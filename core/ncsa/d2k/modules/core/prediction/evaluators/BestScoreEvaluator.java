@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.prediction;
+package ncsa.d2k.modules.core.prediction.evaluators;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.util.datatype.*;
@@ -7,16 +7,16 @@ import ncsa.d2k.util.datatype.*;
  * Meant to be used in conjunction with NFoldTTables.  This module takes N
  * PredictionModelModules and N testing sets.  The testing set is passed to
  * the predict() method of each PredictionModelModule.  Only the model with
- * the highest number of correct predictions is returned.  This model is passed as an output.
+ * the highest number of correct predictions is passed as an output.
  */
-public class PredictionModelSelector extends ModelSelectorModule implements HasNames, ModelEvaluator {
+public class BestScoreEvaluator extends ModelEvaluatorModule implements HasNames {
 
 	public String getModuleInfo() {
 		String s = "Meant to be used in conjunction with NFoldTTables.  ";
 		s += "This module takes N PredictionModelModules and N testing sets.  ";
 		s += "The testing set is passed to the predict() method of each ";
 		s += "PredictionModelModule.  Only the model with the highest number of";
-		s += "correct predictions is returned.  This model is passed as an output.";
+		s += "correct predictions is passed as an output.";
 		return s;
 	}
 
@@ -48,11 +48,11 @@ public class PredictionModelSelector extends ModelSelectorModule implements HasN
 	public String getInputName(int i) {
 		switch(i) {
 			case 0:
-				return "model";
+				return "Model";
 			case 1:
-				return "test set";
+				return "TestSet";
 			case 2:
-				return "numFolds";
+				return "N";
 			default:
 				return "No such input.";
 		}
@@ -63,11 +63,11 @@ public class PredictionModelSelector extends ModelSelectorModule implements HasN
 	}
 
 	public String getOutputName(int i) {
-		return "bestModel";
+		return "BestModel";
 	}
 
 	public String getModuleName() {
-		return "PredictionModelSelector";
+		return "BestScoreEvaluator";
 	}
 
 	public void beginExecution() {
@@ -111,9 +111,10 @@ public class PredictionModelSelector extends ModelSelectorModule implements HasN
 			numFolds = n.intValue();
 
 			PredictionTable pt = pmm.predict(tbl);
+			int[] pred = pt.getPredictionSet();
 			bestScore = score(pt);
 			bestModel = pmm;
-			printStats(numFires, bestScore, pt.getNumRows());
+			printStats(numFires, bestScore, /*pmm.getTrainingSetSize()*/0, pt.getNumRows());
 			numFires++;
 		}
 		// call the predict method and keep the model if it is the best one
@@ -123,7 +124,7 @@ public class PredictionModelSelector extends ModelSelectorModule implements HasN
 
 			PredictionTable pt = pmm.predict(tbl);
 			double thisscore = score(pt);
-			printStats(numFires, thisscore, pt.getNumRows());
+			printStats(numFires, thisscore, /*pmm.getTrainingSetSize()*/0, pt.getNumRows());
 			if(thisscore > bestScore) {
 				bestScore = thisscore;
 				bestModel = pmm;
@@ -136,15 +137,15 @@ public class PredictionModelSelector extends ModelSelectorModule implements HasN
 	}
 
 	private static final String FOLD = "Fold: ";
-	private static final String SCORE = "Percentage of correct predictions: ";
-	private static final String TEST = "Testing set size: ";
-	private static final String TRAIN = "Training set size: ";
+	private static final String SCORE = "\tPercentage of correct predictions: ";
+	private static final String TEST = "\tTesting set size: ";
+	private static final String TRAIN = "\tTraining set size: ";
 
-	private static final void printStats(int fld, double scre, int size) {
+	private static final void printStats(int fld, double scre, int trainsize, int size) {
 		System.out.println(FOLD+fld);
-		//System.out.println("\t"+TRAIN+trainsize);
-		System.out.println("\t"+TEST+size);
-		System.out.println("\t"+SCORE+scre*100);
+		System.out.println(TRAIN+trainsize);
+		System.out.println(TEST+size);
+		System.out.println(SCORE+scre*100);
 	}
 
 	/**
