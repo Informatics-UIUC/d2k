@@ -1,11 +1,11 @@
-package ncsa.d2k.modules.core.datatype.table.continous;
+package ncsa.d2k.modules.core.datatype.table.continuous;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.TransformationModule;
 import java.util.*;
 
 public class ContinuousExample implements Example, java.io.Serializable {
-  
+
   ContinuousExampleSet exampleSet;
   int              exampleIndex;
 
