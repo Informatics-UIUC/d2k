@@ -271,7 +271,13 @@ public class WriteTableToFile extends OutputModule {
       // write the actual data
       for(int i = 0; i < vt.getNumRows(); i++) {
          for(int j = 0; j < vt.getNumColumns(); j++) {
-            String s = vt.getString(i, j);
+            String s;
+
+            if (vt.isValueMissing(i, j) || vt.isValueEmpty(i, j))
+                s = "";
+            else
+                s = vt.getString(i, j);
+
             //System.out.println("s: "+s);
             fw.write(s, 0, s.length());
             if(j != (vt.getNumColumns() - 1) )
