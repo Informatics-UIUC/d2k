@@ -78,7 +78,7 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule {
 	/**
 		SortTableView
 	*/
-	private class SortTableView extends ncsa.d2k.controller.userviews.swing.JUserPane implements ActionListener {
+	private class SortTableView extends ncsa.d2k.controller.userviews.swing.JUserPane {
 
 		MutableTable table;
 		int columns;
@@ -200,21 +200,6 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule {
 			for(int i = 0; i < sortList.size(); i++)
 				sortorder[i] = ((Integer)sortList.get(i)).intValue();
 			numsort = sortorder.length;
-		}
-
-		public void actionPerformed(ActionEvent event) {
-			Object source = event.getSource();
-			/*if (source == done) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						viewDone("Done");
-						getSortOrder();
-						sort();
-					}
-				});
-			}*/
-			if (source == abort)
-				viewAbort();
 		}
 
 		/**
