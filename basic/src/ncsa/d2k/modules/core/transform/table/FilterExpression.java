@@ -21,7 +21,7 @@ public class FilterExpression implements Expression {
 	private Node root;
 	private Table table;
 	private boolean includeMissingValues = true;
-	
+
 	/**
 	 * Constructor for a <code>FilterExpression</code> object that should use
 	 * the given <code>Table</code> as its context.
@@ -254,56 +254,95 @@ public class FilterExpression implements Expression {
 				if (right instanceof ColumnElement) {
 					ColumnElement cleft = (ColumnElement) left;
 					ColumnElement cright = (ColumnElement) right;
-					switch (opcode) {
 
-						case OP_EQ :
+               try {
 
-							return ((ColumnElement) left).evaluateDouble(
-								rowNumber)
-								== ((ColumnElement) right).evaluateDouble(
-									rowNumber);
+                  // are both columns numeric?
+                  cleft.evaluateDouble(rowNumber);
+                  cright.evaluateDouble(rowNumber);
 
-						case OP_NEQ :
+                  // if so, compare doubles:
 
-							return ((ColumnElement) left).evaluateDouble(
-								rowNumber)
-								!= ((ColumnElement) right).evaluateDouble(
-									rowNumber);
+                  switch (opcode) {
 
-						case OP_LT :
+                     case OP_EQ :
 
-							return ((ColumnElement) left).evaluateDouble(
-								rowNumber)
-								< ((ColumnElement) right).evaluateDouble(
-									rowNumber);
+                        return ((ColumnElement) left).evaluateDouble(
+                           rowNumber)
+                           == ((ColumnElement) right).evaluateDouble(
+                              rowNumber);
 
-						case OP_LTE :
+                     case OP_NEQ :
 
-							return ((ColumnElement) left).evaluateDouble(
-								rowNumber)
-								<= ((ColumnElement) right).evaluateDouble(
-									rowNumber);
+                        return ((ColumnElement) left).evaluateDouble(
+                           rowNumber)
+                           != ((ColumnElement) right).evaluateDouble(
+                              rowNumber);
 
-						case OP_GT :
+                     case OP_LT :
 
-							return ((ColumnElement) left).evaluateDouble(
-								rowNumber)
-								> ((ColumnElement) right).evaluateDouble(
-									rowNumber);
+                        return ((ColumnElement) left).evaluateDouble(
+                           rowNumber)
+                           < ((ColumnElement) right).evaluateDouble(
+                              rowNumber);
 
-						case OP_GTE :
+                     case OP_LTE :
 
-							return ((ColumnElement) left).evaluateDouble(
-								rowNumber)
-								>= ((ColumnElement) right).evaluateDouble(
-									rowNumber);
+                        return ((ColumnElement) left).evaluateDouble(
+                           rowNumber)
+                           <= ((ColumnElement) right).evaluateDouble(
+                              rowNumber);
 
-						default :
+                     case OP_GT :
 
-							throw new ExpressionException(
-								"FilterExpression: illegal opcode: " + opcode);
+                        return ((ColumnElement) left).evaluateDouble(
+                           rowNumber)
+                           > ((ColumnElement) right).evaluateDouble(
+                              rowNumber);
 
-					}
+                     case OP_GTE :
+
+                        return ((ColumnElement) left).evaluateDouble(
+                           rowNumber)
+                           >= ((ColumnElement) right).evaluateDouble(
+                              rowNumber);
+
+                     default :
+
+                        throw new ExpressionException(
+                           "FilterExpression: illegal opcode: " + opcode);
+
+                  }
+
+               }
+               catch(NumberFormatException exc) {
+
+                  // if not, compare strings:
+
+                  switch (opcode) {
+
+                     case OP_EQ :
+
+                        return ((ColumnElement) left).evaluateString(
+                           rowNumber)
+                           .equals(((ColumnElement) right).evaluateString(
+                              rowNumber));
+
+                     case OP_NEQ :
+
+                        return !((ColumnElement) left).evaluateString(
+                           rowNumber)
+                           .equals(((ColumnElement) right).evaluateString(
+                              rowNumber));
+
+                     default :
+
+                        throw new ExpressionException(
+                           "FilterExpression: cannot perform operation on nominal columns: " + opcode);
+
+                  }
+
+               }
 
 				} else if (right instanceof ScalarElement) {
 
@@ -634,7 +673,7 @@ public class FilterExpression implements Expression {
 		private boolean isMissing(int rowNumber) {
 			return table.isValueMissing(rowNumber, columnNumber);
 		}
-		
+
 		public String toString() {
 			return columnLabel;
 		}
