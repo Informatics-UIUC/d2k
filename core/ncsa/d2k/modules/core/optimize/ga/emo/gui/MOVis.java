@@ -7,6 +7,8 @@ import ncsa.d2k.modules.core.vis.widgets.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.functions.*;
+import ncsa.d2k.modules.core.optimize.util.*;
 
 import ncsa.d2k.userviews.swing.*;
 
@@ -375,8 +377,9 @@ public class MOVis
           }
           else if (run > 1) {
             // make a new NewNsgaPopulation from tmpPopulation and current pop
-            populations[CUMUL_ONE] = new NewNsgaPopulation(tmpPopulation,
+            populations[CUMUL_ONE] = new EMONsgaPopulation(tmpPopulation,
                 populations[CURRENT]);
+            ((EMONsgaPopulation)populations[CUMUL_ONE]).setParameters( ((EMOPopulation)tmpPopulation).getParameters());
             ( (NewNsgaPopulation) populations[CUMUL_ONE]).filtering();
             // set tmpPopulation to be null.  we don't need it anymore
             tmpPopulation = null;
@@ -412,8 +415,9 @@ public class MOVis
           }
         }
         else {
-          populations[CUMUL_ONE] = new NewNsgaPopulation(populations[CUMUL_ONE],
+          populations[CUMUL_ONE] = new EMONsgaPopulation(populations[CUMUL_ONE],
               populations[CURRENT]);
+            ((EMONsgaPopulation)populations[CUMUL_ONE]).setParameters( ((EMOPopulation)populations[CUMUL_ONE]).getParameters());
           ( (NewNsgaPopulation) populations[CUMUL_ONE]).filtering();
 
           // copy pop into a fitness table
@@ -1499,4 +1503,190 @@ public class MOVis
 
     } // Run View
   } // MO View
+  
+  class EMONsgaPopulation extends NewNsgaPopulation implements EMOPopulation {
+    EMONsgaPopulation(NsgaPopulation p1, NsgaPopulation p2){
+      super(p1, p2);
+    }
+    
+    private Parameters parameters; 
+    
+    /**
+     * Get the parameters.
+     * @return the parameters
+     */
+    public Parameters getParameters() {
+      return parameters;
+    }
+  
+    /**
+     * Set the parameters
+     * @param params the new parameters
+     */
+    public void setParameters(Parameters params) {
+      parameters = params;
+    }
+  
+    public Table getDecisionVariablesTable() {
+      java.util.List functions = parameters.getFunctions();
+  
+      int numFunctions = functions.size();
+      java.util.List constraints = new LinkedList();
+  
+      for (int i = 0; i < numFunctions; i++) {
+        Function func = (Function) functions.get(i);
+        if (func instanceof Constraint) {
+          constraints.add(func);
+        }
+      }
+  
+      int numGenes = 0;
+      int numTraits = this.traits.length;
+      Solution nis = (Solution) members[0];
+      int numConstraints = nis.getNumConstraints();    
+  
+      int popSize = this.size();
+      double[][] dc = new double[numTraits + numObjectives +2+numConstraints][popSize];
+  
+      for (int i = 0; i < popSize; i++) {
+        Solution ni = (Solution) members[i];
+        double[] genes = ni.toDoubleValues();
+        int j = 0;
+  
+        // first do the genes.
+        for (; j < numTraits; j++) {
+          dc[j][i] = genes[j];
+  
+          // Now the objectives.
+        }
+        for (int k = 0; k < numObjectives; k++, j++) {
+          dc[j][i] = ((NsgaSolution)ni).getObjective(k);
+        }
+        for(int k = 0; k < numConstraints; k++, j++) {
+          dc[j][i] = ni.getConstraint(k);        
+        }
+  
+        dc[j++][i] = ((NsgaSolution)ni).getRank();
+        dc[j++][i] = ((NsgaSolution)ni).getCrowdingDistance();
+  
+      }
+      // Now make the table
+      //BASIC3 TableImpl vt = (TableImpl) DefaultTableFactory.getInstance().createTable(0);
+      MutableTableImpl vt =  new MutableTableImpl(0);
+      int i = 0;
+  
+      for (; i < numTraits; i++) {
+        DoubleColumn col = new DoubleColumn(dc[i]);
+        // NsgaSolution nis0 = (NsgaSolution) members[0];
+        //if (nis instanceof MONumericIndividual) {
+          col.setLabel(this.traits[i].getName());
+        /*}
+        else {
+          col.setLabel("Variable " + i);
+        }*/
+        vt.addColumn(col);
+      }
+  
+      for (int k = 0; k < numObjectives; k++, i++) {
+        DoubleColumn col = new DoubleColumn(dc[i]);
+        col.setLabel(this.objectiveConstraints[k].getName());
+        vt.addColumn(col);
+      }
+      for(int k = 0; k < numConstraints; k++, i++) {
+        DoubleColumn col = new DoubleColumn(dc[i]);
+        col.setLabel(((Function)constraints.get(k)).getName());
+        vt.addColumn(col);
+      }
+  
+      DoubleColumn col = new DoubleColumn(dc[i++]);
+      col.setLabel("Rank");
+      vt.addColumn(col);
+      col = new DoubleColumn(dc[i++]);
+      col.setLabel("Crowding");
+      vt.addColumn(col);
+      return vt;
+    }
+  
+    public Table getGenesTable() {
+      java.util.List functions = parameters.getFunctions();
+  
+      int numFunctions = functions.size();
+      java.util.List constraints = new LinkedList();
+  
+      for (int i = 0; i < numFunctions; i++) {
+        Function func = (Function) functions.get(i);
+        if (func instanceof Constraint) {
+          constraints.add(func);
+        }
+      }
+  
+      int numGenes = 0;
+      int numTraits;
+      BinarySolution nis = (BinarySolution) members[0];
+      int numConstraints = nis.getNumConstraints();    
+      numTraits = this.traits.length;
+  
+      int popSize = this.size();
+      double[][] dc = new double[numTraits + numObjectives + 2+numConstraints][popSize];
+  
+      for (int i = 0; i < popSize; i++) {
+        BinarySolution ni = (BinarySolution) members[i];
+        double[] genes = ni.toDouble();
+        int j = 0;
+  
+        // first do the genes.
+        for (; j < numTraits; j++) {
+          dc[j][i] = genes[j];
+  
+          // Now the objectives.
+        }
+        for (int k = 0; k < numObjectives; k++, j++) {
+          dc[j][i] = ((NsgaSolution)ni).getObjective(k);
+        }
+        for(int k = 0; k < numConstraints; k++, j++) {
+          dc[j][i] = ni.getConstraint(k);        
+        }
+  
+        dc[j++][i] = ((NsgaSolution)ni).getRank();
+        dc[j++][i] = ((NsgaSolution)ni).getCrowdingDistance();
+  
+      }
+      // Now make the table
+      //BASIC3 TableImpl vt = (TableImpl) DefaultTableFactory.getInstance().createTable(0);
+      MutableTableImpl vt =  new MutableTableImpl(0);
+      int i = 0;
+  
+      for (; i < numTraits; i++) {
+        DoubleColumn col = new DoubleColumn(dc[i]);
+        // NsgaSolution nis0 = (NsgaSolution) members[0];
+        //if (nis instanceof MONumericIndividual) {
+          col.setLabel(this.traits[i].getName());
+        /*}
+        else {
+          col.setLabel("Variable " + i);
+        }*/
+        vt.addColumn(col);
+      }
+  
+      for (int k = 0; k < numObjectives; k++, i++) {
+        DoubleColumn col = new DoubleColumn(dc[i]);
+        col.setLabel(this.objectiveConstraints[k].getName());
+        vt.addColumn(col);
+      }
+      for(int k = 0; k < numConstraints; k++, i++) {
+        DoubleColumn col = new DoubleColumn(dc[i]);
+        col.setLabel(((Function)constraints.get(k)).getName());
+        vt.addColumn(col);
+      }
+  
+      DoubleColumn col = new DoubleColumn(dc[i++]);
+      col.setLabel("Rank");
+      vt.addColumn(col);
+      col = new DoubleColumn(dc[i++]);
+      col.setLabel("Crowding");
+      vt.addColumn(col);
+      return vt;
+    }
+    
+  }
 } // MO Vis
