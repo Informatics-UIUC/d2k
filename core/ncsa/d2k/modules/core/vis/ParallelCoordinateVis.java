@@ -114,63 +114,63 @@ public class ParallelCoordinateVis extends VisModule {
 	/**
 	 *
 	 */
-	class PCView extends JUserPane implements ActionListener, Printable  {
+	private final class PCView extends JUserPane implements ActionListener, Printable  {
 		/** the indices of the columns to show */
-		volatile int[] columnorder;
+		private volatile int[] columnorder;
 		/** the locations of the columns */
-		volatile float[] columnlocations;
+		private volatile float[] columnlocations;
 
-		int imagewidth;
+		private int imagewidth;
 
-		boolean zoomin;
+		private boolean zoomin;
 
 		/** the table with the data */
-		VerticalTable table;
-		JMenuBar menuBar;
+		private VerticalTable table;
+		private JMenuBar menuBar;
 
 		/** the choose colors menu */
-		JMenu chooseColors;
+		private JMenu chooseColors;
 		/** the area that shows the lines */
-		MainArea ma;
+		private MainArea ma;
 
-		JButton refreshButton;
-		JButton filterButton;
-		JToggleButton zoom;
-		JButton showTable;
-		JButton printButton;
-		JCheckBoxMenuItem useAntialias;
-		JMenuItem miClearSelected;
-		ColorMenuItem miSelectedColor;
-		Color selectedColor = Color.red;
-		JMenuItem helpItem;
+		private JButton refreshButton;
+		private JButton filterButton;
+		private JToggleButton zoom;
+		private JButton showTable;
+		private JButton printButton;
+		private JCheckBoxMenuItem useAntialias;
+		private JMenuItem miClearSelected;
+		private ColorMenuItem miSelectedColor;
+		private Color selectedColor = Color.red;
+		private JMenuItem helpItem;
 
-		int currentKeyColumn;
+		private int currentKeyColumn;
 
-		Filter filter;
-		JMenuItem miFilter;
-		JMenuItem miShowTable;
-		JMenuItem miPrint;
+		private Filter filter;
+		private JMenuItem miFilter;
+		private JMenuItem miShowTable;
+		private JMenuItem miPrint;
 
-		Color highColor;
-		Color lowColor;
-		HashMap [] colorsLookup;
+		private Color highColor;
+		private Color lowColor;
+		private HashMap [] colorsLookup;
 		/** true if the row should be drawn */
-		boolean [] linemap;
-		boolean [] selectedlines;
-		InfoTableModel infoModel;
-		JTable infoTable;
-		Legend legend;
+		private boolean [] linemap;
+		private boolean [] selectedlines;
+		private InfoTableModel infoModel;
+		private JTable infoTable;
+		private Legend legend;
 
-		double[] mins;
-		double[] maxes;
+		private double[] mins;
+		private double[] maxes;
 
   		public void initView(ViewModule m) {}
 
-		NumberFormat nf;
-		Dimension defaultSize;
-		JScrollPane jsp;
+		private NumberFormat nf;
+		private Dimension defaultSize;
+		private JScrollPane jsp;
 
-		HelpWindow helpWindow;
+		private HelpWindow helpWindow;
 
 		/**
 		 * Input arrived
@@ -409,14 +409,14 @@ public class ParallelCoordinateVis extends VisModule {
 		/**
 			Add a line to the selected set.
 		*/
-		private void addSelection(int row) {
+		private final void addSelection(int row) {
 			infoModel.addInfoRow(row);
 		}
 
 		/**
 			Remove a line from the selected set.
 		*/
-		private void removeSelection(int row) {
+		private final void removeSelection(int row) {
 			infoModel.removeInfoRow(row);
 			infoTable.validate();
 			//scrollPane.validate();
@@ -425,7 +425,7 @@ public class ParallelCoordinateVis extends VisModule {
 		/**
 		 * Identifies which columns to display
 		 */
-		class DisplayColumnMenuItem extends JCheckBoxMenuItem {
+		private final class DisplayColumnMenuItem extends JCheckBoxMenuItem {
 			int id;
 			DisplayColumnMenuItem(String s, int i) {
 				super(s);
@@ -436,7 +436,7 @@ public class ParallelCoordinateVis extends VisModule {
 		/**
 		 * Identifies which is the key column
 		 */
-		class KeyColumnMenuItem extends JCheckBoxMenuItem {
+		private final class KeyColumnMenuItem extends JCheckBoxMenuItem {
 			int id;
 			KeyColumnMenuItem(String s, int i) {
 				super(s);
@@ -447,7 +447,7 @@ public class ParallelCoordinateVis extends VisModule {
 		/**
 		 * Identifies which colors to use
 		 */
-		class ColorMenuItem extends JMenuItem {
+		private final class ColorMenuItem extends JMenuItem {
 			Color c;
 			ColorMenuItem(String s, Icon i, Color c) {
 				super(s, i);
@@ -624,32 +624,32 @@ public class ParallelCoordinateVis extends VisModule {
 		 * Draw the lines as a buffered image.  Everything else is painted
 		 * directly on this.
 		 */
-		class MainArea extends JPanel implements MouseListener, MouseMotionListener {
-			PCView app;
-			int selectedcol;
-			boolean mousedrag;
-			int mousex;
-			int mousey;
-			boolean firsttime;
+		private final class MainArea extends JPanel implements MouseListener, MouseMotionListener {
+			private PCView app;
+			private int selectedcol;
+			private boolean mousedrag;
+			private int mousex;
+			private int mousey;
+			private boolean firsttime;
 
 			// the weights of the lines, scaled to between the
 			// max and min for a column
-			float [][] weights;
+			private float [][] weights;
 			// the actual heights of the lines
-			float [][] heights;
+			private float [][] heights;
 
 			// the color of a row
-			Color [] linecolor;
+			private Color [] linecolor;
 
-			int leftoffset;
-			int topoffset;
-			int imageheight;
+			private int leftoffset;
+			private int topoffset;
+			private int imageheight;
 
-			int imagebottom;
-			int barheight;
-			int imagetop;
+			private int imagebottom;
+			private int barheight;
+			private int imagetop;
 
-			BufferedImage image;
+			private BufferedImage image;
 
 			MainArea(PCView a) {
 				app = a;
@@ -691,9 +691,9 @@ public class ParallelCoordinateVis extends VisModule {
 				addMouseMotionListener(this);
 			}
 
-			int oldwidth;
-			int oldheight;
-			int sidebuffer;
+			private int oldwidth;
+			private int oldheight;
+			private int sidebuffer;
 
 			/**
 			 * Set the size of this.
@@ -742,7 +742,7 @@ public class ParallelCoordinateVis extends VisModule {
 			/**
 			 * Create a buffered image used for the gradient paint.
 			 */
-			BufferedImage getGradientImage(Color low, Color high) {
+			private final BufferedImage getGradientImage(Color low, Color high) {
 				BufferedImage bi = new BufferedImage(2, 101,
 					BufferedImage.TYPE_INT_RGB);
 				Graphics2D g2 = (Graphics2D)bi.getGraphics();
@@ -755,7 +755,7 @@ public class ParallelCoordinateVis extends VisModule {
 			/**
 			 * Set the column that determines the line colors.
 			 */
-			void setKeyColumn(int i) {
+			private final void setKeyColumn(int i) {
 				currentKeyColumn = i;
 				// update the linecolors
 				Column c = table.getColumn(i);
@@ -847,7 +847,7 @@ public class ParallelCoordinateVis extends VisModule {
 			/**
 			 * Redraw the lines.
 			 */
-			void updateImage() {
+			private final void updateImage() {
 				image = null;
 				new CreateImageThread(this).start();
 			}
@@ -856,8 +856,8 @@ public class ParallelCoordinateVis extends VisModule {
 			 * Draw the lines on a buffered image in a separate thread
 			 * and then paint the image on the screen.
 			 */
-			class CreateImageThread extends Thread {
-				MainArea app;
+			private final class CreateImageThread extends Thread {
+				private MainArea app;
 
 				CreateImageThread(MainArea a) {
 					app = a;
@@ -992,7 +992,7 @@ public class ParallelCoordinateVis extends VisModule {
 					imagebottom-topoffset));
 			}
 
-			void drawBar(Graphics2D g2, float location, String name) {
+			private final void drawBar(Graphics2D g2, float location, String name) {
 				int buffer = (int)(.1*barheight);
 
 				Rectangle r = new Rectangle(
@@ -1103,7 +1103,7 @@ public class ParallelCoordinateVis extends VisModule {
 				}
 			}
 
-			void swap(int one, int two) {
+			private final void swap(int one, int two) {
 				int temp = columnorder[one];
 				float temploc = columnlocations[one];
 				columnorder[one] = columnorder[two];
@@ -1117,7 +1117,7 @@ public class ParallelCoordinateVis extends VisModule {
 			 * If a line is found, the lines are redrawn and the selected
 			 * lines are painted the selected color.
 			 */
-			private void calcLocation(float x1, float y1) {
+			private final void calcLocation(float x1, float y1) {
 				// find the two columns that this point
 				// lies between
 
@@ -1168,7 +1168,7 @@ public class ParallelCoordinateVis extends VisModule {
 		 * A small square with a black outline.  The color of the
 		 * square is given in the constructor.
 		 */
-		class ColorComponent extends JComponent {
+		private final class ColorComponent extends JComponent {
 			private final int DIM = 12;
 			Color bkgrd;
 
@@ -1209,29 +1209,29 @@ public class ParallelCoordinateVis extends VisModule {
 		/**
 		 * Filtering lines.
 		 */
-		class Filter extends JD2KFrame implements ActionListener {
-			HashMap numericColumnLookup;
-			HashMap stringColumnLookup;
+		private final class Filter extends JD2KFrame implements ActionListener {
+			private HashMap numericColumnLookup;
+			private HashMap stringColumnLookup;
 
-			JComboBox numColumns;
-			JComboBox strColumns;
-			JComboBox numOps;
-			JComboBox strOps;
-			JTextField numValue;
-			JTextField strValue;
-			JButton numAdd;
-			JButton strAdd;
+			private JComboBox numColumns;
+			private JComboBox strColumns;
+			private JComboBox numOps;
+			private JComboBox strOps;
+			private JTextField numValue;
+			private JTextField strValue;
+			private JButton numAdd;
+			private JButton strAdd;
 
-			JButton cancel;
-			JButton done;
-			JButton update;
+			private JButton cancel;
+			private JButton done;
+			private JButton update;
 
-			JList filterList;
-			JButton remove;
+			private JList filterList;
+			private JButton remove;
 
-			DefaultListModel listModel;
+			private DefaultListModel listModel;
 
-			MainArea ma;
+			private MainArea ma;
 
 			Filter(MainArea m) {
 				super("Filter");
@@ -1407,7 +1407,7 @@ public class ParallelCoordinateVis extends VisModule {
 			/**
 			 * Update the lines to show based on the current filteritems.
 			 */
-			void updateLineMap() {
+			private final void updateLineMap() {
 				Object[] filters = listModel.toArray();
 				if(filters.length == 0) {
 					for(int i = 0; i < table.getNumRows(); i++)
@@ -1487,7 +1487,7 @@ public class ParallelCoordinateVis extends VisModule {
 				}
 			}
 
-			Object[] oldFilters;
+			private Object[] oldFilters;
 
 			public void setVisible(boolean f) {
 				if(f)
@@ -1498,7 +1498,7 @@ public class ParallelCoordinateVis extends VisModule {
 			/**
 			 * Base class for filters.
 			 */
-			abstract class FilterItem {
+			abstract private class FilterItem {
 				String label;
 				int colNum;
 				String op;
@@ -1510,8 +1510,8 @@ public class ParallelCoordinateVis extends VisModule {
 			/**
 			 * Filter out items for numeric columns
 			 */
-			class NumericFilterItem extends FilterItem {
-				double value;
+			private final class NumericFilterItem extends FilterItem {
+				private double value;
 
 				NumericFilterItem(String l, int c, String o, double v) {
 					label = l;
@@ -1520,7 +1520,7 @@ public class ParallelCoordinateVis extends VisModule {
 					value = v;
 				}
 
-				boolean evaluate(String s) {
+				final boolean evaluate(String s) {
 					double d = 0;
 					try {
 						d = Double.parseDouble(s);
@@ -1531,7 +1531,7 @@ public class ParallelCoordinateVis extends VisModule {
 					return evaluate(d);
 				}
 
-				boolean evaluate(double d) {
+				final boolean evaluate(double d) {
 					if(op == GREATER_THAN)
 						//return value > d;
 						return value < d;
@@ -1569,8 +1569,8 @@ public class ParallelCoordinateVis extends VisModule {
 			 * Filter out items for non-numeric columns.
 			 * String equality and inequality is used
 			 */
-			class StringFilterItem extends FilterItem {
-				String value;
+			private final class StringFilterItem extends FilterItem {
+				private String value;
 
 				StringFilterItem(String l, int c, String o, String v) {
 					label = l;
@@ -1582,7 +1582,7 @@ public class ParallelCoordinateVis extends VisModule {
 				/**
 					Return true if the item should be shown
 				*/
-				boolean evaluate(String s) {
+				final boolean evaluate(String s) {
 					if(op == EQUAL_TO)
 						return value.trim().equals(s.trim());
 					else if(op == NOT_EQUAL_TO)
@@ -1590,7 +1590,7 @@ public class ParallelCoordinateVis extends VisModule {
 					return false;
 				}
 
-				boolean evaluate(double d) {
+				final boolean evaluate(double d) {
 					String s;
 					try {
 						s = Double.toString(d);
@@ -1616,19 +1616,19 @@ public class ParallelCoordinateVis extends VisModule {
 			A small window into the table we are visualizing.
 			This only shows the rows that are selected.
 		*/
-		class InfoTableModel extends DefaultTableModel {
-			ArrayList rows;
+		private final class InfoTableModel extends DefaultTableModel {
+			private ArrayList rows;
 
 			InfoTableModel() {
 				rows = new ArrayList();
 			}
 
-			void addInfoRow(int i) {
+			private final void addInfoRow(int i) {
 				rows.add(new Integer(i));
 				fireTableDataChanged();
 			}
 
-			void removeInfoRow(int i) {
+			private final void removeInfoRow(int i) {
 				rows.remove(new Integer(i));
 				fireTableDataChanged();
 			}
@@ -1661,13 +1661,13 @@ public class ParallelCoordinateVis extends VisModule {
 		 * Show the colors for each class name and its percentage of
 		 * the composite
 		 */
-		class Legend extends JPanel {
+		private final class Legend extends JPanel {
 			Legend() {
 				setLayout(new GridBagLayout());
 				setBackground(yellowish);
 			}
 
-			void updateLegend(HashMap lk) {
+			private final void updateLegend(HashMap lk) {
 				removeAll();
 				/*JLabel leg = new JLabel("LEGEND");//new AALabel("LEGEND");
 				leg.setBackground(yellowish);
@@ -1702,7 +1702,7 @@ public class ParallelCoordinateVis extends VisModule {
 		}
 	}
 
-	class HelpWindow extends JD2KFrame {
+	private final class HelpWindow extends JD2KFrame {
 		HelpWindow() {
 			super("About ParallelCoordinateVis");
 			JEditorPane jep = new JEditorPane("text/html", getHelpString());
