@@ -354,22 +354,20 @@ public class FilterBoxPlot extends HeadlessUIModule {
 
     HashMap scalarMap = StaticMethods.getScalarAttributes(_table);
     if(scalarMap.size() == 0){
-      System.out.println(getAlias()+": Table " + _table.getLabel() +
-                         " has no scalar columns\n" +
-                         "The transformaiton will be an empty one.\n");
-      pushOutput(new BooleanFilterTransformation(flags), 0);
-        return;
+      System.out.println(getAlias()+": Warning - Table " + _table.getLabel() +
+                         " has no scalar columns.");
+      //pushOutput(new BooleanFilterTransformation(flags), 0);
+        //return;
     }//if scalar map
 
     boolean[] relevant = StaticMethods.getRelevant(attributes, scalarMap);
 
-    if(relevant.length == 0){
-      System.out.println(getAlias()+
-          ": None of the chosen attributes is scalar and/or in table "
-          + _table.getLabel() + "\nThe transformation will be " +
-          "an empty one");
-      pushOutput(new BooleanFilterTransformation(flags), 0);
-        return;
+    if(relevant.length < attributes.length){
+      throw new Exception(getAlias()+
+          ": Some of the configured attributes are not scalar and/or in table "
+          + _table.getLabel() + ". Please reconfigure the module so it can run Headless.");
+      //pushOutput(new BooleanFilterTransformation(flags), 0);
+        //return;
     }//if relevant
 
     for(int i=0; i<relevant.length; i++)
