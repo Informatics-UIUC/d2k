@@ -2,14 +2,12 @@ package ncsa.d2k.modules.core.transform.attribute;
 
 import  java.awt.*;
 import  java.awt.event.*;
-import  java.io.*;
 import  java.text.*;
 import  java.util.*;
 import  javax.swing.*;
 import  javax.swing.event.*;
 import  ncsa.d2k.core.modules.*;
 import  ncsa.d2k.gui.*;
-import  ncsa.d2k.modules.core.datatype.table.*;
 import  ncsa.d2k.modules.core.vis.widgets.*;
 import  ncsa.d2k.modules.core.io.sql.*;
 import  ncsa.d2k.userviews.swing.*;
@@ -20,8 +18,6 @@ import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 
 import java.sql.*;
-import oracle.sql.*;
-import oracle.jdbc.driver.*;
 
 /**
  * This module does binning for database data
@@ -63,14 +59,14 @@ public class SQLBinColumns extends UIModule {
       s += "grouped by unique values. Binning data is a very important preprocessing ";
       s += "step in many data mining processes, especially for continuous numeric data. ";
       s += "By clustering similar data together, interesting patterns can be ";
-      s += "discovered between clusters. However, data binning is an optional ";
-      s += "process. For data set with a small number of unique values, especially ";
+      s += "discovered between clusters. However, binning data is an optional ";
+      s += "process. For a data set with a small number of unique values, especially ";
       s += "a small nominal data set, binning may not be necessary. You can skip ";
       s += "this step by clicking 'Done' button without any actions. ";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle database. This module consumes ";
+      s += "We currently only support Oracle databases. This module consumes ";
       s += "substantial CPU and memory to display data histograms. Sufficient ";
-      s += "memory is essencial to run this module for huge data set.";
+      s += "memory is essential to run this module for a huge data set.";
 
       return s;
     }
@@ -1067,8 +1063,7 @@ public class SQLBinColumns extends UIModule {
                     nbd = createNumericBinDescriptor(i, binMaxes[k -1], binMaxes[k]);
                     addItemToBinList(nbd);
                   }
-                  nbd = createMaxNumericBinDescriptor(i, binMaxes[binMaxes.length
-                        - 1]);
+                  nbd = createMaxNumericBinDescriptor(i, binMaxes[binMaxes.length - 1]);
                   addItemToBinList(nbd);
                 }
               }
@@ -1094,6 +1089,7 @@ public class SQLBinColumns extends UIModule {
             } catch (NumberFormatException e) {
                 return;
             }
+
             // now create and add the bins
             for (int i = 0; i < fieldNames.length; i++) {
               for (int j = 0; j < colIdx.length; j++) {
@@ -1106,8 +1102,7 @@ public class SQLBinColumns extends UIModule {
                     nbd = createNumericBinDescriptor(i, binMaxes[k - 1], binMaxes[k]);
                     addItemToBinList(nbd);
                 }
-                nbd = createMaxNumericBinDescriptor(i, binMaxes[binMaxes.length
-                        - 1]);
+                nbd = createMaxNumericBinDescriptor(i, binMaxes[binMaxes.length - 1]);
                 addItemToBinList(nbd);
                 }
               }
@@ -1136,8 +1131,7 @@ public class SQLBinColumns extends UIModule {
                   double[] binMaxes = new double[num-1];
                   binMaxes[0] = mins[i] + intrval;
                   // add the first bin manually
-                  BinDescriptor nbd = createMinNumericBinDescriptor(i,
-                        binMaxes[0]);
+                  BinDescriptor nbd = createMinNumericBinDescriptor(i, binMaxes[0]);
                   addItemToBinList(nbd);
                   for (int k = 1; k < binMaxes.length; k++) {
                     binMaxes[k] = binMaxes[k - 1] + intrval;
@@ -1145,8 +1139,7 @@ public class SQLBinColumns extends UIModule {
                     nbd = createNumericBinDescriptor(i, binMaxes[k - 1], binMaxes[k]);
                     addItemToBinList(nbd);
                   }
-                  nbd = createMaxNumericBinDescriptor(i, binMaxes[binMaxes.length
-                        - 1]);
+                  nbd = createMaxNumericBinDescriptor(i, binMaxes[binMaxes.length - 1]);
                   addItemToBinList(nbd);
                 }
               }
@@ -1208,6 +1201,9 @@ public class SQLBinColumns extends UIModule {
                     1], binMaxes[j]);
                     addItemToBinList(nbd);
                 }
+								// add the last bin - anca:
+								nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-1]);
+                addItemToBinList(nbd);
                 stmt.close();
               }
               catch (Exception e) {
@@ -1260,7 +1256,7 @@ public class SQLBinColumns extends UIModule {
          * @return a BinDescriptor object
          */
         private BinDescriptor createMinNumericBinDescriptor (int col, double max) {
-            double min = -9999999.99;
+            //double min = -9999999.99; fixed the problem, BinTree will generate only a one sided query
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(OPEN_BRACKET);
             nameBuffer.append(DOTS);
@@ -1268,12 +1264,12 @@ public class SQLBinColumns extends UIModule {
             nameBuffer.append(nf.format(max));
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    min, max, (String)fieldNames[col]);
+                    Double.NEGATIVE_INFINITY, max, (String)fieldNames[col]);
             return  nb;
         }
 
         /**
-         * Create a numeric bin that goes from min to Double.MAX_VALUE
+         * Create a numeric bin that goes from min to 
          * @param col the index of the column
          * @param min the min value in the bin
          * @return a BinDescriptor object
@@ -1286,7 +1282,7 @@ public class SQLBinColumns extends UIModule {
             nameBuffer.append(DOTS);
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    min, Double.MAX_VALUE, (String)fieldNames[col]);
+                    min, Double.POSITIVE_INFINITY, (String)fieldNames[col]);
             return  nb;
         }
 
@@ -1413,3 +1409,6 @@ public class SQLBinColumns extends UIModule {
         }
     }           // BinColumnsView
 }
+
+//QA Comments
+// Anca: Added last bin in addFromWeigth;
