@@ -270,7 +270,7 @@ public class DSTPView extends JUserPane implements  ActionListener, ComponentLis
       while (servers.hasNext()){
         Element server = (Element)servers.next();
         String servername = server.getAttributeValue("NAME");
-        String serverlocation = server.getAttributeValue("LOCATION");
+        String serverlocation = server.getAttributeValue("Location");
         Iterator datafiles = server.getChildren("DATAFILE").iterator();
         while (datafiles.hasNext()){
           Element datafile = (Element)datafiles.next();
