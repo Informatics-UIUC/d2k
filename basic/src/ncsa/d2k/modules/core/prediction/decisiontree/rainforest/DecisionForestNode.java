@@ -7,78 +7,78 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
 /**
-	A DecisionTree is made up of DecisionForestNodes.
+        A DecisionTree is made up of DecisionForestNodes.
         This module is created based on DecisionTreeNode written by David Clutter.
         @author Dora Cai
 */
 public abstract class DecisionForestNode implements ViewableDTNode, Serializable {
 
-	protected DecisionForestNode parent = null;
+        protected DecisionForestNode parent = null;
 
-	protected static final String UNKNOWN = "Unknown";
+        protected static final String UNKNOWN = "Unknown";
 
-	/** The list of children of this node */
-	protected ArrayList children;
-	/** The labels for the branches for the children */
-	protected ArrayList branchLabels;
+        /** The list of children of this node */
+        protected ArrayList children;
+        /** The labels for the branches for the children */
+        protected ArrayList branchLabels;
 
-	/** The label of this node.  If this is a leaf, this is the
-		value of the class that this leaf represents.  Otherwise
-		this is the name of the attribute that this node splits on */
-	protected String label;
+        /** The label of this node.  If this is a leaf, this is the
+                value of the class that this leaf represents.  Otherwise
+                this is the name of the attribute that this node splits on */
+        protected String label;
 
-	/** The tallies for the records that pass through this node */
+        /** The tallies for the records that pass through this node */
 
-	protected String[] outputValues;
-	protected int[] outputTallies;
+        protected String[] outputValues;
+        protected int[] outputTallies;
 
-	protected boolean training;
+        protected boolean training;
 
-	protected int numCorrect;
-	protected int numIncorrect;
-	protected int numTrainingExamples;
+        protected int numCorrect;
+        protected int numIncorrect;
+        protected int numTrainingExamples;
 
-	/**
-		Create a new DecisionForestNode.
-	*/
-	DecisionForestNode(String lbl, int outputSize) {
-		children = new ArrayList();
-		branchLabels = new ArrayList();
-		outputValues = new String[outputSize];
-		outputTallies = new int[outputSize];
-		training = true;
-		numCorrect = 0;
-		numIncorrect = 0;
+        /**
+                Create a new DecisionForestNode.
+        */
+        DecisionForestNode(String lbl, int outputSize) {
+                children = new ArrayList();
+                branchLabels = new ArrayList();
+                outputValues = new String[outputSize];
+                outputTallies = new int[outputSize];
+                training = true;
+                numCorrect = 0;
+                numIncorrect = 0;
                 label = lbl;
-	}
+        }
 
-	public void setTraining(boolean b) {
-		training = b;
-		for(int i = 0; i < getNumChildren(); i++)
-			getChild(i).setTraining(b);
-	}
+        public void setTraining(boolean b) {
+                training = b;
+                for(int i = 0; i < getNumChildren(); i++)
+                        getChild(i).setTraining(b);
+        }
 
-	public boolean getTraining() {
-		return training;
-	}
+        public boolean getTraining() {
+                return training;
+        }
 
-	public int getNumCorrect() {
-		return numCorrect;
-	}
+        public int getNumCorrect() {
+                return numCorrect;
+        }
 
-	public int getNumIncorrect() {
-		return numIncorrect;
-	}
+        public int getNumIncorrect() {
+                return numIncorrect;
+        }
 
-	/**
-		Get the count of the number of records with the given
-		output value that passed through this node.
-		@param outputVal the unique output value to get the tally of
-		@return the count of the number of records with the
-			given output value that passed through this node
-	*/
-	//public int getOutputTally(String outputVal) throws Exception{
-	public int getOutputTally(String outputVal) {
+        /**
+                Get the count of the number of records with the given
+                output value that passed through this node.
+                @param outputVal the unique output value to get the tally of
+                @return the count of the number of records with the
+                        given output value that passed through this node
+        */
+        //public int getOutputTally(String outputVal) throws Exception{
+        public int getOutputTally(String outputVal) {
           int index = -1;
           for (int i=0; i<outputValues.length; i++) {
             if (outputValues[i].equals(outputVal)) {
@@ -92,114 +92,131 @@ public abstract class DecisionForestNode implements ViewableDTNode, Serializable
           else {
             return outputTallies[index];
           }
-	}
+        }
 
 
-	/**
-	 * Get the total number of examples that passed through this node.
-	 * @return the total number of examples that passes through this node
-	 */
-	public int getTotal() {
-		int tot = 0;
-		for(int i = 0; i < outputTallies.length; i++) {
-			tot += outputTallies[i];
-		}
-		return tot;
-	}
+        /**
+         * Get the total number of examples that passed through this node.
+         * @return the total number of examples that passes through this node
+         */
+        public int getTotal() {
+                int tot = 0;
+                for(int i = 0; i < outputTallies.length; i++) {
+                        tot += outputTallies[i];
+                }
+                return tot;
+        }
 
-	public DecisionForestNode getChildWithMostTrainingExamples() {
-		int numTE = Integer.MIN_VALUE;
-		DecisionForestNode node = null;
+        public DecisionForestNode getChildWithMostTrainingExamples() {
+                int numTE = Integer.MIN_VALUE;
+                DecisionForestNode node = null;
 
-		for(int i = 0; i < getNumChildren(); i++) {
-			if(getChild(i).getNumTrainingExamples() >= numTE) {
-				node = getChild(i);
-				numTE = node.getNumTrainingExamples();
-			}
-		}
-		return node;
-	}
+                for(int i = 0; i < getNumChildren(); i++) {
+                        if(getChild(i).getNumTrainingExamples() >= numTE) {
+                                node = getChild(i);
+                                numTE = node.getNumTrainingExamples();
+                        }
+                }
+                return node;
+        }
 
-	public ViewableDTNode getViewableParent() {
-		return (ViewableDTNode) parent;
-	}
+        public ViewableDTNode getViewableParent() {
+                return (ViewableDTNode) parent;
+        }
 
-	/**
+        /**
         Get the parent of this node.
-	*/
-	public DecisionForestNode getParent() {
-		return parent;
-	}
+        */
+        public DecisionForestNode getParent() {
+                return parent;
+        }
 
-	/**
-		Set the parent of this node.
-	*/
-	public void setParent(DecisionForestNode p) {
-		parent = p;
-	}
+        /**
+                Set the parent of this node.
+        */
+        public void setParent(DecisionForestNode p) {
+                parent = p;
+        }
 
-	/**
-		Set the label of this node.
-		@param s the new label
-	*/
-	public void setLabel(String s) {
-		label = s;
-	}
+        /**
+                Set the label of this node.
+                @param s the new label
+        */
+        public void setLabel(String s) {
+          int idx = s.indexOf(".");
+          if (idx>=0) { // when using > 1 tables, the column name has a table name as the prefix
+            label = s.substring(idx+1, s.length());
+          }
+          else
+            label = s;
+        }
 
-	/**
-		Get the label of this node.
-		@return the label of this node
-	*/
-	public String getLabel() {
-		return label;
-	}
+        /**
+                Get the label of this node.
+                @return the label of this node
+        */
+        public String getLabel() {
+          int idx = label.indexOf(".");
+          if (idx >= 0) {// when using > 1 tables, the column name has a table name as the prefix
+            return label.substring(idx + 1, label.length());
+          }
+          else {
+            return label;
+          }
+        }
 
-	/**
-		Get the label of a branch.
-		@param i the branch to get the label of
-		@return the label of branch i
-	*/
-	public String getBranchLabel(int i) {
-		return (String)branchLabels.get(i);
-	}
+        /**
+                Get the label of a branch.
+                @param i the branch to get the label of
+                @return the label of branch i
+        */
+        public String getBranchLabel(int i) {
+          String branchLabel = (String)branchLabels.get(i);
+          int idx = branchLabel.indexOf(".");
+          // label may contain table name prefix if more than one tables are used
+          if (idx>=0)
+            return branchLabel.substring(idx+1, branchLabel.length());
+          else
+            return branchLabel;
+        }
 
-	/**
-		Get the number of children of this node.
-		@return the number of children of this node
-	*/
-	public int getNumChildren() {
-		return children.size();
-	}
+        /**
+                Get the number of children of this node.
+                @return the number of children of this node
+        */
+        public int getNumChildren() {
+                return children.size();
+        }
 
-	/**
-		Get a child of this node.
-		@param i the index of the child to get
-		@return the ith child of this node
-	*/
-	public DecisionForestNode getChild(int i) {
-		return (DecisionForestNode)children.get(i);
-	}
+        /**
+                Get a child of this node.
+                @param i the index of the child to get
+                @return the ith child of this node
+        */
+        public DecisionForestNode getChild(int i) {
+                return (DecisionForestNode)children.get(i);
+        }
 
-	/**
-		Get a child of this node as a ViewableDTNode.
-		@param i the index of the child to get
-		@return the ith child of this node
-	*/
-	public ViewableDTNode getViewableChild(int i){
-		return (ViewableDTNode)children.get(i);
-	}
+        /**
+                Get a child of this node as a ViewableDTNode.
+                @param i the index of the child to get
+                @return the ith child of this node
+        */
+        public ViewableDTNode getViewableChild(int i){
+                return (ViewableDTNode)children.get(i);
+        }
 
-	/**
-		Evaluate a record from the data set.  If this is a leaf, return the
-		label of this node.  Otherwise find the column of the table that
-		represents the attribute that this node evaluates.  Call evaluate()
-		on the appropriate child.
+        /**
+                Evaluate a record from the data set.  If this is a leaf, return the
+                label of this node.  Otherwise find the column of the table that
+                represents the attribute that this node evaluates.  Call evaluate()
+                on the appropriate child.
 
-		@param vt the Table with the data
-		@param row the row of the table to evaluate
-		@return the class label of the row
-	*/
-	public Object evaluate(DecisionForestNode node, Table vt, int row) {
+                @param vt the Table with the data
+                @param row the row of the table to evaluate
+                @return the class label of the row
+        */
+        public Object evaluate(DecisionForestNode node, Table vt, int row) {
           if (node.isLeaf()) {
             return node.getLabel();
           }
@@ -237,7 +254,7 @@ public abstract class DecisionForestNode implements ViewableDTNode, Serializable
             System.out.println("something is wrong in evaluate");
             return node.label;
           }
-	}
+        }
 
        /**
        * Squeeze out spaces from the string value
@@ -283,89 +300,89 @@ public abstract class DecisionForestNode implements ViewableDTNode, Serializable
           return false;
         }
 
-	/**
-		Add a branch to this node, given the label of the branch and
-		the child node.  For a CategoricalDecisionTreeNode, the label
-		of the branch is the same as the value used to determine the split
-		at this node.
-		@param val the label of the branch
-		@param child the child node
-	*/
-	abstract public void addBranch(String val, DecisionForestNode child);
-	abstract public void addBranch(double split, String branchLabel, DecisionForestNode child);
+        /**
+                Add a branch to this node, given the label of the branch and
+                the child node.  For a CategoricalDecisionTreeNode, the label
+                of the branch is the same as the value used to determine the split
+                at this node.
+                @param val the label of the branch
+                @param child the child node
+        */
+        abstract public void addBranch(String val, DecisionForestNode child);
+        abstract public void addBranch(double split, String branchLabel, DecisionForestNode child);
 
-	abstract public void setBranch(int branchNum, String val, DecisionForestNode child);
+        abstract public void setBranch(int branchNum, String val, DecisionForestNode child);
 
-	/**
-		Add left and right children to this node.
-		@param split the split value for this node
-		@param leftLabel the label for the left branch
-		@param left the left child
-		@param rightLabel the label for the right branch
-		@param right the right child
-	*/
-	abstract public void addBranches(double split, String leftlabel,
-		DecisionForestNode left, String rightlabel, DecisionForestNode right);
+        /**
+                Add left and right children to this node.
+                @param split the split value for this node
+                @param leftLabel the label for the left branch
+                @param left the left child
+                @param rightLabel the label for the right branch
+                @param right the right child
+        */
+        abstract public void addBranches(double split, String leftlabel,
+                DecisionForestNode left, String rightlabel, DecisionForestNode right);
 
-	/**
-		Return true if this is a leaf, false otherwise.
-		@return true if this is a leaf, false otherwise
-	*/
-	public boolean isLeaf() {
-		return (children.size() == 0);
-	}
+        /**
+                Return true if this is a leaf, false otherwise.
+                @return true if this is a leaf, false otherwise
+        */
+        public boolean isLeaf() {
+                return (children.size() == 0);
+        }
 
-	/**
-		Get the depth of this node.
-		@return the depth of this node.
-	*/
-	public int getDepth() {
-		if(parent == null)
-			return 0;
-		return parent.getDepth() + 1;
-	}
+        /**
+                Get the depth of this node.
+                @return the depth of this node.
+        */
+        public int getDepth() {
+                if(parent == null)
+                        return 0;
+                return parent.getDepth() + 1;
+        }
 
-	int getNumTrainingExamples() {
-		return numTrainingExamples;
-	}
+        int getNumTrainingExamples() {
+                return numTrainingExamples;
+        }
 
-	public void print() {
-		System.out.println("Depth: "+getDepth());
-		System.out.print("\tLabel: "+getLabel());
-		if(parent != null)
-			System.out.println("\t\tParent: "+parent.getLabel());
-		else
-			System.out.println("");
-		for(int i = 0; i < getNumChildren(); i++) {
-			System.out.print("\t\tBranch: "+branchLabels.get(i));
-			System.out.println("\t\t\tNode: "+getChild(i).getLabel());
-		}
-		for(int i = 0; i < getNumChildren(); i++)
-			getChild(i).print();
-	}
+        public void print() {
+                System.out.println("Depth: "+getDepth());
+                System.out.print("\tLabel: "+getLabel());
+                if(parent != null)
+                        System.out.println("\t\tParent: "+parent.getLabel());
+                else
+                        System.out.println("");
+                for(int i = 0; i < getNumChildren(); i++) {
+                        System.out.print("\t\tBranch: "+branchLabels.get(i));
+                        System.out.println("\t\t\tNode: "+getChild(i).getLabel());
+                }
+                for(int i = 0; i < getNumChildren(); i++)
+                        getChild(i).print();
+        }
 
-	public void print(Writer out) throws Exception {
-		out.write("Depth: "+getDepth()+"\n");
-		out.write("\tLabel: "+getLabel()+"\n");
-		if(parent != null)
-			out.write("\t\tParent: "+parent.getLabel()+"\n");
-		else
-			out.write("");
-		for(int i = 0; i < getNumChildren(); i++) {
-			out.write("\t\tBranch: "+branchLabels.get(i)+"\n");
-			out.write("\t\t\tNode: "+getChild(i).getLabel()+"\n");
-		}
-		for(int i = 0; i < getNumChildren(); i++)
-			getChild(i).print(out);
-	}
+        public void print(Writer out) throws Exception {
+                out.write("Depth: "+getDepth()+"\n");
+                out.write("\tLabel: "+getLabel()+"\n");
+                if(parent != null)
+                        out.write("\t\tParent: "+parent.getLabel()+"\n");
+                else
+                        out.write("");
+                for(int i = 0; i < getNumChildren(); i++) {
+                        out.write("\t\tBranch: "+branchLabels.get(i)+"\n");
+                        out.write("\t\t\tNode: "+getChild(i).getLabel()+"\n");
+                }
+                for(int i = 0; i < getNumChildren(); i++)
+                        getChild(i).print(out);
+        }
 
     /**
      * Clear the values from this node and its children.
      */
     public void clear() {
-		numCorrect = 0;
-		numIncorrect = 0;
-		numTrainingExamples = 0;
+                numCorrect = 0;
+                numIncorrect = 0;
+                numTrainingExamples = 0;
 
         for(int i = 0; i < children.size(); i++)
             ((DecisionForestNode)children.get(i)).clear();
