@@ -57,16 +57,28 @@ public abstract class Chart extends JPanel {
 		new Color(213, 213, 157), new Color(193,  70,  72),
 		new Color( 29, 136, 161), new Color(187, 116, 130),
 		new Color(200, 143,  93), new Color(127, 162, 133)
-	};*/
-
-	Color[] colors = {new Color(71, 74, 98), new Color(191, 191, 115),
-		new Color(111, 142, 116), new Color(178, 198, 181),
-		new Color(153, 185, 216), new Color(96, 93, 71),
-		new Color(146, 205, 163), new Color(203, 84, 84),
-		new Color(217, 183, 170), new Color(140, 54, 57),
-		new Color(203, 136, 76)
 	};
 
+        Color[] colors = {new Color(71, 74, 98), new Color(191, 191, 115),
+                new Color(111, 142, 116), new Color(178, 198, 181),
+                new Color(153, 185, 216), new Color(96, 93, 71),
+                new Color(146, 205, 163), new Color(203, 84, 84),
+                new Color(217, 183, 170), new Color(140, 54, 57),
+                new Color(203, 136, 76)
+        }; */
+
+        // add more colors - Dora Cai 03/09/29
+        Color[] colors = {new Color(30, 60, 90), new Color(30, 60, 150),
+                new Color(30, 120, 90), new Color(30, 120, 150),
+                new Color(90, 60, 90), new Color(90, 60, 150),
+                new Color(90, 120, 90), new Color(150, 90, 30),
+                new Color(150, 90, 90), new Color(150, 90, 150),
+                new Color(150, 90, 210), new Color(150, 150, 30),
+                new Color(150, 150, 90), new Color(150, 150, 210),
+                new Color(210, 90, 30), new Color(210, 90, 90),
+                new Color(210, 90, 150), new Color(210, 90, 210),
+                new Color(210, 150, 30), new Color(210, 210, 30)
+        };
 	abstract public void initOffsets();
 	abstract public void resize();
 
