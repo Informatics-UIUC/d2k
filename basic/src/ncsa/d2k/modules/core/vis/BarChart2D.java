@@ -47,6 +47,7 @@ public class BarChart2D extends VisModule {
     sb.append("Another column (by default, column 1) must contain the ");
     sb.append("data values to be plotted - these values control the heights ");
     sb.append("of the bars.");
+    sb.append("</P><P>Missing Values Handling: Missing values are treated as regular ones.");
     sb.append("</p><p>Data Handling: ");
     sb.append("Negative data values are ignored (treated as zero).");
     sb.append("</p>");
@@ -153,8 +154,10 @@ public class BarChart2D extends VisModule {
 /**
  * QA comments:
  *
- * 12-25-03 Vered started qa process.
- *          all seems well. would like to test the handling of missing values
- *          and add documentation or fix if needed. need to create cube table with
- *          missing vlaues for this.
+ * 12-25-03
+ * Vered started qa process.
+ *
+ * 12-28-03
+ * missing values are treated as regular ones. added this to documentation.
+ *
 */

@@ -537,7 +537,7 @@ public class ETScatterPlotWidget extends JUserPane implements
     sb.append("<body>");
     sb.append("<h2>ETScatterPlot</h2>");
     sb.append("ETScatterPlot displays multiple scatter plots in a grid layout.  ");
-    sb.append("This a small multiples view of data that plot all the chosen input ");
+    sb.append("This is a small multiple views of data that plot all the chosen input ");
     sb.append("attributes by all the chosen output attributes.  Since each of these ");
     sb.append("grids are a little different, a composite view can be created by ");
     sb.append("highlighting the view you want and clicking the Show Composite ");

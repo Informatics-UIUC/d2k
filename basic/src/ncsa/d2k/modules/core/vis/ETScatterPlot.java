@@ -37,6 +37,8 @@ public class ETScatterPlot extends VisModule
        sb.append("variable in a scatter plot. A matrix of these plots is ");
        sb.append("displayed. These plots can be selected and a larger ");
        sb.append("composite graph of these plots can be displayed.");
+       sb.append("<P>Missing Values Handling: This module treats missing values as");
+       sb.append(" regular values.");
        sb.append("</p>");
        return sb.toString();
     }
@@ -129,3 +131,13 @@ public class ETScatterPlot extends VisModule
    }
 
 }
+
+ /**
+ * qa comments
+ * 12-18-03
+ * Vered started qa process
+ * Added to module info documentation about missing values handling (as regular values)
+
+ * Problem with resulting vis: resolution of x and y axis is not the same when
+  * viewing hte larger plot. this bug is in the widget file. [bug 187]
+*/

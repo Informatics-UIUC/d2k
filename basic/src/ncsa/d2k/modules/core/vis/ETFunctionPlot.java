@@ -29,7 +29,7 @@ public class ETFunctionPlot extends ETScatterPlot {
       sb.append("displayed. These plots can be selected and a larger ");
       sb.append("composite graph of these plots can be displayed.");
        sb.append("<P>Missing Values Handling: This module treats missing values as");
-       sb.append("regular values.");
+       sb.append(" regular values.");
       sb.append("</p>");
       return sb.toString();
    }
@@ -75,4 +75,8 @@ public class ETFunctionPlot extends ETScatterPlot {
   * 12-25-03:
   * vered started qa process.
   * added documnetation about handling of missing values.
+  *
+  * 12-28-03:
+  * Problem with resulting vis: resolution of x and y axis is not the same when
+  * viewing hte larger plot. this bug is in the widget file. [bug 187]
  */

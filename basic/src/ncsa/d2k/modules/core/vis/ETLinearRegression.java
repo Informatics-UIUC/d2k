@@ -29,6 +29,8 @@ public class ETLinearRegression extends ETScatterPlot {
       sb.append("variable in a linear regression plot. A matrix of these ");
       sb.append("plots is displayed. These plots can be selected and a ");
       sb.append("larger composite graph of these plots can be displayed.");
+      sb.append("<P>Missing Values Handling: This module treats missing values as");
+       sb.append(" regular values.");
       sb.append("</p>");
       return sb.toString();
    }
@@ -69,3 +71,13 @@ public class ETLinearRegression extends ETScatterPlot {
       return new ETLinearRegressionWidget();
    }
 }
+
+ /**
+ * qa comments
+ * 12-18-03
+ * Vered started qa process
+ * Added to module info documentation about missing values handling (as regular values)
+ *
+ * Problem with resulting vis: resolution of x and y axis is not the same when
+  * viewing hte larger plot. this bug is in the widget file. [bug 187]
+*/

@@ -80,6 +80,10 @@ public final class LinearRegression2D extends ncsa.d2k.core.modules.VisModule
       sb.append("Given a <i>Table</i> of data, this module visualizes its ");
       sb.append("numeric columns as a scatter plot with a linear regression ");
       sb.append("line approximated through the points.");
+
+      sb.append("<P>Missing Values Handling: This module treats missing values as");
+      sb.append(" regular values.");
+
       sb.append("</p>");
       return sb.toString();
    }
@@ -205,3 +209,17 @@ class LinearRegressionUserPane extends ncsa.d2k.userviews.swing.JUserPane
         return sb.toString();
     }
 }
+
+
+  /**
+   * qa comments:
+   *
+   * 12-28-03:
+   * Vered started qa.
+   * added to module info documentation about missing values handling.
+   * treats missing values as regular ones.
+   *
+   * widgets - resolution of axes x and y is different. have not reported a bug.
+   * a similar bug is reported for ET vis module (bug 187). awaiting to see
+   * handling this bug.
+ */

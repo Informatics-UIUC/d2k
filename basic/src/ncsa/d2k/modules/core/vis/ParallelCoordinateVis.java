@@ -48,6 +48,10 @@ public class ParallelCoordinateVis extends VisModule {
       sb.append("clicking on them. The columns can be reordered by clicking ");
       sb.append("on the boxes that contain their names and dragging them to ");
       sb.append("a new location.");
+
+      sb.append("<P>Missing Values Handling: This module treats missing values as");
+      sb.append(" regular values.");
+
       sb.append("</p>");
       return sb.toString();
    }
@@ -120,3 +124,23 @@ public class ParallelCoordinateVis extends VisModule {
    }
 
 }
+
+ /**
+  * qa comments:
+  *
+  * 12-28-03:
+  * Vered started qa.
+  * added to module info documentation about missing values handling.
+  * treats missing values as regular ones.
+  *
+  * bug 188: when not all the columns are selected through ChooseAttributes,
+  * then the class attribute's unique values are displayed incorrectly by the vis.
+  * instead of being arrange uniformly across the axis they are scrambled into
+  * a single point at the top of the axis.
+  *
+  * bug 189: when the input is an ExampleTable, and as an output column one chooses
+  * a column different than the last one - still the legend would show the discrete
+  * colors of the last column in the Table (though not chosen at all).
+  *
+*/
+
