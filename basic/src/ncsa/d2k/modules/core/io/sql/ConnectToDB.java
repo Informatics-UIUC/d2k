@@ -82,7 +82,7 @@ public class ConnectToDB extends UIModule {
       s += "After you successfully log onto a database, this connection is ";
       s += "passed to next modules for use. </p>";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle, SQLServer and MySQL databases.";
+      s += "We currently only support Oracle, SQLServer , DB2 and MySQL databases.";
 
         return s;
 
@@ -505,8 +505,8 @@ public class ConnectToDB extends UIModule {
 
         private JComboBox cbV;
 
-        // we currently only support Oracle, SQLServer and MySQL
-        private String[] Vendors = {"Oracle", "SQLServer", "MySQL"};
+        // we currently only support Oracle, SQLServer , DB2 and MySQL
+        private String[] Vendors = {"Oracle", "SQLServer", "MySQL", "DB2"};
 
         private int dbFlag;
 
@@ -631,6 +631,14 @@ public class ConnectToDB extends UIModule {
                         tfPo.setText("1433");
 
                         tfD.setText("com.microsoft.jdbc.sqlserver.SQLServerDriver");
+
+                    }
+
+                    else if (newSelection == "DB2") {
+
+                        tfPo.setText("6789");
+
+                        tfD.setText("COM.ibm.db2.jdbc.net.DB2Driver");
 
                     }
 
@@ -1056,6 +1064,24 @@ public class ConnectToDB extends UIModule {
 
                       if (sc.getConnection() != null) {
                         pushOutput (sc, 0);
+                        viewDone("Done");
+                      }
+                  }
+
+                  else if(_driver.equals("COM.ibm.db2.jdbc.net.DB2Driver")) {
+
+                    setUrl("jdbc:db2://" + getMachine() + ":" + getPort() + "/" + getDbInstance());
+
+                      DB2DBConnection dc = new DB2DBConnection(getUrl().trim(),
+
+                              getDriver().trim(),
+
+                              getUsername().trim(),
+
+                              getPassword().trim());
+
+                      if (dc.getConnection() != null) {
+                        pushOutput (dc, 0);
                         viewDone("Done");
                       }
                   }
