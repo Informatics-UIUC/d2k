@@ -9,7 +9,6 @@ import  javax.swing.*;
 import  javax.swing.event.*;
 import  ncsa.d2k.core.modules.*;
 import  ncsa.d2k.gui.*;
-//import ncsa.d2k.modules.core.datatype.*;
 import  ncsa.d2k.modules.core.datatype.table.*;
 import  ncsa.d2k.modules.core.vis.widgets.*;
 import  ncsa.d2k.userviews.swing.*;
@@ -70,7 +69,7 @@ public class SQLBinColumns extends UIModule {
      */
     public String[] getOutputTypes () {
         String[] types =  {
-            "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"
+            "ncsa.d2k.modules.core.datatype.BinDescriptor"
         };
         return  types;
     }
@@ -103,7 +102,7 @@ public class SQLBinColumns extends UIModule {
     public String getOutputName (int i) {
         switch (i) {
             case 0:
-                return "BinningTransformation";
+                return "BinDescriptor";
             default:
                 return  "no such output!";
         }
@@ -137,7 +136,7 @@ public class SQLBinColumns extends UIModule {
     public String getOutputInfo (int i) {
         switch (i) {
             case 0:
-                return  "A Table with its columns binned up.";
+                return  "An BinDescriptor object that contains column_number, name and lable";
             default:
                 return  "No such output";
         }
@@ -192,12 +191,12 @@ public class SQLBinColumns extends UIModule {
             ResultSet columns = metadata.getColumns(null, "%", tableNames.getString("TABLE_NAME"), "%");
             while (columns.next()) {
               String columnName = columns.getString("COLUMN_NAME");
-              String datatype = columns.getString("TYPE_NAME");
+              String dataType = columns.getString("TYPE_NAME");
               if (colName.equals(columnName)) {
-                if (datatype.equals("NUMBER") ||
-                  datatype.equals("INTEGER") ||
-                  datatype.equals("FLOAT") ||
-                  datatype.equals("NUMERIC")) {
+                if (dataType.equals("NUMBER") ||
+                  dataType.equals("INTEGER") ||
+                  dataType.equals("FLOAT") ||
+                  dataType.equals("NUMERIC")) {
                   return true;
                 }
                 else
@@ -222,13 +221,11 @@ public class SQLBinColumns extends UIModule {
           String colName = fieldNames[col];
           con = wrapper.getConnection();
           queryStr = "select min(" + colName + ") from " + tableName;
-          System.out.println("queryStr for min is " + queryStr);
           stmt = con.createStatement();
           ResultSet minSet = stmt.executeQuery(queryStr);
           minSet.next();
           double val = minSet.getDouble(1);
           stmt.close();
-          //return (minSet.getDouble(1));
           return(val);
         }
         catch (Exception e) {
@@ -274,7 +271,6 @@ public class SQLBinColumns extends UIModule {
           cntSet.next();
           int val = cntSet.getInt(1);
           stmt.close();
-          //return (cntSet.getInt(1));
           return(val);
         }
         catch (Exception e) {
@@ -287,21 +283,17 @@ public class SQLBinColumns extends UIModule {
       }
 
       public int[] getCounts(int col, double[] borders) {
-        System.out.println("col is " + col);
-        for(int z = 0; z < borders.length; z++)
-            System.out.println("b["+z+"]: "+borders[z]);
         int[] counts = new int[borders.length+1];
         String colName = fieldNames[col];
-        double low = 0;
+        double low = -9000000.00;
         double high;
         try {
           con = wrapper.getConnection();
-          for (int i = 0; i < (borders.length-1); i++) {
+          for (int i = 0; i < (borders.length); i++) {
             high = borders[i];
             queryStr = "select count(" + colName + ") from " + tableName +
                        " where " + colName + " > " + low + " and " + colName +
                        " <= " + high;
-            System.out.println("queryStr is " + queryStr);
             stmt = con.createStatement();
             ResultSet cntSet = stmt.executeQuery(queryStr);
             cntSet.next();
@@ -311,16 +303,11 @@ public class SQLBinColumns extends UIModule {
           }
           queryStr = "select count(" + colName + ") from " + tableName +
                        " where " + colName + " > " + low;
-          System.out.println("queryStr is " + queryStr);
           stmt = con.createStatement();
           ResultSet cntSet = stmt.executeQuery(queryStr);
           cntSet.next();
-          counts[borders.length-1] = cntSet.getInt(1);
+          counts[borders.length] = cntSet.getInt(1);
           stmt.close();
-
-          for (int i=0; i<counts.length; i++) {
-            System.out.println(i + " item is " + counts[i]);
-          }
           return counts;
         }
         catch (Exception e) {
@@ -342,7 +329,6 @@ public class SQLBinColumns extends UIModule {
           totalSet.next();
           double val = totalSet.getDouble(1);
           stmt.close();
-          //return (totalSet.getDouble(1));
           return(val);
         }
         catch (Exception e) {
@@ -362,7 +348,6 @@ public class SQLBinColumns extends UIModule {
         private HashSet[] uniqueColumnValues;
         private JList numericColumnLabels, textualColumnLabels, currentBins;
         private DefaultListModel binListModel;
-        //private Table tbl;
 
         /* numeric text fields */
         private JTextField uRangeField, specRangeField, intervalField, weightField;
@@ -406,11 +391,9 @@ public class SQLBinColumns extends UIModule {
          * @param id
          */
         public void setInput (Object o, int id) {
-            //tbl = (Table)o;
-
             if(id == 0) {
                 connectionWrapper = (ConnectionWrapper)o;
-                numArrived++;
+                numArrived = 1;
             }
             if(id == 1) {
                 fieldNames = (String[])o;
@@ -426,9 +409,7 @@ public class SQLBinColumns extends UIModule {
             }
 
             if(numArrived == 4) {
-
                 binCounts = new SQLBinCounts(tableName, fieldNames, whereClause, connectionWrapper);
-
             // clear all text fields and lists...
             curSelName.setText(EMPTY);
             textBinName.setText(EMPTY);
@@ -437,25 +418,17 @@ public class SQLBinColumns extends UIModule {
             intervalField.setText(EMPTY);
             weightField.setText(EMPTY);
             columnLookup = new HashMap();
-            //uniqueColumnValues = new HashSet[tbl.getNumColumns()];
             uniqueColumnValues = new HashSet[fieldNames.length];
             binListModel.removeAllElements();
             DefaultListModel numModel = (DefaultListModel)numericColumnLabels.getModel(),
             txtModel = (DefaultListModel)textualColumnLabels.getModel();
             numModel.removeAllElements();
             txtModel.removeAllElements();
-            //for (int i = 0; i < tbl.getNumColumns(); i++) {
             for (int i = 0; i < fieldNames.length; i++) {
-
-                //columnLookup.put(tbl.getColumnLabel(i), new Integer(i));
                 columnLookup.put(fieldNames[i], new Integer(i));
-                //if (table.getColumn(i) instanceof NumericColumn)
-
                 if (binCounts.isColumnNumeric(i))
-                    //numModel.addElement(tbl.getColumnLabel(i));
                     numModel.addElement((String)fieldNames[i]);
-                else {          //if (table.getColumn(i) instanceof TextualColumn) {
-                    //txtModel.addElement(tbl.getColumnLabel(i));
+                else {
                     txtModel.addElement((String)fieldNames[i]);
                     uniqueColumnValues[i] = uniqueValues(i);
                 }
@@ -464,6 +437,7 @@ public class SQLBinColumns extends UIModule {
             setup_complete = true;
             }
         }
+
 
 
         /**
@@ -494,9 +468,9 @@ public class SQLBinColumns extends UIModule {
 
                 public void actionPerformed (ActionEvent e) {
                     HashMap colLook = new HashMap();
-                    for (int i = 0; i < /*tbl.getNumColumns()*/fieldNames.length; i++) {
-                        if(/*tbl.*/binCounts.isColumnNumeric(i)) {
-                            colLook.put(/*tbl.getColumnLabel(i)*/(String)fieldNames[i], new Integer(i));
+                    for (int i = 0; i < fieldNames.length; i++) {
+                        if(binCounts.isColumnNumeric(i)) {
+                            colLook.put((String)fieldNames[i], new Integer(i));
                         }
                     }
 
@@ -538,16 +512,7 @@ public class SQLBinColumns extends UIModule {
                         // message dialog...must specify range
                         ErrorDialog.showDialog("Must specify range.", "Error");
                     }
-                    /*
-                     final JSlider uniformSlider = H.getSlider();
-                     uniformSlider.addChangeListener(new ChangeListener() {
-                     public void stateChanged(ChangeEvent e) {
-                     uRangeField.setText(Integer.toString(uniformSlider.getValue()));
-                     }
-                     });
-                     */
-
-                }
+               }
             });
             urangepnl.setLayout(new GridBagLayout());
             Constrain.setConstraints(urangepnl, new JLabel("Number of Bins"),
@@ -585,15 +550,15 @@ public class SQLBinColumns extends UIModule {
                     }
 
                     HashMap colLook = new HashMap();
-                    for (int i = 0; i < /*tbl.getNumColumns()*/fieldNames.length; i++) {
-                        if(/*tbl.*/binCounts.isColumnNumeric(i)) {
-                            colLook.put(/*tbl.getColumnLabel(i)*/(String)fieldNames[i], new Integer(i));
+                    for (int i = 0; i < fieldNames.length; i++) {
+                        if(binCounts.isColumnNumeric(i)) {
+                            colLook.put((String)fieldNames[i], new Integer(i));
                         }
                     }
                     JD2KFrame frame = new JD2KFrame("Specified Range");
                     String col = (String)numericColumnLabels.getSelectedValue();
                     frame.getContentPane().add(new RangeHistogram(binCounts,
-                            /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook, col));
+                             specRangeField.getText(), colLook, col));
                              frame.pack();
                              frame.setVisible(true);
                 }
@@ -620,16 +585,16 @@ public class SQLBinColumns extends UIModule {
 
                 public void actionPerformed (ActionEvent e) {
                     HashMap colLook = new HashMap();
-                    for (int i = 0; i < /*tbl.getNumColumns()*/fieldNames.length; i++) {
-                        if(/*tbl.*/binCounts.isColumnNumeric(i)) {
-                            colLook.put(/*tbl.getColumnLabel(i)*/(String)fieldNames[i], new Integer(i));
+                    for (int i = 0; i < fieldNames.length; i++) {
+                        if(binCounts.isColumnNumeric(i)) {
+                            colLook.put((String)fieldNames[i], new Integer(i));
                         }
                     }
                     String txt = intervalField.getText();
                     if(txt != null && txt.length() != 0) {
                         String col = (String)numericColumnLabels.getSelectedValue();
                     final Histogram H = new IntervalHistogram(binCounts,
-                            /*Histogram.HISTOGRAM_INTERVAL,*/ intervalField.getText(), colLook, col);
+                             intervalField.getText(), colLook, col);
                              JD2KFrame frame = new JD2KFrame("Bin Interval");
                              frame.getContentPane().setLayout(new GridBagLayout());
                              Constrain.setConstraints(frame.getContentPane(), H, 0,
@@ -669,15 +634,6 @@ public class SQLBinColumns extends UIModule {
                         // message dialog...you must specify an interval
                         ErrorDialog.showDialog("Must specify interval.", "Error");
                     }
-                             /*
-                     final JSlider intervalSlider = H.getSlider();
-                     intervalSlider.addChangeListener(new ChangeListener() {
-                     public void stateChanged(ChangeEvent e) {
-                     intervalField.setText(Integer.toString(intervalSlider.getValue()));
-                     }
-                     });
-                     */
-
                 }
             });
             Constrain.setConstraints(intervalpnl, new JLabel("Interval"), 0,
@@ -720,7 +676,6 @@ public class SQLBinColumns extends UIModule {
             JPanel numpnl = new JPanel();
             numpnl.setLayout(new GridBagLayout());
             JScrollPane jsp = new JScrollPane(numericColumnLabels);
-            //jsp.setColumnHeaderView(new JLabel("Numeric Columns"));
             Constrain.setConstraints(numpnl, jsp, 0, 0, 4, 1, GridBagConstraints.BOTH,
                                      GridBagConstraints.WEST, 1, 1);
             Constrain.setConstraints(numpnl, urangepnl, 0, 1, 4, 1, GridBagConstraints.HORIZONTAL,
@@ -884,7 +839,6 @@ public class SQLBinColumns extends UIModule {
                         curSelName.setText(EMPTY);
                         // update the group
                         Object lbl = textualColumnLabels.getSelectedValue();
-                        // gpape:
                         if (lbl != null) {
                             int idx = ((Integer)columnLookup.get(lbl)).intValue();
                             HashSet unique = uniqueColumnValues[idx];
@@ -897,7 +851,6 @@ public class SQLBinColumns extends UIModule {
                     }
                 }
             });
-            // gpape:
             JButton removeAllBins = new JButton("Remove All");
             removeAllBins.addActionListener(new AbstractAction() {
 
@@ -913,14 +866,11 @@ public class SQLBinColumns extends UIModule {
                     curSelName.setText(EMPTY);
                 }
             });
-            // gpape:
             createInNewColumn = new JCheckBox("Create in new column", false);
             Box pg = new Box(BoxLayout.X_AXIS);
             pg.add(updateCurrent);
-            //pg.add(removeItems);
             pg.add(removeBin);
             pg.add(removeAllBins);
-            // gpape:
             Box pg2 = new Box(BoxLayout.X_AXIS);
             pg2.add(createInNewColumn);
             jop5.setLayout(new BoxLayout(jop5, BoxLayout.Y_AXIS));
@@ -959,14 +909,16 @@ public class SQLBinColumns extends UIModule {
                  * @param e
                  */
                 public void actionPerformed (ActionEvent e) {
-                    //binIt(createInNewColumn.isSelected());
                     Object[] tmp = binListModel.toArray();
                     BinDescriptor[] bins = new BinDescriptor[tmp.length];
                     for (int i = 0; i < bins.length; i++)
                         bins[i] = (BinDescriptor)tmp[i];
-                    BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
-                    pushOutput(bt, 0);
-                    //pushOutput(tbl, 1);
+                    //for (int i = 0; i < bins.length; i++) {
+                      //System.out.println("bins[" + i + "]: column_number is " + bins[i].column_number);
+                      //System.out.println("      name is " + bins[i].name);
+                      //System.out.println("      label is " + bins[i].label);
+                    //}
+                    pushOutput(bins, 0);
                     viewDone("Done");
                 }
             });
@@ -984,83 +936,11 @@ public class SQLBinColumns extends UIModule {
             });
             buttonPanel.add(abort);
             buttonPanel.add(done);
-            //buttonPanel.add(showTable);
             buttonPanel.add(helpButton);
             setLayout(new BorderLayout());
             add(bxl, BorderLayout.CENTER);
             add(buttonPanel, BorderLayout.SOUTH);
         }
-
-        /*private void binIt(boolean new_column) {
-        // boolean replace = true;
-         Object[] tmp = binListModel.toArray();
-         BinDescriptor[] bins = new BinDescriptor[tmp.length];
-         for (int i = 0; i < bins.length; i++)
-         bins[i] = (BinDescriptor)tmp[i];
-        // need to figure out which columns have been binned:
-         boolean[] binRelevant = new boolean[table.getNumColumns()];
-         for (int i = 0; i < binRelevant.length; i++)
-         binRelevant[i] = false;
-         for (int i = 0; i < bins.length; i++)
-         binRelevant[bins[i].column_number] = true;
-        // if (replace) {
-        //Column[] c = new Column[table.getNumColumns()];
-        //for(int i = 0; i < c.length; i++)
-        //  c[i] = table.getColumn(i);
-         String[][] newcols =
-         new String[table.getNumColumns()][table.getNumRows()];
-         for(int i = 0; i < table.getNumColumns(); i++) {
-         if (binRelevant[i])
-         for(int j = 0; j < table.getNumRows(); j++) {
-        // find the correct bin for this column
-         boolean binfound = false;
-         for(int k = 0; k < bins.length; k++) {
-         if(bins[k].column_number == i) {
-        // this has the correct column index
-        //if(c[i] instanceof NumericColumn) {
-         if(table.isColumnNumeric(i)) {
-         if(bins[k].eval(table.getDouble(j, i))) {
-         newcols[i][j] = bins[k].name;
-         binfound = true;
-         }
-         }
-         else {
-         if(bins[k].eval(table.getString(j, i))) {
-         newcols[i][j] = bins[k].name;
-         binfound = true;
-         }
-         }
-         }
-         if(binfound) {
-         binRelevant[i] = true;
-         break;
-         }
-         }
-         if(!binfound)
-         newcols[i][j] = "Unknown";
-         }
-         }
-        //StringColumn[] sc = new StringColumn[table.getNumColumns()];
-         for(int i = 0; i < table.getNumColumns(); i++) {
-         if (binRelevant[i]) {
-        //sc[i] = new StringColumn(newcols[i]);
-        //sc[i].setComment(table.getColumn(i).getComment());
-         if (new_column) {
-         if (binRelevant[i]) {
-        //sc[i].setLabel(table.getColumnLabel(i) + " bin");
-         table.addColumn(newcols[i]);
-         table.setColumnLabel(table.getColumnLabel(i)+" bin", table.getNumColumns()-1);
-         }
-         }
-         else {
-         String oldLabel = table.getColumnLabel(i);
-         table.setColumn(newcols[i], i);
-         table.setColumnLabel(oldLabel, i);
-         }
-         }
-         }
-        // }
-         }*/
 
         private HashSet uniqueValues (int col) {
             // count the number of unique items in this column
@@ -1115,14 +995,6 @@ public class SQLBinColumns extends UIModule {
          */
         private double getInterval () {
             int colIdx = numericColumnLabels.getSelectedIndex();
-            /*double max = Double.MIN_VALUE, min = Double.MAX_VALUE;
-            for (int i = 0; i < tbl.getNumRows(); i++) {
-                double d = tbl.getDouble(i, colIdx);
-                if (d < min)
-                    min = d;
-                if (d > max)
-                    max = d;
-            }*/
             double max = binCounts.getMax(colIdx);
             double min = binCounts.getMin(colIdx);
             return  max - min;
@@ -1361,7 +1233,7 @@ public class SQLBinColumns extends UIModule {
             nameBuffer.append(nf.format(max));
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    min, max, /*tbl.getColumnLabel(col)*/(String)fieldNames[col]);
+                    min, max, (String)fieldNames[col]);
             return  nb;
         }
 
@@ -1369,6 +1241,7 @@ public class SQLBinColumns extends UIModule {
          * Create a numeric bin that goes from Double.MIN_VALUE to max
          */
         private BinDescriptor createMinNumericBinDescriptor (int col, double max) {
+            double min = -9000000.00;
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(OPEN_BRACKET);
             nameBuffer.append(DOTS);
@@ -1376,7 +1249,7 @@ public class SQLBinColumns extends UIModule {
             nameBuffer.append(nf.format(max));
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    Double.MIN_VALUE, max, /*tbl.getColumnLabel(col)*/(String)fieldNames[col]);
+                    min, max, (String)fieldNames[col]);
             return  nb;
         }
 
@@ -1391,7 +1264,7 @@ public class SQLBinColumns extends UIModule {
             nameBuffer.append(DOTS);
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    min, Double.MAX_VALUE, /*tbl.getColumnLabel(col)*/(String)fieldNames[col]);
+                    min, Double.MAX_VALUE, (String)fieldNames[col]);
             return  nb;
         }
 
