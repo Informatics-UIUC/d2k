@@ -19,12 +19,11 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
-   ETScatterPlot.java
+   LWRPlotVis.java
 
-	Given an ExampleTable, plot each numeric input variable against each
-	numeric output variable in a ScatterPlot.  A matrix of these plots is
-	shown.  The plots can be selected and a larger composite graph of
-	these plots can be displayed.
+	Given a PredictionTable, plot each numeric input variable against the 
+	single numeric output, giving curve of some type.  The ExampleTable is
+	used to make scatter plots of each of the inputs versus all other inputs.
 
    @author David Clutter
 */
@@ -657,8 +656,10 @@ public class LWRPlotVis extends VisModule
 			public String getColumnName(int col) {
 				if(col == 0)
 					return "";
-				else
-					return scatterTable.getColumnLabel(col-1);
+				else {
+					int[] inputs = scatterTable.getInputFeatures();
+					return scatterTable.getColumnLabel(inputs[col-1]);
+				}
 			}
 
 

@@ -26,10 +26,12 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 	int distanceSelector;
 	int nearestNeighbors;
 	boolean useNearestNeighbors;
+	boolean NotEnoughPredictions;	//special case where # of training predictions < rows of test data
 
 	int count;	//counter for the rows of the Testtable
 	int num_pts;	//number of points in the regression plots
 	int countPredCol;
+	int TotalNumPredictions;	//number of predictions contained in training data
 	int N;
 	double minDist = -1;
 	int minDistIndex = 0;
@@ -88,27 +90,22 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 	public PredictionTable predict( ExampleTable exTable) {
 
 		TableImpl xTable = generatePlotValues();
-		//xTable.print();
-
 
 		N = xTable.getNumColumns();
-
 
 		//System.out.println("exTable has "+exTable.getNumColumns()+" columns");
 		//place to put the final predictions (will become a PredictionTable)
 		//finalTable = ((ExampleTable) exTable.copy()).toPredictionTable();
 		finalTable = new PredictionTableImpl((ExampleTableImpl) (new ExampleTableImpl(xTable).copy()));
-
 		//System.out.println("finalTable has "+finalTable.getNumColumns()+" columns");
 		//finalTable.removeColumn(finalTable.getNumColumns()-1);
 
 	for (int i=0; i<N; i++){
 
-
 		TableImpl TestTable = testTableLWRGen(xTable, i);
 
 		//determine the subset of training data which should be used for
-		//the regression
+		//the regression (redefines TraintableSubset)
 		determineSubset(TestTable);
 		/*System.out.println("***************TrainTable Subset *****************");
 		TraintableSubset.print();
@@ -406,6 +403,11 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		}
 	}
 
+	/**
+		findIndexInTrainTable
+		finds the index in the Traintable that has the ColumnLabel 'label'.
+		@param String label
+	*/
 	public int findIndexInTraintable(String label){
 		int num = -1;
 		for (int h=0; h<Traintable.getNumColumns(); h++){
@@ -495,9 +497,9 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		removeYs
 		removes the column of output values from the training data
 		@param Table table - the table of input data
+		@return NumericColumn col - the column of training outputs
 	*/
 	public NumericColumn removeYs(TableImpl table) {
-		//table.print();
 		int numCol = table.getNumColumns();
 		NumericColumn col = (NumericColumn) table.getColumn(numCol-1);
 		table.removeColumn(numCol-1);
@@ -509,6 +511,7 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		gets a row from the Table of test data
 		@param int c - the index of the row to get
 		@param Table Testtable - the table to take a query from
+		@return double[] - the query
 	*/
 	public double[] getQuery(int c, Table Testtable){
 		int numCol = Testtable.getNumColumns();
@@ -540,7 +543,7 @@ public class LWRModel extends PredictionModelModule implements Serializable {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
     }
 
@@ -550,7 +553,7 @@ public class LWRModel extends PredictionModelModule implements Serializable {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.modules.core.datatype.Table",
+		String[] out = {"ncsa.d2k.modules.core.datatype.PredictionTable",
 			"ncsa.d2k.modules.core.prediction.LWR.LWRModel"};
    		return out;
 	}
@@ -726,25 +729,43 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		minDistIndex = 0;
 	}
 
+	/**
+		testTableLWRGen
+		the normal Euclidean distance for two n-dimensional vectors
+		@param Table xTble - the table to make a Testtable from
+		@param int i - the index into xTble for getting a column of its data
+		@return  a TableImpl object of testing data
+	*/
 	public TableImpl testTableLWRGen(Table xTble, int i) {
 		//the output column of the Traintable is copied into the last
 		//column of the xTable.  Thus, we can grab column N-1 for the
-		//predictions
+		//predictions.
 
-		double[] predArray = new double[xTble.getNumRows()];
+		//double[] predArray = new double[xTble.getNumRows()];
+		double[] predArray;
+		if (TotalNumPredictions < xTble.getNumRows()){
+			NotEnoughPredictions = true;
+			predArray = new double[TotalNumPredictions];
+		}
+		else {
+			predArray = new double[xTble.getNumRows()];
+		}
 		xTble.getColumn(predArray, N-1);
 		DoubleColumn predCol = new DoubleColumn(predArray);
 		predCol.setLabel(xTble.getColumnLabel(N-1));
 
-		double[] anArray = new double[xTble.getNumRows()];
+		double[] anArray;
+		//handling the case of not enough predictions to fill a full array
+		if (NotEnoughPredictions && i==(N-1))
+			anArray = new double[TotalNumPredictions];
+		else
+			anArray= new double[xTble.getNumRows()];
 		xTble.getColumn(anArray, i);
 		DoubleColumn col = new DoubleColumn(anArray);
 		col.setLabel(xTble.getColumnLabel(i));
-		//System.out.println("the label at testTableLWRGen is "+xTble.getColumnLabel(i));
 
 		DoubleColumn[] c = {col, predCol};
 		TableImpl t = (TableImpl)DefaultTableFactory.getInstance().createTable(c);
-		//System.out.println("the second label is "+t.getColumnLabel(1));
 		return t;
 	}
 
@@ -756,13 +777,13 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		the max.
 		@param double[] x - a vector
 		@param double[] q - a vector
-		return double ans - the distance
+		@return double ans - the distance
 	*/
-
 	public TableImpl generatePlotValues() {
 
 		//int numCol = Traintable.getNumColumns();
 		int numRow = Traintable.getNumRows();
+		TotalNumPredictions = numRow; //Useful value used later on
 		TableImpl returnTable = (TableImpl)DefaultTableFactory.getInstance().createTable();
 
 		int inputCols[] = Traintable.getInputFeatures();
@@ -808,7 +829,10 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 
 	}
 
-
+	/**
+		getMin
+		get the minimum value from a double[]
+	*/
 	public double getMin(double[] c){
 		double min = c[0];
 		for (int k=1; k<c.length; k++){
@@ -819,6 +843,10 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		return min;
 	}
 
+	/**
+		getMax
+		get the maximum value from a double[]
+	*/
 	public double getMax(double[] c){
 		double max = c[0];
 		for (int k=1; k<c.length; k++){
@@ -829,6 +857,16 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		return max;
 	}
 
+	/**
+		fillXs
+		Given a minimum and maximum value, the method returns a double[]
+		of size numval, which contains equally spaced values values in 
+		the range from min to max 
+		@param double min
+		@param double max
+		@param int numval
+
+	*/
 	public double[] fillXs(double min, double max, int numval){
 		double[] xvalues = new double[numval];
 		double increment = (max - min)/(numval-1);
