@@ -1,15 +1,12 @@
 package ncsa.d2k.modules.core.prediction.decisiontree.continuous;
 
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.model.*;
 import java.text.*;
 
-import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel;
-import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTNode;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.model.*;
+import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
-public class DecisionTreeModel
-    extends Model
-    implements java.io.Serializable, ViewableDTModel {
+public class DecisionTreeModel extends Model implements java.io.Serializable, ViewableDTModel {
 
   DecisionTreeNode decisionTree;
 
@@ -28,20 +25,6 @@ public class DecisionTreeModel
 
   public String[] getInputs() {
     return this.getInputFeatureNames();
-  }
-
-  public String[] getUniqueInputValues(int i) {
-    return new String[] {
-        "0", "1"};
-  }
-
-  public String[] getUniqueOutputValues() {
-    return new String[] {
-        "0", "1"};
-  }
-
-  public DecisionTreeNode getDecisionTreeRoot() {
-    return decisionTree;
   }
 
   public double[] evaluate(ExampleTable testExampleSet, int e) throws Exception {

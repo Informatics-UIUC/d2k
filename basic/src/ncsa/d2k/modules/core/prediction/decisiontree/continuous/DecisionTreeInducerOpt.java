@@ -259,7 +259,6 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     RootNode.numExamples = examples.getNumExamples();
     RootNode.root = RootNode;
 
-
     calculateOutputMeansMinsMaxs(RootNode);
 
     if (_Trace) {
