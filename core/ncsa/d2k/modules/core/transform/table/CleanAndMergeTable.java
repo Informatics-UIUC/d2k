@@ -11,6 +11,7 @@ import java.awt.event.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.gui.*;
 
 /**
  * Clean the data in a Table.
@@ -158,6 +159,23 @@ public class CleanAndMergeTable extends UIModule {
 					Object [] merges = attributesToMerge.getSelectedValues();
 					Object control = controlAttribute.getSelectedValue();
 					final Object type = mergeMethod.getSelectedItem();
+
+                    if(keys == null || keys.length == 0) {
+                        ErrorDialog.showDialog("You must select a key attribute.", "Error");
+                        return;
+                    }
+                    if(merges == null || merges.length == 0) {
+                        ErrorDialog.showDialog("You must select attributes to merge.", "Error");
+                        return;
+                    }
+                    if(control == null) {
+                        ErrorDialog.showDialog("You must select a control attribute.", "Error");
+                        return;
+                    }
+                    if(type == null) {
+                        ErrorDialog.showDialog("You must select a method to merge by.", "Error");
+                        return;
+                    }
 
 					final int [] ks = new int[keys.length];
 					for(int i = 0; i < keys.length; i++)
