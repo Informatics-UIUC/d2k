@@ -15,13 +15,28 @@ import backend.*;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.io.dstp.*;
 
+/**
+ *
+ * <p>Title: DSTPDataSource</p>
+ * <p>Description: This class is a DataSource for a DBTable.  The source is a
+ * DSTP server.  It is a very rudimentary implementation that, for now, simply
+ * loads the DSTP data (in its entirety) to a vector (in memory).  This data
+ * vector is declared to be transient so if the table is serialized the data is
+ * rebuilt from the DSTP server when reinstantiated.  The next step for this class
+ * would be to add a caching mechanism for data reads so that very large tables
+ * can be accomodated.</p>
+ *
+ * <p>Copyright: Copyright (c) 2003</p>
+ * <p>Company: NCSA Automated Learning Group</p>
+ * @author D. Searsmith
+ * @version 1.0
+ */
 public class DSTPDataSource extends Thread implements DBDataSource, ProgressQueryable {
 
   //==============
   // Data Members
   //==============
 
-  //transient private DSTPSettings _settings = null;
   transient private DSTPConnection _conn = null;
   private DSTPView.MetaNode _meta = null;
   private boolean _debug = false;
@@ -146,185 +161,6 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
     return true;
   }
 
-/*
-	public void getServerData(Vector asData)
-	{
-
-//		Vector asData = new Vector();
-		Vector asPosition = new Vector();
-		String sPosition = null;
-
-		myClient = new DSTPClient();
-		// establish a socket connection to the selected server and set the class member
-		try
-		{
-			if(m_iThisServerConnection==null)
-				m_iThisServerConnection = new DSTPConnection(m_sServerName);
-
-			DSTPConnection iServerConnection = getThisServerConnection();
-
-			// construct and issue the server commands here
-
-			//  Set the Category
-			String sCmd = "set category " + m_sCategoryName;
-			Vector asServerResponse = iServerConnection.getServerDataVector(sCmd, 220);
-
-			// set the ucks selected for the ConnectionSpecs object
-			for(int i=0; i<m_asUckNames.size(); i++)
-			{
-				// the 'set uck' command for all selected ucks
-				String sCommandString = "set uck " + (String)m_asUckNames.elementAt(i);
-				asServerResponse = iServerConnection.getServerDataVector(sCommandString, 230);
-			}
-
-			// set the datafile
-			String sCommandString = "set datafile " + m_sDFName;
-			iServerConnection.getServerDataVector(sCommandString, 240);
-
-			// set line
-			if( (!(m_sStartLine.equals(""))) && (!(m_sEndLine.equals(""))))
-			{
-				sCommandString = "set line " + m_sStartLine + " " + m_sEndLine;
-				asServerResponse = iServerConnection.getServerDataVector(sCommandString, 250);
-			}
-
-			// set Sample Params
-			if( (m_iSampleType!=-1) && (m_iSampleUnit!=-1) && (!(m_sSampleValue.equals(""))))
-			{
-				String sType=null;
-				String sUnit=null;
-				int sRetCode=0;
-
-				switch(m_iSampleType)
-				{
-					case 1:
-						sType="decimate";
-						if(m_iSampleUnit==1)
-							sUnit="percentage";
-						if(m_iSampleUnit==0)
-							sUnit="line";
-
-						sRetCode=262;
-						break;
-					case 0:
-						if(m_iSampleUnit==1)
-						{
-							sUnit="percentage";
-							sRetCode=261;
-						}
-						if(m_iSampleUnit==0)
-						{
-							sUnit="line";
-							sRetCode=260;
-						}
-						break;
-					default:
-						System.out.println("Invalid parameters");
-						break;
-				}
-
-				if(m_iSampleType==1)
-					sType="decimate";
-				if(m_iSampleType==0)
-					sType="random";
-
-				if(m_iSampleUnit==1)
-					sUnit="percentage";
-				if(m_iSampleUnit==0)
-					sUnit="line";
-
-				sCommandString = "set sample "+sType +" "+sUnit +" "+ m_sSampleValue;
-				asServerResponse = iServerConnection.getServerDataVector(sCommandString, sRetCode);
-			}
-
-			// data command - first the attributes
-			sCommandString = "data ";
-
-			// set the Common Ucks as part of the data command as attributes . This will be valid in case of the getServerData() method being called
-				// from with DSTPClient::getJoinData()
-			for(int i=0; i<m_asJoinUckNames.size();i++)
-			{
-				Vector aaAttrStruct = new Vector();
-				Vector asDFStruct = new Vector();
-				Vector asAttrStruct = new Vector();
-
-				aaAttrStruct.addElement(m_asJoinUckNames.elementAt(i));
-				asDFStruct.addElement(m_sDFName);
-				asDFStruct.addElement(m_sServerName);
-				aaAttrStruct.addElement(asDFStruct);
-				asAttrStruct.addElement(aaAttrStruct);
-
-
-				sPosition = myClient.getAttributeDescriptionNumberWithCategory(asAttrStruct,m_sCategoryName, m_iMetaServerConnection);
-				asPosition.addElement(sPosition);
-
-				sCommandString = sCommandString+ " "+ sPosition;
-			}
-
-			for (int j=0;j<m_asAttributeNames.size();j++)
-			{
-				Vector aaAttrStruct = new Vector();
-				Vector asDFStruct = new Vector();
-				Vector asAttrStruct = new Vector();
-
-				aaAttrStruct.addElement(m_asAttributeNames.elementAt(j));
-				asDFStruct.addElement(m_sDFName);
-				asDFStruct.addElement(m_sServerName);
-				aaAttrStruct.addElement(asDFStruct);
-				asAttrStruct.addElement(aaAttrStruct);
-
-				sPosition = myClient.getAttributeDescriptionNumberWithCategory(asAttrStruct, m_sCategoryName, m_iMetaServerConnection);
-
-				if(asPosition.size()==0)
-					sCommandString = sCommandString + " " + sPosition;
-				else
-				{
-					for(int i=0;i<asPosition.size();i++)
-					{
-						if(sPosition.equals((String)asPosition.elementAt(i)))
-							break;
-						else
-							sCommandString = sCommandString + " " + sPosition;
-					}
-				}
-			}
-			System.out.println("comm-:"+sCommandString);
-
-			// now the conditions
-			if(m_aaConditions.size()>0)
-			{
-				sCommandString = sCommandString + " where ";
-				for(int k=0;k<m_aaConditions.size();k++)
-				{
-					// get the description number for each attribute in the condition
-					Vector aaAttrStruct = new Vector();
-					Vector asDFStruct = new Vector();
-
-					aaAttrStruct.addElement(((Vector)m_aaConditions.elementAt(k)).elementAt(0));
-					asDFStruct.addElement(m_sDFName);
-					asDFStruct.addElement(m_sServerName);
-					aaAttrStruct.addElement(asDFStruct);
-					String sAttrID = myClient.getAttributeDescriptionNumberWithCategory(aaAttrStruct,m_sCategoryName,m_iMetaServerConnection);
-					sCommandString = sCommandString + " " + sAttrID;
-					sCommandString = sCommandString + " " + ((Vector)(m_aaConditions.elementAt(k))).elementAt(1);
-					sCommandString = sCommandString + " " + ((Vector)(m_aaConditions.elementAt(k))).elementAt(2);
-					sCommandString = sCommandString + " " + ((Vector)(m_aaConditions.elementAt(k))).elementAt(3);
-				}
-			}
-
-//			asData = new Vector();
-			iServerConnection.getServerDataVector(sCommandString, 230, asData);
-
-		}
-		catch (Exception e)
-		{
-			System.out.println("Exception "+e);
-		}
-
-		return;
-	}
-
-*/
   //========================================
   // Interface Implementation: DBDataSource
   //========================================
@@ -569,11 +405,6 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
     return _data.size();
   }
 
-
-
-  //=============
-  // Inner Class
-  //=============
 
 
 
