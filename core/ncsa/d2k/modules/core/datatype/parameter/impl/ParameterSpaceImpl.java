@@ -305,5 +305,5 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	 * Split a ParameterSpace into two parameter spaces.
 	 * @return an array of two ParameterSpaces which define the two subspaces, the first being the head and the second being the tail.
 	 */
-	public ParameterSpace [] splitSubspaces(ParameterSpace space) { return null; }
+	public ParameterSpace [] segmentSpace(ParameterSpace space, int splitPoint) { return null; }
 }
