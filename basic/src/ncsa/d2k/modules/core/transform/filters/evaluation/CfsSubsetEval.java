@@ -238,7 +238,7 @@ public class CfsSubsetEval
     m_isNumeric = m_trainTable.isColumnScalar(m_classIndex);
 
     //TODO do discretization here
-    if(m_isNumeric) {
+    if(!m_isNumeric) {
       m_disTransform = new EntropyBinning();
       m_disTransform.setUseBetterEncoding(true);
 
