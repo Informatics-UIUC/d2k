@@ -240,7 +240,9 @@ public class MOBinaryIndividual extends MOBinarySolution
         public void printFitness(int i) {
         }
 
-        public double[] toDouble() {
+      // moved to binary solution
+      
+/*        public double[] toDouble() {
           boolean [] params = (boolean[])this.getParameters ();
           double [] dparams = new double [params.length];
           for (int i=0 ; i < params.length ; i++) {
@@ -252,5 +254,5 @@ public class MOBinaryIndividual extends MOBinarySolution
                   }
           }
           return dparams;
-        }
+        }*/
 }

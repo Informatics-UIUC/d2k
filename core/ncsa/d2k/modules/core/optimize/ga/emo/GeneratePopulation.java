@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 import ncsa.d2k.modules.core.optimize.ga.nsga.*;
+import ncsa.d2k.modules.core.optimize.ga.*;
 
 /**
  * Generate a population.
@@ -40,7 +41,6 @@ public class GeneratePopulation
     return "";
   }
 
-  private int populationSize;
   /** the total number of fitness functions defined */
   private int numFF;
   /** the number of fitness functions defined using a formula
@@ -67,6 +67,7 @@ public class GeneratePopulation
 
   public void beginExecution() {
     firstTime = true;
+    params = null;
   }
 
   public void endExecution() {
@@ -77,8 +78,6 @@ public class GeneratePopulation
     if (firstTime) {
       // pull in the parameters
       params = (Parameters) pullInput(0);
-      // the starting population size
-      populationSize = params.populationSize;
 
       // count the number of fitness functions
       FitnessFunctions ff = params.fitnessFunctions;
@@ -88,10 +87,11 @@ public class GeneratePopulation
 
       // count the number of constraints
       Constraints con = params.constraints;
-      numConstraints = con.getTotalNumConstriants();
+      numConstraints = con.getTotalNumConstraints();
       numFormulaConstraints = con.getNumConstraintFunctions();
       numExternalConstraints = con.getNumExternConstraints();
 
+      // if there were no fitness functions, just die
       if (numFF == 0) {
         throw new Exception("No Fitness Functions were defined.");
       }
@@ -99,10 +99,11 @@ public class GeneratePopulation
       firstTime = false;
     }
     else {
-      // pull in the dummy input
+      // this is a dummy input signaling a new population that has
+      // twice as many members
       pullInput(0);
       // double the population size, but use the same parameters
-      populationSize *= 2;
+      params.populationSize *= 2;
     }
 
     // the decision variables for the problem
@@ -111,6 +112,7 @@ public class GeneratePopulation
     FitnessFunctions ff = params.fitnessFunctions;
 
     int numVariables = dv.getNumVariables();
+    
     Range[] xyz;
 
     // use BinaryRange for binary-coded individuals
@@ -130,7 +132,9 @@ public class GeneratePopulation
       }
     }
 
+    // the objective constraints for FF by formula
     ObjectiveConstraints[] formulas = new ObjectiveConstraints[numFormulaFF];
+    // the objective constraints for FF by executable
     ObjectiveConstraints[] externs = new ObjectiveConstraints[numExternalFF];
 
     // first create the objective constraints for FF by formula
@@ -168,15 +172,25 @@ public class GeneratePopulation
     if (numFF == 1) {
       boolean constrained = (numConstraints > 0);
 
+      EMOPopulation pop;
+      // create a constrained SO pop
       if(constrained) {
-        // create a constrained SO pop
+        pop = new EMOConstrainedSOPopulation(xyz, fit[0],
+                                             params.populationSize, 0.01, 
+                                             this.numConstraints);
       }
+      // create an unconstrained SO pop
       else {
-        // create an unconstrained SO pop
+        pop = new EMOUnconstrainedSOPopulation(xyz, fit[0], 
+                                               params.populationSize, 0.01);
       }
-
-      // pop.setPopulationInfo(params);
-      // pushOutput(pop, 0);
+      
+      // the parameters tag along with the population
+      pop.setParameters(params);
+      //set the maximum number of generations
+      ((Population)pop).setMaxGenerations(params.maxGenerations);
+      
+      pushOutput(pop, 0);
     }
     // otherwise, for an MO problem (mulitple fitness functions) create
     // either a constrained or unconstrained nsga population
@@ -187,12 +201,12 @@ public class GeneratePopulation
       // if there were constraints, we create a constrained pop
       if (constrained) {
         pop = new EMOConstrainedNsgaPopulation(xyz, fit,
-                                            this.populationSize, 0.01, this.numConstraints);
+                                            params.populationSize, 0.01, this.numConstraints);
       }
       // if there are no constraints, we create an Unconstrained pop
       else {
         pop = new EMOUnconstrainedNsgaPopulation(xyz, fit,
-                                              this.populationSize, 0.01);
+                                              params.populationSize, 0.01);
       }
       // the parameters tag along with the population
       pop.setParameters(params);
