@@ -306,6 +306,7 @@ public class SQLHTree extends ComputeModule
 
         initBaseHeadTbl();
         //printBaseHeadTbl();  // for debugging
+        //printColumnList();  // for debugging
         buildHTree();
         //printColumnList();  // for debugging
         //printBaseHeadTbl();  // for debugging
@@ -451,7 +452,7 @@ public class SQLHTree extends ComputeModule
     int uniqCount = 0;
     // check whether this is a binned column
     for (int binIdx = 0; binIdx < bins.length; binIdx++) {
-      if (bins[binIdx].column_number == col)
+      if (bins[binIdx].label.equals(fieldNames[col]))
         uniqCount ++;
     }
     if (uniqCount > 0)
@@ -537,7 +538,7 @@ public class SQLHTree extends ComputeModule
    */
   protected boolean isBinnedColumn(int col) {
     for (int binIdx = 0; binIdx < bins.length; binIdx++) {
-      if (bins[binIdx].column_number == col)
+      if (bins[binIdx].label.equals(fieldNames[col]))
         return (true);
     }
     return (false);
