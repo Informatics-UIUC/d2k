@@ -656,63 +656,6 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 
         private EMOPopulationInfo popInfo;
 
-/*        private EMOConstruction[] fitnessVariables;
-        private EMOConstruction[] fitnessFunctions;
-        private EMOConstruction[] constraintVariables;
-        private EMOConstruction[] constraintFunctions;
-        private MutableTable allVarNames;
-        private MutableTable tbl;
-
-        public void setFitnessVariables(EMOConstruction[] c) {
-          fitnessVariables = c;
-        }
-
-        public EMOConstruction[] getFitnessVariables() {
-          return fitnessVariables;
-        }
-
-        public void setFitnessFunctions(EMOConstruction[] c) {
-          fitnessFunctions = c;
-        }
-
-        public EMOConstruction[] getFitnessFunctions() {
-          return fitnessFunctions;
-        }
-
-        public void setConstraintVariables(EMOConstruction[] c) {
-          constraintVariables = c;
-        }
-
-        public EMOConstruction[] getConstraintVariables() {
-          return constraintVariables;
-        }
-
-        public void setConstraintFunctions(EMOConstruction[] c) {
-          constraintFunctions = c;
-        }
-
-        public EMOConstruction[] getConstraintFunctions() {
-          return constraintFunctions;
-        }
-
-        public void setAllVarNames(MutableTable t) {
-          allVarNames = t;
-        }
-
-        public MutableTable getAllVarNames() {
-          return allVarNames;
-        }*/
-
-/*        MutableTable tbl;
-
-        public MutableTable getTbl() {
-          return tbl;
-        }
-
-        public void setTbl(MutableTable t) {
-          tbl = t;
-        }*/
-
         public void setPopulationInfo(EMOPopulationInfo popI) {
           popInfo = popI;
         }
