@@ -193,27 +193,27 @@ public class ChiSquaredAttributeEval
 
     //selectedColumns has to come from a user interface ore other params
     int [] selectedColumns = new int[data.getNumColumns()-1];
-
-
-       if (!m_Binarize) {
-      EntropyBinning m_disTransform = new EntropyBinning();
-      m_disTransform.setUseBetterEncoding(true);
-
-      for (int i =0; i < data.getNumColumns()-1; i ++) {
-               selectedColumns[i] = i;
-               //System.out.println( i + " " + data.getColumnLabel(i) + " " + data.isColumnScalar(i));
-      }
-      BinDescriptor[] binDescr = m_disTransform.buildBins((ExampleTable)data,selectedColumns);
-      BinTransform bt = new BinTransform(data,binDescr, false);
-      bt.transform((ExampleTable)data);
+    
+    
+    if (!m_Binarize) {
+    	EntropyBinning m_disTransform = new EntropyBinning();
+    	m_disTransform.setUseBetterEncoding(true);
+    	
+    	for (int i =0; i < data.getNumColumns()-1; i ++) {
+    		selectedColumns[i] = i;
+    		//System.out.println( i + " " + data.getColumnLabel(i) + " " + data.isColumnScalar(i));
+    	}
+    	BinDescriptor[] binDescr = m_disTransform.buildBins((ExampleTable)data,selectedColumns);
+    	BinTransform bt = new BinTransform(data,binDescr, false);
+    	bt.transform((ExampleTable)data);
     } else {
-      NumericToBinaryTransform binTransform = new NumericToBinaryTransform(selectedColumns);
-      binTransform.transform((ExampleTable)data);
+    	NumericToBinaryTransform binTransform = new NumericToBinaryTransform(selectedColumns);
+    	binTransform.transform((ExampleTable)data);
     }
     // transform nominal binned attributes to numeric ones
     ReplaceNominalsWithIntsTransform tr =
-     new ReplaceNominalsWithIntsTransform((ExampleTable)data);
-     tr.transform((MutableTable)data);
+    	new ReplaceNominalsWithIntsTransform((ExampleTable)data);
+    tr.transform((MutableTable)data);
     String[] tempStr = TableUtilities.uniqueValues(data,classIndex);
     int numClasses = tempStr.length;
 

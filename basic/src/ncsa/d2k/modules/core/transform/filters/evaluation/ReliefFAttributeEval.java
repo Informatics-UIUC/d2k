@@ -519,9 +519,7 @@ public class ReliefFAttributeEval
   {
     int z, totalRows;
     Random r = new Random(m_seed);
-
-
-   
+  
     int [] inputFeatures = ((ExampleTable)data).getInputFeatures();
 	int [] outputFeatures = ((ExampleTable)data).getOutputFeatures();
 
@@ -533,7 +531,7 @@ public class ReliefFAttributeEval
     m_numAttribs = m_trainTable.getNumColumns();
     m_numRows = m_trainTable.getNumRows();
 
-		// determine whether class is numeric or nominal
+	// determine whether class is numeric or nominal
     if (m_trainTable.isColumnScalar(m_classIndex)) {
       m_numericClass = true;
     }
@@ -760,6 +758,7 @@ public class ReliefFAttributeEval
 		    boolean mis2 =  m_trainTable.isValueMissing(ln2,col2);
 
 		    // If attribute is nominal
+		    //TODO change here when ReplaceNominalWithInts is phased out
 		    if (m_trainTable.isColumnNominal(index)){
 		    	if (mis1 || mis2 ) {
 		    		String[] uniquevalues = TableUtilities.uniqueValues(m_trainTable,index);
@@ -809,13 +808,13 @@ public class ReliefFAttributeEval
 
     double distance = 0;
     int firstI, secondI;
-		int numAttribs = m_trainTable.getNumColumns();
+	int numAttribs = m_trainTable.getNumColumns();
 
     for (int p1 = 0, p2 = 0; p1 < numAttribs || p2 < numAttribs;) {
       if (p1 >= numAttribs) {
 		  	firstI = numAttribs;
       } else {
-				firstI = p1;
+			firstI = p1;
       }
       if (p2 >= numAttribs) {
 		  	secondI = numAttribs;
@@ -830,24 +829,20 @@ public class ReliefFAttributeEval
       }
 
       double diff;
-     // if (first ==0 && second ==1)
-      
-     // System.out.println("d2k firstI secondI p1 p2 " + firstI + " " + secondI + " " + p1 + " " + p2);
-
-  
-     if (firstI == secondI) {
-		  	diff = difference(firstI,first,second,p1,p2);
-			  p1++; p2++;
+     
+      if (firstI == secondI) {
+      	diff = difference(firstI,first,second,p1,p2);
+      	p1++; p2++;
       } else if (firstI > secondI) {
-							  diff = difference(secondI,0, second, 0, p2);
-							  p2++;
-							} else {
-							diff = difference(firstI, first, 0, p1, 0);
-							p1++;
-							}
+      	diff = difference(secondI,0, second, 0, p2);
+      	p2++;
+      } else {
+      	diff = difference(firstI, first, 0, p1, 0);
+      	p1++;
+      }
       //      distance += diff * diff;
       distance += diff;
-      }
+    }
 
     //    return Math.sqrt(distance / m_NumAttributesUsed);
     return distance;
@@ -1007,6 +1002,7 @@ public class ReliefFAttributeEval
     double[] distNormAtt = null;
     int firstI, secondI;
 
+    //TODO change here when ReplaceNominalWithInts is phased out
     // store the indexes (sparse instances) of non-zero elements
     double [] inst = new double[m_numAttribs];
     // 	m_trainTable.getRow(inst,instNum);	
@@ -1235,7 +1231,8 @@ private void findKHitMiss (int instNum) {
 			  if (m_numericClass) {
 			  	cl = 0;
 			  }
-			  else {
+			  else { 
+			  	//TODO change this when ReplaceNominalsWithInts is phased out
 			  	cl = (int)m_trainTable.getInt(i,m_classIndex);
 			  }
 			  if(i == 0) {
