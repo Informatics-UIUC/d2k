@@ -10,7 +10,6 @@ package ncsa.d2k.modules.core.io.sql;
  * @version 1.0
  */
 import ncsa.d2k.core.modules.*;
-//import ncsa.d2k.modules.core.datatype.table.*;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -121,9 +120,9 @@ public class MetaTableModel extends AbstractTableModel
       if (col == 0) // first column value can't contain space and minus sign
       {
          value = squeezeSpace(value);
+         // column name does not allow "-"
          value = value.toString().replace('-','_');
       }
-      //data[row][col] = new String(value.toString().toLowerCase());
       data[row][col] = value.toString().toLowerCase();
       fireTableCellUpdated(row, col);
     }
