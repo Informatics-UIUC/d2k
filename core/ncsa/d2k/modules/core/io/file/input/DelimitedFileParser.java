@@ -352,7 +352,13 @@ public class DelimitedFileParser implements FlatFileParser {
     public int getColumnType(int i) {
         if(columnTypes == null)
             return -1;
-        return columnTypes[i];
+        try {
+          return columnTypes[i];
+        }
+        catch(ArrayIndexOutOfBoundsException e) {
+          throw new ArrayIndexOutOfBoundsException("DelimitedFileParser: The number of column "+
+                                     "types does not match the number of column labels.");
+        }
     }
 
     /**
@@ -363,7 +369,13 @@ public class DelimitedFileParser implements FlatFileParser {
     public String getColumnLabel(int i) {
         if(columnLabels == null)
             return null;
-        return columnLabels[i];
+        try {
+          return columnLabels[i];
+        }
+        catch(ArrayIndexOutOfBoundsException e) {
+          throw new ArrayIndexOutOfBoundsException("DelimitedFileParser: The number of column "+
+                                     "labels does not match the number of columns.");
+        }
     }
 
     /**
