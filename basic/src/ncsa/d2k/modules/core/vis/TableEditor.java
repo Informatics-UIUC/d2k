@@ -611,7 +611,7 @@ public class TableEditor extends TableViewer {
                            buffer[row] = table.getLong(row, i);
                      }
                   } catch (NumberFormatException nfe){
-                              
+
                      // It is possible the column is represented as doubles,
                      // we got a number format exception trying to parse the
                      // chars as an int, let's try getting them as doubles
@@ -652,7 +652,7 @@ public class TableEditor extends TableViewer {
                            buffer[row] = table.getShort(row, i);
                      }
                   } catch (NumberFormatException nfe){
-                              
+
                      // It is possible the column is represented as doubles,
                      // we got a number format exception trying to parse the
                      // chars as an int, let's try getting them as doubles
@@ -842,5 +842,7 @@ public class TableEditor extends TableViewer {
  * bug 200 is fixed.
  *
  * bug 238 - cannot convert from int/long/short to double/float then to char[] and
- * then back to int/short/long. last conversion fails.
+ * then back to int/short/long. last conversion fails. (fixed)
+ *
+ * 01-30-04:  ready for basic 4.
 */
