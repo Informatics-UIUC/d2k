@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.io.file.output;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import java.io.*;
+import java.beans.PropertyVetoException;
 
 /**
  * This module writes the contents of a <code>Table</code> to a flat file.
@@ -13,37 +14,29 @@ public class WriteTableToFile extends OutputModule {
 
    transient String delimiter;
 
-   boolean comma = true;
-//	boolean tab = true;
-//	boolean space = false;
+   String  delimChar = "C";
    boolean useDataTypes = true;
    boolean useColumnLabels = true;
 
-    /*
-    public boolean getComma() {
-      return comma;
-    }
+   public void setDelimChar(String c) throws PropertyVetoException {
+      // here we check for valid entries and save as upper case
+      if (c.equalsIgnoreCase("C")) {
+         delimChar = "C";
+      } else if (c.equalsIgnoreCase("S")) {
+         delimChar = "S";
+      } else if (c.equalsIgnoreCase("T")) {
+         delimChar = "T";
+      } else {
+         throw new PropertyVetoException(
+              "An invalid Delimiter Character was entered. "+
+              "Enter C for comma, S for space, or T for tab.",
+              null);
+      }
+   }
 
-    public void setComma(boolean b) {
-      comma = b;
-    }
-
-    public boolean getTab() {
-      return tab;
-    }
-
-    public void setTab(boolean b) {
-      tab = b;
-    }
-
-    public boolean getSpace() {
-      return space;
-    }
-
-    public void setSpace(boolean b) {
-      space = b;
-    }
-    */
+   public String getDelimChar() {
+      return delimChar;
+   }
 
    public void setUseDataTypes(boolean b) {
       useDataTypes = b;
@@ -66,20 +59,17 @@ public class WriteTableToFile extends OutputModule {
        @return A description of this module.
     */
     public String getModuleInfo() {
-       /*
-       return "<html>  <head>      </head>  <body>    Write the contents of " +
-              "a Table to a flat file. Can use space, comma, or tab " +
-              "as a delimiter. If useColumnLabels is set, the first row of " +
-              "the file will be the column labels. If useDataTypes is set, " +
-              "the data type of each row will be written.  </body></html>";
-       */
        StringBuffer sb = new StringBuffer("<p>Overview: ");
-       sb.append("This module writes the contents of a Table to a flat, ");
-       sb.append("delimited file. A space, a comma, or a tab can be used ");
-       sb.append("as a delimiter. If the useColumnLabels property is set, ");
+       sb.append("<p>This module writes the contents of a Table to a file. ");
+       sb.append("</p><p>Detailed Description: ");
+       sb.append("This module writes the contents of the input ");
+       sb.append("<i>Table</i> to the file specified by the input <i>File Name</i> ");
+       sb.append("The user can select a space, a common, or a tab as the ");
+       sb.append("column delimiter using the properties editor. ");
+       sb.append("If the <i>useColumnLabels</i> property is set, ");
        sb.append("the first row of the file will be the column labels. ");
-       sb.append("If the useDataTypes property is set, the data type of ");
-       sb.append("each row will also be written.");
+       sb.append("If the <i>useDataTypes</i> property is set, the data type of ");
+       sb.append("each column will be written to the file.");
        sb.append("</p><p>Data Handling: ");
        sb.append("This module does not destroy or modify its input data.");
        sb.append("</p>");
@@ -88,13 +78,18 @@ public class WriteTableToFile extends OutputModule {
 
    public PropertyDescription[] getPropertiesDescriptions() {
 
-      PropertyDescription[] descriptions = new PropertyDescription [2];
+      PropertyDescription[] descriptions = new PropertyDescription [3];
 
-      descriptions[0] = new PropertyDescription("useColumnLabels",
+      descriptions[0] = new PropertyDescription("delimChar",
+         "Delimiter Character (C=comma, S=space, T=tab)",
+         "Selects the delimiter character used to separate columns in the file.  "+
+         "Enter C for comma, S for space, or T for tab.");
+
+      descriptions[1] = new PropertyDescription("useColumnLabels",
          "Write Column Labels",
          "Controls whether the table's column labels are written to the file.");
 
-      descriptions[1] = new PropertyDescription("useDataTypes",
+      descriptions[2] = new PropertyDescription("useDataTypes",
          "Write Data Types",
          "Controls whether the table's column data types are written to the file.");
 
@@ -154,7 +149,7 @@ public class WriteTableToFile extends OutputModule {
             return "File Name";
          case 1:
             return "Table";
-         default: return "NO SUCH INPUT!";
+         default: return "No such input";
       }
    }
 
@@ -176,106 +171,38 @@ public class WriteTableToFile extends OutputModule {
     */
     public String getOutputName(int i) {
       switch(i) {
-         default: return "NO SUCH OUTPUT!";
+         default: return "No such output";
       }
    }
 
     /**
       Write the table to the file.
    */
-    public void doit() {
+    public void doit() throws Exception {
       String fileName = (String)pullInput(0);
       Table vt = (Table)pullInput(1);
       FileWriter fw;
       String newLine = "\n";
 
-      if(comma)
-         delimiter = ",";
-      /*if(tab)
-         delimiter = "\t";
-      if(space)
+      delimiter = ",";      // default to comma
+      if (delimChar.equals("S")) {
          delimiter = " ";
-  */
+      } else if (delimChar.equals("T")) {
+         delimiter = "\t";
+      }
 
       try {
-         /*
-         fw = new FileWriter(fileName);
-
-         // write the column labels
-         if(useColumnLabels) {
-            for(int i = 0; i < vt.getNumColumns(); i++) {
-               String s = vt.getColumnLabel(i);
-               fw.write(s, 0, s.length());
-               if(i != (vt.getNumColumns() - 1))
-                  fw.write(delimiter.toCharArray(), 0, delimiter.length());
-            }
-            fw.write(newLine.toCharArray(), 0, newLine.length());
-         }
-
-         // write the datatypes.
-         if(useDataTypes) {
-            for(int i = 0; i < vt.getNumColumns(); i++) {
-               String s = getDataType(vt.getColumnType(i));
-               fw.write(s, 0, s.length());
-               if(i != (vt.getNumColumns() - 1))
-                  fw.write(delimiter.toCharArray(), 0, delimiter.length());
-            }
-            fw.write(newLine.toCharArray(), 0, newLine.length());
-         }
-
-         // write the actual data
-         for(int i = 0; i < vt.getNumRows(); i++) {
-            for(int j = 0; j < vt.getNumColumns(); j++) {
-               String s = vt.getString(i, j);
-               //System.out.println("s: "+s);
-               fw.write(s, 0, s.length());
-               if(j != (vt.getNumColumns() - 1) )
-                  fw.write(delimiter.toCharArray(), 0, delimiter.length());
-            }
-            fw.write(newLine.toCharArray(), 0, newLine.length());
-         }
-         fw.flush();
-         fw.close();
-         */
+          // write the actual data
          writeTable(vt, delimiter, fileName, useColumnLabels, useDataTypes);
       }
-      catch(IOException e) {
-
-         // e.printStackTrace();
-
-         System.err.println("Error writing file " + fileName + ": ");
-         System.err.println(e.getMessage());
-
+      catch (IOException e) {
+         throw new IOException( getAlias() +
+              ": Could not open file: " + fileName +
+              "\n" + e );
       }
+
    }
 
-   /**
-      Get the datatype of a column.
-   */
-   /*public static final String getDataType(Column c) {
-      if(c instanceof StringColumn)
-         return "String";
-      else if(c instanceof IntColumn)
-         return "int";
-      else if(c instanceof FloatColumn)
-         return "float";
-      else if(c instanceof DoubleColumn)
-         return "double";
-      else if(c instanceof LongColumn)
-         return "long";
-      else if(c instanceof ShortColumn)
-         return "short";
-      else if(c instanceof BooleanColumn)
-         return "boolean";
-      else if(c instanceof ObjectColumn)
-         return "Object";
-      else if(c instanceof ByteArrayColumn)
-         return "byte[]";
-      else if(c instanceof CharArrayColumn)
-         return "char[]";
-      else
-         return "unknown";
-   }*/
 
    /**
       Get the datatype of a column.
@@ -299,7 +226,7 @@ public class WriteTableToFile extends OutputModule {
          case 7:
             return "byte[]";
          case 8:
-            return 	"boolean";
+            return "boolean";
          case 9:
             return "Object";
          case 10:
@@ -358,3 +285,10 @@ public class WriteTableToFile extends OutputModule {
    }
 
 }
+// Start QA Comments
+// 3/6/03 - Received from David C and Greg & QA started by Ruth
+//        - Added code to allow for selection of delimiter character and
+//          updated description accordingly.   Removed lots of commented-out
+//          code.  Added exception handler for IO exceptions instead of just
+//          message to stderr.   Committing to Basic.
+// End QA Comments
