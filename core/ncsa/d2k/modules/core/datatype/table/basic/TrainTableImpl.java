@@ -81,68 +81,29 @@ public final class TrainTableImpl
 	return original;
   }
 
+  /**
+   * Get the subset of the table starting at pos for len.
+   * @param pos the first entry to retain
+   * @param len number of entries to retain.
+   * @return the subset.
+   */
   public Table getSubset(int pos, int len) {
-    int[] rowsT = new int[len];
-    System.arraycopy(trainSet, pos, rowsT, 0, len);
-	//ExampleTable et = (ExampleTable)original.getSubset(pos, len);
-//    ExampleTable et  = t.toExampleTable();
-
-/*    int[] newin = new int[inputColumns.length];
-	System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
-	int[] newout = new int[outputColumns.length];
-	System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
-
-	et.setInputFeatures(newin);
-	et.setOutputFeatures(newout);
-
-	// now figure out the test and train sets
-	int[] traincpy = new int[trainSet.length];
-	System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
-	int[] testcpy = new int[testSet.length];
-	System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
-
-	int[] newtrain = subsetTrainOrTest(traincpy, pos, len);
-	System.out.println("NEW TRAIN: "+newtrain.length+" OLD: "+traincpy.length);
-	int[] newtest = subsetTrainOrTest(testcpy, pos, len);
-
-	et.setTrainingSet(newtrain);
-	et.setTestingSet(newtest);
-	*/
-
-	//return et.getTrainTable();
-        return getSubset(rowsT);
+	int[] rowsT = new int[len];
+	System.arraycopy(trainSet, pos, rowsT, 0, len);
+	return getSubset(rowsT);
   }
 
+  /**
+   * given an array with the indexes of the rows to keep, subset the
+   * table.
+   * @param rows array of ints the indices of the rows to keep.
+   * @return the subset of the table.
+   */
   public Table getSubset(int[] rows) {
-      int[] rowsT = new int[rows.length];
-      System.arraycopy(rows, 0, rowsT, 0, rows.length);
-      for (int i = 0, n = rows.length;i < n; i++){
-        rows[i] = this.trainSet[rowsT[i]];
-      }
+	for (int i = 0, n = rows.length;i < n; i++){
+		rows[i] = this.trainSet[rows[i]];
+	}
 	ExampleTable et = (ExampleTable)original.getSubset(rows);
-//    ExampleTable et = t.toExampleTable();
-
-/*    int[] newin = new int[inputColumns.length];
-	System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
-	int[] newout = new int[outputColumns.length];
-	System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
-
-	et.setInputFeatures(newin);
-	et.setOutputFeatures(newout);
-
-	// now figure out the test and train sets
-	int[] traincpy = new int[trainSet.length];
-	System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
-	int[] testcpy = new int[testSet.length];
-	System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
-
-	int[] newtrain = subsetTrainOrTest(traincpy, rows);
-	int[] newtest = subsetTrainOrTest(testcpy, rows);
-
-	et.setTrainingSet(newtrain);
-	et.setTestingSet(newtest);
-	*/
-
 	return et.getTrainTable();
   }
 
@@ -1128,99 +1089,99 @@ public final class TrainTableImpl
 
 
 /*  public void setColumn(double[] data, int pos) {
-    //DoubleColumn ic = new DoubleColumn(data);
-    //setColumn(ic, pos);
-    for(int i = 0; i < data.length; i++) {
-      setDouble(data[i], trainSet[i],  pos);
-    }
+	//DoubleColumn ic = new DoubleColumn(data);
+	//setColumn(ic, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setDouble(data[i], trainSet[i],  pos);
+	}
  }*/
 
 
  public void setColumn(char[] data, int pos) {
-    //CharColumn cc = new CharColumn(data);
-    //setColumn(cc, pos);
-    for(int i = 0; i < data.length; i++) {
-      setChar(data[i], i,  pos);
-    }
+	//CharColumn cc = new CharColumn(data);
+	//setColumn(cc, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setChar(data[i], i,  pos);
+	}
  }
  public void setColumn(byte[] data, int pos) {
-    //ByteColumn bc = new ByteColumn(data);
-    //setColumn(bc, pos);
-    for(int i = 0; i < data.length; i++) {
-      setByte(data[i], i,  pos);
-    }
+	//ByteColumn bc = new ByteColumn(data);
+	//setColumn(bc, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setByte(data[i], i,  pos);
+	}
  }
 
  public void setColumn(int[] data, int pos) {
-    //IntColumn ic = new IntColumn(data);
-    //setColumn(ic, pos);
-    for(int i = 0; i < data.length; i++) {
-      setInt(data[i], i,  pos);
-    }
+	//IntColumn ic = new IntColumn(data);
+	//setColumn(ic, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setInt(data[i], i,  pos);
+	}
  }
  public void setColumn(float[] data, int pos) {
-    //FloatColumn ic = new FloatColumn(data);
-    //setColumn(ic, pos);
-    for(int i = 0; i < data.length; i++) {
-      setFloat(data[i], i,  pos);
-    }
+	//FloatColumn ic = new FloatColumn(data);
+	//setColumn(ic, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setFloat(data[i], i,  pos);
+	}
  }
  public void setColumn(double[] data, int pos) {
-    //DoubleColumn ic = new DoubleColumn(data);
-    //setColumn(ic, pos);
-    for(int i = 0; i < data.length; i++) {
-      setDouble(data[i], i,  pos);
-    }
+	//DoubleColumn ic = new DoubleColumn(data);
+	//setColumn(ic, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setDouble(data[i], i,  pos);
+	}
  }
  public void setColumn(long[] data, int pos) {
-    //LongColumn ic = new LongColumn(data);
-    //setColumn(ic, pos);
-    for(int i = 0; i < data.length; i++) {
-      setDouble(data[i], i,  pos);
-    }
+	//LongColumn ic = new LongColumn(data);
+	//setColumn(ic, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setDouble(data[i], i,  pos);
+	}
  }
  public void setColumn(short[] data, int pos) {
-    //ShortColumn ic = new ShortColumn(data);
-    //setColumn(ic, pos);
-    for(int i = 0; i < data.length; i++) {
-      setShort(data[i], i,  pos);
-    }
+	//ShortColumn ic = new ShortColumn(data);
+	//setColumn(ic, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setShort(data[i], i,  pos);
+	}
  }
  public void setColumn(String[] data, int pos) {
-    //StringColumn ic = new StringColumn(data);
-    //setColumn(ic, pos);
-    for(int i = 0; i < data.length; i++) {
-      setString(data[i], i,  pos);
-    }
+	//StringColumn ic = new StringColumn(data);
+	//setColumn(ic, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setString(data[i], i,  pos);
+	}
  }
  public void setColumn(byte[][] data, int pos) {
-    //ContinuousByteArrayColumn bc = new ContinuousByteArrayColumn(data);
-    //setColumn(bc, pos);
-    for(int i = 0; i < data.length; i++) {
-      setBytes(data[i], i,  pos);
-    }
+	//ContinuousByteArrayColumn bc = new ContinuousByteArrayColumn(data);
+	//setColumn(bc, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setBytes(data[i], i,  pos);
+	}
  }
  public void setColumn(char[][] data, int pos) {
-    //ContinuousCharArrayColumn cc = new ContinuousCharArrayColumn(data);
-    //setColumn(cc, pos);
-    for(int i = 0; i < data.length; i++) {
-      setChars(data[i], i,  pos);
-    }
+	//ContinuousCharArrayColumn cc = new ContinuousCharArrayColumn(data);
+	//setColumn(cc, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setChars(data[i], i,  pos);
+	}
  }
  public void setColumn(Object[] data, int pos) {
-    //ObjectColumn ic = new ObjectColumn(data);
-    //setColumn(ic, pos);
-    for(int i = 0; i < data.length; i++) {
-      setObject(data[i], i,  pos);
-    }
+	//ObjectColumn ic = new ObjectColumn(data);
+	//setColumn(ic, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setObject(data[i], i,  pos);
+	}
  }
  public void setColumn(boolean[] data, int pos) {
-    //BooleanColumn ic = new BooleanColumn(data);
-    //ic.setLabel(getColumnLabel(pos));
-    //ic.setComment(getColumnComment(pos));
-    //setColumn(ic, pos);
-    for(int i = 0; i < data.length; i++) {
-      setBoolean(data[i], i,  pos);
-    }
+	//BooleanColumn ic = new BooleanColumn(data);
+	//ic.setLabel(getColumnLabel(pos));
+	//ic.setComment(getColumnComment(pos));
+	//setColumn(ic, pos);
+	for(int i = 0; i < data.length; i++) {
+	  setBoolean(data[i], i,  pos);
+	}
  }
 }

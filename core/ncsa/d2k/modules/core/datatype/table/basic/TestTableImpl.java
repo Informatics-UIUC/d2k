@@ -87,6 +87,33 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
 		}
 	}
 
+	/**
+	 * Get the subset of the table starting at pos for len.
+	 * @param pos the first entry to retain
+	 * @param len number of entries to retain.
+	 * @return the subset.
+	 */
+	public Table getSubset(int pos, int len) {
+	  int[] rowsT = new int[len];
+	  System.arraycopy(testSet, pos, rowsT, 0, len);
+	  return getSubset(rowsT);
+	}
+
+	/**
+	 * given an array with the indexes of the rows to keep, subset the
+	 * table.
+	 * @param rows array of ints the indices of the rows to keep.
+	 * @return the subset of the table.
+	 */
+	public Table getSubset(int[] rows) {
+	  for (int i = 0, n = rows.length;i < n; i++){
+		  rows[i] = this.testSet[rows[i]];
+	  }
+	  ExampleTable et = (ExampleTable)original.getSubset(rows);
+	  return et.getTestTable();
+	}
+
+	/*
 	public Table getSubset(int pos, int len) {
 	  Table t = super.getSubset(pos, len);
 	  ExampleTable et  = t.toExampleTable();
@@ -148,7 +175,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
 	  pt.setTestingSet(newtest);
 	  return pt;
 	}
-
+*/
 	/**
 	 * Create a subset of a table give a position and a number of row to compose
 	 * the subset.

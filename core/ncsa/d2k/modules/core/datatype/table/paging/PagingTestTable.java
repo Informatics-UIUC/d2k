@@ -296,10 +296,8 @@ class PagingTestTable
 	int[] newTestingSet = new int[len];
 	for (int i = start; i < start + len; i++) {
 	  newTestingSet[i - start] = testSet[i];
-
 	}
 	ptt.testSet = newTestingSet;
-
 	return ptt;
   }
 
@@ -312,13 +310,9 @@ class PagingTestTable
 
 	int[] newTestingSet = new int[rows.length];
 	for (int i = 0; i < rows.length; i++) {
-	  //newTestingSet[i - start] = testSet[i];
-	  newTestingSet[i] = testSet[i];
+	  newTestingSet[i] = testSet[rows[i]];
 	}
-
-	newTestingSet = subsetTrainOrTest(testSet, rows);
 	ptt.testSet = newTestingSet;
-
 	return ptt;
   }
 
