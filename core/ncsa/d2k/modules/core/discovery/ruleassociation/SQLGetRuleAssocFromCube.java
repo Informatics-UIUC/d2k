@@ -235,6 +235,8 @@ public class SQLGetRuleAssocFromCube extends UIModule
       // Outline panel for options
       JOutlinePanel options = new JOutlinePanel("Options");
       options.setLayout (new GridBagLayout());
+      //JScrollPane optionPane = new JScrollPane(options);
+      //options.setPreferredSize(new Dimension(400, 200));
       Constrain.setConstraints(options, new JLabel("Table Name"),
         0,0,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(options, tableName = new JTextField(10),
@@ -297,19 +299,23 @@ public class SQLGetRuleAssocFromCube extends UIModule
 
       /* Add the outline panel to getRulePanel */
       Constrain.setConstraints(getRulePanel, options,
-        0,0,5,5,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
+        0,0,5,5,GridBagConstraints.BOTH,GridBagConstraints.CENTER,1.0,1.0);
+      Constrain.setConstraints(getRulePanel, new JPanel(),
+        0,6,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,0.5,0);
       Constrain.setConstraints(getRulePanel, cancelBtn = new JButton ("   Cancel   "),
-        2,6,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,1,1);
+        1,6,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,0,0);
       cancelBtn.addActionListener(this);
       Constrain.setConstraints(getRulePanel, ruleBtn = new JButton ("Get Rules"),
-        3,6,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,1,1);
+        2,6,1,1,GridBagConstraints.NONE, GridBagConstraints.CENTER,0,0);
       ruleBtn.addActionListener(this);
       Constrain.setConstraints(getRulePanel, sortBtn = new JButton ("    Resort    "),
-        4,6,0,1,GridBagConstraints.NONE, GridBagConstraints.EAST,1,1);
+        3,6,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,0,0);
       sortBtn.addActionListener(this);
+      Constrain.setConstraints(getRulePanel, new JPanel(),
+        4,6,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,0.5,0);
 
       setLayout (new BorderLayout());
-      add(getRulePanel, BorderLayout.NORTH);
+      add(getRulePanel, BorderLayout.CENTER);
     }
 
     public void actionPerformed(ActionEvent e) {
