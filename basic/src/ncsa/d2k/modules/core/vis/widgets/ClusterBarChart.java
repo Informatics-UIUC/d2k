@@ -122,7 +122,8 @@ public class ClusterBarChart extends BarChart implements MouseListener {
 
     clustercolors = new Color[runsize];
     for (int index=0; index < clustercolors.length; index++)
-      clustercolors[index] = getColor(index);
+      //clustercolors[index] = getColor(index);
+      clustercolors[index] = getColor(index * 3);
 
     addMouseListener(this);
   }
