@@ -102,6 +102,12 @@ public class Input2FileNames extends InputModule {
     private String fileName0;
 
     public void setFileName0(String s) throws PropertyVetoException {
+
+     /**
+      ** Remove checks as too annoying... would like to add them back if
+      ** module info eventually available w/o triggering this so just
+      ** commenting out this section for now.
+      **
         // here we check for length of 0 but not for null as we don't want this
         // to get thrown if an itinerary is saved/reloaded without the
         // property dialog being used
@@ -110,6 +116,9 @@ public class Input2FileNames extends InputModule {
                 "File Name 1 must be entered before the dialog can be closed.",
                  null);
         }
+      **
+      ** End of commented out section.
+      **/
 
         fileName0 =  s;;
     }
@@ -123,6 +132,12 @@ public class Input2FileNames extends InputModule {
     private String fileName1;
 
     public void setFileName1(String s) throws PropertyVetoException {
+
+     /**
+      ** Remove checks as too annoying... would like to add them back if
+      ** module info eventually available w/o triggering this so just
+      ** commenting out this section for now.
+      **
         // here we check for length of 0 but not for null as we don't want this
         // to get thrown if an itinerary is saved/reloaded without the
         // property dialog being used
@@ -131,6 +146,9 @@ public class Input2FileNames extends InputModule {
                 "File Name 2 must be entered before the dialog can be closed.",
                  null);
         }
+      **
+      ** End of commented out section.
+      **/
 
         fileName1 =  s;
 
@@ -298,4 +316,7 @@ public class Input2FileNames extends InputModule {
 //           if property dialog/info scanned w/o entering filename. not best
 //           but seems no option as setter called when dialog closed.
 // 2/14/03 - checked into basic.
+// 5/16/03 - don't throw exception if no filename entered in prop dialog - instead
+//           only at runtime. need better way to check if only info scanned or
+//           if edit done. for now, none, and annoying, so removed check added 2/13.
 // END QA Comments
