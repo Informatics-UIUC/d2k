@@ -45,8 +45,8 @@ public class DecisionTreeModel extends PredictionModelModule
 
 	private String[] classNames;
 
-        private boolean[] inputIsScalar;
-       private boolean[] outputIsScalar;
+//        private boolean[] inputIsScalar;
+//       private boolean[] outputIsScalar;
 
 	/**
 		Constructor
@@ -58,12 +58,13 @@ public class DecisionTreeModel extends PredictionModelModule
 		root = rt;
 		inputFeatures = table.getInputFeatures();
 		outputFeatures = table.getOutputFeatures();
+                setTrainingTable(table);
 //		trainingSetSize = table.getNumRows();
 
 /*		inputColumnNames = new String[inputFeatures.length];
 		//inputTypes = new String[inputFeatures.length];
                */
-                inputIsScalar = new boolean[inputFeatures.length];
+/*                inputIsScalar = new boolean[inputFeatures.length];
 
 		for(int i = 0; i < inputFeatures.length; i++) {
 //			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
@@ -89,7 +90,7 @@ public class DecisionTreeModel extends PredictionModelModule
 			else
 				//outputTypes[i] = "Nominal";
                                 outputIsScalar[i] = false;
-		}
+		}*/
 
 		classNames = uniqueValues(table, outputFeatures[0]);
 
@@ -341,10 +342,12 @@ public class DecisionTreeModel extends PredictionModelModule
 
 		return false;
             */
-            return inputIsScalar[index];
+//            return inputIsScalar[index];
+           return super.getScalarInputs()[index];
 	}
 
         public boolean scalarOutput(int index) {
-          return outputIsScalar[index];
+//          return outputIsScalar[index];
+          return super.getScalarOutputs()[index];
         }
 }

@@ -103,6 +103,7 @@ public final class NaiveBayesModel
 
     inputFeatures = table.getInputFeatures();
     outputFeatures = table.getOutputFeatures();
+    setTrainingTable(vt);
 
     isReadyForVisualization = false;
 
