@@ -44,6 +44,12 @@ public class ExampleTableImpl
    */
   public ExampleTableImpl(int numColumns) {
     super(numColumns);
+    inputColumns = new int[0];
+    outputColumns = new int[0];
+    inputNames = new String[0];
+    outputNames = new String[0];
+    testSet = new int[0];
+    trainSet = new int[0];
   }
 
   /**
@@ -68,8 +74,8 @@ public class ExampleTableImpl
     setLabel(table.getLabel());
     setComment(table.getComment());
 
-    inputNames = new String[0];
-    outputNames = new String[0];
+    //inputNames = new String[0];
+    //outputNames = new String[0];
 
     //setType(table.getType());
     if (table instanceof ExampleTableImpl) {
@@ -102,6 +108,8 @@ public class ExampleTableImpl
         this.testSet = new int[testLen];
         System.arraycopy(origTestSet, 0, testSet, 0, testLen);
       }
+      else
+        setTestingSet(new int[0]);
       // make a copy of the train set
       int[] origTrainSet = tt.getTrainingSet();
       if (origTrainSet != null) {
@@ -109,6 +117,8 @@ public class ExampleTableImpl
         this.trainSet = new int[trainLen];
         System.arraycopy(origTrainSet, 0, trainSet, 0, trainLen);
       }
+      else
+        setTestingSet(new int[0]);
 
       //copy the transformations
       try {
@@ -118,6 +128,12 @@ public class ExampleTableImpl
       catch (Exception e) {
         transformations = null;
       }
+    }
+    else {
+      setInputFeatures(new int[0]);
+      setOutputFeatures(new int[0]);
+      setTestingSet(new int[0]);
+      setTrainingSet(new int[0]);
     }
   }
 
