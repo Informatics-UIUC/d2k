@@ -73,9 +73,9 @@ public class AutoBin extends AutoBinOPT {
   public PropertyDescription[] getPropertiesDescriptions() {
     PropertyDescription[] pds = new PropertyDescription[3];
     pds[0] = new PropertyDescription("binMethod", "Discretization Method",
-        "The method to use for discretization.  Select 0 to create bins" +
+        "The method to use for discretization.  Select 1 to create bins" +
         " by weight.  This will create bins with an equal number of items in "+
-        "each slot.  Select 1 to do uniform discretization by specifying the number of bins. "+
+        "each slot.  Select 0 to do uniform discretization by specifying the number of bins. "+
         "This will result in equally spaced bins between the minimum and maximum for "+
         "each scalar column.");
     pds[1] = new PropertyDescription("binWeight", "Number of Items per Bin",
@@ -93,8 +93,6 @@ public class AutoBin extends AutoBinOPT {
 
   public void doit() throws Exception {
     tbl = (ExampleTable) pullInput(0);
-    //ParameterPoint pp = (ParameterPoint) pullInput(1);
-//    HashMap nameToIndexMap = new HashMap();
 
     inputs = tbl.getInputFeatures();
     outputs = tbl.getOutputFeatures();
@@ -108,35 +106,14 @@ if (outputs == null || outputs.length == 0)
     nf = NumberFormat.getInstance();
     nf.setMaximumFractionDigits(3);
 
-    /*for (int i = 0; i < pp.getNumParameters(); i++) {
-      String name = pp.getName(i);
-      nameToIndexMap.put(name, new Integer(i));
-    }
-
-    Integer method = (Integer) nameToIndexMap.get(ParamSpaceGenerator.
-                                                  BIN_METHOD);
-
-    */
-   //int type = (int)pp.getValue(ParamSpaceGenerator.BIN_METHOD);
    int type = getBinMethod();
-
-    /*if (method == null) {
-      throw new Exception(getAlias() + ":  Could not find Bin Method!");
-    }
-    int type = method.intValue();
-*/
+   System.out.println("BinMethod " + type );
 
     // if type == 0, specify the number of bins
     // if type == 1, use uniform weight
     //BinTree bt;
     BinDescriptor[] bins;
     if (type == 0) {
-      /*Integer number = (Integer) nameToIndexMap.get(
-          ParamSpaceGenerator.NUMBER_OF_BINS);
-      if (number == null) {
-        throw new Exception(getAlias() + ": Number of bins not specified!");
-      }
-      */
      //int number = (int)pp.getValue(ParamSpaceGenerator.NUMBER_OF_BINS);
      int number = getNumberOfBins();
      if(number < 0)
@@ -144,11 +121,6 @@ if (outputs == null || outputs.length == 0)
       bins = numberOfBins(number);
     }
     else {
-      /*Integer weight = (Integer) nameToIndexMap.get(
-          ParamSpaceGenerator.ITEMS_PER_BIN);
-      if (weight == null) {
-        throw new Exception(getAlias() + ": Items per bin not specified!");
-      }*/
 //      int weight = (int)pp.getValue(ParamSpaceGenerator.ITEMS_PER_BIN);
       int weight = getBinWeight();
       bins = sameWeight(weight);
