@@ -165,7 +165,7 @@ public class DendogramClusterVis
   public String getInputName(int i) {
     switch (i) {
       case 0:
-        return "ClusterModel";
+        return "Cluster Model";
       default:
         return "NO SUCH INPUT!";
     }
@@ -180,6 +180,15 @@ public class DendogramClusterVis
     String[] out = {
         "ncsa.d2k.modules.core.discovery.cluster.ClusterModel"};
     return out;
+  }
+
+  /**
+     Return an array of the property variables, labels, and descriptions.
+     @return The editable properties of the module - none in this case
+   */
+  public PropertyDescription[] getPropertiesDescriptions() {
+    // hide properties that the user shouldn't udpate
+    return new PropertyDescription[0];
   }
 
 }
