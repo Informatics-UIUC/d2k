@@ -54,12 +54,11 @@ public class AutoBin extends AutoBinOPT {
         "<p>Detailed Description: Given a table of Examples, define the bins for each " +
         "scalar input column.  Nominal input columns will have a bin defined " +
         "for each unique value in the column." +
-        "<p>Data Type Restrictions: This module does not modify the input data." +
         "<p>Data Handling: When binning scalar columns by the number of bins, " +
         "the maximum and minimum values of each column must be found.  When " +
         "binning scalar columns by weight, the data in each individual column " +
         "is first sorted using a merge sort and then another pass is used to " +
-        "find the bounds of the bins." +
+        "find the bounds of the bins. This module does not modify the input data." +
         "<p>Scalability: The module requires enough memory to make copies of " +
         "each of the scalar input columns.";
     return s;
@@ -99,20 +98,19 @@ public class AutoBin extends AutoBinOPT {
     inputs = tbl.getInputFeatures();
     outputs = tbl.getOutputFeatures();
     if ((inputs == null) || (inputs.length == 0))
-	throw new Exception("Input features are missing. Please select the input features.");
+	  throw new Exception(getAlias() + ": Please select the input features, they are missing.");
 
     if (outputs == null || outputs.length == 0)
-	throw new Exception("Output feature is missing. Please select an output feature.");
+	  throw new Exception(getAlias() + ": Please select an output feature, it is missing");
 
     if(tbl.isColumnScalar(outputs[0])) 
-        throw new Exception("Output feature must be nominal."); 
-
+	  throw new Exception(getAlias() + ": Output feature must be nominal. Please transform it.");
 
     nf = NumberFormat.getInstance();
     nf.setMaximumFractionDigits(3);
 
    int type = getBinMethod();
-   System.out.println("BinMethod " + type );
+   
 
     // if type == 0, specify the number of bins
     // if type == 1, use uniform weight
@@ -134,11 +132,9 @@ public class AutoBin extends AutoBinOPT {
     BinTransform bt = new BinTransform(bins, false);
 
     pushOutput(bt, 0);
-    pushOutput(tbl, 1);
-
-    tbl = null;
   }
 }
 
 //QA Comments Anca:
 // added propertyVetoExceptions
+// added checks for input/output feature existence and nominal class variable

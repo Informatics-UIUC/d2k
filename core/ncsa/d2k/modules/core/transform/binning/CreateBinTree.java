@@ -79,21 +79,23 @@ public class CreateBinTree extends DataPrepModule {
       BinTransform bt = (BinTransform)pullInput(0);
       ExampleTable et = (ExampleTable)pullInput(1);
 
-      BinTree tree = createBinTree(bt, et);
       int [] ins = et.getInputFeatures();
       int [] out = et.getOutputFeatures();
 
       if ((ins == null) || (ins.length == 0))
-	  throw new Exception("Input features are missing. Please select the input features.");
+	  throw new Exception(getAlias() + ": Please select the input features, they are missing.");
       
       if (out == null || out.length == 0)
-	  throw new Exception("Output feature is missing. Please select an output feature.");
+	  throw new Exception(getAlias() + ": Please select an output feature, it is missing");
+
 
       // we only support one out variable..
       int classColumn = out[0];
 
       if (et.isColumnScalar(classColumn)) 
-	  throw new Exception("Output feature should be nominal. Please transform it.");
+	  throw new Exception(getAlias() + ": Output feature must be nominal. Please transform it.");
+
+      BinTree tree = createBinTree(bt, et);
 
       int numRows = et.getNumRows();
       long startTime = System.currentTimeMillis();
@@ -174,6 +176,7 @@ public class CreateBinTree extends DataPrepModule {
     
 
     public static BinTree createBinTree(BinTransform bt, ExampleTable et) {
+
 	int[] outputs = et.getOutputFeatures();
 	int[] inputs = et.getInputFeatures();
 	

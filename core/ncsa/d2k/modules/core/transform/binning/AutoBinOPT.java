@@ -1,3 +1,4 @@
+
 package ncsa.d2k.modules.core.transform.binning;
 
 import java.text.*;
@@ -45,8 +46,7 @@ public class AutoBinOPT
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform",
-        "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+        "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform" };
     return out;
   }
 
@@ -56,16 +56,16 @@ public class AutoBinOPT
           "discretize the Example Table";
     }
     else {
-      return "The Example Table, unchanged.";
+      return "";
     }
   }
 
   public String getOutputName(int i) {
     if (i == 0) {
-      return "Bin Transform";
+      return "Binning Transformation";
     }
     else {
-      return "Example Table";
+      return "";
     }
   }
 
@@ -77,7 +77,6 @@ public class AutoBinOPT
         "Parameter Space and a table of Examples, define the bins for each " +
         "scalar input column.  Nominal input columns will have a bin defined " +
         "for each unique value in the column." +
-        "<p>Properties: none" +
         "<p>Data Type Restrictions: This module does not modify the input data." +
         "<p>Data Handling: When binning scalar columns by the number of bins, " +
         "the maximum and minimum values of each column must be found.  When " +
@@ -90,7 +89,7 @@ public class AutoBinOPT
   }
 
   public String getModuleName() {
-    return "Auto Discretization";
+    return "Auto Bin";
   }
 
   protected ExampleTable tbl;
@@ -105,16 +104,19 @@ public class AutoBinOPT
 
     inputs = tbl.getInputFeatures();
     outputs = tbl.getOutputFeatures();
-	if ((inputs == null) || (inputs.length == 0))
-			 throw new Exception("Input features are missing. Please select the input features.");
 
-	if (outputs == null || outputs.length == 0)
-			 throw new Exception("Output feature is missing. Please select an output feature.");
-
-	if(tbl.isColumnScalar(outputs[0])) 
-	    throw new Exception("Output feature must be nominal."); 
-
-			 
+    if ((inputs == null) || (inputs.length == 0))
+	throw new Exception(getAlias() + 
+			    ": Please select the input features, they are missing.");
+    
+    if (outputs == null || outputs.length == 0)
+	throw new Exception(getAlias() + 
+			    ": Please select an output feature, it is missing");
+    
+    if(tbl.isColumnScalar(outputs[0])) 
+	throw new Exception(getAlias() + 
+			    ": Output feature must be nominal. Please transform it.");
+    
     nf = NumberFormat.getInstance();
     nf.setMaximumFractionDigits(3);
 
@@ -164,9 +166,6 @@ public class AutoBinOPT
     BinTransform bt = new BinTransform(bins, false);
 
     pushOutput(bt, 0);
-    pushOutput(tbl, 1);
-
-    tbl = null;
   }
 
  
@@ -216,7 +215,6 @@ public class AutoBinOPT
                                                 binMaxes[binMaxes.length - 1], nf, tbl);
 
         bins.add(bd);
-	System.out.println("BinDescriptors created for numberOfBins");
       }
 
       // if it is nominal, create a bin for each unique value.
