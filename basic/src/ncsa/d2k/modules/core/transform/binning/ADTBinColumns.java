@@ -989,7 +989,7 @@ class ADTBinCounts implements BinCounts {
  *
  *
  * 11-19-03: Vered started qa process
- *           the GUI allows overlapping binning - bug 133.
+ *           the GUI allows overlapping binning - bug 133. [fixed 12-10-03]
  *           other problem with GUI, also reported in this bug - unique values
  *           are not removed from the list once they are associated with a bin.
  *
@@ -1005,6 +1005,6 @@ class ADTBinCounts implements BinCounts {
  *    			the fix did involve the support class ADTree whose uniqueValues
  * 			method does not return missing values ('?' or the one returned by getMissinsString())
  * 			in the list of unique values
-  * 12-08-03 list of unique values is not restored after removing all bins. [bug 159]
+  * 12-08-03 list of unique values is not restored after removing all bins. [bug 159] (fixed)
  */
 

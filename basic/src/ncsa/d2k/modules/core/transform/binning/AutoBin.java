@@ -369,12 +369,16 @@ public class AutoBin extends AutoBinOPT {
 
 /** 12-2-03 Anca  -[ bug 131] fixed
  *              Added support for binning missing values, in AutoBinOPT
- */ 
+ */
 
 /* 12 -5-03 anca - fixed [ bug 132] - changes are in BinDescriptorFactory marked with ANCA
- *              the problem is not with uniform binning but with the way NumberFormat displays a double. 
+ *              the problem is not with uniform binning but with the way NumberFormat displays a double.
 *               the margins of the interval for uniform binning are computed
 * 				using (max-min)/ number of internals and thus what appears
 *               as 3.6 interval margin is in fact 3.5999996. Without NumberFormat nf
 * 				the 3.59999996 will be displayed and there will be no confusion.
  * */
+
+/**
+ * 12-10-03 vered: creates bins smaller than the weight setting. [bug 165]
+ */

@@ -328,7 +328,7 @@ public class Scale extends HeadlessUIModule {
                double min = Double.POSITIVE_INFINITY,
                       max = Double.NEGATIVE_INFINITY, d;
 
-			   
+
                for (int j = 0; j < table.getNumRows(); j++) {
                	  if (!table.isValueMissing(j, index)) {
                      d = table.getDouble(j, index);
@@ -678,13 +678,15 @@ class ScalingTransformation implements Transformation {
  *
  * 11-04-03 Vered started QA process
  *          UI allows insertion of min values that are greater than the max values.
- *          [bug 115]
+ *          [bug 115] fixed.
  *
  * 11-25-03 handles missing values as if they were real values. missing values
  *          should be preserved and left as they are, and not be considered when
  *          calculating upper and lower bounds for each column, and while
- *          scaling. [bug 147]
- * 
+ *          scaling. [bug 147] fixed
+ *
  * 11-25-03 Tom added missing value support (bug 147). Missing values are simply ignored. and
  * 			preserved in the new column.
+ *
+ * 12-08-03 Module is ready fro basic 4.
  */

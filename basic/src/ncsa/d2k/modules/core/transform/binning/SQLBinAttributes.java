@@ -1748,7 +1748,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
   /**
  * 12-03-03 Vered started qa process.
  *          wrong weight binning - [bug 154]
- *          allows overlapping binning [bug 140, 141]
+ *          allows overlapping binning [bug 140, 141] fixed
  *          null pointer exception when trying to remove a nominal bin. [bug 65]
  *          exception when adding anominal bin [bug 155]
  */
