@@ -1708,7 +1708,7 @@ public class ParallelCoordinateVis extends VisModule {
 			JEditorPane jep = new JEditorPane("text/html", getHelpString());
 			jep.setBackground(yellowish);
 			getContentPane().add(new JScrollPane(jep));
-			setSize(400, 200);
+			setSize(400, 400);
 		}
 	}
 
