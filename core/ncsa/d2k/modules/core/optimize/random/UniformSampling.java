@@ -252,8 +252,7 @@ public class UniformSampling
           ControlSpaceDimensionNames[i] = BiasSpace.getName(i);
         }
 
-        String[] ObjectiveSpaceDimensionNames = new String[example.
-            getNumOutputs()];
+        String[] ObjectiveSpaceDimensionNames = new String[example.getNumOutputs()];
         for (int i = 0; i < example.getNumOutputs(); i++) {
           ObjectiveSpaceDimensionNames[i] = example.getOutputName(i);
         }
@@ -384,29 +383,25 @@ public class UniformSampling
 
       switch (BiasSpace.getType(d)) {
         case ColumnTypes.DOUBLE:
-          point[d] = BiasSpace.getMinValue(d) +
-              range * randomNumberGenerator.nextDouble();
+          point[d] = BiasSpace.getMinValue(d) + range * randomNumberGenerator.nextDouble();
           break;
         case ColumnTypes.FLOAT:
-          point[d] = BiasSpace.getMinValue(d) +
-              range * randomNumberGenerator.nextFloat();
+          point[d] = BiasSpace.getMinValue(d) + range * randomNumberGenerator.nextFloat();
           break;
         case ColumnTypes.INTEGER:
-          if ((int) range == 0) {
+          if ( (int) range == 0) {
             point[d] = BiasSpace.getMinValue(d);
           }
           else {
-            point[d] = BiasSpace.getMinValue(d) +
-                randomNumberGenerator.nextInt( (int) (range + 1));
+            point[d] = BiasSpace.getMinValue(d) + randomNumberGenerator.nextInt( (int) (range + 1));
           }
           break;
         case ColumnTypes.BOOLEAN:
-          if ((int) range == 0) {
+          if ( (int) range == 0) {
             point[d] = BiasSpace.getMinValue(d);
           }
           else {
-            point[d] = BiasSpace.getMinValue(d) +
-                randomNumberGenerator.nextInt( (int) (range + 1));
+            point[d] = BiasSpace.getMinValue(d) + randomNumberGenerator.nextInt( (int) (range + 1));
           }
           break;
 
