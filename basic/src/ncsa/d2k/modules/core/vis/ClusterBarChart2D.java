@@ -50,9 +50,9 @@ public class ClusterBarChart2D extends VisModule {
     sb.append("This module creates a cluster bar chart visualization from ");
     sb.append("<i>Table</i> data. One column (by default, column 0) ");
     sb.append("must contain the labels of the bars on the chart, ");
-    sb.append("another column (by default, column 1) must contain their ");
-    sb.append("respective heights, and one last column must contain their ");
-    sb.append("time values.");
+    sb.append("another column (by default, column 2) must contain their ");
+    sb.append("respective heights, and one column must contain their ");
+    sb.append("time values (by default, column 1).");
     sb.append("</p><p>Data Type Restrictions: ");
     sb.append("This module sorts the data first by label and second by time ");
     sb.append("value. The cluster is defined as the set of unique time values ");
@@ -89,11 +89,11 @@ public class ClusterBarChart2D extends VisModule {
   public int getLabelsColumn() { return _labelsColumn; }
   public void setLabelsColumn(int value) { _labelsColumn = value; }
 
-  private int _heightsColumn = 1;
+  private int _heightsColumn = 2;
   public int getHeightsColumn() { return _heightsColumn; }
   public void setHeightsColumn(int value) { _heightsColumn = value; }
 
-  private int _timeColumn = 2;
+  private int _timeColumn = 1;
   public int getTimeColumn() { return _timeColumn; }
   public void setTimeColumn(int value) { _timeColumn = value; }
 
@@ -114,7 +114,7 @@ public class ClusterBarChart2D extends VisModule {
     pds[1] = new PropertyDescription("heightsColumn", "Heights column",
                                      "Specifies which column of the table contains the data heights.");
 
-    pds[2] = new PropertyDescription("timeColumn", "Time column",
+    pds[2] = new PropertyDescription("timeColumn", "Cluster column",
                                      "Specifies which column of the table contains the data time values.");
 
     pds[3] = new PropertyDescription("XIncrement", "Minimum X Increment",
