@@ -31,7 +31,7 @@ public class AttributeConstruction extends UIModule {
 /******************************************************************************/
 
    public String getModuleName() {
-      return "Construct New Attributes";
+      return "Attribute Construction";
    }
 
    public String getModuleInfo() {
@@ -158,6 +158,7 @@ public class AttributeConstruction extends UIModule {
 
       public void initView(ViewModule m) {
          mod = m;
+         mod.setWindowName( getAlias() );
       }
 
       public void setInput(Object obj, int ind) {
@@ -179,16 +180,12 @@ public class AttributeConstruction extends UIModule {
 
 
          this.removeAll();
-         //setPreferredSize(new Dimension(800, 300));
          expression = new ColumnExpression(table);
 
          gui = new ExpressionGUI(expression, true);
          gui.addExpressionListener(this);
 
-         // gui.getTextArea().setText(_lastExpression);
-         // newExpressions = _newExp;
          newLabels = _newLab;
-         // newExpressionStrings = _newExpStr;
          newTypes = _newTyp;
          constructions = _lastCons;
 
@@ -506,16 +503,12 @@ public class AttributeConstruction extends UIModule {
 
                }
 
-               // _lastExpression = gui.getTextArea().getText();
-               // _newExp = newExpressions;
                _newLab = newLabels;
-               // _newExpStr = newExpressionStrings;
                _newTyp = newTypes;
                _lastCons = newColumnModel.toArray();
 
             }
          }
-         //thatPane.setMinimumSize(new Dimension(200, 200));
 
 
       }
@@ -528,49 +521,7 @@ public class AttributeConstruction extends UIModule {
                "AttributeConstruction", JOptionPane.ERROR_MESSAGE);
 
          else {
-
-            /*
-            switch (expression.evaluateType()) {
-
-               case ColumnExpression.TYPE_BOOLEAN:
-                  boolean[] b = (boolean[])evaluation;
-                  table.addColumn(b);
-                  break;
-               case ColumnExpression.TYPE_BYTE:
-                  byte[] bb = (byte[])evaluation;
-                  table.addColumn(bb);
-                  break;
-               case ColumnExpression.TYPE_DOUBLE:
-                  double[] d = (double[])evaluation;
-                  table.addColumn(d);
-                  break;
-               case ColumnExpression.TYPE_FLOAT:
-                  float[] f = (float[])evaluation;
-                  table.addColumn(f);
-                  break;
-               case ColumnExpression.TYPE_INTEGER:
-                  int[] I = (int[])evaluation;
-                  table.addColumn(I);
-                  break;
-               case ColumnExpression.TYPE_LONG:
-                  long[] l = (long[])evaluation;
-                  table.addColumn(l);
-                  break;
-               case ColumnExpression.TYPE_SHORT:
-                  short[] s = (short[])evaluation;
-                  table.addColumn(s);
-                  break;
-               default:
-                  JOptionPane.showMessageDialog(this,
-                     "Error in ColumnConstruction. Check your expression.",
-                     "ColumnConstruction", JOptionPane.ERROR_MESSAGE);
-                  return;
-
-            }
-            */
-
-
-               columnBox.addItem(newNameField.getText());
+            columnBox.addItem(newNameField.getText());
 
             StringBuffer newLabelBuffer = new StringBuffer(newNameField.getText());
             for (int i = 0; i < newLabelBuffer.length(); i++)
@@ -597,29 +548,7 @@ public class AttributeConstruction extends UIModule {
             String newStr = gui.getTextArea().getText();
             int newTyp = newExp.evaluateType();
 
-            /*
-            System.out.println("-----");
-            System.out.println(newExp);
-            System.out.println(newLab);
-            System.out.println(newTyp);
-            System.out.println("-----");
-            */
-
             // add to arrays of new expressions, labels, types
-
-            /*
-            if (newExpressions == null) {
-               newExpressions = new ColumnExpression[1];
-               newExpressions[0] = newExp;
-            }
-            else {
-               ColumnExpression[] newNewExp = new ColumnExpression[newExpressions.length + 1];
-               for (int i = 0; i < newExpressions.length; i++)
-                  newNewExp[i] = newExpressions[i];
-               newNewExp[newExpressions.length] = newExp;
-               newExpressions = newNewExp;
-            }
-            */
 
             if (newLabels == null) {
                newLabels = new String[1];
@@ -633,20 +562,6 @@ public class AttributeConstruction extends UIModule {
                newLabels = newNewLab;
             }
 
-            /*
-            if (newExpressionStrings == null) {
-               newExpressionStrings = new String[1];
-               newExpressionStrings[0] = newStr;
-            }
-            else {
-               String[] newNewStr = new String[newExpressionStrings.length + 1];
-               for (int i = 0; i < newExpressionStrings.length; i++)
-                  newNewStr[i] = newExpressionStrings[i];
-               newNewStr[newExpressionStrings.length] = newStr;
-               newExpressionStrings = newNewStr;
-            }
-            */
-
             if (newTypes == null) {
                newTypes = new int[1];
                newTypes[0] = newTyp;
@@ -658,10 +573,6 @@ public class AttributeConstruction extends UIModule {
                newNewTyp[newTypes.length] = newTyp;
                newTypes = newNewTyp;
             }
-
-            // table.setColumnLabel(newLabelBuffer.toString(), table.getNumColumns() - 1);
-            // expression = new ColumnExpression(table);
-            // gui.setExpression(expression);
 
             newExp = new ColumnExpression(table);
             try {
@@ -681,10 +592,7 @@ public class AttributeConstruction extends UIModule {
             newColumnModel.addElement(added);
             newColumnList.setMinimumSize(new Dimension(200, 200));
 
-           // _lastExpression = gui.getTextArea().getText();
-            // _newExp = newExpressions;
             _newLab = newLabels;
-            // _newExpStr = newExpressionStrings;
             _newTyp = newTypes;
             _lastCons = newColumnModel.toArray();
 
@@ -748,111 +656,13 @@ public class AttributeConstruction extends UIModule {
 
    }
 
-/******************************************************************************/
-/* the type used to store attribute constructions                             */
-/* (replaced by AttributeTransform.Construction)                              */
-/******************************************************************************/
-
-   /*
-   private class Construction {
-
-      String label, expression;
-
-      Construction(String label, String expression) {
-         this.label = label;
-         this.expression = expression;
-      }
-
-      public String toString() {
-         return label + ": " + expression;
-      }
-
-   }
-   */
-
-/******************************************************************************/
-/* the output Transformation                                                  */
-/* (replaced by AttributeTransform)                                           */
-/******************************************************************************/
-
-   /*
-   private class ColumnTransformation implements Transformation {
-
-      private Object[] constructions;
-
-      ColumnTransformation(Object[] constructions) {
-         this.constructions = constructions;
-      }
-
-      public boolean transform(MutableTable table) {
-
-         if (constructions == null || constructions.length == 0)
-            return true;
-
-         for (int i = 0; i < constructions.length; i++) {
-
-            ColumnExpression exp = new ColumnExpression(table);
-            Construction current = (Construction)constructions[i];
-
-            Object evaluation = null;
-            try {
-               exp.setExpression(current.expression);
-               evaluation = exp.evaluate();
-            }
-            catch(Exception e) {
-               e.printStackTrace();
-               return false;
-            }
-
-            switch (exp.evaluateType()) {
-
-               case ColumnExpression.TYPE_BOOLEAN:
-                  boolean[] b = (boolean[])evaluation;
-                  table.addColumn(b);
-                  break;
-               case ColumnExpression.TYPE_BYTE:
-                  byte[] bb = (byte[])evaluation;
-                  table.addColumn(bb);
-                  break;
-               case ColumnExpression.TYPE_DOUBLE:
-                  double[] d = (double[])evaluation;
-                  table.addColumn(d);
-                  break;
-               case ColumnExpression.TYPE_FLOAT:
-                  float[] f = (float[])evaluation;
-                  table.addColumn(f);
-                  break;
-               case ColumnExpression.TYPE_INTEGER:
-                  int[] I = (int[])evaluation;
-                  table.addColumn(I);
-                  break;
-               case ColumnExpression.TYPE_LONG:
-                  long[] l = (long[])evaluation;
-                  table.addColumn(l);
-                  break;
-               case ColumnExpression.TYPE_SHORT:
-                  short[] s = (short[])evaluation;
-                  table.addColumn(s);
-                  break;
-               default:
-                  return false;
-
-            }
-
-            table.setColumnLabel(current.label, table.getNumColumns() - 1);
-
-         }
-
-         return true;
-
-      }
-
-   }
-   */
-
 }
-/**
- * QA comments:
- * 3-4-03 vered started qa:
- * 3-6-03 sent back to greg to support default labels.
- */
+//
+// QA comments:
+// 3-4-03 vered started qa:
+// 3-6-03 sent back to greg to support default labels.
+// 7-17-03 Ruth changed module name to be Attribute Construction.
+//         Deleted commented out code - it's in CVS if needed. 
+//         Explicitly call setWindowName so it matches module alias.
+//
+
