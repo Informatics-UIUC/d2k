@@ -20,8 +20,8 @@ public class ReplaceNominalsWithInts extends ComputeModule {
 
       MutableTable mt = (MutableTable)pullInput(0);
 
-      ReplaceNominalValuesWithIntegersTransform transform =
-            new ReplaceNominalValuesWithIntegersTransform(mt);
+      ReplaceNominalsWithIntsTransform transform =
+            new ReplaceNominalsWithIntsTransform(mt);
 
       if (_printMapping)
          System.out.println(transform.toMappingString(mt));
