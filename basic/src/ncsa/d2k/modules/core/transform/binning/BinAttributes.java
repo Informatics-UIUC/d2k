@@ -1426,9 +1426,17 @@ public class BinAttributes extends HeadlessUIModule {
 		int missing =0;
 		 if (tbl.getColumn(colIdx[i]).hasMissingValues())
 		 missing = tbl.getColumn(colIdx[i]).getNumMissingValues();
+
+
 		double[] data =  new double[tbl.getNumRows()-missing];
-		int k=0;
-		for (int j = 0; j < data.length; j++) {
+
+
+                //vered: (01-20-04) commented out next code line and made k
+                //the exclusive index of data and j of tbl so the loop won't
+                //end before all non-missing values from tbl are copied into data.
+		//int k=0;
+                //k index into data, j index into tbl.
+		for (int k=0,j = 0; k < data.length && j<tbl.getNumRows(); j++) {
 
 		 if (missing > 0) {
 		 		 	if(!tbl.isValueMissing(j,colIdx[i])) {
@@ -1437,12 +1445,15 @@ public class BinAttributes extends HeadlessUIModule {
 		 	}
 		 }
 		 else {
-		 		  data[j] = tbl.getDouble(j, colIdx[i]);
+		 		  data[k++] = tbl.getDouble(j, colIdx[i]);
 		 			//System.out.println("data for j = " + j + " is " + data[j]);
 		 }
 		}
 		// sort it
 		Arrays.sort(data);
+
+
+
 		ArrayList list = new ArrayList();
 		// now find the bin maxes...
 		// loop through the sorted data.  the next max will lie at
@@ -1451,13 +1462,25 @@ public class BinAttributes extends HeadlessUIModule {
          //vered - changed curIdx from 0 to -1. this way, first bin won't be too large.
 		int curIdx = -1;
 		while (curIdx < data.length - 1) {
+
+
+
 		  curIdx += weight;
+
+
+
 		  if (curIdx > data.length - 1)
 			curIdx = data.length - 1;
 		  // now loop until the next unique item is found
 		  boolean done = false;
 		  if (curIdx == data.length - 1)
 			done = true;
+
+                    //vered - debug
+                   System.out.println("curIdx = " + curIdx + " and points to element " +
+                                      data[curIdx]);
+                   //end debug
+
 		  while (!done) {
 			if (data[curIdx] != data[curIdx + 1])
 			  done = true;
@@ -1469,6 +1492,13 @@ public class BinAttributes extends HeadlessUIModule {
 		  // now we have the current index
 		  // add the value at this index to the list
 		  Double dbl = new Double(data[curIdx]);
+
+                  //vered - debug
+                 System.out.println("adding bin when - curIdx = " + curIdx + " and points to element " +
+                                    data[curIdx]);
+                 //end debug
+
+
 		  list.add(dbl);
 		}
 		//System.out.println("BEFORE");
@@ -1839,6 +1869,12 @@ class TableBinCounts implements BinCounts {
    * changed the way bin maxes are computed in the addFromInterval method. now it is Math methods independant.
    * all code lines that were changed or added are preceeded by a comment line "//vered"
    * and description of change.
+ *
+ * 01-20-04: vered
+ * changed indexing in method addFromWeight, so that data and tbl each has
+ * its exclusive index. beforehand - j and k were serving as interchangeably
+ * as index into data, which made the last items in data to be left as zeros
+ * if the column has missing values.
 
  *
 */
