@@ -324,6 +324,7 @@ public final class NaiveBayesVis
       int longest = 0;
       longest_bin_name = "";
       longest_attribute_name = "";
+      
       // get the row data
       for (int j = 0; j < attribute_names.length; j++) {
         row_data[j] = model.getData(attribute_names[j]);
@@ -989,8 +990,15 @@ public final class NaiveBayesVis
       }
 
       public void setBounds(int x, int y, int w, int h) {
-        gridwidth = w / numCols;
-        gridheight = w / numRows;
+        if (numCols != 0)
+          gridwidth = w / numCols;
+        else
+          gridwidth = 0;
+          
+        if (numRows != 0)
+          gridheight = w / numRows;
+        else
+          gridheight = 0;
 
         // make gridwidth equal to gridheight
         if (gridwidth < gridheight) {
