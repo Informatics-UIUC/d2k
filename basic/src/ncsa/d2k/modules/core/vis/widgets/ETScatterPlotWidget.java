@@ -250,8 +250,8 @@ public class ETScatterPlotWidget extends JUserPane implements
     JPanel buttonPanel = new JPanel();
     showComposite = new JButton("Show Composite");
     showComposite.addActionListener(this);
-    buttonPanel.add(showComposite);
-    clearSelected = new JButton("Clear Selected Graphs");
+    buttonPanel.add(showComposite, BorderLayout.NORTH);
+    clearSelected = new JButton("Clear Selection");
     clearSelected.addActionListener(this);
     buttonPanel.add(clearSelected);
     this.add(buttonPanel, BorderLayout.SOUTH);
