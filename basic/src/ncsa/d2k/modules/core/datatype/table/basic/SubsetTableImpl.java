@@ -446,7 +446,7 @@ public class SubsetTableImpl extends MutableTableImpl {
                 break;
 
               case ColumnTypes.DOUBLE:
-                compressedColumn.setFloat(this.getFloat(i, colindex), i);
+                compressedColumn.setDouble(this.getDouble(i, colindex), i);
                 break;
 
               case ColumnTypes.FLOAT:
