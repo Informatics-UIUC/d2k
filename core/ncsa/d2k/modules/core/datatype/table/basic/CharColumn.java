@@ -3,7 +3,8 @@ package ncsa.d2k.modules.core.datatype.table.basic;
 import ncsa.d2k.modules.core.datatype.table.*;
 import java.io.*;
 import java.util.*;
-import ncsa.d2k.util.*;
+//import ncsa.d2k.util.*;
+import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
 
 /**
  * <code>CharColumn</code> is an implementation of <code>TextualColumn</code>
@@ -12,7 +13,7 @@ import ncsa.d2k.util.*;
  */
 final public class CharColumn extends AbstractColumn implements TextualColumn {
 
-	static final long serialVersionUID = 4400422800710542291L;	
+	static final long serialVersionUID = 4400422800710542291L;
 
     /** the internal representation of this Column */
     private char[] internal = null;

@@ -4,7 +4,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
-import ncsa.d2k.modules.*;
+//import ncsa.d2k.modules.*;
 
 /**
  * A default implementation of ExampleTable.

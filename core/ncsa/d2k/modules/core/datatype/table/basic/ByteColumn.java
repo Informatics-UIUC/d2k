@@ -4,7 +4,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
-import ncsa.d2k.util.*;
+//import ncsa.d2k.util.*;
+import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
 
 /**
  * <code>ByteColumn</code> is an implementation of <code>TextualColumn</code>

@@ -4,7 +4,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
-import ncsa.util.*;
+//import ncsa.util.*;
+import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
 
 /**
  * A TextualColumn that keeps its data as a continuous array of chars.  This

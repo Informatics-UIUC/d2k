@@ -4,7 +4,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
-import ncsa.util.*;
+//import ncsa.util.*;
+import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
 
 /**
  * <code>BooleanColumn</code> is an implementation of <code>Column</code> which

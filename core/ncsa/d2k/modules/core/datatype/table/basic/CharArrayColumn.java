@@ -4,7 +4,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
-import ncsa.util.*;
+//import ncsa.util.*;
+import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
 
 /**
  CharArrayColumn is an implementation of TextualColumn which stores
