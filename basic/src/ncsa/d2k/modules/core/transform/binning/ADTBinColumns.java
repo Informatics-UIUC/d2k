@@ -16,7 +16,10 @@ import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 
 /**
- * put your documentation comment here
+ * @todo: this module does not support binning of numeric column.
+ * therefore the documentation about how to bin numeric columns
+ * should be removed.
+ * and so should be removed the scalar tab from the gui.
  */
 public class ADTBinColumns extends HeadlessUIModule {
    private static final String EMPTY = "",

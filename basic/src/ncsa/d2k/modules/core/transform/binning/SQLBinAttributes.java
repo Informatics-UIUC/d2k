@@ -179,9 +179,13 @@ public class SQLBinAttributes extends UIModule {
 
 
     //QA Anca added this:
+    //headless conversion - vered:
     public PropertyDescription[] getPropertiesDescriptions() {
-        // so that "WindowName" property is invisible
-        return new PropertyDescription[0];
+        PropertyDescription[] pds = new PropertyDescription[2];
+        pds[0] = super.getPropertiesDescriptions()[0];
+        pds[1] = new PropertyDescription("newColumn", "Create In New Column",
+            "Set this property to true if you wish the binned columns to be created in new columns");
+        return pds;
     }
 
 
@@ -1596,6 +1600,37 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             return  sb.toString();
         }
     }           // BinColumnsView
+
+
+    //headless conversion support
+
+    private boolean newColumn;
+  public void setNewColumn(boolean val){newColumn = val;}
+  public boolean getNewColumn(){return newColumn;}
+
+    protected void doit(){
+      //pulling input so that this module will be executed only once.
+      wrapper = (ConnectionWrapper) pullInput(0);
+      String tableName = (String)pullInput(1);
+      String[] fieldNames = (String[]) pullInput(2);
+      String condition = (String) pullInput(3);
+
+      if(savedBins == null) {
+        savedBins = new BinDescriptor[0];
+        System.out.println("\n\nSQLBinAttributes:\nNo columns were chosed to be binned.\n" +
+                           "The transformation will be empty.\n");
+      }
+
+      //assuming that previous modules have verified that tableName
+      //is in the database and that the dieldNames are in this table.
+      //verification of relevancy of the bins will be done by applyTransformation.
+
+      pushOutput(new BinTransform(savedBins, newColumn), 0);
+
+
+
+    }//doit
+    //headless conversion support
 }
 
 //QA Comments
