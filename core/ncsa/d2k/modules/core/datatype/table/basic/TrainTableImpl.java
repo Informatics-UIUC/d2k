@@ -81,6 +81,118 @@ public final class TrainTableImpl
     return original;
   }
 
+  public Table getSubset(int pos, int len) {
+    ExampleTable et = (ExampleTable)original.getSubset(pos, len);
+//    ExampleTable et  = t.toExampleTable();
+
+/*    int[] newin = new int[inputColumns.length];
+    System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+    int[] newout = new int[outputColumns.length];
+    System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+
+    et.setInputFeatures(newin);
+    et.setOutputFeatures(newout);
+
+    // now figure out the test and train sets
+    int[] traincpy = new int[trainSet.length];
+    System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+    int[] testcpy = new int[testSet.length];
+    System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+    int[] newtrain = subsetTrainOrTest(traincpy, pos, len);
+    System.out.println("NEW TRAIN: "+newtrain.length+" OLD: "+traincpy.length);
+    int[] newtest = subsetTrainOrTest(testcpy, pos, len);
+
+    et.setTrainingSet(newtrain);
+    et.setTestingSet(newtest);
+    */
+
+    return et.getTrainTable();
+  }
+
+  public Table getSubset(int[] rows) {
+    ExampleTable et = (ExampleTable)original.getSubset(rows);
+//    ExampleTable et = t.toExampleTable();
+
+/*    int[] newin = new int[inputColumns.length];
+    System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+    int[] newout = new int[outputColumns.length];
+    System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+
+    et.setInputFeatures(newin);
+    et.setOutputFeatures(newout);
+
+    // now figure out the test and train sets
+    int[] traincpy = new int[trainSet.length];
+    System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+    int[] testcpy = new int[testSet.length];
+    System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+    int[] newtrain = subsetTrainOrTest(traincpy, rows);
+    int[] newtest = subsetTrainOrTest(testcpy, rows);
+
+    et.setTrainingSet(newtrain);
+    et.setTestingSet(newtest);
+    */
+
+    return et.getTrainTable();
+  }
+
+  public Table getSubsetByReference(int pos, int len) {
+    ExampleTable et = (ExampleTable)original.getSubsetByReference(pos, len);
+    //ExampleTable et  = t.toExampleTable();
+
+/*    int[] newin = new int[inputColumns.length];
+    System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+    int[] newout = new int[outputColumns.length];
+    System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+
+    et.setInputFeatures(newin);
+    et.setOutputFeatures(newout);
+
+    // now figure out the test and train sets
+    int[] traincpy = new int[trainSet.length];
+    System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+    int[] testcpy = new int[testSet.length];
+    System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+    int[] newtrain = subsetTrainOrTest(traincpy, pos, len);
+    int[] newtest = subsetTrainOrTest(testcpy, pos, len);
+
+    et.setTrainingSet(newtrain);
+    et.setTestingSet(newtest);
+    */
+
+    return et.getTrainTable();
+  }
+
+  public Table getSubsetByReference(int[] rows) {
+    ExampleTable et = (ExampleTable)original.getSubsetByReference(rows);
+/*    ExampleTable et = t.toExampleTable();
+    int[] newin = new int[inputColumns.length];
+    System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+    int[] newout = new int[outputColumns.length];
+    System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+
+    et.setInputFeatures(newin);
+    et.setOutputFeatures(newout);
+
+    // now figure out the test and train sets
+    int[] traincpy = new int[trainSet.length];
+    System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+    int[] testcpy = new int[testSet.length];
+    System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+    int[] newtrain = subsetTrainOrTest(traincpy, rows);
+    int[] newtest = subsetTrainOrTest(testcpy, rows);
+
+    et.setTrainingSet(newtrain);
+    et.setTestingSet(newtest);
+    */
+    return et.getTrainTable();
+  }
+
+
   /**
    * Get an int value from the table.
    * @param row the row of the table

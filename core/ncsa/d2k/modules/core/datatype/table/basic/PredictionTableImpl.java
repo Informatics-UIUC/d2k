@@ -125,6 +125,137 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
         }
     }
 
+    public Table getSubset(int pos, int len) {
+      Table t = super.getSubset(pos, len);
+      ExampleTable et  = t.toExampleTable();
+
+      int[] newin = new int[inputColumns.length];
+      System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+      int[] newout = new int[outputColumns.length];
+      System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+
+      int[] newpred = new int[predictionSet.length];
+      System.arraycopy(predictionSet, 0, newpred, 0, predictionSet.length);
+
+      // now figure out the test and train sets
+      int[] traincpy = new int[trainSet.length];
+      System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+      int[] testcpy = new int[testSet.length];
+      System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+      int[] newtrain = subsetTrainOrTest(traincpy, pos, len);
+      int[] newtest = subsetTrainOrTest(testcpy, pos, len);
+
+      PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
+      pt.setPredictionSet(newpred);
+      pt.columns = ((ExampleTableImpl)et).columns;
+      pt.setInputFeatures(newin);
+      pt.setOutputFeatures(newout);
+      pt.setTrainingSet(newtrain);
+      pt.setTestingSet(newtest);
+      return pt;
+    }
+
+    public Table getSubset(int[] rows) {
+      Table t = super.getSubset(rows);
+      ExampleTable et = t.toExampleTable();
+
+      int[] newin = new int[inputColumns.length];
+      System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+      int[] newout = new int[outputColumns.length];
+      System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+      int[] newpred = new int[predictionSet.length];
+      System.arraycopy(predictionSet, 0, newpred, 0, predictionSet.length);
+
+      // now figure out the test and train sets
+      int[] traincpy = new int[trainSet.length];
+      System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+      int[] testcpy = new int[testSet.length];
+      System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+      int[] newtrain = subsetTrainOrTest(traincpy, rows);
+      int[] newtest = subsetTrainOrTest(testcpy, rows);
+
+      //return et.getTrainTable();
+      //PredictionTable pt = et.toPredictionTable();
+      PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
+      pt.setPredictionSet(newpred);
+      pt.columns = ((ExampleTableImpl)et).columns;
+      pt.setInputFeatures(newin);
+      pt.setOutputFeatures(newout);
+      pt.setTrainingSet(newtrain);
+      pt.setTestingSet(newtest);
+      return pt;
+    }
+
+    public Table getSubsetByReference(int pos, int len) {
+      Table t = super.getSubsetByReference(pos, len);
+      ExampleTable et  = t.toExampleTable();
+
+      int[] newin = new int[inputColumns.length];
+      System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+      int[] newout = new int[outputColumns.length];
+      System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+      int[] newpred = new int[predictionSet.length];
+      System.arraycopy(predictionSet, 0, newpred, 0, predictionSet.length);
+
+
+      // now figure out the test and train sets
+      int[] traincpy = new int[trainSet.length];
+      System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+      int[] testcpy = new int[testSet.length];
+      System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+      int[] newtrain = subsetTrainOrTest(traincpy, pos, len);
+      int[] newtest = subsetTrainOrTest(testcpy, pos, len);
+
+
+      //return et.getTrainTable();
+      //PredictionTable pt = et.toPredictionTable();
+      PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
+      pt.setPredictionSet(newpred);
+      pt.columns = ((ExampleTableImpl)et).columns;
+      pt.setInputFeatures(newin);
+      pt.setOutputFeatures(newout);
+      pt.setTrainingSet(newtrain);
+      pt.setTestingSet(newtest);
+      return pt;
+    }
+
+    public Table getSubsetByReference(int[] rows) {
+      Table t = super.getSubsetByReference(rows);
+      ExampleTable et = t.toExampleTable();
+
+      int[] newin = new int[inputColumns.length];
+      System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+      int[] newout = new int[outputColumns.length];
+      System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+      int[] newpred = new int[predictionSet.length];
+      System.arraycopy(predictionSet, 0, newpred, 0, predictionSet.length);
+
+
+      // now figure out the test and train sets
+      int[] traincpy = new int[trainSet.length];
+      System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+      int[] testcpy = new int[testSet.length];
+      System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+      int[] newtrain = subsetTrainOrTest(traincpy, rows);
+      int[] newtest = subsetTrainOrTest(testcpy, rows);
+
+      //return et.getTrainTable();
+      //PredictionTable pt = et.toPredictionTable();
+      PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
+      pt.setPredictionSet(newpred);
+      pt.columns = ((ExampleTableImpl)et).columns;
+      pt.setInputFeatures(newin);
+      pt.setOutputFeatures(newout);
+      pt.setTrainingSet(newtrain);
+      pt.setTestingSet(newtest);
+      return pt;
+    }
+
+
     /**
      Set the prediction set
 	 @return the prediciton set
