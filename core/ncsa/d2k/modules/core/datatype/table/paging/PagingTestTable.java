@@ -141,6 +141,13 @@ class PagingTestTable
 	  return super.getObject(testSet[row], indirection[column]);
 	}
   }
+  public void setObject(Object v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setObject(v, row, indirection[column]);
+	} else {
+	  super.setObject(v, testSet[row], indirection[column]);
+	}
+  }
 
   public int getInt(int row, int column) {
 	if (prediction[column]) {
@@ -150,6 +157,13 @@ class PagingTestTable
 
 	  // return original.getInt(testSet[row], indirection[column]);
 	  return super.getInt(testSet[row], indirection[column]);
+	}
+  }
+  public void setInt(int v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setInt(v, row, indirection[column]);
+	} else {
+	  super.setInt(v, testSet[row], indirection[column]);
 	}
   }
 
@@ -163,6 +177,13 @@ class PagingTestTable
 	  return super.getShort(testSet[row], indirection[column]);
 	}
   }
+  public void setShort(short v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setShort(v, row, indirection[column]);
+	} else {
+	  super.setShort(v, testSet[row], indirection[column]);
+	}
+  }
 
   public float getFloat(int row, int column) {
 	if (prediction[column]) {
@@ -172,6 +193,13 @@ class PagingTestTable
 
 	  // return original.getFloat(testSet[row], indirection[column]);
 	  return super.getFloat(testSet[row], indirection[column]);
+	}
+  }
+  public void setFloat(float v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setFloat(v, row, indirection[column]);
+	} else {
+	  super.setFloat(v, testSet[row], indirection[column]);
 	}
   }
 
@@ -185,6 +213,13 @@ class PagingTestTable
 	  return super.getDouble(testSet[row], indirection[column]);
 	}
   }
+  public void setDouble(double v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setDouble(v, row, indirection[column]);
+	} else {
+	  super.setDouble(v, testSet[row], indirection[column]);
+	}
+  }
 
   public long getLong(int row, int column) {
 	if (prediction[column]) {
@@ -194,6 +229,13 @@ class PagingTestTable
 
 	  // return original.getLong(testSet[row], indirection[column]);
 	  return super.getLong(testSet[row], indirection[column]);
+	}
+  }
+  public void setLong(long v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setLong(v, row, indirection[column]);
+	} else {
+	  super.setLong(v, testSet[row], indirection[column]);
 	}
   }
 
@@ -207,6 +249,13 @@ class PagingTestTable
 	  return super.getString(testSet[row], indirection[column]);
 	}
   }
+  public void setString(String v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setString(v, row, indirection[column]);
+	} else {
+	  super.setString(v, testSet[row], indirection[column]);
+	}
+  }
 
   public byte[] getBytes(int row, int column) {
 	if (prediction[column]) {
@@ -216,6 +265,13 @@ class PagingTestTable
 
 	  // return original.getBytes(testSet[row], indirection[column]);
 	  return super.getBytes(testSet[row], indirection[column]);
+	}
+  }
+  public void setBytes(byte[] v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setBytes(v, row, indirection[column]);
+	} else {
+	  super.setBytes(v, testSet[row], indirection[column]);
 	}
   }
 
@@ -229,6 +285,13 @@ class PagingTestTable
 	  return super.getBoolean(testSet[row], indirection[column]);
 	}
   }
+  public void setBoolean(boolean v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setBoolean(v, row, indirection[column]);
+	} else {
+	  super.setBoolean(v, testSet[row], indirection[column]);
+	}
+  }
 
   public char[] getChars(int row, int column) {
 	if (prediction[column]) {
@@ -238,6 +301,13 @@ class PagingTestTable
 
 	  // return original.getChars(testSet[row], indirection[column]);
 	  return super.getChars(testSet[row], indirection[column]);
+	}
+  }
+  public void setChars(char [] v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setChars(v, row, indirection[column]);
+	} else {
+	  super.setChars(v, testSet[row], indirection[column]);
 	}
   }
 
@@ -251,6 +321,13 @@ class PagingTestTable
 	  return super.getByte(testSet[row], indirection[column]);
 	}
   }
+  public void setByte(byte v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setByte(v, row, indirection[column]);
+	} else {
+	  super.setByte(v, testSet[row], indirection[column]);
+	}
+  }
 
   public char getChar(int row, int column) {
 	if (prediction[column]) {
@@ -260,6 +337,13 @@ class PagingTestTable
 
 	  // return original.getChar(testSet[row], indirection[column]);
 	  return super.getChar(testSet[row], indirection[column]);
+	}
+  }
+  public void setChar(char v, int row, int column) {
+	if (prediction[column]) {
+	  predictionColumnsTable.setChar(v, row, indirection[column]);
+	} else {
+	  super.setChar(v, testSet[row], indirection[column]);
 	}
   }
 
@@ -285,6 +369,15 @@ class PagingTestTable
 	  original.getColumn(buffer, indirection[position]);
 	}
   }
+
+  public boolean isValueMissing(int row, int column) {
+	  if (prediction[column]) {
+		return predictionColumnsTable.isValueMissing(row, indirection[column]);
+	  } else {
+		  return super.isValueMissing(testSet[row], indirection[column]);
+	  }
+  }
+
 
   public Table getSubset(int start, int len) {
 	PagingTestTable ptt =
