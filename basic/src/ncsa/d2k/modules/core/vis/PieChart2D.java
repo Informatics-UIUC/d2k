@@ -48,6 +48,10 @@ public class PieChart2D extends VisModule {
       sb.append("must contain the labels of components of the chart, and ");
       sb.append("another column (by default, column 1) must contain their ");
       sb.append("corresponding ratios.");
+      sb.append("</p><p>Missing Values Handling: ");
+     sb.append("Missing values are treated as regular ones. ");
+
+
       sb.append("</p><p>Data Type Restrictions: ");
       sb.append("Negative ratio values (which make no sense for a pie chart) ");
       sb.append("will lead to inconsistent results.");
@@ -147,3 +151,13 @@ public class PieChart2D extends VisModule {
    }
 
 }
+
+
+ /**
+ * QA comments:
+ *
+ * 12-29-03:
+ * Vered started qa process.
+ * added to module info documentation about missing values handling.
+ *
+*/

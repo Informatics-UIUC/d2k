@@ -311,3 +311,12 @@ public class BoxPlot extends UIModule {
 //          to control that size without Java 1.4.   This isn't ideal but
 //          the best I could come up with.
 // End QA Comments.
+
+
+
+// 12-29-03 vered started qa
+// the module operates smoothly on all Tables (regualr, example)
+// handles missing values correctly.
+// handling of nominal tables - bug 192 which is a wish - to display the user
+// with a message about the abscense of scalar columns.
+// other than this - module is ready for basic.

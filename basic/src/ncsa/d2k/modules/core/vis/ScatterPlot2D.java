@@ -45,6 +45,8 @@ public class ScatterPlot2D extends VisModule {
       sb.append("This module creates a two-dimensional scatter plot of ");
       sb.append("<i>Table</i> data, plotting any numeric column against ");
       sb.append("itself or any other numeric column.");
+      sb.append("<P>Missing Values Handling: The module treats missing values " );
+      sb.append("as regular ones.</P>");
       return sb.toString();
    }
 
@@ -73,3 +75,9 @@ public class ScatterPlot2D extends VisModule {
    }
 
 }
+ /**
+  * QA comments
+  * 12-29-03
+  * Vered started qa process.
+  * added to module info documentation about missing values handling (as regular values)
+ */

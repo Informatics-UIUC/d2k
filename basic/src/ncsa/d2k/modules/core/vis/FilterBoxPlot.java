@@ -168,7 +168,7 @@ public class FilterBoxPlot extends HeadlessUIModule {
         }
       });
 
-      
+
       list.setSelectedIndex(0);
 
       done = new JButton("Done");
@@ -373,8 +373,12 @@ public class FilterBoxPlot extends HeadlessUIModule {
     }//if relevant
 
     for(int i=0; i<relevant.length; i++)
-      if(relevant[i])
-        filter(i, flags, _table);
+      if(relevant[i]){
+        //getting the index of attributes[i] into _table.
+        int idx = ((Integer)scalarMap.get(attributes[i].toUpperCase())).intValue();
+        filter(idx, i, flags, _table);
+      }
+
 
 
 
@@ -395,7 +399,7 @@ public class FilterBoxPlot extends HeadlessUIModule {
     * @param table  - a table to have its values at column no. <code>column</codE>
     *                 to be checked and marked for filteration
     */
-   private void filter(int column, boolean[] flags, Table table){
+    private void filter(int column, int att, boolean[] flags, Table table){
 
      //debug
      System.out.println("going over values in columns " + column);
