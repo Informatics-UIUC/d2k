@@ -62,7 +62,11 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
          "column is chosen for the sort – for each successive column, a sort is being "+
          "applied on the table only for runs in the previous column.<br>"+
          "A run is a collection of identical values in a column.</P><P>"+
-         "<U>Note:</U> If, for example, the user selects a sorting column only for the second "+
+         "<u>Missing Values Handling:</u> This module handles missing values as if they were " +
+         "real meaningful values. For Example: If a missing value in a numeric column " +
+         "is represented by zero, then this is the value according to which its record " +
+         "will be sorted.</P>" +
+         "<P><U>Note:</U> If, for example, the user selects a sorting column only for the second "+
          "sort, the module will relate to this selection as if it is the first sort. "+
          "No messages will be given regarding this miss-selection.</P><P><B>"+
          "Data Handling:</b><br> The data values do not change. Only the rows and possibly the columns are reordered.</P>";
@@ -399,4 +403,5 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
  * QA comments:
  * 3-4-03 Vered started qa process.
  *        changed module info.
+ * 3-6-03 added to module info a note about missing vlaue handling
  */

@@ -54,6 +54,12 @@ public class ReplaceNominalsWithInts extends ComputeModule {
       sb.append("This module constructs a reversible transformation to ");
       sb.append("replace each unique value in every nominal column of a ");
       sb.append("<i>MutableTable</i> with an integer unique to that column.");
+
+      sb.append("</P><P><u>Missing Values Handling:</u> This module handles missing values as if they were " +
+         "real meaningful values. For Example: If a missing value in a string column " +
+         "is represented by '?', then after applying the transformation, a unique integer will "+
+         "be assigned to all the missing values");
+
       sb.append("</p><p>Data Handling: ");
       sb.append("This module does not modify its input data. Rather, its ");
       sb.append("output is a <i>ReversibleTransformation</i> that can be ");
@@ -63,7 +69,7 @@ public class ReplaceNominalsWithInts extends ComputeModule {
    }
 
    public String getModuleName() {
-      return "Replace Nominal Values With Integers";
+      return "Replace Nominals With Ints";
    }
 
    public String getOutputInfo(int index) {
@@ -99,3 +105,9 @@ public class ReplaceNominalsWithInts extends ComputeModule {
    }
 
 }
+
+/**
+ * QA comments:
+ * 2-28-03  Vered started qa.
+ *          added to module info a note about missing values handling.
+ */
