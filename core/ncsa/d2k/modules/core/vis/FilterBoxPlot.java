@@ -80,6 +80,12 @@ public class FilterBoxPlot extends UIModule {
       return null;
    }
 
+    //QA Anca added this:
+    public PropertyDescription[] getPropertiesDescriptions() {
+        // so that "windowname" property is invisible
+        return new PropertyDescription[0];
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
 // user view                                                                  //
 ////////////////////////////////////////////////////////////////////////////////
