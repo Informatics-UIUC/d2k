@@ -86,7 +86,8 @@ public class EMOPopulationParams implements java.io.Serializable {
   /**
    * n ?
    */
-  public double n = 2;
+  public double nSimulatedBinaryCrossover;
+  public double nRealMutation;
 
   /**
    * The tournament size.

@@ -30,7 +30,7 @@ public class EMORealMutation
   public void mutatePopulation(Population p) {
     EMOPopulation pop = (EMOPopulation) p;
     this.setMutationRate(pop.getPopulationInfo().mutationRate);
-    this.setN(pop.getPopulationInfo().n);
+    this.setN(pop.getPopulationInfo().nRealMutation);
     super.mutatePopulation(p);
   }
 }
