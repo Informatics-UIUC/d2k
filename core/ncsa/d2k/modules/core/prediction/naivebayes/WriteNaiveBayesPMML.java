@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.prediction.naivebayes;
 
 import java.io.*;
-import java.util.*;
 
 import org.dom4j.*;
 import org.dom4j.io.*;
@@ -9,6 +8,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.transform.binning.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.util.*;
+
 
 public class WriteNaiveBayesPMML
     extends OutputModule
@@ -54,8 +54,10 @@ public class WriteNaiveBayesPMML
   public String getModuleInfo() {
     String s = "<p>Overview: Write a NaiveBayesModel out as a PMML file."+
         "<p>Detailed Description: Write a NaiveBayesModel out in PMML format "+
-        "complying with the PMML 2.0 DTD."+
-        "<p>Data Type Restrictions: A NaiveBayesModel must be the input to this module."+
+        "complying with the PMML 2.0 DTD. The output file will be placed in the directory"+
+        " where d2k was installed. " +
+        "<p>Data Type Restrictions: A NaiveBayesModel must be the input to this module. "+
+        "The NaiveBayesModel does not have to be prepared for visualization. " +
         "<p>Data Handling: The module does not destroy or modify the input data."+
         "<p>Scalability: The module creates a DOM for the NaiveBayesModel and "+
         "queries the model for several statistics.";
@@ -69,7 +71,7 @@ public class WriteNaiveBayesPMML
   public void doit() throws Exception {
     NaiveBayesModel nbm = (NaiveBayesModel) pullInput(0);
 //    ExampleTable et = (ExampleTable) pullInput(1);
-    String filename = (String) pullInput(2);
+    String filename = (String) pullInput(1);
 
     writePMML(nbm, filename);
   }
@@ -313,3 +315,5 @@ public class WriteNaiveBayesPMML
     writer.close();
   }
 }
+// QA comments Anca
+// added more specifics in moduleInfo
