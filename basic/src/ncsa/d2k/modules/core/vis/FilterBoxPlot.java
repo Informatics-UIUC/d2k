@@ -342,11 +342,11 @@ public class FilterBoxPlot extends HeadlessUIModule {
      Table _table = (Table)pullInput(0);
      boolean[] flags = new boolean[_table.getNumRows()];
      for (int i=0; i<flags.length; i++) flags[i] = false;
+       if(attributes == null )
+         throw new Exception(this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
 
-     if(attributes == null || attributes.length == 0){
-
-
-       System.out.println("No attributes were chosed to be filtered. " +
+     if( attributes.length == 0){
+       System.out.println(getAlias()+": No attributes were chosed to be filtered. " +
                           "The transformation will be an empty one");
         pushOutput(new BooleanFilterTransformation(flags), 0);
         return;
@@ -354,7 +354,7 @@ public class FilterBoxPlot extends HeadlessUIModule {
 
     HashMap scalarMap = StaticMethods.getScalarAttributes(_table);
     if(scalarMap.size() == 0){
-      System.out.println("Table " + _table.getLabel() +
+      System.out.println(getAlias()+": Table " + _table.getLabel() +
                          " has no scalar columns\n" +
                          "The transformaiton will be an empty one.\n");
       pushOutput(new BooleanFilterTransformation(flags), 0);
@@ -364,22 +364,13 @@ public class FilterBoxPlot extends HeadlessUIModule {
     boolean[] relevant = StaticMethods.getRelevant(attributes, scalarMap);
 
     if(relevant.length == 0){
-      System.out.println(
-          "None of the chosen attributes is scalar and/or in table "
+      System.out.println(getAlias()+
+          ": None of the chosen attributes is scalar and/or in table "
           + _table.getLabel() + "\nThe transformation will be " +
           "an empty one");
       pushOutput(new BooleanFilterTransformation(flags), 0);
         return;
     }//if relevant
-
-    //debug
-    System.out.println("\nmin values:\n");
-    for (int i=0; i<min.length; i++)
-      System.out.print(min[i] + "\t");
-    System.out.println("\n\nmax values:\n");
-    for (int i=0; i<max.length; i++)
-      System.out.print(max[i] + "\t");
-    //end debug
 
     for(int i=0; i<relevant.length; i++)
       if(relevant[i])
