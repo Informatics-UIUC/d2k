@@ -1227,7 +1227,10 @@ public class SQLBinColumns extends UIModule {
                   // the number of bins is (max - min) / (bin width)
                   int num = (int)Math.ceil((maxes[i] - mins[i])/intrval);
                   double[] binMaxes = new double[num-1];
-                  binMaxes[0] = mins[i] + intrval;
+                 //Anca replaced: binMaxes[0] = mins[i] + intrval;
+                 System.out.println("interval " + intrval);
+                 System.out.println("binMaxes[0] " + binMaxes[0] + " mins[i]" + mins[i]);
+                  binMaxes[0] = mins[i];
                   // add the first bin manually
                   BinDescriptor nbd = createMinNumericBinDescriptor(i, binMaxes[0]);
                   addItemToBinList(nbd);
