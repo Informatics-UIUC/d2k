@@ -329,138 +329,210 @@ public class SparseMutableTable
   public void setColumn(Column newColumn, int position) {
     AbstractSparseColumn col = null;
 
-    switch (newColumn.getType()) {
-
-      case ColumnTypes.BOOLEAN:
-        col = new SparseBooleanColumn( (boolean[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.BYTE:
-        col = new SparseByteColumn( (byte[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.CHAR:
-        col = new SparseCharColumn( (char[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.DOUBLE:
-        col = new SparseDoubleColumn( (double[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.FLOAT:
-        col = new SparseFloatColumn( (float[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.BYTE_ARRAY:
-        col = new SparseByteArrayColumn( (byte[][]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.CHAR_ARRAY:
-        col = new SparseCharArrayColumn( (char[][]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.INTEGER:
-        col = new SparseIntColumn( (int[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.LONG:
-        col = new SparseLongColumn( (long[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.SHORT:
-        col = new SparseShortColumn( (short[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.OBJECT:
-        col = new SparseObjectColumn( (Object[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.STRING: //fall through to the default...
-
-      default:
-        col = new SparseStringColumn( (String[]) newColumn.getInternal());
-        break;
-
-    } //switch case
-
+    if (newColumn instanceof AbstractSparseColumn) {
+      col = (AbstractSparseColumn)newColumn;
+    } else {
+      switch (newColumn.getType()) {
+        case ColumnTypes.BOOLEAN:
+          col = new SparseBooleanColumn( (boolean[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.BYTE:
+          col = new SparseByteColumn( (byte[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.CHAR:
+          col = new SparseCharColumn( (char[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.DOUBLE:
+          col = new SparseDoubleColumn( (double[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.FLOAT:
+          col = new SparseFloatColumn( (float[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.BYTE_ARRAY:
+          col = new SparseByteArrayColumn( (byte[][]) newColumn.getInternal());
+          break;
+        case ColumnTypes.CHAR_ARRAY:
+          col = new SparseCharArrayColumn( (char[][]) newColumn.getInternal());
+          break;
+        case ColumnTypes.INTEGER:
+          col = new SparseIntColumn( (int[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.LONG:
+          col = new SparseLongColumn( (long[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.SHORT:
+          col = new SparseShortColumn( (short[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.OBJECT:
+          col = new SparseObjectColumn( (Object[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.STRING: //fall through to the default...
+        default:
+          col = new SparseStringColumn( (String[]) newColumn.getInternal());
+          break;
+      } //switch case
+    }
     setColumn(position, col);
+  }
 
+  /**
+   * updates the columns and rows maps regarding the insertion of a new column.
+   *
+   * @param index     the index insertion of a new column
+   * @param col       the new oclumn.
+   */
+  protected void setColumn(int index, AbstractSparseColumn col) {
+
+    columns.put(index, col); //updating the columns map
+
+    //updating the rows map
+    int[] rowNum = col.getIndices();
+    for (int i = 0; i < rowNum.length; i++) {
+      addCol2Row(index, rowNum[i]);
+    }
+
+    if (numColumns <= index) {
+      numColumns = index + 1;
+
+    }
+
+    if (rowNum.length > 0 && numRows <= rowNum[rowNum.length - 1]) {
+      numRows = rowNum[rowNum.length - 1] + 1;
+
+    }
+  }
+
+  /**
+   * Adds the column index <code>column</code> to the row set <code>row</code>
+   *
+   * @param column    the index to be added
+       * @param row       the row index to which the index <code>column<c/doe> is added
+   */
+  protected void addCol2Row(int column, int row) {
+    // XIAOLEI - just added some comments
+
+    /* first check if the row exists */
+    if (!rows.containsKey(row)) {
+      VIntHashSet newRow = new VIntHashSet();
+      rows.put(row, newRow);
+    }
+
+    /* add the column to the row */
+    if (! ( (VIntHashSet) rows.get(row)).contains(column)) {
+      ( (VIntHashSet) rows.get(row)).add(column);
+    }
   }
 
   public void addColumn(Column newColumn) {
-    this.insertColumn(newColumn, numColumns);
+    insertColumn(newColumn, numColumns);
   }
 
   public void addColumns(Column[] newColumns) {
     for (int i = 0, n = newColumns.length; i < n; i++) {
-      this.addColumn(newColumns[i]);
+      addColumn(newColumns[i]);
     }
   }
 
   public void insertColumn(Column newColumn, int position) {
     AbstractSparseColumn col = null;
-
-    switch (newColumn.getType()) {
-
-      case ColumnTypes.BOOLEAN:
-        col = new SparseBooleanColumn( (boolean[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.BYTE:
-        col = new SparseByteColumn( (byte[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.CHAR:
-        col = new SparseCharColumn( (char[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.DOUBLE:
-        col = new SparseDoubleColumn( (double[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.FLOAT:
-        col = new SparseFloatColumn( (float[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.BYTE_ARRAY:
-        col = new SparseByteArrayColumn( (byte[][]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.CHAR_ARRAY:
-        col = new SparseCharArrayColumn( (char[][]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.INTEGER:
-        col = new SparseIntColumn( (int[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.LONG:
-        col = new SparseLongColumn( (long[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.SHORT:
-        col = new SparseShortColumn( (short[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.OBJECT:
-        col = new SparseObjectColumn( (Object[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.STRING: //fall through to the default...
-
-      default:
-        col = new SparseStringColumn( (String[]) newColumn.getInternal());
-        break;
-
-    } //switch case
-
+    if (newColumn instanceof AbstractSparseColumn) {
+      col = (AbstractSparseColumn)newColumn;
+    } else {
+      switch (newColumn.getType()) {
+        case ColumnTypes.BOOLEAN:
+          col = new SparseBooleanColumn( (boolean[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.BYTE:
+          col = new SparseByteColumn( (byte[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.CHAR:
+          col = new SparseCharColumn( (char[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.DOUBLE:
+          col = new SparseDoubleColumn( (double[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.FLOAT:
+          col = new SparseFloatColumn( (float[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.BYTE_ARRAY:
+          col = new SparseByteArrayColumn( (byte[][]) newColumn.getInternal());
+          break;
+        case ColumnTypes.CHAR_ARRAY:
+          col = new SparseCharArrayColumn( (char[][]) newColumn.getInternal());
+          break;
+        case ColumnTypes.INTEGER:
+          col = new SparseIntColumn( (int[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.LONG:
+          col = new SparseLongColumn( (long[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.SHORT:
+          col = new SparseShortColumn( (short[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.OBJECT:
+          col = new SparseObjectColumn( (Object[]) newColumn.getInternal());
+          break;
+        case ColumnTypes.STRING: //fall through to the default...
+        default:
+          col = new SparseStringColumn( (String[]) newColumn.getInternal());
+          break;
+      } //switch case
+    }
     insertColumn(col, position);
   }
 
   public void insertColumns(Column[] newColumns, int position) {
     for (int i = newColumns.length - 1; i >= 0; i--) {
-      this.insertColumn(newColumns[i], position);
+      insertColumn(newColumns[i], position);
     }
+  }
+
+  /**
+   * Insert <codE>newColumn</code> to index <codE>position</codE>.
+   * All columns from index <code>position</code> and on are moved to the next
+   * column down the table.
+   *
+   * @param newColumn     the new column to be inserted at index position.
+   * @param position      the index for the new column.
+   *
+   */
+  protected void insertColumn(AbstractSparseColumn newColumn, int position) {
+
+    int numcols = getNumColumns();
+    if ( (position < 0) || (position > numcols)) {
+      throw new IndexOutOfBoundsException(
+          "SparseMutableTable.insertColumn() -- cannot insert column at position " +
+          position + ". Not a valid index.");
+    }
+
+    //updating the column map
+    columns.insertObject(newColumn, position);
+
+    //updating the rows map
+    int[] rowNumbers = VHashService.getIndices(rows);
+
+    //for each set in rows - adding 1 to each element.
+    for (int i = 0; i < rowNumbers.length; i++) {
+      VIntHashSet tempSet = (VIntHashSet) rows.get(rowNumbers[i]);
+      tempSet.increment(position);
+      //XIAOLEI
+      if (newColumn.doesValueExist(rowNumbers[i])) {
+        tempSet.add(position);
+      }
+    } //for
+
+    int numR = newColumn.getNumRows();
+    if (numRows <= numR) {
+
+      // XIAOLEI
+      for (int i = numRows; i < numR; i++) {
+        addCol2Row(position, i);
+
+      }
+      numRows = numR;
+    }
+
+    numColumns = VHashService.getMaxKey(columns) + 1;
   }
 
   /**
@@ -595,6 +667,53 @@ public class SparseMutableTable
       removeRow(start);
     }
   }
+
+  public void computeNumColumns() {
+    numColumns = VHashService.getMaxKey(columns) + 1;
+  }
+
+  public void computeNumRows() {
+    numRows = VHashService.getMaxKey(rows) + 1;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   /**
    * Reorders the rows in this table, s.t.:
@@ -3343,53 +3462,6 @@ public class SparseMutableTable
    * **********************************************************
    */
 
-  /**
-   * Insert <codE>newColumn</code> to index <codE>position</codE>.
-   * All columns from index <code>position</code> and on are moved to the next
-   * column down the table.
-   *
-   * @param newColumn     the new column to be inserted at index position.
-   * @param position      the index for the new column.
-   *
-   */
-  protected void insertColumn(AbstractSparseColumn newColumn, int position) {
-
-    int numcols = getNumColumns();
-    if ( (position < 0) || (position > numcols)) {
-      throw new IndexOutOfBoundsException(
-          "SparseMutableTable.insertColumn() -- cannot insert column at position " +
-          position + ". Not a valid index.");
-    }
-
-    //updating the column map
-    columns.insertObject(newColumn, position);
-
-    //updating the rows map
-    int[] rowNumbers = VHashService.getIndices(rows);
-
-    //for each set in rows - adding 1 to each element.
-    for (int i = 0; i < rowNumbers.length; i++) {
-      VIntHashSet tempSet = (VIntHashSet) rows.get(rowNumbers[i]);
-      tempSet.increment(position);
-      //XIAOLEI
-      if (newColumn.doesValueExist(rowNumbers[i])) {
-        tempSet.add(position);
-      }
-    } //for
-
-    int numR = newColumn.getNumRows();
-    if (numRows <= numR) {
-
-      // XIAOLEI
-      for (int i = numRows; i < numR; i++) {
-        addCol2Row(position, i);
-
-      }
-      numRows = numR;
-    }
-
-    numColumns = VHashService.getMaxKey(columns) + 1;
-  }
 
   protected void insertColumns(AbstractSparseColumn[] newColumns, int position) {
     for (int i = newColumns.length - 1; i >= 0; i--) {
@@ -4967,26 +5039,6 @@ public class SparseMutableTable
 
 
 
-  /**
-   * Adds the column index <code>column</code> to the row set <code>row</code>
-   *
-   * @param column    the index to be added
-       * @param row       the row index to which the index <code>column<c/doe> is added
-   */
-  protected void addCol2Row(int column, int row) {
-    // XIAOLEI - just added some comments
-
-    /* first check if the row exists */
-    if (!rows.containsKey(row)) {
-      VIntHashSet newRow = new VIntHashSet();
-      rows.put(row, newRow);
-    }
-
-    /* add the column to the row */
-    if (! ( (VIntHashSet) rows.get(row)).contains(column)) {
-      ( (VIntHashSet) rows.get(row)).add(column);
-    }
-  }
 
   //=================
   // Private Methods
@@ -5102,13 +5154,6 @@ public class SparseMutableTable
 
 
 
-  public void computeNumColumns() {
-    numColumns = VHashService.getMaxKey(columns) + 1;
-  }
-
-  public void computeNumRows() {
-    numRows = VHashService.getMaxKey(rows) + 1;
-  }
 
   /**
    * Updates the rows map with a new row at index <code>newRow</code> and valid
@@ -5219,32 +5264,6 @@ public class SparseMutableTable
   }
 
 
-  /**
-   * updates the columns and rows maps regarding the insertion of a new column.
-   *
-   * @param index     the index insertion of a new column
-   * @param col       the new oclumn.
-   */
-  protected void setColumn(int index, AbstractSparseColumn col) {
-
-    columns.put(index, col); //updating the columns map
-
-    //updating the rows map
-    int[] rowNum = col.getIndices();
-    for (int i = 0; i < rowNum.length; i++) {
-      addCol2Row(index, rowNum[i]);
-
-    }
-
-    if (numColumns <= index) {
-      numColumns = index + 1;
-
-    }
-    if (rowNum.length > 0 && numRows <= rowNum[rowNum.length - 1]) {
-      numRows = rowNum[rowNum.length - 1] + 1;
-
-    }
-  }
 
   /**
    * Returns the Column at index <codE>pos</code>.
