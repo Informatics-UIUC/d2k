@@ -957,6 +957,28 @@ public class SaveFileToDB extends HeadlessUIModule
              throw new Exception ("There are more than " + maxDataRow + " rows to load. For more " +
                 "efficient data loading, please use " +
                 "the utility the database vendor provides.");
+
+
+    //checking if the table is in database (in case of appending)
+    //or not in db, in case of create new table
+    String[] types = {"TABLE"};
+    Connection con = cw.getConnection();
+    DatabaseMetaData metadata = con.getMetaData();
+    ResultSet tableNames = metadata.getTables(null,"%","%",types);
+    boolean found = false;
+    while (tableNames.next()) {
+      String aTable = tableNames.getString("TABLE_NAME");
+      if(createNewTable && aTable.equalsIgnoreCase(tableName))
+        throw new Exception("A table named " + tableName + " already exists in " +
+      "the database. Cannot create new table with this name.");
+      if(!createNewTable && aTable.equalsIgnoreCase(tableName)) found = true;
+
+      }//while
+
+      if(!found && !createNewTable)
+        throw new Exception("Table " + tableName + " was not found in the database. " +
+                            "Cannot append the table content.");
+
         //end validation tests.
 
         //allocating and populating ColumnMaxLength.
