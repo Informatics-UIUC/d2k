@@ -486,20 +486,21 @@ public class DendogramPanel
       Color oldColor = cmi.c;
       Color newColor = JColorChooser.showDialog(this,
                                                 "Choose", oldColor);
-
-      if (cmi == hiSelectedColor) {
-        ImageIcon hi = new ImageIcon(new ColorComponent(newColor).getImage());
-        cmi.setIcon(hi);
-        ( (RectGraph) m_rectpan).setHighColor(newColor);
-        //ma.updateImage();
-        return;
-      }
-      if (cmi == lowSelectedColor) {
-        ImageIcon low = new ImageIcon(new ColorComponent(newColor).getImage());
-        cmi.setIcon(low);
-        ( (RectGraph) m_rectpan).setLowColor(newColor);
-        //ma.updateImage();
-        return;
+      if (newColor != null){
+        if (cmi == hiSelectedColor) {
+          ImageIcon hi = new ImageIcon(new ColorComponent(newColor).getImage());
+          cmi.setIcon(hi);
+          ( (RectGraph) m_rectpan).setHighColor(newColor);
+          //ma.updateImage();
+          return;
+        }
+        if (cmi == lowSelectedColor) {
+          ImageIcon low = new ImageIcon(new ColorComponent(newColor).getImage());
+          cmi.setIcon(low);
+          ( (RectGraph) m_rectpan).setLowColor(newColor);
+          //ma.updateImage();
+          return;
+        }
       }
     }
 
