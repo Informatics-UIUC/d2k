@@ -34,6 +34,9 @@ public class ARFFFileParser extends DelimitedFileParser {
     private static final String ATTRIBUTE_TAG = FLAG+ATTRIBUTE;
     private static final char QUESTION = '?';
 
+
+    // NOTE: allowedAttributes currently not implemented;
+    // Nominals are treated as strings without checks for specified values.
     private HashSet[] allowedAttributes;
     private int dataRow;
 
@@ -71,6 +74,7 @@ public class ARFFFileParser extends DelimitedFileParser {
             if( line.toLowerCase().indexOf(ATTRIBUTE_TAG) != -1) {
                 // drop the attribute tag, find the attribute name, type
                 // if it is nominal, add its values to the allowedAttributes.
+                // NOTE: allowedAttributes currently not updated
                 parseAttributeLine(line, attributes, types);
             }
             line = lineReader.readLine();
@@ -82,6 +86,7 @@ public class ARFFFileParser extends DelimitedFileParser {
         // now we have the names of the attributes and the types.
         columnLabels = new String[attributes.size()];
         columnTypes = new int[attributes.size()];
+        // NOTE: allowedAttributes currently not updated
         allowedAttributes = new HashSet[attributes.size()];
         for(int i = 0; i < attributes.size(); i++) {
             columnLabels[i] = (String)attributes.get(i);
@@ -95,6 +100,7 @@ public class ARFFFileParser extends DelimitedFileParser {
             else {
                 columnTypes[i] = ColumnTypes.STRING;
                 // parse allowed values
+                // NOTE: allowedAttributed currently not updated
                 allowedAttributes[i] = parseAllowedAttributes(line);
             }
         }
@@ -124,28 +130,45 @@ public class ARFFFileParser extends DelimitedFileParser {
                 dataRow++;
         }
 
-/*        blanks = new boolean[numRows][numColumns];
-        for(int i = 0; i < numRows; i++) {
-            for(int j = 0; j < numColumns; j++)
-                blanks[i][j] = false;
-        }*/
     }
 
+    // NOTE:  This method currently not doing anything.
     private HashSet parseAllowedAttributes(String line) {
         return null;
     }
 
     private void parseAttributeLine(String line, ArrayList atts, ArrayList types) {
+        // Create a tokenizer that breaks up line based on blank space
         StringTokenizer st = new StringTokenizer(line);
+
         int ctr = 0;
         while(st.hasMoreTokens()) {
             String tok = st.nextToken();
             // this will be the name of the attribute.
-            if(ctr == 1)
-                atts.add(tok);
+            // if it's a quoted string we need special processing so that
+            // we don't just break on whitespace.  Also, don't include quote
+            // characters in the attribute name
+            if (ctr == 1) {
+                if ( tok.startsWith("\"") || tok.startsWith("'") ) {
+                    String attName = tok;
+                    String quoteChar = attName.substring(0,1);
+                    // If we don't have quotes around a string w/o blanks, get
+                    // the rest of the attribute name;  add the quoteChar at the
+                    // end so we have attName w/ quotes
+                    if ( ! attName.endsWith( quoteChar) ) {
+                      attName = attName + st.nextToken( quoteChar );
+                      attName += quoteChar;
+                    }
+                    atts.add( attName.substring(1, attName.length()-1));
+                } else {
+                    atts.add(tok);
+                }
             // this is the datatype of the attribute.
-            else if(ctr == 2)
-                types.add(tok.toLowerCase());
+            // we trim it because there may be extra spaces at the front if we had
+            // a quoted attribute name.
+            } else if(ctr == 2) {
+                types.add((tok.trim()).toLowerCase());
+            }
             ctr++;
         }
     }
@@ -154,9 +177,7 @@ public class ARFFFileParser extends DelimitedFileParser {
     * Get the elements that make up row i of the file.
     * @return the elements of row i in the file.
     */
-    //public char[][] getRowElements(int i) {
     public ParsedLine getRowElements(int i) {
-//        char[][] retVal = super.getRowElements(i);
         ParsedLine retVal = super.getRowElements(i);
 
         if(retVal != null && retVal.elements != null && retVal.elements.length > 0) {
@@ -243,4 +264,7 @@ public class ARFFFileParser extends DelimitedFileParser {
 //           these resolved (next release).
 // 3/3/03  - Missing values are in fact handled (down the road, not here).
 //         - Committing to basic.   Still wish for validating parser.
+// 4/30/03 - Added NOTES that allowedAttributes not updated & removed some
+//           commented out code.  Added code to support quoted attribute
+//           names.  Ruth
 // END QA Comments
