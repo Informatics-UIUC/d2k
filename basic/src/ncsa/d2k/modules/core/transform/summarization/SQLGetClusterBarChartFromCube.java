@@ -23,6 +23,8 @@ import ncsa.d2k.modules.core.transform.attribute.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
+import ncsa.d2k.modules.core.transform.StaticMethods;
+
 public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
   JOptionPane msgBoard = new JOptionPane();
   ConnectionWrapper cw;
@@ -266,6 +268,14 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
       Object src = e.getSource();
       if (src == displayBtn) {
         Object[] values = selectedModel.toArray();
+
+        //headless conversion support
+        setBook(useCodeBook.getState());
+        setCodeBook (bookName.getText().toString());
+        setSelectedAttributes(values);
+        //headless conversion support
+
+
         String[] retVal = new String[values.length];
         if (useCodeBook.getState() && bookName.getText().length()<=0) {
           // The user has not chosen a code book yet
@@ -292,6 +302,9 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
           JOptionPane.ERROR_MESSAGE);
           System.out.println("A cube table is selected instead of a data table.");
         }
+
+
+
         else if (cubeTableName.getText().length()>0 && retVal.length > 0) {
           // if code book is required and the code book is not retrieved yet, then get it
           if (useCodeBook.getState()) {
@@ -534,5 +547,182 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
                         default: return "NO SUCH OUTPUT!";
                 }
         }
+
+        //headless conversion support
+        private String codeBook;
+      public void setCodeBook(String book){codeBook = book;}
+      public String getCodeBook(){return codeBook;}
+
+     private boolean book;
+      public void setBook(boolean val){book = val;}
+      public boolean getBook(){return book;}
+
+      private String[] selectedAttributes;
+        public Object[] getSelectedAttributes(){return selectedAttributes;}
+        public void setSelectedAttributes(Object[] atts){
+        selectedAttributes = new String[atts.length];
+        for (int i=0; i<atts.length; i++)
+          selectedAttributes[i] = (String)atts[i];
+      }
+
+      public PropertyDescription[] getPropertiesDescriptions() {
+       // so that "WindowName" property is invisible
+       PropertyDescription[] pds = new PropertyDescription[3];
+       pds[0] = super.supressDescription;
+       pds[1] = new PropertyDescription("book", "Use Code Book", "Set this property to true if you wish to use a code book");
+       pds[2] = new PropertyDescription("codeBook", "Code Book", "Supply a code book if 'Use Code Book' is set to true");
+       return pds;
+
+   }
+
+
+
+      /*private String firstColumn;
+      private String secondColumn;
+      public String getFirstColumn(){return firstColumn;}
+      public String getSecondColumn(){return secondColumn;}
+      public  void getFirstColumn(String col){firstColumn = col;}
+      public void getSecondColumn(String col){secondColumn = col;}
+*/
+      public void doit() throws Exception{
+        if(book && (codeBook == null || codeBook.length() == 0))
+          throw new Exception("You must choose a code book or set 'Use Code Book' to false\n");
+
+        if(selectedAttributes == null || selectedAttributes.length != 2  )
+          throw new Exception("you must select 2 columns!\n");
+
+        ConnectionWrapper cw = (ConnectionWrapper) pullInput(0);
+        String tableName = (String) pullInput(1);
+
+        if(!(tableName.indexOf("_CUBE") >=0))
+          throw new Exception ("The input table must be a cubed table, and must have the string '_CUBE' in its name");
+
+        if(tableName == null || tableName.length() == 0)
+          throw new Exception("Illegal table name!\n");
+
+        con = cw.getConnection();
+        DatabaseMetaData metadata = con.getMetaData();
+        ResultSet columns = metadata.getColumns(null, "%", tableName,
+                                                "%");
+        Vector columnsVector = new Vector();
+        int counter = 0;
+        while (columns.next()) {
+          String colName = columns.getString("COLUMN_NAME");
+          if (!colName.equals("SET_SIZE") && !colName.equals("CNT")) {
+            columnsVector.add(counter, colName);
+            counter ++;
+          }//if
+        }//while
+
+
+        String[] targetAttributes = StaticMethods.getIntersection(selectedAttributes, columnsVector);
+         if(targetAttributes.length == 0)
+           throw new Exception ("None of the selected attributes is in table " + tableName);
+
+        if (book) {
+            aBook = new SQLCodeBook(cw, codeBook);
+            codeTable = aBook.codeBook;
+        }
+        if (createItemDataTableHeadless(targetAttributes, tableName)) {
+          if (book)
+            replaceCode(data);
+
+            pushOutput(data, 0);
+        }
+
+
+
+      }//doit
+
+
+
+        public boolean createItemDataTableHeadless(String[] columnNames, String tableName) {
+          int rowCnt = 0;
+          try {
+            con = cw.getConnection();
+            // only pick up the cube records that have values in the selected
+            // columns and is a 1-item set
+            String cntQry = new String("select count(*) from " + tableName +
+                                       " where ");
+            for (int idx=0; idx<columnNames.length; idx++) {
+              if (idx == 0) {
+                cntQry = cntQry + columnNames[idx] + " is not null ";
+              }
+              else {
+                cntQry = cntQry + " and " + columnNames[idx] + " is not null ";
+              }
+            }
+
+           /*cntQry = cntQry + firstColumn + " is not null ";
+           cntQry = cntQry + " and " + secondColumn + " is not null ";*/
+
+            cntQry = cntQry + " AND set_size = 2";
+            Statement cntStmt = con.createStatement();
+            ResultSet cntSet = cntStmt.executeQuery(cntQry);
+            while (cntSet.next()) {
+              rowCnt = cntSet.getInt(1);
+            }
+            cntStmt.close();
+          }
+          catch (Exception e){
+
+            System.out.println("Error occurred in create1ItemDataTable.");
+            e.printStackTrace();
+            return false;
+          }
+          // data table will contains one of the columns the user selected and one
+          // extra column for count
+          Column[] cols = new Column[3];
+          cols[0] = new ObjectColumn(rowCnt);
+          cols[0].setLabel(columnNames[0]);
+          cols[1] = new ObjectColumn(rowCnt);
+          cols[1].setLabel(columnNames[1]);
+          cols[2] = new ObjectColumn(rowCnt);
+          cols[2].setLabel("COUNT");
+          data = new MutableTableImpl(cols);
+
+          try {
+            con = cw.getConnection();
+            String dataQry = new String("select ");
+
+            for (int idx=0; idx<columnNames.length; idx++) {
+                dataQry = dataQry + columnNames[idx] + ", ";
+            }
+            /*
+           dataQry = dataQry + firstColumn + ", ";
+           dataQry = dataQry + secondColumn + ", ";
+*/
+
+            dataQry = dataQry + "CNT from " + tableName + " where ";
+            for (int idx=0; idx<columnNames.length; idx++) {
+              if (idx == 0) {
+                dataQry = dataQry + columnNames[idx] + " is not null ";
+              }
+              else {
+                dataQry = dataQry + " and " + columnNames[idx]  + " is not null ";
+              }
+            }
+            dataQry = dataQry + " AND set_size = 2";
+            Statement dataStmt = con.createStatement();
+            ResultSet dataSet = dataStmt.executeQuery(dataQry);
+            int rowIdx = 0;
+            while (dataSet.next()) {
+              data.setString(dataSet.getString(1),rowIdx,0);
+              data.setString(dataSet.getString(2),rowIdx,1);
+              data.setInt(dataSet.getInt(3),rowIdx,2);
+              rowIdx ++;
+            }
+            dataStmt.close();
+            return true;
+          }
+          catch (Exception e){
+
+            System.out.println("Error occurred in createDataTable.");
+            e.printStackTrace();
+            return false;
+          }
+        }//createItemDataTableHeadless
+
+        //headless conversion support
 
 }
