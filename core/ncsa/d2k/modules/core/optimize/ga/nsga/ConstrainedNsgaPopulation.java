@@ -5,6 +5,8 @@ import ncsa.d2k.modules.core.optimize.ga.*;
 //import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
+/** ORIG **/
+
 
 /**
  * Title:
@@ -127,7 +129,7 @@ public class ConstrainedNsgaPopulation
   // This returns the maximum violation of a particular constraint of a certain id
   // over the entire population, for that generation.
   private double getmaxPopConstraintViol(int id) {
-    double maxViol = 0.0;
+/*    double maxViol = 0.0;
     NsgaSolution[] indivs;
     indivs = (NsgaSolution[])this.combinedPopulation;
     int popSz = indivs.length;
@@ -138,7 +140,24 @@ public class ConstrainedNsgaPopulation
       }
     }
 
-    return maxViol;
+    return maxViol;*/
+    
+    double maxViol;
+    NsgaSolution[] indivs;
+    indivs = (NsgaSolution[])this.combinedPopulation;
+    int popSz = indivs.length;
+
+    maxViol = indivs[0].getConstraint(id);
+
+    for (int i = 0; i < popSz; i++) {
+      if (maxViol <= indivs[i].getConstraint(id)) {
+        maxViol = indivs[i].getConstraint(id);
+      }
+    }
+    if (maxViol == 0)
+      return 1.0;
+    else
+      return maxViol;
   }
 
   /**
