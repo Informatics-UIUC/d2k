@@ -71,7 +71,7 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
           s += "If you cannot see the tables you are looking for, please report the ";
           s += "problems to your database administrator. </p>";
           s += "<p> Restrictions: ";
-          s += "We currently only support Oracle databases.";
+          s += "We currently only support SQLServer and Oracle databases.";
 
           return s;
 	}
