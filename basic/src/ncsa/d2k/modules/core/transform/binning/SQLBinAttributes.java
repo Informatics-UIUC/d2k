@@ -1608,11 +1608,13 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                 double max) {
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(OPEN_PAREN);
-            nameBuffer.append(nf.format(min));
-                        //nameBuffer.append(min);
+            //nameBuffer.append(nf.format(min));
+            min = BinDescriptorFactory.round(min,3);      
+            nameBuffer.append(min);
             nameBuffer.append(COLON);
-            nameBuffer.append(nf.format(max));
-                        //nameBuffer.append(max);
+            //nameBuffer.append(nf.format(max));
+            max = BinDescriptorFactory.round(max,3);
+                        nameBuffer.append(max);
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
                     min, max, (String)fieldNames[col]);
@@ -1632,8 +1634,9 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             nameBuffer.append(OPEN_BRACKET);
             nameBuffer.append(DOTS);
             nameBuffer.append(COLON);
-            nameBuffer.append(nf.format(max));
-                        //nameBuffer.append(max);
+            max = BinDescriptorFactory.round(max,3);
+           // nameBuffer.append(nf.format(max));
+                       nameBuffer.append(max);
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
                     Double.NEGATIVE_INFINITY, max, (String)fieldNames[col]);
@@ -1650,8 +1653,9 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
         private BinDescriptor createMaxNumericBinDescriptor (int col, double min) {
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(OPEN_PAREN);
-            nameBuffer.append(nf.format(min));
-                        //nameBuffer.append(min);
+            min = BinDescriptorFactory.round(min,3);
+            //nameBuffer.append(nf.format(min));
+                        nameBuffer.append(min);
             nameBuffer.append(COLON);
             nameBuffer.append(DOTS);
             nameBuffer.append(CLOSE_BRACKET);
