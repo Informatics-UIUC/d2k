@@ -92,7 +92,7 @@ public class RuleAssocReport extends UIModule
         s += "<p>The <i>Done</i> button closes the display window. ";
         s += "The <i>Abort</i> button closes the display window and aborts itinerary execution. ";
         s += "<p> Restrictions: ";
-        s += "We currently only support Oracle databases.";
+        s += "We currently only support Oracle, SqlServer, DB2 and MySql databases.";
         return s;
   }
 

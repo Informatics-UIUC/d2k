@@ -178,7 +178,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
       s += "<i>Done</i> generates the rules and dismisses the window. ";
 
       s += "</p><p>Restrictions: ";
-      s += "Only Oracle and SQLServer databases are currently supported. ";
+      s += "Only Oracle, SQLServer, DB2 and MySql databases are currently supported. ";
 
       s += "</p>";
 
