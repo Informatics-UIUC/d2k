@@ -145,7 +145,6 @@ public class CreateDecisionTreeParameterPoint
   public boolean UseMeanNodeModels = true;
   public void setUseMeanNodeModels(boolean value) {
     this.UseMeanNodeModels = value;
-    this.UseLinearNodeModels = !value;
   }
 
   public boolean getUseMeanNodeModels() {
@@ -155,7 +154,6 @@ public class CreateDecisionTreeParameterPoint
   public boolean UseLinearNodeModels = false;
   public void setUseLinearNodeModels(boolean value) {
     this.UseLinearNodeModels = value;
-    this.UseMeanNodeModels = !value;
   }
 
   public boolean getUseLinearNodeModels() {
@@ -305,7 +303,7 @@ public class CreateDecisionTreeParameterPoint
     catch (Exception e) {
 	//      System.out.println("could not find class");
 	//throw new Exception();
-	throw new Exception(getAlias() + ": could not find class DecisionTreeInducerOpt "); 
+	throw new Exception(getAlias() + ": could not find class DecisionTreeInducerOpt ");
     }
 
     this.pushOutput(parameterPoint, 0);
@@ -313,6 +311,6 @@ public class CreateDecisionTreeParameterPoint
   }
 }
 
-//QA changes Anca: 
-//typos and Exception is now giving a message 
+//QA changes Anca:
+//typos and Exception is now giving a message
 

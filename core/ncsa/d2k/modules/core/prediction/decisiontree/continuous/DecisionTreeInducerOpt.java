@@ -122,7 +122,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
     ExampleTable examples = node.examples;
 
-    if (UseMeanNodeModels) {
+    if (UseMeanNodeModels || (!UseMeanNodeModels && !UseLinearNodeModels)) {
       int numExamples = examples.getNumExamples();
 
       double [] outputSums = new double[numOutputs];
