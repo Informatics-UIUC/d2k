@@ -61,7 +61,7 @@ public class BrowseTablesView extends JD2KFrame
                     (ListSelectionModel)e.getSource();
         if (lsm.isSelectionEmpty())
         {
-          int selectedRow = -1;
+          selectedRow = -1;
           System.out.println("No Selected Rows........");
         }
         else
@@ -123,4 +123,12 @@ public class BrowseTablesView extends JD2KFrame
       chosenTableName = model.getValueAt(selectedRow,0).toString();
       return (chosenTableName);
   }
+
+  /** Get the index of the selected row
+   *  @return the row index
+   */
+   public int getSelectedRow() {
+     return (this.selectedRow);
+   }
+
 }
