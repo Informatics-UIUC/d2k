@@ -24,7 +24,7 @@ public class DisplayFront extends ncsa.d2k.infrastructure.modules.UIModule imple
 	public void setXMin (double nxm) { xmin = nxm; }
 
 	/** this is the maximum value in the x direction to scale the plot. */
-	double xmax = 0.0;
+	double xmax = 1.0;
 	public double getXMax () { return xmax; }
 	public void setXMax (double nxm) { xmax = nxm; }
 
@@ -34,7 +34,7 @@ public class DisplayFront extends ncsa.d2k.infrastructure.modules.UIModule imple
 	public void setYMin (double nxm) { ymin = nxm; }
 
 	/** this is the max value in the y direction to scale the plot. */
-	double ymax = 0.0;
+	double ymax = 1.0;
 	public double getYMax () { return ymax; }
 	public void setYMax (double nxm) { ymax = nxm; }
 

@@ -25,7 +25,7 @@ public class RuleVis extends ncsa.d2k.infrastructure.modules.VisModule
 	static final Color RULE_VIS_SUPPORT = new Color (87, 87, 100);
 	static final Color RULE_VIS_HIGHLIGHT = new Color (247, 247, 247);
 	static final String IMAGE_LOC =
-		"/ncsa/d2k/modules/compute/learning/modelgen/ruleassociation/vis/";
+		"/ncsa/d2k/modules/core/discovery/ruleassociation/";
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
