@@ -79,7 +79,7 @@ public class CreateExample extends ComputeModule {
 	}
 
 	public boolean isReady () {
-		if (inputFlags[0] > 0 || inputFlags[1] > 0) {
+		if (this.getFlags()[0] > 0 || this.getFlags()[1] > 0) {
 			return true;
 		} else if (parameterPoints.size () > 0 && objectivePoints.size () > 0)
 			return true;
@@ -89,9 +89,9 @@ public class CreateExample extends ComputeModule {
 	public void doit () {
 
 		// add any new data at the end of the list.
-		if (inputFlags[0] > 0)
+		if (this.getFlags()[0] > 0)
 			parameterPoints.add (this.pullInput (0));
-		if (inputFlags[1] > 0)
+		if (this.getFlags()[1] > 0)
 			objectivePoints.add (this.pullInput (1));
 
 		// if we have data to push, push it.

@@ -1,5 +1,7 @@
 package ncsa.d2k.modules.core.control;
 
+
+
 import ncsa.d2k.core.modules.DataPrepModule;
 
 /**
@@ -20,10 +22,10 @@ public class WaitPush extends DataPrepModule{
 	 * @return true if we are ready to fire.
 	 */
 	public boolean isReady() {
-		if (firstTime && inputFlags[0] > 0) {
+		if (firstTime && this.getFlags()[0] > 0) {
 			return true;
 		} else {
-			if (inputFlags[0] > 0 && inputFlags[1] > 0)
+			if (this.getFlags()[0] > 0 && this.getFlags()[1] > 0)
 				return true;
 		}
 		return false;
@@ -57,11 +59,13 @@ public class WaitPush extends DataPrepModule{
 
 
 	public String getModuleInfo(){
-		return "<html>  <head>      </head>  <body> Pull the first input received on input zero, and push it, after that, pull inputs off zero and one. This requires two inputs to trigger after the first time.</body></html>";
+		return "<p>      Overview: This module will collect the input received on it's first       input, save"+
+			" it and push it one the first invocation. Subsequent inputs       received on the second input"+
+			" will cause the input saved from the first       input to be pushed again.    </p>";
 	}
 
 	public String getModuleName() {
-		return "Wait Push";
+		return "Trigger Push";
 	}
 
 	public String[] getInputTypes(){
@@ -72,7 +76,7 @@ public class WaitPush extends DataPrepModule{
 	public String getInputInfo(int index){
 		switch (index) {
 			case 0: return "The object to push.";
-			case 1: return "The triggering object";
+			case 1: return "The triggering object.";
 			default: return "No such input";
 		}
 	}
@@ -93,7 +97,7 @@ public class WaitPush extends DataPrepModule{
 
 	public String getOutputInfo(int index){
 		switch (index) {
-			case 0: return "The object pushed initially or after input on 1 is aquired.";
+			case 0: return "The object received on the first input is pushed after it is received the     first time, and after any input on the second input.";
 			default: return "No such output";
 		}
 	}

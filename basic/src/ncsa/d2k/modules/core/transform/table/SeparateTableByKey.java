@@ -126,7 +126,7 @@ public class SeparateTableByKey extends DataPrepModule {
 	public boolean isReady() {
 		if (tables != null && currentTable < tables.length) {
 			return true;
-		} else if (this.inputFlags[0] > 0)
+		} else if (this.getFlags()[0] > 0)
 			return true;
 		return false;
 	}

@@ -57,8 +57,8 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
 		*/
 	public boolean isReady(){
 		if(numFires==0){//this is the 'first' run
-			if( (inputFlags[0]>0)&&//we have the object to push
-				((usePropNValue)||(inputFlags[1]>0))){//we have the number of times
+			if( (this.getFlags()[0]>0)&&//we have the object to push
+				((usePropNValue)||(this.getFlags()[1]>0))){//we have the number of times
 				return true;
 			}else{
 				return false;

@@ -205,12 +205,12 @@ public class OneTimeInputBroker
    */
   public boolean isReady() {
     if (m_readOnce == null) {
-      if ( (inputFlags[0] > 0) && (inputFlags[1] > 0)) {
+      if ( (this.getFlags()[0] > 0) && (this.getFlags()[1] > 0)) {
         return true;
       } else {
         return false;
       }
-    } else if (inputFlags[1] == 0) {
+    } else if (this.getFlags()[1] == 0) {
       return false;
     } else {
       return true;

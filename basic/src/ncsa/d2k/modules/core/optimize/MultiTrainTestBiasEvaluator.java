@@ -261,10 +261,10 @@ public class MultiTrainTestBiasEvaluator
 	switch (PhaseIndex) {
 	  case 0:
 		if (InitialExecution || (!RecycleExamples)) {
-		  value = (inputFlags[0] > 0) && (inputFlags[1] > 0);
+		  value = (this.getFlags()[0] > 0) && (this.getFlags()[1] > 0);
 		}
 		else {
-		  value = (inputFlags[0] > 0);
+		  value = (this.getFlags()[0] > 0);
 		}
 		break;
 
@@ -273,7 +273,7 @@ public class MultiTrainTestBiasEvaluator
 		break;
 
 	  case 2:
-		value = (inputFlags[2] > 0);
+		value = (this.getFlags()[2] > 0);
 		break;
 	}
 

@@ -120,7 +120,7 @@ public class FractionationSampler
   }
 
   public boolean isReady() {
-    if ( (this.inputFlags[0] > 0) || (this.inputFlags[1] > 0) ||
+    if ( (this.getFlags()[0] > 0) || (this.getFlags()[1] > 0) ||
         (_pushing.size() > 0)) {
       return true;
     } else {
@@ -139,13 +139,13 @@ public class FractionationSampler
         ArrayList arrlist = new ArrayList( (ArrayList) _pushing.remove(0));
         ClusterModel mod = new ClusterModel(_itable, arrlist, null);
         this.pushOutput(mod, 0);
-        if (this.inputFlags[1] == 0) {
+        if (this.getFlags()[1] == 0) {
           return;
         }
 
       }
 
-      if (this.inputFlags[0] > 0) {
+      if (this.getFlags()[0] > 0) {
         _itable = (MutableTable)this.pullInput(0);
         if (this.getCheckMissingValues()) {
           if (_itable.hasMissingValues()) {
@@ -154,7 +154,7 @@ public class FractionationSampler
         }
       }
 
-      if (this.inputFlags[1] > 0) {
+      if (this.getFlags()[1] > 0) {
         cm = (ClusterModel)this.pullInput(1);
         clusters = cm.getClusters();
       }

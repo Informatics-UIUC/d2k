@@ -557,7 +557,7 @@ public class Apriori
    * @return
    */
   public boolean isReady() {
-    if ( (inputFlags[0] > 0) || !done) {
+    if ( (this.getFlags()[0] > 0) || !done) {
       return true;
     }
     return false;

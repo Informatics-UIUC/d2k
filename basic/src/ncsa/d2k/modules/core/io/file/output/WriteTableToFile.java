@@ -183,7 +183,7 @@ public class WriteTableToFile extends OutputModule {
 		if (this.isInputPipeConnected(0))
 			return super.isReady();
 		else
-			return this.inputFlags[1] > 0;
+			return this.getFlags()[1] > 0;
 	}
 
     /**

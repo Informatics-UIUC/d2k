@@ -208,7 +208,7 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 		return true if ready to fire , false otherwise
 	*/
 	public boolean isReady () {
-		if (inputFlags[0] > 0 && inputFlags[1] > 0)
+		if (this.getFlags()[0] > 0 && this.getFlags()[1] > 0)
 			return true;
 		else
 			return false;

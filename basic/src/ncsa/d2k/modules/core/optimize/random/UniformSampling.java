@@ -213,10 +213,10 @@ public class UniformSampling
     boolean value = false;
 
     if (InitialExecution) {
-      value = (inputFlags[0] > 0);
+      value = (this.getFlags()[0] > 0);
     }
     else {
-      value = (inputFlags[1] > 0);
+      value = (this.getFlags()[1] > 0);
     }
 
     return value;

@@ -61,10 +61,10 @@ public class GenerateFunctionInducer extends ComputeModule {
     boolean value = false;
 
     if (InitialExecution) {
-      value = (inputFlags[0] > 0) && (inputFlags[1] > 0);
+      value = (this.getFlags()[0] > 0) && (this.getFlags()[1] > 0);
     }
     else {
-      value = (inputFlags[1] > 0);
+      value = (this.getFlags()[1] > 0);
     }
     return value;
   }

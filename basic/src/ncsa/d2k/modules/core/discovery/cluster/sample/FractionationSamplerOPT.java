@@ -250,8 +250,8 @@ public class FractionationSamplerOPT
    */
   public boolean isReady() {
     //System.out.println(">>>>>>>>>>>>>>>>> " + this.inputFlags[0] + " " + this.inputFlags[1] + " " + this.inputFlags[2] + " " + _pushing.size());
-    if ( ( (this.inputFlags[0] > 0) && (this.inputFlags[1] > 0)) ||
-        (this.inputFlags[2] > 0) || (_pushing.size() > 0)) {
+    if ( ( (this.getFlags()[0] > 0) && (this.getFlags()[1] > 0)) ||
+        (this.getFlags()[2] > 0) || (_pushing.size() > 0)) {
       return true;
     } else {
       return false;
@@ -273,13 +273,13 @@ public class FractionationSamplerOPT
         ArrayList arrlist = new ArrayList( (ArrayList) _pushing.remove(0));
         ClusterModel mod = new ClusterModel(_itable, arrlist, null);
         this.pushOutput(mod, 0);
-        if (this.inputFlags[2] == 0) {
+        if (this.getFlags()[2] == 0) {
           return;
         }
 
       }
 
-      if (this.inputFlags[1] > 0) {
+      if (this.getFlags()[1] > 0) {
         _itable = (Table)this.pullInput(1);
         if (this.getCheckMissingValues()) {
           if (_itable.hasMissingValues()) {
@@ -295,7 +295,7 @@ public class FractionationSamplerOPT
         }
       }
 
-      if (this.inputFlags[2] > 0) {
+      if (this.getFlags()[2] > 0) {
         cm = (ClusterModel)this.pullInput(2);
         clusters = cm.getClusters();
       }

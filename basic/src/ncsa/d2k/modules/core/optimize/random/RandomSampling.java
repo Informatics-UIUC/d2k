@@ -208,11 +208,11 @@ public class RandomSampling extends ComputeModule {
 	 * @return
 	 */
 	public boolean isReady () {
-		if (inputFlags[1] > 0)
+		if (this.getFlags()[1] > 0)
 
 		// We are always ready if there are examples to process.
 			return true;
-		else if (pointsPushed == 0 && inputFlags[0] > 0)
+		else if (pointsPushed == 0 && this.getFlags()[0] > 0)
 
 		// we have another space to process.
 			return true;
@@ -233,7 +233,7 @@ public class RandomSampling extends ComputeModule {
 	public void doit () {
 
 		// If we have an example process it.
-		if (inputFlags[1] > 0) {
+		if (this.getFlags()[1] > 0) {
 
 			// We have an example, put it into our list of examples and we are done.
 			// reading examples is given priority because this will keep the pipes from filling

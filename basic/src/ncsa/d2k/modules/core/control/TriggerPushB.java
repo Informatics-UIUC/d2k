@@ -32,11 +32,11 @@ public class TriggerPushB extends DataPrepModule
 
 	public boolean isReady(){
 		if(waitingForObject)
-			return ((inputFlags[0]>0)&&
-					(inputFlags[1]>0));
+			return ((this.getFlags()[0]>0)&&
+					(this.getFlags()[1]>0));
 		else
-			return ((inputFlags[0]>0)||
-					(inputFlags[1]>0));
+			return ((this.getFlags()[0]>0)||
+					(this.getFlags()[1]>0));
 
 	}
 	public void endExecution(){
@@ -63,13 +63,13 @@ public class TriggerPushB extends DataPrepModule
 
 		}
 		totalFires++;
-		if(inputFlags[1]>0){
+		if(this.getFlags()[1]>0){
 			pullInput(1);
 			if(debug)
 				System.out.println("TriggerPushB:"+totalFires);
 			pushOutput(theObject, 0);
 		}
-		if(inputFlags[0]>0){
+		if(this.getFlags()[0]>0){
 			theObject=pullInput(0);
 			if(debug)
 				System.out.println("TriggerPushB: New object");
