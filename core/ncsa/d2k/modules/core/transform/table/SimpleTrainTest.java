@@ -374,8 +374,10 @@ public class SimpleTrainTest extends DataPrepModule  {
 			 * This component is always 100 x 150
 			 * @return
 			 */
+			final private int THEIGHT = 202;
+			final private int RHEIGHT = THEIGHT-2;
 			public Dimension getMinimumSize() {
-				return new Dimension (120, 200);
+				return new Dimension (120, THEIGHT);
 			}
 			public Dimension getPreferredSize() {
 				return this.getMinimumSize();
@@ -389,9 +391,9 @@ public class SimpleTrainTest extends DataPrepModule  {
 			 * @return
 			 */
 			int getTest() {
-				int current = test;
-				current = current * 100;
-				current = current / 200;
+				int current = test-1;
+				current *= 100;
+				current /= RHEIGHT;
 				return current;
 			}
 
@@ -402,6 +404,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 			private void setTest(int val) {
 				test = val;
 				test = test * 2;
+				test++;
 			}
 
 			/**
@@ -409,7 +412,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 			 * @return
 			 */
 			int getTrain() {
-				int current = train;
+				int current = train - 1;
 				current = current / 2;
 				return 100 - current;
 			}
@@ -421,6 +424,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 			private void setTrain(int val) {
 				train = 100 - val;
 				train = (train * 2);
+				train++;
 			}
 
 			/**
