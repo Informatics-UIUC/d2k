@@ -147,6 +147,14 @@ abstract public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.
         s += "The resolution can be a floating point value. ";
 
         s += "</p><p>";
+        s += "Enumerated parameters, for example the choice between multiple distance metrics, are implemented as integer parameters. ";
+        s += "The first choice in the list of choices enumerated in the <i>Property Descriptions</i>, is assigned the value 0. ";
+        s += "The second choice is assigned the value 1, and so on. ";
+        s += "For enumerated parameters, the user must select <i>Min</i> and <i>Max</i> values that fall within the default ";
+        s += "range shown, as that range encompasses the entire set of valid choices. ";
+        s += "The resolution should be set to 1. ";
+
+        s += "</p><p>";
         s += "There may be times when the user wants to allow some control parameters to vary over a range of values while ";
         s += "holding other parameters constant.  This behavior can be accomplished by entering the same <i>Min</i> and <i>Max</i> ";
         s += "values for the parameters that are to be held constant" ;
