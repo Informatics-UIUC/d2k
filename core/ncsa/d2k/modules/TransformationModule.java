@@ -2,6 +2,7 @@ package ncsa.d2k.modules;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import java.io.Serializable;
 
 /**
  * This module does some kind of transformation on a datatable, and
@@ -10,9 +11,6 @@ import ncsa.d2k.modules.core.datatype.table.*;
  * model, if there is one. In this way the model can transform input data
  * in the original format used by the model builder, and back again.
  */
-
-import java.io.Serializable;
-
 public abstract class TransformationModule extends ComputeModule implements Serializable
 {
 
