@@ -474,7 +474,8 @@ public class SparseStringColumn extends AbstractSparseColumn{
     */
 
      public Column reorderRows(VIntIntHashMap newOrder) {
-      SparseStringColumn retVal = new SparseStringColumn (row2Id.size());
+ //     SparseStringColumn retVal = new SparseStringColumn (row2Id.size());
+      SparseStringColumn retVal = (SparseStringColumn)copy();
       int[] destRows = newOrder.keys();
       for(int i=0; i<destRows.length; i++){
 	int srcRow = newOrder.get(destRows[i]);
@@ -482,7 +483,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
 	  retVal.setString(getString(srcRow), destRows[i]);
       }
 
-      retVal.copyAttributes(this);
+    //  retVal.copyAttributes(this);
 
       return retVal;
     }
