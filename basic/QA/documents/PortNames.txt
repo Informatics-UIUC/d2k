@@ -35,6 +35,10 @@ Second Table, ncsa.d2k.modules.core.datatype.table.Table,      Input,  Second ta
 Result Table, ncsa.d2k.modules.core.datatype.table.eTable,     Output, Table resulting from combination,   AppendTables (Append Tables)
 Table,        ncsa.d2k.modules.core.datatype.table.Table,      Input,  Table to write, 		           WriteTableToFile (Write Table To File)
 Table,	      ncsa.d2k.modules.core.datatype.table.Table,      Input,  A Table with columns to bin,        BinColumns (Bin Columns)
+Table,        ncsa.d2k.modules.core.datatype.table.Table,      Input,  Table with examples,                NFoldTrainTest (N-Fold TrainTest )
+
+TrainTable,   ncsa.d2k.modules.core.datatype.table.TrainTable, Output, Training Set,                       NFoldTrainTest (N-FoldTrainTest)
+TestTable,   ncsa.d2k.modules.core.datatype.table.TestTable, Output, Testing Set,                       NFoldTrainTest (N-FoldTrainTest)
 
 Example Table, ncsa.d2k.modules.core.datatype.table.ExampleTable, Input, Example Table containing the names of the input/output features, CreateBinTree (Create Bin Tree)
 
@@ -43,4 +47,5 @@ Binning Transformation, ncsa.d2k.modules.core.datatype.table.transformations.Bin
 
 Bin Tree, ncsa.d2k.modules.core.transform.binning.BinTree, Output, Bin Tree structure without counts, CreateBinTree (Create Bin Tree)
 
+Number of Folds,  java.lang.Integer, Output, The number of Folds, NFoldTrainTest (N-FoldTrainTest)
 
