@@ -792,4 +792,7 @@ public class TableEditor extends TableViewer {
  * bug 196 is fixed. though this problem actually occures with all conversions from
  * byte array to a numeric type.
  * bug 197 is also fixed.
+ *
+ * 01-12-04:
+ * bug 223 - Exception with subset table when trying to change the type of a column.
 */

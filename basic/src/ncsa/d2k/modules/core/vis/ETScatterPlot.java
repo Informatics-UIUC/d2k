@@ -37,6 +37,7 @@ public class ETScatterPlot extends VisModule
        sb.append("variable in a scatter plot. A matrix of these plots is ");
        sb.append("displayed. These plots can be selected and a larger ");
        sb.append("composite graph of these plots can be displayed.");
+        sb.append("if no numeric input or numeric output attributes are selected there are no plots to display.");
        sb.append("<P>Missing Values Handling: This module treats missing values as");
        sb.append(" regular values.");
        sb.append("</p>");
@@ -140,4 +141,7 @@ public class ETScatterPlot extends VisModule
 
  * Problem with resulting vis: resolution of x and y axis is not the same when
   * viewing hte larger plot. this bug is in the widget file. [bug 187]
+ *
+ * 01-12-04:
+ * bug 222 - accepting non-ExampleTables as input.
 */
