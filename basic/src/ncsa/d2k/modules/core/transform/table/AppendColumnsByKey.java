@@ -162,7 +162,12 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 			" that exist only       in the second table are assigned filler values. For rows that exist only"+
 			"       in the second table, the columns of the first table are assigned the       filler values."+
 			" And for columns that exist in both tables, the values       assigned to the result table will"+
-			" come from the first table.    </p>    <p>      Scalability: A hashtable consisting of all the"+
+			" come from the first table.    </p> " +
+                        "<P>Missing Values Handling: Key columns should be clean of missing values. If a missing value is "+
+                       "encountered, an Exception will be thrown. Use 'RemoveRowsWithMissingValues' module " +
+           "before this module, to clean the input tables.</P>"+
+
+                     "   <p>      Scalability: A hashtable consisting of all the"+
 			" unique values in the key       column has to be constructed to identify rows in the two tables"+
 			" that       match. If the table has large number of rows, this may be prohibitive.    </p>";
 	}
@@ -750,17 +755,19 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 // WISH - support for multiple-column-key
 
 
-           /**
-           * 10-24-03: vered started QA process
-           * an itinerary containing this module cannot be loaded. and classes cannot be
-           * loaded too while said itinerary is open. [fixed 11-03-03]
-           *
-           * Module does not handle missing values well: the new appended table does
-      *      not "know" that some values are missing, apparently the missing values
-      *      array is not updated. whereas values that were missing are represented by
-      *      default value for missing values (for example 0.0 for doubles). [fixed - 11-03-03]
-           *
-           * 11-03-03: Columns with a missing value are not considered as key columns.
-           *           the algorithm for isKeyColumn is in TableUtilities. a method and
-           *           a genral approach to missing values should be determined.
-            */
+/**
+* 10-24-03: vered started QA process
+* an itinerary containing this module cannot be loaded. and classes cannot be
+* loaded too while said itinerary is open. [fixed 11-03-03]
+*
+* Module does not handle missing values well: the new appended table does
+*      not "know" that some values are missing, apparently the missing values
+*      array is not updated. whereas values that were missing are represented by
+*      default value for missing values (for example 0.0 for doubles). [fixed - 11-03-03]
+*
+* 11-03-03: Columns with a missing value are not considered as key columns.
+*           the algorithm for isKeyColumn is in TableUtilities. a method and
+*           a genral approach to missing values should be determined.
+* 11-20-03: key columns cannot have missing values. an exception will be thrown
+       *    if such value swill be encountered in such column.
+*/

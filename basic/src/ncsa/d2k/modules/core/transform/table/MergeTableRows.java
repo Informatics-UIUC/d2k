@@ -184,6 +184,12 @@ public class MergeTableRows extends HeadlessUIModule {
           s += "</p><p>Data Handling: ";
           s += "The <i>Input Table</i> is not modified.   The <i>Output Table</i> is created by the module. ";
 
+          s += "</p><p>Missing Values Handling: ";
+         s += "The key, control and merge columns in the <i>Input Table</i> should be clean of missing values. " +
+           "If a missing value is encountered an Exception will be thrown. Use 'RemoveRowsWithMissingValues' module " +
+           "before this module, to clean the <i>Input Table</i>.";
+
+
 	  s += "</p><p>Scalability: ";
           s += "This module should scale very well for tables where the key attribute has a limited number ";
           s += "of unique values. When that is not the case, ";
@@ -855,3 +861,6 @@ public class MergeTableRows extends HeadlessUIModule {
 //           another problem with missing values: calculation of minimum/average
 //           right now - a missing value is considered to be zero when calculating
 //           these values.
+
+//11/20/03 - module should throw exception if a missing value is encountered in
+//           key, control or merge column. [bug 135].
