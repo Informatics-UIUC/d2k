@@ -176,14 +176,6 @@ public class ScalarizeNominals extends DataPrepModule {
                 indices[index++] = ((Integer) iterator.next()).intValue();
 
             Arrays.sort(indices);
-
-            // we'll be removing all input and output columns, so set these to
-            // empty (at least until ExampleTableImpl handles this properly!)
-            /*
-            et.setInputFeatures(new int[0]);
-            et.setOutputFeatures(new int[0]);
-            */
-
         } else {
 
             // simply iterate to find nominal columns
@@ -333,6 +325,7 @@ public class ScalarizeNominals extends DataPrepModule {
 
                         BooleanColumn column = ColumnUtilities.toBooleanColumn(oldColumn);
                         int where = index+k;
+                        column.setLabel(columnLabel+"="+uniqueValues[k]);
                         table.insertColumn(column, where);
                         for (int i = 0 ; i < newColumn.length ; i++)
                             table.setBoolean(newColumn[i], i, where);
@@ -351,6 +344,7 @@ public class ScalarizeNominals extends DataPrepModule {
 
                         DoubleColumn column = ColumnUtilities.toDoubleColumn(oldColumn);
                         int where = index+k;
+                        column.setLabel(columnLabel+"="+uniqueValues[k]);
                         table.insertColumn(column, where);
                         for (int i = 0 ; i < newColumn.length ; i++)
                            table.setDouble(newColumn[i], i, where);
@@ -397,34 +391,6 @@ public class ScalarizeNominals extends DataPrepModule {
         }
         pushOutput(table, 0);
     }
-
-    /*
-    private void printInputOutputColumns(ExampleTable et) {
-
-    	  int[] inputColumns = et.getInputFeatures(),
-    			outputColumns = et.getOutputFeatures();
-
-    	  String[] inputNames = et.getInputNames(),
-    			   outputNames = et.getOutputNames();
-
-    	  System.out.print("actual labels:");
-    	  for (int i = 0; i < et.getNumColumns(); i++)
-    		 System.out.print(" " + i + "(" + et.getColumnLabel(i) + ")");
-    	  System.out.println(" [" + et.getNumColumns() + "]");
-
-    	  System.out.print("input columns:");
-    	  for (int i = 0; i < inputColumns.length; i++)
-    		 System.out.print(" " + inputColumns[i] + "(" + inputNames[i] + ")");
-    	  System.out.println(" [" + inputColumns.length + "]");
-
-    	  System.out.print("output columns:");
-    	  for (int i = 0; i < outputColumns.length; i++)
-    		 System.out.print(" " + outputColumns[i] + "(" + outputNames[i] + ")");
-    	  System.out.println(" [" + outputColumns.length + "]");
-
-    }
-    */
-
 }
 /**
  * QA comment
