@@ -1,26 +1,25 @@
 package  ncsa.d2k.modules.core.vis;
 
-import  com.sun.j3d.utils.behaviors.keyboard.*;
-import  com.sun.j3d.utils.behaviors.mouse.*;
-import  com.sun.j3d.utils.geometry.*;
-import  com.sun.j3d.utils.universe.*;
-import  java.awt.*;
-import  java.awt.event.*;
-import  java.io.*;
-import  java.text.*;
-import  java.util.*;
-import  javax.media.j3d.*;
-import  javax.swing.*;
-import  javax.swing.border.*;
-import  javax.vecmath.*;
-import  ncsa.d2k.controller.userviews.swing.*;
-import  ncsa.d2k.infrastructure.modules.*;
-import  ncsa.d2k.infrastructure.views.*;
-import  ncsa.gui.*;
-import ncsa.d2k.gui.JD2KFrame;
-
-import ncsa.d2k.modules.core.datatype.table.*;
+import com.sun.j3d.utils.behaviors.keyboard.*;
+import com.sun.j3d.utils.behaviors.mouse.*;
+import com.sun.j3d.utils.geometry.*;
+import com.sun.j3d.utils.universe.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.text.*;
+import java.util.*;
+import javax.media.j3d.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.vecmath.*;
+import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.gui.*;
+import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.gui.*;
 
 /**
  * A three-dimensional scatter plot.  Requires Java3D.

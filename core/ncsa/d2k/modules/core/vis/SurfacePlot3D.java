@@ -5,26 +5,21 @@ import com.sun.j3d.utils.behaviors.mouse.*;
 import com.sun.j3d.utils.geometry.*;
 import com.sun.j3d.utils.universe.*;
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.event.*;
-import java.lang.StrictMath;
-import java.util.HashMap;
-import java.util.Vector;
+import java.awt.geom.*;
+import java.util.*;
 import javax.media.j3d.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.vecmath.*;
-import ncsa.d2k.controller.userviews.*;
 import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.d2k.gui.JD2KFrame;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.gui.*;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.modules.core.vis.widgets.ComputationalGeometry;
-import ncsa.gui.Constrain;
-
-import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.gui.*;
 
 /**
  * <code>SurfacePlot3D</code> is a three-dimensional visualization of

@@ -1,21 +1,18 @@
 package ncsa.d2k.modules.core.vis;
 
-import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.gui.JD2KFrame;
-
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-
-import java.io.Serializable;
-import javax.swing.*;
-import javax.swing.table.*;
-import javax.swing.border.*;
-import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.table.*;
+import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.gui.*;
+import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
 	Given an ExampleTable, plot each numeric input variable against each
