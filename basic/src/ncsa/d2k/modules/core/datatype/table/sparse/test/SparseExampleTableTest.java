@@ -40,6 +40,10 @@ public class SparseExampleTableTest
   protected long[] vall = {
       3, 0, 1, 2};
 
+  protected boolean[] valb = {
+      true, false, false, true};
+
+
   /*
    * @see TestCase#setUp()
    */

@@ -6,6 +6,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.*;
 
+import java.io.*;
 /**
  * @author anca
  *
@@ -34,14 +35,14 @@ public class SparseMutableTableTest
   SparseMutableTable mtFull;
   SparseMutableTable mtEmpty;
   Column[] columns;
-  int numColumns = 5;
+  int numColumns = 6;
   double delta = 0.0001;
 
   protected void setUp() throws Exception {
 
     mtEmpty = new SparseMutableTable();
 
-    columns = new Column[numColumns];
+   columns = new Column[numColumns];
     int[] vali = {
         0, 1, 2, 3};
     columns[0] = new SparseIntColumn(vali);
@@ -57,12 +58,37 @@ public class SparseMutableTableTest
     long[] vall = {
         3, 0, 1, 2};
     columns[4] = new SparseLongColumn(vall);
+
+    //vered - May 18 - added boolean column to the full table.
+    boolean[] valb = {
+      true, false, false, true};
+      columns[5] = new SparseBooleanColumn(valb);
+
     mtFull = new SparseMutableTable();
     for (int i = 0, n = columns.length; i < n; i++) {
       mtFull.addColumn(columns[i]);
     }
 
   }
+
+
+  protected int[] vali = {
+     0, 1, 2, 3};
+ protected double[] vald = {
+     3, 2, 1, 0};
+ protected short[] vals = {
+     1, 2, 3, 0};
+ protected float[] valf = {
+     2, 3, 0, 1};
+ protected long[] vall = {
+     3, 0, 1, 2};
+
+ //vered - May 18 - added also the boolean type column
+ protected boolean[] valb = {
+     true, false, false, true};
+
+
+
 
   /*
    * @see TestCase#tearDown()
@@ -381,7 +407,8 @@ public class SparseMutableTableTest
     assertEquals(numRows + rowsToAdd, mtFull.getNumRows());
   }
 
-  public void testReorderRows() {
+//vered - commented this out, as this methdo was removed from interface.
+ /* public void testReorderRows() {
     MutableTable mtFull = (MutableTable) getFullTable();
     MutableTable mtEmpty = (MutableTable) getEmptyTable();
     int newOrder[] = {0, 3, 2, 1};
@@ -393,12 +420,17 @@ public class SparseMutableTableTest
         mtEmpty.setString(mtFull.getString(newOrder[i], j), i, j);
       }
     }
+<<<<<<< SparseMutableTableTest.java
+//    Table reordered = mtFull.reorderRows(newOrder);
+ //   assertEquals(mtEmpty, reordered);
+=======
     Table reordered = mtFull.copy(newOrder);
     //((SparseMutableTable)mtEmpty).print();
     //((SparseMutableTable)reordered).print();
     assertEquals(mtEmpty, reordered);
+>>>>>>> 1.4
 
-  }
+  }*/
 
   public void testReorderColumns() {
     MutableTable mtFull = (MutableTable) getFullTable();
@@ -591,4 +623,58 @@ public class SparseMutableTableTest
     boolean expected = stFull.getBoolean(numRows - 1, numColumns - 1);
     assertEquals(expected, el);
   }
+
+  /*
+            * Test serializability of column
+            */
+   public void testSerializable() {
+      MutableTable stFull = (MutableTable) getFullTable();
+     try{
+       FileOutputStream file = new FileOutputStream("SparseTableSerializableTestFile");
+       ObjectOutputStream out = new ObjectOutputStream(file);
+       out.writeObject(stFull);
+     }
+     catch(IOException e){
+       System.out.println("\nSerialization of SparseTable failed");
+       e.printStackTrace();
+       assertTrue(false);
+     }
+     System.out.println("\nSUCCESS!! Serialization of SparseTable went well!");
+     assertTrue(true);
+
+
+   }
+
+
+   /*
+              * Test de-serializability of column
+              */
+     public void testDeSerializable() {
+        //MutableTable stFull = (MutableTable) getFullTable();
+        MutableTable stFull = (MutableTable)this.getEmptyMutableTable();
+       try{
+         FileInputStream file = new FileInputStream("SparseTableSerializableTestFile");
+         ObjectInputStream in = new ObjectInputStream(file);
+          stFull = (MutableTable) in.readObject();
+       }
+       catch(Exception e){
+         System.out.println("\nDe-Serialization of SparseTable failed");
+         e.printStackTrace();
+         assertTrue(false);
+       }
+       System.out.println("\nSUCCESS!! De-Serialization of SparseTable went well!");
+       System.out.println("\nprinting out the de-serializable table that was read:");
+       for (int i=0; i<stFull.getNumRows(); i++){
+         for (int j = 0; j < stFull.getNumColumns(); j++)
+           System.out.print("\t" + stFull.getString(i, j));
+        System.out.println();
+       }
+
+       System.out.println("\nend of printing\n");
+
+       assertTrue(true);
+
+
+     }
+
 }

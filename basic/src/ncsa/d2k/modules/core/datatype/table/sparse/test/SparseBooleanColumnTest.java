@@ -9,6 +9,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse.test;
 import ncsa.d2k.modules.core.datatype.table.basic.test.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
+import java.io.*;
 /**
  * @author anca
  *
@@ -75,6 +76,8 @@ public class SparseBooleanColumnTest extends AbstractColumnTest {
 			res = cFull.compareRows(el,2);
 			assertTrue(res>0);
 	}
+
+
 
 
 
