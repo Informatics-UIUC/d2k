@@ -54,8 +54,7 @@ public class ChooseFields extends UIModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.util.datatype.ExampleTable"
-						};
+		String[] out = {"ncsa.d2k.util.datatype.ExampleTable" };
     	return out;
 	}
 
@@ -126,29 +125,37 @@ public class ChooseFields extends UIModule implements HasNames {
 	/**
 		Pushes the outputs. Called when the view has finished.
 	*/
-	public void finish(ExampleTable et) {
+	/*public void finish(ExampleTable et) {
 		this.pushOutput(et, 0);
 		executionManager.moduleDone(this);
-	}
+	}*/
 
 	/**
 		The user view class
 	*/
 	class AttributeView extends JUserPane implements ActionListener {
 		//the old data
-		VerticalTable vt;
+		private VerticalTable vt;
 		//the updated table
-		ExampleTable et;
+		private ExampleTable et;
 
-		ChooseFields module;
-		JButton abort;
-		JButton done;
+		private ChooseFields module;
+		private JButton abort;
+		private JButton done;
 
-		JList inputList;
-		JList outputList;
+		private JList inputList;
+		private JList outputList;
 
-		JLabel inputLabel;
-		JLabel outputLabel;
+		private JLabel inputLabel;
+		private JLabel outputLabel;
+
+        private HashMap inputToIndexMap;
+        private HashMap outputToIndexMap;
+
+        private JCheckBoxMenuItem miColumnOrder;
+        private JCheckBoxMenuItem miAlphaOrder;
+
+        private JMenuBar menuBar;
 
 		/**
 			initialize
@@ -159,7 +166,22 @@ public class ChooseFields extends UIModule implements HasNames {
 			done = new JButton("Done");
 			abort.addActionListener(this);
 			done.addActionListener(this);
+            menuBar = new JMenuBar();
+            JMenu m1 = new JMenu("File");
+            miColumnOrder = new JCheckBoxMenuItem("Column Order");
+            miColumnOrder.addActionListener(this);
+            miColumnOrder.setState(true);
+            miAlphaOrder = new JCheckBoxMenuItem("Alphabetical Order");
+            miAlphaOrder.addActionListener(this);
+            miAlphaOrder.setState(false);
+            m1.add(miColumnOrder);
+            m1.add(miAlphaOrder);
+            menuBar.add(m1);
 		}
+
+        public Object getMenu() {
+            return menuBar;
+        }
 
 		/**
 			called when inputs arrive
@@ -178,26 +200,54 @@ public class ChooseFields extends UIModule implements HasNames {
 		public Dimension getPreferredSize() {
 			return new Dimension(400, 500);
 		}
+
 		/**
 			add all the components
 		*/
-		protected void addComponents() {
+		private void addComponents() {
 			JPanel back = new JPanel();
 
 			int numColumns = vt.getNumColumns();
 
-			String[] labels=new String[numColumns];
+			/*String[] labels=new String[numColumns];
 
-			for(int i = 0; i < numColumns; i++) {
+			for(int i = 0; i < numColumns; i++)
 				labels[i] = vt.getColumnLabel(i);
-			}
+            */
+            String[] labels = orderedLabels();
 
-			inputList=new JList(labels);
-			if(vt instanceof ExampleTable)
-				inputList.setSelectedIndices(((ExampleTable)vt).getInputFeatures());
-			outputList=new JList(labels);
-			if(vt instanceof ExampleTable)
-				outputList.setSelectedIndices(((ExampleTable)vt).getOutputFeatures());
+			inputList=new JList(/*labels*/);
+            DefaultListModel dlm = new DefaultListModel();
+            for(int i = 0; i < labels.length; i++)
+                dlm.addElement(labels[i]);
+            inputList.setModel(dlm);
+			if(vt instanceof ExampleTable) {
+				//inputList.setSelectedIndices(((ExampleTable)vt).getInputFeatures());
+                int[] ins = ((ExampleTable)vt).getInputFeatures();
+                int[] sel = new int[ins.length];
+                for(int i = 0; i < ins.length; i++) {
+                    String s = vt.getColumnLabel(ins[i]);
+                    Integer ii = (Integer)inputToIndexMap.get(s);
+                    sel[i] = ii.intValue();
+                }
+                inputList.setSelectedIndices(sel);
+            }
+			outputList=new JList(/*labels*/);
+            dlm = new DefaultListModel();
+            for(int i = 0; i < labels.length; i++)
+                dlm.addElement(labels[i]);
+            outputList.setModel(dlm);
+			if(vt instanceof ExampleTable) {
+				//outputList.setSelectedIndices(((ExampleTable)vt).getOutputFeatures());
+                int[] ins = ((ExampleTable)vt).getOutputFeatures();
+                int[] sel = new int[ins.length];
+                for(int i = 0; i < ins.length; i++) {
+                    String s = vt.getColumnLabel(ins[i]);
+                    Integer ii = (Integer)outputToIndexMap.get(s);
+                    sel[i] = ii.intValue();
+                }
+                outputList.setSelectedIndices(sel);
+            }
 			JScrollPane leftScrollPane=new JScrollPane(inputList);
 			JScrollPane rightScrollPane=new JScrollPane(outputList);
 
@@ -209,16 +259,14 @@ public class ChooseFields extends UIModule implements HasNames {
 
 			back.setLayout(new GridBagLayout());
 
-			Constrain.setConstraints(back, inputLabel, 0, 0, 1, 1, GridBagConstraints.BOTH,
-									GridBagConstraints.CENTER, 0, 0);
-			Constrain.setConstraints(back, outputLabel, 1, 0, 1, 1, GridBagConstraints.BOTH,
-									GridBagConstraints.CENTER, 0, 0);
- 			Constrain.setConstraints(back, leftScrollPane, 0, 1, 1, 1, GridBagConstraints.BOTH,
-									GridBagConstraints.CENTER, 1, 1);
-			Constrain.setConstraints(back, rightScrollPane, 1, 1, 1, 1, GridBagConstraints.BOTH,
-									GridBagConstraints.CENTER, 1, 1);
-
-
+			Constrain.setConstraints(back, inputLabel, 0, 0, 1, 1,
+                GridBagConstraints.BOTH, GridBagConstraints.CENTER, 0, 0);
+			Constrain.setConstraints(back, outputLabel, 1, 0, 1, 1,
+                GridBagConstraints.BOTH, GridBagConstraints.CENTER, 0, 0);
+ 			Constrain.setConstraints(back, leftScrollPane, 0, 1, 1, 1,
+                GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+			Constrain.setConstraints(back, rightScrollPane, 1, 1, 1, 1,
+                GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
 
 			JPanel buttons = new JPanel();
 			buttons.add(abort);
@@ -238,24 +286,106 @@ public class ChooseFields extends UIModule implements HasNames {
 			else if(src == done) {
 				if(checkChoices()) {
 					setFieldsInTable();
-					module.finish(et);
+					//module.finish(et);
+		            pushOutput(et, 0);
+		            executionManager.moduleDone(module);
 					et = null;
 					this.removeAll();
 				}
 			}
+            else if(src == miColumnOrder) {
+                String [] labels = orderedLabels();
+                miAlphaOrder.setState(false);
+                DefaultListModel dlm = (DefaultListModel)inputList.getModel();
+                dlm.removeAllElements();
+                for(int i = 0; i < labels.length; i++) {
+                    dlm.addElement(labels[i]);
+                }
+                dlm = (DefaultListModel)outputList.getModel();
+                dlm.removeAllElements();
+                for(int i = 0; i < labels.length; i++) {
+                    dlm.addElement(labels[i]);
+                }
+            }
+            else if(src == miAlphaOrder) {
+                String [] labels = alphabetizeLabels();
+                miColumnOrder.setState(false);
+                DefaultListModel dlm = (DefaultListModel)inputList.getModel();
+                dlm.removeAllElements();
+                for(int i = 0; i < labels.length; i++) {
+                    dlm.addElement(labels[i]);
+                }
+                dlm = (DefaultListModel)outputList.getModel();
+                dlm.removeAllElements();
+                for(int i = 0; i < labels.length; i++) {
+                    dlm.addElement(labels[i]);
+                }
+            }
 		}
+
+        private final String[] orderedLabels() {
+			String[] labels=new String[vt.getNumColumns()];
+
+            inputToIndexMap = new HashMap(labels.length);
+            outputToIndexMap = new HashMap(labels.length);
+			for(int i = 0; i < labels.length; i++) {
+				labels[i] = vt.getColumnLabel(i);
+                inputToIndexMap.put(labels[i], new Integer(i));
+                outputToIndexMap.put(labels[i], new Integer(i));
+            }
+            return labels;
+        }
+
+        private final String[] alphabetizeLabels() {
+            String [] labels = new String[vt.getNumColumns()];
+            inputToIndexMap = new HashMap(labels.length);
+            outputToIndexMap = new HashMap(labels.length);
+            for(int i = 0; i < labels.length; i++) {
+                labels[i] = vt.getColumnLabel(i);
+                inputToIndexMap.put(labels[i], new Integer(i));
+                outputToIndexMap.put(labels[i], new Integer(i));
+            }
+            Arrays.sort(labels, new StringComp());
+            return labels;
+        }
+
+        private final class StringComp implements Comparator {
+            public int compare(Object o1, Object o2) {
+                String s1 = (String)o1;
+                String s2 = (String)o2;
+                return s1.toLowerCase().compareTo(s2.toLowerCase());
+            }
+            public boolean equals(Object o) {
+                return super.equals(o);
+            }
+        }
 
 		private void setFieldsInTable(){
 			et=new ExampleTable(vt);
-			et.setInputFeatures(inputList.getSelectedIndices());
-			et.setOutputFeatures(outputList.getSelectedIndices());
+			//et.setInputFeatures(inputList.getSelectedIndices());
+			//et.setOutputFeatures(outputList.getSelectedIndices());
+            Object[] selected = inputList.getSelectedValues();
+            int [] inputFeatures = new int[selected.length];
+            for(int i = 0; i < selected.length; i++) {
+                String s = (String)selected[i];
+                Integer ii = (Integer)inputToIndexMap.get(s);
+                inputFeatures[i] = ii.intValue();
+            }
+            selected = outputList.getSelectedValues();
+            int [] outputFeatures = new int[selected.length];
+            for(int i = 0; i < selected.length; i++) {
+                String s = (String)selected[i];
+                Integer ii = (Integer)outputToIndexMap.get(s);
+                outputFeatures[i] = ii.intValue();
+            }
+            et.setInputFeatures(inputFeatures);
+            et.setOutputFeatures(outputFeatures);
 			vt = null;
 		}
 
 		/**
 			Make sure all choices are valid.
-			*/
-
+		*/
 		protected boolean checkChoices() {
 			if(outputList.getSelectedIndex() == -1){
 				JOptionPane.showMessageDialog(this,

@@ -258,10 +258,10 @@ public class SQLDefineBins extends DefineBins {
 			String uniform = uniformRange.getText().trim();
 			String userSpec = userSpecifiedNumeric.getText().trim();
 
-			if(uniform.indexOf(",") != -1) {
+			/*if(uniform.indexOf(",") != -1) {
 				addSpecifiedRange();
 				return;
-			}
+			}*/
 
 			if(uniform.length() > 0) {
 				// get the number of bins
@@ -335,25 +335,25 @@ public class SQLDefineBins extends DefineBins {
 						double upper = min+increment;
 
 						StringBuffer nameBuffer = new StringBuffer();
-						nameBuffer.append("(");
+						nameBuffer.append(OPEN_PAREN);
 						if(q == 0)
-							nameBuffer.append("...");
+							nameBuffer.append(DOTS);
 						else {
-							NumberFormat nf = NumberFormat.getInstance();
-							nf.setMaximumFractionDigits(2);
+							//NumberFormat nf = NumberFormat.getInstance();
+							//nf.setMaximumFractionDigits(2);
 							String formatted = nf.format(lower);
 							nameBuffer.append(formatted/*Double.toString(lower)*/);
 						}
-						nameBuffer.append(",");
+						nameBuffer.append(COMMA);
 						if(q == (numBins - 1))
-							nameBuffer.append("...");
+							nameBuffer.append(DOTS);
 						else {
-							NumberFormat nf = NumberFormat.getInstance();
-							nf.setMaximumFractionDigits(2);
+							//NumberFormat nf = NumberFormat.getInstance();
+							//nf.setMaximumFractionDigits(2);
 							String formatted = nf.format(upper);
 							nameBuffer.append(formatted/*Double.toString(upper)*/);
 						}
-						nameBuffer.append("]");
+						nameBuffer.append(CLOSE_BRACKET);
 
 						try {
 							if(q == 0)
@@ -367,21 +367,21 @@ public class SQLDefineBins extends DefineBins {
 							else {
 								// make the proper equation and add the bin that way
 								StringBuffer eq = new StringBuffer();
-								eq.append("(");
+								eq.append(OPEN_PAREN);
 								eq.append(attName);
 								eq.append(BinTree.GREATER_THAN);
 								eq.append(lower);
-								eq.append(") && (");
+								eq.append(AND);
 								eq.append(attName);
 								eq.append(BinTree.LESS_THAN_EQUAL_TO);
 								eq.append(upper);
-								eq.append(")");
+								eq.append(CLOSE_PAREN);
 								//System.out.println("EQ: "+eq);
 								binTree.addBinFromEquation(attName, nameBuffer.toString(),
 									eq.toString(), true);
 							}
 							StringBuffer entryName = new StringBuffer(attName);
-							entryName.append(" : ");
+							entryName.append(COLON);
 							entryName.append(nameBuffer.toString());
 							BinEntry be = new BinEntry(attName,
 								nameBuffer.toString(), NUMERIC);
@@ -405,9 +405,6 @@ public class SQLDefineBins extends DefineBins {
 					JOptionPane.ERROR_MESSAGE);
 			}
 		}
-
-
-
 
 		/**
 			create a unique bin for each item
@@ -436,12 +433,6 @@ public class SQLDefineBins extends DefineBins {
 				String stringColumn = attCol.getLabel().trim();
 				// find all the unique entries for this column
 				HashMap items = new HashMap();
-				/*
-				for(int i = 0; i < attCol.getNumRows(); i++) {
-					String s = attCol.getString(i);
-					if(!items.containsKey(s))
-						items.put(s, s);
-						}*/
 
 				try {
 				    Statement stmt = conn.getConnection().createStatement();
@@ -466,9 +457,9 @@ public class SQLDefineBins extends DefineBins {
 					try {
 						binTree.addStringBin(attName, s, s);
 						StringBuffer entryBuffer = new StringBuffer(s);
-						entryBuffer.append(" : ");
+						entryBuffer.append(COLON);
 						entryBuffer.append(attName);
-						entryBuffer.append(" == ");
+						entryBuffer.append(EQUAL_TO);
 						entryBuffer.append(s);
 
 						BinEntry be = new BinEntry(attName, s, TEXT);
