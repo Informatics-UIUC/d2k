@@ -306,4 +306,7 @@ public class AutoBin extends AutoBinOPT {
  * 11-18-03 Missing values are binned as if they were regular values. [bug 131]
  *          re-Edited module info.
  *          added the custom properties editor from wish list.
+ * 11-19-03 problem with uniform binning. value x, is binned into bin (x : y]
+ *          instead into bin (z : x]. (bug 132)
+ *
  */
