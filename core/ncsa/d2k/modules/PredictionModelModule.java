@@ -37,7 +37,7 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
     protected boolean applyTransformationsInPredict = false;
     protected boolean applyReverseTransformationsAfterPredict = false;
 
-    private PredictionModelModule() {
+    protected PredictionModelModule() {
     }
 
     protected PredictionModelModule(ExampleTable train) {
@@ -183,7 +183,8 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
                     Integer idx = (Integer)columnToIndexMap.get(inputColumnLabels[i]);
                     if(idx == null)
                         // the input column did not exist!!
-                        throw new Exception();
+                        //throw new Exception();
+                        throw new Exception("input column missing:index="+i+":label="+inputColumnLabels[i]);
                     else
                         newInputFeat[i] = idx.intValue();
                 }
@@ -294,6 +295,20 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
                     inputFeat[i] = idx.intValue();
             }
             pt.setInputFeatures(inputFeat);
+
+            boolean outOk = true;
+            int[] outputFeat = new int[outputColumnLabels.length];
+            for(int i = 0; i < outputColumnLabels.length; i++) {
+                Integer idx = (Integer)columnToIndexMap.get(outputColumnLabels[i]);
+                if(idx == null)
+                    // the input column was missing, throw exception
+                    outOk = false;
+                //    throw new Exception();
+                else
+                    outputFeat[i] = idx.intValue();
+            }
+            if(outOk)
+              pt.setOutputFeatures(outputFeat);
 
             // ensure that the prediction columns are set correctly.
             int[] curPredFeat = pt.getPredictionSet();
@@ -428,6 +443,7 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
             transformations = null;
         }
         catch (Exception e) {
+          e.printStackTrace();
           transformations = null;
         }
     }
@@ -591,6 +607,4 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
 		sb.append("</table>");
 		return sb.toString();
 	}
-
-
 }
