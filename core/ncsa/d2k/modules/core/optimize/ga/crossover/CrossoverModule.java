@@ -1,7 +1,5 @@
 package ncsa.d2k.modules.core.optimize.ga.crossover;
 
-import ncsa.d2k.core.modules.*;
-import java.io.Serializable;
 import ncsa.d2k.modules.core.optimize.ga.*;
 
 /**

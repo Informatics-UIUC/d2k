@@ -36,12 +36,20 @@ public class DecisionVariables implements java.io.Serializable {
   public DecisionVariables() {
     table = new MutableTableImpl(5);
 
-    table.setColumn(new String[0], 0);
-    table.setColumn(new double[0], 1);
-    table.setColumn(new double[0], 2);
-    table.setColumn(new double[0], 3);
-    table.setColumn(new double[0], 4);
-  }
+    //BASIC3
+//    table.setColumn(new String[0], 0);
+//    table.setColumn(new double[0], 1);
+//    table.setColumn(new double[0], 2);
+//    table.setColumn(new double[0], 3);
+//    table.setColumn(new double[0], 4);
+  
+    table.setColumn(new StringColumn(0),0);
+    table.setColumn(new DoubleColumn(0),1);
+    table.setColumn(new DoubleColumn(0),2);
+    table.setColumn(new DoubleColumn(0),3);
+    table.setColumn(new DoubleColumn(0),4);
+    
+    }
 
   public void setSeedTable(Table t) {
     seedTable = t;
@@ -61,14 +69,24 @@ public class DecisionVariables implements java.io.Serializable {
    */
   public void addVariable(String name, double min, double max,
                           double precision, double len) {
-    Object[] row = new Object[5];
-    row[0] = name;
-    row[1] = new Double(min);
-    row[2] = new Double(max);
-    row[3] = new Double(precision);
-    row[4] = new Double(len);
 
-    table.addRow(row);
+//BASIC3    Object[] row = new Object[5];
+//    row[0] = name;
+//    row[1] = new Double(min);
+//    row[2] = new Double(max);
+//    row[3] = new Double(precision);
+//    row[4] = new Double(len);
+//
+//    table.addRow(row);
+
+  	int numRows = table.getNumRows();
+    table.addRows(1);
+    table.setString(name,numRows,0);
+    table.setDouble(min,numRows,1);
+    table.setDouble(max,numRows,2);
+    table.setDouble(precision,numRows,3);
+    table.setDouble(len,numRows,4);
+    
   }
 
   /**

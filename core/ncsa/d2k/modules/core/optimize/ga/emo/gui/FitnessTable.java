@@ -1,6 +1,5 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
-import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import gnu.trove.*;
@@ -18,9 +17,11 @@ public class FitnessTable extends MutableTableImpl {
     super(numObjectives+1);
     int i = 0;
     for(; i < numObjectives; i++) {
-      setColumn(new double[numIndividuals], i);
+      //BASIC3 setColumn(new double[numIndividuals], i);
+    	setColumn(new DoubleColumn(numIndividuals), i);
     }
-    setColumn(new boolean[numIndividuals], i);
+    //BASIC3 setColumn(new boolean[numIndividuals], i);
+    setColumn(new BooleanColumn(numIndividuals), i);
     flagColumn = i;
 
     selectionList = new TIntArrayList();

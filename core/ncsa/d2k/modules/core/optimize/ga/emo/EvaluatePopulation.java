@@ -3,14 +3,14 @@ package ncsa.d2k.modules.core.optimize.ga.emo;
 import java.io.*;
 import java.util.*;
 
-import gnu.trove.*;
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.util.*;
-import ncsa.d2k.modules.core.optimize.ga.nsga.*;
+
 
 /**
  * Evaluate the fitness functions and constraints for an EMOPopulation.  If
@@ -127,24 +127,28 @@ public class EvaluatePopulation
 
       if(pop.getParameters().createBinaryIndividuals) {
         int totalStrLen = (int)pop.getParameters().decisionVariables.getTotalStringLength();
-        populationTable.setNumColumns(totalStrLen);
-
+        //BASIC3 populationTable.setNumColumns(totalStrLen);
+        populationTable = new MutableTableImpl(totalStrLen);
+        
         int index = 0;
         // add boolean columns for each variable
         for(int i = 0; i < numVar; i++) {
           int strLen = (int)pop.getParameters().decisionVariables.getVariableStringLength(i);
           String name = pop.getParameters().decisionVariables.getVariableName(i);
           for(int j = 0; j < strLen; j++) {
-            populationTable.setColumn(new boolean[size], index);
-            populationTable.setColumnLabel(name+" "+j, index);
+            //BASIC3 populationTable.setColumn(new boolean[size], index);
+          	populationTable.setColumn(new BooleanColumn(size), index);
+          	populationTable.setColumnLabel(name+" "+j, index);
             index++;
           }
         }
       }
       else {
-        populationTable.setNumColumns(numVar);
-        for(int i = 0; i < numVar; i++) {
-          populationTable.setColumn(new double[size], i);
+        //BASIC3 populationTable.setNumColumns(numVar);
+        populationTable = new MutableTableImpl(numVar);
+      	for (int i = 0; i < numVar; i++) {
+          //BASIC3  populationTable.setColumn(new double[size], i);
+        	populationTable.setColumn(new DoubleColumn(size), i);
           populationTable.setColumnLabel(pop.getParameters().decisionVariables.getVariableName(i), i);
         }
       }
@@ -400,7 +404,9 @@ public class EvaluatePopulation
     // ensure that the table has the same number of rows as the number
     // of individuals in the population
     if (pop.size() != populationTable.getNumRows()) {
-      populationTable.setNumRows(pop.size());
+     //BASIC3 populationTable.setNumRows(pop.size());
+    	//TODO what happens if pop.size() < populationTable.getNumRows() ????
+    	populationTable.addRows(pop.size()-populationTable.getNumRows());
     }
 
     int numOfvar = pop.getNumGenes();

@@ -1,7 +1,6 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.optimize.ga;
 
-import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 /*#end^1 Continue editing. ^#&*/
@@ -89,8 +88,11 @@ public class AssignFitness extends ncsa.d2k.core.modules.DataPrepModule
 		@returns true if we have something to do.
 	*/
 	public boolean isReady () {
-		if (population != null || this.inputFlags [0] > 0)
-			if (this.inputFlags [1] > 0)
+		//ANCA: replaced below
+		//if (population != null || this.inputFlags [0] > 0)
+		//	if (this.inputFlags [1] > 0)
+		if (population != null || getInputPipeSize(0)  > 0)
+			if (getInputPipeSize(1) > 0)
 				return true;
 
 		return false;

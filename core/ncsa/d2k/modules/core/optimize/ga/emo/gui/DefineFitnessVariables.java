@@ -99,26 +99,35 @@ public class DefineFitnessVariables
       table = new MutableTableImpl(numVars);
 
       for (int j = 0; j < numVars; j++) {
-        table.setColumn(new double[0], j);
+       //BASIC3 table.setColumn(new double[0], j);
+      	table.setColumn(new DoubleColumn(0), j);
         table.setColumnLabel(dv.getVariableName(j), j);
       }
       // add columns for any FF, FV, CV, or CF defined before this...
       FitnessFunctions ff = parameters.fitnessFunctions;
       for(int j = 0; j < ff.getNumFitnessVariables(); j++) {
-        table.addColumn(new double[0]);
-        table.setColumnLabel(ff.getFitnessVariableName(j), table.getNumColumns()-1);
+       //BASIC3 table.addColumn(new double[0]);
+      	DoubleColumn dc = new DoubleColumn(new double[0]);
+      	table.addColumn(dc);
+      	table.setColumnLabel(ff.getFitnessVariableName(j), table.getNumColumns()-1);
       }
       for(int j = 0; j < ff.getNumFitnessFunctions(); j++) {
-        table.addColumn(new double[0]);
+        //BASIC3 table.addColumn(new double[0]);
+        DoubleColumn dc = new DoubleColumn(new double[0]);
+        table.addColumn(dc);
         table.setColumnLabel(ff.getFitnessFunctionName(j), table.getNumColumns()-1);
       }
       Constraints con = parameters.constraints;
       for(int j = 0; j < con.getNumConstraintVariables(); j++) {
-        table.addColumn(new double[0]);
+        //BASIC3 table.addColumn(new double[0]);
+        DoubleColumn dc = new DoubleColumn(new double[0]);
+        table.addColumn(dc);
         table.setColumnLabel(con.getConstraintVariableName(j), table.getNumColumns()-1);
       }
       for(int j = 0; j < con.getNumConstraintFunctions(); j++) {
-        table.addColumn(new double[0]);
+        //BASIC3 table.addColumn(new double[0]);
+        DoubleColumn dc = new DoubleColumn(new double[0]);
+        table.addColumn(dc);
         table.setColumnLabel(con.getConstraintFunctionName(j), table.getNumColumns()-1);
       }
 
@@ -217,11 +226,19 @@ public class DefineFitnessVariables
             newLabels = newNewLabels;
             newTypes = newNewTypes;
           }
-          if (_newLab != null) {
-            _newLab = newLabels;
-          }
-          _newTyp = newTypes;
-          _lastCons = newColumnModel.toArray();
+          //BASIC3
+          //if (_newLab != null) {
+           // _newLab = newLabels;
+          //}
+          //_newTyp = newTypes;
+          
+         // _lastCons = newColumnModel.toArray();
+         if(getNewLabel() != null) {
+         	setNewLabel(newLabels);
+         }
+         setNewTyp(newTypes);
+          setLastCons(newColumnModel.toArray());
+          
         }
       }
       else if (src == this.doneButton) {
@@ -241,8 +258,10 @@ public class DefineFitnessVariables
 
           float[] tmpfloat = new float[0];
           // add an empty column of floats to the table
-          table.addColumn(tmpfloat);
-          // set the label of the new column added to the table
+          //BASIC3 table.addColumn(tmpfloat);
+          FloatColumn dc = new FloatColumn(tmpfloat);
+          table.addColumn(dc);
+         // set the label of the new column added to the table
           table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
         }
 
@@ -347,10 +366,16 @@ public class DefineFitnessVariables
         newColumnModel.addElement(added);
         newColumnList.setMinimumSize(new Dimension(200, 200));
 
-        _newLab = newLabels;
-        _newTyp = newTypes;
-        _lastCons = newColumnModel.toArray();
-
+        
+        //BASIC3 _lastCons = newColumnModel.toArray();
+        //_newLab = newLabels;
+        //_newTyp = newTypes;
+        
+        lastCons = newColumnModel.toArray();
+        setNewLabel( newLabels);
+        setNewTyp (newTypes);
+        
+        
         newNameField.setText("");
         gui.getTextArea().setText("");
 

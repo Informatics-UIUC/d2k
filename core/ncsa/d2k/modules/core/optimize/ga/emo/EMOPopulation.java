@@ -1,8 +1,5 @@
 package ncsa.d2k.modules.core.optimize.ga.emo;
 
-import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.modules.core.optimize.util.*;
-
 /**
  * All populations used in EMO must implement this interface.  The parameters
  * for the EMO problem are kept with the population so that any module 

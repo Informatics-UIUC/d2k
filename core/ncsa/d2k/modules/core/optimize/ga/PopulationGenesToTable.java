@@ -103,15 +103,20 @@ public class PopulationGenesToTable extends ncsa.d2k.core.modules.DataPrepModule
                   }
 
                   // Now make the table
-                  MutableTable mt = (MutableTable)DefaultTableFactory.getInstance().createTable(0);
+                  //BASIC3 MutableTable mt = (MutableTable)DefaultTableFactory.getInstance().createTable(0);
+                  MutableTable mt =  new MutableTableImpl(0);
                   int i = 0;
                   for (; i < numTraits ; i++) {
-                          mt.addColumn (dc[i]);
-                          mt.setColumnLabel (Integer.toString(i), i);
+                        //BASIC3  mt.addColumn (dc[i]);
+                        BooleanColumn bc = new BooleanColumn(dc[i]);
+                        mt.addColumn(bc);
+                  		mt.setColumnLabel (Integer.toString(i), i);
                   }
                   for(int j = 0; j < numObjectives; j++, i++) {
-                    mt.addColumn(objs[j]);
-                    mt.setColumnLabel("Objective "+i, i);
+                    //BASIC3 mt.addColumn(objs[j]);
+                  	DoubleColumn dcol = new DoubleColumn(objs[j]);
+                  	mt.addColumn(dcol);
+                  	mt.setColumnLabel("Objective "+i, i);
                   }
 
                   pushOutput(mt, 0);

@@ -311,7 +311,8 @@ public class SOPopulation extends Population implements Serializable {
         public Table getTable () {
                 int numTraits = traits.length;
                 int popSize = this.size ();
-                TableImpl vt = null;
+               //BASIC 3 TableImpl vt = null;
+                MutableTableImpl vt = null;
                 if (members instanceof NumericIndividual []) {
                     double [][] dc = new double [numTraits+1][popSize];
                         NumericIndividual [] nis = (NumericIndividual []) members;
@@ -325,7 +326,8 @@ public class SOPopulation extends Population implements Serializable {
                         }
 
                         // Now make the table
-                        vt = (TableImpl) DefaultTableFactory.getInstance().createTable(0);
+                       // BASIC3 vt = (TableImpl) DefaultTableFactory.getInstance().createTable(0);
+                        vt =  new MutableTableImpl(0);
                         for (int i = 0 ; i < numTraits ; i++) {
                                 DoubleColumn col = new DoubleColumn (dc [i]);
                                 col.setLabel (traits [i].getName ());
@@ -349,7 +351,8 @@ public class SOPopulation extends Population implements Serializable {
                         }
 
                         // Now make the table
-                        vt = (TableImpl)DefaultTableFactory.getInstance().createTable(0);
+                      //BASIC3  vt = (TableImpl)DefaultTableFactory.getInstance().createTable(0);
+                        vt =  new MutableTableImpl(0);
                         for (int i = 0 ; i < numTraits ; i++) {
                                 BooleanColumn col = new BooleanColumn (dc [i]);
                                 col.setLabel (Integer.toString(i));

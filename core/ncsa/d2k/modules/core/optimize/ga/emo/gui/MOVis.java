@@ -1,7 +1,5 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
-import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.modules.core.optimize.util.*;
 import ncsa.d2k.modules.core.optimize.ga.nsga.*;
 import ncsa.d2k.core.modules.*;
 
@@ -17,7 +15,6 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.event.*;
-import javax.swing.plaf.*;
 import javax.swing.plaf.basic.*;
 import java.util.*;
 

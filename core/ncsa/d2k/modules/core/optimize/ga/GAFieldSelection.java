@@ -99,13 +99,14 @@ public class GAFieldSelection extends ncsa.d2k.core.modules.DataPrepModule
 		Ready if we have the example table and a population
 	*/
 	public boolean isReady () {
-		if (originalExamples != null || this.inputFlags[1] > 0)
-			if (pop != null) {
+		//BASIC3 if (originalExamples != null || this.inputFlags[1] > 0)
+		if (originalExamples != null || getInputPipeSize(1) > 0)
+		if (pop != null) {
 
 				// this means there are more members from a previous population
 				return true;
 			} else
-				if (this.inputFlags[0] > 0) {
+				if (getInputPipeSize(0) > 0) {
 					// We have another population of individuals to start on.
 					return true;
 				}

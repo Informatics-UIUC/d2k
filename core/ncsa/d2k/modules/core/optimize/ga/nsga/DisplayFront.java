@@ -1,18 +1,11 @@
 package ncsa.d2k.modules.core.optimize.ga.nsga;
 
 
-import ncsa.d2k.modules.core.optimize.ga.*;
+
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.userviews.*;
-import ncsa.d2k.userviews.widgets.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.gui.Constrain;
 import java.awt.*;
-import java.io.*;
-import javax.swing.*;
 
 
 /**
@@ -120,8 +113,9 @@ class FrontScatterDisplay extends ncsa.d2k.userviews.swing.JUserInputPane {
 	DisplayFront module;
 
 	/** table contains the stuff to plot. */
-	TableImpl table = null;
-
+	//BASIC3 TableImpl table = null;
+	MutableTableImpl table = null;
+	
 	/** graph displaying the scatter plot. */
 	ScatterPlot graph;
 
@@ -154,7 +148,8 @@ class FrontScatterDisplay extends ncsa.d2k.userviews.swing.JUserInputPane {
 				if (graph != null)
 					remove (graph);
 
-				table = (TableImpl)DefaultTableFactory.getInstance().createTable(2);
+				//BASIC3 table = (TableImpl)DefaultTableFactory.getInstance().createTable(2);
+				table =  new MutableTableImpl(2);
 				double [] objx = new double [num];
 				double [] objy = new double [num];
 

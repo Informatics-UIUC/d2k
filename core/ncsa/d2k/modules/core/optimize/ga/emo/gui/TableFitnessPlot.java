@@ -1,12 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
-import javax.swing.*;
-import javax.swing.table.*;
 import java.awt.*;
 import java.awt.geom.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-
-import gnu.trove.*;
 
 /**
  * A Fitness Plot where the values are kept in a Table.

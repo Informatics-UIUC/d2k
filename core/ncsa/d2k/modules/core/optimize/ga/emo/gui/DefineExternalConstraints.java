@@ -4,9 +4,6 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.Constrain;
 
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

@@ -1,11 +1,8 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.examples;
 
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
 	Evaluate the new population. The population object does all the work,

@@ -9,7 +9,6 @@ import java.awt.image.*;
 import javax.swing.*;
 import java.util.*;
 
-import ncsa.d2k.modules.core.optimize.ga.nsga.*;
 
 /**
  * Fitness plot is a scatter plot graph that plots two fitness functions.  The

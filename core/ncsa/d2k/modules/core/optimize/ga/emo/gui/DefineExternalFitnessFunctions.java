@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;

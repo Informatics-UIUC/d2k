@@ -143,20 +143,26 @@ public class SOVis extends UIModule {
         pop = p;
 
         mt = new MutableTableImpl(2);
-        mt.setColumn(new int[0], 0);
+        //BASIC3 mt.setColumn(new int[0], 0);
+        mt.setColumn(new IntColumn(0), 0);
         mt.setColumnLabel("Generation", 0);
-        mt.setColumn(new double[0], 1);
+        //BASIC3 mt.setColumn(new double[0], 1);
+        mt.setColumn(new DoubleColumn(0), 1);
         mt.setColumnLabel("Average Fitness", 1);
         scatterPlot.init(mt, dataSets, graphSettings);
       }
       p.computeStatistics();
 
-      Object[] row = new Object[2];
-      row[0] = new Integer(p.getCurrentGeneration());
-      row[1] = new Double(((SOPopulation)p).getAverageFitness());
-
-      mt.addRow(row);
-
+//BASIC3      Object[] row = new Object[2];
+//      row[0] = new Integer(p.getCurrentGeneration());
+//      row[1] = new Double(((SOPopulation)p).getAverageFitness());
+//
+//      mt.addRow(row);
+      int numRows = mt.getNumRows();
+      mt.addRows(1);
+      mt.setInt(p.getCurrentGeneration(),numRows,0);
+      mt.setDouble(((SOPopulation)p).getAverageFitness(),numRows,1);
+      
 //      System.out.println("******************");
 //      ((MutableTableImpl)mt).print();
 

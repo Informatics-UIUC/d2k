@@ -7,7 +7,6 @@ import javax.swing.table.*;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
@@ -117,26 +116,35 @@ public class DefineConstraintViolationFunctions
       table = new MutableTableImpl(numVars);
 
       for (int j = 0; j < numVars; j++) {
-        table.setColumn(new double[0], j);
+       //BASIC3 table.setColumn(new double[0], j);
+      	table.setColumn(new DoubleColumn(0), j);
         table.setColumnLabel(dv.getVariableName(j), j);
       }
       // add columns for any FF, FV, CV, or CF defined before this...
       FitnessFunctions ff = parameters.fitnessFunctions;
       for(int j = 0; j < ff.getNumFitnessVariables(); j++) {
-        table.addColumn(new double[0]);
+        //BASIC3 table.addColumn(new double[0]);
+        DoubleColumn dc = new DoubleColumn(new double[0]);
+        table.addColumn(dc);
         table.setColumnLabel(ff.getFitnessVariableName(j), table.getNumColumns()-1);
       }
       for(int j = 0; j < ff.getNumFitnessFunctions(); j++) {
-        table.addColumn(new double[0]);
+        //BASIC3 table.addColumn(new double[0]);
+        DoubleColumn dc = new DoubleColumn(new double[0]);
+        table.addColumn(dc);
         table.setColumnLabel(ff.getFitnessFunctionName(j), table.getNumColumns()-1);
       }
       Constraints con = parameters.constraints;
       for(int j = 0; j < con.getNumConstraintVariables(); j++) {
-        table.addColumn(new double[0]);
+        //BASIC3 table.addColumn(new double[0]);
+        DoubleColumn dc = new DoubleColumn(new double[0]);
+        table.addColumn(dc);
         table.setColumnLabel(con.getConstraintVariableName(j), table.getNumColumns()-1);
       }
       for(int j = 0; j < con.getNumConstraintFunctions(); j++) {
-        table.addColumn(new double[0]);
+        //BASIC3 table.addColumn(new double[0]);
+        DoubleColumn dc = new DoubleColumn(new double[0]);
+        table.addColumn(dc);
         table.setColumnLabel(con.getConstraintFunctionName(j), table.getNumColumns()-1);
       }
 
@@ -467,10 +475,13 @@ public class DefineConstraintViolationFunctions
 
           }
 
-          _newLab = newLabels;
-          _newTyp = newTypes;
-          _lastCons = newColumnModel.toArray();
-
+          //_newLab = newLabels;
+          //_newTyp = newTypes;
+          //BASIC3 _lastCons = newColumnModel.toArray();
+          setLastCons (newColumnModel.toArray());
+          setNewLabel(newLabels);
+          setNewTyp( newTypes);
+          //
           /**
            * Remove label from columnBox, label from the columnModel,
            * remove row from modelData
@@ -492,7 +503,9 @@ public class DefineConstraintViolationFunctions
 
           float[] tmpfloat = new float[0];
           // add an empty column of floats to the table
-          table.addColumn(tmpfloat);
+          //BASIC3 table.addColumn(tmpfloat);
+          FloatColumn bc = new FloatColumn(tmpfloat);
+          table.addColumn(bc);
           // set the label of the new column added to the table
           table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
         }
@@ -617,10 +630,14 @@ public class DefineConstraintViolationFunctions
         newColumnModel.addElement(added);
         newColumnList.setMinimumSize(new Dimension(200, 200));
 
-        _newLab = newLabels;
-        _newTyp = newTypes;
-        _lastCons = newColumnModel.toArray();
-
+        //BASIC3 _lastCons = newColumnModel.toArray();
+        //_newLab = newLabels;
+        //_newTyp = newTypes;
+        
+        setLastCons (newColumnModel.toArray());
+        setNewLabel(newLabels);
+        setNewTyp( newTypes);
+        
         //newColumnModel.addElement(added);
 
         // if the expression is valid set the expression of gui

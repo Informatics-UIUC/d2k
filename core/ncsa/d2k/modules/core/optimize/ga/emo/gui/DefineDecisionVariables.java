@@ -497,7 +497,7 @@ public class DefineDecisionVariables
       Box string_length_panel = new Box(BoxLayout.X_AXIS);
       string_length_panel.add(Box.createHorizontalStrut(200));
       string_length_panel.add(total_string_length);
-      string_length_panel.setBorder(new EmptyBorder(10, 5, 5, 5));
+      //COMPILER_ERROR::string_length_panel.setBorder(new EmptyBorder(10, 5, 5, 5));
 
       MainPanel[1].add(string_length_panel);
       /**
@@ -770,7 +770,8 @@ public class DefineDecisionVariables
           // now create a new MutableTableImpl to hold the seeding values
           MutableTable mt = new MutableTableImpl(numTok);
           for(int i = 0; i < numTok; i++) {
-            mt.setColumn(new double[numLines], i);
+           //BASIC3  mt.setColumn(new double[numLines], i);
+          	mt.setColumn(new DoubleColumn(numLines), i);
           }
 
           br = new BufferedReader(new FileReader(file));

@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.optimize.ga;
 
 import ncsa.d2k.modules.core.optimize.util.*;
 import java.io.Serializable;
-import java.math.*;
+
 
 /**
         This is the individual encoded as an array of booleans, the

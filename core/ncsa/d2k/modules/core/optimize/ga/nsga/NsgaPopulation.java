@@ -666,7 +666,8 @@ abstract public class NsgaPopulation
 
     }
     // Now make the table
-    TableImpl vt = (TableImpl) DefaultTableFactory.getInstance().createTable(0);
+    //BASIC3 TableImpl vt = (TableImpl) DefaultTableFactory.getInstance().createTable(0);
+    MutableTableImpl vt =  new MutableTableImpl(0);
     int i = 0;
 
     for (; i < numTraits; i++) {

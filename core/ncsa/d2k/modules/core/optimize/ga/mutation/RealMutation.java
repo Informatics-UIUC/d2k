@@ -1,10 +1,6 @@
 package ncsa.d2k.modules.core.optimize.ga.mutation;
 
 import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.modules.core.optimize.util.*;
-import ncsa.d2k.core.modules.*;
-import java.io.Serializable;
-import java.util.Random;
 
 /**
                 This module does simulated binary crossover. It will operate

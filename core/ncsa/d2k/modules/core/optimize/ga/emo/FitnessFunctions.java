@@ -44,12 +44,20 @@ public class FitnessFunctions implements java.io.Serializable {
 
   public FitnessFunctions() {
     externalFunctions = new MutableTableImpl(5);
-    externalFunctions.setColumn(new String[0], 0);
-    externalFunctions.setColumn(new String[0], 1);
-    externalFunctions.setColumn(new String[0], 2);
-    externalFunctions.setColumn(new boolean[0], 3);
-    externalFunctions.setColumn(new String[0], 4);
+//BASIC3
+//    externalFunctions.setColumn(new String[0], 0);
+//    externalFunctions.setColumn(new String[0], 1);
+//    externalFunctions.setColumn(new String[0], 2);
+//    externalFunctions.setColumn(new boolean[0], 3);
+//    externalFunctions.setColumn(new String[0], 4);
 
+    externalFunctions.setColumn(new StringColumn(0), 0);
+    externalFunctions.setColumn(new StringColumn(0), 1);
+    externalFunctions.setColumn(new StringColumn(0), 2);
+    externalFunctions.setColumn(new BooleanColumn(0), 3);
+    externalFunctions.setColumn(new StringColumn(0), 4);
+    
+    
     fitnessVariables = new ArrayList();
     fitnessFunctions = new ArrayList();
   }
@@ -154,13 +162,20 @@ public class FitnessFunctions implements java.io.Serializable {
    * @param min true if this function is minimizing, false if maximizing
    */
   public void addExternFitnessFunction(String nm, String exec, String in, String out, boolean min) {
-    Object[] row = new Object[5];
-    row[NAME] = nm;
-    row[INPUT] = in;
-    row[OUTPUT] = out;
-    row[MAX_MIN] = new Boolean(min);
-    row[EXEC] = exec;
-    externalFunctions.addRow(row);
+//BASIC3    Object[] row = new Object[5];
+//    row[NAME] = nm;
+//    row[INPUT] = in;
+//    row[OUTPUT] = out;
+//    row[MAX_MIN] = new Boolean(min);
+//    row[EXEC] = exec;
+//    externalFunctions.addRow(row);
+  	int numRows = externalFunctions.getNumRows();
+  	externalFunctions.addRows(1);
+  	externalFunctions.setString(nm,numRows,NAME);
+  	externalFunctions.setString(in,numRows,INPUT);
+  	externalFunctions.setString(out,numRows,OUTPUT);
+  	externalFunctions.setBoolean(min,numRows,MAX_MIN);
+  	externalFunctions.setString(exec,numRows,EXEC);
   }
 
   /**

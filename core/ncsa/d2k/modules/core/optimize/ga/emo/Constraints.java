@@ -60,12 +60,18 @@ public class Constraints implements java.io.Serializable {
   public Constraints() {
     // create the externalFunctions table
     externalFunctions = new MutableTableImpl(5);
-    externalFunctions.setColumn(new String[0], 0);
-    externalFunctions.setColumn(new String[0], 1);
-    externalFunctions.setColumn(new String[0], 2);
-    externalFunctions.setColumn(new double[0], 3);
-    externalFunctions.setColumn(new String[0], 4);
+//BASIC3    externalFunctions.setColumn(new String[0], 0);
+//    externalFunctions.setColumn(new String[0], 1);
+//    externalFunctions.setColumn(new String[0], 2);
+//    externalFunctions.setColumn(new double[0], 3);
+//    externalFunctions.setColumn(new String[0], 4);
 
+    externalFunctions.setColumn(new StringColumn(0), 0);
+    externalFunctions.setColumn(new StringColumn(0), 1);
+    externalFunctions.setColumn(new StringColumn(0), 2);
+    externalFunctions.setColumn(new DoubleColumn(0), 3);
+    externalFunctions.setColumn(new StringColumn(0), 4);
+    
     // create the lists
     constraintVariables = new ArrayList();
     constraintFunctions = new ArrayList();
@@ -179,13 +185,23 @@ public class Constraints implements java.io.Serializable {
    * @param w the weight assigned to the constraint
    */
   public void addExternConstraint(String nm, String exec, String in, String out, double w) {
-    Object[] row = new Object[5];
-    row[0] = nm;
-    row[1] = in;
-    row[2] = out;
-    row[3] = new Double(w);
-    row[4] = exec;
-    externalFunctions.addRow(row);
+
+//BASIC3    Object[] row = new Object[5];
+//    row[0] = nm;
+//    row[1] = in;
+//    row[2] = out;
+//    row[3] = new Double(w);
+//    row[4] = exec;
+//    externalFunctions.addRow(row);
+  	int numRows = externalFunctions.getNumRows();
+  	externalFunctions.addRows(1);
+  	externalFunctions.setString(nm,numRows,0);
+  	externalFunctions.setString(in,numRows,1);
+  	externalFunctions.setString(out,numRows,2);
+  	externalFunctions.setDouble(w,numRows,3);
+  	externalFunctions.setString(exec,numRows,4);
+  	
+  	
   }
 
   /**

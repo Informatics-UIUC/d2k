@@ -1,14 +1,8 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.*;
-import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
-import ncsa.d2k.modules.core.transform.attribute.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
@@ -57,7 +51,9 @@ public class DefineConstraintVariables
 
           float[] tmpfloat = new float[0];
           // add an empty column of floats to the table
-          table.addColumn(tmpfloat);
+          //BASIC3 table.addColumn(tmpfloat);
+          FloatColumn dc = new FloatColumn(tmpfloat);
+          table.addColumn(dc);
           // set the label of the new column added to the table
           table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
         }
