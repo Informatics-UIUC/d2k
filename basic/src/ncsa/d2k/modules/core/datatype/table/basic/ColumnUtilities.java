@@ -32,7 +32,11 @@ final public class ColumnUtilities {
 	public static IntColumn toIntColumn(Column sc) {
 		IntColumn dc = new IntColumn(sc.getNumRows());
 		for(int i = 0; i < sc.getNumRows(); i++)
-			dc.setInt(sc.getInt(i), i);
+            try {
+			   dc.setInt(sc.getInt(i), i);
+            } catch (NumberFormatException nfe) {
+               dc.setInt(0, i);
+            }
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
 		ColumnUtilities.copyMissingValues(sc, dc);
@@ -138,13 +142,84 @@ final public class ColumnUtilities {
 	}
 
 	/**
+		Create a new StringColumn with the data from sc.  The
+		Objects in the new column are references to the Objects in
+		the original column.
+		@param sc the original column
+		@return a StringColumn initialized with the data from sc
+	*/
+	public static ByteArrayColumn toByteArrayColumn(Column sc) {
+		ByteArrayColumn dc = new ByteArrayColumn(sc.getNumRows());
+		for(int i = 0; i < sc.getNumRows(); i++)
+			dc.setBytes(sc.getBytes(i), i);
+		dc.setLabel(sc.getLabel());
+		dc.setComment(sc.getComment());
+		ColumnUtilities.copyMissingValues(sc, dc);
+		return dc;
+	}
+
+	/**
+		Create a new StringColumn with the data from sc.  The
+		Objects in the new column are references to the Objects in
+		the original column.
+		@param sc the original column
+		@return a StringColumn initialized with the data from sc
+	*/
+	public static CharArrayColumn toCharArrayColumn(Column sc) {
+		CharArrayColumn dc = new CharArrayColumn(sc.getNumRows());
+		for(int i = 0; i < sc.getNumRows(); i++)
+			dc.setChars(sc.getChars(i), i);
+		dc.setLabel(sc.getLabel());
+		dc.setComment(sc.getComment());
+		ColumnUtilities.copyMissingValues(sc, dc);
+		return dc;
+	}
+
+
+	/**
+		Create a new StringColumn with the data from sc.  The
+		Objects in the new column are references to the Objects in
+		the original column.
+		@param sc the original column
+		@return a StringColumn initialized with the data from sc
+	*/
+	public static ByteColumn toByteColumn(Column sc) {
+		ByteColumn dc = new ByteColumn(sc.getNumRows());
+		for(int i = 0; i < sc.getNumRows(); i++)
+			dc.setByte(sc.getByte(i), i);
+		dc.setLabel(sc.getLabel());
+		dc.setComment(sc.getComment());
+		ColumnUtilities.copyMissingValues(sc, dc);
+		return dc;
+	}
+
+	/**
+		Create a new StringColumn with the data from sc.  The
+		Objects in the new column are references to the Objects in
+		the original column.
+		@param sc the original column
+		@return a StringColumn initialized with the data from sc
+	*/
+	public static CharColumn toCharColumn(Column sc) {
+		CharColumn dc = new CharColumn(sc.getNumRows());
+		for(int i = 0; i < sc.getNumRows(); i++)
+			dc.setChar(sc.getChar(i), i);
+		dc.setLabel(sc.getLabel());
+		dc.setComment(sc.getComment());
+		ColumnUtilities.copyMissingValues(sc, dc);
+		return dc;
+	}
+
+	/**
 	 * Copy the missing values from one column to another.
 	 * @param from column to copy missing values from.
 	 * @param to column to copy the missing values to.
 	 */
 	private static void copyMissingValues(Column from, Column to) {
-		((MissingValuesColumn)to).setMissingValues(
-			((MissingValuesColumn)from).getMissingValues());
+		boolean[] orig = ((MissingValuesColumn)from).getMissingValues();
+		boolean[] copy = new boolean[orig.length];
+		System.arraycopy(orig, 0, copy, 0, copy.length);
+		((MissingValuesColumn)to).setMissingValues(copy);
 	}
 
     /**

@@ -658,14 +658,17 @@ class ScalingTransformation implements Transformation {
 		   	  }
 		   }
 		}
-
-		String columnLabel = table.getColumnLabel(index);
-		String columnComment = table.getColumnComment(index);
-		DoubleColumn col = new DoubleColumn(data);
-		col.setMissingValues(missing);
+		
+		// Create the new column, set the column in the table, then
+		// set the new scaled values. In this way, we preserve the subset.
+		Column col = ColumnUtilities.toDoubleColumn(table.getColumn(index));
 		table.setColumn(col, index);
-		table.setColumnLabel(columnLabel, index);
-		table.setColumnComment(columnComment, index);
+		for (int i = 0 ; i < data.length ; i++) {
+		   if (missing[i])
+		      table.setDouble(table.getMissingDouble(), i, index);
+		   else
+		      table.setDouble(data[i], i, index);   
+		}
 	 }
 	 return true;
   }

@@ -112,13 +112,14 @@ public class ReplaceNominalsWithIntsTransform
 			 	missing[j] = true;
 			 }
 		 }
-		 label = mt.getColumnLabel(col);
-		 IntColumn ic = new IntColumn(intColumn);
-		 ic.setMissingValues(missing);
-		 mt.setColumn(ic, col);
-		 mt.setColumnLabel(label, col);
-		 mt.setColumnIsNominal(true,col);
-		 mt.setColumnIsScalar(false,col);
+         
+         Column newColumn = ColumnUtilities.toIntColumn(mt.getColumn(col));
+         mt.setColumn(newColumn, col);
+         for (int pp = 0; pp < numRows ; pp++) {
+             mt.setInt (intColumn[pp], pp, col);
+         }
+         mt.setColumnIsNominal(true,col);
+         mt.setColumnIsScalar(false,col);
 	  }
 
 	  return true;

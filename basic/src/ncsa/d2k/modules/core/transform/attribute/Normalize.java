@@ -21,6 +21,8 @@ import ncsa.d2k.core.modules.ViewModule;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.Transformation;
+import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.basic.ColumnUtilities;
 import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
 import ncsa.d2k.userviews.swing.JUserPane;
 
@@ -402,14 +404,14 @@ public class Normalize extends HeadlessUIModule {
 			   	     data[j] = data[j] / sample_std_dev;
             }
 
-            String columnLabel = table.getColumnLabel(index);
-            String columnComment = table.getColumnComment(index);
-			DoubleColumn col = new DoubleColumn(data);
-            table.setColumn(col, index);
-			col.setMissingValues(missing);
-            table.setColumnLabel(columnLabel, index);
-            table.setColumnComment(columnComment, index);
-
+            Column newColumn = ColumnUtilities.toDoubleColumn(table.getColumn(index));
+            table.setColumn(newColumn, index);
+            for (int entry = 0 ; entry < data.length ;entry++) {
+                if (table.isValueMissing (entry, index))
+                    table.setDouble(table.getMissingDouble(), entry, index);
+                else
+                    table.setDouble(data[entry], entry, index);
+            }
          }
 
          return true;

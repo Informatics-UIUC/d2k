@@ -294,8 +294,13 @@ public class AutoBinOPT extends DataPrepModule {
 			if (isScalar) {
 				int numRows = tbl.getNumRows();
 				int missing =0;
-				if (tbl.getColumn(inputs[i]).hasMissingValues())
-					missing = tbl.getColumn(inputs[i]).getNumMissingValues();
+				if (tbl.getColumn(inputs[i]).hasMissingValues()) {
+                    // Count missing values using table methods in case it is a subsetted table.
+                    for (int ri = 0, ci = inputs[i] ; ri < numRows ; ri++) {
+                        if (tbl.isValueMissing(ri, ci))
+                            missing++;
+                    }        
+                }
 				double[] vals =  new double[tbl.getNumRows()-missing];
 
 				//ANCA added support for eliminating missing values when setting interval limits

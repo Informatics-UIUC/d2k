@@ -21,420 +21,409 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
  */
 public class ScalarizeNominals extends DataPrepModule {
 
-	////////////////////////////////////////////////////////////////////////////////
-	// Module methods                                                             //
-	////////////////////////////////////////////////////////////////////////////////
-
-	public String getInputInfo(int index) {
-		if (index == 0)
-			return "A <i>MutableTable</i> (possibly an <i>ExampleTable</i>).";
-		return "NO SUCH INPUT";
-	}
-
-	public String getInputName(int index) {
-		if (index == 0)
-			return "Mutable Table";
-		return "NO SUCH INPUT";
-	}
-
-	public String[] getInputTypes() {
-		return new String[] { "ncsa.d2k.modules.core.datatype.table.MutableTable" };
-	}
-
-	public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer("<p>Overview: ");
-		sb.append(
-			"This module examines columns in a <i>MutableTable</i> and, ");
-		sb.append("for appropriate columns which contain nominal values, ");
-		sb.append(
-			"converts these single columns into multiple columns -- one ");
-		sb.append("for each possible value of the attribute.");
-		sb.append("</p><p>Detailed Description: ");
-		sb.append("If the input <i>MutableTable</i> implements the ");
-		sb.append("<i>ExampleTable</i> interface, only columns marked as ");
-		sb.append("inputs and outputs will be converted. Otherwise, all ");
-		sb.append("columns containing nominal values will be converted. ");
-		sb.append("Through a property of the module, the user can select ");
-		sb.append("whether the generated columns are double or boolean.");
-		sb.append("</p><p>Data Handling: ");
-		sb.append(
-			"This module modifies its input data; each relevant nominal ");
-		sb.append("column may be replaced with an arbitrary number of new ");
-		sb.append("ones. In addition, columns with blank labels are assigned ");
-		sb.append("default ones.");
-		sb.append("</p>");
-
-		sb.append(
-			"<P>Missing Values Handling: Missing values are preserved by this "
-				+ "module. A missing value in a certain nominal column will have matching "
-				+ "missing values in the respective scalarized columns.");
-
-		return sb.toString();
-	}
-
-	public String getModuleName() {
-		return "Scalarize Nominals";
-	}
-
-	public String getOutputInfo(int index) {
-		if (index == 0) {
-			StringBuffer sb = new StringBuffer();
-			sb.append(
-				"The input <i>MutableTable</i> with appropriate nominal ");
-			sb.append("columns transformed.");
-			return sb.toString();
-		}
-		return "NO SUCH OUTPUT";
-	}
-
-	public String[] getOutputTypes() {
-		return new String[] { "ncsa.d2k.modules.core.datatype.table.MutableTable" };
-	}
-
-	public String getOutputName(int index) {
-		if (index == 0)
-			return "Scalarized Mutable Table";
-		return "NO SUCH OUTPUT";
-	}
-
-	////////////////////////////////////////////////////////////////////////////////
-	// properties                                                                 //
-	////////////////////////////////////////////////////////////////////////////////
-
-	private boolean _newTypeBoolean = true;
-	public void setNewTypeBoolean(boolean value) {
-		_newTypeBoolean = value;
-	}
-	public boolean getNewTypeBoolean() {
-		return _newTypeBoolean;
-	}
-
-	public PropertyDescription[] getPropertiesDescriptions() {
-
-		PropertyDescription newTypeBooleanDesc =
-			new PropertyDescription(
-				"newTypeBoolean",
-				"Create new columns as type boolean",
-				"Controls whether converted nominal columns will have scalar type "
-					+ "boolean (true) or type double (false).");
-
-		return new PropertyDescription[] { newTypeBooleanDesc };
-
-	}
-
-	////////////////////////////////////////////////////////////////////////////////
-	// doit()                                                                     //
-	////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    // Module methods                                                             //
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public String getInputInfo(int index) {
+        if (index == 0)
+            return "A <i>MutableTable</i> (possibly an <i>ExampleTable</i>).";
+        return "NO SUCH INPUT";
+    }
+
+    public String getInputName(int index) {
+        if (index == 0)
+            return "Mutable Table";
+        return "NO SUCH INPUT";
+    }
+
+    public String[] getInputTypes() {
+        return new String[] { "ncsa.d2k.modules.core.datatype.table.MutableTable" };
+    }
+
+    public String getModuleInfo() {
+        StringBuffer sb = new StringBuffer("<p>Overview: ");
+        sb.append("This module examines columns in a <i>MutableTable</i> and, ");
+        sb.append("for appropriate columns which contain nominal values, ");
+        sb.append("converts these single columns into multiple columns -- one ");
+        sb.append("for each possible value of the attribute.");
+        sb.append("</p><p>Detailed Description: ");
+        sb.append("If the input <i>MutableTable</i> implements the ");
+        sb.append("<i>ExampleTable</i> interface, only columns marked as ");
+        sb.append("inputs and outputs will be converted. Otherwise, all ");
+        sb.append("columns containing nominal values will be converted. ");
+        sb.append("Through a property of the module, the user can select ");
+        sb.append("whether the generated columns are double or boolean.");
+        sb.append("</p><p>Data Handling: ");
+        sb.append("This module modifies its input data; each relevant nominal ");
+        sb.append("column may be replaced with an arbitrary number of new ");
+        sb.append("ones. In addition, columns with blank labels are assigned ");
+        sb.append("default ones.");
+        sb.append("</p>");
+
+        sb.append(
+            "<P>Missing Values Handling: Missing values are preserved by this "
+                + "module. A missing value in a certain nominal column will have matching "
+                + "missing values in the respective scalarized columns.");
+
+        return sb.toString();
+    }
+
+    public String getModuleName() {
+        return "Scalarize Nominals";
+    }
+
+    public String getOutputInfo(int index) {
+        if (index == 0) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("The input <i>MutableTable</i> with appropriate nominal ");
+            sb.append("columns transformed.");
+            return sb.toString();
+        }
+        return "NO SUCH OUTPUT";
+    }
+
+    public String[] getOutputTypes() {
+        return new String[] { "ncsa.d2k.modules.core.datatype.table.MutableTable" };
+    }
+
+    public String getOutputName(int index) {
+        if (index == 0)
+            return "Scalarized Mutable Table";
+        return "NO SUCH OUTPUT";
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // properties                                                                 //
+    ////////////////////////////////////////////////////////////////////////////////
 
-	public void doit() throws Exception {
+    private boolean _newTypeBoolean = true;
+    public void setNewTypeBoolean(boolean value) {
+        _newTypeBoolean = value;
+    }
+    public boolean getNewTypeBoolean() {
+        return _newTypeBoolean;
+    }
 
-		MutableTable table = (MutableTable) pullInput(0);
+    public PropertyDescription[] getPropertiesDescriptions() {
 
-		int[] indices;
-		int[] origInputs = null, origOutputs = null;
+        PropertyDescription newTypeBooleanDesc =
+            new PropertyDescription(
+                "newTypeBoolean",
+                "Create new columns as type boolean",
+                "Controls whether converted nominal columns will have scalar type " + "boolean (true) or type double (false).");
 
-		// columns with blank labels need to be assigned default ones
+        return new PropertyDescription[] { newTypeBooleanDesc };
+
+    }
 
-		for (int i = 0; i < table.getNumColumns(); i++) {
-			String s = table.getColumnLabel(i);
-			if (s == null || s.length() == 0)
-				table.setColumnLabel("column_" + i, i);
-		}
+    ////////////////////////////////////////////////////////////////////////////////
+    // doit()                                                                     //
+    ////////////////////////////////////////////////////////////////////////////////
 
-		// determine which columns we wish to transform
+    public void doit() throws Exception {
 
-		boolean tableIsExample = false;
+        MutableTable table = (MutableTable) pullInput(0);
 
-		if (table instanceof ExampleTable) {
+        int[] indices;
+        int[] origInputs = null, origOutputs = null;
 
-			tableIsExample = true;
+        // columns with blank labels need to be assigned default ones
 
-			ExampleTable et = (ExampleTable) table;
+        for (int i = 0; i < table.getNumColumns(); i++) {
+            String s = table.getColumnLabel(i);
+            if (s == null || s.length() == 0)
+                table.setColumnLabel("column_" + i, i);
+        }
 
-			origInputs = new int[et.getInputFeatures().length];
-			for (int i = 0; i < origInputs.length; i++)
-				origInputs[i] = et.getInputFeatures()[i];
+        // determine which columns we wish to transform
 
-			origOutputs = new int[et.getOutputFeatures().length];
-			for (int i = 0; i < origOutputs.length; i++)
-				origOutputs[i] = et.getOutputFeatures()[i];
+        boolean tableIsExample = false;
 
-			// ensure unique column indices
+        if (table instanceof ExampleTable) {
 
-			HashMap uniqueIndexMap = new HashMap();
+            tableIsExample = true;
 
-			for (int i = 0; i < origInputs.length; i++)
-				if (et.isColumnNominal(origInputs[i]))
-					uniqueIndexMap.put(new Integer(origInputs[i]), null);
+            ExampleTable et = (ExampleTable) table;
 
-			for (int i = 0; i < origOutputs.length; i++)
-				if (et.isColumnNominal(origOutputs[i]))
-					uniqueIndexMap.put(new Integer(origOutputs[i]), null);
+            origInputs = new int[et.getInputFeatures().length];
+            for (int i = 0; i < origInputs.length; i++)
+                origInputs[i] = et.getInputFeatures()[i];
 
-			// retrieve column indices
+            origOutputs = new int[et.getOutputFeatures().length];
+            for (int i = 0; i < origOutputs.length; i++)
+                origOutputs[i] = et.getOutputFeatures()[i];
 
-			indices = new int[uniqueIndexMap.size()];
-			int index = 0;
+            // ensure unique column indices
 
-			Iterator iterator = uniqueIndexMap.keySet().iterator();
-			while (iterator.hasNext())
-				indices[index++] = ((Integer) iterator.next()).intValue();
+            HashMap uniqueIndexMap = new HashMap();
 
-			Arrays.sort(indices);
+            for (int i = 0; i < origInputs.length; i++)
+                if (et.isColumnNominal(origInputs[i]))
+                    uniqueIndexMap.put(new Integer(origInputs[i]), null);
 
-			// we'll be removing all input and output columns, so set these to
-			// empty (at least until ExampleTableImpl handles this properly!)
-			/*
-			et.setInputFeatures(new int[0]);
-			et.setOutputFeatures(new int[0]);
-			*/
+            for (int i = 0; i < origOutputs.length; i++)
+                if (et.isColumnNominal(origOutputs[i]))
+                    uniqueIndexMap.put(new Integer(origOutputs[i]), null);
 
-		} else {
+            // retrieve column indices
 
-			// simply iterate to find nominal columns
+            indices = new int[uniqueIndexMap.size()];
+            int index = 0;
 
-			int numNominalColumns = 0;
+            Iterator iterator = uniqueIndexMap.keySet().iterator();
+            while (iterator.hasNext())
+                indices[index++] = ((Integer) iterator.next()).intValue();
 
-			for (int i = 0; i < table.getNumColumns(); i++)
-				if (table.isColumnNominal(i))
-					numNominalColumns++;
+            Arrays.sort(indices);
 
-			indices = new int[numNominalColumns];
+            // we'll be removing all input and output columns, so set these to
+            // empty (at least until ExampleTableImpl handles this properly!)
+            /*
+            et.setInputFeatures(new int[0]);
+            et.setOutputFeatures(new int[0]);
+            */
 
-			int index = 0;
-			for (int i = 0; i < table.getNumColumns(); i++)
-				if (table.isColumnNominal(i))
-					indices[index++] = i;
+        } else {
 
-		}
+            // simply iterate to find nominal columns
 
-		// iterate and replace
+            int numNominalColumns = 0;
 
-		int offset = 0; // number of extra columns added to the table. must be
-		// added to column indices in order to keep consistent
-		int numRows = table.getNumRows();
-		for (int count = 0; count < indices.length; count++) {
-			int index = indices[count] + offset;
+            for (int i = 0; i < table.getNumColumns(); i++)
+                if (table.isColumnNominal(i))
+                    numNominalColumns++;
 
-			// find this column's unique values
-			HashMap uniqueValuesMap = new HashMap();
-			int uniqueValueCount = 0;
-			for (int row = 0; row < numRows; row++) {
+            indices = new int[numNominalColumns];
 
-				if (table.isValueMissing(row, index))
-					continue;
+            int index = 0;
+            for (int i = 0; i < table.getNumColumns(); i++)
+                if (table.isColumnNominal(i))
+                    indices[index++] = i;
 
-				String s = table.getString(row, index);
+        }
 
-				if (s == null || s.length() == 0)
-					continue;
-				if (uniqueValuesMap.containsKey(s))
-					continue;
-				uniqueValuesMap.put(s, new Integer(uniqueValueCount++));
-			}
+        // iterate and replace
 
-			if (uniqueValuesMap.size() == 0) {
-				// nothing (or only missing) here
-				continue;
-			} else {
+        int offset = 0; // number of extra columns added to the table. must be
+        // added to column indices in order to keep consistent
+        int numRows = table.getNumRows();
+        for (int count = 0; count < indices.length; count++) {
+            int index = indices[count] + offset;
 
-				// first, we'd like our string-to-integer mappings as arrays,
-				// for efficiency
+            // find this column's unique values
+            HashMap uniqueValuesMap = new HashMap();
+            int uniqueValueCount = 0;
+            for (int row = 0; row < numRows; row++) {
 
-				String[] uniqueValues = new String[uniqueValuesMap.size()];
-				int[] uniqueValueIndices = new int[uniqueValues.length];
+                if (table.isValueMissing(row, index))
+                    continue;
 
-				Iterator iterator = uniqueValuesMap.keySet().iterator();
-				int iteratorCount = 0;
+                String s = table.getString(row, index);
 
-				while (iterator.hasNext())
-					uniqueValues[iteratorCount++] = (String) iterator.next();
+                if (s == null || s.length() == 0)
+                    continue;
+                if (uniqueValuesMap.containsKey(s))
+                    continue;
+                uniqueValuesMap.put(s, new Integer(uniqueValueCount++));
+            }
 
-				for (int i = 0; i < uniqueValues.length; i++)
-					uniqueValueIndices[i] =
-						((Integer) uniqueValuesMap.get(uniqueValues[i]))
-							.intValue();
+            if (uniqueValuesMap.size() == 0) {
+                // nothing (or only missing) here
+                continue;
+            } else {
 
-				// we also want an indirection array so we can act as if these
-				// mappings were sorted on the integer value
+                // first, we'd like our string-to-integer mappings as arrays,
+                // for efficiency
 
-				int[] indirection = new int[uniqueValueIndices.length];
-				for (int i = 0; i < uniqueValueIndices.length; i++)
-					indirection[uniqueValueIndices[i]] = i;
+                String[] uniqueValues = new String[uniqueValuesMap.size()];
+                int[] uniqueValueIndices = new int[uniqueValues.length];
 
-				// now create one array for the entire column specifying which
-				// unique value is contained in each row. if the value is missing
-				// or empty, set to -1.
+                Iterator iterator = uniqueValuesMap.keySet().iterator();
+                int iteratorCount = 0;
 
-				int[] match = new int[numRows];
-				boolean[] missing = new boolean[numRows];
+                while (iterator.hasNext())
+                    uniqueValues[iteratorCount++] = (String) iterator.next();
 
-				for (int row = 0; row < numRows; row++) {
+                for (int i = 0; i < uniqueValues.length; i++)
+                    uniqueValueIndices[i] = ((Integer) uniqueValuesMap.get(uniqueValues[i])).intValue();
 
-					if (table.isValueMissing(row, index)
-						|| table.isValueEmpty(row, index)) {
-						match[row] = -1;
-						missing[row] = true;
-						continue;
-					}
+                // we also want an indirection array so we can act as if these
+                // mappings were sorted on the integer value
 
-					String s = table.getString(row, index);
-					missing[row] = false;
+                int[] indirection = new int[uniqueValueIndices.length];
+                for (int i = 0; i < uniqueValueIndices.length; i++)
+                    indirection[uniqueValueIndices[i]] = i;
 
-					for (int j = 0; j < uniqueValues.length; j++) {
-						if (s.equals(uniqueValues[indirection[j]])) {
-							match[row] = j;
-							break;
-						}
-					}
+                // now create one array for the entire column specifying which
+                // unique value is contained in each row. if the value is missing
+                // or empty, set to -1.
 
-				}
+                int[] match = new int[numRows];
+                boolean[] missing = new boolean[numRows];
 
-				// !:
-				// are we dealing with an ExampleTable? if so, is the old column
-				// an input, output, or both?
+                for (int row = 0; row < numRows; row++) {
 
-				boolean isInput = false, isOutput = false;
-				if (tableIsExample) {
+                    if (table.isValueMissing(row, index) || table.isValueEmpty(row, index)) {
+                        match[row] = -1;
+                        missing[row] = true;
+                        continue;
+                    }
 
-					ExampleTable et = (ExampleTable) table;
+                    String s = table.getString(row, index);
+                    missing[row] = false;
 
-					for (int i = 0; i < origInputs.length; i++) {
-						if (origInputs[i] == indices[count]) {
-							isInput = true;
-							break;
-						}
-					}
+                    for (int j = 0; j < uniqueValues.length; j++) {
+                        if (s.equals(uniqueValues[indirection[j]])) {
+                            match[row] = j;
+                            break;
+                        }
+                    }
 
-					for (int i = 0; i < origOutputs.length; i++) {
-						if (origOutputs[i] == indices[count]) {
-							isOutput = true;
-							break;
-						}
-					}
+                }
 
-				}
+                // !:
+                // are we dealing with an ExampleTable? if so, is the old column
+                // an input, output, or both?
 
-				// remove the old column
+                boolean isInput = false, isOutput = false;
+                if (tableIsExample) {
 
-				String columnLabel = table.getColumnLabel(index);
-				table.removeColumn(index);
-				offset--;
+                    ExampleTable et = (ExampleTable) table;
 
-				// iterate and create the new columns
+                    for (int i = 0; i < origInputs.length; i++) {
+                        if (origInputs[i] == indices[count]) {
+                            isInput = true;
+                            break;
+                        }
+                    }
 
-				for (int k = 0; k < uniqueValues.length; k++) {
+                    for (int i = 0; i < origOutputs.length; i++) {
+                        if (origOutputs[i] == indices[count]) {
+                            isOutput = true;
+                            break;
+                        }
+                    }
 
-					if (_newTypeBoolean) { // create new columns as type boolean
+                }
 
-						boolean[] newColumn = new boolean[numRows];
+                // remove the old column
 
-						for (int row = 0; row < match.length; row++) {
-							if (missing[row])
-								newColumn[row] = table.getMissingBoolean();
-							else if (match[row] == k)
-								newColumn[row] = true;
-							else
-								newColumn[row] = false;
-						}
+                String columnLabel = table.getColumnLabel(index);
+                Column oldColumn = table.getColumn(index);
+                table.removeColumn(index);
+                offset--;
 
-						BooleanColumn column = new BooleanColumn(newColumn);
-						column.setMissingValues(missing);
-						table.insertColumn(column, index + k);
-						table.setColumnLabel(
-							columnLabel + "=" + uniqueValues[indirection[k]],
-							index + k);
+                // iterate and create the new columns
 
-					} else { // create new columns as type int
+                for (int k = 0; k < uniqueValues.length; k++) {
 
-						double[] newColumn = new double[numRows];
+                    if (_newTypeBoolean) { // create new columns as type boolean
 
-						for (int row = 0; row < match.length; row++) {
-							if (missing[row])
-								newColumn[row] = table.getMissingDouble();
-							else if (match[row] == k)
-								newColumn[row] = 1;
-							else
-								newColumn[row] = 0;
-						}
+                        boolean[] newColumn = new boolean[numRows];
 
-						DoubleColumn column = new DoubleColumn(newColumn);
-						column.setMissingValues(missing);
-						table.insertColumn(column, index + k);
-						table.setColumnLabel(
-							columnLabel + "=" + uniqueValues[indirection[k]],
-							index + k);
+                        for (int row = 0; row < match.length; row++) {
+                            if (missing[row])
+                                newColumn[row] = table.getMissingBoolean();
+                            else if (match[row] == k)
+                                newColumn[row] = true;
+                            else
+                                newColumn[row] = false;
+                        }
+                        
+                        BooleanColumn column = ColumnUtilities.toBooleanColumn(oldColumn);
+                        int where = index+k;
+                        table.insertColumn(column, where);
+                        for (int i = 0 ; i < newColumn.length ; i++)
+                            table.setBoolean(newColumn[i], i, where);
+                    } else { // create new columns as type int
 
-					}
+                        double[] newColumn = new double[numRows];
 
-					offset++;
+                        for (int row = 0; row < match.length; row++) {
+                            if (missing[row])
+                                newColumn[row] = table.getMissingDouble();
+                            else if (match[row] == k)
+                                newColumn[row] = 1;
+                            else
+                                newColumn[row] = 0;
+                        }
 
-					// !:
-					// we now must add this new column to the list of inputs/outputs
-					// if we are dealing with an ExampleTable. this isn't very
-					// efficient; maybe we should modify the API to handle this
-					if (tableIsExample) {
+                        DoubleColumn column = ColumnUtilities.toDoubleColumn(oldColumn);
+                        int where = index+k;
+                        table.insertColumn(column, where);
+                        for (int i = 0 ; i < newColumn.length ; i++)
+                           table.setDouble(newColumn[i], i, where);
+                    }
 
-						ExampleTable et = (ExampleTable) table;
+                    offset++;
 
-						if (isInput) {
+                    // !:
+                    // we now must add this new column to the list of inputs/outputs
+                    // if we are dealing with an ExampleTable. this isn't very
+                    // efficient; maybe we should modify the API to handle this
+                    if (tableIsExample) {
 
-							int[] inputs = et.getInputFeatures();
-							int[] newInputs = new int[inputs.length + 1];
+                        ExampleTable et = (ExampleTable) table;
 
-							for (int i = 0; i < inputs.length; i++)
-								newInputs[i] = inputs[i];
-							newInputs[inputs.length] = index + k;
+                        if (isInput) {
 
-							Arrays.sort(newInputs);
-							et.setInputFeatures(newInputs);
-						}
+                            int[] inputs = et.getInputFeatures();
+                            int[] newInputs = new int[inputs.length + 1];
 
-						if (isOutput) {
+                            for (int i = 0; i < inputs.length; i++)
+                                newInputs[i] = inputs[i];
+                            newInputs[inputs.length] = index + k;
 
-							int[] outputs = et.getOutputFeatures();
-							int[] newOutputs = new int[outputs.length + 1];
+                            Arrays.sort(newInputs);
+                            et.setInputFeatures(newInputs);
+                        }
 
-							for (int i = 0; i < outputs.length; i++)
-								newOutputs[i] = outputs[i];
-							newOutputs[outputs.length] = index + k;
+                        if (isOutput) {
 
-							Arrays.sort(newOutputs);
-							et.setOutputFeatures(newOutputs);
-						}
-					}
-				}
-			}
-		}
-		pushOutput(table, 0);
-	}
+                            int[] outputs = et.getOutputFeatures();
+                            int[] newOutputs = new int[outputs.length + 1];
 
-	/*
-	private void printInputOutputColumns(ExampleTable et) {
+                            for (int i = 0; i < outputs.length; i++)
+                                newOutputs[i] = outputs[i];
+                            newOutputs[outputs.length] = index + k;
 
-		  int[] inputColumns = et.getInputFeatures(),
-				outputColumns = et.getOutputFeatures();
+                            Arrays.sort(newOutputs);
+                            et.setOutputFeatures(newOutputs);
+                        }
+                    }
+                }
+            }
+        }
+        pushOutput(table, 0);
+    }
 
-		  String[] inputNames = et.getInputNames(),
-				   outputNames = et.getOutputNames();
-
-		  System.out.print("actual labels:");
-		  for (int i = 0; i < et.getNumColumns(); i++)
-			 System.out.print(" " + i + "(" + et.getColumnLabel(i) + ")");
-		  System.out.println(" [" + et.getNumColumns() + "]");
-
-		  System.out.print("input columns:");
-		  for (int i = 0; i < inputColumns.length; i++)
-			 System.out.print(" " + inputColumns[i] + "(" + inputNames[i] + ")");
-		  System.out.println(" [" + inputColumns.length + "]");
-
-		  System.out.print("output columns:");
-		  for (int i = 0; i < outputColumns.length; i++)
-			 System.out.print(" " + outputColumns[i] + "(" + outputNames[i] + ")");
-		  System.out.println(" [" + outputColumns.length + "]");
-
-	}
-	*/
+    /*
+    private void printInputOutputColumns(ExampleTable et) {
+    
+    	  int[] inputColumns = et.getInputFeatures(),
+    			outputColumns = et.getOutputFeatures();
+    
+    	  String[] inputNames = et.getInputNames(),
+    			   outputNames = et.getOutputNames();
+    
+    	  System.out.print("actual labels:");
+    	  for (int i = 0; i < et.getNumColumns(); i++)
+    		 System.out.print(" " + i + "(" + et.getColumnLabel(i) + ")");
+    	  System.out.println(" [" + et.getNumColumns() + "]");
+    
+    	  System.out.print("input columns:");
+    	  for (int i = 0; i < inputColumns.length; i++)
+    		 System.out.print(" " + inputColumns[i] + "(" + inputNames[i] + ")");
+    	  System.out.println(" [" + inputColumns.length + "]");
+    
+    	  System.out.print("output columns:");
+    	  for (int i = 0; i < outputColumns.length; i++)
+    		 System.out.print(" " + outputColumns[i] + "(" + outputNames[i] + ")");
+    	  System.out.println(" [" + outputColumns.length + "]");
+    
+    }
+    */
 
 }
 /**
@@ -449,5 +438,7 @@ public class ScalarizeNominals extends DataPrepModule {
  * 01-12-04: module is pulled back into qa process.
  * bug 220 - handling of subset tables. table viewer throws an array index out of
  * bounds exception with subset table that is the output of this module.
-
+ * 01-12-14: tlr, fixed the subset table proble, used the ColumnUtilities.toBooleanColumn 
+ * and toDoubleColumn to create the new columns, added them to the table, then used the table
+ * setter methods.
  */
