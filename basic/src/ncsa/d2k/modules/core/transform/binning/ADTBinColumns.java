@@ -985,3 +985,7 @@ class ADTBinCounts implements BinCounts {
   * 12 -16-03 Anca moved creation of "unknown" bins to BinTransform
  */
 
+/**
+ * 1-05-04:
+  * vered - module is ready fro basic.
+*/

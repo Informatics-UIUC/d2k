@@ -95,6 +95,8 @@ public class AutoBinOPT extends DataPrepModule {
 	int[] outputs;
 
 	public void doit() throws Exception {
+
+
 		tbl = (ExampleTable) pullInput(0);
 		ParameterPoint pp = (ParameterPoint) pullInput(1);
 
@@ -123,10 +125,10 @@ public class AutoBinOPT extends DataPrepModule {
 		  String name = pp.getName(i);
 		  nameToIndexMap.put(name, new Integer(i));
 		}
-		
+
 		Integer method = (Integer) nameToIndexMap.get(AutoParamSpaceGenerator.
 		                                              BIN_METHOD);
-		
+
 		*/
 		int type = (int) pp.getValue(AutoBinParamSpaceGenerator.BIN_METHOD);
 
@@ -222,7 +224,7 @@ public class AutoBinOPT extends DataPrepModule {
 
 				//System.out.println("binmaxes[length-1] " + binMaxes[binMaxes.length-1]);
 				// now add the last bin
-			
+
 				bd =
 					BinDescriptorFactory.createMaxNumericBinDescriptor(
 						inputs[i],
@@ -240,10 +242,10 @@ public class AutoBinOPT extends DataPrepModule {
 							tbl);
 					bins.add(bd);
 				} */
-			} 
+			}
 
-			
-			else { 
+
+			else {
 //		if it is nominal, create a bin for each unique value.
 				String[] vals = TableUtilities.uniqueValues(tbl, inputs[i]);
 				for (int j = 0; j < vals.length; j++) {
@@ -291,17 +293,17 @@ public class AutoBinOPT extends DataPrepModule {
 			if (isScalar) {
 				int numRows = tbl.getNumRows();
 				int missing =0;
-				if (tbl.getColumn(inputs[i]).hasMissingValues()) 
+				if (tbl.getColumn(inputs[i]).hasMissingValues())
 					missing = tbl.getColumn(inputs[i]).getNumMissingValues();
 				double[] vals =  new double[tbl.getNumRows()-missing];
-				
+
 				//ANCA added support for eliminating missing values when setting interval limits
 				int k=0;
 				for (int j = 0; j < numRows; j++) {
 					//check if column has missing values
 					if (missing >0) {
 						//if value is missing do not add it
-						if(!tbl.isValueMissing(j,inputs[i]))	
+						if(!tbl.isValueMissing(j,inputs[i]))
 					    	vals[k++] = tbl.getDouble(j, inputs[i]);
 					}
 					else
@@ -397,7 +399,7 @@ public class AutoBinOPT extends DataPrepModule {
 					bins.add(bd);
 				} */
 
-			} else { 
+			} else {
 				// if it is nominal, create a bin for each unique value.
 				String[] vals = TableUtilities.uniqueValues(tbl, inputs[i]);
 				for (int j = 0; j < vals.length; j++) {
@@ -431,7 +433,7 @@ public class AutoBinOPT extends DataPrepModule {
 		//return bt;
 	}
 
-	
+
 }
 // QA comments Anca:
 //added check for input/output attribute selections - since ChooseAttribute does not guarantee selections
@@ -445,7 +447,7 @@ public class AutoBinOPT extends DataPrepModule {
 */
 
 /**
-* 12-2-03 Anca - added support for missing values by adding an extra textualBin 
+* 12-2-03 Anca - added support for missing values by adding an extra textualBin
 * with name "unknown" for columns that have missing values.
 * 12 -15-03 Anca  - added support for eliminating missing values when bin boundaries are defined
 * 12 -16 -03 Anca - moved creation of "unknown" bins to BinTransform constructor
