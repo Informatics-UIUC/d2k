@@ -703,7 +703,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
       totalSet = totalStmt.executeQuery(totalQry);
       totalSet.next();
       totalRow = totalSet.getInt(1);
-      System.out.println("totalRow is " + totalRow);
+      //System.out.println("totalRow is " + totalRow);
 
       String cubeQry = new String("select * from " + tableName.getText() + " order by set_size");
       cubeStmt = con.createStatement ();
