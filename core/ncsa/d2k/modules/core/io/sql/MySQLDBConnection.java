@@ -19,7 +19,7 @@ public class MySQLDBConnection extends SQLDBConnection {
 //////////////////////////////////////////////////////////////////////////////////////////
 
     public String     getAllTableNamesQuery() {
-System.out.println("mySQLConnect:QueryTableNames:dbI:" + this.dbInstance);
+//System.out.println("mySQLConnect:QueryTableNames:dbI:" + this.dbInstance);
         String str = "SHOW TABLES FROM " + this.dbInstance;
         return str;
     }
@@ -76,7 +76,7 @@ System.out.println("mySQLConnect:QueryTableNames:dbI:" + this.dbInstance);
                                                          colTypeNames,
                                                          colDisplaySizes);
             int createTableFlag = stmt1.executeUpdate(query1);
-System.out.println("createTableFlag = " + createTableFlag);
+//System.out.println("createTableFlag = " + createTableFlag);
             stmt1.close();
 
             // 6. Insert 'tableConnection.getNumRows()' Sequence # and NULL's into the table
@@ -133,7 +133,7 @@ System.out.println("createTableFlag = " + createTableFlag);
                 str += ", ";
         } //for
         str += ")";
-System.out.println("createTableQuery with SEQ_NUM" + str);
+//System.out.println("createTableQuery with SEQ_NUM" + str);
         return str;
     }
 
@@ -162,7 +162,7 @@ System.out.println("createTableQuery with SEQ_NUM" + str);
                 str += ", ";
         } //for
         str += ")";
-System.out.println("createTableQuery without SEQ_NUM" + str);
+//System.out.println("createTableQuery without SEQ_NUM" + str);
         return str;
     }
 
@@ -383,8 +383,8 @@ for (int q=0; q<duplicateVec.size(); q++){
 
 //            query.append(")");
 
-    System.out.println("*****************QUERY: MULTIPLE TABLES *****************");
-    System.out.println(query.toString());
+ //   System.out.println("*****************QUERY: MULTIPLE TABLES *****************");
+//    System.out.println(query.toString());
             return query.toString();
         }//else
 
