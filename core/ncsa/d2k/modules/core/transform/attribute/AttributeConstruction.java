@@ -8,14 +8,15 @@ import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.gui.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.gui.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
  * <code>AttributeConstruction</code> is a simple user interface that facilitates
- * the construction of new columns in a <code>MutableTable</code> from operations
- * on existing columns in the table.
+ * the construction of new attributes in a <code>MutableTable</code> from operations
+ * on existing attributes in the table.
  *
  * <code>AttributeConstruction</code> works by constructing
  * <code>ColumnExpression</code>s; subsequently, its behavior and order of
@@ -30,34 +31,33 @@ public class AttributeConstruction extends UIModule {
 /******************************************************************************/
 
    public String getModuleName() {
-      return "Attribute Construction";
+      return "Construct New Attributes";
    }
 
    public String getModuleInfo() {
-      // return "Allows the user to construct new columns from operations on existing columns.";
       StringBuffer sb = new StringBuffer("<p>Overview: ");
       sb.append("This module provides a GUI that enables the user to construct ");
-      sb.append("new columns in a table from operations on existing columns.");
+      sb.append("new attributes in a table from operations on existing attributes.");
       sb.append("</p>");
       sb.append("<p>Detailed Description: ");
       sb.append("This module provides a GUI used to specify expression strings. ");
       sb.append("These expressions are interpreted as operations on existing ");
-      sb.append("columns in the table and are used to construct new columns. ");
+      sb.append("attributes in the table and are used to construct new attributes. ");
       sb.append("When the GUI is dismissed, the information needed to construct ");
-      sb.append("these new columns is encapsulated in a <i>Transformation</i> ");
+      sb.append("these new attributes is encapsulated in a <i>Transformation</i> ");
       sb.append("object that can be applied downstream in order to actually ");
-      sb.append("add the new columns to the table.");
+      sb.append("add the new attributes to the table.");
       sb.append("</p><p>");
-      sb.append("The available operations on numeric columns are addition, ");
+      sb.append("The available operations on numeric attributes are addition, ");
       sb.append("subtraction, multiplication, division, and modulus. The ");
-      sb.append("operations available on boolean columns are AND and OR.");
+      sb.append("operations available on boolean attributes are AND and OR.");
       sb.append("</p><p>Data Type Restrictions: ");
       sb.append("Attribute construction operations can only be performed on the ");
-      sb.append("numeric and boolean columns of a table. Other columns will ");
+      sb.append("numeric and boolean attributes of a table. Other attributes will ");
       sb.append("be ignored, but they will not be modified.");
       sb.append("</p><p>Data Handling: ");
       sb.append("This module <i>might</i> immediately modify the table: ");
-      sb.append("columns with blank labels will be assigned default ones. ");
+      sb.append("attributes with blank labels will be assigned default ones. ");
       sb.append("Other than that, this module does not modify its input data. ");
       sb.append("Rather, its output is a <i>Transformation</i> that can then ");
       sb.append("be used to modify the table.");
@@ -78,7 +78,7 @@ public class AttributeConstruction extends UIModule {
 
    public String getInputInfo(int index) {
       if (index == 0)
-         return "A MutableTable containing columns to be used in construction.";
+         return "A MutableTable containing attributes to be used in construction.";
       return "Attribute Construction has no such input.";
    }
 
@@ -95,7 +95,7 @@ public class AttributeConstruction extends UIModule {
 
    public String getOutputInfo(int index) {
       if (index == 0)
-         return "The transformation to construct the new columns.";
+         return "The transformation to construct the new attributes.";
       return "Attribute Construction has no such output.";
    }
 
@@ -109,19 +109,20 @@ public class AttributeConstruction extends UIModule {
 /* properties                                                                 */
 /******************************************************************************/
 
-   private String _lastExpression = "";
+   private String[] _newLab = null;
+   public Object getNewLab() { return _newLab; }
+   public void setNewLab(Object value) { _newLab = (String[])value; }
 
-   public String getLastExpression() {
-      return _lastExpression;
-   }
+   private int[] _newTyp = null;
+   public Object getNewTyp() { return _newTyp; }
+   public void setNewTyp(Object value) { _newTyp = (int[])value; }
 
-   public void setLastExpression(String value) {
-      _lastExpression = value;
-   }
+   private Object[] _lastCons = null;
+   public Object getLastCons() { return _lastCons; }
+   public void setLastCons(Object value) { _lastCons = (Object[])value; }
 
    public PropertyDescription[] getPropertiesDescriptions() {
-      return new PropertyDescription[0]; // so that "last expression" property
-                                         // is invisible
+      return new PropertyDescription[0];
    }
 
 /******************************************************************************/
@@ -135,10 +136,8 @@ public class AttributeConstruction extends UIModule {
       private ColumnExpression expression;
       private MutableTable table;
 
-      private ColumnExpression[] newExpressions;  // for use in constructing
-      private String[]           newLabels,       // the transformation
-                                 newExpressionStrings;
-      private int[]              newTypes;
+      private String[]           newLabels; // for use in constructing
+      private int[]              newTypes;  // the transformation
 
       private JButton addColumnButton, addOperationButton, addBooleanButton,
                       deleteButton, abortButton, doneButton, helpButton;
@@ -149,6 +148,8 @@ public class AttributeConstruction extends UIModule {
       private DefaultListModel newColumnModel;
 
       private HashMap stringsToColumnBoxEntries;
+
+      private Object[] constructions;
 
       private ViewModule mod;
 
@@ -180,7 +181,12 @@ public class AttributeConstruction extends UIModule {
          gui = new ExpressionGUI(expression, true);
          gui.addExpressionListener(this);
 
-         gui.getTextArea().setText(_lastExpression);
+         // gui.getTextArea().setText(_lastExpression);
+         // newExpressions = _newExp;
+         newLabels = _newLab;
+         // newExpressionStrings = _newExpStr;
+         newTypes = _newTyp;
+         constructions = _lastCons;
 
          newNameField = new JTextField(16);
 
@@ -189,7 +195,7 @@ public class AttributeConstruction extends UIModule {
          JPanel newNamePanel = new JPanel();
          newNamePanel.setLayout(new GridBagLayout());
          Constrain.setConstraints(newNamePanel,
-            new JLabel("New column label:"), 0, 0, 1, 1,
+            new JLabel("New attribute label:"), 0, 0, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
          Constrain.setConstraints(newNamePanel, newNameField, 0, 1, 1, 1,
             GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
@@ -240,6 +246,12 @@ public class AttributeConstruction extends UIModule {
 
             }
 
+         }
+
+         if (newLabels != null) {
+            for (int i = 0; i < newLabels.length; i++) {
+               columnBox.addItem(newLabels[i]);
+            }
          }
 
          addColumnButton = new JButton(
@@ -312,12 +324,29 @@ public class AttributeConstruction extends UIModule {
          newColumnList.setModel(newColumnModel);
          newColumnList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+         if (constructions != null) {
+            for (int i = 0; i < constructions.length; i++) {
+
+               AttributeTransform.Construction current =
+                  (AttributeTransform.Construction)constructions[i];
+
+               try {
+                  expression.setLazyExpression(current.expression, newLabels, newTypes);
+               }
+               catch(Exception e) { } // this can't really happen, since it
+                                      // would have been caught on the last run
+
+               newColumnModel.addElement(current);
+
+            }
+         }
+
          deleteButton = new JButton("Delete");
          deleteButton.addActionListener(this);
 
          JPanel rightPanel = new JPanel();
          rightPanel.setLayout(new GridBagLayout());
-         Constrain.setConstraints(rightPanel, new JLabel("New columns defined:  "), 0, 0, 1, 1,
+         Constrain.setConstraints(rightPanel, new JLabel("New attributes defined:  "), 0, 0, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
          Constrain.setConstraints(rightPanel, new JScrollPane(newColumnList), 0, 1, 1, 1,
             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
@@ -395,15 +424,51 @@ public class AttributeConstruction extends UIModule {
             viewCancel();
 
          else if (src == doneButton) {
-            pushOutput(new ColumnTransformation(newColumnModel.toArray()), 0);
+            pushOutput(new AttributeTransform(newColumnModel.toArray()), 0);
             viewDone("Done");
          }
 
          else if (src == deleteButton) {
             int selected = newColumnList.getSelectedIndex();
             if (selected != -1) {
-               columnBox.removeItem(((Construction)(newColumnModel.elementAt(selected))).label);
+
+               String label = ((AttributeTransform.Construction)(newColumnModel.elementAt(selected))).label;
+
+               columnBox.removeItem(label);
                newColumnModel.removeElementAt(selected);
+
+               if (newLabels != null) {
+
+                  String[] newNewLabels = new String[newLabels.length - 1];
+                  int[] newNewTypes = new int[newTypes.length - 1];
+
+                  int index = 0;
+                  for (index = 0; index < newLabels.length; index++) {
+                     if (newLabels[index].equals(label)) {
+                        break;
+                     }
+                     else {
+                        newNewLabels[index] = newLabels[index];
+                        newNewTypes[index] = newTypes[index];
+                     }
+                  }
+                  for (; index < newNewLabels.length; index++) {
+                     newNewLabels[index] = newLabels[index + 1];
+                     newNewTypes[index] = newTypes[index + 1];
+                  }
+
+                  newLabels = newNewLabels;
+                  newTypes = newNewTypes;
+
+               }
+
+               // _lastExpression = gui.getTextArea().getText();
+               // _newExp = newExpressions;
+               _newLab = newLabels;
+               // _newExpStr = newExpressionStrings;
+               _newTyp = newTypes;
+               _lastCons = newColumnModel.toArray();
+
             }
          }
 
@@ -413,8 +478,8 @@ public class AttributeConstruction extends UIModule {
 
          if (newNameField.getText().length() == 0)
             JOptionPane.showMessageDialog(this,
-               "You must specify a new column name.",
-               "ColumnConstruction", JOptionPane.ERROR_MESSAGE);
+               "You must specify a new attribute name.",
+               "AttributeConstruction", JOptionPane.ERROR_MESSAGE);
 
          else {
 
@@ -476,8 +541,8 @@ public class AttributeConstruction extends UIModule {
             }
             catch(ExpressionException e) {
                JOptionPane.showMessageDialog(this,
-                     "Error in ColumnConstruction. Check your expression.",
-                     "ColumnConstruction", JOptionPane.ERROR_MESSAGE);
+                     "Error in AttributeConstruction. Check your expression.",
+                     "AttributeConstruction", JOptionPane.ERROR_MESSAGE);
                return;
             }
 
@@ -495,6 +560,7 @@ public class AttributeConstruction extends UIModule {
 
             // add to arrays of new expressions, labels, types
 
+            /*
             if (newExpressions == null) {
                newExpressions = new ColumnExpression[1];
                newExpressions[0] = newExp;
@@ -506,6 +572,7 @@ public class AttributeConstruction extends UIModule {
                newNewExp[newExpressions.length] = newExp;
                newExpressions = newNewExp;
             }
+            */
 
             if (newLabels == null) {
                newLabels = new String[1];
@@ -519,6 +586,7 @@ public class AttributeConstruction extends UIModule {
                newLabels = newNewLab;
             }
 
+            /*
             if (newExpressionStrings == null) {
                newExpressionStrings = new String[1];
                newExpressionStrings[0] = newStr;
@@ -530,6 +598,7 @@ public class AttributeConstruction extends UIModule {
                newNewStr[newExpressionStrings.length] = newStr;
                newExpressionStrings = newNewStr;
             }
+            */
 
             if (newTypes == null) {
                newTypes = new int[1];
@@ -553,15 +622,23 @@ public class AttributeConstruction extends UIModule {
             }
             catch(ExpressionException e) {
                JOptionPane.showMessageDialog(this,
-                     "Error in ColumnConstruction. Check your expression.",
-                     "ColumnConstruction", JOptionPane.ERROR_MESSAGE);
+                     "Error in AttributeConstruction. Check your expression.",
+                     "AttributeConstruction", JOptionPane.ERROR_MESSAGE);
                return;
             }
             gui.setExpression(newExp);
 
-            newColumnModel.addElement(new Construction(newNameField.getText(), gui.getTextArea().getText()));
+            AttributeTransform.Construction added =
+               new AttributeTransform(null).new Construction(
+                  newNameField.getText(), gui.getTextArea().getText());
+            newColumnModel.addElement(added);
 
-            _lastExpression = gui.getTextArea().getText();
+            // _lastExpression = gui.getTextArea().getText();
+            // _newExp = newExpressions;
+            _newLab = newLabels;
+            // _newExpStr = newExpressionStrings;
+            _newTyp = newTypes;
+            _lastCons = newColumnModel.toArray();
 
             newNameField.setText("");
             gui.getTextArea().setText("");
@@ -578,7 +655,7 @@ public class AttributeConstruction extends UIModule {
 
    private class HelpWindow extends JD2KFrame {
       public HelpWindow() {
-         super ("ColumnConstruction Help");
+         super ("AttributeConstruction Help");
          JEditorPane ep = new JEditorPane("text/html", getHelpString());
          ep.setCaretPosition(0);
          getContentPane().add(new JScrollPane(ep));
@@ -589,28 +666,28 @@ public class AttributeConstruction extends UIModule {
    private String getHelpString() {
 
       StringBuffer sb = new StringBuffer();
-      sb.append("<html><body><h2>ColumnConstruction</h2>");
-      sb.append("This module allows a user to construct new columns of a ");
-      sb.append("table from operations on existing columns.");
+      sb.append("<html><body><h2>AttributeConstruction</h2>");
+      sb.append("This module allows a user to construct new attributes in a ");
+      sb.append("table from operations on existing attributes.");
       sb.append("<br><br>");
-      sb.append("The available operations on numeric columns are addition, ");
+      sb.append("The available operations on numeric attributes are addition, ");
       sb.append("subtraction, multiplication, division, and modulus. The ");
-      sb.append("operations available on boolean columns are AND and OR. ");
-      sb.append("The user can construct an expression for the new column ");
-      sb.append("using the lists of columns and operators on the left. ");
+      sb.append("operations available on boolean attributes are AND and OR. ");
+      sb.append("The user can construct an expression for the new attribute ");
+      sb.append("using the lists of attributes and operators on the left. ");
       sb.append("It is important that this expression be well-formed: that ");
-      sb.append("parentheses match, that column labels surround operators, ");
+      sb.append("parentheses match, that attribute labels surround operators, ");
       sb.append("and so forth.");
       sb.append("<br><br>");
       sb.append("In the absence of parentheses, the order of operations is ");
       sb.append("as follows: AND, OR, division and multiplication, modulus, ");
       sb.append("addition and subtraction (all from left to right). Note that ");
-      sb.append("AND and OR cannot be applied to numeric columns, and that ");
-      sb.append("the numeric operators cannot be applied to boolean columns. ");
-      sb.append("Thus a given expression may involve numeric columns or boolean ");
-      sb.append("columns, but not both.");
+      sb.append("AND and OR cannot be applied to numeric attributes, and that ");
+      sb.append("the numeric operators cannot be applied to boolean attributes. ");
+      sb.append("Thus a given expression may involve numeric attributes or boolean ");
+      sb.append("attributes, but not both.");
       sb.append("<br><br>");
-      sb.append("The user must also specify the name for the new column in ");
+      sb.append("The user must also specify the name for the new attribute in ");
       sb.append("the field at the top left. <b>Note carefully</b> that any characters in ");
       sb.append("this new name that could be interpreted as operators (such ");
       sb.append("as parentheses, or a hyphen, which would be interpreted as ");
@@ -623,10 +700,12 @@ public class AttributeConstruction extends UIModule {
    }
 
 /******************************************************************************/
-/* the type used to store column constructions                                */
+/* the type used to store attribute constructions                             */
+/* (replaced by AttributeTransform.Construction)                              */
 /******************************************************************************/
 
-   private class Construction implements java.io.Serializable {
+   /*
+   private class Construction {
 
       String label, expression;
 
@@ -640,11 +719,14 @@ public class AttributeConstruction extends UIModule {
       }
 
    }
+   */
 
 /******************************************************************************/
 /* the output Transformation                                                  */
+/* (replaced by AttributeTransform)                                           */
 /******************************************************************************/
 
+   /*
    private class ColumnTransformation implements Transformation {
 
       private Object[] constructions;
@@ -717,6 +799,7 @@ public class AttributeConstruction extends UIModule {
       }
 
    }
+   */
 
 }
 /**
