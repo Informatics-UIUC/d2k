@@ -177,3 +177,10 @@ public class ADTAutoBin extends DataPrepModule {
 
 }
 
+      /**
+      * 11-17-03 Vered started qa process
+      *          Missing value handling - this module handles missing values
+      *          as if they were real values. since they are to be considered
+      *          as meaningless, and not expected to produce a special unique
+      *          value bin - then they should be binned into UNKNOWN. [bug 127]
+ */
