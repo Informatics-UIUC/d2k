@@ -2474,6 +2474,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
 		numColumns = VHashService.getMaxKey(columns) + 1;
     }
 
+	public void insertColumns(AbstractSparseColumn[] newColumns, int position)
+	{
+		for (int i = newColumns.length - 1; i >= 0; i--) {
+			this.insertColumn(newColumns[i], position);
+		}
+	}
+
 
     /**
    * inserts a new int column to this table at index <code>position</code>.
@@ -5100,7 +5107,178 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
     return retVal;
   }
 
+	public void addRows(int add_num_rows)
+	{
+		numRows += add_num_rows;
+	}
 
+
+	public MutableTable createTable()
+	{
+		SparseMutableTable retVal = new SparseMutableTable();
+		return (MutableTable) retVal;
+	}
+
+	public Table shallowCopy()
+	{
+		SparseMutableTable new_table = new SparseMutableTable();
+		new_table.setLabel(this.getLabel());
+		new_table.setComment(this.getComment());
+		new_table.setKeyColumn(this.getKeyColumn());
+		return new_table;
+	}
+
+	public Table copy(int[] rows)
+	{
+		return getSubset(rows, this);
+	}
+
+	public Table copy(int start, int len)
+	{
+		return getSubset(start, len, this);
+	}
+
+	public void insertColumns(Column[] newColumns, int position)
+	{
+		for (int i = newColumns.length - 1; i >= 0; i--) {
+			this.insertColumn(newColumns[i], position);
+		}
+	}
+
+	public void insertColumn(Column newColumn, int position)
+	{
+		AbstractSparseColumn col = null;
+
+		switch(newColumn.getType()) {
+
+			case ColumnTypes.BOOLEAN: 
+				col = new SparseBooleanColumn((boolean[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.BYTE:    
+				col = new SparseByteColumn((byte[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.CHAR:   
+			   	col = new SparseCharColumn((char[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.DOUBLE:  
+				col = new SparseDoubleColumn((double[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.FLOAT: 
+				col = new SparseFloatColumn((float[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.BYTE_ARRAY:    
+				col = new SparseByteArrayColumn((byte[][]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.CHAR_ARRAY:    
+				col = new SparseCharArrayColumn((char[][]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.INTEGER:  
+				col = new SparseIntColumn((int[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.LONG:    
+				col = new SparseLongColumn((long[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.SHORT:    
+				col = new SparseShortColumn((short[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.OBJECT:    
+				col = new SparseObjectColumn((Object[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.STRING:  //fall through to the default...
+
+			default:                  
+				col = new SparseStringColumn((String[]) newColumn.getInternal());
+				break;
+
+		} //switch case
+
+		insertColumn(col, position);
+	}
+
+	public void addColumns(Column[] newColumns)
+	{
+		for (int i = newColumns.length - 1; i >= 0; i--) {
+			this.addColumn(newColumns[i]);
+		}
+	}
+
+	public void addColumn(Column newColumn)
+	{
+		this.insertColumn(newColumn, numColumns);
+	}
+
+	public void setColumn(Column newColumn, int position)
+	{
+		AbstractSparseColumn col = null;
+
+		switch(newColumn.getType()) {
+
+			case ColumnTypes.BOOLEAN: 
+				col = new SparseBooleanColumn((boolean[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.BYTE:    
+				col = new SparseByteColumn((byte[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.CHAR:   
+			   	col = new SparseCharColumn((char[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.DOUBLE:  
+				col = new SparseDoubleColumn((double[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.FLOAT: 
+				col = new SparseFloatColumn((float[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.BYTE_ARRAY:    
+				col = new SparseByteArrayColumn((byte[][]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.CHAR_ARRAY:    
+				col = new SparseCharArrayColumn((char[][]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.INTEGER:  
+				col = new SparseIntColumn((int[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.LONG:    
+				col = new SparseLongColumn((long[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.SHORT:    
+				col = new SparseShortColumn((short[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.OBJECT:    
+				col = new SparseObjectColumn((Object[]) newColumn.getInternal());
+				break;
+
+			case ColumnTypes.STRING:  //fall through to the default...
+
+			default:                  
+				col = new SparseStringColumn((String[]) newColumn.getInternal());
+				break;
+
+		} //switch case
+
+		setColumn(position, col);
+
+	}
 
 }//SparseMutableTable
 

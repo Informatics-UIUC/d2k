@@ -40,9 +40,9 @@ public class SparseTableFactory implements TableFactory {
   }
 
   public TestTable createTestTable(ExampleTable et) {
-    return et.getTestTable();
+    return (TestTable) et.getTestTable();
   }
   public TrainTable createTrainTable(ExampleTable et) {
-    return et.getTrainTable();
+    return (TrainTable) et.getTrainTable();
   }
 }

@@ -591,7 +591,7 @@ protected static SparseTableFactory factory = new SparseTableFactory();
     * Assuming <code>buffer</code> is an array of some type, the data at the row
     * will be converted into that type as needed.
     *
-    * If row #<coe>pos</code> does not exist - the method does nothing.
+    * If row #<code>pos</code> does not exist - the method does nothing.
     *
     * Note - that since this is a Sparse Table it is very likely that when getRow
     * returns the value stored at <code>buffer[i]</code> is not stored at row
@@ -687,7 +687,7 @@ protected static SparseTableFactory factory = new SparseTableFactory();
     * <code>buffer[i]</code> is the value that stored at row <code>position</code>
     * and column <codE>columnNumbers[i]</code> in this table.
     *
-    * If row #<coe>pos</code> does not exist - the method does nothing.
+    * If row #<code>pos</code> does not exist - the method does nothing.
     *
     * to use this method efficiently make sure that buffer and columnNumbers are
     * only and exactly as big as the value <code>getRowNumEntries(int)</code> returns.
@@ -709,6 +709,10 @@ protected static SparseTableFactory factory = new SparseTableFactory();
      }
 
 
+	 public Row getRow()
+	 {
+		 return null;
+	 }
 
 
      /**
@@ -853,7 +857,7 @@ protected static SparseTableFactory factory = new SparseTableFactory();
  * @param pos   the index number of the returned Column
  * @return      the Column at index <code>pos</codE>
  */
-  protected Column getColumn(int pos){
+  public Column getColumn(int pos){
     return (Column)columns.get(pos);
   }
 

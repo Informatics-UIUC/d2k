@@ -265,14 +265,14 @@ public class SparseExampleTable
   /**
    * Returns a SparseTestTable with the content of this table
    */
-  public TestTable getTestTable() {
+  public Table getTestTable() {
     return new SparseTestTable(this);
   }
 
   /**
    * Returns a SparseTrainTable with the content of this table
    */
-  public TrainTable getTrainTable() {
+  public Table getTrainTable() {
     return new SparseTrainTable(this);
   }
 

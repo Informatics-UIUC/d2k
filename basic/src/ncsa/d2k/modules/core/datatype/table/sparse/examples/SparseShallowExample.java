@@ -1,6 +1,8 @@
 //package ncsa.d2k.modules.projects.vered.sparse.example;
 package ncsa.d2k.modules.core.datatype.table.sparse.examples;
 
+import ncsa.d2k.modules.core.datatype.table.*;
+
 import ncsa.d2k.modules.core.datatype.table.Example;
 //import ncsa.d2k.modules.projects.vered.sparse.table.SparseExampleTable;
 import ncsa.d2k.modules.core.datatype.table.sparse.SparseExampleTable;
@@ -146,6 +148,79 @@ public class SparseShallowExample implements Example {
 
   public boolean isOutputScalar(int o) {
     return table.isColumnScalar(table.getOutputFeatures(row)[o]);
+  }
+
+  // starting here, the rest are new from Xiaolei on 9/8/03
+
+  public Table getTable()
+  {
+	return this.table;
+  }
+
+
+  public double getDouble(int i) 
+  {
+    return table.getInputDouble(row, i);
+  }
+
+  public String getString(int i) 
+  {
+     return table.getInputString(row, i);
+  }
+
+  public int getInt(int i) 
+  {
+     return table.getInputInt(row, i);
+  }
+
+  public float getFloat(int i) 
+  {
+    return table.getInputFloat(row, i);
+  }
+
+  public short getShort(int i) 
+  {
+    return table.getInputShort(row, i);
+  }
+
+  public long getLong(int i) 
+  {
+    return table.getInputLong(row, i);
+  }
+
+  public byte getByte(int i) 
+  {
+    return table.getInputByte(row, i);
+  }
+
+  public Object getObject(int i) 
+  {
+    return table.getInputObject(row, i);
+  }
+
+  public char getChar(int i) 
+  {
+    return table.getInputChar(row, i);
+  }
+
+  public char[] getChars(int i) 
+  {
+    return table.getInputChars(row, i);
+  }
+
+  public byte[] getBytes(int i) 
+  {
+    return table.getInputBytes(row, i);
+  }
+
+  public boolean getBoolean(int i)
+  {
+    return table.getInputBoolean(row, i);
+  }
+
+  public void setIndex(int i)
+  {
+	  this.row = i;
   }
 
 }
