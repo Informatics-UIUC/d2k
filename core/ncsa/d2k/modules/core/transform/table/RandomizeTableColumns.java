@@ -6,11 +6,11 @@ import java.util.*;
 import java.io.Serializable;
 
 /**
-   RandomizeColumns takes a VerticalTable and randomly rearranges the
+   RandomizeColumns takes a Table and randomly rearranges the
    columns.
    @author David Clutter
 */
-public class RandomizeVTColumns extends DataPrepModule implements Serializable {
+public class RandomizeTableColumns extends DataPrepModule implements Serializable {
 
 
   //////////////////
@@ -29,7 +29,7 @@ public class RandomizeVTColumns extends DataPrepModule implements Serializable {
     */
     public String getModuleInfo() {
 		StringBuffer sb = new StringBuffer("Randomly rearranges the columns ");
-		sb.append(" of a VerticalTable.  A Column is chosen at random and ");
+		sb.append(" of a Table.  A Column is chosen at random and ");
 		sb.append(" inserted into a new table, until all Columns have been ");
 		sb.append(" inserted.");
     	return sb.toString();
@@ -49,7 +49,7 @@ public class RandomizeVTColumns extends DataPrepModule implements Serializable {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String [] in = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String [] in = {"ncsa.d2k.util.datatype.Table"};
 		return in;
     }
 
@@ -59,7 +59,7 @@ public class RandomizeVTColumns extends DataPrepModule implements Serializable {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String []out = {"ncsa.d2k.util.datatype.Table"};
 		return out;
     }
 
@@ -103,11 +103,11 @@ public class RandomizeVTColumns extends DataPrepModule implements Serializable {
        Perform the calculation.
     */
     public void doit() {
-    	VerticalTable vt = (VerticalTable)pullInput(0);
+    	Table vt = (Table)pullInput(0);
 		int columns = vt.getNumColumns();
 
 		// create a new, empty table
-		VerticalTable newVt = new VerticalTable(vt.getNumColumns());
+		Table newVt = new VerticalTable(vt.getNumColumns());
 		newVt.setLabel(vt.getLabel());
 		newVt.setComment(vt.getComment());
 		int colNum = 0;

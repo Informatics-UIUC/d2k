@@ -7,14 +7,14 @@ import java.util.Random;
 
 /**
 	SampleVTRows.java
-	Creates a sample of the given VerticalTable.  If the useFirst property is 
-	set, then the first N rows of the table will be the sample.  Otherwise, 
+	Creates a sample of the given Table.  If the useFirst property is
+	set, then the first N rows of the table will be the sample.  Otherwise,
 	the sampled table will contain N random rows from the table.  The original
 	table is left untouched.
 
    @author David Clutter
 */
-public class SampleVTRows extends DataPrepModule implements HasNames, 
+public class SampleTableRows extends DataPrepModule implements HasNames,
 	java.io.Serializable {
 
     /**
@@ -22,13 +22,13 @@ public class SampleVTRows extends DataPrepModule implements HasNames,
        @return A description of this module.
     */
     public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer("Creates a sample of the given VerticalTable.");
+		StringBuffer sb = new StringBuffer("Creates a sample of the given Table.");
 		sb.append(" If the useFirst property is set, then the first N rows of the table ");
 		sb.append(" will be the sample.  Otherwise, the sampled table will contain N ");
 		sb.append(" random rows from the table.  The original table is left untouched.");
 		return sb.toString();
     }
-    
+
     /**
        Return the name of this module.
        @return The name of this module.
@@ -38,22 +38,22 @@ public class SampleVTRows extends DataPrepModule implements HasNames,
     }
 
     /**
-       Return a String array containing the datatypes the inputs to this 
+       Return a String array containing the datatypes the inputs to this
        module.
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String []in = {"ncsa.d2k.util.datatype.Table"};
 		return in;
     }
- 
+
     /**
        Return a String array containing the datatypes of the outputs of this
        module.
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String []out = {"ncsa.d2k.util.datatype.Table"};
 		return out;
     }
 
@@ -63,7 +63,7 @@ public class SampleVTRows extends DataPrepModule implements HasNames,
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "The VerticalTable to create a sample from.";
+		return "The Table to create a sample from.";
     }
 
     /**
@@ -129,23 +129,22 @@ public class SampleVTRows extends DataPrepModule implements HasNames,
        Perform the calculation.
     */
     public void doit() {
-		VerticalTable orig = (VerticalTable)pullInput(0);
-		VerticalTable newTable = orig.getCopy();
+		Table orig = (Table)pullInput(0);
+		Table newTable = (Table)orig.copy();
 
 		// only keep the first N rows
 		if(useFirst) {
-			for(int i = newTable.getNumRows()-1; i > N-1; i--) 
+			for(int i = newTable.getNumRows()-1; i > N-1; i--)
 				newTable.removeRow(i);
 		}
 		else {
 			Random r = new Random(seed);
 			int numRows = newTable.getNumRows();
 			int numRowsToDelete = numRows - N;
-			System.out.println("numRows; "+numRowsToDelete);
 			// for each rowToDelete, randomly pluck one out
 			for(int i = 0; i < numRowsToDelete; i++) {
 				numRows = newTable.getNumRows();
-				newTable.removeRow(Math.abs(r.nextInt()) % numRows);	
+				newTable.removeRow(Math.abs(r.nextInt()) % numRows);
 			}
 		}
 		pushOutput(newTable, 0);
