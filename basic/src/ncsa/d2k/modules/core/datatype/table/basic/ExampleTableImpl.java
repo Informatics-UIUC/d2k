@@ -328,6 +328,34 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	public int[] getTestingSet() {
 		return testSet;
 	}
+	
+	//ANCA added getSubset methods that return ExampleTableImpl 
+	//before these methods were inherited from MutableTableImpl and returned a SubsetTableImpl
+	//The ErrorFunction.evaluate needs subset tables that have the input/output feature information
+	
+	/**
+		 * Gets a subset of this Table's rows, which is actually a shallow
+		 * copy which is subsetted..
+		 * @param pos the start position for the subset
+		 * @param len the length of the subset
+		 * @return a subset of this Table's rows
+		 */
+		public Table getSubset(int pos, int len) {
+			int[] sample = new int[len];
+			for (int i = 0; i < len; i++) {
+				sample[i] = pos + i;
+			}
+			return new ExampleTableImpl(this, sample);
+		}
+
+		/**
+		 * Get a subset of this table.
+		 * @param rows the rows to include in the subset.
+		 * @return a subset table.
+		 */
+		public Table getSubset(int[] rows) {
+				return new ExampleTableImpl(this, rows);
+		}
 
 	///////////// Copying ////////////////////
 
