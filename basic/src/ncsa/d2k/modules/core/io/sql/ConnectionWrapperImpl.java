@@ -48,14 +48,14 @@ public class ConnectionWrapperImpl implements ConnectionWrapper, java.io.Seriali
 	//System.out.println ("Entering getConnection");
 	if (connection == null) {
 	    Class classNm = Class.forName (driver);
-	    System.out.println ("driver has class : "+classNm.getName ());
+	    //System.out.println ("driver has class : "+classNm.getName ());
 	    DriverManager.registerDriver ((Driver) Class.forName (driver).newInstance ());
 
 	    // make the connection
 	    if (username == null) {
 		connection = DriverManager.getConnection( url );
 			} else {
-				System.out.println ("URL is "+url);
+				//System.out.println ("URL is "+url);
 				connection = DriverManager.getConnection( url, username, password );
 			}
 	}
