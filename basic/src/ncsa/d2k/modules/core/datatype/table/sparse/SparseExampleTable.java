@@ -1622,53 +1622,58 @@ public class SparseExampleTable
   protected void decrementTrainTest(int position) {
     boolean containsPos = false;
     int idx = -1;
-    for (int i = 0; i < testSet.length; i++) {
-      if (testSet[i] == position) {
-        containsPos = true;
-        idx = i;
-      }
-      if (containsPos) {
-        break;
-      }
-    }
 
-// if the test set contained pos, remove the item
-    if (containsPos) {
-      int[] newtest = new int[testSet.length - 1];
-      int idd = 0;
+    if (testSet != null){
       for (int i = 0; i < testSet.length; i++) {
-        if (i != idx) {
-          newtest[idd] = testSet[i];
-          idd++;
+        if (testSet[i] == position) {
+          containsPos = true;
+          idx = i;
+        }
+        if (containsPos) {
+          break;
         }
       }
-      setTestingSet(newtest);
-    }
-
-    containsPos = false;
-    idx = -1;
-
-    for (int i = 0; i < trainSet.length; i++) {
-      if (trainSet[i] == position) {
-        containsPos = true;
-        idx = i;
-      }
-      if (containsPos) {
-        break;
-      }
-    }
 
 // if the test set contained pos, remove the item
-    if (containsPos) {
-      int[] newttrain = new int[trainSet.length - 1];
-      int idd = 0;
+      if (containsPos) {
+        int[] newtest = new int[testSet.length - 1];
+        int idd = 0;
+        for (int i = 0; i < testSet.length; i++) {
+          if (i != idx) {
+            newtest[idd] = testSet[i];
+            idd++;
+          }
+        }
+        setTestingSet(newtest);
+      }
+
+      containsPos = false;
+      idx = -1;
+    }
+
+    if (trainSet != null){
       for (int i = 0; i < trainSet.length; i++) {
-        if (i != idx) {
-          newttrain[idd] = trainSet[i];
-          idd++;
+        if (trainSet[i] == position) {
+          containsPos = true;
+          idx = i;
+        }
+        if (containsPos) {
+          break;
         }
       }
-      setTrainingSet(newttrain);
+
+// if the test set contained pos, remove the item
+      if (containsPos) {
+        int[] newttrain = new int[trainSet.length - 1];
+        int idd = 0;
+        for (int i = 0; i < trainSet.length; i++) {
+          if (i != idx) {
+            newttrain[idd] = trainSet[i];
+            idd++;
+          }
+        }
+        setTrainingSet(newttrain);
+      }
     }
   }
 
