@@ -25,7 +25,7 @@ public class FixedFileParser implements FlatFileParser {
 
     private int lineLength;
 
-    private boolean[][] bTable;
+//    private boolean[][] bTable;
 
     public FixedFileParser(File file, Table header) throws Exception {
         int lbl = -1;
@@ -118,11 +118,11 @@ public class FixedFileParser implements FlatFileParser {
 
         _reader.setLineNumber(0);
 
-        bTable = new boolean[this._tableLength][this._noOfColumns];
+/*        bTable = new boolean[this._tableLength][this._noOfColumns];
         for(int i = 0; i < _tableLength; i++) {
             for(int j = 0; j < _noOfColumns; j++)
                 bTable[i][j] = false;
-        }
+        }*/
     }
 
     private void setColumnLabels(Table vt, int col) {
@@ -348,13 +348,13 @@ public class FixedFileParser implements FlatFileParser {
 		keeps track of which fields that were read were actually
 		blank
 	*/
-	private void addBlank(int r, int c){
+/*	private void addBlank(int r, int c){
 /*		_blankRows.add(new Integer(r));
 		_blankColumns.add(new Integer(c));
         _blankRows.add(r);
         _blankColumns.add(c);
         */
-        bTable[r][c] = true;
+/*        bTable[r][c] = true;
 	}
 
     public boolean[][] getBlanks() {
