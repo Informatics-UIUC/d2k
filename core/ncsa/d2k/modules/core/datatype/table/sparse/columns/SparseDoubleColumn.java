@@ -391,6 +391,10 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
    */
     public Column getSubset(int pos, int len){
       SparseDoubleColumn subCol = new SparseDoubleColumn ();
+
+      // added by DC 12.02.2002
+      subCol.elements = (VIntDoubleHashMap) elements.getSubset(pos, len);
+
       getSubset(subCol, pos, len);
 
      return subCol;
