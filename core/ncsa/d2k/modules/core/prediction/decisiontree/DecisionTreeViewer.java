@@ -49,7 +49,6 @@ public class DecisionTreeViewer extends VisModule  {
   String [] columnHeading;
   GenericMatrixModel treeTableModel;
   JTable treeList;
-  JButton printBtn;
 
   public DecisionTreeViewer() {
   }
@@ -75,7 +74,10 @@ public class DecisionTreeViewer extends VisModule  {
     s += "using a tablet form. Each rule represents a branch in a tree. The nodes ";
     s += "in the branch form the IF part of the rule, and the leaf of the branch ";
     s += "forms the THEN part of the rule.";
-
+    s += "<p>The rules displayed can be saved into a file. The <i>File</i> pull-down ";
+    s += "menu offers a <i>Save</i> option to do this. ";
+    s += "A file browser window pops up, allowing the user to select ";
+    s += "where the rules should be saved. ";
     return s;
 
   }
@@ -146,6 +148,8 @@ public class DecisionTreeViewer extends VisModule  {
 
   public class DisplayTreeView extends ncsa.d2k.userviews.swing.JUserPane
     implements ActionListener {
+    JMenuBar menuBar;
+    JMenuItem print;
 
     public void setInput(Object input, int index) {
       ViewableDTModel inputModel = (ViewableDTModel) input;
@@ -164,12 +168,22 @@ public class DecisionTreeViewer extends VisModule  {
       doGUI();
       displayRules();
     }
-
+    /*
     public Dimension getPreferredSize() {
-      return new Dimension (600, 630);
-    }
+      return new Dimension (600, 500);
+    } */
 
     public void initView(ViewModule mod) {
+      menuBar = new JMenuBar();
+      JMenu fileMenu = new JMenu("File");
+      print = new JMenuItem("Save...");
+      print.addActionListener(this);
+      fileMenu.add(print);
+      menuBar.add(fileMenu);
+    }
+
+    public Object getMenu() {
+       return menuBar;
     }
 
     public void doGUI() {
@@ -217,11 +231,6 @@ public class DecisionTreeViewer extends VisModule  {
       TableSorter sorter = new TableSorter(treeTableModel);
       treeList = new JTable(sorter);
       sorter.addMouseListenerToHeaderInTable(treeList);
-      /*
-      String[] columnHeading = {"IF","-->","THEN","COVERAGE%","ACCURACY%"};
-      treeTableModel = new GenericMatrixModel(rules.size(),5,false,columnHeading);
-      treeList = new JTable(treeTableModel);
-      */
       TableColumnModel colModel = treeList.getColumnModel();
       colModel.getColumn(0).setPreferredWidth(90);
       colModel.getColumn(1).setPreferredWidth(10);
@@ -237,17 +246,14 @@ public class DecisionTreeViewer extends VisModule  {
 
 
       JScrollPane tablePane = new JScrollPane(treeList);
-      treeList.setPreferredScrollableViewportSize (new Dimension(500,400));
+      treeList.setPreferredScrollableViewportSize (new Dimension(500,300));
       Constrain.setConstraints(treeInfo, tablePane,
         0,4,4,15,GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,1,1);
 
       /* Add the outline panel to displayTreePanel */
       Constrain.setConstraints(displayTreePanel, treeInfo,
-        0,0,3,8,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
-      Constrain.setConstraints(displayTreePanel, printBtn = new JButton ("Print"),
-        1,9,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,1,1);
-      printBtn.addActionListener(this);
-
+        0,0,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
+      //0,0,3,8,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
       setLayout (new BorderLayout());
       add(displayTreePanel, BorderLayout.SOUTH);
     }
@@ -255,7 +261,7 @@ public class DecisionTreeViewer extends VisModule  {
     public void actionPerformed(ActionEvent e) {
       Object src = e.getSource();
 
-      if (src == printBtn) {
+      if (src == print) {
         writeToFile();
       }
     }
@@ -424,13 +430,19 @@ public class DecisionTreeViewer extends VisModule  {
   }
 
   protected void writeToFile() {
+    JFileChooser chooser = new JFileChooser();
+    String delimiter = "\t";
+    String newLine = "\n";
+    String fileName;
+    int retVal = chooser.showSaveDialog(null);
+    if(retVal == JFileChooser.APPROVE_OPTION)
+       fileName = chooser.getSelectedFile().getAbsolutePath();
+    else
+       return;
     String s1 = NOTHING;
     String s2 = NOTHING;
     String s3 = NOTHING;
     try {
-      String fileName = "DecisionTree.out";
-      String newLine = "\n";
-
       fw = new FileWriter(fileName);
 
       String s = "DECISION TREE: ";

@@ -55,7 +55,7 @@ public class RuleAssocReport extends UIModule
   GenericMatrixModel ruleModel;
   JTable ruleList;
   JButton doneBtn;
-  JButton printBtn;
+  JButton abortBtn;
 
   public RuleAssocReport() {
   }
@@ -85,7 +85,13 @@ public class RuleAssocReport extends UIModule
         s += "and the forth and fifth columns represent the rule's support and ";
         s += "confidence, respectively. The rules displayed in the table can be filtered by different ";
         s += "threshold values for support and confidence, and can be sorted by support or ";
-        s += "confidence by the user interface module 'SQLGetRuleAsscFromCube'. </p>";
+        s += "confidence by the user interface module 'SQLGetRuleAssocFromCube'. </p>";
+        s += "<p>The <i>File</i> pull-down menu offers a <i>Save</i> option to ";
+        s += "save the displayed rules to a file. ";
+        s += "A file browser window pops up, allowing the user to select ";
+        s += "where the rules should be saved. ";
+        s += "<p>The <i>Done</i> button closes the display window. ";
+        s += "The <i>Abort</i> button closes the display window and aborts itinerary execution. ";
         s += "<p> Restrictions: ";
         s += "We currently only support Oracle databases.";
         return s;
@@ -135,6 +141,11 @@ public class RuleAssocReport extends UIModule
   public class DisplayRuleView extends JUserInputPane
         implements ActionListener {
 
+    JMenuBar menuBar;
+    JMenuItem print;
+    /** a reference to our parent module */
+    protected RuleAssocReport parent;
+
         public void setInput(Object input, int index) {
           removeAll();
           ruleTable = (TableImpl)input;
@@ -147,10 +158,21 @@ public class RuleAssocReport extends UIModule
         }
 
         public Dimension getPreferredSize() {
-          return new Dimension (500, 450);
+          return new Dimension (500, 350);
         }
 
         public void initView(ViewModule mod) {
+          parent = (RuleAssocReport)mod;
+          menuBar = new JMenuBar();
+          JMenu fileMenu = new JMenu("File");
+          print = new JMenuItem("Save...");
+          print.addActionListener(this);
+          fileMenu.add(print);
+          menuBar.add(fileMenu);
+        }
+
+        public Object getMenu() {
+           return menuBar;
         }
 
         public void doGUI() {
@@ -180,13 +202,13 @@ public class RuleAssocReport extends UIModule
                 0,0,4,1,GridBagConstraints.BOTH,GridBagConstraints.CENTER,1.0,1.0);
           Constrain.setConstraints(displayRulePanel, new JPanel(),
                 0,1,1,1,GridBagConstraints.HORIZONTAL, GridBagConstraints.EAST,.5,0);
-          Constrain.setConstraints(displayRulePanel, printBtn = new JButton ("Print"),
+          Constrain.setConstraints(displayRulePanel, abortBtn = new JButton ("Abort"),
                 1,1,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,0,0);
-          printBtn.addActionListener(this);
           Constrain.setConstraints(displayRulePanel, doneBtn = new JButton ("Done"),
                 2,1,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,0,0);
           Constrain.setConstraints(displayRulePanel, new JPanel(),
                 3,1,1,1,GridBagConstraints.HORIZONTAL, GridBagConstraints.EAST,.5,0);
+          abortBtn.addActionListener(this);
           doneBtn.addActionListener(this);
 
           setLayout (new BorderLayout());
@@ -198,11 +220,14 @@ public class RuleAssocReport extends UIModule
         public void actionPerformed(ActionEvent e) {
           Object src = e.getSource();
 
-          if (src == printBtn) {
+          if (src == print) {
                 writeToFile();
           }
           else if (src == doneBtn) {
                 closeIt();
+          }
+          else if (src == abortBtn) {
+                parent.viewCancel();
           }
         }
   }
@@ -281,48 +306,53 @@ public class RuleAssocReport extends UIModule
   }
 
   protected void writeToFile() {
-        try {
-          String fileName = "ruleAssocation.out";
-          String delimiter = "          ";
-          String newLine = "\n";
+    JFileChooser chooser = new JFileChooser();
+    String delimiter = "\t";
+    String newLine = "\n";
+    String fileName;
+    int retVal = chooser.showSaveDialog(null);
+    if(retVal == JFileChooser.APPROVE_OPTION)
+       fileName = chooser.getSelectedFile().getAbsolutePath();
+    else
+       return;
+    try {
+      fw = new FileWriter(fileName);
 
-          fw = new FileWriter(fileName);
+      String s = "RULE ASSOCIATION: ";
+      fw.write(s, 0, s.length());
+      fw.write(newLine.toCharArray(), 0, newLine.length());
+      fw.write(newLine.toCharArray(), 0, newLine.length());
 
-          String s = "RULE ASSOCIATION: ";
-          fw.write(s, 0, s.length());
-          fw.write(newLine.toCharArray(), 0, newLine.length());
-          fw.write(newLine.toCharArray(), 0, newLine.length());
-
-          // write the actual data
-          for(int rowIdx = 0; rowIdx < ruleList.getRowCount(); rowIdx++) {
-                for (int colIdx = 0; colIdx < ruleList.getColumnCount(); colIdx++) {
-                  s = NOTHING;
-                  if (colIdx == 0) {
-                        s = "IF (";
-                        s = s + ruleList.getValueAt(rowIdx, colIdx).toString() + ") ";
-                  }
-                  else if (colIdx == 2) {
-                        s = "THEN (";
-                        s = s + ruleList.getValueAt(rowIdx, colIdx).toString() + ") ";
-                  }
-                  else if (colIdx == 3) {
-                        s = "with SUPPORT ";
-                        s = s + ruleList.getValueAt(rowIdx, colIdx).toString();
-                  }
-                  else if (colIdx == 4) {
-                        s = " and CONFIDENCE ";
-                        s = s + ruleList.getValueAt(rowIdx, colIdx).toString();
-                  }
-                  fw.write(s, 0, s.length());
-                }
-                fw.write(newLine.toCharArray(), 0, newLine.length());
+      // write the actual data
+      for(int rowIdx = 0; rowIdx < ruleList.getRowCount(); rowIdx++) {
+        for (int colIdx = 0; colIdx < ruleList.getColumnCount(); colIdx++) {
+          s = NOTHING;
+          if (colIdx == 0) {
+            s = "IF (";
+            s = s + ruleList.getValueAt(rowIdx, colIdx).toString() + ") ";
           }
-          fw.flush();
-          fw.close();
+          else if (colIdx == 2) {
+            s = "THEN (";
+            s = s + ruleList.getValueAt(rowIdx, colIdx).toString() + ") ";
+          }
+          else if (colIdx == 3) {
+            s = "with SUPPORT ";
+            s = s + ruleList.getValueAt(rowIdx, colIdx).toString();
+          }
+          else if (colIdx == 4) {
+            s = " and CONFIDENCE ";
+            s = s + ruleList.getValueAt(rowIdx, colIdx).toString();
+          }
+          fw.write(s, 0, s.length());
         }
-        catch(IOException e) {
-          e.printStackTrace();
-        }
+        fw.write(newLine.toCharArray(), 0, newLine.length());
+      }
+      fw.flush();
+      fw.close();
+    }
+    catch(IOException e) {
+      e.printStackTrace();
+    }
   }
 
 }
