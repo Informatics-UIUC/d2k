@@ -654,7 +654,9 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 	public double getTargetFitness () { return this.target; }
 	public double getCurrentMeasure () { return this.currentMeasure; }
 
-        private EMOConstruction[] fitnessVariables;
+        private EMOPopulationInfo popInfo;
+
+/*        private EMOConstruction[] fitnessVariables;
         private EMOConstruction[] fitnessFunctions;
         private EMOConstruction[] constraintVariables;
         private EMOConstruction[] constraintFunctions;
@@ -699,7 +701,9 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 
         public MutableTable getAllVarNames() {
           return allVarNames;
-        }
+        }*/
+
+        MutableTable tbl;
 
         public MutableTable getTbl() {
           return tbl;
@@ -707,5 +711,13 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 
         public void setTbl(MutableTable t) {
           tbl = t;
+        }
+
+        public void setPopulationInfo(EMOPopulationInfo popI) {
+          popInfo = popI;
+        }
+
+        public EMOPopulationInfo getPopulationInfo() {
+          return popInfo;
         }
 }

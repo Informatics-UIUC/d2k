@@ -279,11 +279,16 @@ public class EMOGeneratePopulation
     //and fitness function, generate the NSGA population.
     NsgaPopulation pop = new ConstrainedNsgaPopulation(xyz, oc,
         this.populationSize, this.getTargetFitness());
-    pop.setFitnessVariables(fitvarConstructions);
-    pop.setFitnessFunctions(fitConstructions);
-    pop.setConstraintVariables(popInfo.constraintVariableConstructions);
-    pop.setConstraintFunctions(popInfo.constraintFunctionConstructions);
-    pop.setAllVarNames(populationTbl);
+    //pop.setFitnessVariables(fitvarConstructions);
+    pop.getPopulationInfo().fitnessVariableConstructions = fitvarConstructions;
+    //pop.setFitnessFunctions(fitConstructions);
+    pop.getPopulationInfo().fitnessFunctionConstructions = fitConstructions;
+    //pop.setConstraintVariables(popInfo.constraintVariableConstructions);
+    pop.getPopulationInfo().constraintVariableConstructions = popInfo.constraintVariableConstructions;
+    //pop.setConstraintFunctions(popInfo.constraintFunctionConstructions);
+    pop.getPopulationInfo().constraintFunctionConstructions = popInfo.constraintFunctionConstructions;
+    //pop.setAllVarNames(populationTbl);
+    pop.getPopulationInfo().varNames = populationTbl;
     //set the maximum number of generation
     pop.setMaxGenerations(this.maxGenerations);
 

@@ -121,12 +121,12 @@ public class EMOEvaluateModule
       //extract the fitness function variables information
       //Construction[] fitvarConstructions = arremoconstructions.
       //    getVarConstructions();
-      EMOConstruction[] fitvarConstructions = pop.getFitnessVariables();
+      EMOConstruction[] fitvarConstructions = pop.getPopulationInfo().fitnessVariableConstructions;
 
       //extract the fitness function information
       //Construction[] fitConstructions = arremoconstructions.
       //    getFuncConstructions();
-      EMOConstruction[] fitConstructions = pop.getFitnessFunctions();
+      EMOConstruction[] fitConstructions = pop.getPopulationInfo().fitnessFunctionConstructions;
 
       // update the mutable table by calculating the
       //fitness function varaibles
@@ -187,12 +187,12 @@ public class EMOEvaluateModule
       //extract the fitness constraints variables information
       //Construction[] fitvarConstructions1 = arremoconstructions1.
       //    getVarConstructions();
-      EMOConstruction[] constraintVarConstructions = pop.getConstraintVariables();
+      EMOConstruction[] constraintVarConstructions = pop.getPopulationInfo().constraintVariableConstructions;
 
       //extract the fitness constraints information
       //Construction[] fitConstructions1 = arremoconstructions1.
       //    getFuncConstructions();
-      EMOConstruction[] constraintVariableConstructions = pop.getConstraintFunctions();
+      EMOConstruction[] constraintVariableConstructions = pop.getPopulationInfo().constraintFunctionConstructions;
 
       // update the mutable table by calculating the
       //constraint varaibles
