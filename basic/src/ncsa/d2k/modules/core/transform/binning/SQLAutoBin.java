@@ -487,7 +487,7 @@ public class SQLAutoBin extends AutoBin {
 }
 
 /*12-8-03 Anca: took out query condition input- does not seem to be used 
- *   			fixed [bug 152] - SQLAutoBin - wrong weight binning - - changed line 271 form 0 to -1
+ *   			fixed [bug 152] - SQLAutoBin - wrong weight binning - - changed itemCnt from 0 to -1
 * 				fixed [bug 151] - wrong uniform binning -  min, max were interchanged
 **				added "unknown" bins for relevant attributes that have missing values
 */
