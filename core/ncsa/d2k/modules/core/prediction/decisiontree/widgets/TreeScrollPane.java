@@ -21,7 +21,7 @@ public class TreeScrollPane extends JScrollPane {
 	JViewport viewport;
 	TreePanel treepanel;
 
-	public TreeScrollPane(DecisionTreeModel model, BrushPanel panel) {
+	public TreeScrollPane(ViewableDTModel model, BrushPanel panel) {
 
 		treepanel = new TreePanel(model, panel);
 
@@ -49,10 +49,10 @@ public class TreeScrollPane extends JScrollPane {
 		BrushPanel brushpanel;
 
 		// Decision tree model
-		DecisionTreeModel dmodel;
+		ViewableDTModel dmodel;
 
 		// Decision tree root
-		DecisionTreeNode droot;
+		ViewableDTNode droot;
 
 		// View tree root
 		ViewNode vroot;
@@ -74,11 +74,11 @@ public class TreeScrollPane extends JScrollPane {
 
 		int lastx, lasty;
 
-		public TreePanel(DecisionTreeModel model, BrushPanel panel) {
+		public TreePanel(ViewableDTModel model, BrushPanel panel) {
 			brushpanel = panel;
 
 			dmodel = model;
-			droot = dmodel.getRoot();
+			droot = dmodel.getViewableRoot();
 			vroot = new ViewNode(dmodel, droot, null);
 
 			findMaximumDepth(droot);
@@ -103,14 +103,14 @@ public class TreeScrollPane extends JScrollPane {
 			addMouseMotionListener(this);
 		}
 
-		public void findMaximumDepth(DecisionTreeNode dnode) {
+		public void findMaximumDepth(ViewableDTNode dnode) {
 			int depth = dnode.getDepth();
 
 			if (depth > mdepth)
 				mdepth = depth;
 
 			for (int index = 0; index < dnode.getNumChildren(); index++) {
-				DecisionTreeNode dchild = dnode.getChild(index);
+				ViewableDTNode dchild = dnode.getViewableChild(index);
 				findMaximumDepth(dchild);
 			}
 		}
@@ -127,9 +127,9 @@ public class TreeScrollPane extends JScrollPane {
 		}
 
 		// Builds a copy of the decision tree using view nodes
-		public void buildViewTree(DecisionTreeNode dnode, ViewNode vnode) {
+		public void buildViewTree(ViewableDTNode dnode, ViewNode vnode) {
 			for (int index = 0; index < dnode.getNumChildren(); index++) {
-				DecisionTreeNode dchild = dnode.getChild(index);
+				ViewableDTNode dchild = dnode.getViewableChild(index);
 				ViewNode vchild = new ViewNode(dmodel, dchild, vnode);
 				vnode.addChild(vchild);
 				buildViewTree(dchild, vchild);
@@ -274,7 +274,7 @@ public class TreeScrollPane extends JScrollPane {
 			}
 		}
 
-		public void expandView(DecisionTreeNode dnode) {
+		public void expandView(ViewableDTNode dnode) {
 			ExpandedGraph graph = new ExpandedGraph(dmodel, dnode);
 
 			JFrame frame = new JFrame();

@@ -16,9 +16,9 @@ import ncsa.d2k.modules.core.vis.widgets.*;
 */
 public class BrushPanel extends JPanel {
 
-	DecisionTreeModel dmodel;
-	DecisionTreeNode droot;
-	DecisionTreeNode dnode;
+	ViewableDTModel dmodel;
+	ViewableDTNode droot;
+	ViewableDTNode dnode;
 
 	double samplesize = 10;
 	double samplespace = 8;
@@ -39,9 +39,9 @@ public class BrushPanel extends JPanel {
 
 	NumberFormat numberformat;
 
-	public BrushPanel(DecisionTreeModel model) {
+	public BrushPanel(ViewableDTModel model) {
 		dmodel = model;
-		droot = dmodel.getRoot();
+		droot = dmodel.getViewableRoot();
 
 		outputs = model.getUniqueOutputValues();
 
@@ -68,7 +68,11 @@ public class BrushPanel extends JPanel {
 		if (dnode != null) {
 			values = new double[outputs.length];
 			for(int index = 0; index < values.length; index++)
+				try{
 				values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
+				}catch(Exception e){
+					System.out.println("getOutputTally threw an exception");
+				}
 		}
 
 		BarColors barcolors = scheme.getBarColors();
@@ -99,7 +103,7 @@ public class BrushPanel extends JPanel {
 	}
 
 	// Called by tree scroll pane
-	public void updateBrush(DecisionTreeNode node) {
+	public void updateBrush(ViewableDTNode node) {
 		dnode = node;
 		repaint();
 	}

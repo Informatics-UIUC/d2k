@@ -13,7 +13,6 @@ public interface ViewableDTModel{
 		Get the unique values of the output column.
 		@param the unique items of the output column
 	*/
-	public String[] getUniqueOutputValues();
-	
+	public String[] getUniqueOutputValues();	
 }
 

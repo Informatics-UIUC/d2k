@@ -20,13 +20,13 @@ public class DecisionTreeVis extends ncsa.d2k.infrastructure.modules.VisModule {
 
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "DecisionTreeModel";
+			case 0: return "ViewableDTModel";
 			default: return "No such input";
 		}
 	}
 
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel"};
+		String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel"};
 		return types;
 	}
 
@@ -72,7 +72,7 @@ class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
 	}
 
 	public void setInput(Object object, int index) {
-		DecisionTreeModel model = (DecisionTreeModel) object;
+		ViewableDTModel model = (ViewableDTModel) object;
 
 		brushpanel = new BrushPanel(model);
 		brushpanel.setBorder(new RectangleBorder("Brushing"));

@@ -20,7 +20,7 @@ import ncsa.gui.*;
 */
 public class NavigatorPanel extends JPanel {
 
-	public NavigatorPanel(DecisionTreeModel model, TreeScrollPane scrollpane) {
+	public NavigatorPanel(ViewableDTModel model, TreeScrollPane scrollpane) {
 		Navigator navigator = new Navigator(model, scrollpane);
 
 		setBackground(DecisionTreeScheme.borderbackgroundcolor);
@@ -32,10 +32,10 @@ public class NavigatorPanel extends JPanel {
 	class Navigator extends JPanel implements MouseListener, MouseMotionListener, ChangeListener {
 
 		// Decision tree model
-		DecisionTreeModel dmodel;
+		ViewableDTModel dmodel;
 
 		// Decision tree root
-		DecisionTreeNode droot;
+		ViewableDTNode droot;
 
 		// Scaled tree root
 		ScaledNode sroot;
@@ -66,9 +66,9 @@ public class NavigatorPanel extends JPanel {
 
 		boolean statechanged;
 
-		public Navigator(DecisionTreeModel model, TreeScrollPane scrollpane) {
+		public Navigator(ViewableDTModel model, TreeScrollPane scrollpane) {
 			dmodel = model;
-			droot = dmodel.getRoot();
+			droot = dmodel.getViewableRoot();
 			sroot = new ScaledNode(dmodel, droot, null);
 
 			treescrollpane = scrollpane;
@@ -98,14 +98,14 @@ public class NavigatorPanel extends JPanel {
 			viewport.addChangeListener(this);
 		}
 
-		public void findMaximumDepth(DecisionTreeNode dnode) {
+		public void findMaximumDepth(ViewableDTNode dnode) {
 			int depth = dnode.getDepth();
 
 			if (depth > mdepth)
 				mdepth = depth;
 
 			for (int index = 0; index < dnode.getNumChildren(); index++) {
-				DecisionTreeNode dchild = dnode.getChild(index);
+				ViewableDTNode dchild = dnode.getViewableChild(index);
 				findMaximumDepth(dchild);
 			}
 		}
@@ -119,9 +119,9 @@ public class NavigatorPanel extends JPanel {
 			}
 		}
 
-		public void buildTree(DecisionTreeNode dnode, ScaledNode snode) {
+		public void buildTree(ViewableDTNode dnode, ScaledNode snode) {
 			for (int index = 0; index < dnode.getNumChildren(); index++) {
-				DecisionTreeNode dchild = dnode.getChild(index);
+				ViewableDTNode dchild = dnode.getViewableChild(index);
 				ScaledNode schild = new ScaledNode(dmodel, dchild, snode);
 				snode.addChild(schild);
 				buildTree(dchild, schild);

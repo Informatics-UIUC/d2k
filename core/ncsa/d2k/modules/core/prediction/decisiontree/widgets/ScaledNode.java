@@ -15,9 +15,9 @@ import ncsa.d2k.modules.core.prediction.decisiontree.*;
 */
 public class ScaledNode {
 
-	DecisionTreeModel dmodel;
+	ViewableDTModel dmodel;
 
-	DecisionTreeNode dnode;
+	ViewableDTNode dnode;
 
 	ScaledNode parent;
 	ArrayList children;
@@ -42,7 +42,7 @@ public class ScaledNode {
 	double scalesize = 100;
 	double xincrement, yincrement;
 
-	public ScaledNode(DecisionTreeModel model, DecisionTreeNode node, ScaledNode snode) {
+	public ScaledNode(ViewableDTModel model, ViewableDTNode node, ScaledNode snode) {
 		dmodel = model;
 		dnode = node;
 		parent = snode;

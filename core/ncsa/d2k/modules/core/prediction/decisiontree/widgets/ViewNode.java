@@ -16,9 +16,9 @@ import ncsa.d2k.modules.core.prediction.decisiontree.*;
 public class ViewNode {
 
 	// Decision tree model
-	DecisionTreeModel dmodel;
+	ViewableDTModel dmodel;
 
-	DecisionTreeNode dnode;
+	ViewableDTNode dnode;
 
 	ViewNode parent;
 	ArrayList children;
@@ -55,7 +55,7 @@ public class ViewNode {
 
 	DecisionTreeScheme scheme;
 
-	public ViewNode(DecisionTreeModel model, DecisionTreeNode node, ViewNode vnode) {
+	public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode) {
 		dmodel = model;
 		dnode = node;
 		parent = vnode;
@@ -102,8 +102,13 @@ public class ViewNode {
 	public void findValues() {
 		String[] output = dmodel.getUniqueOutputValues();
 		values = new double[output.length];
-		for(int index = 0; index < values.length; index++)
+		for(int index = 0; index < values.length; index++){
+			try{
 			values[index] = 100*(double)dnode.getOutputTally(output[index])/(double)dnode.getTotal();
+			}catch(Exception e){
+				System.out.println("getOutputTally threw an exception");
+			}
+		}
 	}
 
 	public double getWidth() {

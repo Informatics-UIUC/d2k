@@ -62,7 +62,7 @@ public abstract class DecisionTreeNode
 		@return the count of the number of records with the
 			given output value that passed through this node
 	*/
-	public int getOutputTally(String outputVal) {
+	public int getOutputTally(String outputVal) throws Exception{
 		Integer i = (Integer)outputValueTallies.get(outputVal);
 		if(i == null)
 			return 0;
@@ -153,7 +153,14 @@ public abstract class DecisionTreeNode
 	public DecisionTreeNode getChild(int i) {
 		return (DecisionTreeNode)children.get(i);
 	}
-
+	/**
+		Get a child of this node as a ViewableDTNode.
+		@param i the index of the child to get
+		@return the ith child of this node
+	*/
+	public ViewableDTNode getViewableChild(int i){
+		return (ViewableDTNode)children.get(i);
+	}
 	/**
 		Evaluate a record from the data set.  If this is a leaf, return the
 		label of this node.  Otherwise find the column of the table that

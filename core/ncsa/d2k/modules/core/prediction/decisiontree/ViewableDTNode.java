@@ -8,7 +8,7 @@ public interface ViewableDTNode {
 		@return the count of the number of records with the
 			given output value that passed through this node
 	*/
-	public int getOutputTally(String outputVal);
+	public int getOutputTally(String outputVal) throws Exception;
 	
 	/**
 	 * Get the total number of examples that passed through this node.
@@ -34,7 +34,7 @@ public interface ViewableDTNode {
 		@param i the index of the child to get
 		@return the ith child of this node
 	*/
-	public DecisionTreeNode getChild(int i);
+	public ViewableDTNode getViewableChild(int i);
 	
 	/**
 		Get the number of children of this node.

@@ -66,7 +66,7 @@ public class ExpandedGraph extends JPanel {
 	double percentspace = 8;
 	double axisspace = 4;
 
-	DecisionTreeNode dnode;
+	ViewableDTNode dnode;
 
 	String[] outputs = {"one", "two", "three"};
 	double[] values = {40, 10, 50};
@@ -79,13 +79,18 @@ public class ExpandedGraph extends JPanel {
 
 	NumberFormat numberformat;
 
-	public ExpandedGraph(DecisionTreeModel model, DecisionTreeNode node) {
+	public ExpandedGraph(ViewableDTModel model, ViewableDTNode node) {
 		dnode = node;
 
 		outputs = model.getUniqueOutputValues();
 		values = new double[outputs.length];
-		for(int index = 0; index < outputs.length; index++)
+		for(int index = 0; index < outputs.length; index++){
+			try{
 			values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
+			}catch(Exception e){
+				System.out.println("getOutputTally threw an Exception");
+			}
+		}
 		datasize = values.length;
 
 		scheme = new DecisionTreeScheme();
