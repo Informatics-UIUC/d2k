@@ -160,13 +160,6 @@ public class ItemSets implements Serializable {
 		// Init each prefix, if there is no column label, use our own
 		// home brew.
 		for (int i = 0 ; i < numAttributes ; i++) {
-/*
-			String tmp = vt.getColumnLabel (attributes[i]);
-			if (tmp != null && tmp.length() > 0)
-				prefix [i] = tmp+"^";
-			else
-				prefix [i] = "Column "+Integer.toString (i)+"^";
-*/
 			String tmp = getNonNullColumnLabel( vt, attributes[i] );
 			prefix [i] = tmp + "^";
 		}
@@ -351,5 +344,8 @@ public class ItemSets implements Serializable {
 //	      Tables where some, but not all, attributes used as both
 //            Ins and Outs.  Also, added support for empty column
 //            labels that's a bit more consistent w/ other displays.
-// 3/16/03  - Committed to Basic.
+// 3/16/03  - Ready for basic.
+// 3/18/03  - If tables are changed to generate default column labels,
+//            remove the method "getNonNullColumnLabel()" which should
+//            no longer be needed.
 //
