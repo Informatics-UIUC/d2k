@@ -177,6 +177,7 @@ public class AttributeConstruction extends HeadlessUIModule {
       protected JList newColumnList;
       protected DefaultListModel newColumnModel;
       protected HashMap stringsToColumnBoxEntries;
+      protected JLabel newAttributeLabel;
 
       protected JLabel constructionLabel;
       protected ViewModule mod;
@@ -388,7 +389,7 @@ public class AttributeConstruction extends HeadlessUIModule {
 
          Constrain.setConstraints(leftPanel,  new JLabel("              "), 0, 0, 1, 1,
              GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 0, 0);
-         Constrain.setConstraints(leftPanel,  new JLabel("New attribute label:"), 0, 0, 1, 1,
+         Constrain.setConstraints(leftPanel,  newAttributeLabel = new JLabel("New attribute label:"), 0, 0, 1, 1,
                  GridBagConstraints.NONE, GridBagConstraints.NORTH, 0, 0);
          Constrain.setConstraints(leftPanel, new JLabel("   "), 0, 1, 1, 1,
                  GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
@@ -422,6 +423,8 @@ public class AttributeConstruction extends HeadlessUIModule {
                return;
              if(rowSel.isSelectionEmpty())  {
                selectedItem = null;
+               newNameField.setText("");
+               gui.getTextArea().setText("");               
                return;
              }
              else {
