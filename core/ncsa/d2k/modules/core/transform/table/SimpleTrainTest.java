@@ -237,8 +237,8 @@ public class SimpleTrainTest extends DataPrepModule  {
 		ExampleTable et = orig.toExampleTable();
 		et.setTestingSet(test);
 		et.setTrainingSet(train);
-		this.pushOutput(et.getTestTable(), 0);
-		this.pushOutput(et.getTrainTable(), 1);
+		this.pushOutput(et.getTrainTable(), 0);
+		this.pushOutput(et.getTestTable(), 1);
 	}
 
 	/**
