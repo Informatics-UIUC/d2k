@@ -65,14 +65,14 @@ public class C45TreeBuilder extends ComputeModule
 	/**
 		The threshold for information gain
 	*/
-	private double threshold = 0.005;
+	private double infoGainThreshold = 0.005;
 
-	public void setThreshold(double d) {
-		threshold = d;
+	public void setInfoGainThreshold(double d) {
+		infoGainThreshold = d;
 	}
 
-	public double getThreshold() {
-		return threshold;
+	public double getInfoGainThreshold() {
+		return infoGainThreshold;
 	}
 
 	/**
@@ -120,56 +120,27 @@ public class C45TreeBuilder extends ComputeModule
 			split value
 	*/
 	private double numericAttributeEntropy(Table vt, double splitVal,
-		ArrayList examples, int attCol, int outCol) {
+		int[] examples, int attCol, int outCol) {
 
-		/*HashMap lessThanTally = new HashMap();
-		HashMap greaterThanTally = new HashMap();
-		*/
 		int lessThanTot = 0;
 		int greaterThanTot = 0;
-
-		/*
-		// count up the number of examples less than and greater than
-		// the split point
-		for(int i = 0; i < examples.size(); i++) {
-			Integer rowIdx = (Integer)examples.get(i);
-			double val = vt.getDouble(rowIdx.intValue(), attCol);
-			String out = vt.getString(rowIdx.intValue(), outCol);
-
-			if(val < splitVal) {
-				if(lessThanTally.containsKey(out)) {
-					Integer in = (Integer)lessThanTally.get(out);
-					int tal = in.intValue() + 1;
-					lessThanTally.put(out, new Integer(tal));
-				}
-				else {
-					lessThanTally.put(out, ONE);
-				}
-				lessThanTot++;
-			}
-			else {
-				if(greaterThanTally.containsKey(out)) {
-					Integer in = (Integer)greaterThanTally.get(out);
-					int tal = in.intValue() + 1;
-					greaterThanTally.put(out, new Integer(tal));
-				}
-				else {
-					greaterThanTally.put(out, ONE);
-				}
-				greaterThanTot++;
-			}
-		}
-		*/
 
 		int [] lessThanTally = new int[0];
 		int [] greaterThanTally = new int[0];
 		HashMap lessThanIndexMap = new HashMap();
 		HashMap greaterThanIndexMap = new HashMap();
-		for(int i = 0; i < examples.size(); i++) {
-			Integer rowIdx = (Integer)examples.get(i);
-			int idx = rowIdx.intValue();
+		for(int i = 0; i < examples.length; i++) {
+			int idx = examples[i];
 
-			double val = vt.getDouble(idx, attCol);
+            double val;
+            //try {
+			    val = vt.getDouble(idx, attCol);
+            /*}
+            catch(RuntimeException e) {
+                System.out.println("IDX: "+idx);
+                System.out.println(vt.getNumRows());
+                throw e;
+            }*/
 			String out = vt.getString(idx, outCol);
 
 			int loc;
@@ -203,32 +174,6 @@ public class C45TreeBuilder extends ComputeModule
 			}
 		}
 
-		// now put all the totals in hash maps..
-		/*lessThanTally = new HashMap(ltm.size());
-		Iterator ii = ltm.keySet().iterator();
-		while(ii.hasNext()) {
-			String out = (String)ii.next();
-			Integer loc = (Integer)ltm.get(out);
-
-			lessThanTally.put(out, new Integer(lt[loc.intValue()]));
-		}
-
-		greaterThanTally = new HashMap(gtm.size());
-		ii = gtm.keySet().iterator();
-		while(ii.hasNext()) {
-			String out = (String)ii.next();
-			Integer loc = (Integer)gtm.get(out);
-
-			greaterThanTally.put(out, new Integer(gt[loc.intValue()]));
-		}
-		*/
-
-		/*Maps mm = dothis(vt, splitVal, examples, attCol, outCol);
-		lessThanTally = mm.lessThan;
-		greaterThanTally = mm.greaterThan;
-		double lessThanTot = mm.lt;
-		double greaterThanTot = mm.gt;
-		*/
 		// now that we have tallies of the outputs for this att value
 		// we can calculate the entropy.
 
@@ -238,154 +183,20 @@ public class C45TreeBuilder extends ComputeModule
 		for(int i = 0; i < lessThanTally.length; i++)
 			probs[i] = ((double)lessThanTally[i])/((double)lessThanTot);
 
-		/*Iterator it = lessThanTally.values().iterator();
-		int idx = 0;
-		while(it.hasNext()) {
-			Integer in = (Integer)it.next();
-			double d = (double)in.intValue();
-			probs[idx] = d/lessThanTot;
-			idx++;
-		}*/
-
-		// get the probablities for the examples greater than or equal to
-		// the split
-		/*double[] greaterProbs = new double[greaterThanTally.size()];
-		it = greaterThanTally.values().iterator();
-		idx = 0;
-		while(it.hasNext()) {
-			Integer in = (Integer)it.next();
-			double d = (double)in.intValue();
-			greaterProbs[idx] = d/greaterThanTot;
-			idx++;
-		}*/
 		double[] greaterProbs = new double[greaterThanTally.length];
 		for(int i = 0; i < greaterThanTally.length; i++)
 			greaterProbs[i] = ((double)greaterThanTally[i])/((double)greaterThanTot);
 
 		// return the sum of the information given on each side of the split
-		return (lessThanTot/(double)examples.size())*entropy(probs) +
-			(greaterThanTot/(double)examples.size())*entropy(greaterProbs);
+		return (lessThanTot/(double)examples.length)*entropy(probs) +
+			(greaterThanTot/(double)examples.length)*entropy(greaterProbs);
 	}
-
-	/*private class Maps {
-		HashMap lessThan;
-		HashMap greaterThan;
-		double lt;
-		double gt;
-	}*/
 
 	private static int[] expandArray(int[] orig) {
 		int [] newarray = new int[orig.length+1];
 		System.arraycopy(orig, 0, newarray, 0, orig.length);
 		return newarray;
 	}
-
-	/*private Maps dothis(VerticalTable vt, double splitVal,
-		ArrayList examples, int attCol, int outCol) {
-		HashMap lessThanTally = new HashMap();
-		HashMap greaterThanTally = new HashMap();
-		double lessThanTot = 0;
-		double greaterThanTot = 0;
-
-		// count up the number of examples less than and greater than
-		// the split point
-		for(int i = 0; i < examples.size(); i++) {
-			Integer rowIdx = (Integer)examples.get(i);
-			double val = vt.getDouble(rowIdx.intValue(), attCol);
-			String out = vt.getString(rowIdx.intValue(), outCol);
-
-			if(val < splitVal) {
-				if(lessThanTally.containsKey(out)) {
-					Integer in = (Integer)lessThanTally.get(out);
-					int tal = in.intValue() + 1;
-					lessThanTally.put(out, new Integer(tal));
-				}
-				else {
-					lessThanTally.put(out, ONE);
-				}
-				lessThanTot++;
-			}
-			else {
-				if(greaterThanTally.containsKey(out)) {
-					Integer in = (Integer)greaterThanTally.get(out);
-					int tal = in.intValue() + 1;
-					greaterThanTally.put(out, new Integer(tal));
-				}
-				else {
-					greaterThanTally.put(out, ONE);
-				}
-				greaterThanTot++;
-			}
-		}
-
-		int [] lt = new int[0];
-		int [] gt = new int[0];
-		HashMap ltm = new HashMap();
-		HashMap gtm = new HashMap();
-		for(int i = 0; i < examples.size(); i++) {
-			Integer rowIdx = (Integer)examples.get(i);
-			int idx = rowIdx.intValue();
-
-			double val = vt.getDouble(idx, attCol);
-			String out = vt.getString(idx, outCol);
-
-			int loc;
-			if(val < splitVal) {
-				if(ltm.containsKey(out)) {
-					Integer in = (Integer)ltm.get(out);
-					loc = in.intValue();
-					lt[loc]++;
-				}
-				// found a new one..
-				else {
-					ltm.put(out, new Integer(ltm.size()));
-					lt = expand(lt);
-					lt[lt.length-1] = 1;
-				}
-				lessThanTot++;
-			}
-			else {
-				if(gtm.containsKey(out)) {
-					Integer in = (Integer)gtm.get(out);
-					loc = in.intValue();
-					gt[loc]++;
-				}
-				// found a new one..
-				else {
-					gtm.put(out, new Integer(gtm.size()));
-					gt = expand(gt);
-					gt[gt.length-1] = 1;
-				}
-				greaterThanTot++;
-			}
-		}
-
-		// now put all the totals in hash maps..
-		lessThanTally = new HashMap(ltm.size());
-		Iterator ii = ltm.keySet().iterator();
-		while(ii.hasNext()) {
-			String out = (String)ii.next();
-			Integer loc = (Integer)ltm.get(out);
-
-			lessThanTally.put(out, new Integer(lt[loc.intValue()]));
-		}
-
-		greaterThanTally = new HashMap(gtm.size());
-		ii = gtm.keySet().iterator();
-		while(ii.hasNext()) {
-			String out = (String)ii.next();
-			Integer loc = (Integer)gtm.get(out);
-
-			greaterThanTally.put(out, new Integer(gt[loc.intValue()]));
-		}
-
-		Maps m = new Maps();
-		m.lessThan = lessThanTally;
-		m.greaterThan = greaterThanTally;
-		m.lt = lessThanTot;
-		m.gt = greaterThanTot;
-		return m;
-	}*/
 
 	/**
 		Find the best split value for the given column with the given examples.
@@ -400,25 +211,25 @@ public class C45TreeBuilder extends ComputeModule
 		@return the split value for this attribute that gives the maximum
 			information
 	*/
-	private double findSplitValue(int attCol, ArrayList examples) {
+	private double findSplitValue(int attCol, int[] examples) {
 		// copy the examples into a new table
-		DoubleColumn dc = new DoubleColumn(examples.size());
+		DoubleColumn dc = new DoubleColumn(examples.length);
 		//StringColumn sc = new StringColumn(examples.size());
-		IntColumn ic = new IntColumn(examples.size());
+		IntColumn ic = new IntColumn(examples.length);
 		//StringColumn sc = new StringColumn();
-		ObjectColumn sc = new ObjectColumn(examples.size());
-		ArrayList exams = new ArrayList();
+		ObjectColumn sc = new ObjectColumn(examples.length);
+		//ArrayList exams = new ArrayList();
 
-		Integer rowIdx;
 		int idx = 0;
-		for(int i = 0; i < examples.size(); i++) {
-			exams.add(new Integer(i));
-			rowIdx = (Integer)examples.get(i);
-		 	dc.setDouble(table.getDouble(rowIdx.intValue(), attCol), idx);
+		for(int i = 0; i < examples.length; i++) {
+			//exams.add(new Integer(i));
+			//rowIdx = (Integer)examples.get(i);
+            int rowIdx = examples[i];
+		 	dc.setDouble(table.getDouble(rowIdx, attCol), idx);
 			//sc.setString(table.getString(rowIdx.intValue(), outputs[0]), idx);
 			//sc.addRow(table.getString(rowIdx.intValue(), outputs[0]));
-			ic.setInt(rowIdx.intValue(), idx);
-			sc.setString(table.getString(rowIdx.intValue(), outputs[0]), idx);
+			ic.setInt(rowIdx, idx);
+			sc.setString(table.getString(rowIdx, outputs[0]), idx);
 			idx++;
 		}
 		//sc.trim();
@@ -440,8 +251,9 @@ public class C45TreeBuilder extends ComputeModule
 
 		// each row of the new table is an example
 		//ArrayList exams = new ArrayList();
-		//for(int i = 0; i < vt.getNumRows(); i++)
-		//	exams.add(new Integer(i));
+        int[] exams = new int[vt.getNumRows()];
+		for(int i = 0; i < vt.getNumRows(); i++)
+			exams[i] = i;
 
 		// now test the possible split values.  these are the half-way point
 		// between two adjacent values.  keep the highest.
@@ -481,9 +293,9 @@ public class C45TreeBuilder extends ComputeModule
 		@return an object holding the gain and the best split value of
 			the column
 	*/
-	private EntrSplit numericGain(int attCol, ArrayList examples) {
+	private EntrSplit numericGain(int attCol, int[] examples) {
 		if(debug)
-			System.out.println("Calc numericGain: "+table.getColumnLabel(attCol)+" size: "+examples.size()+" out: "+table.getColumnLabel(outputs[0]));
+			System.out.println("Calc numericGain: "+table.getColumnLabel(attCol)+" size: "+examples.length+" out: "+table.getColumnLabel(outputs[0]));
 		double gain = outputEntropy(outputs[0], examples);
 
 		double splitVal = findSplitValue(attCol, examples);
@@ -522,9 +334,9 @@ public class C45TreeBuilder extends ComputeModule
 			the table
 		@return the gain of the column
 	*/
-	private double categoricalGain(int attCol, ArrayList examples) {
+	private double categoricalGain(int attCol, int[] examples) {
 		if(debug)
-			System.out.println("Calc categoricalGain: "+table.getColumnLabel(attCol)+" size: "+examples.size());
+			System.out.println("Calc categoricalGain: "+table.getColumnLabel(attCol)+" size: "+examples.length);
 		// total entropy of the class column -
 		// entropy of each of the possibilities of the attribute
 		// (p =#of that value, n=#rows)
@@ -558,16 +370,15 @@ public class C45TreeBuilder extends ComputeModule
 		@return the information given by attValue
 	*/
 	private double categoricalAttributeEntropy(int colNum, String attValue,
-		ArrayList examples) {
+		int[] examples) {
 
 		//HashMap outTally = new HashMap();
 		int tot = 0;
 
 		int [] outtally = new int[0];
 		HashMap outIndexMap = new HashMap();
-		for(int i = 0; i < examples.size(); i++) {
-			Integer rowIdx = (Integer)examples.get(i);
-			int idx = rowIdx.intValue();
+		for(int i = 0; i < examples.length; i++) {
+			int idx = examples[i];
 
 			String s = table.getString(idx, colNum);
 
@@ -621,7 +432,7 @@ public class C45TreeBuilder extends ComputeModule
 		for(int i = 0; i < probs.length; i++)
 			probs[i] = ((double)outtally[i])/((double)tot);
 
-		return (tot/(double)examples.size())*entropy(probs);
+		return (tot/(double)examples.length)*entropy(probs);
 	}
 
 	/**
@@ -632,21 +443,21 @@ public class C45TreeBuilder extends ComputeModule
 		@return an array containing all the unique values for examples in
 			this column
 	*/
-	private String[] uniqueValues(int colNum, ArrayList examples) {
-		int numRows = examples.size();
+	private String[] uniqueValues(int colNum, int[] examples) {
+		int numRows = examples.length;
 
 		// count the number of unique items in this column
-		HashMap map = new HashMap();
+		HashSet set = new HashSet();
 		for(int i = 0; i < numRows; i++) {
-			Integer rowIdx = (Integer)examples.get(i);
-			String s = table.getString(rowIdx.intValue(), colNum);
-			if(!map.containsKey(s))
-				map.put(s, s);
+			int rowIdx = examples[i];
+			String s = table.getString(rowIdx, colNum);
+			if(!set.contains(s))
+				set.add(s);
 		}
 
-		String[] retVal = new String[map.size()];
+		String[] retVal = new String[set.size()];
 		int idx = 0;
-		Iterator it = map.keySet().iterator();
+		Iterator it = set.iterator();
 		while(it.hasNext()) {
 			retVal[idx] = (String)it.next();
 			idx++;
@@ -665,8 +476,8 @@ public class C45TreeBuilder extends ComputeModule
 			the table
 		@return the information value of the branchiness of this attribute
 	*/
-	private double splitInfo(int colNum, double splitVal, ArrayList examples) {
-		int numRows = examples.size();
+	private double splitInfo(int colNum, double splitVal, int[] examples) {
+		int numRows = examples.length;
 		double tot = 0;
 		double[] probs;
 
@@ -680,8 +491,8 @@ public class C45TreeBuilder extends ComputeModule
 			double greaterThanTally = 0;
 
 			for(int i = 0; i < numRows; i++) {
-				Integer rowIdx = (Integer)examples.get(i);
-				double d = table.getDouble(rowIdx.intValue(), colNum);
+				int rowIdx = examples[i];
+				double d = table.getDouble(rowIdx, colNum);
 				if(d < splitVal)
 					lessThanTally++;
 				else
@@ -698,8 +509,8 @@ public class C45TreeBuilder extends ComputeModule
 		else {
 			HashMap map = new HashMap();
 			for(int i = 0; i < numRows; i++) {
-				Integer rowIdx = (Integer)examples.get(i);
-				String s = table.getString(rowIdx.intValue(), colNum);
+				int rowIdx = examples[i];
+				String s = table.getString(rowIdx, colNum);
 				if(!map.containsKey(s))
 					map.put(s, new Integer(1));
 				else {
@@ -733,14 +544,15 @@ public class C45TreeBuilder extends ComputeModule
 			the table
 		@return the entropy of the output column
 	*/
-	private double outputEntropy(int colNum, ArrayList examples) {
-		double numRows = (double)examples.size();
+	private double outputEntropy(int colNum, int[] examples) {
+		double numRows = (double)examples.length;
 
 		// count the number of unique items in this column
 		HashMap map = new HashMap();
 		for(int i = 0; i < numRows; i++) {
-			Integer rowIdx = (Integer)examples.get(i);
-			String s = table.getString(rowIdx.intValue(), colNum);
+			//Integer rowIdx = (Integer)examples.get(i);
+            int rowIdx = examples[i];
+			String s = table.getString(rowIdx, colNum);
 			if(! map.containsKey(s)) {
 				map.put(s, new Integer(1));
 			}
@@ -776,7 +588,7 @@ public class C45TreeBuilder extends ComputeModule
 			gain and (if numeric) the best split for that column, or null
 			if no attributes provide information gain over the threshold.
 	*/
-	private ColSplit getHighestGainAttribute(ArrayList attributes, ArrayList examples) {
+	private ColSplit getHighestGainAttribute(int[] attributes, int[] examples) {
 		ArrayList list = new ArrayList();
 
 		int topCol = 0;
@@ -784,8 +596,8 @@ public class C45TreeBuilder extends ComputeModule
 
 		ColSplit retVal = new ColSplit();
 		// for each available column, calculate the entropy
-		for(int i = 0; i < attributes.size(); i++) {
-			int col = ((Integer)attributes.get(i)).intValue();
+		for(int i = 0; i < attributes.length; i++) {
+			int col = attributes[i];
 			// categorical data
 			//if(!(table.getColumn(col) instanceof NumericColumn)) {
 			//if(table.isNumericColumn(col)) {
@@ -809,7 +621,7 @@ public class C45TreeBuilder extends ComputeModule
 		}
 
 		// return null if the highest information gain is less than threshold
-		if(highestGain < threshold)
+		if(highestGain < infoGainThreshold)
 			return null;
 		return retVal;
 	}
@@ -906,17 +718,23 @@ public class C45TreeBuilder extends ComputeModule
 		nf = NumberFormat.getInstance();
 		nf.setMaximumFractionDigits(5);
 
+        // the set of examples.  the indices of the example rows
+        int[] exampleSet;
 		// use all rows as examples at first
-		ArrayList examples = new ArrayList();
+		System.out.println("DOIT: "+table+" "+table.getNumRows());
+        exampleSet = new int[table.getNumRows()];
 		for(int i = 0; i < table.getNumRows(); i++)
-			examples.add(new Integer(i));
+            exampleSet[i] = i;
 
 		// use all columns as attributes at first
-		ArrayList atts = new ArrayList();
+		//ArrayList atts = new ArrayList();
+        int[] atts = new int[inputs.length];
 		for(int i = 0; i < inputs.length; i++)
-			atts.add(new Integer(inputs[i]));
+			//atts.add(new Integer(inputs[i]));
+            atts[i] = inputs[i];
 
-		DecisionTreeNode rootNode = buildTree(examples, atts);
+		DecisionTreeNode rootNode = buildTree(exampleSet, atts);
+        // rootNode = pruneTree();
 		pushOutput(rootNode, 0);
 		pushOutput(table, 1);
 	}
@@ -936,24 +754,26 @@ public class C45TreeBuilder extends ComputeModule
 		@param attributes the indices of the columns to use
 		@return a tree
 	*/
-	private DecisionTreeNode buildTree(ArrayList examples, ArrayList attributes) {
+	private DecisionTreeNode buildTree(int[] examples, int[] attributes) {
 		if(debug) {
-			System.out.println("BuildTree with "+examples.size()+" examples and "+attributes.size()+" attributes.");
+			System.out.println("BuildTree with "+examples.length+" examples and "+attributes.length+" attributes.");
 		}
 		DecisionTreeNode root = null;
 		String s;
-		Integer rowIdx;
+		//Integer rowIdx;
+        int rowIdx;
 
 		// if all examples have the same output value, give the root this
 		// label-- this node is a leaf.
 		boolean allSame = true;
 		int counter = 0;
-		rowIdx = (Integer)examples.get(counter);
-		s = table.getString(rowIdx.intValue(), outputs[0]);
+		//rowIdx = (Integer)examples.get(counter);
+		rowIdx = examples[counter];
+		s = table.getString(rowIdx/*.intValue()*/, outputs[0]);
 		counter++;
-		while(allSame && counter < examples.size()) {
-			rowIdx = (Integer)examples.get(counter);
-			String t = table.getString(rowIdx.intValue(), outputs[0]);
+		while(allSame && counter < examples.length) {
+			rowIdx = examples[counter];
+			String t = table.getString(rowIdx, outputs[0]);
 			if(!t.equals(s)) {
 				allSame = false;
 			}
@@ -970,7 +790,7 @@ public class C45TreeBuilder extends ComputeModule
 		// if attributes is empty, label the root according to the most common
 		// value this will result in some incorrect classifications...
 		// this node is a leaf.
-		if(attributes.size() == 0) {
+		if(attributes.length == 0) {
 			String mostCommon = mostCommonOutputValue(examples);
 			// make a leaf
 			if(debug)
@@ -1001,10 +821,10 @@ public class C45TreeBuilder extends ComputeModule
 				root = new CategoricalDecisionTreeNode(
 					table.getColumnLabel(col));
 				for(int i = 0; i < branchVals.length; i++) {
-					ArrayList branchExam = narrowCategoricalExamples(col,
+					int[] branchExam = narrowCategoricalExamples(col,
 						branchVals[i], examples);
-					ArrayList branchAttr = narrowAttributes(col, attributes);
-					if(branchExam.size() != 0)
+					int[] branchAttr = narrowAttributes(col, attributes);
+					if(branchExam.length != 0)
 						root.addBranch(branchVals[i], buildTree(branchExam,
 							branchAttr));
 
@@ -1029,9 +849,9 @@ public class C45TreeBuilder extends ComputeModule
 				root = new NumericDecisionTreeNode(table.getColumnLabel(col));
 
 				// create the less than branch
-				ArrayList branchExam = narrowNumericExamples(col,
+				int[] branchExam = narrowNumericExamples(col,
 					best.splitValue, examples, false);
-				if(branchExam.size() != 0) {
+				if(branchExam.length != 0) {
 					left = buildTree(branchExam, attributes);
 				}
 
@@ -1045,7 +865,7 @@ public class C45TreeBuilder extends ComputeModule
 				// create the greater than branch
 				branchExam = narrowNumericExamples(col, best.splitValue,
 					examples, true);
-				if(branchExam.size() != 0) {
+				if(branchExam.length != 0) {
 					right = buildTree(branchExam, attributes);
 				}
 
@@ -1092,12 +912,12 @@ public class C45TreeBuilder extends ComputeModule
 		@param examples the list of examples
 		@return the most common output value from the examples
 	*/
-	private String mostCommonOutputValue(ArrayList examples) {
+	private String mostCommonOutputValue(int[] examples) {
 		HashMap map = new HashMap();
-		Integer rowIdx;
-		for(int i = 0; i < examples.size(); i++) {
-			rowIdx = (Integer)examples.get(i);
-			String s = table.getString(rowIdx.intValue(), outputs[0]);
+		int rowIdx;
+		for(int i = 0; i < examples.length; i++) {
+			rowIdx = examples[i];
+			String s = table.getString(rowIdx, outputs[0]);
 			if(map.containsKey(s)) {
 				Integer tal = (Integer)map.get(s);
 				int val = tal.intValue();
@@ -1132,16 +952,29 @@ public class C45TreeBuilder extends ComputeModule
 		@param exam the list of examples to narrow
 		@return a subset of the original list of examples
 	*/
-	private ArrayList narrowCategoricalExamples(int col, String val, ArrayList exam) {
-		ArrayList examples = new ArrayList();
+	private int[] narrowCategoricalExamples(int col, String val, int[] exam) {
+		//ArrayList examples = new ArrayList();
+        int numNewExamples = 0;
+        boolean[] map = new boolean[exam.length];
 
-		Integer rowIdx;
-		for(int i = 0; i < exam.size(); i++) {
-			rowIdx = (Integer)exam.get(i);
-			String s = table.getString(rowIdx.intValue(), col);
-			if(s.equals(val))
-				examples.add(rowIdx);
+		for(int i = 0; i < exam.length; i++) {
+			String s = table.getString(exam[i], col);
+			if(s.equals(val)) {
+				//examples.add(rowIdx);
+                numNewExamples++;
+                map[i] = true;
+            }
+            else
+                map[i] = false;
 		}
+        int[] examples = new int[numNewExamples];
+        int curIdx = 0;
+        for(int i = 0; i < exam.length; i++) {
+            if(map[i]) {
+                examples[curIdx] = exam[i];
+                curIdx++;
+            }
+        }
 		return examples;
 	}
 
@@ -1158,24 +991,47 @@ public class C45TreeBuilder extends ComputeModule
 			value should be in the list of examples
 		@return a subset of the original list of examples
 	*/
-	private ArrayList narrowNumericExamples(int col, double splitValue, ArrayList exam,
+	private int[] narrowNumericExamples(int col, double splitValue, int[] exam,
 		boolean greaterThan) {
 
-		ArrayList examples = new ArrayList();
-		Integer rowIdx;
+		//ArrayList examples = new ArrayList();
+		int rowIdx;
+        int numNewExamples = 0;
+        boolean[] map = new boolean[exam.length];
 
-		for(int i = 0; i < exam.size(); i++) {
-			rowIdx = (Integer)exam.get(i);
-			double d = table.getDouble(rowIdx.intValue(), col);
+		for(int i = 0; i < exam.length; i++) {
+			//rowIdx = (Integer)exam.get(i);
+            rowIdx = exam[i];
+			double d = table.getDouble(rowIdx, col);
 			if(greaterThan) {
-				if(d >= splitValue)
-					examples.add(rowIdx);
+				if(d >= splitValue) {
+					//examples.add(rowIdx);
+                    numNewExamples++;
+                    map[i] = true;
+                }
+                else
+                    map[i] = false;
 			}
 			else {
-				if(d < splitValue)
-					examples.add(rowIdx);
+				if(d < splitValue) {
+					//examples.add(rowIdx);
+                    numNewExamples++;
+                    map[i] = true;
+                 }
+                 else
+                    map[i] = false;
 			}
 		}
+
+        int[] examples = new int[numNewExamples];
+        int curIdx = 0;
+        for(int i = 0; i < exam.length; i++) {
+            if(map[i]) {
+                examples[curIdx] = exam[i];
+                curIdx++;
+            }
+        }
+
 		return examples;
 	}
 
@@ -1185,9 +1041,18 @@ public class C45TreeBuilder extends ComputeModule
 		@param attr the list of attributes
 		@return a subset of the original list of attributes
 	*/
-	private ArrayList narrowAttributes(int col, ArrayList attr) {
-		ArrayList attributes = (ArrayList)attr.clone();
-		attributes.remove(new Integer(col));
-		return attributes;
+	private int[] narrowAttributes(int col, int[] attr) {
+		//ArrayList attributes = (ArrayList)attr.clone();
+		//attributes.remove(new Integer(col));
+        int[] retVal = new int[attr.length-1];
+		//return attributes;
+        int curIdx = 0;
+        for(int i = 0; i < attr.length; i++) {
+            if(attr[i] != col) {
+                retVal[curIdx] = attr[i];
+                curIdx++;
+             }
+         }
+         return retVal;
 	}
 }

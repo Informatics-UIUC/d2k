@@ -60,8 +60,8 @@ public class RangeEditor extends UIModule
 	/*finishes things up, pushes outputs*/
 	public void moduleFinish(SolutionSpace space){
 		pushOutput(space, 0);
-	executionManager.moduleDone(this);
-
+	//executionManager.moduleDone(this);
+		viewDone("Done");
 	}
 
 

@@ -188,8 +188,8 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 			spacing = new JMenuItem("Node Spacing...");
 			spacing.addActionListener(this);
 
-			zoom = new JCheckBoxMenuItem("Zoom");
-			zoom.addActionListener(this);
+			//zoom = new JCheckBoxMenuItem("Zoom");
+			//zoom.addActionListener(this);
 
 			showlabels = new JCheckBoxMenuItem("Show Labels");
 			showlabels.setState(true);
@@ -198,7 +198,7 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 			viewsmenu.add(depth);
 			viewsmenu.add(spacing);
 			viewsmenu.addSeparator();
-			viewsmenu.add(zoom);
+			//viewsmenu.add(zoom);
 			viewsmenu.add(showlabels);
 
 			search = new JMenuItem("Search...");

@@ -65,8 +65,8 @@ public class SolutionMaker extends UIModule
 	/*finishes things up, pushes outputs*/
 	public void moduleFinish(Solution sol){
 		pushOutput(sol, 0);
-		executionManager.moduleDone(this);
-
+		//executionManager.moduleDone(this);
+		viewDone("Done");
 	}
 
 

@@ -276,7 +276,8 @@ public class ChooseFieldTypes extends UIModule {
 				if(checkChoices()) {
 					setFieldsInTable();
 		            pushOutput(table, 0);
-		            executionManager.moduleDone(module);
+		            //executionManager.moduleDone(module);
+					viewDone("Done");
 				}
 			}
             else if(src == miColumnOrder) {

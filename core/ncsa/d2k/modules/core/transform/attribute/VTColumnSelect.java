@@ -353,7 +353,8 @@ public class VTColumnSelect extends UIModule implements Serializable {
             vt = null;
             pushOutput(out_all, 0);
             pushOutput(out_red, 1);
-            executionManager.moduleDone(parent);
+            //executionManager.moduleDone(parent);
+			viewDone("Done");
 
          }
       }

@@ -457,7 +457,8 @@ public class DefineBins extends UIModule implements HasNames {
 			else if(src == done) {
 		        pushOutput(binTree, 0);
 		        pushOutput(table, 1);
-		        executionManager.moduleDone(parent);
+		        //executionManager.moduleDone(parent);
+				viewDone("Done");
 				table = null;
 			}
 			else if(src == abort)

@@ -196,7 +196,8 @@ public class TableViewer extends UIModule implements HasNames {
       */
       protected void finishUp() {
          pushOutput(table, 0);
-         executionManager.moduleDone(parent);
+         //executionManager.moduleDone(parent);
+		 viewDone("Done");
       }
 
       /**

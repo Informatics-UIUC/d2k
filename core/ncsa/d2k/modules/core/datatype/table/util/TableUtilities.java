@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.datatype.table.util;
 
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * Contains useful methods to find statistics about columns of a Table.
@@ -97,6 +98,33 @@ public class TableUtilities {
 		int [] newarray = new int[orig.length+1];
 		System.arraycopy(orig, 0, newarray, 0, orig.length);
 		return newarray;
+	}
+
+
+	public static Table getPDFTable(Table t, int idx, double mean, double stdDev) {
+		double[] vals = new double[t.getNumRows()];
+		t.getColumn(vals, idx);
+
+		double[] pdfs = new double[t.getNumRows()];
+		for(int i = 0; i < t.getNumRows(); i++) {
+			pdfs[i] = pdfCalc(vals[i], mean, stdDev);
+		}
+
+		Column[] c = new Column[2];
+		c[0] = new DoubleColumn(vals);
+		c[1] = new DoubleColumn(pdfs);
+		TableImpl tbl = new TableImpl(c);
+		return tbl;
+	}
+
+	private static double pdfCalc(double X, double mean, double stdDev) {
+		double exp = Math.pow( (X-mean), 2);
+		exp *= -1;
+		exp /= (2*Math.pow(stdDev, 2));
+
+		double numerator = Math.pow(Math.E, exp);
+		double denom = (stdDev*Math.pow((2*Math.PI), .5));
+		return numerator/denom;
 	}
 
 	/**

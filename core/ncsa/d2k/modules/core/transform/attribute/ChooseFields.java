@@ -292,7 +292,8 @@ public class ChooseFields extends UIModule implements HasNames {
 					setFieldsInTable();
 					//module.finish(et);
 		            pushOutput(et, 0);
-		            executionManager.moduleDone(module);
+		            //executionManager.moduleDone(module);
+					viewDone("Done");
 					et = null;
 					this.removeAll();
 				}
