@@ -23,10 +23,11 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
     return true;
   }
 
+/*
   public String [] getInputs() {
     return this.getInputFeatureNames();
   }
-
+*/
 
   public String[] getUniqueInputValues(int i) {
     return new String[] {"0", "1"};
@@ -129,7 +130,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
                          " ERR:" + Format.format( node.error / numExamples ) );
       if (! leafNode ) {
         System.out.print( " ERR_REDUCT:" + Format.format( node.bestErrorReduction/numExamples ) +
-                          " FEATURE:" + this.getInputName(splitIndex)) ;
+                          " FEATURE:" + this.getInputFeatureName(splitIndex)) ;
       }
       System.out.println("]");
     }
@@ -164,7 +165,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
                 byteCounts[byteValue]++;
             }
           }
-          testString = "(" + this.getInputName(splitIndex) + " = {";
+          testString = "(" + this.getInputFeatureName(splitIndex) + " = {";
           boolean firstTime = true;
           for (int i = 0; i < 256; i++) {
             if (byteCounts[i] > 0)  {
@@ -180,11 +181,11 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
           testString += "})";
         }
         else {
-          testString = "(" + this.getInputName(splitIndex) + " > " + ((char) splitValue) + ")";
+          testString = "(" + this.getInputFeatureName(splitIndex) + " > " + ((char) splitValue) + ")";
         }
       }
       else {
-        testString = "(" + this.getInputName(splitIndex) + " > " + Format.format(splitValue) + ")";
+        testString = "(" + this.getInputFeatureName(splitIndex) + " > " + Format.format(splitValue) + ")";
       }
 
       indent(level);

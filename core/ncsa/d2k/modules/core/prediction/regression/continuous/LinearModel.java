@@ -99,7 +99,7 @@ public class LinearModel extends Model implements java.io.Serializable
     for (int o = 0; o < getNumOutputs(); o++) {
       System.out.println(this.getOutputFeatureName(o) + " = " );
       for (int i = 0; i < numSelectedInputs; i++) {
-        System.out.println(weights[o][i] + " * " + this.getInputName(selectedIndices[i]) + " + ");
+        System.out.println(weights[o][i] + " * " + this.getInputFeatureName(selectedIndices[i]) + " + ");
         }
       System.out.println(weights[o][numSelectedInputs]);
       }

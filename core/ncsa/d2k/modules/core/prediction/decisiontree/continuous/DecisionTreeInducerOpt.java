@@ -92,7 +92,12 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       }
 
       // instantiate model //
-      MeanModel model = new MeanModel(examples, outputSums);
+
+      MeanModel model = null;
+      if (RootNode.model == null)
+        model = new MeanModel(examples, outputSums);
+      else
+        model = new MeanModel(RootNode.model, outputSums);
 
       //model.Instantiate(numInputs, numOutputs, inputNames, outputNames, outputSums);
 
@@ -251,7 +256,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
         QuickSort.sort(SortArray);
 
-        double splitValue = SortArray[numExamples / 2][0];
+        double splitValue = SortArray[(numExamples - 1) / 2][0];
 
         decompositions[decompositionIndex] = new Decomposition();
         decompositions[decompositionIndex].inputIndex = inputIndex;
