@@ -758,7 +758,7 @@ public final class DecisionTreeVis extends VisModule {
 
   private final class HelpWindow extends JD2KFrame {
     HelpWindow() {
-      super("About NaiveBayesVis");
+      super("About Decision Tree Vis");
       JEditorPane jep = new JEditorPane("text/html", getHelpString());
       getContentPane().add(new JScrollPane(jep));
       setSize(400, 400);
@@ -781,7 +781,7 @@ public final class DecisionTreeVis extends VisModule {
     s.append("collapsed using the arrow widget next to a node in the tree.  A ");
     s.append("single-click on a node will show an expanded view of the node.  This ");
     s.append("will show the distributions of the outputs at this particular node.");
-    s.append("<p>The Navigator displays a smaller view of the Main Area.  The current");
+    s.append("<p>The Navigator displays a smaller view of the Main Area.  The current ");
     s.append("portion of the tree that is displayed by the Main Area is shown by a ");
     s.append("box in the Navigator.");
     s.append("<p>The Node Info shows the distributions of the classified values at ");

@@ -31,6 +31,7 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
   }
 
   public PropertyDescription [] getPropertiesDescriptions () {
+
       PropertyDescription[] retVal = new PropertyDescription[1];
       retVal[0] = new PropertyDescription("minimumRatioPerLeaf", "Minimum Leaf Ratio",
         "The minimum ratio of records in a leaf to the total number of records in the tree. "+
