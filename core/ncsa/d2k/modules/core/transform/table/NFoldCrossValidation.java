@@ -151,8 +151,8 @@ public class NFoldCrossValidation extends ncsa.d2k.core.modules.DataPrepModule {
 
 	public String getOutputInfo(int i){
 		switch (i) {
-			case 0: return "This is the output table containing the train data.";
-			case 1: return "The table allows acces to the testing data.";
+			case 1: return "This is the output table containing the train data.";
+			case 0: return "The table allows acces to the testing data.";
 			case 2: return "This integer contains the number of folds. This is the same value as the     property, numberFolds, which can be set by the user.";
 			default: return "No such output";
 		}
@@ -210,8 +210,8 @@ public class NFoldCrossValidation extends ncsa.d2k.core.modules.DataPrepModule {
 		TestTable testT= examples.getTestTable();
 		TrainTable trainT= examples.getTrainTable();
 
-		this.pushOutput (trainT, 0);
-		this.pushOutput (testT, 1);
+		this.pushOutput (trainT, 1);
+		this.pushOutput (testT, 0);
 
 		if(numFires==0){
 			this.pushOutput (new Integer(breaks.length+1), 2);
@@ -221,7 +221,8 @@ public class NFoldCrossValidation extends ncsa.d2k.core.modules.DataPrepModule {
 
 		totalFires++;
 		if(debug)
-		System.out.println("Xval:numfires:"+numFires+" totalFires:"+totalFires+" n:"+N);
+		System.out.println("Xval:numfires:"+numFires+
+			" totalFires:"+totalFires+" n:"+N);
 		if(numFires==(breaks.length+1)){
 			numFires=0;
 			breaks=null;
@@ -256,9 +257,9 @@ public class NFoldCrossValidation extends ncsa.d2k.core.modules.DataPrepModule {
 	 */
 	public String getOutputName(int index) {
 		switch(index) {
-			case 0:
-				return "Train Table";
 			case 1:
+				return "Train Table";
+			case 0:
 				return "Test Table";
 			case 2:
 				return "Number Folds";
