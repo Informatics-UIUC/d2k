@@ -427,6 +427,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
                   else {
                     txtModel.addElement((String)fieldNames[i]);
                     //txtModel.addElement(((String)fieldNames[i]).toLowerCase());
+                    uniqueColumnValues[i] = uniqueValues(i);
                   }
                 }
 
@@ -977,8 +978,9 @@ public class SQLBinAttributes extends HeadlessUIModule {
                         return;
                     if (currentSelectedBin != null) {
                         int col = currentSelectedBin.column_number;
-                        if (currentSelectedBin instanceof TextualBinDescriptor)
+                        if (currentSelectedBin instanceof TextualBinDescriptor) {
                             uniqueColumnValues[col].addAll(((TextualBinDescriptor)currentSelectedBin).vals);
+                        }
                         binListModel.removeElement(currentSelectedBin);
                         currentSelectionModel.removeAllElements();
                         curSelName.setText(EMPTY);
