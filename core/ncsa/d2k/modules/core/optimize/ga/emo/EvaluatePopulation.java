@@ -171,7 +171,7 @@ public class EvaluatePopulation
       // this is the number of columns in the table by default
       int numDecisionVariables = populationTable.getNumColumns();
 
-      // evaluate the fitness variables.  this is done by performing a 
+      // evaluate the fitness variables.  this is done by performing a
       // transformation on the table.  the last column is the new variable
       for (int i = 0; i < numFitnessVars; i++) {
         Construction c = fitnessFunctions.getFitnessVariable(i);
@@ -183,10 +183,10 @@ public class EvaluatePopulation
         }
       }
 
-      // keep the indices of the FF columns, so that we can set the 
+      // keep the indices of the FF columns, so that we can set the
       // values on the individuals later
       int[] ffColumns = new int[numFitnessFunctions];
-      
+
       // evaluate the fitness functions.  this is done by performing a
       // transformation on the table.  the last column is the value of the FF
       for (int i = 0; i < numFitnessFunctions; i++) {
@@ -281,7 +281,7 @@ public class EvaluatePopulation
       }
     }
 
-    // otherwise, decode binary variables so that the entries copied into the 
+    // otherwise, decode binary variables so that the entries copied into the
     // table are real-valued
     else {
       int numTraits = 0;
@@ -425,7 +425,7 @@ public class EvaluatePopulation
       BufferedWriter bw = new BufferedWriter(stringFileWriter);
       PrintWriter pw = new PrintWriter(bw);
 
-      NumericIndividual ni = (NumericIndividual) popul.getMember(0);
+      Individual ni = (Individual) popul.getMember(0);
       double[] genes = (double[]) ni.getGenes();
       int numTraits = genes.length;
 
@@ -436,14 +436,13 @@ public class EvaluatePopulation
       // write genes
       for (int j = 0; j < popul.size(); j++) {
         //   genes = popul.getMember(j).getGenes().toString();
-        
+
         ////////////////////////////////////////////////////////////
         // !!! LAM
         // if an IntInvidual is used, an int[] will be returned...
-        // right now IntIndividuals are not used so thia is currently 
+        // right now IntIndividuals are not used so thia is currently
         // not a problem
-        genes = (double[]) ( (NumericIndividual) popul.getMember(j)).
-            getGenes();
+        genes = (double[]) ( (Individual) popul.getMember(j)).getGenes();
         numTraits = genes.length;
 
         // write to file
@@ -506,7 +505,7 @@ public class EvaluatePopulation
     // close file and streams
     stringFileReader.close();
     br.close();
-    
+
     if(popul instanceof SOPopulation ) {
       // now that we have the fitness values, set the objective on the individual
       for (i = 0; i < popul.size(); i++) {

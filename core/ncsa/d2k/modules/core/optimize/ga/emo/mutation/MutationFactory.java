@@ -12,11 +12,11 @@ public class MutationFactory {
   private static final Mutation createMutation(int type) {
     switch(type) {
       case(MUTATION):
-        return new MutationWrapper();
+        return new EMOMutation();
       case(REAL_MUTATION):
-        return new RealMutationWrapper();
+        return new EMORealMutation();
       default:
-        return new MutationWrapper();
+        return new EMOMutation();
     }
   }
 

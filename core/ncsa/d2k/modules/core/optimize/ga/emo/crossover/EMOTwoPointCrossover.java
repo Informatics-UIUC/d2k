@@ -4,7 +4,7 @@ import ncsa.d2k.modules.core.optimize.ga.crossover.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
- * A special subclass of UniformCrossover that gets its properties
+ * A special subclass of CrossoverModule that gets its properties
  * from the EMOPopulationParams.  This class implements the Crossover interface
  * so that the performCrossover() method can be called by EMOCrossover.
  *
@@ -13,11 +13,11 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
  * @author David Clutter
  * @version 1.0
  */
-class UniformCrossoverWrapper
-    extends UniformCrossoverObj implements BinaryIndividualFunction {
+class EMOTwoPointCrossover
+    extends Crossover implements BinaryIndividualFunction {
 
   public String getName() {
-    return "Uniform Crossover";
+    return "Two Point Crossover";
   }
   
   public String getDescription() {
@@ -25,6 +25,6 @@ class UniformCrossoverWrapper
   }
   
   public Property[] getProperties() {
-    return null;  
+    return null;
   }
 }

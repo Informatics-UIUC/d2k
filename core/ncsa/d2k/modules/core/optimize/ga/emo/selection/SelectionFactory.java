@@ -10,29 +10,22 @@ public class SelectionFactory {
   private static final int TOURNAMENT_WITH_REPLACEMENT = 3;
   private static final int TRUNCATION = 4;
 
-/*  public static final String[] TYPES =
-    {"Rank Selection",
-    "Stochastic Universal Sampling",
-    "Tournament Without Selection",
-    "Tournament With Selection",
-    "Truncation"};
-      */
   public static final int NUM_SELECTION = 5;
 
   private static Selection createSelection(int type) {
     switch(type) {
       case(RANK_SELECTION):
-        return new RankSelectionWrapper();
+        return new EMORankSelection();
       case(STOCHASTIC_UNIVERSAL_SAMPLING):
-        return new StochasticUniversalSamplingWrapper();
+        return new EMOStochasticUniversalSampling();
       case(TOURNAMENT_WITHOUT_REPLACEMENT):
-        return new TournamentWithoutReplacementWrapper();
+        return new EMOTournamentWithoutReplacement();
       case(TOURNAMENT_WITH_REPLACEMENT):
-        return new TournamentWithReplacementWrapper();
+        return new EMOTournamentWithReplacement();
       case(TRUNCATION):
-        return new TruncationWrapper();
+        return new EMOTruncation();
       default:
-        return new TruncationWrapper();
+        return new EMOTruncation();
     }
   }
 

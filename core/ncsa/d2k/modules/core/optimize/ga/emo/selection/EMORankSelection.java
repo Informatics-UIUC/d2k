@@ -3,12 +3,12 @@ package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
-class RankSelectionWrapper extends RankSelectionObj
+class EMORankSelection extends RankSelectionObj
     implements BinaryIndividualFunction, RealIndividualFunction {
 
   private PressureProp pp;
   
-  RankSelectionWrapper() {
+  EMORankSelection() {
     pp = new PressureProp();
   }
 

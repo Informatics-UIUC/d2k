@@ -112,7 +112,7 @@ public class GeneratePopulation
     FitnessFunctions ff = params.fitnessFunctions;
 
     int numVariables = dv.getNumVariables();
-    
+
     Range[] xyz;
 
     // use BinaryRange for binary-coded individuals
@@ -176,22 +176,21 @@ public class GeneratePopulation
       // create a constrained SO pop
       if(constrained) {
         pop = new EMOConstrainedSOPopulation(xyz, fit[0],
-                                             params.populationSize, 0.01, 
+                                             params.populationSize, 0.01,
                                              this.numConstraints);
       }
       // create an unconstrained SO pop
       else {
-        pop = new EMOUnconstrainedSOPopulation(xyz, fit[0], 
+        pop = new EMOUnconstrainedSOPopulation(xyz, fit[0],
                                                params.populationSize, 0.01);
       }
-      
+
       // the parameters tag along with the population
       pop.setParameters(params);
       //set the maximum number of generations
       ((Population)pop).setMaxGenerations(params.maxGenerations);
-      
+
       pushOutput(pop, 0);
-System.out.println("Gen pop");      
     }
     // otherwise, for an MO problem (mulitple fitness functions) create
     // either a constrained or unconstrained nsga population
@@ -206,7 +205,6 @@ System.out.println("Gen pop");
       }
       // if there are no constraints, we create an Unconstrained pop
       else {
-System.out.println("uncons");        
         pop = new EMOUnconstrainedNsgaPopulation(xyz, fit,
                                               params.populationSize, 0.01);
       }
@@ -216,7 +214,6 @@ System.out.println("uncons");
       ((NsgaPopulation)pop).setMaxGenerations(params.maxGenerations);
 
       pushOutput(pop, 0);
-System.out.println("Gen pop");      
     }
   }
 }

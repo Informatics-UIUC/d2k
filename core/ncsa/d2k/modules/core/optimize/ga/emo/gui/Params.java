@@ -205,24 +205,24 @@ public class Params
       // gather all parameters
       for(int i = 0; i < adv.mutationRadio.length; i++) {
         if(adv.mutationRadio[i].isSelected()) {
-          params.mutation = adv.mutationRadio[i].mutation;  
-          
+          params.mutation = adv.mutationRadio[i].mutation;
+
           HashMap propLookup = new HashMap();
           Property[] p = ((EMOFunction)params.mutation).getProperties();
           if(p == null)
             continue;
-            
+
           for(int j = 0; j < p.length; j++)
             propLookup.put(p[j].getName(), p[j]);
-          
+
           // now make sure that the values of the properties are set
-          HashSet propPanels = adv.mutationRadio[i].propertyPanels; 
-          
+          HashSet propPanels = adv.mutationRadio[i].propertyPanels;
+
           // iterate through the property panels
           Iterator iter = propPanels.iterator();
           while(iter.hasNext()) {
-            AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)iter.next();  
-             
+            AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)iter.next();
+
             String propName = pp.label.getText();
             // now match it to a property.
             Property property = (Property)propLookup.get(propName);
@@ -238,7 +238,7 @@ public class Params
                 case (Property.INT):
                   try {
                     Integer ii = new Integer(pp.jtf.getText());
-                    property.setValue(ii);  
+                    property.setValue(ii);
                   }
                   catch (NumberFormatException nfe) {
                   }
@@ -252,11 +252,11 @@ public class Params
           } // while
         } // if
       } // for
-      
+
       for(int i = 0; i < adv.crossoverRadio.length; i++) {
         if(adv.crossoverRadio[i].isSelected()) {
           params.crossover = adv.crossoverRadio[i].crossover;
-          
+
           HashMap propLookup = new HashMap();
           Property[] p = ((EMOFunction)params.crossover).getProperties();
           if(p == null)
@@ -266,12 +266,12 @@ public class Params
             propLookup.put(p[j].getName(), p[j]);
 
           // now make sure that the values of the properties are set
-          HashSet propPanels = adv.crossoverRadio[i].propertyPanels; 
+          HashSet propPanels = adv.crossoverRadio[i].propertyPanels;
 
           // iterate through the property panels
           Iterator iter = propPanels.iterator();
           while(iter.hasNext()) {
-            AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)iter.next();  
+            AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)iter.next();
 
             String propName = pp.label.getText();
             // now match it to a property.
@@ -288,7 +288,7 @@ public class Params
                 case (Property.INT):
                   try {
                     Integer ii = new Integer(pp.jtf.getText());
-                    property.setValue(ii);  
+                    property.setValue(ii);
                   }
                   catch (NumberFormatException nfe) {
                   }
@@ -301,8 +301,8 @@ public class Params
             } // switch
           } // while
         } // if
-      } 
-      
+      }
+
       for(int i = 0; i < adv.selectionRadio.length; i++) {
         if(adv.selectionRadio[i].isSelected()) {
           params.selection = adv.selectionRadio[i].selection;
@@ -315,12 +315,12 @@ public class Params
             propLookup.put(p[j].getName(), p[j]);
 
           // now make sure that the values of the properties are set
-          HashSet propPanels = adv.selectionRadio[i].propertyPanels; 
+          HashSet propPanels = adv.selectionRadio[i].propertyPanels;
 
           // iterate through the property panels
           Iterator iter = propPanels.iterator();
           while(iter.hasNext()) {
-            AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)iter.next();  
+            AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)iter.next();
 
             String propName = pp.label.getText();
             // now match it to a property.
@@ -337,7 +337,7 @@ public class Params
                 case (Property.INT):
                   try {
                     Integer ii = new Integer(pp.jtf.getText());
-                    property.setValue(ii);  
+                    property.setValue(ii);
                   }
                   catch (NumberFormatException nfe) {
                   }
@@ -349,9 +349,9 @@ public class Params
                   break;
             } // switch
           } // while
-          
+
         }
-      } 
+      }
 
       double popSize;
       // if the overriden population size is valid, use that
@@ -513,8 +513,8 @@ public class Params
 
       setCachedParams(cp);
 
-      viewDone("done");
       pushOutput(params, 0);
+      viewDone("done");
     }
 
     public void setInput(Object o, int i) {
@@ -699,7 +699,7 @@ public class Params
               } // while(panelIter.hasNext()
             } // while(propIter.hasNext())
           } // if
-        } // if 
+        } // if
       } // for
 
       // set the crossover parameters
@@ -763,7 +763,7 @@ public class Params
               } // while(panelIter.hasNext())
             } // while(propIter.hasNext())
           } // if
-        } // if 
+        } // if
       } // for
 
     }
@@ -1142,7 +1142,7 @@ public class Params
           }
           mutationRadio[i].propertyPanels = propSet;
 
-          // if a mutation type has properties, enable or disable them 
+          // if a mutation type has properties, enable or disable them
           // when the mutation type's state changes
           mutationRadio[i].addChangeListener(new AbstractChangeListener() {
             public void stateChanged(ChangeEvent ce) {
@@ -1192,7 +1192,7 @@ public class Params
           }
           crossoverRadio[i].propertyPanels = propSet;
 
-          // if a crossover type has properties, enable or disable them 
+          // if a crossover type has properties, enable or disable them
           // when the crossover type's state changes
           crossoverRadio[i].addChangeListener(new AbstractChangeListener() {
             public void stateChanged(ChangeEvent ce) {
@@ -1243,7 +1243,7 @@ public class Params
           }
           selectionRadio[i].propertyPanels = propSet;
 
-          // if a selection type has properties, enable or disable them 
+          // if a selection type has properties, enable or disable them
           // when the selection type's state changes
           selectionRadio[i].addChangeListener(new AbstractChangeListener() {
             public void stateChanged(ChangeEvent ce) {
@@ -1383,27 +1383,27 @@ public class Params
         // only enable the mutation types that implement BinaryIndividualProcess
         for (int i = 0; i < mutationRadio.length; i++) {
           Mutation mut = mutationRadio[i].mutation;
-          if (mut instanceof BinaryIndividualFunction) 
+          if (mut instanceof BinaryIndividualFunction)
             mutationRadio[i].setEnabled(true);
-          else 
+          else
             mutationRadio[i].setEnabled(false);
         }
 
         // only enable the crossover types that implement BinaryIndividualProcess
         for (int i = 0; i < crossoverRadio.length; i++) {
           Crossover x = crossoverRadio[i].crossover;
-          if (x instanceof BinaryIndividualFunction) 
+          if (x instanceof BinaryIndividualFunction)
             crossoverRadio[i].setEnabled(true);
-          else 
+          else
             crossoverRadio[i].setEnabled(false);
         }
 
         // only enable the selection types that implement BinaryIndividaulProcesss
         for (int i = 0; i < selectionRadio.length; i++) {
           Selection sel = selectionRadio[i].selection;
-          if (sel instanceof BinaryIndividualFunction) 
+          if (sel instanceof BinaryIndividualFunction)
             selectionRadio[i].setEnabled(true);
-          else 
+          else
             selectionRadio[i].setEnabled(false);
         }
 
@@ -1440,27 +1440,27 @@ public class Params
         // only enable mutation types that implement RealIndividualProcess
         for (int i = 0; i < mutationRadio.length; i++) {
           Mutation mut = mutationRadio[i].mutation;
-          if (mut instanceof RealIndividualFunction) 
+          if (mut instanceof RealIndividualFunction)
             mutationRadio[i].setEnabled(true);
-          else 
+          else
             mutationRadio[i].setEnabled(false);
         }
 
         // only enable crossover types that implement RealIndividualProcess
         for (int i = 0; i < crossoverRadio.length; i++) {
           Crossover x = crossoverRadio[i].crossover;
-          if (x instanceof RealIndividualFunction) 
+          if (x instanceof RealIndividualFunction)
             crossoverRadio[i].setEnabled(true);
-          else 
+          else
             crossoverRadio[i].setEnabled(false);
         }
 
         // only enable selection types that implement RealIndividualProcess
         for (int i = 0; i < selectionRadio.length; i++) {
           Selection sel = selectionRadio[i].selection;
-          if (sel instanceof RealIndividualFunction) 
+          if (sel instanceof RealIndividualFunction)
             selectionRadio[i].setEnabled(true);
-          else 
+          else
             selectionRadio[i].setEnabled(false);
         }
 

@@ -52,6 +52,5 @@ public class PerformMutation extends ComputeModule {
 
     mutation.mutatePopulation((Population)pop);
     pushOutput(pop, 0);
-System.out.println("mutate!");    
   }
 }

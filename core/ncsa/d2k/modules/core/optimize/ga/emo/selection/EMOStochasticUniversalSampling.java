@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
-class StochasticUniversalSamplingWrapper extends StochasticUniversalSamplingObj
+class EMOStochasticUniversalSampling extends StochasticUniversalSamplingObj
   implements BinaryIndividualFunction, RealIndividualFunction {
 
   public String getDescription() {

@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
-class TruncationWrapper extends TruncationObj
+class EMOTruncation extends TruncationObj
   implements BinaryIndividualFunction, RealIndividualFunction {
 
   public String getDescription() {

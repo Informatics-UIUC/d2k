@@ -3,12 +3,12 @@ package ncsa.d2k.modules.core.optimize.ga.emo.mutation;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.mutation.*;
 
-class RealMutationWrapper
+class EMORealMutation
     extends RealMutationObj implements RealIndividualFunction {
 
   private NProp n;
   
-  RealMutationWrapper() {
+  EMORealMutation() {
     n = new NProp();
   }
 

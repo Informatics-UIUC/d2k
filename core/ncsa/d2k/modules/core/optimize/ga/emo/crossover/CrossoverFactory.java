@@ -16,13 +16,13 @@ public class CrossoverFactory {
   private static Crossover createCrossover(int type) {
     switch(type) {
       case(TWO_POINT_CROSSOVER):
-        return new TwoPointCrossoverWrapper();
+        return new EMOTwoPointCrossover();
       case(UNIFORM_CROSSOVER):
-        return new UniformCrossoverWrapper();
+        return new EMOUniformCrossover();
       case(SIMULATED_BINARY_CROSSOVER):
-        return new SimulatedBinaryCrossoverWrapper();
+        return new EMOSimulatedBinaryCrossover();
       default:
-        return new UniformCrossoverWrapper();
+        return new EMOUniformCrossover();
     }
   }
 

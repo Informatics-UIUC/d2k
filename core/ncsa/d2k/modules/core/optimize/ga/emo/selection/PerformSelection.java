@@ -52,6 +52,5 @@ public class PerformSelection extends ComputeModule {
 
     selection.performSelection((Population)pop);
     pushOutput(pop, 0);
-System.out.println("perform selection");    
   }
 }

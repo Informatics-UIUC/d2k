@@ -71,6 +71,5 @@ public class PerformCrossover extends ComputeModule {
 
     // run the module
     pushOutput(pop, 0);
-System.out.println("perform crossover");    
   }
 }
