@@ -269,8 +269,7 @@ public class DelimitedFileParser implements FlatFileParser {
           return columnTypes[i];
         }
         catch(ArrayIndexOutOfBoundsException e) {
-          System.out.println("I: "+i);
-          throw new ArrayIndexOutOfBoundsException("DelimitedFileParser: The number of column "+
+          throw new ArrayIndexOutOfBoundsException("DelimitedFileParser: Types row = "+typesRow+" labels row = "+labelsRow+" - The number of column "+
                                      "types does not match the number of column labels.");
         }
     }
