@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.*;
 //import ncsa.util.*;
 import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
+import ncsa.d2k.modules.core.datatype.table.util.TableUtilities;
 
 /**
  ObjectColumn is an implementation of Column which holds an Object array as its internal
@@ -576,7 +577,7 @@ final public class ObjectColumn extends AbstractColumn {
 		 return tmp;
 		}
 		 else
-		 
+
 			 return ByteUtils.writeObject(internal[pos]);
 		//return internal[pos].toString().getBytes();
 	}
@@ -1019,6 +1020,9 @@ final public class ObjectColumn extends AbstractColumn {
 		*/
 
 		// ANCA:
+                if(d1 instanceof String && d2 instanceof String)
+                  return TableUtilities.compareStrings((String)d1, (String)d2);
+
 		if (d1 instanceof Comparable && d2 instanceof Comparable)
 			return ((Comparable) d1).compareTo(d2);
 
