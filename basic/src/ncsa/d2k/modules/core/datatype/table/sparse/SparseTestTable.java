@@ -325,9 +325,11 @@ public class SparseTestTable
    * @param position  the row index into the test set, to retrieve its data
    * @param indices   an int array to hold the valid columns of row <codE>position</code>
    */
+/* Deprecated
   public void getRow(Object buffer, int position, int[] indices) {
     super.getRow(buffer, testSet[position], indices);
   }
+*/
 
   /**
        * Returns a TestTable with data from row index no. <code> start</code> in the

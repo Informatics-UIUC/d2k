@@ -1,15 +1,18 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
+//===============
+// Other Imports
+//===============
+
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
-
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
-
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
 
 /**
  * Title:        Sparse Table
- * Description:  Sparse Table projects will implement data structures compatible to the interface tree of Table, for sparsely stored data.
+ * Description:  Sparse Table projects will implement data structures compatible
+ * to the interface tree of Table, for sparsely stored data.
  * Copyright:    Copyright (c) 2002
  * Company:      ncsa
  * @author vered goren
@@ -19,7 +22,9 @@ import ncsa.d2k.modules.core.datatype.table.basic.Column;
 public class SparseByteArrayColumn
     extends SparseObjectColumn {
 
-  public static byte[] DEFAULT = null;
+  //================
+  // Constructor(s)
+  //================
 
   /**
    * Creates a new <code>SparseByteArrayColumn</code> with capacity sero and a default
@@ -75,6 +80,11 @@ public class SparseByteArrayColumn
     copy(column);
     type = ColumnTypes.BYTE_ARRAY;
   }
+
+  //================
+  // Public Methods
+  //================
+
 
   /**
    * performs a deep copy of this SparseByteArrayColumne
@@ -226,7 +236,7 @@ public class SparseByteArrayColumn
    */
   public static byte[] toByteArray(Object obj) {
     if (obj == null) {
-      return DEFAULT;
+      return SparseDefaultValues.getDefaultBytes();
     }
 
     if (obj instanceof byte[]) {
@@ -268,7 +278,7 @@ public class SparseByteArrayColumn
     internal = new byte[max_index + 1][];
 
     for (int i = 0; i < max_index + 1; i++) {
-      internal[i] = DEFAULT;
+      internal[i] = SparseDefaultValues.getDefaultBytes();
     }
 
     for (int i = 0; i < keys.length; i++) {

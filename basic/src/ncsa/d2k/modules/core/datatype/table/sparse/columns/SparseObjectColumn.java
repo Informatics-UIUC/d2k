@@ -1,18 +1,26 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
+//===============
+// Other Imports
+//===============
+
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
-
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
+
+//==============
+// Java Imports
+//==============
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Title:        Sparse Table
- * Description:  Sparse Table projects will implement data structures compatible to the interface tree of Table, for sparsely stored data.
+ * Description:  Sparse Table projects will implement data structures compatible
+ * to the interface tree of Table, for sparsely stored data.
  * Copyright:    Copyright (c) 2002
  * Company:      ncsa
  * @author vered goren
@@ -29,9 +37,15 @@ public class SparseObjectColumn
    * the value j mapped to key i is the value j in line i in this column.
    */
 
-  public static Object DEFAULT = null;
+  //==============
+  // Data Members
+  //==============
 
   protected VIntObjectHashMap elements; //holds the data of this column
+
+  //================
+  // Constructor(s)
+  //================
 
   /**
    * Creates a new <code>SparseObjectColumn </code> instance with the
@@ -99,6 +113,10 @@ public class SparseObjectColumn
     }
   }
 
+  //================
+  // Public Methods
+  //================
+
   /**
    * If the object at row # row is a byte array, returns the first item in the
    * array. else - returns a representation of this object as a bytes array.
@@ -110,7 +128,7 @@ public class SparseObjectColumn
       return SparseByteColumn.toByte(obj);
     }
 
-    return SparseByteColumn.DEFAULT;
+    return SparseDefaultValues.getDefaultByte();
   }
 
   /**
@@ -128,7 +146,7 @@ public class SparseObjectColumn
       return SparseBooleanColumn.toBoolean(obj);
     }
 
-    return SparseBooleanColumn.DEFAULT;
+    return SparseDefaultValues.getDefaultBoolean();
   }
 
   /**
@@ -155,7 +173,7 @@ public class SparseObjectColumn
       return SparseCharColumn.toChar(obj);
     }
 
-    return SparseCharColumn.DEFAULT;
+    return SparseDefaultValues.getDefaultChar();
   }
 
   /**
@@ -186,7 +204,7 @@ public class SparseObjectColumn
       return SparseDoubleColumn.toDouble(obj);
     }
 
-    return SparseDoubleColumn.DEFAULT;
+    return SparseDefaultValues.getDefaultDouble();
 
   }
 
@@ -206,7 +224,7 @@ public class SparseObjectColumn
       return SparseFloatColumn.toFloat(obj);
     }
 
-    return SparseFloatColumn.DEFAULT;
+    return (float) SparseDefaultValues.getDefaultDouble();
 
   }
 
@@ -225,7 +243,7 @@ public class SparseObjectColumn
       return SparseIntColumn.toInt(obj);
     }
 
-    return SparseIntColumn.DEFAULT;
+    return SparseDefaultValues.getDefaultInt();
 
   }
 
@@ -244,7 +262,7 @@ public class SparseObjectColumn
       return SparseLongColumn.toLong(obj);
     }
 
-    return SparseLongColumn.DEFAULT;
+    return (long) SparseDefaultValues.getDefaultInt();
   }
 
   /**
@@ -257,7 +275,7 @@ public class SparseObjectColumn
       return elements.get(row);
     }
     else {
-      return this.DEFAULT;
+      return SparseDefaultValues.getDefaultObject();
     }
   }
 
@@ -276,7 +294,7 @@ public class SparseObjectColumn
       return SparseShortColumn.toShort(obj);
     }
 
-    return SparseShortColumn.DEFAULT;
+    return (short) SparseDefaultValues.getDefaultInt();
   }
 
   /**
@@ -545,10 +563,6 @@ public class SparseObjectColumn
       }
     }
     return retVal;
-  }
-
-  protected VHashMap getElements() {
-    return elements;
   }
 
   /**
@@ -820,58 +834,6 @@ public class SparseObjectColumn
   }
 
   /**
-       * Returns the valid values in rows <codE>begin</code> through <codE>end</code>
-   *
-   * @param begin    row number from to begin retrieving of values
-   * @param end      last row number in the section from which values are retrieved.
-   * @return         only valid values from rows no. <code>begin</code> through
-   *                 <codE>end</code>, sorted.
-   */
-  protected Object[] getValuesInRange(int begin, int end) {
-
-    if (end < begin) {
-      Object[] retVal = {};
-      return retVal;
-    }
-
-    int[] indices = VHashService.getIndicesInRange(begin, end, elements);
-    Object[] values = new Object[indices.length];
-    for (int i = 0; i < indices.length; i++) {
-      values[i] = elements.get(indices[i]);
-
-    }
-    toComparableArray(values);
-
-    Arrays.sort(values);
-    return values;
-  }
-
-  private void toComparableArray(Object[] array) {
-    for (int i = 0; i < array.length; i++) {
-      if (type == ColumnTypes.CHAR_ARRAY || type == ColumnTypes.BYTE_ARRAY) {
-        array[i] = SparseStringColumn.toStringObject(array[i]);
-
-      }
-    }
-  }
-
-  private Object[] getValues(int[] validRows) {
-    Object[] values = new Object[validRows.length];
-    int type = getType();
-
-    for (int i = 0; i < validRows.length; i++) {
-      if (type == ColumnTypes.CHAR_ARRAY || type == ColumnTypes.BYTE_ARRAY) {
-        values[i] = getString(validRows[i]);
-      }
-      else {
-        values[i] = getObject(validRows[i]);
-
-      }
-    }
-    return values;
-  }
-
-  /**
    * Reorders the data stored in this column in a new column.
    * Does not change this column.
    *
@@ -917,7 +879,7 @@ public class SparseObjectColumn
 
     internal = new Object[max_index + 1];
     for (int i = 0; i < max_index + 1; i++) {
-      internal[i] = DEFAULT;
+      internal[i] = SparseDefaultValues.getDefaultObject();
     }
 
     for (int i = 0; i < keys.length; i++) {
@@ -934,4 +896,70 @@ public class SparseObjectColumn
   public void addRows(int number) {
     // table is already sparse.  nothing to do.
   }
+
+  //===================
+  // Protected Methods
+  //===================
+
+  protected VHashMap getElements() {
+    return elements;
+  }
+
+
+  /**
+       * Returns the valid values in rows <codE>begin</code> through <codE>end</code>
+   *
+   * @param begin    row number from to begin retrieving of values
+   * @param end      last row number in the section from which values are retrieved.
+   * @return         only valid values from rows no. <code>begin</code> through
+   *                 <codE>end</code>, sorted.
+   */
+  protected Object[] getValuesInRange(int begin, int end) {
+
+    if (end < begin) {
+      Object[] retVal = {};
+      return retVal;
+    }
+
+    int[] indices = VHashService.getIndicesInRange(begin, end, elements);
+    Object[] values = new Object[indices.length];
+    for (int i = 0; i < indices.length; i++) {
+      values[i] = elements.get(indices[i]);
+
+    }
+    toComparableArray(values);
+
+    Arrays.sort(values);
+    return values;
+  }
+
+  //=================
+  // Private Methods
+  //=================
+
+  private void toComparableArray(Object[] array) {
+    for (int i = 0; i < array.length; i++) {
+      if (type == ColumnTypes.CHAR_ARRAY || type == ColumnTypes.BYTE_ARRAY) {
+        array[i] = SparseStringColumn.toStringObject(array[i]);
+
+      }
+    }
+  }
+
+  private Object[] getValues(int[] validRows) {
+    Object[] values = new Object[validRows.length];
+    int type = getType();
+
+    for (int i = 0; i < validRows.length; i++) {
+      if (type == ColumnTypes.CHAR_ARRAY || type == ColumnTypes.BYTE_ARRAY) {
+        values[i] = getString(validRows[i]);
+      }
+      else {
+        values[i] = getObject(validRows[i]);
+
+      }
+    }
+    return values;
+  }
+
 }

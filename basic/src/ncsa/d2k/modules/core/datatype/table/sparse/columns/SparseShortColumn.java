@@ -1,16 +1,25 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
+//===============
+// Other Imports
+//===============
+
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
+
+//==============
+// Java Imports
+//==============
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Title:        Sparse Table
- * Description:  Sparse Table projects will implement data structures compatible to the interface tree of Table, for sparsely stored data.
+ * Description:  Sparse Table projects will implement data structures compatible
+ * to the interface tree of Table, for sparsely stored data.
  * Copyright:    Copyright (c) 2002
  * Company:      ncsa
  * @author vered goren
@@ -26,13 +35,15 @@ public class SparseShortColumn
    * the value j mapped to key i is the value j in line i in this column.
    */
 
+  //==============
+  // Data Members
+  //==============
+
   private VIntShortHashMap elements;
 
-  //a value to be returne dwhen getShort receives a parameter for a row number
-  //that isn't valid
-  public static short NOT_EXIST = Short.MIN_VALUE;
-
-  public static short DEFAULT = 0;
+  //================
+  // Constructor(s)
+  //================
 
   /**
    * Creates a new <code>SparseShortColumn</code> instance with default
@@ -102,6 +113,101 @@ public class SparseShortColumn
     }
   }
 
+  //================
+  // Static Methods
+  //================
+
+  /**
+   * used by sort method.
+   * returns a new index for a new row number for the item <code>currVal</code>
+       * the index is the first index i to be found  in <code>values</code> such that
+   * <code>currVal equals values[i] and occupiedIndices[i] == false</code>.
+   * this index i is then used in the array validRows by sort().
+   *
+       * @param currVal   the current short that sort() method is looking for its new
+   *                  row number in the column
+   * @param values    all the short values in the column to be sorted.
+       * @param row       index such that <code>values[row] == currVal</code> and also
+   *                  <code>occupiedIndices[row] == true</code>.
+   *                  [meaning the row number in <code>validRows[row]</code> is
+       *                  already occupied by an int that equals <code>currVal</code>
+   * @param occupiedIndices   a flag array in which each index in <vode>validRows</code>
+       *                          that was already occupied by sort() is marked true.
+   * @return an index i s.t. <code>currval == values[i] && occupiedIndices[i] == false</code>
+   */
+  public static int getNewRow(short currVal, short[] values, int row,
+                              boolean[] ocuupiedIndices) {
+    int retVal = -1;
+    //searching values at indices smaller than row
+    for (int i = row - 1; i >= 0 && values[i] == currVal && retVal < 0; i--) {
+      if (!ocuupiedIndices[i]) {
+        retVal = i;
+
+        //searching values at indices greater than row
+      }
+    }
+    for (int i = row + 1;
+         retVal < 0 && i < values.length && values[i] == currVal; i++) {
+      if (!ocuupiedIndices[i]) {
+        retVal = i;
+
+      }
+    }
+    return retVal;
+  }
+
+  /**
+   * Converts obj into type short.
+   * If obj is null returns the Minimum Value of class Short.
+   *
+   * @param obj   an Object to be converted into type short
+   * @return      a short representation of the data held by <code>obj</code>
+   *              # If obj is null returns a value signifying the position is empty,
+   *                as defined by this class.
+   *              # If obj is a Number return its short value
+       *              # If obj is a Character return it char value casted into short
+   *              # If obj is a Boolean return 1 if obj=true else return 0
+   *              # Otherwise: construct a String from obj and attempt to
+   *                  parse a short from it.
+   */
+  public static short toShort(Object obj) {
+
+    if (obj == null) {
+      return (short) SparseDefaultValues.getDefaultInt();
+    }
+
+    if (obj instanceof Number) {
+      return ( (Number) obj).shortValue();
+    }
+
+    if (obj instanceof Character) {
+      return (short) ( (Character) obj).charValue();
+    }
+
+    if (obj instanceof Boolean) {
+      return ( (Boolean) obj).booleanValue() ? (short) 1 : (short) 0;
+    }
+
+    String str;
+    if (obj instanceof char[]) {
+      str = new String( (char[]) obj);
+    }
+    else if (obj instanceof byte[]) {
+      str = new String( (byte[]) obj);
+    }
+    else { //obj is either a Number or String or an unknown object
+      str = obj.toString();
+
+    }
+    float f = Float.parseFloat(str);
+    return (short) f;
+
+  }
+
+  //================
+  // Public Methods
+  //================
+
   /**
    * Returns the value at row # row, casted to type byte.
    * @param row the row number
@@ -111,7 +217,7 @@ public class SparseShortColumn
    */
   public byte getByte(int row) {
     if (!elements.containsKey(row)) {
-      return SparseByteColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultByte();
     }
     return (byte) elements.get(row);
   }
@@ -133,7 +239,7 @@ public class SparseShortColumn
    */
   public boolean getBoolean(int row) {
     if (!elements.containsKey(row)) {
-      return SparseBooleanColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultBoolean();
     }
     return (elements.get(row) != 0);
   }
@@ -161,7 +267,7 @@ public class SparseShortColumn
    */
   public byte[] getBytes(int row) {
     if (!elements.containsKey(row)) {
-      return SparseByteArrayColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultBytes();
     }
     return String.valueOf(elements.get(row)).getBytes();
   }
@@ -185,7 +291,7 @@ public class SparseShortColumn
    */
   public char getChar(int row) {
     if (!elements.containsKey(row)) {
-      return SparseCharColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultChar();
     }
     return (char) elements.get(row);
   }
@@ -207,7 +313,7 @@ public class SparseShortColumn
    */
   public char[] getChars(int row) {
     if (!elements.containsKey(row)) {
-      return SparseCharArrayColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultChars();
     }
     return Short.toString(elements.get(row)).toCharArray();
   }
@@ -230,7 +336,7 @@ public class SparseShortColumn
    */
   public double getDouble(int row) {
     if (!elements.containsKey(row)) {
-      return SparseDoubleColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultDouble();
     }
     return (double) elements.get(row);
   }
@@ -243,7 +349,7 @@ public class SparseShortColumn
    */
   public float getFloat(int row) {
     if (!elements.containsKey(row)) {
-      return SparseFloatColumn.DEFAULT;
+      return (float) SparseDefaultValues.getDefaultDouble();
     }
     return (float) elements.get(row);
   }
@@ -257,7 +363,7 @@ public class SparseShortColumn
    */
   public int getInt(int row) {
     if (!elements.containsKey(row)) {
-      return SparseIntColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultInt();
     }
     return (int) elements.get(row);
   }
@@ -271,7 +377,7 @@ public class SparseShortColumn
    */
   public long getLong(int row) {
     if (!elements.containsKey(row)) {
-      return SparseLongColumn.DEFAULT;
+      return (long) SparseDefaultValues.getDefaultInt();
     }
     return (long) elements.get(row);
   }
@@ -287,7 +393,7 @@ public class SparseShortColumn
       return new Short(elements.get(row));
     }
     else {
-      return new Short(DEFAULT);
+      return new Short( (short) SparseDefaultValues.getDefaultInt());
     }
   }
 
@@ -303,7 +409,7 @@ public class SparseShortColumn
       return elements.get(row);
     }
     else {
-      return this.DEFAULT;
+      return (short) SparseDefaultValues.getDefaultInt();
     }
   }
 
@@ -315,7 +421,7 @@ public class SparseShortColumn
    */
   public String getString(int row) {
     if (!elements.containsKey(row)) {
-      return "" + DEFAULT;
+      return "" + (short) SparseDefaultValues.getDefaultInt();
     }
     return String.valueOf(elements.get(row));
   }
@@ -440,44 +546,6 @@ public class SparseShortColumn
 
   }
 
-  /**
-   * used by sort method.
-   * returns a new index for a new row number for the item <code>currVal</code>
-       * the index is the first index i to be found  in <code>values</code> such that
-   * <code>currVal equals values[i] and occupiedIndices[i] == false</code>.
-   * this index i is then used in the array validRows by sort().
-   *
-       * @param currVal   the current short that sort() method is looking for its new
-   *                  row number in the column
-   * @param values    all the short values in the column to be sorted.
-       * @param row       index such that <code>values[row] == currVal</code> and also
-   *                  <code>occupiedIndices[row] == true</code>.
-   *                  [meaning the row number in <code>validRows[row]</code> is
-       *                  already occupied by an int that equals <code>currVal</code>
-   * @param occupiedIndices   a flag array in which each index in <vode>validRows</code>
-       *                          that was already occupied by sort() is marked true.
-   * @return an index i s.t. <code>currval == values[i] && occupiedIndices[i] == false</code>
-   */
-  public static int getNewRow(short currVal, short[] values, int row,
-                              boolean[] ocuupiedIndices) {
-    int retVal = -1;
-    //searching values at indices smaller than row
-    for (int i = row - 1; i >= 0 && values[i] == currVal && retVal < 0; i--) {
-      if (!ocuupiedIndices[i]) {
-        retVal = i;
-
-        //searching values at indices greater than row
-      }
-    }
-    for (int i = row + 1;
-         retVal < 0 && i < values.length && values[i] == currVal; i++) {
-      if (!ocuupiedIndices[i]) {
-        retVal = i;
-
-      }
-    }
-    return retVal;
-  }
 
   /**
         Set the item at pos to be newEntry by casting it to a short.
@@ -547,26 +615,6 @@ public class SparseShortColumn
   }
 
   /**
-   * Inserts <code>val<code> into row #<code>pos</code>. If this position
-   * already holds data - insert the old data into row #<code>pos+1</code>
-   * recursively.
-   *
-   * @param val   the new boolean value to be inserted at pos.
-   * @param pos   the row number to insert val.
-   */
-  protected void insertRow(short val, int pos) {
-    boolean valid = elements.containsKey(pos);
-    short removedValue = elements.remove(pos);
-    //putting the new value
-    setShort(val, pos);
-    //recursively moving the items in the column as needed
-    if (valid) {
-      insertRow(removedValue, pos + 1);
-
-    }
-  }
-
-  /**
    * Compares the value represented by element and the one of row number
    * <code>pos</code>. <code>elements</code> will be converted to a compatible
    * type to this column.
@@ -614,36 +662,6 @@ public class SparseShortColumn
   }
 
   /**
-   * Compares 2 values and Retruns an int representation of the relation
-   * between the values.
-   *
-   * @param va1_1 - the first value to be compared
-   * @param vla_2 - the second value to be compared
-   * @return int - representing the relation between the values
-   *
-   * if val_1 > val_2 returns 1.
-   * if val_1 < val_2 returns -1.
-   * returns 0 if they are equal.
-   */
-  private int compareShorts(short val_1, short val_2) {
-    if (val_1 > val_2) {
-      return 1;
-    }
-    if (val_1 < val_2) {
-      return -1;
-    }
-    return 0;
-  }
-
-  /**
-   * return the internal representation of the data
-   * @return     a VIntShortHashMap - the internal representation of the data
-   */
-  protected VHashMap getElements() {
-    return elements;
-  }
-
-  /**
    * Swaps the values between 2 rows.
    * If there is no data in row #<code>pos1</code> then nothing is stored in
    * row #<ocde>pos2</code>, and vice versia.
@@ -673,84 +691,6 @@ public class SparseShortColumn
     missing.swapRows(pos1, pos2);
     empty.swapRows(pos1, pos2);
 
-  }
-
-  /**
-   * Converts obj into type short.
-   * If obj is null returns the Minimum Value of class Short.
-   *
-   * @param obj   an Object to be converted into type short
-   * @return      a short representation of the data held by <code>obj</code>
-   *              # If obj is null returns a value signifying the position is empty,
-   *                as defined by this class.
-   *              # If obj is a Number return its short value
-       *              # If obj is a Character return it char value casted into short
-   *              # If obj is a Boolean return 1 if obj=true else return 0
-   *              # Otherwise: construct a String from obj and attempt to
-   *                  parse a short from it.
-   */
-  public static short toShort(Object obj) {
-
-    if (obj == null) {
-      return DEFAULT;
-    }
-
-    if (obj instanceof Number) {
-      return ( (Number) obj).shortValue();
-    }
-
-    if (obj instanceof Character) {
-      return (short) ( (Character) obj).charValue();
-    }
-
-    if (obj instanceof Boolean) {
-      return ( (Boolean) obj).booleanValue() ? (short) 1 : (short) 0;
-    }
-
-    String str;
-    if (obj instanceof char[]) {
-      str = new String( (char[]) obj);
-    }
-    else if (obj instanceof byte[]) {
-      str = new String( (byte[]) obj);
-    }
-    else { //obj is either a Number or String or an unknown object
-      str = obj.toString();
-
-    }
-    float f = Float.parseFloat(str);
-    return (short) f;
-
-  }
-
-  /**
-       * Returns the valid values in rows <codE>begin</code> through <codE>end</code>
-   *
-   * @param begin    row number from to begin retrieving of values
-   * @param end      last row number in the section from which values are retrieved.
-   * @return         only valid values from rows no. <code>begin</code> through
-   *                 <codE>end</code>, sorted.
-   */
-  protected short[] getValuesInRange(int begin, int end) {
-    if (end < begin) {
-      short[] retVal = {};
-      return retVal;
-    }
-    return elements.getValuesInRange(begin, end);
-    /*
-         short[] values =  new short[end - begin +1];
-         int j= 0;
-         for (int i=begin; i<=end; i++)
-     if(doesValueExist(i)){
-       values[j] = getShort(i);
-      j++;
-     }//end if
-         //now j is number of real elements in values.
-         short[] retVal = new short[j];
-         System.arraycopy(values, 0, retVal, 0, j);
-         Arrays.sort(retVal);
-         return retVal;
-     */
   }
 
   /**
@@ -791,7 +731,7 @@ public class SparseShortColumn
 
     internal = new short[max_index + 1];
     for (int i = 0; i < max_index + 1; i++) {
-      internal[i] = DEFAULT;
+      internal[i] = (short) SparseDefaultValues.getDefaultInt();
     }
 
     for (int i = 0; i < keys.length; i++) {
@@ -808,6 +748,99 @@ public class SparseShortColumn
   public void addRows(int number) {
     // table is already sparse.  nothing to do.
   }
+
+  //===================
+  // Protected Methods
+  //===================
+
+  /**
+   * Inserts <code>val<code> into row #<code>pos</code>. If this position
+   * already holds data - insert the old data into row #<code>pos+1</code>
+   * recursively.
+   *
+   * @param val   the new boolean value to be inserted at pos.
+   * @param pos   the row number to insert val.
+   */
+  protected void insertRow(short val, int pos) {
+    boolean valid = elements.containsKey(pos);
+    short removedValue = elements.remove(pos);
+    //putting the new value
+    setShort(val, pos);
+    //recursively moving the items in the column as needed
+    if (valid) {
+      insertRow(removedValue, pos + 1);
+
+    }
+  }
+
+  /**
+   * return the internal representation of the data
+   * @return     a VIntShortHashMap - the internal representation of the data
+   */
+  protected VHashMap getElements() {
+    return elements;
+  }
+
+  /**
+       * Returns the valid values in rows <codE>begin</code> through <codE>end</code>
+   *
+   * @param begin    row number from to begin retrieving of values
+   * @param end      last row number in the section from which values are retrieved.
+   * @return         only valid values from rows no. <code>begin</code> through
+   *                 <codE>end</code>, sorted.
+   */
+  protected short[] getValuesInRange(int begin, int end) {
+    if (end < begin) {
+      short[] retVal = {};
+      return retVal;
+    }
+    return elements.getValuesInRange(begin, end);
+    /*
+         short[] values =  new short[end - begin +1];
+         int j= 0;
+         for (int i=begin; i<=end; i++)
+     if(doesValueExist(i)){
+       values[j] = getShort(i);
+      j++;
+     }//end if
+         //now j is number of real elements in values.
+         short[] retVal = new short[j];
+         System.arraycopy(values, 0, retVal, 0, j);
+         Arrays.sort(retVal);
+         return retVal;
+     */
+  }
+
+  //=================
+  // Private Methods
+  //=================
+
+  /**
+   * Compares 2 values and Retruns an int representation of the relation
+   * between the values.
+   *
+   * @param va1_1 - the first value to be compared
+   * @param vla_2 - the second value to be compared
+   * @return int - representing the relation between the values
+   *
+   * if val_1 > val_2 returns 1.
+   * if val_1 < val_2 returns -1.
+   * returns 0 if they are equal.
+   */
+  private int compareShorts(short val_1, short val_2) {
+    if (val_1 > val_2) {
+      return 1;
+    }
+    if (val_1 < val_2) {
+      return -1;
+    }
+    return 0;
+  }
+
+
+
+
+
 }
 /*
     /**
@@ -822,30 +855,30 @@ public class SparseShortColumn
   *                  and a reordered section as indicated by <code>begin</code>
   *                  and <code>end</code>.
   *
-     public Column reorderRows(int[] newOrder, int begin, int end){
-       SparseShortColumn  retVal = new SparseShortColumn();
-      retVal.elements = (VIntShortHashMap)elements.reorder(newOrder, begin, end);
-       int[] oldOrder = getRowsInRange(begin, end);
-       retVal.missing = missing.reorder(newOrder, oldOrder, begin, end);
-       retVal.empty = empty.reorder(newOrder, oldOrder, begin, end);
-       super.copy(retVal);
-       return retVal;
-       /*
-        int[] oldOrder = getRowsInRange(begin, end);
+      public Column reorderRows(int[] newOrder, int begin, int end){
         SparseShortColumn  retVal = new SparseShortColumn();
-        retVal.elements = elements.copy();
-        retVal.removeRows(begin, end-begin+1);
-        //each val V that is mapped to row no. newOrder[i] will be mapped
-        //to row no. oldOrder[i] in retVal.
-        for (int i=0; i<newOrder.length && i<oldOrder.length; i++){
-   if(elements.containsKey(newOrder[i]))
-     retVal.setShort(elements.get(newOrder[i]), oldOrder[i]);
-        }
-       AbstractSparseColumn.reorderMissingEmpty(newOrder, oldOrder,  this, retVal);
+      retVal.elements = (VIntShortHashMap)elements.reorder(newOrder, begin, end);
+        int[] oldOrder = getRowsInRange(begin, end);
+        retVal.missing = missing.reorder(newOrder, oldOrder, begin, end);
+        retVal.empty = empty.reorder(newOrder, oldOrder, begin, end);
+        super.copy(retVal);
         return retVal;
+        /*
+          int[] oldOrder = getRowsInRange(begin, end);
+          SparseShortColumn  retVal = new SparseShortColumn();
+          retVal.elements = elements.copy();
+          retVal.removeRows(begin, end-begin+1);
+          //each val V that is mapped to row no. newOrder[i] will be mapped
+          //to row no. oldOrder[i] in retVal.
+          for (int i=0; i<newOrder.length && i<oldOrder.length; i++){
+     if(elements.containsKey(newOrder[i]))
+       retVal.setShort(elements.get(newOrder[i]), oldOrder[i]);
+          }
+       AbstractSparseColumn.reorderMissingEmpty(newOrder, oldOrder,  this, retVal);
+          return retVal;
    *
-      }
-         /**
+        }
+           /**
     * Retrieve a new order for the valid rows of this column in the range
     * <code>begin</code> through <code>end</code>. The new order is a sorted
     * order for that section of the column.
@@ -853,26 +886,26 @@ public class SparseShortColumn
     * @param begin     row no. from which to start retrieving the new order
     * @param end       the last row in the section from which to retrieve the new order.
     *
-      public int[] getNewOrder(int begin, int end){
-        //sorting the valid row numbers
-         int[] validRows = getRowsInRange(begin, end);
-         //sorting the values
-         short[] values = getValuesInRange(begin, end);
-      int[] newOrder = new int[validRows.length];
-       boolean[] ocuupiedIndices = new boolean[validRows.length];
-       short currVal;
-       //for each valid row validRows[i]
-       for (int i=0; i<validRows.length; i++){
-         currVal = elements.get(validRows[i]);
-         //finding the index of its mapped float in values
-         int newRow = Arrays.binarySearch(values, currVal);
-         //because binarySearch can return the same index for items that are identical
-         //checking for this option too.
-         if(ocuupiedIndices[newRow])
-    newRow = getNewRow(currVal, values, newRow, ocuupiedIndices);
-         ocuupiedIndices[newRow] = true;
-         newOrder[newRow] = validRows[i];
-       }//end of for
-       return newOrder;
-      }
-    */
+         public int[] getNewOrder(int begin, int end){
+           //sorting the valid row numbers
+            int[] validRows = getRowsInRange(begin, end);
+            //sorting the values
+            short[] values = getValuesInRange(begin, end);
+         int[] newOrder = new int[validRows.length];
+          boolean[] ocuupiedIndices = new boolean[validRows.length];
+          short currVal;
+          //for each valid row validRows[i]
+          for (int i=0; i<validRows.length; i++){
+            currVal = elements.get(validRows[i]);
+            //finding the index of its mapped float in values
+            int newRow = Arrays.binarySearch(values, currVal);
+            //because binarySearch can return the same index for items that are identical
+            //checking for this option too.
+            if(ocuupiedIndices[newRow])
+       newRow = getNewRow(currVal, values, newRow, ocuupiedIndices);
+            ocuupiedIndices[newRow] = true;
+            newOrder[newRow] = validRows[i];
+          }//end of for
+          return newOrder;
+         }
+*/

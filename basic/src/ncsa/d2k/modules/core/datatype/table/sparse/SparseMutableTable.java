@@ -1,19 +1,24 @@
 package ncsa.d2k.modules.core.datatype.table.sparse;
 
+//==============
+// Java Imports
+//==============
+import java.util.*;
+import java.io.*;
+
+//===============
+// Other Imports
+//===============
+
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
-//import ncsa.d2k.modules.projects.vered.sparse.column.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.io.*;
-import java.util.Arrays;
 
 /**
  * Title:        Sparse Table
- * Description:  Sparse Table projects will implement data structures compatible to the interface tree of Table, for sparsely stored data.
+ * Description:  Sparse Table projects will implement data structures compatible
+ * to the interface tree of Table, for sparsely stored data.
  * Copyright:    Copyright (c) 2002
  * Company:      ncsa
  * @author vered goren
@@ -29,8 +34,16 @@ public class SparseMutableTable
     extends SparseTable
     implements MutableTable {
 
+  //==============
+  // Data Members
+  //==============
+
   /** list of transformations performed. */
   protected ArrayList transformations = new ArrayList();
+
+  //================
+  // Constructor(s)
+  //================
 
   public SparseMutableTable() {
     this(0, 0);
@@ -40,6 +53,15 @@ public class SparseMutableTable
     super(numRows, numCols);
     transformations = new ArrayList();
     numColumns = VHashService.getMaxKey(columns) + 1;
+  }
+
+  /**
+   * instantiate this table with the content of <code>T</codE>
+   * creates a shallow mutable copy of <codE>T</code>
+   */
+  public SparseMutableTable(SparseTable T) {
+    super(T);
+    transformations = new ArrayList();
   }
 
   /**
@@ -57,6 +79,963 @@ public class SparseMutableTable
       setString(table.getString(i,2), table.getInt(i,0), table.getInt(i,1));
     }
      }*/
+
+
+  //================
+  // Static Methods
+  //================
+
+  /**
+   * Returns a subset of <code>table</code> consisted of rows no.
+   * <code>start</code> through row no. <code>start+len</codE>.
+   *
+   * @param start   row number from which the subset starts.
+   * @param len     number of consequetive rows to be included in the subset
+   * @table         the table from which the subset is retrieved.
+   * @return        a SparseTable containing rows <code>start</code> through
+   *                <code>start+len</code>
+   */
+  public static Table getSubset(int start, int len, SparseTable table) {
+
+    int numrows = table.getNumRows();
+    if ( (start < 0) || ( (start + len - 1) >= numrows)) {
+      throw new IndexOutOfBoundsException("Some part of the range \"start to start+len-1\" is not in range of rows of the table.");
+    }
+
+    SparseMutableTable retVal = new SparseMutableTable();
+
+    //XIAOLEI
+
+    int[] columnNumbers = table.columns.keys();
+    for (int i = 0; i < columnNumbers.length; i++) {
+      //System.out.println("Working on column " + i + ", " + columnNumbers[i]);
+      Column subCol = ( (Column) table.columns.get(columnNumbers[i])).getSubset(
+          start, len);
+      //System.out.println("Finished column " + i + ": " + subCol.getNumEntries());
+      //System.out.println();
+      retVal.setColumn(columnNumbers[i], (AbstractSparseColumn) subCol);
+    }
+
+    retVal.copyAttributes(table);
+    retVal.computeNumColumns();
+    retVal.computeNumRows();
+    return retVal;
+
+  } //getSubset
+
+
+  //==========================================================================
+  // Table Interface Methods
+  //==========================================================================
+
+  /**
+   * Returns a subset of this table, containing data from rows <code>start</code>
+   * through <code>start+len</code>.
+   *
+   * @param start   row number from which the subset starts.
+   * @param len     number of consequetive rows to be included in the subset
+   * @return        a SparseTable containing rows <code>start</code> through
+   *                <code>start+len</code>
+   */
+  public Table getSubset(int start, int len) {
+    return getSubset(start, len, this);
+  } //getSubset
+
+  public Table getSubset(int[] rows) {
+    return getSubset(rows, this);
+  }
+
+  /**
+   * Returns a deep copy of this table (except of transformation).
+   */
+  public Table copy() {
+
+    SparseMutableTable retVal;
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ObjectOutputStream oos = new ObjectOutputStream(baos);
+      oos.writeObject(this);
+      byte buf[] = baos.toByteArray();
+      oos.close();
+      ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+      ObjectInputStream ois = new ObjectInputStream(bais);
+      retVal = (SparseMutableTable) ois.readObject();
+      ois.close();
+      return retVal;
+    } //try
+
+    catch (Exception e) {
+      retVal = new SparseMutableTable();
+      retVal.copy(this);
+      retVal.transformations = (ArrayList) transformations.clone();
+      return retVal;
+    } //catch
+  }
+
+  public Table copy(int[] rows) {
+    return getSubset(rows, this);
+  }
+
+  public Table copy(int start, int len) {
+    return getSubset(start, len, this);
+  }
+
+  public MutableTable createTable() {
+    SparseMutableTable retVal = new SparseMutableTable();
+    return (MutableTable) retVal;
+  }
+
+  public Table shallowCopy() {
+    SparseMutableTable new_table = new SparseMutableTable();
+    new_table.setLabel(this.getLabel());
+    new_table.setComment(this.getComment());
+    for (int i = 0, n = this.getNumColumns(); i < n; i++) {
+      new_table.addColumn( (AbstractSparseColumn) getColumn(i));
+    }
+    return new_table;
+  }
+
+  public Row getRow() {
+    return null;
+  }
+
+  /**
+   * Returns an ExampleTable with the content of this table.
+   */
+  public ExampleTable toExampleTable() {
+    return new SparseExampleTable(this);
+  }
+
+  //=========================================================================
+  // MutableTable Interface Methods
+  //=========================================================================
+
+  public void setColumn(Column newColumn, int position) {
+    AbstractSparseColumn col = null;
+
+    switch (newColumn.getType()) {
+
+      case ColumnTypes.BOOLEAN:
+        col = new SparseBooleanColumn( (boolean[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.BYTE:
+        col = new SparseByteColumn( (byte[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.CHAR:
+        col = new SparseCharColumn( (char[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.DOUBLE:
+        col = new SparseDoubleColumn( (double[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.FLOAT:
+        col = new SparseFloatColumn( (float[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.BYTE_ARRAY:
+        col = new SparseByteArrayColumn( (byte[][]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.CHAR_ARRAY:
+        col = new SparseCharArrayColumn( (char[][]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.INTEGER:
+        col = new SparseIntColumn( (int[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.LONG:
+        col = new SparseLongColumn( (long[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.SHORT:
+        col = new SparseShortColumn( (short[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.OBJECT:
+        col = new SparseObjectColumn( (Object[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.STRING: //fall through to the default...
+
+      default:
+        col = new SparseStringColumn( (String[]) newColumn.getInternal());
+        break;
+
+    } //switch case
+
+    setColumn(position, col);
+
+  }
+
+  public void addColumn(Column newColumn) {
+    this.insertColumn(newColumn, numColumns);
+  }
+
+  public void addColumns(Column[] newColumns) {
+    for (int i = 0, n = newColumns.length; i < n; i++) {
+      this.addColumn(newColumns[i]);
+    }
+  }
+
+  public void insertColumn(Column newColumn, int position) {
+    AbstractSparseColumn col = null;
+
+    switch (newColumn.getType()) {
+
+      case ColumnTypes.BOOLEAN:
+        col = new SparseBooleanColumn( (boolean[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.BYTE:
+        col = new SparseByteColumn( (byte[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.CHAR:
+        col = new SparseCharColumn( (char[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.DOUBLE:
+        col = new SparseDoubleColumn( (double[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.FLOAT:
+        col = new SparseFloatColumn( (float[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.BYTE_ARRAY:
+        col = new SparseByteArrayColumn( (byte[][]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.CHAR_ARRAY:
+        col = new SparseCharArrayColumn( (char[][]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.INTEGER:
+        col = new SparseIntColumn( (int[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.LONG:
+        col = new SparseLongColumn( (long[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.SHORT:
+        col = new SparseShortColumn( (short[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.OBJECT:
+        col = new SparseObjectColumn( (Object[]) newColumn.getInternal());
+        break;
+
+      case ColumnTypes.STRING: //fall through to the default...
+
+      default:
+        col = new SparseStringColumn( (String[]) newColumn.getInternal());
+        break;
+
+    } //switch case
+
+    insertColumn(col, position);
+  }
+
+  public void insertColumns(Column[] newColumns, int position) {
+    for (int i = newColumns.length - 1; i >= 0; i--) {
+      this.insertColumn(newColumns[i], position);
+    }
+  }
+
+  /**
+   * Removes column no. <code>position</code> from this table.
+   *
+   * @param position    the index of the columnt obe removed
+   *
+   * Modified by Xiaolei - 07/08/2003.
+   */
+  public void removeColumn(int position) {
+
+    int ncols = VHashService.getMaxKey(columns) + 1;
+    if ( (position < 0) || (position >= ncols)) {
+      throw new IndexOutOfBoundsException();
+    }
+
+    //removing the column
+    AbstractSparseColumn col = (AbstractSparseColumn) columns.remove(position);
+
+    //if such column did exist
+    if (col != null) {
+
+      //removing the references to it from each row
+      int[] rowsIndices = col.getIndices();
+
+      for (int i = 0; i < rowsIndices.length; i++) {
+        if (rows.containsKey(rowsIndices[i])) {
+          ( (VIntHashSet) rows.get(rowsIndices[i])).remove(position);
+        }
+      }
+
+      // for the columns with indices larger than position, shift all of
+      // them leftward.
+
+      int[] col_keys = columns.keys();
+      Arrays.sort(col_keys);
+
+      for (int i = 0; i < col_keys.length; i++) {
+        if (col_keys[i] >= position) {
+          col = (AbstractSparseColumn) columns.remove(col_keys[i]);
+          columns.put(col_keys[i] - 1, col);
+        }
+      }
+
+      rowsIndices = getAllRows();
+
+      // shift each row's columns leftward
+      for (int i = 0; i < rowsIndices.length; i++) {
+        ( (VIntHashSet) rows.get(rowsIndices[i])).decrement(position);
+      }
+    }
+
+    numColumns = VHashService.getMaxKey(columns) + 1;
+  }
+
+  /**
+   * Removes all column from index <code>start</code> to index <code>start + len</code>
+   *
+   * @param start     the beginning index for removing the columns
+   * @param len       number of consequetive columns to be removed.
+   */
+  public void removeColumns(int start, int len) {
+    for (int i = 0; i < len; i++) {
+      removeColumn(start);
+    }
+  }
+
+  public void addRows(int add_num_rows) {
+    numRows += add_num_rows;
+  }
+
+  /**
+   * Removes row no. <code>row</code> from this table
+   *
+   * @param row     the index of the row to be removed.
+   *
+   * Modified by Xiaolei - 07/08/2003.
+   */
+  public void removeRow(int row) {
+    //removing the row from the rows map
+    VIntHashSet set = (VIntHashSet) rows.remove(row);
+
+    //if the row existed
+    if (set != null) {
+      //retrieve column numbers
+      int[] columnNumbers = set.toArray();
+
+      //remove the items of the row from each column
+      for (int i = 0; i < columnNumbers.length; i++) {
+        ( (AbstractSparseColumn) columns.get(columnNumbers[i])).removeRow(row);
+        //	removeEmptyColumn(columnNumbers[i]);
+      }
+
+      // shift all the rest of the rows upward
+      int[] row_keys = rows.keys();
+      Arrays.sort(row_keys);
+
+      for (int i = 0; i < row_keys.length; i++) {
+        if (row_keys[i] >= row) {
+          set = (VIntHashSet) rows.remove(row_keys[i]);
+          rows.put(row_keys[i] - 1, set);
+        }
+      }
+
+      int[] colsIndices = getAllColumns();
+      AbstractSparseColumn col;
+
+      // shift each column's values upward
+      for (int i = 0; i < colsIndices.length; i++) {
+        col = (AbstractSparseColumn) columns.get(colsIndices[i]);
+        int[] validRows = col.getIndices();
+
+        for (int j = 0; j < validRows.length; j++) {
+          if (validRows[j] >= row) {
+            col.replaceRow(col.removeRow(validRows[j]), validRows[j] - 1);
+          }
+        }
+      }
+    } //end if
+
+    computeNumRows();
+  }
+
+  /**
+   * Removes all rows from index <code>start</code> to index <code>start + len</code>
+   *
+   * @param start     the beginning index for removing the rows
+   * @param len       number of consequetive rows to be removed.
+   */
+  public void removeRows(int start, int len) {
+    for (int i = 0; i < len; i++) {
+      removeRow(start);
+    }
+  }
+
+  /**
+   * Reorders the rows in this table, s.t.:
+   * If the row numbers were sorted in an array - "row" then when this method returns
+   * <code>row[i]</code> will hold the row that was originally held by <code>
+   * newORder[i]</code>.
+   *
+       * @param newOrder    an array of valid row numbers in this table in a certain
+   *                    order.
+   */
+  public Table reorderRows(int[] newOrder) {
+
+    VIntIntHashMap order = VHashService.toMap(newOrder, rows);
+    return reorderRows(order);
+    /*
+        int[] rowIndices = getAllRows();
+         VIntObjectHashMap tempMap = new VIntObjectHashMap (rows.size());
+         for (int i=0; i<rowIndices.length && i<newOrder.length; i++)
+      if(rows.containsKey(newOrder[i]))
+      tempMap.put(rowIndices[i], rows.get(newOrder[i]));
+         SparseMutableTable retVal = new SparseMutableTable();
+         retVal.rows = tempMap;
+         retVal.columns = (VIntObjectHashMap)columns.copy();
+         //reordering the column
+         int[] colIndices = getAllColumns();
+         for (int i=0; i<colIndices.length; i++)
+      ((AbstractSparseColumn) retVal.columns.get(colIndices[i])).reorderRows(newOrder);
+     */
+
+  }
+
+  /**
+   * Reorders the columns in this table, s.t.:
+   * If the column numbers were sorted in an array - "col" then when this method returns
+       * <code>col[i]</code> will hold the column that was originally held by <code>
+   * newORder[i]</code>.
+   *
+       * @param newOrder    an array of valid column numbers in this table in a certain
+   *                    order.
+   */
+  public Table reorderColumns(int[] newOrder) {
+    VIntIntHashMap order = VHashService.toMap(newOrder, columns);
+
+    return reorderColumns(order);
+
+  }
+
+  /**
+   * Swaps rows no. <code>pos1</code> and <code>pos2</code>
+   *
+   * @param pos1    the index of the first row to be swapped
+   * @param pos2    the index of the second row to be swapped.
+   */
+  public void swapRows(int pos1, int pos2) {
+
+    //retrieve all the column numbers that hold any of these rows
+
+    VIntHashSet r1 = (VIntHashSet) rows.remove(pos1);
+    VIntHashSet r2 = (VIntHashSet) rows.remove(pos2);
+    VIntHashSet tempSet = new VIntHashSet(); //will be a combination of r1 and r2
+    int[] validColumn = null; //will hold the relative oclumn numbers
+
+    if (r1 != null) { //if row pos1 exists
+      rows.put(pos2, r1); //put it at pos2
+      tempSet.addAll(r1.toArray()); //add its valid columns to tempSet
+    }
+
+    if (r2 != null) { //if row pos2 exists
+      rows.put(pos1, r2); //put it at pos1
+      tempSet.addAll(r2.toArray()); //add its valid columns to tempSet
+    }
+
+    validColumn = tempSet.toArray(); //now validColumns hold all the neede indices
+    //for each valid column in those 2 rows
+    for (int i = 0; i < validColumn.length; i++) {
+
+      //swap the rows.
+      ( (Column) columns.get(validColumn[i])).swapRows(pos1, pos2);
+    }
+
+  }
+
+  /**
+   * Swaps columns no. <code>pos1</code> and <code>pos2</code>
+   *
+   * @param pos1    the index of the first column to be swapped
+   * @param pos2    the index of the second column to be swapped.
+   */
+  public void swapColumns(int pos1, int pos2) {
+    Column col1 = (Column) columns.remove(pos1);
+    Column col2 = (Column) columns.remove(pos2);
+
+    if (col1 != null) {
+      columns.put(pos2, col1);
+
+    }
+    if (col2 != null) {
+      columns.put(pos1, col2);
+
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setObject(Object element, int row, int column) {
+
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.OBJECT);
+    }
+    getColumn(column).setObject(element, row);
+    addCol2Row(column, row);
+
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setInt(int data, int row, int column) {
+
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.INTEGER);
+    }
+    getColumn(column).setInt(data, row);
+    addCol2Row(column, row);
+
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setShort(short data, int row, int column) {
+
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.SHORT);
+    }
+    getColumn(column).setShort(data, row);
+    addCol2Row(column, row);
+
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setFloat(float data, int row, int column) {
+
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.FLOAT);
+    }
+    getColumn(column).setFloat(data, row);
+    addCol2Row(column, row);
+
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setDouble(double data, int row, int column) {
+    // XIAOLEI - just added some comments
+
+    /* does the column exist in the entire table? */
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.DOUBLE);
+
+      /* set the value */
+    }
+    getColumn(column).setDouble(data, row);
+
+    /* now make that row see this newly added column */
+    addCol2Row(column, row);
+
+    /* in case this newly added value expands the entire table */
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setLong(long data, int row, int column) {
+
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.LONG);
+    }
+    getColumn(column).setLong(data, row);
+    addCol2Row(column, row);
+
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setString(String data, int row, int column) {
+
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.STRING);
+    }
+    getColumn(column).setString(data, row);
+    addCol2Row(column, row);
+
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setBytes(byte[] data, int row, int column) {
+
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.BYTE_ARRAY);
+    }
+    getColumn(column).setBytes(data, row);
+    addCol2Row(column, row);
+
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setBoolean(boolean data, int row, int column) {
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.BOOLEAN);
+    }
+    getColumn(column).setBoolean(data, row);
+    addCol2Row(column, row);
+
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setChars(char[] data, int row, int column) {
+
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.CHAR_ARRAY);
+    }
+    getColumn(column).setChars(data, row);
+    addCol2Row(column, row);
+
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setByte(byte data, int row, int column) {
+
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.BYTE);
+    }
+    getColumn(column).setByte(data, row);
+    addCol2Row(column, row);
+
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+
+    }
+  }
+
+  /**
+   * Set entry <code>(row, column)</code> to hold the data represented by
+   * <code>element</code>
+   *
+   * @param element      the new data for entry (row, column).
+   * @param row          the row number of the entry to be set
+   * @param column       the column number of the entry to be set
+   */
+  public void setChar(char data, int row, int column) {
+
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.CHAR);
+    }
+    getColumn(column).setChar(data, row);
+    addCol2Row(column, row);
+
+    if (numRows <= row) {
+      numRows = row + 1;
+    }
+    if (numColumns <= column) {
+      numColumns = column + 1;
+
+    }
+  }
+
+  /**
+       * Sets <code>label</code> to be the label of column no. <code>position</code>
+   *
+   * @param label     the new label to be set
+   * @param position  the column index which its label is being set
+   */
+  public void setColumnLabel(String label, int position) {
+    if (columns.containsKey(position)) {
+      ( (AbstractSparseColumn) columns.get(position)).setLabel(label);
+    }
+  }
+
+  /**
+   * Sets <code>comment</code> to be the comment of column no. <code>position</code>
+   *
+   * @param comment     the new comment to be set
+   * @param position    the column index which its comment is being set
+   */
+  public void setColumnComment(String comment, int position) {
+    if (columns.containsKey(position)) {
+      ( (AbstractSparseColumn) columns.get(position)).setComment(comment);
+    }
+  }
+
+  /**
+       * Sorts this Table according to the natural order of Column no. <code>col</code>
+   *
+   * @param col      the index of the Column according to which this table is to be sorted
+   */
+  public void sortByColumn(int col) {
+    Column sorting = getColumn(col);
+    if (sorting != null) {
+      sorting.sort(this);
+    }
+  }
+
+  /**
+   * Sorts rows no. <code>begin</code> through <code>end</code> of this Table
+   * according to the natural order of Column no. <code>col</code>
+   *
+   * @param col      the index of the Column according to which this table is to be sorted
+   * @param begin     the row index at which begins the section to be sorted.
+   * @param edn       the row number at which ends the section to be sorted.
+   */
+  public void sortByColumn(int col, int begin, int end) {
+
+    if (end < begin) {
+      return;
+    }
+
+    Column sorting = getColumn(col);
+    if (sorting != null) {
+      sorting.sort(this, begin, end);
+
+    }
+  }
+
+  /**
+   * Adds <code>tm</code> to the list of the transformations.
+   *
+   * @param tm    a transformation that was operated on this table
+   */
+  public void addTransformation(Transformation tm) {
+    transformations.add(tm);
+  }
+
+  /**
+   * Returns the list of transformation operated on this table
+   */
+  public List getTransformations() {
+    return transformations;
+  }
+
+  /**
+   * Sets the value at position (row, col) in this table to be a missing
+   * value if val is true. if val is false - remove entry <code>row</cdoe> from
+   * list no. <code>col</code> of missing values.
+   *
+   * @param val     indicates if to set the value to missing (true) or to reset
+   *                it to a regular value (false).
+   * @param row     the row index of the value to be set
+   * @param col     the column index of the value to be set.
+   */
+  public void setValueToMissing(boolean val, int row, int col) {
+    if (columns.containsKey(col)) {
+      ( (AbstractSparseColumn) columns.get(col)).setValueToMissing(val, row);
+    }
+  }
+
+  /**
+   * Sets the value at position (row, col) in this table to be an empty
+   * value.
+   *
+   * @param row     the row index of the value to be set
+   * @param col     the column index of the value to be set.
+   */
+  public void setValueToEmpty(boolean val, int row, int col) {
+    if (columns.containsKey(col)) {
+      ( (AbstractSparseColumn) columns.get(col)).setValueToEmpty(val, row);
+    }
+  }
+
+
+  //===========================================================================
+  //===========================================================================
+  //                 END MUTABLETABLE INTERFACE
+  //===========================================================================
+  //===========================================================================
+
+
+  //================
+  // Public Methods
+  //================
+
+  /**
+   * Sorts this table according to <codE>newORder</code>
+   *
+   * @param newOrder  an int to int hashmap that defines the new order of the
+   *                  rows of this table, s.t.: for each pair (key, value) in
+       *                  <code>newOrder</code> put row no. <code>val</code> in row no.
+   *                  <code>key</code>.
+   */
+  public void sort(VIntIntHashMap newOrder) {
+    SparseMutableTable temp = (SparseMutableTable) reorderRows(newOrder);
+    columns = temp.columns;
+    rows = temp.rows;
+  }
+
+
+  //DUANE - added method below for testing purposes
+
+  public boolean equals(Object mt) {
+    SparseMutableTable mti = (SparseMutableTable) mt;
+    int numColumns = mti.getNumColumns();
+    int numRows = mti.getNumRows();
+    if (getNumColumns() != numColumns)
+      return false;
+    if (getNumRows() != numRows)
+      return false;
+    for (int i = 0; i < numRows; i++)
+      for (int j = 0; j < numColumns; j++)
+        if (!getString(i, j).equals(mti.getString(i, j)))
+          return false;
+    return true;
+  }
+
+
+  //===================
+  // Protected Methods
+  //===================
 
   /**
    * **************************************************
@@ -77,7 +1056,7 @@ public class SparseMutableTable
    *                    row at the end of this table.
    *
    */
-  public void addRow(int[] newEntry) {
+  protected void addRow(int[] newEntry) {
     int[] validColumns = getAllColumns();
 
     addRow(newEntry, validColumns);
@@ -91,7 +1070,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(int[] newEntry, int[] validColumns) {
+  protected void addRow(int[] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -109,7 +1088,7 @@ public class SparseMutableTable
    *                    row at the end of this table.
    *
    */
-  public void addRow(float[] newEntry) {
+  protected void addRow(float[] newEntry) {
     int[] validColumns = getAllColumns();
 
     addRow(newEntry, validColumns);
@@ -123,7 +1102,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(float[] newEntry, int[] validColumns) {
+  protected void addRow(float[] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
   }
 
@@ -140,7 +1119,7 @@ public class SparseMutableTable
    *                    row at the end of this table.
    *
    */
-  public void addRow(double[] newEntry) {
+  protected void addRow(double[] newEntry) {
     int[] validColumns = getAllColumns();
     addRow(newEntry, validColumns);
   }
@@ -153,7 +1132,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(double[] newEntry, int[] validColumns) {
+  protected void addRow(double[] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -171,7 +1150,7 @@ public class SparseMutableTable
    *                    row at the end of this table.
    *
    */
-  public void addRow(long[] newEntry) {
+  protected void addRow(long[] newEntry) {
     int[] validColumns = getAllColumns();
     addRow(newEntry, validColumns);
   }
@@ -184,7 +1163,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(long[] newEntry, int[] validColumns) {
+  protected void addRow(long[] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -202,7 +1181,7 @@ public class SparseMutableTable
    *                    row at the end of this table.
    *
    */
-  public void addRow(short[] newEntry) {
+  protected void addRow(short[] newEntry) {
     int[] validColumns = getAllColumns();
     addRow(newEntry, validColumns);
   }
@@ -215,7 +1194,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(short[] newEntry, int[] validColumns) {
+  protected void addRow(short[] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -233,7 +1212,7 @@ public class SparseMutableTable
    *                    row at the end of this table.
    *
    */
-  public void addRow(boolean[] newEntry) {
+  protected void addRow(boolean[] newEntry) {
     int[] validColumns = getAllColumns();
     addRow(newEntry, validColumns);
   }
@@ -246,7 +1225,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(boolean[] newEntry, int[] validColumns) {
+  protected void addRow(boolean[] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -264,7 +1243,7 @@ public class SparseMutableTable
    *                    row at the end of this table.
    *
    */
-  public void addRow(String[] newEntry) {
+  protected void addRow(String[] newEntry) {
     int[] validColumns = getAllColumns();
     addRow(newEntry, validColumns);
   }
@@ -277,7 +1256,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(String[] newEntry, int[] validColumns) {
+  protected void addRow(String[] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -295,7 +1274,7 @@ public class SparseMutableTable
    *                    row at the end of this table.
    *
    */
-  public void addRow(char[][] newEntry) {
+  protected void addRow(char[][] newEntry) {
     int[] validColumns = getAllColumns();
     addRow(newEntry, validColumns);
   }
@@ -308,7 +1287,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(char[][] newEntry, int[] validColumns) {
+  protected void addRow(char[][] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -326,7 +1305,7 @@ public class SparseMutableTable
    *                    row at the end of this table.
    *
    */
-  public void addRow(byte[][] newEntry) {
+  protected void addRow(byte[][] newEntry) {
     int[] validColumns = getAllColumns();
     addRow(newEntry, validColumns);
   }
@@ -339,7 +1318,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(byte[][] newEntry, int[] validColumns) {
+  protected void addRow(byte[][] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -356,7 +1335,7 @@ public class SparseMutableTable
    * @param newEntry    an Object array that holds data to be inserted to a new
    *                    row at the end of this table.
    */
-  public void addRow(Object[] newEntry) {
+  protected void addRow(Object[] newEntry) {
     int[] validColumns = getAllColumns();
     addRow(newEntry, validColumns);
   }
@@ -369,7 +1348,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(Object[] newEntry, int[] validColumns) {
+  protected void addRow(Object[] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -387,7 +1366,7 @@ public class SparseMutableTable
    *                    row at the end of this table.
    *
    */
-  public void addRow(byte[] newEntry) {
+  protected void addRow(byte[] newEntry) {
     int[] validColumns = getAllColumns();
     addRow(newEntry, validColumns);
   }
@@ -400,7 +1379,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(byte[] newEntry, int[] validColumns) {
+  protected void addRow(byte[] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -418,7 +1397,7 @@ public class SparseMutableTable
    *                    row at the end of this table.
    *
    */
-  public void addRow(char[] newEntry) {
+  protected void addRow(char[] newEntry) {
     int[] validColumns = getAllColumns();
     addRow(newEntry, validColumns);
   }
@@ -431,7 +1410,7 @@ public class SparseMutableTable
    * @param newEntry    holds the data to be inserted into the table.
    * @param validColumns  indicates to which columns the data will be inserted.
    */
-  public void addRow(char[] newEntry, int[] validColumns) {
+  protected void addRow(char[] newEntry, int[] validColumns) {
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -978,6 +1957,7 @@ public class SparseMutableTable
     //   updateRows(position, getRowIndices(position));
   }
 
+
   /**
    * *****************************************************
    * insertRow methods
@@ -1000,7 +1980,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(int[] newEntry, int position) {
+  protected void insertRow(int[] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1022,7 +2002,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(float[] newEntry, int position) {
+  protected void insertRow(float[] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1044,7 +2024,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(double[] newEntry, int position) {
+  protected void insertRow(double[] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1065,7 +2045,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(long[] newEntry, int position) {
+  protected void insertRow(long[] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1086,7 +2066,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(short[] newEntry, int position) {
+  protected void insertRow(short[] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1108,7 +2088,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(boolean[] newEntry, int position) {
+  protected void insertRow(boolean[] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1129,7 +2109,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(String[] newEntry, int position) {
+  protected void insertRow(String[] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1151,7 +2131,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(char[][] newEntry, int position) {
+  protected void insertRow(char[][] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1172,7 +2152,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(byte[][] newEntry, int position) {
+  protected void insertRow(byte[][] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1193,7 +2173,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(Object[] newEntry, int position) {
+  protected void insertRow(Object[] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1214,7 +2194,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(byte[] newEntry, int position) {
+  protected void insertRow(byte[] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1236,7 +2216,7 @@ public class SparseMutableTable
        * @param position    the row number into which the values should be inserted.
    *
    */
-  public void insertRow(char[] newEntry, int position) {
+  protected void insertRow(char[] newEntry, int position) {
     int[] validColumns = getAllColumns();
     insertRow(newEntry, position, validColumns);
   }
@@ -1255,7 +2235,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row.
    */
-  public void insertRow(int[] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(int[] newEntry, int rowIndex, int[] validColumns) {
 
     int i;
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
@@ -1294,7 +2274,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row. sorted.
    */
-  public void insertRow(boolean[] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(boolean[] newEntry, int rowIndex, int[] validColumns) {
     int i;
 
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
@@ -1335,7 +2315,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row.
    */
-  public void insertRow(byte[] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(byte[] newEntry, int rowIndex, int[] validColumns) {
 
     int i;
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
@@ -1372,7 +2352,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row.
    */
-  public void insertRow(char[][] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(char[][] newEntry, int rowIndex, int[] validColumns) {
 
     int i;
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
@@ -1411,7 +2391,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row.
    */
-  public void insertRow(double[] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(double[] newEntry, int rowIndex, int[] validColumns) {
     int i;
 
     /* for every existing column, add this new entry */
@@ -1466,7 +2446,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row.
    */
-  public void insertRow(float[] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(float[] newEntry, int rowIndex, int[] validColumns) {
 
     int i;
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
@@ -1503,7 +2483,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row.
    */
-  public void insertRow(long[] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(long[] newEntry, int rowIndex, int[] validColumns) {
 
     int i;
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
@@ -1540,7 +2520,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row.
    */
-  public void insertRow(short[] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(short[] newEntry, int rowIndex, int[] validColumns) {
 
     int i;
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
@@ -1577,7 +2557,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row.
    */
-  public void insertRow(String[] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(String[] newEntry, int rowIndex, int[] validColumns) {
 
     int i;
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
@@ -1614,7 +2594,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row.
    */
-  public void insertRow(Object[] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(Object[] newEntry, int rowIndex, int[] validColumns) {
 
     int i;
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
@@ -1651,7 +2631,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row.
    */
-  public void insertRow(char[] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(char[] newEntry, int rowIndex, int[] validColumns) {
 
     int i;
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
@@ -1688,7 +2668,7 @@ public class SparseMutableTable
    * @param rowIndex       the index of the new row
    * @param validColumns   the indices of the columns of the new row.
    */
-  public void insertRow(byte[][] newEntry, int rowIndex, int[] validColumns) {
+  protected void insertRow(byte[][] newEntry, int rowIndex, int[] validColumns) {
 
     int i;
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
@@ -1710,26 +2690,12 @@ public class SparseMutableTable
     numRows++;
   }
 
+
   /**
    * ***************************************************************
    * addColumn methods
    * ***************************************************************
    */
-
-  /**
-   * Adds a new int column to this table.
-   * Note - Since this is a Sarse Table the data in the new column will be
-   * held in valid rows only.
-   *
-   * For more explicit and accurate way of adding a column use method
-   * addColumn(int[], int[]).
-   *
-   * @param newEntry    the values to be held in the new column.
-   */
-  public void addColumn(int[] newEntry) {
-    int[] validRows = getAllRows();
-    addColumn(newEntry, validRows);
-  }
 
   /**
    * Appends a new int column with <code>newEntry</code>'s data, at the end of
@@ -1739,7 +2705,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(int[] newEntry, int[] validRows) {
+  protected void addColumn(int[] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
 
   }
@@ -1752,7 +2718,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(Object[] newEntry, int[] validRows) {
+  protected void addColumn(Object[] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
   }
 
@@ -1764,7 +2730,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(String[] newEntry, int[] validRows) {
+  protected void addColumn(String[] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
 
   }
@@ -1777,7 +2743,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(short[] newEntry, int[] validRows) {
+  protected void addColumn(short[] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
 
   }
@@ -1790,7 +2756,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(long[] newEntry, int[] validRows) {
+  protected void addColumn(long[] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
 
   }
@@ -1803,7 +2769,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(float[] newEntry, int[] validRows) {
+  protected void addColumn(float[] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
 
   }
@@ -1816,7 +2782,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(double[] newEntry, int[] validRows) {
+  protected void addColumn(double[] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
 
   }
@@ -1829,7 +2795,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(char[][] newEntry, int[] validRows) {
+  protected void addColumn(char[][] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
 
   }
@@ -1842,7 +2808,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(char[] newEntry, int[] validRows) {
+  protected void addColumn(char[] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
 
   }
@@ -1855,7 +2821,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(byte[][] newEntry, int[] validRows) {
+  protected void addColumn(byte[][] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
 
   }
@@ -1868,7 +2834,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(byte[] newEntry, int[] validRows) {
+  protected void addColumn(byte[] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
 
   }
@@ -1881,7 +2847,7 @@ public class SparseMutableTable
    * @param newEntry      the values to be stored in the new column
    * @param validRows     the indices of valid rows in the new column
    */
-  public void addColumn(boolean[] newEntry, int[] validRows) {
+  protected void addColumn(boolean[] newEntry, int[] validRows) {
     addColumn(newEntry, numColumns, validRows);
 
   }
@@ -2071,6 +3037,22 @@ public class SparseMutableTable
   }
 
   /**
+   * Adds a new int column to this table.
+   * Note - Since this is a Sarse Table the data in the new column will be
+   * held in valid rows only.
+   *
+   * For more explicit and accurate way of adding a column use method
+   * addColumn(int[], int[]).
+   *
+   * @param newEntry    the values to be held in the new column.
+   */
+  protected void addColumn(int[] newEntry) {
+    int[] validRows = getAllRows();
+    addColumn(newEntry, validRows);
+  }
+
+
+  /**
    * Adds a new float column to this table.
    * Note - Since this is a Sarse Table the data in the new column will be
    * held in valid rows only.
@@ -2080,7 +3062,7 @@ public class SparseMutableTable
    *
    * @param newEntry    the values to be held in the new column.
    */
-  public void addColumn(float[] newEntry) {
+  protected void addColumn(float[] newEntry) {
 
     int[] validRows = getAllRows();
     addColumn(newEntry, validRows);
@@ -2097,7 +3079,7 @@ public class SparseMutableTable
    *
    * @param newEntry    the values to be held in the new column.
    */
-  public void addColumn(double[] newEntry) {
+  protected void addColumn(double[] newEntry) {
     int[] validRows = getAllRows();
     addColumn(newEntry, validRows);
   }
@@ -2112,7 +3094,7 @@ public class SparseMutableTable
    *
    * @param newEntry    the values to be held in the new column.
    */
-  public void addColumn(long[] newEntry) {
+  protected void addColumn(long[] newEntry) {
     int[] validRows = getAllRows();
     addColumn(newEntry, validRows);
   }
@@ -2127,7 +3109,7 @@ public class SparseMutableTable
    *
    * @param newEntry    the values to be held in the new column.
    */
-  public void addColumn(short[] newEntry) {
+  protected void addColumn(short[] newEntry) {
     int[] validRows = getAllRows();
     addColumn(newEntry, validRows);
 
@@ -2143,7 +3125,7 @@ public class SparseMutableTable
    *
    * @param newEntry    the values to be held in the new column.
    */
-  public void addColumn(boolean[] newEntry) {
+  protected void addColumn(boolean[] newEntry) {
     int[] validRows = getAllRows();
     addColumn(newEntry, validRows);
   }
@@ -2158,7 +3140,7 @@ public class SparseMutableTable
    *
    * @param newEntry    the values to be held in the new column.
    */
-  public void addColumn(String[] newEntry) {
+  protected void addColumn(String[] newEntry) {
     int[] validRows = getAllRows();
     addColumn(newEntry, validRows);
   }
@@ -2173,7 +3155,7 @@ public class SparseMutableTable
    *
    * @param newEntry    the values to be held in the new column.
    */
-  public void addColumn(char[][] newEntry) {
+  protected void addColumn(char[][] newEntry) {
     int[] validRows = getAllRows();
     addColumn(newEntry, validRows);
   }
@@ -2188,7 +3170,7 @@ public class SparseMutableTable
    *
    * @param newEntry    the values to be held in the new column.
    */
-  public void addColumn(byte[][] newEntry) {
+  protected void addColumn(byte[][] newEntry) {
     int[] validRows = getAllRows();
     addColumn(newEntry, validRows);
   }
@@ -2203,7 +3185,7 @@ public class SparseMutableTable
    *
    * @param newEntry    the values to be held in the new column.
    */
-  public void addColumn(Object[] newEntry) {
+  protected void addColumn(Object[] newEntry) {
     int[] validRows = getAllRows();
     addColumn(newEntry, validRows);
   }
@@ -2218,7 +3200,7 @@ public class SparseMutableTable
    *
    * @param newEntry    the values to be held in the new column.
    */
-  public void addColumn(byte[] newEntry) {
+  protected void addColumn(byte[] newEntry) {
     int[] validRows = getAllRows();
     addColumn(newEntry, validRows);
   }
@@ -2233,10 +3215,11 @@ public class SparseMutableTable
    *
    * @param newEntry    the values to be held in the new column.
    */
-  public void addColumn(char[] newEntry) {
+  protected void addColumn(char[] newEntry) {
     int[] validRows = getAllRows();
     addColumn(newEntry, validRows);
   }
+
 
   /**
    * **********************************************************
@@ -2253,11 +3236,13 @@ public class SparseMutableTable
    * @param position      the index for the new column.
    *
    */
-  public void insertColumn(AbstractSparseColumn newColumn, int position) {
+  protected void insertColumn(AbstractSparseColumn newColumn, int position) {
 
     int numcols = getNumColumns();
-    if ((position < 0) || (position > numcols)){
-      throw new IndexOutOfBoundsException("SparseMutableTable.insertColumn() -- cannot insert column at position " + position + ". Not a valid index.");
+    if ( (position < 0) || (position > numcols)) {
+      throw new IndexOutOfBoundsException(
+          "SparseMutableTable.insertColumn() -- cannot insert column at position " +
+          position + ". Not a valid index.");
     }
 
     //updating the column map
@@ -2290,7 +3275,7 @@ public class SparseMutableTable
     numColumns = VHashService.getMaxKey(columns) + 1;
   }
 
-  public void insertColumns(AbstractSparseColumn[] newColumns, int position) {
+  protected void insertColumns(AbstractSparseColumn[] newColumns, int position) {
     for (int i = newColumns.length - 1; i >= 0; i--) {
       this.insertColumn(newColumns[i], position);
     }
@@ -2310,7 +3295,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(int[] newEntry, int position) {
+  protected void insertColumn(int[] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2329,7 +3314,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(float[] newEntry, int position) {
+  protected void insertColumn(float[] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2348,7 +3333,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(double[] newEntry, int position) {
+  protected void insertColumn(double[] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2367,7 +3352,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(long[] newEntry, int position) {
+  protected void insertColumn(long[] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2386,7 +3371,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(short[] newEntry, int position) {
+  protected void insertColumn(short[] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2405,7 +3390,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(boolean[] newEntry, int position) {
+  protected void insertColumn(boolean[] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2424,7 +3409,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(String[] newEntry, int position) {
+  protected void insertColumn(String[] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2443,7 +3428,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(char[][] newEntry, int position) {
+  protected void insertColumn(char[][] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2462,7 +3447,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(byte[][] newEntry, int position) {
+  protected void insertColumn(byte[][] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2481,7 +3466,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(Object[] newEntry, int position) {
+  protected void insertColumn(Object[] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2500,7 +3485,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(byte[] newEntry, int position) {
+  protected void insertColumn(byte[] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2519,7 +3504,7 @@ public class SparseMutableTable
    * @param newEntry    the values to be held in the new column.
    * @param position    the index for the new column.
    */
-  public void insertColumn(char[] newEntry, int position) {
+  protected void insertColumn(char[] newEntry, int position) {
     int[] validRows = getAllRows();
     insertColumn(newEntry, position, validRows);
   }
@@ -2536,7 +3521,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(int[] newEntry, int position, int[] validRows) {
+  protected void insertColumn(int[] newEntry, int position, int[] validRows) {
     SparseIntColumn iColumn = new SparseIntColumn(newEntry, validRows);
     insertColumn(iColumn, position);
   }
@@ -2553,7 +3538,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(boolean[] newEntry, int position, int[] validRows) {
+  protected void insertColumn(boolean[] newEntry, int position, int[] validRows) {
     SparseBooleanColumn blColumn = new SparseBooleanColumn(newEntry, validRows);
     insertColumn(blColumn, position);
   }
@@ -2570,7 +3555,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(byte[] newEntry, int position, int[] validRows) {
+  protected void insertColumn(byte[] newEntry, int position, int[] validRows) {
     SparseByteColumn bColumn = new SparseByteColumn(newEntry, validRows);
     insertColumn(bColumn, position);
   }
@@ -2587,7 +3572,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(char[] newEntry, int position, int[] validRows) {
+  protected void insertColumn(char[] newEntry, int position, int[] validRows) {
     SparseCharColumn cColumn = new SparseCharColumn(newEntry, validRows);
     insertColumn(cColumn, position);
   }
@@ -2604,7 +3589,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(char[][] newEntry, int position, int[] validRows) {
+  protected void insertColumn(char[][] newEntry, int position, int[] validRows) {
     SparseCharArrayColumn caColumn = new SparseCharArrayColumn(newEntry,
         validRows);
     insertColumn(caColumn, position);
@@ -2622,7 +3607,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(byte[][] newEntry, int position, int[] validRows) {
+  protected void insertColumn(byte[][] newEntry, int position, int[] validRows) {
     SparseByteArrayColumn baColumn = new SparseByteArrayColumn(newEntry,
         validRows);
     insertColumn(baColumn, position);
@@ -2640,7 +3625,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(double[] newEntry, int position, int[] validRows) {
+  protected void insertColumn(double[] newEntry, int position, int[] validRows) {
     SparseDoubleColumn dColumn = new SparseDoubleColumn(newEntry, validRows);
     insertColumn(dColumn, position);
   }
@@ -2657,7 +3642,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(float[] newEntry, int position, int[] validRows) {
+  protected void insertColumn(float[] newEntry, int position, int[] validRows) {
     SparseFloatColumn fColumn = new SparseFloatColumn(newEntry, validRows);
     insertColumn(fColumn, position);
   }
@@ -2674,7 +3659,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(long[] newEntry, int position, int[] validRows) {
+  protected void insertColumn(long[] newEntry, int position, int[] validRows) {
     SparseLongColumn lColumn = new SparseLongColumn(newEntry, validRows);
     insertColumn(lColumn, position);
   }
@@ -2691,7 +3676,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(short[] newEntry, int position, int[] validRows) {
+  protected void insertColumn(short[] newEntry, int position, int[] validRows) {
     SparseShortColumn sColumn = new SparseShortColumn(newEntry, validRows);
     insertColumn(sColumn, position);
   }
@@ -2708,7 +3693,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(String[] newEntry, int position, int[] validRows) {
+  protected void insertColumn(String[] newEntry, int position, int[] validRows) {
     SparseStringColumn strColumn = new SparseStringColumn(newEntry, validRows);
     insertColumn(strColumn, position);
   }
@@ -2725,7 +3710,7 @@ public class SparseMutableTable
    * @param position       the index insertion for the new Column
    * @param validRows      the valid indiced for the data in newEntry.
    */
-  public void insertColumn(Object[] newEntry, int position, int[] validRows) {
+  protected void insertColumn(Object[] newEntry, int position, int[] validRows) {
     SparseObjectColumn oColumn = new SparseObjectColumn(newEntry, validRows);
     insertColumn(oColumn, position);
   }
@@ -2751,7 +3736,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(int[] newEntry, int position) {
+  protected void setRow(int[] newEntry, int position) {
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
   }
@@ -2771,7 +3756,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(float[] newEntry, int position) {
+  protected void setRow(float[] newEntry, int position) {
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
   }
@@ -2791,7 +3776,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(double[] newEntry, int position) {
+  protected void setRow(double[] newEntry, int position) {
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
   }
@@ -2811,7 +3796,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(long[] newEntry, int position) {
+  protected void setRow(long[] newEntry, int position) {
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
   }
@@ -2831,7 +3816,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(short[] newEntry, int position) {
+  protected void setRow(short[] newEntry, int position) {
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
   }
@@ -2851,7 +3836,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(boolean[] newEntry, int position) {
+  protected void setRow(boolean[] newEntry, int position) {
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
   }
@@ -2871,7 +3856,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(String[] newEntry, int position) {
+  protected void setRow(String[] newEntry, int position) {
 
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
@@ -2892,7 +3877,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(char[][] newEntry, int position) {
+  protected void setRow(char[][] newEntry, int position) {
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
   }
@@ -2912,7 +3897,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(byte[][] newEntry, int position) {
+  protected void setRow(byte[][] newEntry, int position) {
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
   }
@@ -2932,7 +3917,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(Object[] newEntry, int position) {
+  protected void setRow(Object[] newEntry, int position) {
 
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
@@ -2953,7 +3938,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(byte[] newEntry, int position) {
+  protected void setRow(byte[] newEntry, int position) {
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
   }
@@ -2973,7 +3958,7 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into row #<code>position</code>
    * @param position      the row number to be set.
    */
-  public void setRow(char[] newEntry, int position) {
+  protected void setRow(char[] newEntry, int position) {
     //retrieving the columns numbers
     int[] columnNumbers = getRowIndices(position);
     setRow(newEntry, position, columnNumbers);
@@ -2988,7 +3973,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(int[] newEntry, int position, int[] validColumns) {
+  protected void setRow(int[] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3004,7 +3989,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(boolean[] newEntry, int position, int[] validColumns) {
+  protected void setRow(boolean[] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3020,7 +4005,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(byte[] newEntry, int position, int[] validColumns) {
+  protected void setRow(byte[] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3036,7 +4021,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(char[] newEntry, int position, int[] validColumns) {
+  protected void setRow(char[] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3052,7 +4037,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(byte[][] newEntry, int position, int[] validColumns) {
+  protected void setRow(byte[][] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3068,7 +4053,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(char[][] newEntry, int position, int[] validColumns) {
+  protected void setRow(char[][] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3084,7 +4069,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(double[] newEntry, int position, int[] validColumns) {
+  protected void setRow(double[] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3100,7 +4085,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(float[] newEntry, int position, int[] validColumns) {
+  protected void setRow(float[] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3116,7 +4101,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(long[] newEntry, int position, int[] validColumns) {
+  protected void setRow(long[] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3132,7 +4117,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(short[] newEntry, int position, int[] validColumns) {
+  protected void setRow(short[] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3147,7 +4132,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(String[] newEntry, int position, int[] validColumns) {
+  protected void setRow(String[] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3162,7 +4147,7 @@ public class SparseMutableTable
    * @param position      the row number to be set.
    * @param validColumns  the valid indices of the new row
    */
-  public void setRow(Object[] newEntry, int position, int[] validColumns) {
+  protected void setRow(Object[] newEntry, int position, int[] validColumns) {
     //removing the old row
     removeRow(position);
     addRow(newEntry, position, validColumns);
@@ -3189,13 +4174,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(int[] newEntry, int position) {
+  protected void setColumn(int[] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3213,7 +4199,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(int[] newEntry, int position, int[] validRows) {
+  protected void setColumn(int[] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
   }
@@ -3229,7 +4215,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(float[] newEntry, int position, int[] validRows) {
+  protected void setColumn(float[] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
   }
@@ -3245,7 +4231,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(byte[][] newEntry, int position, int[] validRows) {
+  protected void setColumn(byte[][] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
   }
@@ -3261,7 +4247,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(char[][] newEntry, int position, int[] validRows) {
+  protected void setColumn(char[][] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
   }
@@ -3277,7 +4263,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(Object[] newEntry, int position, int[] validRows) {
+  protected void setColumn(Object[] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
   }
@@ -3293,7 +4279,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(String[] newEntry, int position, int[] validRows) {
+  protected void setColumn(String[] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
   }
@@ -3309,7 +4295,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(short[] newEntry, int position, int[] validRows) {
+  protected void setColumn(short[] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
   }
@@ -3325,7 +4311,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(long[] newEntry, int position, int[] validRows) {
+  protected void setColumn(long[] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
   }
@@ -3341,7 +4327,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(boolean[] newEntry, int position, int[] validRows) {
+  protected void setColumn(boolean[] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
   }
@@ -3357,7 +4343,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(byte[] newEntry, int position, int[] validRows) {
+  protected void setColumn(byte[] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
 
@@ -3374,7 +4360,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(char[] newEntry, int position, int[] validRows) {
+  protected void setColumn(char[] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
   }
@@ -3390,7 +4376,7 @@ public class SparseMutableTable
    * @param position      the column number to be set.
    * @param validRows     the valid indices in the new column
    */
-  public void setColumn(double[] newEntry, int position, int[] validRows) {
+  protected void setColumn(double[] newEntry, int position, int[] validRows) {
     removeColumn(position);
     addColumn(newEntry, position, validRows);
   }
@@ -3409,13 +4395,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(float[] newEntry, int position) {
+  protected void setColumn(float[] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3436,13 +4423,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(double[] newEntry, int position) {
+  protected void setColumn(double[] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3463,13 +4451,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(long[] newEntry, int position) {
+  protected void setColumn(long[] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3490,13 +4479,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(short[] newEntry, int position) {
+  protected void setColumn(short[] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3517,13 +4507,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(boolean[] newEntry, int position) {
+  protected void setColumn(boolean[] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3545,13 +4536,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(String[] newEntry, int position) {
+  protected void setColumn(String[] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3572,13 +4564,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(char[][] newEntry, int position) {
+  protected void setColumn(char[][] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3599,13 +4592,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(byte[][] newEntry, int position) {
+  protected void setColumn(byte[][] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3626,13 +4620,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(Object[] newEntry, int position) {
+  protected void setColumn(Object[] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3653,13 +4648,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(byte[] newEntry, int position) {
+  protected void setColumn(byte[] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3680,13 +4676,14 @@ public class SparseMutableTable
    * @param newEntry      the data to be set into column #<code>position</code>
    * @param position      the column number to be set.
    */
-  public void setColumn(char[] newEntry, int position) {
+  protected void setColumn(char[] newEntry, int position) {
 
     int[] validRows;
     if (columns.contains(position)) {
       validRows = getColumnIndices(position);
 
-    } else {
+    }
+    else {
       validRows = getAllRows();
 
     }
@@ -3699,123 +4696,7 @@ public class SparseMutableTable
    * *****************************************************
    */
 
-  /**
-   * Removes column no. <code>position</code> from this table.
-   *
-   * @param position    the index of the columnt obe removed
-   *
-   * Modified by Xiaolei - 07/08/2003.
-   */
-  public void removeColumn(int position) {
 
-    int ncols = VHashService.getMaxKey(columns) + 1;
-    if ((position < 0) || (position >= ncols)){
-      throw new IndexOutOfBoundsException();
-    }
-
-
-    //removing the column
-    AbstractSparseColumn col = (AbstractSparseColumn) columns.remove(position);
-
-    //if such column did exist
-    if (col != null) {
-
-      //removing the references to it from each row
-      int[] rowsIndices = col.getIndices();
-
-      for (int i = 0; i < rowsIndices.length; i++) {
-        if (rows.containsKey(rowsIndices[i])) {
-          ( (VIntHashSet) rows.get(rowsIndices[i])).remove(position);
-        }
-      }
-
-      // for the columns with indices larger than position, shift all of
-      // them leftward.
-
-      int[] col_keys = columns.keys();
-      Arrays.sort(col_keys);
-
-      for (int i = 0; i < col_keys.length; i++) {
-        if (col_keys[i] >= position) {
-          col = (AbstractSparseColumn) columns.remove(col_keys[i]);
-          columns.put(col_keys[i] - 1, col);
-        }
-      }
-
-      rowsIndices = getAllRows();
-
-      // shift each row's columns leftward
-      for (int i = 0; i < rowsIndices.length; i++) {
-        ( (VIntHashSet) rows.get(rowsIndices[i])).decrement(position);
-      }
-    }
-
-    numColumns = VHashService.getMaxKey(columns) + 1;
-  }
-
-  /**
-   * Removes all column from index <code>start</code> to index <code>start + len</code>
-   *
-   * @param start     the beginning index for removing the columns
-   * @param len       number of consequetive columns to be removed.
-   */
-  public void removeColumns(int start, int len) {
-    for (int i = 0; i < len; i++) {
-      removeColumn(start);
-    }
-  }
-
-  /**
-   * Removes row no. <code>row</code> from this table
-   *
-   * @param row     the index of the row to be removed.
-   *
-   * Modified by Xiaolei - 07/08/2003.
-   */
-  public void removeRow(int row) {
-    //removing the row from the rows map
-    VIntHashSet set = (VIntHashSet) rows.remove(row);
-
-    //if the row existed
-    if (set != null) {
-      //retrieve column numbers
-      int[] columnNumbers = set.toArray();
-
-      //remove the items of the row from each column
-      for (int i = 0; i < columnNumbers.length; i++) {
-        ( (AbstractSparseColumn) columns.get(columnNumbers[i])).removeRow(row);
-        //	removeEmptyColumn(columnNumbers[i]);
-      }
-
-      // shift all the rest of the rows upward
-      int[] row_keys = rows.keys();
-      Arrays.sort(row_keys);
-
-      for (int i = 0; i < row_keys.length; i++) {
-        if (row_keys[i] >= row) {
-          set = (VIntHashSet) rows.remove(row_keys[i]);
-          rows.put(row_keys[i] - 1, set);
-        }
-      }
-
-      int[] colsIndices = getAllColumns();
-      AbstractSparseColumn col;
-
-      // shift each column's values upward
-      for (int i = 0; i < colsIndices.length; i++) {
-        col = (AbstractSparseColumn) columns.get(colsIndices[i]);
-        int[] validRows = col.getIndices();
-
-        for (int j = 0; j < validRows.length; j++) {
-          if (validRows[j] >= row) {
-            col.replaceRow(col.removeRow(validRows[j]), validRows[j] - 1);
-          }
-        }
-      }
-    } //end if
-
-    computeNumRows();
-  }
 
   /**
    * Removes the entry at the specified location.
@@ -3823,7 +4704,7 @@ public class SparseMutableTable
    * @param row     the row number of the entry to be removed.
    * @param column  the column number of the entry to be removed.
    */
-  public void removeEntry(int row, int column) {
+  protected void removeEntry(int row, int column) {
     if (rows.containsKey(row)) {
       ( (VIntHashSet) rows.get(row)).remove(column);
       //  removeEmptyRow(row);
@@ -3857,24 +4738,13 @@ public class SparseMutableTable
      }
    */
 
-  /**
-   * Removes all rows from index <code>start</code> to index <code>start + len</code>
-   *
-   * @param start     the beginning index for removing the rows
-   * @param len       number of consequetive rows to be removed.
-   */
-  public void removeRows(int start, int len) {
-    for (int i = 0; i < len; i++) {
-      removeRow(start);
-    }
-  }
 
   /**
    * Removes row no. i from this table if <code>flags[i] == true</code>
    *
    * @param flags     an array of flags to indicate which row is to be removed
    */
-  public void removeRowsByFlag(boolean[] flags) {
+  protected void removeRowsByFlag(boolean[] flags) {
     int cnt = 0;
     for (int i = 0; i < flags.length; i++) {
       if (flags[i]) {
@@ -3888,7 +4758,7 @@ public class SparseMutableTable
    *
        * @param flags     an array of flags to indicate which column is to be removed
    */
-  public void removeColumnsByFlag(boolean[] flags) {
+  protected void removeColumnsByFlag(boolean[] flags) {
     for (int i = 0; i < flags.length; i++) {
       if (flags[i]) {
         removeColumn(i);
@@ -3901,7 +4771,7 @@ public class SparseMutableTable
    *
    * @param     an array of indices of rows to be removed from this table
    */
-  public void removeRowsByIndex(int[] indices) {
+  protected void removeRowsByIndex(int[] indices) {
     for (int i = 0; i < indices.length; i++) {
       removeRow(indices[i]);
     }
@@ -3912,7 +4782,7 @@ public class SparseMutableTable
    *
    * @param     an array of indices of columns to be removed from this table
    */
-  public void removeColumnsByIndex(int[] indices) {
+  protected void removeColumnsByIndex(int[] indices) {
 
     for (int i = 0; i < indices.length; i++) {
       columns.remove(indices[i]);
@@ -3934,35 +4804,6 @@ public class SparseMutableTable
    * *****************************************************
    */
 
-  /**
-   * Reorders the rows in this table, s.t.:
-   * If the row numbers were sorted in an array - "row" then when this method returns
-   * <code>row[i]</code> will hold the row that was originally held by <code>
-   * newORder[i]</code>.
-   *
-       * @param newOrder    an array of valid row numbers in this table in a certain
-   *                    order.
-   */
-  public Table reorderRows(int[] newOrder) {
-
-    VIntIntHashMap order = VHashService.toMap(newOrder, rows);
-    return reorderRows(order);
-    /*
-        int[] rowIndices = getAllRows();
-         VIntObjectHashMap tempMap = new VIntObjectHashMap (rows.size());
-         for (int i=0; i<rowIndices.length && i<newOrder.length; i++)
-      if(rows.containsKey(newOrder[i]))
-      tempMap.put(rowIndices[i], rows.get(newOrder[i]));
-         SparseMutableTable retVal = new SparseMutableTable();
-         retVal.rows = tempMap;
-         retVal.columns = (VIntObjectHashMap)columns.copy();
-         //reordering the column
-         int[] colIndices = getAllColumns();
-         for (int i=0; i<colIndices.length; i++)
-      ((AbstractSparseColumn) retVal.columns.get(colIndices[i])).reorderRows(newOrder);
-     */
-
-  }
 
   /**
    * Reorders the rows in this table, s.t.:
@@ -3973,7 +4814,7 @@ public class SparseMutableTable
        * @return            a SparseMutableTable with same content as this one, only
    *                    with different order of rows.
    */
-  public Table reorderRows(VIntIntHashMap newOrder) {
+  protected Table reorderRows(VIntIntHashMap newOrder) {
     SparseMutableTable retVal = new SparseMutableTable();
     int[] cols = columns.keys();
     for (int i = 0; i < cols.length; i++) {
@@ -3989,68 +4830,7 @@ public class SparseMutableTable
     return retVal;
   }
 
-  /**
-   * Sorts this table according to <codE>newORder</code>
-   *
-   * @param newOrder  an int to int hashmap that defines the new order of the
-   *                  rows of this table, s.t.: for each pair (key, value) in
-       *                  <code>newOrder</code> put row no. <code>val</code> in row no.
-   *                  <code>key</code>.
-   */
-  public void sort(VIntIntHashMap newOrder) {
-    SparseMutableTable temp = (SparseMutableTable) reorderRows(newOrder);
-    columns = temp.columns;
-    rows = temp.rows;
-  }
 
-  /**
-       * Sorts this Table according to the natural order of Column no. <code>col</code>
-   *
-   * @param col      the index of the Column according to which this table is to be sorted
-   */
-  public void sortByColumn(int col) {
-    Column sorting = getColumn(col);
-    if (sorting != null) {
-      sorting.sort(this);
-    }
-  }
-
-  /**
-   * Sorts rows no. <code>begin</code> through <code>end</code> of this Table
-   * according to the natural order of Column no. <code>col</code>
-   *
-   * @param col      the index of the Column according to which this table is to be sorted
-   * @param begin     the row index at which begins the section to be sorted.
-   * @param edn       the row number at which ends the section to be sorted.
-   */
-  public void sortByColumn(int col, int begin, int end) {
-
-    if (end < begin) {
-      return;
-    }
-
-    Column sorting = getColumn(col);
-    if (sorting != null) {
-      sorting.sort(this, begin, end);
-
-    }
-  }
-
-  /**
-   * Reorders the columns in this table, s.t.:
-   * If the column numbers were sorted in an array - "col" then when this method returns
-       * <code>col[i]</code> will hold the column that was originally held by <code>
-   * newORder[i]</code>.
-   *
-       * @param newOrder    an array of valid column numbers in this table in a certain
-   *                    order.
-   */
-  public Table reorderColumns(int[] newOrder) {
-    VIntIntHashMap order = VHashService.toMap(newOrder, columns);
-
-    return reorderColumns(order);
-
-  }
 
   /**
    * Reorders the columns in this table, s.t.:
@@ -4061,7 +4841,7 @@ public class SparseMutableTable
        * @return            a SparseMutableTable with same content as this one, only
    *                    with different order of columns.
    */
-  public Table reorderColumns(VIntIntHashMap newOrder) {
+  protected Table reorderColumns(VIntIntHashMap newOrder) {
     SparseMutableTable retVal = new SparseMutableTable(this);
 
     retVal.columns = (VIntObjectHashMap) columns.reorder(newOrder);
@@ -4069,60 +4849,7 @@ public class SparseMutableTable
 
   }
 
-  /**
-   * Swaps rows no. <code>pos1</code> and <code>pos2</code>
-   *
-   * @param pos1    the index of the first row to be swapped
-   * @param pos2    the index of the second row to be swapped.
-   */
-  public void swapRows(int pos1, int pos2) {
 
-    //retrieve all the column numbers that hold any of these rows
-
-    VIntHashSet r1 = (VIntHashSet) rows.remove(pos1);
-    VIntHashSet r2 = (VIntHashSet) rows.remove(pos2);
-    VIntHashSet tempSet = new VIntHashSet(); //will be a combination of r1 and r2
-    int[] validColumn = null; //will hold the relative oclumn numbers
-
-    if (r1 != null) { //if row pos1 exists
-      rows.put(pos2, r1); //put it at pos2
-      tempSet.addAll(r1.toArray()); //add its valid columns to tempSet
-    }
-
-    if (r2 != null) { //if row pos2 exists
-      rows.put(pos1, r2); //put it at pos1
-      tempSet.addAll(r2.toArray()); //add its valid columns to tempSet
-    }
-
-    validColumn = tempSet.toArray(); //now validColumns hold all the neede indices
-    //for each valid column in those 2 rows
-    for (int i = 0; i < validColumn.length; i++) {
-
-      //swap the rows.
-      ( (Column) columns.get(validColumn[i])).swapRows(pos1, pos2);
-    }
-
-  }
-
-  /**
-   * Swaps columns no. <code>pos1</code> and <code>pos2</code>
-   *
-   * @param pos1    the index of the first column to be swapped
-   * @param pos2    the index of the second column to be swapped.
-   */
-  public void swapColumns(int pos1, int pos2) {
-    Column col1 = (Column) columns.remove(pos1);
-    Column col2 = (Column) columns.remove(pos2);
-
-    if (col1 != null) {
-      columns.put(pos2, col1);
-
-    }
-    if (col2 != null) {
-      columns.put(pos1, col2);
-
-    }
-  }
 
   /**
    * Adds the column index <code>column</code> to the row set <code>row</code>
@@ -4145,316 +4872,72 @@ public class SparseMutableTable
     }
   }
 
+  //=================
+  // Private Methods
+  //=================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /**
    * **************************************
    * setType methods
    * **************************************
    */
 
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setObject(Object element, int row, int column) {
 
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.OBJECT);
-    }
-    getColumn(column).setObject(element, row);
-    addCol2Row(column, row);
-
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-
-    }
-  }
-
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setInt(int data, int row, int column) {
-
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.INTEGER);
-    }
-    getColumn(column).setInt(data, row);
-    addCol2Row(column, row);
-
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-
-    }
-  }
-
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setShort(short data, int row, int column) {
-
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.SHORT);
-    }
-    getColumn(column).setShort(data, row);
-    addCol2Row(column, row);
-
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-
-    }
-  }
-
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setFloat(float data, int row, int column) {
-
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.FLOAT);
-    }
-    getColumn(column).setFloat(data, row);
-    addCol2Row(column, row);
-
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-
-    }
-  }
-
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setDouble(double data, int row, int column) {
-    // XIAOLEI - just added some comments
-
-    /* does the column exist in the entire table? */
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.DOUBLE);
-
-      /* set the value */
-    }
-    getColumn(column).setDouble(data, row);
-
-    /* now make that row see this newly added column */
-    addCol2Row(column, row);
-
-    /* in case this newly added value expands the entire table */
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-    }
-  }
-
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setLong(long data, int row, int column) {
-
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.LONG);
-    }
-    getColumn(column).setLong(data, row);
-    addCol2Row(column, row);
-
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-
-    }
-  }
-
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setString(String data, int row, int column) {
-
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.STRING);
-    }
-    getColumn(column).setString(data, row);
-    addCol2Row(column, row);
-
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-
-    }
-  }
-
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setBytes(byte[] data, int row, int column) {
-
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.BYTE_ARRAY);
-    }
-    getColumn(column).setBytes(data, row);
-    addCol2Row(column, row);
-
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-
-    }
-  }
-
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setBoolean(boolean data, int row, int column) {
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.BOOLEAN);
-    }
-    getColumn(column).setBoolean(data, row);
-    addCol2Row(column, row);
-
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-
-    }
-  }
-
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setChars(char[] data, int row, int column) {
-
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.CHAR_ARRAY);
-    }
-    getColumn(column).setChars(data, row);
-    addCol2Row(column, row);
-
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-
-    }
-  }
-
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setByte(byte data, int row, int column) {
-
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.BYTE);
-    }
-    getColumn(column).setByte(data, row);
-    addCol2Row(column, row);
-
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-
-    }
-  }
-
-  /**
-   * Set entry <code>(row, column)</code> to hold the data represented by
-   * <code>element</code>
-   *
-   * @param element      the new data for entry (row, column).
-   * @param row          the row number of the entry to be set
-   * @param column       the column number of the entry to be set
-   */
-  public void setChar(char data, int row, int column) {
-
-    if (!columns.containsKey(column)) {
-      addColumn(column, ColumnTypes.CHAR);
-    }
-    getColumn(column).setChar(data, row);
-    addCol2Row(column, row);
-
-    if (numRows <= row) {
-      numRows = row + 1;
-    }
-    if (numColumns <= column) {
-      numColumns = column + 1;
-
-    }
-  }
 
   /**
    * ******************************************************
@@ -4462,29 +4945,6 @@ public class SparseMutableTable
    * ******************************************************
    */
 
-  /**
-       * Sets <code>label</code> to be the label of column no. <code>position</code>
-   *
-   * @param label     the new label to be set
-   * @param position  the column index which its label is being set
-   */
-  public void setColumnLabel(String label, int position) {
-    if (columns.containsKey(position)) {
-      ( (AbstractSparseColumn) columns.get(position)).setLabel(label);
-    }
-  }
-
-  /**
-   * Sets <code>comment</code> to be the comment of column no. <code>position</code>
-   *
-   * @param comment     the new comment to be set
-   * @param position    the column index which its comment is being set
-   */
-  public void setColumnComment(String comment, int position) {
-    if (columns.containsKey(position)) {
-      ( (AbstractSparseColumn) columns.get(position)).setComment(comment);
-    }
-  }
 
   /**
    * "Clips" the columns at the "end" of this table so that the greatest index
@@ -4511,50 +4971,6 @@ public class SparseMutableTable
     }
   }
 
-  /**
-   * Adds <code>tm</code> to the list of the transformations.
-   *
-   * @param tm    a transformation that was operated on this table
-   */
-  public void addTransformation(Transformation tm) {
-    transformations.add(tm);
-  }
-
-  /**
-   * Returns the list of transformation operated on this table
-   */
-  public List getTransformations() {
-    return transformations;
-  }
-
-  /**
-   * Sets the value at position (row, col) in this table to be a missing
-   * value if val is true. if val is false - remove entry <code>row</cdoe> from
-   * list no. <code>col</code> of missing values.
-   *
-   * @param val     indicates if to set the value to missing (true) or to reset
-   *                it to a regular value (false).
-   * @param row     the row index of the value to be set
-   * @param col     the column index of the value to be set.
-   */
-  public void setValueToMissing(boolean val, int row, int col) {
-    if (columns.containsKey(col)) {
-      ( (AbstractSparseColumn) columns.get(col)).setValueToMissing(val, row);
-    }
-  }
-
-  /**
-   * Sets the value at position (row, col) in this table to be an empty
-   * value.
-   *
-   * @param row     the row index of the value to be set
-   * @param col     the column index of the value to be set.
-   */
-  public void setValueToEmpty(boolean val, int row, int col) {
-    if (columns.containsKey(col)) {
-      ( (AbstractSparseColumn) columns.get(col)).setValueToEmpty(val, row);
-    }
-  }
 
   /**
    * copies the content of <code>srcTable</cdoe> into this table.
@@ -4567,48 +4983,8 @@ public class SparseMutableTable
     super.copy(srcTable);
   }
 
-  /**
-   * Returns a deep copy of this table (except of transformation).
-   */
-  public Table copy() {
 
-    SparseMutableTable retVal;
-    try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      ObjectOutputStream oos = new ObjectOutputStream(baos);
-      oos.writeObject(this);
-      byte buf[] = baos.toByteArray();
-      oos.close();
-      ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-      ObjectInputStream ois = new ObjectInputStream(bais);
-      retVal = (SparseMutableTable) ois.readObject();
-      ois.close();
-      return retVal;
-    } //try
 
-    catch (Exception e) {
-      retVal = new SparseMutableTable();
-      retVal.copy(this);
-      retVal.transformations = (ArrayList) transformations.clone();
-      return retVal;
-    } //catch
-  }
-
-  /**
-   * instantiate this table with the content of <code>T</codE>
-   * creates a shallow mutable copy of <codE>T</code>
-   */
-  public SparseMutableTable(SparseTable T) {
-    super(T);
-    transformations = new ArrayList();
-  }
-
-  /**
-   * Returns an ExampleTable with the content of this table.
-   */
-  public ExampleTable toExampleTable() {
-    return new SparseExampleTable(this);
-  }
 
   public void computeNumColumns() {
     numColumns = VHashService.getMaxKey(columns) + 1;
@@ -4637,8 +5013,6 @@ public class SparseMutableTable
     setColumn(numColumns, newColumn);
 
   }
-
-
 
   /**
    * Adds an empty column at index <code>newColIndex</code> of type <code>
@@ -4701,29 +5075,13 @@ public class SparseMutableTable
     } //switch
 
     //columns.put(newColIndex, newCol);
-    this.insertColumn((AbstractSparseColumn)newCol, newColIndex);
+    this.insertColumn( (AbstractSparseColumn) newCol, newColIndex);
 
     if (newColIndex >= numColumns) {
       numColumns = newColIndex + 1;
     }
   } //addColumn
 
-  /**
-       * Returns a subset of this table, containing data from rows <code>start</code>
-   * through <code>start+len</code>.
-   *
-   * @param start   row number from which the subset starts.
-   * @param len     number of consequetive rows to be included in the subset
-   * @return        a SparseTable containing rows <code>start</code> through
-   *                <code>start+len</code>
-   */
-  public Table getSubset(int start, int len) {
-    return getSubset(start, len, this);
-  } //getSubset
-
-  public Table getSubset(int[] rows) {
-    return getSubset(rows, this);
-  }
 
   public Table getSubsetByReference(int start, int len) {
     int[] rows = new int[len];
@@ -4744,42 +5102,6 @@ public class SparseMutableTable
     return et.getTrainTable();
   }
 
-  /**
-   * Returns a subset of <code>table</code> consisted of rows no.
-   * <code>start</code> through row no. <code>start+len</codE>.
-   *
-   * @param start   row number from which the subset starts.
-   * @param len     number of consequetive rows to be included in the subset
-   * @table         the table from which the subset is retrieved.
-   * @return        a SparseTable containing rows <code>start</code> through
-   *                <code>start+len</code>
-   */
-  public static Table getSubset(int start, int len, SparseTable table) {
-
-    int numrows = table.getNumRows();
-      if ((start < 0) || ((start + len -1 ) >= numrows)){
-        throw new IndexOutOfBoundsException("Some part of the range \"start to start+len-1\" is not in range of rows of the table.");
-      }
-
-    SparseMutableTable retVal = new SparseMutableTable();
-
-    //XIAOLEI
-
-    int[] columnNumbers = table.columns.keys();
-    for (int i = 0; i < columnNumbers.length; i++) {
-      //System.out.println("Working on column " + i + ", " + columnNumbers[i]);
-      Column subCol = ( (Column) table.columns.get(columnNumbers[i])).getSubset(start, len);
-      //System.out.println("Finished column " + i + ": " + subCol.getNumEntries());
-      //System.out.println();
-      retVal.setColumn(columnNumbers[i], (AbstractSparseColumn) subCol);
-    }
-
-    retVal.copyAttributes(table);
-    retVal.computeNumColumns();
-    retVal.computeNumRows();
-    return retVal;
-
-  } //getSubset
 
   /**
    * updates the columns and rows maps regarding the insertion of a new column.
@@ -4866,7 +5188,6 @@ public class SparseMutableTable
     this.addColumn(col);
   }
 
-
   /**
    * Adds a column of type <code>type</code> at index no. <code>index</code>
    * to this table.
@@ -4934,12 +5255,12 @@ public class SparseMutableTable
   public static Table getSubset(int[] indices, SparseTable table) {
 
     int numrows = table.getNumRows();
-    for (int i = 0, n = indices.length; i < n; i++){
-      if ((indices[i] < 0) || (indices[i] >= numrows)){
-        throw new IndexOutOfBoundsException("Row: " + indices[i] + "not in table.");
+    for (int i = 0, n = indices.length; i < n; i++) {
+      if ( (indices[i] < 0) || (indices[i] >= numrows)) {
+        throw new IndexOutOfBoundsException("Row: " + indices[i] +
+                                            "not in table.");
       }
     }
-
 
     // the returned value
     SparseMutableTable retVal = new SparseMutableTable();
@@ -4959,204 +5280,21 @@ public class SparseMutableTable
     return retVal;
   }
 
-  public void addRows(int add_num_rows) {
-    numRows += add_num_rows;
-  }
 
-  public MutableTable createTable() {
-    SparseMutableTable retVal = new SparseMutableTable();
-    return (MutableTable) retVal;
-  }
 
-  public Table shallowCopy() {
-    SparseMutableTable new_table = new SparseMutableTable();
-    new_table.setLabel(this.getLabel());
-    new_table.setComment(this.getComment());
-    for (int i = 0, n = this.getNumColumns(); i < n;i++){
-      new_table.addColumn((AbstractSparseColumn)getColumn(i));
-    }
-    return new_table;
-  }
 
-  public Table copy(int[] rows) {
-    return getSubset(rows, this);
-  }
+  /*
+      public Table reorderRows(int[] newOrder, int begin, int end) {
+        SparseMutableTable retVal = (SparseMutableTable )copy();
+        retVal.removeRows(begin, end-begin+1);
+        int[] colIndices = getAllColumns();
+        for (int i=0; i<colIndices.length; i++){
+     Column temp = ((AbstractSparseColumn) getColumn(colIndices[i])).reorderRows(newOrder, begin, end);
+     retVal.insertColumn((AbstractSparseColumn)temp, colIndices[i]);
+        }
+       return retVal;
+      }
+  */
 
-  public Table copy(int start, int len) {
-    return getSubset(start, len, this);
-  }
-
-  public void insertColumns(Column[] newColumns, int position) {
-    for (int i = newColumns.length - 1; i >= 0; i--) {
-      this.insertColumn(newColumns[i], position);
-    }
-  }
-
-  public void insertColumn(Column newColumn, int position) {
-    AbstractSparseColumn col = null;
-
-    switch (newColumn.getType()) {
-
-      case ColumnTypes.BOOLEAN:
-        col = new SparseBooleanColumn( (boolean[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.BYTE:
-        col = new SparseByteColumn( (byte[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.CHAR:
-        col = new SparseCharColumn( (char[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.DOUBLE:
-        col = new SparseDoubleColumn( (double[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.FLOAT:
-        col = new SparseFloatColumn( (float[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.BYTE_ARRAY:
-        col = new SparseByteArrayColumn( (byte[][]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.CHAR_ARRAY:
-        col = new SparseCharArrayColumn( (char[][]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.INTEGER:
-        col = new SparseIntColumn( (int[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.LONG:
-        col = new SparseLongColumn( (long[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.SHORT:
-        col = new SparseShortColumn( (short[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.OBJECT:
-        col = new SparseObjectColumn( (Object[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.STRING: //fall through to the default...
-
-      default:
-        col = new SparseStringColumn( (String[]) newColumn.getInternal());
-        break;
-
-    } //switch case
-
-    insertColumn(col, position);
-  }
-
-  public void addColumns(Column[] newColumns) {
-    for (int i = 0, n = newColumns.length; i < n; i++) {
-      this.addColumn(newColumns[i]);
-    }
-  }
-
-  public void addColumn(Column newColumn) {
-    this.insertColumn(newColumn, numColumns);
-  }
-
-  public void setColumn(Column newColumn, int position) {
-    AbstractSparseColumn col = null;
-
-    switch (newColumn.getType()) {
-
-      case ColumnTypes.BOOLEAN:
-        col = new SparseBooleanColumn( (boolean[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.BYTE:
-        col = new SparseByteColumn( (byte[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.CHAR:
-        col = new SparseCharColumn( (char[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.DOUBLE:
-        col = new SparseDoubleColumn( (double[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.FLOAT:
-        col = new SparseFloatColumn( (float[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.BYTE_ARRAY:
-        col = new SparseByteArrayColumn( (byte[][]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.CHAR_ARRAY:
-        col = new SparseCharArrayColumn( (char[][]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.INTEGER:
-        col = new SparseIntColumn( (int[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.LONG:
-        col = new SparseLongColumn( (long[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.SHORT:
-        col = new SparseShortColumn( (short[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.OBJECT:
-        col = new SparseObjectColumn( (Object[]) newColumn.getInternal());
-        break;
-
-      case ColumnTypes.STRING: //fall through to the default...
-
-      default:
-        col = new SparseStringColumn( (String[]) newColumn.getInternal());
-        break;
-
-    } //switch case
-
-    setColumn(position, col);
-
-  }
-
-  //DUANE - added method below for testing purposes
-
-  public boolean equals(Object mt) {
-    SparseMutableTable mti = (SparseMutableTable) mt;
-    int numColumns = mti.getNumColumns();
-    int numRows = mti.getNumRows();
-    if (getNumColumns() != numColumns)
-      return false;
-    if (getNumRows() != numRows)
-      return false;
-    for (int i = 0; i < numRows; i++)
-      for (int j = 0; j < numColumns; j++)
-        if (!getString(i, j).equals(mti.getString(i, j)))
-          return false;
-    return true;
-  }
-
-  /**
-   * @see ncsa.d2k.modules.core.datatype.table.Table#hasMissingValues(int)
-   */
-  public boolean hasMissingValues(int columnIndex) {
-	  return this.getColumn(columnIndex).hasMissingValues();
-  }
 
 } //SparseMutableTable
-/*
-    public Table reorderRows(int[] newOrder, int begin, int end) {
-      SparseMutableTable retVal = (SparseMutableTable )copy();
-      retVal.removeRows(begin, end-begin+1);
-      int[] colIndices = getAllColumns();
-      for (int i=0; i<colIndices.length; i++){
-   Column temp = ((AbstractSparseColumn) getColumn(colIndices[i])).reorderRows(newOrder, begin, end);
-   retVal.insertColumn((AbstractSparseColumn)temp, colIndices[i]);
-      }
-     return retVal;
-    }
- */

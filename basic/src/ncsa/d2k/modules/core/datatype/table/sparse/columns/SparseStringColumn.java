@@ -1,12 +1,21 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
+//===============
+// Other Imports
+//===============
+
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
+
+//==============
+// Java Imports
+//==============
+
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * SparseStringColumn is a column in a SparseTable that holds data of Type String.
@@ -36,18 +45,22 @@ import java.util.Arrays;
 public class SparseStringColumn
     extends AbstractSparseColumn {
 
+  //==============
+  // Data Members
+  //==============
+
   /* maps row number to index of value in valuesInColumn */
   protected VIntIntHashMap row2Id;
 
       /* the indices are the values in row2Id, the items in this array are the values
-     from this column */
+        from this column */
   protected String[] valuesInColumn;
 
   /* maps String (a value in the map) to id (the index of the value in valuesInColumn) */
   protected VObjectIntHashMap val2Key;
 
       /* first free entry in valuesInColumn (at the end of the array. does not relate
-     to isolated free entries */
+        to isolated free entries */
   protected int firstFree;
 
   /* the elements in this set are isolated free indices in valuesInColumn */
@@ -55,9 +68,13 @@ public class SparseStringColumn
 
   /* determine the load on the array and its expanding factor*/
 
-  public static String DEFAULT = "";
+  //public static String DEFAULT = "";
 
   public static float DEFAULT_LOAD_FACTOR = 0.5f;
+
+  //================
+  // Constructor(s)
+  //================
 
   /**
    * Creates a new <code>SparseStringColumn </code> instance with the
@@ -128,6 +145,46 @@ public class SparseStringColumn
     copy(srcCol);
   }
 
+  //================
+  // Static Methods
+  //================
+
+  /**
+   * Converts <code>obj</code> into a String.
+   *
+   * @param obj    an Object to be converted into a String
+   * @return       a String representing the data <code>obj</code> holds.
+   *               # If obj equals null returns null
+       *               # If obj is a char or byte array - construct a string from it.
+   *               # Otherwise - returns obj.toString.
+   */
+  public static String toStringObject(Object obj) {
+    if (obj == null) {
+      return null;
+    }
+
+    if (obj instanceof char[]) {
+      return new String( (char[]) obj);
+    }
+
+    if (obj instanceof byte[]) {
+      return new String( (byte[]) obj);
+    }
+
+    if (obj instanceof Character) {
+      char[] arr = {
+          ( (Character) obj).charValue()};
+      return new String(arr);
+    }
+
+    //covers cases of  Number, Boolean
+    return obj.toString();
+  }
+
+  //================
+  // Public Methods
+  //================
+
   /**
    * performs a deep copy of this SparseStringColumn
    * returns an exact copy of this SparseStringColumn
@@ -156,20 +213,6 @@ public class SparseStringColumn
 
       return retVal;
     }
-  }
-
-  /**
-   * Copies all data from <code>srcCol</codE> to this Column.
-   */
-  protected void copy(SparseStringColumn srcCol) {
-    row2Id = srcCol.row2Id.copy();
-    valuesInColumn = new String[srcCol.valuesInColumn.length];
-    System.arraycopy(srcCol.valuesInColumn, 0, valuesInColumn, 0,
-                     valuesInColumn.length);
-    val2Key = srcCol.val2Key.copy();
-    firstFree = srcCol.firstFree;
-    free = srcCol.free.copy();
-    super.copy(srcCol);
   }
 
   /**
@@ -346,38 +389,6 @@ public class SparseStringColumn
   }
 
   /**
-   * Converts <code>obj</code> into a String.
-   *
-   * @param obj    an Object to be converted into a String
-   * @return       a String representing the data <code>obj</code> holds.
-   *               # If obj equals null returns null
-       *               # If obj is a char or byte array - construct a string from it.
-   *               # Otherwise - returns obj.toString.
-   */
-  public static String toStringObject(Object obj) {
-    if (obj == null) {
-      return null;
-    }
-
-    if (obj instanceof char[]) {
-      return new String( (char[]) obj);
-    }
-
-    if (obj instanceof byte[]) {
-      return new String( (byte[]) obj);
-    }
-
-    if (obj instanceof Character) {
-      char[] arr = {
-           ( (Character) obj).charValue()};
-      return new String(arr);
-    }
-
-    //covers cases of  Number, Boolean
-    return obj.toString();
-  }
-
-  /**
    * Sets the value at row #<code>row</code> to be the String representing
    * a short value <code>s</code>
    *
@@ -433,19 +444,6 @@ public class SparseStringColumn
   }
 
   /**
-   * enlarges the array valuesInColumn according to the load factor
-   */
-  protected void doubleArray() {
-    int len = valuesInColumn.length;
-    if (len == 0) {
-      len = 1;
-    }
-    String[] newArray = new String[ (int) (len * (1 / DEFAULT_LOAD_FACTOR))];
-    System.arraycopy(valuesInColumn, 0, newArray, 0, valuesInColumn.length);
-    valuesInColumn = newArray;
-  }
-
-  /**
    * Reorders the data stored in this column in a new column.
    * Does not change this column.
    *
@@ -475,13 +473,6 @@ public class SparseStringColumn
     return retVal;
   }
 
-  /*
-    returns the map that holds all valid rows in this column
-   */
-  protected VHashMap getElements() {
-    return row2Id;
-  }
-
   /**
    * Returns a byte representation of the value are row No. <codE>pos</code>.
    *
@@ -491,7 +482,7 @@ public class SparseStringColumn
   public byte getByte(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseByteColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultByte();
     }
 
     int id = row2Id.get(pos);
@@ -507,7 +498,7 @@ public class SparseStringColumn
   public char getChar(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseCharColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultChar();
     }
 
     int id = row2Id.get(pos);
@@ -523,7 +514,7 @@ public class SparseStringColumn
   public byte[] getBytes(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseByteArrayColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultBytes();
     }
 
     int id = row2Id.get(pos);
@@ -539,7 +530,7 @@ public class SparseStringColumn
   public char[] getChars(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseCharArrayColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultChars();
     }
 
     int id = row2Id.get(pos);
@@ -555,7 +546,7 @@ public class SparseStringColumn
   public boolean getBoolean(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseBooleanColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultBoolean();
     }
 
     int id = row2Id.get(pos);
@@ -571,7 +562,7 @@ public class SparseStringColumn
   public double getDouble(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseDoubleColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultDouble();
     }
 
     int id = row2Id.get(pos);
@@ -587,7 +578,7 @@ public class SparseStringColumn
   public float getFloat(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseFloatColumn.DEFAULT;
+      return (float) SparseDefaultValues.getDefaultDouble();
     }
 
     int id = row2Id.get(pos);
@@ -603,7 +594,7 @@ public class SparseStringColumn
   public int getInt(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseIntColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultInt();
     }
 
     int id = row2Id.get(pos);
@@ -619,7 +610,7 @@ public class SparseStringColumn
   public short getShort(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseShortColumn.DEFAULT;
+      return (short) SparseDefaultValues.getDefaultInt();
     }
 
     int id = row2Id.get(pos);
@@ -635,7 +626,7 @@ public class SparseStringColumn
   public long getLong(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseLongColumn.DEFAULT;
+      return (long) SparseDefaultValues.getDefaultInt();
     }
 
     int id = row2Id.get(pos);
@@ -651,7 +642,7 @@ public class SparseStringColumn
   public Object getObject(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return new String(DEFAULT);
+      return new String(SparseDefaultValues.getDefaultString());
     }
 
     int id = row2Id.get(pos);
@@ -667,7 +658,7 @@ public class SparseStringColumn
   public String getString(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseStringColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultString();
     }
 
     int id = row2Id.get(pos);
@@ -859,7 +850,7 @@ public class SparseStringColumn
 
     internal = new String[max_index + 1];
     for (int i = 0; i < max_index + 1; i++) {
-      internal[i] = DEFAULT;
+      internal[i] = SparseDefaultValues.getDefaultString();
     }
 
     for (int i = 0; i < keys.length; i++) {
@@ -876,5 +867,45 @@ public class SparseStringColumn
   public void addRows(int number) {
     // table is already sparse.  nothing to do.
   }
+
+  //===================
+  // Protected Methods
+  //===================
+
+  /**
+   * Copies all data from <code>srcCol</codE> to this Column.
+   */
+  protected void copy(SparseStringColumn srcCol) {
+    row2Id = srcCol.row2Id.copy();
+    valuesInColumn = new String[srcCol.valuesInColumn.length];
+    System.arraycopy(srcCol.valuesInColumn, 0, valuesInColumn, 0,
+                     valuesInColumn.length);
+    val2Key = srcCol.val2Key.copy();
+    firstFree = srcCol.firstFree;
+    free = srcCol.free.copy();
+    super.copy(srcCol);
+  }
+
+  /**
+   * enlarges the array valuesInColumn according to the load factor
+   */
+  protected void doubleArray() {
+    int len = valuesInColumn.length;
+    if (len == 0) {
+      len = 1;
+    }
+    String[] newArray = new String[ (int) (len * (1 / DEFAULT_LOAD_FACTOR))];
+    System.arraycopy(valuesInColumn, 0, newArray, 0, valuesInColumn.length);
+    valuesInColumn = newArray;
+  }
+
+
+  /*
+    returns the map that holds all valid rows in this column
+   */
+  protected VHashMap getElements() {
+    return row2Id;
+  }
+
 
 } //SparseStringColumn

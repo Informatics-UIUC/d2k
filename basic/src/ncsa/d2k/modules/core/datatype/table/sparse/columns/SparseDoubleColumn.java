@@ -1,16 +1,26 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
+//===============
+// Other Imports
+//===============
+
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
+
+//==============
+// Java Imports
+//==============
+
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Title:        Sparse Table
- * Description:  Sparse Table projects will implement data structures compatible to the interface tree of Table, for sparsely stored data.
+ * Description:  Sparse Table projects will implement data structures compatible
+ * to the interface tree of Table, for sparsely stored data.
  * Copyright:    Copyright (c) 2002
  * Company:      ncsa
  * @author vered goren
@@ -26,13 +36,18 @@ public class SparseDoubleColumn
    * the value j mapped to key i is the value j in line i in this column.
    */
 
+  //==============
+  // Data Members
+  //==============
+
   private VIntDoubleHashMap elements;
 
   //a value to be returned if getDouble recieves a parameter for row number that
   //is not valid.
-  public static double NOT_EXIST = 0; //-1 * Double.MAX_VALUE;
 
-  public static double DEFAULT = 0;
+  //================
+  // Constructor(s)
+  //================
 
   /**
    * Creates a new <code>SparseDoubleColumn</code> instance with the default
@@ -101,6 +116,10 @@ public class SparseDoubleColumn
     }
   }
 
+  //================
+  // Public Methods
+  //================
+
   /**
    * performs a deep copy of this SparseDoubleColumn
    * returns an exact copy of this SparseDoubleColumn
@@ -138,7 +157,7 @@ public class SparseDoubleColumn
    */
   public byte getByte(int row) {
     if (!elements.containsKey(row)) {
-      return SparseByteColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultByte();
     }
     return (byte) getDouble(row);
   }
@@ -164,7 +183,7 @@ public class SparseDoubleColumn
    */
   public boolean getBoolean(int row) {
     if (!elements.containsKey(row)) {
-      return SparseBooleanColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultBoolean();
     }
     return (getDouble(row) != 0);
   }
@@ -192,7 +211,7 @@ public class SparseDoubleColumn
    */
   public byte[] getBytes(int row) {
     if (!elements.containsKey(row)) {
-      return (byte[]) SparseByteArrayColumn.DEFAULT;
+      return (byte[]) SparseDefaultValues.getDefaultBytes();
     }
     return String.valueOf(getDouble(row)).getBytes();
   }
@@ -216,7 +235,7 @@ public class SparseDoubleColumn
    */
   public char getChar(int row) {
     if (!elements.containsKey(row)) {
-      return SparseCharColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultChar();
     }
     return (char) getDouble(row);
   }
@@ -238,7 +257,7 @@ public class SparseDoubleColumn
    */
   public char[] getChars(int row) {
     if (!elements.containsKey(row)) {
-      return (char[]) SparseCharArrayColumn.DEFAULT;
+      return (char[]) SparseDefaultValues.getDefaultChars();
     }
     return Double.toString(getDouble(row)).toCharArray();
   }
@@ -262,7 +281,7 @@ public class SparseDoubleColumn
       return elements.get(row);
     }
     else {
-      return this.DEFAULT;
+      return SparseDefaultValues.getDefaultDouble();
     }
   }
 
@@ -274,7 +293,7 @@ public class SparseDoubleColumn
    */
   public float getFloat(int row) {
     if (!elements.containsKey(row)) {
-      return SparseFloatColumn.DEFAULT;
+      return (float)SparseDefaultValues.getDefaultDouble();
     }
     return (float) getDouble(row);
   }
@@ -288,7 +307,7 @@ public class SparseDoubleColumn
    */
   public int getInt(int row) {
     if (!elements.containsKey(row)) {
-      return SparseIntColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultInt();
     }
     return (int) getDouble(row);
   }
@@ -302,7 +321,7 @@ public class SparseDoubleColumn
    */
   public long getLong(int row) {
     if (!elements.containsKey(row)) {
-      return SparseLongColumn.DEFAULT;
+      return (long)SparseDefaultValues.getDefaultInt();
     }
     return (long) getDouble(row);
   }
@@ -317,7 +336,7 @@ public class SparseDoubleColumn
       return new Double(getDouble(row));
     }
     else {
-      return new Double(DEFAULT);
+      return new Double(SparseDefaultValues.getDefaultDouble());
     }
   }
 
@@ -330,7 +349,7 @@ public class SparseDoubleColumn
    */
   public short getShort(int row) {
     if (!elements.containsKey(row)) {
-      return SparseShortColumn.DEFAULT;
+      return (short)SparseDefaultValues.getDefaultInt();
     }
     return (short) getDouble(row);
   }
@@ -343,7 +362,7 @@ public class SparseDoubleColumn
    */
   public String getString(int row) {
     if (!elements.containsKey(row)) {
-      return "" + DEFAULT;
+      return "" + SparseDefaultValues.getDefaultDouble();
     }
     return String.valueOf(getDouble(row));
   }
@@ -491,7 +510,7 @@ public class SparseDoubleColumn
    */
   public static double toDouble(Object obj) {
     if (obj == null) {
-      return SparseDoubleColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultDouble();
     }
 
     if (obj instanceof Number) {
@@ -659,6 +678,59 @@ public class SparseDoubleColumn
     return 0;
   }
 
+  public Column reorderRows(VIntIntHashMap newOrder) {
+    SparseDoubleColumn retVal = new SparseDoubleColumn();
+    retVal.elements = (VIntDoubleHashMap) elements.reorder(newOrder);
+    reorderRows(retVal, newOrder);
+    return retVal;
+  }
+
+  /**
+   * Returns the internal representation of this column.
+   *
+   */
+  public Object getInternal() {
+    int max_index = -1;
+    double[] internal = null;
+    int[] keys = elements.keys();
+
+    for (int i = 0; i < keys.length; i++) {
+      if (keys[i] > max_index) {
+        max_index = keys[i];
+      }
+    }
+
+    internal = new double[max_index + 1];
+    for (int i = 0; i < max_index + 1; i++) {
+      internal[i] = SparseDefaultValues.getDefaultDouble();
+    }
+
+    for (int i = 0; i < keys.length; i++) {
+      internal[keys[i]] = elements.get(keys[i]);
+    }
+
+    return internal;
+  }
+
+  /**
+   * Add the specified number of blank rows.
+   * @param number number of rows to add.
+   */
+  public void addRows(int number) {
+    // table is already sparse.  nothing to do.
+
+    //the above comment is not quite correct, empty rows are not the same as
+    //non-existent rows -- DDS
+    for (int i = 0, n = number; i < n; i++) {
+      addRow(null);
+    }
+
+  }
+
+  //===================
+  // Protected Methods
+  //===================
+
   /**
        * Returns the valid values in rows <codE>begin</code> through <codE>end</code>
    *
@@ -707,52 +779,4 @@ public class SparseDoubleColumn
    * @return a SparseDoubleColumn ordered according to <code>newOrder</code>.
    */
 
-  public Column reorderRows(VIntIntHashMap newOrder) {
-    SparseDoubleColumn retVal = new SparseDoubleColumn();
-    retVal.elements = (VIntDoubleHashMap) elements.reorder(newOrder);
-    reorderRows(retVal, newOrder);
-    return retVal;
-  }
-
-  /**
-   * Returns the internal representation of this column.
-   *
-   */
-  public Object getInternal() {
-    int max_index = -1;
-    double[] internal = null;
-    int[] keys = elements.keys();
-
-    for (int i = 0; i < keys.length; i++) {
-      if (keys[i] > max_index) {
-        max_index = keys[i];
-      }
-    }
-
-    internal = new double[max_index + 1];
-    for (int i = 0; i < max_index + 1; i++) {
-      internal[i] = DEFAULT;
-    }
-
-    for (int i = 0; i < keys.length; i++) {
-      internal[keys[i]] = elements.get(keys[i]);
-    }
-
-    return internal;
-  }
-
-  /**
-   * Add the specified number of blank rows.
-   * @param number number of rows to add.
-   */
-  public void addRows(int number) {
-    // table is already sparse.  nothing to do.
-
-    //the above comment is not quite correct, empty rows are not the same as
-    //non-existent rows -- DDS
-    for (int i = 0, n = number; i < n; i++) {
-      addRow(null);
-    }
-
-  }
 }

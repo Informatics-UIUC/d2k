@@ -1,21 +1,26 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
-import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
+//===============
+// Other Imports
+//===============
 
+import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
-//import ncsa.d2k.modules.projects.vered.sparse.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.*;
 
-import java.util.Arrays;
+//==============
+// Java Imports
+//==============
+import java.util.*;
 import java.io.*;
 
 /**
  * Title:        Sparse Table
- * Description:  Sparse Table projects will implement data structures compatible to the interface tree of Table, for sparsely stored data.
+ * Description:  Sparse Table projects will implement data structures compatible
+ * to the interface tree of Table, for sparsely stored data.
  * Copyright:    Copyright (c) 2002
  * Company:      ncsa
  * @author vered goren
@@ -32,9 +37,16 @@ public class SparseBooleanColumn
    * the value j mapped to key i is the value j in line i in this column.
    */
 
+  //==============
+  // Data Members
+  //==============
+
   protected VIntBooleanHashMap elements; //the values of this column
-  public static boolean NOT_EXIST = false;
-  public static boolean DEFAULT = false;
+
+
+  //================
+  // Constructor(s)
+  //================
 
   /**
    * Creates a new <code>SparseBooleanColumn</code> instance with the default
@@ -98,6 +110,68 @@ public class SparseBooleanColumn
     }
   }
 
+  //================
+  // Static Methods
+  //================
+
+  public static int compareBooleans(boolean b1, boolean b2) {
+    if (b1 == b2) {
+      return 0;
+    }
+    else {
+      return 1;
+    }
+  }
+
+  /**
+   * Converts <code>obj</code> to type boolean:
+   * #  If <code>obj</code> is a Number - parse a double value from it. if the
+   *    double value equals zero return false. return true if ealse.
+   * #  If <code>obj</code> is a Character: return true if its char value is
+   *    't' or 'T'. return false otherwise.
+   * #  Otherwise: construct a String from <code>obj</code> and return true
+   *    if it eqauls to "true". return false if else.
+   *
+   * @param obj   an object from which to retrieve a boolean value
+   * @return      a boolean value associated with <code>obj</code>. if obj is
+   *              null returns false.
+   *
+   */
+  public static boolean toBoolean(Object obj) {
+
+    if (obj == null) {
+      return SparseDefaultValues.getDefaultBoolean();
+    }
+
+    if (obj instanceof Number) {
+      return ( ( (Number) obj).doubleValue() != 0);
+    }
+
+    if (obj instanceof Character) {
+      char c = ( (Character) obj).charValue();
+      return (c == 't' || c == 'T');
+    }
+
+    String str;
+    if (obj instanceof char[]) {
+      str = new String( (char[]) obj);
+    }
+    else if (obj instanceof byte[]) {
+      str = new String( (byte[]) obj);
+
+    }
+    else {
+      str = obj.toString();
+
+    }
+    return str.equalsIgnoreCase("true");
+  }
+
+
+  //================
+  // Public Methods
+  //================
+
   /**
    * Returns the value at row # row, represented as a byte.
    * @param row the row number
@@ -107,7 +181,7 @@ public class SparseBooleanColumn
    */
   public byte getByte(int row) {
     if (!elements.containsKey(row)) {
-      return SparseByteColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultByte();
     }
     if (getBoolean(row)) {
       return 1;
@@ -163,7 +237,7 @@ public class SparseBooleanColumn
    */
   public byte[] getBytes(int row) {
     if (!elements.containsKey(row)) {
-      return SparseByteArrayColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultBytes();
     }
     return getString(row).getBytes();
   }
@@ -189,7 +263,7 @@ public class SparseBooleanColumn
    */
   public char getChar(int row) {
     if (!elements.containsKey(row)) {
-      return SparseCharColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultChar();
     }
     if (getBoolean(row)) {
       return 'T';
@@ -226,7 +300,7 @@ public class SparseBooleanColumn
    */
   public char[] getChars(int row) {
     if (!elements.containsKey(row)) {
-      return SparseCharArrayColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultChars();
     }
     return getString(row).toCharArray();
   }
@@ -252,7 +326,7 @@ public class SparseBooleanColumn
    */
   public double getDouble(int row) {
     if (!elements.containsKey(row)) {
-      return SparseDoubleColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultDouble();
     }
     return (double) getInt(row);
   }
@@ -282,7 +356,7 @@ public class SparseBooleanColumn
    */
   public float getFloat(int row) {
     if (!elements.containsKey(row)) {
-      return SparseFloatColumn.DEFAULT;
+      return (float) SparseDefaultValues.getDefaultDouble();
     }
     return (float) getInt(row);
   }
@@ -296,7 +370,7 @@ public class SparseBooleanColumn
    */
   public int getInt(int row) {
     if (!elements.containsKey(row)) {
-      return SparseIntColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultInt();
     }
 
     if (getBoolean(row)) {
@@ -316,7 +390,7 @@ public class SparseBooleanColumn
    */
   public long getLong(int row) {
     if (!elements.containsKey(row)) {
-      return SparseLongColumn.DEFAULT;
+      return (long) SparseDefaultValues.getDefaultInt();
     }
     return (long) getInt(row);
   }
@@ -332,7 +406,7 @@ public class SparseBooleanColumn
       return new Boolean(getBoolean(row));
     }
     else {
-      return new Boolean(DEFAULT);
+      return new Boolean(SparseDefaultValues.getDefaultBoolean());
     }
   }
 
@@ -345,7 +419,7 @@ public class SparseBooleanColumn
    */
   public short getShort(int row) {
     if (!elements.containsKey(row)) {
-      return SparseShortColumn.DEFAULT;
+      return (short) SparseDefaultValues.getDefaultInt();
     }
     return (short) getInt(row);
   }
@@ -489,14 +563,6 @@ public class SparseBooleanColumn
     return compareBooleans(getBoolean(r1), getBoolean(r2));
   }
 
-  public static int compareBooleans(boolean b1, boolean b2) {
-    if (b1 == b2) {
-      return 0;
-    }
-    else {
-      return 1;
-    }
-  }
 
   /**
    * Returns 0 if the boolean value represented by <code>element</code> is the
@@ -595,7 +661,7 @@ public class SparseBooleanColumn
    */
   public String getString(int row) {
     if (!elements.containsKey(row)) {
-      return SparseStringColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultString();
     }
     return (new Boolean(getBoolean(row))).toString();
   }
@@ -615,49 +681,6 @@ public class SparseBooleanColumn
 
   }
 
-  /**
-   * Converts <code>obj</code> to type boolean:
-   * #  If <code>obj</code> is a Number - parse a double value from it. if the
-   *    double value equals zero return false. return true if ealse.
-   * #  If <code>obj</code> is a Character: return true if its char value is
-   *    't' or 'T'. return false otherwise.
-   * #  Otherwise: construct a String from <code>obj</code> and return true
-   *    if it eqauls to "true". return false if else.
-   *
-   * @param obj   an object from which to retrieve a boolean value
-   * @return      a boolean value associated with <code>obj</code>. if obj is
-   *              null returns false.
-   *
-   */
-  public static boolean toBoolean(Object obj) {
-
-    if (obj == null) {
-      return DEFAULT;
-    }
-
-    if (obj instanceof Number) {
-      return ( ( (Number) obj).doubleValue() != 0);
-    }
-
-    if (obj instanceof Character) {
-      char c = ( (Character) obj).charValue();
-      return (c == 't' || c == 'T');
-    }
-
-    String str;
-    if (obj instanceof char[]) {
-      str = new String( (char[]) obj);
-    }
-    else if (obj instanceof byte[]) {
-      str = new String( (byte[]) obj);
-
-    }
-    else {
-      str = obj.toString();
-
-    }
-    return str.equalsIgnoreCase("true");
-  }
 
   /**
    * Swaps the values between 2 rows.
@@ -688,35 +711,6 @@ public class SparseBooleanColumn
     missing.swapRows(pos1, pos2);
     empty.swapRows(pos1, pos2);
 
-  }
-
-  /**
-   * Inserts <code>val<code> into row #<code>pos</code>. If this position
-   * already holds data - insert the old data into row #<code>pos+1</code>
-   * recursively.
-   *
-   * @param val   the new boolean value to be inserted at pos.
-   * @param pos   the row number to insert val.
-   */
-  protected void insertRow(boolean val, int pos) {
-    boolean valid = elements.containsKey(pos);
-    boolean removedValue = elements.remove(pos);
-    //putting the new value
-    setBoolean(val, pos);
-    //recursively moving the items in the column as needed
-    if (valid) {
-      insertRow(removedValue, pos + 1);
-
-    }
-  }
-
-  /**
-   * Returns a reference to the data in this column
-   *
-   * @return   the hash map that holds the data of this column (VIntBooleanHashMap).
-   */
-  protected VHashMap getElements() {
-    return elements;
   }
 
   /**
@@ -761,7 +755,7 @@ public class SparseBooleanColumn
     internal = new boolean[max_index + 1];
 
     for (int i = 0; i < max_index + 1; i++) {
-      internal[i] = DEFAULT;
+      internal[i] = SparseDefaultValues.getDefaultBoolean();
     }
 
     for (int i = 0; i < keys.length; i++) {
@@ -778,6 +772,40 @@ public class SparseBooleanColumn
   public void addRows(int number) {
     // table is already sparse.  nothing to do.
   }
+
+  //===================
+  // Protected Methods
+  //===================
+
+  /**
+   * Inserts <code>val<code> into row #<code>pos</code>. If this position
+   * already holds data - insert the old data into row #<code>pos+1</code>
+   * recursively.
+   *
+   * @param val   the new boolean value to be inserted at pos.
+   * @param pos   the row number to insert val.
+   */
+  protected void insertRow(boolean val, int pos) {
+    boolean valid = elements.containsKey(pos);
+    boolean removedValue = elements.remove(pos);
+    //putting the new value
+    setBoolean(val, pos);
+    //recursively moving the items in the column as needed
+    if (valid) {
+      insertRow(removedValue, pos + 1);
+
+    }
+  }
+
+  /**
+   * Returns a reference to the data in this column
+   *
+   * @return   the hash map that holds the data of this column (VIntBooleanHashMap).
+   */
+  protected VHashMap getElements() {
+    return elements;
+  }
+
 }
 /*
  /**
@@ -792,30 +820,30 @@ public class SparseBooleanColumn
   *                  and a reordered section as indicated by <code>begin</code>
   *                  and <code>end</code>.
   *
-     public Column reorderRows(int[] newOrder, int begin, int end){
-     SparseBooleanColumn  retVal = new SparseBooleanColumn();
+      public Column reorderRows(int[] newOrder, int begin, int end){
+      SparseBooleanColumn  retVal = new SparseBooleanColumn();
       retVal.elements = (VIntBooleanHashMap)elements.reorder(newOrder, begin, end);
-     int[] oldOrder = getRowsInRange(begin, end);
-     retVal.missing = missing.reorder(newOrder, oldOrder, begin, end);
-     retVal.empty = empty.reorder(newOrder, oldOrder, begin, end);
-     super.copy(retVal);
-     return retVal;
-     /*
-        int[] oldOrder = getRowsInRange(begin, end);
-        SparseBooleanColumn  retVal = new SparseBooleanColumn();
-        retVal.elements = elements.copy();
-        retVal.removeRows(begin, end-begin+1);
-        //each val V that is mapped to row no. newOrder[i] will be mapped
-        //to row no. oldOrder[i] in retVal.
-        for (int i=0; i<newOrder.length && i<oldOrder.length; i++){
-   if(elements.containsKey(newOrder[i]))
-     retVal.setBoolean(elements.get(newOrder[i]), oldOrder[i]);
-        }
+      int[] oldOrder = getRowsInRange(begin, end);
+      retVal.missing = missing.reorder(newOrder, oldOrder, begin, end);
+      retVal.empty = empty.reorder(newOrder, oldOrder, begin, end);
+      super.copy(retVal);
+      return retVal;
+      /*
+          int[] oldOrder = getRowsInRange(begin, end);
+          SparseBooleanColumn  retVal = new SparseBooleanColumn();
+          retVal.elements = elements.copy();
+          retVal.removeRows(begin, end-begin+1);
+          //each val V that is mapped to row no. newOrder[i] will be mapped
+          //to row no. oldOrder[i] in retVal.
+          for (int i=0; i<newOrder.length && i<oldOrder.length; i++){
+     if(elements.containsKey(newOrder[i]))
+       retVal.setBoolean(elements.get(newOrder[i]), oldOrder[i]);
+          }
        AbstractSparseColumn.reorderMissingEmpty(newOrder, oldOrder,  this, retVal);
-        return retVal;
+          return retVal;
    *
-      }
-          /**
+        }
+            /**
     * Retrieve a new order for the valid rows of this column in the range
     * <code>begin</code> through <code>end</code>. The new order is a sorted
     * order for that section of the column.
@@ -823,32 +851,32 @@ public class SparseBooleanColumn
     * @param begin     row no. from which to start retrieving the new order
     * @param end       the last row in the section from which to retrieve the new order.
     *
-      public VIntIntHashMap getNewOrder(int begin, int end){
-       return elements.getSortedOrder(begin, end);
-      /*
-          int[] rangeRows = getRowsInRange(begin, end);
+         public VIntIntHashMap getNewOrder(int begin, int end){
+          return elements.getSortedOrder(begin, end);
+         /*
+              int[] rangeRows = getRowsInRange(begin, end);
          int currentKeyIndex = 0;                  //points to currently inpected
-          //key (row)
+              //key (row)
          int newPosIndex = rangeRows.length - 1;   //points to the last key that
-          //its value is unknown
-          int[] newOrder = new int[rangeRows.length];
-         //for each row number
-          while(currentKeyIndex < newPosIndex){
+              //its value is unknown
+              int[] newOrder = new int[rangeRows.length];
+             //for each row number
+              while(currentKeyIndex < newPosIndex){
 //if the value it holds is true
-     if(elements.get(currentKeyIndex)){
-       //swap values with row number which its value is unknown
-       newOrder[currentKeyIndex] = rangeRows[newPosIndex];
-       newOrder[newPosIndex] = rangeRows[currentKeyIndex];
+         if(elements.get(currentKeyIndex)){
+           //swap values with row number which its value is unknown
+           newOrder[currentKeyIndex] = rangeRows[newPosIndex];
+           newOrder[newPosIndex] = rangeRows[currentKeyIndex];
 //	  swapRows(validRows[currentKeyIndex], validRows[newPosIndex]);
-       //now row number validRows[newPosIndex] certainly holds the values true
-       //therefore decrease newPosIndex.
-       newPosIndex--;
-     }
+           //now row number validRows[newPosIndex] certainly holds the values true
+           //therefore decrease newPosIndex.
+           newPosIndex--;
+         }
 //the currently inspected row holds value false - therefore increase
 //currentKeyIndex
-     else  currentKeyIndex++;
-          }//when the while loop's condition is meet, elements is sorted.
-          return newOrder;
+         else  currentKeyIndex++;
+              }//when the while loop's condition is meet, elements is sorted.
+              return newOrder;
      *
-       }
-     */
+           }
+*/

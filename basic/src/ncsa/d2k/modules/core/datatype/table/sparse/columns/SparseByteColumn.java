@@ -1,13 +1,19 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
+//===============
+// Other Imports
+//===============
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
 
+//==============
+// Java Imports
+//==============
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Title:        Sparse Table
@@ -27,13 +33,19 @@ public class SparseByteColumn
    * the value j mapped to key i is the value j in line i in this column.
    */
 
+  //==============
+  // Data Members
+  //==============
+
   protected VIntByteHashMap elements; //the values of this column
-  public static byte NOT_EXIST = Byte.MIN_VALUE; //a value to be returned
+  //public static byte NOT_EXIST = Byte.MIN_VALUE; //a value to be returned
   //when getByte recieves a
   //parameter for row number which
   //is empty.
 
-  public static byte DEFAULT = 0;
+  //================
+  // Constructor(s)
+  //================
 
   /**
    * Creates a new <code>SparseByteColumn</code> instance with the default
@@ -99,6 +111,107 @@ public class SparseByteColumn
     }
   }
 
+  //================
+  // Static Methods
+  //================
+
+  /**
+   * used by sort method.
+   * returns a new index for a new row number for the item <code>currVal</code>
+       * the index is the first index i to be found  in <code>values</code> such that
+   * <code>currVal equals values[i] and occupiedIndices[i] == false</code>.
+   * this index i is then used in the array validRows by sort().
+   *
+       * @param currVal - the current byte that sort() method is looking for its new
+   * row number in the column
+   * @param values - all the int values in the column to be sorted.
+   * @param row - index such that <code>values[row] == currVal</code> and also
+   * <code>occupiedIndices[row] == true</code>.
+   * [meaning the row number in <code>validRows[row]</code> is already occupied
+   * by an int that equals <code>currVal</code>
+   * @param occupiedIndices - a flag array in which each index in <vode>validRows</code>
+   * that was already occupied by sort() is marked true.
+   */
+  public static int getNewRow(byte currVal, byte[] values, int row,
+                              boolean[] ocuupiedIndices) {
+    int retVal = -1;
+    //searching values at indices smaller than row
+    for (int i = row - 1; i >= 0 && values[i] == currVal && retVal < 0; i--) {
+      if (!ocuupiedIndices[i]) {
+        retVal = i;
+
+        //searching values at indices greater than row
+      }
+    }
+    for (int i = row + 1;
+         retVal < 0 && i < values.length && values[i] == currVal; i++) {
+      if (!ocuupiedIndices[i]) {
+        retVal = i;
+
+      }
+    }
+    return retVal;
+  }
+
+  /**
+   * Returns a byte value associated with <code>obj</code>. If obj equals null
+   * returns Byte's minimum value. the method that calss toByte should check
+   * validity of obj.
+   *
+   * @param obj   an object to be converted into byte type.
+   * @return
+   * #  If <code>obj</code> is a byte[] return the first byte
+   * #  If <code>obj</code> is a Byte return its byte value
+   * #  If <code>obj</code> is a Number - retrieving its byte value
+   * #  If <code>obj</code> is a Character - casting the char value into byte
+   * #  If <code>obj</code> is a Boolean - returning 1 if true, 0 if else.
+   * #  Otherwise: construct a String from <code>obj</code> and retrieved its
+   *    Byte value using Byte's methods.
+   * #  If obj is null returns Byte's minimum value.
+   */
+  public static byte toByte(Object obj) {
+
+    if (obj == null) {
+      return SparseDefaultValues.getDefaultByte();
+    }
+
+    if (obj instanceof byte[]) {
+      return ( (byte[]) obj)[0];
+    }
+
+    if (obj instanceof Number) {
+      return ( (Number) obj).byteValue();
+    }
+
+    if (obj instanceof Character) {
+      return (byte) ( (Character) obj).charValue();
+    }
+
+    if (obj instanceof Boolean) {
+      return ( (Boolean) obj).booleanValue() ? (byte) 1 : (byte) 0;
+    }
+
+    else {
+      String str;
+      if (obj instanceof char[]) {
+        str = new String( (char[]) obj);
+      }
+      else {
+        str = obj.toString();
+
+      }
+      float f = Float.parseFloat(str);
+
+      return (byte) f;
+    }
+
+  }
+
+
+  //================
+  // Public Methods
+  //================
+
   /**
    * Returns the value at row # row
    * @param row the row number
@@ -116,7 +229,7 @@ public class SparseByteColumn
    */
   public boolean getBoolean(int row) {
     if (!elements.containsKey(row)) {
-      return SparseBooleanColumn.NOT_EXIST;
+      return SparseDefaultValues.getDefaultBoolean();
     }
     return (getByte(row) != 0);
   }
@@ -174,7 +287,7 @@ public class SparseByteColumn
    */
   public char getChar(int row) {
     if (!elements.containsKey(row)) {
-      return SparseCharColumn.NOT_EXIST;
+      return SparseDefaultValues.getDefaultChar();
     }
     return (char) getByte(row);
   }
@@ -223,7 +336,7 @@ public class SparseByteColumn
    */
   public double getDouble(int row) {
     if (!elements.containsKey(row)) {
-      return SparseDoubleColumn.NOT_EXIST;
+      return SparseDefaultValues.getDefaultDouble();
     }
     return (double) getByte(row);
   }
@@ -236,7 +349,7 @@ public class SparseByteColumn
    */
   public float getFloat(int row) {
     if (!elements.containsKey(row)) {
-      return SparseFloatColumn.NOT_EXIST;
+      return (float)SparseDefaultValues.getDefaultDouble();
     }
     return (float) getByte(row);
   }
@@ -250,7 +363,7 @@ public class SparseByteColumn
    * */
   public int getInt(int row) {
     if (!elements.containsKey(row)) {
-      return SparseIntColumn.NOT_EXIST;
+      return SparseDefaultValues.getDefaultInt();
     }
 
     return (int) getByte(row);
@@ -265,7 +378,7 @@ public class SparseByteColumn
    */
   public long getLong(int row) {
     if (!elements.containsKey(row)) {
-      return SparseLongColumn.NOT_EXIST;
+      return (long)SparseDefaultValues.getDefaultInt();
     }
 
     return (long) getByte(row);
@@ -282,7 +395,7 @@ public class SparseByteColumn
       return new Byte(getByte(row));
     }
     else {
-      return new Byte(DEFAULT);
+      return new Byte(SparseDefaultValues.getDefaultByte());
     }
   }
 
@@ -295,7 +408,7 @@ public class SparseByteColumn
    */
   public short getShort(int row) {
     if (!elements.containsKey(row)) {
-      return SparseShortColumn.NOT_EXIST;
+      return (short)SparseDefaultValues.getDefaultInt();
     }
 
     return (short) getByte(row);
@@ -494,59 +607,6 @@ public class SparseByteColumn
     }
   }
 
-  /**
-   * Returns a byte value associated with <code>obj</code>. If obj equals null
-   * returns Byte's minimum value. the method that calss toByte should check
-   * validity of obj.
-   *
-   * @param obj   an object to be converted into byte type.
-   * @return
-   * #  If <code>obj</code> is a byte[] return the first byte
-   * #  If <code>obj</code> is a Byte return its byte value
-   * #  If <code>obj</code> is a Number - retrieving its byte value
-   * #  If <code>obj</code> is a Character - casting the char value into byte
-   * #  If <code>obj</code> is a Boolean - returning 1 if true, 0 if else.
-   * #  Otherwise: construct a String from <code>obj</code> and retrieved its
-   *    Byte value using Byte's methods.
-   * #  If obj is null returns Byte's minimum value.
-   */
-  public static byte toByte(Object obj) {
-
-    if (obj == null) {
-      return DEFAULT;
-    }
-
-    if (obj instanceof byte[]) {
-      return ( (byte[]) obj)[0];
-    }
-
-    if (obj instanceof Number) {
-      return ( (Number) obj).byteValue();
-    }
-
-    if (obj instanceof Character) {
-      return (byte) ( (Character) obj).charValue();
-    }
-
-    if (obj instanceof Boolean) {
-      return ( (Boolean) obj).booleanValue() ? (byte) 1 : (byte) 0;
-    }
-
-    else {
-      String str;
-      if (obj instanceof char[]) {
-        str = new String( (char[]) obj);
-      }
-      else {
-        str = obj.toString();
-
-      }
-      float f = Float.parseFloat(str);
-
-      return (byte) f;
-    }
-
-  }
 
   /**
    * Casts <code>newEntry</code> to a <code>byte</code> and stores it at
@@ -586,43 +646,6 @@ public class SparseByteColumn
 
   }
 
-  /**
-   * used by sort method.
-   * returns a new index for a new row number for the item <code>currVal</code>
-       * the index is the first index i to be found  in <code>values</code> such that
-   * <code>currVal equals values[i] and occupiedIndices[i] == false</code>.
-   * this index i is then used in the array validRows by sort().
-   *
-       * @param currVal - the current byte that sort() method is looking for its new
-   * row number in the column
-   * @param values - all the int values in the column to be sorted.
-   * @param row - index such that <code>values[row] == currVal</code> and also
-   * <code>occupiedIndices[row] == true</code>.
-   * [meaning the row number in <code>validRows[row]</code> is already occupied
-   * by an int that equals <code>currVal</code>
-   * @param occupiedIndices - a flag array in which each index in <vode>validRows</code>
-   * that was already occupied by sort() is marked true.
-   */
-  public static int getNewRow(byte currVal, byte[] values, int row,
-                              boolean[] ocuupiedIndices) {
-    int retVal = -1;
-    //searching values at indices smaller than row
-    for (int i = row - 1; i >= 0 && values[i] == currVal && retVal < 0; i--) {
-      if (!ocuupiedIndices[i]) {
-        retVal = i;
-
-        //searching values at indices greater than row
-      }
-    }
-    for (int i = row + 1;
-         retVal < 0 && i < values.length && values[i] == currVal; i++) {
-      if (!ocuupiedIndices[i]) {
-        retVal = i;
-
-      }
-    }
-    return retVal;
-  }
 
   /**
    * Swaps the values between 2 rows.
@@ -655,25 +678,6 @@ public class SparseByteColumn
 
   }
 
-  /**
-   * Inserts <code>val<code> into row #<code>pos</code>. If this position
-   * already holds data - insert the old data into row #<code>pos+1</code>
-   * recursively.
-   *
-   * @param val   the new boolean value to be inserted at pos.
-   * @param pos   the row number to insert val.
-   */
-  protected void insertRow(byte val, int pos) {
-    boolean valid = elements.containsKey(pos);
-    byte removedValue = elements.remove(pos);
-    //putting the new value
-    setByte(val, pos);
-    //recursively moving the items in the column as needed
-    if (valid) {
-      insertRow(removedValue, pos + 1);
-
-    }
-  }
 
   /**
    * Compared the value represented by element and the one of row number
@@ -723,25 +727,83 @@ public class SparseByteColumn
   }
 
   /**
-   * Compares 2 values and Retruns an int representation of the relation
-   * between the values.
+   * Reorders the data stored in this column in a new column.
+   * Does not change this column.
    *
-   * @param va1_1 - the first value to be compared
-   * @param vla_2 - the second value to be compared
-   * @return int - representing the relation between the values
+   * Algorithm: copy this column into the returned vlaue.
+   * for each pair (key, val) in <code>newOrder</code>, if val is a valid row
+   * in this column, put the value mapped to it in row no. key in the returned
+   * values.
    *
-   * if val_1 > val_2 returns 1.
-   * if val_1 < val_2 returns -1.
-   * returns 0 if they are equal.
+   * @param newOrder - an int to int hashmap, defining the new order for
+   *                   the returned column.
+   * @return a SparseByteColumn ordered according to <code>newOrder</code>.
    */
-  private int compareBytes(byte val_1, byte val_2) {
-    if (val_1 > val_2) {
-      return 1;
+
+  public Column reorderRows(VIntIntHashMap newOrder) {
+    SparseByteColumn retVal = new SparseByteColumn();
+    retVal.elements = (VIntByteHashMap) elements.reorder(newOrder);
+    reorderRows(retVal, newOrder);
+    return retVal;
+  }
+
+  /**
+   * Returns the internal representation of this column.
+   *
+   */
+  public Object getInternal() {
+    int max_index = -1;
+    byte[] internal = null;
+    int[] keys = elements.keys();
+
+    for (int i = 0; i < keys.length; i++) {
+      if (keys[i] > max_index) {
+        max_index = keys[i];
+      }
     }
-    if (val_1 < val_2) {
-      return -1;
+
+    internal = new byte[max_index + 1];
+    for (int i = 0; i < max_index + 1; i++) {
+      internal[i] = SparseDefaultValues.getDefaultByte();
     }
-    return 0;
+
+    for (int i = 0; i < keys.length; i++) {
+      internal[keys[i]] = elements.get(keys[i]);
+    }
+
+    return internal;
+  }
+
+  /**
+   * Add the specified number of blank rows.
+   * @param number number of rows to add.
+   */
+  public void addRows(int number) {
+    // table is already sparse.  nothing to do.
+  }
+
+  //===================
+  // Protected Methods
+  //===================
+
+  /**
+   * Inserts <code>val<code> into row #<code>pos</code>. If this position
+   * already holds data - insert the old data into row #<code>pos+1</code>
+   * recursively.
+   *
+   * @param val   the new boolean value to be inserted at pos.
+   * @param pos   the row number to insert val.
+   */
+  protected void insertRow(byte val, int pos) {
+    boolean valid = elements.containsKey(pos);
+    byte removedValue = elements.remove(pos);
+    //putting the new value
+    setByte(val, pos);
+    //recursively moving the items in the column as needed
+    if (valid) {
+      insertRow(removedValue, pos + 1);
+
+    }
   }
 
   /**
@@ -784,61 +846,33 @@ public class SparseByteColumn
      */
   }
 
-  /**
-   * Reorders the data stored in this column in a new column.
-   * Does not change this column.
-   *
-   * Algorithm: copy this column into the returned vlaue.
-   * for each pair (key, val) in <code>newOrder</code>, if val is a valid row
-   * in this column, put the value mapped to it in row no. key in the returned
-   * values.
-   *
-   * @param newOrder - an int to int hashmap, defining the new order for
-   *                   the returned column.
-   * @return a SparseByteColumn ordered according to <code>newOrder</code>.
-   */
-
-  public Column reorderRows(VIntIntHashMap newOrder) {
-    SparseByteColumn retVal = new SparseByteColumn();
-    retVal.elements = (VIntByteHashMap) elements.reorder(newOrder);
-    reorderRows(retVal, newOrder);
-    return retVal;
-  }
+  //=================
+  // Private Methods
+  //=================
 
   /**
-   * Returns the internal representation of this column.
+   * Compares 2 values and Retruns an int representation of the relation
+   * between the values.
    *
+   * @param va1_1 - the first value to be compared
+   * @param vla_2 - the second value to be compared
+   * @return int - representing the relation between the values
+   *
+   * if val_1 > val_2 returns 1.
+   * if val_1 < val_2 returns -1.
+   * returns 0 if they are equal.
    */
-  public Object getInternal() {
-    int max_index = -1;
-    byte[] internal = null;
-    int[] keys = elements.keys();
-
-    for (int i = 0; i < keys.length; i++) {
-      if (keys[i] > max_index) {
-        max_index = keys[i];
-      }
+  private int compareBytes(byte val_1, byte val_2) {
+    if (val_1 > val_2) {
+      return 1;
     }
-
-    internal = new byte[max_index + 1];
-    for (int i = 0; i < max_index + 1; i++) {
-      internal[i] = DEFAULT;
+    if (val_1 < val_2) {
+      return -1;
     }
-
-    for (int i = 0; i < keys.length; i++) {
-      internal[keys[i]] = elements.get(keys[i]);
-    }
-
-    return internal;
+    return 0;
   }
 
-  /**
-   * Add the specified number of blank rows.
-   * @param number number of rows to add.
-   */
-  public void addRows(int number) {
-    // table is already sparse.  nothing to do.
-  }
+
 
 }
 /*

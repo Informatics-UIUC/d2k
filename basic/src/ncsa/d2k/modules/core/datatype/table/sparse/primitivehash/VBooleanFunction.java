@@ -1,8 +1,9 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.primitivehash;
 
 /**
- * Title:        Sparse Table
- * Description:  Sparse Table projects will implement data structures compatible to the interface tree of Table, for sparsely stored data.
+ * Title:        VBooleanFunction
+ * Description:  Sparse Table projects will implement data structures compatible
+ * to the interface tree of Table, for sparsely stored data.
  * Copyright:    Copyright (c) 2002
  * Company:      ncsa
  * @author vered goren

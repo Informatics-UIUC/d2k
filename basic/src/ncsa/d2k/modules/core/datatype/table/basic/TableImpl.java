@@ -330,13 +330,13 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
             Object Obj1 = columns[i].getRow(pos1);
             columns[i].setRow(columns[i].getRow(pos2), pos1);
             columns[i].setRow(Obj1, pos2);
-            
+
             // swap missing values.
             boolean missing1 = columns[i].isValueMissing(pos1);
             boolean missing2 = columns[i].isValueMissing(pos2);
             columns[i].setValueToMissing(missing2, pos1);
             columns[i].setValueToMissing(missing1, pos2);
-            
+
         }
     }
 
@@ -432,13 +432,13 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
 		getColumn(col).setValueToEmpty(b, row);
 	}
 
-//		ANCA: method for comparing two Table objects. 
-		  // Could be more efficient but as is used only in Junit tests, 
+//		ANCA: method for comparing two Table objects.
+		  // Could be more efficient but as is used only in Junit tests,
 		  // less code is more important than speed of execution.
 		  // should also compare missing and empty arrays for columns or use column.equals
 		public boolean equals(Object tbl) {
 						Table table;
-						try { 
+						try {
 								table = (Table) tbl;
 						} catch (Exception e) {
 								return false;
@@ -467,7 +467,7 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
 					return true;
 		return false;
 	}
-	
+
 	/**
 	 * Return true if any value in this Table is missing.
 	 * @param columnIndex, the index of the column to search for missing values.

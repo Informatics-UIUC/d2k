@@ -32,6 +32,8 @@ public final class ColumnTypes {
 	public static final int CHAR = 11;
 	/** A column of char values */
 	public static final int NOMINAL = 12;
+        /** A column of unspecified values -- used for sparse tables*/
+        public static final int UNSPECIFIED = 13;
 
   private static final String[] _names = {"INTEGER",
     "FLOAT",
@@ -45,7 +47,8 @@ public final class ColumnTypes {
     "OBJECT",
     "BYTE",
     "CHAR",
-    "NOMINAL"};
+    "NOMINAL",
+    "UNSPECIFIED"};
 
   public static String getTypeName(int i){
     return _names[i];

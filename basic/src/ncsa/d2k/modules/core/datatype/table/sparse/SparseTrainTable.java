@@ -347,11 +347,11 @@ public class SparseTrainTable extends SparseExampleTable implements TrainTable {
   }
 
 
-
+/* Deprecated
   public void getRow(Object buffer, int position, int[] indices) {
     super.getRow(buffer, trainSet[position], indices);
   }
-
+*/
 
  /**
    * Returns a TestTable with data from row index no. <code> start</code> in the

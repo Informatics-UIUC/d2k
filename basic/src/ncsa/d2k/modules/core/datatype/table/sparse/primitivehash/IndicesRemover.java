@@ -1,5 +1,9 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.primitivehash;
 
+//===============
+// Other Imports
+//===============
+
 import gnu.trove.TObjectProcedure;
 import gnu.trove.TIntHashSet;
 
@@ -12,18 +16,32 @@ import gnu.trove.TIntHashSet;
  * @version 1.0
  */
 
-public class IndicesRemover implements TObjectProcedure {
+public class IndicesRemover
+    implements TObjectProcedure {
+
+  //==============
+  // Data Members
+  //==============
+
+  private int[] idx;
+
+  //================
+  // Constructor(s)
+  //================
 
   public IndicesRemover() {
   }
-  private int[] idx;
 
-   public IndicesRemover(int[] indices) {
+//================
+// Public Methods
+//================
+
+  public IndicesRemover(int[] indices) {
     idx = indices;
   }
 
   public boolean execute(Object object) {
-    ((TIntHashSet)object).removeAll(idx);
+    ( (TIntHashSet) object).removeAll(idx);
     return true;
   }
 

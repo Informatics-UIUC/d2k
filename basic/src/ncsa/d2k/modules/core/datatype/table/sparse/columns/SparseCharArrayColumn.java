@@ -1,10 +1,14 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
+//===============
+// Other Imports
+//===============
+
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
 
 /**
  * Title:        Sparse Table
@@ -23,7 +27,9 @@ public class SparseCharArrayColumn
    * array column and an object column are concerning the get and set methods.
    */
 
-  public static char[] DEFAULT = null;
+  //================
+  // Constructor(s)
+  //================
 
   /**
    * Creates a new <code>SparseCharArrayColumn</code> with capacity sero and a default
@@ -78,6 +84,10 @@ public class SparseCharArrayColumn
     type = ColumnTypes.CHAR_ARRAY;
     copy(column);
   }
+
+  //================
+  // Public Methods
+  //================
 
   /**
    * performs a deep copy of this SparseCharArrayColumn
@@ -296,7 +306,7 @@ public class SparseCharArrayColumn
   public static char[] toCharArray(Object obj) {
 
     if (obj == null) {
-      return DEFAULT;
+      return SparseDefaultValues.getDefaultChars();
     }
 
     if (obj instanceof char[]) {
@@ -333,7 +343,7 @@ public class SparseCharArrayColumn
 
     internal = new char[max_index + 1][];
     for (int i = 0; i < max_index + 1; i++) {
-      internal[i] = DEFAULT;
+      internal[i] = SparseDefaultValues.getDefaultChars();
     }
 
     for (int i = 0; i < keys.length; i++) {

@@ -1,12 +1,20 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
+//===============
+// Other Imports
+//===============
+
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
+
+//==============
+// Java Imports
+//==============
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Title:        Sparse Table
@@ -25,13 +33,18 @@ public class SparseFloatColumn
    * internal representation: the column is an int to float hashmap.
    * the value j mapped to key i is the value j in line i in this column.
    */
+
+  //==============
+  // Data Members
+  //==============
+
   private VIntFloatHashMap elements;
 
-  //a value to be returned when getFloat receives a parameter for a row number
-  //that isn't valid
-  public static float NOT_EXIST = -1 * Float.MAX_VALUE;
 
-  public static float DEFAULT = 0;
+  //================
+  // Constructor(s)
+  //================
+
   /**
    * Creates a new <code>SparseFloatColumn</code> instance with the default
    * capacity and load factor.
@@ -98,6 +111,10 @@ public class SparseFloatColumn
     }
   }
 
+  //================
+  // Static Methods
+  //================
+
   /**
    * Converts obj into type float.
    * If obj is null returns the negative infinity of class Float.
@@ -115,7 +132,7 @@ public class SparseFloatColumn
 
   public static float toFloat(Object obj) {
     if (obj == null) {
-      return SparseFloatColumn.DEFAULT;
+      return (float)SparseDefaultValues.getDefaultDouble();
     }
 
     if (obj instanceof Number) {
@@ -144,6 +161,10 @@ public class SparseFloatColumn
     return Float.parseFloat(str);
 
   }
+
+  //================
+  // Public Methods
+  //================
 
   /**
    * performs a deep copy of this SparseFloatColumn
@@ -183,7 +204,7 @@ public class SparseFloatColumn
    */
   public byte getByte(int row) {
     if (!elements.containsKey(row)) {
-      return SparseByteColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultByte();
     }
     return (byte) getFloat(row);
   }
@@ -206,7 +227,7 @@ public class SparseFloatColumn
    */
   public boolean getBoolean(int row) {
     if (!elements.containsKey(row)) {
-      return SparseBooleanColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultBoolean();
     }
     return (getFloat(row) != 0);
   }
@@ -233,7 +254,7 @@ public class SparseFloatColumn
    */
   public byte[] getBytes(int row) {
     if (!elements.containsKey(row)) {
-      return SparseByteArrayColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultBytes();
     }
     return String.valueOf(getFloat(row)).getBytes();
   }
@@ -256,7 +277,7 @@ public class SparseFloatColumn
    */
   public char getChar(int row) {
     if (!elements.containsKey(row)) {
-      return SparseCharColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultChar();
     }
     return (char) getFloat(row);
   }
@@ -280,7 +301,7 @@ public class SparseFloatColumn
    */
   public char[] getChars(int row) {
     if (!elements.containsKey(row)) {
-      return SparseCharArrayColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultChars();
     }
     return Float.toString(getFloat(row)).toCharArray();
   }
@@ -303,7 +324,7 @@ public class SparseFloatColumn
    */
   public double getDouble(int row) {
     if (!elements.containsKey(row)) {
-      return SparseDoubleColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultDouble();
     }
     return (double) getFloat(row);
   }
@@ -319,7 +340,7 @@ public class SparseFloatColumn
       return elements.get(row);
     }
     else {
-      return this.DEFAULT;
+      return (float)SparseDefaultValues.getDefaultDouble();
     }
   }
 
@@ -332,7 +353,7 @@ public class SparseFloatColumn
    */
   public int getInt(int row) {
     if (!elements.containsKey(row)) {
-      return SparseIntColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultInt();
     }
     return (int) getFloat(row);
   }
@@ -346,7 +367,7 @@ public class SparseFloatColumn
    */
   public long getLong(int row) {
     if (!elements.containsKey(row)) {
-      return SparseLongColumn.DEFAULT;
+      return (long)SparseDefaultValues.getDefaultInt();
     }
     return (long) getFloat(row);
   }
@@ -361,7 +382,7 @@ public class SparseFloatColumn
       return new Float(getFloat(row));
     }
     else {
-      return new Float(DEFAULT);
+      return new Float((float)SparseDefaultValues.getDefaultDouble());
     }
   }
 
@@ -374,7 +395,7 @@ public class SparseFloatColumn
    */
   public short getShort(int row) {
     if (!elements.containsKey(row)) {
-      return SparseShortColumn.DEFAULT;
+      return (short)SparseDefaultValues.getDefaultInt();
     }
     return (short) getFloat(row);
   }
@@ -387,7 +408,7 @@ public class SparseFloatColumn
    */
   public String getString(int row) {
     if (!elements.containsKey(row)) {
-      return "" + DEFAULT;
+      return "" + (float)SparseDefaultValues.getDefaultDouble();
     }
     return String.valueOf(getFloat(row));
   }
@@ -544,26 +565,6 @@ public class SparseFloatColumn
   }
 
   /**
-   * Inserts <code>val<code> into row #<code>pos</code>. If this position
-   * already holds data - insert the old data into row #<code>pos+1</code>
-   * recursively.
-   *
-   * @param val   the new boolean value to be inserted at pos.
-   * @param pos   the row number to insert val.
-   */
-  protected void insertRow(float val, int pos) {
-    boolean valid = elements.containsKey(pos);
-    float removedValue = elements.remove(pos);
-    //putting the new value
-    setFloat(val, pos);
-    //recursively moving the items in the column as needed
-    if (valid) {
-      insertRow(removedValue, pos + 1);
-
-    }
-  }
-
-  /**
    * Compares the value represented by element and the one of row number
    * <code>pos</code>. <code>elements</code> will be converted to a compatible
    * type to this column.
@@ -611,28 +612,6 @@ public class SparseFloatColumn
   }
 
   /**
-   * Compares 2 values and Retruns an int representation of the relation
-   * between the values.
-   *
-   * @param va1_1 - the first value to be compared
-   * @param vla_2 - the second value to be compared
-   * @return int - representing the relation between the values
-   *
-   * if val_1 > val_2 returns 1.
-   * if val_1 < val_2 returns -1.
-   * returns 0 if they are equal.
-   */
-  private int compareFloats(float val_1, float val_2) {
-    if (val_1 > val_2) {
-      return 1;
-    }
-    if (val_1 < val_2) {
-      return -1;
-    }
-    return 0;
-  }
-
-  /**
    * Swaps the values between 2 rows.
    * If there is no data in row #<code>pos1</code> then nothing is stored in
    * row #<ocde>pos2</code>, and vice versia.
@@ -660,41 +639,6 @@ public class SparseFloatColumn
     }
     missing.swapRows(pos1, pos2);
     empty.swapRows(pos1, pos2);
-
-  }
-
-  /**
-       * Returns the valid values in rows <codE>begin</code> through <codE>end</code>
-   *
-   * @param begin    row number from to begin retrieving of values
-   * @param end      last row number in the section from which values are retrieved.
-   * @return         only valid values from rows no. <code>begin</code> through
-   *                 <codE>end</code>, sorted.
-   */
-  protected float[] getValuesInRange(int begin, int end) {
-    if (end < begin) {
-      float[] retVal = {};
-      return retVal;
-    }
-    return elements.getValuesInRange(begin, end);
-    /*
-         float[] values =  new float[end - begin +1];
-         int j= 0;
-         for (int i=begin; i<=end; i++)
-      if(doesValueExist(i)){
-        values[j] = getFloat(i);
-      j++;
-      }//end if
-         //now j is number of real elements in values.
-         float[] retVal = new float[j];
-         System.arraycopy(values, 0, retVal, 0, j);
-         Arrays.sort(retVal);
-         return retVal;
-     */
-  }
-
-  protected VHashMap getElements() {
-    return elements;
   }
 
   /**
@@ -735,7 +679,7 @@ public class SparseFloatColumn
 
     internal = new float[max_index + 1];
     for (int i = 0; i < max_index + 1; i++) {
-      internal[i] = DEFAULT;
+      internal[i] = (float)SparseDefaultValues.getDefaultDouble();
     }
 
     for (int i = 0; i < keys.length; i++) {
@@ -752,5 +696,93 @@ public class SparseFloatColumn
   public void addRows(int number) {
     // table is already sparse.  nothing to do.
   }
+
+
+  //===================
+  // Protected Methods
+  //===================
+
+  /**
+   * Inserts <code>val<code> into row #<code>pos</code>. If this position
+   * already holds data - insert the old data into row #<code>pos+1</code>
+   * recursively.
+   *
+   * @param val   the new boolean value to be inserted at pos.
+   * @param pos   the row number to insert val.
+   */
+  protected void insertRow(float val, int pos) {
+    boolean valid = elements.containsKey(pos);
+    float removedValue = elements.remove(pos);
+    //putting the new value
+    setFloat(val, pos);
+    //recursively moving the items in the column as needed
+    if (valid) {
+      insertRow(removedValue, pos + 1);
+
+    }
+  }
+
+
+  /**
+       * Returns the valid values in rows <codE>begin</code> through <codE>end</code>
+   *
+   * @param begin    row number from to begin retrieving of values
+   * @param end      last row number in the section from which values are retrieved.
+   * @return         only valid values from rows no. <code>begin</code> through
+   *                 <codE>end</code>, sorted.
+   */
+  protected float[] getValuesInRange(int begin, int end) {
+    if (end < begin) {
+      float[] retVal = {};
+      return retVal;
+    }
+    return elements.getValuesInRange(begin, end);
+    /*
+         float[] values =  new float[end - begin +1];
+         int j= 0;
+         for (int i=begin; i<=end; i++)
+      if(doesValueExist(i)){
+        values[j] = getFloat(i);
+      j++;
+      }//end if
+         //now j is number of real elements in values.
+         float[] retVal = new float[j];
+         System.arraycopy(values, 0, retVal, 0, j);
+         Arrays.sort(retVal);
+         return retVal;
+     */
+  }
+
+  protected VHashMap getElements() {
+    return elements;
+  }
+
+  //=================
+  // Private Methods
+  //=================
+
+  /**
+   * Compares 2 values and Retruns an int representation of the relation
+   * between the values.
+   *
+   * @param va1_1 - the first value to be compared
+   * @param vla_2 - the second value to be compared
+   * @return int - representing the relation between the values
+   *
+   * if val_1 > val_2 returns 1.
+   * if val_1 < val_2 returns -1.
+   * returns 0 if they are equal.
+   */
+  private int compareFloats(float val_1, float val_2) {
+    if (val_1 > val_2) {
+      return 1;
+    }
+    if (val_1 < val_2) {
+      return -1;
+    }
+    return 0;
+  }
+
+
 
 }

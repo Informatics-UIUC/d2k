@@ -1,16 +1,26 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
+//===============
+// Other Imports
+//===============
+
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
-import java.util.Arrays;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
+
+//==============
+// Java Imports
+//==============
+
+import java.util.*;
 import java.io.*;
 
 /**
  * Title:        Sparse Table
- * Description:  Sparse Table projects will implement data structures compatible to the interface tree of Table, for sparsely stored data.
+ * Description:  Sparse Table projects will implement data structures compatible
+ * to the interface tree of Table, for sparsely stored data.
  * Copyright:    Copyright (c) 2002
  * Company:      ncsa
  * @author vered goren
@@ -26,11 +36,16 @@ public class SparseCharColumn
    * the value j mapped to key i is the value j in line i in this column.
    */
 
+  //==============
+  // Data Members
+  //==============
+
   private VIntCharHashMap elements;
 
-  public static char NOT_EXIST = '\0';
+  //================
+  // Constructor(s)
+  //================
 
-  public static char DEFAULT = '\0';
   /**
    * Creates a new <code>SparseCharColumn</code> instance with the default
    * capacity and load factor.
@@ -93,6 +108,45 @@ public class SparseCharColumn
     }
   }
 
+  //================
+  // Static Methods
+  //================
+
+  /**
+   * converts obj to a char value
+   * @param obj    an Object to converted into type char.
+   * @return       a char representation of <code>obj</code>. if obj is null
+   *               returns a value signifying the position is empty, as defined
+   * by this calss.
+   */
+  public static char toChar(Object obj) {
+
+    if (obj == null) {
+      return SparseDefaultValues.getDefaultChar();
+    }
+
+    if (obj instanceof Number) {
+      return (char) ( (Number) obj).intValue();
+    }
+
+    if (obj instanceof char[]) {
+      return ( (char[]) obj)[0];
+    }
+
+    if (obj instanceof byte[]) {
+      return new String( (byte[]) obj).toCharArray()[0];
+    }
+
+    //covers also cases of Boolean, Character
+    return obj.toString().toCharArray()[0];
+
+  }
+
+
+  //================
+  // Public Methods
+  //================
+
   /**
    * Returns true if the value at row # row is 't' or 'T'. else returns false.
    *
@@ -136,7 +190,7 @@ public class SparseCharColumn
    */
   public byte getByte(int row) {
     if (!elements.containsKey(row)) {
-      return SparseByteColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultByte();
     }
     return (byte) getChar(row);
   }
@@ -164,7 +218,7 @@ public class SparseCharColumn
      retVal[0] = (byte)getChar(row);
      return retVal;*/
     if (!elements.containsKey(row)) {
-      return SparseByteArrayColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultBytes();
     }
     return getString(row).getBytes();
   }
@@ -197,7 +251,7 @@ public class SparseCharColumn
    */
   public char[] getChars(int row) {
     if (!elements.containsKey(row)) {
-      return SparseCharArrayColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultChars();
     }
 
     char[] retVal = new char[1];
@@ -225,7 +279,7 @@ public class SparseCharColumn
    */
   public double getDouble(int row) {
     if (!elements.containsKey(row)) {
-      return SparseDoubleColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultDouble();
     }
     return (double) getChar(row);
   }
@@ -239,7 +293,7 @@ public class SparseCharColumn
    */
   public float getFloat(int row) {
     if (!elements.containsKey(row)) {
-      return SparseFloatColumn.DEFAULT;
+      return (float)SparseDefaultValues.getDefaultDouble();
     }
     return (float) getChar(row);
   }
@@ -253,7 +307,7 @@ public class SparseCharColumn
    */
   public int getInt(int row) {
     if (!elements.containsKey(row)) {
-      return SparseIntColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultInt();
     }
     return (int) getChar(row);
   }
@@ -267,7 +321,7 @@ public class SparseCharColumn
    */
   public long getLong(int row) {
     if (!elements.containsKey(row)) {
-      return SparseLongColumn.DEFAULT;
+      return (long)SparseDefaultValues.getDefaultInt();
     }
     return (long) getChar(row);
   }
@@ -283,7 +337,7 @@ public class SparseCharColumn
       return new Character(getChar(row));
     }
     else {
-      return new Character(DEFAULT);
+      return new Character(SparseDefaultValues.getDefaultChar());
     }
   }
 
@@ -296,7 +350,7 @@ public class SparseCharColumn
    */
   public short getShort(int row) {
     if (!elements.containsKey(row)) {
-      return SparseShortColumn.DEFAULT;
+      return (short)SparseDefaultValues.getDefaultInt();
     }
     return (short) getChar(row);
   }
@@ -309,7 +363,7 @@ public class SparseCharColumn
    */
   public String getString(int row) {
     if (!elements.containsKey(row)) {
-      return SparseStringColumn.DEFAULT;
+      return SparseDefaultValues.getDefaultString();
     }
     return new String(getChars(row));
   }
@@ -505,35 +559,6 @@ public class SparseCharColumn
     empty = empty.reorder(newOrder);
   }
 
-  /**
-   * converts obj to a char value
-   * @param obj    an Object to converted into type char.
-   * @return       a char representation of <code>obj</code>. if obj is null
-   *               returns a value signifying the position is empty, as defined
-   * by this calss.
-   */
-  public static char toChar(Object obj) {
-
-    if (obj == null) {
-      return DEFAULT;
-    }
-
-    if (obj instanceof Number) {
-      return (char) ( (Number) obj).intValue();
-    }
-
-    if (obj instanceof char[]) {
-      return ( (char[]) obj)[0];
-    }
-
-    if (obj instanceof byte[]) {
-      return new String( (byte[]) obj).toCharArray()[0];
-    }
-
-    //covers also cases of Boolean, Character
-    return obj.toString().toCharArray()[0];
-
-  }
 
   /**
    * Swaps the values between 2 rows.
@@ -565,26 +590,6 @@ public class SparseCharColumn
     missing.swapRows(pos1, pos2);
     empty.swapRows(pos1, pos2);
 
-  }
-
-  /**
-   * Inserts <code>val<code> into row #<code>pos</code>. If this position
-   * already holds data - insert the old data into row #<code>pos+1</code>
-   * recursively.
-   *
-   * @param val   the new boolean value to be inserted at pos.
-   * @param pos   the row number to insert val.
-   */
-  protected void insertRow(char val, int pos) {
-    boolean valid = elements.containsKey(pos);
-    char removedValue = elements.remove(pos);
-    //putting the new value
-    setChar(val, pos);
-    //recursively moving the items in the column as needed
-    if (valid) {
-      insertRow(removedValue, pos + 1);
-
-    }
   }
 
   /**
@@ -635,58 +640,6 @@ public class SparseCharColumn
   }
 
   /**
-   * Compares 2 values and Retruns an int representation of the relation
-   * between the values.
-   *
-   * @param va1_1 - the first value to be compared
-   * @param vla_2 - the second value to be compared
-   * @return int - representing the relation between the values
-   *
-   * if val_1 > val_2 returns 1.
-   * if val_1 < val_2 returns -1.
-   * returns 0 if they are equal.
-   */
-  private int compareChars(char val_1, char val_2) {
-    if (val_1 > val_2) {
-      return 1;
-    }
-    if (val_1 < val_2) {
-      return -1;
-    }
-    return 0;
-  }
-
-  /**
-       * Returns the valid values in rows <codE>begin</code> through <codE>end</code>
-   *
-   * @param begin    row number from to begin retrieving of values
-   * @param end      last row number in the section from which values are retrieved.
-   * @return         only valid values from rows no. <code>begin</code> through
-   *                 <codE>end</code>, sorted.
-   */
-  protected char[] getValuesInRange(int begin, int end) {
-    if (end < begin) {
-      char[] retVal = {};
-      return retVal;
-    }
-    return elements.getValuesInRange(begin, end);
-    /*
-      char[] values = new char[end - begin +1];
-      int j= 0;
-      for (int i=begin; i<=end; i++)
-        if(doesValueExist(i)){
-          values[j] = getChar(i);
-      j++;
-        }//end if
-      //now j is number of real elements in values.
-      char[] retVal = new char[j];
-      System.arraycopy(values, 0, retVal, 0, j);
-      Arrays.sort(retVal);
-      return retVal;
-     */
-  }
-
-  /**
    * Reorders the data stored in this column in a new column.
    * Does not change this column.
    *
@@ -728,7 +681,7 @@ public class SparseCharColumn
 
     internal = new char[max_index + 1];
     for (int i = 0; i < max_index + 1; i++) {
-      internal[i] = DEFAULT;
+      internal[i] = SparseDefaultValues.getDefaultChar();
     }
 
     for (int i = 0; i < keys.length; i++) {
@@ -745,4 +698,87 @@ public class SparseCharColumn
   public void addRows(int number) {
     // table is already sparse.  nothing to do.
   }
+
+  //===================
+  // Protected Methods
+  //===================
+
+  /**
+   * Inserts <code>val<code> into row #<code>pos</code>. If this position
+   * already holds data - insert the old data into row #<code>pos+1</code>
+   * recursively.
+   *
+   * @param val   the new boolean value to be inserted at pos.
+   * @param pos   the row number to insert val.
+   */
+  protected void insertRow(char val, int pos) {
+    boolean valid = elements.containsKey(pos);
+    char removedValue = elements.remove(pos);
+    //putting the new value
+    setChar(val, pos);
+    //recursively moving the items in the column as needed
+    if (valid) {
+      insertRow(removedValue, pos + 1);
+
+    }
+  }
+
+  /**
+       * Returns the valid values in rows <codE>begin</code> through <codE>end</code>
+   *
+   * @param begin    row number from to begin retrieving of values
+   * @param end      last row number in the section from which values are retrieved.
+   * @return         only valid values from rows no. <code>begin</code> through
+   *                 <codE>end</code>, sorted.
+   */
+  protected char[] getValuesInRange(int begin, int end) {
+    if (end < begin) {
+      char[] retVal = {};
+      return retVal;
+    }
+    return elements.getValuesInRange(begin, end);
+    /*
+      char[] values = new char[end - begin +1];
+      int j= 0;
+      for (int i=begin; i<=end; i++)
+        if(doesValueExist(i)){
+          values[j] = getChar(i);
+      j++;
+        }//end if
+      //now j is number of real elements in values.
+      char[] retVal = new char[j];
+      System.arraycopy(values, 0, retVal, 0, j);
+      Arrays.sort(retVal);
+      return retVal;
+     */
+  }
+
+
+  //=================
+  // Private Methods
+  //=================
+
+  /**
+   * Compares 2 values and Retruns an int representation of the relation
+   * between the values.
+   *
+   * @param va1_1 - the first value to be compared
+   * @param vla_2 - the second value to be compared
+   * @return int - representing the relation between the values
+   *
+   * if val_1 > val_2 returns 1.
+   * if val_1 < val_2 returns -1.
+   * returns 0 if they are equal.
+   */
+  private int compareChars(char val_1, char val_2) {
+    if (val_1 > val_2) {
+      return 1;
+    }
+    if (val_1 < val_2) {
+      return -1;
+    }
+    return 0;
+  }
+
+
 }
