@@ -1,32 +1,36 @@
 package ncsa.d2k.modules.core.io.sql;
-
 import ncsa.d2k.modules.core.datatype.table.db.sql.*;
-import ncsa.d2k.modules.core.io.sql.*;
 import java.sql.*;
+import javax.swing.*;
 import java.util.*;
+
 /**
- * <p>Title: OracleDBConnection </p>
- * <p>Description: Provides a connection to an Oracle Database </p>
+ * <p>Title: mySQLDBConnection </p>
+ * <p>Description: Provides a connection to an mySQL Database </p>
  * <p>Copyright: NCSA (c) 2002</p>
  * <p>Company: </p>
  * @author Sameer Mathur, David Clutter
  * @version 1.0
  */
 
-public class OracleDBConnection extends SQLDBConnection {
+public class mySQLDBConnection extends SQLDBConnection {
 
-    public OracleDBConnection(String _url, String _driver, String _username, String _password) {
+    private String dbInstance;
+
+    public mySQLDBConnection(String _url, String _driver, String _username, String _password,
+                           String _dbinstance) {
         super(_url, _driver, _username, _password);
+        dbInstance = _dbinstance;
     }
 //////////////////////////////////////////////////////////////////////////////////////////
 
     public String     getAllTableNamesQuery() {
-        String str = "SELECT DISTINCT table_name FROM user_tables ";
+        String str = "SHOW TABLES FROM " + this.dbInstance;
         return str;
     }
 
     public String     getFirstRowQuery (String tableName) {
-        String str = "SELECT * FROM " + tableName + " WHERE ROWNUM BETWEEN 1 AND 2";
+        String str = "SELECT * FROM " + tableName;
         return str;
     }
 
@@ -37,11 +41,13 @@ public class OracleDBConnection extends SQLDBConnection {
                              String[] colTypeNames,
                              int[]    colDisplaySizes) {
         try {
+
             // 1.5 Connect to the Database
             Connection con  = this.getConnection();
 
             // 4. connect to the database and create the prediction table
-            Statement stmt1 = con.createStatement();
+            Statement stmt1 = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                                                 ResultSet.CONCUR_UPDATABLE);
             String query1 = this.createTableWithoutSeqQuery(tableName,
                                                             colNames,
                                                             colTypeNames,
@@ -52,7 +58,7 @@ public class OracleDBConnection extends SQLDBConnection {
         catch (Exception s) {
             s.printStackTrace();
         }
-    } // createTable
+    } // createPredictionTable
 //////////////////////////////////////////////////////////////////////////////////////////
 
     public void createTable (String   tableName,
@@ -65,13 +71,6 @@ public class OracleDBConnection extends SQLDBConnection {
 
             // 1.5 Connect to the Database
             Connection con  = this.getConnection();
-
-            // 2. create a sequence to act as a Primary Key for the Prediction Table
-            Statement stmt = con.createStatement();
-
-            String sequenceQuery = this.createSequenceQuery(seqName);
-            int querySequenceFlag = stmt.executeUpdate(sequenceQuery);
-            stmt.close();
 
             // 4. connect to the database and create the prediction table
             Statement stmt1 = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -91,14 +90,12 @@ public class OracleDBConnection extends SQLDBConnection {
                                                          colTypeNames,
                                                          colDisplaySizes);
             int insertTableFlag;
-
             for (int i=0; i<numRows; i++) {
                 stmt2 = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                                             ResultSet.CONCUR_UPDATABLE);
                 insertTableFlag = stmt2.executeUpdate(query2);
                 stmt2.close();
             }
-
         }
         catch (Exception s) {
             s.printStackTrace();
@@ -112,7 +109,7 @@ public class OracleDBConnection extends SQLDBConnection {
                                      int[] _colDisplaySizes) {
 
         String str = new String("CREATE TABLE " + _tableName + " (");
-        str += "SEQ_NUM number primary key, ";
+        str += "SEQ_NUM int NOT NULL AUTO_INCREMENT, PRIMARY KEY (SEQ_NUM), ";
 
         for (int i=0; i<_colNames.length; i++) {
             if ( (_colTypeNames[i].compareToIgnoreCase("varchar") == 0) ){
@@ -139,7 +136,9 @@ public class OracleDBConnection extends SQLDBConnection {
                                                String[] _colNames,
                                                String[] _colTypeNames,
                                                int[] _colDisplaySizes) {
+
         String str = new String("CREATE TABLE " + _tableName + " (");
+
         for (int i=0; i<_colNames.length; i++) {
             if ( (_colTypeNames[i].compareToIgnoreCase("varchar") == 0) ){
                 str += _colNames[i];
@@ -162,7 +161,8 @@ public class OracleDBConnection extends SQLDBConnection {
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-
+/*    insertString = "insert into IRIS2DD (SEPAL_LENGTH, SEPAL_WIDTH, PETAL_LENGTH) " +
+                     "values('5',   '3.4',	'1.5')"; */
     private String insertTableWithSeqQuery (String _tableName,
                                             String _seqName,
                                             String[] _colNames,
@@ -170,7 +170,7 @@ public class OracleDBConnection extends SQLDBConnection {
                                             int[] _colDisplaySizes) {
         String str = "INSERT INTO ";
         str += _tableName;
-        str += " (seq_num, ";
+        str += " (";
 
         for (int i=0; i<_colNames.length; i++) {
             str += _colNames[i];
@@ -178,8 +178,6 @@ public class OracleDBConnection extends SQLDBConnection {
                 str += ", ";
         }
         str += ") VALUES (";
-        str += _seqName;
-        str += ".NEXTVAL, ";
 
         for (int i=0; i<_colNames.length; i++) {
             if ( (_colTypeNames[i].compareToIgnoreCase("varchar") == 0) ){
@@ -196,20 +194,11 @@ public class OracleDBConnection extends SQLDBConnection {
     }
 //////////////////////////////////////////////////////////////////////////////////////////
 
-    private String createSequenceQuery (String seqName) {
-
-        String str = new String("CREATE SEQUENCE " + seqName +
-                                " START WITH 1 INCREMENT BY 1 NOCACHE NOMAXVALUE NOCYCLE");
-        return str;
-    }
-//////////////////////////////////////////////////////////////////////////////////////////
-
     public String getTableQuery(String[] tables, String[][] columns, String where) {
 
         StringBuffer query = new StringBuffer();
-
         if (tables.length == 1) {                             //USER SELECTED ONLY 1 TABLE
-            query.append("SELECT * FROM (SELECT ");
+            query.append("SELECT ");
             for (int tabl = 0; tabl < columns.length; tabl++)
                 for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
                     query.append(columns[tabl][tablCol]);
@@ -223,7 +212,6 @@ public class OracleDBConnection extends SQLDBConnection {
                 query.append(" WHERE ");
                 query.append(where);
             }
-
             query.append(" ORDER BY ");
             for (int tabl = 0; tabl < columns.length; tabl++)
                 for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
@@ -231,7 +219,7 @@ public class OracleDBConnection extends SQLDBConnection {
                     if (tablCol < columns[tabl].length -1)
                         query.append(", ");
                 }
-            query.append(")");
+
             return query.toString();
         }
         else {                                                   //USER SELECTED >1 TABLES
@@ -307,7 +295,6 @@ public class OracleDBConnection extends SQLDBConnection {
                 if (k<tables.length-1)
                     query.append(", ");
             }
-
             // Thrid : Create WHERE Clause
             if ((where != null) && (where.length() > 0)) {
                 query.append(" WHERE ");
@@ -346,6 +333,7 @@ public class OracleDBConnection extends SQLDBConnection {
 
             if ((duplicateVec.size() > 0) && (uniqueVec.size() > 0))
                 query.append(", ");
+
             int ct2 = 0;
             for (int tabl = 0; tabl < columns.length; tabl++) {
                 for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
@@ -366,4 +354,4 @@ public class OracleDBConnection extends SQLDBConnection {
 
     }//getTableQuery()
 
-}//OracleConnect
+}//mySQLConnection

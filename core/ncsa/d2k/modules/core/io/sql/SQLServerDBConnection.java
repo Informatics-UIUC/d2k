@@ -3,12 +3,20 @@ package ncsa.d2k.modules.core.io.sql;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.db.sql.*;
-
 import java.sql.*;
 import java.lang.InstantiationException;
 import java.lang.IllegalAccessException;
 import javax.swing.*;
 import java.util.*;
+
+/**
+ * <p>Title: SQLServerDBConnection </p>
+ * <p>Description: Provides a connection to an SQLServer Database </p>
+ * <p>Copyright: NCSA (c) 2002</p>
+ * <p>Company: </p>
+ * @author Sameer Mathur, David Clutter
+ * @version 1.0
+ */
 
 public class SQLServerDBConnection extends SQLDBConnection {
 
@@ -48,7 +56,6 @@ public class SQLServerDBConnection extends SQLDBConnection {
                                                             colDisplaySizes);
 
             int createTableFlag = stmt1.executeUpdate(query1);
-System.out.println("SQLServer: createTableFlag = " + createTableFlag);
             stmt1.close();
         }
         catch (Exception s) {
@@ -76,7 +83,6 @@ System.out.println("SQLServer: createTableFlag = " + createTableFlag);
                                                          colTypeNames,
                                                          colDisplaySizes);
             int createTableFlag = stmt1.executeUpdate(query1);
-//System.out.println("createTableFlag = " + createTableFlag);
             stmt1.close();
 
             // 6. Insert 'tableConnection.getNumRows()' Sequence # and NULL's into the table
@@ -86,7 +92,6 @@ System.out.println("SQLServer: createTableFlag = " + createTableFlag);
                                                          colNames,
                                                          colTypeNames,
                                                          colDisplaySizes);
-//System.out.println("query2 : " + query2);
             int insertTableFlag;
 
             for (int i=0; i<numRows; i++) {
@@ -101,12 +106,6 @@ System.out.println("SQLServer: createTableFlag = " + createTableFlag);
         }
     } // createTable
 //////////////////////////////////////////////////////////////////////////////////////////
-/*        String createSQLServer1 =  "CREATE TABLE IRIS2DC ("
-                                + " SEQ_NUM int IDENTITY (1, 1) NOT NULL ,"
-	                        + " SEPAL_LENGTH varchar(6) ,"
-	                        + " SEPAL_WIDTH varchar(6) ,"
-	                        + " PETAL_LENGTH varchar(6) )";*/
-
     private String createTableWithSeqQuery (String _tableName,
                                             String[] _colNames,
                                             String[] _colTypeNames,
@@ -133,7 +132,6 @@ System.out.println("SQLServer: createTableFlag = " + createTableFlag);
                 str += ", ";
         } //for
         str += ")";
-System.out.println("SQLServerConnection: createTableQuery with Sequence :" + str);
         return str;
     }
 
@@ -143,7 +141,6 @@ System.out.println("SQLServerConnection: createTableQuery with Sequence :" + str
                                                int[] _colDisplaySizes) {
 
         String str = new String("CREATE TABLE " + _tableName + " (");
-//        str += "SEQ_NUM int primary key, ";
 
         for (int i=0; i<_colNames.length; i++) {
             if ( (_colTypeNames[i].compareToIgnoreCase("varchar") == 0) ){
@@ -163,7 +160,6 @@ System.out.println("SQLServerConnection: createTableQuery with Sequence :" + str
                 str += ", ";
         } //for
         str += ")";
-System.out.println("SQLServerConnection: createTableQuery without Sequence: " + str);
         return str;
     }
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -185,9 +181,6 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
         }
 
         str += ") VALUES (";
-//        str += _seqName;
-//        str += ".NEXTVAL, ";
-
         for (int i=0; i<_colNames.length; i++) {
             if ( (_colTypeNames[i].compareToIgnoreCase("varchar") == 0) ){
                 str += "'x'";
@@ -199,8 +192,6 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                 str += ", ";
         } //for
         str += ")";
-
-//System.out.println("insertPredictionTableQuery " + str);
         return str;
     }
 
@@ -233,8 +224,6 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                         query.append(", ");
                 }
 
-//    System.out.println("*****************QUERY: ONE TABLE *****************");
-//    System.out.println(query.toString());
             return query.toString();
         }
         else {                                                   //USER SELECTED >1 TABLES
@@ -253,7 +242,6 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
             Vector duplicateVec = new Vector(dups);
 
             // First : Create SELECT Clause
-//            query.append("SELECT * FROM (SELECT ");
             query.append("SELECT ");
 
             for (int l=0; l<duplicateVec.size(); l++){
@@ -288,16 +276,6 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
             if ((duplicateVec.size() > 0) && (uniqueVec.size() > 0))
                 query.append(", ");
 
-/*
-System.out.println("printing uniqueColumns ");
-for (int q=0; q<uniqueVec.size(); q++){
-    System.out.println(uniqueVec.elementAt(q));
-}
-System.out.println("printing duplicateColumns ");
-for (int q=0; q<duplicateVec.size(); q++){
-    System.out.println(duplicateVec.elementAt(q));
-}
-*/
             int ct = 0;
             for (int tabl = 0; tabl < columns.length; tabl++) {
                 for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
@@ -321,10 +299,8 @@ for (int q=0; q<duplicateVec.size(); q++){
                 if (k<tables.length-1)
                     query.append(", ");
             }
-//System.out.println("str part2 : " + str);
 
             // Thrid : Create WHERE Clause
-
             if ((where != null) && (where.length() > 0)) {
                 query.append(" WHERE ");
                 query.append(where);
@@ -363,13 +339,6 @@ for (int q=0; q<duplicateVec.size(); q++){
             if ((duplicateVec.size() > 0) && (uniqueVec.size() > 0))
                 query.append(", ");
 
-/*
-            for (int m=0; m<uniqueVec.size(); m++){
-                query.append(uniqueVec.elementAt(m));
-                if (m<uniqueVec.size()-1)
-                    query.append(", ");
-            }
-*/
             int ct2 = 0;
             for (int tabl = 0; tabl < columns.length; tabl++) {
                 for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
@@ -385,80 +354,7 @@ for (int q=0; q<duplicateVec.size(); q++){
                     }
                 }
             }
-
-//            query.append(")");
-
-    System.out.println("*****************QUERY: MULTIPLE TABLES *****************");
-    System.out.println(query.toString());
             return query.toString();
         }//else
-
     }//getTableQuery()
-
 }//SQLServerConnection
-
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////
-/////////OLD CODE BACKUP   (this has actual sqlserver queries, now not req bec of JDBC drivers
-/////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Functions related to the Columns of Tables in a Database
-     */
-/*
-    public String QueryColumnNames (String TableName) {
-        String str = "select c.name " +
-                     "from master..sysobjects o, master..syscolumns c " +
-                     "where o.id = object_id('" +
-                     TableName +
-                     "') and c.id = o.id " +
-                     "order by colid";
-        return str;
-    }
-
-    public String QueryAllColumnTypes (String TableName) {
-        String str = "select t.name " +
-                     "from master..sysobjects o, master..syscolumns c, master..systypes t " +
-                     "where o.id = object_id('" + TableName + "') " +
-                     "and c.id = o.id " +
-                     "and c.usertype = t.usertype " +
-                     "order by colid";
-        return str;
-    }
-
-    public String QueryColumnType (String TableName, String ColumnName) {
-        String str = "select t.name " +
-                     "from master..sysobjects o, master..syscolumns c, master..systypes t " +
-                     "where o.id = object_id('" + TableName + "') " +
-                     "and c.id = o.id " +
-                     "and c.name = '" + ColumnName + "' " +
-                     "and c.usertype = t.usertype " +
-                     "order by colid";
-        return str;
-    }
-
-
-    public String QueryAllColumnLengths (String TableName) {
-        String str = "select c.length " +
-                     "from master..sysobjects o, master..syscolumns c " +
-                     "where o.id = object_id('" + TableName + "') " +
-                     "and c.id = o.id " +
-                     "order by colid";
-        return str;
-    }
-
-    public String QueryColumnLength (String TableName, String ColumnName) {
-        String str = "select c.length " +
-                     "from master..sysobjects o, master..syscolumns c " +
-                     "where o.id = object_id('" + TableName + "') " +
-                     "and c.id = o.id " +
-                     "and c.name = '" + ColumnName + "' " +
-                     "order by colid";
-        return str;
-    }
-*/
-/////////////////////////////////////////////////////////////////////////////////////////

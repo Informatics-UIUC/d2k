@@ -1,9 +1,14 @@
 package ncsa.d2k.modules.core.io.sql;
-
 import java.sql.*;
 import java.util.*;
-
-
+/**
+ * <p>Title: SQLDBConnection </p>
+ * <p>Description: an abstract class with common functionality for Database connections </p>
+ * <p>Copyright: NCSA (c) 2002</p>
+ * <p>Company: </p>
+ * @author Sameer Mathur, David Clutter
+ * @version 1.0
+ */
 
 public abstract class SQLDBConnection extends ConnectionWrapperImpl implements DBConnection {
 
@@ -26,12 +31,10 @@ public abstract class SQLDBConnection extends ConnectionWrapperImpl implements D
         if (columnType == "varchar") {
             str += "(32)";
         }
-//System.out.println("addColumnQuery : " + str);
         return str;
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-        // 1. create a new column called 'label' in the prediction table in the database
     public void addColumn (String tableName, String columnName, String columnType) {
         // 1. create a new column called 'columnName' in the table in the database
         try {
@@ -58,10 +61,8 @@ public abstract class SQLDBConnection extends ConnectionWrapperImpl implements D
             Connection con = getConnection();
             Statement stmt = con.createStatement( ResultSet.TYPE_SCROLL_SENSITIVE,
                 ResultSet.CONCUR_READ_ONLY);
-//            System.out.println("TABLE QUERY: "+getTableQuery(tables, columns, where));
             ResultSet rs = stmt.executeQuery(this.getTableQuery(tables, columns, where));
             return rs;
-//            stmt.close();       //////// TODO: IN THE finalize, AFTER rs.getStatement/////
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -74,10 +75,8 @@ public abstract class SQLDBConnection extends ConnectionWrapperImpl implements D
             Connection con = getConnection();
             Statement stmt = con.createStatement( ResultSet.TYPE_SCROLL_SENSITIVE,
                 ResultSet.CONCUR_UPDATABLE);
-//            System.out.println("TABLE QUERY: "+getTableQuery(tables, columns, where));
             ResultSet rs = stmt.executeQuery(this.getTableQuery(tables, columns, where));
             return rs;
-//            stmt.close();       //////// TODO: IN THE finalize, AFTER rs.getStatement/////
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -101,11 +100,8 @@ public abstract class SQLDBConnection extends ConnectionWrapperImpl implements D
             }
             query.append("FROM ");
             query.append(table);
-            //System.out.println("UPDATE: "+query.toString());
-            //ResultSet rs = stmt.executeQuery(this.getTableQuery(tables, columns, where));
             ResultSet rs = stmt.executeQuery(query.toString());
             return rs;
-//            stmt.close();       //////// TODO: IN THE finalize, AFTER rs.getStatement/////
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -128,7 +124,6 @@ public abstract class SQLDBConnection extends ConnectionWrapperImpl implements D
     }
 
     public String[]     getTableNames() {
-//System.out.println("entering getAllTableNames..");
         String tables[];
         Vector vec = new Vector();
 
@@ -136,9 +131,7 @@ public abstract class SQLDBConnection extends ConnectionWrapperImpl implements D
           Connection con = getConnection();
           Statement stmt = con.createStatement();
           ResultSet rs = stmt.executeQuery(getAllTableNamesQuery());
-          //int idx = 0;
           while (rs.next())
-              //tables[idx++] = rs.getString(1);
               vec.addElement((Object)rs.getString(1));
           stmt.close();
 
@@ -274,7 +267,6 @@ public abstract class SQLDBConnection extends ConnectionWrapperImpl implements D
           }
           numRecords--; ///////////For some reason, numRecords is one more than it should be..
           stmt.close();
-//System.out.println("SQLDBConnection:GetNumRecords: " + numRecords);
           return numRecords;
         }
         catch (Exception e){

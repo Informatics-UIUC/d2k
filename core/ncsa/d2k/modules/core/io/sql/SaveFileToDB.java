@@ -216,6 +216,7 @@ public class SaveFileToDB extends UIModule
                       2,3,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
             createTableBtn.addActionListener(this);
 
+
             /* layout the appendTable tab */
             JPanel appendTablePanel = new JPanel();
             appendTablePanel.setLayout (new GridBagLayout());

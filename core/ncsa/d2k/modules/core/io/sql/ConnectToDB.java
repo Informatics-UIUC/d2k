@@ -2,21 +2,19 @@ package ncsa.d2k.modules.core.io.sql;
 
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
-
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
 public class ConnectToDB extends UIModule {
-
     /**
      * Returns an array of description objects for each property of the
      * Module.
      * @return an array of description objects for each property of the
      * Module.
      */
+/*
     public PropertyDescription [] getPropertiesDescriptions () {
         PropertyDescription[] retVal = new PropertyDescription[7];
         retVal[0] = new PropertyDescription("url", "url", "hello");
@@ -28,7 +26,7 @@ public class ConnectToDB extends UIModule {
         retVal[6] = new PropertyDescription("driver", "drv", "hello6");
         return retVal;
 	}
-
+*/
     /**
      *** Variables ***
      */
@@ -56,8 +54,7 @@ public class ConnectToDB extends UIModule {
       @return A description of this module.
       */
     public String getModuleInfo() {
-        return "Connect to a database.  You will need to input a username, password, "+
-                " machine name, port, database instance, and JDBC driver.";
+	return "";
     }
 
     public String getModuleName() {
@@ -148,7 +145,6 @@ public class ConnectToDB extends UIModule {
      * @param u - The username
      */
     public void setUsername(String u) {
-//System.out.println("setUsername");
         username = u;
     }
     /**
@@ -253,29 +249,73 @@ public class ConnectToDB extends UIModule {
         private String[] Vendors = {"Oracle", "MySQL", "SQLServer"};
         private int dbFlag;
 
+        /** A label for username */
+	    private JLabel lU;
+	    /** A text field to show the username */
+	    private JTextField tfU = new JTextField();
+
+        /** A label for password */
+	    private JLabel lPa;
+	    /** A password field to show (hidden) the password */
+	    private JPasswordField pfPa = new JPasswordField(30);
+
+	    /** A label for machine */
+	    private JLabel lM;
+	    /** A text field to show the machine */
+	    private JTextField tfM = new JTextField();
+
+        /** A label for port */
+	    private JLabel lPo;
+	    /** A text field to show the port */
+	    private JTextField tfPo = new JTextField();
+
+        /** A label for dbInstance */
+	    private JLabel ldbI;
+	    /** A text field to show the dbInstance */
+	    private JTextField tfdbI = new JTextField();
+
+        /** A label for driver */
+	    private JLabel lD;
+	    /** A text field to show the driver */
+	    private JTextField tfD = new JTextField();
+
+	    /** A button to Abort */
+	    private JButton bAb = new JButton("Abort");
+
+	    /** A button to Okay */
+	    private JButton bDo = new JButton("Done");
+
+	/** The module that creates this view.  We need a reference to it so
+	    we can get and set its properties. */
+
+	/**
+	   Perform initializations here.
+	   @param mod The module that created this UserView
+	*/
+
         /** A text field to show the username */
-        private JTextField tfU = new JTextField();
+  //      private JTextField tfU = new JTextField();
 
         /** A password field to show (hidden) the password */
-        private JPasswordField pfPa = new JPasswordField(30);
+ //       private JPasswordField pfPa = new JPasswordField(30);
 
         /** A text field to show the machine */
-        private JTextField tfM = new JTextField();
+//        private JTextField tfM = new JTextField();
 
         /** A text field to show the port */
-        private JTextField tfPo = new JTextField();
+ //       private JTextField tfPo = new JTextField();
 
         /** A text field to show the dbInstance */
-        private JTextField tfdbI = new JTextField();
+//        private JTextField tfdbI = new JTextField();
 
         /** A text field to show the driver */
-        private JTextField tfD = new JTextField();
+//        private JTextField tfD = new JTextField();
 
         /** A button to Abort */
-        private JButton bAb = new JButton("Abort");
+//        private JButton bAb = new JButton("Abort");
 
         /** A button to Okay */
-        private JButton bDo = new JButton("Done");
+//        private JButton bDo = new JButton("Done");
 
         /** The module that creates this view.  We need a reference to it so
      we can get and set its properties. */
@@ -289,12 +329,15 @@ public class ConnectToDB extends UIModule {
             /**
              *** Initial Setup ***
              */
+      	    JPanel placeholder = new JPanel();
+	    JPanel p = new JPanel();
+	    p.setLayout(new GridBagLayout());
             //          super.initView(mod); //DO NOT CALL SUPER
             //parentModule = (ConnectToDB)mod;
 
-            JPanel placeholder = new JPanel();
-            JPanel p = new JPanel();
-            p.setLayout(new GridBagLayout());
+//            JPanel placeholder = new JPanel();
+//            JPanel p = new JPanel();
+//            p.setLayout(new GridBagLayout());
 
             cbV = new JComboBox( Vendors );
             cbV.setEditable(false);
@@ -334,7 +377,19 @@ public class ConnectToDB extends UIModule {
              ***                     dbInstance, driver               ***
              */
 
+	    // Add username
+            lU = new JLabel("Username");
+	    Constrain.setConstraints(p, lU, 0, 1, 1, 1,
+				     GridBagConstraints.NONE,
+				     GridBagConstraints.WEST, 1, 1);
+
+	    // try to display the last username chosen
+	    String s = getUsername();
+	    if(s != null) {
+		tfU.setText(s);
+            }
             boolean allPropsNull = true;
+
             // Add Database Vendors
             JLabel lV = new JLabel("Vendor");
             Constrain.setConstraints(p, lV, 0, 0, 1, 1,
@@ -352,7 +407,7 @@ public class ConnectToDB extends UIModule {
                                      GridBagConstraints.WEST, 1, 1);
 
             // try to display the last username chosen
-            String s = getUsername();
+            s = getUsername();
             if(s != null) {
                 tfU.setText(s);
                 allPropsNull = false;
@@ -448,21 +503,93 @@ public class ConnectToDB extends UIModule {
                                      GridBagConstraints.HORIZONTAL,
                                      GridBagConstraints.WEST, 4, 1);
 
-            /**
-             *** Final Setup ***
-             */
+	    Constrain.setConstraints(p, tfU, 1, 1, 2, 1,
+				     GridBagConstraints.HORIZONTAL,
+				     GridBagConstraints.WEST, 4, 1);
+
+	    // Add password
+            lPa = new JLabel("Password");
+	    Constrain.setConstraints(p, lPa, 0, 2, 1, 1,
+				     GridBagConstraints.NONE,
+				     GridBagConstraints.WEST, 1, 1);
+
+	    // try to display the last password chosen
+	    s = /*parentModule.*/getPassword();
+	    if(s != null)
+		pfPa.setText(s);
+
+	    Constrain.setConstraints(p, pfPa, 1, 2, 2, 1,
+				     GridBagConstraints.HORIZONTAL,
+				     GridBagConstraints.WEST, 4, 1);
+
+	    // Add machine
+            lM = new JLabel("Machine");
+	    Constrain.setConstraints(p, lM, 0, 3, 1, 1,
+				     GridBagConstraints.NONE,
+				     GridBagConstraints.WEST, 1, 1);
+
+	    // try to display the last machine chosen
+	    s = /*parentModule.*/getMachine();
+	    if(s != null) {
+		tfM.setText(s);
+            }
+	    Constrain.setConstraints(p, tfM, 1, 3, 2, 1,
+				     GridBagConstraints.HORIZONTAL,
+				     GridBagConstraints.WEST, 4, 1);
+
+	    // Add port
+            lPo = new JLabel("Port");
+	    Constrain.setConstraints(p, lPo, 0, 4, 1, 1,
+				     GridBagConstraints.NONE,
+				     GridBagConstraints.WEST, 1, 1);
+
+	    // try to display the last port chosen
+	    s = /*parentModule.*/getPort();
+	    if(s != null) {
+		tfPo.setText(s);
+            }
+	    Constrain.setConstraints(p, tfPo, 1, 4, 2, 1,
+				     GridBagConstraints.HORIZONTAL,
+				     GridBagConstraints.WEST, 4, 1);
+
+	    // Add dbInstance
+            ldbI = new JLabel("dbInstance");
+	    Constrain.setConstraints(p, ldbI, 0, 5, 1, 1,
+				     GridBagConstraints.NONE,
+				     GridBagConstraints.WEST, 1, 1);
+
+	    // try to display the last dbInstance chosen
+	    s = /*parentModule.*/getDbInstance();
+	    if(s != null) {
+		tfdbI.setText(s);
+            }
+
+	    Constrain.setConstraints(p, tfdbI, 1, 5, 2, 1,
+				     GridBagConstraints.HORIZONTAL,
+				     GridBagConstraints.WEST, 4, 1);
+
+	    // Add driver
+            lD = new JLabel("driver");
+	    Constrain.setConstraints(p, lD, 0, 6, 1, 1,
+				     GridBagConstraints.NONE,
+				     GridBagConstraints.WEST, 1, 1);
+
+	    // try to display the last driver chosen
+	    s = /*parentModule.*/getDriver();
+
+	    if(s != null)
+		tfD.setText(s);
+
+	    Constrain.setConstraints(p, tfD, 1, 6, 2, 1,
+				     GridBagConstraints.HORIZONTAL,
+				     GridBagConstraints.WEST, 4, 1);
+
+	    Constrain.setConstraints(p, placeholder, 0, 4, 4, 1,
+				     GridBagConstraints.NONE,
+				     GridBagConstraints.WEST, 4, 1);
             Constrain.setConstraints(p, placeholder, 0, 4, 4, 1,
                                      GridBagConstraints.NONE,
                                      GridBagConstraints.WEST, 4, 1);
-
-     /*Constrain.setConstraints(p, bDo, 0, 8, 1, 1,
-         GridBagConstraints.NONE,
-         GridBagConstraints.WEST, 1, 1);
-
-     Constrain.setConstraints(p, bAb, 1, 8, 1, 1,
-         GridBagConstraints.NONE,
-         GridBagConstraints.WEST, 1, 1);
-        */
 
             bAb.addActionListener(this);
             bDo.addActionListener(this);
@@ -511,18 +638,31 @@ public class ConnectToDB extends UIModule {
                   /**
                    * Use the Driver to set up the corresponding URL
                    */
-            /*if ( _driver.equals("oracle.jdbc.driver.OracleDriver")) {
+
+            if ( _driver.equals("oracle.jdbc.driver.OracleDriver")) {
+                //OracleConnection dbi = new OracleConnection(out, getDbInstance().trim());
+                OracleDBConnection oc = new OracleDBConnection(getUrl().trim(),
+                                                           getDriver().trim(),
+                                                           getUsername().trim(),
+                                                           getPassword().trim());
+                pushOutput (oc, 0);
             }
             else if ( _driver.equals("org.gjt.mm.mysql.Driver")) {
+                mySQLDBConnection mc = new mySQLDBConnection(getUrl().trim(),
+                                                         getDriver().trim(),
+                                                         getUsername().trim(),
+                                                         getPassword().trim(),
+                                                         getDbInstance().trim());
+                pushOutput (mc, 0);
             }
             else {//if (_driver == "com.microsoft.jdbc.sqlserver.SQLServerDriver") {
-            }*/
-
-//            ConnectionWrapperImpl out = new ConnectionWrapperImpl(
-//			getUrl().trim(),
-//                        getDriver().trim(),
-//                        getUsername().trim(),
-//                       getPassword().trim() );
+                SQLServerDBConnection sc = new SQLServerDBConnection(getUrl().trim(),
+                                                                 getDriver().trim(),
+                                                                 getUsername().trim(),
+                                                                 getPassword().trim());
+                pushOutput (sc, 0);
+            }
+            viewDone("Done");
 
                   if ( _driver.equals("oracle.jdbc.driver.OracleDriver")) {
                       setUrl("jdbc:oracle:thin:@"+getMachine()+":"+getPort()+":"+getDbInstance());
@@ -535,7 +675,7 @@ public class ConnectToDB extends UIModule {
                   }
                   else if ( _driver.equals("org.gjt.mm.mysql.Driver")) {
                       setUrl("jdbc:mysql://" + getMachine()+ "/" + getDbInstance());
-                      MySQLDBConnection mc = new MySQLDBConnection(getUrl().trim(),
+                      mySQLDBConnection mc = new mySQLDBConnection(getUrl().trim(),
                               getDriver().trim(),
                               getUsername().trim(),
                               getPassword().trim(),

@@ -19,13 +19,11 @@ public class SelectDBTables extends UIModule {
 
     public String[] getInputTypes() {
         String[] in = {"ncsa.d2k.modules.core.io.sql.DBConnection"};
-//       String[] in = {"ncsa.d2k.modules.projects.smathur.io.sql.TestGui"};
         return in;
     }
 
     public String[] getOutputTypes() {
         String[] out = {"ncsa.d2k.modules.core.datatype.table.db.DBTable"};
-//        String[] out = null;
         return out;
     }
 
@@ -124,8 +122,6 @@ public class SelectDBTables extends UIModule {
         private DBConnection dbc;     // the input
         private DBDataSource dbds;    // got from the input
 
-//        private TestGui dbc;
-
         private String current = "one";
 
         private class TableSelectionListener implements ListSelectionListener {
@@ -196,16 +192,9 @@ public class SelectDBTables extends UIModule {
             JButton removeSelectedTables = new JButton("Remove");
             moveToSelectedTables.addActionListener(new AddToSelectedTables());
             removeSelectedTables.addActionListener(new RemoveSelectedTables());
-//            JPanel buttons = new JPanel();
-//            buttons.setLayout(new GridLayout(2, 1));
-//            buttons.add(moveToSelectedTables);
-//            buttons.add(removeSelectedTables);
-//            one.add(buttons);
 
             JScrollPane jsp2 = new JScrollPane(selectedTablesList);
             jsp2.setColumnHeaderView(new JLabel("Selected Tables"));
-//            one.add(jsp2);
-
 
             JPanel p0 = new JPanel();
             p0.setLayout(new GridBagLayout());
@@ -248,7 +237,6 @@ public class SelectDBTables extends UIModule {
             moveToJoin.addActionListener(new AddJoin());
             removeJoin.addActionListener(new RemoveJoin());
 
-//            joins = new JComboBox();   //...............
             joinsList = new JList((joinsModel = new DefaultListModel()));   //-----------
             joinsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             JScrollPane jspJoins = new JScrollPane(joinsList);
@@ -260,11 +248,6 @@ public class SelectDBTables extends UIModule {
                 GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 0);
             Constrain.setConstraints(p1, new JLabel("Table 2", JLabel.CENTER), 2, 0, 1, 1,
                 GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 0);
-
-//            Constrain.setConstraints(p1, jspJoins, 4, 0, 2, 2,
-//                GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 0);
-
-
 
             Constrain.setConstraints(p1, allTables1, 0, 1, 1, 1,
                 GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 1);
@@ -297,15 +280,9 @@ public class SelectDBTables extends UIModule {
 
             allTablesList = new JList((allTablesModel = new DefaultListModel()));
 
-
-
-
-
             JPanel two = new JPanel();
             two.setLayout(new BorderLayout());
             two.add(p1, BorderLayout.CENTER);
-
-//            two.add(joins, BorderLayout.EAST);
             two.add(jspJoins, BorderLayout.EAST);
 
 //......................................................................................//
@@ -340,8 +317,6 @@ public class SelectDBTables extends UIModule {
             pBut.add(moveToFilter);
             pBut.add(removeFilter);
             three.add(pBut);
-
-//            three.add(filter);
             three.add(jspFilter);
 
 //......................................................................................//
@@ -430,8 +405,6 @@ public class SelectDBTables extends UIModule {
             });
             previous.setEnabled(false);
             next.setEnabled(true);
-
-//            check = new JButton("Check");
             abort = new JButton("Abort");
             abort.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
@@ -447,19 +420,13 @@ public class SelectDBTables extends UIModule {
                     String[][] cols = new String[selectedTables.length][];
                     String where = getWhereClause();
 
-System.out.println("---------->where clause :  " + where);
-
                     for(int i = 0; i < selectedTables.length; i++) {
-                        //SelectedTable st = (SelectedTable)selectedTables[i];
                         String tn = (String)selectedTables[i];
                         SelectedTable st = (SelectedTable)tableNameToSelectedColsLookup.get(tn);
 
                         tabs[i] = st.tableName;
                         cols[i] = st.selectedColumnNames;
                     }
-
-//                    DBTable table = new DBTable( (DBTableConnection)dbi, tabs, cols,
-//                                                  "", 0);
 
                     dbds = new ResultSetDataSource(dbc, tabs, cols, where);
                     DBTable table = new DBTable(dbds, dbc);
@@ -473,7 +440,6 @@ System.out.println("---------->where clause :  " + where);
 
             buttonPanel.add(next);
             buttonPanel.add(previous);
-//            buttonPanel.add(check);
             buttonPanel.add(abort);
             buttonPanel.add(done);
 
@@ -609,9 +575,7 @@ System.out.println("---------->where clause :  " + where);
                 sb.append(".");
                 sb.append(col2);
 
-//                joins.addItem(sb.toString());
                 joinsModel.addElement(sb.toString());
-
             }
         }
 
@@ -619,13 +583,8 @@ System.out.println("---------->where clause :  " + where);
 
         private class RemoveJoin implements ActionListener {  //................
             public void actionPerformed(ActionEvent e) {
-//                Object val = joins.getSelectedItem();
-//                joins.removeItem(val); JFrame f;
-
                   Object val = joinsList.getSelectedValue();
                   joinsModel.removeElement(val.toString());
-
-                //joins.repaint();
             }
         }
 
@@ -661,8 +620,6 @@ System.out.println("---------->where clause :  " + where);
                 sb.append(op);
                 sb.append(" ");
                 sb.append(val);
-
-//                filter.addItem(sb.toString());
                 filterModel.addElement(sb.toString());
 
             }
@@ -670,12 +627,8 @@ System.out.println("---------->where clause :  " + where);
 
         private class RemoveFilter implements ActionListener {  //................
             public void actionPerformed(ActionEvent e) {
-//                Object val = filter.getSelectedItem();
-//                filter.removeItem(val);
-
                 Object val = filterList.getSelectedValue();
                 filterModel.removeElement(val.toString());
-
            }
         }
 
@@ -710,11 +663,8 @@ System.out.println("---------->where clause :  " + where);
 
 
             dbc = (DBConnection)o;
-
-//            dbc = (TestGui)o;
             String[] tbls = dbc.getTableNames();
             for(int id = 0; id < tbls.length; id++)
-                //System.out.println(tbls[id]);
                 availTablesModel.addElement(tbls[id]);
         }
     }
