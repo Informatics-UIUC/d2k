@@ -183,8 +183,10 @@ public class SQLChooseIOFields extends UIModule {
           while (columns.next()) {
             String columnName = columns.getString("COLUMN_NAME");
             String columnType = columns.getString("TYPE_NAME");
-            colNames.add(columnName.toLowerCase());
-            colTypes.add(columnType.toLowerCase());
+            //colNames.add(columnName.toLowerCase());
+            //colTypes.add(columnType.toLowerCase());
+            colNames.add(columnName);
+            colTypes.add(columnType);
           }
         }
       }
