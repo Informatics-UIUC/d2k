@@ -655,11 +655,49 @@ abstract public class NsgaPopulation extends Population implements Serializable 
                NsgaSolution nis = (NsgaSolution) members [0];
                if (nis instanceof MONumericIndividual) {
                        numTraits = this.traits.length;
+
+                       // write genes
+/*                       for (int j = 0; j < size(); j++) {
+                         double[] genes = ( (MOBinaryIndividual) getMember(j)).
+                             toDouble();
+
+                         // the max and precision are contained in the boundsAndPrecision table
+                         Table bounds = getPopulationInfo().boundsAndPrecision;
+
+                         int curPos = 0;
+                         for (int k = 0; k < traits.length; k++) {
+                           int numBits = ((BinaryRange)traits[k]).getNumBits();
+                           double num = 0.0d;
+                           double max = bounds.getDouble(k, 2);
+                           double min = bounds.getDouble(k, 1);
+                           double precision = bounds.getDouble(k, 3);
+
+                           double interval = (max - min) * precision;
+
+                           // this is one trait
+                           for (int l = 0; l < numBits; l++) {
+                             if (genes[curPos] != 0) {
+                               num = num + Math.pow(2.0, l);
+                             }
+                             curPos++;
+                           }
+
+                           // if it is above the max, scale it down
+                           num = num * precision + min;
+                           if (num > max) {
+                             num = max;
+                           }
+                           if (num < min) {
+                             num = min;
+                           }
+                         }
+                    }*/
                }
                else{
-                       for(int i=0; i<this.traits.length; i++)
-                         numGenes += ((BinaryRange) this.traits[i]).getNumBits();
-                       numTraits = numGenes;
+                       //for(int i=0; i<this.traits.length; i++)
+                       //  numGenes += ((BinaryRange) this.traits[i]).getNumBits();
+                       //numTraits = numGenes;
+                       numTraits = this.traits.length;
                }
                //System.out.println("numtraits :" + numTraits);
                int popSize = this.size();
@@ -672,7 +710,41 @@ abstract public class NsgaPopulation extends Population implements Serializable 
                        genes = (double []) ((Individual) ni).getGenes ();
                   }
                   else{
-                       genes = (double []) ((MOBinaryIndividual) ni).toDouble();
+
+                    genes = new double[numTraits];
+                    double[] binaryGenes = (double[]) ( (MOBinaryIndividual) ni).toDouble();
+
+                    // the max and precision are contained in the boundsAndPrecision table
+                    Table bounds = getPopulationInfo().boundsAndPrecision;
+
+                    int curPos = 0;
+                    for (int k = 0; k < traits.length; k++) {
+                      int numBits = ((BinaryRange)traits[k]).getNumBits();
+                      double num = 0.0d;
+                      double max = bounds.getDouble(k, 2);
+                      double min = bounds.getDouble(k, 1);
+                      double precision = bounds.getDouble(k, 3);
+
+                      double interval = (max - min) * precision;
+
+                      // this is one trait
+                      for (int l = 0; l < numBits; l++) {
+                        if (binaryGenes[curPos] != 0) {
+                          num = num + Math.pow(2.0, l);
+                        }
+                        curPos++;
+                      }
+
+                      // if it is above the max, scale it down
+                      num = num * precision + min;
+                      if (num > max) {
+                        num = max;
+                      }
+                      if (num < min) {
+                        num = min;
+                      }
+                      genes[k] = num;
+                    }
                   }
                        int j = 0;
 

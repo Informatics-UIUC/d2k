@@ -96,7 +96,7 @@ public class DefineFitnessFunctions
     }
 
     public Dimension getPreferredSize() {
-      return new Dimension(750, 350);
+      return new Dimension(800, 400);
     }
 
     // function to repaint the columnBox
@@ -204,8 +204,8 @@ public class DefineFitnessFunctions
       jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
       jsp.setHorizontalScrollBarPolicy(JScrollPane.
                                        HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      jsp.setPreferredSize(new Dimension(220, 200));
-      jsp.setMinimumSize(new Dimension(220, 200));
+      jsp.setPreferredSize(new Dimension(200, 200));
+      jsp.setMinimumSize(new Dimension(200, 200));
 
       /**
        * New tableColumn created
@@ -282,13 +282,14 @@ public class DefineFitnessFunctions
            * TimeButton initialized to JButton, properties set: preferredSize, minimumSize
        */
       timeButton = new JButton("Time it");
-      timeButton.setPreferredSize(new Dimension(75, 30));
-      timeButton.setMinimumSize(new Dimension(75, 30));
+      timeButton.setEnabled(false);
+      //timeButton.setPreferredSize(new Dimension(75, 30));
+      //timeButton.setMinimumSize(new Dimension(75, 30));
       /**
        * deleteButton initialized to JButton, properties set: preferredSize, minimumSize
        */
-      deleteButton.setPreferredSize(new Dimension(70, 30));
-      deleteButton.setMinimumSize(new Dimension(70, 30));
+      //deleteButton.setPreferredSize(new Dimension(70, 30));
+      //deleteButton.setMinimumSize(new Dimension(70, 30));
 
       /**
        * buttonPanel initialized to JPanel and property set: setLayout
@@ -300,9 +301,10 @@ public class DefineFitnessFunctions
        * timeText initialized to JTextfield, 10 spaces wide,
        * two properties set: minimumSize and preferredSize
        */
-      JTextField timeText = new JTextField(10);
-      timeText.setMinimumSize(new Dimension(50, 20));
-      timeText.setPreferredSize(new Dimension(50, 20));
+      JTextField timeText = new JTextField(5);
+      timeText.setEnabled(false);
+      //timeText.setMinimumSize(new Dimension(50, 20));
+      //timeText.setPreferredSize(new Dimension(50, 20));
 
       /**
        * Panel button_boxPanel and textlabel_boxPanel initialized to Box
@@ -316,14 +318,16 @@ public class DefineFitnessFunctions
        * and delete button
        */
       button_boxPanel.add(timeButton);
-      button_boxPanel.add(Box.createHorizontalStrut(50));
+      //button_boxPanel.add(Box.createHorizontalStrut(50));
+      button_boxPanel.add(Box.createHorizontalStrut(20));
       button_boxPanel.add(deleteButton);
 
       /**
        * Panel textlabe_boxPanel adds three items: horizontal strut, JLabel
        * and timeText
        */
-      textlabel_boxPanel.add(Box.createHorizontalStrut(70));
+      //textlabel_boxPanel.add(Box.createHorizontalStrut(70));
+      textlabel_boxPanel.add(Box.createHorizontalStrut(20));
       textlabel_boxPanel.add(new JLabel("Total Time: "));
       textlabel_boxPanel.add(timeText);
 

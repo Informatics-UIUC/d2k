@@ -98,7 +98,7 @@ public class DefineConstraintFunctions
     }
 
     public Dimension getPreferredSize() {
-      return new Dimension(750, 350);
+      return new Dimension(800, 400);
     }
 
     // function to repaint the columnBox
@@ -233,8 +233,8 @@ public class DefineConstraintFunctions
       jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
       jsp.setHorizontalScrollBarPolicy(JScrollPane.
                                        HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      jsp.setPreferredSize(new Dimension(220, 200));
-      jsp.setMinimumSize(new Dimension(220, 200));
+      jsp.setPreferredSize(new Dimension(200, 200));
+      jsp.setMinimumSize(new Dimension(200, 200));
 
       /**
        * New tableColumn created

@@ -75,7 +75,7 @@ public class DefineConstraintVariables
     }
 
     public Dimension getPreferredSize() {
-      return new Dimension(750, 350);
+      return new Dimension(800, 400);
     }
 
     // function to repaint the columnBox

@@ -200,7 +200,7 @@ public class InputEMOParams
           catch (Exception ex) {
             popSize = Double.parseDouble(rec);
           }
-          popInfo.crossoverRate = popSize / 100;
+          popInfo.crossoverRate = popSize;
 
           override = (String) paramsModel.getValueAt(5, 2);
           rec = (String) paramsModel.getValueAt(5, 1);
@@ -210,7 +210,7 @@ public class InputEMOParams
           catch (Exception ex) {
             popSize = Double.parseDouble(rec);
           }
-          popInfo.mutationRate = popSize / 100;
+          popInfo.mutationRate = popSize;
 
           override = (String) paramsModel.getValueAt(6, 2);
           rec = (String) paramsModel.getValueAt(6, 1);
@@ -511,7 +511,7 @@ public class InputEMOParams
             catch (Exception ex) {
               popSize = Double.parseDouble(rec);
             }
-            testPopInfo.crossoverRate = popSize / 100;
+            testPopInfo.crossoverRate = popSize;
 
             override = (String) paramsModel.getValueAt(5, 2);
             rec = (String) paramsModel.getValueAt(5, 1);
@@ -521,7 +521,7 @@ public class InputEMOParams
             catch (Exception ex) {
               popSize = Double.parseDouble(rec);
             }
-            testPopInfo.mutationRate = popSize / 100;
+            testPopInfo.mutationRate = popSize;
 
             override = (String) paramsModel.getValueAt(6, 2);
             rec = (String) paramsModel.getValueAt(6, 1);
@@ -757,7 +757,6 @@ public class InputEMOParams
               double popSize = 2 * vl;
               setValueAt(Double.toString(popSize), 1, 1);
               double mut = 1 / vl;
-              mut = mut * 100;
               setValueAt(Double.toString(mut), 5, 1);
               fireTableDataChanged();
             }
@@ -765,12 +764,11 @@ public class InputEMOParams
               return;
             }
           }
-          if (r == 2) {
+          if (r == 3) {
             String val = (String) value;
             try {
               double d = Double.parseDouble(val);
               double crossover = (d - 1) / d;
-              crossover = crossover * 100;
               setValueAt(Double.toString(crossover), 4, 1);
               fireTableDataChanged();
             }
@@ -789,7 +787,6 @@ public class InputEMOParams
               double popSize = 2 * vl;
               setValueAt(Double.toString(popSize), 1, 1);
               double mut = 1 / vl;
-              mut = mut * 100;
               setValueAt(Double.toString(mut), 5, 1);
               fireTableDataChanged();
             }
@@ -799,12 +796,11 @@ public class InputEMOParams
           }
 
           // user set the tournament size
-          if (r == 2) {
+          if (r == 3) {
             String val = (String) value;
             try {
               double d = Double.parseDouble(val);
               double crossover = (d - 1) / d;
-              crossover = crossover * 100;
               setValueAt(Double.toString(crossover), 4, 1);
               fireTableDataChanged();
             }
