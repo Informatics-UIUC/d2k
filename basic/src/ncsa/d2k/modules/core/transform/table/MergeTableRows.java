@@ -704,4 +704,7 @@ public class MergeTableRows extends HeadlessUIModule {
  *
  * 01-01-04:
  * bug 190 is fixed
+ *
+ * 01-05-04:
+ * module is ready for basic
 */

@@ -440,10 +440,12 @@ public class AutoBinOPT extends DataPrepModule {
 //moved create*BinDescriptor methods to BinDescriptorFactory
 
 /**
-* 11-18-03 Vered - changed line 169 so that curIdx = -1 and not 0.
+* 11-18-03 Vered - changes in sameWeight: curIdx = -1 and not 0.
 *          this makes the first bin not to be too large if there isn't any
 *          good reason for it. (beforehand, the first bin was by default of
 *          size weight+1, even if all values were unique.
+       *
+       * 01-05-04: ready for basic
 */
 
 /**

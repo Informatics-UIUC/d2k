@@ -74,7 +74,8 @@ public class FilterConstruction extends HeadlessUIModule {
 "      default, if an expression operates on any missing value, the row "+
 "      containing the missing value is included in the result. There is a "+
 "      property that can be changed to reverse this behavior."+
-"    </p>";
+"    </p>" +  "<P>Missiing Values Handling: Missing values in attributes that a filter " +
+                    "is constructed by them, are not filtered, by default.</P> ";
 	}
 
    public String[] getInputTypes() {
@@ -118,7 +119,7 @@ public class FilterConstruction extends HeadlessUIModule {
    public void setLastExpression(String value) {
       _lastExpression = value;
    }
-   
+
    private boolean _includeMissingValues = true;
    public boolean getIncludeMissingValues() {
 	  return _includeMissingValues;
@@ -132,7 +133,7 @@ public class FilterConstruction extends HeadlessUIModule {
     PropertyDescription[] pds = new PropertyDescription[3];
     pds[0] = super.supressDescription;
     pds[1] = new PropertyDescription("expression", "Filter Expression", "Set this expression to filter out rows in the table, when \"Supress User Interface Display\" is set to true. Validation of the expression is done during run time.");
-	pds[2] = new PropertyDescription("includeMissingValues", "Include Missing Values", 
+	pds[2] = new PropertyDescription("includeMissingValues", "Include Missing Values",
 			"If set, rows with missing values will be included in the result table.");
     return pds;
 
@@ -665,10 +666,13 @@ try {
   *           is considered legal. if both attributes are nominal this will
   *           throw a number format exception. if both are numeric: if they
   *           are identical - the table remains the same. otherwise the table
-  *           becomes empty. [bug 109].
+  *           becomes empty. [bug 109]. fixed.
   *
   *           the following expression is considered legal (with golf.data):
  *            att == val == att
- *            the result was an empty table. (bug 110)
+ *            the result was an empty table. (bug 110) fixed.
+ *
+ * 01-06-04:
+ * module is ready fro basic.
 
   */

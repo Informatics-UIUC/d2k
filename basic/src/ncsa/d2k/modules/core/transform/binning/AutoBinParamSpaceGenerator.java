@@ -68,3 +68,10 @@ public class AutoBinParamSpaceGenerator extends AbstractParamSpaceGenerator {
     return pds;
   }
 }
+/**
+ * QA comments.
+ *
+ * 01-05-04:
+ * vered started qa process.
+ * ready for basic.
+*/

@@ -753,6 +753,7 @@ public class AttributeConstruction extends HeadlessUIModule {
    /**
  * 11-04-03 Vered started QA process
  *          the ui validates illegal expressions [bug 117]
+ *          fixed (01-06-04)
  *
  *          the ui remembers the previously constructed attributes (byt name)
  *          and lists them together with the available attributes in the input table.
@@ -764,5 +765,7 @@ public class AttributeConstruction extends HeadlessUIModule {
  *
  * 11-25-03 Missing Values handling - handles mising values as real values. [bug 145]
  *          this was fixed (12-05-03)
+ *
+ * 01-06-04: ready for basic.
  */
 

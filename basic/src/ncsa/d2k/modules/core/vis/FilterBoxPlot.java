@@ -443,4 +443,8 @@ public class FilterBoxPlot extends HeadlessUIModule {
  * bug 195 - what to do about missing values. awaiting decision regarding this one.
  * right now missing values are not participating in the statistics but do get
  * to be filtered as regular ones. added this to module info.
+ *
+ * 01-06-04:
+ * bug 195 is fixed.
+ * modules is ready fro basic.
 */
