@@ -141,7 +141,7 @@ public class BarChart extends Chart {
 
   public void initOffsets() {
     NumberFormat numberformat = NumberFormat.getInstance();
-    numberformat.setMaximumFractionDigits(3);
+    numberformat.setMaximumFractionDigits(0);
 
     // Determine maximum string widths
     // X axis
@@ -343,7 +343,7 @@ public class BarChart extends Chart {
 
   public void drawScale(Graphics2D g2) {
     NumberFormat numberformat = NumberFormat.getInstance();
-    numberformat.setMaximumFractionDigits(3);
+    numberformat.setMaximumFractionDigits(0);
     int ascent = metrics.getAscent();
 
     double x = leftoffset + (xoffsetincrement/2);
