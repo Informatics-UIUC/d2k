@@ -8,10 +8,10 @@ import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 
 public class SQLRainForestParamSpaceGenerator extends AbstractParamSpaceGenerator {
 
-  public static final String MIN_RATIO = "Minimum leaf ratio";
+  public static final String MIN_RATIO = "Minimum Leaf Size Ratio";
   public static final String MODE_THRESHOLD = "Mode Threshold";
   public static final String BIN_NUMBER = "Bin Number";
-  public static final String DOMINATE_RATIO = "Dominate Ratio";
+  public static final String DOMINATE_RATIO = "Dominate Class Ratio";
 
   /**
    * Returns a reference to the developer supplied defaults. These are
