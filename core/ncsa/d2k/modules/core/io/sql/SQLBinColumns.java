@@ -222,10 +222,14 @@ public class SQLBinColumns extends UIModule {
           String colName = fieldNames[col];
           con = wrapper.getConnection();
           queryStr = "select min(" + colName + ") from " + tableName;
+          System.out.println("queryStr for min is " + queryStr);
           stmt = con.createStatement();
           ResultSet minSet = stmt.executeQuery(queryStr);
           minSet.next();
-          return (minSet.getDouble(1));
+          double val = minSet.getDouble(1);
+          stmt.close();
+          //return (minSet.getDouble(1));
+          return(val);
         }
         catch (Exception e) {
 	  JOptionPane.showMessageDialog(msgBoard,
@@ -245,7 +249,10 @@ public class SQLBinColumns extends UIModule {
           stmt = con.createStatement();
           ResultSet maxSet = stmt.executeQuery(queryStr);
           maxSet.next();
-          return (maxSet.getDouble(1));
+          double val = maxSet.getDouble(1);
+          stmt.close();
+          //return (maxSet.getDouble(1));
+          return (val);
         }
         catch (Exception e) {
 	  JOptionPane.showMessageDialog(msgBoard,
@@ -265,7 +272,10 @@ public class SQLBinColumns extends UIModule {
           stmt = con.createStatement();
           ResultSet cntSet = stmt.executeQuery(queryStr);
           cntSet.next();
-          return (cntSet.getInt(1));
+          int val = cntSet.getInt(1);
+          stmt.close();
+          //return (cntSet.getInt(1));
+          return(val);
         }
         catch (Exception e) {
 	  JOptionPane.showMessageDialog(msgBoard,
@@ -297,6 +307,7 @@ public class SQLBinColumns extends UIModule {
             cntSet.next();
             counts[i] = cntSet.getInt(1);
             low = high;
+            stmt.close();
           }
           queryStr = "select count(" + colName + ") from " + tableName +
                        " where " + colName + " > " + low;
@@ -305,6 +316,7 @@ public class SQLBinColumns extends UIModule {
           ResultSet cntSet = stmt.executeQuery(queryStr);
           cntSet.next();
           counts[borders.length-1] = cntSet.getInt(1);
+          stmt.close();
 
           for (int i=0; i<counts.length; i++) {
             System.out.println(i + " item is " + counts[i]);
@@ -328,7 +340,10 @@ public class SQLBinColumns extends UIModule {
           stmt = con.createStatement();
           ResultSet totalSet = stmt.executeQuery(queryStr);
           totalSet.next();
-          return (totalSet.getDouble(1));
+          double val = totalSet.getDouble(1);
+          stmt.close();
+          //return (totalSet.getDouble(1));
+          return(val);
         }
         catch (Exception e) {
 	  JOptionPane.showMessageDialog(msgBoard,
@@ -955,17 +970,6 @@ public class SQLBinColumns extends UIModule {
                     viewDone("Done");
                 }
             });
-            /*JButton showTable = new JButton("Show Table");
-            showTable.addActionListener(new AbstractAction() {
-
-                public void actionPerformed (ActionEvent e) {
-                    JD2KFrame frame = new JD2KFrame("Table");
-                    frame.getContentPane().add(new TableMatrix(tbl));
-                    frame.addWindowListener(new DisposeOnCloseListener(frame));
-                    frame.pack();
-                    frame.setVisible(true);
-                }
-            });*/
             JButton helpButton = new JButton("Help");
             helpButton.addActionListener(new AbstractAction() {
 
@@ -1075,6 +1079,7 @@ public class SQLBinColumns extends UIModule {
             while (distinctSet.next()) {
               set.add(distinctSet.getString(1));
             }
+            stmt.close();
             return set;
           }
           catch (Exception e) {
@@ -1319,9 +1324,7 @@ public class SQLBinColumns extends UIModule {
                     1], binMaxes[j]);
                     addItemToBinList(nbd);
                 }
-                //nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length
-                        //- 1]);
-                //addItemToBinList(nbd);
+                stmt.close();
               }
               catch (Exception e) {
 	          JOptionPane.showMessageDialog(msgBoard,
