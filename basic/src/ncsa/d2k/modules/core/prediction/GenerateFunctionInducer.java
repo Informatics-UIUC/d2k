@@ -73,13 +73,14 @@ public class GenerateFunctionInducer extends ComputeModule {
 
   public void doit() throws Exception {
 
+	//System.out.println("GENERATE FUNCTION INDUCER: ENTERED DOIT");
     if (InitialExecution) {
       functionInducerClass = (Class) this.pullInput(0);
       InitialExecution = false;
     }
 
     ParameterPoint parameterPoint = (ParameterPoint) this.pullInput(1);
-
+	//System.out.println("GENERATE FUNCTION INDUCER: pulled parameter point " + parameterPoint);
     FunctionInducerOpt functionInducerOpt = null;
 
     try {
@@ -93,5 +94,6 @@ public class GenerateFunctionInducer extends ComputeModule {
     functionInducerOpt.setControlParameters(parameterPoint);
 
     this.pushOutput(functionInducerOpt, 0);
+	//System.out.println("GENERATE FUNCTION INDUCER: pushed function inducer");
   }
 }

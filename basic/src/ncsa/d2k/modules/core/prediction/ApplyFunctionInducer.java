@@ -79,17 +79,19 @@ public class ApplyFunctionInducer
   public void doit() throws Exception {
 
     ExampleTable exampleSet = null;
+    //System.out.println("APPLYFUNCTION INDUCER: Entered doit");
 
     FunctionInducerOpt functionInducer = (FunctionInducerOpt)this.pullInput(0);
     ErrorFunction errorFunction = (ErrorFunction)this.pullInput(1);
 
     exampleSet = (ExampleTable)this.pullInput(2);
-
+	
     //!!! do i need this?
     //exampleSet = (ExampleTable) exampleSet.copy();
 
     Model model = functionInducer.generateModel(exampleSet, errorFunction);
 
+	//System.out.println("APPLYFUNCTION INDUCER: generated model");
     this.pushOutput(model, 0);
   }
 }

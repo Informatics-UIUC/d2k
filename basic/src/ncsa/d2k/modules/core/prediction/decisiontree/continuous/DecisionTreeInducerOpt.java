@@ -430,7 +430,7 @@ and the example table assigned to node2 contains the examples that the decomposi
     //ExampleTable node1ExampleSet = (ExampleTable) examples.copy();
     //node1ExampleSet.setTestingSet(node1ExampleIndicies);
     node1.examples = (ExampleTable) examples.getSubset(node1ExampleIndicies);
-
+ 
     //ExampleTable node2ExampleSet = (ExampleTable) examples.copy();
     //node2ExampleSet.setTestingSet(node2ExampleIndicies);
     node2.examples = (ExampleTable) examples.getSubset(node2ExampleIndicies);

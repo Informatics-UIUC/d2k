@@ -3,19 +3,20 @@ import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.core.modules.*;
 
-public class FunctionInducer extends OrderedReentrantModule implements Cloneable
+public abstract class FunctionInducer extends OrderedReentrantModule implements Cloneable
 {
   //int NumBiasParameters = 0;
 
   double [] BiasParameters;
 
-  public boolean _Trace     = false;
-  public void    set_Trace (boolean value) {       this._Trace       = value;}
-  public boolean get_Trace ()              {return this._Trace;}
+  //public boolean _Trace     = false;
+  //public void    set_Trace (boolean value) {       this._Trace       = value;}
+  //public boolean get_Trace ()              {return this._Trace;}
 
   public String getModuleInfo() {
-    return "FunctionInducer";
+    return "FunctionInducer - not a functiona module in itself, it is a base class for MeanOutputInducer.";
   }
+  
   public String getModuleName()
   {
     return "FunctionInducer";
@@ -84,9 +85,26 @@ public class FunctionInducer extends OrderedReentrantModule implements Cloneable
   }
 
   public void doit() throws Exception {
+	
+	//	ANCA: added exceptions
+	  ExampleTable  exampleSet ;
+		  try {
+			  exampleSet = (ExampleTable)this.pullInput(0);
+		  } catch ( java.lang.ClassCastException e) {
+			   throw new Exception("Input/Output attributes not selected.");
+		  }
+    
+		  int[] inputs = exampleSet.getInputFeatures();
+		  int [] outputs = exampleSet.getOutputFeatures();
+		  for (int i = 0; i < inputs.length; i++)
+			  if(!(exampleSet.getColumn(inputs[i])).getIsScalar()) 
+				  throw new Exception ("input attributes like " +exampleSet.getColumn(inputs[i]).getLabel() + " must be numeric");
+	
+		  for (int i = 0; i < outputs.length; i++)
+				  if(!(exampleSet.getColumn(outputs[i])).getIsScalar()) 
+					  throw new Exception ("output attribute " + i  +" must be numeric");
 
-    ExampleTable  exampleSet      = (ExampleTable)  this.pullInput(0);
-    ErrorFunction errorFunction   = (ErrorFunction) this.pullInput(1);
+      ErrorFunction errorFunction   = (ErrorFunction) this.pullInput(1);
     
  
     instantiateBiasFromProperties();
