@@ -431,7 +431,8 @@ public class SaveFileToDB extends UIModule
 
       /** connect to a database and retrieve the list of available tables */
       protected void doBrowse() {
-          query = "select table_name from all_tables where owner not like '%SYS%'";
+          //query = "select table_name from all_tables where owner not like '%SYS%'";
+          query = "select table_name from user_tables";
           try {
               bt = new BrowseTables(cw, query);
               btw = new BrowseTablesView(bt, query);
