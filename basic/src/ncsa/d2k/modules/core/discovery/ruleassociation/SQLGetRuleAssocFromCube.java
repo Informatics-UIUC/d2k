@@ -395,6 +395,12 @@ public class SQLGetRuleAssocFromCube extends UIModule
             JOptionPane.ERROR_MESSAGE);
           System.out.println("There is no code book selected.");
         }
+        else if (tableName.getText().toString().indexOf("_CUBE")<0) {
+          JOptionPane.showMessageDialog(msgBoard,
+          "To extract and display rules, you must select a cube table rather than a data table.", "Error",
+          JOptionPane.ERROR_MESSAGE);
+          System.out.println("A cube table is selected instead of a data table.");
+        }
         else if (tableName.getText().length()>0) {
           // if code book is required and the code book is not retrieved yet, then get it
           if (!saveBookName.equals(bookName.getText().toString()) &&
