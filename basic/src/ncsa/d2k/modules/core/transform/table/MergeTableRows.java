@@ -146,25 +146,29 @@ public class MergeTableRows extends UIModule {
       	  s += "merge parameters. ";
 
       	  s += "</p><p>";
-      	  s += "The module dialog lists all of the attributes in the <i>Input Table</i> and allows the user to select one or more ";
-          s += "of them to be the <i>Key</i> for the merge. ";
+      	  s += "The module dialog lists all of the attributes in the <i>Input Table</i> and allows the user to select one ";
+          s += "or more of them to be the <i>Key</i> for the merge. ";
           s += "The module merges table rows with identical values for all of the specified Key attributes. ";
-          s += "The module dialog also lists all of the numeric attributes in the <i>Input Table</i> and allows the user to select ";
-          s += "one of these as the <i>Control</i> attribute. ";
-          s += "The Control determines which row in each matching row set will be used as the basis for the resulting merged row. ";
+          s += "The module dialog also lists all of the numeric attributes in the <i>Input Table</i> and allows the user ";
+          s += "to select one of these as the <i>Control</i> attribute. ";
+          s += "The Control determines which row in each matching row set will be used as the basis ";
+          s += "for the resulting merged row. ";
           s += "For a set of matching rows, the row with the maximum value for the Control attribute is the control row. ";
 
           s += "</p><p>";
-          s += "The module dialog also lists the numeric attributes under the <i>Merge</i> heading, and allows the user to select ";
+          s += "The module dialog also lists the numeric attributes under the <i>Merge</i> heading, ";
+          s += "and allows the user to select ";
           s += "one or more of these attributes to be merged across matching rows using the operation specified via the ";
           s += "dialog's <i>Merge Method</i>. ";
-          s += "The possible merge methods are <i>Sum</i>, <i>Average</i>, <i>Maximum</i>, and <i>Minimum</i>. ";
+          s += "The possible merge methods are <i>Sum</i>, <i>Average</i>, ";
+          s += "<i>Maximum</i>, <i>Minimum</i>, and <i>Count</i>. ";
           s += "For each of the Merge attributes selected, the merge method will be applied to the attribute values of all ";
           s += "matching rows in a set and the result will appear in the output merged row. ";
 
           s += "</p><p>";
-          s += "Each row in the <i>Output Table</i> will have the values of the control row attributes for all string attributes and ";
-          s += "for the numeric attributes that were not selected as Merge attributes.    That is to say, all data that is not ";
+          s += "Each row in the <i>Output Table</i> will have the values of the control row attributes ";
+          s += "for all string attributes and for the numeric attributes that were not selected as Merge attributes. ";
+          s += "That is to say, all data that is not ";
           s += "merged using the merge method is simply copied from the control row for each set of matching rows. ";
 
           s += "</p><p>Data Type Restrictions: ";
@@ -175,8 +179,9 @@ public class MergeTableRows extends UIModule {
           s += "The <i>Input Table</i> is not modified.   The <i>Output Table</i> is created by the module. ";
 
 	  s += "</p><p>Scalability: ";
-          s += "This module should scale very well for tables where the key attribute has a limited number of unique values. When ";
-          s += "that is not the case, in other words, if the key attribute selected is not nominal, the module will not scale ";
+          s += "This module should scale very well for tables where the key attribute has a limited number ";
+          s += "of unique values. When that is not the case, ";
+          s += "in other words, if the key attribute selected is not nominal, the module will not scale ";
           s += "well.</p>";
 
           return s;
@@ -196,8 +201,9 @@ public class MergeTableRows extends UIModule {
 
 	private static final String SUM = "Sum";
 	private static final String AVE = "Average";
-	private static final String MAX = "Max";
-	private static final String MIN = "Min";
+	private static final String MAX = "Maximum";
+	private static final String MIN = "Minimum";
+        private static final String CNT = "Count";
 
 	private class CleanView extends JUserPane {
 		JList keyAttributeList;
@@ -322,7 +328,7 @@ public class MergeTableRows extends UIModule {
 			JScrollPane jsp3 = new JScrollPane(attributesToMerge);
 			jsp3.setColumnHeaderView(new JLabel("To Merge"));
 
-			String [] methods = {SUM, AVE, MAX, MIN};
+			String [] methods = {SUM, AVE, MAX, MIN, CNT};
 			mergeMethod = new JComboBox(methods);
 			JPanel pnl = new JPanel();
 			pnl.add(new JLabel("Merge Method"));
@@ -455,6 +461,8 @@ public class MergeTableRows extends UIModule {
 					mergeAve(newTable, curRow, keys, merges, control, array);
 				else if(type.equals(SUM))
 					mergeSum(newTable, curRow, keys, merges, control, array);
+				else if(type.equals(CNT))
+					mergeCnt(newTable, curRow, keys, merges, control, array);
 				curRow++;
 			}
 
@@ -589,6 +597,36 @@ public class MergeTableRows extends UIModule {
 			}
 		}
 
+		private void mergeCnt(TableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
+			// find the maximum in the control column.  this row will be the one
+			// where data is copied from
+
+			int maxRow = rows[0];
+			double maxVal = table.getDouble(rows[0], control);
+			for(int i = 1; i < rows.length; i++) {
+				if(table.getDouble(rows[i], control) > maxVal) {
+					maxVal = table.getDouble(rows[i], control);
+					maxRow = rows[i];
+				}
+			}
+
+			// copy all the row data in
+			for(int i = 0; i < tbl.getNumColumns(); i++) {
+				Column c = tbl.getColumn(i);
+				if(c instanceof NumericColumn)
+					tbl.setDouble(table.getDouble(maxRow, i), rowLoc, i);
+				else
+					tbl.setString(table.getString(maxRow, i), rowLoc, i);
+			}
+
+			// the count is the number of rows - write than in each column
+                        // that's being merged.
+                        int cnt = rows.length;
+			for(int i = 0; i < mergeCols.length; i++) {
+				tbl.setDouble(cnt, rowLoc, mergeCols[i]);
+			}
+		}
+
 		private TableImpl createTable(int numRows) {
 			Column[] cols = new Column[table.getNumColumns()];
 			for(int i = 0; i < table.getNumColumns(); i++) {
@@ -680,4 +718,7 @@ public class MergeTableRows extends UIModule {
 // 3/5/03  - A6 allows Exeception in setValue;  Commmited to Basic
 //           WISH:  After discussion with Tom this should be reworked at
 //           some point to use Tables, not TableImpls.
+// 7/18/03 - RA: Added "Count" option in response to request from Loretta.
+//           WISH:  Allow "All" option where all stats are computed and
+//           new columns are added.  (see loretta for details)
 // END QA Comments
