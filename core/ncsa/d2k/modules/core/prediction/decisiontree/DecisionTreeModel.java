@@ -58,7 +58,7 @@ public class DecisionTreeModel extends PredictionModelModule
 		root = rt;
 		inputFeatures = table.getInputFeatures();
 		outputFeatures = table.getOutputFeatures();
-                setTrainingTable(table);
+                //setTrainingTable(table);
 //		trainingSetSize = table.getNumRows();
 
 /*		inputColumnNames = new String[inputFeatures.length];
