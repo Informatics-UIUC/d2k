@@ -35,6 +35,15 @@ public class Scale extends UIModule {
       sb.append("interactive scaling of numeric <i>MutableTable</i> data. ");
       sb.append("Numeric columns selected by the user can be scaled to ");
       sb.append("a specified range (the default range is 0 to 1).");
+
+
+      sb.append("<P><U>Missing Values Handling:</U> This module handles missing values" +
+        " as if they were real meaningful values. For example, if a missing values is represented " +
+        "by a number (e.g. zero), then this number may appear as lower or upper bound of its column, " +
+        "although it is marked as a missing value in its table. If it indeed becomes a lower or upper " +
+        "bound, it affects of course the scaling results.</P>");
+
+
       sb.append("</p><p>Data Handling: ");
       sb.append("This module does not modify its input data. Rather, its ");
       sb.append("output is a <i>Transformation</i> that can later be used to ");
@@ -555,3 +564,8 @@ public class Scale extends UIModule {
    }
 
 }
+/**
+ * QA comments:
+ * 2-28-03  Vered started qa.
+ *          added to module info a note about missing values handling.
+ */

@@ -53,6 +53,12 @@ public class BinColumns extends UIModule {
           "<li><u>Uniform Weight:</U><br> Enter a positive integer value for even binning with that number in each bin.</li>"+
           "</ul></P><P>The user may also bin nominal data.</P>"+
           "<P>For further information on how to use this module the user may click on the \"Help\" button during run time and get detailed description of each functionality.</P>"+
+
+          "<P><U>Missing/Empty Values Handling:</u> In scalar columns missing and empty values will be binned into " +
+          "\"UNKNOWN\". In nominal columns how ever, missing/empty values which are represented by " +
+          "'?' will be treated as a unique value in the column. In this case, if the user does not group " +
+          "the '?' and assign it a bin, then it would also be binned into \"UNKNOWN\".</P>"+
+
           "<P><B>Data Handling:</b><BR> This module may change its input " +
           "<i>MutableTable</i>: any column labels that are null will be assigned " +
           "default labels. Otherwise, this module does not change its input. Rather than that it outputs a Transformation that can be then applied to the data.</P>"+
@@ -1481,4 +1487,5 @@ class TableBinCounts implements BinCounts {
  * QA comments:
  * 2-27-03 vered started qa. added module description, exception handling.
  * 2-27-03 commit back to core and back to greg - to reveiw bin nominal columns tab.
+ * 3-6-03 added to module info a note about missing values handling.
  */

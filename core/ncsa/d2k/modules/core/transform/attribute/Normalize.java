@@ -38,7 +38,13 @@ public class Normalize extends UIModule {
       sb.append("numeric <i>MutableTable</i> data. Numeric columns selected ");
       sb.append("by the user are normalized to a set of values such that the ");
       sb.append("mean of that set is approximately zero and the standard ");
-      sb.append("deviation of that set is approximately one.");
+      sb.append("deviation of that set is approximately one.</P>");
+
+      sb.append("<P><U>Missing Values Handling:</U> This module handles missing values" +
+        " as if they were real meaningful values. For example, if a missing values is represented " +
+        "by zero, then after applying the transformation this zero will be changed according " +
+        "to the normalizing definition.</P>");
+
       sb.append("</p><p>Data Handling: ");
       sb.append("This module does not modify its input data. Rather, its ");
       sb.append("output is a <i>Transformation</i> that can later be used to ");
@@ -358,3 +364,10 @@ public class Normalize extends UIModule {
    }
 
 }
+
+
+/**
+ * QA comments:
+ * 2-28-03  Vered started qa.
+ *          added to module info a note about missing values handling.
+ */
