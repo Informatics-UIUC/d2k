@@ -99,6 +99,8 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
                 // get the query condition.
                 String whereClause = (String) this.pullInput (3);
 
+
+
 		////////////////////////////
 		// Get the number of entries in the table.
 		String query = "SELECT COUNT(*) FROM "+tableList;

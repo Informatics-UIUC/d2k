@@ -842,9 +842,9 @@ public class SaveFileToDB extends HeadlessUIModule
 
 
         public PropertyDescription [] getPropertiesDescriptions () {
-          PropertyDescription [] super_pds = super.getPropertiesDescriptions();
+         // PropertyDescription [] super_pds = super.getPropertiesDescriptions();
          PropertyDescription [] pds = new PropertyDescription [3];
-         pds[0] = super_pds[0];
+         pds[0] = super.supressDescription;
          pds[1] = new PropertyDescription ("createNewTable", "Create New Table", "true if file is to be saved to a new table. false if file is to be appended to an existing table");
          pds[2] = new PropertyDescription ("tableName", "Table Name", "The table name to which the file is to be saved.");
          return pds;

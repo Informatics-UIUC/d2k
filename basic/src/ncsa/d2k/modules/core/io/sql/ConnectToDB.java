@@ -218,9 +218,9 @@ public class ConnectToDB extends HeadlessUIModule {
     }
 
     public PropertyDescription [] getPropertiesDescriptions () {
-      PropertyDescription [] super_pds = super.getPropertiesDescriptions();
+      //PropertyDescription [] super_pds = super.getPropertiesDescriptions();
       PropertyDescription [] pds = new PropertyDescription [7];
-      pds[0] = super_pds[0];
+      pds[0] = super.supressDescription;
       pds[1] = new PropertyDescription ("dbVendor", "Database Vendor", "The database vendor.");
       pds[2] = new PropertyDescription ("username", "User Name", "The login account to use.");
       pds[3] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
@@ -489,7 +489,7 @@ public class ConnectToDB extends HeadlessUIModule {
     /**
        connects to the database, according to the settings of the properties.
        */
-        public void doit() throws Exception{
+        protected void doit() throws Exception{
 
           //checking that the properties are not null
           if(dbInstance == null)

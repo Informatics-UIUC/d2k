@@ -44,18 +44,18 @@ public class AvailableFieldsInput extends InputModule
 				return "Database Connection";
 			case 1:
 				return "Selected Table";
-			default: 
+			default:
 				return "No such input";
 		}
 	}
 
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: 
+			case 0:
 				return "The database connection.";
-			case 1: 		
+			case 1:
 				return "The name of the selected table, as specified in a previous module.";
-			default: 
+			default:
 				return "No such input";
 		}
 	}
@@ -76,7 +76,7 @@ public class AvailableFieldsInput extends InputModule
 				return "Database Connection";
 			case 1:
 				return "Attributes List";
-			default: 
+			default:
 				return "No such output";
 		}
 	}
@@ -98,9 +98,9 @@ public class AvailableFieldsInput extends InputModule
 	{
 		String tableName = (String) this.pullInput (1);
                 if (tableName == null || tableName.length()== 0) {
-                  JOptionPane.showMessageDialog(msgBoard,
+                 /* JOptionPane.showMessageDialog(msgBoard,
                             "No table is selected.", "Error",
-                            JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);*/
                   System.out.println("No table is selected");
 
                 }
