@@ -178,6 +178,18 @@ public class GeneratePopulation
         pop = new EMOConstrainedSOPopulation(xyz, fit[0],
                                              params.populationSize, 0.01,
                                              this.numConstraints);
+        
+        // for each constraint, set the weight on the population object 
+        ConstrainedPopulation cp = (ConstrainedPopulation)pop; 
+        for(int i = 0; i < this.numFormulaConstraints; i++) {
+          double weight = params.constraints.getConstraintFunctionWeight(i);
+          cp.setConstraintWeight(weight, i);
+        }
+        
+        for(int i = numFormulaConstraints; i < this.numExternalConstraints; i++) {
+          double weight = params.constraints.getExternConstraintWeight(i);
+          cp.setConstraintWeight(weight, i);
+        }
       }
       // create an unconstrained SO pop
       else {
@@ -202,6 +214,17 @@ public class GeneratePopulation
       if (constrained) {
         pop = new EMOConstrainedNsgaPopulation(xyz, fit,
                                             params.populationSize, 0.01, this.numConstraints);
+        // for each constraint, set the weight on the population object 
+        ConstrainedPopulation cp = (ConstrainedPopulation)pop; 
+        for(int i = 0; i < this.numFormulaConstraints; i++) {
+          double weight = params.constraints.getConstraintFunctionWeight(i);
+          cp.setConstraintWeight(weight, i);
+        }
+        
+        for(int i = numFormulaConstraints; i < this.numExternalConstraints; i++) {
+          double weight = params.constraints.getExternConstraintWeight(i);
+          cp.setConstraintWeight(weight, i);
+        }
       }
       // if there are no constraints, we create an Unconstrained pop
       else {

@@ -74,4 +74,97 @@ public class ConstrainedSOPopulation
   public void setConstraintWeight(double newWeight, int index) {
     constraintWeights[index] = newWeight;
   }
+  
+  // This returns the maximum violation of a particular constraint of a certain id
+  // over the entire population, for that generation.
+/*  private double getmaxPopConstraintViol(int id) {
+    double maxViol = 0.0;
+    Solution[] indivs;
+    indivs = (Solution[])this.combinedPopulation;
+    int popSz = indivs.length;
+
+    for (int i = 0; i < popSz; i++) {
+      if (maxViol >= indivs[i].getConstraint(id)) {
+        maxViol = indivs[i].getConstraint(id);
+      }
+    }
+
+    return maxViol;
+  }*/
+  
+  /**
+          Compare one member to another. This requires knowledge of the
+          fitness function which cannot be supplied here, hence must be
+          provided in a subclass.
+          @returns 1 if member indexed a is greater than b,
+                          0 if they are equal,
+                          -1 if member indexed by a is less than b.
+  */
+  public int compareMembers (Solution f, Solution s) {
+    return super.compareMembers(f, s);
+    
+    
+/*      SOSolution first = (SOSolution)f;
+      SOSolution second = (SOSolution)s;
+      
+       int numObj = 1;
+       boolean firstBetter = false, secondBetter = false;
+   
+       /**
+        * Constraint check first for individuals that violate constraints
+        * Added by Meghna Babbar, feb 02, 2004
+        */
+/*       double totConstViol1 = 0.0;
+       double totConstViol2 = 0.0;
+       for (int i = 0; i < this.getNumConstraints(); i++) {
+         totConstViol1 = totConstViol1 + this.getConstraintWeight(i) *
+             first.getConstraint(i) / getmaxPopConstraintViol(i);
+         totConstViol2 = totConstViol2 + this.getConstraintWeight(i) *
+             second.getConstraint(i) / getmaxPopConstraintViol(i);
+       }
+   
+       if ( (totConstViol1 > 0.0) || (totConstViol2 > 0.0)) {
+         if (totConstViol1 > totConstViol2) {
+           return -1;
+         }
+         else if (totConstViol2 > totConstViol1) {
+           return 1;
+         }
+         else {
+           return 0;
+         }
+       }
+       //////////////////////////////////////////////////////////////////
+   
+       // Set the flag if one member has one objective value better than
+       // the other.
+       for (int i = 0; i < numObj; i++) {
+         int compare = objectiveConstraints[i].compare(
+             first.getObjective(), second.getObjective());
+         if (compare > 0) {
+           firstBetter = true;
+         }
+         else if (compare < 0) {
+           secondBetter = true;
+         }
+       }
+   
+       // Now figure out which is better if either is.
+       if (firstBetter == true) {
+         if (secondBetter == false) {
+           return 1;
+         }
+         else {
+           return 0;
+         }
+       }
+       else
+       if (secondBetter == true) {
+         return -1;
+       }
+       else {
+         return 0;
+       }*/
+  }
+  
 }
