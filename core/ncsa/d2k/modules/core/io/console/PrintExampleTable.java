@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.console.io;
+package ncsa.d2k.modules.core.io.console;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.core.modules.*;
