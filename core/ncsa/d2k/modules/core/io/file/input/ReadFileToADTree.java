@@ -5,6 +5,15 @@ import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
+/**
+ * Read a file into an ADTree.
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2002</p>
+ * <p>Company: </p>
+ * @author clutter
+ * @version 1.0
+ */
 public class ReadFileToADTree extends InputModule {
 
     public String[] getInputTypes() {
@@ -16,9 +25,21 @@ public class ReadFileToADTree extends InputModule {
         return "The FlatFileParser to read data from.";
     }
 
+    public String getInputName(int i) {
+        return "File Parser";
+    }
+
     public String[] getOutputTypes() {
-        String[] out = {"ncsa.d2k.modules.core.datatype.ADTree", "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+        String[] out = {"ncsa.d2k.modules.core.datatype.ADTree",
+            "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
         return out;
+    }
+
+    public String getOutputName(int i) {
+        if(i == 0)
+            return "ADTree";
+        else
+            return "Example Table";
     }
 
     public String getOutputInfo(int i) {
@@ -29,7 +50,17 @@ public class ReadFileToADTree extends InputModule {
     }
 
     public String getModuleInfo() {
-        return "Read a file into an ADTree.";
+        StringBuffer sb = new StringBuffer("<p>Overview: ");
+        sb.append("Read a file into an ADTree. ");
+        sb.append("<p>Detailed Description: ");
+        sb.append("Given a FlatFileParser, read the data into an ADTree. ");
+        sb.append("An ExampleTable that contains the meta data for the ADTree ");
+        sb.append("is also created.");
+        return sb.toString();
+    }
+
+    public String getModuleName() {
+        return "Create an ADTree";
     }
 
     public void doit() {
