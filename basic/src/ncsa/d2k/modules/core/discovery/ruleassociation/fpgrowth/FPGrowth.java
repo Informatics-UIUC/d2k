@@ -566,21 +566,25 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
       pat.addPatternElt(fte.getLabel());
       _patterns.add(pat);
 
-      if (ptrs.size() == 1){
-        FPTreeNode node = (FPTreeNode) ptrs.get(0);
-        if (node.getParent().isRoot()){
-          continue;
-        }
-        List l = this.getPath(node);
+      /*
+       I believe this block of code gives slightly corrupted results in the actual patterns formed
+       */
 
-        //now we need to get the combinations.
-        int[] newalpha = new int[alpha.length + 1];
-        System.arraycopy(alpha,0,newalpha,0,alpha.length);
-        newalpha[newalpha.length-1] = node.getLabel();
-        int supp = ( (FPTreeNode) l.get(l.size() - 1)).getCount();
-        combos2(l, supp, newalpha);
-        continue;
-      }
+//      if (ptrs.size() == 1){
+//        FPTreeNode node = (FPTreeNode) ptrs.get(0);
+//        if (node.getParent().isRoot()){
+//          continue;
+//        }
+//        List l = this.getPath(node);
+//
+//        //now we need to get the combinations.
+//        int[] newalpha = new int[alpha.length + 1];
+//        System.arraycopy(alpha,0,newalpha,0,alpha.length);
+//        newalpha[newalpha.length-1] = node.getLabel();
+//        int supp = ( (FPTreeNode) l.get(l.size() - 1)).getCount();
+//        combos2(l, supp, newalpha);
+//        continue;
+//      }
 
       FPSparse otab = new FPSparse(headers.size());
       int[] colmap = new int[headers.size()];
