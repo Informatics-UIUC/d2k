@@ -21,7 +21,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	public ParameterSpaceImpl (int numColumns) {
 		super(numColumns);
 	}
-	public ParameterSpace createFromTable(Table table) {
+	public ParameterSpace createFromTable(MutableTable table) {
 		return null;
 	}
 
@@ -173,6 +173,24 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	 */
 	public void setDefaultValue(int parameterIndex, double value){
 		this.setDouble(value, 2, parameterIndex);
+	}
+
+
+	/**
+	 * Set the default value of a parameter.
+	 * @param parameterIndex the index of the parameter of interest.
+	 * @param value the value of the parameter of interest.
+	 */
+	public void setType(int parameterIndex, int type){
+		throw new RuntimeException ("Why would you change the data type?");
+	}
+	/**
+	 * Set the resolution of a parameter.
+	 * @param parameterIndex the index of the parameter of interest.
+	 * @param value the resolution.
+	 */
+	public void setResolution(int parameterIndex, int resolution) {
+		this.res[parameterIndex] = resolution;
 	}
 
 	/**

@@ -16,18 +16,14 @@ Note: It is important that this be an Example so that additional layers
 */
 public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 
-	//static final long serialVersionUID = 2508941379956505568L;
 	double [] values;
 	String [] names;
-	int [] res;
-	int [] types;
 
 	/**
 	 * return a paramter point from the given arrays.
 	 * @return
 	 */
-	static final public ParameterPoint getParameterPoint(String []names, double [] values,
-			int [] res, int [] types) {
+	static final public ParameterPoint getParameterPoint(String []names, double [] values) {
 		int numColumns = names.length;
 		ExampleTableImpl eti = new ExampleTableImpl();
 		double [] vals = new double [1];
@@ -38,6 +34,28 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 			eti.addColumn(dc);
 		}
 		return new ParameterPointImpl(eti);
+	 }
+
+	 public ParameterPoint createFromData(String [] names, double [] values) {
+		 int numColumns = names.length;
+		 ExampleTableImpl eti = new ExampleTableImpl();
+		 double [] vals = new double [1];
+		 for (int i = 0 ; i < values.length; i++) {
+			 vals [0] = values[i];
+			 DoubleColumn dc = new DoubleColumn(vals);
+			 dc.setLabel(names[i]);
+			 eti.addColumn(dc);
+		 }
+		 return new ParameterPointImpl(eti);
+	 }
+
+	 /**
+	  * This method is expected to get an MutableTableImpl.
+	  * @param mt
+	  * @return
+	  */
+	 public ParameterPoint createFromTable(MutableTable mt) {
+		 return new ParameterPointImpl((ExampleTableImpl)mt.toExampleTable());
 	 }
 
 	 /**
@@ -62,13 +80,6 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 	* @return A string value representing the name of the parameter.
 	*/
 	public String getName(int parameterIndex) { return names[parameterIndex]; }
-
-	/**
-	* Get the resolution of a parameter.
-	* @param parameterIndex the index of the parameter of interest.
-	* @return An int value representing the number of intervals between the min and max parameter values.
-	*/
-	public int getResolution(int parameterIndex) { return res[parameterIndex]; }
 
 	/**
 	* Get the value of a parameter.
