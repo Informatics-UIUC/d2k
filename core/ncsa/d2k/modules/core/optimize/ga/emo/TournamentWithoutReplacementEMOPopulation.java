@@ -15,6 +15,11 @@ import ncsa.d2k.modules.core.optimize.ga.*;
 */
 public class TournamentWithoutReplacementEMOPopulation extends SelectionModule  {
 
+         public PropertyDescription[] getPropertyDescriptions() {
+           return new PropertyDescription[0];
+         }
+
+
 	/** selective pressure determins how rapidly the population converges. */
 	protected int tsize = 4;
 

@@ -205,7 +205,7 @@ public class GenerateEMOPopulation2
       bounds = (MutableTable) popInfo.boundsAndPrecision;
       firstRun = false;
       this.populationSize = popInfo.populationSize;
-      this.maxGenerations = popInfo.numGenerations;
+      this.maxGenerations = popInfo.maxGenerations;
     }
     else {
       // consume the dummy input

@@ -8,17 +8,23 @@ import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.geom.*;
 import java.awt.event.*;
 
-public class InputEMOParams extends UIModule {
+import java.text.*;
+
+public class InputEMOParams
+    extends UIModule {
 
   public String[] getInputTypes() {
-    //return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
-    return null;
+    return new String[] {
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
   }
 
   public String[] getOutputTypes() {
-    return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+    return new String[] {
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo",
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
   }
 
   public String getInputInfo(int i) {
@@ -41,13 +47,28 @@ public class InputEMOParams extends UIModule {
     return null;
   }
 
-  private class ParamView extends JUserPane {
+  private class ParamView
+      extends JUserPane {
 
     private JTable paramsTable;
     private DefaultTableModel paramsModel;
     private boolean multiObjective;
+    private EMOPopulationInfo popInfo;
+    private JLabel timeRequired = new JLabel();
+    private JTextField maxTime = new JTextField(4);
+    private JTextField numSolutions = new JTextField(4);
+    private JButton advanced = new JButton("Advanced Settings");
+    private RunTimeChart runTimeChart;
+
+    private JLabel timeRequired2 = new JLabel("          ");
+    private JLabel maxTime2 = new JLabel("          ");
+    private JButton tips = new JButton("Optimization Tips");
+    private boolean doingTiming = false;
+    private NumberFormat nf;
 
     public void initView(ViewModule vm) {
+      nf = NumberFormat.getInstance();
+      nf.setMaximumFractionDigits(4);
       paramsModel = new MultiObjectiveParamsTableModel();
       paramsTable = new JTable(paramsModel);
       paramsTable.setPreferredScrollableViewportSize(new Dimension(410, 80));
@@ -55,9 +76,10 @@ public class InputEMOParams extends UIModule {
 
       setLayout(new BorderLayout());
       JLabel label = new JLabel("Set GA Parameters");
-      label.setBorder(new EmptyBorder(20, 10, 20, 5));
+      label.setBorder(new EmptyBorder(20, 0, 20, 0));
 
       JPanel leftPanel = new JPanel(new BorderLayout());
+      leftPanel.setBorder(new EmptyBorder(10, 20, 10, 20));
       leftPanel.add(label, BorderLayout.NORTH);
 
       JPanel l1 = new JPanel(new BorderLayout());
@@ -73,7 +95,8 @@ public class InputEMOParams extends UIModule {
       l2.setBorder(new EmptyBorder(20, 10, 20, 5));
       rightPanel.add(l2, BorderLayout.NORTH);
       JPanel pp = new JPanel(new BorderLayout());
-      pp.add(new RunTimeChart(), BorderLayout.NORTH);
+      runTimeChart = new RunTimeChart();
+      pp.add(runTimeChart, BorderLayout.NORTH);
       pp.add(new RunTimePanel(), BorderLayout.CENTER);
       rightPanel.add(pp, BorderLayout.CENTER);
 
@@ -95,82 +118,191 @@ public class InputEMOParams extends UIModule {
           // now parse this
           try {
             double d = Double.parseDouble(txt);
-            int recPop = (int)(2*d+1);
+            int recPop = (int) (2 * d + 1);
             paramsModel.setValueAt(Double.toString(recPop), 0, 1);
           }
-          catch(Exception ex) {
+          catch (Exception ex) {
             return;
           }
         }
       });
-        paramsModel.setValueAt("30", 0, 1);
-        paramsModel.setValueAt("4", 2, 1);
-        paramsModel.setValueAt("1", 5, 1);
+
+      JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+      JButton abort = new JButton("Abort");
+      abort.addActionListener(new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          viewCancel();
+        }
+      });
+      JButton done = new JButton("Done");
+      done.addActionListener(new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          // set all the proper fields on the pop info
+
+          // get the pop size
+          String override = (String)paramsModel.getValueAt(1, 2);
+          String rec = (String)paramsModel.getValueAt(1, 1);
+
+          double popSize;
+          try {
+            popSize = Double.parseDouble(override);
+          }
+          catch(Exception ex) {
+            popSize = Double.parseDouble(rec);
+          }
+          popInfo.populationSize = (int)popSize;
+
+          override = (String)paramsModel.getValueAt(2, 2);
+          rec = (String)paramsModel.getValueAt(2, 1);
+          try {
+            popSize = Double.parseDouble(override);
+          }
+          catch(Exception ex) {
+            popSize = Double.parseDouble(rec);
+          }
+          popInfo.maxGenerations = (int)popSize;
+
+          override = (String)paramsModel.getValueAt(3, 2);
+          rec = (String)paramsModel.getValueAt(3, 1);
+          try {
+            popSize = Double.parseDouble(override);
+          }
+          catch(Exception ex) {
+            popSize = Double.parseDouble(rec);
+          }
+          popInfo.tournamentSize = (int)popSize;
+
+          override = (String)paramsModel.getValueAt(4, 2);
+          rec = (String)paramsModel.getValueAt(4, 1);
+          try {
+            popSize = Double.parseDouble(override);
+          }
+          catch(Exception ex) {
+            popSize = Double.parseDouble(rec);
+          }
+          popInfo.crossoverRate = popSize / 100;
+
+          override = (String)paramsModel.getValueAt(5, 2);
+          rec = (String)paramsModel.getValueAt(5, 1);
+          try {
+            popSize = Double.parseDouble(override);
+          }
+          catch(Exception ex) {
+            popSize = Double.parseDouble(rec);
+          }
+          popInfo.mutationRate = popSize / 100;
+
+          override = (String)paramsModel.getValueAt(6, 2);
+          rec = (String)paramsModel.getValueAt(6, 1);
+          try {
+            popSize = Double.parseDouble(override);
+          }
+          catch(Exception ex) {
+            popSize = Double.parseDouble(rec);
+          }
+          popInfo.generationGap  = popSize;
+          // push out
+
+          pushOutput(popInfo, 0);
+          viewDone("Done");
+        }
+      });
+      buttonsPanel.add(abort);
+      buttonsPanel.add(done);
+      add(buttonsPanel, BorderLayout.SOUTH);
+
+      maxTime.setText("10");
+      maxTime.addActionListener(new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          String txt = maxTime.getText();
+          maxTime2.setText(txt);
+          runTimeChart.repaint();
+        }
+      });
+      maxTime2.setText("10");
+      maxTime2.setHorizontalAlignment(JLabel.CENTER);
+      timeRequired2.setHorizontalAlignment(JLabel.CENTER);
     }
 
-    private JLabel timeRequired = new JLabel();
-    private JTextField maxTime = new JTextField(4);
-    private JTextField numSolutions = new JTextField(4);
-    private JButton advanced = new JButton("Advanced Settings");
-    private RunTimeChart runTimeChart;
-
-    private JLabel timeRequired2 = new JLabel("   ");
-    private JLabel maxTime2 = new JLabel("    ");
-
-    class RunTimePanel extends JPanel {
+    class RunTimePanel
+        extends JPanel {
       RunTimePanel() {
         setLayout(new GridBagLayout());
-        Constrain.setConstraints(this, new JLabel("Estimated Time Required", JLabel.RIGHT),
-                                                  0, 0, 1, 1,
-                                                  GridBagConstraints.HORIZONTAL,
-                                                  GridBagConstraints.WEST,
-                                                  1, 1);
-        Constrain.setConstraints(this, timeRequired2, 1, 0, 1, 1,
-                                  GridBagConstraints.HORIZONTAL,
-                                  GridBagConstraints.WEST,
-                                  1, 1);
-        Constrain.setConstraints(this, new JLabel("Specified Maximum Run Time", JLabel.RIGHT),
+        Constrain.setConstraints(this, new JLabel("         "),
+                                 0, 0, 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this,
+                                 new JLabel("Estimated Time Required: ",
+                                            JLabel.RIGHT),
                                  0, 1, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
-        Constrain.setConstraints(this, maxTime2, 1,1,1,1,
+        Constrain.setConstraints(this, timeRequired2, 1, 1, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
-        Constrain.setConstraints(this, new JLabel("Difference of ", JLabel.RIGHT),
-                                 0,2,1,1,
+        Constrain.setConstraints(this, new JLabel("minutes"), 2, 1, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
-        Constrain.setConstraints(this, new JLabel("   "), 0,2,1,1,
+        Constrain.setConstraints(this,
+                                 new JLabel("Specified Maximum Run Time: ",
+                                            JLabel.RIGHT),
+                                 0, 2, 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, maxTime2, 1, 2, 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, new JLabel("minutes"), 2, 2, 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this,
+                                 new JLabel("Difference of: ", JLabel.RIGHT),
+                                 0, 3, 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, differenceLabel, 1, 3, 1, 1,
                                  GridBagConstraints.BOTH,
                                  GridBagConstraints.WEST,
                                  1, 1);
-        Constrain.setConstraints(this, tips, 0, 3, 1, 1,
+        Constrain.setConstraints(this, new JLabel("minutes"), 2, 3, 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, tips, 0, 4, 1, 1,
                                  GridBagConstraints.NONE,
                                  GridBagConstraints.EAST,
                                  1, 1);
-
       }
     }
-    JButton tips = new JButton("Optimization Tips");
 
-    class RunTimeChart extends JPanel {
+    JLabel differenceLabel = new JLabel("      ", JLabel.CENTER);
+
+    class RunTimeChart
+        extends JPanel {
       RunTimeChart() {}
 
       public Dimension getPreferredSize() {
-        return new Dimension(300, 100);
+        return new Dimension(200, 100);
       }
 
       protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        Graphics2D g2 = (Graphics2D)g;
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setFont(new Font("Arial", Font.PLAIN, 10));
 
         // paint divider
         g2.setColor(Color.black);
-        g2.drawLine(0, (int)height/2, (int)width, (int)height/2);
+        g2.drawLine(0, (int) height / 2, (int) width, (int) height / 2);
 
         String req = timeRequired.getText();
         String max = maxTime.getText();
@@ -181,14 +313,42 @@ public class InputEMOParams extends UIModule {
           timeReq = Double.parseDouble(req);
           maxTime = Double.parseDouble(max);
         }
-        catch(Exception e) {
+        catch (Exception e) {
           return;
         }
 
-        if(timeReq > maxTime)
-          ;
-        else
-          ;
+        double startx = width * .1;
+        double barLength = width * .8;
+
+        double barHeight = height *.1;
+        double starty = height * .2;
+
+        double nexty = height *.7;
+
+        int strheight = g2.getFontMetrics().getHeight();
+
+        if (timeReq > maxTime) {
+          g2.setPaint(Color.darkGray);
+          g2.fill(new Rectangle2D.Double(startx, starty, barLength, barHeight));
+
+          double len = (maxTime*barLength)/timeReq;
+          g2.fill(new Rectangle2D.Double(startx, nexty, len, barHeight));
+          g2.setColor(Color.black);
+          g2.drawString("Estimated Required Time", (int)startx, (int)(.35*height+(strheight/2)));
+          g2.drawString("Specified Max Runtime", (int)startx, (int)(.9*height+(strheight/2)));
+        }
+        else {
+          g2.setPaint(Color.darkGray);
+          double len = (timeReq*barLength)/maxTime;
+          g2.fill(new Rectangle2D.Double(startx, starty, len, barHeight));
+
+          g2.fill(new Rectangle2D.Double(startx, nexty, barLength, barHeight));
+          g2.setColor(Color.black);
+          g2.drawString("Estimated Required Time", (int)startx, (int)(.35*height+(strheight/2)));
+          //g2.drawString("Estimated Required Time", (int)startx, (int)(.5*height-2));
+          //g2.drawString("Specified Max Runtime", (int)startx, (int)height-2);
+          g2.drawString("Specified Max Runtime", (int)startx, (int)(.9*height+(strheight/2)));
+        }
       }
 
       double height;
@@ -201,104 +361,281 @@ public class InputEMOParams extends UIModule {
       }
     }
 
-    class TimePanel extends JPanel {
+    class TimePanel
+        extends JPanel {
       TimePanel() {
         setLayout(new GridBagLayout());
-        JLabel lbl = new JLabel("Time Required", JLabel.RIGHT);
+        JLabel lbl = new JLabel("Time Required: ", JLabel.RIGHT);
         Constrain.setConstraints(this, lbl,
                                  0, 0, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
                                  1, 1);
         Constrain.setConstraints(this, timeRequired, 1, 0, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
                                  1, 1);
         Constrain.setConstraints(this, new JLabel("minutes"),
                                  2, 0, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        estimate = new JButton("Estimate");
+        estimate.addActionListener(new AbstractAction() {
+          public void actionPerformed(ActionEvent e) {
+            EMOPopulationInfo testPopInfo = new EMOPopulationInfo();
+            testPopInfo.boundsAndPrecision = popInfo.boundsAndPrecision;
+            testPopInfo.constraintFunctionConstructions = popInfo.constraintFunctionConstructions;
+            testPopInfo.constraintVariableConstructions = popInfo.constraintVariableConstructions;
+
+            testPopInfo.externalConstraintInfo = popInfo.externalConstraintInfo;
+            testPopInfo.externalFitnessInfo = popInfo.externalFitnessInfo;
+            testPopInfo.fitnessFunctionConstructions = popInfo.fitnessFunctionConstructions;
+            testPopInfo.fitnessVariableConstructions = popInfo.fitnessVariableConstructions;
+
+            testPopInfo.useExternalConstraintEvaluation = popInfo.useExternalConstraintEvaluation;
+            testPopInfo.useExternalFitnessEvaluation = popInfo.useExternalFitnessEvaluation;
+            testPopInfo.varNames = popInfo.varNames;
+
+            // get the pop size
+            String override = (String)paramsModel.getValueAt(1, 2);
+            String rec = (String)paramsModel.getValueAt(1, 1);
+
+            double popSize;
+/*            try {
+              popSize = Double.parseDouble(override);
+            }
+            catch(Exception ex) {
+              popSize = Double.parseDouble(rec);
+            }*/
+//            testPopInfo.populationSize = (int)popSize;
+            testPopInfo.populationSize = 2;
+
+            override = (String)paramsModel.getValueAt(2, 2);
+            rec = (String)paramsModel.getValueAt(2, 1);
+            /*try {
+              popSize = Double.parseDouble(override);
+            }
+            catch(Exception ex) {
+              popSize = Double.parseDouble(rec);
+            }*/
+//            testPopInfo.maxGenerations = (int)popSize;
+            testPopInfo.maxGenerations = 1;
+
+            override = (String)paramsModel.getValueAt(3, 2);
+            rec = (String)paramsModel.getValueAt(3, 1);
+            try {
+              popSize = Double.parseDouble(override);
+            }
+            catch(Exception ex) {
+              popSize = Double.parseDouble(rec);
+            }
+            testPopInfo.tournamentSize = (int)popSize;
+
+            override = (String)paramsModel.getValueAt(4, 2);
+            rec = (String)paramsModel.getValueAt(4, 1);
+            try {
+              popSize = Double.parseDouble(override);
+            }
+            catch(Exception ex) {
+              popSize = Double.parseDouble(rec);
+            }
+            testPopInfo.crossoverRate = popSize / 100;
+
+            override = (String)paramsModel.getValueAt(5, 2);
+            rec = (String)paramsModel.getValueAt(5, 1);
+            try {
+              popSize = Double.parseDouble(override);
+            }
+            catch(Exception ex) {
+              popSize = Double.parseDouble(rec);
+            }
+            testPopInfo.mutationRate = popSize / 100;
+
+            override = (String)paramsModel.getValueAt(6, 2);
+            rec = (String)paramsModel.getValueAt(6, 1);
+            try {
+              popSize = Double.parseDouble(override);
+            }
+            catch(Exception ex) {
+              popSize = Double.parseDouble(rec);
+            }
+            testPopInfo.generationGap  = popSize;
+            // push out
+
+            doingTiming = true;
+            startTime = System.currentTimeMillis();
+            estimate.setEnabled(false);
+            pushOutput(testPopInfo, 1);
+          }
+        });
+        Constrain.setConstraints(this, estimate,
+                                 3,0,1,1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
                                  1, 1);
         Constrain.setConstraints(this, new JLabel("    "),
                                  0, 1, 1, 1,
-                                 GridBagConstraints.BOTH, GridBagConstraints.WEST,
+                                 GridBagConstraints.BOTH,
+                                 GridBagConstraints.WEST,
                                  1, 1);
-        JLabel lbl2 = new JLabel("Maximum Run Time", JLabel.RIGHT);
+        JLabel lbl2 = new JLabel("Maximum Run Time: ", JLabel.RIGHT);
         Constrain.setConstraints(this, lbl2,
                                  0, 2, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
                                  1, 1);
         Constrain.setConstraints(this, maxTime,
                                  1, 2, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
                                  1, 1);
         Constrain.setConstraints(this, new JLabel("minutes"),
                                  2, 2, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
                                  1, 1);
-        /*JLabel lbl3 = new JLabel("Number of Solutions Desired:", JLabel.RIGHT);
-        Constrain.setConstraints(this, lbl3,
+            /*JLabel lbl3 = new JLabel("Number of Solutions Desired:", JLabel.RIGHT);
+                 Constrain.setConstraints(this, lbl3,
                                  0, 3, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+             GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                  1, 1);
-        Constrain.setConstraints(this, numSolutions,
+                 Constrain.setConstraints(this, numSolutions,
                                  1, 3, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+             GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                  1, 1);
-        Constrain.setConstraints(this, new JLabel("  "),
+                 Constrain.setConstraints(this, new JLabel("  "),
                                  0, 4, 1, 1,
-                                 GridBagConstraints.BOTH, GridBagConstraints.WEST,
+             GridBagConstraints.BOTH, GridBagConstraints.WEST,
                                  1, 1);*/
         Constrain.setConstraints(this, advanced,
                                  0, 4, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 GridBagConstraints.NONE,
+                                 GridBagConstraints.EAST,
                                  1, 1);
       }
     }
 
-    public void setInput(Object o, int i) {
-      EMOPopulationInfo popInfo = (EMOPopulationInfo)o;
-      if(popInfo.fitnessFunctionConstructions.length == 1)
-        multiObjective = false;
-      else
-        multiObjective = true;
+    public void setInput(Object o, int z) {
+      if(!doingTiming) {
+        popInfo = (EMOPopulationInfo) o;
+        if (popInfo.fitnessFunctionConstructions.length == 1) {
+          multiObjective = false;
+        }
+        else {
+          multiObjective = true;
 
-multiObjective = true;
-      if(!multiObjective) {
+        }
+        multiObjective = true;
+        if (!multiObjective) {
+        }
+        else {
+          paramsModel.setValueAt("30", 0, 1);
+          // set the rec. max gens to be 2*string length
+          int stringLength = 0;
+          for (int i = 0; i < popInfo.boundsAndPrecision.getNumRows(); i++) {
+            stringLength += popInfo.boundsAndPrecision.getInt(i,
+                popInfo.boundsAndPrecision.getNumColumns() - 1);
+          }
+          int maxGenerations = 2 * stringLength;
+          paramsModel.setValueAt(Integer.toString(maxGenerations), 2, 1);
+
+          paramsModel.setValueAt("4", 3, 1);
+          paramsModel.setValueAt("1", 6, 1);
+        }
       }
       else {
-        paramsModel.setValueAt("30", 1, 1);
-        paramsModel.setValueAt("4", 2, 1);
-        paramsModel.setValueAt("1", 5, 1);
+        doingTiming = false;
+        stopTime = System.currentTimeMillis();
+        long timeNeeded = stopTime-startTime;
+        int stringLength = 0;
+        for (int i = 0; i < popInfo.boundsAndPrecision.getNumRows(); i++) {
+          stringLength += popInfo.boundsAndPrecision.getInt(i,
+              popInfo.boundsAndPrecision.getNumColumns() - 1);
+        }
+
+        // this is the time in MS needed to evaluate one individual
+        double msNeeded = timeNeeded/2;
+
+        // now multiply by the pop size
+        // get the pop size
+        String override = (String)paramsModel.getValueAt(1, 2);
+        String rec = (String)paramsModel.getValueAt(1, 1);
+
+        double popSize;
+        try {
+          popSize = Double.parseDouble(override);
+        }
+        catch(Exception ex) {
+          popSize = Double.parseDouble(rec);
+        }
+        msNeeded *= popSize;
+//            testPopInfo.populationSize = (int)popSize;
+
+        // now multiply by the number of gens
+        // now multiply by the pop size
+        // get the pop size
+        override = (String)paramsModel.getValueAt(2, 2);
+        rec = (String)paramsModel.getValueAt(2, 1);
+
+        try {
+          popSize = Double.parseDouble(override);
+        }
+        catch(Exception ex) {
+          popSize = Double.parseDouble(rec);
+        }
+        msNeeded *= popSize;
+
+        //double minsNeeded = 3 * Math.pow(stringLength, 2) * timeNeeded;
+        msNeeded = msNeeded / (1000*60);
+        //minsNeeded = minsNeeded / 2;
+        timeRequired.setText(nf.format(msNeeded));
+        timeRequired2.setText(nf.format(msNeeded));
+        runTimeChart.repaint();
+        estimate.setEnabled(true);
+
+        String mx = maxTime.getText();
+        double maxtime = 0;
+        try {
+          maxtime = Double.parseDouble(mx);
+        }
+        catch(Exception e) {
+        }
+        double diff = msNeeded-maxtime;
+        this.differenceLabel.setText(nf.format(diff));
       }
     }
+    private JButton estimate;
 
-    private class MultiObjectiveParamsTableModel extends DefaultTableModel {
+    private long startTime;
+    private long stopTime;
 
-      String[] col0 = {"Number of Nondominated Solutions",
+    private class MultiObjectiveParamsTableModel
+        extends DefaultTableModel {
+
+      String[] col0 = {
+          "Number of Nondominated Solutions",
           "Starting Population Size",
+          "Maximum Number of Generations",
           "Tournament Size",
           "Probability of Crossover",
           "Probability of Mutation",
           "Generation Gap"};
 
-      String[] col1 = {"", "", "", "", "", ""};
-      String[] col2 = {"", "", "", "", "", ""};
+      String[] col1 = {
+          "", "", "", "", "", "", ""};
+      String[] col2 = {
+          "", "", "", "", "", "", ""};
 
-      String[] names = {"", "Recommended", "Override"};
-
-      MultiObjectiveParamsTableModel() {
-//        setValueAt(Integer.toString(20), 0, 1);
-//        setValueAt(Integer.toString(41), 1, 1);
-/*        setValueAt(Integer.toString(5), 0, 1);
-        setValueAt(Double.toString(.8), 1, 1);
-        setValueAt(Double.toString(.2), 2, 1);
-        setValueAt(Integer.toString(1), 3, 1);*/
-      }
+      String[] names = {
+          "", "Recommended", "Override"};
 
       public int getColumnCount() {
         return 3;
       }
 
       public int getRowCount() {
-        return 6;
+        return 7;
       }
 
       public String getColumnName(int i) {
@@ -306,75 +643,82 @@ multiObjective = true;
       }
 
       public Object getValueAt(int r, int c) {
-        if(c == 0)
+        if (c == 0) {
           return col0[r];
-        else if(c == 1)
+        }
+        else if (c == 1) {
           return col1[r];
-        else
+        }
+        else {
           return col2[r];
+        }
       }
 
       public void setValueAt(Object value, int r, int c) {
-        if(c == 0)
-          col0[r] = (String)value;
-        else if(c == 1) {
+        if (c == 0) {
+          col0[r] = (String) value;
+        }
+        else if (c == 1) {
           col1[r] = (String) value;
-          if(r == 0) {
+          if (r == 0) {
             try {
-              String str = (String)value;
+              String str = (String) value;
               double vl = Double.parseDouble(str);
-              double popSize = 2*vl+1;
+              double popSize = 2 * vl + 1;
               setValueAt(Double.toString(popSize), 1, 1);
-              double mut = 1/vl;
-              mut = mut*100;
-              setValueAt(Double.toString(mut), 4, 1);
+              double mut = 1 / vl;
+              mut = mut * 100;
+              setValueAt(Double.toString(mut), 5, 1);
+              fireTableDataChanged();
             }
-            catch(Exception ex) {
+            catch (Exception ex) {
               return;
             }
           }
-          if(r == 2) {
-            String val = (String)value;
+          if (r == 2) {
+            String val = (String) value;
             try {
               double d = Double.parseDouble(val);
-              double crossover = (d-1)/d;
+              double crossover = (d - 1) / d;
               crossover = crossover * 100;
-              setValueAt(Double.toString(crossover), 3, 1);
+              setValueAt(Double.toString(crossover), 4, 1);
+              fireTableDataChanged();
             }
-            catch(Exception e) {
+            catch (Exception e) {
               return;
             }
           }
-
         }
-        else if(c == 2) {
+        else if (c == 2) {
           col2[r] = (String) value;
           // the user set the number of solutions
-          if(r == 0) {
+          if (r == 0) {
             try {
-              String str = (String)value;
+              String str = (String) value;
               double vl = Double.parseDouble(str);
-              double popSize = 2*vl+1;
+              double popSize = 2 * vl + 1;
               setValueAt(Double.toString(popSize), 1, 1);
-              double mut = 1/vl;
-              mut = mut*100;
-              setValueAt(Double.toString(mut), 4, 1);
+              double mut = 1 / vl;
+              mut = mut * 100;
+              setValueAt(Double.toString(mut), 5, 1);
+              fireTableDataChanged();
             }
-            catch(Exception ex) {
+            catch (Exception ex) {
               return;
             }
           }
 
           // user set the tournament size
-          if(r == 2) {
-            String val = (String)value;
+          if (r == 2) {
+            String val = (String) value;
             try {
               double d = Double.parseDouble(val);
-              double crossover = (d-1)/d;
+              double crossover = (d - 1) / d;
               crossover = crossover * 100;
-              setValueAt(Double.toString(crossover), 3, 1);
+              setValueAt(Double.toString(crossover), 4, 1);
+              fireTableDataChanged();
             }
-            catch(Exception e) {
+            catch (Exception e) {
               return;
             }
           }
@@ -382,8 +726,9 @@ multiObjective = true;
       }
 
       public boolean isCellEditable(int r, int c) {
-        if(c == 2)
+        if (c == 2) {
           return true;
+        }
         return false;
       }
     }

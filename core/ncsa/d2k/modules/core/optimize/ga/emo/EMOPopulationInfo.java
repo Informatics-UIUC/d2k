@@ -16,9 +16,6 @@ public class EMOPopulationInfo implements java.io.Serializable {
 
   public Table boundsAndPrecision;
 
-  //public static final int BINARY_TYPE = 1;
-  //public static final int DOUBLE_TYPE = 0;
-
   private int type;
   public boolean useExternalFitnessEvaluation;
   public boolean useExternalConstraintEvaluation;
@@ -31,7 +28,9 @@ public class EMOPopulationInfo implements java.io.Serializable {
   public int tournamentSize;
 
   public int populationSize;
-  public int numGenerations;
+  public int maxGenerations;
+
+  public double generationGap;
 
   public EMOPopulationInfo() {
     fitnessVariableConstructions = new Construction[0];
@@ -39,26 +38,4 @@ public class EMOPopulationInfo implements java.io.Serializable {
     constraintVariableConstructions = new Construction[0];
     constraintFunctionConstructions = new Construction[0];
   }
-
-  /*public void setType(int t) {
-    type = t;
-  }
-
-  public int getType() {
-    return type;
-  }*/
-
-/*  public void setUseExternalFitnessEvaluation(boolean b) {
-    useExternalFitnessEvaluation = b;
-  }
-  public boolean getUseExternalFitnessEvaluation() {
-    return useExternalFitnessEvaluation;
-  }
-
-  public void setUseExternalConstrainEvaluation(boolean b) {
-    useExternalConstraintEvaluation = b;
-  }
-  public boolean getUseExternalConstraintEvaluation() {
-    return useExternalConstraintEvaluation;
-  }*/
 }

@@ -257,7 +257,7 @@ public class DefineExternalFitnessFunctions extends UIModule {
                                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                1, 1);
 
-      JPanel buttonPanel = new JPanel();
+      JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       JButton done = new JButton("Done");
       done.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
