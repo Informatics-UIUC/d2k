@@ -491,25 +491,24 @@ public class SQLAutoBin extends AutoBin {
 
 					if (itemCnt > 0)
 						list.add(db1);
-						
+
 					stmt.close();
-			  }
-				   catch (Exception e) {
-					  						   System.out.println("Error occured in addFromWeight. " + e);
-				   }
+				} catch (Exception e) {
+					System.out.println("Error occured in addFromWeight. " + e);
+				}
 
+				double[] binMaxes = new double[list.size()];
+				for (int j = 0; j < binMaxes.length; j++) {
+					binMaxes[j] = ((Double) list.get(j)).doubleValue();
 
-					double[] binMaxes = new double[list.size()];
-					for (int j = 0; j < binMaxes.length; j++) {
-						binMaxes[j] = ((Double) list.get(j)).doubleValue();
+				}
 
-					}
+				if (binMaxes.length < 2) {
+					BinDescriptor nbd =
+						BinDescriptorFactory.createMinMaxBinDescriptor(i, tbl);
+					bins.add(nbd);
+				} else {
 
-					if (binMaxes.length < 2) {
-								 BinDescriptor nbd = BinDescriptorFactory.createMinMaxBinDescriptor(i,tbl);
-									bins.add(nbd);
-						 } else  {
-						 
 					// add the first bin manually
 
 					BinDescriptor nbd =
@@ -522,7 +521,7 @@ public class SQLAutoBin extends AutoBin {
 					bins.add(nbd);
 
 					// Dora changed from   for (int j = 1; j < binMaxes.length-1; j++) {
-					for (int j = 1; j < binMaxes.length -1; j++) {
+					for (int j = 1; j < binMaxes.length - 1; j++) {
 						// now create the BinDescriptor and add it to the bin list
 						nbd =
 							BinDescriptorFactory.createNumericBinDescriptor(
@@ -537,23 +536,12 @@ public class SQLAutoBin extends AutoBin {
 					// now add the last bin
 
 					//if (binMaxes.length > 1)
-						nbd =
-							BinDescriptorFactory
-								.createMaxNumericBinDescriptor(i,
-							// dora changed from binMaxes[binMaxes.length - 2],
-										binMaxes[binMaxes.length - 2], nf, tbl);
-					// Dora comment out
-					//else
-					//					nbd =		BinDescriptorFactory.createMaxNumericBinDescriptor( i,
-					//									   binMaxes[binMaxes.length - 1],
-					//									   nf,
-					//									   tbl); 
-
+					nbd = BinDescriptorFactory.createMaxNumericBinDescriptor(i,
+				 						binMaxes[binMaxes.length - 2], nf, tbl);
+					
 					bins.add(nbd);
-					}
-			
+				}
 
-				
 			} else {
 
 				HashSet vals = uniqueValues(i);
@@ -586,6 +574,7 @@ public class SQLAutoBin extends AutoBin {
 		BinDescriptor[] bn = new BinDescriptor[bins.size()];
 		for (int i = 0; i < bins.size(); i++) {
 			bn[i] = (BinDescriptor) bins.get(i);
+			System.out.println("bin i "  + bn[i].name + " " + i);
 		}
 
 		return bn;
@@ -739,7 +728,7 @@ public class SQLAutoBin extends AutoBin {
 			Connection con = conn.getConnection();
 
 			String queryStr =
-				"select distinct " + colName + " from " + tableName;
+				"select distinct " + colName + " from " + tableName + " where " + colName + " is not null";
 
 			Statement stmt = con.createStatement();
 
@@ -793,9 +782,8 @@ public class SQLAutoBin extends AutoBin {
 
 // 12 -16-03 Anca moved creation of "unknown" bins to BinTransform
 
-
- /**
- * 01-11-04: Vered
- * bug 215 - creates one bin too many, the last one, which is expendable, as non of the
- * data is being binned into it.
+/**
+* 01-11-04: Vered
+* bug 215 - creates one bin too many, the last one, which is expendable, as non of the
+* data is being binned into it.
 */

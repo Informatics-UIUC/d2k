@@ -226,8 +226,8 @@ public class CreateBinTree extends DataPrepModule {
 				try {
 					bt.addNumericBin(attLabel, bd.name, min, false, max, true);
 					//System.out.println("bin min " + min + " max " + max);
-				} catch (Exception e) {
-				}
+				} catch (Exception e) { }
+				
 			} else {
 				HashSet vals = ((TextualBinDescriptor) bd).vals;
 				String[] values = new String[vals.size()];
@@ -235,13 +235,15 @@ public class CreateBinTree extends DataPrepModule {
 				int idx = 0;
 				while (ii.hasNext()) {
 					values[idx] = (String) ii.next();
+					//System.out.println(values[idx]);
 					idx++;
 				}
 
 				try {
 					bt.addStringBin(attLabel, bd.name, values);
-				} catch (Exception e) {
-				}
+					//System.out.println("addStringBin in CreateBinTree called");	
+				} catch (Exception e) {}
+				
 			}
 
 		}

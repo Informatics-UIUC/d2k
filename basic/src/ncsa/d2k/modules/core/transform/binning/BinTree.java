@@ -595,6 +595,7 @@ public static final String MISSING= "missing";
 			if(bl.containsKey(bn))
 				throw new DuplicateBinNameException();
 			bl.put(bn, new Bin(new StringEvaluate(item)));
+		//	System.out.println("addStringBin called");
 		}
 
 		void addNumericBin(String an, String bn, String op, double item)
@@ -628,6 +629,7 @@ public static final String MISSING= "missing";
 			if(bl.containsKey(bn))
 				throw new DuplicateBinNameException();
 			bl.put(bn, new Bin(new MultiStringEvaluate(items)));
+			//System.out.println("addMultiStringBin called for binName " +bn + " for attribute  " + an + " with items " + items[0]  + " "  + items[1]);
 		}
 
 		/**
@@ -980,7 +982,7 @@ public static final String MISSING= "missing";
 		StringEvaluate createStringEvaluate(String s)
 			throws MalformedEquationException {
 			int loc;
-
+			//System.out.println("createStringEvaluate called");
 			// perhaps check for > or < and throw malfomed eq exception first?
 
 			if((loc = s.indexOf(operators[4])) != -1) {
@@ -1538,11 +1540,14 @@ public static final String MISSING= "missing";
 			// FIX ME by David - FIXED by Anca
 			String getCondition(String an) {
 				Iterator i = values.iterator();
-        String condition = "";
+				//System.out.println("values iterator for attr " + an + " is " + values.size());
+        	String condition = "";
 				while(i.hasNext()) {
-					condition = an + " = '" + i.next() + "'";
-					if (i.hasNext()) condition = condition + " AND " ;
+					condition = condition + an + " = '" + i.next() + "'";
+					if (i.hasNext()) condition = condition + " OR " ;
+					//System.out.println("condition is " + condition);
 				}
+				condition = " ( " + condition + " )";
 				return condition;
 			}
 

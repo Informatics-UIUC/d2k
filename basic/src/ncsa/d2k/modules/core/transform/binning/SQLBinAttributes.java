@@ -932,8 +932,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
                      else
                         textualBinName = textBinName.getText();
 
-                    BinDescriptor bd = createTextualBin(idx, textualBinName,
-                            sel);
+                    BinDescriptor bd = createTextualBin(idx, textualBinName, sel);
                     HashSet set = uniqueColumnValues[idx];
                     for (int i = 0; i < sel.length; i++) {
                        textUniqueModel.removeElement(sel[i]);
@@ -1205,7 +1204,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
             String colName = fieldNames[col];
             //String colName = fieldNames[col].toLowerCase();
             con = connectionWrapper.getConnection();
-            queryStr = "select distinct " + colName + " from " + tableName;
+            queryStr = "select distinct " + colName + " from " + tableName +" where " + colName + " is not null";
             stmt = con.createStatement();
             ResultSet distinctSet = stmt.executeQuery(queryStr);
             while (distinctSet.next()) {
@@ -1218,7 +1217,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
        JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occoured in uniqueValues.");
+            System.out.println("Error occured in uniqueValues.");
             return null;
           }
         }
@@ -1542,8 +1541,12 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
          */
         private BinDescriptor createTextualBin (int idx, String name, Object[] sel) {
             String[] vals = new String[sel.length];
-            for (int i = 0; i < vals.length; i++)
-                vals[i] = sel[i].toString();
+            
+          System.out.println("creating bin named " + name);
+            for (int i = 0; i < vals.length; i++) {
+            	   vals[i] = sel[i].toString();
+            	   System.out.println(vals[i]);
+            }
             return  new TextualBinDescriptor(idx, name, vals, (String)fieldNames[idx]);
             //return  new TextualBinDescriptor(idx, name, vals, (String)fieldNames[idx].toLowerCase());
         }
