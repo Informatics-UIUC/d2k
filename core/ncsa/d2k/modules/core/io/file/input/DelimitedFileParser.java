@@ -43,6 +43,8 @@ public class DelimitedFileParser implements FlatFileParser {
     /** the feature (nom/scalar) types of the columns */
     private int[] featureTypes;
 
+    private int blankRows = 0;
+
     /** the file reader */
     protected LineNumberReader lineReader;
 
@@ -593,11 +595,13 @@ public class DelimitedFileParser implements FlatFileParser {
         String line;
 
         // read the file in one row at a time
-        while ((line = reader.readLine ()) != null) {
-            nr++;
-            int ct = countRowElements(line);
-            if(ct > nc)
+        while ( (line = reader.readLine ()) != null) {
+            if(line.trim().length() > 0) {
+              nr++;
+              int ct = countRowElements(line);
+              if (ct > nc)
                 nc = ct;
+            }
         }
         numRows = nr;
         numColumns = nc;
@@ -770,6 +774,7 @@ public class DelimitedFileParser implements FlatFileParser {
             rowNum++;
         if(nomScalarRow > -1)
             rowNum++;
+        rowNum += blankRows;
         try {
             if(rowNum < lineReader.getLineNumber())
                 lineReader = new LineNumberReader(new FileReader(file));
@@ -778,7 +783,20 @@ public class DelimitedFileParser implements FlatFileParser {
                 lineReader.readLine();
                 current++;
             }
-            return lineReader.readLine();
+
+            /*String line = lineReader.readLine();
+            if(line.trim().length() == 0) {
+              blankRows++;
+              return skipToRow(rowNum);
+            }
+            else
+              return line;
+             */
+
+            String line;
+            while( ( (line = lineReader.readLine()) != null) && (line.trim().length() == 0))
+              blankRows++;
+            return line;
         }
         catch(Exception e) {
             return null;
