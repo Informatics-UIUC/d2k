@@ -5,15 +5,16 @@ package ncsa.d2k.modules.core.io.sql;
 */
 public class OracleURLInput extends URLInput {
 	public OracleURLInput() {
-		setUsername("sears");
-		setPassword("sp1sp6");
+		setUsername("disted_mgr");
+		setPassword("testmining");
 		setDriver("oracle.jdbc.driver.OracleDriver");
 		setMachine("houdin.ncsa.uiuc.edu");
-		setDbInstance("oracle1");
+		setDbInstance("oracle2");
 		setPort("1521");
 	}
 
 	public String getUrl() {
+                System.out.print("jdbc:oracle:thin:@"+getMachine()+":"+getPort()+":"+getDbInstance());
 		return "jdbc:oracle:thin:@"+getMachine()+":"+getPort()+":"+getDbInstance();
 	}
 
