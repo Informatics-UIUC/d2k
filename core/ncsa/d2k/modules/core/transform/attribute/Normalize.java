@@ -154,7 +154,15 @@ public class Normalize extends UIModule {
                 columnType == ColumnTypes.SHORT) {
 
                indirection[index] = i;
+
                numericLabels[index] = table.getColumnLabel(i);
+
+               if (numericLabels[index] == null ||
+                   numericLabels[index].length() == 0) {
+
+                  numericLabels[index] = "column " + i;
+
+               }
 
                index++;
 
