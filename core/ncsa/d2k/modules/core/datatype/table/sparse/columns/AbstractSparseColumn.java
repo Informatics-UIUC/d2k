@@ -30,6 +30,7 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
   public AbstractSparseColumn() {
      super();
     missing = new VIntHashSet();
+    super.setLabel("");
   }
 
   public abstract Column getSubset(int[] indices);
