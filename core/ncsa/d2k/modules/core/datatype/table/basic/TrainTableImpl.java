@@ -167,7 +167,7 @@ public final class TrainTableImpl
 	// now figure out the test and train sets
 	int[] traincpy = new int[rows.length];
 	for (int i = 0 ; i < traincpy.length ; i++) {
-		traincpy [i] = this.testSet[rows[i]];
+		traincpy [i] = this.trainSet[rows[i]];
 	}
 	et.setTrainingSet(traincpy);
 	return et.getTrainTable();
