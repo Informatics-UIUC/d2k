@@ -452,8 +452,8 @@ public class FractionationSamplerOPT
     public int compare(Object o1, Object o2) {
       TableCluster obj1 = (TableCluster) o1;
       TableCluster obj2 = (TableCluster) o2;
-      double term1 = obj1.getCentroid()[m_nthSortTerm];
-      double term2 = obj2.getCentroid()[m_nthSortTerm];
+      double term1 = obj1.getNthCentroidValue(m_nthSortTerm);
+      double term2 = obj2.getNthCentroidValue(m_nthSortTerm);
 
       if (term1 < term2) {
         return 1;

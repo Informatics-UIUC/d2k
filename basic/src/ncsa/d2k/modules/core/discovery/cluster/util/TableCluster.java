@@ -293,7 +293,39 @@ public class TableCluster implements Serializable {
 
   public double[] getCentroid() {
     computeCentroid();
+    if (this.getSparse()){
+      int sz = 0;
+      if (this.getTable() instanceof SparseExampleTable){
+        sz = ((SparseExampleTable)this.getTable()).getInputFeatures().length;
+      } else {
+        sz = this.getTable().getNumRows();
+      }
+      double[] centroid = new double[sz];
+      for (int i = 0, n = sz; i < n; i++){
+        centroid[0] = 0;
+      }
+      for (int i = 0, n = _cind.length; i < n; i++){
+        centroid[_cind[i]] = this._spcentroid[i];
+      }
+      return centroid;
+    }
     return this._centroid;
+  }
+
+  public double getNthCentroidValue(int z){
+    computeCentroid();
+    if (!getSparse()){
+      return _centroid[z];
+    } else {
+      for (int i = 0, n = _cind.length; i < n; i++){
+        if (z == _cind[i]){
+          return _spcentroid[i];
+        } else if (z > _cind[i]){
+          return 0;
+        }
+      }
+      return 0;
+    }
   }
 
   public double[] getSparseCentroidValues(){
@@ -336,6 +368,11 @@ public class TableCluster implements Serializable {
 
   public String generateTextLabel(){
     String out = null;
+
+
+    //implement SelfDescriptive check here
+
+
 //    if (_table = null){
 //      out = "" + this.getClusterLabel();
 //    } else {

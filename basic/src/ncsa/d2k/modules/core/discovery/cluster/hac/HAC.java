@@ -584,18 +584,37 @@ public class HAC {
       }
     }
     if (bcnts != ifeatures.length) {
-      for (int i = 0, n = itable.getNumRows(); i < n; i++) {
-        for (int j = 0, m = ifeatures.length; j < m; j++) {
-          if (! (itable.getColumnType(ifeatures[j]) == ColumnTypes.BOOLEAN)) {
-            double compval = itable.getDouble(i, ifeatures[j]);
-            if (max[j] < compval) {
-              max[j] = compval;
-            }
-            if (min[j] > compval) {
-              min[j] = compval;
+      if (! (itable instanceof SparseTable)) {
+        for (int i = 0, n = itable.getNumRows(); i < n; i++) {
+          for (int j = 0, m = ifeatures.length; j < m; j++) {
+            if (! (itable.getColumnType(ifeatures[j]) == ColumnTypes.BOOLEAN)) {
+              double compval = itable.getDouble(i, ifeatures[j]);
+              if (max[j] < compval) {
+                max[j] = compval;
+              }
+              if (min[j] > compval) {
+                min[j] = compval;
+              }
             }
           }
         }
+
+      } else {
+        for (int i = 0, n = itable.getNumRows(); i < n; i++) {
+          int[] cols = ((SparseTable)itable).getRowIndices(i);
+          for (int j = 0, m = cols.length; j < m; j++) {
+            if (! (itable.getColumnType(cols[j]) == ColumnTypes.BOOLEAN)) {
+              double compval = itable.getDouble(i, cols[j]);
+              if (max[cols[j]] < compval) {
+                max[cols[j]] = compval;
+              }
+              if (min[cols[j]] > compval) {
+                min[cols[j]] = compval;
+              }
+            }
+          }
+        }
+
       }
     }
     //Debug ==========================
