@@ -52,45 +52,6 @@ public class ResultSetDataSource implements DBDataSource {
      * @param columns the columns in the DB that this data source will represent
      * @param whereClause the where
      */
-/*
-    public ResultSetDataSource(ConnectionWrapper connection, String[] tables,
-                        String[][]columns, String whereClaus) {
-        connectionWrapper = connection;
-        userTables = tables;
-        userAllColumns = columns;
-        whereClause = whereClaus;
-
-        //userQuery =
-
-        initialize();
-    }
-*/
-
-    /*public ResultSetDataSource(DBConnection connection,
-                               String[]   tables,
-                               String[][] columns,
-                               String whereClaus) {
-        this.dbConnection = connection;
-        this.setUserSelectedTables(tables);
-        this.setUserSelectedCols(columns);
-        this.setUserSelectedWhere(whereClaus);
-    //    userQuery = dbConnection.getTableQuery(tables, columns, whereClaus);
-        initialize();
-    }*/
-
-    /*public ResultSetDataSource(ResultSet rset,
-                               String[]   tables,
-                               String[][] columns,
-                               String whereClaus) {
-//        this.dbConnection = connection;
-        rs = rset;
-        this.setUserSelectedTables(tables);
-        this.setUserSelectedCols(columns);
-        this.setUserSelectedWhere(whereClaus);
-    //    userQuery = dbConnection.getTableQuery(tables, columns, whereClaus);
-        initialize();
-    }*/
-
      public ResultSetDataSource(DBConnection dbcon,
                                String[]   tables,
                                String[][] columns,
@@ -99,20 +60,9 @@ public class ResultSetDataSource implements DBDataSource {
         this.setUserSelectedTables(tables);
         this.setUserSelectedCols(columns);
         this.setUserSelectedWhere(whereClaus);
-    //    userQuery = dbConnection.getTableQuery(tables, columns, whereClaus);
-
-//        rs = dbConnection.getResultSet(tables, columns, whereClaus);
         rs = dbConnection.getUpdatableResultSet(tables, columns, whereClaus);
         initialize();
     }
-
-/*    public ResultSetDataSource(ResultSet rset) {
-//        this.dbConnection = connection;
-//        initialize();
-        rs = rset;
-        initialize();
-    }
-    */
 
     protected ResultSetDataSource() {
     }
@@ -201,10 +151,6 @@ public class ResultSetDataSource implements DBDataSource {
         ////PROCESS DIFFERENTLY FOR SINGLE TABLE SELECTIONS AND MULTIPLE TABLE SELECTIONS
 
         if (columns.length == 1) {
-//System.out.println("***SQLDBDonncection: getDistinctUserSelectedCols - single table***");
-//for (int k=0; k<columns[0].length; k++) {
-//    System.out.println(columns[0][k]);
-//}
             return columns[0];
         }
         else {  // columns.length > 1
@@ -230,7 +176,6 @@ public class ResultSetDataSource implements DBDataSource {
                     dups.add(allCols[j]);
 
             uniques.removeAll(dups);  // Destructive set-difference
-
             String unqCols[] = (String[]) uniques.toArray( new String[ uniques.size() ] );
             String dupCols[] = (String[]) dups.toArray( new String[ dups.size() ] );
 
@@ -244,10 +189,10 @@ public class ResultSetDataSource implements DBDataSource {
             for (numDup=0; numDup<dupCols.length; numDup++)
                 unqDupCols[numDup+unqCols.length] = dupCols[numDup];
 
-System.out.println("***SQLDBDonncection: getDistinctUserSelectedCols - multiple tables***");
-for (int k=0; k<unqDupCols.length; k++) {
-    System.out.println(unqDupCols[k]);
-}
+//System.out.println("***SQLDBDonncection: getDistinctUserSelectedCols - multiple tables***");
+//for (int k=0; k<unqDupCols.length; k++) {
+//    System.out.println(unqDupCols[k]);
+//}
             return unqDupCols;
         }
 
@@ -268,12 +213,16 @@ for (int k=0; k<unqDupCols.length; k++) {
 
     protected void initialize() {
         try {
-//            this.rs = this.dbConnection.getResultSet(this.userTables, this.userAllColumns, this.whereClause);
             rs.setFetchSize(350);
             rsmd = rs.getMetaData();
             countRows();
             numDistinctUserColumns = getDistinctUserSelectedCols().length;
-            columnLabels = getDistinctUserSelectedCols();
+
+            columnLabels = new String[numDistinctUserColumns];
+
+            for (int i=0; i<numDistinctUserColumns; i++) {
+                columnLabels[i] = getDistinctUserSelectedCols()[i];
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -304,6 +253,7 @@ for (int k=0; k<unqDupCols.length; k++) {
      * Get the labels of the column at pos.
      */
     public String getColumnLabel(int pos) {
+System.out.println(" position " + pos + " label " + columnLabels[pos]);
         return columnLabels[pos];
     }
 

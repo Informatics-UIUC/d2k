@@ -312,12 +312,36 @@ System.out.println(query.toString());
 
             if ((duplicateColumns.length > 0) && (uniqueColumns.length > 0))
                 query.append(", ");
-
+/*
             for (int m=0; m<uniqueColumns.length; m++){
                 query.append(uniqueColumns[m]);
                 if (m<uniqueColumns.length-1)
                     query.append(", ");
             }
+*/
+//instead, cycle thru all the columns in order. at this point add a column, only if it
+//does not appear in duplicateColumns
+            int uniqueCount = 0;
+            for (int tabl = 0; tabl < columns.length; tabl++) {
+                for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
+System.out.println("testing column : " + columns[tabl][tablCol]);
+                    int k = 0;
+                    while(k < duplicateColumns.length)
+                        if (duplicateColumns[k] != columns[tabl][tablCol]) {
+                            k++;
+                            continue;
+                        }//if
+System.out.println("k : " + k);
+                    if (k == duplicateColumns.length) {// not found in duplicateColumns
+                        query.append(columns[tabl][tablCol]);
+                        query.append(", ");
+//                        uniqueCount++;
+//                        if (uniqueCount < uniqueColumns.length)
+//                            query.append(", ");
+                    }//if
+                }//for
+            }//for
+
 //System.out.println("str part1 : " + str);
 
             // Second : Create FROM Clause
