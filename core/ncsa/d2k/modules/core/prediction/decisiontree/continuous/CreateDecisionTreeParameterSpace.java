@@ -160,11 +160,15 @@ public class CreateDecisionTreeParameterSpace extends ComputeModule {
       functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.decisiontree.continuous.DecisionTreeInducerOpt");
     }
     catch (Exception e) {
-      System.out.println("could not find class");
-      throw new Exception();
+	// System.out.println("could not find class");
+	// throw new Exception();
+	throw new Exception(getAlias() + ": could not find class DecisionTreeInducerOpt "); 
     }
 
     this.pushOutput(parameterSpace,       0);
     this.pushOutput(functionInducerClass, 1);
   }
 }
+
+//QA changes Anca: 
+// Exception is now giving a message 

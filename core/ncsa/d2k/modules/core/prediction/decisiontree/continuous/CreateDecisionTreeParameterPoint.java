@@ -31,8 +31,8 @@ public class CreateDecisionTreeParameterPoint
     pds[2] = new PropertyDescription(
         "useOneHalfSplit",
         "Generate splits only at 1/2",
-        "This works fine for boolean values and continuous ones.  " +
-        "If used as the sole decomposition strategy, it forces thes system to only split on a variable once.  ");
+        "This works fine for boolean and continuous values.  " +
+        "If used as the sole decomposition strategy, it forces the system to only split on a variable once.  ");
 
     pds[3] = new PropertyDescription(
         "useMeanBasedSplit",
@@ -303,11 +303,16 @@ public class CreateDecisionTreeParameterPoint
       functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.decisiontree.continuous.DecisionTreeInducerOpt");
     }
     catch (Exception e) {
-      System.out.println("could not find class");
-      throw new Exception();
+	//      System.out.println("could not find class");
+	//throw new Exception();
+	throw new Exception(getAlias() + ": could not find class DecisionTreeInducerOpt "); 
     }
 
     this.pushOutput(parameterPoint, 0);
     this.pushOutput(functionInducerClass, 1);
   }
 }
+
+//QA changes Anca: 
+//typos and Exception is now giving a message 
+

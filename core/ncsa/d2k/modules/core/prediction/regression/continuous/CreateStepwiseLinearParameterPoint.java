@@ -18,7 +18,7 @@ public class CreateStepwiseLinearParameterPoint
     pds[0] = new PropertyDescription(
         "useStepwise",
         "Use Stepwise",
-        "When true, a stepwise regression procedure is followed, otherwise use normal regression is used on all features.  ");
+        "When true, a stepwise regression procedure is followed, otherwise normal regression is used on all features.");
 
     pds[1] = new PropertyDescription(
         "direction",
@@ -165,11 +165,15 @@ public class CreateStepwiseLinearParameterPoint
       functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.regression.continuous.StepwiseLinearInducerOpt");
     }
     catch (Exception e) {
-      System.out.println("could not find class");
-      throw new Exception();
+	//  System.out.println("could not find class");
+	//throw new Exception();
+	throw new Exception(getAlias() + ": could not find class StepwiseLinearInducerOpt "); 
     }
 
     this.pushOutput(parameterPoint, 0);
     this.pushOutput(functionInducerClass, 1);
   }
 }
+
+//QA changes Anca: 
+//typos and Exception is now giving a message 

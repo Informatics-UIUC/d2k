@@ -18,7 +18,7 @@ public class CreateInstanceBasedParameterPoint
     pds[0] = new PropertyDescription(
         "neighborhoodSize",
         "Neighborhood Size",
-        "The number of examples to use for the fitting the prediction module.  " +
+        "The number of examples to use for fitting the prediction module.  " +
         "This must be set to 1 or greater.  ");
 
     pds[1] = new PropertyDescription(
@@ -33,7 +33,7 @@ public class CreateInstanceBasedParameterPoint
         "zeroDistanceValue",
         "Zero Distance Value",
         "What weight to associate to a stored example which has zero distance to example to be predicted.  " +
-        "Sice division by zero is not permitted, some value must be assigned to examples with zero distance.  "  +
+        "Since division by zero is not permitted, some value must be assigned to examples with zero distance.  "  +
         "This value is the weight and exact match should be given.  ");
     return pds;
   }
@@ -83,7 +83,7 @@ public class CreateInstanceBasedParameterPoint
     s += "The first output is a Parameter Point which can be used as input into a Instance Based Inducer Opt module.  ";
     s += "The second output is the Instance Based Inducer Opt Module which can be used as input for Apply Function Inducer module.  ";
     s += "This instance based learning algorithm implements n-nearest neighbor with variable weights for each stored example.  ";
-    s += "The weight of each example is set determined by the inverse weighting formula.  ";
+    s += "The weight of each example set is determined by the inverse weighting formula.  ";
     s += "</p>";
     return s;
   }
@@ -123,7 +123,7 @@ public class CreateInstanceBasedParameterPoint
       case 0:
         return "A ParameterPoint which specifies the control settings of the Instance Based Inducer Opt Module";
       case 1:
-        return "The Decision Tree Inducer Opt Module for use in Apply Function Inducer";
+        return "The Instance Based Inducer Opt module for use in Apply Function Inducer";
       default:
         return "No such output";
     }
@@ -166,11 +166,18 @@ public class CreateInstanceBasedParameterPoint
       functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.instancebased.InstanceBasedInducerOpt");
     }
     catch (Exception e) {
-      System.out.println("could not find class");
-      throw new Exception();
+	//System.out.println("could not find class");
+	throw new Exception(getAlias() + ": could not find class InstanceBasedInducerOpt");
+	//throw new Exception();
     }
 
     this.pushOutput(parameterPoint, 0);
     this.pushOutput(functionInducerClass, 1);
   }
 }
+
+//QA changes Anca: 
+//typos and Exception is now giving a message 
+//replaced Decision Tree with Instance Based in getOutputInfo
+
+

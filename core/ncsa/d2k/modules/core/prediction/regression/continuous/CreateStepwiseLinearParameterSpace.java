@@ -112,11 +112,15 @@ public class CreateStepwiseLinearParameterSpace extends ComputeModule {
       functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.regression.continuous.StepwiseLinearInducerOpt");
     }
     catch (Exception e) {
-      System.out.println("could not find class");
-      throw new Exception();
+	// System.out.println("could not find class");
+	//throw new Exception();
+	throw new Exception(getAlias() + ": could not find class StepwiseLinearInducerOpt ");
     }
 
     this.pushOutput(parameterSpace,       0);
     this.pushOutput(functionInducerClass, 1);
   }
 }
+
+//QA changes Anca: 
+// Exception is now giving a message 

@@ -25,7 +25,7 @@ public class CreateMeanOutputParameterPoint
   public String getModuleInfo() {
     String s = "<p>Overview: ";
     s += "This module allows the user to specify the parameter settings which ";
-    s += "control the behavior of the Mean Outupt Inducer Opt module.  ";
+    s += "control the behavior of the Mean Output Inducer Opt module.  ";
     s += "There are no parameters to the Mean Output Inducer module at this time.  ";
     s += "";
     s += "</p>";
@@ -65,9 +65,9 @@ public class CreateMeanOutputParameterPoint
   public String getOutputInfo(int i) {
     switch (i) {
       case 0:
-        return "A ParameterPoint which specifies the control settings of the Mean Outupt Inducer Opt Module";
+        return "A ParameterPoint which specifies the control settings of the Mean Output Inducer Opt Module";
       case 1:
-        return "The Mean Outupt Inducer Opt Module for use in Apply Function Inducer";
+        return "The Mean Output Inducer Opt Module for use in Apply Function Inducer";
       default:
         return "No such output";
     }
@@ -100,11 +100,14 @@ public class CreateMeanOutputParameterPoint
       functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.mean.continuous.MeanOutputInducerOpt");
     }
     catch (Exception e) {
-      System.out.println("could not find class");
-      throw new Exception();
+	//System.out.println("could not find class");
+      throw new Exception(getAlias() + ": could not find class MeanOutputInducerOpt ");
     }
 
     this.pushOutput(parameterPoint, 0);
     this.pushOutput(functionInducerClass, 1);
   }
 }
+
+//QA changes Anca:
+//typos and Exception is now giving a message
