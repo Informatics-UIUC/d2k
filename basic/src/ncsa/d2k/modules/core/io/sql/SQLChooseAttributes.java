@@ -9,10 +9,9 @@ package ncsa.d2k.modules.core.io.sql;
  * @author Dora Cai
  * @version 1.0
  *
- * @todo: unlike in choose attributes from transform/attribute package
- * this module forces the user to choose at least one input column and
- * exactly one output column.
- * why? especially why not supporting multi labeling (more than one output columns).
+ * @todo: behavior of this module is different than ChooseAttributes. which puts
+ * no restriction on the selection that the user makes. shouldn't these modules
+ * be aligned?
  */
 
 

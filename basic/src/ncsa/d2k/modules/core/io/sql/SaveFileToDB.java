@@ -40,7 +40,7 @@ import ncsa.d2k.modules.core.io.file.input.FlatFileParser;
  * @version 1.0
  *
  * @todo: add validity test to the properties editor - test that isOracle and isSql
- * have oposite values.
+ * have oposite values. currently this validation is in doit.
  */
 public class SaveFileToDB extends HeadlessUIModule
        implements java.io.Serializable {

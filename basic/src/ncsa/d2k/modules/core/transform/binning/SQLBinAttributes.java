@@ -25,7 +25,7 @@ import ncsa.d2k.modules.core.transform.StaticMethods;
  *
  * @todo: since the module remembers the saved bins and displays them with a gui
  * run - a click on remove bin when one of the bins is chosen will cause a null
- * pointer exception.
+ * pointer exception. and it does not remove the bin.
  */
 public class SQLBinAttributes extends HeadlessUIModule {
     private static final String EMPTY = "",

@@ -29,8 +29,6 @@ import ncsa.gui.*;
  successive columns based on runs in the previous column. A run is
  a collection of similar values in a column.
 
- @todo: when not choosing any column to sort by, table viewr after thsi module gets stuck.
- [when running with gui]
  */
 public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 

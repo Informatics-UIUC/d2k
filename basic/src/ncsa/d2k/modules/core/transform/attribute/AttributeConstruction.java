@@ -24,9 +24,6 @@ import ncsa.d2k.modules.core.vis.widgets.*;
  *
  * @author gpape
  *
- * @todo: got negative array size exception when deleted one of the new
- * constructed attributes (that was saved from previous run) it did not terminate
- * the itinerary, but it does not look good.
  */
 public class AttributeConstruction extends HeadlessUIModule {
 

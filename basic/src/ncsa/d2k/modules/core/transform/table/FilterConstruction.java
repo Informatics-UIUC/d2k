@@ -27,8 +27,12 @@ import ncsa.d2k.modules.core.transform.StaticMethods;
  *
  * added by vered:
  *
- * @todo: problems with gui: when entering malformed expression it throws
- * a null pointer exception instead of informing user in a nice way.
+ * @todo: the following expression will throw a number format exception (???)
+ * attribute == attribute (no values!)
+ *
+ * @todo: the following expression is considered legal:
+ * att == val == att
+ * the result was an empty table.
  *
  * @todo: expressions that are equivalent yield different output.
  * for example: att_1 == val_1 && ( att_2 != val_2 || att_3 != val_3)
