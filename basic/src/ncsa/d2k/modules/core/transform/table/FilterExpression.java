@@ -81,6 +81,7 @@ public class FilterExpression implements Expression {
 	 *    <li>valid symbols for filter operations, namely:
 	 *       <ul>
 	 *          <li><code>==</code> for equals,
+	 *          <li><code>is</code> for for SQL is NULL,
 	 *          <li><code>!=</code> for not equals,
 	 *          <li><code>&lt;</code> for less than,
 	 *          <li><code>&lt;=</code> for less than or equal to,
@@ -119,6 +120,11 @@ public class FilterExpression implements Expression {
 		return root.toString();
 	}
 
+    // ANCA added this method
+	public String toSQLString() {
+		return root.toSQLString();
+	}
+
 	/******************************************************************************/
 	/* The filter expression string is parsed into a tree in which each node is   */
 	/* either a subexpression or a terminal.                                      */
@@ -127,24 +133,28 @@ public class FilterExpression implements Expression {
 	/* terminal:        <element> <comparison operator> <element>                 */
 	/******************************************************************************/
 
+    // ANCA added a new operator in order of precedence
 	private static final int OP_EQ = 100, // equal to
-		OP_NEQ = 101, // not equal to
-		OP_LT = 102, // less than
-		OP_LTE = 103, // less than or equal to
-		OP_GT = 104, // greater than
-		OP_GTE = 105, // greater than or equal to
+	        OP_IS = 101,
+		OP_NEQ = 105, // not equal to
+		OP_LT = 110, // less than
+		OP_LTE = 115, // less than or equal to
+		OP_GT = 120, // greater than
+		OP_GTE = 125, // greater than or equal to
 
 		// NOTE: if you add any more boolean operators to the following list, make
 		//       sure that their int values remain sorted such that lesser int values
 		//       correspond to greater operator precedence. (This is how the parser
 		//       operates.)
 
-		BOOL_AND = 106, // boolean AND operator
-		BOOL_OR = 107; // boolean OR operator
+		BOOL_AND = 130, // boolean AND operator
+		BOOL_OR = 135; // boolean OR operator
 
 	private abstract class Node {
 		abstract boolean evaluate(int rowNumber) throws ExpressionException;
 		public abstract String toString();
+	    // ANCA added this method
+		public abstract String toSQLString();
 	}
 	private class Subexpression extends Node {
 
@@ -221,6 +231,31 @@ public class FilterExpression implements Expression {
 
 		}
 
+
+    // ANCA added this method
+		public String toSQLString() {
+
+			StringBuffer buffer = new StringBuffer();
+			buffer.append('(');
+			buffer.append(left.toSQLString());
+			buffer.append(' ');
+			switch (opcode) {
+				case BOOL_AND :
+					buffer.append("and");
+					break;
+				case BOOL_OR :
+					buffer.append("or");
+					break;
+				default :
+					buffer.append("??");
+					break;
+			}
+
+			buffer.append(' ');
+			buffer.append(right.toSQLString());
+			buffer.append(')');
+			return buffer.toString();
+		}
 	}
 
 	private class Terminal extends Node {
@@ -266,6 +301,7 @@ public class FilterExpression implements Expression {
                   switch (opcode) {
 
                      case OP_EQ :
+		     case OP_IS:     // ANCA added this case
 
                         return ((ColumnElement) left).evaluateDouble(
                            rowNumber)
@@ -322,6 +358,7 @@ public class FilterExpression implements Expression {
                   switch (opcode) {
 
                      case OP_EQ :
+		     case OP_IS:      // ANCA added this case 
 
                         return ((ColumnElement) left).evaluateString(
                            rowNumber)
@@ -349,6 +386,7 @@ public class FilterExpression implements Expression {
 					switch (opcode) {
 
 						case OP_EQ :
+					  case OP_IS:      // ANCA added this case
 
 							return ((ColumnElement) left).evaluateDouble(
 								rowNumber)
@@ -396,6 +434,7 @@ public class FilterExpression implements Expression {
 					switch (opcode) {
 
 						case OP_EQ :
+					case OP_IS:      // ANCA added this case
 
 							return ((ColumnElement) left).evaluateString(
 								rowNumber).equals(
@@ -424,6 +463,7 @@ public class FilterExpression implements Expression {
 					switch (opcode) {
 
 						case OP_EQ :
+					case OP_IS:      // ANCA added this case
 
 							return ((ScalarElement) left).evaluate()
 								== ((ColumnElement) right).evaluateDouble(
@@ -471,7 +511,7 @@ public class FilterExpression implements Expression {
 					switch (opcode) {
 
 						case OP_EQ :
-
+					case OP_IS:      // ANCA added this case
 							return ((ScalarElement) left).evaluate()
 								== ((ScalarElement) right).evaluate();
 
@@ -520,6 +560,7 @@ public class FilterExpression implements Expression {
 					switch (opcode) {
 
 						case OP_EQ :
+					case OP_IS:      // ANCA added this case
 
 							return ((NominalElement) left).evaluate().equals(
 								((ColumnElement) right).evaluateString(
@@ -605,7 +646,49 @@ public class FilterExpression implements Expression {
 
 		}
 
+     // ANCA added this method
+		 public String toSQLString() {
+			  
+			  StringBuffer buffer = new StringBuffer();
+			  buffer.append("( ");
+			  buffer.append(left.toSQLString());
+			  buffer.append(' ');
+
+			switch (opcode) {
+				case OP_EQ :
+					buffer.append("=");
+					break;
+				case OP_IS :
+					buffer.append("is");
+					break;
+				case OP_NEQ :
+					buffer.append("<>");
+					break;
+				case OP_LT :
+					buffer.append("<");
+					break;
+				case OP_LTE :
+					buffer.append("<=");
+					break;
+				case OP_GT :
+					buffer.append(">");
+					break;
+				case OP_GTE :
+					buffer.append(">=");
+					break;
+				default :
+					buffer.append("??");
+					break;
+			}
+			buffer.append(' ');
+			buffer.append(right.toSQLString());
+			buffer.append(" )");
+
+			return buffer.toString();
+	 }
+
 	}
+
 
 	private class TrueTerminal extends Terminal {
 
@@ -636,6 +719,8 @@ public class FilterExpression implements Expression {
 
 		public abstract String toString();
 
+     // ANCA added this method
+		 public abstract String toSQLString();
 	}
 
 	private class ColumnElement extends Element {
@@ -677,6 +762,11 @@ public class FilterExpression implements Expression {
 		public String toString() {
 			return columnLabel;
 		}
+
+     // ANCA added this method
+		public String toSQLString() {
+			return columnLabel;
+		}
 	}
 
 	private class ScalarElement extends Element {
@@ -690,6 +780,11 @@ public class FilterExpression implements Expression {
 		public String toString() {
 			return Double.toString(value);
 		}
+     // ANCA added this method
+		public String toSQLString() {
+			return Double.toString(value);
+		}
+
 	}
 
 	private class NominalElement extends Element {
@@ -720,6 +815,12 @@ public class FilterExpression implements Expression {
 
 			return buffer.toString();
 
+		}
+
+	         // ANCA added this method
+		public String toSQLString() {
+				if(value.equals("NULL")) return "null";
+				return toString();
 		}
 
 	}
@@ -958,6 +1059,20 @@ public class FilterExpression implements Expression {
 								expression
 									.substring(i + 1, expression.length())
 									.trim()));
+
+			case ' ':      // ANCA added this case to handle is NULL
+					if(expression.charAt(i+1) == 'i' && expression.charAt(i+2) == 's' &&
+						 expression.charAt(i+3) == ' ') {
+							if(expression.substring(i+4, i+8).equals("NULL")) {
+									return new Terminal(
+															OP_IS,
+															parseElement(expression.substring(0,i).trim()),
+															new NominalElement("NULL"));
+							} else {
+									throw new ExpressionException("FilterExpression: malformed IS condition");
+							}
+					}
+					break;
 
 			}
 

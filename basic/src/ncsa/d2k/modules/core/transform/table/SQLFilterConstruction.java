@@ -438,10 +438,19 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 
          }
 
-         else if (src == addColumnButton)
-            gui.getTextArea().insert((String)columnBox.getSelectedItem(),
-               gui.getTextArea().getCaretPosition());
-
+         else if (src == addColumnButton) {
+	     // ANCA added condition related to missing values
+         	if (getIncludeMissingValues()) {
+         		gui.getTextArea().insert((String)columnBox.getSelectedItem() + 
+				      " is NULL || " + 
+				      (String)columnBox.getSelectedItem(),
+				      gui.getTextArea().getCaretPosition()); 
+			} else {
+             gui.getTextArea().insert((String)columnBox.getSelectedItem(),
+                gui.getTextArea().getCaretPosition());
+         	}
+	     // System.err.println("SQLFilterConstruction::actionPerformed::addColumnButton -- " ); //+ expression.toString);
+	 }
          else if (src == addScalarButton) {
 
             if (nominalShowing < 0) {
@@ -499,44 +508,50 @@ public class SQLFilterConstruction extends HeadlessUIModule {
       }
 
       public void expressionChanged(Object evaluation) {
-         String queryCondition = gui.getTextArea().getText();
-         _lastExpression = new String(queryCondition);
-         // SQL does not support "=="
-         while (queryCondition.indexOf("==") >= 0)
-           queryCondition = replace(queryCondition, "==", "=");
-         // SQL does not support "&&"
-         while (queryCondition.indexOf("&&") >= 0)
-           queryCondition = replace(queryCondition, "&&", " and ");
-         // SQL does not support "||"
-         while (queryCondition.indexOf("||") >= 0)
-           queryCondition = replace(queryCondition, "||", " or ");
+  // ANCA replaced this code with toSQLString method in FilterExpression
+//          String queryCondition = gui.getTextArea().getText();
+//          _lastExpression = new String(queryCondition);
+//          // SQL does not support "=="
+//          while (queryCondition.indexOf("==") >= 0)
+//            queryCondition = replace(queryCondition, "==", "=");
+//          // SQL does not support "&&"
+//          while (queryCondition.indexOf("&&") >= 0)
+//            queryCondition = replace(queryCondition, "&&", " and ");
+//          // SQL does not support "||"
+//          while (queryCondition.indexOf("||") >= 0)
+//            queryCondition = replace(queryCondition, "||", " or ");
 
-         //_lastExpression = new String(queryCondition);
+//          //_lastExpression = new String(queryCondition);
+//          //if(getIncludeMissingValues())
+         
 
-         //headless conversion support
-         setQueryCondition(queryCondition);
-         //headless conversion support
+	  String queryCondition = expression.toSQLString();
+	  // System.out.println("query condition " + queryCondition);
+
+          //headless conversion support
+          setQueryCondition(queryCondition);
+          //headless conversion support
 
          pushOutput(queryCondition,0);
          viewDone("Done");
       }
 
-      public String replace(String oldString, String oldPattern, String newPattern) {
-         int index;
-         String newString;
-         index = oldString.indexOf(oldPattern);
-         // matched substring is located in the middle of the string
-         if (index > 0)
-           newString = oldString.substring(0,index) + newPattern +
-                     oldString.substring(index + oldPattern.length(), oldString.length());
-         // matched substring is located in the begining of the string
-         else if (index == 0)
-           newString = newPattern +
-                     oldString.substring(index + oldPattern.length(), oldString.length());
-         else
-           newString = oldString;
-         return newString;
-      }
+//       public String replace(String oldString, String oldPattern, String newPattern) {
+//          int index;
+//          String newString;
+//          index = oldString.indexOf(oldPattern);
+//          // matched substring is located in the middle of the string
+//          if (index > 0)
+//            newString = oldString.substring(0,index) + newPattern +
+//                      oldString.substring(index + oldPattern.length(), oldString.length());
+//          // matched substring is located in the begining of the string
+//          else if (index == 0)
+//            newString = newPattern +
+//                      oldString.substring(index + oldPattern.length(), oldString.length());
+//          else
+//            newString = oldString;
+//          return newString;
+//       }
    }
 
 /******************************************************************************/
