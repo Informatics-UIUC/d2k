@@ -29,6 +29,13 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
     /** the scalar outputs are marked true */
     private boolean[] scalarOutputs;
 
+    private List transformations;
+
+    /** A flag used to determine whether transformations should be
+     * applied in the predict method or not
+     */
+    protected boolean applyTransformationsInPredict = true;
+
     private PredictionModelModule() {
     }
 
@@ -138,6 +145,12 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
         if(table instanceof PredictionTable) {
             // ensure that the inputFeatures and predictionSet are correct..
             pt = (PredictionTable)table;
+
+
+            if(transformations != null && getApplyTransformationsInPredict()) {
+              applyTransformations(pt);
+            }
+
             Map columnToIndexMap = new HashMap(pt.getNumColumns());
             for(int i = 0; i < pt.getNumColumns(); i++)
                 columnToIndexMap.put(pt.getColumnLabel(i), new Integer(i));
@@ -261,6 +274,9 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
         // and prediction set accordingly
         else {
             ExampleTable et = table.toExampleTable();
+            if(transformations != null && getApplyTransformationsInPredict()) {
+              applyTransformations(et);
+            }
             // turn it into a prediction table
             pt = et.toPredictionTable();
             Map columnToIndexMap = new HashMap(pt.getNumColumns());
@@ -392,6 +408,25 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
         scalarOutputs = new boolean[outputs.length];
         for(int i = 0; i < outputs.length; i++)
           scalarOutputs[i] = et.isOutputScalar(i);
+
+        //copy the transformations
+        try {
+          List trans = et.getTransformations();
+          if(trans instanceof ArrayList) {
+            transformations = (ArrayList) ( (ArrayList) (et).getTransformations()).clone();
+          }
+          else if(trans instanceof LinkedList) {
+            transformations = (LinkedList) ( (LinkedList) (et).getTransformations()).clone();
+          }
+          else if(trans instanceof Vector) {
+            transformations = (Vector) ( (Vector) (et).getTransformations()).clone();
+          }
+          else
+            transformations = null;
+        }
+        catch (Exception e) {
+          transformations = null;
+        }
     }
 
     /**
@@ -451,4 +486,43 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
     public boolean[] getScalarOutputs() {
       return scalarOutputs;
     }
+
+    /**
+     * Apply all the transformations in the Transformations list to
+     * the given ExampleTable
+     * @param et the ExampleTable to transform
+     */
+    protected void applyTransformations(ExampleTable et) {
+      if(transformations != null) {
+        for(int i = 0; i < transformations.size(); i++) {
+          Transformation trans = (Transformation)transformations.get(i);
+          trans.transform(et);
+        }
+      }
+    }
+
+    public void setTransformations(List trans) {
+      transformations = trans;
+    }
+
+    public void setApplyTransformationsInPredict(boolean b) {
+      applyTransformationsInPredict = b;
+    }
+
+    public boolean getApplyTransformationsInPredict() {
+      return applyTransformationsInPredict;
+    }
+
+    /**
+     * Return a list of the property descriptions.
+     * @return a list of the property descriptions.
+     */
+    public PropertyDescription[] getPropertiesDescriptions() {
+      PropertyDescription[] pds = new PropertyDescription[1];
+      pds[0] = new PropertyDescription("applyTransformationsInPredict", "Apply all transformations before predicting",
+        "Set this value to true if the data should be transformed before attemping "+
+        "to make predictions.");
+      return pds;
+    }
+
 }
