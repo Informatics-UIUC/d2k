@@ -15,6 +15,9 @@ import java.sql.*;
 //  Vered added a conditional setting missing value flag to true.
 //  Vered 11/24/03: when value is missing, arguments in setter methods are the
 //                  default, as defined by getMissingType() method.
+//  Dora 01/06/04: Database data types: numeric, decimal, float, and real, must be
+//                 treated as double in MutableTable, not float. Otherwise, garbage
+//                 numbers will be appended to the value.
 
 
 public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
@@ -166,17 +169,14 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 					vt.setColumn (intC, i);
 					break;
 				case Types.DOUBLE:
-					DoubleColumn doubleC = new DoubleColumn (count);
-					doubleC.setLabel (fieldArray[i]);
-					vt.setColumn (doubleC, i);
-					break;
 				case Types.NUMERIC:
 				case Types.DECIMAL:
 				case Types.FLOAT:
 				case Types.REAL:
-					FloatColumn floatC = new FloatColumn (count);
-					floatC.setLabel (fieldArray[i]);
-					vt.setColumn (floatC, i);
+                                        // Dora changed on 01/06/04: a double column must be created for all these data types
+					DoubleColumn doubleC = new DoubleColumn (count);
+					doubleC.setLabel (fieldArray[i]);
+					vt.setColumn (doubleC, i);
 					break;
 				case Types.CHAR:
 				case Types.VARCHAR:
@@ -195,10 +195,7 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 
 		//////////////////////////////////////
 		// Now fill in the data
-		// construct the query to get the column metadata.
-		query = "SELECT "+fieldList.toString()+" FROM "+tableList;
-                if (whereClause != null && whereClause.length() > 0)
-			query += " WHERE "+whereClause;
+		//////////////////////////////////////
 
 /**
 
@@ -233,12 +230,13 @@ be set to the defualt of missing value, when needed. [11-24-03]
 					case Types.DECIMAL:
 					case Types.FLOAT:
 					case Types.REAL:
+                                                // Dora changed from the column type from float to double
                                                 if (rs.getString(i+1) == null) {
 
                                                   vt.setDouble(vt.getMissingDouble(), where, i);
                                                 }
                                                 else
-                                                  vt.setFloat (rs.getFloat (i+1), where, i);
+                                                  vt.setDouble (rs.getDouble (i+1), where, i);
 						break;
 					case Types.CHAR:
 					case Types.VARCHAR:
@@ -261,6 +259,7 @@ be set to the defualt of missing value, when needed. [11-24-03]
                                }
 
                               }//for i
+
 		this.pushOutput (vt, 0);
 	}
 /*&%^8 Do not modify this section. */
