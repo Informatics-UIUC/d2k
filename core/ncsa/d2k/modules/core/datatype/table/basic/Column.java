@@ -387,49 +387,49 @@ public interface Column extends java.io.Serializable {
 	 * Get the scalar missing value for this column.
 	 * @return the scalar missing value for this column.
 	 */
-	public Number getScalarMissingValue();
+	//public Number getScalarMissingValue();
 
 	/**
 	 * Set the scalar missing value for this column.
 	 * @param val the new scalar missing value
 	 */
-	public void setScalarMissingValue(Number val);
+	//public void setScalarMissingValue(Number val);
 
 	/**
 	 * Get the nominal missing value for this column.
 	 * @return the nominal missing value for this column.
 	 */
-	public String getNominalMissingValue();
+	//public String getNominalMissingValue();
 
 	/**
 	 * Set the nominal missing value for this column.
 	 * @param s the new nominal missing value
 	 */
-	public void setNominalMissingValue(String s);
+	//public void setNominalMissingValue(String s);
 
 	/**
 	 * Get the scalar empty value for this column.
 	 * @return the scalar empty value for this column
 	 */
-	public Number getScalarEmptyValue();
+	//public Number getScalarEmptyValue();
 
 	/**
 	 * Set the scalar empty value for this column.
 	 * @param val the scalar empty value for this column
 	 */
-	public void setScalarEmptyValue(Number val);
+	//public void setScalarEmptyValue(Number val);
 
 	/**
 	 * Get the nominal empty value for this column.
 	 * @return the nominal empty value for this column
 	 */
-	public String getNominalEmptyValue();
+	//public String getNominalEmptyValue();
 
 	/**
 	 * Set the nominal empty value for this column.
 	 * @param s the new nominal empty value for this column
 	 */
-	public void setNominalEmptyValue(String s);
+	//public void setNominalEmptyValue(String s);
 
 	/**
 	 * Return true if the value at row is missing, false otherwise
@@ -450,12 +450,12 @@ public interface Column extends java.io.Serializable {
 	 * Set the value at row to be missing.
 	 * @param row the row index
 	 */
-	public void setValueToMissing(int row);
+	public void setValueToMissing(boolean b, int row);
 
 	/**
 	 * Set the value at row to be empty.
 	 * @param row the row index
 	 */
-	public void setValueToEmpty(int row);
+	public void setValueToEmpty(boolean b, int row);
 
 }/*Column*/

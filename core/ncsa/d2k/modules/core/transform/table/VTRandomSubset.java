@@ -4,7 +4,7 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 import java.util.Random;
-import java.util.ArrayList;
+import java.util.List;
 import ncsa.d2k.modules.TransformationModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -173,7 +173,7 @@ public class VTRandomSubset extends ncsa.d2k.core.modules.DataPrepModule {
 
 		if(raw instanceof MutableTable && smallet instanceof MutableTable && biget instanceof MutableTable) {
 			MutableTable mt = (MutableTable)rawet;
-			ArrayList trans=mt.getTransformations();
+			List trans=mt.getTransformations();
 			for(int i=0; i<trans.size(); i++){
 				//((MutableTable)smallet).addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));
 				//((MutableTable)biget).addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));
@@ -187,7 +187,7 @@ public class VTRandomSubset extends ncsa.d2k.core.modules.DataPrepModule {
 
 	if(raw instanceof MutableTable && subsetSmall instanceof MutableTable && subsetBig instanceof MutableTable) {
 		MutableTable mt = (MutableTable)raw;
-		ArrayList trans=mt.getTransformations();
+		List trans=mt.getTransformations();
 		for(int i=0; i<trans.size(); i++){
 			//((MutableTable)subsetSmall).addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));
 			//((MutableTable)subsetBig).addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));

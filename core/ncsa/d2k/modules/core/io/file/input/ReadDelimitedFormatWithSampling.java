@@ -141,7 +141,7 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 			if(labelsList != null)
 				labelsList.clear();
 
-			TableImpl table = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+			MutableTableImpl table = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(cols);
 
 			int numRowsRead = 0;
 
@@ -179,7 +179,8 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 
 			// create an example table if it has a variablesRow
 			if(hasVariables)
-				table = toExampleTable(table);
+				//table = toExampleTable(table);
+				return toExampleTable(table);
 
 			return table;
 		}

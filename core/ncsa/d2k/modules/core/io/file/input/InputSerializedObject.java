@@ -104,13 +104,13 @@ public class InputSerializedObject extends InputModule
   ////////////////
   // Properties //
   ////////////////
-  private String FileName;      // = "ObjectFile.ser";
+/*  private String FileName;      // = "ObjectFile.ser";
 
   /**
    * put your documentation comment here
    * @param value
    */
-  public void setFileName (String value) {
+/*  public void setFileName (String value) {
     this.FileName = value;
   }
 
@@ -118,7 +118,7 @@ public class InputSerializedObject extends InputModule
    * put your documentation comment here
    * @return
    */
-  public String getFileName () {
+/*  public String getFileName () {
     return  this.FileName;
   }
   private boolean usePropFileName = false;
@@ -127,7 +127,7 @@ public class InputSerializedObject extends InputModule
    * put your documentation comment here
    * @param b
    */
-  public void setUsePropFileName (boolean b) {
+/*  public void setUsePropFileName (boolean b) {
     usePropFileName = b;
   }
 
@@ -135,30 +135,32 @@ public class InputSerializedObject extends InputModule
    * put your documentation comment here
    * @return
    */
-  public boolean getUsePropFileName () {
+/*  public boolean getUsePropFileName () {
     return  usePropFileName;
   }
+  */
 
   //////////////////
   //isReady
   /////////////////
-  public boolean isReady () {
+  /*public boolean isReady () {
     if (usePropFileName) {
       return  true;
     }
     else {
       return  super.isReady();
     }
-  }
+  }*/
 
   //////////
   // Doit //
   //////////
   public void doit () {
+      String FileName = null;
     try {
-      if (!usePropFileName) {
+      //if (!usePropFileName) {
         FileName = (String)(pullInput(0));
-      }
+      //}
       FileInputStream file = new FileInputStream(FileName);
       ObjectInputStream in = new ObjectInputStream(file);
       Object object = null;

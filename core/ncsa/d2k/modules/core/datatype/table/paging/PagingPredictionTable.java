@@ -6,6 +6,8 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 class PagingPredictionTable extends PagingExampleTable implements PredictionTable {
 
+	static final long serialVersionUID = -7123137205447209231L;
+
    protected int[] predictionSet;
    protected MutablePagingTable predictionColumnsTable;
 
@@ -41,8 +43,8 @@ class PagingPredictionTable extends PagingExampleTable implements PredictionTabl
 
          predictionSet = new int[0];
 
-         TableImpl table =
-            (TableImpl)DefaultTableFactory.getInstance().createTable();
+         MutableTableImpl table =
+            (MutableTableImpl)DefaultTableFactory.getInstance().createTable();
 
          boolean[] dummy = new boolean[getNumRows()]; // old: pet.getNumRows()
          for (int i = 0; i < dummy.length; i++)
@@ -810,10 +812,11 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
          return original.getColumnType(indirection[position]);
    }
 
-   public ExampleTable toExampleTable() {
+/*   public ExampleTable toExampleTable() {
       //return (PagingPredictionTable)this.copy();
        return this;
    }
+   */
 
 /*****************************************************************************/
 /* PredictionTable methods                                                   */

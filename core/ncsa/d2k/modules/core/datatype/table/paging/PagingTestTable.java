@@ -6,6 +6,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 class PagingTestTable extends PagingPredictionTable
    implements TestTable {
 
+	static final long serialVersionUID = -4264210069845688368L;
+
    PagingTestTable(PagingExampleTable pet, Page[] pgs, PageManager pm) {
       super(pet, pgs, pm);
      //testSet = pet.getTestingSet();
@@ -274,10 +276,10 @@ class PagingTestTable extends PagingPredictionTable
           return this;
    }
 
-   public PredictionTable toPredictionTable() {
+   /*public PredictionTable toPredictionTable() {
       //return (PagingTestTable)this.copy();
        return this;
-   }
+   }*/
 
 ///////////////////////////////////////////////////////////
 /*

@@ -23,7 +23,8 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
 
     /** holds FloatColumn's internal data rep */
     private float[] internal = null;
-
+    private boolean[] missing = null;
+	private boolean[] empty = null;
     /**
      * Create a new emtpy FloatColumn
      */
@@ -39,10 +40,16 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
         internal = new float[capacity];
       	setIsScalar(true);
       	type = ColumnTypes.FLOAT;
-	  	setScalarMissingValue(new Float(Float.NEGATIVE_INFINITY));
-	  	setScalarEmptyValue(new Float(Float.POSITIVE_INFINITY));
-		setNominalMissingValue(Float.toString(Float.NEGATIVE_INFINITY));
-		setNominalEmptyValue(Float.toString(Float.POSITIVE_INFINITY));
+	  	//setScalarMissingValue(new Float(Float.NEGATIVE_INFINITY));
+	  	//setScalarEmptyValue(new Float(Float.POSITIVE_INFINITY));
+		//setNominalMissingValue(Float.toString(Float.NEGATIVE_INFINITY));
+		//setNominalEmptyValue(Float.toString(Float.POSITIVE_INFINITY));
+        missing = new boolean[internal.length];
+        empty = new boolean[internal.length];
+        for(int i = 0; i < internal.length; i++) {
+            missing[i] = false;
+            empty[i] = false;
+		}
     }
 
     /**
@@ -53,10 +60,27 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     	internal = vals;
     	setIsScalar(true);
     	type = ColumnTypes.FLOAT;
-		setScalarMissingValue(new Float(Float.NEGATIVE_INFINITY));
-		setScalarEmptyValue(new Float(Float.POSITIVE_INFINITY));
-		setNominalMissingValue(Float.toString(Float.NEGATIVE_INFINITY));
-		setNominalEmptyValue(Float.toString(Float.POSITIVE_INFINITY));
+		//setScalarMissingValue(new Float(Float.NEGATIVE_INFINITY));
+		//setScalarEmptyValue(new Float(Float.POSITIVE_INFINITY));
+		//setNominalMissingValue(Float.toString(Float.NEGATIVE_INFINITY));
+		//setNominalEmptyValue(Float.toString(Float.POSITIVE_INFINITY));
+        missing = new boolean[internal.length];
+        empty = new boolean[internal.length];
+        for(int i = 0; i < internal.length; i++) {
+            missing[i] = false;
+            empty[i] = false;
+		}
+    }
+
+    private FloatColumn(float[] vals, boolean[] newMiss, boolean[] newEmp,
+                        String lbl, String comm) {
+    	internal = vals;
+    	setIsScalar(true);
+    	type = ColumnTypes.FLOAT;
+        missing = newMiss;
+        empty = newEmp;
+        setLabel(lbl);
+        setComment(comm);
     }
 
     /**
@@ -79,15 +103,27 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
             ois.close();
             return  fc;
         } catch (Exception e) {
-            fc = new FloatColumn(getNumRows());
+            //fc = new FloatColumn(getNumRows());
+            float[] newVals = new float[getNumRows()];
             for (int i = 0; i < getNumRows(); i++)
-                fc.setFloat(internal[i], i);
-            fc.setLabel(getLabel());
-            fc.setComment(getComment());
-			fc.setScalarEmptyValue(getScalarEmptyValue());
-			fc.setScalarMissingValue(getScalarMissingValue());
-			fc.setNominalEmptyValue(getNominalEmptyValue());
-			fc.setNominalMissingValue(getNominalMissingValue());
+                //fc.setFloat(internal[i], i);
+                newVals[i] = getFloat(i);
+            //fc.setLabel(getLabel());
+            //fc.setComment(getComment());
+			//fc.setScalarEmptyValue(getScalarEmptyValue());
+			//fc.setScalarMissingValue(getScalarMissingValue());
+			//fc.setNominalEmptyValue(getNominalEmptyValue());
+			//fc.setNominalMissingValue(getNominalMissingValue());
+            boolean[] miss = new boolean[internal.length];
+            boolean[] em = new boolean[internal.length];
+            for(int i = 0; i < internal.length; i++) {
+                miss[i] = missing[i];
+                em[i] = empty[i];
+
+            }
+            fc = new FloatColumn(newVals, miss, em, getLabel(), getComment());
+            //fc.missing = miss;
+			//fc.empty = em;
             return  fc;
         }
     }
@@ -123,7 +159,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      @param newCapacity the new capacity
      */
     public void setNumRows (int newCapacity) {
-        if (internal != null) {
+/*        if (internal != null) {
             float[] newInternal = new float[newCapacity];
             if (newCapacity > internal.length)
                 newCapacity = internal.length;
@@ -132,6 +168,25 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
         }
         else
             internal = new float[newCapacity];
+        */
+        if (internal != null) {
+            float[] newInternal = new float[newCapacity];
+            boolean[] newMissing = new boolean[newCapacity];
+            boolean[] newEmpty = new boolean[newCapacity];
+            if (newCapacity > internal.length)
+                newCapacity = internal.length;
+            System.arraycopy(internal, 0, newInternal, 0, newCapacity);
+            System.arraycopy(missing, 0, newMissing, 0, missing.length);
+            System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+            internal = newInternal;
+            missing = newMissing;
+            empty = newEmpty;
+        }
+        else {
+            internal = new float[newCapacity];
+            missing = new boolean[newCapacity];
+            empty = new boolean[newCapacity];
+		}
     }
 
     /**
@@ -223,16 +278,41 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
         if ((pos + len) > internal.length)
             throw  new ArrayIndexOutOfBoundsException();
         float[] subset = new float[len];
+        boolean[] newMissing = new boolean[len];
+        boolean[] newEmpty = new boolean[len];
         System.arraycopy(internal, pos, subset, 0, len);
-        FloatColumn fc = new FloatColumn(subset);
+        System.arraycopy(missing, pos, newMissing, 0, len);
+        System.arraycopy(empty, pos, newEmpty, 0, len);
+        /*FloatColumn fc = new FloatColumn(subset);
         fc.setLabel(getLabel());
         fc.setComment(getComment());
-		fc.setScalarEmptyValue(getScalarEmptyValue());
-		fc.setScalarMissingValue(getScalarMissingValue());
-		fc.setNominalEmptyValue(getNominalEmptyValue());
-		fc.setNominalMissingValue(getNominalMissingValue());
+		//fc.setScalarEmptyValue(getScalarEmptyValue());
+		//fc.setScalarMissingValue(getScalarMissingValue());
+		//fc.setNominalEmptyValue(getNominalEmptyValue());
+		//fc.setNominalMissingValue(getNominalMissingValue());
         //fc.setType(getType());
+        fc.missing = newMissing;
+        fc.empty = newEmpty;
+        */
+        FloatColumn fc = new FloatColumn(subset, newMissing, newEmpty,
+                getLabel(), getComment());
         return  fc;
+
+/*        if ((pos + len) > internal.length)
+            throw  new ArrayIndexOutOfBoundsException();
+        boolean[] subset = new boolean[len];
+        boolean[] newMissing = new boolean[len];
+        boolean[] newEmpty = new boolean[len];
+        System.arraycopy(internal, pos, subset, 0, len);
+        System.arraycopy(missing, pos, newMissing, 0, len);
+        System.arraycopy(empty, pos, newEmpty, 0, len);
+        BooleanColumn bc = new BooleanColumn(subset);
+        bc.missing = newMissing;
+        bc.empty = newEmpty;
+        bc.setLabel(getLabel());
+        bc.setComment(getComment());
+        return  bc;
+        */
     }
 
     /**
@@ -437,9 +517,11 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      * @param pos the position
      */
     public void setChar (char newEntry, int pos) {
-        char[] c = new char[1];
+        /*char[] c = new char[1];
         c[0] = newEntry;
         setChars(c, pos);
+        */
+        setFloat((float)newEntry, pos);
     }
 
     /**
@@ -517,9 +599,29 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
          */
         int last = internal.length;
         float[] newInternal = new float[internal.length + 1];
+        boolean[] newMissing = new boolean[internal.length + 1];
+        boolean[] newEmpty = new boolean[internal.length + 1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length);
+        System.arraycopy(missing, 0, newMissing, 0, missing.length);
+        System.arraycopy(empty, 0, newEmpty, 0, empty.length);
         newInternal[last] = ((Number)newEntry).floatValue();
         internal = newInternal;
+        missing = newMissing;
+		empty = newEmpty;
+
+/*        int last = internal.length;
+        boolean[] newInternal = new boolean[internal.length + 1];
+        boolean[] newMissing = new boolean[internal.length + 1];
+        boolean[] newEmpty = new boolean[internal.length + 1];
+        System.arraycopy(internal, 0, newInternal, 0, internal.length);
+        System.arraycopy(missing, 0, newMissing, 0, missing.length);
+        System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+        newInternal[last] = ((Boolean)newEntry).booleanValue();
+
+        internal = newInternal;
+        missing = newMissing;
+		empty = newEmpty;
+        */
     }
 
     /**
@@ -533,10 +635,45 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
         float removed = internal[pos];
         System.arraycopy(internal, pos + 1, internal, pos, internal.length -
                 (pos + 1));
+        System.arraycopy(missing, pos + 1, missing, pos, internal.length -
+                (pos + 1));
+        System.arraycopy(empty, pos + 1, empty, pos, internal.length -
+                (pos + 1));
         float[] newInternal = new float[internal.length - 1];
+        boolean newMissing[] = new boolean[internal.length-1];
+        boolean newEmpty[] = new boolean[internal.length-1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
+        System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
+        System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
         internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
         return  new Float(removed);
+/*        boolean removed = internal[pos];
+        // copy all the items after the item to be removed one position up
+        System.arraycopy(internal, pos + 1, internal, pos, internal.length -
+                (pos + 1));
+
+        System.arraycopy(missing, pos + 1, missing, pos, internal.length -
+                (pos + 1));
+
+        System.arraycopy(empty, pos + 1, empty, pos, internal.length -
+                (pos + 1));
+
+        // copy the items into a new array
+        boolean newInternal[] = new boolean[internal.length - 1];
+        boolean newMissing[] = new boolean[internal.length-1];
+        boolean newEmpty[] = new boolean[internal.length-1];
+        System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
+        System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
+        System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
+
+        internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
+        return  new Boolean(removed);
+        */
+
     }
 
     /**
@@ -553,23 +690,64 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
          newInternal[pos] = ((Number)newEntry).floatValue();
          internal = newInternal;
          */
-        float[] newInternal = new float[internal.length + 1];
         if (pos > getNumRows()) {
             addRow(newEntry);
             return;
         }
-        if (pos == 0)
-            System.arraycopy(internal, 0, newInternal, 1, getNumRows());        /*else if(pos == 1) {
-         newInternal[0] = internal[0];
-         System.arraycopy(internal, 1, newInternal, 2, getCapacity()-2);
-         }*/
+        float[] newInternal = new float[internal.length + 1];
+        boolean[] newMissing = new boolean[internal.length + 1];
+        boolean[] newEmpty = new boolean[internal.length + 1];
+        if (pos == 0) {
+            System.arraycopy(internal, 0, newInternal, 1, getNumRows());
+            System.arraycopy(missing, 0, newMissing, 1, getNumRows());
+            System.arraycopy(empty, 0, newEmpty, 1, getNumRows());
+        }
         else {
             System.arraycopy(internal, 0, newInternal, 0, pos);
             System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
                     - pos);
+            System.arraycopy(missing, 0, newMissing, 0, pos);
+            System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
+                    - pos);
+
+            System.arraycopy(empty, 0, newEmpty, 0, pos);
+            System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
+                    - pos);
         }
         newInternal[pos] = ((Float)newEntry).floatValue();
         internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
+/*        if (pos > getNumRows()) {
+            addRow(newEntry);
+            return;
+        }
+        boolean[] newInternal = new boolean[internal.length + 1];
+        boolean[] newMissing = new boolean[internal.length + 1];
+        boolean[] newEmpty = new boolean[internal.length + 1];
+        if (pos == 0) {
+            System.arraycopy(internal, 0, newInternal, 1, getNumRows());
+            System.arraycopy(missing, 0, newMissing, 1, getNumRows());
+            System.arraycopy(empty, 0, newEmpty, 1, getNumRows());
+        }
+        else {
+            System.arraycopy(internal, 0, newInternal, 0, pos);
+            System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
+                    - pos);
+
+            System.arraycopy(missing, 0, newMissing, 0, pos);
+            System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
+                    - pos);
+
+            System.arraycopy(empty, 0, newEmpty, 0, pos);
+            System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
+                    - pos);
+        }
+        newInternal[pos] = ((Boolean)newEntry).booleanValue();
+        internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
+        */
     }
 
     /**
@@ -579,8 +757,27 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      */
     public void swapRows (int pos1, int pos2) {
         float d1 = internal[pos1];
+        boolean miss = missing[pos1];
+        boolean emp = empty[pos1];
         internal[pos1] = internal[pos2];
         internal[pos2] = d1;
+        missing[pos1] = missing[pos2];
+        missing[pos2] = miss;
+
+        empty[pos1] = empty[pos2];
+        empty[pos2] = emp;
+/*        boolean d1 = internal[pos1];
+        boolean miss = missing[pos1];
+        boolean emp = empty[pos1];
+        internal[pos1] = internal[pos2];
+        internal[pos2] = d1;
+
+        missing[pos1] = missing[pos2];
+        missing[pos2] = miss;
+
+        empty[pos1] = empty[pos2];
+        empty[pos2] = emp;
+        */
     }
 
     /**
@@ -591,21 +788,46 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      */
     public Column reorderRows (int[] newOrder) {
         float[] newInternal = null;
+        boolean[] newMissing = null;
+        boolean[] newEmpty = null;
         if (newOrder.length == internal.length) {
             newInternal = new float[internal.length];
-            for (int i = 0; i < internal.length; i++)
+            for (int i = 0; i < internal.length; i++) {
                 newInternal[i] = internal[newOrder[i]];
+                newMissing[i] = missing[newOrder[i]];
+                newEmpty[i] = empty[newOrder[i]];
+            }
         }
         else
             throw  new ArrayIndexOutOfBoundsException();
-        FloatColumn fc = new FloatColumn(newInternal);
+        /*FloatColumn fc = new FloatColumn(newInternal);
         fc.setLabel(getLabel());
         fc.setComment(getComment());
 		fc.setScalarEmptyValue(getScalarEmptyValue());
 		fc.setScalarMissingValue(getScalarMissingValue());
 		fc.setNominalEmptyValue(getNominalEmptyValue());
 		fc.setNominalMissingValue(getNominalMissingValue());
+        */
+        FloatColumn fc = new FloatColumn(newInternal, newMissing, newEmpty, getLabel(), getComment());
         return  fc;
+/*        boolean[] newInternal = null;
+        boolean[] newMissing = null;
+        boolean[] newEmpty = null;
+        if (newOrder.length == internal.length) {
+            newInternal = new boolean[internal.length];
+            newMissing = new boolean[internal.length];
+            newEmpty = new boolean[internal.length];
+            for (int i = 0; i < internal.length; i++) {
+                newInternal[i] = internal[newOrder[i]];
+                newMissing[i] = missing[newOrder[i]];
+                newEmpty[i] = empty[newOrder[i]];
+            }
+        }
+        else
+            throw  new ArrayIndexOutOfBoundsException();
+        BooleanColumn bc = new BooleanColumn(newInternal, newMissing, newEmpty, getLabel(), getComment());
+        return  bc;
+        */
     }
 
     /**
@@ -618,7 +840,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     public int compareRows (Object element, int pos) {
         float d1 = ((Number)element).floatValue();
         float d2 = internal[pos];
-        if (d1 == scalarEmptyValue) {
+        /*if (d1 == scalarEmptyValue) {
             if (d2 == scalarEmptyValue)
                 return  0;
             else
@@ -635,6 +857,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
 		}
 		else if(d2 == scalarMissingValue)
 			return 1;
+        */
 
         if (d1 > d2)
             return  1;
@@ -653,7 +876,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     public int compareRows (int pos1, int pos2) {
         float d1 = internal[pos1];
         float d2 = internal[pos2];
-        if (d1 == scalarEmptyValue) {
+        /*if (d1 == scalarEmptyValue) {
             if (d2 == scalarEmptyValue)
                 return  0;
             else
@@ -670,6 +893,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
 		}
 		else if(d2 == scalarMissingValue)
 			return 1;
+        */
 
         if (d1 > d2)
             return  1;
@@ -691,16 +915,48 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
             toRemove.add(id);
         }
         float newInternal[] = new float[internal.length - indices.length];
+        boolean newMissing[] = new boolean[internal.length - indices.length];
+        boolean newEmpty[] = new boolean[internal.length - indices.length];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
             // if this row is not in the list, copy it into the new internal
          if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
+                newMissing[newIntIdx] = missing[i];
+                newEmpty[newIntIdx] = empty[i];
                 newIntIdx++;
             }
         }
         internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
+/*        HashSet toRemove = new HashSet(indices.length);
+        for (int i = 0; i < indices.length; i++) {
+            Integer id = new Integer(indices[i]);
+            toRemove.add(id);
+        }
+        boolean newInternal[] = new boolean[internal.length - indices.length];
+        boolean newMissing[] = new boolean[internal.length - indices.length];
+        boolean newEmpty[] = new boolean[internal.length - indices.length];
+
+        int newIntIdx = 0;
+        for (int i = 0; i < getNumRows(); i++) {
+            // check if this row is in the list of rows to remove
+            //Integer x = (Integer)toRemove.get(new Integer(i));
+            // if this row is not in the list, copy it into the new internal
+            //if (x == null) {
+         if(!toRemove.contains(new Integer(i))) {
+                newInternal[newIntIdx] = internal[i];
+                newMissing[newIntIdx] = missing[i];
+                newEmpty[newIntIdx] = empty[i];
+                newIntIdx++;
+            }
+        }
+        internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
+        */
     }
 
     /**
@@ -789,7 +1045,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
         }
     }
 
-	public void setValueToMissing(int row) {
+/*	public void setValueToMissing(int row) {
 		setDouble(scalarMissingValue, row);
 	}
 
@@ -803,6 +1059,22 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
 
 	public boolean isValueEmpty(int row) {
 		return getDouble(row) == scalarEmptyValue;
+	}
+    */
+    public void setValueToMissing(boolean b, int row) {
+        missing[row] = b;
+    }
+
+    public void setValueToEmpty(boolean b, int row) {
+        empty[row] = b;
+    }
+
+    public boolean isValueMissing(int row) {
+        return missing[row];
+    }
+
+    public boolean isValueEmpty(int row) {
+        return empty[row];
 	}
 }
 /*FloatColumn*/

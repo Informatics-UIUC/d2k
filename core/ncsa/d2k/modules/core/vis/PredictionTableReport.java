@@ -130,8 +130,19 @@ public class PredictionTableReport extends VisModule  {
 		}
 
 		public Dimension getPreferredSize() {
-			return new Dimension(400, 400);
+			Dimension d = jtp.getPreferredSize();
+			double wid = d.getWidth();
+			double hei = d.getHeight();
+
+			if(wid > 400)
+				wid = 400;
+			if(hei > 400)
+				hei = 400;
+
+			return new Dimension((int)wid, (int)hei);
 		}
+
+		JTabbedPane jtp;
 
 		/**
 	   		Called whenever inputs arrive to the module.
@@ -143,7 +154,7 @@ public class PredictionTableReport extends VisModule  {
 			int []outputs = pt.getOutputFeatures();
 			int []preds = pt.getPredictionSet();
 
-			JTabbedPane jtp = new JTabbedPane();
+			jtp = new JTabbedPane();
 			for(int i = 0; i < outputs.length; i++) {
 				// create a new InfoArea and ConfusionMatrix for each
 				// and put it in a JPanel and put the JPanel in
@@ -153,8 +164,7 @@ public class PredictionTableReport extends VisModule  {
 				int predCol = preds[i];
 
 				// create the confusion matrix
-				ConfusionMatrix cm = new ConfusionMatrix(pt,
-					outputs[i], preds[i]);
+				ConfusionMatrix cm = new ConfusionMatrix(pt, outputs[i], preds[i]);
 
 				// get the number correct from the confusion matrix
 				int numCorrect = cm.correct;
@@ -187,7 +197,7 @@ public class PredictionTableReport extends VisModule  {
 				Column[] col = new Column[2];
 				col[0] = sc;
 				col[1] = ic;
-				TableImpl tbl = (TableImpl)DefaultTableFactory.getInstance().createTable(col);
+				MutableTableImpl tbl = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(col);
 				// create the pie chart
 				DataSet ds = new DataSet("Accuracy", null, 0, 1);
 				GraphSettings gs = new GraphSettings();
@@ -207,6 +217,7 @@ public class PredictionTableReport extends VisModule  {
 				JPanel pq = new JPanel();
 				pq.setLayout(new BorderLayout());
 				pq.add(new JLabel("Confusion Matrix"), BorderLayout.NORTH);
+				//cm.setColumnHeaderView(new JLabel("Confusion Matrix"));
 				pq.add(cm, BorderLayout.CENTER);
 				pp.add(pq);
 				jtp.addTab(pt.getColumnLabel(outputs[i]), pp);

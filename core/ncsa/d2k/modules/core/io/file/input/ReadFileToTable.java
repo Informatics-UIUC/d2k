@@ -85,7 +85,7 @@ public class ReadFileToTable extends InputModule {
             for(int i = 0; i < nr; i++) {
                 for(int j = 0; j < nc; j++) {
                     if(blanks[i][j])
-                        mt.setValueToMissing(i, j);
+                        mt.setValueToMissing(true, i, j);
                 }
             }
         }
@@ -141,7 +141,7 @@ public class ReadFileToTable extends InputModule {
                 columns[i].setLabel(label);
         }
 
-        TableImpl ti = new TableImpl(columns);
+        MutableTableImpl ti = new MutableTableImpl(columns);
         for(int i = 0; i < numRows; i++) {
             char[][] row = df.getRowElements(i);
             if(row != null) {

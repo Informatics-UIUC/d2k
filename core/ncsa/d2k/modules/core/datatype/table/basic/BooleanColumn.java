@@ -65,6 +65,17 @@ public class BooleanColumn extends AbstractColumn {
 		}
     }
 
+    private BooleanColumn(boolean[] vals, boolean[] miss, boolean[] emp,
+                          String lbl, String comm) {
+        setIsNominal(true);
+        type = ColumnTypes.BOOLEAN;
+        internal = vals;
+        missing = miss;
+        empty = emp;
+        setLabel(lbl);
+        setComment(comm);
+    }
+
     /**
      * Returns an exact copy of this <code>Column</code>. A deep copy is
      * attempted, but if it fails, a new <code>BooleanColumn</code> will be
@@ -88,11 +99,11 @@ public class BooleanColumn extends AbstractColumn {
             ois.close();
             return  newCol;
         } catch (Exception e) {
-            newCol = new BooleanColumn(this.getNumRows());
-            for (int i = 0; i < newCol.getNumRows(); i++)
-                newCol.setBoolean(internal[i], i);
-            newCol.setLabel(getLabel());
-            newCol.setComment(getComment());
+            boolean[] newVals = new boolean[getNumRows()];
+            for (int i = 0; i < getNumRows(); i++)
+                newVals[i] = getBoolean(i);
+            //newCol.setLabel(getLabel());
+            //newCol.setComment(getComment());
 
 			boolean[] miss = new boolean[internal.length];
 			boolean[] em = new boolean[internal.length];
@@ -101,8 +112,9 @@ public class BooleanColumn extends AbstractColumn {
 				em[i] = empty[i];
 
 			}
-		 	newCol.missing = miss;
-			newCol.empty = em;
+		 	//newCol.missing = miss;
+			//newCol.empty = em;
+            newCol = new BooleanColumn(newVals, miss, em, getLabel(), getComment());
             return  newCol;
         }
     }
@@ -514,11 +526,13 @@ public class BooleanColumn extends AbstractColumn {
         System.arraycopy(internal, pos, subset, 0, len);
 		System.arraycopy(missing, pos, newMissing, 0, len);
 		System.arraycopy(empty, pos, newEmpty, 0, len);
-        BooleanColumn bc = new BooleanColumn(subset);
+        /*BooleanColumn bc = new BooleanColumn(subset);
 		bc.missing = newMissing;
 		bc.empty = newEmpty;
         bc.setLabel(getLabel());
         bc.setComment(getComment());
+        */
+        BooleanColumn bc = new BooleanColumn(subset, newMissing, newEmpty, getLabel(), getComment());
         return  bc;
     }
 
@@ -698,11 +712,13 @@ public class BooleanColumn extends AbstractColumn {
         }
         else
             throw  new ArrayIndexOutOfBoundsException();
-        BooleanColumn bc = new BooleanColumn(newInternal);
+        /*BooleanColumn bc = new BooleanColumn(newInternal);
 		bc.missing = newMissing;
 		bc.empty = newEmpty;
         bc.setLabel(getLabel());
         bc.setComment(getComment());
+        */
+        BooleanColumn bc = new BooleanColumn(newInternal, newMissing, newEmpty, getLabel(), getComment());
         return  bc;
     }
 
@@ -857,12 +873,12 @@ public class BooleanColumn extends AbstractColumn {
         }
     }
 
-	public void setValueToMissing(int row) {
-		missing[row] = true;
+	public void setValueToMissing(boolean b, int row) {
+		missing[row] = b;
 	}
 
-	public void setValueToEmpty(int row) {
-		empty[row] = true;
+	public void setValueToEmpty(boolean b, int row) {
+		empty[row] = b;
 	}
 
 	public boolean isValueMissing(int row) {

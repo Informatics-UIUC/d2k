@@ -29,6 +29,8 @@ public final class TreeScrollPane extends JScrollPane {
 		viewport = getViewport();
 		viewport.setBackground(DecisionTreeScheme.treebackgroundcolor);
 		this.setBackground(DecisionTreeScheme.treebackgroundcolor);
+        JPanel lr = new JPanel();
+        setCorner(this.LOWER_RIGHT_CORNER, lr);
 		viewport.setView(treepanel);
 	}
 

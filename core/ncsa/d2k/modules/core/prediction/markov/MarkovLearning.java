@@ -428,7 +428,7 @@ public class MarkovLearning extends ncsa.d2k.core.modules.ComputeModule
     MarkovModel model = getMarkovModel();
 
     model.order                    = order;
-	ArrayList transforms = examples_table.getTransformations();
+	List transforms = examples_table.getTransformations();
 	if(transforms.size() > 0)
 		model.dataTransformer = (MarkovDataTransform)transforms.get(0);
 

@@ -7,6 +7,8 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 public class MutablePagingTable extends PagingTable implements MutableTable, Serializable {
 
+	static final long serialVersionUID = 4882678549211681266L;
+
    public MutablePagingTable() {
       super();
    }
@@ -3931,7 +3933,7 @@ public class MutablePagingTable extends PagingTable implements MutableTable, Ser
 
    }
 
-   public void setScalarMissingValue(Number val, int col) {
+/*   public void setScalarMissingValue(Number val, int col) {
 
       try {
 
@@ -4045,9 +4047,9 @@ public class MutablePagingTable extends PagingTable implements MutableTable, Ser
       }
       catch(InterruptedException e) { e.printStackTrace(); }
 
-   }
+   }*/
 
-   public void setValueToMissing(int row, int col) {
+   public void setValueToMissing(boolean b, int row, int col) {
 
       int pageNum = getPageNumber(row);
 
@@ -4063,7 +4065,7 @@ public class MutablePagingTable extends PagingTable implements MutableTable, Ser
                correct = manager.check(pages[pageNum], lock);
 
                if (correct)
-                  pages[pageNum].setValueToMissing(row - offsets[pageNum], col);
+                  pages[pageNum].setValueToMissing(b, row - offsets[pageNum], col);
 
             lock.releaseWrite();
 
@@ -4074,7 +4076,7 @@ public class MutablePagingTable extends PagingTable implements MutableTable, Ser
 
    }
 
-   public void setValueToEmpty(int row, int col) {
+   public void setValueToEmpty(boolean b, int row, int col) {
 
       int pageNum = getPageNumber(row);
 
@@ -4090,7 +4092,7 @@ public class MutablePagingTable extends PagingTable implements MutableTable, Ser
                correct = manager.check(pages[pageNum], lock);
 
                if (correct)
-                  pages[pageNum].setValueToEmpty(row - offsets[pageNum], col);
+                  pages[pageNum].setValueToEmpty(b, row - offsets[pageNum], col);
 
             lock.releaseWrite();
 
@@ -4107,7 +4109,7 @@ public class MutablePagingTable extends PagingTable implements MutableTable, Ser
       transformations.add(tm);
    }
 
-   public ArrayList getTransformations() {
+   public List getTransformations() {
       return transformations;
    }
 

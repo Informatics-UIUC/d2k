@@ -109,13 +109,13 @@ public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 	}
 	//end setting Properties
 
-	TableImpl table1, table2;
+	MutableTableImpl table1, table2;
 	Object[] fill;
 
 	public void doit() throws Exception {
 		counter = 0;
-		table1 = (TableImpl) pullInput(0);
-		table2 = (TableImpl) pullInput(1);
+		table1 = (MutableTableImpl) pullInput(0);
+		table2 = (MutableTableImpl) pullInput(1);
 		String[] uid = (String[]) pullInput(2);
 
 		//System.out.println(uid[0]);

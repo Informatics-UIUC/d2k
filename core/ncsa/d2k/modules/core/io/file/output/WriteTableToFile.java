@@ -14,13 +14,13 @@ public class WriteTableToFile extends OutputModule
 
 	transient String delimiter;
 
-	boolean comma = false;
-	boolean tab = true;
-	boolean space = false;
+	boolean comma = true;
+//	boolean tab = true;
+//	boolean space = false;
 	boolean useDataTypes = true;
 	boolean useColumnLabels = true;
 
-    public boolean getComma() {
+/*    public boolean getComma() {
     	return comma;
     }
 
@@ -43,6 +43,7 @@ public class WriteTableToFile extends OutputModule
     public void setSpace(boolean b) {
     	space = b;
     }
+*/
 
 	public void setUseDataTypes(boolean b) {
 		useDataTypes = b;
@@ -157,10 +158,11 @@ public class WriteTableToFile extends OutputModule
 
 		if(comma)
 			delimiter = ",";
-		if(tab)
+		/*if(tab)
 			delimiter = "\t";
 		if(space)
 			delimiter = " ";
+  */
 
 		try {
 			fw = new FileWriter(fileName);

@@ -9,6 +9,8 @@ import ncsa.d2k.gui.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.gui.*;
+import ncsa.d2k.modules.core.datatype.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
  * <code>ColumnConstruction</code> is a simple user interface that facilitates

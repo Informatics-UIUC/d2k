@@ -1,17 +1,14 @@
 package ncsa.d2k.modules.core.transform.table;
 
-
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.userviews.widgets.*;
-import ncsa.util.*;
-import ncsa.gui.*;
-import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
+
 import javax.swing.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.gui.*;
 
 /**
  * Perform a cascading Excel-style sort on a MutableTable.
@@ -64,7 +61,7 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
 		numberOfSorts = sort;
 	}
 
-	public void done(Table table) {
+	private void done(Table table) {
 		pushOutput(table, 0);
 		viewDone("Done");
 	}
@@ -234,7 +231,7 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
 				int[] retVal = new int[runList.size()];
 				for(int i = 0; i < retVal.length; i++) {
 					retVal[i] = ((Integer)runList.get(i)).intValue();
-					System.out.println("Run["+i+"]: "+retVal[i]);
+					//System.out.println("Run["+i+"]: "+retVal[i]);
 				}
 				return retVal;
 			} else {
@@ -283,7 +280,7 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
 				int[] retVal = new int[runList.size()];
 				for(int i = 0; i < retVal.length; i++) {
 					retVal[i] = ((Integer)runList.get(i)).intValue();
-					System.out.println("Run["+i+"]: "+retVal[i]);
+					//System.out.println("Run["+i+"]: "+retVal[i]);
 				}
 				return retVal;
 			}
@@ -330,39 +327,5 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
 	public void initialize(int[] array) {
 		for (int index=0; index < array.length; index++)
 			array[index] = index;
-	}
-
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "SortTable";
-	}
-
-	/**
-	 * Return the human readable name of the indexed input.
-	 * @param index the index of the input.
-	 * @return the human readable name of the indexed input.
-	 */
-	public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "input0";
-			default: return "NO SUCH INPUT!";
-		}
-	}
-
-	/**
-	 * Return the human readable name of the indexed output.
-	 * @param index the index of the output.
-	 * @return the human readable name of the indexed output.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			case 0:
-				return "output0";
-			default: return "NO SUCH OUTPUT!";
-		}
 	}
 }

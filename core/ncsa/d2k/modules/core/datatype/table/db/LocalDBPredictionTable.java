@@ -18,7 +18,7 @@ import ncsa.d2k.modules.core.io.sql.*;
 class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
 
     protected int[] predictionSet;
-    protected TableImpl predictionColumnsTable;
+    protected MutableTableImpl predictionColumnsTable;
 
     protected int[] indirection;
     protected boolean[] prediction;
@@ -114,7 +114,7 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
                     default:
                         break;
                 }
-            predictionColumnsTable = (TableImpl)DefaultTableFactory.getInstance().createTable(c);
+            predictionColumnsTable = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(c);
         }
     }
 
@@ -549,14 +549,16 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            return original.getColumnType(indirection[position]);
    }
 
-   public ExampleTable toExampleTable() {
+/*   public ExampleTable toExampleTable() {
        //return (DBPredictionTable2)this.copy();
        return this;
    }
+   */
 
-   public PredictionTable toPredictionTable() {
+/*   public PredictionTable toPredictionTable() {
     return this;
    }
+   */
 
    /*****************************************************************************/
 /* PredictionTable methods                                                   */

@@ -1,4 +1,3 @@
-
 package ncsa.d2k.modules.core.datatype.table.db;
 
 /**

@@ -124,50 +124,274 @@ public interface ExampleTable extends Table {
 	 */
 	public PredictionTable toPredictionTable();
 
-    /*
+    //*****************
+
     /**
-     * Get the ith input double.
+     * Get the ith input as a double.
+     * @param e the example index
      * @param i the input index
-     * @param e the example index
-     *
-    public double getInputDouble(int i, int e);
+     * @return the ith input as a double
+     */
+    public double getInputDouble(int e, int i);
 
     /**
-     * Get the ith output double.
-     * @param i the output index
+     * Get the oth output as a double.
      * @param e the example index
-     *
-    public double getOutputDouble(int i, int e);
-    public String getInputString(int i, int e);
-    public String getOutputString(int i, int e);
-    public int getInputInt(int i, int e);
-    public int getOutputInt(int i, int e);
-    public float getInputFloat(int i, int e);
-    public float getOutputFloat(int i, int e);
-    public short getInputShort(int i, int e);
-    public short getOutputShort(int i, int e);
-    public long getInputLong(int i, int e);
-    public long getOutputLong(int i, int e);
-    public byte getInputByte(int i, int e);
-    public byte getOutputByte(int i, int e);
-    public Object getInputObject(int i, int e);
-    public Object getOutputObject(int i, int e);
-    public char getInputChar(int i, int e);
-    public char getOutputChar(int i, int e);
-    public byte[] getInputBytes(int i, int e);
-    public byte[] getOutputBytes(int i, int e);
-    public boolean getInputBoolean(int i, int e);
-    public boolean getOutputBoolean(int i, int e);
-    public int getNumInputs();
-    public int getNumOutputs();
-    public int getNumExamples();
+     * @param o the output index
+     * @return the oth output as a double
+     */
+    public double getOutputDouble(int e, int o);
 
+    /**
+     * Get the ith input as a String.
+     * @param e the example index
+     * @param i the input index
+     * @return the ith input as a String
+     */
+    public String getInputString(int e, int i);
+
+    /**
+     * Get the oth output as a String.
+     * @param e the example index
+     * @param o the output index
+     * @return the oth output as a String
+     */
+    public String getOutputString(int e, int o);
+
+    /**
+     * Get the ith input as an int.
+     * @param e the example index
+     * @param i the input index
+     * @return the ith input as an int
+     */
+    public int getInputInt(int e, int i);
+
+    /**
+     * Get the oth output as an int.
+     * @param e the example index
+     * @param o the output index
+     * @return the oth output as an int
+     */
+    public int getOutputInt(int e, int o);
+
+    /**
+     * Get the ith input as a float.
+     * @param e the example index
+     * @param i the input index
+     * @return the ith input as a float
+     */
+    public float getInputFloat(int e, int i);
+
+    /**
+     * Get the oth output as a float.
+     * @param e the example index
+     * @param o the output index
+     * @return the oth output as a float
+     */
+    public float getOutputFloat(int e, int o);
+
+    /**
+     * Get the ith input as a short.
+     * @param e the example index
+     * @param i the input index
+     * @return the ith input as a short
+     */
+    public short getInputShort(int e, int i);
+
+    /**
+     * Get the oth output as a short.
+     * @param e the example index
+     * @param o the output index
+     * @return the oth output as a short
+     */
+    public short getOutputShort(int e, int o);
+
+    /**
+     * Get the ith input as a long.
+     * @param e the example index
+     * @param i the input index
+     * @return the ith input as a long
+     */
+    public long getInputLong(int e, int i);
+
+    /**
+     * Get the oth output as a long.
+     * @param e the example index
+     * @param o the output index
+     * @return the ith output as a long
+     */
+    public long getOutputLong(int e, int o);
+
+    /**
+     * Get the ith input as a byte.
+     * @param e the example index
+     * @param i the input index
+     * @return the ith input as a byte
+     */
+    public byte getInputByte(int e, int i);
+
+    /**
+     * Get the oth output as a byte.
+     * @param e the example index
+     * @param o the output index
+     * @return the oth output as a byte
+     */
+    public byte getOutputByte(int e, int o);
+
+    /**
+     * Get the ith input as an Object.
+     * @param e the example index
+     * @param i the input index
+     * @return the ith input as an Object.
+     */
+    public Object getInputObject(int e, int i);
+
+    /**
+     * Get the oth output as an Object.
+     * @param e the example index
+     * @param o the output index
+     * @return the oth output as an Object
+     */
+    public Object getOutputObject(int e, int o);
+
+    /**
+     * Get the ith input as a char.
+     * @param e the example index
+     * @param i the input index
+     * @return the ith input as a char
+     */
+    public char getInputChar(int e, int i);
+
+    /**
+     * Get the oth output as a char.
+     * @param e the example index
+     * @param o the output index
+     * @return the oth output as a char
+     */
+    public char getOutputChar(int e, int o);
+
+    /**
+     * Get the ith input as bytes.
+     * @param e the example index
+     * @param i the input index
+     * @return the ith input as bytes.
+     */
+    public byte[] getInputBytes(int e, int i);
+
+    /**
+     * Get the oth output as bytes.
+     * @param e the example index
+     * @param o the output index
+     * @return the oth output as bytes.
+     */
+    public byte[] getOutputBytes(int e, int o);
+
+    /**
+     * Get the ith input as chars.
+     * @param e the example index
+     * @param i the input index
+     * @return the ith input as chars
+     */
+    public char[] getInputChars(int e, int i);
+
+    /**
+     * Get the oth output as chars.
+     * @param e the example index
+     * @param o the output index
+     * @return the oth output as chars
+     */
+    public char[] getOutputChars(int e, int o);
+
+    /**
+     * Get the ith input as a boolean.
+     * @param e the example index
+     * @param i the input index
+     * @return the ith input as a boolean
+     */
+    public boolean getInputBoolean(int e, int i);
+
+    /**
+     * Get the oth output as a boolean.
+     * @param e the example index
+     * @param o the output index
+     * @return the oth output as a boolean
+     */
+    public boolean getOutputBoolean(int e, int o);
+
+    /**
+     * Get the number of inputs.
+     * @return the number of inputs
+     */
+    public int getNumInputs();
+
+    /**
+     * Get the number of outputs.
+     * @return the number of outputs
+     */
+    public int getNumOutputs();
+
+    /**
+     * Get the eth Example.
+     * @param e the example index.
+     * @return the eth Example
+     */
     public Example getExample(int e);
+
+    /**
+     * Get the name of an input.
+     * @param i the input index
+     * @return the name of the ith input.
+     */
     public String getInputName(int i);
-    public String getOutputName(int i);
+
+    /**
+     * Get the name of an output.
+     * @param o the output index
+     * @return the name of the oth output
+     */
+    public String getOutputName(int o);
+
+    /**
+     * Get the type of the ith input.
+     * @param i the input index
+     * @return the type of the ith input
+     * @see ncsa.d2k.modules.core.datatype.table.ColumnTypes
+     */
     public int getInputType(int i);
-    public int getOutputType(int i);
+
+    /**
+     * Get the type of the oth output.
+     * @param o the output index
+     * @return the type of the oth output
+     * @see ncsa.d2k.modules.core.datatype.table.ColumnTypes
+     */
+    public int getOutputType(int o);
+
+    /**
+     * Return true if the ith input is nominal, false otherwise.
+     * @param i the input index
+     * @return true if the ith input is nominal, false otherwise.
+     */
     public boolean isInputNominal(int i);
-    public boolean isOutputNominal(int i);
-    */
+
+    /**
+     * Return true if the ith output is nominal, false otherwise.
+     * @param o the output index
+     * @return true if the ith output is nominal, false otherwise.
+     */
+    public boolean isOutputNominal(int o);
+
+    /**
+     * Return true if the ith input is scalar, false otherwise.
+     * @param i the input index
+     * @return true if the ith input is scalar, false otherwise.
+     */
+    public boolean isInputScalar(int i);
+
+    /**
+     * Return true if the ith output is scalar, false otherwise.
+     * @param o the output index
+     * @return true if the ith output is scalar, false otherwise.
+     */
+    public boolean isOutputScalar(int o);
 }

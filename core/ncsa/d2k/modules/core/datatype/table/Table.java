@@ -328,27 +328,27 @@ public interface Table extends java.io.Serializable {
 	 * @param col the column index
 	 * @return the value used to signify a scalar missing value in col
 	 */
-	public Number getScalarMissingValue(int col);
+	//public Number getScalarMissingValue(int col);
 
 	/**
 	 * Return the value used to signify a nominal missing value in col
 	 * @param col the column index
 	 * @return the value used to signify a nominal missing value in col
 	 */
-	public String getNominalMissingValue(int col);
+	//public String getNominalMissingValue(int col);
 
 	/**
 	 * Return the value used to signify a scalar empty value in col
 	 * @param col the column index
 	 * @return the value used to signify a scalar empty value in col
 	 */
-	public Number getScalarEmptyValue(int col);
+	//public Number getScalarEmptyValue(int col);
 
 	/**
 	 * Return the value used to signify a nominal empty value in col
 	 * @param col the column index
 	 * @return the value used to signify a nominal empty value in col
 	 */
-	public String getNominalEmptyValue(int col);
+	//public String getNominalEmptyValue(int col);
 
 }/*Table*/

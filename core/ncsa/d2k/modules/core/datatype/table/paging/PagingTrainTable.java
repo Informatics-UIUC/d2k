@@ -4,6 +4,7 @@ import java.io.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 class PagingTrainTable extends PagingExampleTable implements TrainTable {
+	static final long serialVersionUID = -7138942752181423830L;
 
    protected PagingExampleTable original;
 

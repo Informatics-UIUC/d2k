@@ -11,7 +11,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
    greatest, so calling getRatio(0) will return the smallest ratio, and
    so on.
 */
-final class NaiveBayesPieChartData extends TableImpl implements Serializable {
+final class NaiveBayesPieChartData extends MutableTableImpl implements Serializable {
 
    /** The total number of tallies in this pie */
    private int total;

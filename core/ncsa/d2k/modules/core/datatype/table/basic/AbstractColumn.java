@@ -20,16 +20,18 @@ abstract public class AbstractColumn implements Column {
 	private boolean isScalar;
 	protected int type;
 
-	protected String nominalEmptyValue;
+	/*protected String nominalEmptyValue;
 	protected String nominalMissingValue;
 	protected double scalarEmptyValue;
 	protected double scalarMissingValue;
+    */
 
 	protected AbstractColumn() {
-		setNominalEmptyValue(".");
+		/*setNominalEmptyValue(".");
 		setNominalMissingValue("?");
 		setScalarMissingValue(new Double(Double.NEGATIVE_INFINITY));
 		setScalarEmptyValue(new Double(Double.POSITIVE_INFINITY));
+        */
 	}
 
 	/**
@@ -125,7 +127,7 @@ abstract public class AbstractColumn implements Column {
 
 	/*
 	*/
-	public String getNominalMissingValue() {
+/*	public String getNominalMissingValue() {
 		return nominalMissingValue;
 	}
 
@@ -184,4 +186,5 @@ abstract public class AbstractColumn implements Column {
 		else
 			setString(nominalEmptyValue, row);
 	}
+    */
 }

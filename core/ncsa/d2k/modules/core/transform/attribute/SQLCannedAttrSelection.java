@@ -133,7 +133,7 @@ public class SQLCannedAttrSelection extends DataPrepModule  {
 
     public void doit() {
 
-	ConnectionWrapper conn  = (ConnectionWrapper)pullInput(0);
+	ConnectionWrapperImpl conn  = (ConnectionWrapperImpl)pullInput(0);
 	System.out.println("received connection wrapper");
 	BinTree binTree;
 

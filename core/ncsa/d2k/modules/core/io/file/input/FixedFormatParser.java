@@ -50,7 +50,7 @@ class FixedFormatParser extends FileInputStream
     protected   int              _typesRow;
 
     protected	double	_emptyValue = 0;
-    protected  boolean debug = false; 
+    protected  boolean debug = false;
 
     //these are used by the addBlank and getBlanks methods
     ArrayList blankRows;
@@ -533,7 +533,7 @@ class FixedFormatParser extends FileInputStream
 		internal[0]=rowsColumn;
 		internal[1]=colsColumn;
 
-		TableImpl table= (TableImpl)DefaultTableFactory.getInstance().createTable(internal);
+		MutableTableImpl table= (MutableTableImpl)DefaultTableFactory.getInstance().createTable(internal);
 		Object[] tableRow=new Object[2];
 		for(int i=0; i<numBlanks; i++){
 			tableRow[0]=rowsObjArray[i];
@@ -655,7 +655,7 @@ class FixedFormatParser extends FileInputStream
 
         }
 
-	DefaultTableFactory  dtf = DefaultTableFactory.getInstance();  
+	DefaultTableFactory  dtf = DefaultTableFactory.getInstance();
 	Table table = dtf.createTable(tableColumns);
   	return dtf.createExampleTable(table);
 

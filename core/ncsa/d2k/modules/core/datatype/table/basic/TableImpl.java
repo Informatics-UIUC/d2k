@@ -15,11 +15,11 @@ import java.util.*;
  * of Table.
  * <br>
  */
-public class TableImpl extends AbstractTable implements MutableTable {
+public class TableImpl extends AbstractTable implements /*Mutable*/Table {
 	//static final long serialVersionUID = 2152647679198922423L;
 	static final long serialVersionUID = -2629248420114547112L;
 
-   	private static TableFactory tableFactory = DefaultTableFactory.getInstance();
+   	private static transient TableFactory tableFactory = DefaultTableFactory.getInstance();
 
     protected Column[] columns = null;
 
@@ -51,6 +51,13 @@ public class TableImpl extends AbstractTable implements MutableTable {
       setKeyColumn(0);
         columns = c;
     }
+
+    private void readObject(ObjectInputStream in)
+       throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        tableFactory = DefaultTableFactory.getInstance();
+    }
+
 
     /**
       Create a TableImpl from a StaticDocument
@@ -954,7 +961,7 @@ public class TableImpl extends AbstractTable implements MutableTable {
         else
             throw  new NotSupportedException();
       */
-      getColumn(col).sort(this);
+      getColumn(col).sort((MutableTable)this);
     }
 
     /**
@@ -963,8 +970,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
        @param begin the row no. which marks the beginnig of the  column segment to be sorted
        @param end the row no. which marks the end of the column segment to be sorted
     */
-    public void sortByColumn(int col, int begin, int end) {
-      getColumn(col).sort(this, begin, end);
+   public void sortByColumn(int col, int begin, int end) {
+      getColumn(col).sort((MutableTable)this, begin, end);
    }
 
    public TableFactory getTableFactory() {
@@ -1273,7 +1280,7 @@ public class TableImpl extends AbstractTable implements MutableTable {
       for(int i = 0; i< data.length; i++)
         getColumn(i).addRow(new Short(data[i]));
     }
-   public void addRow(String[] data) {
+    public void addRow(String[] data) {
       for(int i= 0; i< data.length; i++)
         getColumn(i).addRow(data[i]);
     }
@@ -1333,7 +1340,7 @@ public class TableImpl extends AbstractTable implements MutableTable {
     	on the original dataset.
     	@returns an ArrayList containing the Transformation which transformed the data.
      */
-    public ArrayList getTransformations () {
+    public List getTransformations () {
         return  transformations;
     }
 
@@ -1344,15 +1351,15 @@ public class TableImpl extends AbstractTable implements MutableTable {
 		return getColumn(col).isValueEmpty(row);
 	}
 
-	public void setValueToMissing(int row, int col) {
-		getColumn(col).setValueToMissing(row);
+	public void setValueToMissing(boolean b, int row, int col) {
+		getColumn(col).setValueToMissing(b, row);
 	}
 
-	public void setValueToEmpty(int row, int col) {
-		getColumn(col).setValueToEmpty(row);
+	public void setValueToEmpty(boolean b, int row, int col) {
+		getColumn(col).setValueToEmpty(b, row);
 	}
 
-	public Number getScalarMissingValue(int col) {
+/*	public Number getScalarMissingValue(int col) {
 		return getColumn(col).getScalarMissingValue();
 	}
 	public void setScalarMissingValue(Number val, int col) {
@@ -1377,4 +1384,5 @@ public class TableImpl extends AbstractTable implements MutableTable {
 	public void setNominalEmptyValue(String val, int col) {
 		getColumn(col).setNominalEmptyValue(val);
 	}
+    */
 }

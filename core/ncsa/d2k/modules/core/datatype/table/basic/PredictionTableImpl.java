@@ -17,8 +17,7 @@ import java.util.*;
 public class PredictionTableImpl extends ExampleTableImpl implements PredictionTable {
 	static final long serialVersionUID = -7087521328197567748L;
 
-    protected int[] predictions;
-    private static final String PRED = " Predictions";
+    protected int[] predictionSet;
 
 	protected PredictionTableImpl(int i) {
 		super(i);
@@ -32,11 +31,11 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
     public PredictionTableImpl (ExampleTableImpl ttt) {
         super(ttt);
         if (outputColumns == null) {
-            predictions = new int[0];
+            predictionSet = new int[0];
             outputColumns = new int[0];
         }
         else
-            predictions = new int[outputColumns.length];
+            predictionSet = new int[outputColumns.length];
         Column[] newColumns = new Column[columns.length + outputColumns.length];
         int i = 0;
         // Copy references to the original columns
@@ -72,10 +71,10 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
             else if (col instanceof ObjectColumn)
                 col = new ObjectColumn(col.getNumRows());
             StringBuffer newLabel = new StringBuffer(ttt.getColumnLabel(outputColumns[i2]));
-            newLabel.append(PRED);
+            newLabel.append(PREDICTION_COLUMN_APPEND_TEXT);
             col.setLabel(newLabel.toString());
             newColumns[i] = col;
-            predictions[i2] = i;
+            predictionSet[i2] = i;
         }
         columns = newColumns;
     }
@@ -87,7 +86,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
      */
     public PredictionTableImpl (PredictionTableImpl ttt) {
         super(ttt);
-        predictions = ttt.getPredictionSet();
+        predictionSet = ttt.getPredictionSet();
     }
 
     /**
@@ -131,7 +130,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 @return the prediciton set
      */
     public int[] getPredictionSet () {
-        return  predictions;
+        return  predictionSet;
     }
 
     /**
@@ -139,7 +138,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 		@param p the new prediciton set
      */
     public void setPredictionSet (int[] p) {
-        predictions = p;
+        predictionSet = p;
     }
 
     /**
@@ -156,12 +155,13 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
         newCol[newCol.length - 1] = c;
         columns = newCol;
         // now set the classification set
-        int[] cf = new int[predictions.length + 1];
-        for (int i = 0; i < predictions.length; i++)
-            cf[i] = predictions[i];
+        int[] cf = new int[predictionSet.length + 1];
+        for (int i = 0; i < predictionSet.length; i++)
+            cf[i] = predictionSet[i];
         cf[cf.length - 1] = columns.length - 1;
         setPredictionSet(cf);
         return  columns.length - 1;
+        //return  predictionSet.length - 1;
     }
 
     /**
@@ -170,11 +170,11 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
      the getter methods look exactly the same as they do for any other vertical table.
 	 @return a table to provide access to the test data
      */
-    public TestTable getTestTable () {
+    /*public TestTable getTestTable () {
         if (testSet == null)
             return  null;
         return  new TestTableImpl(this);
-    }
+    }*/
 
 	/**
 	 * Set an int prediciton in the specified prediction column.  The index into
@@ -185,7 +185,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setIntPrediction(int prediction, int row, int predictionColIdx) {
-		setInt(prediction, row, predictions[predictionColIdx]);
+		setInt(prediction, row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setFloatPrediction(float prediction, int row, int predictionColIdx) {
-		setFloat(prediction, row, predictions[predictionColIdx]);
+		setFloat(prediction, row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setDoublePrediction(double prediction, int row, int predictionColIdx) {
-		setDouble(prediction, row, predictions[predictionColIdx]);
+		setDouble(prediction, row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setLongPrediction(long prediction, int row, int predictionColIdx) {
-		setLong(prediction, row, predictions[predictionColIdx]);
+		setLong(prediction, row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -233,7 +233,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setShortPrediction(short prediction, int row, int predictionColIdx) {
-		setShort(prediction, row, predictions[predictionColIdx]);
+		setShort(prediction, row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setBooleanPrediction(boolean prediction, int row, int predictionColIdx) {
-		setBoolean(prediction, row, predictions[predictionColIdx]);
+		setBoolean(prediction, row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -257,7 +257,9 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setStringPrediction(String prediction, int row, int predictionColIdx) {
-		setString(prediction, row, predictions[predictionColIdx]);
+		setString(prediction, row, predictionSet[predictionColIdx]);
+        //System.out.println("SSP: "+prediction+" "+predictionColIdx);
+        //System.out.println("GS: "+getString(row, predictionSet[predictionColIdx]));
 	}
 
 	/**
@@ -269,7 +271,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setCharsPrediction(char[] prediction, int row, int predictionColIdx) {
-		setChars(prediction, row, predictions[predictionColIdx]);
+		setChars(prediction, row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -281,7 +283,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setBytesPrediction(byte[] prediction, int row, int predictionColIdx) {
-		setBytes(prediction, row, predictions[predictionColIdx]);
+		setBytes(prediction, row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -293,7 +295,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setObjectPrediction(Object prediction, int row, int predictionColIdx) {
-		setObject(prediction, row, predictions[predictionColIdx]);
+		setObject(prediction, row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -305,7 +307,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setBytePrediction(byte prediction, int row, int predictionColIdx) {
-		setByte(prediction, row, predictions[predictionColIdx]);
+		setByte(prediction, row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -317,7 +319,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param predictionColIdx the index into the prediction set
 	 */
 	public void setCharPrediction(char prediction, int row, int predictionColIdx) {
-		setChar(prediction, row, predictions[predictionColIdx]);
+		setChar(prediction, row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -328,7 +330,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public int getIntPrediction(int row, int predictionColIdx) {
-		return getInt(row, predictions[predictionColIdx]);
+		return getInt(row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -339,7 +341,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public float getFloatPrediction(int row, int predictionColIdx) {
-		return getFloat(row, predictions[predictionColIdx]);
+		return getFloat(row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -350,7 +352,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public double getDoublePrediction(int row, int predictionColIdx) {
-		return getDouble(row, predictions[predictionColIdx]);
+		return getDouble(row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -361,7 +363,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public long getLongPrediction(int row, int predictionColIdx) {
-		return getLong(row, predictions[predictionColIdx]);
+		return getLong(row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -372,7 +374,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public short getShortPrediction(int row, int predictionColIdx) {
-		return getShort(row, predictions[predictionColIdx]);
+		return getShort(row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -383,7 +385,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public boolean getBooleanPrediction(int row, int predictionColIdx) {
-		return getBoolean(row, predictions[predictionColIdx]);
+		return getBoolean(row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -394,7 +396,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public String getStringPrediction(int row, int predictionColIdx) {
-		return getString(row, predictions[predictionColIdx]);
+		return getString(row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -405,7 +407,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public char[] getCharsPrediction(int row, int predictionColIdx) {
-		return getChars(row, predictions[predictionColIdx]);
+		return getChars(row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -416,7 +418,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public byte[] getBytesPrediction(int row, int predictionColIdx) {
-		return getBytes(row, predictions[predictionColIdx]);
+		return getBytes(row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -427,7 +429,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public Object getObjectPrediction(int row, int predictionColIdx) {
-		return getObject(row, predictions[predictionColIdx]);
+		return getObject(row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -438,7 +440,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public byte getBytePrediction(int row, int predictionColIdx) {
-		return getByte(row, predictions[predictionColIdx]);
+		return getByte(row, predictionSet[predictionColIdx]);
 	}
 
 	/**
@@ -449,83 +451,95 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @return the prediction at (row, getPredictionSet()[predictionColIdx])
 	 */
 	public char getCharPrediction(int row, int predictionColIdx) {
-		return getChar(row, predictions[predictionColIdx]);
+		return getChar(row, predictionSet[predictionColIdx]);
 	}
 
 	public int addPredictionColumn(int[] predictions, String label) {
 		int i = addPredictionColumn(new IntColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
 	public int addPredictionColumn(float[] predictions, String label) {
 		int i = addPredictionColumn(new FloatColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
 	public int addPredictionColumn(double[] predictions, String label) {
 		int i = addPredictionColumn(new DoubleColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
 	public int addPredictionColumn(long[] predictions, String label) {
 		int i = addPredictionColumn(new LongColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
 	public int addPredictionColumn(short[] predictions, String label) {
 		int i = addPredictionColumn(new ShortColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
 	public int addPredictionColumn(boolean[] predictions, String label) {
 		int i = addPredictionColumn(new BooleanColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
 	public int addPredictionColumn(String[] predictions, String label) {
 		int i = addPredictionColumn(new StringColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
 	public int addPredictionColumn(char[][] predictions, String label) {
 		int i = addPredictionColumn(new ContinuousCharArrayColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
 	public int addPredictionColumn(byte[][] predictions, String label) {
 		int i = addPredictionColumn(new ContinuousByteArrayColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
 	public int addPredictionColumn(Object[] predictions, String label) {
 		int i = addPredictionColumn(new ObjectColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
 	public int addPredictionColumn(byte[] predictions, String label) {
 		int i = addPredictionColumn(new ByteColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
 	public int addPredictionColumn(char[] predictions, String label) {
 		int i = addPredictionColumn(new CharColumn(predictions));
+		//getColumn(predictionSet[i]).setLabel(label);
 		getColumn(i).setLabel(label);
 		return i;
 	}
 
-	public PredictionTable toPredictionTable() {
+	/*public PredictionTable toPredictionTable() {
 		return this;
-	}
+	}*/
 }
 

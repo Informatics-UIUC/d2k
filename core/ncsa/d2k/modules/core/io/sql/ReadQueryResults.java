@@ -115,7 +115,7 @@ System.out.println ("---- Entries - "+count);
 		rs = stmt.executeQuery(query);
 		ResultSetMetaData rsmd = rs.getMetaData ();
 		int numColumns = rsmd.getColumnCount ();
-		TableImpl vt = (TableImpl)DefaultTableFactory.getInstance().createTable(numColumns);
+		MutableTableImpl vt = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(numColumns);
 
 		// Now compile a list of the datatypes.
 		int [] types = new int [numColumns];

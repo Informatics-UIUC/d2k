@@ -15,6 +15,7 @@ import java.util.LinkedList;
  * <code>releaseWrite</code>.
  */
 class Lock implements Serializable {
+	static final long serialVersionUID = 4610323135080242311L;
 
    private int active_readers = 0, active_writers = 0, waiting_readers = 0;
    private LinkedList writer_locks = new LinkedList();

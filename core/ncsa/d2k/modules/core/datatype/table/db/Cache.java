@@ -14,7 +14,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 public abstract class Cache implements java.io.Serializable {
 
-    protected TableImpl table;
+    protected MutableTableImpl table;
 
     // range of row# from the entire ResultSet, that are stored in the Cache
     protected int minRowNum; //(indicates the beginning of the ResultSet subset cached)

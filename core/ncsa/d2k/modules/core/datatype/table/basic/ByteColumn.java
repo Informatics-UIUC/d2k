@@ -83,6 +83,17 @@ final public class ByteColumn extends AbstractColumn implements NumericColumn {
 		}
     }
 
+    private ByteColumn(byte[] newInt, boolean[] miss, boolean[] emp,
+                       String lbl, String comm) {
+		internal = newInt;
+        setIsNominal(true);
+        type = ColumnTypes.BYTE;
+        missing = miss;
+        empty = emp;
+        setLabel(lbl);
+        setComment(comm);
+    }
+
     /**
      * Returns an exact copy of this <code>ByteColumn</code>. A deep copy is
      * attempted, but if it fails, a new column will be created, initialized
@@ -105,11 +116,13 @@ final public class ByteColumn extends AbstractColumn implements NumericColumn {
             ois.close();
             return  bac;
         } catch (Exception e) {
-            bac = new ByteColumn(getCapacity());
-            for (int i = 0; i < getCapacity(); i++)
-                bac.setByte(getByte(i), i);
-            bac.setLabel(getLabel());
-            bac.setComment(getComment());
+            //bac = new ByteColumn(getCapacity());
+            byte[] newVals = new byte[getNumRows()];
+            for (int i = 0; i < getNumRows(); i++)
+                //bac.setByte(getByte(i), i);
+                newVals[i] = getByte(i);
+            //bac.setLabel(getLabel());
+            //bac.setComment(getComment());
 			/*bac.setScalarEmptyValue(getScalarEmptyValue());
 			bac.setScalarMissingValue(getScalarMissingValue());
 			bac.setNominalEmptyValue(getNominalEmptyValue());
@@ -122,9 +135,10 @@ final public class ByteColumn extends AbstractColumn implements NumericColumn {
 				em[i] = empty[i];
 
 			}
-		 	bac.missing = miss;
-			bac.empty = em;
+		 	//bac.missing = miss;
+			//bac.empty = em;
 
+            bac = new ByteColumn(newVals, miss, em, getLabel(), getComment());
             return  bac;
         }
     }
@@ -561,11 +575,14 @@ final public class ByteColumn extends AbstractColumn implements NumericColumn {
         System.arraycopy(internal, pos, subset, 0, len);
 		System.arraycopy(missing, pos, newMissing, 0, len);
 		System.arraycopy(empty, pos, newEmpty, 0, len);
-        ByteColumn bc = new ByteColumn(subset);
+        /*ByteColumn bc = new ByteColumn(subset);
 		bc.missing = newMissing;
 		bc.empty = newEmpty;
         bc.setLabel(getLabel());
         bc.setComment(getComment());
+        */
+        ByteColumn bc = new ByteColumn(subset, newMissing, newEmpty,
+                                       getLabel(), getComment());
         return  bc;
     }
 
@@ -722,6 +739,8 @@ final public class ByteColumn extends AbstractColumn implements NumericColumn {
         internal = newInternal;
 		missing = newMissing;
 		empty = newEmpty;
+
+
     }
 
     /**
@@ -789,11 +808,13 @@ final public class ByteColumn extends AbstractColumn implements NumericColumn {
         }
         else
             throw  new ArrayIndexOutOfBoundsException();
-        ByteColumn bc = new ByteColumn(newInternal);
+        /*ByteColumn bc = new ByteColumn(newInternal);
 		bc.missing = newMissing;
 		bc.empty = newEmpty;
         bc.setLabel(getLabel());
         bc.setComment(getComment());
+        */
+        ByteColumn bc = new ByteColumn(newInternal, newMissing, newEmpty, getLabel(), getComment());
         return  bc;
 
     }
@@ -1012,7 +1033,7 @@ final public class ByteColumn extends AbstractColumn implements NumericColumn {
         }
     }
 
-	public void setValueToMissing(int row) {
+/*	public void setValueToMissing(int row) {
 		missing[row] = true;
 	}
 
@@ -1026,6 +1047,22 @@ final public class ByteColumn extends AbstractColumn implements NumericColumn {
 
 	public boolean isValueEmpty(int row) {
 		return empty[row];
+	}
+    */
+    public void setValueToMissing(boolean b, int row) {
+        missing[row] = b;
+    }
+
+    public void setValueToEmpty(boolean b, int row) {
+        empty[row] = b;
+    }
+
+    public boolean isValueMissing(int row) {
+        return missing[row];
+    }
+
+    public boolean isValueEmpty(int row) {
+        return empty[row];
 	}
 }
 

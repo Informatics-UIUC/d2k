@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.prediction.evaluators;
 import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import java.util.ArrayList;
+import java.util.List;
 import java.io.Serializable;
 
 /**
@@ -117,7 +117,7 @@ public class RootMeanSquared extends ncsa.d2k.core.modules.ComputeModule
 	}
 
 	protected TestTable[] tts;
-	protected TableImpl metrics;
+	protected MutableTableImpl metrics;
 
 	int n=1;
 
@@ -132,7 +132,7 @@ public class RootMeanSquared extends ncsa.d2k.core.modules.ComputeModule
 	}
 	protected void setupMetrics(){
 		int lastIndex=n-1;
-		metrics= (TableImpl)DefaultTableFactory.getInstance().createTable(tts[lastIndex].getNumOutputFeatures());
+		metrics= (MutableTableImpl)DefaultTableFactory.getInstance().createTable(tts[lastIndex].getNumOutputFeatures());
 		for(int i=0; i<metrics.getNumColumns();i++){
 			metrics.setColumn(new DoubleColumn(n), i);
 			metrics.setColumnLabel(tts[lastIndex].getColumnLabel(tts[lastIndex].getOutputFeatures()[i]), i);
@@ -140,7 +140,7 @@ public class RootMeanSquared extends ncsa.d2k.core.modules.ComputeModule
 	}
 
 	protected void untransformTable(TestTable tt){
-		ArrayList transforms=((TestTableImpl)tt).getTransformations();
+		List transforms=((TestTableImpl)tt).getTransformations();
 		//make sure to untransform in reverse order
 		int origSize=transforms.size()-1;
 		//System.out.println(origSize);

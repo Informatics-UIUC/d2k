@@ -726,47 +726,49 @@ public interface MutableTable extends Table {
      on the original dataset.
      @returns an ArrayList containing the Transformation which transformed the data.
      */
-    public ArrayList getTransformations ();
+    public List getTransformations ();
 
 	/**
-	 * Set the value at (row, col) to be the missing value for that column.
+	 * Set the value at (row, col) to be missing or not missing.
+     * @param b true if the value should be set as missing, false otherwise
 	 * @param row the row index
 	 * @param col the column index
 	 */
-	public void setValueToMissing(int row, int col);
+	public void setValueToMissing(boolean b, int row, int col);
 
 	/**
-	 * Set the value at (row, col) to be the empty value for that column.
+	 * Set the value at (row, col) to be empty or not empty.
+     * @param b true if the value should be set as empty, false otherwise
 	 * @param row the row index
 	 * @param col the column index
 	 */
-	public void setValueToEmpty(int row, int col);
+	public void setValueToEmpty(boolean b, int row, int col);
 
 	/**
 	 * Set the value used to signify a nominal empty value for col.
 	 * @param val the new value
 	 * @param col the column index
 	 */
-	public void setNominalEmptyValue(String val, int col);
+	//public void setNominalEmptyValue(String val, int col);
 
 	/**
 	 * Set the value used to signify a scalar missing value for col.
 	 * @param val the new value
 	 * @param col the column index
 	 */
-	public void setScalarMissingValue(Number val, int col);
+	//public void setScalarMissingValue(Number val, int col);
 
 	/**
 	 * Set the value used to signify a nominal missing value for col.
 	 * @param val the new value
 	 * @param col the column index
 	 */
-	public void setNominalMissingValue(String val, int col);
+	//public void setNominalMissingValue(String val, int col);
 
 	/**
 	 * Set the value used to signify a scalar empty value for col.
 	 * @param val the new value
 	 * @param col the column index
 	 */
-	public void setScalarEmptyValue(Number val, int col);
+	//public void setScalarEmptyValue(Number val, int col);
 }

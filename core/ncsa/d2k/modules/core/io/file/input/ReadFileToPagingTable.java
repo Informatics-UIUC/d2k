@@ -86,7 +86,7 @@ public class ReadFileToPagingTable extends InputModule {
             for(int i = 0; i < nr; i++) {
                 for(int j = 0; j < nc; j++) {
                     if(blanks[i][j])
-                        mt.setValueToMissing(i, j);
+                        mt.setValueToMissing(true, i, j);
                 }
             }
         }
@@ -163,7 +163,7 @@ public class ReadFileToPagingTable extends InputModule {
                     columns[col].setLabel(label);
             }
 
-            TableImpl ti = new TableImpl(columns);
+            MutableTableImpl ti = new MutableTableImpl(columns);
 
             for(int ctr = 0; ctr < pageRowNums[nt]; ctr++) {
                 char[][] row = df.getRowElements(curNum);

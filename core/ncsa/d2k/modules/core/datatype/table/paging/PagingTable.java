@@ -13,6 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
  * that the virtual machine terminates normally.
  */
 class PagingTable extends AbstractTable implements Serializable {
+	static final long serialVersionUID = 5316095096085648091L;
 
    protected Page[] pages;
    protected int[] offsets;
@@ -1261,7 +1262,7 @@ class PagingTable extends AbstractTable implements Serializable {
 
    }
 
-   public Number getScalarMissingValue(int column) {
+/*   public Number getScalarMissingValue(int column) {
 
       Number n = null;
 
@@ -1375,6 +1376,6 @@ class PagingTable extends AbstractTable implements Serializable {
 
       return s;
 
-   }
+   }*/
 
 }

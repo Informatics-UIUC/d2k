@@ -125,7 +125,7 @@ public class SQLDefineBins extends DefineBins {
 		The complex user view.
 	*/
 	class SQLBinView extends BinView {
-	    ConnectionWrapper conn;
+	    ConnectionWrapperImpl conn;
 	    String tableName;
 	    //ExampleTable table;
 	    boolean tableArrived = false;
@@ -134,7 +134,7 @@ public class SQLDefineBins extends DefineBins {
 
 	    public void setInput(Object o, int i) {
 		if(i == 0) {
-		    conn = (ConnectionWrapper)o;
+		    conn = (ConnectionWrapperImpl)o;
 		    connArrived = true;
 		}
 		if(i == 1) {

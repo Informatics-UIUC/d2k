@@ -192,7 +192,7 @@ public class NFoldErrorReport extends VisModule  {
 					Column[] col = new Column[2];
 					col[0] = sc;
 					col[1] = ic;
-					TableImpl tbl = (TableImpl)DefaultTableFactory.getInstance().createTable(col);
+					Table tbl = DefaultTableFactory.getInstance().createTable(col);
 					// create the pie chart
 					DataSet ds = new DataSet("Accuracy", null, 0, 1);
 					GraphSettings gs = new GraphSettings();

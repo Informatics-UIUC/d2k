@@ -27,7 +27,7 @@ public class ChooseFieldTypes extends UIModule {
        @return The name of this module.
     */
     public String getModuleName() {
-	return "ChsFldTypes";
+	return "ChooseFieldTypes";
     }
 
     /**
@@ -180,7 +180,7 @@ public class ChooseFieldTypes extends UIModule {
 			make me at least this big
 		*/
 		public Dimension getPreferredSize() {
-			return new Dimension(400, 500);
+			return new Dimension(400, 300);
 		}
 
 		/**

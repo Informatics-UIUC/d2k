@@ -516,7 +516,7 @@ public class ReadDelimitedFormat extends AbstractDelimitedReader
 			if(labelsList != null)
 				labelsList.clear();
 
-			TableImpl table = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+			MutableTableImpl table = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(cols);
 
 			// the number of the row in the table
 			int rowNum = 0;
@@ -549,7 +549,8 @@ public class ReadDelimitedFormat extends AbstractDelimitedReader
 
 			// create an example table if it has a variablesRow
 			if(hasVariables)
-				table = toExampleTable(table);
+				//table = toExampleTable(table);
+				return toExampleTable(table);
 
 			return table;
 		}

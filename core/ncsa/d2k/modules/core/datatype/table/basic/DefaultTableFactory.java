@@ -17,7 +17,7 @@ public class DefaultTableFactory implements TableFactory {
 	 * @return a new, empty Table
      */
 	public Table createTable() {
-		return new TableImpl();
+		return new MutableTableImpl();
 	}
 
     /**
@@ -26,11 +26,11 @@ public class DefaultTableFactory implements TableFactory {
 	 * @return a new, empty Table with the specified number of columns
      */
     public Table createTable(int numColumns) {
-		return new TableImpl(numColumns);
+		return new MutableTableImpl(numColumns);
 	}
 
 	public Table createTable(Column[] cols) {
-		return new TableImpl(cols);
+		return new MutableTableImpl(cols);
 	}
 
     /**

@@ -43,7 +43,7 @@ public class PercentErrorClassification extends ncsa.d2k.modules.core.prediction
 	}
 
 	protected void setupMetrics(){
-			metrics=(TableImpl)DefaultTableFactory.getInstance().createTable(1);
+			metrics=(MutableTableImpl)DefaultTableFactory.getInstance().createTable(1);
 			metrics.setColumn(new DoubleColumn(n), 0);
 			metrics.setColumnLabel("%wrong",  0);
 	}

@@ -332,9 +332,9 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
       return original;
    }
 
-   public PredictionTable toPredictionTable() {
+   /*public PredictionTable toPredictionTable() {
       return this;
-   }
+   }*/
 
    ////////////////////////////////////
    // now, TestTableImpl must override all methods that add, insert, and

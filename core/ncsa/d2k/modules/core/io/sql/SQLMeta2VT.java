@@ -44,7 +44,7 @@ public class SQLMeta2VT extends DataPrepModule
 	ConnectionWrapper cw = (ConnectionWrapper) this.pullInput (0);
 	String tableName = (String) this.pullInput(1);
 	ResultSet result;
-	TableImpl vt = null;
+	MutableTableImpl vt = null;
 	try {
 	    Statement stmt
 		= ((Connection)cw.getConnection()).createStatement();
@@ -56,7 +56,7 @@ public class SQLMeta2VT extends DataPrepModule
 		= result.getMetaData();
 
 	    int numColumns = columnMetadata.getColumnCount();
-	    vt = (TableImpl)DefaultTableFactory.getInstance().createTable(numColumns);
+	    vt = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(numColumns);
 	    for(int i = 0; i < numColumns; i++) {
 		int type = columnMetadata.getColumnType(i+1);
 		if ( type == java.sql.Types.SMALLINT ||

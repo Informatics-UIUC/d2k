@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.transform.table;
 
 
 import ncsa.d2k.core.modules.*;
-import java.util.ArrayList;
+import java.util.List;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.*;
 
@@ -74,7 +74,7 @@ public class UntransformModule extends ncsa.d2k.core.modules.ComputeModule
 		MutableTable et=(MutableTable)pullInput(0);
 
 
-		ArrayList transforms=et.getTransformations();
+		List transforms=et.getTransformations();
 
 		//System.out.println(transforms.size());
 		//make sure to untransform in reverse order

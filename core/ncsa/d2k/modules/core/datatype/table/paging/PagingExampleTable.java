@@ -13,6 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
  * <code>ExampleTable</code> implementation.
  */
 class PagingExampleTable extends PagingTable implements ExampleTable {
+	static final long serialVersionUID = 3690312945290834403L;
 
    protected int[] inputFeatures;
    protected int[] outputFeatures;
@@ -220,8 +221,115 @@ class PagingExampleTable extends PagingTable implements ExampleTable {
       return new PagingPredictionTable(this, pages, manager);
    }
 
-   public ExampleTable toExampleTable() {
+/*   public ExampleTable toExampleTable() {
     return this;
    }
+   */
+   public double getInputDouble(int e, int i) {
+       return getDouble(e, inputFeatures[i]);
+   }
+
+   public double getOutputDouble(int e, int o) {
+       return getDouble(e, outputFeatures[o]);
+   }
+   public String getInputString(int e, int i) {
+       return getString(e, inputFeatures[i]);
+   }
+   public String getOutputString(int e, int o) {
+       return getString(e, outputFeatures[o]);
+   }
+   public int getInputInt(int e, int i) {
+       return getInt(e, inputFeatures[i]);
+   }
+   public int getOutputInt(int e, int o) {
+       return getInt(e, outputFeatures[o]);
+   }
+   public float getInputFloat(int e, int i) {
+       return getFloat(e, inputFeatures[i]);
+   }
+   public float getOutputFloat(int e, int o) {
+       return getFloat(e, outputFeatures[o]);
+   }
+   public short getInputShort(int e, int i) {
+       return getShort(e, inputFeatures[i]);
+   }
+   public short getOutputShort(int e, int o) {
+       return getShort(e, outputFeatures[o]);
+   }
+   public long getInputLong(int e, int i) {
+       return getLong(e, inputFeatures[i]);
+   }
+   public long getOutputLong(int e, int o) {
+       return getLong(e, outputFeatures[o]);
+   }
+   public byte getInputByte(int e, int i) {
+       return getByte(e, inputFeatures[i]);
+   }
+   public byte getOutputByte(int e, int o) {
+       return getByte(e, outputFeatures[o]);
+   }
+   public Object getInputObject(int e, int i) {
+       return getObject(e, inputFeatures[i]);
+   }
+   public Object getOutputObject(int e, int o) {
+       return getObject(e, outputFeatures[o]);
+   }
+   public char getInputChar(int e, int i) {
+       return getChar(e, inputFeatures[i]);
+   }
+   public char getOutputChar(int e, int o) {
+       return getChar(e, outputFeatures[o]);
+   }
+   public char[] getInputChars(int e, int i) {
+       return getChars(e, inputFeatures[i]);
+   }
+   public char[] getOutputChars(int e, int o) {
+       return getChars(e, inputFeatures[o]);
+   }
+   public byte[] getInputBytes(int e, int i) {
+       return getBytes(e, inputFeatures[i]);
+   }
+   public byte[] getOutputBytes(int e, int o) {
+       return getBytes(e, outputFeatures[o]);
+   }
+   public boolean getInputBoolean(int e, int i) {
+       return getBoolean(e, inputFeatures[i]);
+   }
+   public boolean getOutputBoolean(int e, int o) {
+       return getBoolean(e, outputFeatures[o]);
+   }
+   public int getNumInputs() {
+       return inputFeatures.length;
+   }
+   public int getNumOutputs() {
+       return outputFeatures.length;
+   }
+
+   public Example getExample(int i) { return null; }
+
+   public String getInputName(int i) {
+       return getColumnLabel(inputFeatures[i]);
+   }
+   public String getOutputName(int o) {
+       return getColumnLabel(outputFeatures[o]);
+   }
+   public int getInputType(int i) {
+       return getColumnType(inputFeatures[i]);
+   }
+   public int getOutputType(int o) {
+       return getColumnType(outputFeatures[o]);
+   }
+   public boolean isInputNominal(int i) {
+       return isColumnNominal(inputFeatures[i]);
+   }
+   public boolean isOutputNominal(int o) {
+       return isColumnNominal(outputFeatures[o]);
+   }
+   public boolean isInputScalar(int i) {
+       return isColumnScalar(inputFeatures[i]);
+   }
+   public boolean isOutputScalar(int o) {
+       return isColumnScalar(outputFeatures[o]);
+    }
 
 }

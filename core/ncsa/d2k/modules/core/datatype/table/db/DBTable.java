@@ -504,7 +504,7 @@ public class DBTable extends AbstractTable implements Table {
         	return false;
 	}
 
-	public Number getScalarMissingValue(int col) {
+/*	public Number getScalarMissingValue(int col) {
             return new Double(Double.NEGATIVE_INFINITY);
 	}
 
@@ -518,5 +518,5 @@ public class DBTable extends AbstractTable implements Table {
 
 	public String getNominalEmptyValue(int col) {
             return ".";
-	}
+	}*/
 } //DBTable

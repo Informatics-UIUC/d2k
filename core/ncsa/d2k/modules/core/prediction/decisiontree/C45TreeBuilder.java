@@ -258,7 +258,7 @@ public class C45TreeBuilder extends ReentrantComputeModule {
 		}
 
 		Column[] cols = {dc, sc};
-		TableImpl vt = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+		MutableTableImpl vt = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(cols);
 
 		// sort the table
 		vt.sortByColumn(0);
@@ -737,7 +737,7 @@ public class C45TreeBuilder extends ReentrantComputeModule {
 
 		//debug("BuildTree with "+examples.length+" examples and "+attributes.length+" attributes.");
 
-		if(examples.length < minimumRecordsPerLeaf) {
+		if(examples.length < getMinimumRecordsPerLeaf()) {
 			throw new MinimumRecordsPerLeafException();
 		}
 
@@ -799,7 +799,7 @@ public class C45TreeBuilder extends ReentrantComputeModule {
 						int[] branchExam = narrowCategoricalExamples(col,
 							branchVals[i], examples);
 						int[] branchAttr = narrowAttributes(col, attributes);
-						if(branchExam.length >= minimumRecordsPerLeaf && branchAttr.length != 0) {
+						if(branchExam.length >= getMinimumRecordsPerLeaf() && branchAttr.length != 0) {
 							root.addBranch(branchVals[i], buildTree(branchExam,
 								branchAttr));
 						}

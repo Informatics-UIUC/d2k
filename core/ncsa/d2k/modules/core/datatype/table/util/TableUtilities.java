@@ -115,7 +115,7 @@ public class TableUtilities {
 		Column[] c = new Column[2];
 		c[0] = new DoubleColumn(vals);
 		c[1] = new DoubleColumn(pdfs);
-		TableImpl tbl = new TableImpl(c);
+		TableImpl tbl = new MutableTableImpl(c);
 		return tbl;
 	}
 
@@ -313,7 +313,7 @@ public class TableUtilities {
 		*/
 	public static void setValue(Table t1, int row1, int col1,
 								MutableTable t2, int row2, int col2){
-		
+
 		if(t1.isColumnNumeric(col1)){
 			t2.setDouble(t1.getDouble(row1,col1), row2, col2);
 		}else{
@@ -326,7 +326,7 @@ public class TableUtilities {
 	//////////////////////
 	/**
 		multiSortIndex.
-		
+
 		takes a table and an array of column indices to sort by.
 		The resulting array of row indices will contain row pointers
 		ordered such that rows are ordered by the first column index,
@@ -335,7 +335,7 @@ public class TableUtilities {
 		@param tbl the table to multisort
 		@param sortByCols the columns to sort by
 
-		@return an int[] of size tbl.getNumRows() representing the 
+		@return an int[] of size tbl.getNumRows() representing the
 				sorted order of tbl
 	**/
 	public static int[] multiSortIndex(Table tbl, int[] sortByCols){
@@ -344,19 +344,19 @@ public class TableUtilities {
 		for(int i=0; i<size; i++){
 			order[i]=i;
 		}
-		
+
 		multiQuickSort(tbl, sortByCols, order, 0, size-1);
 		multiInsertionSort(tbl, sortByCols, order);
 		return order;
 	}
 
 	/** multiQuickSort.
-		
+
 		DO NOT use this function directly, as it does not completely
 		sort the table (an insertion sort must be done afterwards,
 		use multiSortIndex)
 	*/
-	private static void multiQuickSort(	Table tbl, int[] sortByCols, int[] order, 
+	private static void multiQuickSort(	Table tbl, int[] sortByCols, int[] order,
 							int l, int r){
 
 		if(r-l<=3){
@@ -364,7 +364,7 @@ public class TableUtilities {
 		}
 		int pivot;
 
-		int i=(r+l)/2;		
+		int i=(r+l)/2;
 
 		if(compareMultiCols(tbl,tbl,order[l],order[i],sortByCols,sortByCols)>0)
 			swap(order, l, i);
@@ -375,9 +375,9 @@ public class TableUtilities {
 
 		swap(order, i, r-1);
 
-		pivot=r-1;			
-		
-		i=l+1;	
+		pivot=r-1;
+
+		i=l+1;
 		int j=r-2;
 
 		while(j>i){
@@ -392,10 +392,10 @@ public class TableUtilities {
 						&& (i<j)){
 				j--;
 			}
-			
+
 			if(i<j){
-				swap(order, i, j);	
-			}	
+				swap(order, i, j);
+			}
 		}
 		swap(order, r-1, j);
 
@@ -412,11 +412,11 @@ public class TableUtilities {
 		@param tbl the table to multisort
 		@param sortByCols the columns to sort by
 
-		@return an int[] of size tbl.getNumRows() representing the 
+		@return an int[] of size tbl.getNumRows() representing the
 				sorted order of tbl
 
 	*/
-	public static void multiInsertionSort(	Table tbl, int[] sortByCols, 
+	public static void multiInsertionSort(	Table tbl, int[] sortByCols,
 											int[] order){
 
 		int size=order.length;
@@ -435,10 +435,10 @@ public class TableUtilities {
 		}
 	}
 
-	
+
 	/**
 		compareMultiCols.
-		
+
 		if the value of the row in table 1 is greater, returns 1.
 		if they are equal returns 0
 		if less than, -1
@@ -449,7 +449,7 @@ public class TableUtilities {
 	**/
 	public static int compareMultiCols(Table t1, Table t2, int row1, int row2,
 								int[] cols1, int[] cols2){
-		
+
 		int numCompareCols=cols1.length;
 		int eq=0;
 		for(int i=0; i<numCompareCols; i++){
@@ -476,9 +476,9 @@ public class TableUtilities {
 
 	public static int compareValues(Table t1, int row1, int col1,
 									Table t2, int row2, int col2){
-		
+
 		int type=t1.getColumnType(col1);
-		
+
 		//the numeric case
 		if(t1.isColumnNumeric(col1)){
 			double d1=t1.getDouble(row1,col1);
@@ -490,9 +490,9 @@ public class TableUtilities {
 
 			return -1;
 		}
-		
+
 		int it=-2;
-		//the other cases	
+		//the other cases
 		switch(type){
 			/*case (ColumnTypes.INTEGER) : {
 
@@ -511,7 +511,7 @@ public class TableUtilities {
 			case (ColumnTypes.STRING) : {
 				it=t1.getString(row1,col1).
 						compareTo(t2.getString(row2,col2));
-				break;		
+				break;
 			}
 			case (ColumnTypes.CHAR_ARRAY) : {
 				it=compareChars(t1.getChars(row1,col1),
@@ -529,7 +529,7 @@ public class TableUtilities {
 				}else{
 					it=1;
 				}
-				
+
 				break;
 			}
 			case (ColumnTypes.OBJECT) : {
@@ -628,7 +628,7 @@ public class TableUtilities {
             return  0;
         }
     }
-		
+
 	    /**
 	 * Compare two char arrays
      * @param b1 the first char[] to compare
@@ -672,5 +672,5 @@ public class TableUtilities {
             return  0;
         }
     }
-	
+
 }

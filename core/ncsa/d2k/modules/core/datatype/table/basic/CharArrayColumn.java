@@ -25,7 +25,8 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
 
     /** the internal representation of this Column */
     private char[][] internal = null;
-
+    private boolean[] missing = null;
+	private boolean[] empty = null;
     /**
      Create a new, empty CharArrayColumn
      */
@@ -45,6 +46,12 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
 		type = ColumnTypes.CHAR_ARRAY;
 		//setScalarMissingValue(new Integer(Integer.MIN_VALUE));
 		//setScalarEmptyValue(new Integer(Integer.MAX_VALUE));
+        missing = new boolean[internal.length];
+        empty = new boolean[internal.length];
+        for(int i = 0; i < internal.length; i++) {
+            missing[i] = false;
+            empty[i] = false;
+		}
     }
 
     /**
@@ -59,6 +66,23 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
 		type = ColumnTypes.CHAR_ARRAY;
 		//setScalarMissingValue(new Integer(Integer.MIN_VALUE));
 		//setScalarEmptyValue(new Integer(Integer.MAX_VALUE));
+        missing = new boolean[internal.length];
+        empty = new boolean[internal.length];
+        for(int i = 0; i < internal.length; i++) {
+            missing[i] = false;
+            empty[i] = false;
+		}
+    }
+
+    private CharArrayColumn(char[][] newInternal, boolean[] newMiss, boolean[] newEmp,
+                            String lbl, String comm) {
+        this.setInternal(newInternal);
+		setIsNominal(true);
+		type = ColumnTypes.CHAR_ARRAY;
+        missing = newMiss;
+        empty = newEmp;
+        setLabel(lbl);
+        setComment(comm);
     }
 
     /**
@@ -81,20 +105,32 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
             ois.close();
             return  cac;
         } catch (Exception e) {
-            cac = new CharArrayColumn(getCapacity());
-            for (int i = 0; i < getCapacity(); i++) {
+            //cac = new CharArrayColumn(getCapacity());
+            char[][] newVals = new char[getNumRows()][];
+            for (int i = 0; i < getNumRows(); i++) {
                 char[] val = getChars(i);
                 char[] temp = new char[val.length];
                 for (int j = 0; j < val.length; j++)
                     temp[j] = val[j];
-                cac.setChars(temp, i);
+                //cac.setChars(temp, i);
+                newVals[i] = temp;
             }
-            cac.setLabel(getLabel());
-            cac.setComment(getComment());
-			cac.setScalarEmptyValue(getScalarEmptyValue());
-			cac.setScalarMissingValue(getScalarMissingValue());
-			cac.setNominalEmptyValue(getNominalEmptyValue());
-			cac.setNominalMissingValue(getNominalMissingValue());
+            //cac.setLabel(getLabel());
+            //cac.setComment(getComment());
+			//cac.setScalarEmptyValue(getScalarEmptyValue());
+			//cac.setScalarMissingValue(getScalarMissingValue());
+			//cac.setNominalEmptyValue(getNominalEmptyValue());
+			//cac.setNominalMissingValue(getNominalMissingValue());
+            boolean[] miss = new boolean[internal.length];
+            boolean[] em = new boolean[internal.length];
+            for(int i = 0; i < internal.length; i++) {
+                miss[i] = missing[i];
+                em[i] = empty[i];
+
+            }
+            //cac.missing = miss;
+			//cac.empty = em;
+            cac = new CharArrayColumn(newVals, miss, em, getLabel(), getComment());
             //cac.setType(getType());
             return  cac;
         }
@@ -243,7 +279,8 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
      @return the value at pos as a double
      */
     public byte getByte (int pos) {
-        return getBytes(pos)[0];//return  new String(internal[pos]).getBytes();
+        //return getBytes(pos)[0];//return  new String(internal[pos]).getBytes();
+        return Byte.parseByte(new String(getChars(pos)));
     }
 
     /**
@@ -252,9 +289,11 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
      @param pos the position to store newEntry
      */
     public void setByte (byte newEntry, int pos) {
-		byte[] b = new byte[1];
+		/*byte[] b = new byte[1];
 		b[0] = newEntry;
 		setBytes(b, pos);
+        */
+        setChars(Byte.toString(newEntry).toCharArray(), pos);
     }
 
     /**
@@ -385,7 +424,7 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
      @param newCapacity a new capacity
      */
     public void setNumRows (int newCapacity) {
-        if (internal != null) {
+/*        if (internal != null) {
             char[][] newInternal = new char[newCapacity][];
             if (newCapacity > internal.length)
                 newCapacity = internal.length;
@@ -394,6 +433,25 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
         }
         else
             internal = new char[newCapacity][];
+        */
+        if (internal != null) {
+            char[][] newInternal = new char[newCapacity][];
+            boolean[] newMissing = new boolean[newCapacity];
+            boolean[] newEmpty = new boolean[newCapacity];
+            if (newCapacity > internal.length)
+                newCapacity = internal.length;
+            System.arraycopy(internal, 0, newInternal, 0, newCapacity);
+            System.arraycopy(missing, 0, newMissing, 0, missing.length);
+            System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+            internal = newInternal;
+            missing = newMissing;
+            empty = newEmpty;
+        }
+        else {
+            internal = new char[newCapacity][];
+            missing = new boolean[newCapacity];
+            empty = new boolean[newCapacity];
+		}
     }
 
     //////////////////////////////////////
@@ -418,16 +476,24 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
      */
     public Column getSubset (int pos, int len) {
         char[][] subset = new char[len][];
+        boolean[] newMissing = new boolean[len];
+        boolean[] newEmpty = new boolean[len];
         System.arraycopy(internal, pos, subset, 0, len);
-        CharArrayColumn cac = new CharArrayColumn(subset);
+        System.arraycopy(missing, pos, newMissing, 0, len);
+        System.arraycopy(empty, pos, newEmpty, 0, len);
+        /*CharArrayColumn cac = new CharArrayColumn(subset);
         cac.setLabel(getLabel());
         cac.setComment(getComment());
-		cac.setScalarEmptyValue(getScalarEmptyValue());
-		cac.setScalarMissingValue(getScalarMissingValue());
-		cac.setNominalEmptyValue(getNominalEmptyValue());
-		cac.setNominalMissingValue(getNominalMissingValue());
-
+        cac.missing = newMissing;
+        cac.empty = newEmpty;
+        */
+		//cac.setScalarEmptyValue(getScalarEmptyValue());
+		//cac.setScalarMissingValue(getScalarMissingValue());
+		//cac.setNominalEmptyValue(getNominalEmptyValue());
+		//cac.setNominalMissingValue(getNominalMissingValue());
         //cac.setType(getType());
+        CharArrayColumn cac = new CharArrayColumn(subset, newMissing, newEmpty,
+                getLabel(), getComment());
         return  cac;
     }
 
@@ -467,9 +533,29 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
     public void addRow (Object newEntry) {
         int last = internal.length;
         char[][] newInternal = new char[internal.length + 1][];
+        boolean[] newMissing = new boolean[internal.length + 1];
+        boolean[] newEmpty = new boolean[internal.length + 1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length);
+        System.arraycopy(missing, 0, newMissing, 0, missing.length);
+        System.arraycopy(empty, 0, newEmpty, 0, empty.length);
         newInternal[last] = (char[])newEntry;
         internal = newInternal;
+        missing = newMissing;
+		empty = newEmpty;
+
+/*        int last = internal.length;
+        boolean[] newInternal = new boolean[internal.length + 1];
+        boolean[] newMissing = new boolean[internal.length + 1];
+        boolean[] newEmpty = new boolean[internal.length + 1];
+        System.arraycopy(internal, 0, newInternal, 0, internal.length);
+        System.arraycopy(missing, 0, newMissing, 0, missing.length);
+        System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+        newInternal[last] = ((Boolean)newEntry).booleanValue();
+
+        internal = newInternal;
+        missing = newMissing;
+		empty = newEmpty;
+        */
     }
 
     /**
@@ -482,11 +568,45 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
         char[] removed = internal[pos];
         System.arraycopy(internal, pos + 1, internal, pos, internal.length -
                 (pos + 1));
+        System.arraycopy(missing, pos + 1, missing, pos, internal.length -
+                (pos + 1));
+        System.arraycopy(empty, pos + 1, empty, pos, internal.length -
+                (pos + 1));
         internal[internal.length - 1] = null;
         char[][] newInternal = new char[internal.length - 1][];
+        boolean newMissing[] = new boolean[internal.length-1];
+        boolean newEmpty[] = new boolean[internal.length-1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
+        System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
+        System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
         internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
         return  removed;
+/*        boolean removed = internal[pos];
+        // copy all the items after the item to be removed one position up
+        System.arraycopy(internal, pos + 1, internal, pos, internal.length -
+                (pos + 1));
+
+        System.arraycopy(missing, pos + 1, missing, pos, internal.length -
+                (pos + 1));
+
+        System.arraycopy(empty, pos + 1, empty, pos, internal.length -
+                (pos + 1));
+
+        // copy the items into a new array
+        boolean newInternal[] = new boolean[internal.length - 1];
+        boolean newMissing[] = new boolean[internal.length-1];
+        boolean newEmpty[] = new boolean[internal.length-1];
+        System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
+        System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
+        System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
+
+        internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
+        return  new Boolean(removed);
+        */
     }
 
     /**
@@ -496,23 +616,65 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
      @param pos the position to insert at
      */
     public void insertRow (Object newEntry, int pos) {
-        char[][] newInternal = new char[internal.length + 1][];
         if (pos > getCapacity()) {
             addRow(newEntry);
             return;
         }
-        if (pos == 0)
-            System.arraycopy(internal, 0, newInternal, 1, getCapacity());        /*else if(pos == 1) {
-         newInternal[0] = internal[0];
-         System.arraycopy(internal, 1, newInternal, 2, getCapacity()-2);
-         }*/
+        char[][] newInternal = new char[internal.length + 1][];
+        boolean[] newMissing = new boolean[internal.length + 1];
+        boolean[] newEmpty = new boolean[internal.length + 1];
+        if (pos == 0) {
+            System.arraycopy(internal, 0, newInternal, 1, getCapacity());
+            System.arraycopy(missing, 0, newMissing, 1, getNumRows());
+            System.arraycopy(empty, 0, newEmpty, 1, getNumRows());
+        }
         else {
             System.arraycopy(internal, 0, newInternal, 0, pos);
             System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
                     - pos);
+            System.arraycopy(missing, 0, newMissing, 0, pos);
+            System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
+                    - pos);
+
+            System.arraycopy(empty, 0, newEmpty, 0, pos);
+            System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
+                    - pos);
         }
         newInternal[pos] = (char[])newEntry;
         internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
+
+/*        if (pos > getNumRows()) {
+            addRow(newEntry);
+            return;
+        }
+        boolean[] newInternal = new boolean[internal.length + 1];
+        boolean[] newMissing = new boolean[internal.length + 1];
+        boolean[] newEmpty = new boolean[internal.length + 1];
+        if (pos == 0) {
+            System.arraycopy(internal, 0, newInternal, 1, getNumRows());
+            System.arraycopy(missing, 0, newMissing, 1, getNumRows());
+            System.arraycopy(empty, 0, newEmpty, 1, getNumRows());
+        }
+        else {
+            System.arraycopy(internal, 0, newInternal, 0, pos);
+            System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
+                    - pos);
+
+            System.arraycopy(missing, 0, newMissing, 0, pos);
+            System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
+                    - pos);
+
+            System.arraycopy(empty, 0, newEmpty, 0, pos);
+            System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
+                    - pos);
+        }
+        newInternal[pos] = ((Boolean)newEntry).booleanValue();
+        internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
+        */
     }
 
     /**
@@ -522,8 +684,27 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
      */
     public void swapRows (int pos1, int pos2) {
         char[] e1 = internal[pos1];
+        boolean miss = missing[pos1];
+        boolean emp = empty[pos1];
         internal[pos1] = internal[pos2];
         internal[pos2] = e1;
+        missing[pos1] = missing[pos2];
+        missing[pos2] = miss;
+
+        empty[pos1] = empty[pos2];
+		empty[pos2] = emp;
+/*        boolean d1 = internal[pos1];
+        boolean miss = missing[pos1];
+        boolean emp = empty[pos1];
+        internal[pos1] = internal[pos2];
+        internal[pos2] = d1;
+
+        missing[pos1] = missing[pos2];
+        missing[pos2] = miss;
+
+        empty[pos1] = empty[pos2];
+		empty[pos2] = emp;
+        */
     }
 
     /**
@@ -534,23 +715,47 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
      */
     public Column reorderRows (int[] newOrder) {
         char[][] newInternal = null;
+        boolean[] newMissing = null;
+        boolean[] newEmpty = null;
         if (newOrder.length == internal.length) {
             newInternal = new char[internal.length][];
-            for (int i = 0; i < internal.length; i++)
+            for (int i = 0; i < internal.length; i++) {
                 newInternal[i] = internal[newOrder[i]];
+                newMissing[i] = missing[newOrder[i]];
+                newEmpty[i] = empty[newOrder[i]];
+            }
         }
         else
             throw  new ArrayIndexOutOfBoundsException();
-        CharArrayColumn cac = new CharArrayColumn(newInternal);
+        /*CharArrayColumn cac = new CharArrayColumn(newInternal);
         cac.setLabel(getLabel());
         //cac.setType(getType());
         cac.setComment(getComment());
 		cac.setScalarEmptyValue(getScalarEmptyValue());
 		cac.setScalarMissingValue(getScalarMissingValue());
 		cac.setNominalEmptyValue(getNominalEmptyValue());
-		cac.setNominalMissingValue(getNominalMissingValue());
+		cac.setNominalMissingValue(getNominalMissingValue());*/
+        CharArrayColumn cac = new CharArrayColumn(newInternal, newMissing, newEmpty, getLabel(), getComment());
 
         return  cac;
+/*        boolean[] newInternal = null;
+        boolean[] newMissing = null;
+        boolean[] newEmpty = null;
+        if (newOrder.length == internal.length) {
+            newInternal = new boolean[internal.length];
+            newMissing = new boolean[internal.length];
+            newEmpty = new boolean[internal.length];
+            for (int i = 0; i < internal.length; i++) {
+                newInternal[i] = internal[newOrder[i]];
+                newMissing[i] = missing[newOrder[i]];
+                newEmpty[i] = empty[newOrder[i]];
+            }
+        }
+        else
+            throw  new ArrayIndexOutOfBoundsException();
+        BooleanColumn bc = new BooleanColumn(newInternal, newMissing, newEmpty, getLabel(), getComment());
+        return  bc;
+        */
     }
 
     /**
@@ -638,6 +843,8 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
             toRemove.add(id);
         }
         char newInternal[][] = new char[internal.length - indices.length][];
+        boolean newMissing[] = new boolean[internal.length - indices.length];
+        boolean newEmpty[] = new boolean[internal.length - indices.length];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
@@ -646,12 +853,42 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
             //if (x == null) {
 			if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
+                newMissing[newIntIdx] = missing[i];
+                newEmpty[newIntIdx] = empty[i];
                 newIntIdx++;
             }
             //else
             //   internal[i] = null;
         }
         internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
+/*        HashSet toRemove = new HashSet(indices.length);
+        for (int i = 0; i < indices.length; i++) {
+            Integer id = new Integer(indices[i]);
+            toRemove.add(id);
+        }
+        boolean newInternal[] = new boolean[internal.length - indices.length];
+        boolean newMissing[] = new boolean[internal.length - indices.length];
+        boolean newEmpty[] = new boolean[internal.length - indices.length];
+
+        int newIntIdx = 0;
+        for (int i = 0; i < getNumRows(); i++) {
+            // check if this row is in the list of rows to remove
+            //Integer x = (Integer)toRemove.get(new Integer(i));
+            // if this row is not in the list, copy it into the new internal
+            //if (x == null) {
+         if(!toRemove.contains(new Integer(i))) {
+                newInternal[newIntIdx] = internal[i];
+                newMissing[newIntIdx] = missing[i];
+                newEmpty[newIntIdx] = empty[i];
+                newIntIdx++;
+            }
+        }
+        internal = newInternal;
+        missing = newMissing;
+        empty = newEmpty;
+        */
     }
 
     //////////////////////////////////////
@@ -742,5 +979,20 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
                 return  j;
         }
     }
+    public void setValueToMissing(boolean b, int row) {
+        missing[row] = b;
+    }
+
+    public void setValueToEmpty(boolean b, int row) {
+        empty[row] = b;
+    }
+
+    public boolean isValueMissing(int row) {
+        return missing[row];
+    }
+
+    public boolean isValueEmpty(int row) {
+        return empty[row];
+	}
 }
 /*CharArrayColumn*/

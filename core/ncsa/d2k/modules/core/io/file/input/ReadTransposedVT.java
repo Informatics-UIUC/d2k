@@ -95,7 +95,7 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 			if(labelsList != null)
 				labelsList.clear();
 
-			TableImpl table = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+			MutableTableImpl table = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(cols);
 
 			// the number of the row in the table
 			int rowNum = 0;
@@ -123,7 +123,7 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 
 			// create an example table if it has a variablesRow
 			if(hasVariables)
-				table = toExampleTable(table);
+				return toExampleTable(table);
 
 			return table;
 		}
@@ -138,7 +138,7 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 		for the single byte value that delimits the fields.
 		@param row the line from the file
 	*/
-	protected void createSDRow (String row, TableImpl vt, int curRow) {
+	protected void createSDRow (String row, MutableTable vt, int curRow) {
         // the current column of the table to insert into
 		int currentCol = curRow;
 

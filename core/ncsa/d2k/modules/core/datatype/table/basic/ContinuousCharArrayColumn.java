@@ -37,7 +37,8 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 	protected static final int DEFAULT_INITIAL_SIZE = 2048;
 	/** the multiple used to increment the size of the internal buffer */
 	private float capacityIncrement = 1.3f;
-
+    private boolean[] missing = null;
+	private boolean[] empty = null;
 	/**
 	 * Create a new ContinuousCharArrayColumn
 	 * @param initialLength the initial number of rows
@@ -154,10 +155,10 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
             }
             bac.setLabel(getLabel());
             bac.setComment(getComment());
-			bac.setScalarEmptyValue(getScalarEmptyValue());
-			bac.setScalarMissingValue(getScalarMissingValue());
-			bac.setNominalEmptyValue(getNominalEmptyValue());
-			bac.setNominalMissingValue(getNominalMissingValue());
+			//bac.setScalarEmptyValue(getScalarEmptyValue());
+			//bac.setScalarMissingValue(getScalarMissingValue());
+			//bac.setNominalEmptyValue(getNominalEmptyValue());
+			//bac.setNominalMissingValue(getNominalMissingValue());
             return  bac;
         }
 	}
@@ -677,10 +678,10 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 		cac.setLabel(getLabel());
 		//cac.setType(getType());
 		cac.setComment(getComment());
-		cac.setScalarEmptyValue(getScalarEmptyValue());
-		cac.setScalarMissingValue(getScalarMissingValue());
-		cac.setNominalEmptyValue(getNominalEmptyValue());
-		cac.setNominalMissingValue(getNominalMissingValue());
+		//cac.setScalarEmptyValue(getScalarEmptyValue());
+		//cac.setScalarMissingValue(getScalarMissingValue());
+		//cac.setNominalEmptyValue(getNominalEmptyValue());
+		//cac.setNominalMissingValue(getNominalMissingValue());
 		return cac;
     }
 
@@ -903,10 +904,10 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 		ContinuousCharArrayColumn cac = new ContinuousCharArrayColumn(newinternal, newrowPtrs);
 		cac.setLabel(getLabel());
 		cac.setComment(getComment());
-		cac.setScalarEmptyValue(getScalarEmptyValue());
-		cac.setScalarMissingValue(getScalarMissingValue());
-		cac.setNominalEmptyValue(getNominalEmptyValue());
-		cac.setNominalMissingValue(getNominalMissingValue());
+		//cac.setScalarEmptyValue(getScalarEmptyValue());
+		//cac.setScalarMissingValue(getScalarMissingValue());
+		//cac.setNominalEmptyValue(getNominalEmptyValue());
+		//cac.setNominalMissingValue(getNominalMissingValue());
 		return cac;
     }
 
@@ -1138,4 +1139,34 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
                 return  j;
         }
     }
+/*    public void setValueToMissing(boolean b, int row) {
+        missing[row] = b;
+    }
+
+    public void setValueToEmpty(boolean b, int row) {
+        empty[row] = b;
+    }
+
+    public boolean isValueMissing(int row) {
+        return missing[row];
+    }
+
+    public boolean isValueEmpty(int row) {
+        return empty[row];
+	}*/
+    public void setValueToMissing(boolean b, int row) {
+        missing[row] = b;
+    }
+
+    public void setValueToEmpty(boolean b, int row) {
+        empty[row] = b;
+    }
+
+    public boolean isValueMissing(int row) {
+        return missing[row];
+    }
+
+    public boolean isValueEmpty(int row) {
+        return empty[row];
+	}
 }

@@ -26,7 +26,7 @@ public class FixedRowCache extends Cache {
     }
 
     private void initialize (DBDataSource dbds) throws SQLException {
-        table = new TableImpl(dbds.getNumDistinctColumns());
+        table = new MutableTableImpl(dbds.getNumDistinctColumns());
         for (int col = 0; col < dbds.getNumDistinctColumns(); col++) { //Initialize  Columns of the TableImpl
             switch (dbds.getColumnType(col)) {
                 case ColumnTypes.INTEGER:

@@ -11,6 +11,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
  * @author gpape
  */
 class Page implements Serializable {
+	static final long serialVersionUID = -3452910203130295662L;
 
    private volatile boolean dirty = false; // modified since last write to disk?
 
@@ -344,7 +345,7 @@ class Page implements Serializable {
       return table.isValueEmpty(row, column);
    }
 
-   Number getScalarMissingValue(int column) {
+   /*Number getScalarMissingValue(int column) {
       mark(false);
       return table.getScalarMissingValue(column);
    }
@@ -363,6 +364,7 @@ class Page implements Serializable {
       mark(false);
       return table.getNominalEmptyValue(column);
    }
+   */
 
 /******************************************************************************/
 /* relevant MutableTable methods.                                             */
@@ -882,7 +884,7 @@ class Page implements Serializable {
       mark(true);
    }
 
-   void setScalarMissingValue(Number val, int col) {
+/*   void setScalarMissingValue(Number val, int col) {
       ((MutableTable)table).setScalarMissingValue(val, col);
       dirty = true;
    }
@@ -901,14 +903,15 @@ class Page implements Serializable {
       ((MutableTable)table).setNominalEmptyValue(val, col);
       dirty = true;
    }
+   */
 
-   void setValueToMissing(int row, int col) {
-      ((MutableTable)table).setValueToMissing(row, col);
+   void setValueToMissing(boolean b, int row, int col) {
+      ((MutableTable)table).setValueToMissing(b, row, col);
       mark(true);
    }
 
-   void setValueToEmpty(int row, int col) {
-      ((MutableTable)table).setValueToEmpty(row, col);
+   void setValueToEmpty(boolean b, int row, int col) {
+      ((MutableTable)table).setValueToEmpty(b, row, col);
       mark(true);
    }
 

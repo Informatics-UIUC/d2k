@@ -12,6 +12,7 @@ import java.util.*;
  * @author gpape
  */
 class PageManager implements Serializable {
+	static final long serialVersionUID = -5147263888550325945L;
 
    // private Page[] allPages;
 

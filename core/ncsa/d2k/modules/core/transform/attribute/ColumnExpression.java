@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.transform.attribute;
 
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.*;
 
 /**
  * A <code>ColumnExpression</code> object encapsulates a single mathematical

@@ -14,10 +14,12 @@ import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
 final public class CharColumn extends AbstractColumn implements TextualColumn {
 
 	//static final long serialVersionUID = 4400422800710542291L;
+	static final long serialVersionUID = -5392783624060594709L;
 
     /** the internal representation of this Column */
     private char[] internal = null;
-
+    private boolean[] missing = null;
+	private boolean[] empty = null;
     /**
      * Creates a new, empty <code>CharColumn</code>.
      */
@@ -37,6 +39,12 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
         type = ColumnTypes.CHAR;
 		//setScalarMissingValue(new Integer(Integer.MIN_VALUE));
 		//setScalarEmptyValue(new Integer(Integer.MAX_VALUE));
+        missing = new boolean[internal.length];
+        empty = new boolean[internal.length];
+        for(int i = 0; i < internal.length; i++) {
+            missing[i] = false;
+            empty[i] = false;
+		}
     }
 
     /**
@@ -49,6 +57,12 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
         setIsNominal(true);
 		//setScalarMissingValue(new Integer(Integer.MIN_VALUE));
 		//setScalarEmptyValue(new Integer(Integer.MAX_VALUE));
+        missing = new boolean[internal.length];
+        empty = new boolean[internal.length];
+        for(int i = 0; i < internal.length; i++) {
+            missing[i] = false;
+            empty[i] = false;
+		}
     }
 
     /**
@@ -78,10 +92,19 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
                 bac.setChar(getChar(i), i);
             bac.setLabel(getLabel());
             bac.setComment(getComment());
-			bac.setNominalEmptyValue(getNominalEmptyValue());
-			bac.setNominalMissingValue(getNominalMissingValue());
-			bac.setScalarEmptyValue(getScalarEmptyValue());
-			bac.setScalarMissingValue(getScalarMissingValue());
+			//bac.setNominalEmptyValue(getNominalEmptyValue());
+			//bac.setNominalMissingValue(getNominalMissingValue());
+			//bac.setScalarEmptyValue(getScalarEmptyValue());
+			//bac.setScalarMissingValue(getScalarMissingValue());
+            boolean[] miss = new boolean[internal.length];
+            boolean[] em = new boolean[internal.length];
+            for(int i = 0; i < internal.length; i++) {
+               miss[i] = missing[i];
+               em[i] = empty[i];
+
+            }
+            bac.missing = miss;
+			bac.empty = em;
             return  bac;
         }
     }
@@ -224,9 +247,11 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
      * @return               the corresponding <code>byte</code> array
      */
     public byte[] getBytes (int pos) {
-        byte[] retVal = new byte[1];
+        /*byte[] retVal = new byte[1];
         retVal[0] = getByte(pos);
         return retVal;
+        */
+        return new String(getChars(pos)).getBytes();
     }
 
     /**
@@ -237,7 +262,8 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
      * @param pos            the position to place newEntry
      */
     public void setBytes (byte[] newEntry, int pos) {
-        setInt((int)newEntry[0], pos);
+        //setInt((int)newEntry[0], pos);
+        setChar(new String(newEntry).toCharArray()[0], pos);
     }
 
     /**
@@ -419,7 +445,7 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
         @param newCapacity a new capacity
      */
     public void setNumRows (int newCapacity) {
-        if (internal != null) {
+/*        if (internal != null) {
             char[] newInternal = new char[newCapacity];
             if (newCapacity > internal.length)
                 newCapacity = internal.length;
@@ -428,6 +454,25 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
         }
         else
             internal = new char[newCapacity];
+        */
+        if (internal != null) {
+            char[] newInternal = new char[newCapacity];
+            boolean[] newMissing = new boolean[newCapacity];
+            boolean[] newEmpty = new boolean[newCapacity];
+            if (newCapacity > internal.length)
+                newCapacity = internal.length;
+            System.arraycopy(internal, 0, newInternal, 0, newCapacity);
+            System.arraycopy(missing, 0, newMissing, 0, missing.length);
+            System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+            internal = newInternal;
+            missing = newMissing;
+            empty = newEmpty;
+        }
+        else {
+            internal = new char[newCapacity];
+            missing = new boolean[newCapacity];
+            empty = new boolean[newCapacity];
+		}
     }
 
     //////////////////////////////////////
@@ -453,16 +498,38 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
      */
     public Column getSubset (int pos, int len) {
         char[] subset = new char[len];
+        boolean[] newMissing = new boolean[len];
+        boolean[] newEmpty = new boolean[len];
         System.arraycopy(internal, pos, subset, 0, len);
+        System.arraycopy(missing, pos, newMissing, 0, len);
+        System.arraycopy(empty, pos, newEmpty, 0, len);
         CharColumn bac = new CharColumn(subset);
         bac.setLabel(getLabel());
         bac.setComment(getComment());
-		bac.setNominalEmptyValue(getNominalEmptyValue());
-		bac.setNominalMissingValue(getNominalMissingValue());
-		bac.setScalarEmptyValue(getScalarEmptyValue());
-		bac.setScalarMissingValue(getScalarMissingValue());
+		//bac.setNominalEmptyValue(getNominalEmptyValue());
+		//bac.setNominalMissingValue(getNominalMissingValue());
+		//bac.setScalarEmptyValue(getScalarEmptyValue());
+		//bac.setScalarMissingValue(getScalarMissingValue());
+        bac.missing = newMissing;
+        bac.empty = newEmpty;
 
         return  bac;
+
+/*        if ((pos + len) > internal.length)
+            throw  new ArrayIndexOutOfBoundsException();
+        boolean[] subset = new boolean[len];
+        boolean[] newMissing = new boolean[len];
+        boolean[] newEmpty = new boolean[len];
+        System.arraycopy(internal, pos, subset, 0, len);
+        System.arraycopy(missing, pos, newMissing, 0, len);
+        System.arraycopy(empty, pos, newEmpty, 0, len);
+        BooleanColumn bc = new BooleanColumn(subset);
+        bc.missing = newMissing;
+        bc.empty = newEmpty;
+        bc.setLabel(getLabel());
+        bc.setComment(getComment());
+        return  bc;
+        */
     }
 
     /**
@@ -583,10 +650,10 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
         bac.setLabel(getLabel());
         //bac.setType(getType());
         bac.setComment(getComment());
-		bac.setNominalEmptyValue(getNominalEmptyValue());
-		bac.setNominalMissingValue(getNominalMissingValue());
-		bac.setScalarEmptyValue(getScalarEmptyValue());
-		bac.setScalarMissingValue(getScalarMissingValue());
+		//bac.setNominalEmptyValue(getNominalEmptyValue());
+		//bac.setNominalMissingValue(getNominalMissingValue());
+		//bac.setScalarEmptyValue(getScalarEmptyValue());
+		//bac.setScalarMissingValue(getScalarMissingValue());
 
         return  bac;
     }
@@ -778,5 +845,20 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
                 return  j;
         }
     }
+    public void setValueToMissing(boolean b, int row) {
+        missing[row] = b;
+    }
+
+    public void setValueToEmpty(boolean b, int row) {
+        empty[row] = b;
+    }
+
+    public boolean isValueMissing(int row) {
+        return missing[row];
+    }
+
+    public boolean isValueEmpty(int row) {
+        return empty[row];
+	}
 }
 /* CharColumn */

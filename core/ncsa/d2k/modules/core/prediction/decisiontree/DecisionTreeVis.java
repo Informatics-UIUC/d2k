@@ -1,20 +1,17 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
-
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
+import java.awt.print.*;
 import java.io.*;
 import java.util.*;
-import java.awt.print.*;
+
+import javax.swing.*;
+
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.userviews.*;
-import ncsa.d2k.userviews.widgets.*;
-import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.gui.*;
-import ncsa.gui.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.widgets.*;
+import ncsa.gui.*;
 
 /*
 	DecisionTreeVis
@@ -76,9 +73,6 @@ public final class DecisionTreeVis extends VisModule  {
 		return "DTVis";
 	}
 
-	public void doit() throws Exception {
-	}
-
 	protected UserView createUserView() {
 		return new DecisionTreeUserView();
 	}
@@ -90,39 +84,39 @@ public final class DecisionTreeVis extends VisModule  {
 	/*
 		DecisionTreeUserView
 	*/
-	class DecisionTreeUserView extends ncsa.d2k.userviews.swing.JUserPane implements ActionListener, Printable {
+	private class DecisionTreeUserView extends ncsa.d2k.userviews.swing.JUserPane
+            implements ActionListener, Printable {
 
-		BrushPanel brushpanel;
-		TreeScrollPane treescrollpane;
-		NavigatorPanel navigatorpanel;
-		JD2KFrame depthframe;
-		DepthPanel depthpanel;
-		JD2KFrame spacingframe;
-		SpacingPanel spacingpanel;
-		JD2KFrame searchframe;
-		SearchPanel searchpanel;
+		private BrushPanel brushpanel;
+		private TreeScrollPane treescrollpane;
+		private NavigatorPanel navigatorpanel;
+		private JD2KFrame depthframe;
+		private DepthPanel depthpanel;
+		private JD2KFrame spacingframe;
+		private SpacingPanel spacingpanel;
+		private JD2KFrame searchframe;
+		private SearchPanel searchpanel;
 
-		JMenuBar menubar;
-		JMenuItem printtree, printwindow;
-		JMenuItem depth;
-		JMenuItem spacing;
-		JCheckBoxMenuItem zoom;
-		JCheckBoxMenuItem showlabels;
-		JMenuItem search;
+		private JMenuBar menubar;
+		private JMenuItem printtree, printwindow;
+		private JMenuItem depth;
+		private JMenuItem spacing;
+		private JCheckBoxMenuItem zoom;
+		private JCheckBoxMenuItem showlabels;
+		private JMenuItem search;
 
-		JPanel sidepanel;
-		JScrollPane sidescrollpane;
-		JPanel buttonpanel;
+		private JPanel sidepanel;
+		private JScrollPane sidescrollpane;
+		private JPanel buttonpanel;
 
-		JPanel toolpanel;
-		JButton resetbutton, printbutton, searchbutton, helpbutton;
-		JToggleButton zoombutton;
+		private JPanel toolpanel;
+		private JButton resetbutton, printbutton, searchbutton, helpbutton;
+		private JToggleButton zoombutton;
 
-		Hashtable colortable;
-		Hashtable ordertable;
-		ColorMenuItem[] coloritems;
-		DecisionTreeScheme scheme;
-
+		private Hashtable colortable;
+		private Hashtable ordertable;
+		private ColorMenuItem[] coloritems;
+		private DecisionTreeScheme scheme;
 
 		public void initView(ViewModule module) {
 			menubar = new JMenuBar();
