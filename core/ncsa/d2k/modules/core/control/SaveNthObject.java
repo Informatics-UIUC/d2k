@@ -102,11 +102,14 @@ public class SaveNthObject extends ComputeModule
 
 
 	public String getModuleInfo(){
-		return "";
+		return "Will save objects that come in into a buffer. Will then push"+
+			" out the Nth one where N is the other input. Because of the buffer"
+			+", N can be pulled in after N+K (K>0) objects have come in";
+
 	}
 	
    	public String getModuleName() {
-		return "";
+		return "Buffered Sequencer";
 	}
 	public String[] getInputTypes(){
 		String[] s= {"java.lang.Object","java.lang.Integer"};
@@ -116,9 +119,11 @@ public class SaveNthObject extends ComputeModule
 	public String getInputInfo(int index){
 		switch (index){
 			case(0): {
-				return "";
+				return "The objects, of which the Nth one is wanted to be "+
+				"pushed.";
 			}case(1): {
-				return "";
+				return "The Nth object will be pushed, all others will be "+
+				"ignored";
 			}
 
 
@@ -131,9 +136,9 @@ public class SaveNthObject extends ComputeModule
 	public String getInputName(int index) {
 		switch (index){
 			case(0): {
-				return "Saved Object";
+				return "Objects";
 			}
-			case(1):{return "Object Count";}
+			case(1):{return "Object Count (N)";}
 			default:{
 				return "No such input.";
 			}
@@ -147,7 +152,7 @@ public class SaveNthObject extends ComputeModule
 	public String getOutputInfo(int index){
 		switch (index){
 			case(0): {
-				return "";
+				return "The Nth object pulled in";
 			}
 			default:{
 				return "No such output.";
