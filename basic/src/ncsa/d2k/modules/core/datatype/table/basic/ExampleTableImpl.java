@@ -193,6 +193,15 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		}
 	}
 
+   /**
+    * Construct the new example table given a new subset, and an existing table.
+    * @param table
+    * @param ss
+    */
+   public ExampleTableImpl(Column [] cols, int [] ss) {
+      super(cols, ss);
+   }
+   
 	/**
 	 * Create a prediction table and return it.
 	 * @return a prediction table.
@@ -402,11 +411,13 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	 * @return a subset of this Table's rows
 	 */
 	public Table getSubset(int pos, int len) {
+      ExampleTableImpl eti = (ExampleTableImpl) this.shallowCopy();
 		int[] sample = new int[len];
 		for (int i = 0; i < len; i++) {
-			sample[i] = pos + i;
+			sample[i] = subset[pos + i];
 		}
-		return new ExampleTableImpl(this, sample);
+      eti.setSubset(sample);
+      return eti;
 	}
 
 	/**
@@ -415,7 +426,12 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	 * @return a subset table.
 	 */
 	public Table getSubset(int[] rows) {
-			return new ExampleTableImpl(this, rows);
+		ExampleTableImpl eti = (ExampleTableImpl) this.shallowCopy();
+      for (int i = 0 ; i < rows.length ; i++) {
+         rows[i] = subset[rows[i]];
+      }
+      eti.setSubset(rows);
+      return eti;
 	}
 
 	///////////// Copying ////////////////////
