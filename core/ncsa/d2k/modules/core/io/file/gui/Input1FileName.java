@@ -86,7 +86,6 @@ public class Input1FileName extends UIModule {
         }
 
 		public void initView(ViewModule m) {
-            doSetup();
 		}
 
         void doSetup() {
@@ -98,6 +97,11 @@ public class Input1FileName extends UIModule {
                 if(startdir != null)
                     setCurrentDirectory(new File(startdir));
             }
+        }
+
+        public void setBounds(int x, int y, int w, int h) {
+            super.setBounds(x, y, w, h);
+            doSetup();
         }
 
         public void approveSelection() {
