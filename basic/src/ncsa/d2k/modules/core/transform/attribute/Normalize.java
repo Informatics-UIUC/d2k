@@ -526,6 +526,6 @@ public class Normalize extends HeadlessUIModule {
  * 01-12-04: module is pulled back into qa process.
  * a subset table that had a normalizing transformation applied to cannot be veiwed
  * by a table viewer. the table veiwer throws and array index out of bound exception
- * [bug 218]
+ * [bug 218] (fixed)
  *
  */

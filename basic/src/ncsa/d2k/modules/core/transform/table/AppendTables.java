@@ -281,7 +281,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setInt(vals[index], index, addedIndex);
                             break;
                         }
@@ -314,7 +314,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setFloat(vals[index], index, addedIndex);
                             break;
                         }
@@ -324,7 +324,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                             double[] vals = new double[combinedSize];
 
                             // get the data from table 1, put it first.
-                            for (int x = 0 ; x < t1Size ; x++) 
+                            for (int x = 0 ; x < t1Size ; x++)
                                 vals[x] = t1.getDouble(x,i);
 
                             // get the data from table 2, append it
@@ -351,7 +351,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setDouble(vals[index], index, addedIndex);
                             break;
                         }
@@ -384,7 +384,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setShort(vals[index], index, addedIndex);
                             break;
                         }
@@ -417,7 +417,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setLong(vals[index], index, addedIndex);
                             break;
                         }
@@ -451,7 +451,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setString(vals[index], index, addedIndex);
                             break;
                         }
@@ -484,7 +484,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setChars(vals[index], index, addedIndex);
                             break;
                         }
@@ -517,7 +517,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setBytes(vals[index], index, addedIndex);
                             break;
                         }
@@ -550,7 +550,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setBoolean(vals[index], index, addedIndex);
                             break;
                         }
@@ -583,7 +583,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setObject(vals[index], index, addedIndex);
                             break;
                         }
@@ -616,7 +616,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setByte(vals[index], index, addedIndex);
                             break;
                         }
@@ -651,7 +651,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                                 this.copyMissingValues(-1, col, t1Size, t1, t1.getColumnType(i));
                             result.addColumn(col);
                             int addedIndex = result.getNumColumns() - 1;
-                            for (int index = 0 ; index < vals.length ; index++) 
+                            for (int index = 0 ; index < vals.length ; index++)
                                 result.setChar(vals[index], index, addedIndex);
                             break;
                         }
@@ -1067,5 +1067,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 
  01-11-04 - module is pulled back into qa process
  bug 217 - array index out of bounds exception with subset table that includes
- only part of the original set of data.
+ only part of the original set of data. (fixed)
+
+ 01-13-04:
+ bug 226: with subset tables - when the second table to be appended is a subset
+ table and it has unique columns, the items that are being inserted into the new
+ appended table are not coresponding with the subset the second table is made of.
+ the items are being copied from the original whole set of the table, until
+ reached the number of rows in the subset table.
+
   */

@@ -330,7 +330,7 @@ public class ScalarizeNominals extends DataPrepModule {
                             else
                                 newColumn[row] = false;
                         }
-                        
+
                         BooleanColumn column = ColumnUtilities.toBooleanColumn(oldColumn);
                         int where = index+k;
                         table.insertColumn(column, where);
@@ -400,28 +400,28 @@ public class ScalarizeNominals extends DataPrepModule {
 
     /*
     private void printInputOutputColumns(ExampleTable et) {
-    
+
     	  int[] inputColumns = et.getInputFeatures(),
     			outputColumns = et.getOutputFeatures();
-    
+
     	  String[] inputNames = et.getInputNames(),
     			   outputNames = et.getOutputNames();
-    
+
     	  System.out.print("actual labels:");
     	  for (int i = 0; i < et.getNumColumns(); i++)
     		 System.out.print(" " + i + "(" + et.getColumnLabel(i) + ")");
     	  System.out.println(" [" + et.getNumColumns() + "]");
-    
+
     	  System.out.print("input columns:");
     	  for (int i = 0; i < inputColumns.length; i++)
     		 System.out.print(" " + inputColumns[i] + "(" + inputNames[i] + ")");
     	  System.out.println(" [" + inputColumns.length + "]");
-    
+
     	  System.out.print("output columns:");
     	  for (int i = 0; i < outputColumns.length; i++)
     		 System.out.print(" " + outputColumns[i] + "(" + outputNames[i] + ")");
     	  System.out.println(" [" + outputColumns.length + "]");
-    
+
     }
     */
 
@@ -438,7 +438,11 @@ public class ScalarizeNominals extends DataPrepModule {
  * 01-12-04: module is pulled back into qa process.
  * bug 220 - handling of subset tables. table viewer throws an array index out of
  * bounds exception with subset table that is the output of this module.
- * 01-12-14: tlr, fixed the subset table proble, used the ColumnUtilities.toBooleanColumn 
+ * 01-12-14: tlr, fixed the subset table proble, used the ColumnUtilities.toBooleanColumn
  * and toDoubleColumn to create the new columns, added them to the table, then used the table
  * setter methods.
+ *
+ * 01-13-04:
+ * bug 225 - assigns same label to new scalarized columns that replace the
+ * nominal ones.
  */

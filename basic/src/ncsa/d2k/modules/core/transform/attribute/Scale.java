@@ -658,7 +658,7 @@ class ScalingTransformation implements Transformation {
 		   	  }
 		   }
 		}
-		
+
 		// Create the new column, set the column in the table, then
 		// set the new scaled values. In this way, we preserve the subset.
 		Column col = ColumnUtilities.toDoubleColumn(table.getColumn(index));
@@ -667,7 +667,7 @@ class ScalingTransformation implements Transformation {
 		   if (missing[i])
 		      table.setDouble(table.getMissingDouble(), i, index);
 		   else
-		      table.setDouble(data[i], i, index);   
+		      table.setDouble(data[i], i, index);
 		}
 	 }
 	 return true;
@@ -697,5 +697,6 @@ class ScalingTransformation implements Transformation {
  * 01-12-04: module is pulled back into qa process.
  * bug 221 - handling of subset tables. table viewer throws an array index out of
  * bounds exception with subset table had a scaling transformation applied to.
+ * (fixed)
 
  */
