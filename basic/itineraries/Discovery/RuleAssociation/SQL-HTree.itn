@@ -3,28 +3,22 @@
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
   <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAARdwgAAAAPAAAAEHQADVNlbGVjdCAgVGFibGVzcgAbbmNzYS5kMmsuY29yZS5SZXNvdXJjZUVu
-dHJ51S4sIEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtMAA9vYmpl
-Y3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0AChuY3NhLmQyay5tb2R1bGVzLmNv
-cmUuaW8uc3FsLlNlbGVjdFRhYmxldAAXU1FMIEZpbHRlciBDb25zdHJ1Y3Rpb25zcQB+AARwdAA7
-bmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS50YWJsZS5TUUxGaWx0ZXJDb25zdHJ1Y3Rp
-b250ABpBdmFpbGFibGUgQXR0cmlidXRlcyBJbnB1dHNxAH4ABHB0ADVuY3NhLmQyay5tb2R1bGVz
-LmNvcmUuaW8uc3FsLkF2YWlsYWJsZUF0dHJpYnV0ZXNJbnB1dHQAHFNRTCBHZXQgUnVsZSBBc3Nv
-YyBGcm9tIEN1YmVzcQB+AARwdABHbmNzYS5kMmsubW9kdWxlcy5jb3JlLmRpc2NvdmVyeS5ydWxl
-YXNzb2NpYXRpb24uU1FMR2V0UnVsZUFzc29jRnJvbUN1YmV0AAdGYW5PdXQ0c3EAfgAEcHQAIm5j
-c2EuZDJrLmNvcmUubW9kdWxlcy5GYW5PdXRNb2R1bGV0ABFSdWxlIEFzc29jIFJlcG9ydHNxAH4A
-BHB0AD9uY3NhLmQyay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5LnJ1bGVhc3NvY2lhdGlvbi5SdWxl
-QXNzb2NSZXBvcnR0AAdGYW5PdXQzc3EAfgAEcHEAfgAUdAAJU1FMIEhUcmVlc3EAfgAEcHQANm5j
-c2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uc3VtbWFyaXphdGlvbi5TUUxIVHJlZXQAEVNl
-bGVjdCBBdHRyaWJ1dGVzc3EAfgAEcHQALW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5zcWwuU2Vs
-ZWN0QXR0cmlidXRlc3QAElNRTCBCaW4gQXR0cmlidXRlc3NxAH4ABHB0ADhuY3NhLmQyay5tb2R1
-bGVzLmNvcmUudHJhbnNmb3JtLmJpbm5pbmcuU1FMQmluQXR0cmlidXRlc3QAB0Zhbk91dDJzcQB+
-AARwcQB+ABR0AA1Db25uZWN0IFRvIERCc3EAfgAEcHQAKG5jc2EuZDJrLm1vZHVsZXMuY29yZS5p
-by5zcWwuQ29ubmVjdFRvREJ0AAdGYW5PdXQxc3EAfgAEcHEAfgAUdAAGRmFuT3V0c3EAfgAEcHEA
-fgAUdAAPUnVsZSBWaXN1YWxpemVyc3EAfgAEcHQAN25jc2EuZDJrLm1vZHVsZXMuY29yZS5kaXNj
-b3ZlcnkucnVsZWFzc29jaWF0aW9uLlJ1bGVWaXN0ABZBdmFpbGFibGUgVGFibGVzIElucHV0c3EA
-fgAEcHQAMW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5zcWwuQXZhaWxhYmxlVGFibGVzSW5wdXR4
-" label="SQL-HTree.itn">
+AAARdwgAAAAKAAAAC3QAB0Zhbk91dDJzcgAbbmNzYS5kMmsuY29yZS5SZXNvdXJjZUVudHJ51S4s
+IEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtMAA9vYmplY3RDbGFz
+c05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFu
+T3V0TW9kdWxldAANQ29ubmVjdCBUbyBEQnNxAH4ABHB0AChuY3NhLmQyay5tb2R1bGVzLmNvcmUu
+aW8uc3FsLkNvbm5lY3RUb0RCdAAGRmFuT3V0c3EAfgAEcHEAfgAIdAAHRmFuT3V0MXNxAH4ABHBx
+AH4ACHQAHFNRTCBHZXQgUnVsZSBBc3NvYyBGcm9tIEN1YmVzcQB+AARwdABHbmNzYS5kMmsubW9k
+dWxlcy5jb3JlLmRpc2NvdmVyeS5ydWxlYXNzb2NpYXRpb24uU1FMR2V0UnVsZUFzc29jRnJvbUN1
+YmV0AApTUUwgSFRyZWUxc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0u
+c3VtbWFyaXphdGlvbi5OZXdTUUxIVHJlZXQAElNRTCBCaW4gQXR0cmlidXRlc3NxAH4ABHB0ADtu
+Y3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmJpbm5pbmcuTmV3U1FMQmluQXR0cmlidXRl
+c3QAD1J1bGUgVmlzdWFsaXplcnNxAH4ABHB0ADduY3NhLmQyay5tb2R1bGVzLmNvcmUuZGlzY292
+ZXJ5LnJ1bGVhc3NvY2lhdGlvbi5SdWxlVmlzdAALQnVpbGQgUXVlcnlzcQB+AARwdAAnbmNzYS5k
+MmsubW9kdWxlcy5jb3JlLmlvLnNxbC5CdWlsZFF1ZXJ5dAARUnVsZSBBc3NvYyBSZXBvcnRzcQB+
+AARwdAA/bmNzYS5kMmsubW9kdWxlcy5jb3JlLmRpc2NvdmVyeS5ydWxlYXNzb2NpYXRpb24uUnVs
+ZUFzc29jUmVwb3J0dAAHRmFuT3V0NHNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFu
+T3V0TW9kdWxleA==" label="SQL-HTree.itn">
     <annotation><![CDATA[<p>
       <b>Rule Association Using HTree Algorithm</b>
     </p>
@@ -153,7 +147,7 @@ fgAEcHQAMW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5zcWwuQXZhaWxhYmxlVGFibGVzSW5wdXR4
       This module provides a visual representation of the association rules 
       encapsulated in the Rule Table.
     </p>]]></annotation>
-    <module alias="FanOut4" classname="ncsa.d2k.core.modules.FanOutModule" xloc="602" yloc="353">
+    <module alias="FanOut4" classname="ncsa.d2k.core.modules.FanOutModule" xloc="456" yloc="276">
       <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
       <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable">
         <destination alias="Rule Visualizer" index="0"/>
@@ -161,94 +155,20 @@ fgAEcHQAMW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5zcWwuQXZhaWxhYmxlVGFibGVzSW5wdXR4
       <output index="1" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable">
         <destination alias="Rule Assoc Report" index="0"/>
       </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAACAAAAAAAAAAA="/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAE="/>
     </module>
-    <module alias="Rule Visualizer" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleVis" xloc="672" yloc="304">
+    <module alias="FanOut2" classname="ncsa.d2k.core.modules.FanOutModule" xloc="272" yloc="110">
+      <input index="0" classname="[Ljava.lang.String;"/>
+      <output index="0" classname="[Ljava.lang.String;">
+        <destination alias="SQL HTree1" index="2"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Rule Visualizer" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleVis" xloc="550" yloc="179">
       <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAAA"/>
     </module>
-    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="219" yloc="168">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="java.lang.String">
-        <destination alias="SQL Filter Construction" index="1"/>
-      </output>
-      <output index="1" classname="java.lang.String">
-        <destination alias="SQL HTree" index="1"/>
-      </output>
-      <output index="2" classname="java.lang.String">
-        <destination alias="SQL Bin Attributes" index="1"/>
-      </output>
-      <output index="3" classname="java.lang.String">
-        <destination alias="Available Attributes Input" index="1"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAEAAAAAAAAAAAAAAAAAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAAEAAAAAAAAAAAAAAAAAAAAAA=="/>
-    </module>
-    <module alias="Available Attributes Input" classname="ncsa.d2k.modules.core.io.sql.AvailableAttributesInput" xloc="217" yloc="30">
-      <input index="0" classname="ncsa.d2k.modules.io.input.sql.ConnectionWrapper"/>
-      <input index="1" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
-        <destination alias="FanOut3" index="0"/>
-      </output>
-      <output index="1" classname="java.util.Vector">
-        <destination alias="Select Attributes" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAgAAAAAAAAAA"/>
-    </module>
-    <module alias="Available Tables Input" classname="ncsa.d2k.modules.core.io.sql.AvailableTablesInput" xloc="104" yloc="14">
-      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
-        <destination alias="Available Attributes Input" index="0"/>
-      </output>
-      <output index="1" classname="java.util.Vector">
-        <destination alias="Select  Table" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAACAAAAAAAAAAA="/>
-      <property name="dataTableOnly" value="true"/>
-      <property name="dataCubeOnly" value="false"/>
-    </module>
-    <module alias="Select  Table" classname="ncsa.d2k.modules.core.io.sql.SelectTable" xloc="121" yloc="164">
-      <input index="0" classname="java.util.Vector"/>
-      <output index="0" classname="java.lang.String">
-        <destination alias="FanOut" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
-      <property name="selectedTable" value="IRIS"/>
-      <property name="supressGui" value="false"/>
-    </module>
-    <module alias="Rule Assoc Report" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleAssocReport" xloc="662" yloc="383">
-      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
-      <property name="displayCount" value="false"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAAA"/>
-    </module>
-    <module alias="SQL HTree" classname="ncsa.d2k.modules.core.transform.summarization.SQLHTree" xloc="680" yloc="90">
+    <module alias="SQL HTree1" classname="ncsa.d2k.modules.core.transform.summarization.NewSQLHTree" xloc="408" yloc="19">
       <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
       <input index="1" classname="java.lang.String"/>
       <input index="2" classname="[Ljava.lang.String;"/>
@@ -260,156 +180,77 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAAA"/>
       <output index="1" classname="java.lang.String">
         <destination alias="SQL Get Rule Assoc From Cube" index="1"/>
       </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAABQAAAAAAAAAAAAAAAAAAAAAAAAAAdXEAfgADAAAAAgAA
-AAAAAAAA"/>
-      <property name="maxRuleSize" value="4"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAE="/>
+      <property name="maxRuleSize" value="5"/>
       <property name="support" value="10.0"/>
     </module>
-    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="615" yloc="27">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="java.lang.String">
-        <destination alias="SQL HTree" index="3"/>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="98" yloc="29">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="Build Query" index="0"/>
       </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
+      <output index="1" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="SQL HTree1" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAE="/>
     </module>
-    <module alias="Select Attributes" classname="ncsa.d2k.modules.core.io.sql.SelectAttributes" xloc="360" yloc="88">
-      <input index="0" classname="java.util.Vector"/>
-      <output index="0" classname="[Ljava.lang.String;">
-        <destination alias="FanOut2" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
-      <property name="selectedAttributes" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5TdHJpbmc7rdJW5+kde0cCAAB4cAAAAAV0AAxTRVBBTF9MRU5H
-VEh0AAtTRVBBTF9XSURUSHQADFBFVEFMX0xFTkdUSHQAC1BFVEFMX1dJRFRIdAALRkxPV0VSX1RZ
-UEU="/>
-      <property name="supressGui" value="false"/>
-    </module>
-    <module alias="SQL Filter Construction" classname="ncsa.d2k.modules.core.transform.table.SQLFilterConstruction" xloc="486" yloc="13">
-      <input index="0" classname="ncsa.d2k.modules.io.input.sql.ConnectionWrapper"/>
-      <input index="1" classname="java.lang.String"/>
-      <output index="0" classname="java.lang.String">
-        <destination alias="FanOut1" index="0"/>
-      </output>
-      <property name="includeMissingValues" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="lastExpression" value=""/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAA="/>
-      <property name="queryCondition" value=""/>
-      <property name="supressGui" value="false"/>
-    </module>
-    <module alias="FanOut2" classname="ncsa.d2k.core.modules.FanOutModule" xloc="465" yloc="99">
-      <input index="0" classname="[Ljava.lang.String;"/>
-      <output index="0" classname="[Ljava.lang.String;">
-        <destination alias="SQL HTree" index="2"/>
-      </output>
-      <output index="1" classname="[Ljava.lang.String;">
-        <destination alias="SQL Bin Attributes" index="2"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAACAAAAAAAAAAA="/>
-    </module>
-    <module alias="FanOut3" classname="ncsa.d2k.core.modules.FanOutModule" xloc="369" yloc="19">
-      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
-        <destination alias="SQL Filter Construction" index="0"/>
-      </output>
-      <output index="1" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
-        <destination alias="SQL HTree" index="0"/>
-      </output>
-      <output index="2" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
-        <destination alias="SQL Bin Attributes" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAADAAAAAAAAAAAAAAAA"/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAADAAAAAAAAAAAAAAAA"/>
+    <module alias="Rule Assoc Report" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleAssocReport" xloc="524" yloc="325">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
+      <property name="displayCount" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
     </module>
     <module alias="Connect To DB" classname="ncsa.d2k.modules.core.io.sql.ConnectToDB" xloc="6" yloc="14">
       <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
-        <destination alias="Available Tables Input" index="0"/>
+        <destination alias="FanOut" index="0"/>
       </output>
-      <property name="password" value=""/>
       <property name="dbVendor" value=""/>
+      <property name="password" value="testmining"/>
       <property name="dbInstance" value=""/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAA"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
       <property name="username" value=""/>
       <property name="url" value="jdbc:oracle:thin:@sol.ncsa.uiuc.edu:1521:oracle2"/>
       <property name="supressGui" value="false"/>
+      <property name="port" value=""/>
       <property name="driver" value=""/>
       <property name="machine" value=""/>
-      <property name="port" value=""/>
     </module>
-    <module alias="SQL Get Rule Assoc From Cube" classname="ncsa.d2k.modules.core.discovery.ruleassociation.SQLGetRuleAssocFromCube" xloc="626" yloc="214">
+    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="269" yloc="67">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="SQL HTree1" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Build Query" classname="ncsa.d2k.modules.core.io.sql.BuildQuery" xloc="144" yloc="142">
+      <input index="0" classname="ncsa.d2k.modules.io.input.sql.ConnectionWrapper"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="FanOut1" index="0"/>
+      </output>
+      <output index="1" classname="[Ljava.lang.String;">
+        <destination alias="FanOut2" index="0"/>
+      </output>
+      <output index="2" classname="java.lang.String">
+        <destination alias="SQL HTree1" index="3"/>
+      </output>
+      <output index="3" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <property name="includeMissingValues" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAEAAAAAQAAAAEAAAABAAAAAA=="/>
+      <property name="lastExpression" value=" ADULT.AGE &gt;  10"/>
+      <property name="queryCondition" value=""/>
+      <property name="dataTableOnly" value="true"/>
+      <property name="supressGui" value="false"/>
+      <property name="dataCubeOnly" value="false"/>
+    </module>
+    <module alias="SQL Get Rule Assoc From Cube" classname="ncsa.d2k.modules.core.discovery.ruleassociation.SQLGetRuleAssocFromCube" xloc="509" yloc="71">
       <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
       <input index="1" classname="java.lang.String"/>
       <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable">
         <destination alias="FanOut4" index="0"/>
       </output>
-      <property name="minConfidence" value="70.0"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAA="/>
-      <property name="minSupport" value="20.0"/>
+      <property name="minConfidence" value="50.0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="minSupport" value="0.05"/>
       <property name="threshold" value="10.0"/>
-    </module>
-    <module alias="SQL Bin Attributes" classname="ncsa.d2k.modules.core.transform.binning.SQLBinAttributes" xloc="485" yloc="228">
-      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
-      <input index="1" classname="java.lang.String"/>
-      <input index="2" classname="[Ljava.lang.String;"/>
-      <input index="3" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.transformations.BinTransform">
-        <destination alias="SQL HTree" index="4"/>
-      </output>
-      <property name="newColumn" value="false"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAABAAAAAAAAAAAAAAAAAAAAAB1cQB+AAMAAAABAAAAAA=="/>
-      <property name="supressGui" value="false"/>
-      <property name="savedBins" binaryValue="rO0ABXVyADhbTG5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYmlubmluZy5CaW5EZXNj
-cmlwdG9yO7tpifeLslBXAgAAeHAAAAAQc3IAPG5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zv
-cm0uYmlubmluZy5OdW1lcmljQmluRGVzY3JpcHRvcml9qPZD2AstAgACRAADbWF4RAADbWlueHIA
-NW5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYmlubmluZy5CaW5EZXNjcmlwdG9y09Ql
-pNb0uC8CAANJAA1jb2x1bW5fbnVtYmVyTAAFbGFiZWx0ABJMamF2YS9sYW5nL1N0cmluZztMAARu
-YW1lcQB+AAR4cAAAAAB0AAxTRVBBTF9MRU5HVEh0AAtbLi4uIDogNS4yXUAUzMzMzMzN//AAAAAA
-AABzcQB+AAIAAAAAcQB+AAZ0AAsoNS4yIDogNi4xXUAYZmZmZmZnQBTMzMzMzM1zcQB+AAIAAAAA
-cQB+AAZ0AAkoNi4xIDogN11AHAAAAAAAAUAYZmZmZmZnc3EAfgACAAAAAHEAfgAGdAAJKDcgOiAu
-Li5df/AAAAAAAABAHAAAAAAAAXNxAH4AAgAAAAF0AAtTRVBBTF9XSURUSHQAC1suLi4gOiAyLjZd
-QATMzMzMzM3/8AAAAAAAAHNxAH4AAgAAAAFxAH4AD3QACygyLjYgOiAzLjJdQAmZmZmZmZpABMzM
-zMzMzXNxAH4AAgAAAAFxAH4AD3QACygzLjIgOiAzLjhdQA5mZmZmZmdACZmZmZmZmnNxAH4AAgAA
-AAFxAH4AD3QACygzLjggOiAuLi5df/AAAAAAAABADmZmZmZmZ3NxAH4AAgAAAAJ0AAxQRVRBTF9M
-RU5HVEh0AA1bLi4uIDogMi40NzVdQAPMzMzMzM3/8AAAAAAAAHNxAH4AAgAAAAJxAH4AGHQADigy
-LjQ3NSA6IDMuOTVdQA+ZmZmZmZpAA8zMzMzMzXNxAH4AAgAAAAJxAH4AGHQADigzLjk1IDogNS40
-MjVdQBWzMzMzMzRAD5mZmZmZmnNxAH4AAgAAAAJxAH4AGHQADSg1LjQyNSA6IC4uLl1/8AAAAAAA
-AEAVszMzMzM0c3EAfgACAAAAA3QAC1BFVEFMX1dJRFRIdAALWy4uLiA6IDAuN10/5mZmZmZmZv/w
-AAAAAAAAc3EAfgACAAAAA3EAfgAhdAALKDAuNyA6IDEuM10/9MzMzMzMzD/mZmZmZmZmc3EAfgAC
-AAAAA3EAfgAhdAALKDEuMyA6IDEuOV0//mZmZmZmZj/0zMzMzMzMc3EAfgACAAAAA3EAfgAhdAAL
-KDEuOSA6IC4uLl1/8AAAAAAAAD/+ZmZmZmZm"/>
     </module>
   </itinerary>
 </toolkit>
