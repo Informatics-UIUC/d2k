@@ -1456,26 +1456,30 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             for (int i = 0; i < colIdx.length; i++) {
 				Double db1 = null;
 						 ArrayList list = new ArrayList();
-         
+
               try {
                 int aColIdx = colIdx[i];
                 String colName = fieldNames[aColIdx];
                 //String colName = fieldNames[aColIdx].toLowerCase();
                 con = connectionWrapper.getConnection();
+               // Dora add the where clause to fix bug 172
                 queryStr = "select " + colName + ", count(" + colName + ") from " +
-                           tableName + " group by " + colName;
+                           tableName + " where " + colName + " is not null group by "+ colName;
                 stmt = con.createStatement();
                 ResultSet groupSet = stmt.executeQuery(queryStr);
                 //ANCA changed int itemCnt = 0; to the line below to fix bug 154
-                int itemCnt = -1;
+                //Dora changed from int itemCnt = -1;
+                int itemCnt = 0;
                 while (groupSet.next()) {
                   itemCnt += groupSet.getInt(2);
                   db1 = new Double(groupSet.getDouble(1));
-                  if (itemCnt >= (weight - 1)) {
+                  // Dora changed from if (itemCnt >= (weight - 1)) {
+                  if (itemCnt >= weight) {
                     // itemCnt >= specified weight, add the value to the list
                     list.add(db1);
                     // reset itemCnt
-                    itemCnt = -1;
+                    // Dora changed from itemCnt = -1;
+                    itemCnt = 0;
                   }
                 }
                 // put anything left in a bin
@@ -1489,7 +1493,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
 							 JOptionPane.ERROR_MESSAGE);
 						   System.out.println("Error occoured in addFromWeight. " + e);
 					   }
-         
+
                 double[] binMaxes = new double[list.size()];
                 for (int j = 0; j < binMaxes.length; j++) {
                   binMaxes[j] = ((Double)list.get(j)).doubleValue();
@@ -1499,17 +1503,24 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                 BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
                         binMaxes[0]);
                 addItemToBinList(nbd);
-                for (int j = 1; j < binMaxes.length -1; j++) {
+                // Dora changed from   for (int j = 1; j < binMaxes.length-1; j++) {
+                for (int j = 1; j < binMaxes.length; j++) {
                     // now create the BinDescriptor and add it to the bin list
                     nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -
                     1], binMaxes[j]);
                     addItemToBinList(nbd);
                 }
                         // add the last bin - anca:
+                        // Dora commented out the following 2 lines.
+                        /*
                    if(binMaxes.length-2>0)     nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-2]);
-                   else     nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[0]);
+                   else     nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[0]); */
+
+                // Dora added the following line.
+                nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-1]);
+
                 addItemToBinList(nbd);
-          
+
             }
         }
 
@@ -1802,5 +1813,5 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
  * 01-08-04: vered.
   * user may create bins with identical names in same attribute [bug 207].
 *01-08-04 Anca:
-*fixed bug 177 by checking to see if binMaxes in addFromWeigth does have two maxes or only one 
+*fixed bug 177 by checking to see if binMaxes in addFromWeigth does have two maxes or only one
  */
