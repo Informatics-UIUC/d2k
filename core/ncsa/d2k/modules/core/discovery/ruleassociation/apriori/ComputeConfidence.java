@@ -55,8 +55,9 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 
 	    sb.append("</p><p>Scalability: ");
 	    sb.append("This module searches all the Items Sets to compute the confidence for each Frequent Itemset. ");
-	    sb.append("This is done quite efficiently, so this module should never take as long as the Apriori ");
-	    sb.append("module.  The module allocated memory for the resulting Rule Table. </p>");
+	    // In at least one case this took longer so I removed the following sentence - Ruth.
+            // sb.append("This is done quite efficiently, so this module should never take as long as the Apriori module.");
+	    sb.append("The module allocated memory for the resulting Rule Table. </p>");
 
             return sb.toString();
 	}

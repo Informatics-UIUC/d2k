@@ -1,6 +1,5 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation;
 
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.*;
@@ -24,71 +23,12 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	static final Color RULE_VIS_SUPPORT = new Color (87, 87, 100);
 	static final Color RULE_VIS_HIGHLIGHT = new Color (247, 247, 247);
 
-	/**
-		This method returns the description of the various inputs.
-		@return the description of the indexed input.
-	*/
-	public String getInputInfo(int index) {
-		switch (index) {
-			case 0: return "This structure is a table where the attribute label 'Head'and 'Body' are     an ArrayList of integers that refer to items in the itemLabel structure,     and the following attributes are attributes that compare these rules, like     support and confidence.";
-			default: return "No such input";
-		}
-	}
-
 	/**	This method returns an array of strings that contains the data types for the inputs.
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
 		String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"};
 		return types;
-	}
-
-	/**	This method returns the description of the outputs.
-		@return the description of the indexed output.
-	*/
-	public String getOutputInfo (int index) {
-		switch (index) {
-			default: return "No such output";
-		}
-	}
-
-		/**	This method returns an array of strings that contains the data types for the outputs.
-		@return the data types of all outputs.
-	*/
-	public String[] getOutputTypes () {
-		String[] types = {		};
-		return types;
-	}
-
-	/**	This method returns the description of the module.
-		@return the description of the module.
-	*/
-	public String getModuleInfo () {
-		return "<p>      Overview: This module displays association rules from rule tables.    </p>    <p> "+
-			"     Detailed Description: The rules are displayed in a matrix with all the       possible item"+
-			" values displayed along the left hand side of the window       and the rules displayed in the"+
-			" columns. For each rule, the antecedents       of that particular rule are indicated by a square"+
-			" box in the row       associated with the item value. The result is indicated by a check mark."+
-			"       For example, if we are displaying rules that indicate if a mushroom is       edible or"+
-			" not, a rule might be &quot;odor=none&quot; and &quot;ring_number=one&quot; then       &quot;edibility=edible&quot;."+
-			" This rule would be displayed in a column with a box       in the row for the item &quot;odor=none&quot;"+
-			" and a box in the row for       &quot;ring_number=one&quot;, and there would be a check in the"+
-			" row for       &quot;edibility=edible&quot;.    </p>    <p>      The rules can be ordered by"+
-			" confidence or by support. To resort the       rules, click the support or confidence buttons"+
-			" in the upper left corner       of the display. If sort by support, it will sort using support"+
-			" as the       primary key and by confidence as the secondary key. Conversely, if you       sort"+
-			" by confidence the support will be used as the secondary key.    </p>    <p>      Scalability:"+
-			" This module can display a large number of rules, however,       there are limits. As the rules"+
-			" grow to the tens of thousands, the volume       of information exceeds the minds ability to"+
-			" make sense of them anyway.    </p>";
-	}
-
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "Rule Visualization";
 	}
 
 	/**
@@ -100,7 +40,36 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		switch(index) {
 			case 0:
 				return "Rule Table";
-			default: return "NO SUCH INPUT!";
+			default:
+				return "No such input";
+		}
+	}
+	/**
+		This method returns the description of the various inputs.
+		@return the description of the indexed input.
+	*/
+	public String getInputInfo(int index) {
+		switch (index) {
+		    case 0:
+			return "A representation of association rules to be displayed. ";
+		    default:
+			return "No such input";
+		}
+	}
+
+	/**	This method returns an array of strings that contains the data types for the outputs.
+		@return the data types of all outputs.
+	*/
+	public String[] getOutputTypes () {
+		return null;
+        }
+
+	/**	This method returns the description of the outputs.
+		@return the description of the indexed output.
+	*/
+	public String getOutputInfo (int index) {
+		switch (index) {
+			default: return "No such output";
 		}
 	}
 
@@ -111,9 +80,92 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	 */
 	public String getOutputName(int index) {
 		switch(index) {
-			default: return "NO SUCH OUTPUT!";
+			default: return "No such output";
 		}
 	}
+
+
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Rule Visualization";
+	}
+
+	/**	This method returns the description of the module.
+		@return the description of the module.
+	*/
+	public String getModuleInfo () {
+	  StringBuffer sb = new StringBuffer( "<p>Overview: ");
+          sb.append( "This module provides a visual representation of the association rules encapsulated in the ");
+          sb.append("input <i>Rule Table<i>. ");
+
+          sb.append("</p><p>Detailed Description: ");
+          sb.append("This module presents the user with a visual represention of association rules identified by ");
+          sb.append("a discovery algorithm to help the user understand the rules that were found. ");
+          sb.append("D2K includes several modules that implement association rule discovery algorithms, ");
+          sb.append("all of which save their results in a <i>Rule Table</i> structure that can be used as ");
+          sb.append("input to this module. ");
+
+          sb.append("</p><p> ");
+          sb.append("The main region of the display contains is a matrix that visually represents the rules. ");
+          sb.append("Each numbered column in the matrix corresponds to an association rule  ");
+          sb.append("that met the minimum support and confidence requirements specified by the user in the ");
+          sb.append("rule discovery module(s).    ");
+          sb.append("Items used in the rules, that is [attribute=value] pairs, are listed along the left  ");
+          sb.append("side of the matrix. ");
+          sb.append("Note that some items may not be included in any rule because there was insufficient  ");
+          sb.append("support and/or confidence to consider the item significant. ");
+
+          sb.append("</p><p> ");
+          sb.append("An icon in the matrix cell corresponding to ( row = <i>item i</i>, column = <i>rule r</i>) ");
+          sb.append("indicates that <i>item i</i> is included in <i>rule r</i>. ");
+          sb.append("If the matrix cell icon is a box, the item is part of the rule antecedent.  If ");
+          sb.append("the icon is a check mark, the item is part of the rule consequent. ");
+          sb.append("For example, if the rules being displayed indicate whether or not a mushroom is edible, ");
+          sb.append("a rule might be &quot;odor=none&quot; and &quot;ring_number=one&quot; then &quot;edibility=edible&quot;. ");
+          sb.append("This rule would be displayed in a column with a box in the row for the item &quot;odor=none&quot; ");
+          sb.append("and a box in the row for &quot;ring_number=one&quot;, and there would be a check in the ");
+          sb.append("row for &quot;edibility=edible&quot;. ");
+
+          sb.append("</p><p> ");
+          sb.append("Above the main matrix are two rows of bars labelled <i>Confidence</i> and <i>Support</i>. ");
+          sb.append("These bars align with, and corresond to, the rule columns in the main matrix.  For any given rule, ");
+          sb.append("the confidence and support values for that rule are represented by the degree to which the ");
+          sb.append("bars above the rule column are filled in.   Brushing the mouse on a confidence or support ");
+          sb.append("bar displays the exact value that is graphically represented by the bar height. ");
+
+          sb.append("</p><p>");
+          sb.append("The rules can be ordered by confidence or by support. ");
+          sb.append("To sort the rules, click either the support or the confidence label -- ");
+          sb.append("these labels are clickable buttons. ");
+          sb.append("If support is selected, rules will be sorted using support as the primary key and confidence as the secondary key. ");
+          sb.append("Conversely, if the confidence button is chosen, confidence is the primary sort key and support is the secondary key.  ");
+
+          sb.append("</p><p> ");
+          sb.append("The options menu allows the user to print a screen capture of the module display. ");
+	  sb.append("The print output contains only the cells that are visible in the display window, not all the cells ");
+	  sb.append("in the rule table.  The user can scroll to different part of the matrix and print multiple times  ");
+	  sb.append("to get the full picture of large matrices. ");
+
+          sb.append("</p><p>Scalability: ");
+          sb.append("While this module can display a large number of items and rules, there can be a noticable delay " );
+	  sb.append("in opening the visualization when a large number of cells are involved. " ); 
+          sb.append("Also, as the number of cells increases beyond ");
+          sb.append("a certain point, it is difficult to gain insights from the display.  Advanced features to help ");
+          sb.append("in these cases are being discussed for a future release. ");
+
+	  return sb.toString();
+	}
+
+
+        public PropertyDescription[] getPropertiesDescriptions() {
+		// hide properties that the user shouldn't udpate
+       		return new PropertyDescription[0]; 
+   	}
+
 
 	/**	This method is called by D2K to get the UserView for this module.
 		@return the UserView.
@@ -157,10 +209,13 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			JMenu options = new JMenu("Options");
 			print = new JMenuItem("Print...");
 			print.addActionListener(this);
-			pmml = new JMenuItem("Save as PMML..");
-			pmml.addActionListener(this);
 			options.add(print);
-			options.add(pmml);
+
+			// Commented out for Basic as PMML not working right.  - Ruth
+			// pmml = new JMenuItem("Save as PMML..");
+			// pmml.addActionListener(this);
+			// options.add(pmml);
+
 			menuBar.add(options);
 		}
 
@@ -870,3 +925,16 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	private static final String IF = "If";
 	private static final String THEN = "Then";
 }
+
+// Start QA Comments
+// 
+// 3/*/03  - Ruth did QA and Tom did updates to the module.  
+// 3/28/03 - Ready for basic.
+//         - WISH:  Don't show items that don't appear in any rules.
+//         - WISH:  Group items so attributes show up next to each other (perhaps
+//                  done earlier in module sequence prior to building items or rule table.
+//         - WISH:  Allow sorting by items that have included in most rules.
+//         - WISH:  Show rule consequent items at top of item list.
+//         - WISH:  Put back option to save as PMML when that is working.  
+//         - WISH:  Offer way to print entire matrix, not just viewable area.
+// End QA Comments.
