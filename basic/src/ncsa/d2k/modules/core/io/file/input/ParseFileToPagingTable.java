@@ -158,10 +158,7 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 							// if there was a number format exception, set the value
 							// to 0 and mark it as missing
 							catch (NumberFormatException e) {
-								ti.setChars(
-									Integer.toString(0).toCharArray(),
-									i,
-									j);
+								ti.setChars(Integer.toString(0).toCharArray(), i, j);
 								ti.setValueToMissing(true, i, j);
 							}
 						}
