@@ -33,7 +33,7 @@ public class Isvm implements  Serializable{
         private  DoubleMatrix2D myEE;
        private DoubleMatrix1D myED;
         private  DoubleMatrix1D Weight;
-        protected static Algebra Alg;
+        protected  Algebra Alg;
 
         /**
          * return a deep copy og this Isvm
