@@ -48,6 +48,12 @@ public class ScatterPlot3D extends VisModule {
       sb.append("<i>Table</i> data as a scatter plot. This visualization ");
       sb.append("can be rotated and manipulated via the mouse and keyboard; ");
       sb.append("see the visualization's on-line help for details.");
+      sb.append("</p><p>Scalability: ");
+      sb.append("The memory and processor requirements for this visualization ");
+      sb.append("increase quickly with the number of data points plotted. ");
+      sb.append("These requirements can be reduced somewhat by choosing to ");
+      sb.append("plot points as cubes rather than spheres in the ");
+      sb.append("\"Settings\" tab.");
       sb.append("</p>");
       return sb.toString();
    }
@@ -150,7 +156,8 @@ public class ScatterPlot3D extends VisModule {
       Z_SCALE = 5,
       LEGEND = 6,
       BACKGROUND = 7,
-      NUM_STATIC_CHILDREN = 8;
+      KEYBOARD_BEHAVIOR = 8,
+      NUM_STATIC_CHILDREN = 9;
 
    // possible drawing schemes
    private static final int
