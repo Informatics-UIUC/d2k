@@ -10,7 +10,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 	//begin setting Properties
 	String fillerString = new String("*");
 	int fillerNumeric = 0;
-	boolean fillerBol = false;
+	boolean fillerBool = false;
 	byte[] fillerByte = new byte[1];
 	char[] fillerChar = new char[1];
 	byte fillerSingleByte = '\000';
@@ -30,11 +30,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 		return fillerNumeric;
 	}
 
-	public void setFillerBol(boolean a){
-		fillerBol = a;
+	public void setFillerBool(boolean a){
+		fillerBool = a;
 	}
-	public boolean getFillerBol(){
-		return fillerBol;
+	public boolean getFillerBool(){
+		return fillerBool;
 	}
 
 	public void setFillerBytes(byte[] c){
@@ -71,9 +71,9 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 	 */
 	public PropertyDescription [] getPropertiesDescriptions () {
 		PropertyDescription [] pds = new PropertyDescription [3];
-		pds[0] = new PropertyDescription ("fillerBol", "Boolean Column Filler", "This value fills boolean columns.");
-		pds[1] = new PropertyDescription ("fillerString", "String Column Filler", "This string fills the string columns.");
-		pds[2] = new PropertyDescription ("fillerNumeric", "Numeric Column Filler", "This value fills any numeric columns.");
+		pds[0] = new PropertyDescription ("fillerBool", "Boolean Filler", "The value used to fill boolean columns.");
+		pds[1] = new PropertyDescription ("fillerString", "String Filler", "The value used to fill string columns.");
+		pds[2] = new PropertyDescription ("fillerNumeric", "Numeric Filler", "The value used to fill numeric columns.");
 		return pds;
 	}
 
@@ -83,8 +83,8 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 	 */
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<p>      First of two tables to append together.    </p>";
-			case 1: return "<p>      Second of two tables to append together.    </p>";
+			case 0: return "<p>First of two tables that will be combined.</p>";
+			case 1: return "<p>Second of two tables that will be combined.</p>";
 			default: return "No such input";
 		}
 	}
@@ -99,7 +99,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 				return "First Table";
 			case 1:
 				return "Second Table";
-			default: return "NO SUCH INPUT!";
+			default: return "No such input";
 		}
 	}
 
@@ -118,7 +118,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 	 */
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<p>      Newly created table containing contents of both original tables.    </p>";
+			case 0: return "<p>Newly created table containing contents of both original tables.</p>";
 			default: return "No such output";
 		}
 	}
@@ -129,9 +129,8 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 	 */
 	public String getOutputName(int index) {
 		switch(index) {
-			case 0:
-				return "Result Table";
-			default: return "NO SUCH OUTPUT!";
+			case 0: return "Result Table";
+			default: return "No such output";
 		}
 	}
 
@@ -149,23 +148,49 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 	 * @return the information about the module.
 	 */
 	public String getModuleInfo() {
-		return "<p>      Overview: This module takes two tables appending one to the other to       produce"+
-			" a new table containing the contents of both.    </p>    <p>      Detailed Description: The"+
-			" new table is constructed column by column. The       second tables columns are added first."+
-			" For each column in the second       table, the first table is examined to determine if it contains"+
-			" a column       with the same label (column name). If it does, the contents of the first   "+
-			"    table are appended to the contents to the second table to construct the       new column."+
-			" If the first table does not contain a column with the same       name, the filler for the data"+
-			" types of the original column will be       appended to the contents of the second tables column."+
-			" When we are done,       there may be columns in the first table that were not matched against"+
-			"       any columns in the second table. To construct columns for this data, we       append"+
-			" the the contents of the first tables column to filler. The filler       represents the rows"+
-			" of the second table that did not contain a column by       the same name. The filler values"+
-			" for various data types is defined in       the properties. This module does not modify either"+
-			" of the original       tables.    </p>    <p>      Scalability: This module will operate on"+
-			" a table that is the same type       as the first input table. How scalable this module is will"+
-			" depend on the       scalability of the table implementation. On the other hand, that data "+
-			"      for each complete column must fit in memory.    </p>";
+            String s = "<p>Overview: "+
+            "This module takes two tables and creates a new table containing the contents of both. ";
+
+	    s += "</p><p>Detailed Description: " +
+            "This module combines two tables to create a single table that contains all of the data in the " +
+            "original tables.  The data from the <i>First Table</i> appears first in the new table, "+
+            "with the data from the <i>Second Table</i> appended to it.  The number of rows in the "+
+            "<i>Result</i> table equals the number of rows in the <i>First Table</i> plus the number of "+
+            "rows in the <i>Second Table</i>. "+
+
+            "</p><p> "+
+            "When an attribute name (column label) is common across the two input tables, a single "+
+            "column with that name is created in the result table. "+
+            "Columns are also created in the result table for attributes that appear in the "+
+            "<i>First Table</i> or in the <i>Second Table</i> but not in both. " +
+            "When the result table is populated, rows for table one are inserted first.  For these rows, "+
+            "data values in columns that appear in the result table but not in the first table are set "+
+            "to the <i>String</i>, <i>Boolean</i>, or <i>Numeric Filler</i> values specified "+
+            "in the module properties.  Rows from table two follow, and again filler values are used "+
+            "in result table columns that do not appear in the original table. ";
+
+            s += "</p><p>Data Type Restrictions: "+
+	    "If input table columns have the same name but different data types, the data type "+
+            "from the <i>First Table</i> is used in the result table, and an attempt is made to "+
+            "convert the data values from the <i>Second Table</i> to that type. "+
+            "This conversion may result in unexpected values in the output table. In some cases, "+
+            "such as when a string cannot be converted to a numeric, an exception will be raised. "+
+            "The user is discouraged from appending tables containg attributes with the same name "+
+            "whose types differ.  For some conversions, for example when an integer is converted "+
+	    "to a double, there may be no loss of data, but the user should verify the result table "+
+            "has the expected values. ";
+
+             s += "</p><p>Data Handling: "+
+             "This module does not modify either of the original tables. ";
+
+             s += "</p><p>Scalability: This module performs its operations on a table that is of "+
+             "the same type as the <i>First Table</i>.  The scalability of the module "+
+             "therefore depends on the scalability properties of that Table implementation. "+
+             "The module requires that the data for a complete column must be able to fit "+
+             "into memory, regardless of the Table implementation being used. The module is"+
+	     "optimized for Tables whose underlying implementation is column-based. </p>";
+
+             return s;
 	}
 
 	/**
@@ -184,358 +209,442 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 		Table t1 = (Table)this.pullInput(0);
 		Table t2 = (Table)this.pullInput(1);
 
-		// First, hash the column names with the contents of that column.
-		HashMap colMap1 = new HashMap();
-		for (int i = 0 ; i < t1.getNumColumns() ; i++) {
-			colMap1.put(t1.getColumnLabel(i),new Integer(i));
-		}
-
-		// Hash the column names with the contents of the second table.
+		// Hash the column names of the second table.
 		HashMap colMap2 = new HashMap();
 		for (int i = 0 ; i < t2.getNumColumns() ; i++) {
 			colMap2.put(t2.getColumnLabel(i),new Integer(i));
 		}
 
-		// Now, append each column of the first table to each column of the second
-		// table to create a new column.
+		// Now, create the new table of same type as table 1 and popluate it
+		// column by column, starting with the columns in table 1.  After all the
+		// columns labelled in table 1 are in the result table, work on any remaining
+		// columns from table 2.
+		// Note:  This implementation is designed to speed up operations for tables whose
+		// underlying implemenation is column based, but may be poor choice for those
+		// that have other implementations (row-based for example).   Since most
+		// D2K are column-based, good choice for now.
+
 		MutableTable result = (MutableTable) t1.getTableFactory().createTable();
-		int combinedSize = t1.getNumRows() + t2.getNumRows();
-		int numColumns = t2.getNumColumns();
-		int i = 0;
-		for (; i < numColumns; i++) {
-			String label = t2.getColumnLabel(i);
-			Integer tmp = (Integer) colMap1.get(label);
-			int otherCol = -1;
-			if (tmp != null) {
-				//throw new Exception("Two tables to append must have columns sharing the same names. The second table had no column named "+label);
-				otherCol = tmp.intValue();
-				colMap1.remove(label);
-			}
-			colMap2.remove(label);
 
-			// set the values from table one.
-			int row = 0;;
+ 		int t1Size = t1.getNumRows();
+ 		int t2Size = t2.getNumRows();
+		int combinedSize = t1Size + t2Size;
+
+		int resultCol = 0;
+		int t1numColumns = t1.getNumColumns();
+		int t2numColumns = t2.getNumColumns();
+                String label = null;
+
+		try {
+		   for (int i = 0; i < t1numColumns; i++) {
+                        int t2Col = -1;
+
+			label = t1.getColumnLabel(i);
+			Integer tmp = (Integer) colMap2.get(label);
+			if (tmp != null) {  		// col in both
+				t2Col = tmp.intValue();
+				colMap2.remove(label);
+			}
+
+			// set the column values from table one.
+			int row = 0;
+			switch (t1.getColumnType(i)) {
+				case ColumnTypes.INTEGER: {
+
+					int [] vals = new int [combinedSize];
+
+					// get the data from table 1, put it first.
+					{
+						int [] s1 = new int [t1Size];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						int [] s2 = new int [t2Size];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						int [] s2 = new int [t2Size];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = this.getFillerNumeric();
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+				case ColumnTypes.FLOAT: {
+
+					float [] vals = new float [combinedSize];
+
+					// get the data from table 1, put it first.
+					{
+						float [] s1 = new float [t1Size];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						float [] s2 = new float [t2Size];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						float [] s2 = new float [t2Size];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = (float)this.getFillerNumeric();
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+				case ColumnTypes.DOUBLE: {
+
+					double [] vals = new double [combinedSize];
+
+					// get the data from table 1, put it first.
+					{
+						double [] s1 = new double [t1Size];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						double [] s2 = new double [t2Size];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						double [] s2 = new double [t2Size];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = (double)this.getFillerNumeric();
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+				case ColumnTypes.SHORT: {
+
+					short [] vals = new short [combinedSize];
+
+					// get the data from table 1, put it first.
+					{
+						short [] s1 = new short [t1Size];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						short [] s2 = new short [t2Size];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						short [] s2 = new short [t2Size];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = (short)this.getFillerNumeric();
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+				case ColumnTypes.LONG: {
+
+					long [] vals = new long [combinedSize];
+
+					// get the data from table 1, put it first.
+					{
+						long [] s1 = new long [t1Size];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						long [] s2 = new long [t2Size];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						long [] s2 = new long [t2Size];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = (long)this.getFillerNumeric();
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+
+				case ColumnTypes.STRING: {
+
+					String [] vals = new String [combinedSize];
+
+					// get the data from table 1, put it first.
+					{
+						String [] s1 = new String [t1Size];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						String [] s2 = new String [t2Size];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						String [] s2 = new String [t2Size];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = this.getFillerString();
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+				case ColumnTypes.CHAR_ARRAY: {
+
+					char [][] vals = new char [combinedSize][];
+
+					// get the data from table 1, put it first.
+					{
+						char [][] s1 = new char [t1Size][];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						char [][] s2 = new char [t2Size][];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						char [][] s2 = new char [t2Size][];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = this.getFillerChars();
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+				case ColumnTypes.BYTE_ARRAY: {
+
+					byte [][] vals = new byte [combinedSize][];
+
+					// get the data from table 1, put it first.
+					{
+						byte [][] s1 = new byte [t1Size][];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						byte [][] s2 = new byte [t2Size][];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						byte [][] s2 = new byte [t2Size][];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = this.getFillerBytes();
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+				case ColumnTypes.BOOLEAN: {
+
+					boolean [] vals = new boolean [combinedSize];
+
+					// get the data from table 1, put it first.
+					{
+						boolean [] s1 = new boolean [t1Size];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						boolean [] s2 = new boolean [t2Size];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						boolean [] s2 = new boolean [t2Size];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = this.getFillerBool();
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+				case ColumnTypes.OBJECT: {
+
+					Object [] vals = new Object [combinedSize];
+
+					// get the data from table 1, put it first.
+					{
+						Object [] s1 = new Object [t1Size];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						Object [] s2 = new Object [t2Size];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						Object [] s2 = new Object [t2Size];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = null;
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+				case ColumnTypes.BYTE: {
+
+					byte [] vals = new byte [combinedSize];
+
+					// get the data from table 1, put it first.
+					{
+						byte [] s1 = new byte [t1Size];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						byte [] s2 = new byte [t2Size];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						byte [] s2 = new byte [t2Size];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = this.getFillerByte();
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+
+				case ColumnTypes.CHAR: {
+
+					char [] vals = new char [combinedSize];
+
+					// get the data from table 1, put it first.
+					{
+						char [] s1 = new char [t1Size];
+						t1.getColumn(s1, i);
+						System.arraycopy(s1, 0, vals, 0, t1Size);
+					}
+
+					// get the data from table 2, append it
+					if (t2Col != -1) {
+						char [] s2 = new char [t2Size];
+						t2.getColumn(s2, t2Col);
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+ 					// or, append filler values for table 2 entries
+					} else {
+						char [] s2 = new char [t2Size];
+						for (int j = 0; j < t2Size; j++) {
+						    s2[j] = this.getFillerChar();
+						}
+						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					}
+
+					// add the column
+					result.addColumn(vals);
+					break;
+				}
+				default: {
+					throw new Exception("Datatype for Table 1 column named '" +
+					    label +
+					    "' was not recognized when appending tables.");
+  				}
+			}
+			result.setColumnLabel(label, resultCol++);
+		    }
+                } catch (NumberFormatException e) {
+           		throw new NumberFormatException(
+				getAlias() +
+                    		": Unable to convert data for Second Table column \"" +
+                                label + "\" to numeric type" +
+				"\n" + e );
+                }
+
+		// Now for any columns in table 2 that are not yet accounted for,
+                // fill them in for table 1 rows and add the data from table 2 at the end.
+		// Retain their original order in the result table.
+
+		tbl2cols: for (int i = 0; i < t2numColumns; i++) {
+
+			label = t2.getColumnLabel(i);
+			if (colMap2.get(label) == null) { 	// col already processed so go to next one
+				continue tbl2cols;
+			}
+
 			switch (t2.getColumnType(i)) {
+
 				case ColumnTypes.INTEGER: {
 
-					// get the data from table 2, put it first.
 					int [] vals = new int [combinedSize];
-					{
-						int [] s1 = new int [t2.getNumRows()];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
+
+					// use filler values for table 1 entries
+					int [] s1 = new int [t1Size];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = (int)this.getFillerNumeric();
 					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
 
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						int [] s2 = new int [t1.getNumRows()];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						int [] s2 = new int [t1.getNumRows()];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = this.getFillerNumeric();
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					break;
-				}
-				case ColumnTypes.FLOAT: {
-
-					// get the data from table 2, put it first.
-					float [] vals = new float [combinedSize];
-					{
-						float [] s1 = new float [t2.getNumRows()];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					}
-
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						float [] s2 = new float [t1.getNumRows()];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						float [] s2 = new float [t1.getNumRows()];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = (float)this.getFillerNumeric();
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					break;
-				}
-				case ColumnTypes.DOUBLE: {
-
-					// get the data from table 2, put it first.
-					double [] vals = new double [combinedSize];
-					{
-						double [] s1 = new double [t2.getNumRows()];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					}
-
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						double [] s2 = new double [t1.getNumRows()];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						double [] s2 = new double [t1.getNumRows()];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = (double)this.getFillerNumeric();
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					break;
-				}
-				case ColumnTypes.SHORT: {
-
-					// get the data from table 2, put it first.
-					short [] vals = new short [combinedSize];
-					{
-						short [] s1 = new short [t2.getNumRows()];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					}
-
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						short [] s2 = new short [t1.getNumRows()];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						short [] s2 = new short [t1.getNumRows()];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = (short) this.getFillerNumeric();
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					break;
-				}
-				case ColumnTypes.LONG: {
-
-					// get the data from table 2, put it first.
-					long [] vals = new long [combinedSize];
-					{
-						long [] s1 = new long [t2.getNumRows()];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					}
-
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						long [] s2 = new long [t1.getNumRows()];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						long [] s2 = new long [t1.getNumRows()];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = (long)this.getFillerNumeric();
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					break;
-				}
-				case ColumnTypes.STRING: {
-
-					// get the data from table 2, put it first.
-					String [] vals = new String [combinedSize];
-					{
-						String [] s1 = new String [t2.getNumRows()];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					}
-
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						String [] s2 = new String [t1.getNumRows()];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						String [] s2 = new String [t1.getNumRows()];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = this.getFillerString();
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					break;
-				}
-				case ColumnTypes.CHAR_ARRAY: {
-
-					// get the data from table 2, put it first.
-					char [][] vals = new char [combinedSize][];
-					{
-						char [][] s1 = new char [t2.getNumRows()][];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					}
-
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						char [][] s2 = new char [t1.getNumRows()][];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						char [][] s2 = new char [t1.getNumRows()][];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = this.getFillerChars();
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					break;
-				}
-				case ColumnTypes.BYTE_ARRAY: {
-
-					// get the data from table 2, put it first.
-					byte [][] vals = new byte [combinedSize][];
-					{
-						byte [][] s1 = new byte [t2.getNumRows()][];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					}
-
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						byte [][] s2 = new byte [t1.getNumRows()][];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						byte [][] s2 = new byte [t1.getNumRows()][];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = this.getFillerBytes();
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					break;
-				}
-				case ColumnTypes.BOOLEAN: {
-
-					// get the data from table 2, put it first.
-					boolean [] vals = new boolean [combinedSize];
-					{
-						boolean [] s1 = new boolean [t2.getNumRows()];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					}
-
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						boolean [] s2 = new boolean [t1.getNumRows()];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						boolean [] s2 = new boolean [t1.getNumRows()];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = this.getFillerBol();
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					break;
-				}
-				case ColumnTypes.OBJECT: {
-
-					// get the data from table 2, put it first.
-					Object [] vals = new Object [combinedSize];
-					{
-						Object [] s1 = new Object [t2.getNumRows()];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					}
-
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						Object [] s2 = new Object [t1.getNumRows()];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						Object [] s2 = new Object [t1.getNumRows()];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = null;
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					break;
-				}
-				case ColumnTypes.BYTE: {
-
-					// get the data from table 2, put it first.
-					byte [] vals = new byte [combinedSize];
-					{
-						byte [] s1 = new byte [t2.getNumRows()];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					}
-
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						byte [] s2 = new byte [t1.getNumRows()];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						byte [] s2 = new byte [t1.getNumRows()];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = this.getFillerByte();
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					result.setColumnLabel(t1.getColumnLabel(i), i);
-					break;
-				}
-				case ColumnTypes.CHAR: {
-
-					// get the data from table 2, put it first.
-					char [] vals = new char [combinedSize];
-					{
-						char [] s1 = new char [t2.getNumRows()];
-						t2.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					}
-
-					// get the data from table 1, append it
-					if (otherCol != -1) {
-						char [] s2 = new char [t1.getNumRows()];
-						t1.getColumn(s2, otherCol);
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					} else {
-						char [] s2 = new char [t1.getNumRows()];
-						for (int j = 0 ; j < t1.getNumRows(); j++) s2[j] = this.getFillerChar();
-						System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
-					}
-
-					// add the column
-					result.addColumn(vals);
-					break;
-				}
-				default: throw new Exception("Datatype was not recognized when appending tables.");
-			}
-			result.setColumnLabel(t2.getColumnLabel(i), i);
-		}
-
-		// Now for any columns in table 1 that are not accounted for, just fill them
-		// and add the data from table 1 at the end.
-		Iterator iter = colMap1.values().iterator();
-		for ( ; iter.hasNext() ; i++) {
-			int colIndex = ((Integer)iter.next()).intValue();
-			switch (t1.getColumnType(colIndex)) {
-				case ColumnTypes.INTEGER: {
-					int [] vals = new int [combinedSize];
-					int [] s1 = new int [t2.getNumRows()];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = this.getFillerNumeric();
-					int [] s2 = new int [t1.getNumRows()];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+					// get the data from table 2, append it
+					int [] s2 = new int [t2Size];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
@@ -543,26 +652,44 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 				}
 
 				case ColumnTypes.FLOAT: {
+
 					float [] vals = new float [combinedSize];
-					float [] s1 = new float [t2.getNumRows()];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = (float)this.getFillerNumeric();
-					float [] s2 = new float [t1.getNumRows()];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+
+					// use filler values for table 1 entries
+					float [] s1 = new float [t1Size];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = (float)this.getFillerNumeric();
+					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
+
+					// get the data from table 2, append it
+					float [] s2 = new float [t2Size];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
 					break;
 				}
 				case ColumnTypes.DOUBLE: {
+
 					double [] vals = new double [combinedSize];
-					double [] s1 = new double [t2.getNumRows()];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = (double)this.getFillerNumeric();
-					double [] s2 = new double [t1.getNumRows()];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+
+					// use filler values for table 1 entries
+					double [] s1 = new double [t1Size];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = (double)this.getFillerNumeric();
+					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
+
+					// get the data from table 2, append it
+					double [] s2 = new double [t2Size];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
@@ -570,14 +697,21 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 				}
 				case ColumnTypes.SHORT: {
 
-					// get the data from table 2, put it first.
 					short [] vals = new short [combinedSize];
-					short [] s1 = new short [t2.getNumRows()];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = (short)this.getFillerNumeric();
-					short [] s2 = new short [t1.getNumRows()];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+
+					// use filler values for table 1 entries
+					short [] s1 = new short [t1Size];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = (short)this.getFillerNumeric();
+					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
+
+					// get the data from table 2, append it
+					short [] s2 = new short [t2Size];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
@@ -585,14 +719,21 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 				}
 				case ColumnTypes.LONG: {
 
-					// get the data from table 2, put it first.
 					long [] vals = new long [combinedSize];
-					long [] s1 = new long [t2.getNumRows()];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = (long)this.getFillerNumeric();
-					long [] s2 = new long [t1.getNumRows()];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+
+					// use filler values for table 1 entries
+					long [] s1 = new long [t1Size];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = (long)this.getFillerNumeric();
+					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
+
+					// get the data from table 2, append it
+					long [] s2 = new long [t2Size];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
@@ -600,14 +741,21 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 				}
 				case ColumnTypes.STRING: {
 
-					// get the data from table 2, put it first.
 					String [] vals = new String [combinedSize];
-					String [] s1 = new String [t2.getNumRows()];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = this.getFillerString();
-					String [] s2 = new String [t1.getNumRows()];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+
+					// use filler values for table 1 entries
+					String [] s1 = new String [t1Size];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = this.getFillerString();
+					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
+
+					// get the data from table 2, append it
+					String [] s2 = new String [t2Size];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
@@ -615,29 +763,44 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 				}
 				case ColumnTypes.CHAR_ARRAY: {
 
-					// get the data from table 2, put it first.
 					char [][] vals = new char [combinedSize][];
-					char [][] s1 = new char [t2.getNumRows()][];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = this.getFillerChars();
-					char [][] s2 = new char [t1.getNumRows()][];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+
+					// use filler values for table 1 entries
+					char [][] s1 = new char [t1Size][];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = this.getFillerChars();
+					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
+
+					// get the data from table 2, append it
+					char [][] s2 = new char [t2Size][];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
 					break;
 				}
+
 				case ColumnTypes.BYTE_ARRAY: {
 
-					// get the data from table 2, put it first.
 					byte [][] vals = new byte [combinedSize][];
-					byte [][] s1 = new byte [t2.getNumRows()][];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = this.getFillerBytes();
-					byte [][] s2 = new byte [t1.getNumRows()][];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+
+					// use filler values for table 1 entries
+					byte [][] s1 = new byte [t1Size][];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = this.getFillerBytes();
+					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
+
+					// get the data from table 2, append it
+					byte [][] s2 = new byte [t2Size][];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
@@ -645,29 +808,44 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 				}
 				case ColumnTypes.BOOLEAN: {
 
-					// get the data from table 2, put it first.
 					boolean [] vals = new boolean [combinedSize];
-					boolean [] s1 = new boolean [t2.getNumRows()];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = this.getFillerBol();
-					boolean [] s2 = new boolean [t1.getNumRows()];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+
+					// use filler values for table 1 entries
+					boolean [] s1 = new boolean [t1Size];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = this.getFillerBool();
+					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
+
+					// get the data from table 2, append it
+					boolean [] s2 = new boolean [t2Size];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
 					break;
 				}
+
 				case ColumnTypes.OBJECT: {
 
-					// get the data from table 2, put it first.
 					Object [] vals = new Object [combinedSize];
-					Object [] s1 = new Object [t2.getNumRows()];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = null;
-					Object [] s2 = new Object [t1.getNumRows()];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+
+					// use filler values for table 1 entries
+					Object [] s1 = new Object [t1Size];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = null;
+					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
+
+					// get the data from table 2, append it
+					Object [] s2 = new Object [t2Size];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
@@ -675,14 +853,21 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 				}
 				case ColumnTypes.BYTE: {
 
-					// get the data from table 2, put it first.
 					byte [] vals = new byte [combinedSize];
-					byte [] s1 = new byte [t2.getNumRows()];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = this.getFillerByte();
-					byte [] s2 = new byte [t1.getNumRows()];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+
+					// use filler values for table 1 entries
+					byte [] s1 = new byte [t1Size];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = this.getFillerByte();
+					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
+
+					// get the data from table 2, append it
+					byte [] s2 = new byte [t2Size];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
@@ -690,23 +875,36 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 				}
 				case ColumnTypes.CHAR: {
 
-					// get the data from table 2, put it first.
 					char [] vals = new char [combinedSize];
-					char [] s1 = new char [t2.getNumRows()];
-					for(int j = 0 ; j < t2.getNumRows(); j++) s1[j] = this.getFillerChar();
-					char [] s2 = new char [t1.getNumRows()];
-					t1.getColumn(s2, colIndex);
-					System.arraycopy(s1, 0, vals, 0, t2.getNumRows());
-					System.arraycopy(s2, 0, vals, t2.getNumRows(), t1.getNumRows());
+
+					// use filler values for table 1 entries
+					char [] s1 = new char [t1Size];
+					for (int j = 0; j < t1Size; j++) {
+					    s1[j] = this.getFillerChar();
+					}
+					System.arraycopy(s1, 0, vals, 0, t1Size);
+					s1 = null;   // hint to gc
+
+					// get the data from table 2, append it
+					char [] s2 = new char [t2Size];
+					t2.getColumn(s2, i);
+					System.arraycopy(s2, 0, vals, t1Size, t2Size);
+					s2 = null;
 
 					// add the column
 					result.addColumn(vals);
 					break;
 				}
-				default: throw new Exception("Datatype was not recognized when appending tables.");
+				default: {
+					throw new Exception("Datatype for Table 2 column named '" +
+					    label +
+					    "' was not recognized when appending tables.");
+	  				}
 			}
-			result.setColumnLabel(t1.getColumnLabel(colIndex), i);
+			result.setColumnLabel(label, resultCol++);
 		}
+
+		// Done!
 		this.pushOutput(result, 0);
 	}
 }
@@ -716,3 +914,8 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 //        - Fixed some typos in documentation
 // 3/4/03 - Emailed Tom;  Expect Table1 then Table2 in result - both in rows and columns. And,
 //          don't expect order of columns to be shuffled.  Waiting for feedback.
+//        - Heard back and okay to change.  Updated description and reordered.
+// 3/5/03 - Added exception handling to catch string->numeric conversions that fail.
+//        - committed to Basic.
+//	  - WISH:  At some point may want implementation that's efficient for Tables that aren't
+//          column-oriented.
