@@ -78,7 +78,7 @@ public class BrowseTables
     return new ResultSetTableModel(tableSet);
   }
     /**
-     * Cose database connection
+     * Close database connection
      */
     public void close()
     {
@@ -91,5 +91,4 @@ public class BrowseTables
      *  Automatically close the connection when we're garbage collected
      */
     protected void finalize() {} // Don't close the session. More trans are following
-    //protected void finalize() {close();}
 }
