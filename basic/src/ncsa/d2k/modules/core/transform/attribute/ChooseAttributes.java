@@ -4,10 +4,12 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.core.modules.UserView;
 import ncsa.gui.Constrain;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
+
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
@@ -18,416 +20,454 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
  @author Peter Groves, c/o David Clutter
  */
-public class ChooseAttributes extends UIModule  {
+public class ChooseAttributes extends HeadlessUIModule {
 
-  /**
-   Return a description of the function of this module.
-   @return A description of this module.
-   */
-  public String getModuleInfo() {
-    String info = "<p>Overview: ";
-    info += "This module allows the user to choose which columns of a table are inputs and outputs.";
-    info += "</p><p>Detailed Description: ";
-    info += "This module outputs an <i>Example Table</i> with the input and output features assigned. ";
-    info += "Inputs and outputs do not have to be selected, nor do they have to be mutually exclusive. ";
-    info += "</p><p>Data Handling: ";
-    info += "This module does not modify the data in the table. It only sets the input and output features.";
-    return info;
-  }
+	/**
+	 Return a description of the function of this module.
+	 @return A description of this module.
+	 */
+	public String getModuleInfo () {
+		String info = "<p>Overview: ";
+		info += "This module allows the user to choose which columns of a table are inputs and outputs.";
+		info += "</p><p>Detailed Description: ";
+		info += "This module outputs an <i>Example Table</i> with the input and output features assigned. ";
+		info += "Inputs and outputs do not have to be selected, nor do they have to be mutually exclusive. ";
+		info += "</p><p>Data Handling: ";
+		info += "This module does not modify the data in the table. It only sets the input and output features.";
+		return info;
+	}
 
-  /**
-   Return the name of this module.
-   @return The name of this module.
-   */
-  public String getModuleName() {
-    return "Choose Attributes";
-  }
+	/**
+	 Return the name of this module.
+	 @return The name of this module.
+	 */
+	public String getModuleName () {
+		return "Choose Attributes";
+	}
 
-  /**
-   Return a String array containing the datatypes the inputs to this
-   module.
-   @return The datatypes of the inputs.
-   */
-  public String[] getInputTypes() {
-    String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
-    return types;
-  }
+	/**
+	 Return a String array containing the datatypes the inputs to this
+	 module.
+	 @return The datatypes of the inputs.
+	 */
+	public String[] getInputTypes () {
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
+	}
 
-  /**
-   Return a String array containing the datatypes of the outputs of this
-   module.
-   @return The datatypes of the outputs.
-   */
-  public String[] getOutputTypes() {
-    String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-    return types;
-  }
+	/**
+	 Return a String array containing the datatypes of the outputs of this
+	 module.
+	 @return The datatypes of the outputs.
+	 */
+	public String[] getOutputTypes () {
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
+	}
 
-  /**
-   Return a description of a specific input.
-   @param i The index of the input
-   @return The description of the input
-   */
-  public String getInputInfo(int i) {
-    switch (i) {
-      case 0: return "The Table to choose inputs and outputs from.";
-      default: return "No such input";
-    }
-  }
+	/**
+	 Return a description of a specific input.
+	 @param i The index of the input
+	 @return The description of the input
+	 */
+	public String getInputInfo (int i) {
+		switch (i) {
+			case 0:
+				return "The Table to choose inputs and outputs from.";
+			default:
+				return "No such input";
+		}
+	}
 
-  /**
-   Return the name of a specific input.
-   @param i The index of the input.
-   @return The name of the input
-   */
-  public String getInputName(int i) {
-    switch(i) {
-      case 0:
-        return "Table";
-      default: return "No such input";
-    }
-  }
+	/**
+	 Return the name of a specific input.
+	 @param i The index of the input.
+	 @return The name of the input
+	 */
+	public String getInputName (int i) {
+		switch (i) {
+			case 0:
+				return "Table";
+			default:
+				return "No such input";
+		}
+	}
 
-  /**
-   Return the description of a specific output.
-   @param i The index of the output.
-   @return The description of the output.
-   */
-  public String getOutputInfo(int i) {
-    switch (i) {
-      case 0: return "The Example Table with input and output features assigned.";
-      default: return "No such output";
-    }
-  }
+	/**
+	 Return the description of a specific output.
+	 @param i The index of the output.
+	 @return The description of the output.
+	 */
+	public String getOutputInfo (int i) {
+		switch (i) {
+			case 0:
+				return "The Example Table with input and output features assigned.";
+			default:
+				return "No such output";
+		}
+	}
 
-  /**
-   Return the name of a specific output.
-   @param i The index of the output.
-   @return The name of the output
-   */
-  public String getOutputName(int i) {
-    switch(i) {
-      case 0:
-        return "Example Table";
-      default: return "No such output";
-    }
-  }
+	/**
+	 Return the name of a specific output.
+	 @param i The index of the output.
+	 @return The name of the output
+	 */
+	public String getOutputName (int i) {
+		switch (i) {
+			case 0:
+				return "Example Table";
+			default:
+				return "No such output";
+		}
+	}
 
+	public PropertyDescription[] getPropertiesDescriptions () {
+		PropertyDescription [] desc = new PropertyDescription [1];
+		desc[0] = this.supressDescription;
+		return desc;
+	}
 
-    public PropertyDescription[] getPropertiesDescriptions() { 
-	return new PropertyDescription[0]; // so that "windowName" property 
-	// is invisible 
-    }
+	public void doit () throws Exception {
+		Table table = (Table) this.pullInput (0);
 
+		// Map each column name to an index for the column
+		HashMap colindices = new HashMap ();
+        for (int i = 0 ; i < table.getNumColumns() ; i++) {
+			String label = table.getColumnLabel(i);
+			colindices.put (label, new Integer(i));
+		}
 
-  /**
-   Return the UserView
-   @returns the UserView
-   */
-  protected UserView createUserView() {
-    return new AttributeView();
-  }
+		// Create the input feature index array.
+		Object[] selected = this.getSelectedInputs ();
+		int[] inputFeatures = new int[selected.length];
+		for (int i = 0; i < selected.length; i++) {
+			String s = (String) selected[i];
+			Integer ii = (Integer) colindices.get (s);
+			inputFeatures[i] = ii.intValue ();
+		}
 
-  /**
-  Not used
-  */
-  protected String[] getFieldNameMapping() {
-    return null;
-  }
+		// Create the output features array
+		selected = this.getSelectedOutputs ();
+		int[] outputFeatures = new int[selected.length];
+		for (int i = 0; i < selected.length; i++) {
+			String s = (String) selected[i];
+			Integer ii = (Integer) colindices.get (s);
+			outputFeatures[i] = ii.intValue ();
+		}
 
-  /**
-   Pushes the outputs. Called when the view has finished.
-   */
-  /*public void finish(ExampleTable et) {
-   this.pushOutput(et, 0);
-   executionManager.moduleDone(this);
-   }*/
+		// Create the example table and push it.
+		ExampleTable et = table.toExampleTable();
+		et.setInputFeatures (inputFeatures);
+		et.setOutputFeatures (outputFeatures);
+		this.pushOutput(et, 0);
+	}
 
-  /**
-   The user view class
-   */
-  class AttributeView extends JUserPane implements ActionListener {
-    private Table table; //Old data
-    private ExampleTable et; //Updated table
+	/**
+	 Return the UserView
+	 @return the UserView
+	 */
+	protected UserView createUserView () {
+		return new AttributeView ();
+	}
 
-    private ChooseAttributes module;
-    private JButton abort;
-    private JButton done;
+	/**
+	 Not used
+	 */
+	protected String[] getFieldNameMapping () {
+		return null;
+	}
 
-    private JList inputList;
-    private JList outputList;
+	/** holds the names of the inputs attributes. */
+	Object[] selectedInputs;
+	public Object[] getSelectedInputs () {
+		return selectedInputs;
+	}
+	public void setSelectedInputs (Object[] nsi) {
+		selectedInputs = nsi;
+	}
 
-    private JLabel inputLabel;
-    private JLabel outputLabel;
+	/** holds the names of the toutput attributes. */
+	Object[] selectedOutputs;
+	public Object[] getSelectedOutputs () {
+		return selectedOutputs;
+	}
+	public void setSelectedOutputs (Object[] nsi) {
+		selectedOutputs = nsi;
+	}
 
-    boolean labels;
-    private HashMap inputToIndexMap;
-    private HashMap outputToIndexMap;
+	/**
+	 The user view class
+	 */
+	class AttributeView extends JUserPane implements ActionListener {
+		private Table table; //Old data
+ 		private ExampleTable et; //Updated table
+		private ChooseAttributes module;
+		private JButton abort;
+		private JButton done;
 
-    private JCheckBoxMenuItem miColumnOrder;
-    private JCheckBoxMenuItem miAlphaOrder;
+		private JList inputList;
+		private JList outputList;
 
-    private JMenuBar menuBar;
+		private JLabel inputLabel;
+		private JLabel outputLabel;
 
-    /**
-     Initialize
-     */
-    public void initView(ViewModule v) {
-      module = (ChooseAttributes)v;
-      abort = new JButton("Abort");
-      done = new JButton("Done");
-      abort.addActionListener(this);
-      done.addActionListener(this);
-      menuBar = new JMenuBar();
-      JMenu m1 = new JMenu("File");
-      miColumnOrder = new JCheckBoxMenuItem("Column Order");
-      miColumnOrder.addActionListener(this);
-      miColumnOrder.setState(true);
-      miAlphaOrder = new JCheckBoxMenuItem("Alphabetical Order");
-      miAlphaOrder.addActionListener(this);
-      miAlphaOrder.setState(false);
-      m1.add(miColumnOrder);
-      m1.add(miAlphaOrder);
-      menuBar.add(m1);
-    }
+		boolean labels;
+		private HashMap inputToIndexMap;
+		private HashMap outputToIndexMap;
 
-    public Object getMenu() {
-      return menuBar;
-    }
+		private JCheckBoxMenuItem miColumnOrder;
+		private JCheckBoxMenuItem miAlphaOrder;
 
-    /**
-     Called when inputs arrive
-     */
-    public void setInput(Object o, int id) {
-      if(id == 0) {
-        table = (Table)o;
-        this.removeAll();
-        addComponents();
-      }
-    }
+		private JMenuBar menuBar;
 
-    /**
-     Make me at least this big
-     */
-    public Dimension getPreferredSize() {
-      return new Dimension(400, 300);
-    }
+		/**
+		 Initialize
+		 */
+		public void initView (ViewModule v) {
+			module = (ChooseAttributes) v;
+			abort = new JButton ("Abort");
+			done = new JButton ("Done");
+			abort.addActionListener (this);
+			done.addActionListener (this);
+			menuBar = new JMenuBar ();
+			JMenu m1 = new JMenu ("File");
+			miColumnOrder = new JCheckBoxMenuItem ("Column Order");
+			miColumnOrder.addActionListener (this);
+			miColumnOrder.setState (true);
+			miAlphaOrder = new JCheckBoxMenuItem ("Alphabetical Order");
+			miAlphaOrder.addActionListener (this);
+			miAlphaOrder.setState (false);
+			m1.add (miColumnOrder);
+			m1.add (miAlphaOrder);
+			menuBar.add (m1);
+		}
 
-    /**
-     Add all the components
-     */
-    private void addComponents() {
-      JPanel back = new JPanel();
+		public Object getMenu () {
+			return menuBar;
+		}
 
-      int numColumns = table.getNumColumns();
+		/**
+		 Called when inputs arrive
+		 */
+		public void setInput (Object o, int id) {
+			if (id == 0) {
+				table = (Table) o;
+				this.removeAll ();
+				addComponents ();
+			}
+		}
 
-      /*String[] labels=new String[numColumns];
-      for(int i = 0; i < numColumns; i++)
-      labels[i] = table.getColumnLabel(i);
-      */
-      String[] labels = orderedLabels();
-      if (table.getColumnLabel(0).equals("")) {
-        miColumnOrder.setEnabled(false);
-        miAlphaOrder.setEnabled(false);
-      } else {
-        miColumnOrder.setEnabled(true);
-        miAlphaOrder.setEnabled(true);
-      }
+		/**
+		 Make me at least this big
+		 */
+		public Dimension getPreferredSize () {
+			return new Dimension (400, 300);
+		}
 
-      inputList=new JList(/*labels*/);
-      DefaultListModel dlm = new DefaultListModel();
-      for(int i = 0; i < labels.length; i++)
-        dlm.addElement(labels[i]);
-      inputList.setModel(dlm);
-      if(table instanceof ExampleTable) {
-        //inputList.setSelectedIndices(((ExampleTable)table).getInputFeatures());
-        int[] ins = ((ExampleTable)table).getInputFeatures();
-        if(ins != null) {
-          int[] sel = new int[ins.length];
-          for(int i = 0; i < ins.length; i++) {
-            String s = table.getColumnLabel(ins[i]);
-            Integer ii = (Integer)inputToIndexMap.get(s);
-            sel[i] = ii.intValue();
-          }
-          inputList.setSelectedIndices(sel);
-        }
-      }
-      outputList=new JList(/*labels*/);
-      dlm = new DefaultListModel();
-      for(int i = 0; i < labels.length; i++)
-        dlm.addElement(labels[i]);
-      outputList.setModel(dlm);
-      if(table instanceof ExampleTable) {
-        //outputList.setSelectedIndices(((ExampleTable)table).getOutputFeatures());
-        int[] ins = ((ExampleTable)table).getOutputFeatures();
-        if(ins != null) {
-          int[] sel = new int[ins.length];
-          for(int i = 0; i < ins.length; i++) {
-            String s = table.getColumnLabel(ins[i]);
-            Integer ii = (Integer)outputToIndexMap.get(s);
-            sel[i] = ii.intValue();
-          }
-          outputList.setSelectedIndices(sel);
-        }
-      }
-      JScrollPane leftScrollPane=new JScrollPane(inputList);
-      JScrollPane rightScrollPane=new JScrollPane(outputList);
+		/**
+		 Add all the components
+		 */
+		private void addComponents () {
+			JPanel back = new JPanel ();
+			String[] labels = orderedLabels ();
+			if (table.getColumnLabel (0).equals ("")) {
+				miColumnOrder.setEnabled (false);
+				miAlphaOrder.setEnabled (false);
+			} else {
+				miColumnOrder.setEnabled (true);
+				miAlphaOrder.setEnabled (true);
+			}
 
-      inputLabel=new JLabel("Input Attributes");
-      inputLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			inputList = new JList ();
+			DefaultListModel dlm = new DefaultListModel ();
+			for (int i = 0; i < labels.length; i++)
+				dlm.addElement (labels[i]);
+			inputList.setModel (dlm);
+			if (table instanceof ExampleTable) {
+				int[] ins = ((ExampleTable) table).getInputFeatures ();
+				if (ins != null) {
+					int[] sel = new int[ins.length];
+					for (int i = 0; i < ins.length; i++) {
+						String s = table.getColumnLabel (ins[i]);
+						Integer ii = (Integer) inputToIndexMap.get (s);
+						sel[i] = ii.intValue ();
+					}
+					inputList.setSelectedIndices (sel);
+				}
+			}
+			outputList = new JList (/*labels*/);
+			dlm = new DefaultListModel ();
+			for (int i = 0; i < labels.length; i++)
+				dlm.addElement (labels[i]);
+			outputList.setModel (dlm);
+			if (table instanceof ExampleTable) {
+				//outputList.setSelectedIndices(((ExampleTable)table).getOutputFeatures());
+				int[] ins = ((ExampleTable) table).getOutputFeatures ();
+				if (ins != null) {
+					int[] sel = new int[ins.length];
+					for (int i = 0; i < ins.length; i++) {
+						String s = table.getColumnLabel (ins[i]);
+						Integer ii = (Integer) outputToIndexMap.get (s);
+						sel[i] = ii.intValue ();
+					}
+					outputList.setSelectedIndices (sel);
+				}
+			}
+			JScrollPane leftScrollPane = new JScrollPane (inputList);
+			JScrollPane rightScrollPane = new JScrollPane (outputList);
 
-      outputLabel=new JLabel("Output Attributes");
-      outputLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			inputLabel = new JLabel ("Input Attributes");
+			inputLabel.setHorizontalAlignment (SwingConstants.CENTER);
 
-      back.setLayout(new GridBagLayout());
+			outputLabel = new JLabel ("Output Attributes");
+			outputLabel.setHorizontalAlignment (SwingConstants.CENTER);
 
-      Constrain.setConstraints(back, inputLabel, 0, 0, 1, 1,
-                               GridBagConstraints.BOTH, GridBagConstraints.CENTER, 0, 0);
-      Constrain.setConstraints(back, outputLabel, 1, 0, 1, 1,
-                               GridBagConstraints.BOTH, GridBagConstraints.CENTER, 0, 0);
-      Constrain.setConstraints(back, leftScrollPane, 0, 1, 1, 1,
-                               GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
-      Constrain.setConstraints(back, rightScrollPane, 1, 1, 1, 1,
-                               GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+			back.setLayout (new GridBagLayout ());
 
-      JPanel buttons = new JPanel();
-      buttons.add(abort);
-      buttons.add(done);
+			Constrain.setConstraints (back, inputLabel, 0, 0, 1, 1,
+					GridBagConstraints.BOTH, GridBagConstraints.CENTER, 0, 0);
+			Constrain.setConstraints (back, outputLabel, 1, 0, 1, 1,
+					GridBagConstraints.BOTH, GridBagConstraints.CENTER, 0, 0);
+			Constrain.setConstraints (back, leftScrollPane, 0, 1, 1, 1,
+					GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+			Constrain.setConstraints (back, rightScrollPane, 1, 1, 1, 1,
+					GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
 
-      this.add(back, BorderLayout.CENTER);
-      this.add(buttons, BorderLayout.SOUTH);
-    }
+			JPanel buttons = new JPanel ();
+			buttons.add (abort);
+			buttons.add (done);
 
-    /**
-     Listen for ActionEvents
-     */
-    public void actionPerformed(ActionEvent e) {
-      Object src = e.getSource();
-      if(src == abort)
-        module.viewCancel();
-      else if(src == done) {
-        //if(checkChoices()) {
-        setFieldsInTable();
-        //module.finish(et);
-        pushOutput(et, 0);
-        viewDone("Done");
-        et = null;
-        this.removeAll();
-        //}
-      }
-      else if(src == miColumnOrder) {
-        String [] labels = orderedLabels();
-        miAlphaOrder.setState(false);
-        DefaultListModel dlm = (DefaultListModel)inputList.getModel();
-        dlm.removeAllElements();
-        for(int i = 0; i < labels.length; i++) {
-          dlm.addElement(labels[i]);
-        }
-        dlm = (DefaultListModel)outputList.getModel();
-        dlm.removeAllElements();
-        for(int i = 0; i < labels.length; i++) {
-          dlm.addElement(labels[i]);
-        }
-      }
-      else if(src == miAlphaOrder) {
-        String [] labels = alphabetizeLabels();
-        miColumnOrder.setState(false);
-        DefaultListModel dlm = (DefaultListModel)inputList.getModel();
-        dlm.removeAllElements();
-        for(int i = 0; i < labels.length; i++) {
-          dlm.addElement(labels[i]);
-        }
-        dlm = (DefaultListModel)outputList.getModel();
-        dlm.removeAllElements();
-        for(int i = 0; i < labels.length; i++) {
-          dlm.addElement(labels[i]);
-        }
-      }
-    }
+			this.add (back, BorderLayout.CENTER);
+			this.add (buttons, BorderLayout.SOUTH);
+		}
 
-    private final String[] orderedLabels() {
-      String[] labels=new String[table.getNumColumns()];
+		/**
+		 Listen for ActionEvents
+		 */
+		public void actionPerformed (ActionEvent e) {
+			Object src = e.getSource ();
+			if (src == abort)
+				module.viewCancel ();
+			else if (src == done) {
+				setFieldsInTable ();
+				pushOutput (et, 0);
+				viewDone ("Done");
+				et = null;
+				this.removeAll ();
+			} else if (src == miColumnOrder) {
+				String[] labels = orderedLabels ();
+				miAlphaOrder.setState (false);
+				DefaultListModel dlm = (DefaultListModel) inputList.getModel ();
+				dlm.removeAllElements ();
+				for (int i = 0; i < labels.length; i++) {
+					dlm.addElement (labels[i]);
+				}
+				dlm = (DefaultListModel) outputList.getModel ();
+				dlm.removeAllElements ();
+				for (int i = 0; i < labels.length; i++) {
+					dlm.addElement (labels[i]);
+				}
+			} else if (src == miAlphaOrder) {
+				String[] labels = alphabetizeLabels ();
+				miColumnOrder.setState (false);
+				DefaultListModel dlm = (DefaultListModel) inputList.getModel ();
+				dlm.removeAllElements ();
+				for (int i = 0; i < labels.length; i++) {
+					dlm.addElement (labels[i]);
+				}
+				dlm = (DefaultListModel) outputList.getModel ();
+				dlm.removeAllElements ();
+				for (int i = 0; i < labels.length; i++) {
+					dlm.addElement (labels[i]);
+				}
+			}
+		}
 
-      inputToIndexMap = new HashMap(labels.length);
-      outputToIndexMap = new HashMap(labels.length);
-      for(int i = 0; i < labels.length; i++) {
-        String label = table.getColumnLabel(i);
-        if (label.equals(""))
-          label = new String("Column " + Integer.toString(i));
-        labels[i] = label;
-        inputToIndexMap.put(labels[i], new Integer(i));
-        outputToIndexMap.put(labels[i], new Integer(i));
-      }
-      return labels;
-    }
+		private final String[] orderedLabels () {
+			String[] labels = new String[table.getNumColumns ()];
 
-    private final String[] alphabetizeLabels() {
-      String [] labels = new String[table.getNumColumns()];
-      inputToIndexMap = new HashMap(labels.length);
-      outputToIndexMap = new HashMap(labels.length);
-      for(int i = 0; i < labels.length; i++) {
-        labels[i] = table.getColumnLabel(i);
-        inputToIndexMap.put(labels[i], new Integer(i));
-        outputToIndexMap.put(labels[i], new Integer(i));
-      }
-      Arrays.sort(labels, new StringComp());
-      return labels;
-    }
+			inputToIndexMap = new HashMap (labels.length);
+			outputToIndexMap = new HashMap (labels.length);
+			for (int i = 0; i < labels.length; i++) {
+				String label = table.getColumnLabel (i);
+				if (label.equals (""))
+					label = new String ("Column " + Integer.toString (i));
+				labels[i] = label;
+				inputToIndexMap.put (labels[i], new Integer (i));
+				outputToIndexMap.put (labels[i], new Integer (i));
+			}
+			return labels;
+		}
 
-    private final class StringComp implements Comparator {
-      public int compare(Object o1, Object o2) {
-        String s1 = (String)o1;
-        String s2 = (String)o2;
-        return s1.toLowerCase().compareTo(s2.toLowerCase());
-      }
-      public boolean equals(Object o) {
-        return super.equals(o);
-      }
-    }
+		private final String[] alphabetizeLabels () {
+			String[] labels = new String[table.getNumColumns ()];
+			inputToIndexMap = new HashMap (labels.length);
+			outputToIndexMap = new HashMap (labels.length);
+			for (int i = 0; i < labels.length; i++) {
+				labels[i] = table.getColumnLabel (i);
+				inputToIndexMap.put (labels[i], new Integer (i));
+				outputToIndexMap.put (labels[i], new Integer (i));
+			}
+			Arrays.sort (labels, new StringComp ());
+			return labels;
+		}
 
-    private void setFieldsInTable(){
-      et= table.toExampleTable();
-      //et.setInputFeatures(inputList.getSelectedIndices());
-      //et.setOutputFeatures(outputList.getSelectedIndices());
-      Object[] selected = inputList.getSelectedValues();
-      int [] inputFeatures = new int[selected.length];
-      for(int i = 0; i < selected.length; i++) {
-        String s = (String)selected[i];
-        Integer ii = (Integer)inputToIndexMap.get(s);
-        inputFeatures[i] = ii.intValue();
-      }
-      selected = outputList.getSelectedValues();
-      int [] outputFeatures = new int[selected.length];
-      for(int i = 0; i < selected.length; i++) {
-        String s = (String)selected[i];
-        Integer ii = (Integer)outputToIndexMap.get(s);
-        outputFeatures[i] = ii.intValue();
-      }
-      et.setInputFeatures(inputFeatures);
-      et.setOutputFeatures(outputFeatures);
-      table = null;
-    }
+		private final class StringComp implements Comparator {
+			public int compare (Object o1, Object o2) {
+				String s1 = (String) o1;
+				String s2 = (String) o2;
+				return s1.toLowerCase ().compareTo (s2.toLowerCase ());
+			}
 
-    /**
-     Not used
-     Make sure all choices are valid.
-     */
-    protected boolean checkChoices() {
-      if(outputList.getSelectedIndex() == -1){
-        JOptionPane.showMessageDialog(this,
-                                      "You must select at least one output",
-                                      "Error", JOptionPane.ERROR_MESSAGE);
-        return false;
-      }
-      if(inputList.getSelectedIndex() == -1){
-        JOptionPane.showMessageDialog(this,
-                                      "You must select at least one input",
-                                      "Error", JOptionPane.ERROR_MESSAGE);
-        return false;
-      }
-      return true;
-    }
-  }
+			public boolean equals (Object o) {
+				return super.equals (o);
+			}
+		}
+
+		private void setFieldsInTable () {
+			et = table.toExampleTable ();
+
+			Object[] selected = inputList.getSelectedValues ();
+			int[] inputFeatures = new int[selected.length];
+			for (int i = 0; i < selected.length; i++) {
+				String s = (String) selected[i];
+				Integer ii = (Integer) inputToIndexMap.get (s);
+				inputFeatures[i] = ii.intValue ();
+			}
+			setSelectedInputs (selected);
+			selected = outputList.getSelectedValues ();
+			int[] outputFeatures = new int[selected.length];
+			for (int i = 0; i < selected.length; i++) {
+				String s = (String) selected[i];
+				Integer ii = (Integer) outputToIndexMap.get (s);
+				outputFeatures[i] = ii.intValue ();
+			}
+			setSelectedOutputs (selected);
+			et.setInputFeatures (inputFeatures);
+			et.setOutputFeatures (outputFeatures);
+			table = null;
+		}
+
+		/**
+		 Not used
+		 Make sure all choices are valid.
+		 */
+		protected boolean checkChoices () {
+			if (outputList.getSelectedIndex () == -1) {
+				JOptionPane.showMessageDialog (this,
+						"You must select at least one output",
+						"Error", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+			if (inputList.getSelectedIndex () == -1) {
+				JOptionPane.showMessageDialog (this,
+						"You must select at least one input",
+						"Error", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+			return true;
+		}
+	}
 }
 
 //QA Comments Anca - added getPropertyDescription

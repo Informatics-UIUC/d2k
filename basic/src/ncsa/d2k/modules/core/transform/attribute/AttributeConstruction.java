@@ -24,7 +24,7 @@ import ncsa.d2k.modules.core.vis.widgets.*;
  *
  * @author gpape
  */
-public class AttributeConstruction extends UIModule {
+public class AttributeConstruction extends HeadlessUIModule {
 
 /******************************************************************************/
 /* Module methods                                                             */
@@ -109,21 +109,21 @@ public class AttributeConstruction extends UIModule {
 /* properties                                                                 */
 /******************************************************************************/
 
-   protected String[] _newLab = null;
-   public Object getNewLab() { return _newLab; }
-   public void setNewLab(Object value) { _newLab = (String[])value; }
+   protected String[] newLabel = null;
+   public Object[] getNewLabel() { return newLabel; }
+   public void setNewLabel(Object[] value) { newLabel = (String[])value; }
 
-   protected int[] _newTyp = null;
-   public Object getNewTyp() { return _newTyp; }
-   public void setNewTyp(Object value) { _newTyp = (int[])value; }
+   protected int[] newTyp = null;
+   public Object getNewTyp() { return newTyp; }
+   public void setNewTyp(Object value) { newTyp = (int[])value; }
 
-   protected Object[] _lastCons = null;
-   public Object getLastCons() { return _lastCons; }
-   public void setLastCons(Object value) { _lastCons = (Object[])value; }
+   protected Object[] lastCons = null;
+   public Object[] getLastCons() { return lastCons; }
+   public void setLastCons(Object[] value) { lastCons = (Object[])value; }
 
    public PropertyDescription[] getPropertiesDescriptions() {
 
-     PropertyDescription pds[] = new PropertyDescription[3];
+   /*  PropertyDescription pds[] = new PropertyDescription[3];
      pds[0] = new PropertyDescription( "newLab",
                 "Column Labels",
                 "Saves the labels of the columns created by the user");
@@ -137,7 +137,9 @@ public class AttributeConstruction extends UIModule {
                   "Saves the construction strings of the columns created by the user");
 
 
-      return pds;
+      return pds;*/
+   return null;
+
    }
 
 /******************************************************************************/
@@ -176,7 +178,7 @@ public class AttributeConstruction extends UIModule {
       protected ViewModule mod;
 
       public ColumnConstructionGUI() {
-        newLabels = (String[])AttributeConstruction.this.getNewLab();
+        newLabels = (String[])AttributeConstruction.this.getNewLabel();
         newTypes = (int[])getNewTyp();
         constructions = (Object[])getLastCons();
       }
@@ -512,6 +514,10 @@ public class AttributeConstruction extends UIModule {
 
          else if (src == doneButton) {
            help.setVisible(false);
+           //headless conversion support
+          setLastCons(lastCons);
+          //headless conversion support
+
             pushOutput(new AttributeTransform(newColumnModel.toArray()), 0);
             viewDone("Done");
          }
@@ -551,9 +557,9 @@ public class AttributeConstruction extends UIModule {
 
                }
 
-               _newLab = newLabels;
-               _newTyp = newTypes;
-               _lastCons = newColumnModel.toArray();
+               newLabel = newLabels;
+               newTyp = newTypes;
+               lastCons = newColumnModel.toArray();
 
 
 
@@ -599,7 +605,7 @@ public class AttributeConstruction extends UIModule {
 
             String newLab = newLabelBuffer.toString();
             String newStr = gui.getTextArea().getText();
-            int newTyp = newExp.evaluateType();
+            int newType = newExp.evaluateType();
 
             // add to arrays of new expressions, labels, types
 
@@ -617,13 +623,13 @@ public class AttributeConstruction extends UIModule {
 
             if (newTypes == null) {
                newTypes = new int[1];
-               newTypes[0] = newTyp;
+               newTypes[0] = newType;
             }
             else {
                int[] newNewTyp = new int[newTypes.length + 1];
                for (int i = 0; i < newTypes.length; i++)
                   newNewTyp[i] = newTypes[i];
-               newNewTyp[newTypes.length] = newTyp;
+               newNewTyp[newTypes.length] = newType;
                newTypes = newNewTyp;
             }
 
@@ -645,9 +651,9 @@ public class AttributeConstruction extends UIModule {
             newColumnModel.addElement(added);
             newColumnList.setMinimumSize(new Dimension(200, 200));
 
-            _newLab = newLabels;
-            _newTyp = newTypes;
-            _lastCons = newColumnModel.toArray();
+            newLabel = newLabels;
+            newTyp = newTypes;
+            lastCons = newColumnModel.toArray();
 
             newNameField.setText("");
             gui.getTextArea().setText("");
@@ -708,6 +714,12 @@ public class AttributeConstruction extends UIModule {
       return sb.toString();
 
    }
+
+   //headless conversion support
+     protected void doit(){
+       pushOutput(new AttributeTransform(lastCons), 0);
+     }
+     //headless conversion support
 
 }
 //
