@@ -506,10 +506,19 @@ public class ClusterBarChart extends BarChart
         double value = mutable.getDouble(bin-offset, 1);
         double barheight = (value-yminimum)/yscale;
         double y = getGraphHeight()-bottomoffset-barheight;
+        StringBuffer tip = new StringBuffer("");
 
         rectangle = new Rectangle2D.Double(x, y, barwidth, barheight);
         barBoundary[bin] = rectangle;
-        tipValues[bin] = mutable.getString(bin-offset, set.y) + " " + value;
+        tip.append("<html>");
+        tip.append(xlabel.toLowerCase() + ": " + mutable.getString(bin-offset, set.x));
+        tip.append("<br>");
+        tip.append(mutable.getColumnLabel(2).toLowerCase() + ": " + mutable.getString(bin-offset, set.y));
+        tip.append("<br>");
+        tip.append("frequency: " + value);
+        tip.append("</html>");
+        tipValues[bin] = tip.toString();
+        //tipValues[bin] = mutable.getString(bin-offset, set.y) + " " + value;
 
         g2.setColor(getClusterColor(counter));
         g2.fill(rectangle);
