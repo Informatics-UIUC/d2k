@@ -1667,6 +1667,7 @@ for(int i=0; i<keys.length && (col1Ref == -1 || col2Ref == -1); i++){
     SparseMutableTable mti = (SparseMutableTable) mt;
     int _numColumns = mti.getNumColumns();
     int _numRows = mti.getNumRows();
+
     if (getNumColumns() != _numColumns)
       return false;
     if (getNumRows() != _numRows)

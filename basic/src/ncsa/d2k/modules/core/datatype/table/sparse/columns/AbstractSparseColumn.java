@@ -712,20 +712,31 @@ abstract public class AbstractSparseColumn
 
     while( thisCounter < thisNumRows && otherCounter <otherNumRows ){
       //if both counters points to an existing value - comparing the values.
-      if(doesValueExist(thisCounter) && col.doesValueExist(otherCounter)){
-        if(! col.getString(otherCounter).equals( this.getString(thisCounter)) ) return false;
-        otherCounter++;
-        thisCounter++;
-      }
-      else{ //one of the counters needs to be promoted.
-        if(!doesValueExist(thisCounter)) thisCounter++;
-        else otherCounter++;
-      }
-    }
+      try {
+        if (doesValueExist(thisCounter) && col.doesValueExist(otherCounter)) {
+          if (!col.getString(otherCounter).equals(this.getString(thisCounter)))
+            return false;
 
-    /*for (int i=0; i<col.getNumRows(); i++){
-      if(col.getString(i) != this.getString(i)) return false;
-    }*/
+          otherCounter++;
+          thisCounter++;
+        }
+
+        else { //one of the counters needs to be promoted.
+          if (!doesValueExist(thisCounter))
+            thisCounter++;
+          else
+            otherCounter++;
+        }
+      }//else
+      catch (NullPointerException e) {
+        System.out.println("caught an Exception!");
+        e.printStackTrace();
+        throw e;
+
+      }//catch
+
+    }//while
+
     return retVal;
   }
 

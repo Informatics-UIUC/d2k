@@ -126,13 +126,12 @@ public class VIntObjectHashMap
 
     //copying the map, as it is possible that newOrder does not hold all keys
     //in this map.
-    VIntObjectHashMap retVal = copy();
+    VIntObjectHashMap retVal = new VIntObjectHashMap(size());
 
     //for each key in the newOrder map
     int[] oldKeys = newOrder.keys();
     for (int i = 0; i < oldKeys.length; i++) {
-      //removing its mapping in the returned value
-      retVal.remove(oldKeys[i]);
+
       //if this map contains the key that is mapped to oldKeys[i] -
       //put its value mapped to oldKeys[i] in the returned value.
       if (contains(newOrder.get(oldKeys[i])))
@@ -144,12 +143,13 @@ public class VIntObjectHashMap
     //but are not going to be set to a new value.
     //those keys should be taken off retVal.
 
-    VIntHashSet discard = new VIntHashSet(newOrder.getValues());
+  /*  no need for this discarding, as now retVal is constructed from scratch not copied.
+   VIntHashSet discard = new VIntHashSet(newOrder.getValues());
     discard.removeAll(newOrder.keys());
     int[] toRemove = discard.toArray();
 
     for (int i = 0; i < toRemove.length; i++)
-      retVal.remove(toRemove[i]);
+      retVal.remove(toRemove[i]);*/
     return retVal;
   }
 

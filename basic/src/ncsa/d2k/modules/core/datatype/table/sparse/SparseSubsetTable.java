@@ -8,6 +8,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 import java.util.Arrays;
+import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 
 /**
  * This is a subset of the original table. It contains an array of the
@@ -667,9 +668,8 @@ public class SparseSubsetTable extends SparseMutableTable {
    *                    order.
    */
   public Table reorderColumns(int[] newOrder) {
-    SparseMutableTable tab = (SparseMutableTable)copy();
-    return tab.reorderColumns(newOrder);
 
+    return new SparseSubsetTable(((SparseTable)super.reorderColumns(newOrder)), subset);
   }
 
 
@@ -1115,6 +1115,9 @@ public class SparseSubsetTable extends SparseMutableTable {
   }
 
 //VERED: added this method, for testing purposes
+  //vered: july 16 04: modified this method a bit - now it over looks differences
+  //between the subsets arrays. all that matters is that the values will be the
+  //same.
   public boolean equals(Object st) {
 
    SparseSubsetTable _st = (SparseSubsetTable) st;
@@ -1123,9 +1126,12 @@ public class SparseSubsetTable extends SparseMutableTable {
 
    if(_subset.length != subset.length) return false;
 
-   for (int i=0; i<_subset.length; i++)
+/*  commenting this out will allow compressed form of this table
+    to be equal to it...
+
+    for (int i=0; i<_subset.length; i++)
      if(_subset[i] != this.subset[i])
-       return false;
+       return false;*/
 
    return true;
  }

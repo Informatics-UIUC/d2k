@@ -678,6 +678,7 @@ public class SparseStringColumn
     int index = getInsertionIndex(str);
 
     row2Id.insertObject(new Integer(index), pos);
+
     missing.increment(pos);
     empty.increment(pos);
 
