@@ -178,7 +178,7 @@ public class AttributeSearchBestFirst extends ComputeModule {
     throws PropertyVetoException
   {
     if (t < 1) {
-      throw  new PropertyVetoException("Value of -N must be > 0.",null);
+      throw  new PropertyVetoException("Value of N must be > 0.",null);
     }
 
     m_maxStale = t;

@@ -9,10 +9,9 @@ package ncsa.d2k.modules.core.transform.filters.search;
 // Other Imports
 //===============
 
-
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.transform.filters.*;
-import ncsa.d2k.modules.projects.anca.attributeSelection.*;
+import ncsa.d2k.core.modules.ComputeModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.transform.filters.Range;
 
 
 /**
@@ -39,7 +38,7 @@ public class AttributeSearchExhaustiveSearch extends ComputeModule {
   //==============
 
   /** the start set as a Range */
-  private Range m_startRange;
+  private Range m_startRange = new Range();
 
 
   /** if true, then ouput new best subsets as the search progresses */
@@ -84,10 +83,10 @@ public class AttributeSearchExhaustiveSearch extends ComputeModule {
 			s += "<p> Detailed Description: ";
 			s += " Performs an exhaustive search through ";
       s +="the space of attribute subsets starting from the empty set of ";
-      s +="attrubutes. Reports the best subset found. If a start set is ";
+      s +="attributes. Reports the best subset found. If a start set is ";
       s +="supplied, the algorithm searches backward from the start point ";
       s +="and reports the smallest subset with as good or better evaluation ";
-      s +="as the start point";
+      s +="as the start point.";
 			s += " </p>";
 			s += "<p> Data Type Restrictions: ";
 			s += " </p>";

@@ -121,7 +121,7 @@ public class EntropyBinningTest extends TestCase {
 			assertEquals(d2kCutPoints.length, wekaCutPoints.length);
 			for(int j =0; j < d2kCutPoints.length; j++) {
 			  assertEquals(d2kCutPoints[j], wekaCutPoints[j],delta);
-			System.out.println (" cutpoint for attribute " + j + " is " + d2kCutPoints[j]);
+			System.out.println (" cutpoint for attribute " + i + " is " + d2kCutPoints[j]);
 			}
 		}
 		

@@ -264,7 +264,7 @@ public class EntropyBinning extends DataPrepModule {
 	if (copy == null) {
 	  copy =(ExampleTable) mt.copy();
 	}
-	calculateCutPointsByMDL(j, copy, numClasses);
+	calculateCutPointsByMDL(i, j, copy, numClasses);
       }
     }
   }
@@ -274,16 +274,16 @@ public class EntropyBinning extends DataPrepModule {
    *
    * @param index the index of the attribute to set cutpoints for
    */
-  protected void calculateCutPointsByMDL(int index,
+  protected void calculateCutPointsByMDL(int index, int column,
 					 ExampleTable data, int numClasses) {
 
     // Sort instances
-    data.sortByColumn(index);
+    data.sortByColumn(column);
 
     // Find first instances that's missing
     int firstMissing = data.getNumRows();
     for (int i = 0; i < data.getNumRows(); i++) {
-      if (data.isValueMissing(i,index)) {
+      if (data.isValueMissing(i,column)) {
         firstMissing = i;
         break;
       }
@@ -291,7 +291,7 @@ public class EntropyBinning extends DataPrepModule {
 
    // System.out.println("index " + index + "firstMissing " + firstMissing);
 
-    m_CutPoints[index] = cutPointsForSubset(data, index, 0, firstMissing, numClasses);
+    m_CutPoints[index] = cutPointsForSubset(data, column, 0, firstMissing, numClasses);
    // if (m_CutPoints[index]!=null){
     //System.out.println("column " + index + " m_cutPoints are");
     // for (int i =0; i < m_CutPoints[index].length; i++)
@@ -559,10 +559,6 @@ public class EntropyBinning extends DataPrepModule {
  public BinDescriptor[] buildBins(ExampleTable mt, int[] selectedColumns) {
 
     int len = selectedColumns.length;
-    
-
-  //  mt.setClassIndex(mt.getNumColumns()-1); // get this out latter - for testing only
-  
     if (mt.getOutputFeatures()[0] < 0) {
       System.out.println("Cannot use class-based discretization: "
 					 + "no class assigned to the dataset");
@@ -580,39 +576,39 @@ public class EntropyBinning extends DataPrepModule {
 
     ArrayList binDescriptors = new ArrayList();
     int classIndex = mt.getOutputFeatures()[0];
-    for(int i = 0; i < mt.getNumColumns(); i++) {
-      if ((mt.isColumnScalar(i))) {
+    for(int i = 0; i < selectedColumns.length; i++) {
+      if ((mt.isColumnScalar(selectedColumns[i]))) {
         if (m_CutPoints[i]==null) { // supervized discretization failed  - use one bin
             binDescriptors.add(new NumericBinDescriptor(i,"'(-inf,-inf)'",
-            -Double.MAX_VALUE,Double.MAX_VALUE, mt.getColumnLabel(i)));
+            -Double.MAX_VALUE,Double.MAX_VALUE, mt.getColumnLabel(selectedColumns[i])));
         } else	if (!m_MakeBinary) {
-          //System.out.println("column discretize " + i + " " +mt.getColumnLabel(i) + m_CutPoints[i]);
+          
            for(int j = 0; j <= m_CutPoints[i].length; j++) {
 	      if (j == 0) {
 		binDescriptors.add(new NumericBinDescriptor(i,"'(-inf-"
 			+ Utils.doubleToString(m_CutPoints[i][j], 6) + "]'",
-                        -Double.MAX_VALUE, m_CutPoints[i][j],mt.getColumnLabel(i)));
+                        -Double.MAX_VALUE, m_CutPoints[i][j],mt.getColumnLabel(selectedColumns[i])));
 	      } else if (j == m_CutPoints[i].length) {
 		binDescriptors.add(new NumericBinDescriptor(i,"'("
 			+ Utils.doubleToString(m_CutPoints[i][j - 1], 6)
                         + "-inf)'",m_CutPoints[i][j-1],Double.MAX_VALUE,
-                          mt.getColumnLabel(i)));
+                          mt.getColumnLabel(selectedColumns[i])));
 	      } else {
 		binDescriptors.add(new NumericBinDescriptor(i,"'("
 			+ Utils.doubleToString(m_CutPoints[i][j - 1], 6) + "-"
 			+ Utils.doubleToString(m_CutPoints[i][j], 6) + "]'",
                         m_CutPoints[i][j-1], m_CutPoints[i][j],
-                          mt.getColumnLabel(i)));
+                          mt.getColumnLabel(selectedColumns[i])));
 	  	    }
           }
 	} else {
 	         for(int j = 0; j < m_CutPoints[i].length; j++) {
 	      binDescriptors.add(new NumericBinDescriptor(i,"'(-inf-"
 		      + Utils.doubleToString(m_CutPoints[i][j], 6) + "]'",
-                        Double.MIN_VALUE, m_CutPoints[i][j],mt.getColumnLabel(i)));
+                        Double.MIN_VALUE, m_CutPoints[i][j],mt.getColumnLabel(selectedColumns[i])));
 	      binDescriptors.add(new NumericBinDescriptor(i,"'("
 		      + Utils.doubleToString(m_CutPoints[i][j], 6) + "-inf)'",
-                      m_CutPoints[i][j],Double.MAX_VALUE,mt.getColumnLabel(i)));
+                      m_CutPoints[i][j],Double.MAX_VALUE,mt.getColumnLabel(selectedColumns[i])));
 	    }
 	}
       }
