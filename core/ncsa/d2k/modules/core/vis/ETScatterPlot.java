@@ -137,6 +137,11 @@ public class ETScatterPlot extends VisModule
 		return new ScatterPlot(vt, d, gs);
 	}
 
+	protected JFrame getHelpWindow() {
+		return new ETHelpWindow(getHelpString());
+	}
+
+
 	Random r = new Random();
 
 	/**
@@ -168,8 +173,22 @@ public class ETScatterPlot extends VisModule
 		int []outputs;
 		GraphTable jTable = null;
 		boolean [][]selected = null;
+		JMenuBar menuBar;
+		JMenuItem helpItem;
+		JFrame helpWindow;
 
 		public void initView(ViewModule m) {
+			menuBar = new JMenuBar();
+			JMenu m1 = new JMenu("Help");
+			helpItem = new JMenuItem(getMenuDescription());
+			helpItem.addActionListener(this);
+			m1.add(helpItem);
+			menuBar.add(m1);
+			helpWindow = getHelpWindow();
+		}
+
+		public Object getMenu() {
+			return menuBar;
 		}
 
 		public void setInput(Object o, int i) {
@@ -414,6 +433,8 @@ public class ETScatterPlot extends VisModule
 						selected[i][j] = false;
 				jTable.repaint();
 			}
+			else if(e.getSource() == helpItem)
+				helpWindow.setVisible(true);
 		}
 
 		/**
@@ -579,5 +600,35 @@ public class ETScatterPlot extends VisModule
 				return false;
 			}
 		}
+	}
+
+	private final class ETHelpWindow extends JD2KFrame {
+		ETHelpWindow(String s) {
+			super("About ETScatterPlot");
+			JEditorPane jep = new JEditorPane("text/html", s);
+			getContentPane().add(new JScrollPane(jep));
+			setSize(400, 400);
+		}
+	}
+
+    protected String getHelpString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("<html>");
+        sb.append("<body>");
+		sb.append("<h2>ETScatterPlot</h2>");
+		sb.append("ETScatterPlot displays multiple scatter plots in a grid layout.  ");
+		sb.append("This a small multiples view of data that plot all the chosen input ");
+		sb.append("attributes by all the chosen output attributes.  Since each of these ");
+		sb.append("grids are a little different, a composite view can be created by ");
+		sb.append("highlighting the view you want and clicking the Show Composite ");
+		sb.append("button at the bottom of the window.  This will create a new window ");
+		sb.append("each time.  The Clear Selected Graphs button will toggle off all ");
+		sb.append("the currently highlighted plots.");
+        sb.append("</body></html>");
+        return sb.toString();
+    }
+
+	protected String getMenuDescription() {
+		return "About ETScatterPlot...";
 	}
 }

@@ -26,8 +26,8 @@ public class ScatterPlotUserPane extends ncsa.d2k.controller.userviews.swing.JUs
 	public void initView(ViewModule viewmodule) {
 		module = (ScatterPlot2D) viewmodule;
 		menuBar = new JMenuBar();
-		JMenu m1 = new JMenu("File");
-		help = new JMenuItem("Help...");
+		JMenu m1 = new JMenu("Help");
+		help = new JMenuItem("About ScatterPlot2D...");
 		help.addActionListener(this);
 		m1.add(help);
 		menuBar.add(m1);

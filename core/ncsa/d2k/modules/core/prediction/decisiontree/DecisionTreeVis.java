@@ -12,6 +12,7 @@ import ncsa.d2k.controller.userviews.*;
 import ncsa.d2k.controller.userviews.widgits.*;
 
 import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.gui.*;
 import ncsa.gui.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.widgets.*;
 
@@ -85,12 +86,29 @@ class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
 	JMenuBar menuBar;
 	JMenuItem miPrintWindow;
 	JMenuItem miPrintCanvas;
+	JMenuItem miHelp;
+	JFrame helpWindow;
 
 	public Dimension getPreferredSize() {
 		return new Dimension(600, 400);
 	}
 
 	public void initView(ViewModule module) {
+		menuBar = new JMenuBar();
+		JMenu m1 = new JMenu("File");
+		miPrintWindow = new JMenuItem("Print Window...");
+		miPrintWindow.addActionListener(this);
+		miPrintCanvas = new JMenuItem("Print Canvas...");
+		miPrintCanvas.addActionListener(this);
+		m1.add(miPrintWindow);
+		m1.add(miPrintCanvas);
+		JMenu m2 = new JMenu("Help");
+		miHelp = new JMenuItem("About DecisionTreeVis...");
+		miHelp.addActionListener(this);
+		m2.add(miHelp);
+		menuBar.add(m1);
+		menuBar.add(m2);
+		helpWindow = new HelpWindow();
 	}
 
 	public void setInput(Object object, int index) {
@@ -127,15 +145,6 @@ class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
 		Constrain.setConstraints(this, treescrollpane, 1, 0, 1, 1, GridBagConstraints.BOTH,
 			GridBagConstraints.NORTHWEST, 1, 1);
 
-		menuBar = new JMenuBar();
-		JMenu m1 = new JMenu("File");
-		miPrintWindow = new JMenuItem("Print Window...");
-		miPrintWindow.addActionListener(this);
-		miPrintCanvas = new JMenuItem("Print Canvas...");
-		miPrintCanvas.addActionListener(this);
-		m1.add(miPrintWindow);
-		m1.add(miPrintCanvas);
-		menuBar.add(m1);
 	}
 
 	/**
@@ -200,5 +209,35 @@ class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
 				}
 			}
 		}
+		else if(event.getSource() == miHelp)
+			helpWindow.setVisible(true);
+	}
+
+	private final class HelpWindow extends JD2KFrame {
+		HelpWindow() {
+			super("About DecisionTreeVis");
+			JEditorPane jep = new JEditorPane("text/html", getHelpString());
+			getContentPane().add(new JScrollPane(jep));
+			setSize(400, 400);
+		}
+	}
+
+	private static final String getHelpString() {
+		StringBuffer s = new StringBuffer("<html>");
+		s.append("<h2>DecisionTreeVis</h2>");
+		s.append("The DecisionTreeVis is used to display the results of decision ");
+		s.append("tree modeling.  The window has two panes.  The Navigator pane in ");
+		s.append("the left pane illustrates the full decision tree, the viewable window ");
+		s.append("is shown with a black box outlin.  This box can be dragged around the ");
+		s.append("tree to display different parts of the decision tree.  The viewable ");
+		s.append("tree is shown in the right pane.  The Brushing pane shows the percentage ");
+		s.append("of the examples in each class when the mouse brushes a chart in the ");
+		s.append("decision tree.  The Hide Labels checkbox turns the labels for each ");
+		s.append("split point on and off.  Clicking on a chart in the right pane ");
+		s.append("brings up a bar chart that shows visaully, the percentage of the ");
+		s.append("examples in each class at this split point.  The label of this window ");
+		s.append("shows the most recent split attribute and value.");
+		s.append("</body></html>");
+		return s.toString();
 	}
 }

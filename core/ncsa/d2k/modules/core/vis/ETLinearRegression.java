@@ -15,7 +15,7 @@ import ncsa.d2k.gui.*;
 
    @author David Clutter
 */
-public class ETFunctionPlot extends ETScatterPlot {
+public class ETLinearRegression extends ETScatterPlot {
 
     /**
        Return a description of the function of this module.
@@ -35,11 +35,11 @@ public class ETFunctionPlot extends ETScatterPlot {
        @return The name of this module.
     */
     public String getModuleName() {
-		return "ETFunctionPlot";
+		return "ETLinearRegression";
     }
 
 	protected JFrame getHelpWindow() {
-		return new ETFHelpWindow(getHelpString());
+		return new ETLRHelpWindow(getHelpString());
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class ETFunctionPlot extends ETScatterPlot {
 	*/
 	protected Graph createSmallGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
-		return new FunctionPlotSmall(vt, d, gs);
+		return new LinearRegressionSmall(vt, d, gs);
 	}
 
 	/**
@@ -61,12 +61,12 @@ public class ETFunctionPlot extends ETScatterPlot {
 	*/
 	protected Graph createGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
-		return new FunctionPlot(vt, d, gs);
+		return new LinearRegression(vt, d, gs);
 	}
 
-	private final class ETFHelpWindow extends JD2KFrame {
-		ETFHelpWindow(String s) {
-			super("About ETFunctionPlot");
+	private final class ETLRHelpWindow extends JD2KFrame {
+		ETLRHelpWindow(String s) {
+			super("About ETLinearRegression");
 			JEditorPane jep = new JEditorPane("text/html", s);
 			getContentPane().add(new JScrollPane(jep));
 			setSize(400, 400);
@@ -77,9 +77,9 @@ public class ETFunctionPlot extends ETScatterPlot {
         StringBuffer sb = new StringBuffer();
         sb.append("<html>");
         sb.append("<body>");
-		sb.append("<h2>ETFunctionPlot</h2>");
+		sb.append("<h2>ETLinearRegression</h2>");
 		sb.append("ETLinearRegression displays multiple scatter plots in a grid layout ");
-		sb.append("with a line connecting each data point in order.  ");
+		sb.append("with a line approximated through the data.  ");
 		sb.append("This a small multiples view of data that plot all the chosen input ");
 		sb.append("attributes by all the chosen output attributes.  Since each of these ");
 		sb.append("grids are a little different, a composite view can be created by ");
@@ -92,6 +92,6 @@ public class ETFunctionPlot extends ETScatterPlot {
     }
 
 	protected String getMenuDescription() {
-		return "About ETFunctionPlot...";
+		return "About ETLinearRegression...";
 	}
 }

@@ -116,8 +116,8 @@ class LineGraphUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane im
 	public void initView(ViewModule viewmodule) {
 		module = (LineGraph2D) viewmodule;
 		menuBar = new JMenuBar();
-		JMenu m1 = new JMenu("File");
-		help = new JMenuItem("Help...");
+		JMenu m1 = new JMenu("Help");
+		help = new JMenuItem("About LineGraph2D...");
 		help.addActionListener(this);
 		m1.add(help);
 		menuBar.add(m1);

@@ -114,8 +114,8 @@ class LinearRegressionUserPane extends ncsa.d2k.controller.userviews.swing.JUser
 	public void initView(ViewModule viewmodule) {
 		module = (LinearRegression2D) viewmodule;
 		menuBar = new JMenuBar();
-		JMenu m1 = new JMenu("File");
-		help = new JMenuItem("Help...");
+		JMenu m1 = new JMenu("Help");
+		help = new JMenuItem("About LinearRegression2D...");
 		help.addActionListener(this);
 		m1.add(help);
 		menuBar.add(m1);
