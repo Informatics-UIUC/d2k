@@ -140,6 +140,8 @@ public class GetRuleAsscFromDB extends UIModule
       //tableName.setText(NOTHING);
       condition.setText(NOTHING);
       target.setText(NOTHING);
+      cubeTableName = NOTHING;
+      saveSupport = NOTHING;
       supportChosen.setText(Double.toString(minSupport));
       confidenceChosen.setText(Double.toString(minConfidence));
     }
@@ -250,8 +252,6 @@ public class GetRuleAsscFromDB extends UIModule
             saveSupport = supportChosen.getText().toString();
             allRules = new ArrayList();
             getItemLabels();
-            //printItemLabels(); // for debugging
-            //printItemRange(); // for debugging
             extractRules();
           }
           //dump allRules for debugging
@@ -264,8 +264,10 @@ public class GetRuleAsscFromDB extends UIModule
           else if (sortS.getState()) {
             sortList(2);
           }
+          //printFinalRules(); // for debugging
           convertToRuleTable();
-
+          //printRuleTable();  // for debugging
+          //printItemLabels(); // for debugging
           pushOutput (ruleTable,0);
           pushOutput (itemLabels, 1);
         }
@@ -277,6 +279,8 @@ public class GetRuleAsscFromDB extends UIModule
         }
       }
       else if (src == cancelBtn) {
+        cubeTableName = NOTHING;
+        saveSupport = NOTHING;
         closeIt();
       }
       else if (src == tableName) {
@@ -696,7 +700,6 @@ public class GetRuleAsscFromDB extends UIModule
       // condition attributes is from index 0 to aList.size()-4
       for (int itemIdx = 0; itemIdx < aList.size()-3; itemIdx ++) {
         int idx = Integer.parseInt(aList.get(itemIdx).toString());
-        //System.out.println("idx is " + idx);
         if (idx >= itemRange[conditionIdx][0] &&
             idx <= itemRange[conditionIdx][1]) {
           return (true);
@@ -796,9 +799,19 @@ public class GetRuleAsscFromDB extends UIModule
 
   public void printRuleTable() {
     System.out.println("Rule table is: ");
+    int[] tmpVal;
     for (int i = 0; i < ruleTable.getNumRows(); i++) {
       for (int j = 0; j < ruleTable.getNumColumns(); j++) {
-        System.out.print(ruleTable.getObject(i,j) + ", ");
+        if (j >= 0 && j <= 1) {
+          tmpVal = (int[])ruleTable.getObject(i,j);
+          for (int k=0; k<tmpVal.length; k++) {
+            System.out.print(tmpVal[k] + ", ");
+          }
+        }
+        else {
+          System.out.print(ruleTable.getFloat(i,j) + ", ");
+        }
+        System.out.println(" ");
       }
     }
     System.out.println(" ----- ");

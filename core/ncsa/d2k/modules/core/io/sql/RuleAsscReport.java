@@ -112,14 +112,17 @@ public class RuleAsscReport extends UIModule
     public void setInput(Object input, int index) {
       closeIt();
       removeAll();
+
       if (index == 0) {
+        ruleTable = new TableImpl();
         ruleTable = (TableImpl)input;
       }
       else if (index == 1) {
+        itemLabels = new ArrayList();
         itemLabels = (ArrayList)input;
+        doGUI();
+        displayRules();
       }
-      doGUI();
-      displayRules();
     }
 
     public Dimension getPreferredSize() {
@@ -128,13 +131,15 @@ public class RuleAsscReport extends UIModule
 
     public void initView(ViewModule mod) {
       removeAll();
+      ruleTable = new TableImpl();
       ruleTable = (TableImpl)pullInput(0);
+      itemLabels = new ArrayList();
       itemLabels = (ArrayList)pullInput(1);
       doGUI();
       displayRules();
     }
 
-    protected void doGUI() {
+    public void doGUI() {
       // Panel to hold outline panels
       JPanel displayRulePanel = new JPanel();
       displayRulePanel.setLayout (new GridBagLayout());
@@ -178,7 +183,6 @@ public class RuleAsscReport extends UIModule
       }
       else if (src == doneBtn) {
         closeIt();
-        //viewAbort();
       }
     }
   }
@@ -232,6 +236,13 @@ public class RuleAsscReport extends UIModule
 
   protected void closeIt() {
     executionManager.moduleDone(this);
+  }
+
+  protected void printItemLabels() {
+    System.out.println("item label list in RuleAsscReport: ");
+    for (int i = 0; i < itemLabels.size(); i++) {
+      System.out.println("item" + i + " is " + itemLabels.get(i).toString() + ", ");
+    }
   }
 
   protected void writeToFile() {
