@@ -793,6 +793,14 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 			appendBytes( new String( (char[])newEntry).getBytes());
 		else
 			appendBytes(newEntry.toString().getBytes());
+		
+		int last = getNumRows();
+		boolean[] newMissing = new boolean[last + 1];
+		 boolean[] newEmpty = new boolean[last + 1];
+		 		 System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		 System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+		 		 missing = newMissing;
+		 empty = newEmpty;
     }
 
     /**

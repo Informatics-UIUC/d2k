@@ -205,8 +205,8 @@ abstract public class AbstractColumn implements Column {
 										return false; 
 				return true;                     
 		*/ 
-				if(getNumRows() != column.getNumRows()) return false; 
-				for (int i =0; i < getNumRows(); i ++) { 
+				if(getNumEntries() != column.getNumEntries()) return false; 
+				for (int i =0; i < getNumEntries(); i ++) { 
 						if(!getObject(i).equals(column.getObject(i))) return false; 
 										} 
 				return true; 

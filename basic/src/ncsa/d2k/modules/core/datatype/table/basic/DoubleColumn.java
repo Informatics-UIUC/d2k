@@ -77,7 +77,7 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
         setIsScalar(true);
         type = ColumnTypes.DOUBLE;
         missing = miss;
-        emp = empty;
+        empty =emp;
         setLabel(lbl);
         setComment(com);
     }

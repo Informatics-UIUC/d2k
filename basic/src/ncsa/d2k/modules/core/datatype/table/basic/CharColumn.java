@@ -638,11 +638,21 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 		 last = i;
 		 this.internal[last+1] = (byte[])newEntry;
 		 */
+		 
 		int last = internal.length;
+			   
+		boolean[] newMissing = new boolean[internal.length + 1];
+		boolean[] newEmpty = new boolean[internal.length + 1];
+		System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+			
 		char[] newInternal = new char[internal.length + 1];
 		System.arraycopy(internal, 0, newInternal, 0, internal.length);
 		newInternal[last] = ((Character) newEntry).charValue();
 		internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
+		
 	}
 
 	/**
@@ -673,12 +683,17 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 	 */
 	public void insertRow(Object newEntry, int pos) {
 		char[] newInternal = new char[internal.length + 1];
+		boolean[] newMissing = new boolean[internal.length + 1];
+		boolean[] newEmpty = new boolean[internal.length + 1];
 		if (pos > getCapacity()) {
 			addRow(newEntry);
 			return;
 		}
-		if (pos == 0)
+		if (pos == 0) {
 			System.arraycopy(internal, 0, newInternal, 1, getCapacity());
+			System.arraycopy(missing, 0, newMissing, 1, getCapacity());
+			System.arraycopy(internal, 0, newInternal, 1, getCapacity());
+		}
 		/*else if(pos == 1) {
 			 newInternal[0] = internal[0];
 			 System.arraycopy(internal, 1, newInternal, 2, getCapacity()-2);
@@ -691,9 +706,18 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 				newInternal,
 				pos + 1,
 				internal.length - pos);
+			System.arraycopy(missing, 0, newMissing, 0, pos);
+			System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
+								- pos);
+
+			System.arraycopy(empty, 0, newEmpty, 0, pos);
+			System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
+								- pos);
 		}
 		newInternal[pos] = ((Character) newEntry).charValue();
 		internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
 	}
 
 	/**

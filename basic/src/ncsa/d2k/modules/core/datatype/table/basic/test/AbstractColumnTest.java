@@ -67,10 +67,15 @@ public abstract class AbstractColumnTest extends TestCase {
 		int start = 1;
 		int removeLen = 2;
 		for (int i = 0; i < len; i++) {
-			if (i < start)
+			if (i < start) {
 				cEmpty.addRow(cFull.getRow(i));
-			else if (i > start + removeLen - 1)
+			}
+			else if (i > start + removeLen - 1) {
+			
 				cEmpty.addRow(cFull.getRow(i));
+			}
+			//for (int i = 0; i < cEmpty.getNumRows(); i++)
+			//			cEmpty.setValueToMissing(false, i);
 		}
 		//System.out.println("test from abstract class called");
 		cFull.removeRows(start, removeLen);

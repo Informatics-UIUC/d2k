@@ -8,7 +8,6 @@ package ncsa.d2k.modules.core.datatype.table.basic.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
  * @author anca
  *
@@ -39,7 +38,7 @@ public class AllColumnTests {
 			suite.addTest(new TestSuite(CharArrayColumnTest.class));
 			suite.addTest(new TestSuite(CharColumnTest.class));
 			suite.addTest(new TestSuite(ContinuousByteArrayColumnTest.class));
-			suite.addTest(new TestSuite(ContinuousCharArrayColumnTest.class));
+		suite.addTest(new TestSuite(ContinuousCharArrayColumnTest.class));
 			suite.addTest(new TestSuite(ContinuousStringColumnTest.class));
 	
 		//$JUnit-END$
