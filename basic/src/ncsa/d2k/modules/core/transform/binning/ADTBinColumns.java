@@ -302,7 +302,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 				if (!validateBins(binListModel)) {
 						   binListModel.removeAllElements();
 						}
-					 	
+
 				// finished...
 				setup_complete = true;
 			}
@@ -974,8 +974,9 @@ class ADTBinCounts implements BinCounts {
 
 /* 12-02-03 Anca - fixed [bug 136] - moved fix from BinAttributes into this file
 /* 12-04-03 Anca added "unknown" bins for missing values - fixed [bug 134]
- *    			the fix did involve the support class ADTree whose uniqueValues 
+ *    			the fix did involve the support class ADTree whose uniqueValues
  * 			method does not return missing values ('?' or the one returned by getMissinsString())
- * 			in the list of unique values	         
+ * 			in the list of unique values
+  * 12-08-03 list of unique values is not restored after removing all bins. [bug 159]
  */
- 
+

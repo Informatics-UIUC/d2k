@@ -181,7 +181,7 @@ public class ADTCreateBinTree extends DataPrepModule {
 				for (int k = 0; k < bn.length; k++) {
 
 					BinTree.ClassTree ct = (BinTree.ClassTree) bt.get(cn[i]);
-					 
+
 					bl =(BinTree.ClassTree.BinList) ct.get(an[j]);
 					BinTree.ClassTree.Bin b =
 						(BinTree.ClassTree.Bin) bl.get(bn[k]);
@@ -205,19 +205,19 @@ public class ADTCreateBinTree extends DataPrepModule {
 								+ " ,att:"+ condition	+ ")="+ s);
 
 					b.setTally(s);
-					
+
 					totalClassified = totalClassified + s;
 					classTotal = classTotal + s;
 					binListTotal = binListTotal + s;
 				}
-				if(bl != null) {	bl.setTotal(binListTotal); } 
-			//	System.out.println("totalClassified " + totalClassified + " classTotal " + classTotal + " binListTotal " + binListTotal);   
-				
+				if(bl != null) {	bl.setTotal(binListTotal); }
+			//	System.out.println("totalClassified " + totalClassified + " classTotal " + classTotal + " binListTotal " + binListTotal);
+
 			}
 		//	System.out.println("totalClassified " + totalClassified + " classTotal " + classTotal);
 			bt.setClassTotal(cn[i], classTotal);
 		}
-		
+
 		//System.out.println("totalClassified " + totalClassified);
 		bt.setTotalClassified(totalClassified);
 
@@ -250,3 +250,12 @@ public class ADTCreateBinTree extends DataPrepModule {
 
 
 }
+
+
+   /**
+ * QA comments:
+ * 12-08-03: Vered started qa process
+ *           when property "Generate Verbose Output" is set to true - different
+ *           outputs for something that is supposed to be the same input: the binning
+ *           transformation of ADTAutoBin and ADTBinColumns.
+ */
