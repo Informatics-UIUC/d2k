@@ -37,6 +37,26 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ParameterSpac
 
   }
 
+
+  /**
+   * Instantiate a ParameterSpace from primative data types.
+   * @param names the names of the paramters.
+   * @param minValues the minimum parameter values.
+   * @param maxValues the maximum parameter values.
+   * @param defaultValues the default parameter settings.
+   * @param resolutions the parameter resolutions in terms of number of intervals.
+   * @param types the type as an integer as defined in ColumnTypes.
+   * @return a ParameterSpace.
+   */
+  public ParameterSpace createFromData(String [] names,
+                                       double [] minValues,
+                                       double [] maxValues,
+                                       double [] defaultValues,
+                                       int    [] resolutions,
+                                       int    [] types) {
+    return null;
+  }
+
   /**
    * Get the number of parameters that define the space.
    * @return an int value representing the minimum possible value of the parameter.

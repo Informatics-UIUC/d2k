@@ -28,12 +28,31 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * Each column in the table represents a paramter.
    * Row 1 is the minimum parameter value.
    * Row 2 is the maximum parameter value.
-   * Row 3 is the parameter resolution.
-   * Row 4 is the default parameter setting.
-   * Row 5 is the type as an integer as defined in ColumnTypes
-   * @return an int value representing the minimum possible value of the parameter.
+   * Row 3 is the default parameter setting.
+   * Row 4 is the parameter resolution in terms of number of intervals.
+   * Row 5 is the type as an integer as defined in ColumnTypes.
+   * @param table the table representing the parameter space.
+   * @return a ParameterSpace.
    */
   public ParameterSpace createFromTable(Table table);
+
+  /**
+   * Instantiate a ParameterSpace from primative data types.
+   * @param names the names of the paramters.
+   * @param minValues the minimum parameter values.
+   * @param maxValues the maximum parameter values.
+   * @param defaultValues the default parameter settings.
+   * @param resolutions the parameter resolutions in terms of number of intervals.
+   * @param types the type as an integer as defined in ColumnTypes.
+   * @return a ParameterSpace.
+   */
+  public ParameterSpace createFromData(String [] names,
+                                       double [] minValues,
+                                       double [] maxValues,
+                                       double [] defaultValues,
+                                       int    [] resolutions,
+                                       int    [] types);
+
 
   /**
    * Get the number of parameters that define the space.
