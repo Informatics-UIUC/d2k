@@ -723,21 +723,36 @@ public class AttributeConstruction extends HeadlessUIModule {
 
    //headless conversion support
      public void doit() throws Exception{
-       pullInput(0);
+       Table t = (Table) pullInput(0);
 
 
-//       AttributeTransform.Construction[] cons = (AttributeTransform.Construction[])lastCons;
-  //     cons[0].expression;
+      if(lastCons == null)
+        throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
 
 
+       String[] exps = new String[lastCons.length];
 
-       if(lastCons == null)
-         throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+
+       for(int i=0; i<lastCons.length; i++)
+         exps[i] = ((AttributeTransform.Construction)lastCons[i]).expression;
+
+      ConstructionValidator validator = new ConstructionValidator(exps, t);
+
+      if(validator.validate())
        pushOutput(new AttributeTransform(lastCons), 0);
-     }
+
+      else //should never get here
+        throw new Exception("One or more of the configured constructions is either "  +
+                            "malformed or use a label that is not a valid label for " +
+                            "constructions in the input table.\n" +
+                            "Please reconfigure the module via a GUI run.");
+     }//doit
+
      //headless conversion support
 
-}
+
+
+}//AttributeConstruction
 //
 // QA comments:
 // 3-4-03 vered started qa:
