@@ -1,0 +1,18 @@
+
+		Port Names used in D2K
+
+In an attempt to use consistent names for D2K input and output ports (as 
+much as is reasonably possible), please consult and update this document
+as you update your user modules.   These port names are the input and output 
+display names returned by "getInputName()" and "getOutputName()".   Try to 
+be consistent when possible so the user isn't overwhelmed with 15 names for
+the 'same' information.
+
+Please use the format shown (commas separating different pieces of information)
+so that we can sort & manage the information at a later date.  Thanks!
+
+
+Port Name, Port Type, Description of Information, Module Name
+
+
+
