@@ -13,7 +13,7 @@ package ncsa.d2k.modules.core.io.sql;
 import ncsa.d2k.core.modules.UIModule;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.core.modules.ViewModule;
-import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.prediction.naivebayes.*;
@@ -119,6 +119,12 @@ public class SaveModelToDB extends UIModule {
       default: return "NO SUCH OUTPUT!";
     }
   }
+
+    //QA Anca added this: 
+    public PropertyDescription[] getPropertiesDescriptions() {  
+        // so that "WindowName" property is invisible  
+        return new PropertyDescription[0];   
+    } 
 
   protected String[] getFieldNameMapping () {
     return null;
