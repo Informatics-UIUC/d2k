@@ -61,7 +61,7 @@ public class LWRPlotVis extends VisModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
+		String []in = {"ncsa.d2k.modules.core.datatype.table.PredictionTable",
 					"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return in;
     }
@@ -81,7 +81,10 @@ public class LWRPlotVis extends VisModule
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "The ExampleTable to plot.";
+		if (i == 0)
+			return "The PredictionTable to plot.";
+		else
+			return "A original data to graph in a ScatterPlot.";
     }
 
     /**
@@ -178,17 +181,17 @@ public class LWRPlotVis extends VisModule
 		JTable jTable = null;
 		//boolean [][]selected = null;
 
-		TableImpl plotTable;
-		TableImpl scatterTable;
+		PredictionTableImpl plotTable;
+		ExampleTableImpl scatterTable;
 
 		public void initView(ViewModule m) {
 		}
 
 		public void setInput(Object o, int i) {
 			if(i == 0)
-				plotTable = (TableImpl)o;
+				plotTable = (PredictionTableImpl)o;
 			else if(i == 1) {
-				scatterTable = (TableImpl)o;
+				scatterTable = (ExampleTableImpl)o;
 				setup();
 			}
 	 	}
@@ -393,7 +396,7 @@ public class LWRPlotVis extends VisModule
 			//if (iCol >0) {
 			if (iRow == 0){
 
-				DataSet tmpset = new DataSet("scatter-popup", Color.blue, 3*iCol, 3*iCol+1);
+				DataSet tmpset = new DataSet("scatter-popup", Color.blue, iCol, 2*iCol+scatterTable.getNumInputFeatures()+1);
 				set = new DataSet[1];
 				set[0] = tmpset;
 
@@ -562,7 +565,7 @@ public class LWRPlotVis extends VisModule
 			//ColumnPlotTableModel() {
 			LWRPlotTableModel() {
 
-				int numAttributes = scatterTable.getNumColumns()-1;
+				int numAttributes = scatterTable.getNumInputFeatures();
 				images = new ImageIcon[numAttributes+1][numAttributes];
 				//selected = new boolean[numAttributes+1][numAttributes];
 				GraphSettings settings = new GraphSettings();
@@ -583,19 +586,34 @@ public class LWRPlotVis extends VisModule
 					for(int j = 0; j < numAttributes; j++) {	//iterate over column
 						if (i == 0) {
 							DataSet []data = new DataSet[1];
-							data[0] = new DataSet("", Color.red, 3*j, 3*j+1);
+							data[0] = new DataSet("", Color.red, j, 2*j+scatterTable.getNumInputFeatures()+1);
 							Graph graph = createSmallFunctionGraph(plotTable, data, settings);
 							img = f.createImage(ROW_WIDTH, ROW_HEIGHT);
 							Graphics imgG = img.getGraphics();
 							graph.setSize(new Dimension(ROW_WIDTH, ROW_HEIGHT));
 							graph.paintComponent(imgG);
+							/*DataSet []data = new DataSet[1];
+							data[0] = new DataSet("",
+								Color.red, j, 0);
+							settings.xaxis = scatterTable.getColumnLabel(j);
+							settings.yaxis = scatterTable.getColumnLabel(0);
+
+							Graph graph = createSmallScatterGraph(scatterTable, data, settings);
+							img = f.createImage(ROW_WIDTH, ROW_HEIGHT);
+							Graphics imgG = img.getGraphics();
+							graph.setSize(new Dimension(ROW_WIDTH, ROW_HEIGHT));
+							graph.paintComponent(imgG);*/
+							
+
 						}
 						else {
 							DataSet []data = new DataSet[1];
 							data[0] = new DataSet("",
 								Color.red, j, i-1);
-							settings.xaxis = scatterTable.getColumnLabel(j);
-							settings.yaxis = scatterTable.getColumnLabel(i-1);
+							//settings.xaxis = scatterTable.getColumnLabel(j);
+							//settings.yaxis = scatterTable.getColumnLabel(i-1);
+							settings.xaxis = getColumnName2(j);
+							settings.yaxis = getColumnName2(i-1);
 
 							Graph graph = createSmallScatterGraph(scatterTable, data, settings);
 							img = f.createImage(ROW_WIDTH, ROW_HEIGHT);
@@ -615,14 +633,25 @@ public class LWRPlotVis extends VisModule
 				The first column shows the output variables.
 			*/
 			public int getColumnCount() {
-				return scatterTable.getNumColumns();
+				//return scatterTable.getNumColumns();
+				return scatterTable.getNumInputFeatures()+1;
 			}
 
 			/**
 				There are the same number of rows as output features.
 			*/
 			public int getRowCount() {
-				return scatterTable.getNumColumns();
+				//return scatterTable.getNumColumns();
+				return scatterTable.getNumInputFeatures()+1;
+			}
+
+			public String getColumnName2(int col) {
+				int[] inputs = scatterTable.getInputFeatures();
+				if (col < scatterTable.getNumInputFeatures())
+					return scatterTable.getColumnLabel(inputs[col]);
+				else
+					return scatterTable.getColumnLabel(scatterTable.getNumColumns()-1);
+
 			}
 
 			public String getColumnName(int col) {
@@ -631,6 +660,7 @@ public class LWRPlotVis extends VisModule
 				else
 					return scatterTable.getColumnLabel(col-1);
 			}
+
 
 			public Object getValueAt(int row, int col) {
 				if(col == 0)

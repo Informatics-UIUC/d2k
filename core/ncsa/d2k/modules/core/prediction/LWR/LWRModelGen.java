@@ -95,6 +95,7 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 	int kernelSelector;
 	int distanceSelector;
 	int nearestNeighbors;
+	int numberOfPoints = 60;
 	boolean useNearestNeighbors;
 
 	public void setKernelSelector(int x){
@@ -107,6 +108,10 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 
 	public void setNearestNeighbors(int x){
 		nearestNeighbors = x;
+	}
+
+	public void setNumberOfPoints(int z){
+		numberOfPoints = z;
 	}
 
 	public void setUseNearestNeighbors(boolean a){
@@ -125,6 +130,10 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 		return nearestNeighbors;
 	}
 
+	public int getNumberOfPoints(){
+		return numberOfPoints;
+	}
+
 	public boolean getUseNearestNeighbors(){
 		return useNearestNeighbors;
 	}
@@ -135,9 +144,9 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 	*/
 
 	public void doit() throws Exception {
-		TableImpl Traintable = (TableImpl) pullInput(0);
-		TableImpl Testtable = (TableImpl) pullInput(1);
-		model = new LWRModel(Traintable, Testtable, kernelSelector, distanceSelector, nearestNeighbors, useNearestNeighbors);
+		ExampleTable Traintable = (ExampleTable) pullInput(0);
+		ExampleTable Testtable = (ExampleTable) pullInput(1);
+		model = new LWRModel(Traintable, kernelSelector, distanceSelector, nearestNeighbors, useNearestNeighbors, numberOfPoints);
 		pushOutput(model, 0);
 	}
 

@@ -97,6 +97,7 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	public Table makeTable(NumericColumn col, int i) {
 		TableImpl theTable = (TableImpl)DefaultTableFactory.getInstance().createTable(trainTable.getNumColumns());
 
+		//initializing a new table
 		for (int t=0; t<trainTable.getNumColumns(); t++){
 			double[] work = new double[col.getNumRows()];
 			for (int j=0; j<col.getNumRows(); j++){
