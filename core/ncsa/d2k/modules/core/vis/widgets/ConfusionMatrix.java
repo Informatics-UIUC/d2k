@@ -87,7 +87,6 @@ public class ConfusionMatrix extends JScrollPane {
 			idx++;
 		}
 
-
 		// calculate the confusion matrix
 		int[][] d = new int[outs.length][preds.length];
 
@@ -101,7 +100,7 @@ public class ConfusionMatrix extends JScrollPane {
 				}
 			}
 			for(int i = 0; i < preds.length; i++) {
-				if(vt.getString(row, p).equals(outs[i])) {
+				if(vt.getString(row, p).equals(preds[i])) {
 					predicted = i;
 					break;
 				}
