@@ -1,59 +1,30 @@
-//package ncsa.d2k.modules.projects.gpape;
 package ncsa.d2k.modules.core.datatype.table.transformations;
 
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 
-public class ReplaceNominalValuesWithIntegersTransform implements ReversibleTransformation {
-	static final long serialVersionUID = 2772230274372026572L;
+/**
+ * Encapsulates a (reversible) transformation on a <code>MutableTable</code>
+ * that replaces unique nominal column values with unique integers.
+ */
+public class ReplaceNominalValuesWithIntegersTransform
+   implements ReversibleTransformation {
 
-   /*public String getModuleInfo() {
-      return "Replaces values in nominal columns of a MutableTable with unique integers.";
-   }
-
-   public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-      return i;
-   }
-
-   public String getInputInfo(int index) {
-      if (index == 0)
-         return "A MutableTable with nominal columns.";
-      else
-         return "This module has no such input.";
-   }
-
-   public String[] getOutputTypes() {
-      String[] o = {"ncsa.d2k.modules.core.datatype.table.MutableTable",
-                    "ncsa.d2k.modules.projects.gpape.ReplaceNominalValuesWithIntegers"};
-      return o;
-   }
-
-   public String getOutputInfo(int index) {
-      if (index == 0)
-         return "The transformed MutableTable";
-      else if (index == 1)
-         return "This module, with the appropriate transformation logic.";
-      else
-         return "This module has no such output.";
-   }
-   */
-
+   static final long serialVersionUID = 2772230274372026572L;
 
    private int[] indirection;
-   private HashMap nominalToInteger[], integerToNominal[];
+   private HashMap[] nominalToInteger, integerToNominal;
 
-   //public void doit() {
-
-   //   MutableTable mt = (MutableTable)pullInput(0);
    public ReplaceNominalValuesWithIntegersTransform(MutableTable mt) {
 
       // how many nominal columns do we have?
       int numNominalColumns = 0, totalColumns = mt.getNumColumns();
-      for (int i = 0; i < totalColumns; i++)
-         if (mt.isColumnNominal(i))
+
+      for (int i = 0; i < totalColumns; i++) {
+         if (mt.isColumnNominal(i)) {
             numNominalColumns++;
+         }
+      }
 
       nominalToInteger = new HashMap[numNominalColumns];
       integerToNominal = new HashMap[numNominalColumns];
@@ -62,7 +33,7 @@ public class ReplaceNominalValuesWithIntegersTransform implements ReversibleTran
       indirection = new int[numNominalColumns];
 
       int index = 0;
-      for (int i = 0; i < numNominalColumns; i++)
+      for (int i = 0; i < totalColumns; i++)
          if (mt.isColumnNominal(i))
             indirection[index++] = i;
 
@@ -90,16 +61,35 @@ public class ReplaceNominalValuesWithIntegersTransform implements ReversibleTran
 
       }
 
-      transform(mt);
+      // transform(mt);
 
-      //if (mt instanceof ExampleTable)
-      //  ((ExampleTable)output).addTransformation(this);
+   }
 
-      // mt = null; // really garbage collect mt?
+   public String toMappingString(MutableTable mt) {
 
-      //pushOutput(output, 0);
-      //pushOutput(this, 1);
-		mt.addTransformation(this);
+      if (nominalToInteger.length == 0 || integerToNominal.length == 0)
+         return "empty transformation: " + super.toString();
+
+      StringBuffer sb = new StringBuffer();
+
+      for (int i = 0; i < indirection.length; i++) {
+
+         sb.append("column '");
+         sb.append(mt.getColumnLabel(indirection[i]));
+         sb.append("':\n");
+
+         int size = integerToNominal[i].size();
+         for (int j = 0; j < size; j++) {
+            sb.append(integerToNominal[i].get(new Integer(j)));
+            sb.append(" -> ");
+            sb.append(j);
+            sb.append('\n');
+         }
+
+      }
+
+      return sb.toString();
+
    }
 
    public boolean transform(MutableTable mt) {
@@ -126,7 +116,8 @@ public class ReplaceNominalValuesWithIntegersTransform implements ReversibleTran
       }
 
       //return mt;
-		return true;
+      return true;
+
    }
 
    public boolean untransform(MutableTable mt) {
@@ -154,7 +145,8 @@ public class ReplaceNominalValuesWithIntegersTransform implements ReversibleTran
       }
 
       //return mt;
-		return true;
+      return true;
+
    }
 
 }

@@ -3,161 +3,99 @@ package ncsa.d2k.modules.core.transform.table;
 import java.util.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 
+/**
+ * This module outputs a (reversible) transformation on a
+ * <code>MutableTable</code> that replaces unique nominal column values with
+ * unique integers.
+ */
 public class ReplaceNominalValuesWithIntegers extends ComputeModule {
 
-   public String getModuleInfo() {
-      return "Replaces values in nominal columns of a MutableTable with unique integers.";
-   }
-
-   public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-      return i;
-   }
-
-   public String getInputInfo(int index) {
-      if (index == 0)
-         return "A MutableTable with nominal columns.";
-      else
-         return "This module has no such input.";
-   }
-
-   public String[] getOutputTypes() {
-      String[] o = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-      return o;
-   }
-
-   public String getOutputInfo(int index) {
-      if (index == 0)
-         return "The transformed MutableTable";
-      else if (index == 1)
-         return "This module, with the appropriate transformation logic.";
-      else
-         return "This module has no such output.";
-   }
-
-//   int[] indirection;
-//   HashMap nominalToInteger[], integerToNominal[];
+   private boolean _printMapping = false;
+   public boolean getPrintMapping() { return _printMapping; }
+   public void setPrintMapping(boolean value) { _printMapping = value; }
 
    public void doit() {
 
       MutableTable mt = (MutableTable)pullInput(0);
 
-	  // the Transformation will transform the table and add itself to the list of
-	  // transformations
-	  ReplaceNominalValuesWithIntegersTransform it =
-	  	new ReplaceNominalValuesWithIntegersTransform(mt);
+      ReplaceNominalValuesWithIntegersTransform transform =
+            new ReplaceNominalValuesWithIntegersTransform(mt);
 
-/*      // how many nominal columns do we have?
-      int numNominalColumns = 0, totalColumns = mt.getNumColumns();
-      for (int i = 0; i < totalColumns; i++)
-         if (mt.isColumnNominal(i))
-            numNominalColumns++;
+      if (_printMapping)
+         System.out.println(transform.toMappingString(mt));
 
-      nominalToInteger = new HashMap[numNominalColumns];
-      integerToNominal = new HashMap[numNominalColumns];
-
-      // create the indirection lookup for the nominal columns
-      indirection = new int[numNominalColumns];
-
-      int index = 0;
-      for (int i = 0; i < numNominalColumns; i++)
-         if (mt.isColumnNominal(i))
-            indirection[index++] = i;
-
-      // replace the columns
-      int numRows = mt.getNumRows(), numItems;
-      String item;
-      for (int i = 0; i < indirection.length; i++) {
-
-         nominalToInteger[i] = new HashMap();
-         integerToNominal[i] = new HashMap();
-
-         int col = indirection[i];
-
-         numItems = 0;
-         for (int j = 0; j < numRows; j++) {
-
-            item = mt.getString(j, col);
-            if (!nominalToInteger[i].containsKey(item)) {
-               nominalToInteger[i].put(item, new Integer(numItems));
-               integerToNominal[i].put(new Integer(numItems), item);
-               numItems++;
-            }
-
-         }
-
-      }
-
-      MutableTable output = (MutableTable)transform(mt);
-
-      if (mt instanceof ExampleTable)
-         ((ExampleTable)output).addTransformation(this);
-
-      // mt = null; // really garbage collect mt?
-	  */
-
-      pushOutput(mt, 0);
-      //pushOutput(this, 1);
-   }
-
-   /*public Table transform(Table t) {
-
-      MutableTable mt = (MutableTable)t.copy();
-
-      int numRows = mt.getNumRows();
-      String item, label;
-      for (int i = 0; i < indirection.length; i++) {
-
-         int[] intColumn = new int[numRows];
-
-         int col = indirection[i];
-
-         for (int j = 0; j < numRows; j++) {
-            item = (String)mt.getString(j, col);
-            intColumn[j] = ((Integer)nominalToInteger[i].get(item)).intValue();
-         }
-
-         label = mt.getColumnLabel(col);
-         mt.setColumn(intColumn, col);
-         mt.setColumnLabel(label, col);
-
-      }
-
-      return mt;
+      pushOutput(transform, 0);
 
    }
 
-   public Table untransform(Table t) {
+   public String getInputInfo(int index) {
+      if (index == 0)
+         return "The <i>MutableTable</i> to be used in constructing the " +
+                "transformation.";
+      return null;
+   }
 
-      MutableTable mt = (MutableTable)t.copy();
+   public String getInputName(int index) {
+      if (index == 0)
+         return "Mutable Table";
+      return null;
+   }
 
-      int numRows = mt.getNumRows();
-      Integer item;
-      String label;
-      for (int i = 0; i < indirection.length; i++) {
+   public String[] getInputTypes() {
+      return new String[] {
+         "ncsa.d2k.modules.core.datatype.table.MutableTable"
+      };
+   }
 
-         String[] stringColumn = new String[numRows];
+   public String getModuleInfo() {
+      StringBuffer sb = new StringBuffer("<p>Overview: ");
+      sb.append("This module constructs a reversible transformation to ");
+      sb.append("replace each unique value in every nominal column of a ");
+      sb.append("<i>MutableTable</i> with an integer unique to that column.");
+      sb.append("</p><p>Data Handling: ");
+      sb.append("This module does not modify its input data. Rather, its ");
+      sb.append("output is a <i>ReversibleTransformation</i> that can be ");
+      sb.append("applied downstream.");
+      sb.append("</p>");
+      return sb.toString();
+   }
 
-         int col = indirection[i];
+   public String getModuleName() {
+      return "Replace Nominal Values With Integers";
+   }
 
-         for (int j = 0; j < numRows; j++) {
-            item = new Integer(mt.getInt(j, col));
-            stringColumn[j] = (String)integerToNominal[i].get(item);
-         }
+   public String getOutputInfo(int index) {
+      if (index == 0)
+         return "The <i>ReversibleTransformation</i> that performs the " +
+                "replacement of column values.";
+      return null;
+   }
 
-         label = mt.getColumnLabel(col);
-         mt.setColumn(stringColumn, col);
-         mt.setColumnLabel(label, col);
+   public String getOutputName(int index) {
+      if (index == 0)
+         return "Reversible Transformation";
+      return null;
+   }
 
-      }
+   public String[] getOutputTypes() {
+      return new String[] {
+         "ncsa.d2k.modules.core.datatype.table.ReversibleTransformation"
+      };
+   }
 
-      return mt;
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      PropertyDescription[] pds = new PropertyDescription[1];
+
+      pds[0] = new PropertyDescription("printMapping",
+         "Print Integer Mappings",
+         "If enabled, the nominal-to-integer mappings for each column will " +
+         "be printed to the console.");
+
+      return pds;
 
    }
-   */
 
 }
