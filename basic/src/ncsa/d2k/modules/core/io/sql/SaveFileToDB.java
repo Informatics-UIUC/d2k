@@ -232,7 +232,7 @@ public class SaveFileToDB extends UIModule
             /* Add outline panel and button into the createTable tab */
             Constrain.setConstraints(createTablePanel, newTableInfo,
                       0,0,3,3,GridBagConstraints.HORIZONTAL,GridBagConstraints.NORTH,1,1);
-            Constrain.setConstraints(createTablePanel, cancelAddBtn = new JButton ("     Cancel     "),
+            Constrain.setConstraints(createTablePanel, cancelAddBtn = new JButton ("     Abort     "),
                       1,3,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,1,1);
             cancelAddBtn.addActionListener(this);
             Constrain.setConstraints(createTablePanel, createTableBtn = new JButton ("Create Table"),
@@ -288,7 +288,7 @@ public class SaveFileToDB extends UIModule
                       0,1,3,7,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
             Constrain.setConstraints(appendTablePanel, vtTableInfo,
                       0,8,3,7,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
-            Constrain.setConstraints(appendTablePanel, cancelAppendBtn = new JButton("     Cancel     "),
+            Constrain.setConstraints(appendTablePanel, cancelAppendBtn = new JButton("     Abort     "),
                       1,15,1,1,GridBagConstraints.NONE,GridBagConstraints.EAST,1,1);
             cancelAppendBtn.addActionListener(this);
             Constrain.setConstraints(appendTablePanel, appendTableBtn = new JButton("Append Table"),
