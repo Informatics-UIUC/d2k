@@ -42,7 +42,6 @@ public class ItemSets implements Serializable {
 	public Object userData;
 
     public ItemSets(VerticalTable vt) {
-
 		int numColumns = vt.getNumColumns ();
 		int numRows = this.numExamples = vt.getNumRows ();
 
@@ -82,8 +81,10 @@ public class ItemSets implements Serializable {
 
 		/** Construct the table containing the unique attributes and their
 		 *  counts. */
+
 		int counter = 0;
 		char [] chars = new char [1024];
+		ArrayList set = new ArrayList();
 		for (int i = 0 ; i < numRows ; i++) {
 			for (int j = 0 ; j < numColumns ; j++) {
 				String a = prefix[j];
@@ -101,15 +102,40 @@ public class ItemSets implements Serializable {
 					cnt_and_id[0] = 1;
 					cnt_and_id[1] = counter++;
 					unique.put (item_desc, cnt_and_id);
+					set.add(cnt_and_id);
 				} else
 					cnt_and_id[0]++;
 			}
 		}
 
+		// create the arrays to sort.
+		int [][] vals = new int [set.size()][];
+		for (int i = 0 ; i < set.size();i++) vals[i] = (int[])set.get(i);
+		int [] ind = new int [set.size()];
+		for (int i = 0 ; i < set.size() ; i++) ind[i] = i;
+		this.quickSort (ind, vals, 0, ind.length-1);
+		names = new String [unique.size()];
+		for (int i = 0 ; i < ind.length ; i++) {
+			vals[ind[i]][1] = i;
+		}
+
+		// Now we have the order, the index value in the int array keyed by
+		// name in the unique names hashmap is set correctly. Now we will just
+		// create an array of unique names in the order sorted by frequency.
+		names = new String [unique.size()];
+		Iterator enum = unique.values().iterator();
+		Iterator enum2 = unique.keySet().iterator();
+		while (enum.hasNext ()) {
+			int [] tmp = (int[]) enum.next ();
+			String tmpName = (String) enum2.next ();
+			names[tmp[1]] = tmpName;
+		}
+
 		// We will now sort the unique items on the basis of their frequency distribution
 		// with those items with the highest frequency distribution having the highest indices.
 		// This will allow some optimization fo the search space.
-		HashMap result = new HashMap ();
+
+/*		HashMap result = new HashMap ();
 		int numUnique = unique.size ();
 		names = new String [numUnique];
 		for (int i = 0 ; i < numUnique ;i++) {
@@ -129,12 +155,11 @@ public class ItemSets implements Serializable {
 			}
 			smallestInts[1] = i;
 			names[i] = smallestName;
-
 			result.put (smallestName, smallestInts);
 			unique.remove (smallestName);
 		}
 		unique = result;
-
+*/
 		// Now construct the new representation of the vertical table, where each
 		// entry is represented by an integer.
 		int [][] documents = new int [numRows][numColumns];
@@ -172,6 +197,7 @@ public class ItemSets implements Serializable {
 		ArrayList list = new ArrayList ();
 
 		// for each of the attributes, see if the inputs include the attribute.
+
 		while (keys.hasNext ()) {
 			String name = (String) keys.next ();
 			int[] indx = (int[]) indxs.next ();
@@ -187,7 +213,43 @@ public class ItemSets implements Serializable {
 			for (int i = 0 ; i < size ; i++)
 				outputIndices[i] = ((int[])list.get (i))[1];
 		}
-    }
+	}
+
+	/**
+		Perform a quicksort on the data using the Tri-median method to select the pivot.
+		@param l the first rule.
+		@param r the last rule.
+	*/
+	private void quickSort(int [] ind, int [][] vals, int l, int r) {
+
+		int pivot = (r + l) / 2;
+		int pivotVal = vals[ind[pivot]][0];
+
+		// from position i=l+1 start moving to the right, from j=r-2 start moving
+		// to the left, and swap when the fitness of i is more than the pivot
+		// and j's fitness is less than the pivot
+		int i = l;
+		int j = r;
+		while (i <= j) {
+			while ((i < r) && (vals[ind[i]][0] > pivotVal))
+				i++;
+			while ((j > l) && (vals[ind[j]][0] < pivotVal))
+				j--;
+			if (i <= j) {
+				int swap = ind[i];
+				ind[i] = ind[j];
+				ind[j] = swap;
+				i++;
+				j--;
+			}
+		}
+
+		// sort the two halves
+		if (l < j)
+			quickSort(ind, vals, l, j);
+		if (i < r)
+			quickSort(ind, vals, j+1, r);
+	}
 
 	/**
 	 * Returns an 2D array of booleans with one row for each example, and one bit

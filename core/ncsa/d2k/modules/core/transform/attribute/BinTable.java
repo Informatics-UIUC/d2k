@@ -136,9 +136,9 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 				if (!rmvCol) {
 					newCols[currCol++] = Columnworking;
 				}
-				ins[i] = currCol;
 				newCols[currCol++] = names;
 				names.setLabel(ET.getColumnLabel(ins[i]) + "_Bin");
+				ins[i] = currCol-1;
 		}
 		newCols[currCol] = ET.getColumn(outs[0]);
 		outs[0] = currCol;

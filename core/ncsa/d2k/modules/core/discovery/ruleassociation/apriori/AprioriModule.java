@@ -54,6 +54,8 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 		sNames = null;
 		currentItemsFlags = null;
 		validRules = 0;
+		targetIndices = null;
+		nameAry = null;
 	}
 
 	/**
@@ -290,7 +292,7 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 			MutableIntegerArray mia = lrs.mia;
 
 			// Add each item we have to the current rule
-			for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
+nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 					itemIndex++) {
 
 				// Find the first item in the rule not less than current item.
@@ -298,12 +300,21 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 					ruleIndex++;
 
 				if (rulebuffer[ruleIndex] != items[itemIndex]) {
-					/*if (cardinality == 2) {
-						for (int i = 0, targetIndex = 0 ; i < cardinality; i++) {
-							while (targetIndex < targetIndices.length &&
-								    targetIndices [targetIndex] < rulebuffer[i])
-								targetIndex++;
-							if (targetIndices.length*/
+					if (cardinality == 2) {
+
+						// After we have all the rules of size two, we will know that each rule
+						// will have at least one output item included, because the rules from
+						// which we construct new rules will all contain a target. He we make sure
+						// we ignore any rule that does not contain an output.
+						int targetIndex;
+						for (targetIndex = 0 ; targetIndex < targetIndices.length ;targetIndex++)
+							if (rulebuffer[ruleIndex] == targetIndices[targetIndex])
+								break;
+						if (targetIndex >= targetIndices.length)
+							for (targetIndex = 0 ; targetIndex < targetIndices.length ;targetIndex++)
+								if (items[itemIndex] == targetIndices[targetIndex])
+									break;
+					}
 
 
 					// Find the number of examples that demonstrate the current rule and the new item.
@@ -408,7 +419,8 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 	boolean done = true;
 	boolean [] currentItemsFlags;
 	int numExamples;
-
+	int [] targetIndices;
+	String [] nameAry;
 	public void doit () throws Exception {
 
 		HashMap names = sNames;
@@ -418,7 +430,9 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 			done = false;
 		    ItemSets iss = (ItemSets)this.pullInput(0);
 			sNames = iss.unique;
+			targetIndices = iss.outputIndices;
 			names = sNames;
+			nameAry = iss.names;
 			numExamples = iss.numExamples;
 			cutoff = (int) ((double)numExamples * score);
 			int numItems = names.size();
