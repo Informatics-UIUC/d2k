@@ -37,6 +37,23 @@ public abstract class ConstructionFunction extends Function {
                 Object retVal = ce.evaluate();
                 
                 // return the double[] result
+                if(retVal instanceof float[]) {
+                  float[] fl = (float[])retVal;
+                  double[] ret = new double[fl.length];
+                  for(int i = 0; i < fl.length; i++) {
+                    ret[i] = fl[i];  
+                  }
+                  return ret;
+                }
+                else if(retVal instanceof int[]) {
+                  int[] il = (int[])retVal;  
+                  double[] ret = new double[il.length];
+                  for(int i = 0; i < il.length; i++) {
+                    ret[i] = il[i];  
+                  }
+                  return ret; 
+                }
+                
                 return (double[]) retVal;
         }
 
