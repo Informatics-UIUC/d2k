@@ -136,13 +136,12 @@ public class SQLBinAttributes extends HeadlessUIModule {
 
 	public boolean isReady() {
 			  if (!isInputPipeConnected(3)) {
-				return (getInputPipeSize(0)>0 &&
+			  	return (getInputPipeSize(0)>0 &&
 						getInputPipeSize(1)>0 &&
-						getInputPipeSize(2)>0);
-			  }
-			  return super.isReady();
+						getInputPipeSize(2)>0 );
+			  } 
+			   return super.isReady();
 			}
-
     /**
      * Get the data types for the input parameters
      * @return Connection Wrapper, list of columns chosed, table name, where clause
