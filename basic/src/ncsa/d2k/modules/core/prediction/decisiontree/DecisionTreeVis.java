@@ -534,8 +534,9 @@ public final class DecisionTreeVis
             // get the selected file
             File newFile = jfc.getSelectedFile();
 
-            WriteDecisionTreePMML.writePMML( (DecisionTreeModel) model,
-                                            newFile.getAbsolutePath());
+	    //TODO add back PMML
+            //WriteDecisionTreePMML.writePMML( (DecisionTreeModel) model,
+            //                                newFile.getAbsolutePath());
           }
           catch (Exception e) {
             ncsa.gui.ErrorDialog.showDialog(e, "Error Writing PMML");
