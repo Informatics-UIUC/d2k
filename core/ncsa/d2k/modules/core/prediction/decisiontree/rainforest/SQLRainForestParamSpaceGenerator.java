@@ -45,10 +45,10 @@ public class SQLRainForestParamSpaceGenerator extends AbstractParamSpaceGenerato
    */
   public PropertyDescription [] getPropertiesDescriptions () {
     PropertyDescription [] pds = new PropertyDescription [4];
-    pds[0] = new PropertyDescription (MIN_RATIO, MIN_RATIO, "Ratio of the record on a leaf to in a tree. The tree construction is terminated when this ratio is reached.");
-    pds[1] = new PropertyDescription (MODE_THRESHOLD, MODE_THRESHOLD, "If the number of data records is greater than this threshold, the in-database mode is used. Otherwise, the in-memory mode is used.");
+    pds[0] = new PropertyDescription (MIN_RATIO, MIN_RATIO, "The minimum ratio of records in a leaf to the total number of records in the tree. The tree construction is terminated when this ratio is reached.");
+    pds[1] = new PropertyDescription (MODE_THRESHOLD, MODE_THRESHOLD, "If the number of examples is greater than this threshold, the in-database mode is used. Otherwise, the in-memory mode is used.");
     pds[2] = new PropertyDescription (BIN_NUMBER, BIN_NUMBER, "If the number of distinct values in a numeric attribute is greater than Bin Number, data is grouped into this number of bins.");
-    pds[3] = new PropertyDescription (DOMINATE_RATIO, DOMINATE_RATIO, "Ratio of most-common class to second-most-common class. The tree construction is terminated after this ratio is reached.");
+    pds[3] = new PropertyDescription (DOMINATE_RATIO, DOMINATE_RATIO, "Ratio of most-common class to second-most-common class. The tree construction is terminated when this ratio is reached.");
     return pds;
   }
 }
