@@ -5,11 +5,16 @@ import java.io.*;
 import java.util.*;
 
 /**
- * This class holds itemsets for ruleassociation. Each set is actually
+ * This class holds sets of items for ruleassociation. Each set is actually
  * an example containing a list of items the set contains. The sets
  * are represented as integers, with another string array containing the actual
  * bined string representation of the int. This is much more compact than
  * a vertical table typically.
+ *
+ * Only items that will appear in final rules are included in the output.
+ * Those items are the ones for which the attribute is a possible rule
+ * antecedent or consequent.
+ * 
  * <p>Title: </p>
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2001</p>
@@ -199,7 +204,6 @@ public class ItemSets implements Serializable {
 		int [] ind = new int [set.size()];
 		for (int i = 0 ; i < set.size() ; i++) ind[i] = i;
 		this.quickSort (ind, vals, 0, ind.length-1);
-		names = new String [unique.size()];
 		for (int i = 0 ; i < ind.length ; i++) {
 			vals[ind[i]][1] = i;
 		}
