@@ -7,6 +7,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
+import java.util.Arrays;
 
 /**
  * This is a subset of the original table. It contains an array of the
@@ -183,7 +184,9 @@ public class SparseSubsetTable extends SparseMutableTable {
   //
 
   public int[] getRowIndices(int rowNumber) {
-    return super.getRowIndices(subset[rowNumber]);
+    int[] idx = super.getRowIndicesUnsorted(subset[rowNumber]);
+    Arrays.sort(idx);
+    return idx;
   }
 
   public int[] getRowIndicesUnsorted(int rowNumber) {
