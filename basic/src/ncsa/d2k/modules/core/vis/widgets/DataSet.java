@@ -5,7 +5,7 @@ import java.awt.*;
 public class DataSet implements java.io.Serializable {
    String name;
    public Color color;
-   public int x, y, z;
+   public int x, y, z, g, l;
 
    public DataSet(String name, Color color, int x, int y) {
       this.name = name;
@@ -21,6 +21,17 @@ public class DataSet implements java.io.Serializable {
       this.x = x;
       this.y = y;
       this.z = z;
+   }
+
+   // added to support time cluster bar chart - add an item for granularity
+   public DataSet(String name, Color color, int x, int y, int z, int g, int l) {
+      this.name = name;
+      this.color = color;
+      this.x = x;
+      this.y = y;
+      this.z = z;
+      this.g = g;  // for granularity
+      this.l = l;  // for granularity level
    }
 
    public String toString() {
