@@ -113,6 +113,7 @@ public class ErrorFunctionGenerator extends ComputeModule {
 		JLabel tt = new JLabel("Error Function");
 		tt.setToolTipText(ErrorFunctionGenerator.this.getPropertiesDescriptions()[0].getDescription());
 		this.add ("West",tt);
+		errorsSelection.setSelectedItem(ErrorFunctionName);
 		this.add ("Center",errorsSelection);
 	}
 
@@ -122,8 +123,12 @@ public class ErrorFunctionGenerator extends ComputeModule {
 	 */
 	public boolean updateModule() throws Exception {
 		String newError = (String) errorsSelection.getSelectedItem();
-		if (ErrorFunctionName.equals(newError))return false;
-		else ErrorFunctionName = newError;
+		if (ErrorFunctionName.equals(newError)) {
+			return false;
+		}
+
+		// we have a new error function name.
+		ErrorFunctionName = newError;
 		return true;
 	}
   }
