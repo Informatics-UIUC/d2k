@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.datatype;
 
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
 
 /**
     ADTree is an implementation of the data structure defined by B. Anderson
@@ -402,7 +403,7 @@ public class ADTree extends Node {
 	  @param attribute - array of attribute indexes
 	  @return - the no of the records that have attribute[i] = value
 	            for every i
-
+	
 		NOTE : attribute indexes should be in ascending order
 	*/
 
@@ -435,16 +436,16 @@ public class ADTree extends Node {
 	}
 
 	/**
-
+	
 	  getCount implements an AND like expresion and returns the sums of counts
 	  of all queries.
 	  @param nd - root of the ADTree
 	  @param values - map of attribute, value pairs
 	  @return - the no of the records that have attribute[i] = value
 	            for every i
-
+	
 		NOTE : attribute indexes should be in ascending order
-
+	
 	*/
 	public int getCount(Node nd, TreeMap values) {
 
@@ -581,17 +582,36 @@ public class ADTree extends Node {
 		*/
 
 		TreeSet uniques = (TreeSet) uniqueValues[index];
-		String[] result = new String[uniques.size()];
-		Iterator it = uniques.iterator();
+	    
+	    
+		String[] result;
+		MutableTableImpl tbl = new MutableTableImpl();
+		String missingStringValue = tbl.getMissingString();
+		//find if there are missing values and return only unique non missing values
+		uniques.remove(missingStringValue);
+		
+		//System.out.println("ADTREE : missing values for column " + index + " are " + missing);
+
+		Iterator itnew = uniques.iterator();
 		int i = 0;
-		while (it.hasNext())
-			result[i++] = (String) it.next();
+			result = new String[uniques.size()];
+			//	System.out.println("uniques size " + uniques.size());
+			while (itnew.hasNext()) {
+				String item = (String) itnew.next();
+				result[i++] = item;
+				//			System.out.println("NONMissingValue " + item);
+		}
 		return result;
 
 	}
 
 	public TreeSet getUniqueValuesTreeSet(int index) {
-		return (TreeSet) uniqueValues[index];
+		//		find if there are missing values and return only unique non missing values
+		MutableTableImpl tbl = new MutableTableImpl();
+		String missingStringValue = tbl.getMissingString();
+		TreeSet uniques = (TreeSet) uniqueValues[index];
+		uniques.remove(missingStringValue);
+		return uniques;
 	}
 	//first level of debug
 	boolean debug1 = false;
