@@ -711,7 +711,7 @@ public class FilterExpression implements Expression {
 
                   case OP_NEQ:
 
-                     return ((NominalElement)left).evaluate().equals(
+                     return !((NominalElement)left).evaluate().equals(
 
                         ((ColumnElement)right).evaluateString(rowNumber));
 
