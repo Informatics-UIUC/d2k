@@ -502,8 +502,6 @@ public class DelimitedFileParser implements FlatFileParser {
             delimiterFound = true;
         }
 
-        System.out.println("My DELIM: "+delimiterFound);
-
         if(!delimiterFound) {
             // OK, that didn't work. Lets trim the strings and see if it will work the.
             // read the file in one row at a time
