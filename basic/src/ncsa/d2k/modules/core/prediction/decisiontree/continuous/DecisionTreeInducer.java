@@ -22,7 +22,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     public boolean getPrintEvolvingModels ()              {return this.PrintEvolvingModels;}
     */
 
-  private int MinDecompositionPopulation = 20;
+  //private int MinDecompositionPopulation = 20;
   public void setMinDecompositionPopulation(int value) throws PropertyVetoException {
     if (value < 1) {
       throw new PropertyVetoException(" < 1", null);
@@ -34,7 +34,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     return this.MinDecompositionPopulation;
   }
 
-  private double MinErrorReduction = 0.0;
+  //private double MinErrorReduction = 0.0;
   public void setMinErrorReduction(double value) {
     this.MinErrorReduction = value;
   }
@@ -43,7 +43,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     return this.MinErrorReduction;
   }
 
-  public boolean UseOneHalfSplit = false;
+  //public boolean UseOneHalfSplit = false;
   public void setUseOneHalfSplit(boolean value) {
     this.UseOneHalfSplit = value;
   }
@@ -52,7 +52,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     return this.UseOneHalfSplit;
   }
 
-  public boolean UseMidPointBasedSplit = false;
+  //public boolean UseMidPointBasedSplit = false;
   public void setUseMidPointBasedSplit(boolean value) {
     this.UseMidPointBasedSplit = value;
   }
@@ -61,7 +61,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     return this.UseMidPointBasedSplit;
   }
 
-  public boolean UseMeanBasedSplit = true;
+  //public boolean UseMeanBasedSplit = true;
   public void setUseMeanBasedSplit(boolean value) {
     this.UseMeanBasedSplit = value;
   }
@@ -70,7 +70,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     return this.UseMeanBasedSplit;
   }
 
-  public boolean UsePopulationBasedSplit = false;
+  //public boolean UsePopulationBasedSplit = false;
   public void setUsePopulationBasedSplit(boolean value) {
     this.UsePopulationBasedSplit = value;
   }
@@ -79,7 +79,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     return this.UsePopulationBasedSplit;
   }
 
-  public boolean SaveNodeExamples = false;
+  //public boolean SaveNodeExamples = false;
   public void setSaveNodeExamples(boolean value) {
     this.SaveNodeExamples = value;
   }
@@ -88,7 +88,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     return this.SaveNodeExamples;
   }
 
-  public boolean UseMeanNodeModels = true;
+  //public boolean UseMeanNodeModels = true;
   public void setUseMeanNodeModels(boolean value) {
     this.UseMeanNodeModels = value;
     this.UseLinearNodeModels = !value;
@@ -98,7 +98,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     return this.UseMeanNodeModels;
   }
 
-  public boolean UseLinearNodeModels = false;
+  //public boolean UseLinearNodeModels = false;
   public void setUseLinearNodeModels(boolean value) {
     this.UseLinearNodeModels = value;
     this.UseMeanNodeModels = !value;
@@ -106,6 +106,15 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
 
   public boolean getUseLinearNodeModels() {
     return this.UseLinearNodeModels;
+  }
+
+  //public boolean UseLinearNodeModels = false;
+  public void setTrace(boolean value) {
+    this._Trace = value;
+  }
+
+  public boolean getTrace() {
+    return this._Trace;
   }
 
   int numBiasDimensions = 9;

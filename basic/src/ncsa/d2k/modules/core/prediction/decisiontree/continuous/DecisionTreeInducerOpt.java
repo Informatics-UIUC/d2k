@@ -16,7 +16,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
    boolean UseMeanNodeModels          = true;
    boolean UseLinearNodeModels        = false;
-   boolean UseOneHalfSplit      = false;
+   boolean UseOneHalfSplit            = false;
    boolean UseMidPointBasedSplit      = false;
    boolean UseMeanBasedSplit          = true;
    boolean UsePopulationBasedSplit    = false;
