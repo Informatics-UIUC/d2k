@@ -56,7 +56,7 @@ public class DecisionTreeViewer extends VisModule  {
 
   public String getInputInfo(int index) {
     switch (index) {
-      case 0: return "ViewableDTModel.";
+      case 0: return "Decision Tree Model.";
       default: return "No such input";
     }
   }
@@ -68,7 +68,16 @@ public class DecisionTreeViewer extends VisModule  {
   }
 
   public String getModuleInfo () {
-    return "<html>  <head>      </head>  <body>    Display the decision tree in text format.  </body></html>";
+    String s = "<p> Overview: ";
+    s += "This module displays a decision tree in a tablet form. </p> ";
+    s += "<p> Detailed Description: ";
+    s += "This module takes a decision tree model, and display the rules in text ";
+    s += "using a tablet form. Each rule represents a branch in a tree. The nodes ";
+    s += "in the branch form the IF part of the rule, and the leaf of the branch ";
+    s += "forms the THEN part of the rule.";
+
+    return s;
+
   }
 
   public String[] getOutputTypes () {
@@ -83,6 +92,10 @@ public class DecisionTreeViewer extends VisModule  {
 
   protected String[] getFieldNameMapping () {
     return null;
+  }
+
+  public PropertyDescription[] getPropertiesDescriptions() {
+    return new PropertyDescription[0];
   }
 
   /**
@@ -101,7 +114,7 @@ public class DecisionTreeViewer extends VisModule  {
   public String getInputName(int index) {
     switch(index) {
       case 0:
-        return "DTModel";
+        return "Decision Tree Model";
       default: return "NO SUCH INPUT!";
     }
   }

@@ -61,7 +61,7 @@ public class SQLRainForest extends ReentrantComputeModule {
   // the threshold for choosing in-memory or in-database mode
   // If the totalRow < modeThreshold, the entire data set is retrieved and load in memory.
   // Otherwise, the data set is partitioned at each tree node
-  double modeThreshold = 20000;
+  double modeThreshold = 200000;
   // the ration calculated by: abs(parent node's dominate ratio - child node's dominate ratio)
   // When below this ratio, the child node is pruned.
   double improvementRatio = dominateRatio * 0.05;
@@ -140,7 +140,7 @@ public class SQLRainForest extends ReentrantComputeModule {
 
   public String getOutputInfo(int i) {
     switch (i) {
-      case 0: return "The decision tree model.";
+      case 0: return "Decision tree model.";
       default: return "No such output";
     }
   }
@@ -187,7 +187,7 @@ public class SQLRainForest extends ReentrantComputeModule {
     s += "the requirement of memory. </li>";
     s += "<li>gain ratio (gain/split-info) is used in categorical columns, ";
     s += "but not numeric columns. </li>";
-    s += "<li>minimum-ratio-per-leaf (number_record_in_leaf / total_number_records) is ";
+    s += "<li>minimum-ratio-per-leaf (number-record-in-leaf / total-number-records) is ";
     s += "used, instead of minimum-number-per-leaf. </li>";
     s += "<li>missing values are skipped in computation of each column, ";
     s += "but the records are not removed from the data set. </li> ";
@@ -223,7 +223,7 @@ public class SQLRainForest extends ReentrantComputeModule {
         }
 
   public String getOutputName(int i) {
-    return "TreeModel";
+    return "Decision Tree Model";
   }
 
   public String getModuleName() {
