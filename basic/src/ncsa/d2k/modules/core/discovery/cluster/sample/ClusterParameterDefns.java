@@ -23,7 +23,7 @@ public interface ClusterParameterDefns {
   public static final String MAX_ITERATIONS = "Maximum Number of Iterations";
   public static final String VERBOSE = "Generate Verbose Output";
   public static final String CHECK_MV = "Check for Missing Values";
-  public static final String AUTO_CLUSTER = "Use Distance Threshold to Limit Number of Clusters";
+  public static final String AUTO_CLUSTER = "Use Distance Threshold to Determine Number of Clusters";
 
 }
 

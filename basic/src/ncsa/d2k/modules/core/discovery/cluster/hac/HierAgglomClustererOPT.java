@@ -197,7 +197,7 @@ public class HierAgglomClustererOPT
     s += "</p>";
 
     s += "<p>References: ";
-    s += "A discussion of the Hierarchical Agglomerative clustering can be found in the book ";
+    s += "A discussion of the Hierarchical Agglomerative Clustering can be found in the book ";
     s += "<i>Algorithms for Clustering Data</i>, A.K. Jain and R. C. Dubes, Prentice Hall, 1988. ";
     s += "</p>";
 

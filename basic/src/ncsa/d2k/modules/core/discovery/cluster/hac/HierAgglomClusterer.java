@@ -134,10 +134,10 @@ public class HierAgglomClusterer
                                       DISTANCE_THRESHOLD,
       "This property specifies the percentage of the <i>maximum distance</i> to use " +
        "as a cutoff value to halt cluster agglomeration.  " +
-       "When the distance between the two clusters that are closest exceeds the cutoff value, cluster agglomeration stops, " +
-       "even if more or less than <i>" +
+       "When the distance between the two clusters that are closest exceeds the cutoff value, cluster agglomeration stops, "+
+       "independent of the value of the <i>" +
        NUM_CLUSTERS +
-       "</i> remain.  Lower values for the <i>" +
+       "</i> property.  Lower values for the <i>" +
        DISTANCE_THRESHOLD +
        "</i> result in more clusters.   "+
        "See the <i>Hier. Agglom. Clusterer</i> module information for further details on " +
