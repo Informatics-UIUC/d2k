@@ -117,10 +117,12 @@ public class CreateDelimitedParser extends InputModule {
                     if(lblbtn.isSelected()) {
                         lbllbl.setEnabled(true);
                         lblrow.setEnabled(true);
+                        lblrow.setText("0");
                     }
                     else {
                         lbllbl.setEnabled(false);
                         lblrow.setEnabled(false);
+						lblrow.setText("-1");
                     }
                 }
             });
@@ -149,10 +151,12 @@ public class CreateDelimitedParser extends InputModule {
                     if(typbtn.isSelected()) {
                         typlbl.setEnabled(true);
                         typrow.setEnabled(true);
-                    }
+						typrow.setText("1");
+                   }
                     else {
                         typlbl.setEnabled(false);
                         typrow.setEnabled(false);
+						typrow.setText("-1");
                     }
                 }
             });

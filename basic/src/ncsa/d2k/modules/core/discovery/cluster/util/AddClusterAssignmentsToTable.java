@@ -212,7 +212,9 @@ public class AddClusterAssignmentsToTable
         int[] outs = ((ExampleTable)itable).getOutputFeatures();
         int[] newouts = new int[outs.length + 1];
         System.arraycopy(outs,0,newouts,0,outs.length);
-        newouts[newouts.length-1] = newouts.length-1;
+        //LAM-tlr, I change the following : newouts[newouts.length-1] = newouts.length-1;
+        // to: 
+		newouts[newouts.length-1] = itable.getNumColumns()-1;
         ((ExampleTable)itable).setOutputFeatures(newouts);
       }
       ArrayList resultClusters = cm.getClusters();

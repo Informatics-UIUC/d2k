@@ -329,33 +329,94 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		return testSet;
 	}
 	
+	/**
+	 * when a column is removed, adjust the indices of the remaining input and output
+	 * columns.
+	 * @param pos
+	 */
+	private void adjustRemovedColummn (int pos) {
+		if (inputColumns != null)
+			for (int i = 0 ; i < inputColumns.length ; i++) {
+				if (inputColumns[i] > pos) 
+					inputColumns[i]--;
+			}
+		if (outputColumns != null)
+			for (int i = 0 ; i < outputColumns.length ; i++) {
+				if (outputColumns[i] > pos)
+					outputColumns[i]--;
+			}
+	}
+	
+	/**
+	 * Remove a Column from the Table.
+	 * @param pos the position of the Column to remove
+	 */
+	public void removeColumn(int pos) {
+		super.removeColumn(pos);
+		if (inputColumns != null)
+			for (int i = 0 ; i < inputColumns.length ; i++) {
+				if (inputColumns[i] == pos) {
+					int [] newInputColumns = new int [inputColumns.length-1];
+					System.arraycopy(inputColumns, 0, newInputColumns, 0, i);
+					System.arraycopy(inputColumns, i+1, newInputColumns, i, 
+						newInputColumns.length - i);
+					inputColumns = newInputColumns;
+				}
+			}
+			
+		if (outputColumns != null)
+			for (int i = 0 ; i < outputColumns.length ; i++) {
+				if (outputColumns[i] == pos) {
+					int [] newColumns = new int [outputColumns.length-1];
+					System.arraycopy(outputColumns, 0, newColumns, 0, i);
+					System.arraycopy(outputColumns, i+1, newColumns, i, 
+						newColumns.length - i);
+					outputColumns = newColumns;
+				}
+			}
+			
+		this.adjustRemovedColummn (pos);
+		this.setInputFeatures(inputColumns);
+		this.setOutputFeatures(outputColumns);
+	}
+
+	/**
+	 * Remove a range of columns from the Table.
+	 * @param start the start position of the range to remove
+	 * @param len the number to remove-the length of the range
+	 */
+	public void removeColumns(int start, int len) {
+		for (int i = start + len - 1; i >= start ; i--)
+			this.removeColumn(i);
+	}
+
 	//ANCA added getSubset methods that return ExampleTableImpl 
 	//before these methods were inherited from MutableTableImpl and returned a SubsetTableImpl
 	//The ErrorFunction.evaluate needs subset tables that have the input/output feature information
 	
 	/**
-		 * Gets a subset of this Table's rows, which is actually a shallow
-		 * copy which is subsetted..
-		 * @param pos the start position for the subset
-		 * @param len the length of the subset
-		 * @return a subset of this Table's rows
-		 */
-		public Table getSubset(int pos, int len) {
-			int[] sample = new int[len];
-			for (int i = 0; i < len; i++) {
-				sample[i] = pos + i;
-			}
-			return new ExampleTableImpl(this, sample);
+	 * Gets a subset of this Table's rows, which is actually a shallow
+	 * copy which is subsetted..
+	 * @param pos the start position for the subset
+	 * @param len the length of the subset
+	 * @return a subset of this Table's rows
+	 */
+	public Table getSubset(int pos, int len) {
+		int[] sample = new int[len];
+		for (int i = 0; i < len; i++) {
+			sample[i] = pos + i;
 		}
+		return new ExampleTableImpl(this, sample);
+	}
 
-		/**
-		 * Get a subset of this table.
-		 * @param rows the rows to include in the subset.
-		 * @return a subset table.
-		 */
-		public Table getSubset(int[] rows) {
-				return new ExampleTableImpl(this, rows);
-		}
+	/**
+	 * Get a subset of this table.
+	 * @param rows the rows to include in the subset.
+	 * @return a subset table.
+	 */
+	public Table getSubset(int[] rows) {
+			return new ExampleTableImpl(this, rows);
+	}
 
 	///////////// Copying ////////////////////
 
