@@ -17,7 +17,7 @@ eA==" label="WEKA_Apriori.itn">
         <destination alias="WEKA_ReadARFF" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="fileName" value="/Users/lauvil/data/UCI-arff/mushroom.arff"/>
+      <property name="fileName" value="data/weka/UCI-arff/mushroom.arff"/>
       <property name="fileFilterExtension" value=""/>
     </module>
     <module alias="WEKA_Apriori" classname="ncsa.d2k.modules.weka.association.WEKA_Apriori" xloc="370" yloc="17">

@@ -26,7 +26,7 @@ ZXNNb2RlbFByb2R1Y2VyeA==" label="WEKA_Bayes.itn">
         <destination alias="WEKA_ReadARFF" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="fileName" value="/Users/lauvil/data/UCI-arff/iris.arff"/>
+      <property name="fileName" value="data/weka/UCI-arff/iris.arff"/>
       <property name="fileFilterExtension" value=""/>
     </module>
     <module alias="WEKA_CVClassifierEvaluator" classname="ncsa.d2k.modules.weka.evaluation.WEKA_CVClassifierEvaluator" xloc="400" yloc="65">

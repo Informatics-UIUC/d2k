@@ -39,7 +39,7 @@ ZWN0aW9uRXZhbHVhdGlvbl9DRlN4" label="WEKA_AttSel.itn">
         <destination alias="WEKA_ReadARFF" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="fileName" value="/Users/lauvil/data/UCI-arff/iris.arff"/>
+      <property name="fileName" value="data/weka/UCI-arff/iris.arff"/>
       <property name="fileFilterExtension" value=""/>
     </module>
     <module alias="WEKA_AttributeSelector" classname="ncsa.d2k.modules.weka.attributeSelection.WEKA_AttributeSelector" xloc="487" yloc="65">
