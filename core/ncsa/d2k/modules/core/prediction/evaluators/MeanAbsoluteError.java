@@ -23,6 +23,7 @@ public class MeanAbsoluteError extends ncsa.d2k.modules.core.prediction.evaluato
 	public String getOutputInfo (int index) {
 		switch (index) {
 			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"error metric\">    <Text>A Table with the mean absolute  error for each feature in a separate column, rows are the different crossValidation tests. </Text>  </Info></D2K>";
+			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"average\">    <Text>The average of all the cross-validation trials (for the first output)</Text>  </Info></D2K>";
 			default: return "No such output";
 		}
 	}

@@ -93,7 +93,7 @@ public class RegressionModelGenerator extends ModelGeneratorModule
 		return "Multivariate Regression Model Generator";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"/*,
+		String[] s= {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTable"/*,
 			"ncsa.d2k.modules.compute.learning.optimize.util.Solution"*/};
 		return s;
 	}
@@ -131,7 +131,7 @@ public class RegressionModelGenerator extends ModelGeneratorModule
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.prediction.regression.RegressionModelGenerator$RegressionModel"};
+		String[] s={"ncsa.d2k.modules.core.prediction.regression.RegressionModel"};
 		return s;
 	}
 

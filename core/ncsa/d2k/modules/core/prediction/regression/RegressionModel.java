@@ -1,9 +1,9 @@
 package ncsa.d2k.modules.core.prediction.regression;
 
-import ncsa.d2k.modules.*;
+import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.infrastructure.modules.HasNames;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+//import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 import Jama.*;
@@ -61,23 +61,30 @@ import Jama.*;
 		*/
 		public RegressionModel(ExampleTable et){
 			predictMean=false;
+			TrainTable tt=et.getTrainTable();
+
+			int numRows=tt.getNumRows();
+			int numOuts=tt.getNumOutputFeatures();
+			int numIns=tt.getNumInputFeatures();
 
 			setName("Regression");
-			coefficients=new double[et.getNumOutputFeatures()][];
-			outputNames=new String[et.getNumOutputFeatures()];
-			for(int i=0; i<et.getNumOutputFeatures(); i++){
-				outputNames[i]=et.getColumnLabel(et.getOutputFeatures()[i]);
+			coefficients=new double[numOuts][];
+			outputNames=new String[numOuts];
+			for(int i=0; i<numOuts; i++){
+				outputNames[i]=tt.getColumnLabel(tt.getOutputFeatures()[i]);
 			}
 
 			//get the main matrix (input features)
 			//make sure to make room for a constant
 			try{
-			Matrix matA=new Matrix(et.getNumTrainExamples(),
-									et.getNumInputFeatures()+1);
-			for(int i=0;i<et.getNumTrainExamples(); i++){//row
+			
+			Matrix matA=new Matrix(numRows, numIns+1);
+			
+			for(int i=0;i<numRows; i++){//row
 				matA.set(i, 0, 1.0);//the constant
-				for(int j=0;j<et.getNumInputFeatures(); j++){//column
-					matA.set(i, j+1, ((ExampleTableImpl)et).getTrainInputDouble(i, j));
+				for(int j=0;j<numIns; j++){//column
+					matA.set(i, j+1, tt.getDouble(i,tt.getInputFeatures()[j]));
+												//TrainInputDouble(i, j));
 				}
 			}
 
@@ -88,12 +95,13 @@ import Jama.*;
 			//assign the output being considered to matrix b,
 			//compile the results from solving the regression
 			//for each particular b
-			for(int oi=0; oi<et.getNumOutputFeatures(); oi++){
+			for(int oi=0; oi<numOuts; oi++){
 
 				//get the output/predictions matrix
-				Matrix matb=new Matrix(et.getNumTrainExamples(), 1);
-				for(int i=0;i<et.getNumTrainExamples();i++){
-					matb.set(i, 0, ((ExampleTableImpl)et).getTrainOutputDouble(i,oi));
+				Matrix matb=new Matrix(numRows, 1);
+				for(int i=0;i<numRows;i++){
+					matb.set(i, 0, tt.getDouble(i, tt.getOutputFeatures()[oi]));
+								//getTrainOutputDouble(i,oi));
 				}
 				coefficients[oi]=regression(matA, matb, matATA, matR);
 			}
@@ -111,12 +119,13 @@ import Jama.*;
 
 				//return the mean if it fails
 				predictMean=true;
-				mean=new double[et.getNumOutputFeatures()];
-				for(int j=0;j<et.getNumOutputFeatures(); j++){//column
-					for(int i=0; i<et.getNumTrainExamples(); i++){
-						mean[j]+=((ExampleTableImpl)et).getTrainOutputDouble(i,j);
+				mean=new double[numOuts];
+				for(int j=0;j<numOuts; j++){//column
+					for(int i=0; i<numRows; i++){
+						mean[j]+=tt.getDouble(i,tt.getOutputFeatures()[j]);
+									// ((ExampleTableImpl)et).getTrainOutputDouble(i,j);
 					}
-					mean[j]/=et.getNumTrainExamples();
+					mean[j]/=numRows;
 				}
 			}
 
@@ -151,26 +160,26 @@ import Jama.*;
 	public PredictionTable predict(ExampleTable et){
 
 
-		PredictionTableImpl predTable;
+		PredictionTable predTable;
 		if(et instanceof PredictionTable){
-			predTable=(PredictionTableImpl)et;
+			predTable=(PredictionTable)et;
 		}else{
-			predTable= (PredictionTableImpl)et.toPredictionTable();
+			predTable= et.toPredictionTable();
 		}
 
 		//if there are no spots for pred columns
 		if(predTable.getNumOutputFeatures()==0){
 			for(int i=0; i<outputNames.length; i++){
-				DoubleColumn dc=new DoubleColumn(et.getNumRows());
-				dc.setLabel(outputNames[i]);
-				predTable.addPredictionColumn(dc);
+				//DoubleColumn dc=new DoubleColumn(et.getNumRows());
+				//dc.setLabel(outputNames[i]);
+				predTable.addPredictionColumn(new double[et.getNumRows()],outputNames[i]);
 			}
 		}
 		int exampleCount=predTable.getNumRows();
 		for(int e=0; e<exampleCount; e++){
 			for(int oi=0; oi<outputNames.length; oi++){
 				double sum;
-				if(!predictMean){
+				sb.append(if(!predictMean){
 					sum=0.0;
 					sum+=coefficients[oi][0];
 					for(int i=0; i<et.getNumInputFeatures();i++){
@@ -181,7 +190,7 @@ import Jama.*;
 				}else{
 					sum=mean[oi];
 				}
-				predTable.setDouble(sum, e, predTable.getPredictionSet()[oi]);
+				predTable.setDoublePrediction(sum, e, oi);
 
 			}
 		}
@@ -223,7 +232,7 @@ import Jama.*;
 			return "RegressionModel";
 		}
 		public String[] getInputTypes(){
-			String[] s= {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+			String[] s= {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTable"};
 			return s;
 		}
 
@@ -250,7 +259,7 @@ import Jama.*;
 			}
 		}
 		public String[] getOutputTypes(){
-			String[] s={"ncsa.d2k.modules.core.datatype.table.basic.PredictionTableImpl"};
+			String[] s={"ncsa.d2k.modules.core.datatype.table.basic.PredictionTable"};
 			return s;
 		}
 
