@@ -1104,8 +1104,8 @@ public class ExampleTableImpl
    */
   public void insertRow(int[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1115,8 +1115,8 @@ public class ExampleTableImpl
    */
   public void insertRow(float[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1126,8 +1126,8 @@ public class ExampleTableImpl
    */
   public void insertRow(double[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1137,8 +1137,8 @@ public class ExampleTableImpl
    */
   public void insertRow(long[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1148,8 +1148,8 @@ public class ExampleTableImpl
    */
   public void insertRow(short[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1159,8 +1159,8 @@ public class ExampleTableImpl
    */
   public void insertRow(boolean[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1170,8 +1170,8 @@ public class ExampleTableImpl
    */
   public void insertRow(String[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1181,8 +1181,8 @@ public class ExampleTableImpl
    */
   public void insertRow(char[][] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1192,8 +1192,8 @@ public class ExampleTableImpl
    */
   public void insertRow(byte[][] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1203,8 +1203,8 @@ public class ExampleTableImpl
    */
   public void insertRow(Object[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1214,8 +1214,8 @@ public class ExampleTableImpl
    */
   public void insertRow(byte[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1225,8 +1225,8 @@ public class ExampleTableImpl
    */
   public void insertRow(char[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
     super.insertRow(newEntry, trainSet[position]);
+    incrementTrainTest(position);
   }
 
   /**
@@ -1235,8 +1235,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(int[] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1245,8 +1245,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(float[] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1255,8 +1255,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(double[] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1265,8 +1265,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(long[] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1275,8 +1275,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(short[] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1285,8 +1285,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(boolean[] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1295,8 +1295,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(String[] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1305,8 +1305,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(char[][] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1315,8 +1315,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(byte[][] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1325,8 +1325,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(Object[] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1335,8 +1335,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(byte[] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1345,8 +1345,8 @@ public class ExampleTableImpl
    * @param position the position to insert the new row
    */
   public void insertColumn(char[] newEntry, int position) {
-    this.incrementInOut(position);
     super.insertColumn(newEntry, position);
+    this.incrementInOut(position);
   }
 
   /**
@@ -1354,8 +1354,8 @@ public class ExampleTableImpl
        @param position the position of the Column to remove
    */
   public void removeColumn(int position) {
-    decrementInOut(position);
     super.removeColumn(position);
+    decrementInOut(position);
   }
 
   /**
@@ -1374,8 +1374,8 @@ public class ExampleTableImpl
    * @param row the row to remove
    */
   public void removeRow(int row) {
-    decrementTrainTest(row);
     super.removeRow(row);
+    decrementTrainTest(row);
   }
 
   /**
@@ -1604,8 +1604,8 @@ public class ExampleTableImpl
                      @param numColumns the number of columns this Table can hold
                  */
                 public void setNumColumns(int numColumns) {
-                  dropInOut(numColumns);
                   super.setNumColumns(numColumns);
+                  dropInOut(numColumns);
                 }
 
   /**
@@ -1628,8 +1628,8 @@ public class ExampleTableImpl
          @param newCapacity a new capacity
      */
     public void setNumRows(int newCapacity) {
-      dropTestTrain(newCapacity);
       super.setNumRows(newCapacity);
+      dropTestTrain(newCapacity);
     }
 
   /////////// Collect the transformations that were performed. /////////
@@ -1723,7 +1723,12 @@ public class ExampleTableImpl
       int idd = 0;
       for (int i = 0; i < testSet.length; i++) {
         if (i != idx) {
-          newtest[idd] = testSet[i];
+          if(testSet[i] > position) {
+            newtest[idd] = testSet[i]--;
+          }
+          else
+            newtest[idd] = testSet[i];
+
           idd++;
         }
       }
@@ -1749,7 +1754,10 @@ public class ExampleTableImpl
       int idd = 0;
       for (int i = 0; i < trainSet.length; i++) {
         if (i != idx) {
-          newttrain[idd] = trainSet[i];
+          if(trainSet[i] > position)
+            newttrain[idd] = trainSet[i]--;
+          else
+            newttrain[idd] = trainSet[i];
           idd++;
         }
       }
@@ -1781,7 +1789,10 @@ public class ExampleTableImpl
       int idd = 0;
       for (int i = 0; i < inputColumns.length; i++) {
         if (i != idx) {
-          newin[idd] = inputColumns[i];
+          if(inputColumns[i] > position)
+            newin[idd] = inputColumns[i]--;
+          else
+            newin[idd] = inputColumns[i];
           idd++;
         }
       }
@@ -1807,7 +1818,11 @@ public class ExampleTableImpl
       int idd = 0;
       for (int i = 0; i < outputColumns.length; i++) {
         if (i != idx) {
-          newout[idd] = outputColumns[i];
+          if(outputColumns[i] > position)
+            newout[idd] = outputColumns[i]--;
+          else
+            newout[idd] = outputColumns[i];
+
           idd++;
         }
       }
