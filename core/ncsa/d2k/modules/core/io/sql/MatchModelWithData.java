@@ -35,8 +35,18 @@ public class MatchModelWithData extends ComputeModule {
   }
 
   public String getModuleInfo () {
-    String text = "Verify the selected model is suitable for the testing data.";
-    return text;
+    String s = "<p> Overview: ";
+    s += "This module determines the compatibility between a model and a data set. </p>";
+    s += "<p> Detailed Description: ";
+    s += "This module compares the selected model and the selected data set for ";
+    s += "compatibility. There are three properties are compared: the output features, ";
+    s += "the number and names of input feature. If any of these three properties ";
+    s += "is different, the selected model cannot be applied to the selected ";
+    s += "data set. ";
+    s += "<p> Restrictions: ";
+    s += "We currently only support Oracle databases and only support decision ";
+    s += "tree models and Naive Bayes models. ";
+    return s;
   }
 
   public String[] getInputTypes () {
@@ -65,9 +75,9 @@ public class MatchModelWithData extends ComputeModule {
   public String getInputName(int index) {
     switch(index) {
       case 0:
-        return "ExampleTable";
+        return "Example Table";
       case 1:
-        return "PredictionModel";
+        return "Prediction Model";
       default: return "NO SUCH INPUT!";
     }
   }
@@ -80,9 +90,9 @@ public class MatchModelWithData extends ComputeModule {
    public String getOutputName(int index) {
     switch(index) {
       case 0:
-        return "ExampleTable";
+        return "Example Table";
       case 1:
-        return "PredictionModel";
+        return "Prediction Model";
       default: return "NO SUCH OUTPUT!";
     }
   }
@@ -98,7 +108,18 @@ public class MatchModelWithData extends ComputeModule {
     ExampleTable et = (ExampleTable)pullInput(0);
     PredictionModelModule mdl = (PredictionModelModule)pullInput(1);
     System.out.println("rows in the testing data set is " + et.getNumRows());
-    //mdl.getTrainingSetSize()
+    // check the first row in the example table. If the first row contains
+    // the strings of data type, the user has not set the property "typeRow"
+    // correctly in data loading.
+    for (int colIdx = 0; colIdx < et.getNumColumns(); colIdx++) {
+      if (et.getString(0,colIdx).equals("double") ||
+          et.getString(0,colIdx).equals("string")) {
+        JOptionPane.showMessageDialog(msgBoard,
+          "The data table has problems. You did not set the property 'typeRow' correctly when loading data.",
+          "Information", JOptionPane.INFORMATION_MESSAGE);
+        return;
+      }
+    }
     int etOutColumn = (et.getOutputFeatures())[0];
     String etOutLabel = et.getColumnLabel(etOutColumn).toUpperCase();
     // database does not allow column name containing "-", therefore in the
@@ -114,8 +135,6 @@ public class MatchModelWithData extends ComputeModule {
     mdlOutLabel = squeezeSpace(mdlOutLabel);
     // Model does not match to data if output labels are different.
     if (!etOutLabel.equals(mdlOutLabel)) {
-      System.out.println("etOutLabel is " + etOutLabel.toUpperCase());
-      System.out.println("mdlOutLabel is " + mdlOutLabel.toUpperCase());
       JOptionPane.showMessageDialog(msgBoard,
         "Output features do not match. You cannot use this model.",
         "Information", JOptionPane.INFORMATION_MESSAGE);
