@@ -585,6 +585,8 @@ public class SQLHTree extends ComputeModule
             if (dataType.equals("NUMBER") ||
                 dataType.equals("INTEGER") ||
                 dataType.equals("FLOAT") ||
+                dataType.equals("SMALLINT") ||
+                dataType.equals("DECIMAL") ||
                 dataType.equals("NUMERIC")) {
               return true;
             }
@@ -1209,6 +1211,7 @@ public class SQLHTree extends ComputeModule
   protected void saveBaseHeadTbl() {
     Column aColumn;
     Head aHead;
+    String temp_aHead_value = NOTHING;
     int columnOrder;
     String insertStr = NOTHING;
 
@@ -1221,6 +1224,8 @@ public class SQLHTree extends ComputeModule
       if (aHead.valueCnt >= cutOff) {
         insertStr = "insert into " + cubeTableName + " (" +
                   aColumn.columnName + ", set_size, cnt)";
+        if(aHead.value.indexOf("'") != -1)
+          aHead.value = aHead.value.replace('\'', ' ');
         insertStr = insertStr + " values ('" + aHead.value + "', 1, ";
         insertStr = insertStr + aHead.valueCnt + ")";
         try {
