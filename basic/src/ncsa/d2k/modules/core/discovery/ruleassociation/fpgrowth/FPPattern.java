@@ -42,9 +42,7 @@ public class FPPattern implements java.io.Serializable{
 
   public FPPattern(int col, int supp){
     _support = supp;
-    //if (col != null){
       _patternElts.add(col);
-    //}
   }
 
 //================

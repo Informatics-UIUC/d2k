@@ -26,14 +26,6 @@ public class FPProb implements Serializable{
 
 
   public FPProb(FPSparse tab, int[] alpha, int sup) {
-//    if (alpha instanceof Collection){
-//      _alpha = new ArrayList(alpha);
-//    } else {
-//      _alpha = new ArrayList();
-//      for (Iterator it = alpha.iterator(); it.hasNext();){
-//        _alpha.add(it.next());
-//      }
-//    }
     _alpha = alpha;
     _tab = tab;
     _support = sup;

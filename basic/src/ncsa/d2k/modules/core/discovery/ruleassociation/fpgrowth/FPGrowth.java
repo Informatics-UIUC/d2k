@@ -333,7 +333,6 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
 
       FPProcess(prob);
 
-//      if (this.getVerbose()){
         System.out.println("\n\n" + _patterns.size() + " patterns discovered.");
         long stop = System.currentTimeMillis();
         System.out.println((stop-start)/1000 + " seconds");
@@ -368,7 +367,6 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
           }
           System.out.println("Number of frequent " + keys[i] + "-patterns: " + tiihm.get(keys[i]));
         }
-//      }
 
      //CONVERT TO FORMAT USED BY COMPUTE CONFIDENCE MODULE
 
@@ -547,17 +545,8 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
 //      }
       //now we need to get the combinations.
       ArrayList param = new ArrayList(path);
-      //ArrayList combosLst = combos(param);
       int supp =  ((FPTreeNode)path.get(path.size()-1)).getCount();
       combos2(param,supp,alpha);
-//      for (int i = 0, n = combosLst.size(); i < n; i++){
-//        FPPattern pat = (FPPattern)combosLst.get(i);
-//        pat.setSupport(supp);
-//        if (alpha.size() != 0){
-//          pat.addPatternElts(alpha);
-//        }
-//      }
-//      _patterns.addAll(combosLst);
       return;
     }
 
@@ -585,9 +574,6 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
         List l = this.getPath(node);
 
         //now we need to get the combinations.
-        //ArrayList alpha2 = new ArrayList(alpha);
-        //alpha2.add(node.getLabel());
-        //ArrayList combosLst = combos(param);
         int[] newalpha = new int[alpha.length + 1];
         System.arraycopy(alpha,0,newalpha,0,alpha.length);
         newalpha[newalpha.length-1] = node.getLabel();
@@ -603,11 +589,9 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
       //create new pattern DB
       int cnter = 0;
       for (int i2 = 0, n2 = ptrs.size(); i2 < n2; i2++){
-      //for (Iterator it2 = fte.getPointersIter(); it2.hasNext();){
         FPTreeNode node = (FPTreeNode)ptrs.get(i2);
         List l = this.getPath(node);
         for (int i3 = 0, n3 = l.size(); i3 < n3; i3++){
-        //for (Iterator it3 = l.iterator(); it3.hasNext();){
           FPTreeNode node2 = (FPTreeNode)l.get(i3);
           if (colmap[node2.getPosition()] == 0){
             otab.addColumn(((FeatureTableElement)headers.get(node2.getPosition())).getLabel());
@@ -620,8 +604,6 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
       }
 
       //build a new prob and submit it for processing
-      //ArrayList newalpha = new ArrayList(alpha);
-      //newalpha.add(fte.getLabel());
       int[] newalpha = new int[alpha.length + 1];
       System.arraycopy(alpha,0,newalpha,0,alpha.length);
       newalpha[newalpha.length-1] = fte.getLabel();
