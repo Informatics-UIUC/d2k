@@ -1,31 +1,26 @@
 package ncsa.d2k.modules.core.vis;
 
-import java.io.*;
+import com.sun.j3d.utils.behaviors.keyboard.*;
+import com.sun.j3d.utils.geometry.*;
+import com.sun.j3d.utils.picking.*;
+import com.sun.j3d.utils.picking.behaviors.*;
+import com.sun.j3d.utils.universe.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.*;
 import javax.media.j3d.*;
 import javax.swing.*;
-import javax.swing.plaf.*;
 import javax.swing.plaf.basic.*;
 import javax.swing.plaf.metal.*;
 import javax.vecmath.*;
-import com.sun.j3d.utils.picking.*;
-import com.sun.j3d.utils.picking.behaviors.*;
-import com.sun.j3d.utils.geometry.*;
-import com.sun.j3d.utils.universe.*;
-import com.sun.j3d.utils.behaviors.mouse.*;
-import com.sun.j3d.utils.behaviors.keyboard.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.gui.Constrain;
+import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.modules.core.datatype.*;
-
-import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.gui.*;
 
 // author: mbach
 

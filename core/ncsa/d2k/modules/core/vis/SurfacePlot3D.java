@@ -40,7 +40,7 @@ public class SurfacePlot3D extends VisModule {
    }
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.table.basic.Table"}; return i;
+      String[] i = {"ncsa.d2k.modules.core.datatype.table.Table"}; return i;
    }
 
    public String[] getOutputTypes() {

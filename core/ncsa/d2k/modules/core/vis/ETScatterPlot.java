@@ -58,7 +58,7 @@ public class ETScatterPlot extends VisModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTable"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
     }
 

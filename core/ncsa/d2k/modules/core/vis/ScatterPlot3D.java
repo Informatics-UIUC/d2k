@@ -77,7 +77,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
      * @return the input types
      */
     public String[] getInputTypes () {
-        String[] i =  { "ncsa.d2k.modules.core.datatype.table.basic.Table" };
+        String[] i =  { "ncsa.d2k.modules.core.datatype.table.Table" };
         return  i;
     }
 

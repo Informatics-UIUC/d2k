@@ -1,17 +1,9 @@
 package ncsa.d2k.modules.core.vis;
 
-import ncsa.d2k.modules.core.vis.widgets.*;
+import java.io.*;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.gui.*;
-
-import java.awt.*;
-import java.io.*;
-import javax.swing.*;
-
-import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
  * 	A two-dimensional scatter plot.  Displays any two columns of numeric data.
