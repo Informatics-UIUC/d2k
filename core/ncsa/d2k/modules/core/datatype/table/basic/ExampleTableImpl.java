@@ -1668,17 +1668,17 @@ public class ExampleTableImpl
        */
       protected void incrementInOut(int position) {
         for (int i = 0; i < this.inputColumns.length; i++) {
-          if (inputColumns[i] > position) {
+          if (inputColumns[i] >= position) { // !: change
             inputColumns[i]++;
           }
         }
-        setInputFeatures(inputColumns);
+        // setInputFeatures(inputColumns); // !: change
         for (int i = 0; i < this.outputColumns.length; i++) {
-          if (outputColumns[i] > position) {
+          if (outputColumns[i] >= position) { // !: change
             outputColumns[i]++;
           }
         }
-        setOutputFeatures(outputColumns);
+        // setOutputFeatures(outputColumns); // !: change
       }
 
   /**
@@ -1724,7 +1724,7 @@ public class ExampleTableImpl
       for (int i = 0; i < testSet.length; i++) {
         if (i != idx) {
           if(testSet[i] > position) {
-            newtest[idd] = testSet[i]--;
+            newtest[idd] = --testSet[i]; // !: change
           }
           else
             newtest[idd] = testSet[i];
@@ -1755,7 +1755,7 @@ public class ExampleTableImpl
       for (int i = 0; i < trainSet.length; i++) {
         if (i != idx) {
           if(trainSet[i] > position)
-            newttrain[idd] = trainSet[i]--;
+            newttrain[idd] = --trainSet[i]; // !: change
           else
             newttrain[idd] = trainSet[i];
           idd++;
@@ -1771,6 +1771,7 @@ public class ExampleTableImpl
    * @param position
    */
   protected void decrementInOut(int position) {
+
     boolean containsPos = false;
     int idx = -1;
     for (int i = 0; i < inputColumns.length; i++) {
@@ -1790,7 +1791,7 @@ public class ExampleTableImpl
       for (int i = 0; i < inputColumns.length; i++) {
         if (i != idx) {
           if(inputColumns[i] > position)
-            newin[idd] = inputColumns[i]--;
+            newin[idd] = --inputColumns[i]; // !: change
           else
             newin[idd] = inputColumns[i];
           idd++;
@@ -1819,7 +1820,7 @@ public class ExampleTableImpl
       for (int i = 0; i < outputColumns.length; i++) {
         if (i != idx) {
           if(outputColumns[i] > position)
-            newout[idd] = outputColumns[i]--;
+            newout[idd] = --outputColumns[i]; // !: change
           else
             newout[idd] = outputColumns[i];
 
@@ -1828,6 +1829,7 @@ public class ExampleTableImpl
       }
       setOutputFeatures(newout);
     }
+
   }
 
   /**

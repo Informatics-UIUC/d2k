@@ -119,6 +119,7 @@ public class ScalarizeNominals extends DataPrepModule {
       MutableTable table = (MutableTable)pullInput(0);
 
       int[] indices;
+      int[] origInputs = null, origOutputs = null;
 
       // columns with blank labels need to be assigned default ones
 
@@ -130,24 +131,33 @@ public class ScalarizeNominals extends DataPrepModule {
 
       // determine which columns we wish to transform
 
+      boolean tableIsExample = false;
+
       if (table instanceof ExampleTable) {
+
+         tableIsExample = true;
 
          ExampleTable et = (ExampleTable)table;
 
-         int[] inputs  = et.getInputFeatures(),
-               outputs = et.getOutputFeatures();
+         origInputs  = new int[et.getInputFeatures().length];
+         for (int i = 0; i < origInputs.length; i++)
+            origInputs[i] = et.getInputFeatures()[i];
+
+         origOutputs = new int[et.getOutputFeatures().length];
+         for (int i = 0; i < origOutputs.length; i++)
+            origOutputs[i] = et.getOutputFeatures()[i];
 
          // ensure unique column indices
 
          HashMap uniqueIndexMap = new HashMap();
 
-         for (int i = 0; i < inputs.length; i++)
-            if (et.isColumnNominal(inputs[i]))
-                uniqueIndexMap.put(new Integer(inputs[i]), null);
+         for (int i = 0; i < origInputs.length; i++)
+            if (et.isColumnNominal(origInputs[i]))
+                uniqueIndexMap.put(new Integer(origInputs[i]), null);
 
-         for (int i = 0; i < outputs.length; i++)
-            if (et.isColumnNominal(outputs[i]))
-               uniqueIndexMap.put(new Integer(outputs[i]), null);
+         for (int i = 0; i < origOutputs.length; i++)
+            if (et.isColumnNominal(origOutputs[i]))
+               uniqueIndexMap.put(new Integer(origOutputs[i]), null);
 
          // retrieve column indices
 
@@ -159,6 +169,13 @@ public class ScalarizeNominals extends DataPrepModule {
             indices[index++] = ((Integer)iterator.next()).intValue();
 
          Arrays.sort(indices);
+
+         // !:
+         // we'll be removing all input and output columns, so set these to
+         // empty (at least until ExampleTableImpl handles this properly!)
+
+         et.setInputFeatures(new int[0]);
+         et.setOutputFeatures(new int[0]);
 
       }
       else {
@@ -266,6 +283,31 @@ public class ScalarizeNominals extends DataPrepModule {
 
             }
 
+            // !:
+            // are we dealing with an ExampleTable? if so, is the old column
+            // an input, output, or both?
+
+            boolean isInput = false, isOutput = false;
+            if (tableIsExample) {
+
+               ExampleTable et = (ExampleTable)table;
+
+               for (int i = 0; i < origInputs.length; i++) {
+                  if (origInputs[i] == indices[count]) {
+                     isInput = true;
+                     break;
+                  }
+               }
+
+               for (int i = 0; i < origOutputs.length; i++) {
+                  if (origOutputs[i] == indices[count]) {
+                     isOutput = true;
+                     break;
+                  }
+               }
+
+            }
+
             // remove the old column
 
             String columnLabel = table.getColumnLabel(index);
@@ -287,9 +329,9 @@ public class ScalarizeNominals extends DataPrepModule {
                         newColumn[row] = false;
                   }
 
-                  table.insertColumn(newColumn, index);
+                  table.insertColumn(newColumn, index + k);
                   table.setColumnLabel(columnLabel + "=" +
-                     uniqueValues[indirection[k]], index++);
+                     uniqueValues[indirection[k]], index + k);
 
                }
                else { // create new columns as type int
@@ -303,13 +345,54 @@ public class ScalarizeNominals extends DataPrepModule {
                         newColumn[row] = 0;
                   }
 
-                  table.insertColumn(newColumn, index);
+                  table.insertColumn(newColumn, index + k);
                   table.setColumnLabel(columnLabel + "=" +
-                     uniqueValues[indirection[k]], index++);
+                     uniqueValues[indirection[k]], index + k);
 
                }
 
                offset++;
+
+               // !:
+               // we now must add this new column to the list of inputs/outputs
+               // if we are dealing with an ExampleTable. this isn't very
+               // efficient; maybe we should modify the API to handle this
+
+               if (tableIsExample) {
+
+                  ExampleTable et = (ExampleTable)table;
+
+                  if (isInput) {
+
+                     int[] inputs = et.getInputFeatures();
+                     int[] newInputs = new int[inputs.length + 1];
+
+                     for (int i = 0; i < inputs.length; i++)
+                        newInputs[i] = inputs[i];
+                     newInputs[inputs.length] = index + k;
+
+                     Arrays.sort(newInputs);
+
+                     et.setInputFeatures(newInputs);
+
+                  }
+
+                  if (isOutput) {
+
+                     int[] outputs = et.getOutputFeatures();
+                     int[] newOutputs = new int[outputs.length + 1];
+
+                     for (int i = 0; i < outputs.length; i++)
+                        newOutputs[i] = outputs[i];
+                     newOutputs[outputs.length] = index + k;
+
+                     Arrays.sort(newOutputs);
+
+                     et.setOutputFeatures(newOutputs);
+
+                  }
+
+               }
 
             }
 
