@@ -171,15 +171,27 @@ public class VTRandomSubset extends ncsa.d2k.core.modules.DataPrepModule {
 		smallet.setOutputFeatures(rawet.getOutputFeatures());
 		biget.setOutputFeatures(rawet.getOutputFeatures());
 
-		ArrayList trans=rawet.getTransformations();
-		for(int i=0; i<trans.size(); i++){
-			smallet.addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));
-			biget.addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));
+		if(raw instanceof MutableTable && smallet instanceof MutableTable && biget instanceof MutableTable) {
+			MutableTable mt = (MutableTable)rawet;
+			ArrayList trans=mt.getTransformations();
+			for(int i=0; i<trans.size(); i++){
+				//((MutableTable)smallet).addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));
+				//((MutableTable)biget).addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));
+			}
 		}
 		pushOutput(smallet, 1);
 		pushOutput(biget, 0);
 		return;
 
+	}
+
+	if(raw instanceof MutableTable && subsetSmall instanceof MutableTable && subsetBig instanceof MutableTable) {
+		MutableTable mt = (MutableTable)raw;
+		ArrayList trans=mt.getTransformations();
+		for(int i=0; i<trans.size(); i++){
+			//((MutableTable)subsetSmall).addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));
+			//((MutableTable)subsetBig).addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));
+		}
 	}
 	pushOutput(subsetSmall, 1);
 	pushOutput(subsetBig, 0);

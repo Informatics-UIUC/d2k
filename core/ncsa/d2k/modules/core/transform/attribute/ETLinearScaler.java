@@ -129,13 +129,13 @@ public void setClearPreviousTransforms(boolean b){
 	*/
 	public void doit () throws Exception {
 
-		ExampleTable et=(ExampleTable)pullInput(0);
-		et=(ExampleTable)transform(et);
+		ExampleTableImpl et=(ExampleTableImpl)pullInput(0);
+		et=(ExampleTableImpl)transform(et);
 		if(clearPreviousTransforms){
 				et.getTransformations().clear();
 		}
 
-		et.addTransformation(this);
+		//et.addTransformation(this);
 		//System.out.println("ETLIN:"+et.getTransformations().size());
 		firstUntransform=true;
 		pushOutput(et, 0);

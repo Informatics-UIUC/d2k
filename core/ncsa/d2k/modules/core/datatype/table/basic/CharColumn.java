@@ -12,6 +12,8 @@ import ncsa.d2k.util.*;
  */
 final public class CharColumn extends AbstractColumn implements TextualColumn {
 
+	static final long serialVersionUID = 4400422800710542291L;	
+
     /** the internal representation of this Column */
     private char[] internal = null;
 

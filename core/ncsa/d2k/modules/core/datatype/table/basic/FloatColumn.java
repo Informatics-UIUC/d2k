@@ -16,6 +16,8 @@ import java.util.*;
  */
 final public class FloatColumn extends AbstractColumn implements NumericColumn {
 
+	static final long serialVersionUID = 7079197888923314281L;
+
     private float min, max;
     private float emptyValue = Float.MIN_VALUE;
 

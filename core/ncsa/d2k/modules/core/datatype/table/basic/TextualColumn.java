@@ -8,7 +8,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
  <br>
  */
 public interface TextualColumn extends Column {
-
+	static final long serialVersionUID = -3415736840495933396L;
 	/**
 	 * Trim any excess storage from the internal buffer for this TextualColumn.
 	 */

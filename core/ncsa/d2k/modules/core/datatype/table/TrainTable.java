@@ -7,6 +7,8 @@ package ncsa.d2k.modules.core.datatype.table;
  */
 public interface TrainTable extends ExampleTable {
 
+	static final long serialVersionUID = -6278945296824621689L;
+
     /**
      * Get the example table from which this table was derived.
 	 * @return the example table from which this table was derived

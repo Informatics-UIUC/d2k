@@ -15,6 +15,8 @@ import java.util.*;
  did not have any outputs, it is up to the ModelModule to add prediction Columns.
  */
 public class PredictionTableImpl extends ExampleTableImpl implements PredictionTable {
+	static final long serialVersionUID = -7087521328197567748L;
+
     protected int[] predictions;
     private static final String PRED = " Predictions";
 

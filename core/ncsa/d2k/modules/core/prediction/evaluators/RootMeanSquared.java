@@ -1,11 +1,11 @@
 package ncsa.d2k.modules.core.prediction.evaluators;
 
 import ncsa.d2k.core.modules.ComputeModule;
-import ncsa.d2k.modules.TransformationModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.ArrayList;
 import java.io.Serializable;
+
 /**
 	RootMeanSquaredjava
 
@@ -18,7 +18,7 @@ import java.io.Serializable;
 
 
 */
-public class RootMeanSquared extends ncsa.d2k.core.modules.ComputeModule 
+public class RootMeanSquared extends ncsa.d2k.core.modules.ComputeModule
 {
 
 	/**
@@ -140,12 +140,18 @@ public class RootMeanSquared extends ncsa.d2k.core.modules.ComputeModule
 	}
 
 	protected void untransformTable(TestTable tt){
-		ArrayList transforms=tt.getTransformations();
+		ArrayList transforms=((TestTableImpl)tt).getTransformations();
 		//make sure to untransform in reverse order
 		int origSize=transforms.size()-1;
 		//System.out.println(origSize);
+
+		// MODIFIED BY DC 7.16.02
+		// Changed to support new Transformation.  Removed TransformationModule
 		for(int i=origSize; i>=0; i--){
-			tt=(TestTable)((TransformationModule)(transforms.get(i))).untransform(tt);
+			Transformation trans = (Transformation)transforms.get(i);
+			if(trans instanceof ReversibleTransformation && tt instanceof MutableTable)
+				//tt=(TestTable)((Transformation)(transforms.get(i))).untransform(tt);
+				((ReversibleTransformation)trans).untransform((MutableTable)tt);
 		}
 	}
 	protected void computeError(TestTable tt, int m){

@@ -9,6 +9,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 */
 public interface NumericColumn extends Column {
 
+	static final long serialVersionUID = -8231597566891195839L;
+
     //////////////////////////////////////
     //// Accessing Metadata
     /**

@@ -17,9 +17,14 @@ import java.util.*;
  */
 public class TableImpl extends AbstractTable implements MutableTable {
 
+	static final long serialVersionUID = 2152647679198922423L;
+
    private static TableFactory tableFactory = DefaultTableFactory.getInstance();
 
     protected Column[] columns = null;
+
+   /** list of transformations performed. */
+    protected ArrayList transformations = new ArrayList();
 
    /**
     * Create a new Table with zero columns.
@@ -1313,4 +1318,22 @@ public class TableImpl extends AbstractTable implements MutableTable {
    public ExampleTable toExampleTable() {
       return new ExampleTableImpl(this);
    }
+
+    /////////// Collect the transformations that were performed. /////////
+    /**
+    	Add the transformation to the list.
+    	@param tm the Transformation that performed the reversable transform.
+     */
+    public void addTransformation (Transformation tm) {
+        transformations.add(tm);
+    }
+
+    /**
+    	Returns the list of all reversable transformations there were performed
+    	on the original dataset.
+    	@returns an ArrayList containing the Transformation which transformed the data.
+     */
+    public ArrayList getTransformations () {
+        return  transformations;
+    }
 }

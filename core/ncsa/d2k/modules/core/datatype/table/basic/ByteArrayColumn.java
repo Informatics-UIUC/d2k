@@ -19,6 +19,8 @@ import ncsa.util.*;
  */
 final public class ByteArrayColumn extends AbstractColumn implements TextualColumn {
 
+	static final long serialVersionUID = 4081605254880124454L;
+
     /** the internal representation of this Column */
     private byte[][] internal = null;
 

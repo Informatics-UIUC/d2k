@@ -22,6 +22,8 @@ import java.io.*;
  */
 final public class StringColumn extends ContinuousCharArrayColumn {
 
+	static final long serialVersionUID = 7989129781969763787L;
+
 	/**
 	 * Create a new StringColumn
 	 * @param initialLength the initial number of rows

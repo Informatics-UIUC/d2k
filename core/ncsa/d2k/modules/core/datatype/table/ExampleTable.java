@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.datatype.table;
 
 import java.util.*;
-import ncsa.d2k.modules.TransformationModule;
 
 /**
  This is a Table with some additional features designed to support
@@ -26,19 +25,7 @@ import ncsa.d2k.modules.TransformationModule;
  */
 public interface ExampleTable extends Table {
 
-    /////////// Collect the transformations that were performed. /////////
-    /**
-     Add the transformation to the list.
-     @param tm the TransformationModule that performed the reversable transform.
-     */
-    public void addTransformation (TransformationModule tm);
-
-    /**
-     Returns the list of all reversable transformations there were performed
-     on the original dataset.
-     @returns an ArrayList containing the TransformationModules which transformed the data.
-     */
-    public ArrayList getTransformations ();
+  static final long serialVersionUID = 6037200533380375292L;
 
     //////////////  Input, output, test and train. ///////////////
     /**

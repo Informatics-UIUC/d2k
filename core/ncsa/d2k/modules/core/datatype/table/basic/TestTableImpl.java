@@ -14,7 +14,7 @@ import java.util.*;
  */
 public final class TestTableImpl extends PredictionTableImpl implements TestTable {
 
-   static final long serialVersionUID = -7408690070856124087L;
+	static final long serialVersionUID = -7408690070856124087L;
 
    private ExampleTable original;
 

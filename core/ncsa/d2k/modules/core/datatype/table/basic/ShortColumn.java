@@ -16,6 +16,8 @@ import java.util.*;
  */
 final public class ShortColumn extends AbstractColumn implements NumericColumn {
 
+	static final long serialVersionUID = 4529414048084787224L;
+
     private short min, max;
     private static short emptyValue = Short.MIN_VALUE;
 

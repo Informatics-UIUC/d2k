@@ -9,6 +9,9 @@ import java.util.*;
  * to all Columns.
  */
 abstract public class AbstractColumn implements Column {
+
+	static final long serialVersionUID = -2585038024480240364L;
+
 	private String label;
 	private String comment;
 	private boolean isNominal;

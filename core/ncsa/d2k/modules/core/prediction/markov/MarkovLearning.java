@@ -9,13 +9,14 @@ package ncsa.d2k.modules.core.prediction.markov;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.io.*;
 import java.util.*;
 import java.text.*;
 
 
 
-public class MarkovLearning extends ncsa.d2k.core.modules.ComputeModule 
+public class MarkovLearning extends ncsa.d2k.core.modules.ComputeModule
   {
 
   //////////////////////
@@ -98,7 +99,7 @@ public class MarkovLearning extends ncsa.d2k.core.modules.ComputeModule
   public void doit()
     {
     // pull inputs //
-    ExampleTable examples_table = (ExampleTable) this.pullInput(0);
+    ExampleTableImpl examples_table = (ExampleTableImpl) this.pullInput(0);
     Table bias_table     = (Table) this.pullInput(1);
 
     // extract bias parameters */

@@ -5,6 +5,8 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.core.modules.*;
 import java.util.ArrayList;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.*;
+
 /**
 	UntransformModule.java
 
@@ -33,7 +35,7 @@ public class UntransformModule extends ncsa.d2k.core.modules.ComputeModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return types;
 	}
 
@@ -53,7 +55,7 @@ public class UntransformModule extends ncsa.d2k.core.modules.ComputeModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return types;
 	}
 
@@ -69,7 +71,7 @@ public class UntransformModule extends ncsa.d2k.core.modules.ComputeModule
 		Does it
 	*/
 	public void doit() throws Exception {
-		ExampleTable et=(ExampleTable)pullInput(0);
+		MutableTable et=(MutableTable)pullInput(0);
 
 
 		ArrayList transforms=et.getTransformations();
@@ -77,7 +79,7 @@ public class UntransformModule extends ncsa.d2k.core.modules.ComputeModule
 		//System.out.println(transforms.size());
 		//make sure to untransform in reverse order
 		for(int i=transforms.size()-1; i>=0; i--){
-			((ncsa.d2k.modules.TransformationModule)(transforms.get(i))).untransform(et);
+			((ReversibleTransformation)(transforms.get(i))).untransform(et);
 		}
 		pushOutput(et, 0);
 	}

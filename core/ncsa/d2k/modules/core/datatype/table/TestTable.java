@@ -7,6 +7,8 @@ package ncsa.d2k.modules.core.datatype.table;
  */
 public interface TestTable extends PredictionTable {
 
+	static final long serialVersionUID = 68099221590892385L;
+
     /**
      * Get the example table from which this table was derived.
 	 * @return the example table from which this table was derived

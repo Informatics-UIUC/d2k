@@ -1,9 +1,13 @@
 package ncsa.d2k.modules.core.datatype.table;
 
+import java.util.*;
+
 /**
  * MutableTable defines methods used to mutate the contents of a Table.
  */
 public interface MutableTable extends Table {
+
+static final long serialVersionUID = 1505481703513638163L;
 
 	/**
 	 * Add a row to the end of this Table, initialized with integer data.
@@ -707,4 +711,18 @@ public interface MutableTable extends Table {
 		@param newCapacity a new capacity
 	*/
 	public void setNumRows(int newCapacity);
+
+    /////////// Collect the transformations that were performed. /////////
+    /**
+     Add the transformation to the list.
+     @param tm the Transformation that performed the reversable transform.
+     */
+    public void addTransformation (Transformation tm);
+
+    /**
+     Returns the list of all reversable transformations there were performed
+     on the original dataset.
+     @returns an ArrayList containing the Transformation which transformed the data.
+     */
+    public ArrayList getTransformations ();
 }

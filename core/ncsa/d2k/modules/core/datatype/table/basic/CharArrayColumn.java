@@ -20,6 +20,8 @@ import ncsa.util.*;
  */
 final public class CharArrayColumn extends AbstractColumn implements TextualColumn {
 
+	static final long serialVersionUID = -2731483357925113065L;
+
     /** the internal representation of this Column */
     private char[][] internal = null;
 

@@ -42,6 +42,8 @@ package ncsa.d2k.modules.core.datatype.table;
 */
 public interface Table extends java.io.Serializable {
 
+	static final long serialVersionUID = 2508941379956505568L;
+
     /**
 	 * Get an Object from the table.
      * @param row the row of the table

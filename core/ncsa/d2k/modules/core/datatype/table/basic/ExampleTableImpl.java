@@ -11,6 +11,8 @@ import ncsa.d2k.modules.*;
  */
 public class ExampleTableImpl extends TableImpl implements ExampleTable {
 
+	static final long serialVersionUID = -3828377409585479094L;
+
     /** the indicies of the records in the various training sets. */
     protected int trainSet[];
 
@@ -23,8 +25,6 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
     /**the indicies of the attributes that are inputs (to the model). */
     protected int outputColumns[];
 
-    /** list of transformations performed. */
-    protected ArrayList transformations = new ArrayList();
 
     /**
 	 * Create a new ExampleTableImpl
@@ -94,7 +94,12 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
                 System.arraycopy(origTrainSet, 0, trainSet, 0, trainLen);
             }
             //copy the transformations
-            transformations = (ArrayList)tt.getTransformations().clone();
+			try {
+            transformations = (ArrayList)((MutableTable)tt).getTransformations().clone();
+			}
+			catch(Exception e) {
+				transformations = null;
+			}
         }
     }
 
@@ -134,23 +139,7 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
         }
     }
 
-    /////////// Collect the transformations that were performed. /////////
-    /**
-    	Add the transformation to the list.
-    	@param tm the TransformationModule that performed the reversable transform.
-     */
-    public void addTransformation (TransformationModule tm) {
-        transformations.add(tm);
-    }
 
-    /**
-    	Returns the list of all reversable transformations there were performed
-    	on the original dataset.
-    	@returns an ArrayList containing the TransformationModules which transformed the data.
-     */
-    public ArrayList getTransformations () {
-        return  transformations;
-    }
 
     //////////////  Input, output, test and train. ///////////////
     /**

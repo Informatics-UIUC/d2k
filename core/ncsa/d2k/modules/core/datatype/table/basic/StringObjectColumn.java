@@ -18,6 +18,8 @@ import java.util.*;
  */
 final public class StringObjectColumn extends AbstractColumn implements TextualColumn {
 
+	static final long serialVersionUID = 7592751696371096295L;
+
     /** the internal representation of this Column */
     private String[] internal = null;
 

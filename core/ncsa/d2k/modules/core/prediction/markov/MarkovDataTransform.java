@@ -146,12 +146,12 @@ public class MarkovDataTransform extends TransformationModule
 		}
 		TableImpl vt = (TableImpl)DefaultTableFactory.getInstance().createTable(newCols);
 		newCols = null;
-		ExampleTable et = vt.toExampleTable();
+		ExampleTableImpl et = (ExampleTableImpl)vt.toExampleTable();
 		if(t instanceof ExampleTable) {
 			et.setInputFeatures( ((ExampleTable)t).getInputFeatures());
 			et.setOutputFeatures( ((ExampleTable)t).getOutputFeatures());
 		}
-		et.addTransformation(this);
+		//et.addTransformation(this);
 		return et;
 	}
 
@@ -169,12 +169,12 @@ public class MarkovDataTransform extends TransformationModule
 		}
 		TableImpl vt = (TableImpl)DefaultTableFactory.getInstance().createTable(newCols);
 		newCols = null;
-		ExampleTable et = vt.toExampleTable();
+		ExampleTableImpl et = (ExampleTableImpl)vt.toExampleTable();
 		if(t instanceof ExampleTable) {
 			et.setInputFeatures( ((ExampleTable)t).getInputFeatures());
 			et.setOutputFeatures( ((ExampleTable)t).getOutputFeatures());
 		}
-		et.addTransformation(this);
+		//et.addTransformation(this);
 		return et;
 	}
 

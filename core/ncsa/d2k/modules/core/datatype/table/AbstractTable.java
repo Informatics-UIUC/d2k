@@ -4,6 +4,9 @@ package ncsa.d2k.modules.core.datatype.table;
  * AbstractTable implements several meta methods common to all Tables.
  */
 public abstract class AbstractTable implements Table {
+
+ static final long serialVersionUID = 7799682534587814277L;
+
 	private String label;
 	private String comment;
 	private int keyColumn;

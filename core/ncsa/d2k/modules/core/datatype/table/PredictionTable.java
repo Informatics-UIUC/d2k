@@ -13,6 +13,8 @@ package ncsa.d2k.modules.core.datatype.table;
  */
 public interface PredictionTable extends ExampleTable {
 
+	static final long serialVersionUID = -3140627186936758135L;
+
     /**
      * Set the prediction set
 	 * @return the prediciton set

@@ -13,6 +13,8 @@ import ncsa.util.*;
  */
 public class BooleanColumn extends AbstractColumn {
 
+	static final long serialVersionUID = -6442288971928484351L;
+
     /** holds BooleanColumn's internal data rep */
     private boolean[] internal = null;
 

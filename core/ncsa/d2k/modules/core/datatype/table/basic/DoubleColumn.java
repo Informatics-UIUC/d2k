@@ -15,6 +15,7 @@ import java.util.*;
  It is very inefficient for: removals, insertions, additions
  */
 final public class DoubleColumn extends AbstractColumn implements NumericColumn {
+	static final long serialVersionUID = 5514367304811178549L;
 
     private double min, max;
     private double emptyValue = Double.MIN_VALUE;
