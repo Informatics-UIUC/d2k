@@ -433,7 +433,7 @@ public class ParseDSTPToDBTable
   //creating the data source that will hold all of the data of this datafile
   //(pushOutput is called by run method of DSTPDataSource...
   DSTPDataSource dsource = new DSTPDataSource(fileNode, this);
-
+  dsource.join();
 
   }//doit
 
