@@ -227,7 +227,7 @@ final public class ColumnUtilities {
 
 	/**
 		CopyColumn
-		
+
 		make a copy of the column data in a Table (the interface kind of Table) and return
 		it as a Column (The package 'basic' kind of Column)
 
@@ -247,7 +247,7 @@ final public class ColumnUtilities {
 				break;
 			}
 			case (ColumnTypes.FLOAT) : {
-				float[] dat=new float[numRows];	
+				float[] dat=new float[numRows];
 				sourceTable.getColumn(dat, colIndex);
 				c= new FloatColumn(dat);
 				break;
@@ -259,13 +259,13 @@ final public class ColumnUtilities {
 				break;
 			}
 			case (ColumnTypes.LONG) : {
-				long[] dat=new long[numRows];	
+				long[] dat=new long[numRows];
 				sourceTable.getColumn(dat, colIndex);
 				c= new LongColumn(dat);
 				break;
 			}
 			case (ColumnTypes.STRING) : {
-				String[] dat=new String[numRows];	
+				String[] dat=new String[numRows];
 				sourceTable.getColumn(dat, colIndex);
 				c= new StringColumn(dat);
 				break;
@@ -289,7 +289,7 @@ final public class ColumnUtilities {
 				break;
 			}
 			case (ColumnTypes.OBJECT) : {
-				Object[] dat=new Object[numRows];	
+				Object[] dat=new Object[numRows];
 				sourceTable.getColumn(dat, colIndex);
 				c= new ObjectColumn(dat);
 				break;
@@ -301,7 +301,7 @@ final public class ColumnUtilities {
 				break;
 			}
 			case (ColumnTypes.CHAR) : {
-				char[] dat=new char[numRows];	
+				char[] dat=new char[numRows];
 				sourceTable.getColumn(dat, colIndex);
 				c= new CharColumn(dat);
 				break;
@@ -381,9 +381,10 @@ final public class ColumnUtilities {
 
 			}
 			default : {
-				System.err.println(	"ColumnUtilities:CopyColumn"+
-									": Invalid Column Type");
-				c= new ObjectColumn();
+				//System.err.println(	"ColumnUtilities:CopyColumn"+
+				//					": Invalid Column Type");
+				//c= new ObjectColumn();
+                c = new StringColumn(size);
 			}
 		}
 		c.setLabel("");
@@ -394,21 +395,21 @@ final public class ColumnUtilities {
 		This is for creating a subset from a Table interface object
 		and putting it into a TableImpl object
 
-		@param tbl the original table 
+		@param tbl the original table
 		@param colIndex which column to make a subset of
-		@param subset the indices of the rows from the original 
+		@param subset the indices of the rows from the original
 						column to put in the new column
 		@return a new Column object of the same datatype as the
 				original column of tbl w/ the entries being the
-				subset values				
+				subset values
 
-		@author pgroves 5/30/02		
+		@author pgroves 5/30/02
 	*/
-	public static Column createColumnSubset(Table tbl, int colIndex, 
+	public static Column createColumnSubset(Table tbl, int colIndex,
 											int[] subset){
 		int type=tbl.getColumnType(colIndex);
 		int size=subset.length;
-		
+
 		Column col=ColumnUtilities.createColumn(type,size);
 		col.setLabel(tbl.getColumnLabel(colIndex));
 		col.setComment(tbl.getColumnLabel(colIndex));
@@ -494,7 +495,7 @@ final public class ColumnUtilities {
 	}
 	/* DONT DELETE THIS! every function needs to cut and
 		paste this switch
-	
+
 		switch(type){
 			case (ColumnTypes.DOUBLE) : {
 				break;
