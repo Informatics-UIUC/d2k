@@ -276,7 +276,9 @@ public class HAC {
               }
             }
           }
-          System.out.println("INITIAL PROXIMITY MATRIX COMPLETE");
+	  if (getVerbose()) {
+            System.out.println("INITIAL PROXIMITY MATRIX COMPLETE");
+          }
 
           // DEBUG ===================
 //          int k = clusters.size();
@@ -525,10 +527,12 @@ public class HAC {
     finally {
       long end = System.currentTimeMillis();
       if (resultClusters != null) {
-        System.out.println("\nEND EXEC -- HAC -- clusters built: " +
+        if (getVerbose()) {
+          System.out.println("\nEND EXEC -- HAC -- clusters built: " +
                            resultClusters.size() + " in " +
                            (end - m_start) / 1000 +
                            " seconds\n");
+        }
       }
     }
     return model;
