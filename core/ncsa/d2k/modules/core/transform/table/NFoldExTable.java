@@ -78,6 +78,8 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	int N = 4;
 
 	
+	int numRows;
+	
 	long seed = (long)0.00;
 	
 	int totalFires=0;
@@ -92,6 +94,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		table = null;
 		indices = null;
 		totalFires=0;
+		numRows=0;
 	}
 	
 	/**
@@ -119,7 +122,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		// breaks and indices
 		table = (Table) this.pullInput (0);
 		//System.out.println("XVal: pullingInput:"+numFires);
-		int numRows = table.getNumRows ();
+		numRows = table.getNumRows ();
 		breaks = this.getTableBreaks (numRows);
 		indices = new int [numRows];
 		for (int i = 0 ; i < numRows ; i++) 
@@ -141,7 +144,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		if(N>numRows){
 			testSize=1;
 		}else{
-			testSize = (int) (((double)1.0/(double)(breaks.length+1)) * (double)numRows);
+			testSize = breaks[0];//(int) (((double)1.0/(double)(breaks.length+1)) * (double)numRows);
 		}
 		trainSize = numRows - testSize;
 	}
@@ -167,8 +170,9 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			
 		}else{
 			tableBreaks = new int[N-1];
+			//int tS = (int) (((double)1.0/(double)(tableBreaks.length+1)) * (double)orig);
 			for(int i = 0; i < N-1; i++){
-				tableBreaks[i] = (int) (((double)(i+1)/n)*numCols);
+				tableBreaks[i] = /*(i+1)*tS;*/(int) (((double)(i+1)/n)*numCols);
 			}
 		}
 				return tableBreaks;
@@ -218,13 +222,25 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		if (numFires == 0) {
 			System.arraycopy (indices, 0, testing, 0, breaks [0]);
 			System.arraycopy (indices, breaks[0], training, 0, indices.length-breaks [0]);
+			testSize=breaks[1]-breaks[0];
+			trainSize=numRows-testSize;
 		} else {
 			int startTestingSet = breaks [numFires-1];
 			System.arraycopy (indices, 0, training, 0, startTestingSet);
 			System.arraycopy (indices, startTestingSet, testing, 0, 
 					testing.length);
-			System.arraycopy (indices, breaks [numFires-1]+testing.length, training, startTestingSet,
+			System.arraycopy (indices, startTestingSet+testing.length, training, startTestingSet,
 					indices.length - breaks [numFires-1]-testing.length);
+			if(breaks.length>numFires){
+				if(breaks.length>(numFires+1)){
+					testSize=breaks[numFires+1]-breaks[numFires];
+				}else{
+					testSize=indices.length-breaks[numFires];
+				}
+				trainSize=numRows-testSize;
+
+			}
+			//trainSize=numRows-testSize;
 		}
 	}
 		 

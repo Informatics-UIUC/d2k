@@ -18,20 +18,41 @@ public class NFoldTTables_inplace extends NFoldTTables{
 	protected TestTable testT;
 	protected TrainTable trainT;
 
+	boolean firstRun;
+
+	public void beginExecution(){
+		firstRun=true;
+		super.beginExecution();
+	}
+	
+
 	/**
 		the first time, just say if we have the data,
 		every other time, if we have the 'all clear'
-		trigger
+		trigger.  If it's reset, it needs to see if
+		there is both a trigger and a new data set
 		*/
 	public boolean isReady(){
+		if(firstRun){
+			return(inputFlags[0]>0);
+		}
 		if(numFires==0){
-			return (inputFlags[0]>0);
+			return super.isReady();
 		}else{
 			return (inputFlags[1]>0);
 		}
 	}
 
 	public void doit () throws Exception {
+		if(firstRun)
+			firstRun=false;
+		else
+			pullInput(1);	
+			
+		if(debug){
+			System.out.println(getAlias()+"InputFlags[0]"+inputFlags[0]);
+			System.out.println(getAlias()+"InputFlags[1]"+inputFlags[1]);
+		}
 
 		if (breaks == null) {
 			setup ();
@@ -54,7 +75,17 @@ public class NFoldTTables_inplace extends NFoldTTables{
 			testT=(TestTable)examples.getTestTable();
 			trainT=(TrainTable)examples.getTrainTable();
 
+			/*System.out.println("Indices");
+			for(int i=0; i<indices.length; i++){
+				System.out.print(indices[i]+" ,");
+			}
 
+			System.out.println("breaks");
+			for(int i=0; i<breaks.length; i++){
+				System.out.println(breaks[i]+", "+indices[breaks[i]-1]+", "+
+						indices[breaks[i]]+", "+indices[breaks[i]+1]);
+			}
+			*/
 		}else{
 
 			// Set up the train and test sets indices
@@ -62,12 +93,23 @@ public class NFoldTTables_inplace extends NFoldTTables{
 			int training [] = new int [trainSize];
 
 			makeSets(testing, training);
+			if(debug){
+				System.out.println("TestSEt");
+				for(int i=0; i<testing.length; i++){
+					System.out.print(testing[i]+", ");
+				}				System.out.println();
+				System.out.println("TrainSEt");
+				for(int i=0; i<training.length; i++){
+					System.out.print(training[i]+", ");
+				}
+				System.out.println();
+			}
 
 			// now create a new vertical table.
 			//ExampleTable examples = new ExampleTable (table);
 			trainT.setTrainingSet (training);
 			testT.setTestingSet (testing);
-			pullInput(1);
+			//pullInput(1);
 		}
 
 		this.pushOutput (testT, 0);

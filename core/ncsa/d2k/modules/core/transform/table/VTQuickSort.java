@@ -102,7 +102,7 @@ public class VTQuickSort extends DataPrepModule
 	*/
 	public String getModuleInfo () {
 
-		 return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Basic Vertical Table Quick Sort\">    <Text>This module takes in a VerticalTable and uses quick sort to sort the table based on the column (must be an instance of NumericColumn) indicated by the property sortColumn. PROPS: sortColumn - the column to sort by. printTime - will print the time taken by the algorithms two parts to standard out</Text>  </Info></D2K>";
+		 return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Basic Vertical Table Quick Sort\">    <Text>This module takes in a VerticalTable and uses quick sort to sort the table based on the column (must be an instance of NumericColumn) indicated by the property sortColumn. PROPS: sortColumn - the column to sort by. printTime - will print the time taken by the algorithms two parts to standard out. ascending- if true, results will be in ascending order, if not, descending (descending requires a rather inefficient reversal of a table sorted to be ascending).</Text>  </Info></D2K>";
 
 	}
 
