@@ -200,6 +200,17 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 	}
 
 	/**
+	 * Copy the missing value flags from the source column to the destination.
+	 * @param source the source column
+	 * @param dest the destination column
+	 * @param start the starting position in the destination column.
+	 */
+	private void copyMissingValues (Column source, Column dest, int start) {
+		for (int i = 0 ; i < source.getNumRows(); i++)
+			dest.setValueToMissing(source.isValueMissing(i), i+start);
+	}
+	
+	/**
 	 * append table one to table two.
 	 * @throws Exception
 	 */
@@ -250,7 +261,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 				case ColumnTypes.INTEGER: {
 
 					int [] vals = new int [combinedSize];
-
+					
 					// get the data from table 1, put it first.
 					System.arraycopy((int[]) t1.getColumn(i).getInternal(),
 								0, vals, 0, t1Size);
@@ -269,7 +280,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new IntColumn(vals));
+					Column col = new IntColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.FLOAT: {
@@ -294,7 +309,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new FloatColumn(vals));
+					// add the column
+					Column col = new FloatColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.DOUBLE: {
@@ -319,7 +339,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new DoubleColumn(vals));
+					// add the column
+					Column col = new DoubleColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.SHORT: {
@@ -344,7 +369,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new ShortColumn(vals));
+					// add the column
+					Column col = new ShortColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.LONG: {
@@ -369,7 +399,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new LongColumn(vals));
+					// add the column
+					Column col = new LongColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 
@@ -395,7 +430,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new StringColumn(vals));
+					// add the column
+					Column col = new StringColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.CHAR_ARRAY: {
@@ -420,7 +460,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new CharArrayColumn(vals));
+					// add the column
+					Column col = new CharArrayColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.BYTE_ARRAY: {
@@ -445,7 +490,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new ByteArrayColumn(vals));
+					// add the column
+					Column col = new ByteArrayColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.BOOLEAN: {
@@ -470,7 +520,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new BooleanColumn(vals));
+					// add the column
+					Column col = new BooleanColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.OBJECT: {
@@ -495,7 +550,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new ObjectColumn(vals));
+					// add the column
+					Column col = new ObjectColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.BYTE: {
@@ -520,7 +580,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new ByteColumn(vals));
+					Column col = new ByteColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 
@@ -546,7 +610,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new CharColumn(vals));
+					// add the column
+					Column col = new CharColumn(vals);
+					this.copyMissingValues(t1.getColumn(i), col, 0);
+					if (t2Col != -1) 
+						this.copyMissingValues (t2.getColumn(t2Col), col, t1Size);
+					result.addColumn(col);
 					break;
 				}
 				default: {

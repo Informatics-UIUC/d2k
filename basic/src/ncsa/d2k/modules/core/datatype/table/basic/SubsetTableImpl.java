@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
+import java.lang.reflect.Array;
+
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
 
 /**
  * This is a subset of the original table. It contains an array of the
@@ -160,6 +161,96 @@ public class SubsetTableImpl extends MutableTableImpl {
 	public Table getSubset(int[] rows) {
 		return new SubsetTableImpl(this, this.resubset(rows));
 	}
+
+	///////////////////////////////////////////
+	// Subsetting is done by reordering the subset array, rather than sorting the 
+	// column.
+	//
+	/**
+		Sort the specified column and rearrange the rows of the table to
+		correspond to the sorted column.
+		@param col the column to sort by
+	*/
+	public void sortByColumn(int col) {
+		
+		int [] tmp = new int [this.subset.length];
+		System.arraycopy (this.subset, 0, tmp, 0, this.subset.length);
+		this.doSort(this.getColumn(col), tmp, 0, this.getNumRows()-1, 0);
+	}
+
+	/**
+	   Sort the elements in this column starting with row 'begin' up to row 'end',
+	   @param col the index of the column to sort
+	   @param begin the row no. which marks the beginnig of the  column segment to be sorted
+	   @param end the row no. which marks the end of the column segment to be sorted
+	*/
+	public void sortByColumn(int col, int begin, int end) {
+		int [] neworder = new int [end-begin+1];
+		for (int i = begin ; i <= end ; i++) 
+			neworder[i-begin] = this.subset[i];
+		this.doSort(this.getColumn(col), neworder, 0, neworder.length-1, begin);
+	}
+	
+	/**
+	 Implement the quicksort algorithm.  Partition the array and
+	 recursively call doSort.
+	 @param A the array to sort
+	 @param p the beginning index
+	 @param r the ending index
+	 @param t the Table to swap rows for
+	 @return a sorted array of doubles
+	 */
+	private void doSort (Column A, int [] i, int p, int r, int begin) {//double[] A, int p, int r, MutableTable t) {
+		if (p < r) {
+			int q = partition(A, i, p, r, begin);
+			doSort(A, i, p, q, begin);
+			doSort(A, i, q + 1, r, begin);
+		}
+	}
+
+	/**
+	 Rearrange the subarray A[p..r] in place.
+	 @param A the array to rearrange
+	 @param p the beginning index
+	 @param r the ending index
+	 @param t the Table to swap rows for
+	 @return the partition point
+	 */
+	private int partition (Column A, int [] ix, int p, int r, int begin) {
+		int i = p - 1;
+		int j = r + 1;
+		while (true) {
+			
+			// find the first entry [j] <= entry [p].
+			do {
+				j--;
+			} while (A.compareRows (ix[j], ix[p]) > 0);
+			
+			// now find the first entry [i] >= entry [p].
+			do {
+				i++;
+			} while (A.compareRows (ix[i], ix[p]) < 0);
+			
+			if (i < j) {
+				this.swapRows(i+begin, j+begin);
+				int tmp = ix[i];
+				ix[i] = ix[j];
+				ix[j] = tmp;
+			} else
+				return  j;
+		}
+	}
+
+	/**
+	 * Swap the table rows. We do this by simply swaping the indices in the subset array.
+	 * @param pos1 the first row to swap
+	 * @param pos2 the second row to swap
+	 */
+	 public void swapRows (int pos1, int pos2) {
+	 	int swap = this.subset[pos1];
+	 	this.subset[pos1] = this.subset[pos2];
+	 	this.subset[pos2] = swap;
+	 }
 
 	/**
 		 * Add a new Column after the last occupied position in this Table.

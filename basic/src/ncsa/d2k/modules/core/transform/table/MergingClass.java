@@ -153,6 +153,7 @@ public class MergingClass {
                                 tbl.setDouble(table.getDouble(maxRow, i), rowLoc, i);
                         else
                                 tbl.setString(table.getString(maxRow, i), rowLoc, i);
+					tbl.setValueToMissing(table.isValueMissing(maxRow, i), rowLoc, i);
                 }
         }
 
@@ -176,20 +177,22 @@ public class MergingClass {
                                 tbl.setDouble(table.getDouble(maxRow, i), rowLoc, i);
                         else
                                 tbl.setString(table.getString(maxRow, i), rowLoc, i);
-                }
+                        tbl.setValueToMissing(table.isValueMissing(maxRow, i), rowLoc, i);
+               }
 
                 // now find the minimum
                 for(int i = 0; i < mergeCols.length; i++) {
                         double minimum = 0;
                         for(int j = 0; j < rows.length; j++) {
-                             if ( j == 0 ) {
-                                minimum = table.getDouble(rows[j], mergeCols[i]);
-                            } else {
-                                double testVal = table.getDouble(rows[j], mergeCols[i]);
-                                if ( testVal < minimum ) {
-                                    minimum = testVal;
-                                }
-                            }
+                            if (!table.isValueMissing(rows[i], mergeCols[i]))
+	                            if ( j == 0 ) {
+	                                minimum = table.getDouble(rows[j], mergeCols[i]);
+	                            } else {
+	                                double testVal = table.getDouble(rows[j], mergeCols[i]);
+	                                if ( testVal < minimum ) {
+	                                    minimum = testVal;
+	                                }
+	                            }
                         }
                         tbl.setDouble(minimum, rowLoc, mergeCols[i]);
                 }
@@ -215,15 +218,20 @@ public class MergingClass {
                                 tbl.setDouble(table.getDouble(maxRow, i), rowLoc, i);
                         else
                                 tbl.setString(table.getString(maxRow, i), rowLoc, i);
+                        tbl.setValueToMissing(table.isValueMissing(maxRow, i), rowLoc, i);
                 }
 
                 // now find the averages
                 for(int i = 0; i < mergeCols.length; i++) {
                         double sums = 0;
+                        int num = rows.length;
                         for(int j = 0; j < rows.length; j++) {
+							if (!table.isValueMissing(rows[i], mergeCols[i]))
                                 sums += table.getDouble(rows[j], mergeCols[i]);
+                            else
+                                num--;
                         }
-                        tbl.setDouble(sums/(double)rows.length, rowLoc, mergeCols[i]);
+                        tbl.setDouble(sums/(double)num, rowLoc, mergeCols[i]);
                 }
         }
 
@@ -247,7 +255,8 @@ public class MergingClass {
                                 tbl.setDouble(table.getDouble(maxRow, i), rowLoc, i);
                         else
                                 tbl.setString(table.getString(maxRow, i), rowLoc, i);
-                }
+					tbl.setValueToMissing(table.isValueMissing(maxRow, i), rowLoc, i);
+               }
 
                 // now find the sums
                 for(int i = 0; i < mergeCols.length; i++) {
@@ -279,6 +288,7 @@ public class MergingClass {
                                 tbl.setDouble(table.getDouble(maxRow, i), rowLoc, i);
                         else
                                 tbl.setString(table.getString(maxRow, i), rowLoc, i);
+					tbl.setValueToMissing(table.isValueMissing(maxRow, i), rowLoc, i);
                 }
 
                 // the count is the number of rows - write than in each column
