@@ -299,7 +299,7 @@ public class CreateDelimitedParser extends InputModule {
                 else {
                     String dd = null;
                     if(delim.isSelected()) {
-                        dd = delim.getText();
+                        dd = delimfld.getText(); // dd = delim.getText();
                         if(dd.length() > 1)
                             throw new Exception("The delimiter must be one character long.");
                     }
