@@ -119,6 +119,14 @@ public class Input1FileName extends InputModule {
         return fileName;
     }
 
+    private String fileFilterExtension;
+    public void setFileFilterExtension(String s) {
+      fileFilterExtension = s;
+    }
+    public String getFileFilterExtension() {
+      return fileFilterExtension;
+    }
+
     /**
      * Return a custom property editor.
      * @return
@@ -129,26 +137,36 @@ public class Input1FileName extends InputModule {
 
     private class PropEdit extends JPanel implements CustomModuleEditor {
         private JTextField jtf;
+        private JTextField fileFilter;
 
         private PropEdit() {
             setLayout(new GridBagLayout());
                         this.setMinimumSize (new Dimension(14, 14));
-           
+
             String name = getFileName();
             jtf = new JTextField(10);
+            fileFilter = new JTextField(10);
             jtf.setText(name);
+            fileFilter.setText(getFileFilterExtension());
                         JButton b0 = new JButton("Browse");
-                                                                                                  
+
                         Constrain.setConstraints(this, new JLabel ("File Name"), 0, 0, 1, 1,
                                                                           GridBagConstraints.NONE,
                                                                           GridBagConstraints.CENTER, 0, 0);
                         Constrain.setConstraints(this, jtf, 1, 0, 1, 1,
                                                                           GridBagConstraints.HORIZONTAL,
-                                                                          GridBagConstraints.CENTER, 1, 0);				  
+                                                                          GridBagConstraints.CENTER, 1, 0);
                         Constrain.setConstraints(this, b0, 2, 0, 1, 1,
                                                                           GridBagConstraints.NONE,
                                                                           GridBagConstraints.CENTER, 0, 0);
-                        
+
+                        Constrain.setConstraints(this, new JLabel("File Extension Filter"), 0, 1, 1, 1,
+                                                                          GridBagConstraints.NONE,
+                                                                          GridBagConstraints.CENTER, 0, 0);
+                        Constrain.setConstraints(this, fileFilter, 1, 1, 1, 1,
+                                                                          GridBagConstraints.HORIZONTAL,
+                                                                          GridBagConstraints.CENTER, 1, 0);
+
                         b0.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
@@ -156,8 +174,8 @@ public class Input1FileName extends InputModule {
                     String d = getFileName();
                     if(d == null)
                       d = jtf.getText();
-                    //if(d != null) {                      
-// added 3.25.2004 by DC --- d.trim().length() > 0                      
+                    //if(d != null) {
+// added 3.25.2004 by DC --- d.trim().length() > 0
                     if(d != null && (d.trim().length() > 0)) {
                       File thefile = new File(d);
                       if(thefile.isDirectory())
@@ -165,11 +183,28 @@ public class Input1FileName extends InputModule {
                       else
                         chooser.setSelectedFile(thefile);
                     }
-// added 3.25.2004 by DC                    
+// added 3.25.2004 by DC
                     else {
                       chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
                     }
-// end                 
+// end
+
+
+// added 6.5.2004 by DC
+                    final String filter = fileFilter.getText();
+                    if(filter.trim().length() > 0) {
+                      javax.swing.filechooser.FileFilter ff =
+                          new javax.swing.filechooser.FileFilter() {
+                        public boolean accept(File f) {
+                          return f.isDirectory() || f.getName().endsWith(filter);
+                        }
+                        public String getDescription() {
+                          return filter;
+                        }
+                      };
+                      chooser.setFileFilter(ff);
+                    }
+
 
                     // set the title of the FileDialog
                     StringBuffer sb = new StringBuffer("Select File");
@@ -193,11 +228,17 @@ public class Input1FileName extends InputModule {
 
         public boolean updateModule() throws Exception {
             String f0 = jtf.getText();
+            boolean didChange = false;
             if(f0 != getFileName()) {
                 setFileName(f0);
-                return true;
+                didChange = true;
             }
-            return false;
+            f0 = fileFilter.getText();
+            if(f0 != getFileFilterExtension()) {
+              setFileFilterExtension(f0);
+              didChange = true;
+            }
+            return didChange;
         }
     }
 
@@ -229,5 +270,5 @@ public class Input1FileName extends InputModule {
 // 9/19/03 - For 4.0 it is now possible to make text box size variable, and I have
 //			 done that.
 // END QA Comments
- 
+
  // 3/25/2004 clutter changed JFileChooser to start in the current working directory
