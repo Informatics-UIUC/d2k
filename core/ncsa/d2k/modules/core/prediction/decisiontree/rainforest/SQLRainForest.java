@@ -43,7 +43,9 @@ import java.util.*;
 import java.text.*;
 import javax.swing.*;
 import java.io.*;
+import java.beans.PropertyVetoException;
 import gnu.trove.*;
+
 
 public class SQLRainForest extends ReentrantComputeModule {
   JOptionPane msgBoard = new JOptionPane();
@@ -172,7 +174,7 @@ public class SQLRainForest extends ReentrantComputeModule {
     s += "<p>Detailed Description: ";
     s += "The module supports two different modes to build a decision tree. If the ";
     s += "data set can be fit into the memory, the whole data set ";
-    s += "will be retrieved and resided in memory, otherwise, the data set ";
+    s += "will be retrieved and stored in memory, otherwise, the data set ";
     s += "will be partitioned at each tree node. This module automatically ";
     s += "chooses the execution mode based on the size of the data set ";
     s += "and the parameter 'Mode Threshold'. The tree is built ";
@@ -184,7 +186,7 @@ public class SQLRainForest extends ReentrantComputeModule {
     s += "This module is based on RainForest and C4.5 algorithms with the following features. </p>";
     s += "<ul><li>a special class AvcSet (Attribute-Value-Class Set) keeps the ";
     s += "summarized information, which reduces the number of data scans and ";
-    s += "the requirement of memory. </li>";
+    s += "the memory requirements. </li>";
     s += "<li>gain ratio (gain/split-info) is used in categorical columns, ";
     s += "but not numeric columns. </li>";
     s += "<li>minimum-ratio-per-leaf (number-record-in-leaf / total-number-records) is ";
@@ -193,8 +195,8 @@ public class SQLRainForest extends ReentrantComputeModule {
     s += "but the records are not removed from the data set. </li> ";
     s += "<li>dominate ratio (number_mostCommonClass / number_secondMostCommonClass) ";
     s += "is used to prune trivial nodes. </li> ";
-    s += "<li>Numeric columns are allowed to be chosen for more than once. However, if the dominateRatio ";
-    s += "between parent node and child node has no improvement, the spliting will ";
+    s += "<li>Numeric columns are allowed to be chosen more than once. However, if the dominateRatio ";
+    s += "between parent node and child node shows no improvement, the spliting will ";
     s += "be terminated and a leaf will be formed. </li></ul></p>";
     s += "<p>References: ";
     s += "<ul><li>C4.5: Programs for Machine Learning by J. Ross Quinlan </li>";
@@ -205,7 +207,7 @@ public class SQLRainForest extends ReentrantComputeModule {
     s += "nominal outputs. We currently only support Oracle databases. </p>";
     s += "<p>Data Handling: This module does not modify the input data. </p>";
     s += "<p>Scalability: This module can handle a huge data set even the ";
-    s += "size of the data set is over the available memory. </p> ";
+    s += "size of the data set is larger than the available memory. </p> ";
     return s;
   }
 
@@ -230,15 +232,19 @@ public class SQLRainForest extends ReentrantComputeModule {
     return "SQLRainForest";
   }
 
-  public void setBinNumber (double i) {
-    binNumber = i;
+  public void setBinNumber (double i) throws PropertyVetoException {
+      if (i <  0 )
+	  throw new PropertyVetoException(" < 0", null);
+      binNumber = i;
   }
 
   public double getBinNumber () {
     return binNumber;
   }
 
-  public void setMinimumRatioPerLeaf(double num) {
+  public void setMinimumRatioPerLeaf(double num) throws PropertyVetoException {
+      if(num < 0 || num >1)
+	  throw new PropertyVetoException(" < 0 or > 1", null);
     minimumRatioPerLeaf = num;
   }
 
@@ -246,7 +252,9 @@ public class SQLRainForest extends ReentrantComputeModule {
     return minimumRatioPerLeaf;
   }
 
-  public void setDominateRatio(double num) {
+  public void setDominateRatio(double num) throws PropertyVetoException {
+      if (num < 0)
+	  throw new PropertyVetoException(" < 0", null);
     dominateRatio = num;
     improvementRatio = dominateRatio * 0.05;
   }
@@ -255,7 +263,9 @@ public class SQLRainForest extends ReentrantComputeModule {
     return dominateRatio;
   }
 
-  public void setModeThreshold(double num) {
+  public void setModeThreshold(double num) throws PropertyVetoException {
+      if( num < 0)
+	  throw new PropertyVetoException(" < 0", null);
     modeThreshold = num;
   }
 
@@ -265,6 +275,20 @@ public class SQLRainForest extends ReentrantComputeModule {
 
   protected String[] getFieldNameMapping () {
     return null;
+  }
+
+    public static final String MIN_RATIO = "Minimum Leaf Size Ratio";
+    public static final String MODE_THRESHOLD = "Mode Threshold";
+    public static final String BIN_NUMBER = "Bin Number";
+    public static final String DOMINATE_RATIO = "Dominate Class Ratio";
+
+  public PropertyDescription [] getPropertiesDescriptions () {
+    PropertyDescription [] pds = new PropertyDescription [4];
+    pds[0] = new PropertyDescription ("minimumRatioPerLeaf", MIN_RATIO, "The minimum ratio of records in a leaf to the total number of records in the tree. The tree construction is terminated when this ratio is reached.");
+    pds[1] = new PropertyDescription ("modeThreshold", MODE_THRESHOLD, "If the number of examples is greater than this threshold, the in-database mode is used. Otherwise, the in-memory mode is used.");
+    pds[2] = new PropertyDescription ("binNumber", BIN_NUMBER, "If the number of distinct values in a numeric attribute is greater than Bin Number, data is grouped into this number of bins.");
+    pds[3] = new PropertyDescription ("dominateRatio", DOMINATE_RATIO, "Ratio of most-common class to second-most-common class. The tree construction is terminated when this ratio is reached.");
+    return pds;
   }
 
   /** build decision tree
