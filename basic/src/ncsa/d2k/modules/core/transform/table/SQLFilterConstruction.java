@@ -581,10 +581,6 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 
      String goodCondition = ""; //this will be pushed out.
 
-     //debug
-     System.out.println("\n\nSQL Filter Construction:");
-     System.out.println("The old query condition: " + queryCondition);
-     //end debug
 
 
      //connecting to data base and getting all the available attributes
@@ -595,19 +591,11 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
      int counter = 0;
 
- //debug
-     System.out.println("\nAvailable Columns:");
-     //end debug
-
+     //populating the map
      while (columns.next()) {
        String columnName = columns.getString("COLUMN_NAME");
        availableAttributes.put(columnName , new Integer(counter));
        counter++;
-
-       //debug
-    System.out.println("column no. " + counter + ": " + columnName);
-    //end debug
-
      }//while column
 
      if(counter == 0){
@@ -624,100 +612,61 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      //parsing the condition, each sub condition that holds a valid
      //attribute name will be copied into goodCondition
 
+     boolean first = true; //is it the first sub expression
 
-            //debug
-         System.out.println("\nparsing the condition:");
-         //end debug
+ //assuming the expression could be malformed.
+     //if it is the first one to be parsed and it has at least 3 more tokens
+     //then there is still yet another sub expression to parse.
+     //if it is not the first one - at least 4 tokens are needed.
 
+    // String currentToken = null; //will hold the attribute or the value.
 
-
-     boolean first = true;
-     //assuming the expression could be malformed.
-     //if it has at least 3 more tokens then there is still yet another
-     //sub expression to parse.
-     String currentToken = null;
      while((first && tok.countTokens() >= 3) || (!first && tok.countTokens() >= 4)){
 
-     boolean added = false;
+     boolean added = false;  //whether a sub expression was added of not.
 
 
      String joint = null;
-         if(!first){ //meaning the following token is "and" or "or".
-
+     if(!first){ //meaning the following token is "and" or "or".
        joint = tok.nextToken();
+       goodCondition += " " + joint + " ";
+     }//if !first
 
-       //debug
-       System.out.println("joint = " + joint);
-       //end debug
-
-           goodCondition += " " + joint + " ";
-         }//if !first
-          else first = false;
-
-          currentToken = tok.nextToken();
-          if(availableAttributes.containsKey(currentToken)){
-
-         goodCondition += currentToken + " ";
-         //parsing the relation and the value
-
-         //debug
-
-         String rel = tok.nextToken();
-         System.out.println("relation = "  + rel);
-         goodCondition +=  rel + " ";
-
-         String val = tok.nextToken();
-         System.out.println("value = "  + val);
-         goodCondition += val;
-
-         added = true;
-
-       }//if contain key
-
- //could be that the value is left side of expression and the attribute is a right side
-
-       else{
-         String value = currentToken;
-         String relation = tok.nextToken();
-         String attribute = tok.nextToken();
-
-         //debug
-         System.out.println("attribute = " + attribute);
-         System.out.println("relation = " + relation);
-         System.out.println("value = " + value);
-         //end debug
-
-         if (availableAttributes.containsKey(attribute)) {
+      else first = false;
 
 
-           goodCondition += attribute + " ";
-           //parsing the relation and the value
-           goodCondition += relation + " ";
-           goodCondition += value;
+      //parsing the 3 tokens that make the sub expression.
+      String leftHand = tok.nextToken();
+      String relation = tok.nextToken();
+      String rightHand = tok.nextToken();
 
-           added = true;
 
-         }//if contain key
 
-       }//else
+
+
+
+      //if the right hand operand is the attribute - swaping between them.
+      if(availableAttributes.containsKey(rightHand)){
+
+
+        String temp = leftHand;
+        leftHand = rightHand;
+        rightHand = temp;
+      }//if contains key
+
+      if(availableAttributes.containsKey(leftHand)){
+
+        //adding the parsed tokens to the good condition
+        goodCondition += leftHand + " " + relation + " " + rightHand;
+        added = true;
+      }
 
        if(!added && joint != null){
          //now the joint that was added should be taken off
          int index = goodCondition.lastIndexOf(joint);
-
          String temp = goodCondition.substring(0, index);
-
-         //debug
-         System.out.println("had to remove last joint. temp condition = " + temp);
-         //debug
          goodCondition = temp;
-
        }//if !added
-
-       //debug
-       System.out.println(goodCondition);
-       //end debug
-
 
      }//while has more tokens
 
