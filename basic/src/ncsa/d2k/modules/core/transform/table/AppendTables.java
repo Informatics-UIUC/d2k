@@ -947,6 +947,6 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
  table and it has unique columns, the items that are being inserted into the new
  appended table are not coresponding with the subset the second table is made of.
  the items are being copied from the original whole set of the table, until
- reached the number of rows in the subset table.
+ reached the number of rows in the subset table. (fixed)
 
   */
