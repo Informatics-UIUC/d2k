@@ -92,9 +92,9 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       }
 
       // instantiate model //
-      MeanModel model = new MeanModel();
+      MeanModel model = new MeanModel(examples, outputSums);
 
-      model.Instantiate(numInputs, numOutputs, inputNames, outputNames, outputSums);
+      //model.Instantiate(numInputs, numOutputs, inputNames, outputNames, outputSums);
 
       node.model = model;
     }
@@ -164,8 +164,8 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     evaluateModel(RootNode);
 
     if (PrintEvolvingModels) {
-      DecisionTreeModel model = new DecisionTreeModel();
-      model.instantiate(numInputs, numOutputs, inputNames, outputNames, RootNode);
+      DecisionTreeModel model = new DecisionTreeModel(examples, RootNode);
+      //model.instantiate(numInputs, numOutputs, inputNames, outputNames, RootNode);
       model.print(ModelPrintOptions);
       System.out.println();
     }
@@ -472,8 +472,8 @@ and the example table assigned to node2 contains the examples that the decomposi
       node.childNode2.depth = depth + 1;
 
       if (PrintEvolvingModels) {
-        DecisionTreeModel model = new DecisionTreeModel();
-        model.instantiate(numInputs, numOutputs, inputNames, outputNames, RootNode);
+        DecisionTreeModel model = new DecisionTreeModel(examples, RootNode);
+        //model.instantiate(numInputs, numOutputs, inputNames, outputNames, RootNode);
         model.print(ModelPrintOptions);
         System.out.println();
       }
@@ -510,6 +510,8 @@ and the example table assigned to node2 contains the examples that the decomposi
 
   public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) throws Exception {
 
+    //call superclass constructor using example table to initialize the names;
+
     numInputs  = examples.getNumInputFeatures();
     numOutputs = examples.getNumOutputFeatures();
     inputNames  = new String[numInputs];
@@ -524,8 +526,8 @@ and the example table assigned to node2 contains the examples that the decomposi
     DecisionTreeNode decisionTree = createDecisionTree(examples);
     decisionTree.examples = null;
 
-    DecisionTreeModel model = new DecisionTreeModel();
-    model.instantiate(numInputs, numOutputs, inputNames, outputNames, decisionTree);
+    DecisionTreeModel model = new DecisionTreeModel(examples, decisionTree);
+    //model.instantiate(decisionTree);
 
     RootNode = null;
     return (Model) model;

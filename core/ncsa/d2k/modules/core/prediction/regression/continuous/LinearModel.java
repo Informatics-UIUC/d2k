@@ -12,10 +12,39 @@ public class LinearModel extends Model implements java.io.Serializable
   double  minOutputValue;
   double  maxOutputValue;
 
+  public LinearModel(ExampleTable examples,
+                     boolean [] selectedInputs,
+                     double [][] weights,
+                     double minOutputValue,
+                     double maxOutputValue) {
+    super(examples);
+
+    int    numSelectedInputs = 0;
+    int [] selectedInputIndices = new int[getNumInputs()];
+
+    for (int i = 0; i < getNumInputs(); i++) {
+      if (selectedInputs[i] == true)
+      {
+      selectedInputIndices[numSelectedInputs] = i;
+      numSelectedInputs++;
+    }
+    }
+
+
+
+
+    this.numSelectedInputs = numSelectedInputs;
+    this.selectedIndices   = selectedInputIndices;
+    this.weights           = (double [][]) weights.clone();
+    this.minOutputValue    = minOutputValue;
+    this.maxOutputValue    = maxOutputValue;
+
+  }
+
 
   public double [] Evaluate(ExampleTable examples, int e)
     {
-    double [] outputs = new double[numOutputs];
+    double [] outputs = new double[getNumOutputs()];
     for (int o = 0; o < weights.length; o++)
       {
       double sum = weights[o][numSelectedInputs];
@@ -31,7 +60,7 @@ public class LinearModel extends Model implements java.io.Serializable
       }
     return outputs;
     }
-
+/*
   public void Instantiate(int numInputs, int numOutputs, String [] inputNames, String [] outputNames,
                           boolean [] selectedInputs, double [][] weights,
                           double minOutputValue, double maxOutputValue)
@@ -60,16 +89,17 @@ public class LinearModel extends Model implements java.io.Serializable
     this.minOutputValue    = minOutputValue;
     this.maxOutputValue    = maxOutputValue;
     }
+*/
 
   public void print(ModelPrintOptions printOptions) throws Exception
     {
     System.out.println("Linear Model");
     System.out.println("minOutputValue          = " + minOutputValue);
     System.out.println("maxOutputValue          = " + maxOutputValue);
-    for (int o = 0; o < numOutputs; o++) {
-      System.out.println(outputNames[o] + " = " );
+    for (int o = 0; o < getNumOutputs(); o++) {
+      System.out.println(this.getOutputFeatureName(o) + " = " );
       for (int i = 0; i < numSelectedInputs; i++) {
-        System.out.println(weights[o][i] + " * " + inputNames[selectedIndices[i]] + " + ");
+        System.out.println(weights[o][i] + " * " + this.getInputName(selectedIndices[i]) + " + ");
         }
       System.out.println(weights[o][numSelectedInputs]);
       }

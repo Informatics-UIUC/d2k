@@ -7,6 +7,11 @@ public class MeanModel extends Model implements java.io.Serializable
   {
   double [] meanOutputValues;
 
+  public MeanModel(ExampleTable examples, double [] meanOutputValues) {
+    super(examples);
+    this.meanOutputValues = (double []) meanOutputValues.clone();
+
+  }
 
   // this is a dummy input since mean model does not have any; added only for consistancy
   public double [] Evaluate(double [] inputs) {
@@ -32,6 +37,7 @@ public class MeanModel extends Model implements java.io.Serializable
       }
     }
 
+/*
   public void Instantiate(int numInputs, int numOutputs, String [] inputNames, String [] outputNames, double [] meanOutputValues) {
     this.numInputs = numInputs;
     this.numOutputs = numOutputs;
@@ -39,16 +45,17 @@ public class MeanModel extends Model implements java.io.Serializable
     this.outputNames = outputNames;
     this.meanOutputValues = (double []) meanOutputValues.clone();
     }
+*/
 
   DecimalFormat Format = new DecimalFormat();
   public void print(ModelPrintOptions options) {
 
     Format.setMaximumFractionDigits(options.MaximumFractionDigits);
 
-    for (int i = 0; i < numOutputs; i++) {
+    for (int i = 0; i < getNumOutputs(); i++) {
       if (i > 0)
         System.out.print("  ");
-      System.out.print(outputNames[i] + " = " + Format.format(this.meanOutputValues[i]));
+      System.out.print(this.getOutputFeatureName(i) + " = " + Format.format(this.meanOutputValues[i]));
     }
     //System.out.println();
   }

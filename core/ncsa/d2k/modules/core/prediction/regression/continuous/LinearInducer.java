@@ -7,7 +7,7 @@ import Jama.Matrix;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 public class LinearInducer extends FunctionInducer
-  {
+{
   private int        NumRounds = 0;
   public  void    setNumRounds (int value) {       this.NumRounds = value;}
   public  int     getNumRounds ()          {return this.NumRounds;}
@@ -26,24 +26,24 @@ public class LinearInducer extends FunctionInducer
 
 
   public String getModuleInfo()
-    {
+  {
     return "<html>  <head>      </head>  <body>    LinearInducer  </body></html>";
-    }
+  }
   public String getModuleName()
-    {
+  {
     return "LinearInducer";
-    }
+  }
 
   public void instantiateBias(double [] bias)
-    {
+  {
     NumRounds       = (int) bias[0];
     Direction       = (int) bias[1];
     MinOutputValue  =       bias[2];
     MaxOutputValue  =       bias[3];
-    }
+  }
 
   Object [] computeError(ExampleTable examples, boolean [] selectedInputs) throws Exception
-    {
+  {
 
     int numExamples = examples.getNumExamples();
     int numInputs   = examples.getNumInputFeatures();
@@ -54,20 +54,20 @@ public class LinearInducer extends FunctionInducer
     int     [] selectedInputIndices = new int[numInputs];
 
     for (int i = 0; i < numInputs; i++)
-      {
+    {
       if (selectedInputs[i] == true)
-        {
-        selectedInputIndices[numSelectedInputs] = i;
-        numSelectedInputs++;
-        }
-      }
+      {
+      selectedInputIndices[numSelectedInputs] = i;
+      numSelectedInputs++;
+    }
+    }
 
 
 
     double [][] weights = new double[numOutputs][numSelectedInputs + 1];
 
     for (int outputIndex = 0; outputIndex < numOutputs; outputIndex++)
-      {
+    {
 
       /*
       double x[][]   = new double[numExamples][numSelectedInputs + 1];
@@ -144,33 +144,33 @@ public class LinearInducer extends FunctionInducer
       Matrix firstInv = null;
       //Matrix firstInv = new Matrix(numSelectedInputs + 1, numSelectedInputs + 1);
       if (numSelectedInputs == 0)
-        {
+      {
         firstInv = new Matrix(1, 1);
         firstInv.set(0, 0, 1.0 / firstProduct.get(0, 0));
-        }
+      }
       else
-        {
+      {
         try
-          {
+        {
           firstInv = firstProduct.inverse();
-          }
+        }
         catch
           (Exception e)
-          {
+        {
           exceptionflag = true;
-          }
         }
+      }
 
-        if (exceptionflag == true) {
-          Object [] returnValues = new Object[2];
+      if (exceptionflag == true) {
+        Object [] returnValues = new Object[2];
 
-          Double errorObject = new Double(Double.MAX_VALUE);
+        Double errorObject = new Double(Double.MAX_VALUE);
 
-          returnValues[0] = null;
-          returnValues[1] = errorObject;
+        returnValues[0] = null;
+        returnValues[1] = errorObject;
 
-          return returnValues;
-        }
+        return returnValues;
+      }
 
       if (_Trace)
         System.out.println("Found inverse");
@@ -300,36 +300,34 @@ public class LinearInducer extends FunctionInducer
 
       double b[] = new double[numSelectedInputs + 1];
       for (int i = 0; i < numSelectedInputs; i++)
-        {
+      {
         b[i] = thirdProductDouble[i][0];
         weights[outputIndex][i] = b[i];
         if (_Trace)
           System.out.println("w[" + (i + 1) +"] = " + b[i]);
-        }
+      }
       b[numSelectedInputs] = thirdProductDouble[numSelectedInputs][0];
       weights[outputIndex][numSelectedInputs] = b[numSelectedInputs];
       if (_Trace)
         System.out.println("offset  = " + b[numSelectedInputs]);
       }
 
-    LinearModel model = new LinearModel();
-    model.Instantiate(examples.getNumInputFeatures(), examples.getNumOutputFeatures(), examples.getInputNames(), examples.getOutputNames(),
-                      selectedInputs, weights,
-                      MinOutputValue, MaxOutputValue);
+      LinearModel model = new LinearModel(examples,
+          selectedInputs, weights, MinOutputValue, MaxOutputValue);
 
-    ErrorFunction errorFunction = new ErrorFunction(ErrorFunction.varianceErrorFunctionIndex);
-    double error = errorFunction.evaluate(examples, model);
+      ErrorFunction errorFunction = new ErrorFunction(ErrorFunction.varianceErrorFunctionIndex);
+      double error = errorFunction.evaluate(examples, model);
 
-    //System.out.println("linear error = " + error);
+      //System.out.println("linear error = " + error);
 
-    Object [] returnValues = new Object[2];
+      Object [] returnValues = new Object[2];
 
-    Double errorObject = new Double(error);
+      Double errorObject = new Double(error);
 
-    returnValues[0] = model;
-    returnValues[1] = errorObject;
+      returnValues[0] = model;
+      returnValues[1] = errorObject;
 
-    return returnValues;
+      return returnValues;
     }
 
 
@@ -337,101 +335,101 @@ public class LinearInducer extends FunctionInducer
 
 
 
-  public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) throws Exception
+    public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) throws Exception
     {
-    int numExamples = examples.getNumExamples();
-    int numInputs   = examples.getNumInputFeatures();
-    int numOutputs  = examples.getNumOutputFeatures();
+      int numExamples = examples.getNumExamples();
+      int numInputs   = examples.getNumInputFeatures();
+      int numOutputs  = examples.getNumOutputFeatures();
 
 
-    boolean [] selectedInputs = new boolean[numInputs];
+      boolean [] selectedInputs = new boolean[numInputs];
 
-    for (int i = 0; i < numInputs; i++)
+      for (int i = 0; i < numInputs; i++)
       {
-      if (Direction <= 0)
-        selectedInputs[i] = true;
-      else
-        selectedInputs[i] = false;
+        if (Direction <= 0)
+          selectedInputs[i] = true;
+        else
+          selectedInputs[i] = false;
       }
 
-    LinearModel bestModel = null;
+      LinearModel bestModel = null;
 
 
-    if (Direction != 0)
+      if (Direction != 0)
       {
-      for (int roundIndex = 0; roundIndex < NumRounds; roundIndex++)
+        for (int roundIndex = 0; roundIndex < NumRounds; roundIndex++)
         {
-        double bestError = Double.POSITIVE_INFINITY;
-        int    bestV = 0;
+          double bestError = Double.POSITIVE_INFINITY;
+          int    bestV = 0;
 
-        for (int v = 0; v < numInputs; v++)
+          for (int v = 0; v < numInputs; v++)
           {
-          if ((Direction == -1 && selectedInputs[v]) || (Direction == 1 && !selectedInputs[v]))
+            if ((Direction == -1 && selectedInputs[v]) || (Direction == 1 && !selectedInputs[v]))
             {
 
-            if (Direction == -1)
-              selectedInputs[v] = false;
-            else
-              selectedInputs[v] = true;
+              if (Direction == -1)
+                selectedInputs[v] = false;
+              else
+                selectedInputs[v] = true;
 
-            Object [] results = computeError(examples, selectedInputs);
+              Object [] results = computeError(examples, selectedInputs);
 
-            double error = ((Double) results[1]).doubleValue();
+              double error = ((Double) results[1]).doubleValue();
 
-            if (error < bestError)
+              if (error < bestError)
               {
-              bestError = error;
-              bestV     = v;
+                bestError = error;
+                bestV     = v;
               }
 
-            if (Direction == -1)
-              selectedInputs[v] = true;
-            else
-              selectedInputs[v] = false;
-            }
+              if (Direction == -1)
+                selectedInputs[v] = true;
+              else
+                selectedInputs[v] = false;
+          }
           }
 
-        if (Direction == -1)
-          selectedInputs[bestV] = false;
-        else
-          selectedInputs[bestV] = true;
+          if (Direction == -1)
+            selectedInputs[bestV] = false;
+          else
+            selectedInputs[bestV] = true;
 
         }
       }
 
-    Object [] results = computeError(examples, selectedInputs);
+      Object [] results = computeError(examples, selectedInputs);
 
-    bestModel = (LinearModel) results[0];
+      bestModel = (LinearModel) results[0];
 
-    return (Model) bestModel;
+      return (Model) bestModel;
     }
 
 
-  /**
-   * Return the human readable name of the indexed input.
-   * @param index the index of the input.
-   * @return the human readable name of the indexed input.
-   */
-  public String getInputName(int index) {
-    switch(index) {
-      case 0:
-        return "input0";
-      case 1:
-        return "input1";
-      default: return "NO SUCH INPUT!";
+    /**
+     * Return the human readable name of the indexed input.
+     * @param index the index of the input.
+     * @return the human readable name of the indexed input.
+     */
+    public String getInputName(int index) {
+      switch(index) {
+        case 0:
+          return "input0";
+        case 1:
+          return "input1";
+        default: return "NO SUCH INPUT!";
+      }
     }
-  }
 
-  /**
-   * Return the human readable name of the indexed output.
-   * @param index the index of the output.
-   * @return the human readable name of the indexed output.
-   */
-  public String getOutputName(int index) {
-    switch(index) {
-      case 0:
-        return "output0";
-      default: return "NO SUCH OUTPUT!";
+    /**
+     * Return the human readable name of the indexed output.
+     * @param index the index of the output.
+     * @return the human readable name of the indexed output.
+     */
+    public String getOutputName(int index) {
+      switch(index) {
+        case 0:
+          return "output0";
+        default: return "NO SUCH OUTPUT!";
+      }
     }
-  }
   }

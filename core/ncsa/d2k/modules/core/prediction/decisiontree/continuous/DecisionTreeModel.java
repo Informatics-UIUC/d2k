@@ -10,6 +10,11 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
 
   DecisionTreeNode decisionTree;
 
+  public DecisionTreeModel (ExampleTable examples, DecisionTreeNode decisionTree) {
+    super(examples);
+    this.decisionTree = decisionTree;
+  }
+
   public Object /*ViewableDTNode*/ getViewableRoot() {
     return decisionTree;
   }
@@ -58,6 +63,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
     return outputs;
   }
 
+/*
   public void instantiate(int numInputs, int numOutputs, String [] inputNames, String [] outputNames,
                           DecisionTreeNode decisionTree) {
     this.numInputs = numInputs;
@@ -66,6 +72,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
     this.outputNames = outputNames;
     this.decisionTree = decisionTree;
   }
+*/
 
   void indent (int level) {
     for (int i = 0; i < level * 2; i++) {
@@ -122,7 +129,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
                          " ERR:" + Format.format( node.error / numExamples ) );
       if (! leafNode ) {
         System.out.print( " ERR_REDUCT:" + Format.format( node.bestErrorReduction/numExamples ) +
-                          " FEATURE:" + inputNames[splitIndex] ) ;
+                          " FEATURE:" + this.getInputName(splitIndex)) ;
       }
       System.out.println("]");
     }
@@ -157,7 +164,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
                 byteCounts[byteValue]++;
             }
           }
-          testString = "(" + inputNames[splitIndex] + " = {";
+          testString = "(" + this.getInputName(splitIndex) + " = {";
           boolean firstTime = true;
           for (int i = 0; i < 256; i++) {
             if (byteCounts[i] > 0)  {
@@ -173,11 +180,11 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
           testString += "})";
         }
         else {
-          testString = "(" + inputNames[splitIndex] + " > " + ((char) splitValue) + ")";
+          testString = "(" + this.getInputName(splitIndex) + " > " + ((char) splitValue) + ")";
         }
       }
       else {
-        testString = "(" + inputNames[splitIndex] + " > " + Format.format(splitValue) + ")";
+        testString = "(" + this.getInputName(splitIndex) + " > " + Format.format(splitValue) + ")";
       }
 
       indent(level);

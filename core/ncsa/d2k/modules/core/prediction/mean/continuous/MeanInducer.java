@@ -36,10 +36,7 @@ public class MeanInducer extends FunctionInducer {
     }
 
 
-    MeanModel model = new MeanModel();
-    model.Instantiate(examples.getNumInputFeatures(),  examples.getNumOutputFeatures(),
-                      examples.getInputNames(), examples.getOutputNames(),
-                      outputSums);
+    MeanModel model = new MeanModel(examples, outputSums);
 
     return (Model) model;
   }

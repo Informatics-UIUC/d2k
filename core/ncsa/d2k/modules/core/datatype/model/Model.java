@@ -5,14 +5,14 @@ public class Model extends PredictionModelModule /*, FunctionDouble1DArrayToDoub
   {
 
 
-  protected Model() {
-    super(null);
+  protected Model(ExampleTable examples) {
+    super(examples);
   }
 
-  public int numInputs;
-  public int numOutputs;
-  public String [] inputNames;
-  public String [] outputNames;
+  //public int numInputs;
+  //public int numOutputs;
+  //public String [] inputNames;
+  //public String [] outputNames;
 
 
 
@@ -57,24 +57,34 @@ public class Model extends PredictionModelModule /*, FunctionDouble1DArrayToDoub
     throw new Exception();
     }
 
-  public String[] getInputFeatureNames()
+  public int getNumInputs()
     {
-    return inputNames;
+    return getInputColumnLabels().length;
     }
 
-  public String getInputFeatureName( int i )
+  public String[] getInputFeatureNames()
     {
-    return inputNames[i];
+    return getInputColumnLabels();
+    }
+
+  public String getInputFeatureName(int i)
+    {
+    return getInputName(i);
+    }
+
+  public int getNumOutputs()
+    {
+    return getOutputColumnLabels().length;
     }
 
   public String[] getOutputFeatureNames()
     {
-    return outputNames;
+    return getOutputColumnLabels();
     }
 
   public String getOutputFeatureName( int i)
     {
-    return outputNames[i];
+    return getOutputName(i);
     }
 
 
