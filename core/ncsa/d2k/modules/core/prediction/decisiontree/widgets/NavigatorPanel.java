@@ -21,11 +21,17 @@ import ncsa.gui.*;
 */
 public final class NavigatorPanel extends JPanel {
 
+	Navigator navigator;
+
 	public NavigatorPanel(ViewableDTModel model, TreeScrollPane scrollpane) {
-		Navigator navigator = new Navigator(model, scrollpane);
+		navigator = new Navigator(model, scrollpane);
 
 		setBackground(DecisionTreeScheme.borderbackgroundcolor);
 		add(navigator);
+	}
+
+	public void rebuildTree() {
+			navigator.rebuildTree();
 	}
 
 	class Navigator extends JPanel implements MouseListener, MouseMotionListener, ChangeListener {
@@ -62,7 +68,7 @@ public final class NavigatorPanel extends JPanel {
 
 		boolean statechanged;
 
-		BufferedImage img;
+		BufferedImage image;
 
 		public Navigator(ViewableDTModel model, TreeScrollPane scrollpane) {
 			dmodel = model;
@@ -91,9 +97,34 @@ public final class NavigatorPanel extends JPanel {
 			addMouseMotionListener(this);
 			viewport.addChangeListener(this);
 
-			img = new BufferedImage((int) swidth, (int) sheight, BufferedImage.TYPE_INT_RGB);
-			Graphics2D g2 = img.createGraphics();
+			image = new BufferedImage((int) swidth, (int) sheight, BufferedImage.TYPE_INT_RGB);
+			Graphics2D g2 = image.createGraphics();
 			paintBuffer(g2);
+		}
+
+		// Rebuild tree because node spacing has changed
+		public void rebuildTree() {
+			sroot = new ScaledNode(dmodel, droot, null);
+
+			findMaximumDepth(droot);
+			buildTree(droot, sroot);
+
+			sroot.x = sroot.findLeftSubtreeWidth();
+			sroot.y = sroot.yspace;
+
+			findTreeOffsets(sroot);
+
+			dwidth = sroot.findSubtreeWidth();
+			dheight = (sroot.yspace + sroot.gheight)*(mdepth + 1) + sroot.yspace;
+
+			findSize();
+
+			image = new BufferedImage((int) swidth, (int) sheight, BufferedImage.TYPE_INT_RGB);
+			Graphics2D g2 = image.createGraphics();
+			paintBuffer(g2);
+
+			revalidate();
+			repaint();
 		}
 
 		public void findMaximumDepth(ViewableDTNode dnode) {
@@ -112,7 +143,7 @@ public final class NavigatorPanel extends JPanel {
 			snode.findOffsets();
 
 			for (int index = 0; index < snode.getNumChildren(); index++) {
-				ScaledNode schild = snode.getChild(index);
+				ScaledNode schild = (ScaledNode) snode.getChild(index);
 				findTreeOffsets(schild);
 			}
 		}
@@ -131,7 +162,7 @@ public final class NavigatorPanel extends JPanel {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-			g2.drawImage(img, 0, 0, null);
+			g2.drawImage(image, 0, 0, null);
 
 			g2.setColor(DecisionTreeScheme.viewercolor);
 			g2.setStroke(new BasicStroke(1));
@@ -144,7 +175,7 @@ public final class NavigatorPanel extends JPanel {
 			g2.fill(new Rectangle((int) dwidth, (int) dheight));
 
 			AffineTransform transform = g2.getTransform();
-			AffineTransform sinstance = AffineTransform.getScaleInstance(xscale, yscale);
+			AffineTransform sinstance = AffineTransform.getScaleInstance(swidth/dwidth, swidth/dwidth);
 			g2.transform(sinstance);
 
 			drawTree(g2, sroot);
@@ -156,7 +187,7 @@ public final class NavigatorPanel extends JPanel {
 			snode.drawScaledNode(g2);
 
 			for (int index = 0; index < snode.getNumChildren(); index++) {
-				ScaledNode schild = snode.getChild(index);
+				ScaledNode schild = (ScaledNode) snode.getChild(index);
 
 				double x1 = snode.x;
 				double y1 = snode.y + snode.gheight;
@@ -177,7 +208,7 @@ public final class NavigatorPanel extends JPanel {
 			g2.draw(new Line2D.Double(x1, y1, x2, y2));
 		}
 
-		// Determine size of navigator
+		// Determine size and position of navigator
 		public void findSize() {
 			double scale = treescrollpane.getScale();
 

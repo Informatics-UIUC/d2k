@@ -24,17 +24,22 @@ public final class TreeScrollPane extends JScrollPane {
 	TreePanel treepanel;
 
 	public TreeScrollPane(ViewableDTModel model, BrushPanel panel) {
-
 		treepanel = new TreePanel(model, panel);
 
 		viewport = getViewport();
 		viewport.setView(treepanel);
 	}
 
-	// Called by navigator panel
+	// Called by navigator and search panel
 	public void scroll(int x, int y) {
-		Point point = viewport.toViewCoordinates(new Point(x, y));
-		viewport.setViewPosition(point);
+		viewport.setViewPosition(new Point(x, y));
+		revalidate();
+		repaint();
+	}
+
+	public void reset() {
+		treepanel.scale = 1;
+		scroll(0, 0);
 	}
 
 	public void toggleLabels() {
@@ -45,18 +50,11 @@ public final class TreeScrollPane extends JScrollPane {
 		treepanel.repaint();
 	}
 
-	public void toggleZoomin() {
-		if (treepanel.zoomin == true)
-			treepanel.zoomin = false;
+	public void toggleZoom() {
+		if (treepanel.zoom)
+			treepanel.zoom = false;
 		else
-			treepanel.zoomin = true;
-	}
-
-	public void toggleZoomout() {
-		if (treepanel.zoomout == true)
-			treepanel.zoomout = false;
-		else
-			treepanel.zoomout = true;
+			treepanel.zoom = true;
 	}
 
 	public Printable getPrintable() {
@@ -65,6 +63,24 @@ public final class TreeScrollPane extends JScrollPane {
 
 	public double getScale() {
 		return treepanel.scale;
+	}
+
+	public void clearSearch() {
+		treepanel.clearSearch();
+	}
+
+	public ViewableDTModel getViewableModel() {
+		return treepanel.dmodel;
+	}
+
+	public void rebuildTree() {
+		treepanel.rebuildTree();
+		revalidate();
+		repaint();
+	}
+
+	public ViewNode getViewRoot() {
+		return treepanel.vroot;
 	}
 
 	public class TreePanel extends JPanel implements MouseListener, MouseMotionListener, Printable {
@@ -96,15 +112,10 @@ public final class TreeScrollPane extends JScrollPane {
 		// Maximum depth
 		int mdepth;
 
-		// Roll node
-		ViewNode rnode;
-
 		// Draw labels
 		boolean labels = true;
 
-		// Zoom
-		boolean zoomin = false;
-		boolean zoomout = false;
+		boolean zoom = false;
 
 		int lastx, lasty;
 
@@ -135,7 +146,45 @@ public final class TreeScrollPane extends JScrollPane {
 			addMouseMotionListener(this);
 		}
 
-		public void findMaximumDepth(ViewableDTNode dnode) {
+		public void rebuildTree() {
+			ViewNode root = new ViewNode(dmodel, droot, null);
+
+			findMaximumDepth(droot);
+			buildViewTree(droot, root);
+
+			offsets = new LinkedList[mdepth + 1];
+			for (int index = 0; index <= mdepth; index++)
+				offsets[index] = new LinkedList();
+
+			root.x = root.findLeftSubtreeWidth();
+			root.y = root.yspace;
+			offsets[0].add(root);
+
+			findViewTreeOffsets(root);
+
+			dwidth = root.findSubtreeWidth();
+			dheight = (root.yspace + root.gheight)*(mdepth + 1) + root.yspace;
+
+			copySearch(vroot, root);
+
+			vroot = root;
+
+			revalidate();
+			repaint();
+		}
+
+		void copySearch(ViewNode onode, ViewNode nnode) {
+			nnode.search = onode.search;
+
+			for (int index = 0; index < onode.getNumChildren(); index++) {
+				ViewNode ochild = onode.getChild(index);
+				ViewNode nchild = nnode.getChild(index);
+
+				copySearch(ochild, nchild);
+			}
+		}
+
+		void findMaximumDepth(ViewableDTNode dnode) {
 			int depth = dnode.getDepth();
 
 			if (depth > mdepth)
@@ -148,7 +197,7 @@ public final class TreeScrollPane extends JScrollPane {
 		}
 
 		// Finds the offsets for each node
-		public void findViewTreeOffsets(ViewNode vnode) {
+		void findViewTreeOffsets(ViewNode vnode) {
 			vnode.findOffsets();
 			offsets[vnode.getDepth()].add(vnode);
 
@@ -158,8 +207,8 @@ public final class TreeScrollPane extends JScrollPane {
 			}
 		}
 
-		// Builds a copy of the decision tree using view nodes
-		public void buildViewTree(ViewableDTNode dnode, ViewNode vnode) {
+		// Builds the decision tree using view nodes
+		void buildViewTree(ViewableDTNode dnode, ViewNode vnode) {
 			for (int index = 0; index < dnode.getNumChildren(); index++) {
 				ViewableDTNode dchild = dnode.getViewableChild(index);
 				ViewNode vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
@@ -172,6 +221,7 @@ public final class TreeScrollPane extends JScrollPane {
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
 			Rectangle rectangle = new Rectangle((int) getSWidth(), (int) getSHeight());
 			g2.setColor(DecisionTreeScheme.treebackgroundcolor);
 			g2.fill(rectangle);
@@ -186,10 +236,10 @@ public final class TreeScrollPane extends JScrollPane {
 		}
 
 		// Draws the view tree
-		public void drawViewTree(Graphics2D g2, ViewNode vnode) {
-			Shape s = g2.getClip();
+		void drawViewTree(Graphics2D g2, ViewNode vnode) {
+			Shape shape = g2.getClip();
 
-			if(s.intersects((vnode.x-vnode.gwidth/2), vnode.y, vnode.gwidth, vnode.gheight))
+			if (shape.intersects((vnode.x-vnode.gwidth/2), vnode.y, vnode.gwidth, vnode.gheight))
 				vnode.drawViewNode(g2);
 
 			if (vnode.collapsed)
@@ -210,7 +260,7 @@ public final class TreeScrollPane extends JScrollPane {
 		}
 
 		// Draws a line between nodes
-		public void drawLine(Graphics2D g2, String label, double x1, double y1, double x2, double y2) {
+		void drawLine(Graphics2D g2, String label, double x1, double y1, double x2, double y2) {
 			int linestroke = 1;
 
 			double diameter = 8;
@@ -258,6 +308,23 @@ public final class TreeScrollPane extends JScrollPane {
 			g2.draw(new Ellipse2D.Double(xcircle, ycircle, 8, 8));
 		}
 
+		public void clearSearch() {
+			clearSearch(vroot);
+		}
+
+		void clearSearch(ViewNode node) {
+			if (node.search)
+				node.search = false;
+
+			if (node.isLeaf())
+				return;
+
+			for (int index = 0; index < node.getNumChildren(); index++) {
+				ViewNode child = node.getChild(index);
+				clearSearch(child);
+			}
+		}
+
 		public Dimension getMinimumSize() {
 			return new Dimension(0, 0);
 		}
@@ -293,18 +360,20 @@ public final class TreeScrollPane extends JScrollPane {
 			int x = event.getX();
 			int y = event.getY();
 
-			if (zoomin) {
-				if (scale + scaleincrement < upperscale) {
-					scale += scaleincrement;
-					revalidate();
-					repaint();
+			if (zoom) {
+				if (SwingUtilities.isLeftMouseButton(event)) {
+					if (scale + scaleincrement < upperscale) {
+						scale += scaleincrement;
+						revalidate();
+						repaint();
+					}
 				}
-			}
-			else if (zoomout) {
-				if (scale - scaleincrement > lowerscale) {
-					scale -= scaleincrement;
-					revalidate();
-					repaint();
+				else if(SwingUtilities.isRightMouseButton(event)) {
+					if (scale - scaleincrement > lowerscale) {
+						scale -= scaleincrement;
+						revalidate();
+						repaint();
+					}
 				}
 			}
 			else {
@@ -384,11 +453,6 @@ public final class TreeScrollPane extends JScrollPane {
 				}
 				else if (test == 1) {
 					valid = false;
-					if (vnode.isVisible()) {
-						vnode.roll = true;
-						rnode = vnode;
-						repaint();
-					}
 				}
 				else if (test == 2) {
 					valid = false;
@@ -400,14 +464,7 @@ public final class TreeScrollPane extends JScrollPane {
 			}
 		}
 
-		public void mouseReleased(MouseEvent event) {
-			if (rnode != null) {
-				rnode.roll = false;
-				rnode = null;
-				repaint();
-			}
-		}
-
+		public void mouseReleased(MouseEvent event) { }
 		public void mouseExited(MouseEvent event) {	}
 		public void mouseEntered(MouseEvent event) { }
 
@@ -491,15 +548,15 @@ public final class TreeScrollPane extends JScrollPane {
 			double cHeight = getHeight();
 
 			double scale = 1;
-			if(cWidth >= pageWidth)
+			if (cWidth >= pageWidth)
 				scale = pageWidth/cWidth;
-			if(cHeight >= pageHeight)
+			if (cHeight >= pageHeight)
 				scale = Math.min(scale, pageHeight/cHeight);
 
 			double cWidthOnPage = cWidth*scale;
 			double cHeightOnPage = cHeight*scale;
 
-			if(pi >= 1)
+			if (pi >= 1)
 				return Printable.NO_SUCH_PAGE;
 
 			Graphics2D g2 = (Graphics2D) g;

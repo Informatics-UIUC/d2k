@@ -10,6 +10,9 @@ import javax.swing.*;
 */
 public final class DecisionTreeScheme {
 
+	// Search
+	public static final Color searchcolor = new Color(156, 0, 0);
+
 	// Background
 	public static final Color backgroundcolor = new Color(219, 217, 203);
 
@@ -18,18 +21,19 @@ public final class DecisionTreeScheme {
 	public static final Color textcolor = new Color(0, 0, 0);
 
 	// Decision tree
-	public static final Color treebackgroundcolor = new Color(233, 232, 230);
+	public static final Color treebackgroundcolor = new Color(255, 255, 255);
 	public static final Color treelinelevelcolor = new Color(219, 217, 214);
 	public static final Color treecirclestrokecolor = new Color(100, 98, 87);
 	public static final Color treecirclebackgroundcolor = new Color(252, 252, 252);
 	public static final Color treelinecolor = new Color(100, 98, 87);
 
 	// View nodes
-	public static final Color viewbackgroundcolor = new Color(219, 217, 206);
+	public static final Color viewbackgroundcolor = new Color(233, 232, 231);
 	public static final Color viewtickcolor = new Color(164, 164, 164);
 	public static final Color viewtrianglecolor = new Color(76, 76, 76);
 	public static final Color viewrollcolor = new Color(197, 195, 184);
 	public static final Color viewsearchcolor = new Color(177, 72, 69);
+	public static final Color viewsearchbackgroundcolor = new Color(207, 215, 224);
 
 	// Scaled nodes
 	public static final Color scaledviewbackgroundcolor = new Color(76, 76, 76);
@@ -47,7 +51,7 @@ public final class DecisionTreeScheme {
 	public static final Color viewercolor = new Color(0, 0, 0);
 
 	// Border
-	public static final Color borderbackgroundcolor = new Color(219, 217, 206);
+	public static final Color borderbackgroundcolor = new Color(233, 232, 230);
 	public static final Color borderupperbevelcolor = new Color(127, 127, 127);
 	public static final Color borderlowerbevelcolor = new Color(10, 10, 10);
 	public static final Color borderhighlightcolor = new Color(242, 242, 242);

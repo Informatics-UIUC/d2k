@@ -13,29 +13,36 @@ import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
 	Represents a decision tree node with a bar graph
 */
-public final class ViewNode {
+public class ViewNode {
 
-	static JFrame frame;
+	private static final String GREATER_THAN = ">";
+	private static final String LESS_THAN = "<";
+	private static final String GREATER_THAN_EQUAL_TO = ">=";
+	private static final String LESS_THAN_EQUAL_TO = "<=";
+	private static final String NOT_EQUAL_TO = "!=";
+	private static final String EQUAL_TO = "==";
 
 	// Decision tree model
 	ViewableDTModel dmodel;
 
 	ViewableDTNode dnode;
-
 	ViewNode parent;
 	ArrayList children;
 
 	// Distribution values
 	double[] values;
 
-	boolean roll = false;
+	boolean search = false;
+	boolean searchbackground = false;
 
 	boolean collapsed = false;
 
-	// x is midpoint of node, y is top left of bar graph
+	// X is midpoint of node, y is top left of bar graph
 	double x, y;
-	double xspace = 20;
-	double yspace = 80;
+
+	// Space between nodes
+	public static double xspace = 20;
+	public static double yspace = 80;
 
 	double gwidth;
 	double gheight = 45;
@@ -46,24 +53,27 @@ public final class ViewNode {
 	double ygrid = 5;
 	double tickmark = 3;
 
+	String branchlabel;
+
+	double searchspace = 4;
+
 	double tside = 8;
-	double tspace = 8;
+	double tspace = 10;
 	double theight;
 
 	double yscale;
 	double scalesize = 100;
 	double xincrement, yincrement;
 
-	DecisionTreeScheme scheme;
+	static JFrame graphicsframe;
 
-	// Branch label above this node
-	private String blabel;
+	DecisionTreeScheme scheme;
 
 	public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode, String label) {
 		dmodel = model;
 		dnode = node;
 		parent = vnode;
-		blabel = label;
+		branchlabel = label;
 		children = new ArrayList(dnode.getNumChildren());
 
 		findValues();
@@ -74,10 +84,10 @@ public final class ViewNode {
 		yincrement = gheight/(ygrid+1);
 		yscale = (gheight - 2*yincrement)/scalesize;
 
-		if (frame == null) {
-			frame = new JFrame();
-			frame.addNotify();
-			frame.setFont(DecisionTreeScheme.textfont);
+		if (graphicsframe == null) {
+			graphicsframe = new JFrame();
+			graphicsframe.addNotify();
+			graphicsframe.setFont(DecisionTreeScheme.textfont);
 		}
 	}
 
@@ -128,27 +138,26 @@ public final class ViewNode {
 	}
 
 	public double getWidth() {
-
 		Graphics g = null;
-		while(g == null)
-			g = frame.getGraphics();
-		FontMetrics fm = g.getFontMetrics();
-		int strwid1;
-		if(blabel != null)
-			strwid1 = fm.stringWidth(blabel);
+
+		while (g == null)
+			g = graphicsframe.getGraphics();
+
+		FontMetrics metrics = g.getFontMetrics();
+		int swidth1;
+
+		if (branchlabel != null)
+			swidth1 = metrics.stringWidth(branchlabel);
 		else
-			strwid1 = 0;
+			swidth1 = 0;
 
-		double w1 = xspace+(gwidth/2);
-		double w2 = strwid1+(gwidth/2);
+		double width1 = swidth1*2;
+		double width2 = xspace + gwidth + xspace;
 
-		double wid1 = strwid1*2;
-		double wid2 = xspace + gwidth+ xspace;
-
-		if(wid1 > wid2)
-			return wid1;
+		if (width1 > width2)
+			return width1;
 		else
-			return wid2;
+			return width2;
 	}
 
 	public double findSubtreeWidth() {
@@ -257,6 +266,21 @@ public final class ViewNode {
 		return intervalwidth;
 	}
 
+	// Find branch index of parent corresponding to node
+	public int findBranchIndex() {
+		if (parent == null)
+			return -1;
+
+		for (int index = 0; index < parent.getNumChildren(); index++) {
+			ViewNode node = parent.getChild(index);
+
+			if (node == this)
+				return index;
+		}
+
+		return -1;
+	}
+
 	public void toggle() {
 		if (collapsed)
 			collapsed = false;
@@ -275,6 +299,7 @@ public final class ViewNode {
 		return true;
 	}
 
+	// Determine if given point falls in bounds of node
 	public int test(int x1, int y1, double scale) {
 		if (x1 >= scale*(x - gwidth/2) && x1 <= scale*(x + gwidth/2))
 			return 1;
@@ -290,8 +315,18 @@ public final class ViewNode {
 	public void drawViewNode(Graphics2D g2) {
 		double x1, y1;
 
+		if (search) {
+			g2.setColor(scheme.searchcolor);
+			g2.setStroke(new BasicStroke(.5f));
+			g2.draw(new Rectangle2D.Double(x-gwidth/2-searchspace, y-searchspace, gwidth+2*searchspace, gheight+2*searchspace));
+		}
+
 		// Background
-		g2.setColor(scheme.viewbackgroundcolor);
+		if (searchbackground)
+			g2.setColor(scheme.viewsearchbackgroundcolor);
+		else
+			g2.setColor(scheme.viewbackgroundcolor);
+
 		g2.fill(new Rectangle2D.Double(x-gwidth/2, y, gwidth, gheight));
 
 		// Tickmarks
@@ -359,75 +394,137 @@ public final class ViewNode {
 		}
 	}
 
-	public void drawNode(Graphics2D g2) {
-		double x1, y1;
+	// Search functions
+	public void setSearchBackground(boolean search) {
+		searchbackground = search;
+	}
 
-		// Background
-		g2.setColor(scheme.viewbackgroundcolor);
-		g2.fill(new Rectangle2D.Double(0, 0, gwidth, gheight));
+	public double findPurity() {
+		double sum = 0;
+		int count = 0;
 
-		// Tickmarks
-		g2.setColor(scheme.viewtickcolor);
-		g2.setStroke(new BasicStroke(1));
-		x1 = leftinset;
-		y1 = yincrement;
-		for (int index = 0; index < ygrid; index++) {
-			g2.draw(new Line2D.Double(x1, y1, x1+tickmark, y1));
-			y1 += yincrement;
-		}
-
-		// Bars
-		x1 = leftinset + tickmark + barspace;
 		for (int index = 0; index < values.length; index++) {
-			double barheight = yscale*values[index];
-			y1 = 1 + gheight - yincrement - barheight;
-			g2.setColor(scheme.getNextColor());
-			g2.fill(new Rectangle2D.Double(x1, y1, barwidth, barheight));
-			x1 += barwidth + barspace;
-		}
+			double value = values[index];
 
-		// Triangle
-		if (isLeaf())
-			return;
-
-		theight = .866025*tside;
-		double ycomponent = tside/2;
-		double xcomponent = .577350*ycomponent;
-		double xcenter, ycenter;
-
-		if (collapsed) {
-			xcenter = 0 + gwidth/2 + tspace + xcomponent;
-			ycenter = 0 + gheight - ycomponent;
-
-			int xpoints[] = {(int) (xcenter-xcomponent), (int) (xcenter+theight-xcomponent), (int) (xcenter-xcomponent)};
-			int ypoints[] = {(int) (ycenter-ycomponent), (int) ycenter, (int) (ycenter+ycomponent)};
-
-			GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
-			triangle.moveTo((int) (xcenter-xcomponent), (int) (ycenter-ycomponent));
-			for (int index = 1; index < xpoints.length; index++) {
-				triangle.lineTo(xpoints[index], ypoints[index]);
+			if (value > 0) {
+				sum += value;
+				count++;
 			}
-			triangle.closePath();
-
-			g2.setColor(scheme.viewtrianglecolor);
-			g2.fill(triangle);
 		}
-		else {
-			xcenter = 0 + gwidth/2 + tspace + xcomponent;
-			ycenter = 0 + gheight - ycomponent;
 
-			int xpoints[] = {(int) (xcenter-ycomponent), (int) (xcenter+ycomponent), (int) (xcenter)};
-			int ypoints[] = {(int) (ycenter-xcomponent), (int) (ycenter-xcomponent), (int) (ycenter+ycomponent)};
+		if (count != 0)
+			return sum/count;
+		else
+			return 0;
+	}
 
-			GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
-			triangle.moveTo((int) (xcenter-ycomponent), (int) (ycenter-xcomponent));
-			for (int index = 1; index < xpoints.length; index++) {
-				triangle.lineTo(xpoints[index], ypoints[index]);
+	// Determine type of condition and call specific evaluate function
+	protected boolean evaluate(SearchPanel.Condition condition) {
+		try {
+			if (condition instanceof SearchPanel.PopulationCondition) {
+				int population = dnode.getOutputTally(condition.attribute);
+				return evaluate(population, condition.value, condition.operator);
 			}
-			triangle.closePath();
 
-			g2.setColor(DecisionTreeScheme.viewtrianglecolor);
-			g2.fill(triangle);
+			else if (condition instanceof SearchPanel.PercentCondition) {
+				double percent = 100*(double)dnode.getOutputTally(condition.attribute)/(double)dnode.getTotal();
+				return evaluate(percent, condition.value, condition.operator);
+			}
+
+			else if (condition instanceof SearchPanel.PurityCondition) {
+				double purity = findPurity();
+				return evaluate(purity, condition.value, condition.operator);
+			}
+
+			else if (condition instanceof SearchPanel.SplitCondition) {
+				SearchPanel.SplitCondition splitcondition = (SearchPanel.SplitCondition) condition;
+
+				if (splitcondition.scalar)
+					return evaluateScalar(splitcondition);
+				else
+					return evaluateNominal(splitcondition);
+			}
+		} catch (Exception exception) {
+			return false;
 		}
+
+		return false;
+	}
+
+	// Evaluate double values based on operator
+	boolean evaluate(double dvalue, double value, String operator) {
+		if (operator == GREATER_THAN)
+			return value < dvalue;
+
+		else if (operator == GREATER_THAN_EQUAL_TO)
+			return value <= dvalue;
+
+		else if (operator == LESS_THAN)
+			return value > dvalue;
+
+		else if (operator == LESS_THAN_EQUAL_TO)
+			return value >= dvalue;
+
+		else if (operator == EQUAL_TO)
+			return value == dvalue;
+
+		else if (operator == NOT_EQUAL_TO)
+			return value != dvalue;
+
+		return false;
+	}
+
+	// Evaluate string values based on operator
+	boolean evaluate(String svalue, String value, String operator) {
+		if (operator == EQUAL_TO)
+			return value.equals(svalue);
+
+		else if (operator == NOT_EQUAL_TO)
+			return !value.equals(svalue);
+
+		return false;
+	}
+
+	// Evaluate scalar split condition
+	boolean evaluateScalar(SearchPanel.SplitCondition condition) {
+		if (parent == null)
+			return false;
+
+		if (!(parent.dnode instanceof NumericViewableDTNode))
+			return false;
+
+
+		NumericViewableDTNode numericparent = (NumericViewableDTNode) parent.dnode;
+
+		String attribute = numericparent.getSplitAttribute();
+
+		if (!attribute.equals(condition.attribute))
+			return false;
+
+		double splitvalue = numericparent.getSplitValue();
+
+		return evaluate(splitvalue, condition.value, condition.operator);
+	}
+
+	// Evaluate nominal split condition
+	boolean evaluateNominal(SearchPanel.SplitCondition condition) {
+		if (parent == null)
+			return false;
+
+		if (!(parent.dnode instanceof CategoricalViewableDTNode))
+			return false;
+
+		CategoricalViewableDTNode categoricalparent = (CategoricalViewableDTNode) parent.dnode;
+
+		String attribute = categoricalparent.getSplitAttribute();
+
+		if (!attribute.equals(condition.attribute))
+			return false;
+
+		String[] splitvalues = categoricalparent.getSplitValues();
+		int index = findBranchIndex();
+		String splitvalue = splitvalues[index];
+
+		return evaluate(splitvalue, condition.svalue, condition.operator);
 	}
 }
