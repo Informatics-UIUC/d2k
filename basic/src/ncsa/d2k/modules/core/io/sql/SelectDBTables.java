@@ -15,6 +15,8 @@ import ncsa.gui.Constrain;
 
 import ncsa.d2k.modules.core.datatype.table.db.*;
 import ncsa.d2k.modules.core.datatype.table.db.sql.*;
+
+import ncsa.d2k.modules.core.transform.StaticMethods;
 /**
  *
  * <p>Title: </p>
@@ -26,8 +28,19 @@ import ncsa.d2k.modules.core.datatype.table.db.sql.*;
  *
  * @todo: getting class cast exception when trying to remove a table from the
  *        selected tables.
+ *
  * @todo: gettign array index out of bound exception when not selectign ANYTHING
  * and clicking "done".
+ *
+ * @todo: getting array index out of bound exception when choosing one table, adding it
+ * without choosing any columns. clicking done.
+ *
+ * @todo: to the best of my understanding the user should be able to select
+ * more than one table. and the moduel will push them one by one.
+ * what happens now is that one table is being appended to the other.
+ * in addition to that - the number of rows is histeric. it is way over more than
+ * the number of rows in the larger table that is being loaded.
+ * ???
  */
 public class SelectDBTables extends HeadlessUIModule {
 
@@ -767,7 +780,7 @@ public class SelectDBTables extends HeadlessUIModule {
 
 
 
-    protected void doit(){
+    public void doit() throws Exception{
 
       DBConnection dbc = (DBConnection)pullInput(0);
       String[] availableTables = dbc.getTableNames();
@@ -782,8 +795,16 @@ public class SelectDBTables extends HeadlessUIModule {
     //targetTables holds only the intersection between available and selected.
     String[] targetTables = getPositive(isTargetTable, selectedTablesNames);
 
+    if(targetTables == null || targetTables.length == 0)
+      throw new Exception ("None of the selected tables in in the given data base.");
+
     //targetColumns[i] will hold the available columns for targetTables[i] that were also selected.
     String[][] targetColumns = new String[targetTables.length][];
+
+    //tables that have no target columns will be marked true.
+    //then removed from target tables and target columns too.
+    //in order to avoid array index out of bound exception...
+    boolean[] toBeRemoved = new boolean[targetTables.length];
 
 
       //going over the available columns for each table.
@@ -796,15 +817,45 @@ public class SelectDBTables extends HeadlessUIModule {
           boolean[] isTargetsCols = getIntersection(availableColumns, selectedColumnsNames[i]);
           //retrieving only the target columns names for this table.
           targetColumns[j] = getPositive(isTargetsCols, selectedColumnsNames[i]);
+
+          //checking if this table has any target columns
+          if(targetColumns[j] == null || targetColumns[j].length == 0)
+            toBeRemoved[j] = true;
+
           //increasing targetColumns counter.
           j++;
         }//if
       }//for
 
-//for (int i=0; i<targetTables.length; i++){
+      int counter = 0; //counts the tables that will make the output (ones that won't be removed.)
+      for (int i=0; i<toBeRemoved.length; i++)
+        if(!toBeRemoved[i] == true) counter++;
+
+      String[] finalTables = null;        //will hold names of final target tables.
+      String[][] finalColumns = null;     //will hold names of final columns for the final target tables.
+
+      if(counter < toBeRemoved.length){ //meaning some tables should be removed
+        finalTables = new String[counter];
+        finalColumns = new String[counter][];
+        for(int i=0, j=0; i<toBeRemoved.length; i++)
+          //if the table should not be removed it is copied to the final arrays.
+          if(!toBeRemoved[i]){
+            finalTables[j] = targetTables[i];
+            finalColumns[j] = targetColumns[i];
+            j++;
+          }//if not to be removed
+
+      }//if counter is smaller
+
+      //if none of the tables should be removed...
+      if(finalTables == null && finalColumns == null){
+        finalTables = targetTables;
+        finalColumns = targetColumns;
+      }
+
         //creating the data source that will hold the data for the DBTable
-        DBDataSource dbDataSource = new ResultSetDataSource(dbc, targetTables,
-            targetColumns, whereClause);
+        DBDataSource dbDataSource = new ResultSetDataSource(dbc, finalTables,
+            finalColumns, whereClause);
         //creating the DBTable
         DBTable table = new DBTable(dbDataSource, dbc);
 
