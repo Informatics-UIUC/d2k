@@ -60,15 +60,22 @@ public class ReadFileToPagingTable extends ReadFileToTable {
     }*/
 
     public String getOutputName(int i) {
-        return "table";
+        return "Table";
     }
 
     public String getModuleInfo() {
-        return "Read the data from a FlatFileReader to a PagingTable.";
+        // return "Read the data from a FlatFileParser to a PagingTable.";
+        StringBuffer sb = new StringBuffer("<p>Overview: ");
+        sb.append("Given a FlatFileParser, this module reads the data ");
+        sb.append("from the flat file on disk into a PagingTable, a type ");
+        sb.append("of Table capable of keeping only part of itself in ");
+        sb.append("memory at any given time.");
+        sb.append("</p>");
+        return sb.toString();
     }
 
     public String getModuleName() {
-        return "ReadFileToPagingTable";
+        return "Read File to Paging Table";
     }
 
     /*public void doit() throws Exception {
@@ -254,26 +261,26 @@ public class ReadFileToPagingTable extends ReadFileToTable {
         return pt;
     }
 
-	/**
-		returns a VT that has 2 columns, corresponding
-		to the row and column indices of the fields
-		that were blank in the file that was read in
-		/
-	private Table createBlanks(FlatFileReader ffr){
+   /**
+      returns a VT that has 2 columns, corresponding
+      to the row and column indices of the fields
+      that were blank in the file that was read in
+      /
+   private Table createBlanks(FlatFileReader ffr){
         /*int[][] blanks = ffr.getBlanks();
 
-		IntColumn rowsColumn=new IntColumn(blanks[0]);
-		rowsColumn.setLabel("Rows");
+      IntColumn rowsColumn=new IntColumn(blanks[0]);
+      rowsColumn.setLabel("Rows");
 
-		IntColumn colsColumn=new IntColumn(blanks[1]);
-		colsColumn.setLabel("Column");
+      IntColumn colsColumn=new IntColumn(blanks[1]);
+      colsColumn.setLabel("Column");
 
-		Column[] internal=new Column[2];
-		internal[0]=rowsColumn;
-		internal[1]=colsColumn;
+      Column[] internal=new Column[2];
+      internal[0]=rowsColumn;
+      internal[1]=colsColumn;
 
-		TableImpl table= (TableImpl)DefaultTableFactory.getInstance().createTable(internal);
-		return table;
+      TableImpl table= (TableImpl)DefaultTableFactory.getInstance().createTable(internal);
+      return table;
         return null;
-	}*/
+   }*/
 }
