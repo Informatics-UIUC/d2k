@@ -831,7 +831,7 @@ LineGraphAppModule.java
 OptimizerReport.java
 ParallelCoordinateVis.java		submitted
 PieChart2D.java				submitted
-PredictionTableReport.java		Greg volunteered to take this one
+PredictionTableReport.java		David C working on this one
 ScatterPlot2D.java			submitted
 ScatterPlot3D.java			submitted
 SurfacePlot3D.java			still being worked on
