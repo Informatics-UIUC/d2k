@@ -140,7 +140,9 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return a subset of this Table's rows
     */
    public Table getSubset(int pos, int len) {
-      return new SubsetTableImpl(this, this.resubset(pos, len));
+      SubsetTableImpl eti = (SubsetTableImpl) this.shallowCopy();
+      eti.subset = this.resubset(pos, len);
+      return eti;
    }
 
    /**
@@ -149,7 +151,9 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return a subset table.
     */
    public Table getSubset(int[] rows) {
-      return new SubsetTableImpl(this, this.resubset(rows));
+      SubsetTableImpl eti = (SubsetTableImpl) this.shallowCopy();
+      eti.subset = this.resubset(rows);
+      return eti;
    }
 
    ///////////////////////////////////////////
