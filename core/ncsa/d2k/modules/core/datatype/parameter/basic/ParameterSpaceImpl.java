@@ -62,7 +62,7 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
   }
 
 
-  public ParameterSpace createFromData (String [] names, double [] minValues, double [] maxValues, double [] defaultValues, int [] resolutions, int [] types) {
+  public void createFromData (String [] names, double [] minValues, double [] maxValues, double [] defaultValues, int [] resolutions, int [] types) {
 
     int numParameters = names.length;
     int numRows      = 5;
@@ -98,8 +98,6 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
     this.numSubspaces = 1;
     this.subspaceNumParameters = new int[1];
     this.subspaceNumParameters[0] = numParameters;
-
-    return this;
   }
 
   public int getNumParameters() {
@@ -116,9 +114,8 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
       if (getName(i).equals(name))
         return i;
     }
-    Exception e = new Exception();
     System.out.println("Error!  Can not find name (" + name + ").  ");
-    throw e;
+    throw new Exception();
   }
 
 
@@ -166,18 +163,6 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
     throw new Exception();
   }
 
-  public int getSubspaceParameterIndex(int parameterIndex) throws Exception {
-    int lastParameterIndex = parameterIndex;
-    for (int i = 0; i < numSubspaces; i++) {
-      parameterIndex -= subspaceNumParameters[i];
-      if (parameterIndex < 0)
-        return lastParameterIndex;
-      lastParameterIndex = parameterIndex;
-    }
-    System.out.println("Error!  parameterIndex (" + parameterIndex + ") invalid.  ");
-    throw new Exception();
-  }
-
   public int getSubspaceParameterStartIndex(int subspaceIndex) throws Exception {
 
     if (subspaceIndex < 0 || subspaceIndex >= numSubspaces) {
@@ -218,31 +203,6 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
 
   public void setType(int parameterIndex, int value) {
     this.setInt(value, typeRowIndex, parameterIndex);
-  }
-
-  public ParameterSpace [] segmentSpace(ParameterSpace space, int splitIndex) {
-
-    int numParameters = space.getNumParameters();
-    int [] headCols = new int[splitIndex];
-    int [] tailCols = new int[numParameters - splitIndex];
-
-    for (int i = 0; i < splitIndex; i++) {
-      headCols[i] = i;
-    }
-    for (int i = 0; i < numParameters - splitIndex; i++) {
-      headCols[i] = splitIndex + i;
-    }
-
-
-    ParameterSpace headSpace = (ParameterSpace) getSubsetByColumnsReference(headCols);
-    ParameterSpace tailSpace = (ParameterSpace) getSubsetByColumnsReference(tailCols);
-
-    ParameterSpace [] spaces = new ParameterSpace[2];
-
-    spaces[0] = headSpace;
-    spaces[1] = tailSpace;
-
-    return spaces;
   }
 
   public ParameterSpace getSubspace(int subspaceIndex) throws Exception {

@@ -46,12 +46,12 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * @param types the type as an integer as defined in ColumnTypes.
    * @return a ParameterSpace.
    */
-  public ParameterSpace createFromData(String [] names,
-                                       double [] minValues,
-                                       double [] maxValues,
-                                       double [] defaultValues,
-                                       int    [] resolutions,
-                                       int    [] types);
+  public void createFromData(String [] names,
+                             double [] minValues,
+                             double [] maxValues,
+                             double [] defaultValues,
+                             int    [] resolutions,
+                             int    [] types);
 
 
   /**
@@ -149,13 +149,6 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
   public int getSubspaceIndex(int parameterIndex) throws Exception;
 
   /**
-   * Get the subspace parameter index of a parameter.
-   * @param parameterIndex the index of the parameter of interest.
-   * @return a int value representing the subpace index number of parameter.
-   */
-  public int getSubspaceParameterIndex(int parameterIndex) throws Exception;
-
-  /**
    * Get a subspace from the space.
    * @param subspaceIndex the index of the subspace of interest.
    * @return a ParameterSpace which defines the indicated subspace.
@@ -197,16 +190,12 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
   public void setType(int parameterIndex, int type);
 
   /**
-   * Join two ParameterSpaces to produce a single parameter space.
+   * Join two ParameterSpaces to produce a new independent single parameter space
+   * that does not share any memeory with with original ParameterSpaces.
    * @param firstSpace the first of the two ParameterSpaces to join.
    * @param secondSpace the second of the two ParameterSpaces to join.
    * @return a ParameterSpace which defines the indicated subspace.
    */
   public ParameterSpace joinSubspaces(ParameterSpace firstSpace, ParameterSpace secondSpace);
 
-  /**
-   * Split a ParameterSpace into two parameter spaces.
-   * @return an array of two ParameterSpaces which define the two subspaces, the first being the head and the second being the tail.
-   */
-  public ParameterSpace [] segmentSpace(ParameterSpace space, int splitIndex);
 } /* ParameterSpace */

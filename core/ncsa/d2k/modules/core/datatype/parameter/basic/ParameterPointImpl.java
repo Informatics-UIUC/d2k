@@ -61,9 +61,8 @@ public class ParameterPointImpl extends ContinuousExampleSet implements Paramete
       if (getName(i).equals(name))
         return i;
     }
-    Exception e = new Exception();
     System.out.println("Error!  Can not find name (" + name + ").  ");
-    throw e;
+    throw new Exception();
   }
 
   public ParameterPoint [] segmentPoint(ParameterPoint point, int splitIndex) {
