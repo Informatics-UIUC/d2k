@@ -2,6 +2,7 @@ package ncsa.d2k.modules;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
 
 
@@ -57,6 +58,21 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
           //this.scalarInputs = scalarInputs;
           //this.scalarOutputs = scalarOutputs;
     }
+/*    private void writeObject(java.io.ObjectOutputStream out)
+         throws Exception {
+
+
+
+        out.defaultWriteObject();
+
+     }
+     private void readObject(java.io.ObjectInputStream in)
+         throws Exception {
+
+      System.out.println("1IC: "+inputColumnLabels);
+      in.defaultReadObject();
+      System.out.println("2IC: "+inputColumnLabels);
+     }*/
 
     /**
      *	Describe the function of this module.
@@ -243,8 +259,9 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
                 else
                     outputFeat[i] = idx.intValue();
             }
-            if(outOk)
+            if(outOk) {
               pt.setOutputFeatures(outputFeat);
+            }
 
             // ensure that the prediction columns are set correctly.
             int[] curPredFeat = pt.getPredictionSet();
@@ -265,9 +282,32 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
             }
             else
                 predok = false;
+            if(!predok) {
+              int[] predSet = new int[outputFeatureTypes.length];
+              // add as many prediction columns as there are outputs
+              for(int i = 0; i < outputFeatureTypes.length; i++) {
+                // add the prediction columns
+                int type = outputFeatureTypes[i];
+                switch(type) {
+                  case ColumnTypes.DOUBLE:
+                    pt.addColumn(new DoubleColumn(pt.getNumRows()));
+                    predSet[i] = pt.getNumColumns()-1;
+                    break;
+                  case ColumnTypes.STRING:
+                    pt.addColumn(new StringColumn(pt.getNumRows()));
+                    predSet[i] = pt.getNumColumns()-1;
+                    break;
 
+                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    // fill in for all column types
+
+                    // is it ok to call pt.addColumn() ?  Will this work with
+                    // different implementations of Table?
+                }
+              }
+              pt.setPredictionSet(predSet);
+            }
         }
-
         makePredictions(pt);
         if(transformations != null && this.getApplyReverseTransformationsAfterPredict())
           applyReverseTransformations(pt);
