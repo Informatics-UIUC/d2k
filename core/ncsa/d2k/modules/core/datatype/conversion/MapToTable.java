@@ -8,7 +8,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	MapToVT.java
 */
-public class MapToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class MapToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 {
 	/**
 		This pair returns the description of the various inputs.
@@ -46,7 +46,7 @@ public class MapToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 

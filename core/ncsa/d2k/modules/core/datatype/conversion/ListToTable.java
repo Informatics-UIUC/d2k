@@ -9,7 +9,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	ListToVT.java
 */
-public class ListToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class ListToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 {
 
 	/**
@@ -48,7 +48,7 @@ public class ListToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
