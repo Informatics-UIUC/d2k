@@ -520,7 +520,7 @@ public class GetAssRuleFromDB extends UIModule
     double support;
     double parentSupport;
     double confidence;
-    if (condition.getText().equals(target.getText())) {
+    if (condition.getText().equals(target.getText()) && target.getText().length()>0) {
       JOptionPane.showMessageDialog(msgBoard,
                 "The condition attribute cannot be same as the target attribute", "Error",
                 JOptionPane.ERROR_MESSAGE);
