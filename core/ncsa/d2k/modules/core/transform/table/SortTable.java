@@ -151,13 +151,19 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule {
 			JPanel buttonpanel = new JPanel();
 			abort = new JButton("Abort");
 			done = new JButton("Done");
-			abort.addActionListener(this);
+			//abort.addActionListener(this);
 			//done.addActionListener(this);
+			abort.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+					viewAbort();
+				}
+			});
+
 			done.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-						viewDone("Done");
-						getSortOrder();
-						sort();
+					viewDone("Done");
+					getSortOrder();
+					sort();
 				}
 			});
 			buttonpanel.add(abort);
@@ -198,14 +204,15 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule {
 
 		public void actionPerformed(ActionEvent event) {
 			Object source = event.getSource();
-			if (source == done) {
+			/*if (source == done) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
+						viewDone("Done");
 						getSortOrder();
 						sort();
 					}
 				});
-			}
+			}*/
 			if (source == abort)
 				viewAbort();
 		}
@@ -273,7 +280,6 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule {
 			if(getReorderColumns())
 				reorder();
 			pushOutput(table, 0);
-			viewDone("Done");
 		}
 /*		Column column;
 		int[] sorted;
