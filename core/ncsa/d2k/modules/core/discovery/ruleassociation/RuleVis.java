@@ -34,8 +34,7 @@ public class RuleVis extends ncsa.d2k.infrastructure.modules.VisModule
 /*&%^3 Do not modify this section. */
 		switch (index) {
 			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Rules\">    <Text>These rules consist of an array of rules where each rule is some number of antecedants, followed by one target or prediction, the support value, then the confidence value. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"distinct values\">    <Text>This array contains a list of all the names associated with the integer representationof the sets. </Text>  </Info></D2K>";
-			case 2: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"distinct values\">    <Text>This is the dataset from which rules were derived.</Text>  </Info></D2K>";
+			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"item sets\">    <Text>This structure contains the examples used to generate the itemsets.</Text>  </Info></D2K>";
 			default: return "No such input";
 		}
 /*#end^3 Continue editing. ^#&*/
@@ -49,8 +48,7 @@ public class RuleVis extends ncsa.d2k.infrastructure.modules.VisModule
 /*&%^4 Do not modify this section. */
 		String [] types =  {
 			"[[I",
-			"[Ljava.lang.String;",
-			"[[Ljava.lang.String;"};
+			"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"};
 		return types;
 /*#end^4 Continue editing. ^#&*/
 	}
@@ -143,13 +141,12 @@ class RuleVisView extends ncsa.d2k.controller.userviews.swing.JUserPane implemen
 
 	int [][] rules = null;
 	String[] names = null;
-	String[][] sets = null;
+	int numExamples;
 	int [] nameIndices = null;
 
 	public void endExecution () {
 		rules = null;
 		names = null;
-		sets = null;
 		nameIndices = null;
 	}
 
@@ -208,18 +205,21 @@ class RuleVisView extends ncsa.d2k.controller.userviews.swing.JUserPane implemen
 		Create a panel which will contain the buttons that sort by the various
 		means, confidence and support.
 	*/
-	JButton conf, sup;
+	JButton conf, sup, unsort;
 	private JPanel getSortPanel () {
 		JPanel buttons = new JPanel ();
 		buttons.setLayout (new GridBagLayout ());
 		conf = new JButton ("C");
 		sup = new JButton ("S");
+		unsort = new JButton ("U");
 
 		this.setConstraints (buttons, new JLabel ("sort by:"), 0, 0, 1, 1, GridBagConstraints.NONE,
 					GridBagConstraints.WEST, 0, 0);
 		this.setConstraints (buttons, conf, 1, 0, 1, 1, GridBagConstraints.NONE,
 					GridBagConstraints.WEST, 0, 0);
 		this.setConstraints (buttons, sup, 2, 0, 1, 1, GridBagConstraints.NONE,
+					GridBagConstraints.WEST, 0, 0);
+		this.setConstraints (buttons, unsort, 3, 0, 1, 1, GridBagConstraints.NONE,
 					GridBagConstraints.WEST, 0, 0);
 
 		conf.addActionListener (this);
@@ -232,11 +232,14 @@ class RuleVisView extends ncsa.d2k.controller.userviews.swing.JUserPane implemen
 		A sorting button was clicked, resort by confidence or support.
 		@param e the action event.
 	*/
-	public void actionPerformed (ActionEvent e) {
-		if (e.getSource () == conf)
-			rdm.sortConfidenceSupport ();
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == conf)
+			rdm.sortConfidenceSupport();
+		else if (e.getSource() == sup)
+			rdm.sortSupportConfidence();
 		else
-			rdm.sortSupportConfidence ();
+			rdm.unSort();
+
 		rvdm.fireTableRowsUpdated (0, rvdm.getColumnCount () - 1);
 		vvdm.fireTableRowsUpdated (0, vvdm.getColumnCount () - 1);
 	}
@@ -288,13 +291,19 @@ class RuleVisView extends ncsa.d2k.controller.userviews.swing.JUserPane implemen
 		if (index == 0)
 			rules = (int [][]) o;
 		else
-			if (index == 1)
+			if (index == 1) {
+				ItemSets is = (ItemSets)o;
+				names = is.names;
+				numExamples = is.numExamples;
+			}
+			/*
 				names = (String[]) o;
-			else
+			} else
 				sets = (String [][]) o;
+			*/
 
 		// Do we have all the inputs we need?
-		if (rules != null && names != null && sets != null) {
+		if (rules != null && names != null) {
 
 			this.setLayout (new GridBagLayout ());
 			this.setBackground (RuleVis.RULE_VIS_BACKGROUND);
@@ -316,7 +325,7 @@ class RuleVisView extends ncsa.d2k.controller.userviews.swing.JUserPane implemen
 			////////////////////////////////////////////////////////////////////////
 			// Create the table that will go on the top, it will show the confidence
 			// support and the row headers.
-			vvdm = new ValueVisDataModel (rdm, sets.length);
+			vvdm = new ValueVisDataModel (rdm, numExamples);
 			final JTable vjt = new JTable (vvdm);
 			vjt.setBackground (RuleVis.RULE_VIS_BACKGROUND);
 			vjt.createDefaultColumnsFromModel ();
@@ -335,7 +344,7 @@ class RuleVisView extends ncsa.d2k.controller.userviews.swing.JUserPane implemen
 			// next construct the table of the rules themselves, this table
 			// will also have row headers in a different table, the scroller
 			// understands and deals with the concept of table row headers.
-			rvdm = new RuleVisDataModel (rdm, names, sets.length);
+			rvdm = new RuleVisDataModel (rdm, names, numExamples);
 			nameIndices = rvdm.getNameIndices ();
 			JTable rjt = new JTable (rvdm);
 			rjt.createDefaultColumnsFromModel ();
@@ -713,10 +722,10 @@ class ValueVisDataModel extends AbstractTableModel {
 
 		// Is it a header? We have to share the same data model for the
 		// scroller to work right.
-		float percent = 0;
+		double percent = 0;
 		if (row == 0) {
 			percent = results.getConfidence (column);
-			percent /= 10000;
+			percent /= 10000.0;
 		} else {
 			percent = results.getSupport (column);
 			percent = (percent * 100) / this.numsets;

@@ -4,6 +4,7 @@ package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
 
 import java.io.*;
 import java.util.*;
+import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
@@ -22,11 +23,9 @@ implements Serializable
 	public String getInputInfo(int index) {
 /*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"examples\">    <Text>This is the dataset containing the examples. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"distinct values\">    <Text>This array contains a list of all the names associated with the integer representationof the sets. </Text>  </Info></D2K>";
-			case 2: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"rules\">    <Text>The rules from the apriori computation. </Text>  </Info></D2K>";
-			case 3: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Name2ID\">    <Text>This table maps attributes by name to an id number. </Text>  </Info></D2K>";
-			case 4: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"targets\">    <Text>This is a list of target names that can be identified. It is optional. </Text>  </Info></D2K>";
+			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"itemset\">    <Text>the itemset contains the examples </Text>  </Info></D2K>";
+			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"rules\">    <Text>Rules generated.</Text>  </Info></D2K>";
+			case 2: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"targets\">    <Text>These are the target items we are trying to predict, if there are any.</Text>  </Info></D2K>";
 			default: return "No such input";
 		}
 /*#end^3 Continue editing. ^#&*/
@@ -39,10 +38,8 @@ implements Serializable
 	public String[] getInputTypes () {
 /*&%^4 Do not modify this section. */
 		String [] types =  {
-			"[[Ljava.lang.String;",
-			"[Ljava.lang.String;",
+			"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets",
 			"[[I",
-			"java.util.Hashtable",
 			"[Ljava.lang.String;"};
 		return types;
 /*#end^4 Continue editing. ^#&*/
@@ -99,46 +96,47 @@ implements Serializable
 		return true if ready to fire , false otherwise
 	*/
 	public boolean isReady () {
-		if (inputFlags[0] > 0 && inputFlags[1] > 0 && inputFlags[2] > 0 && inputFlags[3] > 0)
+		if (inputFlags[0] > 0 && inputFlags[1] > 0)
 			return true;
 		else
 			return false;
 	}
+
 	/**
 		So we have computed the support that each set is pertinate, now
 		compute confidence that each permutation of the set is a rule.
 	*/
 	public void doit () throws Exception {
 
+		long start = System.currentTimeMillis();
+
 		// pull the inputs.
-		String [] items = (String []) this.pullInput (1);
-		String [][] examples = (String [][]) this.pullInput (0);
-		int [][] rules = (int [][]) this.pullInput (2);
-		Hashtable names = (Hashtable) this.pullInput (3);
+		ItemSets iss = (ItemSets) this.pullInput(0);
+		int [][] rules = (int [][]) this.pullInput (1);
+		String [] items = iss.names;
+		HashMap names = iss.unique;
 
 		// Init the counters.
-		int numExamples = examples.length;
+		int numExamples = iss.numExamples;
 		int numRules = rules.length;
 		int numItems = items.length;
-		boolean [][] itemFlags = new boolean [numExamples][numItems];
      	int [] targetIndex = null;
 
-		// What are the outputs...
-		if (this.inputFlags[4] != 0) {
+		// What are the outputs.
+		if (this.inputFlags[2] != 0) {
 
 			// So here we have a list of fields that we are going to
 			// target, these are the outputs.
-			Object obj = this.pullInput (4);
-			System.out.println ("Input is "+obj.getClass().getName());
+			Object obj = this.pullInput (2);
 			String[] targets = (String [])obj;
-			Enumeration keys = names.keys ();
-			Enumeration indxs = names.elements ();
+			Iterator keys = names.keySet().iterator();
+			Iterator indxs = names.values().iterator();
 			ArrayList list = new ArrayList ();
 
 			// for each of the attributes, see if the inputs include the attribute.
-			while (keys.hasMoreElements ()) {
-				String name = (String) keys.nextElement ();
-				int[] indx = (int[]) indxs.nextElement ();
+			while (keys.hasNext ()) {
+				String name = (String) keys.next ();
+				int[] indx = (int[]) indxs.next ();
 				for (int i = 0 ; i < targets.length; i++)
 					if (name.startsWith (targets[i]))
 						list.add (indx);
@@ -154,14 +152,14 @@ implements Serializable
 		}
      	else
 	     	if (targetItem.length () > 0) {
-	     		Enumeration keys = names.keys ();
-				Enumeration indxs = names.elements ();
-				ArrayList list = new ArrayList ();
+	     		Iterator keys = names.keySet().iterator();
+				Iterator indxs = names.values().iterator();
+				ArrayList list = new ArrayList();
 
 				// for each of the attributes, see if the inputs include the attribute.
-				while (keys.hasMoreElements ()) {
-					String name = (String) keys.nextElement ();
-					int[] indx = (int[]) indxs.nextElement ();
+				while (keys.hasNext ()) {
+					String name = (String) keys.next ();
+					int[] indx = (int[]) indxs.next ();
 					if (name.startsWith (targetItem))
 						list.add (indx);
 				}
@@ -175,26 +173,23 @@ implements Serializable
 				}
 	     	}
 
-		//////////////////////
-		// First, set up the item flags, set the bit associated with each
-		// eletment in each set.
-		for (int i = 0 ; i < numExamples ; i++)
-			for (int j = 0 ; j < examples[i].length ; j++) {
-			  String item_desc = examples[i][j];
-			  int[] count_id = (int[])names.get (item_desc);
-			  if (count_id.length < 2)
-				System.out.println("WHOOOAAAA i = "+i+" item name = "+item_desc);
-			  itemFlags[i][count_id[1]] = true;
-			}
-
+		// get the bit map indicating what items were bought for each example.
+		boolean [][] itemFlags = iss.getItemFlags();
 		Vector finalRules = new Vector ();
+		MutableIntegerArray[] documentMap = (MutableIntegerArray[]) iss.userData;
+		iss.userData = null;
 		if (debug) {
 			System.out.println ("ComputeConfidence, number of rules :"+numRules);
 			System.out.println ("            number of unique items :"+numItems);
-			System.out.println ("                        numExamples:"+numExamples);
+			System.out.println ("                       numExamples :"+numExamples);
 		}
+
+///////////////////////////////////////
+// Compute the confidence for each rule.
+//
 		for (int i = 0 ; i < numRules ; i++) {
-			int ruleNum = rules[i].length - 1;
+			int [] currentRule = rules [i];
+			int ruleNum = currentRule.length - 1;
 			for (int j = 0 ; j < rules[i].length-1; j++) {
 
 				// Make a new rule array with one extra slot for the confidence
@@ -204,6 +199,15 @@ implements Serializable
 					newRule[k-1] = rules[i][k];
 				int mark = newRule[newRule.length-3] = rules[i][j];
 				newRule[newRule.length-2] = rules[i][ruleNum]; // the support.
+
+				if (targetIndex != null) {
+					int tgts;
+				    for (tgts = 0 ; tgts < targetIndex.length ; tgts++)
+						if (newRule[newRule.length-3] == targetIndex [tgts])
+						    break;
+					if (tgts == targetIndex.length)
+						continue;
+				}
 
 				// the last entry in this array is the confidence that
 				// given the first n-1 attributes the last attribute will
@@ -216,33 +220,27 @@ implements Serializable
 				for (int x = 0 ; x < numExamples ; x++) {
 					// First determine if the antecedents exist in the set.
 					int y = 0;
+					boolean [] itf = itemFlags[x];
 					for ( ; y < ruleNumLessOne ; y++)
-						if (itemFlags[x][newRule[y]] == false)
+						if (itf[newRule[y]] == false)
 							break;
 
 					// Did the antecedent exist in this set?
 					if (y == ruleNumLessOne) {
 						total++;
-						if (itemFlags[x][mark] == true)
+						if (itf[mark] == true)
 							hits++;
 					}
 				}
 
 				// Here we will have the confidence.
-				if ((float)hits/(float)total > confidence) {
-					newRule[newRule.length-1] = (int)(((float)hits*1000000.0)/
-										(float)total);
-					if (targetIndex != null) {
-						for (int tgts = 0 ; tgts < targetIndex.length ; tgts++)
-							if (newRule[newRule.length-3] == targetIndex [tgts]) {
-								finalRules.addElement (newRule);
-								break;
-							}
-					} else
-						finalRules.addElement (newRule);
+				if (((double)hits/(double)total) >= confidence) {
+					newRule[newRule.length-1] =
+						    (int)(((double)hits/(double)total) * 1000000.0);
+					finalRules.addElement (newRule);
+					newRule = null;
 				}
 			}
-			Thread.currentThread ().yield ();
 		}
 
 		if (debug) {
@@ -253,15 +251,20 @@ implements Serializable
 					System.out.print(","+items[rule[k]]);
 				System.out.println("->"+rule[rule.length-2]+","+rule[rule.length-1]);
 			}
-			System.out.println ("ComputeConfidence, rules found : "+finalRules.size());
+
 		}
+		System.out.println ("ComputeConfidence, rules found : "+finalRules.size()+":"+(
+			    System.currentTimeMillis()-start));
+
 		int rsize = finalRules.size();
-		int[][] resultingRules = new int [rsize][];
-		for (int i = 0 ; i < rsize; i++) {
-			int [] rule = (int [])  finalRules.elementAt(i);
-			resultingRules[i] = rule;
+		if (rsize > 0) {
+			int[][] resultingRules = new int [rsize][];
+			for (int i = 0 ; i < rsize; i++) {
+				int [] rule = (int [])  finalRules.elementAt(i);
+				resultingRules[i] = rule;
+			}
+			this.pushOutput (resultingRules, 0);
 		}
-		this.pushOutput (resultingRules, 0);
 	}
 
 /*&%^8 Do not modify this section. */

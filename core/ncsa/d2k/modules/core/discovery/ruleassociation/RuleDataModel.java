@@ -134,6 +134,20 @@ class RuleDataModel {
 	/**
 		Bubble sort on confidence as primary key.
 	*/
+	public void unSort () {
+		primaryKey = 1;
+		secondaryKey = 2;
+		int numRules = rules.length;
+
+		// Create and init a new handle array.
+		order = new int [numRules];
+		for (int i = 0 ; i < numRules ; i++)
+			order[i] = i;
+	}
+
+	/**
+		Bubble sort on confidence as primary key.
+	*/
 	public void sortConfidenceSupport () {
 		primaryKey = 1;
 		secondaryKey = 2;

@@ -2,6 +2,7 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
 import java.io.*;
 import java.util.*;
+import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
 /**
@@ -40,6 +41,7 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public void beginExecution () {
 		startTime = System.currentTimeMillis ();
+		results = new ArrayList();
 	}
 
 	public void endExecution () {
@@ -48,15 +50,19 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 			+(System.currentTimeMillis()-startTime));
 		results = null;
 		nameList = null;
+		documentMap = null;
+		sNames = null;
+		currentItemsFlags = null;
+		validRules = 0;
 	}
+
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"sets\">    <Text>This is the list of sets we are going to build association rules for. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"item ids\">    <Text>For each item that may appear in the sets, this hashtable has an int array where the first entry is the count of the total occurances of that item out of all sets, and the second int is the unique id of that item. </Text>  </Info></D2K>";
+			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"item sets\">    <Text>ITem set object. </Text>  </Info></D2K>";
 			default: return "No such input";
 		}
 	}
@@ -67,8 +73,7 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public String[] getInputTypes () {
 		String [] types =  {
-			"[[Ljava.lang.String;",
-			"java.util.Hashtable"};
+			"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"};
 		return types;
 	}
 
@@ -78,8 +83,7 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"distinct items\">    <Text>This is the list of distinct items, the id of the item is the index into this array. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"rules\">    <Text>Each rull consists of a list of distinct item ids followed by a confidence and a support value. The support is the percentage of the sets that contained that combination, the confidence is, well , we don't know what that is. </Text>  </Info></D2K>";
+			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"rules\">    <Text>Each rull consists of a list of distinct item ids followed by a confidence and a support value. The support is the percentage of the sets that contained that combination, the confidence is, well , we don't know what that is. </Text>  </Info></D2K>";
 			default: return "No such output";
 		}
 	}
@@ -90,7 +94,6 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public String[] getOutputTypes () {
 		String [] types =  {
-			"[Ljava.lang.String;",
 			"[[I"};
 		return types;
 	}
@@ -120,6 +123,17 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 	}
 	public boolean getDebug () {
 		return this.debug;
+	}
+
+	/**
+	 * the Debug property.
+	 */
+	private int maxSize = 6;
+	public void setMaxRuleSize (int yy) {
+		this.maxSize = yy;
+	}
+	public int getMaxRuleSize () {
+		return this.maxSize;
 	}
 
 	/**
@@ -267,6 +281,7 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 			System.out.println ("Valid Rules Possible : "+numSets);
 
 		// We construct new rules from existing rules of size (cardinality-1).
+		MutableIntegerArray tmp = new MutableIntegerArray (numExamples);
 		for (int i = validRules ; i < foobar ; i++) {
 
 			// Get the next rule of size cardinality-1, copy into the rule buffer.
@@ -285,11 +300,11 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 				if (rulebuffer[ruleIndex] != items[itemIndex]) {
 
 					// Find the number of examples that demonstrate the current rule and the new item.
-					MutableIntegerArray tmp = mia.intersection (documentMap[items[itemIndex]]);
+					tmp.count = 0;
+					mia.intersection (documentMap[items[itemIndex]], tmp);
 					if (tmp.count >= cutoff) {
 
 						// meet the support criterion, we have a new rule
-						// LAM-tlr DO A ARRAYCOPY HERE! ruleIndex tells us where.
 						int [] newRule = new int [cardinality+1];
 						if (rulebuffer[ruleIndex] < items[itemIndex]) {
 
@@ -315,7 +330,8 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 							// Need a new rule buffer;
 							FastHashIntArray darn = new FastHashIntArray (newRule);
 							dups.put (darn, darn);
-							results.add (new LocalResultSet (rules[ruleCount], tmp));
+							results.add (new LocalResultSet (rules[ruleCount],
+								    new MutableIntegerArray(tmp)));
 							rules[ruleCount] = newRule;
 						} else
 							rules[ruleCount] = null;
@@ -327,6 +343,37 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 			lrs.mia = null;
 		}
 		return rules;
+	}
+
+	/**
+	 * Return true if either we still have input, or have more work to do.
+	 * @return
+	 */
+	public boolean isReady() {
+		if ((inputFlags[0] > 0) || !done)
+			return true;
+		return false;
+	}
+
+	/**
+	 * Called when we are all done, it will construct the rules, and
+	 * if there are any, pass them along.
+	 */
+	final private void finish () {
+		done = true;
+		int [][] finalRules = null;
+		int finalRuleCount = 0;
+		for (int i = 0 ; i < results.size(); i++) {
+			int [] tmp = ((LocalResultSet) results.get (i)).set;
+			if (finalRules == null)
+				if (tmp.length > 1)
+					finalRules = new int [results.size ()-i][];
+				else
+					continue;
+			finalRules[finalRuleCount++] = tmp;
+		}
+		if (finalRules != null)
+			this.pushOutput (finalRules, 0);
 	}
 
 	/**
@@ -348,156 +395,131 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 		<li> backto step 3.
 		</ol>
 	*/
+
+	int attributeCount;
+	HashMap sNames;
+	boolean done = true;
+	boolean [] currentItemsFlags;
+	int numExamples;
+
 	public void doit () throws Exception {
 
+		HashMap names = sNames;
+
 		// get the item names, and the sets, from these num items and num examples.
-		Hashtable names = (Hashtable) this.pullInput (1);
-		String [][] sets = (String [][]) this.pullInput (0);
-		int numExamples = sets.length;
-		int numItems = names.size();
+		if (documentMap == null) {
+			done = false;
+		    ItemSets iss = (ItemSets)this.pullInput(0);
+			sNames = iss.unique;
+			names = sNames;
+			numExamples = iss.numExamples;
+			cutoff = (int) ((double)numExamples * score);
+			int numItems = names.size();
 
-		// Compile an array of names where the name is referenced by he index.
-		nameList = new String [numItems];
-		Enumeration keys = names.keys ();
-		Enumeration elems = names.elements ();
-		cutoff = (int) Math.round (((double)numExamples*score));
-		results = new ArrayList ();
-		validRules = 0;
-		while (keys.hasMoreElements ()) {
-			String nm = (String) keys.nextElement ();
-			int[] vals = (int []) elems.nextElement ();
-			nameList [vals[vals.length-1]] = nm;
-		}
+			// Compile an array of names where the name is referenced by he index.
+			nameList = iss.names;
 
-		// the name list is an output.
-		this.pushOutput (nameList, 0);
-		for (int i = 0 ; i < nameList.length ;i++)
-			System.out.println (i+":"+nameList[i]);
+			for (int i = 0 ; i < nameList.length ;i++)
+				System.out.println (i+":"+nameList[i]);
 
-		System.out.println ("--------------------------");
-		System.out.println ("number examples : "+numExamples);
-		System.out.println ("cutoff : "+cutoff);
-		System.out.println ("number unique items : "+numItems);
-		System.out.println ("--------------------------");
+			System.out.println ("--------------------------");
+			System.out.println ("number examples : "+numExamples);
+			System.out.println ("cutoff : "+cutoff);
+			System.out.println ("number unique items : "+numItems);
+			System.out.println ("--------------------------");
 
-		boolean [][] itemFlags = new boolean [numExamples][numItems];
+			boolean [][] itemFlags = iss.getItemFlags();
+			documentMap = new MutableIntegerArray [numItems];
+			currentItemsFlags = new boolean [numItems];
 
-		//////////////////////
-		// First, set up the item flags, set the bit associated with each
-		// element in each set.
-		for (int i = 0 ; i < numExamples ; i++)
-			for (int j = 0 ; j < sets[i].length ; j++) {
-				String item_desc = sets[i][j];
+			//////////////////////
+			// First set up the doc list for each item, that is the indices
+			// of all the examples that contain the item. Don't bother for
+			// items which don't meet the support criterion.
+			for (int i = 0 ; i < numItems ; i++) {
+				String item_desc = nameList[i];
 				int[] count_id = (int[])names.get (item_desc);
-				itemFlags[i][count_id[1]] = true;
+				if (count_id[0] >= cutoff) {
+
+					// This item is of interest, has sufficient support.
+					currentItemsFlags[i] = true;
+					documentMap[i] = new MutableIntegerArray (numExamples);
+					int [] tmp = new int [1];
+					tmp[0]=i;
+					results.add (new LocalResultSet (tmp, documentMap[i]));
+					for (int j = 0 ; j < numExamples ; j++)
+						if (itemFlags[j][i] == true)
+
+							// The example contained this item, so add the
+							// example to the doc list.
+							documentMap[i].add (j);
+				}
 			}
-
-		documentMap = new MutableIntegerArray [numItems];
-		boolean [] currentItemsFlags = new boolean [numItems];
-
-		//////////////////////
-		// First set up the doc list for each item, that is the indices
-		// of all the examples that contain the item. Don't bother for
-		// items which don't meet the support criterion.
-		for (int i = 0 ; i < numItems ; i++) {
-			String item_desc = nameList[i];
-			int[] count_id = (int[])names.get (item_desc);
-			if (count_id[0] >= cutoff) {
-
-				// This item is of interest, has sufficient support.
-				currentItemsFlags[i] = true;
-				documentMap[i] = new MutableIntegerArray (numExamples);
-				int [] tmp = new int [1];
-				tmp[0]=i;
-				results.add (new LocalResultSet (tmp, documentMap[i]));
-				for (int j = 0 ; j < numExamples ; j++)
-					if (itemFlags[j][i] == true)
-
-						// The example contained this item, so add the
-						// example to the doc list.
-						documentMap[i].add (j);
-			}
+			itemFlags = null;
+			iss.userData = documentMap;
+		    attributeCount = 2; // number attributes to include in the rule		}
 		}
-		itemFlags = null;
 
 		// The rules themselves will actually be stored in a vector where
 		// the first entry in the vector is a list of all the 2 item combos,
 		// the second is all the 3 item combos, and so on.
-		int attributeCount = 2; // number attributes to include in the rule
 
-		//////////////////////////////
-		// Now loop until we reach a point where no additional sets will
-		// meet our support criterion.
-		while (true) {
 
-			// Now convert the flags that indicate an item exists or not to a
-			// sorted array of indices.
-			int [] currentItemIndices = this.convertFlagsToIndices (currentItemsFlags);
-			if (currentItemIndices == null) {
-				System.out.println ("DONE: No elements.");
-				break;
-			}
-			if (debug) {
-				System.out.println ("APriori -> currentItemIndices count :"+currentItemIndices.length);
-				System.out.print ("APriori ->{");
-				for (int i = 0 ; i < currentItemIndices.length-1; i++)
-					System.out.print (nameList[currentItemIndices[i]]+",");
-				System.out.println (nameList[currentItemIndices[currentItemIndices.length-1]]+"}");
-			}
-
-			// Generate all the new possible rules and compute their support values. Any rule
-			// not meeting the support criterion returns as null. The results vector also is up
-			// to date on return.
-			int oldRuleSize = results.size();
-			int [][] fixedResultSets = this.generatePossibleRules (currentItemIndices, attributeCount);
-			int newRules = results.size() - oldRuleSize;
-			validRules = oldRuleSize;
-			if (fixedResultSets == null) {
-				System.out.println ("DONE: No sets.");
-				break;
-			}
-			if (debug) {
-				System.out.println ("APriori -> validRules : "+newRules);
-			}
-			attributeCount++;
-			if (newRules <= 0) {
-				System.out.println ("DONE");
-				break;
-			}
-
-			// Clear the current item flags.
-			int testCounter = 0;
-			for (int i = 0 ; i < currentItemsFlags.length; i++)
-				currentItemsFlags[i] = false;
-
-			// Set the appropriate bits.
-			for (int i = 0 ; i < fixedResultSets.length; i++)
-				if (fixedResultSets[i] != null)
-					for (int k = 0 ; k < fixedResultSets[i].length-1; k++) {
-						if (currentItemsFlags[fixedResultSets[i][k]] == false)
-							testCounter++;
-						currentItemsFlags[fixedResultSets[i][k]] = true;
-					}
-			if (!debug)
-				System.out.print (".");
-			else
-				System.out.println ();
-			Thread.currentThread ().yield ();
+		// Now convert the flags that indicate an item exists or not to a
+		// sorted array of indices.
+		int [] currentItemIndices = this.convertFlagsToIndices (currentItemsFlags);
+		if (currentItemIndices == null) {
+			System.out.println ("DONE: No elements.");
+			this.finish();
+			return;
 		}
-		int [][] finalRules = null;
-		int finalRuleCount = 0;
-		for (int i = 0 ; i < results.size(); i++) {
-			int [] tmp = ((LocalResultSet) results.get (i)).set;
-			if (finalRules == null)
-				if (tmp.length > 1)
-					finalRules = new int [results.size ()-i][];
-				else
-					continue;
-
-			finalRules[finalRuleCount++] = tmp;
+		if (debug) {
+			System.out.println ("APriori -> currentItemIndices count :"+currentItemIndices.length);
+			System.out.print ("APriori ->{");
+			for (int i = 0 ; i < currentItemIndices.length-1; i++)
+				System.out.print (nameList[currentItemIndices[i]]+",");
+			System.out.println (nameList[currentItemIndices[currentItemIndices.length-1]]+"}");
 		}
-		if (finalRules != null)
-		    this.pushOutput (finalRules, 1);
+
+		// Generate all the new possible rules and compute their support values. Any rule
+		// not meeting the support criterion returns as null. The results vector also is up
+		// to date on return.
+		int oldRuleSize = results.size();
+		int [][] fixedResultSets = this.generatePossibleRules (currentItemIndices, attributeCount);
+		int newRules = results.size() - oldRuleSize;
+		validRules = oldRuleSize;
+		if (fixedResultSets == null) {
+			System.out.println ("DONE: No sets.");
+			this.finish();
+			return;
+		}
+		if (debug) {
+			System.out.println ("APriori -> validRules : "+newRules);
+		}
+		attributeCount++;
+		if (newRules <= 0 || attributeCount > maxSize) {
+			System.out.println ("DONE");
+			this.finish();
+			return;
+		}
+
+		// Clear the current item flags.
+		int testCounter = 0;
+		for (int i = 0 ; i < currentItemsFlags.length; i++)
+			currentItemsFlags[i] = false;
+
+		// Set the appropriate bits.
+		for (int i = 0 ; i < fixedResultSets.length; i++)
+			if (fixedResultSets[i] != null)
+				for (int k = 0 ; k < fixedResultSets[i].length-1; k++) {
+					if (currentItemsFlags[fixedResultSets[i][k]] == false)
+						testCounter++;
+					currentItemsFlags[fixedResultSets[i][k]] = true;
+				}
+		if (!debug)
+			System.out.print (".");
+		else
+			System.out.println ();
 	}
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
