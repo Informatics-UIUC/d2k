@@ -537,12 +537,18 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	 * @return a shallow copy of the table.
 	 */
 	public Table shallowCopy() {
-		SubsetTableImpl vt =
-			new SubsetTableImpl(this.getColumns(), this.subset);
-		vt.setKeyColumn(getKeyColumn());
-		vt.setLabel(getLabel());
-		vt.setComment(getComment());
-		return vt;
+		ExampleTableImpl eti = new ExampleTableImpl();
+		eti.setColumns(this.getColumns());
+		eti.setSubset(this.getSubset());
+		eti.setTrainingSet(this.getTrainingSet());
+		eti.setTestingSet(this.getTestingSet());
+		eti.setInputFeatures(this.getInputFeatures());
+		eti.setOutputFeatures(this.getOutputFeatures());
+		eti.setKeyColumn (this.getKeyColumn());
+		eti.setLabel (this.getLabel());
+		eti.setComment (this.getComment());
+		eti.transformations = this.transformations;
+		return eti;
 	}
 
 	//////////////// Access the test train sets data ///////////////////
