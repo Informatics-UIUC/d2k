@@ -76,7 +76,7 @@ public class SQLBinAttributes extends UIModule {
       s += "discovered between groups and computational complexity can be reduced. ";
       s += "However, binning data is an optional ";
       s += "process. For a data set with a small number of unique values, especially ";
-      s += "a small nominal data set, binning may not be necessary. The user can omit";
+      s += "a small nominal data set, binning may not be necessary. The user can omit ";
       s += "the binning step by clicking the 'Done' button without performing any binning actions. ";
       s += "<p> Restrictions: ";
       s += "Only support Oracle and SQLServer databases are currently supported. ";
@@ -98,9 +98,9 @@ public class SQLBinAttributes extends UIModule {
             case 0:
                 return "Database Connection";
             case 1:
-                return "Selected Attributes";
-            case 2:
                 return "Selected Table";
+            case 2:
+                return "Selected Attributes";
             default:
                 return  "No such input";
         }
@@ -115,9 +115,9 @@ public class SQLBinAttributes extends UIModule {
             case 0:
                 return "The database connection.";
             case 1:
-                return "The attributes selected from the specified table.";
-            case 2:
                 return "The selected table from the database.";
+            case 2:
+                return "The attributes selected from the specified table.";
             default:
                 return  "No such input";
         }
@@ -129,9 +129,9 @@ public class SQLBinAttributes extends UIModule {
      */
     public String[] getInputTypes () {
         String[] types =  {
-            "ncsa.d2k.modules.core.io.sql.DBConnection",
-            "[Ljava.lang.String;",
-            "java.lang.String"
+            "ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
+            "java.lang.String",
+            "[Ljava.lang.String;"
         };
         return  types;
     }
@@ -365,11 +365,11 @@ public class SQLBinAttributes extends UIModule {
                 numArrived = 1;
             }
             if(id == 1) {
-                fieldNames = (String[])o;
+                tableName = (String)o;
                 numArrived++;
             }
             if(id == 2) {
-                tableName = (String)o;
+                fieldNames = (String[])o;
                 numArrived++;
             }
 
@@ -549,7 +549,6 @@ public class SQLBinAttributes extends UIModule {
                     for (int i = 0; i < fieldNames.length; i++) {
                         if(binCounts.isColumnNumeric(i)) {
                             colLook.put((String)fieldNames[i], new Integer(i));
-                            //colLook.put((String)fieldNames[i].toLowerCase(), new Integer(i));
                         }
                     }
 
@@ -651,7 +650,6 @@ public class SQLBinAttributes extends UIModule {
                     for (int i = 0; i < fieldNames.length; i++) {
                         if(binCounts.isColumnNumeric(i)) {
                             colLook.put((String)fieldNames[i], new Integer(i));
-                            //colLook.put((String)fieldNames[i].toLowerCase(), new Integer(i));
                         }
                     }
                     JD2KFrame frame = new JD2KFrame("Specified Range");
@@ -693,7 +691,6 @@ public class SQLBinAttributes extends UIModule {
                     for (int i = 0; i < fieldNames.length; i++) {
                         if(binCounts.isColumnNumeric(i)) {
                             colLook.put((String)fieldNames[i], new Integer(i));
-                            //colLook.put((String)fieldNames[i].toLowerCase(), new Integer(i));
                         }
                     }
                     String txt = intervalField.getText();
