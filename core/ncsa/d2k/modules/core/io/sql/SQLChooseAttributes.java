@@ -88,12 +88,12 @@ public class SQLChooseAttributes extends UIModule {
       s += "from a database table. </p>";
       s += "<p> Detailed Description: ";
       s += "This module first connects to a database, retrieves the list of attributes ";
-      s += "for a selected table, and then allows a user to choose input and output ";
-      s += "from the list. Based on user's selection, this module creates a meta ";
+      s += "for a selected table, and then allows a user to choose the input and output ";
+      s += "attributes from the list. Based on user's selection, this module creates a meta ";
       s += "table to store the meta information (such as attribute name, data type, ";
       s += "and number of rows in the data set), and pass on the information to the ";
-      s += "next module. The meta table this module created does not contain the ";
-      s += "real data. The real data are retrieved from the database table ";
+      s += "next module. The meta table created by this module  does not contain the ";
+      s += "real data. The real data can be retrieved from the database table ";
       s += "by other modules. </p>";
       s += "<p> Restrictions: ";
       s += "We currently only support Oracle databases. </p> ";
