@@ -1015,7 +1015,6 @@ public final class NaiveBayesModel
       Iterator i = keySet().iterator();
       while (i.hasNext()) {
         String key = (String) i.next();
-        System.out.println("CN: " + key);
         AttTree at = (AttTree) get(key);
         at.printAll();
       }
@@ -1053,14 +1052,11 @@ public final class NaiveBayesModel
         Iterator i = keySet().iterator();
         while (i.hasNext()) {
           String key = (String) i.next();
-          System.out.println("AN: " + key);
           HashMap cl = (HashMap) get(key);
           Iterator j = cl.keySet().iterator();
           while (j.hasNext()) {
             String k = (String) j.next();
             CalcItem ci = (CalcItem) cl.get(k);
-            System.out.println("BN: " + k + " ta:" + ci.tally + " to:" +
-                               ci.total + " r:" + ci.ratio);
           }
         }
       }
@@ -1107,5 +1103,9 @@ public final class NaiveBayesModel
         total = to;
       }
     }
+  }
+
+  BinTree getBinTree() {
+    return binTree;
   }
 }

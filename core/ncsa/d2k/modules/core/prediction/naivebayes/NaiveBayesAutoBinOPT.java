@@ -186,21 +186,21 @@ public class NaiveBayesAutoBinOPT
         binMaxes[0] = min + interval;
 
         // add the first bin manually
-        BinDescriptor bd = this.createMinNumericBinDescriptor(inputs[i],
-            binMaxes[0]);
+        BinDescriptor bd = BinDescriptorFactory.createMinNumericBinDescriptor(inputs[i],
+            binMaxes[0], nf, tbl);
         bins.add(bd);
 
         // now add the rest
         for (int j = 1; j < binMaxes.length; j++) {
           binMaxes[j] = binMaxes[j - 1] + interval;
-          bd = this.createNumericBinDescriptor(inputs[i], binMaxes[j - 1],
-                                               binMaxes[j]);
+          bd = BinDescriptorFactory.createNumericBinDescriptor(inputs[i], binMaxes[j - 1],
+                                               binMaxes[j], nf, tbl);
           bins.add(bd);
         }
 
         // now add the last bin
-        bd = this.createMaxNumericBinDescriptor(inputs[i],
-                                                binMaxes[binMaxes.length - 1]);
+        bd = BinDescriptorFactory.createMaxNumericBinDescriptor(inputs[i],
+                                                binMaxes[binMaxes.length - 1], nf, tbl);
         bins.add(bd);
       }
 
@@ -210,7 +210,7 @@ public class NaiveBayesAutoBinOPT
         for (int j = 0; j < vals.length; j++) {
           String[] st = {
               vals[j]};
-          BinDescriptor bd = this.createTextualBin(inputs[i], vals[j], st);
+          BinDescriptor bd = BinDescriptorFactory.createTextualBin(inputs[i], vals[j], st, tbl);
           bins.add(bd);
         }
       }
@@ -283,22 +283,22 @@ public class NaiveBayesAutoBinOPT
           // now we have the binMaxes.  add the bins to the bin tree.
           // add the first one manually
         }
-        BinDescriptor bd = this.createMinNumericBinDescriptor(inputs[i],
-            binMaxes[0]);
+        BinDescriptor bd = BinDescriptorFactory.createMinNumericBinDescriptor(inputs[i],
+            binMaxes[0], nf, tbl);
         bins.add(bd);
 
         // add the other bins
         // now add the rest
         for (int j = 1; j < binMaxes.length; j++) {
           //binMaxes[j] = binMaxes[j - 1] + interval;
-          bd = this.createNumericBinDescriptor(inputs[i], binMaxes[j - 1],
-                                               binMaxes[j]);
+          bd = BinDescriptorFactory.createNumericBinDescriptor(inputs[i], binMaxes[j - 1],
+                                               binMaxes[j], nf, tbl);
           bins.add(bd);
         }
 
         // now add the last bin
-        bd = this.createMaxNumericBinDescriptor(inputs[i],
-                                                binMaxes[binMaxes.length - 1]);
+        bd = BinDescriptorFactory.createMaxNumericBinDescriptor(inputs[i],
+                                                binMaxes[binMaxes.length - 1], nf, tbl);
         bins.add(bd);
       }
 
@@ -308,7 +308,7 @@ public class NaiveBayesAutoBinOPT
         for (int j = 0; j < vals.length; j++) {
           String[] st = {
               vals[j]};
-          BinDescriptor bd = this.createTextualBin(inputs[i], vals[j], st);
+          BinDescriptor bd = BinDescriptorFactory.createTextualBin(inputs[i], vals[j], st, tbl);
           bins.add(bd);
         }
       }
@@ -329,14 +329,14 @@ public class NaiveBayesAutoBinOPT
    * @param name
    * @param sel
    * @return
-   */
+   /
   protected BinDescriptor createTextualBin(int idx, String name, String[] vals) {
     return new TextualBinDescriptor(idx, name, vals, tbl.getColumnLabel(idx));
   }
 
   /**
    * Create a numeric bin that goes from min to max.
-   */
+   /
   protected BinDescriptor createNumericBinDescriptor(int col, double min,
       double max) {
     StringBuffer nameBuffer = new StringBuffer();
@@ -353,7 +353,7 @@ public class NaiveBayesAutoBinOPT
 
   /**
    * Create a numeric bin that goes from Double.MIN_VALUE to max
-   */
+   /
   protected BinDescriptor createMinNumericBinDescriptor(int col, double max) {
     StringBuffer nameBuffer = new StringBuffer();
     nameBuffer.append(OPEN_BRACKET);
@@ -369,7 +369,7 @@ public class NaiveBayesAutoBinOPT
 
   /**
    * Create a numeric bin that goes from min to Double.MAX_VALUE
-   */
+   /
   protected BinDescriptor createMaxNumericBinDescriptor(int col, double min) {
     StringBuffer nameBuffer = new StringBuffer();
     nameBuffer.append(OPEN_PAREN);
@@ -387,4 +387,5 @@ public class NaiveBayesAutoBinOPT
       EMPTY = "", COLON = " : ", COMMA = ",",
       DOTS = "...", OPEN_PAREN = "(", CLOSE_PAREN = ")",
       OPEN_BRACKET = "[", CLOSE_BRACKET = "]";
+      */
 }
