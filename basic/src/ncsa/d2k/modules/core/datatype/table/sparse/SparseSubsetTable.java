@@ -309,6 +309,8 @@ public class SparseSubsetTable extends SparseMutableTable {
   /**
    * Return a compressed representation of the column identified by the index
    * passed in..
+   *
+   *
    * @param colindex the column to compress
    * @return the expanded compress.
    */
@@ -1074,4 +1076,20 @@ public class SparseSubsetTable extends SparseMutableTable {
     }
     super.setBoolean(data, subset[row], column);
   }
+
+//VERED: added this method, for testing purposes
+  public boolean equals(Object st) {
+   SparseSubsetTable _st = (SparseSubsetTable) st;
+   super.equals(_st);
+   int[] _subset = _st.getSubset();
+
+   if(_subset.length != subset.length) return false;
+
+   for (int i=0; i<_subset.length; i++)
+     if(_subset[i] != this.subset[i])
+       return false;
+
+   return true;
+ }
+
 }

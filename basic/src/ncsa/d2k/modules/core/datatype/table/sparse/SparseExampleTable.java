@@ -2288,5 +2288,42 @@ public class SparseExampleTable
       setTrainingSet(newtrain);
     }
   }
+//VERED: added this method, for testing purposes
+  public boolean equals(Object set) {
+   SparseExampleTable _set = (SparseExampleTable) set;
+   super.equals(_set);
+   int[] _inputs = _set.getInputFeatures();
+   int[] _outputs = _set.getOutputFeatures();
+   if (!Arrays.equals(_inputs, this.inputColumns)){
+     System.out.println("incompatibility of input features sets");
+     return false;
+   }
+   if (!Arrays.equals(_outputs, this.outputColumns)) {
+     System.out.println("incompatibility of output features sets");
+     return false;
+   }
+
+
+   for (int i=0; i<getNumRows(); i++){
+     int[] thisInputs = this.getInputFeatures(i);
+     _inputs = _set.getInputFeatures(i);
+     int[] thisOutputs = this.getOutputFeatures(i);
+     _outputs = _set.getOutputFeatures(i);
+     if (!Arrays.equals(_inputs, thisInputs)) {
+       System.out.println("incompatibility of input features sets for row # " +
+                          i);
+       return false;
+   }
+
+   if (!Arrays.equals(_outputs, thisOutputs)) {
+     System.out.println("incompatibility of output features sets for row # " +
+                        i);
+     return false;
+   }
+
+   }//for
+
+   return true;
+ }//equals
 
 }

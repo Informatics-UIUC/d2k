@@ -5,6 +5,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse.primitivehash;
 //==============
 
 import java.util.Arrays;
+import gnu.trove.*;
 
 /**
  * Title:        Sparse Table
@@ -168,4 +169,132 @@ public class VHashService {
       return -1;
     return keys[keys.length - 1];
   }
-}
+
+  /**
+   * for each values in <code>map</code>, that is equal to or greater than
+   * <codE>val</codE>, increment this value by 1
+   * @param val lower boundary of values to be incremented.
+   * @param map a hashmap that its values should be incremented.
+   */
+   public static void incrementValues(int val, VIntIntHashMap map){
+     TIntIntIterator it = map.iterator();
+     //iterating over keys in the map
+     while(it.hasNext()){
+       int currKey = it.key();
+       int currVal = map.get(currKey);
+       //if current value is equal to or greater than val
+       if(currVal >= val){
+         //removing this value
+         map.remove(currKey);
+         //putting a new one, incremented.
+         map.put(currKey, currVal+1);
+       }
+     }
+
+   }
+
+
+   /**
+    * for each values in <code>map</code>, that is greater than
+    * <codE>val</codE>, decrement this value by 1
+    * @param val lower boundary of values to be decremented.
+    * @param map a hashmap that its values should be decremented.
+    */
+    public static void decrementValues(int val, VIntIntHashMap map){
+      TIntIntIterator it = map.iterator();
+      //iterating over keys in the map
+      while(it.hasNext()){
+        int currKey = it.key();
+        int currVal = map.get(currKey);
+        //if current value is equal to or greater than val
+        if(currVal > val){
+          //removing this value
+          map.remove(currKey);
+          //putting a new one, incremented.
+          map.put(currKey, currVal-1);
+        }
+      }
+
+    }
+
+
+   /**
+    * for each key k in <code>map</code> that is equal to or greater than
+    * <codE>val</code>, remove key k and its mapped value and map this value
+    * to key k+1.
+    *
+    * @param val - keys greater than or equal to val are incremented.
+    * @param map - the keys of this map are to be incremented.
+    */
+   public static void incrementKeys(int val, VIntIntHashMap map){
+     int[] keys = map.keys();
+     Arrays.sort(keys);
+     for (int i=keys.length -1; keys[i] >= val; i--){
+       int value = map.remove(keys[i]);
+       map.put(keys[i] + 1, value);
+     }
+   }
+
+
+   /**
+       * for each key k in <code>map</code> that is greater than
+       * <codE>val</code>, remove key k and its mapped value and map this value
+       * to key k+1.
+       *
+       * @param val - keys greater than val are decremented.
+       * @param map - the keys of this map are to be decremented.
+       */
+      public static void decrementKeys(int val, VIntIntHashMap map){
+        int[] keys = map.keys();
+        Arrays.sort(keys);
+        for (int i=keys.length -1; keys[i] > val; i--){
+          int value = map.remove(keys[i]);
+          map.put(keys[i] - 1, value);
+        }
+      }
+
+      /**
+       * finds the key of <code>val</code> in <code> map</code> and returns it
+       * @param val - a value in the int to int hashmap
+       * @param map - an int to int hashmap
+       * @return - return s the key of <codE>val</code> in <codE>map</code>.
+       * if <codE>vla</code> is not a value in <codE>map</codE>, returns -1.
+       */
+      public static int findKey(int val, VIntIntHashMap map){
+        int retVal = -1;
+        if(!map.containsValue(val)) return retVal;
+
+        TIntIntIterator it = map.iterator();
+        while(it.hasNext() && retVal == -1){
+          int currKey = it.key();
+          int currVal = map.get(currKey);
+          if(currVal == val) retVal = currKey;
+        }
+        return retVal;
+
+      }//findKey
+
+      /**
+       * returns the keys of <codE>values</codE> in <code>map</code>.
+       * @param values - values held in <codE>map</code>
+       * @param map - an int to int hashmap
+       * @return - keys in <codE>map</codE> that are mapped to <codE>values</codE>, such that
+       * retVal[i] is the key of <codE>values[i]</codE> in map.
+       */
+       public static int[] getKeys(int[] values, VIntIntHashMap map){
+         int[] retVal = new int[values.length];
+         VIntIntHashMap tempMap = new VIntIntHashMap (map.size());
+
+         TIntIntIterator it = map.iterator();
+         while(it.hasNext()){
+           int key = it.key();
+           tempMap.put(map.get(key), key);
+         }
+
+         for(int i=0; i<values.length; i++){
+           retVal[i] = tempMap.get(values[i]);
+         }
+         return retVal;
+       }//getKeys
+
+}//VHashService
