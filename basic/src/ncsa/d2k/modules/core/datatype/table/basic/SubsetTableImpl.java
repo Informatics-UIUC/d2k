@@ -525,7 +525,13 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return a shallow copy of the table.
     */
    public Table shallowCopy() {
-      SubsetTableImpl vt = new SubsetTableImpl(columns, this.subset);
+      
+      // make a copy of the columns array, we don't want to share that.
+      Column [] newCols = new Column [this.columns.length];
+      for (int i = 0 ; i < newCols.length ; i++) {
+         newCols [i] = this.columns[i];
+      }
+      SubsetTableImpl vt = new SubsetTableImpl(newCols, this.subset);
       vt.setLabel(getLabel());
       vt.setComment(getComment());
       return vt;

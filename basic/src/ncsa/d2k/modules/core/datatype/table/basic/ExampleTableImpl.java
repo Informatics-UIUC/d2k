@@ -612,7 +612,13 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	 */
 	public Table shallowCopy() {
 		ExampleTableImpl eti = new ExampleTableImpl();
-		eti.setColumns(columns);
+      
+      // make a copy of the columns array, we don't want to share that.
+      Column [] newCols = new Column [this.columns.length];
+      for (int i = 0 ; i < newCols.length ; i++) {
+         newCols [i] = this.columns[i];
+      }
+		eti.setColumns(newCols);
 		eti.setSubset(this.getSubset());
 		eti.setTrainingSet(this.getTrainingSet());
 		eti.setTestingSet(this.getTestingSet());

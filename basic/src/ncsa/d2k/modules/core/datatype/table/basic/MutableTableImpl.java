@@ -441,7 +441,13 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	 * @return a shallow copy of the table.
 	 */
 	public Table shallowCopy() {
-		MutableTableImpl mti = new MutableTableImpl(this.columns);
+      
+      // make a copy of the columns array, we don't want to share that.
+      Column [] newCols = new Column [this.columns.length];
+      for (int i = 0 ; i < newCols.length ; i++) {
+         newCols [i] = this.columns[i];
+      }
+		MutableTableImpl mti = new MutableTableImpl(newCols);
 		mti.setLabel(this.getLabel());
 		mti.setComment(this.getComment());
 		return mti;
