@@ -33,6 +33,15 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
     return super.getMinimumRatioPerLeaf();
   }
 
+  public PropertyDescription [] getPropertiesDescriptions () {
+      PropertyDescription[] retVal = new PropertyDescription[1];
+      retVal[0] = new PropertyDescription("minimumRatioPerLeaf", "Minimum Leaf Ratio",
+        "The minimum ratio of records in a leaf to the total number of records in the tree. "+
+          "The tree construction is terminated when this ratio is reached.");
+      return retVal;
+  }
+
+
 /*  public String getModuleInfo() {
     String s = "Build a C4.5 decision tree.  The tree is build recursively, ";
     s += "always choosing the attribute with the highest information gain ";

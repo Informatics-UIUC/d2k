@@ -328,4 +328,10 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 
 		return numerator/denominator;
 	}
+
+        public PropertyDescription [] getPropertiesDescriptions () {
+            PropertyDescription[] retVal = new PropertyDescription[0];
+            return retVal;
+        }
+
 }
