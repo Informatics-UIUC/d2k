@@ -123,10 +123,17 @@ public class PCView extends JUserPane implements ActionListener, Printable  {
 
 		private double[] mins;
 		private double[] maxes;
-		private ParallelCoordinateVis module;
+		private ViewModule module;
+
+		public PCView() {}
+
+		public PCView(ViewModule mod, Table tbl) {
+			initView(mod);
+			setInput(tbl, 0);
+		}
 
   		public void initView(ViewModule m) {
-			module = (ParallelCoordinateVis)m;
+			module = m;
 		}
 
 		private NumberFormat nf;
