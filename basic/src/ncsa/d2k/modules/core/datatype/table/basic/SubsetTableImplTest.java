@@ -100,37 +100,41 @@ public class SubsetTableImplTest extends MutableTableImplTest {
 	/*
 		 * Test for void sortByColumn(int)
 		 */
-	/*	public void testSortByColumnint() {
+		public void testSortByColumnint() {
 			SubsetTableImpl mtFull = (SubsetTableImpl) getFullTable();
-					int numRows = mtFull.getNumRows();
+
+			mtFull.setSubset(getSubset());
+
 			for (int i = 0; i < numColumns; i++) {
 				mtFull.sortByColumn(i);
-				int subset[] = mtFull.getSubset();
-				for (int j = 0; j < subset.length -1; j++)
+			
+			for (int j = 0; j < mtFull.getNumRows() -1; j++)
 					assertTrue(
 						"sort failed for column " + i,
-						mtFull.getColumn(i).compareRows(subset[j],subset[j + 1]) <= 0);
+						mtFull.getColumn(i).compareRows(j, j+1) <= 0);
 			}
 		}
-*/
+
 	
 		/*
 		 * Test for void sortByColumn(int, int, int)
 		 */
-	/*	public void testSortByColumnintintint() {
-		 SubsetTableImpl mtFull = (SubsetTableImpl) getFullTable();
-			int pos = 1;
-			int len = 3;
-			for (int i = 0; i < numColumns; i++) {
+	public void testSortByColumnintintint() {
+		SubsetTableImpl mtFull = (SubsetTableImpl) getFullTable();
+		int []subset = {1, 2, 3};
+		mtFull.setSubset(subset);	
+		int pos = 0;
+		int len = mtFull.getNumRows()-1;
+		for (int i = 0; i < numColumns; i++) {
 				mtFull.sortByColumn(i, pos, len);
-				int subset[] = mtFull.getSubset();
+				
 				for (int j = pos; j < len - 1; j++)
 					assertTrue(
 						"sort failed",
-						mtFull.getColumn(i).compareRows(subset[j], subset[j + 1]) <= 0);
+						mtFull.getColumn(i).compareRows(j, j + 1) <= 0);
 			}
 		}
-	*/
+	
 	/*
 	 * Test for void SubsetTableImpl(int)
 	 */
@@ -574,9 +578,9 @@ public class SubsetTableImplTest extends MutableTableImplTest {
 	 SubsetTableImpl subsetCopy = (SubsetTableImpl) mtFull.copy();
 	 for (int i =0; i < subsetCopy.getNumRows(); i ++)
 			for (int j =0; j < subsetCopy.getNumColumns(); j++)	{
-				String one = subsetCopy.getString(i,j);
-				String two = mtFull.getString(i,j);
-				System.out.println("i "  + i + " j " + j +" copy " + one + " mtFull " + two);
+				//String one = subsetCopy.getString(i,j);
+				//String two = mtFull.getString(i,j);
+				//System.out.println("i "  + i + " j " + j +" copy " + one + " mtFull " + two);
 				assertEquals(subsetCopy.getString(i,j),mtFull.getString(i,j));
 			}
 	}
@@ -593,9 +597,9 @@ public class SubsetTableImplTest extends MutableTableImplTest {
 		Table subsetTable = mtFull.copy(pos, len - 1);
 		for (int i = 0; i < subsetTable.getNumRows(); i++)
 			for (int j = 0; j < mtFull.getNumColumns(); j++)  {
-				String one =  mtFull.getString(pos+i,j);
-				String two = subsetTable.getString(i,j);
-				System.out.println("i j mtfull subset " + i + " "+ j + " " + one+ " " + two);
+				//String one =  mtFull.getString(pos+i,j);
+				//String two = subsetTable.getString(i,j);
+				//System.out.println("i j mtfull subset " + i + " "+ j + " " + one+ " " + two);
 				assertEquals(mtFull.getString(pos + i, j), subsetTable.getString(i, j));
 			}
 	
@@ -609,16 +613,16 @@ public class SubsetTableImplTest extends MutableTableImplTest {
 		int []subset = {1, 2, 3}; 
 		mtFull.setSubset(subset);
 		int []newSubset = {0, 2};
-		int []stableSubset = {0,2};
+//		int []stableSubset = {0,2};
 		//newSubset is changed in resubset function call . is that right ???
 		Table subsetTable = mtFull.copy(newSubset);
 	
 		for (int i = 0; i < subsetTable.getNumRows(); i++)
 			for (int j = 0; j < mtFull.getNumColumns(); j++)  {
-				String one =  mtFull.getString(newSubset[i],j);
-				String two = subsetTable.getString(i,j);
-				System.out.println("testCopyInt array: i j mtfull subset " + i + " "+ j + " " + one+ " " + two);
-				assertEquals(mtFull.getString(stableSubset[i], j), subsetTable.getString(i, j));
+				//String one =  mtFull.getString(newSubset[i],j);
+			//	String two = subsetTable.getString(i,j);
+				//System.out.println("testCopyInt array: i j mtfull subset " + i + " "+ j + " " + one+ " " + two);
+				assertEquals(mtFull.getString(newSubset[i], j), subsetTable.getString(i, j));
 			}	
 		
 		}
@@ -694,6 +698,10 @@ public class SubsetTableImplTest extends MutableTableImplTest {
 		numRows = mtFull.getNumRows();
 		mtFull.addRows(rowsToAdd);
 		assertEquals(numRows + rowsToAdd, mtFull.getNumRows());
+	   for (int i = numRows; i < numRows + rowsToAdd; i ++) {
+	   	 mtFull.setInt(1, i,0);
+	   	 assertEquals("1",mtFull.getString(i,0));
+	   }  
 	}
 
 	

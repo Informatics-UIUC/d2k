@@ -553,13 +553,17 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @param howMany
     */
    public void addRows(int howMany) {
-      for (int i = 0; i < getNumColumns(); i++) {
-         columns[i].addRows(howMany);
+    
+   	int numRows =0;
+   	if (getNumColumns()>0) numRows = columns[0].getNumRows();
+   	for (int i = 0; i < getNumColumns(); i++) {
+       		columns[i].addRows(howMany);
       }
+      
       int[] newsubset = new int[subset.length + howMany];
       System.arraycopy(subset, 0, newsubset, 0, subset.length);
       for (int i = subset.length; i < subset.length + howMany; i++)
-         newsubset[i] = i;
+         newsubset[i] = numRows + i - subset.length;
 
       subset = newsubset;
    }
