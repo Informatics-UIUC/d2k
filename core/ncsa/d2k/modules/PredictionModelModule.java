@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * TO DO add useNameChecking
  */
-abstract public class PredictionModelModule extends /*Prediction*/ModelModule {
+abstract public class PredictionModelModule extends /*Prediction*/ModelModule implements java.io.Serializable {
 
     /** the size of the training set for this model */
     private int trainingSetSize;
@@ -23,6 +23,10 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule {
     /** the datatypes for the output features */
     private int[] outputFeatureTypes;
 
+    /** the scalar inputs are marked true */
+    private boolean[] scalarInputs;
+    /** the scalar outputs are marked true */
+    private boolean[] scalarOutputs;
 
     private PredictionModelModule() {
     }
@@ -36,12 +40,16 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule {
         String[] inputColumnLabels,
         String[] outputColumnLabels,
         int[] inputFeatureTypes,
-        int[] outputFeatureTypes) {
+        int[] outputFeatureTypes/*,
+        boolean[] scalarInputs,
+        boolean[] scalarOutputs*/) {
           this.trainingSetSize    = trainingSetSize;
           this.inputColumnLabels  = inputColumnLabels;
           this.outputColumnLabels = outputColumnLabels;
           this.inputFeatureTypes  = inputFeatureTypes;
           this.outputFeatureTypes = outputFeatureTypes;
+          //this.scalarInputs = scalarInputs;
+          //this.scalarOutputs = scalarOutputs;
     }
 
     /**
@@ -376,6 +384,13 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule {
         outputFeatureTypes = new int[outputs.length];
         for(int i = 0; i < outputs.length; i++)
             outputFeatureTypes[i] = et.getColumnType(outputs[i]);
+
+        scalarInputs = new boolean[inputs.length];
+        for(int i = 0; i < inputs.length; i++)
+          scalarInputs[i] = et.isInputScalar(i);
+        scalarOutputs = new boolean[outputs.length];
+        for(int i = 0; i < outputs.length; i++)
+          scalarOutputs[i] = et.isOutputScalar(i);
     }
 
     /**
@@ -418,5 +433,21 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule {
      */
     public int[] getOutputFeatureTypes() {
         return outputFeatureTypes;
+    }
+
+    /**
+     * Determine which inputs were scalar.
+     * @return a boolean map with inputs that are scalar marked 'true'
+     */
+    public boolean[] getScalarInputs() {
+      return scalarInputs;
+    }
+
+    /**
+     * Determine which outputs were scalar.
+     * @return a boolean map with outputs that are scalar marked 'true'
+     */
+    public boolean[] getScalarOutputs() {
+      return scalarOutputs;
     }
 }
