@@ -1668,17 +1668,17 @@ public class ExampleTableImpl
        */
       protected void incrementInOut(int position) {
         for (int i = 0; i < this.inputColumns.length; i++) {
-          if (inputColumns[i] > position) { // !: change?
+          if (inputColumns[i] >= position) { // !: change
             inputColumns[i]++;
           }
         }
-        // setInputFeatures(inputColumns); // !: change
+        setInputFeatures(inputColumns); // !: change?
         for (int i = 0; i < this.outputColumns.length; i++) {
-          if (outputColumns[i] > position) { // !: change?
+          if (outputColumns[i] >= position) { // !: change
             outputColumns[i]++;
           }
         }
-        // setOutputFeatures(outputColumns); // !: change
+        setOutputFeatures(outputColumns); // !: change?
       }
 
   /**
@@ -1766,7 +1766,7 @@ public class ExampleTableImpl
   }
 
   /**
-   * Decrement any items in test or train that are greater than position
+   * Decrement any items in input/output are greater than position
    * Also remove position from either set if it exists
    * @param position
    */
@@ -1784,7 +1784,7 @@ public class ExampleTableImpl
       }
     }
 
-    // if the test set contained pos, remove the item
+    // if the input contained pos, remove the item
     if (containsPos) {
       int[] newin = new int[inputColumns.length - 1];
       int idd = 0;
@@ -1798,6 +1798,13 @@ public class ExampleTableImpl
         }
       }
       setInputFeatures(newin);
+    }
+    // else decrement appropriate inputs
+    else {
+       for (int i = 0; i < inputColumns.length; i++)
+          if (inputColumns[i] >= position)
+             inputColumns[i]--;
+       setInputFeatures(inputColumns);
     }
 
     containsPos = false;
@@ -1813,7 +1820,7 @@ public class ExampleTableImpl
       }
     }
 
-    // if the test set contained pos, remove the item
+    // if the output contained pos, remove the item
     if (containsPos) {
       int[] newout = new int[outputColumns.length - 1];
       int idd = 0;
@@ -1828,6 +1835,13 @@ public class ExampleTableImpl
         }
       }
       setOutputFeatures(newout);
+    }
+    // else decrement appropriate outputs
+    else {
+       for (int i = 0; i < outputColumns.length; i++)
+          if (outputColumns[i] >= position)
+             outputColumns[i]--;
+      setOutputFeatures(outputColumns);
     }
 
   }

@@ -1,159 +1,121 @@
 package ncsa.d2k.modules.core.vis;
 
-
 import java.awt.*;
 import java.io.*;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.userviews.swing.*;
 
 /**
-	Creates a BarChart visualization.  The data is kept in a Table.
-	The first column must be a labels column, and the second column must contain
-	the frequencies.
-*/
-public class BarChart2D extends VisModule
-{
+ * This module creates a bar chart visualization from <code>Table</code> data.
+ * The first column of the table is expected to contain labels, and the second
+ * column is expected to contain frequencies.
+ */
+public class BarChart2D extends VisModule {
 
-	/**
-		This pair returns the description of the various inputs.
-		@return the description of the indexed input.
-	*/
-	public String getInputInfo(int index) {
-		switch (index) {
-			case 0: return "A Table that holds the data to show.";
-			default: return "No such input";
-		}
-	}
+////////////////////////////////////////////////////////////////////////////////
+// Module methods                                                             //
+////////////////////////////////////////////////////////////////////////////////
 
-	/**
-		This pair returns an array of strings that contains the data types for the inputs.
-		@return the data types of all inputs.
-	*/
-	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
-		return types;
-	}
+   public String[] getFieldNameMapping() {
+      return null;
+   }
 
-	/**
-		This pair returns the description of the outputs.
-		@return the description of the indexed output.
-	*/
-	public String getOutputInfo(int index) {
-		switch (index) {
-			default: return "No such output";
-		}
-	}
+   public String getInputInfo(int index) {
+      if (index == 0)
+         return "A <i>Table</i> containing the data to be visualized.";
+      return "NO SUCH INPUT";
+   }
 
-	/**
-		This pair returns an array of strings that contains the data types for the outputs.
-		@return the data types of all outputs.
-	*/
-	public String[] getOutputTypes() {
-		String[] types = {		};
-		return types;
-	}
+   public String getInputName(int index) {
+      if (index == 0)
+         return "Table";
+      return "NO SUCH INPUT";
+   }
 
-	/**
-		This pair returns the description of the module.
-		@return the description of the module.
-	*/
-	public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    Creates a BarChart visualization. The data is kept in a Table. The first     column must be a labels column, and the second column must contain the     frequencies.  </body></html>";
-	}
+   public String[] getInputTypes() {
+      return new String[] {"ncsa.d2k.modules.core.datatype.table.Table"};
+   }
 
-	/**
-		PUT YOUR CODE HERE.
-	*/
-	public void doit() throws Exception {
-	}
+   public String getModuleInfo() {
+      StringBuffer sb = new StringBuffer("<p>Overview: ");
+      sb.append("This module creates a bar chart visualization from ");
+      sb.append("<i>Table</i> data. The first column of the table is ");
+      sb.append("expected to contain labels, and the second column is ");
+      sb.append("expected to contain frequencies.");
+      sb.append("</p>");
+      return sb.toString();
+   }
 
+   public String getModuleName() {
+      return "2D Bar Chart";
+   }
 
-	/**
-		This pair is called by D2K to get the UserView for this module.
-		@return the UserView.
-	*/
-	protected UserView createUserView() {
-		return new BarChartUserPane();
-	}
+   public String getOutputInfo(int index) {
+      return "NO SUCH OUTPUT";
+   }
 
-	/**
-		This pair returns an array with the names of each DSComponent in the UserView
-		that has a value.  These DSComponents are then used as the outputs of this module.
-	*/
-	public String[] getFieldNameMapping() {
-		return null;
+   public String getOutputName(int index) {
+      return "NO SUCH OUTPUT";
+   }
 
-	}
+   public String[] getOutputTypes() {
+      return null;
+   }
+
+   protected UserView createUserView() {
+      return new BarChartUserPane();
+   }
+
+////////////////////////////////////////////////////////////////////////////////
+// properties                                                                 //
+////////////////////////////////////////////////////////////////////////////////
+
+  private int _labelsColumn = 0;
+  public int getLabelsColumn() { return _labelsColumn; }
+  public void setLabelsColumn(int value) { _labelsColumn = value; }
+
+  private int _frequenciesColumn = 1;
+  public int getFrequenciesColumn() { return _frequenciesColumn; }
+  public void setFrequenciesColumn(int value) { _frequenciesColumn = value; }
+
+////////////////////////////////////////////////////////////////////////////////
+// user pane                                                                  //
+////////////////////////////////////////////////////////////////////////////////
+
+   private class BarChartUserPane extends JUserPane {
+
+      private Dimension preferredSize = new Dimension(400, 300);
+      private Table table;
+
+      public void initView(ViewModule mod) { }
+
+      public void setInput(Object obj, int ind) {
+         table = (Table)obj;
+         initialize();
+      }
+
+      private void initialize() {
+
+         DataSet set = new DataSet("dataset", Color.gray,
+            _labelsColumn, _frequenciesColumn);
+
+         GraphSettings settings = new GraphSettings();
+         String xaxis = table.getColumnLabel(_labelsColumn);
+         String yaxis = table.getColumnLabel(_frequenciesColumn);
+         settings.title = xaxis + " and " + yaxis;
+         settings.xaxis = xaxis;
+         settings.yaxis = yaxis;
+
+         add(new BarChart(table, set, settings));
+
+      }
+
+      public Dimension getPreferredSize() {
+         return preferredSize;
+      }
+
+   }
+
 }
-
-
-/**
-	BarChartUserPane
-*/
-class BarChartUserPane extends ncsa.d2k.userviews.swing.JUserPane {
-	BarChart2D module;
-
-	Table table;
-
-	public void initView(ViewModule viewmodule) {
-		module = (BarChart2D) viewmodule;
-	}
-
-	public void setInput(Object object, int index) {
-		table = (Table) object;
-
-		buildView();
-	}
-
-	public void buildView() {
-		DataSet set = new DataSet("dataset", Color.gray, 0, 1);
-
-		GraphSettings settings = new GraphSettings();
-		String xaxis = table.getColumnLabel(0);
-		String yaxis = table.getColumnLabel(1);
-		settings.title = xaxis + " and " + yaxis;
-		settings.xaxis = xaxis;
-		settings.yaxis = yaxis;
-
-		add(new BarChart(table, set, settings));
-	}
-
-	public Dimension getPreferredSize() {
-		return new Dimension(400, 300);
-	}
-
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "BarChart2D";
-	}
-
-	/**
-	 * Return the human readable name of the indexed input.
-	 * @param index the index of the input.
-	 * @return the human readable name of the indexed input.
-	 */
-	public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "input0";
-			default: return "NO SUCH INPUT!";
-		}
-	}
-
-	/**
-	 * Return the human readable name of the indexed output.
-	 * @param index the index of the output.
-	 * @return the human readable name of the indexed output.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			default: return "NO SUCH OUTPUT!";
-		}
-	}
-}
-
