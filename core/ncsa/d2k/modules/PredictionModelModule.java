@@ -555,4 +555,42 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
       return pds;
     }
 
+	
+	protected String getTrainingInfoHtml(){
+		StringBuffer sb=new StringBuffer();
+		sb.append("<b>Number Training Examples</b>:"+ trainingSetSize+"<br><br>");
+		sb.append("<b>Input Features:</b>: <br>");
+		sb.append("<table><tr><td><u>Name</u><td><u>Type</u>");
+		sb.append("<td><u>S/N</u></tr>");
+		for(int i=0;i<inputColumnLabels.length;i++){
+			sb.append("<tr><td>"+inputColumnLabels[i]);
+			sb.append("<td>"+ColumnTypes.getTypeName(inputFeatureTypes[i]));
+			if(scalarInputs[i]){
+				sb.append("<td>sclr");
+			}else{
+				sb.append("<td>nom");
+			}
+			sb.append("</tr>");
+		}
+		sb.append("</table><br>");
+
+		sb.append("<b>Output (Predicted) Features</b>: <br><br>");
+		sb.append("<table><tr><td><u>Name</u><td><u>Type</u>");
+		sb.append("<td><u>S/N</u></tr>");
+
+		for(int i=0;i<outputColumnLabels.length;i++){
+			sb.append("<tr><td>"+outputColumnLabels[i]);
+			sb.append("<td>"+ColumnTypes.getTypeName(outputFeatureTypes[i]));
+			if(scalarOutputs[i]){
+				sb.append("<td>sclr");
+			}else{
+				sb.append("<td>nom");
+			}
+			sb.append("</tr>");
+		}
+		sb.append("</table>");
+		return sb.toString();
+	}
+	 
+
 }
