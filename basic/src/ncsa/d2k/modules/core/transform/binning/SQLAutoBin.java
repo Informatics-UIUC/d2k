@@ -96,7 +96,7 @@ public class SQLAutoBin extends AutoBin {
 	public String getOutputInfo(int i) {
 		switch (i) {
 			case 0 :
-				return "A BinTransform object that contains column_numbers, names and lables";
+				return "A BinTransform object that contains column_numbers, names and labels";
 			default :
 				return "No such output";
 		}
@@ -125,9 +125,9 @@ public class SQLAutoBin extends AutoBin {
 	String tableName, whereClause;
 	ExampleTable tbl;
     NumberFormat nf;
-    
+
     public void doit() throws Exception {
-	
+
 	conn = (DBConnection) pullInput(0);
 	tableName = (String) pullInput(1);
 	tbl = (ExampleTable) pullInput(2);
@@ -136,18 +136,18 @@ public class SQLAutoBin extends AutoBin {
 	nf.setMaximumFractionDigits(3);
 	int type = getBinMethod();
 
-	int [] inputs = tbl.getInputFeatures(); 
-	if (inputs == null || inputs.length == 0)  
-	    throw new Exception("Input features are missing. Please select an input feature."); 
-	
-	int [] outputs = tbl.getOutputFeatures(); 
-	if (outputs == null || outputs.length == 0)  
-	    throw new Exception("Output feature is missing. Please select an output feature."); 
-	if(tbl.isColumnScalar(outputs[0])) 
-	    throw new Exception("Output feature must be nominal."); 
-	
-	
-	
+	int [] inputs = tbl.getInputFeatures();
+	if (inputs == null || inputs.length == 0)
+	    throw new Exception("Input features are missing. Please select an input feature.");
+
+	int [] outputs = tbl.getOutputFeatures();
+	if (outputs == null || outputs.length == 0)
+	    throw new Exception("Output feature is missing. Please select an output feature.");
+	if(tbl.isColumnScalar(outputs[0]))
+	    throw new Exception("Output feature must be nominal.");
+
+
+
 	BinDescriptor[] bins;
 		if (type == 0) {
 			int number = getNumberOfBins();
@@ -188,7 +188,7 @@ public class SQLAutoBin extends AutoBin {
 				double interval = (max - min) / (double) num;
 				binMaxes[0] = min + interval;
                 //System.out.println("binmaxes[0] " + binMaxes[0]);
-                
+
                 // add the first bin manually
 				BinDescriptor bd =
 					BinDescriptorFactory.createMinNumericBinDescriptor(inputs[i], binMaxes[0],nf,tbl);
@@ -245,7 +245,7 @@ public class SQLAutoBin extends AutoBin {
 	int[] inputs = tbl.getInputFeatures();
 	int[] outputs = tbl.getOutputFeatures();
 	boolean colTypes[] = getColTypes(inputs.length);
-	
+
 	for (int i = 0; i < inputs.length; i++) {
 	    // if it is scalar, get the data and sort it.  put (num) into each bin,
 	    // and create a new bin when the last one fills up
@@ -282,7 +282,7 @@ public class SQLAutoBin extends AutoBin {
 		    // put anything left in a bin
 		    if (itemCnt > 0)
 			list.add(db1);
-		    
+
 		    double[] binMaxes = new double[list.size()];
 		    for (int j = 0; j < binMaxes.length; j++)
 			binMaxes[j] = ((Double) list.get(j)).doubleValue();
@@ -294,7 +294,7 @@ public class SQLAutoBin extends AutoBin {
 									   nf,
 									   tbl);
 		    bins.add(nbd);
-		    
+
 		    for (int j = 1; j < binMaxes.length-1; j++) {
 			// now create the BinDescriptor and add it to the bin list
 			nbd =
@@ -347,14 +347,14 @@ public class SQLAutoBin extends AutoBin {
 		}
 	    }
 	}
-	
+
 	BinDescriptor[] bn = new BinDescriptor[bins.size()];
 	for (int i = 0; i < bins.size(); i++) {
 	    bn[i] = (BinDescriptor) bins.get(i);
-	    
+
 	}
 	return bn;
-	
+
 	//return bt;
     }
 

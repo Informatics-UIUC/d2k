@@ -127,7 +127,7 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 		sb.append( "the number of possible antecedents and consequents, so narrowing the search prior to this step is ");
 		sb.append( "highly recommended.   Use the module <i>Choose Attributes</i> to specify the subset of table ");
 		sb.append( "attributes that are of interest. ");
-                sb.append( "If the table has continuous attributes as possible rule antecendents or targets, ");
+                sb.append( "If the table has continuous attributes as possible rule antecedents or targets, ");
                 sb.append( "a <i>Binning</i> module should be used prior to this module to reduce the number of possible ");
                 sb.append( "values for those continuous attributes. ");
 

@@ -86,7 +86,7 @@ public class CoverageParamSpaceGenerator extends AbstractParamSpaceGenerator {
         "<p>WPGMC: Weighted pair group method using centroids.</p>");
     pds[2] = new PropertyDescription(DISTANCE_METRIC,
                                      "Distance Metric",
-        "This property determine the type of distance fucntion used to calculate " +
+        "This property determine the type of distance function used to calculate " +
         "distance between two examples." +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +

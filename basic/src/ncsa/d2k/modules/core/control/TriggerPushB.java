@@ -6,19 +6,19 @@ import ncsa.d2k.core.modules.*;
 /*
 	takes in an object once, saves it, and then
 	pushes it out every time an object comes into
-	the other input 
-	
+	the other input
+
 	@author pgroves
 	*/
 
-public class TriggerPushB extends DataPrepModule 
+public class TriggerPushB extends DataPrepModule
 	{
 
 	//////////////////////
 	//d2k Props
 	////////////////////
-	protected boolean debug;	
-	
+	protected boolean debug;
+
 	/////////////////////////
 	/// other fields
 	////////////////////////
@@ -36,8 +36,8 @@ public class TriggerPushB extends DataPrepModule
 					(inputFlags[1]>0));
 		else
 			return ((inputFlags[0]>0)||
-					(inputFlags[1]>0));	
-			
+					(inputFlags[1]>0));
+
 	}
 	public void endExecution(){
 		waitingForObject=true;
@@ -47,9 +47,9 @@ public class TriggerPushB extends DataPrepModule
 	public void beginExecution(){
 		waitingForObject=true;
 		totalFires=0;
-		super.beginExecution(); 
+		super.beginExecution();
 	}
-	int totalFires=0;	
+	int totalFires=0;
 	/////////////////////
 	//work methods
 	////////////////////
@@ -60,7 +60,7 @@ public class TriggerPushB extends DataPrepModule
 		if(waitingForObject){
 			theObject=pullInput(0);
 			waitingForObject=false;
-			
+
 		}
 		totalFires++;
 		if(inputFlags[1]>0){
@@ -74,11 +74,11 @@ public class TriggerPushB extends DataPrepModule
 			if(debug)
 				System.out.println("TriggerPushB: New object");
 		}
-		
+
 
 	}
-		
-	
+
+
 	////////////////////////
 	/// D2K Info Methods
 	/////////////////////
@@ -87,7 +87,7 @@ public class TriggerPushB extends DataPrepModule
 	public String getModuleInfo(){
 		return "<html>  <head>      </head>  <body>    Takes in an object and saves it. Every time an object enters the <i>other</i> input pipe, the saved object will be pushed out the single output. This will     also assign a new object to the saved object field whenever a new one     arrives, and that new one will become the one to get pushed at each     triggering  </body></html>";
 	}
-	
+
    	public String getModuleName() {
 		return "Trigger Push";
 	}
@@ -104,7 +104,7 @@ public class TriggerPushB extends DataPrepModule
 			default: return "No such input";
 		}
 	}
-	
+
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
@@ -121,7 +121,7 @@ public class TriggerPushB extends DataPrepModule
 
 	public String getOutputInfo(int index){
 		switch (index) {
-			case 0: return "The saved object pushed out every time thereis a trigger object";
+			case 0: return "The saved object pushed out every time there is a trigger object";
 			default: return "No such output";
 		}
 	}
@@ -131,7 +131,7 @@ public class TriggerPushB extends DataPrepModule
 				return "Object";
 			default: return "NO SUCH OUTPUT!";
 		}
-	}		
+	}
 	////////////////////////////////
 	//D2K Property get/set methods
 	///////////////////////////////
@@ -162,10 +162,10 @@ public class TriggerPushB extends DataPrepModule
 	}
 	*/
 }
-			
-					
 
-			
 
-								
-	
+
+
+
+
+

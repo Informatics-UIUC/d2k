@@ -249,7 +249,7 @@ public class HAC {
       //while the number of clusters is still greater than m_numberOfClusters
       while (clusters.size() > 1) {
 
-        //System.out.println(clusters.size() + " clusters remain ... begining similarity search ...");
+        //System.out.println(clusters.size() + " clusters remain ... beginning similarity search ...");
         //find the two most similar clusters
         double dist = 0;
         TableCluster tc1 = null;
@@ -567,7 +567,7 @@ public class HAC {
   static public double calculateMaxDist(Table itable, int[] ifeatures, int dm,
                                         int thresh) {
     double maxdist = 0;
-    //find distance threshhold
+    //find distance threshold
     double[] max = new double[ifeatures.length];
     double[] min = new double[ifeatures.length];
     for (int i = 0, n = ifeatures.length; i < n; i++) {
@@ -644,7 +644,7 @@ public class HAC {
   }
 
   /**
-   * TODO: Need to accomodate sparse tables
+   * TODO: Need to accommodate sparse tables
    *
    * @param tc1 cluster to calculate distance from
    * @param tc2 cluster to calculate distance from

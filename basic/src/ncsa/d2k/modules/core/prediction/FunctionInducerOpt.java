@@ -44,7 +44,7 @@ public class FunctionInducerOpt extends OrderedReentrantModule implements Clonea
 
   public String getInputInfo(int i) {
     switch (i) {
-      case 0: return "Paramter Point containing control parameters values";
+      case 0: return "Parameter Point containing control parameters values";
       case 1: return "Example Table";
       case 2: return "Error Function";
       default: return "No such input";

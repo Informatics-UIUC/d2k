@@ -224,7 +224,7 @@ public class BinColumns extends UIModule {
         public void setInput (Object o, int id) {
             tbl = (MutableTable)o;
 
-            // set column lables on the table if necessary...
+            // set column labels on the table if necessary...
             for (int i = 0; i < tbl.getNumColumns(); i++) {
                if (tbl.getColumnLabel(i) == null || tbl.getColumnLabel(i).length() == 0) {
                   tbl.setColumnLabel("column_" + i, i);

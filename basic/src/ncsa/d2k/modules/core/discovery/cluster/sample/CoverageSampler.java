@@ -78,7 +78,7 @@ public class CoverageSampler extends CoverageSamplerOPT {
                                      "min example and a max example -- then finding the distance between the two.");
     descriptions[2] = new PropertyDescription("distanceMetric",
                                               "Distance Metric",
-        "This property determine the type of distance fucntion used to calculate " +
+        "This property determine the type of distance function used to calculate " +
         "distance between two examples." +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +

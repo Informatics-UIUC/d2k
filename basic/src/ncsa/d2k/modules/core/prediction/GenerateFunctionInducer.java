@@ -10,7 +10,7 @@ public class GenerateFunctionInducer extends ComputeModule {
   }
   public String getModuleInfo() {
     return "This module is used in the optimization of modules.  "  +
-           "It takes as input the module (class) to be optimized and a point in control paramter space from the optimizer.  " +
+           "It takes as input the module (class) to be optimized and a point in control parameter space from the optimizer.  " +
            "Next it creates the module from the class, sets the module control parameters, and outputs the module for evaluation.  ";
   }
 

@@ -26,14 +26,14 @@ public class CreateBinTree extends DataPrepModule {
    }
 
    public String getInputInfo(int i) {
-       switch (i) { 
-       case 0 : 
-	   return "Binning Transformation containing the bin definitions"; 
-       case 1 : 
-	   return "Example Table containing the names of the input/output features"; 
-       default : 
-	   return "No such input"; 
-       } 
+       switch (i) {
+       case 0 :
+	   return "Binning Transformation containing the bin definitions";
+       case 1 :
+	   return "Example Table containing the names of the input/output features";
+       default :
+	   return "No such input";
+       }
    }
 
    public String getOutputInfo(int i) {
@@ -41,14 +41,14 @@ public class CreateBinTree extends DataPrepModule {
    }
 
    public String getInputName(int i) {
-       switch (i) { 
-       case 0 : 
-	   return "Binning Transformation"; 
-       case 1 : 
-	   return "Example Table"; 
-       default : 
-	   return "No such input"; 
-       } 
+       switch (i) {
+       case 0 :
+	   return "Binning Transformation";
+       case 1 :
+	   return "Example Table";
+       default :
+	   return "No such input";
+       }
    }
 
    public String getOutputName(int i) {
@@ -56,18 +56,18 @@ public class CreateBinTree extends DataPrepModule {
    }
 
    public String getModuleInfo() {
-       StringBuffer sb = new StringBuffer("<p>Overview: "); 
-       sb.append("Creates an empty BinTree."); 
-       sb.append("</p><p>Detailed Description: "); 
-       sb.append( "Given a Binning Transformation containing the definition of the bins, "); 
-       sb.append( "and an Example Table that has the input/ output attribute labels and types, "); 
-       sb.append( "this module builds a Bin Tree that can be later used to clasify data. ");
+       StringBuffer sb = new StringBuffer("<p>Overview: ");
+       sb.append("Creates an empty BinTree.");
+       sb.append("</p><p>Detailed Description: ");
+       sb.append( "Given a Binning Transformation containing the definition of the bins, ");
+       sb.append( "and an Example Table that has the input/ output attribute labels and types, ");
+       sb.append( "this module builds a Bin Tree that can be later used to classify data. ");
        sb.append( "</p><p>A Bin Tree holds information about the number of examples that fall into each bin ");
-       sb.append( "for each class. The Bin Tree can use only one output "); 
+       sb.append( "for each class. The Bin Tree can use only one output ");
        sb.append( "feature as a class. If more are selected in the Example Table, only the first one will be used." );
-       sb.append( "</p><p> Scalability: a large enough number of features will result "); 
+       sb.append( "</p><p> Scalability: a large enough number of features will result ");
        sb.append( "in an OutOfMemory error. Use feature selection to reduce the number of features.</p>");
-       return sb.toString(); 
+       return sb.toString();
 
    }
 
@@ -84,7 +84,7 @@ public class CreateBinTree extends DataPrepModule {
 
       if ((ins == null) || (ins.length == 0))
 	  throw new Exception(getAlias() + ": Please select the input features, they are missing.");
-      
+
       if (out == null || out.length == 0)
 	  throw new Exception(getAlias() + ": Please select an output feature, it is missing");
 
@@ -94,17 +94,17 @@ public class CreateBinTree extends DataPrepModule {
       // we only support one out variable..
       int classColumn = out[0];
 
-      if (et.isColumnScalar(classColumn)) 
+      if (et.isColumnScalar(classColumn))
 	  throw new Exception(getAlias() + ": Output feature must be nominal. Please transform it.");
 
 
       BinDescriptor [] bins = bt.getBinDescriptors();
 
       if(bins.length == 0 || bins.length < ins.length )
-	  throw new Exception(getAlias() + 
+	  throw new Exception(getAlias() +
 			      ": Bins must be defined for each input before creating BinTree.");
 
-   
+
       BinTree tree = createBinTree(bt, et);
 
 
@@ -118,9 +118,9 @@ public class CreateBinTree extends DataPrepModule {
 		  tree.classify(et.getString(j, classColumn),
 				et.getColumnLabel(ins[i]), et.getDouble(j, ins[i]));
 	      }
-	      
+
 	  }
-	  
+
 	  // everything else is treated as textual columns
 	  else {
 	      for(int j = 0; j < numRows; j++)
@@ -128,17 +128,17 @@ public class CreateBinTree extends DataPrepModule {
 				et.getColumnLabel(ins[i]), et.getString(j, ins[i]));
 	  }
       }
-      
+
       long endTime = System.currentTimeMillis();
       if (debug) System.out.println ( "time in msec " + (endTime-startTime));
       if (debug)tree.printAll();
       pushOutput(tree, 0);
-   
+
 }
 
 
    public static BinTree createBinTree(BinDescriptor[] bins, String[] cn, String[] an) {
-       
+
        // converting the attribute labels to lower case
        // done for compatibility with BinTrees produced by SQL
        /*   String lowerCaseAn [] = new String[an.length];
@@ -156,7 +156,7 @@ public class CreateBinTree extends DataPrepModule {
 	 if(bd instanceof NumericBinDescriptor) {
 	     double max = ((NumericBinDescriptor)bd).max;
 	     double min = ((NumericBinDescriptor)bd).min;
-	     
+
 	     try {
 		 bt.addNumericBin(attLabel, bd.name, min, false,
 				  max, true);
@@ -173,54 +173,54 @@ public class CreateBinTree extends DataPrepModule {
 		 values[idx] = (String)ii.next();
 		 idx++;
 	     }
-	     
+
 	     try {
 		 bt.addStringBin(attLabel, bd.name, values);
             }
 	     catch(Exception e) {
 	     }
          }
-	 
+
       }
-      
+
       return bt;
 
    }
-    
+
 
     public static BinTree createBinTree(BinTransform bt, ExampleTable et) {
 
 	int[] outputs = et.getOutputFeatures();
 	int[] inputs = et.getInputFeatures();
-	
+
 	HashMap used = new HashMap();
-	
+
 	String[] cn = TableUtilities.uniqueValues(et, outputs[0]);
 	String[] an = new String[inputs.length];
 	for(int i = 0; i < an.length; i++)
 	    an[i] = et.getColumnLabel(inputs[i]);
 	return createBinTree(bt.getBinDescriptors(), cn, an);
     }
-    
 
-    boolean debug; 
- 
-    public boolean getDebug() { 
-	return debug; 
-    } 
- 
-    public void setDebug(boolean deb) { 
-	debug = deb; 
-    } 
 
-    public PropertyDescription[] getPropertiesDescriptions(){ 
-	PropertyDescription[] pd = new PropertyDescription[1] ; 
-	pd[0] = new PropertyDescription("debug", "Verbose Mode", 
-					"This property controls the module's output to the stdout. " + 
+    boolean debug;
+
+    public boolean getDebug() {
+	return debug;
+    }
+
+    public void setDebug(boolean deb) {
+	debug = deb;
+    }
+
+    public PropertyDescription[] getPropertiesDescriptions(){
+	PropertyDescription[] pd = new PropertyDescription[1] ;
+	pd[0] = new PropertyDescription("debug", "Verbose Mode",
+					"This property controls the module's output to the stdout. " +
 					"If set to true the created BinTree will be printed. ");
-					
-	return pd; 
-    } 
+
+	return pd;
+    }
 
 
 

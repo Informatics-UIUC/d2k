@@ -78,7 +78,7 @@ public class ComputationalGeometry {
       /* breaks polar angle ties by choosing the furthest point. some       */
       /* applications, however, might project three-dimensional points onto */
       /* two dimensions before calling this method. we need to break ties   */
-      /* by choosing the _nearest_ point to accomodate these applications.  */
+      /* by choosing the _nearest_ point to accommodate these applications.  */
 
       Point2D.Double next = (Point2D.Double)notInHull.get(0);
       double least_angle = polarAngle(lowest, next), candidate_angle;

@@ -114,7 +114,7 @@ public class CoverageParamsOPT
    */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "The Coverage clustering algorithm is a type of kmeans approach where a sample set";
+    s += "The Coverage clustering algorithm is a type of kmeans approach where a sample set ";
     s += "is chosen from the input table such that the set formed is approximately the minimum number of samples ";
     s += "needed such that for every example in the input table there is at least one example in the sample set of distance ";
     s += "<= <i>" + DISTANCE_THRESHOLD + "</i>. This sampling is sent through the hierarchical agglomerative clustering ";
@@ -135,7 +135,7 @@ public class CoverageParamsOPT
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "This algortihm runs in time O(num_examples^2) worst case but in most cases it runs in O(<i>Sample Size</i> * <i>" + NUM_CLUSTERS + "</i>). ";
+    s += "This algorithm runs in time O(num_examples^2) worst case but in most cases it runs in O(<i>Sample Size</i> * <i>" + NUM_CLUSTERS + "</i>). ";
     s += "See the component modules information to understand the memory requirements overall.";
     s += "</p>";
     return s;

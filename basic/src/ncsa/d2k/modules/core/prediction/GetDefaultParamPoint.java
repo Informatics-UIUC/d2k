@@ -11,7 +11,7 @@ public class GetDefaultParamPoint extends ncsa.d2k.core.modules.DataPrepModule {
 	 */
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<p>      This is the paramter space containing the default point.    </p>";
+			case 0: return "<p>      This is the parameter space containing the default point.    </p>";
 			default: return "No such input";
 		}
 	}

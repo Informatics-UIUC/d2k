@@ -275,7 +275,7 @@ public class MinLenEncodingClusterModelEvaluator
    */
   private Object[] calculateMinMax(Table itable, int[] ifeatures) {
     double maxdist = 0;
-    //find distance threshhold
+    //find distance threshold
     double[] max = new double[ifeatures.length];
     double[] min = new double[ifeatures.length];
     for (int i = 0, n = ifeatures.length; i < n; i++) {

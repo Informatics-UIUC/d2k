@@ -9,37 +9,37 @@ import ncsa.d2k.core.modules.*;
 
 	@author Peter Groves
 	7/15/01
-	
+
 	Revised 04/06/03 by pgroves
 */
 public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
-	implements java.io.Serializable 
+	implements java.io.Serializable
 {
 
 
 	//////////////////////
 	//d2k Props
 	////////////////////
-	
+
 	/** the number of times to push the object*/
 	int N=4;
 
-	
+
 	/**false- will wait for and use the Integer in input 1
 		true - will use the N in properties*/
 	private boolean usePropNValue=false;
-	
-	boolean debug=false;		
+
+	boolean debug=false;
 	/////////////////////////
 	/// other fields
 	////////////////////////
 	/** the current number of times this module has fired, indicating the
 	number of times the input object has been pushed*/
 	int numFires=0;
-	
+
 	/** the object that is input (pulled in)*/
 	Object obj;
-	
+
 	/** the total number of times this module has fired since the itin began,
 		this is used only for debugging*/
 	int totalFires=0;
@@ -47,9 +47,9 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
 	//////////////////////////
 	///d2k control methods
 	///////////////////////
-	
+
 	/**isReady()
-	
+
 		At first, checks to see if the object is in and if it should wait for
 		input (1) (the Integer N), otherwise returns the superclass's isReady.
 		Once it has the object and knows how many times to pass it, returns true
@@ -76,7 +76,7 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
 		totalFires=0;
 		super.beginExecution();
 	}
-	
+
 	/////////////////////
 	//work methods
 	////////////////////
@@ -97,7 +97,7 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
 		pushOutput(obj, 0);
 		numFires++;
 		totalFires++;
-		
+
 		if(debug)
 			System.out.println(this.getAlias()+" current numFires:"+numFires+
 			"/"+N+", total number fires this execution:"+totalFires);
@@ -106,8 +106,8 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
 			numFires=0;
 		}
 	}
-		
-	
+
+
 	////////////////////////
 	/// D2K Info Methods
 	/////////////////////
@@ -126,7 +126,7 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
 	public String getModuleInfo() {
 		return "Takes any object, pushes it out N times, where N is either set"+
 		" as a property or passed in as an input. See property descriptions "+
-		" for details on controlling this behaviour";
+		" for details on controlling this behavior";
 	}
 
 
@@ -151,14 +151,14 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: 
+			case 0:
 				return "The object to be passed multiple times";
-			case 1: 
+			case 1:
 				return "The number of times to pass the input object. This module"+
 					" must receive exactly one Integer object for every object"+
-					" passed to the first input (unless the propery <i> Use the "+
+					" passed to the first input (unless the property <i> Use the "+
 					"value of \"N\" from the properties</i> is set to TRUE)";
-				
+
 			default: return "No such input";
 		}
 	}
@@ -197,7 +197,7 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
 	}
 
 	/**
-		This pair returns an array of strings that contains the data types 
+		This pair returns an array of strings that contains the data types
 		for the outputs.
 		@return the data types of all outputs.
 	*/
@@ -222,7 +222,7 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
         "Debug",
         "If true, will print the number of times the module has fired, every "+
 		  "time it is fired.");
-		pds[1] = new PropertyDescription("timesToFire", 
+		pds[1] = new PropertyDescription("timesToFire",
 			"N - Number Times to Push",
        	"The number of times to pass the input object");
       return pds;
@@ -251,11 +251,11 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
 		return debug;
 	}
 }
-			
-					
 
-			
 
-								
-	
+
+
+
+
+
 

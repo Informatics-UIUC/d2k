@@ -21,7 +21,7 @@ public class CreateNBModel
         "<p>Detailed Description: Given a BinTree object that contains counts for "+
         "each discrete item in the training data set, this module creates a "+
         "Naive Bayesian learning model.  This method is based on Bayes's rule "+
-        "for conditional probablility.  It \"naively\" assumes independence of "+
+        "for conditional probability.  It \"naively\" assumes independence of "+
         "the input features."+
         "<p>Data Type Restrictions: This model can only use nominal data as the inputs "+
         "and can only classify one nominal output.  The binning procedure will "+
@@ -130,7 +130,7 @@ public class CreateNBModel
     BinTree bins = (BinTree) pullInput(0);
     ExampleTable et = (ExampleTable) pullInput(1);
     int [] outputs = et.getOutputFeatures();
-    if (outputs == null || outputs.length == 0) 
+    if (outputs == null || outputs.length == 0)
 	throw new Exception("Output feature is missing. Please select an output feature.");
     if(et.isColumnScalar(outputs[0]))
 	throw new Exception("Output feature must be nominal.");

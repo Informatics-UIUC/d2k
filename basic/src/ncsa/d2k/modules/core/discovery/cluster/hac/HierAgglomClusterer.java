@@ -19,7 +19,7 @@ import ncsa.d2k.modules.core.discovery.cluster.gui.properties.*;
  * @author D. Searsmith
  * @version 1.0
  *
- * TODO: change distance method to accomodate sparse matrices
+ * TODO: change distance method to accommodate sparse matrices
  */
 
 public class HierAgglomClusterer

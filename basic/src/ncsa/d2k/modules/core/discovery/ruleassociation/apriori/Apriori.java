@@ -93,7 +93,7 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule{
           sb.append("</p><p> ");
           sb.append("The user can restrict the maximum number of items included in any frequent itemset with ");
 	  sb.append("the <i>Maximum Items Per Rule</i> property.  The generation of sets with large number of items " );
-	  sb.append("can be computationaly expensive, so setting this property in conjunction with the <i>Minimum Support %</i> ");
+	  sb.append("can be computationally expensive, so setting this property in conjunction with the <i>Minimum Support %</i> ");
 	  sb.append("property helps keep the module runtime reasonable. ");
 
           sb.append( "</p><p>" );
@@ -112,7 +112,7 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule{
 
           sb.append("</p><p>Data Type Restrictions: ");
           sb.append("While this module can operate on attributes of any datatype, in practice it is usually infeasible ");
-	  sb.append("to use it with contiuous-valued attributes.   The module considers each [attribute,value] pair that occurs ");
+	  sb.append("to use it with continuous-valued attributes.   The module considers each [attribute,value] pair that occurs ");
 	  sb.append("in the examples individually when building the frequent itemsets.  Continuous attributes (and categorical ");
           sb.append("attributes with a large number of values) are less likely to meet the Minimum Support requirements ");
 	  sb.append("and can result in unacceptably long execution time.  Typically <i>Choose Attributes</i> and <i>Binning</i> ");

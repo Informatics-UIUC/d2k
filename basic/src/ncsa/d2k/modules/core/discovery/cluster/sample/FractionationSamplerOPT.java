@@ -156,7 +156,7 @@ public class FractionationSamplerOPT
    */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "Chooses a sample set of rows through a process of repeated partitioning and cluistering.  The ";
+    s += "Chooses a sample set of rows through a process of repeated partitioning and clustering.  The ";
     s += "table rows are treated as vectors of a vector space.";
     s += "</p>";
 

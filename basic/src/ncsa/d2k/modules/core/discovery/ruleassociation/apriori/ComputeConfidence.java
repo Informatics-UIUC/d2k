@@ -40,7 +40,7 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 	    sb.append("From these inputs, it develops a set of possible association rules, each with a single ");
 	    sb.append("target item, where an item consists of an [attribute,value] pair. " );
 	    sb.append("For each possible rule, this module computes the <i>Confidence</i> in the prediction, " );
-	    sb.append("and accepts those rules that meet a minimum confidence threshhold specified via the " );
+	    sb.append("and accepts those rules that meet a minimum confidence threshold specified via the " );
 	    sb.append("property editor. " );
 
 	    sb.append("</p><p>");

@@ -43,7 +43,7 @@ public class ClassificationErrorEvaluator extends ModelEvaluatorModule {
 
   public String getModuleInfo() {
     //return "";
-    StringBuffer sb = new StringBuffer("<p>Overview: Evaluate the perfomance of ");
+    StringBuffer sb = new StringBuffer("<p>Overview: Evaluate the performance of ");
     sb.append("a classifier.");
     sb.append("<p>Detailed Description: Given a PredictionModelModule and a ");
     sb.append("Table of examples, use the model to predict a value for each ");

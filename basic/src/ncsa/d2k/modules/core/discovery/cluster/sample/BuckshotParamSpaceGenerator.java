@@ -69,7 +69,7 @@ public class BuckshotParamSpaceGenerator extends AbstractParamSpaceGenerator {
                                     "This property specifies the number of clusters to form (>= 2).");
     pds[1] = new PropertyDescription(SEED,
                                      "Seed",
-                                     "The seed for the random number generater used to select the random sampling of table rows. If this value is set to the same value for different runs, the results could be exactly the same.");
+                                     "The seed for the random number generator used to select the random sampling of table rows. If this value is set to the same value for different runs, the results could be exactly the same.");
     pds[2] = new PropertyDescription(USE_FIRST,
                                      "Use First",
                                      "If this option is selected, the first entries in the original table will be used as the sample.");
@@ -86,7 +86,7 @@ public class BuckshotParamSpaceGenerator extends AbstractParamSpaceGenerator {
         "<p>WPGMC: Weighted pair group method using centroids.</p>");
     pds[4] = new PropertyDescription(DISTANCE_METRIC,
                                               "Distance Metric",
-        "This property determine the type of distance fucntion used to calculate " +
+        "This property determine the type of distance function used to calculate " +
         "distance between two examples." +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +

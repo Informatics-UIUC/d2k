@@ -450,7 +450,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
 
 
   /**
-   * enlarges the array vlauesInColumn according to the load factor
+   * enlarges the array valuesInColumn according to the load factor
    */
   protected void doubleArray(){
     String[] newArray = new String[(int)(valuesInColumn.length * (1/DEFAULT_LOAD_FACTOR))];

@@ -112,7 +112,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
           s += "The 'IF' part is the condition of the rule, or called left-hand side ";
           s += "of the rule. The 'THEN' part is the target of the rule, or called ";
           s += "right-hand side of the rule. 'SUPPORT' and 'CONFIDENCE' are ";
-          s += "two measuresre of rule interestingness. They respectively reflect ";
+          s += "two measures of rule interestingness. They respectively reflect ";
           s += "the usefulness and certainty of discovered rules. A support of 2% ";
           s += "for a rule means that 2% of data under analysis support this rule. ";
           s += "A confidence of 60% means that 60% of data that match 'IF' condition ";
@@ -510,7 +510,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
     }
   }
 
-  /** build an ArrayList itemLables to keep strings "colName=colValue".
+  /** build an ArrayList itemLabels to keep strings "colName=colValue".
    *  to speed up search and filtering, build an int[2] to keep the min index
    *  and max index for each column.
    */

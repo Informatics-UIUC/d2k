@@ -32,7 +32,7 @@ public class SparseByteColumn extends AbstractSparseColumn {
 
 
 
-   protected VIntByteHashMap elements;   //the vlaues of this column
+   protected VIntByteHashMap elements;   //the values of this column
   public static byte NOT_EXIST = Byte.MIN_VALUE;    //a value to be returned
 						  //when getByte recieves a
 						  //parameter for row number which

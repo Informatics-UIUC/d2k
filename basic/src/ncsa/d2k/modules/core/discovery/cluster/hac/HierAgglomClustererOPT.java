@@ -20,7 +20,7 @@ import ncsa.d2k.modules.core.discovery.cluster.sample.*;
  * @author D. Searsmith
  * @version 1.0
  *
- * TODO: change distance method to accomodate sparse matrices
+ * TODO: change distance method to accommodate sparse matrices
  */
 
 public class HierAgglomClustererOPT
@@ -297,7 +297,7 @@ public class HierAgglomClustererOPT
 // 4/13/03 - Asked Duane to clarify if 2 arrays are created at same time or
 //           not (scalability comment).  Yes
 //         - Not sure if full tree in model if max number of clusters causes halt.
-// 4/14/03 - Heard from Duane; Few more updates 
+// 4/14/03 - Heard from Duane; Few more updates
 //         - Ready for Basic.
 // End QA Comments
 

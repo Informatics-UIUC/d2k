@@ -156,19 +156,19 @@ public class SQLBinColumns extends UIModule {
     public String getOutputInfo (int i) {
         switch (i) {
             case 0:
-                return  "A BinTransformation object that contains column_numbers, names and lables";
+                return  "A BinTransformation object that contains column_numbers, names and labels";
             default:
                 return  "No such output";
         }
     }
 
 
-    //QA Anca added this: 
-    public PropertyDescription[] getPropertiesDescriptions() {  
-        // so that "WindowName" property is invisible  
-        return new PropertyDescription[0];   
-    } 
- 
+    //QA Anca added this:
+    public PropertyDescription[] getPropertiesDescriptions() {
+        // so that "WindowName" property is invisible
+        return new PropertyDescription[0];
+    }
+
 
 
 

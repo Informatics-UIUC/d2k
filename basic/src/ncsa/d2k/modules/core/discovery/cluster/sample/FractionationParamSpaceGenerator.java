@@ -86,7 +86,7 @@ public class FractionationParamSpaceGenerator extends AbstractParamSpaceGenerato
         "<p>WPGMC: Weighted pair group method using centroids.</p>");
     pds[2] = new PropertyDescription(DISTANCE_METRIC,
                                      "Distance Metric",
-        "This property determine the type of distance fucntion used to calculate " +
+        "This property determine the type of distance function used to calculate " +
         "distance between two examples." +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +
@@ -106,7 +106,7 @@ public class FractionationParamSpaceGenerator extends AbstractParamSpaceGenerato
         );
     pds[5] = new PropertyDescription(FRACT_NTH_SORT_TERM,
                                               "Sort Attribute",
-                                              "The index of for the column denoting the atttribute to be used to sort on prior to partitioning.");
+                                              "The index of for the column denoting the attribute to be used to sort on prior to partitioning.");
     pds[6] = new PropertyDescription(MAX_ITERATIONS,
                                               "Number of Assignment Passes",
         "This property specifies the number of iterations of cluster refinement to perform (> 0).");

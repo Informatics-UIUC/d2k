@@ -87,7 +87,7 @@ public class SampleTableRowsOPT
     s += "The input table is not changed. ";
 
     s += "</p><p>Scalability: ";
-    s += "This module should scale very well. There must be memory to accomodate both the input table ";
+    s += "This module should scale very well. There must be memory to accommodate both the input table ";
     s += "and the resulting sample table. ";
 
     return s;

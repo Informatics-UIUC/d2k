@@ -137,7 +137,7 @@ public class BuckshotParamsOPT
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "This algortihm runs in time O(<i>Number of Examples</i> * <i>" + NUM_CLUSTERS + "</i>).  See the component modules ";
+    s += "This algorithm runs in time O(<i>Number of Examples</i> * <i>" + NUM_CLUSTERS + "</i>).  See the component modules ";
     s += "information to understand the memory requirements overall.";
     s += "</p>";
     return s;

@@ -111,7 +111,7 @@ public class DendogramClusterVis
 
     s += "<p>Detailed Description: ";
     s += "The dendogram produced represents a hard clustering of a data table using ";
-    s += "a hiearchical agglomerative clustering algorithm.  Some cluster models will ";
+    s += "a hierarchical agglomerative clustering algorithm.  Some cluster models will ";
     s += "contain complete dendogram trees (from the actual table rows to the single ";
     s += "root cluster.  Other models will contain trees that start at some cluster cut ";
     s += "(for example the clusters returned from a KMeans algortihm) to the root. ";

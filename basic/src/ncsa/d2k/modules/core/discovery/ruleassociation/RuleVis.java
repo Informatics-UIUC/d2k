@@ -131,7 +131,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 
           sb.append("</p><p> ");
           sb.append("Above the main matrix are two rows of bars labelled <i>Confidence</i> and <i>Support</i>. ");
-          sb.append("These bars align with, and corresond to, the rule columns in the main matrix.  For any given rule, ");
+          sb.append("These bars align with, and correspond to, the rule columns in the main matrix.  For any given rule, ");
           sb.append("the confidence and support values for that rule are represented by the degree to which the ");
           sb.append("bars above the rule column are filled in.   Brushing the mouse on a confidence or support ");
           sb.append("bar displays the exact value that is graphically represented by the bar height. ");

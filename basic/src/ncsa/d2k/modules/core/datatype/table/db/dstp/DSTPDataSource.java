@@ -24,7 +24,7 @@ import ncsa.d2k.modules.core.io.dstp.*;
  * vector is declared to be transient so if the table is serialized the data is
  * rebuilt from the DSTP server when reinstantiated.  The next step for this class
  * would be to add a caching mechanism for data reads so that very large tables
- * can be accomodated.</p>
+ * can be accommodated.</p>
  *
  * <p>Copyright: Copyright (c) 2003</p>
  * <p>Company: NCSA Automated Learning Group</p>
