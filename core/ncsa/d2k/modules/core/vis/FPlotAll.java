@@ -13,7 +13,7 @@ import javax.swing.border.*;
 
 public class FPlotAll extends JPanel {
 
-	public FPlotAll(VerticalTable table1, VerticalTable table2){
+	public FPlotAll(Table table1, Table table2){
 		super();
 		PlotMatrix plot = new PlotMatrix(table1, table2);
 		MatrixHolder matrix = new MatrixHolder(plot);
@@ -89,8 +89,8 @@ class MatrixHolder extends JScrollPane {
 
 class PlotMatrix extends JPanel implements MouseListener{
 
-	VerticalTable plotTable;
-	VerticalTable scatterTable;
+	Table plotTable;
+	Table scatterTable;
 
 	int NUM_ATTRIBUTES; //the number of input variables (i.e. x_1....x_n)
 	JPanel[] graphs; //an array to store all of the graphs
@@ -98,10 +98,10 @@ class PlotMatrix extends JPanel implements MouseListener{
 	/**Constructor
 		This makes the matrix of scatter and function plots.  The matrix is
 		(n+1) rows by n columns (n = number attributes).
-		@param VerticalTable table1 - the table of data for lines of best fit
-		@param VerticalTable table2 - the table of data for scatter plots
+		@param table1 - the table of data for lines of best fit
+		@param table2 - the table of data for scatter plots
 	*/
-	public PlotMatrix(VerticalTable table1, VerticalTable table2){
+	public PlotMatrix(Table table1, Table table2){
 		plotTable = table1;// the table containing line of best fit data
 		scatterTable = table2;// the table containing scatter plot data
 		NUM_ATTRIBUTES = scatterTable.getNumColumns()-1;

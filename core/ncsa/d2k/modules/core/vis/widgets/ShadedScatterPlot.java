@@ -31,7 +31,7 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 * @param settings
 	 * @param shadeColumnIndex the index of the column with the values to shade by
 	 */
-	public ShadedScatterPlot(VerticalTable table, DataSet[] sets,
+	public ShadedScatterPlot(Table table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex) {
 		super(table, sets, settings);
 
@@ -48,7 +48,7 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 * @param low the low color
 	 * @param high the high color
 	 */
-	public ShadedScatterPlot(VerticalTable table, DataSet[] sets,
+	public ShadedScatterPlot(Table table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex, Color low, Color high) {
 		super(table, sets, settings, low, high);
 
@@ -66,7 +66,7 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 * @param high the high color
 	 * @param pos
 	 */
-	public ShadedScatterPlot(VerticalTable table, DataSet[] sets,
+	public ShadedScatterPlot(Table table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex, Color low,
 		Color high, int pos) {
 		super(table, sets, settings, low, high, pos);

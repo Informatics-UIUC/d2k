@@ -25,12 +25,12 @@ import ncsa.d2k.gui.JD2KFrame;
 import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
- * Plots the data in a VerticalTable on parallel axes.
+ * Plots the data in a Table on parallel axes.
  */
 public class ParallelCoordinateVis extends VisModule {
 
 	public String getModuleInfo() {
-		return "Plots the data in a VerticalTable on parallel axes.";
+		return "Plots the data in a Table on parallel axes.";
 	}
 
 	public String getInputInfo(int i) {
@@ -42,7 +42,7 @@ public class ParallelCoordinateVis extends VisModule {
 	}
 
 	public String[] getInputTypes() {
-		String[] i = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] i = {"ncsa.d2k.util.datatype.Table"};
 		return i;
 	}
 
@@ -125,7 +125,7 @@ public class ParallelCoordinateVis extends VisModule {
 		private boolean zoomin;
 
 		/** the table with the data */
-		private VerticalTable table;
+		private Table table;
 		private JMenuBar menuBar;
 
 		/** the choose colors menu */
@@ -176,7 +176,7 @@ public class ParallelCoordinateVis extends VisModule {
 		 * Input arrived
 		 */
 		public void setInput(Object o, int i) {
-			table = (VerticalTable)o;
+			table = (Table)o;
 			selectedlines = new boolean[table.getNumRows()];
 			legend = new Legend();
 			nf = NumberFormat.getInstance();
@@ -1715,7 +1715,7 @@ public class ParallelCoordinateVis extends VisModule {
 	private static final String getHelpString() {
 		StringBuffer s = new StringBuffer("<html>");
 		s.append("<h2>ParallelCoordinateVis</h2>");
-		s.append("ParallelCoordinateVis shows the data contained in a VerticalTable ");
+		s.append("ParallelCoordinateVis shows the data contained in a Table ");
 		s.append("on parallel axes.  For NumericColumns, the maximum will be at ");
 		s.append("the top of the graph and the minimum will be at the bottom. ");
 		s.append("For any other column, each unique value will be mapped to a ");
@@ -1757,7 +1757,7 @@ public class ParallelCoordinateVis extends VisModule {
 		s.append("<li>Print: Print this visualization.");
 		s.append("<li>Zoom: When this button is pressed, left-click the ");
 		s.append("graph to zoom in, or right-click the graph to zoom out.");
-		s.append("<li>Show Table: Show the VerticalTable that is being graphed.");
+		s.append("<li>Show Table: Show the Table that is being graphed.");
 		s.append("</ul></html>");
 		return s.toString();
 	}

@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.prediction.decisiontree;
 import java.io.Serializable;
 import java.util.*;
 
-import ncsa.d2k.util.datatype.VerticalTable;
+import ncsa.d2k.util.datatype.Table;
 
 /**
 	A DecisionTreeNode for categorical data.  These have as many children
@@ -15,14 +15,6 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 
 	/* Maps an output to a specific child.  Used in evaluate() */
 	private HashMap outputToChildMap;
-
-	/**
-		Create a new, blank node.
-	*/
-	/*public CategoricalDecisionTreeNode() {
-		super();
-		outputToChildMap = new HashMap();
-	}*/
 
 	/**
 		Create a new node.
@@ -74,11 +66,11 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 		of the attribute for the row to test and call evaluate() on
 		the appropriate child node.
 
-		@param vt the VerticalTable with the data
+		@param vt the Table with the data
 		@param row the row of the table to evaluate
 		@return the result of evaluating the record
 	*/
-	public final Object evaluate(VerticalTable vt, int row) {
+	public final Object evaluate(Table vt, int row) {
 
 		if(isLeaf()) {
 			incrementOutputTally(label);

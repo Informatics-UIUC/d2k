@@ -8,7 +8,7 @@ import javax.swing.*;
 
 	Colors and fonts used
 */
-public class DecisionTreeScheme {
+public final class DecisionTreeScheme {
 
 	public static final JFrame frame = new JFrame();
 

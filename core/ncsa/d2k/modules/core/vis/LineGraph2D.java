@@ -15,27 +15,27 @@ import javax.swing.*;
 /**
 	LineGraph2D.java
 */
-public class LineGraph2D extends ncsa.d2k.infrastructure.modules.VisModule implements Serializable
-{
+public class LineGraph2D extends ncsa.d2k.infrastructure.modules.VisModule
+    implements Serializable, HasNames {
 
 	/**
 		This pair returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table\">    <Text> </Text>  </Info></D2K>";
-			default: return "No such input";
-		}
-
+        return "A table to visualize.";
 	}
+
+    public String getInputName(int index) {
+        return "Table";
+    }
 
 	/**
 		This pair returns an array of strings that contains the data types for the inputs.
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.util.datatype.Table"};
 		return types;
 
 	}
@@ -50,6 +50,10 @@ public class LineGraph2D extends ncsa.d2k.infrastructure.modules.VisModule imple
 		}
 
 	}
+
+    public String getOutputName(int index) {
+        return "";
+    }
 
 	/**
 		This pair returns an array of strings that contains the data types for the outputs.
@@ -66,16 +70,14 @@ public class LineGraph2D extends ncsa.d2k.infrastructure.modules.VisModule imple
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ScatterPlot\">    <Text> </Text>  </Info></D2K>";
-
+        String s = "Visualize the NumericColumns in a 2D scatter plot. ";
+        s += "A line is drawn through each point in order.";
+        return s;
 	}
 
-	/**
-		PUT YOUR CODE HERE.
-	*/
-	public void doit() throws Exception {
-	}
-
+    public String getModuleName() {
+        return "LineGraph2D";
+    }
 
 	/**
 		This pair is called by D2K to get the UserView for this module.
@@ -103,14 +105,14 @@ public class LineGraph2D extends ncsa.d2k.infrastructure.modules.VisModule imple
 class LineGraphUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane {
 	LineGraph2D module;
 
-	VerticalTable table;
+	Table table;
 
 	public void initView(ViewModule viewmodule) {
 		module = (LineGraph2D) viewmodule;
 	}
 
 	public void setInput(Object object, int index) {
-		table = (VerticalTable) object;
+		table = (Table) object;
 
 		buildView();
 	}

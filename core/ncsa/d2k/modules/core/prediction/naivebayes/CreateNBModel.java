@@ -78,8 +78,7 @@ public class CreateNBModel extends ModelProducerModule
     public String getInputName(int i) {
 	    switch(i) {
 			case 0: return "BinTree";
-			case 1: return "VerticalTable";
-	    	//case 2: return "typesmap";
+			case 1: return "Table";
 			default: return "no such input";
     	}
 	}
@@ -103,7 +102,7 @@ public class CreateNBModel extends ModelProducerModule
     */
     public String getOutputName(int i) {
 	    switch(i) {
-			case 0: return "mdl";
+			case 0: return "NBModel";
 			default: return "no such output";
     	}
 	}

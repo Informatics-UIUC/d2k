@@ -36,7 +36,7 @@ public class DefineBins extends UIModule implements HasNames {
        @return The name of this module.
     */
     public String getModuleName() {
-		return "defineBin";
+		return "DefineBins";
     }
 
     /**
@@ -67,8 +67,7 @@ public class DefineBins extends UIModule implements HasNames {
     */
     public String getInputInfo(int i) {
     	switch(i) {
-			case 0: return "Table with data in it.";
-			case 1: return "Map of attributes and classes.";
+			case 0: return "ExampleTable with data in it.";
 			default: return "no such input!";
 		}
 	}
@@ -80,8 +79,7 @@ public class DefineBins extends UIModule implements HasNames {
     */
     public String getInputName(int i) {
     	switch(i) {
-			case 0: return "table";
-			case 1: return "map";
+			case 0: return "Table";
 			default: return "no such input!";
 		}
 	}
@@ -93,9 +91,8 @@ public class DefineBins extends UIModule implements HasNames {
     */
     public String getOutputInfo(int i) {
     	switch(i) {
-			case 0: return "Contains binning info";
-			case 1: return "table, unchanged";
-			case 2: return "map";
+			case 0: return "Contains binning info.";
+			case 1: return "Table, unchanged.";
 			default: return "no such output!";
 		}
 	}
@@ -107,9 +104,8 @@ public class DefineBins extends UIModule implements HasNames {
     */
     public String getOutputName(int i) {
     	switch(i) {
-			case 0: return "binInfo";
-			case 1: return "table";
-			case 2: return "map";
+			case 0: return "BinTree";
+			case 1: return "Table";
 			default: return "no such output!";
 		}
 	}

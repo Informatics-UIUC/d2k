@@ -26,7 +26,7 @@ import ncsa.gui.Constrain;
 
 /**
  * <code>SurfacePlot3D</code> is a three-dimensional visualization of
- * <code>VerticalTable</code> data as a surface plot. Java3D is required.
+ * <code>Table</code> data as a surface plot. Java3D is required.
  *
  * @author gpape
  */
@@ -34,11 +34,11 @@ import ncsa.gui.Constrain;
 public class SurfacePlot3D extends VisModule {
 
    public String getModuleInfo() {
-      return "SurfacePlot3D is a three-dimensional visualization of VerticalTable data as a surface plot.";
+      return "SurfacePlot3D is a three-dimensional visualization of Table data as a surface plot.";
    }
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.util.datatype.VerticalTable"}; return i;
+      String[] i = {"ncsa.d2k.util.datatype.Table"}; return i;
    }
 
    public String[] getOutputTypes() {
@@ -46,7 +46,7 @@ public class SurfacePlot3D extends VisModule {
    }
 
    public String getInputInfo(int index) {
-      if (index == 0) return "The VerticalTable to be visualized.";
+      if (index == 0) return "The Table to be visualized.";
       else return "SurfacePlot3D has no such input.";
    }
 
@@ -65,7 +65,7 @@ public class SurfacePlot3D extends VisModule {
       private Transform3D scale, transform;
       private TransformGroup objScale, objTrans;
 
-      private VerticalTable input;
+      private Table input;
       private Point3d[] points;
 
       private boolean show_vertices, show_triangles;
@@ -84,10 +84,10 @@ public class SurfacePlot3D extends VisModule {
       private static final int FONT_SIZE = 14;
 
       public void initView(ViewModule m) { }
-      public void setInput(Object o, int i) { if (i == 0) go((VerticalTable)o); }
+      public void setInput(Object o, int i) { if (i == 0) go((Table)o); }
       public Object getMenu() { return menuBar; }
 
-      private void go(VerticalTable table) {
+      private void go(Table table) {
 
          input = table;
          points = new Point3d[input.getNumRows()];

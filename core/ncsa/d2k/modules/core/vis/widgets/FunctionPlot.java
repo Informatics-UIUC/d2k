@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class FunctionPlot extends Graph {
 
-	public FunctionPlot(VerticalTable Functiontable, DataSet[] set, GraphSettings settings) {
+	public FunctionPlot(Table Functiontable, DataSet[] set, GraphSettings settings) {
 		super(Functiontable, set, settings);
 	}
 

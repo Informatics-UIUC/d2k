@@ -5,12 +5,13 @@ import ncsa.d2k.util.datatype.*;
 
 /**
  * A very simple ModelSelector that takes a model as input and returns it in the
- * getModel() method.
+ * getModel() method.  The model is passed as output, unchanged.
  */
 public class BasicModelSelector extends ModelSelectorModule implements HasNames {
 
 	public String getModuleInfo() {
-		String s = "A simple ModelSelector that takes a model and returns it.";
+		String s = "A simple ModelSelector that takes a model and returns it. ";
+        s += "The model is passed as output, unchanged.";
 		return s;
 	}
 
@@ -58,10 +59,12 @@ public class BasicModelSelector extends ModelSelectorModule implements HasNames 
 	}
 
 	/**
-	 * Return the model with the highest percentage of correct predictions.
-	 * @return the model with the highest number of correct predictions.
+     * Return the model that was passed in.
+	 * @return the model that was passed in.
 	 */
 	public ModelModule getModel() {
-		return theModel;
+        ModelModule mod = theModel;
+        theModel = null;
+		return mod;
 	}
 }

@@ -29,7 +29,7 @@ public class VerticalTableMatrix extends JScrollPane {
 		Create a new VerticalTableMatrix
 		@param table the VerticalTable to display
 	*/
-	public VerticalTableMatrix(VerticalTable table) {
+	public VerticalTableMatrix(Table table) {
 	    tm = new VerticalTableModel(table);
 		init();
 	}

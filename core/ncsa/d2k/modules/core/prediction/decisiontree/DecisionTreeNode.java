@@ -2,13 +2,12 @@ package ncsa.d2k.modules.core.prediction.decisiontree;
 
 import java.io.Serializable;
 import java.util.*;
-import ncsa.d2k.util.datatype.VerticalTable;
+import ncsa.d2k.util.datatype.Table;
 
 /**
 	A DecisionTree is made up of DecisionTreeNodes.
 */
-public abstract class DecisionTreeNode
-	implements ViewableDTNode, Serializable {
+public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 
 	protected DecisionTreeNode parent = null;
 
@@ -105,7 +104,7 @@ public abstract class DecisionTreeNode
 	}
 
 	/**
-			Get the parent of this node.
+        Get the parent of this node.
 	*/
 	public DecisionTreeNode getParent() {
 		return parent;
@@ -159,6 +158,7 @@ public abstract class DecisionTreeNode
 	public DecisionTreeNode getChild(int i) {
 		return (DecisionTreeNode)children.get(i);
 	}
+
 	/**
 		Get a child of this node as a ViewableDTNode.
 		@param i the index of the child to get
@@ -167,17 +167,18 @@ public abstract class DecisionTreeNode
 	public ViewableDTNode getViewableChild(int i){
 		return (ViewableDTNode)children.get(i);
 	}
+
 	/**
 		Evaluate a record from the data set.  If this is a leaf, return the
 		label of this node.  Otherwise find the column of the table that
 		represents the attribute that this node evaluates.  Call evaluate()
 		on the appropriate child.
 
-		@param vt the VerticalTable with the data
+		@param vt the Table with the data
 		@param row the row of the table to evaluate
 		@return the result of evaluating the record
 	*/
-	abstract public Object evaluate(VerticalTable vt, int row/*, int outputCol*/);
+	abstract public Object evaluate(Table vt, int row);
 
 	/**
 		Add a branch to this node, given the label of the branch and
@@ -225,21 +226,6 @@ public abstract class DecisionTreeNode
 		// for each child
 		// delete child
 		// remove pointer from children list
-	}*/
-
-	/**
-		FIX ME
-	/
-	public static void print(DecisionTreeNode nde) {
-		if(nde == null)
-			return;
-
-		//print(nde.getLeft());
-		//System.out.println("Level "+nde.getLevel());
-		//System.out.println("\tAttribute "+nde.getAttribute());
-		//System.out.println("\tSplit "+nde.getSplit());
-		//print(nde.getRight());
-
 	}*/
 
 	public void print() {

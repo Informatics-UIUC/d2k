@@ -23,13 +23,12 @@ import ncsa.d2k.modules.core.datatype.*;
 */
 public class SQLDefineBins extends DefineBins {
 
-
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleInfo() {
-    	StringBuffer sb = new StringBuffer("Allows the user to bin data comming from a database");
+    	StringBuffer sb = new StringBuffer("Allows the user to bin data comming from a database.");
 		return sb.toString();
 	}
 
@@ -38,7 +37,7 @@ public class SQLDefineBins extends DefineBins {
        @return The name of this module.
     */
     public String getModuleName() {
-		return "SQLDefineBin";
+		return "SQLDefineBins";
     }
 
     /**
@@ -85,8 +84,8 @@ public class SQLDefineBins extends DefineBins {
     */
     public String getInputName(int i) {
     	switch(i) {
-	case 0: return "connection";
-	case 1: return "table";
+	case 0: return "Connection";
+	case 1: return "Table";
 	case 2: return "MetadataTable";
 	default: return "no such input!";
 	}
@@ -97,33 +96,30 @@ public class SQLDefineBins extends DefineBins {
        @param i The index of the output.
        @return The description of the output.
     */
-    public String getOutputInfo(int i) {
+    /*public String getOutputInfo(int i) {
     	switch(i) {
-	case 0: return "Contains binning info";
-	case 1: return "table, unchanged";
+	case 0: return "Contains binning info.";
+	case 1: return "Table, unchanged.";
 	default: return "no such output!";
 	}
-    }
+    }*/
 
     /**
        Return the name of a specific output.
        @param i The index of the output.
        @return The name of the output
     */
-    public String getOutputName(int i) {
+    /*public String getOutputName(int i) {
     	switch(i) {
 	case 0: return "binInfo";
 	case 1: return "table";
 	default: return "no such output!";
 	}
-    }
+    }*/
 
     public UserView createUserView() {
 	return new SQLBinView();
     }
-
-
-
 
 	/**
 		The complex user view.

@@ -5,16 +5,15 @@ import java.awt.geom.*;
 import java.text.*;
 import java.util.*;
 import javax.swing.*;
-//import ncsa.d2k.modules.compute.learning.modelgen.decisiontree.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
-import ncsa.d2k.modules.core.vis.widgets.*;
+//import ncsa.d2k.modules.core.vis.widgets.*;
 
 /*
 	DecisionTreeVis
 
 	Draws data when mouse moves over a node in tree scroll pane
 */
-public class BrushPanel extends JPanel {
+public final class BrushPanel extends JPanel {
 
 	ViewableDTModel dmodel;
 	ViewableDTNode droot;

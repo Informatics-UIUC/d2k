@@ -15,27 +15,27 @@ import javax.swing.*;
 /**
 	LinearRegression2D.java
 */
-public class LinearRegression2D extends ncsa.d2k.infrastructure.modules.VisModule implements Serializable
-{
+public final class LinearRegression2D extends ncsa.d2k.infrastructure.modules.VisModule
+    implements Serializable, HasNames {
 
 	/**
 		This pair returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table\">    <Text> </Text>  </Info></D2K>";
-			default: return "No such input";
-		}
-
+        return "A Table to visualize.";
 	}
+
+    public String getInputName(int index) {
+        return "Table";
+    }
 
 	/**
 		This pair returns an array of strings that contains the data types for the inputs.
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.util.datatype.Table"};
 		return types;
 
 	}
@@ -48,8 +48,11 @@ public class LinearRegression2D extends ncsa.d2k.infrastructure.modules.VisModul
 		switch (index) {
 			default: return "No such output";
 		}
-
 	}
+
+    public String getOutputName(int index) {
+        return "";
+    }
 
 	/**
 		This pair returns an array of strings that contains the data types for the outputs.
@@ -66,16 +69,14 @@ public class LinearRegression2D extends ncsa.d2k.infrastructure.modules.VisModul
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ScatterPlot\">    <Text> </Text>  </Info></D2K>";
-
+       String s = "Visualize the NumericColumns in a 2D scatter plot.  A line ";
+       s += "is approximated through the points.";
+       return s;
 	}
 
-	/**
-		PUT YOUR CODE HERE.
-	*/
-	public void doit() throws Exception {
-	}
-
+    public String getModuleName() {
+        return "LinearRegression";
+    }
 
 	/**
 		This pair is called by D2K to get the UserView for this module.
@@ -93,7 +94,6 @@ public class LinearRegression2D extends ncsa.d2k.infrastructure.modules.VisModul
 		return null;
 
 	}
-
 }
 
 
@@ -103,14 +103,14 @@ public class LinearRegression2D extends ncsa.d2k.infrastructure.modules.VisModul
 class LinearRegressionUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane {
 	LinearRegression2D module;
 
-	VerticalTable table;
+	Table table;
 
 	public void initView(ViewModule viewmodule) {
 		module = (LinearRegression2D) viewmodule;
 	}
 
 	public void setInput(Object object, int index) {
-		table = (VerticalTable) object;
+		table = (Table) object;
 
 		buildView();
 	}
@@ -121,6 +121,5 @@ class LinearRegressionUserPane extends ncsa.d2k.controller.userviews.swing.JUser
 		Constrain.setConstraints(this, new GraphEditor(table, GraphEditor.LINEAR_REGRESSION), 0, 0, 1, 1, GridBagConstraints.BOTH,
 			GridBagConstraints.NORTHWEST, 1, 1);
 	}
-
 }
 

@@ -18,20 +18,32 @@ import ncsa.gui.*;
 /**
  * An evidence visualization for a NaiveBayesModel.
  */
-public final class NaiveBayesVis extends VisModule {
+public final class NaiveBayesVis extends VisModule implements HasNames {
 
 	public String getInputInfo(int i) {
 		return "A NaiveBayesModel to visualize.";
 	}
 
+    public String getInputName(int i) {
+        return "NBModel";
+    }
+
 	public String getOutputInfo(int i) {
 		return "";
 	}
+
+    public String getOutputName(int i) {
+        return "";
+    }
 
 	public String getModuleInfo() {
 		return "An evidence visualization for a NaiveBayesModel.  The model performs "+
 			"any necessary calculations.";
 	}
+
+    public String getModuleName() {
+        return "NBVis";
+    }
 
 	public String[] getInputTypes() {
 		String[] in = {"ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
@@ -110,9 +122,11 @@ public final class NaiveBayesVis extends VisModule {
 		return retVal;
 	}
 
+    /**
+     * The View class.
+     */
 	private final class NBView extends JUserPane implements ActionListener, Printable {
-
-		private NaiveBayesModel model;
+		private transient NaiveBayesModel model;
 		private transient Legend legend;
 
 		private transient Dimension preferredGrid;
@@ -221,6 +235,10 @@ public final class NaiveBayesVis extends VisModule {
 		}
 
 		public void initView(ViewModule m) {
+			menuBar = new JMenuBar();
+			nf = NumberFormat.getInstance();
+			nf.setMaximumFractionDigits(2);
+			helpWindow = new HelpWindow();
 		}
 
 		public void setInput(Object o, int i) {
@@ -260,9 +278,6 @@ public final class NaiveBayesVis extends VisModule {
 			}
 			if(longest_attribute_name.length() < MAX_ATTRIBUTE_ERROR.length())
 				longest_attribute_name = MAX_ATTRIBUTE_ERROR;
-
-			nf = NumberFormat.getInstance();
-			nf.setMaximumFractionDigits(2);
 
 			// make the grid
 			gp = new GridPanel();
@@ -402,7 +417,6 @@ public final class NaiveBayesVis extends VisModule {
 			add(p1, BorderLayout.CENTER);
 
 			// setup the menus
-			menuBar = new JMenuBar();
 			JMenu m1 = new JMenu("Options");
 			JMenu m2 = new JMenu("Views");
 			m2.add(miPieChart = new JCheckBoxMenuItem("Pie Charts", true));
@@ -433,9 +447,7 @@ public final class NaiveBayesVis extends VisModule {
 				attributeItems[j].addActionListener(this);
 				if(numItems == MAX_MENU_ITEMS) {
 					JMenu nextMenu = new JMenu(MORE);
-					//curMenu.add(nextMenu);
 					curMenu.insert(nextMenu, 0);
-					//m5.add(attributeItems[j]);
 					nextMenu.add(attributeItems[j]);
 					curMenu = nextMenu;
 					numItems = 1;
@@ -489,9 +501,7 @@ public final class NaiveBayesVis extends VisModule {
 			helpMenu.add(helpItem);
 			helpItem.addActionListener(this);
 			menuBar.add(helpMenu);
-			helpWindow = new HelpWindow();
 		}
-
 
 		public Object getMenu() {
 			return menuBar;
@@ -735,11 +745,9 @@ public final class NaiveBayesVis extends VisModule {
 				hp.revalidate();
 			}
 			else if(src == helpItem) {
-				//new HelpWindow();
 				helpWindow.setVisible(true);
 			}
 		}
-
 
 		private final Color getColor(String s) {
 			return (Color)color_map.get(s);
@@ -1163,12 +1171,12 @@ public final class NaiveBayesVis extends VisModule {
 				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
 				NaiveBayesPieChartData ev_data = model.getCurrentEvidence();
+				legend.updateLegend(ev_data);
 				if(miPieChart.getState())
 					drawPieChart(g2, 0, (int)sq05, ev_data);
 				else
 					drawBarChart(g2, 0, (int)sq05, ev_data);
 
-				legend.updateLegend(ev_data);
 				g2.setFont(labelFont);
 				g2.setPaint(messageColor);
 				FontMetrics fm = scaleFont(g2, model.getClassColumn(),
@@ -1184,11 +1192,13 @@ public final class NaiveBayesVis extends VisModule {
 			private final void drawPieChart(Graphics2D g2, int x, int y,
 				NaiveBayesPieChartData data) {
 
+                //System.out.println("DRAW.");
 				// draw chart
 				int angle = 0;
 				for (int count = class_names.length - 1; count >= 0; count--) {
 					g2.setPaint(getColor(data.getClassName(count)));
 					double ratio = data.getClass(data.getClassName(count));
+                    //System.out.println(data.getClassName(count)+" "+ratio);
 
 					if (count == class_names.length - 1)
 						g2.fill(new Arc2D.Double(x + (int)(sq1), y + (int)(sq1),
@@ -1357,7 +1367,7 @@ public final class NaiveBayesVis extends VisModule {
 				catch(Exception e) {
 				}
 				int ct = 0;
-                                int numRows = ev_data.getNumRows();
+                int numRows = ev_data.getNumRows();
 				for(int count = numRows-1; count >= 0; count--) {
 					double dr = ev_data.getClass(ev_data.getClassName(count));
 					StringBuffer sb = new StringBuffer(ev_data.getClassName(count));

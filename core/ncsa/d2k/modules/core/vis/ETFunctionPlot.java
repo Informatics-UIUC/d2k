@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.vis;
 
 import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.d2k.util.datatype.VerticalTable;
+import ncsa.d2k.util.datatype.Table;
 
 /**
    ETScatterPlot.java
@@ -42,7 +42,7 @@ public class ETFunctionPlot extends ETScatterPlot {
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createSmallGraph(VerticalTable vt, DataSet[] d,
+	protected Graph createSmallGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
 		return new FunctionPlotSmall(vt, d, gs);
 	}
@@ -53,7 +53,7 @@ public class ETFunctionPlot extends ETScatterPlot {
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createGraph(VerticalTable vt, DataSet[] d,
+	protected Graph createGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
 		return new FunctionPlot(vt, d, gs);
 	}

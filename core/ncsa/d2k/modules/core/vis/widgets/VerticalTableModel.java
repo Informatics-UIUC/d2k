@@ -15,13 +15,13 @@ import javax.swing.table.*;
 */
 public class VerticalTableModel extends AbstractTableModel {
 	/** The VerticalTable that holds the data */
-	protected VerticalTable table;
+	protected Table table;
 
 	/**
 		Constructor.
 		@param vt The VerticalTable that we represent
 	*/
-	public VerticalTableModel(VerticalTable vt) {
+	public VerticalTableModel(Table vt) {
 		table = vt;
 	}
 

@@ -23,7 +23,7 @@ public class Binning extends DataPrepModule implements HasNames {
        @return The name of this module.
     */
     public String getModuleName() {
-		return "binningMod";
+		return "BinningMod";
     }
 
     /**
@@ -69,9 +69,9 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public String getInputName(int i) {
 		if(i == 0)
-			return "binTree.";
+			return "BinTree";
 		else if(i == 1)
-			return "exampleTable.";
+			return "ExampleTable.";
 		else
 			return "No such input";
     }
@@ -97,9 +97,9 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public String getOutputName(int i) {
 		if(i == 0)
-			return "binTree.";
+			return "BinTree";
 		else if(i == 1)
-			return "exampleTable";
+			return "ExampleTable";
 		else
 			return "No such input";
     }

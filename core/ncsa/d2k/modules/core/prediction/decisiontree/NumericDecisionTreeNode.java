@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.prediction.decisiontree;
 import java.io.Serializable;
 import java.util.*;
 
-import ncsa.d2k.util.datatype.VerticalTable;
+import ncsa.d2k.util.datatype.Table;
 
 /**
 	A DecisionTreeNode for numerical data.  These are binary nodes that
@@ -13,16 +13,12 @@ public final class NumericDecisionTreeNode extends DecisionTreeNode
 	implements Serializable {
 
 	/** everything less than the split value goes left */
-	private final static int LEFT = 0;
+	private static final int LEFT = 0;
 	/** everything greater than the split value goes right */
-	private final static int RIGHT = 1;
+	private static final int RIGHT = 1;
 
 	/** the value used to compare whether to go left or right */
 	private double splitValue;
-
-	/*public NumericDecisionTreeNode() {
-		super();
-	}*/
 
 	/**
 		Create a new NumericDecisionTreeNode
@@ -59,8 +55,6 @@ public final class NumericDecisionTreeNode extends DecisionTreeNode
 	public final void addBranches(double split, String leftLabel,
 		DecisionTreeNode left, String rightLabel, DecisionTreeNode right) {
 
-		//left.setLabel(leftLabel);
-		//right.setLabel(rightLabel);
 		splitValue = split;
 		branchLabels.add(leftLabel);
 		children.add(left);
@@ -79,12 +73,11 @@ public final class NumericDecisionTreeNode extends DecisionTreeNode
 		the right child if the split value is greater than or equal to the
 		split value.
 
-		@param vt the VerticalTable with the data
+		@param vt the Table with the data
 		@param row the row of the table to evaluate
 		@return the result of evaluating the record
 	*/
-	public final Object evaluate(VerticalTable vt, int row) {
-
+	public final Object evaluate(Table vt, int row) {
 		if(isLeaf()) {
 			incrementOutputTally(label);
 			return label;

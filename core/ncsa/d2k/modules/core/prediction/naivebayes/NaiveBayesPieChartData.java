@@ -10,28 +10,28 @@ import java.io.Serializable;
    greatest, so calling getRatio(0) will return the smallest ratio, and
    so on.
 */
-class NaiveBayesPieChartData extends VerticalTable implements Serializable {
+final class NaiveBayesPieChartData extends VerticalTable implements Serializable {
 
    /** The total number of tallies in this pie */
-   int total;
+   private int total;
 
    /** The attribute name we represent */
-   String attributeName;
+   private String attributeName;
 
    /** The name of the pie */
-   String binName;
+   private String binName;
 
    /** The total of all the pies for this attribute */
-   int rowTotal;
+   private int rowTotal;
 
-   public static int CLASS = 0;
-   public static int TALLY = 1;
-   public static int RATIO = 2;
+   static final int CLASS = 0;
+   static final int TALLY = 1;
+   static final int RATIO = 2;
 
    /**
       Constructor
    */
-   public NaiveBayesPieChartData(String an, String bn, String []n, int[]t) {
+   NaiveBayesPieChartData(String an, String bn, String []n, int[]t) {
       total = 0;
       rowTotal = 0;
       attributeName = an;
@@ -77,7 +77,7 @@ class NaiveBayesPieChartData extends VerticalTable implements Serializable {
    /**
       Constructor only used when creating the evidence.
    */
-   public NaiveBayesPieChartData(String an, String bn, String []n, double[]r) {
+   NaiveBayesPieChartData(String an, String bn, String []n, double[]r) {
       total = 0;
       rowTotal = 0;
       attributeName = an;
@@ -122,8 +122,8 @@ class NaiveBayesPieChartData extends VerticalTable implements Serializable {
       }
    }
 
-   public void sortByColumn(int c) throws NotSupportedException {
-  	super.sortByColumn(c);
+   public final void sortByColumn(int c) throws NotSupportedException {
+  	    super.sortByColumn(c);
       	classLookup = new HashMap();
         int numRows = getNumRows();
       	for(int i = 0; i < numRows; i++) {
@@ -131,14 +131,14 @@ class NaiveBayesPieChartData extends VerticalTable implements Serializable {
       	}
    }
 
-   void printMe() {
+   final void printMe() {
       System.out.println("bn: "+binName+" "+total);
       print();
    }
 
-   HashMap classLookup;
+   private HashMap classLookup;
 
-   public double getClass(String c) {
+   final double getClass(String c) {
       Integer row = (Integer)classLookup.get(c);
       return getDouble(row.intValue(), RATIO);
    }
@@ -147,7 +147,7 @@ class NaiveBayesPieChartData extends VerticalTable implements Serializable {
       Get the total number of tallies in this pie
       @return the total number of tallies
    */
-   public int getTotal() {
+   final int getTotal() {
       return total;
    }
 
@@ -157,7 +157,7 @@ class NaiveBayesPieChartData extends VerticalTable implements Serializable {
       @param i the row
       @return The class that is in the ith row.
    */
-   public String getClassName(int i) {
+   final String getClassName(int i) {
       return getString(i, CLASS);
    }
 
@@ -166,7 +166,7 @@ class NaiveBayesPieChartData extends VerticalTable implements Serializable {
       @param i the row to look up
       @return the ith largest tally
    */
-   public int getTally(int i) {
+   final int getTally(int i) {
       return getInt(i, TALLY);
    }
 
@@ -175,7 +175,7 @@ class NaiveBayesPieChartData extends VerticalTable implements Serializable {
       @param i the row to look up
       @return the ith largest tally
    */
-   public double getRatio(int i) {
+   final double getRatio(int i) {
       return getDouble(i, RATIO);
    }
 
@@ -183,7 +183,7 @@ class NaiveBayesPieChartData extends VerticalTable implements Serializable {
       Get the attribute name
       @return the attribute that this pie represents
    */
-   public String getAttributeName() {
+   final String getAttributeName() {
       return attributeName;
    }
 
@@ -191,7 +191,7 @@ class NaiveBayesPieChartData extends VerticalTable implements Serializable {
       Get the name of the pie.
       @return the name of the bin that this pie represents
    */
-   public String getBinName() {
+   final String getBinName() {
       return binName;
    }
 
@@ -199,14 +199,14 @@ class NaiveBayesPieChartData extends VerticalTable implements Serializable {
       Get the total number of tallies for this attribute.
       @return the total number of tallies in this row
    */
-   public int getRowTotal() {
+   final int getRowTotal() {
       return rowTotal;
    }
 
    /**
       Set the total number of tallies for this attribute.
    */
-   public void setRowTotal(int i) {
+   final void setRowTotal(int i) {
       rowTotal = i;
    }
 }

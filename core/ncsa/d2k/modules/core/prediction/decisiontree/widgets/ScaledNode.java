@@ -13,7 +13,7 @@ import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
 	Scaled node used by navigator panel
 */
-public class ScaledNode {
+public final class ScaledNode {
 
 	static JFrame frame;
 

@@ -18,7 +18,7 @@ import ncsa.gui.*;
 	Displays a scaled view of decision tree from tree scroll pane
 	Draws a navigator that shows how much of tree is visible
 */
-public class NavigatorPanel extends JPanel {
+public final class NavigatorPanel extends JPanel {
 
 	public NavigatorPanel(ViewableDTModel model, TreeScrollPane scrollpane) {
 		Navigator navigator = new Navigator(model, scrollpane);

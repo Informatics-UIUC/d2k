@@ -67,7 +67,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
      */
     public String getModuleInfo () {
         return  "ScatterPlot3D is a three-dimensional visualization of " +
-                "VerticalTable data as a scatter plot.";
+                "Table data as a scatter plot.";
     }
 
     /**
@@ -75,7 +75,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
      * @return the input types
      */
     public String[] getInputTypes () {
-        String[] i =  { "ncsa.d2k.util.datatype.VerticalTable" };
+        String[] i =  { "ncsa.d2k.util.datatype.Table" };
         return  i;
     }
 
@@ -86,7 +86,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
      */
     public String getInputInfo (int index) {
         if (index == 0)
-            return  "The VerticalTable to be visualized.";
+            return  "The Table to be visualized.";
         else
             return  "ScatterPlot3D has no such input.";
     }
@@ -132,7 +132,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
         private ScatterPlot3DControl control;
 
         /** the table holding the data */
-        private VerticalTable table;
+        private Table table;
 
         /** the canvas area */
         private ScatterPlot3DCanvas canvas;
@@ -174,7 +174,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
          */
         public void setInput (Object o, int i) {
             if (i == 0) {
-                table = (VerticalTable)o;
+                table = (Table)o;
                 execute();
             }
         }

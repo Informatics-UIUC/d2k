@@ -15,7 +15,7 @@ public class FunctionPlotSmall extends Graph {
 	int smallspace = 1;
 	int largespace = 3;
 
-	public FunctionPlotSmall(VerticalTable Functiontable, DataSet[] set, GraphSettings settings) {
+	public FunctionPlotSmall(Table Functiontable, DataSet[] set, GraphSettings settings) {
 		super(Functiontable, set, settings);
 	}
 

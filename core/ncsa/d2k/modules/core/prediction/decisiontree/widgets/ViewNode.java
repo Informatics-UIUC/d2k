@@ -5,7 +5,6 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
 import javax.swing.*;
-//import ncsa.d2k.modules.compute.learning.modelgen.decisiontree.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
 /*
@@ -13,7 +12,7 @@ import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
 	Represents a decision tree node with a bar graph
 */
-public class ViewNode {
+public final class ViewNode {
 
 	static JFrame frame;
 

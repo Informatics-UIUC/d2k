@@ -19,7 +19,7 @@ public class PieChart extends Chart {
 		Create a new PieChart that normalizes the data.  Each item
 		will be represented as a fraction of 1.0
 	*/
-	public PieChart(VerticalTable vt, DataSet ds, GraphSettings gs,
+	public PieChart(Table vt, DataSet ds, GraphSettings gs,
 		boolean normalize) {
 		this(vt, ds, gs);
 
@@ -43,7 +43,7 @@ public class PieChart extends Chart {
 	/**
 		Create a new PieChart with the data already normalized.
 	*/
-	public PieChart(VerticalTable vt, DataSet ds, GraphSettings gs) {
+	public PieChart(Table vt, DataSet ds, GraphSettings gs) {
 		super(vt, ds, gs);
 
 		setBackground(Color.white);

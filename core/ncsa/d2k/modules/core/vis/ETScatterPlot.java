@@ -121,7 +121,7 @@ public class ETScatterPlot extends VisModule
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createSmallGraph(VerticalTable vt, DataSet[] d,
+	protected Graph createSmallGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
 		return new ScatterPlotSmall(vt, d, gs);
 	}
@@ -132,7 +132,7 @@ public class ETScatterPlot extends VisModule
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createGraph(VerticalTable vt, DataSet[] d,
+	protected Graph createGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
 		return new ScatterPlot(vt, d, gs);
 	}

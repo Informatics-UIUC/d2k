@@ -18,17 +18,21 @@ import ncsa.d2k.modules.core.prediction.decisiontree.widgets.*;
 /*
 	DecisionTreeVis
 */
-public class DecisionTreeVis extends ncsa.d2k.infrastructure.modules.VisModule {
+public final class DecisionTreeVis extends VisModule implements HasNames {
 
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "ViewableDTModel";
+			case 0: return "A ViewableDTModel.";
 			default: return "No such input";
 		}
 	}
 
+    public String getInputName(int index) {
+        return "DTModel";
+    }
+
 	public String[] getInputTypes() {
-		String[] types = {"java.lang.Object"};
+		String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel"};
 		return types;
 	}
 
@@ -38,14 +42,22 @@ public class DecisionTreeVis extends ncsa.d2k.infrastructure.modules.VisModule {
 		}
 	}
 
+    public String getOutputName(int index) {
+        return "";
+    }
+
 	public String[] getOutputTypes() {
 		String[] types = {		};
 		return types;
 	}
 
 	public String getModuleInfo() {
-		return "Draws a decision tree.";
+		return "Visualizes a decision tree.";
 	}
+
+    public String getModuleName() {
+        return "DTVis";
+    }
 
 	public void doit() throws Exception {
 	}

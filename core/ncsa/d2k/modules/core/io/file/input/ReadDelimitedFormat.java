@@ -8,7 +8,8 @@ import ncsa.d2k.util.datatype.*;
 /**
  * Read in a file with a single delimiter.
 */
-public class ReadDelimitedFormat extends InputModule implements Serializable {
+public class ReadDelimitedFormat extends InputModule
+    implements Serializable, HasNames, HasProperties {
 
 	protected static final String STRING_TYPE = "String";
 	protected static final String FLOAT_TYPE = "float";
@@ -148,19 +149,23 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	   @return A description of this module.
 	*/
 	public String getModuleInfo() {
-		String str = "Loads data that is in a delimited format "+
-                "from the input filename into a "+
-                "VerticleTable and outputs this VerticleTable. "+
-                "This is optimized for a file with a single character delimiter. "+
-                "This module has several properties. "+
-                "labelsRow indicates which row specifies attribute labels, if none specify '-l'. "+
-                "typesRow indicates which row specifies data types, if none specify '-1'. "+
-                "inoutRow indicates which row specifies the attributes to use "+
-                "as input and output, if none specify '-1'. " +
-                "useStringAndDouble indicates whether or not the system needs to determine data types. "+
-                "missingValue is the value to use for missing numeric values.";
-                return str;
+		String str = "Loads data that is in a delimited format ";
+        str += "from the input filename into a Table and outputs this Table. ";
+        str += "This is optimized for a file with a single character delimiter. ";
+        str += "This module has several properties. labelsRow indicates which ";
+        str += "row specifies attribute labels, if none specify '-l'. ";
+        str += "typesRow indicates which row specifies data types, if none ";
+        str += "specify '-1'.  inoutRow indicates which row specifies the ";
+        str += "attributes to use as input and output, if none specify '-1'. ";
+        str += "useStringAndDouble indicates whether or not the system needs ";
+        str += "to determine data types. missingValue is the value to use for ";
+        str += "missing numeric values.";
+        return str;
 	}
+
+    public String getModuleName() {
+        return "ReadDelimitedFormat";
+    }
 
 	/**
 	   Return a String array containing the datatypes the inputs to this
@@ -178,7 +183,7 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	   @return The datatypes of the outputs.
 	*/
 	public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String []out = {"ncsa.d2k.util.datatype.Table"};
 		return out;
 	}
 
@@ -194,6 +199,10 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 			return "No such input";
 	}
 
+    public String getInputName(int i) {
+        return "FileName";
+    }
+
 	/**
 	   Return the description of a specific output.
 	   @param i The index of the output.
@@ -201,10 +210,14 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	*/
 	public String getOutputInfo(int i) {
 		if(i == 0)
-			return "The VerticalTable";
+			return "The Table";
 		else
 			return "No such output";
 	}
+
+    public String getOutputName(int i) {
+        return "Table";
+    }
 
 	/**
 		Called when the itinerary begins execution.  Initialize

@@ -7,7 +7,6 @@ import java.util.*;
 import java.io.Serializable;
 
 import ncsa.d2k.modules.core.datatype.BinTree;
-//import ncsa.d2k.modules.dataprep.field.ChooseAttributes;
 
 /**
 	NaiveBayesModel performs all the necessary calculations for the
@@ -194,8 +193,8 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 			//String classLabel = null;
 			int classColumn = 0;
 
-			int [] ins = inputFeatures;//table.getInputFeatures();
-			int [] outs = outputFeatures;//table.getOutputFeatures();
+			int [] ins = inputFeatures;
+			int [] outs = outputFeatures;
 
 			classColumn = outs[0];
 			for(int i = 0; i < ins.length; i++) {
@@ -244,39 +243,12 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 								// call add evidence with the attribute
 								//and bin name
 								if(bn != null){
-                                    /*for(int j=0; j<cn.length; j++)
-                                    multRatio[j]=calcTree.getRatio(cn[j],table.getColumnLabel(ins[col]),bn);
-                                    for(int j=0; j<cn.length; j++)
-                                    currentEv[j] *= multRatio[j];
-                                    }*/
-
-                                	/*EvidenceItem ei = new EvidenceItem(
-										table.getColumnLabel(ins[col]), bn);
-                                	evidenceList.add(ei);
-									*/
-
-									/*for(int i = 0; i < cn.length; i++)
-										multRatio[i] = calcTree.getRatio(cn[i],
-											table.getColumnLabel(ins[col]), bn);
-
-									*/
 									for(int i = 0; i < cn.length; i++)
 										currentEv[i] *= calcTree.getRatio(cn[i],
 											table.getColumnLabel(ins[col]), bn);
 						  		}
                             }
                          }
-
-						//currentEv = computeEvidence();
-                        /*for(int z = 0; z < currentEv.length; z++)
-                        	currentEv[z] = initEv[z];
-                            Iterator i = evidenceList.iterator();
-			                while(i.hasNext()) {
-				            	EvidenceItem ei = (EvidenceItem)i.next();
-				            	for(int j = 0; j < ei.multRatio.length; j++)
-					        		currentEv[j] *= ei.multRatio[j];
-                        	}
-							*/
 
                         // largest chunk of pie is the prediction
 						int id = getIndexOfMax(currentEv);
@@ -304,7 +276,6 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 
 			// get the ranked attributes.
 			String []tempAttributes = sortPredictions(predictions);
-			//rankedAttributes = sortPredictions(predictions);
 
 			// now drop the ones from the toDrop list
 			rankedAttributes = new String[tempAttributes.length-toDrop.size()];
@@ -321,24 +292,11 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			System.out.println("Couldn't rank");
+			System.out.println("Couldn't rank.");
 		}
 	}
 
-	/**
-		Returns true if the column should be ommited, false otherwise
-		@param name the label of the column
-	*/
-	/*boolean omitColumn(String name) {
-		String type = (String)types.get(name);
-		if(type == null)
-			return false;
-		if(type.trim().equals(ChooseAttributes.OMIT))
-			return true;
-		return false;
-	}*/
-
-	final private class PredictionTally {
+	private final class PredictionTally {
 		String attributeName;
 		int tally;
 
@@ -352,7 +310,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		Sort the predictions lookup table.  The attribute with the least
 		number of correct predictions goes first.
 	*/
-	final private String[] sortPredictions(HashMap pred) {
+	private final String[] sortPredictions(HashMap pred) {
 		Object[] preds = pred.values().toArray();
 		List list = Arrays.asList(preds);
 		// sort the prediction tallys
@@ -368,7 +326,6 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		while(i.hasNext()) {
 			PredictionTally pt = (PredictionTally)i.next();
 			names[idx] = pt.attributeName;
-			//System.out.println( ((double)pt.tally)/table.getNumRows());
 			predictionValues.put(pt.attributeName,
 				new Double((1.0 - ((double)pt.tally)/numRows) * 100));
 			idx++;
@@ -377,7 +334,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 	}
 
 
-	final private class PredictionComparator implements Comparator {
+	private final class PredictionComparator implements Comparator {
 		public int compare(Object o1, Object o2) {
 			PredictionTally p1 = (PredictionTally)o1;
 			PredictionTally p2 = (PredictionTally)o2;
@@ -389,7 +346,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		}
 	}
 
-	final public double getPredictionValue(String an) {
+	final double getPredictionValue(String an) {
 		Double d = (Double)predictionValues.get(an);
 		if(d != null)
 			return d.doubleValue();
@@ -426,14 +383,14 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
  	/**
 		Sort charts from largest to smallest
 	*/
-  	final NaiveBayesPieChartData[] sortPieCharts(NaiveBayesPieChartData []A) {
+  	private final NaiveBayesPieChartData[] sortPieCharts(NaiveBayesPieChartData []A) {
 		List list = Arrays.asList(A);
 		Collections.sort(list, new PieChartComparator());
 		Collections.reverse(list);
 		return (NaiveBayesPieChartData[])list.toArray();
 	}
 
- 	final private class PieChartComparator implements Comparator {
+ 	private final class PieChartComparator implements Comparator {
 		public int compare(Object o1, Object o2) {
 			NaiveBayesPieChartData p1 = (NaiveBayesPieChartData)o1;
 			NaiveBayesPieChartData p2 = (NaiveBayesPieChartData)o2;
@@ -446,7 +403,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		}
 	}
 
-  	final NaiveBayesPieChartData[] sortPieChartsAlpha(NaiveBayesPieChartData []A) {
+  	private final NaiveBayesPieChartData[] sortPieChartsAlpha(NaiveBayesPieChartData []A) {
 		List list = Arrays.asList(A);
 		Collections.sort(list, new PieChartAlphaComparator());
 		//Collections.reverse(list);
@@ -478,7 +435,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
        @return The name of this module.
     */
     public String getModuleName() {
-		return "nbmdl";
+		return "NBModel";
     }
 
     /**
@@ -552,8 +509,6 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 	*/
 	public void doit() {
 		VerticalTable vt = (VerticalTable)pullInput(0);
-		/*VerticalTable result = (VerticalTable)predict(vt);
-		*/
 		PredictionTable result;
 
 		if(vt instanceof ExampleTable)
@@ -651,7 +606,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 			}
 			clearEvidence();
 		}
-		System.out.print("number of correct predictions: "+numCorrect);
+		System.out.print("Number of correct predictions: "+numCorrect);
 		System.out.println(" out of: "+pt.getNumRows());
 
 		return pt;
@@ -672,7 +627,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		@return the attribute names, in ranked order
 	*/
 	public final String []getAttributeNames() {
-		return rankedAttributes;//binTree.getAttributeNames();
+		return rankedAttributes;
 	}
 
 	/**
@@ -680,8 +635,6 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		@return the column number
 	*/
 	public final String getClassColumn() {
-		//int [] outs = table.getOutputFeatures();
-		//return table.getColumnLabel(outputFeatures[0]);
 		return outputColumnNames[0];
 	}
 
@@ -759,7 +712,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 	/**
 		Re-compute the current evidence.
 	*/
-	final double[] computeEvidence() {
+	private final double[] computeEvidence() {
 		double []currentEv = new double[initEv.length];
 
 		// set all values in currentEv to be initEv
@@ -836,7 +789,6 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		BinTree.
 	*/
 	private final class CalcTree extends HashMap implements Serializable {
-
 		CalcTree(BinTree bt) {
 			String []cn = bt.getClassNames();
 			String []an = bt.getAttributeNames();

@@ -14,7 +14,7 @@ public class GradientColorScatterPlotSmall extends GradientColorScatterPlot {
 	 *	@param sets
 	 *	@param settings
 	 */
-	public GradientColorScatterPlotSmall(VerticalTable table,
+	public GradientColorScatterPlotSmall(Table table,
 		DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 		smallspace = 1;

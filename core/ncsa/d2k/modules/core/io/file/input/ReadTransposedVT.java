@@ -15,7 +15,7 @@ import ncsa.d2k.util.datatype.*;
 	@author Peter Groves
 */
 public class ReadTransposedVT extends ReadDelimitedFormat
-			implements HasNames, Serializable {
+			implements Serializable {
 
 	/**the column that contains the types of the VT columns*/
 	int typesColumn= 1;
@@ -277,30 +277,6 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 	*/
 	public String getModuleName() {
 		return "ReadTransposedVT";
-	}
-
-	/**
-	   Return the name of a specific output.
-	   @param i The index of the output.
-	   @return The name of the output
-	*/
-	public String getOutputName(int i) {
-		if(i == 0)
-			return "table";
-		else
-			return "No such output";
-	}
-
-	/**
-	   Return the name of a specific output.
-	   @param i The index of the output.
-	   @return The name of the output
-	*/
-	public String getInputName(int i) {
-		if(i == 0)
-			return "FileName";
-		else
-			return "No such output";
 	}
 
     /**

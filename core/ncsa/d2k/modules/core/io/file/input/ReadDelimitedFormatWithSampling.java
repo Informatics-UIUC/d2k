@@ -15,7 +15,7 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 	   @return A description of this module.
 	*/
 	public String getModuleInfo() {
-		String s = "Optimized for a file with a single delimiter.";
+		String s = super.getModuleInfo();
 		s += " Allows a sample of the file to be read in.  The ";
 		s += "value of N determines the number of rows in the table. ";
 		s += "If the useFirst property is set, only the first N rows ";
@@ -130,10 +130,10 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 			for(int i = 0; i < cols.length; i++) {
 				if(typesList != null) {
 					String type = new String((char[])typesList.get(i));
-					cols[i] = createColumn(type, /*numRows*/N);
+					cols[i] = createColumn(type, N);
 				}
 				else
-					cols[i] = new StringColumn(/*numRows*/N);
+					cols[i] = new StringColumn(N);
 
 				if(labelsList != null)
 					cols[i].setLabel(new String((char[])labelsList.get(i)));

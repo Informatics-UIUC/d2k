@@ -9,7 +9,7 @@ import ncsa.d2k.util.datatype.*;
 
 /**
 	A simple ConfusionMatrix.  Implemented as a JTable inside a JScrollPane.
-	This class will calculate the confusion matrix given a VerticalTable,
+	This class will calculate the confusion matrix given a Table,
 	the index of the output column and the index of its associated
 	prediction column.  ConfusionMatrix can also be used as a simple
 	table of numbers when the appropriate constructor is used.
@@ -41,11 +41,11 @@ public class ConfusionMatrix extends JScrollPane {
 
 	/**
 		Create a new ConfusionMatrix
-		@param vt the VerticalTable with the outputs and predictions
+		@param vt the Table with the outputs and predictions
 		@param o the index of the output column
 		@param p the index of the prediction column
 	*/
-	public ConfusionMatrix(VerticalTable vt, int o, int p) {
+	public ConfusionMatrix(Table vt, int o, int p) {
 		super();
 		int numRows = vt.getNumRows();
 

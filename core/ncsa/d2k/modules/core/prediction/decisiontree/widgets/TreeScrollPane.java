@@ -17,7 +17,7 @@ import ncsa.d2k.modules.core.prediction.decisiontree.widgets.*;
 
 	Draws the decision tree
 */
-public class TreeScrollPane extends JScrollPane {
+public final class TreeScrollPane extends JScrollPane {
 
 	JViewport viewport;
 	TreePanel treepanel;

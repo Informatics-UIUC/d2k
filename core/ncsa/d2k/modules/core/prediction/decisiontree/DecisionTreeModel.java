@@ -10,19 +10,18 @@ import java.util.Iterator;
 	Encapsulates a decision tree.  Takes an ExampleTable as input
 	and uses the decision tree to predict the outcome for each row
 	in the data set.
-	TODO: change to PredictionTable
 */
 public class DecisionTreeModel extends PredictionModelModule
-	implements Serializable, ViewableDTModel {
+	implements Serializable, ViewableDTModel, HasNames {
 
 	/** The root of the decision tree */
-	DecisionTreeNode root;
+	private DecisionTreeNode root;
 	/** The table that is passed to the tree to perform predictions */
-	transient ExampleTable table;
+	private transient ExampleTable table;
 	/** The unique values in the output column of the table */
-	String[] uniqueOutputs;
+	private String[] uniqueOutputs;
 	/** The number of examples in the data set */
-	int numExamples;
+	private int numExamples;
 
 	private int[] inputFeatures;
 	private int[] outputFeatures;
@@ -52,13 +51,16 @@ public class DecisionTreeModel extends PredictionModelModule
 			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
 	}
 
-
 	public String getModuleInfo() {
 		String s = "Encapsulates a decision tree.  Takes an ";
 		s += "ExampleTable as input and uses the decision tree to ";
 		s += "predict the outcome for each row in the data set.";
 		return s;
 	}
+
+    public String getModuleName() {
+        return "DTModel";
+    }
 
 	public String[] getInputTypes() {
 		String[] in = {"ncsa.d2k.util.datatype.ExampleTable"};
@@ -67,7 +69,8 @@ public class DecisionTreeModel extends PredictionModelModule
 
 	// change to prediction table
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.util.datatype.PredictionTable"};
+		String[] out = {"ncsa.d2k.util.datatype.PredictionTable",
+            "ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel"};
 		return out;
 	}
 
@@ -75,9 +78,23 @@ public class DecisionTreeModel extends PredictionModelModule
 		return "The data set to predict the outcomes for.";
 	}
 
+    public String getInputName(int i) {
+        return "Dataset";
+    }
+
 	public String getOutputInfo(int i) {
-		return "The original data set with an extra column of predictions.";
+        if(i == 0)
+		    return "The original data set with an extra column of predictions.";
+        else
+            return "A reference to this model.";
 	}
+
+    public String getOutputName(int i) {
+        if(i == 0)
+            return "Predictions";
+        else
+            return "DTModel";
+    }
 
 	public int getTrainingSetSize() {
 		return trainingSetSize;
@@ -106,6 +123,7 @@ public class DecisionTreeModel extends PredictionModelModule
 		ExampleTable et = (ExampleTable)pullInput(0);
 		PredictionTable retVal = predict(et);
 		pushOutput(retVal, 0);
+        pushOutput(this, 1);
 	}
 
 	/**
@@ -199,7 +217,4 @@ public class DecisionTreeModel extends PredictionModelModule
 	public ViewableDTNode getViewableRoot() {
 		return root;
 	}
-
-
-
 }

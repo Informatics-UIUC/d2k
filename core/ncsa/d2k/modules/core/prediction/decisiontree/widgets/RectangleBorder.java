@@ -10,7 +10,7 @@ import javax.swing.border.*;
 
 	Border for navigator panel and brush panel
 */
-public class RectangleBorder extends AbstractBorder {
+public final class RectangleBorder extends AbstractBorder {
 
 	String title;
 

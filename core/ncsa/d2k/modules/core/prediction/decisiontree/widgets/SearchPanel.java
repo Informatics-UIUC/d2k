@@ -9,7 +9,7 @@ import ncsa.gui.*;
 /**
 	Search interface
 */
-public class SearchPanel extends JPanel implements ActionListener {
+public final class SearchPanel extends JPanel implements ActionListener {
 	int searchsize = 3;
 
 	JScrollPane attributesscroll, classificationsscroll;

@@ -15,7 +15,7 @@ import ncsa.d2k.modules.core.vis.*;
 public class ScatterPlotUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane {
 	ScatterPlot2D module;
 
-	VerticalTable table;
+	Table table;
 
 	public void initView(ViewModule viewmodule) {
 		module = (ScatterPlot2D) viewmodule;
@@ -23,7 +23,7 @@ public class ScatterPlotUserPane extends ncsa.d2k.controller.userviews.swing.JUs
 	public Module getModule () { return module; }
 
 	public void setInput(Object object, int index) {
-		table = (VerticalTable) object;
+		table = (Table) object;
 		buildView();
 	}
 
