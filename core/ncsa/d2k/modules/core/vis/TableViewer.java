@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.vis;
 
 import ncsa.d2k.modules.core.vis.widgets.TableMatrix;
-import ncsa.d2k.modules.core.io.file.output.WriteVTToFile;
+import ncsa.d2k.modules.core.io.file.output.WriteTableToFile;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.UserView;
 import ncsa.d2k.controller.userviews.swing.JUserPane;
@@ -19,7 +19,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
    Display the contents of a VerticalTable.
    @author David Clutter
 */
-public class VTViewer extends UIModule implements HasNames {
+public class TableViewer extends UIModule implements HasNames {
 
 	/**
 		Return a description of the function of this module.
@@ -134,9 +134,9 @@ public class VTViewer extends UIModule implements HasNames {
     public class TableView extends JUserPane implements ActionListener{
 		TableMatrix matrix;
 		/** the table with data */
-		protected TableImpl table = null;
+		protected Table table = null;
 		/** a reference to our parent module */
-		protected VTViewer parent;
+		protected TableViewer parent;
 		/** ok button */
 		protected JButton ok;
 		/** cancel button */
@@ -150,7 +150,7 @@ public class VTViewer extends UIModule implements HasNames {
 			@param mod The VerticalTableViewer module that owns us
 		*/
 		public void initView(ViewModule mod) {
-			parent = (VTViewer)mod;
+			parent = (TableViewer)mod;
             menuBar = new JMenuBar();
 			JMenu fileMenu = new JMenu("File");
 			print = new JMenuItem("Save...");
@@ -243,7 +243,7 @@ public class VTViewer extends UIModule implements HasNames {
 
 				// write the datatypes.
 				for(int i = 0; i < table.getNumColumns(); i++) {
-					String s = WriteVTToFile.getDataType(table.getColumn(i));
+					String s = WriteTableToFile.getDataType(table.getColumnType(i));
 					fw.write(s, 0, s.length());
 					if(i != (table.getNumColumns() - 1))
 						fw.write(delimiter.toCharArray(), 0, delimiter.length());

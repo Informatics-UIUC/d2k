@@ -19,7 +19,7 @@ public class TableEditorModel extends TableViewerModel {
 		@param t the table to display
 		@param b an array of combo boxes to display in the first row
 	*/
-	public TableEditorModel(Table t, JComboBox[] b) {
+	public TableEditorModel(MutableTable t, JComboBox[] b) {
 		super(t);
 		dataTypes = b;
 	}
@@ -73,8 +73,7 @@ public class TableEditorModel extends TableViewerModel {
 		if(row == 0)
 			return;
 		try {
-			if(table instanceof MutableTable)
-				((MutableTable)table).setString(value.toString(), row-1, col-1);
+			((MutableTable)table).setString(value.toString(), row-1, col-1);
 		}
 		catch(Exception e) {
 			ErrorDialog.showDialog("Could not set the value at "+
