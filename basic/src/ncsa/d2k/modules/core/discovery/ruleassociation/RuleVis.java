@@ -1035,6 +1035,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 
 		public void setInput(Object o, int index) {
 			if (index == 0)
+            removeAll();
 				ruleTable = (RuleTable)o;
                                 // Added call to cleanup() to remove items
                                 // from the RuleTable that are not used in any rules
