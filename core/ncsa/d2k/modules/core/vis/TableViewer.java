@@ -84,7 +84,7 @@ public class TableViewer extends UIModule {
       sb.append("It will not work properly if it receives multiple inputs per run. ");
       sb.append("If you accidently direct multiple inputs to the module, it may be necessary ");
       sb.append("to resize the Table Viewer Window before the table contents and <i>Abort</i> ");
-      sb.append("and <i>Done</i> buttons are visible and/or operational.   Until you reize it may ");
+      sb.append("and <i>Done</i> buttons are visible and/or operational.   Until you resize, it may ");
       sb.append("seem that you have no way to stop the itinerary and correct the problem. ");
 
       sb.append("</p><p>Data Handling: ");
