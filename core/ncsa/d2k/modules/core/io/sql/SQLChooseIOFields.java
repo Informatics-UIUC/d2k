@@ -164,8 +164,8 @@ public class SQLChooseIOFields extends UIModule {
       tableBrowseBtn.addActionListener(this);
 
 
-      inputList=new JList(/*labels*/);
-      outputList=new JList(/*labels*/);
+      inputList=new JList();
+      outputList=new JList();
 
       inputLabel=new JLabel("Input Columns");
       inputLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -320,10 +320,18 @@ public class SQLChooseIOFields extends UIModule {
     int inputIndex = 0;
     int outputIndex = 0;
     for (int colIdx = 0; colIdx < colNames.size(); colIdx++) {
+      if (isInList(colIdx, inputFeatures) && isInList(colIdx, outputFeatures)) {
+        JOptionPane.showMessageDialog(msgBoard,
+                  "A column can be either an input or an output, but not both.", "Error",
+                  JOptionPane.ERROR_MESSAGE);
+        return null;
+      }
       if (isInList(colIdx, inputFeatures) || isInList(colIdx, outputFeatures)) {
         cols[selectedColumn] = new ObjectColumn(1);
         cols[selectedColumn].setLabel(colNames.get(colIdx).toString());
-        if (colTypes.get(colIdx).toString().equals("NUMBER")) {
+        // data type may be in uppercase or lowercase
+        if (colTypes.get(colIdx).toString().equals("NUMBER") ||
+            colTypes.get(colIdx).toString().equals("number")) {
           cols[selectedColumn].setIsScalar(true);
           // cannot choose numeric column as the output column
           if (outputFeatures[0] == colIdx) {
