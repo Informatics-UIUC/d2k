@@ -112,12 +112,19 @@ public class SQLAutoBin extends AutoBin {
 				+ "Naive Bayesian classification model. "
 				+ "<p>Detailed Description: Given a database connection, a database table name "
 				+ "a query condition, and a metadata ExampleTable containing the names of columns "
-				+ "define the bins for each scalar input column.  Nominal input columns will have a bin "
-				+ "defined for each unique value in the column."
+				+ "define the bins for each scalar input column.  "
 				+ "<p>Data Type Restrictions: This module does not modify the input data."
+                                + "<P>Data Handling: When binning Uniformly, "
+                                    + "the number of bins is determined by '<i>Number of Bins</i>' property, "
+                                    + "and the boundaries of the bins are set so that they divide evenly over the range "
+                                    + "of the binned column. "
+                                    + " When binning by weight, '<i>Number of Items per Bin</I>' sets the size of each bin. "
+                                    + "The values are then binned so that in each bin there is the same number of items. ";
+
+                                /*
 				+ "<p>Data Handling: When binning scalar columns by the number of bins, "
 				+ "the maximum and minimum values of each column must be found.  When "
-				+ "binning scalar columns by weight, group by statements are used.";
+				+ "binning scalar columns by weight, group by statements are used.";*/
 		return s;
 	}
 

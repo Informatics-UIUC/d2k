@@ -83,14 +83,14 @@ public class BinAttributes extends HeadlessUIModule {
 	sb.append( "Table should be divided into bins. ");
 
 	sb.append( "</p><p> Numeric data can be binned in four ways:<br>" );
-	sb.append( "<U>Uniform range:</U><br>" );
+	sb.append( "<BR><U>Uniform range:</U><br>" );
 	sb.append( "Enter a positive integer value for the number of bins. The module will divide the ");
 	sb.append( "binning range evenly over these bins. <br> ");
-	sb.append( "<U>Specified range:</U><br> ");
+	sb.append( "<BR><U>Specified range:</U><br> ");
 	sb.append( "Enter a comma-separated sequence of integer or floating-point values for the endpoints of each bin. <br> ");
-	sb.append( "<U>Bin Interval:</u><br> ");
+	sb.append( "<BR><U>Bin Interval:</u><br> ");
 	sb.append( "Enter an integer or floating-point value for the width of each bin.<br> ");
-	sb.append( "<u>Uniform Weight:</U><br> ");
+	sb.append( "<BR><u>Uniform Weight:</U><br> ");
 	sb.append( "Enter a positive integer value for even binning with that number in each bin. ");
 
 	sb.append( "</P><P>The user may also bin nominal data. ");
@@ -204,7 +204,7 @@ public class BinAttributes extends HeadlessUIModule {
 	PropertyDescription[] pds = new PropertyDescription[2];
         pds[0] = this.supressDescription;
         pds[1] = new PropertyDescription("newColumn", "Create In New Column",
-            "Set this property to true if you wish the binned columns to be created in new columns");
+            "Set this property to true if you wish the binned columns to be created in new columns (applied only when 'Supress User Interface Display' is set to true)");
 	return pds;
   }
 
@@ -1620,3 +1620,9 @@ class TableBinCounts implements BinCounts {
 //				 output port name; updated descriptions; added getPropertiesDescriptions
 //				 so no properties a user can't edit are shown.
 //
+
+/**
+ * 12-02-03 vered started qa.
+ *          modules does not bin missing scalar values into "UNKNOWN" bin. [bug 140]
+ *          modules allows overlapping binning of same column. [bug 142]
+ */

@@ -454,10 +454,13 @@ public class SQLBinAttributes extends HeadlessUIModule {
             return(val);
           }
           catch (Exception e) {
+
+
             JOptionPane.showMessageDialog(msgBoard,
                   e.getMessage(), "Error",
                   JOptionPane.ERROR_MESSAGE);
             System.out.println("Error occoured in getTotalRows.");
+
             return 0;
           }
         }

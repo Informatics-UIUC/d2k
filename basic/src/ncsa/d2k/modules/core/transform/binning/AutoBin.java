@@ -36,7 +36,7 @@ public class AutoBin extends AutoBinOPT {
 
 	private int binWeight = 1;
 	public void setBinWeight(int i) throws PropertyVetoException {
-		if (i < 1)
+		if ( i < 1)
 			throw new PropertyVetoException(
 				"Number of items per bin must be a positive integer.",
 				null);
@@ -80,13 +80,10 @@ public class AutoBin extends AutoBinOPT {
 			"<p>Overview: Automatically discretize scalar data for the "
 				+ "Naive Bayesian classification model."
 				+ "<p>Detailed Description: Given a table of Examples, define the bins for each "
-				+ "scalar input column.  </P><P><u>Nominal Columns</u>:<BR>Nominal input columns "
-				+ "will have a bin defined "
-				+ "for each unique value in the column."
-				+ "<p><u>Scalar Columns</u>:<br>When binning Uniformly, "
+				+ "scalar input column.  </P><P>When binning Uniformly, "
 				+ "the number of bins is determined by '<i>Number of Bins</i>' property, "
 				+ "and the boundaries of the bins are set so that they divide evenly over the range "
-				+ "of the binned column.<br>"
+				+ "of the binned column.</p><P>"
 				+ " When binning by weight, '<i>Number of Items per Bin</I>' sets the size of each bin. "
 				+ "The values are then binned so that in each bin there is the same number of items. "
 				+ "For more details see description of property '<i>Number of Items per Bin</I>'."
