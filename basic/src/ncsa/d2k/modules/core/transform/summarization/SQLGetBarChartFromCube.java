@@ -84,11 +84,13 @@ public class SQLGetBarChartFromCube extends UIModule {
 
   public String getModuleInfo () {
     String s = "<p> Overview: ";
-    s += "This module displays bar charts for data in a cube table. </p>";
+    s += "This module prepares cube table data for display in one or more bar chart visualizations. </p>";
     s += "<p> Detailed Description: ";
     s += "This module first makes a connection to a database and retrieves the ";
-    s += "data from user-selected columns in a specified cube table, then displays the statistic data ";
-    s += "using bar charts. A bar chart is generated for each selected column. ";
+    s += "data for the user-selected attributes in the specified cube table. ";
+    s += "It formats the statistical data and makes it available on the output port for use by ";
+    s += "a 2D Bar Chart module which generates the actual visualizations. ";
+    s += "A bar chart is generated for each selected attribute. ";
     s += "The displayed data not only can be labeled in predefined ";
     s += "codes, but also in detailed descriptions by choosing the 'Use Code Book' ";
     s += "option and specifying a code book for use. ";
@@ -221,9 +223,9 @@ public class SQLGetBarChartFromCube extends UIModule {
       possibleFields.setModel(possibleModel);
 
       JScrollPane jsp = new JScrollPane(possibleFields);
-      jsp.setColumnHeaderView(new JLabel("Possible Fields"));
+      jsp.setColumnHeaderView(new JLabel("Possible Attributes"));
       JScrollPane jsp1 = new JScrollPane(selectedFields);
-      jsp1.setColumnHeaderView(new JLabel("Selected Fields"));
+      jsp1.setColumnHeaderView(new JLabel("Selected Attributes"));
 
       featureArea.add (b1, BorderLayout.CENTER);
       featureArea.add (jsp, BorderLayout.WEST);
@@ -312,9 +314,9 @@ public class SQLGetBarChartFromCube extends UIModule {
         }
         else if (retVal.length <= 0) { // The user has not chosen any features
           JOptionPane.showMessageDialog(msgBoard,
-          "You must select some features.", "Error",
+          "You must select some attributes.", "Error",
           JOptionPane.ERROR_MESSAGE);
-          System.out.println("There are no features selected.");
+          System.out.println("There are no attributes selected.");
         }
       }
       else if (src == cancelBtn) {
