@@ -105,8 +105,8 @@ public class SQLHTree extends ComputeModule
   public String getInputInfo (int i) {
     switch(i) {
       case 0: return "JDBC data source to make database connection.";
-      case 1: return "Field Names";
-      case 2: return "Table Name";
+      case 1: return "Table Name";
+      case 2: return "Field Names";
       case 3: return "Query Condition (Optional)";
       case 4: return "Bin Transform (Optional)";
       default: return "No such input";
@@ -120,7 +120,7 @@ public class SQLHTree extends ComputeModule
       s += "This module takes 5 inputs: a database connection, a database table ";
       s += "name, a list of selected attributes, a user specified query condition, ";
       s += "and a binning transform schema. The last two inputs are optional. ";
-      s += "The input <i>Query Condition</i> is used to subsetting or filtering ";
+      s += "The input <i>Query Condition</i> is used to subset or filter ";
       s += "your data set. If you are only interesting in the subset of your data, ";
       s += "you should link the module <i>SQLFilterConstruction</i> to this input port. ";
       s += "The input <i>Bin Transform</i> is used to group values. For the ";
@@ -130,7 +130,7 @@ public class SQLHTree extends ComputeModule
       s += "this input port. </p>";
       s += "<p>This module first makes a connection to a database, retrieves the ";
       s += "data from a specified database table for the specified attributes, ";
-      s += "and then computes a data cube. ";
+      s += "and then computes a data cube using the H-Tree algorithm. ";
       s += "You can control the cube construction by two parameters: <i>maximum ";
       s += "rule size</i> and <i>minimum support</i>'. The <i>maximum rule size</i> is the ";
       s += "maximum number of items in a rule. To avoid the exponential computation, ";
@@ -140,6 +140,9 @@ public class SQLHTree extends ComputeModule
       s += "By setting <i>minimum support</i> lower, you would get more trivial rules. ";
       s += "However, by setting <i>minimum support</i> too high, you might loose some ";
       s += "important rules. ";
+      s += "<p>References: ";
+      s += "<i>Efficient Computation of Iceberg Cubes with Complex Measures </i>";
+      s += "by J Han et al. </p>";
       s += "<p> Restrictions: ";
       s += "We currently only support Oracle and SQLServer databases. Due to the intensive ";
       s += "computation involved in constructing a data cube, the memory and CPU requirements ";
@@ -162,9 +165,9 @@ public class SQLHTree extends ComputeModule
             case 0:
                 return "Database Connection";
             case 1:
-                return "Selected Fields";
-            case 2:
                 return "Selected Table";
+            case 2:
+                  return "Selected Attributes";
             case 3:
                 return "Query Condition (Optional)";
             case 4:
@@ -219,8 +222,8 @@ public class SQLHTree extends ComputeModule
 
   public String[] getInputTypes () {
     String [] in =  {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-                     "[Ljava.lang.String;",
                      "java.lang.String",
+                     "[Ljava.lang.String;",
                      "java.lang.String",
                      "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"};
     return in;
@@ -267,8 +270,8 @@ public class SQLHTree extends ComputeModule
   public void doit() {
     boolean rightInput = true;
     cw = (ConnectionWrapper)pullInput(0);
-    fieldNames = (String[])pullInput(1);
-    tableName = ((String)pullInput(2)).toUpperCase();
+    tableName = ((String)pullInput(1)).toUpperCase();
+    fieldNames = (String[])pullInput(2);
     if (tableName.indexOf("_CUBE") >= 0) {
       System.out.println("The user has selected a cube to build a new cube.");
       rightInput = false;
