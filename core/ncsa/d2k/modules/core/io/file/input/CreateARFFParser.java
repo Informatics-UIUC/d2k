@@ -4,7 +4,16 @@ package ncsa.d2k.modules.core.io.file.input;
 import ncsa.d2k.core.modules.*;
 import java.io.*;
 
-public class ReadARFFFile extends InputModule {
+/**
+ * Create an ARFF File Parser for the specified file.
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2002</p>
+ * <p>Company: </p>
+ * @author unascribed
+ * @version 1.0
+ */
+public class CreateARFFParser extends InputModule {
 
     public String[] getInputTypes() {
         String[] in = {"java.lang.String"};
@@ -15,9 +24,17 @@ public class ReadARFFFile extends InputModule {
         return "The absolute path to an ARFF file.";
     }
 
+    public String getInputName(int i) {
+        return "File Name";
+    }
+
     public String[] getOutputTypes() {
         String[] out = {"ncsa.d2k.modules.core.io.file.input.ARFFFileParser"};
         return out;
+    }
+
+    public String getOutputName(int i) {
+        return "File Parser";
     }
 
     public String getOutputInfo(int i) {
@@ -36,11 +53,15 @@ public class ReadARFFFile extends InputModule {
         return s.toString();
     }
 
+    public String getModuleName() {
+        return "Create ARFF File Parser";
+    }
+
     public void doit() throws Exception {
         String fn = (String)pullInput(0);
         File file = new File(fn);
         if(!file.exists())
-            throw new FileNotFoundException(file+" did not exist.");
+            throw new FileNotFoundException(getAlias()+" "+file+" did not exist.");
         ARFFFileParser arff = new ARFFFileParser(file);
         pushOutput(arff, 0);
     }

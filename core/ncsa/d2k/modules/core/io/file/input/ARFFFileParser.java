@@ -194,7 +194,9 @@ public class ARFFFileParser extends DelimitedFileParser {
 
     /**
      * Skip to a specific row in the file.  Rows are lines of data in the file,
-     * not including the optional meta data rows.
+     * not including the optional meta data rows.  When a comment is found, the
+     * datarow index is incremented to account for it.  This will fail if the
+     * file is not accessed in a serial fashion.
      * @param rowNum the row number to skip to
      */
     protected String skipToRow(int rowNum) {
