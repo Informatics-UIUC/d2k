@@ -6,7 +6,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 
-public class ParamSpaceGenerator extends AbstractParamSpaceGenerator {
+public class AutoBinParamSpaceGenerator extends AbstractParamSpaceGenerator {
 
   public static final String BIN_METHOD = "Binning Method";
   public static final String ITEMS_PER_BIN = "Number of items per bin";
@@ -36,7 +36,7 @@ public class ParamSpaceGenerator extends AbstractParamSpaceGenerator {
    * @return a name
    */
   public String getModuleName() {
-    return "Naive Bayes Param Space Generator";
+    return "Auto Bin Param Space Generator";
   }
 
   /**
@@ -44,22 +44,22 @@ public class ParamSpaceGenerator extends AbstractParamSpaceGenerator {
    * @return a list of the property descriptions.
    */
   public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] pds = new PropertyDescription[3];
-    pds[0] = new PropertyDescription(BIN_METHOD, "Discretization Method",
-        "The method to use for discretization.  Select 0 to create bins" +
-        " by weight.  This will create bins with an equal number of items in "+
-        "each slot.  Select 1 to discretize by specifying the number of bins. "+
-        "This will give equally spaced bins between the minimum and maximum for "+
-        "each scalar column.");
-    pds[1] = new PropertyDescription(ITEMS_PER_BIN, "Number of Items per Bin",
-        "When binning by weight, this is the number of items" +
-        " that will go in each bin.  The last bin may have less than "+
-        "<i>weight</i> values, however.");
-    pds[2] = new PropertyDescription(NUMBER_OF_BINS, "Number of Bins",
-                                     "Define the number of bins absolutely. "+
-                                     "This will give equally spaced bins between "+
-                                     "the minimum and maximum for each scalar "+
-                                     "column.");
+      PropertyDescription[] pds = new PropertyDescription[3];
+      pds[0] = new PropertyDescription(BIN_METHOD, "Discretization Method",
+				       "The method to use for discretization.  Select 1 to create bins" +
+				       " by weight.  This will create bins with an equal number of items in "+
+				       "each slot.  Select 0 to discretize by specifying the number of bins. "+
+				       "This will give equally spaced bins between the minimum and maximum for "+
+				       "each scalar column.");
+      pds[1] = new PropertyDescription(ITEMS_PER_BIN, "Number of Items per Bin",
+				       "When binning by weight, this is the number of items" +
+				       " that will go in each bin.  The last bin may have less than "+
+				       "<i>weight</i> values, however.");
+      pds[2] = new PropertyDescription(NUMBER_OF_BINS, "Number of Bins",
+				       "Define the number of bins absolutely. "+
+				       "This will give equally spaced bins between "+
+				       "the minimum and maximum for each scalar "+
+				       "column.");
     return pds;
   }
 }
