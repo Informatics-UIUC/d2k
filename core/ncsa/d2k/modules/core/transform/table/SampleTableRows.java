@@ -26,10 +26,10 @@ public class SampleTableRows extends DataPrepModule  {
 	*/
 	public String getModuleInfo() {
 		return "Overview: Creates a sample of the given Table, by either randomly selecting     rows, or using"+
-			" the first rows<p>Detailed Description: This module will take the inputs table, and select <i>"+
+			" the first rows.<p>Detailed Description: This module will take the inputs table, and select <i>"+
 			"     Sample Size</i> rows from it, where <i>Sample Size</i> is a property the     user can modify."+
 			" The selected rows will then be placed in a different     table and passed as the output. If"+
-			" the <i>Use First</i> property is set,     the first <i>Sample Size</i> entryies from the file"+
+			" the <i>Use First</i> property is set,     the first <i>Sample Size</i> entries from the file"+
 			" will be placed in the     resulting table. Otherwise, they are selected randomly.<p>Scalability:"+
 			" This module should scale very well. There must be memory to     accomodate both the input table"+
 			" and the resulting sample table.";
