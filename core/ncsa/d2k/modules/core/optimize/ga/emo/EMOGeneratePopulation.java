@@ -205,8 +205,8 @@ public class EMOGeneratePopulation
         */
 
 
-       // twice the number of non dominated fronts desired
-    this.populationSize = 2*10;
+    // twice the number of non dominated fronts desired
+    this.populationSize = 2*100;
   }
 
   private EMOPopulationInfo popInfo;
