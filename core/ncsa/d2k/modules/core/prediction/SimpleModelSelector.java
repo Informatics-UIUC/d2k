@@ -55,7 +55,7 @@ public class SimpleModelSelector extends ModelSelectorModule  {
 	}
 
 	public String getModuleName() {
-		return "SimpleModelSelector";
+		return "PutTheLastModelThatPassesThroughThisModuleIntoTheModelPaneAtTheBottomOfTheWorkspaceAtTheEndOfTheItineraryExecutiuonSoItCanBeSavedLaterModule";
 	}
 
 	public void beginExecution() {
