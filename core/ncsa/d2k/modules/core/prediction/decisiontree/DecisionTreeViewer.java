@@ -18,6 +18,10 @@ import ncsa.gui.JOutlinePanel;
 import java.util.ArrayList;
 import java.text.*;
 import javax.swing.*;
+import javax.swing.JTable.*;
+//import javax.swing.table.AbstractTableModel.*;
+//import javax.swing.table.DefaultTableModel.*;
+
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -197,13 +201,28 @@ public class DecisionTreeViewer extends VisModule  {
 
       String[] columnHeading = {"IF","-->","THEN","COVERAGE%","ACCURACY%"};
       treeTableModel = new GenericMatrixModel(rules.size(),5,false,columnHeading);
+      TableSorter sorter = new TableSorter(treeTableModel);
+      treeList = new JTable(sorter);
+      sorter.addMouseListenerToHeaderInTable(treeList);
+      /*
+      String[] columnHeading = {"IF","-->","THEN","COVERAGE%","ACCURACY%"};
+      treeTableModel = new GenericMatrixModel(rules.size(),5,false,columnHeading);
       treeList = new JTable(treeTableModel);
+      */
       TableColumnModel colModel = treeList.getColumnModel();
       colModel.getColumn(0).setPreferredWidth(90);
       colModel.getColumn(1).setPreferredWidth(10);
       colModel.getColumn(2).setPreferredWidth(50);
       colModel.getColumn(3).setPreferredWidth(25);
       colModel.getColumn(4).setPreferredWidth(25);
+
+      colModel.getColumn(0).setHeaderValue("IF");
+      colModel.getColumn(1).setHeaderValue("-->");
+      colModel.getColumn(2).setHeaderValue("THEN");
+      colModel.getColumn(3).setHeaderValue("COVERAGE%");
+      colModel.getColumn(4).setHeaderValue("ACCURACY%");
+
+
       JScrollPane tablePane = new JScrollPane(treeList);
       treeList.setPreferredScrollableViewportSize (new Dimension(500,400));
       Constrain.setConstraints(treeInfo, tablePane,
