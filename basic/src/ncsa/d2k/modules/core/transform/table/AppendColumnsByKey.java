@@ -319,7 +319,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new IntColumn(vals));
+					Column col = new IntColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.FLOAT: {
@@ -352,7 +356,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new FloatColumn(vals));
+					Column col = new FloatColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.DOUBLE: {
@@ -385,7 +393,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new DoubleColumn(vals));
+					Column col = new DoubleColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.SHORT: {
@@ -418,7 +430,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new ShortColumn(vals));
+					Column col = new ShortColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.LONG: {
@@ -451,7 +467,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new LongColumn(vals));
+					Column col = new LongColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.STRING: {
@@ -484,7 +504,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new StringColumn(vals));
+					Column col = new StringColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.CHAR_ARRAY: {
@@ -517,7 +541,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new CharArrayColumn(vals));
+					Column col = new CharArrayColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.BYTE_ARRAY: {
@@ -550,7 +578,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new ByteArrayColumn(vals));
+					Column col = new ByteArrayColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.BOOLEAN: {
@@ -581,8 +613,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						}
 					}
+					
 					// add the column
-					result.addColumn(new BooleanColumn(vals));
+					Column col = new BooleanColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.OBJECT: {
@@ -615,7 +652,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new ObjectColumn(vals));
+					Column col = new ObjectColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.BYTE: {
@@ -648,7 +689,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new ByteColumn(vals));
+					Column col = new ByteColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.CHAR: {
@@ -681,7 +726,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(new CharColumn(vals));
+					Column col = new CharColumn(vals);
+					for (int ri = 0 ; ri < missing.length ; ri++){
+						col.setValueToMissing(missing[ri],ri);
+					}
+					result.addColumn(col);
 					break;
 				}
 				default: throw new Exception("Datatype was not recognized when appending tables.");
