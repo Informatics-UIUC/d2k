@@ -147,5 +147,8 @@ public class ParallelCoordinateVis extends VisModule {
   * bug 188 is fixed.
   * bug 189 turns into a wish. HI will be revised in next release.
   *
+  * 02-02-04:
+  * ready for basic 4.
+  *
 */
 

@@ -83,4 +83,12 @@ public class ETLinearRegression extends ETScatterPlot {
   * viewing hte larger plot. this bug is in the widget file. [bug 187]
   *
   *
+  * 02-02-04:
+  * bug 187 is not to be resolved in this release. it is transformed into a wish
+  * to be handled in absic 5 release.
+  *
+  * ready for basic 4.
+
+  *
+  *
 */

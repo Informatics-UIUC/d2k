@@ -81,5 +81,11 @@ public class ETFunctionPlot extends ETScatterPlot {
   * Problem with resulting vis: resolution of x and y axis is not the same when
   * viewing hte larger plot. this bug is in the widget file. [bug 187]
   *
+  * 02-02-04:
+  * bug 187 is not to be resolved in this release. it is transformed into a wish
+  * to be handled in absic 5 release.
+  *
+  * ready for basic 4.
+  *
   *
  */

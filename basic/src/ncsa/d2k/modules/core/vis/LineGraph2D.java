@@ -221,4 +221,12 @@ class LineGraphUserPane extends ncsa.d2k.userviews.swing.JUserPane implements Ac
   * widgets - resolution of axes x and y is different. have not reported a bug.
   * a similar bug is reported for ET vis module (bug 187). awaiting to see
   * handling this bug.
+  *
+  *
+  * 02-02-04:
+  * bug 187 is not to be resolved in this release. it is transformed into a wish
+  * to be handled in absic 5 release.
+  *
+  * ready for basic 4.
+
 */

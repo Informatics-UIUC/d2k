@@ -80,4 +80,13 @@ public class ScatterPlot2D extends VisModule {
   * 12-29-03
   * Vered started qa process.
   * added to module info documentation about missing values handling (as regular values)
+  *
+  *
+  * 02-02-04:
+  * bug 187 is not to be resolved in this release. it is transformed into a wish
+  * to be handled in absic 5 release. (the bug was not reported for this modules,
+  * but applies to it too).
+  *
+  * ready for basic 4.
+
  */
