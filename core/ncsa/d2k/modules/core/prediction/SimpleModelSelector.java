@@ -11,7 +11,7 @@ import ncsa.d2k.modules.PredictionModelModule;
 public class SimpleModelSelector extends ModelSelectorModule  {
 
 	public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    A simple ModelSelector that takes a model and returns it. The model is     passed as output, unchanged.  </body></html>";
+		return "This has been REPLACED by CatchModel.   Stop using this module.";
 	}
 
 	public String[] getInputTypes() {
@@ -55,7 +55,7 @@ public class SimpleModelSelector extends ModelSelectorModule  {
 	}
 
 	public String getModuleName() {
-		return "PutTheLastModelThatPassesThroughThisModuleIntoTheModelPaneAtTheBottomOfTheWorkspaceAtTheEndOfTheItineraryExecutiuonSoItCanBeSavedLaterModule";
+		return "REPLACED BY CatchModel - DISCONTINUE USING THIS!";
 	}
 
 	public void beginExecution() {
