@@ -34,6 +34,7 @@ public class ConnectionWrapperImpl implements ConnectionWrapper, java.io.Seriali
 	{
 		url = _url;
 		driver = _driver;
+System.out.println("driver : " + driver);
 		username = _username;
 		password = _password;
 	} /* ConnectionWrapper(String,String,String,String) */

@@ -5,8 +5,8 @@ package ncsa.d2k.modules.core.io.sql;
 */
 public class OracleURLInput extends URLInput {
 	public OracleURLInput() {
-		setUsername("disted_mgr");
-		setPassword("testmining");
+		setUsername("smathur");
+		setPassword("d2kd2k");
 		setDriver("oracle.jdbc.driver.OracleDriver");
 		setMachine("houdin.ncsa.uiuc.edu");
 		setDbInstance("oracle2");

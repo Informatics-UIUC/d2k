@@ -210,7 +210,6 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
     public String getTableQuery(String[] tables, String[][] columns, String where) {
 
         StringBuffer query = new StringBuffer();
-
         if (tables.length == 1) {                             //USER SELECTED ONLY 1 TABLE
             query.append("SELECT ");
             for (int tabl = 0; tabl < columns.length; tabl++)
@@ -222,6 +221,10 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
             query.append(" FROM ");
             query.append(tables[0]);
 
+            if ((where != null) && (where.length() > 0)) {
+                query.append(" WHERE ");
+                query.append(where);
+            }
             query.append(" ORDER BY ");
             for (int tabl = 0; tabl < columns.length; tabl++)
                 for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
@@ -230,16 +233,8 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                         query.append(", ");
                 }
 
-            /*if ((where != null) && (where != "")) {
-                str += " WHERE ";
-                str += where;
-            }*/
-
-    //System.out.println("*****************QUERY: ONE TABLE *****************");
-    //System.out.println(str);
-    //System.out.println(query.toString());
-    //System.out.println("*****************QUERY: ONE TABLE *****************");
-            //return str;
+    System.out.println("*****************QUERY: ONE TABLE *****************");
+    System.out.println(query.toString());
             return query.toString();
         }
         else {                                                   //USER SELECTED >1 TABLES
@@ -267,8 +262,6 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                     dups.add(allCols[j]);
 
             uniques.removeAll(dups);  // Destructive set-difference
-    //System.out.println("Unique columns:    " + uniques);
-    //System.out.println("Duplicate columns: " + dups);
 
             String uniqueColumns[] = (String[]) uniques.toArray( new String[ uniques.size() ] );
             String duplicateColumns[] = (String[]) dups.toArray( new String[ dups.size() ] );
@@ -281,7 +274,7 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
               */
 
             // First : Create SELECT Clause
-            String str = "SELECT ";
+            query.append("SELECT ");
             for (int l=0; l<duplicateColumns.length; l++){
                 // get the 2 tables that a duplicate column belongs to
                 // how?
@@ -305,36 +298,41 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                         }
 
                 // now append  "<TableName1>.<DuplicateColumnName>"
-                str += tables[idx1];
-                str += ".";
-                str += duplicateColumns[l];
+                query.append(tables[idx1]);
+                query.append(".");
+                query.append(duplicateColumns[l]);
                 if (l<duplicateColumns.length-1)
-                    str += ", ";
+                    query.append(", ");
             }
 
-            if (uniqueColumns.length > 0)
-                str += ", ";
+            if ((duplicateColumns.length > 0) && (uniqueColumns.length > 0))
+                query.append(", ");
 
             for (int m=0; m<uniqueColumns.length; m++){
-                str += uniqueColumns[m];
+                query.append(uniqueColumns[m]);
                 if (m<uniqueColumns.length-1)
-                    str += ", ";
+                    query.append(", ");
             }
 //System.out.println("str part1 : " + str);
 
             // Second : Create FROM Clause
-            str += " FROM ";
+            query.append(" FROM ");
             for (int k=0; k<tables.length; k++){
-                str += tables[k];
+                query.append(tables[k]);
                 if (k<tables.length-1)
-                    str += ", ";
+                    query.append(", ");
             }
 //System.out.println("str part2 : " + str);
 
             // Thrid : Create WHERE Clause
-            str += " WHERE ";
 
-            for (int m=0; m<duplicateColumns.length; m++){
+            if ((where != null) && (where.length() > 0)) {
+                query.append(" WHERE ");
+                query.append(where);
+            }
+
+            query.append(" ORDER BY ");
+            for (int l=0; l<duplicateColumns.length; l++){
                 // get the 2 tables that a duplicate column belongs to
                 // how?
                 //first find the two [x] indices of columns[x][y] where the column is present
@@ -344,47 +342,41 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                 int table1, table2;
                 for (table1 = 0; table1 < columns.length; table1++)
                     for (int tablCol = 0; tablCol < columns[table1].length; tablCol++)
-                        if( columns[table1][tablCol] == duplicateColumns[m] ) {
+                        if( columns[table1][tablCol] == duplicateColumns[l] ) {
                             idx1 = table1;
                             break;
                         }
 
                 for (table2 = table1; table2 < columns.length; table2++)
                     for (int tablCol = 0; tablCol < columns[table2].length; tablCol++)
-                        if( columns[table2][tablCol] == duplicateColumns[m] ) {
+                        if( columns[table2][tablCol] == duplicateColumns[l] ) {
                             idx2 = table2;
                             break;
                         }
 
-                // now append  "<TableName1>.<ColumnName> = <TableName2>.<ColumnName>"
-                str += tables[idx1];
-                str += ".";
-                str += duplicateColumns[m];
-                str += " = ";
-                str += tables[idx2];
-                str += ".";
-                str += duplicateColumns[m];
-
-                // if (duplicateColumns.length-1) > m > 0, append  " AND "
-                if ( (m>0) && (m<duplicateColumns.length-1) )
-                    str += " AND ";
+                // now append  "<TableName1>.<DuplicateColumnName>"
+                query.append(tables[idx1]);
+                query.append(".");
+                query.append(duplicateColumns[l]);
+                if (l<duplicateColumns.length-1)
+                    query.append(", ");
             }
 
-            if ((where != null) && (where != "")) {
-                str += " AND ";
-                str += where;
+            if ((duplicateColumns.length > 0) && (uniqueColumns.length > 0))
+                query.append(", ");
+
+            for (int m=0; m<uniqueColumns.length; m++){
+                query.append(uniqueColumns[m]);
+                if (m<uniqueColumns.length-1)
+                    query.append(", ");
             }
 
     System.out.println("*****************QUERY: MULTIPLE TABLES *****************");
-    System.out.println(str);
-    System.out.println("*****************QUERY: MULTIPLE TABLES *****************");
-            return str;
-
+    System.out.println(query.toString());
+            return query.toString();
         }//else
 
     }//getTableQuery()
-
-
 
 }//SQLServerConnection
 
@@ -395,7 +387,7 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-/////////OLD CODE BACKUP
+/////////OLD CODE BACKUP   (this has actual sqlserver queries, now not req bec of JDBC drivers
 /////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Functions related to the Columns of Tables in a Database

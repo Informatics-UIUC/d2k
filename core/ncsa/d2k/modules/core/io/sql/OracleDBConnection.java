@@ -254,8 +254,7 @@ System.out.println("createTableQuery without SEQ_NUM" + str);
 
             query.append(")");
 
-    //System.out.println(query.toString());
-            //return str;
+System.out.println(query.toString());
             return query.toString();
         }
         else {                                                   //USER SELECTED >1 TABLES
@@ -267,31 +266,18 @@ System.out.println("createTableQuery without SEQ_NUM" + str);
             for (int tabl = 0; tabl < columns.length; tabl++)
                 allColsCount += columns[tabl].length;
 
-            //second: initialize space for a 1-D string array of all columns and copy into it
-            String[] allCols = new String[allColsCount];
+            //second: separate the columns into uniqueColumns and duplicateColumns
             int i = 0;
-            for (int tabl = 0; tabl < columns.length; tabl++)
-                for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++)
-                    allCols[i++] = columns[tabl][tablCol];
-
-            //third: separate the columns into uniqueColumns and duplicateColumns
             Set uniques = new HashSet();
             Set dups = new HashSet();
-
-            for (int j=0; j<allCols.length; j++)
-                if (!uniques.add(allCols[j]))
-                    dups.add(allCols[j]);
+            for (int tabl = 0; tabl < columns.length; tabl++)
+                for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++)
+                    if (!uniques.add(allCols[j]))
+                        dups.add(allCols[j]);
 
             uniques.removeAll(dups);  // Destructive set-difference
-    //System.out.println("Unique columns:    " + uniques);
-    //System.out.println("Duplicate columns: " + dups);
-
             String uniqueColumns[] = (String[]) uniques.toArray( new String[ uniques.size() ] );
             String duplicateColumns[] = (String[]) dups.toArray( new String[ dups.size() ] );
-            /**
-             * END PROCESSING columns[][]..
-             */
-
              /**
               * BEGIN CREATING QUERY
               */
