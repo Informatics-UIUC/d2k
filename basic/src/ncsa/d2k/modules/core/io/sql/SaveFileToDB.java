@@ -544,7 +544,7 @@ public class SaveFileToDB extends UIModule
              JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-             System.out.println("Error occoured in doBrowse.");
+             System.out.println("Error occurred in doBrowse.");
            }
       }
     } /* end of TableNameView */
@@ -626,7 +626,7 @@ public class SaveFileToDB extends UIModule
            JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-           System.out.println("Error occoured in doCreateTable.");
+           System.out.println("Error occurred in doCreateTable.");
            return (false);
       }
       return (true);
@@ -679,7 +679,7 @@ public class SaveFileToDB extends UIModule
            JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error in row " + rowIdx ,
                 JOptionPane.ERROR_MESSAGE);
-           System.out.println("Error occoured in doInsertTable.");
+           System.out.println("Error occurred in doInsertTable.");
       }
     }
 
@@ -717,7 +717,7 @@ public class SaveFileToDB extends UIModule
            JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-           System.out.println("Error occoured in getDBTableDef.");
+           System.out.println("Error occurred in getDBTableDef.");
       }
     }
 

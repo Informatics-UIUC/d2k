@@ -362,7 +362,7 @@ public class SQLFilterConstruction extends UIModule {
       JOptionPane.showMessageDialog(msgBoard,
       e.getMessage(), "Error",
       JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in createMeatTable.");
+      System.out.println("Error occurred in createMeatTable.");
     }
 
     Column[] cols = new Column[colNames.size()];
@@ -472,7 +472,7 @@ public class SQLFilterConstruction extends UIModule {
           JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-          System.out.println("Error occoured in getUniqValue (db mode).");
+          System.out.println("Error occurred in getUniqValue (db mode).");
           return null;
         }
       }

@@ -459,7 +459,7 @@ public class SQLAutoBin extends AutoBin {
 			/* JOptionPane.showMessageDialog(msgBoard,
 			         e.getMessage(), "Error",
 			         JOptionPane.ERROR_MESSAGE); */
-			System.out.println("Error occoured in uniqueValues.");
+			System.out.println("Error occurred in uniqueValues.");
 			return null;
 		}
 	}

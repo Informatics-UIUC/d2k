@@ -291,7 +291,7 @@ public class SQLBinAttributes extends UIModule {
      JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-          System.out.println("Error occoured in getCounts.");
+          System.out.println("Error occurred in getCounts.");
           return counts;
         }
       }
@@ -446,7 +446,7 @@ public class SQLBinAttributes extends UIModule {
             JOptionPane.showMessageDialog(msgBoard,
                   e.getMessage(), "Error",
                   JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occoured in getTotalRows.");
+            System.out.println("Error occurred in getTotalRows.");
             return 0;
           }
         }
@@ -470,7 +470,7 @@ public class SQLBinAttributes extends UIModule {
             JOptionPane.showMessageDialog(msgBoard,
                   e.getMessage(), "Error",
                   JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occoured in getMMTValues.");
+            System.out.println("Error occurred in getMMTValues.");
           }
         }
 
@@ -511,7 +511,7 @@ public class SQLBinAttributes extends UIModule {
             JOptionPane.showMessageDialog(msgBoard,
                   e.getMessage(), "Error",
                   JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occoured in getColTypes.");
+            System.out.println("Error occurred in getColTypes.");
             return null;
           }
         }
@@ -1129,7 +1129,7 @@ public class SQLBinAttributes extends UIModule {
        JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occoured in uniqueValues.");
+            System.out.println("Error occurred in uniqueValues.");
             return null;
           }
         }
@@ -1392,7 +1392,7 @@ public class SQLBinAttributes extends UIModule {
              JOptionPane.showMessageDialog(msgBoard,
                     e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
-                  System.out.println("Error occoured in addFromWeight.");
+                  System.out.println("Error occurred in addFromWeight.");
               }
             }
         }

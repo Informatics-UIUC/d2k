@@ -352,7 +352,7 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
       JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in doColumnBrowse.");
+      System.out.println("Error occurred in doColumnBrowse.");
     }
   }
 
@@ -395,7 +395,7 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
       JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in doBookBrowse.");
+      System.out.println("Error occurred in doBookBrowse.");
     }
   }
 
@@ -427,7 +427,7 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
       JOptionPane.showMessageDialog(msgBoard,
           e.getMessage(), "Error",
           JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in create1ItemDataTable.");
+      System.out.println("Error occurred in create1ItemDataTable.");
       return false;
     }
     // data table will contains one of the columns the user selected and one
@@ -474,7 +474,7 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
       JOptionPane.showMessageDialog(msgBoard,
           e.getMessage(), "Error",
           JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in createDataTable.");
+      System.out.println("Error occurred in createDataTable.");
       return false;
     }
   }

@@ -67,7 +67,7 @@ public class ConnectionWrapperImpl implements ConnectionWrapper, java.io.Seriali
           "name, password, server machine, " +
           "and database instance you have entered.", "Error",
           JOptionPane.ERROR_MESSAGE);
-        System.out.println("Error occoured when connecting to a database.");
+        System.out.println("Error occurred when connecting to a database.");
         return null;
       }
 

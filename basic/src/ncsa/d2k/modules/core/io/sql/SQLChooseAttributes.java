@@ -217,7 +217,7 @@ public class SQLChooseAttributes extends UIModule {
         JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
-        System.out.println("Error occoured in addComponents.");
+        System.out.println("Error occurred in addComponents.");
       }
       DefaultListModel dlm = new DefaultListModel();
       for(int i = 0; i < colNames.size(); i++)
@@ -408,7 +408,7 @@ public class SQLChooseAttributes extends UIModule {
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in createExampleTable.");
+      System.out.println("Error occurred in createExampleTable.");
     }
     table.setNumRows(numRows);
 
