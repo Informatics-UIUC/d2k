@@ -17,42 +17,82 @@ public class AvailableTablesInput extends InputModule
 	protected boolean dataTableOnly = true;
         protected boolean dataCubeOnly = false;
 
-	public String getOutputInfo (int index) {
-		switch (index) {
-			case 0: return "Pass the database connection to the next module.";
-			case 1: return "A list of available tables.";
-			default: return "No such output";
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Available Tables Input";
+	}
+
+	public String getModuleInfo () {
+          String s = "<p>Overview: ";
+          s += "This module builds a list of available database tables. </p>";
+          s += "<p>Detailed Description: ";
+          s += "This module makes a connection to the database indicated by the ";
+	  s += "<i>Database Connection</i> input port and builds a ";
+          s += "list of available database tables. There are two types of tables in a ";
+          s += "database, raw data tables and aggregated cube tables. The ";
+          s += "properties <i>List Data Tables</i> and <i>List Cube Tables</i> allow ";
+          s += "the user to control whether one or both types of tables will be included in the list.</p>";
+          s += "<p>For security, ";
+          s += "users may only view the tables they have been granted permission to access. If you ";
+          s += "cannot see the tables you are looking for, please report the ";
+          s += "problems to your database administrator. </p>";
+          s += "<p> Restrictions: ";
+          s += "Only Oracle and SQLServer databases are currently supported.";
+
+          return s;
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Database Connection";
+			default: 
+				return "No such input";
 		}
 	}
 
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: return "The database connection to discover what tables are available.";
-			default: return "No such input";
+			case 0: return "The database connection used to discover the available tables.";
+			default: return "No such input.";
 		}
-	}
-
-	public String getModuleInfo () {
-          String s = "<p> Overview: ";
-          s += "This module displays the list of available database tables. </p>";
-          s += "<p> Detailed Description: ";
-          s += "This module makes a connection to a database and retrieves the ";
-          s += "list of available database tables. There are two types of tables in a ";
-          s += "database: raw data tables and aggregated cube tables. By using ";
-          s += "the property parameters: 'List Data Tables' and 'List Cube Tables', you ";
-          s += "can list one or both types of tables. For security purposes, ";
-          s += "you may only view the tables you have been granted permission to access. If you ";
-          s += "cannot see the tables you are looking for, please report the ";
-          s += "problems to your database administrator. </p>";
-          s += "<p> Restrictions: ";
-          s += "We currently only support Oracle and SQLServer databases.";
-
-          return s;
 	}
 
 	public String[] getInputTypes () {
 		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper"};
 		return types;
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Database Connection";
+			case 1:
+				return "Tables List";
+			default: 
+				return "No such output";
+		}
+	}
+
+	public String getOutputInfo (int index) {
+		switch (index) {
+			case 0: return "The database connection, for use by the next module.";
+			case 1: return "A list of available tables of the specified type(s).";
+			default: return "No such output.";
+		}
 	}
 
 	public String[] getOutputTypes () {
@@ -139,39 +179,5 @@ public class AvailableTablesInput extends InputModule
 	}
 
 
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "Available Tables Input";
-	}
-
-	/**
-	 * Return the human readable name of the indexed input.
-	 * @param index the index of the input.
-	 * @return the human readable name of the indexed input.
-	 */
-	public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "Database Connection";
-			default: return "NO SUCH INPUT!";
-		}
-	}
-
-	/**
-	 * Return the human readable name of the indexed output.
-	 * @param index the index of the output.
-	 * @return the human readable name of the indexed output.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			case 0:
-				return "Database Connection";
-			case 1:
-				return "Tables List";
-			default: return "NO SUCH OUTPUT!";
-		}
-	}
 }
+
