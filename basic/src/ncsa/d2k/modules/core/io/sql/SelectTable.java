@@ -17,6 +17,49 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
   JOptionPane msgBoard = new JOptionPane();
 
 	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Select Table";
+	}
+
+	/**
+		This method returns the description of the module.
+		@return the description of the module.
+	*/
+	public String getModuleInfo () {
+          String s = "<p> Overview: ";
+          s += "This module allows the user to select a database table. </p>";
+          s += "<p> Detailed Description: ";
+          s += "This module provides a user-interface that allows one table to be chosen ";
+          s += "from a list of available database tables. The list of available tables is ";
+          s += "retrieved from the <i>Tables List</i> input port. ";
+          s += "The selected table will be used to construct SQL queries.  </p>";
+          s += "<p>";
+          s += "For security reasons, a user may only view the tables they have been granted access to. ";
+          s += "If you cannot see the tables you are looking for, please report the ";
+          s += "problem to your database administrator. </p>";
+          s += "<p> Restrictions: ";
+          s += "Currently only SQLServer and Oracle databases are supported.";
+
+          return s;
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Tables List";
+			default:
+				return "No such input.";
+		}
+	}
+	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
@@ -37,12 +80,26 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
 	}
 
 	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Selected Table";
+			default:
+				return "No such output.";
+		}
+	}
+
+	/**
 		This method returns the description of the outputs.
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return " The name of the table that the user selected.   ";
+			case 0: return " The name of the table selected by the user.   ";
 			default: return "No such output";
 		}
 	}
@@ -54,26 +111,6 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
 	public String[] getOutputTypes () {
 		String[] types = {"java.lang.String"};
 		return types;
-	}
-
-	/**
-		This method returns the description of the module.
-		@return the description of the module.
-	*/
-	public String getModuleInfo () {
-          String s = "<p> Overview: ";
-          s += "This module allows users to select a database table. </p>";
-          s += "<p> Detailed Description: ";
-          s += "Given a list of available tables, this module provides a user-interface ";
-          s += "to allow users to choose a table from it. ";
-          s += "The selected table will be used to construct SQL queries. For security ";
-          s += "purposes, you may only view the tables you have been granted access to. ";
-          s += "If you cannot see the tables you are looking for, please report the ";
-          s += "problems to your database administrator. </p>";
-          s += "<p> Restrictions: ";
-          s += "We currently only support SQLServer and Oracle databases.";
-
-          return s;
 	}
 
     //QA Anca added this:
@@ -99,39 +136,6 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
 		return fieldMap;
 	}
 
-		/**
-		 * Return the human readable name of the module.
-		 * @return the human readable name of the module.
-		 */
-		public String getModuleName() {
-			return "Select Table";
-		}
-
-		/**
-		 * Return the human readable name of the indexed input.
-		 * @param index the index of the input.
-		 * @return the human readable name of the indexed input.
-		 */
-		public String getInputName(int index) {
-			switch(index) {
-				case 0:
-					return "Tables List";
-				default: return "NO SUCH INPUT!";
-			}
-		}
-
-		/**
-		 * Return the human readable name of the indexed output.
-		 * @param index the index of the output.
-		 * @return the human readable name of the indexed output.
-		 */
-		public String getOutputName(int index) {
-			switch(index) {
-				case 0:
-					return "Selected Table";
-				default: return "NO SUCH OUTPUT!";
-			}
-		}
 
 	/**
 		SelectTablesView
@@ -219,6 +223,8 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
 // 2/19/03 - Very clean and well documented. checked into basic.
 // 2/28/03 - Dora added code to handle no selection for table name
 // 03/03/03 - QA and checked into basic - Anca.
+// 6/12/03 - Ruth updated text some and moved code containing words a user will
+//           see up toward top of file (easier to find them all)
 // END QA Comments
 
 }
