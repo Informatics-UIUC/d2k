@@ -79,8 +79,6 @@ public class SQLGetRuleAssocFromCube extends UIModule
   JTextField thresholdChosen;
   JTextField bookName;
   JLabel bookLabel;
-  Checkbox sortS;
-  Checkbox sortC;
   Checkbox useCodeBook;
   JButton tableBrowseBtn;
   JButton targetBrowseBtn;
@@ -88,7 +86,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
   JButton bookBrowseBtn;
   JButton cancelBtn;
   JButton ruleBtn;
-  JButton sortBtn;
+  JButton doneBtn;
   int[][] itemRange;
 
   BrowseTables bt;
@@ -124,30 +122,34 @@ public class SQLGetRuleAssocFromCube extends UIModule
           s += "<p> Detailed Description: ";
           s += "This module first makes a connection to a database and retrieves the ";
           s += "data from a specified cube table, then compute the association ";
-          s += "rules and present them to users. Each association rule has 4 components: 'IF' ";
-          s += "part, 'THEN' part, 'SUPPORT' part, and 'CONFIDENCE' part. ";
-          s += "The 'IF' part is the condition of the rule, or called left-hand side ";
-          s += "of the rule. The 'THEN' part is the target of the rule, or called ";
-          s += "right-hand side of the rule. 'SUPPORT' and 'CONFIDENCE' are ";
-          s += "two measuresre of rule interestingness. They respectively reflect ";
+          s += "rules and present them to users. Each association rule has 4 components: <i>IF</i> ";
+          s += "part, <i>THEN</i> part, <i>SUPPORT</i> part, and <i>CONFIDENCE</i> part. ";
+          s += "The <i>IF</i> part is the condition of the rule, or called <i>antecedent</i> ";
+          s += "of the rule. The <i>THEN</i> part is the target of the rule, or called ";
+          s += "<i>consequent</i> of the rule. <i>SUPPORT</i> and <i>CONFIDENCE</i> are ";
+          s += "two measures of rule interestingness. They respectively reflect ";
           s += "the usefulness and certainty of discovered rules. A support of 2% ";
           s += "for a rule means that 2% of data under analysis support this rule. ";
-          s += "A confidence of 60% means that 60% of data that match 'IF' condition ";
+          s += "A confidence of 60% means that 60% of data that match <i>IF</i> condition ";
           s += "support this rule. You can control the rule generation by three ";
-          s += "parameters: 'minimum support', 'minimum confidence', and 'pruning ";
-          s += "threshold'. By setting 'minimum support' and 'minimum confidence' lower ";
-          s += "you would get more trivial rules. However, by setting 'minimum support' ";
-          s += "and 'minimum confidence' higher, you might loose some important rules. ";
-          s += "The parameter 'pruning threshold' is used to prune rules after they ";
-          s += "are generated. A 'pruning threshold' 10% means if the confidence ";
+          s += "parameters: <i>minimum support</i>, <i>minimum confidence</i>, and <i>pruning ";
+          s += "threshold</i>. By setting <i>minimum support</i> and <i>minimum confidence</i> lower, ";
+          s += "you would get more trivial rules. However, by setting <i>minimum support</i> ";
+          s += "and <i>minimum confidence</i> higher, you might loose some important rules. ";
+          s += "The parameter <i>pruning threshold</i> is used to prune rules after they ";
+          s += "are generated. A <i>pruning threshold</i> 10% means if the confidence ";
           s += "of two similar rules is less than 10%, the more specialized rule ";
           s += "will be pruned. This module also provides an user-interface to filter out rules. ";
-          s += "You can specify the 'IF' part by choosing a condition, and specify ";
-          s += "the 'THEN' part by choosing a target. This module will only generate ";
+          s += "You can specify the <i>IF</i> part by choosing one or more conditions, and specify ";
+          s += "the <i>THEN</i> part by choosing one or more targets. This module will only generate ";
           s += "association rules that match your selections. In addition, this module ";
           s += "not only can display the discoved rules in predefined codes, ";
-          s += "but also in detailed descriptions by choosing the 'Use Code Book' ";
-          s += "option and specifying a code book for use. ";
+          s += "but also in detailed descriptions by choosing the <i>Use Code Book</i> ";
+          s += "option and specifying a code book for use. You can use three buttons ";
+          s += "at the bottom to control the display. The button <i>Abort</i> will dismiss ";
+          s += "the display window. The button <i>Display Rule</i> will continually and ";
+          s += "interactly display rules based on the criteria the user has selected. ";
+          s += "The button <i>Done</i> will display rules and dismiss the window. ";
           s += "<p> Restrictions: ";
           s += "We currently only support Oracle and SQLServer databases.";
           return s;
@@ -302,10 +304,6 @@ public class SQLGetRuleAssocFromCube extends UIModule
         5,5,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       supportChosen.setText(Double.toString(minSupport));
       supportChosen.addActionListener(this);
-      sortS = new Checkbox( "Sort by Support", null, true );
-      sortS.addItemListener( this );
-      Constrain.setConstraints(options, sortS,
-        15,5,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
 
       Constrain.setConstraints(options, new JLabel("Minimum Confidence"),
         0,6,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
@@ -313,10 +311,6 @@ public class SQLGetRuleAssocFromCube extends UIModule
         5,6,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       confidenceChosen.setText(Double.toString(minConfidence));
       confidenceChosen.addActionListener(this);
-      sortC = new Checkbox ( "Sort by Confidence", null, false);
-      sortC.addItemListener( this );
-      Constrain.setConstraints(options, sortC,
-        15,6,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
 
       Constrain.setConstraints(options, new JLabel("Pruning Threshold"),
         0,7,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
@@ -368,9 +362,9 @@ public class SQLGetRuleAssocFromCube extends UIModule
       Constrain.setConstraints(getRulePanel, ruleBtn = new JButton ("Get Rules"),
         2,6,1,1,GridBagConstraints.NONE, GridBagConstraints.CENTER,0,0);
       ruleBtn.addActionListener(this);
-      Constrain.setConstraints(getRulePanel, sortBtn = new JButton ("    Resort    "),
+      Constrain.setConstraints(getRulePanel, doneBtn = new JButton ("    Done    "),
         3,6,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,0,0);
-      sortBtn.addActionListener(this);
+      doneBtn.addActionListener(this);
       Constrain.setConstraints(getRulePanel, new JPanel(),
         4,6,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,0.5,0);
 
@@ -387,83 +381,9 @@ public class SQLGetRuleAssocFromCube extends UIModule
         doBookBrowse();
         changeCodeBook = true;
       }
+      // The "Display Rule" button displays rules interactly and continually
       else if (src == ruleBtn) {
-        if (useCodeBook.getState() && bookName.getText().length()<=0) {
-          // The user has not chosen a code book yet
-          JOptionPane.showMessageDialog(msgBoard,
-            "You must choose a code book.", "Error",
-            JOptionPane.ERROR_MESSAGE);
-          System.out.println("There is no code book selected.");
-        }
-        else if (tableName.getText().toString().indexOf("_CUBE")<0) {
-          JOptionPane.showMessageDialog(msgBoard,
-          "To extract and display rules, you must select a cube table rather than a data table.", "Error",
-          JOptionPane.ERROR_MESSAGE);
-          System.out.println("A cube table is selected instead of a data table.");
-        }
-        else if (tableName.getText().length()>0) {
-          // if code book is required and the code book is not retrieved yet, then get it
-          if (!saveBookName.equals(bookName.getText().toString()) &&
-              useCodeBook.getState()) {
-            aBook = new SQLCodeBook(cw, bookName.getText().toString());
-            codeTable = aBook.codeBook;
-            saveBookName = bookName.getText().toString();
-          }
-          // only recalculate rules if table name, or code table, or support are changed
-          if (!cubeTableName.equals(tableName.getText().toString()) ||
-              !saveSupport.equals(supportChosen.getText().toString()) ||
-              changeCodeBook ) {
-            getItemLabels();
-            cubeTableName = tableName.getText().toString();
-            saveSupport = supportChosen.getText().toString();
-            freqItemSets = new ArrayList();
-            allRules = new ArrayList();
-            //printArrayList(itemLabels);
-            //printArrayList(itemText);
-            extractRules();
-            //printAllRules();
-          }
-          conditionSelected = conditionList.getSelectedIndices();
-          targetSelected = targetList.getSelectedIndices();
-          finalRules = new ArrayList();
-          filterRules();
-          if (finalRules.size() > 0) {
-            convertToRuleTable();
-            if (sortC.getState()) {
-              sortRuleTable(CONFIDENCE);
-            }
-            else if (sortS.getState()) {
-              sortRuleTable(SUPPORT);
-            }
-
-            changeCodeBook = false;
-            RuleTable rt;
-            if (useCodeBook.getState()) {
-              rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
-                    itemText, freqItemSets);
-            }
-            else {
-              rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
-                    itemLabels, freqItemSets);
-            }
-
-            pushOutput(rt, 0);
-          }
-          // if no rules discovered, inform user.
-          else {
-            JOptionPane.showMessageDialog(msgBoard,
-            "There is no rule discovered. You may like to adjust " +
-            "Minimum Support, Minimum Confidence and Pruning Threshold, and try again.",
-            "Error", JOptionPane.ERROR_MESSAGE);
-            System.out.println("There is no rule discovered.");
-          }
-        }
-        else if (tableName.getText().length()<=0) { // The user has not chosen a table yet
-          JOptionPane.showMessageDialog(msgBoard,
-          "You must choose a table first.", "Error",
-          JOptionPane.ERROR_MESSAGE);
-          System.out.println("There is no table selected.");
-        }
+        displayRules();
       }
       else if (src == cancelBtn) {
         cubeTableName = NOTHING;
@@ -482,32 +402,86 @@ public class SQLGetRuleAssocFromCube extends UIModule
           dlm.addElement(colNames.get(i).toString());
         targetList.setModel(dlm);
       }
-      else if (src == sortBtn) {
-        if (allRules.size()==0) {
-          JOptionPane.showMessageDialog(msgBoard,
-          "Please click button 'Get Rules' first.", "Error",
+      // The "Display Rule" button displays rules only once, no interactive and
+      // continual display
+      else if (src == doneBtn) {
+        displayRules();
+        closeIt();
+      }
+    }
+
+    /**
+     * If "Display Rule" button or "Done" button is pressed, extract rules
+     * from a cube.
+     */
+    protected void displayRules() {
+      if (useCodeBook.getState() && bookName.getText().length()<=0) {
+        // The user has not chosen a code book yet
+        JOptionPane.showMessageDialog(msgBoard,
+          "You must choose a code book.", "Error",
           JOptionPane.ERROR_MESSAGE);
-          System.out.println("Please click button 'Get Rules' first.");
+        System.out.println("There is no code book selected.");
+      }
+      else if (tableName.getText().toString().indexOf("_CUBE")<0) {
+        JOptionPane.showMessageDialog(msgBoard,
+          "To extract and display rules, you must select a cube table rather than a data table.", "Error",
+          JOptionPane.ERROR_MESSAGE);
+        System.out.println("A cube table is selected instead of a data table.");
+      }
+      else if (tableName.getText().length()>0) {
+        // if code book is required and the code book is not retrieved yet, then get it
+        if (!saveBookName.equals(bookName.getText().toString()) &&
+            useCodeBook.getState()) {
+          aBook = new SQLCodeBook(cw, bookName.getText().toString());
+          codeTable = aBook.codeBook;
+          saveBookName = bookName.getText().toString();
         }
-        else if (sortC.getState()) {
-          sortRuleTable(CONFIDENCE);
+        // only recalculate rules if table name, or code table, or support are changed
+        if (!cubeTableName.equals(tableName.getText().toString()) ||
+            !saveSupport.equals(supportChosen.getText().toString()) ||
+            changeCodeBook ) {
+          getItemLabels();
+          cubeTableName = tableName.getText().toString();
+          saveSupport = supportChosen.getText().toString();
+          freqItemSets = new ArrayList();
+          allRules = new ArrayList();
+          //printArrayList(itemLabels);
+          //printArrayList(itemText);
+          extractRules();
+          //printAllRules();
         }
-        else if (sortS.getState()) {
-          sortRuleTable(SUPPORT);
-        }
+        conditionSelected = conditionList.getSelectedIndices();
+        targetSelected = targetList.getSelectedIndices();
+        finalRules = new ArrayList();
+        filterRules();
         if (finalRules.size() > 0) {
+          convertToRuleTable();
           changeCodeBook = false;
           RuleTable rt;
           if (useCodeBook.getState()) {
             rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
-                  itemText, freqItemSets);
+                               itemText, freqItemSets);
           }
           else {
             rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
-                  itemLabels, freqItemSets);
+                               itemLabels, freqItemSets);
           }
           pushOutput(rt, 0);
         }
+        // if no rules discovered, inform user.
+        else {
+          JOptionPane.showMessageDialog(msgBoard,
+            "There is no rule discovered. You may like to adjust " +
+            "Minimum Support, Minimum Confidence and Pruning Threshold, and try again.",
+            "Error", JOptionPane.ERROR_MESSAGE);
+          System.out.println("There is no rule discovered.");
+        }
+      }
+      else if (tableName.getText().length()<=0) { // The user has not chosen a table yet
+        JOptionPane.showMessageDialog(msgBoard,
+          "You must choose a table first.", "Error",
+          JOptionPane.ERROR_MESSAGE);
+        System.out.println("There is no table selected.");
       }
     }
 
@@ -516,23 +490,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
      *  @param e the event user has triggered
      */
     public void itemStateChanged(ItemEvent e) {
-      if (e.getSource() == sortS) {
-        if (sortS.getState()) {
-          sortC.setState(false);
-        }
-        else {
-          sortC.setState(true);
-        }
-      }
-      else if (e.getSource() == sortC) {
-        if (sortC.getState()) {
-          sortS.setState(false);
-        }
-        else {
-          sortS.setState(true);
-        }
-      }
-      else if (e.getSource() == useCodeBook) {
+      if (e.getSource() == useCodeBook) {
         if (useCodeBook.getState()) {
           changeCodeBook = true;
           codeBookLayout.show(codeBookPanel, FILLED);
@@ -546,6 +504,8 @@ public class SQLGetRuleAssocFromCube extends UIModule
       }
     }
   }
+
+
 
   /** connect to a database and retrieve the list of available cube tables
    */
