@@ -1,9 +1,5 @@
 package ncsa.d2k.modules.core.transform.table;
 
-
-
-
-
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -74,7 +70,7 @@ public class MergeByColumns extends ncsa.d2k.core.modules.DataPrepModule
 
 	//fill two arrays with filler properties that corespond to columns of two input verticaltables
 	//these arrays will be used to fill rows in the final verticaltable
-		protected void 	determineFillers(TableImpl table1, TableImpl table2){
+	protected void 	determineFillers(TableImpl table1, TableImpl table2){
 		int num1 = table1.getNumColumns();
 		int num2 = table2.getNumColumns();
 		for (int i=0; i<num1; i++){

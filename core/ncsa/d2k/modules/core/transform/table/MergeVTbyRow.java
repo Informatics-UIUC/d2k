@@ -1,11 +1,5 @@
 package ncsa.d2k.modules.core.transform.table;
 
-
-
-
-
-
-
 import ncsa.d2k.core.modules.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
