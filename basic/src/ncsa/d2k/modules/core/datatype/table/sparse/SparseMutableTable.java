@@ -2254,6 +2254,12 @@ public class SparseMutableTable
    *
    */
   public void insertColumn(AbstractSparseColumn newColumn, int position) {
+
+    int numcols = getNumColumns();
+    if ((position < 0) || (position > numcols)){
+      throw new IndexOutOfBoundsException("SparseMutableTable.insertColumn() -- cannot insert column at position " + position + ". Not a valid index.");
+    }
+
     //updating the column map
     columns.insertObject(newColumn, position);
 
@@ -3701,6 +3707,13 @@ public class SparseMutableTable
    * Modified by Xiaolei - 07/08/2003.
    */
   public void removeColumn(int position) {
+
+    int ncols = VHashService.getMaxKey(columns) + 1;
+    if ((position < 0) || (position >= ncols)){
+      throw new IndexOutOfBoundsException();
+    }
+
+
     //removing the column
     AbstractSparseColumn col = (AbstractSparseColumn) columns.remove(position);
 
@@ -3748,7 +3761,7 @@ public class SparseMutableTable
    */
   public void removeColumns(int start, int len) {
     for (int i = 0; i < len; i++) {
-      removeColumn(start + i);
+      removeColumn(start);
     }
   }
 
@@ -4739,6 +4752,12 @@ public class SparseMutableTable
    *                <code>start+len</code>
    */
   public static Table getSubset(int start, int len, SparseTable table) {
+
+    int numrows = table.getNumRows();
+      if ((start < 0) || ((start + len -1 ) >= numrows)){
+        throw new IndexOutOfBoundsException("Some part of the range \"start to start+len-1\" is not in range of rows of the table.");
+      }
+
     SparseMutableTable retVal = new SparseMutableTable();
 
     //XIAOLEI
@@ -4746,8 +4765,7 @@ public class SparseMutableTable
     int[] columnNumbers = table.columns.keys();
     for (int i = 0; i < columnNumbers.length; i++) {
       //System.out.println("Working on column " + i + ", " + columnNumbers[i]);
-      Column subCol = ( (Column) table.columns.get(columnNumbers[i])).getSubset(
-          start, len);
+      Column subCol = ( (Column) table.columns.get(columnNumbers[i])).getSubset(start, len);
       //System.out.println("Finished column " + i + ": " + subCol.getNumEntries());
       //System.out.println();
       retVal.setColumn(columnNumbers[i], (AbstractSparseColumn) subCol);
@@ -4863,6 +4881,14 @@ public class SparseMutableTable
    */
   public static Table getSubset(int[] indices, SparseTable table) {
 
+    int numrows = table.getNumRows();
+    for (int i = 0, n = indices.length; i < n; i++){
+      if ((indices[i] < 0) || (indices[i] >= numrows)){
+        throw new IndexOutOfBoundsException("Row: " + indices[i] + "not in table.");
+      }
+    }
+
+
     // the returned value
     SparseMutableTable retVal = new SparseMutableTable();
 
@@ -4895,6 +4921,9 @@ public class SparseMutableTable
     new_table.setLabel(this.getLabel());
     new_table.setComment(this.getComment());
     new_table.setKeyColumn(this.getKeyColumn());
+    for (int i = 0, n = this.getNumColumns(); i < n;i++){
+      new_table.addColumn((AbstractSparseColumn)getColumn(i));
+    }
     return new_table;
   }
 
@@ -4973,7 +5002,7 @@ public class SparseMutableTable
   }
 
   public void addColumns(Column[] newColumns) {
-    for (int i = newColumns.length - 1; i >= 0; i--) {
+    for (int i = 0, n = newColumns.length; i < n; i++) {
       this.addColumn(newColumns[i]);
     }
   }
@@ -5042,6 +5071,24 @@ public class SparseMutableTable
     setColumn(position, col);
 
   }
+
+  //DUANE - added method below for testing purposes
+
+  public boolean equals(Object mt) {
+    SparseMutableTable mti = (SparseMutableTable) mt;
+    int numColumns = mti.getNumColumns();
+    int numRows = mti.getNumRows();
+    if (getNumColumns() != numColumns)
+      return false;
+    if (getNumRows() != numRows)
+      return false;
+    for (int i = 0; i < numRows; i++)
+      for (int j = 0; j < numColumns; j++)
+        if (!getString(i, j).equals(mti.getString(i, j)))
+          return false;
+    return true;
+  }
+
 
 } //SparseMutableTable
 /*

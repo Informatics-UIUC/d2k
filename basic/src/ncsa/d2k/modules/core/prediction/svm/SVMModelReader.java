@@ -71,7 +71,7 @@ public class SVMModelReader extends ModelProducerModule
 
 	public String[] getOutputTypes()
 	{
-		String[] out = {"ncsa.d2k.modules.projects.xli.SVM.SVMModel"};
+		String[] out = {"ncsa.d2k.modules.core.prediction.svm.SVMModel"};
 		return out;
 	}
 
@@ -91,7 +91,7 @@ public class SVMModelReader extends ModelProducerModule
 			ExampleTable et = (ExampleTable) this.pullInput(1);
 
 			svm_model model = svm.svm_load_model(file_name);
-				
+
 			SVMModel d2k_model = new SVMModel(model, et);
 
 			this.pushOutput(d2k_model, 0);

@@ -115,19 +115,19 @@ public class DSTPView
   }
 
   public void disableAll() {
-    _list.disable();
-    _treepan.disable();
-    _abort.disable();
-    _done.disable();
-    _reset.disable();
+    _list.setEnabled(false);
+    _treepan.setEnabled(false);
+    _abort.setEnabled(false);
+    _done.setEnabled(false);
+    _reset.setEnabled(false);
   }
 
   public void enableAll() {
-    _list.enable();
-    _treepan.enable();
-    _done.enable();
-    _reset.enable();
-    _abort.enable();
+    _list.setEnabled(true);
+    _treepan.setEnabled(true);
+    _done.setEnabled(true);
+    _reset.setEnabled(true);
+    _abort.setEnabled(true);
   }
 
   public void reset() {

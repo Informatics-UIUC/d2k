@@ -314,11 +314,14 @@ public class VIntLongHashMap extends TIntLongHashMap implements VHashMap{
       */
      public VHashMap getSubset(int start, int len){
       VIntLongHashMap retVal = new VIntLongHashMap (len);
-      int[] validKeys = VHashService.getIndicesInRange(start, start+len, this);
+      //XIAOLEI: added the -1
+      int[] validKeys = VHashService.getIndicesInRange(start, start+len-1, this);
       for (int i=0; i<validKeys.length; i++)
-	retVal.put(validKeys[i], get(validKeys[i]));
+        //XIAOLEI: added the - start
+	retVal.put(validKeys[i] - start, get(validKeys[i]));
       return retVal;
      }
+
 
 
      /**
