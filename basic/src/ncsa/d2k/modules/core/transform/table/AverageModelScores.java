@@ -11,145 +11,167 @@ import java.util.ArrayList;
 
 public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
 
-   /** number of folds to average scores for. */
-   private int numberFolds =-1;
+  /** number of folds to average scores for. */
+  private int numberFolds = -1;
 
-   /** number of scores currently obtained. */
-   int counter = 0;
+  /** number of scores currently obtained. */
+  int counter = 0;
 
-   /** the accumulated points in objective space. */
-   ArrayList objectivePoints = new ArrayList();
+  /** the accumulated points in objective space. */
+  ArrayList objectivePoints = new ArrayList();
 
-   /** used to store the average score for each of the objective features. */
-   double [] avgs = null;
+  /** used to store the average score for each of the objective features. */
+  double[] avgs = null;
 
-   /** number of points in solution space. */
-   int solutionSpaceDimensions = 0;
+  /** number of points in solution space. */
+  int solutionSpaceDimensions = 0;
 
-   /**
-    * returns information about the input at the given index.
-    * @return information about the input at the given index.
-    */
-   public String getInputInfo(int index) {
-      switch (index) {
-         case 0 :
-            return "<p>"
-               + "      This is the number of scores input to average."
-               + "    </p>";
-         case 1 :
-            return "<p>"
-               + "      This paramter point contains the objective score."
-               + "    </p>";
-         default :
-            return "No such input";
-      }
-   }
+  /**
+   * returns information about the input at the given index.
+   * @return information about the input at the given index.
+   */
+  public String getInputInfo(int index) {
+    switch (index) {
+      case 0:
+        return "<p>"
+            + "      This is the number of scores input to average."
+            + "    </p>";
+      case 1:
+        return "<p>"
+            + "      This paramter point contains the objective score."
+            + "    </p>";
+      default:
+        return "No such input";
+    }
+  }
 
-   /**
-    * returns information about the output at the given index.
-    * @return information about the output at the given index.
-    */
-   public String getInputName(int index) {
-      switch (index) {
-         case 0 :
-            return "Input Count";
-         case 1 :
-            return "Score";
-         default :
-            return "NO SUCH INPUT!";
-      }
-   }
+  /**
+   * returns information about the output at the given index.
+   * @return information about the output at the given index.
+   */
+  public String getInputName(int index) {
+    switch (index) {
+      case 0:
+        return "Input Count";
+      case 1:
+        return "Score";
+      default:
+        return "NO SUCH INPUT!";
+    }
+  }
 
-   /**
-    * returns string array containing the datatypes of the inputs.
-    * @return string array containing the datatypes of the inputs.
-    */
-   public String[] getInputTypes() {
-      String[] types =
-         {
-            "java.lang.Integer",
-            "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint" };
-      return types;
-   }
+  /**
+   * returns string array containing the datatypes of the inputs.
+   * @return string array containing the datatypes of the inputs.
+   */
+  public String[] getInputTypes() {
+    String[] types = {
+        "java.lang.Integer",
+        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"};
+    return types;
+  }
 
-   /**
-    * returns information about the output at the given index.
-    * @return information about the output at the given index.
-    */
-   public String getOutputInfo(int index) {
-      switch (index) {
-         case 0 :
-            return "<p>"
-               + "      This is the point in paramter space which contains the averaged "
-               + "      objective score."
-               + "    </p>";
-         default :
-            return "No such output";
-      }
-   }
+  /**
+   * returns information about the output at the given index.
+   * @return information about the output at the given index.
+   */
+  public String getOutputInfo(int index) {
+    switch (index) {
+      case 0:
+        return "<p>"
+            +
+            "      This is the point in paramter space which contains the averaged "
+            + "      objective score."
+            + "    </p>";
+      default:
+        return "No such output";
+    }
+  }
 
-   /**
-    * returns information about the output at the given index.
-    * @return information about the output at the given index.
-    */
-   public String getOutputName(int index) {
-      switch (index) {
-         case 0 :
-            return "Averaged Objective";
-         default :
-            return "NO SUCH OUTPUT!";
-      }
-   }
+  /**
+   * returns information about the output at the given index.
+   * @return information about the output at the given index.
+   */
+  public String getOutputName(int index) {
+    switch (index) {
+      case 0:
+        return "Averaged Objective";
+      default:
+        return "NO SUCH OUTPUT!";
+    }
+  }
 
-   /**
-    * returns string array containing the datatypes of the outputs.
-    * @return string array containing the datatypes of the outputs.
-    */
-   public String[] getOutputTypes() {
-      String[] types =
-         { "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint" };
-      return types;
-   }
+  /**
+   * returns string array containing the datatypes of the outputs.
+   * @return string array containing the datatypes of the outputs.
+   */
+  public String[] getOutputTypes() {
+    String[] types = {
+        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"};
+    return types;
+  }
 
-   /**
-    * returns the information about the module.
-    * @return the information about the module.
-    */
-   public String getModuleInfo() {
-      return "<p>"
-         + "      Overview: This module takes an integer which indicates how many scores "
-         + "      it should accumulate, and on the other input, the scores which will be "
-         + "      averaged."
-         + "    </p>"
-         + "    <p>"
-         + "      Detailed Description: This module will take N scores and average them, "
-         + "      produced the averaged score in the form of a ParameterPoint. The number "
-         + "      of scores to average is ascertained from the Integer passed in on the "
-         + "      first port. When all N scores have been received, the average is "
-         + "      calcuated and the result passed along."
-         + "    </p>"
-         + "    <p>"
-         + "      Data Type Restrictions: None. This module will average any number of "
-         + "      objective scores, producing a Parameter Point with the same number of "
-         + "      objectives. "
-         + "    </p>"
-         + "    <p>"
-         + "      Data Handling: The original ParameterPoiints are discarded and a new one "
-         + "      is produced."
-         + "    </p>"
-         + "    <p>"
-         + "      Scalability: There must be sufficient memory to store all the "
-         + "      ParameterPoints to be averaged."
-         + "    </p>";
-   }
+  /**
+   * returns the information about the module.
+   * @return the information about the module.
+   */
+  public String getModuleInfo() {
+    return "<p>"
+        +
+        "      Overview: This module takes an integer which indicates how many scores "
+        +
+        "      it should accumulate, and on the other input, the scores which will be "
+        + "      averaged."
+        + "    </p>"
+        + "    <p>"
+        +
+        "      Detailed Description: This module will take N scores and average them, "
+        +
+        "      produced the averaged score in the form of a ParameterPoint. The number "
+        +
+        "      of scores to average is ascertained from the Integer passed in on the "
+        +
+        "      first port. When all N scores have been received, the average is "
+        + "      calcuated and the result passed along."
+        + "    </p>"
+        + "    <p>"
+        +
+        "      Data Type Restrictions: None. This module will average any number of "
+        +
+        "      objective scores, producing a Parameter Point with the same number of "
+        + "      objectives. "
+        + "    </p>"
+        + "    <p>"
+        + "      Data Handling: The original ParameterPoiints are discarded and a new one "
+        + "      is produced."
+        + "    </p>"
+        + "    <p>"
+        +
+        "      Scalability: There must be sufficient memory to store all the "
+        + "      ParameterPoints to be averaged."
+        + "    </p>";
+  }
 
-   /**
-    * Return the human readable name of the module.
-    * @return the human readable name of the module.
-    */
-   public String getModuleName() {
-      return "Average Scores";
-   }
+  /**
+   * Return the human readable name of the module.
+   * @return the human readable name of the module.
+   */
+  public String getModuleName() {
+    return "Average Scores";
+  }
+
+  ArrayList folds = null;
+  public ArrayList getNumberFolds() {
+    return folds;
+  }
+
+  public void setNumberFolds(ArrayList tt) {
+    this.folds = tt;
+  }
+
+  public void beginExecution() {
+    folds = new ArrayList(200);
+  }
 
    /**
     * This module will enable if we have not already gotten the fold count and
@@ -157,13 +179,26 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
     * have an input on pipe 1.
     */
    public boolean isReady () {
-      if (numberFolds == -1 && this.getInputPipeSize(0) > 0 &&
-         this.getInputPipeSize(1) > 0)
+
+      // If we have a fold number, we will run and queue it up.
+      if (this.getInputPipeSize(0) > 0)
          return true;
-      else if (this.getInputPipeSize(1) > 0)
-         return true;
-      else
-         return false;
+
+      if (numberFolds == -1){
+
+         // We are not currently processing a set of folds, we must
+         // have some folds queued up before we can run.
+         if (this.folds.size() > 0 && this.getInputPipeSize(1) > 0) {
+            return true;
+         }
+      } else {
+
+         // we are already working on a set of folds.
+         if (this.getInputPipeSize(1) > 0) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /**
@@ -174,6 +209,13 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
     */
    public void doit () {
 
+      // If we have a number of folds, just put it into the
+      // folds list and return.
+      if (this.getInputPipeSize(0) > 0) {
+         this.folds.add(this.pullInput(0));
+         return;
+      }
+
       // Get the parameter point.
       ParameterPoint pp = (ParameterPoint) this.pullInput(1);
       if (numberFolds == -1) {
@@ -181,7 +223,7 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
          // First time through, we need to get num folds, number of
          // attributes in solution space, allocate array for the
          // sums of all the solutions.
-         this.numberFolds = ((Integer) this.pullInput(0)).intValue();
+         this.numberFolds = ((Integer) this.folds.remove(0)).intValue();
          solutionSpaceDimensions = pp.getNumParameters();
          this.avgs = new double [solutionSpaceDimensions];
          for (int i = 0 ; i < solutionSpaceDimensions ; i++)

@@ -16,7 +16,6 @@ public class SimpleModelEvaluator extends DataPrepModule {
 
 
   int numProperties = 6;
-  ArrayList testTables = null;
   public PropertyDescription[] getPropertiesDescriptions() {
 
     PropertyDescription[] pds = new PropertyDescription[numProperties];
@@ -188,8 +187,8 @@ public class SimpleModelEvaluator extends DataPrepModule {
     switch (i) {
       case 0:
         return "Objective Parameter Point";
-	  case 1:
-		return "Prediction Table";
+          case 1:
+                return "Prediction Table";
 
     }
     return "";
@@ -199,8 +198,8 @@ public class SimpleModelEvaluator extends DataPrepModule {
     switch (i) {
       case 0:
         return "A point in objective space indicating the predictive error of model";
-	  case 1:
-		return "The prediction table generated to analyze the results.";
+          case 1:
+                return "The prediction table generated to analyze the results.";
     }
     return "";
   }
@@ -208,8 +207,15 @@ public class SimpleModelEvaluator extends DataPrepModule {
   public String[] getOutputTypes() {
     String[] out = {
         "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
-		"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
+                "ncsa.d2k.modules.core.datatype.table.PredictionTable"};
     return out;
+  }
+  ArrayList testTables = null;
+  public ArrayList getTestTables() {
+    return testTables;
+  }
+  public void setTestTables(ArrayList tt) {
+    this.testTables = tt;
   }
   public void beginExecution() {
     testTables = new ArrayList(200);
@@ -224,7 +230,7 @@ public class SimpleModelEvaluator extends DataPrepModule {
   public boolean isReady() {
     if (this.getInputPipeSize(2) > 0)
       return true;
-    
+
     // we have no test tables, check to see if we
     // have an error function and a model
     if (this.getInputPipeSize(0) > 0 && this.getInputPipeSize(1) > 0 &&
@@ -320,14 +326,14 @@ public class SimpleModelEvaluator extends DataPrepModule {
 
     if (reportAverageError) {
       synchronized (System.out) {
-	    if (exampleTable.getLabel () != null)
+            if (exampleTable.getLabel () != null)
           System.out.println(reportLineLabel + "(" + exampleTable.getLabel() + ")" +
                            ErrorFunction.getErrorFunctionName(errorFunction.
             errorFunctionIndex) + " = " + utility[0]);
-		else
-			System.out.println(reportLineLabel +
+                else
+                        System.out.println(reportLineLabel +
                            ErrorFunction.getErrorFunctionName(errorFunction.
-					errorFunctionIndex) + " = " + utility[0]);
+                                        errorFunctionIndex) + " = " + utility[0]);
       }
     }
 
@@ -341,7 +347,7 @@ public class SimpleModelEvaluator extends DataPrepModule {
     ParameterPoint objectivePoint =  ParameterPointImpl.getParameterPoint(names,utility);
     //    objectivePoint.createFromData(names, utility);
     this.pushOutput(objectivePoint, 0);
-	this.pushOutput(predictionTable, 1);
+        this.pushOutput(predictionTable, 1);
 
   }
 }
