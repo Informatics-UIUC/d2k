@@ -120,8 +120,8 @@ public class KMeansParamsOPT
     s += "</p>";
 
     s += "<p>Detailed Description: ";
-    s += "The KMeans clustering algorithm is an approach where a sample set of ";
-    s += "<i>Number of Clusters</i> rows are chosen from an input table of examples, and ";
+    s += "The KMeans clustering algorithm is an approach where a sample set containing ";
+    s += "<i>Number of Clusters</i> rows is chosen from an input table of examples and ";
     s += "used as initial cluster centers. ";
     s += "These initial clusters undergo a series of assignment/refinement iterations, ";
     s += "resulting in a final cluster model. ";
