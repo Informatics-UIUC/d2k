@@ -23,48 +23,53 @@ public class NaiveBayesModel extends PredictionModelModule implements Serializab
 
 	/** The object that holds the true tallies.  This data is shown in
 		the visualization */
-  	BinTree binTree;
+  	private BinTree binTree;
 	/** The object that holds the data used in calculations.  This may
 		be different than the data in the BinTree, because the tallies
 		and totals are modified whenever there is a 0
 		in the BinTree.  So separate objects are used. */
-	CalcTree calcTree;
+	private CalcTree calcTree;
 
 	/** The data used */
-	//VerticalTable table;
-	ExampleTable table;
-	/** The types of columns in the table. */
-	//HashMap types;
+	private transient ExampleTable table;
 
  	/** A lookup table of the data for the chart, indexed by attribute name */
-  	HashMap chartData;
+  	private HashMap chartData;
   	/** A lookup table of the default data, indexed by attribute name */
-	HashMap defaultData;
+	private HashMap defaultData;
 
- 	HashMap rankedChartData;
-	HashMap alphaChartData;
+ 	private HashMap rankedChartData;
+	private HashMap alphaChartData;
 
  	/** The pie chart for the unknown attributes */
-  	NaiveBayesPieChartData unknownAttrData;
+  	private NaiveBayesPieChartData unknownAttrData;
 
  	/** The initial evidence.  ie the evidence when no other pies
 		are selected */
- 	NaiveBayesPieChartData initialEvidence;
-	double []initEv;
+ 	private NaiveBayesPieChartData initialEvidence;
+	private double []initEv;
 
 	/** The current evidence. */
- 	NaiveBayesPieChartData currentEvidence;
+ 	private NaiveBayesPieChartData currentEvidence;
 
  	/** The list of pies chosen */
-   	LinkedList evidenceList;
+   	private LinkedList evidenceList;
 
 	/** The class names */
-	String []cn;
+	private String []cn;
 
 	/** The attribute names, ranked in order of significance */
-	String []rankedAttributes;
+	private String []rankedAttributes;
 
-	HashMap predictionValues;
+	private HashMap predictionValues;
+
+	private int[] inputFeatures;
+	private int[] outputFeatures;
+
+	private int trainingSetSize;
+
+	private String[] inputColumnNames;
+	private String[] outputColumnNames;
 
 	/**
 		Constructor
@@ -75,13 +80,24 @@ public class NaiveBayesModel extends PredictionModelModule implements Serializab
    	NaiveBayesModel(BinTree bt, /*Vertical*/ExampleTable vt/*, HashMap t*/) {
 		binTree = bt;
 		table = vt;
-		//types = t;
+
+		inputFeatures = table.getInputFeatures();
+		outputFeatures = table.getOutputFeatures();
+		trainingSetSize = table.getNumRows();
+
+		inputColumnNames = new String[inputFeatures.length];
+		for(int i = 0; i < inputFeatures.length; i++) {
+			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
+		}
+
+		outputColumnNames = new String[outputFeatures.length];
+		for(int i = 0; i < outputFeatures.length; i++)
+			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
 
 		cn = bt.getClassNames();
 		String []an = bt.getAttributeNames();
 
 		// create all the NaiveBayesPieChartData objects
-		//chartData = new HashMap(an.length);
 		rankedChartData = new HashMap(an.length);
 		alphaChartData = new HashMap(an.length);
 		defaultData = new HashMap(an.length);
@@ -104,7 +120,6 @@ public class NaiveBayesModel extends PredictionModelModule implements Serializab
 				cd[j] = new NaiveBayesPieChartData(an[i],
 						bn[j], cn, tallies);
 				cd2[j] = cd[j];
-				//cd[j].printMe();
 			}
 			// sort them from largest to smallest
 			cd = sortPieCharts(cd);
@@ -179,8 +194,8 @@ public class NaiveBayesModel extends PredictionModelModule implements Serializab
 			//String classLabel = null;
 			int classColumn = 0;
 
-			int [] ins = table.getInputFeatures();
-			int [] outs = table.getOutputFeatures();
+			int [] ins = inputFeatures;//table.getInputFeatures();
+			int [] outs = outputFeatures;//table.getOutputFeatures();
 
 			classColumn = outs[0];
 			for(int i = 0; i < ins.length; i++) {
@@ -550,6 +565,26 @@ public class NaiveBayesModel extends PredictionModelModule implements Serializab
 		pushOutput(this, 1);
 	}
 
+	public int getTrainingSetSize() {
+		return trainingSetSize;
+	}
+
+	public String[] getInputColumnLabels() {
+		return inputColumnNames;
+	}
+
+	public String[] getOutputColumnLabels() {
+		return outputColumnNames;
+	}
+
+	public int[] getInputFeatureIndicies() {
+		return inputFeatures;
+	}
+
+	public int[] getOutputFeatureIndices() {
+		return outputFeatures;
+	}
+
 	/**
 		Predict the classes based on the attributes.  The binning data
 		from the training set is used.  If the correct class is present,
@@ -559,61 +594,39 @@ public class NaiveBayesModel extends PredictionModelModule implements Serializab
 		assumed to be the same as that of the training data!
 	*/
 	public PredictionTable predict(ExampleTable src) {
-		ExampleTable vt = (ExampleTable)src;
-
-		PredictionTable pt = new PredictionTable(vt);
-		//StringColumn sc = new StringColumn(vt.getNumRows());
-		//sc.setLabel("prediction");
+		PredictionTable pt = null;
+		if (src instanceof PredictionTable)
+			pt = (PredictionTable) src;
+		else
+			pt = new PredictionTable(src);
 
 		int numCorrect = 0;
 
-		// we must get the class column.
-		// it will be expected to have the same label as in the types map
-
-		// first find the column that has the correct classes in it
-		//String classLabel = null;
-		int classColumn = 0;
-
-		int [] ins = table.getInputFeatures();
-		int [] outs = table.getOutputFeatures();
+		int [] ins = pt.getInputFeatures();
+		int [] outs = pt.getOutputFeatures();
 		int [] preds = pt.getPredictionSet();
 
-		// we only allow one out var
-		classColumn = outs[0];
-
-		// if the data did not have the correct class, we cannot
-		// compute the number correct.  just return
-		/*if(classLabel == null)
-			return vt;
-
-		// find the index of the column with the classes in it
-		for(int i = 0; i < vt.getNumColumns(); i++) {
-			if(vt.getColumn(i).getLabel().trim().equals(classLabel.trim()))
-				classColumn = i;
-		}*/
-
-		// for each row
-                int numRows = vt.getNumRows();
+        int numRows = pt.getNumRows();
 		for(int row = 0; row < numRows; row++) {
 			double []currentEv = null;
 
 			// for each column
 			for(int col = 0; col < ins.length; col++) {
-				String aName = vt.getColumnLabel(ins[col]);
+				String aName = pt.getColumnLabel(ins[col]);
 				String bn = null;
 
 				// skip over the class column and omitted columns.
-				Column c = vt.getColumn(ins[col]);
+				Column c = pt.getColumn(ins[col]);
 
 				if(c instanceof NumericColumn)
-					bn = binTree.getBinNameForValue(vt.getColumnLabel(ins[col]),
-						vt.getDouble(row, ins[col]));
+					bn = binTree.getBinNameForValue(pt.getColumnLabel(ins[col]),
+						pt.getDouble(row, ins[col]));
 				else
-					bn = binTree.getBinNameForValue(vt.getColumnLabel(ins[col]),
-						vt.getString(row, ins[col]));
+					bn = binTree.getBinNameForValue(pt.getColumnLabel(ins[col]),
+						pt.getString(row, ins[col]));
 
 				if(bn != null)
-					currentEv = addEvidence(vt.getColumnLabel(ins[col]), bn);
+					currentEv = addEvidence(pt.getColumnLabel(ins[col]), bn);
 			}
 			// now predict
 			if(currentEv != null) {
@@ -624,15 +637,16 @@ public class NaiveBayesModel extends PredictionModelModule implements Serializab
 				String predictedClass = cn[id];
 				pt.setString(predictedClass, row, preds[0]);
 
-				if(predictedClass.trim().equals(vt.getString(row, classColumn)))
+				if(predictedClass.trim().equals(pt.getString(row, outs[0])))
 					numCorrect++;
 			}
-			else
+			else {
 				pt.setString(null, row, preds[0]);
+			}
 			clearEvidence();
 		}
 		System.out.print("number of correct predictions: "+numCorrect);
-		System.out.println(" out of: "+vt.getNumRows());
+		System.out.println(" out of: "+pt.getNumRows());
 
 		return pt;
 	}
@@ -660,8 +674,9 @@ public class NaiveBayesModel extends PredictionModelModule implements Serializab
 		@return the column number
 	*/
 	public String getClassColumn() {
-		int [] outs = table.getOutputFeatures();
-		return table.getColumnLabel(outs[0]);
+		//int [] outs = table.getOutputFeatures();
+		//return table.getColumnLabel(outputFeatures[0]);
+		return outputColumnNames[0];
 	}
 
    	/**
@@ -696,10 +711,6 @@ public class NaiveBayesModel extends PredictionModelModule implements Serializab
 	*/
 	public NaiveBayesPieChartData getCurrentEvidence() {
 		return currentEvidence;
-	}
-
-	public int getTrainingSetSize() {
-		return table.getNumRows();
 	}
 
 	/**
