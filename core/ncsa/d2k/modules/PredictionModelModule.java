@@ -34,8 +34,8 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
     /** A flag used to determine whether transformations should be
      * applied in the predict method or not
      */
-    protected boolean applyTransformationsInPredict = true;
-    protected boolean applyReverseTransformationsAfterPredict = true;
+    protected boolean applyTransformationsInPredict = false;
+    protected boolean applyReverseTransformationsAfterPredict = false;
 
     private PredictionModelModule() {
     }
