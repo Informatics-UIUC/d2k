@@ -110,7 +110,7 @@ abstract public class URLInput extends InputModule implements Serializable {
 	*/
 	protected void doit() throws Exception
 	{
-		ConnectionWrapper out = new ConnectionWrapper(
+		ConnectionWrapper out = new ConnectionWrapperImpl(
 			getUrl(),getDriver(),getUsername(),getPassword() );
 		this.pushOutput (out, 0);
 	}
