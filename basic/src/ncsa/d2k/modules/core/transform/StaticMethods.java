@@ -115,7 +115,7 @@ public class StaticMethods {
  static public boolean[] getRelevant(String[] names, Vector available){
    boolean[] relevant = new boolean[names.length];
    for (int i=0; i<names.length; i++)
-     if(available.contains(names[i].toUpperCase()))
+     if(available.contains(names[i].toUpperCase()) || available.contains(names[i]))
        relevant[i] = true;
      else System.out.println("Label " + names[i] + " was not found in the given input table. " );
 
