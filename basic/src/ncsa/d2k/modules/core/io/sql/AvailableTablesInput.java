@@ -4,7 +4,7 @@ package ncsa.d2k.modules.core.io.sql;
 import ncsa.d2k.core.modules.InputModule;
 import java.sql.*;
 import java.util.Vector;
-import java.beans.PropertyVetoException;  
+import java.beans.PropertyVetoException;
 import ncsa.d2k.core.modules.*;
 
 public class AvailableTablesInput extends InputModule
@@ -54,7 +54,7 @@ public class AvailableTablesInput extends InputModule
 		switch(index) {
 			case 0:
 				return "Database Connection";
-			default: 
+			default:
 				return "No such input";
 		}
 	}
@@ -82,7 +82,7 @@ public class AvailableTablesInput extends InputModule
 				return "Database Connection";
 			case 1:
 				return "Tables List";
-			default: 
+			default:
 				return "No such output";
 		}
 	}
@@ -136,8 +136,8 @@ public class AvailableTablesInput extends InputModule
 		dataCubeOnly = b;
 
 		if ( !dataTableOnly && !dataCubeOnly ) {
-      		    throw new PropertyVetoException( 
-			"\nYou must set either List Data Tables or List Data Cubes to True.", null );   
+      		    throw new PropertyVetoException(
+			"\nYou must set either List Data Tables or List Data Cubes to True.", null );
                 }
 	}
 
@@ -151,7 +151,6 @@ public class AvailableTablesInput extends InputModule
 	protected void doit ()  throws Exception
 	{
 		ConnectionWrapper cw = (ConnectionWrapper) this.pullInput (0);
-                System.out.println("cw is " + cw);
 		Connection con = cw.getConnection();
 		Vector v = new Vector();
 
