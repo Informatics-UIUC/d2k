@@ -87,7 +87,7 @@ public class CfsSubsetEval
   /** Threshold for admitting locally predictive features */
   private double m_c_Threshold;
 
-  
+
 
   /**
    * Constructor
@@ -136,7 +136,7 @@ public class CfsSubsetEval
     setLocallyPredictive(Utils.getFlag('L', options));
   }
 
- 
+
 
   /**
    * Include locally predictive attributes
@@ -157,7 +157,7 @@ public class CfsSubsetEval
     return  m_locallyPredictive;
   }
 
- 
+
   /**
    * Treat missing as a seperate value
    *
@@ -220,10 +220,10 @@ public class CfsSubsetEval
       m_trainTable = data;
 	int[] outputFeatures = ((ExampleTable)data).getOutputFeatures();
 	int[] inputFeatures = ((ExampleTable)data).getInputFeatures();
-	
-	if (outputFeatures == null || outputFeatures.length == 0) 
+
+	if (outputFeatures == null || outputFeatures.length == 0)
 		throw new Exception ( " Class attribute must be specified in ChooseAttributes ");
-	
+
 	int classIndex = outputFeatures[0];
 	int [] classIndexArray =  { classIndex };
 	if (m_trainTable.hasMissingValues(classIndex))
@@ -232,16 +232,16 @@ public class CfsSubsetEval
 	//RemoveRowsWithMissingTransform  removeMissing =
 	//	 new RemoveRowsWithMissingTransform(classIndexArray);
 	//removeMissing.transform((MutableTable)m_trainTable);
-    
+
     m_numAttribs = m_trainTable.getNumColumns();
     m_numInstances = m_trainTable.getNumRows();
     m_isNumeric = m_trainTable.isColumnScalar(m_classIndex);
 
     //TODO do discretization here
-    if(!m_isNumeric) {
+    if(m_isNumeric) {
       m_disTransform = new EntropyBinning();
       m_disTransform.setUseBetterEncoding(true);
-      
+
       BinDescriptor[] binDescr = m_disTransform.buildBins((ExampleTable)m_trainTable,inputFeatures);
       BinTransform bt = new BinTransform(m_trainTable,binDescr, false);
       bt.transform((ExampleTable)m_trainTable);
@@ -250,8 +250,8 @@ public class CfsSubsetEval
     ReplaceNominalsWithIntsTransform tr =
      new ReplaceNominalsWithIntsTransform((ExampleTable)m_trainTable);
     tr.transform((MutableTable)m_trainTable);
-    
-    
+
+
     m_std_devs = new double[m_numAttribs];
     m_corr_matrix = new float [m_numAttribs][];
     for (int i = 0; i < m_numAttribs; i++) {
@@ -287,7 +287,7 @@ public class CfsSubsetEval
     int larger, smaller;
 
     // do numerator
-    
+
     for (int i = 0; i < m_numAttribs; i++) {
     	if (i != m_classIndex) {
     		if (subset.get(i)) {
@@ -309,7 +309,7 @@ public class CfsSubsetEval
     		}
     	}
     }
-   
+
 
 // do denominator
     for (int i = 0; i < m_numAttribs; i++) {
@@ -342,7 +342,7 @@ public class CfsSubsetEval
     }
 
     double merit = (num/Math.sqrt(denom));
-    
+
     if (merit < 0.0) {
       merit *= -1.0;
     }
@@ -923,7 +923,7 @@ public class CfsSubsetEval
     j = 0;
     BitSet temp_group = (BitSet)best_group.clone();
     int larger, smaller;
-    
+
     while (!done) {
       temp_best = -1.0;
 
@@ -948,7 +948,7 @@ public class CfsSubsetEval
       		}
       	}
       }
-     
+
       if (temp_best == -1.0) {
 	done = true;
       }
@@ -957,7 +957,7 @@ public class CfsSubsetEval
 	temp_group.set(j);
 
 // check the best against correlations with others already
-	// in group 
+	// in group
 	for (i = 0; i < m_numAttribs; i++) {
 		if (i > j) {
 			larger = i; smaller = j;
