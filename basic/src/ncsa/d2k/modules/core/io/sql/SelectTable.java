@@ -13,7 +13,7 @@ import ncsa.d2k.userviews.swing.*;
 	SelectTable.java
 
 */
-public class SelectTable extends ncsa.d2k.core.modules.UIModule {
+public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
   JOptionPane msgBoard = new JOptionPane();
 
 	/**
@@ -207,6 +207,9 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
                        System.out.println("No table is selected. ");
                      }
                      else {
+                       //headless conversion support
+                       setSelectedTable(availTablesList.getSelectedValue().toString());
+                       //headless conversion support
                        pushOutput(availTablesList.getSelectedValue().toString(), 0);
                        viewDone("Done");
                      }
@@ -216,6 +219,25 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
                   }
               }
 	}
+
+
+        //headless conversion support
+        private String selectedTable;
+        public String getSelectedTable(){return selectedTable;}
+        public void setSelectedTable(String name){selectedTable = name;}
+
+        protected void doit(){
+          pullInput(0);
+
+          if (selectedTable == null || selectedTable.length() == 0)
+               System.out.println("\n\nSelectTable:\nInvalid name for selected table.\n");
+
+           else
+             pushOutput(selectedTable, 0);
+        }
+
+
+        //headless conversion support
 
 	// QA Comments
 // 2/18/03 - Handed off to QA by Dora Cai

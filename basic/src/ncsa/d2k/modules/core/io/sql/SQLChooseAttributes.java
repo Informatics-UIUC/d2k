@@ -25,7 +25,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 
-public class SQLChooseAttributes extends UIModule {
+public class SQLChooseAttributes extends HeadlessUIModule {
   JOptionPane msgBoard = new JOptionPane();
   ConnectionWrapper cw;
   String tblName;
@@ -89,7 +89,9 @@ public class SQLChooseAttributes extends UIModule {
       s += "<p> Detailed Description: ";
       s += "This module first connects to a database, retrieves the list of attributes ";
       s += "for a selected table, and then allows a user to choose the input and output ";
-      s += "attributes from the list. Based on user's selection, this module creates a meta ";
+      s += "attributes from the list. The user must choose at least one input and one ";
+      s+= "attribute and <u>at most</u> one output attribute. ";
+      s+= "Based on user's selection, this module creates a meta ";
       s += "table to store the meta information (such as attribute name, data type, ";
       s += "and number of rows in the data set), and pass on the information to the ";
       s += "next module. The meta table created by this module  does not contain the ";
@@ -322,6 +324,9 @@ public class SQLChooseAttributes extends UIModule {
         Integer ii = (Integer)inputToIndexMap.get(s);
         inputFeatures[i] = ii.intValue();
       }
+
+      setSelectedInput(selected); //healdess conversion support
+
       selected = outputList.getSelectedValues();
       outputFeatures = new int[selected.length]; // Store the column index of GUI list for output features
       selectedOutput = new int[selected.length]; // Store the column index of Example Table for output features
@@ -330,6 +335,9 @@ public class SQLChooseAttributes extends UIModule {
         Integer ii = (Integer)outputToIndexMap.get(s);
         outputFeatures[i] = ii.intValue();
       }
+
+      setSelectedOutput(selected); //healdess conversion support
+
     }
   }
 
@@ -463,5 +471,218 @@ public class SQLChooseAttributes extends UIModule {
     outputList.removeAll();
     executionManager.moduleDone(this);
   }
+
+  //headless conversion
+  private String[] selectedInputNames;
+  private String[] selectedOutputNames;
+  public Object[] getSelectedInput(){return selectedInputNames;}
+  public Object[] getSelectedOutput(){return selectedOutputNames;}
+  public void setSelectedInput(Object[] ins){selectedInputNames = (String[])ins;}
+  public void setSelectedOutput(Object[] outs){selectedOutputNames = (String[])outs;}
+
+  private String _table;
+
+  protected void doit() throws Exception{
+    cw = (ConnectionWrapper)pullInput(0);
+    _table = (String)pullInput(1);
+
+    con = cw.getConnection();
+    DatabaseMetaData metadata = con.getMetaData();
+
+     ResultSet columns = metadata.getColumns(null,"%",_table,"%");
+     //will hold column name <-> column index
+     HashMap availableColumnMap = new HashMap ();
+     //will hold column index <-> column type.
+     HashMap columTypes = new HashMap();
+     int counter = 0;
+
+     while (columns.next()) {
+       String columnName = columns.getString("COLUMN_NAME");
+       String columnType = columns.getString("TYPE_NAME");
+       availableColumnMap.put( columnName, new Integer(counter));
+       columTypes.put(new Integer(counter), columnName);
+       counter++;
+
+     }//while column
+
+     //verifying that non of the columns appears both in selected input
+     //and selectd output.
+
+     //mapping name <-> meaningless integer
+     HashMap inputMap = new HashMap();
+     for (int i=0; i<selectedInputNames.length; i++)
+       inputMap.put(selectedInputNames[i], new Integer(i));
+
+       //mapping name <-> meaningless integer
+     HashMap outputMap = new HashMap();
+    for (int i=0; i<selectedOutputNames.length; i++)
+      outputMap.put(selectedOutputNames[i], new Integer(i));
+
+      /*@todo: make this module handle multiple output features.*/
+      if(outputMap.size() > 1)
+        throw new Exception("\nSQLChooseAttributes:\nyou cannot choose more than one output column.\n");
+
+      //more validating.
+      if(outputMap.size() == 0)
+        throw new Exception("\nSQLChooseAttributes:\nyou must choose one output column.\n");
+      if(inputMap.size() == 0)
+        throw new Exception("\nSQLChooseAttributes:\nyou must choose at least one input column.\n");
+
+
+   Iterator it = availableColumnMap.keySet().iterator();
+
+
+      String temp = (String)it.next();
+    while(temp != null){
+        if(inputMap.containsKey(temp) && outputMap.containsKey(temp))
+          throw new Exception("SQLChooseAttributes:\nA column can be chosen as either " +
+        "input column or output column. It cannot be both.\n");
+
+      //  temp = (String)it.next();
+
+      }
+
+      //verifying that the selected inputs and outputs are available.
+      //and retrieving the indices of the target inputs and outputs.
+      selectedInput = getTargetColumns(availableColumnMap, selectedInputNames);
+
+
+//      outputFeatures = getTargetColumns(availableColumnMap, selectedOutputNames);
+      //since there can be only one ourput feature...
+      selectedOutput = new int[1];
+      String finalSelectedOutput = null;
+      for (int i=0; i<selectedOutputNames.length; i++){
+        if (availableColumnMap.containsKey(selectedOutputNames[i])) {
+          selectedOutput[0] = ( (Integer) availableColumnMap.get(
+              selectedOutputNames[i])).intValue();
+          finalSelectedOutput = selectedOutputNames[i];
+        }
+        if(finalSelectedOutput != null) break;
+      }
+
+
+
+      int selectedColumn = 0;
+      int numRows = 0;
+      // only include the selected columns in the example table
+      Column[] cols = new Column[inputFeatures.length + outputFeatures.length];
+//      selectedColumn = 0;
+      int inputIndex = 0;
+      int outputIndex = 0;
+
+  //    int colIdx = 0;
+      it = availableColumnMap.keySet().iterator();
+      String currentColName;
+      //for (int colIdx = 0; colIdx < availableColumnMap.size(); colIdx++) {
+      while((currentColName = (String)it.next()) != null){
+
+      if (inputMap.containsKey(currentColName) || outputMap.containsKey(currentColName)) {
+        cols[selectedColumn] = new ObjectColumn();
+        cols[selectedColumn].setLabel(currentColName);
+        // data type may be in uppercase or lowercase
+        int colId = ((Integer)availableColumnMap.get(currentColName)).intValue();
+        String type = (String) columTypes.get(new Integer(colId));
+        if (type.equals("NUMBER") ||
+            type.equals("number") ||
+            type.equals("NUMERIC") ||
+            type.equals("numeric")) {
+          cols[selectedColumn].setIsScalar(true);
+
+          /*@todo: why assuming only one output feature?
+            mend this in createMetaTable too.*/
+
+          // cannot choose numeric column as the output column
+          if (outputFeatures[0] == colId)
+            throw new Exception("\nSQLChooseAttributes:\n" +
+                      "You cannot choose a numeric column as the output column");
+
+        }//if type equals
+
+        else           cols[selectedColumn].setIsScalar(false);
+
+     /*   if (inputMap.containsKey(currentColName)) {
+          selectedInput[inputIndex] = selectedColumn;
+          inputIndex ++;
+        }
+        else if (outputMap.containsKey(currentColName)) {
+          selectedOutput[outputIndex] = selectedColumn;
+          outputIndex ++;
+        }*/
+
+        selectedColumn ++;
+      }//if current name is in either map.
+    }//while
+
+    // create a Table to hold the meta data
+    MutableTableImpl table = new MutableTableImpl(cols);
+    for (int colIdx = 0; colIdx < selectedColumn; colIdx++) {
+      if (cols[colIdx].getIsScalar()) {
+        table.setColumnIsScalar(true,colIdx);
+        table.setColumnIsNominal(false,colIdx);
+      }
+      else {
+        table.setColumnIsScalar(false,colIdx);
+        table.setColumnIsNominal(true,colIdx);
+      }
+    }
+
+
+    // get the count of the rows that have class labels
+    try {
+     // con = cw.getConnection();
+
+     /*this handles only single output column. not multy labeling.*/
+      String countQry = new String("select count(*) from " + _table +
+                        " where " + finalSelectedOutput + " is not null");
+      Statement countStmt = con.createStatement();
+      ResultSet countSet = countStmt.executeQuery(countQry);
+      countSet.next();
+      numRows = countSet.getInt(1);
+    }
+    catch (Exception e){
+      e.printStackTrace();
+      System.out.println("Error occurred in createExampleTable.");
+    }
+   // table.setNumRows(numRows);
+    table.addRows(numRows);
+    ExampleTable et = table.toExampleTable();
+    et.setInputFeatures(selectedInput);
+    et.setOutputFeatures(selectedOutput);
+
+
+    pushOutput(_table,0);
+    pushOutput(et, 1);
+
+
+  }//doit
+
+  /**
+   * for each <codE>desired[i]</code> that is a key in <codE>available</code>
+   * putting th mapped index in <code>available</code> in the returned value.
+   * @param available maps column name to column index
+   * @param desired   names of selected columns by the user (through gui)
+   * @return          int[] with indices of columns that their names are both in
+   *                  <code>available</code> and <code>desired</code>.
+   *                  the indices are the mapped values in <codE>available</code>.
+   */
+  private int[] getTargetColumns(HashMap available, String[] desired){
+    int[] retVal;
+    boolean[] isTarget = new boolean[desired.length];
+    int count = 0;
+    for(int i=0; i<desired.length; i++)
+      if(available.containsKey(desired[i]))
+        count++;
+
+    retVal = new int[count];
+    for(int i=0, j=0; i<desired.length; i++)
+      if(available.containsKey(desired[i])){
+        retVal[j] = ( (Integer) available.get(desired[i])).intValue();
+        j++;
+      }//if
+
+    return retVal;
+
+  }
+  //headless conversion
 
 }
