@@ -137,8 +137,17 @@ public class SQLAutoBin extends AutoBin {
 
 	conn = (DBConnection) pullInput(0);
 	tableName = (String) pullInput(1);
-	tbl = (ExampleTable) pullInput(2);
+	//tbl = (ExampleTable) pullInput(2);
 	//whereClause = (String) pullInput(3);
+
+		try {
+				tbl = (ExampleTable) pullInput(2);
+		} catch ( ClassCastException ce) {
+			throw new Exception(
+							getAlias()
+								+ ": Select input/output features using SQLChooseAttributes before this module");
+		}
+	
 	nf = NumberFormat.getInstance();
 	nf.setMaximumFractionDigits(3);
 	int type = getBinMethod();
@@ -167,8 +176,12 @@ public class SQLAutoBin extends AutoBin {
 			bins = sameWeight(weight);
 		}
 
-		BinTransform bt = new BinTransform(bins, false);
+		
+		//Add bins named "unknown" for each binned column that has missing values
+		bins = BinningUtils.addMissingValueBins(tbl,bins);
 
+		BinTransform bt = new BinTransform(bins, false);
+		
 		pushOutput(bt, 0);
 		//pushOutput(et, 1);
 	}
@@ -478,3 +491,7 @@ public class SQLAutoBin extends AutoBin {
 * 				fixed [bug 151] - wrong uniform binning -  min, max were interchanged
 **				added "unknown" bins for relevant attributes that have missing values
 */
+/*12 -11-03 Anca - added an "unkown" named bin for every column that has missing values
+*				Missing values are set in SQLChooseAttributes in the  metadata example table
+*/
+//12-12--03 Anca - added check and exception for input table that is not an ExampleTable

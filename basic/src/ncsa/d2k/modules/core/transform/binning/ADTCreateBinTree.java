@@ -133,7 +133,15 @@ public class ADTCreateBinTree extends DataPrepModule {
 	public void doit()  throws Exception{
 		ADTree adt = (ADTree) pullInput(0);
 		BinTransform btrans = (BinTransform) pullInput(1);
-		ExampleTable vt = (ExampleTable) pullInput(2);
+		//ExampleTable vt = (ExampleTable) pullInput(2);
+		ExampleTable vt;
+				try {
+						vt = (ExampleTable) pullInput(2);
+				} catch ( ClassCastException ce) {
+					throw new Exception(
+									getAlias()
+										+ ": Select input/output features using ChooseAttributes before this module");
+				}
 		int[] ins = vt.getInputFeatures();
 		if (ins == null || ins.length == 0)
 		 throw new Exception("Input features are missing. Please select the input features.");
@@ -256,3 +264,4 @@ public class ADTCreateBinTree extends DataPrepModule {
  * QA comments:
  * 12-08-03: Vered started qa process
  */
+//12-12--03 Anca - added check and exception for input table that is not an ExampleTable 

@@ -80,7 +80,14 @@ public class CreateBinTree extends DataPrepModule {
 
 	public void doit() throws Exception {
 		BinTransform bt = (BinTransform) pullInput(0);
-		ExampleTable et = (ExampleTable) pullInput(1);
+		ExampleTable et;
+		try {
+				et = (ExampleTable) pullInput(1);
+		} catch ( ClassCastException ce) {
+			throw new Exception(
+							getAlias()
+								+ ": Select input/output features using ChooseAttributes before this module");
+		}
 
 		int[] ins = et.getInputFeatures();
 		int[] out = et.getOutputFeatures();
@@ -318,3 +325,4 @@ public class CreateBinTree extends DataPrepModule {
 // module gives OutOfMemory error for large number of attributes
 // merged Binning module functionality in this module
 // added debug variable
+//12-12--03 Anca - added check and exception for input table that is not an ExampleTable

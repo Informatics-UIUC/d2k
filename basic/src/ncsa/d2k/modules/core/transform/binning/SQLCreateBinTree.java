@@ -94,7 +94,15 @@ public class SQLCreateBinTree extends DataPrepModule {
 		BinTransform btrans = (BinTransform) pullInput(0);
 		DBConnection conn = (DBConnection) pullInput(1);
 		String tableName = (String) pullInput(2);
-		ExampleTable et = (ExampleTable) pullInput(3);
+		//ExampleTable et = (ExampleTable) pullInput(3);
+		ExampleTable et;
+			try {
+					et = (ExampleTable) pullInput(3);
+			} catch ( ClassCastException ce) {
+				throw new Exception(
+								getAlias()
+									+ ": Select input/output features using SQLChooseAttributes before this module");
+			}
 
 		// get the attributes names from the input features
 		int[] inputFeatures = et.getInputFeatures();
@@ -250,3 +258,5 @@ public class SQLCreateBinTree extends DataPrepModule {
      }
 
 }
+
+//12-12--03 Anca - added check and exception for input table that is not an ExampleTable
