@@ -360,7 +360,7 @@ public class ReadDelimitedFormat extends InputModule
 	 * @param f the file to check for delimiters
 	 * @returns one from among the set of delimiters we look for (',', ' ', '\t'), or '=' if the search failed.
 	 */
-	private char findDelimiter (File f) {
+	protected char findDelimiter (File f) {
 		int counters [] = new int [3];
 		final int tabIndex = 0, spaceIndex = 1, commaIndex = 2;
 
@@ -737,16 +737,33 @@ public class ReadDelimitedFormat extends InputModule
 	public ReadDelimitedFormat() {
 	}
 
-	public ReadDelimitedFormat(String fn) {
-		File f = new File(fn);
-		delimiterOne = this.findDelimiter (f);
-		hasTypes = true;
-		typesRow = 1;
-		hasLabels = true;
-		labelsRow = 0;
-		if(f.exists()) {
-			Table vtable = readSDFile(f);
-			//vtable.print();
-		}
+    public ReadDelimitedFormat( char delimiter, int typesR, int labelsR) {
+        delimiterOne = delimiter;
+        if ( typesR == -1 )
+            hasTypes = false;
+        else 
+            hasTypes = true; 
+        typesRow = typesR;
+	
+        if ( labelsR == -1 )
+            hasLabels = false;
+        else 
+            hasLabels = true; 
+        labelsRow = labelsR;
+	
+    }
+    
+    
+    public ReadDelimitedFormat(String fn) {
+	File f = new File(fn);
+	delimiterOne = this.findDelimiter (f);
+	hasTypes = true;
+	typesRow = 1;
+	hasLabels = true;
+	labelsRow = 0;
+	if(f.exists()) {
+	    Table vtable = readSDFile(f);
+	    //vtable.print();
 	}
+    }
 }

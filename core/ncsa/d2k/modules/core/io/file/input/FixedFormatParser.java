@@ -3,8 +3,11 @@ package ncsa.d2k.modules.core.io.file.input;
 import java.io.*;
 import java.text.ParseException;
 import java.util.*;
+import ncsa.d2k.modules.core.datatype.ADTree;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+
+
 
 /**
  * Class FixedFormatParser
@@ -47,6 +50,7 @@ class FixedFormatParser extends FileInputStream
     protected   int              _typesRow;
 
     protected	double	_emptyValue = 0;
+    protected  boolean debug = false; 
 
     //these are used by the addBlank and getBlanks methods
     ArrayList blankRows;
@@ -347,6 +351,158 @@ class FixedFormatParser extends FileInputStream
 		return (TableImpl)DefaultTableFactory.getInstance().createTable(tableColumns);
 	}
 
+
+    /**
+     * Parse the body of the file, which is formatted according to
+     * <code>format</code>. <br>
+     * The ADTree structure is built in memory if there is enough space.
+     * If not this method will fail, by entering an infinite memory swap mode.
+     * @return an ADTree structure
+     *
+     * @exception ParseException
+     * @exception IOException
+     */
+
+
+    public ADTree parseAD()  throws ParseException, IOException
+    {
+        int headerLines = readHeader(); // read in the header
+
+        /* count the number of lines in the rest of the file */
+        _reader.mark((int)_fileLength);  //mark the current position
+
+        char buffer[] = new char[(int)_fileLength];
+        _reader.read(buffer, 0, (int)_fileLength);
+        int lines = _reader.getLineNumber();
+        _reader.reset();
+        _tableLength = lines-headerLines;
+
+        /* allocate the ADTree */
+        ADTree result = new ADTree(_noOfColumns);
+
+        /* set the labels*/
+        for(int i = 0; i < _noOfColumns; i++) {
+
+            if ( _columnLabels != null )
+                result.setLabel(i+1,(String)_columnLabels.get(i));
+            else
+                result.setLabel(i+1,Integer.toString(i+1));
+
+        }
+
+	//get rid of the vectors
+        int[] begins=new int[_noOfColumns];
+        int[] ends=new int[_noOfColumns];
+
+        for(int i=0;i<_noOfColumns; i++){
+            begins[i]=((Integer)_columnBegin.get(i)).intValue();
+            ends[i]=((Integer)_columnEnd.get(i)).intValue();
+        }
+
+
+        // now initialize the tree
+        String values[] = new String[_noOfColumns];
+        for(int row = 0; row < _tableLength; row++) {
+
+            String line = _reader.readLine();
+            if(debug)
+                System.out.println("line " + line);
+
+            if(line == null)
+                throw new ParseException("null line " + (row+headerLines), 0);
+
+            if(isComment(line))
+                continue;
+
+            for(int col = 0; col < _noOfColumns; col++) {
+                if (debug)
+                    System.out.println("begin end  substring  "
+                                       + begins[col] + " " + ends[col] + " "
+                                       + line.substring(begins[col],ends[col]+1));
+                values[col]=(line.substring(begins[col],ends[col]+1)).trim();
+            }
+            result.countLine(result,values);
+
+        }
+        return result;
+    }
+
+
+    /**
+     * Parse the body of the file, which is formatted according to
+     * <code>format</code>. <br>
+     * The ADTree metadata is stored in main memory.
+     * @return an ADTree structure
+     *
+     * @exception ParseException
+     * @exception IOException
+     */
+
+
+    public ADTree scanFile2AD()  throws ParseException, IOException
+    {
+        int headerLines = readHeader(); // read in the header
+
+        /* count the number of lines in the rest of the file */
+        _reader.mark((int)_fileLength);  //mark the current position
+
+        char buffer[] = new char[(int)_fileLength];
+        _reader.read(buffer, 0, (int)_fileLength);
+        int lines = _reader.getLineNumber();
+        _reader.reset();
+        _tableLength = lines-headerLines;
+
+        /* allocate the ADTree */
+        ADTree result = new ADTree(_noOfColumns);
+
+        /* set the labels*/
+        for(int i = 0; i < _noOfColumns; i++) {
+
+            if ( _columnLabels != null )
+                result.setLabel(i+1,(String)_columnLabels.get(i));
+            else
+                result.setLabel(i+1,Integer.toString(i+1));
+        }
+
+        //get rid of the vectors
+        int[] begins=new int[_noOfColumns];
+        int[] ends=new int[_noOfColumns];
+
+        for(int i=0;i<_noOfColumns; i++){
+            begins[i]=((Integer)_columnBegin.get(i)).intValue();
+            ends[i]=((Integer)_columnEnd.get(i)).intValue();
+        }
+
+
+        // now initialize the tree
+        String values[] = new String[_noOfColumns];
+        for(int row = 0; row < _tableLength; row++) {
+
+            String line = _reader.readLine();
+            if(debug)
+                System.out.println("line " + line);
+
+            if(line == null)
+                throw new ParseException("null line " + (row+headerLines), 0);
+
+            if(isComment(line))
+                continue;
+
+
+            for(int col = 0; col < _noOfColumns; col++) {
+                if (debug)
+                    System.out.println("begin end  substring  "
+                                       + begins[col] + " " + ends[col] + " "
+                                       + line.substring(begins[col],ends[col]+1));
+                values[col]=(line.substring(begins[col],ends[col]+1)).trim();
+            }
+            result.scanUniqueValues(result,values);
+
+        }
+        return result;
+    }
+
+
 	/*
 		keeps track of which fields that were read were actually
 		blank
@@ -475,6 +631,36 @@ class FixedFormatParser extends FileInputStream
 
     }
 
+
+    /*
+       returns an ExampleTable that has no data, only information
+       about the columns
+    */
+
+    public ExampleTable getMetadata() {
+
+        /* allocate the table */
+        //      ExampleTable result = new ExampleTable(_noOfColumns);
+
+        /* allocate the columns  and set the labels*/
+        Column []tableColumns = new Column[_noOfColumns];
+        for(int i = 0; i < _noOfColumns; i++) {
+
+            tableColumns[i]
+                = createColumn((String)_columnType.get(i),_tableLength);
+            if ( _columnLabels != null )
+                tableColumns[i].setLabel((String)_columnLabels.get(i));
+            else
+                tableColumns[i].setLabel(Integer.toString(i));
+
+        }
+
+	DefaultTableFactory  dtf = DefaultTableFactory.getInstance();  
+	Table table = dtf.createTable(tableColumns);
+  	return dtf.createExampleTable(table);
+
+
+    }
 
 
 	/**
