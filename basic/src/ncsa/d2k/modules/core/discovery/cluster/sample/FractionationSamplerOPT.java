@@ -307,7 +307,9 @@ public class FractionationSamplerOPT
       ex.printStackTrace();
       System.out.println(ex.getMessage());
       System.out.println("ERROR: FractionationSamplerOPT.doit()");
-      throw ex;
+      // MRC added 6/24/04: the message given here is inadequate; need to add
+      // more information for the user.
+      throw new Exception("Error in Fractionation Sampler: "+ex.toString());
     }
   }
 
