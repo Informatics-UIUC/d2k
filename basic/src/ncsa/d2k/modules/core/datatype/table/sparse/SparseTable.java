@@ -747,6 +747,27 @@ public abstract class SparseTable
     }
   }
 
+  /**
+   * Return true if the value at (row, col) is a missing value, false otherwise.
+   * @param row the row index
+   * @param col the column index
+   * @return true if the value is missing, false otherwise
+   */
+  public boolean isValueDefault(int row, int col) {
+//    if ((col < 0) || (col >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + col);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
+    if (columns.containsKey(col)) {
+      return ((AbstractSparseColumn)getColumn(col)).isValueDefault(row);
+    }
+    else {
+      return false;
+    }
+  }
+
 
   /**
    * Return true if any value in this Table is missing.

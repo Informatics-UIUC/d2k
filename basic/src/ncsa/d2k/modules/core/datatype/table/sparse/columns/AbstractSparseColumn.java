@@ -328,6 +328,17 @@ abstract public class AbstractSparseColumn
   }
 
   /**
+   * Verifies if row no. <code>pos</code> holds a value.
+   *
+   * @param pos     the inspected row no.
+   * @return        true if row no. <code>pos</code> holds a value, otherwise
+   *                returns false.
+   */
+  public boolean isValueDefault(int pos) {
+    return ( ( (VHashMap) getElements()).containsKey(pos));
+  }
+
+  /**
    * Verifies if row #<code>row</code> holds an empty value
    * @param row - the row which its value is being validated.
    * @return true if the value is empty, false otherwise
@@ -351,11 +362,14 @@ abstract public class AbstractSparseColumn
    * @return true if the value is missing, false otherwise
    */
   public boolean hasMissingValues() {
-    for (int i = 0; i < this.getNumRows(); i++) {
-      if (this.isValueMissing(i)) {
-        return true;
-      }
+    if (missing.size() > 0){
+      return true;
     }
+//    for (int i = 0; i < this.getNumRows(); i++) {
+//      if (this.isValueMissing(i)) {
+//        return true;
+//      }
+//    }
     return false;
   }
 

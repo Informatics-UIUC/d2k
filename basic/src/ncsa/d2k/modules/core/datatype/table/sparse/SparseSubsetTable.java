@@ -6,6 +6,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 
 /**
  * This is a subset of the original table. It contains an array of the
@@ -272,6 +273,244 @@ public class SparseSubsetTable extends SparseMutableTable {
     this.subset[pos1] = this.subset[pos2];
     this.subset[pos2] = swap;
   }
+
+
+  /**
+   * Get a Column from the table. The columns must be compressed to provide
+   * a consistent view of the data.
+   * @param pos the position of the Column to get from table
+   * @return the Column at in the table at pos
+   */
+  Column [] getColumns () {
+     Column copyColumns [] = new Column [this.getNumColumns()];
+     for (int i = 0 ; i < this.getNumColumns() ; i++)
+        copyColumns[i] = this.compressColumn(i);
+     return copyColumns;
+  }
+
+  /**
+   * Return a compressed representation of the column identified by the index
+   * passed in..
+   * @param colindex the column to compress
+   * @return the expanded compress.
+   */
+  private Column compressColumn (int colindex) {
+
+     // init our data objects, create a new column
+     Column col = null;
+     try {
+       col = super.getColumn(colindex);
+     } catch (Exception e){
+       //should catch the VERY rare and starnge case when a column doesn't exist.
+       return null;
+     }
+     String columnClass = (col.getClass()).getName();
+     Column expandedColumn = null;
+     try {
+        expandedColumn = (Column)Class.forName(columnClass).newInstance();
+     } catch (Exception e) {
+        System.out.println(e);
+     }
+
+     // create a new column
+     int numTableRows = this.getNumRows();
+     expandedColumn.addRows(numTableRows);
+     expandedColumn.setLabel(col.getLabel());
+     expandedColumn.setComment(col.getComment());
+     expandedColumn.setIsScalar(col.getIsScalar());
+     expandedColumn.setIsNominal(col.getIsNominal());
+
+     //set the elements of the column where appropriate as determined by subset
+     for (int i = 0; i < this.getNumRows(); i++) {
+        if (this.isValueMissing(i, colindex)) {
+           expandedColumn.setValueToMissing(true, i);
+        } else {
+          if (!isValueDefault(i, colindex)){
+            expandedColumn.setObject(this.getObject(i, colindex), i);
+            // ANCA: replaced line: expandedColumn.setValueToMissing(false, subset[i]);
+            expandedColumn.setValueToMissing(false, i);
+          }
+        }
+     }
+     return expandedColumn;
+  }
+
+  /**
+   * Sets the reference to the internal representation of this Table.
+   * @param newColumns a new internal representation for this Table
+   */
+  public void setColumns (Column[] newColumns) {
+     for (int i = 0 ; i < this.getNumColumns() ; i++){
+       this.setColumn(newColumns[i], i);
+     }
+  }
+
+  /**
+   *
+   * Get a Column from the table.
+   * @param pos the position of the Column to get from table
+   * @return the Column at in the table at pos
+   */
+  public Column getColumn (int pos) {
+     return this.compressColumn(pos);
+  }
+
+
+    /**
+   *
+   * Get a Column from the table.
+   * @param pos the position of the Column to get from table
+   * @return the Column at in the table at pos
+   */
+  public void setColumn (Column col, int where) {
+     super.setColumn(expandColumn(col), where);
+  }
+
+  /**
+   * Column may or may not be the correct size for this table, it may only
+   * be the size of the subset. If it is the size of the subset, create a
+   * new column of the correct size, then assign the data from the original
+   * column to the new column.
+   * @param col the column to expand
+   * @return the expanded column.
+   */
+  protected Column expandColumn (Column col) {
+     String columnClass = (col.getClass()).getName();
+     Column expandedColumn = null;
+
+     //if col is the first column in the table add it as is and initialize subset
+     int numRows = super.getNumRows();
+     if (columns.size() == 0 && subset.length == 0) {
+
+        // This is the first column added. Set the subset to include everything
+        // and submist the column unmodified.
+        numRows = col.getNumRows();
+        subset = new int[numRows];
+        for (int i = 0; i < this.getNumRows(); i++) {
+           subset[i] = i;
+        }
+        expandedColumn = col;
+     } else if (numRows == col.getNumRows()) {
+        expandedColumn = col;
+     } else {
+
+        // the column is not the correct size, resize it to size of the
+        // other columns in the table.
+        try {
+           expandedColumn = (Column)Class.forName(columnClass).newInstance();
+        } catch (Exception e) {
+           System.out.println(e);
+        }
+        expandedColumn.addRows(numRows);
+        expandedColumn.setLabel(col.getLabel());
+        expandedColumn.setComment(col.getComment());
+        expandedColumn.setIsScalar(col.getIsScalar());
+        expandedColumn.setIsNominal(col.getIsNominal());
+
+        //set the elements of the column where appropriate as determined by subset
+        Object el;
+        for (int i = 0; i < subset.length; i++) {
+           if (col.isValueMissing(i)) {
+              expandedColumn.setValueToMissing(true, subset[i]);
+           } else {
+             if (!((AbstractSparseColumn)col).isValueDefault(i)){
+               el = col.getObject(i);
+               expandedColumn.setObject(el, subset[i]);
+               expandedColumn.setValueToMissing(false, subset[i]);
+             }
+           }
+        }
+     }
+     return expandedColumn;
+  }
+
+  /**
+           * Add a new Column after the last occupied position in this Table.
+           * If this is the first column in the table it will be added as is.
+           * If not, it will be expanded to match the other columns and corresponding subset
+           * @param newColumn the Column to be added to the table
+           */
+  public void addColumn(Column col) {
+     col = this.expandColumn(col);
+     super.addColumn(col);
+  }
+
+  /**
+   * Add a new Column after the last occupied position in this Table.
+   * @param newColumn the Column to be added to the table
+   */
+  public void addColumns(Column[] cols) {
+     // Expand the columns before adding them.
+     for (int i = 0 ; i < cols.length ; i++) {
+        addColumn(cols[i]);
+     }
+  }
+
+
+  /**
+   * Insert a column in the table.
+   * @param col the column to add.
+   * @param where position were the column will be inserted.
+   */
+  public void insertColumn(Column col, int where) {
+     // expand the column
+     col = this.expandColumn(col);
+     super.insertColumn(col, where);
+  }
+
+  /**
+   * Insert columns in the table.
+   * @param datatype the columns to add.
+   * @param where the number of columns to add.
+   */
+  public void insertColumns(Column [] datatype, int where){
+     for (int i = 0 ; i < datatype.length ; i++) {
+       insertColumn(datatype[i], where+i);
+     }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //  /**
 //   * Add a new Column after the last occupied position in this Table.
