@@ -2,7 +2,6 @@ package ncsa.d2k.modules.core.io.file.output;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.io.*;
 
@@ -11,16 +10,16 @@ import java.io.*;
    Write the contents of a Table to a flat file.
    @author David Clutter
 */
-public class WriteVTToFile extends OutputModule
+public class WriteTableToFile extends OutputModule
 	implements HasNames, Serializable {
 
 	transient String delimiter;
 
-	boolean comma;
-	boolean tab;
-	boolean space;
-	boolean useDataTypes;
-	boolean useColumnLabels;
+	boolean comma = false;
+	boolean tab = true;
+	boolean space = false;
+	boolean useDataTypes = true;
+	boolean useColumnLabels = true;
 
     public boolean getComma() {
     	return comma;
@@ -90,8 +89,7 @@ public class WriteVTToFile extends OutputModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-    	String []in = {"java.lang.String",
-			"ncsa.d2k.modules.datatype.table.basic.TableImpl"};
+    	String []in = {"java.lang.String", "ncsa.d2k.modules.core.datatype.table.Table"};
 		return in;
 	}
 
@@ -153,7 +151,7 @@ public class WriteVTToFile extends OutputModule
 	*/
     public void doit() {
     	String fileName = (String)pullInput(0);
-		TableImpl vt = (TableImpl)pullInput(1);
+		Table vt = (Table)pullInput(1);
 		FileWriter fw;
 		String newLine = "\n";
 
@@ -181,7 +179,7 @@ public class WriteVTToFile extends OutputModule
 			// write the datatypes.
 			if(useDataTypes) {
 				for(int i = 0; i < vt.getNumColumns(); i++) {
-					String s = getDataType(vt.getColumn(i));
+					String s = getDataType(vt.getColumnType(i));
 					fw.write(s, 0, s.length());
 					if(i != (vt.getNumColumns() - 1))
 						fw.write(delimiter.toCharArray(), 0, delimiter.length());
@@ -211,7 +209,7 @@ public class WriteVTToFile extends OutputModule
 	/**
 		Get the datatype of a column.
 	*/
-	public static final String getDataType(Column c) {
+	/*public static final String getDataType(Column c) {
 		if(c instanceof StringColumn)
 			return "String";
 		else if(c instanceof IntColumn)
@@ -234,5 +232,39 @@ public class WriteVTToFile extends OutputModule
 			return "char[]";
 		else
 			return "unknown";
+	}*/
+
+	/**
+		Get the datatype of a column.
+	*/
+	public static final String getDataType(int i) {
+		switch(i) {
+			case 0:
+				return "int";
+			case 1:
+				return "float";
+			case 2:
+				return "double";
+			case 3:
+				return "short";
+			case 4:
+				return "long";
+			case 5:
+				return "String";
+			case 6:
+				return "char[]";
+			case 7:
+				return "byte[]";
+			case 8:
+				return 	"boolean";
+			case 9:
+				return "Object";
+			case 10:
+				return "byte";
+			case 11:
+				return "char";
+			default:
+				return "String";
+		}
 	}
 }
