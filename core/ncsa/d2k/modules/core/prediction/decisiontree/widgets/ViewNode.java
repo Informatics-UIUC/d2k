@@ -15,6 +15,8 @@ import ncsa.d2k.modules.core.prediction.decisiontree.*;
 */
 public class ViewNode {
 
+	static JFrame frame;
+
 	// Decision tree model
 	ViewableDTModel dmodel;
 
@@ -34,7 +36,7 @@ public class ViewNode {
 	// y is top left of bar graph
 	double x, y;
 	double xspace = 20;
-	double yspace = 60;
+	double yspace = 80;
 
 	double gwidth;
 	double gheight = 60;
@@ -55,10 +57,14 @@ public class ViewNode {
 
 	DecisionTreeScheme scheme;
 
-	public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode) {
+	// the branch label above this node
+	private String blabel;
+
+	public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode, String blab) {
 		dmodel = model;
 		dnode = node;
 		parent = vnode;
+		blabel = blab;
 		children = new ArrayList(dnode.getNumChildren());
 
 		findValues();
@@ -67,6 +73,12 @@ public class ViewNode {
 		gwidth = leftinset + tickmark + (barwidth + barspace)*values.length + rightinset;
 		yincrement = gheight/(ygrid+1);
 		yscale = (gheight - 2*yincrement)/scalesize;
+
+		if(frame == null) {
+			frame = new JFrame();
+			frame.addNotify();
+			frame.setFont(DecisionTreeScheme.textfont);
+		}
 	}
 
 	public void addChild(ViewNode vnode) {
@@ -112,7 +124,31 @@ public class ViewNode {
 	}
 
 	public double getWidth() {
-		return xspace + gwidth + xspace;
+		//if(!left && !right)
+		//	return xspace + gwidth+ xspace;
+
+		Graphics g = null;
+		while(g == null)
+			g = frame.getGraphics();
+		FontMetrics fm = g.getFontMetrics();
+		int strwid1 = fm.stringWidth(blabel);
+
+		double w1 = xspace+(gwidth/2);
+		double w2 = strwid1+(gwidth/2);
+
+		/*if(w1 > w2)
+			return w1+(gwidth/2)+xspace;
+		else
+			return w2+(gwidth/2)+xspace;
+			*/
+
+		double wid1 = strwid1*2;
+		double wid2 = xspace + gwidth+ xspace;
+
+		if(wid1 > wid2)
+			return wid1;
+		else
+			return wid2;
 	}
 
 	public double findSubtreeWidth() {

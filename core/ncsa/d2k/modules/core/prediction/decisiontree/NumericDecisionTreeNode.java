@@ -59,6 +59,8 @@ public class NumericDecisionTreeNode extends DecisionTreeNode
 	public void addBranches(double split, String leftLabel,
 		DecisionTreeNode left, String rightLabel, DecisionTreeNode right) {
 
+		//left.setLabel(leftLabel);
+		//right.setLabel(rightLabel);
 		splitValue = split;
 		branchLabels.add(leftLabel);
 		children.add(left);

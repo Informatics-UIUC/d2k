@@ -4,7 +4,7 @@ import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.util.*;
 
-
+import java.text.*;
 import java.util.*;
 import java.io.Serializable;
 
@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 	@author David Clutter
 */
-public class C45TreeBuilder extends ComputeModule implements Serializable {
+final public class C45TreeBuilder extends ComputeModule implements Serializable {
 
 	public static void main(String[] args) {
 		double d1 = (double)9/(double)14;
@@ -42,7 +42,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		@param data the probabilities
 		@return the information conveyed by the probabilities
 	*/
-	static double entropy(double[] data) {
+	final static double entropy(double[] data) {
 		double retVal = 0;
 		for(int i = 0; i < data.length; i++) {
 			retVal += -1*data[i]*lg(data[i]);
@@ -56,7 +56,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		@param d the number to take the binary log of
 		@return the binary log of d
 	*/
-	static double lg(double d) {
+	final static double lg(double d) {
 		return Math.log(d)/Math.log(2.0);
 	}
 
@@ -73,10 +73,22 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		return threshold;
 	}
 
-	static String LESS_THAN = " < ";
-	static String GREATER_THAN_EQUAL_TO = " >= ";
-	static int NUMERIC_VAL_COLUMN = 0;
-	static int NUMERIC_OUT_COLUMN = 1;
+	private final static String LESS_THAN = " < ";
+	private final static String GREATER_THAN_EQUAL_TO = " >= ";
+	private final static int NUMERIC_VAL_COLUMN = 0;
+	private final static int NUMERIC_OUT_COLUMN = 1;
+	private static final NumberFormat nf = NumberFormat.getInstance();
+
+	public void beginExecution() {
+		super.beginExecution();
+		nf.setMaximumFractionDigits(5);
+	}
+
+	public void endExecution() {
+		super.endExecution();
+		table = null;
+		outputs = null;
+	}
 
 	/**
 		Calculate the entropy of a numeric attribute.  This is the sum of
@@ -93,7 +105,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		@return the information given by a numeric attribute with the given
 			split value
 	*/
-	double numericAttributeEntropy(VerticalTable vt, double splitVal,
+	private final double numericAttributeEntropy(VerticalTable vt, double splitVal,
 		ArrayList examples, int attCol, int outCol) {
 
 		HashMap lessThanTally = new HashMap();
@@ -175,7 +187,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		@return the split value for this attribute that gives the maximum
 			information
 	*/
-	double findSplitValue(int attCol, ArrayList examples) {
+	private final double findSplitValue(int attCol, ArrayList examples) {
 		// copy the examples into a new table
 		DoubleColumn dc = new DoubleColumn(examples.size());
 		StringColumn sc = new StringColumn(examples.size());
@@ -241,7 +253,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		@return an object holding the gain and the best split value of
 			the column
 	*/
-	EntrSplit numericGain(int attCol, ArrayList examples) {
+	private final EntrSplit numericGain(int attCol, ArrayList examples) {
 		double gain = outputEntropy(outputs[0], examples);
 
 		double splitVal = findSplitValue(attCol, examples);
@@ -258,7 +270,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 	/**
 		A simple structure to hold the gain and split value of a column.
 	*/
-	class EntrSplit {
+	private final class EntrSplit {
 		double splitValue;
 		double gain;
 
@@ -278,7 +290,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 			the table
 		@return the gain of the column
 	*/
-	double categoricalGain(int attCol, ArrayList examples) {
+	private final double categoricalGain(int attCol, ArrayList examples) {
 		// total entropy of the class column -
 		// entropy of each of the possibilities of the attribute
 		// (p =#of that value, n=#rows)
@@ -309,7 +321,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 			the table
 		@return the information given by attValue
 	*/
-	double categoricalAttributeEntropy(int colNum, String attValue,
+	private final double categoricalAttributeEntropy(int colNum, String attValue,
 		ArrayList examples) {
 
 		HashMap outTally = new HashMap();
@@ -356,7 +368,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		@return an array containing all the unique values for examples in
 			this column
 	*/
-	String[] uniqueValues(int colNum, ArrayList examples) {
+	private final String[] uniqueValues(int colNum, ArrayList examples) {
 		int numRows = examples.size();
 
 		// count the number of unique items in this column
@@ -389,7 +401,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 			the table
 		@return the information value of the branchiness of this attribute
 	*/
-	double splitInfo(int colNum, double splitVal, ArrayList examples) {
+	private final double splitInfo(int colNum, double splitVal, ArrayList examples) {
 		int numRows = examples.size();
 		double tot = 0;
 		double[] probs;
@@ -455,7 +467,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 			the table
 		@return the entropy of the output column
 	*/
-	double outputEntropy(int colNum, ArrayList examples) {
+	private final double outputEntropy(int colNum, ArrayList examples) {
 		double numRows = (double)examples.size();
 
 		// count the number of unique items in this column
@@ -498,7 +510,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 			gain and (if numeric) the best split for that column, or null
 			if no attributes provide information gain over the threshold.
 	*/
-	ColSplit getHighestGainAttribute(ArrayList attributes, ArrayList examples) {
+	private final ColSplit getHighestGainAttribute(ArrayList attributes, ArrayList examples) {
 		ArrayList list = new ArrayList();
 
 		int topCol = 0;
@@ -538,41 +550,39 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		A simple structure to hold a column index and the best split value of
 		an attribute.
 	*/
-	class ColSplit {
+	private final class ColSplit {
 		int col;
 		double splitValue;
 	}
 
 	// the table that contains the data set
-	transient ExampleTable table;
+	transient private ExampleTable table;
 	// the indices of the columns with output variables
-	transient int[] outputs;
+	transient private int[] outputs;
 
-	static String INFO = "Build a C4.5 decision tree.";
-	static String IN0 = "An ExampleTable to build a decision tree from. "
-		+"Only one output feature is used.";
-	static String OUT0 = "The decision tree built by this module.";
-	static String[] IN = {"ncsa.d2k.util.datatype.ExampleTable"};
-	static String[] OUT = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode"};
 
 	public String getModuleInfo() {
-		return INFO;
+		return "Build a C4.5 decision tree.";
 	}
 
 	public String getInputInfo(int i) {
-		return IN0;
+		String s = "An ExampleTable to build a decision tree from. ";
+		s += "Only one output feature is used.";
+		return s;
 	}
 
 	public String getOutputInfo(int i) {
-		return OUT0;
+		return "The decision tree built by this module.";
 	}
 
 	public String[] getInputTypes() {
-		return IN;
+		String[] in = {"ncsa.d2k.util.datatype.ExampleTable"};
+		return in;
 	}
 
 	public String[] getOutputTypes() {
-		return OUT;
+		String[] out = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode"};
+		return out;
 	}
 
 	/**
@@ -617,7 +627,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		@param attributes the indices of the columns to use
 		@return a tree
 	*/
-	DecisionTreeNode buildTree(ArrayList examples, ArrayList attributes) {
+	private final DecisionTreeNode buildTree(ArrayList examples, ArrayList attributes) {
 		DecisionTreeNode root = null;
 		String s;
 		Integer rowIdx;
@@ -728,12 +738,16 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 				StringBuffer lesser =
 					new StringBuffer(table.getColumnLabel(col));
 				lesser.append(LESS_THAN);
+				//!!!!!!!!!!!!!!!!!
 				lesser.append(Double.toString(best.splitValue));
+				//lesser.append(nf.format(best.splitValue));
 
 				StringBuffer greater =
 					new StringBuffer(table.getColumnLabel(col));
+				//!!!!!!!!!!!!!!!!!!
 				greater.append(GREATER_THAN_EQUAL_TO);
 				greater.append(Double.toString(best.splitValue));
+				//greater.append(nf.format(best.splitValue));
 				root.addBranches(best.splitValue, lesser.toString(), left,
 					greater.toString(), right);
 			}
@@ -755,7 +769,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		@param examples the list of examples
 		@return the most common output value from the examples
 	*/
-	String mostCommonOutputValue(ArrayList examples) {
+	private final String mostCommonOutputValue(ArrayList examples) {
 		HashMap map = new HashMap();
 		Integer rowIdx;
 		for(int i = 0; i < examples.size(); i++) {
@@ -795,7 +809,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		@param exam the list of examples to narrow
 		@return a subset of the original list of examples
 	*/
-	ArrayList narrowCategoricalExamples(int col, String val, ArrayList exam) {
+	private final ArrayList narrowCategoricalExamples(int col, String val, ArrayList exam) {
 		ArrayList examples = new ArrayList();
 
 		Integer rowIdx;
@@ -821,7 +835,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 			value should be in the list of examples
 		@return a subset of the original list of examples
 	*/
-	ArrayList narrowNumericExamples(int col, double splitValue, ArrayList exam,
+	private final ArrayList narrowNumericExamples(int col, double splitValue, ArrayList exam,
 		boolean greaterThan) {
 
 		ArrayList examples = new ArrayList();
@@ -848,7 +862,7 @@ public class C45TreeBuilder extends ComputeModule implements Serializable {
 		@param attr the list of attributes
 		@return a subset of the original list of attributes
 	*/
-	ArrayList narrowAttributes(int col, ArrayList attr) {
+	private final ArrayList narrowAttributes(int col, ArrayList attr) {
 		ArrayList attributes = (ArrayList)attr.clone();
 		attributes.remove(new Integer(col));
 		return attributes;

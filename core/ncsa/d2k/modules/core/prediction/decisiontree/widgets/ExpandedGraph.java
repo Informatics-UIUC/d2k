@@ -80,6 +80,9 @@ public class ExpandedGraph extends JPanel {
 
 	NumberFormat numberformat;
 
+	private static final String SPLIT = "Split: ";
+	private static final String LEAF = "Leaf: ";
+
 	public ExpandedGraph(ViewableDTModel model, ViewableDTNode node) {
 		dnode = node;
 
@@ -146,11 +149,17 @@ public class ExpandedGraph extends JPanel {
 	}
 
 	public void drawLabel(Graphics2D g2) {
-		String label = dnode.getLabel();
+		StringBuffer label;
+		if(dnode.getNumChildren() != 0)
+			label = new StringBuffer(SPLIT);
+		else
+			label = new StringBuffer(LEAF);
+		//StringBuffer label = new StringBuffer(dnode.getLabel());
+		label.append(dnode.getLabel());
 
 		g2.setFont(scheme.expandedfont);
 		g2.setColor(scheme.expandedfontcolor);
-		g2.drawString(label, (int) xlabel, (int) ylabel);
+		g2.drawString(label.toString(), (int) xlabel, (int) ylabel);
 	}
 
 	public void drawLabelPath(Graphics2D g2) {
@@ -276,13 +285,20 @@ public class ExpandedGraph extends JPanel {
 		xpath = xlabel;
 		ypath = ylabel + ylabelspace;
 
+		StringBuffer sb = new StringBuffer();
+		if(dnode.getNumChildren() != 0)
+			sb.append(SPLIT);
+		else
+			sb.append(LEAF);
+		sb.append(dnode.getLabel());
+		pathwidth = largemetrics.stringWidth(sb.toString());
 		for (int index=0; index < path.length; index++) {
 			int twidth = smallmetrics.stringWidth(path[index]);
 			if (twidth > pathwidth)
 				pathwidth = twidth;
 		}
 
-		pathwidth = 0;
+		//pathwidth = 0;
 		if (path.length > 0) {
 			pathwidth += pathleft + pathright;
 			pathheight = pathtop + path.length*smallascent + (path.length-1)*pathleading + pathbottom;

@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
+import java.awt.print.*;
+
 import javax.swing.*;
 import ncsa.d2k.util.*;
 import ncsa.d2k.util.datatype.*;
@@ -42,7 +44,11 @@ public class TreeScrollPane extends JScrollPane {
 		treepanel.repaint();
 	}
 
-	public class TreePanel extends JPanel implements MouseListener, MouseMotionListener {
+	public Printable getPrintable() {
+		return treepanel;
+	}
+
+	public class TreePanel extends JPanel implements MouseListener, MouseMotionListener, Printable {
 
 		// Brush panel
 		BrushPanel brushpanel;
@@ -78,7 +84,7 @@ public class TreeScrollPane extends JScrollPane {
 
 			dmodel = model;
 			droot = dmodel.getViewableRoot();
-			vroot = new ViewNode(dmodel, droot, null);
+			vroot = new ViewNode(dmodel, droot, null, "");
 
 			findMaximumDepth(droot);
 			buildViewTree(droot, vroot);
@@ -129,7 +135,13 @@ public class TreeScrollPane extends JScrollPane {
 		public void buildViewTree(ViewableDTNode dnode, ViewNode vnode) {
 			for (int index = 0; index < dnode.getNumChildren(); index++) {
 				ViewableDTNode dchild = dnode.getViewableChild(index);
-				ViewNode vchild = new ViewNode(dmodel, dchild, vnode);
+				ViewNode vchild;
+				if( index == 0 )
+					vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
+				else if(index == dnode.getNumChildren())
+					vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
+				else
+					vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
 				vnode.addChild(vchild);
 				buildViewTree(dchild, vchild);
 			}
@@ -403,6 +415,37 @@ public class TreeScrollPane extends JScrollPane {
 				point.y = (int) (dheight - vpheight);
 
 			viewport.setViewPosition(point);
+		}
+
+		/**
+		* Print this component.
+		*/
+		public int print(Graphics g, PageFormat pf, int pi)
+			throws PrinterException {
+
+			double pageHeight = pf.getImageableHeight();
+			double pageWidth = pf.getImageableWidth();
+
+			double cWidth = getWidth();
+			double cHeight = getHeight();
+
+			double scale = 1;
+			if(cWidth >= pageWidth)
+				scale = pageWidth/cWidth;
+			if(cHeight >= pageHeight)
+				scale = Math.min(scale, pageHeight/cHeight);
+
+			double cWidthOnPage = cWidth*scale;
+			double cHeightOnPage = cHeight*scale;
+
+			if(pi >= 1)
+				return Printable.NO_SUCH_PAGE;
+
+			Graphics2D g2 = (Graphics2D)g;
+			g2.translate(pf.getImageableX(), pf.getImageableY());
+			g2.scale(scale, scale);
+			print(g2);
+			return Printable.PAGE_EXISTS;
 		}
 	}
 }

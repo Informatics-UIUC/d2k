@@ -21,7 +21,9 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return A description of this module.
     */
     public String getModuleInfo() {
-		return "";
+		String s = "Display some statistics about a PredictionTable, including ";
+		s += "the number of correct predictions and a confusion matrix.";
+		return s;
     }
 
     /**
@@ -38,7 +40,7 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] in = {"ncsa.d2k.util.datatype.PredictionTable"};
 		return in;
     }
 
@@ -57,7 +59,7 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "";
+		return "A PredictionTable.";
     }
 
     /**
@@ -66,7 +68,7 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The name of the input
     */
     public String getInputName(int i) {
-		return "";
+		return "predTable";
     }
 
     /**
@@ -125,20 +127,20 @@ public class PredictionTableReport extends VisModule implements HasNames {
 	   		@param idx the index of the input
 		*/
 		public void setInput(Object input, int idx) {
-			//PredictionTable pt = (PredictionTable)input;
-			ExampleTable pt = (ExampleTable)input;
+			PredictionTable pt = (PredictionTable)input;
+			//ExampleTable pt = (ExampleTable)input;
 			int []outputs = pt.getOutputFeatures();
-			int []preds;
+			int []preds = pt.getPredictionSet();
 			/*if(pt instanceof PredictionTable) {
 				preds = ((PredictionTable)pt).getPredictionSet();
 			}
 			else {*/
 
-			preds = new int[outputs.length];
+			//preds = new int[outputs.length];
 
 			// assumed that the last outputs.length columns are
 			// prediction columns
-			int j = 0;
+			/*int j = 0;
 			for(int i = pt.getNumColumns()-preds.length;
 				i < pt.getNumColumns(); i++) {
 					preds[j] = i;
@@ -146,6 +148,7 @@ public class PredictionTableReport extends VisModule implements HasNames {
 					j++;
 			}
 			//}
+			*/
 
 			JTabbedPane jtp = new JTabbedPane();
 			for(int i = 0; i < outputs.length; i++) {
@@ -176,8 +179,8 @@ public class PredictionTableReport extends VisModule implements HasNames {
 				sc.setString("Correct", 0);
 				sc.setString("Incorrect", 1);
 				DoubleColumn ic = new DoubleColumn(2);
-				ic.setDouble((double)numCorrect/100, 0);
-				ic.setDouble((double)numIncorrect/100, 1);
+				ic.setDouble(((double)numCorrect)/((double)pt.getNumRows()), 0);
+				ic.setDouble(((double)numIncorrect)/((double)pt.getNumRows()), 1);
 				Column[] col = new Column[2];
 				col[0] = sc;
 				col[1] = ic;

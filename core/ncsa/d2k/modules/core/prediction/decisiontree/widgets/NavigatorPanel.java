@@ -69,7 +69,7 @@ public class NavigatorPanel extends JPanel {
 		public Navigator(ViewableDTModel model, TreeScrollPane scrollpane) {
 			dmodel = model;
 			droot = dmodel.getViewableRoot();
-			sroot = new ScaledNode(dmodel, droot, null);
+			sroot = new ScaledNode(dmodel, droot, null, "");
 
 			treescrollpane = scrollpane;
 			viewport = treescrollpane.getViewport();
@@ -122,7 +122,7 @@ public class NavigatorPanel extends JPanel {
 		public void buildTree(ViewableDTNode dnode, ScaledNode snode) {
 			for (int index = 0; index < dnode.getNumChildren(); index++) {
 				ViewableDTNode dchild = dnode.getViewableChild(index);
-				ScaledNode schild = new ScaledNode(dmodel, dchild, snode);
+				ScaledNode schild = new ScaledNode(dmodel, dchild, snode, dnode.getBranchLabel(index));
 				snode.addChild(schild);
 				buildTree(dchild, schild);
 			}

@@ -66,23 +66,30 @@ public class ConfusionMatrix extends JScrollPane {
 		}
 
 		String []outs = new String[outNames.size()];
+		String []outlabels = new String[outNames.size()];
 		int idx = 0;
 		Iterator it = outNames.keySet().iterator();
 		while(it.hasNext()) {
-			outs[idx] = (String)it.next();
+			String s = (String)it.next();
+			outs[idx] = s;
+			outlabels[idx] = "Out: "+s;
 			idx++;
 		}
 
-		String []preds = outs;//new String[predNames.size()];
-		/*idx = 0;
+		String []preds = new String[predNames.size()];
+		String []predlabels = new String[predNames.size()];
+		idx = 0;
 		it = predNames.keySet().iterator();
 		while(it.hasNext()) {
-			preds[idx] = (String)it.next();
+			String s = (String)it.next();
+			preds[idx] = s;
+			predlabels[idx] = "Pred: "+s;
 			idx++;
-		}*/
+		}
+
 
 		// calculate the confusion matrix
-		int[][] d = new int[outs.length][outs.length];
+		int[][] d = new int[outs.length][preds.length];
 
 		for(int row = 0; row < vt.getNumRows(); row++) {
 			int actual = 0;
@@ -93,7 +100,7 @@ public class ConfusionMatrix extends JScrollPane {
 					break;
 				}
 			}
-			for(int i = 0; i < outs.length; i++) {
+			for(int i = 0; i < preds.length; i++) {
 				if(vt.getString(row, p).equals(outs[i])) {
 					predicted = i;
 					break;
@@ -108,7 +115,7 @@ public class ConfusionMatrix extends JScrollPane {
 				if(i == j)
 					correct += d[i][j];
 
-		setupTable(d, outs, preds);
+		setupTable(d, outlabels, predlabels);
 	}
 
 	/**
@@ -116,21 +123,38 @@ public class ConfusionMatrix extends JScrollPane {
 	*/
 	private void setupTable(int[][] d, String[] r, String[] c) {
 		MatrixModel tblModel = new MatrixModel(d, r, c);
+		/*JTable tmp = new JTable();
+		Graphics g = tmp.getGraphics();
+		FontMetrics fm = g.getFontMetrics();
+		int max = 0;
+		for (int i = 0; i < r.length; i++) {
+			if(fm.stringWidth(c[i]) > max)
+				max = fm.stringWidth(c[i]);
+		}
+
+		final int mm = max;*/
 		TableColumnModel cm = new DefaultTableColumnModel() {
 			boolean first = true;
 			public void addColumn(TableColumn tc) {
 				if(first) { first = false; return; }
-				tc.setMinWidth(75);
+				tc.setMinWidth(100);
 				super.addColumn(tc);
 			}
 		};
 
+		/*max = 0;
+		for (int i = 0; i < r.length; i++) {
+			if(fm.stringWidth(r[i]) > max)
+				max = fm.stringWidth(r[i]);
+		}
+
+		final int mx = max;*/
 		// setup the columns for the row header table
 		TableColumnModel rowHeaderModel = new DefaultTableColumnModel() {
 			boolean first = true;
 			public void addColumn(TableColumn tc) {
 				if(first) {
-					tc.setMinWidth(75);
+					tc.setMinWidth(100);
 					super.addColumn(tc);
 					first = false;
 				}

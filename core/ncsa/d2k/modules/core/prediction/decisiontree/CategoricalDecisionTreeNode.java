@@ -52,6 +52,7 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
 		@param child the child node
 	*/
 	public void addBranch(String val, DecisionTreeNode child) {
+		child.setLabel(val);
 		outputToChildMap.put(val, child);
 		children.add(child);
 		branchLabels.add(val);

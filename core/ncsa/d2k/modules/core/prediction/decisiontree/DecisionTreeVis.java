@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
+import java.awt.print.*;
+
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.*;
@@ -60,13 +62,17 @@ public class DecisionTreeVis extends ncsa.d2k.infrastructure.modules.VisModule {
 /*
 	DecisionTreeUserView
 */
-class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane implements ActionListener{
+class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
+	implements ActionListener, Printable {
 
 	BrushPanel brushpanel;
 	TreeScrollPane treescrollpane;
 	NavigatorPanel navigatorpanel;
 
 	JCheckBox labelbox;
+	JMenuBar menuBar;
+	JMenuItem miPrintWindow;
+	JMenuItem miPrintCanvas;
 
 	public void initView(ViewModule module) {
 	}
@@ -104,10 +110,79 @@ class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
 			GridBagConstraints.NORTHWEST, 0, 0);
 		Constrain.setConstraints(this, treescrollpane, 1, 0, 1, 1, GridBagConstraints.BOTH,
 			GridBagConstraints.NORTHWEST, 1, 1);
+
+		menuBar = new JMenuBar();
+		JMenu m1 = new JMenu("File");
+		miPrintWindow = new JMenuItem("Print Window...");
+		miPrintWindow.addActionListener(this);
+		miPrintCanvas = new JMenuItem("Print Canvas...");
+		miPrintCanvas.addActionListener(this);
+		m1.add(miPrintWindow);
+		m1.add(miPrintCanvas);
+		menuBar.add(m1);
+	}
+
+	/**
+	 * Print this component.
+	 */
+	public int print(Graphics g, PageFormat pf, int pi)
+		throws PrinterException {
+
+		double pageHeight = pf.getImageableHeight();
+		double pageWidth = pf.getImageableWidth();
+
+		double cWidth = getWidth();
+		double cHeight = getHeight();
+
+		double scale = 1;
+		if(cWidth >= pageWidth)
+			scale = pageWidth/cWidth;
+		if(cHeight >= pageHeight)
+			scale = Math.min(scale, pageHeight/cHeight);
+
+		double cWidthOnPage = cWidth*scale;
+		double cHeightOnPage = cHeight*scale;
+
+		if(pi >= 1)
+			return Printable.NO_SUCH_PAGE;
+
+		Graphics2D g2 = (Graphics2D)g;
+		g2.translate(pf.getImageableX(), pf.getImageableY());
+		g2.scale(scale, scale);
+		print(g2);
+		return Printable.PAGE_EXISTS;
+	}
+
+	public Object getMenu() {
+		return menuBar;
 	}
 
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource() == labelbox)
 			treescrollpane.toggleLabels();
+		else if(event.getSource() == miPrintWindow) {
+			PrinterJob pj = PrinterJob.getPrinterJob();
+			pj.setPrintable(this);
+			if(pj.printDialog()) {
+				try {
+					pj.print();
+				}
+				catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		else if(event.getSource() == miPrintCanvas) {
+			PrinterJob pj = PrinterJob.getPrinterJob();
+			pj.setPrintable(treescrollpane.getPrintable());
+			if(pj.printDialog()) {
+				try {
+					pj.print();
+				}
+				catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 }
