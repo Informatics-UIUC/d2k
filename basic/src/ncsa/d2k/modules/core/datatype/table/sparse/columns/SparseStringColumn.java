@@ -765,12 +765,13 @@ public class SparseStringColumn
     return index;
   }
 
-  public VIntIntHashMap getNewOrder() {
+/*  public VIntIntHashMap getNewOrder() {
     SparseStringObjectColumn tempCol = new SparseStringObjectColumn(this);
     return tempCol.getNewOrder();
   }
+*/
 
-  public VIntIntHashMap getNewOrder(int begin, int end) {
+/*  public VIntIntHashMap getNewOrder(int begin, int end) {
     if (end < begin) {
 
       return new VIntIntHashMap(0);
@@ -778,6 +779,8 @@ public class SparseStringColumn
     SparseStringObjectColumn tempCol = new SparseStringObjectColumn(this);
     return tempCol.getNewOrder(begin, end);
   }
+*/
+
 
   /**
    * sorts the elements in this column such that the rows that were originally

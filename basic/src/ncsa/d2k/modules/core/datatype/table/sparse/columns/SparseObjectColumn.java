@@ -780,6 +780,8 @@ public class SparseObjectColumn
    * @param validRows     row numbers from which the sorted order is retrieved.
    *
    */
+  //vered - this is covered by abstract sparse column
+/*
   public VIntIntHashMap getNewOrder(int[] validRows) {
 
     Object[] sortedValues = getValuesInRange(validRows[0],
@@ -816,6 +818,9 @@ public class SparseObjectColumn
     } //end of for
     return VHashService.getMappedOrder(validRows, newOrder);
   }
+*/
+
+
 
   /**
    * Retrieve a new order for the valid rows of this column in the range
@@ -825,7 +830,8 @@ public class SparseObjectColumn
    * @param begin     row no. from which to start retrieving the new order
    * @param end       the last row in the section from which to retrieve the new order.
    */
-  public VIntIntHashMap getNewOrder(int begin, int end) {
+  //VERED - this is covered by the abstract sparse column
+/*  public VIntIntHashMap getNewOrder(int begin, int end) {
 
     if (end < begin) {
       return new VIntIntHashMap(0);
@@ -837,7 +843,7 @@ public class SparseObjectColumn
     return getNewOrder(validRows);
 
   }
-
+*/
   /**
    * Reorders the data stored in this column in a new column.
    * Does not change this column.

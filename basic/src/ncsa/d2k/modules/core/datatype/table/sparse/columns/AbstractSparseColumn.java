@@ -335,6 +335,7 @@ abstract public class AbstractSparseColumn
 
   /**
    * Verifies if row no. <code>pos</code> holds a value.
+   * @todo
    *
    * @param pos     the inspected row no.
    * @return        true if row no. <code>pos</code> holds a value, otherwise
@@ -488,9 +489,10 @@ abstract public class AbstractSparseColumn
        *              if i<j then the value at row no. x in this column is smaller than
    *              or equal to the value at row no. y in this column.
    */
-  public VIntIntHashMap getNewOrder() {
+  //VERED - commented this out - this is now taken care of by getSortedOrder()
+/*  public VIntIntHashMap getNewOrder() {
     return getElements().getSortedOrder();
-  }
+  }*/
 
   /**
    * Retrieve a new order for the valid rows of this column in the range <code>
@@ -509,12 +511,16 @@ abstract public class AbstractSparseColumn
        *              this new order affects only the rows in the range specified by
    *              <code>begin</codE> and <code>end</codE>.
    */
-  public VIntIntHashMap getNewOrder(int begin, int end) {
+  //VERED - commented this out - this is taken care of by getSortedOrder
+/*  public VIntIntHashMap getNewOrder(int begin, int end) {
     if (end < begin) {
       return new VIntIntHashMap(0);
     }
     return getElements().getSortedOrder(begin, end);
   }
+*/
+
+
 
   /**
    * Sorts <code>t</code> according to the natural sorted order of this
@@ -523,7 +529,7 @@ abstract public class AbstractSparseColumn
    * @param t   a table this column is part of, to be sorted.
    */
   public void sort(MutableTable t) {
-    ( (SparseMutableTable) t).sort(getNewOrder());
+    ( (SparseMutableTable) t).sort(getSortedOrder());
   }
 
 
@@ -543,7 +549,7 @@ abstract public class AbstractSparseColumn
     if (end < begin) {
       return;
     }
-    ( (SparseMutableTable) t).sort(getNewOrder(begin, end));
+    ( (SparseMutableTable) t).sort(getSortedOrder(begin, end));
   }
 
   /**
@@ -853,29 +859,29 @@ abstract public class AbstractSparseColumn
  }
 
 
-  protected VIntIntHashMap getSortedOrder(){
-    VIntIntHashMap retVal = new VIntIntHashMap(getNumEntries());
-    Element[] values = getValuesForSort();
-    int[] sortedKeys = getIndices();
-    Arrays.sort(values, new ObjectComparator());
-    for (int i=0; i<values.length; i++){
-      retVal.put(sortedKeys[i], values[i].getIndex());
-    }
-    return retVal;
+  public VIntIntHashMap getSortedOrder(){
+     return getSortedOrder(keys());
+
   }
 
-
-  protected VIntIntHashMap getSortedOrder(int begin, int end){
-
-  int[] keys = VHashService.getIndicesInRange(begin, end, getElements());
-  VIntIntHashMap retVal = new VIntIntHashMap(keys.length);
-  Element[] values = getValuesForSort(keys);
-  Arrays.sort(keys);
+  public VIntIntHashMap getSortedOrder(int[] validRows){
+  VIntIntHashMap retVal = new VIntIntHashMap(validRows.length);
+  Element[] values = getValuesForSort(validRows);
+    Arrays.sort(validRows);
   Arrays.sort(values, new ObjectComparator());
   for (int i=0; i<values.length; i++){
-    retVal.put(keys[i], values[i].getIndex());
+    retVal.put(validRows[i], values[i].getIndex());
   }
   return retVal;
+}
+
+
+
+  public VIntIntHashMap getSortedOrder(int begin, int end){
+
+  int[] keys = VHashService.getIndicesInRange(begin, end, getElements());
+  return getSortedOrder(keys);
+
 }
 
 

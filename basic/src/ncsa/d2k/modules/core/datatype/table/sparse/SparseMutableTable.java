@@ -1548,7 +1548,7 @@ for(int i=0; i<keys.length && (col1Ref == -1 || col2Ref == -1); i++){
   public void sortByColumn(int col) {
     Column sorting = getCol(col);
     if (sorting != null) {
-      VIntIntHashMap sortOrder = ((AbstractSparseColumn)sorting).getNewOrder();
+      VIntIntHashMap sortOrder = ((AbstractSparseColumn)sorting).getSortedOrder();
       sort(sortOrder);
     //  sorting.sort(this);
     }
@@ -1578,7 +1578,7 @@ for(int i=0; i<keys.length && (col1Ref == -1 || col2Ref == -1); i++){
 
     Column sorting = getCol(col);
     if (sorting != null) {
-      VIntIntHashMap sortOrder = ((AbstractSparseColumn)sorting).getNewOrder(begin, end);
+      VIntIntHashMap sortOrder = ((AbstractSparseColumn)sorting).getSortedOrder(begin, end);
       sort(sortOrder);
 //      sorting.sort(this, begin, end);
 
