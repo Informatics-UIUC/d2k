@@ -82,7 +82,7 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
           s += "This module displays a cluster bar chart for data in a cube table. </p>";
           s += "<p> Detailed Description: ";
           s += "This module first makes a connection to a database and retrieves the ";
-          s += "data from two user-selected columns in a cube table, then displays the statistic data ";
+          s += "data from two user-selected columns in a cube table, then displays the counts ";
           s += "using a cluster bar chart. The displayed data not only can be labeled in predefined ";
           s += "codes, but also in detailed descriptions by choosing the 'Use Code Book' ";
           s += "option and specifying a code book for use. ";

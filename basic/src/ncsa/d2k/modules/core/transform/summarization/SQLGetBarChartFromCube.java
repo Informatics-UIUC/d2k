@@ -113,7 +113,7 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
     s += "<p> Detailed Description: ";
     s += "This module first makes a connection to a database and retrieves the ";
     s += "data for the user-selected attributes in the specified cube table. ";
-    s += "It formats the statistical data and makes it available on the output port for use by ";
+    s += "It formats the counts and makes them available on the output port for use by ";
     s += "a 2D Bar Chart module which generates the actual visualizations. ";
     s += "A bar chart is generated for each selected attribute. ";
     s += "The displayed data not only can be labeled in predefined ";
