@@ -11,7 +11,8 @@ public class DecisionTreeModelGen extends ModelGeneratorModule {
 
 	static String INFO = "Given a DecisionTreeNode that is the root "
 		+" of a decision tree, create a new DecisionTreeModel from it.";
-	static String[] IN = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode"};
+	static String[] IN = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
+		"ncsa.d2k.util.datatype.ExampleTable"};
 	static String[] OUT = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel"};
 	static String IN0 = "The root of the decision tree";
 	static String OUT0 = "A DecisionTreeModel created from the DecisionTreeNode";
@@ -44,7 +45,8 @@ public class DecisionTreeModelGen extends ModelGeneratorModule {
 	*/
 	public void doit() {
 		DecisionTreeNode root = (DecisionTreeNode)pullInput(0);
-		mdl = new DecisionTreeModel(root);
+		ExampleTable tbl = (ExampleTable)pullInput(1);
+		mdl = new DecisionTreeModel(root, tbl);
 		pushOutput(mdl, 0);
 	}
 

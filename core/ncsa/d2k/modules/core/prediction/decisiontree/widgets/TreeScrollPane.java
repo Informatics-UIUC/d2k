@@ -136,12 +136,12 @@ public class TreeScrollPane extends JScrollPane {
 			for (int index = 0; index < dnode.getNumChildren(); index++) {
 				ViewableDTNode dchild = dnode.getViewableChild(index);
 				ViewNode vchild;
-				if( index == 0 )
+				//if( index == 0 )
 					vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
-				else if(index == dnode.getNumChildren()-1)
-					vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
-				else
-					vchild = new ViewNode(dmodel, dchild, vnode);
+				//else if(index == dnode.getNumChildren()-1)
+				//	vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
+				//else
+				//	vchild = new ViewNode(dmodel, dchild, vnode);
 				vnode.addChild(vchild);
 				buildViewTree(dchild, vchild);
 			}

@@ -211,7 +211,8 @@ public class SaveModelToDB extends UIModule {
     } // initView
 
     public void displayRowCount() {
-        int totalRow = model.table.getNumRows();
+        //int totalRow = model.table.getNumRows();
+		int totalRow = 0;
         dataSize.setText(Integer.toString(totalRow));
         System.out.println("totalRow is " + dataSize.getText());
     }
@@ -226,8 +227,8 @@ public class SaveModelToDB extends UIModule {
         trainSetDef.setValueAt(attributeNames[i].toString(),i,0);
         // the column order in attributeNames is different the one in model.table
         // we need to loop through model.table's column to match it
-        for (int j = 0; j<model.table.getNumColumns(); j++) {
-          if (attributeNames[i].toString().equals(model.table.getColumnLabel(j).toString())) {
+        for (int j = 0; j</*model.table.getNumColumns()*/0; j++) {
+          /*if (attributeNames[i].toString().equals(model.table.getColumnLabel(j).toString())) {
             if (model.table.getColumn(j) instanceof StringColumn)
               trainSetDef.setValueAt("Text",i,1);
             else if(model.table.getColumn(j) instanceof ByteArrayColumn)
@@ -236,7 +237,7 @@ public class SaveModelToDB extends UIModule {
               trainSetDef.setValueAt("Text",i,1);
             else
               trainSetDef.setValueAt("Numeric",i,1);
-          }
+          }*/
         }
         numBin = model.getBinNames(attributeNames[i].toString()).length;
         trainSetDef.setValueAt(Integer.toString(numBin),i,2);
