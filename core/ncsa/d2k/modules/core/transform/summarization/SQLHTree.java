@@ -7,17 +7,15 @@ package ncsa.d2k.modules.core.transform.summarization;
  * @author Dora Cai
  * @version 1.0
  */
-import ncsa.d2k.core.*;
+
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import java.sql.*;
 import java.util.ArrayList;
 import javax.swing.*;
-import oracle.sql.*;
-import oracle.jdbc.driver.*;
+import java.beans.PropertyVetoException;
 
 public class SQLHTree extends ComputeModule
        implements java.io.Serializable {
@@ -124,21 +122,21 @@ public class SQLHTree extends ComputeModule
       s += "<p> Detailed Description: ";
       s += "This module first makes a connection to a database, retrieves the ";
       s += "data from a specified database table for the specified columns, ";
-      s += "where clause, and the bin definition, and then compute a data cube. ";
+      s += "where clause, and  bin definitions, and then computes a data cube. ";
       s += "You can control the cube construction by two parameters: 'maximum ";
       s += "rule size' and 'minimum support'. The 'maximum rule size' is the ";
       s += "maximum number of items in a rule. To avoid the exponential computation, ";
-      s += "only up to 5 items in a rule is allowed. The 'minimum support' is used ";
+      s += "only up to 5 items per rule are allowed. The 'minimum support' is used ";
       s += "to control the usefulness of discovered rules. A support of 2% ";
       s += "for a rule means that 2% of data under analysis support this rule. ";
       s += "By setting 'minimum support' lower, you would get more trivial rules. ";
-      s += "However, by setting 'minimum support' higher, you might loose some ";
+      s += "However, by setting 'minimum support' too high, you might loose some ";
       s += "important rules. ";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle database. Since the intensive ";
-      s += "computation in constructing data cube, the memory and CPU requirment ";
-      s += "may substantially increase when more fields and more unique values ";
-      s += "are included. We suggest you only choose the data set that has less ";
+      s += "We currently only support Oracle databases. Due to the intensive ";
+      s += "computation involved in constructing a data cube, the memory and CPU requirements ";
+      s += "may substantially increase when more attributes and more unique values for them  ";
+      s += "are included. We suggest you only choose a data set that has less ";
       s += "than 25 fields for analysis. ";
       return s;
   }
@@ -182,7 +180,8 @@ public class SQLHTree extends ComputeModule
     }
 
   // this property is the min acceptable support score.
-  public void setSupport (double i) {
+  public void setSupport (double i)  throws PropertyVetoException {
+  	if( i < 0 || i  >1) throw new PropertyVetoException ("Support must be between 0 and 1", null);
     support = i;
   }
   public double getSupport () {
@@ -190,7 +189,8 @@ public class SQLHTree extends ComputeModule
   }
 
   // this property is the maximum acceptable rule size.
-  public void setMaxRuleSize (int yy) {
+  public void setMaxRuleSize (int yy) throws PropertyVetoException {
+   if( yy <= 0 ) throw new PropertyVetoException("Rule size must be a positive integer", null);
     maxRuleSize = yy;
   }
   public int getMaxRuleSize () {
