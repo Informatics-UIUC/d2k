@@ -197,7 +197,7 @@ public class UniformSampling
 
     InitialExecution = true;
     ExampleData = null;
-    //NumExamples = 0;
+    NumExamples = 0;
 
     if (ObjectiveScoreDirection == 1) {
       BestUtility = Double.NEGATIVE_INFINITY;
