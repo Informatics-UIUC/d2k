@@ -79,7 +79,7 @@ public class CreateDecisionTreeParameterPoint
   private int MinDecompositionPopulation = 20;
   public void setMinDecompositionPopulation(int value) throws PropertyVetoException {
     if (value < 1) {
-      throw new PropertyVetoException("Minimum examples per leaf < 1", null);
+      throw new PropertyVetoException(" < 1", null);
     }
     this.MinDecompositionPopulation = value;
   }
@@ -169,7 +169,7 @@ public class CreateDecisionTreeParameterPoint
   public String getModuleInfo() {
     String s = "<p>Overview: ";
     s += "This module allows the user to specify the parameter settings which ";
-    s += "control the behavior of the Decision Tree Inducer Opt Module.  ";
+    s += "control the behavior of the Decision Tree Inducer Opt module.  ";
     s += "The first output is a Parameter Point which can be used as input into a Decision Tree Inducer Opt module.  ";
     s += "The second output is the Decision Tree Inducer Opt Module which can be used as input for Apply Function Inducer module.  ";
     s += "This decision tree learning algorithm allows for multiple decomposition (splitting) strategies to be used ";

@@ -1,9 +1,9 @@
 package ncsa.d2k.modules.core.prediction.decisiontree.continuous;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
-//import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTNode;
+import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTNode;
 
-public class DecisionTreeNode implements java.io.Serializable /*, ViewableDTNode */{
+public class DecisionTreeNode implements java.io.Serializable, ViewableDTNode {
 
   int index;
   int depth;
@@ -94,7 +94,7 @@ public class DecisionTreeNode implements java.io.Serializable /*, ViewableDTNode
           Get the parent of this node.
   */
 
-  public Object /*ViewableDTNode*/ getViewableParent() {
+  public ViewableDTNode getViewableParent() {
     return this.parent;
     }
 
@@ -103,7 +103,7 @@ public class DecisionTreeNode implements java.io.Serializable /*, ViewableDTNode
           @param i the index of the child to get
           @return the ith child of this node
   */
-  public Object /*ViewableDTNode*/ getViewableChild(int i)
+  public ViewableDTNode getViewableChild(int i)
     {
     if (i == 0)
       return this.childNode1;

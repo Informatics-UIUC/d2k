@@ -3,10 +3,10 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
 import java.text.*;
 
-//import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel;
-//import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTNode;
+import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel;
+import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTNode;
 
-public class DecisionTreeModel extends Model implements java.io.Serializable /*, ViewableDTModel */ {
+public class DecisionTreeModel extends Model implements java.io.Serializable, ViewableDTModel  {
 
   DecisionTreeNode decisionTree;
 
@@ -15,7 +15,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
     this.decisionTree = decisionTree;
   }
 
-  public Object /*ViewableDTNode*/ getViewableRoot() {
+  public ViewableDTNode getViewableRoot() {
     return decisionTree;
   }
 
@@ -23,11 +23,9 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
     return true;
   }
 
-/*
   public String [] getInputs() {
     return this.getInputFeatureNames();
   }
-*/
 
   public String[] getUniqueInputValues(int i) {
     return new String[] {"0", "1"};

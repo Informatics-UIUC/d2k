@@ -11,16 +11,15 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
-   boolean UseMeanNodeModels = true;
-   boolean UseLinearNodeModels = false;
-   boolean UseSimpleBooleanSplit = false;
-   boolean UseMidPointBasedSplit = false;
-   boolean UseMeanBasedSplit = true;
-   boolean UsePopulationBasedSplit = false;
-   boolean SaveNodeExamples = false;
+   boolean UseMeanNodeModels          = true;
+   boolean UseLinearNodeModels        = false;
+   boolean UseSimpleBooleanSplit      = false;
+   boolean UseMidPointBasedSplit      = false;
+   boolean UseMeanBasedSplit          = true;
+   boolean UsePopulationBasedSplit    = false;
+   boolean SaveNodeExamples           = false;
    int     MinDecompositionPopulation = 20;
-   double  MinErrorReduction = 0.0;
-   int     ErrorFunctionIndex = 0;
+   double  MinErrorReduction          = 0.0;
 
    boolean PrintEvolvingModels = false;
 
@@ -37,28 +36,28 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     MinDecompositionPopulation  = (int) parameterPoint.getValue(0);
     MinErrorReduction           =       parameterPoint.getValue(1);
 
-    UseSimpleBooleanSplit   = false;
+    UseSimpleBooleanSplit       = false;
     if (parameterPoint.getValue(2) > 0.5) UseSimpleBooleanSplit   = true;
-    UseMidPointBasedSplit   = false;
+    UseMidPointBasedSplit       = false;
     if (parameterPoint.getValue(3) > 0.5) UseMidPointBasedSplit   = true;
-    UseMeanBasedSplit       = false;
+    UseMeanBasedSplit           = false;
     if (parameterPoint.getValue(4) > 0.5) UseMeanBasedSplit       = true;
-    UsePopulationBasedSplit = false;
+    UsePopulationBasedSplit     = false;
     if (parameterPoint.getValue(5) > 0.5) UsePopulationBasedSplit = true;
-    SaveNodeExamples = false;
-    if (parameterPoint.getValue(6) > 0.5) SaveNodeExamples = true;
-    UseMeanNodeModels = false;
-    if (parameterPoint.getValue(7) > 0.5) UseMeanNodeModels = true;
-    UseLinearNodeModels = false;
-    if (parameterPoint.getValue(8) > 0.5) UseLinearNodeModels = true;
+    SaveNodeExamples            = false;
+    if (parameterPoint.getValue(6) > 0.5) SaveNodeExamples        = true;
+    UseMeanNodeModels           = false;
+    if (parameterPoint.getValue(7) > 0.5) UseMeanNodeModels       = true;
+    UseLinearNodeModels         = false;
+    if (parameterPoint.getValue(8) > 0.5) UseLinearNodeModels     = true;
   }
 
   public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) throws Exception {
 
     //call superclass constructor using example table to initialize the names;
 
-    numInputs  = examples.getNumInputFeatures();
-    numOutputs = examples.getNumOutputFeatures();
+    numInputs   = examples.getNumInputFeatures();
+    numOutputs  = examples.getNumOutputFeatures();
     inputNames  = new String[numInputs];
     outputNames = new String[numOutputs];
     for (int i = 0; i < numInputs; i++)
@@ -137,11 +136,11 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
       // instantiate model //
 
-      MeanModel model = null;
+      MeanOutputModel model = null;
       if (RootNode.model == null)
-        model = new MeanModel(examples, outputSums);
+        model = new MeanOutputModel(examples, outputSums);
       else
-        model = new MeanModel(RootNode.model.getTrainingSetSize(),
+        model = new MeanOutputModel(RootNode.model.getTrainingSetSize(),
                               RootNode.model.getInputColumnLabels(),
                               RootNode.model.getOutputColumnLabels(),
                               RootNode.model.getInputFeatureTypes(),
@@ -154,13 +153,10 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     }
     if (UseLinearNodeModels) {
 
-      LinearInducer inducer = new LinearInducer();
+      StepwiseLinearInducer inducer = new StepwiseLinearInducer();
 
-      double [] bias = new double[4];
-      bias[0] = 0;  // NumRounds
-      bias[1] = 0;  // Direction
-      bias[2] = Double.NEGATIVE_INFINITY;
-      bias[3] = Double.POSITIVE_INFINITY;
+      inducer.setNumRounds(0);
+      inducer.setDirection(0);
 
       Model model = inducer.generateModel(examples, errorFunction);
 
