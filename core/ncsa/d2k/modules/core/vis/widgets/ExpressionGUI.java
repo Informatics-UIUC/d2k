@@ -24,7 +24,10 @@ import ncsa.d2k.modules.core.datatype.*;
  *        <code>ExpressionException</code> if an attempt to evaluate
  *        the string fails).</li>
  *    <li>A button for clearing the string.</li>
- *    <li>A button for "setting" the current expression string.</li>
+ *    <li>A button for "setting" the current expression string. This
+ *        button triggers actual evaluation of the
+ *        <code>Expression</code> and passes the evaluation object
+ *        to all registered <code>ExpressionListener</code>s.</li>
  * </ul>
  * <p>
  * A user interface that includes an <code>ExpressionGUI</code> object must
