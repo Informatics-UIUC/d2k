@@ -53,13 +53,13 @@ MapToTable.java
 VTtoHashLookupTable.java
 
 ./datatype/model:
-Model.java
-ModelPrintOptions.java
+Model.java			submitted
+ModelPrintOptions.java		submitted
 PrintModel.java			submitted (should this be in another pkg?)
 
 ./datatype/parameter:
-ParameterPoint.java
-ParameterSpace.java
+ParameterPoint.java		submitted
+ParameterSpace.java		submitted
 TestParamSpaceImpl.java
 
 ./datatype/parameter/basic:
@@ -257,7 +257,7 @@ WeightedTrainTable.java
 ClusterModel.java				submitted
 
 ./discovery/cluster/eval:
-MinEncodingLenClusterModelEvaluator.java	? Don't find ... did I miss it
+MinEncodingLenClusterModelEvaluator.java	will be submitted soon
 
 ./discovery/cluster/gui/properties:
 BuckshotParams_Props.java			submitted
@@ -340,7 +340,7 @@ MutableIntegerArray.java		done
 ETPrint.java
 PrintObjectModule.java
 
-./io/dstp:
+./io/dstp:		heard from Duane that this will be turned over 3/31
 DSTPSelect.java
 DSTPTree.java
 DSTPTreeModel.java
@@ -586,9 +586,9 @@ ApplyFunctionInducer.java			submitted
 CatchModel.java					replaces SimpleModelSelector; needs updates
 ErrorFunctionGenerator.java			submitted
 ErrorFunctionGeneratorOpt.java
-ErrorFunction.java
+ErrorFunction.java				submitted
 FunctionInducer.java
-FunctionInducerOpt.java
+FunctionInducerOpt.java				submitted
 GenerateFunctionInducer.java			submitted
 GetDefaultParamPoint.java
 ModelPredict.java					submitted (should this be renamed?)
@@ -631,12 +631,12 @@ C45TreePruner.java				done
 CreateDecisionTreeParameterPoint.java		submitted
 CreateDecisionTreeParameterSpace.java		submitted
 DecisionTreeBiasSpaceGenerator.java
-DecisionTreeInducer.java
-DecisionTreeInducerOpt.java
-DecisionTreeModel.java
-DecisionTreeNode.java
+DecisionTreeInducer.java			
+DecisionTreeInducerOpt.java			submitted
+DecisionTreeModel.java				submitted
+DecisionTreeNode.java				submitted
 DecisionTreePartition.java
-Decomposition.java
+Decomposition.java				submitted
 
 ./prediction/decisiontree/rainforest:
 CategoricalDecisionForestNode.java
@@ -670,8 +670,8 @@ CreateInstanceBasedParameterPoint.java		submitted
 CreateInstanceBasedParameterSpace.java		submitted
 InstanceBasedBiasSpaceGenerator.java
 InstanceBasedInducer.java
-InstanceBasedInducerOpt.java
-InstanceBasedModel.java
+InstanceBasedInducerOpt.java			submitted
+InstanceBasedModel.javaA			submitted
 
 ./prediction/LWR:
 DoubleNode.java
@@ -696,8 +696,8 @@ CreateMeanOutputParameterPoint.java		submitted
 CreateMeanOutputParameterSpace.java		submitted
 MeanOutputBiasSpaceGenerator.java
 MeanOutputInducer.java
-MeanOutputInducerOpt.java
-MeanOutputModel.java
+MeanOutputInducerOpt.java			submitted
+MeanOutputModel.java				submitted
 
 ./prediction/naivebayes:
 CastToNBModel.java				received
@@ -729,12 +729,12 @@ RegressionModelGenerator.java
 RegressionModel.java
 
 ./prediction/regression/continuous:
-CreateStepwiseLinearParameterPoint.java
-CreateStepwiseLinearParameterSpace.java
+CreateStepwiseLinearParameterPoint.java		submitted
+CreateStepwiseLinearParameterSpace.java		submitted
 StepwiseLinearBiasSpaceGenerator.java
 StepwiseLinearInducer.java
-StepwiseLinearInducerOpt.java
-StepwiseLinearModel.java
+StepwiseLinearInducerOpt.java			submitted
+StepwiseLinearModel.java			submitted
 
 ./transform:
 ApplyTransformation.java
@@ -782,7 +782,7 @@ TextualBinDescriptor.java	done
 ValidateBinCounts.java		submitted
 
 ./transform/sort:
-QuickSort.java
+QuickSort.java			submitted
 
 ./transform/summarization:
 SQLArrayCube.java
@@ -820,7 +820,7 @@ VTStats.java
 ./vis:
 BarChart2D.java				submitted
 BoxPlot.java				submitted
-ClusterBarChart2D.java
+ClusterBarChart2D.java			will be submitted soon
 ETFunctionPlot.java			submitted
 ETLinearRegression.java			submitted
 ETScatterPlot.java			submitted
@@ -831,7 +831,7 @@ LineGraphAppModule.java
 OptimizerReport.java
 ParallelCoordinateVis.java		submitted
 PieChart2D.java				submitted
-PredictionTableReport.java
+PredictionTableReport.java		Greg volunteered to take this one
 ScatterPlot2D.java			submitted
 ScatterPlot3D.java			submitted
 SurfacePlot3D.java			still being worked on
@@ -843,7 +843,7 @@ BarChart.java				submitted
 BoxPlotGroup.java			submitted
 BoxPlotPane.java			submitted
 Chart.java				submitted
-ClusterBarChart.java
+ClusterBarChart.java			will be submitted soon
 ComputationalGeometry.java
 ConfusionMatrix.java
 DataSet.java				submitted
