@@ -43,13 +43,27 @@ public class CreateARFFParser extends InputModule {
 
     public String getModuleInfo() {
         StringBuffer s = new StringBuffer("<p>Overview: ");
-        s.append("This module creates an ARFFFileParser for the specified file. ");
-        s.append("<p>DetailedDescription: ");
-        s.append("ARFFFileParser is used to read data from an ARFF file. ");
-        s.append("<p>Data Type Restrictions: ");
+        s.append("This module creates an ARFF File Parser for the specified file. ");
+        s.append("</p><p>DetailedDescription: ");
+        s.append("This module creates an ARFF File Parser that will ");
+        s.append("read data from the specified ARFF file. ");
+        s.append("An ARFF (Attribute-Relation File Format) file is an ASCII file ");
+        s.append("that describes a list of instances sharing a set of attributes. ");
+        s.append("ARFF files were developed by the Machine Learning Project at the ");
+        s.append("Department of Computer Science of the University of Waikota for use ");
+        s.append("with the Weka machine learning software. ");
+        s.append("</p><p>Typically the <i>File Parser</i> output port of this ");
+        s.append("module is connected to the <i>File Parser</i> input port of ");
+        s.append("a module whose name begins with 'Parse File', for example, ");
+        s.append("<i>Parse File To Table</i> or  <i>Parse File To Paging Table</i>.");
+
+        s.append("</p><p>References: <br>");
+        s.append("The Weka Project: http://www.cs.waikato.ac.nz/~ml/weka <br>" );
+        s.append("The ARFF Format: http://www.cs.waikato.ac.nz/~ml/weka/arff.html " );
+        s.append("</p><p>Data Type Restrictions: ");
         s.append("The input to this module must be an ARFF file.");
-        s.append("<p>Data Handling: ");
-        s.append("The module does not destroy or modify the input data.");
+        s.append("</p><p>Data Handling: ");
+        s.append("The module does not destroy or modify the input data.</p>");
         return s.toString();
     }
 
@@ -59,10 +73,39 @@ public class CreateARFFParser extends InputModule {
 
     public void doit() throws Exception {
         String fn = (String)pullInput(0);
-        File file = new File(fn);
-        if(!file.exists())
-            throw new FileNotFoundException(getAlias()+" "+file+" did not exist.");
+        File file = null;
+
+        try {
+            file = new File(fn);
+        }
+        catch (NullPointerException e) {
+           throw new FileNotFoundException( getAlias() +
+                ": File Name was blank "  +
+                "\n" + e );
+        }
+
+        boolean fileOk = false;
+        try {
+            fileOk = file.exists();
+        }
+        catch (SecurityException e) {
+           throw new SecurityException( getAlias() +
+                ": Could not open file " + fn +
+                "\n" + e );
+        }
+
+        if(!file.exists()) {
+            throw new FileNotFoundException(getAlias()+
+              ": "+file+" does not exist." );
+        }
+
         ARFFFileParser arff = new ARFFFileParser(file);
         pushOutput(arff, 0);
     }
 }
+
+// QA Comments
+// 2/14/03 - Handed off to QA by David Clutter
+// 2/12/03 - Ruth started QA process. added more to module description
+//           module description; added more specific exceptions.
+// END QA Comments
