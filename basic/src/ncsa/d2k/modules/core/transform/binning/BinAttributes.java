@@ -292,11 +292,12 @@ public class BinAttributes extends HeadlessUIModule {
 	  uniqueColumnValues = new HashSet[tbl.getNumColumns()];
 	  binListModel.removeAllElements();
 
-	  if (savedBins != null) {
+	  /* This was causing it to put the same bins in multiple times.
+      if (savedBins != null) {
 		 for (int i = 0; i < savedBins.length; i++) {
 			binListModel.addElement(savedBins[i]);
 		 }
-	  }
+	  }*/
 
 		DefaultListModel numModel = (DefaultListModel)numericColumnLabels.getModel(),
 		txtModel = (DefaultListModel)textualColumnLabels.getModel();
@@ -807,7 +808,11 @@ public class BinAttributes extends HeadlessUIModule {
 			textualBinName = "bin" + uniqueTextualIndex++;
 		  else
 			textualBinName = textBinName.getText();
-
+          if (!checkDuplicateBinNames(textualBinName)) {
+            ErrorDialog.showDialog("The bin name must be unique, "+textualBinName+" already used.", "Error");
+            return;
+          }
+              
 		  BinDescriptor bd = createTextualBin(idx, textualBinName,
 			  sel);
 
@@ -1058,6 +1063,15 @@ public class BinAttributes extends HeadlessUIModule {
 	  add(bxl, BorderLayout.CENTER);
 	  add(buttonPanel, BorderLayout.SOUTH);
 	}
+    
+    private boolean checkDuplicateBinNames(String newName) {
+       for (int bdi = 0; bdi < binListModel.getSize(); bdi++) {
+          BinDescriptor bd = (BinDescriptor)binListModel.elementAt(bdi);
+          if (newName.equals(bd.name))
+              return false;
+       }
+       return true;
+    }
 
    private boolean checkDuplicateNumericBins(int[] newIndices) {
 

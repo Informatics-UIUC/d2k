@@ -402,6 +402,11 @@ public class ADTBinColumns extends HeadlessUIModule {
 					else
 						textualBinName = textBinName.getText();
 
+                    if (!checkDuplicateBinNames(textualBinName)) {
+                      ErrorDialog.showDialog("The bin name must be unique, "+textualBinName+" already used.", "Error");
+                      return;
+                    }
+              
 					BinDescriptor bd =
 						createTextualBin(idx, textualBinName, sel);
 
@@ -668,6 +673,14 @@ public class ADTBinColumns extends HeadlessUIModule {
 			return set;
 		}
 
+        private boolean checkDuplicateBinNames(String newName) {
+           for (int bdi = 0; bdi < binListModel.getSize(); bdi++) {
+              BinDescriptor bd = (BinDescriptor)binListModel.elementAt(bdi);
+              if (newName.equals(bd.name))
+                  return false;
+           }
+           return true;
+        }
 		private boolean validateBins(DefaultListModel newBins) {
 			   boolean match = false;
 			   for (int binIdx = 0; binIdx < newBins.size(); binIdx++) {

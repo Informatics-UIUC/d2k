@@ -932,7 +932,12 @@ public class SQLBinAttributes extends HeadlessUIModule {
                      else
                         textualBinName = textBinName.getText();
 
-                    BinDescriptor bd = createTextualBin(idx, textualBinName, sel);
+                    if (!checkDuplicateBinNames(textualBinName)) {
+                      ErrorDialog.showDialog("The bin name must be unique, "+textualBinName+" already used.", "Error");
+                      return;
+                    }
+              
+BinDescriptor bd = createTextualBin(idx, textualBinName, sel);
                     HashSet set = uniqueColumnValues[idx];
                     for (int i = 0; i < sel.length; i++) {
                        textUniqueModel.removeElement(sel[i]);
@@ -1192,6 +1197,15 @@ public class SQLBinAttributes extends HeadlessUIModule {
             return true;
           }
 
+
+        private boolean checkDuplicateBinNames(String newName) {
+           for (int bdi = 0; bdi < binListModel.getSize(); bdi++) {
+              BinDescriptor bd = (BinDescriptor)binListModel.elementAt(bdi);
+              if (newName.equals(bd.name))
+                  return false;
+           }
+           return true;
+        }
 
         /** find unique values in a column
          *  @param col the column to check for
