@@ -51,10 +51,11 @@ public class ItemSets implements Serializable {
 			ExampleTable et = (ExampleTable)vt;
 			int [] inputs = et.getInputFeatures ();
 			int [] outputs = et.getOutputFeatures ();
-			numColumns =inputs.length+outputs.length;
+			int totalInsOuts = inputs.length+outputs.length;
+			numColumns = totalInsOuts > et.getNumColumns() ? et.getNumColumns() : totalInsOuts;
 			attributes = new int [numColumns];
-			System.arraycopy(inputs,0,attributes,0,inputs.length);
-			System.arraycopy(outputs,0,attributes,inputs.length,outputs.length);
+			System.arraycopy(inputs, 0, attributes, 0, inputs.length);
+			System.arraycopy(outputs, 0, attributes, numColumns - outputs.length, outputs.length);
 
 			// Construct the output names.
 			outputNames = new String [outputs.length];
