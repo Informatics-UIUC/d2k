@@ -24,7 +24,7 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "      This vector contains a list of all the tables in the database.   ";
+			case 0: return " A list of tables in the database.   ";
 			default: return "No such input";
 		}
 	}
@@ -44,7 +44,7 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "      The name of the table that the user selected.   ";
+			case 0: return " The name of the table that the user selected.   ";
 			default: return "No such output";
 		}
 	}
@@ -63,7 +63,19 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    This module will provide a user interface from which the user can select     one from among the database tables available in the targeted database.  </body></html>";
+          String s = "<p> Overview: ";
+          s += "This module allows users to select a database table. </p>";
+          s += "<p> Detailed Description: ";
+          s += "Given a list of available tables, this module provides an user-interface ";
+          s += "to allows users to choose a table from it. ";
+          s += "The selected table will be used to construct SQL queries. For the security purpose, ";
+          s += "you may only view the tables you have been granted to. If you ";
+          s += "cannot see the tables you are looking for, please report the ";
+          s += "problems to your database administrator. </p>";
+          s += "<p> Restrictions: ";
+          s += "We currently only support Oracle database.";
+
+          return s;
 	}
 
 	/**
@@ -88,7 +100,7 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
 		 * @return the human readable name of the module.
 		 */
 		public String getModuleName() {
-			return "Select Table";
+			return "SelectTable";
 		}
 
 		/**
