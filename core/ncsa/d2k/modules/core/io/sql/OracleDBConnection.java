@@ -261,19 +261,14 @@ System.out.println(query.toString());
             /**
              * BEGIN PROCESSING columns[][]..
              */
-            //first: count the # columns in the 2D-array columns (including duplicates)
-            int allColsCount = 0;
-            for (int tabl = 0; tabl < columns.length; tabl++)
-                allColsCount += columns[tabl].length;
-
-            //second: separate the columns into uniqueColumns and duplicateColumns
+            // separate the columns into uniqueColumns and duplicateColumns
             int i = 0;
             Set uniques = new HashSet();
             Set dups = new HashSet();
             for (int tabl = 0; tabl < columns.length; tabl++)
                 for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++)
-                    if (!uniques.add(allCols[j]))
-                        dups.add(allCols[j]);
+                    if (!uniques.add(columns[tabl][tablCol]))
+                        dups.add(columns[tabl][tablCol]);
 
             uniques.removeAll(dups);  // Destructive set-difference
             String uniqueColumns[] = (String[]) uniques.toArray( new String[ uniques.size() ] );
@@ -283,7 +278,8 @@ System.out.println(query.toString());
               */
 
             // First : Create SELECT Clause
-            query.append("SELECT * FROM (SELECT ");
+//            query.append("SELECT * FROM (SELECT ");
+            query.append("SELECT ");
             for (int l=0; l<duplicateColumns.length; l++){
                 // get the 2 tables that a duplicate column belongs to
                 // how?
@@ -380,7 +376,7 @@ System.out.println(query.toString());
                     query.append(", ");
             }
 
-            query.append(")");
+//            query.append(")");
 
     System.out.println("*****************QUERY: MULTIPLE TABLES *****************");
     System.out.println(query.toString());

@@ -77,7 +77,7 @@ public class SelectDBTables extends UIModule {
         private JComboBox allTables2; //for join
         private JComboBox allColumns1; //for join
         private JComboBox allColumns2; //for join
-        private JComboBox operations12; // for join   : ==, !=, >, <, >=, <=
+        private JComboBox operations12; // for join   : =, !=, >, <, >=, <=
         private JButton moveToJoin;
         private JButton removeJoin;
 
@@ -86,7 +86,7 @@ public class SelectDBTables extends UIModule {
         private DefaultListModel joinsModel;
         private JScrollPane jspJoins;
 
-        private String[] ops = {"  ", "==", ">", "<", "!=", ">=", "<="}; //........
+        private String[] ops = {"  ", "=", ">", "<", "!=", ">=", "<="}; //........
 
 
         private JComboBox   allTables;      // for row filter       //...............
