@@ -95,6 +95,20 @@ public class TableViewer extends UIModule {
    }
 
 ////////////////////////////////////////////////////////////////////////////////
+// properties                                                                 //
+////////////////////////////////////////////////////////////////////////////////
+ 
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      // This module doesn't have any properties that the user should edit.
+      // so we return an empty list
+ 
+      PropertyDescription[] pds = new PropertyDescription[0];
+      return pds;
+ 
+   }
+
+////////////////////////////////////////////////////////////////////////////////
 // user view                                                                  //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -224,3 +238,6 @@ public class TableViewer extends UIModule {
 //        - to table viewer; Asked developers about "Save" option format,
 //        - undoc properties, and labels types.
 //  
+// 3/24/03  - Added getPropertiesDescriptions() so that no properties the user
+//            can't edit are shown.
+//
