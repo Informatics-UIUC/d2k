@@ -8,27 +8,27 @@ import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 
 public class InstanceBasedParamSpaceGenerator extends AbstractParamSpaceGenerator {
 
-    public String getOutputName(int i) { 
-	switch (i) { 
-	case 0: return "Parameter Space"; 
-	case 1: return "Function Inducer Class"; 
-	} 
-	return ""; 
-    } 
-    public String getOutputInfo(int i) { 
-	switch (i) { 
-	case 0: return "Control Parameter Space for InstanceBased Inducer"; 
-	case 1: return "Instance Based Function Inducer Class"; 
-	} 
-	return ""; 
-    } 
-    public String[] getOutputTypes() { 
-	String [] out = { 
-	    "ncsa.d2k.modules.core.datatype.parameter.ParameterSpace", 
-	    "java.lang.Class"}; 
-	return out; 
-    } 
- 
+    public String getOutputName(int i) {
+	switch (i) {
+	case 0: return "Parameter Space";
+	case 1: return "Function Inducer Class";
+	}
+	return "";
+    }
+    public String getOutputInfo(int i) {
+	switch (i) {
+	case 0: return "Control Parameter Space for InstanceBased Inducer";
+	case 1: return "Instance Based Function Inducer Class";
+	}
+	return "";
+    }
+    public String[] getOutputTypes() {
+	String [] out = {
+	    "ncsa.d2k.modules.core.datatype.parameter.ParameterSpace",
+	    "java.lang.Class"};
+	return out;
+    }
+
 
     /**
      * Returns a reference to the developer supplied defaults. These are
@@ -37,7 +37,7 @@ public class InstanceBasedParamSpaceGenerator extends AbstractParamSpaceGenerato
      * @return the factory settings space.
      */
     protected ParameterSpace getDefaultSpace() {
-       
+
     int         numControlParameters = 3;
     double []   minControlValues = new double[numControlParameters];
     double []   maxControlValues = new double[numControlParameters];
@@ -64,7 +64,7 @@ public class InstanceBasedParamSpaceGenerator extends AbstractParamSpaceGenerato
     types           [biasIndex] = ColumnTypes.DOUBLE;
     biasIndex++;
 
-    biasNames       [biasIndex] = "ZeroDistanceValue";
+    biasNames       [biasIndex] = "ZeroDistanceWeight";
     minControlValues[biasIndex] = 1.0E-99;
     maxControlValues[biasIndex] = Double.MAX_VALUE;
     defaults        [biasIndex] = 1.0E-99;
@@ -93,20 +93,20 @@ public class InstanceBasedParamSpaceGenerator extends AbstractParamSpaceGenerato
     int numBiasDimensions = 3;
 
     public static final String NEIGHBORHOOD_SIZE = "NeighborhoodSize";
-       
 
 
 
-    
+
+
     public PropertyDescription[] getPropertiesDescriptions() {
-	
+
 	PropertyDescription[] pds = new PropertyDescription[numBiasDimensions];
-	
+
 	pds[0] = new PropertyDescription(NEIGHBORHOOD_SIZE,
 					 "Neighborhood Size",
 					 "The number of examples to use for fitting the prediction module.  " +
 					 "This must be set to 1 or greater.  ");
-	
+
 	pds[1] = new PropertyDescription(
 					 "DistanceWeightingPower",
 					 "Distance Weighting Power",
@@ -114,18 +114,18 @@ public class InstanceBasedParamSpaceGenerator extends AbstractParamSpaceGenerato
 					 "Setting this to zero causes equal weighting of all examples.  " +
 					 "Setting it to 1.0 gives inverse distance weighting.  " +
 					 "Setting it to 2.0 gives inverse distance squared weighting and so on.  ");
-	
+
 	pds[2] = new PropertyDescription(
-					 "zeroDistanceValue",
+					 "zeroDistanceWeight",
 					 "Zero Distance Value",
 					 "What weight to associate to a stored example which has zero distance to example to be predicted.  " +
 					 "Since division by zero is not permitted, some value must be assigned to examples with zero distance.  "  +
 					 "This value is the weight and exact match should be given.  ");
 	return pds;
     }
-    
-    
-    
+
+
+
     /**
      * All we have to do here is push the parameter space and function inducer class.
      */
@@ -138,9 +138,9 @@ public class InstanceBasedParamSpaceGenerator extends AbstractParamSpaceGenerato
 	catch (Exception e) {
 	    //System.out.println("could not find class");
 	    //throw new Exception();
-	    throw new Exception(getAlias() + ": could not find class InstanceBasedInducerOpt "); 
+	    throw new Exception(getAlias() + ": could not find class InstanceBasedInducerOpt ");
 	}
-	
+
 	if (space == null) space = getDefaultSpace();
 	this.pushOutput(space, 0);
 	this.pushOutput(functionInducerClass, 1);

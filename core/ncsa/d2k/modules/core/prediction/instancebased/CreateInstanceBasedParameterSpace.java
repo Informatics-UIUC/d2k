@@ -97,7 +97,7 @@ public class CreateInstanceBasedParameterSpace extends ComputeModule {
     types           [biasIndex] = ColumnTypes.DOUBLE;
     biasIndex++;
 
-    biasNames       [biasIndex] = "ZeroDistanceValue";
+    biasNames       [biasIndex] = "ZeroDistanceWeight";
     minControlValues[biasIndex] = minParameterPoint.getValue(biasNames[biasIndex]);
     maxControlValues[biasIndex] = maxParameterPoint.getValue(biasNames[biasIndex]);
     defaults        [biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
@@ -114,7 +114,7 @@ public class CreateInstanceBasedParameterSpace extends ComputeModule {
     catch (Exception e) {
 	//System.out.println("could not find class");
 	//throw new Exception();
-	throw new Exception(getAlias() + ": could not find class InstanceBasedInducerOpt "); 
+	throw new Exception(getAlias() + ": could not find class InstanceBasedInducerOpt ");
     }
 
     this.pushOutput(parameterSpace,       0);
@@ -122,5 +122,5 @@ public class CreateInstanceBasedParameterSpace extends ComputeModule {
   }
 }
 
-//QA changes Anca: 
-// Exception is now giving a message 
+//QA changes Anca:
+// Exception is now giving a message

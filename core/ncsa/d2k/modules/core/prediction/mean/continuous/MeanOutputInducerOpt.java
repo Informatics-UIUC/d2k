@@ -8,11 +8,33 @@ import ncsa.d2k.core.modules.*;
 public class MeanOutputInducerOpt extends FunctionInducerOpt {
   //int NumBiasParameters = 0;
 
-  public String getModuleInfo() {
-    return "MeanOutputInducerOpt";
-  }
   public String getModuleName() {
-    return "MeanOutputInducerOpt";
+    return "Mean Output Inducer Optimizable";
+  }
+
+ public String getModuleInfo() {
+
+    String s = "";
+    s += "<p>";
+    s += "Overview: ";
+    s += "This module builds simple model by computing the average point in output space.  </p>";
+    s += "<p>";
+    s += "Detailed Description: ";
+    s += "The module implements the mean output learning algorithm.  ";
+    s += "It produces a model that makes predictions that are independent of the input feature values.  ";
+    s += "During the training phase, the mean output inducer sums ";
+    s += "up the output values for each output feature and then divides by the number of examples.  ";
+    s += "There are no control parameters to this learning algorithm and <i>Mean Output Inducer Optimizable</i> is added for uniformity.  ";
+    s += "<p>";
+    s += "Restrictions: ";
+    s += "This module will only classify examples with numeric output features.";
+    s += "<p>";
+    s += "Data Handling: This module does not modify the input data. </p>";
+    s += "<p>";
+    s += "Scalability: This module can efficiently a data set that can be stored in memory.  ";
+    s += "The ultimate limit is how much virtual memory java can access. </p> ";
+
+    return s;
   }
 
   public void setControlParameters(ParameterPoint point) throws Exception {
@@ -52,7 +74,7 @@ public class MeanOutputInducerOpt extends FunctionInducerOpt {
     //QA Anca added this:
     public PropertyDescription[] getPropertiesDescriptions() {
         // so that "ordered and _trace" property are invisible
-        return new PropertyDescription[0]; 
+        return new PropertyDescription[0];
     }
 
 }

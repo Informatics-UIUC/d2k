@@ -177,8 +177,9 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
 
 
   public String getModuleName() {
-    return "DecisionTreeInducer";
+    return "Decision Tree Inducer";
   }
+
   public String getModuleInfo() {
 
     String s = "";
@@ -186,7 +187,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     s += "Overview: ";
     s += "This module builds a decision tree from an example table. </p>";
     s += "<p>Detailed Description: ";
-    s += "The module implements a decision tree learning algorithm for continous features. ";
+    s += "The module implements a decision tree learning algorithm for continuous features. ";
 
     s += "For inducing functions within a node, one of two different learning algorithms can be used. ";
     s += "<ul>";
@@ -203,7 +204,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     s += "<li><i>Generate median splits</i>:  Generate splits at the median input feature value within the node which requires n log n sorting.  </li> ";
     s += "</ul>";
 
-    s += "Determining whether to split a node is contoled by a couple parameters ";
+    s += "Determining whether to split a node is controled by a couple parameters ";
     s += "<i>Minimum examples per leaf</i> and <i>Minimum split error reduction</i>.  ";
     s += "A split is not considered if it results in a nodes with less than <i>Minimum examples per leaf</i> examples in it.  ";
     s += "A split is not considered if the resubstitution based error weighted by population ";

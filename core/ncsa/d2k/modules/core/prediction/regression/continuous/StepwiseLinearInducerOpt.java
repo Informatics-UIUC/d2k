@@ -16,12 +16,36 @@ public class StepwiseLinearInducerOpt
   private int Direction = 0;
 
   public String getModuleName() {
-    return "StepwiseLinearInducerOpt";
+    return "Stepwise Linear Inducer Optimizable";
   }
 
-  public String getModuleInfo() {
-    return "StepwiseLinearInducerOpt";
+public String getModuleInfo() {
+
+    String s = "";
+    s += "<p>";
+    s += "Overview: ";
+    s += "This module implements the stepwise linear learning algorithm which creates linear prediction functions using one or more input variables.  ";
+    s += "<p>";
+    s += "Detailed Description: ";
+    s += "This Stepwise Linear learning algorithm allows for both standard multiple regression using all the input features ";
+    s += "or stepwise regression, either step up or step down.  Step up regression, is a feature subset selection method that ";
+    s += "adds features one at a time starting with no features.  Step down regression, which is slower, starts with all the ";
+    s += "features and removes them one at a time.  The performance of different feature subsets is evaluated relative to the ";
+    s += "given error function.  <i>Use Stepwise</i> turns stepwise feature selection on and off.  ";
+    s += "<i>Direction of Search</i> can be 1 or -1 denoting step up (starting with no features) and step down (starting with all featuers) subset selection.  ";
+    s += "<i>Number of Feature Selection Rounds</i> determines how many features are added or removed from the initial set.  ";
+    s += "<p>";
+    s += "Restrictions: ";
+    s += "This module will only classify examples with numeric input and output features.";
+    s += "<p>";
+    s += "Data Handling: This module does not modify the input data. </p>";
+    s += "<p>";
+    s += "Scalability: This module can efficiently a data set that can be stored in memory.  ";
+    s += "The ultimate limit is how much virtual memory java can access. </p> ";
+
+    return s;
   }
+
 
   public void setControlParameters(ParameterPoint parameterPoint) {
 

@@ -30,8 +30,8 @@ public class CreateInstanceBasedParameterPoint
         "Setting it to 2.0 gives inverse distance squared weighting and so on.  ");
 
     pds[2] = new PropertyDescription(
-        "zeroDistanceValue",
-        "Zero Distance Value",
+        "zeroDistanceWeight",
+        "Zero Distance Weight",
         "What weight to associate to a stored example which has zero distance to example to be predicted.  " +
         "Since division by zero is not permitted, some value must be assigned to examples with zero distance.  "  +
         "This value is the weight and exact match should be given.  ");
@@ -59,16 +59,16 @@ public class CreateInstanceBasedParameterPoint
     return this.DistanceWeightingPower;
   }
 
-  private double ZeroDistanceValue = 0.0;
-  public void setZeroDistanceValue(double value) throws PropertyVetoException {
+  private double ZeroDistanceWeight = 0.0;
+  public void setZeroDistanceWeight(double value) throws PropertyVetoException {
     if (value < 0.0) {
       throw new PropertyVetoException(" < 0.0", null);
     }
-    this.ZeroDistanceValue = value;
+    this.ZeroDistanceWeight = value;
   }
 
-  public double getZeroDistanceValue() {
-    return this.ZeroDistanceValue;
+  public double getZeroDistanceWeight() {
+    return this.ZeroDistanceWeight;
   }
 
 
@@ -153,8 +153,8 @@ public class CreateInstanceBasedParameterPoint
     biasNames[biasIndex] = "DistanceWeightingPower";
     bias[biasIndex] = DistanceWeightingPower;
     biasIndex++;
-    biasNames[biasIndex] = "ZeroDistanceValue";
-    bias[biasIndex] = ZeroDistanceValue;
+    biasNames[biasIndex] = "ZeroDistanceWeight";
+    bias[biasIndex] = ZeroDistanceWeight;
     biasIndex++;
 
     ParameterPointImpl parameterPoint = new ParameterPointImpl();
@@ -176,8 +176,8 @@ public class CreateInstanceBasedParameterPoint
   }
 }
 
-//QA changes Anca: 
-//typos and Exception is now giving a message 
+//QA changes Anca:
+//typos and Exception is now giving a message
 //replaced Decision Tree with Instance Based in getOutputInfo
 
 

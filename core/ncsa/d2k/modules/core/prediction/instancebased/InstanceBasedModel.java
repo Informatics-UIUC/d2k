@@ -8,7 +8,7 @@ public class InstanceBasedModel extends Model implements java.io.Serializable
   double [] inputRanges;
   int    NeighborhoodSize;
   double DistanceWeightingPower;
-  double ZeroDistanceValue;
+  double ZeroDistanceWeight;
 
 
   double [] bestDistances      = null;
@@ -21,7 +21,7 @@ public class InstanceBasedModel extends Model implements java.io.Serializable
                             double [] inputRanges,
     int    NeighborhoodSize,
     double DistanceWeightingPower,
-    double ZeroDistanceValue,
+    double ZeroDistanceWeight,
     ExampleTable exampleSet) {
 
     super(examples);
@@ -29,7 +29,7 @@ public class InstanceBasedModel extends Model implements java.io.Serializable
     this.inputRanges            = inputRanges;
     this.NeighborhoodSize       = NeighborhoodSize;
     this.DistanceWeightingPower = DistanceWeightingPower;
-    this.ZeroDistanceValue      = ZeroDistanceValue;
+    this.ZeroDistanceWeight      = ZeroDistanceWeight;
     this.trainExampleSet        = (ExampleTable) exampleSet.copy();
 
   }
@@ -102,13 +102,17 @@ public class InstanceBasedModel extends Model implements java.io.Serializable
     }
 
     double weightSum = 0.0;
+    double weight;
     for (int i = 0; i < actualNeighborhoodSize; i++) {
 
       double distance = bestDistances[i];
+
       if (distance == 0) {
-        distance = ZeroDistanceValue;
-        }
-      double weight = 1.0 / Math.pow(distance, DistanceWeightingPower);
+        weight = ZeroDistanceWeight;
+      }
+      else {
+        weight = 1.0 / Math.pow(distance, DistanceWeightingPower);
+      }
 
       weightSum += weight;
 
@@ -129,7 +133,7 @@ public class InstanceBasedModel extends Model implements java.io.Serializable
                           double [] inputRanges,
                           int    NeighborhoodSize,
                           double DistanceWeightingPower,
-                          double ZeroDistanceValue,
+                          double ZeroDistanceWeight,
                           ExampleTable exampleSet)
     {
     this.numInputs = numInputs;
@@ -139,7 +143,7 @@ public class InstanceBasedModel extends Model implements java.io.Serializable
     this.inputRanges            = inputRanges;
     this.NeighborhoodSize       = NeighborhoodSize;
     this.DistanceWeightingPower = DistanceWeightingPower;
-    this.ZeroDistanceValue      = ZeroDistanceValue;
+    this.ZeroDistanceWeight      = ZeroDistanceWeight;
     this.trainExampleSet        = (ExampleTable) exampleSet.copy();
     }
 */
@@ -148,7 +152,7 @@ public class InstanceBasedModel extends Model implements java.io.Serializable
     System.out.println("Instance Based Control Parameters:");
     System.out.println("  NeighborhoodSize       = " + NeighborhoodSize);
     System.out.println("  DistanceWeightingPower = " + DistanceWeightingPower);
-    System.out.println("  ZeroDistanceValue      = " + ZeroDistanceValue);
+    System.out.println("  ZeroDistanceWeight      = " + ZeroDistanceWeight);
     System.out.println("Example Set Attributes");
     System.out.println("  NumExamples            = " + trainExampleSet.getNumExamples());
     }
