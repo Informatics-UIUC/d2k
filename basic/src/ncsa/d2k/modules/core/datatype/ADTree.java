@@ -402,7 +402,7 @@ public class ADTree extends Node {
 	  @param attribute - array of attribute indexes
 	  @return - the no of the records that have attribute[i] = value
 	            for every i
-	
+
 		NOTE : attribute indexes should be in ascending order
 	*/
 
@@ -435,16 +435,16 @@ public class ADTree extends Node {
 	}
 
 	/**
-	
+
 	  getCount implements an AND like expresion and returns the sums of counts
 	  of all queries.
 	  @param nd - root of the ADTree
 	  @param values - map of attribute, value pairs
 	  @return - the no of the records that have attribute[i] = value
 	            for every i
-	
+
 		NOTE : attribute indexes should be in ascending order
-	
+
 	*/
 	public int getCount(Node nd, TreeMap values) {
 
@@ -480,7 +480,7 @@ public class ADTree extends Node {
 	/*
 	  getDirectCount - gets a count by using only the ADTree skeleton,
 	  expanding the needed branches and then discarding them
-	  @param pos -position where the search for the node containg
+	  @param pos -position where the search for the node containing
 	  the count will begin
 	  @param nd - root of the ADTree
 	  @param values - map of attribute, value pairs

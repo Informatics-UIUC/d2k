@@ -173,7 +173,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
             "convert the data values from the <i>Second Table</i> to that type. "+
             "This conversion may result in unexpected values in the output table. In some cases, "+
             "such as when a string cannot be converted to a numeric, an exception will be raised. "+
-            "The user is discouraged from appending tables containg attributes with the same name "+
+            "The user is discouraged from appending tables containing attributes with the same name "+
             "whose types differ.  For some conversions, for example when an integer is converted "+
 	    "to a double, there may be no loss of data, but the user should verify the result table "+
             "has the expected values. ";
@@ -185,7 +185,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
              "the same type as the <i>First Table</i>.  The scalability of the module "+
              "therefore depends on the scalability properties of that Table implementation. "+
              "The module requires that the data for a complete column must be able to fit "+
-             "into memory, regardless of the Table implementation being used. The module is"+
+             "into memory, regardless of the Table implementation being used. The module is "+
 	     "optimized for Tables whose underlying implementation is column-based. </p>";
 
              return s;

@@ -30,7 +30,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
    * the value j mapped to key i is the value j in line i in this column.
    */
 
-   protected VIntBooleanHashMap elements;   //the vlaues of this column
+   protected VIntBooleanHashMap elements;   //the values of this column
   public static boolean NOT_EXIST = false;
 
 

@@ -524,7 +524,7 @@ protected static SparseTableFactory factory = new SparseTableFactory();
    * Note - that since this is a Sparse Table if value V resides at buffer[i] at the
    * end of getColumn process - it does not mean V resides at (i, pos) in this table.
    * It is highly recommended to use getColumn(Object, int, int[]) in order to
-   * receive a better mapping of vlaues to row numbers.
+   * receive a better mapping of values to row numbers.
    *
    * @param buffer  an array to hold the data at column #<code>pos</code>
    * @param pos     the column number to retrieve the data from

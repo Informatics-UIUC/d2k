@@ -83,7 +83,7 @@ public class ADTBinColumns extends UIModule {
 	public String getInputInfo(int i) {
 		switch (i) {
 			case 0 :
-				return "An ADTree contaning counts.";
+				return "An ADTree containing counts.";
 			case 1 :
 				return "ExampleTable containing the names of the input/output features.";
 			default :

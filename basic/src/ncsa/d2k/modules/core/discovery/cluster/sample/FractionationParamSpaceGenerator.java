@@ -86,7 +86,7 @@ public class FractionationParamSpaceGenerator extends AbstractParamSpaceGenerato
         "<p>WPGMC: Weighted pair group method using centroids.</p>");
     pds[2] = new PropertyDescription(DISTANCE_METRIC,
                                      "Distance Metric",
-        "This property determine the type of distance fucntion used to calculate " +
+        "This property determine the type of distance function used to calculate " +
         "distance between two examples." +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +
@@ -95,16 +95,18 @@ public class FractionationParamSpaceGenerator extends AbstractParamSpaceGenerato
     pds[3] = new PropertyDescription(HAC_DISTANCE_THRESHOLD,
                                      "HAC Distance Threshold",
                                      "This property specifies the percent of the max distance to use " +
-                                     "as a cutoff value to halt clustering ([1...100].  The max distance between examples " +
+                                     "as a cutoff value to halt clustering ([0...100].  The max distance between examples " +
                                      "is approximated by taking the min and max of each attribute and forming a " +
-                                     "min example and a max example -- then finding the distance between the two.");
+                                     "min example and a max example -- then finding the distance between the two. " +
+                                     "This property when set with a value > 0 becomes the dominant halting criteria for " +
+                                     "clustering (overriding the <i>Number of Clusters</i> property.");
     pds[4] = new PropertyDescription(FRACT_PART_SZ,
                                               "Max Partition Size",
         "The size of partitions to use in the sampling process."
         );
     pds[5] = new PropertyDescription(FRACT_NTH_SORT_TERM,
                                               "Sort Attribute",
-                                              "The index of for the column denoting the atttribute to be used to sort on prior to partitioning.");
+                                              "The index of for the column denoting the attribute to be used to sort on prior to partitioning.");
     pds[6] = new PropertyDescription(MAX_ITERATIONS,
                                               "Number of Assignment Passes",
         "This property specifies the number of iterations of cluster refinement to perform (> 0).");

@@ -17,7 +17,7 @@ Note: It is important that this be an Example so that additional layers
 public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 
 	/**
-	 * return a paramter point from the given arrays.
+	 * return a parameter point from the given arrays.
 	 * @return
 	 */
 	static final public ParameterPoint getParameterPoint(String []names, double [] values) {

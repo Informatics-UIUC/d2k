@@ -23,7 +23,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.discovery.cluster.hac.*;
 
 public class BuckshotParamsOPT
-    extends DataPrepModule {
+    extends DataPrepModule implements ClusterParameterDefns {
 
   //==============
   // Data Members
@@ -78,7 +78,7 @@ public class BuckshotParamsOPT
     if (parm1 == 0) {
       return "Control Parameters";
     } else if (parm1 == 1) {
-      return "Table of entities to cluster";
+      return "Table of examples to cluster";
     } else {
       return "";
     }
@@ -118,9 +118,9 @@ public class BuckshotParamsOPT
   public String getModuleInfo() {
     String s = "<p>Overview: ";
     s += "The Buckshot clustering algorithm is a type of kmeans approach where a sample ";
-    s += "of size Sqrt(num_clusters * num_examples) is chosen at random from the table ";
+    s += "of size Sqrt(<i>" + NUM_CLUSTERS + "</i> * <i>Number of Examples</i>) is chosen at random from the table ";
     s += "of examples.  This sampling is sent through the hierarchical agglomerative clustering ";
-    s += "module to form num_clusters clusters.  These cluster centroids are used as the initial ";
+    s += "module to form <i>" + NUM_CLUSTERS + "</i> clusters.  These clusters' centroids are used as the initial ";
     s += "\"means\" for the cluster assignment module. ";
     s += "The assignment module, once it has made refinements, outputs the final cluster model. ";
     s += "</p>";
@@ -137,7 +137,7 @@ public class BuckshotParamsOPT
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "This algortihm runs in time O(num_examples * num_clusters).  See the component modules ";
+    s += "This algorithm runs in time O(<i>Number of Examples</i> * <i>" + NUM_CLUSTERS + "</i>).  See the component modules ";
     s += "information to understand the memory requirements overall.";
     s += "</p>";
     return s;
@@ -156,7 +156,7 @@ public class BuckshotParamsOPT
     } else if (parm1 == 2) {
       return "Parameters for Sample Table Rows";
     } else if (parm1 == 3) {
-      return "Table of entities to cluster";
+      return "Table of examples to cluster";
     } else {
       return "";
     }

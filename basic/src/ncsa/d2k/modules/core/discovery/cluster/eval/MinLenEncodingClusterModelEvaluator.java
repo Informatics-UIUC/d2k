@@ -41,7 +41,7 @@ public class MinLenEncodingClusterModelEvaluator
     PropertyDescription[] descriptions = new PropertyDescription[1];
 
     descriptions[0] = new PropertyDescription("verbose",
-                                              "Verbose Ouput",
+                                              "Verbose Output",
         "Do you want verbose output to the console.");
 
     return descriptions;
@@ -59,7 +59,7 @@ public class MinLenEncodingClusterModelEvaluator
 
     s += "<p>Detailed Description: ";
     s += "The minimum encoding length measure is affected by the number of clusters ";
-    s += "formed and the amount of information tha tcan be saved by tagging cluster ";
+    s += "formed and the amount of information that can be saved by tagging cluster ";
     s += "entities with a cluster ID.  The intuition is that good clusterings ";
     s += "will form clusters that meaningfully limit the possibility of values thus ";
     s += "economizing the amount of information needed to describe the overall ";
@@ -119,7 +119,7 @@ public class MinLenEncodingClusterModelEvaluator
   public String getInputInfo(int i) {
     switch (i) {
       case 0:
-        return "This is the ClusterModel that will have it's table modified.";
+        return "This is the ClusterModel that will be evaluated.";
       default:
         return "No such input";
     }
@@ -147,7 +147,7 @@ public class MinLenEncodingClusterModelEvaluator
   public String getOutputInfo(int i) {
     switch (i) {
       case 0:
-        return "This is ther score for this model.";
+        return "This is the score for this model.";
       default:
         return "No such output";
     }
@@ -275,7 +275,7 @@ public class MinLenEncodingClusterModelEvaluator
    */
   private Object[] calculateMinMax(Table itable, int[] ifeatures) {
     double maxdist = 0;
-    //find distance threshhold
+    //find distance threshold
     double[] max = new double[ifeatures.length];
     double[] min = new double[ifeatures.length];
     for (int i = 0, n = ifeatures.length; i < n; i++) {

@@ -156,7 +156,7 @@ public class ParseDSTPToDBTable
     s += "</p>";
 
     s += "<p>Detailed Description: ";
-    s += "This GUI provides a tree view of metadata for DSTP data sources.  Any";
+    s += "This GUI provides a tree view of metadata for DSTP data sources.  Any ";
     s += "of these sources can be selected and loaded into a DBTable for use in ";
     s += "a D2K itinerary.  To select a source simply double click on the tree ";
     s += "node that bears the source name.  The attributes for the source will ";

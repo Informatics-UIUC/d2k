@@ -69,7 +69,7 @@ public class CoverageSampler extends CoverageSamplerOPT {
     PropertyDescription[] descriptions = new PropertyDescription[5];
     descriptions[0] = new PropertyDescription("maxNumCenters",
                                               "Maximum Samples.",
-        "Maximum nunmber of samples to be generated");
+        "Maximum number of samples to be generated");
     descriptions[1] = new PropertyDescription("cutOff",
                                               "Distance Threshold",
                                      "This property specifies the percent of the max distance to use " +
@@ -78,7 +78,7 @@ public class CoverageSampler extends CoverageSamplerOPT {
                                      "min example and a max example -- then finding the distance between the two.");
     descriptions[2] = new PropertyDescription("distanceMetric",
                                               "Distance Metric",
-        "This property determine the type of distance fucntion used to calculate " +
+        "This property determine the type of distance function used to calculate " +
         "distance between two examples." +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +
@@ -88,7 +88,7 @@ public class CoverageSampler extends CoverageSamplerOPT {
         "Check Missing Values",
         "Perform a check for missing values on the table inputs (or not).");
     descriptions[4] = new PropertyDescription("verbose",
-        "Verbose Ouput",
+        "Verbose Output",
         "Do you want verbose output to the console.");
     return descriptions;
   }

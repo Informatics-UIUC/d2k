@@ -66,19 +66,19 @@ import java.util.Random;
 		</ul>
 	<li><b>Epochs</b>: The number of passes through the training data set
 	(iterations) that the training function will do.
-	<li><b>Seed</b>: A seed to the random weight initiallization. This can't
+	<li><b>Seed</b>: A seed to the random weight initialization. This can't
 	really be optimized but trying different values for any parameter setting
 	is a good idea as back propagation is capable of finding only the local
 	minimum.
 	<li><b>Weight Initialization Range</b>: The activation weights will be
-	randomly initiallized to values between zero and this value. This is
+	randomly initialized to values between zero and this value. This is
 	particularly useful if the inputs in the data set (independent variables)
 	are not scaled to a standard range.
 	<li><b>Learning Accelerator</b>: Learning acceleration refers to changing
 	the learning rate as the training process proceeds. This can be based on
 	the epoch or the time, and can be any kind of monotonically decreasing
 	function. The purpose of altering the learning rate is to make large
-	adjustments intially when the weights are still near-random and then
+	adjustments initially when the weights are still near-random and then
 	smaller as the network approaches an optimal solution (think of it as a
 	hill climbing algorithm that takes big steps when it's far from the
 	optimum and takes smaller steps at it approaches the optimum for better
@@ -193,7 +193,8 @@ public class BackPropModel extends PredictionModelModule
 	*/
 	protected NNlearn learnFn;
 
-
+	/*controls the scaling/unscaling of the inputs and outputs*/
+	ScalingTransformation scaler;
 	public final double bias=-1.0;
 
 	public final boolean trainingSuccess;
@@ -233,7 +234,7 @@ public class BackPropModel extends PredictionModelModule
 		int i,j,k;
 		data=et.getTrainTable();
 
-
+		params=prms;
 		/* make sure all of the columns we have to work with are
 		scalar*/
 		if(!verifyData()){
@@ -242,7 +243,6 @@ public class BackPropModel extends PredictionModelModule
 		}
 
 
-		params=prms;
 		transform((TrainTable)data);
 
 		//set up arrays, fill w/ random values
@@ -328,7 +328,7 @@ public class BackPropModel extends PredictionModelModule
 
 	/*** compute
 
-	the main function to calculate the ouput(s) given an input vector.
+	the main function to calculate the output(s) given an input vector.
 	@param e the row index in the table 'data' to use as input
 	@param results[e][out] the output 'out' will be put in row 'e' of this table
 	*/
@@ -434,10 +434,10 @@ public class BackPropModel extends PredictionModelModule
 		}
 		int numOutputs=et.getNumOutputFeatures();
 		int numInputs=et.getNumInputFeatures();
-		
+
 		int colsToScale=numOutputs+numInputs;
 		int[] colIndices=new int[colsToScale];
-		
+
 		double[] maxs=new double[colsToScale];
 		double[] mins=new double[colsToScale];
 		int i;
@@ -453,7 +453,7 @@ public class BackPropModel extends PredictionModelModule
 			mins[i]=lowerBound;
 			colIndices[i]=et.getOutputFeatures()[i-numInputs];
 		}
-		ScalingTransformation scaler=new ScalingTransformation(
+		scaler=new ScalingTransformation(
 				colIndices, mins, maxs, et);
 		scaler.transform(et);
 		this.getTransformations().add(scaler);
@@ -757,6 +757,17 @@ public class BackPropModel extends PredictionModelModule
 		//make predictions for the test examples
 		data = pt;
 
+		try{
+			//must scale the inputs before making predicitons
+			scaler.transform(pt);
+		}catch(Exception e){
+			System.out.println("Error scaling the prediction table. A possible"+
+			" reason for this is that the prediction table *must* have its"+
+			" output columns set for the neural net to work (even though this"+
+			" is not normally a constraint.");
+			e.printStackTrace();
+		}
+
 		//make a Table to put the predictions in, a column for every output
 		//feature
 		int numRows=pt.getNumRows();
@@ -772,6 +783,8 @@ public class BackPropModel extends PredictionModelModule
 				pt.setDoublePrediction(predictedResults[i][j], i,j);
 			}
 		}
+		//now must untransform for the sake of the predictions
+		scaler.untransform(pt);
 	}
 
 	/**

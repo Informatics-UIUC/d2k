@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.prediction.decisiontree.continuous;
 
-import ncsa.d2k.modules.core.transform.sort.*;
+import ncsa.d2k.modules.core.datatype.sort.*;
 import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.modules.core.prediction.regression.continuous.*;
 import ncsa.d2k.modules.core.prediction.mean.continuous.*;
@@ -53,7 +53,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     s += "<li><i>Generate median splits</i>:  Generate splits at the median input attribute value within the node which requires n log n sorting.  </li> ";
     s += "</ul>";
 
-    s += "Determining whether to split a node is controled by the following parameters: ";
+    s += "Determining whether to split a node is controlled by the following parameters: ";
     s += "<i>Minimum examples per leaf</i> and <i>Minimum split error reduction</i>.  ";
     s += "A split is not considered if it results in a node with less than <i>Minimum examples per leaf</i> examples in it.  ";
     s += "A split is not considered if the resubstitution based error weighted by population ";
@@ -214,7 +214,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       //ParameterPointImpl parameterPoint = new ParameterPointImpl();
       //parameterPoint.createFromData(biasNames, bias);
 
-      ParameterPoint parameterPoint 
+      ParameterPoint parameterPoint
 	  = ParameterPointImpl.getParameterPoint(biasNames, bias);
 
       StepwiseLinearInducerOpt inducer = new StepwiseLinearInducerOpt();

@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.console.io;
+package ncsa.d2k.modules.core.io.console;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.core.modules.*;
@@ -43,7 +43,7 @@ public class PrintExample
   public String getInputName(int i) {
     switch (i) {
       case 0:
-        return "Example Table";
+        return "Example";
     }
     return "";
   }
@@ -65,7 +65,7 @@ public class PrintExample
   public String getOutputName(int i) {
     switch (i) {
       case 0:
-        return "Example Table";
+        return "Example";
     }
     return "";
   }

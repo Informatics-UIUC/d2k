@@ -57,7 +57,7 @@ public class Input1FileName extends InputModule {
         s += "The module provides a properties editor that can be used to ";
         s += "enter a file name.  The user can enter the name directly into ";
         s += "a text area or click a 'Browse' button to navigate ";
-        s += "the local filesystem. ";
+        s += "the local file system. ";
         s += "</p><p>";
         s += "This module does not perform any checks to verify that ";
         s += "the named file exists and is accessible by the user.  Such ";

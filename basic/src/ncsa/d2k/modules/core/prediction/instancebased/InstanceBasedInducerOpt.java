@@ -27,7 +27,7 @@ public class InstanceBasedInducerOpt extends FunctionInducerOpt {
     s += "The instance based learning algorithm is also known as n-nearest neighbor or kernel density weighting.  ";
     s += "During the training phase, the instance based inducer simply memorizes (makes a copy of) the training example table.  ";
     s += "Given a target point in input space to classify, an instance based model first ";
-    s += "finds the n (<i>Neighborhood Size</i>) nearest examples using Eucledian distance, and weights each example to make the final prediction.  ";
+    s += "finds the n (<i>Neighborhood Size</i>) nearest examples using Euclidean distance, and weights each example to make the final prediction.  ";
     s += "The formula used to weight each example is 1.0 / distance^<i>Distance Weighting Power</i>.  ";
     s += "Distance is Euclidean (square root of the sum of squared differences).  ";
     s += "To prevent division by zero, a constant weight (<i>Zero Distance Weight</i>) is assigned to any example with a zero distance.  ";

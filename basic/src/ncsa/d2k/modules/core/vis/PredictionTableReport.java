@@ -39,7 +39,7 @@ public class PredictionTableReport extends VisModule  {
       sb.append("within a class divided by the number that actually exist in ");
       sb.append("a class.  The confusion matrix also displays the <i>Type I</i> ");
       sb.append("and <i>Type II</i> errors.  <i>Type I</i> error is defined as ");
-      sb.append("accepting an item as a member of a class whenit is actually ");
+      sb.append("accepting an item as a member of a class when it is actually ");
       sb.append("false, known as a false positive.  <i>Type II</i> error is ");
       sb.append("defined as rejecting an item as a member of class when it is ");
       sb.append("actually true, known as a false negative.  The confusion ");
@@ -48,7 +48,7 @@ public class PredictionTableReport extends VisModule  {
       sb.append("displayed along the side.  These are labeled <i>Ground Truth</i>.");
       sb.append("<p>Data Type Restrictions: A PredictionTable with both the ");
       sb.append("predictions and actual values is required.  This module only ");
-      sb.append("supports classification predictons.  Continuous predictions ");
+      sb.append("supports classification predictions.  Continuous predictions ");
       sb.append("are not supported.");
       sb.append("<p>Data Handling: This module does not modify the input data.");
       sb.append("<p>Scalability: This module makes one pass over the data to ");

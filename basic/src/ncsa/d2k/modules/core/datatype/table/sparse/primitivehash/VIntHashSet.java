@@ -57,7 +57,7 @@ public class VIntHashSet extends TIntHashSet {
    *                  range <code>[begin, begin+len]</code>.
    */
   public VIntHashSet getSubset(int begin, int len){
-    //retrieving all the vlaues in this set and sorting them
+    //retrieving all the values in this set and sorting them
     int[] values = toArray();
     Arrays.sort(values);
 

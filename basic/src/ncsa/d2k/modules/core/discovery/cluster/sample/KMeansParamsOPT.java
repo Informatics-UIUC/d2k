@@ -75,7 +75,7 @@ public class KMeansParamsOPT
     if (parm1 == 0) {
       return "Control parameters, available as a Parameter Point.";
     } else if (parm1 == 1) {
-      return "Table of entities to cluster.";
+      return "Table of examples to cluster.";
     } else {
       return "No such input.";
     }
@@ -138,7 +138,7 @@ public class KMeansParamsOPT
 
     s += "<p>";
     s += "The KMeans algorithm implementation is comprised of three modules. ";
-    s += "This module is used to set control parameters for the algorithm.";
+    s += "This module is used to set control parameters for the algorithm. ";
     s += "A second module, <i>Sample Table Rows</i>, builds the sample set from the input <i>Table</i>. ";
     s += "The third module, <i>Cluster Assignment</i>, refines the initial clusters in a series of assignment passes. ";
     s += "The control parameters set in this module are passed as <i>Parameter Point</i>s to the ";
@@ -150,7 +150,7 @@ public class KMeansParamsOPT
     s += "<p>Data Type Restrictions: ";
     s += "The KMeans algorithm does not work if the input data being clustered contains missing values.  If ";
     s += "missing values are detected an exception will be raised. ";
-    s += "The KMeans algorithm operates on numeric and boolean datatypes.  If the data to be clustered ";
+    s += "The KMeans algorithm operates on numeric and boolean data types.  If the data to be clustered ";
     s += "contains nominal data types, it should be converted prior to performing the KMeans clustering. ";
     s += "The <i>Scalarize Nominals</i> module can be used to convert nominal types into boolean values. ";
     s += "</p>";
@@ -162,7 +162,7 @@ public class KMeansParamsOPT
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "This algorithm runs in time O(num_examples).  See the information for the component modules ";
+    s += "This algorithm runs in time O(number of examples).  See the information for the component modules ";
     s += "to understand the overall memory requirements.";
     s += "</p>";
     return s;
@@ -179,7 +179,7 @@ public class KMeansParamsOPT
     } else if (parm1 == 1) {
       return "Parameters for Sample Table Rows module, available as a Parameter Point.";
     } else if (parm1 == 2) {
-      return "Table of entities to cluster, unchanged by module.";
+      return "Table of examples to cluster, unchanged by module.";
     } else {
       return "No such output.";
     }

@@ -17,7 +17,7 @@ unified space.
 The column order for this table should match the order in which the module designer
 of the parameters as described in the PropertyDescriptors
 defined in the space generator(s).
-Paramters can be accessed by name using getParameterIndex().
+Parameters can be accessed by name using getParameterIndex().
 */
 public interface ParameterSpace extends ExampleTable, java.io.Serializable {
 
@@ -25,7 +25,7 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
 
   /**
    * Instantiate a ParameterSpace from the information in the given table.
-   * Each column in the table represents a paramter.
+   * Each column in the table represents a parameter.
    * Row 1 is the minimum parameter value.
    * Row 2 is the maximum parameter value.
    * Row 3 is the default parameter setting.
@@ -38,7 +38,7 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
 
   /**
    * Instantiate a ParameterSpace from primative data types.
-   * @param names the names of the paramters.
+   * @param names the names of the parameters.
    * @param minValues the minimum parameter values.
    * @param maxValues the maximum parameter values.
    * @param defaultValues the default parameter settings.
@@ -95,23 +95,23 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
   public double getDefaultValue(int parameterIndex);
 
   /**
-   * Get the minimum values of all parameters returned as a ParamterPoint.
+   * Get the minimum values of all parameters returned as a ParameterPoint.
    * @param parameterIndex the index of the parameter of interest.
-   * @return A ParamterPoint representing the minimum possible values of all parameters.
+   * @return A ParameterPoint representing the minimum possible values of all parameters.
    */
   public ParameterPoint getMinParameterPoint();
 
   /**
-   * Get the maximum values of all parameters returned as a ParamterPoint.
+   * Get the maximum values of all parameters returned as a ParameterPoint.
    * @param parameterIndex the index of the parameter of interest.
-   * @return A ParamterPoint representing the maximum possible values of all parameters.
+   * @return A ParameterPoint representing the maximum possible values of all parameters.
    */
   public ParameterPoint getMaxParameterPoint();
 
   /**
-   * Get the default values of all parameters returned as a ParamterPoint.
+   * Get the default values of all parameters returned as a ParameterPoint.
    * @param parameterIndex the index of the parameter of interest.
-   * @return A ParamterPoint representing the default values of all parameters.
+   * @return A ParameterPoint representing the default values of all parameters.
    */
   public ParameterPoint getDefaultParameterPoint();
 

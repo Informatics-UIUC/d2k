@@ -68,7 +68,7 @@ public class AddClusterAssignmentsToTable
     s += "</p>";
 
     s += "<p>";
-    s += "The <i>Output Tabel Only</i> property controls whether the ";
+    s += "The <i>Output Table Only</i> property controls whether the ";
     s += "modified table or the entire Cluster Model, ";
     s += "which includes the modified table, is output. ";
     s += "The <i>Cluster Model</i> object implements the Table interface and delegates ";

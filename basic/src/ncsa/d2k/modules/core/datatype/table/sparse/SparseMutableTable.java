@@ -4770,7 +4770,7 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    *
    * @param newColIndex     the index insertion of the new Column.
    * @param type            the type of the new Column.
-   * @param size            the size fo the new Column.
+   * @param size            the size of the new Column.
    */
   public void addColumn(int newColIndex, int type, int size){
     Column newCol = null;

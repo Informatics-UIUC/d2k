@@ -705,9 +705,9 @@ public class C45TreeBuilderOPT
   public String getInputInfo(int i) {
     String in = "An ExampleTable to build a decision tree from. ";
     in += "Only one output feature is used.";
-    if (i == 0) 
+    if (i == 0)
 	return in;
-    else 
+    else
 	return "Control Point in Parameter Space";
   }
 
@@ -916,7 +916,7 @@ public class C45TreeBuilderOPT
                 branchVals[i], examples);
             int[] branchAttr = narrowAttributes(col, attributes);
             //if (branchExam.length >= getMinimumRecordsPerLeaf() &&
-            if ( (((double)branchExam.length)/(double)numExamples) < getMinimumRatioPerLeaf() &&
+            if ( (((double)branchExam.length)/(double)numExamples) > getMinimumRatioPerLeaf() &&
                 branchAttr.length != 0) {
               root.addBranch(branchVals[i], buildTree(branchExam,
                   branchAttr));
@@ -932,12 +932,13 @@ public class C45TreeBuilderOPT
           }
         }
         catch (MinimumRecordsPerLeafException e) {
-          //e.printStackTrace();
+//          e.printStackTrace();
           String val = mostCommonOutputValue(table, outputs[0], examples);
           DecisionTreeNode nde = new CategoricalDecisionTreeNode(val);
           root.addBranch(val, nde);
         }
         catch (Exception e) {
+//          e.printStackTrace();
           String val = mostCommonOutputValue(table, outputs[0], examples);
           DecisionTreeNode nde = new CategoricalDecisionTreeNode(val);
           root.addBranch(val, nde);

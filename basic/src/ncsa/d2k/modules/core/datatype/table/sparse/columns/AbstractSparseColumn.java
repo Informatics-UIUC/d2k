@@ -213,7 +213,7 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
     *                 to be compared.
     * @param valid2    boolean value, representing validity of a value in the map
     *                 to be compared.
-    * @return             an int representing the co-validity of the vlaues. for more
+    * @return             an int representing the co-validity of the values. for more
     *                     details see validate(int, int);
     */
    private int validate (boolean valid1, boolean valid2){
@@ -268,7 +268,7 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
      * in this column
      *
      * @param row   the row number to check if a double value can be retrieved from it
-     * @return      true if a double value can be retrived from row no.
+     * @return      true if a double value can be retrieved from row no.
      *              <code>row</code>. false if an exception occures while trying
      *              to retrieve the value
      */

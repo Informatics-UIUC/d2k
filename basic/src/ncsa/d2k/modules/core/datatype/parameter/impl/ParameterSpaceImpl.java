@@ -17,7 +17,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	/** the number of spaces. */
 	int numSpaces = 0;
 
-	/** counts of the number of paramters in each subspace. */
+	/** counts of the number of parameters in each subspace. */
 	int [] parameterCount = new int[0];
 
 	public ParameterSpaceImpl () {
@@ -32,7 +32,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 
 	/**
 	 * Instantiate a ParameterSpace from primative data types.
-	 * @param names the names of the paramters.
+	 * @param names the names of the parameters.
 	 * @param minValues the minimum parameter values.
 	 * @param maxValues the maximum parameter values.
 	 * @param defaultValues the default parameter settings.
@@ -47,13 +47,13 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 										 int    [] resolutions,
 										 int    [] types){
 
-		// Given the data create a paramter space object and return it.
+		// Given the data create a parameter space object and return it.
 		int numColumns = names.length;
 		ParameterSpaceImpl spi = this;
 		Column [] columns = new Column[numColumns];
 		Column addMe = null;
 
-		// Init all the columns of the paramter space.
+		// Init all the columns of the parameter space.
 		for (int i = 0; i < numColumns; i++) {
 			switch (types[i]) {
 				case ColumnTypes.DOUBLE:
@@ -89,7 +89,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 
 	/**
 	 * Add a new subspace to the parameter space.
-	 * @param newcols the number of paramters in the new space.
+	 * @param newcols the number of parameters in the new space.
 	 */
 	private void addSubspace(int newcols) {
 		this.numSpaces++;
@@ -199,9 +199,9 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	}
 
 	/**
-	 * Get the minimum values of all parameters returned as a ParamterPoint.
+	 * Get the minimum values of all parameters returned as a ParameterPoint.
 	 * @param parameterIndex the index of the parameter of interest.
-	 * @return A ParamterPoint representing the minimum possible values of all parameters.
+	 * @return A ParameterPoint representing the minimum possible values of all parameters.
 	 */
 	public ParameterPoint getMinParameterPoint(){
 		double [] vals = new double[this.getNumParameters()];
@@ -215,9 +215,9 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	}
 
 	/**
-	 * Get the maximum values of all parameters returned as a ParamterPoint.
+	 * Get the maximum values of all parameters returned as a ParameterPoint.
 	 * @param parameterIndex the index of the parameter of interest.
-	 * @return A ParamterPoint representing the maximum possible values of all parameters.
+	 * @return A ParameterPoint representing the maximum possible values of all parameters.
 	 */
 	public ParameterPoint getMaxParameterPoint(){
 		String [] labels = new String [this.getNumParameters()];
@@ -231,9 +231,9 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	}
 
 	/**
-	 * Get the default values of all parameters returned as a ParamterPoint.
+	 * Get the default values of all parameters returned as a ParameterPoint.
 	 * @param parameterIndex the index of the parameter of interest.
-	 * @return A ParamterPoint representing the default values of all parameters.
+	 * @return A ParameterPoint representing the default values of all parameters.
 	 */
 	public ParameterPoint getDefaultParameterPoint(){
 		double [] vals = new double[this.getNumParameters()];
@@ -347,7 +347,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 			names[i] = this.getName(start);
 		}
 
-		// Now we have the data, make the paramter space.
+		// Now we have the data, make the parameter space.
 		ParameterSpaceImpl psi = new ParameterSpaceImpl();
 		psi.createFromData(names,mins,maxs,defaults,res,types);
 		return psi;

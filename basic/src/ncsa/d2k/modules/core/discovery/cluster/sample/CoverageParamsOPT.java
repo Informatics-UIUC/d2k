@@ -23,7 +23,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.discovery.cluster.hac.*;
 
 public class CoverageParamsOPT
-    extends DataPrepModule {
+    extends DataPrepModule implements ClusterParameterDefns {
 
   //==============
   // Data Members
@@ -114,13 +114,13 @@ public class CoverageParamsOPT
    */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "The Coverage clustering algorithm is a type of kmeans approach where a sample set";
+    s += "The Coverage clustering algorithm is a type of kmeans approach where a sample set ";
     s += "is chosen from the input table such that the set formed is approximately the minimum number of samples ";
-    s += "needed such that for every row in the input table there is at least one sample in the sample set of distance ";
-    s += "<= Distance Cutoff. This sampling is sent through the hierarchical agglomerative clustering ";
-    s += "module to form num_clusters clusters.  These cluster centroids are used as the initial ";
+    s += "needed such that for every example in the input table there is at least one example in the sample set of distance ";
+    s += "<= <i>" + DISTANCE_THRESHOLD + "</i>. This sampling is sent through the hierarchical agglomerative clustering ";
+    s += "module to form <i>" + NUM_CLUSTERS + "</i> clusters.  These clusters' centroids are used as the initial ";
     s += "\"means\" for the cluster assignment module. ";
-    s += "The assignment module, once it has made refinements, outputs the final cluster model. ";
+    s += "The assignment module, once it has made refinements, outputs the final <i>Cluster Model</i>. ";
     s += "</p>";
 
     s += "<p>Detailed Description: ";
@@ -131,11 +131,11 @@ public class CoverageParamsOPT
 
     s += "<p>Data Handling: ";
     s += "The input table is not modified by this algorithm, however it is include as part of ";
-    s += "the ClusterModel that is created.";
+    s += "the <i>Cluster Model</i> that is created.";
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "This algortihm runs in time O(num_examples^2) worst case but in most cases it runs in O(sample_size * num_examples). ";
+    s += "This algorithm runs in time O(num_examples^2) worst case but in most cases it runs in O(<i>Sample Size</i> * <i>" + NUM_CLUSTERS + "</i>). ";
     s += "See the component modules information to understand the memory requirements overall.";
     s += "</p>";
     return s;
@@ -154,7 +154,7 @@ public class CoverageParamsOPT
     } else if (parm1 == 2) {
       return "Parameters for Coverage Sampler";
     } else if (parm1 == 3) {
-      return "Table of entities to cluster";
+      return "Table of examples to cluster";
     } else {
       return "";
     }

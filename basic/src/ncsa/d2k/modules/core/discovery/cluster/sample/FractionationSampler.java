@@ -74,7 +74,7 @@ public class FractionationSampler
         "This property specifies the number of clusters to form (>= 2).");
     descriptions[1] = new PropertyDescription("NthSortTerm",
                                               "Sort Attribute",
-                                              "The index of for the column denoting the atttribute to be used to sort on prior to partitioning.");
+                                              "The index of for the column denoting the attribute to be used to sort on prior to partitioning.");
     descriptions[2] = new PropertyDescription("maxPartitionSize",
                                               "Max Partition Size",
         "The size of partitions to use in the sampling process."
@@ -83,7 +83,7 @@ public class FractionationSampler
                                               "Check Missing Values",
         "Perform a check for missing values on the table inputs (or not).");
     descriptions[4] = new PropertyDescription("verbose",
-                                              "Verbose Ouput",
+                                              "Verbose Output",
         "Do you want verbose output to the console.");
     return descriptions;
   }

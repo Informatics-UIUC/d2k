@@ -73,7 +73,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 		PropertyDescription [] pds = new PropertyDescription [3];
 		pds[0] = new PropertyDescription ("fillerBol", "Boolean Column Filler", "This value fills boolean columns.");
 		pds[1] = new PropertyDescription ("fillerString", "String Column Filler", "This string fills the string columns.");
-		pds[2] = new PropertyDescription ("fillerNumeric", "Numeric Column Filler", "This value fills any numberic columns.");
+		pds[2] = new PropertyDescription ("fillerNumeric", "Numeric Column Filler", "This value fills any numeric columns.");
 		return pds;
 	}
 

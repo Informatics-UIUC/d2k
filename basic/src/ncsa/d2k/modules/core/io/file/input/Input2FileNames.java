@@ -62,7 +62,7 @@ public class Input2FileNames extends InputModule {
         s += "The module provides a properties editor that can be used to ";
         s += "enter two file names.  The user can enter the names directly ";
         s += "into text areas or click 'Browse' buttons to navigate ";
-        s += "the local filesystem. ";
+        s += "the local file system. ";
         s += "</p><p>";
         s += "This module does not perform any checks to verify that ";
         s += "the named files exist and are accessible by the user.  Such ";

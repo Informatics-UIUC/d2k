@@ -66,5 +66,8 @@ public class RemoveColumnsWithMissingValues extends DataPrepModule {
       idx[i] = ((Integer)toRemove.get(i)).intValue();
 
     mt.removeColumnsByIndex(idx);
+    pushOutput(mt, 0);
+
   }
+    
 }

@@ -512,7 +512,7 @@ public final class NaiveBayesModel
         "<p>Detailed Description: Given a BinTree object that contains counts for "+
         "each discrete item in the training data set, this module creates a "+
         "Naive Bayesian learning model.  This method is based on Bayes's rule "+
-        "for conditional probablility.  It \"naively\" assumes independence of "+
+        "for conditional probability.  It \"naively\" assumes independence of "+
         "the input features."+
         "<p>Data Type Restrictions: This model can only use nominal data as the inputs "+
         "and can only classify one nominal output.  The binning procedure will "+

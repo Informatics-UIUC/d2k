@@ -39,10 +39,10 @@ public class CastToDTModel extends ComputeModule {
           s += "This module converts a prediction model to a decision tree model. </p> ";
           s += "<p> Detailed Description: ";
           s += "A prediction model can be created by different algorithms, for example, ";
-          s += "C45 decision tree, Rain Forest decision tree, Naive Bayse, etc. ";
+          s += "C45 decision tree, Rain Forest decision tree, Naive Bayes, etc. ";
           s += "This module converts a prediction model to a decision tree model. ";
           s += "After this conversion, the decision tree model can be visualized ";
-          s += "and viewed using the desion tree visualizer and viewer. ";
+          s += "and viewed using the decision tree visualizer and viewer. ";
           s += "<p> Restrictions: ";
           s += "Only the models that are compatible with the decision tree model ";
           s += "can be converted. For example, models created by the algorithm C45 ";

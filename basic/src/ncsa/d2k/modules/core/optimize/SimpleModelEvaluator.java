@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.optimize;
 
-import ncsa.d2k.modules.core.transform.sort.*;
+import ncsa.d2k.modules.core.datatype.sort.*;
 import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.model.*;
@@ -34,22 +34,22 @@ public class SimpleModelEvaluator
     pds[2] = new PropertyDescription(
         "filterByPredictedOutput",
         "Filter By Predicted Output",
-        "When only the top and/or bottom fraction of the examples, ranked by predicted output, are used for error assesment");
+        "When only the top and/or bottom fraction of the examples, ranked by predicted output, are used for error assessment");
 
     pds[3] = new PropertyDescription(
         "filterOutputLowerFraction",
         "Filter Output Lower Fraction",
-        "The lower fraction of examples, ranked by predicted output, to be used for error assesment");
+        "The lower fraction of examples, ranked by predicted output, to be used for error assessment");
 
     pds[4] = new PropertyDescription(
         "filterOutputUpperFraction",
         "Filter Output Upper Fraction",
-        "The upper fraction of examples, ranked by predicted output, to be used for error assesment");
+        "The upper fraction of examples, ranked by predicted output, to be used for error assessment");
 
     pds[5] = new PropertyDescription(
         "reportLineLabel",
         "Report Line Label",
-        "The label printed at the begining of each report line");
+        "The label printed at the beginning of each report line");
 
     return pds;
   }
@@ -148,8 +148,8 @@ public class SimpleModelEvaluator
   public String getModuleInfo() {
     return "This module measures the predictive error of a model relative to the given error function and example set.  " +
         "If Filter by Predicted Output is true, then only a subset of the examples are used for the error measurement.  " +
-        "This subset is selected by first applying the model to every example, sorting the examples based on prediced output, " +
-        "and then selecting the top and/or bottom fraction of examples for error calcultions.  ";
+        "This subset is selected by first applying the model to every example, sorting the examples based on predicted output, " +
+        "and then selecting the top and/or bottom fraction of examples for error calculations.  ";
   }
 
   public String getInputName(int i) {
@@ -178,7 +178,7 @@ public class SimpleModelEvaluator
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.projects.dtcheng.ErrorFunction",
+        "ncsa.d2k.modules.core.prediction.ErrorFunction",
         "ncsa.d2k.modules.PredictionModelModule",
         "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
     return in;

@@ -25,7 +25,7 @@ import ncsa.d2k.modules.core.discovery.cluster.util.*;
  */
 
 public class FractionationSamplerOPT
-    extends ComputeModule {
+    extends ComputeModule implements ClusterParameterDefns{
 
   //==============
   // Data Members
@@ -89,7 +89,7 @@ public class FractionationSamplerOPT
         "Perform a check for missing values on the table inputs (or not).");
 
     descriptions[1] = new PropertyDescription("verbose",
-                                              "Verbose Ouput",
+                                              "Verbose Output",
         "Do you want verbose output to the console.");
 
     return descriptions;
@@ -112,7 +112,7 @@ public class FractionationSamplerOPT
     if (parm1 == 0) {
       return "Control Parameters";
     } else if (parm1 == 1) {
-      return "Table of values to cluster";
+      return "Table of examples to cluster";
     } else if (parm1 == 2) {
       return "Cluster Model from clusterer";
     } else {
@@ -127,11 +127,11 @@ public class FractionationSamplerOPT
    */
   public String getInputName(int parm1) {
     if (parm1 == 0) {
-      return "ParameterPoint";
+      return "Parameter Point";
     } else if (parm1 == 1) {
       return "Table";
     } else if (parm1 == 2) {
-      return "ClusterModel";
+      return "Cluster Model";
     } else {
       return "";
     }
@@ -156,26 +156,26 @@ public class FractionationSamplerOPT
    */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "Chooses a sample set of rows through a process of repeated partitioning and cluistering.  The ";
+    s += "Chooses a sample set of rows through a process of repeated partitioning and clustering.  The ";
     s += "table rows are treated as vectors of a vector space.";
     s += "</p>";
 
     s += "<p>Detailed Description: ";
-    s += "This module sorts the initial rows (converted to clusters) by a key attribute denoted by <i>Sort Attribute</i>. ";
-    s += "The set of sorted clusters is then segmented into equal partitions of size <i>maxPartitionsize</i>. ";
+    s += "This module sorts the initial examples (converted to clusters) by a key attribute denoted by <i>Sort Attribute</i>. ";
+    s += "The set of sorted clusters is then segmented into equal partitions of size <i>Max Partition Size</i>. ";
     s += "Each of these partitions is then passed through the agglomerative clusterer to produce ";
-    s += "<i>numberOfClusters</i> clusters.  All the clusters are gathered together for all partitions and the ";
-    s += "entire process is repeated until only <i>numberOfClusters</i> clusters remain. ";
+    s += "<i>" + NUM_CLUSTERS + "</i> clusters.  All the clusters are gathered together for all partitions and the ";
+    s += "entire process is repeated until only <i>" + NUM_CLUSTERS + "</i> clusters remain. ";
     s += "The sorting step is to encourage like clusters into same partitions. ";
     s += "</p>";
 
     s += "<p>Data Handling: ";
-    s += "The original table input is not modified but it is included in the final ClusterModel.";
+    s += "The original table input is not modified but it is included in the final <i>Cluster Model</i>.";
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "This module time complexity of O(num_examples * partition_size). ";
-    s += "Each iteration creates num_examples TableCluster objects.";
+    s += "This module time complexity of O(<i>Number of Examples</i> * <i>Partition Size</i>). ";
+    s += "Each iteration creates <i>Number of Examples</i> <i>Table Cluster</i> objects.";
     s += "</p>";
     return s;
   }
@@ -202,9 +202,9 @@ public class FractionationSamplerOPT
    */
   public String getOutputName(int parm1) {
     if (parm1 == 0) {
-      return "ClusterModel";
+      return "Cluster Model";
     } else if (parm1 == 1) {
-      return "ClusterModel for Refinement";
+      return "Cluster Model for Refinement";
     } else {
       return "";
     }

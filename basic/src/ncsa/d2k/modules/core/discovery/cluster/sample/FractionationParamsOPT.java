@@ -23,7 +23,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.discovery.cluster.hac.*;
 
 public class FractionationParamsOPT
-    extends DataPrepModule {
+    extends DataPrepModule implements ClusterParameterDefns {
 
   //==============
   // Data Members
@@ -114,16 +114,16 @@ public class FractionationParamsOPT
    */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "The Coverage clustering algorithm is a type of kmeans approach where a sample set";
+    s += "The Coverage clustering algorithm is a type of kmeans approach where a sample set ";
     s += "is formed as follows: <br>";
-    s += "In the FractionationSampler, the initial rows (converted to clusters) by a key attribute denoted by <i>Sort Attribute</i>. ";
+    s += "In the FractionationSampler, the initial examples (converted to clusters) by a key attribute denoted by <i>Sort Attribute</i>. ";
     s += "The set of sorted clusters is then segmented into equal partitions of size <i>maxPartitionsize</i>. ";
     s += "Each of these partitions is then passed through the agglomerative clusterer to produce ";
     s += "<i>numberOfClusters</i> clusters.  All the clusters are gathered together for all partitions and the ";
-    s += "entire process is repeated until only <i>numberOfClusters</i> clusters remain. ";
+    s += "entire process is repeated until only <i>" + NUM_CLUSTERS + "</i> clusters remain. ";
     s += "The sorting step is to encourage like clusters into same partitions. ";
     s += "The final cluster's centroids are used as the initial \"means\" for the cluster assignment module.";
-    s += "The assignment module, once it has made refinements, outputs the final cluster model. ";
+    s += "The assignment module, once it has made refinements, outputs the final <i>Cluster Model</i>. ";
     s += "</p>";
 
     s += "<p>Detailed Description: ";
@@ -134,12 +134,12 @@ public class FractionationParamsOPT
 
     s += "<p>Data Handling: ";
     s += "The input table is not modified by this algorithm, however it is include as part of ";
-    s += "the ClusterModel that is created.";
+    s += "the <i>Cluster Model</i> that is created.";
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "This module time complexity of O(num_examples * partition_size). ";
-    s += "Each iteration creates num_examples TableCluster objects.";
+    s += "This module time complexity of O(<i>Number of Examples</i> * <i>Partition Size</i>). ";
+    s += "Each iteration creates <i>Number of Examples</i> <i>Table Cluster</i> objects.";
     s += "</p>";
     return s;
   }
@@ -157,7 +157,7 @@ public class FractionationParamsOPT
     } else if (parm1 == 2) {
       return "Parameters for Fractionation Sampler";
     } else if (parm1 == 3) {
-      return "Table of entities to cluster";
+      return "Table of examples to cluster";
     } else {
       return "";
     }

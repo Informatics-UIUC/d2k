@@ -569,7 +569,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a boolean representation of the value at the specified location.
    */
   public boolean getInputBoolean(int row, int index) {
@@ -583,7 +583,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a byte representation of the value at the specified location.
    */
   public byte getInputByte(int row, int index) {
@@ -597,7 +597,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a char representation of the value at the specified location.
    */
   public char getInputChar(int row, int index) {
@@ -611,7 +611,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
    * @return       a byte array representation of the value at the specified location.
    */
   public byte[] getInputBytes(int row, int index) {
@@ -625,7 +625,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
    * @return       a char array representation of the value at the specified location.
    */
   public char[] getInputChars(int row, int index) {
@@ -639,7 +639,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a double representation of the value at the specified location.
    */
   public double getInputDouble(int row, int index) {
@@ -653,7 +653,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       an int representation of the value at the specified location.
    */
   public int getInputInt(int row, int index) {
@@ -667,7 +667,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a long representation of the value at the specified location.
    */
   public long getInputLong(int row, int index) {
@@ -681,7 +681,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a float representation of the value at the specified location.
    */
   public float getInputFloat(int row, int index) {
@@ -695,7 +695,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a short representation of the value at the specified location.
    */
   public short getInputShort(int row, int index) {
@@ -709,7 +709,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       an Objectrepresentation of the value at the specified location.
    */
   public Object getInputObject(int row, int index) {
@@ -723,7 +723,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the input set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a String representation of the value at the specified location.
    */
   public String getInputString(int row, int index) {
@@ -743,7 +743,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a float representation of the value at the specified location.
    */
   public float getOutputFloat(int row, int index) {
@@ -757,7 +757,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a boolean representation of the value at the specified location.
    */
   public boolean getOutputBoolean(int row, int index) {
@@ -771,7 +771,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a byte representation of the value at the specified location.
    */
   public byte getOutputByte(int row, int index) {
@@ -785,7 +785,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a char representation of the value at the specified location.
    */
   public char getOutputChar(int row, int index) {
@@ -799,7 +799,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
    * @return       a byte array representation of the value at the specified location.
    */
   public byte[] getOutputBytes(int row, int index) {
@@ -813,7 +813,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
    * @return       a char array representation of the value at the specified location.
    */
   public char[] getOutputChars(int row, int index) {
@@ -827,7 +827,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a double representation of the value at the specified location.
    */
   public double getOutputDouble(int row, int index) {
@@ -841,7 +841,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       an int representation of the value at the specified location.
    */
   public int getOutputInt(int row, int index) {
@@ -855,7 +855,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a long representation of the value at the specified location.
    */
   public long getOutputLong(int row, int index) {
@@ -869,7 +869,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a short representation of the value at the specified location.
    */
   public short getOutputShort(int row, int index) {
@@ -883,7 +883,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       an Objectrepresentation of the value at the specified location.
    */
   public Object getOutputObject(int row, int index) {
@@ -897,7 +897,7 @@ public class SparseExampleTable
    *
    * @param row    the row number from which to retrieve the data.
        * @param index  an index into the output set, indicating the column from which
-   *               the data is retrived.
+   *               the data is retrieved.
        * @return       a String representation of the value at the specified location.
    */
   public String getOutputString(int row, int index) {

@@ -126,13 +126,23 @@ public class HAC {
     _mvCheck = b;
   }
 
-  public HAC(int cm, int dm, int num, int thresh, boolean ver, boolean check) {
+  private String _alias = "HAC";
+  public String getAlias() {
+    return _alias;
+  }
+
+  public void setAlias( String moduleAlias ) {
+    _alias = moduleAlias;
+  }
+
+  public HAC(int cm, int dm, int num, int thresh, boolean ver, boolean check, String moduleAlias) {
     this.setClusterMethod(cm);
     this.setDistanceMetric(dm);
     this.setNumberOfClusters(num);
-    this.setVerbose(ver);
     this.setDistanceThreshold(thresh);
+    this.setVerbose(ver);
     this.setCheckMissingValues(check);
+    this.setAlias(moduleAlias);
   }
 
   /**
@@ -146,12 +156,14 @@ public class HAC {
 
     if (this.getCheckMissingValues()) {
       if (inittable.hasMissingValues()) {
-        throw new TableMissingValuesException("Hier. Agglom. Clusterer: Please replace or filter out missing values in your data.");
+        throw new TableMissingValuesException( getAlias() +
+			" (HAC): Please replace or filter out missing values in your data.");
       }
     }
 
     if (inittable.getNumRows() < 1) {
-        throw new Exception("Hier. Agglom. Clusterer: Input table has no rows.");
+        throw new Exception( getAlias() +
+			" (HAC): Input table has no rows.");
     }
 
     ClusterModel model = null;
@@ -237,7 +249,7 @@ public class HAC {
       //while the number of clusters is still greater than m_numberOfClusters
       while (clusters.size() > 1) {
 
-        //System.out.println(clusters.size() + " clusters remain ... begining similarity search ...");
+        //System.out.println(clusters.size() + " clusters remain ... beginning similarity search ...");
         //find the two most similar clusters
         double dist = 0;
         TableCluster tc1 = null;
@@ -264,6 +276,7 @@ public class HAC {
                 dval[3] = new Integer(dvalcnt++);
                 if (!cRank.add(dval)) {
                   System.out.println(
+                      getAlias() + " (HAC): " +
                       ">>>>>>>>>>>>>>>>>>>>> UNABLE TO ADD TO cRANK " +
                       dval.hashCode() + " " + simval);
                 }
@@ -277,7 +290,7 @@ public class HAC {
             }
           }
 	  if (getVerbose()) {
-            System.out.println("INITIAL PROXIMITY MATRIX COMPLETE");
+            System.out.println(getAlias() + " (HAC): INITIAL PROXIMITY MATRIX COMPLETE");
           }
 
           // DEBUG ===================
@@ -435,8 +448,8 @@ public class HAC {
             simval = (sz1 * sim1) / (sznew) + (sz2 * sim2) / sznew -
                 ( ( (sz1) * (sz2)) / Math.pow( (sz1 + sz2), 2)) * sim3;
           } else {
-            System.out.println("ERROR: unknown cluster method specified.");
-            throw new Exception("ERROR: unknown cluster method specified.");
+            // System.out.println("ERROR: unknown cluster method specified.");
+            throw new Exception(getAlias() + " (HAC): unknown cluster method specified.");
           }
 
           //System.out.println("cid: " + cid + " old sims: " + sim1 + " " + sim2 + " new sim: " + simval);
@@ -449,7 +462,7 @@ public class HAC {
           dval[2] = new Double(simval);
           dval[3] = new Integer(dvalcnt++);
           if (!cRank.add(dval)) {
-            System.out.println(">>>>>>>>>>>>>>>>>>>>> UNABLE TO ADD TO cRANK ");
+            System.out.println(getAlias() + " (HAC): >>>>>>>>>>>>>>>>>>>>> UNABLE TO ADD TO cRANK ");
           }
           //update the matrix
           if (clustind < newrow) {
@@ -521,14 +534,14 @@ public class HAC {
     catch (Exception ex) {
       ex.printStackTrace();
       System.out.println(ex.getMessage());
-      System.out.println("EXCEPTION: HAC.doit()");
+      //System.out.println("EXCEPTION: HAC.doit()");
       throw ex;
     }
     finally {
       long end = System.currentTimeMillis();
       if (resultClusters != null) {
         if (getVerbose()) {
-          System.out.println("\nEND EXEC -- HAC -- clusters built: " +
+          System.out.println("\n" + getAlias() + " (HAC): END EXEC -- clusters built: " +
                            resultClusters.size() + " in " +
                            (end - m_start) / 1000 +
                            " seconds\n");
@@ -554,7 +567,7 @@ public class HAC {
   static public double calculateMaxDist(Table itable, int[] ifeatures, int dm,
                                         int thresh) {
     double maxdist = 0;
-    //find distance threshhold
+    //find distance threshold
     double[] max = new double[ifeatures.length];
     double[] min = new double[ifeatures.length];
     for (int i = 0, n = ifeatures.length; i < n; i++) {
@@ -617,19 +630,21 @@ public class HAC {
              (ctype == ColumnTypes.LONG) ||
              (ctype == ColumnTypes.INTEGER) ||
              (ctype == ColumnTypes.SHORT))) {
+        // can't use getAlias() in next exception since this is static method
         Exception ex1 = new TableColumnTypeException(ctype,
+            " (HAC): " +
             "Only boolean and numeric types are permitted."
             +
             " For nominal input types use a scalarization transformation or remove"
             + " them from the input set.");
-        System.out.println("EXCEPTION -- HAC.doit(): " + ex1.getMessage());
+        //System.out.println("EXCEPTION -- HAC.doit(): " + ex1.getMessage());
         throw ex1;
       }
     }
   }
 
   /**
-   * TODO: Need to accomodate sparse tables
+   * TODO: Need to accommodate sparse tables
    *
    * @param tc1 cluster to calculate distance from
    * @param tc2 cluster to calculate distance from
@@ -771,3 +786,10 @@ public class HAC {
   }
 
 }
+
+// Start QA Comments
+// 4/11/03 - Ruth;   Added getAlias() to ctor & to messages so we can tell which
+//           instance is causing problems;  commented out some lines that would
+//           produce double exception messages... revisit later.
+//         - Ready for Basic
+// End QA Comments

@@ -678,7 +678,7 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 			BinList bl = (BinList)get(an);
 			if(bl == null) {
 				// this is an unknown attribute.
-				// we cannot clasify it further
+				// we cannot classify it further
 				unknownAttributes++;
 				throw new AttributeNotFoundException();
 			}

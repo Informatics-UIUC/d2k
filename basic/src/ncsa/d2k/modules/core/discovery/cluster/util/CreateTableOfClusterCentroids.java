@@ -36,7 +36,7 @@ public class CreateTableOfClusterCentroids extends DataPrepModule {
     PropertyDescription[] descriptions = new PropertyDescription[1];
 
     descriptions[0] = new PropertyDescription("verbose",
-        "Verbose Ouput",
+        "Verbose Output",
         "Do you want verbose output to the console.");
 
     return descriptions;
@@ -59,10 +59,10 @@ public class CreateTableOfClusterCentroids extends DataPrepModule {
     s += "to the clustering algorithm as well as the clusters that were formed.  This ";
     s += "module will create a new table that contains only the centroids of each cluster ";
     s += "from the model.  Each row in the new table corresponds to one centroid from a cluster.  ";
-    s += "The centroid vlaues are all doubles because they represent points in a continuous space.  ";
+    s += "The centroid values are all doubles because they represent points in a continuous space.  ";
     s += "Therefore, even if the original data type for an attribute was not a double (say boolean ";
     s += "or int), the value in the centroid row for that attribute is most likely no longer ";
-    s += "representable as a whole number.  In any case, the types for each colmn in the new table are ";
+    s += "representable as a whole number.  In any case, the types for each column in the new table are ";
     s += "all double.";
     s += "</p>";
 

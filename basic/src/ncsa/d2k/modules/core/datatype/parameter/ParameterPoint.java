@@ -14,7 +14,7 @@ public interface ParameterPoint extends Table {
 
   /**
    * Create a ParameterPoint from the information in the given table.
-   * Each column in the table represents a paramter.
+   * Each column in the table represents a parameter.
    * Row 1 is the values for all the parameter settings.
    * @param table the table representing the parameter space.
    * @return a ParameterPoint.
@@ -23,7 +23,7 @@ public interface ParameterPoint extends Table {
 
   /**
    * Create a ParameterPoint from primative data types.
-   * @param names the names of the paramters.
+   * @param names the names of the parameters.
    * @param values the values parameter settings.
    * @param types the type as an integer as defined in ColumnTypes.
    * @return a ParameterPoint.

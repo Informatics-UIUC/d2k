@@ -38,14 +38,14 @@ public class CreateFixedParser extends InputModule {
             case(0):
                 return "File Name";
             case(1):
-                return "Header Table";
+                return "Metadata Table";
             default:
                 return "";
         }
     }
 
     public String getOutputInfo(int i) {
-        return "A FixedFileParser for the specified fixed format file.";
+        return "A Fixed File Parser for the specified fixed-format file.";
     }
 
     public String getOutputName(int i) {
@@ -54,29 +54,61 @@ public class CreateFixedParser extends InputModule {
 
     public String getModuleInfo() {
         StringBuffer sb = new StringBuffer("<p>Overview: ");
-        sb.append("This module creates a parser for a fixed-format file.");
+        sb.append("This module creates a parser for a fixed-format file. ");
+
         sb.append("</p><p>Detailed Description: ");
-        sb.append("Given a file name and a \"header\" Table of metadata ");
-        sb.append("describing the file's format, this module creates a ");
-        sb.append("parser for that file. This parser can then be passed to ");
-        sb.append("ParseFileToTable, for example, to read the file into a Table.");
-        sb.append("The table of metadata has five columns with the following labels:");
-        sb.append("LABEL, TYPE, START, STOP, LENGTH not necessarily in this order.");
-        sb.append("The START column needs to be always present. Only one of the");
-				sb.append("STOP or LENGTH columns need to be present.");
-				sb.append("The STOP column will be ignored if LENGTH column is present.");
-				sb.append("Columns start from 1 not from zero. Start and stop columns are inclusive,");
-				sb.append("for a column with one character the start and stop will be equal. ");
+        sb.append("Given a file name and a table of metadata ");
+        sb.append("describing the file's layout, this module creates a ");
+        sb.append("parser for the file, which must have fixed-length fields. This parser can then be passed to ");
+        sb.append("<i>Parse File To Table</i>, for example, to read the file into a Table. ");
+        sb.append("Many databases offer the option of writing their contents to fixed-format files. ");
+        sb.append("</p>");
+
+        sb.append("<p>");
+        sb.append("The table of metadata has up to five columns labeled ");
+        sb.append("LABEL, TYPE, START, STOP, and LENGTH, not necessarily in that order. ");
+	sb.append("Each row in the table, other than the labels row and an optional data type row, ");
+	sb.append("provides information about one attribute (field) that is to be loaded from the fixed-format file. ");
+        sb.append("</p>");
+
+        sb.append("<p>");
+        sb.append("The LABEL entry, which is optional, contains the label to assign to the attribute.  ");
+        sb.append("If the table does not contain a LABEL column, D2K automatically assigns a label to the attribute. ");
+
+        sb.append("</p><p>" );
+        sb.append("The TYPE entry specifies the datatype of the attribute.  If no TYPE appears, D2K tries to determine the ");
+        sb.append("attribute type automatically. ");
+
+        sb.append("</p><p>" );
+        sb.append("The START entry must be present, and gives the starting position of the attribute value in the ");
+        sb.append("rows of the fixed-format file. The first position in a row is position 1. ");
+        sb.append("Either STOP or LENGTH must be present in the <i>Metadata Table</i>. ");
+        sb.append("If both appear in the table, STOP is ignored and LENGTH is used. ");
+        sb.append("The STOP entry gives the stopping position of the attribute value in the rows of the fixed-format file. ");
+        sb.append("The LENGTH entry specifies the number of positions taken by the attribute ");
+	sb.append("value in the rows of the fixed-format file. ");
+        sb.append("START and STOP positions are inclusive, hence an attribute with one character will have equal START and STOP ");
+        sb.append("entries. ");
+        sb.append("</p>");
+
+        sb.append("<p>");
+        sb.append("The <i>Metadata Table</i> need not include rows describing all of the fields in the fixed-format file. ");
+        sb.append("Only the attributes (fields) that are described by the metadata table will be read by the parser. ");
+	sb.append("Typically, the <i>Metadata Table</i> is itself loaded from a file into a <i>Table</i> ");
+        sb.append("using D2K modules such as <i>Create Delimited File Parser</i> and <i>Parse File To Table</i> .");
+
         sb.append("</p><p>Data Type Restrictions: ");
-        sb.append("The specified file must be in fixed format.");
+        sb.append("The specified file must be in fixed-format. ");
+
         sb.append("</p><p>Data Handling: ");
         sb.append("This module does not destroy or modify its input data.");
         sb.append("</p>");
+
         return sb.toString();
     }
 
     public String getModuleName() {
-       return "Create Fixed-format Parser";
+       return "Create Fixed-Format Parser";
     }
 
     public void doit() throws Exception {
@@ -96,15 +128,8 @@ public class CreateFixedParser extends InputModule {
 // QA Comments
 // 2/14/03 - Handed off to QA by David Clutter
 // 2/16/03 - Anca started QA process. Added fixed format description.
-//
-
-
 // 2/18/03 - checked into basic.
+// 4/16/03 - Ruth updated info to provide more details on what the metadata
+//           table columns were used for.  It wasn't clear to her from reading
+//           without an example Fixed File and Metadata table how to create one.
 // END QA Comments
-
-
-/* Fixed Format Description
- Column start -inclusive, Column End inclusive too. Means column start can equal column length
- for fields of length 1.
- Column's start cannot be zero! Column begin only from 1.
-*/

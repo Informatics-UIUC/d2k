@@ -34,17 +34,17 @@ public class ErrorFunctionGenerator extends ComputeModule {
   public String getModuleInfo() {
 		return "<p>      Overview: This module produces a string that identifies an error       function to"+
 			" be used with model builders.    </p>    <p>      Detailed Description: Error functions are"+
-			" used to measure the accuracy       of a model. There are a number of differernt ways the accuracy"+
+			" used to measure the accuracy       of a model. There are a number of different ways the accuracy"+
 			" can be       measured or represented. The name of the error function is user       selectable"+
 			" via a customer properties user interface. The property editor       will produce an editor"+
-			" that provides the names of all the supported       error fuctions. The currently supported"+
+			" that provides the names of all the supported       error functions. The currently supported"+
 			" error functions are <i>Absolute</i>, <i>Classification</i>, <i>Likelihood</i> and <i>Variance</i>."+
 			" The absolute       error is the sum of all the differences in the predicted and actual    "+
 			"   values. Classification will only work if there is one output feature. It       will yield"+
 			" 0 if there is no classification error, 1 otherwise.       Likelihood returns the negative of"+
-			" the sum of the log of probabilities       fo the actual classes. This is useful when using"+
+			" the sum of the log of probabilities       of the actual classes. This is useful when using"+
 			" Likelihood to guide the       formation of the Probability Density Function based models. Variance"+
-			"       returns the sum of all the squared differrences between predicted and       actual output"+
+			"       returns the sum of all the squared differences between predicted and       actual output"+
 			" values.    </p>";
 	}
 

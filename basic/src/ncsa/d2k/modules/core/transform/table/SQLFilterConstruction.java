@@ -503,7 +503,7 @@ public class SQLFilterConstruction extends UIModule {
          if (index > 0)
            newString = oldString.substring(0,index) + newPattern +
                      oldString.substring(index + oldPattern.length(), oldString.length());
-         // matched substring is located in the begining of the string
+         // matched substring is located in the beginning of the string
          else if (index == 0)
            newString = newPattern +
                      oldString.substring(index + oldPattern.length(), oldString.length());

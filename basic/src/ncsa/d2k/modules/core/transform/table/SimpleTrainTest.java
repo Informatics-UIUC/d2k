@@ -34,7 +34,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 			" change only train or test percentages drag the side arrows, if you want to change them at the " +
 			" same time drag the invisible line between the percentages.   </p>    <p>"+
 			"      Data Type Restrictions: Although this module can take tables containing       any type"+
-			" of data, most supervised learing algorithms will work only on       doubles. If one of these"+
+			" of data, most supervised learning algorithms will work only on       doubles. If one of these"+
 			" algorithms is to be used, the conversion to       floating point data should take place upstream"+
 			" from this module. This       module will need to be able to allocate arrays of integers to"+
 			" contain       the indices of the test and train examples.    </p>    <p>      Data Handling:"+
