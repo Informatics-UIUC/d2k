@@ -86,6 +86,10 @@ public class SQLChooseIOFields extends UIModule {
 		return "<html>  <head>      </head>  <body>    Select input and output fields from a cube table  </body></html>";
 	}
 
+  public String getModuleName() {
+    return "SQLChooseIOFields";
+  }
+
   public String[] getInputTypes () {
 		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","java.lang.String"};
 		return types;

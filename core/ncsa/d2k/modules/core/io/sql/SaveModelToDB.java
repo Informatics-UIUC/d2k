@@ -18,6 +18,7 @@ import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.prediction.naivebayes.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
+import ncsa.d2k.modules.core.prediction.decisiontree.rainforest.*;
 import ncsa.d2k.modules.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
@@ -37,6 +38,7 @@ public class SaveModelToDB extends UIModule {
   static String  NOTHING = "";
   static String  NB = "NB"; // for NaiveBayes
   static String  DT = "DT"; // for Decision Tree
+  static String  RF = "RF"; // for RainForest
 
   public SaveModelToDB() {
   }
@@ -97,6 +99,7 @@ public class SaveModelToDB extends UIModule {
     PredictionModelModule model;
     NaiveBayesModel modelNB;
     DecisionTreeModel modelDT;
+    DecisionForestModel modelRF;
     File file = new File("aModel.mdl");
 
     public void setInput(Object input, int index) {
@@ -113,6 +116,11 @@ public class SaveModelToDB extends UIModule {
           "class ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel")) {
           modelType = DT; // DT for decision tree
           modelDT = (DecisionTreeModel)model;
+        }
+        else if (model.getClass().toString().equals(
+          "class ncsa.d2k.modules.core.prediction.decisiontree.rainforest.DecisionForestModel")) {
+          modelType = RF; // RF for rainforest
+          modelRF = (DecisionForestModel)model;
         }
         modelName.setText(NOTHING);
         dataSize.setText(NOTHING);
@@ -150,6 +158,11 @@ public class SaveModelToDB extends UIModule {
           modelType = DT; // DT for decision tree
           modelDT = (DecisionTreeModel)model;
       }
+      else if (model.getClass().toString().equals(
+          "class ncsa.d2k.modules.core.prediction.decisiontree.rainforest.DecisionForestModel")) {
+          modelType = RF; // RF for rainforest
+          modelRF = (DecisionForestModel)model;
+      }
 
       // Panel to hold outline panels
       JPanel saveModelPanel = new JPanel();
@@ -171,6 +184,9 @@ public class SaveModelToDB extends UIModule {
         modelDesc.setText("Naive Bayes");
       }
       else if (modelType.equals(DT)) {
+        modelDesc.setText("Decision Tree");
+      }
+      else if (modelType.equals(RF)) {
         modelDesc.setText("Decision Tree");
       }
       Constrain.setConstraints(modelInfo, new JLabel("Training Data Size (Records)"),
@@ -306,6 +322,9 @@ public class SaveModelToDB extends UIModule {
       }
       else if (modelType.equals(DT)) {
         classNames = modelDT.getClassNames();
+      }
+      else if (modelType.equals(RF)) {
+        classNames = modelRF.getClassNames();
       }
       for (i = 0; i < classNames.length; i++) {
         classLabelDef.setValueAt(classNames[i].toString(),i,0);
