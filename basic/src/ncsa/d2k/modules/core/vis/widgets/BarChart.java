@@ -448,10 +448,13 @@ public class BarChart extends Chart {
       double barheight = (value-yminimum)/yscale;
       double y = getGraphHeight()-bottomoffset-barheight;
 
+      Rectangle2D.Double rectangle = new Rectangle2D.Double(x, y, barwidth, barheight);
+
       g2.setColor(colors[bin%colors.length]);
-      g2.fill(new Rectangle2D.Double(x, y, barwidth, barheight));
+      g2.fill(rectangle);
+
       g2.setColor(Color.black);
-      g2.draw(new Rectangle2D.Double(x, y, barwidth, barheight));
+      g2.draw(rectangle);
 
       x += xoffsetincrement;
     }
