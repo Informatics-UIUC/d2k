@@ -192,9 +192,9 @@ public class SQLFilterConstruction extends HeadlessUIModule {
    }
    catch (Exception e) {
      JOptionPane.showMessageDialog(msgBoard,
-     e.getMessage(), "Error",
+     "Could not create metadata table.", "Error",
      JOptionPane.ERROR_MESSAGE);
-     System.out.println("Error occurred in createMeatTable.");
+     System.out.println("Error occurred in createMetaTable.");
    }
 
    Column[] cols = new Column[colNames.size()];
