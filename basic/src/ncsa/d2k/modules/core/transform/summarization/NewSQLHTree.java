@@ -887,7 +887,7 @@ public class NewSQLHTree extends ComputeModule
 
      String sb = new String("select count(*) from " + table);
 
-     if (whereClause != null) {
+     if (whereClause != null && whereClause.length()>6) {
 
        sb = sb + " where " + whereClause;
 
@@ -1110,7 +1110,7 @@ public class NewSQLHTree extends ComputeModule
        Statement uniqStmt;
 
        String sb = new String("select count(distinct " + fieldNames[col] + ") from " + tableName);
-       if (whereClause != null && whereClause.length()>0)
+       if (whereClause != null && whereClause.length()>6)
          sb = sb + " where " + whereClause;
        //System.out.println("query in getUniqCount is " + sb);
 
@@ -1487,7 +1487,7 @@ public class NewSQLHTree extends ComputeModule
 
          String valueQry = new String("select distinct " + colName + " from ");
 
-         if (whereClause != null && whereClause.length()>0)
+         if (whereClause != null && whereClause.length()>6)
            valueQry = valueQry + tableName + " where (" + whereClause + ") and " +
                       colName + " is not null order by " + colName;
          else
@@ -1616,7 +1616,7 @@ public class NewSQLHTree extends ComputeModule
 
      sb = sb + columnStr + " from " + tableName;
 
-     if (whereClause != null) {
+     if (whereClause != null  && whereClause.length()>6) {
 
        sb = sb + " where " + whereClause;
 

@@ -1108,7 +1108,7 @@ public class BuildQuery extends HeadlessUIModule
           try {
             Connection con = cw.getConnection();
             String countQry;
-            if (queryCondition.length() > 0) {
+            if (queryCondition.length() > 1) {
               countQry = new String("select count(*) from " + fromTable +
                          " where (" + queryCondition +
                          ") and " + selectedAttributes.getValueAt(
@@ -1120,6 +1120,7 @@ public class BuildQuery extends HeadlessUIModule
                          selectedOutput[0], 0).toString() + " is not null");
 
             }
+            System.out.println("countQry is " + countQry);
             Statement countStmt = con.createStatement();
             ResultSet countSet = countStmt.executeQuery(countQry);
             countSet.next();

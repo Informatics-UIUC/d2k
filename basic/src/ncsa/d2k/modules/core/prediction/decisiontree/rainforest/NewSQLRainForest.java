@@ -754,7 +754,7 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
       String classQry;
 
-      if (whereClause != null && whereClause.length() > 0) {
+      if (whereClause != null && whereClause.length() > 6) {
 
         classQry = new String("select distinct " + classColName + " from " + dbTable +
 
@@ -949,7 +949,7 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
       }
 
-      if (whereClause != null && whereClause.length() > 0) {
+      if (whereClause != null && whereClause.length() > 6) {
 
         dataQry = dataQry + " from " + dbTable + " where (" + whereClause + ") and " +
 
@@ -3030,7 +3030,7 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
       }
 
-      if (whereClause != null && whereClause.length() > 0) {
+      if (whereClause != null && whereClause.length() > 6) {
 
         dataQry = dataQry + " from " + dbTable + " where (" + whereClause + ") and " +
 
@@ -3546,7 +3546,7 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
         String valueQry = new String("select distinct " + colName + " from ");
 
-        if (whereClause != null && whereClause.length() > 0) {
+        if (whereClause != null && whereClause.length() > 6) {
 
           valueQry = valueQry + dbTable + " where (" + whereClause + ") and " +
 
