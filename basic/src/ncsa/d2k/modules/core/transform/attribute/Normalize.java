@@ -281,6 +281,10 @@ public class Normalize extends HeadlessUIModule {
          }
 
          else if (src == doneButton) {
+           //headless conversion support
+              setNumericLabels(numericList.getSelectedValues());
+              //headless conversion support
+
 
             if (indirection.length == 0) {
                pushOutput(new NormalizingTransformation(new int[0]), 0);
@@ -294,9 +298,7 @@ public class Normalize extends HeadlessUIModule {
                   transform[i] = indirection[indices[i]];
                }
 
-               //headless conversion support
-               setNumericLabels(numericList.getSelectedValues());
-               //headless conversion support
+
 
                pushOutput(new NormalizingTransformation(transform), 0);
 
@@ -400,8 +402,11 @@ public class Normalize extends HeadlessUIModule {
    public Object[] getNumericLabels(){return numericLabels;}
    public void setNumericLabels(Object[] labels){
      numericLabels = new String[labels.length];
-     for (int i=0; i<labels.length; i++)
-       numericLabels[i] = (String)labels[i];
+
+     for (int i=0; i<labels.length; i++){
+       numericLabels[i] = (String) labels[i];
+
+     }
    }
 
    public void doit() throws Exception{
@@ -412,8 +417,23 @@ public class Normalize extends HeadlessUIModule {
      if(numericLabels == null)
        throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
 
+
+          HashMap availableNumericColumns = new HashMap();
+          for (int i=0; i<_table.getNumColumns(); i++)
+            if(_table.isColumnNumeric(i))
+              availableNumericColumns.put(_table.getColumnLabel(i), new Integer(i));
+
+           if(availableNumericColumns.size() == 0){
+             System.out.println(getAlias() + ": Warning - Table " + _table.getLabel() +
+                                " has no numeric columns. The transformation will be " +
+                                "an empty one");
+              //pushOutput(new NormalizingTransformation(transform), 0);
+              //return;
+           }
+
+
      if( numericLabels.length ==0){
-       System.out.println(getAlias() + ": numeric columns were selected. " +
+       System.out.println(getAlias() + ": no numeric columns were selected. " +
                           "the transformation will be an empty one.\n");
         pushOutput(new NormalizingTransformation(transform), 0);
        return;
@@ -424,18 +444,6 @@ public class Normalize extends HeadlessUIModule {
      //numericLabels and the available numeric columns in the table
 
 
-     HashMap availableNumericColumns = new HashMap();
-     for (int i=0; i<_table.getNumColumns(); i++)
-       if(_table.isColumnNumeric(i))
-         availableNumericColumns.put(_table.getColumnLabel(i), new Integer(i));
-
-      if(availableNumericColumns.size() == 0){
-        System.out.println(getAlias() + ": Warning - Table " + _table.getLabel() +
-                           " has no numeric columns. The transformation will be " +
-                           "an empty one");
-         //pushOutput(new NormalizingTransformation(transform), 0);
-         //return;
-      }
 
 
         transform = StaticMethods.getIntersectIds(numericLabels, availableNumericColumns);
@@ -446,7 +454,12 @@ public class Normalize extends HeadlessUIModule {
 */
 
         if(transform.length < numericLabels.length){
-          throw new Exception(getAlias() + ": Table " + _table.getLabel() +
+          String str, label;
+          label = _table.getLabel();
+          if( label == null || label.length() == 0)
+            str = "The input table";
+          else str = "Table " + label;
+          throw new Exception(getAlias() + ": " + str +
                               " does not contain all of the configured numeric columns." +
                               " Please reconfigure this moduel via a GUI run so it can run Headless.");
         //pushOutput(new NormalizingTransformation(transform), 0);
