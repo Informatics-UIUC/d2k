@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.transform.table;
 
 
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -17,88 +18,95 @@ import java.util.Random;
 */
 public class SampleTableRows extends DataPrepModule  {
 
-    /**
-       Return a description of the function of this module.
-       @return A description of this module.
-    */
-    public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    Creates a sample of the given Table. If the useFirst property is set, then     the first N rows of the table will be the sample. Otherwise, the sampled     table will contain N random rows from the table. The original table is     left untouched.  </body></html>";
+	/**
+	   Return a description of the function of this module.
+	   @return A description of this module.
+	*/
+	public String getModuleInfo() {
+		return "Overview: Creates a sample of the given Table, by either randomly selecting     rows, or using"+
+			" the first rows.Detailed Description: This module will take the inputs table, and select <i>"+
+			"    Sample Size</i> rows from it, where <i>Sample Size</i> is a property the     user can modify."+
+			" The selected rows will then be placed in a different     table and passed as the output. If"+
+			" the <i>Use First</i> property is set,     the first <i>Sample Size</i> entryies from the file"+
+			" will be placed in the     resulting table. Otherwise, they are selected randomly.Scalability:"+
+			" This module should scale very well. There must be memory to     accomodate both the input table"+
+			" and the resulting sample table.";
 	}
 
-    /**
-       Return the name of this module.
-       @return The name of this module.
-    */
-    public String getModuleName() {
+	/**
+	   Return the name of this module.
+	   @return The name of this module.
+	*/
+	public String getModuleName() {
 		return "SampleTableRows";
 	}
 
-    /**
-       Return a String array containing the datatypes the inputs to this
-       module.
-       @return The datatypes of the inputs.
-    */
-    public String[] getInputTypes() {
+	/**
+	   Return a String array containing the datatypes the inputs to this
+	   module.
+	   @return The datatypes of the inputs.
+	*/
+	public String[] getInputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return types;
 	}
 
-    /**
-       Return a String array containing the datatypes of the outputs of this
-       module.
-       @return The datatypes of the outputs.
-    */
-    public String[] getOutputTypes() {
+	/**
+	   Return a String array containing the datatypes of the outputs of this
+	   module.
+	   @return The datatypes of the outputs.
+	*/
+	public String[] getOutputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return types;
 	}
 
-    /**
-       Return a description of a specific input.
-       @param i The index of the input
-       @return The description of the input
-    */
-    public String getInputInfo(int i) {
+	/**
+	   Return a description of a specific input.
+	   @param i The index of the input
+	   @return The description of the input
+	*/
+	public String getInputInfo(int i) {
 		switch (i) {
-			case 0: return "The Table to create a sample from.";
+			case 0: return "This is the original table that will be sampled.";
 			default: return "No such input";
 		}
 	}
 
-    /**
-       Return the name of a specific input.
-       @param i The index of the input.
-       @return The name of the input
-    */
-    public String getInputName(int i) {
+	/**
+	   Return the name of a specific input.
+	   @param i The index of the input.
+	   @return The name of the input
+	*/
+	public String getInputName(int i) {
 		switch(i) {
 			case 0:
-				return "original table";
+				return "Original Table";
 			default: return "NO SUCH INPUT!";
 		}
 	}
 
-    /**
-       Return the description of a specific output.
-       @param i The index of the output.
-       @return The description of the output.
-    */
-    public String getOutputInfo(int i) {
+	/**
+	   Return the description of a specific output.
+	   @param i The index of the output.
+	   @return The description of the output.
+	*/
+	public String getOutputInfo(int i) {
 		switch (i) {
-			case 0: return "The sample table";
+			case 0: return "This table is the result of sampling the original table.";
 			default: return "No such output";
 		}
 	}
 
-    /**
-       Return the name of a specific output.
-       @param i The index of the output.
-       @return The name of the output
-    */
-    public String getOutputName(int i) {
+	/**
+	   Return the name of a specific output.
+	   @param i The index of the output.
+	   @return The name of the output
+	*/
+	public String getOutputName(int i) {
 		switch(i) {
 			case 0:
-				return "sample table";
+				return "Sample Table";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
@@ -119,11 +127,11 @@ public class SampleTableRows extends DataPrepModule  {
 		return useFirst;
 	}
 
-	public void setN(int i) {
+	public void setSampleSize(int i) {
 		N = i;
 	}
 
-	public int getN() {
+	public int getSampleSize() {
 		return N;
 	}
 
@@ -134,11 +142,23 @@ public class SampleTableRows extends DataPrepModule  {
 	public int getSeed() {
 		return seed;
 	}
+	/**
+	 * Return a list of the property descriptions.
+	 * @return a list of the property descriptions.
+	 */
+	public PropertyDescription [] getPropertiesDescriptions () {
+		PropertyDescription [] pds = new PropertyDescription [3];
+		pds[0] = new PropertyDescription ("sampleSize", "Sample Size", "This number of examples in the resulting table.");
+		pds[1] = new PropertyDescription ("seed", "Seed", "The seed for the random number generater used to select the random folds. If this value is set to the same value for different runs, the results be the exact same.");
+		pds[2] = new PropertyDescription ("useFirst", "Use First", "If this option is selected, the first entries in the original table will be used as the sample.");
+		return pds;
+	}
 
-    /**
-       Perform the calculation.
-    */
-    public void doit() {
+
+	/**
+	   Perform the calculation.
+	*/
+	public void doit() {
 		MutableTable orig = (MutableTable)pullInput(0);
 		MutableTable newTable = (MutableTable)orig.copy();
 
@@ -158,5 +178,5 @@ public class SampleTableRows extends DataPrepModule  {
 			}
 		}
 		pushOutput(newTable, 0);
-    }
+	}
 }

@@ -1,7 +1,5 @@
 package ncsa.d2k.modules.core.transform.table;
 
-
-
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import java.util.Random;
@@ -146,6 +144,7 @@ public class NFoldTTables extends ncsa.d2k.core.modules.DataPrepModule {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
+
 
 	public String getOutputInfo(int i){
 		switch (i) {

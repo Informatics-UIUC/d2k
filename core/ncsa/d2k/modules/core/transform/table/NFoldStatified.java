@@ -1,5 +1,9 @@
 package ncsa.d2k.modules.core.transform.table;
-//package ncsa.d2k.modules.projects.smathur.transform.table;
+
+
+
+
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.transform.table.NFoldExTable;
@@ -14,270 +18,229 @@ import gnu.trove.*;
  * @author unascribed
  * @version 1.0
  */
+public class NFoldStatified extends NFoldTTables {
+	Hashtable uniqueOutputToRows;
+	TIntArrayList testIndices, trainIndices;
 
-public class NFoldStatified extends NFoldExTable{
-    Hashtable uniqueOutputToRows; //maps a uniqueOutput to a vector of rows that have this output
-    TIntArrayList testIndices, trainIndices;
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "NFoldStatified";
+	}
 
-    /**
-     * Return the human readable name of the module.
-     * @return the human readable name of the module.
-     */
-    public String getModuleName() {
-            return "NFoldStatified";
-    }
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Original Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
-    /**
-     * Return the human readable name of the indexed input.
-     * @param index the index of the input.
-     * @return the human readable name of the indexed input.
-     */
-    public String getInputName(int index) {
-            switch(index) {
-                    case 0:
-                            return "input0";
-                    default: return "NO SUCH INPUT!";
-            }
-    }
+	/**
+	 * get the input information for each input
+	 * @param i the index of the input
+	 * @return the input information
+	 */
+	public String getInputInfo(int i){
+		switch (i) {
+			case 0: return "<p>      This is the original table from which we will construct the test and       train tables.    </p>";
+			default: return "No such input";
+		}
+	}
+	public String[] getInputTypes(){
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
+	}
 
-    /**
-     * Return the human readable name of the indexed output.
-     * @param index the index of the output.
-     * @return the human readable name of the indexed output.
-     */
-    public String getOutputName(int index) {
-            switch(index) {
-                    case 0:
-                            return "output0";
-                    case 1:
-                            return "output1";
-                    case 2:
-                            return "output2";
-//                    case 3:
-//                            return "output3";
-                    default: return "NO SUCH OUTPUT!";
-            }
-    }
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Test Table";
+			case 1:
+				return "Train Table";
+			case 2:
+				return "Number Folds";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
-    public String getOutputInfo(int i){
-            switch (i) {
-//                    case 0: return "The Example Table";
-                    case 0: return "The Test Table";
-                    case 1: return "The Train Table";
-                    case 2: return "The N that was set in the properties";
-                    default: return "No such output";
-            }
-    }
+	public String getOutputInfo(int i){
+		switch (i) {
+			case 0: return "This is the test table.";
+			case 1: return "This is the table containing the training data.";
+			case 2: return "This is the number of folds.";
+			default: return "No such output";
+		}
+	}
 
-    public String[] getOutputTypes(){
-            String[] types = {/*"ncsa.d2k.modules.core.datatype.table.ExampleTable",*/
-                              "ncsa.d2k.modules.core.datatype.table.TestTable",
-                              "ncsa.d2k.modules.core.datatype.table.TrainTable",
-                              "java.lang.Integer"};
-            return types;
-    }
+	public String[] getOutputTypes(){
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.TestTable","ncsa.d2k.modules.core.datatype.table.TrainTable","java.lang.Integer"};
+		return types;
+	}
 
-    public String getModuleInfo(){
-            return "<html>  <head>      </head>  <body>    Will produce and push N " +
-                   "TestTable/TrainTable pairs. The test sets are of size (1/N)*numExamples" +
-                   " and the train sets the rest. The sets are are randomly created based " +
-                   "on the seed. PROPS: N - the number of exampleTables to make, Seed - " +
-                   "the basis of the random subsampling, allows the user to create the same" +
-                   "subsets or insure it changes  </body></html>";
-    }
+	public String getModuleInfo(){
+		return "<p>      Overview: This module N-fold cross validation with a twist(see module       info for"+
+			" &quot;NFoldTTables&quot;). It will identify examples having the same       output features,"+
+			" and attempt to distribute those examples evenly between       the test and train sets.    </p>"+
+			"    <p>      Detailed Description: For each table input, this modules will execute n       times"+
+			" where n is the number of folds specified in the <i>Number Folds</i>       property. At each"+
+			" execution, it will produce one test table and one       train table. The data is initially"+
+			" divided into n equally sized chunks       of data, that is each chunk contains nearly the same"+
+			" number of examples.       Each time the module executes, it will hold out a different chunk"+
+			" of the       data for testing. This hold out data should be about 1/n of the data,       and"+
+			" this will constitute the test data. The training data will be the       other chunks of data"+
+			" combined into a single test table. This should       represent n-1/n of the entire dataset."+
+			" The number of folds is also       output, but this value is only output once, the first time"+
+			" the module       executes.    </p>    <p>      Additionally, this module will identify examples"+
+			" with the same output       features, and distribute those examples evenly among the test and"+
+			" train       sets.    </p>    <p>      Data Type Restrictions: This module has no explicit data"+
+			" type       restrictions, however the majority of the supervised learning algorithms       are"+
+			" only prepared to deal with floating point numbers, so data       conversion may be need to"+
+			" be done, and if so, it should be done upstream       from this module. Otherwise, it will be"+
+			" done repeated, that is, on each       fold.     </p>    <p>      Scalability: This algorithm"+
+			" expects a limited set of distinct output       features. Typically, the output features will"+
+			" be nominals of some sort.       If the number of distinct output sets is large, so too will"+
+			" be the       memory requirements for this module.     </p>    <p>      Trigger Criteria: When"+
+			" this module receives an input, it will execute <i>       Number Folds</i> times, where <i>Number"+
+			" Folds</i> is the property the       user sets.    </p>";
+	}
+	String once;
+	public void beginExecution() {
+		super.beginExecution();
+		once = null;
+	}
 
-    int totalFires=0;
+	protected void setup(){
+		once = new String("first");
+		table = (Table) this.pullInput (0);
+	}
 
-    String once;
+	/**
+			Does things, especially 'it'
+	*/
+	public void doit () throws Exception {
+		if (once == null) {
+			setup ();
+		}
 
-    public void beginExecution() {
-        super.beginExecution();
-        once = null;
-    }
+		createUniqueOutputToRowsHash();
+		createTestTrainSets();
 
-    protected void setup(){
-        once = new String("first");
-        table = (Table) this.pullInput (0);
-//printTable(table);
-    }
+		// Set up the train and test sets indices
+		//convert a Vector of Integer objects to an array of ints
+		int testing [] = new int [testIndices.size()];
+		for (int i=0; i<testing.length; i++) {
+			testing[i] = testIndices.get(i);
+		}
 
-    /**
-            Does things, especially 'it'
-    */
-    public void doit () throws Exception {
-        if (once == null) {
-            setup ();
-        }
+		int training [] = new int [trainIndices.size()];
+		for (int i=0; i<training.length; i++) {
+			training[i] = trainIndices.get(i);
+		}
 
-        createUniqueOutputToRowsHash();
-        createTestTrainSets();
+		// now create a new table.
+		ExampleTable examples = table.toExampleTable();
+		examples.setTrainingSet (training);
+		examples.setTestingSet (testing);
 
-        // Set up the train and test sets indices
-        //convert a Vector of Integer objects to an array of ints
-        int testing [] = new int [testIndices.size()];
-        for (int i=0; i<testing.length; i++) {
-            testing[i] = testIndices.get(i);
-        }
+		TestTable testT = examples.getTestTable();
+		TrainTable trainT = examples.getTrainTable();
 
-        int training [] = new int [trainIndices.size()];
-        for (int i=0; i<training.length; i++) {
-            training[i] = trainIndices.get(i);
-        }
+		this.pushOutput (testT, 0);
+		this.pushOutput (trainT, 1);
+		if(numFires==0){
+			this.pushOutput (new Integer(N), 2);
+		}
 
-        // now create a new table.
-        ExampleTable examples = table.toExampleTable();
-        examples.setTrainingSet (training);
-        examples.setTestingSet (testing);
+		numFires++;
 
-        TestTable testT = examples.getTestTable();
-        TrainTable trainT = examples.getTrainTable();
+		totalFires++;
+		  if (numFires == N){
+				numFires=0;
+		}
+	}
 
-//        this.pushOutput(examples, 0);
-        this.pushOutput (testT, 0);
-        this.pushOutput (trainT, 1);
-        if(numFires==0){
-//            this.pushOutput (new Integer(breaks.length+1), 3);
-            this.pushOutput (new Integer(N), 2);
-        }
+	/**
+	 * Hashtable : key - a Vector of output columns. value - Vector of row no Integers where this occurs
+	 * For a row of data, create a vector of output columns.
+	 *    If this vector is a key of the Hashtable
+	 *        Get the vector of row numbers where this output occurs;
+	 *        Add the current row number to this vector and put it back into the hash table
+	 *    Else if this vector is not present in the hashtable
+	 *        Create a new entry in the table - key: this vector; value: a new Vector
+	 *        containig the current row number.
+	 * Repeat this check for all rows.
+	 */
+	private void createUniqueOutputToRowsHash() {
+		uniqueOutputToRows = new Hashtable();
+		Vector    output; //a vector that holds the output column values for a particular row
+		TIntArrayList rowIndices;
 
-        numFires++;
+		int[] outputCols = table.toExampleTable().getOutputFeatures();
 
-        totalFires++;
+		for (int r=0; r< this.table.getNumRows(); r++) {
+			output = new Vector(outputCols.length); // build a vector v of the outputCols
+			for (int c=0; c< outputCols.length; c++) // of every row
+				output.add(table.getString(r,outputCols[c]));
 
-//        if(debug)
-//            System.out.println("Xval:numfires:"+numFires+" totalFires:"+totalFires+" n:"+N);
-//       if(numFires==(breaks.length+1)){
-          if (numFires == N){
-                numFires=0;
-               // breaks=null;
-        }
-    }
+			// try to add output to the HashSet uniqueOutput,
+			if (uniqueOutputToRows.containsKey(output)){ // success: lookup output in Hashtable
+				rowIndices = (TIntArrayList)uniqueOutputToRows.get(output);
+				rowIndices.add(r);
+				uniqueOutputToRows.put(output, rowIndices);
+			}
+			else {    // failure: create a new entry in the Hashtable
+				rowIndices = new TIntArrayList(1);
+				rowIndices.add(r);
+				uniqueOutputToRows.put(output, rowIndices);
+			}
+		}
+	}
 
-/*
-        private void printTable(Table t){
-            System.out.println("PRINTING TABLE");
-            int rows = t.getNumRows();
-            int cols = t.getNumColumns();
-            if (t instanceof PredictionTable)
-                cols--;
+	protected void createTestTrainSets() {
+		testIndices = new TIntArrayList();
+		trainIndices = new TIntArrayList();
+		Random rdm0 = new Random(this.seed);
+		Random rdm = new Random(this.seed);
 
-            for (int c=0; c<cols; c++) {
-                System.out.print(t.getColumnLabel(c)+ "   ");
-            }
-            System.out.println("");
-            System.out.println("*************************************");
+		Enumeration keyEnum = uniqueOutputToRows.keys();
+		while ( keyEnum.hasMoreElements() ) {
+			TIntArrayList rowIndices = (TIntArrayList) uniqueOutputToRows.get(keyEnum.nextElement());
+			if (rowIndices.size() < N) {         //if the number of row indices retrived 'n' is < N
+				for (int i=0; i<rowIndices.size(); i++) {
+					int coin = rdm0.nextInt(2);//add them randomly to either the test or the train set
+					if (coin == 0)
+						testIndices.add(rowIndices.get(i));
+					else if (coin == 1)
+						trainIndices.add(rowIndices.get(i));
+				}//for
+			}//if
+			else {
+				TIntHashSet testIndicesSet = new TIntHashSet();//randomly pick (n/N) of them
+				while (testIndicesSet.size() < (int)(rowIndices.size()/N)){
+					int index = rdm.nextInt(rowIndices.size());
+					testIndicesSet.add(rowIndices.get(index));
+				}//while
 
-            for (int r=0; r<rows; r++) {
-                for (int c=0; c<cols; c++) {
-                    System.out.print(t.getString(r,c) + "   ");
-                }
-                System.out.println("");
-            }
-            System.out.println("*************************************");
-        }
-*/
+				testIndices.add(testIndicesSet.toArray());
+				for (int i=0; i<rowIndices.size(); i++) {
+					if (! testIndicesSet.contains(rowIndices.get(i)))
+						trainIndices.add(rowIndices.get(i));
+				}//for
+			}//else
+		}//while
+	}//createTestTrainSets
+}
 
-
-    /**
-     * Hashtable : key - a Vector of output columns. value - Vector of row no Integers where this occurs
-     * For a row of data, create a vector of output columns.
-     *    If this vector is a key of the Hashtable
-     *        Get the vector of row numbers where this output occurs;
-     *        Add the current row number to this vector and put it back into the hash table
-     *    Else if this vector is not present in the hashtable
-     *        Create a new entry in the table - key: this vector; value: a new Vector
-     *        containig the current row number.
-     * Repeat this check for all rows.
-     */
-    private void createUniqueOutputToRowsHash() {
-        uniqueOutputToRows = new Hashtable();
-        Vector    output; //a vector that holds the output column values for a particular row
-        TIntArrayList rowIndices;
-
-        int[] outputCols = table.toExampleTable().getOutputFeatures();
-
-        for (int r=0; r< this.table.getNumRows(); r++) {
-            output = new Vector(outputCols.length); // build a vector v of the outputCols
-            for (int c=0; c< outputCols.length; c++) // of every row
-                output.add(table.getString(r,outputCols[c]));
-//printVector(output);
-            // try to add output to the HashSet uniqueOutput,
-            if (uniqueOutputToRows.containsKey(output)){ // success: lookup output in Hashtable
-                rowIndices = (TIntArrayList)uniqueOutputToRows.get(output);
-                rowIndices.add(r);
-                uniqueOutputToRows.put(output, rowIndices);
-            }
-            else {    // failure: create a new entry in the Hashtable
-                rowIndices = new TIntArrayList(1);
-                rowIndices.add(r);
-                uniqueOutputToRows.put(output, rowIndices);
-            }
-        }//outer for
-//printHashtable(uniqueOutputToRows);
-    }//createUniqueOutputToRowsHash
-/*
-    private void printVector (Vector v) {
-//DEBUG
-      System.out.println(v);
-    }
-
-    private void printHashtable (Hashtable t) {
-//DEBUG
-        Set keyset = t.keySet();
-        Enumeration keyEnum = t.keys();
-        while ( keyEnum.hasMoreElements() ) {
-            Vector rows = (Vector) t.get(keyEnum.nextElement());
-            for (int i=0; i<rows.size(); i++)
-                System.out.println(rows.elementAt(i));
-            System.out.println("........................................................");
-        }
-    }
-*/
-    protected void createTestTrainSets(){
-        // loop through all the keys of the hash table and retrive stored row indices
-            // if the number of row indices retrived 'n' is > N
-                // randomly pick (int)(n/N) of them and add them to testing[]
-                // add the remaining  to training[]
-            // else if the number of row indices retrived 'n' is < N
-                // add them all to the training set for now  (TODO)
-            // repeat for every key in the hashtable
-
-        testIndices = new TIntArrayList();
-        trainIndices = new TIntArrayList();
-        Random rdm0 = new Random(this.seed);
-        Random rdm = new Random(this.seed);
-
-        Enumeration keyEnum = uniqueOutputToRows.keys();
-        while ( keyEnum.hasMoreElements() ) {
-            TIntArrayList rowIndices = (TIntArrayList) uniqueOutputToRows.get(keyEnum.nextElement());
-            if (rowIndices.size() < N) {         //if the number of row indices retrived 'n' is < N
-                for (int i=0; i<rowIndices.size(); i++) {
-                    int coin = rdm0.nextInt(2);//add them randomly to either the test or the train set
-                    if (coin == 0)
-                        testIndices.add(rowIndices.get(i));
-                    else if (coin == 1)
-                        trainIndices.add(rowIndices.get(i));
-                }//for
-            }//if
-
-            else {
-                TIntHashSet testIndicesSet = new TIntHashSet();//randomly pick (n/N) of them
-                while (testIndicesSet.size() < (int)(rowIndices.size()/N)){
-                    int index = rdm.nextInt(rowIndices.size());
-                    testIndicesSet.add(rowIndices.get(index));
-                }//while
-
-                testIndices.add(testIndicesSet.toArray());
-                for (int i=0; i<rowIndices.size(); i++) {
-                    if (! testIndicesSet.contains(rowIndices.get(i)))
-                        trainIndices.add(rowIndices.get(i));
-                }//for
-            }//else
-        }//while
-//System.out.println("Test Indices:");
-//this.printVector(testIndices);
-//System.out.println("Train Indices:");
-//this.printVector(trainIndices);
-    }//createTestTrainSets
-
-} //NFoldStatified

@@ -168,7 +168,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 	 * @return a list of the property descriptions.
 	 */
 	public PropertyDescription [] getPropertiesDescriptions () {
-		PropertyDescription [] pds = new PropertyDescription [4];
+		PropertyDescription [] pds = new PropertyDescription [3];
 		pds[0] = new PropertyDescription ("testPercent", "Test Percent", "This percentage of the data will be used for testing the model.");
 		pds[1] = new PropertyDescription ("trainPercent", "Train Percent", "This percentage of the data will be used for training the model.");
 		pds[2] = new PropertyDescription ("useFirst", "Use First", "If this option is selected, the first entries in the data will be used for test, the last entries for train, rather than selecting them randomly.");
