@@ -137,7 +137,7 @@ public class DelimitedFileParser implements FlatFileParser {
             ArrayList row = getLineElements(typesRow);
             if (row != null ) createColumnTypes(row);
             else throw new Exception("Delimited File Parser: types' row number " +
-						   typesRow + " does not exist in the file");
+                     typesRow + " does not exist in the file");
 
         }
         else
@@ -148,10 +148,10 @@ public class DelimitedFileParser implements FlatFileParser {
             // now parse the line and the the labels
             ArrayList row = getLineElements(labelsRow);
            if (row != null) createColumnLabels(row);
-    			 else throw new Exception("Delimited File Parser: labels' row number " +
-					   labelsRow + " does not exist in the file");
+             else throw new Exception("Delimited File Parser: labels' row number " +
+                  labelsRow + " does not exist in the file");
 
-				}
+            }
         else
             columnLabels = null;
 
@@ -371,9 +371,16 @@ public class DelimitedFileParser implements FlatFileParser {
      */
     public String getColumnLabel(int i) {
         if(columnLabels == null)
-            return null;
+            // change:
+            // return null;
+            return "column_" + i;
         try {
-          return columnLabels[i];
+           // change:
+           // return columnLabels[i];
+           if (columnLabels[i] != null)
+              return columnLabels[i];
+           else
+              return "column_" + i;
         }
         catch(ArrayIndexOutOfBoundsException e) {
           throw new ArrayIndexOutOfBoundsException("DelimitedFileParser: The number of column "+
@@ -931,54 +938,54 @@ public class DelimitedFileParser implements FlatFileParser {
         return numToks;
     }
 
-	/**
-		returns a Table that has 2 columns, corresponding
-		to the row and column indices of the fields
-		that were blank in the file that was read in
-		*/
-	/*public Table getBlanks(){
-		Object[] rowsObjArray=_blankRows.toArray();
-		Object[] colsObjArray=_blankColumns.toArray();
-		int numBlanks=rowsObjArray.length;
-		//use these to make the kind of rows that VT's like
+   /**
+      returns a Table that has 2 columns, corresponding
+      to the row and column indices of the fields
+      that were blank in the file that was read in
+      */
+   /*public Table getBlanks(){
+      Object[] rowsObjArray=_blankRows.toArray();
+      Object[] colsObjArray=_blankColumns.toArray();
+      int numBlanks=rowsObjArray.length;
+      //use these to make the kind of rows that VT's like
 
-		IntColumn rowsColumn=new IntColumn(numBlanks);
-		rowsColumn.setLabel("Rows");
+      IntColumn rowsColumn=new IntColumn(numBlanks);
+      rowsColumn.setLabel("Rows");
 
-		IntColumn colsColumn=new IntColumn(numBlanks);
-		colsColumn.setLabel("Column");
+      IntColumn colsColumn=new IntColumn(numBlanks);
+      colsColumn.setLabel("Column");
 
-		Column[] internal=new Column[2];
-		internal[0]=rowsColumn;
-		internal[1]=colsColumn;
+      Column[] internal=new Column[2];
+      internal[0]=rowsColumn;
+      internal[1]=colsColumn;
 
-		TableImpl table= (TableImpl)DefaultTableFactory.getInstance().createTable(internal);
-		Object[] tableRow=new Object[2];
-		for(int i=0; i<numBlanks; i++){
-			tableRow[0]=rowsObjArray[i];
-			tableRow[1]=colsObjArray[i];
-			table.setRow(tableRow, i);
-		}
-		return table;
-	}*/
+      TableImpl table= (TableImpl)DefaultTableFactory.getInstance().createTable(internal);
+      Object[] tableRow=new Object[2];
+      for(int i=0; i<numBlanks; i++){
+         tableRow[0]=rowsObjArray[i];
+         tableRow[1]=colsObjArray[i];
+         table.setRow(tableRow, i);
+      }
+      return table;
+   }*/
 
-	/*
-		keeps track of which fields that were read were actually
-		blank
-	*/
+   /*
+      keeps track of which fields that were read were actually
+      blank
+   */
 /*	protected void addBlank(int r, int c){
-		//_blankRows.add(new Integer(r));
-		//_blankColumns.add(new Integer(c));
+      //_blankRows.add(new Integer(r));
+      //_blankColumns.add(new Integer(c));
         blanks[r][c] = true;
-	}
+   }
 
-	/**
-		returns a Table that has 2 columns, corresponding
-		to the row and column indices of the fields
-		that were blank in the file that was read in
-	/
-	public int[][] getBlanks(){
-		int numBlanks = _blankRows.size();
+   /**
+      returns a Table that has 2 columns, corresponding
+      to the row and column indices of the fields
+      that were blank in the file that was read in
+   /
+   public int[][] getBlanks(){
+      int numBlanks = _blankRows.size();
 
         int[][] blanks = new int[2][numBlanks];
         for(int i = 0; i < numBlanks; i++) {
@@ -986,7 +993,7 @@ public class DelimitedFileParser implements FlatFileParser {
             blanks[1][i] = ((Integer)_blankRows.get(i)).intValue();
         }
         return blanks;
-	}*/
+   }*/
 
 /*   public boolean[][] getBlanks() {
        return blanks;

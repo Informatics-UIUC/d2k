@@ -38,33 +38,33 @@ public class FixedFileParser implements FlatFileParser {
             throw new Exception("Could not read header.");
 
         for ( int i =0; i < header.getNumColumns() ; i++) {
-		    if (header.getColumnLabel(i).equalsIgnoreCase(LABEL))
-		        //setColumnLabels(header,i);
+          if (header.getColumnLabel(i).equalsIgnoreCase(LABEL))
+              //setColumnLabels(header,i);
                 lbl = i;
-		    if (header.getColumnLabel(i).equalsIgnoreCase(TYPE))
-		        //setColumnTypes(header,i);
+          if (header.getColumnLabel(i).equalsIgnoreCase(TYPE))
+              //setColumnTypes(header,i);
                 typ = i;
-		    if (header.getColumnLabel(i).equalsIgnoreCase(START))
-		        //setColumnBeginings(header,i);
+          if (header.getColumnLabel(i).equalsIgnoreCase(START))
+              //setColumnBeginings(header,i);
                 strt = i;
-		    if (header.getColumnLabel(i).equalsIgnoreCase(STOP))
-		        //setColumnEnds(header,i);
+          if (header.getColumnLabel(i).equalsIgnoreCase(STOP))
+              //setColumnEnds(header,i);
                 stp = i;
-		    if (header.getColumnLabel(i).equalsIgnoreCase(LENGTH))
-		        //setColumnBounds(header,i);
+          if (header.getColumnLabel(i).equalsIgnoreCase(LENGTH))
+              //setColumnBounds(header,i);
                 len = i;
-	    }
+       }
 
         if(lbl != -1) setColumnLabels(header, lbl);
         if(typ != -1) setColumnTypes(header, typ);
         if(strt == -1)
             throw new Exception("Could not determine column start.");
         else
-			      setColumnBeginings(header, strt);
+               setColumnBeginings(header, strt);
         if(len == -1 && stp != -1)
-	  	      setColumnEnds(header, stp);
+            setColumnEnds(header, stp);
         else if(len != -1)
-						setColumnBounds(header, len);
+                  setColumnBounds(header, len);
         else
            throw new Exception("Could not determine column sizes.");
 
@@ -73,7 +73,7 @@ public class FixedFileParser implements FlatFileParser {
         _reader = new LineNumberReader(new FileReader(file));
 
         _file = file;
-				int lineLength = _columnEnd[_noOfColumns-1];
+            int lineLength = _columnEnd[_noOfColumns-1];
 
         // count the number of lines in the file
         BufferedReader rdr = new BufferedReader(new FileReader(file));
@@ -84,21 +84,21 @@ public class FixedFileParser implements FlatFileParser {
         }
 
 
-				//QA added - check column bounds
-	  	  int lenHdr = header.getNumRows();
+            //QA added - check column bounds
+        int lenHdr = header.getNumRows();
         for (int i =0 ; i < lenHdr; i ++) {
-				if (_columnBegin[i] < 1)
-					 throw new Exception ("Column start " + _columnBegin[i] + " must  be greater than zero." +
-							" Please correct format ");
-		     if(_columnBegin[i] > _columnEnd[i])
-				   throw new Exception ("Column start " + _columnBegin[i] + " must be less  or equal to " +
-						  "column end " + _columnEnd[i] + ". Please correct format");
-				if (_columnBegin[i] > lineLength)
-				  throw new Exception ("Column start " + _columnBegin[i] + " must be less or equal to " +
-					 "line length " + lineLength + ". Please correct format");
-				if (_columnEnd[i] > lineLength)
-				  throw new Exception ("Column end " + _columnEnd[i] + " must be less or equal " +
-					 "line length " + lineLength + ". Please correct format");
+            if (_columnBegin[i] < 1)
+                throw new Exception ("Column start " + _columnBegin[i] + " must  be greater than zero." +
+                     " Please correct format ");
+           if(_columnBegin[i] > _columnEnd[i])
+               throw new Exception ("Column start " + _columnBegin[i] + " must be less  or equal to " +
+                    "column end " + _columnEnd[i] + ". Please correct format");
+            if (_columnBegin[i] > lineLength)
+              throw new Exception ("Column start " + _columnBegin[i] + " must be less or equal to " +
+                "line length " + lineLength + ". Please correct format");
+            if (_columnEnd[i] > lineLength)
+              throw new Exception ("Column end " + _columnEnd[i] + " must be less or equal " +
+                "line length " + lineLength + ". Please correct format");
 
        }
 
@@ -106,7 +106,7 @@ public class FixedFileParser implements FlatFileParser {
 
 
         if (debug ) {
-				System.out.println("LL: "+lineLength);
+            System.out.println("LL: "+lineLength);
         System.out.println("NR: "+_tableLength);
         System.out.println("NC: "+this._noOfColumns);
         for(int i = 0; i < this._columnBegin.length; i++) {
@@ -126,17 +126,17 @@ public class FixedFileParser implements FlatFileParser {
     }
 
     private void setColumnLabels(Table vt, int col) {
-	    int nr=vt.getNumRows();
+       int nr=vt.getNumRows();
        _columnLabels = new String[nr];
-	    for ( int i = 0 ; i <  nr ; i++)
-	        _columnLabels[i] = vt.getString(i,col);
-			    _noOfColumns = nr;
+       for ( int i = 0 ; i <  nr ; i++)
+           _columnLabels[i] = vt.getString(i,col);
+             _noOfColumns = nr;
     }
 
     private void setColumnTypes(Table vt, int col) {
       int nr = vt.getNumRows();
        _columnType = new int[nr];
-	    for ( int i = 0 ; i < nr ; i++) {
+       for ( int i = 0 ; i < nr ; i++) {
             String type = vt.getString(i, col);
             if(type.equalsIgnoreCase(STRING_TYPE) )
                 _columnType[i] = ColumnTypes.STRING;
@@ -163,35 +163,35 @@ public class FixedFileParser implements FlatFileParser {
             else
                 _columnType[i] = ColumnTypes.STRING;
 
-	    }
+       }
     }
 
     private void setColumnBeginings(Table vt, int col) {
-	      int nr = vt.getNumRows();
-		    _columnBegin = new int[nr];
-		    for ( int i = 0 ; i < nr ; i++)
-		        _columnBegin[i] = vt.getInt(i,col);
+         int nr = vt.getNumRows();
+          _columnBegin = new int[nr];
+          for ( int i = 0 ; i < nr ; i++)
+              _columnBegin[i] = vt.getInt(i,col);
 
     }
 
     private void setColumnEnds(Table vt, int col) {
-		    int nr=vt.getNumRows();
-		    _columnEnd = new int[nr];
-		    for ( int i = 0 ; i <  nr; i++)
-		        _columnEnd[i] = vt.getInt(i,col);
+          int nr=vt.getNumRows();
+          _columnEnd = new int[nr];
+          for ( int i = 0 ; i <  nr; i++)
+              _columnEnd[i] = vt.getInt(i,col);
     }
 
     private void setColumnBounds(Table vt, int col) {
-	    int nr=vt.getNumRows();
-	    int start = 0;
-	    int end;
+       int nr=vt.getNumRows();
+       int start = 0;
+       int end;
       _columnEnd = new int[vt.getNumRows()];
-	    for ( int i = 0 ; i <  nr ; i++) {
-	        start = _columnBegin[i];
-	        end=start+vt.getInt(i,col)-1;
-	        start = end+1;       //QA comment - this statement has no effect on _columnBegin
-	        _columnEnd[i] = end;
-	    }
+       for ( int i = 0 ; i <  nr ; i++) {
+           start = _columnBegin[i];
+           end=start+vt.getInt(i,col)-1;
+           start = end+1;       //QA comment - this statement has no effect on _columnBegin
+           _columnEnd[i] = end;
+       }
     }
 
 
@@ -229,9 +229,16 @@ public class FixedFileParser implements FlatFileParser {
     }
 
     public String getColumnLabel(int i) {
-        if(_columnLabels == null)
-            return null;
-        return _columnLabels[i];
+        // change:
+        // if(_columnLabels == null)
+        //     return null;
+        // return _columnLabels[i];
+        if (_columnLabels == null)
+           return "column_" + i;
+         if (_columnLabels[i] == null)
+            return "column_" + i;
+         else
+            return _columnLabels[i];
     }
 
     /*public int getDataType(int i) {
@@ -242,87 +249,87 @@ public class FixedFileParser implements FlatFileParser {
         return -1;
     }*/
 
-		boolean debug = false;
+      boolean debug = false;
 
     //private char[][] parseLine(int row) throws Exception {
     private ParsedLine parseLine(int row) throws Exception {
 
         ParsedLine pl = new ParsedLine();
 
-	  	if(debug) System.out.println("noOfColumns:"+_noOfColumns);
+      if(debug) System.out.println("noOfColumns:"+_noOfColumns);
         //ArrayList retVal = new ArrayList();
       char[][] retVal = new char[_noOfColumns][];
       boolean[] bl = new boolean[_noOfColumns];
 
-			//these will be used for eliminating trailing and
-		  //leading whitespace
-		  int trueBegin;
-		  int trueEnd;
+         //these will be used for eliminating trailing and
+        //leading whitespace
+        int trueBegin;
+        int trueEnd;
 
-			//this is the current
-		  //read each line, put the data in the columns
-		  //for(int r=0; r<_tableLength; r++){
+         //this is the current
+        //read each line, put the data in the columns
+        //for(int r=0; r<_tableLength; r++){
 
       // MUST SKIP TO THE APPROPRIATE LINE HERE
       skipToLine(row);
 
         //lineChars = _reader.readLine().toCharArray();
 
-				//_reader.read(lineChars, 0, lineLength);
-				//_reader.skip(1);//the line delimiter
+            //_reader.read(lineChars, 0, lineLength);
+            //_reader.skip(1);//the line delimiter
         //_reader.setLineNumber(_reader.getLineNumber()+1);
 
       String ln = _reader.readLine();
       char[] lineChars = ln.toCharArray();
-			int lineLength = ln.length();
+         int lineLength = ln.length();
 
       if(debug) System.out.println("parse line: "+row+" "+ ln + " lenght : " + ln.length());
 
-		  for(int col=0; col<_noOfColumns; col++){
-		    //getting rid of whitespace
-			  trueBegin = _columnBegin[col]-1;
-			  trueEnd   = _columnEnd[col]-1;
-			  //trueBegin= _columnBegin[col];
-				//trueEnd= _columnEnd[col];
+        for(int col=0; col<_noOfColumns; col++){
+          //getting rid of whitespace
+           trueBegin = _columnBegin[col]-1;
+           trueEnd   = _columnEnd[col]-1;
+           //trueBegin= _columnBegin[col];
+            //trueEnd= _columnEnd[col];
 
-			while(((lineChars[trueBegin]==' ')/*||(lineChars[trueBegin]=='0')*/)
-			    &&(trueBegin<trueEnd))
-								trueBegin++;
-			//System.out.println("b:"+trueBegin+" e:"+trueEnd);
-			//while((lineChars[trueEnd]==' ')&&(trueEnd>trueBegin))
-			 //  trueEnd--;
+         while(((lineChars[trueBegin]==' ')/*||(lineChars[trueBegin]=='0')*/)
+             &&(trueBegin<trueEnd))
+                        trueBegin++;
+         //System.out.println("b:"+trueBegin+" e:"+trueEnd);
+         //while((lineChars[trueEnd]==' ')&&(trueEnd>trueBegin))
+          //  trueEnd--;
 
-			if(debug) System.out.println("b:"+trueBegin+" e:"+trueEnd);
+         if(debug) System.out.println("b:"+trueBegin+" e:"+trueEnd);
 
-			//if(trueBegin!=trueEnd){
+         //if(trueBegin!=trueEnd){
             //if(true) {
-			    /*try{
-			        tableColumns[col].setString(
-						new String( lineChars,
-										trueBegin,
-										trueEnd-trueBegin+1),
-															r);
-					}catch(NumberFormatException e){
-						System.err.println("NumberFormatException at");
-						System.err.println("Row:"+r+" Col:"+col);
-						System.err.println("  "+new String(lineChars,
-										trueBegin,
-										trueEnd-trueBegin+1));
+             /*try{
+                 tableColumns[col].setString(
+                  new String( lineChars,
+                              trueBegin,
+                              trueEnd-trueBegin+1),
+                                             r);
+               }catch(NumberFormatException e){
+                  System.err.println("NumberFormatException at");
+                  System.err.println("Row:"+r+" Col:"+col);
+                  System.err.println("  "+new String(lineChars,
+                              trueBegin,
+                              trueEnd-trueBegin+1));
 
-					}
+               }
                     */
          char[] element = new String(lineChars, trueBegin, trueEnd-trueBegin+1).toCharArray();
        //char[] element = new String(lineChars, _columnBegin[col], _columnEnd[col]-_columnBegin[col]+1).toCharArray();
          if(debug) System.out.println(new String(element)+"!");
                 //retVal.add(element);
          retVal[col] = element;
-			//}
+         //}
       /*else {
 
           retVal[col] = new char[0];
-		      addBlank(row, col);
+            addBlank(row, col);
        } */
-		  }
+        }
         //return retVal;
         pl.blanks = bl;
         pl.elements = retVal;
@@ -344,30 +351,30 @@ public class FixedFileParser implements FlatFileParser {
         }
     }
 
-	/*
-		keeps track of which fields that were read were actually
-		blank
-	*/
+   /*
+      keeps track of which fields that were read were actually
+      blank
+   */
 /*	private void addBlank(int r, int c){
 /*		_blankRows.add(new Integer(r));
-		_blankColumns.add(new Integer(c));
+      _blankColumns.add(new Integer(c));
         _blankRows.add(r);
         _blankColumns.add(c);
         */
 /*        bTable[r][c] = true;
-	}
+   }
 
     public boolean[][] getBlanks() {
         return bTable;
     }
 
-	/**
-		returns a Table that has 2 columns, corresponding
-		to the row and column indices of the fields
-		that were blank in the file that was read in
-	/
-	public int[][] getBlanks(){
-		int numBlanks = _blankRows.size();
+   /**
+      returns a Table that has 2 columns, corresponding
+      to the row and column indices of the fields
+      that were blank in the file that was read in
+   /
+   public int[][] getBlanks(){
+      int numBlanks = _blankRows.size();
 
         int[] rws = _blankRows.toNativeArray();
         int[] cls = _blankColumns.toNativeArray();
@@ -378,7 +385,7 @@ public class FixedFileParser implements FlatFileParser {
             //blanks[1][i] = ((Integer)_blankRows.get(i)).intValue();
         }
         return blanks;
-	}*/
+   }*/
 
 
 }
