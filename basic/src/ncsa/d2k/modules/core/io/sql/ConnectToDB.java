@@ -10,13 +10,15 @@ import javax.swing.*;
 
 import ncsa.d2k.core.modules.*;
 
+
 import ncsa.d2k.userviews.swing.*;
 
 import ncsa.gui.*;
 
 
 
-public class ConnectToDB extends UIModule {
+
+public class ConnectToDB extends HeadlessUIModule {
 
 /**
 
@@ -24,6 +26,7 @@ public class ConnectToDB extends UIModule {
 
  */
     private String dbVendor;
+
     private String url;
 
     /** username */
@@ -482,16 +485,76 @@ public class ConnectToDB extends UIModule {
 
 
     /**
-
-       Provides a simple user interface to get username, password, host and port.
-
-       The text values used in the Labels and textfields are properties of the
-
-       module class.
-
-       If these properties are null, default values are used.
-
+       connects to the database, according to the settings of the properties.
        */
+        public void doit(){
+          if ( driver.equals("oracle.jdbc.driver.OracleDriver")) {
+
+                        setUrl("jdbc:oracle:thin:@"+getMachine()+":"+getPort()+":"+getDbInstance());
+
+                        OracleDBConnection oc = new OracleDBConnection(getUrl().trim(),
+
+                                getDriver().trim(),
+
+                                getUsername().trim(),
+
+                                getPassword().trim());
+
+                        if (oc.getConnection() != null) {
+                          pushOutput (oc, 0);
+                         // viewDone("Done");
+                        }
+
+                    }
+
+                    else if ( driver.equals("com.mysql.jdbc.Driver")) {
+
+                        setUrl("jdbc:mysql://" + getMachine()+ "/" + getDbInstance());
+
+                        MySQLDBConnection mc = new MySQLDBConnection(getUrl().trim(),
+
+                                getDriver().trim(),
+
+                                getUsername().trim(),
+
+                                getPassword().trim(),
+
+                                getDbInstance().trim());
+
+                        pushOutput (mc, 0);
+
+                    }
+
+                    else if(driver.equals("com.microsoft.jdbc.sqlserver.SQLServerDriver")) {
+
+                      setUrl("jdbc:microsoft:sqlserver://"+getMachine()+":"+getPort()+";"
+
+                               +"DatabaseName="+getDbInstance());
+
+                        SQLServerDBConnection sc = new SQLServerDBConnection(getUrl().trim(),
+
+                                getDriver().trim(),
+
+                                getUsername().trim(),
+
+                                getPassword().trim());
+
+                        if (sc.getConnection() != null) {
+                          pushOutput (sc, 0);
+                          //viewDone("Done");
+                        }
+                    }
+
+                    else {
+                      System.out.println("no match driver");
+                        //pushOutput(null, 0);
+                      //viewDone("Done");
+                    }
+
+                    //viewDone("Done");
+
+          }
+
 
     private class GetConnectionView extends JUserPane implements ActionListener {
 

@@ -7,9 +7,12 @@ package ncsa.d2k.modules.core.io.sql;
  * <p>Company: NCSA </p>
  * @author Dora Cai
  * @version 1.0
+ *
+ * @todo: make this module show its properties at info window.
  */
 
 import ncsa.d2k.core.modules.*;
+
 import ncsa.d2k.core.modules.UserView;
 
 import ncsa.d2k.userviews.swing.*;
@@ -26,8 +29,13 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class SaveFileToDB extends UIModule
+
+public class SaveFileToDB extends HeadlessUIModule
        implements java.io.Serializable {
+
+
+
+
     /* Input holder for ConnectionWrapper */
     protected ConnectionWrapper cw;
     /* Input holder for VerticalTable */
@@ -143,11 +151,7 @@ public class SaveFileToDB extends UIModule
         return null;
     }
 
-    //QA Anca added this:
-    public PropertyDescription[] getPropertiesDescriptions() {
-        // so that "WindowName" property is invisible
-        return new PropertyDescription[0];
-    }
+
 
 
 
@@ -569,12 +573,17 @@ public class SaveFileToDB extends UIModule
           int i = 0;
           for (i=0; i<newTableDef.getRowCount(); i++) {
             /* s1 is column name */
+
+            //sb.concat(tableToString());
+
             String s1 = newTableDef.getValueAt(i,0).toString();
             if (s1.length()>0) {
               if (i > 0) // add "," between columns definitions
                 sb = sb + ",";
               sb = sb + (String) newTableDef.getValueAt(i,0) + " ";
+
               /* s2 is column type */
+
               String s2 = newTableDef.getValueAt(i,1).toString();
               if (s2.length()>0) {
                 String len = newTableDef.getValueAt(i, 2).toString();
@@ -594,9 +603,14 @@ public class SaveFileToDB extends UIModule
                   sb = sb + "numeric";
                 else if (s2.equals("short"))
                   sb = sb + "numeric";
+
+
                 /* boolean datatype is saved as varchar */
                 else if (s2.equals("boolean"))
                   sb = sb + "varchar(" + "5)";
+
+
+
                 else {
                   JOptionPane.showMessageDialog(msgBoard,
                   "Invalid data type. Table cannot be created", "Error",
@@ -682,6 +696,9 @@ public class SaveFileToDB extends UIModule
            System.out.println("Error occurred in doInsertTable.");
       }
     }
+
+
+
 
     /** get the structure of a database table
     */
@@ -809,6 +826,383 @@ public class SaveFileToDB extends UIModule
       }
       return(true);
     }
+
+
+
+
+      //conversion to headless ui modules support: [vered]
+//attributes
+         private boolean createNewTable;
+         public boolean getCreateNewTable(){return createNewTable;}
+        public void setCreateNewTable(boolean val){createNewTable = val;}
+
+        private String tableName;
+        public String getTableName(){return tableName;}
+        public void setTableName(String str){tableName = str;}
+
+
+        public PropertyDescription [] getPropertiesDescriptions () {
+         PropertyDescription [] pds = new PropertyDescription [2];
+         pds[0] = new PropertyDescription ("createNewTable", "Create New Table", "true if file is to be saved to a new table. false if file is to be appended to an existing table");
+         pds[1] = new PropertyDescription ("tableName", "Table Name", "The table name to which the file is to be saved.");
+         return pds;
+       }
+
+//attributes
+
+       private String[] ColumnMaxLength; //for each column i in the input table, ColumnMaxLength[i] will hold its max length
+
+       /**
+        * Returns the maximum length of column no. <code>col</code> converted to a String.
+        * @param col - the column no. to figure it's maximum length
+        * @return - maximum length of column #<ocde>col</code> as a String.
+        */
+
+       protected String getMaxLength(int col){
+         int maxLength = 0;
+         for (int i=0; i<vt.getNumRows(); i++) {
+             int l = vt.getString(i,col).length();
+             if (l > maxLength)
+                 maxLength = l;
+         }
+         return (Integer.toString(maxLength));
+
+       }
+
+           //conversion to headless - Vered - 9-9-03
+
+           protected void doit() throws Exception{
+         cw = (ConnectionWrapper)pullInput(0);
+         vt = (Table)pullInput(1);
+
+         //validation tests...
+
+         // check the first row in the data table. If the first row contains
+         // the strings of data type, the user has not set the property "typeRow"
+         // correctly in data loading.
+
+         //@todo: handle all data types.
+         for (int idx = 0; idx < vt.getNumColumns(); idx++)
+           if (vt.getString(0,idx).equals("double") ||
+               vt.getString(0,idx).equals("string"))
+             throw new Exception ("The data table has problems. You did not set the property 'typeRow' " +
+               "correctly for reading data.");
+
+         //checking the the table is not larger than allowed.
+         //@todo: double check this constant 100000
+         if (vt.getNumRows() >= maxDataRow)
+             throw new Exception ("There are more than " + maxDataRow + " rows to load. For more " +
+                "efficient data loading, please use " +
+                "the utility the database vendor provides.");
+        //end validation tests.
+
+        //allocating and populating ColumnMaxLength.
+        ColumnMaxLength = new String[vt.getNumColumns()];
+        for (int i=0; i<ColumnMaxLength.length; i++)
+          ColumnMaxLength[i] = getMaxLength(i);
+
+          //if this module is to create a new table
+         if(createNewTable){
+           //creating the table in the data base
+           if (doCreateTableHeadLess())
+             //if creation succeeded inserting the data.
+             doInsertTableHeadless();
+         }
+
+         //if this module is to append the table to an existing one
+        else{
+           int numDBColumns =  getDBTableDefHeadless();
+           //validting that the number of columns is equal.
+           if (numDBColumns == vt.getNumColumns()) {
+             //validating matching between types and lengths of columns.
+             boolean pass = doValidateHeadless(dbTableDef);
+             if (pass)
+               //inserting data (appending)
+               doInsertTableHeadless();
+           }
+           else{
+             System.out.println("\n\nSaveFileToDB:\nThe number of columns does not match. Data cannot be appended.\n");
+           }
+        }//else
+
+       }//doit
+
+
+       /** verify the data type and length of the vertical table suitable to
+             insert into database
+             @param dbTable The JTable keeping the structure of the database table
+             @return The validation result (pass or fail)
+         */
+         protected boolean doValidateHeadless(JTable dbTable) throws Exception{
+           int dbRowCnt;
+         //  int vtRowCnt;
+           for (dbRowCnt=0; dbRowCnt<dbTable.getRowCount(); dbRowCnt++) {
+             if (dbTable.getValueAt(dbRowCnt,0).equals(NOTHING))
+               break;
+           };
+
+
+
+
+//for each column, comparing types and length.
+           for (int i = 0; i < vt.getNumColumns(); i++) {
+
+             //iType is the type of column i in the vertical table.
+             int iType = vt.getColumnType(i);
+             //type1.toString().toLowerCase().indexOf("varchar")>=0)
+
+             //sType is the type of column i in the db table.
+             String sType = dbTable.getValueAt(i,1).toString().toLowerCase();
+
+             switch(iType){
+               case ColumnTypes.BYTE_ARRAY:
+               case ColumnTypes.CHAR_ARRAY:
+               case ColumnTypes.STRING:
+               case ColumnTypes.BOOLEAN:
+                 //added support for all types of column. double check this (vered)
+               case ColumnTypes.BYTE:
+               case ColumnTypes.CHAR:
+               case ColumnTypes.OBJECT:
+                  if( !( sType.indexOf("varchar") >= 0)){
+
+
+                    System.out.println("\nSaveFilreToDB:\nThe data type of column " + (i+1) +
+                     " does not match. Data cannot be " + "appended.\n");
+
+                    return false;
+                  }
+                  break;
+                case ColumnTypes.DOUBLE:
+                case ColumnTypes.INTEGER:
+                 case ColumnTypes.FLOAT:
+                 case ColumnTypes.SHORT:
+                case ColumnTypes.LONG: if( !( sType.indexOf("numeric") >= 0) && !( sType.indexOf("number") >= 0)) {
+
+
+                    System.out.println("\nSaveFilreToDB:\nThe data type of column " + (i+1) +
+                     " does not match. Data cannot be " + "appended.\n");
+                     return false;
+                  }
+                  break;
+
+              //    default: return false; no support for defualt since all types of columns are supported.
+             }
+
+             //compare length of columns.
+             if(!(ColumnMaxLength[i].equals("0"))) {
+               if (Integer.valueOf(dbTable.getValueAt(i, 2).toString()).intValue() <
+                   Integer.valueOf(ColumnMaxLength[i]).intValue()){
+                 System.out.println("\nSaveFilreToDB:\nThe length of column " + (i+1) +
+                     " does not match. Data cannot be " + "appended.\n");
+                 return false;
+               }//inner if - comparing length
+             }//outer if, checking if to compare at all.
+
+
+           }//for
+           return (true);
+         }//doValidateHeadless
+
+
+
+       /** create a database table based on user's settings (createNewtable is true
+        * and the name. creates only the table
+        * without any data in it.
+         *  @return true if the table is created successfully, otherwise false
+         */
+        protected boolean doCreateTableHeadLess () {
+          try {
+              System.out.println("TableName is: " + getTableName());
+
+              if (tableName == null || tableName.length() == 0 )
+                   {
+                System.out.println("\n\nSavefileToDB:\n" +
+                "Table name is missing. Table cannot be created\n\n");
+                return (false);
+              }
+
+              String sb = new String("create table " + tableName +
+                          " (");
+              int i = 0;
+              for (i=0; i<vt.getNumColumns(); i++) {
+
+
+                if (ColumnMaxLength[i] == null || ColumnMaxLength[i].equals("0")){
+                  System.out.println("\n\nSavefileToDB:\n" +
+                        "Column length is not provided for column no. " + i+1 + ". Table cannot be created.");
+                  return false;
+                }
+
+
+                /* s1 is column name */
+                String s1 = vt.getColumnLabel(i);
+                if (s1.length()>0) {
+                  if (i > 0) // add "," between columns definitions
+                    sb = sb + ",";
+                  sb = sb + vt.getColumnLabel(i) + " ";
+
+
+                /* type is the column type*/
+                int type = vt.getColumnType(i);
+
+
+
+                switch(type){
+                  case ColumnTypes.STRING:
+                  case ColumnTypes.BYTE_ARRAY:
+                  //added support for all types of column. double check this.
+                  case ColumnTypes.BYTE:
+                  case ColumnTypes.CHAR:
+                  case ColumnTypes.OBJECT:
+
+                  case ColumnTypes.CHAR_ARRAY: sb = sb + "varchar(" + ColumnMaxLength[i]+")";
+                    break;
+                  case ColumnTypes.INTEGER:
+                  case ColumnTypes.FLOAT:
+                  case ColumnTypes.DOUBLE:
+                  case ColumnTypes.LONG:
+                  case ColumnTypes.SHORT: sb = sb + "numeric";
+                    break;
+                  case ColumnTypes.BOOLEAN: sb = sb + "varchar(" + "5)";
+                    break;
+                    default:   System.out.println("\n\nSavefileToDB:\n" +
+                        "Invalid data type. Table cannot be created");
+                        return (false);
+                }//switch
+
+                } /* end of if (s1.length() > 0) */
+                else
+                  break;
+              } /* end for */
+
+              sb = sb + ")";
+              Connection con = cw.getConnection ();
+              Statement stmt = con.createStatement ();
+              stmt.executeUpdate(sb);
+              //ResultSet result = stmt.executeQuery(sb);
+              stmt.close();
+              System.out.println("Table " + tableName + " has been created");
+           }
+           catch (Exception e){
+             e.printStackTrace();
+              System.out.println("\n\nSavefileToDB:\n" +
+                                 "Error occurred in doCreateTableHeadLess.");
+               return (false);
+          }
+          return (true);
+        }//doCreateTableHeadLess
+
+
+
+        /** insert data from a vertical table into a database table
+           */
+           protected void doInsertTableHeadless ( ) throws Exception {
+             int rowIdx = 0;
+             int colIdx = 0;
+             /* insert data */
+             try {
+               Connection con = cw.getConnection ();
+               Statement stmt;
+               for(rowIdx = 0; rowIdx < vt.getNumRows(); rowIdx++) {
+                 String sb = new String("insert into " + tableName +
+                               " values (");
+                 for(colIdx = 0; colIdx < vt.getNumColumns(); colIdx++) {
+                   /* find the data type */
+                  // String colType = vTableDef.getValueAt(colIdx,1).toString();
+                  int type = vt.getColumnType(colIdx);
+                   String s = vt.getString(rowIdx, colIdx);
+
+
+
+                   if (colIdx > 0) /* add "," between columns */
+                     sb = sb + ",";
+                   if (type==ColumnTypes.STRING || type==ColumnTypes.BYTE_ARRAY ||
+                       type==ColumnTypes.CHAR_ARRAY  || type==ColumnTypes.BOOLEAN ) {
+                     sb = sb + "'" + s + "'";
+                   }
+                   else {
+                     sb = sb + s;
+                   }
+                 } /* end of for colIdx */
+                 sb = sb + ")";
+                 stmt = con.createStatement ();
+                 stmt.executeUpdate(sb);
+                 stmt.close();
+               } /* end of for rowIdx */
+
+               System.out.println("\n\nSaveFileToDB:\nData has been loaded.\n\n");
+             /*  JOptionPane.showMessageDialog(msgBoard,
+                     "Data has been loaded.", "Information",
+                     JOptionPane.INFORMATION_MESSAGE);
+               newTableName.setText(NOTHING);
+               chosenTableName.setText(NOTHING);
+               newModel.initTableModel(maxNumRow,3);
+               dbModel.initTableModel(maxNumRow,3);
+               vtModel.initTableModel(maxNumRow,3);
+               viewAbort();*/
+             }
+             catch (Exception e){
+               e.printStackTrace();
+               throw new Exception("SaveFileToDB:\nError occurred in doInsertTableHeadless.");
+
+             }
+           }//doInsertTableHeadless
+
+
+
+
+
+   /** get the structure of a database table.
+    * @return the actual number of rows in <code>dbTableDef</code>. which is
+    * the number of columns in the table in the data base.
+     */
+     protected int getDBTableDefHeadless() throws Exception {
+
+         Connection con = cw.getConnection ();
+         DatabaseMetaData metadata = con.getMetaData();
+
+
+         dbModel = new MetaTableModel(maxNumRow,3,false);
+         dbTableDef = new JTable(dbModel);
+
+         String[] names = {"TABLE"};
+         ResultSet tableNames = metadata.getTables(null,"%",tableName.toUpperCase(),names);
+          int rIdx = 0;
+
+
+
+         while (tableNames.next()) {
+           ResultSet columns = metadata.getColumns(null,"%",tableNames.getString("TABLE_NAME"),"%");
+
+           while (columns.next()) {
+
+             String columnName = columns.getString("COLUMN_NAME");
+             String dataType = columns.getString("TYPE_NAME");
+             int columnSize = columns.getInt("COLUMN_SIZE");
+             dbTableDef.setValueAt(columnName,rIdx,0);
+             dbTableDef.setValueAt(dataType,rIdx,1);
+             dbTableDef.setValueAt(Integer.toString(columnSize),rIdx,2);
+             rIdx++;
+           }//while columns
+
+           /* if rIdx == 0, that indicate the tableSet is empty, the db table does not exist */
+           if (rIdx == 0) {
+             System.out.println("\n\nSaveFileToDBTable:\nTable " + tableName + " does not exist.");
+           }//if rIdx
+         }//while tableNames
+
+        return rIdx;
+
+     }//getDBTableDefHeadless
+
+
+
+
+//conversion headless
+
+
+
+
 }
 
 // QA Comments Anca 03/12/03
