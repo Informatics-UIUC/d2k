@@ -74,7 +74,7 @@ final public class ObjectColumn extends MissingValuesColumn {
 		internal = vals;
 		setIsNominal(true);
 		type = ColumnTypes.OBJECT;
-		this.setMissingValues(missing);
+		this.setMissingValues(miss);
 		empty = emp;
 		setLabel(lbl);
 		setComment(comm);
