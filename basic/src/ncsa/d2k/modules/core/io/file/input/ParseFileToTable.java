@@ -83,7 +83,7 @@ public class ParseFileToTable extends InputModule {
         pushOutput(t, 0);
     }
 
-    protected Table createTable(FlatFileParser df) {
+    public Table createTable(FlatFileParser df) {
         int numRows = df.getNumRows();
         int numColumns = df.getNumColumns();
 
