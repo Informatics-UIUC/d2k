@@ -19,7 +19,7 @@ import java.beans.PropertyVetoException;
 */
 public class SimpleTrainTest extends DataPrepModule  {
 
-	boolean debug = false;
+	boolean debug = true;
 	/**
 	   Return a description of the function of this module.
 	   @return A description of this module.
@@ -183,7 +183,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 		// This is the number that will be test
 		int nr = orig.getNumRows();
 		int numTest = (nr*this.getTestPercent())/100;
-		int numTrain = (nr*this.getTestPercent())/100;
+		int numTrain = (nr*this.getTrainPercent())/100;
 		int [] test = new int [numTest];
 		int [] train = new int [numTrain];
 
