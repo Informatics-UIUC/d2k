@@ -845,3 +845,9 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 //        - committed to Basic.
 //	  - WISH:  At some point may want implementation that's efficient for Tables that aren't
 //          column-oriented.
+
+
+//QA comments
+// 10/23/03 - vered started qa process.
+//            the module throws an exception  when trying to load an itinerary
+//            with it.

@@ -73,8 +73,12 @@ public class RemoveDuplicateRows extends DataPrepModule {
                 setOfUniqueRows.add(rs);
         }
         int[] toRem = rowsToRemove.toNativeArray();
-        for (int i =0; i < toRem.length; i++)
-        mt.removeRow(toRem[i]);
+        for (int i =0; i < toRem.length; i++){
+          //vered - debug
+          System.out.println("removing row no. " + i);
+          //end debug
+          mt.removeRow(toRem[i]);
+        }
         pushOutput(mt, 0);
     }
 
@@ -140,3 +144,12 @@ public class RemoveDuplicateRows extends DataPrepModule {
 		}
 	}
 }
+
+      /**
+      * QA Comments:
+      * 10-23-03: vered started qa process.
+      *           the module does not handle missing values well.
+      *           array index out of bound exception is throws by removeRow of
+      *           Column. meaning - method removeRow in Table should be fixed
+      *           (no check-up for missing value is done before removal)
+ */

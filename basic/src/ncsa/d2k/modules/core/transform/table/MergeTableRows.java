@@ -851,3 +851,10 @@ public class MergeTableRows extends HeadlessUIModule {
 //           WISH:  Allow "All" option where all stats are computed and
 //           new columns are added.  (see loretta for details)
 // END QA Comments
+
+
+//QA Comments
+//10/23/03 - vered started QA process.
+//           handling of missing values - when the merged table is viewed by a
+//           table viewer, missing values represented by zero. in a addition to
+//           that - the new table does not "know" the value is missing...

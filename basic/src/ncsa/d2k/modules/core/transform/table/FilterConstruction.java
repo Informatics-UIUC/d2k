@@ -638,4 +638,15 @@ try {
   * QA comments:
   * 3-4-03 vered started qa:
   * 3-6-03 sent back to greg to support default labels.
+  *
+  * 10-23-03 vered started qa process
+  *
+  * does not handle missing values well. if according to the transformation row no.
+  * i should be ommited, and row no. i has a missing value in attribute a, then
+  * the table after the transformation will also have a missing value in row
+  * no. i under attribute a (even if the row that replaced it has only valid
+  * values).
+  * solution - either removeRow of Table is modified such that it updates
+  * the missing values array, or that the applyTransformation method of
+  * FilterTransformation should take care of that.
   */
