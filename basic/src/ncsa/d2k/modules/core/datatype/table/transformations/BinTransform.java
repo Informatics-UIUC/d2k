@@ -49,7 +49,7 @@ public class BinTransform implements Transformation, Cloneable {
 			Integer idx = (Integer) colIndexLookup.get(bins[i].label);
 			if (idx != null) {
 				binRelevant[idx.intValue()] = true;
-				// System.out.println("relevant column " + idx.intValue());
+				  //System.out.println("relevant column " + idx.intValue());
 			}
 			//else
 			//   System.out.println("COLUMN LABEL NOT FOUND!!!");
@@ -64,14 +64,13 @@ public class BinTransform implements Transformation, Cloneable {
 					boolean binfound = false;
 					for (int k = 0; k < bins.length; k++) {
 						//if (bins[k].column_number == i) {
-						if (((Integer) colIndexLookup.get(bins[k].label))
-							.intValue()
-							== i) {
+						if (((Integer) colIndexLookup.get(bins[k].label)).intValue() == i) {
 							// this has the correct column index
 							if (mt.isColumnNumeric(i)) {
 								if (mt.isValueMissing(j, i))
 									binfound = false;
 								else if (bins[k].eval(mt.getDouble(j, i))) {
+									// System.out.println("evaled " + mt.getString(j,i) + " into bin " + bins[k].name);
 									newcols[i][j] = bins[k].name;
 									binfound = true;
 								}
