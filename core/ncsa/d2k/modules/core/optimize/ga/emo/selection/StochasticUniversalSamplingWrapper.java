@@ -2,8 +2,10 @@ package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
-class StochasticUniversalSamplingWrapper extends Selection {
+class StochasticUniversalSamplingWrapper extends Selection
+  implements BinaryIndividualProcess, RealIndividualProcess {
 
   private StochasticUniversalSampling sus;
 
@@ -15,4 +17,7 @@ class StochasticUniversalSamplingWrapper extends Selection {
     sus.performSelection(p);
   }
 
+  public String getName() {
+    return "Stochastic Universal Sampling";
+  }
 }

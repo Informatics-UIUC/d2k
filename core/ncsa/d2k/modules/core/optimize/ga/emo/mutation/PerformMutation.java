@@ -1,10 +1,10 @@
-package ncsa.d2k.modules.core.optimize.ga.emo.selection;
+package ncsa.d2k.modules.core.optimize.ga.emo.mutation;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
 
-public class EMOSelection extends ComputeModule {
+public class PerformMutation extends ComputeModule {
 
   public String[] getInputTypes() {
     String[] in = {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulation"};
@@ -34,21 +34,21 @@ public class EMOSelection extends ComputeModule {
 
   public void endExecution() {
     population = null;
-    selectionModule = null;
+    mutateModule = null;
   }
 
   private EMOPopulation population;
-  private Selection selectionModule;
+  private Mutation mutateModule;
 
   public void doit() throws Exception {
     EMOPopulation pop = (EMOPopulation)pullInput(0);
 
     if(population != pop) {
       EMOParams info = pop.getParameters();
-      selectionModule = info.selection;
+      mutateModule = info.mutation;
     }
 
-    selectionModule.performSelection((Population)pop);
+    mutateModule.mutatePopulation((Population)pop);
     pushOutput(pop, 0);
   }
 }

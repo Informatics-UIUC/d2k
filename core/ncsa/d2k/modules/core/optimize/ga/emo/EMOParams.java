@@ -1,8 +1,5 @@
 package ncsa.d2k.modules.core.optimize.ga.emo;
 
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
-
 import ncsa.d2k.modules.core.optimize.ga.emo.crossover.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.mutation.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.selection.*;
@@ -15,65 +12,49 @@ import ncsa.d2k.modules.core.optimize.ga.emo.selection.*;
 public class EMOParams implements java.io.Serializable {
 
   /**
-   * Contains the bounds and precision for the decision variables.
+   * A structure describing the number and types of the decision variables.
    */
   public DecisionVariables decisionVariables;
 
+  /**
+   * A structure describing the number and types of fitness functions.
+   */
   public FitnessFunctions fitnessFunctions;
 
+  /**
+   * A structure describing the number and types of constraint violation functions.
+   */
   public Constraints constraints;
 
+  /**
+   * The crossover function to use.
+   */
   public Crossover crossover;
+
+  /**
+   * The mutation function to use.
+   */
   public Mutation mutation;
 
+  /**
+   * The selection function to use.
+   */
   public Selection selection;
 
   /**
-   * The mutation rate.
+   * true if binary individuals should be created, false otherwise.
    */
-  public double mutationRate = 0.1;
-
-  /**
-   * The crossover rate.
-   */
-  public double crossoverRate = 0.25;
-
-  /**
-   * The generation gap.
-   */
-  public double generationGap = 0.6;
-
-  /**
-   * n ?
-   */
-  public double nSimulatedBinaryCrossover;
-  public double nRealMutation;
-
   public boolean createBinaryIndividuals;
 
   /**
-   * The tournament size.
+   * The population size to use.
    */
-  public int tournamentSize = 4;
-
-  /**
-   * The selectioni pressure.
-   */
-  public double selection_pressure;
-
-  /**
-   * The inital population size.
-   */
-  public int populationSize = 100;
+  public int populationSize;
 
   /**
    * The maximum number of generations.
    */
   public int maxGenerations;
-
-  public int selectionType = 2;
-  public int crossoverType = 1;
-  public int mutationType = 0;
 
   public EMOParams() {
     decisionVariables = new DecisionVariables();

@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
 import java.text.*;
+import java.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -8,6 +9,7 @@ import java.awt.geom.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
+import javax.swing.event.*;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
@@ -24,13 +26,13 @@ public class Params
 
   public String[] getInputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
   }
 
   public String[] getOutputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams",
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams",
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
   }
 
   public String getInputInfo(int i) {
@@ -102,7 +104,7 @@ public class Params
       extends JUserPane {
 
     /** the parameters for EMO */
-    EMOPopulationParams params;
+    EMOParams params;
     /** the table model, holds several parameters */
     ParamsTableModel paramsModel;
     /** the estimated time that the evaluation will take */
@@ -124,14 +126,9 @@ public class Params
     /** the label in the TimePanel that shows the difference in times */
     JLabel difference;
 
-    /** the type of mutation to use */
-    int mutationType;
-    /** the type of individual to use 0 = binary, 1 = real */
-    int individualType;
-    /** the type of selection to use */
-    int selectionType;
-    /** the type of crossover to use */
-    int crossoverType;
+    private Mutation mutationType;
+    private Crossover crossoverType;
+    private Selection selectionType;
 
     /**
      * Add components to this gui.
@@ -200,7 +197,8 @@ public class Params
       catch (Exception ex) {
         popSize = Double.parseDouble(rec);
       }
-      params.tournamentSize = (int) popSize;
+//      params.tournamentSize = (int) popSize;
+      selectionType.setTournamentSize((int)popSize);
 
       override = (String) paramsModel.getValueAt(3, 2);
       rec = (String) paramsModel.getValueAt(3, 1);
@@ -210,7 +208,8 @@ public class Params
       catch (Exception ex) {
         popSize = Double.parseDouble(rec);
       }
-      params.crossoverRate = popSize;
+//      params.crossoverRate = popSize;
+      crossoverType.setCrossoverRate(popSize);
 
       override = (String) paramsModel.getValueAt(4, 2);
       rec = (String) paramsModel.getValueAt(4, 1);
@@ -220,7 +219,8 @@ public class Params
       catch (Exception ex) {
         popSize = Double.parseDouble(rec);
       }
-      params.mutationRate = popSize;
+//      params.mutationRate = popSize;
+      mutationType.setMutationRate(popSize);
 
       override = (String) paramsModel.getValueAt(5, 2);
       rec = (String) paramsModel.getValueAt(5, 1);
@@ -230,7 +230,8 @@ public class Params
       catch (Exception ex) {
         popSize = Double.parseDouble(rec);
       }
-      params.generationGap = popSize;
+//      params.generationGap = popSize;
+      crossoverType.setGenerationGap(popSize);
 
       int numSol;
       try {
@@ -255,15 +256,9 @@ public class Params
       cp.maxRunTime = maxRunTime.getText();
       cp.estimatedTimeReq = estimatedTime.getText();
       cp.diff = difference.getText();
-      cp.numVars = params.boundsAndPrecision.getNumRows();
-      int stringLength = 0;
-      for (int i = 0; i < params.boundsAndPrecision.getNumRows(); i++) {
-        stringLength += params.boundsAndPrecision.getInt(i,
-            params.boundsAndPrecision.getNumColumns() - 1);
-      }
-      cp.stringLength = stringLength;
+      cp.numVars = params.decisionVariables.getNumVariables();
+      cp.stringLength = (int)params.decisionVariables.getTotalStringLength();
       cp.numSolutions = numSol;
-
 
       setCachedParams(cp);
 
@@ -272,7 +267,7 @@ public class Params
     }
 
     public void setInput(Object o, int i) {
-      params = (EMOPopulationParams) o;
+      params = (EMOParams) o;
 
       // check the cached params...
 
@@ -511,7 +506,6 @@ public class Params
         Font f = lbl.getFont();
         Font newFont = new Font(f.getFamily(), Font.BOLD, 16);
         lbl.setFont(newFont);
-//        lbl.setBorder(new EmptyBorder(0, 10, 5, 0));
         Constrain.setConstraints(this, lbl, 0, 0, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
@@ -523,28 +517,23 @@ public class Params
                                  GridBagConstraints.WEST,
                                  1, 1);
 
-        //JPanel lblPanel = new JPanel(new GridLayout(3, 3));
         JPanel lblPanel = new JPanel(new GridBagLayout());
         JLabel l1 = new JLabel("Estimated Run Time:");
         l1.setBorder(new EmptyBorder(2, 0, 2, 10));
-        //lblPanel.add(l1);
         Constrain.setConstraints(lblPanel, l1, 0, 0, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST, 1, 1);
         estimatedRunTime = new JLabel("      ");
-        //lblPanel.add(estimatedRunTime);
         Constrain.setConstraints(lblPanel, estimatedRunTime, 1, 0, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST, 1, 1);
         JLabel minLabel = new JLabel("min", JLabel.LEFT);
-        //lblPanel.add(minLabel);
         Constrain.setConstraints(lblPanel, minLabel, 2, 0, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST, 1, 1);
 
         JLabel l2 = new JLabel("Specified Max Run Time:");
         l2.setBorder(new EmptyBorder(2, 0, 2, 10));
-        //lblPanel.add(l2);
         Constrain.setConstraints(lblPanel, l2, 0, 1, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST, 1, 1);
@@ -552,28 +541,23 @@ public class Params
         Constrain.setConstraints(lblPanel, specifiedMaxTime, 1, 1, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST, 1, 1);
-        //lblPanel.add(specifiedMaxTime);
 
         JLabel minLabel2 = new JLabel("min", JLabel.LEFT);
-        //lblPanel.add(minLabel2);
         Constrain.setConstraints(lblPanel, minLabel2, 2, 1, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST, 1, 1);
 
         JLabel l3 = new JLabel("Difference of:");
         l3.setBorder(new EmptyBorder(2, 0, 2, 10));
-        //lblPanel.add(l3);
         Constrain.setConstraints(lblPanel, l3, 0, 2, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST, 1, 1);
         difference = new JLabel("      ");
-        //lblPanel.add(difference);
         Constrain.setConstraints(lblPanel, difference, 1, 2, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST, 1, 1);
 
         JLabel minLabel3 = new JLabel("min", JLabel.LEFT);
-        //lblPanel.add(minLabel3);
         Constrain.setConstraints(lblPanel, minLabel3, 2, 2, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST, 1, 1);
@@ -599,6 +583,10 @@ public class Params
       }
     }
 
+    private Mutation[] mutationChoices;
+    private Crossover[] crossoverChoices;
+    private Selection[] selectionChoices;
+
     /**
      * An interface for the advanced settings for the GA.
      * @author David Clutter
@@ -608,206 +596,281 @@ public class Params
         extends JPanel
         implements ActionListener {
 
-      class IndividualRadioButton
-          extends JRadioButton {
-        int type;
-        IndividualRadioButton(String s) {
-          super(s);
-        }
-      }
-
-      class MutationRadioButton
-          extends JRadioButton {
-        int type;
-        MutationRadioButton(String s) {
-          super(s);
-        }
-      }
-
-      class SelectionRadioButton
-          extends JRadioButton {
-        int type;
-        SelectionRadioButton(String s) {
-          super(s);
-        }
-      }
-
-      class CrossoverRadioButton
-          extends JRadioButton {
-        int type;
-        CrossoverRadioButton(String s) {
-          super(s);
-        }
-      }
-
-      JLabel selPres;
-      JTextField selPressure;
-
-      JLabel crossoverNLabel;
-      JTextField crossoverNField;
-
-      JLabel mutationNLabel;
-      JTextField mutationNField;
-
-      IndividualRadioButton[] individualRadio;
-      MutationRadioButton[] mutationRadio;
-      SelectionRadioButton[] selectionRadio;
-      CrossoverRadioButton[] crossoverRadio;
+      JRadioButton[] mutationRadio;
+      JRadioButton[] crossoverRadio;
+      JRadioButton[] selectionRadio;
 
       AdvSettingsPanel() {
-        JOutlinePanel gaType = new JOutlinePanel("Individual Type");
-        IndividualRadioButton binaryInd = new IndividualRadioButton(
-            "Binary-coded Individuals");
-        binaryInd.addActionListener(this);
-        binaryInd.type = 0;
-
-        IndividualRadioButton realInd = new IndividualRadioButton(
-            "Real-coded Individuals");
-        realInd.addActionListener(this);
-        realInd.type = 1;
-
-        individualRadio = new IndividualRadioButton[] {
-            binaryInd, realInd};
 
         ButtonGroup bg = new ButtonGroup();
+        JRadioButton binaryInd = new JRadioButton("Binary-coded Individuals");
         bg.add(binaryInd);
-        bg.add(realInd);
-        gaType.setLayout(new GridLayout(2, 1));
-        gaType.add(binaryInd);
-        gaType.add(realInd);
-
-        JOutlinePanel mutType = new JOutlinePanel("Mutation Technique");
-        mutationNLabel = new JLabel("n");
-        mutationNField = new JTextField(10);
-
-        JPanel mutNPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        mutNPanel.add(mutationNLabel);
-        mutNPanel.add(mutationNField);
-
-        int numMutations = Mutation.TYPES.length;
-        mutationRadio = new MutationRadioButton[numMutations];
-        ButtonGroup bg2 = new ButtonGroup();
-        mutType.setLayout(new GridLayout(numMutations + 1, 1));
-        for (int i = 0; i < numMutations; i++) {
-          MutationRadioButton mrb = new MutationRadioButton(Mutation.TYPES[i]);
-          mrb.addActionListener(this);
-          mrb.type = i;
-          bg2.add(mrb);
-          mutType.add(mrb);
-          if (i == Mutation.REAL_MUTATION) {
-            mutType.add(mutNPanel);
+        binaryInd.addActionListener(new AbstractAction() {
+          public void actionPerformed(ActionEvent ae) {
+            binaryIndividualSelected();
           }
-          mutationRadio[i] = mrb;
+        });
+
+        JRadioButton realInd = new JRadioButton("Real-coded Individuals");
+        bg.add(realInd);
+        realInd.addActionListener(new AbstractAction() {
+          public void actionPerformed(ActionEvent ae) {
+            realIndividualSelected();
+          }
+        });
+
+        JOutlinePanel individualType = new JOutlinePanel("Individual Type");
+        individualType.setLayout(new GridLayout(2, 1));
+        individualType.add(binaryInd);
+        individualType.add(realInd);
+
+        mutationChoices = MutationFactory.createMutationOptions();
+        int numMutation = mutationChoices.length;
+        // count the number of extra properties...
+        int numExtraMutationProps = 0;
+        for(int i = 0; i < numMutation; i++) {
+          Property[] props = mutationChoices[i].getProperties();
+          if(props != null)
+            numExtraMutationProps += props.length;
         }
 
-        crossoverNLabel = new JLabel("n");
-        crossoverNField = new JTextField(10);
-        JPanel crossNPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        crossNPanel.add(crossoverNLabel);
-        crossNPanel.add(crossoverNField);
+        JOutlinePanel mutType = new JOutlinePanel("Mutation Technique");
+        mutType.setLayout(new GridLayout(numMutation+numExtraMutationProps, 1));
+        mutationRadio = new JRadioButton[numMutation];
+        ButtonGroup mutGroup = new ButtonGroup();
+        for(int i = 0; i < numMutation; i++) {
+          Mutation mut = mutationChoices[i];
+          mutationRadio[i] = new JRadioButton(mut.getName());
+          mutGroup.add(mutationRadio[i]);
+          mutType.add(mutationRadio[i]);
+
+          Property[] props = mut.getProperties();
+          final HashSet propSet = new HashSet();
+          if(props != null) {
+            for(int j = 0; j < props.length; j++) {
+              Property prop = props[j];
+              PropPanel pp = new PropPanel(prop);
+              propSet.add(pp);
+              mutType.add(pp);
+            }
+          }
+          mutationRadio[i].addChangeListener(new AbstractChangeListener() {
+            public void stateChanged(ChangeEvent ce) {
+              // iterate through the prop panels...
+              Iterator ii = propSet.iterator();
+              boolean isSelected = ((JRadioButton)ce.getSource()).isSelected();
+              while(ii.hasNext()) {
+                PropPanel pp = (PropPanel)ii.next();
+                pp.setEnabled(isSelected);
+              }
+            }
+          });
+        }
+
+        crossoverChoices = CrossoverFactory.createCrossoverOptions();
+        int numCrossover = crossoverChoices.length;
+        int numExtraCrossoverProps = 0;
+        for(int i = 0; i < numCrossover; i++) {
+          Property[] props = crossoverChoices[i].getProperties();
+          if(props != null)
+            numExtraCrossoverProps += props.length;
+        }
 
         JOutlinePanel xType = new JOutlinePanel("Crossover Technique");
-        int numCrossover = Crossover.TYPES.length;
-        crossoverRadio = new CrossoverRadioButton[numCrossover];
-        ButtonGroup bg3 = new ButtonGroup();
-        xType.setLayout(new GridLayout(numCrossover + 1, 1));
-        for (int i = 0; i < numCrossover; i++) {
-          CrossoverRadioButton crb = new CrossoverRadioButton(Crossover.TYPES[i]);
-          crb.addActionListener(this);
-          crb.type = i;
-          bg3.add(crb);
-          xType.add(crb);
-          if (i == Crossover.SIMULATED_BINARY_CROSSOVER) {
-            xType.add(crossNPanel);
+        xType.setLayout(new GridLayout(numCrossover+numExtraCrossoverProps, 1));
+        crossoverRadio = new JRadioButton[numCrossover];
+        ButtonGroup crsGroup = new ButtonGroup();
+        for(int i = 0; i < numCrossover; i++) {
+          Crossover crs = crossoverChoices[i];
+          crossoverRadio[i] = new JRadioButton(crs.getName());
+          crsGroup.add(crossoverRadio[i]);
+          xType.add(crossoverRadio[i]);
+
+          Property[] props = crs.getProperties();
+          final HashSet propSet = new HashSet();
+          if(props != null) {
+            for(int j = 0; j < props.length; j++) {
+              Property prop = props[j];
+              PropPanel pp = new PropPanel(prop);
+              propSet.add(pp);
+              xType.add(pp);
+            }
           }
-          crossoverRadio[i] = crb;
+          crossoverRadio[i].addChangeListener(new AbstractChangeListener() {
+            public void stateChanged(ChangeEvent ce) {
+              // iterate through the prop panels...
+              Iterator ii = propSet.iterator();
+              boolean isSelected = ((JRadioButton)ce.getSource()).isSelected();
+              while(ii.hasNext()) {
+                PropPanel pp = (PropPanel)ii.next();
+                pp.setEnabled(isSelected);
+              }
+            }
+          });
+        }
+
+        selectionChoices = SelectionFactory.createSelectionOptions();
+        int numSelection = selectionChoices.length;
+        int numExtraSelectionProps = 0;
+        for(int i = 0; i < numSelection; i++) {
+          Property[] props = selectionChoices[i].getProperties();
+          if(props != null)
+            numExtraSelectionProps += props.length;
         }
 
         JOutlinePanel selType = new JOutlinePanel("Selection Technique");
-        int numSelection = Selection.TYPES.length;
-        selectionRadio = new SelectionRadioButton[numSelection];
-        ButtonGroup bg4 = new ButtonGroup();
+        selType.setLayout(new GridLayout(numSelection+numExtraSelectionProps, 1));
+        selectionRadio = new JRadioButton[numSelection];
+        ButtonGroup selGroup = new ButtonGroup();
+        for(int i = 0; i < numSelection; i++) {
+          Selection sel = selectionChoices[i];
+          selectionRadio[i] = new JRadioButton(sel.getName());
+          selGroup.add(selectionRadio[i]);
 
-        selPres = new JLabel("Selection Pressure");
-        selPressure = new JTextField(5);
-        selPres.setEnabled(false);
-        selPressure.setEnabled(false);
-
-        JPanel selPressurePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        selPressurePanel.add(selPres);
-        selPressurePanel.add(selPressure);
-
-        selType.setLayout(new GridLayout(6, 1));
-
-        for (int i = 0; i < numSelection; i++) {
-          SelectionRadioButton srb = new SelectionRadioButton(Selection.TYPES[i]);
-          srb.addActionListener(this);
-          srb.type = i;
-          bg4.add(srb);
-          selType.add(srb);
-          if (i == Selection.RANK_SELECTION) {
-            selType.add(selPressurePanel);
+          selType.add(selectionRadio[i]);
+          Property[] props = sel.getProperties();
+          final HashSet propSet = new HashSet();
+          if(props != null) {
+            for(int j = 0; j < props.length; j++) {
+              Property prop = props[j];
+              PropPanel pp = new PropPanel(prop);
+              propSet.add(pp);
+              selType.add(pp);
+            }
           }
-          selectionRadio[i] = srb;
+          selectionRadio[i].addChangeListener(new AbstractChangeListener() {
+            public void stateChanged(ChangeEvent ce) {
+              // iterate through the prop panels...
+              Iterator ii = propSet.iterator();
+              boolean isSelected = ((JRadioButton)ce.getSource()).isSelected();
+              while(ii.hasNext()) {
+                PropPanel pp = (PropPanel)ii.next();
+                pp.setEnabled(isSelected);
+              }
+            }
+          });
         }
 
-        setLayout(new GridLayout(2, 2));
-        add(gaType);
+
+        // binary individuals is the default.
+        binaryInd.setSelected(true);
+        binaryIndividualSelected();
+
+        this.setLayout(new GridLayout(2, 2));
+        add(individualType);
         add(mutType);
         add(xType);
         add(selType);
+      }
 
-        binaryInd.setSelected(true);
-        individualType = 0;
-        binaryIndividualSelected();
+      private abstract class AbstractChangeListener implements ChangeListener {}
+
+      private class PropPanel extends JPanel {
+
+        JTextField jtf;
+        JLabel label;
+
+        PropPanel(Property prop) {
+          // each prop will get a JLabel and an editor.
+          // the editor will be a jtextfield
+
+          setLayout(new FlowLayout(FlowLayout.RIGHT));
+          label = new JLabel(prop.getName());
+          label.setToolTipText(prop.getDescription());
+          jtf = new JTextField(4);
+          jtf.setText(prop.getValue().toString());
+
+          add(label);
+          add(jtf);
+        }
+
+        public void setEnabled(boolean b) {
+          label.setEnabled(b);
+          jtf.setEnabled(b);
+        }
       }
 
       private void binaryIndividualSelected() {
-        mutationRadio[Mutation.MUTATION].setEnabled(true);
-        mutationRadio[Mutation.REAL_MUTATION].setEnabled(false);
+        // for each of the options, loop through and enable/disable appropriate
+        // options
 
-        mutationRadio[Mutation.MUTATION].setSelected(true);
-        mutationType = Mutation.MUTATION;
-        this.mutationNField.setEnabled(false);
-        this.mutationNLabel.setEnabled(false);
+        for(int i = 0; i < mutationChoices.length; i++) {
+          Mutation mut = mutationChoices[i];
+          if(mut instanceof BinaryIndividualProcess) {
+            mutationRadio[i].setEnabled(true);
+          }
+          else {
+            mutationRadio[i].setEnabled(false);
+          }
+        }
 
-        crossoverRadio[Crossover.TWO_POINT_CROSSOVER].setEnabled(true);
-        crossoverRadio[Crossover.UNIFORM_CROSSOVER].setEnabled(true);
-        crossoverRadio[Crossover.SIMULATED_BINARY_CROSSOVER].setEnabled(false);
+        for(int i = 0; i < crossoverChoices.length; i++) {
+          Crossover x = crossoverChoices[i];
+          if(x instanceof BinaryIndividualProcess) {
+            crossoverRadio[i].setEnabled(true);
+          }
+          else
+            crossoverRadio[i].setEnabled(false);
+        }
 
-        crossoverRadio[Crossover.UNIFORM_CROSSOVER].setSelected(true);
-        crossoverType = Crossover.UNIFORM_CROSSOVER;
-        this.crossoverNField.setEnabled(false);
-        this.crossoverNLabel.setEnabled(false);
+        for(int i = 0; i < selectionChoices.length; i++) {
+          Selection sel = selectionChoices[i];
+          if(sel instanceof BinaryIndividualProcess)
+            selectionRadio[i].setEnabled(true);
+          else
+            selectionRadio[i].setEnabled(false);
+        }
 
-        selectionRadio[Selection.TOURNAMENT_WITHOUT_REPLACEMENT].setSelected(true);
-        selectionType = Selection.TOURNAMENT_WITHOUT_REPLACEMENT;
+        int defMutation = MutationFactory.getBinaryDefault();
+        mutationRadio[defMutation].setSelected(true);
+
+        int defCrossover = CrossoverFactory.getBinaryDefault();
+        crossoverRadio[defCrossover].setSelected(true);
+
+        int defSelection = SelectionFactory.getBinaryDefault();
+        selectionRadio[defSelection].setSelected(true);
       }
 
       private void realIndividualSelected() {
-        mutationRadio[Mutation.MUTATION].setEnabled(false);
-        mutationRadio[Mutation.REAL_MUTATION].setEnabled(true);
+        for(int i = 0; i < mutationChoices.length; i++) {
+          Mutation mut = mutationChoices[i];
+          if(mut instanceof RealIndividualProcess) {
+            mutationRadio[i].setEnabled(true);
+          }
+          else {
+            mutationRadio[i].setEnabled(false);
+          }
+        }
 
-        mutationRadio[Mutation.REAL_MUTATION].setSelected(true);
-        mutationType = Mutation.REAL_MUTATION;
-        this.mutationNField.setEnabled(true);
-        this.mutationNLabel.setEnabled(true);
+        for(int i = 0; i < crossoverChoices.length; i++) {
+          Crossover x = crossoverChoices[i];
+          if(x instanceof RealIndividualProcess) {
+            crossoverRadio[i].setEnabled(true);
+          }
+          else
+            crossoverRadio[i].setEnabled(false);
+        }
 
-        crossoverRadio[Crossover.TWO_POINT_CROSSOVER].setEnabled(false);
-        crossoverRadio[Crossover.UNIFORM_CROSSOVER].setEnabled(false);
-        crossoverRadio[Crossover.SIMULATED_BINARY_CROSSOVER].setEnabled(true);
+        for(int i = 0; i < selectionChoices.length; i++) {
+          Selection sel = selectionChoices[i];
+          if(sel instanceof RealIndividualProcess)
+            selectionRadio[i].setEnabled(true);
+          else
+            selectionRadio[i].setEnabled(false);
+        }
 
-        crossoverRadio[Crossover.SIMULATED_BINARY_CROSSOVER].setSelected(true);
-        crossoverType = Crossover.SIMULATED_BINARY_CROSSOVER;
-        this.crossoverNField.setEnabled(true);
-        this.crossoverNLabel.setEnabled(true);
+        int defMutation = MutationFactory.getRealDefault();
+        mutationRadio[defMutation].setSelected(true);
 
-        selectionRadio[Selection.STOCHASTIC_UNIVERSAL_SAMPLING].setSelected(true);
-        selectionType = Selection.STOCHASTIC_UNIVERSAL_SAMPLING;
+        int defCrossover = CrossoverFactory.getRealDefault();
+        crossoverRadio[defCrossover].setSelected(true);
+
+        int defSelection = SelectionFactory.getRealDefault();
+        selectionRadio[defSelection].setSelected(true);
       }
 
       public void actionPerformed(ActionEvent ae) {
-        Component src = (Component) ae.getSource();
+/*        Component src = (Component) ae.getSource();
 
         if (src instanceof IndividualRadioButton) {
           individualType = ( (IndividualRadioButton) src).type;
@@ -859,7 +922,7 @@ public class Params
             this.crossoverNLabel.setEnabled(false);
             this.crossoverNField.setEnabled(false);
           }
-        }
+        }*/
       }
 
       /**

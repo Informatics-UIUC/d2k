@@ -16,7 +16,7 @@ import ncsa.d2k.modules.core.optimize.ga.crossover.*;
  * @version 1.0
  */
 class UniformCrossoverWrapper
-    extends Crossover {
+    extends Crossover implements BinaryIndividualProcess {
 
   private UniformCrossoverModule ucm;
 
@@ -31,5 +31,9 @@ class UniformCrossoverWrapper
 
   public void performCrossover(Population p) {
     ucm.performCrossover(p);
+  }
+
+  public String getName() {
+    return "Uniform Crossover";
   }
 }

@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.crossover;
 
 import ncsa.d2k.modules.core.optimize.ga.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
  */
@@ -13,6 +14,7 @@ public abstract class Crossover {
    * @param p the population, will always be an EMOPopulation
    */
   public abstract void performCrossover(Population p);
+  public abstract String getName();
 
   private double crossoverRate;
   public void setCrossoverRate(double cr) {
@@ -29,4 +31,6 @@ public abstract class Crossover {
   public double getGenerationGap() {
     return generationGap;
   }
+
+  public Property[] getProperties() { return null;}
 }

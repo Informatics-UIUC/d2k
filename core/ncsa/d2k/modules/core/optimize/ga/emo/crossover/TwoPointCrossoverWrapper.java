@@ -16,7 +16,7 @@ import ncsa.d2k.modules.core.optimize.ga.crossover.*;
  * @version 1.0
  */
 class TwoPointCrossoverWrapper
-    extends Crossover {
+    extends Crossover implements BinaryIndividualProcess {
 
   private CrossoverModule cm;
 
@@ -36,5 +36,9 @@ class TwoPointCrossoverWrapper
 
   public void performCrossover(Population p) {
     cm.performCrossover(p);
+  }
+
+  public String getName() {
+    return "Two Point Crossover";
   }
 }

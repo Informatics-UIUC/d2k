@@ -16,9 +16,10 @@ import ncsa.d2k.modules.core.optimize.ga.crossover.*;
  * @version 1.0
  */
 class SimulatedBinaryCrossoverWrapper
-    extends Crossover {
+    extends Crossover implements RealIndividualProcess {
 
   private SimulatedBinaryCrossover sbc;
+  private NProp n;
 
   SimulatedBinaryCrossoverWrapper() {
     sbc = new SimulatedBinaryCrossover();
@@ -35,6 +36,33 @@ class SimulatedBinaryCrossoverWrapper
   }
 
   public void performCrossover(Population p) {
+    if(n.isDirty) {
+      Double d = (Double)n.getValue();
+      sbc.setN(d.doubleValue());
+      n.isDirty = false;
+    }
     sbc.performCrossover(p);
+  }
+
+  public String getName() {
+    return "Simulated Binary Crossover";
+  }
+
+  public Property[] getProperties() {
+    n = new NProp();
+    return new Property[] {n};
+  }
+
+  private class NProp extends Property {
+    private boolean isDirty = false;
+
+    NProp() {
+      super(Property.DOUBLE, "n", "don't know", new Double(2));
+    }
+
+    public void setValue(Object val) {
+      super.setValue(val);
+      isDirty = true;
+    }
   }
 }

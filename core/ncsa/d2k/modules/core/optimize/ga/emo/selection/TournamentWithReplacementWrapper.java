@@ -2,8 +2,10 @@ package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
-class TournamentWithReplacementWrapper extends Selection {
+class TournamentWithReplacementWrapper extends Selection
+  implements BinaryIndividualProcess, RealIndividualProcess {
 
   private TournamentWithReplacement twr;
 
@@ -18,5 +20,9 @@ class TournamentWithReplacementWrapper extends Selection {
 
   public void performSelection(Population p) {
     twr.performSelection(p);
+  }
+
+  public String getName() {
+    return "Tournament With Replacement";
   }
 }

@@ -2,20 +2,22 @@ package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 
 public class SelectionFactory {
 
-  public static final int RANK_SELECTION = 0;
-  public static final int STOCHASTIC_UNIVERSAL_SAMPLING = 1;
-  public static final int TOURNAMENT_WITHOUT_REPLACEMENT = 2;
-  public static final int TOURNAMENT_WITH_REPLACEMENT = 3;
-  public static final int TRUNCATION = 4;
+  private static final int RANK_SELECTION = 0;
+  private static final int STOCHASTIC_UNIVERSAL_SAMPLING = 1;
+  private static final int TOURNAMENT_WITHOUT_REPLACEMENT = 2;
+  private static final int TOURNAMENT_WITH_REPLACEMENT = 3;
+  private static final int TRUNCATION = 4;
 
-  public static final String[] TYPES =
+/*  public static final String[] TYPES =
     {"Rank Selection",
     "Stochastic Universal Sampling",
     "Tournament Without Selection",
     "Tournament With Selection",
     "Truncation"};
+      */
+  public static final int NUM_SELECTION = 5;
 
-  public static Selection createSelection(int type) {
+  private static Selection createSelection(int type) {
     switch(type) {
       case(RANK_SELECTION):
         return new RankSelectionWrapper();
@@ -30,5 +32,21 @@ public class SelectionFactory {
       default:
         return new TruncationWrapper();
     }
+  }
+
+  public static final int getBinaryDefault() {
+    return TOURNAMENT_WITHOUT_REPLACEMENT;
+  }
+
+  public static final int getRealDefault() {
+    return STOCHASTIC_UNIVERSAL_SAMPLING;
+  }
+
+  public static Selection[] createSelectionOptions() {
+    Selection[] retVal = new Selection[NUM_SELECTION];
+    for(int i = 0; i < NUM_SELECTION; i++) {
+      retVal[i] = createSelection(i);
+    }
+    return retVal;
   }
 }

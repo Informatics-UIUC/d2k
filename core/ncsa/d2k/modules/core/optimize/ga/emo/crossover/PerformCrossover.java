@@ -9,7 +9,7 @@ import ncsa.d2k.modules.core.optimize.ga.*;
  * enumerated in the Crossover interface.  An object is then created and the
  * performCrossover method is called on that object.
  */
-public class EMOCrossover extends ComputeModule {
+public class PerformCrossover extends ComputeModule {
 
   public String[] getInputTypes() {
     String[] in = {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulation"};

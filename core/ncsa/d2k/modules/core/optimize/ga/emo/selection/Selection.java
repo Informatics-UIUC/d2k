@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 
 import ncsa.d2k.modules.core.optimize.ga.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 public abstract class Selection {
 
@@ -13,4 +14,7 @@ public abstract class Selection {
   }
 
   public abstract void performSelection(Population p);
+  public abstract String getName();
+
+  public Property[] getProperties() { return null;}
 }

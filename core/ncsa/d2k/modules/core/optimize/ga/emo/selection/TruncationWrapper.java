@@ -2,8 +2,10 @@ package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
-class TruncationWrapper extends Selection {
+class TruncationWrapper extends Selection
+  implements BinaryIndividualProcess, RealIndividualProcess {
 
   private Truncation truncation;
 
@@ -14,5 +16,9 @@ class TruncationWrapper extends Selection {
   public void performSelection(Population p) {
     truncation.setTournamentSize(getTournamentSize());
     truncation.performSelection(p);
+  }
+
+  public String getName() {
+    return "Truncation";
   }
 }
