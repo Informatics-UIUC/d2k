@@ -7,7 +7,9 @@ import ncsa.d2k.util.datatype.VerticalTable;
 /**
 	A DecisionTree is made up of DecisionTreeNodes.
 */
-public abstract class DecisionTreeNode implements Serializable {
+public abstract class DecisionTreeNode 
+	implements ViewableDTNode, Serializable {
+
 	DecisionTreeNode parent = null;
 
 	static String UNKNOWN = "Unknown";
