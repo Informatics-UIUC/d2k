@@ -127,25 +127,32 @@ public class CleanAndMergeTable extends UIModule {
                         HashSet selectedMerges = new HashSet();
                         HashSet selectedControls = new HashSet();
 
-			// now add the column lables to keyListModel and controlListModel
+			// now add the column labels 
+			// keyListModel entries can be string or numeric type columns
+			// mergeListModel and controlListModel entries must be numeric type columns
+  			int ni = 0;		// index for numeric type selections
 			for(int i = 0; i < table.getNumColumns(); i++) {
 				columnLookup.put(table.getColumnLabel(i), new Integer(i));
-				keyListModel.addElement(table.getColumnLabel(i));
 
+				keyListModel.addElement(table.getColumnLabel(i));
                                 if(lastKeys != null && lastKeys.contains(table.getColumnLabel(i)))
                                    selectedKeys.add(new Integer(i));
 
 				if(table.getColumn(i) instanceof NumericColumn) {
 					mergeListModel.addElement(table.getColumnLabel(i));
                                         if(lastToMerge != null && lastToMerge.contains(table.getColumnLabel(i)))
-                                            selectedMerges.add(new Integer(i));
+                                            selectedMerges.add(new Integer(ni));
+
 					controlListModel.addElement(table.getColumnLabel(i));
                                         if(lastControl != null && lastControl.equals(table.getColumnLabel(i)))
-                                            selectedControls.add(new Integer(i));
+                                            selectedControls.add(new Integer(ni));
+                                      
+					ni++;
 				}
 				if(table.getColumnLabel(i).length() > longest.length())
 					longest = table.getColumnLabel(i);
 			}
+
 			keyAttributeList.setPrototypeCellValue(longest);
 			attributesToMerge.setPrototypeCellValue(longest);
 			controlAttribute.setPrototypeCellValue(longest);
@@ -388,7 +395,6 @@ public class CleanAndMergeTable extends UIModule {
 			}
 
 			// now find the averages
-			// now find the sums
 			for(int i = 0; i < mergeCols.length; i++) {
 				double sums = 0;
 				for(int j = 0; j < rows.length; j++) {
