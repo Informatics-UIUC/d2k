@@ -56,7 +56,7 @@ public class FilterExpression implements Expression {
 	 *    if there was any error in evaluation
 	 */
 	public Object evaluate() throws ExpressionException {
-		if (root == null || table == null || table.getObject(0, 0) == null)
+		if (root == null || table == null || table.getNumRows() == 0 || table.getObject(0, 0) == null)
 			return null;
 		boolean[] b = new boolean[table.getNumRows()];
 		for (int i = 0; i < b.length; i++) {
