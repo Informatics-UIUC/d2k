@@ -334,9 +334,14 @@ public class NFoldTTables extends ncsa.d2k.core.modules.DataPrepModule {
 	 */
 	public PropertyDescription [] getPropertiesDescriptions () {
 		PropertyDescription [] pds = new PropertyDescription [3];
-		pds[0] = new PropertyDescription ("debug", "Debug", "If this flag is set, there will be some console output indicating the indices of the the train and test sets.");
-		pds[1] = new PropertyDescription ("seed", "Seed", "This is the see for the random number generator. If the seed is the same between different runs, you should get the same result sets.");
-		pds[2] = new PropertyDescription ("numberFolds", "Number Folds", "This is the number of folds for n-fold cross validation. This number should always be greater than 2.");
+		pds[0] = new PropertyDescription ("numberFolds", "Number of Folds", "The number of folds for the cross validation. This number must be greater than 2.");
+		pds[1] = new PropertyDescription ("seed", "Seed", "The seed for the random number generator. If the same seed is used across runs, you should get the same result sets.");
+		pds[2] = new PropertyDescription ("debug", "Debug", "If this flag is set, the indices of the train and test sets will output to the console as the module runs.");
 		return pds;
 	}
 }
+// Start QA Comments
+// 2/24/03 - Received by QA from Loretta & Tom
+// 3/5/03  - Ruth starts QA;  Reordered Properties so what user will likely change is first;
+//         - Reported ArrayOutOfBounds err to developers.
+// End QA Comments
