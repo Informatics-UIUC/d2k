@@ -112,15 +112,6 @@ public class OutputSerializedObject extends OutputModule {
         }
     }
 
-   /** Return an array with information on the properties the user may update.
-    *  Empty for this module!
-    *  @return The PropertyDescriptions for properties user may update. (none)
-    */
-    public PropertyDescription[] getPropertiesDescriptions() {
-        PropertyDescription[] pds = null;
-        return pds;
-    }
-
     //////////
     // Doit //
     //////////
@@ -163,4 +154,6 @@ public class OutputSerializedObject extends OutputModule {
 //           name; Added some JavaDocs; deleted unused code; added more to
 //           module description; added more user-friendly exceptions.
 // 2/14/03 - checked into basic.  Development version 1.4
+// 2/25/03 - removed getPropertyDescriptions() that returned null as not needed
+//           with latest changed to property display.  updated in core too.
 // END QA Comments
