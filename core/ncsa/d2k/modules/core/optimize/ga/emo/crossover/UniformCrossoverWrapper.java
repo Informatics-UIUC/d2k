@@ -36,4 +36,8 @@ class UniformCrossoverWrapper
   public String getName() {
     return "Uniform Crossover";
   }
+  
+  public String getDescription() {
+    return ucm.getModuleInfo();
+  }
 }

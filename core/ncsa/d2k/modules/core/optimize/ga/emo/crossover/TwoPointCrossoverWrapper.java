@@ -41,4 +41,8 @@ class TwoPointCrossoverWrapper
   public String getName() {
     return "Two Point Crossover";
   }
+  
+  public String getDescription() {
+    return cm.getModuleInfo();
+  }
 }

@@ -7,6 +7,7 @@ public abstract class Mutation {
 
   public abstract void mutatePopulation(Population p);
   public abstract String getName();
+  public abstract String getDescription();
 
   private double mutationRate;
   public void setMutationRate(double mr) {

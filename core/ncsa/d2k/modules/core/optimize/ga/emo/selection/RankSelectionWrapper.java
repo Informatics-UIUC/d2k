@@ -27,6 +27,10 @@ class RankSelectionWrapper extends Selection
   public String getName() {
     return "Rank Selection";
   }
+  
+  public String getDescription() {
+    return rs.getModuleInfo();
+  }
 
   public Property[] getProperties() {
     return new Property[] {pp};

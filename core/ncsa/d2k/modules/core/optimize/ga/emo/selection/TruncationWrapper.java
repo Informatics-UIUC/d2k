@@ -17,6 +17,10 @@ class TruncationWrapper extends Selection
     truncation.setTournamentSize(getTournamentSize());
     truncation.performSelection(p);
   }
+  
+  public String getDescription() {
+    return truncation.getModuleInfo();
+  }
 
   public String getName() {
     return "Truncation";

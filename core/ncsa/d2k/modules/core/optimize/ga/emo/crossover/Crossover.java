@@ -15,6 +15,7 @@ public abstract class Crossover {
    */
   public abstract void performCrossover(Population p);
   public abstract String getName();
+  public abstract String getDescription();
 
   private double crossoverRate;
   public void setCrossoverRate(double cr) {

@@ -16,6 +16,10 @@ class StochasticUniversalSamplingWrapper extends Selection
   public void performSelection(Population p) {
     sus.performSelection(p);
   }
+  
+  public String getDescription() {
+    return sus.getModuleInfo();
+  }
 
   public String getName() {
     return "Stochastic Universal Sampling";

@@ -1,25 +1,22 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
-import java.text.*;
 import java.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.table.*;
 import javax.swing.event.*;
+import javax.swing.table.*;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.gui.*;
 import ncsa.d2k.gui.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
-
-import ncsa.d2k.modules.core.optimize.ga.emo.mutation.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.crossover.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.mutation.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.selection.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.gui.*;
 
 public class Params
     extends UIModule {
@@ -40,11 +37,11 @@ public class Params
   }
 
   public String getOutputName(int i) {
-    return "Population Info";
+    return "Parameters";
   }
 
   public String getInputName(int i) {
-    return "Population Info";
+    return "Parameters";
   }
 
   public String getOutputInfo(int i) {
@@ -76,69 +73,100 @@ public class Params
     return cachedParams;
   }
 
+  /**
+   * Contains the cached parameters that were input.
+   */
   private class CachedParams
       implements java.io.Serializable {
+
+    /** the number of variables in the problem */
+    int numVariables;
+    /** the number of objectives in the problem */
+    int numObjectives;
+    /** the total string length */
+    int totalStringLength;
+    /** the names of the variables in the problem */
+    String[] variableNames;
+
+    /** the recommended values from the table model */
     String[] recommended;
+    /** the overriden values from the table model */
     String[] override;
+    /** the estimated time required */
     String estimatedTimeReq;
+    /** the maximum run time */
     String maxRunTime;
+    /** the difference in time */
     String diff;
-    int numVars;
-    int stringLength;
-    boolean multiObjective;
 
-    int numSolutions;
-
-    int individualType;
-    int crossoverType;
-    int selectionType;
-    int mutationType;
-
-    double selectionPressure;
-
-    double nMutation;
-    double nSimulatedBinaryCrossover;
+    /** the name of the selected mutation type */
+    String mutName;
+    /** the properties for the selected mutation */
+    HashMap mutProps;
+    /** the name of the selected crossover type */
+    String crossName;
+    /** the properties for the selected crossover */
+    HashMap crossProps;
+    /** the name of the selected selection type */
+    String selName;
+    /** the properties for the selected selection type */
+    HashMap selProps;
+    /** true if binary individuals should be created, false otherwise */
+    boolean binaryInd;
   }
 
   private class ParamsView
       extends JUserPane {
-
     /** the parameters for EMO */
-    EMOParams params;
+    transient private EMOParams params;
     /** the table model, holds several parameters */
-    ParamsTableModel paramsModel;
+    transient private ParamsTableModel paramsModel;
     /** the estimated time that the evaluation will take */
-    JTextField estimatedTime;
+    transient private JTextField estimatedTime;
     /** the maximum run time a user is willing to wait */
-    JTextField maxRunTime;
-    JLabel numSolutionsLabel;
+    transient private JTextField maxRunTime;
+    /** */
+    transient private JLabel numSolutionsLabel;
     /** the number of solutions desired */
-    JTextField numSolutions;
+    transient private JTextField numSolutions;
     /** the advanced settings */
-    AdvSettingsPanel adv;
+    transient private AdvSettingsPanel adv;
     /** the frame that holds the advanced settings */
-    JFrame advFrame;
+    transient private JFrame advFrame;
 
     /** the label in the TimePanel that shows the estimated run time */
-    JLabel estimatedRunTime;
+    transient private JLabel estimatedRunTime;
         /** the label in the TimePanel that shows the user-specified max run time */
-    JLabel specifiedMaxTime;
+    transient private JLabel specifiedMaxTime;
     /** the label in the TimePanel that shows the difference in times */
-    JLabel difference;
+    transient private JLabel difference;
+    transient private int numObjectives;
 
-    private Mutation mutationType;
-    private Crossover crossoverType;
-    private Selection selectionType;
+    transient private Mutation selectedMutation;
+    transient private Crossover selectedCrossover;
+    transient private Selection selectedSelection;
+
+    private static final int OVERRIDE = 2;
+    private static final int REC = 1;
+    private static final int POP_SIZE = 0;
+    private static final int MAX_GEN = 1;
+    private static final int TOURNAMENT = 2;
+    private static final int CROSSOVER_RATE = 3;
+    private static final int MUTATION_RATE = 4;
+    private static final int GEN_GAP = 5;
 
     /**
-     * Add components to this gui.
+     * Add the components to this user view.
      */
     public void initView(ViewModule vm) {
+      // ParamsPanel contains the jtable, times, and advanced settings
       ParamsPanel pp = new ParamsPanel();
       pp.setBorder(new EmptyBorder(0, 10, 10, 0));
       setLayout(new BorderLayout());
       add(pp, BorderLayout.WEST);
 
+      // time panel contains the time graph, the time labels, and
+      // optimizing tips
       TimePanel tp = new TimePanel();
       tp.setBorder(new EmptyBorder(0, 10, 10, 60));
       add(tp, BorderLayout.EAST);
@@ -163,102 +191,322 @@ public class Params
       add(pnl, BorderLayout.SOUTH);
     }
 
+    /**
+     * When done is pressed, gather all the parameters and
+     * set them on the EMOParams object.  Also, create a
+     * new CachedParams object and set the appropriate values
+     * so that the next time this module is run the parameters can
+     * be re-loaded.
+     */
     private void done() {
-      // gather all params
+      // gather all parameters
+      for(int i = 0; i < adv.mutationRadio.length; i++) {
+        if(adv.mutationRadio[i].isSelected()) {
+          params.mutation = adv.mutationRadio[i].mutation;  
+          
+          HashMap propLookup = new HashMap();
+          Property[] p = params.mutation.getProperties();
+          if(p == null)
+            continue;
+            
+          for(int j = 0; j < p.length; j++)
+            propLookup.put(p[j].getName(), p[j]);
+          
+          // now make sure that the values of the properties are set
+          HashSet propPanels = adv.mutationRadio[i].propertyPanels; 
+          
+          // iterate through the property panels
+          Iterator iter = propPanels.iterator();
+          while(iter.hasNext()) {
+            AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)iter.next();  
+             
+            String propName = pp.label.getText();
+            // now match it to a property.
+            Property property = (Property)propLookup.get(propName);
+            switch(property.getType()) {
+                case (Property.DOUBLE):
+                  try {
+                    Double d = new Double(pp.jtf.getText());
+                    property.setValue(d);
+                  }
+                  catch (NumberFormatException nfe) {
+                  }
+                  break;
+                case (Property.INT):
+                  try {
+                    Integer ii = new Integer(pp.jtf.getText());
+                    property.setValue(ii);  
+                  }
+                  catch (NumberFormatException nfe) {
+                  }
+                  break;
+                case (Property.STRING):
+                  property.setValue(pp.jtf.getText());
+                  break;
+                default:
+                  break;
+            } // switch
+          } // while
+        } // if
+      } // for
+      
+      for(int i = 0; i < adv.crossoverRadio.length; i++) {
+        if(adv.crossoverRadio[i].isSelected()) {
+          params.crossover = adv.crossoverRadio[i].crossover;
+          
+          HashMap propLookup = new HashMap();
+          Property[] p = params.crossover.getProperties();
+          if(p == null)
+            continue;
 
-      // get the pop size
-      String override = (String) paramsModel.getValueAt(0, 2);
-      String rec = (String) paramsModel.getValueAt(0, 1);
+          for(int j = 0; j < p.length; j++)
+            propLookup.put(p[j].getName(), p[j]);
+
+          // now make sure that the values of the properties are set
+          HashSet propPanels = adv.crossoverRadio[i].propertyPanels; 
+
+          // iterate through the property panels
+          Iterator iter = propPanels.iterator();
+          while(iter.hasNext()) {
+            AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)iter.next();  
+
+            String propName = pp.label.getText();
+            // now match it to a property.
+            Property property = (Property)propLookup.get(propName);
+            switch(property.getType()) {
+                case (Property.DOUBLE):
+                  try {
+                    Double d = new Double(pp.jtf.getText());
+                    property.setValue(d);
+                  }
+                  catch (NumberFormatException nfe) {
+                  }
+                  break;
+                case (Property.INT):
+                  try {
+                    Integer ii = new Integer(pp.jtf.getText());
+                    property.setValue(ii);  
+                  }
+                  catch (NumberFormatException nfe) {
+                  }
+                  break;
+                case (Property.STRING):
+                  property.setValue(pp.jtf.getText());
+                  break;
+                default:
+                  break;
+            } // switch
+          } // while
+        } // if
+      } 
+      
+      for(int i = 0; i < adv.selectionRadio.length; i++) {
+        if(adv.selectionRadio[i].isSelected()) {
+          params.selection = adv.selectionRadio[i].selection;
+          HashMap propLookup = new HashMap();
+          Property[] p = params.selection.getProperties();
+          if(p == null)
+            continue;
+
+          for(int j = 0; j < p.length; j++)
+            propLookup.put(p[j].getName(), p[j]);
+
+          // now make sure that the values of the properties are set
+          HashSet propPanels = adv.selectionRadio[i].propertyPanels; 
+
+          // iterate through the property panels
+          Iterator iter = propPanels.iterator();
+          while(iter.hasNext()) {
+            AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)iter.next();  
+
+            String propName = pp.label.getText();
+            // now match it to a property.
+            Property property = (Property)propLookup.get(propName);
+            switch(property.getType()) {
+                case (Property.DOUBLE):
+                  try {
+                    Double d = new Double(pp.jtf.getText());
+                    property.setValue(d);
+                  }
+                  catch (NumberFormatException nfe) {
+                  }
+                  break;
+                case (Property.INT):
+                  try {
+                    Integer ii = new Integer(pp.jtf.getText());
+                    property.setValue(ii);  
+                  }
+                  catch (NumberFormatException nfe) {
+                  }
+                  break;
+                case (Property.STRING):
+                  property.setValue(pp.jtf.getText());
+                  break;
+                default:
+                  break;
+            } // switch
+          } // while
+          
+        }
+      } 
 
       double popSize;
+      // if the overriden population size is valid, use that
       try {
-        popSize = Double.parseDouble(override);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(POP_SIZE, OVERRIDE));
       }
+      // otherwise use the recommended value
       catch (Exception ex) {
-        popSize = Double.parseDouble(rec);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(POP_SIZE, REC));
       }
       params.populationSize = (int) popSize;
 
-      override = (String) paramsModel.getValueAt(1, 2);
-      rec = (String) paramsModel.getValueAt(1, 1);
+      // if the overriden max gens is valid, use that
       try {
-        popSize = Double.parseDouble(override);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(MAX_GEN, OVERRIDE));
       }
+      // otherwise use the recommended value
       catch (Exception ex) {
-        popSize = Double.parseDouble(rec);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(MAX_GEN, REC));
       }
       params.maxGenerations = (int) popSize;
 
-      override = (String) paramsModel.getValueAt(2, 2);
-      rec = (String) paramsModel.getValueAt(2, 1);
+      // if the overriden tournament size is valid, use that
       try {
-        popSize = Double.parseDouble(override);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(TOURNAMENT, OVERRIDE));
       }
+      // otherwise use the recommended value
       catch (Exception ex) {
-        popSize = Double.parseDouble(rec);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(TOURNAMENT, REC));
       }
-//      params.tournamentSize = (int) popSize;
-      selectionType.setTournamentSize((int)popSize);
+      params.selection.setTournamentSize( (int) popSize);
 
-      override = (String) paramsModel.getValueAt(3, 2);
-      rec = (String) paramsModel.getValueAt(3, 1);
+      // if the overriden crossover rate is valid, use that
       try {
-        popSize = Double.parseDouble(override);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(CROSSOVER_RATE, OVERRIDE));
       }
+      // otherwise use the recommended value
       catch (Exception ex) {
-        popSize = Double.parseDouble(rec);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(CROSSOVER_RATE, REC));
       }
-//      params.crossoverRate = popSize;
-      crossoverType.setCrossoverRate(popSize);
+      params.crossover.setCrossoverRate(popSize);
 
-      override = (String) paramsModel.getValueAt(4, 2);
-      rec = (String) paramsModel.getValueAt(4, 1);
+      // if the overriden mutation rate is valid, use that
       try {
-        popSize = Double.parseDouble(override);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(MUTATION_RATE, OVERRIDE));
       }
+      // otherwise use the recommended value
       catch (Exception ex) {
-        popSize = Double.parseDouble(rec);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(MUTATION_RATE, REC));
       }
-//      params.mutationRate = popSize;
-      mutationType.setMutationRate(popSize);
+      params.mutation.setMutationRate(popSize);
 
-      override = (String) paramsModel.getValueAt(5, 2);
-      rec = (String) paramsModel.getValueAt(5, 1);
+      // if the overriden generation gap is valid, use that
       try {
-        popSize = Double.parseDouble(override);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(GEN_GAP, OVERRIDE));
       }
+      // otherwise use the recommended value
       catch (Exception ex) {
-        popSize = Double.parseDouble(rec);
+        popSize = Double.parseDouble(
+            (String) paramsModel.getValueAt(GEN_GAP, REC));
       }
-//      params.generationGap = popSize;
-      crossoverType.setGenerationGap(popSize);
+      params.crossover.setGenerationGap(popSize);
 
+      // get the number of solutions
       int numSol;
       try {
         String s = numSolutions.getText();
         numSol = Integer.parseInt(s);
       }
-      catch(Exception e) {
+      catch (Exception e) {
         numSol = 0;
       }
 
-      // save the values that were input
+      // save the values of parameters so the
+      // gui can show these values the next time the module is run
+      // the values are saved in a CachedParams object
       CachedParams cp = new CachedParams();
-      String[] recVals = paramsModel.col1;
+
+      // save the number of objectives
+      cp.numObjectives = numObjectives;
+      // save the number of decision variables
+      cp.numVariables = params.decisionVariables.getNumVariables();
+      // save the total string length
+      cp.totalStringLength = (int) params.decisionVariables.
+          getTotalStringLength();
+      // save the variable names
+      String[] varNames = new String[cp.numVariables];
+      for (int i = 0; i < cp.numVariables; i++) {
+        varNames[i] = params.decisionVariables.getVariableName(i);
+      }
+      cp.variableNames = varNames;
+
+      // save the recommended values from the table model
+      String[] recVals = paramsModel.data[REC];
       String[] recCpy = new String[recVals.length];
       System.arraycopy(recVals, 0, recCpy, 0, recVals.length);
       cp.recommended = recCpy;
-      String[] overVals = paramsModel.col2;
+
+      // save the overriden values from the table model
+      String[] overVals = paramsModel.data[OVERRIDE];
       String[] overCpy = new String[recVals.length];
       System.arraycopy(overVals, 0, overCpy, 0, overVals.length);
       cp.override = overCpy;
 
+      // save the maximum run time
       cp.maxRunTime = maxRunTime.getText();
+      // save the estimated time required
       cp.estimatedTimeReq = estimatedTime.getText();
+      // save the difference
       cp.diff = difference.getText();
-      cp.numVars = params.decisionVariables.getNumVariables();
-      cp.stringLength = (int)params.decisionVariables.getTotalStringLength();
-      cp.numSolutions = numSol;
+
+      // need to save which type of mutation, sel, crossover selected
+      // save the name of the type selected
+      cp.mutName = params.mutation.getName();
+      // we also keep a hash map for the extra properties of mutation
+      // key is prop name, the value is the property value
+      HashMap mutProps = new HashMap();
+      Property[] props = params.mutation.getProperties();
+      if (props != null) {
+        for (int i = 0; i < props.length; i++) {
+          mutProps.put(props[i].getName(), props[i].getValue());
+        }
+      }
+      cp.mutProps = mutProps;
+
+      cp.crossName = params.crossover.getName();
+      HashMap crossProps = new HashMap();
+      props = params.crossover.getProperties();
+      if (props != null) {
+        for (int i = 0; i < props.length; i++) {
+          crossProps.put(props[i].getName(), props[i].getValue());
+        }
+      }
+      cp.crossProps = crossProps;
+
+      cp.selName = params.selection.getName();
+      HashMap selProps = new HashMap();
+      props = params.selection.getProperties();
+      if (props != null) {
+        for (int i = 0; i < props.length; i++) {
+          selProps.put(props[i].getName(), props[i].getValue());
+        }
+      }
+      cp.selProps = selProps;
+
+      // need to save binary/real individuals
+      cp.binaryInd = adv.binaryInd.isSelected();
 
       setCachedParams(cp);
 
@@ -269,9 +517,252 @@ public class Params
     public void setInput(Object o, int i) {
       params = (EMOParams) o;
 
-      // check the cached params...
+      // how many objectives are there?
+      numObjectives = params.fitnessFunctions.getTotalNumFitnessFunctions();
 
-      // check if SO or MO.  disable/enable necessary components
+      // now get the cached params.  check if the cached params match this
+      // population.  if so, fill in everything with the cached params
+
+      // cached params are assumed to be equal if the number of objectives,
+      // the number of decision variables, and the names of the decision vars
+      // are the same.
+      if (useCachedParams()) {
+        setCachedValues();
+        // else, fill in default values
+      }
+      else {
+        setRecommendedValues();
+      }
+    }
+
+    /**
+     * Return true if the cached parameters should be used, false otherwise.
+     * The cached parameters will be used if all the following are true:
+     * the number of objectives match, the number of decision variables match,
+     * the total string length matches, and the names of the decision variables
+     * match.
+     *
+     * @return true if cached parameters should be used, false if not
+     */
+    private boolean useCachedParams() {
+      CachedParams cache = getCachedParams();
+      if (cache == null) {
+        return false;
+      }
+      if (numObjectives != cache.numObjectives) {
+        return false;
+      }
+
+      int numVars = params.decisionVariables.getNumVariables();
+      if (numVars != cache.numVariables) {
+        return false;
+      }
+
+      int strLength = (int) params.decisionVariables.getTotalStringLength();
+      if (strLength != cache.totalStringLength) {
+        return false;
+      }
+
+      // loop through the names.  if a name is missing, return false
+      for (int i = 0; i < numVars; i++) {
+        String name = params.decisionVariables.getVariableName(i);
+
+        boolean found = false;
+        for (int j = 0; j < cache.variableNames.length; j++) {
+          if (cache.variableNames[j].equals(name)) {
+            found = true;
+          }
+        }
+        if (!found) {
+          return false;
+        }
+      }
+
+      // otherwise we passed the tests, return true
+      return true;
+    }
+
+    /**
+     * Set all the parameter values to the recommended values.
+     */
+    private void setRecommendedValues() {
+      boolean multiObjective = (numObjectives > 1);
+
+      // the recommended population size is twice the number of
+      // solutions desired for an MO pop
+      double popSize;
+      if (multiObjective) {
+        this.numSolutions.setEnabled(true);
+        this.numSolutionsLabel.setEnabled(true);
+        this.numSolutions.setText("20");
+        paramsModel.setValueAt("40", POP_SIZE, REC);
+        popSize = 40;
+      }
+      // otherwise for an SO pop, the reccommended population size
+      // is 1.4 * total string length
+      else {
+        this.numSolutions.setEnabled(false);
+        this.numSolutionsLabel.setEnabled(false);
+        double strLen = params.decisionVariables.getTotalStringLength();
+        popSize = 1.4 * strLen;
+        popSize = Math.ceil(popSize);
+        paramsModel.setValueAt(Integer.toString( (int) popSize), POP_SIZE, REC);
+      }
+
+      // recommended max # of generations
+      paramsModel.setValueAt(Integer.toString(100), MAX_GEN, REC);
+
+      // recommended tournmaent size
+      paramsModel.setValueAt(Integer.toString(4), TOURNAMENT, REC);
+
+      // recommended crossover rate
+      paramsModel.setValueAt(Double.toString(.75), CROSSOVER_RATE, REC);
+
+      // rec mutation rate is 1/population size
+      double mutrate = 1 / popSize;
+      paramsModel.setValueAt(Double.toString(mutrate), MUTATION_RATE, REC);
+
+      // rec gen gap
+      paramsModel.setValueAt(Double.toString(1), GEN_GAP, REC);
+
+      // binary individuals is the default.
+      adv.binaryInd.setSelected(true);
+      adv.binaryIndividualSelected();
+    }
+
+    /**
+     * Set all the parameter values to the cached values.
+     */
+    private void setCachedValues() {
+      boolean multiObjective = (numObjectives > 1);
+      CachedParams cache = getCachedParams();
+      // set the recommended values in the jtable
+      for (int i = 0; i < cache.recommended.length; i++) {
+        paramsModel.setValueAt(cache.recommended[i], i, REC);
+      }
+      // set the overridden values in the jtable
+      for (int i = 0; i < cache.override.length; i++) {
+        paramsModel.setValueAt(cache.override[i], i, OVERRIDE);
+      }
+
+      boolean bin = cache.binaryInd;
+      if (bin) {
+        adv.binaryInd.setSelected(true);
+        adv.binaryIndividualSelected();
+      }
+      else {
+        adv.realInd.setSelected(true);
+        adv.realIndividualSelected();
+      }
+
+      // if it is multiobjective, fill in the number of solutions.
+      if (multiObjective) {
+        this.numSolutions.setEnabled(true);
+        this.numSolutionsLabel.setEnabled(true);
+//        this.numSolutions.setText(Integer.toString(cache.numS);
+//        paramsModel.setValueAt("40", POP_SIZE, REC);
+      }
+      // if it is an SO problem, disable the numSolutions and numSolutionsLabel
+      else {
+        this.numSolutions.setEnabled(false);
+        this.numSolutionsLabel.setEnabled(false);
+      }
+
+      // set the mutation properties
+      String mutName = cache.mutName;
+      HashMap mutProps = cache.mutProps;
+
+      // match the saved name to the mutation type
+      for (int i = 0; i < adv.mutationRadio.length; i++) {
+        if (mutName.equals(adv.mutationRadio[i].getText())) {
+          adv.mutationRadio[i].setSelected(true);
+          // loop through the props and set them
+
+          if (mutProps != null && adv.mutationRadio[i].propertyPanels != null) {
+            Iterator propIter = mutProps.keySet().iterator();
+            while (propIter.hasNext()) {
+              String name = (String) propIter.next();
+              Object val = mutProps.get(name);
+
+              // now we have to loop through the prop panels to find
+              // the one with this prop and set its value
+              Iterator panelIter = adv.mutationRadio[i].propertyPanels.iterator();
+              while (panelIter.hasNext()) {
+                AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)
+                    panelIter.next();
+                if (pp.label.getText().equals(name)) {
+                  pp.jtf.setText(val.toString());
+                } // if
+              } // while(panelIter.hasNext()
+            } // while(propIter.hasNext())
+          } // if
+        } // if 
+      } // for
+
+      // set the crossover parameters
+      String crossName = cache.crossName;
+      HashMap crossProps = cache.crossProps;
+
+      // match the saved name to the crossover type
+      for (int i = 0; i < adv.crossoverRadio.length; i++) {
+        if (crossName.equals(adv.crossoverRadio[i].getText())) {
+          adv.crossoverRadio[i].setSelected(true);
+          // loop through the props and set them
+
+          if (crossProps != null && adv.crossoverRadio[i].propertyPanels != null) {
+            Iterator propIter = crossProps.keySet().iterator();
+            while (propIter.hasNext()) {
+              String name = (String) propIter.next();
+              Object val = crossProps.get(name);
+
+              // now we have to loop through the prop panels to find
+              // the one with this prop and set its value
+              Iterator panelIter = adv.crossoverRadio[i].propertyPanels.
+                  iterator();
+              while (panelIter.hasNext()) {
+                AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)
+                    panelIter.next();
+                if (pp.label.getText().equals(name)) {
+                  pp.jtf.setText(val.toString());
+                } // if
+              } // while(panelIter.hasNext())
+            } // while(propIter.hasNext())
+          } // if
+        } // if
+      } // for
+
+      // set the selection parameters
+      String selName = cache.selName;
+      HashMap selProps = cache.selProps;
+
+      // match the saved name to the selection type
+      for (int i = 0; i < adv.selectionRadio.length; i++) {
+        if (selName.equals(adv.selectionRadio[i].getText())) {
+          adv.selectionRadio[i].setSelected(true);
+          // loop through the props and set them
+
+          if (selProps != null && adv.selectionRadio[i].propertyPanels != null) {
+            Iterator propIter = selProps.keySet().iterator();
+            while (propIter.hasNext()) {
+              String name = (String) propIter.next();
+              Object val = selProps.get(name);
+
+              // now we have to loop through the prop panels to find
+              // the one with this prop and set its value
+              Iterator panelIter = adv.selectionRadio[i].propertyPanels.
+                  iterator();
+              while (panelIter.hasNext()) {
+                AdvSettingsPanel.PropPanel pp = (AdvSettingsPanel.PropPanel)
+                    panelIter.next();
+                if (pp.label.getText().equals(name)) {
+                  pp.jtf.setText(val.toString());
+                } // if
+              } // while(panelIter.hasNext())
+            } // while(propIter.hasNext())
+          } // if
+        } // if 
+      } // for
+
     }
 
     public Dimension getPreferredSize() {
@@ -414,11 +905,6 @@ public class Params
                                  GridBagConstraints.WEST,
                                  1, 1);
 
-        /*numSolutions.addMouseListener(new MouseAdapter() {
-           public void mousePressed(MouseEvent e) {
-             numSolutions.setEditable(true);
-           }
-                 });*/
         numSolutions.addFocusListener(new FocusAdapter() {
           public void focusLost(FocusEvent e) {
             // set the recommended population size in the table model
@@ -583,27 +1069,21 @@ public class Params
       }
     }
 
-    private Mutation[] mutationChoices;
-    private Crossover[] crossoverChoices;
-    private Selection[] selectionChoices;
-
     /**
-     * An interface for the advanced settings for the GA.
-     * @author David Clutter
-     * @version 1.0
+     * Arrange the advanced settings
      */
     private class AdvSettingsPanel
-        extends JPanel
-        implements ActionListener {
+        extends JPanel {
 
-      JRadioButton[] mutationRadio;
-      JRadioButton[] crossoverRadio;
-      JRadioButton[] selectionRadio;
+      MutationRadioButton[] mutationRadio;
+      CrossoverRadioButton[] crossoverRadio;
+      SelectionRadioButton[] selectionRadio;
+      JRadioButton binaryInd;
+      JRadioButton realInd;
 
       AdvSettingsPanel() {
-
         ButtonGroup bg = new ButtonGroup();
-        JRadioButton binaryInd = new JRadioButton("Binary-coded Individuals");
+        binaryInd = new JRadioButton("Binary-coded Individuals");
         bg.add(binaryInd);
         binaryInd.addActionListener(new AbstractAction() {
           public void actionPerformed(ActionEvent ae) {
@@ -611,7 +1091,7 @@ public class Params
           }
         });
 
-        JRadioButton realInd = new JRadioButton("Real-coded Individuals");
+        realInd = new JRadioButton("Real-coded Individuals");
         bg.add(realInd);
         realInd.addActionListener(new AbstractAction() {
           public void actionPerformed(ActionEvent ae) {
@@ -624,137 +1104,154 @@ public class Params
         individualType.add(binaryInd);
         individualType.add(realInd);
 
-        mutationChoices = MutationFactory.createMutationOptions();
+        Mutation[] mutationChoices = MutationFactory.createMutationOptions();
         int numMutation = mutationChoices.length;
         // count the number of extra properties...
         int numExtraMutationProps = 0;
-        for(int i = 0; i < numMutation; i++) {
+        for (int i = 0; i < numMutation; i++) {
           Property[] props = mutationChoices[i].getProperties();
-          if(props != null)
+          if (props != null) {
             numExtraMutationProps += props.length;
+          }
         }
 
         JOutlinePanel mutType = new JOutlinePanel("Mutation Technique");
-        mutType.setLayout(new GridLayout(numMutation+numExtraMutationProps, 1));
-        mutationRadio = new JRadioButton[numMutation];
+        mutType.setLayout(new GridLayout(numMutation + numExtraMutationProps, 1));
+        mutationRadio = new MutationRadioButton[numMutation];
         ButtonGroup mutGroup = new ButtonGroup();
-        for(int i = 0; i < numMutation; i++) {
+        for (int i = 0; i < numMutation; i++) {
           Mutation mut = mutationChoices[i];
-          mutationRadio[i] = new JRadioButton(mut.getName());
+          mutationRadio[i] = new MutationRadioButton(mut.getName(),
+              mut.getDescription(), mut);
           mutGroup.add(mutationRadio[i]);
           mutType.add(mutationRadio[i]);
 
           Property[] props = mut.getProperties();
-          final HashSet propSet = new HashSet();
-          if(props != null) {
-            for(int j = 0; j < props.length; j++) {
+          HashSet propSet = new HashSet();
+          if (props != null) {
+            for (int j = 0; j < props.length; j++) {
               Property prop = props[j];
               PropPanel pp = new PropPanel(prop);
               propSet.add(pp);
               mutType.add(pp);
             }
           }
+          mutationRadio[i].propertyPanels = propSet;
+
+          // if a mutation type has properties, enable or disable them 
+          // when the mutation type's state changes
           mutationRadio[i].addChangeListener(new AbstractChangeListener() {
             public void stateChanged(ChangeEvent ce) {
               // iterate through the prop panels...
-              Iterator ii = propSet.iterator();
-              boolean isSelected = ((JRadioButton)ce.getSource()).isSelected();
-              while(ii.hasNext()) {
-                PropPanel pp = (PropPanel)ii.next();
+              Iterator ii = ( (MutationRadioButton) ce.getSource()).
+                  propertyPanels.iterator();
+              boolean isSelected = ( (JRadioButton) ce.getSource()).isSelected();
+              while (ii.hasNext()) {
+                PropPanel pp = (PropPanel) ii.next();
                 pp.setEnabled(isSelected);
               }
             }
           });
         }
 
-        crossoverChoices = CrossoverFactory.createCrossoverOptions();
+        Crossover[] crossoverChoices = CrossoverFactory.createCrossoverOptions();
         int numCrossover = crossoverChoices.length;
         int numExtraCrossoverProps = 0;
-        for(int i = 0; i < numCrossover; i++) {
+        for (int i = 0; i < numCrossover; i++) {
           Property[] props = crossoverChoices[i].getProperties();
-          if(props != null)
+          if (props != null) {
             numExtraCrossoverProps += props.length;
+          }
         }
 
         JOutlinePanel xType = new JOutlinePanel("Crossover Technique");
-        xType.setLayout(new GridLayout(numCrossover+numExtraCrossoverProps, 1));
-        crossoverRadio = new JRadioButton[numCrossover];
+        xType.setLayout(new GridLayout(numCrossover + numExtraCrossoverProps, 1));
+        crossoverRadio = new CrossoverRadioButton[numCrossover];
         ButtonGroup crsGroup = new ButtonGroup();
-        for(int i = 0; i < numCrossover; i++) {
+        for (int i = 0; i < numCrossover; i++) {
           Crossover crs = crossoverChoices[i];
-          crossoverRadio[i] = new JRadioButton(crs.getName());
+          crossoverRadio[i] = new CrossoverRadioButton(crs.getName(),
+              crs.getDescription(), crs);
           crsGroup.add(crossoverRadio[i]);
           xType.add(crossoverRadio[i]);
 
           Property[] props = crs.getProperties();
-          final HashSet propSet = new HashSet();
-          if(props != null) {
-            for(int j = 0; j < props.length; j++) {
+          HashSet propSet = new HashSet();
+          if (props != null) {
+            for (int j = 0; j < props.length; j++) {
               Property prop = props[j];
               PropPanel pp = new PropPanel(prop);
               propSet.add(pp);
               xType.add(pp);
             }
           }
+          crossoverRadio[i].propertyPanels = propSet;
+
+          // if a crossover type has properties, enable or disable them 
+          // when the crossover type's state changes
           crossoverRadio[i].addChangeListener(new AbstractChangeListener() {
             public void stateChanged(ChangeEvent ce) {
               // iterate through the prop panels...
-              Iterator ii = propSet.iterator();
-              boolean isSelected = ((JRadioButton)ce.getSource()).isSelected();
-              while(ii.hasNext()) {
-                PropPanel pp = (PropPanel)ii.next();
+              Iterator ii = ( (CrossoverRadioButton) ce.getSource()).
+                  propertyPanels.iterator();
+              boolean isSelected = ( (JRadioButton) ce.getSource()).isSelected();
+              while (ii.hasNext()) {
+                PropPanel pp = (PropPanel) ii.next();
                 pp.setEnabled(isSelected);
               }
             }
           });
         }
 
-        selectionChoices = SelectionFactory.createSelectionOptions();
+        Selection[] selectionChoices = SelectionFactory.createSelectionOptions();
         int numSelection = selectionChoices.length;
         int numExtraSelectionProps = 0;
-        for(int i = 0; i < numSelection; i++) {
+        for (int i = 0; i < numSelection; i++) {
           Property[] props = selectionChoices[i].getProperties();
-          if(props != null)
+          if (props != null) {
             numExtraSelectionProps += props.length;
+          }
         }
 
         JOutlinePanel selType = new JOutlinePanel("Selection Technique");
-        selType.setLayout(new GridLayout(numSelection+numExtraSelectionProps, 1));
-        selectionRadio = new JRadioButton[numSelection];
+        selType.setLayout(new GridLayout(numSelection + numExtraSelectionProps,
+                                         1));
+        selectionRadio = new SelectionRadioButton[numSelection];
         ButtonGroup selGroup = new ButtonGroup();
-        for(int i = 0; i < numSelection; i++) {
+        for (int i = 0; i < numSelection; i++) {
           Selection sel = selectionChoices[i];
-          selectionRadio[i] = new JRadioButton(sel.getName());
+          selectionRadio[i] = new SelectionRadioButton(sel.getName(),
+              sel.getDescription(), sel);
           selGroup.add(selectionRadio[i]);
 
           selType.add(selectionRadio[i]);
           Property[] props = sel.getProperties();
-          final HashSet propSet = new HashSet();
-          if(props != null) {
-            for(int j = 0; j < props.length; j++) {
+          HashSet propSet = new HashSet();
+          if (props != null) {
+            for (int j = 0; j < props.length; j++) {
               Property prop = props[j];
               PropPanel pp = new PropPanel(prop);
               propSet.add(pp);
               selType.add(pp);
             }
           }
+          selectionRadio[i].propertyPanels = propSet;
+
+          // if a selection type has properties, enable or disable them 
+          // when the selection type's state changes
           selectionRadio[i].addChangeListener(new AbstractChangeListener() {
             public void stateChanged(ChangeEvent ce) {
               // iterate through the prop panels...
-              Iterator ii = propSet.iterator();
-              boolean isSelected = ((JRadioButton)ce.getSource()).isSelected();
-              while(ii.hasNext()) {
-                PropPanel pp = (PropPanel)ii.next();
+              Iterator ii = ( (SelectionRadioButton) ce.getSource()).
+                  propertyPanels.iterator();
+              boolean isSelected = ( (JRadioButton) ce.getSource()).isSelected();
+              while (ii.hasNext()) {
+                PropPanel pp = (PropPanel) ii.next();
                 pp.setEnabled(isSelected);
               }
             }
           });
         }
-
-
-        // binary individuals is the default.
-        binaryInd.setSelected(true);
-        binaryIndividualSelected();
 
         this.setLayout(new GridLayout(2, 2));
         add(individualType);
@@ -763,22 +1260,95 @@ public class Params
         add(selType);
       }
 
-      private abstract class AbstractChangeListener implements ChangeListener {}
+      /**
+       * an abstract class that implements the ChangeListener interface.
+       * used as an anonymous inner class in addChangeListener() methods.
+       */
+      private abstract class AbstractChangeListener
+          implements ChangeListener {}
 
-      private class PropPanel extends JPanel {
+      private class MutationRadioButton
+          extends JRadioButton {
+        transient Mutation mutation;
+        transient HashSet propertyPanels;
 
-        JTextField jtf;
-        JLabel label;
+        MutationRadioButton(String n, String d, Mutation m) {
+          super(n);
+          setToolTipText(d);
+          mutation = m;
+        }
+      }
+
+      private class CrossoverRadioButton
+          extends JRadioButton {
+        transient Crossover crossover;
+        transient HashSet propertyPanels;
+
+        CrossoverRadioButton(String n, String d, Crossover c) {
+          super(n);
+          setToolTipText(d);
+          crossover = c;
+        }
+      }
+
+      private class SelectionRadioButton
+          extends JRadioButton {
+        transient Selection selection;
+        transient HashSet propertyPanels;
+
+        SelectionRadioButton(String n, String d, Selection s) {
+          super(n);
+          setToolTipText(d);
+          selection = s;
+        }
+      }
+
+      private class PropPanel
+          extends JPanel {
+        private JTextField jtf;
+        private JLabel label;
+        transient private Property property;
 
         PropPanel(Property prop) {
           // each prop will get a JLabel and an editor.
           // the editor will be a jtextfield
 
+          property = prop;
+
           setLayout(new FlowLayout(FlowLayout.RIGHT));
           label = new JLabel(prop.getName());
+          label.setEnabled(false);
           label.setToolTipText(prop.getDescription());
           jtf = new JTextField(4);
           jtf.setText(prop.getValue().toString());
+          jtf.setEnabled(false);
+          /*jtf.addActionListener(new AbstractAction() {
+            public void actionPerformed(ActionEvent ae) {
+              String txt = jtf.getText();
+              switch (property.getType()) {
+                case (Property.DOUBLE):
+                  try {
+                    Double d = new Double(txt);
+                    property.setValue(d);
+                  }
+                  catch (NumberFormatException nfe) {
+                  }
+                  break;
+                case (Property.INT):
+                  try {
+                    Integer i = new Integer(txt);
+                  }
+                  catch (NumberFormatException nfe) {
+                  }
+                  break;
+                case (Property.STRING):
+                  property.setValue(txt);
+                  break;
+                default:
+                  break;
+              }
+            }
+          });*/
 
           add(label);
           add(jtf);
@@ -790,139 +1360,118 @@ public class Params
         }
       }
 
+      /**
+       * If binary individuals are selected, enable or diable the
+       * appropriate options.
+       *
+       * If an option is usable on a population with binary individuals,
+       * it must implement the BinaryIndividualProcess.
+       *
+       * If an option is usable on a population with real individuals,
+       * it must implement the RealIndividualProcess.
+       *
+       * If an option can be used on either real or binary individuals it
+       * should implement both BinaryIndividualProcess and RealIndividualProcess.
+       */
       private void binaryIndividualSelected() {
-        // for each of the options, loop through and enable/disable appropriate
-        // options
-
-        for(int i = 0; i < mutationChoices.length; i++) {
-          Mutation mut = mutationChoices[i];
-          if(mut instanceof BinaryIndividualProcess) {
+        // only enable the mutation types that implement BinaryIndividualProcess
+        for (int i = 0; i < mutationRadio.length; i++) {
+          Mutation mut = mutationRadio[i].mutation;
+          if (mut instanceof BinaryIndividualProcess) 
             mutationRadio[i].setEnabled(true);
-          }
-          else {
+          else 
             mutationRadio[i].setEnabled(false);
-          }
         }
 
-        for(int i = 0; i < crossoverChoices.length; i++) {
-          Crossover x = crossoverChoices[i];
-          if(x instanceof BinaryIndividualProcess) {
+        // only enable the crossover types that implement BinaryIndividualProcess
+        for (int i = 0; i < crossoverRadio.length; i++) {
+          Crossover x = crossoverRadio[i].crossover;
+          if (x instanceof BinaryIndividualProcess) 
             crossoverRadio[i].setEnabled(true);
-          }
-          else
+          else 
             crossoverRadio[i].setEnabled(false);
         }
 
-        for(int i = 0; i < selectionChoices.length; i++) {
-          Selection sel = selectionChoices[i];
-          if(sel instanceof BinaryIndividualProcess)
+        // only enable the selection types that implement BinaryIndividaulProcesss
+        for (int i = 0; i < selectionRadio.length; i++) {
+          Selection sel = selectionRadio[i].selection;
+          if (sel instanceof BinaryIndividualProcess) 
             selectionRadio[i].setEnabled(true);
-          else
+          else 
             selectionRadio[i].setEnabled(false);
         }
 
+        // get the default mutation type for binary ind
         int defMutation = MutationFactory.getBinaryDefault();
+        // set the default mutation type to be selected
         mutationRadio[defMutation].setSelected(true);
 
+        // get the default crossover type for binary ind
         int defCrossover = CrossoverFactory.getBinaryDefault();
+        // set the default crossover type to be selected
         crossoverRadio[defCrossover].setSelected(true);
 
+        // get the default selection type for binary ind
         int defSelection = SelectionFactory.getBinaryDefault();
+        // set the default selection type for binary ind
         selectionRadio[defSelection].setSelected(true);
       }
 
+      /**
+       * If real individuals are selected, enable or diable the
+       * appropriate options.
+       *
+       * If an option is usable on a population with binary individuals,
+       * it must implement the BinaryIndividualProcess.
+       *
+       * If an option is usable on a population with real individuals,
+       * it must implement the RealIndividualProcess.
+       *
+       * If an option can be used on either real or binary individuals it
+           * should implement both BinaryIndividualProcess and RealIndividualProcess.
+       */
       private void realIndividualSelected() {
-        for(int i = 0; i < mutationChoices.length; i++) {
-          Mutation mut = mutationChoices[i];
-          if(mut instanceof RealIndividualProcess) {
+        // only enable mutation types that implement RealIndividualProcess
+        for (int i = 0; i < mutationRadio.length; i++) {
+          Mutation mut = mutationRadio[i].mutation;
+          if (mut instanceof RealIndividualProcess) 
             mutationRadio[i].setEnabled(true);
-          }
-          else {
+          else 
             mutationRadio[i].setEnabled(false);
-          }
         }
 
-        for(int i = 0; i < crossoverChoices.length; i++) {
-          Crossover x = crossoverChoices[i];
-          if(x instanceof RealIndividualProcess) {
+        // only enable crossover types that implement RealIndividualProcess
+        for (int i = 0; i < crossoverRadio.length; i++) {
+          Crossover x = crossoverRadio[i].crossover;
+          if (x instanceof RealIndividualProcess) 
             crossoverRadio[i].setEnabled(true);
-          }
-          else
+          else 
             crossoverRadio[i].setEnabled(false);
         }
 
-        for(int i = 0; i < selectionChoices.length; i++) {
-          Selection sel = selectionChoices[i];
-          if(sel instanceof RealIndividualProcess)
+        // only enable selection types that implement RealIndividualProcess
+        for (int i = 0; i < selectionRadio.length; i++) {
+          Selection sel = selectionRadio[i].selection;
+          if (sel instanceof RealIndividualProcess) 
             selectionRadio[i].setEnabled(true);
-          else
+          else 
             selectionRadio[i].setEnabled(false);
         }
 
+        // get the default mutation type for real ind
         int defMutation = MutationFactory.getRealDefault();
+        // set the default selection type for real ind
         mutationRadio[defMutation].setSelected(true);
 
+        // get the default mutation type for real ind
         int defCrossover = CrossoverFactory.getRealDefault();
+        // set the default selection type for real ind
         crossoverRadio[defCrossover].setSelected(true);
 
+        // get the default mutation type for real ind
         int defSelection = SelectionFactory.getRealDefault();
+        // set the default selection type for real ind
         selectionRadio[defSelection].setSelected(true);
-      }
-
-      public void actionPerformed(ActionEvent ae) {
-/*        Component src = (Component) ae.getSource();
-
-        if (src instanceof IndividualRadioButton) {
-          individualType = ( (IndividualRadioButton) src).type;
-
-          // if binary..
-          if (individualType == 0) {
-            binaryIndividualSelected();
-            // if real
-          }
-          else {
-            realIndividualSelected();
-          }
-        }
-        else if (src instanceof MutationRadioButton) {
-          mutationType = ( (MutationRadioButton) src).type;
-          // if real mutation, enable N text field
-          if (mutationType == Mutation.REAL_MUTATION) {
-            this.mutationNLabel.setEnabled(true);
-            this.mutationNField.setEnabled(true);
-          }
-          // else disable N text field
-          else {
-            this.mutationNLabel.setEnabled(false);
-            this.mutationNField.setEnabled(false);
-          }
-        }
-        else if (src instanceof SelectionRadioButton) {
-          selectionType = ( (SelectionRadioButton) src).type;
-          // if rank selection, enable selction pressure
-          if (selectionType == Selection.RANK_SELECTION) {
-            this.selPres.setEnabled(true);
-            this.selPressure.setEnabled(true);
-          }
-          // else disable selection pressure
-          else {
-            this.selPres.setEnabled(false);
-            this.selPressure.setEnabled(false);
-          }
-        }
-        else if (src instanceof CrossoverRadioButton) {
-          crossoverType = ( (CrossoverRadioButton) src).type;
-          // if simulated binary crossover, enable N text field
-          // else disable n text field
-          if (crossoverType == Crossover.SIMULATED_BINARY_CROSSOVER) {
-            this.crossoverNLabel.setEnabled(true);
-            this.crossoverNField.setEnabled(true);
-          }
-          else {
-            this.crossoverNLabel.setEnabled(false);
-            this.crossoverNField.setEnabled(false);
-          }
-        }*/
       }
 
       /**
@@ -949,16 +1498,13 @@ public class Params
      * the maximum number of generations, the tournament size,
      * the probability of crossover, the probability of mutation, and
      * the generation gap.
-     *
-         * When the rec. population size is set, the mutation rate will also be set.
      */
     private class ParamsTableModel
         extends DefaultTableModel {
-      String[] col0;
-      String[] col1;
-      String[] col2;
       String[] names = {
           "", "Rec", "Override"};
+
+      String[][] data;
 
       public int getColumnCount() {
         return 3;
@@ -969,26 +1515,20 @@ public class Params
       }
 
       public boolean isCellEditable(int r, int c) {
-        if (c == 2) {
+        if (c == OVERRIDE) {
           return true;
         }
         return false;
       }
 
       public Object getValueAt(int r, int c) {
-        if (c == 0) {
-          return col0[r];
-        }
-        else if (c == 1) {
-          return col1[r];
-        }
-        else {
-          return col2[r];
-        }
+        return data[c][r];
       }
 
       ParamsTableModel() {
-        col0 = new String[] {
+        data = new String[3][6];
+
+        data[0] = new String[] {
             "Starting Population Size",
             "Maximum Number of Generations",
             "Tournament Size",
@@ -996,9 +1536,11 @@ public class Params
             "Probability of Mutation",
             "Generation Gap"};
 
-        col1 = new String[] {
-            "", "100", "4", ".75", "", "1"};
-        col2 = new String[] {
+        data[1] = new String[] {
+            //"", "100", "4", ".75", "", "1"};
+            "", "", "", "", "", ""};
+
+        data[2] = new String[] {
             "", "", "", "", "", ""};
       }
 
@@ -1008,15 +1550,15 @@ public class Params
 
       public void setValueAt(Object value, int r, int c) {
         if (c == 0) {
-          col0[r] = (String) value;
+          data[c][r] = (String) value;
         }
-        else if (c == 1) {
-          col1[r] = (String) value;
-          if (r == 0) {
+        else if (c == REC) {
+          data[c][r] = (String) value;
+          if (r == POP_SIZE) {
             try {
               int popsize = Integer.parseInt( (String) value);
               double mutRate = 1.0 / popsize;
-              setValueAt(Double.toString(mutRate), 4, 1);
+              setValueAt(Double.toString(mutRate), MUTATION_RATE, REC);
               fireTableDataChanged();
             }
             catch (Exception ee) {
@@ -1035,8 +1577,8 @@ public class Params
             }
                      }*/
         }
-        else if (c == 2) {
-          col2[r] = (String) value;
+        else if (c == OVERRIDE) {
+          data[c][r] = (String) value;
         }
       }
     }

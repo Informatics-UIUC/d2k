@@ -15,6 +15,7 @@ public abstract class Selection {
 
   public abstract void performSelection(Population p);
   public abstract String getName();
+  public abstract String getDescription();
 
   public Property[] getProperties() { return null;}
 }

@@ -21,6 +21,11 @@ class TournamentWithoutReplacementWrapper extends Selection
   public void performSelection(Population p) {
     twr.performSelection(p);
   }
+  
+  public String getDescription() {
+    return twr.getModuleInfo();
+  }
+  
 
   public String getName() {
     return "Tournament Without Replacement";

@@ -23,6 +23,7 @@ class SimulatedBinaryCrossoverWrapper
 
   SimulatedBinaryCrossoverWrapper() {
     sbc = new SimulatedBinaryCrossover();
+    n = new NProp();
   }
 
   public void setCrossoverRate(double cr) {
@@ -47,9 +48,12 @@ class SimulatedBinaryCrossoverWrapper
   public String getName() {
     return "Simulated Binary Crossover";
   }
+  
+  public String getDescription() {
+    return sbc.getModuleInfo();
+  }
 
   public Property[] getProperties() {
-    n = new NProp();
     return new Property[] {n};
   }
 

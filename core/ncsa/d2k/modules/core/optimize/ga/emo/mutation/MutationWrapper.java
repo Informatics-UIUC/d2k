@@ -25,4 +25,8 @@ class MutationWrapper
   public String getName() {
     return "Mutation";
   }
+  
+  public String getDescription() {
+    return mm.getModuleInfo();
+  }
 }
