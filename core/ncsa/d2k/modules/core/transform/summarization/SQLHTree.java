@@ -27,7 +27,7 @@ public class SQLHTree extends ComputeModule
   String[] fieldNames;
   String whereClause;
   BinDescriptor[] bins;
-  double support = 0.2;
+  double support = 20.0;
   int maxRuleSize = 5;
   // maximum number of columns that can be included for analysis
   int maxColumn = 25;
@@ -181,7 +181,7 @@ public class SQLHTree extends ComputeModule
 
   // this property is the min acceptable support score.
   public void setSupport (double i)  throws PropertyVetoException {
-  	if( i < 0 || i  >1) throw new PropertyVetoException ("Support must be between 0 and 1", null);
+  	if( i < 0 || i  >100) throw new PropertyVetoException ("Support must be between 0 and 100", null);
     support = i;
   }
   public double getSupport () {
@@ -215,7 +215,7 @@ public class SQLHTree extends ComputeModule
   public PropertyDescription [] getPropertiesDescriptions () {
     PropertyDescription [] pds = new PropertyDescription [2];
     pds[0] = new PropertyDescription ("maxRuleSize", "Maximum Rule Size", "The maximum number of components in each rule is restricted by Maximum Rule Size.");
-    pds[1] = new PropertyDescription ("support", "Minimum Support", "If the occurrence ratio of a rule is below Minimum Support, it is pruned.");
+    pds[1] = new PropertyDescription ("support", "Minimum Support %", "If the occurrence ratio of a rule is below the Minimum Support, it is pruned.");
     return pds;
   }
 
@@ -237,7 +237,7 @@ public class SQLHTree extends ComputeModule
 
     totalRow = getRowCount(tableName);
     if (totalRow > 0) {
-      cutOff = totalRow * support;
+      cutOff = totalRow * support / 100;
       if (setColumnList()) {
         sortColumnList();
         // to avoid exponential computation, the maxRuleSize is only allowed up to 5
