@@ -87,15 +87,22 @@ public class PieChart2D extends VisModule {
    public int getRatiosColumn() { return _ratiosColumn; }
    public void setRatiosColumn(int value) { _ratiosColumn = value; }
 
+   private int _maxLegendRows = 5;
+   public int getMaxLegendRows() { return _maxLegendRows; }
+   public void setMaxLegendRows(int value) {  _maxLegendRows = value; }
+
    public PropertyDescription[] getPropertiesDescriptions() {
 
-      PropertyDescription[] pds = new PropertyDescription[2];
+      PropertyDescription[] pds = new PropertyDescription[3];
 
       pds[0] = new PropertyDescription("labelsColumn", "Labels column",
          "Specifies which column of the table contains the data labels.");
 
       pds[1] = new PropertyDescription("ratiosColumn", "Ratios column",
          "Specifies which column of the table contains the data ratios.");
+
+      pds[2] = new PropertyDescription("maxLegendRows", "Max Legend Rows",
+         "Specifies the maximum number of rows drawn in the chart's legend.");
 
       return pds;
 
@@ -129,7 +136,7 @@ public class PieChart2D extends VisModule {
          settings.xaxis = xaxis;
          settings.yaxis = yaxis;
 
-         add(new JScrollPane(new PieChart(table, set, settings, true)));
+         add(new JScrollPane(new PieChart(table, set, settings, true, _maxLegendRows)));
 
       }
 

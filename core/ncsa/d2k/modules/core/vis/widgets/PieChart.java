@@ -22,8 +22,9 @@ public class PieChart extends Chart {
       Create a new PieChart that normalizes the data.  Each item
       will be represented as a fraction of 1.0
    */
-   public PieChart(Table vt, DataSet ds, GraphSettings gs, boolean normalize) {
-      this(vt, ds, gs);
+   public PieChart(Table vt, DataSet ds, GraphSettings gs, boolean normalize,
+      int maxLegendRows) {
+      this(vt, ds, gs, maxLegendRows);
 
       DoubleColumn dc = new DoubleColumn(bins);
       ObjectColumn oc = new ObjectColumn(bins);
@@ -51,6 +52,20 @@ public class PieChart extends Chart {
    */
    public PieChart(Table vt, DataSet ds, GraphSettings gs) {
       super(vt, ds, gs);
+
+      setBackground(Color.white);
+
+      title = settings.title;
+   }
+
+   /**
+      Create a new PieChart with the data already normalized.
+   */
+   public PieChart(Table vt, DataSet ds, GraphSettings gs, int maxLegendRows) {
+      super(vt, ds, gs);
+
+      if (maxLegendRows > 0)
+         max_legend_rows = maxLegendRows;
 
       setBackground(Color.white);
 
