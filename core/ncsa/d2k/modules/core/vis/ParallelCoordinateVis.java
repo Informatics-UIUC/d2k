@@ -566,7 +566,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 			}
 			else if(src == miShowTable || src == showTable) {
 				JD2KFrame frame = new JD2KFrame("Table");
-				VerticalTableMatrix vtm = new VerticalTableMatrix(table);
+				TableMatrix vtm = new TableMatrix(table);
 				frame.getContentPane().add(vtm);
 				frame.addWindowListener(new DisposeOnCloseListener(frame));
 				frame.pack();

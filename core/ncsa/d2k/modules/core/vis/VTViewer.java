@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.vis;
 
-import ncsa.d2k.modules.core.vis.widgets.VerticalTableMatrix;
+import ncsa.d2k.modules.core.vis.widgets.TableMatrix;
 import ncsa.d2k.modules.core.io.file.output.WriteVTToFile;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.UserView;
@@ -132,7 +132,7 @@ public class VTViewer extends UIModule implements HasNames {
 	   VerticalTable.
     */
     public class TableView extends JUserPane implements ActionListener{
-		VerticalTableMatrix matrix;
+		TableMatrix matrix;
 		/** the table with data */
 		protected TableImpl table = null;
 		/** a reference to our parent module */
@@ -183,7 +183,7 @@ public class VTViewer extends UIModule implements HasNames {
 			    buttonPanel.add(ok);
 
 				// create the matrix
-				matrix = new VerticalTableMatrix(table);
+				matrix = new TableMatrix(table);
 				// add everything to this
 				add(matrix, BorderLayout.CENTER);
 				add(buttonPanel, BorderLayout.SOUTH);

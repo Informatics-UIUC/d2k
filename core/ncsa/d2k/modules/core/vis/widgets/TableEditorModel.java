@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.util.ErrorDialog;
 
 import javax.swing.JComboBox;
@@ -10,7 +9,7 @@ import javax.swing.JComboBox;
 	This VerticalTable model allows the cells in the table to be edited.
 	@author David Clutter
 */
-public class TableEditorModel extends VerticalTableModel {
+public class TableEditorModel extends TableViewerModel {
 
 	JComboBox []dataTypes;
 	static String DATATYPE = "type";
@@ -20,7 +19,7 @@ public class TableEditorModel extends VerticalTableModel {
 		@param t the table to display
 		@param b an array of combo boxes to display in the first row
 	*/
-	public TableEditorModel(TableImpl t, JComboBox[] b) {
+	public TableEditorModel(Table t, JComboBox[] b) {
 		super(t);
 		dataTypes = b;
 	}
@@ -74,7 +73,8 @@ public class TableEditorModel extends VerticalTableModel {
 		if(row == 0)
 			return;
 		try {
-			table.setString(value.toString(), row-1, col-1);
+			if(table instanceof MutableTable)
+				((MutableTable)table).setString(value.toString(), row-1, col-1);
 		}
 		catch(Exception e) {
 			ErrorDialog.showDialog("Could not set the value at "+

@@ -14,15 +14,15 @@ import javax.swing.table.*;
 	model.  A subclass may allow cells in the table to be edited, however.
 	@author David Clutter
 */
-public class VerticalTableModel extends AbstractTableModel {
+public class TableViewerModel extends AbstractTableModel {
 	/** The VerticalTable that holds the data */
-	protected TableImpl table;
+	protected Table table;
 
 	/**
 		Constructor.
 		@param vt The VerticalTable that we represent
 	*/
-	public VerticalTableModel(TableImpl vt) {
+	public TableViewerModel(Table vt) {
 		table = vt;
 	}
 

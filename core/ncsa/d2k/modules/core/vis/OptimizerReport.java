@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.vis;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.swing.JUserPane;
-import ncsa.d2k.modules.core.vis.widgets.VerticalTableMatrix;
+import ncsa.d2k.modules.core.vis.widgets.TableMatrix;
 import ncsa.gui.JEasyConstrainsPanel;
 import javax.swing.*;
 import java.awt.*;
@@ -70,7 +70,7 @@ public class OptimizerReport extends VisModule
 		implements java.io.Serializable, ActionListener{
 
 		TableImpl vt;
-		VerticalTableMatrix vtm;
+		TableMatrix vtm;
 
 		ButtonGroup radios;
 		JRadioButton ascendButton;
@@ -126,7 +126,7 @@ public class OptimizerReport extends VisModule
 				vt=(VerticalTable)vt.reOrderRows(newOrder);
 			}
 			*/
-			vtm=new VerticalTableMatrix(vt);
+			vtm=new TableMatrix(vt);
 			JTable vtTable=vtm.getJTable();
 			if(vt.getNumColumns()<6)
 				vtTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);

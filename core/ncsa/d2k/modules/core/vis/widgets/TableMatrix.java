@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -15,11 +14,11 @@ import javax.swing.table.*;
 	up to a maximum of 500x500.
 	@author David Clutter
 */
-public class VerticalTableMatrix extends JScrollPane {
+public class TableMatrix extends JScrollPane {
 	/** the gui table that is shown */
 	protected JTable jTable = null;
 	/** the table model for the JTable */
-	protected VerticalTableModel tm = null;
+	protected TableViewerModel tm = null;
 	/** The header column */
 	protected JTable headerColumn = null;
 
@@ -30,8 +29,8 @@ public class VerticalTableMatrix extends JScrollPane {
 		Create a new VerticalTableMatrix
 		@param table the VerticalTable to display
 	*/
-	public VerticalTableMatrix(TableImpl table) {
-	    tm = new VerticalTableModel(table);
+	public TableMatrix(Table table) {
+	    tm = new TableViewerModel(table);
 		init();
 	}
 
@@ -39,7 +38,7 @@ public class VerticalTableMatrix extends JScrollPane {
 		Create a new VerticalTableMatrix
 		@param mdl the table model for the JTable
 	*/
-	public VerticalTableMatrix(VerticalTableModel mdl) {
+	public TableMatrix(TableViewerModel mdl) {
 		tm = mdl;
 		init();
 	}

@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.vis;
 
 import ncsa.d2k.modules.core.vis.widgets.TableEditorModel;
-import ncsa.d2k.modules.core.vis.widgets.VerticalTableMatrix;
+import ncsa.d2k.modules.core.vis.widgets.TableMatrix;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
@@ -83,7 +83,7 @@ public class VTEditor extends VTViewer {
 				setupTypes();
 
 				// create the matrix
-				matrix = new VerticalTableMatrix(
+				matrix = new TableMatrix(
 					new TableEditorModel(table, types));
 
 				TableColumnModel tc = matrix.getJTable().getColumnModel();
