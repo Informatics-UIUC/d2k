@@ -31,7 +31,7 @@ public class BrowseTablesView extends JD2KFrame
    implements ActionListener
 {
   BrowseTables bt;
-  JTable table; // The table for displaying available database tables
+  JTable aTable; // The table for displaying available database tables
   JButton okBtn; // Button for choosing a table
   int selectedRow;
   TableModel model;
@@ -47,9 +47,9 @@ public class BrowseTablesView extends JD2KFrame
     // remember the BrowseTables object that was passed to us
     this.bt = t;
     // create the Swing components we'll be using
-    table = new JTable();
-    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    ListSelectionModel rowSM = table.getSelectionModel();
+    aTable = new JTable();
+    aTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    ListSelectionModel rowSM = aTable.getSelectionModel();
     rowSM.addListSelectionListener(new ListSelectionListener() {
       /**
        * Detect a row has been selected
@@ -73,7 +73,7 @@ public class BrowseTablesView extends JD2KFrame
     });
     // Place the components within this window
     Container contentPane = getContentPane();
-    contentPane.add(new JScrollPane(table), BorderLayout.CENTER);
+    contentPane.add(new JScrollPane(aTable), BorderLayout.CENTER);
     okBtn = new JButton("OK");
     okBtn.setSize(5,5);
     okBtn.addActionListener(this);
@@ -92,7 +92,7 @@ public class BrowseTablesView extends JD2KFrame
       try {
       // Use the BrowseTables object to obtain a TableModel object for
       // the query results and display that model in the JTable component.
-        table.setModel(bt.getResultSetTableModel(q));
+        aTable.setModel(bt.getResultSetTableModel(q));
       }
       catch (SQLException ex) {
         JOptionPane.showMessageDialog(msgBoard,
@@ -110,7 +110,6 @@ public class BrowseTablesView extends JD2KFrame
     Object src = e.getSource();
     if (src == okBtn)
     {
-      System.out.println("OK button is pressed");
       dispose();
     }
   }
@@ -120,7 +119,7 @@ public class BrowseTablesView extends JD2KFrame
    */
   public String getChosenRow()
   {
-      model = table.getModel();
+      model = aTable.getModel();
       chosenTableName = model.getValueAt(selectedRow,0).toString();
       return (chosenTableName);
   }
