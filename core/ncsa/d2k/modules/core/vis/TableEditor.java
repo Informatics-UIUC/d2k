@@ -21,21 +21,45 @@ public class TableEditor extends TableViewer {
 
   public String getModuleInfo() {
     String info = "<p>Overview: ";
-    info += "This module displays a table and allows the cells to be changed. ";
-    info += "The first row of the table contains combo boxes that change the datatype associated with each column. ";
+    info += "This module displays a table and allows it to be edited. ";
+
     info += "</p><p>Detailed Description: ";
-    info += "This module can change the value of a cell and the datatype of the cells in a column. ";
-    info += "If an incongruous value is entered in a cell, a message is displayed and the cell is not changed. ";
-    info += "If the datatype is changed then the values of the cells are immediately converted. ";
-    info += "If the conversion fails, a message is displayed and the cells are not changed. ";
-    info += "The rows of the table can also be removed.";
+    info += "This module can be used to edit a table in a variety of ways. ";
+    info += "The value of an individual cell can be edited directly by clicking on the cell and entering the new value. ";
+    info += "The datatype of an attribute (column) can be changed by clicking on the column's datatype and using the ";
+    info += "combo box that appears to select a new datatype. ";
+    info += "One or more rows can be deleted from the table by highlighting the rows that are to be removed, and then ";
+    info += "selecting the menu bar option <i>Edit->Remove Rows</i>. ";
+
+    info += "</p><p>";
+    info += "The module performs sanity checks when a cell value is changed, or when a column datatype is changed, to ";
+    info += "make sure that the new selection is valid.  ";
+    info += "In particular, if an incongruous value is entered in a cell, a message is displayed and the cell is not changed. ";
+    info += "If a column datatype is changed, and the conversion fails, a message is displayed and the datatypes of the cells in the ";
+    info += "column are not updated. ";
+
+    info += "</p><p>";
+    info += "The <i>File</i> pull-down menu offers a <i>Save</i> option to ";
+    info += "save the displayed table to a tab-delimited file. ";
+    info += "A file browser window pops up, allowing the user to select ";
+    info += "where the table should be saved. ";
+    info += "Missing values in the table appear as blanks in the saved file. ";
+
+    info += "</p><p>Known Limitations in Current Release: ";
+    info += "This module was designed to work with a single input table per itinerary run. ";
+    info += "It will not work properly if it receives multiple inputs per run. ";
+    info += "If you accidently direct multiple inputs to the module, it may be necessary ";
+    info += "to resize the Table Editor Window before the table contents and <i>Abort</i> ";
+    info += "and <i>Done</i> buttons are visible and/or operational.   Until you resize, it may ";
+    info += "seem that you have no way to stop the itinerary and correct the problem. ";
+
     info += "</p><p>Data Handling: ";
-    info += "The data of the input table is obviously changed. The changed table can also be saved to a file.";
+    info += "The data in the input <i>Table</i> is changed during the edit process.";
     return info;
   }
 
   public String getModuleName() {
-    return "Edit Table Data";
+    return "Table Editor";
   }
 
   /**
@@ -55,8 +79,8 @@ public class TableEditor extends TableViewer {
    */
   public String getInputInfo(int i) {
     switch (i) {
-      case 0: return "The MutableTable to edit.";
-      default: return "No such input";
+      case 0: return "The table to edit.";
+      default: return "No such input.";
     }
   }
 
@@ -68,7 +92,7 @@ public class TableEditor extends TableViewer {
   public String getInputName(int index) {
     switch(index) {
       case 0:
-        return "MutableTable";
+        return "Table";
       default: return "No such input";
     }
   }
@@ -81,7 +105,7 @@ public class TableEditor extends TableViewer {
   public String getOutputName(int index) {
     switch(index) {
       case 0:
-        return "MutableTable";
+        return "Edited Table";
       default: return "No such output";
     }
   }
@@ -103,8 +127,8 @@ public class TableEditor extends TableViewer {
        */
   public String getOutputInfo(int i) {
     switch (i) {
-      case 0: return "The MutableTable with any changes that were made.";
-      default: return "No such output";
+      case 0: return "The table after the edits.";
+      default: return "No such output.";
     }
   }
 
@@ -186,7 +210,6 @@ public class TableEditor extends TableViewer {
         // Add everything to this
         add(matrix, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
-        //addKeyListener(this);
       }
     }
 
@@ -230,7 +253,6 @@ public class TableEditor extends TableViewer {
       }
 
       public boolean isCellEditable(EventObject anEvent) {
-        //return editor.isCellEditable(anEvent);
         return true;
       }
 
@@ -256,34 +278,11 @@ public class TableEditor extends TableViewer {
      Setup the types column.
      */
     protected void setupTypes() {
-      //Column c;
       types = new JComboBox[table.getNumColumns()];
       indices = new int[table.getNumColumns()];
       for(int i = 0; i < types.length; i++) {
         types[i] = new JComboBox(typeList);
         map.put(types[i], new Integer(i));
-
-        /*
-        c = table.getColumn(i);
-        if(c instanceof ByteArrayColumn)
-        types[i].setSelectedItem(BYTE_ARRAY_TYPE);
-        else if(c instanceof DoubleColumn)
-        types[i].setSelectedItem(DOUBLE_TYPE);
-        else if(c instanceof IntColumn)
-        types[i].setSelectedItem(INT_TYPE);
-        else if(c instanceof StringColumn)
-        types[i].setSelectedItem(STRING_TYPE);
-        else if(c instanceof BooleanColumn)
-        types[i].setSelectedItem(BOOLEAN_TYPE);
-        else if(c instanceof CharArrayColumn)
-        types[i].setSelectedItem(CHAR_ARRAY_TYPE);
-        else if(c instanceof FloatColumn)
-        types[i].setSelectedItem(FLOAT_TYPE);
-        else if(c instanceof LongColumn)
-        types[i].setSelectedItem(LONG_TYPE);
-        else if(c instanceof ShortColumn)
-        types[i].setSelectedItem(SHORT_TYPE);
-        */
 
         switch(table.getColumnType(i)) {
           case ColumnTypes.INTEGER:
@@ -335,22 +334,15 @@ public class TableEditor extends TableViewer {
      type.
      */
     protected void convertTable() {
-      //Column newCol;
-      //Column origCol;
       for(int i = 0; i < types.length; i++)
         convertColumn(i);
     }
 
     protected void convertColumn(int i) {
       String selected = (String) types[i].getSelectedItem();
-      //newCol = null;
-      //origCol = table.getColumn(i);
 
       try {
         if(selected.equals(DOUBLE_TYPE)) {
-          //	if(!(table.getColumn(i) instanceof DoubleColumn)) {
-          //		newCol = ColumnUtilities.toDoubleColumn(origCol);
-          //	}
           if(!(table.getColumnType(i) == ColumnTypes.DOUBLE)) {
 
             String lbl = table.getColumnLabel(i);
@@ -380,9 +372,6 @@ public class TableEditor extends TableViewer {
           }
         }
         else if(selected.equals(INT_TYPE)) {
-          //	if(!(table.getColumn(i) instanceof IntColumn)) {
-          //		newCol = ColumnUtilities.toIntColumn(origCol);
-          //	}
           if(!(table.getColumnType(i) == ColumnTypes.INTEGER)) {
 
             String lbl = table.getColumnLabel(i);
@@ -412,9 +401,6 @@ public class TableEditor extends TableViewer {
 
         }
         else if(selected.equals(STRING_TYPE)) {
-          //	if(!(table.getColumn(i) instanceof StringColumn)) {
-          //		newCol = ColumnUtilities.toStringColumn(origCol);
-          //	}
           if(!(table.getColumnType(i) == ColumnTypes.STRING)) {
 
             String lbl = table.getColumnLabel(i);
@@ -447,9 +433,6 @@ public class TableEditor extends TableViewer {
           }
         }
         else if(selected.equals(BYTE_ARRAY_TYPE)) {
-          //	if(!(table.getColumn(i) instanceof ByteArrayColumn)) {
-          //		newCol = ColumnUtilities.toByteArrayColumn(origCol);
-          //	}
           if(!(table.getColumnType(i) == ColumnTypes.BYTE_ARRAY)) {
 
             String lbl = table.getColumnLabel(i);
@@ -479,9 +462,6 @@ public class TableEditor extends TableViewer {
           }
         }
         else if(selected.equals(CHAR_ARRAY_TYPE)) {
-          //	if(!(table.getColumn(i) instanceof CharArrayColumn)) {
-          //		newCol = ColumnUtilities.toCharArrayColumn(origCol);
-          //	}
           if(!(table.getColumnType(i) == ColumnTypes.CHAR_ARRAY)) {
 
             String lbl = table.getColumnLabel(i);
@@ -513,9 +493,6 @@ public class TableEditor extends TableViewer {
           }
         }
         else if(selected.equals(FLOAT_TYPE)) {
-          //	if(!(table.getColumn(i) instanceof FloatColumn)) {
-          //		newCol = ColumnUtilities.toFloatColumn(origCol);
-          //	}
           if(!(table.getColumnType(i) == ColumnTypes.FLOAT)) {
 
             String lbl = table.getColumnLabel(i);
@@ -545,9 +522,6 @@ public class TableEditor extends TableViewer {
           }
         }
         else if(selected.equals(LONG_TYPE)) {
-          //	if(!(table.getColumn(i) instanceof LongColumn)) {
-          //		newCol = ColumnUtilities.toLongColumn(origCol);
-          //	}
           if(!(table.getColumnType(i) == ColumnTypes.LONG)) {
 
             String lbl = table.getColumnLabel(i);
@@ -577,9 +551,6 @@ public class TableEditor extends TableViewer {
           }
         }
         else if(selected.equals(SHORT_TYPE)) {
-          //	if(!(table.getColumn(i) instanceof ShortColumn)) {
-          //		newCol = ColumnUtilities.toShortColumn(origCol);
-          //	}
           if(!(table.getColumnType(i) == ColumnTypes.SHORT)) {
 
             String lbl = table.getColumnLabel(i);
@@ -609,9 +580,6 @@ public class TableEditor extends TableViewer {
           }
         }
         else if(selected.equals(BOOLEAN_TYPE)) {
-          //	if(!(table.getColumn(i) instanceof BooleanColumn)) {
-          //		newCol = ColumnUtilities.toBooleanColumn(origCol);
-          //	}
           if(!(table.getColumnType(i) == ColumnTypes.BOOLEAN)) {
 
             String lbl = table.getColumnLabel(i);
@@ -707,9 +675,6 @@ public class TableEditor extends TableViewer {
           ErrorDialog.showDialog("Could not convert column type", "Conversion Error");
       }
 
-      /*if(newCol != null)
-      table.setColumn(newCol, i);
-      */
     }
 
     protected void removeRows() {
@@ -750,16 +715,15 @@ public class TableEditor extends TableViewer {
       super.finishUp();
     }
 
-    /*public void keyTyped(KeyEvent e) {}
-    public void keyPressed(KeyEvent e) {
-    if(e.getKeyCode() == KeyEvent.VK_DELETE) {
-    int[] rows = matrix.getSelectedRows();
-    int[] cols = matrix.getSelectedColumns();
-    for(int i = 0; i < rows.length; i++)
-    System.out.println(rows[i]);
-    }
-    }
-    public void keyReleased(KeyEvent e) {}
-    */
   }
 }
+
+// Start QA comments
+// 4/5/03 - Ruth resumed QA after what Vered started initially.
+//          Updated module name and info;   2 problems reported to Greg.
+//          1) if you edit a cell and then hit "Done" before clicking on another cell the update
+//          of the cell value doesn't occur.    2) If you change a column type to an illegal value
+//          you get the Exception box "Could not convert column type" two times.  Haven't
+//          yet tested w/ 'other' table types.  Vered had reported the types of conversions
+//          allowed weren't consistent across types.
+// End QA comments.
