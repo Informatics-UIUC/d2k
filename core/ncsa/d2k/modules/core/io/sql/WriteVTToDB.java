@@ -116,6 +116,14 @@ public class WriteVTToDB extends UIModule
     public String getOutputName (int i) {
         return null;
     }
+
+	    //QA Anca added this: 
+	    public PropertyDescription[] getPropertiesDescriptions() {  
+		// so that "WindowName" property is invisible  
+		return new PropertyDescription[0];   
+	    } 
+
+
     /**
         Get the field name map for this module-view combination.
         @return The field name map.
