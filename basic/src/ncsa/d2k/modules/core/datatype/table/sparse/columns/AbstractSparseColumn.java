@@ -335,7 +335,7 @@ abstract public class AbstractSparseColumn
    *                returns false.
    */
   public boolean isValueDefault(int pos) {
-    return ( ( (VHashMap) getElements()).containsKey(pos));
+    return (! ( (VHashMap) getElements()).containsKey(pos));
   }
 
   /**

@@ -7,6 +7,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.examples.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 //==============
 // Java Imports
@@ -25,7 +26,7 @@ import java.util.*;
  */
 
 public class SparseExampleTable
-    extends SparseMutableTable
+    extends SparseSubsetTable
     implements ExampleTable {
 
   //==============
@@ -33,19 +34,19 @@ public class SparseExampleTable
   //==============
 
   /** the indicies of the records in the various training sets. */
-  protected int[] trainSet;
+  protected int[] trainSet = new int[0];
 
   /** the indicies of the records in the various test sets. */
-  protected int[] testSet;
+  protected int[] testSet = new int[0];
 
   /**the indicies of the attributes that are inputs (to the model). */
-  protected int[] inputColumns;
+  protected int[] inputColumns = new int[0];
 
   /**the indicies of the attributes that are inputs (to the model). */
-  protected int[] outputColumns;
+  protected int[] outputColumns = new int[0];
 
-  protected String[] outputNames;
-  protected String[] inputNames;
+  protected String[] outputNames = new String[0];
+  protected String[] inputNames = new String[0];
 
   //================
   // Constructor(s)
@@ -60,14 +61,14 @@ public class SparseExampleTable
     trainSet = null;
   }
 
-  /* Creates an empty table with the specified size */
-  public SparseExampleTable(int numRows, int numColumns) {
-    super(numRows, numColumns);
-    inputColumns = null;
-    outputColumns = null;
-    testSet = null;
-    trainSet = null;
-  }
+//  /* Creates an empty table with the specified size */
+//  public SparseExampleTable(int numRows, int numColumns) {
+//    super(numRows, numColumns);
+//    inputColumns = null;
+//    outputColumns = null;
+//    testSet = null;
+//    trainSet = null;
+//  }
 
   /* Instantiate this table with the content of <codE>table</code>*/
   public SparseExampleTable(SparseTable table) {
@@ -83,9 +84,81 @@ public class SparseExampleTable
     }
   }
 
+  /* Instantiate this table with the content of <codE>table</code>*/
+  public SparseExampleTable(int numcols) {
+    super(numcols);
+    inputColumns = null;
+    outputColumns = null;
+    testSet = null;
+    trainSet = null;
+  }
+
+  /* Instantiate this table with the content of <codE>table</code>*/
+  public SparseExampleTable(Column[] cols) {
+    super(cols);
+    inputColumns = null;
+    outputColumns = null;
+    testSet = null;
+    trainSet = null;
+  }
+
+  /* Instantiate this table with the content of <codE>table</code>*/
+  public SparseExampleTable(SparseTable table, int[] ss) {
+    super(table, ss);
+    if (table instanceof SparseExampleTable) {
+      copyArrays( (SparseExampleTable) table);
+    }
+    else {
+      inputColumns = null;
+      outputColumns = null;
+      testSet = null;
+      trainSet = null;
+    }
+  }
+
+  /* Instantiate this table with the content of <codE>table</code>*/
+  public SparseExampleTable(Column[] cols, int[] ss) {
+    super(cols, ss);
+    inputColumns = null;
+    outputColumns = null;
+    testSet = null;
+    trainSet = null;
+  }
+
+  //===================================================================
+  //===================================================================
+
+  protected void copyArrays(SparseExampleTable table) {
+    if (table.inputColumns != null) {
+      inputColumns = copyArray(table.inputColumns);
+    }
+    if (table.outputColumns != null) {
+      outputColumns = copyArray(table.outputColumns);
+    }
+    if (table.testSet != null) {
+      testSet = copyArray(table.testSet);
+    }
+    if (table.trainSet != null) {
+      trainSet = copyArray(table.trainSet);
+    }
+  }
+
+  protected int[] copyArray(int[] arr) {
+    int[] retVal = new int[arr.length];
+    System.arraycopy(arr, 0, retVal, 0, retVal.length);
+    return retVal;
+  }
+
   //=========================================================================
   //                      Example Table Interface
   //=========================================================================
+
+  /**
+   * Returns a SparsePredictionTable with the content of this table
+   */
+  public PredictionTable toPredictionTable() {
+    return new SparsePredictionTable(this);
+  }
 
   /**
    * returns an int array containing indices of input columns of this table.
@@ -224,6 +297,131 @@ public class SparseExampleTable
   }
 
   /**
+   * Decrement any items in test or train that are greater than position
+   * Also remove position from either set if it exists
+   * @param position
+   */
+  protected void decrementInOut(int position) {
+    boolean containsPos = false;
+    int idx = -1;
+
+    if (inputColumns != null) {
+      for (int i = 0; i < inputColumns.length; i++) {
+        if (inputColumns[i] == position) {
+          containsPos = true;
+          idx = i;
+        }
+        if (containsPos) {
+          break;
+        }
+      }
+
+      // if the test set contained pos, remove the item
+      if (containsPos) {
+        int[] newin = new int[inputColumns.length - 1];
+        int idd = 0;
+        for (int i = 0; i < inputColumns.length; i++) {
+          if (i != idx) {
+            newin[idd] = inputColumns[i];
+            idd++;
+          }
+        }
+        setInputFeatures(newin);
+      }
+
+      //adjust input/output array values to account for column indice shifts -- DDS
+      int[] newin = this.getInputFeatures();
+      for (int i = 0, n = newin.length; i < n; i++) {
+        if (newin[i] > position) {
+          newin[i]--;
+        }
+      }
+      this.setInputFeatures(newin);
+    }
+
+    containsPos = false;
+    idx = -1;
+
+    if (outputColumns != null) {
+
+      for (int i = 0; i < outputColumns.length; i++) {
+        if (outputColumns[i] == position) {
+          containsPos = true;
+          idx = i;
+        }
+        if (containsPos) {
+          break;
+        }
+      }
+
+      // if the test set contained pos, remove the item
+      if (containsPos) {
+        int[] newout = new int[outputColumns.length - 1];
+        int idd = 0;
+        for (int i = 0; i < outputColumns.length; i++) {
+          if (i != idx) {
+            newout[idd] = outputColumns[i];
+            idd++;
+          }
+        }
+        setOutputFeatures(newout);
+      }
+
+      //adjust input/output array values to account for column indice shifts -- DDS
+      int[] newout = this.getOutputFeatures();
+      for (int i = 0, n = newout.length; i < n; i++) {
+        if (newout[i] > position) {
+          newout[i]--;
+        }
+      }
+      this.setOutputFeatures(newout);
+    }
+
+  }
+
+
+  /**
+       Remove a column from the table.
+       @param position the position of the Column to remove
+   */
+  public void removeColumn(int position) {
+    decrementInOut(position);
+    super.removeColumn(position);
+  }
+
+  /**
+   Remove a range of columns from the table.
+   @param start the start position of the range to remove
+   @param len the number to remove-the length of the range
+   */
+  public void removeColumns(int start, int len) {
+    for (int i = start; i < len; i++) {
+      removeColumn(start);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /**
    * Returns a SparseTestTable with the content of this table
    */
   public Table getTestTable() {
@@ -237,12 +435,6 @@ public class SparseExampleTable
     return new SparseTrainTable(this);
   }
 
-  /**
-   * Returns a SparsePredictionTable with the content of this table
-   */
-  public PredictionTable toPredictionTable() {
-    return new SparsePredictionTable(this);
-  }
 
   //========================================================================
   //        DATA ACCESSOR METHODS FOR ExampleTable INTERFACE
@@ -852,26 +1044,6 @@ public class SparseExampleTable
 
 
 
-  protected void copyArrays(SparseExampleTable table) {
-    if (table.inputColumns != null) {
-      inputColumns = copyArray(table.inputColumns);
-    }
-    if (table.outputColumns != null) {
-      outputColumns = copyArray(table.outputColumns);
-    }
-    if (table.testSet != null) {
-      testSet = copyArray(table.testSet);
-    }
-    if (table.trainSet != null) {
-      trainSet = copyArray(table.trainSet);
-    }
-  }
-
-  protected int[] copyArray(int[] arr) {
-    int[] retVal = new int[arr.length];
-    System.arraycopy(arr, 0, retVal, 0, retVal.length);
-    return retVal;
-  }
 
 
   /**
@@ -1542,25 +1714,6 @@ public class SparseExampleTable
     super.insertColumn(newEntry, position);
   }
 
-  /**
-       Remove a column from the table.
-       @param position the position of the Column to remove
-   */
-  public void removeColumn(int position) {
-    decrementInOut(position);
-    super.removeColumn(position);
-  }
-
-  /**
-   Remove a range of columns from the table.
-   @param start the start position of the range to remove
-   @param len the number to remove-the length of the range
-   */
-  public void removeColumns(int start, int len) {
-    for (int i = start; i < len; i++) {
-      removeColumn(i);
-    }
-  }
 
   /**
    * Remove a row from this Table.
@@ -1770,88 +1923,6 @@ public class SparseExampleTable
     }
   }
 
-  /**
-   * Decrement any items in test or train that are greater than position
-   * Also remove position from either set if it exists
-   * @param position
-   */
-  protected void decrementInOut(int position) {
-    boolean containsPos = false;
-    int idx = -1;
-
-    if (inputColumns != null) {
-      for (int i = 0; i < inputColumns.length; i++) {
-        if (inputColumns[i] == position) {
-          containsPos = true;
-          idx = i;
-        }
-        if (containsPos) {
-          break;
-        }
-      }
-
-// if the test set contained pos, remove the item
-      if (containsPos) {
-        int[] newin = new int[inputColumns.length - 1];
-        int idd = 0;
-        for (int i = 0; i < inputColumns.length; i++) {
-          if (i != idx) {
-            newin[idd] = inputColumns[i];
-            idd++;
-          }
-        }
-        setInputFeatures(newin);
-      }
-
-      //adjust input/output array values to account for column indice shifts -- DDS
-      int[] newin = this.getInputFeatures();
-      for (int i = 0, n = newin.length; i < n; i++) {
-        if (newin[i] > position) {
-          newin[i]--;
-        }
-      }
-      this.setInputFeatures(newin);
-    }
-
-    containsPos = false;
-    idx = -1;
-
-    if (outputColumns != null) {
-
-      for (int i = 0; i < outputColumns.length; i++) {
-        if (outputColumns[i] == position) {
-          containsPos = true;
-          idx = i;
-        }
-        if (containsPos) {
-          break;
-        }
-      }
-
-// if the test set contained pos, remove the item
-      if (containsPos) {
-        int[] newout = new int[outputColumns.length - 1];
-        int idd = 0;
-        for (int i = 0; i < outputColumns.length; i++) {
-          if (i != idx) {
-            newout[idd] = outputColumns[i];
-            idd++;
-          }
-        }
-        setOutputFeatures(newout);
-      }
-
-      //adjust input/output array values to account for column indice shifts -- DDS
-      int[] newout = this.getOutputFeatures();
-      for (int i = 0, n = newout.length; i < n; i++) {
-        if (newout[i] > position) {
-          newout[i]--;
-        }
-      }
-      this.setOutputFeatures(newout);
-    }
-
-  }
 
   /**
    * For every p1 in test/train, put in p2.

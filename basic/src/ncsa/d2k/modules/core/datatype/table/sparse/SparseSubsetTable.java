@@ -41,56 +41,59 @@ public class SparseSubsetTable extends SparseMutableTable {
     subset = new int[0];
   }
 
-//  /**
-//   * We are given a table and the subset of the table to apply. The array
-//   * of indices contains the indexes of the rows in the subset.
-//   * @param table the table implementation.
-//   * @param subset the integer subset.
-//   */
-//  public SparseSubsetTable(TableImpl table) {
-//    this.columns = table.getColumns();
-//    this.label = table.label;
-//    this.comment = table.comment;
-//    this.subset = new int[table.getNumRows()];
-//    if (table instanceof SubsetTableImpl) {
-//      int[] tmp = ( (SubsetTableImpl) table).getSubset();
-//      for (int i = 0; i < this.subset.length; i++) {
-//        this.subset[i] = tmp[i];
-//      }
-//    }
-//    else
-//      for (int i = 0; i < this.subset.length; i++) {
-//        this.subset[i] = i;
-//      }
-//  }
-//
-//  /**
-//   * We are given a table and the subset of the table to apply. The array
-//   * of indices contains the indexes of the rows in the subset.
-//   * @param table the table implementation.
-//   * @param subset the integer subset.
-//   */
-//  public SparseSubsetTable(Column[] col, int[] subset) {
-//    super(col);
-//    this.subset = subset;
-//  }
-//
-//  /**
-//   * We are given a table and the subset of the table to apply. The array
-//   * of indices contains the indexes of the rows in the subset.
-//   * @param table the table implementation.
-//   * @param subset the integer subset.
-//   */
-//  public SparseSubsetTable(Column[] col) {
-//    super(col);
-//    //ANCA added 2 lines below
-//    int numRows = super.getNumRows();
-//    this.subset = new int[numRows];
-//    //ANCA took this out: this.subset = new int [this.getNumRows()];
-//    for (int i = 0; i < this.getNumRows(); i++) {
-//      subset[i] = i;
-//    }
-//  }
+  /**
+   * We are given a table and the subset of the table to apply. The array
+   * of indices contains the indexes of the rows in the subset.
+   * @param table the table implementation.
+   * @param subset the integer subset.
+   */
+  public SparseSubsetTable(SparseTable table) {
+    super(table);
+    this.subset = new int[table.getNumRows()];
+    if (table instanceof SparseSubsetTable) {
+      int[] tmp = ((SparseSubsetTable)table).getSubset();
+      for (int i = 0; i < this.subset.length; i++) {
+        this.subset[i] = tmp[i];
+      }
+    }
+    else
+      for (int i = 0; i < this.subset.length; i++) {
+        this.subset[i] = i;
+      }
+  }
+
+
+  /**
+   * We are given a table and the subset of the table to apply. The array
+   * of indices contains the indexes of the rows in the subset.
+   * @param table the table implementation.
+   * @param subset the integer subset.
+   */
+  public SparseSubsetTable(Column[] col, int[] subset) {
+    this.subset = subset;
+    for (int i = 0, n = col.length; i < n; i++){
+      super.insertColumn(col[i], numColumns);
+    }
+  }
+
+  /**
+   * We are given a table and the subset of the table to apply. The array
+   * of indices contains the indexes of the rows in the subset.
+   * @param table the table implementation.
+   * @param subset the integer subset.
+   */
+  public SparseSubsetTable(Column[] col) {
+    for (int i = 0, n = col.length; i < n; i++){
+      super.insertColumn(col[i], numColumns);
+    }
+    //ANCA added 2 lines below
+    int numRows = super.getNumRows();
+    this.subset = new int[numRows];
+    //ANCA took this out: this.subset = new int [this.getNumRows()];
+    for (int i = 0; i < this.getNumRows(); i++) {
+      subset[i] = i;
+    }
+  }
 
   /**
    * We are given a table and the subset of the table to apply. The array
@@ -107,7 +110,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    * Set the subset.
    * @param ns the subset
    */
-  final protected void setSubset(int[] ns) {
+  final public void setSubset(int[] ns) {
     this.subset = ns;
   }
 
@@ -131,11 +134,11 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @return the new adjusted subset.
    */
   protected int[] resubset(int start, int length) {
-    int[] tmp = new int[length];
-    for (int i = 0; i < length; i++) {
-      tmp[i] = subset[start + i];
-    }
-    return tmp;
+     int[] tmp = new int[length];
+     for (int i = 0; i < length; i++) {
+        tmp[i] = subset[start + i];
+     }
+     return tmp;
   }
 
   /**
@@ -145,10 +148,11 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @return the adjusted newsubset.
    */
   protected int[] resubset(int[] newset) {
-    for (int i = 0; i < newset.length; i++) {
-      newset[i] = subset[newset[i]];
-    }
-    return newset;
+     int [] tmp = new int [newset.length];
+     for (int i = 0; i < newset.length; i++) {
+        tmp[i] = subset[newset[i]];
+     }
+     return tmp;
   }
 
   /**
@@ -175,6 +179,8 @@ public class SparseSubsetTable extends SparseMutableTable {
   // Subsetting is done by reordering the subset array, rather than sorting the
   // column.
   //
+
+
   /**
           Sort the specified column and rearrange the rows of the table to
           correspond to the sorted column.
@@ -184,7 +190,7 @@ public class SparseSubsetTable extends SparseMutableTable {
 
     int[] tmp = new int[this.subset.length];
     System.arraycopy(this.subset, 0, tmp, 0, this.subset.length);
-    this.doSort(this.getColumn(col), tmp, 0, this.getNumRows() - 1, 0);
+    this.doSort(super.getColumn(col), tmp, 0, this.getNumRows() - 1, 0);
   }
 
   /**
@@ -197,7 +203,7 @@ public class SparseSubsetTable extends SparseMutableTable {
     int[] neworder = new int[end - begin + 1];
     for (int i = begin; i <= end; i++)
       neworder[i - begin] = this.subset[i];
-    this.doSort(this.getColumn(col), neworder, 0, neworder.length - 1, begin);
+    this.doSort(super.getColumn(col), neworder, 0, neworder.length - 1, begin);
   }
 
   /**
@@ -281,7 +287,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param pos the position of the Column to get from table
    * @return the Column at in the table at pos
    */
-  Column [] getColumns () {
+  public Column [] getColumns () {
      Column copyColumns [] = new Column [this.getNumColumns()];
      for (int i = 0 ; i < this.getNumColumns() ; i++)
         copyColumns[i] = this.compressColumn(i);
@@ -432,7 +438,7 @@ public class SparseSubsetTable extends SparseMutableTable {
            */
   public void addColumn(Column col) {
      col = this.expandColumn(col);
-     super.addColumn(col);
+     super.insertColumn(col, numColumns);
   }
 
   /**
@@ -469,336 +475,153 @@ public class SparseSubsetTable extends SparseMutableTable {
      }
   }
 
+  /**
+   * Return a copy of this Table.
+   * @return A new Table with a copy of the contents of this table.
+   */
+  public Table copy() {
+    /**
+     * Since we want to make a deep copy of the table we can just return
+     * a SparseMutableTable.
+     */
+     SparseMutableTable vt;
+     vt = (SparseMutableTable)super.copy(subset);
+     //this is probably redundant -- DS
+     vt.setLabel(this.getLabel());
+     vt.setComment(this.getComment());
+     return vt;
+  }
+
+  /**
+   * Make a deep copy of the table, include length rows begining at start
+   * @param start the first row to include in the copy
+   * @param length the number of rows to include
+   * @return a new copy of the table.
+   */
+  public Table copy(int start, int length) {
+    /**
+     * Since we want to make a deep copy of a subset of the table we can just return
+     * a SparseMutableTable.
+     */
+    SparseMutableTable vt;
+    int[] newsubset = this.resubset(start, length);
+    vt = (SparseMutableTable)super.copy(newsubset);
+    vt.setLabel(this.getLabel());
+    vt.setComment(this.getComment());
+    return vt;
+  }
+
+  /**
+   * Make a deep copy of the table, include length rows begining at start
+   * @param start the first row to include in the copy
+   * @param length the number of rows to include
+   * @return a new copy of the table.
+   */
+  public Table copy(int[] asubset) {
+    /**
+     * Since we want to make a deep copy of a subset of the table we can just return
+     * a SparseMutableTable.
+     */
+    SparseMutableTable vt;
+    int[] newsubset = this.resubset(asubset);
+    vt = (SparseMutableTable)super.copy(newsubset);
+    vt.setLabel(this.getLabel());
+    vt.setComment(this.getComment());
+    return vt;
+  }
+
+  /**
+   * Do a shallow copy on the data by creating a new instance of a MutableTable,
+   * and initialize all it's fields from this one.
+   * @return a shallow copy of the table.
+   */
+  public Table shallowCopy() {
+
+    SparseMutableTable smt = (SparseMutableTable)super.shallowCopy();
+    int[] newsubset = new int[subset.length];
+    System.arraycopy(subset, 0, newsubset, 0, subset.length);
+    SparseSubsetTable sst = new SparseSubsetTable(smt, newsubset);
+    sst.setLabel(getLabel());
+    sst.setComment(getComment());
+    return smt;
+  }
+
+  /**
+   * Insert the specified number of blank rows.
+   * @param howMany
+   */
+  public void addRows(int howMany) {
+    int mark = super.getNumRows();
+    super.addRows(howMany);
+     int[] newsubset = new int[subset.length + howMany];
+     System.arraycopy(subset, 0, newsubset, 0, subset.length);
+     for (int i = subset.length ; i < subset.length  + howMany; i++){
+       newsubset[i] = mark++;
+     }
+     subset = newsubset;
+  }
 
 
+  /**
+           * Remove a row from this Table.
+           * @param pos the row to remove
+           */
+  public void removeRows(int pos, int cnt) {
+     int[] newsubset = new int[subset.length - cnt];
+     System.arraycopy(subset, 0, newsubset, 0, pos);
+     System.arraycopy(
+        subset,
+        pos + cnt,
+        newsubset,
+        pos,
+        subset.length - pos - cnt);
+
+     subset = newsubset;
+  }
+
+  /**
+   * Remove a row from this Table.
+   * @param pos the row to remove
+   */
+  public void removeRow(int pos) {
+     int[] newsubset = new int[subset.length - 1];
+
+     System.arraycopy(subset, 0, newsubset, 0, pos);
+     System.arraycopy(
+        subset,
+        pos + 1,
+        newsubset,
+        pos,
+        subset.length - pos - 1);
+     subset = newsubset;
+
+  }
+
+  /**
+   * Returns the length of the table, defined by the size of the subset, not
+   * the table itself.
+   * @return the number of rows int he subset.
+   */
+  public int getNumRows() {
+     return this.subset.length;
+  }
+
+  /**
+   * Reorders the columns in this table, s.t.:
+   * If the column numbers were sorted in an array - "col" then when this method returns
+       * <code>col[i]</code> will hold the column that was originally held by <code>
+   * newORder[i]</code>.
+   *
+       * @param newOrder    an array of valid column numbers in this table in a certain
+   *                    order.
+   */
+  public Table reorderColumns(int[] newOrder) {
+    SparseMutableTable tab = (SparseMutableTable)copy();
+    return tab.reorderColumns(newOrder);
+
+  }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//  /**
-//   * Add a new Column after the last occupied position in this Table.
-//   * If this is the first column in the table it will be added as is.
-//   * If not, it will be expanded to match the other columns and corresponding subset
-//   * @param newColumn the Column to be added to the table
-//   */
-//  public void addColumn(Column col) {
-//    // Allocate a new array.
-//    Column[] newColumns = new Column[columns.length + 1];
-//
-//    // copy current columns if any
-//    System.arraycopy(columns, 0, newColumns, 0, columns.length);
-//
-//    //ANCA: need to expand the column
-//    // old:		newColumns[newColumns.length - 1] = col;
-//
-//    String columnClass = (col.getClass()).getName();
-//    Column expandedColumn = null;
-//    try {
-//      expandedColumn = (Column) Class.forName(columnClass).newInstance();
-//    }
-//    catch (Exception e) {
-//      System.out.println(e);
-//    }
-//
-//    //if col is the first column in the table add it as is and initialize subset
-//    int numRows = super.getNumRows();
-//    if (columns.length == 0) {
-//      if (subset.length == 0) {
-//        numRows = col.getNumRows();
-//        subset = new int[numRows];
-//        for (int i = 0; i < this.getNumRows(); i++) {
-//          subset[i] = i;
-//        }
-//        expandedColumn = col;
-//      }
-//    }
-//    else if (numRows == col.getNumRows()) {
-//      expandedColumn = col;
-//    }
-//    else {
-//      expandedColumn.addRows(numRows);
-//      expandedColumn.setLabel(col.getLabel());
-//      expandedColumn.setComment(col.getComment());
-//      expandedColumn.setIsScalar(col.getIsScalar());
-//      expandedColumn.setIsNominal(col.getIsNominal());
-//
-//      //initialize all values as missing for the beginning
-//      for (int j = 0; j < numRows; j++)
-//        expandedColumn.setValueToMissing(true, j);
-//
-//        //set the elements of the column where appropriate as determined by subset
-//      Object el;
-//      for (int i = 0; i < subset.length; i++) {
-//        if (col.isValueMissing(i)) {
-//          expandedColumn.setValueToMissing(true, i);
-//        }
-//        else {
-//          el = col.getObject(i);
-//          expandedColumn.setObject(el, subset[i]);
-//          expandedColumn.setValueToMissing(false, subset[i]);
-//        }
-//      }
-//    }
-//    newColumns[newColumns.length - 1] = expandedColumn;
-//    columns = newColumns;
-//  }
-//
-//  /**
-//   * Add a new Column after the last occupied position in this Table.
-//   * @param newColumn the Column to be added to the table
-//   */
-//  public void addColumns(Column[] cols) {
-//
-//    //			Allocate a new array.
-//    int number = cols.length;
-//    int cnt = columns.length + number;
-//    Column[] newColumns = new Column[cnt];
-//
-//    // copy current columns.
-//    System.arraycopy(columns, 0, newColumns, 0, columns.length);
-//
-//    //			ANCA: need to expand the Column[] cols
-//
-//    for (int k = 0; k < cols.length; k++) {
-//
-//      String columnClass = (cols[k].getClass()).getName();
-//      Column expandedColumn = null;
-//
-//      //if col is the first column in the table add it as is and initialize subset
-//      int numRows = super.getNumRows();
-//      if (columns.length == 0) {
-//        if (subset.length == 0) {
-//          numRows = cols[k].getNumRows();
-//          subset = new int[numRows];
-//          for (int i = 0; i < this.getNumRows(); i++) {
-//            subset[i] = i;
-//          }
-//        }
-//
-//        // LAM-tlr, I moved this down from inside the above condition. If it is
-//        // inside the condition above, after the first column is added, the rest of
-//        // the columns are empty.
-//        expandedColumn = cols[k];
-//      }
-//      else {
-//        // LAM-tlr, I moved this down from above. If we are to use the column
-//        // as is, we don't need to reallocate it.
-//        try {
-//          expandedColumn =
-//              (Column) Class.forName(columnClass).newInstance();
-//        }
-//        catch (Exception e) {
-//          System.out.println(e);
-//        }
-//        expandedColumn.addRows(numRows);
-//        expandedColumn.setLabel(cols[k].getLabel());
-//        expandedColumn.setComment(cols[k].getComment());
-//        expandedColumn.setIsScalar(cols[k].getIsScalar());
-//        expandedColumn.setIsNominal(cols[k].getIsNominal());
-//
-//        //initialize all values as missing for the beginning
-//        for (int j = 0; j < numRows; j++)
-//          expandedColumn.setValueToMissing(true, j);
-//
-//          //set the elements of the column where appropriate as determined by subset
-//        Object el;
-//        for (int i = 0; i < subset.length; i++) {
-//          el = cols[k].getObject(i);
-//          expandedColumn.setObject(el, subset[i]);
-//          expandedColumn.setValueToMissing(false, subset[i]);
-//        }
-//      }
-//      newColumns[columns.length + k] = expandedColumn;
-//    }
-//    columns = newColumns;
-//
-//  }
-//
-//  /**
-//   * Return a copy of this Table.
-//   * @return A new Table with a copy of the contents of this table.
-//   */
-//  public Table copy() {
-//    TableImpl vt;
-//
-//    // Copy failed, maybe objects in a column that are not serializable.
-//    Column[] cols = new Column[this.getNumColumns()];
-//    Column[] oldcols = this.getColumns();
-//    for (int i = 0; i < cols.length; i++) {
-//      cols[i] = oldcols[i].copy();
-//    }
-//    int[] newsubset = new int[subset.length];
-//    System.arraycopy(subset, 0, newsubset, 0, subset.length);
-//    vt = new SubsetTableImpl(cols, newsubset);
-//    vt.setLabel(this.getLabel());
-//    vt.setComment(this.getComment());
-//    return vt;
-//  }
-//
-//  /**
-//   * Make a deep copy of the table, include length rows begining at start
-//   * @param start the first row to include in the copy
-//   * @param length the number of rows to include
-//   * @return a new copy of the table.
-//   */
-//  public Table copy(int start, int length) {
-//    TableImpl vt;
-//    int[] newsubset = this.resubset(start, length);
-//
-//    // Copy failed, maybe objects in a column that are not serializable.
-//    Column[] cols = new Column[this.getNumColumns()];
-//    Column[] oldcols = this.getColumns();
-//    for (int i = 0; i < cols.length; i++) {
-//      cols[i] = oldcols[i].getSubset(newsubset);
-//    }
-//
-//    vt = new MutableTableImpl(cols);
-//    vt.setLabel(this.getLabel());
-//    vt.setComment(this.getComment());
-//    return vt;
-//  }
-//
-//  /**
-//   * Make a deep copy of the table, include length rows begining at start
-//   * @param start the first row to include in the copy
-//   * @param length the number of rows to include
-//   * @return a new copy of the table.
-//   */
-//  public Table copy(int[] subset) {
-//    TableImpl vt;
-//    int[] newsubset = this.resubset(subset);
-//
-//    // Copy failed, maybe objects in a column that are not serializable.
-//    Column[] cols = new Column[this.getNumColumns()];
-//    Column[] oldcols = this.getColumns();
-//    for (int i = 0; i < cols.length; i++) {
-//      cols[i] = oldcols[i].getSubset(newsubset);
-//    }
-//
-//    vt = new MutableTableImpl(cols);
-//    vt.setLabel(this.getLabel());
-//    vt.setComment(this.getComment());
-//    return vt;
-//  }
-//
-//  /**
-//       * Do a shallow copy on the data by creating a new instance of a MutableTable,
-//   * and initialize all it's fields from this one.
-//   * @return a shallow copy of the table.
-//   */
-//  public Table shallowCopy() {
-//    SubsetTableImpl vt =
-//        new SubsetTableImpl(this.getColumns(), this.subset);
-//    vt.setLabel(getLabel());
-//    vt.setComment(getComment());
-//    return vt;
-//  }
-//
-//  /**
-//   * Insert the specified number of blank rows.
-//   * @param howMany
-//   */
-//  public void addRows(int howMany) {
-//    for (int i = 0; i < getNumColumns(); i++) {
-//      getColumn(i).addRows(howMany);
-//    }
-//    int[] newsubset = new int[subset.length + howMany];
-//    System.arraycopy(subset, 0, newsubset, 0, subset.length);
-//    for (int i = subset.length; i < subset.length + howMany; i++)
-//      newsubset[i] = i;
-//
-//    subset = newsubset;
-//  }
-//
-//  /**
-//   * Remove a row from this Table.
-//   * @param pos the row to remove
-//   */
-//  public void removeRows(int pos, int cnt) {
-//    //		ANCA: rows need not be removed from the columns if they are removed from the subset
-//    //for (int i = 0; i < getNumColumns(); i++) {
-//    //	getColumn(i).removeRows(pos, cnt);
-//    //}
-//    int[] newsubset = new int[subset.length - cnt];
-//    System.arraycopy(subset, 0, newsubset, 0, pos);
-//    System.arraycopy(
-//        subset,
-//        pos + cnt,
-//        newsubset,
-//        pos,
-//        subset.length - pos - cnt);
-//
-//    subset = newsubset;
-//  }
-//
-//  /**
-//   * Remove a row from this Table.
-//   * @param pos the row to remove
-//   */
-//  public void removeRow(int pos) {
-//    //ANCA: rows need not be removed from the columns if they are removed from the subset
-//    //for (int i = 0; i < getNumColumns(); i++) {
-//    //	getColumn(i).removeRow(subset[pos]);
-//    //}
-//    int[] newsubset = new int[subset.length - 1];
-//
-//    System.arraycopy(subset, 0, newsubset, 0, pos);
-//    System.arraycopy(
-//        subset,
-//        pos + 1,
-//        newsubset,
-//        pos,
-//        subset.length - pos - 1);
-//    subset = newsubset;
-//
-//  }
-//
-//  /**
-//   * Returns the length of the table, defined by the size of the subset, not
-//   * the table itself.
-//   * @return the number of rows int he subset.
-//   */
-//  public int getNumRows() {
-//    return this.subset.length;
-//  }
-//
   //////////////////////////////////////
   // getters.
   //
@@ -810,7 +633,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public Object getObject(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getRow(subset[row]);
     } else {
@@ -826,7 +649,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public int getInt(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getInt(subset[row]);
     } else {
@@ -842,7 +665,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public short getShort(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getShort(subset[row]);
     } else {
@@ -858,7 +681,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public long getLong(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getLong(subset[row]);
     } else {
@@ -874,7 +697,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public float getFloat(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getFloat(subset[row]);
     } else {
@@ -890,7 +713,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public double getDouble(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getDouble(subset[row]);
     } else {
@@ -906,7 +729,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public String getString(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getString(subset[row]);
     } else {
@@ -922,7 +745,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public byte[] getBytes(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getBytes(subset[row]);
     } else {
@@ -938,7 +761,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public byte getByte(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getByte(subset[row]);
     } else {
@@ -954,7 +777,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public char[] getChars(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getChars(subset[row]);
     } else {
@@ -970,7 +793,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public char getChar(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getChar(subset[row]);
     } else {
@@ -986,7 +809,7 @@ public class SparseSubsetTable extends SparseMutableTable {
    */
   public boolean getBoolean(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.getBoolean(subset[row]);
     } else {
@@ -999,7 +822,7 @@ public class SparseSubsetTable extends SparseMutableTable {
   //
   public boolean isValueMissing(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.isValueMissing(subset[row]);
     } else {
@@ -1009,7 +832,7 @@ public class SparseSubsetTable extends SparseMutableTable {
 
   public boolean isValueEmpty(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       return col.isValueEmpty(subset[row]);
     } else {
@@ -1017,9 +840,19 @@ public class SparseSubsetTable extends SparseMutableTable {
     }
   }
 
+  public boolean isValueDefault(int row, int column) {
+    //the index out of bounds check is performed in the getColumn call.
+    Column col = super.getColumn(column);
+    if (col != null) {
+      return ((AbstractSparseColumn)col).isValueDefault(subset[row]);
+    } else {
+      return true;
+    }
+  }
+
   public void setValueToMissing(boolean b, int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       col.setValueToMissing(b, subset[row]);
     } else {
@@ -1029,7 +862,7 @@ public class SparseSubsetTable extends SparseMutableTable {
 
   public void setValueToEmpty(boolean b, int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
-    Column col = getColumn(column);
+    Column col = super.getColumn(column);
     if (col != null) {
       col.setValueToEmpty(b, subset[row]);
     } else {
@@ -1040,123 +873,123 @@ public class SparseSubsetTable extends SparseMutableTable {
 //  //////////////////////////////////////
 //  // Setter methods.
 //  //
-//  /**
-//   * Set an Object in the Table.
-//   * @param element the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setObject(Object element, int row, int column) {
-//    columns[column].setRow(element, subset[row]);
-//  }
-//
-//  /**
-//   * Set an int value in the Table.
-//   * @param data the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setInt(int data, int row, int column) {
-//    columns[column].setInt(data, subset[row]);
-//  }
-//
-//  /**
-//   * Set a short value in the Table.
-//   * @param data the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setShort(short data, int row, int column) {
-//    columns[column].setShort(data, subset[row]);
-//  }
-//
-//  /**
-//   * Set a long value in the Table.
-//   * @param data the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setLong(long data, int row, int column) {
-//    columns[column].setLong(data, subset[row]);
-//  }
-//
-//  /**
-//   * Set a float value in the Table.
-//   * @param data the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setFloat(float data, int row, int column) {
-//    columns[column].setFloat(data, subset[row]);
-//  }
-//
-//  /**
-//   * Set a double value in the Table.
-//   * @param data the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setDouble(double data, int row, int column) {
-//    columns[column].setDouble(data, subset[row]);
-//  }
-//
-//  /**
-//   * Set a String value in the Table.
-//   * @param data the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setString(String data, int row, int column) {
-//    columns[column].setString(data, subset[row]);
-//  }
-//
-//  /**
-//   * Set a byte[] value in the Table.
-//   * @param data the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setBytes(byte[] data, int row, int column) {
-//    columns[column].setBytes(data, subset[row]);
-//  }
-//
-//  /**
-//   * Set a byte value in the Table.
-//   * @param data the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setByte(byte data, int row, int column) {
-//    columns[column].setByte(data, subset[row]);
-//  }
-//
-//  /**
-//   * Set a char[] value in the Table.
-//   * @param data the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setChars(char[] data, int row, int column) {
-//    columns[column].setChars(data, subset[row]);
-//  }
-//
-//  /**
-//   * Set a char value in the Table.
-//   * @param data the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setChar(char data, int row, int column) {
-//    columns[column].setChar(data, subset[row]);
-//  }
-//
-//  /**
-//   * Set a boolean value in the Table.
-//   * @param data the value to set
-//   * @param row the row of the table
-//   * @param column the column of the table
-//   */
-//  public void setBoolean(boolean data, int row, int column) {
-//    columns[column].setBoolean(data, subset[row]);
-//  }
+  /**
+   * Set an Object in the Table.
+   * @param element the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setObject(Object element, int row, int column) {
+    super.setObject(element, subset[row], column);
+  }
+
+  /**
+   * Set an int value in the Table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setInt(int data, int row, int column) {
+    super.setInt(data, subset[row], column);
+  }
+
+  /**
+   * Set a short value in the Table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setShort(short data, int row, int column) {
+    super.setShort(data, subset[row], column);
+  }
+
+  /**
+   * Set a long value in the Table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setLong(long data, int row, int column) {
+    super.setLong(data, subset[row], column);
+  }
+
+  /**
+   * Set a float value in the Table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setFloat(float data, int row, int column) {
+    super.setFloat(data, subset[row], column);
+  }
+
+  /**
+   * Set a double value in the Table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setDouble(double data, int row, int column) {
+    super.setDouble(data, subset[row], column);
+  }
+
+  /**
+   * Set a String value in the Table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setString(String data, int row, int column) {
+    super.setString(data, subset[row], column);
+  }
+
+  /**
+   * Set a byte[] value in the Table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setBytes(byte[] data, int row, int column) {
+    super.setBytes(data, subset[row], column);
+  }
+
+  /**
+   * Set a byte value in the Table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setByte(byte data, int row, int column) {
+    super.setByte(data, subset[row], column);
+  }
+
+  /**
+   * Set a char[] value in the Table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setChars(char[] data, int row, int column) {
+    super.setChars(data, subset[row], column);
+  }
+
+  /**
+   * Set a char value in the Table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setChar(char data, int row, int column) {
+    super.setChar(data, subset[row], column);
+  }
+
+  /**
+   * Set a boolean value in the Table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setBoolean(boolean data, int row, int column) {
+    super.setBoolean(data, subset[row], column);
+  }
 }

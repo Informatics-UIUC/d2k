@@ -28,7 +28,7 @@ public class SparseTableFactory implements TableFactory {
   }
 
   public Table createTable(int numColumns) {
-      return new SparseExampleTable(0, numColumns);
+      return new SparseExampleTable(numColumns);
   }
 
   public ExampleTable createExampleTable(Table table) {
