@@ -97,7 +97,9 @@ public class Input1FileName extends InputModule {
         // to get thrown if an itinerary is saved/reloaded without the
         // property dialog being used
         if ( s != null && s.length() == 0) {
-            throw new PropertyVetoException("No file name was given.", null);
+            throw new PropertyVetoException(
+		"A file name must be entered before the dialog can be closed.",
+		 null);
         }
 
         fileName =  s;

@@ -11,8 +11,8 @@ import ncsa.d2k.core.modules.*;
 import ncsa.gui.*;
 
 /**
- * InputFileName allows the user to input the name of a single file.  The file
- * name is input in the properties editor.
+ * InputsFileNames allows the user to input the names of two file.  The file
+ * names are input in the properties editor.
  * <p>Title: </p>
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2002</p>
@@ -106,7 +106,9 @@ public class Input2FileNames extends InputModule {
         // to get thrown if an itinerary is saved/reloaded without the
         // property dialog being used
         if ( s != null && s.length() == 0) {
-            throw new PropertyVetoException("File Name 1 was not given.", null);
+ 	    throw new PropertyVetoException(
+                "File Name 1 must be entered before the dialog can be closed.",
+                 null);
         }
 
         fileName0 =  s;;
@@ -125,7 +127,9 @@ public class Input2FileNames extends InputModule {
         // to get thrown if an itinerary is saved/reloaded without the
         // property dialog being used
         if ( s != null && s.length() == 0) {
-            throw new PropertyVetoException("File Name 2 was not given.", null);
+ 	    throw new PropertyVetoException(
+                "File Name 2 must be entered before the dialog can be closed.",
+                 null);
         }
 
         fileName1 =  s;
