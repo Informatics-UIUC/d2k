@@ -331,7 +331,7 @@ public class ParseDSTPToDBTable
     String currCat = (String)node.getUserObject();
     //categoryMap.put(currCat, new Integer(counter));
     //counter++;
-    if(currCat.equals(category))
+    if(currCat.equalsIgnoreCase(category))
       categoryNode = node;
   }//while e_category
 
@@ -353,7 +353,7 @@ public class ParseDSTPToDBTable
      DefaultMutableTreeNode node = (DefaultMutableTreeNode) e_datafile.nextElement();
      DSTPTreeNodeData currFile = (DSTPTreeNodeData) node.getUserObject();
      MetaNode currFileNode = currFile.getNode();
-     if(currFileNode.getDatafileName().equals(datafileName))
+     if(currFileNode.getDatafileName().equalsIgnoreCase(datafileName))
        fileNode = currFileNode;
 
    }//while fileMap
@@ -377,7 +377,7 @@ public class ParseDSTPToDBTable
 
   while(attIt.hasNext()){
     attribute currAtt = (attribute) attIt.next();
-    attsNameMap.put(currAtt.getAttName(), new Integer(counter));
+    attsNameMap.put(currAtt.getAttName().toUpperCase(), new Integer(counter));
     attsIdMap.put( new Integer(counter), currAtt);
     counter++;
   }//while fileMap
@@ -385,7 +385,7 @@ public class ParseDSTPToDBTable
   //building a map name <-> id of the selected attribute names (by the user).
   HashMap selectedAtts = new HashMap();
   for(int i=0; i<attNames.length; i++)
-    selectedAtts.put(attNames[i], new Integer(i));
+    selectedAtts.put(attNames[i].toUpperCase(), new Integer(i));
 
   //verifying that the chosen attributes match the maps
 
@@ -408,13 +408,13 @@ public class ParseDSTPToDBTable
 //so - for each targetAttNames[i]
   for (int i=0; i<targetAttNames.length; i++){
     //finding its id in the dataspace map
-    Integer id = (Integer ) attsNameMap.get(targetAttNames[i]);
+    Integer id = (Integer ) attsNameMap.get(targetAttNames[i].toUpperCase());
     //finding its attribute object in the id map (again matching the dataspace.
     attribute currAtt = (attribute) attsIdMap.get(id);
     //getting its type (according to dataspace)
     String currType = currAtt.getAttType();
     //finding the type that was selected by the user prior to this run.
-    String selectedType = attTypes[((Integer)selectedAtts.get(targetAttNames[i])).intValue()];
+    String selectedType = attTypes[((Integer)selectedAtts.get(targetAttNames[i].toUpperCase())).intValue()];
 
     //validating matching between the types.
     if(! currType.equals(selectedType))
