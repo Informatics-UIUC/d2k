@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.optimize;
 
+import ncsa.d2k.modules.*;
 import ncsa.d2k.modules.core.datatype.sort.*;
 import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.core.modules.*;
@@ -209,7 +210,7 @@ public class SimpleModelEvaluator
   public void doit() throws Exception {
 
     ErrorFunction errorFunction = (ErrorFunction)this.pullInput(0);
-    Model         model         = (Model)        this.pullInput(1);
+    PredictionModelModule         model         = (PredictionModelModule)        this.pullInput(1);
     ExampleTable  exampleTable  = (ExampleTable) this.pullInput(2);
 
     ExampleTable examples = exampleTable;
