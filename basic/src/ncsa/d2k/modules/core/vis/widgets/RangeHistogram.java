@@ -1,15 +1,14 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.text.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.transform.binning.*;
-import ncsa.gui.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.StringTokenizer;
+
+import ncsa.d2k.modules.core.transform.binning.BinCounts;
+import ncsa.gui.Constrain;
 
 
 /**

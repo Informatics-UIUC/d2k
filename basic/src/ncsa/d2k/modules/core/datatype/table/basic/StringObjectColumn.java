@@ -125,6 +125,23 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
             return  newCol;
         }
     }
+	/**
+	 * Add the specified number of blank rows.
+	 * @param number number of rows to add.
+	 */
+	public void addRows (int number) {
+		int last = internal.length;
+		String[] newInternal = new String[last + number];
+		boolean[] newMissing = new boolean[last + number];
+		boolean[] newEmpty = new boolean[last + number];
+
+		System.arraycopy(internal, 0, newInternal, 0, last);
+		System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+		internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
+	}
 
    public void trim() {
    }
@@ -345,10 +362,10 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
     public int getNumEntries () {
         int numEntries = 0;
         for (int i = 0; i < internal.length; i++)
-            if (internal[i] != null)
+            if (internal[i] != null && !isValueMissing(i) && !isValueEmpty(i))
                 numEntries++;
         return  numEntries;
-    }
+		    }
 
    /**
     * Get the number of rows that this column can hold.  Same as getCapacity
@@ -724,6 +741,9 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         boolean[] newEmpty = null;
         if (newOrder.length == internal.length) {
             newInternal = new String[internal.length];
+            //ANCA: added newMissing, newEmpty allocation statements
+            newMissing = new boolean[internal.length];
+            newEmpty = new boolean[internal.length];
             for (int i = 0; i < internal.length; i++) {
                 newInternal[i] = internal[newOrder[i]];
                 newMissing[i] = missing[newOrder[i]];

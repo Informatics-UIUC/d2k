@@ -3,7 +3,6 @@ package ncsa.d2k.modules.core.optimize;
 import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.optimize.random.UniformSampling;
 
 public class CreateExample extends ComputeModule {
@@ -89,7 +88,8 @@ public class CreateExample extends ComputeModule {
 	}
 
 	// construct an example, first create a table.
-	Example example = UniformSampling.getTable(data, inputNames, outputNames, inputs, outputs, 1).getExample(0);
+	Row example = UniformSampling.getTable(data, inputNames, outputNames, inputs, outputs, 1).getRow();
+	example.setIndex(0);
     this.pushOutput(example, 0);
   }
 }

@@ -1,20 +1,21 @@
 package ncsa.d2k.modules.core.datatype.table.transformations;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
-   public class ScalingTransformation implements ReversibleTransformation {
+public class ScalingTransformation implements ReversibleTransformation {
 
       private int[] indices;
       private double[] from_min, from_max, to_min, to_max;
 
 
 	/** Constructor 1
-		
+
 		This allows the from_min and from_max values to be explicitly stated
 		for each column to transform
 	*/
-			
-      public ScalingTransformation(int[] indices, double[] from_min, 
+
+      public ScalingTransformation(int[] indices, double[] from_min,
 	  	double[] from_max, double[] to_min, double[] to_max) {
 
          this.indices = indices;
@@ -29,9 +30,9 @@ import ncsa.d2k.modules.core.datatype.table.*;
 		This will automatically determing the from_min and from_max from the
 		data in the table
 		*/
-	public ScalingTransformation(int[] indices, double[] to_min, 
+	public ScalingTransformation(int[] indices, double[] to_min,
 			double[] to_max, Table sourceData) {
-		
+
          this.indices = indices;
          this.to_min = to_min;
          this.to_max = to_max;
@@ -48,7 +49,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 		}
 
 
-		
+
 		for(i=0;i<numRelevantCols;i++){
 			for(j=0;j<numRows;j++){
 				if(sourceData.getDouble(j,indices[i])>from_max[i])
@@ -109,12 +110,9 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
             String columnLabel = table.getColumnLabel(index);
             String columnComment = table.getColumnComment(index);
-
-            table.setColumn(data, index);
-
+            table.setColumn(new DoubleColumn(data), index);
             table.setColumnLabel(columnLabel, index);
             table.setColumnComment(columnComment, index);
-
          }
 
          return true;
@@ -122,17 +120,17 @@ import ncsa.d2k.modules.core.datatype.table.*;
       }
 
 	  public boolean untransform(MutableTable table){
-		  
+
 			int[] new_indices=indices;
 			double[] newFromMax=to_max;
 			double[] newFromMin=to_min;
 			double[] newToMax=from_max;
 			double[] newToMin=from_min;
-			
+
 		  	//if this is a prediction table, untransform any predictions
 			//as if they were outputs by adding the appropriate prediction
 			//columns to the 'new_indices' array
-			
+
 			if(table instanceof PredictionTable){
 				PredictionTable pt=(PredictionTable) table;
 				int[] predSet=pt.getPredictionSet();
@@ -152,7 +150,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 					newFromMin=new double[i];
 					newToMax=new double[i];
 					newToMin=new double[i];
-					
+
 					for(i=0;i<indices.length;i++){
 						new_indices[i]=indices[i];
 						newFromMax[i]=to_max[i];
@@ -175,13 +173,13 @@ import ncsa.d2k.modules.core.datatype.table.*;
 				}
 			}
 			//just make a new transformation where the old 'from' values
-			//become the 'to' values 
+			//become the 'to' values
 		  ScalingTransformation s=
 		  		new ScalingTransformation(new_indices,newFromMin,newFromMax,
 					newToMin,newToMax);
 		  return s.transform(table);
 	  }
-		  
+
 
    }
 

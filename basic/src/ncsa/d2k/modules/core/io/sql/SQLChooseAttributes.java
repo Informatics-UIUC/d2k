@@ -11,7 +11,7 @@ package ncsa.d2k.modules.core.io.sql;
  */
 
 
-import ncsa.d2k.core.*;
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.userviews.swing.*;
@@ -23,7 +23,7 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import gnu.trove.*;
+
 
 public class SQLChooseAttributes extends UIModule {
   JOptionPane msgBoard = new JOptionPane();
@@ -352,7 +352,7 @@ public class SQLChooseAttributes extends UIModule {
         return null;
       }
       if (isInList(colIdx, inputFeatures) || isInList(colIdx, outputFeatures)) {
-        cols[selectedColumn] = new ObjectColumn(1);
+        cols[selectedColumn] = new ObjectColumn();
         cols[selectedColumn].setLabel(colNames.get(colIdx).toString());
         // data type may be in uppercase or lowercase
         if (colTypes.get(colIdx).toString().equals("NUMBER") ||
@@ -383,7 +383,7 @@ public class SQLChooseAttributes extends UIModule {
       }
     }
     // create an Table to hold the meta data
-    TableImpl table = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+    MutableTableImpl table = new MutableTableImpl(cols);
     for (int colIdx = 0; colIdx < selectedColumn; colIdx++) {
       if (cols[colIdx].getIsScalar()) {
         table.setColumnIsScalar(true,colIdx);
@@ -410,8 +410,8 @@ public class SQLChooseAttributes extends UIModule {
                 JOptionPane.ERROR_MESSAGE);
       System.out.println("Error occurred in createExampleTable.");
     }
-    table.setNumRows(numRows);
-
+   // table.setNumRows(numRows);
+   table.addRows(numRows);
     ExampleTable et = table.toExampleTable();
     et.setInputFeatures(selectedInput);
     et.setOutputFeatures(selectedOutput);
@@ -448,7 +448,8 @@ public class SQLChooseAttributes extends UIModule {
     System.out.println("output feature list: ");
     System.out.println(output[0]);
     System.out.println(" ");
-    int numRows = et.getNumEntries();
+    //int numRows = et.getNumEntries();
+	int numRows = et.getNumRows();
     System.out.println("numRows is " + numRows);
 
     System.out.println("data type list: ");

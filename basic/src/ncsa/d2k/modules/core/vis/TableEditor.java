@@ -9,7 +9,7 @@ import javax.swing.table.*;
 
 import ncsa.gui.ErrorDialog;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.vis.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 
@@ -371,7 +371,10 @@ public class TableEditor extends TableViewer {
 
             // get data
             double[] buffer = new double[table.getNumRows()];
-            table.getColumn(buffer, i);
+			for (int row = 0 ; row < buffer.length; row++)
+                         buffer[row] = table.getDouble(row, i);
+
+//            table.getColumn(buffer, i);
 
             // get missing values
             boolean[] missing = new boolean[table.getNumRows()];
@@ -381,7 +384,7 @@ public class TableEditor extends TableViewer {
             MutableTable mt = (MutableTable)table;
 
             // set data
-            mt.setColumn(buffer, i);
+            mt.setColumn(new DoubleColumn(buffer), i);
             mt.setColumnLabel(lbl, i);
             mt.setColumnComment(comm, i);
 
@@ -400,7 +403,8 @@ public class TableEditor extends TableViewer {
 
             // get data
             int[] buffer = new int[table.getNumRows()];
-            table.getColumn(buffer, i);
+            for (int row = 0 ; row < buffer.length; row++)
+                         buffer[row] = table.getInt(row, i);
 
             // get missing values
             boolean[] missing = new boolean[table.getNumRows()];
@@ -410,7 +414,7 @@ public class TableEditor extends TableViewer {
             MutableTable mt = (MutableTable)table;
 
             // set data
-            mt.setColumn(buffer, i);
+            mt.setColumn(new IntColumn(buffer), i);
             mt.setColumnLabel(lbl, i);
             mt.setColumnComment(comm, i);
 
@@ -429,7 +433,8 @@ public class TableEditor extends TableViewer {
 
             // get data
             String[] buffer = new String[table.getNumRows()];
-            table.getColumn(buffer, i);
+            for (int row = 0 ; row < buffer.length; row++)
+                         buffer[row] = table.getString(row, i);
 
             // get missing values
             boolean[] missing = new boolean[table.getNumRows()];
@@ -439,7 +444,7 @@ public class TableEditor extends TableViewer {
             MutableTable mt = (MutableTable)table;
 
             // set data
-            mt.setColumn(buffer, i);
+            mt.setColumn(new StringColumn(buffer), i);
             mt.setColumnLabel(lbl, i);
             mt.setColumnComment(comm, i);
 
@@ -461,7 +466,8 @@ public class TableEditor extends TableViewer {
 
             // get data
             byte[][] buffer = new byte[table.getNumRows()][];
-            table.getColumn(buffer, i);
+            for (int row = 0 ; row < buffer.length; row++)
+                         buffer[row] = table.getBytes(row, i);
 
             // get missing values
             boolean[] missing = new boolean[table.getNumRows()];
@@ -471,7 +477,7 @@ public class TableEditor extends TableViewer {
             MutableTable mt = (MutableTable)table;
 
             // set data
-            mt.setColumn(buffer, i);
+            mt.setColumn(new ByteArrayColumn(buffer), i);
             mt.setColumnLabel(lbl, i);
             mt.setColumnComment(comm, i);
 
@@ -490,7 +496,8 @@ public class TableEditor extends TableViewer {
 
             // get data
             char[][] buffer = new char[table.getNumRows()][];
-            table.getColumn(buffer, i);
+            for (int row = 0 ; row < buffer.length; row++)
+                         buffer[row] = table.getChars(row, i);
 
             // get missing values
             boolean[] missing = new boolean[table.getNumRows()];
@@ -500,7 +507,7 @@ public class TableEditor extends TableViewer {
             MutableTable mt = (MutableTable)table;
 
             // set data
-            mt.setColumn(buffer, i);
+            mt.setColumn(new CharArrayColumn(buffer), i);
             mt.setColumnLabel(lbl, i);
             mt.setColumnComment(comm, i);
 
@@ -521,7 +528,8 @@ public class TableEditor extends TableViewer {
 
             // get data
             float[] buffer = new float[table.getNumRows()];
-            table.getColumn(buffer, i);
+            for (int row = 0 ; row < buffer.length; row++)
+                         buffer[row] = table.getFloat(row, i);
 
             // get missing values
             boolean[] missing = new boolean[table.getNumRows()];
@@ -531,7 +539,7 @@ public class TableEditor extends TableViewer {
             MutableTable mt = (MutableTable)table;
 
             // set data
-            mt.setColumn(buffer, i);
+            mt.setColumn(new FloatColumn(buffer), i);
             mt.setColumnLabel(lbl, i);
             mt.setColumnComment(comm, i);
 
@@ -550,7 +558,8 @@ public class TableEditor extends TableViewer {
 
             // get data
             long[] buffer = new long[table.getNumRows()];
-            table.getColumn(buffer, i);
+            for (int row = 0 ; row < buffer.length; row++)
+                         buffer[row] = table.getLong(row, i);
 
             // get missing values
             boolean[] missing = new boolean[table.getNumRows()];
@@ -560,7 +569,7 @@ public class TableEditor extends TableViewer {
             MutableTable mt = (MutableTable)table;
 
             // set data
-            mt.setColumn(buffer, i);
+            mt.setColumn(new LongColumn(buffer), i);
             mt.setColumnLabel(lbl, i);
             mt.setColumnComment(comm, i);
 
@@ -579,7 +588,8 @@ public class TableEditor extends TableViewer {
 
             // get data
             short[] buffer = new short[table.getNumRows()];
-            table.getColumn(buffer, i);
+            for (int row = 0 ; row < buffer.length; row++)
+                         buffer[row] = table.getShort(row, i);
 
             // get missing values
             boolean[] missing = new boolean[table.getNumRows()];
@@ -589,7 +599,7 @@ public class TableEditor extends TableViewer {
             MutableTable mt = (MutableTable)table;
 
             // set data
-            mt.setColumn(buffer, i);
+            mt.setColumn(new ShortColumn(buffer), i);
             mt.setColumnLabel(lbl, i);
             mt.setColumnComment(comm, i);
 
@@ -608,7 +618,8 @@ public class TableEditor extends TableViewer {
 
             // get data
             boolean[] buffer = new boolean[table.getNumRows()];
-            table.getColumn(buffer, i);
+            for (int row = 0 ; row < buffer.length; row++)
+                         buffer[row] = table.getBoolean(row, i);
 
             // get missing values
             boolean[] missing = new boolean[table.getNumRows()];
@@ -618,7 +629,7 @@ public class TableEditor extends TableViewer {
             MutableTable mt = (MutableTable)table;
 
             // set data
-            mt.setColumn(buffer, i);
+            mt.setColumn(new BooleanColumn(buffer), i);
             mt.setColumnLabel(lbl, i);
             mt.setColumnComment(comm, i);
 
@@ -637,7 +648,8 @@ public class TableEditor extends TableViewer {
 
             // get data
             byte[] buffer = new byte[table.getNumRows()];
-            table.getColumn(buffer, i);
+            for (int row = 0 ; row < buffer.length; row++)
+                         buffer[row] = table.getByte(row, i);
 
             // get missing values
             boolean[] missing = new boolean[table.getNumRows()];
@@ -647,7 +659,7 @@ public class TableEditor extends TableViewer {
             MutableTable mt = (MutableTable)table;
 
             // set data
-            mt.setColumn(buffer, i);
+            mt.setColumn(new ByteColumn(buffer), i);
             mt.setColumnLabel(lbl, i);
             mt.setColumnComment(comm, i);
 
@@ -665,8 +677,9 @@ public class TableEditor extends TableViewer {
             String comm = table.getColumnComment(i);
 
             // get data
-            byte[] buffer = new byte[table.getNumRows()];
-            table.getColumn(buffer, i);
+            char[] buffer = new char[table.getNumRows()];
+            for (int row = 0 ; row < buffer.length; row++)
+                         buffer[row] = table.getChar(row, i);
 
             // get missing values
             boolean[] missing = new boolean[table.getNumRows()];
@@ -676,7 +689,7 @@ public class TableEditor extends TableViewer {
             MutableTable mt = (MutableTable)table;
 
             // set data
-            mt.setColumn(buffer, i);
+            mt.setColumn(new CharColumn(buffer), i);
             mt.setColumnLabel(lbl, i);
             mt.setColumnComment(comm, i);
 

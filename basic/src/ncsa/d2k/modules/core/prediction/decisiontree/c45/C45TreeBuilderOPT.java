@@ -1,17 +1,20 @@
 package ncsa.d2k.modules.core.prediction.decisiontree.c45;
 
-import ncsa.d2k.modules.core.prediction.decisiontree.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.datatype.table.util.*;
-import ncsa.d2k.modules.core.datatype.parameter.*;
-import ncsa.d2k.util.*;
-
-import java.util.*;
-import java.io.Serializable;
-import java.text.NumberFormat;
 import java.beans.PropertyVetoException;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+
+import ncsa.d2k.core.modules.ReentrantComputeModule;
+import ncsa.d2k.modules.core.datatype.parameter.ParameterPoint;
+import ncsa.d2k.modules.core.datatype.table.ExampleTable;
+import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.datatype.table.util.TableUtilities;
+import ncsa.d2k.modules.core.prediction.decisiontree.CategoricalDecisionTreeNode;
+import ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode;
+import ncsa.d2k.modules.core.prediction.decisiontree.NumericDecisionTreeNode;
 
 /**
  Build a C4.5 decision tree.  The tree is build recursively, always choosing

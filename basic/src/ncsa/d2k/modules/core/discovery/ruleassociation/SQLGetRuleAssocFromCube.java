@@ -64,7 +64,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
     int headSize; // the size of the left-hand side rule
   }
   ArrayList finalRules;
-  TableImpl ruleTable;
+  MutableTableImpl ruleTable;
   TableImpl codeTable;
   SQLCodeBook aBook;
 
@@ -1068,7 +1068,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
     cols[1].setLabel("Body");
     cols[2].setLabel("Support");
     cols[3].setLabel("Confidence");
-    ruleTable = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+    ruleTable = new MutableTableImpl(cols);
     String tmpVal;
     for (int ruleIdx = 0; ruleIdx < finalRules.size(); ruleIdx++) {
       Rule aRule = (Rule)finalRules.get(ruleIdx);

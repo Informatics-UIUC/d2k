@@ -3,11 +3,9 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.gui.*;
 
@@ -441,7 +439,7 @@ public class MergeTableRows extends UIModule {
 			}
 
 			// create the table
-			TableImpl newTable = createTable(keyLookup.size());
+			MutableTableImpl newTable = createTable(keyLookup.size());
 
 			int curRow = 0;
 			// now convert the array lists to int[]
@@ -471,7 +469,7 @@ public class MergeTableRows extends UIModule {
 			viewDone("Done");
 		}
 
-		private void mergeMax(TableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
+		private void mergeMax(MutableTableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
 			// find the maximum in the control column.  this row will be the one
 			// where data is copied from
 
@@ -494,7 +492,7 @@ public class MergeTableRows extends UIModule {
 			}
 		}
 
-		private void mergeMin(TableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
+		private void mergeMin(MutableTableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
 			// find the maximum in the control column.  this row will be the one
 			// where data is copied from
 
@@ -533,7 +531,7 @@ public class MergeTableRows extends UIModule {
 			}
 		}
 
-		private void mergeAve(TableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
+		private void mergeAve(MutableTableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
 			// find the maximum in the control column.  this row will be the one
 			// where data is copied from
 
@@ -565,7 +563,7 @@ public class MergeTableRows extends UIModule {
 			}
 		}
 
-		private void mergeSum(TableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
+		private void mergeSum(MutableTableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
 			// find the maximum in the control column.  this row will be the one
 			// where data is copied from
 
@@ -597,7 +595,7 @@ public class MergeTableRows extends UIModule {
 			}
 		}
 
-		private void mergeCnt(TableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
+		private void mergeCnt(MutableTableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
 			// find the maximum in the control column.  this row will be the one
 			// where data is copied from
 
@@ -627,7 +625,7 @@ public class MergeTableRows extends UIModule {
 			}
 		}
 
-		private TableImpl createTable(int numRows) {
+		private MutableTableImpl createTable(int numRows) {
 			Column[] cols = new Column[table.getNumColumns()];
 			for(int i = 0; i < table.getNumColumns(); i++) {
 				Column c = table.getColumn(i);
@@ -656,7 +654,7 @@ public class MergeTableRows extends UIModule {
 				cols[i] = newCol;
 			}
 
-			TableImpl tbl = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+			MutableTableImpl tbl = new MutableTableImpl(cols);
 			tbl.setLabel(table.getLabel());
 			return tbl;
 		}

@@ -22,6 +22,7 @@ import java.util.*;
 //===============
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.discovery.cluster.util.*;
 
 public class ClusterModel
@@ -510,7 +511,8 @@ public class ClusterModel
       System.out.println("ERROR: " + getAlias() + ".getNumEntries() -- Model does not contain table data -- will return Integer.MIN_VALUE");
       return Integer.MIN_VALUE;
     } else {
-      return _table.getNumEntries();
+      //ANCA return _table.getNumEntries();
+	  return _table.getNumRows();
     }
   }
 
@@ -529,26 +531,32 @@ public class ClusterModel
   /**
    * See Table in ncsa.d2k.modules.core.datatype.table
    */
-  public void getRow(Object buffer, int position) {
+  //ANCA : made conversion from buffer to Row
+  public Row getRow() {
     if (_table == null) {
       System.out.println(
           "ERROR: " + getAlias() + ".getRow(...) -- Model does not contain table data.");
+          return null;
     } else {
-      _table.getRow(buffer, position);
+      //_table.getRow(buffer, position);
+      return (Row) _table.getRow();
     }
   }
 
   /**
    * See Table in ncsa.d2k.modules.core.datatype.table
    */
-  public void getColumn(Object buffer, int position) {
+// ANCA: changed to the new interface
+ 
+   public Column getColumn(int position) {
     if (_table == null) {
       System.out.println(
           "ERROR: " + getAlias() + ".getColumn(...) -- Model does not contain table data.");
+          return null;
     } else {
-      _table.getColumn(buffer, position);
+     return  _table.getColumn( position);
     }
-  }
+  } 
 
   /**
    * See Table in ncsa.d2k.modules.core.datatype.table
@@ -573,11 +581,42 @@ public class ClusterModel
       return _table.copy();
     }
   }
+  
+  //ANCA: added method below
+  /**
+   * Create a copy of this Table. This is a deep copy, and it contains a copy of
+   * 	all the data.
+   * @return a copy of this Table
+   */
+  public Table copy(int start, int len) {
+	if (_table == null) {
+		  System.out.println("ERROR: " + getAlias() + ".copy(int start, int len) -- Model does not contain table data -- will return null");
+		  return null;
+		} else {
+		  return _table.copy(start,len);
+		}
+  }
+
+//ANCA: added method below
+
+  /**
+   * Create a copy of this Table. This is a deep copy, and it contains a copy of
+   * 	all the data.
+   * @return a copy of this Table
+   */
+  public Table copy(int [] rows){
+	if (_table == null) {
+		  System.out.println("ERROR: " + getAlias() + ".copy(int [] rows) -- Model does not contain table data -- will return null");
+		  return null;
+		} else {
+		  return _table.copy(rows);
+		}
+  }
 
   /**
    * See Table in ncsa.d2k.modules.core.datatype.table
    */
-  public TableFactory getTableFactory() {
+ /*ANCA public TableFactory getTableFactory() {
     if (_table == null) {
       System.out.println("ERROR: " + getAlias() + ".getTableFactory() -- Model does not contain table data -- will return null");
       return null;
@@ -585,7 +624,7 @@ public class ClusterModel
       return _table.getTableFactory();
     }
   }
-
+*/
   /**
    * See Table in ncsa.d2k.modules.core.datatype.table
    */
@@ -702,7 +741,8 @@ public class ClusterModel
       System.out.println("ERROR: " + getAlias() + ".getSubsetByReference(...) -- Model does not contain table data and will return null");
       return null;
     } else {
-      return _table.getSubsetByReference(start, len);
+      //ANCA return _table.getSubsetByReference(start, len);
+	  return _table.getSubset(start, len);
     }
   }
 
@@ -714,7 +754,8 @@ public class ClusterModel
       System.out.println("ERROR: " + getAlias() + ".getSubsetByReference(...) -- Model does not contain table data and will return null");
       return null;
     } else {
-      return _table.getSubsetByReference(rows);
+      //ANCA return _table.getSubsetByReference(rows);
+	  return _table.getSubset(rows);
     }
   }
 
@@ -741,6 +782,21 @@ public class ClusterModel
       return _table.hasMissingValues();
     }
   }
+  
+  //ANCA added method below
+  public MutableTable createTable() {
+	return new MutableTableImpl().createTable();
+}
+
+//ANCA added method below
+public Table shallowCopy() {
+	if (_table == null) {
+		  System.out.println("ERROR: " + getAlias() + ".shallowCopy() -- Model does not contain table data and will return false");
+		  return null;
+		} else {
+		  return _table.shallowCopy();
+		}
+}
 
 }
 // Start QA Comments

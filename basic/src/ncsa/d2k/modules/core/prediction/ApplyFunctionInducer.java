@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.prediction;
 
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.prediction.*;
+
 
 import ncsa.d2k.core.modules.*;
 

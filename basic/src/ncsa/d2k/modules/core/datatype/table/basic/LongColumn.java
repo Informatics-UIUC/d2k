@@ -134,6 +134,32 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
 
     //////////////////////////////////////
     //// Accessing Metadata
+	/**
+	 * Add the specified number of blank rows.
+	 * @param number number of rows to add.
+	 */
+	public void addRows (int number) {
+		int last = internal.length;
+		long[] newInternal = new long[last + number];
+		boolean[] newMissing = new boolean[last + number];
+		boolean[] newEmpty = new boolean[last + number];
+
+		System.arraycopy(internal, 0, newInternal, 0, last);
+		System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+		internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
+	}
+
+
+	/**
+	 * Returns the internal representation of the data.
+	 * @return the internal representation of the data.
+	 */
+	public Object getInternal () {
+		return internal;
+	}
 
     /**
      Return the count for the number of non-null entries.

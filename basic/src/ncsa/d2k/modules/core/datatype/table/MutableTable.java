@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.datatype.table;
-
+import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Transformation;
 import java.util.*;
 
 /**
@@ -7,489 +8,40 @@ import java.util.*;
  */
 public interface MutableTable extends Table {
 
-//static final long serialVersionUID = 1505481703513638163L;
-
 	static final long serialVersionUID = 3803628206682571278L;
 
 	/**
-	 * Add a row to the end of this Table, initialized with integer data.
-	 * @param newEntry the data to put into the new row.
+	 * This method will replace the column at where with the one passed in.
+	 * @param col the new column
+	 * @param where where to put it.
 	 */
-	public void addRow(int[] newEntry);
+	public void setColumn(Column col, int where);
 
 	/**
-	 * Add a row to the end of this Table, initialized with float data.
-	 * @param newEntry the data to put into the new row.
+	 * Add columns to the table.
+	 * @param datatype add columns to the table.
 	 */
-	public void addRow(float[] newEntry);
+	public void addColumn(Column datatype);
 
 	/**
-	 * Add a row to the end of this Table, initialized with double data.
-	 * @param newEntry the data to put into the new row.
+	 * Add columns to the table.
+	 * @param datatype add columns to the table.
 	 */
-	public void addRow(double[] newEntry);
+	public void addColumns(Column [] datatype);
 
 	/**
-	 * Add a row to the end of this Table, initialized with long data.
-	 * @param newEntry the data to put into the new row.
+	 * Insert a column in the table.
+	 * @param col the column to add.
+	 * @param where position were the column will be inserted.
 	 */
-	public void addRow(long[] newEntry);
+	public void insertColumn(Column col, int where);
 
 	/**
-	 * Add a row to the end of this Table, initialized with short data.
-	 * @param newEntry the data to put into the new row.
+	 * Insert columns in the table.
+	 * @param datatype the columns to add.
+	 * @param where the number of columns to add.
 	 */
-	public void addRow(short[] newEntry);
-
-	/**
-	 * Add a row to the end of this Table, initialized with boolean data.
-	 * @param newEntry the data to put into the new row.
-	 */
-	public void addRow(boolean[] newEntry);
-
-	/**
-	 * Add a row to the end of this Table, initialized with String data.
-	 * @param newEntry the data to put into the new row.
-	 */
-	public void addRow(String[] newEntry);
-
-	/**
-	 * Add a row to the end of this Table, initialized with char[] data.
-	 * @param newEntry the data to put into the new row.
-	 */
-	public void addRow(char[][] newEntry);
-
-	/**
-	 * Add a row to the end of this Table, initialized with byte[] data.
-	 * @param newEntry the data to put into the new row.
-	 */
-	public void addRow(byte[][] newEntry);
-
-	/**
-	 * Add a row to the end of this Table, initialized with Object[] data.
-	 * @param newEntry the data to put into the new row.
-	 */
-	public void addRow(Object[] newEntry);
-
-	/**
-	 * Add a row to the end of this Table, initialized with byte data.
-	 * @param newEntry the data to put into the new row.
-	 */
-	public void addRow(byte[] newEntry);
-
-	/**
-	 * Add a row to the end of this Table, initialized with char data.
-	 * @param newEntry the data to put into the new row.
-	 */
-	public void addRow(char[] newEntry);
-
-	/**
-	 * Insert a new row into this Table, initialized with integer data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(int[] newEntry, int position);
-
-	/**
-	 * Insert a new row into this Table, initialized with float data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(float[] newEntry, int position);
-
-	/**
-	 * Insert a new row into this Table, initialized with double data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(double[] newEntry, int position);
-
-	/**
-	 * Insert a new row into this Table, initialized with long data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(long[] newEntry, int position);
-
-	/**
-	 * Insert a new row into this Table, initialized with short data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(short[] newEntry, int position);
-
-	/**
-	 * Insert a new row into this Table, initialized with boolean data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(boolean[] newEntry, int position);
-
-	/**
-	 * Insert a new row into this Table, initialized with String data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(String[] newEntry, int position);
-
-	/**
-	 * Insert a new row into this Table, initialized with char[] data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(char[][] newEntry, int position);
-
-	/**
-	 * Insert a new row into this Table, initialized with byte[] data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(byte[][] newEntry, int position);
-
-	/**
-	 * Insert a new row into this Table, initialized with Object data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(Object[] newEntry, int position);
-
-	/**
-	 * Insert a new row into this Table, initialized with byte data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(byte[] newEntry, int position);
-
-	/**
-	 * Insert a new row into this Table, initialized with char data.
-	 * @param newEntry the data to put into the inserted row.
-	 * @param position the position to insert the new row
-	 */
-	public void insertRow(char[] newEntry, int position);
-
-	/**
-	 * Add a new column to the end of this table, initialized with integer data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(int[] newEntry);
-
-	/**
-	 * Add a new column to the end of this table, initialized with float data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(float[] newEntry);
-
-	/**
-	 * Add a new column to the end of this table, initialized with double data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(double[] newEntry);
-
-	/**
-	 * Add a new column to the end of this table, initialized with long data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(long[] newEntry);
-
-	/**
-	 * Add a new column to the end of this table, initialized with short data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(short[] newEntry);
-
-	/**
-	 * Add a new column to the end of this table, initialized with boolean data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(boolean[] newEntry);
-
-	/**
-	 * Add a new column to the end of this table, initialized with String data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(String[] newEntry);
-
-	/**
-	 * Add a new column to the end of this table, initialized with char[] data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(char[][] newEntry);
-
-	/**
-	 * Add a new column to the end of this table, initialized with byte[] data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(byte[][] newEntry);
-
-	/**
-	 * Add a new column to the end of this table, initialized with Object data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(Object[] newEntry);
-
-	/**
-	 * Add a new column to the end of this table, initialized with byte data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(byte[] newEntry);
-
-	/**
-	 * Add a new column to the end of this table, initialized with char data.
-	 * @param newEntry the data to initialize the column with.
-	 */
-	public void addColumn(char[] newEntry);
-
-	/**
-	 * Insert a new column into this Table, initialized with integer data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(int[] newEntry, int position);
-
-	/**
-	 * Insert a new column into this Table, initialized with float data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(float[] newEntry, int position);
-
-	/**
-	 * Insert a new column into this Table, initialized with double data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(double[] newEntry, int position);
-
-	/**
-	 * Insert a new column into this Table, initialized with long data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(long[] newEntry, int position);
-
-	/**
-	 * Insert a new column into this Table, initialized with short data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(short[] newEntry, int position);
-
-	/**
-	 * Insert a new column into this Table, initialized with boolean data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(boolean[] newEntry, int position);
-
-	/**
-	 * Insert a new column into this Table, initialized with String data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(String[] newEntry, int position);
-
-	/**
-	 * Insert a new column into this Table, initialized with char[] data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(char[][] newEntry, int position);
-
-	/**
-	 * Insert a new column into this Table, initialized with byte[] data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(byte[][] newEntry, int position);
-
-	/**
-	 * Insert a new column into this Table, initialized with Object data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(Object[] newEntry, int position);
-
-	/**
-	 * Insert a new column into this Table, initialized with byte data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(byte[] newEntry, int position);
-
-	/**
-	 * Insert a new column into this Table, initialized with char data.
-	 * @param newEntry the initial values of the new column.
-	 * @param position the position to insert the new row
-	 */
-	public void insertColumn(char[] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of int data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(int[] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of float data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(float[] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of double data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(double[] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of long data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(long[] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of short data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(short[] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of boolean data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(boolean[] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of String data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(String[] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of char[] data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(char[][] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of byte[] data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(byte[][] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of Object data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(Object[] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of byte data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(byte[] newEntry, int position);
-
-	/**
-	 * Set the row at the given position to an array of char data.
-	 *	@param newEntry the new values of the row.
-	 *	@param position the position to set
-	 */
-	public void setRow(char[] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of int data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(int[] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of float data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(float[] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of double data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(double[] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of long data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(long[] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of short data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(short[] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of boolean data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(boolean[] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of String data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(String[] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of char data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(char[][] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of byte[] data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(byte[][] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of Object data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(Object[] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of byte data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(byte[] newEntry, int position);
-
-	/**
-	 * Set the column at the given position to an array of char data.
-	 *	@param newEntry the new values of the column.
-	 *	@param position the position to set
-	 */
-	public void setColumn(char[] newEntry, int position);
+	public void insertColumns(Column [] datatype, int where);
 
 	/**
 		Remove a column from the table.
@@ -505,6 +57,12 @@ public interface MutableTable extends Table {
 	public void removeColumns(int start, int len);
 
 	/**
+	 * Insert the specified number of blank rows.
+	 * @param howMany
+	 */
+	public void addRows(int howMany);
+
+	/**
 	 * Remove a row from this Table.
 	 * @param row the row to remove
 	 */
@@ -517,31 +75,6 @@ public interface MutableTable extends Table {
 	*/
 	public void removeRows(int start, int len);
 
-	/**
-	 * Remove rows from this Table using a boolean map.
-	 * @param flags an array of booleans to map to this Table's rows.  Those
-	 * with a true will be removed, all others will not be removed
-	 */
-	public void removeRowsByFlag(boolean[] flags);
-
-	/**
-	 * Remove rows from this Table using a boolean map.
-	 * @param flags an array of booleans to map to this Table's rows.  Those
-	 * with a true will be removed, all others will not be removed
-	 */
-	public void removeColumnsByFlag(boolean[] flags);
-
-	/**
-	 * Remove rows from this Table by index.
-	 * @param indices a list of the rows to remove
-	 */
-	public void removeRowsByIndex(int[] indices);
-
-	/**
-	 * Remove rows from this Table by index.
-	 * @param indices a list of the rows to remove
-	 */
-	public void removeColumnsByIndex(int[] indices);
 
 	/**
 		Get a copy of this Table reordered based on the input array of indexes.
@@ -685,12 +218,6 @@ public interface MutableTable extends Table {
 	*/
 	public void setColumnComment(String comment, int position);
 
-    /**
-    	Set the number of columns this Table can hold.
-    	@param numColumns the number of columns this Table can hold
-     */
-	public void setNumColumns(int numColumns);
-
 	/**
 		Sort the specified column and rearrange the rows of the table to
 		correspond to the sorted column.
@@ -705,14 +232,6 @@ public interface MutableTable extends Table {
        @param end the row no. which marks the end of the column segment to be sorted
     */
     public void sortByColumn(int col, int begin, int end);
-
-	/**
-		Sets a new capacity for this Table.  The capacity is its potential
-		maximum number of entries.  If numEntries is greater than newCapacity,
-		then the Table may be truncated.
-		@param newCapacity a new capacity
-	*/
-	public void setNumRows(int newCapacity);
 
     /////////// Collect the transformations that were performed. /////////
     /**
@@ -743,32 +262,4 @@ public interface MutableTable extends Table {
 	 * @param col the column index
 	 */
 	public void setValueToEmpty(boolean b, int row, int col);
-
-	/**
-	 * Set the value used to signify a nominal empty value for col.
-	 * @param val the new value
-	 * @param col the column index
-	 */
-	//public void setNominalEmptyValue(String val, int col);
-
-	/**
-	 * Set the value used to signify a scalar missing value for col.
-	 * @param val the new value
-	 * @param col the column index
-	 */
-	//public void setScalarMissingValue(Number val, int col);
-
-	/**
-	 * Set the value used to signify a nominal missing value for col.
-	 * @param val the new value
-	 * @param col the column index
-	 */
-	//public void setNominalMissingValue(String val, int col);
-
-	/**
-	 * Set the value used to signify a scalar empty value for col.
-	 * @param val the new value
-	 * @param col the column index
-	 */
-	//public void setScalarEmptyValue(Number val, int col);
 }

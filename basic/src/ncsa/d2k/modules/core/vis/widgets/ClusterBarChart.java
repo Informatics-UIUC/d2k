@@ -8,7 +8,6 @@ import java.util.*;
 import javax.swing.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.util.*;
 
 public class ClusterBarChart extends BarChart implements MouseListener {
@@ -87,11 +86,16 @@ public class ClusterBarChart extends BarChart implements MouseListener {
         // Missing values
         Iterator iterator = runset.iterator();
         while (iterator.hasNext()) {
-          String[] values = new String[mutable.getNumColumns()];
+			int where = mutable.getNumRows();
+					  mutable.addRows(1);
+					  mutable.setString(label, where, 0);
+					  mutable.setString(new String("0.0"), where, 1);
+					  mutable.setString((String) iterator.next(), where, 2);
+         /* String[] values = new String[mutable.getNumColumns()];
           values[0] = label;
           values[1] = new String("0.0");
           values[2] = (String) iterator.next();
-          mutable.addRow(values);
+          mutable.addRow(values);*/
         }
 
         runs++;
@@ -105,11 +109,17 @@ public class ClusterBarChart extends BarChart implements MouseListener {
     // Last run
     Iterator iterator = runset.iterator();
     while (iterator.hasNext()) {
+		int where = mutable.getNumRows();
+			 mutable.addRows(1);
+			 mutable.setString(label, where, 0);
+			 mutable.setString(new String("0.0"), where, 1);
+			 mutable.setString((String) iterator.next(), where, 2);
+			 /*
       String[] values = new String[mutable.getNumColumns()];
       values[0] = label;
       values[1] = new String("0.0");
       values[2] = (String) iterator.next();
-      mutable.addRow(values);
+      mutable.addRow(values); */
     }
     runs++;
 
@@ -430,7 +440,10 @@ public class ClusterBarChart extends BarChart implements MouseListener {
 
     map.clear();
     String[] values = new String[runsize];
-    mutable.getSubset(0, runsize).getColumn(values, 2);
+	for (int i = 0 ; i < values.length ; i++) {
+		  values[i] = mutable.getString(i, 2);
+		}
+    //mutable.getSubset(0, runsize).getColumn(values, 2);
     for (int index=0; index < values.length; index++) {
       x = legendleftoffset + smallspace;
       y += fontheight - samplecolorsize;

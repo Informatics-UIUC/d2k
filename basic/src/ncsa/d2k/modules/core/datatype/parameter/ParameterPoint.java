@@ -10,8 +10,6 @@ Parameters can be accessed by name if desired.
 
 public interface ParameterPoint extends Table {
 
-  //static final long serialVersionUID = 2508941379956505568L;
-
   /**
    * Create a ParameterPoint from the information in the given table.
    * Each column in the table represents a parameter.
@@ -68,5 +66,4 @@ public interface ParameterPoint extends Table {
    * @return an integer representing the index of the parameters.
    */
   public ParameterPoint [] segmentPoint(ParameterPoint point, int splitIndex);
-
 } /* ParameterPoint */

@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.transform.attribute;
 import java.util.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * This module examines columns in a <code>MutableTable</code> and, for
@@ -329,7 +330,7 @@ public class ScalarizeNominals extends DataPrepModule {
 				  newColumn[row] = false;
 			  }
 
-			  table.insertColumn(newColumn, index + k);
+			  table.insertColumn(new BooleanColumn(newColumn), index + k);
 			  table.setColumnLabel(columnLabel + "=" +
 				uniqueValues[indirection[k]], index + k);
 
@@ -345,7 +346,7 @@ public class ScalarizeNominals extends DataPrepModule {
 				  newColumn[row] = 0;
 			  }
 
-			  table.insertColumn(newColumn, index + k);
+			  table.insertColumn(new DoubleColumn(newColumn), index + k);
 			  table.setColumnLabel(columnLabel + "=" +
 				uniqueValues[indirection[k]], index + k);
 

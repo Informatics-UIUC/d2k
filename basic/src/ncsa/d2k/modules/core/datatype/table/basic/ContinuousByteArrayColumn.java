@@ -166,6 +166,14 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 	}
 
 	/**
+	 * Add the specified number of blank rows.
+	 * @param number number of rows to add.
+	 */
+	public void addRows (int number) {
+		for (int i = 0 ; i < number ; i++) this.addRow("");
+	}
+
+	/**
 	 * Create a new int array with all elements set to -1.
 	 * @param size the size of the array
 	 * @return a new int array with all elements set to -1
@@ -318,6 +326,7 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 			numRows++;
 		}
 	}
+
 
 	/**
 	 * Get the bytes that make up a row

@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.datatype.table.transformations;
 
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * Encapsulates a (reversible) transformation on a <code>MutableTable</code>
@@ -116,12 +117,8 @@ public class ReplaceNominalsWithIntsTransform
 		 }
 
 		 label = mt.getColumnLabel(col);
-		 mt.setColumn(intColumn, col);
+		 mt.setColumn(new IntColumn(intColumn), col);
 		 mt.setColumnLabel(label, col);
-		 //Iterator it = missingValues.iterator();
-		 //while(it.hasNext())
-		 //    mt.setValueToMissing(true,((Integer)it.next()).intValue(), col);
-
 		 mt.setColumnIsNominal(true,col);
 		 mt.setColumnIsScalar(false,col);
 
@@ -159,15 +156,9 @@ public class ReplaceNominalsWithIntsTransform
 			//}
 		 }
 
-
 		 label = mt.getColumnLabel(col);
-		 mt.setColumn(stringColumn, col);
+		 mt.setColumn(new StringColumn(stringColumn), col);
 		 mt.setColumnLabel(label, col);
-		 //Iterator it = missingValues.iterator();
-		 //while(it.hasNext())
-		 //    mt.setValueToMissing(true,((Integer)it.next()).intValue(), col);
-
-
 	  }
 
 	  return true;

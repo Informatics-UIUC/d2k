@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.datatype.table.transformations;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
 
 /**
@@ -40,31 +41,31 @@ public class AttributeTransform implements Transformation {
 
             case ColumnExpression.TYPE_BOOLEAN:
                boolean[] b = (boolean[])evaluation;
-               table.addColumn(b);
+               table.addColumn(new BooleanColumn(b));
                break;
             case ColumnExpression.TYPE_BYTE:
                byte[] bb = (byte[])evaluation;
-               table.addColumn(bb);
+               table.addColumn(new ByteColumn(bb));
                break;
             case ColumnExpression.TYPE_DOUBLE:
                double[] d = (double[])evaluation;
-               table.addColumn(d);
+               table.addColumn(new DoubleColumn(d));
                break;
             case ColumnExpression.TYPE_FLOAT:
                float[] f = (float[])evaluation;
-               table.addColumn(f);
+               table.addColumn(new FloatColumn(f));
                break;
             case ColumnExpression.TYPE_INTEGER:
                int[] I = (int[])evaluation;
-               table.addColumn(I);
+               table.addColumn(new IntColumn(I));
                break;
             case ColumnExpression.TYPE_LONG:
                long[] l = (long[])evaluation;
-               table.addColumn(l);
+               table.addColumn(new LongColumn(l));
                break;
             case ColumnExpression.TYPE_SHORT:
                short[] s = (short[])evaluation;
-               table.addColumn(s);
+               table.addColumn(new ShortColumn(s));
                break;
              case ColumnExpression.TYPE_STRING:
                String[] p = (String[]) evaluation;

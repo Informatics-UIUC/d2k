@@ -16,7 +16,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
    boolean UseMeanNodeModels          = true;
    boolean UseLinearNodeModels        = false;
-   boolean UseOneHalfSplit            = false;
+   boolean UseOneHalfSplit      = false;
    boolean UseMidPointBasedSplit      = false;
    boolean UseMeanBasedSplit          = true;
    boolean UsePopulationBasedSplit    = false;
@@ -127,7 +127,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
     ExampleTable examples = node.examples;
 
-    int numExamples = examples.getNumExamples();
+    int numExamples = examples.getNumRows();
 
     double [] outputSums = new double[numOutputs];
     double [] outputMins = new double[numOutputs];
@@ -163,7 +163,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     ExampleTable examples = node.examples;
 
     if (UseMeanNodeModels || (!UseMeanNodeModels && !UseLinearNodeModels)) {
-      int numExamples = examples.getNumExamples();
+      int numExamples = examples.getNumRows();
 
       double [] outputSums = new double[numOutputs];
 
@@ -233,7 +233,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
     ExampleTable examples = node.examples;
 
-    int numExamples = examples.getNumExamples();
+    int numExamples = examples.getNumRows();
 
     PredictionTable predictionTable = examples.toPredictionTable();
     node.model.predict(predictionTable);
@@ -256,8 +256,9 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     RootNode = new DecisionTreeNode(NodeIndex, depth);
     NodeIndex++;
     RootNode.examples = examples;
-    RootNode.numExamples = examples.getNumExamples();
+    RootNode.numExamples = examples.getNumRows();
     RootNode.root = RootNode;
+
 
     calculateOutputMeansMinsMaxs(RootNode);
 
@@ -298,7 +299,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
   public Decomposition [] createDecompositions(DecisionTreeNode node) {
     ExampleTable examples = node.examples;
-    int numExamples = examples.getNumExamples();
+    int numExamples = examples.getNumRows();
 
     int numSplitMethods = 0;
 
@@ -393,12 +394,12 @@ and the example table assigned to node2 contains the examples that the decomposi
                                  DecisionTreeNode node2,
                                  Decomposition decomposition) throws Exception {
 
-    if (workNode1ExampleIndices == null || workNode1ExampleIndices.length < examples.getNumExamples()) {
-      workNode1ExampleIndices = new int[examples.getNumExamples()];
-      workNode2ExampleIndices = new int[examples.getNumExamples()];
+    if (workNode1ExampleIndices == null || workNode1ExampleIndices.length < examples.getNumRows()) {
+      workNode1ExampleIndices = new int[examples.getNumRows()];
+      workNode2ExampleIndices = new int[examples.getNumRows()];
     }
 
-    int numExamples = examples.getNumExamples();
+    int numExamples = examples.getNumRows();
     int numNode1Examples = 0;
     int numNode2Examples = 0;
     for (int e = 0; e < numExamples; e++) {
@@ -428,17 +429,17 @@ and the example table assigned to node2 contains the examples that the decomposi
 
     //ExampleTable node1ExampleSet = (ExampleTable) examples.copy();
     //node1ExampleSet.setTestingSet(node1ExampleIndicies);
-    node1.examples = (ExampleTable) examples.getSubsetByReference(node1ExampleIndicies);
+    node1.examples = (ExampleTable) examples.getSubset(node1ExampleIndicies);
 
     //ExampleTable node2ExampleSet = (ExampleTable) examples.copy();
     //node2ExampleSet.setTestingSet(node2ExampleIndicies);
-    node2.examples = (ExampleTable) examples.getSubsetByReference(node2ExampleIndicies);
+    node2.examples = (ExampleTable) examples.getSubset(node2ExampleIndicies);
 
-    //System.out.println("node1.examples.numExamples() = " + node1.examples.getNumExamples());
-    //System.out.println("node2.examples.numExamples() = " + node2.examples.getNumExamples());
+    //System.out.println("node1.examples.numExamples() = " + node1.examples.getNumRows());
+    //System.out.println("node2.examples.numExamples() = " + node2.examples.getNumRows());
 
-    node1.numExamples = node1.examples.getNumExamples();
-    node2.numExamples = node2.examples.getNumExamples();
+    node1.numExamples = node1.examples.getNumRows();
+    node2.numExamples = node2.examples.getNumRows();
 
     node1.root = parrentNode.root;
     node2.root = parrentNode.root;
@@ -448,7 +449,7 @@ and the example table assigned to node2 contains the examples that the decomposi
 
   public DecisionTreeNode recursiveDecomposition(DecisionTreeNode node, int depth) throws Exception {
 
-    if (node.examples.getNumExamples() < MinDecompositionPopulation)
+    if (node.examples.getNumRows() < MinDecompositionPopulation)
       return node;
 
     double parentError = node.error;
@@ -463,7 +464,7 @@ and the example table assigned to node2 contains the examples that the decomposi
     //!!!
     //ExampleTable examples = (ExampleTable) node.examples.copy();
     ExampleTable examples = node.examples;
-    int    numExamples = examples.getNumExamples();
+    int    numExamples = examples.getNumRows();
 
 
 

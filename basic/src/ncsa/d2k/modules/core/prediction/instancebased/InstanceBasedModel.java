@@ -40,7 +40,7 @@ public class InstanceBasedModel extends Model implements java.io.Serializable
 
   public double [] evaluate(ExampleTable testExampleSet, int testE)
     {
-    int numExamples = trainExampleSet.getNumExamples();
+    int numExamples = trainExampleSet.getNumRows();
     int numInputs   = trainExampleSet.getNumInputFeatures();
     int numOutputs  = trainExampleSet.getNumOutputFeatures();
 
@@ -154,7 +154,7 @@ public class InstanceBasedModel extends Model implements java.io.Serializable
     System.out.println("  DistanceWeightingPower = " + DistanceWeightingPower);
     System.out.println("  ZeroDistanceWeight      = " + ZeroDistanceWeight);
     System.out.println("Example Set Attributes");
-    System.out.println("  NumExamples            = " + trainExampleSet.getNumExamples());
+    System.out.println("  NumExamples            = " + trainExampleSet.getNumRows());
     }
 
 

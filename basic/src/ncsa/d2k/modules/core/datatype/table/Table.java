@@ -1,4 +1,5 @@
 package ncsa.d2k.modules.core.datatype.table;
+import ncsa.d2k.modules.core.datatype.table.basic.Column;
 
 /**
 	Table is a data structure of m rows where each row has n columns.  Therefore,
@@ -202,37 +203,10 @@ public interface Table extends java.io.Serializable {
 	public int getNumRows();
 
 	/**
-		Get the number of entries this Table holds.
-		@return this Table's number of entries
-	*/
-	public int getNumEntries();
-
-	/**
 		Return the number of columns this table holds.
 		@return the number of columns in this table
 	*/
 	public int getNumColumns();
-
-	/**
-	 * Get a row from the table at the specified position.  The table will
-	 * copy the entries into the buffer, in a format that is appropriate for
-	 * the buffer's data type.
-	 * @param buffer a buffer to copy the data into
-	 * @param position the position
-	*/
-	public void getRow(Object buffer, int position);
-
-	/**
-	 * Get a copy of the data from a column from the Table at the specified
-	 * position.  The Table will copy the entries into the buffer, in a format
-	 * that is appropriate for the buffer's data type.  The buffer must be an
-	 * array of data that corresponds to one of the types enumerated in
-	 * ColumnTypes.
-	 * @param buffer a buffer to copy the data into
-	 * @param position the position
-	 * @see ColumnTypes
-	 */
-	 public void getColumn(Object buffer, int position);
 
 	/**
 		Get a subset of this Table, given a start position and length.  The
@@ -244,31 +218,60 @@ public interface Table extends java.io.Serializable {
 	public Table getSubset(int start, int len);
 
 	/**
-		Create a copy of this Table.
-		@return a copy of this Table
-	*/
+	 * get a subset of the table consisting of the rows identified by the array
+	 * of indices passed in.
+	 * @param rows the rows to be in the subset.
+	 * @return
+	 */
+	public Table getSubset(int[] rows);
+
+	/**
+	 * Create a copy of this Table. This is a deep copy, and it contains a copy of
+	 * 	all the data.
+	 * @return a copy of this Table
+	 */
 	public Table copy();
 
 	/**
-	 * Get a TableFactory for this Table.
-	 * @return The appropriate TableFactory for this Table.
+	 * Create a copy of this Table. This is a deep copy, and it contains a copy of
+	 * 	all the data.
+	 * @return a copy of this Table
 	 */
-	 public TableFactory getTableFactory();
+	public Table copy(int start, int len);
 
-	 /**
-	  * Returns true if the column at position contains nominal data, false
-	  * otherwise.
-	  * @param position the index of the column
-	  * @return true if the column contains nominal data, false otherwise.
-	  */
-	 public boolean isColumnNominal(int position);
+	/**
+	 * Create a copy of this Table. This is a deep copy, and it contains a copy of
+	 * 	all the data.
+	 * @return a copy of this Table
+	 */
+	public Table copy(int [] rows);
+	/**
+	 * Create a copy of this Table. A copy of every field in the class should be made,
+	 * but the data itself should not be copied.
+	 * @return a shallow copy of this Table
+	 */
+	public Table shallowCopy();
 
-	 /**
-	  * Returns true if the column at position contains scalar data, false
-	  * otherwise
-	  * @param position
-	  * @return true if the column contains scalar data, false otherwise
-	  */
+	/**
+	 * Create a new empty table of the same type as the implementation
+	 * @return a new empty table.
+	 */
+	public MutableTable createTable();
+
+	/**
+	 * Returns true if the column at position contains nominal data, false
+	 * otherwise.
+	 * @param position the index of the column
+	 * @return true if the column contains nominal data, false otherwise.
+	 */
+	public boolean isColumnNominal(int position);
+
+	/**
+	 * Returns true if the column at position contains scalar data, false
+	 * otherwise
+	 * @param position
+	 * @return true if the column contains scalar data, false otherwise
+	 */
 	 public boolean isColumnScalar(int position);
 
 	 /**
@@ -285,82 +288,62 @@ public interface Table extends java.io.Serializable {
 	  */
 	 public void setColumnIsScalar(boolean value, int position);
 
-	 /**
-	  * Returns true if the column at position contains only numeric values,
-	  * false otherwise.
-	  * @param position the index of the column
-	  * @return true if the column contains only numeric values, false otherwise
-	  */
-	 public boolean isColumnNumeric(int position);
+	/**
+	 * Returns true if the column at position contains only numeric values,
+	 * false otherwise.
+	 * @param position the index of the column
+	 * @return true if the column contains only numeric values, false otherwise
+	 */
+	public boolean isColumnNumeric(int position);
 
-	 /**
+	/**
 	  * Return the type of column located at the given position.
 	  * @param position the index of the column
 	  * @return the column type
 	  * @see ColumnTypes
 	  */
-	 public int getColumnType(int position);
+	public int getColumnType(int position);
 
-	 /**
+	/**
+	 * This method will return a Row object. The row object can be used over and over
+	 * to access the rows of the table by setting it's index to access a particular row.
+	 * @return a Row object that can access the rows of the table.
+	 */
+	public Row getRow ();
+
+	/**
 	  * Return this Table as an ExampleTable.
 	  * @return This object as an ExampleTable
 	  */
-	 public ExampleTable toExampleTable();
+	public ExampleTable toExampleTable();
 
 	/**
 	 * Return true if the value at (row, col) is a missing value, false otherwise.
 	 * @param row the row index
 	 * @param col the column index
-	 * @return true if the value is missing, false otherwise
-	 */
+	* @return true if the value is missing, false otherwise
+	*/
 	public boolean isValueMissing(int row, int col);
 
 	/**
-	 * Return true if the value at (row, col) is an empty value, false otherwise.
-	 * @param row the row index
-	 * @param col the column index
-	 * @return true if the value is empty, false otherwise
-	 */
+	* Return true if the value at (row, col) is an empty value, false otherwise.
+	* @param row the row index
+	* @param col the column index
+	* @return true if the value is empty, false otherwise
+	*/
 	public boolean isValueEmpty(int row, int col);
 
 	/**
-	 * Return the value used to signify a scalar missing value in col
-	 * @param col the column index
-	 * @return the value used to signify a scalar missing value in col
-	 */
-	//public Number getScalarMissingValue(int col);
+	* Return true if any value in this Table is missing.
+	* @return true if there are any missing values, false if there are no missing values
+	*/
+	public boolean hasMissingValues();
 
 	/**
-	 * Return the value used to signify a nominal missing value in col
-	 * @param col the column index
-	 * @return the value used to signify a nominal missing value in col
+	 * Return a column representing the data in column n.
+	 * @param n the column to get.
+	 * @return a column representing the data.
 	 */
-	//public String getNominalMissingValue(int col);
-
-	/**
-	 * Return the value used to signify a scalar empty value in col
-	 * @param col the column index
-	 * @return the value used to signify a scalar empty value in col
-	 */
-	//public Number getScalarEmptyValue(int col);
-
-	/**
-	 * Return the value used to signify a nominal empty value in col
-	 * @param col the column index
-	 * @return the value used to signify a nominal empty value in col
-	 */
-	//public String getNominalEmptyValue(int col);
-
-        public Table getSubsetByReference(int start, int len);
-        public Table getSubsetByReference(int[] rows);
-
-        public Table getSubset(int[] rows);
-
-
-        /**
-         * Return true if any value in this Table is missing.
-         * @return true if there are any missing values, false if there are no missing values
-         */
-        public boolean hasMissingValues();
+	public Column getColumn(int n);
 
 }/*Table*/

@@ -63,7 +63,8 @@ public class RemoveDuplicateRows extends DataPrepModule {
         int numCols = mt.getNumColumns();
         for(int i = 0; i < numRows; i++) {
             String[] row = new String[numCols];
-            mt.getRow(row, i);
+            for (int j =0; j < numCols; j++)
+               row [j] =mt.getString(i, j);
             RowSet rs = new RowSet(row);
             if(setOfUniqueRows.contains(rs)) {
                 rowsToRemove.add(i);
@@ -72,7 +73,8 @@ public class RemoveDuplicateRows extends DataPrepModule {
                 setOfUniqueRows.add(rs);
         }
         int[] toRem = rowsToRemove.toNativeArray();
-        mt.removeRowsByIndex(toRem);
+        for (int i =0; i < toRem.length; i++)
+        mt.removeRow(toRem[i]);
         pushOutput(mt, 0);
     }
 

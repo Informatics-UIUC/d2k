@@ -27,22 +27,14 @@ package ncsa.d2k.modules.core.prediction.decisiontree.rainforest;
  * @version 1.0
  */
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.UserView;
-import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.*;
-import ncsa.d2k.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.prediction.decisiontree.*;
-import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.io.sql.*;
-import ncsa.gui.Constrain;
-import ncsa.gui.JOutlinePanel;
 import java.sql.*;
 import java.util.*;
 import java.text.*;
 import javax.swing.*;
-import java.io.*;
 import java.beans.PropertyVetoException;
 import gnu.trove.*;
 
@@ -313,7 +305,8 @@ public class SQLRainForest extends SQLRainForestOPT {
     for (int colIdx=0; colIdx<inputFeatures.length; colIdx++) {
       availableCols[colIdx] = meta.getColumnLabel(inputFeatures[colIdx]);
     }
-    totalRow = meta.getNumEntries();
+   // totalRow = meta.getNumEntries();
+   totalRow = meta.getNumRows();
     minimumRecordsPerLeaf = totalRow * minimumRatioPerLeaf;
 
     // if totalRow < modeThreshold, use in-memory mode
@@ -1469,7 +1462,7 @@ public class SQLRainForest extends SQLRainForestOPT {
         cols[colIdx].setIsScalar(false);
       }
     }
-    data = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(cols);
+    data =  new MutableTableImpl (cols);
     try {
       con = cw.getConnection();
       String dataQry = new String("select ");

@@ -22,7 +22,7 @@ public class UniformSampling
     pds[0] = new PropertyDescription(
         "objectiveScoreOutputFeatureNumber",
         "Objective Score Output Feature Number",
-        "Selects which example output feature, from 1 to n, that is used to denote the objective score of the Parameter Point.  ");
+        "Selects which example output feature is used to denote the objective score of the Parameter Point.  ");
 
     pds[1] = new PropertyDescription(
         "objectiveScoreDirection",
@@ -197,7 +197,6 @@ public class UniformSampling
 
     InitialExecution = true;
     ExampleData = null;
-    //!!! error introduced by tlr found by dkt 4/23; was:  //NumExamples = 0;
     NumExamples = 0;
 
     if (ObjectiveScoreDirection == 1) {
@@ -255,9 +254,9 @@ public class UniformSampling
       Example example = (Example)this.pullInput(1);
       if (ExampleData == null) {
 	    NumExamples = 0;
-		ExampleData = new double [BiasSpace.getNumParameters()+example.getNumOutputs()][MaxNumIterations];
+		ExampleData = new double [BiasSpace.getNumParameters()+((ExampleTable)example.getTable()).getNumOutputFeatures()][MaxNumIterations];
 		inputs = new int [BiasSpace.getNumParameters()];
-		outputs = new int [example.getNumOutputs()];
+		outputs = new int [((ExampleTable)example.getTable()).getNumOutputFeatures()];
 		int index = 0;
 		for (; index < inputs.length ; index++) inputs[index] = index;
 		for (int i = 0 ; i < outputs.length ; index++, i++) outputs[i] = index;
@@ -267,27 +266,25 @@ public class UniformSampling
 		  inputNames[i] = BiasSpace.getName(i);
 		}
 
-		outputNames = new String[example.getNumOutputs()];
-		for (int i = 0; i < example.getNumOutputs(); i++) {
-		  outputNames[i] = example.getOutputName(i);
+		outputNames = new String[((ExampleTable)example.getTable()).getNumOutputFeatures()];
+		for (int i = 0; i < ((ExampleTable)example.getTable()).getNumOutputFeatures(); i++) {
+		  outputNames[i] = ((ExampleTable)example.getTable()).getOutputName(i);
 		}
       }
 
       // add example to set
       int index = 0;
-      for (int i = 0; i < example.getNumInputs(); i++) {
+      for (int i = 0; i < ((ExampleTable)example.getTable()).getNumInputFeatures(); i++) {
         ExampleData[index++][NumExamples] = example.getInputDouble(i);
       }
-      for (int i = 0; i < example.getNumOutputs(); i++) {
+      for (int i = 0; i < ((ExampleTable)example.getTable()).getNumOutputFeatures(); i++) {
         ExampleData[index++][NumExamples] = example.getOutputDouble(i);
       }
       NumExamples++;
 
       // update best solution so far
-      //!!! error in Tom's revisions of this module found by dkt on 4/24.  It was:  int outputFeature2Score = inputs.length + ObjectiveScoreOutputFeatureNumber;
-	  int outputFeature2Score = inputs.length + ObjectiveScoreOutputFeatureNumber - 1;
+	  int outputFeature2Score = inputs.length + (ObjectiveScoreOutputFeatureNumber-1);
       for (int e = NumExamples - 1; e < NumExamples; e++) {
-		//!!! error in Tom's revisions of this module found by dkt on 4/24.  It was: double utility = ExampleData [e][outputFeature2Score];
 		double utility = ExampleData [outputFeature2Score][e];
         if (ObjectiveScoreDirection == 1) {
           if (utility > BestUtility) {
@@ -350,9 +347,10 @@ public class UniformSampling
 	  for (int i = 0; i < ExampleData.length; i++) {
 		data[index++][0] = ExampleData[i][BestExampleIndex];
 	  }
-	  ExampleTable optimalExampleSet = this.getTable(data, inputNames, outputNames,
+	  //ANCA: was this.getTable()
+	  ExampleTable optimalExampleSet = getTable(data, inputNames, outputNames,
 			  inputs, outputs, 1);
-	  ExampleTable exampleSet = this.getTable(ExampleData, inputNames, outputNames,
+	  ExampleTable exampleSet = getTable(ExampleData, inputNames, outputNames,
 			  inputs, outputs, NumExamples);
       this.pushOutput(optimalExampleSet, 1);
       this.pushOutput(exampleSet, 2);

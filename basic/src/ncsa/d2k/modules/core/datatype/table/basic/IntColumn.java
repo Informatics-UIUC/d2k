@@ -132,6 +132,24 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
 
 	//////////////////////////////////////
 	//// Accessing Metadata
+	/**
+	 * Add the specified number of blank rows.
+	 * @param number number of rows to add.
+	 */
+	public void addRows (int number) {
+		int last = internal.length;
+		int[] newInternal = new int[last + number];
+		boolean[] newMissing = new boolean[last + number];
+		boolean[] newEmpty = new boolean[last + number];
+
+		System.arraycopy(internal, 0, newInternal, 0, last);
+		System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+		internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
+	}
+
 
 	/**
 	 * Return the count for the number of non-null entries.
@@ -146,6 +164,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
 				numEntries++;
 		return  numEntries;
 	}
+
 
    /**
 	* Get the number of rows that this column can hold.
@@ -234,7 +253,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
 	 * @return a String representation of the entry at that position
 	 */
 	public String getString (int pos) {
-		return  String.valueOf(this.internal[pos]);
+		return String.valueOf(this.internal[pos]);
 	}
 
 	/**
@@ -353,7 +372,6 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
 	 */
 	public void setBytes (byte[] newEntry, int pos) {
 		setString(new String(newEntry), pos);
-		//internal[pos] = ByteUtils.toInt(newEntry);
 	}
 
 	/**
@@ -362,7 +380,6 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
 	 * @return the value at pos as a byte.
 	 */
 	public byte getByte (int pos) {
-		//return (String.valueOf(this.internal[pos])).getBytes();
 	  return (byte)getInt(pos);
 	}
 

@@ -135,6 +135,25 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
 
     //////////////////////////////////////
     //// ACCESSING FIELD ELEMENTS
+	/**
+	 * Add the specified number of blank rows.
+	 * @param number number of rows to add.
+	 */
+	public void addRows (int number) {
+		int last = internal.length;
+		byte [][] newInternal = new byte[last + number][];
+		boolean[] newMissing = new boolean[last + number];
+		boolean[] newEmpty = new boolean[last + number];
+
+		System.arraycopy(internal, 0, newInternal, 0, last);
+		System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+		internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
+	}
+
+
     /**
     	Get a String from this Column at pos
     	@param pos the position from which to get a String
@@ -1026,5 +1045,15 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
     public boolean isValueEmpty(int row) {
         return empty[row];
 	}
+	
+//ANCA added for testing purposes
+  public boolean equals(Object obj) {
+   byte[][] objInternal = (byte [][])((ByteArrayColumn)obj).getInternal();
+   if (internal.length != objInternal.length) return false;
+   for (int i =0; i < internal.length; i ++)
+	 if (compareRows(objInternal[i],i) !=0 ) return false;
+	return true; 
+	
+  }
 }
 /*ByteArrayColumn*/

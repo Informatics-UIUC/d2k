@@ -1,12 +1,26 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.userviews.swing.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.core.modules.UIModule;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
+import ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.Transformation;
+import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
+import ncsa.d2k.userviews.swing.JUserPane;
 
 /**
  * This module presents a user interface for interactive normalization of
@@ -357,7 +371,7 @@ public class Normalize extends UIModule {
             String columnLabel = table.getColumnLabel(index);
             String columnComment = table.getColumnComment(index);
 
-            table.setColumn(data, index);
+            table.setColumn(new DoubleColumn(data), index);
 
             table.setColumnLabel(columnLabel, index);
             table.setColumnComment(columnComment, index);

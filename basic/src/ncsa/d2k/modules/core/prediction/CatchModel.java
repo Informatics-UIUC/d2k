@@ -2,7 +2,6 @@ package ncsa.d2k.modules.core.prediction;
 
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.PredictionModelModule;
 
 /**
  * A very simple ModelSelector that takes a model as input and returns it in the

@@ -6,6 +6,7 @@ import java.util.*;
 import javax.swing.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.userviews.swing.*;
 
 /**
@@ -550,7 +551,7 @@ public class Scale extends UIModule {
             String columnLabel = table.getColumnLabel(index);
             String columnComment = table.getColumnComment(index);
 
-            table.setColumn(data, index);
+            table.setColumn(new DoubleColumn(data), index);
 
             table.setColumnLabel(columnLabel, index);
             table.setColumnComment(columnComment, index);

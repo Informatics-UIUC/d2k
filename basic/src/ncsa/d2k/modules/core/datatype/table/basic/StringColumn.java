@@ -102,6 +102,33 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
    }
 
    /**
+	* Add the specified number of blank rows.
+	* @param number number of rows to add.
+	*/
+   public void addRows (int number) {
+	  //ANCA : replaced this: int last = values.length; and all value with rowIndicies
+	  int last = rowIndicies.length;
+	   int[] newInternal = new int[last + number];
+	   boolean[] newMissing = new boolean[last + number];
+	   boolean[] newEmpty = new boolean[last + number];
+
+	   System.arraycopy(rowIndicies, 0, newInternal, 0, last);
+	   System.arraycopy(missing, 0, newMissing, 0, missing.length);
+	   System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+	   rowIndicies = newInternal;
+	   missing = newMissing;
+	   empty = newEmpty;
+   }
+
+	/**
+	 * Returns the internal representation of the data.
+	 * @return the internal representation of the data.
+	 */
+	public Object getInternal () {
+		return this.values;
+	}
+
+   /**
 	* Currently we just leave removed values in the values array.
 	* Eventually we should compact the array, but this will require shuffling
 	* the rowIndicies...??? will it??
@@ -118,7 +145,12 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
    }
 
    public int getNumEntries() {
-	  return rowIndicies.length;
+ 			int numEntries = 0;
+			for (int i = 0; i < rowIndicies.length; i++)
+				if (!isValueMissing(i) && !isValueEmpty(i))
+					numEntries++;
+			return numEntries;
+	//ANCA: replaced with the above:  return rowIndicies.length;
    }
 
    public String getString(int row) {
@@ -202,8 +234,8 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
    }
 
    public byte getByte(int row) {
-	  //return getString(row).getBytes()[0];
-	   return Byte.parseByte(getString(row));
+	  return getString(row).getBytes()[0];
+	  //ANCA: the above was commented but it 's the corect one- return Byte.parseByte(getString(row));
    }
 
    public void setByte(byte b, int row) {

@@ -8,24 +8,40 @@ package ncsa.d2k.modules.core.prediction.decisiontree;
  * @author Dora Cai
  * @version 1.0
  */
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.modules.core.prediction.decisiontree.*;
-import ncsa.d2k.modules.core.prediction.decisiontree.rainforest.*;
-import ncsa.d2k.modules.core.io.sql.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.table.TableColumnModel;
+
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.core.modules.VisModule;
+import ncsa.d2k.modules.core.io.sql.GenericMatrixModel;
+import ncsa.d2k.modules.core.prediction.decisiontree.rainforest.DecisionForestModel;
+import ncsa.d2k.modules.core.prediction.decisiontree.rainforest.DecisionForestNode;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
-import java.util.ArrayList;
-import java.text.*;
-import javax.swing.*;
-import javax.swing.JTable.*;
-//import javax.swing.table.AbstractTableModel.*;
-//import javax.swing.table.DefaultTableModel.*;
-
-import java.io.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.table.TableColumnModel;
 
 public class DecisionTreeViewer extends VisModule  {
   File file;

@@ -10,6 +10,7 @@ import java.util.*;
 //===============
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.discovery.cluster.*;
 import ncsa.d2k.modules.core.discovery.cluster.hac.*;
 
@@ -205,7 +206,7 @@ public class AddClusterAssignmentsToTable
       if (itable.getColumnLabel(itable.getNumColumns() - 1).equals(HAC._CLUSTER_COLUMN_LABEL)) {
         itable.removeColumn(itable.getNumColumns() - 1);
       }
-      itable.addColumn(new int[itable.getNumRows()]);
+      itable.addColumn(new IntColumn(itable.getNumRows()));
       itable.setColumnLabel(HAC._CLUSTER_COLUMN_LABEL, itable.getNumColumns() - 1);
       if (itable instanceof ExampleTable){
         int[] outs = ((ExampleTable)itable).getOutputFeatures();

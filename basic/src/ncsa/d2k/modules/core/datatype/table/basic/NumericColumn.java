@@ -1,6 +1,5 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
-import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	NumericColumn is an extension of Column which is implemented by all

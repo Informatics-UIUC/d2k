@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.optimize;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.*;
-import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.core.modules.*;
 import java.util.Random;
@@ -307,7 +306,7 @@ final private static boolean useContinuous = false;
 
 		  ExampleSet = (ExampleTable)this.pullInput(1);
 
-		  numExamples = ExampleSet.getNumExamples();
+		  numExamples = ExampleSet.getNumRows();
 		  numInputs = ExampleSet.getNumInputFeatures();
 		  numOutputs = ExampleSet.getNumOutputFeatures();
 
@@ -366,8 +365,8 @@ final private static boolean useContinuous = false;
 		  // LAM-tlr this is part of the patch.
                   // updated by dkt 4/26 to allow for continuous tables, but with now compilation dependency
                     if ( ExampleSet.getClass().toString().equals("class ncsa.d2k.modules.core.datatype.table.continuous.ContinuousDoubleExampleTable")) {
-			  currentTrainExampleSet = (ExampleTable) ExampleSet.getSubsetByReference(trainSetIndicies);
-			  currentTestExampleSet = (ExampleTable) ExampleSet.getSubsetByReference(testSetIndicies);
+			  currentTrainExampleSet = (ExampleTable) ExampleSet.getSubset(trainSetIndicies);
+			  currentTestExampleSet = (ExampleTable) ExampleSet.getSubset(testSetIndicies);
 		  } else {
 			  ExampleSet.setTestingSet(testSetIndicies);
 			  ExampleSet.setTrainingSet(trainSetIndicies);

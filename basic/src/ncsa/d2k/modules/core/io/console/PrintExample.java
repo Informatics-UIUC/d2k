@@ -87,17 +87,17 @@ public class PrintExample
   public void doit() {
 
     Example example = (Example)this.pullInput(0);
-    int numInputs = example.getNumInputs();
-    int numOutputs = example.getNumOutputs();
+    int numInputs = ((ExampleTable)example.getTable()).getNumInputFeatures();
+    int numOutputs = ((ExampleTable)example.getTable()).getNumOutputFeatures();
 
     System.out.println(Label + "    input:");
     for (int v = 0; v < numInputs; v++) {
-      System.out.println(Label + "    " + example.getInputName(v) + " = " +
+      System.out.println(Label + "    " + ((ExampleTable)example.getTable()).getInputName(v) + " = " +
                          example.getInputDouble(v));
     }
     System.out.println(Label + "    output:");
     for (int v = 0; v < numOutputs; v++) {
-      System.out.println(Label + "    " + example.getOutputName(v) + " = " +
+      System.out.println(Label + "    " + ((ExampleTable)example.getTable()).getOutputName(v) + " = " +
                          example.getOutputDouble(v));
     }
 

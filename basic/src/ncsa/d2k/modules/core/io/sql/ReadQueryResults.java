@@ -1,13 +1,8 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.io.sql;
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import java.util.*;
 import java.sql.*;
-import java.io.*;
-import java.util.*;
 
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
@@ -131,7 +126,7 @@ System.out.println ("---- Entries - "+count);
 		rs = stmt.executeQuery(query);
 		ResultSetMetaData rsmd = rs.getMetaData ();
 		int numColumns = rsmd.getColumnCount ();
-		MutableTableImpl vt = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(numColumns);
+		MutableTableImpl vt =  new MutableTableImpl(numColumns);
 
 		// Now compile a list of the datatypes.
 		int [] types = new int [numColumns];

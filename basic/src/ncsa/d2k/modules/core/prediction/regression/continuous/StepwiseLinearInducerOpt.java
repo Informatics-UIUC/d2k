@@ -7,7 +7,7 @@ import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.core.modules.*;
 import Jama.Matrix;
 
-import ncsa.d2k.modules.core.datatype.table.*;
+
 
 public class StepwiseLinearInducerOpt
     extends FunctionInducerOpt {
@@ -71,7 +71,7 @@ public String getModuleInfo() {
   Object[] computeError(ExampleTable examples, boolean[] selectedInputs) throws
       Exception {
 
-    int numExamples = examples.getNumExamples();
+    int numExamples = examples.getNumRows();
     int numInputs = examples.getNumInputFeatures();
     int numOutputs = examples.getNumOutputFeatures();
 
@@ -236,7 +236,7 @@ public String getModuleInfo() {
     }
 
 
-    int numExamples = examples.getNumExamples();
+    int numExamples = examples.getNumRows();
     int numInputs = examples.getNumInputFeatures();
     int numOutputs = examples.getNumOutputFeatures();
 

@@ -69,6 +69,9 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 				appendChars(new char[0]);
 		setIsNominal(true);
 		type = ColumnTypes.CHAR_ARRAY;
+		//ANCA added lines below
+		missing = new boolean[initialSize];
+		empty = new boolean[initialSize];
 	}
 
 	/**
@@ -322,6 +325,14 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 			// increment number of rows
 			numRows++;
 		}
+	}
+
+	/**
+	 * Returns the internal representation of the data.
+	 * @return the internal representation of the data.
+	 */
+	public Object getInternal () {
+		return internal;
 	}
 
 	/**
@@ -611,7 +622,8 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
     public int getNumEntries () {
         int numEntries = 0;
         for (int i = 0; i < rowPtrs.length; i++)
-            if (rowPtrs[i] != -1)
+        //ANCA added is isValueMissing, isValueEmpty
+            if (rowPtrs[i] != -1 && !isValueMissing(i)&& !isValueEmpty(i))
                numEntries++;
         return  numEntries;
     }
@@ -841,15 +853,20 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 		char[] newinternal;
 		int[] newrowPtrs;
 
-		int minCap = rowPtrs[numRows-1]+b.length;
+        int minCap;
+        //ANCA added if condition
+		if (numRows >0 ) minCap = rowPtrs[numRows-1]+b.length;
+		else minCap = b.length;
 		int newSize = internal.length;
 		if(minCap > internal.length)
 			newSize = getNewCapacity(minCap);
 
 		newinternal = new char[newSize];
 
+       
 		// increase the size of the rowPtrs array if necessary
 		if(numRows == rowPtrs.length) {
+			if (numRows ==0)  newrowPtrs = initializeArray(newSize);
 			// increment the size by the capacity increment
 			newrowPtrs = initializeArray((int)Math.ceil((capacityIncrement)*rowPtrs.length));
 		}
@@ -971,6 +988,13 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 		char[] b2 = getInternalChars(pos2);
 		return compareChars(b1, b2);
     }
+	/**
+	 * Add the specified number of blank rows.
+	 * @param number number of rows to add.
+	 */
+	public void addRows (int number) {
+		for (int i = 0 ; i < number ; i++) this.addRow("");
+	}
 
     /**
 	 * Compare two char arrays.

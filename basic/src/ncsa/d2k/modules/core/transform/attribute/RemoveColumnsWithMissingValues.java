@@ -61,11 +61,11 @@ public class RemoveColumnsWithMissingValues extends DataPrepModule {
       }
     }
 
-    int[] idx = new int[toRemove.size()];
-    for(int i = 0; i < toRemove.size(); i++)
-      idx[i] = ((Integer)toRemove.get(i)).intValue();
-
-    mt.removeColumnsByIndex(idx);
+        for(int i = 0; i < toRemove.size(); i++) {
+		int idx = ((Integer)toRemove.get(i)).intValue();
+		mt.removeColumn(idx);
+    }
+        
     pushOutput(mt, 0);
 
   }

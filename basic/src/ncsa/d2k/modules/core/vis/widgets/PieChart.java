@@ -1,13 +1,17 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.geom.Arc2D;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.text.*;
-import javax.swing.*;
+import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
+import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
+import ncsa.d2k.modules.core.datatype.table.basic.ObjectColumn;
 
 /**
    A simple pie chart.  The data must be in a VerticalTable.  The x value
@@ -44,7 +48,8 @@ public class PieChart extends Chart {
          dc.setDouble((double)(val/total), i);
       }
 
-      table = (Table)DefaultTableFactory.getInstance().createTable(cols);
+	  table = new MutableTableImpl (cols);
+      //table = (Table)DefaultTableFactory.getInstance().createTable(cols);
    }
 
    /**

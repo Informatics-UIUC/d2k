@@ -55,7 +55,7 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
   BrowseTablesView btw;
   int featureIdx = -1;
   int colCnt;
-  TableImpl data;
+  MutableTableImpl data;
 
   public SQLGetClusterBarChartFromCube() {
   }
@@ -439,7 +439,7 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
     cols[1].setLabel(selectedModel.get(1).toString());
     cols[2] = new ObjectColumn(rowCnt);
     cols[2].setLabel("COUNT");
-    data = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+    data = new MutableTableImpl(cols);
 
     try {
       con = cw.getConnection();

@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.datatype.parameter.impl;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.examples.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import ncsa.d2k.modules.core.datatype.parameter.*;
@@ -22,14 +21,16 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 	 */
 	static final public ParameterPoint getParameterPoint(String []names, double [] values) {
 		int numColumns = names.length;
-		ExampleTableImpl eti = new ExampleTableImpl();
+		Column [] cols = new Column [values.length];
 		for (int i = 0 ; i < values.length; i++) {
 			double [] vals = new double [1];
 			vals [0] = values[i];
 			DoubleColumn dc = new DoubleColumn(vals);
 			dc.setLabel(names[i]);
-			eti.addColumn(dc);
+			cols[i] = dc;
 		}
+		ExampleTableImpl eti = new ExampleTableImpl();
+		eti.addColumns(cols);
 		int [] ins = new int [numColumns];
 		for (int i = 0 ; i < numColumns; i++) ins[i] = i;
 		eti.setInputFeatures(ins);
@@ -38,14 +39,15 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 
 	 public ParameterPoint createFromData(String [] names, double [] values) {
 		int numColumns = names.length;
-		 ExampleTableImpl eti = new ExampleTableImpl();
-		 for (int i = 0 ; i < values.length; i++) {
+		Column [] cols = new Column[values.length];
+		for (int i = 0 ; i < values.length; i++) {
 			 double [] vals = new double [1];
 			 vals [0] = values[i];
 			 DoubleColumn dc = new DoubleColumn(vals);
 			 dc.setLabel(names[i]);
-			 eti.addColumn(dc);
+			 cols[i] = dc;
 		 }
+		 ExampleTableImpl eti = new ExampleTableImpl();
 		 return new ParameterPointImpl(eti);
 	 }
 
@@ -55,7 +57,7 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 	  * @return
 	  */
 	 public ParameterPoint createFromTable(MutableTable mt) {
-		 return new ParameterPointImpl((ExampleTableImpl)mt.toExampleTable());
+		 return new ParameterPointImpl((ExampleTableImpl)mt);
 	 }
 
 	 /**
@@ -63,7 +65,7 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 	  * @param et
 	  */
 	ParameterPointImpl(ExampleTableImpl et) {
-		super(et, 0);
+		super(et);
 	}
 
 	/**
@@ -132,5 +134,388 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 	*/
 	public ParameterPoint [] segmentPoint(ParameterPoint point, int splitIndex) {
 		return null;
+	}
+
+	/**
+	 * Get an Object from the table.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the Object at (row, column)
+	 */
+	public Object getObject(int row, int column){
+		return this.getTable().getObject(row, column);
+	}
+
+	/**
+	 * Get an int value from the table.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the int at (row, column)
+	 */
+	public int getInt(int row, int column){
+		return this.getTable().getInt(row, column);
+	}
+
+	/**
+	 * Get a short value from the table.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the short at (row, column)
+	 */
+	public short getShort(int row, int column){
+		return this.getTable().getShort(row, column);
+	}
+
+	/**
+	 * Get a float value from the table.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the float at (row, column)
+	 */
+	public float getFloat(int row, int column){
+		return this.getTable().getFloat(row, column);
+	}
+
+	/**
+	 * Get a double value from the table.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the double at (row, column)
+	 */
+	public double getDouble(int row, int column){
+		return this.getTable().getDouble(row, column);
+	}
+
+	/**
+	 * Get a long value from the table.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the long at (row, column)
+	 */
+	public long getLong(int row, int column){
+		return this.getTable().getLong(row, column);
+	}
+
+	/**
+	 * Get a String value from the table.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the String at (row, column)
+	 */
+	public String getString(int row, int column){
+		return this.getTable().getString(row, column);
+	}
+
+	/**
+	 * Get a value from the table as an array of bytes.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the value at (row, column) as an array of bytes
+	 */
+	public byte[] getBytes(int row, int column){
+		return this.getTable().getBytes(row, column);
+	}
+
+	/**
+	 * Get a boolean value from the table.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the boolean value at (row, column)
+	 */
+	public boolean getBoolean(int row, int column){
+		return this.getTable().getBoolean(row, column);
+	}
+
+	/**
+	 * Get a value from the table as an array of chars.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the value at (row, column) as an array of chars
+	 */
+	public char[] getChars(int row, int column){
+		return this.getTable().getChars(row, column);
+	}
+
+	/**
+	 * Get a byte value from the table.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the byte value at (row, column)
+	 */
+	public byte getByte(int row, int column){
+		return this.getTable().getByte(row, column);
+	}
+
+	/**
+	 * Get a char value from the table.
+	 * @param row the row of the table
+	 * @param column the column of the table
+	 * @return the char value at (row, column)
+	 */
+	public char getChar(int row, int column){
+		return this.getTable().getChar(row, column);
+	}
+
+	//////////////////////////////////////
+	//// Accessing Table Metadata
+
+	/**
+		Return the index which represents the key column of this table.
+		@return the key column index
+	*/
+	public int getKeyColumn(){
+		return this.getTable().getKeyColumn();
+	}
+
+	/**
+		Sets the key column index of this table.
+		@param position the Column which is key for identifying unique rows
+	*/
+	public void setKeyColumn(int position){
+		this.getTable().setKeyColumn(position);
+	}
+
+	/**
+		Returns the name associated with the column.
+		@param position the index of the Column name to get.
+		@returns the name associated with the column.
+	*/
+	public String getColumnLabel(int position){
+		return this.getTable().getColumnLabel(position);
+	}
+
+	/**
+		Returns the comment associated with the column.
+		@param position the index of the Column name to get.
+		@returns the comment associated with the column.
+	*/
+	public String getColumnComment(int position){
+		return this.getTable().getColumnComment(position);
+	}
+
+	/**
+		Get the label associated with this Table.
+		@return the label which describes this Table
+	*/
+	public String getLabel(){
+		return this.getTable().getLabel();
+	}
+
+	/**
+		Set the label associated with this Table.
+		@param labl the label which describes this Table
+	*/
+	public void setLabel(String labl){
+		this.getTable().setLabel(labl);
+	}
+
+	/**
+		Get the comment associated with this Table.
+		@return the comment which describes this Table
+	*/
+	public String getComment(){
+		return this.getTable().getComment();
+	}
+
+	/**
+		Set the comment associated with this Table.
+		@param comment the comment which describes this Table
+	*/
+	public void setComment(String comment){
+		this.getTable().setComment(comment);
+	}
+
+	/**
+		  Get the number of rows in this Table.  Same as getCapacity().
+		@return the number of rows in this Table.
+	*/
+	public int getNumRows(){
+		return this.getTable().getNumRows();
+	}
+
+	/**
+		Return the number of columns this table holds.
+		@return the number of columns in this table
+	*/
+	public int getNumColumns(){
+		return this.getTable().getNumColumns();
+	}
+
+	/**
+		Get a subset of this Table, given a start position and length.  The
+		subset will be a new Table.
+		@param start the start position for the subset
+		@param len the length of the subset
+		@return a subset of this Table
+	*/
+	public Table getSubset(int start, int len){
+		return this.getTable().getSubset(start, len);
+	}
+
+	/**
+	 * get a subset of the table consisting of the rows identified by the array
+	 * of indices passed in.
+	 * @param rows the rows to be in the subset.
+	 * @return
+	 */
+	public Table getSubset(int[] rows){
+		return this.getTable().getSubset(rows);
+	}
+
+	/**
+	 * Create a copy of this Table. This is a deep copy, and it contains a copy of
+	 * 	all the data.
+	 * @return a copy of this Table
+	 */
+	public Table copy(){
+		return this.getTable().copy();
+	}
+
+	/**
+	 * Create a copy of this Table. This is a deep copy, and it contains a copy of
+	 * 	all the data.
+	 * @return a copy of this Table
+	 */
+	public Table copy(int start, int len){
+		return this.getTable().copy(start, len);
+	}
+
+	/**
+	 * Create a copy of this Table. This is a deep copy, and it contains a copy of
+	 * 	all the data.
+	 * @return a copy of this Table
+	 */
+	public Table copy(int [] rows){
+		return this.getTable().copy(rows);
+	}
+	/**
+	 * Create a copy of this Table. A copy of every field in the class should be made,
+	 * but the data itself should not be copied.
+	 * @return a shallow copy of this Table
+	 */
+	public Table shallowCopy(){
+		return this.getTable().shallowCopy();
+	}
+
+	/**
+	 * Returns true if the column at position contains nominal data, false
+	 * otherwise.
+	 * @param position the index of the column
+	 * @return true if the column contains nominal data, false otherwise.
+	 */
+	public boolean isColumnNominal(int position){
+		return this.getTable().isColumnNominal(position);
+	}
+
+	/**
+	 * Returns true if the column at position contains scalar data, false
+	 * otherwise
+	 * @param position
+	 * @return true if the column contains scalar data, false otherwise
+	 */
+	public boolean isColumnScalar(int position) {
+	   return this.getTable().isColumnScalar(position);
+	}
+
+	 /**
+	  * Set whether the column at position contains nominal data or not.
+	  * @param value true if the column at position holds nominal data, false otherwise
+	  * @param position the index of the column
+	  */
+	public void setColumnIsNominal(boolean value, int position) {
+		this.getTable().setColumnIsNominal(value, position);
+	}
+
+	/**
+	* Set whether the column at position contains scalar data or not.
+	* @param value true if the column at position holds scalar data, false otherwise
+	* @param position the index of the column
+	*/
+	public void setColumnIsScalar(boolean value, int position) {
+		this.getTable().setColumnIsScalar(value, position);
+	}
+
+	/**
+	 * Returns true if the column at position contains only numeric values,
+	 * false otherwise.
+	 * @param position the index of the column
+	 * @return true if the column contains only numeric values, false otherwise
+	 */
+	public boolean isColumnNumeric(int position) {
+	  return this.getTable().isColumnNumeric(position);
+	}
+
+	/**
+	  * Return the type of column located at the given position.
+	  * @param position the index of the column
+	  * @return the column type
+	  * @see ColumnTypes
+	  */
+	public int getColumnType(int position) {
+		return this.getTable().getColumnType(position);
+	}
+
+	/**
+	 * This method will return a Row object. The row object can be used over and over
+	 * to access the rows of the table by setting it's index to access a particular row.
+	 * @return a Row object that can access the rows of the table.
+	 */
+	public Row getRow () {
+		return this;
+	}
+
+	/**
+	  * Return this Table as an ExampleTable.
+	  * @return This object as an ExampleTable
+	  */
+	public ExampleTable toExampleTable() {
+	  return this.getTable().toExampleTable();
+	}
+
+	/**
+	 * Return a new table.
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	public MutableTable createTable() {
+		return new MutableTableImpl();
+	}
+
+	/**
+	 * Return true if the value at (row, col) is a missing value, false otherwise.
+	 * @param row the row index
+	 * @param col the column index
+	* @return true if the value is missing, false otherwise
+	*/
+	public boolean isValueMissing(int row, int col) {
+	  return this.getTable().isValueMissing(row, col);
+	}
+
+	/**
+	* Return true if the value at (row, col) is an empty value, false otherwise.
+	* @param row the row index
+	* @param col the column index
+	* @return true if the value is empty, false otherwise
+	*/
+	public boolean isValueEmpty(int row, int col) {
+	  return this.getTable().isValueEmpty(row, col);
+	}
+
+	/**
+	* Return true if any value in this Table is missing.
+	* @return true if there are any missing values, false if there are no missing values
+	*/
+	public boolean hasMissingValues() {
+	  return this.getTable().hasMissingValues();
+	}
+
+	/**
+	 * Return a column representing the data in column n.
+	 * @param n the column to get.
+	 * @return a column representing the data.
+	 */
+	public Column getColumn(int n) {
+	  return this.getTable().getColumn(n);
 	}
 } /* ParameterPoint */

@@ -6,7 +6,7 @@ import ncsa.d2k.core.modules.*;
 import java.beans.PropertyVetoException;
 //import Jama.Matrix;
 
-import ncsa.d2k.modules.core.datatype.table.*;
+
 public class StepwiseLinearInducer extends StepwiseLinearInducerOpt {
 
   int numBiasDimensions = 3;

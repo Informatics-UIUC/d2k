@@ -252,8 +252,10 @@ public class AutoBinOPT
       // and create a new bin when the last one fills up
       boolean isScalar = tbl.isColumnScalar(inputs[i]);
       if (isScalar) {
+      	int numRows = tbl.getNumRows();
         double[] vals = new double[tbl.getNumRows()];
-        tbl.getColumn(vals, inputs[i]);
+        for(int j =0 ; j < numRows; j ++)
+       	 vals [j] = tbl.getDouble(j ,inputs[i]);
         Arrays.sort(vals);
 
         //!!!!!!!!!!!!!!!

@@ -1,6 +1,5 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
-import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.util.*;
 
@@ -187,4 +186,32 @@ abstract public class AbstractColumn implements Column {
 			setString(nominalEmptyValue, row);
 	}
     */
+
+        //ANCA: method for comparing two Column objects.  
+		// Could be more efficient but as is used only in Junit tests,  
+		// less code is more important than speed of execution. 
+		// should also compare missing and empty arrays 
+		public boolean equals(Object col) { 
+				Column column; 
+				try {  
+						column = (Column) col; 
+				} catch (Exception e) { 
+						return false; 
+				} 
+                                         
+				/*if(internal.length != column.getNumRows()) return false; 
+				for (int i =0; i < internal.length; i ++)  
+								if(internal[i] != column.getInt(i)) 
+										return false; 
+				return true;                     
+		*/ 
+				if(getNumRows() != column.getNumRows()) return false; 
+				for (int i =0; i < getNumRows(); i ++) { 
+						if(!getObject(i).equals(column.getObject(i))) return false; 
+										} 
+				return true; 
+         
+		} 
+
+
 }

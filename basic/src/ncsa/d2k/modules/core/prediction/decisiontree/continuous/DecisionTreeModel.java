@@ -1,12 +1,15 @@
 package ncsa.d2k.modules.core.prediction.decisiontree.continuous;
 
-import java.text.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
-import ncsa.d2k.modules.core.prediction.decisiontree.*;
+import java.text.*;
 
-public class DecisionTreeModel extends Model implements java.io.Serializable, ViewableDTModel {
+import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel;
+import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTNode;
+
+public class DecisionTreeModel
+    extends Model
+    implements java.io.Serializable, ViewableDTModel {
 
   DecisionTreeNode decisionTree;
 
@@ -25,6 +28,20 @@ public class DecisionTreeModel extends Model implements java.io.Serializable, Vi
 
   public String[] getInputs() {
     return this.getInputFeatureNames();
+  }
+
+  public String[] getUniqueInputValues(int i) {
+    return new String[] {
+        "0", "1"};
+  }
+
+  public String[] getUniqueOutputValues() {
+    return new String[] {
+        "0", "1"};
+  }
+
+  public DecisionTreeNode getDecisionTreeRoot() {
+    return decisionTree;
   }
 
   public double[] evaluate(ExampleTable testExampleSet, int e) throws Exception {
@@ -81,7 +98,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable, Vi
     if (node.examples != null) {
 
       ExampleTable examples = node.examples;
-      int numExamples = examples.getNumExamples();
+      int numExamples = examples.getNumRows();
       double outputValueSum = 0.0;
       double outputValueMin = Double.MAX_VALUE;
       double outputValueMax = Double.MIN_VALUE;
@@ -141,7 +158,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable, Vi
         if (PrintOptions.EnumerateSplitValues) {
           int[] byteCounts = new int[256];
           ExampleTable examples = node.examples;
-          int numExamples = examples.getNumExamples();
+          int numExamples = examples.getNumRows();
           for (int e = 0; e < numExamples; e++) {
             int byteValue = (int) examples.getInputDouble(e, splitIndex);
             if (byteValue < splitValue)

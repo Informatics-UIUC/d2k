@@ -15,62 +15,43 @@ import java.util.*;
  did not have any outputs, it is up to the ModelModule to add prediction Columns.
  */
 public class PredictionTableImpl extends ExampleTableImpl implements PredictionTable {
-	static final long serialVersionUID = -7087521328197567748L;
-
     protected int[] predictionSet;
 
 	protected PredictionTableImpl(int i) {
 		super(i);
 	}
 
+	/**
+	 * return this.
+	 * @return this prediction table.
+	 */
+	public PredictionTable toPredictionTable() {
+		return this;
+	}
+
     /**
-     Given an example table, copy its input columns, and create new
-     columns to hold the predicted values.
-	 @param ttt the ExampleTable that contains the inital values
+	 * Given an example table, copy its input columns, and create *
+     * columns to hold the predicted values.
+	 * @param ttt the ExampleTable that contains the inital values
      */
     public PredictionTableImpl (ExampleTableImpl ttt) {
         super(ttt);
         if (outputColumns == null) {
             predictionSet = new int[0];
             outputColumns = new int[0];
-        }
-        else
+        } else
             predictionSet = new int[outputColumns.length];
+
+		// Copy the existing columns.
         Column[] newColumns = new Column[columns.length + outputColumns.length];
-        int i = 0;
-        // Copy references to the original columns
-        for (; i < columns.length; i++)
-            newColumns[i] = columns[i];
+		System.arraycopy (columns, 0, newColumns, 0, columns.length);
+        int i = columns.length;
+
         // Create new columns which will contain the predicted values.
         for (int i2 = 0; i2 < outputColumns.length; i++, i2++) {
             Column col = ttt.getColumn(outputColumns[i2]);
-            if (col instanceof DoubleColumn)
-                col = new DoubleColumn(col.getNumRows());
-            else if (col instanceof FloatColumn)
-                col = new FloatColumn(col.getNumRows());
-            else if (col instanceof StringColumn)
-                col = new StringColumn(col.getNumRows());
-			else if(col instanceof StringObjectColumn)
-				col = new StringObjectColumn(col.getNumRows());
-            //else if (col instanceof ByteArrayColumn)
-            //    col = new ByteArrayColumn(col.getNumRows());
-			else if (col instanceof ContinuousByteArrayColumn)
-				col = new ContinuousByteArrayColumn(col.getNumRows(), true);
-            else if (col instanceof BooleanColumn)
-                col = new BooleanColumn(col.getNumRows());
-            //else if (col instanceof CharArrayColumn)
-            //   col = new CharArrayColumn(col.getNumRows());
-			else if (col instanceof ContinuousCharArrayColumn)
-				col = new ContinuousCharArrayColumn(col.getNumRows(), true);
-            else if (col instanceof LongColumn)
-                col = new LongColumn(col.getNumRows());
-            else if (col instanceof IntColumn)
-                col = new IntColumn(col.getNumRows());
-            else if (col instanceof ShortColumn)
-                col = new ShortColumn(col.getNumRows());
-            else if (col instanceof ObjectColumn)
-                col = new ObjectColumn(col.getNumRows());
-            StringBuffer newLabel = new StringBuffer(ttt.getColumnLabel(outputColumns[i2]));
+			col = ColumnUtilities.createColumn(col.getType(), col.getNumRows());
+			StringBuffer newLabel = new StringBuffer(ttt.getColumnLabel(outputColumns[i2]));
             newLabel.append(PREDICTION_COLUMN_APPEND_TEXT);
             col.setLabel(newLabel.toString());
             newColumns[i] = col;
@@ -80,9 +61,9 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
     }
 
     /**
-     Given a prediction table, copy its input columns, and create new
-     columns to hold the predicted values.
-	 @param ttt the prediction table to start with
+     * Given a prediction table, copy its input columns, and create new
+     * columns to hold the predicted values.
+	 * @param ttt the prediction table to start with
      */
     public PredictionTableImpl (PredictionTableImpl ttt) {
         super(ttt);
@@ -90,10 +71,10 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
     }
 
     /**
-     Copy method. Return an exact copy of this column.  A deep copy
-     is attempted, but if it fails a new column will be created,
-     initialized with the same data as this column.
-     @return A new Column with a copy of the contents of this column.
+     * Copy method. Return an exact copy of this column.  A deep copy
+     * is attempted, but if it fails a new column will be created,
+     * initialized with the same data as this column.
+     * @return A new Column with a copy of the contents of this column.
      */
     public Table copy () {
        	PredictionTableImpl vt;
@@ -125,136 +106,6 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
         }
     }
 
-    public Table getSubset(int pos, int len) {
-      Table t = super.getSubset(pos, len);
-      ExampleTable et  = t.toExampleTable();
-
-      int[] newin = new int[inputColumns.length];
-      System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
-      int[] newout = new int[outputColumns.length];
-      System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
-
-      int[] newpred = new int[predictionSet.length];
-      System.arraycopy(predictionSet, 0, newpred, 0, predictionSet.length);
-
-      // now figure out the test and train sets
-      int[] traincpy = new int[trainSet.length];
-      System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
-      int[] testcpy = new int[testSet.length];
-      System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
-
-      int[] newtrain = subsetTrainOrTest(traincpy, pos, len);
-      int[] newtest = subsetTrainOrTest(testcpy, pos, len);
-
-      PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
-      pt.setPredictionSet(newpred);
-      pt.columns = ((ExampleTableImpl)et).columns;
-      pt.setInputFeatures(newin);
-      pt.setOutputFeatures(newout);
-      pt.setTrainingSet(newtrain);
-      pt.setTestingSet(newtest);
-      return pt;
-    }
-
-    public Table getSubset(int[] rows) {
-      Table t = super.getSubset(rows);
-      ExampleTable et = t.toExampleTable();
-
-      int[] newin = new int[inputColumns.length];
-      System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
-      int[] newout = new int[outputColumns.length];
-      System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
-      int[] newpred = new int[predictionSet.length];
-      System.arraycopy(predictionSet, 0, newpred, 0, predictionSet.length);
-
-      // now figure out the test and train sets
-      int[] traincpy = new int[trainSet.length];
-      System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
-      int[] testcpy = new int[testSet.length];
-      System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
-
-      int[] newtrain = subsetTrainOrTest(traincpy, rows);
-      int[] newtest = subsetTrainOrTest(testcpy, rows);
-
-      //return et.getTrainTable();
-      //PredictionTable pt = et.toPredictionTable();
-      PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
-      pt.setPredictionSet(newpred);
-      pt.columns = ((ExampleTableImpl)et).columns;
-      pt.setInputFeatures(newin);
-      pt.setOutputFeatures(newout);
-      pt.setTrainingSet(newtrain);
-      pt.setTestingSet(newtest);
-      return pt;
-    }
-
-    public Table getSubsetByReference(int pos, int len) {
-      Table t = super.getSubsetByReference(pos, len);
-      ExampleTable et  = t.toExampleTable();
-
-      int[] newin = new int[inputColumns.length];
-      System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
-      int[] newout = new int[outputColumns.length];
-      System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
-      int[] newpred = new int[predictionSet.length];
-      System.arraycopy(predictionSet, 0, newpred, 0, predictionSet.length);
-
-
-      // now figure out the test and train sets
-      int[] traincpy = new int[trainSet.length];
-      System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
-      int[] testcpy = new int[testSet.length];
-      System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
-
-      int[] newtrain = subsetTrainOrTest(traincpy, pos, len);
-      int[] newtest = subsetTrainOrTest(testcpy, pos, len);
-
-
-      //return et.getTrainTable();
-      //PredictionTable pt = et.toPredictionTable();
-      PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
-      pt.setPredictionSet(newpred);
-      pt.columns = ((ExampleTableImpl)et).columns;
-      pt.setInputFeatures(newin);
-      pt.setOutputFeatures(newout);
-      pt.setTrainingSet(newtrain);
-      pt.setTestingSet(newtest);
-      return pt;
-    }
-
-    public Table getSubsetByReference(int[] rows) {
-      Table t = super.getSubsetByReference(rows);
-      ExampleTable et = t.toExampleTable();
-
-      int[] newin = new int[inputColumns.length];
-      System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
-      int[] newout = new int[outputColumns.length];
-      System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
-      int[] newpred = new int[predictionSet.length];
-      System.arraycopy(predictionSet, 0, newpred, 0, predictionSet.length);
-
-
-      // now figure out the test and train sets
-      int[] traincpy = new int[trainSet.length];
-      System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
-      int[] testcpy = new int[testSet.length];
-      System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
-
-      int[] newtrain = subsetTrainOrTest(traincpy, rows);
-      int[] newtest = subsetTrainOrTest(testcpy, rows);
-
-      //return et.getTrainTable();
-      //PredictionTable pt = et.toPredictionTable();
-      PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
-      pt.setPredictionSet(newpred);
-      pt.columns = ((ExampleTableImpl)et).columns;
-      pt.setInputFeatures(newin);
-      pt.setOutputFeatures(newout);
-      pt.setTrainingSet(newtrain);
-      pt.setTestingSet(newtest);
-      return pt;
-    }
-
 
     /**
      Set the prediction set
@@ -272,41 +123,9 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
         predictionSet = p;
     }
 
-    /**
-     Add a Column to the prediction set.  This
-     will append the Column to the end of the table and
-     set the prediction set accordingly.  The column
-     index of the new Column is returned.
-     @param c the Column to add
-	 @return the index of the new prediction column
-     */
-    public int addPredictionColumn (Column c) {
-        Column[] newCol = new Column[columns.length + 1];
-        System.arraycopy(columns, 0, newCol, 0, columns.length);
-        newCol[newCol.length - 1] = c;
-        columns = newCol;
-        // now set the classification set
-        int[] cf = new int[predictionSet.length + 1];
-        for (int i = 0; i < predictionSet.length; i++)
-            cf[i] = predictionSet[i];
-        cf[cf.length - 1] = columns.length - 1;
-        setPredictionSet(cf);
-        return  columns.length - 1;
-        //return  predictionSet.length - 1;
-    }
-
-    /**
-     This class provides transparent access to the test data only. The testSets
-     field of the TrainTest table is used to reference only the test data, yet
-     the getter methods look exactly the same as they do for any other vertical table.
-	 @return a table to provide access to the test data
-     */
-    /*public TestTable getTestTable () {
-        if (testSet == null)
-            return  null;
-        return  new TestTableImpl(this);
-    }*/
-
+	/////////////////////////////////////////
+	// accessors for prediction columns.
+	//
 	/**
 	 * Set an int prediciton in the specified prediction column.  The index into
 	 * the prediction set is used, not the actual column index.  This functions
@@ -389,8 +208,6 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 */
 	public void setStringPrediction(String prediction, int row, int predictionColIdx) {
 		setString(prediction, row, predictionSet[predictionColIdx]);
-        //System.out.println("SSP: "+prediction+" "+predictionColIdx);
-        //System.out.println("GS: "+getString(row, predictionSet[predictionColIdx]));
 	}
 
 	/**
@@ -584,93 +401,5 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	public char getCharPrediction(int row, int predictionColIdx) {
 		return getChar(row, predictionSet[predictionColIdx]);
 	}
-
-	public int addPredictionColumn(int[] predictions, String label) {
-		int i = addPredictionColumn(new IntColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	public int addPredictionColumn(float[] predictions, String label) {
-		int i = addPredictionColumn(new FloatColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	public int addPredictionColumn(double[] predictions, String label) {
-		int i = addPredictionColumn(new DoubleColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	public int addPredictionColumn(long[] predictions, String label) {
-		int i = addPredictionColumn(new LongColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	public int addPredictionColumn(short[] predictions, String label) {
-		int i = addPredictionColumn(new ShortColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	public int addPredictionColumn(boolean[] predictions, String label) {
-		int i = addPredictionColumn(new BooleanColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	public int addPredictionColumn(String[] predictions, String label) {
-		int i = addPredictionColumn(new StringColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	public int addPredictionColumn(char[][] predictions, String label) {
-		int i = addPredictionColumn(new ContinuousCharArrayColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	public int addPredictionColumn(byte[][] predictions, String label) {
-		int i = addPredictionColumn(new ContinuousByteArrayColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	public int addPredictionColumn(Object[] predictions, String label) {
-		int i = addPredictionColumn(new ObjectColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	public int addPredictionColumn(byte[] predictions, String label) {
-		int i = addPredictionColumn(new ByteColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	public int addPredictionColumn(char[] predictions, String label) {
-		int i = addPredictionColumn(new CharColumn(predictions));
-		//getColumn(predictionSet[i]).setLabel(label);
-		getColumn(i).setLabel(label);
-		return i;
-	}
-
-	/*public PredictionTable toPredictionTable() {
-		return this;
-	}*/
 }
 

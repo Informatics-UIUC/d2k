@@ -81,8 +81,9 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 					break;
 			}
 			addMe.setLabel(names[i]);
-			spi.addColumn(addMe);
+			columns[i] = addMe;
 		}
+		spi.addColumns(columns);
 		this.res = resolutions;
 		spi.addSubspace(numColumns);
 	}

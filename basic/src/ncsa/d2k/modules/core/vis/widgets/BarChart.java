@@ -3,12 +3,8 @@ package ncsa.d2k.modules.core.vis.widgets;
 import java.awt.*;
 import java.awt.geom.*;
 import java.text.*;
-import java.util.*;
-import javax.swing.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.datatype.table.util.*;
 
 public class BarChart extends Chart {
 
@@ -393,7 +389,10 @@ public class BarChart extends Chart {
     y += fontheight-samplecolorsize;
 
     String[] values = new String[bins];
-    table.getColumn(values, set.x);
+	for (int i = 0 ; i < values.length ; i++) {
+		  values[i] = table.getString(i, set.x);
+		}
+    //table.getColumn(values, set.x);
     for (int index=0; index < values.length; index++) {
       g2.setColor(colors[index%colors.length]);
       g2.fill(new Rectangle.Double(x, y, samplecolorsize, samplecolorsize));

@@ -122,6 +122,14 @@ public class BooleanColumn extends AbstractColumn {
     //////////////////////////////////////
     //// Accessing Metadata
 
+	/**
+	 * Returns the internal representation of the data.
+	 * @return the internal representation of the data.
+	 */
+	public Object getInternal () {
+		return internal;
+	}
+
     /**
      * Gets the number of rows in this <code>Column</code>.  Same as
      * <code>getCapacity()</code>.
@@ -418,18 +426,19 @@ public class BooleanColumn extends AbstractColumn {
     }
 
     /**
-     * Returns the character <code>'T'</code> or <code>'F'</code> corresponding
+     * Returns the character <code>'t'</code> or <code>'f'</code> corresponding
      * to a <code>true</code> or <code>false</code> value at this position,
      * respectively.
      *
      * @param pos            the position
      * @return               the appropriate <code>char</code>
      */
+    //ANCA changed to returning t and f instead of T and F
     public char getChar (int pos) {
         if (internal[pos])
-            return 'T';
+            return 't';
         else
-            return 'F';
+            return 'f';
     }
 
     /**
@@ -619,6 +628,24 @@ public class BooleanColumn extends AbstractColumn {
 		missing = newMissing;
 		empty = newEmpty;
     }
+
+	/**
+	 * Add the specified number of blank rows.
+	 * @param number number of rows to add.
+	 */
+	public void addRows (int number) {
+		int last = internal.length;
+		boolean[] newInternal = new boolean[last + number];
+		boolean[] newMissing = new boolean[last + number];
+		boolean[] newEmpty = new boolean[last + number];
+
+		System.arraycopy(internal, 0, newInternal, 0, last);
+		System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+		internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
+	}
 
     /**
      * Removes an entry from the <code>Column</code>, at <code>pos</code>. All
@@ -830,7 +857,8 @@ public class BooleanColumn extends AbstractColumn {
     /**
      * Compare the values of <code>element</code> and the value at
      * <code>row</code>. Return 0 if they are the same or greater than 0 if
-     * <code>element</code> is different.
+     * <code>element </code> is true  and row element is false and 
+     * less than 0 if <code> element </code> is false and row element is true.
      *
      * @param element        the object to be passed in should be a subclass of
      *                       <code>Boolean</code>
@@ -842,16 +870,22 @@ public class BooleanColumn extends AbstractColumn {
      *                       <code>==</code> 0
      */
     public int compareRows (Object element, int row) {
-        boolean b = ((Boolean)element).booleanValue();
+        /*boolean b = ((Boolean)element).booleanValue();
         if (b == getBoolean(row))
             return  0;
         else
-            return  1;
+            return  1;*/
+				int b1 = ((Boolean)element).booleanValue() ? 1:0;
+				int b2 = getInt(row);
+				return b1-b2; 
+            
     }
 
     /**
      * Compare the values of the elements at <code>r1</code> and
-     * <code>r2</code>. Return 0 if they are the same, greater than 0 if not.
+     * <code>r2</code>. Return 0 if they are the same, less than 0 if 
+     * r1 element is false and r2 element is true, and greater than 0 if r1 element
+     * is true and r2 element is false.
      *
      * @param r1             the first row to compare
      * @param r2             the second row to compare
@@ -860,11 +894,16 @@ public class BooleanColumn extends AbstractColumn {
      *                       <code>==</code> 0
      */
     public int compareRows (int r1, int r2) {
+    	/*
         boolean b = getBoolean(r1);
         if (b == getBoolean(r2))
             return  0;
         else
-            return  1;
+            return  1; */
+           int b1 = getInt(r1);
+           int b2 = getInt(r2);
+           return b1-b2; 
+            
     }
 
     //////////////////////////////////////

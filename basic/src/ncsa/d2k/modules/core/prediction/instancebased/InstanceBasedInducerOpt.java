@@ -56,7 +56,7 @@ public class InstanceBasedInducerOpt extends FunctionInducerOpt {
 
   public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) {
 
-    int numExamples = examples.getNumExamples();
+    int numExamples = examples.getNumRows();
     int numInputs   = examples.getNumInputFeatures();
     double [] inputMins   = new double[numInputs];
     double [] inputMaxs   = new double[numInputs];

@@ -133,6 +133,25 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
 
     //////////////////////////////////////
     //// Accessing Metadata
+	/**
+	 * Add the specified number of blank rows.
+	 * @param number number of rows to add.
+	 */
+	public void addRows (int number) {
+		int last = internal.length;
+		double[] newInternal = new double[last + number];
+		boolean[] newMissing = new boolean[last + number];
+		boolean[] newEmpty = new boolean[last + number];
+
+		System.arraycopy(internal, 0, newInternal, 0, last);
+		System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+		internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
+	}
+
+
     /**
      Return the count for the number of non-null entries.
      This variable is recomputed each time...as keeping

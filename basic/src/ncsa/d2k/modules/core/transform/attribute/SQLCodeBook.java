@@ -9,19 +9,18 @@ package ncsa.d2k.modules.core.transform.attribute;
  * @version 1.0
  */
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.UserView;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.io.sql.*;
-import ncsa.gui.Constrain;
-import ncsa.gui.JOutlinePanel;
-import java.sql.*;
-import java.util.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import gnu.trove.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.HashMap;
+
+import javax.swing.JOptionPane;
+
+import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
+import ncsa.d2k.modules.core.datatype.table.basic.ObjectColumn;
+import ncsa.d2k.modules.core.datatype.table.basic.TableImpl;
+import ncsa.d2k.modules.core.io.sql.ConnectionWrapper;
 
 
 public class SQLCodeBook {
@@ -36,7 +35,7 @@ public class SQLCodeBook {
 
   public TableImpl getCodeBook(ConnectionWrapper cw, String bookName) {
     int codeCount = 0;
-    TableImpl book = null;
+    MutableTableImpl book = null;
     try {
       con = cw.getConnection();
       String countQry = new String("select count(*) "  + " from " + bookName);
@@ -66,7 +65,7 @@ public class SQLCodeBook {
       cols[1].setLabel("Code");
       cols[2].setLabel("Description");
       cols[3].setLabel("ItemIdx");
-      book = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+      book = new MutableTableImpl(cols);
       try {
         String codeQry = new String("select attribute_name, code, description from " + bookName);
         //System.out.println("codeQry is " + codeQry);

@@ -1,10 +1,9 @@
 package ncsa.d2k.modules.core.io.file.input;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.core.modules.*;
 import java.io.*;
-import java.util.*;
+
 
 /**
  * Create a new fixed file reader.

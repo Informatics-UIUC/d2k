@@ -88,7 +88,7 @@ public class MeanOutputInducer extends FunctionInducer {
 
   public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) throws Exception {
 
-    int numExamples = examples.getNumExamples();
+    int numExamples = examples.getNumRows();
     int numOutputs  = examples.getNumOutputFeatures();
 
     double [] outputSums = new double[numOutputs];

@@ -1,13 +1,10 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-
-import java.awt.*;
-import java.awt.event.*;
 import java.text.NumberFormat;
-import javax.swing.*;
-import javax.swing.table.*;
+
+import javax.swing.table.AbstractTableModel;
+
+import ncsa.d2k.modules.core.datatype.table.Table;
 
 /**
    VerticalTableModel is the table model for the VerticalTableViewer.

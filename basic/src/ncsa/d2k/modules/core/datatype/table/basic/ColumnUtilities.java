@@ -241,75 +241,63 @@ final public class ColumnUtilities {
 		Column c;
 		switch(type){
 			case (ColumnTypes.INTEGER) : {
-				int[] dat=new int[numRows];
-				sourceTable.getColumn(dat, colIndex);
-				c= new IntColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new IntColumn((int[])c.getInternal());
 				break;
 			}
 			case (ColumnTypes.FLOAT) : {
-				float[] dat=new float[numRows];
-				sourceTable.getColumn(dat, colIndex);
-				c= new FloatColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new FloatColumn((float[])c.getInternal());
 				break;
 			}
 			case (ColumnTypes.SHORT) : {
-				short[] dat=new short[numRows];
-				sourceTable.getColumn(dat, colIndex);
-				c= new ShortColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new ShortColumn((short[])c.getInternal());
 				break;
 			}
 			case (ColumnTypes.LONG) : {
-				long[] dat=new long[numRows];
-				sourceTable.getColumn(dat, colIndex);
-				c= new LongColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new LongColumn((long[])c.getInternal());
 				break;
 			}
 			case (ColumnTypes.STRING) : {
-				String[] dat=new String[numRows];
-				sourceTable.getColumn(dat, colIndex);
-				c= new StringColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new StringColumn((String[])c.getInternal());
 				break;
 			}
 			case (ColumnTypes.CHAR_ARRAY) : {
-				char[][] dat=new char[numRows][];
-				sourceTable.getColumn(dat, colIndex);
-				c= new CharArrayColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new CharArrayColumn((char [][])c.getInternal());
 				break;
 			}
 			case (ColumnTypes.BYTE_ARRAY) : {
-				byte[][] dat=new byte[numRows][];
-				sourceTable.getColumn(dat, colIndex);
-				c= new ByteArrayColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new ByteArrayColumn((byte[][])c.getInternal());
 				break;
 			}
 			case (ColumnTypes.BOOLEAN) : {
-				boolean[] dat=new boolean[numRows];
-				sourceTable.getColumn(dat, colIndex);
-				c= new BooleanColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new BooleanColumn((boolean[])c.getInternal());
 				break;
 			}
 			case (ColumnTypes.OBJECT) : {
-				Object[] dat=new Object[numRows];
-				sourceTable.getColumn(dat, colIndex);
-				c= new ObjectColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new ObjectColumn((Object [])c.getInternal());
 				break;
 			}
 			case (ColumnTypes.BYTE) : {
-				byte[] dat=new byte[numRows];
-				sourceTable.getColumn(dat, colIndex);
-				c= new ByteColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new ByteColumn((byte[])c.getInternal());
 				break;
 			}
 			case (ColumnTypes.CHAR) : {
-				char[] dat=new char[numRows];
-				sourceTable.getColumn(dat, colIndex);
-				c= new CharColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new CharColumn((char[])c.getInternal());
 				break;
 			}
 			case (ColumnTypes.DOUBLE) : {
-				double[] dat=new double[numRows];
-				sourceTable.getColumn(dat, colIndex);
-				c= new DoubleColumn(dat);
+				c = sourceTable.getColumn(colIndex);
+				c= new DoubleColumn((double[])c.getInternal());
 				break;
 
 			}

@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.prediction;
 
-import ncsa.d2k.core.modules.*;
+
 import ncsa.d2k.modules.core.datatype.parameter.*;
 
 public class GetDefaultParamPoint extends ncsa.d2k.core.modules.DataPrepModule {

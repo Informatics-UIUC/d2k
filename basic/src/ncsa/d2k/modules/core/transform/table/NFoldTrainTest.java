@@ -342,8 +342,8 @@ public class NFoldTrainTest extends ncsa.d2k.core.modules.DataPrepModule {
 		examples.setTrainingSet (training);
 		examples.setTestingSet (testing);
 
-		TestTable testT= examples.getTestTable();
-		TrainTable trainT= examples.getTrainTable();
+		Table testT= examples.getTestTable();
+		Table trainT= examples.getTrainTable();
 
 		// push train and test sets to output ports
 		this.pushOutput (trainT, 0);

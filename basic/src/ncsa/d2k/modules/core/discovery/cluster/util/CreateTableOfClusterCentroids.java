@@ -10,8 +10,9 @@ import java.util.*;
 //===============
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.discovery.cluster.*;
-import ncsa.d2k.modules.core.discovery.cluster.hac.*;
+
 
 
 public class CreateTableOfClusterCentroids extends DataPrepModule {
@@ -184,7 +185,7 @@ public class CreateTableOfClusterCentroids extends DataPrepModule {
 
       MutableTable itable = (MutableTable)cm.getTable();
 
-      MutableTable newtab = (MutableTable)itable.getTableFactory().createTable();
+      MutableTable newtab = (new MutableTableImpl()).createTable();
       ArrayList clusters = cm.getClusters();
 
       if (clusters.size() == 0){
@@ -203,7 +204,7 @@ public class CreateTableOfClusterCentroids extends DataPrepModule {
       }
 
       for (int i = 0, n = _ifeatures.length; i < n; i++){
-        newtab.addColumn(new double[clusters.size()]);
+        newtab.addColumn(new DoubleColumn(clusters.size()));
         newtab.setColumnComment(itable.getColumnComment(_ifeatures[i]), i);
         newtab.setColumnLabel(itable.getColumnLabel(_ifeatures[i]), i);
       }

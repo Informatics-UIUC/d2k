@@ -130,7 +130,7 @@ public class PrintExampleTable
   public void doit() {
 
     ExampleTable exampleSet = (ExampleTable)this.pullInput(0);
-    int numExamples = exampleSet.getNumExamples();
+    int numExamples = exampleSet.getNumRows();
     int numInputs  = exampleSet.getNumInputFeatures();
     int numOutputs = exampleSet.getNumOutputFeatures();
 

@@ -4,7 +4,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
-import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
+
 
 /**
  * <code>ByteColumn</code> is an implementation of <code>NumericColumn</code>
@@ -170,6 +170,32 @@ final public class ByteColumn extends AbstractColumn implements NumericColumn {
 
     //////////////////////////////////////
     //// ACCESSING FIELD ELEMENTS
+	/**
+	 * Add the specified number of blank rows.
+	 * @param number number of rows to add.
+	 */
+	public void addRows (int number) {
+		int last = internal.length;
+		byte[] newInternal = new byte[last + number];
+		boolean[] newMissing = new boolean[last + number];
+		boolean[] newEmpty = new boolean[last + number];
+
+		System.arraycopy(internal, 0, newInternal, 0, last);
+		System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+		internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
+	}
+
+
+	/**
+	 * Returns the internal representation of the data.
+	 * @return the internal representation of the data.
+	 */
+	public Object getInternal () {
+		return internal;
+	}
 
     /**
      * Gets the entry at <code>pos</code> as a <code>String</code>.

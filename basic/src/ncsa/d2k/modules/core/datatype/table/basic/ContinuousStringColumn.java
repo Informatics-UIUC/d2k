@@ -127,7 +127,6 @@ final public class ContinuousStringColumn extends ContinuousCharArrayColumn {
             return  bac;
         }
 	}
-
 	public Object getRow(int i) {
 		return getString(i);
 	}

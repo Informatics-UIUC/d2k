@@ -222,7 +222,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 		// that have other implementations (row-based for example).   Since most
 		// D2K are column-based, good choice for now.
 
-		MutableTable result = (MutableTable) t1.getTableFactory().createTable();
+		MutableTable result = (MutableTable) t1.createTable();
 
  		int t1Size = t1.getNumRows();
  		int t2Size = t2.getNumRows();
@@ -252,17 +252,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					int [] vals = new int [combinedSize];
 
 					// get the data from table 1, put it first.
-					{
-						int [] s1 = new int [t1Size];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((int[]) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						int [] s2 = new int [t2Size];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+						System.arraycopy((int[]) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
  					// or, append filler values for table 2 entries
 					} else {
 						int [] s2 = new int [t2Size];
@@ -273,7 +269,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new IntColumn(vals));
 					break;
 				}
 				case ColumnTypes.FLOAT: {
@@ -281,17 +277,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					float [] vals = new float [combinedSize];
 
 					// get the data from table 1, put it first.
-					{
-						float [] s1 = new float [t1Size];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((float[]) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						float [] s2 = new float [t2Size];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+						System.arraycopy((float[]) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
  					// or, append filler values for table 2 entries
 					} else {
 						float [] s2 = new float [t2Size];
@@ -302,7 +294,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new FloatColumn(vals));
 					break;
 				}
 				case ColumnTypes.DOUBLE: {
@@ -310,18 +302,14 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					double [] vals = new double [combinedSize];
 
 					// get the data from table 1, put it first.
-					{
-						double [] s1 = new double [t1Size];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((double[]) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						double [] s2 = new double [t2Size];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
- 					// or, append filler values for table 2 entries
+						System.arraycopy((double[]) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
+					// or, append filler values for table 2 entries
 					} else {
 						double [] s2 = new double [t2Size];
 						for (int j = 0; j < t2Size; j++) {
@@ -331,7 +319,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new DoubleColumn(vals));
 					break;
 				}
 				case ColumnTypes.SHORT: {
@@ -339,17 +327,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					short [] vals = new short [combinedSize];
 
 					// get the data from table 1, put it first.
-					{
-						short [] s1 = new short [t1Size];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((short[]) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						short [] s2 = new short [t2Size];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+						System.arraycopy((short[]) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
  					// or, append filler values for table 2 entries
 					} else {
 						short [] s2 = new short [t2Size];
@@ -360,7 +344,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new ShortColumn(vals));
 					break;
 				}
 				case ColumnTypes.LONG: {
@@ -368,17 +352,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					long [] vals = new long [combinedSize];
 
 					// get the data from table 1, put it first.
-					{
-						long [] s1 = new long [t1Size];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((long[]) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						long [] s2 = new long [t2Size];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+						System.arraycopy((long[]) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
  					// or, append filler values for table 2 entries
 					} else {
 						long [] s2 = new long [t2Size];
@@ -389,7 +369,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new LongColumn(vals));
 					break;
 				}
 
@@ -398,18 +378,14 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					String [] vals = new String [combinedSize];
 
 					// get the data from table 1, put it first.
-					{
-						String [] s1 = new String [t1Size];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((String[]) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						String [] s2 = new String [t2Size];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
- 					// or, append filler values for table 2 entries
+						System.arraycopy((String[]) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
+					// or, append filler values for table 2 entries
 					} else {
 						String [] s2 = new String [t2Size];
 						for (int j = 0; j < t2Size; j++) {
@@ -419,7 +395,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new StringColumn(vals));
 					break;
 				}
 				case ColumnTypes.CHAR_ARRAY: {
@@ -427,17 +403,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					char [][] vals = new char [combinedSize][];
 
 					// get the data from table 1, put it first.
-					{
-						char [][] s1 = new char [t1Size][];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((char[][]) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						char [][] s2 = new char [t2Size][];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+						System.arraycopy((char[][]) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
  					// or, append filler values for table 2 entries
 					} else {
 						char [][] s2 = new char [t2Size][];
@@ -448,7 +420,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new CharArrayColumn(vals));
 					break;
 				}
 				case ColumnTypes.BYTE_ARRAY: {
@@ -456,17 +428,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					byte [][] vals = new byte [combinedSize][];
 
 					// get the data from table 1, put it first.
-					{
-						byte [][] s1 = new byte [t1Size][];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((byte[][]) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						byte [][] s2 = new byte [t2Size][];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+						System.arraycopy((byte[][]) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
  					// or, append filler values for table 2 entries
 					} else {
 						byte [][] s2 = new byte [t2Size][];
@@ -477,7 +445,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new ByteArrayColumn(vals));
 					break;
 				}
 				case ColumnTypes.BOOLEAN: {
@@ -485,17 +453,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					boolean [] vals = new boolean [combinedSize];
 
 					// get the data from table 1, put it first.
-					{
-						boolean [] s1 = new boolean [t1Size];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((boolean[]) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						boolean [] s2 = new boolean [t2Size];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+						System.arraycopy((boolean[]) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
  					// or, append filler values for table 2 entries
 					} else {
 						boolean [] s2 = new boolean [t2Size];
@@ -506,7 +470,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new BooleanColumn(vals));
 					break;
 				}
 				case ColumnTypes.OBJECT: {
@@ -514,17 +478,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					Object [] vals = new Object [combinedSize];
 
 					// get the data from table 1, put it first.
-					{
-						Object [] s1 = new Object [t1Size];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((Object []) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						Object [] s2 = new Object [t2Size];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+						System.arraycopy((Object []) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
  					// or, append filler values for table 2 entries
 					} else {
 						Object [] s2 = new Object [t2Size];
@@ -535,7 +495,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new ObjectColumn(vals));
 					break;
 				}
 				case ColumnTypes.BYTE: {
@@ -543,17 +503,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					byte [] vals = new byte [combinedSize];
 
 					// get the data from table 1, put it first.
-					{
-						byte [] s1 = new byte [t1Size];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((byte[]) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						byte [] s2 = new byte [t2Size];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+						System.arraycopy((byte[]) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
  					// or, append filler values for table 2 entries
 					} else {
 						byte [] s2 = new byte [t2Size];
@@ -564,7 +520,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new ByteColumn(vals));
 					break;
 				}
 
@@ -573,17 +529,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					char [] vals = new char [combinedSize];
 
 					// get the data from table 1, put it first.
-					{
-						char [] s1 = new char [t1Size];
-						t1.getColumn(s1, i);
-						System.arraycopy(s1, 0, vals, 0, t1Size);
-					}
+					System.arraycopy((char[]) t1.getColumn(i).getInternal(),
+								0, vals, 0, t1Size);
 
 					// get the data from table 2, append it
 					if (t2Col != -1) {
-						char [] s2 = new char [t2Size];
-						t2.getColumn(s2, t2Col);
-						System.arraycopy(s2, 0, vals, t1Size, t2Size);
+						System.arraycopy((char[]) t2.getColumn(t2Col).getInternal(),
+								0, vals, t1Size, t2Size);
  					// or, append filler values for table 2 entries
 					} else {
 						char [] s2 = new char [t2Size];
@@ -594,7 +546,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new CharColumn(vals));
 					break;
 				}
 				default: {
@@ -639,13 +591,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					int [] s2 = new int [t2Size];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((int[])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new IntColumn(vals));
 					break;
 				}
 
@@ -662,13 +612,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					float [] s2 = new float [t2Size];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((float[])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new FloatColumn(vals));
 					break;
 				}
 				case ColumnTypes.DOUBLE: {
@@ -684,13 +632,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					double [] s2 = new double [t2Size];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((double[])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new DoubleColumn(vals));
 					break;
 				}
 				case ColumnTypes.SHORT: {
@@ -706,13 +652,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					short [] s2 = new short [t2Size];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((short[])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new ShortColumn(vals));
 					break;
 				}
 				case ColumnTypes.LONG: {
@@ -728,13 +672,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					long [] s2 = new long [t2Size];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((short[])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new LongColumn(vals));
 					break;
 				}
 				case ColumnTypes.STRING: {
@@ -750,13 +692,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					String [] s2 = new String [t2Size];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((String[])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new StringColumn(vals));
 					break;
 				}
 				case ColumnTypes.CHAR_ARRAY: {
@@ -772,13 +712,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					char [][] s2 = new char [t2Size][];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((char[][])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new CharArrayColumn(vals));
 					break;
 				}
 
@@ -795,13 +733,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					byte [][] s2 = new byte [t2Size][];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((byte[][])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new ByteArrayColumn(vals));
 					break;
 				}
 				case ColumnTypes.BOOLEAN: {
@@ -817,13 +753,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					boolean [] s2 = new boolean [t2Size];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((boolean[])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new BooleanColumn(vals));
 					break;
 				}
 
@@ -840,13 +774,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					Object [] s2 = new Object [t2Size];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((Object[])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new ObjectColumn(vals));
 					break;
 				}
 				case ColumnTypes.BYTE: {
@@ -862,13 +794,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					byte [] s2 = new byte [t2Size];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((byte[])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new ByteColumn(vals));
 					break;
 				}
 				case ColumnTypes.CHAR: {
@@ -884,13 +814,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					s1 = null;   // hint to gc
 
 					// get the data from table 2, append it
-					char [] s2 = new char [t2Size];
-					t2.getColumn(s2, i);
-					System.arraycopy(s2, 0, vals, t1Size, t2Size);
-					s2 = null;
+					System.arraycopy((char[])t2.getColumn(i).getInternal(),
+									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(vals);
+					result.addColumn(new CharColumn(vals));
 					break;
 				}
 				default: {

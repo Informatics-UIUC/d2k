@@ -1,9 +1,8 @@
 package ncsa.d2k.modules.core.prediction;
 
 import ncsa.d2k.modules.core.datatype.parameter.*;
-import java.io.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.model.*;
+
 
 public class ErrorFunction
     implements java.io.Serializable {
@@ -54,7 +53,7 @@ public class ErrorFunction
   double[] AllstateRatios;
 
   public double evaluate(ExampleTable examples, PredictionTable predictedExamples) throws Exception {
-    int numExamples = examples.getNumExamples();
+    int numExamples = examples.getNumRows();
 
     double errorSum = 0.0;
     for (int e = 0; e < numExamples; e++) {

@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.prediction.mean.continuous;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
 import java.text.*;
-import ncsa.d2k.modules.*;
+
 
 public class MeanOutputModel extends Model implements java.io.Serializable
   {

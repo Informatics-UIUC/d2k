@@ -1,6 +1,5 @@
 package ncsa.d2k.modules.core.datatype.table;
 
-import java.util.*;
 
 /**
  This is a Table with some additional features designed to support
@@ -39,12 +38,6 @@ public interface ExampleTable extends MutableTable {
      @returns the number of input features.
      */
     public int getNumInputFeatures () ;
-
-    /**
-     Returns the number of example rows.
-     @returns the number of example rows.
-     */
-    public int getNumExamples ();
 
     /**
      Return the number of examples in the training set.
@@ -110,13 +103,13 @@ public interface ExampleTable extends MutableTable {
 	 * Return a reference to a Table referencing only the testing data.
 	 @return a reference to a Table referencing only the testing data
      */
-    public TestTable getTestTable ();
+    public Table getTestTable ();
 
     /**
      Return a reference to a Table referencing only the training data.
      @return a reference to a Table referencing only the training data.
      */
-    public TrainTable getTrainTable ();
+    public Table getTrainTable ();
 
 	/**
 	 * Return this ExampleTable as a PredictionTable.
@@ -333,13 +326,6 @@ public interface ExampleTable extends MutableTable {
     public int getNumOutputs(int e);
 
     /**
-     * Get the eth Example.
-     * @param e the example index.
-     * @return the eth Example
-     */
-    public Example getExample(int e);
-
-    /**
      * Get the name of an input.
      * @param i the input index
      * @return the name of the ith input.
@@ -397,6 +383,15 @@ public interface ExampleTable extends MutableTable {
      */
     public boolean isOutputScalar(int o);
 
+	/**
+	 * Returns a list of names of the input columns.
+	 * @return a list of names of the input columns.
+	 */
     public String[] getInputNames();
+
+	/**
+	 * Returns a list of names of the input columns.
+	 * @return a list of names of the input columns.
+	 */
     public String[] getOutputNames();
 }

@@ -10,24 +10,50 @@ package ncsa.d2k.modules.core.transform.summarization;
  */
 
 
-import ncsa.d2k.core.*;
-import ncsa.d2k.core.modules.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Checkbox;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Vector;
+
+import javax.swing.AbstractAction;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.core.modules.UIModule;
 import ncsa.d2k.core.modules.UserView;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.io.sql.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
+import ncsa.d2k.modules.core.datatype.table.basic.ObjectColumn;
+import ncsa.d2k.modules.core.datatype.table.basic.TableImpl;
+import ncsa.d2k.modules.core.io.sql.BrowseTables;
+import ncsa.d2k.modules.core.io.sql.BrowseTablesView;
+import ncsa.d2k.modules.core.io.sql.ConnectionWrapper;
+import ncsa.d2k.modules.core.transform.attribute.SQLCodeBook;
+import ncsa.d2k.userviews.swing.JUserPane;
 import ncsa.gui.Constrain;
-import ncsa.gui.JOutlinePanel;
-import java.sql.*;
-import java.util.*;
-import java.util.ArrayList;
-import java.text.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import gnu.trove.*;
 
 public class SQLGetBarChartFromCube extends UIModule {
   JOptionPane msgBoard = new JOptionPane();
@@ -60,7 +86,7 @@ public class SQLGetBarChartFromCube extends UIModule {
   BrowseTablesView btw;
   int featureIdx = -1;
   int colCnt;
-  TableImpl data;
+  MutableTableImpl data;
 
   public SQLGetBarChartFromCube() {
   }
@@ -453,7 +479,7 @@ public class SQLGetBarChartFromCube extends UIModule {
     cols[0].setLabel(selectedModel.get(col).toString());
     cols[1] = new ObjectColumn(rowCnt);
     cols[1].setLabel("COUNT");
-    data = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+    data = new MutableTableImpl (cols);
 
     try {
       con = cw.getConnection();

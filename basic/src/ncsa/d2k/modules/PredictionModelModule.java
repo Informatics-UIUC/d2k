@@ -2,11 +2,8 @@ package ncsa.d2k.modules;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.examples.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
 
-//import ncsa.d2k.modules.PredictionModelModule;
 
 /**
  * TO DO add useNameChecking
@@ -146,8 +143,6 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
         if(table instanceof PredictionTable) {
             // ensure that the inputFeatures and predictionSet are correct..
             pt = (PredictionTable)table;
-
-
             if(transformations != null && getApplyTransformationsInPredict()) {
               applyTransformations(pt);
             }
@@ -211,65 +206,6 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
             else
                 predok = false;
 
-            if(!predok) {
-                int[] newPredSet = new int[outputFeatureTypes.length];
-                // if the predictions are not ok, just make new columns for each one
-                for(int i = 0; i < outputFeatureTypes.length; i++) {
-                    int typ = outputFeatureTypes[i];
-                    String name = outputColumnLabels[i]+PredictionTable.PREDICTION_COLUMN_APPEND_TEXT;
-                    switch(typ) {
-                        case(ColumnTypes.BOOLEAN):
-                            boolean[] vals = new boolean[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(vals, name);
-                            break;
-                        case(ColumnTypes.BYTE):
-                            byte[] bvals = new byte[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(bvals, name);
-                            break;
-                        case(ColumnTypes.BYTE_ARRAY):
-                            byte[][] bbvals = new byte[pt.getNumRows()][];
-                            newPredSet[i] = pt.addPredictionColumn(bbvals, name);
-                            break;
-                        case(ColumnTypes.CHAR):
-                            char[] cvals = new char[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(cvals, name);
-                            break;
-                        case(ColumnTypes.CHAR_ARRAY):
-                            char[][] ccvals = new char[pt.getNumRows()][];
-                            newPredSet[i] = pt.addPredictionColumn(ccvals, name);
-                            break;
-                        case(ColumnTypes.DOUBLE):
-                            double[] dvals = new double[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(dvals, name);
-                            break;
-                        case(ColumnTypes.FLOAT):
-                            float[] fvals = new float[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(fvals, name);
-                            break;
-                        case(ColumnTypes.INTEGER):
-                            int[] ivals = new int[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(ivals, name);
-                            break;
-                        case(ColumnTypes.LONG):
-                            long[] lvals = new long[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(lvals, name);
-                            break;
-                        case(ColumnTypes.OBJECT):
-                            Object[] ovals = new Object[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(ovals, name);
-                            break;
-                        case(ColumnTypes.SHORT):
-                            short[] shvals = new short[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(shvals, name);
-                            break;
-                        default:
-                            String[] stvals = new String[pt.getNumRows()];
-                        newPredSet[i] = pt.addPredictionColumn(stvals, name);
-                        break;
-                    }
-                }
-                pt.setPredictionSet(newPredSet);
-            }
         }
 
         // it was not a prediction table.  make it one and set the input features
@@ -330,65 +266,6 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
             else
                 predok = false;
 
-            if(!predok) {
-                int[] newPredSet = new int[outputFeatureTypes.length];
-                // just make new columns for each prediction
-                for(int i = 0; i < outputFeatureTypes.length; i++) {
-                    int typ = outputFeatureTypes[i];
-                    String name = outputColumnLabels[i]+PredictionTable.PREDICTION_COLUMN_APPEND_TEXT;
-                    switch(typ) {
-                        case(ColumnTypes.BOOLEAN):
-                            boolean[] vals = new boolean[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(vals, name);
-                            break;
-                        case(ColumnTypes.BYTE):
-                            byte[] bvals = new byte[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(bvals, name);
-                            break;
-                        case(ColumnTypes.BYTE_ARRAY):
-                            byte[][] bbvals = new byte[pt.getNumRows()][];
-                            newPredSet[i] = pt.addPredictionColumn(bbvals, name);
-                            break;
-                        case(ColumnTypes.CHAR):
-                            char[] cvals = new char[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(cvals, name);
-                            break;
-                        case(ColumnTypes.CHAR_ARRAY):
-                            char[][] ccvals = new char[pt.getNumRows()][];
-                            newPredSet[i] = pt.addPredictionColumn(ccvals, name);
-                            break;
-                        case(ColumnTypes.DOUBLE):
-                            double[] dvals = new double[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(dvals, name);
-                            break;
-                        case(ColumnTypes.FLOAT):
-                            float[] fvals = new float[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(fvals, name);
-                            break;
-                        case(ColumnTypes.INTEGER):
-                            int[] ivals = new int[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(ivals, name);
-                            break;
-                        case(ColumnTypes.LONG):
-                            long[] lvals = new long[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(lvals, name);
-                            break;
-                        case(ColumnTypes.OBJECT):
-                            Object[] ovals = new Object[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(ovals, name);
-                            break;
-                        case(ColumnTypes.SHORT):
-                            short[] shvals = new short[pt.getNumRows()];
-                            newPredSet[i] = pt.addPredictionColumn(shvals, name);
-                            break;
-                        default:
-                            String[] stvals = new String[pt.getNumRows()];
-                        newPredSet[i] = pt.addPredictionColumn(stvals, name);
-                        break;
-                    }
-                }
-                pt.setPredictionSet(newPredSet);
-            }
         }
 
         makePredictions(pt);

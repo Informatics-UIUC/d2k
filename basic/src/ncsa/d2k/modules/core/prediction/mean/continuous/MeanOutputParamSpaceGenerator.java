@@ -2,7 +2,6 @@ package ncsa.d2k.modules.core.prediction.mean.continuous;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.prediction.AbstractParamSpaceGenerator;
-import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 

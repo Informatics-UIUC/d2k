@@ -11,10 +11,9 @@ import java.awt.image.*;
 import javax.swing.table.*;
 import java.io.*;
 
-import ncsa.d2k.modules.core.vis.*;
+
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.util.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.gui.*;
 import ncsa.gui.*;

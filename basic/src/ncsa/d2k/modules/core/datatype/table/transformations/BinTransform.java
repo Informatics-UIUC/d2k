@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.datatype.table.transformations;
 
-import ncsa.d2k.modules.core.datatype.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
 import ncsa.d2k.modules.core.transform.binning.*;
 
@@ -90,14 +90,14 @@ public class BinTransform implements Transformation, Cloneable {
                 if (new_column) {
                     if (binRelevant[i]) {
                         //sc[i].setLabel(table.getColumnLabel(i) + " bin");
-                        mt.addColumn(newcols[i]);
+                        mt.addColumn(new StringColumn(newcols[i]));
                         mt.setColumnLabel(mt.getColumnLabel(i) + BIN, mt.getNumColumns()
                                 - 1);
                     }
                 }
                 else {
                     String oldLabel = mt.getColumnLabel(i);
-                    mt.setColumn(newcols[i], i);
+                    mt.setColumn(new StringColumn(newcols[i]), i);
                     mt.setColumnLabel(oldLabel, i);
                 }
             }

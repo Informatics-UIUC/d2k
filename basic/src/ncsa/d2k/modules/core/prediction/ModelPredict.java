@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.prediction;
 
 
-import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 /**

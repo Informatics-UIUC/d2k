@@ -13,7 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.gui.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
+
 
 /**
  * <code>FilterConstruction</code> is a simple user interface that facilitates
@@ -492,12 +492,12 @@ public class FilterConstruction extends UIModule {
        if (filter == null)
           return true;
 
+try {	
        if (!filterThese)
          for (int i = 0; i < filter.length; i++)
-            filter[i] = !filter[i];
-
-       try {
-         table.removeRowsByFlag(filter);
+          if(!filter[i])
+           table.removeRow(i);
+            
          // 4/7/02 commented out by Loretta...
          // this add gets done by applyTransformation
          //table.addTransformation(this);

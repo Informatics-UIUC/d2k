@@ -238,8 +238,10 @@ public class FilterBoxPlot extends UIModule {
 
     public boolean transform(MutableTable mt) {
       try {
-        mt.removeRowsByFlag(flags);
-      }
+		for (int i = flags.length-1 ; i >= 0 ; i--){
+					 if (flags[i]) mt.removeRow(i);
+				   }
+             }
       catch (Exception e) {
         return false;
       }

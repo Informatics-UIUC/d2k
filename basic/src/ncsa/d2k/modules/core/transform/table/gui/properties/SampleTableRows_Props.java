@@ -14,22 +14,21 @@ package ncsa.d2k.modules.core.transform.table.gui.properties;
 // Java Imports
 //==============
 
-import java.util.ArrayList;
-import java.awt.event.*;
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.table.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
-import java.util.Enumeration;
-import java.beans.*;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyVetoException;
 
-//===============
-// Other Imports
-//===============
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.transform.table.*;
+import ncsa.d2k.core.modules.CustomModuleEditor;
+import ncsa.d2k.modules.core.transform.table.SampleTableRows;
 
 public class SampleTableRows_Props extends JPanel implements
 CustomModuleEditor, ActionListener 

@@ -6,7 +6,6 @@ import java.text.*;
 import javax.swing.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
@@ -239,7 +238,8 @@ public class PredictionTableReport extends VisModule  {
 				Column[] col = new Column[2];
 				col[0] = sc;
 				col[1] = ic;
-				MutableTableImpl tbl = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(col);
+				MutableTableImpl tbl = new MutableTableImpl(col);
+				//MutableTableImpl tbl = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(col);
 				// create the pie chart
 				DataSet ds = new DataSet("Accuracy", null, 0, 1);
 				GraphSettings gs = new GraphSettings();

@@ -6,7 +6,6 @@ import java.util.*;
 import javax.swing.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.gui.*;
-import ncsa.d2k.core.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.modules.core.datatype.table.*;
@@ -15,9 +14,8 @@ import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.gui.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
 import java.sql.*;
-import gnu.trove.*;
+
 
 /**
  * <code>SQLFilterConstruction</code> is a simple user interface that facilitates
@@ -380,7 +378,7 @@ public class SQLFilterConstruction extends UIModule {
       }
     }
     // create an Table to hold the meta data
-    TableImpl aTable = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+    MutableTableImpl aTable = new MutableTableImpl(cols);
     for (int colIdx = 0; colIdx < colNames.size(); colIdx++) {
       if (cols[colIdx].getIsScalar()) {
         aTable.setColumnIsScalar(true,colIdx);

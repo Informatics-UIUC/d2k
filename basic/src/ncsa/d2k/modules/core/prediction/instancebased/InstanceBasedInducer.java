@@ -3,7 +3,6 @@ package ncsa.d2k.modules.core.prediction.instancebased;
 import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
-import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.core.modules.PropertyDescription;
 import java.beans.PropertyVetoException;
 
@@ -31,15 +30,15 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
         "Setting it to 2.0 gives inverse distance squared weighting and so on.  ");
 
     pds[2] = new PropertyDescription(
-        "ZeroDistanceWeight",
-        "Zero Distance Weight",
+        "zeroDistanceValue",
+        "Zero Distance Value",
         "What weight to associate to a stored example which has zero distance to example to be predicted.  " +
         "Since division by zero is not permitted, some value must be assigned to examples with zero distance.  "  +
         "This value is the weight and exact match should be given.  ");
     return pds;
   }
 
-  //private int NeighborhoodSize = 20;
+  private int NeighborhoodSize = 20;
   public void setNeighborhoodSize(int value) throws PropertyVetoException {
     if (value < 1) {
       throw new PropertyVetoException(" < 1", null);
@@ -51,7 +50,7 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
     return this.NeighborhoodSize;
   }
 
-  //private double DistanceWeightingPower = 0.0;
+  private double DistanceWeightingPower = 0.0;
   public void setDistanceWeightingPower(double value) {
     this.DistanceWeightingPower = value;
   }
@@ -60,16 +59,16 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
     return this.DistanceWeightingPower;
   }
 
-  //private double ZeroDistanceWeight = 0.0;
-  public void setZeroDistanceWeight(double value) throws PropertyVetoException {
+  private double ZeroDistanceValue = 0.0;
+  public void setZeroDistanceValue(double value) throws PropertyVetoException {
     if (value < 0.0) {
       throw new PropertyVetoException(" < 0.0", null);
     }
-    this.ZeroDistanceWeight = value;
+    this.ZeroDistanceValue = value;
   }
 
-  public double getZeroDistanceWeight() {
-    return this.ZeroDistanceWeight;
+  public double getZeroDistanceValue() {
+    return this.ZeroDistanceValue;
   }
 
 
@@ -122,7 +121,7 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
 
   public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) {
 
-    int numExamples = examples.getNumExamples();
+    int numExamples = examples.getNumRows();
     int numInputs   = examples.getNumInputFeatures();
     double [] inputMins   = new double[numInputs];
     double [] inputMaxs   = new double[numInputs];
@@ -152,7 +151,7 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
         inputRanges,
         NeighborhoodSize,
         DistanceWeightingPower,
-        ZeroDistanceWeight,
+        ZeroDistanceValue,
         examples);
 
     return (Model) model;

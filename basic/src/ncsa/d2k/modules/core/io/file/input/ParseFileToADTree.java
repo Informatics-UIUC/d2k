@@ -122,10 +122,11 @@ public class ParseFileToADTree extends InputModule {
         }
 
 
-        DefaultTableFactory  dtf = DefaultTableFactory.getInstance();
-        Table table = dtf.createTable(cols);
-        ExampleTable meta = dtf.createExampleTable(table);
-
+      //  DefaultTableFactory  dtf = DefaultTableFactory.getInstance();
+       // Table table = dtf.createTable(cols);
+        //ExampleTable meta = dtf.createExampleTable(table);
+	MutableTableImpl table = new MutableTableImpl(cols);
+	ExampleTable meta = new ExampleTableImpl (table);
 
 				// create the ADTree
         ADTree adt = new ADTree(ffr.getNumColumns());

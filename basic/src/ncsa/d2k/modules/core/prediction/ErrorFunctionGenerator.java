@@ -1,11 +1,13 @@
 package ncsa.d2k.modules.core.prediction;
 
 
-import ncsa.d2k.modules.core.prediction.*;
-import ncsa.d2k.modules.core.datatype.parameter.*;
-import ncsa.d2k.core.modules.*;
-import java.awt.*;
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import ncsa.d2k.core.modules.ComputeModule;
+import ncsa.d2k.core.modules.CustomModuleEditor;
+import ncsa.d2k.core.modules.PropertyDescription;
 
 public class ErrorFunctionGenerator extends ComputeModule {
 
