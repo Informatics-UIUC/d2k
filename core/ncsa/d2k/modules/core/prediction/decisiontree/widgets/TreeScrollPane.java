@@ -225,16 +225,21 @@ public final class TreeScrollPane extends JScrollPane {
 
 		// Draws the view tree
 		public void drawViewTree(Graphics2D g2, ViewNode vnode) {
-			//vnode.drawViewNode(g2);
-			g2.drawImage(vnode.getImage(), (int)(vnode.x-vnode.gwidth/2), (int)vnode.y, null);
+			Shape s = g2.getClip();
+			//boolean traverse = false;
+			if(s.intersects((vnode.x-vnode.gwidth/2), vnode.y, vnode.gwidth, vnode.gheight)) {
+				//System.out.println("painting: "+vnode);
+				vnode.drawViewNode(g2);
+			//	traverse = true;
+			//	g2.drawImage(vnode.getImage(), (int)(vnode.x-vnode.gwidth/2), (int)vnode.y, null);
 
-			vnode.theight = .866025*vnode.tside;
+			/*vnode.theight = .866025*vnode.tside;
 			double ycomponent = vnode.tside/2;
 			double xcomponent = .577350*ycomponent;
 			double xcenter, ycenter;
 
 			// draw the triangles
-			if(!vnode.isLeaf()) {
+			/*if(!vnode.isLeaf()) {
 			if (vnode.collapsed) {
 				xcenter = vnode.x + vnode.gwidth/2 + vnode.tspace + xcomponent;
 				ycenter = vnode.y + vnode.gheight - ycomponent;
@@ -273,10 +278,14 @@ public final class TreeScrollPane extends JScrollPane {
 				g2.fill(triangle);
 			}
 			}
+			}
+			*/
+			}
 
 			if (vnode.collapsed)
 				return;
 
+			//	if(traverse) {
 			for (int index = 0; index < vnode.getNumChildren(); index++) {
 				ViewNode vchild = vnode.getChild(index);
 

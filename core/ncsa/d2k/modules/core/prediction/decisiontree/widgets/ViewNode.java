@@ -82,14 +82,14 @@ public final class ViewNode {
 			frame.setFont(DecisionTreeScheme.textfont);
 		}
 
-		img = new BufferedImage((int)gwidth, (int)gheight, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2 = img.createGraphics();
-		this.drawNode(g2);
+		//img = new BufferedImage((int)gwidth, (int)gheight, BufferedImage.TYPE_INT_RGB);
+		//Graphics2D g2 = img.createGraphics();
+		//this.drawNode(g2);
 	}
 
-	public Image getImage() {
-		return img;
-	}
+	//public Image getImage() {
+	//	return img;
+	//}
 
 	public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode) {
 		this(model, node, vnode, null);
@@ -411,7 +411,7 @@ public final class ViewNode {
 		if (isLeaf())
 			return;
 
-		/*theight = .866025*tside;
+		theight = .866025*tside;
 		double ycomponent = tside/2;
 		double xcomponent = .577350*ycomponent;
 		double xcenter, ycenter;
@@ -450,6 +450,5 @@ public final class ViewNode {
 			g2.setColor(DecisionTreeScheme.viewtrianglecolor);
 			g2.fill(triangle);
 		}
-		*/
 	}
 }

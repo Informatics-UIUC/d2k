@@ -6,6 +6,8 @@ import java.awt.geom.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
+import java.awt.image.*;
+
 import ncsa.d2k.util.*;
 import ncsa.d2k.util.datatype.*;
 //import ncsa.d2k.modules.compute.learning.modelgen.decisiontree.*;
@@ -19,6 +21,7 @@ import ncsa.gui.*;
 	Draws a navigator that shows how much of tree is visible
 */
 public final class NavigatorPanel extends JPanel {
+
 
 	public NavigatorPanel(ViewableDTModel model, TreeScrollPane scrollpane) {
 		Navigator navigator = new Navigator(model, scrollpane);
@@ -66,6 +69,8 @@ public final class NavigatorPanel extends JPanel {
 
 		boolean statechanged;
 
+		BufferedImage img;
+
 		public Navigator(ViewableDTModel model, TreeScrollPane scrollpane) {
 			dmodel = model;
 			droot = dmodel.getViewableRoot();
@@ -91,11 +96,15 @@ public final class NavigatorPanel extends JPanel {
 			findSize();
 
 			setOpaque(true);
-			setBackground(DecisionTreeScheme.borderbackgroundcolor);
+			//setBackground(DecisionTreeScheme.borderbackgroundcolor);
 
 			addMouseListener(this);
 			addMouseMotionListener(this);
 			viewport.addChangeListener(this);
+
+			img = new BufferedImage((int)swidth, (int)sheight, BufferedImage.TYPE_INT_RGB);
+			Graphics2D g2 = img.createGraphics();
+			paintBuffer(g2);
 		}
 
 		public void findMaximumDepth(ViewableDTNode dnode) {
@@ -140,6 +149,26 @@ public final class NavigatorPanel extends JPanel {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+			//AffineTransform transform = g2.getTransform();
+			/*AffineTransform sinstance = AffineTransform.getScaleInstance(scale, scale);
+			g2.transform(sinstance);
+
+			drawTree(g2, sroot);
+			*/
+			g2.drawImage(img, 0, 0, null);
+
+			//g2.setTransform(transform);
+
+			g2.setColor(DecisionTreeScheme.viewercolor);
+			g2.setStroke(new BasicStroke(1));
+			g2.draw(new Rectangle2D.Double(x, y, nwidth-1, nheight-1));
+		}
+
+		public void paintBuffer(Graphics2D g2) {
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2.setPaint(DecisionTreeScheme.borderbackgroundcolor);
+			g2.fill(new Rectangle((int)dwidth, (int)dheight));
+
 			AffineTransform transform = g2.getTransform();
 			AffineTransform sinstance = AffineTransform.getScaleInstance(scale, scale);
 			g2.transform(sinstance);
@@ -147,10 +176,6 @@ public final class NavigatorPanel extends JPanel {
 			drawTree(g2, sroot);
 
 			g2.setTransform(transform);
-
-			g2.setColor(DecisionTreeScheme.viewercolor);
-			g2.setStroke(new BasicStroke(1));
-			g2.draw(new Rectangle2D.Double(x, y, nwidth-1, nheight-1));
 		}
 
 		public void drawTree(Graphics2D g2, ScaledNode snode) {
