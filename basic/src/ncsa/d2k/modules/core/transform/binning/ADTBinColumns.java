@@ -18,10 +18,7 @@ import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.transform.StaticMethods;
 
 /**
- * @todo: this module does not support binning of numeric column.
- * therefore the documentation about how to bin numeric columns
- * should be removed.
- * and so should be removed the scalar tab from the gui.
+ *
  */
 public class ADTBinColumns extends HeadlessUIModule {
    private static final String EMPTY = "",
@@ -50,7 +47,7 @@ public class ADTBinColumns extends HeadlessUIModule {
    public String getModuleInfo() {
       return "<html>  <head>      </head>  <body>"
          + "<P><b>Overview:</B> This module allows a user to interactively bin data using counts stored in an ADTree.</P>"
-         + "<P><B>Detailed Description:</B>Numeric data cannot be binned."
+         + "<P><B>Detailed Description:</B> Numeric data cannot be binned."
          + "The user may bin only nominal data.</P>"
          + "<P>For further information on how to use this module the user may click on the \"Help\" button during run time and get detailed description of each functionality.</P>"
          + "<P><B>Data Handling:</b><BR> This module does not change its input. Rather than that it outputs a Transformation that can be then applied to the data.</P>"
@@ -1739,7 +1736,8 @@ public class ADTBinColumns extends HeadlessUIModule {
     PropertyDescription[] pds = new PropertyDescription[2];
     pds[0] = super.supressDescription;
     pds[1] = new PropertyDescription("newColumn", "Create In New Column",
-            "Set this property to true if you wish the binned columns to be created in new columns");
+            "Set this property to true if you wish the binned columns to be created in new columns. " +
+            "It will be used only when 'Supress User Interface Display' is set to true.");
     return pds;
   }
 
@@ -1834,4 +1832,13 @@ class ADTBinCounts implements BinCounts {
  * QA comments:
  * 2-27-03 vered started qa. added module description, exception handling.
  * 2-27-03 commit back to core and back to greg - to reveiw bin nominal columns tab.
+ *
+ *
+ * 11-19-03: Vered started qa process
+ *           the GUI allows overlapping binning - bug 133.
+ *           other problem with GUI, also reported in this bug - unique values
+ *           are not removed from the list once they are associated with a bin.
+ *
+ *           missing values are considered as '?', and therefore are listed in the
+ *           unique values list. [bug 134] the bug is in support class ADTree.
  */

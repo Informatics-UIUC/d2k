@@ -1024,11 +1024,16 @@ public class BinAttributes extends HeadlessUIModule {
 	private HashSet uniqueValues (int col) {
 	  // count the number of unique items in this column
 	  HashSet set = new HashSet();
-	  for (int i = 0; i < tbl.getNumRows(); i++) {
-		String s = tbl.getString(i, col);
-		if (!set.contains(s))
-		  set.add(s);
-	  }
+          for (int i = 0; i < tbl.getNumRows(); i++) {
+
+            //vered - added thsi condition, only if the value is not missing
+            //then the unique value will be added.
+            if(!tbl.isValueMissing(i, col)){
+              String s = tbl.getString(i, col);
+              if (!set.contains(s))
+                set.add(s);
+            }//if value is not missing
+	  }//for i
 	  return  set;
 	}
 
