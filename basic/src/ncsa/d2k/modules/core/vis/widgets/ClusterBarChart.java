@@ -8,9 +8,12 @@ import java.util.*;
 import javax.swing.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.util.*;
 
-public class ClusterBarChart extends BarChart implements MouseListener {
+public class ClusterBarChart extends BarChart
+    implements MouseListener, MouseMotionListener {
+
   private static final int LEFTOFFSET = 20;
   private static final int RIGHTOFFSET = 20;
   private static final int TOPOFFSET = 20;
@@ -37,8 +40,22 @@ public class ClusterBarChart extends BarChart implements MouseListener {
 
   Color[] clustercolors;
 
+Rectangle2D.Double rectangle;
+  Rectangle2D.Double[]  barBoundary;    //array to keep rectangle boundary infomation
+  String[] tipValues;
+
+
   public ClusterBarChart(Table table, DataSet set, GraphSettings settings, int xincrement, int yincrement) throws Exception {
+
     super(table, set, settings);
+
+    // Dependencies
+    if (table.getNumRows() == 0) {
+      throw new Exception("Table exception: No rows to display.");
+    }
+    if (!table.isColumnNominal(set.z)) {
+      throw new Exception("Nominal exception: The " + set.z + " column is not a nominal column");
+    }
 
     settings.displayaxislabels = false;
     settings.displaylegend = true;
@@ -50,14 +67,7 @@ public class ClusterBarChart extends BarChart implements MouseListener {
 
     yvalueincrement = (ymaximum-yminimum)/gridsize;
 
-    // Dependencies
-    if (table.getNumRows() == 0)
-      throw new Exception("Table exception");
-
-    if (!table.isColumnNominal(set.z))
-      throw new Exception("Nominal exception");
-
-    mutable = table.toExampleTable();
+        mutable = table.toExampleTable();
 
     // Map x, y and z to first three columns
     int[] reorder = {set.x, set.y, set.z};
@@ -68,6 +78,9 @@ public class ClusterBarChart extends BarChart implements MouseListener {
     // Runs
     int[] sort = {0, 2};
     int[] indices = TableUtilities.multiSortIndex(mutable, sort);
+
+//vered - reorderRows is no longer in the API. Copy is used instead.
+//mutable = (MutableTable) mutable.reorderRows(indices);
     mutable = (MutableTable) mutable.copy(indices);
 
     // Missing values
@@ -295,6 +308,7 @@ public class ClusterBarChart extends BarChart implements MouseListener {
     if (settings.displaylegend)
       drawLegend(g2);
     drawDataSet(g2, set);
+addMouseMotionListener(this);
   }
 
   public void drawTitle(Graphics2D g2) {
@@ -321,8 +335,12 @@ public class ClusterBarChart extends BarChart implements MouseListener {
 
     for (int bin=0; bin < bins; bin++) {
 
-      if (counter == runsize)
+      if (counter == runsize){
         counter = 0;
+        // draw a seperation line between clustered values
+        g2.draw(new Line2D.Double(x, getGraphHeight()-bottomoffset, x, getGraphHeight()-bottomoffset+(tickmarksize*4)));
+      }
+
 
       else {
         g2.draw(new Line2D.Double(x, getGraphHeight()-bottomoffset-tickmarksize, x, getGraphHeight()-bottomoffset+tickmarksize));
@@ -424,6 +442,34 @@ public class ClusterBarChart extends BarChart implements MouseListener {
   public void mouseExited(MouseEvent event) {
   }
 
+public void mouseMoved(MouseEvent e) {
+    setToolTipText(e);
+  }
+
+public void setToolTipText(MouseEvent e) {
+    double cx = e.getX();
+    double cy = e.getY();
+    String tip = "";
+    // search barBoundary to find which bar has been pointed to
+    for (int i=0; i<barBoundary.length; i++) {
+      if (inRectangle(cx, cy, barBoundary[i])) {
+        tip = tipValues[i];
+        break;
+      }
+    }
+    setToolTipText(tip);
+  }
+
+  public boolean inRectangle(double x, double y, Rectangle2D.Double rectangle) {
+    if (x >= rectangle.getMinX() && x < rectangle.getMaxX() &&
+        y >= rectangle.getMinY() && y < rectangle.getMaxY())
+      return true;
+    else
+      return false;
+  }
+
+
+
   HashMap map = new HashMap();
 
   public void drawLegend(Graphics2D g2) {
@@ -472,9 +518,16 @@ public class ClusterBarChart extends BarChart implements MouseListener {
     int counter = 0;
     int offset = 0;
 
+    barBoundary = new Rectangle2D.Double[bins];
+    tipValues = new String[bins];
+
     for (int bin=0; bin < bins; bin++) {
 
       if (counter == runsize) {
+	  rectangle = new Rectangle2D.Double(x, 0, barwidth, 0);
+        barBoundary[bin] = rectangle;
+        tipValues[bin] = " ";
+
         counter = 0;
         offset++;
       }
@@ -483,6 +536,21 @@ public class ClusterBarChart extends BarChart implements MouseListener {
         double value = mutable.getDouble(bin-offset, 1);
         double barheight = (value-yminimum)/yscale;
         double y = getGraphHeight()-bottomoffset-barheight;
+
+	  StringBuffer tip = new StringBuffer("");
+
+
+        rectangle = new Rectangle2D.Double(x, y, barwidth, barheight);
+        barBoundary[bin] = rectangle;
+        tip.append("<html>");
+        tip.append(" " + mutable.getColumnLabel(0).toLowerCase() + ": " + mutable.getString(bin-offset, 0));
+        tip.append("<br>");
+        tip.append(" " + mutable.getColumnLabel(2).toLowerCase() + ": " + mutable.getString(bin-offset, 2));
+        tip.append("<br>");
+        tip.append(" frequency: " + value);
+        tip.append("</html>");
+        tipValues[bin] = tip.toString();
+
 
         g2.setColor(getClusterColor(counter));
         g2.fill(new Rectangle2D.Double(x, y, barwidth, barheight));
