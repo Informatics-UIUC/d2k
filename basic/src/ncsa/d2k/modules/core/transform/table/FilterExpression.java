@@ -117,12 +117,16 @@ public class FilterExpression implements Expression {
 	}
 
 	public String toString() {
-		return root.toString();
+	    if (root == null)
+		return "";
+	    return root.toString();
 	}
 
     // ANCA added this method
 	public String toSQLString() {
-		return root.toSQLString();
+	    if (root == null)
+		return "";
+	    return root.toSQLString();
 	}
 
 	/******************************************************************************/
