@@ -214,18 +214,20 @@ public class TableUtilities
     // count the number of unique items in this column
     HashSet set = new HashSet ();
     for (int i = 0; i < numRows; i++) {
-	String s = table.getString (i, colNum);
-	if (!set.contains (s)) {
-	  set.add (s);
+      if (!table.isValueMissing(i, colNum)) {
+        String s = table.getString (i, colNum);
+        if (!set.contains (s)) {
+          set.add (s);
         }
+      }
     }
 
     String[]retVal = new String[set.size ()];
     int idx = 0;
     Iterator it = set.iterator ();
     while (it.hasNext ()) {
-	retVal[idx] = (String) it.next ();
-	idx++;
+	  retVal[idx] = (String) it.next ();
+	  idx++;
     }
     return retVal;
   }

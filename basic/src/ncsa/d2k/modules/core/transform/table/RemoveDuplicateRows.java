@@ -63,8 +63,12 @@ public class RemoveDuplicateRows extends DataPrepModule {
         int numCols = mt.getNumColumns();
         for(int i = 0; i < numRows; i++) {
             String[] row = new String[numCols];
-            for (int j =0; j < numCols; j++)
-               row [j] =mt.getString(i, j);
+            for (int j =0; j < numCols; j++) {
+               if (mt.isValueMissing(i, j))
+			     row [j] = "XX_MISSING_VALUE_XX";
+               else
+			     row [j] = mt.getString(i, j);
+            }
             RowSet rs = new RowSet(row);
             if(setOfUniqueRows.contains(rs)) {
                 rowsToRemove.add(i);
