@@ -1370,7 +1370,7 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
 	 *
 	 * All rows from <code>rowIndex</code> to the last row are moved down
 	 * the table to the next row.
-	 * 
+	 *
 	 * Modified by Xiaolei - 07/08/2003.
 	 *
 	 * @param newEntry       the data to be stored at the new row
@@ -3968,10 +3968,10 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
 	 *
 	 * Modified by Xiaolei - 07/08/2003.
 	 */
-	public void removeColumn(int position) 
+	public void removeColumn(int position)
 	{
 		//removing the column
-		AbstractSparseColumn col = (AbstractSparseColumn) columns.remove(position);    
+		AbstractSparseColumn col = (AbstractSparseColumn) columns.remove(position);
 
 		//if such column did exist
 		if (col != null) {
@@ -4028,7 +4028,7 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
 	 *
 	 * Modified by Xiaolei - 07/08/2003.
 	 */
-	public void removeRow(int row) 
+	public void removeRow(int row)
 	{
 		//removing the row from the rows map
 		VIntHashSet set = (VIntHashSet) rows.remove(row);
@@ -4126,7 +4126,7 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    */
   public void removeRows(int start, int len) {
      for (int i=0; i<len; i++)
-      removeRow(start+i);
+      removeRow(start);
   }
 
 
@@ -4137,9 +4137,10 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
  * @param flags     an array of flags to indicate which row is to be removed
  */
   public void removeRowsByFlag(boolean[] flags) {
+    int cnt = 0;
     for (int i=0; i<flags.length; i++)
       if(flags[i])
-	removeRow(i);
+	removeRow(i-cnt++);
   }
 
   /**
@@ -4408,7 +4409,7 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
 		}
 
 		/* add the column to the row */
-		if (!((VIntHashSet) rows.get(row)).contains(column)) 
+		if (!((VIntHashSet) rows.get(row)).contains(column))
 			((VIntHashSet) rows.get(row)).add(column);
 	}
 
@@ -4511,7 +4512,7 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param row          the row number of the entry to be set
    * @param column       the column number of the entry to be set
    */
-	public void setDouble(double data, int row, int column) 
+	public void setDouble(double data, int row, int column)
 	{
 		// XIAOLEI - just added some comments
 
@@ -5151,53 +5152,53 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
 
 		switch(newColumn.getType()) {
 
-			case ColumnTypes.BOOLEAN: 
+			case ColumnTypes.BOOLEAN:
 				col = new SparseBooleanColumn((boolean[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.BYTE:    
+			case ColumnTypes.BYTE:
 				col = new SparseByteColumn((byte[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.CHAR:   
+			case ColumnTypes.CHAR:
 			   	col = new SparseCharColumn((char[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.DOUBLE:  
+			case ColumnTypes.DOUBLE:
 				col = new SparseDoubleColumn((double[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.FLOAT: 
+			case ColumnTypes.FLOAT:
 				col = new SparseFloatColumn((float[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.BYTE_ARRAY:    
+			case ColumnTypes.BYTE_ARRAY:
 				col = new SparseByteArrayColumn((byte[][]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.CHAR_ARRAY:    
+			case ColumnTypes.CHAR_ARRAY:
 				col = new SparseCharArrayColumn((char[][]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.INTEGER:  
+			case ColumnTypes.INTEGER:
 				col = new SparseIntColumn((int[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.LONG:    
+			case ColumnTypes.LONG:
 				col = new SparseLongColumn((long[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.SHORT:    
+			case ColumnTypes.SHORT:
 				col = new SparseShortColumn((short[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.OBJECT:    
+			case ColumnTypes.OBJECT:
 				col = new SparseObjectColumn((Object[]) newColumn.getInternal());
 				break;
 
 			case ColumnTypes.STRING:  //fall through to the default...
 
-			default:                  
+			default:
 				col = new SparseStringColumn((String[]) newColumn.getInternal());
 				break;
 
@@ -5224,53 +5225,53 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
 
 		switch(newColumn.getType()) {
 
-			case ColumnTypes.BOOLEAN: 
+			case ColumnTypes.BOOLEAN:
 				col = new SparseBooleanColumn((boolean[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.BYTE:    
+			case ColumnTypes.BYTE:
 				col = new SparseByteColumn((byte[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.CHAR:   
+			case ColumnTypes.CHAR:
 			   	col = new SparseCharColumn((char[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.DOUBLE:  
+			case ColumnTypes.DOUBLE:
 				col = new SparseDoubleColumn((double[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.FLOAT: 
+			case ColumnTypes.FLOAT:
 				col = new SparseFloatColumn((float[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.BYTE_ARRAY:    
+			case ColumnTypes.BYTE_ARRAY:
 				col = new SparseByteArrayColumn((byte[][]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.CHAR_ARRAY:    
+			case ColumnTypes.CHAR_ARRAY:
 				col = new SparseCharArrayColumn((char[][]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.INTEGER:  
+			case ColumnTypes.INTEGER:
 				col = new SparseIntColumn((int[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.LONG:    
+			case ColumnTypes.LONG:
 				col = new SparseLongColumn((long[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.SHORT:    
+			case ColumnTypes.SHORT:
 				col = new SparseShortColumn((short[]) newColumn.getInternal());
 				break;
 
-			case ColumnTypes.OBJECT:    
+			case ColumnTypes.OBJECT:
 				col = new SparseObjectColumn((Object[]) newColumn.getInternal());
 				break;
 
 			case ColumnTypes.STRING:  //fall through to the default...
 
-			default:                  
+			default:
 				col = new SparseStringColumn((String[]) newColumn.getInternal());
 				break;
 

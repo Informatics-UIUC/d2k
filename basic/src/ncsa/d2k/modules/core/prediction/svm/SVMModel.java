@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.prediction.svm;
 
 import ncsa.d2k.modules.PredictionModelModule;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import libsvm.*;
 
@@ -16,7 +17,7 @@ import java.io.Serializable;
   */
 public final class SVMModel
     extends PredictionModelModule
-    implements Serializable
+    implements Serializable, ModelProducer
 {
 	/**
 	  The actual SVM stored in its native class.

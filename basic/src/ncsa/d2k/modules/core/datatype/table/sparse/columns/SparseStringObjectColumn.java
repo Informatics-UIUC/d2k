@@ -27,7 +27,7 @@ public class SparseStringObjectColumn extends SparseObjectColumn{
  * Strings) are the data stored at wach row.
  */
 
-	public static Object DEFAULT = null;
+	public static Object DEFAULT = "";
 
 
  /**

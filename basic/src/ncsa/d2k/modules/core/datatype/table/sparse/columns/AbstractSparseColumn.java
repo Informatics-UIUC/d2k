@@ -635,9 +635,15 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
      * Xiaolei - 07/08/2003
      */
     public void replaceRow (Object newEntry, int pos) {
+      if (this instanceof SparseStringColumn){
+        if (getElements().containsKey(pos)) {
+          ( (SparseStringColumn)this).valuesInColumn[ ( (SparseStringColumn)this).row2Id.get(pos)] = (String) newEntry;
+        }
+      } else {
         getElements().replaceObject(newEntry, pos);
-        if (missing.contains(pos))
-            missing.remove(pos);
+      }
+      if (missing.contains(pos))
+        missing.remove(pos);
     }
 }
 

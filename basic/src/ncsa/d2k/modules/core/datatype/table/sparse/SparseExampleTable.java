@@ -76,10 +76,18 @@ public class SparseExampleTable
   }
 
   protected void copyArrays(SparseExampleTable table) {
-    inputColumns = copyArray(table.inputColumns);
-    outputColumns = copyArray(table.outputColumns);
-    testSet = copyArray(table.testSet);
-    trainSet = copyArray(table.trainSet);
+    if (table.inputColumns != null){
+      inputColumns = copyArray(table.inputColumns);
+    }
+    if (table.outputColumns != null){
+      outputColumns = copyArray(table.outputColumns);
+    }
+    if (table.testSet != null){
+      testSet = copyArray(table.testSet);
+    }
+    if (table.trainSet != null){
+      trainSet = copyArray(table.trainSet);
+    }
   }
 
   protected int[] copyArray(int[] arr) {
@@ -1485,7 +1493,7 @@ public class SparseExampleTable
    */
   public void removeRows(int start, int len) {
     for (int i = start; i < len; i++) {
-      removeColumn(i);
+      removeRow(start);
     }
   }
 
@@ -1498,7 +1506,7 @@ public class SparseExampleTable
     int numRemoved = 0;
     for (int i = 0; i < flags.length; i++) {
       if (flags[i]) {
-        removeRow(i - numRemoved);
+        removeRow(i - numRemoved++);
       }
     }
   }

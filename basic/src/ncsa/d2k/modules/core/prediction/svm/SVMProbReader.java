@@ -116,7 +116,7 @@ public class SVMProbReader extends InputModule
 			Vector vy = new Vector();
 			Vector vx = new Vector();
 			int max_index = 0;
-		
+
 			/* read all lines */
 			while(true)
 			{
@@ -164,14 +164,20 @@ public class SVMProbReader extends InputModule
 		}
 	}
 
-	private static double atof(String s)
-	{
-		return Double.valueOf(s).doubleValue();
-	}
 
-	private static int atoi(String s)
-	{
-		return Integer.parseInt(s);
-	}
+        private static double atof(String s)
+        {
+                if ((s == null) || (s.length() == 0))
+                        return 0.0;
+                else
+                        return Double.valueOf(s).doubleValue();
+        }
 
+        private static int atoi(String s)
+        {
+                if ((s == null) || (s.length() == 0))
+                        return 0;
+                else
+                        return Integer.parseInt(s);
+        }
 }
