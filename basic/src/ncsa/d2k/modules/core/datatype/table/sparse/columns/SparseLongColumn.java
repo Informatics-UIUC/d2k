@@ -451,7 +451,9 @@ public class SparseLongColumn extends AbstractSparseColumn {
     SparseLongColumn retVal = new SparseLongColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setLong(getLong(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setLong(getLong(indices[i]), indices[i]);
+        retVal.setLong(getLong(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

@@ -160,7 +160,9 @@ public class SparseStringObjectColumn extends SparseObjectColumn{
     SparseStringObjectColumn retVal = new SparseStringObjectColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setString(getString(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setString(getString(indices[i]), indices[i]);
+        retVal.setString(getString(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

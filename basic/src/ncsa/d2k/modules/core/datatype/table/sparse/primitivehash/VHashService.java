@@ -35,22 +35,25 @@ public class VHashService {
    */
    public static int[] getIndicesInRange(int begin, int end, VHashMap map){
 
-
      int[] keysInRange = new int[0];      //the returned value
 
      if(end < begin) return keysInRange;
 
       //retrieving all valid rows and sorting them
       int[] validIndices = map.keys();
-
-
       Arrays.sort(validIndices);
 
+	  //for (int i = 0; i < validIndices.length; i++)
+		  //System.out.print(validIndices[i] + ", ");
+	  //System.out.println();
 
 
+
+	  // XIAOLEI
       int beginIndex = findPlace(validIndices, begin);
-      int endIndex = findPlace(validIndices, end);
+      int endIndex = findEndPlace(validIndices, end);
 
+	  //System.out.println(beginIndex + " ---> " + endIndex);
 
 
       //if begin is greater than any valid row number - return an empty array
@@ -61,8 +64,8 @@ public class VHashService {
       int numKeysInRange = endIndex - beginIndex + 1;
       keysInRange = new int[numKeysInRange];
       System.arraycopy(validIndices, beginIndex, keysInRange, 0, numKeysInRange);
-      return keysInRange;
 
+      return keysInRange;
     }
 
     /**
@@ -122,10 +125,21 @@ public class VHashService {
 
     int retVal =  Arrays.binarySearch(arr, value);
 
-    if(retVal < 0){
+    if (retVal < 0) {
+		retVal = (retVal + 1) * - 1;
+    }
+
+    return retVal;
+  }
 
 
-      retVal = (retVal +1) * -1;
+  //XIAOLEI
+  public static int findEndPlace(int[] arr, int value){
+
+    int retVal =  Arrays.binarySearch(arr, value);
+
+    if (retVal < 0) {
+		retVal = (retVal + 1) * - 1 - 1;
     }
 
     return retVal;

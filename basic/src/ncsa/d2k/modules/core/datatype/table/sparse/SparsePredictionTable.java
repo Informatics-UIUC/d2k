@@ -43,6 +43,18 @@ public class SparsePredictionTable
   /* a mutable table will hold the prediction columns */
   protected SparseMutableTable predictionColumns;
 
+	// XIAOLEI - temp fix
+	public String getColumnLabel(int position)
+	{
+		if (columns.containsKey(position))
+			return ((Column)columns.get(position)).getLabel();
+		else if (predictionColumns.getColumnLabel(position - super.getNumColumns()) != null) {
+			return predictionColumns.getColumnLabel(position - super.getNumColumns());
+		}
+		else 
+			return null;
+	}
+
   /**
    * *********************************************************
    * CONSTRUCTORS
@@ -100,6 +112,10 @@ public class SparsePredictionTable
         int size = table.getColumnNumEntries(outputColumns[i]);
         //add a prediction column of the same type and size.
         predictionColumns.addColumn(i, type, size);
+
+		//XIAOLEI
+		predictionColumns.setColumnLabel(table.getColumnLabel(i) +
+				PredictionTable.PREDICTION_COLUMN_APPEND_TEXT, i);
 
       } //for
 

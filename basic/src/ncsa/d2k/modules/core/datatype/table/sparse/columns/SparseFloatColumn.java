@@ -435,7 +435,9 @@ public class SparseFloatColumn extends AbstractSparseColumn  {
     SparseFloatColumn retVal = new SparseFloatColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setFloat(getFloat(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setFloat(getFloat(indices[i]), indices[i]);
+        retVal.setFloat(getFloat(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

@@ -357,7 +357,9 @@ public class SparseIntColumn extends AbstractSparseColumn {
     SparseIntColumn retVal = new SparseIntColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setInt(getInt(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setInt(getInt(indices[i]), indices[i]);
+        retVal.setInt(getInt(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

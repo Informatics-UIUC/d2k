@@ -746,7 +746,9 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
     SparseBooleanColumn retVal = new SparseBooleanColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setBoolean(getBoolean(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setBoolean(getBoolean(indices[i]), indices[i]);
+        retVal.setBoolean(getBoolean(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

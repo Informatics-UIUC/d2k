@@ -355,6 +355,12 @@ public class VIntLongHashMap extends TIntLongHashMap implements VHashMap{
 	put(keysInRange[i]+1, removed);
       }
       //putting the new object in key.
-      put(key, SparseLongColumn.toLong(obj));
+	  if (obj != null)
+		  put(key, SparseLongColumn.toLong(obj));
      }
+
+	public void replaceObject(Object obj, int key)
+	{
+		put(key, SparseLongColumn.toLong(obj));
+	}
 }

@@ -367,7 +367,9 @@ public class SparseShortColumn extends AbstractSparseColumn {
     SparseShortColumn retVal = new SparseShortColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setShort(getShort(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setShort(getShort(indices[i]), indices[i]);
+        retVal.setShort(getShort(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

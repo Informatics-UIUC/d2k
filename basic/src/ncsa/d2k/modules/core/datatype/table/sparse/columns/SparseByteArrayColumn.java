@@ -225,7 +225,9 @@ public class SparseByteArrayColumn extends SparseObjectColumn {
     SparseByteArrayColumn retVal = new SparseByteArrayColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setBytes(getBytes(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setBytes(getBytes(indices[i]), indices[i]);
+        retVal.setBytes(getBytes(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

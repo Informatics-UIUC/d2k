@@ -399,7 +399,9 @@ public class SparseByteColumn extends AbstractSparseColumn {
     SparseByteColumn retVal = new SparseByteColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setByte(getByte(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setByte(getByte(indices[i]), indices[i]);
+        retVal.setByte(getByte(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

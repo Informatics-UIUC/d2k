@@ -229,7 +229,9 @@ public class SparseCharArrayColumn extends SparseObjectColumn {
     SparseCharArrayColumn retVal = new SparseCharArrayColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setChars(getChars(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setChars(getChars(indices[i]), indices[i]);
+        retVal.setChars(getChars(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

@@ -686,9 +686,13 @@ public class VIntShortHashMap extends TIntHash implements VHashMap{
       */
      public VHashMap getSubset(int start, int len){
       VIntShortHashMap retVal = new VIntShortHashMap (len);
-      int[] validKeys = VHashService.getIndicesInRange(start, start+len, this);
+	  //XIAOLEI
+      //int[] validKeys = VHashService.getIndicesInRange(start, start+len, this);
+      int[] validKeys = VHashService.getIndicesInRange(start, start+len-1, this);
       for (int i=0; i<validKeys.length; i++)
-	retVal.put(validKeys[i], get(validKeys[i]));
+		  //XIAOLEI
+	//retVal.put(validKeys[i], get(validKeys[i]));
+	retVal.put(validKeys[i] - start, get(validKeys[i]));
       return retVal;
      }
 
@@ -711,6 +715,12 @@ public class VIntShortHashMap extends TIntHash implements VHashMap{
 	put(keysInRange[i]+1, removed);
       }
       //putting the new object in key.
-      put(key, SparseShortColumn.toShort(obj));
+	  if (obj != null)
+		  put(key, SparseShortColumn.toShort(obj));
      }
+
+	public void replaceObject(Object obj, int key)
+	{
+		put(key, SparseShortColumn.toShort(obj));
+	}
 }

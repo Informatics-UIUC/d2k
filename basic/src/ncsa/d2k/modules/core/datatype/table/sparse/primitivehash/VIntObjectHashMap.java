@@ -147,7 +147,7 @@ public class VIntObjectHashMap extends TIntObjectHashMap implements VHashMap{
 
     /**
       * Returns the values mapped to keys between <codE>begin</code> through
-      * <codE>end</cdoe>, sorted.
+      * <codE>end</code>, sorted.
       *
       *
       * This method can be used safely if the map holds object that are comparable
@@ -321,9 +321,13 @@ public class VIntObjectHashMap extends TIntObjectHashMap implements VHashMap{
       */
      public VHashMap getSubset(int start, int len){
       VIntObjectHashMap retVal = new VIntObjectHashMap (len);
-      int[] validKeys = VHashService.getIndicesInRange(start, start+len, this);
+	  //XIAOLEI
+      //int[] validKeys = VHashService.getIndicesInRange(start, start+len, this);
+      int[] validKeys = VHashService.getIndicesInRange(start, start+len-1, this);
       for (int i=0; i<validKeys.length; i++)
-	retVal.put(validKeys[i], get(validKeys[i]));
+		  //XIAOLEI
+	//retVal.put(validKeys[i], get(validKeys[i]));
+	retVal.put(validKeys[i] - start, get(validKeys[i]));
       return retVal;
      }
 
@@ -356,9 +360,15 @@ public class VIntObjectHashMap extends TIntObjectHashMap implements VHashMap{
       //putting the new object in key.
 
 
-      put(key, obj);
+	  if (obj != null)
+		  put(key, obj);
      }
 
 
+
+	public void replaceObject(Object obj, int key)
+	{
+		put(key, obj);
+	}
 
 }

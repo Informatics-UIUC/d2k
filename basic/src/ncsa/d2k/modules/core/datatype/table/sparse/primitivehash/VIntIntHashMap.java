@@ -313,9 +313,13 @@ public class VIntIntHashMap extends TIntIntHashMap implements VHashMap{
       */
      public VHashMap getSubset(int start, int len){
       VIntIntHashMap retVal = new VIntIntHashMap (len);
-      int[] validKeys = VHashService.getIndicesInRange(start, start+len, this);
+	  //XIAOLEI: added the -1
+      int[] validKeys = VHashService.getIndicesInRange(start, start+len-1, this);
+
       for (int i=0; i<validKeys.length; i++)
-	retVal.put(validKeys[i], get(validKeys[i]));
+		  //XIAOLEI: added the - start
+			//retVal.put(validKeys[i], get(validKeys[i]));
+			retVal.put(validKeys[i] - start, get(validKeys[i]));
       return retVal;
      }
 
@@ -355,6 +359,12 @@ public class VIntIntHashMap extends TIntIntHashMap implements VHashMap{
 	put(keysInRange[i]+1, removed);
       }
       //putting the new object in key.
-      put(key, SparseIntColumn.toInt(obj));
+	  if (obj != null)
+		  put(key, SparseIntColumn.toInt(obj));
      }
+
+	public void replaceObject(Object obj, int key)
+	{
+		put(key, SparseIntColumn.toInt(obj));
+	}
 }

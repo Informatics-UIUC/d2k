@@ -448,8 +448,9 @@ protected static SparseTableFactory factory = new SparseTableFactory();
   }
 
   /**
-   * marks the falg attributes of column #<code>position</code> according to
-   * <code>values</code>: sets isNominal to <code>value</code> and sets isScalar
+   * marks the falg attributes of column #<code>position</code>
+   * according to <code>values</code>: sets isNominal to
+   * <code>value</code> and sets isScalar
    * to <code>!value</code>
    *
    * @param value   a flag signifies whether a column holds nominal values
@@ -478,9 +479,9 @@ protected static SparseTableFactory factory = new SparseTableFactory();
 
 
   /**
-   * Returns true if column #<c0ode>position</code> holds numeric data or data
-   * that numeric values can be parsed from. otherwise return false (also if the
-   * column does not exist).
+   * Returns true if column #<code>position</code> holds numeric data or
+   * data that numeric values can be parsed from. otherwise return false
+   * (also if the column does not exist).
    *
    * @param position    the column number which its data type is verified.
    * @return            true if the data at column #<code>position</code> is
@@ -869,7 +870,29 @@ protected static SparseTableFactory factory = new SparseTableFactory();
   }
 
 
-}//SparseTable
+  //XIAOLEI
+	public void print()
+	{
+		System.out.print("---------------------------------------");
+		System.out.println("---------------------------------------");
+		int[] my_rows = getAllRows();
+		System.out.println(my_rows.length + " rows total.");
+		System.out.println(numRows + " rows total.");
+		System.out.println(numColumns + " columns total.");
+		for (int i = 0; i < my_rows.length; i++) {
+			System.out.print(my_rows[i] + ": ");
+			//int[] my_cols = getRowIndices(i);
+			int[] my_cols = getRowIndices(my_rows[i]);
+
+			for (int j = 0; j < my_cols.length; j++) {
+				System.out.print(my_cols[j] + "(");
+				System.out.print(getDouble(my_rows[i], my_cols[j]) + ") ");
+			}
+			System.out.println();
+		}
+		System.out.print("---------------------------------------");
+		System.out.println("---------------------------------------");
+	}
 
 
 
@@ -912,7 +935,6 @@ protected static SparseTableFactory factory = new SparseTableFactory();
    * @param len     number of consequetive rows to be included in the subset
    * @return        a SparseTable containing rows <code>start</code> through
    *                <code>start+len</code>
-   *
   public Table getSubset(int start, int len){
     SparseTable retVal = new SparseTable();
 
@@ -935,5 +957,6 @@ protected static SparseTableFactory factory = new SparseTableFactory();
     public ExampleTable toExampleTable(){
       return new SparseExampleTable(this);
       }
+  */
 
-*/
+}//SparseTable

@@ -222,7 +222,9 @@ public class SparseStringColumn extends AbstractSparseColumn{
     SparseStringColumn retVal = new SparseStringColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(row2Id.containsKey(indices[i]))
-        retVal.setString(getString(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setString(getString(indices[i]), indices[i]);
+        retVal.setString(getString(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

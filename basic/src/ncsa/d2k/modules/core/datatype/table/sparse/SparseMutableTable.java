@@ -10,6 +10,7 @@ import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * Title:        Sparse Table
@@ -1360,41 +1361,50 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
 
 
 
- /**
-  * Inserts each item <code>newEntry[i]</code> into column no. <code>validColumns[i]
-  * </code> and row no. <code>rowIndex</code>.
-  * If <code>newEntry</code> is larger than <code>validColumns</code> then the
-  * rest of <code>newEntry</code> is inserted into SparseStringColumns at the
-  * end og the table.
-  *
-  * All rows from <code>rowIndex</code> to the last row are moved down the table
-  * to the next row.
-  *
-  * @param newEntry       the data to be stored at the new row
-  * @param rowIndex       the index of the new row
-  * @param validColumns   the indices of the columns of the new row. sorted.
-  */
- public  void insertRow(boolean[] newEntry, int rowIndex, int[] validColumns){
+	/**
+	 * Inserts each item <code>newEntry[i]</code> into column no.
+	 * <code>validColumns[i] </code> and row no. <code>rowIndex</code>.
+	 * If <code>newEntry</code> is larger than <code>validColumns</code>
+	 * then the rest of <code>newEntry</code> is inserted into
+	 * SparseStringColumns at the end of the table.
+	 *
+	 * All rows from <code>rowIndex</code> to the last row are moved down
+	 * the table to the next row.
+	 * 
+	 * Modified by Xiaolei - 07/08/2003.
+	 *
+	 * @param newEntry       the data to be stored at the new row
+	 * @param rowIndex       the index of the new row
+	 * @param validColumns   the indices of the columns of the new row. sorted.
+	 */
+	public void insertRow(boolean[] newEntry, int rowIndex, int[] validColumns)
+	{
+		int i;
 
-     int i;
-     for (i=0; i<newEntry.length && i<validColumns.length; i++){
-      getColumn(validColumns[i]).insertRow(new Boolean(newEntry[i]), rowIndex);
-     }
+		for (i=0; i < newEntry.length && i<validColumns.length; i++) {
+			getColumn(validColumns[i]).insertRow(new Boolean(newEntry[i]), rowIndex);
+		}
 
-     if(validColumns.length > 0);
-      numColumns = validColumns[validColumns.length - 1] +1;
+		if (validColumns.length > 0)
+			numColumns = validColumns[validColumns.length - 1] + 1;
 
-     for(; i<newEntry.length; i++){
- //     addDefaultColumn(colIndex);
-      setBoolean(newEntry[i], rowIndex, numColumns);
-      numColumns++;
-    }
+		if (newEntry.length < validColumns.length) {
 
-     rows.insertObject(new VIntHashSet(validColumns), rowIndex);
 
-     numRows++;
+		}
 
- }
+
+		for(; i<newEntry.length; i++){
+			//     addDefaultColumn(colIndex);
+			setBoolean(newEntry[i], rowIndex, numColumns);
+			numColumns++;
+		}
+
+		rows.insertObject(new VIntHashSet(validColumns), rowIndex);
+
+		numRows++;
+
+	}
 
 
 
@@ -1483,43 +1493,60 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
 
 
 
- /**
-  * Inserts each item <code>newEntry[i]</code> into column no. <code>validColumns[i]
-  * </code> and row no. <code>rowIndex</code>.
-  * If <code>newEntry</code> is larger than <code>validColumns</code> then the
-  * rest of <code>newEntry</code> is inserted into SparseStringColumns at the
-  * end og the table.
-  *
-  * All rows from <code>rowIndex</code> to the last row are moved down the table
-  * to the next row.
-  *
-  * @param newEntry       the data to be stored at the new row
-  * @param rowIndex       the index of the new row
-  * @param validColumns   the indices of the columns of the new row.
-  */
- public  void insertRow(double[] newEntry, int rowIndex, int[] validColumns){
+	/**
+	 * Inserts each item <code>newEntry[i]</code> into column no.
+	 * <code>validColumns[i] </code> and row no. <code>rowIndex</code>.
+	 * If <code>newEntry</code> is larger than <code>validColumns</code>
+	 * then the rest of <code>newEntry</code> is inserted into
+	 * SparseStringColumns at the end og the table.
+	 *
+	 * All rows from <code>rowIndex</code> to the last row are moved down the table
+	 * to the next row.
+	 *
+	 * Modified by Xiaolei Li - 07/08/2003.
+	 *
+	 * @param newEntry       the data to be stored at the new row
+	 * @param rowIndex       the index of the new row
+	 * @param validColumns   the indices of the columns of the new row.
+	 */
+	public void insertRow(double[] newEntry, int rowIndex, int[] validColumns)
+	{
+		int i;
 
+		/* for every existing column, add this new entry */
+		for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
+			getColumn(validColumns[i]).insertRow(new Double(newEntry[i]), rowIndex);
+		}
 
+		/* re-compute the total number of columns */
+		if (validColumns.length > 0)
+			numColumns = validColumns[validColumns.length - 1] + 1;
 
-     int i;
-     for (i=0; i<newEntry.length && i<validColumns.length; i++){
-      getColumn(validColumns[i]).insertRow(new Double(newEntry[i]), rowIndex);
-     }
+		/* if the new row has less entries, we still have to shift down
+		 * the columns after the new row.  by inserting a null object,
+		 * the insertRow method will actually _not_ insert it.  it'll
+		 * only do the shifting. */
+		if (newEntry.length < validColumns.length) {
+			for (int j = newEntry.length; j < validColumns.length; j++)
+				getColumn(validColumns[j]).insertRow(null, rowIndex);
+		}
 
+		int[] rowColumns = new int[newEntry.length];
+		for (int j = 0; j < rowColumns.length; j++)
+			rowColumns[j] = j;
 
-     if(validColumns.length > 0);
-      numColumns = validColumns[validColumns.length - 1] +1;
+		/* add the row */
+		rows.insertObject(new VIntHashSet(rowColumns), rowIndex);
 
-     for(; i<newEntry.length; i++){
-//      addDefaultColumn(colIndex);
-      setDouble(newEntry[i], rowIndex, numColumns);
-      numColumns++;
-    }
+		/* if the new row has more entries than the current table */
+		for(; i < newEntry.length; i++) {
+			// addDefaultColumn(colIndex);
+			setDouble(newEntry[i], rowIndex, numColumns);
+			numColumns++;
+		}
 
-     rows.insertObject(new VIntHashSet(validColumns), rowIndex);
-     numRows++;
-
- }
+		numRows++;
+	}
 
 
 
@@ -2420,19 +2447,31 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
     public void insertColumn(AbstractSparseColumn newColumn, int position) {
       //updating the column map
       columns.insertObject(newColumn, position);
+
       //updating the rows map
       int[] rowNumbers = VHashService.getIndices(rows);
+
       //for each set in rows - adding 1 to each element.
       for (int i=0; i<rowNumbers.length; i++){
-	VIntHashSet tempSet = (VIntHashSet) rows.get(rowNumbers[i]);
-	tempSet.increment(position);
-	tempSet.add(position);
+			VIntHashSet tempSet = (VIntHashSet) rows.get(rowNumbers[i]);
+			tempSet.increment(position);
+			//XIAOLEI
+		  if (newColumn.doesValueExist(rowNumbers[i])) {
+			tempSet.add(position);
+		  }
       }//for
 
-      numColumns++;
       int numR = newColumn.getNumRows();
-      if(numRows <= numR)  numRows = numR;
+      if (numRows <= numR) {
 
+		  // XIAOLEI
+		for (int i = numRows; i < numR; i++)
+			addCol2Row(position, i);
+
+		numRows = numR;
+	  }
+
+		numColumns = VHashService.getMaxKey(columns) + 1;
     }
 
 
@@ -3915,26 +3954,52 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
 
 
 
-  /**
-   * Removes column no. <code>position</code> from this table.
-   *
-   * @param position    the index of the columnt obe removed
-   */
-  public void removeColumn(int position) {
-    AbstractSparseColumn col = (AbstractSparseColumn)columns.remove(position);    //removing the column
-    //if such column did exist
-    if(col != null){
-      //removing the references to it from each row
-      int[] rowsIndices = col.getIndices();
-      for (int i=0; i<rowsIndices.length; i++)
-	if(rows.containsKey(rowsIndices[i]))
-	  ((VIntHashSet)rows.get(rowsIndices[i])).remove(position);
-    }
+	/**
+	 * Removes column no. <code>position</code> from this table.
+	 *
+	 * @param position    the index of the columnt obe removed
+	 *
+	 * Modified by Xiaolei - 07/08/2003.
+	 */
+	public void removeColumn(int position) 
+	{
+		//removing the column
+		AbstractSparseColumn col = (AbstractSparseColumn) columns.remove(position);    
 
-    if(numColumns == position +1)
-      numColumns = VHashService.getMaxKey(columns) + 1;
+		//if such column did exist
+		if (col != null) {
 
-  }
+			//removing the references to it from each row
+			int[] rowsIndices = col.getIndices();
+
+			for (int i=0; i<rowsIndices.length; i++) {
+				if (rows.containsKey(rowsIndices[i]))
+					((VIntHashSet)rows.get(rowsIndices[i])).remove(position);
+			}
+
+			// for the columns with indices larger than position, shift all of
+			// them leftward.
+
+			int[] col_keys = columns.keys();
+			Arrays.sort(col_keys);
+
+			for (int i = 0; i < col_keys.length; i++) {
+				if (col_keys[i] >= position) {
+					col = (AbstractSparseColumn) columns.remove(col_keys[i]);
+					columns.put(col_keys[i] - 1, col);
+				}
+			}
+
+			rowsIndices = getAllRows();
+
+			// shift each row's columns leftward
+			for (int i = 0; i < rowsIndices.length; i++) {
+				((VIntHashSet) rows.get(rowsIndices[i])).decrement(position);
+			}
+		}
+
+		numColumns = VHashService.getMaxKey(columns) + 1;
+	}
 
 
 
@@ -3949,30 +4014,58 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
       removeColumn(start+i);
   }
 
-  /**
-   * Removes row no. <code>row</code> from this table
-   *
-   * @param row     the index of the row to be removed.
-   */
-  public void removeRow(int row) {
-    //removing the row from the rows map
-    VIntHashSet set = (VIntHashSet)rows.remove(row);
+	/**
+	 * Removes row no. <code>row</code> from this table
+	 *
+	 * @param row     the index of the row to be removed.
+	 *
+	 * Modified by Xiaolei - 07/08/2003.
+	 */
+	public void removeRow(int row) 
+	{
+		//removing the row from the rows map
+		VIntHashSet set = (VIntHashSet) rows.remove(row);
 
-    //if the row existed
-    if(set != null){
-      //retrieve column numbers
-      int[] columnNumbers = set.toArray();
-      //remove the items of the row from each column
-      for (int i=0; i<columnNumbers.length; i++){
-	((AbstractSparseColumn)columns.get(columnNumbers[i])).removeRow(row);
-//	removeEmptyColumn(columnNumbers[i]);
-      }
-    }//end if
+		//if the row existed
+		if (set != null) {
+			//retrieve column numbers
+			int[] columnNumbers = set.toArray();
 
-    if(numRows == row-1)
-      computeNumRows();
+			//remove the items of the row from each column
+			for (int i = 0; i < columnNumbers.length; i++) {
+				((AbstractSparseColumn)columns.get(columnNumbers[i])).removeRow(row);
+				//	removeEmptyColumn(columnNumbers[i]);
+			}
 
-  }
+			// shift all the rest of the rows upward
+			int[] row_keys = rows.keys();
+			Arrays.sort(row_keys);
+
+			for (int i = 0; i < row_keys.length; i++) {
+				if (row_keys[i] >= row) {
+					set = (VIntHashSet) rows.remove(row_keys[i]);
+					rows.put(row_keys[i] - 1, set);
+				}
+			}
+
+			int[] colsIndices = getAllColumns();
+			AbstractSparseColumn col;
+
+			// shift each column's values upward
+			for (int i = 0; i < colsIndices.length; i++) {
+				col = (AbstractSparseColumn) columns.get(colsIndices[i]);
+				int[] validRows = col.getIndices();
+
+				for (int j = 0; j < validRows.length; j++) {
+					if (validRows[j] >= row) {
+						col.replaceRow(col.removeRow(validRows[j]), validRows[j] - 1);
+					}
+				}
+			}
+		}//end if
+
+		computeNumRows();
+	}
 
   /**
    * Removes the entry at the specified location.
@@ -4298,13 +4391,19 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param column    the index to be added
    * @param row       the row index to which the index <code>column<c/doe> is added
    */
-  protected void addCol2Row(int column, int row){
-       if (!rows.containsKey(row)){
-	VIntHashSet newRow = new VIntHashSet();
-	rows.put(row, newRow);
-      }
-      ((VIntHashSet) rows.get(row)).add(column);
-  }
+	protected void addCol2Row(int column, int row){
+		// XIAOLEI - just added some comments
+
+		/* first check if the row exists */
+		if (!rows.containsKey(row)) {
+			VIntHashSet newRow = new VIntHashSet();
+			rows.put(row, newRow);
+		}
+
+		/* add the column to the row */
+		if (!((VIntHashSet) rows.get(row)).contains(column)) 
+			((VIntHashSet) rows.get(row)).add(column);
+	}
 
 
   /**
@@ -4405,18 +4504,24 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param row          the row number of the entry to be set
    * @param column       the column number of the entry to be set
    */
-  public void setDouble(double data, int row, int column) {
+	public void setDouble(double data, int row, int column) 
+	{
+		// XIAOLEI - just added some comments
 
-    if(!columns.containsKey(column))
-      addColumn(column, ColumnTypes.DOUBLE);
-    getColumn(column).setDouble(data, row);
-    addCol2Row(column, row);
+		/* does the column exist in the entire table? */
+		if(!columns.containsKey(column))
+			addColumn(column, ColumnTypes.DOUBLE);
 
-    if(numRows <= row) numRows = row+1;
-    if(numColumns <= column) numColumns = column+1;
+		/* set the value */
+		getColumn(column).setDouble(data, row);
 
+		/* now make that row see this newly added column */
+		addCol2Row(column, row);
 
-  }
+		/* in case this newly added value expands the entire table */
+		if (numRows <= row) numRows = row + 1;
+		if (numColumns <= column) numColumns = column + 1;
+	}
 
 
     /**
@@ -4857,8 +4962,8 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
   }
 
   /**
-   * Returns a subset of <code>table</code> consisted of rows no. <code>start</code>
-   * through row no. <code>start+len</codE>.
+   * Returns a subset of <code>table</code> consisted of rows no.
+   * <code>start</code> through row no. <code>start+len</codE>.
    *
    * @param start   row number from which the subset starts.
    * @param len     number of consequetive rows to be included in the subset
@@ -4869,9 +4974,14 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
   public static Table getSubset(int start, int len, SparseTable table){
     SparseMutableTable retVal = new SparseMutableTable();
 
+	//XIAOLEI
+
     int[] columnNumbers = table.columns.keys();
     for (int i=0; i<columnNumbers.length; i++){
+		//System.out.println("Working on column " + i + ", " + columnNumbers[i]);
       Column subCol = ((Column)table.columns.get(columnNumbers[i])).getSubset(start, len);
+	  //System.out.println("Finished column " + i + ": " + subCol.getNumEntries());
+	  //System.out.println();
       retVal.setColumn(columnNumbers[i], (AbstractSparseColumn)subCol);
     }
 

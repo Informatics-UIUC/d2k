@@ -338,7 +338,9 @@ public class SparseObjectColumn extends AbstractSparseColumn {
     SparseObjectColumn retVal = new SparseObjectColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setObject(getObject(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setObject(getObject(indices[i]), indices[i]);
+        retVal.setObject(getObject(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

@@ -10,22 +10,20 @@ package ncsa.d2k.modules.core.datatype.table.sparse.primitivehash;
  * @version 1.0
  */
 
-public interface VHashMap {
+public interface VHashMap 
+{
+	public int[] keys();
 
-  public int[] keys();
+	public boolean containsKey(int pos);
+	public int size();
 
+	//  public VHashMap reorder(int[] newOrder, int begin, int end);
+	public VHashMap reorder(VIntIntHashMap newOrder);
+	public VIntIntHashMap getSortedOrder();
+	public VIntIntHashMap getSortedOrder(int begin, int end);
 
+	public void insertObject(Object obj, int key);
+	public void replaceObject(Object obj, int key);
 
-  public boolean containsKey(int pos);
-  public int size();
-//  public VHashMap reorder(int[] newOrder, int begin, int end);
-  public VHashMap reorder(VIntIntHashMap newOrder);
-  public VIntIntHashMap getSortedOrder();
-  public VIntIntHashMap getSortedOrder(int begin, int end);
-
-public void insertObject(Object obj, int key);
-
-
-
-  //public boolean containsKey(int key);
+	//public boolean containsKey(int key);
 }

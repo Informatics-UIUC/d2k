@@ -326,7 +326,7 @@ public class SparseExampleTable
    *                  through </codE>start+len</code> from this table.
    */
   public Table getSubset(int start, int len) {
-    SparseExampleTable retVal = (SparseExampleTable) ( (SparseMutableTable)
+		SparseExampleTable retVal = (SparseExampleTable) ( (SparseMutableTable)
         SparseMutableTable.getSubset(start, len, this)).toExampleTable();
 
     retVal.getSubArrays(this, start, len);
@@ -406,18 +406,34 @@ public class SparseExampleTable
   protected void getSubArrays(SparseExampleTable srcTable, int start, int len) {
     testSet = getSubArray(srcTable.testSet, start, len);
     trainSet = getSubArray(srcTable.trainSet, start, len);
+
+	// XIAOLEI
+	for (int i = 0; i < this.testSet.length; i++)
+		testSet[i] = i;
+
+	for (int i = 0; i < this.trainSet.length; i++)
+		trainSet[i] = i;
   }
 
   protected void getSubArrays(SparseExampleTable srcTable, int[] rows) {
     testSet = getSubArray(srcTable.testSet, rows);
     trainSet = getSubArray(srcTable.trainSet, rows);
+
+	// XIAOLEI
+	for (int i = 0; i < this.testSet.length; i++)
+		testSet[i] = i;
+
+	for (int i = 0; i < this.trainSet.length; i++)
+		trainSet[i] = i;
   }
 
   protected int[] getSubArray(int[] arr, int start, int len) {
     int[] tempSet = new int[len];
     int j = 0;
     for (int i = 0; i < arr.length; i++) {
-      if (arr[i] >= start && arr[i] <= start + len) {
+      //if (arr[i] >= start && arr[i] <= start + len) {
+		//XIAOLEI fixed <= to <
+      if (arr[i] >= start && arr[i] < start + len) {
         tempSet[j] = arr[i];
         j++;
       } //if
@@ -1116,8 +1132,12 @@ public class SparseExampleTable
    */
   public void insertRow(int[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1127,8 +1147,12 @@ public class SparseExampleTable
    */
   public void insertRow(float[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1138,8 +1162,12 @@ public class SparseExampleTable
    */
   public void insertRow(double[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1149,8 +1177,12 @@ public class SparseExampleTable
    */
   public void insertRow(long[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1160,8 +1192,12 @@ public class SparseExampleTable
    */
   public void insertRow(short[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1171,8 +1207,12 @@ public class SparseExampleTable
    */
   public void insertRow(boolean[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1182,8 +1222,12 @@ public class SparseExampleTable
    */
   public void insertRow(String[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1193,8 +1237,12 @@ public class SparseExampleTable
    */
   public void insertRow(char[][] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1204,8 +1252,12 @@ public class SparseExampleTable
    */
   public void insertRow(byte[][] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1215,8 +1267,12 @@ public class SparseExampleTable
    */
   public void insertRow(Object[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1226,8 +1282,12 @@ public class SparseExampleTable
    */
   public void insertRow(byte[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1237,8 +1297,12 @@ public class SparseExampleTable
    */
   public void insertRow(char[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-    incrementTrainTest(position);
-    super.insertRow(newEntry, trainSet[position]);
+	  if (position < 0 || position >= numRows)
+		  super.addRow(newEntry);
+	  else {
+		incrementTrainTest(position);
+		super.insertRow(newEntry, trainSet[position]);
+	  }
   }
 
   /**
@@ -1517,6 +1581,7 @@ public class SparseExampleTable
       }
     }
     setTrainingSet(trainSet);
+
     for (int i = 0; i < this.testSet.length; i++) {
       if (testSet[i] > position) {
         testSet[i]++;

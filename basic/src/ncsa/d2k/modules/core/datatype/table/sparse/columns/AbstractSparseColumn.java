@@ -630,19 +630,18 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
    }
 
 
-     /**
-      Inserts a new entry in the Column at position <code>pos</code>.
-      All entries at row numbers greater than <codE>pos</code> are moved down
-      the column to the next row.
-      @param newEntry the newEntry to insert
-      @param pos the position to insert at
-   */
-    public void insertRow (Object newEntry, int pos) {
-
-      getElements().insertObject(newEntry, pos);
-      missing.increment(pos);
-
-    }
+	/**
+	 * Inserts a new entry in the Column at position <code>pos</code>.
+	 * All entries at row numbers greater than <codE>pos</code> are moved down
+	 * the column to the next row.
+	 * @param newEntry the newEntry to insert
+	 * @param pos the position to insert at
+	 */
+	public void insertRow (Object newEntry, int pos) 
+	{
+		getElements().insertObject(newEntry, pos);
+		missing.increment(pos);
+	}
 
     protected void getSubset(AbstractSparseColumn destCol, int pos, int len){
       destCol.missing = missing.getSubset(pos, len);
@@ -658,5 +657,15 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
       toOrder.copyAttributes(this);
     }
 
-
+	/**
+	 * Replaces a row's entry at position <code>pos</code>.
+	 *
+	 * Xiaolei - 07/08/2003
+	 */
+	public void replaceRow (Object newEntry, int pos) 
+	{
+		getElements().replaceObject(newEntry, pos);
+		if (missing.contains(pos))
+			missing.remove(pos);
+	}
 }

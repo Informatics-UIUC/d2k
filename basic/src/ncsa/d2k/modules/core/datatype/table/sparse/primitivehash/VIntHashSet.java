@@ -197,19 +197,51 @@ public class VIntHashSet extends TIntHashSet {
     /**
      * Adds 1 to each item greater than or equals to <code>start</code>
      */
-    public void increment(int start){
-      int[] items = getSubset(start, max()).toArray();
-      removeAll(items);
-      for(int i=0; i<items.length; i++)
-	add(items[i]+1);
+    public void increment(int start)
+	{
+		int[] items = getSubset(start, max()).toArray();
 
-      add(start);
+		removeAll(items);
+		for(int i=0; i<items.length; i++)
+		add(items[i]+1);
+
+		//XIAOLEI
+		//add(start);
     }
 
+	/**
+	 * Substracts 1 to each item greater than or equal to
+	 * <code>start</code>.
+	 */
+	public void decrement(int start)
+	{
+		int[] items = getSubset(start, max()).toArray();
+		removeAll(items);
 
-    public int max(){
-      int[] arr = toArray();
-      return arr[arr.length-1];
+		if (items.length > 0) {
+
+			int i = 0;
+
+			if (items[0] == start)
+				i = 1;
+
+			for (; i < items.length; i++)
+				add(items[i] - 1);
+		}
+	}
+ 
+
+
+
+
+    public int max()
+	{
+		int[] arr = toArray();
+
+		if (arr.length > 0)
+			return arr[arr.length - 1];
+		else
+			return Integer.MIN_VALUE;
     }
 
     /**

@@ -95,8 +95,9 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
       for (i=0; i<data.length && i< validRows.length; i++)
 	setDouble(data[i], validRows[i]);
 
-      for (; i<data.length; i++)
-	elements.put(getNumRows(), data[i]);
+	  for (; i < data.length; i++) {
+		elements.put(getNumRows(), data[i]);
+	  }
      }
 
 
@@ -372,7 +373,9 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
     SparseDoubleColumn retVal = new SparseDoubleColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setDouble(getDouble(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setDouble(getDouble(indices[i]), indices[i]);
+        retVal.setDouble(getDouble(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

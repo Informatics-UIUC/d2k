@@ -355,7 +355,9 @@ public class SparseCharColumn extends AbstractSparseColumn {
     SparseCharColumn retVal = new SparseCharColumn(indices.length);
     for (int i=0; i<indices.length; i++)
       if(elements.containsKey(indices[i]))
-        retVal.setChar(getChar(indices[i]), indices[i]);
+		  //XIAOLEI
+        //retVal.setChar(getChar(indices[i]), indices[i]);
+        retVal.setChar(getChar(indices[i]), i);
 
     super.getSubset(retVal, indices);
 

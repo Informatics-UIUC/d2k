@@ -310,9 +310,19 @@ public class VIntDoubleHashMap extends TIntDoubleHashMap implements VHashMap{
       */
      public VHashMap getSubset(int start, int len){
       VIntDoubleHashMap retVal = new VIntDoubleHashMap (len);
-      int[] validKeys = VHashService.getIndicesInRange(start, start+len, this);
-      for (int i=0; i<validKeys.length; i++)
-	retVal.put(validKeys[i], get(validKeys[i]));
+
+	  //System.out.println("Currently holds " + size() + " elements total.");
+
+	  //XIAOLEI: added the -1
+      //int[] validKeys = VHashService.getIndicesInRange(start, start+len, this);
+      int[] validKeys = VHashService.getIndicesInRange(start, start + len - 1, this);
+
+      for (int i=0; i<validKeys.length; i++) {
+		// XIAOLEI: added the - start
+		//retVal.put(validKeys[i], get(validKeys[i]));
+		retVal.put(validKeys[i] - start, get(validKeys[i]));
+	  }
+
       return retVal;
      }
 
@@ -333,24 +343,45 @@ public class VIntDoubleHashMap extends TIntDoubleHashMap implements VHashMap{
     }
 
 
-      /**
-      * Inserts <codE>obj</codE> to be mapped to key <code>key<code>.
-      * All values mapped to keys <code>key</code> and on will be mapped to
-      * a key greater in one.
-      *
-      * @param obj    an object to be inserted into the map.
-      * @param key    the insertion key
-      */
-     public void insertObject(Object obj, int key){
-      //moving all elements mapped to key through the maximal key
-      //to be mapped to a key greater in 1.
-      int max = VHashService.getMaxKey(this);
-      int[] keysInRange = VHashService.getIndicesInRange(key, max, this);
-      for(int i=keysInRange.length-1; i>=0; i--){
-	double removed = remove(keysInRange[i]);
-	put(keysInRange[i]+1, removed);
-      }
-      //putting the new object in key.
-      put(key, SparseDoubleColumn.toDouble(obj));
-     }
+	/**
+	 * Inserts <code>obj</code> to be mapped to key <code>key<code>.
+	 * All values mapped to keys <code>key</code> and on will be mapped
+	 * to a key greater in one.
+	 *
+	 * Modified by Xiaolei Li - 07/08/2003
+	 *
+	 * @param obj    an object to be inserted into the map.
+	 * @param key    the insertion key
+	 */
+	public void insertObject(Object obj, int key)
+	{
+		// moving all elements mapped to key through the maximal key to
+		// be mapped to a key greater in 1.
+		int max = VHashService.getMaxKey(this);
+		int[] keysInRange = VHashService.getIndicesInRange(key, max, this);
+
+		for(int i=keysInRange.length-1; i>=0; i--) {
+			double removed = remove(keysInRange[i]);
+			put(keysInRange[i]+1, removed);
+		}
+
+		// put the new object in key.
+		if (obj != null)
+			put(key, SparseDoubleColumn.toDouble(obj));
+	}
+
+
+	/**
+	 * Replaces the object at key <code>key</code> with this new
+	 * <code>obj</code>.  Leaves the rest of the table untouched.
+	 *
+	 * @author Xiaolei Li
+	 *
+	 * @param obj    an object to be inserted into the map.
+	 * @param key    the insertion key
+	 */
+	public void replaceObject(Object obj, int key)
+	{
+		put(key, SparseDoubleColumn.toDouble(obj));
+	}
 }
