@@ -18,6 +18,11 @@ Port Name, Port Object Type, Input or Output, Description of Information, Module
 File Name, java.lang.String, Output, A file name - possibly with path, Input1FileName (Input File Name)
 File Name 1, java.lang.String, Output, First file name - possibly with path, Input2FileNames (Input 2 File Names)
 File Name 2, java.lang.String, Output, Second file name - possibly with path, Input2FileNames (Input 2 File Names)
+FileName, java.lang.String, Input, A file name where serialized object is, InputSerializedObject (Read a Serialized Object from a File)
+FileName, java.lang.String, Input, A file name where serialized object is written, Input, OutputSerializedObject (Write a Serializable Object to a File)
+
+Java Object, java.lang.Object, Output, The object that was deserialized, InputSerializedObject (Read a Serialized Object from a File)
+Object to Serialize, java.lang.Object, Input, The objec to be serialized, OutputSerializedObject (Write a Serializable Object to a File)
 
 
 
