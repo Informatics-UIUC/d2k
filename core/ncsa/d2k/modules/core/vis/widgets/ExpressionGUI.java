@@ -60,9 +60,9 @@ public class ExpressionGUI extends JPanel implements ActionListener {
       listeners = new ArrayList();
       this.expression = expression;
 
-      parenButton = new JButton("Parens");
+      parenButton = new JButton("Add Parens");
       parenButton.addActionListener(this);
-      syntaxButton = new JButton("Syntax");
+      syntaxButton = new JButton("Check Syntax");
       syntaxButton.addActionListener(this);
       clearButton = new JButton("Clear");
       clearButton.addActionListener(this);

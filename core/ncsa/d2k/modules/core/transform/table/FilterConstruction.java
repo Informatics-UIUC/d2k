@@ -28,8 +28,24 @@ public class FilterConstruction extends UIModule {
 /* Module methods                                                             */
 /******************************************************************************/
 
+   public String getModuleName() {
+      return "Filter Construction";
+   }
+
    public String getModuleInfo() {
-      return "Allows the user to filter rows of a MutableTable.";
+      // return "Allows the user to filter rows of a MutableTable.";
+      StringBuffer sb = new StringBuffer("<p>Overview: ");
+      sb.append("This module allows the user to graphically select criteria ");
+      sb.append("to filter rows from a MutableTable. Details can be found ");
+      sb.append("in the module's online help.");
+      sb.append("</p>");
+      return sb.toString();
+   }
+
+   public String getInputName(int index) {
+      if (index == 0)
+         return "Mutable Table";
+      return null;
    }
 
    public String[] getInputTypes() {
@@ -48,6 +64,12 @@ public class FilterConstruction extends UIModule {
       return o;
    }
 
+   public String getOutputName(int index) {
+      if (index == 0)
+         return "Filter Transformation";
+      return null;
+   }
+
    public String getOutputInfo(int index) {
       if (index == 0)
          return "The transformation to filter the MutableTable.";
@@ -64,6 +86,8 @@ public class FilterConstruction extends UIModule {
 /* GUI                                                                        */
 /******************************************************************************/
 
+   private static String scalar = "FilterConstructionINTERNALscalar";
+
    protected class FilterConstructionGUI extends JUserPane
       implements ActionListener, ExpressionListener {
 
@@ -75,6 +99,15 @@ public class FilterConstruction extends UIModule {
                       addBooleanButton, abortButton, doneButton, helpButton;
       private JComboBox columnBox, operationBox, booleanBox;
       private JTextField scalarField;
+
+      private JPanel comboOrFieldPanel;
+      private CardLayout nominalOrScalarLayout;
+      private HashMap nominalComboBoxLookup; // look up JComboBoxes for nominal
+                                             // columns; key = column #
+      private int nominalShowing = -1; // which nominal combobox is showing?
+                                       // -1 if scalar textfield is showing
+
+      private boolean initialized = false;
 
       public void initView(ViewModule m) { }
 
@@ -94,10 +127,11 @@ public class FilterConstruction extends UIModule {
          gui.addExpressionListener(this);
 
          columnBox = new JComboBox();
+         columnBox.addActionListener(this);
          for (int i = 0; i < table.getNumColumns(); i++)
             columnBox.addItem(table.getColumnLabel(i));
 
-         addColumnButton = new JButton(">");
+         addColumnButton = new JButton("Add");
          addColumnButton.addActionListener(this);
 
          JPanel columnPanel = new JPanel();
@@ -109,11 +143,41 @@ public class FilterConstruction extends UIModule {
          Constrain.setConstraints(columnPanel, addColumnButton, 2, 0, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
 
+         ///////////////////////////////////////////////////////////////////////
+         // scalar columns will require textfield input; nominal columns will
+         // require a combobox of nominal values:
+         // {
+
          scalarField = new JTextField(6);
 
-         addScalarButton = new JButton(">");
+         addScalarButton = new JButton("Add");
          addScalarButton.addActionListener(this);
 
+         nominalComboBoxLookup = new HashMap();
+         comboOrFieldPanel = new JPanel();
+         nominalOrScalarLayout = new CardLayout();
+         comboOrFieldPanel.setLayout(nominalOrScalarLayout);
+         comboOrFieldPanel.add(scalarField, scalar);
+
+         for (int i = 0; i < table.getNumColumns(); i++) {
+
+            if (!table.isColumnNominal(i))
+               continue;
+
+            JComboBox nominalCombo = new JComboBox(getUniqueValues(i));
+
+            comboOrFieldPanel.add(nominalCombo, table.getColumnLabel(i));
+            nominalComboBoxLookup.put(new Integer(i), nominalCombo);
+
+         }
+
+         if (table.isColumnNominal(0)) {
+            nominalOrScalarLayout.show(comboOrFieldPanel,
+               table.getColumnLabel(0));
+            nominalShowing = 0;
+         }
+
+         /*
          JPanel scalarPanel = new JPanel();
          scalarPanel.setLayout(new GridBagLayout());
          Constrain.setConstraints(scalarPanel, new JLabel(), 0, 0, 1, 1,
@@ -122,6 +186,22 @@ public class FilterConstruction extends UIModule {
             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
          Constrain.setConstraints(scalarPanel, addScalarButton, 2, 0, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+         */
+
+         JPanel nominalOrScalarPanel = new JPanel();
+         nominalOrScalarPanel.setLayout(new GridBagLayout());
+         Constrain.setConstraints(nominalOrScalarPanel,
+            new JLabel(), 0, 0, 1, 1,
+            GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+         Constrain.setConstraints(nominalOrScalarPanel,
+            comboOrFieldPanel, 1, 0, 1, 1,
+            GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+         Constrain.setConstraints(nominalOrScalarPanel,
+            addScalarButton, 2, 0, 1, 1,
+            GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+
+         // }
+         ///////////////////////////////////////////////////////////////////////
 
          operationBox = new JComboBox();
          operationBox.addItem("==");
@@ -131,7 +211,7 @@ public class FilterConstruction extends UIModule {
          operationBox.addItem(">");
          operationBox.addItem(">=");
 
-         addOperationButton = new JButton(">");
+         addOperationButton = new JButton("Add");
          addOperationButton.addActionListener(this);
 
          JPanel operationPanel = new JPanel();
@@ -147,7 +227,7 @@ public class FilterConstruction extends UIModule {
          booleanBox.addItem("&&");
          booleanBox.addItem("||");
 
-         addBooleanButton = new JButton(">");
+         addBooleanButton = new JButton("Add");
          addBooleanButton.addActionListener(this);
 
          JPanel booleanPanel = new JPanel();
@@ -163,7 +243,7 @@ public class FilterConstruction extends UIModule {
          leftPanel.setLayout(new GridBagLayout());
          Constrain.setConstraints(leftPanel, columnPanel, 0, 0, 1, 1,
             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
-         Constrain.setConstraints(leftPanel, scalarPanel, 0, 1, 1, 1,
+         Constrain.setConstraints(leftPanel, nominalOrScalarPanel, 0, 1, 1, 1,
             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
          Constrain.setConstraints(leftPanel, operationPanel, 0, 2, 1, 1,
             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
@@ -213,19 +293,60 @@ public class FilterConstruction extends UIModule {
          Constrain.setConstraints(this, bottomPanel, 0, 2, 1, 1,
             GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 0);
 
+         initialized = true;
+
       }
 
       public void actionPerformed(ActionEvent e) {
 
          Object src = e.getSource();
 
-         if (src == addColumnButton)
+         if (src == columnBox && initialized) {
+
+            int index = columnBox.getSelectedIndex();
+
+            if (table.isColumnNominal(index)) {
+
+               nominalShowing = index;
+
+               nominalOrScalarLayout.show(comboOrFieldPanel,
+                  table.getColumnLabel(index));
+
+            }
+            else {
+
+               nominalShowing = -1;
+
+               nominalOrScalarLayout.show(comboOrFieldPanel, scalar);
+
+            }
+
+         }
+
+         else if (src == addColumnButton)
             gui.getTextArea().insert((String)columnBox.getSelectedItem(),
                gui.getTextArea().getCaretPosition());
 
-         else if (src == addScalarButton)
-            gui.getTextArea().insert(scalarField.getText(),
-               gui.getTextArea().getCaretPosition());
+         else if (src == addScalarButton) {
+
+            if (nominalShowing < 0) {
+
+               gui.getTextArea().insert(scalarField.getText(),
+                                        gui.getTextArea().getCaretPosition());
+
+            }
+            else {
+
+               JComboBox combo = (JComboBox)nominalComboBoxLookup.get(
+                  new Integer(nominalShowing));
+
+               gui.getTextArea().insert(
+                  "'" + combo.getSelectedItem() + "'",
+                  gui.getTextArea().getCaretPosition());
+
+            }
+
+         }
 
          else if (src == addOperationButton)
             gui.getTextArea().insert(" " + operationBox.getSelectedItem() + " ",
@@ -237,6 +358,29 @@ public class FilterConstruction extends UIModule {
 
          else if (src == abortButton)
             viewCancel();
+
+      }
+
+      private Vector getUniqueValues(int columnIndex) {
+
+         if (table == null)
+            return null;
+
+         int numRows = table.getNumRows();
+
+         HashMap columnValues = new HashMap();
+
+         int index = 0;
+         for (int i = 0; i < numRows; i++) {
+
+            String str = table.getString(i, columnIndex);
+
+            if (!columnValues.containsKey(str))
+               columnValues.put(str, new Integer(index++));
+
+         }
+
+         return new Vector(columnValues.keySet());
 
       }
 
