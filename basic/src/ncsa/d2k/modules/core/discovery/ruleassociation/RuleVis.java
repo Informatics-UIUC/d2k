@@ -123,11 +123,11 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("input to this module. ");
 
           sb.append("</p><p> ");
-          sb.append("The main region of the display contains a matrix that visually represents the rules. ");
+          sb.append("The main region of the display contains a matrix that visually depicts the rules. ");
           sb.append("Each numbered column in the matrix corresponds to an association rule  ");
           sb.append("that met the minimum support and confidence requirements specified by the user in the ");
-          sb.append("rule discovery module(s).    ");
-          sb.append("Items used in the rules, that is [attribute=value] pairs, are listed along the left  ");
+          sb.append("rule discovery modules. ");
+          sb.append("Items used in the rules, that is attribute-value pairs, are listed along the left  ");
           sb.append("side of the matrix. ");
           sb.append("Note that some items in the original data set may not be included in any rule ");
           sb.append("because there was insufficient support and/or confidence to consider the item ");
@@ -136,7 +136,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("</p><p> ");
           sb.append("An icon in the matrix cell corresponding to ( row = <i>item i</i>, column = <i>rule r</i>) ");
           sb.append("indicates that <i>item i</i> is included in <i>rule r</i>. ");
-          sb.append("If the matrix cell icon is a box, then the item is part of the rule antecedent.  If ");
+          sb.append("If the matrix cell icon is a box, then the item is part of the rule antecedent. If ");
           sb.append("the icon is a check mark, then the item is part of the rule consequent. ");
           sb.append("For example, if the rules being displayed indicate whether or not a mushroom is edible, ");
           sb.append("a rule might be &quot;odor=none&quot; and &quot;ring_number=one&quot; then &quot;edibility=edible&quot;. ");
@@ -154,32 +154,30 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("</p><p>");
           sb.append("The rules can be ordered by confidence or by support. ");
           sb.append("To sort the rules, click either the support or the confidence label -- ");
-          sb.append("these labels are clickable buttons. ");
+          sb.append("these labels are clickable radio buttons. ");
           sb.append("If support is selected, rules will be sorted using support as the primary key and confidence as the secondary key. ");
           sb.append("Conversely, if the confidence button is chosen, confidence is the primary sort key and support is the secondary key.  ");
 
           sb.append("</p><p>");
-          sb.append("Directly above the confidence and support display is a toolbar which provides alternate functionality.  ");
-          sb.append("On the left side of this toolbar are two buttons that allow the rows of this table to be displayed ");
-          sb.append("according to the sorting schemes specified by their icons.  Exactly one of these buttons will be selected ");
-          sb.append(" at all times.  The <i>Alphabetize</i> button simply sorts the [attribute=value] combinations alphabetically.  ");
-          sb.append("The <i>Rank</i> button will rank the rows based on the current Confidence/Support selection, moving the ");
-          sb.append("consequents and antecedents of the highest ranking rules (according to Confidence/Support) to the ");
-          sb.append("top of the [attribute=value] list. On the right side of the toolbar are four additional buttons. ");
-          sb.append("The leftmost button, Restore Original, will revert ");
-          sb.append("back to the original table that was first displayed before any sorting or re-ordering was done. ");
-          sb.append("The next button, Filter, will provide an interface for constructing a filter expression ");
-          sb.append("to create a much more specifically defined rule display.  The next button, Print, will print a screen ");
-          sb.append("capture of the visual display.  The last button, Help, displays information describing this visualization.");
-
-          sb.append("</p><p> ");
-          sb.append("The options menu allows the user to print a screen capture of the visual display. ");
-	  sb.append("The print output contains only the cells that are visible in the display window, not all the cells ");
-	  sb.append("in the rule table.  The user can scroll to different part of the matrix and print multiple times  ");
-	  sb.append("to get the full picture of large matrices. ");
-
+          sb.append("Directly above the confidence and support display is a toolbar that provides additional functionality.  ");
+          sb.append("On the left side of the toolbar are two buttons that allow the rows of the table to be displayed ");
+          sb.append("according to different sorting schemes. One of the buttons is active at all times. ");
+          sb.append("The <i>Alphabetize</i> button sorts the attribute-value pairs alphabetically.  ");
+          sb.append("The <i>Rank</i> button sorts the rows based on the current Confidence/Support selection, moving the ");
+          sb.append("consequents and antecedents of the highest ranking rules to the ");
+          sb.append("top of the attribute-value list. ");
+          sb.append("</p><p>");
+          sb.append("On the right side of the toolbar are four additional buttons. ");
+          sb.append("Restore Original reverts ");
+          sb.append("back to the original table that was displayed before any sorting was done. ");
+          sb.append("Filter provides an interface that allows the user to display a subset of the generated rules. ");
+          sb.append("Print prints a screen capture of the visual display. ");
+          sb.append("The print output contains only the cells that are visible in the display window, not all the cells ");
+          sb.append("in the rule table.  The user can scroll to different part of the matrix and print multiple times ");
+          sb.append("to get the full picture of a large matrix. Printing is also accessible via the Options menu. ");
+          sb.append("Help displays information describing the visualization. ");
           sb.append("</p><p>Scalability: ");
-          sb.append("While this module can display a large number of items and rules, there can be a noticeable delay " );
+          sb.append("While the visualization can display a large number of items and rules, there can be a noticeable delay " );
 	  sb.append("in opening the visualization when a large number of cells are involved. " );
           sb.append("Also, as the number of cells increases beyond ");
           sb.append("a certain point, it is difficult to gain insights from the display.  Advanced features to help ");
