@@ -655,13 +655,14 @@ public class SparseLongColumn
    *                   the returned column.
    * @return a SparseLongColumn ordered according to <code>newOrder</code>.
    */
-
+//VERED - this is implemented in the abstract level.
+  /*
   public Column reorderRows(VIntIntHashMap newOrder) {
     SparseLongColumn retVal = new SparseLongColumn();
     retVal.elements = (VIntLongHashMap) elements.reorder(newOrder);
     reorderRows(retVal, newOrder);
     return retVal;
-  }
+  }*/
 
   /**
    * Returns the internal representation of this column.

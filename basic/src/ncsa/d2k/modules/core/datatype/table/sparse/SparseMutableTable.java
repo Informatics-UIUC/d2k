@@ -511,6 +511,7 @@ public class SparseMutableTable
           col = new SparseStringColumn( (String[]) newColumn.getInternal());
           break;
       } //switch case
+      col.setLabel(newColumn.getLabel());
     }
     insertColumn(col, position);
   }

@@ -632,13 +632,14 @@ public class SparseIntColumn
    *                   the returned column.
    * @return a SparseIntColumn ordered according to <code>newOrder</code>.
    */
-
+//VERED - this is implemented in the abstract level.
+  /*
   public Column reorderRows(VIntIntHashMap newOrder) {
     SparseIntColumn retVal = new SparseIntColumn();
     retVal.elements = (VIntIntHashMap) elements.reorder(newOrder);
     reorderRows(retVal, newOrder);
     return retVal;
-  }
+  }*/
 
   /*
    * Returns the internal representation of this column.

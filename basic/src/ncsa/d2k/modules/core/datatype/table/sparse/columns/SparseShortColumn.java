@@ -706,14 +706,15 @@ public class SparseShortColumn
    *                   the returned column.
    * @return a SparseShortColumn ordered according to <code>newOrder</code>.
    */
-
+  //VERED - this is implemented in the abstract level.
+/*
   public Column reorderRows(VIntIntHashMap newOrder) {
     SparseShortColumn retVal = new SparseShortColumn();
     retVal.elements = (VIntShortHashMap) elements.reorder(newOrder);
     reorderRows(retVal, newOrder);
     return retVal;
   }
-
+*/
   /**
    * Returns the internal representation of this column.
    *

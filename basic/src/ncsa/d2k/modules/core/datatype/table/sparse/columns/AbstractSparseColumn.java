@@ -553,11 +553,35 @@ abstract public class AbstractSparseColumn
   }
 
   /**
-   * put your documentation comment here
-   * @param newOrder
-   * @return
+   * returns a copy of this column, with its rows reordered as following:
+   * for each pair (key, val) in newOrder - if this column has a value in
+   * row # val, put this value in row # key in the returned column.
+   * for rows in this columns that are not values in newOrder - copy them as is
+   * to the returned value.
+   * @param newOrder - an int to int mapping that defines the new order.
+   * @return - a column with the values of this column, reordered.
    */
-  public abstract Column reorderRows(VIntIntHashMap newOrder);
+
+  public  Column reorderRows(VIntIntHashMap newOrder){
+    String columnClass = this.getClass().getName();
+     AbstractSparseColumn retVal = null;
+     try {
+        retVal = (AbstractSparseColumn)Class.forName(columnClass).newInstance();
+     } catch (Exception e) {
+        System.out.println(e);
+     }
+
+     retVal.setElements(getElements().reorder(newOrder));
+     retVal.missing = missing.reorder(newOrder);
+    retVal.empty = empty.reorder(newOrder);
+    retVal.copyAttributes(this);
+
+     //reorderRows(retVal, newOrder);
+
+   return retVal;
+
+
+  }
 
   /**
    * Reorders the data stored in this column in a new column.

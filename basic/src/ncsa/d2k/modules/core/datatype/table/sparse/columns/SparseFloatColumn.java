@@ -654,13 +654,14 @@ public class SparseFloatColumn
    *                   the returned column.
    * @return a SparseFloatColumn ordered according to <code>newOrder</code>.
    */
-
+//VERED - this is implemented in the abstract level.
+  /*
   public Column reorderRows(VIntIntHashMap newOrder) {
     SparseFloatColumn retVal = new SparseFloatColumn();
     retVal.elements = (VIntFloatHashMap) elements.reorder(newOrder);
     reorderRows(retVal, newOrder);
     return retVal;
-  }
+  }*/
 
   /**
    * Returns the internal representation of this column.

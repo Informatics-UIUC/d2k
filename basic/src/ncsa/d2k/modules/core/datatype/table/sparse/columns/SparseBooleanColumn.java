@@ -506,7 +506,8 @@ public class SparseBooleanColumn
    *                   the returned column.
    * @return a SparseBooleanColumn ordered according to <code>newOrder</code>.
    */
-
+//VERED - this is implemented in the abstract level.
+  /*
   public Column reorderRows(VIntIntHashMap newOrder) {
     SparseBooleanColumn retVal = new SparseBooleanColumn();
 
@@ -514,7 +515,7 @@ public class SparseBooleanColumn
     reorderRows(retVal, newOrder);
 
     return retVal;
-  }
+  }*/
 
   /**
    * Creates a deep copy of this colun

@@ -652,13 +652,14 @@ public class SparseCharColumn
    *                   the returned column.
    * @return a SparseCharColumn ordered according to <code>newOrder</code>.
    */
-
+//VERED - this is implemented in the abstract level.
+  /*
   public Column reorderRows(VIntIntHashMap newOrder) {
     SparseCharColumn retVal = new SparseCharColumn();
     retVal.elements = (VIntCharHashMap) elements.reorder(newOrder);
     reorderRows(retVal, newOrder);
     return retVal;
-  }
+  }*/
 
   protected VHashMap getElements() {
     return elements;

@@ -857,13 +857,14 @@ public class SparseObjectColumn
    *                   the returned column.
    * @return a SparseObjectColumn ordered according to <code>newOrder</code>.
    */
-
+//VERED - this is implemented in the abstract level.
+  /*
   public Column reorderRows(VIntIntHashMap newOrder) {
     SparseObjectColumn retVal = new SparseObjectColumn();
     retVal.elements = (VIntObjectHashMap) elements.reorder(newOrder);
     reorderRows(retVal, newOrder);
     return retVal;
-  }
+  }*/
 
   public void copy(AbstractSparseColumn srcCol) {
     if (srcCol instanceof SparseObjectColumn) {

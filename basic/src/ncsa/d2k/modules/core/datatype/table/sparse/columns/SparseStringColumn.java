@@ -456,31 +456,48 @@ public class SparseStringColumn
    *                   the returned column.
    * @return a SparseStringColumn ordered according to <code>newOrder</code>.
    */
-
   public Column reorderRows(VIntIntHashMap newOrder) {
-    //     SparseStringColumn retVal = new SparseStringColumn (row2Id.size());
-    SparseStringColumn retVal = (SparseStringColumn) copy();
-    VIntIntHashMap newRow2Id = new VIntIntHashMap(row2Id.size());
-    int[] keys = newOrder.keys();
-    for(int i=0; i<keys.length; i++){
-      newRow2Id.put(keys[i], row2Id.get(newOrder.get(keys[i])));
-    }
-    /*
-    int[] destRows = newOrder.keys();
-    for (int i = 0; i < destRows.length; i++) {
-      int srcRow = newOrder.get(destRows[i]);
-      if (row2Id.containsKey(srcRow)) {
-        retVal.setString(getString(srcRow), destRows[i]);
+    SparseStringColumn retVal = new SparseStringColumn();
+
+    int[] newKeys = newOrder.keys();
+    int[] oldKeys = new int[newKeys.length];
+    for (int i = 0; i < newKeys.length; i++) {
+      //find the old key
+      int oldKey = newOrder.get(newKeys[i]);
+      //if this old key is a valid row in this column...
+      if(row2Id.containsKey(oldKey)){
+        //find its mapped value
+        String val = getString(oldKey);
+        //put this value in the returned map, mapped to the new key
+        retVal.setString(val, newKeys[i]);
+
+      }//if contains key
+
+    }//for
+
+    //copying old mapping from this column to retval of rows that are
+    //not values in newOrder
+    int[] thisKeys = keys();
+    //for each key in this column
+    for(int i=0; i<thisKeys.length; i++){
+      //that is not a value in newOrder
+      if(!newOrder.containsValue(thisKeys[i])){
+        //reserve its old mapping in the returned map
+        retVal.setString(getString(thisKeys[i]), thisKeys[i]);
       }
     }
-*/
-    //  retVal.copyAttributes(this);
 
-    retVal.row2Id = newRow2Id;
-//    this.row2Id = newRow2Id;
+    retVal.missing = this.missing.copy();
+
+    retVal.empty = this.empty.copy();
+
+
+
+    reorderRows(retVal, newOrder);
 
     return retVal;
   }
+
 
   /**
    * Returns a byte representation of the value are row No. <codE>pos</code>.

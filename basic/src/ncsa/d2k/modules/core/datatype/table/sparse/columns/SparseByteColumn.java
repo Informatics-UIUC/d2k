@@ -740,13 +740,14 @@ public class SparseByteColumn
    *                   the returned column.
    * @return a SparseByteColumn ordered according to <code>newOrder</code>.
    */
-
+//VERED - this is implemented in the abstract level.
+  /*
   public Column reorderRows(VIntIntHashMap newOrder) {
     SparseByteColumn retVal = new SparseByteColumn();
     retVal.elements = (VIntByteHashMap) elements.reorder(newOrder);
     reorderRows(retVal, newOrder);
     return retVal;
-  }
+  }*/
 
   /**
    * Returns the internal representation of this column.

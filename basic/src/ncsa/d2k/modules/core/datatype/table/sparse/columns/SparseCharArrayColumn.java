@@ -120,13 +120,14 @@ public class SparseCharArrayColumn
    *                   the returned column.
        * @return a SparseCharArrayColumn ordered according to <code>newOrder</code>.
    */
-
+  //VERED - this is implemented in the abstract level.
+/*
   public Column reorderRows(VIntIntHashMap newOrder) {
     SparseCharArrayColumn retVal = new SparseCharArrayColumn(
         (SparseObjectColumn)super.reorderRows(newOrder));
     return retVal;
   }
-
+*/
   /**
         Calls the toString() method on newEntry to get a String and
         stores the String as a char[].

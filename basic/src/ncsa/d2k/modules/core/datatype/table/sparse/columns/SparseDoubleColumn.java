@@ -678,14 +678,15 @@ public class SparseDoubleColumn
     }
     return 0;
   }
-
+//VERED - this is implemented in the abstract level.
+  /*
   public Column reorderRows(VIntIntHashMap newOrder) {
     SparseDoubleColumn retVal = new SparseDoubleColumn();
     retVal.elements = (VIntDoubleHashMap) elements.reorder(newOrder);
     reorderRows(retVal, newOrder);
     return retVal;
   }
-
+*/
   /**
    * Returns the internal representation of this column.
    *

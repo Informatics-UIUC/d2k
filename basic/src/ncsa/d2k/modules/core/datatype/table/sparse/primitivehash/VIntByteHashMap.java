@@ -398,32 +398,39 @@ public class VIntByteHashMap
    */
   public VHashMap reorder(VIntIntHashMap newOrder) {
 
-    //copying the map, as it is possible that newOrder does not hold all keys
+    //creating a new map, as it is possible that newOrder does not hold all keys
     //in this map.
-    VIntByteHashMap retVal = copy();
+    VIntByteHashMap retVal = new VIntByteHashMap();
 
     //for each key in the newOrder map
-    int[] oldKeys = newOrder.keys();
-    for (int i = 0; i < oldKeys.length; i++) {
-      //removing its mapping in the returned value
-      retVal.remove(oldKeys[i]);
-      //if this map contains the key that is mapped to oldKeys[i] -
-      //put its value mapped to oldKeys[i] in the returned value.
-      if (contains(newOrder.get(oldKeys[i])))
-        retVal.put(oldKeys[i], get(newOrder.get(oldKeys[i])));
-    } //end of for
+    int[] newKeys = newOrder.keys();
+//    int[] oldKeys = new int[newKeys.length];
+    for (int i = 0; i < newKeys.length; i++) {
+      //find the old key
+      int oldKey = newOrder.get(newKeys[i]);
+      //if this old key is a key in this map...
+      if(this.containsKey(oldKey)){
+        //find its mapped value
+        byte val = get(oldKey);
+        //put this value in the returned map, mapped to the new key
+        retVal.put(newKeys[i], val);
+    //    oldKeys[i] = oldKey;
+      }//if
+    }//for i
 
-    //values in newOrder, that are not in the keys of new order
-    //are keys in retVal that their values will be moved to another row
-    //but are not going to be set to a new value.
-    //those keys should be taken off retVal.
 
-    VIntHashSet discard = new VIntHashSet(newOrder.getValues());
-    discard.removeAll(newOrder.keys());
-    int[] toRemove = discard.toArray();
+    //copying old mapping from this map to retval of keys that are
+    //not values in newOrder
+    int[] thisKeys = keys();
+    //for each key in this map
+    for(int i=0; i<thisKeys.length; i++){
+      //that is not a value in newOrder
+      if(!newOrder.containsValue(thisKeys[i])){
+        //reserve its old mapping in the returned map
+        retVal.put(thisKeys[i], get(thisKeys[i]));
+      }
+    }
 
-    for (int i = 0; i < toRemove.length; i++)
-      retVal.remove(toRemove[i]);
     return retVal;
   }
 

@@ -116,13 +116,14 @@ public class SparseByteArrayColumn
    *                   the returned column.
        * @return a SparseByteArrayColumn ordered according to <code>newOrder</code>.
    */
-
+//VERED - this is implemented in the abstract level.
+  /*
   public Column reorderRows(VIntIntHashMap newOrder) {
     SparseByteArrayColumn retVal = new SparseByteArrayColumn(
         (SparseObjectColumn)super.reorderRows(newOrder));
 
     return retVal;
-  }
+  }*/
 
   /**
     Converts <code>newEntry</code> into a String and calls setString method, to
