@@ -729,7 +729,7 @@ public class SurfacePlot3D extends VisModule {
             super("About SurfacePlot3D");
             JEditorPane ep = new JEditorPane("text/html", getHelpString());
             getContentPane().add(new JScrollPane(ep));
-            setSize(300, 400);
+            setSize(400, 400);
          }
       }
 

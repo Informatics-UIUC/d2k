@@ -1121,7 +1121,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
 			    super("About ScatterPlot3D");
 			    JEditorPane jep = new JEditorPane("text/html", getHelpString());
 			    getContentPane().add(new JScrollPane(jep));
-			    setSize(400, 200);
+			    setSize(400, 400);
 		    }
 	    }
     } // ScatterPlot3D$ScatterPlot3DView
