@@ -693,4 +693,6 @@ System.out.println( "initView\n" );
 // 2/27/03 - Want to raise Exception if InputTable doesn't have numeric
 //           attributes but not possible in UI module.  David C is looking into
 //           fix.   Committing current version (w/ debug stments) to CVS core.
+//           WISH:  After discussion with Tom this should be reworked at
+//           some point to use Tables, not TableImpls.
 // END QA Comments
