@@ -25,14 +25,23 @@ public class DBSubsetTable extends DBTable implements MutableTable  {
 
     protected int[] subset;
 
+DBSubsetTable(){}
 
     /**
      * constructors creates shallow copy of a subset of the original table.
      */
-    public DBSubsetTable(DBTable table){
-      super(table.dataSource, table.dbConnection);
-      subset = new int[0];
+    public DBSubsetTable(DBTable _table){
+      super(_table.dataSource, _table.dbConnection);
+
+      if(_table instanceof DBSubsetTable ){
+        int[] temp = ((DBSubsetTable)_table).subset;
+        subset = new int[temp.length];
+        for(int i=0; i<temp.length; i++)
+          subset[i] = temp[i];
+      }
+
     }
+
 
 public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection){
   super(_dbdatasource, _dbconnection);
@@ -41,14 +50,20 @@ public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection){
   for (int i=0; i<subset.length; i++)
     subset[i] = i;
 }
+
+
       public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection, int[] indices){
         super(_dbdatasource, _dbconnection);
       subset = indices;
   }
+
     public DBSubsetTable (DBTable table, int[] indices){
       super(table.dataSource, table.dbConnection);
       subset = indices;
     }
+
+
+
 
   public void setColumn(Column col, int where) {
    throw new RuntimeException("Table mutation not supported in DBTable.");
@@ -273,9 +288,10 @@ public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection){
 
   public Table getSubset(int[] rows) {
    int[] retValIndices = reSubset(rows);
-
-
-   return new DBSubsetTable(this, retValIndices);
+   DBSubsetTable retVal = (DBSubsetTable) shallowCopy();
+   retVal.subset = retValIndices;
+   return retVal;
+//   return new DBSubsetTable(this, retValIndices);
 
   }
 
@@ -283,6 +299,7 @@ public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection){
     int[] retValIndices = new int[subset.length];
     System.arraycopy(subset, 0, retValIndices, 0, subset.length);
     return new DBSubsetTable(this.dataSource.copy(), this.dbConnection, retValIndices);
+
 
   }
 
@@ -296,10 +313,19 @@ public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection){
   }
 
 
-  public Table shallowCopy() {
-    return new DBSubsetTable(this, this.subset);
-  }
 
+  public Table shallowCopy(){
+
+            DBSubsetTable retVal = new DBSubsetTable();
+            copyAttributes(retVal);
+            return retVal;
+           }
+
+       protected void copyAttributes(DBSubsetTable target){
+         super.copyAttributes(target);
+         target.subset = this.subset;
+
+       }
 
 
   public void setColumnIsNominal(boolean value, int position) {

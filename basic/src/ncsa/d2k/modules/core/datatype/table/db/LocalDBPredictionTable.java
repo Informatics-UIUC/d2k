@@ -37,19 +37,35 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
 
     //PagingPredictionTable() { }
 
+     LocalDBPredictionTable(){}
+
     LocalDBPredictionTable(DBExampleTable pet, DBDataSource dataSource) {
         this(pet, dataSource, null);
     }
 
     LocalDBPredictionTable(LocalDBPredictionTable orig, int[] _subset){
       super(orig, _subset);
-      indirection = orig.indirection;
+      indirection = new int[orig.indirection.length];
+      for(int i=0; i<indirection.length; i++)
+        indirection[i] = orig.indirection[i];
+
       newTableHackVariable = orig.newTableHackVariable;
+
       num_original_columns = orig.num_original_columns;
+
       original = orig.original;
-      prediction = orig.prediction;
+
+      prediction = new boolean[orig.prediction.length];
+      for(int i=0; i<prediction.length; i++)
+        prediction[i] = orig.prediction[i];
+
+
       predictionColumns = orig.predictionColumns;
-      predictionSet = orig.predictionSet;
+
+      predictionSet = new int[orig.predictionSet.length];
+      for(int i=0; i<predictionSet.length; i++)
+        predictionSet[i] = orig.predictionSet[i];
+
 
     }
 
@@ -159,13 +175,37 @@ public Row getRow(){
     }
 
 
-     public Table getSubset(int[] rows) {
-       int[] retValIndices = reSubset(rows);
 
 
-       return new LocalDBPredictionTable(this, retValIndices);
 
-      }
+        public Table copy() {
+             return new LocalDBPredictionTable(this, dataSource.copy(), dbConnection);
+
+           }
+
+
+
+
+           public Table shallowCopy() {
+             LocalDBPredictionTable retVal = new LocalDBPredictionTable();
+             copyAttributes(retVal);
+             return retVal;
+           }
+
+
+           protected void copyAttributes(LocalDBPredictionTable target){
+             super.copyAttributes(target);
+             target.indirection = this.indirection;
+             target.inputColumns = this.inputColumns;
+             target.newTableHackVariable = this.newTableHackVariable;
+             target.num_original_columns = this.num_original_columns;
+             target.original = this.original;
+             target.prediction = this.prediction;
+             target.predictionColumns = this.predictionColumns;
+             target.predictionColumnsTable = this.predictionColumnsTable;
+             target.predictionSet = this.predictionSet;
+           }
+
 
 
 /*****************************************************************************/

@@ -32,11 +32,14 @@ class DBExampleTable extends DBSubsetTable implements ExampleTable{
     private String inputNames[];
     private String outputNames[];
 
+    DBExampleTable(){}
+
     DBExampleTable(DBTable orig, DBDataSource _dbdatasource, DBConnection _dbconnection) {
-        super(_dbdatasource, _dbconnection);
+        super(orig);
 
         if (orig instanceof ExampleTable) {
-          subset = ((DBExampleTable)orig).subset;
+
+
             if (((ExampleTable)orig).getTestingSet() != null) {
                 testSet = new int[((ExampleTable)orig).getTestingSet().length];
                 for (int i=0; i<((ExampleTable)orig).getTestingSet().length; i++) {
@@ -73,6 +76,7 @@ class DBExampleTable extends DBSubsetTable implements ExampleTable{
     }
 
     public DBExampleTable(DBExampleTable _table, int[] _subset){
+
       this(_table, _table.dataSource, _table.dbConnection);
       subset = _subset;
 
@@ -361,13 +365,7 @@ class DBExampleTable extends DBSubsetTable implements ExampleTable{
      }
 
 
-     public Table getSubset(int[] rows) {
-       int[] retValIndices = reSubset(rows);
 
-
-       return new DBExampleTable(this, retValIndices);
-
-      }
 
 
      /**
@@ -418,6 +416,36 @@ class DBExampleTable extends DBSubsetTable implements ExampleTable{
     public String[] getOutputNames() {
       return outputNames;
     }
+
+
+
+
+      public Table copy() {
+
+        return new DBExampleTable(this, dataSource.copy(), dbConnection);
+
+      }
+
+
+
+
+      public Table shallowCopy() {
+        DBExampleTable retVal = new DBExampleTable();
+        copyAttributes(retVal);
+        return retVal;
+      }
+
+      protected void copyAttributes(DBExampleTable target){
+        super.copyAttributes(target);
+        target.inputColumns = this.inputColumns;
+        target.inputNames = this.inputNames;
+        target.outputColumns = this.outputColumns;
+        target.outputNames = this.outputNames;
+        target.testSet = this.testSet;
+        target.trainSet = this.trainSet;
+      }
+
+
 
     // Mutable Table support -
     //VERED 8-25-03 now supported in DBSubsetTable.

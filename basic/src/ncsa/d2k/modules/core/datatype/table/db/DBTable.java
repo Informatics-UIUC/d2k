@@ -23,6 +23,8 @@ public class DBTable extends AbstractTable implements Table {
 
     protected boolean[] isNominal;
 
+    DBTable(){}
+
     /**
      * Construct a DBTable with the specified DBDataSource.
      * @param _dbdatasource
@@ -412,7 +414,11 @@ public class DBTable extends AbstractTable implements Table {
         //changing this method to return a shallow copy of the subset.
         //it will return now a subset table.
         public Table getSubset(int[] rows) {
-          return new DBSubsetTable(this, rows);
+          //return new DBSubsetTable(this, rows);
+          DBSubsetTable retVal = new DBSubsetTable();
+          copyAttributes(retVal);
+          retVal.subset = rows;
+          return retVal;
           //  ExampleTable et = this.toExampleTable();
           //  et.setTrainingSet(rows);
           //  return et.getTrainTable();
@@ -455,9 +461,17 @@ public class DBTable extends AbstractTable implements Table {
          */
 
          public Table shallowCopy(){
-          DBTable retVal = new DBTable(this.dataSource, this.dbConnection);
-//          retVal.isNominal = this.isNominal; //redundant. will be copied in constructor...
+
+          DBTable retVal = new DBTable();
+          copyAttributes(retVal);
           return retVal;
+         }
+
+         protected void copyAttributes(DBTable target){
+           target.dataSource = this.dataSource;
+          target.dbConnection = this.dbConnection;
+          target.isNominal = this.isNominal;
+
          }
 
 
