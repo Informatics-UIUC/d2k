@@ -21,7 +21,7 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 	public String getInputInfo(int index) {
 		switch (index) {
 			case 0: return "The table to have rows randomized";
-			default: return "No such input";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 
@@ -41,7 +41,7 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 	public String getOutputInfo(int index) {
 		switch (index) {
 			case 0: return "The resulting table with rows randomly reordered.";
-			default: return "No such output";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 
