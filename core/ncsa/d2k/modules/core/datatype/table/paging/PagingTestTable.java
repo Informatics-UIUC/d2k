@@ -59,7 +59,7 @@ class PagingTestTable
 	predictionColumnsTable = (MutablePagingTable) in.readObject();
 	indirection = (int[]) in.readObject();
 	prediction = (boolean[]) in.readObject();
-	original = (PagingTable) in.readObject();
+	original = (PagingExampleTable) in.readObject();
 	newTableHackVariable = in.readBoolean();
 
 	/*
@@ -419,13 +419,13 @@ class PagingTestTable
   public Table getSubsetByReference(int pos, int len) {
 
 	// Make a copy of the example table
-	ExampleTable et  = this.toExampleTable();
+	ExampleTable et = this.original;
 
 	// Remove the prediction columns, since they will get readded
 	// when we create the test table.
-	for (int i = predictionSet.length - 1 ; i > -1; i--) {
+	/*for (int i = predictionSet.length - 1 ; i > -1; i--) {
 		et.removeColumn(predictionSet[i]);
-	}
+	}*/
 
 	// now figure out the test and train sets
 	int[] testcpy = new int [len];
@@ -441,13 +441,13 @@ class PagingTestTable
    * @return the new table.
    */
   public Table getSubsetByReference(int[] rows) {
-	ExampleTable et = this.toExampleTable();
+	ExampleTable et = this.original;
 
 	// Remove the prediction columns, since they will get readded
 	// when we create the test table.
-	for (int i = this.predictionSet.length - 1 ; i > -1; i--) {
+/*	for (int i = this.predictionSet.length - 1 ; i > -1; i--) {
 		et.removeColumn(this.predictionSet[i]);
-	}
+	}*/
 
 	// now figure out the test and train sets
 	int[] testcpy = new int[rows.length];

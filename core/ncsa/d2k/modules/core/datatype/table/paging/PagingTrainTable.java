@@ -208,7 +208,7 @@ public Table getSubset(int pos, int len) {
    public Table getSubsetByReference(int pos, int len) {
 
 	   // Make a copy of the example table
-	   ExampleTable et  = this.toExampleTable();
+	   ExampleTable et  = this.original;
 
 	   // now figure out the test and train sets
 	   int[] traincpy = new int [len];
@@ -223,12 +223,12 @@ public Table getSubset(int pos, int len) {
 	* @return the subset table.
 	*/
    public Table getSubsetByReference(int[] rows) {
-	 ExampleTable et = this.toExampleTable();
+	 ExampleTable et = this.original;
 
 	 // now figure out the test and train sets
 	 int[] traincpy = new int[rows.length];
 	 for (int i = 0 ; i < traincpy.length ; i++) {
-		 traincpy [i] = this.testSet[rows[i]];
+		 traincpy [i] = this.trainSet[rows[i]];
 	 }
 	 et.setTrainingSet(traincpy);
 	 return et.getTrainTable();

@@ -14,7 +14,7 @@ class PagingPredictionTable extends PagingExampleTable implements PredictionTabl
    protected int[] indirection;
    protected boolean[] prediction;
 
-   protected PagingTable original;
+   PagingExampleTable original;
 
    protected boolean newTableHackVariable = true;
 
@@ -282,7 +282,7 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
 	  predictionColumnsTable = (MutablePagingTable)in.readObject();
 	  indirection = (int[])in.readObject();
 	  prediction = (boolean[])in.readObject();
-	  original = (PagingTable)in.readObject();
+	  original = (PagingExampleTable)in.readObject();
 	  newTableHackVariable = in.readBoolean();
 
 	  /*
@@ -1531,4 +1531,10 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
 	  }
    }
 
+   public void removeColumn(int column) {
+	  if (prediction[column])
+		 predictionColumnsTable.removeColumn(indirection[column]);
+	  else
+		 super.removeColumn(indirection[column]);
+   }
 }
