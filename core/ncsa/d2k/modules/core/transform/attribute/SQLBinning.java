@@ -5,8 +5,8 @@ import ncsa.d2k.infrastructure.modules.*;
 import java.sql.*;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.datatype.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
+
 /**
    SQLBinningModule.java
    @author David Clutter
