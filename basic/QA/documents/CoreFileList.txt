@@ -1,7 +1,7 @@
 sources/core/ncsa/d2k/modules/
 
 PredictionModelModule		done
-TransformationModule		remove
+TransformationModule		remove -- Tried 4/5 but things won't build 
 
 --------------------------
 
@@ -26,7 +26,7 @@ TriggerPush.java		save
 
 ./datatype:
 ADTree.java			done
-AsciiHashMap.java		remove
+AsciiHashMap.java		removed 4/5
 CloneBinTransform.java		?
 ExpressionException.java	move
 Expression.java			move
@@ -34,17 +34,17 @@ ExpressionListener.java		move
 HashLookupTable.java		save, Greg, Time Series Vis
 HTMLDocumentWrapper.java	save
 Node.java			done
-StaticDocument.java		remove
+StaticDocument.java		removed 4/5
 
 ./datatype/array:
-Mean.java			remove
-Median.java			remove
-Mode.java			remove
-Variance.java			remove
+Mean.java			removed 4/5
+Median.java			removed 4/5
+Mode.java			removed 4/5
+Variance.java			removed 4/5
 
 ./datatype/conversion:
 BinTreeToVT.java		?
-ExampleToTestTable.java		remove
+ExampleToTestTable.java		removed 4/5
 ListToTable.java		?
 MapToTable.java			?
 VTtoHashLookupTable.java	save, Greg, Time Series Vis
@@ -52,12 +52,12 @@ VTtoHashLookupTable.java	save, Greg, Time Series Vis
 ./datatype/model:
 Model.java			submitted
 ModelPrintOptions.java		submitted
-PrintModel.java			submitted (should this be in another pkg)
+PrintModel.java			submitted (this should be in another pkg)
 
 ./datatype/parameter:
 ParameterPoint.java		submitted
 ParameterSpace.java		submitted
-TestParamSpaceImpl.java		remove
+TestParamSpaceImpl.java		removed 4/5
 
 ./datatype/parameter/basic:
 ParameterPointImpl.java		save, Dave T.s implementation
@@ -315,7 +315,7 @@ ItemSets.java				done
 LabelCellRenderer.java			done
 ReadRuleAssocPMML.java			next release
 RuleCellRenderer.java			done
-RuleDataModel.java			remove
+RuleDataModel.java			removed 4/5
 RulePMMLTags.java			next release
 RuleTable.java				done
 RuleVis.java				done
@@ -353,14 +353,14 @@ FlatFile.java			move
 <Empty>
 
 ./io/file/input:
-AbstractDelimitedReader.java	remove
+AbstractDelimitedReader.java	removed 4/5
 ARFFFileParser.java		done
 CreateARFFParser.java  		done
 CreateDelimitedParser.java	done
 CreateFixedParser.java		done
 DelimitedFileParser.java	done
 FixedFileParser.java		done
-FixedFormatParser.java		remove
+FixedFormatParser.java		removed
 FlatFileParser.java		done
 Input1FileName.java		done
 Input2FileNames.java		done
@@ -371,18 +371,18 @@ ParseFileToPagingTable.java	done
 ParseFileToSparseExamples.java	?
 ParseFileToSparseTable.java	waiting
 ParseFileToTable.java		done
-ReadDelimited2ADT.java		remove
-ReadDelimitedFormat.java	remove
-ReadDelimitedFormatWithSampling.java	remove
-ReadFixed2ADT.java		remove
-ReadFixedFormat.java		remove
+ReadDelimited2ADT.java		removed 
+ReadDelimitedFormat.java	removed 4/5
+ReadDelimitedFormatWithSampling.java	removed 4/5
+ReadFixed2ADT.java		removed 
+ReadFixedFormat.java		removed 4/5
 ReadSerializedTable.java	save, check with David T.
-ReadTransposedVT.java		remove
+ReadTransposedVT.java		removed 4/5
 
 ./io/file/output:
 OutputSerializedObject.java	done
-WriteBytesModule.java		remove
-WriteSerializedTable.java	remove
+WriteBytesModule.java		removed 4/5
+WriteSerializedTable.java	removed 4/5
 WriteTableToFile.java		done
 
 ./io/grid:
@@ -653,8 +653,8 @@ ViewNode.java					submitted
 ./prediction/evaluators:
 MeanAbsoluteError.java				save
 MeanPercentError.java				save
-NFoldErrorReport.java				remove
-NFoldPTCollector.java				remove
+NFoldErrorReport.java				removed 4/5
+NFoldPTCollector.java				removed 4/5
 PercentErrorClassification.java			save
 RootMeanSquared.java				save
 
@@ -735,7 +735,7 @@ ApplyTransformation.java			move
 ./transform/attribute:
 ChooseAttributes.java		done
 ChooseAttributeTypes.java	done (may allow bad choices)
-ColumnConstruction.java		remove - replaced by AttributeConstruction 4/4/03
+ColumnConstruction.java		remove - replaced by AttributeConstruction 4/5/03
 AttributeConstruction.java	done
 ColumnExpression.java		move
 CombinePredictionTables.java	? ask Peter G.
@@ -749,7 +749,7 @@ RandomGenerator.java		?, ask Peter G.
 RenamePredictionColumn.java	?, ask Peter G.
 ScalarizeNominals.java		submitted
 Scale.java			submitted
-SelectAttribute.java		remove
+SelectAttribute.java		removed 4/5
 SelectAttributeOrdered.java	save, Greg, Time Series Vis
 VTColumnSelect.java		save, Greg, Time Series Vis
 VTReference.java		save, Greg, Time Series Vis
@@ -789,10 +789,10 @@ AppendTables.java			done
 CopyTable.java				submitted (moved from core.datatype.table)
 FilterConstruction.java			done
 FilterExpression.java			done
-FilterTable.java			remove
+FilterTable.java			removed 4/5
 MergeTableRows.java			done
 NFoldCrossValidation.java		replaced by NFoldTrainTest
-NFoldExTable.java			remove
+NFoldExTable.java			remove; Tried 4/5 but then NFoldStatified won't build
 NFoldStatified.java			save
 NFoldTrainTest.java			done
 NFoldTTables_inplace.java		?, ask Peter G.
@@ -806,7 +806,7 @@ SetTrainOrTest.java			save
 SimpleTrainTest.java			done
 SortTable.java				done
 SQLFilterConstruction.java		done
-UntransformModule.java			remove
+UntransformModule.java			removed 4/5
 VTQuickSort.java			save
 VTRandomSubset.java			move
 VTStats.java				save
@@ -822,7 +822,7 @@ FilterBoxPlot.java			submitted
 LinearRegression2D.java			submitted
 LineGraph2D.java			submitted
 LineGraphAppModule.java			save, this is the TimeSeriesVis.
-OptimizerReport.java			remove
+OptimizerReport.java			removed 4/5
 ParallelCoordinateVis.java		submitted
 PieChart2D.java				submitted
 PredictionTableReport.java		David C working on this one
