@@ -271,6 +271,16 @@ public class SubsetTableImpl extends MutableTableImpl {
    }
    
    /**
+    * Sets the reference to the internal representation of this Table.
+    * @param newColumns a new internal representation for this Table
+    */
+   public void setColumns (Column[] newColumns) {
+      Column copyColumns [] = new Column [this.getNumColumns()];
+      for (int i = 0 ; i < this.getNumColumns() ; i++)
+         this.setColumn (this.expandColumn(newColumns[i]), i);
+   }
+
+   /**
     * 
     * Get a Column from the table.
     * @param pos the position of the Column to get from table
@@ -278,6 +288,16 @@ public class SubsetTableImpl extends MutableTableImpl {
     */
    public Column getColumn (int pos) {
       return this.compressColumn(pos);
+   } 
+
+   /**
+    * 
+    * Get a Column from the table.
+    * @param pos the position of the Column to get from table
+    * @return the Column at in the table at pos
+    */
+   public void setColumn (Column col, int where) {
+      columns[where] = this.expandColumn(col);
    } 
 
    /**
