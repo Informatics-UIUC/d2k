@@ -561,6 +561,23 @@ public class SubsetTableImpl extends MutableTableImpl {
 		return getColumn(column).getBoolean(subset[row]);
 	}
 
+	///////////////////////
+	// Missing and empty values.
+	//
+	public boolean isValueMissing(int row, int col) {
+		return getColumn(col).isValueMissing(subset[row]);
+	}
+	public boolean isValueEmpty(int row, int col) {
+		return getColumn(col).isValueEmpty(subset[row]);
+	}
+
+	public void setValueToMissing(boolean b, int row, int col) {
+		getColumn(col).setValueToMissing(b, subset[row]);
+	}
+
+	public void setValueToEmpty(boolean b, int row, int col) {
+		getColumn(col).setValueToEmpty(b, subset[row]);
+	}
 	//////////////////////////////////////
 	// Setter methods.
 	//
