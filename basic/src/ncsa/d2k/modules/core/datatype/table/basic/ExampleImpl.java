@@ -5,9 +5,6 @@ import java.io.Serializable;
 
 public class ExampleImpl extends RowImpl implements Serializable, Example {
 
-	/** this is the index of the row to access. */
-	private int index;
-
 	/** these are the input columns. */
 	private Column [] inputColumns;
 

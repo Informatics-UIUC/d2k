@@ -6,7 +6,7 @@ import java.io.Serializable;
 public class RowImpl implements Row, Serializable {
 
 	/** this is the index of the row to access. */
-	private int index;
+	protected int index;
 
 	/** this is the example table we are accessing. */
 	private TableImpl table;
