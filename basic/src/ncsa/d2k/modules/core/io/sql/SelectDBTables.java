@@ -801,12 +801,15 @@ public class SelectDBTables extends HeadlessUIModule {
         }//if
       }//for
 
-      //creating the data source that will hold the data for the DBTable
-       DBDataSource dbDataSource = new ResultSetDataSource(dbc, targetTables, targetColumns, whereClause);
-       //creating the DBTable
-      DBTable table = new DBTable(dbDataSource, dbc);
+//for (int i=0; i<targetTables.length; i++){
+        //creating the data source that will hold the data for the DBTable
+        DBDataSource dbDataSource = new ResultSetDataSource(dbc, targetTables,
+            targetColumns, whereClause);
+        //creating the DBTable
+        DBTable table = new DBTable(dbDataSource, dbc);
 
-      pushOutput(table, 0);
+        pushOutput(table, 0);
+  //    }
 
 
     }//doit
