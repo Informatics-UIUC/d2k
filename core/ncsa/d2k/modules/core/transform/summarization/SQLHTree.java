@@ -35,7 +35,7 @@ public class SQLHTree extends ComputeModule
   int maxColumn = 25;
   // allowed maximum ratio of the number of uniq values over the total number of rows
   // for each column. Binning is required if it is over.
-  double maxUniqRatio = 0.2;
+  double maxUniqRatio = 0.3;
   int ruleSize;
   int totalRow;
   double cutOff;
