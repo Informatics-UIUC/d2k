@@ -158,7 +158,6 @@ public class AttributeConstruction extends UIModule {
 
       public void initView(ViewModule m) {
          mod = m;
-         mod.setWindowName( getAlias() );
       }
 
       public void setInput(Object obj, int ind) {
@@ -178,6 +177,7 @@ public class AttributeConstruction extends UIModule {
 
       private void initialize() {
 
+         mod.setWindowName( getAlias() );
 
          this.removeAll();
          expression = new ColumnExpression(table);
