@@ -1,4 +1,3 @@
-/* This is the working version before adding verification routine */
 package ncsa.d2k.modules.core.io.sql;
 
 /**
@@ -83,8 +82,8 @@ public class SaveModelToDB extends UIModule {
 
   public class SaveModelView extends JUserInputPane
     implements ActionListener {
-    GenericTableModel trainSet;
-    GenericTableModel classLabel;
+    GenericMatrixModel trainSet;
+    GenericMatrixModel classLabel;
     JTextField modelName;
     JTextField modelDesc;
     JTextField dataSize;
@@ -103,7 +102,6 @@ public class SaveModelToDB extends UIModule {
     public void setInput(Object input, int index) {
       if (index == 0) {
         cw = (ConnectionWrapper)input;
-        System.out.println("the input 1 in setInput is " + cw.toString());
       }
       else if (index == 1) {
         model = (DecisionTreeModel)input;
@@ -119,8 +117,8 @@ public class SaveModelToDB extends UIModule {
         modelName.setText(NOTHING);
         dataSize.setText(NOTHING);
         notes.setText(NOTHING);
-        trainSet.initTableModel(100,4);
-        classLabel.initTableModel(100,1);
+        trainSet.initMatrixModel(100,4);
+        classLabel.initMatrixModel(100,1);
         // get the row count in the training set
         displayRowCount();
         // get the attribute information
@@ -184,7 +182,7 @@ public class SaveModelToDB extends UIModule {
       String [] columnHeading = {"Attribute Name","Attribute Type","Number of Bins","Input/Output"};
       JOutlinePanel trainSetInfo = new JOutlinePanel("Training Set Information");
       trainSetInfo.setLayout (new GridBagLayout());
-      trainSet = new GenericTableModel(100,4,false,columnHeading);
+      trainSet = new GenericMatrixModel(100,4,false,columnHeading);
       trainSetDef = new JTable(trainSet);
       JScrollPane tablePane = new JScrollPane(trainSetDef);
       trainSetDef.setPreferredScrollableViewportSize (new Dimension(200,80));
@@ -195,7 +193,7 @@ public class SaveModelToDB extends UIModule {
       String [] columnHeading2 = {"Class Name"};
       JOutlinePanel classInfo = new JOutlinePanel("Class Information");
       classInfo.setLayout (new GridBagLayout());
-      classLabel = new GenericTableModel(100,1,false,columnHeading2);
+      classLabel = new GenericMatrixModel(100,1,false,columnHeading2);
       classLabelDef = new JTable(classLabel);
       JScrollPane tablePane2 = new JScrollPane(classLabelDef);
       classLabelDef.setPreferredScrollableViewportSize (new Dimension(100,80));
@@ -252,12 +250,17 @@ public class SaveModelToDB extends UIModule {
       displayClasses();
     } // initView
 
+    /**
+     * display the row count
+     */
     public void displayRowCount() {
         int totalRow = model.getTrainingSetSize();
         dataSize.setText(Integer.toString(totalRow));
-        System.out.println("totalRow is " + dataSize.getText());
     }
 
+    /**
+     * display the selected attributes
+     */
     public void displayAttributes() {
       String [] inAttributeNames = model.getInputColumnLabels();
       String [] outAttributeNames = model.getOutputColumnLabels();
@@ -276,6 +279,9 @@ public class SaveModelToDB extends UIModule {
       }
     }
 
+    /**
+     * display the number of bins
+     */
     public void displayNumBins() {
       String [] inAttributeNames = model.getInputColumnLabels();
       int numBin;
@@ -286,6 +292,9 @@ public class SaveModelToDB extends UIModule {
       }
     }
 
+    /**
+     * display the class labels
+     */
     public void displayClasses() {
       int i;
       String [] classNames = null;
@@ -299,7 +308,6 @@ public class SaveModelToDB extends UIModule {
         classNames = modelDT.getClassNames();
       }
       for (i = 0; i < classNames.length; i++) {
-        System.out.print("in for loop");
         classLabelDef.setValueAt(classNames[i].toString(),i,0);
       }
     }
@@ -307,17 +315,18 @@ public class SaveModelToDB extends UIModule {
     public void actionPerformed(ActionEvent e) {
       Object src = e.getSource();
       if (src == cancelBtn) {
-        System.out.println("Cancel button is pressed");
         viewAbort();
       }
       else if (src == saveModelBtn) {
-        System.out.println("Save model button is pressed");
         if (verifyData()) {
           doAction();
         }
       }
     }
 
+  /** verify all input information is properly entered
+   *  @return true if verification is passed, false otherwise
+   */
   protected boolean verifyData () {
     String qryStr;
     if (modelName.getText().length() == 0 ||
@@ -327,7 +336,7 @@ public class SaveModelToDB extends UIModule {
         JOptionPane.INFORMATION_MESSAGE);
       return (false);
     }
-    else {// verify the name is not used
+    else {// verify the name is not already used
       try {
         Connection con = cw.getConnection();
         // create a statement
@@ -336,7 +345,6 @@ public class SaveModelToDB extends UIModule {
                  modelName.getText() + "'";
         ResultSet rset = stmt.executeQuery(qryStr);
         rset.next();
-        System.out.println("count is " + rset.getInt(1));
         if (rset.getInt(1) > 0) {
           JOptionPane.showMessageDialog(msgBoard,
           "The model name " + modelName.getText() +
@@ -357,6 +365,9 @@ public class SaveModelToDB extends UIModule {
     return (true);
   }
 
+  /** insert the model into database tables: model_master, model_attribute and
+   *  model_class.
+   */
   protected void doAction () {
     BLOB blob;
     OutputStream outstream;
@@ -383,7 +394,6 @@ public class SaveModelToDB extends UIModule {
     System.out.println("model has been saved into a file");
 
     String userName = System.getProperty("user.name");
-    System.out.println("user name is " + userName);
     java.util.Date now = new java.util.Date();
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     String dateStr = df.format(now);
@@ -396,10 +406,6 @@ public class SaveModelToDB extends UIModule {
       // create a statement
       Statement stmt = con.createStatement();
       // insert an empty BLOB locator
-      System.out.println("modelName is " + modelName.getText());
-      System.out.println("dataSize is " + Integer.parseInt(dataSize.getText()));
-      System.out.println("notes is " + notes.getText());
-
       qryStr = "insert into model_master values ('" + modelName.getText() +
                "', '" + modelDesc.getText() +
                "', " + Integer.parseInt(dataSize.getText()) + ", '" +
@@ -407,7 +413,6 @@ public class SaveModelToDB extends UIModule {
                "', to_date('" + dateStr + "', 'yyyy/mm/dd hh24:mi:ss'))";
 
       stmt.execute(qryStr);
-      System.out.println("after insert");
       // Execute the query and lock the BLOB row
       qryStr = "select model_object from model_master where model_name = '" +
                modelName.getText() + "' for update";
@@ -506,7 +511,6 @@ public class SaveModelToDB extends UIModule {
           sb = sb + "'" + modelName.getText() + "', ";
           // get class name
           sb = sb + "'" + classLabel.getValueAt(i,0) + "')";
-          //System.out.println("sb for class is " + sb);
           stmt = con.createStatement ();
           stmt.executeUpdate(sb);
           stmt.close();
@@ -545,9 +549,9 @@ public class SaveModelToDB extends UIModule {
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "input0";
+				return "dbconnection";
 			case 1:
-				return "input1";
+				return "model";
 			default: return "NO SUCH INPUT!";
 		}
 	}
