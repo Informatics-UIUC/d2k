@@ -84,6 +84,11 @@ public class CreateDelimitedParser extends InputModule {
             }
 
             lblrow.setText(Integer.toString(getLabelsRow()));
+            lblrow.addKeyListener(new KeyAdapter() {
+                public void keyPressed(KeyEvent e) {
+                    lblChange = true;
+                }
+            });
 
             lblbtn.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
@@ -111,6 +116,12 @@ public class CreateDelimitedParser extends InputModule {
             }
 
             typrow.setText(Integer.toString(getTypesRow()));
+            typrow.setText(Integer.toString(getLabelsRow()));
+            typrow.addKeyListener(new KeyAdapter() {
+                public void keyPressed(KeyEvent e) {
+                    typChange = true;
+                }
+            });
 
             typbtn.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
@@ -135,6 +146,11 @@ public class CreateDelimitedParser extends InputModule {
                 delimfld.setEnabled(false);
                 dellbl.setEnabled(false);
             }
+            delimfld.addKeyListener(new KeyAdapter() {
+                public void keyPressed(KeyEvent e) {
+                    delChange = true;
+                }
+            });
 
             delim.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {

@@ -90,7 +90,9 @@ public class Input2FileNames extends InputModule {
         PropEdit() {
             setLayout(new GridBagLayout());
             fn0 = new JTextField(20);
+            fn0.setText(getFileName0());
             fn1 = new JTextField(20);
+            fn1.setText(getFileName1());
 
             // first file name
             JButton b0 = new JButton("Browse");

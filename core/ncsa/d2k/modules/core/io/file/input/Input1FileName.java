@@ -74,9 +74,9 @@ public class Input1FileName extends InputModule {
         private PropEdit() {
             setLayout(new GridBagLayout());
             jtf = new JTextField(20);
+            jtf.setText(getFileName());
 
             //jtf = new JTextField(15);
-            //jtf.setText(getFileName());
 
             JButton b0 = new JButton("Browse");
 
