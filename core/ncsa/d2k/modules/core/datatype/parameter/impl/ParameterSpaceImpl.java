@@ -4,16 +4,21 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 
+/**
+ * this is the implementation based on the real table.
+ * @author Thomas L. Redman
+ * @version 1.0
+ */
 public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpace {
 
 	/** the resolution of each property. */
-	int [] res;
+	int [] res = new int[0];
 
 	/** the number of spaces. */
 	int numSpaces = 0;
 
 	/** counts of the number of paramters in each subspace. */
-	int [] parameterCount = null;
+	int [] parameterCount = new int[0];
 
 	public ParameterSpaceImpl () {
 		this(0);
@@ -79,6 +84,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 			spi.addColumn(addMe);
 		}
 		this.res = resolutions;
+		spi.addSubspace(numColumns);
 		return spi;
 	}
 
@@ -199,7 +205,14 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	 * @return A ParamterPoint representing the minimum possible values of all parameters.
 	 */
 	public ParameterPoint getMinParameterPoint(){
-		return null;
+		double [] vals = new double[this.getNumParameters()];
+		String [] labels = new String [this.getNumParameters()];
+		for (int i = 0 ; i < vals.length ; i++) {
+			vals[i] = this.getMinValue(i);
+			labels[i] = this.getName(i);
+		}
+		ParameterPoint ppi = ParameterPointImpl.getParameterPoint(labels, vals);
+		return ppi;
 	}
 
 	/**
@@ -208,7 +221,14 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	 * @return A ParamterPoint representing the maximum possible values of all parameters.
 	 */
 	public ParameterPoint getMaxParameterPoint(){
-		return null;
+		String [] labels = new String [this.getNumParameters()];
+		double [] vals = new double[this.getNumParameters()];
+		for (int i = 0 ; i < vals.length ; i++) {
+			vals[i] = this.getMaxValue(i);
+			labels[i] = this.getName(i);
+		}
+		ParameterPoint ppi = ParameterPointImpl.getParameterPoint(labels, vals);
+		return ppi;
 	}
 
 	/**
@@ -216,12 +236,9 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	 * @param parameterIndex the index of the parameter of interest.
 	 * @return A ParamterPoint representing the default values of all parameters.
 	 */
-	String [] labels;
 	public ParameterPoint getDefaultParameterPoint(){
 		double [] vals = new double[this.getNumParameters()];
-		if (labels == null || labels.length != this.getNumParameters()){
-			labels = new String [this.getNumParameters()];
-		}
+		String [] labels = new String [this.getNumParameters()];
 		for (int i = 0 ; i < vals.length ; i++) {
 			vals[i] = this.getDefaultValue(i);
 			labels[i] = this.getName(i);
@@ -284,26 +301,99 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	 * @param parameterIndex the index of the parameter of interest.
 	 * @return a int value representing the subpace index number of parameter.
 	 */
-	public int getSubspaceParameterIndex(int parameterIndex) {return -1; }
+	public int getSubspaceParameterIndex(int parameterIndex) {
+		for (int i = 0, counter = 0 ; i < this.parameterCount.length; i++) {
+			counter += parameterCount[i];
+			if (counter > parameterIndex) {
+				return parameterIndex - (counter-parameterCount[i]);
+			}
+		}
+		return -1;
+	}
 
 	/**
 	 * Get a subspace from the space.
 	 * @param subspaceIndex the index of the subspace of interest.
 	 * @return a ParameterSpace which defines the indicated subspace.
 	 */
-	public ParameterSpace getSubspace(int subspaceIndex){ return null; }
+	public ParameterSpace getSubspace(int subspaceIndex){
+
+		// First find the offset where the subspace starts.
+		if (subspaceIndex >= parameterCount.length)
+			return null;
+
+		// Find the start and end of the subspace.
+		int start = 0;
+		for (int i = 0 ; i < subspaceIndex ; i++) {
+			start += parameterCount[i];
+		}
+		int end = start + parameterCount[subspaceIndex];
+		int size = end-start;
+
+		// initialize the data from which we will create the new space.
+		double [] mins = new double[size];
+		double [] maxs = new double[size];
+		double [] defaults = new double[size];
+		int [] res = new int[size];
+		int [] types = new int[size];
+		String [] names = new String[size];
+
+		// init the values.
+		for (int i = 0 ;start < end; start++, i++) {
+			mins[i] = this.getMinValue(start);
+			maxs[i] = this.getMaxValue(start);
+			defaults[i] = this.getDefaultValue(start);
+			res[i] = this.getResolution(start);
+			types[i] = this.getType(start);
+			names[i] = this.getName(start);
+		}
+
+		// Now we have the data, make the paramter space.
+		ParameterSpaceImpl psi = new ParameterSpaceImpl();
+		return psi.createFromData(names,mins,maxs,defaults,res,types);
+	}
 
 	/**
-	 * Join two ParameterSpaces to produce a single parameter space.
+	 * Join two ParameterSpaces to produce a single parameter space. This does a deep
+	 * copy.
 	 * @param firstSpace the first of the two ParameterSpaces to join.
 	 * @param secondSpace the second of the two ParameterSpaces to join.
 	 * @return a ParameterSpace which defines the indicated subspace.
 	 */
-	public ParameterSpace joinSubspaces(ParameterSpace firstSpace, ParameterSpace secondSpace) { return null; }
+	public ParameterSpace joinSubspaces(ParameterSpace firstSpace, ParameterSpace secondSpace) {
+		ParameterSpaceImpl psi = new ParameterSpaceImpl();
+		// initialize the data from which we will create the new space.
+		int size = firstSpace.getNumParameters() + secondSpace.getNumParameters();
+		double [] mins = new double[size];
+		double [] maxs = new double[size];
+		double [] defaults = new double[size];
+		int [] res = new int[size];
+		int [] types = new int[size];
+		String [] names = new String[size];
 
-	/**
-	 * Split a ParameterSpace into two parameter spaces.
-	 * @return an array of two ParameterSpaces which define the two subspaces, the first being the head and the second being the tail.
-	 */
+		// init the values.
+		int counter = 0;
+		for (int i = 0 ;i < firstSpace.getNumParameters(); i++, counter++) {
+			mins[counter] = firstSpace.getMinValue(i);
+			maxs[counter] = firstSpace.getMaxValue(i);
+			defaults[counter] = firstSpace.getDefaultValue(i);
+			res[counter] = firstSpace.getResolution(i);
+			types[counter] = firstSpace.getType(i);
+			names[counter] = firstSpace.getName(i);
+		}
+		psi.addSubspace(firstSpace.getNumParameters());
+		for (int i = 0 ;i < secondSpace.getNumParameters(); i++, counter++) {
+			mins[counter] = secondSpace.getMinValue(i);
+			maxs[counter] = secondSpace.getMaxValue(i);
+			defaults[counter] = secondSpace.getDefaultValue(i);
+			res[counter] = secondSpace.getResolution(i);
+			types[counter] = secondSpace.getType(i);
+			names[counter] = secondSpace.getName(i);
+		}
+		psi.addSubspace(secondSpace.getNumParameters());
+		psi = (ParameterSpaceImpl) psi.createFromData(names,mins,maxs,defaults,res,types);
+		return psi;
+	}
+
 	public ParameterSpace [] segmentSpace(ParameterSpace space, int splitPoint) { return null; }
 }
