@@ -32,7 +32,8 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.discovery.cluster.hac.*;
 import ncsa.d2k.modules.core.discovery.cluster.sample.*;
 
-public class KMeansParams_Props extends JPanel implements CustomModuleEditor, ActionListener {
+public class KMeansParams_Props extends JPanel
+    implements CustomModuleEditor, ActionListener, KMeansParameterDefns {
 
   //==============
   // Data Members
@@ -86,10 +87,10 @@ public class KMeansParams_Props extends JPanel implements CustomModuleEditor, Ac
       try{
         num = Integer.parseInt(m_numClust.getText());
       } catch (Exception e){
-        throw new PropertyVetoException("Error in Number of Clusters field: " + e.getMessage(), null);
+        throw new PropertyVetoException("Error in " + NUM_CLUSTERS + " field: " + e.getMessage(), null);
       }
       if (num < 2){
-        throw new PropertyVetoException("Number of Clusters must be two or more.", null);
+        throw new PropertyVetoException(NUM_CLUSTERS + " must be > 1.", null);
       }
     }
 
@@ -98,10 +99,10 @@ public class KMeansParams_Props extends JPanel implements CustomModuleEditor, Ac
       seed = Integer.parseInt(m_seed.getText());
     }
     catch (Exception e) {
-      throw new PropertyVetoException("Error in Random Seed field: " + e.getMessage(), null);
+      throw new PropertyVetoException("Error in " + SEED + " field: " + e.getMessage(), null);
     }
     if (seed < 0) {
-      throw new PropertyVetoException("Random Seed must be >= 0.", null);
+      throw new PropertyVetoException(SEED +" must be >= 0.", null);
     }
 
     int maxit = -1;
@@ -109,11 +110,11 @@ public class KMeansParams_Props extends JPanel implements CustomModuleEditor, Ac
       maxit = Integer.parseInt(m_max.getText());
     }
     catch (Exception e) {
-      throw new PropertyVetoException("Error in Number of Assignment Passes field: " +
+      throw new PropertyVetoException("Error in " + MAX_ITERATIONS + " field: " +
                                       e.getMessage(), null);
     }
     if (maxit < 1) {
-      throw new PropertyVetoException("Number of Assignment Passes must be > 1.", null);
+      throw new PropertyVetoException(MAX_ITERATIONS + " must be > 0.", null);
     }
 
     if (_src != null){
@@ -145,7 +146,7 @@ public class KMeansParams_Props extends JPanel implements CustomModuleEditor, Ac
     m_gbc.gridwidth = 1;
     m_gbc.anchor = GridBagConstraints.EAST;
     m_cmLbl = new JLabel();
-    m_cmLbl.setText("Cluster Method: ");
+    m_cmLbl.setText(CLUSTER_METHOD + ": ");
     m_cmLbl.setToolTipText("Select method to use in determining distance between two clusters.");
     m_gbl.setConstraints(m_cmLbl, m_gbc);
 
@@ -164,7 +165,7 @@ public class KMeansParams_Props extends JPanel implements CustomModuleEditor, Ac
     m_gbc.insets = new Insets(2,2,2,2);
     m_gbc.anchor = GridBagConstraints.EAST;
     m_seedLbl = new JLabel();
-    m_seedLbl.setText("Random Seed: ");
+    m_seedLbl.setText(SEED + ": ");
     m_seedLbl.setToolTipText("Enter integer value >= 0 specifying random seed.");
     m_gbl.setConstraints(m_seedLbl, m_gbc);
 
@@ -181,8 +182,8 @@ public class KMeansParams_Props extends JPanel implements CustomModuleEditor, Ac
     m_gbc.gridy++;
     m_gbc.insets = new Insets(2,2,2,2);
     m_gbc.anchor = GridBagConstraints.CENTER;
-    m_useFirst = new JCheckBox("Use First Rows", _src.getUseFirst());
-    m_useFirst.setToolTipText("Use first rows in table as sample set.");
+    m_useFirst = new JCheckBox(USE_FIRST, _src.getUseFirst());
+    m_useFirst.setToolTipText("If checked, use first rows in table as sample set.");
     m_gbl.setConstraints(m_useFirst, m_gbc);
 
 
@@ -192,7 +193,7 @@ public class KMeansParams_Props extends JPanel implements CustomModuleEditor, Ac
     m_gbc.insets = new Insets(2,2,2,2);
     m_gbc.anchor = GridBagConstraints.EAST;
     m_numClustLbl = new JLabel();
-    m_numClustLbl.setText("Number of Clusters: ");
+    m_numClustLbl.setText( NUM_CLUSTERS + ": " );
     m_numClustLbl.setToolTipText("Enter integer value > 1 specifying number of clusters desired.");
     m_gbl.setConstraints(m_numClustLbl, m_gbc);
 
@@ -209,7 +210,7 @@ public class KMeansParams_Props extends JPanel implements CustomModuleEditor, Ac
     m_gbc.insets = new Insets(2,2,2,2);
     m_gbc.gridwidth = 1;
     m_dmLbl = new JLabel();
-    m_dmLbl.setText("Distance Metric: ");
+    m_dmLbl.setText( DISTANCE_METRIC + ": ");
     m_dmLbl.setToolTipText("Select method to use in determining distance between two examples.");
     m_gbl.setConstraints(m_dmLbl, m_gbc);
 
@@ -227,16 +228,18 @@ public class KMeansParams_Props extends JPanel implements CustomModuleEditor, Ac
     m_gbc.insets = new Insets(2,2,2,2);
     m_gbc.anchor = GridBagConstraints.EAST;
     m_maxLbl = new JLabel();
-    m_maxLbl.setText("Number of Assignment Passes: ");
+    m_maxLbl.setText( MAX_ITERATIONS + ": ");
     //m_numClustLbl.setFont(new Font("Arial", Font.BOLD,10));
-    m_maxLbl.setToolTipText("Enter integer value > 0 specifying number of assignment passes to perform.");
+    m_maxLbl.setToolTipText("Enter integer value > 0 specifying maximum number of " +
+                             "cluster assignment/refinement iterations." );
     m_gbl.setConstraints(m_maxLbl, m_gbc);
 
     m_gbc.gridx = 1;
     m_gbc.anchor = GridBagConstraints.WEST;
     m_max = new JTextField(Integer.toString((_src.getMaxIterations() < 1)?5:_src.getMaxIterations()), 5);
     m_max.setFont(new Font("Arial", Font.BOLD,12));
-    m_max.setToolTipText("Enter integer value > 0 specifying number of assignment passes to perform.");
+    m_max.setToolTipText("Enter integer value > 0 specifying maximum number of " +
+                         "cluster assignment/refinement iterations." );
     m_gbl.setConstraints(m_max, m_gbc);
 
     add(m_cmLbl);
@@ -278,6 +281,7 @@ public class KMeansParams_Props extends JPanel implements CustomModuleEditor, Ac
 
 // Start QA Comments
 // 4/6/03 - Ruth starts QA
-//          Made minor changes for consistency;
+//          Made minor changes for consistency - some tests/msgs didn't agree.
+// 4/7/03 - Used KMeansParameterDefns so dialog & property descriptions are consistent.
 //        - Ready for Basic
 // End QA Comments
