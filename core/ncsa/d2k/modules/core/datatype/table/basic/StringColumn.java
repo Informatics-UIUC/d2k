@@ -55,11 +55,15 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
     * @param set
     */
    private StringColumn(int[] rows, String[] vals, HashMap set) {
-      setOfValues = set;
-      values = vals;
-      rowIndicies = rows;
-      setIsNominal(true);
-      type = ColumnTypes.STRING;
+        setOfValues = (HashMap)set.clone();
+        values = new String[vals.length];
+        for(int i = 0; i < vals.length; i++)
+            values[i] = vals[i];
+        rowIndicies = new int[rows.length];
+        for(int i = 0; i < rowIndicies.length; i++)
+            rowIndicies[i] = rows[i];
+        setIsNominal(true);
+        type = ColumnTypes.STRING;
    }
 
    private int addValue(String newVal) {
