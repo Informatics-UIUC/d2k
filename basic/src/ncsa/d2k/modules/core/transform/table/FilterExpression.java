@@ -384,6 +384,7 @@ public class FilterExpression implements Expression {
       private Element left, right;
 
 
+      Terminal() { }
 
       Terminal(int opcode, Element left, Element right) {
 
@@ -799,6 +800,19 @@ public class FilterExpression implements Expression {
 
    }
 
+   private class TrueTerminal extends Terminal {
+
+      TrueTerminal() { }
+
+      public boolean evaluate(int rowNumber) {
+         return true;
+      }
+
+      public String toString() {
+         return "true";
+      }
+
+   }
 
 
 /******************************************************************************/
@@ -998,6 +1012,8 @@ public class FilterExpression implements Expression {
 
           leastPrecedenceType = BOOL_AND, leastPrecedencePosition = -1;
 
+      int leftParens = 0;
+      int rightParens = 0;
 
 
       for (int i = 0; i < expression.length(); i++) {
@@ -1012,9 +1028,15 @@ public class FilterExpression implements Expression {
 
 
 
-            case '(': currentDepth++; break;
+            case '(':
+               currentDepth++;
+               leftParens++;
+               break;
 
-            case ')': currentDepth--; break;
+            case ')':
+               currentDepth--;
+               rightParens++;
+               break;
 
 
 
@@ -1110,7 +1132,9 @@ public class FilterExpression implements Expression {
 
       }
 
-
+      if (leftParens != rightParens) {
+         throw new ExpressionException("FilterExpression: parentheses do not match.");
+      }
 
       if (leastDepth > maximumDepth) // ...there were no parentheses
 
@@ -1324,6 +1348,11 @@ public class FilterExpression implements Expression {
 
       }
 
+      // check to see if it's just empty parentheses
+      String test = expression.trim();
+      if (test.length() == 0) {
+         return new TrueTerminal();
+      }
 
 
       throw new ExpressionException("FilterExpression: apparently malformed expression.");
