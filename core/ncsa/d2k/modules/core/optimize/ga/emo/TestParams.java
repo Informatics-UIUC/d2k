@@ -31,13 +31,19 @@ public class TestParams extends ComputeModule {
     EMOParams params = (EMOParams)pullInput(0);
 
     params.createBinaryIndividuals = false;
-/*    params.tournamentSize = 4;
-    params.crossoverRate = 0.25;
-    params.generationGap = 0.6;
-    params.nSimulatedBinaryCrossover = 2;
-    params.mutationRate = 0.1;
-    params.nRealMutation = 2.0;
-*/
+    Mutation mut = MutationFactory.createMutationOptions()[1];
+    mut.setMutationRate(0.75);
+    params.mutation = mut;
+
+    Crossover cross = CrossoverFactory.createCrossoverOptions()[2];
+    params.crossover = cross;
+    cross.setCrossoverRate(0.1);
+    cross.setGenerationGap(1);
+
+    Selection selection = SelectionFactory.createSelectionOptions()[4];
+    params.selection = selection;
+    selection.setTournamentSize(4);
+
     params.populationSize = 250;
     params.maxGenerations = 100;
 

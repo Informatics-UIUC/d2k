@@ -61,6 +61,7 @@ public class PerformCrossover extends ComputeModule {
     if(population != pop) {
       EMOParams info = pop.getParameters();
       crossoverModule = info.crossover;
+      population = pop;
     }
 
     // do the crossover

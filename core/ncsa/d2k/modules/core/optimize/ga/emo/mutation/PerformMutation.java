@@ -46,6 +46,7 @@ public class PerformMutation extends ComputeModule {
     if(population != pop) {
       EMOParams info = pop.getParameters();
       mutateModule = info.mutation;
+      population = pop;
     }
 
     mutateModule.mutatePopulation((Population)pop);
