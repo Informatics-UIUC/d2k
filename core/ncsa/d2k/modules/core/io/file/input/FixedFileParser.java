@@ -235,7 +235,7 @@ public class FixedFileParser implements FlatFileParser {
         // return _columnLabels[i];
         if (_columnLabels == null)
            return "column_" + i;
-         if (_columnLabels[i] == null)
+         if (_columnLabels[i] == null || _columnLabels[i].length() == 0)
             return "column_" + i;
          else
             return _columnLabels[i];

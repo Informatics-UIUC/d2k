@@ -377,7 +377,7 @@ public class DelimitedFileParser implements FlatFileParser {
         try {
            // change:
            // return columnLabels[i];
-           if (columnLabels[i] != null)
+           if (columnLabels[i] != null && columnLabels[i].length() != 0)
               return columnLabels[i];
            else
               return "column_" + i;
