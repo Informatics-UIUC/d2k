@@ -402,7 +402,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
           dlm.addElement(colNames.get(i).toString());
         targetList.setModel(dlm);
       }
-      // The "Display Rule" button displays rules only once, no interactive and
+      // The "Done" button displays rules only once, no interactive and
       // continual display
       else if (src == doneBtn) {
         displayRules();
