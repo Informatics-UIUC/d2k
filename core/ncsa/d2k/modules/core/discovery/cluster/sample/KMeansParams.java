@@ -20,7 +20,8 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.discovery.cluster.gui.properties.*;
 
 public class KMeansParams
-    extends KMeansParamsOPT {
+    extends KMeansParamsOPT
+    implements KMeansParameterDefns {
 
   //==============
   // Data Members
@@ -90,14 +91,45 @@ public class KMeansParams
   }
 
   /**
-   * Return a list of the property descriptions.
+   * Return a list of the property descriptions.  The order of descriptions
+   * matches the order of presentation of the properties to the user.
    * @return a list of the property descriptions.
    */
   public PropertyDescription[] getPropertiesDescriptions() {
+
+    // presentation order (dictated by dialog layout): 0-CLUSTER_METHOD, 1-SEED,
+    // 2-USE_FIRST, 3-NUM_CLUSTERS, 4-DISTANCE_METRIC, 5-MAX_ITERATIONS
+    // Following code is cut/paste from KMeansParamSpaceGenerator and indices of
+    // pds are adjusted for the appropriate order.
+
     PropertyDescription[] pds = new PropertyDescription[6];
-    pds[0] = new PropertyDescription("clusterMethod",
-                                     "Clustering Method",
+    pds[3] = new PropertyDescription("numClusters",
+                                      NUM_CLUSTERS,
+       "This property specifies the number of clusters to form. It must be greater than 1.");
+
+    pds[1] = new PropertyDescription("seed",
+                                      SEED,
+       "The seed for the random number generator used to select the sample set of <i>" +
+       NUM_CLUSTERS +
+       "</i> table rows that defines the initial cluster centers. " +
+       "It must be greater than or equal to 0. " +
+       "If the same seed is used across runs with the same input table, the sample sets " +
+       "will be identical. If <i>" +
+       USE_FIRST +
+       "</i> is selected, this seed is not used. ");
+
+     pds[2] = new PropertyDescription("useFirst",
+                                       USE_FIRST,
+        "If this option is selected, the first <i>" +
+        NUM_CLUSTERS +
+        "</i> entries in the input table " +
+        "will be used as the initial cluster centers, " +
+        "rather than selecting a random sample set of table rows. ");
+
+     pds[0] = new PropertyDescription("clusterMethod",
+                                       CLUSTER_METHOD,
         "The method to use for determining the distance between two clusters. " +
+        "This distance is used in formulating the tree that is part of the final cluster model. " +
         "<p>WARDS METHOD: Use a minimum variance approach that sums the squared error " +
         "(distance) for every point in the cluster to the cluster centroid.</p>" +
         "<p>SINGLE LINK: Distance of closest pair (one from each cluster).</p>" +
@@ -106,33 +138,26 @@ public class KMeansParams
         "<p>WPGMA: Weighted pair group method using arithmetic averages.</p>" +
         "<p>UPGMC: Unweighted pair group method using centroids.</p>" +
         "<p>WPGMC: Weighted pair group method using centroids.</p>");
-    pds[1] = new PropertyDescription("seed",
-                                     "Random Seed",
-        "The seed for the random number generater used to select the set of <i>Number of Clusters</i> " +         
-	"table rows that defines the initial cluster centers. " +
-   	"If the same seed is used across runs with the same input table, the same sets will be identical . " +
-	"If <i>Use First Rows</i> is selected, this seed is not used. ");
-    pds[2] = new PropertyDescription("useFirst",
-        			     "Use First Rows",
-        "If this option is selected, the first <i>Number of Clusters</i> entries in the input table " +
-	"will be used as the initial cluster centers, " +
-	"rather than selecting a random set of table rows. ");
-    pds[3] = new PropertyDescription("numClusters",
-                                     "Number of Clusters",
-        "This property specifies the number of clusters to form. It must be greater than 1.");
-    pds[4] = new PropertyDescription("distanceMetric",
-                                     "Distance Metric",
+
+     pds[4] = new PropertyDescription("distanceMetric",
+                                       DISTANCE_METRIC,
         "This property determines the type of distance function to use in calculating the " +
-        "distance between two examples." +
+        "distance between two examples.  This distance is used in assigning points to clusters, and " +
+        "in determining if there was sufficient movement since the last assignment iteration "+
+        "to continue the refinement process. " +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +
         "<p>COSINE: 1 minus the cosine of the angle between the norms of the vectors denoted by two points.</p>"
         );
-    pds[5] = new PropertyDescription("maxIterations",
-                                     "Number of Assignment Passes",
-        "This property specifies the number of iterations of cluster refinement to perform.  " +
-	"It must be greater than 0.");
-    return pds;
+
+     pds[5] = new PropertyDescription("maxIterations",
+                                       MAX_ITERATIONS,
+        "This property specifies the maximum number of iterations of cluster " +
+        "assignment/refinement to perform. " +
+        "It must be greater than 0.  A check is performed after each iteration to determine if " +
+        "the cluster centers have moved more than a small threshold amount.  If they have not, " +
+        "the refinement process is stopped before the specified number of iterations. " );
+     return pds;
   }
 
   //========================
@@ -196,6 +221,7 @@ public class KMeansParams
 
 // Start QA Comments
 // 4/6/03 - Ruth starts QA
-//        - Reorder Property descriptions to match GUI order;  Update a bit
+//        - Reorder Property descriptions to match GUI order
+// 4/7/03 - Added KMeansParameterDefns so easier to keep labels in sync.
 //        - Ready for Basic
 // End QA Comments

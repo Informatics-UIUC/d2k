@@ -73,7 +73,7 @@ public class KMeansParamsOPT
    */
   public String getInputInfo(int parm1) {
     if (parm1 == 0) {
-      return "Control parameters.";
+      return "Control parameters, available as a Parameter Point.";
     } else if (parm1 == 1) {
       return "Table of entities to cluster.";
     } else {
@@ -123,19 +123,36 @@ public class KMeansParamsOPT
     s += "The KMeans clustering algorithm is an approach where a sample set of ";
     s += "<i>Number of Clusters</i> rows are chosen from an input table of examples, and ";
     s += "used as initial cluster centers. ";
-    s += "These initial clusters are refined by a series of assignment passes, resulting in a ";
-    s += "final cluster model. ";
+    s += "These initial clusters undergo a series of assignment/refinement iterations, ";
+    s += "resulting in a final cluster model. ";
+    s += "</p>";
+
+    s += "<p>";
+    s += "If an <i>Example Table</i> is passed to this module, the algorithm will assign the examples (rows) ";
+    s += "to clusters based on the values of the input attributes (columns) . If no input attributes have been ";
+    s += "specified, the algorithm has no values to cluster on, and a single cluster will be formed. ";
+    s += "The module <i>Choose Attributes</i> is typically used to form an <i>Example Table</i>. ";
+    s += "In contrast, if a <i>Table</i> is passed to this module, the algorithm will consider all attributes ";
+    s += "when forming the clusters. ";
     s += "</p>";
 
     s += "<p>";
     s += "The KMeans algorithm implementation is comprised of three modules. ";
-    s += "This module, <i>KMeans Parameters</i>, is used to set control parameters for the ";
-    s += "algorithm. ";
+    s += "This module is used to set control parameters for the algorithm.";
     s += "A second module, <i>Sample Table Rows</i>, builds the sample set from the input <i>Table</i>. ";
     s += "The third module, <i>Cluster Assignment</i>, refines the initial clusters in a series of assignment passes. ";
-    s += "The control parameters set in this module determine the behavior of the <i>Sample Table Rows</i> ";
-    s += "and <i>Cluster Assignment</i> modules. ";
-    s += "Control parameters are updated via the property editor. ";
+    s += "The control parameters set in this module are passed as <i>Parameter Point</i>s to the ";
+    s += "the other two modules, and determine their exact behavior. ";
+    s += "The <i>OPT</i>, optimizable, versions of the <i>Sample Table Rows</i> and <i>Cluster Assignment</i> ";
+    s += "modules must be used, as they can accept the <i>Parameter Point</i> inputs. ";
+    s += "</p>";
+
+    s += "<p>Data Type Restrictions: ";
+    s += "The KMeans algorithm does not work if the input data being clustered contains missing values.  If ";
+    s += "missing values are detected an exception will be raised. ";
+    s += "The KMeans algorithm operates on numeric and boolean datatypes.  If the data to be clustered ";
+    s += "contains nominal data types, it should be converted prior to performing the KMeans clustering. ";
+    s += "The <i>Scalarize Nominals</i> module can be used to convert nominal types into boolean values. ";
     s += "</p>";
 
     s += "<p>Data Handling: ";
@@ -158,9 +175,9 @@ public class KMeansParamsOPT
    */
   public String getOutputInfo(int parm1) {
     if (parm1 == 0) {
-      return "Parameters for Cluster Assignment module.";
+      return "Parameters for Cluster Assignment module, available as a Parameter Point.";
     } else if (parm1 == 1) {
-      return "Parameters for Sample Table Rows module.";
+      return "Parameters for Sample Table Rows module, available as a Parameter Point.";
     } else if (parm1 == 2) {
       return "Table of entities to cluster, unchanged by module.";
     } else {
@@ -244,6 +261,6 @@ public class KMeansParamsOPT
 
 // Start QA Comments
 // 4/6/03 - QA Started by Ruth
-//        - Updated module info and some formatting changes for consistency.
-// 
+// 4/7/03 - Updated module info and some formatting changes for consistency.
+//        - Ready for Basic
 // End QA Comments
