@@ -14,6 +14,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.examples.SparseRow;
 
 /**
  * Title:        Sparse Table
@@ -224,17 +225,75 @@ public class SparseMutableTable
     } //catch
   }
 
+  /**
+   * Make a deep copy of the table, include length rows begining at start
+   * @param start the first row to include in the copy
+   * @param length the number of rows to include
+   * @return a new copy of the table.
+   */
+  public Table copy(int start, int length) {
+
+    if ((start + length - 1) >= getNumColumns()){
+      throw new IndexOutOfBoundsException("num cols is " + getNumColumns() + " range enterred is " + start + " through " + (start + length - 1));
+    }
+
+    if (start < 0) {
+      throw new IndexOutOfBoundsException("num cols is " + getNumColumns() + " range enterred is " + start + " through " + (start + length - 1));
+    }
+
+    if (length < 0) {
+      throw new IndexOutOfBoundsException("length invalid -- num cols is " + getNumColumns() + " range enterred is start:" + start + " through length: " + length);
+    }
+
+    // Subset the columns to get new columns.
+    Column[] cols = new Column[this.getNumColumns()];
+    for (int i = 0; i < getNumColumns(); i++) {
+      Column oldColumn = this.getColumn(i);
+      cols[i] = oldColumn.getSubset(start, length);
+    }
+
+    // make a table from the new columns
+    SparseMutableTable vt = new SparseMutableTable();
+    vt.setLabel(getLabel());
+    vt.setComment(getComment());
+    for (int i = 0, n = cols.length; i < n; i++) {
+      vt.addColumn( (AbstractSparseColumn) cols[i]);
+    }
+    return vt;
+  }
+
+  /**
+   * Make a deep copy of the table, include length rows begining at start
+   * @param start the first row to include in the copy
+   * @param length the number of rows to include
+   * @return a new copy of the table.
+   */
   public Table copy(int[] rows) {
-    return getSubset(rows, this);
-  }
 
-  public Table copy(int start, int len) {
-    return getSubset(start, len, this);
-  }
+    for (int i = 0, n = rows.length; i < n; i++){
+      if (rows[i] < 0){
+        throw new IndexOutOfBoundsException("num rows is " + getNumRows() + " row index out of bounds value " + rows[i]);
+      }
+      if (rows[i] >= getNumRows()){
+        throw new IndexOutOfBoundsException("num rows is " + getNumRows() + " row index out of bounds value " + rows[i]);
+      }
+    }
 
-  public MutableTable createTable() {
-    SparseMutableTable retVal = new SparseMutableTable();
-    return (MutableTable) retVal;
+    // Subset the columns to get new columns.
+    Column[] cols = new Column[this.getNumColumns()];
+    for (int i = 0; i < getNumColumns(); i++) {
+      Column oldColumn = this.getColumn(i);
+      cols[i] = oldColumn.getSubset(rows);
+    }
+
+    // make a table from the new columns
+    SparseMutableTable vt = new SparseMutableTable();
+    vt.setLabel(getLabel());
+    vt.setComment(getComment());
+    for (int i = 0, n = cols.length; i < n; i++) {
+      vt.addColumn( (AbstractSparseColumn) cols[i]);
+    }
+    return vt;
   }
 
   public Table shallowCopy() {
@@ -247,8 +306,13 @@ public class SparseMutableTable
     return new_table;
   }
 
+  public MutableTable createTable() {
+    SparseMutableTable retVal = new SparseMutableTable();
+    return (MutableTable) retVal;
+  }
+
   public Row getRow() {
-    return null;
+    return new SparseRow(this);
   }
 
   /**

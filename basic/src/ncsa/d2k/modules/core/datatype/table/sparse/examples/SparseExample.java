@@ -1,10 +1,10 @@
-//package ncsa.d2k.modules.projects.vered.sparse.example;
 package ncsa.d2k.modules.core.datatype.table.sparse.examples;
 
-import ncsa.d2k.modules.core.datatype.table.*;
+//===============
+// Other Imports
+//===============
 
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.VIntHashSet;
-//import ncsa.d2k.modules.projects.vered.sparse.table.SparseExampleTable;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.VIntHashSet;
 import ncsa.d2k.modules.core.datatype.table.sparse.SparseExampleTable;
 
@@ -25,9 +25,15 @@ import ncsa.d2k.modules.core.datatype.table.sparse.SparseExampleTable;
 
 public class SparseExample extends SparseExampleTable implements Example {
 
+  //==============
+  // Data Members
+  //==============
 
   protected int row;
 
+  //================
+  // Constructor(s)
+  //================
 
   public SparseExample(SparseExampleTable t, int r) {
     super((SparseExampleTable)(t.getSubset(r, 1)));
@@ -46,6 +52,9 @@ public class SparseExample extends SparseExampleTable implements Example {
     row = t.getAllRows()[0];
    }
 
+  //================
+  // Public Methods
+  //================
 
   /**
    * GET TYPE METHODS.
@@ -55,7 +64,6 @@ public class SparseExample extends SparseExampleTable implements Example {
    * or column no. <code>o</code> in the output features set, in this example.
    *
    */
-
 
   public double getInputDouble(int i) {
     return getInputDouble(row, i);
@@ -137,57 +145,57 @@ public class SparseExample extends SparseExampleTable implements Example {
 	return this;
   }
 
-  public double getDouble(int i) 
+  public double getDouble(int i)
   {
     return getInputDouble(row, i);
   }
 
-  public String getString(int i) 
+  public String getString(int i)
   {
      return getInputString(row, i);
   }
 
-  public int getInt(int i) 
+  public int getInt(int i)
   {
      return getInputInt(row, i);
   }
 
-  public float getFloat(int i) 
+  public float getFloat(int i)
   {
     return getInputFloat(row, i);
   }
 
-  public short getShort(int i) 
+  public short getShort(int i)
   {
     return getInputShort(row, i);
   }
 
-  public long getLong(int i) 
+  public long getLong(int i)
   {
     return getInputLong(row, i);
   }
 
-  public byte getByte(int i) 
+  public byte getByte(int i)
   {
     return getInputByte(row, i);
   }
 
-  public Object getObject(int i) 
+  public Object getObject(int i)
   {
     return getInputObject(row, i);
   }
 
-  public char getChar(int i) 
+  public char getChar(int i)
   {
     return getInputChar(row, i);
   }
 
-  public char[] getChars(int i) 
+  public char[] getChars(int i)
   {
     return getInputChars(row, i);
   }
 
-  public byte[] getBytes(int i) 
+  public byte[] getBytes(int i)
   {
     return getInputBytes(row, i);
   }
