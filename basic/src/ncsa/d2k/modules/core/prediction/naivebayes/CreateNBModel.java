@@ -132,11 +132,18 @@ public class CreateNBModel
   public void doit() throws Exception {
     BinTree bins = (BinTree) pullInput(0);
     ExampleTable et = (ExampleTable) pullInput(1);
-    if (et.hasMissingInputsOutputs())
-      throw new Exception("The data contains missing values, not supported by Naive Bayes.");
+    
     int [] outputs = et.getOutputFeatures();
+    
+    // It's got to have outputs.
     if (outputs == null || outputs.length == 0)
-	   throw new Exception("Output feature is missing. Please select an output feature.");
+      throw new Exception("Output feature is missing. Please select a output feature.");
+
+    // No missing values in the output columns allowed!
+    for (int i = 0 ; i < outputs.length; i++)
+      if (et.hasMissingValues(outputs[i]))
+        throw new Exception("The data contains missing values in an output column, not supported by Naive Bayes.");
+
     if(et.isColumnScalar(outputs[0]))
 	   throw new Exception("Output feature must be nominal.");
     ModelModule mdl = new NaiveBayesModel(bins, et);
