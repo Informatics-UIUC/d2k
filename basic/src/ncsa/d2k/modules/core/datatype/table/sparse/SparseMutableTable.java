@@ -15,7 +15,6 @@ import ncsa.d2k.modules.core.datatype.table.basic.Column;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.examples.SparseRow;
-import gnu.trove.*;
 
 /**
  * Title:        Sparse Table
@@ -31,14 +30,6 @@ import gnu.trove.*;
  * Sparse Mutable Table is just like a Sparse Table with one difference: Sparse
  * Mutable Table has a mutable functionality. It provides the user with methods
  * that chnage and manipulate the entries of the Table.
- *
- * @todo add validity test for keys and columns in the various maps.
- * if such cannot be found - method could not be completed as expected.
- * message should be given to user. sometimes - an exception should be thrown.
- *
- * @todo compare method insertRow(double[] newEntry, int rowIndex, int[] validColumns)
- * to its sister methods. this one is different. has more end cases...
- *
  */
 public class SparseMutableTable
     extends SparseTable
@@ -412,14 +403,11 @@ public class SparseMutableTable
   protected void setColumn(int index, AbstractSparseColumn col) {
 
     columns.put(index, col); //updating the columns map
-    int key = columnRef.size();
-    columnRef.put(key, index);
-//    reversedRef.put(index, key);
 
     //updating the rows map
     int[] rowNum = col.getIndices();
     for (int i = 0; i < rowNum.length; i++) {
-      addCol2Row(key, rowNum[i]);
+      addCol2Row(index, rowNum[i]);
     }
 
     if (numColumns <= index) {
@@ -434,9 +422,9 @@ public class SparseMutableTable
   }
 
   /**
-   * Adds the column redirection index <code>column</code> to the row set <code>row</code>
+   * Adds the column index <code>column</code> to the row set <code>row</code>
    *
-   * @param column    the redirection index (a key into columnRef) to be added
+   * @param column    the index to be added
        * @param row       the row index to which the index <code>column<c/doe> is added
    */
   protected void addCol2Row(int column, int row) {
@@ -539,37 +527,27 @@ public class SparseMutableTable
     //updating the column map
     columns.insertObject(newColumn, position);
 
-    //updating the redirection map
-    VHashService.incrementValues(position, columnRef);
- //   VHashService.incrementKeys(position, reversedRef);
-    int newKey = columnRef.size();
-    columnRef.put(newKey, position);
-  //  reversedRef.put(position, newKey);
+    //updating the rows map
+    int[] rowNumbers = VHashService.getIndices(rows);
 
-    //updating the rows in the new column's sets
-    int[] rowNumbers = newColumn.getIndices();
-
-    //for each set in rows (that its index is in rowNumbers) -
-    //adding the new key of the redirections..
+    //for each set in rows - adding 1 to each element.
     for (int i = 0; i < rowNumbers.length; i++) {
-      addCol2Row(position, rowNumbers[i]);
-
-/*      VIntHashSet tempSet = (VIntHashSet) rows.get(rowNumbers[i]);
+      VIntHashSet tempSet = (VIntHashSet) rows.get(rowNumbers[i]);
       tempSet.increment(position);
       //XIAOLEI
       if (newColumn.doesValueExist(rowNumbers[i])) {
         tempSet.add(position);
-      }*/
+      }
     } //for
 
     int numR = newColumn.getNumRows();
     if (numRows <= numR) {
 
       // XIAOLEI
- /*     for (int i = numRows; i < numR; i++) {
+      for (int i = numRows; i < numR; i++) {
         addCol2Row(position, i);
 
-      }*/
+      }
       numRows = numR;
     }
 
@@ -596,44 +574,14 @@ public class SparseMutableTable
     //if such column did exist
     if (col != null) {
 
-      //updating the redirections map
-      int redirectionKey = -1;
- //     int redirectionKey = reversedRef.remove(position);
-
-      TIntIntIterator it = columnRef.iterator();
-      while(it.hasNext()){
-        int currKey = it.key();
-        int currValue = columnRef.get(currKey);
-        if(currValue == position)
-          redirectionKey = currValue;
-
-        if(currValue > position){
-          columnRef.remove(currKey);
-          columnRef.put(currKey, currValue -1);
-        }
-      }
-      if(redirectionKey != -1) columnRef.remove(redirectionKey);
-      else {
-        System.out.println("removeColumn: Incomplete removal of column # " +
-                           position);
-        System.out.println("Could not remove value " + position +
-                           " from indirection map.");
-      }
-      //remove redirectionKey from the rows Sets.
+      //removing the references to it from each row
       int[] rowsIndices = col.getIndices();
 
-      for (int i = 0; i < rowsIndices.length; i++)
-       ((VIntObjectHashMap)rows.get(rowsIndices[i])).remove(redirectionKey);
-
-
-
-
-
-   /*   for (int i = 0; i < rowsIndices.length; i++) {
+      for (int i = 0; i < rowsIndices.length; i++) {
         if (rows.containsKey(rowsIndices[i])) {
           ( (VIntHashSet) rows.get(rowsIndices[i])).remove(position);
         }
-      }*/
+      }
 
       // for the columns with indices larger than position, shift all of
       // them leftward.
@@ -648,22 +596,19 @@ public class SparseMutableTable
         }
       }
 
-//      rowsIndices = getAllRows();
+      rowsIndices = getAllRows();
 
-   /*   // shift each row's columns leftward
+      // shift each row's columns leftward
       for (int i = 0; i < rowsIndices.length; i++) {
         ( (VIntHashSet) rows.get(rowsIndices[i])).decrement(position);
-      }*/
+      }
     }
 
     numColumns = VHashService.getMaxKey(columns) + 1;
-  }//removeColumn
+  }
 
   /**
    * Removes all column from index <code>start</code> to index <code>start + len</code>
-   *
-   * @todo maybe make this method more efficient. instead of decrementing
-   *       indices len times, do the decremention once...
    *
    * @param start     the beginning index for removing the columns
    * @param len       number of consequetive columns to be removed.
@@ -674,28 +619,14 @@ public class SparseMutableTable
     }
   }
 
-
-  /**
-   * @todo need to add IntObjectHashMap object to rows?
-   * @param add_num_rows
-   */
   public void addRows(int add_num_rows) {
-        int newRowIdx = numRows;
     numRows += add_num_rows;
     //add rows to each column
     int[] col_keys = columns.keys();
     for (int i = 0; i < col_keys.length; i++) {
       ( (AbstractSparseColumn) columns.get(col_keys[i])).addRows(add_num_rows);
     }
-
-    //adding new rows objects to the rows map, each containing all the columns redirections.
-    int[] redirections = columnRef.keys();
-    for (int i=0; i<add_num_rows; i++){
-      VIntHashSet newRow = new VIntHashSet(redirections);
-      rows.put(newRowIdx + i, newRow);
-    }
-
-  }//addRows
+  }
 
   /**
    * Removes row no. <code>row</code> from this table
@@ -710,12 +641,12 @@ public class SparseMutableTable
 
     //if the row existed
     if (set != null) {
-      //retrieve column redirections
-      int[] columnRedirections = set.toArray();
+      //retrieve column numbers
+      int[] columnNumbers = set.toArray();
 
       //remove the items of the row from each column
-      for (int i = 0; i < columnRedirections.length; i++) {
-        ( (AbstractSparseColumn) columns.get(columnRef.get(columnRedirections[i]))).removeRow(row);
+      for (int i = 0; i < columnNumbers.length; i++) {
+        ( (AbstractSparseColumn) columns.get(columnNumbers[i])).removeRow(row);
         //	removeEmptyColumn(columnNumbers[i]);
       }
 
@@ -723,11 +654,11 @@ public class SparseMutableTable
       int[] row_keys = rows.keys();
       Arrays.sort(row_keys);
 
-      for (int i = row_keys.length - 1; i >= row; i--) {
-
+      for (int i = 0; i < row_keys.length; i++) {
+        if (row_keys[i] >= row) {
           set = (VIntHashSet) rows.remove(row_keys[i]);
           rows.put(row_keys[i] - 1, set);
-
+        }
       }
 
       int[] colsIndices = getAllColumns();
@@ -827,35 +758,13 @@ public class SparseMutableTable
   protected Table reorderRows(VIntIntHashMap newOrder) {
     SparseMutableTable retVal = new SparseMutableTable();
     int[] cols = columns.keys();
-    /*
-     VERED - this implementation will make retVal to go through the rows map
-     again and again for each column that is added.
-     replaced this code.
     for (int i = 0; i < cols.length; i++) {
       retVal.setColumn(cols[i],
                        ( (AbstractSparseColumn) ( (AbstractSparseColumn)
                                                  getCol(cols[i])).
                         reorderRows(newOrder)));
-    }*/
 
-   VIntObjectHashMap newColumns = new VIntObjectHashMap (cols.length);
-     for (int i = 0; i < cols.length; i++) {
-       newColumns.put(cols[i] ,( (AbstractSparseColumn) ( (AbstractSparseColumn)
-                                                 getCol(cols[i])).reorderRows(newOrder)));
-     }
-     retVal.columns = newColumns;
-     retVal.columnRef = columnRef.copy();
-
-     //reordering the rows map
-     //putting row i that is mapped to key j in newOrder with key j
-     //in the retVal rows map.
-     retVal.rows = new VIntObjectHashMap(rows.size());
-     TIntIntIterator it = newOrder.iterator();
-     while (it.hasNext()){
-       int newKey = it.key();
-       retVal.rows.put(newKey, rows.get(newOrder.get(newKey)));
-     }
-
+    }
     retVal.transformations = (ArrayList) transformations.clone();
     //copying general attributes
     retVal.copyAttributes(this);
@@ -877,35 +786,9 @@ public class SparseMutableTable
     SparseMutableTable retVal = new SparseMutableTable(this);
 
     retVal.columns = (VIntObjectHashMap) columns.reorder(newOrder);
-    //reordering the columns redirections
-
-    //first building a reversed map of the references
-    //mapping index to its redirection key in columnRef
-    VIntIntHashMap revMap = new VIntIntHashMap(columnRef.size());
-    TIntIntIterator it = columnRef.iterator();
-    while(it.hasNext()){
-      int k= it.key();
-      revMap.put(columnRef.get(k), k);
-    }
-    //this will be the reference map of the returned value
-    VIntIntHashMap newRef = new VIntIntHashMap(columnRef.size());
-    TIntIntIterator orderIt = newOrder.iterator();
-    //iterating over newOrder
-    while(orderIt.hasNext()){
-      //retrieving new key
-      int newKey = orderIt.key();
-      //for the old key
-      int oldKey = newOrder.get(newKey);
-      //finding the reference key of the old key
-      int refKey = revMap.get(oldKey);
-      //putting the new key in the reference map
-      newRef.put(refKey, newKey);
-    }
-
-    retVal.columnRef = newRef;
     return retVal;
 
-  }//reorderColumns
+  }
 
   /**
    * Swaps rows no. <code>pos1</code> and <code>pos2</code>
@@ -920,7 +803,7 @@ public class SparseMutableTable
     VIntHashSet r1 = (VIntHashSet) rows.remove(pos1);
     VIntHashSet r2 = (VIntHashSet) rows.remove(pos2);
     VIntHashSet tempSet = new VIntHashSet(); //will be a combination of r1 and r2
-    int[] ref = null; //will hold the relative column references
+    int[] validColumn = null; //will hold the relative oclumn numbers
 
     if (r1 != null) { //if row pos1 exists
       rows.put(pos2, r1); //put it at pos2
@@ -932,11 +815,11 @@ public class SparseMutableTable
       tempSet.addAll(r2.toArray()); //add its valid columns to tempSet
     }
 
-    ref = tempSet.toArray(); //now validColumns hold all the neede indices
+    validColumn = tempSet.toArray(); //now validColumns hold all the neede indices
     //for each valid column in those 2 rows
-    for (int i = 0; i < ref.length; i++) {
+    for (int i = 0; i < validColumn.length; i++) {
       //swap the rows.
-      ( (Column) columns.get(columnRef.get(ref[i]))).swapRows(pos1, pos2);
+      ( (Column) columns.get(validColumn[i])).swapRows(pos1, pos2);
     }
   }
 
@@ -952,50 +835,12 @@ public class SparseMutableTable
 
     if (col1 != null) {
       columns.put(pos2, col1);
-    }
-    else {
-      System.out.println("swapColumns: Could not find reference to column # " +
-                         pos1 + " in columns map. could not swap this column with column # " +
-                         pos2);
-      return;
+
     }
     if (col2 != null) {
       columns.put(pos1, col2);
-    }
-    else {
-      System.out.println("swapColumns: Could not find reference to column # " +
-                         pos2 + " in columns map. could not swap this column with column # " +
-                         pos1);
-      return;
 
     }
-
-if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
-      System.out.println("swapColumns: could not swap indirections to columns " +
-                         pos1 + " and " + pos2 + ". Could not find both values in the " +
-                         "indirections map.");
-      return;
-
-    }
-
-    //swapping the references
-    int col1Ref = -1;
-    int  col2Ref = -1;
-    TIntIntIterator it = columnRef.iterator();
-    while(it.hasNext() && (col1Ref == -1 || col2Ref == -1)){
-      int currKey = it.key();
-      int val = columnRef.get(currKey);
-      if (val == pos1)
-        col1Ref = currKey;
-      if (val == pos2)
-        col2Ref = currKey;
-    }
-    //swapping between the references
-    columnRef.remove(col1Ref);
-    columnRef.remove(col2Ref);
-    columnRef.put(col1Ref, pos2);
-    columnRef.put(col2Ref, pos1);
-
   }
 
   /**
@@ -1008,23 +853,11 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    */
   public void setObject(Object element, int row, int column) {
 
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
-
-
-    if (newCol == null) {
-      newCol = new SparseObjectColumn();
-      newCol.setObject(element, row);
-      insertColumn(newCol, column);
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.OBJECT);
     }
-    else{
-      getCol(column).setObject(element, row);
-      int key = VHashService.findKey(column, columnRef);
-      if(key == -1){
-        System.out.println("Could not find reference to column " + column +
-                           " in the references map! incomlete setting of object");
-      }
-      addCol2Row(key, row);
-    }
+    getCol(column).setObject(element, row);
+    addCol2Row(column, row);
 
     if (numRows <= row) {
       numRows = row + 1;
@@ -1044,29 +877,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    * @param column       the column number of the entry to be set
    */
   public void setInt(int data, int row, int column) {
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
 
-    if (newCol == null) {
-         newCol = new SparseIntColumn();
-         newCol.setInt(data, row);
-         insertColumn(newCol, column);
-       }
-     else{
-       getCol(column).setInt(data, row);
-       int key = VHashService.findKey(column, columnRef);
-       if(key == -1){
-         System.out.println("Could not find reference to column " + column +
-                            " in the references map! incomlete setting of data");
-       }
-       addCol2Row(key, row);
-     }
-
-    /*if (!columns.containsKey(column)) {
+    if (!columns.containsKey(column)) {
       addColumn(column, ColumnTypes.INTEGER);
     }
     getCol(column).setInt(data, row);
     addCol2Row(column, row);
-*/
+
     if (numRows <= row) {
       numRows = row + 1;
     }
@@ -1086,30 +903,12 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    */
   public void setShort(short data, int row, int column) {
 
-
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
-
-       if (newCol == null) {
-            newCol = new SparseShortColumn();
-            newCol.setShort(data, row);
-            insertColumn(newCol, column);
-          }
-        else{
-          getCol(column).setShort(data, row);
-          int key = VHashService.findKey(column, columnRef);
-          if(key == -1){
-            System.out.println("Could not find reference to column " + column +
-                               " in the references map! incomlete setting of data");
-          }
-          addCol2Row(key, row);
-        }
-
- /*   if (!columns.containsKey(column)) {
+    if (!columns.containsKey(column)) {
       addColumn(column, ColumnTypes.SHORT);
     }
     getCol(column).setShort(data, row);
     addCol2Row(column, row);
-*/
+
     if (numRows <= row) {
       numRows = row + 1;
     }
@@ -1129,29 +928,12 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    */
   public void setFloat(float data, int row, int column) {
 
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
-
-       if (newCol == null) {
-            newCol = new SparseFloatColumn();
-            newCol.setFloat(data, row);
-            insertColumn(newCol, column);
-          }
-        else{
-          getCol(column).setFloat(data, row);
-          int key = VHashService.findKey(column, columnRef);
-          if(key == -1){
-            System.out.println("Could not find reference to column " + column +
-                               " in the references map! incomlete setting of data");
-          }
-          addCol2Row(key, row);
-        }
-/*
     if (!columns.containsKey(column)) {
       addColumn(column, ColumnTypes.FLOAT);
     }
     getCol(column).setFloat(data, row);
     addCol2Row(column, row);
-*/
+
     if (numRows <= row) {
       numRows = row + 1;
     }
@@ -1171,35 +953,17 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    */
   public void setDouble(double data, int row, int column) {
     // XIAOLEI - just added some comments
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
-
-       if (newCol == null) {
-            newCol = new SparseDoubleColumn();
-            newCol.setDouble(data, row);
-            insertColumn(newCol, column);
-          }
-        else{
-          getCol(column).setDouble(data, row);
-          int key = VHashService.findKey(column, columnRef);
-          if(key == -1){
-            System.out.println("Could not find reference to column " + column +
-                               " in the references map! incomlete setting of data");
-          }
-          addCol2Row(key, row);
-        }
-
-
 
     /* does the column exist in the entire table? */
-    //if (!columns.containsKey(column)) {
-  //    addColumn(column, ColumnTypes.DOUBLE);
+    if (!columns.containsKey(column)) {
+      addColumn(column, ColumnTypes.DOUBLE);
 
       /* set the value */
-//    }
-//    getCol(column).setDouble(data, row);
+    }
+    getCol(column).setDouble(data, row);
 
     /* now make that row see this newly added column */
-//    addCol2Row(column, row);
+    addCol2Row(column, row);
 
     /* in case this newly added value expands the entire table */
     if (numRows <= row) {
@@ -1220,31 +984,12 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    */
   public void setLong(long data, int row, int column) {
 
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
-
-       if (newCol == null) {
-            newCol = new SparseLongColumn();
-            newCol.setLong(data, row);
-            insertColumn(newCol, column);
-          }
-        else{
-          getCol(column).setLong(data, row);
-          int key = VHashService.findKey(column, columnRef);
-          if(key == -1){
-            System.out.println("Could not find reference to column " + column +
-                               " in the references map! incomlete setting of data");
-          }
-          addCol2Row(key, row);
-        }
-
-
-/*
     if (!columns.containsKey(column)) {
       addColumn(column, ColumnTypes.LONG);
     }
     getCol(column).setLong(data, row);
     addCol2Row(column, row);
-*/
+
     if (numRows <= row) {
       numRows = row + 1;
     }
@@ -1263,29 +1008,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    * @param column       the column number of the entry to be set
    */
   public void setString(String data, int row, int column) {
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
 
-       if (newCol == null) {
-            newCol = new SparseStringColumn();
-            newCol.setString(data, row);
-            insertColumn(newCol, column);
-          }
-        else{
-          getCol(column).setString(data, row);
-          int key = VHashService.findKey(column, columnRef);
-          if(key == -1){
-            System.out.println("Could not find reference to column " + column +
-                               " in the references map! incomlete setting of data");
-          }
-          addCol2Row(key, row);
-        }
-/*
     if (!columns.containsKey(column)) {
       addColumn(column, ColumnTypes.STRING);
     }
     getCol(column).setString(data, row);
     addCol2Row(column, row);
-*/
+
     if (numRows <= row) {
       numRows = row + 1;
     }
@@ -1305,30 +1034,12 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    */
   public void setBytes(byte[] data, int row, int column) {
 
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
-
-       if (newCol == null) {
-            newCol = new SparseByteArrayColumn();
-            newCol.setBytes(data, row);
-            insertColumn(newCol, column);
-          }
-        else{
-          getCol(column).setBytes(data, row);
-          int key = VHashService.findKey(column, columnRef);
-          if(key == -1){
-            System.out.println("Could not find reference to column " + column +
-                               " in the references map! incomlete setting of data");
-          }
-          addCol2Row(key, row);
-        }
-
-
- /*   if (!columns.containsKey(column)) {
+    if (!columns.containsKey(column)) {
       addColumn(column, ColumnTypes.BYTE_ARRAY);
     }
     getCol(column).setBytes(data, row);
     addCol2Row(column, row);
-*/
+
     if (numRows <= row) {
       numRows = row + 1;
     }
@@ -1347,31 +1058,12 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    * @param column       the column number of the entry to be set
    */
   public void setBoolean(boolean data, int row, int column) {
-
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
-
-   if (newCol == null) {
-        newCol = new SparseBooleanColumn();
-        newCol.setBoolean(data, row);
-        insertColumn(newCol, column);
-      }
-    else{
-      getCol(column).setBoolean(data, row);
-      int key = VHashService.findKey(column, columnRef);
-      if(key == -1){
-        System.out.println("Could not find reference to column " + column +
-                           " in the references map! incomlete setting of data");
-      }
-      addCol2Row(key, row);
-    }
-
-
-  /*  if (!columns.containsKey(column)) {
+    if (!columns.containsKey(column)) {
       addColumn(column, ColumnTypes.BOOLEAN);
     }
     getCol(column).setBoolean(data, row);
     addCol2Row(column, row);
-*/
+
     if (numRows <= row) {
       numRows = row + 1;
     }
@@ -1390,29 +1082,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    * @param column       the column number of the entry to be set
    */
   public void setChars(char[] data, int row, int column) {
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
 
-       if (newCol == null) {
-            newCol = new SparseCharArrayColumn();
-            newCol.setChars(data, row);
-            insertColumn(newCol, column);
-          }
-        else{
-          getCol(column).setChars(data, row);
-          int key = VHashService.findKey(column, columnRef);
-          if(key == -1){
-            System.out.println("Could not find reference to column " + column +
-                               " in the references map! incomlete setting of data");
-          }
-          addCol2Row(key, row);
-        }
-/*
     if (!columns.containsKey(column)) {
       addColumn(column, ColumnTypes.CHAR_ARRAY);
     }
     getCol(column).setChars(data, row);
     addCol2Row(column, row);
-*/
+
     if (numRows <= row) {
       numRows = row + 1;
     }
@@ -1432,30 +1108,12 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    */
   public void setByte(byte data, int row, int column) {
 
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
-
-          if (newCol == null) {
-               newCol = new SparseByteColumn();
-               newCol.setByte(data, row);
-               insertColumn(newCol, column);
-             }
-           else{
-             getCol(column).setByte(data, row);
-             int key = VHashService.findKey(column, columnRef);
-             if(key == -1){
-               System.out.println("Could not find reference to column " + column +
-                                  " in the references map! incomlete setting of data");
-             }
-             addCol2Row(key, row);
-           }
-
-/*
     if (!columns.containsKey(column)) {
       addColumn(column, ColumnTypes.BYTE);
     }
     getCol(column).setByte(data, row);
     addCol2Row(column, row);
-*/
+
     if (numRows <= row) {
       numRows = row + 1;
     }
@@ -1475,30 +1133,12 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    */
   public void setChar(char data, int row, int column) {
 
-    AbstractSparseColumn newCol = (AbstractSparseColumn)columns.get(column);
-
-          if (newCol == null) {
-               newCol = new SparseCharColumn();
-               newCol.setChar(data, row);
-               insertColumn(newCol, column);
-             }
-           else{
-             getCol(column).setChar(data, row);
-             int key = VHashService.findKey(column, columnRef);
-             if(key == -1){
-               System.out.println("Could not find reference to column " + column +
-                                  " in the references map! incomlete setting of data");
-             }
-             addCol2Row(key, row);
-           }
-
-/*
     if (!columns.containsKey(column)) {
       addColumn(column, ColumnTypes.CHAR);
     }
     getCol(column).setChar(data, row);
     addCol2Row(column, row);
-*/
+
     if (numRows <= row) {
       numRows = row + 1;
     }
@@ -1540,27 +1180,19 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
 
   /**
        * Sorts this Table according to the natural order of Column no. <code>col</code>
-       *
-       * @todo there is a problem with this method: getNewOrder will return a
-       * mapping of the new order that contains only rows from the sorting column.
-       * which means, some columns might be half sorted.
    *
    * @param col      the index of the Column according to which this table is to be sorted
    */
   public void sortByColumn(int col) {
     Column sorting = getCol(col);
     if (sorting != null) {
-      VIntIntHashMap sortOrder = ((AbstractSparseColumn)sorting).getNewOrder();
-      sort(sortOrder);
-    //  sorting.sort(this);
+      sorting.sort(this);
     }
   }
 
   /**
    * Sorts rows no. <code>begin</code> through <code>end</code> of this Table
    * according to the natural order of Column no. <code>col</code>
-   *
-   * @todo same as sortByColumn method...
    *
    * @param col      the index of the Column according to which this table is to be sorted
    * @param begin     the row index at which begins the section to be sorted.
@@ -1580,9 +1212,7 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
 
     Column sorting = getCol(col);
     if (sorting != null) {
-      VIntIntHashMap sortOrder = ((AbstractSparseColumn)sorting).getNewOrder(begin, end);
-      sort(sortOrder);
-//      sorting.sort(this, begin, end);
+      sorting.sort(this, begin, end);
 
     }
   }
@@ -1689,8 +1319,6 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
   /**
    * **************************************************
    * AddRow methods
-   *
-   * the column reference indirections map is updated via setType(data, row, column)
    * **************************************************
    */
 
@@ -1710,7 +1338,6 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
   protected void addRow(int[] newEntry) {
     int[] validColumns = getAllColumns();
 
-
     addRow(newEntry, validColumns);
   }
 
@@ -1723,7 +1350,6 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    * @param validColumns  indicates to which columns the data will be inserted.
    */
   protected void addRow(int[] newEntry, int[] validColumns) {
-
     addRow(newEntry, numRows, validColumns);
 
   }
@@ -2900,21 +2526,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
     }
     numColumns = validColumns[validColumns.length - 1] + 1;
 
-//todo: the objected iserted here should consist of keys of validColumns in
-    //columnRef and not validColumns.
-    //implement reveresed map to cut on costs?
-    //in the meantime - costly but working:
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
-
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
-
     for (; i < newEntry.length; i++) {
       //     addDefaultColumn(colIndex);
       setInt(newEntry[i], rowIndex, numColumns);
       numColumns++;
     }
 
-
+    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
 
     numRows++;
   }
@@ -2950,22 +2568,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
 
     }
 
-
-//todo: the objected iserted here should consist of keys of validColumns in
-    //columnRef and not validColumns.
-    //implement reveresed map to cut on costs?
-    //in the meantime - costly but working:
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
-
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
-
     for (; i < newEntry.length; i++) {
       //     addDefaultColumn(colIndex);
       setBoolean(newEntry[i], rowIndex, numColumns);
       numColumns++;
     }
 
- //   rows.insertObject(new VIntHashSet(validColumns), rowIndex);
+    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
 
     numRows++;
 
@@ -2997,23 +2606,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
     }
     numColumns = validColumns[validColumns.length - 1] + 1;
 
-
-//todo: the objected iserted here should consist of keys of validColumns in
-    //columnRef and not validColumns.
-    //implement reveresed map to cut on costs?
-    //in the meantime - costly but working:
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
-
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
-
-
     for (; i < newEntry.length; i++) {
       //     addDefaultColumn(colIndex);
       setByte(newEntry[i], rowIndex, numColumns);
       numColumns++;
     }
 
-  //  rows.insertObject(new VIntHashSet(validColumns), rowIndex);
+    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
     numRows++;
 
   }
@@ -3044,21 +2643,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
     }
     numColumns = validColumns[validColumns.length - 1] + 1;
 
-//todo: the objected iserted here should consist of keys of validColumns in
-    //columnRef and not validColumns.
-    //implement reveresed map to cut on costs?
-    //in the meantime - costly but working:
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
-
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
-
     for (; i < newEntry.length; i++) {
 //      addDefaultColumn(colIndex);
       setChars(newEntry[i], rowIndex, numColumns);
       numColumns++;
     }
 
-//    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
+    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
     numRows++;
 
   }
@@ -3092,8 +2683,7 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
       numColumns = validColumns[validColumns.length - 1] + 1;
 
       /* if the new row has less entries, we still have to shift down
-       * the elements after the new row in each column in valid columns
-       that has no data to be inserted. by inserting a null object,
+       * the columns after the new row.  by inserting a null object,
        * the insertRow method will actually _not_ insert it.  it'll
        * only do the shifting. */
     }
@@ -3103,14 +2693,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
       }
     }
 
-    int[] rowColumns = new int[(validColumns.length > newEntry.length) ? newEntry.length : validColumns.length];
-    for (int j = 0; j < rowColumns.length ; j++) {
-      rowColumns[j] = validColumns[j];
-    }
+    int[] rowColumns = new int[newEntry.length];
+    for (int j = 0; j < rowColumns.length; j++) {
+      rowColumns[j] = j;
 
-          /* add the row */
-    int[] indirections = VHashService.getKeys(rowColumns, columnRef);
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
+      /* add the row */
+    }
+    rows.insertObject(new VIntHashSet(rowColumns), rowIndex);
 
     /* if the new row has more entries than the current table */
     for (; i < newEntry.length; i++) {
@@ -3148,16 +2737,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
     }
     numColumns = validColumns[validColumns.length - 1] + 1;
 
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
-
     for (; i < newEntry.length; i++) {
       //     addDefaultColumn(colIndex);
       setFloat(newEntry[i], rowIndex, numColumns);
       numColumns++;
     }
 
- //   rows.insertObject(new VIntHashSet(validColumns), rowIndex);
+    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
     numRows++;
 
   }
@@ -3188,19 +2774,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
     }
     numColumns = validColumns[validColumns.length - 1] + 1;
 
-
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
-
-
-
     for (; i < newEntry.length; i++) {
 //      addDefaultColumn(colIndex);
       setLong(newEntry[i], rowIndex, numColumns);
       numColumns++;
     }
 
-//    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
+    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
 
     numRows++;
   }
@@ -3231,16 +2811,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
     }
     numColumns = validColumns[validColumns.length - 1] + 1;
 
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
-
     for (; i < newEntry.length; i++) {
       //     addDefaultColumn(colIndex);
       setShort(newEntry[i], rowIndex, numColumns);
       numColumns++;
     }
 
- //   rows.insertObject(new VIntHashSet(validColumns), rowIndex);
+    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
 
     numRows++;
   }
@@ -3271,16 +2848,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
     }
     numColumns = validColumns[validColumns.length - 1] + 1;
 
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
-
     for (; i < newEntry.length; i++) {
 //      addDefaultColumn(colIndex);
       setString(newEntry[i], rowIndex, numColumns);
       numColumns++;
     }
 
-//    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
+    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
     numRows++;
 
   }
@@ -3311,16 +2885,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
     }
     numColumns = validColumns[validColumns.length - 1] + 1;
 
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
-
     for (; i < newEntry.length; i++) {
       //     addDefaultColumn(colIndex);
       setObject(newEntry[i], rowIndex, numColumns);
       numColumns++;
     }
 
- //   rows.insertObject(new VIntHashSet(validColumns), rowIndex);
+    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
 
     numRows++;
   }
@@ -3351,16 +2922,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
     }
     numColumns = validColumns[validColumns.length - 1] + 1;
 
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
-
     for (; i < newEntry.length; i++) {
 //      addDefaultColumn(colIndex);
       setChar(newEntry[i], rowIndex, numColumns);
       numColumns++;
     }
 
-  //  rows.insertObject(new VIntHashSet(validColumns), rowIndex);
+    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
 
     numRows++;
   }
@@ -3391,16 +2959,13 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
     }
     numColumns = validColumns[validColumns.length - 1] + 1;
 
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
-    rows.insertObject(new VIntHashSet(indirections), rowIndex);
-
     for (; i < newEntry.length; i++) {
 //      addDefaultColumn(colIndex);
       setBytes(newEntry[i], rowIndex, numColumns);
       numColumns++;
     }
 
-//    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
+    rows.insertObject(new VIntHashSet(validColumns), rowIndex);
     numRows++;
   }
 
@@ -3941,25 +3506,11 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    * **********************************************************
    */
 
-  /**
-   * modified by vered on May 24: better inserting first the first column.
-   * that leaves us with less relocations of the data.
-   *
-   * @todo maybe not call insertColumn here. to make it more efficient - move the
-   * data only once, at once.
-   *
-   * @param newColumns
-   * @param position
-   */
-  protected void insertColumns(AbstractSparseColumn[] newColumns, int position) {
-/*    for (int i = newColumns.length - 1; i >= 0; i--) {
-      this.insertColumn(newColumns[i], position);
-    }*/
 
-    for (int i = 0; i < newColumns.length; i++, position++) {
+  protected void insertColumns(AbstractSparseColumn[] newColumns, int position) {
+    for (int i = newColumns.length - 1; i >= 0; i--) {
       this.insertColumn(newColumns[i], position);
     }
-
   }
 
   /**
@@ -5387,8 +4938,7 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    */
   protected void removeEntry(int row, int column) {
     if (rows.containsKey(row)) {
-      int key = VHashService.findKey(column, columnRef);
-      ( (VIntHashSet) rows.get(row)).remove(key);
+      ( (VIntHashSet) rows.get(row)).remove(column);
       //  removeEmptyRow(row);
     }
 
@@ -5471,9 +5021,7 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
 
     }
 
-    int[] indirections = VHashService.getKeys(indices, columnRef);
-
-    IndicesRemover remover = new IndicesRemover(indirections);
+    IndicesRemover remover = new IndicesRemover(indices);
     rows.forEachValue(remover);
     /*
         int[] allRows = this.getAllRows();
@@ -5489,9 +5037,66 @@ if(!columnRef.containsValue(pos1) || !columnRef.containsValue(pos2) ){
    */
 
 
+
+
+
   //=================
   // Private Methods
   //=================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   /**

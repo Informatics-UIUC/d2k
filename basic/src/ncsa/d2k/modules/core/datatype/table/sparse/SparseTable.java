@@ -32,9 +32,8 @@ import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
  * SparseTable holds another int to object hashmap which represents the valid
  * rows (rows that have elements in them).
  *
- * Each row is represented by a Set of integers, which are redirections to the
- * indices of valid columns in the Table. for each element from column j in row i,
- * the redirection k to column j is part of the Set.
+ * Each row is represented by a Set of integers, which are the valid columns number
+ * of that specific row.
  *
  * Each row (a Set object) is mapped to an int, the row number, in the hashmap.
  *
@@ -42,10 +41,6 @@ import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
  * table implementations.  Missing values however are not the same as "default" values
  * which constitute the majority of values in the value space.
  *
- * @todo think of the option of creating a reference map for the row objects too.
- * see removeRow code for thsi matter.
- *
-
  */
 
 public abstract class SparseTable
@@ -59,14 +54,7 @@ public abstract class SparseTable
   protected VIntObjectHashMap columns; //ints (keys - the column number) mapped to
   //int hashmaps (values - the columns)
   protected VIntObjectHashMap rows; //ints (keys - row number) mapped to Sets
-  //(values - redirections are indices into *columnRef*)
-
-  protected VIntIntHashMap columnRef; //keys - redirections (elements in the
-//  IntSet that consists a row) values - indices of the columns as viewed by
-  //the user (meaning the keys into *columns*)
-
- // protected VIntIntHashMap reversedRef; //the reversed map of columnRef.
-
+  //(values - holds the valid columns in the row)
   protected int numRows;
   protected int numColumns;
   protected static SparseTableFactory factory = new SparseTableFactory();
@@ -117,9 +105,6 @@ public abstract class SparseTable
 
     numRows = _numRows;
     numColumns = _numCols;
-    columnRef = new VIntIntHashMap(_numCols);
-    //reversedRef = new VIntIntHashMap(_numCols);
-
   }
 
   /**
@@ -134,8 +119,6 @@ public abstract class SparseTable
     //retrieving valid rows numbers
     int[] rKeys;
 
-//todo: this cases should be handle in constructor of subset table...
-    //should not be here. especially now that train and test tables are subset tables...
     if (T instanceof TestTable) {
       rKeys = ( (SparseExampleTable) T).testSet;
     }
@@ -160,10 +143,6 @@ public abstract class SparseTable
     }
     numRows = T.numRows;
     numColumns = T.numColumns;
-    columnRef = T.columnRef.copy();
-//    reversedRef = T.reversedRef.copy();
-
-
     copyAttributes(T);
   }
 
@@ -989,33 +968,35 @@ public abstract class SparseTable
    *                    sorted.
    */
   public int[] getRowIndices(int rowNumber) {
-   int[] indices = getRowIndicesUnsorted(rowNumber);
+    if ((rowNumber < 0) || (rowNumber >= this.numRows)){
+      throw new java.lang.RuntimeException("Column index out of range: " + rowNumber);
+    }
+    int[] indices = null;
+    if (rows.containsKey(rowNumber)) {
+      indices = ( (VIntHashSet) rows.get(rowNumber)).toArray();
+    }
+    if (indices == null) {
+      indices = columns.keys();
+
+    }
     Arrays.sort(indices);
-       return   indices;
+
+    return indices;
 
   }
 
   public int[] getRowIndicesUnsorted(int rowNumber) {
     if ((rowNumber < 0) || (rowNumber >= this.numRows)){
-      throw new java.lang.RuntimeException("Row index out of range: " + rowNumber);
+      throw new java.lang.RuntimeException("Column index out of range: " + rowNumber);
     }
     int[] indices = null;
-   if (rows.containsKey(rowNumber)) {
+    if (rows.containsKey(rowNumber)) {
+      indices = ( (VIntHashSet) rows.get(rowNumber)).toArray();
+    }
+    if (indices == null) {
+      indices = columns.keys();
 
-     VIntHashSet rowSet = (VIntHashSet)rows.get(rowNumber);
-     indices = new int[rowSet.size()];
-     TIntIterator it = rowSet.iterator();
-     int i=0;
-     while(it.hasNext()){
-       indices[i] = columnRef.get(it.next());
-       i++;
-     }
-
-   }
-   if (indices == null) {
-     indices = columns.keys();
-   }
-
+    }
     return indices;
 
   }
@@ -1053,8 +1034,6 @@ public abstract class SparseTable
 
     columns = srcTable.columns.copy();
     rows = srcTable.rows.copy();
-    columnRef = srcTable.columnRef.copy();
- //   reversedRef = srcTable.reversedRef.copy();
     numColumns = srcTable.numColumns;
     numRows = srcTable.numRows;
 
@@ -1309,8 +1288,5 @@ public abstract class SparseTable
           return new SparseExampleTable(this);
           }
      */
-
-
-
 
 } //SparseTable
