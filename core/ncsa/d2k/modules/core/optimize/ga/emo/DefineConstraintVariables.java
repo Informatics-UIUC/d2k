@@ -92,6 +92,14 @@ public class DefineConstraintVariables
       for (i = 0; i < table.getNumColumns(); i++) {
         columnModel.addElement(table.getColumnLabel(i));
       }
+
+      if(constructions != null) {
+        for(int j = 0; j < constructions.length; j++) {
+          columnModel.addElement( ((EMOConstruction)constructions[j]).label);
+        }
+      }
+
+
       // set the columnBox model to the recently
       // updated columnModel
       columnBox.setModel(columnModel);

@@ -95,7 +95,7 @@ public class EMOGeneratePopulation
   /**
      This is the desired number of points user wants to see on the Pareto optimal front
    */
-  public int NoOfDesiredPeaks = 5;
+  /*public int NoOfDesiredPeaks = 5;
 
   public int getNoOfDesiredPeaks() {
     return this.NoOfDesiredPeaks;
@@ -103,7 +103,7 @@ public class EMOGeneratePopulation
 
   /**
    */
-  public void setNoOfDesiredPeaks(int nodp) {
+  /*public void setNoOfDesiredPeaks(int nodp) {
     this.NoOfDesiredPeaks = nodp;
   }
 
@@ -126,7 +126,7 @@ public class EMOGeneratePopulation
   /**
      This is the probability of maintaining the desired number of points on the Pareto optimal front
    */
-  protected double ProbabilityOfMaintainingQNiches = 0.9;
+  /*protected double ProbabilityOfMaintainingQNiches = 0.9;
   public void setProbabilityOfMaintainingQNiches(double pomqn) {
     this.ProbabilityOfMaintainingQNiches = pomqn;
   }
@@ -159,12 +159,12 @@ public class EMOGeneratePopulation
      get the population size.
      @returns the population size.
    */
-  public int getpopulationSize() {
+  /*public int getpopulationSize() {
     return this.populationSize;
   }
 
   /** generation counter. */
-  public int maxGenerations;
+  //private int maxGenerations;
 
   public void beginExecution() {
     firstRun = true;
@@ -217,6 +217,7 @@ public class EMOGeneratePopulation
       popInfo = (EMOPopulationInfo) pullInput(0);
       populationTbl = (MutableTable) popInfo.varNames;
       variableNames = (MutableTable)populationTbl.copy();
+
       bounds = (MutableTable) popInfo.boundsAndPrecision;
       firstRun = false;
       int stringLength = 0;
@@ -226,7 +227,7 @@ public class EMOGeneratePopulation
       this.maxGenerations = 2*stringLength;
       System.out.println("MaxGen: "+maxGenerations);
       this.CalculateAndSetPopulationSize();
-      System.out.println("PS: "+this.populationSize);
+      System.out.println("Pop Size: "+this.populationSize);
     }
     else {
       // consume the dummy input
@@ -239,24 +240,24 @@ public class EMOGeneratePopulation
 
     // the number of variables in the encoded problem
     int numOfvar = bounds.getNumRows();
+
     // generate DoubleRange for variables
     //use the first input, the default table model, to get the
     //information about decision variables of the problem
     DoubleRange[] xyz = new DoubleRange[numOfvar];
     for (int i = 0; i < numOfvar; i++) {
-      //xyz[i] = new DoubleRange( (String)(model.getValueAt(i,1)),(Float.parseFloat((String)(model.getValueAt(i,3)))) ,(Float.parseFloat((String)(model.getValueAt(i,2)))) );
       xyz[i] = new DoubleRange(bounds.getString(i, 1), bounds.getFloat(i, 3),
                                bounds.getFloat(i, 2));
     }
-    // use the second input, to set the information about
-    //fitness function of the problem
-    EMOConstruction[] fitvarConstructions = popInfo.
-        fitnessVariableConstructions;
-    EMOConstruction[] fitConstructions = popInfo.fitnessFunctionConstructions;
 
+    // fitness variables of the problem
+    EMOConstruction[] fitvarConstructions = popInfo.fitnessVariableConstructions;
+    // fitness functions of the problem
+    EMOConstruction[] fitConstructions = popInfo.fitnessFunctionConstructions;
 
     //number of objective functions
     int numOfFunc = fitConstructions.length;
+
     // set up the fitness function
     ObjectiveConstraints oc[] = new ObjectiveConstraints[numOfFunc];
     // if getmyflag() returns 0, the corresponding objective
@@ -287,19 +288,21 @@ public class EMOGeneratePopulation
     pop.setMaxGenerations(this.maxGenerations);
 
     //update the third input, the mutable table,
-    //by aading rows using the generated population
+    //by adding rows using the generated population
     //the columns of the mutable table corresponds to the
     //variables, fitness functions
     //the rows corresponds to the member of the population
     //therefore the number of rows equal to the the number of
     //members in the population
+    populationTbl.setNumRows(populationSize);
     for (int i = 0; i < this.populationSize; i++) {
       double[] tabrows = (double[]) ( (pop.getMember(i)).getGenes());
       float[] ftabrows = new float[populationTbl.getNumColumns()];
       for (int j = 0; j < numOfvar; j++) {
         ftabrows[j] = (float) tabrows[j];
       }
-      populationTbl.addRow(ftabrows);
+//      populationTbl.addRow(ftabrows);
+      populationTbl.setRow(ftabrows, i);
     }
 
     pop.setTbl(populationTbl);

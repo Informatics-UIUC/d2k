@@ -104,6 +104,7 @@ public class EMOEvaluateModule
 //	}
       // increase the module execution counter
       //iiEval++;
+
       // the current population of the GA run
       NsgaPopulation pop = (NsgaPopulation)this.pullInput(0);
 
@@ -181,7 +182,6 @@ public class EMOEvaluateModule
           MONumericIndividual myni = (MONumericIndividual) mymember;
           myni.setObjective(i, newmt.getFloat(mynewii, fitpos));
         }
-
       }
 
       //extract the fitness constraints variables information
@@ -239,9 +239,8 @@ public class EMOEvaluateModule
         // a new column to the table and hence we deleted the column
         // corresponding to the constraint before transforming
         myfitct.transform(newmt);
-
       }
-      //((ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl)newmt).print();
+
       //this is the array of integers that contain the column
       // number of the constraints
       int[] myconstraintpos = new int[constraintVariableConstructions.length];
@@ -253,6 +252,7 @@ public class EMOEvaluateModule
         }
         myconstraintpos[i] = fitpos;
       }
+
       //myconstraintpos now contains the column number of the constraints
       float constrvalue = 0;
       //calculate the constraint for each member
@@ -322,7 +322,5 @@ public class EMOEvaluateModule
           return true;
 
       }
-
   }
-
 }

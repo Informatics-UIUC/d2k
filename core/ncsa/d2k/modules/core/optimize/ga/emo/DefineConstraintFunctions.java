@@ -104,7 +104,7 @@ public class DefineConstraintFunctions
     // the columnBox needs to be continuously updated so
     // that recently defined defined variables can be used to define
     //other variables
-/*    public void redoBox() {
+    public void redoBox() {
       Object[] constructions;
       constructions = (newColumnModel.toArray());
       columnModel = new DefaultComboBoxModel();
@@ -113,10 +113,17 @@ public class DefineConstraintFunctions
       for (i = 0; i < table.getNumColumns(); i++) {
         columnModel.addElement(table.getColumnLabel(i));
       }
+
+      if(constructions != null) {
+        for(int j = 0; j < constructions.length; j++) {
+          columnModel.addElement( ((EMOConstruction)constructions[j]).label);
+        }
+      }
+
       // set the columnBox model to the recently
       // updated columnModel
       columnBox.setModel(columnModel);
-    }*/
+    }
 
     public void initialize() {
       //Initialize method called of class that is extended

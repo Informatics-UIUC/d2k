@@ -79,6 +79,7 @@ public class EMO2 extends UIModule {
       continueButton.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           pushOutput(new EMOPopulationInfo(), 0);
+          pushOutput(pop, 1);
           continueButton.setEnabled(false);
           newPop = true;
         }
@@ -100,14 +101,15 @@ public class EMO2 extends UIModule {
     int currentGen = 0;
 
     public void setInput(Object o, int z) {
-      NsgaPopulation pop = (NsgaPopulation)o;
+      pop = (NsgaPopulation)o;
       if(newPop) {
+        System.out.println(pop.getNumObjectives());
         maxGen = pop.getMaxGenerations();
         newPop = false;
       }
       currentGen = pop.getCurrentGeneration();
-      System.out.println("Current Gen: "+currentGen);
-      if(currentGen >= (maxGen-1))
+      //System.out.println("Current Gen: "+currentGen);
+      if(currentGen == maxGen-1)
         continueButton.setEnabled(true);
 
       NsgaSolution[] nis;
@@ -134,9 +136,10 @@ public class EMO2 extends UIModule {
       table.setColumn (f1, 0);
       table.setColumn (f2, 1);
 
-      int[] sc = new int[]{0,1};
+      int[] sc = new int[]{0, 1};
+      //table.print();
 
-      spw.setTable(table, sc);
+      //spw.setTable(table, sc);
     }
 
     private class MainView extends JPanel {
@@ -437,6 +440,10 @@ public class EMO2 extends UIModule {
                                       Color.red, scalarColumns[j], scalarColumns[i]);
                 settings.xaxis = table.getColumnLabel(scalarColumns[j]);
                 settings.yaxis = table.getColumnLabel(scalarColumns[i]);
+                settings.xmaximum = new Integer(100);
+                settings.xminimum = new Integer(-100);
+                settings.yminimum = new Integer(-100);
+                settings.ymaximum = new Integer(100);
 
                 Graph graph = createSmallGraph(table, data, settings);
                 //img = new BufferedImage(ROW_WIDTH, ROW_HEIGHT,
