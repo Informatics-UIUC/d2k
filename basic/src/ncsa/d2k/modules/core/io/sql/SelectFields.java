@@ -14,14 +14,57 @@ import ncsa.d2k.userviews.swing.*;
 public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 
   JOptionPane msgBoard = new JOptionPane();
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Select Attributes";
+	}
+
+	/**
+		This method returns the description of the module.
+		@return the description of the module.
+	*/
+	public String getModuleInfo () {
+          String s = "<p>Overview: ";
+          s += "This module allows the user to select one or more attributes (fields) from a list of attributes. </p>";
+          s += "<p>Detailed Description: ";
+          s += "This module provides a user-interface that allows one or more attributes to be chosen ";
+          s += "from a list of attributes. The list of attributes is ";
+          s += "retrieved from the <i>Attributes List</i> input port. ";
+          s += "The selected attributes will be used to construct SQL queries.  </p>";
+          s += "<p>Restrictions: ";
+          s += "Currently only SQLServer and Oracle databases are supported. ";
+          return s;
+
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Attributes List";
+			default:
+				return "No such input";
+		}
+	}
+
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "A list of available fields in the selected table.";
-			default: return "No such input";
+			case 0:
+				return "A list of available attributes.";
+			default:
+				return "No such input.";
 		}
 	}
 
@@ -35,13 +78,28 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 	}
 
 	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Selected Attributes";
+			default:
+				return "No such output";
+		}
+	}
+	/**
 		This method returns the description of the outputs.
-		@return the description of the indexed output.
+		@return the description of the indexed output
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "A list of selected fields.";
-			default: return "No such output";
+			case 0:
+				return "The attributes that were selected.";
+			default:
+				return "No such output";
 		}
 	}
 
@@ -52,24 +110,6 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 	public String[] getOutputTypes () {
 		String[] types = {"[Ljava.lang.String;"};
 		return types;
-	}
-
-	/**
-		This method returns the description of the module.
-		@return the description of the module.
-	*/
-	public String getModuleInfo () {
-          String s = "<p> Overview: ";
-          s += "This module allows users to make the field selection. </p>";
-          s += "<p> Detailed Description: ";
-          s += "Given a list of available fields, this module provides a user-interface ";
-          s += "to allow users to select from them. ";
-          s += "The selected list will be used to construct SQL queries. </p>";
-          s += "<p> Restrictions: ";
-          s += "We currently only support Oracle databases.";
-
-          return s;
-
 	}
 
 
@@ -88,39 +128,6 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 		return new SelectFieldsView();
 	}
 
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "Select Fields";
-	}
-
-	/**
-	 * Return the human readable name of the indexed input.
-	 * @param index the index of the input.
-	 * @return the human readable name of the indexed input.
-	 */
-	public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "Fields List";
-			default: return "NO SUCH INPUT!";
-		}
-	}
-
-	/**
-	 * Return the human readable name of the indexed output.
-	 * @param index the index of the output.
-	 * @return the human readable name of the indexed output.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			case 0:
-				return "Selected Fields";
-			default: return "NO SUCH OUTPUT!";
-		}
-	}
 
 	/**
 		This method returns an array with the names of each DSComponent in the UserView
@@ -174,8 +181,8 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 				}
 			});
 
-			// The listener for the add button moves stuff from the possible list
-			// to the selected list.
+			// The listener for the remove button moves stuff from the selected list
+			// to the possible list.
 			remove.addActionListener (new AbstractAction () {
 				public void actionPerformed (ActionEvent e) {
 					Object[] sel = selectedFields.getSelectedValues();
@@ -195,9 +202,9 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 			//selectedFields.setFixedCellWidth(100);
 
 			JScrollPane jsp = new JScrollPane(possibleFields);
-			jsp.setColumnHeaderView(new JLabel("Possible Fields"));
+			jsp.setColumnHeaderView(new JLabel("Possible Attributes"));
 			JScrollPane jsp1 = new JScrollPane(selectedFields);
-			jsp1.setColumnHeaderView(new JLabel("Selected Fields"));
+			jsp1.setColumnHeaderView(new JLabel("Selected Attributes"));
 
 			canvasArea.add (b1, BorderLayout.CENTER);
 			canvasArea.add (/*possibleFields*/jsp, BorderLayout.WEST);
@@ -213,7 +220,7 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 					String[] retVal = new String[values.length];
                                         if (retVal.length==0) {
                                           JOptionPane.showMessageDialog(msgBoard,
-                                                    "You must select some fields.", "Error",
+                                                    "You must select at least one attribute.", "Error",
                                                     JOptionPane.ERROR_MESSAGE);
                                           System.out.println("No columns are selected");
                                         }
@@ -264,6 +271,14 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 				}
 			}
 
+			// If Possible Attributes or Selected Attributes labels are
+                        // longer than any of the fields, we want the width to be
+                        // based on those, not on the longest field.  -RA 6/03
+			String label = "XXXXXXXX Attributes";
+			if ( label.length() > lengthOfLongest) {
+				longest = label;
+			}
+
 			possibleFields.setPrototypeCellValue(longest);
 			selectedFields.setPrototypeCellValue(longest);
 		}
@@ -276,4 +291,6 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 // 2/19/03 - Very clean and well documented. checked into basic.
 // 2/28/03 - Dora added code to handle no selection of fields
 // 03/03/03 - QA and checked into basic - Anca.
+// 6/12/03 - Ruth changed "Fields" to "Attributes" and made sure there's enough space
+//           in dialog box for labels.  Also updated info & moved in/out methods together.
 // END QA Comments
