@@ -25,17 +25,6 @@ import ncsa.d2k.modules.core.transform.StaticMethods;
  *
  * @author gpape
  *
- * added by vered:
- *
- * @todo: the following expression will throw a number format exception (???)
- * attribute == attribute (no values!)
- *
- * @todo: the following expression is considered legal:
- * att == val == att
- * the result was an empty table.
- *
- *
- *
  *
  */
 public class FilterConstruction extends HeadlessUIModule {
@@ -119,7 +108,7 @@ public class FilterConstruction extends HeadlessUIModule {
    public PropertyDescription[] getPropertiesDescriptions() {
     PropertyDescription[] pds = new PropertyDescription[2];
     pds[0] = super.supressDescription;
-    pds[1] = new PropertyDescription("expression", "Filter Expression", "Set this expression to filter rows in the table");
+    pds[1] = new PropertyDescription("expression", "Filter Expression", "Set this expression to filter out rows in the table, when \"Supress User Interface Display\" is set to true");
     return pds;
 
    }
@@ -645,8 +634,17 @@ try {
   * i should be ommited, and row no. i has a missing value in attribute a, then
   * the table after the transformation will also have a missing value in row
   * no. i under attribute a (even if the row that replaced it has only valid
-  * values).
-  * solution - either removeRow of Table is modified such that it updates
-  * the missing values array, or that the applyTransformation method of
-  * FilterTransformation should take care of that.
+  * values). (fixed - 11-03-03)
+  *
+  *
+  * 11-03-03: the following expression attribute == attribute
+  *           is considered legal. if both attributes are nominal this will
+  *           throw a number format exception. if both are numeric: if they
+  *           are identical - the table remains the same. otherwise the table
+  *           becomes empty. [bug 109].
+  *
+  *           the following expression is considered legal (with golf.data):
+ *            att == val == att
+ *            the result was an empty table. (bug 110)
+
   */

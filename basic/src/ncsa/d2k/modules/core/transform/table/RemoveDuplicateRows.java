@@ -150,11 +150,11 @@ public class RemoveDuplicateRows extends DataPrepModule {
       * QA Comments:
       * 10-23-03: vered started qa process.
       *
-      *           array index out of bound exception is throws by removeRow of
+      *           array index out of bound exception is thrown by removeRow of
       *           Column [bug 87]. On other dataset the removal is incorrect.
       *           [bug 100]
       *           data set files can be found in basic archive under QA/bugs_data_set
       *
-      *
+      * 11-03-03: bugs 87 & 100 are fixed.
       *
  */
