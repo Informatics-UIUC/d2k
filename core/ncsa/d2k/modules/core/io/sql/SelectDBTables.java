@@ -210,18 +210,18 @@ public class SelectDBTables extends UIModule {
             JPanel p0 = new JPanel();
             p0.setLayout(new GridBagLayout());
 
-            Constrain.setConstraints(p0, jsp0, 0, 0, 1, 4,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p0, jsp1, 1, 0, 1, 4,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
+            Constrain.setConstraints(p0, jsp0, 0, 0, 1, 2,
+                GridBagConstraints.BOTH, GridBagConstraints.NORTHWEST, 1, 0);
+            Constrain.setConstraints(p0, jsp1, 1, 0, 1, 2,
+                GridBagConstraints.BOTH, GridBagConstraints.NORTHWEST, 1, 0);
 
-            Constrain.setConstraints(p0, moveToSelectedTables, 2, 1, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p0, removeSelectedTables, 2, 2, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
+            Constrain.setConstraints(p0, moveToSelectedTables, 2, 0, 1, 1,
+                GridBagConstraints.NONE, GridBagConstraints.SOUTH, 0, .5);
+            Constrain.setConstraints(p0, removeSelectedTables, 2, 1, 1, 1,
+                GridBagConstraints.NONE, GridBagConstraints.NORTH, 0, .5);
 
-            Constrain.setConstraints(p0, jsp2, 3, 0, 1, 4,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
+            Constrain.setConstraints(p0, jsp2, 3, 0, 1, 2,
+                GridBagConstraints.BOTH, GridBagConstraints.NORTHWEST, 1, 0);
 
 
             JPanel one = new JPanel();
@@ -248,47 +248,58 @@ public class SelectDBTables extends UIModule {
             moveToJoin.addActionListener(new AddJoin());
             removeJoin.addActionListener(new RemoveJoin());
 
-
-            Constrain.setConstraints(p1, new JLabel("Table 1", JLabel.CENTER), 0, 0, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p1, new JPanel(), 1, 0, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p1, new JLabel("Table 2", JLabel.CENTER), 2, 0, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-
-            Constrain.setConstraints(p1, allTables1, 0, 1, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p1, new JLabel("JOIN", JLabel.CENTER), 1, 1, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p1, allTables2, 2, 1, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p1, moveToJoin, 3, 1, 1, 1,  //..............
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-
-            Constrain.setConstraints(p1, new JLabel("Column", JLabel.CENTER), 0, 2, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p1, new JLabel("Op", JLabel.CENTER), 1, 2, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p1, new JLabel("Column", JLabel.CENTER), 2, 2, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p1, removeJoin, 3, 2, 1, 1,  //..............
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-
-            Constrain.setConstraints(p1, allColumns1, 0, 3, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p1, operations12, 1, 3, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(p1, allColumns2, 2, 3, 1, 1,
-                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1);
-
-
-            allTablesList = new JList((allTablesModel = new DefaultListModel()));
-
 //            joins = new JComboBox();   //...............
             joinsList = new JList((joinsModel = new DefaultListModel()));   //-----------
             joinsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             JScrollPane jspJoins = new JScrollPane(joinsList);
             jspJoins.setColumnHeaderView(new JLabel("Joins"));
+
+            Constrain.setConstraints(p1, new JLabel("Table 1", JLabel.CENTER), 0, 0, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 0);
+            Constrain.setConstraints(p1, new JPanel(), 1, 0, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 0);
+            Constrain.setConstraints(p1, new JLabel("Table 2", JLabel.CENTER), 2, 0, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 0);
+
+//            Constrain.setConstraints(p1, jspJoins, 4, 0, 2, 2,
+//                GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 0);
+
+
+
+            Constrain.setConstraints(p1, allTables1, 0, 1, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 1);
+            Constrain.setConstraints(p1, new JLabel("JOIN", JLabel.CENTER), 1, 1, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 1);
+            Constrain.setConstraints(p1, allTables2, 2, 1, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 1);
+            Constrain.setConstraints(p1, moveToJoin, 3, 1, 1, 1,  //..............
+                GridBagConstraints.NONE, GridBagConstraints.SOUTH, 1, 1);
+
+
+
+
+            Constrain.setConstraints(p1, new JLabel("Column", JLabel.CENTER), 0, 2, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 1);
+            Constrain.setConstraints(p1, new JLabel("Operation", JLabel.CENTER), 1, 2, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 1);
+            Constrain.setConstraints(p1, new JLabel("Column", JLabel.CENTER), 2, 2, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 1);
+            Constrain.setConstraints(p1, removeJoin, 3, 2, 1, 1,  //..............
+                GridBagConstraints.NONE, GridBagConstraints.NORTH, 1, 1);
+
+            Constrain.setConstraints(p1, allColumns1, 0, 3, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 1);
+            Constrain.setConstraints(p1, operations12, 1, 3, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 1);
+            Constrain.setConstraints(p1, allColumns2, 2, 3, 1, 1,
+                GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 1);
+
+
+            allTablesList = new JList((allTablesModel = new DefaultListModel()));
+
+
+
+
 
             JPanel two = new JPanel();
             two.setLayout(new BorderLayout());
@@ -469,9 +480,9 @@ System.out.println("---------->where clause :  " + where);
             // now the main area
             mainArea = new JPanel();
             mainArea.setLayout((cardLayout = new CardLayout()));
-            mainArea.add(one, "one");
-            mainArea.add(two, "two");
-            mainArea.add(three, "three");       //............
+            mainArea.add(p0, "one");
+            mainArea.add(two, "two");            //............
+            mainArea.add(three, "three");
             mainArea.add(four, "four");
 
             setLayout(new BorderLayout());
