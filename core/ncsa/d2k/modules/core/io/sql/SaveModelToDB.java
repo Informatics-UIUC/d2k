@@ -138,7 +138,6 @@ public class SaveModelToDB extends UIModule {
 
     public void initView(ViewModule mod) {
       removeAll();
-      System.out.println("enter initView");
       cw = (ConnectionWrapper)pullInput (0);
       model = (PredictionModelModule)pullInput (1);
       if (model.getClass().toString().equals(
