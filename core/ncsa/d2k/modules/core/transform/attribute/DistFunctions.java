@@ -530,13 +530,9 @@ public class DistFunctions {
 
 
 
-	/**////////////////////////////////////////////////////////
-	**a bunch of functions concerning the gamma distribution**
-	**														**
-	**														**
-	**														**
-	///////////////////////////////////////////////////////**/
-
+	/**
+	a bunch of functions concerning the gamma distribution**
+	**/
 
 
 	/** gamma   - the pdf
