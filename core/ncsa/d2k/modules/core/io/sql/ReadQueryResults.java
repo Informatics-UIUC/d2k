@@ -101,12 +101,14 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 
 		// get the name of the table.
 		String tableList = (String) this.pullInput (2);
+                // get the query condition.
+                String whereClause = (String) this.pullInput (3);
 
 		////////////////////////////
 		// Get the number of entries in the table.
-                // the following query does not work if fieldArray[0] contains missing values
-		//String query = "SELECT COUNT("+fieldArray[0]+") FROM "+tableList;
 		String query = "SELECT COUNT(*) FROM "+tableList;
+                if (whereClause.length() > 0)
+                   query += " WHERE " + whereClause;
 		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		int count = 0;
@@ -118,13 +120,11 @@ System.out.println ("---- Entries - "+count);
 		// Get the column types, and create the appropriate column
 		// objects
 
-		// construct the query to get the column metadata.
+		// construct the query to get clumn information.
 		query = "SELECT "+fieldList.toString()+" FROM "+tableList;
-		String whereClause = (String) this.pullInput (3);
-		if (whereClause.length() == 0)
-			whereClause = null;
-		if (whereClause != null)
-			query += " WHERE "+whereClause;
+
+                if (whereClause.length() > 0)
+                   query += " WHERE " + whereClause;
 
 		// Get the number of columns selected.
 		stmt = con.createStatement();
@@ -166,7 +166,6 @@ System.out.println ("---- Entries - "+count);
 				case Types.CHAR:
 				case Types.VARCHAR:
 				case Types.LONGVARCHAR:
-					//ByteArrayColumn byteC = new ByteArrayColumn (count);
 					StringColumn byteC = new StringColumn (count);
                                         byteC.setLabel (fieldArray[i]);
 					vt.setColumn (byteC, i);
@@ -183,7 +182,7 @@ System.out.println ("---- Entries - "+count);
 		// Now fill in the data
 		// construct the query to get the column metadata.
 		query = "SELECT "+fieldList.toString()+" FROM "+tableList;
-		if (whereClause != null)
+                if (whereClause.length() > 0)
 			query += " WHERE "+whereClause;
 
 		// Now populate the table.
@@ -219,8 +218,6 @@ System.out.println ("---- Entries - "+count);
                                                 break;
 				}
                               }
-		//for (int i = 0 ; i < numColumns; i++)
-			//System.out.println (vt.getColumnLabel (i));
 		this.pushOutput (vt, 0);
 	}
 /*&%^8 Do not modify this section. */
