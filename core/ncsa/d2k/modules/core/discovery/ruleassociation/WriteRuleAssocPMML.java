@@ -4,14 +4,13 @@ import java.io.*;
 import java.util.*;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 import org.dom4j.*;
 import org.dom4j.io.*;
 
 /**
  *
  */
-public class WriteRuleAssocPMML extends OutputModule {
+public class WriteRuleAssocPMML extends OutputModule implements RulePMMLTags {
 
     public String[] getInputTypes() {
         String[] in = {"ncsa.d2k.modules.projects.clutter.RuleTable", "java.lang.String"};
@@ -50,7 +49,7 @@ public class WriteRuleAssocPMML extends OutputModule {
 
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("PMML");
-        root.addAttribute("version", "1.1");
+        root.addAttribute("version", "2.0");
 
         Element header = root.addElement("Header");
         header.addAttribute("copyright", "NCSA ALG");
@@ -60,23 +59,28 @@ public class WriteRuleAssocPMML extends OutputModule {
         Element dataDictionary = root.addElement("DataDictionary");
 
         // make assoc input stats
-        Element assocInputStats = root.addElement("AssocInputStats");
-        assocInputStats.addAttribute("numberOfTransactions",
+        Element assocInputStats = root.addElement("AssociationModel");
+        assocInputStats.addAttribute("functionName", "associationRules");
+        assocInputStats.addAttribute(NUM_TRANS,
                                      Integer.toString(rt.getNumberOfTransactions()));
-        assocInputStats.addAttribute("minimumSupport",
+        assocInputStats.addAttribute(MIN_SUP,
                                      Double.toString(rt.getMinimumSupport()));
-        assocInputStats.addAttribute("minimumConfidence",
+        assocInputStats.addAttribute(MIN_CON,
                                      Double.toString(rt.getMinimumConfidence()));
-        assocInputStats.addAttribute("numberOfItems",
+        assocInputStats.addAttribute(NUM_ITEM,
                                      Integer.toString(items.size()));
-        assocInputStats.addAttribute("numberOfItemsets",
+        assocInputStats.addAttribute(NUM_ITEMSETS,
                                      Integer.toString(itemSets.size()));
-        assocInputStats.addAttribute("numberOfRules",
+        assocInputStats.addAttribute(NUM_RULE,
                                      Integer.toString(rt.getNumRules()));
+        //MINING SCHEMA
+        Element miningSchema = assocInputStats.addElement("MiningSchema");
+        miningSchema.addAttribute("name", "transaction");
+        miningSchema.addAttribute("name", "item");
 
         // make assoc items
         for(int i = 0; i < items.size(); i++) {
-            Element assocItem = root.addElement(ASSOC_ITEM);
+            Element assocItem = root.addElement(ITEM);
             assocItem.addAttribute(ID, Integer.toString(i));
             assocItem.addAttribute(VALUE, (String)items.get(i));
         }
@@ -85,12 +89,12 @@ public class WriteRuleAssocPMML extends OutputModule {
         for(int i = 0; i < itemSets.size(); i++) {
             FreqItemSet fis = (FreqItemSet)itemSets.get(i);
 
-            Element itemset = root.addElement(ITEM_SET);
+            Element itemset = root.addElement(ITEMSET);
             itemset.addAttribute(ID, Integer.toString(i));
             itemset.addAttribute(SUPPORT, Integer.toString((int)fis.support));
             int[] vals = fis.items.toNativeArray();
             for(int j = 0; j < vals.length; j++) {
-                Element assocItemRef = itemset.addElement(ASSOC_ITEM_REF);
+                Element assocItemRef = itemset.addElement(ITEMREF);
                 assocItemRef.addAttribute(ITEM_REF, Integer.toString(vals[j]));
             }
         }
@@ -120,16 +124,4 @@ public class WriteRuleAssocPMML extends OutputModule {
             e.printStackTrace();
         }
     }
-
-    private static final String CONSEQUENT = "consequent";
-    private static final String ANTECEDENT = "antecedent";
-    private static final String SUPPORT = "support";
-    private static final String CONFIDENCE = "confidence";
-    private static final String ID = "id";
-    private static final String VALUE = "value";
-    private static final String ITEM_SET = "AssocItemSet";
-    private static final String ASSOC_ITEM = "AssocItem";
-    private static final String ASSOC_RULE = "AssocRule";
-    private static final String ASSOC_ITEM_REF = "AssocItemRef";
-    private static final String ITEM_REF = "itemRef";
 }
