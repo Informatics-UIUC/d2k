@@ -36,7 +36,7 @@ public class BrowseTablesView extends JD2KFrame
   int selectedRow;
   TableModel model;
   JOptionPane msgBoard = new JOptionPane();
-  String choosedTableName;
+  String chosenTableName;
   /**
    * Constructor
    * @param t The BrowseTables object
@@ -118,10 +118,10 @@ public class BrowseTablesView extends JD2KFrame
    * Get the table name a user has selected
    * @return The table name a user has selected
    */
-  public String getChoosedTableName()
+  public String getChosenRow()
   {
       model = table.getModel();
-      choosedTableName = model.getValueAt(selectedRow,0).toString();
-      return (choosedTableName);
+      chosenTableName = model.getValueAt(selectedRow,0).toString();
+      return (chosenTableName);
   }
 }
