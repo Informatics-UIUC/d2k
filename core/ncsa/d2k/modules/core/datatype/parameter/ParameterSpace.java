@@ -25,6 +25,22 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
 
 
   /**
+   * Instantiate a ParameterSpace from the information in the given table.
+   * Each column in the table represents a paramter.
+   * Row 1 is the minimum parameter value.
+   * Row 2 is the maximum parameter value.
+   * Row 3 is the parameter resolution.
+   * Row 4 is the default parameter setting.
+   * Row 5 is the default minimum parameter value.
+   * Row 6 is the default maximum parameter value.
+   * Row 7 is the factory default parameter setting.
+   * Row 8 is the factory default minimum parameter value.
+   * Row 9 is the factory default maximum parameter value.
+   * @return an int value representing the minimum possible value of the parameter.
+   */
+  public int createFromTable(Table table);
+
+  /**
    * Get the number of parameters that define the space.
    * @return an int value representing the minimum possible value of the parameter.
    */
@@ -58,18 +74,18 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
   public double getMaxParameterValue(int parameterIndex);
 
   /**
-   * Get the minimum value of a parameter based on factory settings.
+   * Get the minimum default value of a parameter based on factory settings.
    * @param parameterIndex the index of the parameter of interest.
    * @return a double value representing the factory minimum parameter setting.
    */
-  public double getFactoryMinParameterValue(int parameterIndex);
+  public double getFactoryDefaultMinParameterValue(int parameterIndex);
 
   /**
-   * Get the maximum value of a parameter based on factory settings.
+   * Get the maximum default value of a parameter based on factory settings.
    * @param parameterIndex the index of the parameter of interest.
    * @return a double value representing the factory maximum parameter setting.
    */
-  public double getFactoryMaxParameterValue(int parameterIndex);
+  public double getFactoryDefaultMaxParameterValue(int parameterIndex);
 
   /**
    * Get the minimum value of a parameter based on default settings.
@@ -98,6 +114,13 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * @return a int value representing the subpace index number of parameter.
    */
   public int getSubspaceIndex(int parameterIndex);
+
+  /**
+   * Get the subspace parameter index of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   * @return a int value representing the subpace index number of parameter.
+   */
+  public int getSubspaceParameterIndex(int parameterIndex);
 
   /**
    * Get the number of subspaces that defines the space.
@@ -131,7 +154,5 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * @return an array of two ParameterSpaces which define the two subspaces, the first being the head and the second being the tail.
    */
   public ParameterSpace [] splitSubspaces(ParameterSpace space);
-
-
 
 } /* ParameterSpace */

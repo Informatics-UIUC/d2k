@@ -26,12 +26,19 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ExampleTable,
   public ParameterSpaceImpl () {
   }
 
-  public ParameterSpaceImpl (Table table) {
+  public ParameterSpace createFromTable (Table table) {
 
-    this.subspaceTables = new Table[1];
+    this.numSubspaces = 1;
+    this.subspaceTables = new Table[this.numSubspaces];
     this.subspaceTables[0] = table;
-    int [] subspaceSizes = new int[1];
+    int [] subspaceSizes = new int[this.numSubspaces];
     this.subspaceSizes[0] = table.getNumColumns();
+
+    int numParameters = this.subspaceSizes[0];
+
+
+
+    return (ParameterSpace) this;
 
   }
 
