@@ -43,7 +43,7 @@ public class DecisionTreeViewer extends VisModule  {
   ArrayList rules;
 
   String [] columnHeading;
-  GenericTableModel treeTableModel;
+  GenericMatrixModel treeTableModel;
   JTable treeList;
   JButton printBtn;
 
@@ -196,7 +196,7 @@ public class DecisionTreeViewer extends VisModule  {
         1,2,3,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
 
       String[] columnHeading = {"IF","-->","THEN","COVERAGE%","ACCURACY%"};
-      treeTableModel = new GenericTableModel(rules.size(),5,false,columnHeading);
+      treeTableModel = new GenericMatrixModel(rules.size(),5,false,columnHeading);
       treeList = new JTable(treeTableModel);
       TableColumnModel colModel = treeList.getColumnModel();
       colModel.getColumn(0).setPreferredWidth(90);
