@@ -1,9 +1,10 @@
-package ncsa.d2k.modules.core.optimize.ga.emo;
+package ncsa.d2k.modules.core.optimize.ga.nsga;
 
 
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
+
 
 /**
 	This module is only to be used with NsgaPopulations. It performs the

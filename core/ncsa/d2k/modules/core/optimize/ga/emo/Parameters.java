@@ -9,7 +9,7 @@ import ncsa.d2k.modules.core.optimize.ga.emo.selection.*;
  * create the population, calculate fitness functions, calculate constraints,
  * and mutation, selection and crossover parameters.
  */
-public class EMOParams implements java.io.Serializable {
+public class Parameters implements java.io.Serializable {
 
   /**
    * A structure describing the number and types of the decision variables.
@@ -56,7 +56,7 @@ public class EMOParams implements java.io.Serializable {
    */
   public int maxGenerations;
 
-  public EMOParams() {
+  public Parameters() {
     decisionVariables = new DecisionVariables();
     fitnessFunctions = new FitnessFunctions();
     constraints = new Constraints();

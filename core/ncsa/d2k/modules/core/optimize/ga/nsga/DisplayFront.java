@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize.ga.emo;
+package ncsa.d2k.modules.core.optimize.ga.nsga;
 
 
 import ncsa.d2k.modules.core.optimize.ga.*;
@@ -13,6 +13,7 @@ import ncsa.gui.Constrain;
 import java.awt.*;
 import java.io.*;
 import javax.swing.*;
+
 
 /**
 	ScatterPlot2D.java

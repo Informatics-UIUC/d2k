@@ -9,6 +9,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.util.*;
+import ncsa.d2k.modules.core.optimize.ga.nsga.*;
 
 public class EvaluatePopulation
     extends ComputeModule {
@@ -235,6 +236,7 @@ public class EvaluatePopulation
     }
 
     pushOutput(pop, 0);
+    //pushOutput();
   }
 
   /**

@@ -22,11 +22,11 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
 public class DefineExternalConstraints extends UIModule {
 
   public String[] getInputTypes() {
-    return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+    return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
   }
 
   public String[] getOutputTypes() {
-    return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+    return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
   }
 
   public String getInputInfo(int i) {
@@ -83,7 +83,7 @@ public class DefineExternalConstraints extends UIModule {
     JTextField outputFilePath;
     JComboBox min;
 
-    EMOParams popInfo;
+    Parameters popInfo;
 
     public Dimension getPreferredSize() {
       return new Dimension(600, 250);
@@ -341,7 +341,7 @@ public class DefineExternalConstraints extends UIModule {
     }
 
     public void setInput(Object o, int i) {
-      popInfo = (EMOParams)o;
+      popInfo = (Parameters)o;
     }
 
     class Constraint implements Serializable {

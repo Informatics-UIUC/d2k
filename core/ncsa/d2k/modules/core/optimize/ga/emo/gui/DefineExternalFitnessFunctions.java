@@ -24,12 +24,12 @@ public class DefineExternalFitnessFunctions
 
   public String[] getInputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
   }
 
   public String[] getOutputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
   }
 
   public String getInputInfo(int i) {
@@ -102,7 +102,7 @@ public class DefineExternalFitnessFunctions
     /** minimize/maximize */
     JComboBox min;
 
-    EMOParams popInfo;
+    Parameters popInfo;
 
     public Dimension getPreferredSize() {
       return new Dimension(600, 250);
@@ -433,7 +433,7 @@ public class DefineExternalFitnessFunctions
     }
 
     public void setInput(Object o, int i) {
-      popInfo = (EMOParams) o;
+      popInfo = (Parameters) o;
     }
 
     class FitnessFunction

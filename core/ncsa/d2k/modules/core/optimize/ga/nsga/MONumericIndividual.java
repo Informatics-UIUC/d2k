@@ -1,9 +1,10 @@
-package ncsa.d2k.modules.core.optimize.ga.emo;
+package ncsa.d2k.modules.core.optimize.ga.nsga;
 
 import ncsa.d2k.modules.core.optimize.util.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
 import java.io.Serializable;
 import java.math.*;
+
 
 /**
         This is the individual encoded as an array of booleans, the

@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize.ga.emo;
+package ncsa.d2k.modules.core.optimize.ga.nsga;
 
 import java.io.Serializable;
 import ncsa.d2k.modules.core.optimize.ga.*;
@@ -6,6 +6,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.util.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
         This is a population object which may serve as a baseclass for all population
@@ -25,10 +26,10 @@ import ncsa.d2k.modules.core.optimize.util.*;
         value. This class overrides the evaluateAll method to accumulate the best objective
         values after the members have all been evalutated.
 */
-abstract public class NsgaPopulation extends MOPopulation implements Serializable {
+abstract public class NsgaPopulation extends Population implements Serializable {
 
         /** number of objectives to optimize on.*/
-        int numObjectives;
+        protected int numObjectives;
 
         /** the combined population of parents and progeny. */
         protected NsgaSolution [] combinedPopulation = null;
@@ -37,34 +38,34 @@ abstract public class NsgaPopulation extends MOPopulation implements Serializabl
         public ParetoFront fronts;
 
         /** the maxfitness values. */
-        double [] maxFitnesses = null;
+        protected double [] maxFitnesses = null;
 
         /** the minimum fitness values. */
-        double [] minFitnesses = null;
+        protected double [] minFitnesses = null;
 
         /** indices of the individuals possessing the max fitnesses. */
-        int [] maxFitnessMembers = null;
+        protected int [] maxFitnessMembers = null;
 
         /** indices of the individuals possessing the max fitnesses. */
-        int [] minFitnessMembers = null;
+        protected int [] minFitnessMembers = null;
 
         /** constrains the range and polarity of the obectives, maximizing or minimizing,
          *  and handles the comparison of values of that trait.
          */
-        ObjectiveConstraints [] objectiveConstraints = null;
+        protected ObjectiveConstraints [] objectiveConstraints = null;
         public ObjectiveConstraints [] getObjectiveConstraints () { return objectiveConstraints; }
 
         /** this is the target fitness we strive for. */
-        double target;
+        protected double target;
 
         /** this is some measure of the current fitness, averaged best in this case. */
-        double currentMeasure;
+        protected double currentMeasure;
 
         /** this is the best possible fitness. */
-        double best;
+        protected double best;
 
         /** the worst possible. */
-        double worst;
+        protected double worst;
 
         /**
                 Given only the number of members, the number of alleles per member
@@ -709,7 +710,9 @@ abstract public class NsgaPopulation extends MOPopulation implements Serializabl
                   else{
 
                     genes = new double[numTraits];
-                    double[] binaryGenes = (double[]) ( (MOBinaryIndividual) ni).toDouble();
+                    // changed dc 2.5.2004
+                    genes = (double[]) ( (MOBinaryIndividual)ni).toDouble();
+/*                    double[] binaryGenes = (double[]) ( (MOBinaryIndividual) ni).toDouble();
 
                     // the max and precision are contained in the boundsAndPrecision table
                     //Table bounds = getPopulationInfo().decisionVariables;
@@ -742,7 +745,7 @@ abstract public class NsgaPopulation extends MOPopulation implements Serializabl
                         num = min;
                       }
                       genes[k] = num;
-                    }
+                    }*/
                   }
                        int j = 0;
 

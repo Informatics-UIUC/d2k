@@ -42,13 +42,13 @@ public class DefineFitnessFunctions
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
     return in;
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
     return out;
   }
 
@@ -90,10 +90,10 @@ public class DefineFitnessFunctions
     //for use in displaying fitness function
     private JTable tableData;
     private DefaultTableModel modelData;
-    private EMOParams data;
+    private Parameters data;
 
     public void setInput(Object o, int i) {
-      data = (EMOParams) o;
+      data = (Parameters) o;
 //      this.table = (MutableTable) data.varNames;
       this.table = data.decisionVariables.createVariableNameTable();
       this.initialize();

@@ -59,7 +59,7 @@ public class PerformCrossover extends ComputeModule {
     // if the population has changed or the crossoverType has not been set,
     // create a Crossover object
     if(population != pop) {
-      EMOParams info = pop.getParameters();
+      Parameters info = pop.getParameters();
       crossoverModule = info.crossover;
       population = pop;
     }

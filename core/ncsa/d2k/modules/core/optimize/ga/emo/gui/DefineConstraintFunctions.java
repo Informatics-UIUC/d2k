@@ -31,13 +31,13 @@ public class DefineConstraintFunctions
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
     return in;
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
     return out;
   }
 
@@ -87,7 +87,7 @@ public class DefineConstraintFunctions
     // using the widget. It is used in the redoBox() function.
     private DefaultComboBoxModel columnModel;
 
-    private EMOParams data;
+    private Parameters data;
 
     public void paintComponent(Graphics g) {
       Graphics2D g2 = (Graphics2D) g;
@@ -101,7 +101,7 @@ public class DefineConstraintFunctions
       if (i != 0) {
         return;
       }
-      data = (EMOParams)o;
+      data = (Parameters)o;
 //      table = (MutableTable)data.varNames;
       table = data.decisionVariables.createVariableNameTable();
       initialize();

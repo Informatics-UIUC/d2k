@@ -44,17 +44,12 @@ public class PerformSelection extends ComputeModule {
     EMOPopulation pop = (EMOPopulation)pullInput(0);
 
     if(population != pop) {
-      EMOParams info = pop.getParameters();
+      Parameters info = pop.getParameters();
       selectionModule = info.selection;
       population = pop;
     }
 
-System.out.println("Selection");
-
     selectionModule.performSelection((Population)pop);
-
-System.out.println("End Selection");
-
     pushOutput(pop, 0);
   }
 }

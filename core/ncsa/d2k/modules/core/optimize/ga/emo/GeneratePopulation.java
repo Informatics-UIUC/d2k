@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.util.*;
+import ncsa.d2k.modules.core.optimize.ga.nsga.*;
 
 /**
  * Generate a population.
@@ -11,12 +12,12 @@ public class GeneratePopulation
 
   public String[] getInputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
   }
 
   public String[] getOutputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.Population"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulation"};
   }
 
   public String getInputInfo(int i) {
@@ -57,7 +58,7 @@ public class GeneratePopulation
   private int numExternalConstraints;
 
   /** the parameters for the problem */
-  private EMOParams params;
+  private Parameters params;
 
   /** is this the first time the module has been run? */
   private boolean firstTime;
@@ -75,7 +76,7 @@ public class GeneratePopulation
   public void doit() throws Exception {
     if (firstTime) {
       // pull in the parameters
-      params = (EMOParams) pullInput(0);
+      params = (Parameters) pullInput(0);
       // the starting population size
       populationSize = params.populationSize;
 
@@ -180,23 +181,23 @@ public class GeneratePopulation
     // otherwise, for an MO problem (mulitple fitness functions) create
     // either a constrained or unconstrained nsga population
     else {
-      NsgaPopulation pop = null;
+      EMOPopulation pop = null;
       boolean constrained = (numConstraints > 0);
 
       // if there were constraints, we create a constrained pop
       if (constrained) {
-        pop = new ConstrainedNsgaPopulation(xyz, fit,
-                                            this.populationSize, 0.01);
+        pop = new EMOConstrainedNsgaPopulation(xyz, fit,
+                                            this.populationSize, 0.01, this.numConstraints);
       }
       // if there are no constraints, we create an Unconstrained pop
       else {
-        pop = new UnconstrainedNsgaPopulation(xyz, fit,
+        pop = new EMOUnconstrainedNsgaPopulation(xyz, fit,
                                               this.populationSize, 0.01);
       }
       // the parameters tag along with the population
       pop.setParameters(params);
       //set the maximum number of generations
-      pop.setMaxGenerations(params.maxGenerations);
+      ((NsgaPopulation)pop).setMaxGenerations(params.maxGenerations);
 
       pushOutput(pop, 0);
     }

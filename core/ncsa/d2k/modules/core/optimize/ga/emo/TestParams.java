@@ -28,7 +28,7 @@ public class TestParams extends ComputeModule {
   }
 
   public void doit() {
-    EMOParams params = (EMOParams)pullInput(0);
+    Parameters params = (Parameters)pullInput(0);
 
     params.createBinaryIndividuals = false;
     Mutation mut = MutationFactory.createMutationOptions()[1];

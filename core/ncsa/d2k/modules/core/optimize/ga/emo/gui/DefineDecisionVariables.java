@@ -44,7 +44,7 @@ public class DefineDecisionVariables
      @return the data types of all outputs.
   */
   public String[] getOutputTypes() {
-    String[] types = {"ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+    String[] types = {"ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
     return types;
   }
 
@@ -645,7 +645,7 @@ public class DefineDecisionVariables
         varTable.addVariable(name, dmin, dmax, dprec, dstr);
       }
 
-      EMOParams data = new EMOParams();
+      Parameters data = new Parameters();
       data.decisionVariables = varTable;
 
       pushOutput(data, 0);

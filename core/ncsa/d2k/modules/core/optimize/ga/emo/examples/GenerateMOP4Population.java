@@ -5,6 +5,7 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
+import ncsa.d2k.modules.core.optimize.ga.nsga.*;
 
 /**
 		CrossoverModule.java

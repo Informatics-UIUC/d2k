@@ -24,13 +24,13 @@ public class DefineConstraintVariables
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
     return in;
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
     return out;
   }
 
@@ -67,7 +67,7 @@ public class DefineConstraintVariables
     // It is used in the redoBox() function
     private DefaultComboBoxModel columnModel;
 
-    private EMOParams data;
+    private Parameters data;
 
     public void paintComponent(Graphics g) {
       Graphics2D g2 = (Graphics2D) g;
@@ -77,7 +77,7 @@ public class DefineConstraintVariables
     }
 
     public void setInput(Object o, int i) {
-      data = (EMOParams) o;
+      data = (Parameters) o;
 //      table = (MutableTable) data.varNames;
       table = data.decisionVariables.createVariableNameTable();
       this.initialize();

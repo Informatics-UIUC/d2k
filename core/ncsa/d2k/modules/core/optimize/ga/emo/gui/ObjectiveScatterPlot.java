@@ -9,6 +9,7 @@ import java.text.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
+import ncsa.d2k.modules.core.optimize.ga.nsga.*;
 
 public class ObjectiveScatterPlot extends JPanel implements MouseListener, MouseMotionListener {
 

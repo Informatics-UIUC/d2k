@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize.ga.emo;
+package ncsa.d2k.modules.core.optimize.ga.nsga;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 /**

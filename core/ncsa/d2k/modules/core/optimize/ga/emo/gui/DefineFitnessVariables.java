@@ -25,13 +25,13 @@ public class DefineFitnessVariables
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
     return in;
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
     return out;
   }
 
@@ -68,10 +68,10 @@ public class DefineFitnessVariables
     // It is used in the redoBox() function
     private DefaultComboBoxModel columnModel;
 
-    private EMOParams data;
+    private Parameters data;
 
     public void setInput(Object o, int i) {
-      data = (EMOParams) o;
+      data = (Parameters) o;
 //      table = (MutableTable) data.varNames;
       table = data.decisionVariables.createVariableNameTable();
       this.initialize();

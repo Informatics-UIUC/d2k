@@ -23,13 +23,13 @@ public class Params
 
   public String[] getInputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
   }
 
   public String[] getOutputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams",
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters",
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
   }
 
   public String getInputInfo(int i) {
@@ -118,7 +118,7 @@ public class Params
   private class ParamsView
       extends JUserPane {
     /** the parameters for EMO */
-    transient private EMOParams params;
+    transient private Parameters params;
     /** the table model, holds several parameters */
     transient private ParamsTableModel paramsModel;
     /** the estimated time that the evaluation will take */
@@ -515,7 +515,7 @@ public class Params
     }
 
     public void setInput(Object o, int i) {
-      params = (EMOParams) o;
+      params = (Parameters) o;
 
       // how many objectives are there?
       numObjectives = params.fitnessFunctions.getTotalNumFitnessFunctions();
