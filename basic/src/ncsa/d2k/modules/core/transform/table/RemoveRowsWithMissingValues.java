@@ -48,28 +48,30 @@ public class RemoveRowsWithMissingValues extends DataPrepModule {
   public void doit() {
     MutableTable mt = (MutableTable)pullInput(0);
 
-    List toRemove = new ArrayList();
+    HashSet toRemove = new HashSet();
     int numCols = mt.getNumColumns();
     int numRows = mt.getNumRows();
 
-    for(int i = 0; i < numCols; i++) {
-      for(int j = 0; j < numRows; j++) {
-        if(mt.isValueMissing(j, i)) {
-          toRemove.add(new Integer(j));
-          break;
+    for(int i = 0; i < numRows; i++) {
+      for(int j = 0; j < numCols; j++) {
+        if(mt.isValueMissing(i, j)) {
+          toRemove.add(new Integer(i));
         }
       }
     }
 
     int[] idx = new int[toRemove.size()];
-    for(int i = 0; i < toRemove.size(); i++)
-      idx[i] = ((Integer)toRemove.get(i)).intValue();
-
+    Iterator iter = toRemove.iterator();
+    int i = 0;
+    while(iter.hasNext()) {
+      idx[i] = ((Integer)iter.next()).intValue();
+      i++;
+    }
 
     mt.removeRowsByIndex(idx);
     pushOutput(mt,0);
 
   }
-    
+
 
 }
