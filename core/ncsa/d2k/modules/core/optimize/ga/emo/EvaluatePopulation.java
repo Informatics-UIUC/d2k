@@ -80,9 +80,6 @@ public class EvaluatePopulation
   private boolean hasCVars;
   private boolean hasExternalCon;
 
-  //private TIntArrayList externFFToExecute;
-  //private TIntArrayList externFFInputFiles;
-
   private List executeList;
   private List inputFileList;
 
@@ -94,7 +91,7 @@ public class EvaluatePopulation
     String input;
 
     public boolean equals(Object o) {
-      Pair p = (Pair)o;
+      Pair p = (Pair) o;
 
       return p.exec.equals(this.exec) && p.input.equals(this.input);
     }
@@ -123,8 +120,9 @@ public class EvaluatePopulation
       hasExternalFF = (numExternalFF > 0);
 
       // if no fitness functions were given, quit
-      if ( (numFitnessFunctions + numExternalFF) == 0)
+      if ( (numFitnessFunctions + numExternalFF) == 0) {
         throw new Exception("No fitness functions could be found.");
+      }
 
       constraints = pop.getParameters().constraints;
       numConstraintVars = constraints.getNumConstraintVariables();
@@ -144,7 +142,7 @@ public class EvaluatePopulation
 
         executeList = new ArrayList();
         Pair firstOne = new Pair();
-        if(hasExternalFF) {
+        if (hasExternalFF) {
           firstOne.exec = fitnessFunctions.getExternFitnessFunctionExec(0);
           firstOne.input = fitnessFunctions.getExternFitnessFunctionInput(0);
         }
@@ -156,21 +154,23 @@ public class EvaluatePopulation
         executeList.add(firstOne);
 
         // for each extern ff
-        for(int i = 0; i < this.numExternalFF; i++) {
+        for (int i = 0; i < this.numExternalFF; i++) {
           Pair p = new Pair();
           p.exec = fitnessFunctions.getExternFitnessFunctionExec(i);
           p.input = fitnessFunctions.getExternFitnessFunctionInput(i);
-          if(!executeList.contains(p))
+          if (!executeList.contains(p)) {
             executeList.add(p);
+          }
         }
 
         // for each extern constraint
-        for(int i = 0; i < this.numExternalConstraints; i++) {
+        for (int i = 0; i < this.numExternalConstraints; i++) {
           Pair p = new Pair();
           p.exec = constraints.getExternConstraintExec(i);
           p.input = constraints.getExternConstraintInput(i);
-          if(!executeList.contains(p))
+          if (!executeList.contains(p)) {
             executeList.add(p);
+          }
         }
 
         // now we have a collection of the unique execs that need to be
@@ -179,23 +179,25 @@ public class EvaluatePopulation
         // now find the unique input files
         HashSet inputs = new HashSet();
 
-        for(int i = 0; i < this.numExternalFF; i++) {
+        for (int i = 0; i < this.numExternalFF; i++) {
           String file = fitnessFunctions.getExternFitnessFunctionInput(i);
-          if(!inputs.contains(file))
+          if (!inputs.contains(file)) {
             inputs.add(file);
+          }
         }
 
-        for(int i = 0; i < this.numExternalConstraints; i++) {
+        for (int i = 0; i < this.numExternalConstraints; i++) {
           String file = constraints.getExternConstraintInput(i);
-          if(!inputs.contains(file))
+          if (!inputs.contains(file)) {
             inputs.add(file);
+          }
         }
 
         inputFileList = new ArrayList(inputs);
       }
 
       // determine if the population contains binary or real-coded genes
-      Individual[] individuals = ((Population)pop).getMembers();
+      Individual[] individuals = ( (Population) pop).getMembers();
       if (individuals.length > 0) {
         if (individuals[0] instanceof BinarySolution)
           binaryType = true;
@@ -204,18 +206,19 @@ public class EvaluatePopulation
       }
     }
 
-    // copy the population into the population table
-    // if any constructions are used
-    if(hasFVars || hasCVars || hasFF || hasCon) {
+    // copy the population into the population table if any
+    // Constructions are used to calculate FF or Constraints
+    if (hasFVars || hasCVars || hasFF || hasCon) {
       copyPopulationToTable();
     }
 
     // this is the number of columns in the table by default
+    // keep it, because we are going to remove the columns
+    // created by Constructions when we are done
     int numDecisionVariables = populationTable.getNumColumns();
 
-    // first evaluate the variables and functions created by Constructions
-    // the population must be copied into the populationTable
-    if (hasFF) {
+    // first evaluate the FF variables and FF created by Constructions
+    if (hasFF || hasFVars) {
       // evaluate the fitness variables.  this is done by performing a
       // transformation on the table.  the last column is the new variable
       for (int i = 0; i < numFitnessVars; i++) {
@@ -245,43 +248,89 @@ public class EvaluatePopulation
         ffColumns[i] = populationTable.getNumColumns() - 1;
       }
 
+      boolean multiObjective = (this.numFitnessFunctions > 1);
       // after transforming the table, we update the
       // population by filling in the corresponding fitness
       // function values into it.
       int sz = ( (Population) pop).size();
-      for (int i = 0; i < sz; i++) {
-        Individual mymember = ( (Population) pop).getMember(i);
-        // set all the objective values for an MO Solution
-        if (mymember instanceof MOSolution) {
-          MOSolution myni = (MOSolution) mymember;
-          for (int j = 0; j < numFitnessFunctions; j++) {
-            myni.setObjective(j, populationTable.getDouble(i, ffColumns[j]));
+      if (sz > 0) {
+        Individual member = ( (Population) pop).getMember(0);
+        for (int i = 0; i < sz; i++) {
+          Individual mymember = ( (Population) pop).getMember(i);
+          // set all the objective values for an MO Solution
+          if (multiObjective) {
+            MOSolution myni = (MOSolution) mymember;
+            for (int j = 0; j < numFitnessFunctions; j++) {
+              myni.setObjective(j, populationTable.getDouble(i, ffColumns[j]));
+            }
+          }
+          // set the single objective value for an SO Solution
+          else {
+            SOSolution mysi = (SOSolution) mymember;
+            mysi.setObjective(populationTable.getDouble(i, ffColumns[0]));
           }
         }
-        // set the single objective value for an SO Solution
-        else {
-          SOSolution mysi = (SOSolution)mymember;
-          mysi.setObjective(populationTable.getDouble(i, ffColumns[0]));
-        }
-      }
-
-      // remove all columns created by the transformations
-      int numAddedColumns = numFitnessVars + numFitnessFunctions;
-      for (int i = 0; i < numAddedColumns; i++) {
-        populationTable.removeColumns(numDecisionVariables, numAddedColumns);
       }
     }
 
-    if(hasCon) {
+    // evaluate the constraint variables and constraints created by Constructions
+    if (hasCon) {
       // calculate the constraints
+      // evaluate the constraint variables.  this is done by performing a
+      // transformation on the table.  the last column is the new variable
+      for (int i = 0; i < this.numConstraintVars; i++) {
+        Construction c = constraints.getConstraintVariable(i);
+        AttributeTransform at = new AttributeTransform(new Object[] {c});
+        boolean retVal = at.transform(populationTable);
+        if (!retVal) {
+          throw new Exception("Could not calculate constraint variable: " +
+                              constraints.getConstraintVariableName(i));
+        }
+      }
 
+      // keep the indices of the FF columns, so that we can set the
+      // values on the individuals later
+      int[] conColumns = new int[this.numConstraintFunctions];
+
+      // evaluate the fitness functions.  this is done by performing a
+      // transformation on the table.  the last column is the value of the constraint
+      for (int i = 0; i < this.numConstraintFunctions; i++) {
+        Construction c = constraints.getConstraintFunction(i);
+        AttributeTransform at = new AttributeTransform(new Object[] {c});
+        boolean retVal = at.transform(populationTable);
+        if (!retVal) {
+          throw new Exception("Could not calculate constraint function: " +
+                              constraints.getConstraintFunctionName(i));
+        }
+        conColumns[i] = populationTable.getNumColumns() - 1;
+      }
+
+      // after transforming the table, we update the
+      // population by filling in the corresponding fitness
+      // function values into it.
+      int size = ( (Population) pop).size();
+      for (int i = 0; i < size; i++) {
+        Individual mymember = ( (Population) pop).getMember(i);
+        for (int j = 0; j < this.numConstraintFunctions; j++) {
+          double weight = constraints.getConstraintFunctionWeight(j);
+          mymember.setConstraint(populationTable.getDouble(i, conColumns[j])*weight, j);
+        }
+      }
+    }
+
+    // remove all columns created by the transformations
+    int numAddedColumns = this.numConstraintVars + this.numConstraintFunctions +
+        this.numFitnessVars + this.numFitnessFunctions;
+    for (int i = 0; i < numAddedColumns; i++) {
+      populationTable.removeColumns(numDecisionVariables, numAddedColumns);
     }
 
     // write out the population if external executables are used
     // we only need to write out the first file, and make copies for
     // the rest
-    if(hasExternalFF || hasExternalCon) {
-      // we need to write out the file
+    if (hasExternalFF || hasExternalCon) {
+      // we need to write out the file.  Only write out the first file,
+      // make copies for all other executables
       String firstFile = (String)this.inputFileList.get(0);
       if (binaryType)
         this.writeBinaryGenesToFile(firstFile);
@@ -289,24 +338,26 @@ public class EvaluatePopulation
         this.writeNumericGenesToFile(firstFile);
 
       // now make copies of the file for the other inputs
-        for (int i = 1; i < inputFileList.size(); i++) {
-          String fileName = (String)inputFileList.get(i);
-          copyFile(new File(firstFile), new File(fileName));
-        }
+      for (int i = 1; i < inputFileList.size(); i++) {
+        String fileName = (String) inputFileList.get(i);
+        copyFile(new File(firstFile), new File(fileName));
+      }
 
       // now execute the executables
-      for(int i = 0; i < executeList.size(); i++) {
-        Pair pair = (Pair)executeList.get(i);
+      for (int i = 0; i < executeList.size(); i++) {
+        Pair pair = (Pair) executeList.get(i);
         String exec = pair.exec;
         ExecRunner er = new ExecRunner();
         er.exec(exec);
       }
 
-      for(int i = 0; i < this.numExternalFF; i++) {
+      // read the output for FF
+      for (int i = 0; i < this.numExternalFF; i++) {
         this.readExternalFFOutput(i);
       }
 
-      for(int i = 0; i < this.numExternalConstraints; i++) {
+      // read the output for constraints
+      for (int i = 0; i < this.numExternalConstraints; i++) {
         this.readExternalConstraintOutput(i);
       }
     }
@@ -393,73 +444,73 @@ public class EvaluatePopulation
   private void writeBinaryGenesToFile(String fileName) throws IOException {
     Population popul = (Population) population;
 
-      FileWriter stringFileWriter = new FileWriter(fileName);
-      BufferedWriter bw = new BufferedWriter(stringFileWriter);
-      PrintWriter pw = new PrintWriter(bw);
+    FileWriter stringFileWriter = new FileWriter(fileName);
+    BufferedWriter bw = new BufferedWriter(stringFileWriter);
+    PrintWriter pw = new PrintWriter(bw);
 
-      int numTraits = 0;
+    int numTraits = 0;
 
-      BinaryRange[] traits = (BinaryRange[]) popul.getTraits();
+    BinaryRange[] traits = (BinaryRange[]) popul.getTraits();
 
-      // write population size in file
-      pw.println(popul.size());
+    // write population size in file
+    pw.println(popul.size());
 
-      // write length of each gene/chromosome
-      pw.println(traits.length);
+    // write length of each gene/chromosome
+    pw.println(traits.length);
 
-      // write genes
-      for (int j = 0; j < popul.size(); j++) {
-        double[] genes = ( (BinaryIndividual) popul.getMember(j)).toDouble();
+    // write genes
+    for (int j = 0; j < popul.size(); j++) {
+      double[] genes = ( (BinaryIndividual) popul.getMember(j)).toDouble();
 
-        // the max and precision are contained in the DecisionVariables
-        DecisionVariables dv = population.getParameters().decisionVariables;
+      // the max and precision are contained in the DecisionVariables
+      DecisionVariables dv = population.getParameters().decisionVariables;
 
-        int curPos = 0;
-        for (int k = 0; k < traits.length; k++) {
-          int numBits = traits[k].getNumBits();
-          double num = 0.0d;
-          double max = dv.getVariableMax(k);
-          double min = dv.getVariableMin(k);
-          double precision = dv.getVariablePrecision(k);
+      int curPos = 0;
+      for (int k = 0; k < traits.length; k++) {
+        int numBits = traits[k].getNumBits();
+        double num = 0.0d;
+        double max = dv.getVariableMax(k);
+        double min = dv.getVariableMin(k);
+        double precision = dv.getVariablePrecision(k);
 
-          double interval = (max - min) * precision;
+        double interval = (max - min) * precision;
 
-          // this is one trait
-          for (int l = 0; l < numBits; l++) {
-            if (genes[curPos] != 0) {
-              num = num + Math.pow(2.0, l);
-            }
-            curPos++;
+        // this is one trait
+        for (int l = 0; l < numBits; l++) {
+          if (genes[curPos] != 0) {
+            num = num + Math.pow(2.0, l);
           }
-
-          // if it is above the max, scale it down
-          num = num * precision + min;
-          if (num > max) {
-            num = max;
-          }
-          if (num < min) {
-            num = min;
-          }
-          //pw.print(num + SPACE);
-          pw.print(num);
-          pw.print(SPACE);
+          curPos++;
         }
 
-        pw.println();
+        // if it is above the max, scale it down
+        num = num * precision + min;
+        if (num > max) {
+          num = max;
+        }
+        if (num < min) {
+          num = min;
+        }
+        //pw.print(num + SPACE);
+        pw.print(num);
+        pw.print(SPACE);
       }
+
       pw.println();
-      // close file and streams
-      pw.flush();
-      bw.flush();
-      stringFileWriter.flush();
-      pw.close();
-      bw.close();
-      stringFileWriter.close();
+    }
+    pw.println();
+    // close file and streams
+    pw.flush();
+    bw.flush();
+    stringFileWriter.flush();
+    pw.close();
+    bw.close();
+    stringFileWriter.close();
   }
 
   /*
    * This writes the genes of individuals to input files for different
-   * fitness function executables, that might be present in different directories
+       * fitness function executables, that might be present in different directories
    *
    * Right now this only works for MO populations!!!
    */
@@ -467,50 +518,50 @@ public class EvaluatePopulation
       IOException {
     Population popul = (Population) population;
 
-      FileWriter stringFileWriter = new FileWriter(fileName);
-      BufferedWriter bw = new BufferedWriter(stringFileWriter);
-      PrintWriter pw = new PrintWriter(bw);
+    FileWriter stringFileWriter = new FileWriter(fileName);
+    BufferedWriter bw = new BufferedWriter(stringFileWriter);
+    PrintWriter pw = new PrintWriter(bw);
 
-      Individual ni = (Individual) popul.getMember(0);
-      double[] genes = (double[]) ni.getGenes();
-      int numTraits = genes.length;
+    Individual ni = (Individual) popul.getMember(0);
+    double[] genes = (double[]) ni.getGenes();
+    int numTraits = genes.length;
 
-      // write population size in file
-      pw.println(popul.size());
-      // write length of each gene/chromosome
-      pw.println(numTraits);
-      // write genes
-      for (int j = 0; j < popul.size(); j++) {
-        //   genes = popul.getMember(j).getGenes().toString();
+    // write population size in file
+    pw.println(popul.size());
+    // write length of each gene/chromosome
+    pw.println(numTraits);
+    // write genes
+    for (int j = 0; j < popul.size(); j++) {
+      //   genes = popul.getMember(j).getGenes().toString();
 
-        ////////////////////////////////////////////////////////////
-        // !!! LAM
-        // if an IntInvidual is used, an int[] will be returned...
-        // right now IntIndividuals are not used so thia is currently
-        // not a problem
-        genes = (double[]) ( (Individual) popul.getMember(j)).getGenes();
-        numTraits = genes.length;
+      ////////////////////////////////////////////////////////////
+      // !!! LAM
+      // if an IntInvidual is used, an int[] will be returned...
+      // right now IntIndividuals are not used so thia is currently
+      // not a problem
+      genes = (double[]) ( (Individual) popul.getMember(j)).getGenes();
+      numTraits = genes.length;
 
-        // write to file
-        for (int k = 0; k < numTraits; k++) {
-          //pw.print(genes[k] + SPACE);
-          pw.print(genes[k]);
-          pw.print(SPACE);
-        }
-        pw.println();
+      // write to file
+      for (int k = 0; k < numTraits; k++) {
+        //pw.print(genes[k] + SPACE);
+        pw.print(genes[k]);
+        pw.print(SPACE);
       }
       pw.println();
-      // close file and streams
-      pw.flush();
-      bw.flush();
-      stringFileWriter.flush();
-      pw.close();
-      bw.close();
-      stringFileWriter.close();
+    }
+    pw.println();
+    // close file and streams
+    pw.flush();
+    bw.flush();
+    stringFileWriter.flush();
+    pw.close();
+    bw.close();
+    stringFileWriter.close();
   }
 
   private double[] readOutput(String fileName) throws IOException {
-    double[] fit = new double[((Population)population).size()];
+    double[] fit = new double[ ( (Population) population).size()];
 
     FileReader stringFileReader = new FileReader(fileName);
     BufferedReader br = new BufferedReader(stringFileReader);
@@ -537,18 +588,21 @@ public class EvaluatePopulation
    * @throws Exception
    */
   private void readExternalFFOutput(int ffIndex) throws IOException {
-    Population popul = (Population)population;
-    double[] fit = readOutput(fitnessFunctions.getExternFitnessFunctionOutput(ffIndex));
+    Population popul = (Population) population;
+    double[] fit = readOutput(fitnessFunctions.getExternFitnessFunctionOutput(
+        ffIndex));
 
-    if(popul instanceof SOPopulation ) {
+    int size = popul.size();
+
+    if (popul instanceof SOPopulation) {
       // now that we have the fitness values, set the objective on the individual
-      for (int i = 0; i < popul.size(); i++) {
+      for (int i = 0; i < size; i++) {
         ( (SOSolution) popul.getMember(i)).setObjective(fit[i]);
       }
     }
     else {
       // now that we have the fitness values, set the objective on the individual
-      for (int i = 0; i < popul.size(); i++) {
+      for (int i = 0; i < size; i++) {
         ( (MOSolution) popul.getMember(i)).setObjective(
             numFitnessFunctions + ffIndex, fit[i]);
       }
@@ -562,14 +616,15 @@ public class EvaluatePopulation
    * @throws Exception
    */
   private void readExternalConstraintOutput(int conIndex) throws IOException {
-    Population popul = (Population)population;
-    double[] fit = readOutput(fitnessFunctions.getExternFitnessFunctionOutput(conIndex));
+    Population popul = (Population) population;
+    double[] fit = readOutput(fitnessFunctions.getExternFitnessFunctionOutput(
+        conIndex));
 
-    if(popul instanceof SOPopulation ) {
-      ;
-    }
-    else {
-      ;
+    int size = popul.size();
+    double weight = constraints.getExternConstraintWeight(conIndex);
+    for(int i = 0; i < size; i++) {
+      Solution s = (Solution)popul.getMember(i);
+      s.setConstraint(fit[i]*weight, numConstraintFunctions+conIndex);
     }
   }
 
