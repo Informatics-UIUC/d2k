@@ -228,8 +228,8 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
   }
 
   public void setBinNumber (double i) throws PropertyVetoException {
-      if (i <  0 )
-          throw new PropertyVetoException(" < 0", null);
+      if (i <= 0 )
+          throw new PropertyVetoException(" <= 0", null);
       binNumber = i;
   }
 
