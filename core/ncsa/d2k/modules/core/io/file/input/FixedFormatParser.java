@@ -82,6 +82,7 @@ class FixedFormatParser extends FileInputStream
 
         for ( int i =0; i < header.getNumColumns() ; i++)
 	    {
+			//System.out.println(header.getColumnLabel(i).toUpperCase());
 		if (header.getColumnLabel(i).toUpperCase().equals("LABEL"))
 		    setColumnLabels(header,i);
 		if (header.getColumnLabel(i).toUpperCase().equals("TYPE"))
@@ -126,6 +127,7 @@ class FixedFormatParser extends FileInputStream
 	for ( int i = 0 ; i < nr ; i++)
 	    _columnType.add(vt.getString(i,col));
 	_noOfColumns = nr;
+	//System.out.println("nr:"+nr);
     }
 
 
@@ -253,14 +255,14 @@ class FixedFormatParser extends FileInputStream
 			begins[i]=((Integer)_columnBegin.get(i)).intValue();
 			ends[i]=((Integer)_columnEnd.get(i)).intValue();
 		}
-
+		//System.out.println("noOfColumns:"+_noOfColumns);
 		int lineLength=ends[_noOfColumns-1];
 
 		//the number of lines in the file
 		int lines=(int)_fileLength/(lineLength+1);
 
 		_tableLength = lines-headerLines;
-
+		
 		/* allocate the table */
 		//Table result = new VerticalTable(_noOfColumns);
 
@@ -274,7 +276,7 @@ class FixedFormatParser extends FileInputStream
 	   		else
 				tableColumns[i].setLabel(Integer.toString(i));
 		}
-		System.out.println("Reader: HeaderInfo In");
+		System.out.println("Reader: HeaderInfo In"+_tableLength);
 
 		//done w/ these
 		_columnBegin=null;

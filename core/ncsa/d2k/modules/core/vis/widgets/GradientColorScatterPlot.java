@@ -29,7 +29,7 @@ public class GradientColorScatterPlot extends ScatterPlot {
 	 *	@param sets
 	 *	@param settings
 	 */
-	public GradientColorScatterPlot(VerticalTable table,
+	public GradientColorScatterPlot(Table table,
 		DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 		lowColor = Color.orange;
@@ -47,7 +47,7 @@ public class GradientColorScatterPlot extends ScatterPlot {
 	 *	@param low the low color
 	 *	@param high the high color
 	 */
-	public GradientColorScatterPlot(VerticalTable table,
+	public GradientColorScatterPlot(Table table,
 		DataSet[] sets, GraphSettings settings,
 		Color low, Color high) {
 		this(table, sets, settings);
@@ -64,7 +64,7 @@ public class GradientColorScatterPlot extends ScatterPlot {
 	 *	@param high the high color
 	 *	@param position
 	 */
-	public GradientColorScatterPlot(VerticalTable table,
+	public GradientColorScatterPlot(Table table,
 		DataSet[] sets, GraphSettings settings,
 		Color low, Color high, int position) {
 		this(table, sets, settings, low, high);

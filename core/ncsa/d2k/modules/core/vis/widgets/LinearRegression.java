@@ -7,7 +7,7 @@ import java.awt.geom.*;
 
 public class LinearRegression extends Graph {
 
-	public LinearRegression(VerticalTable table, DataSet[] set, GraphSettings settings) {
+	public LinearRegression(Table table, DataSet[] set, GraphSettings settings) {
 		super(table, set, settings);
 	}
 

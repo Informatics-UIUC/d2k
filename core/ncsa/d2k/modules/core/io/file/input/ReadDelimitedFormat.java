@@ -1,31 +1,31 @@
 package ncsa.d2k.modules.core.io.file.input;
 
-import java.util.*;
 import java.io.*;
-
+import java.util.*;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.util.datatype.*;
 
 /**
-	A subclass of ReadVT that is optimized for files using a single delimiter.
-	StringTokenizer is not used when reading the file.
-	@author David Clutter
-	@author Tom Redman
+ * Read in a file with a single delimiter.
 */
-public class ReadDelimitedFormat extends InputModule implements Serializable {
+public class ReadDelimitedFormat extends InputModule
+    implements Serializable, HasNames, HasProperties {
 
-	static final String STRING_TYPE = "String";
-	static final String FLOAT_TYPE = "float";
-	static final String DOUBLE_TYPE = "double";
-	static final String INT_TYPE = "int";
-	static final String BOOLEAN_TYPE = "boolean";
-	static final String CHAR_TYPE = "char[]";
-	static final String BYTE_TYPE = "byte[]";
-	static final String LONG_TYPE = "long";
-	static final String SHORT_TYPE = "short";
+	protected static final String STRING_TYPE = "String";
+	protected static final String FLOAT_TYPE = "float";
+	protected static final String DOUBLE_TYPE = "double";
+	protected static final String INT_TYPE = "int";
+	protected static final String BOOLEAN_TYPE = "boolean";
+	protected static final String CHAR_TYPE = "char[]";
+	protected static final String BYTE_TYPE = "byte[]";
+	protected static final String LONG_TYPE = "long";
+	protected static final String SHORT_TYPE = "short";
+	protected static final String IN = "in";
+	protected static final String OUT = "out";
+	protected static final String OMIT = "omit";
 
 	/** the delimiter identified. */
-	private byte delimiterOne;
+	protected char delimiterOne;
 
 	/** the datatype for each column. */
 	transient protected ArrayList typesList;
@@ -33,31 +33,51 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	/** the labels for each column. */
 	transient protected ArrayList labelsList;
 
+	/** the list of variables */
+	transient protected ArrayList variablesList;
+
 	/** set if the types are specified in the file. */
 	transient protected boolean hasTypes = false;
 
 	/** set if the labels are specified in the file. */
 	transient protected boolean hasLabels = false;
 
+	/** set if the in/out variables are specified */
+	transient protected boolean hasVariables = false;
+
+	private String comment = "%";
+
 	/** create DoubleColumns for numeric values, or StringColumns otherwise */
-	public boolean useStringAndDouble;
+	protected boolean useStringAndDouble = false;
 
 	/** the row containing the labels. */
-	public int labelsRow = -1;
+	protected int labelsRow = 0;
 
 	/** the row containing the column types. */
-	public int typesRow = -1;
+	protected int typesRow = 1;
+
+	/** the row containing the in/out/omit declarations */
+	protected int inOutRow = -1;
 
 	/** the value to replace missing numerics values with. */
-	double emptyValue = 0;
+	protected double missingValue = 0;
 
-	public double getEmptyValue() {
-		return emptyValue;
+	public double getMissingValue() {
+		return missingValue;
 	}
 
-	public void setEmptyValue(double d) {
-		emptyValue = d;
+	/*public void setComment(String s) {
+		comment = s;
 	}
+
+	public String getComment() {
+		return comment;
+	}*/
+
+	public void setMissingValue(double d) {
+		missingValue = d;
+	}
+
 	/**
 		Get the index of the types row.
 		@return the index of the types row.
@@ -72,6 +92,22 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	*/
 	public void setTypesRow(int i) {
 		typesRow = i;
+	}
+
+	/**
+		Get the index of the variable row.
+		@return the index of the types row.
+	*/
+	public int getInOutRow() {
+		return inOutRow;
+	}
+
+	/**
+		Set the index of the variable row.
+		@param i the new index
+	*/
+	public void setInOutRow(int i) {
+		inOutRow = i;
 	}
 
 	/**
@@ -113,8 +149,23 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	   @return A description of this module.
 	*/
 	public String getModuleInfo() {
-		return "Optimized for a file with a single delimiter";
+		String str = "Loads data that is in a delimited format ";
+        str += "from the input filename into a Table and outputs this Table. ";
+        str += "This is optimized for a file with a single character delimiter. ";
+        str += "This module has several properties. labelsRow indicates which ";
+        str += "row specifies attribute labels, if none specify '-l'. ";
+        str += "typesRow indicates which row specifies data types, if none ";
+        str += "specify '-1'.  inoutRow indicates which row specifies the ";
+        str += "attributes to use as input and output, if none specify '-1'. ";
+        str += "useStringAndDouble indicates whether or not the system needs ";
+        str += "to determine data types. missingValue is the value to use for ";
+        str += "missing numeric values.";
+        return str;
 	}
+
+    public String getModuleName() {
+        return "ReadDelimitedFormat";
+    }
 
 	/**
 	   Return a String array containing the datatypes the inputs to this
@@ -132,7 +183,7 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	   @return The datatypes of the outputs.
 	*/
 	public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String []out = {"ncsa.d2k.util.datatype.Table"};
 		return out;
 	}
 
@@ -148,6 +199,10 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 			return "No such input";
 	}
 
+    public String getInputName(int i) {
+        return "FileName";
+    }
+
 	/**
 	   Return the description of a specific output.
 	   @param i The index of the output.
@@ -155,10 +210,14 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	*/
 	public String getOutputInfo(int i) {
 		if(i == 0)
-			return "The VerticalTable";
+			return "The Table";
 		else
 			return "No such output";
 	}
+
+    public String getOutputName(int i) {
+        return "Table";
+    }
 
 	/**
 		Called when the itinerary begins execution.  Initialize
@@ -169,6 +228,8 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 		hasLabels = false;
 		typesList = null;
 		labelsList = null;
+		variablesList = null;
+		hasVariables = false;
 	}
 
 	/**
@@ -179,7 +240,7 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 		String fileName = (String)pullInput(0);
 		File file = new File (fileName);
 		delimiterOne = this.findDelimiter (file);
-		if (delimiterOne == (byte) '=') {
+		if (delimiterOne == EQUALS) {
 			throw new Exception ("No single character delimiter could be identified.");
 		}
 
@@ -187,6 +248,8 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 			hasTypes = true;
 		if(labelsRow >= 0)
 			hasLabels = true;
+		if(inOutRow >= 0)
+			hasVariables = true;
 
 		if(file.exists())
 			pushOutput(readSDFile(file), 0);
@@ -202,9 +265,10 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 		@return true if column contains only numeric data, false otherwise
 	*/
 	protected boolean isNumericColumn(SimpleColumn column) {
-		for(int row = 0; row < column.getNumRows(); row++) {
+        int numRows = column.getNumRows();
+		for(int row = 0; row < numRows; row++) {
 			try {
-				Double d = Double.valueOf(new String( column.getBytes(row) ));
+				Double d = Double.valueOf(column.getString(row));
 			}
 			catch(Exception e) {
 				return false;
@@ -220,60 +284,72 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 		@return a new, empty column
 	*/
 	protected SimpleColumn createColumn(String type, int size) {
-		if(type.equals(STRING_TYPE))
+		if(type.compareToIgnoreCase(STRING_TYPE) == 0)
 			return new StringColumn(size);
-		else if(type.equals(FLOAT_TYPE))
+		else if(type.compareToIgnoreCase(FLOAT_TYPE) == 0)
 			return new FloatColumn(size);
-		else if(type.equals(DOUBLE_TYPE))
+		else if(type.compareToIgnoreCase(DOUBLE_TYPE) == 0)
 			return new DoubleColumn(size);
-		else if(type.equals(INT_TYPE))
+		else if(type.compareToIgnoreCase(INT_TYPE) == 0)
 			return new IntColumn(size);
-		else if(type.equals(BOOLEAN_TYPE))
+		else if(type.compareToIgnoreCase(BOOLEAN_TYPE) == 0)
 			return new BooleanColumn(size);
-		else if(type.equals(CHAR_TYPE))
-			return new CharArrayColumn(size);
-		else if(type.equals(BYTE_TYPE))
-			return new ByteArrayColumn(size);
-		else if(type.equals(LONG_TYPE))
+		else if(type.compareToIgnoreCase(CHAR_TYPE) == 0)
+			return new ContinuousCharArrayColumn(size);
+		else if(type.compareToIgnoreCase(BYTE_TYPE) == 0)
+			return new ContinuousByteArrayColumn(size);
+		else if(type.compareToIgnoreCase(LONG_TYPE) == 0)
 			return new LongColumn(size);
-		else if(type.equals(SHORT_TYPE))
+		else if(type.compareToIgnoreCase(SHORT_TYPE) == 0)
 			return new ShortColumn(size);
 		else
-			return new ByteArrayColumn(size);
+			return new StringColumn(size);
 	}
 
 	/**
-		Create a DoubleColumn from a ByteArrayColumn
+		Create a DoubleColumn from a ByteArrayPointerColumn
 		@param sc the original column
 		@return a DoubleColumn with the values from sc
 	*/
-	protected DoubleColumn toDoubleColumn(ByteArrayColumn sc) {
-		DoubleColumn retVal = new DoubleColumn(sc.getNumRows());
+	protected DoubleColumn toDoubleColumn(ContinuousCharArrayColumn sc) {
 		int numRows = sc.getNumRows ();
+		DoubleColumn retVal = new DoubleColumn(numRows);
 		for(int row = 0; row < numRows; row++)
 			retVal.setDouble( Double.valueOf(
 				sc.getString(row)).doubleValue(), row);
+		retVal.setLabel(sc.getLabel());
+		retVal.setType(new Double(0));
+		retVal.setComment(sc.getComment());
 		return retVal;
 	}
 
 	/**
-		Create a StringColumn from a ByteArrayColumn
+		Create a StringColumn from a ByteArrayPointerColumn
 		@param sc the original column
 		@return a StringColumn with the values from sc
 	*/
-	protected StringColumn toStringColumn(ByteArrayColumn sc) {
-		StringColumn retVal = new StringColumn(sc.getNumRows());
+	protected StringColumn toStringColumn(ContinuousCharArrayColumn sc) {
 		int numRows = sc.getNumRows ();
+		StringColumn retVal = new StringColumn(numRows);
 		for(int row = 0; row < numRows; row++) {
-			byte []val = sc.getBytes(row);
+			char[] val = sc.getChars(row);
 			if(val == null)
-				val = new byte[0];
+				val = new char[0];
 			retVal.setString(new String(val), row);
 		}
+		retVal.setLabel(sc.getLabel());
+		retVal.setType(new String());
+		retVal.setComment(sc.getComment());
+
 		return retVal;
 	}
 
 	/////// Private methods //////////////
+
+	private static final char TAB = '\t';
+	private static final char SPACE = ' ';
+	private static final char COMMA = ',';
+	private static final char EQUALS = '=';
 
 	/**
 	 * This method will search the document, counting the number of each
@@ -285,7 +361,7 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	 * @param f the file to check for delimiters
 	 * @returns one from among the set of delimiters we look for (',', ' ', '\t'), or '=' if the search failed.
 	 */
-	private byte findDelimiter (File f) {
+	private char findDelimiter (File f) {
 		int counters [] = new int [3];
 		final int tabIndex = 0, spaceIndex = 1, commaIndex = 2;
 
@@ -299,18 +375,18 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 			// read the file in one row at a time
 			int currentRow = 0;
 			while ((line[currentRow] = reader.readLine ()) != null) {
-				byte [] bytes = line [currentRow].getBytes ();
+				char[] bytes = line [currentRow].toCharArray ();
 
 				// In this row, count instances of each delimiter
 				for (int i = 0 ; i < bytes.length ; i++) {
 					switch (bytes [i]) {
-						case '\t':
+						case TAB:
 							counters [tabIndex] ++;
 							break;
-						case ' ':
+						case SPACE:
 							counters [spaceIndex] ++;
 							break;
-						case ',':
+						case COMMA:
 							counters [commaIndex] ++;
 							break;
 					}
@@ -338,16 +414,16 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-			return (byte) '=';
+			return EQUALS;
 		}
 
 		// Did one of the possible delimiters come up a winner?
 		if (isComma && !isSpace && !isTab)
-			return (byte) ',';
+			return COMMA;
 		if (!isComma && isSpace && !isTab)
-			return (byte) ' ';
+			return SPACE;
 		if (!isComma && !isSpace && isTab)
-			return (byte) '\t';
+			return TAB;
 
 		// OK, that didn't work. Lets trim the strings and see if it will work the.
 		// read the file in one row at a time
@@ -356,18 +432,18 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 		isTab = true;
 		for (int currentRow = 0; currentRow < 10 ;currentRow++) {
 			String tmp = line [currentRow].trim ();
-			byte [] bytes = tmp.getBytes ();
+			char [] bytes = tmp.toCharArray ();
 			counters [tabIndex] = counters [spaceIndex] = counters [commaIndex] = 0;
 			// In this row, count instances of each delimiter
 			for (int i = 0 ; i < bytes.length ; i++) {
 				switch (bytes [i]) {
-					case '\t':
+					case TAB:
 						counters [tabIndex] ++;
 						break;
-					case ' ':
+					case SPACE:
 						counters [spaceIndex] ++;
 						break;
-					case ',':
+					case COMMA:
 						counters [commaIndex] ++;
 						break;
 				}
@@ -392,101 +468,13 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 
 		// Did one of the possible delimiters come up a winner?
 		if (isComma && !isSpace && !isTab)
-			return (byte) ',';
+			return COMMA;
 		if (!isComma && isSpace && !isTab)
-			return (byte) ' ';
+			return SPACE;
 		if (!isComma && !isSpace && isTab)
-			return (byte) '\t';
+			return TAB;
 
-		return (byte) '=';
-	}
-
-	/** this method takes the data and creates from it a vertical table.
-	 *  @param rowPtrs the list of byte arrays containing the original data.
-	 *  @param maxRowLength the maximum number of entries found in any row.
-	 *  @returns a vertical table representing the data.
-	 */
-	protected VerticalTable createVerticalTable (ArrayList rowPtrs, int maxRowLength) {
-		// now create the columns
-		SimpleColumn []tableColumns = new SimpleColumn[maxRowLength];
-		for(int i = 0; i < maxRowLength; i++) {
-			if(hasTypes) {
-				tableColumns[i] = createColumn(
-					new String((byte[])typesList.get(i)),
-					rowPtrs.size());
-			} else
-				tableColumns[i] = new ByteArrayColumn(rowPtrs.size());
-		}
-
-		// now populate the columns
-		for(int row = 0; row < rowPtrs.size(); row++) {
-			ArrayList thisRow = (ArrayList)rowPtrs.get(row);
-			for(int col = 0; col < thisRow.size(); col++) {
-				/*if(tableColumns[col] instanceof NumericColumn) {
-					String s = new String((byte[])thisRow.get(col));
-					double d;
-					try {
-						d = Double.parseDouble(s);
-					}
-					catch(Exception e) {
-						d = emptyValue;
-					}
-	    			tableColumns[col].setString(Double.toString(d),row);
-				*/
-				if(tableColumns[col] instanceof NumericColumn) {
-					String s = new String((byte[])thisRow.get(col));
-					if(s.trim().length() == 0) {
-						if(tableColumns[col] instanceof IntColumn)
-	    						tableColumns[col].setInt(
-								(int)emptyValue,row);
-						else if(tableColumns[col] instanceof ShortColumn)
-	    						tableColumns[col].setShort(
-								(short)emptyValue,row);
-						else if(tableColumns[col] instanceof LongColumn)
-							tableColumns[col].setLong(
-								(long)emptyValue, row);
-						else if(tableColumns[col] instanceof DoubleColumn)
-							tableColumns[col].setDouble(
-								emptyValue, row);
-						else
-							tableColumns[col].setFloat(
-								(float)emptyValue, row);
-					}
-					else
-						tableColumns[col].setString(
-							new String((byte[])thisRow.get(col)), row);
-				} else
-					tableColumns[col].setBytes((byte[])thisRow.get(col), row);
-			}
-		}
-
-		// change the columns to String and DoubleColumns if necessary
-		if(useStringAndDouble && !hasTypes) {
-			for(int col = 0; col < tableColumns.length; col++) {
-				if(isNumericColumn( (ByteArrayColumn)tableColumns[col] ) ) {
-					tableColumns[col] = toDoubleColumn(
-						(ByteArrayColumn)tableColumns[col]);
-				} else {
-					tableColumns[col] = toStringColumn(
-						(ByteArrayColumn)tableColumns[col]);
-				}
-			}
-		}
-
-		// set the labels if given
-		if(hasLabels) {
-			for(int i = 0; i < labelsList.size(); i++)
-				tableColumns[i].setLabel(
-					new String( (byte[])labelsList.get(i)) );
-		}
-
-		// otherwise make the labels be the index of the column
-		else {
-			for(int i = 0; i < tableColumns.length; i++)
-				tableColumns[i].setLabel(Integer.toString(i));
-		}
-
-		return new VerticalTable(tableColumns);
+		return EQUALS;
 	}
 
 	/**
@@ -496,46 +484,155 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 		@return a VerticalTable containing the data from the file, or null
 		if any errors occur
 	*/
-	private VerticalTable readSDFile(File f) {
-		int maxRowLength = 0;
-		ArrayList rowPtrs = new ArrayList();
+	protected VerticalTable readSDFile(File f) {
+		int numLines = 0;
+		int numCols = 0;
+		BufferedReader reader;
+
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(f));
-			String line;
+			reader = new BufferedReader(new FileReader(f));
 
-			// read the file in one row at a time
-			int currentRow = 0;
+			// get the number of columns from the first line
+			String line = reader.readLine();
+			numCols = countSDRow(line);
+
+			typesList = null;
+			labelsList = null;
+			variablesList = null;
+
+			reader = new BufferedReader(new FileReader(f));
 			while( (line = reader.readLine()) != null) {
-				ArrayList thisRow = createSDRow(line);
-				if(currentRow == typesRow) {
-					typesList = thisRow;
-				} else if(currentRow == labelsRow) {
-					labelsList = thisRow;
-				} else
-					rowPtrs.add(thisRow);
-
-				currentRow++;
-				if(thisRow.size() > maxRowLength)
-					maxRowLength = thisRow.size();
+				if(numLines == typesRow)
+					typesList = createSDRow(line);
+				else if(numLines == labelsRow)
+					labelsList = createSDRow(line);
+				else if(numLines == inOutRow)
+					variablesList = createSDRow(line);
+				numLines++;
 			}
+			int numRows = numLines;
+
+			if(hasTypes)
+				numRows--;
+			if(hasLabels)
+				numRows--;
+			if(hasVariables)
+				numRows--;
+
+			// now create the table.
+			Column[] cols = new Column[numCols];
+			for(int i = 0; i < cols.length; i++) {
+				if(typesList != null) {
+					String type = new String((char[])typesList.get(i));
+					cols[i] = createColumn(type, numRows);
+				}
+				else
+					cols[i] = new StringColumn(numRows);
+
+				if(labelsList != null)
+					cols[i].setLabel(new String((char[])labelsList.get(i)));
+				else
+					cols[i].setLabel(Integer.toString(i));
+			}
+			if(typesList != null)
+				typesList.clear();
+			if(labelsList != null)
+				labelsList.clear();
+
+			VerticalTable table = new VerticalTable(cols);
+
+			// the number of the row in the table
+			int rowNum = 0;
+			// the number of the line in the actual file
+			int lineNum = 0;
+			reader = new BufferedReader(new FileReader(f));
+			while( (line = reader.readLine()) != null) {
+				if(lineNum != typesRow && lineNum != labelsRow && lineNum != inOutRow) {
+					createSDRow(line, table, rowNum);
+					rowNum++;
+				}
+				lineNum++;
+			}
+
+			// change the columns to String and DoubleColumns if necessary
+			if(useStringAndDouble && !hasTypes) {
+				for(int col = 0; col < table.getNumColumns(); col++) {
+					if(isNumericColumn( (StringColumn)table.getColumn(col)) ) {
+						table.setColumn(toDoubleColumn(
+							(StringColumn)table.getColumn(col)), col);
+					}
+				}
+			}
+
+			// trim all textual columns down
+			for(int i = 0; i < table.getNumColumns(); i++) {
+				if(table.getColumn(i) instanceof TextualColumn)
+					((TextualColumn)table.getColumn(i)).trim();
+			}
+
+			// create an example table if it has a variablesRow
+			if(hasVariables)
+				table = toExampleTable(table);
+
+			return table;
 		}
 		catch(IOException e) {
 			e.printStackTrace();
-			return null;
 		}
-		return this.createVerticalTable (rowPtrs, maxRowLength);
+		return null;
 	}
 
 	/**
-	   Return the name of a specific input.
-	   @param i The index of the input.
-	   @return The name of the input
-	*/
-	public String getInputName(int i) {
-		if(i == 0)
-			return "filename";
-		else
-			return "No such input";
+	 * Set the input and output features of an example table.
+	 * @param t
+	 * @return
+	 */
+	protected ExampleTable toExampleTable(VerticalTable t) {
+		ExampleTable retVal = new ExampleTable(t);
+		int [] ins;
+		int [] outs;
+
+		int numIn = 0;
+		int numOut = 0;
+
+		// count the number of ins and outs
+		Iterator i = variablesList.iterator();
+		while(i.hasNext()) {
+			char[] c = (char[])i.next();
+			String s = new String(c);
+			if(s.compareToIgnoreCase(IN) == 0)
+				numIn++;
+			else if(s.compareToIgnoreCase(OUT) == 0)
+				numOut++;
+		}
+
+
+		ins = new int[numIn];
+		outs = new int[numOut];
+
+		int inIdx = 0;
+		int outIdx = 0;
+
+		int colIdx = 0;
+
+		i = variablesList.iterator();
+		while(i.hasNext()) {
+			char[] c = (char[])i.next();
+			String s = new String(c);
+			if(s.compareToIgnoreCase(IN) == 0) {
+				ins[inIdx] = colIdx;
+				inIdx++;
+			}
+			else if(s.compareToIgnoreCase(OUT) == 0) {
+				outs[outIdx] = colIdx;
+				outIdx++;
+			}
+			colIdx++;
+		}
+		retVal.setInputFeatures(ins);
+		retVal.setOutputFeatures(outs);
+
+		return retVal;
 	}
 
 	/**
@@ -544,31 +641,108 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 		@param row the line from the file
 		@return an ArrayList containing the tokens from the line.
 	*/
-	private ArrayList createSDRow (String row) {
+	protected void createSDRow (String row, VerticalTable vt, int curRow) {
 		int current = 0;
-		ArrayList thisRow = new ArrayList();
-		byte [] bytes = row.getBytes ();
-		byte del = delimiterOne;
+		char [] bytes = row.toCharArray ();
+		char del = delimiterOne;
 		int len = bytes.length;
-		for (int i = 0 ; i < len ; i++)
-		{
-			if (bytes[i] == del)
-			{
+
+		int curCol = 0;
+
+		for (int i = 0 ; i < len ; i++) {
+			if (bytes[i] == del) {
 				if ((i-current) > 0) {
-					byte [] newBytes = new byte [i-current];
+					char [] newBytes = new char [i-current];
 					System.arraycopy (bytes, current, newBytes, 0, i-current);
-					thisRow.add(newBytes);
-				} else
-					thisRow.add (new byte [0]);
+					vt.setChars(newBytes, curRow, curCol);
+					curCol++;
+				} else {
+					vt.setChars(new char[0], curRow, curCol);
+					curCol++;
+				}
 				current = i+1;
 			}
 		}
 
 		if ((len-current) > 0) {
-			byte [] newBytes = new byte [len-current];
+			char [] newBytes = new char [len-current];
+			System.arraycopy (bytes, current, newBytes, 0, len-current);
+			vt.setChars(newBytes, curRow, curCol);
+			curCol++;
+		}
+	}
+
+	protected ArrayList createSDRow (String row) {
+		int current = 0;
+		ArrayList thisRow = new ArrayList();
+		char [] bytes = row.toCharArray();
+		char del = delimiterOne;
+		int len = bytes.length;
+
+		for (int i = 0 ; i < len ; i++) {
+			if (bytes[i] == del) {
+				if ((i-current) > 0) {
+					char [] newBytes = new char [i-current];
+					System.arraycopy (bytes, current, newBytes, 0, i-current);
+					thisRow.add(newBytes);
+				} else {
+					thisRow.add (new char [0]);
+				}
+				current = i+1;
+			}
+		}
+
+		if ((len-current) > 0) {
+			char [] newBytes = new char [len-current];
 			System.arraycopy (bytes, current, newBytes, 0, len-current);
 			thisRow.add(newBytes);
 		}
 		return thisRow;
+	}
+
+	/**
+		Count the number of tokens in a row.
+	*/
+	protected int countSDRow (String row) {
+		int current = 0;
+
+		char [] bytes = row.toCharArray ();
+		char del = delimiterOne;
+		int len = bytes.length;
+
+		int numToks = 0;
+
+		for (int i = 0 ; i < len ; i++) {
+			if (bytes[i] == del) {
+				current = i+1;
+				numToks++;
+			}
+		}
+
+		if ((len-current) > 0) {
+			numToks++;
+		}
+		//return thisRow;
+		return numToks;
+	}
+
+	public static void main(String []args) {
+		new ReadDelimitedFormat(args[0]);
+	}
+
+	public ReadDelimitedFormat() {
+	}
+
+	public ReadDelimitedFormat(String fn) {
+		File f = new File(fn);
+		delimiterOne = this.findDelimiter (f);
+		hasTypes = true;
+		typesRow = 1;
+		hasLabels = true;
+		labelsRow = 0;
+		if(f.exists()) {
+			VerticalTable vtable = readSDFile(f);
+			//vtable.print();
+		}
 	}
 }

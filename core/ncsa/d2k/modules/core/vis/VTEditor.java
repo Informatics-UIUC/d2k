@@ -17,7 +17,7 @@ import java.awt.event.*;
 import java.util.EventObject;
 
 /**
-   Displays a VerticalTable and allows editing of the cells.
+   Displays a Table and allows editing of the cells.
    TODO: allow the columns and rows to be moved and deleted.
    @author David Clutter
 */
@@ -25,7 +25,7 @@ public class VTEditor extends VTViewer {
 
 	public String getModuleInfo() {
 		StringBuffer b = new StringBuffer("A table editor.  This displays");
-		b.append(" the contents of a VerticalTable and allows the editing");
+		b.append(" the contents of a Table and allows the editing");
 		b.append(" of the table.  The first row contains combo boxes to ");
 		b.append(" change the datatype of the associated column.");
 		return b.toString();
@@ -44,15 +44,15 @@ public class VTEditor extends VTViewer {
 		return new TableEditorView();
     }
 
-	static final String STRING_TYPE = "String";
-	static final String DOUBLE_TYPE = "double";
-	static final String INT_TYPE = "int";
-	static final String BYTE_ARRAY_TYPE = "byte[]";
-	static final String CHAR_ARRAY_TYPE = "char[]";
-	static final String BOOLEAN_TYPE = "boolean";
-	static final String FLOAT_TYPE = "float";
-	static final String LONG_TYPE = "long";
-	static final String SHORT_TYPE = "short";
+	private static final String STRING_TYPE = "String";
+	private static final String DOUBLE_TYPE = "double";
+	private static final String INT_TYPE = "int";
+	private static final String BYTE_ARRAY_TYPE = "byte[]";
+	private static final String CHAR_ARRAY_TYPE = "char[]";
+	private static final String BOOLEAN_TYPE = "boolean";
+	private static final String FLOAT_TYPE = "float";
+	private static final String LONG_TYPE = "long";
+	private static final String SHORT_TYPE = "short";
 
     /**
     	A specialized TableView that uses a TableEditorModel for the
@@ -70,7 +70,7 @@ public class VTEditor extends VTViewer {
 		public void setInput(Object input, int idx) {
 			if(idx == 0) {
 				removeAll();
-				table = (VerticalTable)input;
+				table = (Table)input;
 				// a panel to put the buttons on
 				JPanel buttonPanel = new JPanel();
 				ok = new JButton("Done");

@@ -13,7 +13,7 @@ public class ScatterPlotSmall extends Graph {
 	int smallspace =1;
 	int largespace = 3;
 
-	public ScatterPlotSmall(VerticalTable table, DataSet[] sets, GraphSettings settings) {
+	public ScatterPlotSmall(Table table, DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 	}
 

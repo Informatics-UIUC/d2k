@@ -152,14 +152,14 @@ public class LineGraphAppModule extends VisModule {
          findClosest;// = new SimpleButton(darkGoNorm, darkGoPres);
 
       public void initView(ViewModule mod) {
-      	goNorm = new ImageIcon(mod.getImage("/images/l-go-normal.gif"));
-         goPres = new ImageIcon(mod.getImage("/images/l-go-pressed.gif"));
-         leftNorm = new ImageIcon(mod.getImage("/images/left-normal.gif"));
-         leftPres = new ImageIcon(mod.getImage("/images/left-pressed.gif"));
-         rightNorm = new ImageIcon(mod.getImage("/images/right-normal.gif"));
-         rightPres = new ImageIcon(mod.getImage("/images/right-pressed.gif"));
-         darkGoNorm = new ImageIcon(mod.getImage("/images/d-go-normal.gif"));
-         darkGoPres = new ImageIcon(mod.getImage("/images/d-go-pressed.gif"));
+      	goNorm = new ImageIcon(mod.getImage("/images/linegraph/l-go-normal.gif"));
+         goPres = new ImageIcon(mod.getImage("/images/linegraph/l-go-pressed.gif"));
+         leftNorm = new ImageIcon(mod.getImage("/images/linegraph/left-normal.gif"));
+         leftPres = new ImageIcon(mod.getImage("/images/linegraph/left-pressed.gif"));
+         rightNorm = new ImageIcon(mod.getImage("/images/linegraph/right-normal.gif"));
+         rightPres = new ImageIcon(mod.getImage("/images/linegraph/right-pressed.gif"));
+         darkGoNorm = new ImageIcon(mod.getImage("/images/linegraph/d-go-normal.gif"));
+         darkGoPres = new ImageIcon(mod.getImage("/images/linegraph/d-go-pressed.gif"));
 
       	doIt = new SimpleButton(goNorm, goPres);
          increment = new SimpleButton(rightNorm, rightPres);

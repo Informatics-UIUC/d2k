@@ -42,7 +42,8 @@ public class ConvertVTToSets extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	public String getOutputInfo (int index) {
 /*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Sets\">    <Text>These are the item sets that can be used in rule association, for example, for basket analysis, one set might be {bread, butter, milk}. </Text>  </Info></D2K>";
+			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Sets\"><Text>This is the itemset object representation.</Text>  </Info></D2K>";
+			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"output names\">    <Text>List of the names of the output attributes.</Text>  </Info></D2K>";
 			default: return "No such output";
 		}
 /*#end^5 Continue editing. ^#&*/
@@ -55,7 +56,8 @@ public class ConvertVTToSets extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	public String[] getOutputTypes () {
 /*&%^6 Do not modify this section. */
 		String [] types =  {
-			"[[Ljava.lang.String;"};
+			"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets",
+			"[Ljava.lang.String;"};
 		return types;
 /*#end^6 Continue editing. ^#&*/
 	}
@@ -74,30 +76,10 @@ public class ConvertVTToSets extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		PUT YOUR CODE HERE.
 	*/
 	public void doit () throws Exception {
-		VerticalTable vt = (VerticalTable) this.pullInput (0);
-		int numColumns = vt.getNumColumns ();
-		int numRows = vt.getNumRows ();
-
-		// Allocate an array of string for each column prefix.
-		String [] prefix = new String [numColumns];
-
-		// Init each prefix, if there is no column label, use our own
-		// home brew.
-		for (int i = 0 ; i < numColumns ; i++) {
-			String tmp = vt.getColumnLabel (i);
-			if (tmp != null && tmp.length() > 0)
-				prefix [i] = tmp+"^";
-			else
-				prefix [i] = "^"+Integer.toString (i)+"^";
-		}
-
-		String [][] sets = new String [numRows][numColumns];
-		for (int i = 0 ; i < numRows ; i++) {
-			for (int j = 0 ; j < numColumns ; j++) {
-				sets[i][j] = prefix[j]+vt.getString (i, j);
-			}
-		}
-		this.pushOutput (sets, 0);
+		ItemSets iss = new ItemSets((VerticalTable)this.pullInput(0));
+		if (iss.outputNames != null)
+			this.pushOutput(iss.outputNames, 1);
+		this.pushOutput(iss,0);
 	}
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/

@@ -1,0 +1,16 @@
+outlook	temperature	humidity	windy	play
+String	String	String	String	String
+S	H	H	F	N
+S	H	H	T	N
+O	H	H	F	Y
+R	M	H	F	Y
+R	C	N	F	Y
+R	C	N	T	N
+O	C	N	T	Y
+S	M	H	F	N
+S	C	N	F	Y
+R	M	N	F	Y
+S	M	N	T	Y
+O	M	H	T	Y
+O	H	H	F	Y
+R	M	H	T	N

@@ -14,10 +14,10 @@ import java.awt.*;
 public class ScatterAndLinePlot extends ScatterPlot {
 
 	DataSet[] ConnectedSets;
-	VerticalTable fTable;
+	Table fTable;
 	public ScatterAndLinePlot () {}
 
-	public ScatterAndLinePlot(VerticalTable Scattertable, VerticalTable Functiontable, DataSet[] Scatterset, DataSet[] Functionset, GraphSettings settings) {
+	public ScatterAndLinePlot(Table Scattertable, Table Functiontable, DataSet[] Scatterset, DataSet[] Functionset, GraphSettings settings) {
 		super(Scattertable, Scatterset, settings);
 		ConnectedSets = Functionset;
 		fTable = Functiontable;

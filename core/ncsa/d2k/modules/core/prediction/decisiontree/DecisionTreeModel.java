@@ -10,57 +10,145 @@ import java.util.Iterator;
 	Encapsulates a decision tree.  Takes an ExampleTable as input
 	and uses the decision tree to predict the outcome for each row
 	in the data set.
-	TODO: change to PredictionTable
 */
 public class DecisionTreeModel extends PredictionModelModule
-	implements Serializable {
+	implements Serializable, ViewableDTModel, HasNames {
 
 	/** The root of the decision tree */
-	DecisionTreeNode root;
+	private DecisionTreeNode root;
 	/** The table that is passed to the tree to perform predictions */
-	transient ExampleTable table;
+	private transient ExampleTable table;
 	/** The unique values in the output column of the table */
-	String[] uniqueOutputs;
+	private String[] uniqueOutputs;
 	/** The number of examples in the data set */
-	int numExamples;
+	private int numExamples;
 
+	private int[] inputFeatures;
+	private int[] outputFeatures;
+
+	private int trainingSetSize;
+
+	private String[] inputColumnNames;
+	private String[] outputColumnNames;
+
+	private String[] inputTypes;
+	private String[] outputTypes;
+
+	private String [] classNames;
 
 	/**
 		Constructor
 		@param rt the root of the decision tree
 	*/
-	DecisionTreeModel(DecisionTreeNode rt) {
+	DecisionTreeModel(DecisionTreeNode rt, ExampleTable table) {
+		setName("DecisionTreeModel");
 		root = rt;
-	}
+		inputFeatures = table.getInputFeatures();
+		outputFeatures = table.getOutputFeatures();
+		trainingSetSize = table.getNumRows();
 
-	static String INFO = "Encapsulates a decision tree.  Takes an "
-		+"ExampleTable as input and uses the decision tree to "
-		+"predict the outcome for each row in the data set.";
-	static String[] IN = {"ncsa.d2k.util.datatype.ExampleTable"};
-	static String[] OUT = {"ncsa.d2k.util.datatype.PredictionTable"};
-	static String IN0 = "The data set to predict the outcomes for.";
-	static String OUT0 = "The original data set with an extra column "
-		+"of predictions.";
+		inputColumnNames = new String[inputFeatures.length];
+		inputTypes = new String[inputFeatures.length];
+		for(int i = 0; i < inputFeatures.length; i++) {
+			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
+			if(table.getColumn(inputFeatures[i]) instanceof NumericColumn)
+				inputTypes[i] = "Numeric";
+			else
+				inputTypes[i] = "Text";
+		}
+
+		outputColumnNames = new String[outputFeatures.length];
+		outputTypes = new String[outputFeatures.length];
+		for(int i = 0; i < outputFeatures.length; i++) {
+			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
+			if(table.getColumn(outputFeatures[i]) instanceof NumericColumn)
+				outputTypes[i] = "Numeric";
+			else
+				outputTypes[i] = "Text";
+		}
+
+		classNames = uniqueValues(table, outputFeatures[0]);
+	}
 
 	public String getModuleInfo() {
-		return INFO;
+		String s = "Encapsulates a decision tree.  Takes an ";
+		s += "ExampleTable as input and uses the decision tree to ";
+		s += "predict the outcome for each row in the data set.";
+		return s;
 	}
 
+    public String getModuleName() {
+        return "DTModel";
+    }
+
 	public String[] getInputTypes() {
-		return IN;
+		String[] in = {"ncsa.d2k.util.datatype.ExampleTable"};
+		return in;
 	}
 
 	// change to prediction table
 	public String[] getOutputTypes() {
-		return OUT;
+		String[] out = {"ncsa.d2k.util.datatype.PredictionTable",
+            "ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel"};
+		return out;
 	}
 
 	public String getInputInfo(int i) {
-		return IN0;
+		return "The data set to predict the outcomes for.";
 	}
 
+    public String getInputName(int i) {
+        return "Dataset";
+    }
+
 	public String getOutputInfo(int i) {
-		return OUT0;
+        if(i == 0)
+		    return "The original data set with an extra column of predictions.";
+        else
+            return "A reference to this model.";
+	}
+
+    public String getOutputName(int i) {
+        if(i == 0)
+            return "Predictions";
+        else
+            return "DTModel";
+    }
+
+	public int getTrainingSetSize() {
+		return trainingSetSize;
+	}
+
+	public String[] getInputColumnLabels() {
+		return inputColumnNames;
+	}
+
+	public String[] getOutputColumnLabels() {
+		return outputColumnNames;
+	}
+
+	public int[] getInputFeatureIndicies() {
+		return inputFeatures;
+	}
+
+	public int[] getOutputFeatureIndices() {
+		return outputFeatures;
+	}
+
+	public String [] getInputFeatureTypes() {
+		return inputTypes;
+	}
+
+	public String [] getOutputFeatureTypes() {
+		return outputTypes;
+	}
+
+	/**
+		Get the class names.
+		@return the class names
+	*/
+  	public final String []getClassNames() {
+		return classNames;
 	}
 
 	/**
@@ -70,6 +158,7 @@ public class DecisionTreeModel extends PredictionModelModule
 		ExampleTable et = (ExampleTable)pullInput(0);
 		PredictionTable retVal = predict(et);
 		pushOutput(retVal, 0);
+        pushOutput(this, 1);
 	}
 
 	/**
@@ -91,17 +180,17 @@ public class DecisionTreeModel extends PredictionModelModule
 		int[] outputs = pt.getOutputFeatures();
 		int[] preds = pt.getPredictionSet();
 
-		//StringColumn sc = new StringColumn(table.getNumRows());
-		//StringColumn sc = pt.getColumn(preds[0]);
+		if(preds.length == 0) {
+			StringColumn sc = new StringColumn(pt.getNumRows());
+			pt.addPredictionColumn(sc);
+			preds = pt.getPredictionSet();
+		}
 
 		for(int i = 0; i < pt.getNumRows(); i++) {
-			String pred = (String)root.evaluate(pt, i, outputs[0]);
-			//sc.setString(pred, i);
+			String pred = (String)root.evaluate(pt, i);
 			pt.setString(pred, i, preds[0]);
 		}
-		//table.addColumn(sc);
 		uniqueOutputs = uniqueValues(pt, outputs[0]);
-		//return table;
 		return pt;
 	}
 
@@ -154,6 +243,13 @@ public class DecisionTreeModel extends PredictionModelModule
 		@return the root of the tree
 	*/
 	public DecisionTreeNode getRoot() {
+		return root;
+	}
+	/**
+		Get the Viewable root of this decision tree.
+		@return the root of the tree
+	*/
+	public ViewableDTNode getViewableRoot() {
 		return root;
 	}
 }

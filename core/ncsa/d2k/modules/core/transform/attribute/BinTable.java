@@ -23,8 +23,8 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"BT\">    <Text> </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ET\">    <Text> </Text>  </Info></D2K>";
+			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"BT\">    <Text>This is the bin tree.</Text>  </Info></D2K>";
+			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ET\">    <Text> The example table.</Text>  </Info></D2K>";
 			default: return "No such input";
 		}
 
@@ -46,7 +46,7 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ET\">    <Text> </Text>  </Info></D2K>";
+			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ET\">    <Text> </Text>The resulting table.</Info></D2K>";
 			default: return "No such output";
 		}
 
@@ -67,7 +67,7 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"\">    <Text> </Text>  </Info></D2K>";
+		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Bin Table\">    <Text>This module will use a module tree to bin the input columns of the example table passed in. If removeColumns is true, the old unbinned columns will not be included in the resulting table.</Text>  </Info></D2K>";
 
 	}
 
@@ -120,11 +120,17 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 					if (Columnworking instanceof NumericColumn) {
 						double d = ((NumericColumn)Columnworking).getDouble(j);
 						String str = BT.getBinNameForValue(ET.getString(j, outs[0]), ET.getColumnLabel(ins[i]), d);
-						names.setString(str, j);
+						if(str != null)
+							names.setString(str, j);
+						else
+							names.setString(Double.toString(d), j);
 					} else {
 						String str2 = ((StringColumn)Columnworking).getString(j);
 						String str3 = BT.getBinNameForValue(ET.getString(j, outs[0]), ET.getColumnLabel(ins[i]), str2);
-						names.setString(str3, j);
+						if(str3 != null)
+							names.setString(str3, j);
+						else
+							names.setString(str2, j);
 					}
 				}
 				if (!rmvCol) {
@@ -132,8 +138,10 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 				}
 				newCols[currCol++] = names;
 				names.setLabel(ET.getColumnLabel(ins[i]) + "_Bin");
+				ins[i] = currCol-1;
 		}
 		newCols[currCol] = ET.getColumn(outs[0]);
+		outs[0] = currCol;
 		ET.setInternal(newCols);
 		pushOutput(ET, 0);
 	}

@@ -1,37 +1,49 @@
 package ncsa.d2k.modules.core.prediction.naivebayes;
 
-import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
-import java.util.*;
-import java.text.NumberFormat;
 import java.awt.print.*;
-import java.io.File;
-
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.UserView;
+import java.io.*;
+import java.text.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.border.*;
 import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.gui.Constrain;
-
+import ncsa.d2k.gui.*;
+import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.infrastructure.views.*;
+import ncsa.gui.*;
 
 /**
  * An evidence visualization for a NaiveBayesModel.
  */
-public class NaiveBayesVis extends VisModule {
+public final class NaiveBayesVis extends VisModule implements HasNames {
 
 	public String getInputInfo(int i) {
-		return "";
+		return "A NaiveBayesModel to visualize.";
 	}
+
+    public String getInputName(int i) {
+        return "NBModel";
+    }
 
 	public String getOutputInfo(int i) {
 		return "";
 	}
 
+    public String getOutputName(int i) {
+        return "";
+    }
+
 	public String getModuleInfo() {
-		return "";
+		return "An evidence visualization for a NaiveBayesModel.  The model performs "+
+			"any necessary calculations.";
 	}
+
+    public String getModuleName() {
+        return "NBVis";
+    }
 
 	public String[] getInputTypes() {
 		String[] in = {"ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
@@ -85,11 +97,11 @@ public class NaiveBayesVis extends VisModule {
 	private static final int PREF_HEAD = 100;
 	private static final String MAX_ATTRIBUTE_ERROR = "100.00% error";
 
-	private static final String zoomicon = File.separator+"images"+File.separator+"search.gif";
-	private static final String refreshicon = File.separator+"images"+File.separator+"homeview.gif";
-	private static final String printicon = File.separator+"images"+File.separator+"print.gif";
+	private static final String zoomicon = File.separator+"images"+File.separator+"zoom.gif";
+	private static final String refreshicon = File.separator+"images"+File.separator+"home.gif";
+	private static final String printicon = File.separator+"images"+File.separator+"printit.gif";
 
-	private static final Dimension buttonsize = new Dimension(20, 20);
+	private static final Dimension buttonsize = new Dimension(25, 25);
 
 	/**
 		Sort an array of Strings.
@@ -110,81 +122,86 @@ public class NaiveBayesVis extends VisModule {
 		return retVal;
 	}
 
-	class NBView extends JUserPane implements ActionListener, Printable {
+    /**
+     * The View class.
+     */
+	private final class NBView extends JUserPane implements ActionListener, Printable {
+		private transient NaiveBayesModel model;
+		private transient Legend legend;
 
-		NaiveBayesModel model;
-		transient Legend legend;
+		private transient Dimension preferredGrid;
+		private transient Dimension preferredHeader;
 
-		transient Dimension preferredGrid;
-		transient Dimension preferredHeader;
+		private transient NumberFormat nf;
 
-		transient NumberFormat nf;
-
-		transient boolean zoomin = false;
+		private transient boolean zoomin = false;
 
 		// menu stuff
-		transient JMenuBar menuBar;
-		transient JCheckBoxMenuItem miPieChart;
-		transient JCheckBoxMenuItem miBarChart;
-		transient JCheckBoxMenuItem miAttrBest;
-		transient JCheckBoxMenuItem miAttrAlpha;
-		transient JCheckBoxMenuItem miEviTot;
-		transient JCheckBoxMenuItem miEviAlpha;
-		transient JCheckBoxMenuItem miShowPredVal;
-		transient JMenuItem miPrint;
-		transient ColorMenuItem[] colorItems;
-		transient AttributeMenuItem[] attributeItems;
-		transient JCheckBoxMenuItem miPercentage;
+		private transient JMenuBar menuBar;
+		private transient JCheckBoxMenuItem miPieChart;
+		private transient JCheckBoxMenuItem miBarChart;
+		private transient JCheckBoxMenuItem miAttrBest;
+		private transient JCheckBoxMenuItem miAttrAlpha;
+		private transient JCheckBoxMenuItem miEviTot;
+		private transient JCheckBoxMenuItem miEviAlpha;
+		private transient JCheckBoxMenuItem miShowPredVal;
+		private transient JMenuItem miPrint;
+		private transient ColorMenuItem[] colorItems;
+		private transient AttributeMenuItem[] attributeItems;
+		private transient JCheckBoxMenuItem miPercentage;
+		private transient JMenuItem helpItem;
 
-		transient JToggleButton zoom;
-		transient JButton printButton;
-		transient JButton refreshView;
+		private transient JToggleButton zoom;
+		private transient JButton printButton;
+		private transient JButton refreshView;
 
-		transient String longest_attribute_name;
-		transient String longest_bin_name;
+		private transient String longest_attribute_name;
+		private transient String longest_bin_name;
 
 		// constants used in drawing
-		transient int gridwidth;
-		transient int gridheight;
-		transient float grid1;
-		transient float grid75;
-		transient float grid125;
-		transient float grid25;
-		transient float grid05;
-		transient float grid5;
-		transient float grid85;
-		transient float grid8;
-		transient float grid15;
-		transient float grid2;
-		transient float grid6;
-		transient float grid7;
-		transient float padding;
+		private transient int gridwidth;
+		private transient int gridheight;
+		private transient float grid1;
+		private transient float grid75;
+		private transient float grid125;
+		private transient float grid25;
+		private transient float grid05;
+		private transient float grid5;
+		private transient float grid85;
+		private transient float grid8;
+		private transient float grid15;
+		private transient float grid2;
+		private transient float grid6;
+		private transient float grid7;
+		private transient float padding;
 
 		// the components that make up the vis
-		transient GridPanel gp;
-		transient HeaderPanel hp;
-		transient CompositePanel cp;
-		transient MessageArea ma;
+		private transient GridPanel gp;
+		private transient HeaderPanel hp;
+		private transient CompositePanel cp;
+		private transient MessageArea ma;
 
 		// the selected item in each row
-		transient int[] selected;
+		private transient int[] selected;
 
-		transient int numRows = 0;
-		transient int numCols = 0;
+		private transient int numRows = 0;
+		private transient int numCols = 0;
 
 		// map class names to a color
-		transient HashMap color_map;
+		private transient HashMap color_map;
 
 		// the names of the classes
-		transient String[] class_names;
+		private transient String[] class_names;
 		// the names of the attributes
-		transient String[] attribute_names;
-		transient String[] all_ranked_attribute_names;
-		transient String[] all_alpha_attribute_names;
+		private transient String[] attribute_names;
+		private transient String[] all_ranked_attribute_names;
+		private transient String[] all_alpha_attribute_names;
 		// the data for the pie charts
-		transient NaiveBayesPieChartData[][] row_data;
-		transient double[] predictor_values;
-		transient int mouse_pos_y;
+		private transient NaiveBayesPieChartData[][] row_data;
+		private transient double[] predictor_values;
+		private transient int mouse_pos_y;
+
+		private transient HelpWindow helpWindow;
 
 		/**
 		 * Print this component.
@@ -218,6 +235,10 @@ public class NaiveBayesVis extends VisModule {
 		}
 
 		public void initView(ViewModule m) {
+			menuBar = new JMenuBar();
+			nf = NumberFormat.getInstance();
+			nf.setMaximumFractionDigits(2);
+			helpWindow = new HelpWindow();
 		}
 
 		public void setInput(Object o, int i) {
@@ -238,6 +259,7 @@ public class NaiveBayesVis extends VisModule {
 			predictor_values = new double[attribute_names.length];
 			int longest = 0;
 			longest_bin_name = "";
+			longest_attribute_name = "";
 			// get the row data
 			for(int j = 0; j < attribute_names.length; j++) {
 				row_data[j] = model.getData(attribute_names[j]);
@@ -256,9 +278,6 @@ public class NaiveBayesVis extends VisModule {
 			}
 			if(longest_attribute_name.length() < MAX_ATTRIBUTE_ERROR.length())
 				longest_attribute_name = MAX_ATTRIBUTE_ERROR;
-
-			nf = NumberFormat.getInstance();
-			nf.setMaximumFractionDigits(2);
 
 			// make the grid
 			gp = new GridPanel();
@@ -335,6 +354,8 @@ public class NaiveBayesVis extends VisModule {
 			else
 				refreshView = new JButton("R");
 			refreshView.addActionListener(this);
+			refreshView.setToolTipText("Reset View");
+
 			im = getImage(printicon);
 			ImageIcon pi = null;
 			if(im != null)
@@ -343,6 +364,8 @@ public class NaiveBayesVis extends VisModule {
 				printButton = new JButton(pi);
 			else printButton = new JButton("P");
 			printButton.addActionListener(this);
+			printButton.setToolTipText("Print");
+
 			im = getImage(zoomicon);
 			ImageIcon zi = null;
 			if(im != null)
@@ -353,6 +376,7 @@ public class NaiveBayesVis extends VisModule {
 				zoom = new JToggleButton("Z");
 
 			zoom.addActionListener(this);
+			zoom.setToolTipText("Zoom");
 
 			if(ri != null && zi != null && pi != null) {
 				zoom.setMaximumSize(buttonsize);
@@ -393,7 +417,6 @@ public class NaiveBayesVis extends VisModule {
 			add(p1, BorderLayout.CENTER);
 
 			// setup the menus
-			menuBar = new JMenuBar();
 			JMenu m1 = new JMenu("Options");
 			JMenu m2 = new JMenu("Views");
 			m2.add(miPieChart = new JCheckBoxMenuItem("Pie Charts", true));
@@ -424,9 +447,7 @@ public class NaiveBayesVis extends VisModule {
 				attributeItems[j].addActionListener(this);
 				if(numItems == MAX_MENU_ITEMS) {
 					JMenu nextMenu = new JMenu(MORE);
-					//curMenu.add(nextMenu);
 					curMenu.insert(nextMenu, 0);
-					//m5.add(attributeItems[j]);
 					nextMenu.add(attributeItems[j]);
 					curMenu = nextMenu;
 					numItems = 1;
@@ -474,8 +495,13 @@ public class NaiveBayesVis extends VisModule {
 			m1.addSeparator();
 			m1.add(miPrint = new JMenuItem("Print.."));
 			miPrint.addActionListener(this);
-		}
 
+			JMenu helpMenu = new JMenu("Help");
+			helpItem = new JMenuItem("About NaiveBayesVis..");
+			helpMenu.add(helpItem);
+			helpItem.addActionListener(this);
+			menuBar.add(helpMenu);
+		}
 
 		public Object getMenu() {
 			return menuBar;
@@ -718,11 +744,12 @@ public class NaiveBayesVis extends VisModule {
 				gp.revalidate();
 				hp.revalidate();
 			}
+			else if(src == helpItem) {
+				helpWindow.setVisible(true);
+			}
 		}
 
-
-
-		Color getColor(String s) {
+		private final Color getColor(String s) {
 			return (Color)color_map.get(s);
 		}
 
@@ -730,7 +757,7 @@ public class NaiveBayesVis extends VisModule {
 			Scales a graphics context's font so that a given
 			string will fit within a given horizontal pixel width.
 		*/
-		FontMetrics scaleFont(Graphics2D g2, String str, int spaceH, int spaceV) {
+		private final FontMetrics scaleFont(Graphics2D g2, String str, int spaceH, int spaceV) {
 			boolean fits = false;
 			Font ft = g2.getFont();
 			String nm = ft.getName();
@@ -757,7 +784,7 @@ public class NaiveBayesVis extends VisModule {
 		/**
 			Show the evidence in a grid
 		*/
-		class GridPanel extends JPanel implements MouseListener,
+		private final class GridPanel extends JPanel implements MouseListener,
 			MouseMotionListener {
 
 			GridPanel() {
@@ -844,7 +871,7 @@ public class NaiveBayesVis extends VisModule {
 			/**
 				Draw the weight bar above a pie/bar chart.
 			*/
-			void drawWeightBar(Graphics2D g2, int x, int y, double weight) {
+			private final void drawWeightBar(Graphics2D g2, int x, int y, double weight) {
 				g2.setPaint(Color.black);
 				g2.draw(new Rectangle2D.Double(x+(int)grid25, y+(int)grid1,
 					(int)grid5, (int)grid05));
@@ -860,7 +887,7 @@ public class NaiveBayesVis extends VisModule {
 			/**
 			 * Draw the bin weight as a percentage
 			 */
-			void drawWeightPercentage(Graphics2D g2, int x, int y, double w) {
+			private final void drawWeightPercentage(Graphics2D g2, int x, int y, double w) {
 				// draw text
 				g2.setPaint(Color.black);
 				FontMetrics metrics = g2.getFontMetrics();
@@ -875,7 +902,7 @@ public class NaiveBayesVis extends VisModule {
 			/**
 			 * Draw a bar chart for a bin
 			 */
-			void drawBarChart(Graphics2D g2, int x, int y,
+			private final void drawBarChart(Graphics2D g2, int x, int y,
 			 	NaiveBayesPieChartData data, boolean selected) {
 
 				// draw background if selected
@@ -919,7 +946,7 @@ public class NaiveBayesVis extends VisModule {
 			/**
 			 * Draw a bin as a pie chart
 			 */
-			void drawPieChart(Graphics2D g2, int x, int y,
+			private final void drawPieChart(Graphics2D g2, int x, int y,
 				NaiveBayesPieChartData data, boolean selected) {
 
 				// draw background if selected
@@ -964,7 +991,7 @@ public class NaiveBayesVis extends VisModule {
 			/**
 			 * Draw the name of a bin
 			 */
-			void drawName(Graphics2D g2, int x, int y, String n) {
+			private final void drawName(Graphics2D g2, int x, int y, String n) {
 				// draw text
 				g2.setPaint(Color.black);
 				FontMetrics metrics = g2.getFontMetrics();
@@ -1127,7 +1154,7 @@ public class NaiveBayesVis extends VisModule {
 		/**
 			Show the composite and a legend
 		*/
-		class CompositePanel extends JPanel {
+		private final class CompositePanel extends JPanel {
 			CompositePanel() {
 				setBackground(yellowish);
 			}
@@ -1144,12 +1171,12 @@ public class NaiveBayesVis extends VisModule {
 				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
 				NaiveBayesPieChartData ev_data = model.getCurrentEvidence();
+				legend.updateLegend(ev_data);
 				if(miPieChart.getState())
 					drawPieChart(g2, 0, (int)sq05, ev_data);
 				else
 					drawBarChart(g2, 0, (int)sq05, ev_data);
 
-				legend.updateLegend(ev_data);
 				g2.setFont(labelFont);
 				g2.setPaint(messageColor);
 				FontMetrics fm = scaleFont(g2, model.getClassColumn(),
@@ -1162,16 +1189,16 @@ public class NaiveBayesVis extends VisModule {
 			/**
 			 * Draw the composite as a pie chart
 			 */
-			void drawPieChart(Graphics2D g2, int x, int y,
+			private final void drawPieChart(Graphics2D g2, int x, int y,
 				NaiveBayesPieChartData data) {
 
+                //System.out.println("DRAW.");
 				// draw chart
 				int angle = 0;
 				for (int count = class_names.length - 1; count >= 0; count--) {
-				//for(int count = 0; count < data.getNumRows(); count++) {
 					g2.setPaint(getColor(data.getClassName(count)));
-					//double ratio = data.getClass(class_names[count]);
 					double ratio = data.getClass(data.getClassName(count));
+                    //System.out.println(data.getClassName(count)+" "+ratio);
 
 					if (count == class_names.length - 1)
 						g2.fill(new Arc2D.Double(x + (int)(sq1), y + (int)(sq1),
@@ -1189,7 +1216,7 @@ public class NaiveBayesVis extends VisModule {
 			/**
 			 * Draw the composite as a bar chart
 			 */
-			void drawBarChart(Graphics2D g2, int x, int y,
+			private final void drawBarChart(Graphics2D g2, int x, int y,
 				NaiveBayesPieChartData data) {
 
 				g2.setPaint(Color.black);
@@ -1231,7 +1258,7 @@ public class NaiveBayesVis extends VisModule {
 		/**
 			Show the attribute names
 		*/
-		class HeaderPanel extends JPanel {
+		private final class HeaderPanel extends JPanel {
 			NumberFormat nfmt;
 			HeaderPanel() {
 				setBackground(darkBg);
@@ -1275,7 +1302,7 @@ public class NaiveBayesVis extends VisModule {
 		/**
 		 * Keep track of the colors.
 		 */
-		class ColorMenuItem extends JMenuItem {
+		private final class ColorMenuItem extends JMenuItem {
 			ColorMenuItem(String s) {
 				super(s);
 			}
@@ -1284,7 +1311,7 @@ public class NaiveBayesVis extends VisModule {
 		/**
 		 * Keep track of the attributes to show
 		 */
-		class AttributeMenuItem extends JCheckBoxMenuItem {
+		private final class AttributeMenuItem extends JCheckBoxMenuItem {
 			AttributeMenuItem(String s) {
 				super(s, true);
 			}
@@ -1294,7 +1321,7 @@ public class NaiveBayesVis extends VisModule {
 		 * Show the colors for each class name and its percentage of
 		 * the composite
 		 */
-		class Legend extends JPanel {
+		private final class Legend extends JPanel {
 			Legend() {
 				setLayout(new GridBagLayout());
 
@@ -1330,7 +1357,7 @@ public class NaiveBayesVis extends VisModule {
 			/**
 			 * Update all the items in the legend
 			 */
-			void updateLegend(NaiveBayesPieChartData ev_data) {
+			private final void updateLegend(NaiveBayesPieChartData ev_data) {
 				if(ev_data == null)
 					ev_data = model.getCurrentEvidence();
 
@@ -1340,7 +1367,7 @@ public class NaiveBayesVis extends VisModule {
 				catch(Exception e) {
 				}
 				int ct = 0;
-                                int numRows = ev_data.getNumRows();
+                int numRows = ev_data.getNumRows();
 				for(int count = numRows-1; count >= 0; count--) {
 					double dr = ev_data.getClass(ev_data.getClassName(count));
 					StringBuffer sb = new StringBuffer(ev_data.getClassName(count));
@@ -1359,7 +1386,7 @@ public class NaiveBayesVis extends VisModule {
 			Show information on the pie chart that the mouse pointer is over.
 			The pie chart represents a bin.
 		*/
-		class MessageArea extends JTextArea implements java.io.Serializable {
+		private final class MessageArea extends JTextArea implements java.io.Serializable {
 
 			MessageArea(int numRow) {
 				super(numRow+3, 0);
@@ -1417,7 +1444,7 @@ public class NaiveBayesVis extends VisModule {
 		 * A small square with a black outline.  The color of the
 		 * square is given in the constructor.
 		 */
-		class ColorComponent extends JComponent {
+		private final class ColorComponent extends JComponent {
 			private final int DIM = 12;
 			Color bkgrd;
 
@@ -1450,7 +1477,7 @@ public class NaiveBayesVis extends VisModule {
 		/**
 		 * A scroll pane that never changes its size.
 		 */
-		class SameSizeSP extends JScrollPane {
+		private final class SameSizeSP extends JScrollPane {
 			Dimension p;
 			SameSizeSP(Component view, Dimension pref) {
 				super(view);
@@ -1472,7 +1499,7 @@ public class NaiveBayesVis extends VisModule {
 		/**
 		 * An anti aliased label
 		 */
-		class AALabel extends JLabel {
+		private final class AALabel extends JLabel {
 			AALabel(String s) {
 				super(s);
 				setBackground(darkBg);
@@ -1495,7 +1522,7 @@ public class NaiveBayesVis extends VisModule {
 		/**
 		 * A black border on the left and top edges
 		 */
-		class SPBorder extends LineBorder {
+		private final class SPBorder extends LineBorder {
 			SPBorder() {
 				super(Color.black);
 			}
@@ -1514,7 +1541,7 @@ public class NaiveBayesVis extends VisModule {
 		/**
 		 * A black border on the top edge
 		 */
-		class SPBorder2 extends LineBorder {
+		private final class SPBorder2 extends LineBorder {
 			SPBorder2() {
 				super(Color.black);
 			}
@@ -1540,6 +1567,54 @@ public class NaiveBayesVis extends VisModule {
 		nf.setMinimumFractionDigits(2); nf.setMaximumFractionDigits(2);
 		StringBuffer sb = new StringBuffer(nf.format(doub));
 		sb.append(PERCENT_SIGN);
+		return sb.toString();
+	}
+
+	private final class HelpWindow extends JD2KFrame {
+		HelpWindow() {
+			super("About NaiveBayesVis");
+			JEditorPane jep = new JEditorPane("text/html", getHelpString());
+			jep.setBackground(yellowish);
+			getContentPane().add(new JScrollPane(jep));
+			setSize(400, 200);
+		}
+	}
+
+	private static final String getHelpString() {
+		StringBuffer sb = new StringBuffer("<html>");
+		sb.append("<h2>NaiveBayesVis</h2>");
+		sb.append("NaiveBayesVis provides an evidence visualization for a ");
+		sb.append("NaiveBayesModel.  Evidence items can be selected by clicking ");
+		sb.append("on an item and the conclusion will update its predictions.  The ");
+		sb.append("predictions are shown in the conclusion graph and in the ");
+		sb.append("Legend.<br><br>");
+		sb.append("The evidence can be zoomed or scaled.  To scale the ");
+		sb.append("evidence, right-click the mouse and drag toward the northwest ");
+		sb.append("or southwest corners.");
+		sb.append("<h3>Menu Options</h3>");
+		sb.append("<ul><li>Views: Display the evidence and composite as either");
+		sb.append(" pie charts or bar charts.");
+		sb.append("<li>Sort Attributes By: Sort the attributes by either the");
+		sb.append(" best predictor or alphabetical order.  The best predictor is");
+		sb.append(" the attribute that induces the largest error when omitted.");
+		sb.append("<li>Sort Evidence By: Sort the evidence by the number of ");
+		sb.append(" items in its category or in alphabetical order.");
+		sb.append("<li>Show Attributes: Select which attributes to display.");
+		sb.append("<li>Set Colors: Select the colors for the outputs.");
+		sb.append("<li>Show Predictor Values: Display the error induced when ");
+		sb.append("the attribute was ommited from a prediction calculation.");
+		sb.append("<li>Show Bin Weight Percentage: Show the weights assigned to ");
+		sb.append(" each evidence item as a percentage or display a bar with its ");
+		sb.append(" weight relative to all other items in its row.");
+		sb.append("<li>Print: Print this visualization.");
+		sb.append("</ul>");
+		sb.append("<h3>Toolbar Buttons</h3>");
+		sb.append("<ul><li>Reset View: Reset the evidence to the default size.");
+		sb.append("<li>Print: Print this visualization.");
+		sb.append("<li>Zoom: When this button is pressed, left-click the ");
+		sb.append("evidence to zoom in, or right-click the evidence to zoom out.");
+		sb.append("</ul>");
+		sb.append("</html>");
 		return sb.toString();
 	}
 }

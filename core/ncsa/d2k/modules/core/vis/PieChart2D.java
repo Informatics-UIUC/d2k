@@ -13,7 +13,7 @@ import java.io.*;
 import javax.swing.*;
 
 /**
-	Creates a PieChart visualization.  The data is kept in a VerticalTable.
+	Creates a PieChart visualization.  The data is kept in a Table.
 	The first column must be a labels column, and the second column must contain
 	the ratios.
 */
@@ -26,7 +26,7 @@ public class PieChart2D extends VisModule implements Serializable
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "A VerticalTable that holds the data to show.";
+			case 0: return "A Table that holds the data to show.";
 			default: return "No such input";
 		}
 
@@ -37,7 +37,7 @@ public class PieChart2D extends VisModule implements Serializable
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.util.datatype.Table"};
 		return types;
 
 	}
@@ -67,7 +67,7 @@ public class PieChart2D extends VisModule implements Serializable
 	*/
 	public String getModuleInfo() {
 		StringBuffer sb = new StringBuffer("Creates a PieChart visualization.  The ");
-		sb.append(" data is kept in a VerticalTable.  The first column must be a ");
+		sb.append(" data is kept in a Table.  The first column must be a ");
 		sb.append(" labels column, and the second column must contain the ratios.");
 		return sb.toString();
 	}
@@ -104,14 +104,14 @@ public class PieChart2D extends VisModule implements Serializable
 class PieChartUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane {
 	PieChart2D module;
 
-	VerticalTable table;
+	Table table;
 
 	public void initView(ViewModule viewmodule) {
 		module = (PieChart2D) viewmodule;
 	}
 
 	public void setInput(Object object, int index) {
-		table = (VerticalTable) object;
+		table = (Table) object;
 
 		buildView();
 	}

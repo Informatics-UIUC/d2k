@@ -12,7 +12,7 @@ public class SaveNthObject extends ComputeModule
 	//////////////////////
 	//d2k Props
 	////////////////////
-	
+	boolean debug=false;	
 	
 	/////////////////////////
 	/// other fields
@@ -62,12 +62,14 @@ public class SaveNthObject extends ComputeModule
 		if(inputFlags[0]>0){
 			savedObj=pullInput(0);
 			numfires++;
-			System.out.println("numfires:"+numfires);
+			if(debug)
+				System.out.println("numfires:"+numfires);
 
 		}
 		if(inputFlags[1]>0){
 			maxfires=((Integer)pullInput(1)).intValue();
-			System.out.println("maxfires set to "+maxfires);
+			if(debug)
+				System.out.println("maxfires set to "+maxfires);
 			return;
 		}
 		
@@ -152,7 +154,12 @@ public class SaveNthObject extends ComputeModule
 	////////////////////////////////
 	//D2K Property get/set methods
 	///////////////////////////////
-
+	public boolean getDebug(){
+		return debug;
+	}
+	public void setDebug(boolean b){
+		debug=b;
+	}
 	/*
 	public boolean get(){
 		return ;

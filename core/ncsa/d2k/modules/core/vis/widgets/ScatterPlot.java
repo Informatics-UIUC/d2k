@@ -7,7 +7,7 @@ import java.awt.*;
 public class ScatterPlot extends Graph {
 
 	public ScatterPlot () {}
-	public ScatterPlot(VerticalTable table, DataSet[] sets, GraphSettings settings) {
+	public ScatterPlot(Table table, DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 	}
 

@@ -10,6 +10,7 @@ import ncsa.d2k.modules.core.vis.widgets.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.text.*;
 
 /**
    @author David Clutter
@@ -21,7 +22,9 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return A description of this module.
     */
     public String getModuleInfo() {
-		return "";
+		String s = "Display some statistics about a PredictionTable, including ";
+		s += "the number of correct predictions and a confusion matrix.";
+		return s;
     }
 
     /**
@@ -38,7 +41,7 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] in = {"ncsa.d2k.util.datatype.PredictionTable"};
 		return in;
     }
 
@@ -57,7 +60,7 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "";
+		return "A PredictionTable.";
     }
 
     /**
@@ -66,7 +69,7 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The name of the input
     */
     public String getInputName(int i) {
-		return "";
+		return "predTable";
     }
 
     /**
@@ -125,27 +128,9 @@ public class PredictionTableReport extends VisModule implements HasNames {
 	   		@param idx the index of the input
 		*/
 		public void setInput(Object input, int idx) {
-			//PredictionTable pt = (PredictionTable)input;
-			ExampleTable pt = (ExampleTable)input;
+			PredictionTable pt = (PredictionTable)input;
 			int []outputs = pt.getOutputFeatures();
-			int []preds;
-			/*if(pt instanceof PredictionTable) {
-				preds = ((PredictionTable)pt).getPredictionSet();
-			}
-			else {*/
-
-			preds = new int[outputs.length];
-
-			// assumed that the last outputs.length columns are
-			// prediction columns
-			int j = 0;
-			for(int i = pt.getNumColumns()-preds.length;
-				i < pt.getNumColumns(); i++) {
-					preds[j] = i;
-					//System.out.println(preds[j]);
-					j++;
-			}
-			//}
+			int []preds = pt.getPredictionSet();
 
 			JTabbedPane jtp = new JTabbedPane();
 			for(int i = 0; i < outputs.length; i++) {
@@ -167,17 +152,27 @@ public class PredictionTableReport extends VisModule implements HasNames {
 				// append data to the JTextArea
 				JTextArea jta = new JTextArea();
 				jta.append("Accuracy\n");
-				jta.append("   Correct: "+numCorrect+"\n");
-				jta.append("   Incorrect: "+numIncorrect+"\n");
-				jta.append("   Total: "+pt.getNumRows());
+				jta.append("   Correct Predictions: "+numCorrect+"\n");
+				jta.append("   Incorrect Predictions: "+numIncorrect+"\n");
+				jta.append("   Total Number of Records: "+pt.getNumRows()+"\n");
+				NumberFormat nf = NumberFormat.getInstance();
+				nf.setMaximumFractionDigits(2);
+				jta.append("\n");
+
+				double pCorrect = ((double)numCorrect)/((double)pt.getNumRows())*100;
+				double pIncorrect = ((double)numIncorrect)/((double)pt.getNumRows())*100;
+
+				jta.append("   Percent correct: "+nf.format(pCorrect)+"%\n");
+				jta.append("   Percent incorrect: "+nf.format(pIncorrect)+"%\n");
+
 				jta.setEditable(false);
 
 				StringColumn sc = new StringColumn(2);
 				sc.setString("Correct", 0);
 				sc.setString("Incorrect", 1);
 				DoubleColumn ic = new DoubleColumn(2);
-				ic.setDouble((double)numCorrect/100, 0);
-				ic.setDouble((double)numIncorrect/100, 1);
+				ic.setDouble(((double)numCorrect)/((double)pt.getNumRows()), 0);
+				ic.setDouble(((double)numIncorrect)/((double)pt.getNumRows()), 1);
 				Column[] col = new Column[2];
 				col[0] = sc;
 				col[1] = ic;
@@ -189,16 +184,6 @@ public class PredictionTableReport extends VisModule implements HasNames {
 				gs.displaytitle = true;
 				gs.displaylegend = true;
 				PieChart pc = new PieChart(tbl, ds, gs);
-				/*Dimension dd = cm.getPreferredSize();
-				double pw = dd.getWidth();
-				double ph = dd.getHeight();
-				if(pw > 400)
-					pw = 400;
-				if(ph > 400)
-					ph = 400;
-				cm.setPreferredSize(new Dimension((int)pw, (int)ph));
-				pc.setPreferredSize(new Dimension((int)pw/2, (int)pw/2));
-				*/
 
 				JPanel p1 = new JPanel();
 				p1.setLayout(new GridLayout(1, 2));
@@ -208,7 +193,11 @@ public class PredictionTableReport extends VisModule implements HasNames {
 				JPanel pp = new JPanel();
 				pp.setLayout(new GridLayout(2, 1));
 				pp.add(p1);
-				pp.add(cm);
+				JPanel pq = new JPanel();
+				pq.setLayout(new BorderLayout());
+				pq.add(new JLabel("Confusion Matrix"), BorderLayout.NORTH);
+				pq.add(cm, BorderLayout.CENTER);
+				pp.add(pq);
 				jtp.addTab(pt.getColumnLabel(outputs[i]), pp);
 			}
 			setLayout(new BorderLayout());

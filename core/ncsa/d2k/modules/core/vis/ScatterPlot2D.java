@@ -15,29 +15,28 @@ import javax.swing.*;
 /**
 	ScatterPlot2D.java
 */
-public class ScatterPlot2D extends ncsa.d2k.infrastructure.modules.VisModule implements Serializable
-{
+public class ScatterPlot2D extends ncsa.d2k.infrastructure.modules.VisModule
+    implements Serializable, HasNames {
 
 	/**
 		This pair returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table\">    <Text> </Text>  </Info></D2K>";
-			default: return "No such input";
-		}
-
+        return "A Table to visualize.";
 	}
+
+    public String getInputName(int index) {
+        return "Table";
+    }
 
 	/**
 		This pair returns an array of strings that contains the data types for the inputs.
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.util.datatype.Table"};
 		return types;
-
 	}
 
 	/**
@@ -48,17 +47,18 @@ public class ScatterPlot2D extends ncsa.d2k.infrastructure.modules.VisModule imp
 		switch (index) {
 			default: return "No such output";
 		}
-
 	}
+
+    public String getOutputName(int index) {
+        return "";
+    }
 
 	/**
 		This pair returns an array of strings that contains the data types for the outputs.
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {		};
-		return types;
-
+        return null;
 	}
 
 	/**
@@ -66,16 +66,12 @@ public class ScatterPlot2D extends ncsa.d2k.infrastructure.modules.VisModule imp
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ScatterPlot\">    <Text> </Text>  </Info></D2K>";
-
+        return "Visualizes the NumericColumns of a Table in a 2D scatter plot.";
 	}
 
-	/**
-		PUT YOUR CODE HERE.
-	*/
-	public void doit() throws Exception {
-	}
-
+    public String getModuleName() {
+        return "ScatterPlot2D";
+    }
 
 	/**
 		This pair is called by D2K to get the UserView for this module.
@@ -93,5 +89,4 @@ public class ScatterPlot2D extends ncsa.d2k.infrastructure.modules.VisModule imp
 		return null;
 
 	}
-
 }

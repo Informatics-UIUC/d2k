@@ -23,7 +23,7 @@ public class Binning extends DataPrepModule implements HasNames {
        @return The name of this module.
     */
     public String getModuleName() {
-		return "binningMod";
+		return "BinningMod";
     }
 
     /**
@@ -69,9 +69,9 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public String getInputName(int i) {
 		if(i == 0)
-			return "binTree.";
+			return "BinTree";
 		else if(i == 1)
-			return "exampleTable.";
+			return "ExampleTable.";
 		else
 			return "No such input";
     }
@@ -97,9 +97,9 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public String getOutputName(int i) {
 		if(i == 0)
-			return "binTree.";
+			return "BinTree";
 		else if(i == 1)
-			return "exampleTable";
+			return "ExampleTable";
 		else
 			return "No such input";
     }
@@ -117,16 +117,18 @@ public class Binning extends DataPrepModule implements HasNames {
 		// we only support one out variable..
 		int classColumn = out[0];
 
+        //                int numRows = sc.getNumRows();
+		int numRows = vt.getNumRows();
 		//long startTime = System.currentTimeMillis();
 		for(int i = 0; i < ins.length; i++) {
 			SimpleColumn sc = (SimpleColumn)vt.getColumn(ins[i]);
-                        int numRows = sc.getNumRows();
 
 			// numeric columns
 			if(sc instanceof NumericColumn) {
-				for(int j = 0; j < numRows; j++)
+				for(int j = 0; j < numRows; j++) {
 					bt.classify(vt.getString(j, classColumn),
 						sc.getLabel(), vt.getDouble(j, ins[i]));
+					}
 			}
 
 			// everything else is treated as textual columns

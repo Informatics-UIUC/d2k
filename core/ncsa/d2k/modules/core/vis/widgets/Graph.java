@@ -12,7 +12,7 @@ import java.util.HashMap;
 public abstract class Graph extends JPanel {
 
 	// Data
-	protected VerticalTable table;
+	protected Table table;
 	protected DataSet[] sets;
 	protected GraphSettings settings;
 
@@ -77,11 +77,11 @@ public abstract class Graph extends JPanel {
 	public Graph() {
 	}
 
-	public Graph(VerticalTable table, DataSet[] sets, GraphSettings settings) {
+	public Graph(Table table, DataSet[] sets, GraphSettings settings) {
 		this.init (table, sets, settings);
 	}
 
-	public void init (VerticalTable table, DataSet[] sets, GraphSettings settings) {
+	public void init (Table table, DataSet[] sets, GraphSettings settings) {
 		this.table = table;
 		this.sets = sets;
 		this.settings = settings;
@@ -212,7 +212,7 @@ public abstract class Graph extends JPanel {
 	 *	Set the table for this graph.  Reinitialize the table.
 	 *	@param t the new table
 	 */
-	public void setTable(VerticalTable t) {
+	public void setTable(Table t) {
 		init(t, sets, settings);
 		repaint();
 	}
@@ -221,7 +221,7 @@ public abstract class Graph extends JPanel {
 	 * Iteratate through a column and map each unique value to an integer.
 	 * Return a HashMap containing the relations.
 	 */
-	static protected HashMap createUniqueValueMap(VerticalTable table, int column) {
+	static protected HashMap createUniqueValueMap(Table table, int column) {
 		HashMap map = new HashMap();
 		int idx = 1;
 		for(int i = 0; i < table.getColumn(column).getNumRows(); i++) {

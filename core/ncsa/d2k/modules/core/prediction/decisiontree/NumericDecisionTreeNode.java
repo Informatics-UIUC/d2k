@@ -3,26 +3,22 @@ package ncsa.d2k.modules.core.prediction.decisiontree;
 import java.io.Serializable;
 import java.util.*;
 
-import ncsa.d2k.util.datatype.VerticalTable;
+import ncsa.d2k.util.datatype.Table;
 
 /**
 	A DecisionTreeNode for numerical data.  These are binary nodes that
 	split on a value of an attribute.
 */
-public class NumericDecisionTreeNode extends DecisionTreeNode
+public final class NumericDecisionTreeNode extends DecisionTreeNode
 	implements Serializable {
 
 	/** everything less than the split value goes left */
-	static int LEFT = 0;
+	private static final int LEFT = 0;
 	/** everything greater than the split value goes right */
-	static int RIGHT = 1;
+	private static final int RIGHT = 1;
 
 	/** the value used to compare whether to go left or right */
-	double splitValue;
-
-	/*public NumericDecisionTreeNode() {
-		super();
-	}*/
+	private double splitValue;
 
 	/**
 		Create a new NumericDecisionTreeNode
@@ -45,7 +41,7 @@ public class NumericDecisionTreeNode extends DecisionTreeNode
 		Should never be called, because NumericDecisionTreeNodes use
 		a split value.
 	*/
-	public void addBranch(String val, DecisionTreeNode child) {
+	public final void addBranch(String val, DecisionTreeNode child) {
 	}
 
 	/**
@@ -56,7 +52,7 @@ public class NumericDecisionTreeNode extends DecisionTreeNode
 		@param rightLabel the label for the right branch
 		@param right the right child
 	*/
-	public void addBranches(double split, String leftLabel,
+	public final void addBranches(double split, String leftLabel,
 		DecisionTreeNode left, String rightLabel, DecisionTreeNode right) {
 
 		splitValue = split;
@@ -77,15 +73,13 @@ public class NumericDecisionTreeNode extends DecisionTreeNode
 		the right child if the split value is greater than or equal to the
 		split value.
 
-		@param vt the VerticalTable with the data
+		@param vt the Table with the data
 		@param row the row of the table to evaluate
 		@return the result of evaluating the record
 	*/
-	public Object evaluate(VerticalTable vt, int row, int outputCol) {
-		String output = vt.getString(row, outputCol);
-
+	public final Object evaluate(Table vt, int row) {
 		if(isLeaf()) {
-			incrementOutputTally(output);
+			incrementOutputTally(label);
 			return label;
 		}
 
@@ -110,14 +104,12 @@ public class NumericDecisionTreeNode extends DecisionTreeNode
 		// go left if d is less than split value
 		if(d < splitValue) {
 			DecisionTreeNode dtn = (DecisionTreeNode)children.get(LEFT);
-			incrementOutputTally(output);
-			return dtn.evaluate(vt, row, outputCol);
+			return dtn.evaluate(vt, row);
 		}
 		// otherwise go right
 		else {
 			DecisionTreeNode dtn = (DecisionTreeNode)children.get(RIGHT);
-			incrementOutputTally(output);
-			return dtn.evaluate(vt, row, outputCol);
+			return dtn.evaluate(vt, row);
 		}
 	}
 }

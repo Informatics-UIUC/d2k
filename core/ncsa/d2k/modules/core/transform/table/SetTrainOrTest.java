@@ -83,10 +83,15 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	*/
 	public void doit() throws Exception {
 		Table tt=(Table)pullInput(0);
+		
+		ExampleTable et;
+		if(tt instanceof ExampleTable){
+			et=(ExampleTable)tt;
+		}else{
+			et=new ExampleTable(tt);
+		}
 
-		ExampleTable et=new ExampleTable(tt);
-
-		int[] exsAll=new int[tt.getCapacity()];
+		int[] exsAll=new int[et.getColumn(0).getCapacity()];
 		int[] exsNone=new int[0];
 
 		for(int i=0; i<exsAll.length; i++){
@@ -96,11 +101,13 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		if(trainVsTest){
 			et.setTrainingSet(exsAll);
 			et.setTestingSet(exsNone);
-			et=(ExampleTable)et.getTrainTable();
+			if(!(et instanceof TrainTable))
+				et=(ExampleTable)et.getTrainTable();
 		}else{
 			et.setTestingSet(exsAll);
 			et.setTrainingSet(exsNone);
-			et=(ExampleTable)et.getTestTable();
+			if(!(et instanceof TestTable))
+				et=(ExampleTable)et.getTestTable();
 		}
 
 		pushOutput(et, 0);

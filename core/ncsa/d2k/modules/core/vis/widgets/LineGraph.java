@@ -7,7 +7,7 @@ import java.awt.geom.*;
 
 public class LineGraph extends Graph {
 
-	public LineGraph(VerticalTable table, DataSet[] set, GraphSettings settings) {
+	public LineGraph(Table table, DataSet[] set, GraphSettings settings) {
 		super(table, set, settings);
 	}
 

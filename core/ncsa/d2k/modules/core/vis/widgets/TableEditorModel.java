@@ -19,7 +19,7 @@ public class TableEditorModel extends VerticalTableModel {
 		@param t the table to display
 		@param b an array of combo boxes to display in the first row
 	*/
-	public TableEditorModel(VerticalTable t, JComboBox[] b) {
+	public TableEditorModel(Table t, JComboBox[] b) {
 		super(t);
 		dataTypes = b;
 	}

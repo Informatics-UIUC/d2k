@@ -1,30 +1,30 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
+import java.io.*;
 
-public class MutableIntegerArray {
-	final boolean debug = false;
+final class MutableIntegerArray implements Serializable {
+	final private boolean debug = false;
+
 	/** the integers. */
 	int [] integers = null;
 
 	/** the number of entries occupying the array., */
 	int count;
 
-	/** means the array needs to be compressed. */
-	boolean dirty = false;
-
-	public MutableIntegerArray (int size) {
+	MutableIntegerArray (int size) {
 		integers = new int [size];
 		count = 0;
 	}
-	public MutableIntegerArray (MutableIntegerArray mia) {
-		integers = mia.integers;
+	MutableIntegerArray (MutableIntegerArray mia) {
 		count = mia.count;
+		integers = new int [count];
+		System.arraycopy(mia.integers,0,integers,0,count);
 	}
-	public MutableIntegerArray (int [] t) {
+	MutableIntegerArray (int [] t) {
 		integers = t;
 		count = t.length;
 	}
 
-	public String toString () {
+	final public String toString () {
 		String r = "{";
 		for (int i = 0 ; i < count-1; i++)
 			r += Integer.toString (integers[i])+",";
@@ -41,7 +41,7 @@ public class MutableIntegerArray {
 		Add an integer to the array.
 		@param val the value to add.
 	*/
-	void add (int val) {
+	final void add (int val) {
 		integers[count++] = val;
 	}
 
@@ -50,7 +50,7 @@ public class MutableIntegerArray {
 		passed in.
 		@param addMe the mutable array to copy into this one.
 	*/
-	void add (MutableIntegerArray addMe) {
+	final void add (MutableIntegerArray addMe) {
 		System.arraycopy (addMe.getArray(), 0, integers, 0, addMe.count);
 		this.count = addMe.count;
 	}
@@ -58,46 +58,55 @@ public class MutableIntegerArray {
 	/**
 		Find out what items these two sorted mutable integer arrays
 		share.
-
 		@param addMe the array to intersect.
+		@param mia add the intersection to this guy.
 	*/
-	public MutableIntegerArray intersection (MutableIntegerArray addMe) {
+	final void intersection (MutableIntegerArray addMe, MutableIntegerArray mia) {
 		if (debug) {
 			System.out.println ("Intersection-----");
 			System.out.println ("set a:"+this.toString ());
 			System.out.println ("set b:"+addMe.toString());
 		}
+
+		// reset tmp.
+		mia.count = 0;
+
+		// compute the max possible size of the intersection, and create
+		// a mia to hold it.
 		int size = addMe.count < this.count ? addMe.count : this.count;
-		MutableIntegerArray mia = new MutableIntegerArray (size);
+
+		// These are for the addMe array.
 		int othersIndex = 0;
-		done:
-			for (int i = 0 ; i < this.count ; i++) {
+		int [] otherInts = addMe.getArray();
+		int [] myInts = integers;
+		int [] newInts = mia.integers;
+		int newCount = 0;
+done:   for (int i = 0 ; i < this.count ; i++) {
 
-				// Find the first entry in the other integer array that
-				// is greater than or equal to the current entry.
-				while (addMe.get (othersIndex) < integers[i]) {
-					othersIndex++;
-					if (othersIndex >= addMe.count)
-						break done;
-				}
-
-				// If they are equal, add the item to the new integer array.
-				if (addMe.get (othersIndex) == integers[i]) {
-					mia.add (integers[i]);
-				}
+			// Find the first entry in the other integer array that
+			// is greater than or equal to the current entry.
+			while (otherInts[othersIndex] < myInts[i]) {
+				othersIndex++;
+				if (othersIndex >= addMe.count)
+					break done;
 			}
+
+			// If they are equal, add the item to the new integer array.
+			if (otherInts[othersIndex] == myInts[i]) {
+				newInts[newCount++] = myInts[i];
+			}
+		}
+		mia.count = newCount;
 		if (debug)
 			System.out.println ("result:"+mia.toString());
-		return mia;
 	}
 
 	/**
-		Find out what items these two sorted mutable integer arrays
+		count the items these two sorted mutable integer arrays
 		share.
-
 		@param addMe the array to intersect.
 	*/
-	public int countIntersection (MutableIntegerArray addMe) {
+	final int countIntersection (MutableIntegerArray addMe) {
 		int othersIndex = 0;
 		int intersectionCount = 0;
 		if (debug) {
@@ -128,42 +137,31 @@ public class MutableIntegerArray {
 	/**
 		Reset the size to zero.
 	*/
-	void reset () {
+	final void reset () {
 		count = 0;
 	}
 
 	/**
 		Delete an item.
 	*/
-	void delete (int which) {
+	final void delete (int which) {
 		System.arraycopy (integers, which, integers, which+1, integers.length - (which+1));
-		/*integers[which] = -1;
-		dirty = true;*/
 		count--;
 	}
-	int [] getArray () {
-		if (dirty)
-			clean ();
+	final int [] getPackedArray () {
+		if (integers.length != count) {
+			int [] pp = new int [count];
+			System.arraycopy(integers,0,pp,0,count);
+			integers = pp;
+		}
 		return integers;
 	}
-	int get (int i) {
-		if (dirty)
-			clean ();
+	final int [] getArray () {
+		return integers;
+	}
+	final int get (int i) {
 		return integers[i];
 	}
-	void clean () {
-		/*int include = -1;
-		int startCopy = -1;
-		int copyTo = -1;
-		for (int i = 0 ; i < count ; i++)
-			if (integers[i] == -1)
-				if (copyTo == -1)
-					copyTo = i;
-				else if (startCopy == -1)
-					continue;
-				else
-					System.arraycopy ();
-			else
-				if (copyTo == */
+	final void clean () {
 	}
 }

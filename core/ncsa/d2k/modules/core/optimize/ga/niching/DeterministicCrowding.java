@@ -14,7 +14,68 @@ import java.io.Serializable;
 		The parent will be copied into the new generation if it is more
 		fit than it's progeny which it is most similar to.
 */
-public class DeterministicCrowding extends CrossoverModule implements Serializable {
+abstract public class DeterministicCrowding extends EvaluateModule implements Serializable {
+	///////////////////////////////
+	// Properties.
+	///////////////////////////////
+
+	protected boolean debugging = false;
+
+	/**
+		set the debug flag.
+		@param debug is a boolean indicating if debugging is on or off.
+	*/
+	public void setDebugging (boolean score) {
+		this.debugging = score;
+	}
+
+	/**
+		get the debug flag.
+		@returns true if debugging is on.
+	*/
+	public boolean getDebugging () {
+		return this.debugging;
+	}
+
+	/** Defines the percent of the population that is possibly replace at each generation. */
+	protected double generationGap = 0.6;
+
+	/**
+		Generation gap defines the percent of the population replaced in each
+		generation, this value is set here.
+		@param ng the new generation gap value.
+	*/
+	public void setGenerationGap (double ng) {
+		generationGap = ng;
+	}
+
+	/**
+		get the generation gap
+		@returns the ratio of the population to be replace at each generation.
+	*/
+	public double getGenerationGap () {
+		return generationGap;
+	}
+
+	/** The probability that any two individuals will cross. */
+	protected double c_rate = 0.25;
+
+	/**
+		set the probability that any two individuals will cross.
+		@param score the new probability that any two individuals will cross.
+	*/
+	public void setCrossoverRate (double score) {
+		c_rate = score;
+	}
+
+	/**
+		get the crossover rate.
+		@returns the crossover rate.
+	*/
+	public double getCrossoverRate () {
+		return c_rate;
+	}
+
 
 	//////////////////////////////////
 	// Info methods
@@ -68,6 +129,35 @@ public class DeterministicCrowding extends CrossoverModule implements Serializab
 	}
 
 	/**
+	 * This is a very simple crowding computation, we just sum the
+	 * differences between each of the corresponding genes of the individuals.
+	 * @param a the first individual.
+	 * @param b the second individual.
+	 * @return the difference.
+	 */
+	private double crowding (Individual a, Individual b) {
+		double diff = 0;
+		if (a instanceof BinaryIndividual) {
+			boolean [] genesA = (boolean []) a.getGenes ();
+			boolean [] genesB = (boolean []) b.getGenes ();
+			int d = 0;
+			for (int i = 0 ; i < genesA.length; i++)
+				if (genesA [i] != genesB [i])
+					d++;
+			diff = d;
+		} else if (a instanceof NumericIndividual) {
+			double [] genesA = (double []) a.getGenes ();
+			double [] genesB = (double []) b.getGenes ();
+			for (int i = 0 ; i < genesA.length; i++)
+				if (genesA [i] > genesB [i])
+					diff += genesA [i] - genesB [i];
+				else
+				    diff += genesB [i] - genesA [i];
+		}
+		return diff;
+	}
+
+	/**
 		For each individual crossed, do deterministic crowding to determine
 		if the offspring replaces the parent.
 		@param outV the array to contain output object.
@@ -77,8 +167,6 @@ public class DeterministicCrowding extends CrossoverModule implements Serializab
 
 		// Our input argument is the population.
 		Population population = (Population) this.pullInput(0);
-		/*
-		Crowding crowdedPop = (Crowding) population;
 
 		// In effect, the following lines are selection, shuffle the order of the
 		// individuals and everybody mates. Only crosses producing better children
@@ -113,8 +201,8 @@ public class DeterministicCrowding extends CrossoverModule implements Serializab
 
 			// Swap the indicated genes.
 			individuals [mom].crossAt (x, individuals [dad]);
-			population.evaluateIndividual (individuals [mom]);
-			population.evaluateIndividual (individuals [dad]);
+			this.evaluateIndividual (individuals [mom]);
+			this.evaluateIndividual (individuals [dad]);
 
 			// Now compare the children to the parents. A child will replace it's
 			// closest parent only if it is better. Start with the child initially
@@ -129,8 +217,8 @@ public class DeterministicCrowding extends CrossoverModule implements Serializab
 				System.out.println (parents [mom]);
 				System.out.println (parents [dad]);
 			}
-			if (crowdedPop.crowding (individuals [mom], parents [mom]) >
-				crowdedPop.crowding (individuals [mom], parents [dad])) {
+			if (this.crowding (individuals [mom], parents [mom]) >
+				this.crowding (individuals [mom], parents [dad])) {
 
 				// The individual is closer to the dad
 				if (population.compareMembers (parents [dad],
@@ -154,8 +242,8 @@ public class DeterministicCrowding extends CrossoverModule implements Serializab
 				}
 
 			// Now do the member replacing dad
-			if (crowdedPop.crowding (individuals [dad], parents [mom]) >
-				crowdedPop.crowding (individuals [dad], parents [dad])) {
+			if (this.crowding (individuals [dad], parents [mom]) >
+				this.crowding (individuals [dad], parents [dad])) {
 
 				// The individual is closer to the dad
 				if (population.compareMembers (parents [dad],
@@ -188,7 +276,6 @@ public class DeterministicCrowding extends CrossoverModule implements Serializab
 				System.out.println (parents [dad]);
 			}
 		}
-		*/
 		this.pushOutput (population, 0);
 	}
 }

@@ -301,9 +301,9 @@ public class SOPopulation extends Population implements Serializable {
 	public Table getTable () {
 		int numTraits = traits.length;
 		int popSize = this.size ();
-		double [][] dc = new double [numTraits+1][popSize];
 		VerticalTable vt = null;
 		if (members instanceof NumericIndividual []) {
+		    double [][] dc = new double [numTraits+1][popSize];
 			NumericIndividual [] nis = (NumericIndividual []) members;
 
 			// Populate the double arrays
@@ -322,6 +322,30 @@ public class SOPopulation extends Population implements Serializable {
 				vt.addColumn (col);
 			}
 			DoubleColumn col = new DoubleColumn (dc [numTraits]);
+			col.setLabel ("Objective");
+			vt.addColumn (col);
+		} else if (members instanceof BinaryIndividual []) {
+			numTraits = ((BinaryRange)traits[0]).getNumBits ();
+			BinaryIndividual [] nis = (BinaryIndividual []) members;
+			boolean [][] dc = new boolean [numTraits][popSize];
+			double [] objs = new double [popSize];
+
+			// Populate the double arrays
+			for (int i = 0 ; i < popSize ; i++) {
+				boolean [] genes = (boolean []) nis [i].getGenes ();
+				for (int j = 0 ; j < numTraits ; j++)
+					dc [j][i] = genes [j];
+				objs [i] = nis [i].getObjective();
+			}
+
+			// Now make the vertical table
+			vt = new VerticalTable ();
+			for (int i = 0 ; i < numTraits ; i++) {
+				BooleanColumn col = new BooleanColumn (dc [i]);
+				col.setLabel (Integer.toString(i));
+				vt.addColumn (col);
+			}
+			DoubleColumn col = new DoubleColumn (objs);
 			col.setLabel ("Objective");
 			vt.addColumn (col);
 		}

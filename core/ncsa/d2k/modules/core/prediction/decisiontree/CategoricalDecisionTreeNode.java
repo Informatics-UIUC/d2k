@@ -3,26 +3,18 @@ package ncsa.d2k.modules.core.prediction.decisiontree;
 import java.io.Serializable;
 import java.util.*;
 
-import ncsa.d2k.util.datatype.VerticalTable;
+import ncsa.d2k.util.datatype.Table;
 
 /**
 	A DecisionTreeNode for categorical data.  These have as many children
 	as there are values of the attribute that this node tests on.
 	@author David Clutter
 */
-public class CategoricalDecisionTreeNode extends DecisionTreeNode
+public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 	implements Serializable {
 
 	/* Maps an output to a specific child.  Used in evaluate() */
-	HashMap outputToChildMap;
-
-	/**
-		Create a new, blank node.
-	*/
-	/*public CategoricalDecisionTreeNode() {
-		super();
-		outputToChildMap = new HashMap();
-	}*/
+	private HashMap outputToChildMap;
 
 	/**
 		Create a new node.
@@ -51,7 +43,8 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
 		@param val the label of the branch
 		@param child the child node
 	*/
-	public void addBranch(String val, DecisionTreeNode child) {
+	public final void addBranch(String val, DecisionTreeNode child) {
+		//child.setLabel(val);
 		outputToChildMap.put(val, child);
 		children.add(child);
 		branchLabels.add(val);
@@ -62,7 +55,7 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
 		This should never be called, because CategoricalDecisionTreeNodes
 		do not use a split value.
 	*/
-	public void addBranches(double split, String leftlabel,
+	public final void addBranches(double split, String leftlabel,
 		DecisionTreeNode left, String rightlabel, DecisionTreeNode right) {
 	}
 
@@ -73,15 +66,14 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
 		of the attribute for the row to test and call evaluate() on
 		the appropriate child node.
 
-		@param vt the VerticalTable with the data
+		@param vt the Table with the data
 		@param row the row of the table to evaluate
 		@return the result of evaluating the record
 	*/
-	public Object evaluate(VerticalTable vt, int row, int outputCol) {
-		String output = vt.getString(row, outputCol);
+	public final Object evaluate(Table vt, int row) {
 
 		if(isLeaf()) {
-			incrementOutputTally(output);
+			incrementOutputTally(label);
 			return label;
 		}
 
@@ -107,8 +99,7 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
 		if(outputToChildMap.containsKey(s)) {
 			DecisionTreeNode dtn = (DecisionTreeNode)outputToChildMap.get(s);
 			// recurse on the child subtree
-			incrementOutputTally(output);
-			return dtn.evaluate(vt, row, outputCol);
+			return dtn.evaluate(vt, row);
 		}
 
 		incrementOutputTally(UNKNOWN);

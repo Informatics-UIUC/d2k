@@ -2,28 +2,29 @@ package ncsa.d2k.modules.core.prediction.decisiontree;
 
 import java.io.Serializable;
 import java.util.*;
-import ncsa.d2k.util.datatype.VerticalTable;
+import ncsa.d2k.util.datatype.Table;
 
 /**
 	A DecisionTree is made up of DecisionTreeNodes.
 */
-public abstract class DecisionTreeNode implements Serializable {
-	DecisionTreeNode parent = null;
+public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 
-	static String UNKNOWN = "Unknown";
+	protected DecisionTreeNode parent = null;
+
+	protected static final String UNKNOWN = "Unknown";
 
 	/** The list of children of this node */
-	ArrayList children;
+	protected ArrayList children;
 	/** The labels for the branches for the children */
-	ArrayList branchLabels;
+	protected ArrayList branchLabels;
 
 	/** The label of this node.  If this is a leaf, this is the
 		value of the class that this leaf represents.  Otherwise
 		this is the name of the attribute that this node splits on */
-	String label;
+	protected String label;
 
 	/** The tallies for the records that pass through this node */
-	HashMap outputValueTallies;
+	protected HashMap outputValueTallies;
 
 	/**
 		Create a new DecisionTreeNode.
@@ -60,7 +61,7 @@ public abstract class DecisionTreeNode implements Serializable {
 		@return the count of the number of records with the
 			given output value that passed through this node
 	*/
-	public int getOutputTally(String outputVal) {
+	public int getOutputTally(String outputVal) throws Exception{
 		Integer i = (Integer)outputValueTallies.get(outputVal);
 		if(i == null)
 			return 0;
@@ -94,10 +95,16 @@ public abstract class DecisionTreeNode implements Serializable {
 			tal++;
 			outputValueTallies.put(outputVal, new Integer(tal));
 		}
+		if(parent != null)
+			parent.incrementOutputTally(outputVal);
+	}
+
+	public ViewableDTNode getViewableParent() {
+		return (ViewableDTNode) parent;
 	}
 
 	/**
-		Get the parent of this node.
+        Get the parent of this node.
 	*/
 	public DecisionTreeNode getParent() {
 		return parent;
@@ -153,16 +160,25 @@ public abstract class DecisionTreeNode implements Serializable {
 	}
 
 	/**
+		Get a child of this node as a ViewableDTNode.
+		@param i the index of the child to get
+		@return the ith child of this node
+	*/
+	public ViewableDTNode getViewableChild(int i){
+		return (ViewableDTNode)children.get(i);
+	}
+
+	/**
 		Evaluate a record from the data set.  If this is a leaf, return the
 		label of this node.  Otherwise find the column of the table that
 		represents the attribute that this node evaluates.  Call evaluate()
 		on the appropriate child.
 
-		@param vt the VerticalTable with the data
+		@param vt the Table with the data
 		@param row the row of the table to evaluate
 		@return the result of evaluating the record
 	*/
-	abstract public Object evaluate(VerticalTable vt, int row, int outputCol);
+	abstract public Object evaluate(Table vt, int row);
 
 	/**
 		Add a branch to this node, given the label of the branch and
@@ -212,21 +228,6 @@ public abstract class DecisionTreeNode implements Serializable {
 		// remove pointer from children list
 	}*/
 
-	/**
-		FIX ME
-	/
-	public static void print(DecisionTreeNode nde) {
-		if(nde == null)
-			return;
-
-		//print(nde.getLeft());
-		//System.out.println("Level "+nde.getLevel());
-		//System.out.println("\tAttribute "+nde.getAttribute());
-		//System.out.println("\tSplit "+nde.getSplit());
-		//print(nde.getRight());
-
-	}*/
-
 	public void print() {
 		System.out.println("Depth: "+getDepth());
 		System.out.print("\tLabel: "+getLabel());
@@ -241,4 +242,13 @@ public abstract class DecisionTreeNode implements Serializable {
 		for(int i = 0; i < getNumChildren(); i++)
 			getChild(i).print();
 	}
+
+    /**
+     * Clear the values from this node and its children.
+     */
+    public void clear() {
+        outputValueTallies.clear();
+        for(int i = 0; i < children.size(); i++)
+            ((DecisionTreeNode)children.get(i)).clear();
+    }
 }

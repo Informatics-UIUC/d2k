@@ -9,7 +9,7 @@ import java.text.*;
 import javax.swing.*;
 
 /**
-	A simple BarChart.  The data is stored in a VerticalTable.
+	A simple BarChart.  The data is stored in a Table.
 	The x value of the DataSet is the index of the column with the
 	labels, while the y value must be the index of the column with
 	frequencies.
@@ -37,7 +37,7 @@ public class BarChart extends Chart {
 
 	int tickmarksize = 4;
 
-	public BarChart(VerticalTable table, DataSet set, GraphSettings settings) {
+	public BarChart(Table table, DataSet set, GraphSettings settings) {
 		/*this.table = table;
 		this.set = set;
 		this.settings = settings;

@@ -25,7 +25,7 @@ public class VTViewer extends UIModule implements HasNames {
 	*/
 	public String getModuleInfo() {
 		StringBuffer b = new StringBuffer( "A table viewer.  This displays");
-		b.append(" the contents of a VerticalTable.  The table is then");
+		b.append(" the contents of a Table.  The table is then");
 		b.append(" passed along as the output.");
 		return b.toString();
     }
@@ -44,7 +44,7 @@ public class VTViewer extends UIModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] in = {"ncsa.d2k.util.datatype.Table"};
 		return in;
     }
 
@@ -54,7 +54,7 @@ public class VTViewer extends UIModule implements HasNames {
        @return The datatypes of the outputs.
     */
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] out = {"ncsa.d2k.util.datatype.Table"};
 		return out;
     }
 
@@ -65,7 +65,7 @@ public class VTViewer extends UIModule implements HasNames {
     */
     public String getInputInfo(int i) {
 		if(i == 0)
-	    	return "The VerticalTable to display.";
+	    	return "The Table to display.";
 		else
 	    	return "No such input!";
     }
@@ -77,7 +77,7 @@ public class VTViewer extends UIModule implements HasNames {
     */
     public String getInputName(int i) {
 		if(i == 0)
-	    	return "table";
+	    	return "Table";
 		else
 	    	return "No such input!";
     }
@@ -89,7 +89,7 @@ public class VTViewer extends UIModule implements HasNames {
     */
     public String getOutputInfo(int i) {
 		if(i == 0) {
-	    	StringBuffer b = new StringBuffer("The VerticalTable that was");
+	    	StringBuffer b = new StringBuffer("The Table that was");
 	    	b.append(" displayed.  No changes are made to the table by");
 	    	b.append(" this module.");
 	    	return b.toString();
@@ -105,7 +105,7 @@ public class VTViewer extends UIModule implements HasNames {
     */
     public String getOutputName(int i) {
 		if(i == 0)
-	    	return "table";
+	    	return "Table";
 		else
 	    	return "No such output!";
     }
@@ -132,7 +132,7 @@ public class VTViewer extends UIModule implements HasNames {
     public class TableView extends JUserPane implements ActionListener{
 		VerticalTableMatrix matrix;
 		/** the table with data */
-		protected VerticalTable table = null;
+		protected Table table = null;
 		/** a reference to our parent module */
 		protected VTViewer parent;
 		/** ok button */
@@ -149,6 +149,12 @@ public class VTViewer extends UIModule implements HasNames {
 		*/
 		public void initView(ViewModule mod) {
 			parent = (VTViewer)mod;
+            menuBar = new JMenuBar();
+			JMenu fileMenu = new JMenu("File");
+			print = new JMenuItem("Save...");
+			print.addActionListener(this);
+			fileMenu.add(print);
+			menuBar.add(fileMenu);
 		}
 
 		public Object getMenu() {
@@ -164,27 +170,21 @@ public class VTViewer extends UIModule implements HasNames {
 		public void setInput(Object input, int idx) {
 			if(idx == 0) {
 				removeAll();
-				table = (VerticalTable)input;
-				// a panel to put the buttons on
-				JPanel buttonPanel = new JPanel();
-				ok = new JButton("Done");
-				ok.addActionListener(this);
-				cancel = new JButton("Abort");
-				cancel.addActionListener(this);
-				buttonPanel.add(cancel);
-				buttonPanel.add(ok);
+				table = (Table)input;
+			    // a panel to put the buttons on
+			    JPanel buttonPanel = new JPanel();
+			    ok = new JButton("Done");
+			    ok.addActionListener(this);
+			    cancel = new JButton("Abort");
+			    cancel.addActionListener(this);
+			    buttonPanel.add(cancel);
+			    buttonPanel.add(ok);
 
 				// create the matrix
 				matrix = new VerticalTableMatrix(table);
 				// add everything to this
 				add(matrix, BorderLayout.CENTER);
 				add(buttonPanel, BorderLayout.SOUTH);
-				menuBar = new JMenuBar();
-				JMenu fileMenu = new JMenu("File");
-				print = new JMenuItem("Print");
-				print.addActionListener(this);
-				fileMenu.add(print);
-				menuBar.add(fileMenu);
 			}
 		}
 

@@ -2,6 +2,7 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
 import java.io.*;
 import java.util.*;
+import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
 /**
@@ -10,14 +11,37 @@ import java.util.*;
 */
 public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 /*#end^2 Continue editing. ^#&*/
-implements Serializable
-{
+		    implements Serializable {
+
+	/** the names of the various items. */
+	String [] nameList;
+
+	/** the number of valid rules obtained.*/
+	int validRules;
+
+	/** this is the number of sets that must contain a given rule for it to
+		meet the support. */
+	int cutoff;
+
+	/** this is a list of results. */
+	ArrayList results;
+
+	/** this is an integer representation of the sets, each mutable integer array contains
+	 *  a list of the items that set contains. */
+	MutableIntegerArray [] documentMap = null;
+
+	/** minimum support. */
+	double score=0.05;
+
+	/** start time. */
+	long startTime;
+
 	/**
 		Start a timer when we begin execution.
 	*/
-	long startTime;
 	public void beginExecution () {
 		startTime = System.currentTimeMillis ();
+		results = new ArrayList();
 	}
 
 	public void endExecution () {
@@ -26,19 +50,23 @@ implements Serializable
 			+(System.currentTimeMillis()-startTime));
 		results = null;
 		nameList = null;
+		documentMap = null;
+		sNames = null;
+		currentItemsFlags = null;
+		validRules = 0;
+		targetIndices = null;
+		nameAry = null;
 	}
+
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"sets\">    <Text>This is the list of sets we are going to build association rules for. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"item ids\">    <Text>For each item that may appear in the sets, this hashtable has an int array where the first entry is the count of the total occurances of that item out of all sets, and the second int is the unique id of that item. </Text>  </Info></D2K>";
+			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"item sets\">    <Text>ITem set object. </Text>  </Info></D2K>";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -46,12 +74,9 @@ implements Serializable
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
 		String [] types =  {
-			"[[Ljava.lang.String;",
-			"java.util.Hashtable"};
+			"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -59,13 +84,10 @@ implements Serializable
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"distinct items\">    <Text>This is the list of distinct items, the id of the item is the index into this array. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"rules\">    <Text>Each rull consists of a list of distinct item ids followed by a confidence and a support value. The support is the percentage of the sets that contained that combination, the confidence is, well , we don't know what that is. </Text>  </Info></D2K>";
+			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"rules\">    <Text>Each rull consists of a list of distinct item ids followed by a confidence and a support value. The support is the percentage of the sets that contained that combination, the confidence is, well , we don't know what that is. </Text>  </Info></D2K>";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -73,12 +95,9 @@ implements Serializable
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
 		String [] types =  {
-			"[Ljava.lang.String;",
 			"[[I"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -86,13 +105,10 @@ implements Serializable
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
 		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"A Priori Rule Assoc\">    <Text>This module will take a number of sets and a hashtable as it's inputs. The sets is a list of co-occurances, for example, a list purchases from a store, where each purchase entry (a set) is a list of items purchased. This module will find rules that define a high probability that combinations of items will be purchased together. </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
 	}
 
 	/** this property is the min acceptable support score. */
-	double score=0.05;
 	public void setMinimumSupport (double i) {
 		score = i;
 	}
@@ -100,7 +116,27 @@ implements Serializable
 		return score;
 	}
 
-	MutableIntegerArray [] documentMap = null;
+	/**
+	 * the Debug property.
+	 */
+	private boolean debug = false;
+	public void setDebug (boolean yy) {
+		this.debug = yy;
+	}
+	public boolean getDebug () {
+		return this.debug;
+	}
+
+	/**
+	 * the Debug property.
+	 */
+	private int maxSize = 6;
+	public void setMaxRuleSize (int yy) {
+		this.maxSize = yy;
+	}
+	public int getMaxRuleSize () {
+		return this.maxSize;
+	}
 
 	/**
 		Convert an array of flags that indicate the presence of an item
@@ -122,89 +158,8 @@ implements Serializable
 	}
 
 	/**
-		Generate a set of rules if all but one item is fixed, or fix
-		the next item and call in again. The way I generate these
-		rules is that keep an array of fixed items. At each level
-		in the recursion, I fix the next entry in rule, and recurse
-		until there is only one item left to fix, and at this point
-		I generate the rules for all possible values of that item. In
-		this way, when I am ready to generate the rules, I have only
-		to find the index of the last item in the fixed items list, and
-		then add each item after that one to get the list of rules. <p>
-
-		Notice that each rule is constructed by adding an item to an existing rule.
-		We keep track of all the documents that contain the rule we are adding
-		to so that we need only check those documents to see if the new item
-		exists. In this way we can compute the support or coverage cumulatively
-		rather that searching the entire document list to compute the support
-		each time.
-
-		@param fixedSets this is the list of items that are already
-			set.
-		@param numFixed the number of items already fixed.
-		@param items the items to choose from.
-		@param rules the list of rules.
-		@param currentRule the index of the next rule to generate.
-		@param currentDocList the list of documents which contain the current set.
-		@return the index of next rule to generate.
-
-	private int generateRules (int [] fixedSets, int numFixed,
-			int [] items, int [][] rules, int currentRule,
-			MutableIntegerArray currentDocList) {
-
-		// find the first item available to add to the sets
-		int numItems = items.length;
-		int ruleSize = fixedSets.length;
-		int fixedIndex = 0;
-
-		// Find the first entry in the items list that is not
-		// already fixed.
-		if (numFixed > 0)
-			while (fixedSets[numFixed-1] != items[fixedIndex++]);
-
-		// If all items are fixed but one, generate the sets.
-		if (ruleSize == numFixed+1) {
-
-			// Fix the last item, we can now create the rule.
-			for (; fixedIndex < numItems ; fixedIndex++) {
-
-				// One additional entry in each rule for the
-				// support value.
-				int support = currentDocList.countIntersection (documentMap[items[fixedIndex]]);
-				if (support < cutoff)
-					rules[currentRule] = null;
-				else {
-					validRules++;
-					rules [currentRule] = new int [ruleSize+1];
-					for (int i = 0; i < numFixed; i++)
-						rules [currentRule][i] = fixedSets [i];
-
-					rules[currentRule][numFixed] = items [fixedIndex];
-					rules[currentRule][ruleSize] = support;
-					results.add (rules[currentRule]);
-				}
-				currentRule++;
-			}
-		} else {
-			// Fix the next position in the rule vector
-			int numPositions = numItems - (fixedSets.length - (numFixed+1));
-			for (; fixedIndex < numPositions; fixedIndex++) {
-				fixedSets[numFixed] = items[fixedIndex];
-				if (numFixed == 0) {
-					currentDocList.add (documentMap[items[fixedIndex]]);
-				}
-
-				// Find the intersection of the currently represented examples,
-				// and those which contain the new item.
-				MutableIntegerArray newcurrent =
-					currentDocList.intersection (documentMap[items[fixedIndex]]);
-				currentRule = this.generateRules (fixedSets, numFixed+1,
-					items, rules, currentRule, newcurrent);
-			}
-		}
-		return currentRule;
-	}
-	*/
+	 * These are the rules we have stored.
+	 */
 	class LocalResultSet {
 		int [] set;
 		MutableIntegerArray mia;
@@ -212,7 +167,7 @@ implements Serializable
 			this.set = too;
 			this.mia = mia;
 		}
-	};
+	}
 
 	/**
 		This is a hashable object containing an integer array.
@@ -235,7 +190,7 @@ implements Serializable
 			This method computes the hashcode. The hashcode computation
 			here sucks.
 		*/
-		int fastHash (int [] ints) {
+		final int fastHash (int [] ints) {
 			long thash = 0;
 			for (int i = 0; i < ints.length;i++)
 				thash += ints[i];
@@ -247,7 +202,7 @@ implements Serializable
 			array and compute a new hashcode.
 			@param ints the new integer array.
 		*/
-		void setIntegers (int [] ints) {
+		final void setIntegers (int [] ints) {
 			toto = ints;
 			hash = fastHash (ints);
 		}
@@ -255,14 +210,14 @@ implements Serializable
 		/**
 			Return a reference to a hashcode.
 		*/
-		public int hashCode() {
+		final public int hashCode() {
 			return hash;
 		}
 
 		/**
 			Compare each entry if necessary.
 		*/
-		public boolean equals(Object obj) {
+		final public boolean equals(Object obj) {
 			FastHashIntArray fh = (FastHashIntArray) obj;
 			if (fh.toto.length != this.toto.length)
 				return false;
@@ -301,6 +256,7 @@ implements Serializable
 		with only one rule.
 		@param items is the list of items.
 		@param cardinality the size of the resulting sets.
+		@returns all the possible rules of the given cardinality.
 	*/
 	private int [][] generatePossibleRules (int [] items, int cardinality) {
 
@@ -312,12 +268,10 @@ implements Serializable
 		// This will be equal to the number of distinct sets generated
 		// last time * the number of items available to choose from less
 		// the number we already have. I think.
-		int numValidSets = results.size() - validRules;
-		int numElementsToAdd = numItems - (cardinality - 1);
-		int numSets = numValidSets * numElementsToAdd;
+		int numSets = (results.size() - validRules) * (numItems - (cardinality - 1));
 		FastHashIntArray fhia = new FastHashIntArray ();
 
-		//Compute the number of sets.
+		//Allocate space for the rules
 		int [][] rules = new int [numSets][];
 
 		// Now generate each rule
@@ -325,43 +279,62 @@ implements Serializable
 		int ruleCount = 0;
 		HashMap dups = new HashMap ();
 		int foobar = results.size ();	// Since the list will grow.
-		System.out.println ("Valid Rules Possible : "+numSets);
+		if (debug)
+			System.out.println ("Valid Rules Possible : "+numSets);
+
+		// We construct new rules from existing rules of size (cardinality-1).
+		MutableIntegerArray tmp = new MutableIntegerArray (numExamples);
 		for (int i = validRules ; i < foobar ; i++) {
+
+			// Get the next rule of size cardinality-1, copy into the rule buffer.
 			LocalResultSet lrs = (LocalResultSet) results.get (i);
 			System.arraycopy (lrs.set, 0, rulebuffer, 0, cardinality-1);
 			MutableIntegerArray mia = lrs.mia;
 
-			for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
+			// Add each item we have to the current rule
+nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 					itemIndex++) {
 
-				// Find the first rule that is not less than current
-				// item.
+				// Find the first item in the rule not less than current item.
 				while (ruleIndex < rulebuffer.length-1 && rulebuffer[ruleIndex] < items[itemIndex])
 					ruleIndex++;
 
-				// If the items are equal skip it.
 				if (rulebuffer[ruleIndex] != items[itemIndex]) {
+					if (cardinality == 2) {
 
-					// Generate a new rule.
-					MutableIntegerArray tmp = mia.intersection (documentMap[items[itemIndex]]);
-					if (tmp.count >= cutoff) {
-						// First construct the new rule, in sorted order.
-						int [] newRule = new int [cardinality+1];
-						int p;
-						for (p = 0 ; p < cardinality-1 ; p++) {
-							if (rulebuffer [p] < items[itemIndex])
-								newRule[p] = rulebuffer [p];
-							else {
-								newRule[p] = items[itemIndex];
+						// After we have all the rules of size two, we will know that each rule
+						// will have at least one output item included, because the rules from
+						// which we construct new rules will all contain a target. He we make sure
+						// we ignore any rule that does not contain an output.
+						int targetIndex;
+						for (targetIndex = 0 ; targetIndex < targetIndices.length ;targetIndex++)
+							if (rulebuffer[ruleIndex] == targetIndices[targetIndex])
 								break;
-							}
-						}
-						if (p == cardinality-1)
-							newRule[cardinality-1] = items[itemIndex];
-						else
-							for (; p < cardinality-1; p++) newRule[p+1] = rulebuffer[p];
+						if (targetIndex >= targetIndices.length)
+							for (targetIndex = 0 ; targetIndex < targetIndices.length ;targetIndex++)
+								if (items[itemIndex] == targetIndices[targetIndex])
+									break;
+					}
 
-						// The support is the count of the intersection.
+
+					// Find the number of examples that demonstrate the current rule and the new item.
+					tmp.count = 0;
+					mia.intersection (documentMap[items[itemIndex]], tmp);
+					if (tmp.count >= cutoff) {
+
+						// meet the support criterion, we have a new rule
+						int [] newRule = new int [cardinality+1];
+						if (rulebuffer[ruleIndex] < items[itemIndex]) {
+
+							// the new item should be added at the end.
+							System.arraycopy(rulebuffer, 0, newRule, 0, ruleIndex+1);
+							newRule[ruleIndex+1] = items[itemIndex];
+						} else {
+							System.arraycopy(rulebuffer, 0, newRule, 0, ruleIndex);
+							newRule[ruleIndex] = items[itemIndex];
+							System.arraycopy(rulebuffer,ruleIndex,newRule,ruleIndex+1,
+									rulebuffer.length-ruleIndex);
+						}
 						newRule[cardinality] = tmp.count;
 
 						// We found one, is it a dup?
@@ -373,10 +346,10 @@ implements Serializable
 							rules[ruleCount] = newRule;
 
 							// Need a new rule buffer;
-							FastHashIntArray darn =
-								new FastHashIntArray (newRule);
+							FastHashIntArray darn = new FastHashIntArray (newRule);
 							dups.put (darn, darn);
-							results.add (new LocalResultSet (rules[ruleCount], tmp));
+							results.add (new LocalResultSet (rules[ruleCount],
+								    new MutableIntegerArray(tmp)));
 							rules[ruleCount] = newRule;
 						} else
 							rules[ruleCount] = null;
@@ -389,7 +362,38 @@ implements Serializable
 		}
 		return rules;
 	}
-	final boolean debug = true;
+
+	/**
+	 * Return true if either we still have input, or have more work to do.
+	 * @return
+	 */
+	public boolean isReady() {
+		if ((inputFlags[0] > 0) || !done)
+			return true;
+		return false;
+	}
+
+	/**
+	 * Called when we are all done, it will construct the rules, and
+	 * if there are any, pass them along.
+	 */
+	final private void finish () {
+		done = true;
+		int [][] finalRules = null;
+		int finalRuleCount = 0;
+		for (int i = 0 ; i < results.size(); i++) {
+			int [] tmp = ((LocalResultSet) results.get (i)).set;
+			if (finalRules == null)
+				if (tmp.length > 1)
+					finalRules = new int [results.size ()-i][];
+				else
+					continue;
+			finalRules[finalRuleCount++] = tmp;
+		}
+		if (finalRules != null)
+			this.pushOutput (finalRules, 0);
+	}
+
 	/**
 		This is how we implement the apriori algorithm:
 		<ol>
@@ -409,158 +413,136 @@ implements Serializable
 		<li> backto step 3.
 		</ol>
 	*/
-	String [] nameList;
-	int validRules;
-	int cutoff;
-	ArrayList results;
+
+	int attributeCount;
+	HashMap sNames;
+	boolean done = true;
+	boolean [] currentItemsFlags;
+	int numExamples;
+	int [] targetIndices;
+	String [] nameAry;
 	public void doit () throws Exception {
 
+		HashMap names = sNames;
+
 		// get the item names, and the sets, from these num items and num examples.
-		Hashtable names = (Hashtable) this.pullInput (1);
-		String [][] sets = (String [][]) this.pullInput (0);
-		int numExamples = sets.length;
-		int numItems = names.size();
+		if (documentMap == null) {
+			done = false;
+		    ItemSets iss = (ItemSets)this.pullInput(0);
+			sNames = iss.unique;
+			targetIndices = iss.outputIndices;
+			names = sNames;
+			nameAry = iss.names;
+			numExamples = iss.numExamples;
+			cutoff = (int) ((double)numExamples * score);
+			int numItems = names.size();
 
-		// Compile an array of names where the name is referenced by he index.
-		nameList = new String [numItems];
-		Enumeration keys = names.keys ();
-		Enumeration elems = names.elements ();
-		cutoff = (int) Math.round (((double)numExamples*score));
-		results = new ArrayList ();
-		validRules = 0;
-		while (keys.hasMoreElements ()) {
-			String nm = (String) keys.nextElement ();
-			int[] vals = (int []) elems.nextElement ();
-			nameList [vals[vals.length-1]] = nm;
-		}
+			// Compile an array of names where the name is referenced by he index.
+			nameList = iss.names;
 
-		// the name list is an output.
-		this.pushOutput (nameList, 0);
-		for (int i = 0 ; i < nameList.length ;i++)
-			System.out.println (i+":"+nameList[i]);
+			for (int i = 0 ; i < nameList.length ;i++)
+				System.out.println (i+":"+nameList[i]);
 
-		System.out.println ("--------------------------");
-		System.out.println ("number examples : "+numExamples);
-		System.out.println ("cutoff : "+cutoff);
-		System.out.println ("number unique items : "+numItems);
-		System.out.println ("--------------------------");
+			System.out.println ("--------------------------");
+			System.out.println ("number examples : "+numExamples);
+			System.out.println ("cutoff : "+cutoff);
+			System.out.println ("number unique items : "+numItems);
+			System.out.println ("--------------------------");
 
-		boolean [][] itemFlags = new boolean [numExamples][numItems];
+			boolean [][] itemFlags = iss.getItemFlags();
+			documentMap = new MutableIntegerArray [numItems];
+			currentItemsFlags = new boolean [numItems];
 
-		//////////////////////
-		// First, set up the item flags, set the bit associated with each
-		// element in each set.
-		for (int i = 0 ; i < numExamples ; i++)
-			for (int j = 0 ; j < sets[i].length ; j++) {
-				String item_desc = sets[i][j];
+			//////////////////////
+			// First set up the doc list for each item, that is the indices
+			// of all the examples that contain the item. Don't bother for
+			// items which don't meet the support criterion.
+			for (int i = 0 ; i < numItems ; i++) {
+				String item_desc = nameList[i];
 				int[] count_id = (int[])names.get (item_desc);
-				itemFlags[i][count_id[1]] = true;
+				if (count_id[0] >= cutoff) {
+
+					// This item is of interest, has sufficient support.
+					currentItemsFlags[i] = true;
+					documentMap[i] = new MutableIntegerArray (numExamples);
+					int [] tmp = new int [1];
+					tmp[0]=i;
+					results.add (new LocalResultSet (tmp, documentMap[i]));
+					for (int j = 0 ; j < numExamples ; j++)
+						if (itemFlags[j][i] == true)
+
+							// The example contained this item, so add the
+							// example to the doc list.
+							documentMap[i].add (j);
+				}
 			}
-
-		documentMap = new MutableIntegerArray [numItems];
-		boolean [] currentItemsFlags = new boolean [numItems];
-
-		//////////////////////
-		// First set up the doc list for each item, that is the number
-		// of all the examples that contain the item. Don't bother for
-		// items wich don't meet the support criterion.
-		for (int i = 0 ; i < numItems ; i++) {
-			String item_desc = nameList[i];
-			int[] count_id = (int[])names.get (item_desc);
-			if (count_id[0] >= cutoff) {
-
-				// This item is of interest, has sufficient support.
-				currentItemsFlags[i] = true;
-				documentMap[i] = new MutableIntegerArray (numExamples);
-				int [] tmp = new int [1];
-				tmp[0]=i;
-				results.add (new LocalResultSet (tmp, documentMap[i]));
-				for (int j = 0 ; j < numExamples ; j++)
-					if (itemFlags[j][i] == true)
-
-						// The example contained this item, so add the
-						// example to the doc list.
-						documentMap[i].add (j);
-			}
+			itemFlags = null;
+			iss.userData = documentMap;
+		    attributeCount = 2; // number attributes to include in the rule		}
 		}
-		itemFlags = null;
 
 		// The rules themselves will actually be stored in a vector where
 		// the first entry in the vector is a list of all the 2 item combos,
 		// the second is all the 3 item combos, and so on.
-		int attributeCount = 2; // number attributes to include in the rule
 
-		//////////////////////////////
-		// Now loop until we reach a point where no additional sets will
-		// meet our support criterion.
-		while (true) {
 
-			// Now convert the flags that indicate an item exists or not to a
-			// sorted array of indices.
-			int [] currentItemIndices = this.convertFlagsToIndices (currentItemsFlags);
-			if (currentItemIndices == null) {
-				System.out.println ("DONE: No elements.");
-				break;
-			}
-			if (debug) {
-				System.out.println ("APriori -> currentItemIndices count :"+currentItemIndices.length);
-				System.out.print ("APriori ->{");
-				for (int i = 0 ; i < currentItemIndices.length-1; i++)
-					System.out.print (nameList[currentItemIndices[i]]+",");
-				System.out.println (nameList[currentItemIndices[currentItemIndices.length-1]]+"}");
-			}
-
-			// Generate all the new possible rules and compute their support values. Any rule
-			// not meeting the support criterion returns as null. The results vector also is up
-			// to date on return.
-			int oldRuleSize = results.size();
-			int [][] fixedResultSets = this.generatePossibleRules (currentItemIndices, attributeCount);
-			int newRules = results.size() - oldRuleSize;
-			validRules = oldRuleSize;
-			if (fixedResultSets == null) {
-				System.out.println ("DONE: No sets.");
-				break;
-			}
-			if (debug) {
-				System.out.println ("APriori -> validRules : "+newRules);
-			}
-			attributeCount++;
-			if (newRules <= 0) {
-				System.out.println ("DONE");
-				break;
-			}
-
-			// Clear the current item flags.
-			int testCounter = 0;
-			for (int i = 0 ; i < currentItemsFlags.length; i++)
-				currentItemsFlags[i] = false;
-
-			// Set the appropriate bits.
-			for (int i = 0 ; i < fixedResultSets.length; i++)
-				if (fixedResultSets[i] != null)
-					for (int k = 0 ; k < fixedResultSets[i].length-1; k++) {
-						if (currentItemsFlags[fixedResultSets[i][k]] == false)
-							testCounter++;
-						currentItemsFlags[fixedResultSets[i][k]] = true;
-					}
-			if (!debug)
-				System.out.print (".");
-			else System.out.println ();
-			Thread.currentThread ().yield ();
+		// Now convert the flags that indicate an item exists or not to a
+		// sorted array of indices.
+		int [] currentItemIndices = this.convertFlagsToIndices (currentItemsFlags);
+		if (currentItemIndices == null) {
+			System.out.println ("DONE: No elements.");
+			this.finish();
+			return;
 		}
-		int [][] finalRules = null;
-		int finalRuleCount = 0;
-		for (int i = 0 ; i < results.size(); i++) {
-			int [] tmp = ((LocalResultSet) results.get (i)).set;
-			if (finalRules == null)
-				if (tmp.length > 1)
-					finalRules = new int [results.size ()-i][];
-				else
-					continue;
-
-			finalRules[finalRuleCount++] = tmp;
+		if (debug) {
+			System.out.println ("APriori -> currentItemIndices count :"+currentItemIndices.length);
+			System.out.print ("APriori ->{");
+			for (int i = 0 ; i < currentItemIndices.length-1; i++)
+				System.out.print (nameList[currentItemIndices[i]]+",");
+			System.out.println (nameList[currentItemIndices[currentItemIndices.length-1]]+"}");
 		}
-		this.pushOutput (finalRules, 1);
+
+		// Generate all the new possible rules and compute their support values. Any rule
+		// not meeting the support criterion returns as null. The results vector also is up
+		// to date on return.
+		int oldRuleSize = results.size();
+		int [][] fixedResultSets = this.generatePossibleRules (currentItemIndices, attributeCount);
+		int newRules = results.size() - oldRuleSize;
+		validRules = oldRuleSize;
+		if (fixedResultSets == null) {
+			System.out.println ("DONE: No sets.");
+			this.finish();
+			return;
+		}
+
+		// In the first round, we will discard any rule that does not contain a target value.
+		if (debug) {
+			System.out.println ("APriori -> validRules : "+newRules);
+		}
+		attributeCount++;
+		if (newRules <= 0 || attributeCount > maxSize) {
+			System.out.println ("DONE");
+			this.finish();
+			return;
+		}
+
+		// Clear the current item flags.
+		int testCounter = 0;
+		for (int i = 0 ; i < currentItemsFlags.length; i++)
+			currentItemsFlags[i] = false;
+
+		// Set the appropriate bits.
+		for (int i = 0 ; i < fixedResultSets.length; i++)
+			if (fixedResultSets[i] != null)
+				for (int k = 0 ; k < fixedResultSets[i].length-1; k++) {
+					if (currentItemsFlags[fixedResultSets[i][k]] == false)
+						testCounter++;
+					currentItemsFlags[fixedResultSets[i][k]] = true;
+				}
+		if (!debug)
+			System.out.print (".");
+		else
+			System.out.println ();
 	}
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
