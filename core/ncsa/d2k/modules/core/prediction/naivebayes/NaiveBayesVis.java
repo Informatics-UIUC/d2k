@@ -87,6 +87,12 @@ public final class NaiveBayesVis
     return types;
   }
 
+
+    public PropertyDescription[] getPropertiesDescriptions() {
+	return new PropertyDescription[0]; // so that "windowName" property
+	// is invisible
+    }
+
   public String[] getFieldNameMapping() {
     return null;
   }
@@ -293,8 +299,10 @@ public final class NaiveBayesVis
       helpWindow = new HelpWindow();
     }
 
-    public void setInput(Object o, int i) {
+    public void setInput(Object o, int i) throws Exception {
       model = (NaiveBayesModel) o;
+      if(!model.isReadyForVisualization()) 
+	  throw new Exception("NaiveBayesModel has to be processed by PrepareForVisualization module before entering NaiveBayesVisualization");
       all_ranked_attribute_names = model.getAttributeNames();
       //for(int j = 0; j < all_ranked_attribute_names.length; j++)
       //	  System.out.println("Ranked attr" + all_ranked_attribute_names[j]);

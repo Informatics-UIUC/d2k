@@ -2,7 +2,6 @@ package ncsa.d2k.modules.core.prediction.naivebayes;
 
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.util.*;
 import java.io.Serializable;
@@ -70,6 +69,17 @@ public final class NaiveBayesModel
   private int[] inputFeatures;
   private int[] outputFeatures;
 
+  private boolean isReadyForVisualization;  
+  
+    boolean isReadyForVisualization () {
+	return isReadyForVisualization;
+    }
+    
+    void setIsReadyForVisualization ( boolean val ) {
+	isReadyForVisualization = val;
+    }
+ 
+
 /*  private int trainingSetSize;
 
   private String[] inputColumnNames;
@@ -93,6 +103,9 @@ public final class NaiveBayesModel
 
     inputFeatures = table.getInputFeatures();
     outputFeatures = table.getOutputFeatures();
+    
+    isReadyForVisualization = false;
+
 /*    trainingSetSize = table.getNumRows();
 
     inputColumnNames = new String[inputFeatures.length];
@@ -150,6 +163,7 @@ public final class NaiveBayesModel
     // for each attribute
     for (int i = 0; i < an.length; i++) {
       String[] bn = binTree.getBinNames(cn[0], an[i]);
+      //System.out.println("bn " + bn + " "  + bn.length);
 
       NaiveBayesPieChartData[] cd = new NaiveBayesPieChartData[bn.length];
       NaiveBayesPieChartData[] cd2 = new NaiveBayesPieChartData[bn.length];
@@ -161,6 +175,7 @@ public final class NaiveBayesModel
         // get the tallies for each class name
         for (int q = 0; q < tallies.length; q++) {
           tallies[q] = binTree.getTally(cn[q], an[i], bn[j]);
+	
         }
         cd[j] = new NaiveBayesPieChartData(an[i],
                                            bn[j], cn, tallies);
@@ -272,9 +287,8 @@ public final class NaiveBayesModel
                     table.getDouble(row, ins[col]));
               }
               else {
-
-                //System.out.println("BNFV: "+actualClass+" "+table.getColumnLabel(ins[col])+" "+
-                //                   table.getString(row, ins[col]));
+		  
+		  //  System.out.println("BNFV: "+actualClass+" "+table.getColumnLabel(ins[col])+" "+  table.getString(row, ins[col]));
 
 
                 bn = binTree.getBinNameForValue(
@@ -284,7 +298,7 @@ public final class NaiveBayesModel
 
               }
               if (bn == null) {
-                //System.out.println("BN WAS NULL.");
+		  //System.out.println("BN WAS NULL. for col " + ins[col]);
                 toDrop.add(table.getColumnLabel(ins[col]));
               }
               // call add evidence with the attribute
@@ -328,6 +342,7 @@ public final class NaiveBayesModel
 
       // now drop the ones from the toDrop list
       rankedAttributes = new String[tempAttributes.length - toDrop.size()];
+      //System.out.println("rankedAttributes.len " + rankedAttributes.length);
       int q = 0;
       for (int r = 0; r < tempAttributes.length; r++) {
         if (!toDrop.contains(tempAttributes[r])) {

@@ -49,7 +49,7 @@ public class PrepareForVis extends DataPrepModule {
         "out one input feature each time."+
         "<p>Properties: none"+
         "<p>Data Type Restrictions: none"+
-        "<p>Data Handling: This module does not destroy of modify the input."+
+        "<p>Data Handling: This module does not destroy or modify the input."+
         "<p>Scalability: This module will perform N predictions for each "+
         "input, where N is the number of training examples.";
   }
@@ -61,6 +61,7 @@ public class PrepareForVis extends DataPrepModule {
   public void doit() throws Exception {
     NaiveBayesModel nbm = (NaiveBayesModel)pullInput(0);
     nbm.setupForVis();
+    nbm.setIsReadyForVisualization(true);
     pushOutput(nbm, 0);
   }
 }
