@@ -387,8 +387,8 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
                 sortMap.put(I, I);
              }
           }
+		  sort();
           viewDone("Done");
-          sort();
         }
       });
 

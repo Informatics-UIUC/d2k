@@ -321,7 +321,7 @@ public class Apriori
   /**
    * These are the rules we have stored.
    */
-  class LocalResultSet {
+  class LocalResultSet implements Serializable  {
     int[] set;
     MutableIntegerArray mia;
     LocalResultSet(int[] too, MutableIntegerArray mia) {
@@ -333,7 +333,7 @@ public class Apriori
   /**
    This is a hashable object containing an integer array.
    */
-  class FastHashIntArray {
+  class FastHashIntArray implements Serializable  {
     int[] toto;
     int hash;
     /**

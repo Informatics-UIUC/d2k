@@ -103,7 +103,7 @@ public class AttributeConstruction extends HeadlessUIModule {
    public String[] getFieldNameMapping() { return null; }
 
    protected UserView createUserView() {
-      return new ColumnConstructionGUI();
+      return new ColumnConstructionGUI(null, null, null);
    }
 
 /******************************************************************************/
@@ -123,28 +123,6 @@ public class AttributeConstruction extends HeadlessUIModule {
    public void setLastCons(Object[] value) { lastCons = (Object[])value; }
 
 
-//headless conversion - vered: this method is already implemented by the super class.
-   //and there is no point in listing properties which are not basic type.
-   /*public PropertyDescription[] getPropertiesDescriptions() {
-
-     PropertyDescription pds[] = new PropertyDescription[3];
-     pds[0] = new PropertyDescription( "newLab",
-                "Column Labels",
-                "Saves the labels of the columns created by the user");
-
-     pds[1] = new PropertyDescription( "newTyp",
-                  "Column Types",
-                  "Saves the types of the columns created by the user");
-
-     pds[2] = new PropertyDescription( "lastCons",
-                  "Column Construction Strings",
-                  "Saves the construction strings of the columns created by the user");
-
-
-      return pds;
-
-
-   }*/
 
 /******************************************************************************/
 /* GUI                                                                        */
@@ -182,25 +160,16 @@ public class AttributeConstruction extends HeadlessUIModule {
       protected ViewModule mod;
 
       public ColumnConstructionGUI() {
-        newLabels = (String[])AttributeConstruction.this.getNewLabel();
-        newTypes = (int[])getNewTyp();
-        constructions = (Object[])getLastCons();
+        this.newLabels = (String[])AttributeConstruction.this.getNewLabel();
+        this.newTypes = (int[])AttributeConstruction.this.getNewTyp();
+        this.constructions = (Object[])AttributeConstruction.this.getLastCons();
       }
 
      public ColumnConstructionGUI(String[] nl, int[] nt, Object[] con) {
-        newLabels = nl;
-        newTypes = nt;
-        constructions = con;
+        this.newLabels = nl;
+        this.newTypes = nt;
+        this.constructions = con;
       }
-
-      public void setValues(String[] nl, int[] nt, Object[] con)
-      {
-        newLabels = nl;
-      newTypes = nt;
-      constructions = con;
-
-      }
-
 
       public void initView(ViewModule m) {
          mod = m;
@@ -224,6 +193,9 @@ public class AttributeConstruction extends HeadlessUIModule {
      public void initialize() {
 
          this.removeAll();
+		 this.newLabels = null;
+		 this.newTypes = null;
+		 this.constructions = null;
          expression = new ColumnExpression(table);
 
          gui = new ExpressionGUI(expression, true);
@@ -519,9 +491,12 @@ public class AttributeConstruction extends HeadlessUIModule {
          else if (src == doneButton) {
            help.setVisible(false);
            //headless conversion support
-           if (lastCons == null) //meaning the user chose no constructions
-             lastCons = new Object[0];
-          setLastCons(lastCons);
+           //LAM-tlr this is a fix, we are setting a value to itself here,
+           // and that of course has no effect, and then we are passing
+           // something else.
+          /* if (AttributeConstruction.this.lastCons == null) //meaning the user chose no constructions
+             lastCons = new Object[0];*/
+          setLastCons(newColumnModel.toArray());
           //headless conversion support
 
             pushOutput(new AttributeTransform(newColumnModel.toArray()), 0);
