@@ -158,7 +158,7 @@ public class RuleAssocReport extends UIModule
         }
 
         public Dimension getPreferredSize() {
-          return new Dimension (500, 350);
+          return new Dimension (800, 350);
         }
 
         public void initView(ViewModule mod) {
@@ -187,13 +187,13 @@ public class RuleAssocReport extends UIModule
           ruleModel = new GenericMatrixModel(ruleTable.getNumRows(),5,false,columnHeading);
           ruleList = new JTable(ruleModel);
           TableColumnModel colModel = ruleList.getColumnModel();
-          colModel.getColumn(0).setPreferredWidth(200);
+          colModel.getColumn(0).setPreferredWidth(400);
           colModel.getColumn(1).setPreferredWidth(25);
-          colModel.getColumn(2).setPreferredWidth(150);
+          colModel.getColumn(2).setPreferredWidth(250);
           colModel.getColumn(3).setPreferredWidth(50);
           colModel.getColumn(4).setPreferredWidth(50);
           JScrollPane tablePane = new JScrollPane(ruleList);
-          ruleList.setPreferredScrollableViewportSize (new Dimension(200,350));
+          ruleList.setPreferredScrollableViewportSize (new Dimension(600,350));
           Constrain.setConstraints(ruleInfo, tablePane,
                 0,0,1,1,GridBagConstraints.BOTH, GridBagConstraints.WEST,1,1);
 
@@ -212,8 +212,6 @@ public class RuleAssocReport extends UIModule
           doneBtn.addActionListener(this);
 
           setLayout (new BorderLayout());
-          //Constrain.setConstraints(this, displayRulePanel, 0, 0, 1, 1, GridBagConstraints.BOTH,
-                //					   GridBagConstraints.CENTER, 1.0, 1.0);
           add(displayRulePanel, BorderLayout.CENTER);
         }
 
