@@ -33,8 +33,6 @@ public class DBarChart extends Chart {
 
   int tickmarksize = 4;
 
-  int longest_width_x, longest_width_y;
-
   static final int LEFTOFFSET = 20;
   static final int RIGHTOFFSET = 20;
   static final int TOPOFFSET = 20;
@@ -47,6 +45,10 @@ public class DBarChart extends Chart {
 
   int longestwidthx;
   int longestwidthy;
+
+  int maximumcharacters = 15;
+
+  boolean resize = true;
 
   public DBarChart(Table table, DataSet set, GraphSettings settings) {
     super(table, set, settings);
@@ -77,11 +79,13 @@ public class DBarChart extends Chart {
     yvalueincrement = (ymaximum-yminimum)/gridsize;
   }
 
-  public DBarChart(Table table, DataSet set, GraphSettings settings, int xincrement, int yincrement) {
+  public DBarChart(Table table, DataSet set, GraphSettings settings, int xincrement, int yincrement, int characters) {
     this(table, set, settings);
 
     minimumxoffsetincrement = xincrement;
     minimumyoffsetincrement = yincrement;
+
+    maximumcharacters = characters;
   }
 
   public double[] getMinAndMax(Table table, int ndx) {
@@ -144,6 +148,11 @@ public class DBarChart extends Chart {
     for (int bin=0; bin < bins; bin++) {
       String value = table.getString(bin, set.x);
 
+      if (value.length() > maximumcharacters) {
+        value = value.substring(0, maximumcharacters) + "...";
+        bin = bins;
+      }
+
       int stringwidth = metrics.stringWidth(value);
       if (stringwidth > longestwidthx)
         longestwidthx = stringwidth;
@@ -174,7 +183,6 @@ public class DBarChart extends Chart {
       if (legendwidth < labelwidth)
         legendwidth = labelwidth;
 
-      //legendheight = (fontheight+smallspace)+(bins*fontheight);
       legendheight = bins*fontheight;
     }
 
@@ -184,12 +192,18 @@ public class DBarChart extends Chart {
 
     if (settings.displayaxislabels) {
       leftoffset = LEFTOFFSET+2*smallspace+fontheight+longestwidthy;
-      bottomoffset = BOTTOMOFFSET+2*smallspace+fontheight+longestwidthx;
+      bottomoffset = BOTTOMOFFSET+2*smallspace+fontheight+longestwidthx+tickmarksize;
     }
     else {
       leftoffset = LEFTOFFSET+longestwidthy;
-      bottomoffset = BOTTOMOFFSET+longestwidthx;
+      bottomoffset = BOTTOMOFFSET+longestwidthx+tickmarksize;
     }
+
+    if (xlabel.length() > maximumcharacters)
+      xlabel = xlabel.substring(0, maximumcharacters) + "...";
+
+    if (ylabel.length() > maximumcharacters)
+      ylabel = ylabel.substring(0, maximumcharacters) + "...";
 
     // Minimum dimensions
     minimumgraphwidth = minimumxoffsetincrement*bins+leftoffset+rightoffset;
@@ -236,6 +250,7 @@ public class DBarChart extends Chart {
 
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
+
     Graphics2D g2 = (Graphics2D) g;
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -251,6 +266,12 @@ public class DBarChart extends Chart {
     initOffsets();
 
     resize();
+
+    if (resize) {
+      resize = false;
+      revalidate();
+      repaint();
+    }
 
     yvalueincrement = (ymaximum-yminimum)/gridsize;
 
@@ -332,6 +353,10 @@ public class DBarChart extends Chart {
 
     for (int bin=0; bin < bins; bin++) {
       String value = table.getString(bin, set.x);
+
+      if (value.length() > maximumcharacters)
+        value = value.substring(0, maximumcharacters) + "...";
+
       int stringwidth = metrics.stringWidth(value);
 
       g2.drawString(value, (int) (getGraphHeight()-bottomoffset+tickmarksize+smallspace), (int) -(x-ascent/2));
@@ -396,18 +421,18 @@ public class DBarChart extends Chart {
 
     // X axis
     stringwidth = metrics.stringWidth(xlabel);
-    xvalue = (graphwidth-stringwidth)/2;
-    //yvalue = graphheight-(bottomoffset+fontheight)/2+(2*largespace);
+    xvalue = (graphwidth-leftoffset-rightoffset-stringwidth)/2+leftoffset;
     yvalue = graphheight-(BOTTOMOFFSET+2*smallspace+fontheight)/2;
     g2.drawString(xlabel, (int) xvalue, (int) yvalue);
 
     // Y axis
-    AffineTransform transform = g2.getTransform();
-
     stringwidth = metrics.stringWidth(ylabel);
-    xvalue = (leftoffset-fontascent-smallspace)/2;
-    yvalue = (graphheight+stringwidth)/2;
+    xvalue = (LEFTOFFSET+2*smallspace+fontheight)/2;
+    yvalue = (graphheight-topoffset-bottomoffset+stringwidth)/2+topoffset;
+
+    AffineTransform transform = g2.getTransform();
     AffineTransform rotate = AffineTransform.getRotateInstance(Math.toRadians(-90), xvalue, yvalue);
+
     g2.transform(rotate);
     g2.drawString(ylabel, (int) xvalue, (int) yvalue);
 
