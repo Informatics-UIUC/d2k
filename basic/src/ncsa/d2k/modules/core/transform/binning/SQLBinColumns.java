@@ -1065,9 +1065,7 @@ public class SQLBinColumns extends UIModule {
             boolean match = false;
             for (int binIdx = 0; binIdx < newBins.size(); binIdx++) {
               match = false;
-              System.out.println("bin label is " + newBins.get(binIdx));
               for (int colIdx = 0; colIdx < fieldNames.length; colIdx++) {
-                System.out.println("field name is " + fieldNames[colIdx]);
                 if (newBins.get(binIdx).toString().indexOf(fieldNames[colIdx])>=0) {
                   match = true;
                   break;
@@ -1083,7 +1081,6 @@ public class SQLBinColumns extends UIModule {
                 return false;
               }
             }
-            System.out.println("will return true for validateBins");
             return true;
           }
 
