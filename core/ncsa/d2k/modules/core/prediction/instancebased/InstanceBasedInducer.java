@@ -74,7 +74,7 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
 
 
   public String getModuleName() {
-    return "InstanceBasedInducer";
+    return "Instance Based Inducer";
   }
 
   public String getInputName(int i) {

@@ -27,11 +27,51 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
    boolean PrintEvolvingModels = false;
 
   public String getModuleName() {
-    return "DecisionTreeInducerOpt";
+    return "Decision Tree Inducer Optimizable";
   }
+
   public String getModuleInfo() {
-    return "DecisionTreeInducerOpt";
+
+    String s = "";
+    s += "<p>";
+    s += "Overview: ";
+    s += "This module builds a decision tree from an example table. </p>";
+    s += "<p>Detailed Description: ";
+    s += "The module implements a decision tree learning algorithm for continuous attributes. ";
+    s += "For inducing functions within a node, one of two different learning algorithms can be used. ";
+    s += "<ul>";
+    s += "<li><i>Use the mean averaging for models</i>:  Simple averaging of output values.  </li>";
+    s += "<li><i>Use multiple regression for models</i>:  Using the best 1-d linear function using a single input attribute.  </li>";
+    s += "</ul>";
+
+    s += "It allows for multiple decomposition strategies to be used simultaneously. ";
+
+    s += "<ul>";
+    s += "<li><i>Generate splits only at 1/2</i>:  Generate splits only at 0.5.  Works well when inputs are scaled from 0.0 to 1.0.</li>";
+    s += "<li><i>Generate mean splits</i>:  Generate splits at the mean input attribute value within the node.  </li>";
+    s += "<li><i>Generate midpoint splits</i>:  Generate splits at the midpoint between the min and max input attribute value within the node.  </li>";
+    s += "<li><i>Generate median splits</i>:  Generate splits at the median input attribute value within the node which requires n log n sorting.  </li> ";
+    s += "</ul>";
+
+    s += "Determining whether to split a node is controled by the following parameters: ";
+    s += "<i>Minimum examples per leaf</i> and <i>Minimum split error reduction</i>.  ";
+    s += "A split is not considered if it results in a node with less than <i>Minimum examples per leaf</i> examples in it.  ";
+    s += "A split is not considered if the resubstitution based error weighted by population ";
+    s += "does improve by at least <i>Minimum split error reduction</i>.  ";
+
+    s += "<p>";
+    s += "Restrictions: ";
+    s += "This module will only classify examples with ";
+    s += "continuous outputs.  </p>";
+
+    s += "<p>Data Handling: This module does not modify the input data. </p>";
+
+    s += "<p>Scalability: This module can efficiently process a data set that can be stored in memory.  ";
+    s += "The ultimate limit is how much virtual memory java can access. </p> ";
+
+    return s;
   }
+
 
 
   public void setControlParameters(ParameterPoint parameterPoint) {

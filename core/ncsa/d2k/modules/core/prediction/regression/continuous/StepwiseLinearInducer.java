@@ -65,13 +65,8 @@ public class StepwiseLinearInducer extends StepwiseLinearInducerOpt {
   }
 
 
-
-
-  public String getModuleInfo() {
-    return "LinearInducer";
-  }
   public String getModuleName() {
-    return "LinearInducer";
+    return "Stepwise Linear Inducer";
   }
 
   public String getInputName(int i) {

@@ -26,7 +26,7 @@ public class InstanceBasedInducerOpt extends FunctionInducerOpt {
     s += "The module implements the instance based learning algorithm. ";
     s += "The instance based learning algorithm is also known as n-nearest neighbor or kernel density weighting.  ";
     s += "During the training phase, the instance based inducer simply memorizes (makes a copy of) the training example table.  ";
-    s += "Given a target point in input space to classify, an instance based model first";
+    s += "Given a target point in input space to classify, an instance based model first ";
     s += "finds the n (<i>Neighborhood Size</i>) nearest examples using Eucledian distance, and weights each example to make the final prediction.  ";
     s += "The formula used to weight each example is 1.0 / distance^<i>Distance Weighting Power</i>.  ";
     s += "Distance is Euclidean (square root of the sum of squared differences).  ";
@@ -34,11 +34,11 @@ public class InstanceBasedInducerOpt extends FunctionInducerOpt {
     s += "When <i>Distance Weighting Power</i> is 0.0, and <i>Zero Distance Value</i> is 1.0, every example in the neighborhood is given equal consideration.  ";
     s += "<p>";
     s += "Restrictions: ";
-    s += "This module will only classify examples with numeric input and output features.";
+    s += "This module will only classify examples with numeric input and output attributes.";
     s += "<p>";
     s += "Data Handling: This module does not modify the input data. </p>";
     s += "<p>";
-    s += "Scalability: This module can efficiently a data set that can be stored in memory.  ";
+    s += "Scalability: This module can efficiently process a data set that can be stored in memory.  ";
     s += "The ultimate limit is how much virtual memory java can access. </p> ";
     s += "Model prediction speed can be increased by reducing <i>Neighborhood Size</i>.  ";
 
