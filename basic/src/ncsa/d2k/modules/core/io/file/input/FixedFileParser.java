@@ -5,10 +5,13 @@ import java.io.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 
+
+
 /**
  * Read a fixed format file.
  */
 public class FixedFileParser implements FlatFileParser {
+
 
     private int[] _columnType;
     private String[] _columnLabels;
@@ -26,6 +29,8 @@ public class FixedFileParser implements FlatFileParser {
     private int lineLength;
 
 //    private boolean[][] bTable;
+
+    boolean debug = false;
 
     public FixedFileParser(File file, Table header) throws Exception {
         int lbl = -1;
@@ -55,12 +60,15 @@ public class FixedFileParser implements FlatFileParser {
                 len = i;
        }
 
-        if(lbl != -1) setColumnLabels(header, lbl);
+        setColumnLabels(header, lbl);
+
         if(typ != -1) setColumnTypes(header, typ);
+
         if(strt == -1)
             throw new Exception("Could not determine column start.");
         else
                setColumnBeginings(header, strt);
+
         if(len == -1 && stp != -1)
             setColumnEnds(header, stp);
         else if(len != -1)
@@ -68,12 +76,11 @@ public class FixedFileParser implements FlatFileParser {
         else
            throw new Exception("Could not determine column sizes.");
 
-
         // the existence of the file should have been checked beforehand.
         _reader = new LineNumberReader(new FileReader(file));
 
         _file = file;
-            int lineLength = _columnEnd[_noOfColumns-1];
+        int lineLength = _columnEnd[_noOfColumns-1];
 
         // count the number of lines in the file
         BufferedReader rdr = new BufferedReader(new FileReader(file));
@@ -91,30 +98,26 @@ public class FixedFileParser implements FlatFileParser {
                 throw new Exception ("Column start " + _columnBegin[i] + " must  be greater than zero." +
                      " Please correct format ");
            if(_columnBegin[i] > _columnEnd[i])
-               throw new Exception ("Column start " + _columnBegin[i] + " must be less  or equal to " +
+               throw new Exception ("Column start " + _columnBegin[i] + " must be less than or equal to " +
                     "column end " + _columnEnd[i] + ". Please correct format");
             if (_columnBegin[i] > lineLength)
-              throw new Exception ("Column start " + _columnBegin[i] + " must be less or equal to " +
+              throw new Exception ("Column start " + _columnBegin[i] + " must be less than or equal to " +
                 "line length " + lineLength + ". Please correct format");
             if (_columnEnd[i] > lineLength)
-              throw new Exception ("Column end " + _columnEnd[i] + " must be less or equal " +
+              throw new Exception ("Column end " + _columnEnd[i] + " must be less than or equal " +
                 "line length " + lineLength + ". Please correct format");
 
        }
 
-
-
-
         if (debug ) {
             System.out.println("LL: "+lineLength);
-        System.out.println("NR: "+_tableLength);
-        System.out.println("NC: "+this._noOfColumns);
-        for(int i = 0; i < this._columnBegin.length; i++) {
-            System.out.println("BEGIN: "+_columnBegin[i]);
-            System.out.println("END: "+_columnEnd[i]);
+            System.out.println("NR: "+_tableLength);
+            System.out.println("NC: "+this._noOfColumns);
+            for(int i = 0; i < this._columnBegin.length; i++) {
+              System.out.println("BEGIN: "+_columnBegin[i]);
+              System.out.println("END: "+_columnEnd[i]);
+            }
         }
-        }
-
 
         _reader.setLineNumber(0);
 
@@ -125,12 +128,27 @@ public class FixedFileParser implements FlatFileParser {
         }*/
     }
 
+    // 
+    // This method sets up the column labels. If the metadata table
+    // contained a LABEL column, we use the entries in that column
+    // as the labels for the data we're reading.  If it didn't, we
+    // generate column labels of the form column_N, to match what
+    // other readers do if no labels.
+    //
     private void setColumnLabels(Table vt, int col) {
        int nr=vt.getNumRows();
        _columnLabels = new String[nr];
-       for ( int i = 0 ; i <  nr ; i++)
-           _columnLabels[i] = vt.getString(i,col);
-             _noOfColumns = nr;
+
+       if ( col != -1 ) {
+           for ( int i = 0 ; i <  nr ; i++) {
+               _columnLabels[i] = vt.getString(i,col);
+           }
+       } else {
+           for ( int i = 0 ; i <  nr ; i++) {
+               _columnLabels[i] = "column_"+i;;
+           }
+       }
+       _noOfColumns = nr;
     }
 
     private void setColumnTypes(Table vt, int col) {
@@ -249,7 +267,6 @@ public class FixedFileParser implements FlatFileParser {
         return -1;
     }*/
 
-      boolean debug = false;
 
     //private char[][] parseLine(int row) throws Exception {
     private ParsedLine parseLine(int row) throws Exception {
@@ -395,5 +412,8 @@ public class FixedFileParser implements FlatFileParser {
 // 2/16/03 - Anca started QA process. Added error handling for bad formating
 //           see check column bounds comment
 // 2/ ?/03 - checked into basic.
+// 4/17/03 - Ruth changed setColumnLabels so that it generates column labels
+//           if no LABEL was in the metadata table.  Before if there was no
+//           LABEL you'd get an array index out of bounds error.
 // END QA Comments
 
