@@ -23,7 +23,7 @@ import ncsa.d2k.modules.core.transform.attribute.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
-public class SQLGetClusterBarChartFromCube extends UIModule {
+public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
   JOptionPane msgBoard = new JOptionPane();
   ConnectionWrapper cw;
   String cube;

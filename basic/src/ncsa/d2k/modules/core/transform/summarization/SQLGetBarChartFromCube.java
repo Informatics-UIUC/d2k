@@ -681,6 +681,9 @@ public boolean createItemDataTableHeadless(int col, String[] attributes, String 
           ConnectionWrapper cw = (ConnectionWrapper) pullInput(0);
           String tableName = (String) pullInput(1);
 
+          if(!(tableName.indexOf("_CUBE") >=0))
+            throw new Exception ("The input table must be a cubed table, and must have the string '_CUBE' in its name");
+
           if(tableName == null || tableName.length() == 0)
             throw new Exception("Illegal table name!\n");
 
