@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.transform.table;
 
 
+
 import ncsa.d2k.core.modules.DataPrepModule;
 import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.Table;
@@ -58,11 +59,15 @@ public class SeparateTableByKey extends DataPrepModule {
 	//////////////////////////////////
 
 	public String getModuleInfo () {
-		return "Overview: This module will subset the table into n different tables where     n is the number"+
-			" of unique values of the key attribute specified in the     attribute property. Detailed Description:"+
-			" All the examples in the table having the same value for     the attribute will be placed in"+
-			" the same resulting table. All the subset     files will get pushed one at a time until all"+
-			" the tables have been pushed.Data Handling: All resulting tables are subset tables.";
+		return "<p>      Overview: This module will separate the input table into several subset       tables"+
+			" based on the value of the key field.    </p>    <p>      Detailed Description: The column named"+
+			" in the property named <i>Key       Attribute</i> will be used to identify the contents of the"+
+			" resulting       tables. Each table will contain all the entries that shared a common      "+
+			" value of that attribute. The tables are pushed one per execution until       either the number"+
+			" specified by the &quot;Maximum Number of Tables&quot; property       is reached, or all the"+
+			" tables generated have been pushed.    </p>    <p>      Data Handling: Each table is a subset"+
+			" table, so the data is not copied,       and the subset tables are no smaller than the original."+
+			"    </p>";
 	}
 	static final String [] ins = {"ncsa.d2k.modules.core.datatype.table.Table"};
 	public String [] getInputTypes() {
@@ -176,7 +181,6 @@ public class SeparateTableByKey extends DataPrepModule {
 				tables [i] = t;
 			}
 		}
-		System.out.println("Pushing table named "+tables[currentTable].getLabel()+" of size "+tables[currentTable].getNumRows());
 		this.pushOutput (tables[currentTable++], 0);
 	}
 

@@ -1,18 +1,15 @@
 package ncsa.d2k.modules.core.optimize.random;
 
+
+
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
-//import ncsa.d2k.modules.core.datatype.table.continuous.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-
 import java.util.Random;
 import java.util.ArrayList;
-
 import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.core.modules.PropertyDescription;
-
 import java.beans.PropertyVetoException;
 
 public class RandomSampling extends ComputeModule {
@@ -123,70 +120,71 @@ public class RandomSampling extends ComputeModule {
 	}
 
 	public String getModuleInfo () {
-		return "Generate maxIteration random points in the spaced passed in. Push these generated points, one per invocation, until either all points have been pushed or we converge. This module will not wait for a score to arrive before it pushes another output.  ";
+		return "<p>      Overview: Generate random points in a space defined by a parameter space       input"+
+			" until we push a user defined maximum number of points, we we       converge to a user defined"+
+			" optima.    </p>    <p>      Detailed Description: This module will produce <i>Maximum Number"+
+			" of       Iterations</i> points in parameter space, unless it converges before       generating"+
+			" that many points. It will produce only one point per       invocation, unless it has already"+
+			" produced all the points it is going to       and it is just waiting for scored points to come"+
+			" back. This module will       not wait for a scored point to come back before producing the"+
+			" next one,       it will produce as many poiints as it can, and it will remain enabled     "+
+			"  until all those points are produced, or it has converged. The module       converges if a"+
+			" score exceeds the property named <i>Objective Threashhold</i>. The Random Seed can be set to"+
+			" a positive value to cause this module to       produce the same points, given the same inputs,"+
+			" on multiple runs. <i>      Trace</i> and <i>Verbose Output</i> properties can be set to produce"+
+			" a       little or a lot of console output respectively. If <i>Constrain       Resolution</i>"+
+			" is not set, the resolution value from the parameter space       object will be ignored. We"+
+			" can minimize the objective score by setting       the <i>Minimize Objective Score</i> property"+
+			" to true.    </p>";
 	}
 
 	public String getInputName (int i) {
-		switch (i) {
+		switch(i) {
 			case 0:
 				return "Control Parameter Space";
 			case 1:
 				return "Example";
+			default: return "NO SUCH INPUT!";
 		}
-		return "";
 	}
 
 	public String getInputInfo (int i) {
 		switch (i) {
-			case 0:
-				return "The Control Parameter Space to search";
-			case 1:
-				return
-						"The Example created by combining the Parameter Point and the objective scores";
+			case 0: return "The Control Parameter Space to search";
+			case 1: return "The scored parameter point from a previously pushed point in parameter     space.";
+			default: return "No such input";
 		}
-		return "";
 	}
 
 	public String[] getInputTypes () {
-		String[] in = {
-			"ncsa.d2k.modules.core.datatype.parameter.ParameterSpace",
-			"ncsa.d2k.modules.core.datatype.table.Example"
-		};
-		return in;
+		String[] types = {"ncsa.d2k.modules.core.datatype.parameter.ParameterSpace","ncsa.d2k.modules.core.datatype.table.Example"};
+		return types;
 	}
 
 	public String getOutputName (int i) {
-		switch (i) {
+		switch(i) {
 			case 0:
 				return "Parameter Point";
 			case 1:
 				return "Optimal Example Table";
 			case 2:
 				return "Complete Example Table";
+			default: return "NO SUCH OUTPUT!";
 		}
-		return "";
 	}
 
 	public String getOutputInfo (int i) {
 		switch (i) {
-			case 0:
-				return "The next Parameter Point selected for evaluation";
-			case 1:
-				return "An example table consisting of only the Optimal Example(s)";
-			case 2:
-				return
-						"An example table consisting of all Examples generated during optimization";
+			case 0: return "The next Parameter Point selected for evaluation";
+			case 1: return "An example table consisting of only the Optimal Example(s)";
+			case 2: return "An example table consisting of all Examples generated during optimization";
+			default: return "No such output";
 		}
-		return "";
 	}
 
 	public String[] getOutputTypes () {
-		String[] out = {
-			"ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"
-		};
-		return out;
+		String[] types = {"ncsa.d2k.modules.core.datatype.parameter.ParameterPoint","ncsa.d2k.modules.core.datatype.table.ExampleTable","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
 	}
 
 	private Random randomNumberGenerator = null;
@@ -365,11 +363,13 @@ public class RandomSampling extends ComputeModule {
 		}
 		ParameterPointImpl parameterPoint = (ParameterPointImpl) ParameterPointImpl.getParameterPoint (names, point);
 		this.pushOutput (parameterPoint, 0);
+		if (trace) System.out.println("Pushed point "+pointsPushed);
 		if (verbose)
 			this.printExample (pointsPushed + " - Pushed a point : ", parameterPoint);
 		if (pointsPushed++ == maxIterations) {
 			if (verbose) System.out.println ("\nPushed Max Points.\n");
 			donePushing = true;
+			if (trace) System.out.println("DONE");
 		}
 	}
 
