@@ -605,6 +605,19 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		return mti;
 	}
 
+   /**
+    * Make a copy of an integer array.
+    * @param orig the original array to copy
+    * @return a copy of the array given.
+    */
+   private int [] copyIntArray (int [] orig) {
+      if (orig == null)
+         return null;
+      int [] newArray = new int [orig.length];
+      System.arraycopy (orig, 0, newArray, 0, orig.length);
+      return newArray;
+   }
+   
 	/**
 	 * Do a shallow copy on the data by creating a new instance of a MutableTable,
 	 * and initialize all it's fields from this one.
@@ -618,12 +631,12 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
       for (int i = 0 ; i < newCols.length ; i++) {
          newCols [i] = this.columns[i];
       }
-		eti.setColumns(newCols);
-		eti.setSubset(this.getSubset());
-		eti.setTrainingSet(this.getTrainingSet());
-		eti.setTestingSet(this.getTestingSet());
-		eti.setInputFeatures(this.getInputFeatures());
-		eti.setOutputFeatures(this.getOutputFeatures());
+		eti.columns = newCols;
+		eti.setSubset(copyIntArray(this.getSubset()));
+		eti.setTrainingSet(copyIntArray(this.getTrainingSet()));
+		eti.setTestingSet(copyIntArray(this.getTestingSet()));
+		eti.setInputFeatures(copyIntArray(this.getInputFeatures()));
+		eti.setOutputFeatures(copyIntArray(this.getOutputFeatures()));
 		eti.setLabel (this.getLabel());
 		eti.setComment (this.getComment());
 		eti.transformations = this.transformations;
