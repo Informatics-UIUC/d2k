@@ -297,7 +297,7 @@ public final class NaiveBayesVis
       model = (NaiveBayesModel) o;
       all_ranked_attribute_names = model.getAttributeNames();
       //for(int j = 0; j < all_ranked_attribute_names.length; j++)
-      //  System.out.println(all_ranked_attribute_names[j]);
+      //	  System.out.println("Ranked attr" + all_ranked_attribute_names[j]);
       all_alpha_attribute_names = sortNames(all_ranked_attribute_names);
       class_names = model.getClassNames();
       color_map = new HashMap();
@@ -309,6 +309,7 @@ public final class NaiveBayesVis
       }
       attribute_names = all_ranked_attribute_names;
       numRows = attribute_names.length;
+      //System.out.println("numRows "  + numRows);
       selected = new int[attribute_names.length];
       row_data = new NaiveBayesPieChartData[attribute_names.length][];
       predictor_values = new double[attribute_names.length];
@@ -318,6 +319,7 @@ public final class NaiveBayesVis
       // get the row data
       for (int j = 0; j < attribute_names.length; j++) {
         row_data[j] = model.getData(attribute_names[j]);
+	//	System.out.println("row_data[" +j+ "] " + row_data[j]);
         predictor_values[j] = model.getPredictionValue(attribute_names[j]);
         selected[j] = -1;
         if (attribute_names[j].length() > longest) {
@@ -1777,7 +1779,7 @@ public final class NaiveBayesVis
     sb.append("<ul><li>Views: Display the evidence and composite as either");
     sb.append(" pie charts or bar charts.");
     sb.append("<li>Sort Attributes By: Sort the attributes by either the");
-    sb.append(" best predictor or alphabetical order.  The best predictor is");
+    sb.append(" best predictor or alphabetical order. The best predictor is");
     sb.append(" the attribute that induces the largest error when omitted.");
     sb.append("<li>Sort Evidence By: Sort the evidence by the number of ");
     sb.append(" items in its category or in alphabetical order.");
@@ -1786,8 +1788,8 @@ public final class NaiveBayesVis
     sb.append("<li>Show Predictor Values: Display the error induced when ");
     sb.append("the attribute was ommited from a prediction calculation.");
     sb.append("<li>Show Bin Weight Percentage: Show the weights assigned to ");
-    sb.append(" each evidence item as a percentage or display a bar with its ");
-    sb.append(" weight relative to all other items in its row.");
+    sb.append("each evidence item as a percentage or display a bar with its ");
+    sb.append("weight relative to all other items in its row.");
     sb.append("<li>Print: Print this visualization.");
     sb.append("</ul>");
     sb.append("<h3>Toolbar Buttons</h3>");
@@ -1849,6 +1851,7 @@ sb.append("	<li>Show Bin Weight Percentage: Show the weights assigned to ");
 sb.append("	each evidence item as a percentage or display a bar with its ");
 sb.append("	weight relative to all other items in its row. ");
 sb.append("	<li>Print: Print the visualization window. ");
+sb.append("     <li>Save as PMML: Saves the model in a PMML format file.");
 sb.append("	</ul> ");
 sb.append("<li>Help: ");
 sb.append("	<ul> ");
