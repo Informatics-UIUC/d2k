@@ -361,6 +361,26 @@ public class ChooseAttributes extends HeadlessUIModule {
 					inputList.setSelectedIndices(sel);
 				}
 			}
+         else if (selectedInputs != null) {
+
+            ArrayList indices = new ArrayList();
+            for (int i = 0; i < selectedInputs.length; i++) {
+
+               Integer ii = (Integer)inputToIndexMap.get(selectedInputs[i]);
+               if (ii != null) {
+                  indices.add(ii);
+               }
+
+            }
+
+            int[] ints = new int[indices.size()];
+            for (int i = 0; i < ints.length; i++) {
+               ints[i] = ((Integer)indices.get(i)).intValue();
+            }
+
+            inputList.setSelectedIndices(ints);
+
+         }
 			outputList = new JList(/*labels*/
 			);
 			dlm = new DefaultListModel();
@@ -380,6 +400,27 @@ public class ChooseAttributes extends HeadlessUIModule {
 					outputList.setSelectedIndices(sel);
 				}
 			}
+         else if (selectedOutputs != null) {
+
+            ArrayList indices = new ArrayList();
+            for (int i = 0; i < selectedOutputs.length; i++) {
+
+               Integer ii = (Integer)outputToIndexMap.get(selectedOutputs[i]);
+               if (ii != null) {
+                  indices.add(ii);
+               }
+
+            }
+
+            int[] ints = new int[indices.size()];
+            for (int i = 0; i < ints.length; i++) {
+               ints[i] = ((Integer)indices.get(i)).intValue();
+            }
+
+            outputList.setSelectedIndices(ints);
+
+         }
+
 			JScrollPane leftScrollPane = new JScrollPane(inputList);
 			JScrollPane rightScrollPane = new JScrollPane(outputList);
 
