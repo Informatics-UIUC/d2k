@@ -1,16 +1,15 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation;
 
-public interface RulePMMLTags {
+import ncsa.d2k.modules.core.prediction.*;
+
+public interface RulePMMLTags extends PMMLTags {
     public static final String CONSEQUENT = "consequent";
     public static final String ANTECEDENT = "antecedent";
     public static final String SUPPORT = "support";
     public static final String CONFIDENCE = "confidence";
     public static final String ID = "id";
     public static final String VALUE = "value";
-    //public static final String ITEM_SET = "AssocItemSet";
-    //public static final String ASSOC_ITEM = "AssocItem";
     public static final String ASSOC_RULE = "AssociationRule";
-    //public static final String ASSOC_ITEM_REF = "AssocItemRef";
     public static final String ITEM_REF = "itemRef";
     public static final String ITEM = "Item";
     public static final String ITEMSET = "Itemset";
