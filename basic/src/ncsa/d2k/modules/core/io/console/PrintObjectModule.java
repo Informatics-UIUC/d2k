@@ -63,9 +63,8 @@ public class PrintObjectModule extends ncsa.d2k.core.modules.OutputModule {
 		@param outV the array to contain output object.
 	*/
 	public void doit () throws Exception {
-		synchronized( System.out ) {
-			Object inputArg = this.pullInput (0);
-
+		Object inputArg = this.pullInput (0);
+		synchronized(System.out) {
 			// int[]
 			if (inputArg instanceof int[]) {
 				int [] ia = (int []) inputArg;
