@@ -230,7 +230,7 @@ public class SQLRainForest extends SQLRainForestOPT {
   }
 
   public String getModuleName() {
-    return "SQLRainForest";
+    return "SQL Rain Forest";
   }
 
   public void setBinNumber (double i) throws PropertyVetoException {

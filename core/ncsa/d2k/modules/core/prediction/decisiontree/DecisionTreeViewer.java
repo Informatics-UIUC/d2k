@@ -105,7 +105,7 @@ public class DecisionTreeViewer extends VisModule  {
   * @return the human readable name of the module.
   */
   public String getModuleName() {
-    return "DecisionTreeViewer";
+    return "Decision Tree Viewer";
   }
 
   /**

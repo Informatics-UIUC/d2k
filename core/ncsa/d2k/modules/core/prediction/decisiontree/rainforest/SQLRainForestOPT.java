@@ -231,7 +231,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
   }
 
   public String getModuleName() {
-    return "SQLRainForestOPT";
+    return "SQL Rain Forest OPT";
   }
 
   public void setBinNumber (double i) throws PropertyVetoException {
