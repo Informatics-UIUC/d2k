@@ -41,10 +41,12 @@ public class ItemSets implements Serializable {
 
 	/** for each example contains a boolean array with an entry for each item,
 	 *  set to true only if the item is represented in the example or not.  */
-	private boolean [][] itemFlags;
+	protected boolean [][] itemFlags;
 
 	/** holds some method specific data.*/
 	public Object userData;
+
+        public ItemSets(){}
 
 	public ItemSets(Table vt) {
 		// number of cols and rows in original table
@@ -282,7 +284,7 @@ public class ItemSets implements Serializable {
 		@param l the first rule.
 		@param r the last rule.
 	*/
-	private void quickSort(int [] ind, int [][] vals, int l, int r) {
+	protected void quickSort(int [] ind, int [][] vals, int l, int r) {
 
 		int pivot = (r + l) / 2;
 		int pivotVal = vals[ind[pivot]][0];
