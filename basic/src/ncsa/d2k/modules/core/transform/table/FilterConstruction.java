@@ -108,7 +108,7 @@ public class FilterConstruction extends HeadlessUIModule {
    public PropertyDescription[] getPropertiesDescriptions() {
     PropertyDescription[] pds = new PropertyDescription[2];
     pds[0] = super.supressDescription;
-    pds[1] = new PropertyDescription("expression", "Filter Expression", "Set this expression to filter out rows in the table, when \"Supress User Interface Display\" is set to true");
+    pds[1] = new PropertyDescription("expression", "Filter Expression", "Set this expression to filter out rows in the table, when \"Supress User Interface Display\" is set to true. Validation of the expression is done during run time.");
     return pds;
 
    }

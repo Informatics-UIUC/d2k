@@ -79,8 +79,6 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 		MutableTable table = (MutableTable) pullInput(0);
 		int numRow = table.getNumRows();
 
-
-
 		int j = 0;
 		for (int i=0; i<numRow; i++){
 			j = getRandomNumber(i, numRow-1);

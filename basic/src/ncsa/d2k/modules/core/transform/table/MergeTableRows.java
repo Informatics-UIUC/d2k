@@ -72,8 +72,8 @@ public class MergeTableRows extends HeadlessUIModule {
 	public PropertyDescription [] getPropertiesDescriptions () {
 		PropertyDescription [] pds = new PropertyDescription [3];
                 pds[0] = super.supressDescription;
-                pds[1] = new PropertyDescription("control", "Control Column", "Name of control column for merging\n(will be used if \"Supress User Interface Display\" is set to true");
-                pds[2] = new PropertyDescription("type", "Merging Method", "Type of merging method (Sum, Average, Minimum, Maximum or Count)\nwill be used if \"Supress User Interface Display\" is set to true");
+                pds[1] = new PropertyDescription("control", "Control Column", "Name of control column for merging (will be used if \"Supress User Interface Display\" is set to true");
+                pds[2] = new PropertyDescription("type", "Merging Method", "Type of merging method (Sum, Average, Minimum, Maximum or Count) will be used if \"Supress User Interface Display\" is set to true");
 		return pds;
 	}
 
