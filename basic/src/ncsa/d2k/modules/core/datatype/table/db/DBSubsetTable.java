@@ -36,7 +36,10 @@ public class DBSubsetTable extends DBTable implements MutableTable  {
 
 public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection){
   super(_dbdatasource, _dbconnection);
-  subset = new int[0];
+  //initializing subset to include all of the Table by default.
+  subset = new int[super.getNumRows()];
+  for (int i=0; i<subset.length; i++)
+    subset[i] = i;
 }
       public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection, int[] indices){
         super(_dbdatasource, _dbconnection);
