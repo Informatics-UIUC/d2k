@@ -250,6 +250,10 @@ public class ADTAutoBin extends DataPrepModule {
  * 01-15-04:
  * bug 227 is fixed.
  *
- * 01-21-04:
- * module is ready for basic 4.
+ * 01-21-04: vered
+ *
+ * bug 228: binning and representation of missing values. missing values are binned
+ * into the "UNKNOWN" bin but are still marked as missing if binning is done
+ * in the same column.
+
 */

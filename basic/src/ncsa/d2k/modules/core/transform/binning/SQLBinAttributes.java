@@ -1893,5 +1893,12 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
  * and description of change.
  *
  * 01-21-04: vered.
- * module is ready for basic 4.
+ *
+ * bug 228: binning and representation of missing values. missing values are binned
+ * into the "UNKNOWN" bin but are still marked as missing if binning is done
+ * in the same column.
+ *
+ * bug 229 - when checking the "create in a new column" box, the module creates
+   the new binned columns with identical labels as the original ones have.
+
  */

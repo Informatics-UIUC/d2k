@@ -404,5 +404,9 @@ public class AutoBin extends AutoBinOPT {
  *
  * 01-21-04:
  * bug 216 is fixed.
- * ready for basuc 4.
+ *
+ * bug 228: binning and representation of missing values. missing values are binned
+ * into the "UNKNOWN" bin but are still marked as missing if binning is done
+ * in the same column.
+
 */
