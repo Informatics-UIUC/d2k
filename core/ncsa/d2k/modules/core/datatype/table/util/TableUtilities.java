@@ -208,6 +208,22 @@ public class TableUtilities {
 		return retVal;
 	}
 
+
+    public static boolean isKeyColumn(Table table, int colNum) {
+		int numRows = table.getNumRows();
+		
+		String [] unique = TableUtilities.uniqueValues(table,colNum);
+		//there is no support for missing values - unique no of values could be less
+		//than numRows if there were missing values
+		if (numRows != unique.length)
+		    return false;
+		else 
+		    return true;
+		
+    }
+
+
+
 	/**
 	 * Expand an array by one.
 	 * @param orig
