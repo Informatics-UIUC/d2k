@@ -335,15 +335,24 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
             aBook = new SQLCodeBook(cw, bookName.getText().toString());
             codeTable = aBook.codeBook;
           }
+
+          //vered: added this try catch, to bypass compilation error
+
+          try{
           for (int idx = 0; idx < selectedModel.size(); idx++) {
             // if code book is required and the code book is not retrieved yet, then get it
-            if (create1ItemDataTable(idx)) {
+            if (create1ItemDataTable(idx, selectedModel.get(idx).toString(), cubeTableName.getText())) {
               if (useCodeBook.getState()) {
                 replaceCode(data);
               }
               pushOutput(data, 0);
             }
           }
+        }//try
+        catch(Exception ex){
+          //any exception that is thrown in the creat1ItemDataTable method
+          //while running with gui - will be handled in that method.
+        }
           closeIt();
         }
         else if (cubeTableName.getText().length()<=0) { // The user has not chosen a table yet
@@ -456,19 +465,29 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
     }
   }
 
-  public boolean create1ItemDataTable(int col) {
+//vered: changed the parameters of this method, so that also doit method
+  //could use it.
+  /**
+   * creates a data table for one item of the selected items.
+   *
+   * @param col - current columns number (the selected item)
+   * @param label - label of selected item
+   * @param tableName - the table name in the data base
+   * @return - true if succeeded with creation of table. else - returns false.
+   * @throws Exception - throws exception if running without gui and encountering a problem.
+   */
+  public boolean create1ItemDataTable(int col, String label, String tableName) throws Exception{
     int rowCnt = 0;
     try {
       con = cw.getConnection();
+
       // only pick up the cube records that have values in the selected
       // columns and is a 1-item set
-      String cntQry = new String("select count(*) from " + cubeTableName.getText() +
+      String cntQry = new String("select count(*) from " + tableName +
                                  " where ");
-      for (int idx=0; idx<selectedModel.size(); idx++) {
-        if (idx == col) {
-          cntQry = cntQry + selectedModel.get(idx) + " is not null ";
-        }
-      }
+
+      cntQry = cntQry + label + " is not null ";
+
       cntQry = cntQry + " AND set_size = 1";
       //System.out.println("cntQry is " + cntQry);
       Statement cntStmt = con.createStatement();
@@ -479,9 +498,13 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
       cntStmt.close();
     }
     catch (Exception e){
-      JOptionPane.showMessageDialog(msgBoard,
-          e.getMessage(), "Error",
-          JOptionPane.ERROR_MESSAGE);
+      if(!supressGui){
+        JOptionPane.showMessageDialog(msgBoard,
+                                      e.getMessage(), "Error",
+                                      JOptionPane.ERROR_MESSAGE);
+      }//if
+      else throw new Exception ("Error occurred in create1ItemDataTable.");
+
       System.out.println("Error occurred in create1ItemDataTable.");
       return false;
     }
@@ -489,7 +512,7 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
     // extra column for count
     Column[] cols = new Column[2];
     cols[0] = new ObjectColumn(rowCnt);
-    cols[0].setLabel(selectedModel.get(col).toString());
+    cols[0].setLabel(label);
     cols[1] = new ObjectColumn(rowCnt);
     cols[1].setLabel("COUNT");
     data = new MutableTableImpl (cols);
@@ -497,9 +520,9 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
     try {
       con = cw.getConnection();
       String dataQry = new String("select ");
-      dataQry = dataQry + selectedModel.get(col) + ", ";
-      dataQry = dataQry + "CNT from " + cubeTableName.getText() + " where ";
-      dataQry = dataQry + selectedModel.get(col) + " is not null ";
+      dataQry = dataQry + label + ", ";
+      dataQry = dataQry + "CNT from " + tableName + " where ";
+      dataQry = dataQry + label + " is not null ";
       dataQry = dataQry + " AND set_size = 1";
       //dataQry = dataQry + " AND set_size = 1 order by " + selectedModel.get(col);
       //System.out.println("dataQry is " + dataQry);
@@ -515,9 +538,12 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
       return true;
     }
     catch (Exception e){
-      JOptionPane.showMessageDialog(msgBoard,
-          e.getMessage(), "Error",
-          JOptionPane.ERROR_MESSAGE);
+      if(!supressGui){
+        JOptionPane.showMessageDialog(msgBoard,
+                                      e.getMessage(), "Error",
+                                      JOptionPane.ERROR_MESSAGE);
+      }
+      else throw new Exception("Error occurred in createDataTable.");
       System.out.println("Error occurred in createDataTable.");
       return false;
     }
@@ -598,7 +624,10 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
         public void setBook(boolean val){book = val;}
         public boolean getBook(){return book;}
 
+        private String tableName;
 
+/*
+vered: commented out this method, since doit will call the regular one.
 public boolean createItemDataTableHeadless(int col, String[] attributes, String tableName){
   int rowCnt = 0;
    try {
@@ -607,11 +636,11 @@ public boolean createItemDataTableHeadless(int col, String[] attributes, String 
      // columns and is a 1-item set
      String cntQry = new String("select count(*) from " + tableName +
                                 " where ");
- /*    for (int idx=0; idx<attributes.length; idx++) {
+  for (int idx=0; idx<attributes.length; idx++) {
        if (idx == col) {
          cntQry = cntQry + attributes[idx] + " is not null ";
        }
-     }*/
+     }
     if (col < attributes.length)
       cntQry = cntQry + attributes[col] + " is not null ";
 
@@ -667,11 +696,14 @@ public boolean createItemDataTableHeadless(int col, String[] attributes, String 
 
 
 }//createItemDataTableHeadless
+*/
+
 
         public void doit() throws Exception{
 
           cw = (ConnectionWrapper) pullInput(0);
-          String tableName = (String) pullInput(1);
+          tableName = (String) pullInput(1);
+
 
           //validating code book use
           if(book && (codeBook == null || codeBook.length() == 0))
@@ -684,9 +716,6 @@ public boolean createItemDataTableHeadless(int col, String[] attributes, String 
             throw new Exception(getAlias() + " has not been configured. Before running headless, run with the gui and configure the parameters.");
 
           //validating table name
-
-
-
 
           if(tableName == null || tableName.length() == 0)
             throw new Exception(getAlias() + ": Illegal table name on input port 2.");
@@ -731,7 +760,7 @@ public boolean createItemDataTableHeadless(int col, String[] attributes, String 
 
          for (int idx = 0; idx < targetAttributes.length; idx++)
            // if code book is required and the code book is not retrieved yet, then get it
-           if (createItemDataTableHeadless(idx, targetAttributes, tableName) ){
+           if (create1ItemDataTable(idx, targetAttributes[idx], tableName) ){
              if (book)
                replaceCode(data);
 

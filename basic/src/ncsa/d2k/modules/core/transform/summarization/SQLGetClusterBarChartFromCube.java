@@ -311,12 +311,18 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
             aBook = new SQLCodeBook(cw, bookName.getText().toString());
             codeTable = aBook.codeBook;
           }
-          if (create1ItemDataTable()) {
+          //vered: added this try catch to bypass compilation error
+          //if running this module with gui, exceptions are always handled within createItemDataTable
+          try{
+          if (create1ItemDataTable(cubeTableName.getText(), (String[])getSelectedAttributes() )) {
             if (useCodeBook.getState()) {
               replaceCode(data);
             }
               pushOutput(data, 0);
           }
+
+        }//try
+        catch(Exception ex){}
           closeIt();
         }
       }
@@ -412,20 +418,33 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
     }
   }
 
-  public boolean create1ItemDataTable() {
+//vered: changed this method so that doit can call it too.
+  /**
+   * creates a data table for the selected attributes in the input database table
+   * @param tableName - name of table in data base
+   * @param selected - selected attributes in the table
+   * @return - true if successfule false if fails.
+   */
+  public boolean create1ItemDataTable(String tableName, String[] selected) throws Exception{
     int rowCnt = 0;
     try {
       con = cw.getConnection();
       // only pick up the cube records that have values in the selected
       // columns and is a 1-item set
-      String cntQry = new String("select count(*) from " + cubeTableName.getText() +
+
+
+      //String cntQry = new String("select count(*) from " + cubeTableName.getText() +
+        //                         " where ");
+        String cntQry = new String("select count(*) from " + tableName +
                                  " where ");
-      for (int idx=0; idx<selectedModel.size(); idx++) {
+
+
+      for (int idx=0; idx<selected.length;/* selectedModel.size()*/ idx++) {
         if (idx == 0) {
-          cntQry = cntQry + selectedModel.get(idx) + " is not null ";
+          cntQry = cntQry + selected[idx] /*selectedModel.get(idx)*/ + " is not null ";
         }
         else {
-          cntQry = cntQry + " and " + selectedModel.get(idx) + " is not null ";
+          cntQry = cntQry + " and " + selected[idx] /*selectedModel.get(idx)*/ + " is not null ";
         }
       }
       cntQry = cntQry + " AND set_size = 2";
@@ -437,9 +456,12 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
       cntStmt.close();
     }
     catch (Exception e){
-      JOptionPane.showMessageDialog(msgBoard,
-          e.getMessage(), "Error",
-          JOptionPane.ERROR_MESSAGE);
+      if(!supressGui){
+        JOptionPane.showMessageDialog(msgBoard,
+                                      e.getMessage(), "Error",
+                                      JOptionPane.ERROR_MESSAGE);
+      }
+      else throw  e;
       System.out.println("Error occurred in create1ItemDataTable.");
       return false;
     }
@@ -447,9 +469,9 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
     // extra column for count
     Column[] cols = new Column[3];
     cols[0] = new ObjectColumn(rowCnt);
-    cols[0].setLabel(selectedModel.get(0).toString());
+    cols[0].setLabel( selected[0] /*selectedModel.get(0).toString()*/);
     cols[1] = new ObjectColumn(rowCnt);
-    cols[1].setLabel(selectedModel.get(1).toString());
+    cols[1].setLabel(selected[1] /*selectedModel.get(1).toString()*/);
     cols[2] = new ObjectColumn(rowCnt);
     cols[2].setLabel("COUNT");
     data = new MutableTableImpl(cols);
@@ -458,16 +480,16 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
       con = cw.getConnection();
       String dataQry = new String("select ");
 
-      for (int idx=0; idx<selectedModel.size(); idx++) {
-          dataQry = dataQry + selectedModel.get(idx) + ", ";
+      for (int idx=0; idx<selected.length /*selectedModel.size()*/; idx++) {
+          dataQry = dataQry + selected[idx] /*selectedModel.get(idx)*/ + ", ";
       }
-      dataQry = dataQry + "CNT from " + cubeTableName.getText() + " where ";
-      for (int idx=0; idx<selectedModel.size(); idx++) {
+      dataQry = dataQry + "CNT from " + tableName /*cubeTableName.getText()*/ + " where ";
+      for (int idx=0; idx<selected.length /*selectedModel.size()*/; idx++) {
         if (idx == 0) {
-          dataQry = dataQry + selectedModel.get(idx) + " is not null ";
+          dataQry = dataQry + selected[idx] /*selectedModel.get(idx)*/ + " is not null ";
         }
         else {
-          dataQry = dataQry + " and " + selectedModel.get(idx) + " is not null ";
+          dataQry = dataQry + " and " + selected[idx] /*selectedModel.get(idx)*/ + " is not null ";
         }
       }
       dataQry = dataQry + " AND set_size = 2";
@@ -484,9 +506,12 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
       return true;
     }
     catch (Exception e){
-      JOptionPane.showMessageDialog(msgBoard,
-          e.getMessage(), "Error",
-          JOptionPane.ERROR_MESSAGE);
+      if(!supressGui){
+        JOptionPane.showMessageDialog(msgBoard,
+                                      e.getMessage(), "Error",
+                                      JOptionPane.ERROR_MESSAGE);
+      }
+      else throw e;
       System.out.println("Error occurred in createDataTable.");
       return false;
     }
@@ -596,8 +621,10 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
                                 "or via running this itinerary with GUI first.");
 
 
-        if(selectedAttributes == null || selectedAttributes.length != 2  )
+        if(selectedAttributes == null )
           throw new Exception(getAlias() + " has not been configured. Before running headless, run with the gui and configure the parameters.");
+      if(selectedAttributes.length != 2  )
+        throw new Exception(getAlias() + " has been configured incorrectly. Before running headless, run with the gui and configure the parameters.");
 
 
 
@@ -644,7 +671,7 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
             aBook = new SQLCodeBook(cw, codeBook);
             codeTable = aBook.codeBook;
         }
-        if (createItemDataTableHeadless(targetAttributes, tableName)) {
+        if (create1ItemDataTable(tableName, targetAttributes)) {
           if (book)
             replaceCode(data);
 
@@ -657,7 +684,7 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
 
 
 
-        public boolean createItemDataTableHeadless(String[] columnNames, String tableName) {
+     /*   public boolean createItemDataTableHeadless(String[] columnNames, String tableName) {
           int rowCnt = 0;
           try {
             con = cw.getConnection();
@@ -674,8 +701,8 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
               }
             }
 
-           /*cntQry = cntQry + firstColumn + " is not null ";
-           cntQry = cntQry + " and " + secondColumn + " is not null ";*/
+           cntQry = cntQry + firstColumn + " is not null ";
+           cntQry = cntQry + " and " + secondColumn + " is not null ";
 
             cntQry = cntQry + " AND set_size = 2";
             Statement cntStmt = con.createStatement();
@@ -709,10 +736,10 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
             for (int idx=0; idx<columnNames.length; idx++) {
                 dataQry = dataQry + columnNames[idx] + ", ";
             }
-            /*
+
            dataQry = dataQry + firstColumn + ", ";
            dataQry = dataQry + secondColumn + ", ";
-*/
+
 
             dataQry = dataQry + "CNT from " + tableName + " where ";
             for (int idx=0; idx<columnNames.length; idx++) {
@@ -743,6 +770,7 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
             return false;
           }
         }//createItemDataTableHeadless
+        */
 
         //headless conversion support
 
