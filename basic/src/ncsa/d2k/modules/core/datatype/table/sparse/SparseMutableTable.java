@@ -86,8 +86,51 @@ public class SparseMutableTable
   //================
 
   /**
+   * Returns a TestTable with data from row index no. <code> start</code> in the
+   * test set through row index no. <code>start+len</code> in the test set.
+   *
+   * DUANE: This should now be a by rference implementation using subset table
+   * metaphor just as in the basic implementation.
+   *
+   * @param start       index number into the test set of the row at which begins
+   *                    the subset.
+   * @param len         number of consequetive rows to include in the subset.
+   */
+  public static Table getSubset(int[] indices, SparseTable table) {
+    return new SparseSubsetTable(table, indices);
+
+//    int numrows = table.getNumRows();
+//    for (int i = 0, n = indices.length; i < n; i++) {
+//      if ( (indices[i] < 0) || (indices[i] >= numrows)) {
+//        throw new IndexOutOfBoundsException("Row: " + indices[i] +
+//                                            "not in table.");
+//      }
+//    }
+//
+//    // the returned value
+//    SparseMutableTable retVal = new SparseMutableTable();
+//
+//    int[] cols = table.getAllColumns();
+//    for (int i = 0; i < cols.length; i++) {
+//      AbstractSparseColumn currentCol = (AbstractSparseColumn) table.getColumn(
+//          cols[i]);
+//      retVal.setColumn(cols[i],
+//                       (AbstractSparseColumn) currentCol.getSubset(indices));
+//    }
+//
+//    retVal.copyAttributes(table);
+//    retVal.computeNumColumns();
+//    retVal.computeNumRows();
+//
+//    return retVal;
+  }
+
+  /**
    * Returns a subset of <code>table</code> consisted of rows no.
    * <code>start</code> through row no. <code>start+len</codE>.
+   *
+   * DUANE: This should now be a by rference implementation using subset table
+   * metaphor just as in the basic implementation.
    *
    * @param start   row number from which the subset starts.
    * @param len     number of consequetive rows to be included in the subset
@@ -95,31 +138,37 @@ public class SparseMutableTable
    * @return        a SparseTable containing rows <code>start</code> through
    *                <code>start+len</code>
    */
-  public static Table getSubset(int start, int len, SparseTable table) {
+  static public Table getSubset(int pos, int len, SparseTable table) {
 
-    int numrows = table.getNumRows();
-    if ( (start < 0) || ( (start + len - 1) >= numrows)) {
-      throw new IndexOutOfBoundsException("Some part of the range \"start to start+len-1\" is not in range of rows of the table.");
+    int[] sample = new int[len];
+    for (int i = 0; i < len; i++) {
+            sample[i] = pos + i;
     }
+    return new SparseSubsetTable(table, sample);
 
-    SparseMutableTable retVal = new SparseMutableTable();
-
-    //XIAOLEI
-
-    int[] columnNumbers = table.columns.keys();
-    for (int i = 0; i < columnNumbers.length; i++) {
-      //System.out.println("Working on column " + i + ", " + columnNumbers[i]);
-      Column subCol = ( (Column) table.columns.get(columnNumbers[i])).getSubset(
-          start, len);
-      //System.out.println("Finished column " + i + ": " + subCol.getNumEntries());
-      //System.out.println();
-      retVal.setColumn(columnNumbers[i], (AbstractSparseColumn) subCol);
-    }
-
-    retVal.copyAttributes(table);
-    retVal.computeNumColumns();
-    retVal.computeNumRows();
-    return retVal;
+//    int numrows = table.getNumRows();
+//    if ( (start < 0) || ( (start + len - 1) >= numrows)) {
+//      throw new IndexOutOfBoundsException("Some part of the range \"start to start+len-1\" is not in range of rows of the table.");
+//    }
+//
+//    SparseMutableTable retVal = new SparseMutableTable();
+//
+//    //XIAOLEI
+//
+//    int[] columnNumbers = table.columns.keys();
+//    for (int i = 0; i < columnNumbers.length; i++) {
+//      //System.out.println("Working on column " + i + ", " + columnNumbers[i]);
+//      Column subCol = ( (Column) table.columns.get(columnNumbers[i])).getSubset(
+//          start, len);
+//      //System.out.println("Finished column " + i + ": " + subCol.getNumEntries());
+//      //System.out.println();
+//      retVal.setColumn(columnNumbers[i], (AbstractSparseColumn) subCol);
+//    }
+//
+//    retVal.copyAttributes(table);
+//    retVal.computeNumColumns();
+//    retVal.computeNumRows();
+//    return retVal;
 
   } //getSubset
 
@@ -127,6 +176,7 @@ public class SparseMutableTable
   //==========================================================================
   // Table Interface Methods
   //==========================================================================
+
 
   /**
    * Returns a subset of this table, containing data from rows <code>start</code>
@@ -141,9 +191,11 @@ public class SparseMutableTable
     return getSubset(start, len, this);
   } //getSubset
 
+
   public Table getSubset(int[] rows) {
     return getSubset(rows, this);
   }
+
 
   /**
    * Returns a deep copy of this table (except of transformation).
@@ -5244,41 +5296,6 @@ public class SparseMutableTable
     setColumn(index, col);
   }
 
-  /**
-       * Returns a TestTable with data from row index no. <code> start</code> in the
-   * test set through row index no. <code>start+len</code> in the test set.
-   *
-       * @param start       index number into the test set of the row at which begins
-   *                    the subset.
-   * @param len         number of consequetive rows to include in the subset.
-   */
-  public static Table getSubset(int[] indices, SparseTable table) {
-
-    int numrows = table.getNumRows();
-    for (int i = 0, n = indices.length; i < n; i++) {
-      if ( (indices[i] < 0) || (indices[i] >= numrows)) {
-        throw new IndexOutOfBoundsException("Row: " + indices[i] +
-                                            "not in table.");
-      }
-    }
-
-    // the returned value
-    SparseMutableTable retVal = new SparseMutableTable();
-
-    int[] cols = table.getAllColumns();
-    for (int i = 0; i < cols.length; i++) {
-      AbstractSparseColumn currentCol = (AbstractSparseColumn) table.getColumn(
-          cols[i]);
-      retVal.setColumn(cols[i],
-                       (AbstractSparseColumn) currentCol.getSubset(indices));
-    }
-
-    retVal.copyAttributes(table);
-    retVal.computeNumColumns();
-    retVal.computeNumRows();
-
-    return retVal;
-  }
 
 
 
