@@ -783,8 +783,15 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
 	  * Add the specified number of blank rows.
 	  * @param number number of rows to add.
 	  */
-	public void addRows(int number) 
+	public void addRows(int number)
 	{
-		// table is already sparse.  nothing to do.
+          // table is already sparse.  nothing to do.
+
+          //the above comment is not quite correct, empty rows are not the same as
+          //non-existent rows -- DDS
+          for (int i = 0, n = number; i < n; i++){
+            addRow(null);
+          }
+
 	}
 }
