@@ -1,4 +1,3 @@
-//package ncsa.d2k.modules.LaxNNRuleExtraction;
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
@@ -16,7 +15,8 @@ import java.io.Serializable;
 	
 ***/
 
-public class VTQuickSort extends ncsa.d2k.infrastructure.modules.DataPrepModule implements Serializable{
+public class VTQuickSort extends DataPrepModule 
+	implements Serializable{
 
 	VerticalTable sorted;
 	NumericColumn sortColumn;
@@ -36,6 +36,14 @@ public class VTQuickSort extends ncsa.d2k.infrastructure.modules.DataPrepModule 
 	}
 	public void setPrintTime(boolean b){
 		printTime=b;
+	}
+
+	public boolean ascending=true;
+	public boolean getAscending(){
+		return ascending;
+	}
+	public void setAscending(boolean b){
+		ascending=b;
 	}
 	/**
 		This method returns the description of the various inputs.
@@ -155,6 +163,9 @@ public class VTQuickSort extends ncsa.d2k.infrastructure.modules.DataPrepModule 
 	for(int i=0; i<newOrder.length; i++){
 		fullSorted.setRow(raw.getRow(newOrder[i]), i);
 	}
+	if(!ascending){
+		reverse(fullSorted);
+	}
 
 	pushOutput(fullSorted, 0);
 
@@ -248,5 +259,13 @@ public class VTQuickSort extends ncsa.d2k.infrastructure.modules.DataPrepModule 
 				}
 				sorted.setRow(v, i+1);
 			}
+	}
+
+	private void reverse(VerticalTable vt){
+		int numRows=vt.getNumRows();
+		int halfWay=(int)(numRows/2D);
+		for(int i=0;i<halfWay; i++){
+			vt.swapRows(i, numRows-i-1);
+		}
 	}
 }
