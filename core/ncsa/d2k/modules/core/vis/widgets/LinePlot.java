@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.vis;
+package ncsa.d2k.modules.core.vis.widgets;
 import java.awt.*;
 
 /**

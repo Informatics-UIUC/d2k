@@ -10,6 +10,7 @@ import ncsa.d2k.controller.userviews.widgits.*;
 import ncsa.gui.Constrain;
 import java.awt.*;
 import java.awt.event.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
 /**
