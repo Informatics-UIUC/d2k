@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAARdwgAAAAPAAAAD3QAEElucHV0IEZpbGUgTmFtZTFzcgAbbmNzYS5kMmsuY29yZS5SZXNvdXJj
+ZUVudHJ51S4sIEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtMAA9v
+YmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ADJuY3NhLmQyay5tb2R1bGVz
+LmNvcmUuaW8uZmlsZS5pbnB1dC5JbnB1dDFGaWxlTmFtZXQAH0Nob29zZSBBdHRyaWJ1dGVzIEJ5
+IFBhcmFtZXRlcnNzcQB+AARwdAA/bmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS5hdHRy
+aWJ1dGUuQ2hvb3NlQXR0cmlidXRlUGFyYW1zdAAIQXV0byBCaW5zcQB+AARwdAAvbmNzYS5kMmsu
+bW9kdWxlcy5jb3JlLnRyYW5zZm9ybS5iaW5uaW5nLkF1dG9CaW50ABNQYXJzZSBGaWxlIFRvIFRh
+Ymxlc3EAfgAEcHQANG5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LlBhcnNlRmls
+ZVRvVGFibGV0ABNXcml0ZSBUYWJsZSB0byBGaWxlc3EAfgAEcHQANW5jc2EuZDJrLm1vZHVsZXMu
+Y29yZS5pby5maWxlLm91dHB1dC5Xcml0ZVRhYmxlVG9GaWxldAAfUHJlcGFyZSBNb2RlbCBGb3Ig
+VmlzdWFsaXphdGlvbnNxAH4ABHB0ADluY3NhLmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlvbi5u
+YWl2ZWJheWVzLlByZXBhcmVGb3JWaXN0AAtDYXRjaCBNb2RlbHNxAH4ABHB0ACtuY3NhLmQyay5t
+b2R1bGVzLmNvcmUucHJlZGljdGlvbi5DYXRjaE1vZGVsdAAHRmFuT3V0MXNxAH4ABHB0ACJuY3Nh
+LmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAAPSW5wdXQgRmlsZSBOYW1lc3EAfgAEcHEA
+fgAIdAARU2ltcGxlIFRyYWluIFRlc3RzcQB+AARwdAA1bmNzYS5kMmsubW9kdWxlcy5jb3JlLnRy
+YW5zZm9ybS50YWJsZS5TaW1wbGVUcmFpblRlc3R0ABxDcmVhdGUgRGVsaW1pdGVkIEZpbGUgUGFy
+c2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LkNyZWF0ZURl
+bGltaXRlZFBhcnNlcnQABkZhbk91dHNxAH4ABHBxAH4AHXQAGENyZWF0ZSBOYWl2ZSBCYXllcyBN
+b2RlbHNxAH4ABHB0ADluY3NhLmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlvbi5uYWl2ZWJheWVz
+LkNyZWF0ZU5CTW9kZWx0AA1Nb2RlbCBQcmVkaWN0c3EAfgAEcHQALW5jc2EuZDJrLm1vZHVsZXMu
+Y29yZS5wcmVkaWN0aW9uLk1vZGVsUHJlZGljdHQAD0NyZWF0ZSBCaW4gVHJlZXNxAH4ABHB0ADVu
+Y3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmJpbm5pbmcuQ3JlYXRlQmluVHJlZXg=" label="NBTest.zip">
+    <annotation><![CDATA[<p>
+      <b>Naive Bayesian Analysis </b>
+    </p>
+    <p>
+      Naive Bayesian builds a model to classify new examples, based upon 
+      observed probabilities and supporting evidence from the training data. 
+      The data set for this type of problem is one with input attributes and a 
+      known output attribute or class.
+    </p>
+    <p>
+      This itinerary creates a Naive Bayes Model by requesting the user to 
+      select the input and output attributes, splitting the data into a train 
+      set and a test set, requesting the user to bin the data, builds the 
+      model on the train set and tests the model on the test set. The 
+      visualization is based on the model of the training data and the 
+      PredictionTableReport is based on the testing data.
+    </p>
+    <p>
+      <b>Modules with Properties</b>
+    </p>
+    <p>
+      The following modules have properties that may need to be adjusted. The 
+      properties can be changed by double clicking on the given module.
+    </p>
+    <p>
+      1 - <b><i>Input File Name</i></b>:
+    </p>
+    <p>
+      This module selects the data set. The file is identified with the 
+      filename property.
+    </p>
+    <p>
+      2 - <b><i>Create Delimited File Parser</i></b>:
+    </p>
+    <p>
+      This module creates a parser for the specified file. The properties of 
+      the module specify the labels row number, the types row number and the 
+      delimiter.
+    </p>
+    <p>
+      3 - <b><i>Parse File To Table</i></b>:
+    </p>
+    <p>
+      This module loads the data from a file to a Table in memory. The 
+      property of this module indicates whether blanks should be interpreted 
+      as missing values.
+    </p>
+    <p>
+      4 - <b><i>SimpleTrainTest</i></b>:
+    </p>
+    <p>
+      This module allows the user to specify how much data should be used for 
+      building the model and testing the model.
+    </p>
+    <p>
+      <b>Modules without Properties and User Interfaces</b>
+    </p>
+    <p>
+      1 - <b><i>Create Bin Tree</i></b>:
+    </p>
+    <p>
+      This module creates takes the binning definitions and builds the BinTree 
+      structure with the counts for each bin.
+    </p>
+    <p>
+      2 - <b><i>Create Naive Bayes Model</i></b>:
+    </p>
+    <p>
+      This module builds the Naive Bayes model for the data set.
+    </p>
+    <p>
+      3 - <b><i>Prepare Model For Vis</i></b>:
+    </p>
+    <p>
+      This module performs many calculations that are necessary for the Naive 
+      Bayes Visualization module. This includes calculations to determine 
+      which attributes are better predictors. It outputs a revised model that 
+      is viewable by the Naive Bayes Vis module.
+    </p>
+    <p>
+      4 - <b><i>ModelPredict</i></b>:
+    </p>
+    <p>
+      This module take a testing set and the model and applies the model to 
+      the testing data. It creates a prediction column with the 
+      classificationfilled in by applying the model. It outputs a Prediction 
+      Table which can be viewed in the PredictionTableReport.
+    </p>
+    <p>
+      5 - <b><i>Catch Model</i></b>:
+    </p>
+    <p>
+      This module is used to select a model and return it to the D2K 
+      environment, so that is shows up in the Generate Model Session Pane.
+    </p>
+    <p>
+      <b>Execution</b>
+    </p>
+    <p>
+      Execute the itinerary by clicking on the &quot;Run&quot; button. As the itinerary 
+      runs, the following windows will open for user input.
+    </p>
+    <p>
+      1 - <b><i>Choose Attributes</i></b>:
+    </p>
+    <p>
+      This user interface prompts the user to identify the input and output 
+      attributes. Use Shift to select a range of attributes. Use Control to 
+      select and/or deselect an attribute. Also the File menu allows different 
+      sorting options.
+    </p>
+    <p>
+      2 - <b><i>Bin Columns</i></b>:
+    </p>
+    <p>
+      This user interface prompts the user to specify how the data should be 
+      binned. There are several binning approaches implemented. For instance, 
+      highlight all the scalar attributes and type 4 in the Uniform Range 
+      Approach for Number of bins. This will create 4 bins for each attribute 
+      of uniform range (equal spacing between minimum and maximum value).
+    </p>
+    <p>
+      <b>Results</b>
+    </p>
+    <p>
+      Once execution has completed the status bar will disappear. The pane of 
+      the Generated Visualization Session Pane and the Generated Models 
+      Session Pane will turn red when visualization and model glpyhs have been 
+      created.
+    </p>
+    <p>
+      1 - <b><i>Naive Bayes Vis:</i></b>
+    </p>
+    <p>
+      Naive Bayes Vis provides an evidence visualization for a Naive Bayes 
+      Model. Information about this visualization can be found in the help 
+      menu item of this visualization. The evidence are the attributes/values 
+      combinations and are shown in the left pane as pie charts (or bar 
+      charts). Each individual evidence shows how that attribute/value 
+      combination is split among the classes of the output attribute. Evidence 
+      items can be selected by clicking on an item and the conclusion will 
+      update the predictions. Multiple evidence charts can be selected and the 
+      predictions are conditional probabilities. Only one chart may be 
+      selected per row. Clicking on charts toggle them on and off. The 
+      predictions are shown in the conclusion graph and in the legend in the 
+      right pane. The evidence can also be zoomed or scaled interactively by 
+      right-clicking the mouse and dragging it up and down.
+    </p>
+    <p>
+      2 - <b><i>Prediction Table Report:</i></b>
+    </p>
+    <p>
+      This report shows the classification error - the number and percentage 
+      of correct and incorrect, and a confusion matrix.
+    </p>]]></annotation>
+    <module alias="Write Table to File" classname="ncsa.d2k.modules.core.io.file.output.WriteTableToFile" xloc="566" yloc="371">
+      <input index="0" classname="java.lang.String"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="delimChar" value="C"/>
+      <property name="useColumnLabels" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="useDataTypes" value="true"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAv//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAA=="/>
+    </module>
+    <module alias="Create Bin Tree" classname="ncsa.d2k.modules.core.transform.binning.CreateBinTree" xloc="415" yloc="120">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.transform.binning.BinTree">
+        <destination alias="Create Naive Bayes Model" index="0"/>
+      </output>
+      <property name="debug" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAABP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAE="/>
+    </module>
+    <module alias="Catch Model" classname="ncsa.d2k.modules.core.prediction.CatchModel" xloc="418" yloc="418">
+      <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAf//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAAA"/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="326" yloc="18">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Choose Attributes By Parameters" index="0"/>
+      </output>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAT///////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Choose Attributes By Parameters" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributeParams" xloc="391" yloc="18">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Simple Train Test" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Model Predict" classname="ncsa.d2k.modules.core.prediction.ModelPredict" xloc="417" yloc="343">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <input index="1" classname="ncsa.d2k.modules.PredictionModelModule"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable">
+        <destination alias="Write Table to File" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAHP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAE="/>
+    </module>
+    <module alias="Auto Bin" classname="ncsa.d2k.modules.core.transform.binning.AutoBin" xloc="275" yloc="135">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.transformations.BinTransform">
+        <destination alias="Create Bin Tree" index="0"/>
+      </output>
+      <property name="binWeight" value="1"/>
+      <property name="numberOfBins" value="2"/>
+      <property name="binMethod" value="0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAABf//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAQ=="/>
+    </module>
+    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="227" yloc="254">
+      <input index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"/>
+      <output index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel">
+        <destination alias="Prepare Model For Visualization" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel">
+        <destination alias="Model Predict" index="1"/>
+      </output>
+      <output index="2" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel">
+        <destination alias="Catch Model" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAADAAAAAAAAAAAAAAAA"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAADAAAAAAAAAAAAAAAA"/>
+    </module>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="151" yloc="164">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.TrainTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.TrainTable">
+        <destination alias="Create Bin Tree" index="1"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.TrainTable">
+        <destination alias="Create Naive Bayes Model" index="1"/>
+      </output>
+      <output index="2" classname="ncsa.d2k.modules.core.datatype.table.TrainTable">
+        <destination alias="Auto Bin" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAADAAAAAAAAAAAAAAAA"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAADAAAAAAAAAAAAAAAA"/>
+    </module>
+    <module alias="Prepare Model For Visualization" classname="ncsa.d2k.modules.core.prediction.naivebayes.PrepareForVis" xloc="358" yloc="268">
+      <input index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"/>
+      <output index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAADv//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="130" yloc="18">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="hasTypes" value="true"/>
+      <property name="labelsRow" value="0"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="typesRow" value="1"/>
+      <property name="hasLabels" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAf//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Input File Name1" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="230" yloc="462">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Write Table to File" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAB"/>
+      <property name="fileName" value="NB-PredictionTable.txt"/>
+    </module>
+    <module alias="Simple Train Test" classname="ncsa.d2k.modules.core.transform.table.SimpleTrainTest" xloc="7" yloc="187">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.TrainTable">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.TestTable">
+        <destination alias="Model Predict" index="0"/>
+      </output>
+      <property name="samplingMethod" value="0"/>
+      <property name="seed" value="123"/>
+      <property name="trainPercent" value="67"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAE="/>
+      <property name="testPercent" value="33"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAf//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAACAAAAAQAAAAE="/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="23" yloc="18">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAKP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAB"/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+    </module>
+    <module alias="Create Naive Bayes Model" classname="ncsa.d2k.modules.core.prediction.naivebayes.CreateNBModel" xloc="548" yloc="165">
+      <input index="0" classname="ncsa.d2k.modules.core.transform.binning.BinTree"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel">
+        <destination alias="FanOut1" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAf//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAE="/>
+    </module>
+  </itinerary>
+</toolkit>

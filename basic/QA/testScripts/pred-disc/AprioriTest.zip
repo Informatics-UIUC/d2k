@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAARdwgAAAAXAAAAC3QAEkNvbXB1dGUgQ29uZmlkZW5jZXNyABtuY3NhLmQyay5jb3JlLlJlc291
+cmNlRW50cnnVLiwgQgMm0gIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wA
+D29iamVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQASW5jc2EuZDJrLm1vZHVs
+ZXMuY29yZS5kaXNjb3ZlcnkucnVsZWFzc29jaWF0aW9uLmFwcmlvcmkuQ29tcHV0ZUNvbmZpZGVu
+Y2V0ABNXcml0ZSBUYWJsZSB0byBGaWxlc3EAfgAEcHQANW5jc2EuZDJrLm1vZHVsZXMuY29yZS5p
+by5maWxlLm91dHB1dC5Xcml0ZVRhYmxlVG9GaWxldAASQ2FzY2FkZS1zb3J0IFRhYmxlc3EAfgAE
+cHQAL25jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0udGFibGUuU29ydFRhYmxldAATUGFy
+c2UgRmlsZSBUbyBUYWJsZXNxAH4ABHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5p
+bnB1dC5QYXJzZUZpbGVUb1RhYmxldAAHQXByaW9yaXNxAH4ABHB0AD9uY3NhLmQyay5tb2R1bGVz
+LmNvcmUuZGlzY292ZXJ5LnJ1bGVhc3NvY2lhdGlvbi5hcHJpb3JpLkFwcmlvcml0AB9DaG9vc2Ug
+QXR0cmlidXRlcyBCeSBQYXJhbWV0ZXJzc3EAfgAEcHQAP25jc2EuZDJrLm1vZHVsZXMuY29yZS50
+cmFuc2Zvcm0uYXR0cmlidXRlLkNob29zZUF0dHJpYnV0ZVBhcmFtc3QAElRhYmxlIFRvIEl0ZW0g
+U2V0c3NxAH4ABHB0AD9uY3NhLmQyay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5LnJ1bGVhc3NvY2lh
+dGlvbi5UYWJsZVRvSXRlbVNldHN0AAZGYW5PdXRzcQB+AARwdAAibmNzYS5kMmsuY29yZS5tb2R1
+bGVzLkZhbk91dE1vZHVsZXQAEElucHV0IEZpbGUgTmFtZTFzcQB+AARwdAAybmNzYS5kMmsubW9k
+dWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV0ABxDcmVhdGUgRGVsaW1pdGVk
+IEZpbGUgUGFyc2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0
+LkNyZWF0ZURlbGltaXRlZFBhcnNlcnQAD0lucHV0IEZpbGUgTmFtZXNxAH4ABHBxAH4AIHg=" label="AprioriTest.zip">
+    <annotation><![CDATA[<p>
+      <b>Rule Association Using Apriori</b>
+    </p>
+    <p>
+      Apriori is one of many rule association agorithms. Rule association is 
+      an unsupervised learning approach that seeks to discover signifcant 
+      relationships among attributes in a data set. The visualization of these 
+      relationships are represented at two levels, structural and 
+      quantitative. At the structural level, the model will indicate which 
+      attributes are locally dependent on one another. At the quantitative 
+      level, the model will offer some numeric measure of support and 
+      confidence for these relationships. Rule association has also been 
+      called market basket analysis because of its application to the retail 
+      sales domain.
+    </p>
+    <p>
+      Two of the main quantitative measures are support and confidence. Given 
+      if X, then Y. Support is the percent of the number of records that 
+      contain both X and Y out of the total number of records. Confidence is 
+      the percent of the number of records taht contain both X and Y out of 
+      the number of records that contain X.
+    </p>
+    <p>
+      This itinerary creates a Rule Table by requesting the user to select the 
+      attributes for the antecedent (input) and the consequent (output). The 
+      visualization is a graphical display of the rules generated.
+    </p>
+    <p>
+      <b>Modules with Properties</b>
+    </p>
+    <p>
+      The following modules have properties that may need to be adjusted. The 
+      properties can be changed by double clicking on the given module.
+    </p>
+    <p>
+      1 - <i><b>Input File Name</b></i>:
+    </p>
+    <p>
+      This module selects the data set. The file is identified with the 
+      filename property.
+    </p>
+    <p>
+      2 - <i><b>Create Delimited File Parser</b></i>:
+    </p>
+    <p>
+      This module creates a parser for the specified file. The properties of 
+      the module specify the labels row number, the types row number and the 
+      delimiter.
+    </p>
+    <p>
+      3 - <i><b>Parse File To Table</b></i>:
+    </p>
+    <p>
+      This module loads the data from a file to a Table in memory. The 
+      property of this module indicates whether blanks should be interpreted 
+      as missing values.
+    </p>
+    <p>
+      4 - <i><b>Apriori</b></i>:
+    </p>
+    <p>
+      This module implements the Apriori algorithm to generate frequent 
+      itemsets consisting of items that occur in a sufficient number of 
+      examples to satisfy the minimum support criteria. One of the properties 
+      of this module is the <i>Minimum Support</i> which is the percent of all 
+      examples that must contain a given set of items before an association 
+      rule will be formed containing those items. This value must be greater 
+      than 0 and less than or equal to 100. Another property is <i>Maximum 
+      Items per Rule</i> which is the maximum number of items to include in 
+      any rule. This value cannot be less than 2. Two other properties provide 
+      user feedback: If the <i>Report Module Progress</i> property is true, 
+      then the module will report progress information to the console. If the <i>
+Generate Verbose Output</i> property is true, then the module will write 
+      verbose status information to the console.
+    </p>
+    <p>
+      5 - <i><b>Compute Confidence</b></i>:
+    </p>
+    <p>
+      This module works in conjunction with other modules implementing the 
+      Apriori rule association algorithm to generate association rules 
+      satisfying a minimum confidence threshold. One of the properties for 
+      this modules is <i>Minimum Confidence</i>, which is the percent of the 
+      examples containing a rule antecedent that must also contain the rule 
+      consequent before a potential association rule is accepted. This value 
+      must be greater than 0 and less than or equal to 100. Two other 
+      properties provide user feedback: If the <i>Report Module Progress </i>
+      property is true, then the module will report progress information to 
+      the console. If the<i> Generate Verbose Output</i> property is true, 
+      then the module will write verbose status information to the console.
+    </p>
+    <p>
+      <b>Modules without Properties or User Interfaces</b>
+    </p>
+    <p>
+      1 - <i><b>Table To Item Sets</b></i>:
+    </p>
+    <p>
+      This module extracts items (attribute/value combinations) from a table 
+      for use in mining association rules with the Apriori algorithm.
+    </p>
+    <p>
+      <b>Execution</b>
+    </p>
+    <p>
+      Execute the itinerary by clicking on the &quot;Run&quot; button. As the itinerary 
+      runs, the following windows will open for user input.
+    </p>
+    <p>
+      1 - <i><b>Choose Attributes</b></i>:
+    </p>
+    <p>
+      This user interface prompts the user to identify the input and output 
+      attributes. Use Shift to select a range of attributes. Use Control to 
+      select and/or deselect an attribute. Also the File menu allows different 
+      sorting options. For this itinerary,if we were looking for rules that 
+      implied whether or not a mushroom was edible, we would choose as input 
+      all attributes except class and we would choose class as the output 
+      attribute. This may take a little time to run. To get faster results 
+      choose fewer input attributes or fewer output attributes or increase <i>
+      Minimum Support</i> (property of Apriori module) or <i>Minimum 
+      Confidence </i>(property of Compute Confidence module).
+    </p>
+    <p>
+      2 - <i><b>RuleAssocReport</b></i>:
+    </p>
+    <p>
+      This module displays the association rules in a table form.
+    </p>
+    <p>
+      <b>Results</b>
+    </p>
+    <p>
+      Once execution has completed the status bar will disappear. The pane of 
+      the Generated Visualization Session Pane and the Generated Models 
+      Session Pane will turn red when visualization and model glpyhs have been 
+      created.
+    </p>
+    <p>
+      1 - <i><b>Rule Visualization</b></i>:
+    </p>
+    <p>
+      This module provides a visual representation of the association rules 
+      encapsulated in the Rule Table.
+    </p>]]></annotation>
+    <module alias="Compute Confidence" classname="ncsa.d2k.modules.core.discovery.ruleassociation.apriori.ComputeConfidence" xloc="286" yloc="173">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
+      <input index="1" classname="[[I"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable">
+        <destination alias="Cascade-sort Table" index="0"/>
+      </output>
+      <property name="debug" value="false"/>
+      <property name="confidence" value="80.0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="showProgress" value="true"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAJp///////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAE="/>
+    </module>
+    <module alias="Write Table to File" classname="ncsa.d2k.modules.core.io.file.output.WriteTableToFile" xloc="500" yloc="214">
+      <input index="0" classname="java.lang.String"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="delimChar" value="C"/>
+      <property name="useColumnLabels" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="useDataTypes" value="true"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAH///////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAA=="/>
+    </module>
+    <module alias="Cascade-sort Table" classname="ncsa.d2k.modules.core.transform.table.SortTable" xloc="382" yloc="206">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Write Table to File" index="1"/>
+      </output>
+      <property name="sortOrderNames" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5TdHJpbmc7rdJW5+kde0cCAAB4cAAAAAR0AARIZWFkdAAEQm9k
+eXQACkNvbmZpZGVuY2V0AAdTdXBwb3J0"/>
+      <property name="windowName" value="Cascade-sort Table"/>
+      <property name="reorderColumns" value="false"/>
+      <property name="numberOfSorts" value="5"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAACP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAQ=="/>
+      <property name="supressGui" value="true"/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="309" yloc="32">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Choose Attributes By Parameters" index="0"/>
+      </output>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAIJ///////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Apriori" classname="ncsa.d2k.modules.core.discovery.ruleassociation.apriori.Apriori" xloc="199" yloc="232">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
+      <output index="0" classname="[[I">
+        <destination alias="Compute Confidence" index="1"/>
+      </output>
+      <property name="debug" value="false"/>
+      <property name="maxRuleSize" value="6"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="minimumSupport" value="30.0"/>
+      <property name="showProgress" value="true"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAATLv//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Choose Attributes By Parameters" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributeParams" xloc="367" yloc="81">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Table To Item Sets" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAf//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Table To Item Sets" classname="ncsa.d2k.modules.core.discovery.ruleassociation.TableToItemSets" xloc="7" yloc="168">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAADJ///////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAQ=="/>
+    </module>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="122" yloc="184">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets">
+        <destination alias="Compute Confidence" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets">
+        <destination alias="Apriori" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAE="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAACAAAAAQAAAAE="/>
+    </module>
+    <module alias="Input File Name1" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="332" yloc="303">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Write Table to File" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAB"/>
+      <property name="fileName" value="AprioriTest.txt"/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="132" yloc="32">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="hasTypes" value="true"/>
+      <property name="labelsRow" value="0"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="typesRow" value="1"/>
+      <property name="hasLabels" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAgv//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="26" yloc="32">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAMv//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAB"/>
+      <property name="fileName" value="data/UCI/mushroom.csv"/>
+    </module>
+  </itinerary>
+</toolkit>

@@ -1,0 +1,6 @@
+To run these testing scripts:
+
+1. Set  the enviroment variables in runTest.sh to the right values
+2. Set  the .d2kV$.props to point to the right modules directory
+3. Add to the modules ChooseAttributeParams module from this directory
+4. run the script runTest
