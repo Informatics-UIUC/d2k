@@ -33,8 +33,9 @@ public class SQLHTree extends ComputeModule
   int maxRuleSize = 5;
   // maximum number of columns that can be included for analysis
   int maxColumn = 25;
-  // maximum number of uniq values that is allowed for each column. Bining is required if it is over.
-  int maxUniq = 100;
+  // allowed maximum ratio of the number of uniq values over the total number of rows
+  // for each column. Binning is required if it is over.
+  double maxUniqRatio = 0.2;
   int ruleSize;
   int totalRow;
   double cutOff;
@@ -234,7 +235,7 @@ public class SQLHTree extends ComputeModule
     baseHeadTbl = new ArrayList();
     hTree = new ArrayList();
 
-    totalRow = getRowCount();
+    totalRow = getRowCount(tableName);
     if (totalRow > 0) {
       cutOff = totalRow * support;
       if (setColumnList()) {
@@ -264,8 +265,17 @@ public class SQLHTree extends ComputeModule
         prefixList = new int[ruleSize];
         initPrefixList();
         computeTree();
-        this.pushOutput(cw, 0);
-        this.pushOutput(cubeTableName, 1);
+        if (getCubeRowCount(cubeTableName) > 0) {
+          this.pushOutput(cw, 0);
+          this.pushOutput(cubeTableName, 1);
+        }
+        else {
+          JOptionPane.showMessageDialog(msgBoard,
+          "There is no rule discovered in the data set. You may like to adjust " +
+          "Minimum Support in SQLHTree module, and run again.", "Error",
+          JOptionPane.ERROR_MESSAGE);
+          System.out.println("There is no data in the data set.");
+        }
       }
     }
     else {// totalRow <= 0
@@ -279,11 +289,11 @@ public class SQLHTree extends ComputeModule
   /** get the count of rows from the database table
    *  @return the number of rows in the table.
    */
-  protected int getRowCount() {
+  protected int getRowCount(String table) {
     try {
       con = cw.getConnection();
       Statement cntStmt;
-      String sb = new String("select count(1) from " + tableName);
+      String sb = new String("select count(*) from " + table);
       cntStmt = con.createStatement ();
       ResultSet tableSet = cntStmt.executeQuery(sb);
       tableSet.next();
@@ -300,6 +310,31 @@ public class SQLHTree extends ComputeModule
     }
   }
 
+  /** get the count of rows from the database table
+   *  @return the number of rows in the table.
+   */
+  protected int getCubeRowCount(String table) {
+    try {
+      con = cw.getConnection();
+      Statement cntStmt;
+      // we are only interested in the rules that are 2-items and up
+      String sb = new String("select count(*) from " + table +
+                  " where set_size > 1");
+      cntStmt = con.createStatement ();
+      ResultSet tableSet = cntStmt.executeQuery(sb);
+      tableSet.next();
+      int rowCount = tableSet.getInt(1);
+      cntStmt.close();
+      return(rowCount);
+    }
+    catch (Exception e){
+      JOptionPane.showMessageDialog(msgBoard,
+                e.getMessage(), "Error",
+                JOptionPane.ERROR_MESSAGE);
+      System.out.println("Error occoured in getCubeRowCount.");
+      return(0);
+    }
+  }
   /** create the object columnList that keeps the information for each column:
    *  column name, the count of uniq values, the starting index in head table,
    *  the data type, binned or not.
@@ -373,8 +408,8 @@ public class SQLHTree extends ComputeModule
         uniqSet.next();
         uniqCount = uniqSet.getInt(1);
         uniqStmt.close();
-        // if uniqCount > maxUniq, inform users to binning the column
-        if (uniqCount <= maxUniq)
+        // if uniqCount/totalRow > maxUniqRatio, inform users to binning the column
+        if ((double)uniqCount/(double)totalRow <= maxUniqRatio)
           return (uniqCount);
         else {
           JOptionPane.showMessageDialog(msgBoard,
