@@ -41,8 +41,7 @@ public class SVMBuilderOPT extends ComputeModule
 			+ " the separate classes.  This makes for better " +
 			"generalization.<p>" +
 
-			"<b>Properties</b>: None.  All to be passed in via a " +
-			"parameter point.<p>" +
+
 
 			"<b>Restrictions</b>: The SVM can deal with binary or " +
 			"multi-class classification.  The classes need to be " +
