@@ -698,6 +698,10 @@ public class NaiveBayesModel extends PredictionModelModule implements Serializab
 		return currentEvidence;
 	}
 
+	public int getTrainingSetSize() {
+		return table.getNumRows();
+	}
+
 	/**
 		Add a piece of evidence when a pie chart is chosen.
 		@param an the attribute name
