@@ -13,14 +13,14 @@ public final class DecisionTreeScheme {
 	public static final JFrame frame = new JFrame();
 
 	// Background
-	public static final Color backgroundcolor = new Color(219, 217, 203);//new Color(243, 243, 237);
+	public static final Color backgroundcolor = new Color(219, 217, 203);
 
 	// Text
 	public static final Font textfont = new Font("Sans Serif", Font.PLAIN, 12);
 	public static final Color textcolor = new Color(0, 0, 0);
 
 	// Decision tree
-	public static final Color treebackgroundcolor = new Color(233, 232, 230);//new Color(252, 252, 252);
+	public static final Color treebackgroundcolor = new Color(233, 232, 230);
 	public static final Color treelinelevelcolor = new Color(219, 217, 214);
 	public static final Color treecirclestrokecolor = new Color(100, 98, 87);
 	public static final Color treecirclebackgroundcolor = new Color(252, 252, 252);
@@ -66,9 +66,9 @@ public final class DecisionTreeScheme {
 
 // Circular array that holds bar graph colors
 class BarColors {
-	private static final Color barcolor0 = new Color(71, 74, 98);//new Color(11, 95, 132);
-	private static final Color barcolor1 = new Color(191, 191, 115);//new Color(156, 0, 0);
-	private static final Color barcolor2 = new Color(111, 142, 116);//new Color(0, 84, 34);
+	private static final Color barcolor0 = new Color(71, 74, 98);
+	private static final Color barcolor1 = new Color(191, 191, 115);
+	private static final Color barcolor2 = new Color(111, 142, 116);
 	private static final Color barcolor3 = new Color(178, 198, 181);
 	private static final Color barcolor4 = new Color(153, 185, 216);
 	private static final Color barcolor5 = new Color(96, 93, 71);

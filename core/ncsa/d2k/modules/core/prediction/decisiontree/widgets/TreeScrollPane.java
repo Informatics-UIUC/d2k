@@ -9,6 +9,7 @@ import java.awt.image.*;
 
 import javax.swing.*;
 import ncsa.d2k.util.*;
+import ncsa.d2k.gui.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.widgets.*;
 
@@ -25,35 +26,6 @@ public final class TreeScrollPane extends JScrollPane {
 	public TreeScrollPane(ViewableDTModel model, BrushPanel panel) {
 
 		treepanel = new TreePanel(model, panel);
-
-		/*BufferedImage img = new BufferedImage((int)treepanel.dwidth,
-			(int)treepanel.dheight, BufferedImage.TYPE_USHORT_555_RGB);
-		System.out.println("w: "+treepanel.dwidth+" h: "+treepanel.dheight);
-		Graphics2D g2 = (Graphics2D)img.createGraphics();
-		treepanel.paintComponent(g2);
-		viewport = getViewport();
-		final Image ii = img;
-		final int wid = (int)treepanel.dwidth;
-		final int hei = (int)treepanel.dheight;
-		JPanel p = new JPanel() {
-			public void paint(Graphics g) {
-				super.paint(g);
-				g.drawImage(ii, 0, 0, this);
-			}
-
-			public Dimension getPreferredSize() {
-				return new Dimension(wid, hei);
-			}
-
-			public Dimension getMinimumSize() {
-				return new Dimension(wid, hei);
-			}
-		};
-		p.addMouseListener(treepanel);
-		p.addMouseMotionListener(treepanel);
-
-		viewport.setView(p);
-		*/
 
 		viewport = getViewport();
 		viewport.setView(treepanel);
@@ -73,8 +45,26 @@ public final class TreeScrollPane extends JScrollPane {
 		treepanel.repaint();
 	}
 
+	public void toggleZoomin() {
+		if (treepanel.zoomin == true)
+			treepanel.zoomin = false;
+		else
+			treepanel.zoomin = true;
+	}
+
+	public void toggleZoomout() {
+		if (treepanel.zoomout == true)
+			treepanel.zoomout = false;
+		else
+			treepanel.zoomout = true;
+	}
+
 	public Printable getPrintable() {
 		return treepanel;
+	}
+
+	public double getScale() {
+		return treepanel.scale;
 	}
 
 	public class TreePanel extends JPanel implements MouseListener, MouseMotionListener, Printable {
@@ -94,6 +84,12 @@ public final class TreeScrollPane extends JScrollPane {
 		// List of offsets for each depth
 		LinkedList[] offsets;
 
+		// Scale
+		double scale = 1;
+		double scaleincrement = .1;
+		double upperscale = 2;
+		double lowerscale = .1;
+
 		// Width and height of decision tree
 		double dwidth, dheight;
 
@@ -106,8 +102,11 @@ public final class TreeScrollPane extends JScrollPane {
 		// Draw labels
 		boolean labels = true;
 
+		// Zoom
+		boolean zoomin = false;
+		boolean zoomout = false;
+
 		int lastx, lasty;
-		boolean ok = false;
 
 		public TreePanel(ViewableDTModel model, BrushPanel panel) {
 			brushpanel = panel;
@@ -132,11 +131,8 @@ public final class TreeScrollPane extends JScrollPane {
 			dwidth = vroot.findSubtreeWidth();
 			dheight = (vroot.yspace + vroot.gheight)*(mdepth + 1) + vroot.yspace;
 
-			//setBackground(DecisionTreeScheme.treebackgroundcolor);
-
 			addMouseListener(this);
 			addMouseMotionListener(this);
-			ok = true;
 		}
 
 		public void findMaximumDepth(ViewableDTNode dnode) {
@@ -166,125 +162,39 @@ public final class TreeScrollPane extends JScrollPane {
 		public void buildViewTree(ViewableDTNode dnode, ViewNode vnode) {
 			for (int index = 0; index < dnode.getNumChildren(); index++) {
 				ViewableDTNode dchild = dnode.getViewableChild(index);
-				ViewNode vchild;
-				//if( index == 0 )
-					vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
-				//else if(index == dnode.getNumChildren()-1)
-				//	vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
-				//else
-				//	vchild = new ViewNode(dmodel, dchild, vnode);
+				ViewNode vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
 				vnode.addChild(vchild);
 				buildViewTree(dchild, vchild);
 			}
 		}
 
-		/*public void repaint() {
-			super.repaint();
-
-			if(ok) {
-		BufferedImage img = new BufferedImage((int)dwidth,
-			(int)dheight, BufferedImage.TYPE_USHORT_555_RGB);
-		Graphics2D g2 = (Graphics2D)img.createGraphics();
-		treepanel.paintComponent(g2);
-		//viewport = getViewport();
-		final Image ii = img;
-		final int wid = (int)treepanel.dwidth;
-		final int hei = (int)treepanel.dheight;
-		JPanel p = new JPanel() {
-			public void paint(Graphics g) {
-				super.paint(g);
-				g.drawImage(ii, 0, 0, this);
-			}
-
-			public Dimension getPreferredSize() {
-				return new Dimension(wid, hei);
-			}
-
-			public Dimension getMinimumSize() {
-				return new Dimension(wid, hei);
-			}
-		};
-		p.addMouseListener(treepanel);
-		p.addMouseMotionListener(treepanel);
-
-		viewport.setView(p);
-		}
-		}*/
-
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			Rectangle r = new Rectangle((int)dwidth, (int)dheight);
+			Rectangle rectangle = new Rectangle((int) getSWidth(), (int) getSHeight());
 			g2.setColor(DecisionTreeScheme.treebackgroundcolor);
-			g2.fill(r);
+			g2.fill(rectangle);
+
+			AffineTransform transform = g2.getTransform();
+			AffineTransform sinstance = AffineTransform.getScaleInstance(scale, scale);
+			g2.transform(sinstance);
 
 			drawViewTree(g2, vroot);
+
+			g2.setTransform(transform);
 		}
 
 		// Draws the view tree
 		public void drawViewTree(Graphics2D g2, ViewNode vnode) {
 			Shape s = g2.getClip();
-			//boolean traverse = false;
-			if(s.intersects((vnode.x-vnode.gwidth/2), vnode.y, vnode.gwidth, vnode.gheight)) {
-				//System.out.println("painting: "+vnode);
+
+			if(s.intersects((vnode.x-vnode.gwidth/2), vnode.y, vnode.gwidth, vnode.gheight))
 				vnode.drawViewNode(g2);
-			//	traverse = true;
-			//	g2.drawImage(vnode.getImage(), (int)(vnode.x-vnode.gwidth/2), (int)vnode.y, null);
-
-			/*vnode.theight = .866025*vnode.tside;
-			double ycomponent = vnode.tside/2;
-			double xcomponent = .577350*ycomponent;
-			double xcenter, ycenter;
-
-			// draw the triangles
-			/*if(!vnode.isLeaf()) {
-			if (vnode.collapsed) {
-				xcenter = vnode.x + vnode.gwidth/2 + vnode.tspace + xcomponent;
-				ycenter = vnode.y + vnode.gheight - ycomponent;
-
-				int xpoints[] = {(int) (xcenter-xcomponent),
-					(int) (xcenter+vnode.theight-xcomponent), (int) (xcenter-xcomponent)};
-				int ypoints[] = {(int) (ycenter-ycomponent), (int) ycenter, (int) (ycenter+ycomponent)};
-
-				GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
-				triangle.moveTo((int) (xcenter-xcomponent), (int) (ycenter-ycomponent));
-				for (int index = 1; index < xpoints.length; index++) {
-					triangle.lineTo(xpoints[index], ypoints[index]);
-				}
-				triangle.closePath();
-
-				g2.setColor(DecisionTreeScheme.viewtrianglecolor);
-				g2.fill(triangle);
-			}
-			else {
-				xcenter = vnode.x + vnode.gwidth/2 + vnode.tspace + xcomponent;
-				ycenter = vnode.y + vnode.gheight - ycomponent;
-
-				int xpoints[] = {(int) (xcenter-ycomponent),
-					(int) (xcenter+ycomponent), (int) (xcenter)};
-				int ypoints[] = {(int) (ycenter-xcomponent),
-					(int) (ycenter-xcomponent), (int) (ycenter+ycomponent)};
-
-				GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
-				triangle.moveTo((int) (xcenter-ycomponent), (int) (ycenter-xcomponent));
-				for (int index = 1; index < xpoints.length; index++) {
-					triangle.lineTo(xpoints[index], ypoints[index]);
-				}
-				triangle.closePath();
-
-				g2.setColor(DecisionTreeScheme.viewtrianglecolor);
-				g2.fill(triangle);
-			}
-			}
-			}
-			*/
-			}
 
 			if (vnode.collapsed)
 				return;
 
-			//	if(traverse) {
 			for (int index = 0; index < vnode.getNumChildren(); index++) {
 				ViewNode vchild = vnode.getChild(index);
 
@@ -349,61 +259,86 @@ public final class TreeScrollPane extends JScrollPane {
 		}
 
 		public Dimension getMinimumSize() {
-			return getPreferredSize();
+			return new Dimension(0, 0);
 		}
 
 		public Dimension getPreferredSize() {
-			return new Dimension((int) dwidth, (int) dheight);
+			return new Dimension((int) getSWidth(), (int) getSHeight());
+		}
+
+		// Returns scaled width of tree
+		public double getSWidth() {
+			return scale*dwidth;
+		}
+
+		// Returns scaled height of tree
+		public double getSHeight() {
+			return scale*dheight;
 		}
 
 		// Returns the tree depth given y offset
 		public int findDepth(int y) {
-			if (y > dheight - vroot.yspace)
+			if (y > scale*(dheight - vroot.yspace))
 				return -1;
 
-			int depth = (int) (y/(vroot.yspace + vroot.gheight));
-			if ((y - depth*(vroot.yspace + vroot.gheight)) >= vroot.yspace)
+			int depth = (int) (y/(scale*(vroot.yspace + vroot.gheight)));
+			if ((y - scale*depth*(vroot.yspace + vroot.gheight)) >= scale*vroot.yspace)
 				return depth;
 
 			return -1;
 		}
-
 
 		// Mouse listener methods
 		public void mouseClicked(MouseEvent event) {
 			int x = event.getX();
 			int y = event.getY();
 
-			int depth = findDepth(y);
-
-			if (depth == -1) {
-				return;
-			}
-
-			LinkedList list = offsets[depth];
-			boolean valid = true;
-			int index = 0;
-
-			while (valid) {
-				ViewNode vnode = (ViewNode) list.get(index);
-				int test = vnode.test(x, y);
-
-				if (test == -1) {
-					index++;
-				}
-				else if (test == 1) {
-					valid = false;
-					if (vnode.isVisible())
-						expandView(vnode.dnode);
-				}
-				else if (test == 2) {
-					valid = false;
-					vnode.toggle();
+			if (zoomin) {
+				if (scale + scaleincrement < upperscale) {
+					scale += scaleincrement;
+					revalidate();
 					repaint();
 				}
+			}
+			else if (zoomout) {
+				if (scale - scaleincrement > lowerscale) {
+					scale -= scaleincrement;
+					revalidate();
+					repaint();
+				}
+			}
+			else {
+				int depth = findDepth(y);
 
-				if (index == list.size()) {
-					valid = false;
+				if (depth == -1) {
+					return;
+				}
+
+				LinkedList list = offsets[depth];
+				boolean valid = true;
+				int index = 0;
+
+				while (valid) {
+					ViewNode vnode = (ViewNode) list.get(index);
+					int test = vnode.test(x, y, getScale());
+
+					if (test == -1) {
+						index++;
+					}
+					else if (test == 1) {
+						valid = false;
+						if (vnode.isVisible())
+							expandView(vnode.dnode);
+					}
+					else if (test == 2) {
+						valid = false;
+						vnode.toggle();
+						repaint();
+					}
+
+					if (index == list.size()) {
+						valid = false;
+					}
 				}
 			}
 		}
@@ -411,7 +346,14 @@ public final class TreeScrollPane extends JScrollPane {
 		public void expandView(ViewableDTNode dnode) {
 			ExpandedGraph graph = new ExpandedGraph(dmodel, dnode);
 
-			JFrame frame = new JFrame();
+			StringBuffer title;
+			if (dnode.getNumChildren() != 0)
+				title = new StringBuffer("Split: ");
+			else
+				title = new StringBuffer("Leaf: ");
+			title.append(dnode.getLabel());
+
+			JD2KFrame frame = new JD2KFrame(title.toString());
 			frame.getContentPane().add(new JScrollPane(graph));
 			frame.pack();
 			frame.setVisible(true);
@@ -435,7 +377,7 @@ public final class TreeScrollPane extends JScrollPane {
 
 			while (valid) {
 				ViewNode vnode = (ViewNode) list.get(index);
-				int test = vnode.test(x, y);
+				int test = vnode.test(x, y, getScale());
 
 				if (test == -1) {
 					index++;
@@ -487,7 +429,7 @@ public final class TreeScrollPane extends JScrollPane {
 
 			while (valid) {
 				ViewNode vnode = (ViewNode) list.get(index);
-				int test = vnode.test(x, y);
+				int test = vnode.test(x, y, getScale());
 				if (test == -1) {
 					index++;
 				}
@@ -525,24 +467,22 @@ public final class TreeScrollPane extends JScrollPane {
 
 			if (point.x < 0 )
 				point.x = 0;
-			else if (vpwidth > dwidth)
+			else if (vpwidth > getSWidth())
 				point.x = 0;
-			else if (point.x + vpwidth > dwidth)
-				point.x = (int) (dwidth - vpwidth);
+			else if (point.x + vpwidth > getSWidth())
+				point.x = (int) (getSWidth() - vpwidth);
 
 			if (point.y < 0)
 				point.y = 0;
-			else if (vpheight > dheight)
+			else if (vpheight > getSHeight())
 				point.y = 0;
-			else if (point.y + vpheight > dheight)
-				point.y = (int) (dheight - vpheight);
+			else if (point.y + vpheight > getSHeight())
+				point.y = (int) (getSHeight() - vpheight);
 
 			viewport.setViewPosition(point);
 		}
 
-		/**
-		* Print this component.
-		*/
+		// Print this component.
 		public int print(Graphics g, PageFormat pf, int pi)
 			throws PrinterException {
 

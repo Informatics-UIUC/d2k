@@ -67,7 +67,8 @@ public final class ExpandedGraph extends JPanel {
 	double percentspace = 8;
 	double axisspace = 4;
 
-	double maxtallywidth;
+	double tallywidth;
+	double tallyspace = 10;
 
 	ViewableDTNode dnode;
 
@@ -125,11 +126,10 @@ public final class ExpandedGraph extends JPanel {
 		dpercentwidth = smallmetrics.stringWidth("100.0%");
 		percentwidth = smallmetrics.stringWidth("100");
 
-		maxtallywidth = 0;
-		for(int i = 0; i < tallies.length; i++) {
-			double d = smallmetrics.stringWidth(Integer.toString(tallies[i]));
-			if(d > maxtallywidth)
-				maxtallywidth = d;
+		for (int index = 0; index < tallies.length; index++) {
+			double width = smallmetrics.stringWidth(Integer.toString(tallies[index]));
+			if (width > tallywidth)
+				tallywidth = width;
 		}
 
 		setBackground(scheme.expandedbackgroundcolor);
@@ -169,7 +169,6 @@ public final class ExpandedGraph extends JPanel {
 			label = new StringBuffer(SPLIT);
 		else
 			label = new StringBuffer(LEAF);
-		//StringBuffer label = new StringBuffer(dnode.getLabel());
 		label.append(dnode.getLabel());
 
 		g2.setFont(scheme.expandedfont);
@@ -219,9 +218,9 @@ public final class ExpandedGraph extends JPanel {
 			x += outputwidth + outputspace;
 
 			String tally = Integer.toString(tallies[index]);
-			g2.drawString(tally, (int)x, (int)y);
+			g2.drawString(tally, (int) x, (int) y);
 
-			x += maxtallywidth + outputspace;
+			x += tallywidth + tallyspace;
 			String value = numberformat.format(values[index]) + "%";
 			g2.drawString(value, (int) x, (int) y);
 
@@ -296,7 +295,7 @@ public final class ExpandedGraph extends JPanel {
 		}
 	}
 
-	public Dimension getMinimumSize() {
+	public Dimension getPreferredSize() {
 		// Label bounds
 		xlabel = left;
 		ylabel = top + largeascent;
@@ -318,7 +317,6 @@ public final class ExpandedGraph extends JPanel {
 				pathwidth = twidth;
 		}
 
-		//pathwidth = 0;
 		if (path.length > 0) {
 			pathwidth += pathleft + pathright;
 			pathheight = pathtop + path.length*smallascent + (path.length-1)*pathleading + pathbottom;
@@ -328,7 +326,7 @@ public final class ExpandedGraph extends JPanel {
 		xdata = xpath;
 		ydata = ypath + pathheight + ypathspace;
 
-		datawidth = dataleft + samplesize + samplespace + outputwidth + outputspace + dpercentwidth + dataright+maxtallywidth;
+		datawidth = dataleft + samplesize + samplespace + outputwidth + outputspace + tallywidth + tallyspace + dpercentwidth + dataright;
 		dataheight = datatop + datasize*samplesize + (datasize-1)*samplespace + databottom;
 
 		if (pathwidth > datawidth)
@@ -346,12 +344,19 @@ public final class ExpandedGraph extends JPanel {
 		graphwidth = graphleft + percentwidth + percentspace + largetick + tickspace + gridwidth + graphright;
 
 		double width = left + pathwidth + xgraphspace + graphwidth + right;
-		double height = top + graphheight + bottom;
+
+		double pdheight = ydata + dataheight + bottom;
+		double gheight = top + graphheight + bottom;
+		double height;
+		if (pdheight > gheight)
+			height = pdheight;
+		else
+			height = gheight;
 
 		return new Dimension((int) width, (int) height);
 	}
 
-	public Dimension getPreferredSize() {
-		return getMinimumSize();
+	public Dimension getMinimumSize() {
+		return getPreferredSize();
 	}
 }

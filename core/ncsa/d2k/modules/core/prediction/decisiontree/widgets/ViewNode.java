@@ -32,8 +32,7 @@ public final class ViewNode {
 
 	boolean collapsed = false;
 
-	// x is midpoint of node
-	// y is top left of bar graph
+	// x is midpoint of node, y is top left of bar graph
 	double x, y;
 	double xspace = 20;
 	double yspace = 80;
@@ -57,16 +56,14 @@ public final class ViewNode {
 
 	DecisionTreeScheme scheme;
 
-	// the branch label above this node
+	// Branch label above this node
 	private String blabel;
 
-	private BufferedImage img;
-
-	public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode, String blab) {
+	public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode, String label) {
 		dmodel = model;
 		dnode = node;
 		parent = vnode;
-		blabel = blab;
+		blabel = label;
 		children = new ArrayList(dnode.getNumChildren());
 
 		findValues();
@@ -76,20 +73,12 @@ public final class ViewNode {
 		yincrement = gheight/(ygrid+1);
 		yscale = (gheight - 2*yincrement)/scalesize;
 
-		if(frame == null) {
+		if (frame == null) {
 			frame = new JFrame();
 			frame.addNotify();
 			frame.setFont(DecisionTreeScheme.textfont);
 		}
-
-		//img = new BufferedImage((int)gwidth, (int)gheight, BufferedImage.TYPE_INT_RGB);
-		//Graphics2D g2 = img.createGraphics();
-		//this.drawNode(g2);
 	}
-
-	//public Image getImage() {
-	//	return img;
-	//}
 
 	public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode) {
 		this(model, node, vnode, null);
@@ -128,18 +117,16 @@ public final class ViewNode {
 	public void findValues() {
 		String[] output = dmodel.getUniqueOutputValues();
 		values = new double[output.length];
-		for(int index = 0; index < values.length; index++){
-			try{
-			values[index] = 100*(double)dnode.getOutputTally(output[index])/(double)dnode.getTotal();
-			}catch(Exception e){
+		for (int index = 0; index < values.length; index++){
+			try {
+				values[index] = 100*(double)dnode.getOutputTally(output[index])/(double)dnode.getTotal();
+			} catch (Exception exception) {
 				System.out.println("Exception from getOutputTally");
 			}
 		}
 	}
 
 	public double getWidth() {
-		//if(blabel == null)
-		//	return xspace + gwidth+ xspace;
 
 		Graphics g = null;
 		while(g == null)
@@ -150,16 +137,9 @@ public final class ViewNode {
 			strwid1 = fm.stringWidth(blabel);
 		else
 			strwid1 = 0;
-		//int strwid1 = fm.stringWidth(blabel);
 
 		double w1 = xspace+(gwidth/2);
 		double w2 = strwid1+(gwidth/2);
-
-		/*if(w1 > w2)
-			return w1+(gwidth/2)+xspace;
-		else
-			return w2+(gwidth/2)+xspace;
-			*/
 
 		double wid1 = strwid1*2;
 		double wid2 = xspace + gwidth+ xspace;
@@ -294,12 +274,12 @@ public final class ViewNode {
 		return true;
 	}
 
-	public int test(int x1, int y1) {
-		if (x1 >= x - gwidth/2 && x1 <= x + gwidth/2)
+	public int test(int x1, int y1, double scale) {
+		if (x1 >= scale*(x - gwidth/2) && x1 <= scale*(x + gwidth/2))
 			return 1;
 
-		if (x1 >= x + gwidth/2 && x1 <= x + gwidth/2 + tspace + tside + tspace) {
-			if (y1 >= y + gheight - tside - tspace && y1 <= y + gheight)
+		if (x1 >= scale*(x + gwidth/2) && x1 <= scale*(x + gwidth/2 + tspace + tside + tspace)) {
+			if (y1 >= scale*(y + gheight - tside - tspace) && y1 <= scale*(y + gheight))
 				return 2;
 		}
 

@@ -6,7 +6,6 @@ import java.text.*;
 import java.util.*;
 import javax.swing.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
-//import ncsa.d2k.modules.core.vis.widgets.*;
 
 /*
 	DecisionTreeVis
@@ -23,6 +22,8 @@ public final class BrushPanel extends JPanel {
 	double samplespace = 8;
 	double outputwidth = 80;
 	double outputspace = 10;
+	double tallywidth;
+	double tallyspace = 10;
 	double percentwidth;
 
 	// Outputs
@@ -30,6 +31,8 @@ public final class BrushPanel extends JPanel {
 
 	// Distribution values
 	double[] values;
+
+	int[] tallies;
 
 	DecisionTreeScheme scheme;
 
@@ -64,23 +67,35 @@ public final class BrushPanel extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.setFont(scheme.textfont);
 
-		if (dnode != null) {
-			values = new double[outputs.length];
-			for(int index = 0; index < values.length; index++)
-				try{
-				values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
-				}catch(Exception e){
-					System.out.println("getOutputTally threw an exception");
-				}
-		}
-
 		BarColors barcolors = scheme.getBarColors();
 
 		Insets insets = getInsets();
 		double x = insets.left;
 		double y = insets.top;
 
-		for (int index=0; index < outputs.length; index++) {
+		if (dnode != null) {
+			values = new double[outputs.length];
+			tallies = new int[outputs.length];
+			for (int index = 0; index < values.length; index++) {
+				try{
+					if (dnode.getTotal() == 0)
+						values[index] = 0;
+					else
+						values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
+					tallies[index] = dnode.getOutputTally(outputs[index]);
+				} catch(Exception exception){
+					System.out.println("getOutputTally threw an exception");
+				}
+			}
+
+			for (int index = 0; index < tallies.length; index++) {
+				double stringwidth = metrics.stringWidth(Integer.toString(tallies[index]));
+				if (stringwidth > tallywidth)
+					tallywidth = stringwidth;
+			}
+		}
+
+		for (int index = 0; index < outputs.length; index++) {
 			g2.setColor(barcolors.getNextColor());
 			g2.fill(new Rectangle2D.Double(x, y, samplesize, samplesize));
 
@@ -92,6 +107,10 @@ public final class BrushPanel extends JPanel {
 
 			if (dnode != null) {
 				x += outputwidth + outputspace;
+				String tally = Integer.toString(tallies[index]);
+				g2.drawString(tally, (int) x, (int) y);
+
+				x += tallywidth + tallyspace;
 				String value = numberformat.format(values[index]) + "%";
 				g2.drawString(value, (int) x, (int) y);
 			}
@@ -107,14 +126,14 @@ public final class BrushPanel extends JPanel {
 		repaint();
 	}
 
-	public Dimension getMinimumSize() {
+	public Dimension getPreferredSize() {
 		Insets insets = getInsets();
-		int pwidth = (int) (insets.left + samplesize + samplespace + outputwidth + outputspace + percentwidth + insets.right);
+		int pwidth = (int) (insets.left + samplesize + samplespace + outputwidth + outputspace + tallywidth + tallyspace + percentwidth + insets.right);
 		int pheight = (int) (insets.top + samplesize*(outputs.length) + samplespace*(outputs.length-1) + descent + insets.bottom);
 		return new Dimension(pwidth, pheight);
 	}
 
-	public Dimension getPreferredSize() {
-		return getMinimumSize();
+	public Dimension getMinimumSize() {
+		return getPreferredSize();
 	}
 }

@@ -5,7 +5,6 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
 import javax.swing.*;
-//import ncsa.d2k.modules.compute.learning.modelgen.decisiontree.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
 /*
@@ -32,7 +31,7 @@ public final class ScaledNode {
 	double yspace = 80;
 
 	double gwidth;
-	double gheight = 60;
+	double gheight = 45;
 	double leftinset = 5;
 	double rightinset = 5;
 	double barwidth = 16;
@@ -108,8 +107,6 @@ public final class ScaledNode {
 	}
 
 	public double getWidth() {
-		//if(blabel == null)
-		//	return xspace + gwidth + xspace;
 		Graphics g = null;
 		while(g == null)
 			g = frame.getGraphics();
@@ -122,12 +119,6 @@ public final class ScaledNode {
 
 		double w1 = xspace+(gwidth/2);
 		double w2 = strwid1+(gwidth/2);
-
-		/*if(w1 > w2)
-			return w1+(gwidth/2)+xspace;
-		else
-			return w2+(gwidth/2)+xspace;
-			*/
 
 		double wid1 = strwid1*2;
 		double wid2 = xspace + gwidth+ xspace;
