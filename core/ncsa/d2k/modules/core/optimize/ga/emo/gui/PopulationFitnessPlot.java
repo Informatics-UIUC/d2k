@@ -15,30 +15,33 @@ public class PopulationFitnessPlot extends FitnessPlot {
   protected NsgaPopulation pop;
 
   public void setPopulation(NsgaPopulation p) {
-    this.numPoints = p.size();
-    changed = true;
+    setChanged(true);
 
     if(p != pop) {
       pop = p;
     }
   }
 
-  protected void drawPoints(Graphics2D g, float xscale, float yscale) {
+  protected int getNumIndividuals() {
+    return pop.size();
+  }
+
+  protected void drawPoints(Graphics2D g, double xscale, double yscale) {
     synchronized (pop) {
       g.setColor(Color.red);
       NsgaSolution[] members = (NsgaSolution[]) pop.getMembers();
       int numMembers = members.length;
       for (int i = 0; i < numMembers; i++) {
         if (members[i].getRank() == 0) {
-          float xvalue = (float) members[i].getObjective(xObjective);
-          float yvalue = (float) members[i].getObjective(yObjective);
-          float x = (xvalue - xMin) / xscale + left;
-          float y = graphheight - bottom - (yvalue - yMin) / yscale;
+          double xvalue = members[i].getObjective(xObjective);
+          double yvalue = members[i].getObjective(yObjective);
+          double x = (xvalue - xMin) / xscale + left;
+          double y = graphheight - bottom - (yvalue - yMin) / yscale;
 
-          g.fill(new Rectangle2D.Float(x, y, 2, 2));
+          g.fill(new Rectangle2D.Double(x, y, 2, 2));
         }
       }
-      if (selected != null) {
+      /*if (selected != null) {
         g.setColor(Color.blue);
         for (int i = 0; i < numMembers; i++) {
           if (members[i].getRank() == 0 && selected[i]) {
@@ -51,7 +54,7 @@ public class PopulationFitnessPlot extends FitnessPlot {
             g.fill(new Rectangle2D.Float(x, y, 2, 2));
           }
         }
-      }
+      }*/
     }
   }
 
@@ -61,6 +64,9 @@ public class PopulationFitnessPlot extends FitnessPlot {
 
     xObjective = x;
     yObjective = y;
+  }
+
+  protected void findMinMax() {
 
     // reset min/max for both objectives by looping through pop
     xMin = yMin = Float.POSITIVE_INFINITY;
@@ -83,7 +89,7 @@ public class PopulationFitnessPlot extends FitnessPlot {
       }
     }
 
-    changed = true;
+    setChanged(true);
   }
 
   protected double getXValue(int i) {

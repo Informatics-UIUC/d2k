@@ -62,7 +62,6 @@ public class ObjectiveScatterPlot extends JPanel implements MouseListener, Mouse
     if(image != null)
       image.flush();
 
-
     if(w != 0 && h != 0) {
       if(image != null)
         image.flush();
