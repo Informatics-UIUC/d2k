@@ -958,7 +958,8 @@ public class SaveFileToDB extends HeadlessUIModule
                                "properties editor, or through running this itinerary with GUI.");
          if(isOracle != !isSql)
            throw new Exception(this.getAlias() + " was configured incorrectly. " +
-                               "Property SQL Server must be different that Oracle Server.");
+                               "Property SQL Server must be different that Oracle Server." +
+                               " Please reconfigure the module using the properties editor.");
 
          // check the first row in the data table. If the first row contains
          // the strings of data type, the user has not set the property "typeRow"

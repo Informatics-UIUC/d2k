@@ -338,7 +338,9 @@ public class ParseDSTPToDBTable
 //validating that the chosen category was found in the dataspace
 
   if(categoryNode == null)
-    throw new Exception (this.getAlias()+": The chosen category " + category + " does not exist in the chosen server " + m_servername + " dataspace");
+    throw new Exception (this.getAlias()+": The configured category " + category + " does not exist in the chosen server " + m_servername + " dataspace." +
+                         " Please re configure the module (using the properties editor or via a GUI run) " +
+                         "so it can run Headless.");
 
 //everything is ok...
   //retrieving the category's children - datafiles.
@@ -359,7 +361,9 @@ public class ParseDSTPToDBTable
 //validating that the chosen datafile is in the chosen category
 
   if(fileNode == null)
-    throw new Exception (this.getAlias()+ ": The chosen datafile name " + datafileName + " does not exist in the chosen category " + category);
+    throw new Exception (this.getAlias()+ ": The configured datafile name " + datafileName + " does not exist in the chosen category " + category +
+                         ". Please reconfigure the module (using the properties editor or via a GUI run) " +
+                         "so it can run Headless.");
 
 //everything is fine...
 
@@ -389,8 +393,11 @@ public class ParseDSTPToDBTable
   //and also in attNamesMap will be in targetAttNames.
   String[] targetAttNames = StaticMethods.getIntersection(attNames, attsNameMap);
 
-  if(targetAttNames.length == 0)
-    throw new Exception(this.getAlias()+ ": None of the selected attributes is in the given dataspace");
+  if(targetAttNames.length < attNames.length)
+    throw new Exception(this.getAlias()+ ": Some of the configured attributes were not found "
+                       + " in the datafile " + datafileName +
+                       ". Please re configure the module " +
+                         "so it can run Headless.");
 
 //verifying that each type matches.
 
@@ -411,8 +418,9 @@ public class ParseDSTPToDBTable
 
     //validating matching between the types.
     if(! currType.equals(selectedType))
-      throw new Exception(this.getAlias()+ ": The selected type for attribute name " + targetAttNames[i] +
-    " does not match the type is the data space.");
+      throw new Exception(this.getAlias()+ ": The configured type for attribute name " + targetAttNames[i] +
+    " does not match the type is the data space." +
+    " Please reconfigure this module via a GUI run, so it can run Headless");
 
       //if everything is ok, adding to the array list.
     validAtt.add(i, currAtt);

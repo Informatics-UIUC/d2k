@@ -802,8 +802,10 @@ if(selectedTablesNames.length != selectedColumnsNames.length )
     //targetTables holds only the intersection between available and selected.
     String[] targetTables = getPositive(isTargetTable, selectedTablesNames);
 
-    if(targetTables == null || targetTables.length == 0)
-      throw new Exception (this.getAlias()+": None of the selected tables is in the given data base.");
+
+    if(targetTables.length < selectedTablesNames.length)
+      throw new Exception (this.getAlias()+": Some of the configured tables were not found in the given data base." +
+                           " Please reconfigure this module so it can run Headless.");
 
     //targetColumns[i] will hold the available columns for targetTables[i] that were also selected.
     String[][] targetColumns = new String[targetTables.length][];
@@ -811,13 +813,15 @@ if(selectedTablesNames.length != selectedColumnsNames.length )
     //tables that have no target columns will be marked true.
     //then removed from target tables and target columns too.
     //in order to avoid array index out of bound exception...
-    boolean[] toBeRemoved = new boolean[targetTables.length];
+
+    //now that configured data must match 100% the input this has no meaning.
+    //boolean[] toBeRemoved = new boolean[targetTables.length];
 
 
       //going over the available columns for each table.
       for (int i=0, j=0; i<selectedTablesNames.length; i++){
         //if the selected table is also a target
-        if(isTargetTable[i]){
+      //  if(isTargetTable[i]){
           //getting its available columns.
           String[] availableColumns = dbc.getColumnNames(selectedTablesNames[i]);
           //verifying which of the columns is a target.
@@ -826,16 +830,18 @@ if(selectedTablesNames.length != selectedColumnsNames.length )
           targetColumns[j] = getPositive(isTargetsCols, selectedColumnsNames[i]);
 
           //checking if this table has any target columns
-          if(targetColumns[j] == null || targetColumns[j].length == 0)
-            toBeRemoved[j] = true;
+          if(targetColumns[j].length < selectedColumnsNames[i].length)
+            throw new Exception ("Table " + selectedTablesNames[i] + " does not contain " +
+                                 "all the configured attributes." +
+                                 " Please reconfigure the module so it can run headless.");
 
           //increasing targetColumns counter.
           j++;
-        }//if
+        //}//if
       }//for
 
       int counter = 0; //counts the tables that will make the output (ones that won't be removed.)
-      for (int i=0; i<toBeRemoved.length; i++)
+ /*     for (int i=0; i<toBeRemoved.length; i++)
         if(!toBeRemoved[i] == true) counter++;
 
       String[] finalTables = null;        //will hold names of final target tables.
@@ -863,10 +869,10 @@ if(selectedTablesNames.length != selectedColumnsNames.length )
         finalTables = targetTables;
         finalColumns = targetColumns;
       }
-
+*/
         //creating the data source that will hold the data for the DBTable
-        DBDataSource dbDataSource = new ResultSetDataSource(dbc, finalTables,
-            finalColumns, whereClause);
+        DBDataSource dbDataSource = new ResultSetDataSource(dbc, targetTables,
+            targetColumns, whereClause);
         //creating the DBTable
         DBTable table = new DBTable(dbDataSource, dbc);
 

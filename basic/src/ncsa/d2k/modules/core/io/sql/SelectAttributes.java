@@ -312,8 +312,10 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
             }//if
 */
          String[] targetAttributes = StaticMethods.getIntersection(selectedAttributes, availableAttributes);
-         if(targetAttributes.length == 0)
-           throw new Exception(getAlias() + ": None of the selected attributes matched the input attributes. Quiting.");
+         if(targetAttributes.length < selectedAttributes.length)
+           throw new Exception(getAlias() + ": Some of the configured attributes were not " +
+                               "found in the input attributes list. " +
+                               "Please reconfigure this module so it can run Headless.");
 
          pushOutput(targetAttributes, 0);
 

@@ -518,7 +518,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
     //validating table's name
     if(_table == null || _table.length() ==0)
-      throw new Exception(getAlias() + ": the input Data Table Name is in valid.");
+      throw new Exception(getAlias() + ": the input Data Table Name is invalid.");
 
     //validating that inputs and outputs were selected on previous run
     if(selectedInputNames == null || selectedOutputNames == null ||
@@ -562,9 +562,10 @@ public class SQLChooseAttributes extends HeadlessUIModule {
  //     inputFeatures = getTargetColumns(availableColumnMap, selectedInputNames);
         inputFeatures = StaticMethods.getIntersectIds(selectedInputNames, availableColumnMap);
 
-      if(inputFeatures.length == 0)
-        throw new Exception(getAlias() +": None of the configured input names " +
- "appear in the selected table. Cannot proceed without any valid input names.");
+      if(inputFeatures.length < selectedInputNames.length)
+        throw new Exception(getAlias() +": Some of the configured input names " +
+                            "are not in the selected table. Cannot proceed without any valid input names."+
+                                 " Please reconfigure the module so it can run headless.");
 
       /* selectedInput holds the input columns ids, of the output example table.*/
       selectedInput = new int[inputFeatures.length];
@@ -590,7 +591,8 @@ public class SQLChooseAttributes extends HeadlessUIModule {
           finalSelectedOutput = selectedOutputNames[0];
         }
         else throw new Exception (getAlias() +": The selected output " +
-        "feature is not available in the data base table. cannot proceed.\n");
+                                  "feature is not available in the data base table. cannot proceed.\n"+
+                                 " Please reconfigure the module so it can run headless.");
 
 
     int selectedColumn = 0;  //current column in the output example table.

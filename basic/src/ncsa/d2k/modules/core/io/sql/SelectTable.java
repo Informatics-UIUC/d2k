@@ -239,7 +239,8 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
                                     "either configure the parameters via the properties editor " +
                                     "or run with the gui and configure the parameters.");
           if(!available.contains(selectedTable))
-            throw new Exception(getAlias() + ": The selected table - " + selectedTable + " was not found in the input list of available tables.");
+            throw new Exception(getAlias() + ": The selected table - " + selectedTable + " was not found in the input list of available tables."+
+                                 " Please reconfigure the module (using the properties editor or via a GUI run ) so it can run headless.");
 
            else
              pushOutput(selectedTable, 0);
