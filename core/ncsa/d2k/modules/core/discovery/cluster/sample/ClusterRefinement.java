@@ -256,9 +256,11 @@ public class ClusterRefinement {
         centers = assignEntities(centers, entities);
         //insert check here to evaluate if assignments should continue
         if (evaluation(oldCenters, centers)) {
-          System.out.println(
+          if (getVerbose()) {
+            System.out.println(
               "New assignment has not changed significantly, assignments stopped at " +
               (i + 1) + " iterations.");
+          }
           break;
         }
       }
