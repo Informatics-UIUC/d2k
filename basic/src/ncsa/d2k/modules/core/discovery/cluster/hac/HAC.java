@@ -139,8 +139,8 @@ public class HAC {
     this.setClusterMethod(cm);
     this.setDistanceMetric(dm);
     this.setNumberOfClusters(num);
-    this.setVerbose(ver);
     this.setDistanceThreshold(thresh);
+    this.setVerbose(ver);
     this.setCheckMissingValues(check);
     this.setAlias(moduleAlias);
   }
@@ -790,6 +790,6 @@ public class HAC {
 // Start QA Comments
 // 4/11/03 - Ruth;   Added getAlias() to ctor & to messages so we can tell which
 //           instance is causing problems;  commented out some lines that would
-//           produce double exception messages... revisit.
+//           produce double exception messages... revisit later.
 //         - Ready for Basic
 // End QA Comments

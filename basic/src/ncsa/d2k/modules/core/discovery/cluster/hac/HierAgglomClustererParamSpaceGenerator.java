@@ -5,6 +5,7 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.prediction.*;
+import ncsa.d2k.modules.core.discovery.cluster.sample.ClusterParameterDefns;
 
 /**
  * <p>Title: HierAgglomClustererParamSpaceGenerator</p>
@@ -17,16 +18,13 @@ import ncsa.d2k.modules.core.prediction.*;
  * @version 1.0
  */
 
-public class HierAgglomClustererParamSpaceGenerator extends AbstractParamSpaceGenerator {
+public class HierAgglomClustererParamSpaceGenerator
+	extends AbstractParamSpaceGenerator
+	implements ClusterParameterDefns{
 
   //==============
   // Data Members
   //==============
-
-  public static final String CLUSTERING_METHOD = "Clustering Method";
-  public static final String DISTANCE_METRIC = "Distance Metric";
-  public static final String NUMBER_OF_CLUSTERS = "Number of Clusters";
-  public static final String HAC_DISTANCE_THRESHOLD = "HAC Distance Threshold";
 
   /**
    * Returns a reference to the developer supplied defaults. These are
@@ -36,10 +34,10 @@ public class HierAgglomClustererParamSpaceGenerator extends AbstractParamSpaceGe
    */
   protected ParameterSpace getDefaultSpace() {
         ParameterSpace psi = new ParameterSpaceImpl();
-        String[] names = { CLUSTERING_METHOD,
-            DISTANCE_METRIC,
-            NUMBER_OF_CLUSTERS,
-            HAC_DISTANCE_THRESHOLD};
+        String[] names = { CLUSTER_METHOD,
+            		   DISTANCE_METRIC,
+            		   NUM_CLUSTERS,
+            		   DISTANCE_THRESHOLD};
         double[] min = { 0, 0, 1, 0};
         double[] max = { 6, 2, Integer.MAX_VALUE, 100};
         double[] def = { 0, 0, 5, 0};
@@ -58,40 +56,68 @@ public class HierAgglomClustererParamSpaceGenerator extends AbstractParamSpaceGe
   }
 
   /**
-   * Return a list of the property descriptions.
+   * Return a list of the property descriptions.  The order of descriptions
+   * matches the order of presentation of the properties to the user.
    * @return a list of the property descriptions.
    */
   public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] descriptions = new PropertyDescription[4];
-    descriptions[0] = new PropertyDescription(CLUSTERING_METHOD,
-                                              "Clustering Method",
+
+    // presentation order (dictated by dialog layout):
+    // 0-CLUSTER_METHOD, 1-DISTANCE_METRIC, 2-NUM_CLUSTERS, 3-DISTANCE_THRESHOLD
+    // Following code is (mostly) cut/paste across modules and indices of pds are adjusted
+    // for the appropriate order for the dialog that is used in this module.
+    // The first variable in each Property Description isn't used in this case;
+    // just the 2nd and 3rd for dialog label and help.
+
+    PropertyDescription[] pds = new PropertyDescription[4];
+    pds[0] = new PropertyDescription( CLUSTER_METHOD,
+                                      CLUSTER_METHOD,
         "The method to use for determining the distance between two clusters. " +
-        "<p>0 WARDS METHOD: Use a minimum variance approach that sums the squared error " +
+        "This distance is used in formulating the tree that is part of the final cluster model. " +
+        "<p>WARDS METHOD: Use a minimum variance approach that sums the squared error " +
         "(distance) for every point in the cluster to the cluster centroid.</p>" +
-        "<p>1 SINGLE LINK: Distance of closest pair (one from each cluster).</p>" +
-        "<p>2 COMPLETE LINK: Distance of furthest pair (one from each cluster).</p>" +
-        "<p>3 UPGMA: Unweighted pair group method using arithmetic averages.</p>" +
-        "<p>4 WPGMA: Weighted pair group method using arithmetic averages.</p>" +
-        "<p>5 UPGMC: Unweighted pair group method using centroids.</p>" +
-        "<p>6 WPGMC: Weighted pair group method using centroids.</p>");
-    descriptions[1] = new PropertyDescription(DISTANCE_METRIC,
-                                              "Distance Metric",
-        "This property determine the type of distance fucntion used to calculate " +
-        "distance between two examples." +
-        "<p>0 EUCLIDEAN: \"Straight\" line distance between points.</p>" +
-        "<p>1 MANHATTAN: Distance between two points measured along axes at right angles.</p>" +
-        "<p>2 COSINE: 1 minus the cosine of the angle between the norms of the vectors denoted by two points.</p>"
-        );
-    descriptions[2] = new PropertyDescription(NUMBER_OF_CLUSTERS,
-                                              "Number of Clusters",
-                                     "This property specifies the number of clusters to form (>= 2).");
-    descriptions[3] = new PropertyDescription(HAC_DISTANCE_THRESHOLD,
-                                              "Distance Threshold",
-                                     "This property specifies the percent of the max distance to use " +
-                                     "as a cutoff value to halt clustering ([0...100]).  The max distance between examples " +
-                                     "is approximated by taking the min and max of each attribute and forming a " +
-                                     "min example and a max example -- then finding the distance between the two.");
-    return descriptions;
+        "<p>SINGLE LINK: Distance of closest pair (one from each cluster).</p>" +
+        "<p>COMPLETE LINK: Distance of furthest pair (one from each cluster).</p>" +
+        "<p>UPGMA: Unweighted pair group method using arithmetic averages.</p>" +
+        "<p>WPGMA: Weighted pair group method using arithmetic averages.</p>" +
+        "<p>UPGMC: Unweighted pair group method using centroids.</p>" +
+        "<p>WPGMC: Weighted pair group method using centroids.</p>");
+
+    pds[1] = new PropertyDescription( DISTANCE_METRIC,
+                                      DISTANCE_METRIC,
+        "This property determines the type of distance function to use in calculating the " +
+        "distance between two examples.  This distance is used in assigning points to clusters, and " +
+        "in determining if there was sufficient movement since the last assignment iteration "+
+        "to continue the refinement process. " +
+        "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
+        "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +
+        "<p>COSINE: 1 minus the cosine of the angle between the norms of the vectors denoted by two points.</p>");
+
+    pds[2] = new PropertyDescription( NUM_CLUSTERS,
+                                      NUM_CLUSTERS,
+       "This property specifies the maximum number of clusters to form. It must be greater than 1.");
+
+    pds[3] = new PropertyDescription( DISTANCE_THRESHOLD,
+				      DISTANCE_THRESHOLD,
+       "This property specifies the percentage of the <i>maximum distance</i> to use " +
+       "as a cutoff value to halt cluster agglomeration.  It can range from 0 to 100. " +
+       "Lower values result in fewer clusters, with the exception that for a value of 0 " +
+       "cluster formation is not halted until " +
+       NUM_CLUSTERS +
+       "are formed. " +
+       "See the <i>Hier. Agglom. Clusterer</i> module information for further details on " +
+       "this is property. " );
+
+     return pds;
   }
 
 }
+
+// Start QA Comments
+// 4/12/03 - Ruth starts QA;  Updated properties to be more consistent w/ other modules and
+//           to use ClusterParameterDefns.
+//         * Unsure how DISTANCE_THRESHOLD really works...  if < threshold movement does it stop or what?
+// 4/13/03 - Another stab at the DISTANCE_THRESHOLD words.   Asked Duane for confirmation.
+//         - Looked at code - think descr is okay now.   
+//         - Ready for Basic.
+// End QA Comments
