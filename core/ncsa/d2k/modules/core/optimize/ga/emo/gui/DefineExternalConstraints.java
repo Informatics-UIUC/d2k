@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize.ga.emo;
+package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
@@ -11,15 +11,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
+/**
+ * An interface to input the fitness functions when the constraints are
+ * calculated by a foreign executable
+ * @author David Clutter
+ * @version 1.0
+ */
 public class DefineExternalConstraints extends UIModule {
 
   public String[] getInputTypes() {
-    return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+    return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
   }
 
   public String[] getOutputTypes() {
-    return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+    return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
   }
 
   public String getInputInfo(int i) {
@@ -31,11 +38,11 @@ public class DefineExternalConstraints extends UIModule {
   }
 
   public String getInputName(int i) {
-    return "Population Info";
+    return "EMOParams";
   }
 
   public String getOutputName(int i) {
-    return "Population Info";
+    return "EMOParams";
   }
 
   public String getModuleInfo() {
@@ -76,7 +83,7 @@ public class DefineExternalConstraints extends UIModule {
     JTextField outputFilePath;
     JComboBox min;
 
-    EMOPopulationInfo popInfo;
+    EMOPopulationParams popInfo;
 
     public Dimension getPreferredSize() {
       return new Dimension(600, 250);
@@ -259,7 +266,7 @@ public class DefineExternalConstraints extends UIModule {
 
           // if we get to here, everything checks out ok
           // add the function
-          FitnessFunction ff = new FitnessFunction(nme, exec, input, output, minmax);
+          Constraint ff = new Constraint(nme, exec, input, output, minmax);
           definedFunctionsModel.addElement(ff);
 
           functionName.setText("");
@@ -296,7 +303,7 @@ public class DefineExternalConstraints extends UIModule {
           tbl.setColumnLabel("Min/Max", 4);
 
           for(int i = 0; i < functions.length; i++) {
-            FitnessFunction f = (FitnessFunction)functions[i];
+            Constraint f = (Constraint)functions[i];
             tbl.setString(f.name, i, 0);
             tbl.setString(f.exec, i, 1);
             tbl.setString(f.input, i, 2);
@@ -310,6 +317,7 @@ public class DefineExternalConstraints extends UIModule {
           popInfo.externalFitnessInfo = tbl;
 
           pushOutput(popInfo, 0);
+          popInfo = null;
           viewDone("Done");
         }
       });
@@ -333,17 +341,17 @@ public class DefineExternalConstraints extends UIModule {
     }
 
     public void setInput(Object o, int i) {
-      popInfo = (EMOPopulationInfo)o;
+      popInfo = (EMOPopulationParams)o;
     }
 
-    class FitnessFunction implements Serializable {
+    class Constraint implements Serializable {
       String name;
       String exec;
       String input;
       String output;
       String minmax;
 
-      FitnessFunction(String n, String e, String i, String o, String m) {
+      Constraint(String n, String e, String i, String o, String m) {
         name = n;
         exec = e;
         input = i;

@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize.ga.emo;
+package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
 import java.text.*;
 
@@ -12,19 +12,20 @@ import javax.swing.table.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
-public class InputEMOParams
+public class DefineParameters
     extends UIModule {
 
   public String[] getInputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
   }
 
   public String[] getOutputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo",
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams",
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
   }
 
   public String getInputInfo(int i) {
@@ -63,6 +64,7 @@ public class InputEMOParams
   public void setCachedParams(CachedParams cp) {
     cachedParams = cp;
   }
+
   public CachedParams getCachedParams() {
     return cachedParams;
   }
@@ -71,9 +73,10 @@ public class InputEMOParams
       extends JUserPane {
 
     private JTable paramsTable;
-    private MultiObjectiveParamsTableModel paramsModel;
+    private ParamsTableModel paramsModel;
+
     private boolean multiObjective;
-    private EMOPopulationInfo popInfo;
+    private EMOPopulationParams popInfo;
     private JLabel timeRequired = new JLabel();
     private JTextField maxTime = new JTextField(4);
     private JTextField numSolutions = new JTextField(4);
@@ -89,7 +92,7 @@ public class InputEMOParams
     public void initView(ViewModule vm) {
       nf = NumberFormat.getInstance();
       nf.setMaximumFractionDigits(4);
-      paramsModel = new MultiObjectiveParamsTableModel();
+      paramsModel = new MOTableModel();
       paramsTable = new JTable(paramsModel);
       paramsTable.setPreferredScrollableViewportSize(new Dimension(410, 80));
       JScrollPane jsp = new JScrollPane(paramsTable);
@@ -267,7 +270,7 @@ public class InputEMOParams
       timeRequired2.setHorizontalAlignment(JLabel.CENTER);
 
       CachedParams cp = getCachedParams();
-      if(cp != null) {
+      if (cp != null) {
         paramsModel.col1 = cp.recommended;
         paramsModel.col2 = cp.override;
 
@@ -448,7 +451,7 @@ public class InputEMOParams
         estimate = new JButton("Estimate");
         estimate.addActionListener(new AbstractAction() {
           public void actionPerformed(ActionEvent e) {
-            EMOPopulationInfo testPopInfo = new EMOPopulationInfo();
+            EMOPopulationParams testPopInfo = new EMOPopulationParams();
             testPopInfo.boundsAndPrecision = popInfo.boundsAndPrecision;
             testPopInfo.constraintFunctionConstructions = popInfo.
                 constraintFunctionConstructions;
@@ -567,18 +570,18 @@ public class InputEMOParams
                                  GridBagConstraints.WEST,
                                  1, 1);
             /*JLabel lbl3 = new JLabel("Number of Solutions Desired:", JLabel.RIGHT);
-             Constrain.setConstraints(this, lbl3,
-                             0, 3, 1, 1,
-         GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                             1, 1);
-             Constrain.setConstraints(this, numSolutions,
-                             1, 3, 1, 1,
-         GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                             1, 1);
-             Constrain.setConstraints(this, new JLabel("  "),
-                             0, 4, 1, 1,
-         GridBagConstraints.BOTH, GridBagConstraints.WEST,
-                             1, 1);*/
+         Constrain.setConstraints(this, lbl3,
+                         0, 3, 1, 1,
+                  GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                         1, 1);
+         Constrain.setConstraints(this, numSolutions,
+                         1, 3, 1, 1,
+                  GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                         1, 1);
+         Constrain.setConstraints(this, new JLabel("  "),
+                         0, 4, 1, 1,
+                  GridBagConstraints.BOTH, GridBagConstraints.WEST,
+                         1, 1);*/
         Constrain.setConstraints(this, advanced,
                                  0, 4, 1, 1,
                                  GridBagConstraints.NONE,
@@ -589,7 +592,7 @@ public class InputEMOParams
 
     public void setInput(Object o, int z) {
       if (!doingTiming) {
-        popInfo = (EMOPopulationInfo) o;
+        popInfo = (EMOPopulationParams) o;
         if (popInfo.fitnessFunctionConstructions.length == 1) {
           multiObjective = false;
         }
@@ -605,7 +608,7 @@ public class InputEMOParams
           CachedParams cp = getCachedParams();
           // only use the cached values if the number of variables and string length are equal
           boolean useCached = false;
-          if(cp != null) {
+          if (cp != null) {
             int numVars = cp.numVars;
             int stringLen = cp.stringLength;
 
@@ -614,10 +617,12 @@ public class InputEMOParams
               stringLength += popInfo.boundsAndPrecision.getInt(i,
                   popInfo.boundsAndPrecision.getNumColumns() - 1);
             }
-            if(stringLength == stringLen && numVars == popInfo.boundsAndPrecision.getNumRows())
+            if (stringLength == stringLen &&
+                numVars == popInfo.boundsAndPrecision.getNumRows()) {
               useCached = true;
+            }
           }
-          if(!useCached) {
+          if (!useCached) {
             paramsModel.setValueAt("30", 0, 1);
             // set the rec. max gens to be 2*string length
             int stringLength = 0;
@@ -685,6 +690,7 @@ public class InputEMOParams
 
         String mx = maxTime.getText();
         double maxtime = 0;
+
         try {
           maxtime = Double.parseDouble(mx);
         }
@@ -696,27 +702,20 @@ public class InputEMOParams
     }
 
     private JButton estimate;
-
     private long startTime;
     private long stopTime;
 
-    private class MultiObjectiveParamsTableModel
+    /**
+     * A table model for the input of GA parameters.  is subclassed for
+     * SO and MO populations.
+     * @author not attributable
+     * @version 1.0
+     */
+    private abstract class ParamsTableModel
         extends DefaultTableModel {
-
-      String[] col0 = {
-          "Number of Nondominated Solutions",
-          "Starting Population Size",
-          "Maximum Number of Generations",
-          "Tournament Size",
-          "Probability of Crossover",
-          "Probability of Mutation",
-          "Generation Gap"};
-
-      String[] col1 = {
-          "", "", "", "", "", "", ""};
-      String[] col2 = {
-          "", "", "", "", "", "", ""};
-
+      String[] col0;
+      String[] col1;
+      String[] col2;
       String[] names = {
           "", "Recommended", "Override"};
 
@@ -724,24 +723,84 @@ public class InputEMOParams
         return 3;
       }
 
-      public int getRowCount() {
-        return 7;
-      }
-
       public String getColumnName(int i) {
         return names[i];
       }
 
+      public boolean isCellEditable(int r, int c) {
+        if (c == 2) {
+          return true;
+        }
+        return false;
+      }
+
       public Object getValueAt(int r, int c) {
-        if (c == 0) {
+        if (c == 0)
           return col0[r];
-        }
-        else if (c == 1) {
+        else if (c == 1)
           return col1[r];
-        }
-        else {
+        else
           return col2[r];
-        }
+      }
+
+      public void setValueAt(Object val, int r, int c) {
+      }
+    }
+
+    /**
+     * The table model when using a single-objective problem.
+     * @author not attributable
+     * @version 1.0
+     */
+    private class SOTableModel
+        extends ParamsTableModel {
+
+      SOTableModel() {
+        col0 = new String[] {
+            "Starting Population Size",
+            "Maximum Number of Generations",
+            "Tournament Size",
+            "Probability of Crossover",
+            "Probability of Mutation",
+            "Generation Gap"};
+
+        col1 = new String[] {
+            "", "", "", "", "", ""};
+        col2 = new String[] {
+            "", "", "", "", "", ""};
+      }
+
+      public int getRowCount() {
+        return 6;
+      }
+    }
+
+    /**
+     * The table model when using a multi-objective problem.
+     * @author not attributable
+     * @version 1.0
+     */
+    private class MOTableModel
+        extends ParamsTableModel {
+
+      MOTableModel() {
+        col0 = new String[] {
+            "Number of Nondominated Solutions",
+            "Starting Population Size",
+            "Maximum Number of Generations",
+            "Tournament Size",
+            "Probability of Crossover",
+            "Probability of Mutation",
+            "Generation Gap"};
+
+        col1 = new String[] {
+            "", "", "", "", "", "", ""};
+        col2 = new String[] {
+            "", "", "", "", "", "", ""};
+      }
+
+      public int getRowCount() {
+        return 7;
       }
 
       public void setValueAt(Object value, int r, int c) {
@@ -810,23 +869,17 @@ public class InputEMOParams
           }
         }
       }
-
-      public boolean isCellEditable(int r, int c) {
-        if (c == 2) {
-          return true;
-        }
-        return false;
-      }
     }
   }
 
-    class CachedParams implements java.io.Serializable {
-      String[] recommended;
-      String[] override;
-      String estimatedTimeReq;
-      String maxRunTime;
-      String diff;
-      int numVars;
-      int stringLength;
-    }
+  class CachedParams
+      implements java.io.Serializable {
+    String[] recommended;
+    String[] override;
+    String estimatedTimeReq;
+    String maxRunTime;
+    String diff;
+    int numVars;
+    int stringLength;
+  }
 }

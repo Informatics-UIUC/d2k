@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize.ga.emo;
+package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
 import java.io.*;
 import java.util.*;
@@ -13,6 +13,7 @@ import ncsa.gui.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
  Newemo1.java
@@ -43,7 +44,7 @@ public class DefineDecisionVariables
      @return the data types of all outputs.
   */
   public String[] getOutputTypes() {
-    String[] types = {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+    String[] types = {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
     return types;
   }
 
@@ -52,7 +53,7 @@ public class DefineDecisionVariables
      @return the description of the indexed output.
   */
   public String getOutputName(int i) {
-    return "Population Info";
+    return "EMOParams";
   }
 
   public String getOutputInfo(int index) {
@@ -161,7 +162,9 @@ public class DefineDecisionVariables
       // and this will update the number of rows in the table.
       //JButton updateBt = new JButton("Update");
       JButton readFromFileBt = new JButton("Read From File");
+      readFromFileBt.setEnabled(false);
       JButton seedFromFileBt = new JButton("Seed From File");
+      seedFromFileBt.setEnabled(false);
 
       /**
        The Color object, buttonColor, creates a yellowish
@@ -553,11 +556,17 @@ public class DefineDecisionVariables
       //add(myPanel, BorderLayout.NORTH);
 
       add(MainPanel[1], BorderLayout.CENTER);
+      JLabel lbl = new JLabel("Define Decision Variables");
+      Font f = lbl.getFont();
+      Font newFont = new Font(f.getFamily(), Font.BOLD, 16);
+      lbl.setFont(newFont);
+      lbl.setBorder(new EmptyBorder(10, 10, 10, 0));
+      add(lbl, BorderLayout.NORTH);
     }
 
     public void setInput(Object object, int index) {}
 
-    public void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
       Graphics2D g2 = (Graphics2D) g;
       g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -602,7 +611,7 @@ public class DefineDecisionVariables
       }
       MutableTableImpl varTable = new MutableTableImpl(cols);
 
-      EMOPopulationInfo data = new EMOPopulationInfo();
+      EMOPopulationParams data = new EMOPopulationParams();
       data.boundsAndPrecision = varTable;
       data.varNames = table1;
 

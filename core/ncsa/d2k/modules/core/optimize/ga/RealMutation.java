@@ -122,71 +122,74 @@ public class RealMutation extends DataPrepModule 			 {
 
 		// Our input argument is the population.
 		Population population = (Population) this.pullInput (0);
-		Individual [] individuals = (Individual []) population.getMembers ();
-
-		double oneOverNPlus1 = 1.0 / (n + 1.0);
-
-		// Loop over the entire population.
-		int last = population.size ();
-		Range [] traits = population.getTraits ();
-
-		// for each member of the population,
-		for (int i = 0; i < last; i++) {
-			double [] genes = (double []) individuals [i].getGenes ();
-
-			// for each gene of the individual
-			for (int k = 0 ; k < genes.length; k++) {
-
-				if (rand.nextDouble () < m_rate) {
-					DoubleRange dr = (DoubleRange) traits [k];
-					double gene = genes [k];
-					double paramLower = dr.getMin ();
-					double paramUpper = dr.getMax ();
-
-					// Swap the indicated genes.
-					if (debugging) {
-						System.out.println ("--------------------");
-						System.out.println ("Before SBX");
-						population.printIndividual (i);
-						population.printIndividual (i+1);
-					}
-
-
-					// compute beta sub q
-					double delta;
-					if ((gene - paramLower) < (paramUpper - gene))
-					    delta = (gene - paramLower)/(paramUpper - paramLower);
-					else
-					    delta = (paramUpper - gene)/(paramUpper - paramLower);
-
-					double u = rand.nextDouble ();
-					double deltaq;
-					if (u <= 0.5) {
-					    double xy = 1 - delta;
-					    double val = 2 * u + (1 - 2 * u) * (Math.pow (xy, (n + 1)));
-					    deltaq =  Math.pow (val,oneOverNPlus1) - 1;
-					} else {
-					    double xy = 1 - delta;
-					    double val = 2 * (1 - u) + 2 * (u - 0.5) * (Math.pow (xy, (n + 1)));
-					    deltaq = 1 - (Math.pow (val, oneOverNPlus1));
-					}
-
-					/*Change the value for the parent */
-					genes [k] = gene + deltaq * (paramUpper - paramLower);
-				    individuals [i].setGenes (genes);
-
-
-					// Debugging
-					if (debugging) {
-						System.out.println ("-------After RealMutation ");
-						population.printIndividual (i);
-					}
-				}
-			}
-		}
-
+                this.mutatePopulation(population);
 		this.pushOutput (population, 0);
 	}
+
+        protected void mutatePopulation(Population population) {
+          Individual [] individuals = (Individual []) population.getMembers ();
+
+          double oneOverNPlus1 = 1.0 / (n + 1.0);
+
+          // Loop over the entire population.
+          int last = population.size ();
+          Range [] traits = population.getTraits ();
+
+          // for each member of the population,
+          for (int i = 0; i < last; i++) {
+                  double [] genes = (double []) individuals [i].getGenes ();
+
+                  // for each gene of the individual
+                  for (int k = 0 ; k < genes.length; k++) {
+
+                          if (rand.nextDouble () < m_rate) {
+                                  DoubleRange dr = (DoubleRange) traits [k];
+                                  double gene = genes [k];
+                                  double paramLower = dr.getMin ();
+                                  double paramUpper = dr.getMax ();
+
+                                  // Swap the indicated genes.
+                                  if (debugging) {
+                                          System.out.println ("--------------------");
+                                          System.out.println ("Before SBX");
+                                          population.printIndividual (i);
+                                          population.printIndividual (i+1);
+                                  }
+
+
+                                  // compute beta sub q
+                                  double delta;
+                                  if ((gene - paramLower) < (paramUpper - gene))
+                                      delta = (gene - paramLower)/(paramUpper - paramLower);
+                                  else
+                                      delta = (paramUpper - gene)/(paramUpper - paramLower);
+
+                                  double u = rand.nextDouble ();
+                                  double deltaq;
+                                  if (u <= 0.5) {
+                                      double xy = 1 - delta;
+                                      double val = 2 * u + (1 - 2 * u) * (Math.pow (xy, (n + 1)));
+                                      deltaq =  Math.pow (val,oneOverNPlus1) - 1;
+                                  } else {
+                                      double xy = 1 - delta;
+                                      double val = 2 * (1 - u) + 2 * (u - 0.5) * (Math.pow (xy, (n + 1)));
+                                      deltaq = 1 - (Math.pow (val, oneOverNPlus1));
+                                  }
+
+                                  /*Change the value for the parent */
+                                  genes [k] = gene + deltaq * (paramUpper - paramLower);
+                              individuals [i].setGenes (genes);
+
+
+                                  // Debugging
+                                  if (debugging) {
+                                          System.out.println ("-------After RealMutation ");
+                                          population.printIndividual (i);
+                                  }
+                          }
+                  }
+          }
+        }
 
 	/**
 	 * Return the human readable name of the module.

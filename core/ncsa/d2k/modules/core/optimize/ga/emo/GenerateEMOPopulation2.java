@@ -55,43 +55,9 @@ public class GenerateEMOPopulation2
   }
 
   private int nonDominatedFronts = 50;
-/*  public void setNonDominatedFronts(int i) {
-    nonDominatedFronts = i;
-  }
-  public int getNonDominatedFronts() {
-    return nonDominatedFronts;
-  }*/
-
   private boolean useRecommendedPopSize = true;
-/*  public void setUseRecommendedPopSize(boolean b) {
-    useRecommendedPopSize = b;
-  }
-  public boolean getUseRecommendedPopSize() {
-    return useRecommendedPopSize;
-  }*/
-
   private boolean useRecommendedNumGenerations = true;
-/*  public void setUseRecommendedNumGenerations(boolean b) {
-    useRecommendedNumGenerations = b;
-  }
-  public boolean getUseRecommendedNumGenerations() {
-    return useRecommendedNumGenerations;
-  }*/
-
-/*  public int getMaxGenerations() {
-    return this.maxGenerations;
-  }
-  public void setMaxGenerations(int i) {
-    maxGenerations = i;
-  }*/
-
   private boolean createBinaryIndividuals = true;
-/*  public void setCreateBinaryIndividuals(boolean b) {
-    createBinaryIndividuals = b;
-  }
-  public boolean getCreateBinaryIndividuals() {
-    return createBinaryIndividuals;
-  }*/
 
   public String getInputName(int i) {
     switch (i) {
@@ -177,7 +143,7 @@ public class GenerateEMOPopulation2
   }
 
   private boolean firstRun;
-  private EMOPopulationInfo popInfo;
+  private EMOPopulationParams popInfo;
   private MutableTable variableNames;
 
   public void doit() throws Exception {
@@ -185,7 +151,7 @@ public class GenerateEMOPopulation2
     MutableTable populationTbl;
 
     if(firstRun) {
-      popInfo = (EMOPopulationInfo) pullInput(0);
+      popInfo = (EMOPopulationParams) pullInput(0);
       populationTbl = (MutableTable) popInfo.varNames;
       variableNames = (MutableTable)populationTbl.copy();
 

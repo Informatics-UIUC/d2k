@@ -53,12 +53,12 @@ public class NonDominationElitism extends ncsa.d2k.core.modules.ComputeModule
 	//////////////////////////////////
 
 	public String[] getInputTypes () {
-		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
+		String[] types = {"ncsa.d2k.modules.core.optimize.ga.NsgaPopulation"};
 		return types;
 	}
 
 	public String[] getOutputTypes () {
-		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
+		String[] types = {"ncsa.d2k.modules.core.optimize.ga.NsgaPopulation"};
 		return types;
 	}
 

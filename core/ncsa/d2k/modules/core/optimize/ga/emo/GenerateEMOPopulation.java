@@ -176,7 +176,7 @@ public class GenerateEMOPopulation
   }
 
   private boolean firstRun;
-  private EMOPopulationInfo popInfo;
+  private EMOPopulationParams popInfo;
   private MutableTable variableNames;
 
   public void doit() throws Exception {
@@ -184,7 +184,7 @@ public class GenerateEMOPopulation
     MutableTable populationTbl;
 
     if(firstRun) {
-      popInfo = (EMOPopulationInfo) pullInput(0);
+      popInfo = (EMOPopulationParams) pullInput(0);
       populationTbl = (MutableTable) popInfo.varNames;
       variableNames = (MutableTable)populationTbl.copy();
 

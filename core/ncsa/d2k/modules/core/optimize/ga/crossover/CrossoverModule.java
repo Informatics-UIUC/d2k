@@ -146,43 +146,47 @@ public class CrossoverModule extends ncsa.d2k.core.modules.ComputeModule
 
 		// Our input argument is the population.
 		Population population = (Population) this.pullInput (0);
-		Individual [] individuals = population.getMembers ();
-		int [] x = new int [2];
-
-		// Compute the last individual to cross.
-		int last = (int) (c_rate * population.size () * generationGap);
-		int dad;
-		for (int mom = 0; mom < last; mom += 2) {
-			dad = mom + 1;
-
-			// choose two Crossover points */
-			x[0] = (int) (Math.random () * population.getNumGenes ());
-			x[1] = (int) (Math.random () * (population.getNumGenes () - 1));
-			if (x [1] < x [0]) {
-
-				// Swap them
-				int swap = x [1];
-				x [1] = x [0];
-				x [0] = swap;
-			} else
-				x [1]++;
-
-			// Swap the indicated genes.
-			if (debugging) {
-				System.out.println ("--------------------");
-				System.out.println ("Before cross at positions "+x[0]+" and "+x[1]);
-				population.printIndividual (mom);
-				population.printIndividual (dad);
-			}
-			population.getMember (mom).crossAt (x, population.getMember (dad));
-			if (debugging) {
-				System.out.println ("After crossover ");
-				population.printIndividual (mom);
-				population.printIndividual (dad);
-			}
-		}
+                performCrossover(population);
 		this.pushOutput (population, 0);
 	}
+
+        protected void performCrossover(Population population) {
+          Individual [] individuals = population.getMembers ();
+          int [] x = new int [2];
+
+          // Compute the last individual to cross.
+          int last = (int) (c_rate * population.size () * generationGap);
+          int dad;
+          for (int mom = 0; mom < last; mom += 2) {
+                  dad = mom + 1;
+
+                  // choose two Crossover points */
+                  x[0] = (int) (Math.random () * population.getNumGenes ());
+                  x[1] = (int) (Math.random () * (population.getNumGenes () - 1));
+                  if (x [1] < x [0]) {
+
+                          // Swap them
+                          int swap = x [1];
+                          x [1] = x [0];
+                          x [0] = swap;
+                  } else
+                          x [1]++;
+
+                  // Swap the indicated genes.
+                  if (debugging) {
+                          System.out.println ("--------------------");
+                          System.out.println ("Before cross at positions "+x[0]+" and "+x[1]);
+                          population.printIndividual (mom);
+                          population.printIndividual (dad);
+                  }
+                  population.getMember (mom).crossAt (x, population.getMember (dad));
+                  if (debugging) {
+                          System.out.println ("After crossover ");
+                          population.printIndividual (mom);
+                          population.printIndividual (dad);
+                  }
+          }
+        }
 
 	/**
 	 * Return the human readable name of the module.

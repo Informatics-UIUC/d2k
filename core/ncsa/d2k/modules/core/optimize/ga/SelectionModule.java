@@ -95,43 +95,46 @@ abstract public class SelectionModule extends ncsa.d2k.core.modules.ComputeModul
 	*/
 	protected int [] sample;
 	public void doit () {
-
 		// Our input argument is the population.
 		Population population = (Population) this.pullInput (0);
-		if (debug) {
-			System.out.println ("==================================================");
-			System.out.println ("-------------- BEFORE SELECTION ------------------");
-			for (int i = 0 ; i < population.size () ; i++)
-				System.out.println (i+"::"+population.getMember (i));
-
-		}
-
-		// This is an array of indices which when done will identify
-		// the members of the new population.
-		int popSize = population.size ();
-		sample = new int [popSize];
-
-		// Compute the members to survive and reproduce
-		compute (population);
-		if (debug) {
-			System.out.println ("");
-			System.out.println ("-------------- AFTER SELECTION ------------------");
-			for (int i = 0 ; i < sample.length ; i++)
-				System.out.println (i+":"+sample [i]+":"+population.getMember (sample[i]));
-
-		}
-		population.shuffleIndices (sample);
-
-		// The population does the work of creating the new population,
-		// we tell it which members are to survive.
-		population.makeNextGeneration (sample);
-		if (debug) {
-			System.out.println ("");
-			System.out.println ("-------------- RANDOM ORDERED ------------------");
-			for (int i = 0 ; i < sample.length ; i++)
-				System.out.println (i+":"+i+":"+population.getMember (i));
-
-		}
+                this.performSelection(population);
 		this.pushOutput (population, 0);
 	}
+
+        protected void performSelection(Population population) {
+          if (debug) {
+                  System.out.println ("==================================================");
+                  System.out.println ("-------------- BEFORE SELECTION ------------------");
+                  for (int i = 0 ; i < population.size () ; i++)
+                          System.out.println (i+"::"+population.getMember (i));
+
+          }
+
+          // This is an array of indices which when done will identify
+          // the members of the new population.
+          int popSize = population.size ();
+          sample = new int [popSize];
+
+          // Compute the members to survive and reproduce
+          compute (population);
+          if (debug) {
+                  System.out.println ("");
+                  System.out.println ("-------------- AFTER SELECTION ------------------");
+                  for (int i = 0 ; i < sample.length ; i++)
+                          System.out.println (i+":"+sample [i]+":"+population.getMember (sample[i]));
+
+          }
+          population.shuffleIndices (sample);
+
+          // The population does the work of creating the new population,
+          // we tell it which members are to survive.
+          population.makeNextGeneration (sample);
+          if (debug) {
+                  System.out.println ("");
+                  System.out.println ("-------------- RANDOM ORDERED ------------------");
+                  for (int i = 0 ; i < sample.length ; i++)
+                          System.out.println (i+":"+i+":"+population.getMember (i));
+
+          }
+        }
 }

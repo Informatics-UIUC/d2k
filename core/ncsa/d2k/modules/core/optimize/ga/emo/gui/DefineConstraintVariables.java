@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize.ga.emo;
+package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -9,6 +9,7 @@ import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
 import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 public class DefineConstraintVariables
     extends AttributeConstruction {
@@ -23,22 +24,22 @@ public class DefineConstraintVariables
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
     return in;
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
     return out;
   }
 
   public String getInputName(int i) {
-    return "Population Info";
+    return "EMOParams";
   }
 
   public String getOutputName(int i) {
-    return "Population Info";
+    return "EMOParams";
   }
 
   public String getInputInfo(int i) {
@@ -66,7 +67,7 @@ public class DefineConstraintVariables
     // It is used in the redoBox() function
     private DefaultComboBoxModel columnModel;
 
-    private EMOPopulationInfo data;
+    private EMOPopulationParams data;
 
     public void paintComponent(Graphics g) {
       Graphics2D g2 = (Graphics2D) g;
@@ -75,9 +76,8 @@ public class DefineConstraintVariables
       super.paintComponent(g2);
     }
 
-
     public void setInput(Object o, int i) {
-      data = (EMOPopulationInfo) o;
+      data = (EMOPopulationParams) o;
       table = (MutableTable) data.varNames;
       this.initialize();
     }
@@ -107,7 +107,6 @@ public class DefineConstraintVariables
           columnModel.addElement( ((Construction)constructions[j]).label);
         }
       }
-
 
       // set the columnBox model to the recently
       // updated columnModel
@@ -212,6 +211,7 @@ public class DefineConstraintVariables
          }
 
          pushOutput(data, 0);
+         data = null;
          viewDone("Done");
       }
       else

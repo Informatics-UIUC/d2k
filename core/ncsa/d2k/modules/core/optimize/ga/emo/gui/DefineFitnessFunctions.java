@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize.ga.emo;
+package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -14,6 +14,7 @@ import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.gui.*;
 
 import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
  * Define the fitness functions.
@@ -41,22 +42,22 @@ public class DefineFitnessFunctions
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
     return in;
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
     return out;
   }
 
   public String getInputName(int i) {
-    return "Population Info";
+    return "EMOParams";
   }
 
   public String getOutputName(int i) {
-    return "Population Info";
+    return "EMOParams";
   }
 
   public String getInputInfo(int i) {
@@ -89,10 +90,10 @@ public class DefineFitnessFunctions
     //for use in displaying fitness function
     private JTable tableData;
     private DefaultTableModel modelData;
-    private EMOPopulationInfo data;
+    private EMOPopulationParams data;
 
     public void setInput(Object o, int i) {
-      data = (EMOPopulationInfo) o;
+      data = (EMOPopulationParams) o;
       this.table = (MutableTable) data.varNames;
       this.initialize();
     }
@@ -471,6 +472,7 @@ public class DefineFitnessFunctions
         }
 
         pushOutput(data, 0);
+        data = null;
         viewDone("Done");
       }
       else {

@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize.ga.emo;
+package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -13,6 +13,7 @@ import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.gui.*;
 
 import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
  * <code>FilterConstruction</code> is a simple user interface that facilitates
@@ -30,13 +31,13 @@ public class DefineConstraintFunctions
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
     return in;
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
     return out;
   }
 
@@ -45,7 +46,7 @@ public class DefineConstraintFunctions
   }
 
   public String getInputName(int i) {
-    return "Population Info";
+    return "EMOParams";
   }
 
   public String getOutputInfo(int i) {
@@ -53,7 +54,7 @@ public class DefineConstraintFunctions
   }
 
   public String getOutputName(int i) {
-    return "Population Info";
+    return "EMOParams";
   }
 
   protected UserView createUserView() {
@@ -86,7 +87,7 @@ public class DefineConstraintFunctions
     // using the widget. It is used in the redoBox() function.
     private DefaultComboBoxModel columnModel;
 
-    private EMOPopulationInfo data;
+    private EMOPopulationParams data;
 
     public void paintComponent(Graphics g) {
       Graphics2D g2 = (Graphics2D) g;
@@ -100,7 +101,7 @@ public class DefineConstraintFunctions
       if (i != 0) {
         return;
       }
-      data = (EMOPopulationInfo)o;
+      data = (EMOPopulationParams)o;
       table = (MutableTable)data.varNames;
       initialize();
     }
@@ -471,6 +472,7 @@ public class DefineConstraintFunctions
          }
 
          pushOutput(data, 0);
+         data = null;
          viewDone("Done");
       }
       else
