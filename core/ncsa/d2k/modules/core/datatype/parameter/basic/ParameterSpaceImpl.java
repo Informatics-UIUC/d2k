@@ -3,7 +3,7 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.projects.dtcheng.*;
 
-public class ParameterSpaceImpl extends FloatExampleSet implements ExampleTable, java.io.Serializable {
+public class ParameterSpaceImpl extends FloatExampleSet implements ParameterSpace, ExampleTable, java.io.Serializable {
 
   Table [] subspaceTables;
   int numSubspaces;
@@ -13,12 +13,7 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ExampleTable,
   String [] parameterNames;
   double [] parameterMinValues;
   double [] parameterMaxValues;
-  double [] parameterDefaultMinValues;
-  double [] parameterDefaultMaxValues;
   double [] parameterDefaultValues;
-  double [] parameterFactoryDefaultMinValues;
-  double [] parameterFactoryDefaultMaxValues;
-  double [] parameterFactoryDefaultValues;
   int    [] resolutions;
   int    [] parameterSubspaceIndices;
   int    [] parameterSubspaceParameterIndices;
@@ -55,16 +50,16 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ExampleTable,
    * @param parameterIndex the index of the parameter of interest.
    * @return a string value representing the name of the parameter.
    */
-  public String getParameterName(int parameterIndex) {
+  public String getName(int parameterIndex) {
     return parameterNames[parameterIndex];
   }
 
   /**
-   * Get the names of all the parameters.
-   * @return an array of string values representing the names of the all the parameters.
+   * Get the parameter index of that corresponds to the given name.
+   * @return an integer representing the index of the parameters.
    */
-  public String [] getParameterNames() {
-    return parameterNames;
+  public int getParameterIndex(String name) {
+    return -1;
   }
 
   /**
@@ -72,7 +67,7 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ExampleTable,
    * @param parameterIndex the index of the parameter of interest.
    * @return a double value representing the minimum possible value of the parameter.
    */
-  public double getMinParameterValue(int parameterIndex) {
+  public double getMinValue(int parameterIndex) {
     return parameterMinValues[parameterIndex];
   }
 
@@ -81,44 +76,76 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ExampleTable,
    * @param parameterIndex the index of the parameter of interest.
    * @return a double value representing the minimum possible value of the parameter.
    */
-  public double getMaxParameterValue(int parameterIndex) {
+  public double getMaxValue(int parameterIndex) {
     return parameterMaxValues[parameterIndex];
   }
 
   /**
-   * Get the minimum default value of a parameter based on factory settings.
+   * Get the default value of a parameter.
    * @param parameterIndex the index of the parameter of interest.
-   * @return a double value representing the factory minimum parameter setting.
+   * @return a double value representing the minimum possible value of the parameter.
    */
-  public double getFactoryDefaultMinParameterValue(int parameterIndex) {
-    return parameterFactoryDefaultMinValues[parameterIndex];
+  public double getDefaultValue(int parameterIndex) {
+    return parameterDefaultValues[parameterIndex];
   }
 
   /**
-   * Get the maximum default value of a parameter based on factory settings.
+   * Set the minimum value of a parameter.
    * @param parameterIndex the index of the parameter of interest.
-   * @return a double value representing the factory maximum parameter setting.
    */
-  public double getFactoryDefaultMaxParameterValue(int parameterIndex) {
-    return parameterFactoryDefaultMaxValues[parameterIndex];
+  public void setMinValue(int parameterIndex, double value) {
   }
 
   /**
-   * Get the minimum value of a parameter based on default settings.
+   * Set the maximum value of a parameter.
    * @param parameterIndex the index of the parameter of interest.
-   * @return a double value representing the default minimum parameter setting.
+   * @param value the value of the parameter of interest.
    */
-  public double getDefaultMinParameterValue(int parameterIndex) {
-    return parameterDefaultMinValues[parameterIndex];
+  public void setMaxValue(int parameterIndex, double value){
   }
 
   /**
-   * Get the maximum value of a parameter based on default settings.
+   * Set the default value of a parameter.
    * @param parameterIndex the index of the parameter of interest.
-   * @return a double value representing the default maximum parameter setting.
+   * @param value the value of the parameter of interest.
    */
-  public double getDefaultMaxParameterValue(int parameterIndex) {
-    return parameterDefaultMaxValues[parameterIndex];
+  public void setDefaultValue(int parameterIndex, double value){
+  }
+
+  /**
+   * Get the minimum values of all parameters returned as a ParamterPoint.
+   * @param parameterIndex the index of the parameter of interest.
+   * @return A ParamterPoint representing the minimum possible values of all parameters.
+   */
+  public ParameterPoint getMinParameterPoint() {
+    return null;
+  }
+
+  /**
+   * Get the maximum values of all parameters returned as a ParamterPoint.
+   * @param parameterIndex the index of the parameter of interest.
+   * @return A ParamterPoint representing the maximum possible values of all parameters.
+   */
+  public ParameterPoint getMaxParameterPoint(){
+    return null;
+  }
+
+  /**
+   * Get the default values of all parameters returned as a ParamterPoint.
+   * @param parameterIndex the index of the parameter of interest.
+   * @return A ParamterPoint representing the default values of all parameters.
+   */
+  public ParameterPoint getDefaultParameterPoint(){
+    return null;
+  }
+
+  /**
+   * Get the type of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   * @return a int value representing the number of intervals between the min and max parameter values.
+   */
+  public int getType(int parameterIndex) {
+    return resolutions[parameterIndex];
   }
 
   /**
