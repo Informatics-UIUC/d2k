@@ -6,13 +6,13 @@ import java.util.*;
 
 public class ContinuousExample implements Example, java.io.Serializable {
 
-  ContinuousExampleSet exampleSet;
+  ContinuousExampleTable exampleSet;
   int              exampleIndex;
 
   public ContinuousExample() {
   }
 
-  public ContinuousExample(ContinuousExampleSet exampleSet, int i) {
+  public ContinuousExample(ContinuousExampleTable exampleSet, int exampleIndex) {
     this.exampleSet   = exampleSet;
     this.exampleIndex = exampleIndex;
   }

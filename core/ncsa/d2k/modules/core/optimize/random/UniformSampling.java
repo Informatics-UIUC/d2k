@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.optimize.random;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.continuous.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import java.util.Random;
 import ncsa.d2k.core.modules.ComputeModule;
@@ -137,7 +137,7 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
   //int           BiasSpaceNumDimensions;
   double [][][] InitialExampleSet;
   int           InitialNumExamples;
-  ExampleTableImpl ExampleSet;
+  ContinuousExampleTable ExampleSet;
   int           NumExamples;
   double [][]   ExampleData;
 
@@ -147,43 +147,34 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
 
   public void doit() {
 
-    // read the problem and bias space once
     if (InitialExecution) {
       BiasSpace                    = (ParameterSpace) this.pullInput(0);
-      //BiasSpaceNumDimensions       = BiasSpace.getNumParameters();
-      //BiasSpaceDimensionNames      = BiasSpace.get
       InitialExecution             = false;
     }
     else {
-      // get the result of the experiment
-      //Example = (Double2DArray) this.pullFlowInput(1);
 
       Example example = (Example) this.pullInput(2);
 
       if (ExampleSet == null) {
-        String [] BiasSpaceDimensionNames = new String[BiasSpace.getNumParameters()];
-        for (int i = 0; i < BiasSpace.getNumParameters(); i++) {
-          BiasSpaceDimensionNames[i] = BiasSpace.getName(i);
-        }
-        /*
-        ExampleSet = new ExampleTableImpl(1,
-            BiasSpace.getNumParameters(),
-            ObjectiveSpaceNumDimensions,
-            BiasSpaceDimensionNames,
-            ObjectiveSpaceDimensionNames);
-        */
-        ExampleSet = new ExampleTableImpl();
 
-        int [] inputs = new int[example.getNumInputs()];
-        for (int i = 0; i < example.getNumInputs(); i++) {
-          inputs[i] = i;
+        String [] ControlSpaceDimensionNames = new String[BiasSpace.getNumParameters()];
+        for (int i = 0; i < BiasSpace.getNumParameters(); i++) {
+          ControlSpaceDimensionNames[i] = BiasSpace.getName(i);
         }
-        int [] outputs = new int[example.getNumOutputs()];
+
+        String [] ObjectiveSpaceDimensionNames = new String[example.getNumOutputs()];
         for (int i = 0; i < example.getNumOutputs(); i++) {
-          outputs[i] = i;
+          ObjectiveSpaceDimensionNames[i] = example.getOutputName(i);
         }
-        ExampleSet.setInputFeatures(inputs);
-        ExampleSet.setOutputFeatures(outputs);
+
+        ExampleSet = new ContinuousExampleTable(MaxNumIterations,
+            BiasSpace.getNumParameters(),
+            example.getNumOutputs(),
+            ControlSpaceDimensionNames,
+            ObjectiveSpaceDimensionNames);
+
+        ExampleSet.setNumRows(0);
+
       }
 
       // add example to set
@@ -204,11 +195,11 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
 
 
       for (int e = NumExamples - 1; e < NumExamples; e++) {
+
         double utility = ExampleSet.getExample(e).getOutputDouble(UtilityIndex);
 
         if (UtilityDirection == 1) {
-          if (utility > BestUtility)
-          {
+          if (utility > BestUtility) {
             BestUtility      = utility;
             BestExampleIndex = e;
           }
@@ -253,7 +244,7 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
         System.out.println("NumExamples............ " + NumExamples);
         System.out.println("UtilityDirection....... " + UtilityDirection);
         System.out.println("BestUtility............ " + BestUtility);
-        System.out.println("BestExampleIndex....... " + BestExampleIndex);
+        System.out.println("BestExampleNumber...... " + (BestExampleIndex + 1));
       }
 
 
@@ -267,37 +258,18 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
         data[index++] = ExampleSet.getOutputDouble(BestExampleIndex, i);
       }
 
-      ExampleTableImpl optimalExampleSet = new ExampleTableImpl();
 
-      int [] inputs = new int[ExampleSet.getNumInputFeatures()];
-      for (int i = 0; i < ExampleSet.getNumInputFeatures(); i++) {
-        inputs[i] = i;
-      }
-      int [] outputs = new int[ExampleSet.getNumOutputFeatures()];
-      for (int i = 0; i < ExampleSet.getNumOutputFeatures(); i++) {
-        outputs[i] = i;
-      }
-      ExampleSet.setInputFeatures(inputs);
-      ExampleSet.setOutputFeatures(outputs);
-
-
-    ExampleSet.addRow(data);
-
-
-
-
-/*
-      ContinuousExampleSet optimalExampleSet = new ContinuousExampleSet(data,
+      ContinuousExampleTable optimalExampleSet = new ContinuousExampleTable(
+          data,
           1,
           ExampleSet.getNumInputFeatures(),
           ExampleSet.getNumOutputFeatures(),
           ExampleSet.getInputNames(),
-          ExampleSet.getOutputNames());
-*/
+          ExampleSet.getOutputNames()
+          );
+
       this.pushOutput(optimalExampleSet, 1);
-
-
-      this.pushOutput(ExampleSet, 2);
+      this.pushOutput(ExampleSet,        2);
 
       beginExecution();
 

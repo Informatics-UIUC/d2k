@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.optimize;
 import ncsa.d2k.modules.core.datatype.parameter.*;
+import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.core.modules.*;
@@ -51,10 +52,10 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
   public String getInputName(int i) {
     switch(i) {
       case  0: return "Control Parameters";
-      case  1: return "ErrorFunctions";
-      case  2: return "ExampleSet";
-      case  3: return "ModelFunctionUtility";
-      default: return "NO SUCH INPUT!";
+      case  1: return "Error Function";
+      case  2: return "Example Table";
+      case  3: return "Objective Scores";
+      default: return "No such input!";
     }
   }
   public String getInputInfo(int i) {
@@ -62,8 +63,8 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
       case  0: return "Control Parameters";
       case  1: return "ErrorFunctions";
       case  2: return "ExampleSet";
-      case  3: return "Utility";
-      default: return "No such input";
+      case  3: return "Objective Scores";
+      default: return "No such input!";
     }
   }
 
@@ -72,7 +73,7 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
       "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
       "ncsa.d2k.modules.core.prediction.ErrorFunction",
       "ncsa.d2k.modules.core.datatype.table.ExampleTable",
-      "[D"
+      "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"
     };
     return types;
   }
@@ -81,24 +82,23 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
   public String getOutputName(int i) {
     switch(i) {
       case  0: return "Control Parameters";
-      case  1: return "Error Functions";
-      case  2: return "Train Examples";
-      case  3: return "Test Examples";
-      case  4: return "Mean Utility";
-      case  5: return "All Utilities";
-      default: return "NO SUCH OUTPUT!";
+      case  1: return "Error Function";
+      case  2: return "Train Example Table";
+      case  3: return "Test Example Table";
+      case  4: return "Objective Scores";
+      case  5: return "All Objective Scores";
+      default: return "No such output!";
     }
   }
-
   public String getOutputInfo(int i) {
     switch (i) {
       case 0: return "Control Parameters";
-      case 1: return "Error Functions";
-      case 2: return "Train Examples";
-      case 3: return "Test Examples";
-      case 4: return "Mean Utility";
-      case 5: return "All Utilities";
-      default: return "No such output";
+      case 1: return "Error Function";
+      case 2: return "Train Example Table";
+      case 3: return "Test Example Table";
+      case 4: return "Objective Scores";
+      case 5: return "All Objective Scores";
+      default: return "No such output!";
     }
   }
 
@@ -108,8 +108,8 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
       "ncsa.d2k.modules.core.prediction.ErrorFunction",
       "ncsa.d2k.modules.core.datatype.table.ExampleTable",
       "ncsa.d2k.modules.core.datatype.table.ExampleTable",
-      "[D",
-      "[[D"
+      "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+      "[Lncsa.d2k.modules.core.datatype.parameter.ParameterPoint;",
     };
     return types;
   }
@@ -126,8 +126,7 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
     void randomizeIntArray(int [] data, int numElements) throws Exception {
       int temp, rand_index;
 
-      for (int i = 0; i < numElements - 1; i++)
-      {
+      for (int i = 0; i < numElements - 1; i++) {
         rand_index       = randomInt(i + 1, numElements - 1);
         temp             = data[i];
         data[i]          = data[rand_index];
@@ -183,13 +182,13 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
 
 
 
-  ParameterPoint Bias;
+  ParameterPoint ControlPoint;
   ErrorFunction   errorFunction = null;
   ExampleTable ExampleSet;
   int numExamples;
   int numInputs;
   int numOutputs;
-  double [][] UtilityValues;
+  ParameterPoint [] UtilityValues;
   double []   UtilitySums;
 
   Random RandomNumberGenerator;
@@ -200,12 +199,13 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
     switch (PhaseIndex) {
       case 0:
 
-        Bias = (ParameterPoint) this.pullInput(0);
+        ControlPoint = (ParameterPoint) this.pullInput(0);
 
         if (InitialExecution)
           errorFunction = (ErrorFunction) this.pullInput(1);
 
         if (InitialExecution || (!RecycleExamples)) {
+
           RandomNumberGenerator = new Random(RandomSeed);
           ExampleSet   = (ExampleTable) this.pullInput(2);
 
@@ -294,7 +294,7 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
           */
 
 
-          this.pushOutput(Bias, 0);
+          this.pushOutput(ControlPoint,            0);
           this.pushOutput(errorFunction,           1);
           this.pushOutput(currentTrainExampleSet,  2);
           this.pushOutput(currentTestExampleSet,   3);
@@ -311,30 +311,38 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
 
       case 2:
 
-        double [] utilityArray = (double []) this.pullInput(3);
+        ParameterPoint objectivePoint = (ParameterPoint) this.pullInput(3);
+        //double [] utilityArray = (double []) this.pullInput(3);
 
-        double [] utilities = utilityArray;
-        int    numUtilities = utilities.length;
+        //double [] utilities = utilityArray;
+        int    numUtilities = objectivePoint.getNumParameters();
 
         if (UtilityIndex == 0) {
-          UtilityValues = new double[NumRepetitions][numUtilities];
+          UtilityValues = new ParameterPoint[NumRepetitions];
           UtilitySums   = new double[numUtilities];
         }
 
+        UtilityValues[UtilityIndex] = objectivePoint;
         for (int i = 0; i < numUtilities; i++) {
-          UtilityValues[UtilityIndex][i]  = utilities[i];
-          UtilitySums[i]                 += utilities[i];
+          UtilitySums[i] += objectivePoint.getValue(i);
         }
 
         UtilityIndex++;
         if (UtilityIndex == NumRepetitions) {
+
+          String [] names = new String[numUtilities];
+          for (int i = 0; i < numUtilities; i++) {
+            names[i] = objectivePoint.getName(i);
+          }
           double [] meanUtilityArray = new double[numUtilities];
           for (int i = 0; i < numUtilities; i++) {
             meanUtilityArray[i] = UtilitySums[i] / NumRepetitions;
           }
 
-          this.pushOutput(meanUtilityArray, 4);
-          this.pushOutput(UtilityValues,    5);
+          ParameterPoint meanObjectivePoint = new ParameterPointImpl();
+          meanObjectivePoint.createFromData(names, meanUtilityArray);
+          this.pushOutput(meanObjectivePoint, 4);
+          this.pushOutput(UtilityValues,      5);
 
           reset();
         }

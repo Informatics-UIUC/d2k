@@ -4,7 +4,7 @@ import ncsa.d2k.modules.TransformationModule;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-public class ContinuousExampleSet implements ExampleTable, TestTable, java.io.Serializable {
+public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.Serializable {
 
   int       numExamples;
   int       numFeatures;
@@ -17,7 +17,7 @@ public class ContinuousExampleSet implements ExampleTable, TestTable, java.io.Se
   int    [] testingSet;
   double [] data;
 
-  public ContinuousExampleSet () {
+  public ContinuousExampleTable () {
   }
 
   public void initialize(double [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
@@ -53,20 +53,19 @@ public class ContinuousExampleSet implements ExampleTable, TestTable, java.io.Se
 
 
 
-  public ContinuousExampleSet (double [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
-
+  public ContinuousExampleTable (double [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
     initialize(data, numExamples, numInputs, numOutputs, inputNames, outputNames);
   }
 
 
-  public ContinuousExampleSet (int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
+  public ContinuousExampleTable (int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
     double [] data = new double[numExamples * (numInputs + numOutputs)];
     initialize(data, numExamples, numInputs, numOutputs, inputNames, outputNames);
   }
 
 
 
-public ContinuousExampleSet (double [][][] data, String [] inputNames, String [] outputNames) {
+public ContinuousExampleTable (double [][][] data, String [] inputNames, String [] outputNames) {
 
     int numExamples = data.length;
     int numInputs   = inputNames.length;
@@ -90,7 +89,7 @@ public ContinuousExampleSet (double [][][] data, String [] inputNames, String []
   }
 
   public Table copy() {
-    ContinuousExampleSet copy   = new ContinuousExampleSet();
+    ContinuousExampleTable copy   = new ContinuousExampleTable();
 
     copy.numExamples        = this.numExamples;
     copy.numFeatures        = this.numFeatures;
@@ -107,7 +106,7 @@ public ContinuousExampleSet (double [][][] data, String [] inputNames, String []
   }
 
   public Table copyByReference() {
-    ContinuousExampleSet copy   = new ContinuousExampleSet();
+    ContinuousExampleTable copy   = new ContinuousExampleTable();
 
     copy.numExamples        = this.numExamples;
     copy.numFeatures        = this.numFeatures;
@@ -298,7 +297,7 @@ public ContinuousExampleSet (double [][][] data, String [] inputNames, String []
 
 
 
-  public void setExample(int e1, ContinuousExampleSet exampleSet, int e2) {
+  public void setExample(int e1, ContinuousExampleTable exampleSet, int e2) {
     for (int i = 0; i < numFeatures; i++) {
       data[exampleIndices[e1] * numFeatures + i] = data[exampleIndices[e2] * numFeatures + i];
     }
@@ -556,7 +555,7 @@ public ContinuousExampleSet (double [][][] data, String [] inputNames, String []
 
   public Table getSubsetByReference(int rows[]){
 
-    ContinuousExampleSet table = (ContinuousExampleSet) this.copyByReference();
+    ContinuousExampleTable table = (ContinuousExampleTable) this.copyByReference();
 
     int numExamples = rows.length;
     int [] newExampleIndices = new int[numExamples];
@@ -573,7 +572,7 @@ public ContinuousExampleSet (double [][][] data, String [] inputNames, String []
 
   public Table getSubsetByColumnsReference(int cols[]) {
 
-    ContinuousExampleSet table = (ContinuousExampleSet) this.copyByReference();
+    ContinuousExampleTable table = (ContinuousExampleTable) this.copyByReference();
 
     int numInputs = cols.length;
     int [] newInputIndices = new int[numInputs];
@@ -690,7 +689,7 @@ public ContinuousExampleSet (double [][][] data, String [] inputNames, String []
 
   public TestTable getTestTable () {
 
-    ContinuousExampleSet table = (ContinuousExampleSet) this.copy();
+    ContinuousExampleTable table = (ContinuousExampleTable) this.copy();
 
     int [] newExampleIndices = new int[testingSet.length];
 
@@ -909,7 +908,7 @@ public ContinuousExampleSet (double [][][] data, String [] inputNames, String []
   }
 
   public void setExample(int e1, ExampleTable exampleSet, int e2) {
-    exampleIndices[e1] = ((ContinuousExampleSet) exampleSet).exampleIndices[e2];
+    exampleIndices[e1] = ((ContinuousExampleTable) exampleSet).exampleIndices[e2];
       /*
       for (int i = 0; i < numInputs; i++)
       {
@@ -936,14 +935,16 @@ public ContinuousExampleSet (double [][][] data, String [] inputNames, String []
 
   public void addRow(double[] newEntry){
 
-    int newNumExamples = numExamples + 1;
+    int newNumExamples = this.numExamples + 1;
     int [] newExampleIndices = new int[newNumExamples];
     System.arraycopy(this.exampleIndices, 0, newExampleIndices, 0, this.numExamples);
-    newExampleIndices[this.exampleIndices.length] = this.numExamples;
+    newExampleIndices[this.numExamples] = this.numExamples;
 
     double [] newData = new double[newNumExamples * this.numFeatures];
     System.arraycopy(this.data, 0, newData, 0, this.numExamples * this.numFeatures);
     System.arraycopy(newEntry, 0, newData, this.numExamples * this.numFeatures, this.numFeatures);
+
+    this.data = newData;
 
     this.numExamples++;
 
@@ -1273,6 +1274,7 @@ public ContinuousExampleSet (double [][][] data, String [] inputNames, String []
   }
 
   public void setNumRows(int newCapacity) {
+    this.numExamples = newCapacity;
   }
 
   public void addTransformation (Transformation tm) {

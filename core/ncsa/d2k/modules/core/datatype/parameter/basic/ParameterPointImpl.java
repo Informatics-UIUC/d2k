@@ -3,7 +3,7 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.continuous.*;
 
-public class ParameterPointImpl extends ContinuousExampleSet implements ParameterPoint {
+public class ParameterPointImpl extends ContinuousExampleTable implements ParameterPoint {
 
   final static int valueRowIndex = 0;
 
