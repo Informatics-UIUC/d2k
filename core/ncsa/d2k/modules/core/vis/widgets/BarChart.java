@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -26,8 +27,11 @@ public class BarChart extends Chart {
 
    // Pixels per increment
    double xoffsetincrement, yoffsetincrement;
-   double minimumxoffsetincrement = 40;
-   double minimumyoffsetincrement = 15;
+   double minimumxoffsetincrement = 5;
+   double minimumyoffsetincrement = 5;
+
+   double minimumgraphwidth;
+   double minimumgraphheight;
 
    // Units per pixel
    double xscale, yscale;
@@ -39,12 +43,7 @@ public class BarChart extends Chart {
    int tickmarksize = 4;
 
    public BarChart(Table table, DataSet set, GraphSettings settings) {
-      /*this.table = table;
-      this.set = set;
-      this.settings = settings;
-      bins = table.getNumRows();
-      */
-      super(table, set, settings);
+     super(table, set, settings);
 
       setBackground(Color.white);
 
@@ -52,21 +51,8 @@ public class BarChart extends Chart {
       xlabel = settings.xaxis;
       ylabel = settings.yaxis;
 
-      /*
-      // Find interval for x data
-      if ((settings.xminimum == null) || (settings.xmaximum == null)) {
-
-      }
-      else {
-         xminimum = settings.xminimum.doubleValue();
-         xmaximum = settings.xmaximum.doubleValue();
-      }
-      */
-
       // Find interval for y data
-      //NumericColumn column;
       if ((settings.yminimum == null) || (settings.ymaximum == null)) {
-         //(set.y)
          double[] mm = getMinAndMax(table, set.y);
          yminimum = mm[0] - .25 * mm[0];
          if (yminimum < 0)
@@ -80,7 +66,6 @@ public class BarChart extends Chart {
    }
 
    public double[] getMinAndMax(Table table, int ndx) {
-
       double[] minAndMax = new double[2];
       double mandm;
       for (int i = 0; i < table.getNumRows(); i++) {
@@ -93,19 +78,17 @@ public class BarChart extends Chart {
          }
       }
 
-      // change: scale intelligently
-      // i.e., if max is 900, scale to max of 1000 to make graph pretty
+      // Scale intelligently
       minAndMax[1] = maxScale(minAndMax[1]);
 
       return minAndMax;
-
    }
 
    public void paintComponent(Graphics g) {
       super.paintComponent(g);
       Graphics2D g2 = (Graphics2D) g;
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-         RenderingHints.VALUE_ANTIALIAS_ON);
+                          RenderingHints.VALUE_ANTIALIAS_ON);
 
       font = g2.getFont();
       metrics = getFontMetrics(font);
@@ -117,54 +100,72 @@ public class BarChart extends Chart {
 
       // Determine offsets
       initOffsets();
-
       resize();
-
-      yvalueincrement = (ymaximum-yminimum)/gridsize;
-
-      yoffsetincrement = (graphheight-topoffset-bottomoffset)/gridsize;
-      xoffsetincrement = (graphwidth-leftoffset-rightoffset)/bins;
-
-      //xscale = (xmaximum-xminimum)/(graphwidth-leftoffset-rightoffset);
-      yscale = (ymaximum-yminimum)/(graphheight-topoffset-bottomoffset);
 
       drawAxis(g2);
       if (settings.displaygrid)
-         drawGrid(g2);
+        drawGrid(g2);
       if (settings.displaytickmarks)
-         drawTickMarks(g2);
+        drawTickMarks(g2);
       if (settings.displayscale)
-         drawScale(g2);
+        drawScale(g2);
       if (settings.displayaxislabels)
-         drawAxisLabels(g2);
+        drawAxisLabels(g2);
       if (settings.displaytitle)
-         drawTitle(g2);
+        drawTitle(g2);
+      if (settings.displaylegend)
+        drawLegend(g2); // Draw legend after drawing scale
       drawDataSet(g2, set);
    }
 
    public void initOffsets() {
-      // Offsets of axis
-      //leftoffset = 65;
-      //rightoffset = 65;
-      //bottomoffset = 65;
-      //topoffset = 65;
-        leftoffset = .2*getWidth();
-       rightoffset = .1*getWidth();
-        // Offsets of axis
-        bottomoffset = .25*getHeight();
-      topoffset = .05*getHeight();
+     if (!settings.displaylegend) {
+       legendheight = 0;
+       legendwidth = 0;
+       rightoffset = .05*graphwidth;
+     }
+     else {
+       String[] values = TableUtilities.uniqueValues(table, set.z);
+       legendwidth = metrics.stringWidth(values[0]);
+       for (int index=1; index < values.length; index++) {
+         int stringwidth = metrics.stringWidth(values[index]);
+         if (stringwidth > legendwidth)
+           legendwidth = stringwidth;
+       }
+
+       legendwidth += 4*smallspace+samplecolorsize;
+       legendheight = (values.length*fontheight)+(fontheight-samplecolorsize);
+
+       legendleftoffset = graphwidth-legendwidth-legendspace;
+       legendtopoffset = graphheight/2-legendheight/2;
+
+       rightoffset = legendwidth+2*legendspace;
+     }
+
+     leftoffset = .05*graphwidth+point_size+longest_font_width_y;
+     bottomoffset = .1*graphheight+point_size+longest_font_width_x;
+     topoffset = .1*graphheight+point_size;
    }
 
    // Resize scale
    public void resize() {
       gridsize = settings.gridsize;
 
-      // y
+      yvalueincrement = (ymaximum-yminimum)/gridsize;
+      yscale = (ymaximum-yminimum)/(graphheight-topoffset-bottomoffset);
+
+      // x axis
+      xoffsetincrement = (graphwidth-leftoffset-rightoffset)/bins;
+
+      // y axis
       yoffsetincrement = (graphheight-topoffset-bottomoffset)/gridsize;
       while ((yoffsetincrement < minimumyoffsetincrement) && (gridsize > 0)) {
          gridsize = gridsize/2;
          yoffsetincrement = (graphheight-topoffset-bottomoffset)/gridsize;
       }
+   }
+
+   public void drawLegend(Graphics2D g2) {
    }
 
    public void drawDataSet(Graphics2D g2, DataSet set) {
@@ -176,7 +177,6 @@ public class BarChart extends Chart {
          double y = graphheight-bottomoffset-(value-yminimum)/yscale;
          double barheight = (value-yminimum)/yscale;
 
-         // g2.setColor(new Color(102, 153, 255));
          g2.setColor(new Color((int)(255 - 255*index/bins), 51, (int)(255*index/bins)));
          g2.fill(new Rectangle2D.Double(x, y, barwidth, barheight));
          g2.setColor(Color.black);
@@ -211,19 +211,24 @@ public class BarChart extends Chart {
       numberformat.setMaximumFractionDigits(3);
 
       // x axis
-      TextualColumn textcolumn;
       double x = leftoffset+(xoffsetincrement/2);
       double lastx = 0;
-      AffineTransform transform = g2.getTransform(); //
+      AffineTransform transform = g2.getTransform();
       g2.rotate(Math.toRadians(-90));
       int ascent = metrics.getAscent();
       for (int index=0; index < bins; index++) {
          if (x - ascent/2 + 3 > lastx) {
-            String bin = (String)table.getString(index, set.x);
+            String bin = (String) table.getString(index, set.x);
+
             int stringwidth = metrics.stringWidth(bin);
+            if (stringwidth > longest_font_width_x) {
+              longest_font_width_x = stringwidth;
+              repaint();
+            }
+
             g2.drawString(bin,
-               (int)-(graphheight-bottomoffset+stringwidth+tickmarksize+3),
-               (int)(x+ascent/2));
+                          (int) -(graphheight-bottomoffset+stringwidth+tickmarksize+3),
+                          (int) (x+ascent/2));
             lastx = x + ascent/2;
          }
          x += xoffsetincrement;
@@ -235,9 +240,16 @@ public class BarChart extends Chart {
       double y = graphheight-bottomoffset;
       for (int index=0; index < gridsize; index++) {
          String string = numberformat.format(yvalue);
+
          int stringwidth = metrics.stringWidth(string);
+         if (stringwidth > longest_font_width_y) {
+           longest_font_width_y = stringwidth;
+           repaint();
+         }
+
          g2.drawString(string, (int) (leftoffset-stringwidth-smallspace),
-            (int) (y+fontascent/2));
+                       (int) (y+fontascent/2));
+
          y -= yoffsetincrement;
          yvalue += yvalueincrement;
       }
@@ -246,7 +258,7 @@ public class BarChart extends Chart {
    public void drawTitle(Graphics2D g2) {
       int stringwidth = metrics.stringWidth(title);
       double x = (graphwidth-stringwidth)/2;
-      double y = (topoffset)/2;
+      double y = (topoffset)/2 + fontheight/2;
 
       g2.drawString(title, (int) x, (int) y);
    }
@@ -305,49 +317,38 @@ public class BarChart extends Chart {
    }
 
    /**
-    * scale a double up, for graph max -- 14 to 15, 19 to 20, 99 to 100, etc.
+    * Scale a double up, for graph max -- 14 to 15, 19 to 20, 99 to 100, etc.
     * @param d
     * @return
     */
    protected double maxScale(double d) {
+     if (d <= 0) {
+       // do nothing
+     }
+     else if (d < 1) {
+       // do nothing
+     }
+     else {
+       double magnitude = 1;
+       double danger = Double.MAX_VALUE / 100;
 
-      if (d <= 0) {
-         // do nothing
-      }
-      else if (d < 1) {
-         // do nothing
-      }
-      else {
+       while (magnitude < danger) {
+         if (d < magnitude * 10) { // matches
+           double addend = magnitude;
+           while (addend < d) {
+             addend += magnitude;
+           }
 
-         double magnitude = 1;
-         double danger = Double.MAX_VALUE / 100;
+           if (d < addend - magnitude / 2)
+             d = addend - magnitude / 2;
+           else
+             d = addend;
 
-         while (magnitude < danger) {
-
-            if (d < magnitude * 10) { // matches
-
-               double addend = magnitude;
-               while (addend < d) {
-                  addend += magnitude;
-               }
-
-               if (d < addend - magnitude / 2)
-                  d = addend - magnitude / 2;
-               else
-                  d = addend;
-
-               break;
-
-            }
-
-            magnitude = magnitude * 10;
-
+           break;
          }
-
-      }
-
-      return d;
-
+         magnitude = magnitude * 10;
+       }
+     }
+     return d;
    }
-
 }
