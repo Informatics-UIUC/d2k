@@ -1,5 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.mutation;
 
+import ncsa.d2k.modules.core.optimize.ga.mutation.*;
+
 public class MutationFactory {
 
   private static final int MUTATION = 0;

@@ -1,5 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.crossover;
 
+import ncsa.d2k.modules.core.optimize.ga.crossover.*;
+
 public class CrossoverFactory {
   private static final int TWO_POINT_CROSSOVER = 0;
   private static final int UNIFORM_CROSSOVER = 1;

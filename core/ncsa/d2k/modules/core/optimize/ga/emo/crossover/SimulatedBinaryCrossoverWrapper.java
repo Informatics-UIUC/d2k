@@ -1,9 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.crossover;
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.crossover.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
  * A special subclass of SimulatedBinaryCrossover that gets its properties
@@ -16,33 +14,12 @@ import ncsa.d2k.modules.core.optimize.ga.crossover.*;
  * @version 1.0
  */
 class SimulatedBinaryCrossoverWrapper
-    extends Crossover implements RealIndividualProcess {
+    extends SimulatedBinaryCrossoverObj implements RealIndividualFunction {
 
-  private SimulatedBinaryCrossover sbc;
   private NProp n;
-
+  
   SimulatedBinaryCrossoverWrapper() {
-    sbc = new SimulatedBinaryCrossover();
     n = new NProp();
-  }
-
-  public void setCrossoverRate(double cr) {
-    super.setCrossoverRate(cr);
-    sbc.setCrossoverRate(cr);
-  }
-
-  public void setGenerationGap(double gg) {
-    super.setGenerationGap(gg);
-    sbc.setGenerationGap(gg);
-  }
-
-  public void performCrossover(Population p) {
-    if(n.isDirty) {
-      Double d = (Double)n.getValue();
-      sbc.setN(d.doubleValue());
-      n.isDirty = false;
-    }
-    sbc.performCrossover(p);
   }
 
   public String getName() {
@@ -50,9 +27,9 @@ class SimulatedBinaryCrossoverWrapper
   }
   
   public String getDescription() {
-    return sbc.getModuleInfo();
+    return "";
   }
-
+  
   public Property[] getProperties() {
     return new Property[] {n};
   }

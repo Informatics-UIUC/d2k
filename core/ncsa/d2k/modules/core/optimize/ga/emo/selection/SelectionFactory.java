@@ -1,5 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 
+import ncsa.d2k.modules.core.optimize.ga.selection.*;
+
 public class SelectionFactory {
 
   private static final int RANK_SELECTION = 0;

@@ -1,27 +1,20 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 
-import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.modules.core.optimize.ga.selection.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
+import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
-class StochasticUniversalSamplingWrapper extends Selection
-  implements BinaryIndividualProcess, RealIndividualProcess {
+class StochasticUniversalSamplingWrapper extends StochasticUniversalSamplingObj
+  implements BinaryIndividualFunction, RealIndividualFunction {
 
-  private StochasticUniversalSampling sus;
-
-  StochasticUniversalSamplingWrapper() {
-    sus = new StochasticUniversalSampling();
-  }
-
-  public void performSelection(Population p) {
-    sus.performSelection(p);
-  }
-  
   public String getDescription() {
-    return sus.getModuleInfo();
+    return "";
   }
 
   public String getName() {
     return "Stochastic Universal Sampling";
+  }
+  
+  public Property[] getProperties() {
+    return null;
   }
 }

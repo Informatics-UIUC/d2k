@@ -1,27 +1,15 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 
-import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.modules.core.optimize.ga.selection.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
+import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
-class RankSelectionWrapper extends Selection
-    implements BinaryIndividualProcess, RealIndividualProcess {
+class RankSelectionWrapper extends RankSelectionObj
+    implements BinaryIndividualFunction, RealIndividualFunction {
 
-  private RankSelection rs;
   private PressureProp pp;
-
+  
   RankSelectionWrapper() {
-    rs = new RankSelection();
     pp = new PressureProp();
-  }
-
-  public void performSelection(Population p) {
-    if(pp.isDirty) {
-      Double d = (Double)pp.getValue();
-      rs.setSelectivePressure(d.doubleValue());
-      pp.isDirty = false;
-    }
-    rs.performSelection(p);
   }
 
   public String getName() {
@@ -29,7 +17,7 @@ class RankSelectionWrapper extends Selection
   }
   
   public String getDescription() {
-    return rs.getModuleInfo();
+    return "";
   }
 
   public Property[] getProperties() {

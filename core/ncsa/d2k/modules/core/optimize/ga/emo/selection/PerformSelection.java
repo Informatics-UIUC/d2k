@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
+import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
 public class PerformSelection extends ComputeModule {
 
@@ -34,22 +35,23 @@ public class PerformSelection extends ComputeModule {
 
   public void endExecution() {
     population = null;
-    selectionModule = null;
+    selection = null;
   }
 
-  private EMOPopulation population;
-  private Selection selectionModule;
+  private transient EMOPopulation population;
+  private transient Selection selection;
 
   public void doit() throws Exception {
     EMOPopulation pop = (EMOPopulation)pullInput(0);
 
     if(population != pop) {
       Parameters info = pop.getParameters();
-      selectionModule = info.selection;
+      selection = info.selection;
       population = pop;
     }
 
-    selectionModule.performSelection((Population)pop);
+    selection.performSelection((Population)pop);
     pushOutput(pop, 0);
+System.out.println("perform selection");    
   }
 }

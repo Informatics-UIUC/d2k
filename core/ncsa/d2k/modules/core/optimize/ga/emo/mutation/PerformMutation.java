@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo.mutation;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
+import ncsa.d2k.modules.core.optimize.ga.mutation.*;
 
 public class PerformMutation extends ComputeModule {
 
@@ -34,22 +35,23 @@ public class PerformMutation extends ComputeModule {
 
   public void endExecution() {
     population = null;
-    mutateModule = null;
+    mutation = null;
   }
 
-  private EMOPopulation population;
-  private Mutation mutateModule;
+  private transient EMOPopulation population;
+  private transient Mutation mutation;
 
   public void doit() throws Exception {
     EMOPopulation pop = (EMOPopulation)pullInput(0);
 
     if(population != pop) {
       Parameters info = pop.getParameters();
-      mutateModule = info.mutation;
+      mutation = info.mutation;
       population = pop;
     }
 
-    mutateModule.mutatePopulation((Population)pop);
+    mutation.mutatePopulation((Population)pop);
     pushOutput(pop, 0);
+System.out.println("mutate!");    
   }
 }

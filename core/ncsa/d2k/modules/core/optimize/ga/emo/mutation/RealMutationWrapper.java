@@ -1,32 +1,15 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.mutation;
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
+import ncsa.d2k.modules.core.optimize.ga.mutation.*;
 
 class RealMutationWrapper
-    extends Mutation implements RealIndividualProcess {
+    extends RealMutationObj implements RealIndividualFunction {
 
-  private RealMutation rm;
   private NProp n;
-
+  
   RealMutationWrapper() {
-    rm = new RealMutation();
     n = new NProp();
-  }
-
-  public void setMutationRate(double mr) {
-    super.setMutationRate(mr);
-    rm.setMutationRate(mr);
-  }
-
-  public void mutatePopulation(Population p) {
-    if(n.isDirty) {
-      Double d = (Double)n.getValue();
-      rm.setN(d.doubleValue());
-      n.isDirty = false;
-    }
-    rm.mutatePopulation(p);
   }
 
   public String getName() {
@@ -34,7 +17,7 @@ class RealMutationWrapper
   }
   
   public String getDescription() {
-    return rm.getModuleInfo();
+    return "";
   }
 
   public Property[] getProperties() {

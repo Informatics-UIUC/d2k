@@ -191,6 +191,7 @@ public class GeneratePopulation
       ((Population)pop).setMaxGenerations(params.maxGenerations);
       
       pushOutput(pop, 0);
+System.out.println("Gen pop");      
     }
     // otherwise, for an MO problem (mulitple fitness functions) create
     // either a constrained or unconstrained nsga population
@@ -205,6 +206,7 @@ public class GeneratePopulation
       }
       // if there are no constraints, we create an Unconstrained pop
       else {
+System.out.println("uncons");        
         pop = new EMOUnconstrainedNsgaPopulation(xyz, fit,
                                               params.populationSize, 0.01);
       }
@@ -214,6 +216,7 @@ public class GeneratePopulation
       ((NsgaPopulation)pop).setMaxGenerations(params.maxGenerations);
 
       pushOutput(pop, 0);
+System.out.println("Gen pop");      
     }
   }
 }

@@ -11,9 +11,12 @@ import javax.swing.table.*;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.gui.*;
+import ncsa.d2k.modules.core.optimize.ga.crossover.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.crossover.*;
+import ncsa.d2k.modules.core.optimize.ga.mutation.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.mutation.*;
+import ncsa.d2k.modules.core.optimize.ga.selection.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.selection.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
@@ -205,7 +208,7 @@ public class Params
           params.mutation = adv.mutationRadio[i].mutation;  
           
           HashMap propLookup = new HashMap();
-          Property[] p = params.mutation.getProperties();
+          Property[] p = ((EMOFunction)params.mutation).getProperties();
           if(p == null)
             continue;
             
@@ -255,7 +258,7 @@ public class Params
           params.crossover = adv.crossoverRadio[i].crossover;
           
           HashMap propLookup = new HashMap();
-          Property[] p = params.crossover.getProperties();
+          Property[] p = ((EMOFunction)params.crossover).getProperties();
           if(p == null)
             continue;
 
@@ -304,7 +307,7 @@ public class Params
         if(adv.selectionRadio[i].isSelected()) {
           params.selection = adv.selectionRadio[i].selection;
           HashMap propLookup = new HashMap();
-          Property[] p = params.selection.getProperties();
+          Property[] p = ((EMOFunction)params.selection).getProperties();
           if(p == null)
             continue;
 
@@ -473,11 +476,11 @@ public class Params
 
       // need to save which type of mutation, sel, crossover selected
       // save the name of the type selected
-      cp.mutName = params.mutation.getName();
+      cp.mutName = ((EMOFunction)params.mutation).getName();
       // we also keep a hash map for the extra properties of mutation
       // key is prop name, the value is the property value
       HashMap mutProps = new HashMap();
-      Property[] props = params.mutation.getProperties();
+      Property[] props = ((EMOFunction)params.mutation).getProperties();
       if (props != null) {
         for (int i = 0; i < props.length; i++) {
           mutProps.put(props[i].getName(), props[i].getValue());
@@ -485,9 +488,9 @@ public class Params
       }
       cp.mutProps = mutProps;
 
-      cp.crossName = params.crossover.getName();
+      cp.crossName = ((EMOFunction)params.crossover).getName();
       HashMap crossProps = new HashMap();
-      props = params.crossover.getProperties();
+      props = ((EMOFunction)params.crossover).getProperties();
       if (props != null) {
         for (int i = 0; i < props.length; i++) {
           crossProps.put(props[i].getName(), props[i].getValue());
@@ -495,9 +498,9 @@ public class Params
       }
       cp.crossProps = crossProps;
 
-      cp.selName = params.selection.getName();
+      cp.selName = ((EMOFunction)params.selection).getName();
       HashMap selProps = new HashMap();
-      props = params.selection.getProperties();
+      props = ((EMOFunction)params.selection).getProperties();
       if (props != null) {
         for (int i = 0; i < props.length; i++) {
           selProps.put(props[i].getName(), props[i].getValue());
@@ -1109,7 +1112,7 @@ public class Params
         // count the number of extra properties...
         int numExtraMutationProps = 0;
         for (int i = 0; i < numMutation; i++) {
-          Property[] props = mutationChoices[i].getProperties();
+          Property[] props = ((EMOFunction)mutationChoices[i]).getProperties();
           if (props != null) {
             numExtraMutationProps += props.length;
           }
@@ -1121,12 +1124,13 @@ public class Params
         ButtonGroup mutGroup = new ButtonGroup();
         for (int i = 0; i < numMutation; i++) {
           Mutation mut = mutationChoices[i];
-          mutationRadio[i] = new MutationRadioButton(mut.getName(),
-              mut.getDescription(), mut);
+          mutationRadio[i] = new MutationRadioButton(
+              ((EMOFunction)mut).getName(),
+              ((EMOFunction)mut).getDescription(), mut);
           mutGroup.add(mutationRadio[i]);
           mutType.add(mutationRadio[i]);
 
-          Property[] props = mut.getProperties();
+          Property[] props = ((EMOFunction)mut).getProperties();
           HashSet propSet = new HashSet();
           if (props != null) {
             for (int j = 0; j < props.length; j++) {
@@ -1158,7 +1162,7 @@ public class Params
         int numCrossover = crossoverChoices.length;
         int numExtraCrossoverProps = 0;
         for (int i = 0; i < numCrossover; i++) {
-          Property[] props = crossoverChoices[i].getProperties();
+          Property[] props = ((EMOFunction)crossoverChoices[i]).getProperties();
           if (props != null) {
             numExtraCrossoverProps += props.length;
           }
@@ -1170,12 +1174,13 @@ public class Params
         ButtonGroup crsGroup = new ButtonGroup();
         for (int i = 0; i < numCrossover; i++) {
           Crossover crs = crossoverChoices[i];
-          crossoverRadio[i] = new CrossoverRadioButton(crs.getName(),
-              crs.getDescription(), crs);
+          crossoverRadio[i] = new CrossoverRadioButton(
+              ((EMOFunction)crs).getName(),
+              ((EMOFunction)crs).getDescription(), crs);
           crsGroup.add(crossoverRadio[i]);
           xType.add(crossoverRadio[i]);
 
-          Property[] props = crs.getProperties();
+          Property[] props = ((EMOFunction)crs).getProperties();
           HashSet propSet = new HashSet();
           if (props != null) {
             for (int j = 0; j < props.length; j++) {
@@ -1207,7 +1212,7 @@ public class Params
         int numSelection = selectionChoices.length;
         int numExtraSelectionProps = 0;
         for (int i = 0; i < numSelection; i++) {
-          Property[] props = selectionChoices[i].getProperties();
+          Property[] props = ((EMOFunction)selectionChoices[i]).getProperties();
           if (props != null) {
             numExtraSelectionProps += props.length;
           }
@@ -1220,12 +1225,13 @@ public class Params
         ButtonGroup selGroup = new ButtonGroup();
         for (int i = 0; i < numSelection; i++) {
           Selection sel = selectionChoices[i];
-          selectionRadio[i] = new SelectionRadioButton(sel.getName(),
-              sel.getDescription(), sel);
+          selectionRadio[i] = new SelectionRadioButton(
+              ((EMOFunction)sel).getName(),
+              ((EMOFunction)sel).getDescription(), sel);
           selGroup.add(selectionRadio[i]);
 
           selType.add(selectionRadio[i]);
-          Property[] props = sel.getProperties();
+          Property[] props = ((EMOFunction)sel).getProperties();
           HashSet propSet = new HashSet();
           if (props != null) {
             for (int j = 0; j < props.length; j++) {
@@ -1377,7 +1383,7 @@ public class Params
         // only enable the mutation types that implement BinaryIndividualProcess
         for (int i = 0; i < mutationRadio.length; i++) {
           Mutation mut = mutationRadio[i].mutation;
-          if (mut instanceof BinaryIndividualProcess) 
+          if (mut instanceof BinaryIndividualFunction) 
             mutationRadio[i].setEnabled(true);
           else 
             mutationRadio[i].setEnabled(false);
@@ -1386,7 +1392,7 @@ public class Params
         // only enable the crossover types that implement BinaryIndividualProcess
         for (int i = 0; i < crossoverRadio.length; i++) {
           Crossover x = crossoverRadio[i].crossover;
-          if (x instanceof BinaryIndividualProcess) 
+          if (x instanceof BinaryIndividualFunction) 
             crossoverRadio[i].setEnabled(true);
           else 
             crossoverRadio[i].setEnabled(false);
@@ -1395,7 +1401,7 @@ public class Params
         // only enable the selection types that implement BinaryIndividaulProcesss
         for (int i = 0; i < selectionRadio.length; i++) {
           Selection sel = selectionRadio[i].selection;
-          if (sel instanceof BinaryIndividualProcess) 
+          if (sel instanceof BinaryIndividualFunction) 
             selectionRadio[i].setEnabled(true);
           else 
             selectionRadio[i].setEnabled(false);
@@ -1434,7 +1440,7 @@ public class Params
         // only enable mutation types that implement RealIndividualProcess
         for (int i = 0; i < mutationRadio.length; i++) {
           Mutation mut = mutationRadio[i].mutation;
-          if (mut instanceof RealIndividualProcess) 
+          if (mut instanceof RealIndividualFunction) 
             mutationRadio[i].setEnabled(true);
           else 
             mutationRadio[i].setEnabled(false);
@@ -1443,7 +1449,7 @@ public class Params
         // only enable crossover types that implement RealIndividualProcess
         for (int i = 0; i < crossoverRadio.length; i++) {
           Crossover x = crossoverRadio[i].crossover;
-          if (x instanceof RealIndividualProcess) 
+          if (x instanceof RealIndividualFunction) 
             crossoverRadio[i].setEnabled(true);
           else 
             crossoverRadio[i].setEnabled(false);
@@ -1452,7 +1458,7 @@ public class Params
         // only enable selection types that implement RealIndividualProcess
         for (int i = 0; i < selectionRadio.length; i++) {
           Selection sel = selectionRadio[i].selection;
-          if (sel instanceof RealIndividualProcess) 
+          if (sel instanceof RealIndividualFunction) 
             selectionRadio[i].setEnabled(true);
           else 
             selectionRadio[i].setEnabled(false);

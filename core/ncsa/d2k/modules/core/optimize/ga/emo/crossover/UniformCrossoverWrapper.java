@@ -1,9 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.crossover;
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.crossover.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
  * A special subclass of UniformCrossover that gets its properties
@@ -16,28 +14,17 @@ import ncsa.d2k.modules.core.optimize.ga.crossover.*;
  * @version 1.0
  */
 class UniformCrossoverWrapper
-    extends Crossover implements BinaryIndividualProcess {
-
-  private UniformCrossoverModule ucm;
-
-  UniformCrossoverWrapper() {
-    ucm = new UniformCrossoverModule();
-  }
-
-  public void setCrossoverRate(double cr) {
-    super.setCrossoverRate(cr);
-    ucm.setCrossoverRate(cr);
-  }
-
-  public void performCrossover(Population p) {
-    ucm.performCrossover(p);
-  }
+    extends UniformCrossoverObj implements BinaryIndividualFunction {
 
   public String getName() {
     return "Uniform Crossover";
   }
   
   public String getDescription() {
-    return ucm.getModuleInfo();
+    return "";
+  }
+  
+  public Property[] getProperties() {
+    return null;  
   }
 }

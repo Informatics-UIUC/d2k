@@ -1,9 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.crossover;
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.crossover.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
  * A special subclass of CrossoverModule that gets its properties
@@ -16,33 +14,17 @@ import ncsa.d2k.modules.core.optimize.ga.crossover.*;
  * @version 1.0
  */
 class TwoPointCrossoverWrapper
-    extends Crossover implements BinaryIndividualProcess {
-
-  private CrossoverModule cm;
-
-  TwoPointCrossoverWrapper() {
-    cm = new CrossoverModule();
-  }
-
-  public void setCrossoverRate(double cr) {
-    super.setCrossoverRate(cr);
-    cm.setCrossoverRate(cr);
-  }
-
-  public void setGenerationGap(double gg) {
-    super.setGenerationGap(gg);
-    cm.setGenerationGap(gg);
-  }
-
-  public void performCrossover(Population p) {
-    cm.performCrossover(p);
-  }
+    extends Crossover implements BinaryIndividualFunction {
 
   public String getName() {
     return "Two Point Crossover";
   }
   
   public String getDescription() {
-    return cm.getModuleInfo();
+    return "";
+  }
+  
+  public Property[] getProperties() {
+    return null;
   }
 }
