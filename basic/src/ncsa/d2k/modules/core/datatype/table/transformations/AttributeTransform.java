@@ -85,11 +85,15 @@ public class AttributeTransform implements Transformation {
 
    }
 
+
    /**
     * <code>AttributeConstruction.Construction</code> is a simple inner class
     * used to store the label and contents of an expression.
+    *
+    * this is a duplicated code of Construction.java from package
+    * core.datatype.table.transformations
     */
-   public class Construction implements java.io.Serializable {
+   /*public class Construction implements java.io.Serializable {
 
       public String label, expression;
 
@@ -102,6 +106,6 @@ public class AttributeTransform implements Transformation {
          return label + ": " + expression;
       }
 
-   }
+   }*/
 
 }
