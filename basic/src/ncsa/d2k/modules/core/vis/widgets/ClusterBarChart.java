@@ -317,8 +317,11 @@ public class ClusterBarChart extends BarChart
 
     for (int bin=0; bin < bins; bin++) {
 
-      if (counter == runsize)
+      if (counter == runsize) {
         counter = 0;
+        // draw a seperation line between clustered values
+        g2.draw(new Line2D.Double(x, getGraphHeight()-bottomoffset, x, getGraphHeight()-bottomoffset+(tickmarksize*3)));
+      }
 
       else {
         g2.draw(new Line2D.Double(x, getGraphHeight()-bottomoffset-tickmarksize, x, getGraphHeight()-bottomoffset+tickmarksize));
@@ -511,14 +514,13 @@ public class ClusterBarChart extends BarChart
         rectangle = new Rectangle2D.Double(x, y, barwidth, barheight);
         barBoundary[bin] = rectangle;
         tip.append("<html>");
-        tip.append(xlabel.toLowerCase() + ": " + mutable.getString(bin-offset, set.x));
+        tip.append(" " + mutable.getColumnLabel(0).toLowerCase() + ": " + mutable.getString(bin-offset, 0));
         tip.append("<br>");
-        tip.append(mutable.getColumnLabel(2).toLowerCase() + ": " + mutable.getString(bin-offset, set.y));
+        tip.append(" " + mutable.getColumnLabel(2).toLowerCase() + ": " + mutable.getString(bin-offset, 2));
         tip.append("<br>");
-        tip.append("frequency: " + value);
+        tip.append(" frequency: " + value);
         tip.append("</html>");
         tipValues[bin] = tip.toString();
-        //tipValues[bin] = mutable.getString(bin-offset, set.y) + " " + value;
 
         g2.setColor(getClusterColor(counter));
         g2.fill(rectangle);
