@@ -172,8 +172,9 @@ public class ReadFileToPagingTable extends ReadFileToTable {
 
             MutableTableImpl ti = new MutableTableImpl(columns);
 
+            int offset = nt * numRowsPerPage; //
             for(int i = 0; i < pageRowNums[nt]; i++) {
-                char[][] row = df.getRowElements(i);
+                char[][] row = df.getRowElements(i + offset); //
                 curNum++;
                 if(row != null)
                     for(int j = 0; j < columns.length; j++) {
