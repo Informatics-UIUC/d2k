@@ -17,14 +17,11 @@ import libsvm.*;
   */
 public class SVMBuilderOPT extends ComputeModule
 {
-	/* empty constructor */
-	public SVMBuilderOPT()
-	{
-	}
+
 
         public String getModuleName()
          {
-           return "Optimized SVM Builder";
+           return "new Optimized SVM Builder";
 
          }
 
@@ -180,23 +177,23 @@ public class SVMBuilderOPT extends ComputeModule
 
 		svm_parameter param = new svm_parameter();
 
-		param.svm_type = (int) pp.getValue(SVMParamSpaceGenerator.SVM_TYPE);
-		param.kernel_type = (int) pp.getValue(SVMParamSpaceGenerator.KERNEL_TYPE);
-		param.degree = (double) pp.getValue(SVMParamSpaceGenerator.DEGREE);
+		param.svm_type = (int) pp.getValue(SVMParameters.SVM_TYPE);
+		param.kernel_type = (int) pp.getValue(SVMParameters.KERNEL_TYPE);
+		param.degree = (double) pp.getValue(SVMParameters.DEGREE);
 
 		/* if the user entered 0.0, default to 1/k where k is the
 		 * number of attributes in the input data. */
-		param.gamma = (double) pp.getValue(SVMParamSpaceGenerator.GAMMA);
+		param.gamma = (double) pp.getValue(SVMParameters.GAMMA);
 		if (param.gamma == 0.0)
 			param.gamma = 1.0 / num_attributes.doubleValue();
 
-		param.coef0 = (double) pp.getValue(SVMParamSpaceGenerator.COEF0);
-		param.nu = (double) pp.getValue(SVMParamSpaceGenerator.NU);
-		param.cache_size = (double) pp.getValue(SVMParamSpaceGenerator.CACHE_SIZE);
-		param.C = (double) pp.getValue(SVMParamSpaceGenerator.C);
-		param.eps = (double) pp.getValue(SVMParamSpaceGenerator.EPS);
-		param.p = (double) pp.getValue(SVMParamSpaceGenerator.P);
-		param.shrinking = (int) pp.getValue(SVMParamSpaceGenerator.SHRINKING);
+		param.coef0 = (double) pp.getValue(SVMParameters.COEF0);
+		param.nu = (double) pp.getValue(SVMParameters.NU);
+		param.cache_size = (double) pp.getValue(SVMParameters.CACHE_SIZE);
+		param.C = (double) pp.getValue(SVMParameters.C);
+		param.eps = (double) pp.getValue(SVMParameters.EPS);
+		param.p = (double) pp.getValue(SVMParameters.P);
+		param.shrinking = (int) pp.getValue(SVMParameters.SHRINKING);
 
 		/* these are hard-coded.  should be user inputs. */
 		param.nr_weight = 0;

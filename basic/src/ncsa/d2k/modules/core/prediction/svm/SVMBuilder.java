@@ -2,7 +2,13 @@ package ncsa.d2k.modules.core.prediction.svm;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+
 import libsvm.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import ncsa.gui.*;
 
 /**
   Builds a Support Vector Machine (SVM).  This is a wrapper for the
@@ -14,19 +20,19 @@ import libsvm.*;
 
   @author Xiaolei Li
   */
-public class SVMBuilder extends SVMBuilderOPT
+class SVMBuilder extends SVMBuilderOPT
 {
 	/**
 	  Type of SVM.  Has 5 possible choices: C-SVC, nu-SVC, one-class
 	  SVM, epsilon-SVR, and nu-SVR.  Default is C-SVC.
 	  */
-	private int SvmType = 0;
+	private int SvmType = SVMParameters.C_SVC;
 
 	/**
 	  Type of kernel.  Has 4 possible choices: linear, polynomial,
 	  radial basis, and sigmoid.  Default is radial basis.
 	  */
-	private int KernelType = 2;
+	private int KernelType = SVMParameters.RADIAL;
 
 	/**
 	  Degree of the kernel function (if a polynomial kernel is chosen).
@@ -87,17 +93,9 @@ public class SVMBuilder extends SVMBuilderOPT
 	private int Shrinking = 1;
 
 
-
-
-
-	/* empty constructor */
-	public SVMBuilder()
-	{
-	}
-
         public String getModuleName()
         {
-          return "SVM Builder";
+          return "new SVM Builder";
 
         }
 
@@ -113,45 +111,8 @@ public class SVMBuilder extends SVMBuilderOPT
 			+ " the separate classes.  This makes for better " +
 			"generalization.<p>" +
 
-			"<b>Properties</b>:" +
-			"<ul>" +
-				"<li>SVM Type: " +
-				"Type of the SVM.  0 is C-SVC, 1 is nu-SVC, 2 is " +
-				"one-class SVM, 3 is epsilon-SVR, 4 is nu-SVR.</li>" +
 
-				"<li>Kernel Type: " +
-				"Type of the kernel.  0 is linear, 1 is polynomial, 2 is " +
-				"radial, and 3 is sigmoid.</li>" +
-
-				"<li>Degree: " +
-				"Degree in polynomial kernel function.</li>" +
-
-				"<li>Gamma: " +
-				"Gamma in polynomail, radial, or sigmoid kernel function.</li>" +
-
-				"<li>Coef0: " +
-				"Coefficient 0 in polynomial or sigmoid kernel function.</li>" +
-
-				"<li>Cache Size: " +
-				"Cache memory size in MB.</li>" +
-
-				"<li>Epsilon: " +
-				"Tolerance of termination (stopping criterion).</li>" +
-
-				"<li>C: " +
-				"Parameter C of C-SVC, Epsilon-SVR, and nu-SVR.</li>" +
-
-				"<li>Nu: " +
-				"Parameter nu of nu-SVC, One-class SVM, and nu-SVR.</li>" +
-
-				"<li>P: " +
-	  			"Epsilon in the loss function of epsilon-SVR.</li>" +
-
-				"<li>Shrinking: " +
-				"Binary value to disable or enable the shrinking heuristics.</li>" +
-			"</ul>" +
-
-			"<b>Restrictions</b>: The SVM can deal with binary or " +
+			"<b>Data Restrictions</b>: The SVM can deal with binary or " +
 			"multi-class classification.  The classes need to be " +
 			"integers and the attribute values need to be numerical.<p>"
 			+
@@ -302,20 +263,483 @@ public class SVMBuilder extends SVMBuilderOPT
 
 	public PropertyDescription[] getPropertiesDescriptions()
 	{
-		PropertyDescription[] pds = new PropertyDescription[11];
 
-		pds[0] = new PropertyDescription("svmType", "SVM Type", "Type of the SVM.");
-		pds[1] = new PropertyDescription("kernelType", "Kernel Type", "Type of the kernel.");
-		pds[2] = new PropertyDescription("degree", "Degree", "Degree of kernel function, applicable to polynomial kernels only.");
-		pds[3] = new PropertyDescription("gamma", "Gamma", "Gamma of kernel function.");
-		pds[4] = new PropertyDescription("coef0", "Coef0", "Coefficent 0 of kernel function.");
-		pds[5] = new PropertyDescription("cacheSize", "Cache Size", "Cache memory size in MB.");
-		pds[6] = new PropertyDescription("eps", "Epsilon", "Stopping criterion.");
-		pds[7] = new PropertyDescription("c", "C", "Parameter C of C-SVC, Epsilon-SVR, and nu-SVR.");
-		pds[8] = new PropertyDescription("nu", "nu", "Parameter nu of nu-SVC, One-class SVM, and nu-SVR.");
-		pds[9] = new PropertyDescription("p", "p", "Epsilon of loss function in epsilon-SVR.");
-		pds[10] = new PropertyDescription("shrinking", "Shrinking", "Binary value to turn on/off shrinking heuristics.");
-
-		return pds;
+             return SVMParameters.getPropertiesDescriptions();
 	}
-}
+
+
+
+        public CustomModuleEditor getPropertyEditor() {
+          return new PropEdit();
+        }
+
+private class PropEdit extends JPanel implements CustomModuleEditor {
+
+    public  final String[] BOOLEANS = {"false", "true"};
+    public  final int FALSE = 0;
+    public  final int TRUE = 1;
+
+//the labels
+    private JLabel[] propLabels;
+    //drop down list objects
+    private JComboBox svm_type_list = new JComboBox(SVMParameters.SVM_TYPE_NAMES);
+    private JComboBox kernel_type_list = new JComboBox(SVMParameters.KERNEL_TYPE_NAMES);
+    private JComboBox shrinking_list = new JComboBox(BOOLEANS);
+
+//text fields properties objects
+    private JTextField _gamma = new JTextField(Double.toString(getGamma()));
+    private JTextField _nu = new JTextField(Double.toString(getNu()));
+    private JTextField _c = new JTextField(Double.toString(getC()));
+    private JTextField _p = new JTextField(Double.toString(getP()));
+    private JTextField _degree = new JTextField(Double.toString(getDegree()));
+    private JTextField _epsilon = new JTextField(Double.toString(getEps()));
+    private JTextField _cache = new JTextField(Double.toString(getCacheSize()));
+    private JTextField _coef = new JTextField(Double.toString(getCoef0()));
+
+    private boolean[] change; //change[i] is true if property i (according to SVMParameters) was changed
+
+    private PropEdit() {
+
+      change = new boolean[SVMParameters.NUM_PROPS];
+      //creating the labels
+      propLabels = new JLabel[SVMParameters.NUM_PROPS];
+      for (int i = 0; i < SVMParameters.NUM_PROPS; i++) {
+        propLabels[i] = new JLabel(SVMParameters.PROPS_NAMES[i]);
+        propLabels[i].setToolTipText(SVMParameters.PROPS_DESCS[i]);
+      }
+
+      //selecting the items in the combo boxes.
+      svm_type_list.setSelectedIndex(getSvmType());
+      kernel_type_list.setSelectedIndex(getKernelType());
+      shrinking_list.setSelectedIndex(getShrinking());
+
+      //adding listeners to text fields
+      _gamma.addKeyListener(new KeyAdapter() {
+        public void keyPressed(KeyEvent e) {
+          change[SVMParameters.GAMMA] = true;
+        }
+      });
+
+      _nu.addKeyListener(new KeyAdapter() {
+        public void keyPressed(KeyEvent e) {
+          change[SVMParameters.NU] = true;
+        }
+      });
+
+      _c.addKeyListener(new KeyAdapter() {
+        public void keyPressed(KeyEvent e) {
+          change[SVMParameters.C] = true;
+        }
+      });
+
+
+      _p.addKeyListener(new KeyAdapter() {
+        public void keyPressed(KeyEvent e) {
+          change[SVMParameters.GAMMA] = true;
+        }
+      });
+
+      _coef.addKeyListener(new KeyAdapter() {
+        public void keyPressed(KeyEvent e) {
+          change[SVMParameters.COEF0] = true;
+        }
+      });
+
+      _epsilon.addKeyListener(new KeyAdapter() {
+        public void keyPressed(KeyEvent e) {
+          change[SVMParameters.EPS] = true;
+        }
+      });
+
+
+      _cache.addKeyListener(new KeyAdapter() {
+         public void keyPressed(KeyEvent e) {
+           change[SVMParameters.CACHE_SIZE] = true;
+         }
+       });
+
+       _degree.addKeyListener(new KeyAdapter() {
+         public void keyPressed(KeyEvent e) {
+           change[SVMParameters.DEGREE] = true;
+         }
+       });
+       //adding listeners to drop down lists
+       svm_type_list.addActionListener(new SVMTypeListener());
+       kernel_type_list.addActionListener(new KernelTypeListener());
+       shrinking_list.addActionListener(new ShrinkingListener());
+
+//enabling and disabling dependent text fields
+       enableKernelDependencies();
+      enableSvmDependencies();
+
+
+//adding the components:
+
+   setLayout(new GridBagLayout());
+
+   //adding svm type drop down list
+   Constrain.setConstraints(this, propLabels[SVMParameters.SVM_TYPE], 1, 0,
+                            1, 1,
+                            GridBagConstraints.HORIZONTAL,
+                            GridBagConstraints.WEST,
+                            1, 1);
+   Constrain.setConstraints(this, svm_type_list, 2, 0,
+                            1, 1,
+                            GridBagConstraints.HORIZONTAL,
+                            GridBagConstraints.WEST,
+                            1, 1);
+
+
+   //adding parameters that are svm type dependencies
+    JPanel type_panel = new JPanel(new GridBagLayout());
+   Constrain.setConstraints(type_panel, propLabels[SVMParameters.C], 0, 0, 1, 1,
+                            GridBagConstraints.HORIZONTAL,
+                            GridBagConstraints.EAST,
+                            1, 1);
+   Constrain.setConstraints(type_panel, _c, 1, 0,
+                            1, 1,
+                            GridBagConstraints.HORIZONTAL,
+                            GridBagConstraints.WEST,
+                            1, 1);
+
+   Constrain.setConstraints(type_panel, propLabels[SVMParameters.NU], 0, 1, 1, 1,
+                            GridBagConstraints.HORIZONTAL,
+                            GridBagConstraints.EAST,
+                            1, 1);
+   Constrain.setConstraints(type_panel, _nu, 1, 1,
+                            1, 1,
+                            GridBagConstraints.HORIZONTAL,
+                            GridBagConstraints.WEST,
+                            1, 1);
+
+   Constrain.setConstraints(type_panel, propLabels[SVMParameters.P], 0, 2, 1, 1,
+                            GridBagConstraints.HORIZONTAL,
+                            GridBagConstraints.EAST,
+                            1, 1);
+   Constrain.setConstraints(type_panel, _p, 1, 2,
+                            1, 1,
+                            GridBagConstraints.HORIZONTAL,
+                            GridBagConstraints.WEST,
+                            1, 1);
+
+   Constrain.setConstraints(this, type_panel, 2, 1,
+                              1, 1,
+                              GridBagConstraints.HORIZONTAL,
+                              GridBagConstraints.WEST,
+                              1, 1);
+
+
+
+   //adding kernel type drop down list
+     Constrain.setConstraints(this, propLabels[SVMParameters.KERNEL_TYPE], 1, 2,
+                              1, 1,
+                              GridBagConstraints.HORIZONTAL,
+                              GridBagConstraints.WEST,
+                              1, 1);
+     Constrain.setConstraints(this, kernel_type_list, 2, 2,
+                              1, 1,
+                              GridBagConstraints.HORIZONTAL,
+                              GridBagConstraints.WEST,
+                              1, 1);
+
+     //adding parameters that are kernel type dependencies
+     JPanel kernel_panel = new JPanel(new GridBagLayout());
+
+     Constrain.setConstraints(kernel_panel, propLabels[SVMParameters.GAMMA], 0, 0,
+                              1, 1,
+                              GridBagConstraints.HORIZONTAL,
+                              GridBagConstraints.EAST,
+                              1, 1);
+     Constrain.setConstraints(kernel_panel, _gamma, 1, 0,
+                              1, 1,
+                              GridBagConstraints.HORIZONTAL,
+                              GridBagConstraints.WEST,
+                              1, 1);
+
+     Constrain.setConstraints(kernel_panel, propLabels[SVMParameters.DEGREE], 0, 1,
+                              1, 1,
+                              GridBagConstraints.HORIZONTAL,
+                              GridBagConstraints.EAST,
+                              1, 1);
+     Constrain.setConstraints(kernel_panel, _degree, 1, 1,
+                              1, 1,
+                              GridBagConstraints.HORIZONTAL,
+                              GridBagConstraints.WEST,
+                              1, 1);
+
+     Constrain.setConstraints(kernel_panel, propLabels[SVMParameters.COEF0], 0, 2,
+                              1, 1,
+                              GridBagConstraints.HORIZONTAL,
+                              GridBagConstraints.EAST,
+                              1, 1);
+     Constrain.setConstraints(kernel_panel, _coef, 1, 2,
+                              1, 1,
+                              GridBagConstraints.HORIZONTAL,
+                              GridBagConstraints.WEST,
+                              1, 1);
+
+     Constrain.setConstraints(this, kernel_panel, 2, 3,
+                                1, 1,
+                                GridBagConstraints.HORIZONTAL,
+                                GridBagConstraints.WEST,
+                                1, 1);
+
+
+
+//adding the rest of the properties
+     Constrain.setConstraints(this, propLabels[SVMParameters.EPS], 1, 4,
+                                 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+     Constrain.setConstraints(this, _epsilon, 2, 4,
+                                 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, propLabels[SVMParameters.CACHE_SIZE], 1, 5,
+                                 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, _cache, 2, 5,
+                                 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, propLabels[SVMParameters.SHRINKING], 1, 6,
+                                 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, shrinking_list, 2, 6,
+                                 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+
+//adding place holders
+        Constrain.setConstraints(this, new Label("\t"), 4, 0,
+                                 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, new Label("\t"), 0, 0,
+                                 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+
+      } //PropEdit ctor
+
+
+      /**
+       * Enables and disables text fileds that are SVM type dependent.
+       */
+      private void enableSvmDependencies() {
+        int selected = svm_type_list.getSelectedIndex();
+
+        boolean enableC = (selected == SVMParameters.C_SVC ||
+                           selected == SVMParameters.EPSILON_SVR ||
+                           selected == SVMParameters.NU_SVR);
+
+        boolean enableNu = (selected == SVMParameters.NU_SVC ||
+                            selected == SVMParameters.ONE_CLASS_SVM ||
+                            selected == SVMParameters.NU_SVR);
+
+        _c.setEnabled(enableC);
+        change[SVMParameters.C] = true;
+
+        _nu.setEnabled(enableNu);
+        change[SVMParameters.NU] = true;
+
+        _p.setEnabled(selected == SVMParameters.EPSILON_SVR);
+        change[SVMParameters.P] = true;
+
+      } //enableSvmDependencies
+
+
+      /**
+       * Enables and disables text fileds that are kernel type dependent.
+       */
+      private void enableKernelDependencies() {
+        int selected = kernel_type_list.getSelectedIndex();
+
+        boolean enableGamma = (selected == SVMParameters.POLYNOMIAL ||
+                               selected == SVMParameters.RADIAL ||
+                               selected == SVMParameters.SIGMOID);
+
+        boolean enableCoef = (selected == SVMParameters.POLYNOMIAL ||
+                              selected == SVMParameters.SIGMOID);
+
+        _degree.setEnabled(selected == SVMParameters.POLYNOMIAL);
+        change[SVMParameters.DEGREE] = true;
+
+        _gamma.setEnabled(enableGamma);
+        change[SVMParameters.GAMMA] = true;
+
+        _coef.setEnabled(enableCoef);
+        change[SVMParameters.COEF0] = true;
+
+      } //enableKernelDependencies
+
+
+//drop down lists listeners
+
+    private class ShrinkingListener implements ActionListener{
+      public void actionPerformed(ActionEvent e) {
+
+        change[SVMParameters.SHRINKING] = true;
+      }
+    }
+
+    private class SVMTypeListener implements ActionListener{
+      public void actionPerformed(ActionEvent e){
+       enableSvmDependencies();
+       change[SVMParameters.SVM_TYPE] = true;
+      }//action performed
+
+    }//SVMTypeListener
+
+
+    private class KernelTypeListener implements ActionListener{
+
+    public void actionPerformed(ActionEvent e){
+      enableKernelDependencies();
+      change[SVMParameters.KERNEL_TYPE] = true;
+    }//action performed
+
+  }//KernelTypeListener
+
+
+
+
+
+  /**
+   * updates the module: for each component that was changed - calls the
+   * respective setter method of this module. also validates the inserted values.
+   *
+   * @return returns true if all's well and setter methods calls returned normally.
+   * @throws java.lang.Exception - if an inserted values was found invalid.
+   */
+    public boolean updateModule() throws Exception {
+      boolean didChange = false;
+
+      if(change[SVMParameters.SVM_TYPE]){
+        setSvmType(svm_type_list.getSelectedIndex());
+        didChange = true;
+      }
+
+
+      if(change[SVMParameters.KERNEL_TYPE]){
+        setKernelType(kernel_type_list.getSelectedIndex());
+        didChange = true;
+      }
+
+      if(change[SVMParameters.SHRINKING]){
+        setShrinking(shrinking_list.getSelectedIndex());
+        didChange = true;
+      }
+
+
+
+      if (change[SVMParameters.GAMMA] ) {
+        try {
+          double val = Double.parseDouble(_gamma.getText());
+          setGamma(val);
+        }
+        catch (NumberFormatException e) {
+          throw new Exception("Gamma parameter must be a real number.");
+        }
+        didChange = true;
+      } //change gamma
+
+
+      if (change[SVMParameters.C] ) {
+        try {
+          double val = Double.parseDouble(_c.getText());
+          if (val <= 0) throw new Exception("C Parameter should be greater than 0");
+          setC(val);
+        }
+        catch (NumberFormatException e) {
+          throw new Exception("C parameter should be a real number greater than 0.");
+        }
+        didChange = true;
+      } //change c
+
+      if (change[SVMParameters.P] ) {
+        try {
+          double val = Double.parseDouble(_p.getText());
+          if (val < 0) throw new Exception("P Parameter should be greater than or equal to 0");
+          setP(val);
+        }
+        catch (NumberFormatException e) {
+          throw new Exception("P parameter must be a real number greater than or equal to 0.");
+        }
+        didChange = true;
+      } //change p
+
+      if (change[SVMParameters.NU] ) {
+        try {
+          double val = Double.parseDouble(_nu.getText());
+          if (val < 0 || val > 1) throw new Exception("nu Parameter should be between 0 and 1");
+          setNu(val);
+        }
+        catch (NumberFormatException e) {
+          throw new Exception("NU parameter should be a real number between 0 and 1.");
+        }
+        didChange = true;
+      } //change nu
+
+      if (change[SVMParameters.CACHE_SIZE]) {
+        try {
+          double val = Double.parseDouble(_cache.getText());
+          if(val <=0) throw new Exception("Cache Size parameter should be greater than zero");
+          setCacheSize(val);
+        }
+        catch (NumberFormatException e) {
+          throw new Exception("Cache Size parameter must be a number greater than zero.");
+        }
+        didChange = true;
+      } //change cache size
+
+      if (change[SVMParameters.EPS] ) {
+        try {
+          double val = Double.parseDouble(_epsilon.getText());
+          if(val <=0) throw new Exception("Epsilon parameter should be greater than zero");
+          setEps(val);
+        }
+        catch (NumberFormatException e) {
+          throw new Exception("Epsilon parameter should be a real number greater than 0.");
+        }
+        didChange = true;
+      } //change c
+
+      if (change[SVMParameters.DEGREE] ) {
+        try {
+          double val = Double.parseDouble(_degree.getText());
+          setDegree(val);
+        }
+        catch (NumberFormatException e) {
+          throw new Exception("Degree parameter must be a real number.");
+        }
+        didChange = true;
+      } //change degree
+
+      if (change[SVMParameters.COEF0]) {
+        try {
+          double val = Double.parseDouble(_coef.getText());
+          setCoef0(val);
+        }
+        catch (NumberFormatException e) {
+          throw new Exception("Coef0 parameter should be a real number.");
+        }
+        didChange = true;
+      } //change coef0
+
+        return didChange;
+    }//updateModule
+
+}//class prop edit
+
+}//SVMBuilder

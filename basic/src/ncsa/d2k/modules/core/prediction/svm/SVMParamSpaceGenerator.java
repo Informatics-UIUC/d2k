@@ -8,7 +8,9 @@ import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 
 public class SVMParamSpaceGenerator extends AbstractParamSpaceGenerator
 {
-	public static final String SVM_TYPE = "SVM Type";
+	/* VERED - 7-23-04: tese are now part of SVMParameter
+
+         public static final String SVM_TYPE = "SVM Type";
 	public static final String KERNEL_TYPE = "Kernel Type";
 	public static final String DEGREE = "Degree of Kernel";
 	public static final String GAMMA = "Gamma of Kernel";
@@ -18,7 +20,7 @@ public class SVMParamSpaceGenerator extends AbstractParamSpaceGenerator
 	public static final String C = "C of Kernel";
 	public static final String EPS = "Stopping Criterion";
 	public static final String P = "P of Kernel";
-	public static final String SHRINKING = "Shrinking Heuristics";
+	public static final String SHRINKING = "Shrinking Heuristics";*/
 
 	/**
 	* Returns a reference to the developer supplied defaults. These are
@@ -27,9 +29,9 @@ public class SVMParamSpaceGenerator extends AbstractParamSpaceGenerator
 	* @return the default settings space.
 	*/
 	protected ParameterSpace getDefaultSpace() {
+
 		ParameterSpace psi = new ParameterSpaceImpl();
-		String[] names = {SVM_TYPE, KERNEL_TYPE, DEGREE, GAMMA, COEF0,
-			NU, CACHE_SIZE, C, EPS, P, SHRINKING};
+		String[] names = SVMParameters.PROPS_NAMES;
 		double[] min = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		double[] max = {4, 3, 9, 5, 0, 0, 0, 0, 0, 0, 0};
 		double[] def = {0, 2, 3, 0, 0, 0.5, 40, 1, 0.001, 0.1, 1};
@@ -43,7 +45,7 @@ public class SVMParamSpaceGenerator extends AbstractParamSpaceGenerator
 	}
 
 	public String getModuleName() {
-		return "Support Vector Machine Parameter Space Generator";
+		return "new Support Vector Machine Parameter Space Generator";
 	}
 
 	/**
@@ -52,21 +54,30 @@ public class SVMParamSpaceGenerator extends AbstractParamSpaceGenerator
 	  */
 	public PropertyDescription[] getPropertiesDescriptions()
 	{
-		PropertyDescription[] pds = new PropertyDescription[11];
+          PropertyDescription[] pds = SVMParameters.getPropertiesDescriptions();
+          //because this module's editor is a special one and all of the values
+          //are numeric - replace the description for properties that are
+          //represented by drop down lists in the regular SVM Builder module.
 
-		pds[0] = new PropertyDescription(SVM_TYPE, SVM_TYPE, "Type of the SVM. (0 = C-SVC, 1 = nu-SVC, 2 = One-Class SVM, 3 = epsilon-SVR, 4 = nu-SVR)");
-		pds[1] = new PropertyDescription(KERNEL_TYPE, KERNEL_TYPE, "Type of the kernel. (0 = Linear, 1 = Polynomial, 2 = Radial Basis, 3 = Sigmoid)");
-		pds[2] = new PropertyDescription(DEGREE, DEGREE, "Degree of kernel function, applicable to polynomial kernels only.");
-		pds[3] = new PropertyDescription(GAMMA, GAMMA, "Gamma of kernel function.");
-		pds[4] = new PropertyDescription(COEF0, COEF0, "Coefficent 0 of kernel function.");
-		pds[5] = new PropertyDescription(CACHE_SIZE, CACHE_SIZE, "Cache memory size in MB.");
-		pds[6] = new PropertyDescription(EPS, EPS, "Stopping criterion.");
-		pds[7] = new PropertyDescription(C, C, "Parameter C of C-SVC, Epsilon-SVR, and nu-SVR.");
-		pds[8] = new PropertyDescription(NU, NU, "Parameter nu of nu-SVC, One-class SVM, and nu-SVR.");
-		pds[9] = new PropertyDescription(P, P, "Epsilon of loss function in epsilon-SVR.");
-		pds[10] = new PropertyDescription(SHRINKING, SHRINKING, "Binary value to turn on/off shrinking heuristics.");
+          pds[SVMParameters.SVM_TYPE] = new PropertyDescription(
+        SVMParameters.PROPS_NAMES[SVMParameters.SVM_TYPE],
+        SVMParameters.PROPS_NAMES[SVMParameters.SVM_TYPE],
+        "Type of the SVM. (0 = C-SVC, 1 = nu-SVC, 2 = One-Class SVM, 3 = epsilon-SVR, 4 = nu-SVR)");
 
-		return pds;
-	}
+          pds[SVMParameters.KERNEL_TYPE] = new PropertyDescription(
+        SVMParameters.PROPS_NAMES[SVMParameters.KERNEL_TYPE],
+        SVMParameters.PROPS_NAMES[SVMParameters.KERNEL_TYPE],
+        "Type of the SVM.  (0 = Linear, 1 = Polynomial, 2 = Radial Basis, 3 = Sigmoid)");
+
+
+          pds[SVMParameters.SHRINKING] = new PropertyDescription(
+        SVMParameters.PROPS_NAMES[SVMParameters.SHRINKING],
+        SVMParameters.PROPS_NAMES[SVMParameters.SHRINKING],
+        "Toggles shrinking heuristics on (1) and off (0)");
+
+
+
+	   return pds;
+       }
 
 }
