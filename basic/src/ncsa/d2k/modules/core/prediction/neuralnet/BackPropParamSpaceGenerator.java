@@ -63,7 +63,7 @@ public class BackPropParamSpaceGenerator extends AbstractParamSpaceGenerator
 			"are trained on and when the update of the activation weights occurs. "+
 			"<ul>"+
 			"	<li><u>Incremental BackProp</u> - 0 - The activation weights are "+
-			"	updated after every training example is passesed through, and the "+
+			"	updated after every training example is passed through, and the "+
 			"	examples are passed through in the order given in the training "+
 			"	data. This is slower than Batch BackProp. "+
 			"	<li><u>Batch BackProp</u> - 1 - Weights are updated after every epoch "+
