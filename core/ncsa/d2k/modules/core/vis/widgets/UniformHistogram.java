@@ -1,16 +1,11 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.text.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.transform.binning.*;
 import ncsa.gui.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.d2k.modules.core.transform.binning.*;
 
 /**
  * A histogram panel.
@@ -81,9 +76,9 @@ public class UniformHistogram extends Histogram {
             counts = binCounts.getCounts(currentColumnIndex, borders);
 
             for (int i = 0; i < heights.length; i++) {
-                System.out.println("BINCOUNTS: "+binCounts);
-                System.out.println("heights: "+heights);
-                System.out.println("counts: "+counts);
+                //System.out.println("BINCOUNTS: "+binCounts);
+                //System.out.println("heights: "+heights);
+                //System.out.println("counts: "+counts);
                heights[i] = (double)counts[i] / (double)/*tbl.*/binCounts.getNumRows();
             }
    }
