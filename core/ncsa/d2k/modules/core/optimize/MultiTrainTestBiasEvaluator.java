@@ -208,10 +208,6 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
 
           ExampleSet   = (ExampleTable) this.pullInput(2);
 
-          ///////////////////////
-          ///   PULL INPUTS   ///
-          ///////////////////////
-
           numExamples = ExampleSet.getNumExamples();
           numInputs = ExampleSet.getNumInputFeatures();
           numOutputs = ExampleSet.getNumOutputFeatures();
@@ -273,29 +269,8 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
           }
 
 
-
-         ExampleTable currentTrainExampleSet = (ExampleTable) ExampleSet.copy();
-         currentTrainExampleSet.setTestingSet(trainSetIndicies);
-         currentTrainExampleSet = (ExampleTable) currentTrainExampleSet.getTestTable().copy();
-
-         ExampleTable currentTestExampleSet = (ExampleTable) ExampleSet.copy();
-         currentTestExampleSet.setTestingSet(testSetIndicies);
-         currentTestExampleSet = (ExampleTable) currentTestExampleSet.getTestTable().copy();
-
-         /*
-          ExampleTable currentTrainExampleSet = ExampleSet.shallowCopy();
-          ExampleTable currentTestExampleSet  = ExampleSet.shallowCopy();
-
-          currentTrainExampleSet.allocateExamplePointers(NumTrainExamples);
-          currentTestExampleSet.allocateExamplePointers(NumTestExamples);
-          for (int e = 0; e < NumTrainExamples; e++) {
-            currentTrainExampleSet.setExample(e, ExampleSet, RandomizedIndices[e]);
-          }
-          for (int e = 0; e < NumTestExamples; e++) {
-            currentTestExampleSet.setExample(e, ExampleSet, RandomizedIndices[e + NumTrainExamples]);
-          }
-          */
-
+         ExampleTable currentTrainExampleSet = (ExampleTable) ExampleSet.getSubsetByReference(trainSetIndicies);
+         ExampleTable currentTestExampleSet = (ExampleTable) ExampleSet.getSubsetByReference(testSetIndicies);
 
           this.pushOutput(ControlPoint,            0);
           this.pushOutput(errorFunction,           1);
