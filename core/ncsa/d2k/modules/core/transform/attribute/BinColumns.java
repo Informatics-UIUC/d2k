@@ -88,7 +88,9 @@ public class BinColumns extends UIModule {
     public String getOutputName (int i) {
         switch (i) {
             case 0:
-                return  "The input Table with its columns binned.";
+                return "BinTransform";
+            case 1:
+                return  "Table";
             default:
                 return  "no such output!";
         }
@@ -113,7 +115,9 @@ public class BinColumns extends UIModule {
     public String getOutputInfo (int i) {
         switch (i) {
             case 0:
-                return  "A Table with its columns binned up.";
+                return "A BinTransform that can be applied to the input Table.";
+            case 1:
+                return  "The unchanged Table.  Apply the BinTransform to the Table to replace the binned columns.";
             default:
                 return  "No such output";
         }
