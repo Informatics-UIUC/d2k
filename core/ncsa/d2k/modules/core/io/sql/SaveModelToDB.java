@@ -50,7 +50,7 @@ public class SaveModelToDB extends UIModule {
   public String getInputInfo (int i) {
 		switch (i) {
 			case 0: return "JDBC data source to make database connection.";
-			case 1: return "A model to save.";
+			case 1: return "A prediction model to save.";
 			default: return "No such input";
 		}
 	}

@@ -127,7 +127,7 @@ public class AvailableTablesInput extends InputModule
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "input0";
+				return "DBConnection";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -140,9 +140,9 @@ public class AvailableTablesInput extends InputModule
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
+				return "DBConnection";
 			case 1:
-				return "output1";
+				return "Tables List";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
