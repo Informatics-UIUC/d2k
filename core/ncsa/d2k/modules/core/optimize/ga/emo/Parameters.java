@@ -58,4 +58,10 @@ public class Parameters implements java.io.Serializable {
    * The maximum number of generations.
    */
   public int maxGenerations;
+
+  public Parameters() {
+    decisionVariables = new DecisionVariables();
+    fitnessFunctions = new FitnessFunctions();
+    constraints = new Constraints();
+  }
 }

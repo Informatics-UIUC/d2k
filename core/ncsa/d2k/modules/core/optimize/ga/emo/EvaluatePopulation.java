@@ -80,11 +80,25 @@ public class EvaluatePopulation
   private boolean hasCVars;
   private boolean hasExternalCon;
 
-  private TIntArrayList externFFToExecute;
-  private TIntArrayList externFFInputFiles;
+  //private TIntArrayList externFFToExecute;
+  //private TIntArrayList externFFInputFiles;
+
+  private List executeList;
+  private List inputFileList;
 
   /** true if the individuals in the population are binary solutions */
   private boolean binaryType;
+
+  private class Pair {
+    String exec;
+    String input;
+
+    public boolean equals(Object o) {
+      Pair p = (Pair)o;
+
+      return p.exec.equals(this.exec) && p.input.equals(this.input);
+    }
+  }
 
   public void doit() throws Exception {
     // pull in the population
@@ -112,51 +126,6 @@ public class EvaluatePopulation
       if ( (numFitnessFunctions + numExternalFF) == 0)
         throw new Exception("No fitness functions could be found.");
 
-      // if we have external FF, determine which executables need to
-      // be executed each time (i.e. weed out duplicates) and which
-      // files need to be written each time
-      if (hasExternalFF) {
-        // determine which executables need to be run.
-        // if the same executable and input file occur, that only needs
-        // to be executed once
-        TIntHashSet rows = new TIntHashSet();
-        rows.add(0);
-
-        int numFitnessExecs = fitnessFunctions.getNumExternFitnessFunctions();
-
-        // determine which need to be run
-        for (int j = 1; j < numFitnessExecs; j++) {
-          String exec = fitnessFunctions.getExternFitnessFunctionExec(j);
-          String in = fitnessFunctions.getExternFitnessFunctionInput(j);
-
-          for (int k = j; k < numFitnessExecs; k++) {
-            String exec2 = fitnessFunctions.getExternFitnessFunctionExec(k);
-            String in2 = fitnessFunctions.getExternFitnessFunctionInput(k);
-
-            if (!exec.equals(exec2) && !in.equals(in2)) {
-              rows.add(k);
-            }
-          }
-        }
-        externFFToExecute = new TIntArrayList(rows.toArray());
-        externFFToExecute.sort();
-
-        // find the unique input files
-        HashSet inputs = new HashSet();
-        inputs.add(fitnessFunctions.getExternFitnessFunctionInput(0));
-        rows.add(0);
-        for (int j = 1; j < numFitnessExecs; j++) {
-          String in = fitnessFunctions.getExternFitnessFunctionInput(j);
-          if (!inputs.contains(in)) {
-            inputs.add(in);
-            rows.add(j);
-          }
-        }
-
-        externFFInputFiles = new TIntArrayList(rows.toArray());
-        externFFInputFiles.sort();
-      }
-
       constraints = pop.getParameters().constraints;
       numConstraintVars = constraints.getNumConstraintVariables();
       hasCVars = (numConstraintVars > 0);
@@ -165,12 +134,64 @@ public class EvaluatePopulation
       numExternalConstraints = constraints.getNumExternConstraints();
       hasExternalCon = (numExternalConstraints > 0);
 
-      if(hasCon) {
-        ;
-      }
+      // if we have external FF, determine which executables need to
+      // be executed each time (i.e. weed out duplicates) and which
+      // files need to be written each time
+      if (hasExternalFF || hasExternalCon) {
+        // determine which executables need to be run.
+        // if the same executable and input file occur, that only needs
+        // to be executed once
 
-      if(hasExternalCon) {
-        ;
+        executeList = new ArrayList();
+        Pair firstOne = new Pair();
+        if(hasExternalFF) {
+          firstOne.exec = fitnessFunctions.getExternFitnessFunctionExec(0);
+          firstOne.input = fitnessFunctions.getExternFitnessFunctionInput(0);
+        }
+        else {
+          firstOne.exec = constraints.getExternConstraintExec(0);
+          firstOne.input = constraints.getExternConstraintInput(0);
+        }
+
+        executeList.add(firstOne);
+
+        // for each extern ff
+        for(int i = 0; i < this.numExternalFF; i++) {
+          Pair p = new Pair();
+          p.exec = fitnessFunctions.getExternFitnessFunctionExec(i);
+          p.input = fitnessFunctions.getExternFitnessFunctionInput(i);
+          if(!executeList.contains(p))
+            executeList.add(p);
+        }
+
+        // for each extern constraint
+        for(int i = 0; i < this.numExternalConstraints; i++) {
+          Pair p = new Pair();
+          p.exec = constraints.getExternConstraintExec(i);
+          p.input = constraints.getExternConstraintInput(i);
+          if(!executeList.contains(p))
+            executeList.add(p);
+        }
+
+        // now we have a collection of the unique execs that need to be
+        // executed each time
+
+        // now find the unique input files
+        HashSet inputs = new HashSet();
+
+        for(int i = 0; i < this.numExternalFF; i++) {
+          String file = fitnessFunctions.getExternFitnessFunctionInput(i);
+          if(!inputs.contains(file))
+            inputs.add(file);
+        }
+
+        for(int i = 0; i < this.numExternalConstraints; i++) {
+          String file = constraints.getExternConstraintInput(i);
+          if(!inputs.contains(file))
+            inputs.add(file);
+        }
+
+        inputFileList = new ArrayList(inputs);
       }
 
       // determine if the population contains binary or real-coded genes
@@ -251,39 +272,43 @@ public class EvaluatePopulation
       }
     }
 
+    if(hasCon) {
+      // calculate the constraints
+
+    }
+
     // write out the population if external executables are used
     // we only need to write out the first file, and make copies for
     // the rest
     if(hasExternalFF || hasExternalCon) {
-      int firstFile = this.externFFInputFiles.get(0);
-      String firstFileName = fitnessFunctions.getExternFitnessFunctionInput(firstFile);
-      if(binaryType)
-        this.writeBinaryGenesToFile(firstFileName);
+      // we need to write out the file
+      String firstFile = (String)this.inputFileList.get(0);
+      if (binaryType)
+        this.writeBinaryGenesToFile(firstFile);
       else
-        this.writeNumericGenesToFile(firstFileName);
+        this.writeNumericGenesToFile(firstFile);
 
-      for(int i = 1; i < externFFInputFiles.size(); i++) {
-        int idx = externFFInputFiles.get(i);
-        String fileName = fitnessFunctions.getExternFitnessFunctionInput(idx);
-        copyFile(new File(firstFileName), new File(fileName));
+      // now make copies of the file for the other inputs
+        for (int i = 1; i < inputFileList.size(); i++) {
+          String fileName = (String)inputFileList.get(i);
+          copyFile(new File(firstFile), new File(fileName));
+        }
+
+      // now execute the executables
+      for(int i = 0; i < executeList.size(); i++) {
+        Pair pair = (Pair)executeList.get(i);
+        String exec = pair.exec;
+        ExecRunner er = new ExecRunner();
+        er.exec(exec);
       }
-    }
 
-    // finally evaluate the external fitness functions
-    if (hasExternalFF) {
-      // call the executables
-      for(int i = 0; i < this.externFFToExecute.size(); i++) {
-        this.callExternalFFExecutable(externFFToExecute.get(i));
-      }
-
-      // next read the files and set the objective values on the individuals
       for(int i = 0; i < this.numExternalFF; i++) {
         this.readExternalFFOutput(i);
       }
-    }
 
-    if(hasExternalCon) {
-
+      for(int i = 0; i < this.numExternalConstraints; i++) {
+        this.readExternalConstraintOutput(i);
+      }
     }
 
     pushOutput(pop, 0);
@@ -368,7 +393,6 @@ public class EvaluatePopulation
   private void writeBinaryGenesToFile(String fileName) throws IOException {
     Population popul = (Population) population;
 
-    try {
       FileWriter stringFileWriter = new FileWriter(fileName);
       BufferedWriter bw = new BufferedWriter(stringFileWriter);
       PrintWriter pw = new PrintWriter(bw);
@@ -431,13 +455,6 @@ public class EvaluatePopulation
       pw.close();
       bw.close();
       stringFileWriter.close();
-    }
-    catch (IOException e) {
-      //pw.close();
-      //bw.close();
-      //stringFileWriter.close();
-      throw e;
-    }
   }
 
   /*
@@ -450,7 +467,6 @@ public class EvaluatePopulation
       IOException {
     Population popul = (Population) population;
 
-    try {
       FileWriter stringFileWriter = new FileWriter(fileName);
       BufferedWriter bw = new BufferedWriter(stringFileWriter);
       PrintWriter pw = new PrintWriter(bw);
@@ -491,42 +507,12 @@ public class EvaluatePopulation
       pw.close();
       bw.close();
       stringFileWriter.close();
-    }
-    catch (IOException e) {
-      //pw.close();
-      //bw.close();
-      //stringFileWriter.close();
-      throw e;
-    }
   }
 
-  /**
-   * Call an external executable
-   * @param ffIndex
-   * @throws Exception
-   */
-  private void callExternalFFExecutable(int ffIndex) throws Exception {
-    ExecRunner er = new ExecRunner();
-    er.exec(fitnessFunctions.getExternFitnessFunctionExec(ffIndex));
-  }
+  private double[] readOutput(String fileName) throws IOException {
+    double[] fit = new double[((Population)population).size()];
 
-  private void callExternalConExecutable(int conIndex) throws Exception {
-    ExecRunner er = new ExecRunner();
-    er.exec(constraints.getExternConstraintExec(conIndex));
-  }
-
-  /**
-   * Read the output from an external executable and set the objective
-   * value on the individual
-   * @param ffIndex the index of the ff
-   * @throws Exception
-   */
-  private void readExternalFFOutput(int ffIndex) throws IOException {
-    Population popul = (Population)population;
-    double[] fit = new double[popul.size()];
-
-    String outFileName = fitnessFunctions.getExternFitnessFunctionOutput(ffIndex);
-    FileReader stringFileReader = new FileReader(outFileName);
+    FileReader stringFileReader = new FileReader(fileName);
     BufferedReader br = new BufferedReader(stringFileReader);
 
     int i = 0;
@@ -541,18 +527,49 @@ public class EvaluatePopulation
     stringFileReader.close();
     br.close();
 
+    return fit;
+  }
+
+  /**
+   * Read the output from an external executable and set the objective
+   * value on the individual
+   * @param ffIndex the index of the ff
+   * @throws Exception
+   */
+  private void readExternalFFOutput(int ffIndex) throws IOException {
+    Population popul = (Population)population;
+    double[] fit = readOutput(fitnessFunctions.getExternFitnessFunctionOutput(ffIndex));
+
     if(popul instanceof SOPopulation ) {
       // now that we have the fitness values, set the objective on the individual
-      for (i = 0; i < popul.size(); i++) {
+      for (int i = 0; i < popul.size(); i++) {
         ( (SOSolution) popul.getMember(i)).setObjective(fit[i]);
       }
     }
     else {
       // now that we have the fitness values, set the objective on the individual
-      for (i = 0; i < popul.size(); i++) {
+      for (int i = 0; i < popul.size(); i++) {
         ( (MOSolution) popul.getMember(i)).setObjective(
             numFitnessFunctions + ffIndex, fit[i]);
       }
+    }
+  }
+
+  /**
+   * Read the output from an external executable and set the objective
+   * value on the individual
+   * @param ffIndex the index of the ff
+   * @throws Exception
+   */
+  private void readExternalConstraintOutput(int conIndex) throws IOException {
+    Population popul = (Population)population;
+    double[] fit = readOutput(fitnessFunctions.getExternFitnessFunctionOutput(conIndex));
+
+    if(popul instanceof SOPopulation ) {
+      ;
+    }
+    else {
+      ;
     }
   }
 
