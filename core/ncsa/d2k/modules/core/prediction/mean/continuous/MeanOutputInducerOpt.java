@@ -46,4 +46,13 @@ public class MeanOutputInducerOpt extends FunctionInducerOpt {
 
     return (Model) model;
   }
+
+
+
+    //QA Anca added this:
+    public PropertyDescription[] getPropertiesDescriptions() {
+        // so that "ordered and _trace" property are invisible
+        return new PropertyDescription[0]; 
+    }
+
 }
