@@ -252,10 +252,10 @@ public class Get1FileName extends UIModule {
             JButton done = new JButton("Done");
             done.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    viewDone("Done");
                     String file = filename0.getText();
                     setFile0Path(file);
                     pushOutput(file, 0);
+                    viewDone("Done");
                 }
             });
             JButton abort = new JButton("Abort");
@@ -265,8 +265,8 @@ public class Get1FileName extends UIModule {
                 }
             });
 
-            buttonPanel.add(done);
             buttonPanel.add(abort);
+            buttonPanel.add(done);
 
             setLayout(new BorderLayout());
 	        add(p, BorderLayout.CENTER);

@@ -593,8 +593,8 @@ public class Get4FileNames extends UIModule {
                 }
             });
 
-            buttonPanel.add(done);
             buttonPanel.add(abort);
+            buttonPanel.add(done);
 
             setLayout(new BorderLayout());
 	        add(p, BorderLayout.CENTER);
