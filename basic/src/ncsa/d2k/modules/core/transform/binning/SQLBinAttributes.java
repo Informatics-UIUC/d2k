@@ -142,6 +142,17 @@ public class SQLBinAttributes extends HeadlessUIModule {
                           }
                            return super.isReady();
                         }
+
+       // Dora added this method on 04/02/24 to handle optional input.
+       public Object[] getPulledInputs() {
+         Object[] o = new Object[4];
+         for (int i=0; i<3; i++) {
+           o[i] = pullInput(i);
+         }
+         if (isInputPipeConnected(3))
+           o[3] = pullInput(3);
+         return o;
+       }
     /**
      * Get the data types for the input parameters
      * @return Connection Wrapper, list of columns chosed, table name, where clause
@@ -388,24 +399,20 @@ public class SQLBinAttributes extends HeadlessUIModule {
             if(id == 0) {
                 connectionWrapper = (ConnectionWrapper)o;
                 numArrived = 1;
-               // System.out.println("input one ");
             }
-            if(id == 1) {
+            else if(id == 1) {
                 tableName = (String)o;
                 numArrived++;
-                                //System.out.println("input two ");
             }
-            if(id == 2) {
+            else if(id == 2) {
                 fieldNames = (String[])o;
                 numArrived++;
-                                //System.out.println("input three ");
             }
 
-                        if (isInputPipeConnected(3) && id ==3) {
-                                //System.out.println("input 3 connected id = " + id);
-                                                         etbl = (ExampleTable)o;
-                        numArrived ++;
-                        }
+            else if (isInputPipeConnected(3) && id ==3) {
+                etbl = (ExampleTable)o;
+                numArrived ++;
+            }
 
             if(numArrived == 3 ) {
                 binCounts = new SQLBinCounts(tableName, fieldNames, connectionWrapper);
@@ -1799,11 +1806,12 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
   public boolean getNewColumn(){return newColumn;}
 
     public void doit() throws Exception{
+      System.out.println("in do it");
       //pulling input so that this module will be executed only once.
       wrapper = (ConnectionWrapper) pullInput(0);
       String tableName = (String)pullInput(1);
       String[] fieldNames = (String[]) pullInput(2);
-     ExampleTable etbl = null;
+      //ExampleTable etbl = null;
           if (isInputPipeConnected(3)) {
                                 etbl = (ExampleTable)pullInput(3);
                  }
