@@ -4,9 +4,14 @@ package ncsa.d2k.modules.core.io.sql;
 import ncsa.d2k.core.modules.InputModule;
 import java.sql.*;
 import java.util.Vector;
+import ncsa.d2k.core.modules.*;
 
 public class AvailableTablesInput extends InputModule
 {
+	/** list data tables (not views and cube tables) only */
+	protected boolean dataTableOnly = true;
+        protected boolean dataCubeOnly = false;
+
 	public String getOutputInfo (int index) {
 		switch (index) {
 			case 0: return "Pass this on to the next module that needs a connection to this data source.";
@@ -36,6 +41,49 @@ public class AvailableTablesInput extends InputModule
 		return types;
 	}
 
+	/**
+		Get the value of dataTableOnly
+		@return true if only data tables (not data cubes) should be listed.
+		false otherwise
+	*/
+	public boolean getDataTableOnly() {
+		return dataTableOnly;
+	}
+
+	/**
+		Set the the value of dataTableOnly
+		@param b true if only data tables should be listed.
+		false otherwise
+	*/
+	public void setDataTableOnly(boolean b) {
+		dataTableOnly = b;
+	}
+
+	/**
+		Get the value of dataCubeOnly
+		@return true if only data cubes (not data tables) should be listed.
+		false otherwise
+	*/
+	public boolean getDataCubeOnly() {
+		return dataCubeOnly;
+	}
+
+	/**
+		Set the the value of dataTableOnly
+		@param b true if only data tables should be listed.
+		false otherwise
+	*/
+	public void setDataCubeOnly(boolean b) {
+		dataCubeOnly = b;
+	}
+
+        public PropertyDescription [] getPropertiesDescriptions () {
+          PropertyDescription [] pds = new PropertyDescription [2];
+          pds[0] = new PropertyDescription ("dataTableOnly", "List Data Tables Only?", "Choose True if you only want to list data tables, but not data cubes.");
+          pds[1] = new PropertyDescription ("dataCubeOnly", "List Data Cubes Only?", "Choose True if you only want to list data cubes, but not data tables.");
+          return pds;
+        }
+
 	protected void doit ()  throws Exception
 	{
 		ConnectionWrapper cw = (ConnectionWrapper) this.pullInput (0);
@@ -43,7 +91,14 @@ public class AvailableTablesInput extends InputModule
 		Vector v = new Vector();
 
 		Statement stmt = con.createStatement();
-		ResultSet tableSet = stmt.executeQuery("select table_name from user_tables");
+                String qryString = "select table_name from user_tables";
+                if (dataTableOnly) {
+                  qryString = qryString + " where table_name not like '%_CUBE%'";
+                }
+                else if (dataCubeOnly) {
+                  qryString = qryString + " where table_name like '%_CUBE%'";
+                }
+		ResultSet tableSet = stmt.executeQuery(qryString);
 		while (tableSet.next())
 		    v.addElement(tableSet.getString(1));
 
