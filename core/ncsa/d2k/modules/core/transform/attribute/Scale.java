@@ -88,6 +88,10 @@ public class Scale extends UIModule {
 /* GUI                                                                        */
 /******************************************************************************/
 
+   private Insets emptyInsets  = new Insets( 0,  0,  0,  0),
+                  labelInsets  = new Insets(10, 10, 10, 10),
+                  buttonInsets = new Insets( 5,  5,  5,  5);
+
    private class ScaleUI extends JUserPane implements ActionListener {
 
       private MutableTable table;
@@ -98,9 +102,15 @@ public class Scale extends UIModule {
       private int[] indirection; // points into table, at numeric columns
       private String[] numericLabels;
 
-      private Insets emptyInsets  = new Insets( 0,  0,  0,  0),
-                     labelInsets  = new Insets(10, 10, 10, 10),
-                     buttonInsets = new Insets( 5,  5,  5,  5);
+      private Dimension preferredSize = new Dimension(600, 300);
+
+      public Dimension getMinimumSize() {
+         return preferredSize;
+      }
+
+      public Dimension getPreferredSize() {
+         return preferredSize;
+      }
 
       public void initView(ViewModule mod) { }
 
@@ -150,7 +160,15 @@ public class Scale extends UIModule {
                 columnType == ColumnTypes.SHORT) {
 
                indirection[index] = i;
+
                numericLabels[index] = table.getColumnLabel(i);
+
+               if (numericLabels[index] == null ||
+                   numericLabels[index].length() == 0) {
+
+                  numericLabels[index] = "column " + i;
+
+               }
 
                index++;
 
@@ -208,14 +226,8 @@ public class Scale extends UIModule {
          }
          else {
 
-            JPanel numericColumnsPanel = new JPanel();
-            GridBagLayout numericColumnsLayout = new GridBagLayout();
-            numericColumnsPanel.setLayout(numericColumnsLayout);
+            Box numericColumnsBox = new Box(BoxLayout.Y_AXIS);
 
-            // !:
-            // Box numericColumnsBox = new Box(BoxLayout.Y_AXIS);
-
-            int layoutVIndex = 0; // vertical position for numericColumnsLayout
             panelMap = new HashMap();
 
             // add fields for scaling
@@ -223,30 +235,6 @@ public class Scale extends UIModule {
             for (int count = 0; count < indirection.length; count++) {
 
                index = indirection[count];
-
-               // add separator if necessary
-
-               if (count > 0) {
-
-                  JSeparator separator = new JSeparator();
-
-                  numericColumnsLayout.addLayoutComponent(separator,
-                     new GridBagConstraints(0, layoutVIndex++, 2, 1, 1.0, 0.0,
-                     GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                     emptyInsets, 0, 0));
-                  numericColumnsPanel.add(separator);
-
-               }
-
-               // add column label
-
-               JLabel labelLabel = new JLabel(table.getColumnLabel(index));
-
-               numericColumnsLayout.addLayoutComponent(labelLabel,
-                  new GridBagConstraints(0, layoutVIndex, 1, 1, 1.0, 0.0,
-                  GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-                  labelInsets, 0, 0));
-               numericColumnsPanel.add(labelLabel);
 
                // find min and max for this column
 
@@ -263,19 +251,16 @@ public class Scale extends UIModule {
 
                // add column panel
 
-               ColumnPanel columnPanel = new ColumnPanel(min, max);
+               ColumnPanel columnPanel = new ColumnPanel(numericLabels[count],
+                 min, max, (count < indirection.length - 1));
 
                panelMap.put(new Integer(index), columnPanel);
 
-               numericColumnsLayout.addLayoutComponent(columnPanel,
-                  new GridBagConstraints(1, layoutVIndex++, 1, 1, 1.0, 0.0,
-                  GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-                  emptyInsets, 0, 0));
-               numericColumnsPanel.add(columnPanel);
+               numericColumnsBox.add(columnPanel);
 
             }
 
-            JScrollPane numericScroll = new JScrollPane(numericColumnsPanel);
+            JScrollPane numericScroll = new JScrollPane(numericColumnsBox);
 
             layout.addLayoutComponent(numericScroll,
                new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
@@ -397,7 +382,8 @@ public class Scale extends UIModule {
              toLabel, toMinLabel, toMaxLabel;
       JTextField fromMinField, fromMaxField, toMinField, toMaxField;
 
-      public ColumnPanel(double fromMin, double fromMax) {
+      public ColumnPanel(String label, double fromMin, double fromMax,
+         boolean addSeparator) {
 
          super();
 
@@ -405,13 +391,13 @@ public class Scale extends UIModule {
          scaleCheck.setSelected(true);
          scaleCheck.addActionListener(this);
 
-         fromMinField = new JTextField(5);
+         fromMinField = new JTextField(6);
          fromMinField.setText(Double.toString(fromMin));
-         fromMaxField = new JTextField(5);
+         fromMaxField = new JTextField(6);
          fromMaxField.setText(Double.toString(fromMax));
-         toMinField = new JTextField(5);
+         toMinField = new JTextField(6);
          toMinField.setText("0.0");
-         toMaxField = new JTextField(5);
+         toMaxField = new JTextField(6);
          toMaxField.setText("1.0");
 
          fromLabel = new JLabel("  From:  ");
@@ -421,17 +407,47 @@ public class Scale extends UIModule {
          toMinLabel = new JLabel("min");
          toMaxLabel = new JLabel("max");
 
-         add(scaleCheck);
-         add(fromLabel);
-         add(fromMinLabel);
-         add(fromMinField);
-         add(fromMaxLabel);
-         add(fromMaxField);
-         add(toLabel);
-         add(toMinLabel);
-         add(toMinField);
-         add(toMaxLabel);
-         add(toMaxField);
+         JPanel controlsPanel = new JPanel();
+         controlsPanel.add(scaleCheck);
+         controlsPanel.add(fromLabel);
+         controlsPanel.add(fromMinLabel);
+         controlsPanel.add(fromMinField);
+         controlsPanel.add(fromMaxLabel);
+         controlsPanel.add(fromMaxField);
+         controlsPanel.add(toLabel);
+         controlsPanel.add(toMinLabel);
+         controlsPanel.add(toMinField);
+         controlsPanel.add(toMaxLabel);
+         controlsPanel.add(toMaxField);
+
+         GridBagLayout layout = new GridBagLayout();
+         setLayout(layout);
+
+         JLabel labelLabel = new JLabel(label); // *grin*
+
+         layout.addLayoutComponent(labelLabel, new GridBagConstraints(
+            0, 0, 1, 1, 1.0, 0.0,
+            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+            labelInsets, 0, 0));
+         add(labelLabel);
+
+         layout.addLayoutComponent(controlsPanel, new GridBagConstraints(
+            1, 0, 1, 1, 0.0, 0.0,
+            GridBagConstraints.EAST, GridBagConstraints.NONE,
+            emptyInsets, 0, 0));
+         add(controlsPanel);
+
+         if (addSeparator) {
+
+            JSeparator separator = new JSeparator();
+
+            layout.addLayoutComponent(separator, new GridBagConstraints(
+               0, 1, 2, 1, 1.0, 0.0,
+               GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL,
+               emptyInsets, 0, 0));
+            add(separator);
+
+         }
 
       }
 
