@@ -149,6 +149,8 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
     int[] runs = null;
     boolean first = true;
 
+    private SortTableView parent = this;
+
     //QuickQueue queue, lastqueue;
 
     JLabel[] sortlabels;
@@ -224,8 +226,26 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
 
       done.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
-          viewDone("Done");
+
           getSortOrder();
+
+          // check to make sure the user hasn't chosen the same column twice
+          HashMap sortMap = new HashMap(); Integer I;
+          for (int i = 0; i < sortorder.length; i++) {
+             I = new Integer(sortorder[i]);
+             if (sortMap.containsKey(I)) {
+
+                JOptionPane.showMessageDialog(parent,
+                   "You cannot sort on the same column twice.",
+                   "Error", JOptionPane.ERROR_MESSAGE);
+
+                return;
+             }
+             else {
+                sortMap.put(I, I);
+             }
+          }
+          viewDone("Done");
           sort();
         }
       });
