@@ -60,7 +60,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 		String[] types =
 			{
 				"ncsa.d2k.modules.core.datatype.ADTree",
-				"ncsa.d2k.modules.core.datatype.table.Table" };
+				"ncsa.d2k.modules.core.datatype.table.ExampleTable" };
 		return types;
 	}
 
@@ -162,7 +162,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 		private JList /*numericColumnLabels*/
 		textualColumnLabels, currentBins;
 		private DefaultListModel binListModel;
-		private Table tbl;
+		private ExampleTable tbl;
 		private int numArrived = 0;
 		private ADTree adt;
 
@@ -208,7 +208,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 				numArrived = 1;
 			}
 			if (id == 1) {
-				tbl = (Table) o;
+				tbl = (ExampleTable) o;
 				numArrived++;
 			}
 
@@ -913,7 +913,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 		/*ADTree tree = (ADTree) */
 		pullInput(0);
 
-		Table table = (Table) pullInput(1);
+		ExampleTable table = (ExampleTable) pullInput(1);
 
 		//BinningUtils.validateBins(table, binDes, getAlias());
 
@@ -997,4 +997,10 @@ class ADTBinCounts implements BinCounts {
   * (ExampleTable vs Table) the module can work with regular Table that was generated
   * by ParseFileToTable but cannot work with regular metadata Table that was
   * created by CreateADTree.
+  * 
+  * 01-13 04 Anca:
+  * changed input 1 from Table to ExampleTable to be consistent with the other binning modules
+  * Input 1 can be table if the results of the binning are used in a transformation ( applyTransformation)
+  * but for use in creating a BinTree an ExampleTable is needed.
+  * 
 */
