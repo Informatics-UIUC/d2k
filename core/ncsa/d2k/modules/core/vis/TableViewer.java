@@ -46,7 +46,7 @@ public class TableViewer extends UIModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return in;
     }
 
@@ -56,7 +56,7 @@ public class TableViewer extends UIModule implements HasNames {
        @return The datatypes of the outputs.
     */
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] out = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return out;
     }
 

@@ -47,6 +47,18 @@ public class TableEditor extends TableViewer {
     }
 
     /**
+       Return a description of a specific input.
+       @param i The index of the input
+       @return The description of the input
+    */
+    public String getInputInfo(int i) {
+		if(i == 0)
+	    	return "The MutableTable to edit.";
+		else
+	    	return "No such input!";
+    }
+
+    /**
        Return a String array containing the datatypes of the outputs of this
        module.
        @return The datatypes of the outputs.
