@@ -17,7 +17,7 @@ public class ClusterBarChart extends BarChart {
   private static final int BOTTOMOFFSET = 20;
 
   // Clustering
-  private int runs = 1;
+  private int runs = 0;
   private int runsize;
 
   // Unique cluster values
@@ -48,31 +48,37 @@ public class ClusterBarChart extends BarChart {
 
     mutable = table.toExampleTable();
 
+    // Map x, y and z to first three columns
+    int[] reorder = {set.x, set.y, set.z};
+    mutable = (MutableTable) mutable.reorderColumns(reorder);
+    if (mutable.getNumColumns() > 3)
+      mutable.removeColumns(3, mutable.getNumColumns()-3);
+
     // Runs
-    int[] sort = {set.x, set.z};
+    int[] sort = {0, 2};
     int[] indices = TableUtilities.multiSortIndex(mutable, sort);
-    mutable = (mutable.reorderRows(indices)).toExampleTable();
+    mutable = (MutableTable) mutable.reorderRows(indices);
 
     // Missing values
-    valueset = TableUtilities.uniqueValueSet(mutable, set.z);
+    valueset = TableUtilities.uniqueValueSet(mutable, 2);
     runsize = valueset.size();
 
     // Determine number of runs
-    String label = mutable.getString(0, set.x);
+    String label = mutable.getString(0, 0);
     HashSet runset = new HashSet(valueset);
     int rows = mutable.getNumRows();
-    for (int row=0; row <= rows; row++) {
-      String runlabel = mutable.getString(row, set.x);
-      String runtime = mutable.getString(row, set.z);
+    for (int row=0; row < rows; row++) {
+      String runlabel = mutable.getString(row, 0);
+      String runtime = mutable.getString(row, 2);
 
       if (!runlabel.equals(label)) {
         // Missing values
         Iterator iterator = runset.iterator();
         while (iterator.hasNext()) {
-          String[] values = new String[3];
-          values[set.x] = label;
-          values[set.y] = new String("0.0");
-          values[set.z] = (String) iterator.next();
+          String[] values = new String[mutable.getNumColumns()];
+          values[0] = label;
+          values[1] = new String("0.0");
+          values[2] = (String) iterator.next();
           mutable.addRow(values);
         }
 
@@ -84,12 +90,22 @@ public class ClusterBarChart extends BarChart {
       runset.remove(runtime);
     }
 
+    // Last run
+    Iterator iterator = runset.iterator();
+    while (iterator.hasNext()) {
+      String[] values = new String[mutable.getNumColumns()];
+      values[0] = label;
+      values[1] = new String("0.0");
+      values[2] = (String) iterator.next();
+      mutable.addRow(values);
+    }
+    runs++;
+
     indices = TableUtilities.multiSortIndex(mutable, sort);
     mutable = (mutable.reorderRows(indices)).toExampleTable();
 
     // Include bins for spacing runs
     // Impacts mapping of bins to table values
-    runs--;
     bins = (runsize+1)*runs;
   }
 
@@ -100,7 +116,7 @@ public class ClusterBarChart extends BarChart {
     // Determine maximum string widths
     // X axis
     for (int run=0; run < runs; run++) {
-      String value = mutable.getString(run*runsize, set.x);
+      String value = mutable.getString(run*runsize, 0);
 
       int stringwidth = metrics.stringWidth(value);
       if (stringwidth > longest_font_width_x)
@@ -120,13 +136,10 @@ public class ClusterBarChart extends BarChart {
     }
 
     // Z axis
-    for (int run=0; run < runs; run++) {
-      String value = mutable.getString(run*runsize, set.z);
-
-      int stringwidth = metrics.stringWidth(value);
-      if (stringwidth > longest_font_width_x)
-        longest_font_width_z = stringwidth;
-    }
+    String label = mutable.getColumnLabel(2);
+    int labelwidth = metrics.stringWidth(label);
+    if (labelwidth > longest_font_width_x)
+      longest_font_width_z = labelwidth;
 
     // Determine offsets
     if (!settings.displaylegend) {
@@ -134,17 +147,20 @@ public class ClusterBarChart extends BarChart {
       legendwidth = 0;
     }
     else {
-      String[] values = TableUtilities.uniqueValues(table, set.z);
+      String[] values = TableUtilities.uniqueValues(mutable, 2);
       legendwidth = metrics.stringWidth(values[0]);
       for (int index=1; index < values.length; index++) {
         int stringwidth = metrics.stringWidth(values[index]);
         if (stringwidth > legendwidth)
           legendwidth = stringwidth;
       }
-      legendwidth = Math.max(legendwidth, longest_font_width_z);
 
-      legendwidth += 3*smallspace+samplecolorsize;
-      legendheight = (fontheight+smallspace)+(values.length*fontheight)+(fontheight-samplecolorsize);
+      if (legendwidth > longest_font_width_z)
+        legendwidth += 3*smallspace+samplecolorsize;
+      else
+        legendwidth = longest_font_width_z;
+
+      legendheight = (fontheight+smallspace)+(values.length*fontheight);
     }
 
     // Primary offsets
@@ -231,7 +247,7 @@ public class ClusterBarChart extends BarChart {
         counter = 0;
 
       else {
-        g2.draw(new Line2D.Double(x, graphheight-bottomoffset-tickmarksize, x, graphheight-bottomoffset+tickmarksize));
+        g2.draw(new Line2D.Double(x, getGraphHeight()-bottomoffset-tickmarksize, x, getGraphHeight()-bottomoffset+tickmarksize));
         counter++;
       }
 
@@ -272,7 +288,7 @@ public class ClusterBarChart extends BarChart {
     g2.rotate(Math.toRadians(90));
 
     for (int run=0; run < runs; run++) {
-      String value = mutable.getString(run*runsize, set.x);
+      String value = mutable.getString(run*runsize, 0);
       int stringwidth = metrics.stringWidth(value);
 
       g2.drawString(value,
@@ -301,7 +317,7 @@ public class ClusterBarChart extends BarChart {
     double x = legendleftoffset;
     double y = legendtopoffset;
 
-    g2.drawString(mutable.getColumnLabel(set.z), (int) x, (int) y);
+    g2.drawString(mutable.getColumnLabel(2), (int) x, (int) y);
 
     y += smallspace;
 
@@ -311,7 +327,7 @@ public class ClusterBarChart extends BarChart {
     y += fontheight-samplecolorsize;
 
     String[] values = new String[runsize];
-    mutable.getSubset(0, runsize).getColumn(values, set.z);
+    mutable.getSubset(0, runsize).getColumn(values, 2);
     for (int index=0; index < values.length; index++) {
       double gradient = (double) ((double) index)/((double) runsize);
       g2.setColor(new Color((int)(255 - 255*gradient), 25, (int)(255*gradient)));
@@ -350,7 +366,7 @@ public class ClusterBarChart extends BarChart {
       }
 
       else {
-        double value = mutable.getDouble(bin-offset, set.y);
+        double value = mutable.getDouble(bin-offset, 1);
         double barheight = (value-yminimum)/yscale;
         double y = getGraphHeight()-bottomoffset-barheight;
 
