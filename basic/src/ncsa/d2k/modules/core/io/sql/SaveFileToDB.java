@@ -703,12 +703,20 @@ public class SaveFileToDB extends HeadlessUIModule
           for(colIdx = 0; colIdx < vt.getNumColumns(); colIdx++) {
             /* find the data type */
             String colType = vTableDef.getValueAt(colIdx,1).toString();
-            String s = vt.getString(rowIdx, colIdx);
+            String s = " ";
+            if(!vt.isValueMissing(rowIdx, colIdx))
+              s = vt.getString(rowIdx, colIdx);
+            else
+              s = "null";
+            //String s = vt.getString(rowIdx, colIdx);
             if (colIdx > 0) /* add "," between columns */
               sb = sb + ",";
             if (colType.equals("string") || colType.equals("byte[]") ||
                 colType.equals("char[]") || colType.equals("boolean")) {
-              sb = sb + "'" + s + "'";
+              if(!vt.isValueMissing(rowIdx, colIdx))
+                sb = sb + "'" + s + "'";
+              else
+                sb = sb + s;
             }
             else {
               sb = sb + s;
@@ -819,7 +827,6 @@ public class SaveFileToDB extends HeadlessUIModule
           System.out.println("column is too big.");
           return (false);
         }
-        return (true);
       }
       return (true);
     }
@@ -831,23 +838,19 @@ public class SaveFileToDB extends HeadlessUIModule
     */
     protected boolean isTypeMatch (Object type1, Object type2) {
       if (type1.toString().toLowerCase().indexOf("varchar")>=0) {
-        if (type2.equals(FlatFileParser.STRING_TYPE) || type2.equals(FlatFileParser.BOOLEAN_TYPE) ||
-            type2.equals(FlatFileParser.BYTE_ARRAY_TYPE) || type2.equals(FlatFileParser.CHAR_ARRAY_TYPE) ||
-            type2.equals(FlatFileParser.BYTE_TYPE) || type2.equals(FlatFileParser.CHAR_TYPE) )
+        if(!ColumnTypes.isEqualNumeric(type2.toString()))
           return (true);
         else
           return (false);
       }
-      else if (type1.toString().toLowerCase().indexOf("number")>=0 ||
-               type1.toString().toLowerCase().indexOf("numeric")>=0) {
-        if (type2.equals(FlatFileParser.INT_TYPE) || type2.equals(FlatFileParser.FLOAT_TYPE) ||
-            type2.equals(FlatFileParser.DOUBLE_TYPE) || type2.equals(FlatFileParser.LONG_TYPE) ||
-            type2.equals(FlatFileParser.SHORT_TYPE))
+
+      else if(ColumnTypes.isContainNumeric(type1.toString())){
+        if(ColumnTypes.isEqualNumeric(type2.toString()))
             return (true);
         else
             return (false);
       }
-      return (false);
+     return (false);
     }
 
     /** verify the vertical table's data length matches the database table's
@@ -1046,7 +1049,7 @@ public class SaveFileToDB extends HeadlessUIModule
 
 
 
-//for each column, comparing types and length.
+           //for each column, comparing types and length.
            for (int i = 0; i < vt.getNumColumns(); i++) {
 
              //iType is the type of column i in the vertical table.
@@ -1078,8 +1081,7 @@ public class SaveFileToDB extends HeadlessUIModule
                 case ColumnTypes.INTEGER:
                  case ColumnTypes.FLOAT:
                  case ColumnTypes.SHORT:
-                case ColumnTypes.LONG: if( !( sType.indexOf("numeric") >= 0) && !( sType.indexOf("number") >= 0)) {
-
+                case ColumnTypes.LONG: if(!ColumnTypes.isContainNumeric(sType)){
 
                     System.out.println(this.getAlias()+ ": The data type of column " + (i+1) +
                      " does not match. Data cannot be " + "appended.\n");
@@ -1142,7 +1144,6 @@ public class SaveFileToDB extends HeadlessUIModule
                   if (i > 0) // add "," between columns definitions
                     sb = sb + ",";
                   String colLabel = vt.getColumnLabel(i);
-
                   colLabel = colLabel.replace('-', '_');
                   sb = sb + colLabel + " ";
 
@@ -1223,15 +1224,21 @@ public class SaveFileToDB extends HeadlessUIModule
                    /* find the data type */
                   // String colType = vTableDef.getValueAt(colIdx,1).toString();
                   int type = vt.getColumnType(colIdx);
-                   String s = vt.getString(rowIdx, colIdx);
-
-
+                  String s = " ";
+                  if(!vt.isValueMissing(rowIdx, colIdx))
+                    s = vt.getString(rowIdx, colIdx);
+                  //String s = vt.getString(rowIdx, colIdx);
+                  else
+                    s = "null";
 
                    if (colIdx > 0) /* add "," between columns */
                      sb = sb + ",";
                    if (type==ColumnTypes.STRING || type==ColumnTypes.BYTE_ARRAY ||
                        type==ColumnTypes.CHAR_ARRAY  || type==ColumnTypes.BOOLEAN ) {
-                     sb = sb + "'" + s + "'";
+                     if(!vt.isValueMissing(rowIdx, colIdx))
+                       sb = sb + "'" + s + "'";
+                     else
+                       sb = sb + s;
                    }
                    else {
                      sb = sb + s;
@@ -1244,15 +1251,7 @@ public class SaveFileToDB extends HeadlessUIModule
                } /* end of for rowIdx */
 
                System.out.println(this.getAlias()+ ": nData has been loaded.\n\n");
-             /*  JOptionPane.showMessageDialog(msgBoard,
-                     "Data has been loaded.", "Information",
-                     JOptionPane.INFORMATION_MESSAGE);
-               newTableName.setText(NOTHING);
-               chosenTableName.setText(NOTHING);
-               newModel.initTableModel(maxNumRow,3);
-               dbModel.initTableModel(maxNumRow,3);
-               vtModel.initTableModel(maxNumRow,3);
-               viewAbort();*/
+
              }
              catch (Exception e){
                e.printStackTrace();
