@@ -586,27 +586,41 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
 */
       public void doit() throws Exception{
         if(book && (codeBook == null || codeBook.length() == 0))
-          throw new Exception("You must choose a code book or set 'Use Code Book' to false\n");
+          throw new Exception(getAlias() + ": Code Book properties were not configured correctly. " +
+                                "You must choose a code book or set 'Use Code Book' to false. " +
+                                "You may configure these properties using the properties editor " +
+                                "or via running this itinerary with GUI first.");
+
 
         if(selectedAttributes == null || selectedAttributes.length != 2  )
-          throw new Exception("you must select 2 columns!\n");
+          throw new Exception(getAlias() + " has not been configured. Before running headless, run with the gui and configure the parameters.");
 
          cw = (ConnectionWrapper) pullInput(0);
         String tableName = (String) pullInput(1);
 
-        if(!(tableName.indexOf("_CUBE") >=0))
-          throw new Exception ("The input table must be a cubed table, and must have the string '_CUBE' in its name");
-
         if(tableName == null || tableName.length() == 0)
-          throw new Exception("Illegal table name!\n");
+          throw new Exception(getAlias() + ": Illegal table name on input port 2.");
+
+        if(!(tableName.indexOf("_CUBE") >=0))
+          throw new Exception (getAlias() +": The input table must be a cubed table, and must have the string '_CUBE' in its name");
+
+
 
 
         if(!StaticMethods.getAvailableTables(cw).containsKey(tableName))
-          throw new Exception ("Table " + tableName + " was not found in the database!");
+          throw new Exception (getAlias() + ": Table " + tableName + " was not found in the database!");
 
 
         con = cw.getConnection();
         DatabaseMetaData metadata = con.getMetaData();
+
+
+    //verifying that tableName is in the data base
+        if(!StaticMethods.getAvailableTables(cw).containsKey(tableName))
+          throw new Exception(getAlias()+ ": Table named " + tableName +
+                              " was not found in the database.");
+
+
         ResultSet columns = metadata.getColumns(null, "%", tableName,
                                                 "%");
         Vector columnsVector = new Vector();
@@ -622,7 +636,7 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
 
         String[] targetAttributes = StaticMethods.getIntersection(selectedAttributes, columnsVector);
          if(targetAttributes.length == 0)
-           throw new Exception ("None of the selected attributes is in table " + tableName);
+           throw new Exception (getAlias() + ": None of the selected attributes is in table " + tableName);
 
         if (book) {
             aBook = new SQLCodeBook(cw, codeBook);

@@ -580,7 +580,10 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      ConnectionWrapper cw = (ConnectionWrapper) pullInput(0);
      String tableName = (String) pullInput(1);
 
-     String goodCondition = ""; //this will be pushed out.
+     if(queryCondition == null)
+       throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+
+//     String goodCondition = ""; //this will be pushed out.
 
 //validating
      //getting tables names in data base
@@ -588,7 +591,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      HashMap tables = StaticMethods.getAvailableTables(cw);
      //checking that tableName is in the hashmap
      if(!tables.containsKey(tableName))
-       throw new Exception ("Table " + tableName + " was not found in the data base!");
+       throw new Exception (getAlias() + ": Table " + tableName + " was not found in the data base!");
 
      //getting all attributes names.
      HashMap availableAttributes = StaticMethods.getAvailableAttributes(cw, tableName);
@@ -613,14 +616,17 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      if(availableAttributes.size() == 0){
        //this means either the table was not found in the data base, or that
        //it has no columns. the query condition will be empty anyway
-       System.out.println("\n\nSQL Filter Construction:\n Table " +
+       System.out.println(getAlias() + ": Table " +
                           tableName +
                           " has no columns. The filter will be empty");
-       pushOutput(goodCondition, 0);
+       //pushOutput(goodCondition, 0);
+       pushOutput("", 0);
        return;
      }
 
-     goodCondition = ExpressionParser.parseExpression(queryCondition, availableAttributes, true);
+     //goodCondition = ExpressionParser.parseExpression(queryCondition, availableAttributes, true);
+
+
 /*
      StringTokenizer tok = new StringTokenizer(queryCondition);
      //parsing the condition, each sub condition that holds a valid
@@ -675,8 +681,9 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      }//while has more tokens
  */
 
+//assuming that the module that will execute this query, will validate it first.
 
-     pushOutput(goodCondition,0);
+     pushOutput(queryCondition,0);
 
 
    }

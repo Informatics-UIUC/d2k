@@ -522,6 +522,8 @@ public class AttributeConstruction extends HeadlessUIModule {
          else if (src == doneButton) {
            help.setVisible(false);
            //headless conversion support
+           if (lastCons == null) //meaning the user chose no constructions
+             lastCons = new Object[0];
           setLastCons(lastCons);
           //headless conversion support
 
@@ -723,8 +725,10 @@ public class AttributeConstruction extends HeadlessUIModule {
    }
 
    //headless conversion support
-     public void doit(){
+     public void doit() throws Exception{
        pullInput(0);
+       if(lastCons == null)
+         throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
        pushOutput(new AttributeTransform(lastCons), 0);
      }
      //headless conversion support

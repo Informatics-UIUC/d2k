@@ -22,7 +22,9 @@ import ncsa.d2k.modules.core.transform.StaticMethods;
 
  @author Peter Groves, c/o David Clutter
  *
- * @todo: allows choosing same attribute both as input and output
+ *@todo: lines 407 and 413 are currently commented out. which causes this module
+ * to accept any selection of the user (no selection at all, selecting only
+ * inputs, or only outputs, or having inputs and outputs with intersecting items.)
  */
 public class ChooseAttributes extends HeadlessUIModule {
 
@@ -142,7 +144,7 @@ public class ChooseAttributes extends HeadlessUIModule {
 		}
 
                 if(colindices.size() == 0){
-                  System.out.println("The input table has no columns in it. " +
+                  System.out.println(getAlias() + ": The input table has no columns in it. " +
                                      "Thus it will be output as is.");
                   ExampleTable et = table.toExampleTable();
                 this.pushOutput(et, 0);
@@ -155,7 +157,7 @@ public class ChooseAttributes extends HeadlessUIModule {
                 String[] selectedNames;
 
                 if(selected == null || selected.length == 0){
-                  System.out.println("No input attributes were selected. Skipping " +
+                  System.out.println(getAlias() + ": No input attributes were selected. Skipping " +
                                      "setting of input features.");
                 }
 
@@ -168,7 +170,7 @@ public class ChooseAttributes extends HeadlessUIModule {
                   inputFeatures = StaticMethods.getIntersectIds(selectedNames, colindices);
 
                   if(inputFeatures.length == 0)
-                    System.out.println("None of the selected input attributes is in the input table. " +
+                    System.out.println(getAlias() + ": None of the selected input attributes is in the input table. " +
                                        "Skipping setting of input features.");
                   //the following was commented out and replaced by the previous code line.
                   //vered.
@@ -187,7 +189,7 @@ public class ChooseAttributes extends HeadlessUIModule {
                 int[] outputFeatures = new int[0];
 
                 if(selected == null || selected.length == 0){
-                  System.out.println("No output attributes were selected. Skipping " +
+                  System.out.println(getAlias() + ": No output attributes were selected. Skipping " +
                                      "setting of output features.");
                 }
                 else{
@@ -199,7 +201,7 @@ public class ChooseAttributes extends HeadlessUIModule {
                 outputFeatures = StaticMethods.getIntersectIds(selectedNames, colindices);
 
                 if(outputFeatures.length == 0)
-                  System.out.println("None of the selected output attributes is in the input table. " +
+                  System.out.println(getAlias() + ": None of the selected output attributes is in the input table. " +
                                      "Skipping setting of output features.");
 
 		/*int[] outputFeatures = new int[selected.length];
@@ -404,11 +406,13 @@ public class ChooseAttributes extends HeadlessUIModule {
 			if (src == abort)
 				module.viewCancel ();
 			else if (src == done) {
-				setFieldsInTable ();
-				pushOutput (et, 0);
-				viewDone ("Done");
-				et = null;
-				this.removeAll ();
+                        //  if(checkChoices()){
+                            setFieldsInTable();
+                            pushOutput(et, 0);
+                            viewDone("Done");
+                            et = null;
+                            this.removeAll();
+                          //}
 			} else if (src == miColumnOrder) {
 				String[] labels = orderedLabels ();
 				miAlphaOrder.setState (false);
@@ -480,13 +484,17 @@ public class ChooseAttributes extends HeadlessUIModule {
 		}
 
 		private void setFieldsInTable () {
+
+
 			et = table.toExampleTable ();
 
 			Object[] selected = inputList.getSelectedValues ();
 			int[] inputFeatures = new int[selected.length];
+
 			for (int i = 0; i < selected.length; i++) {
 				String s = (String) selected[i];
 				Integer ii = (Integer) inputToIndexMap.get (s);
+
 				inputFeatures[i] = ii.intValue ();
 			}
 			setSelectedInputs (selected);
@@ -494,6 +502,8 @@ public class ChooseAttributes extends HeadlessUIModule {
 			int[] outputFeatures = new int[selected.length];
 			for (int i = 0; i < selected.length; i++) {
 				String s = (String) selected[i];
+
+
 				Integer ii = (Integer) outputToIndexMap.get (s);
 				outputFeatures[i] = ii.intValue ();
 			}
@@ -504,8 +514,9 @@ public class ChooseAttributes extends HeadlessUIModule {
 		}
 
 		/**
-		 Not used
+
 		 Make sure all choices are valid.
+                 vered - added test that input features and output featurs have no intersection
 		 */
 		protected boolean checkChoices () {
 			if (outputList.getSelectedIndex () == -1) {
@@ -520,7 +531,22 @@ public class ChooseAttributes extends HeadlessUIModule {
 						"Error", JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
-			return true;
+
+                        //vered - added this code
+                        Object[] selected = inputList.getSelectedValues ();
+                        HashMap ins = new HashMap();
+                        for (int i=0; i<selected.length; i++)
+                          ins.put(selected[i], new Integer(i));
+                        selected = outputList.getSelectedValues ();
+                        for (int i=0; i<selected.length; i++)
+                          if (ins.containsKey(selected[i])){
+                            JOptionPane.showMessageDialog (this,
+                                                "You cannot select an attribute both as an input and an output",
+                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                return false;
+                          }//if contains
+
+                        return true;
 		}
 	}
 }

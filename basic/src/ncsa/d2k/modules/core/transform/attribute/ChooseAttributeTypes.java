@@ -517,7 +517,7 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
     }
 
     if(availableColumns.size() == 0){
-      System.out.println("The input table has no columns. It will be output as is.");
+      System.out.println(getAlias() + ": The input table has no columns. It will be output as is.");
       pushOutput(_table, 0);
       return;
     }
@@ -536,12 +536,12 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
         _table.setColumnIsScalar(true, index);
         _table.setColumnIsNominal(false, index);
         if(!_table.isColumnNumeric(index))
-          System.out.println("Column " + scalarColumns[i] + " was selected as scalar, but " +
+          System.out.println(getAlias() + ": Column " + scalarColumns[i] + " was selected as scalar, but " +
                              "this column is not numeric. Continueing anyway.");
 
       }//if contains
     else
-      System.out.println("The table does not contain a column named " + scalarColumns[i] +
+      System.out.println(getAlias() + ": The table does not contain a column named " + scalarColumns[i] +
                          ".\nIgnoring this attribute.");
 
 
@@ -553,12 +553,12 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
         _table.setColumnIsScalar(false, index);
         _table.setColumnIsNominal(true, index);
         if(_table.isColumnNumeric(index))
-          System.out.println("Column " + nominalColumns[i] + " was selected as nominal, but " +
+          System.out.println(getAlias() + ": Column " + nominalColumns[i] + " was selected as nominal, but " +
                              "this column is numeric. Continueing anyway.");
 
       }//if contains
       else
-        System.out.println("The table does not contain a column named " + nominalColumns[i] +
+        System.out.println(getAlias() + ": The table does not contain a column named " + nominalColumns[i] +
                            ".\nIgnoring this attribute.");
 
 
@@ -577,11 +577,8 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
     if(scalarColumns == null) scalarColumns = new String[0];
     if(nominalColumns == null) nominalColumns = new String[0];
     if(scalarColumns.length == 0 && nominalColumns.length == 0){
-      System.out.println("\n\nChooseAttributeTypes:\nYou did not choose any " +
-          "nominal or scalar columns." +
-          "\nthe itinerary will continue " +
-          "without changing the columns' scalar\nominal properties.\n");
-      return false;
+      throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+//      return false;
     }//if length
 
 
@@ -593,7 +590,9 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
 
     for (int i=0; i<nominalColumns.length; i++)
       if(scalarMap.containsKey(nominalColumns[i]))
-        throw new Exception("\n\nChooseAttributeTypes:\nA column can be either scalar or nominal, it cannot be both!\n");
+        throw new Exception(this.getAlias()+": Attribute " + nominalColumns[i] +
+                            " was set as both scalar and nominal. A column can be " +
+                            "only either scalar or nominal, it cannot be both!\n");
 
 
     return true;

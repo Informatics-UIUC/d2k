@@ -1622,9 +1622,12 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
       String[] fieldNames = (String[]) pullInput(2);
 //      String condition = (String) pullInput(3);
 
-      if(savedBins == null) {
+      if(savedBins == null)
+        throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+
+      if(savedBins.length == 0) {
         savedBins = new BinDescriptor[0];
-        System.out.println("\n\nSQLBinAttributes:\nNo columns were chosen to be binned.\n" +
+        System.out.println(getAlias()+ ": No bins were configured.\n" +
                            "The transformation will be empty.\n");
         pushOutput(new BinTransform(savedBins, newColumn), 0);
         return;
@@ -1632,7 +1635,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
 
       //verifying that tableName is in the data base
       if(!StaticMethods.getAvailableTables(wrapper).containsKey(tableName))
-        throw new Exception("Table named " + tableName +
+        throw new Exception(getAlias()+ ": Table named " + tableName +
                             " was not found in the database.");
       /*
       Connection con = wrapper.getConnection();
@@ -1654,7 +1657,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
       HashMap colMap = StaticMethods.getAvailableAttributes(wrapper, tableName);
 
       if(colMap.size() == 0){
-        System.out.println("Table " + tableName + " has no columns. The transformation " +
+        System.out.println(getAlias()+ ": Table " + tableName + " has no columns. The transformation " +
                            "will be empty");
         BinDescriptor[] targetBins = new BinDescriptor[0];
         pushOutput(new BinTransform(targetBins, newColumn), 0);
@@ -1667,11 +1670,11 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
       for (int i=0; i<fieldNames.length; i++)
         if(colMap.containsKey(fieldNames[i]))
           newColMap.put(fieldNames[i], new Integer(i));
-        else System.out.println("The attribute " + fieldNames[i] + " was not found in table " +
+        else System.out.println(getAlias()+ ": The attribute " + fieldNames[i] + " was not found in table " +
                                 tableName + " and it will be ignored.");
 
       if(newColMap.size() == 0){
-        System.out.println("Table " + tableName + " has no columns labeled as the selected attributes " +
+        System.out.println(getAlias()+ ": Table " + tableName + " has no columns labeled as the configured attributes " +
                            "on input port no. 3. The transformation " +
                            "will be empty");
         BinDescriptor[] targetBins = new BinDescriptor[0];
@@ -1693,9 +1696,13 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
      Vector relevant = new Vector();
    for (int i=0; i<savedBins.length; i++){
      if(!newColMap.containsKey(savedBins[i].label))
-       System.out.println("Bin " +  savedBins[i].toString() + " does not match any column label in the input table. It will be ignored.");
+       System.out.println(getAlias()+ ": Bin " +  savedBins[i].toString() + " does not match any column label in the input table. It will be ignored.");
      else relevant.add(savedBins[i]);
    }//for
+
+   if(relevant.size() == 0)
+     System.out.println(getAlias() + ": None of the configured bins matched the columns in the " +
+                        "configured table in the database. The transformation will be empty.");
 
    BinDescriptor[] targetBins =  new BinDescriptor[relevant.size()];
    for(int i=0; i<targetBins.length; i++)

@@ -767,7 +767,7 @@ public class MergeTableRows extends HeadlessUIModule {
     public String getType(){return type;}
     public void setType(String t){type = t;}
 
-    public void doit(){
+    public void doit() throws Exception{
       final Table table = (Table)pullInput(0);
 
 
@@ -784,38 +784,17 @@ public class MergeTableRows extends HeadlessUIModule {
 
       //validating that properties are not null. if they are - pushing out the
       //table without any changes.
-      if(ks == null || ks.length == 0){
-        System.out.println("\nNo valid key column were chosen!\nThe Table remains the same!\n");
-        pushOutput(table.toExampleTable(), 0);
-        return;
-      }
-
-      if(ms == null || ms.length == 0){
-        System.out.println("\nNo valid merges column were chosen!\nThe Table remains the same!\n");
-        pushOutput(table.toExampleTable(), 0);
-        return;
-      }
+      if(ks == null || ks.length == 0 || ms == null || ms.length == 0 ||
+        control == null || cntrl == -1 ||  type == null || type.length() == 0)
+         throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
 
 
-      if(control == null || cntrl == -1){
-        System.out.println("\nNo valid control column was chosen!\nThe Table remains the same!\n");
-        pushOutput(table.toExampleTable(), 0);
-        return;
-      }
 
 
-      if(type == null || type.length() == 0){
-        System.out.println("\nNo merging type was chosen!\nThe Table remains the same!\n");
-        pushOutput(table.toExampleTable(), 0);
-        return;
-      }
 
       if(!(type.equals(MergingClass.AVE) || type.equals(MergingClass.CNT) || type.equals(MergingClass.MAX) ||
-           type.equals(MergingClass.MIN) || type.equals(MergingClass.SUM))){
-          System.out.println("\nThe chosen merging type is illegal!\nThe Table remains the same!\n");
-          pushOutput(table.toExampleTable(), 0);
-          return;
-        }
+           type.equals(MergingClass.MIN) || type.equals(MergingClass.SUM)))
+        throw new Exception (getAlias() + ": The merging type is illegal!");
 
       //end validation.
 

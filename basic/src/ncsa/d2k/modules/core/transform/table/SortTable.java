@@ -28,6 +28,9 @@ import ncsa.gui.*;
  Cascade sorts a MutableTable by sorting the first column and then
  successive columns based on runs in the previous column. A run is
  a collection of similar values in a column.
+
+ @todo: when not choosing any column to sort by, table viewr after thsi module gets stuck.
+ [when running with gui]
  */
 public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
@@ -147,15 +150,21 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
  //ANCA: added doit method for Headless execution
 
- public void doit() {
+ public void doit() throws Exception {
         MutableTable table =(MutableTable) pullInput(0);
         CascadeSort cSort = new CascadeSort(table);
 
+         if(sortOrderNames == null)
+           throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+
         int[] sortorder;
-        if(sortOrderNames == null || sortOrderNames.length == 0)
+        if(sortOrderNames.length == 0)
           sortorder = cSort.getDefaultSortOrder();
         else
           sortorder = getSortOrder(table);
+
+        if(sortorder == null)
+          sortorder = cSort.getDefaultSortOrder();
 
         if(sortorder != null && sortorder.length != 0)
           cSort.sort(sortorder);
@@ -175,9 +184,14 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 
          retVal = StaticMethods.getIntersectIds(sortOrderNames, columns);
-         if(retVal == null || retVal.length == 0)
-           System.out.println("None of the configured labels were found in the input table. "+
-                              "\nThe table is ouput as is.");
+         if(retVal == null || retVal.length == 0){
+           System.out.println(
+               "None of the configured labels were found in the input table. " +
+               "\nThe table will be ordered by default.");
+          retVal = null;
+         }
+
+
 
 
          return retVal;

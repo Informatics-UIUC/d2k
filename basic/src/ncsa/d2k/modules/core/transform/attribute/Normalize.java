@@ -404,13 +404,16 @@ public class Normalize extends HeadlessUIModule {
        numericLabels[i] = (String)labels[i];
    }
 
-   public void doit(){
+   public void doit() throws Exception{
      MutableTable _table = (MutableTable)pullInput(0);
 
      int[] transform = new int[0]; //with this array the normalization trasform will be build
 
-     if(numericLabels == null || numericLabels.length ==0){
-       System.out.println("\n\nNormalize:\nno numeric columns were selected. " +
+     if(numericLabels == null)
+       throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+
+     if( numericLabels.length ==0){
+       System.out.println(getAlias() + ": numeric columns were selected. " +
                           "the transformation will be an empty one.\n");
         pushOutput(new NormalizingTransformation(transform), 0);
        return;
@@ -427,7 +430,7 @@ public class Normalize extends HeadlessUIModule {
          availableNumericColumns.put(_table.getColumnLabel(i), new Integer(i));
 
       if(availableNumericColumns.size() == 0){
-        System.out.println("\n\nNormalize:\nTable " + _table.getLabel() +
+        System.out.println(getAlias() + ": Table " + _table.getLabel() +
                            " has no numeric columns. The transformation will be " +
                            "an empty one");
          pushOutput(new NormalizingTransformation(transform), 0);
@@ -443,8 +446,8 @@ public class Normalize extends HeadlessUIModule {
 */
 
         if(transform.length == 0){
-          System.out.println("\n\nNormalize:\nTable " + _table.getLabel() +
-                          " does not contain any of the numeric columns you chose. " +
+          System.out.println(getAlias() + ": Table " + _table.getLabel() +
+                          " does not contain any of the configured numeric columns. " +
                           "The transformation will be an empty one");
         //pushOutput(new NormalizingTransformation(transform), 0);
         //return;

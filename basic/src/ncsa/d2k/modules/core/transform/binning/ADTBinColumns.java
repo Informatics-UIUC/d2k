@@ -1744,15 +1744,23 @@ public class ADTBinColumns extends HeadlessUIModule {
     return pds;
   }
 
-  public void doit(){
+  public void doit() throws Exception{
     //the tree is not necessary for validating relevancy of bins to the table.
     /*ADTree tree = (ADTree) */pullInput(0);
 
     Table table = (Table) pullInput(1);
 
-    if(binDes == null || binDes.length == 0){
+    //debug
+    System.out.print("binDes == null : ");
+    System.out.println(binDes == null);
+    //end debug
+
+    if(binDes == null)
+      throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+
+      if(binDes.length == 0){
        binDes = new BinDescriptor[0];
-      System.out.println("No bins were selected via a gui run. The transformation will be an empty one.");
+      System.out.println(getAlias() + ": No bins were configured. The transformation will be an empty one.");
        pushOutput(new BinTransform(binDes, newColumn), 0);
        return;
     }
@@ -1762,7 +1770,7 @@ public class ADTBinColumns extends HeadlessUIModule {
     Vector relevant = new Vector();
     for (int i=0; i<binDes.length; i++){
       if(!columns.containsKey(binDes[i].label))
-        System.out.println("Bin " +  binDes[i].toString() + " does not match any column label in the input table. It will be ignored.");
+        System.out.println(getAlias() + ": Bin " +  binDes[i].toString() + " does not match any column label in the input table. It will be ignored.");
       else relevant.add(binDes[i]);
     }//for
 
@@ -1771,7 +1779,7 @@ public class ADTBinColumns extends HeadlessUIModule {
       binDes[i] = (BinDescriptor) relevant.get(i);
 
     if(binDes == null || binDes.length == 0){
-      System.out.println("None of the bins matched the input table, the transformation will be an empty one.");
+      System.out.println(getAlias() + ": None of the bins matched the input table, the transformation will be an empty one.");
       binDes = new BinDescriptor[0];
     }
 
