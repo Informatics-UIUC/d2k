@@ -82,7 +82,7 @@ public class ConnectToDB extends UIModule {
       s += "After you successfully log onto a database, this connection is ";
       s += "passed to next modules for use. </p>";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle and SQLServer databases.";
+      s += "We currently only support Oracle, SQLServer and MySQL databases.";
 
         return s;
 
@@ -505,9 +505,8 @@ public class ConnectToDB extends UIModule {
 
         private JComboBox cbV;
 
-        // we currently only support Oracle and SQLServer
-        private String[] Vendors = {"Oracle", "SQLServer"};
-        //private String[] Vendors = {"Oracle", "MySQL", "SQLServer"};
+        // we currently only support Oracle, SQLServer and MySQL
+        private String[] Vendors = {"Oracle", "SQLServer", "MySQL"};
 
         private int dbFlag;
 
@@ -618,15 +617,14 @@ public class ConnectToDB extends UIModule {
                         tfD.setText("oracle.jdbc.driver.OracleDriver");
 
                     }
-                    /*
-                    // we don't support MySQL at this point
+
                     else if (newSelection == "MySQL") {
 
                         tfPo.setText("1520");
 
-                        tfD.setText("org.gjt.mm.mysql.Driver");
+                        tfD.setText("com.mysql.jdbc.Driver");
 
-                    } */
+                    }
 
                     else if (newSelection == "SQLServer") {
 
@@ -1024,9 +1022,7 @@ public class ConnectToDB extends UIModule {
 
                   }
 
-                  /*
-                  // We don't support MySQL and SQLServer at this time
-                  else if ( _driver.equals("org.gjt.mm.mysql.Driver")) {
+                  else if ( _driver.equals("com.mysql.jdbc.Driver")) {
 
                       setUrl("jdbc:mysql://" + getMachine()+ "/" + getDbInstance());
 
@@ -1042,7 +1038,7 @@ public class ConnectToDB extends UIModule {
 
                       pushOutput (mc, 0);
 
-                  } */
+                  }
 
                   else if(_driver.equals("com.microsoft.jdbc.sqlserver.SQLServerDriver")) {
 
