@@ -129,7 +129,7 @@ public class SVMProbMaker extends DataPrepModule
 			else if (outputs.length == 0 || inputs.length == 0) {
                           //vered - 02-23-04: throwing and exception instead of outputing a message.
                           //this will terminate the intinerary.
-                          String msg = "Invalid features! You must choose input and output features to the input table!";
+                          String msg = "Invalid features! You must assign input and output features to the input table!";
                           throw new Exception(msg);
 			}
 
