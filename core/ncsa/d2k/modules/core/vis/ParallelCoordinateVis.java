@@ -43,7 +43,7 @@ public class ParallelCoordinateVis extends VisModule {
 	}
 
 	public String[] getInputTypes() {
-		String[] i = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] i = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return i;
 	}
 
@@ -105,10 +105,10 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 
 	private static final Dimension buttonsize = new Dimension(25, 25);
 
-	private static final HashMap uniqueValues(Column sc) {
+	private static final HashMap uniqueValues(Table t, int i) {
 		HashMap hm = new HashMap();
-		for(int k = 0; k < sc.getNumRows(); k++) {
-			String s = sc.getString(k);
+		for(int k = 0; k < t.getNumRows(); k++) {
+			String s = t.getString(k, i);
 			if(!hm.containsKey(s)) {
 				int sz = hm.size();
 				sz++;
@@ -128,7 +128,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 		private boolean zoomin;
 
 		/** the table with the data */
-		private TableImpl table;
+		private Table table;
 		private JMenuBar menuBar;
 
 		/** the choose colors menu */
@@ -182,7 +182,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 		 * Input arrived
 		 */
 		public void setInput(Object o, int i) {
-			table = (TableImpl)o;
+			table = (Table)o;
 			selectedlines = new boolean[table.getNumRows()];
 			legend = new Legend();
 			nf = NumberFormat.getInstance();
@@ -669,21 +669,23 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 				maxes = new double[table.getNumColumns()];
 				for(int j = 0; j < columnorder.length; j++) {
 					columnorder[j] = j;
-					Column c = table.getColumn(j);
-					if(c instanceof NumericColumn) {
-						NumericColumn nc = (NumericColumn)c;
-						float max = (float)nc.getMax();
-						float min = (float)nc.getMin();
-						mins[j] = min;
-						maxes[j] = max;
-						for(int k = 0; k < nc.getNumRows(); k++)
-							weights[j][k] = (max-nc.getFloat(k))/(max-min);
+					//Column c = table.getColumn(j);
+					//if(c instanceof NumericColumn) {
+					if(table.isNumericColumn(j)) {
+						//NumericColumn nc = (NumericColumn)c;
+						MaxMin mm = getMaxMin(j);
+						//float max = (float)nc.getMax();
+						//float min = (float)nc.getMin();
+						mins[j] = (float)mm.min;
+						maxes[j] = (float)mm.max;
+						for(int k = 0; k < table.getNumRows(); k++)
+							weights[j][k] = ((float)maxes[j]-table.getFloat(k, j))/((float)maxes[j]-(float)mins[j]);
 					}
 					else {
-						Column sc = (Column)c;
-						HashMap hm = uniqueValues(sc);
-						for(int k = 0; k < sc.getNumRows(); k++) {
-							Integer ii = (Integer)hm.get(sc.getString(k));
+						//Column sc = (Column)c;
+						HashMap hm = uniqueValues(table, j);
+						for(int k = 0; k < table.getNumRows(); k++) {
+							Integer ii = (Integer)hm.get(table.getString(k, j));
 							weights[j][k] = ii.floatValue()/(hm.size()+1);
 						}
 					}
@@ -764,16 +766,18 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 			private final void setKeyColumn(int i) {
 				currentKeyColumn = i;
 				// update the linecolors
-				Column c = table.getColumn(i);
+				//Column c = table.getColumn(i);
 
 				HashMap lookup = colorsLookup[i];
 				if(lookup == null)
 					lookup = new HashMap();
 
-				if(c instanceof NumericColumn) {
-					NumericColumn nc = (NumericColumn)c;
-					double max = nc.getMax();
-					double min = nc.getMin();
+				//if(c instanceof NumericColumn) {
+				if(table.isNumericColumn(i)) {
+					//NumericColumn nc = (NumericColumn)c;
+					MaxMin mm = getMaxMin(i);
+					double max = mm.max;//nc.getMax();
+					double min = mm.min;//nc.getMin();
 
 					Color h = (Color)lookup.get(HIGH);
 					if(h == null)
@@ -787,7 +791,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 					for(int j = 0; j < table.getNumRows(); j++) {
 						// now create a new GradientPaint
 						// based on the shadecolumn get the shader value
-						double shaderVal = nc.getDouble(j);
+						double shaderVal = table.getDouble(j, i);
 						// find where the shader value lies between min and max
 						double percent = (max-shaderVal)/(max-min);
 						Color col = new Color(gradient.getRGB(1,
@@ -807,12 +811,12 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 					chooseColors.add(lm);
 				}
 				else {
-					Column sc = (Column)c;
+					//Column sc = (Column)c;
 
 					int idx = 0;
 					//linecolor = new Color[table.getNumRows()];
-					for(int j = 0; j < sc.getNumRows(); j++) {
-						String s = sc.getString(j);
+					for(int j = 0; j < table.getNumRows(); j++) {
+						String s = table.getString(j, i);
 						if(lookup.containsKey(s)) {
 							Color col = (Color)lookup.get(s);
 							linecolor[j] = col;
@@ -974,7 +978,8 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 				FontMetrics fm = g2.getFontMetrics();
 				int ascent = fm.getAscent();
 				for(int i = 0; i < columnorder.length; i++) {
-					if(table.getColumn(columnorder[i]) instanceof NumericColumn) {
+					//if(table.getColumn(columnorder[i]) instanceof NumericColumn) {
+					if(table.isNumericColumn(columnorder[i])) {
 						String mx = nf.format(maxes[columnorder[i]]);
 						g2.drawString(mx,
 							columnlocations[i]+leftoffset-fm.stringWidth(mx)/2,
@@ -982,7 +987,8 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 					}
 				}
 				for(int i = 0; i < columnorder.length; i++) {
-					if(table.getColumn(columnorder[i]) instanceof NumericColumn) {
+					//if(table.getColumn(columnorder[i]) instanceof NumericColumn) {
+					if(table.isNumericColumn(columnorder[i])) {
 						String mx = nf.format(mins[columnorder[i]]);
 						g2.drawString(mx,
 							columnlocations[i]+leftoffset-fm.stringWidth(mx)/2,
@@ -1256,14 +1262,15 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 				LinkedList strCols = new LinkedList();
 
 				for(int i = 0; i < table.getNumColumns(); i++) {
-					Column c = table.getColumn(i);
-					if(c instanceof NumericColumn) {
-						numericColumnLookup.put(c.getLabel(), new Integer(i));
-						numCols.add(c.getLabel());
+					//Column c = table.getColumn(i);
+					//if(c instanceof NumericColumn) {
+					if(table.isNumericColumn(i)) {
+						numericColumnLookup.put(table.getColumnLabel(i), new Integer(i));
+						numCols.add(table.getColumnLabel(i));
 					}
 					else {
-						stringColumnLookup.put(c.getLabel(), new Integer(i));
-						strCols.add(c.getLabel());
+						stringColumnLookup.put(table.getColumnLabel(i), new Integer(i));
+						strCols.add(table.getColumnLabel(i));
 					}
 				}
 
@@ -1426,7 +1433,8 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 						FilterItem fi = (FilterItem)filters[j];
 						int col = fi.colNum;
 						boolean retVal;
-						if(table.getColumn(col) instanceof NumericColumn)
+						//if(table.getColumn(col) instanceof NumericColumn)
+						if(table.isNumericColumn(col))
 							retVal = fi.evaluate(table.getDouble(i, col));
 						else
 							retVal = fi.evaluate(table.getString(i, col));
@@ -1435,6 +1443,8 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 					linemap[i] = start;
 				}
 			}
+
+
 
 			/**
 			 * Listen for button presses.
@@ -1765,5 +1775,27 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 		s.append("</ul></html>");
 		return s.toString();
 	}
-	}
+
+			private class MaxMin {
+				double min;
+				double max;
+			}
+
+			private MaxMin getMaxMin(int colIdx) {
+				double min = Double.MAX_VALUE;
+				double max = Double.MIN_VALUE;
+
+				for(int i = 0; i < table.getNumRows(); i++) {
+					double d = table.getDouble(i, colIdx);
+					if(d < min)
+						min = d ;
+					if(d > max)
+						max = d;
+				}
+				MaxMin mm = new MaxMin();
+				mm.min = min;
+				mm.max = max;
+				return mm;
+			}
+}
 
