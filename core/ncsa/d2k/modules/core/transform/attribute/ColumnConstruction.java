@@ -164,7 +164,7 @@ public class ColumnConstruction extends UIModule {
 
          }
 
-         addColumnButton = new JButton(">");
+         addColumnButton = new JButton("Add");
          addColumnButton.addActionListener(this);
 
          JPanel columnPanel = new JPanel();
@@ -183,7 +183,7 @@ public class ColumnConstruction extends UIModule {
          operationBox.addItem("/");
          operationBox.addItem("%");
 
-         addOperationButton = new JButton(">");
+         addOperationButton = new JButton("Add");
          addOperationButton.addActionListener(this);
 
          JPanel operationPanel = new JPanel();
@@ -199,7 +199,7 @@ public class ColumnConstruction extends UIModule {
          booleanBox.addItem("&&");
          booleanBox.addItem("||");
 
-         addBooleanButton = new JButton(">");
+         addBooleanButton = new JButton("Add");
          addBooleanButton.addActionListener(this);
 
          JPanel booleanPanel = new JPanel();
