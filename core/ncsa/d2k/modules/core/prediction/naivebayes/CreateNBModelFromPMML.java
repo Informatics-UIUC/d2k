@@ -245,8 +245,35 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
                   includeHi = true;
                 }
 
-                double lower = Double.parseDouble(leftMargin);
-                double upper = Double.parseDouble(rightMargin);
+                double lower = 0;
+                try {
+                 lower = Double.parseDouble(leftMargin.trim());
+                }
+                catch(NumberFormatException nfe) {
+                    if(leftMargin.trim().equals(Double.toString(Double.POSITIVE_INFINITY))) {
+                        lower = Double.POSITIVE_INFINITY;
+                    }
+                    else if(leftMargin.trim().equals(Double.toString(Double.NEGATIVE_INFINITY))) {
+                        lower = Double.NEGATIVE_INFINITY;
+                    }
+                    else
+                        throw nfe;
+                }
+
+                double upper = 0;
+                try {
+                    upper = Double.parseDouble(rightMargin.trim());
+                }
+                catch(NumberFormatException nfe) {
+                    if(rightMargin.trim().equals(Double.toString(Double.POSITIVE_INFINITY))) {
+                        upper = Double.POSITIVE_INFINITY;
+                    }
+                    else if(rightMargin.trim().equals(Double.toString(Double.NEGATIVE_INFINITY))) {
+                        upper = Double.NEGATIVE_INFINITY;
+                    }
+                    else
+                        throw nfe;
+                }
 
                 binTree.addNumericBin(name, binname, lower, includeLo,
                                         upper, includeHi);
