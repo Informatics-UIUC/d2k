@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.core.transform.attribute;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 import java.util.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	ScalarizeNominals.java
 
@@ -26,7 +27,7 @@ public class ScalarizeNominals extends ncsa.d2k.infrastructure.modules.DataPrepM
 	*/
 	public String[] getInputTypes () {
 		String [] types =  {
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 	}
 
@@ -47,7 +48,7 @@ public class ScalarizeNominals extends ncsa.d2k.infrastructure.modules.DataPrepM
 	*/
 	public String[] getOutputTypes () {
 		String [] types =  {
-			"ncsa.d2k.util.datatype.Table"};
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
@@ -63,7 +64,7 @@ public class ScalarizeNominals extends ncsa.d2k.infrastructure.modules.DataPrepM
 		convert the column containing nominal values to scalar values.
 		@param Column the column containing the data.
 	*/
-	public Column [] getScalarColumns (SimpleColumn col, String label) {
+	public Column [] getScalarColumns (Column col, String label) {
 
 		// First find all the unique values of the column.
 		int how = col.getNumRows ();
@@ -106,7 +107,8 @@ System.out.println ("LABEL : "+lbl);
 	*/
 	public void doit () throws Exception {
 		Table et = (Table) this.pullInput (0);
-		ExampleTable newet = new ExampleTable ();
+		Table tmpTbl = TableFactory.createTable();
+		ExampleTable newet = TableFactory.createExampleTable(tmpTbl);
 		int [] inputs = null;
 		int [] outputs = null;
 		if (et instanceof ExampleTable) {
@@ -118,7 +120,7 @@ System.out.println ("LABEL : "+lbl);
 		int iIndex = 0, oIndex = 0;
 
 		for (int i = 0 ; i < et.getNumColumns () ; i++) {
-			SimpleColumn col = (SimpleColumn) et.getColumn (i);
+			Column col = et.getColumn (i);
 			if (inputs == null) {
 
 				// Is the column contain scalars?

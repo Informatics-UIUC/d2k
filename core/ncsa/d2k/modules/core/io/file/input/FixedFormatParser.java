@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.io.file.input;
 import java.io.*;
 import java.text.ParseException;
 import java.util.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  * Class FixedFormatParser
@@ -73,7 +73,7 @@ class FixedFormatParser extends FileInputStream
 	_emptyValue = emptyValue;
     }
 
-    public FixedFormatParser(File file, VerticalTable header)
+    public FixedFormatParser(File file, Table header)
         throws FileNotFoundException
     {
         super(file);
@@ -99,7 +99,7 @@ class FixedFormatParser extends FileInputStream
 
     }
 
-    public FixedFormatParser(File file, VerticalTable header, double emptyVal)
+    public FixedFormatParser(File file, Table header, double emptyVal)
         throws FileNotFoundException
     {
 	this(file, header);
@@ -121,7 +121,7 @@ class FixedFormatParser extends FileInputStream
     }
 
 
-    public void setColumnTypes(VerticalTable vt, int col) {
+    public void setColumnTypes(Table vt, int col) {
 	_columnType = new Vector();
 	int nr=vt.getNumRows();
 	for ( int i = 0 ; i < nr ; i++)
@@ -131,7 +131,7 @@ class FixedFormatParser extends FileInputStream
     }
 
 
-    public void setColumnBeginings(VerticalTable vt, int col) {
+    public void setColumnBeginings(Table vt, int col) {
 	// _columnBegin has not been initialized by setColumnBounds
 	if (_columnBegin == null)
 	    {
@@ -143,7 +143,7 @@ class FixedFormatParser extends FileInputStream
     }
 
 
-    public void setColumnEnds(VerticalTable vt, int col) {
+    public void setColumnEnds(Table vt, int col) {
 	// _columnEnd has not been initialized by setColumnBounds
 	if (_columnEnd == null)
 	    {
@@ -155,7 +155,7 @@ class FixedFormatParser extends FileInputStream
     }
 
 
-    public void setColumnLabels(VerticalTable vt, int col) {
+    public void setColumnLabels(Table vt, int col) {
 	_columnLabels = new Vector();
 	int nr=vt.getNumRows();
 	for ( int i = 0 ; i <  nr ; i++)
@@ -163,7 +163,7 @@ class FixedFormatParser extends FileInputStream
     }
 
 
-    public void setColumnBounds(VerticalTable vt, int col) {
+    public void setColumnBounds(Table vt, int col) {
 	_columnEnd = new Vector();
 	_columnBegin = new Vector();
 	int start = 0;
@@ -262,12 +262,12 @@ class FixedFormatParser extends FileInputStream
 		int lines=(int)_fileLength/(lineLength+1);
 
 		_tableLength = lines-headerLines;
-		
+
 		/* allocate the table */
 		//Table result = new VerticalTable(_noOfColumns);
 
 		/* allocate the columns  and set the labels*/
-		SimpleColumn []tableColumns = new SimpleColumn[_noOfColumns];
+		Column []tableColumns = new Column[_noOfColumns];
 		for(int i = 0; i < _noOfColumns; i++) {
 
 		    tableColumns[i] = createColumn((String)_columnType.get(i),_tableLength);
@@ -343,7 +343,7 @@ class FixedFormatParser extends FileInputStream
 				}
 			}
 		}
-		return new VerticalTable(tableColumns);
+		return TableFactory.createTable(tableColumns);
 	}
 
 	/*
@@ -360,7 +360,7 @@ class FixedFormatParser extends FileInputStream
 		to the row and column indices of the fields
 		that were blank in the file that was read in
 		*/
-	public VerticalTable getBlanks(){
+	public Table getBlanks(){
 		Object[] rowsObjArray=blankRows.toArray();
 		Object[] colsObjArray=blankCols.toArray();
 		int numBlanks=rowsObjArray.length;
@@ -376,7 +376,7 @@ class FixedFormatParser extends FileInputStream
 		internal[0]=rowsColumn;
 		internal[1]=colsColumn;
 
-		VerticalTable table=new VerticalTable(internal);
+		Table table= TableFactory.createTable(internal);
 		Object[] tableRow=new Object[2];
 		for(int i=0; i<numBlanks; i++){
 			tableRow[0]=rowsObjArray[i];
@@ -482,7 +482,7 @@ class FixedFormatParser extends FileInputStream
 		@param size the initial size of the column
 		@return a new, empty column
 	*/
-	protected SimpleColumn createColumn(String type, int size) {
+	protected Column createColumn(String type, int size) {
 		if(type.equals(STRING_TYPE))
 			return new StringColumn(size);
 		else if(type.equals(FLOAT_TYPE))

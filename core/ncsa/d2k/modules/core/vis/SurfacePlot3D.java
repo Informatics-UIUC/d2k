@@ -21,8 +21,9 @@ import ncsa.d2k.gui.JD2KFrame;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.vis.widgets.ComputationalGeometry;
-import ncsa.d2k.util.datatype.*;
 import ncsa.gui.Constrain;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  * <code>SurfacePlot3D</code> is a three-dimensional visualization of
@@ -38,7 +39,7 @@ public class SurfacePlot3D extends VisModule {
    }
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.util.datatype.Table"}; return i;
+      String[] i = {"ncsa.d2k.modules.core.datatype.table.Table"}; return i;
    }
 
    public String[] getOutputTypes() {

@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.optimize.util;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 public class SOSolutionSpace implements SolutionSpace, java.io.Serializable{
 
@@ -85,9 +85,9 @@ public class SOSolutionSpace implements SolutionSpace, java.io.Serializable{
 				}
 			}
 		}
-			
+
 	}
-	
+
 	/**
 	 * compute statistics that can be used to measure the success of
 	 * the population.
@@ -136,22 +136,22 @@ public class SOSolutionSpace implements SolutionSpace, java.io.Serializable{
 		double bf = ((SOSolution)b).getObjective ();
 		return objConstraints.compare (af, bf);
 	}
-	
+
 	/**
-	 * Returns a representation of of the population in the form of a vertical
+	 * Returns a representation of of the population in the form of a
 	 * table, where each row represents one individual, one parameter per column, and the last
 	 * column containing the objective value.
-	 * @returns a vertical table represeting the population.
+	 * @returns a table represeting the population.
 	 */
 	public Table getTable () {
-		
-		VerticalTable vt;
-		
+
+		Table vt;
+
 		int rowCount=solutions.length;
 		int colCount=ranges.length+1;
-		
+
 		Column[] cols=new Column[colCount];
-		
+
 		//make a column for each range
 		for(int i=0; i<ranges.length; i++){
 			Column c;
@@ -180,8 +180,8 @@ public class SOSolutionSpace implements SolutionSpace, java.io.Serializable{
 					double d=solutions[j].getDoubleParameter(i);
 					((DoubleColumn)c).setDouble(d, j);
 				}
-			}				
-				
+			}
+
 			c.setLabel(ranges[i].getName());
 			cols[i]=c;
 		}
@@ -192,8 +192,8 @@ public class SOSolutionSpace implements SolutionSpace, java.io.Serializable{
 			objC.setDouble(solutions[j].getObjective(), j);
 		}
 		cols[colCount-1]=objC;
-		
-		vt=new VerticalTable(cols);
+
+		vt=TableFactory.createTable(cols);
 		return vt;
 	}
 	/**
@@ -285,7 +285,7 @@ public class SOSolutionSpace implements SolutionSpace, java.io.Serializable{
 	///////////////////////////
 	///print/status functions
 	////////////////////////////
-	
+
 	/**
 	 * Construct a string representing the current status of the population, best members,
 	 * maybe worst members, whatever.
@@ -307,13 +307,13 @@ public class SOSolutionSpace implements SolutionSpace, java.io.Serializable{
 		sb.append (this.getAverage());
 		sb.append ('\n');
 		return sb.toString ();
-	}	
-	
+	}
+
 	/* returns a string with info on the ranges, obj constraints, etc
 	*/
 	public String getSpaceDefinitionString(){
 		StringBuffer sb=new StringBuffer();
-		
+
 		sb.append("\nRanges:\n");
 		sb.append("\t_Name_\t_Min_\t_Max_\n");
 		for(int i=0; i<ranges.length; i++){
@@ -333,7 +333,7 @@ public class SOSolutionSpace implements SolutionSpace, java.io.Serializable{
 		sb.append(objConstraints.isMaximizing());
 		sb.append("\n");
 		return(sb.toString());
-			
+
 	}
 
 	/* returns all the solutions as strings, one per line
@@ -345,8 +345,8 @@ public class SOSolutionSpace implements SolutionSpace, java.io.Serializable{
 		}
 		return sb.toString();
 	}
-	
-	
+
+
 	////////////////////////////
 	///get/set methods for fields
 	////////////////////////////

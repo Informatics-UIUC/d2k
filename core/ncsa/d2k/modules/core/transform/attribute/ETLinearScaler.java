@@ -1,10 +1,9 @@
-
 package ncsa.d2k.modules.core.transform.attribute;
 
 import ncsa.d2k.infrastructure.modules.DataPrepModule;
-import ncsa.d2k.util.datatype.*;
 import java.io.Serializable;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
        ETLinearScaler.java
 
@@ -19,7 +18,7 @@ import java.io.Serializable;
 	   @author Peter Groves
 
 */
-public class ETLinearScaler extends ncsa.d2k.infrastructure.modules.TransformationModule implements Serializable {
+public class ETLinearScaler extends ncsa.d2k.modules.TransformationModule implements Serializable {
 
 
 public double lowerBound=0;
@@ -95,7 +94,7 @@ public void setClearPreviousTransforms(boolean b){
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 
 	}
@@ -120,7 +119,7 @@ public void setClearPreviousTransforms(boolean b){
 	public String[] getOutputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 
 	}

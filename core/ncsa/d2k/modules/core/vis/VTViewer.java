@@ -5,13 +5,14 @@ import ncsa.d2k.modules.core.io.file.output.WriteVTToFile;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.UserView;
 import ncsa.d2k.controller.userviews.swing.JUserPane;
-import ncsa.d2k.util.datatype.*;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.io.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
    Display the contents of a VerticalTable.
@@ -44,7 +45,7 @@ public class VTViewer extends UIModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.util.datatype.Table"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return in;
     }
 
@@ -54,7 +55,7 @@ public class VTViewer extends UIModule implements HasNames {
        @return The datatypes of the outputs.
     */
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.util.datatype.Table"};
+		String[] out = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return out;
     }
 

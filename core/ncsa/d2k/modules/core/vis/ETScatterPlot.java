@@ -2,10 +2,11 @@ package ncsa.d2k.modules.core.vis;
 
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.gui.JD2KFrame;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.Serializable;
 import javax.swing.*;
@@ -58,7 +59,7 @@ public class ETScatterPlot extends VisModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
     }
 

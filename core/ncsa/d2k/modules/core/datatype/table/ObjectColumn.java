@@ -16,6 +16,8 @@ import ncsa.d2k.util.*;
  */
 final public class ObjectColumn extends AbstractColumn {
 
+	static final long serialVersionUID = 1485541315569603141L;
+
     private static final Object emptyValue = null;
 
     /** holds ObjectColumn's enternal data rep */

@@ -10,13 +10,15 @@ package ncsa.d2k.modules.core.io.sql;
  * @version 1.0
  */
 
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.infrastructure.modules.UIModule;
+import ncsa.d2k.infrastructure.modules.ViewModule;
 import ncsa.d2k.infrastructure.views.UserView;
 import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.prediction.naivebayes.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
+import ncsa.d2k.modules.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 

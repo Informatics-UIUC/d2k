@@ -1,8 +1,7 @@
 package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
-import ncsa.d2k.modules.core.transform.table.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /*
 	NFoldTTables
 
@@ -34,8 +33,8 @@ public class NFoldTTables extends NFoldExTable{
 
 	public String[] getOutputTypes(){
 		String[] types={
-			"ncsa.d2k.util.datatype.TestTable",
-			"ncsa.d2k.util.datatype.TrainTable",
+			"ncsa.d2k.modules.core.datatype.table.TestTable",
+			"ncsa.d2k.modules.core.datatype.table.TrainTable",
 			"java.lang.Integer"
 		};
 		return types;
@@ -66,7 +65,7 @@ public class NFoldTTables extends NFoldExTable{
 		makeSets(testing, training);
 
 		// now create a new vertical table.
-		ExampleTable examples = new ExampleTable (table);
+		ExampleTable examples = TableFactory.createExampleTable (table);
 		examples.setTrainingSet (training);
 		examples.setTestingSet (testing);
 

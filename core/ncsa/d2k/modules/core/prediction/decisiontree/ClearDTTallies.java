@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 
 /**
 	Given a DecisionTreeNode that is the root of a decision tree,

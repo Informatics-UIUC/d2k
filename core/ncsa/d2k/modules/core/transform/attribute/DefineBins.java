@@ -10,7 +10,7 @@ import ncsa.d2k.gui.*;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.modules.core.datatype.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.gui.*;
 
 /**
@@ -45,7 +45,7 @@ public class DefineBins extends UIModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
 	}
 
@@ -56,7 +56,7 @@ public class DefineBins extends UIModule implements HasNames {
     */
     public String[] getOutputTypes() {
 		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return out;
 	}
 
@@ -387,7 +387,7 @@ public class DefineBins extends UIModule implements HasNames {
 			// get all unique outputs from the output column
 			if(classColumn != null) {
 				for(int i = 0; i < numRows; i++) {
-					String s = ((SimpleColumn)classColumn).getString(i);
+					String s = classColumn.getString(i);
 					if(s != null && !cn.containsKey(s))
 						cn.put(s, s);
 				}
@@ -813,11 +813,11 @@ public class DefineBins extends UIModule implements HasNames {
 						JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				SimpleColumn attCol = null;
+				Column attCol = null;
 				for(int i = 0; i < table.getNumColumns(); i++) {
 					Column c = table.getColumn(i);
 					if(c.getLabel().trim() == attName.trim()) {
-						attCol = (SimpleColumn)c;
+						attCol = c;
 						break;
 					}
 				}

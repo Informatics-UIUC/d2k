@@ -3,10 +3,9 @@ package ncsa.d2k.modules.core.transform.attribute;
 import java.io.*;
 import java.util.*;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.modules.core.vis.*;
 import ncsa.d2k.modules.core.datatype.*; // eliminate this when HLT gets added to d2k
-
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
  * VTReferenceModule
  * @author gpape
@@ -20,8 +19,8 @@ public class VTReferenceModule extends DataPrepModule
    }
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.util.datatype.VerticalTable",
-         "ncsa.d2k.util.datatype.VerticalTable"};
+      String[] i = {"ncsa.d2k.modules.core.datatype.table.Table",
+         "ncsa.d2k.modules.core.datatype.table.Table"};
       return i;
    }
 
@@ -36,7 +35,7 @@ public class VTReferenceModule extends DataPrepModule
 
    public String[] getOutputTypes() {
       String[] o = {"ncsa.d2k.modules.core.datatype.HashLookupTable",
-         "ncsa.d2k.util.datatype.VerticalTable"};
+         "ncsa.d2k.modules.core.datatype.table.VerticalTable"};
       return o;
    }
 
@@ -61,8 +60,8 @@ public class VTReferenceModule extends DataPrepModule
 
    public void doit() {
 
-      VerticalTable vt_uni = (VerticalTable)pullInput(0); // unique data
-      VerticalTable vt_red = (VerticalTable)pullInput(1); // redundant data
+      Table vt_uni = (Table)pullInput(0); // unique data
+      Table vt_red = (Table)pullInput(1); // redundant data
 
       HashLookupTable hlt = new HashLookupTable();
 

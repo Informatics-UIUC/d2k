@@ -1,8 +1,8 @@
-
 package ncsa.d2k.modules.core.prediction;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.infrastructure.modules.ComputeModule;
+import ncsa.d2k.modules.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 
 
@@ -35,7 +35,7 @@ public class ModelPredict extends ncsa.d2k.infrastructure.modules.ComputeModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.ExampleTable",
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
 						"ncsa.d2k.infrastructure.modules.PredictionModelModule"	};
 		return types;
 
@@ -59,7 +59,7 @@ public class ModelPredict extends ncsa.d2k.infrastructure.modules.ComputeModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.PredictionTable",
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.PredictionTable",
 			"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
 		return types;
 

@@ -9,6 +9,8 @@ abstract public class AbstractColumn implements Column {
 	private String comment;
 	//private Object type;
 
+	static final long serialVersionUID = 3049013317275255101L;
+
 	/**
 		Get the label associated with this Column.
 		@return the label which describes this Column

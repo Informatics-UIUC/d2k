@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /*
 	works just like NFoldTTables except that the test tables
 	are all the same tables w/ different test sets.  this
@@ -24,7 +24,7 @@ public class NFoldTTables_inplace extends NFoldTTables{
 		firstRun=true;
 		super.beginExecution();
 	}
-	
+
 
 	/**
 		the first time, just say if we have the data,
@@ -47,8 +47,8 @@ public class NFoldTTables_inplace extends NFoldTTables{
 		if(firstRun)
 			firstRun=false;
 		else
-			pullInput(1);	
-			
+			pullInput(1);
+
 		if(debug){
 			System.out.println(getAlias()+"InputFlags[0]"+inputFlags[0]);
 			System.out.println(getAlias()+"InputFlags[1]"+inputFlags[1]);
@@ -68,7 +68,7 @@ public class NFoldTTables_inplace extends NFoldTTables{
 			makeSets(testing, training);
 
 			// now create a new vertical table.
-			ExampleTable examples = new ExampleTable (table);
+			ExampleTable examples = TableFactory.createExampleTable (table);
 			examples.setTrainingSet (training);
 			examples.setTestingSet (testing);
 

@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.io.file.input;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.pipes.*;
-import ncsa.d2k.util.datatype.VerticalTable;
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.io.*;
 import java.util.*;
 import ncsa.d2k.modules.core.io.file.*;
@@ -31,7 +31,7 @@ public class ReadFixedFormat extends ncsa.d2k.infrastructure.modules.InputModule
 	case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>" +
 		    " <Info common=\"_fileName\"> "+
 		    "  <Text>input file name </Text>  </Info></D2K>";
-	case 1: return "Vertical Table containing type/label data";
+	case 1: return "Table containing type/label data";
 	default: return "No such input";
 	}
 
@@ -42,7 +42,7 @@ public class ReadFixedFormat extends ncsa.d2k.infrastructure.modules.InputModule
        @return the data types of all inputs.
     */
     public String[] getInputTypes() {
-	String[] types = {"java.lang.String", "ncsa.d2k.util.datatype.VerticalTable"};
+	String[] types = {"java.lang.String", "ncsa.d2k.modules.core.datatype.table.Table"};
 	return types;
 
     }
@@ -67,8 +67,8 @@ public class ReadFixedFormat extends ncsa.d2k.infrastructure.modules.InputModule
        @return the data types of all outputs.
     */
     public String[] getOutputTypes() {
-	String[] types = {"ncsa.d2k.util.datatype.Table",
-						"ncsa.d2k.util.datatype.VerticalTable"};
+	String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
+						"ncsa.d2k.modules.core.datatype.table.Table"};
 	return types;
 
     }
@@ -161,7 +161,7 @@ public class ReadFixedFormat extends ncsa.d2k.infrastructure.modules.InputModule
     public void doit() throws Exception {
 
 	FixedFormatParser p = null;
-	p=new FixedFormatParser(new File((String)pullInput(0)),(VerticalTable)pullInput(1)/*, emptyValue*/);
+	p=new FixedFormatParser(new File((String)pullInput(0)),(Table)pullInput(1)/*, emptyValue*/);
 
 	pushOutput(p.parse(), 0);
 	pushOutput(p.getBlanks(), 1);

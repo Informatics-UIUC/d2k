@@ -4,13 +4,13 @@ import java.util.*;
 import java.io.*;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	Works the same as ReadVT, but for an input file
 	where each row represents a field and each column
 	represents an example. It therefore transposes
-	the table as it makes it into a VerticalTable.
+	the table as it makes it into a Table.
 
 	@author Peter Groves
 */
@@ -27,13 +27,13 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 	int variableColumn = -1;
 
 	/**
-		Read a file and create a VerticalTable from the file.  Returns null
+		Read a file and create a Table from the file.  Returns null
 		if any errors occur.
 		@param f the File to read
-		@return a VerticalTable containing the data from the file, or null
+		@return a Table containing the data from the file, or null
 		if any errors occur
 	*/
-	protected VerticalTable readSDFile(File f) {
+	protected Table readSDFile(File f) {
 		int numLines = 0;
 		int numRows = 0;
 		BufferedReader reader;
@@ -94,7 +94,7 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 			if(labelsList != null)
 				labelsList.clear();
 
-			VerticalTable table = new VerticalTable(cols);
+			Table table = TableFactory.createTable(cols);
 
 			// the number of the row in the table
 			int rowNum = 0;
@@ -137,7 +137,7 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 		for the single byte value that delimits the fields.
 		@param row the line from the file
 	*/
-	protected void createSDRow (String row, VerticalTable vt, int curRow) {
+	protected void createSDRow (String row, Table vt, int curRow) {
         // the current column of the table to insert into
 		int currentCol = curRow;
 

@@ -1,4 +1,3 @@
-//package  ncsa.util.table;
 package ncsa.d2k.modules.core.datatype.table;
 
 /**
@@ -8,6 +7,8 @@ package ncsa.d2k.modules.core.datatype.table;
  */
 public abstract class TextualColumn extends AbstractColumn {
 
+	static final long serialVersionUID = 3996712405009613990L;
+
 	/**
 	 * Trim any excess storage from the internal buffer for this TextualColumn.
 	 */
@@ -15,4 +16,3 @@ public abstract class TextualColumn extends AbstractColumn {
 }
 
 /*TextualColumn*/
-

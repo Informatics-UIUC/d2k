@@ -2,8 +2,9 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 import java.io.Serializable;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	ET1ExType.java
 
@@ -31,7 +32,7 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -53,7 +54,7 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 
 	}
@@ -83,12 +84,12 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	*/
 	public void doit() throws Exception {
 		Table tt=(Table)pullInput(0);
-		
+
 		ExampleTable et;
 		if(tt instanceof ExampleTable){
 			et=(ExampleTable)tt;
 		}else{
-			et=new ExampleTable(tt);
+			et=TableFactory.createExampleTable(tt);
 		}
 
 		int[] exsAll=new int[et.getColumn(0).getCapacity()];

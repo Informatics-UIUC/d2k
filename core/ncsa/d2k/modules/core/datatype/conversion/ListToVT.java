@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.datatype.conversion;
 
 import ncsa.d2k.infrastructure.modules.*;
 import java.util.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	ListToVT.java
@@ -46,7 +46,7 @@ public class ListToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
@@ -72,7 +72,7 @@ public class ListToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			col.setRow(list.get(position), position);
 			position ++;
 		}
-		VerticalTable table = new VerticalTable(1);
+		Table table = TableFactory.createTable(1);
 		table.setColumn(col, 0);  // put col into table
 		pushOutput(table, 0);
 	}

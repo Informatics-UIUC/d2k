@@ -10,7 +10,7 @@ package ncsa.d2k.modules.core.io.sql;
  * @version 1.0
  */
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import javax.swing.*;
 import javax.swing.table.*;

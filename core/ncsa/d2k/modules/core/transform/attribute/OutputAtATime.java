@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /*
 	For use with CompoundModels.
 	Takes an ExampleTable with several
@@ -66,7 +66,7 @@ public class OutputAtATime extends DataPrepModule
 			origOutputFeatures=origTable.getOutputFeatures();
 			pushOutput(new Integer(origOutputFeatures.length), 1);
 		}
-		ExampleTable et=new ExampleTable(origTable);
+		ExampleTable et= TableFactory.createExampleTable(origTable);
 		int[] newOutputs=new int[1];
 		newOutputs[0]=origOutputFeatures[numFires];
 		et.setOutputFeatures(newOutputs);
@@ -94,7 +94,7 @@ public class OutputAtATime extends DataPrepModule
 		return "";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] s= {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return s;
 	}
 
@@ -120,7 +120,7 @@ public class OutputAtATime extends DataPrepModule
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.util.datatype.ExampleTable",
+		String[] s={"ncsa.d2k.modules.core.datatype.table.ExampleTable",
 					"java.lang.Integer",
 					/*"ncsa.d2k.util.datatype.ExampleTable"*/};
 		return s;

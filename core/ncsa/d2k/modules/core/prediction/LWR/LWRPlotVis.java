@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.prediction.LWR;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.gui.JD2KFrame;
@@ -60,8 +60,8 @@ public class LWRPlotVis extends VisModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.util.datatype.VerticalTable",
-					"ncsa.d2k.util.datatype.VerticalTable"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.Table",
+					"ncsa.d2k.modules.core.datatype.table.Table"};
 		return in;
     }
 
@@ -124,12 +124,12 @@ public class LWRPlotVis extends VisModule
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createSmallScatterGraph(VerticalTable vt, DataSet[] d,
+	protected Graph createSmallScatterGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
 		return new ScatterPlotSmall(vt, d, gs);
 	}
 
-	protected Graph createSmallFunctionGraph(VerticalTable vt, DataSet[] d,
+	protected Graph createSmallFunctionGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
 		return new FunctionPlotSmall(vt, d, gs);
 	}
@@ -140,7 +140,7 @@ public class LWRPlotVis extends VisModule
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createGraph(VerticalTable vt, DataSet[] d,
+	protected Graph createGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
 		return new ScatterPlot(vt, d, gs);
 	}
@@ -177,17 +177,17 @@ public class LWRPlotVis extends VisModule
 		JTable jTable = null;
 		//boolean [][]selected = null;
 
-		VerticalTable plotTable;
-		VerticalTable scatterTable;
+		Table plotTable;
+		Table scatterTable;
 
 		public void initView(ViewModule m) {
 		}
 
 		public void setInput(Object o, int i) {
 			if(i == 0)
-				plotTable = (VerticalTable)o;
+				plotTable = (Table)o;
 			else if(i == 1) {
-				scatterTable = (VerticalTable)o;
+				scatterTable = (Table)o;
 				setup();
 			}
 	 	}

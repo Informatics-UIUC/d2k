@@ -6,10 +6,9 @@ import java.lang.*;
 import java.io.*;
 import java.awt.*;
 import java.util.*;
-import ncsa.d2k.util.datatype.*;
-import ncsa.d2k.util.datatype.ExampleTable;
 import ncsa.d2k.modules.core.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	BinnedTable.java
 */
@@ -35,7 +34,7 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.util.datatype.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 
 	}
@@ -57,7 +56,7 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 
 	}
@@ -142,7 +141,7 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 		}
 		newCols[currCol] = ET.getColumn(outs[0]);
 		outs[0] = currCol;
-		ET.setInternal(newCols);
+		ET.setColumns(newCols);
 		pushOutput(ET, 0);
 	}
 }

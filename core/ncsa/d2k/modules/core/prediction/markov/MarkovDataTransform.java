@@ -1,8 +1,9 @@
 //package opie;
 package ncsa.d2k.modules.core.prediction.markov;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.TransformationModule;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.infrastructure.modules.HasNames;
 
 import java.util.*;
 
@@ -40,7 +41,7 @@ public class MarkovDataTransform extends TransformationModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
     }
 
@@ -50,7 +51,7 @@ public class MarkovDataTransform extends TransformationModule
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String []out = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return out;
     }
 
@@ -134,9 +135,9 @@ public class MarkovDataTransform extends TransformationModule
 			for(int j = 0; j < numRows; j++)
 				newCols[i].setInt(stringToInt(t.getString(j, i)), j);
 		}
-		VerticalTable vt = new VerticalTable(newCols);
+		Table vt = TableFactory.createTable(newCols);
 		newCols = null;
-		ExampleTable et = new ExampleTable(vt);
+		ExampleTable et = TableFactory.createExampleTable(vt);
 		if(t instanceof ExampleTable) {
 			et.setInputFeatures( ((ExampleTable)t).getInputFeatures());
 			et.setOutputFeatures( ((ExampleTable)t).getOutputFeatures());
@@ -157,9 +158,9 @@ public class MarkovDataTransform extends TransformationModule
 			for(int j = 0; j < numRows; j++)
 				newCols[i].setString(intToString(t.getInt(j, i)), j);
 		}
-		VerticalTable vt = new VerticalTable(newCols);
+		Table vt = TableFactory.createTable(newCols);
 		newCols = null;
-		ExampleTable et = new ExampleTable(vt);
+		ExampleTable et = TableFactory.createExampleTable(vt);
 		if(t instanceof ExampleTable) {
 			et.setInputFeatures( ((ExampleTable)t).getInputFeatures());
 			et.setOutputFeatures( ((ExampleTable)t).getOutputFeatures());

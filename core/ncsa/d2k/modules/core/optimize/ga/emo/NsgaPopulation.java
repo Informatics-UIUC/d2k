@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo;
 
 import java.io.Serializable;
 import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 /**
@@ -559,10 +559,10 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 
 
 	/**
-	 * Returns a representation of of the population in the form of a vertical
+	 * Returns a representation of of the population in the form of a
 	 * table, where each row represents one individual, one gene per column, and the last
 	 * column containing the objective value.
-	 * @returns a vertical table represeting the population.
+	 * @returns a table represeting the population.
 	 */
 	public Table getTable () {
 		int numTraits = this.traits.length;
@@ -585,8 +585,8 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 			dc [j++][i] = ni.getCrowdingDistance ();
 		}
 
-		// Now make the vertical table
-		VerticalTable vt = new VerticalTable ();
+		// Now make the table
+		Table vt = TableFactory.createTable(0);
 		int i = 0;
 		for (; i < numTraits ; i++) {
 			DoubleColumn col = new DoubleColumn (dc [i]);

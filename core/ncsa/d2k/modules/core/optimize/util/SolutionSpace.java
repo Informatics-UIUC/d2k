@@ -1,5 +1,5 @@
 package ncsa.d2k.modules.core.optimize.util;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 /*
 	SolutionSpace
 

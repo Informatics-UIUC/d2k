@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.text.NumberFormat;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  * A ShadedScatterPlot is a ScatterPlot with its points shaded by a gradient.
@@ -96,8 +96,8 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 *	@param set
 	 */
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-		SimpleColumn xcolumn = (SimpleColumn) table.getColumn(set.x);
-		SimpleColumn ycolumn = (SimpleColumn) table.getColumn(set.y);
+		Column xcolumn = table.getColumn(set.x);
+		Column ycolumn = table.getColumn(set.y);
 
 		int size = xcolumn.getNumRows();
 

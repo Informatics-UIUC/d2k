@@ -1,11 +1,12 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.transform.attribute;
-import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.*;
 import ncsa.d2k.controller.userviews.widgits.*;
 import java.awt.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
 /**
@@ -36,7 +37,7 @@ public class SelectAttribute extends ncsa.d2k.infrastructure.modules.UIModule
 	public String[] getInputTypes () {
 /*&%^4 Do not modify this section. */
 		String [] types =  {
-			"ncsa.d2k.util.datatype.Table"};
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 /*#end^4 Continue editing. ^#&*/
 	}
@@ -63,7 +64,7 @@ public class SelectAttribute extends ncsa.d2k.infrastructure.modules.UIModule
 /*&%^6 Do not modify this section. */
 		String [] types =  {
 			"[Ljava.lang.String;",
-			"ncsa.d2k.util.datatype.Table"};
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 /*#end^6 Continue editing. ^#&*/
 	}

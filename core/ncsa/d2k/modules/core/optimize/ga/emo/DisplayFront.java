@@ -6,7 +6,7 @@ import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.*;
 import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.gui.Constrain;
 
 import java.awt.*;
@@ -122,7 +122,7 @@ class FrontScatterDisplay extends ncsa.d2k.controller.userviews.swing.JUserInput
 	DisplayFront module;
 
 	/** table contains the stuff to plot. */
-	VerticalTable table = null;
+	Table table = null;
 
 	/** graph displaying the scatter plot. */
 	ScatterPlot graph;
@@ -156,7 +156,7 @@ class FrontScatterDisplay extends ncsa.d2k.controller.userviews.swing.JUserInput
 				if (graph != null)
 					remove (graph);
 
-				table = new VerticalTable (2);
+				table = TableFactory.createTable(2);
 				double [] objx = new double [num];
 				double [] objy = new double [num];
 

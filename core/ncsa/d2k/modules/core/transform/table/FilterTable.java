@@ -3,7 +3,6 @@ package ncsa.d2k.modules.core.transform.table;
 import  ncsa.d2k.infrastructure.modules.*;
 import  ncsa.d2k.infrastructure.views.*;
 import  ncsa.d2k.controller.userviews.swing.*;
-import  ncsa.d2k.util.datatype.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 
@@ -11,6 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  * Filter rows from a Table
@@ -42,7 +42,7 @@ public class FilterTable extends UIModule {
      @return the data types of all inputs.
      */
     public String[] getInputTypes () {
-        String[] types =  { "ncsa.d2k.util.datatype.Table" };
+        String[] types =  { "ncsa.d2k.modules.core.datatype.table.Table" };
         return  types;
     }
 
@@ -64,7 +64,7 @@ public class FilterTable extends UIModule {
      @return the data types of all outputs.
      */
     public String[] getOutputTypes () {
-        String[] types =  { "ncsa.d2k.util.datatype.Table" };
+        String[] types =  { "ncsa.d2k.modules.core.datatype.table.Table" };
         return  types;
     }
 

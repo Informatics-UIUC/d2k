@@ -5,8 +5,9 @@ import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.*;
 import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.gui.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.awt.*;
 import java.io.*;
@@ -37,7 +38,7 @@ public class PieChart2D extends VisModule implements Serializable
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}

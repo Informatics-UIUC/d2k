@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.util.*;
 
 import java.util.*;
@@ -108,7 +108,7 @@ public class C45TreeBuilder extends ComputeModule
 		@return the information given by a numeric attribute with the given
 			split value
 	*/
-	private double numericAttributeEntropy(VerticalTable vt, double splitVal,
+	private double numericAttributeEntropy(Table vt, double splitVal,
 		ArrayList examples, int attCol, int outCol) {
 
 		/*HashMap lessThanTally = new HashMap();
@@ -413,7 +413,7 @@ public class C45TreeBuilder extends ComputeModule
 		//sc.trim();
 		//Column[] cols = {dc, sc};
 		Column[] cols = {dc, sc};
-		VerticalTable vt = new VerticalTable(cols);
+		Table vt = TableFactory.createTable(cols);
 
 		// sort the table
 		try {
@@ -859,13 +859,13 @@ public class C45TreeBuilder extends ComputeModule
     }
 
 	public String[] getInputTypes() {
-	    String[] in = {"ncsa.d2k.util.datatype.ExampleTable"};
+	    String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
         return in;
 	}
 
 	public String[] getOutputTypes() {
 	    String[] out = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
-		    "ncsa.d2k.util.datatype.ExampleTable"};
+		    "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
         return out;
 	}
 

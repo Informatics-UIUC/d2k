@@ -2,24 +2,24 @@ package ncsa.d2k.modules.core.datatype.conversion;
 
 import java.io.Serializable;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.VerticalTable;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.HashLookupTable;
 
 public class VTtoHashLookupTable extends DataPrepModule
    implements Serializable {
 
    public String getModuleInfo() {
-      return "This module converts a VerticalTable into a HashLookupTable.";
+      return "This module converts a Table into a HashLookupTable.";
    }
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.util.datatype.VerticalTable"};
+      String[] i = {"ncsa.d2k.modules.core.datatype.Table"};
       return i;
    }
 
    public String getInputInfo(int index) {
       if (index == 0)
-         return "A VerticalTable to be converted to a HashLookupTable.";
+         return "A Table to be converted to a HashLookupTable.";
       else
          return "No such input exists.";
    }
@@ -31,14 +31,14 @@ public class VTtoHashLookupTable extends DataPrepModule
 
    public String getOutputInfo(int index) {
       if (index == 0)
-         return "A HashLookupTable built from the VerticalTable input.";
+         return "A HashLookupTable built from the Table input.";
       else
          return "No such output exists.";
    }
 
    public void doit() {
 
-      VerticalTable v = (VerticalTable)pullInput(0);
+      Table v = (Table)pullInput(0);
       HashLookupTable t = new HashLookupTable();
 
       Object[] keys;

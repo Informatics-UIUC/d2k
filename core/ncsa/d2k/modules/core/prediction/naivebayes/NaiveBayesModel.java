@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.prediction.naivebayes;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.PredictionModelModule;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.util.*;
 import java.io.Serializable;
@@ -19,6 +19,8 @@ import ncsa.d2k.modules.core.datatype.BinTree;
 	and the table is passed as the output of the model.
 */
 public final class NaiveBayesModel extends PredictionModelModule implements Serializable {
+
+	static final long serialVersionUID = -1834546262367986165L;
 
 	/** The object that holds the true tallies.  This data is shown in
 		the visualization */
@@ -459,7 +461,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
     }
 
@@ -469,7 +471,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.util.datatype.PredictionTable",
+		String[] out = {"ncsa.d2k.modules.core.datatype.table.PredictionTable",
 			"ncsa.d2k.modules.compute.learning.modelgen.naivebayes.NaiveBayesModel"};
    		return out;
 	}
@@ -523,13 +525,13 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		is added to the table to hold the predictions.
 	*/
 	public void doit() {
-		VerticalTable vt = (VerticalTable)pullInput(0);
+		Table vt = (Table)pullInput(0);
 		PredictionTable result;
 
 		if(vt instanceof ExampleTable)
 			result = predict((ExampleTable)vt);
 		else
-			result = predict(new ExampleTable(vt));
+			result = predict(TableFactory.createExampleTable(vt));
 
 		pushOutput(result, 0);
 		pushOutput(this, 1);
@@ -576,7 +578,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		if (src instanceof PredictionTable)
 			pt = (PredictionTable) src;
 		else
-			pt = new PredictionTable(src);
+			pt = TableFactory.createPredictionTable(src);
 
 		int numCorrect = 0;
 

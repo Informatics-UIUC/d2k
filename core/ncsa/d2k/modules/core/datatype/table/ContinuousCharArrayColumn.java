@@ -22,6 +22,8 @@ import ncsa.d2k.util.*;
  */
 public class ContinuousCharArrayColumn extends TextualColumn {
 
+	static final long serialVersionUID = 2347005850467129497L;
+
 	/** the internal buffer */
 	private char[] internal;
 	/** the pointers to the rows */

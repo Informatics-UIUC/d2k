@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.datatype.conversion;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.util.*;
 
@@ -27,7 +27,7 @@ public class ExampleToTestTable extends DataPrepModule {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-    	String []in = {"ncsa.d2k.util.datatype.ExampleTable"};
+    	String []in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
 	}
 
@@ -37,7 +37,7 @@ public class ExampleToTestTable extends DataPrepModule {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-    	String []out = {"ncsa.d2k.util.datatype.TestTable"};
+    	String []out = {"ncsa.d2k.modules.core.datatype.table.TestTable"};
 		return out;
 	}
 
@@ -47,7 +47,7 @@ public class ExampleToTestTable extends DataPrepModule {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "the input exmaple table.";
+		return "The input ExampleTable.";
 	}
 
     /**

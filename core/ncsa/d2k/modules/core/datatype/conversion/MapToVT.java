@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.datatype.conversion;
 
 import ncsa.d2k.infrastructure.modules.*;
 import java.util.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	MapToVT.java
@@ -33,7 +33,7 @@ public class MapToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		This pair returns the description of the outputs.
 		@return the description of the indexed output.
 	*/
-	public String getOutputInfo(int index) { 
+	public String getOutputInfo(int index) {
 		switch (index) {
 			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"table\"><Text>This verticaltable contains the data from the map.</Text></Info></D2K>";
 			default: return "No such output";
@@ -45,7 +45,7 @@ public class MapToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
@@ -61,7 +61,7 @@ public class MapToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		PUT YOUR CODE HERE.
 	*/
 	public void doit() throws Exception {
-		VerticalTable table = new VerticalTable(2);
+		Table table = TableFactory.createTable(2);
 		Map map = (Map)pullInput(0);
 		int mapSize = map.size();
 		ObjectColumn col1 = new ObjectColumn(mapSize); // keys

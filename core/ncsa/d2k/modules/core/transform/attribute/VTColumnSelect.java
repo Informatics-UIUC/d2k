@@ -6,11 +6,11 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import ncsa.gui.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.controller.userviews.swing.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
  * VTColumnSelectUI
  * @author gpape
@@ -18,32 +18,32 @@ import ncsa.d2k.controller.userviews.swing.*;
 public class VTColumnSelect extends UIModule implements Serializable {
 
    public String getModuleInfo() {
-      return "Allows the user to visually split one VerticalTable into " +
+      return "Allows the user to visually split one Table into " +
              "two and reorder the columns of these tables.";
    }
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.util.datatype.VerticalTable"}; return i;
+      String[] i = {"ncsa.d2k.modules.core.datatype.table.Table"}; return i;
    }
 
    public String getInputInfo(int index) {
       if (index == 0)
-         return "The VerticalTable to be manipulated.";
+         return "The Table to be manipulated.";
       else
          return "VTColumnSelectUI has no such input.";
    }
 
    public String[] getOutputTypes() {
-      String[] o = {"ncsa.d2k.util.datatype.VerticalTable",
-         "ncsa.d2k.util.datatype.VerticalTable"};
+      String[] o = {"ncsa.d2k.modules.core.datatype.Table",
+         "ncsa.d2k.modules.core.datatype.table.Table"};
       return o;
    }
 
    public String getOutputInfo(int index) {
       if (index == 0)
-         return "One of the new VerticalTables.";
+         return "One of the new Tables.";
       else if (index == 1)
-         return "The other new VerticalTable.";
+         return "The other new Table.";
       else
          return "VTColumnSelectUI has no such output.";
    }
@@ -62,7 +62,7 @@ public class VTColumnSelect extends UIModule implements Serializable {
       implements Serializable, ActionListener {
 
       VTColumnSelect parent;
-      VerticalTable vt;
+      Table vt;
 
       Vector v_all, v_red;
 
@@ -79,7 +79,7 @@ public class VTColumnSelect extends UIModule implements Serializable {
       public void setInput(Object o, int i) {
          if (i == 0) {
 
-            vt = (VerticalTable)o;
+            vt = (Table)o;
 
             v_all = new Vector(vt.getNumColumns());
             v_red = new Vector(vt.getNumColumns());
@@ -333,8 +333,8 @@ public class VTColumnSelect extends UIModule implements Serializable {
             parent.viewCancel();
          else if (src == b_done) {
 
-            VerticalTable out_all = new VerticalTable();
-            VerticalTable out_red = new VerticalTable();
+            Table out_all = TableFactory.createTable();
+            Table out_red = TableFactory.createTable();
 
             HashMap vt_labels = new HashMap();
 

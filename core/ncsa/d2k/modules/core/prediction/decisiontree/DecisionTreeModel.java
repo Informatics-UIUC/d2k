@@ -1,10 +1,10 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.*;
+import ncsa.d2k.infrastructure.modules.HasNames;
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 /**
 	Encapsulates a decision tree.  Takes an ExampleTable as input
@@ -13,6 +13,8 @@ import java.util.Iterator;
 */
 public class DecisionTreeModel extends PredictionModelModule
 	implements Serializable, ViewableDTModel, HasNames {
+
+	static final long serialVersionUID = 6788778863299676465L;
 
 	/** The root of the decision tree */
 	private DecisionTreeNode root;
@@ -82,13 +84,13 @@ public class DecisionTreeModel extends PredictionModelModule
     }
 
 	public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
 	}
 
 	// change to prediction table
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.util.datatype.PredictionTable",
+		String[] out = {"ncsa.d2k.modules.core.datatype.table.PredictionTable",
             "ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel"};
 		return out;
 	}
@@ -175,7 +177,7 @@ public class DecisionTreeModel extends PredictionModelModule
 		if (table instanceof PredictionTable)
 			pt = (PredictionTable) table;
 		else
-			pt = new PredictionTable(table);
+			pt = TableFactory.createPredictionTable(table);
 
 		int[] outputs = pt.getOutputFeatures();
 		int[] preds = pt.getPredictionSet();
@@ -212,25 +214,25 @@ public class DecisionTreeModel extends PredictionModelModule
 	}
 
 	/**
-		Get the unique values in a column of a VerticalTable
-		@param vt the VerticalTable
+		Get the unique values in a column of a Table
+		@param vt the Table
 		@param col the column we are interested in
 		@return a String array containing the unique values of the column
 	*/
-	public static String[] uniqueValues(VerticalTable vt, int col) {
+	public static String[] uniqueValues(Table vt, int col) {
 		int numRows = vt.getNumRows();
 
 		// count the number of unique items in this column
-		HashMap map = new HashMap();
+		HashSet set = new HashSet();
 		for(int i = 0; i < numRows; i++) {
 			String s = vt.getString(i, col);
-			if(!map.containsKey(s))
-				map.put(s, s);
+			if(!set.contains(s))
+				set.add(s);
 		}
 
-		String[] retVal = new String[map.size()];
+		String[] retVal = new String[set.size()];
 		int idx = 0;
-		Iterator it = map.keySet().iterator();
+		Iterator it = set.iterator();
 		while(it.hasNext()) {
 			retVal[idx] = (String)it.next();
 			idx++;

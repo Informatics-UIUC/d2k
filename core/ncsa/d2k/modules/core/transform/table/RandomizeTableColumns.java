@@ -1,10 +1,10 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 import java.util.*;
 import java.io.Serializable;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
    RandomizeColumns takes a Table and randomly rearranges the
    columns.
@@ -49,7 +49,7 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String [] in = {"ncsa.d2k.util.datatype.Table"};
+		String [] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return in;
     }
 
@@ -59,7 +59,7 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.util.datatype.Table"};
+		String []out = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return out;
     }
 
@@ -107,7 +107,7 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
 		int columns = vt.getNumColumns();
 
 		// create a new, empty table
-		Table newVt = new VerticalTable(vt.getNumColumns());
+		Table newVt = TableFactory.createTable(vt.getNumColumns());
 		newVt.setLabel(vt.getLabel());
 		newVt.setComment(vt.getComment());
 		int colNum = 0;

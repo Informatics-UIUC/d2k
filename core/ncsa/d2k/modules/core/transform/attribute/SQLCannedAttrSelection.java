@@ -3,7 +3,6 @@ package ncsa.d2k.modules.core.transform.attribute;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 
@@ -15,7 +14,7 @@ import java.awt.event.*;
 import java.text.NumberFormat;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.datatype.*;
-
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
  SQLCannedAttrSelection is a module in which table, attribute and bin selections are hard coded
  to speed up testing
@@ -62,7 +61,7 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
     */
     public String[] getOutputTypes() {
 		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-				"ncsa.d2k.util.datatype.ExampleTable",
+				"ncsa.d2k.modules.core.datatype.table.ExampleTable",
 				"java.lang.String"};
 		return out;
 	}
@@ -148,7 +147,7 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
             ResultSetMetaData columnMetadata = result.getMetaData();
 
             int numColumns = columnMetadata.getColumnCount();
-            vt = new ExampleTable(numColumns);
+            vt = TableFactory.createExampleTable(numColumns);
             for(int i = 0; i < numColumns; i++) {
                 int type = columnMetadata.getColumnType(i+1);
                 if ( type == java.sql.Types.SMALLINT ||

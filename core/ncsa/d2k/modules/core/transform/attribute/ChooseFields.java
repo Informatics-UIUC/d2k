@@ -4,7 +4,6 @@ import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.d2k.infrastructure.views.UserView;
 
-import ncsa.d2k.util.datatype.*;
 import ncsa.gui.Constrain;
 
 import javax.swing.*;
@@ -12,6 +11,7 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
    ChooseFields.java
 
@@ -44,7 +44,7 @@ public class ChooseFields extends UIModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
     	return in;
 	}
 
@@ -54,7 +54,7 @@ public class ChooseFields extends UIModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.util.datatype.ExampleTable" };
+		String[] out = {"ncsa.d2k.modules.core.datatype.table.ExampleTable" };
     	return out;
 	}
 
@@ -135,7 +135,7 @@ public class ChooseFields extends UIModule implements HasNames {
 	*/
 	class AttributeView extends JUserPane implements ActionListener {
 		//the old data
-		private VerticalTable vt;
+		private Table vt;
 		//the updated table
 		private ExampleTable et;
 
@@ -188,7 +188,7 @@ public class ChooseFields extends UIModule implements HasNames {
 		*/
 		public void setInput(Object o, int id) {
 			if(id == 0) {
-				vt = (VerticalTable)o;
+				vt = (Table)o;
 				this.removeAll();
 				addComponents();
 			}
@@ -365,7 +365,7 @@ public class ChooseFields extends UIModule implements HasNames {
         }
 
 		private void setFieldsInTable(){
-			et=new ExampleTable(vt);
+			et= TableFactory.createExampleTable(vt);
 			//et.setInputFeatures(inputList.getSelectedIndices());
 			//et.setOutputFeatures(outputList.getSelectedIndices());
             Object[] selected = inputList.getSelectedValues();

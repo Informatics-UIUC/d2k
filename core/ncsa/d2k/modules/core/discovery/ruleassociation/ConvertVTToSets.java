@@ -1,6 +1,6 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.discovery.ruleassociation;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
 /**
@@ -30,7 +30,7 @@ public class ConvertVTToSets extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	public String[] getInputTypes () {
 /*&%^4 Do not modify this section. */
 		String [] types =  {
-			"ncsa.d2k.util.datatype.VerticalTable"};
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 /*#end^4 Continue editing. ^#&*/
 	}
@@ -76,7 +76,7 @@ public class ConvertVTToSets extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		PUT YOUR CODE HERE.
 	*/
 	public void doit () throws Exception {
-		ItemSets iss = new ItemSets((VerticalTable)this.pullInput(0));
+		ItemSets iss = new ItemSets((Table)this.pullInput(0));
 		if (iss.outputNames != null)
 			this.pushOutput(iss.outputNames, 1);
 		this.pushOutput(iss,0);

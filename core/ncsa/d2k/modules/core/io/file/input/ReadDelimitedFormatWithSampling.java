@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.io.file.input;
 import java.io.*;
 import java.util.*;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  * Read in a file with a single delimiter.
@@ -57,13 +57,13 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 	}
 
 	/**
-		Read a file and create a VerticalTable from the file.  Returns null
+		Read a file and create a Table from the file.  Returns null
 		if any errors occur.
 		@param f the File to read
-		@return a VerticalTable containing the data from the file, or null
+		@return a Table containing the data from the file, or null
 		if any errors occur
 	*/
-	protected VerticalTable readSDFile(File f) {
+	protected Table readSDFile(File f) {
 		int numLines = 0;
 		int numCols = 0;
 		BufferedReader reader;
@@ -145,7 +145,7 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 			if(labelsList != null)
 				labelsList.clear();
 
-			VerticalTable table = new VerticalTable(cols);
+			Table table = TableFactory.createTable(cols);
 
 			int numRowsRead = 0;
 

@@ -34,6 +34,8 @@ package ncsa.d2k.modules.core.datatype.table;
 */
 public interface Table extends java.io.Serializable {
 
+	static final long serialVersionUID = 6658036618516210127L;
+
 	/**
 		Get a Column from the table.
 		@param pos the position of the Column to get from table
@@ -357,6 +359,12 @@ public interface Table extends java.io.Serializable {
 	 * @param newInternal the new internal representation for this Table.
 	 */
 	//public void setInternal( Object newInternal );
+
+	/**
+	 * Set the columns for this Table.
+	 * @param newInternal the columns for this Table.
+	 */
+	public void setColumns(Column[] newColumns);
 
 	/**
 		Get an entry from the Table at the indicated position.

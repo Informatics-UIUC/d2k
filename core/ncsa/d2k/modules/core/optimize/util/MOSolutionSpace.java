@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.optimize.util;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 
 	protected Range[] ranges;
@@ -17,7 +17,7 @@ public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 	/* the indices of the worst solutions, one per objective*/
 	int[] worstSolutions;
 
-	/*the average value for each objective for the entire space*/	
+	/*the average value for each objective for the entire space*/
 	double[] averageScores;
 
 	/////////////////////////
@@ -87,14 +87,14 @@ public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 				}
 			}
 		}
-			
+
 	}
 	/**
 	 * compute statistics that can be used to measure the success of
 	 * the population.
 	 */
 	public void computeStatistics () {
-		
+
 		int solCount = solutions.length;
 		int objCount=objConstraints.length;
 
@@ -111,12 +111,12 @@ public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 			averageScores[i]=0.0;
 		}
 
-		for(int j=1; j<objCount; j++){	
+		for(int j=1; j<objCount; j++){
 			for (int i = 1; i < solCount; i++) {
 				double currentScore=solutions[i].getObjective(j);
 				// update current statistics
 				averageScores[j]+=currentScore;
-			
+
 				// Compare to best performer.
 				if (objConstraints[j].compare(bestScores[j],
 						currentScore) < 0){
@@ -137,11 +137,11 @@ public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 	}
 
 	public Table getTable(){
-		VerticalTable vt;
-		
+		Table vt;
+
 		int rowCount=solutions.length;
 		int colCount=ranges.length+objConstraints.length;
-		
+
 		Column[] cols=new Column[colCount];
 		int colIndex=0;
 		//make a column for each range
@@ -173,8 +173,8 @@ public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 					double d=solutions[j].getDoubleParameter(i);
 					((DoubleColumn)c).setDouble(d, j);
 				}
-			}				
-				
+			}
+
 			c.setLabel(ranges[i].getName());
 			cols[i]=c;
 		}
@@ -188,10 +188,10 @@ public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 			}
 			cols[j]=objC;
 		}
-		
-		vt=new VerticalTable(cols);
-		return vt;		
-		
+
+		vt=TableFactory.createTable(cols);
+		return vt;
+
 	}
 
 	///////////////////////////
@@ -199,7 +199,7 @@ public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 	////////////////////////////
 	public String getSpaceDefinitionString(){
 		StringBuffer sb=new StringBuffer();
-		
+
 		sb.append("\nRanges:\n");
 		sb.append("\t_Name_\t_Min_\t_Max_\n");
 		for(int i=0; i<ranges.length; i++){
@@ -221,10 +221,10 @@ public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 			sb.append("\n");
 		}
 
-		return(sb.toString());				
-		
+		return(sb.toString());
+
 	}
-	
+
 	public String statusString(){
 		return "MOSolutionSpace Status";
 	}
@@ -249,13 +249,13 @@ public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 		averageScores=new double[objCount];
 		//b/c the old solutions are no longer valid
 		solutions=null;
-		
+
 	}
 
 	public ObjectiveConstraints[] getObjectiveConstraints(){
 		return objConstraints;
 	}
-	
+
 	public void setSolutions(Solution[] sols){
 		solutions=(MOSolution[])sols;
 	}

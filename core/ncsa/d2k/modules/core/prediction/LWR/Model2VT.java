@@ -2,12 +2,12 @@ package ncsa.d2k.modules.core.prediction.LWR;
 
 import ncsa.d2k.infrastructure.modules.*;
 
-import ncsa.d2k.util.datatype.VerticalTable;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	Model2VT.java
 		This module takes an LWRModel module, and outputs the model's
-		finaltable.  This is a VerticalTable containing the predicted
+		finaltable.  This is a Table containing the predicted
 		values of each query along with the original test data.
 	@talumbau
 */
@@ -53,7 +53,7 @@ public class Model2VT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}

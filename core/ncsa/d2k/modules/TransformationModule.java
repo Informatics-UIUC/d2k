@@ -15,6 +15,9 @@ import java.io.Serializable;
 
 public abstract class TransformationModule extends ComputeModule implements Serializable
 {
+
+	static final long serialVersionUID = -8546393568758732369L;
+
 	/**
 	 * reverses the data transformation.
 	 * @param input the table to untransform.

@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.prediction.neuralnet.updateFunctions;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.activationFunctions.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.learnFunctions.*;
@@ -14,11 +14,11 @@ import ncsa.d2k.modules.core.prediction.neuralnet.learnFunctions.*;
 
 public class StandardBatchBP extends StandardIncrementalBP{
 
-	private VerticalTable runningUpdates;
+	private Table runningUpdates;
 
 	public  StandardBatchBP(ncsa.d2k.modules.core.prediction.neuralnet.NNModelGenerator.NNModel mod){
 		super(mod);
-		runningUpdates=weights.getCopy();
+		runningUpdates=weights.copy();
 		//make it a deep copy
 		for (int k=0; k<runningUpdates.getNumColumns();k++){
 			for(int h=0; h<runningUpdates.getColumn(k).getNumRows(); h++){

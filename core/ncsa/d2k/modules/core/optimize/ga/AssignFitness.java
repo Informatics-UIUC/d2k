@@ -1,7 +1,7 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.optimize.ga;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
@@ -52,7 +52,7 @@ public class AssignFitness extends ncsa.d2k.infrastructure.modules.DataPrepModul
 /*&%^4 Do not modify this section. */
 		String [] types =  {
 			"ncsa.d2k.modules.core.optimize.ga.Population",
-			"ncsa.d2k.util.datatype.Table"};
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 /*#end^4 Continue editing. ^#&*/
 	}

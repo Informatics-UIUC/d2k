@@ -1,11 +1,11 @@
 package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.util.Random;
 import java.io.Serializable;
 /*
 	NFoldExTable
-	
+
 	Takes in a single table, makes N ExampleTables that have different,
 	exhaustive subsets set to the trainSet and testSet
 
@@ -24,7 +24,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	}
 	public String[] getInputTypes(){
 		String[] types = {
-			"ncsa.d2k.util.datatype.Table"};
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
@@ -34,7 +34,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		}else if(i==1){
 			return "The N that was set in the properties";
 		}
-		
+
 		else {
 			return "No such output";
 		}
@@ -42,7 +42,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 
 	public String[] getOutputTypes(){
 		String[] types={
-			"ncsa.d2k.util.datatype.ExampleTable",
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable",
 			"java.lang.Integer" };
 		return types;
 	}
@@ -55,33 +55,33 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		str+=", allows the user to create the same subsets or insure it changes";
 		return str;
 	}
-	
+
 	/** number of times we have fired. */
 	int numFires = 0;
-	
+
 	/** the break points. */
 	int [] breaks = null;
-	
+
 	/** the data table. */
 	Table table = null;
-	
+
 	/** This is an array of all the indices so we can do an arraycopy. */
 	int [] indices = null;
-	
+
 	/** the size of the training set. */
 	int trainSize = 0;
-	
+
 	/** the size of the test set. */
 	int testSize = 0;
-	
+
 	/** number of folds. */
 	int N = 4;
 
-	
+
 	int numRows;
-	
+
 	long seed = (long)0.00;
-	
+
 	int totalFires=0;
 
 	boolean debug=false;
@@ -96,7 +96,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		totalFires=0;
 		numRows=0;
 	}
-	
+
 	/**
 		Fires N times where n is the number of folds.
 	*/
@@ -112,24 +112,24 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			return true;
 		}
 	}
-	
+
 	/**
 		Setup the indexing array and shuffle it randomly.
 	*/
 	protected void setup () {
-				
-		// First time through, init the table field, compute the 
+
+		// First time through, init the table field, compute the
 		// breaks and indices
 		table = (Table) this.pullInput (0);
 		//System.out.println("XVal: pullingInput:"+numFires);
 		numRows = table.getNumRows ();
 		breaks = this.getTableBreaks (numRows);
 		indices = new int [numRows];
-		for (int i = 0 ; i < numRows ; i++) 
+		for (int i = 0 ; i < numRows ; i++)
 			indices [i] = i;
-	
+
 		Random rand=new Random(seed);
-			
+
 		// Let's shuffle them
 		for (int i = 0 ; i < numRows ; i++) {
 			int swap = (int) (rand.nextDouble () * numRows);
@@ -139,8 +139,8 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			indices [swap] = indices [i];
 			indices [i] = old;
 		}
-		
-		// Randomly 
+
+		// Randomly
 		if(N>numRows){
 			testSize=1;
 		}else{
@@ -148,7 +148,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		}
 		trainSize = numRows - testSize;
 	}
-	
+
 	/**
 		Returns a list of vertices which are the indices of the first index
 		of the next set.
@@ -158,7 +158,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		int [] tableBreaks;
 		double numCols = (double)orig;
 		double n = (double)N;
-		
+
 		if(N>orig){
 			//if the crossvalidation 'fold' is greater
 			//than the number of examples, simply make
@@ -167,7 +167,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			for(int i=0; i<orig-1; i++){
 				tableBreaks[i]=(i+1);
 			}
-			
+
 		}else{
 			tableBreaks = new int[N-1];
 			//int tS = (int) (((double)1.0/(double)(tableBreaks.length+1)) * (double)orig);
@@ -179,25 +179,25 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	}
 
 	/**
-		Does things, especially 'it'	
+		Does things, especially 'it'
 	*/
 	public void doit () throws Exception {
-		System.out.println("doit");	
+		System.out.println("doit");
 		if (breaks == null) {
 			setup ();
 		}
-		
+
 		// Set up the train and test sets indices
 		int testing [] = new int [testSize];
 		int training [] = new int [trainSize];
-		
+
 		makeSets(testing, training);
-				
+
 		// now create a new vertical table.
-		ExampleTable examples = new ExampleTable (table);
+		ExampleTable examples = TableFactory.createExampleTable (table);
 		examples.setTrainingSet (training);
 		examples.setTestingSet (testing);
-		
+
 		this.pushOutput (examples, 0);
 		if(numFires==0){
 			this.pushOutput (new Integer(breaks.length+1), 1);
@@ -211,7 +211,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			table=null;
 			indices=null;
 		}
-		
+
 	}
 
 	/*
@@ -227,7 +227,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		} else {
 			int startTestingSet = breaks [numFires-1];
 			System.arraycopy (indices, 0, training, 0, startTestingSet);
-			System.arraycopy (indices, startTestingSet, testing, 0, 
+			System.arraycopy (indices, startTestingSet, testing, 0,
 					testing.length);
 			System.arraycopy (indices, startTestingSet+testing.length, training, startTestingSet,
 					indices.length - breaks [numFires-1]-testing.length);
@@ -243,12 +243,12 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			//trainSize=numRows-testSize;
 		}
 	}
-		 
+
 	////////////////////////////////
 	//D2K Property get/set methods
 	///////////////////////////////
 
-	
+
 	public boolean getDebug(){
 		return debug;
 	}
@@ -270,5 +270,5 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	public long getSeed(){
 		return seed;
 	}
-		 
+
 }

@@ -16,6 +16,8 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
     protected int[] predictions;
     private static final String PRED = " Predictions";
 
+	static final long serialVersionUID = -5410732702360322327L;
+
 	protected PredictionTableImpl(int i) {
 		super(i);
 	}

@@ -13,6 +13,8 @@ final public class BooleanColumn extends AbstractColumn {
     /** holds BooleanColumn's internal data rep */
     private boolean[] internal = null;
 
+	static final long serialVersionUID = 4092267981102467184L;
+
     /**
     	Create a new, empty BooleanColumn.
      */

@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.vis;
 
 import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.gui.*;
 
 import java.awt.*;

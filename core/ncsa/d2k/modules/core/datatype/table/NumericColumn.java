@@ -8,6 +8,8 @@ package ncsa.d2k.modules.core.datatype.table;
 */
 public abstract class NumericColumn extends AbstractColumn {
 
+	static final long serialVersionUID = 1970428654845248318L;
+
     //////////////////////////////////////
     //// Accessing Metadata
     /**

@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.io.sql;
 
 import ncsa.d2k.infrastructure.modules.DataPrepModule;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.sql.*;
 import java.util.Vector;
 
@@ -11,7 +11,7 @@ public class SQLMeta2VT extends DataPrepModule
 	public String getOutputInfo (int index) {
 	    String[] outputDescriptions = {
 		"Pass this on to the next module that needs a connection to this data source.",
-		"VerticalTable containing only metadata related to the SQL table "
+		"Table containing only metadata related to the SQL table "
 	    };
 	    return outputDescriptions[index];
 	}
@@ -38,7 +38,7 @@ public class SQLMeta2VT extends DataPrepModule
     public String[] getOutputTypes () {
 	String[] temp = {
 	    //	    "ncsa.d2k.modules.io.input.sql.ConnectionWrapper",
-	    "ncsa.d2k.util.datatype.Table"};
+	    "ncsa.d2k.modules.core.datatype.table.Table"};
 	return temp;
     }
 
@@ -47,7 +47,7 @@ public class SQLMeta2VT extends DataPrepModule
 	ConnectionWrapper cw = (ConnectionWrapper) this.pullInput (0);
 	String tableName = (String) this.pullInput(1);
 	ResultSet result;
-	VerticalTable vt = null;
+	Table vt = null;
 	try {
 	    Statement stmt
 		= ((Connection)cw.getConnection()).createStatement();
@@ -59,7 +59,7 @@ public class SQLMeta2VT extends DataPrepModule
 		= result.getMetaData();
 
 	    int numColumns = columnMetadata.getColumnCount();
-	    vt = new VerticalTable(numColumns);
+	    vt = TableFactory.createTable(numColumns);
 	    for(int i = 0; i < numColumns; i++) {
 		int type = columnMetadata.getColumnType(i+1);
 		if ( type == java.sql.Types.SMALLINT ||

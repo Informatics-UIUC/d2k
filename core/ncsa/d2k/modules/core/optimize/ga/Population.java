@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.optimize.ga;
 
 import ncsa.d2k.modules.core.optimize.util.*;
 import java.io.Serializable;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	The population
@@ -298,7 +298,7 @@ abstract public class Population implements Serializable {
 	abstract public int compareMembers (Solution a, Solution b);
 
 	/**
-	 * converts the population into a vertical table for viewing or statistical measure.
+	 * converts the population into a table for viewing or statistical measure.
 	 */
 	abstract public Table getTable ();
 }

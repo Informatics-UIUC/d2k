@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	Given a DecisionTreeNode that is the root of a decision tree,
@@ -21,7 +21,7 @@ public class CreateDTModel extends ModelProducerModule implements HasNames {
 
 	public String[] getInputTypes() {
 		String[] in = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
 	}
 

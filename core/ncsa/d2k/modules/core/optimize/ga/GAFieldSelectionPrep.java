@@ -1,7 +1,7 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.optimize.ga;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import ncsa.d2k.modules.core.optimize.util.*;
 /*#end^1 Continue editing. ^#&*/
@@ -34,7 +34,7 @@ public class GAFieldSelectionPrep extends PopulationPrep
 	public String[] getInputTypes () {
 /*&%^4 Do not modify this section. */
 		String [] types =  {
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 /*#end^4 Continue editing. ^#&*/
 	}

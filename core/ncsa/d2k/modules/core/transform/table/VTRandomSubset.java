@@ -1,27 +1,29 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 import java.io.Serializable;
 import java.util.Random;
 import java.util.ArrayList;
+import ncsa.d2k.modules.TransformationModule;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 /******************
 
-	VTRandomSubset 
+	VTRandomSubset
 
 
-	This module takes in a VerticalTable and outputs two new VerticalTables 
-	that are exhaustive of the original.  The fraction that is in each set is 
-	determined by the property \"splitPercent\".  ExampleTables will have their input/outputFeatures 
-	and transforms transferred to new ExampleTables but not their test/trainExample 
-	sets(they'll be left null).  PROPS:  splitPercent should be an integer between 0 and 
-	100. seed is the seed of the random generator.  A constant seed with the same Table 
-	will generate identical subsets every time the alg is run. It should be noted 
+	This module takes in a VerticalTable and outputs two new VerticalTables
+	that are exhaustive of the original.  The fraction that is in each set is
+	determined by the property \"splitPercent\".  ExampleTables will have their input/outputFeatures
+	and transforms transferred to new ExampleTables but not their test/trainExample
+	sets(they'll be left null).  PROPS:  splitPercent should be an integer between 0 and
+	100. seed is the seed of the random generator.  A constant seed with the same Table
+	will generate identical subsets every time the alg is run. It should be noted
 	that rows remain in the same order that they were in in the original table
 
 	@author Peter Groves
 
-*********************/ 
+*********************/
 public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModule implements Serializable{
 
 	/*the 1-100 int that indicates the fraction to split into*/
@@ -29,7 +31,7 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 
 	/*the seed for the random function*/
 	double seed=0.0;
-	
+
 	public void setSplitPercent(int i){
 		splitPercent=i;
 	}
@@ -44,7 +46,7 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	public double getSeed(){
 		return seed;
 	}
-	
+
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
@@ -64,8 +66,8 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.util.datatype.VerticalTable"
-			
+			"ncsa.d2k.modules.core.datatype.table.Table"
+
 			};
 		return types;
 
@@ -80,7 +82,7 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		switch (index) {
 			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"TableSetBig\">    <Text>The table containing the larger percentage of rows </Text>  </Info></D2K>";
 			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"TableSetSmall\">    <Text>The table containing the smaller percentage of rows </Text>  </Info></D2K>";
-			
+
 			default: return "No such output";
 		}
 
@@ -93,8 +95,8 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	public String[] getOutputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.util.datatype.VerticalTable",
-			"ncsa.d2k.util.datatype.VerticalTable"};
+			"ncsa.d2k.modules.core.datatype.table.Table",
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -114,7 +116,7 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
   //////////////////*/
 	public void doit () throws Exception {
 
-	VerticalTable raw=(VerticalTable)pullInput(0);
+	Table raw=(Table)pullInput(0);
 
 	int subsetCountSmall=(int)(splitPercent*raw.getNumRows()*.01);
 	int subsetCountBig=raw.getNumRows()-subsetCountSmall;
@@ -129,10 +131,10 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	if(splitPercent>50){
 		splitPercent=100-splitPercent;
 	}
-	
-	VerticalTable subsetBig=(VerticalTable)raw.getSubset(0, subsetCountBig);
-	
-	VerticalTable subsetSmall=(VerticalTable)raw.getSubset(0, subsetCountSmall);		
+
+	Table subsetBig=(Table)raw.getSubset(0, subsetCountBig);
+
+	Table subsetSmall=(Table)raw.getSubset(0, subsetCountSmall);
 
 	//VT.getSubset should do this automatically, but it doesn't
 	for(int j=0; j<raw.getNumColumns(); j++){
@@ -144,10 +146,10 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	}
 
 
-			
+
 	Random rand=new Random((long)seed);
 	int smallCounter=0;
-	
+
 	for(int i=0; i<raw.getNumRows(); i++){
 			double d=rand.nextInt(100);
 			if((d<splitPercent)&&(smallCounter<subsetCountSmall)){
@@ -165,9 +167,9 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	}
 	if(raw instanceof ExampleTable){
 		ExampleTable rawet=(ExampleTable)raw;
-		
-		ExampleTable smallet=new ExampleTable(subsetSmall);
-		ExampleTable biget=new ExampleTable(subsetBig);
+
+		ExampleTable smallet= TableFactory.createExampleTable(subsetSmall);
+		ExampleTable biget= TableFactory.createExampleTable(subsetBig);
 
 		smallet.setInputFeatures(rawet.getInputFeatures());
 		biget.setInputFeatures(rawet.getInputFeatures());
@@ -177,13 +179,13 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 
 		ArrayList trans=rawet.getTransformations();
 		for(int i=0; i<trans.size(); i++){
-			smallet.addTransformation((TransformationModule)trans.get(i));
-			biget.addTransformation((TransformationModule)trans.get(i));
+			smallet.addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));
+			biget.addTransformation((ncsa.d2k.modules.TransformationModule)trans.get(i));
 		}
 		pushOutput(smallet, 1);
 		pushOutput(biget, 0);
 		return;
-		
+
 	}
 	pushOutput(subsetSmall, 1);
 	pushOutput(subsetBig, 0);

@@ -14,6 +14,8 @@ import java.util.*;
  */
 final public class DoubleColumn extends NumericColumn {
 
+	static final long serialVersionUID = 8965700394825965214L;
+
     private double min, max;
     private double emptyValue = Double.MIN_VALUE;
 

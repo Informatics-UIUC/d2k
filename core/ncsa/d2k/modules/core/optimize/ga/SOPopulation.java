@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.optimize.ga;
 
 import ncsa.d2k.modules.core.optimize.util.*;
 import java.io.Serializable;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	This class represents populations of individuals with a single objective
@@ -293,15 +293,15 @@ public class SOPopulation extends Population implements Serializable {
 	}
 
 	/**
-	 * Returns a representation of of the population in the form of a vertical
+	 * Returns a representation of of the population in the form of a
 	 * table, where each row represents one individual, one gene per column, and the last
 	 * column containing the objective value.
-	 * @returns a vertical table represeting the population.
+	 * @returns a table represeting the population.
 	 */
 	public Table getTable () {
 		int numTraits = traits.length;
 		int popSize = this.size ();
-		VerticalTable vt = null;
+		Table vt = null;
 		if (members instanceof NumericIndividual []) {
 		    double [][] dc = new double [numTraits+1][popSize];
 			NumericIndividual [] nis = (NumericIndividual []) members;
@@ -314,8 +314,8 @@ public class SOPopulation extends Population implements Serializable {
 				dc [numTraits] [i] = nis [i].getObjective();
 			}
 
-			// Now make the vertical table
-			vt = new VerticalTable ();
+			// Now make the table
+			vt = TableFactory.createTable(0);
 			for (int i = 0 ; i < numTraits ; i++) {
 				DoubleColumn col = new DoubleColumn (dc [i]);
 				col.setLabel (traits [i].getName ());
@@ -338,8 +338,8 @@ public class SOPopulation extends Population implements Serializable {
 				objs [i] = nis [i].getObjective();
 			}
 
-			// Now make the vertical table
-			vt = new VerticalTable ();
+			// Now make the table
+			vt = TableFactory.createTable(0);
 			for (int i = 0 ; i < numTraits ; i++) {
 				BooleanColumn col = new BooleanColumn (dc [i]);
 				col.setLabel (Integer.toString(i));

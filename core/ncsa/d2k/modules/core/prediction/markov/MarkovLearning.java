@@ -7,8 +7,7 @@ package ncsa.d2k.modules.core.prediction.markov;
 //import ncsa.d2k.dtcheng.io.*;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
-
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
@@ -42,8 +41,8 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
 
   public String getInputInfo (int index)
     {
-    String[] inputDescriptions = {"ExampleSetVerticalTable",
-		"LearningBiasVerticalTable"};
+    String[] inputDescriptions = {"ExampleSetTable",
+		"LearningBiasTable"};
     return inputDescriptions[index];
     }
 
@@ -66,8 +65,8 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
 
   public String[] getInputTypes()
     {
-    String[] temp = {"ncsa.d2k.util.datatype.ExampleTable",
-                     "ncsa.d2k.util.datatype.VerticalTable"};
+    String[] temp = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
+                     "ncsa.d2k.modules.core.datatype.table.Table"};
     return temp;
     }
 
@@ -97,27 +96,27 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
   public void doit()
     {
     // pull inputs //
-    ExampleTable examples_vertical_table = (ExampleTable) this.pullInput(0);
-    VerticalTable bias_vertical_table     = (VerticalTable) this.pullInput(1);
+    ExampleTable examples_table = (ExampleTable) this.pullInput(0);
+    Table bias_table     = (Table) this.pullInput(1);
 
     // extract bias parameters */
-    int order = (int) bias_vertical_table.getDouble(0, 0);
+    int order = (int) bias_table.getDouble(0, 0);
 
     if (Trace)
       System.out.println("order = " + order);
 
-    // analyze example vertical table to determine number of examples and input and output features //
-    int    numExamples          = examples_vertical_table.getNumRows();
-    int    numFeatures          = examples_vertical_table.getNumColumns();
+    // analyze example table to determine number of examples and input and output features //
+    int    numExamples          = examples_table.getNumRows();
+    int    numFeatures          = examples_table.getNumColumns();
     int    numInputFeatures     = 0;
     int    numOutputFeatures    = 0;
-    int [] inputFeatureIndices  = examples_vertical_table.getInputFeatures();//new int[numFeatures];
-    int [] outputFeatureIndices = examples_vertical_table.getOutputFeatures();//new int[numFeatures];
+    int [] inputFeatureIndices  = examples_table.getInputFeatures();//new int[numFeatures];
+    int [] outputFeatureIndices = examples_table.getOutputFeatures();//new int[numFeatures];
 	numInputFeatures = inputFeatureIndices.length;
 	numOutputFeatures = outputFeatureIndices.length;
     /*for (int f = 0; f < numFeatures; f++)
       {
-      Column column = (Column) examples_vertical_table.getColumn(f);
+      Column column = (Column) examples_table.getColumn(f);
       if (column.getComment().equals("input"))
         {
         inputFeatureIndices[numInputFeatures] = f;
@@ -169,7 +168,7 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
       {
       for (int e = 0; e < numExamples; e++)
         {
-        int v = examples_vertical_table.getInt(e, inputFeatureIndices[f]);
+        int v = examples_table.getInt(e, inputFeatureIndices[f]);
         if (v < inputValueMins[f])
           inputValueMins[f] = v;
         if (v > inputValueMaxs[f])
@@ -182,7 +181,7 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
       {
       for (int e = 0; e < numExamples; e++)
         {
-        int v = examples_vertical_table.getInt(e, outputFeatureIndices[f]);
+        int v = examples_table.getInt(e, outputFeatureIndices[f]);
         if (v < outputValueMins[f])
           outputValueMins[f] = v;
         if (v > outputValueMaxs[f])
@@ -241,7 +240,7 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
       {
       for (int e = 0; e < numExamples; e++)
         {
-        int v = examples_vertical_table.getInt(e, inputFeatureIndices[f]);
+        int v = examples_table.getInt(e, inputFeatureIndices[f]);
         inputValueDistributions[f][v - inputValueMins[f]]++;
         }
       }
@@ -250,7 +249,7 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
       {
       for (int e = 0; e < numExamples; e++)
         {
-        int v = examples_vertical_table.getInt(e, outputFeatureIndices[f]);
+        int v = examples_table.getInt(e, outputFeatureIndices[f]);
         outputValueDistributions[f][v - outputValueMins[f]]++;
         }
       }
@@ -399,7 +398,7 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
 
         inputIndex *= numUniqueInputValues[f];
 
-        int v = examples_vertical_table.getInt(e, inputFeatureIndices[f]);
+        int v = examples_table.getInt(e, inputFeatureIndices[f]);
 
         inputIndex += (inputValueIndex[f][v - inputValueMins[f]]);
 
@@ -410,7 +409,7 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
         {
         outputIndex *= numUniqueOutputValues[f];
 
-        int v = examples_vertical_table.getInt(e, outputFeatureIndices[f]);
+        int v = examples_table.getInt(e, outputFeatureIndices[f]);
 
         outputIndex += (outputValueIndex[f][v - outputValueMins[f]]);
 
@@ -426,7 +425,7 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
     MarkovModel model = getMarkovModel();
 
     model.order                    = order;
-	ArrayList transforms = examples_vertical_table.getTransformations();
+	ArrayList transforms = examples_table.getTransformations();
 	if(transforms.size() > 0)
 		model.dataTransformer = (MarkovDataTransform)transforms.get(0);
 

@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.io.*;
 import java.util.*;
 
@@ -41,7 +41,7 @@ public class ItemSets implements Serializable {
 	/** holds some method specific data.*/
 	public Object userData;
 
-    public ItemSets(VerticalTable vt) {
+    public ItemSets(Table vt) {
 		int numColumns = vt.getNumColumns ();
 		int numRows = this.numExamples = vt.getNumRows ();
 

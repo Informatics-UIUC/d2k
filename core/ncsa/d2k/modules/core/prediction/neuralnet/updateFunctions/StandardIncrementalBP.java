@@ -1,10 +1,10 @@
 package ncsa.d2k.modules.core.prediction.neuralnet.updateFunctions;
 
-import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.learnFunctions.*;
 import java.io.Serializable;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /*
 	StandardIncrementalBP
 

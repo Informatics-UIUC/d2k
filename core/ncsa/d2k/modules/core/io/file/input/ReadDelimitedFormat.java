@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.io.file.input;
 import java.io.*;
 import java.util.*;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  * Read in a file with a single delimiter.
@@ -183,7 +183,7 @@ public class ReadDelimitedFormat extends InputModule
 	   @return The datatypes of the outputs.
 	*/
 	public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.util.datatype.Table"};
+		String []out = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return out;
 	}
 
@@ -264,7 +264,7 @@ public class ReadDelimitedFormat extends InputModule
 		@param column the column to test
 		@return true if column contains only numeric data, false otherwise
 	*/
-	protected boolean isNumericColumn(SimpleColumn column) {
+	protected boolean isNumericColumn(Column column) {
         int numRows = column.getNumRows();
 		for(int row = 0; row < numRows; row++) {
 			try {
@@ -283,7 +283,7 @@ public class ReadDelimitedFormat extends InputModule
 		@param size the initial size of the column
 		@return a new, empty column
 	*/
-	protected SimpleColumn createColumn(String type, int size) {
+	protected Column createColumn(String type, int size) {
 		if(type.compareToIgnoreCase(STRING_TYPE) == 0)
 			return new StringColumn(size);
 		else if(type.compareToIgnoreCase(FLOAT_TYPE) == 0)
@@ -318,7 +318,6 @@ public class ReadDelimitedFormat extends InputModule
 			retVal.setDouble( Double.valueOf(
 				sc.getString(row)).doubleValue(), row);
 		retVal.setLabel(sc.getLabel());
-		retVal.setType(new Double(0));
 		retVal.setComment(sc.getComment());
 		return retVal;
 	}
@@ -338,7 +337,6 @@ public class ReadDelimitedFormat extends InputModule
 			retVal.setString(new String(val), row);
 		}
 		retVal.setLabel(sc.getLabel());
-		retVal.setType(new String());
 		retVal.setComment(sc.getComment());
 
 		return retVal;
@@ -478,13 +476,13 @@ public class ReadDelimitedFormat extends InputModule
 	}
 
 	/**
-		Read a file and create a VerticalTable from the file.  Returns null
+		Read a file and create a Table from the file.  Returns null
 		if any errors occur.
 		@param f the File to read
-		@return a VerticalTable containing the data from the file, or null
+		@return a Table containing the data from the file, or null
 		if any errors occur
 	*/
-	protected VerticalTable readSDFile(File f) {
+	protected Table readSDFile(File f) {
 		int numLines = 0;
 		int numCols = 0;
 		BufferedReader reader;
@@ -539,7 +537,7 @@ public class ReadDelimitedFormat extends InputModule
 			if(labelsList != null)
 				labelsList.clear();
 
-			VerticalTable table = new VerticalTable(cols);
+			Table table = TableFactory.createTable(cols);
 
 			// the number of the row in the table
 			int rowNum = 0;
@@ -587,8 +585,8 @@ public class ReadDelimitedFormat extends InputModule
 	 * @param t
 	 * @return
 	 */
-	protected ExampleTable toExampleTable(VerticalTable t) {
-		ExampleTable retVal = new ExampleTable(t);
+	protected ExampleTable toExampleTable(Table t) {
+		ExampleTable retVal = TableFactory.createExampleTable(t);
 		int [] ins;
 		int [] outs;
 
@@ -641,7 +639,7 @@ public class ReadDelimitedFormat extends InputModule
 		@param row the line from the file
 		@return an ArrayList containing the tokens from the line.
 	*/
-	protected void createSDRow (String row, VerticalTable vt, int curRow) {
+	protected void createSDRow (String row, Table vt, int curRow) {
 		int current = 0;
 		char [] bytes = row.toCharArray ();
 		char del = delimiterOne;
@@ -741,7 +739,7 @@ public class ReadDelimitedFormat extends InputModule
 		hasLabels = true;
 		labelsRow = 0;
 		if(f.exists()) {
-			VerticalTable vtable = readSDFile(f);
+			Table vtable = readSDFile(f);
 			//vtable.print();
 		}
 	}

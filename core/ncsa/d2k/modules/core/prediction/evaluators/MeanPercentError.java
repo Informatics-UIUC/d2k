@@ -1,16 +1,16 @@
 package ncsa.d2k.modules.core.prediction.evaluators;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	MeanPercentError.java
 
-	For every output feature, sums the percent errors, divides by numTestExamples, and 
+	For every output feature, sums the percent errors, divides by numTestExamples, and
 	outputs a VT with the output feature names and corresponding errors
 
-	@author Peter Groves 
+	@author Peter Groves
 	6/26/01
-	
- 	
+
+
 */
 public class MeanPercentError extends ncsa.d2k.modules.core.prediction.evaluators.RootMeanSquared
 {
@@ -36,12 +36,12 @@ public class MeanPercentError extends ncsa.d2k.modules.core.prediction.evaluator
 		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"M % Evaluator\">    <Text>Takes a TestTable with the prediction columns filled in returns a table with mean percent errors."+props+" </Text>  </Info></D2K>";
 	}
 
-	
+
 	protected void computeError(TestTable tt, int m){
 
 		int rows = tt.getNumRows ();
 		int columns = tt.getNumOutputFeatures ();
-		
+
 		//store an mabs error for each output feature, make sure to initialize to zero
 		double[] mpe = new double[columns];
 		for (int i=0; i<mpe.length; i++){
@@ -49,7 +49,7 @@ public class MeanPercentError extends ncsa.d2k.modules.core.prediction.evaluator
 		}
 		int[] ttOuts=tt.getOutputFeatures();
 		int[] ttPreds=tt.getPredictionSet();
-		
+
 		for (int j = 0 ; j < columns ; j++){
 			for (int i = 0 ; i < rows ; i++){
 				double row_error;
@@ -62,7 +62,7 @@ public class MeanPercentError extends ncsa.d2k.modules.core.prediction.evaluator
 				mpe[j] += row_error;
 			}
 		}
-		
+
 		for (int j=0; j<mpe.length; j++){
 			mpe[j] = (mpe[j] / rows)*100;
 			metrics.setDouble(mpe[j], m, j);

@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.prediction.regression;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 import Jama.*;
@@ -93,7 +93,7 @@ public class RegressionModelGenerator extends ModelGeneratorModule
 		return "Multivariate Regression Model Generator";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.util.datatype.ExampleTable"/*,
+		String[] s= {"ncsa.d2k.modules.core.datatype.table.ExampleTable"/*,
 			"ncsa.d2k.modules.compute.learning.optimize.util.Solution"*/};
 		return s;
 	}

@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.vis.widgets;
 
 import java.awt.*;
 import java.awt.geom.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.text.NumberFormat;
 
 /**
@@ -79,8 +79,8 @@ public class GradientColorScatterPlot extends ScatterPlot {
 	public void drawDataSet(Graphics2D g2, DataSet set) {
 		g2.setPaint(new GradientPaint((float)leftoffset, 0, lowColor,
 			(float)(graphwidth-rightoffset), 0, highColor));
-		SimpleColumn xcolumn = (SimpleColumn) table.getColumn(set.x);
-		SimpleColumn ycolumn = (SimpleColumn) table.getColumn(set.y);
+		Column xcolumn = table.getColumn(set.x);
+		Column ycolumn = table.getColumn(set.y);
 
 		int size = xcolumn.getNumRows();
 

@@ -22,6 +22,8 @@ import ncsa.d2k.util.*;
  */
 final public class ContinuousByteArrayColumn extends TextualColumn {
 
+	static final long serialVersionUID = 8166528232612804955L;
+
 	/** the internal buffer */
 	private byte[] internal;
 	/** the pointers to the rows */

@@ -1,8 +1,7 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.util.datatype.*;
 import java.io.Serializable;
-
+import ncsa.d2k.modules.core.datatype.table.*;
 
 
 public class RandomGenerator extends ncsa.d2k.infrastructure.modules.DataPrepModule implements Serializable {
@@ -37,7 +36,7 @@ public class RandomGenerator extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	}
 
 	public String[] getOutputTypes () {
-		String[] temp = {"ncsa.d2k.util.datatype.DoubleColumn"};
+		String[] temp = {"ncsa.d2k.modules.core.datatype.table.DoubleColumn"};
 		return temp;
 	}
 

@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.vis.widgets;
 import javax.swing.JPanel;
 import java.awt.*;
 
-import ncsa.d2k.util.datatype.Table;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	A Chart is similar to a Graph, but it does not plot

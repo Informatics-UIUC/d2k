@@ -12,6 +12,9 @@ import java.io.*;
  <br>
  */
 public class TableImpl extends AbstractTable {
+
+	static final long serialVersionUID = -2649715462563902739L;
+
     protected Column[] columns = null;
     protected int keyColumn = 0;
 
@@ -553,9 +556,9 @@ public class TableImpl extends AbstractTable {
      Sets the reference to the internal representation of this Table.
      @param newInternal a new internal representation for this Table
      */
-    public void setInternal (Object newInternal) {
+    public void setColumns (Column[] newColumns) {
         //JJM support this? should setInternal be Objectified?? or specific?
-       columns = (Column[])newInternal;
+       columns = newColumns;
     }
 
 	/**

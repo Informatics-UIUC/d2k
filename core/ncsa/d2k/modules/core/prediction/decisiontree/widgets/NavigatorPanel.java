@@ -9,7 +9,6 @@ import javax.swing.event.*;
 import java.awt.image.*;
 
 import ncsa.d2k.util.*;
-import ncsa.d2k.util.datatype.*;
 //import ncsa.d2k.modules.compute.learning.modelgen.decisiontree.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 import ncsa.gui.*;

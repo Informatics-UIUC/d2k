@@ -2,7 +2,6 @@ package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.controller.userviews.swing.*;
 
 import javax.swing.*;
@@ -11,6 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
  * Clean the data in a Table.
  * <p>Title: </p>
@@ -33,13 +33,13 @@ public class CleanAndMergeTable extends UIModule {
 	}
 
 	public String [] getInputTypes() {
-		String [] in = {"ncsa.d2k.util.datatype.Table"};
+		String [] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return in;
 	}
 
 	public String [] getOutputTypes() {
-		String [] out = {"ncsa.d2k.util.datatype.Table",
-			"ncsa.d2k.util.datatype.Table"};
+		String [] out = {"ncsa.d2k.modules.core.datatype.table.Table",
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return out;
 	}
 
@@ -351,7 +351,7 @@ public class CleanAndMergeTable extends UIModule {
 				cols[i] = newCol;
 			}
 
-			VerticalTable tbl = new VerticalTable(cols);
+			Table tbl = TableFactory.createTable(cols);
 			tbl.setLabel(table.getLabel());
 			return tbl;
 		}

@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -96,7 +96,7 @@ public abstract class Graph extends JPanel {
 		ylabel = settings.yaxis;
 
 		DataSet set;
-		SimpleColumn column;
+		Column column;
 
 		// Find interval for x data
 		if ((settings.xminimum == null) || (settings.xmaximum == null)) {
@@ -105,7 +105,7 @@ public abstract class Graph extends JPanel {
 
 				// find the min + max for the first set
 				set = sets[0];
-				column = (SimpleColumn) table.getColumn(set.x);
+				column = table.getColumn(set.x);
 				if(column instanceof NumericColumn) {
 					xminimum = ((NumericColumn)column).getMin();
 					xmaximum = ((NumericColumn)column).getMax();
@@ -119,7 +119,7 @@ public abstract class Graph extends JPanel {
 				// find the min and max for all other sets
 				for (int index=1; index < sets.length; index++) {
 					set = sets[index];
-					column = (SimpleColumn) table.getColumn(set.x);
+					column = table.getColumn(set.x);
 
 					if(column instanceof NumericColumn) {
 						double value = ((NumericColumn)column).getMin();
@@ -155,7 +155,7 @@ public abstract class Graph extends JPanel {
 				(settings.ydatamaximum == null)) {
 				// find the min and max for the first set
 				set = sets[0];
-				column = (SimpleColumn) table.getColumn(set.y);
+				column = table.getColumn(set.y);
 				if(column instanceof NumericColumn) {
 					yminimum = ((NumericColumn)column).getMin();
 					ymaximum = ((NumericColumn)column).getMax();
@@ -168,7 +168,7 @@ public abstract class Graph extends JPanel {
 				}
 				for (int index=1; index < sets.length; index++) {
 					set = sets[index];
-					column = (SimpleColumn) table.getColumn(set.y);
+					column = table.getColumn(set.y);
 
 					if(column instanceof NumericColumn) {
 						double value = ((NumericColumn)column).getMin();

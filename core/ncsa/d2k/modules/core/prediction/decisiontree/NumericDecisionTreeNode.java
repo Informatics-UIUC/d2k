@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.prediction.decisiontree;
 import java.io.Serializable;
 import java.util.*;
 
-import ncsa.d2k.util.datatype.Table;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	A DecisionTreeNode for numerical data.  These are binary nodes that

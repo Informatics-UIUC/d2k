@@ -1,8 +1,9 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.transform.attribute;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 import java.util.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
 /**
@@ -33,7 +34,7 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	public String[] getInputTypes () {
 /*&%^4 Do not modify this section. */
 		String [] types =  {
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 /*#end^4 Continue editing. ^#&*/
 	}
@@ -58,7 +59,7 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	public String[] getOutputTypes () {
 /*&%^6 Do not modify this section. */
 		String [] types =  {
-			"ncsa.d2k.util.datatype.Table"};
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 /*#end^6 Continue editing. ^#&*/
 	}
@@ -97,7 +98,7 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		}
 
 		for (int i = 0 ; i < et.getNumColumns () ; i++) {
-			SimpleColumn col = (SimpleColumn) et.getColumn (i);
+			Column col = et.getColumn (i);
 		System.out.println ("COLUMN TPE = "+col.getClass().getName());
 			if (inputs == null) {
 

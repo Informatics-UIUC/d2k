@@ -1,7 +1,12 @@
 package ncsa.d2k.modules.core.prediction.compound;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.infrastructure.modules.ModelGeneratorModule;
+import ncsa.d2k.infrastructure.modules.HasNames;
+import ncsa.d2k.infrastructure.modules.ModelModule;
+import ncsa.d2k.infrastructure.modules.HasNames;
+import ncsa.d2k.modules.PredictionModelModule;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 /**
@@ -312,7 +317,7 @@ public class CompoundModelGen extends ModelGeneratorModule
 			if(et instanceof PredictionTable){
 				predTable=(PredictionTable)et;
 			}else{
-				predTable=new PredictionTable(et);
+				predTable=TableFactory.createPredictionTable(et);
 			}
 
 			//if there are no spots for pred columns
@@ -372,7 +377,7 @@ public class CompoundModelGen extends ModelGeneratorModule
 			return "Compound Model";
 		}
 		public String[] getInputTypes(){
-			String[] s= {"ncsa.d2k.util.datatype.ExampleTable"};
+			String[] s= {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 			return s;
 		}
 
@@ -399,7 +404,7 @@ public class CompoundModelGen extends ModelGeneratorModule
 			}
 		}
 		public String[] getOutputTypes(){
-			String[] s={"ncsa.d2k.util.datatype.PredictionTable"};
+			String[] s={"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
 			return s;
 		}
 
@@ -464,7 +469,7 @@ public class CompoundModelGen extends ModelGeneratorModule
 		return "Compound Model Generator";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.util.datatype.ExampleTable",
+		String[] s= {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
 					"ncsa.d2k.modules.core.prediction.compound.ModelScore" };
 		return s;
 	}
@@ -499,7 +504,7 @@ public class CompoundModelGen extends ModelGeneratorModule
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.infrastructure.modules.PredictionModelModule"
+		String[] s={"ncsa.d2k.modules.PredictionModelModule"
 
 					/*"modules.compute.learning.modelgen."+
 					"compound.CompoundModelGen$CompoundModel"*/};

@@ -8,7 +8,7 @@ import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.sql.*;
 import java.util.*;
@@ -31,7 +31,7 @@ public class WriteVTToDB extends UIModule
     /* Input holder for ConnectionWrapper */
     protected ConnectionWrapper cw;
     /* Input holder for VerticalTable */
-    protected VerticalTable vt;
+    protected Table vt;
     /* SQL Query String */
     protected String query;
     /* The resultset table model */
@@ -84,7 +84,7 @@ public class WriteVTToDB extends UIModule
     */
     public String[] getInputTypes () {
         String [] in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-                        "ncsa.d2k.util.datatype.VerticalTable" };
+                        "ncsa.d2k.modules.core.datatype.table.Table" };
         return in;
     }
     /**
@@ -166,7 +166,7 @@ public class WriteVTToDB extends UIModule
 	public void initView(ViewModule mod) {
             removeAll();
             cw = (ConnectionWrapper)pullInput(0);
-            vt = (VerticalTable)pullInput(1);
+            vt = (Table)pullInput(1);
             /* the number of rows in vt JTables is determined by inputed vertical table */
             maxNumRow = vt.getNumColumns();
 
@@ -380,7 +380,7 @@ public class WriteVTToDB extends UIModule
             System.out.println("the input 1 in setInput is " + cw.toString());
           }
           else if (index == 1) {
-            vt = (VerticalTable)input;
+            vt = (Table)input;
             System.out.println("the input 2 in setInput is " + vt.toString());
             newModel.initTableModel(maxNumRow,3);
             newModel.fireTableDataChanged();

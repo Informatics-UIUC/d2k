@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.prediction.naivebayes;
 
 import java.util.HashMap;
-import ncsa.d2k.util.datatype.*;
 import java.io.Serializable;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
    NaiveBayesPieChartData contains all the data contained in a pie
@@ -10,7 +10,7 @@ import java.io.Serializable;
    greatest, so calling getRatio(0) will return the smallest ratio, and
    so on.
 */
-final class NaiveBayesPieChartData extends VerticalTable implements Serializable {
+final class NaiveBayesPieChartData extends TableImpl implements Serializable {
 
    /** The total number of tallies in this pie */
    private int total;
@@ -59,7 +59,7 @@ final class NaiveBayesPieChartData extends VerticalTable implements Serializable
       c[0] = cn;
       c[1] = tc;
       c[2] = rc;
-      setInternal(c);
+      setColumns(c);
    /*
       try {
          sortByColumn(TALLY);
@@ -108,7 +108,7 @@ final class NaiveBayesPieChartData extends VerticalTable implements Serializable
       c[0] = cn;
       c[1] = tc;
       c[2] = rc;
-      setInternal(c);
+      setColumns(c);
 /*
       try {
          sortByColumn(RATIO);

@@ -1,4 +1,3 @@
-//package  ncsa.util.table;
 package ncsa.d2k.modules.core.datatype.table;
 
 
@@ -10,7 +9,5 @@ package ncsa.d2k.modules.core.datatype.table;
  the output columns last.
  */
 public interface TestTable extends PredictionTable {
+	static final long serialVersionUID = -1802337275793313757L;
 }
-
-
-

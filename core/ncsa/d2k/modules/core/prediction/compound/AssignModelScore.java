@@ -1,6 +1,8 @@
 package ncsa.d2k.modules.core.prediction.compound;
 
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.infrastructure.modules.DataPrepModule;
+import ncsa.d2k.infrastructure.modules.HasNames;
+import ncsa.d2k.modules.PredictionModelModule;
 
 /**
 	This is used by a CompoundModelGenerator

@@ -3,14 +3,15 @@ package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
 import java.util.ArrayList;
-import ncsa.d2k.util.datatype.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	UntransformModule.java
 
-	runs all the untransforms of an exampletable on 
+	runs all the untransforms of an exampletable on
 	that table
 
-	@author Peter Groves 
+	@author Peter Groves
 	8/01/01
 */
 public class UntransformModule extends ncsa.d2k.infrastructure.modules.ComputeModule
@@ -33,7 +34,7 @@ public class UntransformModule extends ncsa.d2k.infrastructure.modules.ComputeMo
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 
 	}
@@ -55,7 +56,7 @@ public class UntransformModule extends ncsa.d2k.infrastructure.modules.ComputeMo
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 
 	}
@@ -74,14 +75,14 @@ public class UntransformModule extends ncsa.d2k.infrastructure.modules.ComputeMo
 	*/
 	public void doit() throws Exception {
 		ExampleTable et=(ExampleTable)pullInput(0);
-		
+
 
 		ArrayList transforms=et.getTransformations();
 
 		//System.out.println(transforms.size());
 		//make sure to untransform in reverse order
 		for(int i=transforms.size()-1; i>=0; i--){
-			((TransformationModule)(transforms.get(i))).untransform(et);
+			((ncsa.d2k.modules.TransformationModule)(transforms.get(i))).untransform(et);
 		}
 		pushOutput(et, 0);
 	}

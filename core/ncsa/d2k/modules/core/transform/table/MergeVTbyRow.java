@@ -2,10 +2,9 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.VerticalTable;
-import ncsa.d2k.util.datatype.*;
 import java.util.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	MergeVTbyRow.java
 */
@@ -31,7 +30,8 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable","ncsa.d2k.util.datatype.VerticalTable","java.lang.String"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
+			"ncsa.d2k.modules.core.datatype.table.Table","java.lang.String"};
 		return types;
 
 	}
@@ -53,7 +53,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -71,7 +71,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		PUT YOUR CODE HERE.
 	*/
 
-	VerticalTable returnTable;
+	Table returnTable;
 	int counter = 0;
 
 	//begin setting Properties
@@ -93,7 +93,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	}
 	public int getFillerNumeric(){
 		return fillerNumeric;
-	}				 
+	}
 	public void setFillerBol(boolean a){
 		fillerBol = a;
 	}
@@ -114,13 +114,13 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	}
 	//end setting Properties
 
-	VerticalTable table1, table2;
+	Table table1, table2;
 	Object[] fill;
 
 	public void doit() throws Exception {
 		counter = 0;
-		table1 = (VerticalTable) pullInput(0);
-		table2 = (VerticalTable) pullInput(1);
+		table1 = (Table) pullInput(0);
+		table2 = (Table) pullInput(1);
 		String[] uid = (String[]) pullInput(2);
 
 		//System.out.println(uid[0]);
@@ -133,7 +133,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		if ( (col1 == null) || (col2 == null) ) {
 			//push empty table and exit
 			System.out.println("col1 or 2 is null");
-			returnTable = new VerticalTable();
+			returnTable = TableFactory.createTable();
 			pushOutput(returnTable, 0);
 
 		}
@@ -143,7 +143,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 
 		if (!test){
 			System.out.println("the test was not ok");
-			returnTable = new VerticalTable();
+			returnTable = TableFactory.createTable();
 			pushOutput(returnTable, 0);
 		}
 		else {
@@ -157,7 +157,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		//System.out.println("#rows of returntable is "+returnTable.getNumRows());
 		fill = new Object[numCol1 + numCol2];
 
-		fillerByte[0] = 0;	
+		fillerByte[0] = 0;
 		fillerChar[0] = '*';
 		determineFillers();
 		System.out.println("# columns in table1 is "+numCol1);
@@ -165,10 +165,11 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		System.out.println("index 1 is "+index1);
 		System.out.println("index 2 is "+index2);
 
-		System.out.println("here is table1 in makeBigTable: ");
+		/*System.out.println("here is table1 in makeBigTable: ");
 		table1.print();
 		System.out.println("here is table2 in makeBigTable: ");
 		table2.print();
+		*/
 
 		try {
 			table1.sortByColumn(index1);
@@ -178,10 +179,11 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			System.out.println("shiznit");
 		}
 
-		System.out.println("here is table1 in makeBigTable: ");
+		/*System.out.println("here is table1 in makeBigTable: ");
 		table1.print();
 		System.out.println("here is table2 in makeBigTable: ");
 		table2.print();
+		*/
 
 		table1.swapColumns(numCol1-1, index1);
 		table2.swapColumns(0, index2);
@@ -197,7 +199,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			colArray[h+numCol1] = (Column) ((table2.getColumn(h+1)).getClass()).newInstance();
 		}
 
-		returnTable = new VerticalTable(colArray);
+		returnTable = TableFactory.createTable(colArray);
 
 		for (int u=0; u<(numCol1); u++){
 			returnTable.getColumn(u).setLabel(table1.getColumnLabel(u));
@@ -207,12 +209,13 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			returnTable.getColumn(v+numCol1).setLabel(table2.getColumnLabel(v+1));
 		}
 
-		returnTable.suggestCapacity(table1.getNumRows());
+		returnTable.setCapacity(table1.getNumRows());
 
-		System.out.println("here is table1 in makeBigTable: ");
+		/*System.out.println("here is table1 in makeBigTable: ");
 		table1.print();
 		System.out.println("here is table2 in makeBigTable: ");
 		table2.print();
+		*/
 
 		makeBigTable();
 
@@ -224,7 +227,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 
 	protected void makeBigTable(){
 		boolean smallerOnLeft;
-		VerticalTable smallTable, largeTable;
+		Table smallTable, largeTable;
 		Column smallCol, largeCol;
 		if ( table1.getNumRows() < table2.getNumRows() ) {
 			smallTable = table1;
@@ -242,10 +245,11 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			smallerOnLeft = false;
 		}
 
-		System.out.println("here is table1 in makeBigTable: ");
+		/*System.out.println("here is table1 in makeBigTable: ");
 		table1.print();
 		System.out.println("here is table2 in makeBigTable: ");
 		table2.print();
+		*/
 
 		int count = 0;
 		boolean[] isDuplicated = new boolean[smallCol.getNumRows()];
@@ -302,7 +306,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			}
 		}
 
-		
+
 	}
 	protected boolean isOK(Column col1, Column col2){
 		boolean test = true;
@@ -331,7 +335,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		return test;
 	}
 
-	protected Column findColumn(String uid, VerticalTable table){
+	protected Column findColumn(String uid, Table table){
 		Column col = null;
 		System.out.println("the string here is "+uid);
 		for (int i=0; i<(table.getNumColumns()); i++){
@@ -345,7 +349,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		return col;
 	}
 
-	protected int findIndex(Column col, VerticalTable table){
+	protected int findIndex(Column col, Table table){
 		int index = -1;
 		for (int j=0; j<(table.getNumColumns()); j++){
 			if (table.getColumn(j).equals(col)){
@@ -355,8 +359,8 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		}
 		return index;
 	}
-	
-	protected void addFullRow( VerticalTable smallTable, VerticalTable largeTable, boolean smallOnLeft, int rowNum1, int rowNum2){
+
+	protected void addFullRow( Table smallTable, Table largeTable, boolean smallOnLeft, int rowNum1, int rowNum2){
 
 		int smallNum = smallTable.getNumColumns();
 		int largeNum = largeTable.getNumColumns();
@@ -365,7 +369,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		if (counter >= returnTable.getCapacity()){
 			System.out.println("counter is too big.  it is "+counter);
 			System.out.println("capacity is "+returnTable.getCapacity());
-			returnTable.suggestCapacity(counter+1);
+			returnTable.setCapacity(counter+1);
 		}
 		if (smallOnLeft) {
 			for (int j=0; j<smallTable.getNumColumns(); j++){
@@ -387,18 +391,18 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		return;
 	}
 
-	protected void addHalfRow( VerticalTable table, boolean isLarge, boolean smallOnLeft, int rowNum) {
+	protected void addHalfRow( Table table, boolean isLarge, boolean smallOnLeft, int rowNum) {
 
 		int cNum = table.getNumColumns();
 		try {
 			if (counter >= returnTable.getCapacity()){
 				System.out.println("counter is too big.  it is "+counter);
 				System.out.println("capacity is "+returnTable.getCapacity());
-				returnTable.suggestCapacity(counter+1);
+				returnTable.setCapacity(counter+1);
 			}
 		} catch (NullPointerException e){
 			System.out.println("nullpointer exception");
-			returnTable.suggestCapacity(2);}
+			returnTable.setCapacity(2);}
 		if (!(isLarge ^ smallOnLeft)){
 			//add half row on the right
 			for (int g= cNum-1; g<returnTable.getNumColumns();g++){
@@ -409,7 +413,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 				returnTable.getColumn(i).setRow( fill[i], counter);
 			}
 		}
-		else {	//add half row on the left 
+		else {	//add half row on the left
 				for (int h=0; h< cNum; h++){
 					returnTable.getColumn(h).setRow( table.getColumn(h).getRow(rowNum), counter);
 				}
@@ -426,7 +430,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 
 	protected void determineFillers(){
 
-		int num1 = table1.getNumColumns();	
+		int num1 = table1.getNumColumns();
 		int num2 = table2.getNumColumns();
 		for (int i=0; i<num1; i++){
 			if (table1.getColumn(i) instanceof StringColumn)
@@ -442,7 +446,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 											else {
 													fill[i] = null;
 											}
-									}	
+									}
 							}
 					}
 			}
@@ -462,7 +466,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 											else {
 													fill[j] = null;
 											}
-									}	
+									}
 							}
 					}
 			}
@@ -470,7 +474,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	}
 
 	protected int compare( Object ob1, Object ob2, Class clas1 ) {
-		SimpleColumn col1;
+		Column col1;
 		Object o;
 		System.out.println("the class name is "+clas1.getName());
 		try {
@@ -483,55 +487,55 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			if ( o instanceof StringColumn){
 				col1 = new StringColumn(1);
 				col1.setRow((String) ob1, 0);
-				col1.suggestCapacity(2);
+				col1.setCapacity(2);
 				col1.setRow((String) ob2, 1);
 			}
 			else { if ( o instanceof DoubleColumn){
 						col1 = new DoubleColumn(1);
 						col1.setRow((Double) ob1, 0);
-						col1.suggestCapacity(2);
+						col1.setCapacity(2);
 						col1.setRow((Double) ob2, 1);
 					}
 					else { if ( o instanceof FloatColumn){
 								col1 = new FloatColumn(1);
 								col1.setRow((Float) ob1, 0);
-								col1.suggestCapacity(2);
+								col1.setCapacity(2);
 								col1.setRow((Float) ob2, 1);
 							}
 							else { if ( o instanceof IntColumn){
 										col1 = new IntColumn(1);
 										col1.setRow((Integer) ob1, 0);
-										col1.suggestCapacity(2);
+										col1.setCapacity(2);
 										col1.setRow((Integer) ob2, 1);
 									}
 									else { if ( o instanceof ShortColumn){
 												col1 = new ShortColumn(1);
 												col1.setRow((Short) ob1, 0);
-												col1.suggestCapacity(2);
+												col1.setCapacity(2);
 												col1.setRow((Short) ob2, 1);
 											}
 											else { if ( o instanceof LongColumn){
 														col1 = new LongColumn(1);
 														col1.setRow((Long) ob1, 0);
-														col1.suggestCapacity(2);
+														col1.setCapacity(2);
 														col1.setRow((Long) ob2, 1);
 													}
 													else { if ( o instanceof BooleanColumn){
-																col1 = new BooleanColumn(1);	
+																col1 = new BooleanColumn(1);
 																col1.setRow((Boolean) ob1, 0);
-																col1.suggestCapacity(2);
+																col1.setCapacity(2);
 																col1.setRow((Boolean) ob2, 1);
 															}
 															else { if ( o instanceof ByteArrayColumn){
 																		col1 = new ByteArrayColumn(1);
 																		col1.setRow((Byte[]) ob1, 0);
-																		col1.suggestCapacity(2);
+																		col1.setCapacity(2);
 																		col1.setRow((Byte[]) ob2, 1);
 																	}
-																	else { 
+																	else {
 																			col1 = new CharArrayColumn(1);
 																			col1.setRow((Character[]) ob1, 0);
-																			col1.suggestCapacity(2);
+																			col1.setCapacity(2);
 																			col1.setRow((Character[]) ob2, 1);
 																	}
 															}

@@ -2,9 +2,9 @@ package ncsa.d2k.modules.core.vis;
 
 import ncsa.d2k.modules.core.vis.widgets.TableEditorModel;
 import ncsa.d2k.modules.core.vis.widgets.VerticalTableMatrix;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.util.ErrorDialog;
 
 import javax.swing.*;
@@ -188,12 +188,12 @@ public class VTEditor extends VTViewer {
 		*/
 		protected void convertTable() {
 			Column newCol;
-			SimpleColumn origCol;
+			Column origCol;
 
 			for(int i = 0; i < types.length; i++) {
 				String selected = (String)types[i].getSelectedItem();
 				newCol = null;
-				origCol = (SimpleColumn)table.getColumn(i);
+				origCol = table.getColumn(i);
 
 				if(selected.equals(DOUBLE_TYPE)) {
 					if(!(table.getColumn(i) instanceof DoubleColumn)) {
@@ -210,7 +210,7 @@ public class VTEditor extends VTViewer {
  						newCol = ColumnUtilities.toStringColumn(origCol);
 					}
 				}
-				if(selected.equals(BYTE_ARRAY_TYPE)) {
+				/*if(selected.equals(BYTE_ARRAY_TYPE)) {
 					if(!(table.getColumn(i) instanceof ByteArrayColumn)) {
 						newCol = ColumnUtilities.toByteArrayColumn(origCol);
 					}
@@ -220,6 +220,7 @@ public class VTEditor extends VTViewer {
 						newCol = ColumnUtilities.toCharArrayColumn(origCol);
 					}
 				}
+				*/
 				if(selected.equals(FLOAT_TYPE)) {
 					if(!(table.getColumn(i) instanceof FloatColumn)) {
 						newCol = ColumnUtilities.toFloatColumn(origCol);

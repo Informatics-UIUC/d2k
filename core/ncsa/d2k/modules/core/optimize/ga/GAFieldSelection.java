@@ -1,7 +1,7 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.optimize.ga;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
@@ -35,7 +35,7 @@ public class GAFieldSelection extends ncsa.d2k.infrastructure.modules.DataPrepMo
 /*&%^4 Do not modify this section. */
 		String [] types =  {
 			"ncsa.d2k.modules.core.optimize.ga.Population",
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 /*#end^4 Continue editing. ^#&*/
 	}
@@ -60,7 +60,7 @@ public class GAFieldSelection extends ncsa.d2k.infrastructure.modules.DataPrepMo
 	public String[] getOutputTypes () {
 /*&%^6 Do not modify this section. */
 		String [] types =  {
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 /*#end^6 Continue editing. ^#&*/
 	}
@@ -179,7 +179,7 @@ public class GAFieldSelection extends ncsa.d2k.infrastructure.modules.DataPrepMo
 		System.arraycopy (newinputs, 0, tmp, 0, numberNewInputs);
 
 		// create a new example table.
-		ExampleTable newExamples = new ExampleTable (originalExamples);
+		ExampleTable newExamples = TableFactory.createExampleTable(originalExamples);
 		newExamples.setInputFeatures (tmp);
 		newExamples.setOutputFeatures (originalExamples.getOutputFeatures ());
 

@@ -1,9 +1,8 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.modules.core.datatype.*;
-
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
    BinningModule.java
    @author David Clutter
@@ -33,7 +32,7 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public String[] getInputTypes() {
 		String []in = {"ncsa.d2k.modules.core.datatype.BinTree",
-				"ncsa.d2k.util.datatype.ExampleTable"};
+				"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
     }
 
@@ -44,7 +43,7 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public String[] getOutputTypes() {
 		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return out;
     }
 
@@ -121,7 +120,7 @@ public class Binning extends DataPrepModule implements HasNames {
 		int numRows = vt.getNumRows();
 		//long startTime = System.currentTimeMillis();
 		for(int i = 0; i < ins.length; i++) {
-			SimpleColumn sc = (SimpleColumn)vt.getColumn(ins[i]);
+			Column sc = vt.getColumn(ins[i]);
 
 			// numeric columns
 			if(sc instanceof NumericColumn) {

@@ -1,4 +1,3 @@
-//package  ncsa.util.table;
 package ncsa.d2k.modules.core.datatype.table;
 
 import java.io.*;
@@ -12,6 +11,8 @@ import java.util.*;
  the output columns last.
  */
 public final class TestTableImpl extends PredictionTableImpl implements TestTable {
+
+	static final long serialVersionUID = -7408690070856124087L;
 
 	TestTableImpl(int i) {
 		super(i);

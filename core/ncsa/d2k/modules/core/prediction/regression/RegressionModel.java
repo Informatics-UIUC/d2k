@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.core.prediction.regression;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.*;
+import ncsa.d2k.infrastructure.modules.HasNames;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 import Jama.*;
@@ -28,7 +29,7 @@ import Jama.*;
 	@author pgroves
 	*/
 
-	
+
 	//////////////////////////////////////////////////////////////
 	//// The model
 	//////////////////////////////////////////////////////////////
@@ -100,13 +101,13 @@ import Jama.*;
 				/*
 				//let's just leave everything the way it is (all coefficients 0)
 				//and return
-				
+
 				for(int i=0;i<coefficients.length;i++){
 					coefficients[i]=new double[et.getNumInputFeatures()+1];
 				}
 				*/
 
-				
+
 				//return the mean if it fails
 				predictMean=true;
 				mean=new double[et.getNumOutputFeatures()];
@@ -153,7 +154,7 @@ import Jama.*;
 		if(et instanceof PredictionTable){
 			predTable=(PredictionTable)et;
 		}else{
-			predTable=new PredictionTable(et);
+			predTable=TableFactory.createPredictionTable(et);
 		}
 
 		//if there are no spots for pred columns
@@ -180,12 +181,12 @@ import Jama.*;
 					sum=mean[oi];
 				}
 				predTable.setDouble(sum, e, predTable.getPredictionSet()[oi]);
-				
+
 			}
 		}
 		return predTable;
 	}
-	
+
 	public double predictRow(ExampleTable et, int row, int outputColumn){
 		double sum=0.0;
 		if(!predictMean){
@@ -221,7 +222,7 @@ import Jama.*;
 			return "RegressionModel";
 		}
 		public String[] getInputTypes(){
-			String[] s= {"ncsa.d2k.util.datatype.ExampleTable"};
+			String[] s= {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 			return s;
 		}
 
@@ -248,7 +249,7 @@ import Jama.*;
 			}
 		}
 		public String[] getOutputTypes(){
-			String[] s={"ncsa.d2k.util.datatype.PredictionTable"};
+			String[] s={"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
 			return s;
 		}
 

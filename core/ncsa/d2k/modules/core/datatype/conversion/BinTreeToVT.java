@@ -1,11 +1,11 @@
 package ncsa.d2k.modules.core.datatype.conversion;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
 
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
    BinTreeToVT takes the data in a BinTree and inserts it into a
@@ -22,7 +22,7 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
        @return A description of this module.
     */
     public String getModuleInfo() {
-    	StringBuffer sb = new StringBuffer("Create a VerticalTable from a");
+    	StringBuffer sb = new StringBuffer("Create a Table from a");
 		sb.append(" BinTree.  Each column corresponds to a bin.");
 		sb.append(" The first row contains the class name.  The second row");
 		sb.append(" contains the attribute name.  The third row contains the");
@@ -55,7 +55,7 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-    	String []out = {"ncsa.d2k.util.datatype.VerticalTable"};
+    	String []out = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return out;
 	}
 
@@ -83,7 +83,7 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-    	return "The VerticalTable.";
+    	return "The Table.";
 	}
 
     /**
@@ -100,14 +100,14 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
     */
     public void doit() {
     	BinTree bt = (BinTree)pullInput(0);
-		VerticalTable vt = toTable(bt);
+		Table vt = toTable(bt);
 		pushOutput(vt, 0);
 	}
 
 	/**
-		Take the data out of the BinTree and put it in a VerticalTable
+		Take the data out of the BinTree and put it in a Table
 	*/
-	VerticalTable toTable(BinTree bt) {
+	private Table toTable(BinTree bt) {
 		LinkedList columns = new LinkedList();
 
 		String []classNames = bt.getClassNames();
@@ -134,6 +134,6 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
 		Column []co = new Column[cols.length];
 		for(int i = 0; i < cols.length; i++)
 			co[i] = (Column)cols[i];
-		return new VerticalTable(co);
+		return TableFactory.createTable(co);
 	}
 }

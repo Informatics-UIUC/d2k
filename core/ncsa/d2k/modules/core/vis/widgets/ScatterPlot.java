@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.awt.*;
 
@@ -12,8 +12,8 @@ public class ScatterPlot extends Graph {
 	}
 
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-		SimpleColumn xcolumn = (SimpleColumn) table.getColumn(set.x);
-		SimpleColumn ycolumn = (SimpleColumn) table.getColumn(set.y);
+		Column xcolumn = table.getColumn(set.x);
+		Column ycolumn = table.getColumn(set.y);
 
 		int size = xcolumn.getNumRows();
 

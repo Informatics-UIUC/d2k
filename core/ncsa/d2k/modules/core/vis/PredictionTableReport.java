@@ -3,9 +3,9 @@ package ncsa.d2k.modules.core.vis;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.UserView;
 import ncsa.d2k.controller.userviews.swing.JUserPane;
-import ncsa.d2k.util.datatype.*;
 
 import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -41,7 +41,7 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.util.datatype.PredictionTable"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
 		return in;
     }
 
@@ -176,7 +176,7 @@ public class PredictionTableReport extends VisModule implements HasNames {
 				Column[] col = new Column[2];
 				col[0] = sc;
 				col[1] = ic;
-				VerticalTable tbl = new VerticalTable(col);
+				Table tbl = TableFactory.createTable(col);
 				// create the pie chart
 				DataSet ds = new DataSet("Accuracy", null, 0, 1);
 				GraphSettings gs = new GraphSettings();

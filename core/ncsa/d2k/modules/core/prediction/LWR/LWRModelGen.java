@@ -2,13 +2,13 @@
 package ncsa.d2k.modules.core.prediction.LWR;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import Jama.*;
 
 /**
 	LWRModelGen.java
 		This model generating module creates an LWRModel module
-		using the VerticalTables that were passed in.
+		using the Tables that were passed in.
 	@talumbau
 
 */
@@ -33,7 +33,7 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable", "ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table", "ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -81,7 +81,7 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 	*/
 	public String getModuleInfo() {
 		StringBuffer sb = new StringBuffer("Generates an LWRModel ");
-		sb = sb.append("from the VerticalTables.  The LWRModel ");
+		sb = sb.append("from the Tables.  The LWRModel ");
 		sb = sb.append("performs all the necessary calculations.");
 		return sb.toString();
 	}
@@ -133,8 +133,8 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 	*/
 
 	public void doit() throws Exception {
-		VerticalTable Traintable = (VerticalTable) pullInput(0);
-		VerticalTable Testtable = (VerticalTable) pullInput(1);
+		Table Traintable = (Table) pullInput(0);
+		Table Testtable = (Table) pullInput(1);
 		model = new LWRModel(Traintable, Testtable, kernelSelector, distanceSelector, nearestNeighbors, useNearestNeighbors);
 		pushOutput(model, 0);
 	}

@@ -8,6 +8,8 @@ public abstract class AbstractTable implements Table {
 	private String comment;
 	//private Object type;
 
+	static final long serialVersionUID = 7466283323917113619L;
+
 	/**
 		Get the label associated with this Table.
 		@return the label which describes this Table

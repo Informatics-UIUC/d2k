@@ -16,9 +16,10 @@ import  javax.vecmath.*;
 import  ncsa.d2k.controller.userviews.swing.*;
 import  ncsa.d2k.infrastructure.modules.*;
 import  ncsa.d2k.infrastructure.views.*;
-import  ncsa.d2k.util.datatype.*;
 import  ncsa.gui.*;
 import ncsa.d2k.gui.JD2KFrame;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  * A three-dimensional scatter plot.  Requires Java3D.
@@ -75,7 +76,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
      * @return the input types
      */
     public String[] getInputTypes () {
-        String[] i =  { "ncsa.d2k.util.datatype.Table" };
+        String[] i =  { "ncsa.d2k.modules.core.datatype.table.Table" };
         return  i;
     }
 

@@ -2,13 +2,14 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 import java.util.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	RandomizeVTRows.java
 */
 public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepModule implements java.io.Serializable
-{ 
+{
 	/**
 		This pair returns the description of the various inputs.
 		@return the description of the indexed input.
@@ -26,7 +27,7 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -48,7 +49,7 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -58,7 +59,7 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"RandomizeVTRows\">    <Text>Randomizes the rows of a VerticalTable </Text>  </Info></D2K>";
+		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"RandomizeVTRows\">    <Text>Randomizes the rows of a Table </Text>  </Info></D2K>";
 
 	}
 
@@ -67,13 +68,13 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	*/
 
 	/**
-		Randomizes the rows of the VerticalTable using swapping
+		Randomizes the rows of the Table using swapping
 	*/
 	public void doit() throws Exception {
 
 		rand = new Random(seed);
 
-		VerticalTable table = (VerticalTable) pullInput(0);
+		Table table = (Table) pullInput(0);
 		int numRow = table.getNumRows();
 		int j = 0;
 		for (int i=0; i<numRow; i++){

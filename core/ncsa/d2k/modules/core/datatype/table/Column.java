@@ -13,6 +13,8 @@ package ncsa.d2k.modules.core.datatype.table;
 */
 public interface Column extends java.io.Serializable {
 
+	static final long serialVersionUID = 8637084126103716671L;
+
 	/**
 		Get the label associated with this Column.
 		@return the label which describes this Column

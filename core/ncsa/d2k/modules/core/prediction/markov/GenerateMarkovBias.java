@@ -7,8 +7,7 @@ package ncsa.d2k.modules.core.prediction.markov;
 //import ncsa.d2k.dtcheng.io.*;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
-
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
@@ -49,7 +48,7 @@ public class GenerateMarkovBias extends ncsa.d2k.infrastructure.modules.ComputeM
 
   public String getOutputInfo (int index)
     {
-    String[] outputDescriptions = {"MarkovBiasVerticalTable"};
+    String[] outputDescriptions = {"MarkovBiasTable"};
     return outputDescriptions[index];
     }
 
@@ -72,7 +71,7 @@ public class GenerateMarkovBias extends ncsa.d2k.infrastructure.modules.ComputeM
 
   public String[] getOutputTypes()
     {
-    String[] temp = {"ncsa.d2k.util.datatype.VerticalTable"};
+    String[] temp = {"ncsa.d2k.modules.core.datatype.table.Table"};
     return temp;
     }
 
@@ -96,16 +95,16 @@ public class GenerateMarkovBias extends ncsa.d2k.infrastructure.modules.ComputeM
   public void doit()
     {
 
-    VerticalTable transform_bias_vertical_table = null;
+    Table transform_bias_table = null;
 
-    transform_bias_vertical_table = new VerticalTable(NumBiasFeatures);
+    transform_bias_table = TableFactory.createTable(NumBiasFeatures);
 
     DoubleColumn Order_column = new DoubleColumn (1);
     Order_column.setDouble(Order, 0);
 
-    transform_bias_vertical_table.setColumn(Order_column, 0);
+    transform_bias_table.setColumn(Order_column, 0);
 
-    this.pushOutput(transform_bias_vertical_table, 0);
+    this.pushOutput(transform_bias_table, 0);
     }
 
   }

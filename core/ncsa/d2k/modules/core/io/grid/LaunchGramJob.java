@@ -7,7 +7,6 @@
 package ncsa.d2k.modules.core.io.grid;
 
 import  ncsa.d2k.infrastructure.modules.*;
-import  ncsa.d2k.util.datatype.*;
 import  java.io.*;
 import  org.globus.gram.*;
 import  org.globus.mds.*;
@@ -22,7 +21,7 @@ import  java.security.*;
 
 /**
  WriteVTToFile.java
- Write the contents of a VerticalTable to a flat file.
+ Write the contents of a Table to a flat file.
  @author David Clutter
  */
 public class LaunchGramJob extends OutputModule

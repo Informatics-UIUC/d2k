@@ -1,7 +1,10 @@
 package ncsa.d2k.modules.core.prediction.evaluators;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.PredictionModelModule;
+import ncsa.d2k.infrastructure.modules.ModelEvaluatorModule;
+import ncsa.d2k.infrastructure.modules.HasNames;
+import ncsa.d2k.infrastructure.modules.ModelModule;
 
 /**
  * Meant to be used in conjunction with NFoldTTables.  This module takes N
@@ -21,14 +24,14 @@ public class BestScoreEvaluator extends ModelEvaluatorModule implements HasNames
 	}
 
 	public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.infrastructure.modules.PredictionModelModule",
-			"ncsa.d2k.util.datatype.ExampleTable",
+		String[] in = {"ncsa.d2k.modules.PredictionModelModule",
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable",
 			"java.lang.Integer"};
 		return in;
 	}
 
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
+		String[] out = {"ncsa.d2k.modules.PredictionModelModule"};
 		return out;
 	}
 
@@ -114,7 +117,7 @@ public class BestScoreEvaluator extends ModelEvaluatorModule implements HasNames
 			int[] pred = pt.getPredictionSet();
 			bestScore = score(pt);
 			bestModel = pmm;
-			printStats(numFires, bestScore, /*pmm.getTrainingSetSize()*/0, pt.getNumRows());
+			printStats(numFires, bestScore, 0, pt.getNumRows());
 			numFires++;
 		}
 		// call the predict method and keep the model if it is the best one
@@ -124,7 +127,7 @@ public class BestScoreEvaluator extends ModelEvaluatorModule implements HasNames
 
 			PredictionTable pt = pmm.predict(tbl);
 			double thisscore = score(pt);
-			printStats(numFires, thisscore, /*pmm.getTrainingSetSize()*/0, pt.getNumRows());
+			printStats(numFires, thisscore, pmm.getTrainingSetSize(), pt.getNumRows());
 			if(thisscore > bestScore) {
 				bestScore = thisscore;
 				bestModel = pmm;

@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
    RotateVerticalTable.java
@@ -35,7 +36,7 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return in;
     }
 
@@ -45,7 +46,7 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String []out = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return out;
     }
 
@@ -101,8 +102,8 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
     */
     public void doit() {
 
-    	VerticalTable vt = (VerticalTable)pullInput(0);
-		VerticalTable nt = rotateTable(vt);
+    	Table vt = (Table)pullInput(0);
+		Table nt = rotateTable(vt);
 		pushOutput(nt, 0);
 	}
 
@@ -110,11 +111,11 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
 		whatever was in col1 becomes row1, etc
 		the first column will be the labels from the original.
 	*/
-	VerticalTable rotateTable(VerticalTable orig) {
+	Table rotateTable(Table orig) {
 		int origRows = orig.getNumRows();
 		int origCols = orig.getNumColumns();
 
-		VerticalTable newTable = new VerticalTable(origRows + 1);
+		Table newTable = TableFactory.createTable(origRows + 1);
 		newTable.setComment(orig.getComment());
 
 		StringColumn sc = new StringColumn(origCols);

@@ -1,4 +1,3 @@
-//package  ncsa.util.table;
 package ncsa.d2k.modules.core.datatype.table;
 
 import java.io.*;
@@ -11,6 +10,8 @@ import java.util.*;
  */
 public final class TrainTableImpl extends ExampleTableImpl implements TrainTable {
     protected ExampleTable original = null;
+
+	static final long serialVersionUID = 3645653836067022357L;
 
 	TrainTableImpl(int i) {
 		super(i);

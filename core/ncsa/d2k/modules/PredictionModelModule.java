@@ -12,6 +12,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 abstract public class PredictionModelModule extends ModelModule
 	implements HasNames {
 
+	static final long serialVersionUID = -9161888039007606151L;
+
 	/** A decription of Numeric inputs and outputs */
 	public static final String NUMERIC = "Numeric";
 	/** A description of Textual inputs and outputs */

@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.util.Random;
 
 /**
@@ -43,7 +43,7 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.util.datatype.Table"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return in;
     }
 
@@ -53,7 +53,7 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.util.datatype.Table"};
+		String []out = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return out;
     }
 

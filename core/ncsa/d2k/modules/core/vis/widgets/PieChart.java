@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -37,7 +37,7 @@ public class PieChart extends Chart {
 			dc.setDouble((double)(val/total), i);
 		}
 
-		table = new VerticalTable(cols);
+		table = TableFactory.createTable(cols);
 	}
 
 	/**

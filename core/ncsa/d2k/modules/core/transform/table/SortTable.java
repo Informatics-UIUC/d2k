@@ -5,13 +5,13 @@ import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.d2k.controller.userviews.widgits.*;
 import ncsa.d2k.util.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.gui.*;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	MultipleSort.java
 
@@ -29,7 +29,7 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule
 	}
 
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
@@ -41,7 +41,7 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule
 	}
 
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
@@ -274,7 +274,7 @@ class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements 
 		int compare = 0;
 
 		while (current < rows) {
-			compare = ((SimpleColumn) column).compareRows(sorted[previous], sorted[current]);
+			compare = column.compareRows(sorted[previous], sorted[current]);
 			if (compare != 0) {
 				if ((current-previous) >= 1) {
 					queue.push(new Run(previous, current-1));
@@ -299,7 +299,7 @@ class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements 
 			current = run.start;
 			previous = run.start;
 			while (current <= run.end) {
-				compare = ((SimpleColumn) column).compareRows(sorted[previous], sorted[current]);
+				compare = column.compareRows(sorted[previous], sorted[current]);
 				if (compare != 0) {
 					if ((current-previous) >= 1) {
 						queue.push(new Run(previous, current-1));
@@ -338,7 +338,7 @@ class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements 
 
 		while (index <= end) {
 			if ((lowerindex <= middle) && (upperindex <= end)) {
-				int compare = ((SimpleColumn) column).compareRows(sorted[lowerindex], sorted[upperindex]);
+				int compare = column.compareRows(sorted[lowerindex], sorted[upperindex]);
 
 				if (compare < 0) {
 					copy[index] = sorted[lowerindex];

@@ -2,13 +2,13 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	LWRCollect.java
 		This module collects the predictions from an LWR model
-		and passes them along to the LWRPlotVis.  It will fire 
-		as many times as there are attributes for the queries 
+		and passes them along to the LWRPlotVis.  It will fire
+		as many times as there are attributes for the queries
 		and will finally output a table containing inputs, outputs,
 		and criterion calculations.
 	@author talumbau
@@ -35,7 +35,9 @@ public class LWRCollect extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable","ncsa.d2k.util.datatype.VerticalTable","ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
+			"ncsa.d2k.modules.core.datatype.table.Table",
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -58,7 +60,8 @@ public class LWRCollect extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable","ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -75,27 +78,27 @@ public class LWRCollect extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	/**
 		PUT YOUR CODE HERE.
 	*/
-	VerticalTable collectTable;
-	VerticalTable inputTable;
+	Table collectTable;
+	Table inputTable;
 	//StringColumn colLabels;
 	int nFired = -1;
 	int N = 0;
 
 	public void doit() throws Exception {
-		
-		VerticalTable predTable = (VerticalTable) pullInput(1);
-		inputTable = (VerticalTable) pullInput(2);
+
+		Table predTable = (Table) pullInput(1);
+		inputTable = (Table) pullInput(2);
 
 		if (nFired == -1)
 			nFired = 0;
-	
+
 		if (nFired < 1){ //first time through
-			collectTable = new VerticalTable();
+			collectTable = TableFactory.createTable();
 			//colLabels = new StringColumn();
 			N = inputTable.getNumColumns()-1;
 		}
 		else
-			collectTable = (VerticalTable) pullInput(0);
+			collectTable = (Table) pullInput(0);
 
 		nFired++;	//at this point, nFired = # of times module entered here
 
@@ -108,7 +111,7 @@ public class LWRCollect extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			//collectTable.addColumn(colLabels);
 			pushOutput(collectTable,1);
 		}
-		else 
+		else
 			pushOutput(collectTable,0);
 	}
 
@@ -118,9 +121,9 @@ public class LWRCollect extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			return true;
 		else if ((inputFlags[1]>0) && (inputFlags[0]>0))
 				return true;
-			else 
+			else
 				return false;
-			
+
 
 	}
 
@@ -129,6 +132,6 @@ public class LWRCollect extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		N = 0;
 		collectTable = null;
 	}
-		
+
 }
 

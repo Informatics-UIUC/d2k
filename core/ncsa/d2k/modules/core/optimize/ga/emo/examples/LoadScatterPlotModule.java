@@ -5,12 +5,13 @@ import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.*;
 import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.gui.*;
 
 import java.awt.*;
 import java.io.*;
 import javax.swing.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	ScatterPlot2D.java
@@ -24,7 +25,7 @@ public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisMo
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table\">    <Text>This is the vertical table to plot.</Text>  </Info></D2K>";
+			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table\">    <Text>This is the table to plot.</Text>  </Info></D2K>";
 			default: return "No such input";
 		}
 
@@ -35,7 +36,7 @@ public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisMo
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -102,14 +103,14 @@ public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisMo
 */
 class LoadPlotUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane {
 	LoadScatterPlotModule module;
-	VerticalTable table;
+	Table table;
 
 	public void initView(ViewModule viewmodule) {
 		module = (LoadScatterPlotModule) viewmodule;
 	}
 	public Module getModule () { return module; }
 	public void setInput(Object object, int index) {
-		table = (VerticalTable) object;
+		table = (Table) object;
 
 		buildView();
 	}

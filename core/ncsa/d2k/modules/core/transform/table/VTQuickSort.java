@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.util.Date;
 import java.io.Serializable;
 
@@ -12,16 +12,16 @@ import java.io.Serializable;
 	property.  Uses a fancy tri-pivot technique and then an insertion sort
 	to clean up what it misses.  Also displays/prints the time each component
 	of the sort takes
-	
+
 ***/
 
-public class VTQuickSort extends DataPrepModule 
+public class VTQuickSort extends DataPrepModule
 	implements Serializable{
 
-	VerticalTable sorted;
+	Table sorted;
 	NumericColumn sortColumn;
-	
-	int sortColumnIndex=0; 
+
+	int sortColumnIndex=0;
 	public void setSortColumnIndex(int i){
 		sortColumnIndex=i;
 	}
@@ -29,7 +29,7 @@ public class VTQuickSort extends DataPrepModule
 	public int getSortColumnIndex(){
 		return sortColumnIndex;
 	}
-	
+
 	public boolean printTime=false;
 	public boolean getPrintTime(){
 		return printTime;
@@ -64,8 +64,8 @@ public class VTQuickSort extends DataPrepModule
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.util.datatype.VerticalTable"
-			
+			"ncsa.d2k.modules.datatype.table.Table"
+
 			};
 		return types;
 
@@ -91,7 +91,7 @@ public class VTQuickSort extends DataPrepModule
 	public String[] getOutputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.util.datatype.VerticalTable"};
+			"ncsa.d2k.modules.datatype.table.Table"};
 		return types;
 
 	}
@@ -111,9 +111,9 @@ public class VTQuickSort extends DataPrepModule
   //////////////////*/
 	public void doit () throws Exception {
 
-	VerticalTable raw=(VerticalTable)pullInput(0);
-	sorted=new VerticalTable(2);
-	
+	Table raw=(Table)pullInput(0);
+	sorted=	TableFactory.createTable(2);
+
 	sortColumn=(NumericColumn)raw.getColumn(sortColumnIndex).copy();
 	/*System.out.println(sortColumn.getNumRows());
 	for(int i=0; i<sortColumn.getNumRows(); i++){
@@ -131,15 +131,15 @@ public class VTQuickSort extends DataPrepModule
 	*/
 	sorted.setColumn(sortColumn, 0);
 	sorted.setColumn(orderColumn, 1);
-	
+
 	Date startTime=new Date();
-    
+
 	quickSort(0, sortColumn.getNumRows()-1);
 	//for(int i=0; i<sortColumn.getNumRows(); i++)
-	//System.out.println(sortColumn.getRow(i).toString());	
+	//System.out.println(sortColumn.getRow(i).toString());
 	//System.out.println();
     Date quickTime=new Date();
-	
+
 	insertionSort(0, sortColumn.getNumRows()-1);
 
 	Date endTime=new Date();
@@ -150,15 +150,15 @@ public class VTQuickSort extends DataPrepModule
 	for(int i=0; i<sortColumn.getNumRows(); i++)
 	System.out.println(sortColumn.getRow(i).toString());
 	*/
-	
+
 	/*
 		now use the VT that is sorted and contains the row numbers from the orig
 		table in sorted order (sorted by the sorting column) to make a new sorted
 		column that contains all the data (not just the sorting column)
 	*/
-	
+
 	int[] newOrder=(int[])orderColumn.getInternal();
-	VerticalTable fullSorted=(VerticalTable)raw.copy();
+	Table fullSorted=(Table)raw.copy();
 
 	for(int i=0; i<newOrder.length; i++){
 		fullSorted.setRow(raw.getRow(newOrder[i]), i);
@@ -170,7 +170,7 @@ public class VTQuickSort extends DataPrepModule
 	pushOutput(fullSorted, 0);
 
   }
-	
+
 	private void quickSort(int l, int r){
 
 		if(r-l<=3){
@@ -179,9 +179,9 @@ public class VTQuickSort extends DataPrepModule
 		int pivot;
 
 		int i=(r+l)/2;
-		
+
 		/*
-			of {i, l, r}, make the pivot the one with value in sort column 
+			of {i, l, r}, make the pivot the one with value in sort column
 			between the other two (Tri-median method)
 		*/
 		/*
@@ -193,27 +193,27 @@ public class VTQuickSort extends DataPrepModule
 			sorted.swapRows(l, r);
 		if(sortColumn.compareRows(i, r)>0);
 			sorted.swapRows(i, r);
-			
-					
-			
+
+
+
 
 		/*
 	   		XXXXXmove the pivot to the end, and the one we know is greater than
    			XXXXXXthe pivot to one position before the end
 		*/
-				
+
 		sorted.swapRows(i, r-1);
-		
+
 		pivot=r-1;
 		/*
    			from position i=l+1 start moving to the right, from j=r-2 start moving
    			to the left, and swap when the fitness of i is more than the pivot
    			and j's fitness is less than the pivot
-		*/	
-	
+		*/
+
 		i=l+1;
 		int j=r-2;
-		
+
 		while(j>i){
 
 			while((sortColumn.compareRows(i, pivot)<=0) && (i<j)){
@@ -231,24 +231,24 @@ public class VTQuickSort extends DataPrepModule
 
 		/*
 	   		put the pivot back in the middle, at this point j should equal i
-		*/	
-		
+		*/
+
 			sorted.swapRows(r-1, j);
-	
+
 		/*
 			sort the two halves
 		*/
-		
+
 			quickSort(l, i-1);
 			quickSort(j+1, r);
 	}
 
 	public void insertionSort(int l, int r){
-		
+
 			int i;
 			int j;
-			Object v;//the row
-			Object w;	
+			Object[] v;//the row
+			Object w;
 			for(j=l+1; j<=r; j++){
 				v=sorted.getRow(j);
 				w=sortColumn.getRow(j);
@@ -261,7 +261,7 @@ public class VTQuickSort extends DataPrepModule
 			}
 	}
 
-	private void reverse(VerticalTable vt){
+	private void reverse(Table vt){
 		int numRows=vt.getNumRows();
 		int halfWay=(int)(numRows/2D);
 		for(int i=0;i<halfWay; i++){

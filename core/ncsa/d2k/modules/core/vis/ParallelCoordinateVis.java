@@ -14,7 +14,6 @@ import java.io.File;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.util.datatype.*;
 
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
@@ -23,7 +22,7 @@ import ncsa.gui.DisposeOnCloseListener;
 import ncsa.d2k.gui.JD2KFrame;
 
 import ncsa.d2k.modules.core.vis.widgets.*;
-
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
  * Plots the data in a Table on parallel axes.
  */
@@ -42,7 +41,7 @@ public class ParallelCoordinateVis extends VisModule {
 	}
 
 	public String[] getInputTypes() {
-		String[] i = {"ncsa.d2k.util.datatype.Table"};
+		String[] i = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return i;
 	}
 
@@ -104,7 +103,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 
 	private static final Dimension buttonsize = new Dimension(25, 25);
 
-	private static final HashMap uniqueValues(SimpleColumn sc) {
+	private static final HashMap uniqueValues(Column sc) {
 		HashMap hm = new HashMap();
 		for(int k = 0; k < sc.getNumRows(); k++) {
 			String s = sc.getString(k);
@@ -679,7 +678,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 							weights[j][k] = (max-nc.getFloat(k))/(max-min);
 					}
 					else {
-						SimpleColumn sc = (SimpleColumn)c;
+						Column sc = (Column)c;
 						HashMap hm = uniqueValues(sc);
 						for(int k = 0; k < sc.getNumRows(); k++) {
 							Integer ii = (Integer)hm.get(sc.getString(k));
@@ -806,7 +805,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 					chooseColors.add(lm);
 				}
 				else {
-					SimpleColumn sc = (SimpleColumn)c;
+					Column sc = (Column)c;
 
 					int idx = 0;
 					//linecolor = new Color[table.getNumRows()];

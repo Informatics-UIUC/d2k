@@ -16,7 +16,6 @@ import com.sun.j3d.utils.geometry.*;
 import com.sun.j3d.utils.universe.*;
 import com.sun.j3d.utils.behaviors.mouse.*;
 import com.sun.j3d.utils.behaviors.keyboard.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
 import ncsa.d2k.controller.userviews.*;
 import ncsa.d2k.controller.userviews.widgits.*;
@@ -24,6 +23,8 @@ import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.gui.Constrain;
 import ncsa.d2k.modules.core.datatype.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 // author: mbach
 
@@ -47,7 +48,7 @@ public class LineGraphAppModule extends VisModule {
 
    public String[] getInputTypes() {
       String[] i = {"ncsa.d2k.modules.core.datatype.HashLookupTable",
-         "ncsa.d2k.util.datatype.VerticalTable"};
+         "ncsa.d2k.modules.core.datatype.table.VerticalTable"};
       return i;
    }
 
@@ -79,7 +80,7 @@ public class LineGraphAppModule extends VisModule {
       implements ActionListener, ItemListener {
 
       public HashLookupTable hlt;
-      public VerticalTable vt;
+      public Table vt;
       public LineGraphVerticalTable dt;
       public FindClosest fc;
 
@@ -317,7 +318,7 @@ public class LineGraphAppModule extends VisModule {
          if (index == 0)
             hlt = (HashLookupTable)o;
          else if (index == 1)
-            vt = (VerticalTable)o;
+            vt = (Table)o;
 
          inputs_set[index] = true;
 
@@ -1426,15 +1427,15 @@ public class LineGraphAppModule extends VisModule {
 
    }
 
-   public class LineGraphVerticalTable extends VerticalTable
+   public class LineGraphVerticalTable extends TableImpl
       implements Serializable {
 
       int numRecords, numFields, numLines;
       public String[] names;
-      private VerticalTable vtable;
+      private Table vtable;
       private HashLookupTable htable;
 
-      public LineGraphVerticalTable(HashLookupTable inhlt, VerticalTable invt) {
+      public LineGraphVerticalTable(HashLookupTable inhlt, Table invt) {
 
          htable = inhlt; vtable = invt;
          names = new String[vtable.getNumColumns()];

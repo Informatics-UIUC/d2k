@@ -2,19 +2,19 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	TestTableLWRGen.java
-		This module is only used (so far) in creating a 
+		This module is only used (so far) in creating a
 		VerticalTable of test data for the purpose of generating
 		a model from an LWRModelGen module. It takes the table of
 		x values, select a column at random, and uses that column
 		of x values to create a new table of test data.  The other
-		values for each row are pulled from the training data.  
-		The row from the training data that most closely matches 
+		values for each row are pulled from the training data.
+		The row from the training data that most closely matches
 		the x value in the randomly selected column is chosen as
-		the other values to fill the new VerticalTable.  
+		the other values to fill the new VerticalTable.
 	@author talumbau
 */
 public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepModule
@@ -38,7 +38,8 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable","ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -60,7 +61,7 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -77,22 +78,22 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	/**
 		PUT YOUR CODE HERE.
 	*/
-	VerticalTable trainTable = null;
-	VerticalTable xTable = null;
+	Table trainTable = null;
+	Table xTable = null;
 	public void doit() throws Exception {
 
-		trainTable = (VerticalTable) pullInput(0);
-		xTable = (VerticalTable) pullInput(1);
+		trainTable = (Table) pullInput(0);
+		xTable = (Table) pullInput(1);
 		int N = xTable.getNumColumns();
 		int randomIndex = getRandom(N);
 		NumericColumn col = (NumericColumn) xTable.getColumn(randomIndex);
-		VerticalTable t = makeTable(col, randomIndex);
+		Table t = makeTable(col, randomIndex);
 
 		pushOutput(t,0);
 	}
 
-	public VerticalTable makeTable(NumericColumn col, int i) {
-		VerticalTable theTable = new VerticalTable(trainTable.getNumColumns());
+	public Table makeTable(NumericColumn col, int i) {
+		Table theTable = TableFactory.createTable(trainTable.getNumColumns());
 
 		for (int t=0; t<trainTable.getNumColumns(); t++){
 			double[] work = new double[col.getNumRows()];
@@ -105,7 +106,7 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		}
 
 		Column[] c1 = {col.copy()};
-		VerticalTable xTble = new VerticalTable(c1);
+		Table xTble = TableFactory.createTable(c1);
 		//NumericColumn col2 = (NumericColumn) trainTable.getColumn(i).copy();
 		//Column[] c2 = {col2};
 		//VerticalTable trainTble = new VerticalTable(c2);
@@ -123,7 +124,7 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		NumericColumn sortedColx = (NumericColumn) xTble.getColumn(0);
 		NumericColumn sortedColt = (NumericColumn) trainTable.getColumn(i);
 		int[] indices = new int[sortedColx.getNumRows()];
-		theTable.suggestCapacity(indices.length);
+		theTable.setCapacity(indices.length);
 		int index = 0;
 		int last = 0;
 		for (int j=0; j<(sortedColx.getNumRows()); j++){
@@ -163,7 +164,7 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 						if ((last +jump) <= P-1)
 							last = last + jump;
 					}
-					else 
+					else
 						stillLooking = false;
 					}
 			}
@@ -183,8 +184,8 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 			//System.err.println("say what?");
 			Object o = trainTable.getRow(n);
 			//System.err.println("snizzle");
-			//Object q = o.clone();	
-			theTable.setRow(o,k);
+			//Object q = o.clone();
+			theTable.setRow((Object[])o,k);
 			//System.out.println(" ");
 			//theTable.print();
 			//System.out.println(" ");

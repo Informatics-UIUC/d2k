@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.prediction.LWR;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.util.splaytree.*;
 import Jama.*;
 import java.util.*;
@@ -12,8 +12,8 @@ import ncsa.d2k.infrastructure.modules.*;
 	LWRModel.java
 		This model module implements a type of locally weighted
 		learning algorithm called locally weighted regression.  The
-		module will predict outputs for the testing data Vertical
-		Table based on the training data VerticalTable.
+		module will predict outputs for the testing data
+		Table based on the training data Table.
 
 	@author talumbau
 */
@@ -34,8 +34,8 @@ public class LWRModel extends ModelModule implements Serializable {
 	double[] kernels;
 	double[] distances;
 	double[] criterion;
-	VerticalTable Traintable, TraintableSubset;
-	public VerticalTable finaltable;
+	Table Traintable, TraintableSubset;
+	public Table finaltable;
 	Matrix X;
 	Matrix Z;
 	NumericColumn y;
@@ -43,14 +43,14 @@ public class LWRModel extends ModelModule implements Serializable {
 
 	/**
 		Constructor
-		Builds the model from a VerticalTable of test data, one of training data,
+		Builds the model from a Table of test data, one of training data,
 		and the various properties of the model
-		@param VerticalTable table1 - the training data
-		@param VerticalTable table2 - the testing data
+		@param Table table1 - the training data
+		@param Table table2 - the testing data
 	*/
-	LWRModel(VerticalTable table1, VerticalTable table2, int ker, int distance, int nearest, boolean useNearest) {
+	LWRModel(Table table1, Table table2, int ker, int distance, int nearest, boolean useNearest) {
 		Traintable = table1;
-		VerticalTable Testtable = table2;
+		Table Testtable = table2;
 
 		//determine the subset of training data which should be used for
 		//the regresssion.
@@ -102,9 +102,9 @@ public class LWRModel extends ModelModule implements Serializable {
 		//make a column of the criterion calculations
 		DoubleColumn critCol = new DoubleColumn(criterion);
 
-		//making the final VerticalTable of the test data and the
+		//making the final Table of the test data and the
 		//corresponding predicted values
-		finaltable = new VerticalTable();
+		finaltable = TableFactory.createTable();
 		for (int i=0; i< Testtable.getNumColumns()-1; i++){
 			finaltable.addColumn(Testtable.getColumn(i));
 		}
@@ -120,7 +120,7 @@ public class LWRModel extends ModelModule implements Serializable {
 	*/
 	public void doit() {
 		//get the testing data
-		VerticalTable table = (VerticalTable) pullInput(0);
+		Table table = (Table) pullInput(0);
 		determineSubset(table);
 
 		if (useNearestNeighbors){
@@ -145,7 +145,7 @@ public class LWRModel extends ModelModule implements Serializable {
 		DoubleColumn critCol = new DoubleColumn(criterion);
 		DoubleColumn copyCritCol = (DoubleColumn) critCol.copy();
 
-		VerticalTable fTable = new VerticalTable();
+		Table fTable = TableFactory.createTable();
 		for (int i=0; i< table.getNumColumns()-1; i++){
 			fTable.addColumn(table.getColumn(i).copy());
 		}
@@ -162,14 +162,14 @@ public class LWRModel extends ModelModule implements Serializable {
 	/**
 		predict
 		The overwritten method for a PredictionModelModule that produces a
-		NumericColumn of prediction given a VerticalTable object of queries
+		NumericColumn of prediction given a Table object of queries
 		@param Object m - the queries
 		@return Object predCol - the column of predictions
 	*/
 
 	public Object predict( Object m) {
 
-		VerticalTable theTable = (VerticalTable) m;
+		Table theTable = (Table) m;
 		int numRows = theTable.getNumRows();
 		int numColumns = theTable.getNumColumns();
 		prediction = new double[theTable.getNumRows()];
@@ -392,12 +392,12 @@ public class LWRModel extends ModelModule implements Serializable {
 	/**
 		determineSubset
 		finds the subset of the Traintable that will serve as appropriate
-		training data for the given VerticalTable.  This subset of the data
+		training data for the given Table.  This subset of the data
 		will become TraintableSubset
-		@param VerticalTable t - the test data
+		@param Table t - the test data
 	*/
-	public void determineSubset(VerticalTable t){
-		TraintableSubset = new VerticalTable();
+	public void determineSubset(Table t){
+		TraintableSubset = TableFactory.createTable();
 		for (int j=0; j<t.getNumColumns(); j++){
 			int index = findIndexInTraintable(t.getColumnLabel(j));
 			TraintableSubset.addColumn(Traintable.getColumn(index).copy());
@@ -491,9 +491,9 @@ public class LWRModel extends ModelModule implements Serializable {
 	/**
 		removeYs
 		removes the column of output values from the training data
-		@param VerticalTable table - the table of input data
+		@param Table table - the table of input data
 	*/
-	public NumericColumn removeYs(VerticalTable table) {
+	public NumericColumn removeYs(Table table) {
 		//table.print();
 		int numCol = table.getNumColumns();
 		NumericColumn col = (NumericColumn) table.getColumn(numCol-1);
@@ -503,11 +503,11 @@ public class LWRModel extends ModelModule implements Serializable {
 
 	/**
 		getQuery
-		gets a row from the VerticalTable of test data
+		gets a row from the Table of test data
 		@param int c - the index of the row to get
-		@param VerticalTable Testtable - the table to take a query from
+		@param Table Testtable - the table to take a query from
 	*/
-	public double[] getQuery(int c, VerticalTable Testtable){
+	public double[] getQuery(int c, Table Testtable){
 		int numCol = Testtable.getNumColumns();
 		double[] query = new double[numCol];
 		for (int h=0; h<numCol; h++){
@@ -537,7 +537,7 @@ public class LWRModel extends ModelModule implements Serializable {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return in;
     }
 
@@ -547,7 +547,7 @@ public class LWRModel extends ModelModule implements Serializable {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.util.datatype.VerticalTable",
+		String[] out = {"ncsa.d2k.modules.core.datatype.Table",
 			"ncsa.d2k.modules.core.prediction.LWR.LWRModel"};
    		return out;
 	}
@@ -693,7 +693,7 @@ public class LWRModel extends ModelModule implements Serializable {
 		addConstant1s
 		adds a column of constant 1's
 	*/
-	protected void addConstant1s(VerticalTable table){
+	protected void addConstant1s(Table table){
 		int numR = table.getNumRows();
 		int[] ar1 = new int[numR];
 		for (int i=0; i<numR; i++){

@@ -2,8 +2,7 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.VerticalTable;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	GeneratePlotValues.java
 		Given a VerticalTable of test data, this module finds the min
@@ -33,7 +32,7 @@ public class GeneratePlotValues extends ncsa.d2k.infrastructure.modules.DataPrep
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -56,7 +55,8 @@ public class GeneratePlotValues extends ncsa.d2k.infrastructure.modules.DataPrep
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable", "ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -78,16 +78,16 @@ public class GeneratePlotValues extends ncsa.d2k.infrastructure.modules.DataPrep
 		return num_pts;
 	}
 
-	VerticalTable table;
+	Table table;
 	int num_pts = 60;
 
 	/**
 		PUT YOUR CODE HERE.
 	*/
 	public void doit() throws Exception {
-		table = (VerticalTable) pullInput(0);
+		table = (Table) pullInput(0);
 		int numCol = table.getNumColumns();
-		VerticalTable outputTable = new VerticalTable();
+		Table outputTable = TableFactory.createTable();
 
 		for (int i=0; i< numCol-1; i++){
 			double min, max;

@@ -4,12 +4,13 @@ import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.swing.JUserPane;
 import ncsa.d2k.modules.core.vis.widgets.VerticalTableMatrix;
-import ncsa.d2k.util.datatype.VerticalTable;
 import ncsa.gui.JEasyConstrainsPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import ncsa.d2k.modules.core.optimize.util.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 /*
 	A simple vis for saving the information of a solution space.
 	contains a tabbed pane with the best/worst and constraint info
@@ -67,7 +68,7 @@ public class OptimizerReport extends VisModule
     public class ClassView extends JUserPane
 		implements java.io.Serializable, ActionListener{
 
-		VerticalTable vt;
+		Table vt;
 		VerticalTableMatrix vtm;
 
 		ButtonGroup radios;
@@ -117,7 +118,7 @@ public class OptimizerReport extends VisModule
 			solutionTablePanel.setLayout(new BorderLayout());
 
 			//the vt part
-			vt=(VerticalTable)ss.getTable();
+			vt=(Table)ss.getTable();
 			/*
 			if(ss instanceof SOSolutionSpace){
 				int[] newOrder=((SOSolutionSpace)ss).sortSolutions();

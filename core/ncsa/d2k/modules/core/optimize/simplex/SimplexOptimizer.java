@@ -129,7 +129,7 @@ public class SimplexOptimizer extends ComputeModule
 	public void printStuff(){
 		System.out.println();
 		space.setSolutions(simplex);
-		((ncsa.d2k.util.datatype.VerticalTable)space.getTable()).print();
+		((ncsa.d2k.modules.core.datatype.table.TableImpl)space.getTable()).print();
 
 		System.out.println();
 	}

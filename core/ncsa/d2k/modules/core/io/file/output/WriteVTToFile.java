@@ -1,13 +1,13 @@
 package ncsa.d2k.modules.core.io.file.output;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 
 /**
    WriteVTToFile.java
-   Write the contents of a VerticalTable to a flat file.
+   Write the contents of a Table to a flat file.
    @author David Clutter
 */
 public class WriteVTToFile extends OutputModule
@@ -67,7 +67,7 @@ public class WriteVTToFile extends OutputModule
     */
     public String getModuleInfo() {
     	StringBuffer sb = new StringBuffer("Write the contents of a ");
-		sb.append("VerticalTable to a flat file.  Can use space, comma, ");
+		sb.append("Table to a flat file.  Can use space, comma, ");
 		sb.append("or tab as a delimiter.  If useColumnLabels is set, ");
 		sb.append("the first row of the file will be the column labels.");
 		sb.append(" If useDataTypes is set, the data type of each row will ");
@@ -90,7 +90,7 @@ public class WriteVTToFile extends OutputModule
     */
     public String[] getInputTypes() {
     	String []in = {"java.lang.String",
-			"ncsa.d2k.util.datatype.VerticalTable"};
+			"ncsa.d2k.modules.datatype.table.Table"};
 		return in;
 	}
 
@@ -111,7 +111,7 @@ public class WriteVTToFile extends OutputModule
     public String getInputInfo(int i) {
     	switch(i) {
 			case 0: return "The name of the file to write.";
-			case 1: return "The VerticalTable to write.";
+			case 1: return "The Table to write.";
 			default: return "No such input.";
 		}
 	}
@@ -152,7 +152,7 @@ public class WriteVTToFile extends OutputModule
 	*/
     public void doit() {
     	String fileName = (String)pullInput(0);
-		VerticalTable vt = (VerticalTable)pullInput(1);
+		Table vt = (Table)pullInput(1);
 		FileWriter fw;
 		String newLine = "\n";
 

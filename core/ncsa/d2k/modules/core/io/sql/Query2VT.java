@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.io.sql;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.util.*;
 import java.sql.*;
 import java.io.*;
@@ -37,7 +37,7 @@ public class Query2VT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	String [] types =  {
 	    "ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
 	    "java.lang.String",
-	    "ncsa.d2k.util.datatype.Table"};
+	    "ncsa.d2k.modules.core.datatype.table.Table"};
 	return types;
     }
 
@@ -59,7 +59,7 @@ public class Query2VT extends ncsa.d2k.infrastructure.modules.DataPrepModule
     */
     public String[] getOutputTypes () {
 	String [] types =  {
-	    "ncsa.d2k.util.datatype.Table"};
+	    "ncsa.d2k.modules.core.datatype.table.Table"};
 	return types;
 
     }

@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	VTNormalizer.java
 
@@ -33,7 +33,7 @@ public class VTNormalizer extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.util.datatype.VerticalTable"};
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -58,7 +58,7 @@ public class VTNormalizer extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	public String[] getOutputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.util.datatype.VerticalTable"};
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -83,7 +83,7 @@ public class VTNormalizer extends ncsa.d2k.infrastructure.modules.DataPrepModule
 
 	public void doit () throws Exception {
 
-	VerticalTable raw=(VerticalTable)pullInput(0);
+	Table raw=(Table)pullInput(0);
 	Column[] newColumns=new Column[raw.getNumColumns()];
 
 	  for(int k=0; k<raw.getNumColumns(); k++){
@@ -135,9 +135,7 @@ public class VTNormalizer extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	    }
 
 	  }
-	  VerticalTable newVT=new VerticalTable();
-
-	  newVT.setInternal(newColumns);
+	  Table newVT=TableFactory.createTable(newColumns);
 
 	  pushOutput(newVT, 0);
 

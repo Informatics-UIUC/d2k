@@ -2,11 +2,11 @@
 package ncsa.d2k.modules.core.optimize.ga;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
-	Converts the population to a vertical table where each column is an attribute, objective value,
+	Converts the population to a table where each column is an attribute, objective value,
 	or fitness.
 */
 public class PopulationToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule {
@@ -50,7 +50,7 @@ public class PopulationToVT extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -60,7 +60,7 @@ public class PopulationToVT extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Objectives To VT\">    <Text>This module converts a GA populations objective values into a vertical table so that it can be plotted. </Text>  </Info></D2K>";
+		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Objectives To VT\">    <Text>This module converts a GA populations objective values into a table so that it can be plotted. </Text>  </Info></D2K>";
 
 	}
 

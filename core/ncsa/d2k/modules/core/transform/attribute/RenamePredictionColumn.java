@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /*
 	Renames the first prediction column in a prediction
 	table to the value given in the properties
@@ -65,7 +65,7 @@ public class RenamePredictionColumn extends ComputeModule
 		return "Rename Prediction Column";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.util.datatype.PredictionTable"};
+		String[] s= {"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
 		return s;
 	}
 
@@ -91,7 +91,7 @@ public class RenamePredictionColumn extends ComputeModule
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.util.datatype.PredictionTable"};
+		String[] s={"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
 		return s;
 	}
 

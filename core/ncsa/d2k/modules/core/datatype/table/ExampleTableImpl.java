@@ -2,12 +2,14 @@ package ncsa.d2k.modules.core.datatype.table;
 
 import java.io.*;
 import java.util.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.modules.*;
 
 /**
  * A default implementation of ExampleTable.
  */
 public class ExampleTableImpl extends TableImpl implements ExampleTable {
+
+	static final long serialVersionUID = -5554592175150224719L;
 
     /** the indexes of the records in the various training sets. */
     protected int trainSet[];
@@ -274,9 +276,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the int in the table at (testSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public int getTestOutputInt (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getInt(testSet[row]);
+        return  columns[outputColumns[column]].getInt(testSet[row]);
     }
 
     /**
@@ -284,9 +287,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the short in the table at (testSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public short getTestOutputShort (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getShort(testSet[row]);
+        return  columns[outputColumns[column]].getShort(testSet[row]);
     }
 
     /**
@@ -294,9 +298,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the long in the table at (testSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public long getTestOutputLong (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getLong(testSet[row]);
+        return  columns[outputColumns[column]].getLong(testSet[row]);
     }
 
     /**
@@ -304,9 +309,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the float in the table at (testSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public float getTestOutputFloat (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getFloat(testSet[row]);
+        return  columns[outputColumns[column]].getFloat(testSet[row]);
     }
 
     /**
@@ -314,9 +320,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the double in the table at (testSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public double getTestOutputDouble (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getDouble(testSet[row]);
+        return  columns[outputColumns[column]].getDouble(testSet[row]);
     }
 
     /**
@@ -324,9 +331,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the String in the table at (testSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public String getTestOutputString (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getString(testSet[row]);
+        return  columns[outputColumns[column]].getString(testSet[row]);
     }
 
     /**
@@ -334,9 +342,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the value in the table at (testSet[row], outputColumns[column]) as a byte[]
-     /
+	 * @deprecated Use TestTable
+     */
     public byte[] getTestOutputBytes (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getBytes(testSet[row]);
+        return  columns[outputColumns[column]].getBytes(testSet[row]);
     }
 
     /**
@@ -344,9 +353,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the value in the table at (testSet[row], outputColumns[column]) as a char[]
-     /
+	 * @deprecated Use TestTable
+     */
     public char[] getTestOutputChars (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getChars(testSet[row]);
+        return  columns[outputColumns[column]].getChars(testSet[row]);
     }
 
     /**
@@ -354,9 +364,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the boolean in the table at (testSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public boolean getTestOutputBoolean (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getBoolean(testSet[row]);
+        return  columns[outputColumns[column]].getBoolean(testSet[row]);
     }
 
     /**
@@ -364,9 +375,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the int in the table at (testSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public int getTestInputInt (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getInt(testSet[row]);
+        return  columns[inputColumns[column]].getInt(testSet[row]);
     }
 
     /**
@@ -374,9 +386,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the short in the table at (testSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public short getTestInputShort (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getShort(testSet[row]);
+        return  columns[inputColumns[column]].getShort(testSet[row]);
     }
 
     /**
@@ -384,9 +397,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the long in the table at (testSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public long getTestInputLong (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getLong(testSet[row]);
+        return  columns[inputColumns[column]].getLong(testSet[row]);
     }
 
     /**
@@ -394,9 +408,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the float in the table at (testSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public float getTestInputFloat (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getFloat(testSet[row]);
+        return  columns[inputColumns[column]].getFloat(testSet[row]);
     }
 
     /**
@@ -404,9 +419,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the double in the table at (testSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public double getTestInputDouble (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getDouble(testSet[row]);
+        return  columns[inputColumns[column]].getDouble(testSet[row]);
     }
 
     /**
@@ -414,9 +430,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the String in the table at (testSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public String getTestInputString (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getString(testSet[row]);
+        return  columns[inputColumns[column]].getString(testSet[row]);
     }
 
     /**
@@ -424,9 +441,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the value in the table at (testSet[row], inputColumns[column]) as a byte[]
-     /
+	 * @deprecated Use TestTable
+     */
     public byte[] getTestInputBytes (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getBytes(testSet[row]);
+        return  columns[inputColumns[column]].getBytes(testSet[row]);
     }
 
     /**
@@ -434,9 +452,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the value in the table at (testSet[row], inputColumns[column]) as a char[]
-     /
+	 * @deprecated Use TestTable
+     */
     public char[] getTestInputChars (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getChars(testSet[row]);
+        return  columns[inputColumns[column]].getChars(testSet[row]);
     }
 
     /**
@@ -444,9 +463,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the boolean in the table at (testSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TestTable
+     */
     public boolean getTestInputBoolean (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getBoolean(testSet[row]);
+        return  columns[inputColumns[column]].getBoolean(testSet[row]);
     }
 
     /**
@@ -454,9 +474,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the int in the table at (trainSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public int getTrainOutputInt (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getInt(trainSet[row]);
+        return  columns[outputColumns[column]].getInt(trainSet[row]);
     }
 
     /**
@@ -464,9 +485,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the short in the table at (trainSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public short getTrainOutputShort (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getShort(trainSet[row]);
+        return columns[outputColumns[column]].getShort(trainSet[row]);
     }
 
     /**
@@ -474,9 +496,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the long in the table at (trainSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public long getTrainOutputLong (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getLong(trainSet[row]);
+        return  columns[outputColumns[column]].getLong(trainSet[row]);
     }
 
     /**
@@ -484,9 +507,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the float in the table at (trainSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public float getTrainOutputFloat (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getFloat(trainSet[row]);
+        return  columns[outputColumns[column]].getFloat(trainSet[row]);
     }
 
     /**
@@ -494,9 +518,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the double in the table at (trainSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public double getTrainOutputDouble (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getDouble(trainSet[row]);
+        return  columns[outputColumns[column]].getDouble(trainSet[row]);
     }
 
     /**
@@ -504,9 +529,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the String in the table at (trainSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public String getTrainOutputString (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getString(trainSet[row]);
+        return  columns[outputColumns[column]].getString(trainSet[row]);
     }
 
     /**
@@ -514,9 +540,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the value in the table at (trainSet[row], outputColumns[column]) as a byte[]
-     /
+	 * @deprecated Use TrainTable
+     */
     public byte[] getTrainOutputBytes (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getBytes(trainSet[row]);
+        return  columns[outputColumns[column]].getBytes(trainSet[row]);
     }
 
     /**
@@ -524,9 +551,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the value in the table at (trainSet[row], outputColumns[column]) as a char[]
-     /
+	 * @deprecated Use TrainTable
+     */
     public char[] getTrainOutputChars (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getChars(trainSet[row]);
+        return  columns[outputColumns[column]].getChars(trainSet[row]);
     }
 
     /**
@@ -534,9 +562,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the boolean in the table at (trainSet[row], outputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public boolean getTrainOutputBoolean (int row, int column) {
-        return  ((SimpleColumn)columns[outputColumns[column]]).getBoolean(trainSet[row]);
+        return  columns[outputColumns[column]].getBoolean(trainSet[row]);
     }
 
     /**
@@ -544,9 +573,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the int in the table at (trainSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public int getTrainInputInt (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getInt(trainSet[row]);
+        return  columns[inputColumns[column]].getInt(trainSet[row]);
     }
 
     /**
@@ -554,9 +584,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the short in the table at (trainSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public short getTrainInputShort (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getShort(trainSet[row]);
+        return  columns[inputColumns[column]].getShort(trainSet[row]);
     }
 
     /**
@@ -564,9 +595,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the long in the table at (trainSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public long getTrainInputLong (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getLong(trainSet[row]);
+        return  columns[inputColumns[column]].getLong(trainSet[row]);
     }
 
     /**
@@ -574,9 +606,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the float in the table at (trainSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public float getTrainInputFloat (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getFloat(trainSet[row]);
+        return  columns[inputColumns[column]].getFloat(trainSet[row]);
     }
 
     /**
@@ -584,9 +617,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the double in the table at (trainSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public double getTrainInputDouble (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getDouble(trainSet[row]);
+        return  columns[inputColumns[column]].getDouble(trainSet[row]);
     }
 
     /**
@@ -594,9 +628,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the String in the table at (trainSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public String getTrainInputString (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getString(trainSet[row]);
+        return  columns[inputColumns[column]].getString(trainSet[row]);
     }
 
     /**
@@ -604,9 +639,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the value in the table at (trainSet[row], inputColumns[column]) as a byte[]
-     /
+	 * @deprecated Use TrainTable
+     */
     public byte[] getTrainInputBytes (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getBytes(trainSet[row]);
+        return  columns[inputColumns[column]].getBytes(trainSet[row]);
     }
 
     /**
@@ -614,9 +650,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the value in the table at (trainSet[row], inputColumns[column]) as a char[]
-     /
+	 * @deprecated Use TrainTable
+     */
     public char[] getTrainInputChars (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getChars(trainSet[row]);
+        return  columns[inputColumns[column]].getChars(trainSet[row]);
     }
 
     /**
@@ -624,9 +661,10 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the boolean in the table at (trainSet[row], inputColumns[column])
-     /
+	 * @deprecated Use TrainTable
+     */
     public boolean getTrainInputBoolean (int row, int column) {
-        return  ((SimpleColumn)columns[inputColumns[column]]).getBoolean(trainSet[row]);
+        return  columns[inputColumns[column]].getBoolean(trainSet[row]);
     }
 
     //////////////// Access the test data ///////////////////

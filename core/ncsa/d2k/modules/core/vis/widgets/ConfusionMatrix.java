@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.util.*;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	A simple ConfusionMatrix.  Implemented as a JTable inside a JScrollPane.

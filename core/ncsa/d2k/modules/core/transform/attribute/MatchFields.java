@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	MatchFields.java
 
@@ -32,7 +32,8 @@ public class MatchFields extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.ExampleTable","ncsa.d2k.util.datatype.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
+			"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -54,7 +55,7 @@ public class MatchFields extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 
 	}
@@ -74,7 +75,7 @@ public class MatchFields extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		ExampleTable et=(ExampleTable)pullInput(0);
 		Table tt=(Table)pullInput(1);
 
-		ExampleTable et2=new ExampleTable(tt);
+		ExampleTable et2=TableFactory.createExampleTable(tt);
 
 		int[] ins=new int[et.getNumInputFeatures()];
 		int[] outs=new int[et.getNumOutputFeatures()];

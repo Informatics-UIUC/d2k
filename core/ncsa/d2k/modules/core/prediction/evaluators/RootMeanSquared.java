@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.prediction.evaluators;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.infrastructure.modules.ComputeModule;
+import ncsa.d2k.modules.TransformationModule;
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.util.ArrayList;
 import java.io.Serializable;
 /**
@@ -9,11 +10,11 @@ import java.io.Serializable;
 	 this module computes the rms for each predicted feature independently.
 	every outputfeature gets a row with 'n' errors, one for each crossValidation
 	generated model or just 1 if crossValidate is false
-	
-	@author Peter Groves 
+
+	@author Peter Groves
 	7/30/01
-	
-	
+
+
 */
 public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModule implements Serializable
 {
@@ -37,7 +38,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 	*/
 	public String[] getInputTypes () {
 		String [] types =  {
-			"ncsa.d2k.util.datatype.TestTable",
+			"ncsa.d2k.modules.core.datatype.table.TestTable",
 			"java.lang.Integer"};
 		return types;
 	}
@@ -61,7 +62,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 	*/
 	public String[] getOutputTypes () {
 		String [] types =  {
-			"ncsa.d2k.util.datatype.VerticalTable",
+			"ncsa.d2k.modules.core.datatype.table.Table",
 			"java.lang.Double"};
 		return types;
 	}
@@ -79,7 +80,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 							" if false, will just wait for one and not wait for an Integer to be passed into input(1)"+
 							". printResults - will print each target/prediction pair to System.out";
 
-							
+
 
 	public boolean untransformFirst=true;
 
@@ -93,7 +94,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 	public boolean crossValidate=true;
 	public boolean getCrossValidate(){
 		return crossValidate;
-	}	
+	}
 	public void setCrossValidate(boolean b){
 		crossValidate=b;
 	}
@@ -104,7 +105,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 	public void setPrintResults(boolean b){
 		printResults=b;
 		}
-	
+
 	public boolean isReady(){
 		if((!crossValidate)&&(inputFlags[0]>0)){
 			return true;
@@ -116,14 +117,14 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 	}
 	public void beginExecution(){
 		tts=null;
-		
+
 	}
 
 	protected TestTable[] tts;
-	protected VerticalTable metrics;
-	
+	protected Table metrics;
+
 	int n=1;
-	
+
 	protected void setupTestTables(){
 		if(crossValidate){
 			n=((Integer)pullInput(1)).intValue();
@@ -135,12 +136,12 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 	}
 	protected void setupMetrics(){
 		int lastIndex=n-1;
-		metrics=new VerticalTable(tts[lastIndex].getNumOutputFeatures());
+		metrics= TableFactory.createTable(tts[lastIndex].getNumOutputFeatures());
 		for(int i=0; i<metrics.getNumColumns();i++){
 			metrics.setColumn(new DoubleColumn(n), i);
 			metrics.setColumnLabel(tts[lastIndex].getColumnLabel(tts[lastIndex].getOutputFeatures()[i]), i);
 		}
-	}	
+	}
 
 	protected void untransformTable(TestTable tt){
 		ArrayList transforms=tt.getTransformations();
@@ -149,21 +150,21 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 		//System.out.println(origSize);
 		for(int i=origSize; i>=0; i--){
 			tt=(TestTable)((TransformationModule)(transforms.get(i))).untransform(tt);
-		}	
+		}
 	}
 	protected void computeError(TestTable tt, int m){
 		int rows = tt.getNumRows ();
 		int columns = tt.getNumOutputFeatures ();
-		
+
 		//store an rms error for each output feature, make sure to initialize to zero
 		double[] rmse = new double[columns];
 		for (int i=0; i<rmse.length; i++){
 			rmse[i]=0;
 		}
-			
+
 		int[] ttOuts=tt.getOutputFeatures();
 		int[] ttPreds=tt.getPredictionSet();
-			
+
 		for (int j = 0 ; j < columns ; j++){
 			for (int i = 0 ; i < rows ; i++){
 				double row_error;
@@ -177,7 +178,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 				rmse[j] += row_error;
 			}
 		}
-		
+
 		for (int j=0; j<rmse.length; j++){
 			rmse[j] = rmse[j] / rows;
 			rmse[j]=Math.sqrt(rmse[j]);
@@ -186,11 +187,11 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 		}
 	}
 
-	/* 
+	/*
 		finds the average of the numbers in the first column
 		of a tabl
 	*/
-	public Double average(VerticalTable vt){
+	public Double average(Table vt){
 		double avg=0;
 		for(int i=0;i<vt.getNumRows(); i++){
 			avg+=vt.getDouble(i, 0);
@@ -198,13 +199,13 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 		avg/=vt.getNumRows();
 		return new Double(avg);
 	}
-			
+
 
 	/*
 		does amazing things, really
-	*/	
+	*/
 	public void doit () throws Exception{
-	
+
 		if(tts==null){
 			setupTestTables();
 		}
@@ -213,25 +214,25 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 			tts [n-1] = (TestTable) table;
 		}else {
 			tts [n-1] = (TestTable) ((ExampleTable)table).getTestTable ();
-		}		
-		
-		//if this is the first run (we're putting the testTable in the last index of tts)
-		//we need to have one TestTable in so that we can get outputFeature names 
-		if(tts.length==n){
-			setupMetrics();	
 		}
-		//decrement n 		
+
+		//if this is the first run (we're putting the testTable in the last index of tts)
+		//we need to have one TestTable in so that we can get outputFeature names
+		if(tts.length==n){
+			setupMetrics();
+		}
+		//decrement n
 		n--;
 		//to be done the last fire
 		if(n==0){
 			for(int m=0; m<tts.length; m++){
 				TestTable tt=tts[m];
-				
+
 				if (untransformFirst){
 					untransformTable(tt);
 				}
 				// Now we have the predicted values, compare them to the real values.
-				
+
 				computeError(tt, m);
 			}
 			pushOutput(metrics, 0);
@@ -239,7 +240,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 			tts=null;
 
 		}
-		
+
 	}
 }
 

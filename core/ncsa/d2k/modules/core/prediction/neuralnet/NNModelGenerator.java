@@ -1,9 +1,11 @@
 package ncsa.d2k.modules.core.prediction.neuralnet;
 
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.infrastructure.modules.ModelGeneratorModule;
+import ncsa.d2k.infrastructure.modules.ModelModule;
 import java.io.*;
 import java.util.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.PredictionModelModule;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.activationFunctions.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.updateFunctions.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.learnFunctions.*;
@@ -50,7 +52,7 @@ public class NNModelGenerator
 	}
 	boolean bug2=true;
 
-	/*Row Indices for the Vertical Tables that (1) paramRangeTable- output
+	/*Row Indices for the Tables that (1) paramRangeTable- output
 	 the range of the variables for an optimizer (2) param-input the actual
 	 values that this model should use
 	 */
@@ -164,7 +166,7 @@ public class NNModelGenerator
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.util.datatype.TrainTable",
+			"ncsa.d2k.modules.core.datatype.table.TrainTable",
 			"ncsa.d2k.modules.core.optimize.util.MixedSolution"
 			};
 		return types;
@@ -245,7 +247,7 @@ public class NNModelGenerator
 
 
 	*/
-	public final VerticalTable weights;
+	public final Table weights;
 
 	/*the weighted sums for each node (before activation),
 	  column # corresponds to layer (outputs
@@ -254,19 +256,19 @@ public class NNModelGenerator
 	  because it should never be used, just there for that
 	  indexing thing again
 	*/
-	private final VerticalTable sums;
+	private final Table sums;
 
 	/*the activation function values for all nodes, including outputs
 	  same mapping as 'sums'. row zero is set to the threshold/bias value
 	  (normally -1)
 	*/
 
-	private final  VerticalTable activations;
+	private final  Table activations;
 
 	/*The 'deltas', or error distribution values, for each node
 	  same mapping as 'sums'
 	*/
-	private final VerticalTable deltas;
+	private final Table deltas;
 
 	/* The parameters
 	*/
@@ -321,7 +323,7 @@ public class NNModelGenerator
 	  because its weights' arrays are getting written over
 
 	  @param d= the data set to train on
-	  @param p= a vertical table with the parameters to use
+	  @param p= a table with the parameters to use
     ****************************************************************************************/
 
     public NNModel(TrainTable d, double[] p, boolean transform) {
@@ -335,7 +337,7 @@ public class NNModelGenerator
 		//initialize sums VT
 		//////////////////////
 
-		sums=new VerticalTable(/*(int)params.getDouble(HIDDEN_LAYERS, 1)+1*/);
+		sums= TableFactory.createTable(/*(int)params.getDouble(HIDDEN_LAYERS, 1)+1*/);
 
 
 		/*starts at NODES_IN_LAYER_01 and goes through every NODES_IN_LAYER_XX that HIDDEN_LAYERS indicates
@@ -355,7 +357,7 @@ public class NNModelGenerator
 		//initialize weights VT
 		//////////////////////
 
-		weights=new VerticalTable((int)params[HIDDEN_LAYERS]+1);
+		weights= TableFactory.createTable((int)params[HIDDEN_LAYERS]+1);
 		int numWeightCols=0;
 
 		DoubleColumn tempColumn;
@@ -406,16 +408,12 @@ public class NNModelGenerator
 			}
 
 		}
-		for (int i=0; i<weights.getNumColumns(); i++){
-			weights.getColumn(i).setType(null);
-		}
-
 		randomizeWeights();
 
 
 		//these just need to be the right size, none of the values will be used
-		deltas=sums.getCopy();
-		activations=sums.getCopy();
+		deltas=sums.copy();
+		activations=sums.copy();
 		//printWeights();
  		setFiller();
 		//printWeights();
@@ -451,7 +449,7 @@ public class NNModelGenerator
 		}
 		//now that we know what activation function, we can scale the outputs
 		if(doTransform){
-			data=new ExampleTable(data);
+			data= TableFactory.createExampleTable(data);
 			transform(data);
 		}
 
@@ -527,7 +525,7 @@ public class NNModelGenerator
 		data=value;
 
 		//make a VT to put the predictions in, a column for every output feature
-		VerticalTable predictedResults=new VerticalTable(outputNames.length);
+		Table predictedResults= TableFactory.createTable(outputNames.length);
 		for(int i=0; i<outputNames.length; i++){
 			//make sure to get the real length, not just the number of test examples
 			predictedResults.setColumn(new DoubleColumn(data.getNumRows()), i);
@@ -557,7 +555,7 @@ public class NNModelGenerator
 			return (TestTable)data;
 		}
 
-		PredictionTable predTable=new PredictionTable(data);
+		PredictionTable predTable= TableFactory.createPredictionTable(data);
 
 		//if there are no spots for pred columns
 		if(predTable.getNumOutputFeatures()==0){
@@ -589,19 +587,19 @@ public class NNModelGenerator
 
 	//these are here in case you want to use an old model as a starting point
 	//also so the update/NNlearner can get to them
-	public VerticalTable getWeights(){
+	public Table getWeights(){
 		return weights;
 	}
 
-	public VerticalTable getSums(){
+	public Table getSums(){
 		return sums;
 	}
 
-	public VerticalTable getActivations(){
+	public Table getActivations(){
 		return activations;
 	}
 
-	public VerticalTable getDeltas(){
+	public Table getDeltas(){
 		return deltas;
 	}
 
@@ -626,7 +624,7 @@ public class NNModelGenerator
 					if that's what you want to be looked at
 	*/
 
-	public void compute(int e, VerticalTable results){
+	public void compute(int e, Table results){
 
 
 		//finding first hidden layer activations
@@ -752,7 +750,7 @@ public class NNModelGenerator
 		System.out.println("Acts:");
 		printVT(activations);
 	}
-	private void printVT(VerticalTable vt){
+	private void printVT(Table vt){
 		for(int i=0; i<vt.getNumColumns(); i++){
 			System.out.print("col "+i+":");
 			for(int j=0; j<vt.getColumn(i).getCapacity(); j++){
@@ -849,7 +847,7 @@ public class NNModelGenerator
 
 	}
 
-	private void unTransform(VerticalTable vt){
+	private void unTransform(Table vt){
 		final int outputCount=transformOutputInfo.length;
 		final int rows=vt.getColumn(0).getCapacity();
 		double d;
@@ -877,7 +875,7 @@ public class NNModelGenerator
 		*/
 		public String []getInputTypes() {
 			String []inputs = {
-				"ncsa.d2k.util.datatype.ExampleTable"
+				"ncsa.d2k.modules.core.datatype.table.ExampleTable"
 };
 
 			return inputs;
@@ -890,7 +888,7 @@ public class NNModelGenerator
 			@returns the output types
 		*/
 		public String []getOutputTypes() {
-			String []out = {"ncsa.d2k.util.datatype.VerticalTable"};
+			String []out = {"ncsa.d2k.modules.core.datatype.table.Table"};
 			return out;
 		}
 
@@ -920,7 +918,7 @@ public class NNModelGenerator
 		public String getOutputInfo(int i) {
 			switch(i) {
 				case(0):
-					return "The result Vertical Table with each output being a column with an entry for each example in the input data's test set."
+					return "The result Table with each output being a column with an entry for each example in the input data's test set."
 						+"IF the input table was a TestTable, this output will be the same TestTable with the PredictionSet columns filled in";
 
 				default:

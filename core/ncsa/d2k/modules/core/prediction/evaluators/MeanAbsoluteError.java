@@ -1,16 +1,16 @@
 package ncsa.d2k.modules.core.prediction.evaluators;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	MeanAbsoluteError.java
 
-	For every output feature, sums the absolute errors, divides by numTestExamples, and 
+	For every output feature, sums the absolute errors, divides by numTestExamples, and
 	outputs a VT with the output feature names and corresponding errors
 
-	@author Peter Groves 
+	@author Peter Groves
 	7/30/01
-	
-	
+
+
 */
 public class MeanAbsoluteError extends ncsa.d2k.modules.core.prediction.evaluators.RootMeanSquared
 {
@@ -26,7 +26,7 @@ public class MeanAbsoluteError extends ncsa.d2k.modules.core.prediction.evaluato
 			default: return "No such output";
 		}
 	}
-	
+
 	/**
 		This method returns the description of the module.
 		@return the description of the module.
@@ -41,7 +41,7 @@ public class MeanAbsoluteError extends ncsa.d2k.modules.core.prediction.evaluato
 	protected void computeError(TestTable tt, int m){
 		int rows = tt.getNumTestExamples ();
 		int columns = tt.getNumOutputFeatures ();
-		
+
 		//store an mabs error for each output feature, make sure to initialize to zero
 		double[] mabse = new double[columns];
 		for (int i=0; i<mabse.length; i++){
@@ -49,7 +49,7 @@ public class MeanAbsoluteError extends ncsa.d2k.modules.core.prediction.evaluato
 		}
 		int[] ttOuts=tt.getOutputFeatures();
 		int[] ttPreds=tt.getPredictionSet();
-		
+
 		for (int j = 0 ; j < columns ; j++){
 			for (int i = 0 ; i < rows ; i++){
 				double row_error;
@@ -62,7 +62,7 @@ public class MeanAbsoluteError extends ncsa.d2k.modules.core.prediction.evaluato
 				mabse[j] += row_error;
 			}
 		}
-		
+
 		for (int j=0; j<mabse.length; j++){
 			mabse[j] = mabse[j] / rows;
 			metrics.setDouble(mabse[j], m, j);

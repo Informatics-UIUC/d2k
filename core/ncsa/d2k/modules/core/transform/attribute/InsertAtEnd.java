@@ -8,8 +8,8 @@ import ncsa.d2k.controller.userviews.widgits.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	InsertAtEnd.java
 */
@@ -33,7 +33,7 @@ public class InsertAtEnd extends ncsa.d2k.infrastructure.modules.UIModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -55,7 +55,7 @@ public class InsertAtEnd extends ncsa.d2k.infrastructure.modules.UIModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}
@@ -75,7 +75,7 @@ public class InsertAtEnd extends ncsa.d2k.infrastructure.modules.UIModule
 	public void doit() throws Exception {
 	}
 
-	public void done(VerticalTable t, int j){
+	public void done(Table t, int j){
 		pushOutput(t,j);
 		viewDone("");
 	}
@@ -107,7 +107,7 @@ public class InsertAtEnd extends ncsa.d2k.infrastructure.modules.UIModule
 class Viewer extends ncsa.d2k.controller.userviews.swing.JUserPane implements ActionListener{
 
 	InsertAtEnd module;
-	VerticalTable table;
+	Table table;
 	JPanel panel;
 	JComboBox box;
 	JButton done;
@@ -138,7 +138,7 @@ class Viewer extends ncsa.d2k.controller.userviews.swing.JUserPane implements Ac
 		@param index the index of the input that has been received.
 	*/
 	public void setInput(Object o, int index) {
-		table = (VerticalTable) o;
+		table = (Table) o;
 		int numCol = table.getNumColumns();
 		String[] labels = new String[numCol];
 		for (int i=0; i<numCol; i++){

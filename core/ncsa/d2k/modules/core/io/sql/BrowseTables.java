@@ -16,7 +16,7 @@ import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.sql.*;
 import java.util.*;

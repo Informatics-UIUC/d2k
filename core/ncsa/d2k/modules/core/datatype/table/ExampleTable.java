@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.datatype.table;
 
 import java.util.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.modules.TransformationModule;
 
 /**
  This is a table with some additional features designed to support
@@ -25,6 +25,8 @@ import ncsa.d2k.infrastructure.modules.*;
  table.
  */
 public interface ExampleTable extends Table {
+
+	static final long serialVersionUID = 6990739490115785849L;
 
     /////////// Collect the transformations that were performed. /////////
     /**
@@ -125,16 +127,18 @@ public interface ExampleTable extends Table {
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the int in the table at (testSet[row], outputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public int getTestOutputInt (int row, int column);
+    public int getTestOutputInt (int row, int column);
 
     /**
 	 * Get a short from the table at (testSet[row], outputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the short in the table at (testSet[row], outputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public short getTestOutputShort (int row, int column);
+    public short getTestOutputShort (int row, int column);
 
     /**
 	 * Get a long from the table at (testSet[row], outputColumns[column])
@@ -142,271 +146,304 @@ public interface ExampleTable extends Table {
 	 * @param column the index into outputColumns
 	 * @return the long in the table at (testSet[row], outputColumns[column])
      */
-    //public long getTestOutputLong (int row, int column);
+    public long getTestOutputLong (int row, int column);
 
     /**
 	 * Get a float from the table at (testSet[row], outputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the float in the table at (testSet[row], outputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public float getTestOutputFloat (int row, int column);
+    public float getTestOutputFloat (int row, int column);
 
     /**
 	 * Get a double from the table at (testSet[row], outputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the double in the table at (testSet[row], outputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public double getTestOutputDouble (int row, int column);
+    public double getTestOutputDouble (int row, int column);
 
     /**
 	 * Get a String from the table at (testSet[row], outputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the String in the table at (testSet[row], outputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public String getTestOutputString (int row, int column);
+    public String getTestOutputString (int row, int column);
 
     /**
 	 * Get a value from the table at (testSet[row], outputColumns[column]) as a byte[]
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the value in the table at (testSet[row], outputColumns[column]) as a byte[]
+	 * @deprecated Use TestTable
      */
-    //public byte[] getTestOutputBytes (int row, int column);
+    public byte[] getTestOutputBytes (int row, int column);
 
     /**
 	 * Get a value from the table at (testSet[row], outputColumns[column]) as a char[]
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the value in the table at (testSet[row], outputColumns[column]) as a char[]
+	 * @deprecated Use TestTable
      */
-    //public char[] getTestOutputChars (int row, int column);
+    public char[] getTestOutputChars (int row, int column);
 
     /**
 	 * Get a boolean from the table at (testSet[row], outputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into outputColumns
 	 * @return the boolean in the table at (testSet[row], outputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public boolean getTestOutputBoolean (int row, int column);
+    public boolean getTestOutputBoolean (int row, int column);
 
     /**
 	 * Get an int from the table at (testSet[row], inputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the int in the table at (testSet[row], inputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public int getTestInputInt (int row, int column);
+    public int getTestInputInt (int row, int column);
 
     /**
 	 * Get a short from the table at (testSet[row], inputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the short in the table at (testSet[row], inputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public short getTestInputShort (int row, int column);
+    public short getTestInputShort (int row, int column);
 
     /**
 	 * Get a long from the table at (testSet[row], inputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the long in the table at (testSet[row], inputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public long getTestInputLong (int row, int column);
+    public long getTestInputLong (int row, int column);
 
     /**
 	 * Get a flaot from the table at (testSet[row], inputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the float in the table at (testSet[row], inputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public float getTestInputFloat (int row, int column);
+    public float getTestInputFloat (int row, int column);
 
     /**
 	 * Get a double from the table at (testSet[row], inputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the double in the table at (testSet[row], inputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public double getTestInputDouble (int row, int column);
+    public double getTestInputDouble (int row, int column);
 
     /**
 	 * Get a String from the table at (testSet[row], inputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the String in the table at (testSet[row], inputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public String getTestInputString (int row, int column);
+    public String getTestInputString (int row, int column);
 
     /**
 	 * Get a value from the table at (testSet[row], inputColumns[column]) as a byte[]
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the value in the table at (testSet[row], inputColumns[column]) as a byte[]
+	 * @deprecated Use TestTable
      */
-    //public byte[] getTestInputBytes (int row, int column);
+    public byte[] getTestInputBytes (int row, int column);
 
     /**
 	 * Get a value from the table at (testSet[row], inputColumns[column]) as a char[]
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the value in the table at (testSet[row], inputColumns[column]) as a char[]
+	 * @deprecated Use TestTable
      */
-    //public char[] getTestInputChars (int row, int column);
+    public char[] getTestInputChars (int row, int column);
 
     /**
 	 * Get a boolean from the table at (testSet[row], inputColumns[column])
 	 * @param row the row of the test set
 	 * @param column the index into inputColumns
 	 * @return the boolean in the table at (testSet[row], inputColumns[column])
+	 * @deprecated Use TestTable
      */
-    //public boolean getTestInputBoolean (int row, int column);
+    public boolean getTestInputBoolean (int row, int column);
 
     /**
 	 * Get an int from the table at (trainSet[row], outputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the int in the table at (trainSet[row], outputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public int getTrainOutputInt (int row, int column);
+    public int getTrainOutputInt (int row, int column);
 
     /**
 	 * Get a short from the table at (trainSet[row], outputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the short in the table at (trainSet[row], outputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public short getTrainOutputShort (int row, int column);
+    public short getTrainOutputShort (int row, int column);
 
     /**
 	 * Get a long from the table at (trainSet[row], outputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the long in the table at (trainSet[row], outputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public long getTrainOutputLong (int row, int column);
+    public long getTrainOutputLong (int row, int column);
 
     /**
 	 * Get a float from the table at (trainSet[row], outputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the float in the table at (trainSet[row], outputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public float getTrainOutputFloat (int row, int column);
+    public float getTrainOutputFloat (int row, int column);
 
     /**
 	 * Get a double from the table at (trainSet[row], outputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the double in the table at (trainSet[row], outputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public double getTrainOutputDouble (int row, int column);
+    public double getTrainOutputDouble (int row, int column);
 
     /**
 	 * Get a String from the table at (trainSet[row], outputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the String in the table at (trainSet[row], outputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public String getTrainOutputString (int row, int column);
+    public String getTrainOutputString (int row, int column);
 
     /**
 	 * Get a value from the table at (trainSet[row], outputColumns[column]) as a byte[]
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the value in the table at (trainSet[row], outputColumns[column]) as a byte[]
+	 * @deprecated Use TrainTable
      */
-    //public byte[] getTrainOutputBytes (int row, int column);
+    public byte[] getTrainOutputBytes (int row, int column);
 
     /**
 	 * Get a value from the table at (trainSet[row], outputColumns[column]) as a char[]
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the value in the table at (trainSet[row], outputColumns[column]) as a char[]
+	 * @deprecated Use TrainTable
      */
-    //public char[] getTrainOutputChars (int row, int column);
+    public char[] getTrainOutputChars (int row, int column);
 
     /**
 	 * Get a boolean from the table at (trainSet[row], outputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into outputColumns
 	 * @return the boolean in the table at (trainSet[row], outputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public boolean getTrainOutputBoolean (int row, int column);
+    public boolean getTrainOutputBoolean (int row, int column);
 
     /**
 	 * Get an int from the table at (trainSet[row], inputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the int in the table at (trainSet[row], inputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public int getTrainInputInt (int row, int column);
+    public int getTrainInputInt (int row, int column);
 
     /**
 	 * Get a short from the table at (trainSet[row], inputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the short in the table at (trainSet[row], inputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public short getTrainInputShort (int row, int column);
+    public short getTrainInputShort (int row, int column);
 
     /**
 	 * Get a long from the table at (trainSet[row], inputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the long in the table at (trainSet[row], inputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public long getTrainInputLong (int row, int column);
+    public long getTrainInputLong (int row, int column);
 
     /**
 	 * Get a float from the table at (trainSet[row], inputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the float in the table at (trainSet[row], inputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public float getTrainInputFloat (int row, int column);
+    public float getTrainInputFloat (int row, int column);
 
     /**
 	 * Get a double from the table at (trainSet[row], inputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the double in the table at (trainSet[row], inputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public double getTrainInputDouble (int row, int column);
+    public double getTrainInputDouble (int row, int column);
 
     /**
 	 * Get a String from the table at (trainSet[row], inputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the String in the table at (trainSet[row], inputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public String getTrainInputString (int row, int column);
+    public String getTrainInputString (int row, int column);
 
     /**
 	 * Get a value from the table at (trainSet[row], inputColumns[column]) as a byte[]
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the value in the table at (trainSet[row], inputColumns[column]) as a byte[]
+	 * @deprecated Use TrainTable
      */
-    //public byte[] getTrainInputBytes (int row, int column);
+    public byte[] getTrainInputBytes (int row, int column);
 
     /**
 	 * Get a value from the table at (trainSet[row], inputColumns[column]) as a char[]
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the value in the table at (trainSet[row], inputColumns[column]) as a char[]
+	 * @deprecated Use TrainTable
      */
-    //public char[] getTrainInputChars (int row, int column);
+    public char[] getTrainInputChars (int row, int column);
 
     /**
 	 * Get a boolean from the table at (trainSet[row], inputColumns[column])
 	 * @param row the row of the train set
 	 * @param column the index into intputColumns
 	 * @return the boolean in the table at (trainSet[row], inputColumns[column])
+	 * @deprecated Use TrainTable
      */
-    //public boolean getTrainInputBoolean (int row, int column);
+    public boolean getTrainInputBoolean (int row, int column);
 
     //////////////// Access the test data ///////////////////
     /**

@@ -3,7 +3,6 @@ package ncsa.d2k.modules.core.transform.attribute;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.util.datatype.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 
@@ -15,7 +14,7 @@ import java.awt.event.*;
 import java.text.NumberFormat;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.datatype.*;
-
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
    SQLDefineBins presents a GUI to allow the use to enter classifications for
    a data set.
@@ -48,7 +47,7 @@ public class SQLDefineBins extends DefineBins {
     public String[] getInputTypes() {
 	String []in = {	"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
 			"java.lang.String",
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 	return in;
 	}
 
@@ -59,7 +58,7 @@ public class SQLDefineBins extends DefineBins {
     */
     public String[] getOutputTypes() {
 		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return out;
 	}
 
@@ -417,11 +416,11 @@ public class SQLDefineBins extends DefineBins {
 						JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				SimpleColumn attCol = null;
+				Column attCol = null;
 				for(int i = 0; i < table.getNumColumns(); i++) {
 					Column c = table.getColumn(i);
 					if(c.getLabel().trim() == attName.trim()) {
-						attCol = (SimpleColumn)c;
+						attCol = c;
 						break;
 					}
 				}

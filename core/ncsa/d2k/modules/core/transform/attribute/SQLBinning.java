@@ -1,12 +1,12 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
 
 import java.sql.*;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
    SQLBinningModule.java
    @author David Clutter
@@ -38,7 +38,7 @@ public class SQLBinning extends DataPrepModule implements HasNames {
 	String []in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
                        "java.lang.String",
 		       "ncsa.d2k.modules.core.datatype.BinTree",
-		       "ncsa.d2k.util.datatype.ExampleTable"};
+		       "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 	return in;
     }
 
@@ -49,7 +49,7 @@ public class SQLBinning extends DataPrepModule implements HasNames {
     */
     public String[] getOutputTypes() {
 	String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.util.datatype.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return out;
     }
 

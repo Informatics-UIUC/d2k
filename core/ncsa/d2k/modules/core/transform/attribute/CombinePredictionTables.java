@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.transform.attribute;
 
 import ncsa.d2k.infrastructure.modules.*;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /*
 	takes multiple PredictionTables, puts all the columns
@@ -94,7 +94,7 @@ public class CombinePredictionTables extends ComputeModule
 				internalIndex++;
 			}
 		}
-		master.setInternal(newInternal);
+		master.setColumns(newInternal);
 		return master;
 	}
 	////////////////////////
@@ -114,7 +114,7 @@ public class CombinePredictionTables extends ComputeModule
 		return "Predictions Compiler";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.util.datatype.PredictionTable"};
+		String[] s= {"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
 		return s;
 	}
 
@@ -140,7 +140,7 @@ public class CombinePredictionTables extends ComputeModule
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.util.datatype.PredictionTable"};
+		String[] s={"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
 		return s;
 	}
 

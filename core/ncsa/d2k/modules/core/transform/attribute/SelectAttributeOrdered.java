@@ -10,8 +10,8 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.util.*;
 import java.lang.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	SelectAttributeOrdered.java
 */
@@ -35,7 +35,7 @@ public class SelectAttributeOrdered extends ncsa.d2k.infrastructure.modules.UIMo
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.Table"};
 		return types;
 
 	}
@@ -58,7 +58,7 @@ public class SelectAttributeOrdered extends ncsa.d2k.infrastructure.modules.UIMo
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"[Ljava.lang.String;", "ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"[Ljava.lang.String;", "ncsa.d2k.modules.core.datatype.Table"};
 		return types;
 
 	}
@@ -78,7 +78,7 @@ public class SelectAttributeOrdered extends ncsa.d2k.infrastructure.modules.UIMo
 	public void doit() throws Exception {
 	}
 
-	public void done( String[] arr, VerticalTable t, int j){
+	public void done( String[] arr, Table t, int j){
 		pushOutput(arr, j);
 		pushOutput(t, j+1);
 		viewDone("");
@@ -109,7 +109,7 @@ public class SelectAttributeOrdered extends ncsa.d2k.infrastructure.modules.UIMo
 */
 class SelectUserView extends ncsa.d2k.controller.userviews.UserPane implements ActionListener{
 
-	VerticalTable table;
+	Table table;
 	JPanel panel;
 	JComboBox attBox;
 	JButton done;
@@ -143,7 +143,7 @@ class SelectUserView extends ncsa.d2k.controller.userviews.UserPane implements A
 		@param index the index of the input that has been received.
 	*/
 	public void setInput(Object o, int index) {
-		table = (VerticalTable) o;
+		table = (Table) o;
 		int columns = table.getNumColumns();
 		String[] labels = new String[columns];
 		values = new String[columns];
