@@ -311,8 +311,8 @@ public class NFoldTTables extends ncsa.d2k.core.modules.DataPrepModule {
 		return N;
 	}
 	public void setNumberFolds(int n) throws PropertyVetoException {
-		if (n < 2)
-			throw new PropertyVetoException ("There must be at least 2 folds", null);
+		if (n < 3)
+			throw new PropertyVetoException ("There must be at least 3 folds", null);
 		N = n;
 	}
 
