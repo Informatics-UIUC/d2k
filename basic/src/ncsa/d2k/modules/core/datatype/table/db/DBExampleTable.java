@@ -11,6 +11,8 @@ import ncsa.d2k.modules.core.io.sql.*;
  * <p>Company: </p>
  * @author Sameer Mathur, David Clutter
  * @version 1.0
+ *
+ * @todo: reimplement getSubset.
  */
 
 class DBExampleTable extends DBSubsetTable implements ExampleTable{
@@ -357,6 +359,15 @@ class DBExampleTable extends DBSubsetTable implements ExampleTable{
      public int getNumOutputs(int e) {
          return outputColumns.length;
      }
+
+
+     public Table getSubset(int[] rows) {
+       int[] retValIndices = reSubset(rows);
+
+
+       return new DBExampleTable(this, retValIndices);
+
+      }
 
 
      /**

@@ -262,12 +262,18 @@ public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection){
 
   public int getNumRows(){return subset.length;}
 
+  protected int[] reSubset(int[] rows){
+    int[] retValIndices = new int[Math.min(rows.length, subset.length)];
+     for (int i=0; i<rows.length; i++){
+      if(rows[i] < subset.length)
+        retValIndices[i] = subset[rows[i]];
+     }
+     return retValIndices;
+  }
+
   public Table getSubset(int[] rows) {
-   int[] retValIndices = new int[Math.min(rows.length, subset.length)];
-   for (int i=0; i<rows.length; i++){
-    if(rows[i] < subset.length)
-      retValIndices[i] = subset[rows[i]];
-   }
+   int[] retValIndices = reSubset(rows);
+
 
    return new DBSubsetTable(this, retValIndices);
 

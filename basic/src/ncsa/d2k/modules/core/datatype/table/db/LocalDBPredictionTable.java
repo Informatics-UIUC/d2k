@@ -41,6 +41,18 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
         this(pet, dataSource, null);
     }
 
+    LocalDBPredictionTable(LocalDBPredictionTable orig, int[] _subset){
+      super(orig, _subset);
+      indirection = orig.indirection;
+      newTableHackVariable = orig.newTableHackVariable;
+      num_original_columns = orig.num_original_columns;
+      original = orig.original;
+      prediction = orig.prediction;
+      predictionColumns = orig.predictionColumns;
+      predictionSet = orig.predictionSet;
+
+    }
+
     LocalDBPredictionTable(DBExampleTable pet, DBDataSource dataSource, DBConnection conn) {
         super(pet, dataSource, conn);
 
@@ -145,6 +157,15 @@ public Row getRow(){
                                   this, subset, indirection, prediction);
 
     }
+
+
+     public Table getSubset(int[] rows) {
+       int[] retValIndices = reSubset(rows);
+
+
+       return new LocalDBPredictionTable(this, retValIndices);
+
+      }
 
 
 /*****************************************************************************/
