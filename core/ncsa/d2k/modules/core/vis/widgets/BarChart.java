@@ -80,6 +80,7 @@ public class BarChart extends Chart {
    }
 
    public double[] getMinAndMax(Table table, int ndx) {
+
       double[] minAndMax = new double[2];
       double mandm;
       for (int i = 0; i < table.getNumRows(); i++) {
@@ -91,7 +92,13 @@ public class BarChart extends Chart {
             minAndMax[0] = mandm;
          }
       }
+
+      // change: scale intelligently
+      // i.e., if max is 900, scale to max of 1000 to make graph pretty
+      minAndMax[1] = maxScale(minAndMax[1]);
+
       return minAndMax;
+
    }
 
    public void paintComponent(Graphics g) {
@@ -142,10 +149,10 @@ public class BarChart extends Chart {
       //bottomoffset = 65;
       //topoffset = 65;
         leftoffset = .2*getWidth();
-	    rightoffset = .1*getWidth();
+       rightoffset = .1*getWidth();
         // Offsets of axis
         bottomoffset = .25*getHeight();
-		topoffset = .05*getHeight();
+      topoffset = .05*getHeight();
    }
 
    // Resize scale
@@ -165,7 +172,7 @@ public class BarChart extends Chart {
       double barwidth = xoffsetincrement;
 
       for (int index=0; index < bins; index++) {
-         double value = table.getDouble(index, 1);
+         double value = table.getDouble(index, set.y);
          double y = graphheight-bottomoffset-(value-yminimum)/yscale;
          double barheight = (value-yminimum)/yscale;
 
@@ -296,4 +303,51 @@ public class BarChart extends Chart {
 
       g2.setColor(previouscolor);
    }
+
+   /**
+    * scale a double up, for graph max -- 14 to 15, 19 to 20, 99 to 100, etc.
+    * @param d
+    * @return
+    */
+   protected double maxScale(double d) {
+
+      if (d <= 0) {
+         // do nothing
+      }
+      else if (d < 1) {
+         // do nothing
+      }
+      else {
+
+         double magnitude = 1;
+         double danger = Double.MAX_VALUE / 100;
+
+         while (magnitude < danger) {
+
+            if (d < magnitude * 10) { // matches
+
+               double addend = magnitude;
+               while (addend < d) {
+                  addend += magnitude;
+               }
+
+               if (d < addend - magnitude / 2)
+                  d = addend - magnitude / 2;
+               else
+                  d = addend;
+
+               break;
+
+            }
+
+            magnitude = magnitude * 10;
+
+         }
+
+      }
+
+      return d;
+
+   }
+
 }

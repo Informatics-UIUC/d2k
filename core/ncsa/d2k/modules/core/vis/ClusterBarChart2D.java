@@ -9,13 +9,16 @@ import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.userviews.swing.*;
 
 /**
- * This module creates a bar chart visualization from <code>Table</code> data.
+ * This module creates a cluster bar chart visualization from
+ * <code>Table</code> data.
  * <p>
  * One column (by default, column 0) must contain the labels of the bars on
- * the chart, and another column (by default, column 1) must contain their
- * respective heights. Negative height values are ignored (treated as zero).
+ * the chart, another column (by default, column 1) must contain their
+ * respective heights, and one last column must contain their time values.
+ * Negative height values are ignored (treated as zero). The data
+ * <b>must</b> be sorted first by label and second by time value.
  */
-public class BarChart2D extends VisModule {
+public class ClusterBarChart2D extends VisModule {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Module methods                                                             //
@@ -43,11 +46,15 @@ public class BarChart2D extends VisModule {
 
    public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
-      sb.append("This module creates a bar chart visualization from ");
+      sb.append("This module creates a cluster bar chart visualization from ");
       sb.append("<i>Table</i> data. One column (by default, column 0) ");
-      sb.append("must contain the labels of the bars on the chart, and ");
+      sb.append("must contain the labels of the bars on the chart, ");
       sb.append("another column (by default, column 1) must contain their ");
-      sb.append("respective heights.");
+      sb.append("respective heights, and one last column must contain their ");
+      sb.append("time values.");
+      sb.append("</p><p>Data Type Restrictions: ");
+      sb.append("The data must be sorted first by label and second by time ");
+      sb.append("value.");
       sb.append("</p><p>Data Handling: ");
       sb.append("Negative height values are ignored (treated as zero).");
       sb.append("</p>");
@@ -55,7 +62,7 @@ public class BarChart2D extends VisModule {
    }
 
    public String getModuleName() {
-      return "2D Bar Chart";
+      return "2D Cluster Bar Chart";
    }
 
    public String getOutputInfo(int index) {
@@ -86,15 +93,22 @@ public class BarChart2D extends VisModule {
    public int getHeightsColumn() { return _heightsColumn; }
    public void setHeightsColumn(int value) { _heightsColumn = value; }
 
+   private int _timeColumn = 2;
+   public int getTimeColumn() { return _timeColumn; }
+   public void setTimeColumn(int value) { _timeColumn = value; }
+
    public PropertyDescription[] getPropertiesDescriptions() {
 
-      PropertyDescription[] pds = new PropertyDescription[2];
+      PropertyDescription[] pds = new PropertyDescription[3];
 
       pds[0] = new PropertyDescription("labelsColumn", "Labels column",
          "Specifies which column of the table contains the data labels.");
 
       pds[1] = new PropertyDescription("heightsColumn", "Heights column",
          "Specifies which column of the table contains the data heights.");
+
+      pds[2] = new PropertyDescription("timeColumn", "Time column",
+         "Specifies which column of the table contains the data time values.");
 
       return pds;
 
@@ -106,7 +120,7 @@ public class BarChart2D extends VisModule {
 
    private class BarChartUserPane extends JUserPane {
 
-      private Dimension preferredSize = new Dimension(400, 300);
+      private Dimension preferredSize = new Dimension(600, 300);
       private Table table;
 
       public void initView(ViewModule mod) { }
@@ -119,7 +133,7 @@ public class BarChart2D extends VisModule {
       private void initialize() {
 
          DataSet set = new DataSet("dataset", Color.gray,
-            _labelsColumn, _heightsColumn);
+            _labelsColumn, _heightsColumn, _timeColumn);
 
          GraphSettings settings = new GraphSettings();
          String xaxis = table.getColumnLabel(_labelsColumn);
@@ -128,7 +142,7 @@ public class BarChart2D extends VisModule {
          settings.xaxis = xaxis;
          settings.yaxis = yaxis;
 
-         add(new JScrollPane(new BarChart(table, set, settings)));
+         add(new JScrollPane(new ClusterBarChart(table, set, settings)));
 
       }
 
