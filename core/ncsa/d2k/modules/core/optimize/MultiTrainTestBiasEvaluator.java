@@ -1,142 +1,247 @@
 package ncsa.d2k.modules.core.optimize;
+
+// remove error function and use repeat object
+
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.core.modules.*;
 import java.util.Random;
-
-public class MultiTrainTestBiasEvaluator extends ComputeModule {
-
-  private int  NumRepetitions = 10;
-  public  void setNumRepetitions (int value) {       this.NumRepetitions = value;}
-  public  int  getNumRepetitions ()          {return this.NumRepetitions;}
-
-  private int  NumTrainExamples = -1;
-  public  void setNumTrainExamples (int value) {       this.NumTrainExamples = value;}
-  public  int  getNumTrainExamples ()          {return this.NumTrainExamples;}
-
-  private int  NumTestExamples = 999999999;
-  public  void setNumTestExamples (int value) {       this.NumTestExamples = value;}
-  public  int  getNumTestExamples ()          {return this.NumTestExamples;}
-
-  private int  RandomSeed = 123;
-  public  void setRandomSeed (int value) {       this.RandomSeed = value;}
-  public  int  getRandomSeed ()          {return this.RandomSeed;}
+import ncsa.d2k.core.modules.PropertyDescription;
+import java.beans.PropertyVetoException;
 
 
+public class MultiTrainTestBiasEvaluator
+    extends ComputeModule {
 
-  private int     BatchSize = 1;
-  public  void setBatchSize (int value) {       this.BatchSize = value;}
-  public  int  getBatchSize ()          {return this.BatchSize;}
+  int numProperties = 6;
+  public PropertyDescription[] getPropertiesDescriptions() {
 
-  private boolean    Trace = false;
-  public  void    setTrace (boolean value) {       this.Trace = value;}
-  public  boolean getTrace ()              {return this.Trace;}
+    PropertyDescription[] pds = new PropertyDescription[numProperties];
 
-  private boolean    RecycleExamples = false;
-  public  void    setRecycleExamples (boolean value) {       this.RecycleExamples = value;}
-  public  boolean getRecycleExamples ()              {return this.RecycleExamples;}
+    pds[0] = new PropertyDescription(
+        "numTrainExamples",
+        "Num Train Examples",
+        "The number of examples in each training set generated and if set to -1 all but Num Test Examples are used");
+
+    pds[1] = new PropertyDescription(
+        "numTestExamples",
+        "Num Test Examples",
+        "The number of examples in each testing set generated and if set to -1 all but Num Train Examples are used");
+
+    pds[2] = new PropertyDescription(
+        "numRepetitions",
+        "Num Repetitions",
+        "Number of train/test set combinations to generate");
+
+    pds[4] = new PropertyDescription(
+        "randomSeed",
+        "Random Seed",
+        "The initial seed to the random number generator used to randomly select examples for training and testing sets");
+
+    pds[3] = new PropertyDescription(
+        "batchSize",
+        "Batch Size",
+        "The maximum number of parallel evaluations to allow and must be equal or les than Num Repetitions");
+
+    pds[5] = new PropertyDescription(
+        "recycleExamples",
+        "Recycle Examples",
+        "If true, a single example set is used by the module repeatedly for all subsequent module firings, otherwise " +
+        "a new example set is used for each module firing" );
 
 
+    return pds;
+  }
+
+  private int NumTrainExamples = -1;
+  public void setNumTrainExamples(int value) throws PropertyVetoException {
+    if ( (value == -1) && (NumTestExamples == -1)) {
+      throw new PropertyVetoException(
+          "both Num Test Examples and Num Train Examples cannot be -1", null);
+    }
+
+    if ( ( (value != -1) && (value < 1))) {
+      throw new PropertyVetoException("< 1", null);
+    }
+
+    this.NumTrainExamples = value;
+  }
+
+  public int getNumTrainExamples() {
+    return this.NumTrainExamples;
+  }
+
+  private int NumTestExamples = 999999999;
+  public void setNumTestExamples(int value) throws PropertyVetoException {
+    if ( (value == -1) && (NumTrainExamples == -1)) {
+      throw new PropertyVetoException(
+          "both Num Test Examples and Num Test Examples cannot be -1", null);
+    }
+
+    if ( ( (value != -1) && (value < 1))) {
+      throw new PropertyVetoException("< 1", null);
+    }
+    this.NumTestExamples = value;
+  }
+
+  public int getNumTestExamples() {
+    return this.NumTestExamples;
+  }
+
+  private int NumRepetitions = 10;
+  public void setNumRepetitions(int value) throws PropertyVetoException {
+    if (! (value >= 1)) {
+      throw new PropertyVetoException("< 1", null);
+    }
+    this.NumRepetitions = value;
+  }
+
+  public int getNumRepetitions() {
+    return this.NumRepetitions;
+  }
+
+  private int RandomSeed = 123;
+  public void setRandomSeed(int value) {
+    this.RandomSeed = value;
+  }
+
+  public int getRandomSeed() {
+    return this.RandomSeed;
+  }
+
+  private int BatchSize = 1;
+  public void setBatchSize(int value) throws PropertyVetoException {
+    if (! (value >= 1)) {
+      throw new PropertyVetoException("< 1", null);
+    }
+    this.BatchSize = value;
+  }
+
+  public int getBatchSize() {
+    return this.BatchSize;
+  }
+
+  private boolean RecycleExamples = false;
+  public void setRecycleExamples(boolean value) {
+    this.RecycleExamples = value;
+  }
+
+  public boolean getRecycleExamples() {
+    return this.RecycleExamples;
+  }
 
   public String getModuleName() {
     return "MultiTrainTestBiasEvaluator";
   }
+
   public String getModuleInfo() {
-    return "This module is the control center for evaluating a bias that involves training and testing examples.  " +
-           "Random sampling is performed without replacement.  " +
-           "The sum of training and testing examples can be less than the total number of examples but not more.";
+    return "This module is the control center for evaluating a control space point that involves the generation of training and " +
+        "testing example tables.  Random sampling is performed without replacement.  " +
+        "The sum of training and testing examples can be less than the total number of examples but not more.";
   }
 
   public String getInputName(int i) {
-    switch(i) {
-      case  0: return "Control Parameters";
-      case  1: return "Error Function";
-      case  2: return "Example Table";
-      case  3: return "Objective Scores";
-      default: return "No such input!";
+    switch (i) {
+      case 0:
+        return "Control Space Point";
+      case 1:
+        return "Example Table";
+      case 2:
+        return "Individual Objective Space Point";
+      default:
+        return "No such input!";
     }
   }
+
   public String getInputInfo(int i) {
     switch (i) {
-      case  0: return "Control Parameters";
-      case  1: return "ErrorFunctions";
-      case  2: return "ExampleSet";
-      case  3: return "Objective Scores";
-      default: return "No such input!";
+      case 0:
+        return "The point in control space which is currently being evaluated";
+      case 1:
+        return "The example table used to generate training and testing example tables";
+      case 2:
+        return "The point in objective space resulting from evaluating the last pair of train and test tables";
+      default:
+        return "No such input!";
     }
   }
 
   public String[] getInputTypes() {
     String[] types = {
-      "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
-      "ncsa.d2k.modules.core.prediction.ErrorFunction",
-      "ncsa.d2k.modules.core.datatype.table.ExampleTable",
-      "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"
+        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+        "ncsa.d2k.modules.core.datatype.table.ExampleTable",
+        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"
     };
     return types;
   }
 
-
   public String getOutputName(int i) {
-    switch(i) {
-      case  0: return "Control Parameters";
-      case  1: return "Error Function";
-      case  2: return "Train Example Table";
-      case  3: return "Test Example Table";
-      case  4: return "Objective Scores";
-      case  5: return "All Objective Scores";
-      default: return "No such output!";
+    switch (i) {
+      case 0:
+        return "Control Space Point";
+      case 1:
+        return "Train Example Table";
+      case 2:
+        return "Test Example Table";
+      case 3:
+        return "Averaged Objective Space Point";
+      case 4:
+        return "All Objective Space Points";
+      default:
+        return "No such output!";
     }
   }
+
   public String getOutputInfo(int i) {
     switch (i) {
-      case 0: return "Control Parameters";
-      case 1: return "Error Function";
-      case 2: return "Train Example Table";
-      case 3: return "Test Example Table";
-      case 4: return "Objective Scores";
-      case 5: return "All Objective Scores";
-      default: return "No such output!";
+      case 0:
+        return "The point in control space which is currently being evaluated and is replicated for each train test table set";
+      case 1:
+        return "The example table used for the training phase of the external evaluation process";
+      case 2:
+        return "The example table used for the testing phase of the external evaluation process";
+      case 3:
+        return "The point in objective space resulting from averaging (i.e., computing the centroid) of all the individual " +
+            "train/test objective space points";
+      case 4:
+        return "An array of objective space points for each train/test pairing";
+      default:
+        return "No such output!";
     }
   }
 
   public String[] getOutputTypes() {
     String[] types = {
-      "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
-      "ncsa.d2k.modules.core.prediction.ErrorFunction",
-      "ncsa.d2k.modules.core.datatype.table.ExampleTable",
-      "ncsa.d2k.modules.core.datatype.table.ExampleTable",
-      "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
-      "[Lncsa.d2k.modules.core.datatype.parameter.ParameterPoint;",
+        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+        "ncsa.d2k.modules.core.datatype.table.ExampleTable",
+        "ncsa.d2k.modules.core.datatype.table.ExampleTable",
+        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+        "[Lncsa.d2k.modules.core.datatype.parameter.ParameterPoint;",
     };
     return types;
   }
 
-  /*****************************************************************************/
-  /* This function returns a random integer between min and max (both          */
-  /* inclusive).                                                               */
-  /*****************************************************************************/
+      /*****************************************************************************/
+      /* This function returns a random integer between min and max (both          */
+      /* inclusive).                                                               */
+      /*****************************************************************************/
 
-    int randomInt(int min, int max) {
-      return (int) ((RandomNumberGenerator.nextDouble() * (max - min + 1)) + min);
+  int randomInt(int min, int max) {
+    return (int) ( (RandomNumberGenerator.nextDouble() * (max - min + 1)) + min);
+  }
+
+  void randomizeIntArray(int[] data, int numElements) throws Exception {
+    int temp, rand_index;
+
+    for (int i = 0; i < numElements - 1; i++) {
+      rand_index = randomInt(i + 1, numElements - 1);
+      temp = data[i];
+      data[i] = data[rand_index];
+      data[rand_index] = temp;
     }
-
-    void randomizeIntArray(int [] data, int numElements) throws Exception {
-      int temp, rand_index;
-
-      for (int i = 0; i < numElements - 1; i++) {
-        rand_index       = randomInt(i + 1, numElements - 1);
-        temp             = data[i];
-        data[i]          = data[rand_index];
-        data[rand_index] = temp;
-      }
-    }
-
-
-
-
+  }
 
   int PhaseIndex;
   int ExampleSetIndex;
@@ -154,14 +259,13 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
     reset();
   }
 
-
   public boolean isReady() {
     boolean value = false;
 
     switch (PhaseIndex) {
       case 0:
         if (InitialExecution || (!RecycleExamples)) {
-          value = (inputFlags[0] > 0) && (inputFlags[2] > 0);
+          value = (inputFlags[0] > 0) && (inputFlags[1] > 0);
         }
         else {
           value = (inputFlags[0] > 0);
@@ -173,40 +277,35 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
         break;
 
       case 2:
-        value = (inputFlags[3] > 0);
+        value = (inputFlags[2] > 0);
         break;
     }
 
     return value;
   }
 
-
-
   ParameterPoint ControlPoint;
-  ErrorFunction   errorFunction = null;
+  Object errorFunction = null;
   ExampleTable ExampleSet;
   int numExamples;
   int numInputs;
   int numOutputs;
-  ParameterPoint [] UtilityValues;
-  double []   UtilitySums;
+  ParameterPoint[] UtilityValues;
+  double[] UtilitySums;
 
   Random RandomNumberGenerator;
-  int [] RandomizedIndices = null;
+  int[] RandomizedIndices = null;
 
   public void doit() throws Exception {
 
     switch (PhaseIndex) {
       case 0:
 
-        ControlPoint = (ParameterPoint) this.pullInput(0);
-
-        if (InitialExecution)
-          errorFunction = (ErrorFunction) this.pullInput(1);
+        ControlPoint = (ParameterPoint)this.pullInput(0);
 
         if (InitialExecution || (!RecycleExamples)) {
 
-          ExampleSet   = (ExampleTable) this.pullInput(2);
+          ExampleSet = (ExampleTable)this.pullInput(1);
 
           numExamples = ExampleSet.getNumExamples();
           numInputs = ExampleSet.getNumInputFeatures();
@@ -229,12 +328,10 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
             NumTestExamples = numExamples - NumTrainExamples;
           }
 
-
-          if ((RandomizedIndices == null) || (RandomizedIndices.length < numExamples)) {
+          if ( (RandomizedIndices == null) ||
+              (RandomizedIndices.length < numExamples)) {
             RandomizedIndices = new int[numExamples];
           }
-
-
 
           InitialExecution = false;
         }
@@ -246,20 +343,16 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
 
       case 1:
 
-        if (ExampleSetIndex - UtilityIndex < BatchSize && ExampleSetIndex < NumRepetitions) {
-
+        if (ExampleSetIndex - UtilityIndex < BatchSize &&
+            ExampleSetIndex < NumRepetitions) {
 
           for (int e = 0; e < numExamples; e++)
             RandomizedIndices[e] = e;
 
           randomizeIntArray(RandomizedIndices, numExamples);
 
-
-
-          int [] trainSetIndicies = new int[NumTrainExamples];
-          int []  testSetIndicies = new int[ NumTestExamples];
-
-
+          int[] trainSetIndicies = new int[NumTrainExamples];
+          int[] testSetIndicies = new int[NumTestExamples];
 
           for (int e = 0; e < NumTrainExamples; e++) {
             trainSetIndicies[e] = RandomizedIndices[e];
@@ -268,17 +361,14 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
             testSetIndicies[e] = RandomizedIndices[e + NumTrainExamples];
           }
 
+          ExampleTable currentTrainExampleSet = (ExampleTable) ExampleSet.
+              getSubsetByReference(trainSetIndicies);
+          ExampleTable currentTestExampleSet = (ExampleTable) ExampleSet.
+              getSubsetByReference(testSetIndicies);
 
-         ExampleTable currentTrainExampleSet = (ExampleTable) ExampleSet.getSubsetByReference(trainSetIndicies);
-         ExampleTable currentTestExampleSet = (ExampleTable) ExampleSet.getSubsetByReference(testSetIndicies);
-
-          this.pushOutput(ControlPoint,            0);
-          this.pushOutput(errorFunction,           1);
-          this.pushOutput(currentTrainExampleSet,  2);
-          this.pushOutput(currentTestExampleSet,   3);
-
-          if (Trace)
-            System.out.println("pushing outputs; ExampleSetIndex = " + ExampleSetIndex);
+          this.pushOutput(ControlPoint, 0);
+          this.pushOutput(currentTrainExampleSet, 1);
+          this.pushOutput(currentTestExampleSet, 2);
 
           ExampleSetIndex++;
         }
@@ -289,15 +379,13 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
 
       case 2:
 
-        ParameterPoint objectivePoint = (ParameterPoint) this.pullInput(3);
-        //double [] utilityArray = (double []) this.pullInput(3);
+        ParameterPoint objectivePoint = (ParameterPoint)this.pullInput(2);
 
-        //double [] utilities = utilityArray;
-        int    numUtilities = objectivePoint.getNumParameters();
+        int numUtilities = objectivePoint.getNumParameters();
 
         if (UtilityIndex == 0) {
           UtilityValues = new ParameterPoint[NumRepetitions];
-          UtilitySums   = new double[numUtilities];
+          UtilitySums = new double[numUtilities];
         }
 
         UtilityValues[UtilityIndex] = objectivePoint;
@@ -308,19 +396,19 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
         UtilityIndex++;
         if (UtilityIndex == NumRepetitions) {
 
-          String [] names = new String[numUtilities];
+          String[] names = new String[numUtilities];
           for (int i = 0; i < numUtilities; i++) {
             names[i] = objectivePoint.getName(i);
           }
-          double [] meanUtilityArray = new double[numUtilities];
+          double[] meanUtilityArray = new double[numUtilities];
           for (int i = 0; i < numUtilities; i++) {
             meanUtilityArray[i] = UtilitySums[i] / NumRepetitions;
           }
 
           ParameterPoint meanObjectivePoint = new ParameterPointImpl();
           meanObjectivePoint.createFromData(names, meanUtilityArray);
-          this.pushOutput(meanObjectivePoint, 4);
-          this.pushOutput(UtilityValues,      5);
+          this.pushOutput(meanObjectivePoint, 3);
+          this.pushOutput(UtilityValues,      4);
 
           reset();
         }
