@@ -19,7 +19,7 @@ import java.beans.PropertyVetoException;
 */
 public class SimpleTrainTest extends DataPrepModule  {
 
-	boolean debug = true;
+	boolean debug = false;
 	/**
 	   Return a description of the function of this module.
 	   @return A description of this module.
