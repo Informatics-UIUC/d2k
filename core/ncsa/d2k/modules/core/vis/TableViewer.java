@@ -37,13 +37,13 @@ public class TableViewer extends UIModule {
    public String getInputInfo(int i) {
       if (i == 0)
          return "The <i>Table</i> to be displayed.";
-      return "NO SUCH INPUT";
+      return "No such input";
    }
 
    public String getInputName(int i) {
       if (i == 0)
          return "Table";
-      return "NO SUCH INPUT";
+      return "No such input";
    }
 
    public String[] getInputTypes() {
@@ -55,6 +55,16 @@ public class TableViewer extends UIModule {
    public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
       sb.append("This module displays the contents of a <i>Table</i>.");
+      sb.append("</p><p>Detailed Description: " );
+      sb.append("This module creates a display window and shows the contents ");
+      sb.append("of the input <i>Table</i>.  Table entries that contain ");
+      sb.append("missing values are indicated by a  ?  in the display. ");
+      sb.append("</p><p>The window can be resized and has both horizontal ");
+      sb.append("and vertical scroll bars to accomodate large ");
+      sb.append("table sizes.  An individual column can be made wider by ");
+      sb.append("clicking on the column divider in the labels row and moving ");
+      sb.append("it to the right while keeping the mouse button pressed. ");
+      sb.append("Releasing the button sets the new column size.");
       sb.append("</p><p>Data Handling: ");
       sb.append("This module does not modify its input. The <i>Table</i> ");
       sb.append("is passed, unchanged, as the module's output.");
@@ -63,19 +73,19 @@ public class TableViewer extends UIModule {
    }
 
    public String getModuleName() {
-      return "View Table";
+      return "Table Viewer";
    }
 
    public String getOutputInfo(int i) {
       if (i == 0)
          return "The <i>Table</i> that was displayed, unmodified.";
-      return "NO SUCH OUTPUT";
+      return "No such output.";
    }
 
    public String getOutputName(int i) {
       if (i == 0)
          return "Table";
-      return "NO SUCH OUTPUT";
+      return "No such output";
    }
 
    public String[] getOutputTypes() {
@@ -208,3 +218,9 @@ public class TableViewer extends UIModule {
    }
 
 }
+// Start QA Comments
+// 3/6/03 - Recv from Greg;  Ruth starts QA
+//        - Expanded module info text; Changed module name from view table
+//        - to table viewer; Asked developers about "Save" option format,
+//        - undoc properties, and labels types.
+//  
