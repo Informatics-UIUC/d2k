@@ -64,7 +64,7 @@ abstract public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.
 	 */
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<p>      This is the parameter space that will be searched.    </p>";
+			case 0: return "The parameter space that will be searched.";
 			default: return "No such output";
 		}
 	}
@@ -95,17 +95,64 @@ abstract public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.
 	 * @return the information about the module.
 	 */
 	public String getModuleInfo() {
-		return "<p>Overview: This module will produce a parameter space object that     constrains the search space"+
-			" for parameter optimization. <p>Detailed Description: For model builders to work, they must have"+
-			" an input that     defines their control parameters. For example, a neural net will often  "+
-			"  require an integer that defines the number of hidden layers and an     activation value. The"+
-			" optimal settings for these parameters for a given     dataset to model are not usually known"+
-			" before the run begins. Therefore,     several models can often be built and evaluated to find"+
-			" the best settings     for these control parameters. To automate this, we define an API that"+
-			" allows the optimization of these     control parameters. The range of possible values for each"+
-			" control     parameters must therefore be defined for the optimization to search the     space"+
-			" of possible parameters. We use the <i>ParameterSpace</i> object to     define these spaces."+
-			" This module defines those spaces.";
+
+        String s = "<p>Overview: ";
+        s += "This module produces a parameter space object that constrains the search space ";
+	s += "for parameter optimization. ";
+
+        s += "</p><p>Detailed Description: ";
+        s += "Model building algorithms often require one or more control parameters. ";
+        s += "For example, a neural net may require parameters specifying the number of hidden layers and an activation value. ";
+        s += "The optimal control parameter settings for a given dataset are not usually known before the run begins. ";
+        s += "Therefore, several models are often built and evaluated to identify the best control parameter settings ";
+        s += "for a given dataset. ";
+
+        s += "</p><p>";
+        s += "To automate this build/evaluate process, D2K defines a procedure, implemented as a series of modules in an itinerary, ";
+        s += "that supports the optimization of control parameters. ";
+
+        s += "</p><p>";
+        s += "This module allows the user to specify the range of possible values for every control parameter that is relevant ";
+        s += "to the algorithm being used.  The optimization itinerary will build multiple models, varying the parameters ";
+        s += "within the space defined in this module.  ";
+        s += "The range of values to search is specified via the property editor, and the results are made available ";
+        s += "on the <i>Parameter Space</i> output port. ";
+
+        s += "</p><p>Using the Property Editor: ";
+        s += "The property editor used to control the range of possible values for an algorithm's control parameters ";
+        s += "is based on the same GUI interface regardless of the algorithm.  The user is presented with a list of ";
+        s += "parameters that are relevant to the algorithm they are employing.  These parameters are explained ";
+        s += "in the <i>Properties</i> section of the <i>Module Information</i>. ";
+
+        s += "</p><p>";
+        s += "For each parameter, text edit boxes allow the user to specify the range of allowable values (<i>Min</i> ";
+        s += "and <i>Max</i>), the default value (<i>Default</i>), and the minimum resolution to use when navigating the range ";
+        s += "(<i>Res</i>).   A <i>Reset</i> button is also provided for each parameter to restore the parameter ";
+        s += "specifications to their original settings. ";
+        s += "The same set of boxes is used regardless of the type of the control parameter. ";
+
+        s += "</p><p>";
+        s += "For boolean parameters, a value of 0 is considered False and a value of 1 is considered True. ";
+        s += "The <i>Min</i> and <i>Max</i> values should be set to 0 or 1, with the minimum less than or equal to the maximum. ";
+        s += "The resolution should be 1 for these parameters. ";
+
+        s += "</p><p>";
+        s += "For integer parameters, ";
+        s += "the <i>Min</i> and <i>Max</i> values should be integers, with the minimum less than or equal to the maximum. ";
+        s += "The resolution should be set to an integer value. ";
+
+        s += "</p><p>";
+        s += "For floating point parameters, ";
+        s += "the <i>Min</i> and <i>Max</i> values can be floating point values, with the minimum less than or equal to the maximum. ";
+        s += "The resolution can be a floating point value. ";
+
+        s += "</p><p>";
+        s += "There may be times when the user wants to allow some control parameters to vary over a range of values while ";
+        s += "holding other parameters constant.  This behavior can be accomplished by entering the same <i>Min</i> and <i>Max</i> ";
+        s += "values for the parameters that are to be held constant" ;
+
+	return s;
+
 	}
 
 	/**
@@ -127,7 +174,7 @@ abstract public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.
 	/**
 	 * return a reference a custom property editor to select the percent test
 	 * and train.
-	 * @returna reference a custom property editor
+	 * @return a reference a custom property editor
 	 */
 	public CustomModuleEditor getPropertyEditor() {
 		if (space == null) space = this.getDefaultSpace();
@@ -135,3 +182,7 @@ abstract public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.
 	}
 
 }
+
+// Start QA Comments
+// 4/7/03 - Ruth added more extensive Module Info
+// End QA Comments
