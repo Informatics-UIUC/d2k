@@ -58,6 +58,12 @@ public class ParallelCoordinateVis extends VisModule {
 		return null;
 	}
 
+
+}
+/**
+ *
+ */
+final class PCView extends JUserPane implements ActionListener, Printable  {
 	/** The length of the line used for the gradient paint */
 	private static final int LINE_LENGTH = 250;
 
@@ -111,10 +117,6 @@ public class ParallelCoordinateVis extends VisModule {
 		return hm;
 	}
 
-	/**
-	 *
-	 */
-	private final class PCView extends JUserPane implements ActionListener, Printable  {
 		/** the indices of the columns to show */
 		private volatile int[] columnorder;
 		/** the locations of the columns */
@@ -163,8 +165,11 @@ public class ParallelCoordinateVis extends VisModule {
 
 		private double[] mins;
 		private double[] maxes;
+		private ParallelCoordinateVis module;
 
-  		public void initView(ViewModule m) {}
+  		public void initView(ViewModule m) {
+			module = (ParallelCoordinateVis)m;
+		}
 
 		private NumberFormat nf;
 		private Dimension defaultSize;
@@ -271,7 +276,7 @@ public class ParallelCoordinateVis extends VisModule {
 			jsp = new JScrollPane(ma);
 			//jsp.setPreferredSize(new Dimension(500, 400));
 
-			Image im = getImage(filtericon);
+			Image im = module.getImage(filtericon);
 			ImageIcon icon = null;
 			if(im != null)
 				icon = new ImageIcon(im);
@@ -287,7 +292,7 @@ public class ParallelCoordinateVis extends VisModule {
 
 			im = null;
 			icon = null;
-			im = getImage(refreshicon);
+			im = module.getImage(refreshicon);
 			if(im != null)
 				icon = new ImageIcon(im);
 			if(icon != null) {
@@ -302,7 +307,7 @@ public class ParallelCoordinateVis extends VisModule {
 
 			im = null;
 			icon = null;
-			im = getImage(zoomicon);
+			im = module.getImage(zoomicon);
 			if(im != null)
 				icon = new ImageIcon(im);
 			if(icon != null) {
@@ -318,7 +323,7 @@ public class ParallelCoordinateVis extends VisModule {
 
 			im = null;
 			icon = null;
-			im = getImage(tableicon);
+			im = module.getImage(tableicon);
 			if(im != null)
 				icon = new ImageIcon(im);
 			if(icon != null) {
@@ -333,7 +338,7 @@ public class ParallelCoordinateVis extends VisModule {
 
 			im = null;
 			icon = null;
-			im = getImage(printicon);
+			im = module.getImage(printicon);
 			if(im != null)
 				icon = new ImageIcon(im);
 			if(icon != null) {
@@ -1700,8 +1705,6 @@ public class ParallelCoordinateVis extends VisModule {
 				repaint();
 			}
 		}
-	}
-
 	private final class HelpWindow extends JD2KFrame {
 		HelpWindow() {
 			super("About ParallelCoordinateVis");
@@ -1761,4 +1764,5 @@ public class ParallelCoordinateVis extends VisModule {
 		s.append("</ul></html>");
 		return s.toString();
 	}
-}
+	}
+
