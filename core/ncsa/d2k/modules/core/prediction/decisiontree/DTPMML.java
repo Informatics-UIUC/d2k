@@ -54,9 +54,9 @@ public class DTPMML extends DataPrepModule {
     header.addAttribute("description", "a tree model");
 
     String[] inputNames = dtm.getInputColumnLabels();
-    String[] inputTypes = dtm.getInputFeatureTypes();
+    int[] inputTypes = dtm.getInputFeatureTypes();
     String[] outNames = dtm.getOutputColumnLabels();
-    String[] outTypes = dtm.getOutputFeatureTypes();
+    int[] outTypes = dtm.getOutputFeatureTypes();
     Element dictionary = root.addElement("DataDictionary");
     dictionary.addAttribute("numberOfFields", Integer.toString(inputNames.length+outNames.length));
 
@@ -66,7 +66,7 @@ public class DTPMML extends DataPrepModule {
       field.addAttribute("name", inputNames[i]);
 
       // if it is Scalar, mark the input as continuous
-      if(inputTypes[i].equals("Scalar"))
+      if(dtm.scalarInput(inputTypes[i]))
         field.addAttribute("optype", "continuous");
 
       // otherwise it is categorical.  mark it as such and list
@@ -88,7 +88,7 @@ public class DTPMML extends DataPrepModule {
       field.addAttribute("name", outNames[i]);
 
       // if it is scalar, mark the output as continous
-      if(outTypes[i].equals("Scalar"))
+      if(dtm.scalarOutput(outTypes[i]))
         field.addAttribute("optype", "continuous");
 
       // otherwise it is categorical.  mark it as such and list
@@ -179,14 +179,27 @@ public class DTPMML extends DataPrepModule {
       else
         pred.addAttribute("operator", "equal");
       pred.addAttribute("value", ns.right);
-            /*}
-            else {
-                NumericSet cs = new CategoricalSet(label);
-                Element pred = newNode.addElement("SimplePredicate");
-                pred.addAttribute("field", cs.left);
-                pred.addAttribute("operator", "equal");
-                pred.addAttribute("value", cs.right);
-            }*/
+      /*}
+      else {
+      NumericSet cs = new CategoricalSet(label);
+      Element pred = newNode.addElement("SimplePredicate");
+      pred.addAttribute("field", cs.left);
+      pred.addAttribute("operator", "equal");
+      pred.addAttribute("value", cs.right);
+      }*/
+
+      try {
+        String[] outputvalues = nde.getOutputValues();
+        for (int value=0; value < outputvalues.length; value++) {
+          String outputvalue = outputvalues[value];
+          int tally = nde.getOutputTally(outputvalue);
+          Element distribution = newNode.addElement("ScoreDistribution");
+          distribution.addAttribute("value", outputvalue);
+          distribution.addAttribute("recordCount", Integer.toString(tally));
+        }
+      } catch (Exception exception) {
+        System.out.println(exception);
+      }
 
       if (childNde.isLeaf()) {
         // make the leaf tag

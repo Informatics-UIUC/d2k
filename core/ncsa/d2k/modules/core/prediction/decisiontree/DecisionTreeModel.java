@@ -335,4 +335,8 @@ public class DecisionTreeModel extends PredictionModelModule
             */
             return inputIsScalar[index];
 	}
+
+        public boolean scalarOutput(int index) {
+          return outputIsScalar[index];
+        }
 }
