@@ -75,7 +75,19 @@ public class BooleanColumnTest extends AbstractColumnTest {
 	}
 	
 	
-			
+	public void testSetBytes() {
+			Column cFull = getFullColumn();
+			Column cEmpty = getEmptyColumn();
+			Byte tmp = new Byte("1");
+			byte[] el = new byte[1];
+			el[0] = tmp.byteValue();
+			int len = cFull.getNumRows();
+			cFull.setBytes(el, len - 1);
+			byte[] expected = cFull.getBytes(len - 1);
+			assertEquals(el.length, expected.length);
+			for (int i = 0; i < el.length; i++)
+				assertEquals(expected[i], el[i]);
+		}
 	/*
 	 * Test for void sort(MutableTable)
 	 */

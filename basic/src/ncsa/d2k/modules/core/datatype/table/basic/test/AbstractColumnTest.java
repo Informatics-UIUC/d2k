@@ -41,20 +41,20 @@ public abstract class AbstractColumnTest extends TestCase {
 		cFull.setValueToEmpty(true, numRows - 1);
 		numEntries = cFull.getNumEntries();
 		assertEquals(numEntries, numRows - 2);
-		cFull.setValueToMissing(false,0);
+		cFull.setValueToMissing(false, 0);
 		cFull.setValueToEmpty(false, numRows - 1);
 		int toAdd = 3;
 		// TODO solve this bug  - fails because missing and empty are set to false;
 		//DONE by setting newly added rows as having missing values
 		cFull.addRows(toAdd);
-		for (int i = numRows; i < numRows+toAdd; i ++)
-			cFull.setValueToMissing(true,i);
+		for (int i = numRows; i < numRows + toAdd; i++)
+			cFull.setValueToMissing(true, i);
 		numEntries = cFull.getNumEntries();
 		numRows = cFull.getNumRows();
 		assertEquals(numEntries + toAdd, numRows);
 		cEmpty.addRows(toAdd);
-		for ( int i = 0; i < toAdd; i ++)
-					cEmpty.setValueToMissing(true,i);
+		for (int i = 0; i < toAdd; i++)
+			cEmpty.setValueToMissing(true, i);
 		numEntries = cEmpty.getNumEntries();
 		numRows = cEmpty.getNumRows();
 		assertEquals(numEntries + toAdd, numRows);
@@ -182,7 +182,8 @@ public abstract class AbstractColumnTest extends TestCase {
 	public void testSetByte() {
 		Column cFull = getFullColumn();
 		Column cEmpty = getEmptyColumn();
-		byte el = 1;
+		byte el = new Byte("1").byteValue();
+
 		int len = cFull.getNumRows();
 		cFull.setByte(el, len - 1);
 		byte expected = cFull.getByte(len - 1);
@@ -251,9 +252,9 @@ public abstract class AbstractColumnTest extends TestCase {
 		int pos = 1;
 		Column col = cFull.getSubset(pos, len - 1);
 		for (int i = 0; i < len - pos - 1; i++) {
-		   String old = cFull.getString(pos+i);
-		   String tobe = col.getString(i);	
-					assertEquals(cFull.getString(pos + i), col.getString(i));
+			String old = cFull.getString(pos + i);
+			String tobe = col.getString(i);
+			assertEquals(cFull.getString(pos + i), col.getString(i));
 		}
 	}
 
@@ -294,17 +295,17 @@ public abstract class AbstractColumnTest extends TestCase {
 
 		cFull.removeRow(toRemove);
 		assertEquals(len - 1, cFull.getNumRows());
-		assertEquals((Column)cFull,(Column) cEmpty);
+		assertEquals((Column) cFull, (Column) cEmpty);
 	}
 
 	public void testInsertRow() {
 		Column cFull = getFullColumn();
 		Column cEmpty = getEmptyColumn();
 		int len = cFull.getNumRows();
-		cFull.insertRow(cFull.getRow(0), len-2);
+		cFull.insertRow(cFull.getRow(0), len - 2);
 		assertEquals(len + 1, cFull.getNumRows());
 		assertEquals(cFull.getRow(0), cFull.getRow(len - 2));
-				len = cFull.getNumRows();
+		len = cFull.getNumRows();
 		for (int i = 0; i < len; i++)
 			cEmpty.insertRow(cFull.getRow(i), i);
 		assertEquals(cFull, cEmpty);
