@@ -277,7 +277,45 @@ public class SQLBinColumns extends UIModule {
       }
 
       public int[] getCounts(int col, double[] borders) {
-        return null;
+        System.out.println("col is " + col);
+        int[] counts = new int[borders.length+1];
+        String colName = fieldNames[col];
+        double low = 0;
+        double high;
+        try {
+          con = wrapper.getConnection();
+          for (int i = 0; i < (borders.length-1); i++) {
+            high = borders[i];
+            queryStr = "select count(" + colName + ") from " + tableName +
+                       " where " + colName + " > " + low + " and " + colName +
+                       " <= " + high;
+            System.out.println("queryStr is " + queryStr);
+            stmt = con.createStatement();
+            ResultSet cntSet = stmt.executeQuery(queryStr);
+            cntSet.next();
+            counts[i] = cntSet.getInt(1);
+            low = high;
+          }
+          queryStr = "select count(" + colName + ") from " + tableName +
+                       " where " + colName + " > " + low;
+          System.out.println("queryStr is " + queryStr);
+          stmt = con.createStatement();
+          ResultSet cntSet = stmt.executeQuery(queryStr);
+          cntSet.next();
+          counts[borders.length-1] = cntSet.getInt(1);
+
+          for (int i=0; i<counts.length; i++) {
+            System.out.println(i + " item is " + counts[i]);
+          }
+          return counts;
+        }
+        catch (Exception e) {
+	  JOptionPane.showMessageDialog(msgBoard,
+                e.getMessage(), "Error",
+                JOptionPane.ERROR_MESSAGE);
+          System.out.println("Error occoured in getCounts.");
+          return counts;
+        }
       }
 
       public double getTotal(int col) {
@@ -447,10 +485,8 @@ public class SQLBinColumns extends UIModule {
 
                     String txt = uRangeField.getText();
                     if(txt != null && txt.length() != 0) {
-                        System.out.println("SHOW RANGE: "+binCounts);
-                    String selectedColumn = (String)numericColumnLabels.getSelectedValue();
                     final Histogram H = new UniformHistogram(binCounts,
-                            uRangeField.getText(), colLook, selectedColumn);
+                            uRangeField.getText(), colLook);
                     JD2KFrame frame = new JD2KFrame("Uniform Range");
                     frame.getContentPane().setLayout(new GridBagLayout());
                     Constrain.setConstraints(frame.getContentPane(), H, 0,
@@ -537,9 +573,8 @@ public class SQLBinColumns extends UIModule {
                         }
                     }
                     JD2KFrame frame = new JD2KFrame("Specified Range");
-                    String col = (String)numericColumnLabels.getSelectedValue();
                     frame.getContentPane().add(new RangeHistogram(binCounts,
-                            /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook, col));
+                            /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook));
                              frame.pack();
                              frame.setVisible(true);
                 }
@@ -573,9 +608,8 @@ public class SQLBinColumns extends UIModule {
                     }
                     String txt = intervalField.getText();
                     if(txt != null && txt.length() != 0) {
-                        String col = (String)numericColumnLabels.getSelectedValue();
                     final Histogram H = new IntervalHistogram(binCounts,
-                            /*Histogram.HISTOGRAM_INTERVAL,*/ intervalField.getText(), colLook, col);
+                            /*Histogram.HISTOGRAM_INTERVAL,*/ intervalField.getText(), colLook);
                              JD2KFrame frame = new JD2KFrame("Bin Interval");
                              frame.getContentPane().setLayout(new GridBagLayout());
                              Constrain.setConstraints(frame.getContentPane(), H, 0,
