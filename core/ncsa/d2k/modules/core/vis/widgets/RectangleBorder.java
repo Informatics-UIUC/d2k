@@ -5,6 +5,11 @@ import java.awt.geom.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
+/*
+	DecisionTreeVis
+
+	Border for navigator panel and brush panel
+*/
 public class RectangleBorder extends AbstractBorder {
 
 	String title;
@@ -18,14 +23,14 @@ public class RectangleBorder extends AbstractBorder {
 	public RectangleBorder(String title) {
 		this.title = title;
 
-		// Set insets
+		// Insets
 		left = 10;
 		right = 10;
 		bottom = 10;
 		titletop = 4;
 		titlebottom = 8;
 		titlespace = 12;
-		top = titletop+10+titlebottom+titlespace;
+		top = titletop + 10 + titlebottom + titlespace;
 	}
 
 	public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
@@ -35,33 +40,33 @@ public class RectangleBorder extends AbstractBorder {
 		metrics = g2.getFontMetrics(DecisionTreeScheme.textfont);
 		ascent = metrics.getAscent();
 
-		// Draw background
+		// Background
 		g2.setColor(DecisionTreeScheme.borderbackgroundcolor);
 		g2.fill(new Rectangle2D.Double(x, y, width, top));
 		g2.fill(new Rectangle2D.Double(x, y, left, height));
 		g2.fill(new Rectangle2D.Double(x+width-right, y, right, height));
 		g2.fill(new Rectangle2D.Double(x, y+height-bottom, width, bottom));
 
-		// Draw bevel
-		double ybevel = y+titletop+ascent+titlebottom;
+		// Bevel
+		double ybevel = y + titletop + ascent + titlebottom;
 		g2.setColor(DecisionTreeScheme.bordershadowcolor);
 		g2.draw(new Line2D.Double(x, y+ybevel, x+width-1, y+ybevel));
 		g2.setColor(DecisionTreeScheme.borderhighlightcolor);
 		g2.draw(new Line2D.Double(x, y+ybevel+2, x+width-1, y+ybevel+2));
 
-		// Draw upper bevel
+		// Upper bevel
 		g2.setStroke(new BasicStroke(1.2f));
 		g2.setColor(DecisionTreeScheme.borderupperbevelcolor);
 		g2.draw(new Line2D.Double(x, y, x+width-1, y));
 		g2.draw(new Line2D.Double(x, y, x, y+height-1));
 
-		// Draw lower bevel
+		// Lower bevel
 		g2.setStroke(new BasicStroke(1.2f));
 		g2.setColor(DecisionTreeScheme.borderlowerbevelcolor);
 		g2.draw(new Line2D.Double(x, y+height-1, x+width-1, y+height-1));
 		g2.draw(new Line2D.Double(x+width-1, y, x+width-1, y+height-1));
 
-		// Draw title
+		// Title
 		g2.setFont(DecisionTreeScheme.textfont);
 		g2.setColor(DecisionTreeScheme.textcolor);
 		g2.drawString(title, x+left, y+titletop+ascent);

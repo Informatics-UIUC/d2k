@@ -2,6 +2,11 @@ package ncsa.d2k.modules.core.vis.widgets;
 
 import java.awt.*;
 
+/*
+	DecisionTreeVis
+
+	Colors and fonts used
+*/
 public class DecisionTreeScheme {
 
 	// Background
@@ -11,7 +16,7 @@ public class DecisionTreeScheme {
 	public static Font textfont = new Font("Sans Serif", Font.PLAIN, 12);
 	public static Color textcolor = new Color(0, 0, 0);
 
-	// Tree
+	// Decision tree
 	public static Color treebackgroundcolor = new Color(252, 252, 252);
 	public static Color treelinelevelcolor = new Color(219, 217, 214);
 	public static Color treecirclestrokecolor = new Color(100, 98, 87);
@@ -25,7 +30,7 @@ public class DecisionTreeScheme {
 	public static Color viewrollcolor = new Color(197, 195, 184);
 	public static Color viewsearchcolor = new Color(177, 72, 69);
 
-	// Scaled view nodes
+	// Scaled nodes
 	public static Color scaledviewbackgroundcolor = new Color(76, 76, 76);
 	public static Color scaledviewbarcolor = new Color(219, 217, 206);
 
@@ -37,7 +42,7 @@ public class DecisionTreeScheme {
 	public static Color expandedborderbackgroundcolor = new Color(252, 255, 255);
 	public static Color expandedgraphgridcolor = new Color(0, 0, 0);
 
-	// Viewer
+	// Navigator
 	public static Color viewercolor = new Color(0, 0, 0);
 
 	// Border
@@ -56,7 +61,7 @@ public class DecisionTreeScheme {
 	}
 }
 
-// Wrapped circular array holding bar graph colors
+// Circular array that holds bar graph colors
 class BarColors {
 	private static Color barcolor0 = new Color(11, 95, 132);
 	private static Color barcolor1 = new Color(156, 0, 0);

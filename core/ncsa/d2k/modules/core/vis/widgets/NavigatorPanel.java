@@ -6,19 +6,22 @@ import java.awt.geom.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
-
 import ncsa.d2k.util.*;
 import ncsa.d2k.util.datatype.*;
+//import ncsa.d2k.modules.compute.learning.modelgen.decisiontree.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 import ncsa.gui.*;
 
-/**
-	Wrapper class
+/*
+	DecisionTreeVis
+
+	Displays a scaled view of decision tree from tree scroll pane
+	Draws a navigator that shows how much of tree is visible
 */
 public class NavigatorPanel extends JPanel {
 
-	public NavigatorPanel(DecisionTreeModel mdl, DecisionTreeNode tree, TreeScrollPane treescrollpane) {
-		Navigator navigator = new Navigator(mdl, tree, treescrollpane);
+	public NavigatorPanel(DecisionTreeModel model, TreeScrollPane scrollpane) {
+		Navigator navigator = new Navigator(model, scrollpane);
 
 		setBackground(DecisionTreeScheme.borderbackgroundcolor);
 		setLayout(new GridBagLayout());
@@ -28,59 +31,64 @@ public class NavigatorPanel extends JPanel {
 
 	class Navigator extends JPanel implements MouseListener, MouseMotionListener, ChangeListener {
 
-		// Width of panel
-		double panelwidth = 250;
+		// Decision tree model
+		DecisionTreeModel dmodel;
 
-		/**
-			Viewer
-		*/
+		// Decision tree root
+		DecisionTreeNode droot;
+
+		// Scaled tree root
+		ScaledNode sroot;
+
+		// Width and height of decision tree
+		double dwidth, dheight;
+
+		// Scaled width and height of decision tree
+		double swidth = 200;
+		double sheight;
+
+		// Scaling factor
+		double scale;
+
+		// Maximum depth
+		int mdepth;
+
 		TreeScrollPane treescrollpane;
 		JViewport viewport;
 
-		// Dimensions of viewer
-		double viewerwidth, viewerheight;
+		// Width and height of navigator
+		double nwidth, nheight;
 
 		double xscale, yscale;
 
-		// Coordinates of viewer
-		double xview = 0;
-		double yview = 0;
-		double lastxview = 0;
-		double lastyview = 0;
+		// Offsets of navigator
+		double x, y, lastx, lasty;
 
-		/**
-			Background
-		*/
-		DecisionTreeModel model;
-		DecisionTreeNode tree;
-		ScaledNode viewtree;
+		boolean statechanged;
 
-		int treeheight;
-		int leaves;
+		public Navigator(DecisionTreeModel model, TreeScrollPane scrollpane) {
+			dmodel = model;
+			droot = dmodel.getRoot();
+			sroot = new ScaledNode(dmodel, droot, null);
 
-		// Empty space
-		double xspace = 50;
-		double yspace = 75;
-
-		double panelwidthratio;
-
-		// Dimensions of tree
-		double fullwidth, fullheight;
-
-		// Dimenions of scaled tree
-		double scaledwidth, scaledheight;
-
-		// Dimensions of nodes
-		double viewwidth, viewheight;
-
-		double top = 50;
-		double bottom = 50;
-
-		public Navigator(DecisionTreeModel mdl, DecisionTreeNode tree, TreeScrollPane treescrollpane) {
-			this.model = mdl;
-			this.tree = tree;
-			this.treescrollpane = treescrollpane;
+			treescrollpane = scrollpane;
 			viewport = treescrollpane.getViewport();
+
+			findMaximumDepth(droot);
+			buildTree(droot, sroot);
+
+			sroot.x = sroot.findLeftSubtreeWidth();
+			sroot.y = sroot.yspace;
+
+			findTreeOffsets(sroot);
+
+			dwidth = sroot.findSubtreeWidth();
+			dheight = (sroot.yspace + sroot.gheight)*(mdepth + 1) + sroot.yspace;
+
+			scale = swidth/dwidth;
+			sheight = scale*dheight;
+
+			findSize();
 
 			setOpaque(true);
 			setBackground(DecisionTreeScheme.borderbackgroundcolor);
@@ -90,47 +98,33 @@ public class NavigatorPanel extends JPanel {
 			viewport.addChangeListener(this);
 		}
 
-		/**
-			Build view tree representing decision tree
+		public void findMaximumDepth(DecisionTreeNode dnode) {
+			int depth = dnode.getDepth();
 
-			Determine dimensions of tree
-			Determine offsets of view nodes
+			if (depth > mdepth)
+				mdepth = depth;
 
-		*/
-		public void buildViewTree() {
-			viewtree.xoffset = (fullwidth/2)-(viewwidth/2);
-			viewtree.yoffset = top;
-
-			buildRecursive(tree, viewtree);
+			for (int index = 0; index < dnode.getNumChildren(); index++) {
+				DecisionTreeNode dchild = dnode.getChild(index);
+				findMaximumDepth(dchild);
+			}
 		}
 
-		public void buildRecursive(DecisionTreeNode modelnode, ScaledNode viewnode) {
-			if (modelnode.isLeaf()) {
-				viewnode.leaf = true;
-				return;
-			}
+		public void findTreeOffsets(ScaledNode snode) {
+			snode.findOffsets();
 
-			int level = modelnode.getDepth();//modelnode.getLevel();
-			double div = Math.pow(2.0, (double) (level+2));
-			double increment = fullwidth/div;
-
-			if (/*modelnode.getLeft()*/modelnode.getChild(0) != null) {
-				ScaledNode leftview = new ScaledNode(model, /*modelnode.getLeft()*/
-					modelnode.getChild(0), viewnode);
-				viewnode.left = leftview;
-				leftview.xoffset = viewnode.xoffset-increment;
-				leftview.yoffset = viewnode.yoffset+viewheight+yspace;
-				buildRecursive(/*modelnode.getLeft()*/
-					modelnode.getChild(0), leftview);
+			for (int index = 0; index < snode.getNumChildren(); index++) {
+				ScaledNode schild = snode.getChild(index);
+				findTreeOffsets(schild);
 			}
-			if (/*modelnode.getRight()*/modelnode.getChild(1) != null) {
-				ScaledNode rightview = new ScaledNode(model, /*modelnode.getRight()*/
-					modelnode.getChild(1), viewnode);
-				viewnode.right = rightview;
-				rightview.xoffset = viewnode.xoffset+increment;
-				rightview.yoffset = viewnode.yoffset+viewheight+yspace;
-				buildRecursive(/*modelnode.getRight()*/
-					modelnode.getChild(1), rightview);
+		}
+
+		public void buildTree(DecisionTreeNode dnode, ScaledNode snode) {
+			for (int index = 0; index < dnode.getNumChildren(); index++) {
+				DecisionTreeNode dchild = dnode.getChild(index);
+				ScaledNode schild = new ScaledNode(dmodel, dchild, snode);
+				snode.addChild(schild);
+				buildTree(dchild, schild);
 			}
 		}
 
@@ -139,151 +133,124 @@ public class NavigatorPanel extends JPanel {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-			buildViewTree();
-
 			AffineTransform transform = g2.getTransform();
-			AffineTransform scale = AffineTransform.getScaleInstance(panelwidthratio, panelwidthratio);
-			g2.transform(scale);
-			drawTree(g2);
+			AffineTransform sinstance = AffineTransform.getScaleInstance(scale, scale);
+			g2.transform(sinstance);
+
+			drawTree(g2, sroot);
+
 			g2.setTransform(transform);
-
-			/**
-				Draw viewer
-			*/
-			Point pos = viewport.getViewPosition();
-			Dimension viewdim = viewport.getExtentSize();
-
-			double viewportwidth = viewdim.getWidth();
-			viewerwidth = viewportwidth/fullwidth*scaledwidth;
-
-			// Resize viewerwidth and move viewer horizontally
-			xscale = fullwidth/scaledwidth;
-			if (xscale > 0)
-				xview = pos.x/xscale;
-			if (viewerwidth > scaledwidth)
-				viewerwidth = scaledwidth;
-
-			double viewportheight = viewdim.getHeight();
-			viewerheight = viewportheight/fullheight*scaledheight;
-
-			// Resize viewerheight and move viewer vertically
-			yscale = fullheight/scaledheight;
-			if (yscale > 0)
-				yview = pos.y/yscale;
-			if (viewerheight > scaledheight)
-				viewerheight = scaledheight;
 
 			g2.setColor(DecisionTreeScheme.viewercolor);
 			g2.setStroke(new BasicStroke(1));
-			g2.draw(new Rectangle2D.Double(xview, yview, viewerwidth-1, viewerheight-1));
+			g2.draw(new Rectangle2D.Double(x, y, nwidth-1, nheight-1));
 		}
 
-		public void drawTree(Graphics2D g2) {
-			viewtree.drawScaledNode(g2);
-			drawRecursive(g2, tree, viewtree);
-		}
+		public void drawTree(Graphics2D g2, ScaledNode snode) {
+			snode.drawScaledNode(g2);
 
-		public void drawRecursive(Graphics2D g2, DecisionTreeNode modelnode, ScaledNode viewnode) {
+			for (int index = 0; index < snode.getNumChildren(); index++) {
+				ScaledNode schild = snode.getChild(index);
 
-			if (modelnode.isLeaf())
-				return;
+				double x1 = snode.x;
+				double y1 = snode.y + snode.gheight;
+				double x2 = schild.x;
+				double y2 = schild.y;
 
-			if (/*modelnode.getLeft()*/modelnode.getChild(0) != null) {
-				ScaledNode leftview = viewnode.left;
-				leftview.drawScaledNode(g2);
-				drawLine(g2, viewnode.xoffset+(viewwidth/2), viewnode.yoffset+viewheight,
-					leftview.xoffset+(viewwidth/2), leftview.yoffset);
-				drawRecursive(g2, /*modelnode.getLeft()*/
-					modelnode.getChild(0), leftview);
-			}
-			if (/*modelnode.getRight()*/modelnode.getChild(1) != null) {
-				ScaledNode rightview = viewnode.right;
-				rightview.drawScaledNode(g2);
-				drawLine(g2, viewnode.xoffset+(viewwidth/2), viewnode.yoffset+viewheight,
-					rightview.xoffset+(viewwidth/2), rightview.yoffset);
-				drawRecursive(g2, /*modelnode.getRight()*/
-					modelnode.getChild(1), rightview);
+				drawLine(g2, x1, y1, x2, y2);
+
+				drawTree(g2, schild);
 			}
 		}
 
 		public void drawLine(Graphics2D g2, double x1, double y1, double x2, double y2) {
-
 			int linestroke = 1;
 
-			// Draw line
 			g2.setStroke(new BasicStroke(linestroke));
 			g2.setColor(DecisionTreeScheme.scaledviewbackgroundcolor);
 			g2.draw(new Line2D.Double(x1, y1, x2, y2));
 		}
 
-		public void mousePressed(MouseEvent event) {
-			int x = event.getX();
-			int y = event.getY();
+		// Determine size of navigator
+		public void findSize() {
+			Point position = viewport.getViewPosition();
+			Dimension vpdimension = viewport.getExtentSize();
 
-			lastxview = x;
-			lastyview = y;
+			double vpwidth = vpdimension.getWidth();
+			nwidth = vpwidth/dwidth*swidth;
+			if (nwidth > swidth)
+				nwidth = swidth;
+
+			xscale = swidth/dwidth;
+			x = xscale*position.x;
+
+			double vpheight = vpdimension.getHeight();
+			nheight = vpheight/dheight*sheight;
+			if (nheight > sheight)
+				nheight = sheight;
+
+			yscale = sheight/dheight;
+			y = yscale*position.y;
 		}
-
-		public void mouseDragged(MouseEvent event) {
-			int x = event.getX();
-			int y = event.getY();
-
-			double xdiff = x-lastxview;
-			double ydiff = y-lastyview;
-
-			xview += xdiff;
-			yview += ydiff;
-
-			if (xview < 0)
-				xview = 0;
-			if (yview < 0)
-				yview = 0;
-			if (xview+viewerwidth > scaledwidth)
-				xview = scaledwidth-viewerwidth;
-			if (yview+viewerheight > scaledheight)
-				yview = scaledheight-viewerheight;
-
-			treescrollpane.scroll((int) (xview*xscale), (int) (yview*yscale));
-
-			lastxview = x;
-			lastyview = y;
-
-			repaint();
-		}
-
-		/**
-			View port listener
-		*/
-		public void stateChanged(ChangeEvent event) {
-			repaint();
-		}
-
-		public void mouseExited(MouseEvent event) {	}
-		public void mouseEntered(MouseEvent event) {	}
-		public void mouseReleased(MouseEvent event) { }
-		public void mouseClicked(MouseEvent event) { }
-		public void mouseMoved(MouseEvent event) { }
 
 		public Dimension getMinimumSize() {
-			treeheight = tree.getDepth();
-			leaves = (int) Math.pow(2.0, (double) treeheight);
-
-			viewtree = new ScaledNode(model, tree, null);
-			viewwidth = viewtree.width;
-			viewheight = viewtree.height;
-
-			fullwidth = leaves*(viewwidth+xspace)+xspace;
-			fullheight = treeheight*(viewheight+yspace)+viewheight+top+bottom;
-
-			panelwidthratio = panelwidth/fullwidth;
-			scaledwidth = panelwidth;
-			scaledheight = panelwidthratio*fullheight;
-
-			return new Dimension((int) scaledwidth, (int) scaledheight);
+			return new Dimension((int) swidth, (int) sheight);
 		}
 
 		public Dimension getPreferredSize() {
 			return getMinimumSize();
 		}
+
+		public void mousePressed(MouseEvent event) {
+			lastx = event.getX();
+			lasty = event.getY();
+		}
+
+		public void mouseDragged(MouseEvent event) {
+			int x1 = event.getX();
+			int y1 = event.getY();
+
+			double xchange = x1 - lastx;
+			double ychange = y1 - lasty;
+
+			x += xchange;
+			y += ychange;
+
+			if (x < 0)
+				x = 0;
+			if (y < 0)
+				y = 0;
+			if (x + nwidth > swidth)
+				x = swidth - nwidth;
+			if (y + nheight > sheight)
+				y = sheight - nheight;
+
+			statechanged = false;
+			treescrollpane.scroll((int) (x/xscale), (int) (y/yscale));
+
+			lastx = x1;
+			lasty = y1;
+
+			repaint();
+		}
+
+		/*
+			Scrolling causes a change event, but scrolling caused by
+			moving the navigator should not cause a change event.
+		*/
+		public void stateChanged(ChangeEvent event) {
+			if (statechanged) {
+				findSize();
+				repaint();
+			}
+
+			statechanged = true;
+		}
+
+		public void mouseExited(MouseEvent event) {	}
+		public void mouseEntered(MouseEvent event) { }
+		public void mouseReleased(MouseEvent event) { }
+		public void mouseClicked(MouseEvent event) { }
+		public void mouseMoved(MouseEvent event) { }
 	}
 }

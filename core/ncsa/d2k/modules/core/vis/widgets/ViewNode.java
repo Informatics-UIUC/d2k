@@ -5,161 +5,215 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
 import javax.swing.*;
-
+//import ncsa.d2k.modules.compute.learning.modelgen.decisiontree.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
-/**
-	Renders decision tree nodes
+/*
+	DecisionTreeVis
+
+	Represents a decision tree node with a bar graph
 */
 public class ViewNode {
 
-	DecisionTreeModel model;
+	// Decision tree model
+	DecisionTreeModel dmodel;
 
-	// Decision node
-	DecisionTreeNode modelnode;
+	DecisionTreeNode dnode;
 
-	ViewNode parent, left, right;
-
-	// View node displays descendants
-	boolean collapsed = false;
-
-	// Match for search
-	boolean searchmatch = false;//true;
-
-	// Represents leaf node
-	boolean leaf = false;
-
-	boolean roll = false;
+	ViewNode parent;
+	ArrayList children;
 
 	// Distribution values
 	double[] values;
 
-	double xoffset, yoffset;
+	boolean roll = false;
 
-	double width;
-	double height = 60;
+	boolean collapsed = false;
+
+	// x is midpoint of node
+	// y is top left of bar graph
+	double x, y;
+	double xspace = 20;
+	double yspace = 60;
+
+	double gwidth;
+	double gheight = 60;
 	double leftinset = 5;
 	double rightinset = 5;
 	double barwidth = 16;
 	double barspace = 5;
 	double ygrid = 5;
+	double tickmark = 3;
+
+	double tside = 8;
+	double tspace = 8;
+	double theight;
+
 	double yscale;
 	double scalesize = 100;
-	double tickmark = 3;
-	double triside = 8;
-	double trispace = 8;
-	double triheight;
-	double searchspace = 3;
-
 	double xincrement, yincrement;
 
 	DecisionTreeScheme scheme;
 
-	//public ViewNode(DecisionTreeNode modelnode, ViewNode parent) {
-	public ViewNode(DecisionTreeModel mdl, DecisionTreeNode modelnode,
-		ViewNode parent) {
+	public ViewNode(DecisionTreeModel model, DecisionTreeNode node, ViewNode vnode) {
+		dmodel = model;
+		dnode = node;
+		parent = vnode;
+		children = new ArrayList(dnode.getNumChildren());
 
-		model = mdl;
-		this.modelnode = modelnode;
-		this.parent = parent;
-
-		//values = modelnode.valuemapArray();
-		String[] outs = model.getUniqueOutputValues();
-		values = new double[outs.length];
-		for(int i = 0; i < values.length; i++)
-			values[i] = 100*(double)modelnode.getOutputTally(outs[i])/(double)modelnode.getTotal();
-
-		left = null;
-		right = null;
-
-		leaf = modelnode.isLeaf();
-
-		width = leftinset+tickmark+(barwidth+barspace)*values.length+rightinset;
-		yincrement = height/(ygrid+1);
-		yscale= (height-2*yincrement)/scalesize;
+		findValues();
 
 		scheme = new DecisionTreeScheme();
+		gwidth = leftinset + tickmark + (barwidth + barspace)*values.length + rightinset;
+		yincrement = gheight/(ygrid+1);
+		yscale = (gheight - 2*yincrement)/scalesize;
 	}
 
-	public void drawViewNode(Graphics2D g2) {
+	public void addChild(ViewNode vnode) {
+		children.add(vnode);
+	}
 
-		if (searchmatch) {
-			g2.setColor(scheme.treebackgroundcolor);
-			g2.fill(new Rectangle2D.Double(xoffset-searchspace, yoffset-searchspace, width+2*searchspace, height+2*searchspace));
+	public ViewNode getChild(int index) {
+		return (ViewNode) children.get(index);
+	}
 
-			g2.setColor(scheme.viewsearchcolor);;
-			g2.setStroke(new BasicStroke(1));
-			g2.draw(new Rectangle2D.Double(xoffset-searchspace, yoffset-searchspace, width+2*searchspace, height+2*searchspace));
+	public int getNumChildren() {
+		return children.size();
+	}
+
+	public boolean isLeaf() {
+		if (children.size() == 0)
+			return true;
+
+		return false;
+	}
+
+	public int getDepth() {
+		if (parent == null)
+			return 0;
+
+		return parent.getDepth() + 1;
+	}
+
+	public String getBranchLabel(int index) {
+		return dnode.getBranchLabel(index);
+	}
+
+	public void findValues() {
+		String[] output = dmodel.getUniqueOutputValues();
+		values = new double[output.length];
+		for(int index = 0; index < values.length; index++)
+			values[index] = 100*(double)dnode.getOutputTally(output[index])/(double)dnode.getTotal();
+	}
+
+	public double getWidth() {
+		return xspace + gwidth + xspace;
+	}
+
+	public double findSubtreeWidth() {
+		if (isLeaf())
+			return getWidth();
+
+		double subtreewidth = 0;
+
+		for (int index = 0; index < getNumChildren(); index++) {
+			ViewNode vchild = getChild(index);
+			subtreewidth += vchild.findSubtreeWidth();
 		}
 
-		// Draw background
-		if (roll) {
-			g2.setColor(scheme.viewrollcolor);
-			g2.fill(new Rectangle2D.Double(xoffset, yoffset, width, height));
+		return subtreewidth;
+	}
+
+	// Width from midpoint to leftmost child node
+	public double findLeftSubtreeWidth() {
+		if (isLeaf())
+			return getWidth()/2;
+
+		int numchildren = getNumChildren();
+
+		if (numchildren%2 == 0) {
+			int midindex = numchildren/2;
+			return findIntervalWidth(0, midindex-1);
 		}
 		else {
-			g2.setColor(scheme.viewbackgroundcolor);
-			g2.fill(new Rectangle2D.Double(xoffset, yoffset, width, height));
+			int midindex = numchildren/2 + 1;
+			ViewNode midchild = getChild(midindex-1);
+			return findIntervalWidth(0, midindex-2) + midchild.findLeftSubtreeWidth();
 		}
+	}
 
-		// Draw tickmarks
-		g2.setColor(scheme.viewtickcolor);
-		g2.setStroke(new BasicStroke(1));
-		double x = xoffset+leftinset;
-		double y = yoffset+yincrement;
-		for (int index=0; index < ygrid; index++) {
-			g2.draw(new Line2D.Double(x, y, x+tickmark, y));
-			y += yincrement;
-		}
+	// Width from midpoint to rightmost child node
+	public double findRightSubtreeWidth() {
+		if (isLeaf())
+			return getWidth()/2;
 
-		BarColors barcolors = scheme.getBarColors();
-		// Draw bars
-		x = xoffset+leftinset+tickmark+barspace;
-		for (int index=0; index < values.length; index++) {
-			double barheight = yscale*values[index];
-			y = yoffset+1+height-yincrement-barheight;
-			g2.setColor(barcolors.getNextColor());
-			g2.fill(new Rectangle2D.Double(x, y, barwidth, barheight));
-			x += barwidth+barspace;
-		}
+		int numchildren = getNumChildren();
 
-		// Draw triangle
-		if (leaf)
-			return;
-
-		triheight = .866025*triside;
-		double ycomponent = triside/2;
-		double xcomponent = .577350*ycomponent;
-		double xcenter, ycenter;
-
-		if (collapsed) {
-			xcenter = xoffset+width+trispace+xcomponent;
-			ycenter = yoffset+height-ycomponent;
-			int xpoints[] = {(int) (xcenter-xcomponent), (int) (xcenter+triheight-xcomponent), (int) (xcenter-xcomponent)};
-			int ypoints[] = {(int) (ycenter-ycomponent), (int) ycenter, (int) (ycenter+ycomponent)};
-			GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
-			triangle.moveTo((int) (xcenter-xcomponent), (int) (ycenter-ycomponent));
-			for (int index=1; index < xpoints.length; index++) {
-				triangle.lineTo(xpoints[index], ypoints[index]);
-			}
-			triangle.closePath();
-			g2.setColor(scheme.viewtrianglecolor);
-			g2.fill(triangle);
+		if (numchildren%2 == 0) {
+			int midindex = numchildren/2;
+			return findIntervalWidth(midindex, numchildren-1);
 		}
 		else {
-			xcenter = xoffset+width+trispace+xcomponent;
-			ycenter = yoffset+height-ycomponent;
-			int xpoints[] = {(int) (xcenter-ycomponent), (int) (xcenter+ycomponent), (int) (xcenter)};
-			int ypoints[] = {(int) (ycenter-xcomponent), (int) (ycenter-xcomponent), (int) (ycenter+ycomponent)};
-			GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
-			triangle.moveTo((int) (xcenter-ycomponent), (int) (ycenter-xcomponent));
-			for (int index=1; index < xpoints.length; index++) {
-				triangle.lineTo(xpoints[index], ypoints[index]);
-			}
-			triangle.closePath();
-			g2.setColor(DecisionTreeScheme.viewtrianglecolor);
-			g2.fill(triangle);
+			int midindex = numchildren/2 + 1;
+			ViewNode midchild = getChild(midindex-1);
+			return findIntervalWidth(midindex, numchildren-1) + midchild.findRightSubtreeWidth();
 		}
+	}
+
+	// Determines offsets of children
+	public void findOffsets() {
+		int numchildren = getNumChildren();
+
+		if (numchildren%2 == 0) {
+			int midindex = numchildren/2;
+
+			for (int index = 0; index < numchildren; index++) {
+				ViewNode vchild = getChild(index);
+
+				if (index <= midindex-1)
+					vchild.x = x - findIntervalWidth(index+1, midindex-1) - vchild.findRightSubtreeWidth();
+				else
+					vchild.x = x + findIntervalWidth(midindex, index-1) + vchild.findLeftSubtreeWidth();
+
+				vchild.y = y + gheight + yspace;
+			}
+		}
+		else {
+			int midindex = numchildren/2 + 1;
+			ViewNode midchild = getChild(midindex-1);
+
+			for (int index = 0; index < numchildren; index++) {
+				ViewNode vchild = getChild(index);
+
+				if (index < midindex-1) {
+					if (index == midindex-2)
+						vchild.x = x - midchild.findLeftSubtreeWidth() - vchild.findRightSubtreeWidth();
+					else
+						vchild.x = x - midchild.findLeftSubtreeWidth() - findIntervalWidth(index+1, midindex-2) - vchild.findRightSubtreeWidth();
+				}
+				else if (index == midindex-1)
+					vchild.x = x;
+				else {
+					if (index == midindex)
+						vchild.x = x + midchild.findRightSubtreeWidth() + vchild.findLeftSubtreeWidth();
+					else
+						vchild.x = x + midchild.findRightSubtreeWidth() + findIntervalWidth(midindex, index-1) + vchild.findLeftSubtreeWidth();
+				}
+
+				vchild.y = y + gheight + yspace;
+			}
+		}
+	}
+
+	public double findIntervalWidth(int start, int end) {
+		double intervalwidth = 0;
+
+		for (; start <= end; start++) {
+			ViewNode vchild = getChild(start);
+			intervalwidth += vchild.findSubtreeWidth();
+		}
+
+		return intervalwidth;
 	}
 
 	public void toggle() {
@@ -169,34 +223,99 @@ public class ViewNode {
 			collapsed = true;
 	}
 
-	/**
-		Returns one if x offset falls on background of view node
-		Returns two if x and y offsets falls around triangle
-	*/
-	public int evaluate(int xoff, int yoff) {
-		if (xoff >= xoffset && xoff <= xoffset+width)
+	public boolean isVisible() {
+		ViewNode vnode = this;
+		while (vnode.parent != null) {
+			if (vnode.parent.collapsed)
+				return false;
+			vnode = vnode.parent;
+		}
+
+		return true;
+	}
+
+	public int test(int x1, int y1) {
+		if (x1 >= x - gwidth/2 && x1 <= x + gwidth/2)
 			return 1;
-		if (xoff >= xoffset+width && xoff <= xoffset+width+trispace+triside+trispace) {
-			if (yoff >= yoffset+height-triside-trispace && yoff <= yoffset+height)
+
+		if (x1 >= x + gwidth/2 && x1 <= x + gwidth/2 + tspace + tside + tspace) {
+			if (y1 >= y + gheight - tside - tspace && y1 <= y + gheight)
 				return 2;
 		}
 
 		return -1;
 	}
 
-	/**
-		Determine if view node is visible
+	public void drawViewNode(Graphics2D g2) {
+		double x1, y1;
 
-		Returns true if the parent of all view nodes up to the root are not collapsed
-	*/
-	public boolean visible() {
-		ViewNode iterator = this;
-		while (iterator.parent != null) {
-			if (iterator.parent.collapsed)
-				return false;
-			iterator = iterator.parent;
+		// Background
+		g2.setColor(scheme.viewbackgroundcolor);
+		g2.fill(new Rectangle2D.Double(x-gwidth/2, y, gwidth, gheight));
+
+		// Tickmarks
+		g2.setColor(scheme.viewtickcolor);
+		g2.setStroke(new BasicStroke(1));
+		x1 = x - gwidth/2 + leftinset;
+		y1 = y + yincrement;
+		for (int index = 0; index < ygrid; index++) {
+			g2.draw(new Line2D.Double(x1, y1, x1+tickmark, y1));
+			y1 += yincrement;
 		}
 
-		return true;
+		// Bars
+		BarColors barcolors = scheme.getBarColors();
+		x1 = x - gwidth/2 + leftinset + tickmark + barspace;
+		for (int index = 0; index < values.length; index++) {
+			double barheight = yscale*values[index];
+			y1 = y + 1 + gheight - yincrement - barheight;
+			g2.setColor(barcolors.getNextColor());
+			g2.fill(new Rectangle2D.Double(x1, y1, barwidth, barheight));
+			x1 += barwidth + barspace;
+		}
+
+		// Triangle
+		if (isLeaf())
+			return;
+
+		theight = .866025*tside;
+		double ycomponent = tside/2;
+		double xcomponent = .577350*ycomponent;
+		double xcenter, ycenter;
+
+		if (collapsed) {
+			xcenter = x + gwidth/2 + tspace + xcomponent;
+			ycenter = y + gheight - ycomponent;
+
+			int xpoints[] = {(int) (xcenter-xcomponent), (int) (xcenter+theight-xcomponent), (int) (xcenter-xcomponent)};
+			int ypoints[] = {(int) (ycenter-ycomponent), (int) ycenter, (int) (ycenter+ycomponent)};
+
+			GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
+			triangle.moveTo((int) (xcenter-xcomponent), (int) (ycenter-ycomponent));
+			for (int index = 1; index < xpoints.length; index++) {
+				triangle.lineTo(xpoints[index], ypoints[index]);
+			}
+			triangle.closePath();
+
+			g2.setColor(scheme.viewtrianglecolor);
+			g2.fill(triangle);
+		}
+		else {
+			xcenter = x + gwidth/2 + tspace + xcomponent;
+			ycenter = y + gheight - ycomponent;
+
+			int xpoints[] = {(int) (xcenter-ycomponent), (int) (xcenter+ycomponent), (int) (xcenter)};
+			int ypoints[] = {(int) (ycenter-xcomponent), (int) (ycenter-xcomponent), (int) (ycenter+ycomponent)};
+
+			GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
+			triangle.moveTo((int) (xcenter-ycomponent), (int) (ycenter-xcomponent));
+			for (int index = 1; index < xpoints.length; index++) {
+				triangle.lineTo(xpoints[index], ypoints[index]);
+			}
+			triangle.closePath();
+
+			g2.setColor(DecisionTreeScheme.viewtrianglecolor);
+			g2.fill(triangle);
+		}
 	}
 }

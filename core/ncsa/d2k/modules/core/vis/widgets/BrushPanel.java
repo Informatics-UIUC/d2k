@@ -5,10 +5,19 @@ import java.awt.geom.*;
 import java.text.*;
 import java.util.*;
 import javax.swing.*;
-
+//import ncsa.d2k.modules.compute.learning.modelgen.decisiontree.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
+/*
+	DecisionTreeVis
+
+	Draws data when mouse moves over a node in tree scroll pane
+*/
 public class BrushPanel extends JPanel {
+
+	DecisionTreeModel dmodel;
+	DecisionTreeNode droot;
+	DecisionTreeNode dnode;
 
 	double samplesize = 10;
 	double samplespace = 8;
@@ -29,16 +38,11 @@ public class BrushPanel extends JPanel {
 
 	NumberFormat numberformat;
 
-	DecisionTreeModel model;
-	DecisionTreeNode tree;
-	DecisionTreeNode node;
+	public BrushPanel(DecisionTreeModel model) {
+		dmodel = model;
+		droot = dmodel.getRoot();
 
-	//public BrushPanel(DecisionTreeNode tree) {
-	public BrushPanel(DecisionTreeModel mdl) {
-		this.model = mdl;
-		this.tree = model.getRoot();
-
-		outputs = model.getUniqueOutputValues();//tree.outputmapArray();
+		outputs = model.getUniqueOutputValues();
 
 		scheme = new DecisionTreeScheme();
 
@@ -50,8 +54,6 @@ public class BrushPanel extends JPanel {
 		numberformat = NumberFormat.getInstance();
 		numberformat.setMaximumFractionDigits(1);
 
-		node = null;
-
 		setOpaque(true);
 		setBackground(scheme.borderbackgroundcolor);
 	}
@@ -62,51 +64,50 @@ public class BrushPanel extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.setFont(scheme.textfont);
 
-		if (node != null) {
+		if (dnode != null) {
 			values = new double[outputs.length];
-			//values = node.valuemapArray();
-			for(int i = 0; i < values.length; i++)
-				values[i] = 100*(double)node.getOutputTally(outputs[i])/(double)node.getTotal();
+			for(int index = 0; index < values.length; index++)
+				values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
 		}
 
-		// Draw brush data
 		BarColors barcolors = scheme.getBarColors();
 
 		Insets insets = getInsets();
+		double x = insets.left;
+		double y = insets.top;
 
-		double xoff = insets.left;
-		double yoff = insets.top;
 		for (int index=0; index < outputs.length; index++) {
 			g2.setColor(barcolors.getNextColor());
-			g2.fill(new Rectangle2D.Double(xoff, yoff, samplesize, samplesize));
+			g2.fill(new Rectangle2D.Double(x, y, samplesize, samplesize));
 
-			xoff += samplesize+samplespace;
-			yoff += samplesize;
+			x += samplesize + samplespace;
+			y += samplesize;
 			String output = outputs[index];
 			g2.setColor(scheme.textcolor);
-			g2.drawString(output, (int) xoff, (int) yoff);
+			g2.drawString(output, (int) x, (int) y);
 
-			if (node != null) {
-				xoff += outputwidth+outputspace;
+			if (dnode != null) {
+				x += outputwidth + outputspace;
 				String value = numberformat.format(values[index]) + "%";
-				g2.drawString(value, (int) xoff, (int) yoff);
+				g2.drawString(value, (int) x, (int) y);
 			}
 
-			xoff = insets.left;
-			yoff += samplespace;
+			x = insets.left;
+			y += samplespace;
 		}
 	}
 
+	// Called by tree scroll pane
 	public void updateBrush(DecisionTreeNode node) {
-		this.node = node;
+		dnode = node;
 		repaint();
 	}
 
 	public Dimension getMinimumSize() {
 		Insets insets = getInsets();
-		int prefwidth = (int) (insets.left+samplesize+samplespace+outputwidth+outputspace+percentwidth+insets.right);
-		int prefheight = (int) (insets.top+samplesize*(outputs.length)+samplespace*(outputs.length-1)+descent+insets.bottom);
-		return new Dimension(prefwidth, prefheight);
+		int pwidth = (int) (insets.left + samplesize + samplespace + outputwidth + outputspace + percentwidth + insets.right);
+		int pheight = (int) (insets.top + samplesize*(outputs.length) + samplespace*(outputs.length-1) + descent + insets.bottom);
+		return new Dimension(pwidth, pheight);
 	}
 
 	public Dimension getPreferredSize() {

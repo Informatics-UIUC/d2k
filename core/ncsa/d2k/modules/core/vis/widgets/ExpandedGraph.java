@@ -5,9 +5,13 @@ import java.awt.geom.*;
 import java.text.*;
 import java.util.*;
 import javax.swing.*;
-
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
+/*
+	DecisionTreeVis
+
+	Graph displayed when mouse clicks a node in tree scroll pane
+*/
 public class ExpandedGraph extends JPanel {
 
 	double left = 15;
@@ -15,8 +19,8 @@ public class ExpandedGraph extends JPanel {
 	double top = 15;
 	double bottom = 15;
 
-	double xrule, yrule;
-	double yrulespace = 15;
+	double xlabel, ylabel;
+	double ylabelspace = 15;
 
 	double xpath, ypath;
 	double pathleft = 10;
@@ -61,10 +65,10 @@ public class ExpandedGraph extends JPanel {
 	double percentspace = 8;
 	double axisspace = 4;
 
-	DecisionTreeNode modelnode;
+	DecisionTreeNode dnode;
 
-	String[] outputs;
-	double[] values;
+	String[] outputs = {"one", "two", "three"};
+	double[] values = {40, 10, 50};
 	int datasize;
 
 	DecisionTreeScheme scheme;
@@ -74,15 +78,13 @@ public class ExpandedGraph extends JPanel {
 
 	NumberFormat numberformat;
 
-	public ExpandedGraph(DecisionTreeModel mdl, DecisionTreeNode modelnode) {
-		this.modelnode = modelnode;
+	public ExpandedGraph(DecisionTreeModel model, DecisionTreeNode node) {
+		dnode = node;
 
-		//outputs = modelnode.outputmapArray();
-		outputs = mdl.getUniqueOutputValues();
-		//values = modelnode.valuemapArray();
+		outputs = model.getUniqueOutputValues();
 		values = new double[outputs.length];
-		for(int i = 0; i < outputs.length; i++)
-			values[i] = 100*(double)modelnode.getOutputTally(outputs[i])/(double)modelnode.getTotal();
+		for(int index = 0; index < outputs.length; index++)
+			values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
 		datasize = values.length;
 
 		scheme = new DecisionTreeScheme();
@@ -106,164 +108,161 @@ public class ExpandedGraph extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		drawRule(g2);
-		drawRulePath(g2);
+		drawLabel(g2);
+		drawLabelPath(g2);
 		drawData(g2);
 		drawGraph(g2);
 	}
 
-	public void drawRule(Graphics2D g2) {
-		// ** Correct??
-		String rule = modelnode.getLabel();//modelnode.getRule();
+	public void drawLabel(Graphics2D g2) {
+		String label = dnode.getLabel();
 
 		g2.setFont(scheme.expandedfont);
 		g2.setColor(scheme.expandedfontcolor);
-		g2.drawString(rule, (int) xrule, (int) yrule);
+		g2.drawString(label, (int) xlabel, (int) ylabel);
 	}
 
-	public void drawRulePath(Graphics2D g2) {
-
+	public void drawLabelPath(Graphics2D g2) {
 		g2.setFont(scheme.textfont);
 
-		// Draw background
+		// Background
 		g2.setColor(scheme.expandedborderbackgroundcolor);
 		g2.fill(new Rectangle2D.Double(xpath, ypath, pathwidth, pathheight));
 
 
-		// Draw path
-		double yoff = ypath+pathtop+smallascent;
-		double xoff = pathleft+xpath;
+		// Path
+		double y = ypath + pathtop + smallascent;
+		double x = pathleft + xpath;
 		g2.setColor(scheme.textcolor);
-		for (int index=0; index < path.length; index++) {
-			g2.drawString(path[index], (int) xoff, (int) yoff);
-			yoff += smallascent+pathleading;
+		for (int index = 0; index < path.length; index++) {
+			g2.drawString(path[index], (int) x, (int) y);
+			y += smallascent + pathleading;
 		}
 	}
 
 	public void drawData(Graphics2D g2) {
 
-		// Draw background
+		// Background
 		g2.setColor(scheme.expandedborderbackgroundcolor);
 		g2.fill(new Rectangle2D.Double(xdata, ydata, datawidth, dataheight));
 
-		// Draw data
-		double xoff = xdata+dataleft;
-		double yoff = ydata+datatop;
+		// Data
+		double x = xdata + dataleft;
+		double y = ydata + datatop;
 
 		BarColors barcolors = scheme.getBarColors();
 
-		for (int index=0; index < datasize; index++) {
+		for (int index = 0; index < datasize; index++) {
 			Color color = barcolors.getNextColor();
 			g2.setColor(color);
-			g2.fill(new Rectangle2D.Double(xoff, yoff, samplesize, samplesize));
+			g2.fill(new Rectangle2D.Double(x, y, samplesize, samplesize));
 
-			xoff += samplesize+samplespace;
-			yoff += samplesize;
+			x += samplesize + samplespace;
+			y += samplesize;
 			g2.setColor(scheme.textcolor);
-			g2.drawString(outputs[index], (int) xoff, (int) yoff);
+			g2.drawString(outputs[index], (int) x, (int) y);
 
-			xoff += outputwidth+outputspace;
+			x += outputwidth + outputspace;
 			String value = numberformat.format(values[index]) + "%";
-			g2.drawString(value, (int) xoff, (int) yoff);
+			g2.drawString(value, (int) x, (int) y);
 
-			xoff = xdata+dataleft;
-			yoff += samplespace;
+			x = xdata + dataleft;
+			y += samplespace;
 		}
 	}
 
 	public void drawGraph(Graphics2D g2) {
 
-		// Draw background
+		// Background
 		g2.setColor(scheme.expandedborderbackgroundcolor);
 		g2.fill(new Rectangle2D.Double(xgraph, ygraph, graphwidth, graphheight));
 
-		// Draw grid
+		// Grid
 		g2.setColor(scheme.expandedgraphgridcolor);
 
 		double yincrement = gridheight/10;
-		double xoff = xgraph+graphleft;
-		double yoff = ygraph+graphheight-graphbottom;
+		double x = xgraph + graphleft;
+		double y = ygraph + graphheight - graphbottom;
 		int val = 0;
 		for (int index=0; index <= 10; index++) {
 			Integer integer = new Integer(val);
-			String stringval = integer.toString();
-			int valwidth = smallmetrics.stringWidth(stringval);
-			g2.drawString(stringval, (int) xoff, (int) yoff);
+			String svalue = integer.toString();
+			g2.drawString(svalue, (int) x, (int) y);
 
 			g2.setStroke(new BasicStroke(gridstroke));
-			xoff += percentwidth+percentspace;
-			g2.draw(new Line2D.Double(xoff, yoff, xoff+largetick, yoff));
-			xoff += largetick+tickspace;
-			g2.draw(new Line2D.Double(xoff, yoff, xoff+gridwidth, yoff));
+			x += percentwidth + percentspace;
+			g2.draw(new Line2D.Double(x, y, x+largetick, y));
+			x += largetick + tickspace;
+			g2.draw(new Line2D.Double(x, y, x+gridwidth, y));
 
-			xoff = xgraph+graphleft;
-			yoff -= yincrement;
+			x = xgraph + graphleft;
+			y -= yincrement;
 			val += 10;
 		}
 
 
-		// Draw small grid
-		xoff = xgraph+graphleft+percentwidth+percentspace+largetick-smalltick;
+		// Small grid
+		x = xgraph + graphleft + percentwidth + percentspace + largetick - smalltick;
 		yincrement = gridheight/20;
-		yoff = ygraph+graphheight-graphbottom-yincrement;
+		y = ygraph + graphheight - graphbottom - yincrement;
 		for (int index=0; index < 10; index++) {
-			g2.draw(new Line2D.Double(xoff, yoff, xoff+smalltick, yoff));
-			xoff += smalltick+tickspace;
-			g2.draw(new Line2D.Double(xoff, yoff, xoff+gridwidth, yoff));
+			g2.draw(new Line2D.Double(x, y, x+smalltick, y));
+			x += smalltick+tickspace;
+			g2.draw(new Line2D.Double(x, y, x+gridwidth, y));
 
-			xoff = xgraph+graphleft+percentwidth+percentspace+largetick-smalltick;
-			yoff -= 2*yincrement;
+			x = xgraph + graphleft + percentwidth + percentspace + largetick - smalltick;
+			y -= 2*yincrement;
 		}
 
-		// Draw bars
+		// Bars
 		BarColors barcolors = scheme.getBarColors();
 
-		xoff = xgraph+graphleft+percentwidth+percentspace+largetick+tickspace+barspace;
+		x = xgraph + graphleft + percentwidth + percentspace + largetick + tickspace + barspace;
 		double yscale = gridheight/100;
 		for (int index=0; index < values.length; index++) {
 			double barheight = yscale*values[index];
-			yoff = ygraph+graphheight-graphbottom-barheight;
+			y = ygraph + graphheight - graphbottom - barheight;
 			g2.setColor(barcolors.getNextColor());
-			g2.fill(new Rectangle2D.Double(xoff, yoff, barwidth, barheight));
-			xoff += barspace+barwidth;
+			g2.fill(new Rectangle2D.Double(x, y, barwidth, barheight));
+			x += barspace + barwidth;
 		}
 
-		xoff = xgraph+graphleft+percentwidth+percentspace+largetick+tickspace+barspace+barwidth/2;
-		yoff = ygraph+graphheight-graphbottom+smallascent+axisspace;
+		x = xgraph + graphleft + percentwidth + percentspace + largetick + tickspace + barspace + barwidth/2;
+		y = ygraph + graphheight - graphbottom + smallascent + axisspace;
 		g2.setColor(scheme.textcolor);
 		for (int index=0; index < outputs.length; index++) {
 			String output = outputs[index];
 			int outputwidth = smallmetrics.stringWidth(output);
-			g2.drawString(output, (int) (xoff-outputwidth/2), (int) yoff);
-			xoff += barspace+barwidth;
+			g2.drawString(output, (int) (x-outputwidth/2), (int) y);
+			x += barspace + barwidth;
 		}
 	}
 
 	public Dimension getMinimumSize() {
-		// Rule bounds
-		xrule = left;
-		yrule = top+largeascent;
+		// Label bounds
+		xlabel = left;
+		ylabel = top + largeascent;
 
 		// Path bounds
-		xpath = xrule;
-		ypath = yrule+yrulespace;
+		xpath = xlabel;
+		ypath = ylabel + ylabelspace;
 
-		path = new String[0];//modelnode.getRulePath();
+		path = new String[0];
 		pathwidth = 0;
 		for (int index=0; index < path.length; index++) {
-			int tempwidth = smallmetrics.stringWidth(path[index]);
-			if (tempwidth > pathwidth)
-				pathwidth = tempwidth;
+			int twidth = smallmetrics.stringWidth(path[index]);
+			if (twidth > pathwidth)
+				pathwidth = twidth;
 		}
-		pathwidth += pathleft+pathright;
-		pathheight = pathtop+path.length*smallascent+(path.length-1)*pathleading+pathbottom;
+		pathwidth += pathleft + pathright;
+		pathheight = pathtop + path.length*smallascent + (path.length-1)*pathleading + pathbottom;
 
 		// Data bounds
 		xdata = xpath;
-		ydata = ypath+pathheight+ypathspace;
+		ydata = ypath + pathheight + ypathspace;
 
-		datawidth = dataleft+samplesize+samplespace+outputwidth+outputspace+dpercentwidth+dataright;
-		dataheight = datatop+datasize*samplesize+(datasize-1)*samplespace+databottom;
+		datawidth = dataleft + samplesize + samplespace + outputwidth + outputspace + dpercentwidth + dataright;
+		dataheight = datatop + datasize*samplesize + (datasize-1)*samplespace + databottom;
 
 		if (pathwidth > datawidth)
 			datawidth = pathwidth;
@@ -272,15 +271,15 @@ public class ExpandedGraph extends JPanel {
 
 		// Graph bounds
 		ygraph = top;
-		xgraph = xpath+pathwidth+xgraphspace;
+		xgraph = xpath + pathwidth + xgraphspace;
 
-		graphheight = graphtop+gridheight+graphbottom;
+		graphheight = graphtop + gridheight + graphbottom;
 
-		gridwidth = barwidth*datasize+barspace*(datasize+1);
-		graphwidth = graphleft+percentwidth+percentspace+largetick+tickspace+gridwidth+graphright;
+		gridwidth = barwidth*datasize + barspace*(datasize+1);
+		graphwidth = graphleft + percentwidth + percentspace + largetick + tickspace + gridwidth + graphright;
 
-		double width = left+pathwidth+xgraphspace+graphwidth+right;
-		double height = top+graphheight+bottom;
+		double width = left + pathwidth + xgraphspace + graphwidth + right;
+		double height = top + graphheight + bottom;
 
 		return new Dimension((int) width, (int) height);
 	}
@@ -288,5 +287,4 @@ public class ExpandedGraph extends JPanel {
 	public Dimension getPreferredSize() {
 		return getMinimumSize();
 	}
-
 }
