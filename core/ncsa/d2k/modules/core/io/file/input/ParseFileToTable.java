@@ -99,6 +99,7 @@ public class ParseFileToTable extends InputModule {
             }
         }*/
 
+        // System.out.println("check at end: " + t.isValueMissing(24, 0));
         pushOutput(t, 0);
         //pushOutput(bt, 1);
     }
@@ -140,6 +141,8 @@ public class ParseFileToTable extends InputModule {
                 columns[i] = new StringColumn(numRows);
             */
             columns[i] = ColumnUtilities.createColumn(type, numRows);
+
+            // System.out.println(i + ": " + columns[i]);
 
             if(type != -1)
                 hasTypes = true;
@@ -184,9 +187,20 @@ public class ParseFileToTable extends InputModule {
                     // if the value was missing..
                     else {
                         // put 0 in a numeric column and set the value to missing
-                        if(ti.isColumnNumeric(j)) {
+                        // if(ti.isColumnNumeric(j)) {
+                       if (df.getColumnType(i) == ColumnTypes.INTEGER ||
+                           df.getColumnType(i) == ColumnTypes.DOUBLE ||
+                           df.getColumnType(i) == ColumnTypes.FLOAT ||
+                           df.getColumnType(i) == ColumnTypes.LONG ||
+                           df.getColumnType(i) == ColumnTypes.SHORT ||
+                           df.getColumnType(i) == ColumnTypes.BYTE) {
+
+
+
+                           // System.out.println("setting missing at " + i + ", " + j);
                             ti.setChars(Integer.toString(0).toCharArray(), i, j);
                             ti.setValueToMissing(true, i, j);
+                           // System.out.println("confirming missing at " + i + ", " + j + ": " + ti.isValueMissing(i, j));
                         }
                         // otherwise put the '?' in the table and set the value to missing
                         else {
@@ -201,6 +215,9 @@ public class ParseFileToTable extends InputModule {
         // if types were not specified, we should try to convert to double columns
         // where appropriate
         if(!hasTypes) {
+
+           // System.out.println("no types");
+
             // for each column
             for(int i = 0; i < numColumns; i++) {
                 boolean isNumeric = true;
@@ -209,6 +226,10 @@ public class ParseFileToTable extends InputModule {
                 // for each row
                 for(int j = 0; j < numRows; j++) {
                     String s = ti.getString(j, i);
+
+                    if (ti.isValueMissing(j, i) || ti.isValueEmpty(j, i))
+                       continue;
+
                     try {
                         double d = Double.parseDouble(s);
                         newCol[j] = d;
@@ -223,10 +244,21 @@ public class ParseFileToTable extends InputModule {
                 if(isNumeric) {
                     DoubleColumn dc = new DoubleColumn(newCol);
                     dc.setLabel(ti.getColumnLabel(i));
+
+                    for (int k = 0; k < ti.getNumRows(); k++) {
+                       if (ti.isValueMissing(k, i))
+                          dc.setValueToMissing(true, k);
+                       if (ti.isValueEmpty(k, i))
+                          dc.setValueToEmpty(true, k);
+                    }
+
                     ti.setColumn(dc, i);
                 }
             }
         }
+        // else {
+        //    System.out.println("has types");
+        // }
 
         // set the feature (nom-scalar) type
         /*for(int i = 0; i < numColumns; i++) {
