@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.transform.table;
 
 
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -160,12 +161,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 			"       any columns in the second table. To construct columns for this data, we       append"+
 			" the the contents of the first tables column to filler. The filler       represents the rows"+
 			" of the second table that did not contain a column by       the same name. The filler values"+
-			" for various data types is defined in       the properties.    </p>    <p>      Scalability:"+
-			" This module will operate on a table that is the same type       as the first. How scalable"+
-			" this module is will depend on the scalability       of the table implementation. However, this"+
-			" module, for each column       extract the data from both tables for that column into memory"+
-			" to       construct the new column. Therefor, memory to contain said data must be       available."+
-			"    </p>";
+			" for various data types is defined in       the properties. This module does not modify either"+
+			" of the original       tables.    </p>    <p>      Scalability: This module will operate on"+
+			" a table that is the same type       as the first input table. How scalable this module is will"+
+			" depend on the       scalability of the table implementation. On the other hand, that data "+
+			"      for each complete column must fit in memory.    </p>";
 	}
 
 	/**
