@@ -10,7 +10,7 @@ public class DecisionTreeParamSpaceGenerator extends AbstractParamSpaceGenerator
 
     public String getOutputName(int i) { 
 	switch (i) { 
-	case 0: return "Control Parameter Space"; 
+	case 0: return "Parameter Space"; 
 	case 1: return "Function Inducer Class"; 
 	} 
 	return ""; 
