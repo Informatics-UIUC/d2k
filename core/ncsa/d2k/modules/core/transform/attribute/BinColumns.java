@@ -957,7 +957,7 @@ public class BinColumns extends UIModule {
          */
         private double getInterval () {
             int colIdx = numericColumnLabels.getSelectedIndex();
-            double max = Double.MIN_VALUE, min = Double.MAX_VALUE;
+            double max = Double.NEGATIVE_INFINITY, min = Double.POSITIVE_INFINITY;
             for (int i = 0; i < tbl.getNumRows(); i++) {
                 double d = tbl.getDouble(i, colIdx);
                 if (d < min)
@@ -998,8 +998,8 @@ public class BinColumns extends UIModule {
             double[] maxes = new double[colIdx.length];
             double[] mins = new double[colIdx.length];
             for (int i = 0; i < colIdx.length; i++) {
-                maxes[i] = Double.MIN_VALUE;
-                mins[i] = Double.MAX_VALUE;
+                maxes[i] = Double.NEGATIVE_INFINITY;
+                mins[i] = Double.POSITIVE_INFINITY;
             }
             for (int i = 0; i < colIdx.length; i++) {
                 // find the max and min and make equally spaced bins
@@ -1108,8 +1108,8 @@ public class BinColumns extends UIModule {
             double[] maxes = new double[colIdx.length];
             double[] mins = new double[colIdx.length];
             for (int i = 0; i < colIdx.length; i++) {
-                maxes[i] = Double.MIN_VALUE;
-                mins[i] = Double.MAX_VALUE;
+                maxes[i] = Double.NEGATIVE_INFINITY;
+                mins[i] = Double.POSITIVE_INFINITY;
             }
             for (int i = 0; i < colIdx.length; i++) {
                 // find the max and min
@@ -1253,7 +1253,7 @@ public class BinColumns extends UIModule {
         }
 
         /**
-         * Create a numeric bin that goes from Double.MIN_VALUE to max
+         * Create a numeric bin that goes from Double.NEGATIVE_INFINITY to max
          */
         private BinDescriptor createMinNumericBinDescriptor (int col, double max) {
             StringBuffer nameBuffer = new StringBuffer();
@@ -1263,12 +1263,12 @@ public class BinColumns extends UIModule {
             nameBuffer.append(nf.format(max));
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    Double.MIN_VALUE, max, tbl.getColumnLabel(col));
+                    Double.NEGATIVE_INFINITY, max, tbl.getColumnLabel(col));
             return  nb;
         }
 
         /**
-         * Create a numeric bin that goes from min to Double.MAX_VALUE
+         * Create a numeric bin that goes from min to Double.POSITIVE_INFINITY
          */
         private BinDescriptor createMaxNumericBinDescriptor (int col, double min) {
             StringBuffer nameBuffer = new StringBuffer();
@@ -1278,7 +1278,7 @@ public class BinColumns extends UIModule {
             nameBuffer.append(DOTS);
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    min, Double.MAX_VALUE, tbl.getColumnLabel(col));
+                    min, Double.POSITIVE_INFINITY, tbl.getColumnLabel(col));
             return  nb;
         }
 
@@ -1425,8 +1425,8 @@ class TableBinCounts implements BinCounts {
             if(table.isColumnNumeric(i)) {
                 minMaxes[i] = new double[2];
 
-                double max = Double.MIN_VALUE;
-                double min = Double.MAX_VALUE;
+                double max = Double.NEGATIVE_INFINITY;
+                double min = Double.POSITIVE_INFINITY;
 
                 // get the max and min
                 for (int j = 0; j < table.getNumRows(); j++) {
