@@ -13,7 +13,7 @@ import ncsa.d2k.modules.core.optimize.util.*;
 
 	In effect it works like this. Imagine that each of the individuals of the current population
 	is assigned a start and end point on a line where the length betwee the start
-	and end point is perportional to their fitness relative to the total fitness of the
+	and end point is proportional to their fitness relative to the total fitness of the
 	population. Then assign N equidistant points along the line such that the points are evenly
 	distributed all the way along the line. The only variable is where the first point is placed,
 	this is determined by a role of the dice. For each of the N points, it is determined which
@@ -117,7 +117,7 @@ public class StochasticUniversalSampling extends SelectionModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "SUS";
+		return "Expected Value";
 	}
 
 	/**

@@ -9,10 +9,10 @@ import java.io.Serializable;
 abstract public class IntSolution implements Solution, java.io.Serializable  {
 
 	/** the parameters. */
-	int [] parameters;
+	protected int [] parameters;
 
 	/** the ranges with describe the parameters. */
-	IntRange [] ranges;
+	protected IntRange [] ranges;
 
 	/**
 	 * the constructor takes a list of IntRanges for the parameters,

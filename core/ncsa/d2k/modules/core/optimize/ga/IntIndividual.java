@@ -43,7 +43,7 @@ public class IntIndividual extends SOIntSolution
 		@param p the new genes.
 	*/
 	public void setGenes (Object p) {
-		this.parameters = (int []) p;
+		this.setParameters((int []) p);
 		dirty = true;
 	}
 
@@ -51,7 +51,7 @@ public class IntIndividual extends SOIntSolution
 		Copy the given individual.
 	*/
 	public Object clone () {
-		IntIndividual bi = new IntIndividual (ranges);
+		IntIndividual bi = new IntIndividual (this.ranges);
 		int [] genes = (int []) this.getGenes ();
 		int [] bigenes = (int []) bi.getGenes ();
 		System.arraycopy (genes, 0, bigenes,
@@ -67,7 +67,7 @@ public class IntIndividual extends SOIntSolution
 		@param x the location to mutate the chomosome.
 	*/
 	public void mutateGene (int x) {
-		this.parameters [x] = (int)(ranges [x].getMin () + (Math.random() *
+		((int[])this.getGenes())[x] = (int)(ranges [x].getMin () + (Math.random() *
 						(ranges [x].getMax () - ranges [x].getMin ())));
 		this.dirty = true;
 	}
@@ -77,10 +77,10 @@ public class IntIndividual extends SOIntSolution
 		@param x the points to cross at.
 	*/
 	public void crossAt (int [] x, Individual swapee) {
-		int [] swap = new int [parameters.length];
+		int [] swap = new int [((int[])this.getGenes()).length];
 		int ct = x.length;
-		int [] mom = parameters;
-		int [] pop = (int [])swapee.getGenes ();
+		int [] mom = (int[]) this.getGenes();
+		int [] pop = (int []) swapee.getGenes ();
 		for (int i = 1 ; i < ct; i += 2) {
 
 			// Determin the points of crossover
@@ -102,8 +102,8 @@ public class IntIndividual extends SOIntSolution
 	*/
 	public void copy (Individual cloneMe) {
 		IntIndividual bi = (IntIndividual)cloneMe;
-		System.arraycopy (bi.getGenes (), 0, this.parameters,
-					0, this.parameters.length);
+		System.arraycopy (bi.getGenes (), 0, this.getGenes(),
+					0, ((int[])this.getGenes()).length);
 		this.setObjective (bi.getObjective ());
 		this.dirty = bi.dirty;
 	}

@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga;
 
 
+
 import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 
@@ -49,7 +50,8 @@ public class MeasureModule extends ncsa.d2k.core.modules.ComputeModule 	 {
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "      We will generate this output population only if we are not done.   ";
+			case 0: return "<html>  <head>  </head>  <body>    This output will be produced at each iteration, unless we are done.  </body></html>";
+			case 1: return "<html>  <head>      </head>  <body>    This output will be produced only when we are done.  </body></html>";
 			default: return "No such output";
 		}
 	}
@@ -72,7 +74,7 @@ public class MeasureModule extends ncsa.d2k.core.modules.ComputeModule 	 {
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    THis is the module that will determine when the population is done. The     population object is responsible for making the call, it will stop when we     have reached the maximum number of interations (property of the population     generation module), or if we have reached the target fitness (also a     property of the population generation module).  </body></html>";
+		return "<html>  <head>      </head>  <body>    This is the module that will determine when the optimization is done. The     population object is responsible for making the call, it will stop when we     have reached the maximum number of interations (property of the population     generation module), or if we have reached the target fitness (also a     property of the population generation module).  </body></html>";
 	}
 
 	//////////////////////////////////
@@ -85,7 +87,7 @@ public class MeasureModule extends ncsa.d2k.core.modules.ComputeModule 	 {
 	}
 
 	public String[] getOutputTypes () {
-		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
+		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population","ncsa.d2k.modules.core.optimize.ga.Population"};
 		return types;
 	}
 	public void beginExecution () {
@@ -145,6 +147,8 @@ public class MeasureModule extends ncsa.d2k.core.modules.ComputeModule 	 {
 		switch(index) {
 			case 0:
 				return "population";
+			case 1:
+				return "result population";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
