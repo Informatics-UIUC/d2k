@@ -1307,14 +1307,14 @@ public class SQLBinColumns extends UIModule {
                 BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
                         binMaxes[0]);
                 addItemToBinList(nbd);
-                for (int j = 1; j < binMaxes.length; j++) {
+                for (int j = 1; j < binMaxes.length -1; j++) {
                     // now create the BinDescriptor and add it to the bin list
                     nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -
                     1], binMaxes[j]);
                     addItemToBinList(nbd);
                 }
                         // add the last bin - anca:
-                        nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-1]);
+                        nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-2]);
                 addItemToBinList(nbd);
                 stmt.close();
               }
@@ -1523,4 +1523,4 @@ public class SQLBinColumns extends UIModule {
 }
 
 //QA Comments
-// Anca: Added last bin in addFromWeigth;
+// Anca: changed last bin in addFromWeigth

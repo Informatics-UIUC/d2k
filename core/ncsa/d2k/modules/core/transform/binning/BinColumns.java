@@ -1227,14 +1227,14 @@ public class BinColumns extends UIModule {
                 BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
                         binMaxes[0]);
                 addItemToBinList(nbd);
-                for (int j = 1; j < binMaxes.length; j++) {
+                for (int j = 1; j < binMaxes.length-1; j++) {
                     // now create the BinDescriptor and add it to the bin list
                     nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -
                     1], binMaxes[j]);
                     addItemToBinList(nbd);
                 }
                 nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length
-                        - 1]);
+                        - 2]);
                 addItemToBinList(nbd);
             }
         }
@@ -1505,4 +1505,5 @@ class TableBinCounts implements BinCounts {
  * 2-27-03 vered started qa. added module description, exception handling.
  * 2-27-03 commit back to core and back to greg - to reveiw bin nominal columns tab.
  * 3-6-03 added to module info a note about missing values handling.
+ * 3-17 -3 anca: changed last bin in addFromWeigth 
  */
