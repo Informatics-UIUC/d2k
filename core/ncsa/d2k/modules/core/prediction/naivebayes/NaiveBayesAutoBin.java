@@ -97,7 +97,7 @@ public class NaiveBayesAutoBin
   public void doit() throws Exception {
     ExampleTable et = (ExampleTable) pullInput(0);
     ParameterPoint pp = (ParameterPoint) pullInput(1);
-    HashMap nameToIndexMap = new HashMap();
+//    HashMap nameToIndexMap = new HashMap();
 
     tbl = et;
     nf = NumberFormat.getInstance();
@@ -125,20 +125,25 @@ public class NaiveBayesAutoBin
     //BinTree bt;
     BinDescriptor[] bins;
     if (type == 0) {
-      Integer number = (Integer) nameToIndexMap.get(
+      /*Integer number = (Integer) nameToIndexMap.get(
           NaiveBayesParamSpaceGenerator.NUMBER_OF_BINS);
       if (number == null) {
         throw new Exception(getAlias() + ": Number of bins not specified!");
       }
-      bins = numberOfBins( (int) pp.getValue(number.intValue()));
+      */
+     int number = (int)pp.getValue(NaiveBayesParamSpaceGenerator.NUMBER_OF_BINS);
+     if(number < 0)
+       throw new Exception(getAlias()+": Number of bins not specified!");
+      bins = numberOfBins(number);
     }
     else {
-      Integer weight = (Integer) nameToIndexMap.get(
+      /*Integer weight = (Integer) nameToIndexMap.get(
           NaiveBayesParamSpaceGenerator.ITEMS_PER_BIN);
       if (weight == null) {
         throw new Exception(getAlias() + ": Items per bin not specified!");
-      }
-      bins = sameWeight( (int) pp.getValue(weight.intValue()));
+      }*/
+      int weight = (int)pp.getValue(NaiveBayesParamSpaceGenerator.ITEMS_PER_BIN);
+      bins = sameWeight(weight);
     }
 
     BinTransform bt = new BinTransform(bins, false);
