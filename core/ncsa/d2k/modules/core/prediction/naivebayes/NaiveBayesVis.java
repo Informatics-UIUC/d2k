@@ -215,6 +215,16 @@ public final class NaiveBayesVis extends VisModule  {
 
       private transient HelpWindow helpWindow;
 
+      /*private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        System.out.println("WRITE NBV!");
+      }
+
+      private void readObject(ObjectInputStream in) throws Exception {
+          in.defaultReadObject();
+          System.out.println("READ NBV!"+this);
+      }*/
+
       /**
        * Print this component.
        */
@@ -256,6 +266,8 @@ public final class NaiveBayesVis extends VisModule  {
       public void setInput(Object o, int i) {
          model = (NaiveBayesModel)o;
          all_ranked_attribute_names = model.getAttributeNames();
+         for(int j = 0; j < all_ranked_attribute_names.length; j++)
+           System.out.println(all_ranked_attribute_names[j]);
          all_alpha_attribute_names = sortNames(all_ranked_attribute_names);
          class_names = model.getClassNames();
          color_map = new HashMap();
