@@ -273,7 +273,10 @@ public class FilterConstruction extends UIModule {
       sb.append("operators, and so forth.");
       sb.append("<br><br>");
       sb.append("Column names may not contain spaces or the following ");
-      sb.append("characters: =, !, <, >, |, &.");
+      sb.append("characters: =, !, <, >, |, &. You may specify nominal ");
+      sb.append("values from columns; i.e., ColumnA != 'value', but those ");
+      sb.append("values must be enclosed in tick marks (single quotes) so ");
+      sb.append("as to distinguish them from column labels.");
       sb.append("</body></html>");
 
       return sb.toString();
