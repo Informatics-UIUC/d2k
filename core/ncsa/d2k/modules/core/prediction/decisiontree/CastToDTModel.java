@@ -15,19 +15,19 @@ public class CastToDTModel extends ComputeModule {
 	}
 
 	public String getInputInfo(int i) {
-		return "";
+		return "Prediction Model";
 	}
 
 	public String getInputName(int i) {
-		return "";
+		return "Prediction Model";
 	}
 
 	public String getOutputInfo(int i) {
-		return "";
+		return "Decision Tree Model";
 	}
 
 	public String getOutputName(int i) {
-		return "";
+		return "Decision Tree Model";
 	}
 
 	public String getModuleName() {
@@ -35,7 +35,21 @@ public class CastToDTModel extends ComputeModule {
 	}
 
 	public String getModuleInfo() {
-		return "";
+          String s = "<p> Overview: ";
+          s += "This module converts a prediction model to a decision tree model. </p> ";
+          s += "<p> Detailed Description: ";
+          s += "A prediction model can be created by different algorithms, for example, ";
+          s += "C45 decision tree, Rain Forest decision tree, Naive Bayse, etc. ";
+          s += "This module converts a prediction model to a decision tree model. ";
+          s += "After this conversion, the decision tree model can be visualized ";
+          s += "and viewed using the desion tree visualizer and viewer. ";
+          s += "<p> Restrictions: ";
+          s += "Only the models that are compatible with the decision tree model ";
+          s += "can be converted. For example, models created by the algorithm C45 ";
+          s += "and RainForest can be converted to the decision tree model, but ";
+          s += "models created by NaiveBayes cannot.";
+
+          return s;
 	}
 
 	public void doit() {
