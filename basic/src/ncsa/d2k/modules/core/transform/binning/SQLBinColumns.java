@@ -1076,7 +1076,7 @@ public class SQLBinColumns extends UIModule {
               }
               if (!match) {
                 JOptionPane.showMessageDialog(msgBoard,
-                         "Current bins contain unselected attributes. Please remove them.", "Error",
+                         "Current bins contain non-selected attributes. Please remove them.", "Error",
                          JOptionPane.ERROR_MESSAGE);
                 return false;
               }
