@@ -1014,7 +1014,7 @@ public class BinAttributes extends HeadlessUIModule {
 
 		//ANCA
 			//		 savedBins = BinningUtils.addMissingValueBins(tbl,savedBins);
-			
+
 			 BinTransform bt = new BinTransform(tbl, savedBins, createInNewColumn.isSelected());
 
 			 pushOutput(bt, 0);
@@ -1189,9 +1189,9 @@ public class BinAttributes extends HeadlessUIModule {
 		//NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
 /*
 		for (int j = 0; j < tbl.getNumRows(); j++) {
-			
+
 		   double  d = tbl.getDouble(j, colIdx[i]);
-		        
+
 		  if (d > maxes[i])
 			maxes[i] = d;
 		  if (d < mins[i])
@@ -1201,7 +1201,7 @@ public class BinAttributes extends HeadlessUIModule {
 		ScalarStatistics ss = TableUtilities.getScalarStatistics(tbl, colIdx[i]);
 		 maxes[i] = ss.getMaximum();
 		mins[i] = ss.getMinimum();
-		
+
 		double[] binMaxes = new double[num - 1];
 		double interval = (maxes[i] - mins[i])/(double)num;
 		// add the first bin manually
@@ -1317,7 +1317,7 @@ public class BinAttributes extends HeadlessUIModule {
 		maxes[i] = Double.NEGATIVE_INFINITY;
 		mins[i] = Double.POSITIVE_INFINITY;
 	  }
-	  
+
 	   for (int i = 0; i < colIdx.length; i++) {
 		// find the max and min
 		//NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
@@ -1328,14 +1328,17 @@ public class BinAttributes extends HeadlessUIModule {
 		  if (d < mins[i])
 			mins[i] = d;
 	    }
-	*/	
+	*/
       //ANCA added support for missing  values
 		ScalarStatistics ss = TableUtilities.getScalarStatistics(tbl, colIdx[i]);
 		 maxes[i] = ss.getMaximum();
 		mins[i] = ss.getMinimum();
-	
+
+
 		// the number of bins is (max - min) / (bin width)
 		int num = (int)Math.ceil((maxes[i] - mins[i])/intrval);
+
+
 		double[] binMaxes = new double[num];
 		binMaxes[0] = mins[i];
 		// add the first bin manually
@@ -1385,19 +1388,19 @@ public class BinAttributes extends HeadlessUIModule {
 		ErrorDialog.showDialog("Must specify a positive integer", "Error");
 		return;
 	  }
-	  
+
 	    // we need to sort the data, but do not want to sort the
 	  // actual column, so we get a copy of the data
 	  for (int i = 0; i < colIdx.length; i++) {
 		//NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
 		//ANCA added support for eliminating missing values when setting interval limits
 		int missing =0;
-		 if (tbl.getColumn(colIdx[i]).hasMissingValues()) 
+		 if (tbl.getColumn(colIdx[i]).hasMissingValues())
 		 missing = tbl.getColumn(colIdx[i]).getNumMissingValues();
 		double[] data =  new double[tbl.getNumRows()-missing];
 		int k=0;
 		for (int j = 0; j < data.length; j++)
-		 if (missing > 0) 
+		 if (missing > 0)
 		 	if(!tbl.isValueMissing(j,colIdx[i]))
 		 		data[k++] = tbl.getDouble(j,colIdx[i]);
 		 else
@@ -1747,6 +1750,7 @@ class TableBinCounts implements BinCounts {
  * 12-02-03 vered started qa.
  *          modules does not bin missing scalar values into "UNKNOWN" bin. [bug 140]
  *          modules allows overlapping binning of same column. [bug 142]
+ *
  * 12-03-03 incorrect uniform binning [bug 153]
  *          missing values are binned as real values [bug 150]
  */
@@ -1764,4 +1768,17 @@ class TableBinCounts implements BinCounts {
 * 				the 3.59999996 will be displayed and there will be no confusion.
 *
 * 12 -16-03 Anca moved creation of "unknown" bins to BinTransform
-*/ 
+ *
+*/
+
+/**
+ * 12-23-03: Vered - bug 142 was partially fixed. only regarding scalar columns.
+ *           regarding nominal columns - via secodn run with gui, one may re-bin
+ *           the nominal column which was binned in previous run. [bug 174]
+ *
+ *           bug 178 - with interval binning, creates one bin too many. that happens
+ *           when the interval values devided (max-min) into an integer...
+ *
+ *           bug 179 - array index out of bounds exception with weight binning.
+ *
+*/

@@ -222,7 +222,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 				//  weightField.setText(EMPTY);
 				columnLookup = new HashMap();
 
-		
+
 				uniqueColumnValues = new TreeSet[tbl.getNumColumns() + 1];
 				binListModel.removeAllElements();
 				//  DefaultListModel numModel =
@@ -614,7 +614,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 
 					//ANCA add "unknown" bins for missing values
 					//	bins = BinningUtils.addMissingValueBins(tbl, bins);
-			
+
 
 					//headless conversion support
 					setBinDes(bins);
@@ -970,7 +970,7 @@ class ADTBinCounts implements BinCounts {
  *           are not removed from the list once they are associated with a bin.
  *
  *           missing values are considered as '?', and therefore are listed in the
- *           unique values list. [bug 134] the bug is in support class ADTree.
+ *           unique values list. [bug 134] the bug is in support class ADTree. (fixed)
  *
  * 11-21-03 The modules treats Table and ExampleTable the same. it ignores the
  *          selection of input/output features. [bug 136]
@@ -982,6 +982,6 @@ class ADTBinCounts implements BinCounts {
  * 			method does not return missing values ('?' or the one returned by getMissinsString())
  * 			in the list of unique values
   * 12-08-03 list of unique values is not restored after removing all bins. [bug 159] (fixed)
-  * 12 -16-03 Anca moved creation of "unknown" bins to BinTransform 
+  * 12 -16-03 Anca moved creation of "unknown" bins to BinTransform
  */
 

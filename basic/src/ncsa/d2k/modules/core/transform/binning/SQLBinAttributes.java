@@ -1711,7 +1711,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
       wrapper = (ConnectionWrapper) pullInput(0);
       String tableName = (String)pullInput(1);
       String[] fieldNames = (String[]) pullInput(2);
-     ExampleTable etbl = null; 
+     ExampleTable etbl = null;
 	  if (isInputPipeConnected(3)) {
 				etbl = (ExampleTable)pullInput(3);
 		 }
@@ -1774,8 +1774,13 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
 
   /**
  * 12-03-03 Vered started qa process.
- *          wrong weight binning - [bug 154]
+ *          wrong weight binning - [bug 154] fixed
  *          allows overlapping binning [bug 140, 141] fixed
- *          null pointer exception when trying to remove a nominal bin. [bug 65]
+ *          null pointer exception when trying to remove a nominal bin. [bug 65] (fixed)
  *          exception when adding anominal bin [bug 155]
+ *
+ * 12-23-03 unique values maintenance and overlapping binning of nominal columns in
+ *          second run. [bug 169].
+ *          error with weight binning [bug 177]
+ *
  */
