@@ -62,7 +62,11 @@ public class TableViewerModel extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		if(col == 0)
 			return new Integer(row);
-		return table.getString (row, col-1);
+		try{
+			return table.getString (row, col-1);
+		}catch (NullPointerException e){
+			return "";
+		}
 	}
 
 	/**
