@@ -21,7 +21,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
  * the column can not be read as specified in <code>_format</code>.<p>
  *
  */
-class FixedFormatParser extends FileInputStream
+public class FixedFormatParser extends FileInputStream
 {
 
     static String STRING_TYPE = "String";
@@ -64,8 +64,8 @@ class FixedFormatParser extends FileInputStream
         throws FileNotFoundException
     {
         super(file);
-	_labelsRow = labelsRow;
-	_typesRow = typesRow;
+			  _labelsRow = labelsRow;
+			  _typesRow = typesRow;
         _reader = new LineNumberReader(new InputStreamReader(this));
         _fileLength = file.length();
 
@@ -74,30 +74,30 @@ class FixedFormatParser extends FileInputStream
    public FixedFormatParser(File file, int labelsRow, int typesRow, double emptyValue)
         throws FileNotFoundException
     {
-	this(file, labelsRow, typesRow);
-	_emptyValue = emptyValue;
+			  this(file, labelsRow, typesRow);
+			  _emptyValue = emptyValue;
     }
 
     public FixedFormatParser(File file, TableImpl header)
         throws FileNotFoundException
     {
         super(file);
-	_labelsRow = -1;
-	_typesRow = -1;
+			  _labelsRow = -1;
+			  _typesRow = -1;
 
         for ( int i =0; i < header.getNumColumns() ; i++)
 	    {
 			//System.out.println(header.getColumnLabel(i).toUpperCase());
-		if (header.getColumnLabel(i).toUpperCase().equals("LABEL"))
-		    setColumnLabels(header,i);
-		if (header.getColumnLabel(i).toUpperCase().equals("TYPE"))
-		    setColumnTypes(header,i);
-		if (header.getColumnLabel(i).toUpperCase().equals("START"))
-		    setColumnBeginings(header,i);
-		if (header.getColumnLabel(i).toUpperCase().equals("STOP"))
-		    setColumnEnds(header,i);
-		if (header.getColumnLabel(i).toUpperCase().equals("LENGTH"))
-		    setColumnBounds(header,i);
+				if (header.getColumnLabel(i).toUpperCase().equals("LABEL"))
+					setColumnLabels(header,i);
+				if (header.getColumnLabel(i).toUpperCase().equals("TYPE"))
+					setColumnTypes(header,i);
+				if (header.getColumnLabel(i).toUpperCase().equals("START"))
+		      setColumnBeginings(header,i);
+				if (header.getColumnLabel(i).toUpperCase().equals("STOP"))
+		      setColumnEnds(header,i);
+				if (header.getColumnLabel(i).toUpperCase().equals("LENGTH"))
+		      setColumnBounds(header,i);
 	    }
         _reader = new LineNumberReader(new InputStreamReader(this));
         _fileLength = file.length();
@@ -107,9 +107,9 @@ class FixedFormatParser extends FileInputStream
     public FixedFormatParser(File file, TableImpl header, double emptyVal)
         throws FileNotFoundException
     {
-	this(file, header);
-	_emptyValue = emptyVal;
-	}
+			this(file, header);
+			_emptyValue = emptyVal;
+	  }
 
     /**
      * @return whether the line is a comment or an empty line
@@ -127,59 +127,60 @@ class FixedFormatParser extends FileInputStream
 
 
     public void setColumnTypes(TableImpl vt, int col) {
-	_columnType = new Vector();
-	int nr=vt.getNumRows();
-	for ( int i = 0 ; i < nr ; i++)
-	    _columnType.add(vt.getString(i,col));
-	_noOfColumns = nr;
-	//System.out.println("nr:"+nr);
+	    _columnType = new Vector();
+			int nr=vt.getNumRows();
+			for ( int i = 0 ; i < nr ; i++)
+	      _columnType.add(vt.getString(i,col));
+			_noOfColumns = nr;
+			//System.out.println("nr:"+nr);
     }
 
 
     public void setColumnBeginings(TableImpl vt, int col) {
-	// _columnBegin has not been initialized by setColumnBounds
-	if (_columnBegin == null)
+			// _columnBegin has not been initialized by setColumnBounds
+			if (_columnBegin == null)
 	    {
-		_columnBegin = new Vector();
-		int nr=vt.getNumRows();
-		for ( int i = 0 ; i < nr ; i++)
-		    _columnBegin.add(new Integer(vt.getInt(i,col)));
+				_columnBegin = new Vector();
+				int nr=vt.getNumRows();
+				for ( int i = 0 ; i < nr ; i++)
+		      _columnBegin.add(new Integer(vt.getInt(i,col)));
 	    }
     }
 
 
     public void setColumnEnds(TableImpl vt, int col) {
-	// _columnEnd has not been initialized by setColumnBounds
-	if (_columnEnd == null)
-	    {
-		_columnEnd = new Vector();
-		int nr=vt.getNumRows();
-		for ( int i = 0 ; i <  nr; i++)
-		    _columnEnd.add(new Integer(vt.getInt(i,col)));
+		// _columnEnd has not been initialized by setColumnBounds
+	  if (_columnEnd == null)
+		  {
+				_columnEnd = new Vector();
+				int nr=vt.getNumRows();
+				for ( int i = 0 ; i <  nr; i++)
+		      _columnEnd.add(new Integer(vt.getInt(i,col)));
 	    }
     }
 
 
     public void setColumnLabels(TableImpl vt, int col) {
-	_columnLabels = new Vector();
-	int nr=vt.getNumRows();
-	for ( int i = 0 ; i <  nr ; i++)
-	    _columnLabels.add(vt.getString(i,col));
+			_columnLabels = new Vector();
+			int nr=vt.getNumRows();
+			for ( int i = 0 ; i <  nr ; i++)
+	      _columnLabels.add(vt.getString(i,col));
     }
 
 
+		//!! SetColumnBounds destroys all previous columnEnd and columnBegin
     public void setColumnBounds(TableImpl vt, int col) {
-	_columnEnd = new Vector();
-	_columnBegin = new Vector();
-	int start = 0;
-	int end;
-	int nr=vt.getNumRows();
-	for ( int i = 0 ; i <  nr ; i++) {
-	    _columnBegin.add(new Integer(start));
+			_columnEnd = new Vector();
+			_columnBegin = new Vector();
+			int start = 0;
+			int end;
+			int nr=vt.getNumRows();
+			for ( int i = 0 ; i <  nr ; i++) {
+	      _columnBegin.add(new Integer(start));
 	    end=start+vt.getInt(i,col)-1;
 	    start = end+1;
 	    _columnEnd.add(new Integer(end));
-	}
+			}
     }
 
 
@@ -193,34 +194,34 @@ class FixedFormatParser extends FileInputStream
         throws ParseException, IOException
     {
 
-	int rowsToParse = 0;
-	if ( _labelsRow >= 0 )
-	    rowsToParse++;
-	if ( _typesRow >= 0 )
-	    rowsToParse++;
+			int rowsToParse = 0;
+			if ( _labelsRow >= 0 )
+	      rowsToParse++;
+			if ( _typesRow >= 0 )
+	      rowsToParse++;
 
-	for ( int i =0; i < rowsToParse ; i ++) {
-	    String line = _reader.readLine();
+			for ( int i =0; i < rowsToParse ; i ++) {
+	      String line = _reader.readLine();
 
 	    //  System.out.println(" header line " + line);
 	    if(line == null)
-		throw new ParseException("null line " + i   , 0);
+				throw new ParseException("null line " + i   , 0);
 
 
 	    if( i == _labelsRow )  // set the labels if given
-		{
+		  {
 		    StringTokenizer st = new StringTokenizer(line, " ");
 		    _columnLabels = new Vector();
 		    while(st.hasMoreTokens())
-			_columnLabels.add(st.nextToken());
-		}
+			  _columnLabels.add(st.nextToken());
+		  }
 
 	    if ( i == _typesRow) {
-		parseFormat(line);
+				parseFormat(line);
 	    }
-	}
-	//	System.out.println("header done rowsToParse " + rowsToParse);
-	return _reader.getLineNumber();
+	  }
+	  //	System.out.println("header done rowsToParse " + rowsToParse);
+		return _reader.getLineNumber();
 
 	}
 
@@ -235,10 +236,11 @@ class FixedFormatParser extends FileInputStream
      * @exception IOException
      */
 	public TableImpl parse() throws ParseException, IOException{
-		blankRows=new ArrayList();
-		blankCols=new ArrayList();
 
-        int headerLines = readHeader(); // read in the header
+			blankRows=new ArrayList();
+		  blankCols=new ArrayList();
+
+      int headerLines = readHeader(); // read in the header
 
         /* count the number of lines in the rest of the file */
         _reader.mark((int)_fileLength);  // mark the current position in the stream

@@ -54,7 +54,7 @@ public class ParseFileToADTree extends InputModule {
         sb.append("Read a file into an ADTree index structure ");
         sb.append("<p>Detailed Description: ");
         sb.append("Given a FlatFileParser, read the data and store all counts");
-            sb.append("into an ADTree.");
+        sb.append("into an ADTree.");
         sb.append("An ExampleTable that contains the meta data for the ADTree");
         sb.append("is also created.");
         return sb.toString();
@@ -64,21 +64,8 @@ public class ParseFileToADTree extends InputModule {
         return "Create an ADTree";
     }
 
-    public void doit() {
+    public void doit() throws Exception {
         FlatFileParser ffr = (FlatFileParser)pullInput(0);
-        ADTree adt = new ADTree(ffr.getNumColumns());
-            //there are two levels of debug for an ADTree; set the first one only
-            adt.setDebug1(debug);
-          for(int i = 0; i < ffr.getNumColumns(); i++)
-            adt.setLabel(i+1, ffr.getColumnLabel(i));
-        for(int i = 0; i < ffr.getNumRows(); i++) {
-            String[] vals = new String[ffr.getNumColumns()];
-            char[][] row = ffr.getRowElements(i);
-            for(int j = 0; j < row.length; j++)
-                vals[j] = new String(row[j]);
-                  //System.out.println("countingLine for " + i + ": " +  vals.toString());
-            adt.countLine(adt, vals);
-        }
 
         // make the meta table
         int numRows = ffr.getNumRows();
@@ -90,9 +77,11 @@ public class ParseFileToADTree extends InputModule {
             if(typ == ColumnTypes.STRING)
                 cols[i] = new StringColumn(numRows);
             else if(typ == ColumnTypes.DOUBLE)
-                cols[i] = new DoubleColumn(numRows);
+                //cols[i] = new DoubleColumn(numRows);
+								throw new Exception ( "Cannot build ADTree for continuous data in column " + i);
             else if(typ == ColumnTypes.FLOAT)
-                cols[i] = new FloatColumn(numRows);
+                //cols[i] = new FloatColumn(numRows);
+								throw new Exception ( "Cannot build ADTree for continuous data in column " + i);
             else if(typ == ColumnTypes.INTEGER)
                 cols[i] = new IntColumn(numRows);
             else if(typ == ColumnTypes.SHORT)
@@ -112,16 +101,34 @@ public class ParseFileToADTree extends InputModule {
             else
                 cols[i] = new StringColumn(numRows);
 
-            String lbl = ffr.getColumnLabel(i);
+				    String lbl = ffr.getColumnLabel(i);
             if(lbl != null)
                 cols[i].setLabel(lbl);
             else
                 cols[i].setLabel(Integer.toString(i));
         }
 
+
         DefaultTableFactory  dtf = DefaultTableFactory.getInstance();
         Table table = dtf.createTable(cols);
-       ExampleTable meta = dtf.createExampleTable(table);
+        ExampleTable meta = dtf.createExampleTable(table);
+
+
+				// create the ADTree
+        ADTree adt = new ADTree(ffr.getNumColumns());
+            //there are two levels of debug for an ADTree; set the first one only
+            adt.setDebug1(debug);
+          for(int i = 0; i < ffr.getNumColumns(); i++)
+            adt.setLabel(i+1, ffr.getColumnLabel(i));
+        for(int i = 0; i < ffr.getNumRows(); i++) {
+            String[] vals = new String[ffr.getNumColumns()];
+            char[][] row = ffr.getRowElements(i);
+            for(int j = 0; j < row.length; j++)
+                vals[j] = new String(row[j]);
+             //System.out.println("countingLine for " + i + ": " +  vals.toString());
+            adt.countLine(adt, vals);
+        }
+
 
         pushOutput(adt, 0);
         pushOutput(meta, 1);
@@ -148,3 +155,12 @@ public class ParseFileToADTree extends InputModule {
      }
 
 }
+// QA Comments
+// 2/14/03 - Handed off to QA by David Clutter
+// 2/17/03 - Anca started QA process.  Updated module info and added
+//           exception handling for numeric/continuous data.
+//           FEATURE REQUEST: a module that will create an ADTree
+//           from selected columns only, either from a table or from a file..
+// 2/18/03 - checked into basic.
+// END QA Comments
+

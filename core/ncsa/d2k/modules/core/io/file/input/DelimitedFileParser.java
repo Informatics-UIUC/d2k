@@ -125,13 +125,18 @@ public class DelimitedFileParser implements FlatFileParser {
 
         lineReader = new LineNumberReader(new FileReader(file));
 
+
         // now read in the types, scalar, in out rows, labels
         if(typesRow > -1) {
             numRows--;
 
             // now parse the line and get the types
+
             ArrayList row = getLineElements(typesRow);
-            createColumnTypes(row);
+            if (row != null ) createColumnTypes(row);
+            else throw new Exception("Delimited File Parser: types' row number " +
+						   typesRow + " does not exist in the file");
+
         }
         else
             columnTypes = null;
@@ -140,10 +145,15 @@ public class DelimitedFileParser implements FlatFileParser {
 
             // now parse the line and the the labels
             ArrayList row = getLineElements(labelsRow);
-            createColumnLabels(row);
-        }
+           if (row != null) createColumnLabels(row);
+    			 else throw new Exception("Delimited File Parser: labels' row number " +
+					   labelsRow + " does not exist in the file");
+
+				}
         else
             columnLabels = null;
+
+
         /*if(inOutRow > -1) {
             numRows--;
 
@@ -935,3 +945,11 @@ public class DelimitedFileParser implements FlatFileParser {
        return blanks;
    }
 }
+
+// QA Comments
+// 2/14/03 - Handed off to QA by David Clutter
+// 2/16/03 - Anca started QA process. Tested negative, zero, wrong label
+//           type row numbers. Added error handling for types and labels
+//           row numbers out of bound.
+// 2/18/03 - checked into basic.
+// END QA Comments

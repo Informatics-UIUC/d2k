@@ -1,4 +1,3 @@
-//package ncsa.d2k.modules.projects.clutter.rdr;
 package ncsa.d2k.modules.core.io.file.input;
 
 import ncsa.d2k.core.modules.*;
@@ -300,6 +299,7 @@ public class CreateDelimitedParser extends InputModule {
                     String dd = null;
                     if(delim.isSelected()) {
                         dd = delimfld.getText(); // dd = delim.getText();
+												//System.out.println("dd.lenght " + dd.length() + " dd " + dd);
                         if(dd.length() > 1)
                             throw new Exception("The delimiter must be one character long.");
                     }
@@ -349,7 +349,7 @@ public class CreateDelimitedParser extends InputModule {
     }
 
     public String getInputName(int i) {
-        return "File";
+        return "File Name";
     }
 
     public String getOutputName(int i) {
@@ -373,13 +373,13 @@ public class CreateDelimitedParser extends InputModule {
         s.append("The delimiter can be found automatically, or it can be input in the properties ");
         s.append("editor.  The file can contain a row of labels, and a row of data ");
         s.append("types.  These are also input in the properties editor.");
-        s.append("<p>Properties are used to specify the delimiter, the labels row, ");
-        s.append("and the types row.  The labels row and types row are indexed from ");
-        s.append("zero.");
+        s.append("<p>Properties are used to specify the delimiter, the labels row number, ");
+        s.append("and the types row number. The row numbers are indexed from zero.");
         s.append("<p>Data Type Restrictions: ");
-        s.append("The input to this module must be a delimited file.");
+        s.append("The input to this module must be a delimited file. If the file is");
+				s.append("large a java OutOfMemory error might occur");
         s.append("<p>Data Handling: ");
-        s.append("The module does not destroy or modify the input data.");
+				s.append("The module does not destroy or modify the input data.");
         return s.toString();
     }
 
@@ -401,13 +401,21 @@ public class CreateDelimitedParser extends InputModule {
         if(getHasTypes())
             typ = getTypesRow();
 
-        if(!getHasSpecDelim())
-            df = new DelimitedFileParser(file, lbl, typ);
-        else {
-            String s = getSpecDelim();
-            char[] del = s.toCharArray();
-            df = new DelimitedFileParser(file, lbl, typ, del[0]);
-        }
+
+	       if(!getHasSpecDelim())
+             df = new DelimitedFileParser(file, lbl, typ);
+         else {
+             String s = getSpecDelim();
+             char[] del = s.toCharArray();
+             df = new DelimitedFileParser(file, lbl, typ, del[0]);
+         }
+
         pushOutput(df, 0);
     }
 }
+// QA Comments
+// 2/14/03 - Handed off to QA by David Clutter
+// 2/16/03 - Anca started QA process.  Updated module info and changed input
+//           name to File Name.
+// 2/18/03 - checked into basic.
+// END QA Comments
