@@ -63,8 +63,8 @@ public class CreateBinTree extends DataPrepModule {
        sb.append( "an ExampleTable "); 
        sb.append( "that has the input/ output attribute labels and types, builds a BinTree "); 
        sb.append( "that can be later used to clasify data. " );
-       sb.append( "<p> Scalability:  "); 
-       sb.append( " ");
+       sb.append( "<p> Scalability: a large enough number of attributes will result "); 
+       sb.append( "in an OutOfMemory error. Use attribute selection to reduce the number.");
        return sb.toString(); 
 
    }
@@ -135,3 +135,4 @@ public class CreateBinTree extends DataPrepModule {
 }
 // QA comments Anca:
 // added input/output names, description, module info text
+// module gives OutOfMemory error for large number of attributes
