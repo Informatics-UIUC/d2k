@@ -204,7 +204,7 @@ protected static SparseTableFactory factory = new SparseTableFactory();
   public double getDouble(int row, int column){
      if (columns.containsKey(column))
         return ((Column)columns.get(column)).getDouble(row);
-    else return SparseDoubleColumn.NOT_EXIST;
+    else return SparseDoubleColumn.DEFAULT;
   }
 
 
@@ -885,12 +885,23 @@ protected static SparseTableFactory factory = new SparseTableFactory();
 		System.out.println(numColumns + " columns total.");
 		for (int i = 0; i < my_rows.length; i++) {
 			System.out.print(my_rows[i] + ": ");
+
+
+			/*
 			//int[] my_cols = getRowIndices(i);
 			int[] my_cols = getRowIndices(my_rows[i]);
 
 			for (int j = 0; j < my_cols.length; j++) {
 				System.out.print(my_cols[j] + "(");
 				System.out.print(getDouble(my_rows[i], my_cols[j]) + ") ");
+			}
+			System.out.println();
+			*/
+
+
+			for (int j = 0; j < numColumns; j++) {
+				System.out.print(j + "(");
+				System.out.print(getDouble(my_rows[i], j) + ") ");
 			}
 			System.out.println();
 		}

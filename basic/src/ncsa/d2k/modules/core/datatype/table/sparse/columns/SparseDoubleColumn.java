@@ -31,6 +31,8 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
    //is not valid.
    public static double NOT_EXIST = 0;//-1 * Double.MAX_VALUE;
 
+   public static double DEFAULT = 0;
+
 
      /**
      * Creates a new <code>SparseDoubleColumn</code> instance with the default
@@ -144,7 +146,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
      */
     public byte getByte(int row)   {
       if (!elements.containsKey(row))
-	return SparseByteColumn.NOT_EXIST;
+	return SparseByteColumn.DEFAULT;
       return (byte)getDouble(row);
     }
 
@@ -172,7 +174,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
      */
     public boolean getBoolean(int row)    {
       if (!elements.containsKey(row))
-	return SparseBooleanColumn.NOT_EXIST;
+	return SparseBooleanColumn.DEFAULT;
       return (getDouble(row) != 0);
     }
 
@@ -200,7 +202,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
      */
     public byte[] getBytes(int row) {
       if (!elements.containsKey(row))
-	return null;
+	return (byte[]) SparseByteArrayColumn.DEFAULT;
       return String.valueOf(getDouble(row)).getBytes();
     }
 
@@ -226,7 +228,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
      */
     public char getChar(int row) {
       if(!elements.containsKey(row))
-	return SparseCharColumn.NOT_EXIST;
+	return SparseCharColumn.DEFAULT;
       return (char)getDouble(row);
     }
 
@@ -251,7 +253,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
    */
     public char[] getChars(int row)  {
       if (!elements.containsKey(row))
-	return null;
+	return (char[]) SparseCharArrayColumn.DEFAULT;
        return  Double.toString(getDouble(row)).toCharArray();
     }
 
@@ -267,14 +269,18 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
     }
 
 
-  /**
-   * Returns the value at row # row.
-   * @param row the row number
-   * @return the double value at row # row
-   */
-    public double getDouble(int row)  {
-      return elements.get(row);
-    }
+	/**
+	 * Returns the value at row # row.
+	 * @param row the row number
+	 * @return the double value at row # row
+	 */
+	public double getDouble(int row)
+	{
+		if (elements.containsKey(row))
+			return elements.get(row);
+		else
+			return this.DEFAULT;
+	}
 
   /**
    * Returns the value at row # row, casted to type float.
@@ -284,7 +290,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
    */
     public float getFloat(int row) {
       if(!elements.containsKey(row))
-	return SparseFloatColumn.NOT_EXIST;
+	return SparseFloatColumn.DEFAULT;
       return (float)getDouble(row);
     }
 
@@ -297,7 +303,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
      */
     public int getInt(int row) {
       if(!elements.containsKey(row))
-	return SparseIntColumn.NOT_EXIST;
+	return SparseIntColumn.DEFAULT;
       return (int)getDouble(row);
     }
 
@@ -312,7 +318,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
    */
     public long getLong(int row)    {
       if(!elements.containsKey(row))
-	return SparseLongColumn.NOT_EXIST;
+	return SparseLongColumn.DEFAULT;
       return (long)getDouble(row);
     }
 
@@ -326,7 +332,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
     public Object getObject(int row)    {
       if (elements.containsKey(row))
         return new Double(getDouble(row));
-      else return null;
+      else return SparseObjectColumn.DEFAULT;
     }
 
 
@@ -343,7 +349,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
    */
     public short getShort(int row) {
      if(!elements.containsKey(row))
-	return SparseShortColumn.NOT_EXIST;
+	return SparseShortColumn.DEFAULT;
       return (short)getDouble(row);
     }
 
@@ -355,7 +361,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
    */
     public String getString(int row)  {
       if (!elements.containsKey(row))
-	return null;
+	return SparseStringColumn.DEFAULT;
       return String.valueOf(getDouble(row));
     }
 
@@ -519,7 +525,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
      */
     public static double toDouble(Object obj){
       if(obj == null)
-        return SparseDoubleColumn.NOT_EXIST;
+        return SparseDoubleColumn.DEFAULT;
 
       if (obj instanceof Number)
             return ((Number)obj).doubleValue();
@@ -578,8 +584,9 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
     */
    public void sort(){
     VIntIntHashMap newOrder = elements.getSortedOrder();
-      elements = (VIntDoubleHashMap)elements.reorder(newOrder);
+      elements = (VIntDoubleHashMap) elements.reorder(newOrder);
       missing = missing.reorder(newOrder);
+      empty = empty.reorder(newOrder);
    }
 
 
@@ -611,6 +618,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
       setDouble(val2, pos1);
 
     missing.swapRows(pos1, pos2);
+    empty.swapRows(pos1, pos2);
 
 
    }

@@ -32,6 +32,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
 
    protected VIntBooleanHashMap elements;   //the values of this column
   public static boolean NOT_EXIST = false;
+  public static boolean DEFAULT = false;
 
 
 
@@ -106,7 +107,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
      */
     public byte getByte(int row){
       if(!elements.containsKey(row))
-	return SparseByteColumn.NOT_EXIST;
+	return SparseByteColumn.DEFAULT;
       if (getBoolean(row))
         return 1;
       else
@@ -162,7 +163,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
      */
     public byte[] getBytes(int row){
       if(!elements.containsKey(row))
-	return null;
+	return SparseByteArrayColumn.DEFAULT;
        return getString(row).getBytes();
     }
 
@@ -189,7 +190,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
      */
     public char getChar(int row){
      if(!elements.containsKey(row))
-	return SparseCharColumn.NOT_EXIST;
+	return SparseCharColumn.DEFAULT;
       if(getBoolean(row))
 	return 'T';
       else
@@ -222,7 +223,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
    */
     public char[] getChars(int row){
       if(!elements.containsKey(row))
-	return null;
+	return SparseCharArrayColumn.DEFAULT;
        return getString(row).toCharArray();
     }
 
@@ -250,7 +251,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
    */
     public double getDouble(int row) {
      if(!elements.containsKey(row))
-	return SparseDoubleColumn.NOT_EXIST;
+	return SparseDoubleColumn.DEFAULT;
       return (double)getInt(row);
     }
 
@@ -281,7 +282,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
    */
     public float getFloat(int row) {
       if(!elements.containsKey(row))
-	return SparseFloatColumn.NOT_EXIST;
+	return SparseFloatColumn.DEFAULT;
       return (float)getInt(row);
     }
 
@@ -294,7 +295,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
      */
     public int getInt(int row){
       if(!elements.containsKey(row))
-	return SparseIntColumn.NOT_EXIST;
+	return SparseIntColumn.DEFAULT;
 
       if (getBoolean(row))
 	return 1;
@@ -313,7 +314,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
    */
     public long getLong(int row){
       if(!elements.containsKey(row))
-	return SparseLongColumn.NOT_EXIST;
+	return SparseLongColumn.DEFAULT;
       return (long)getInt(row);
     }
 
@@ -341,7 +342,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
    */
     public short getShort(int row) {
       if (!elements.containsKey(row))
-	return SparseShortColumn.NOT_EXIST;
+	return SparseShortColumn.DEFAULT;
       return (short)getInt(row);
     }
 
@@ -607,7 +608,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
    */
     public String getString(int row) {
       if (!elements.containsKey(row))
-	return null;
+	return SparseStringColumn.DEFAULT;
       return (new Boolean(getBoolean(row))).toString();
     }
 
@@ -626,6 +627,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
       elements = (VIntBooleanHashMap)elements.reorder(newOrder);
 
       missing = missing.reorder(newOrder);
+      empty = empty.reorder(newOrder);
 
     }
 
@@ -649,7 +651,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
      public static boolean toBoolean(Object obj){
 
        if (obj == null)
-	return false;
+	return DEFAULT;
 
       if (obj instanceof Number)
 	return (((Number)obj).doubleValue() != 0);
@@ -696,7 +698,9 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
       setBoolean(val1, pos2);
     if(valid_2)
       setBoolean(val2, pos1);
+
     missing.swapRows(pos1, pos2);
+    empty.swapRows(pos1, pos2);
 
    }
 

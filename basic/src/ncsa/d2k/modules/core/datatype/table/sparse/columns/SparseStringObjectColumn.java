@@ -27,6 +27,8 @@ public class SparseStringObjectColumn extends SparseObjectColumn{
  * Strings) are the data stored at wach row.
  */
 
+	public static Object DEFAULT = null;
+
 
  /**
      * Creates a new <code>SparseStringObjectColumn </code> instance with the
@@ -100,6 +102,7 @@ public class SparseStringObjectColumn extends SparseObjectColumn{
       setString(column.getString(keys[i]), keys[i]);
     }
     missing = column.missing.copy();
+    empty = column.empty.copy();
 
     type = ColumnTypes.STRING;
   }

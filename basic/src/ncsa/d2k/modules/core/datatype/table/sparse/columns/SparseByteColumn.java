@@ -38,6 +38,7 @@ public class SparseByteColumn extends AbstractSparseColumn {
 						  //parameter for row number which
 						  //is empty.
 
+  public static byte DEFAULT = 0;
 
      /**
      * Creates a new <code>SparseByteColumn</code> instance with the default
@@ -64,6 +65,7 @@ public class SparseByteColumn extends AbstractSparseColumn {
 	  elements = new VIntByteHashMap(initialCapacity);
 
       missing = new VIntHashSet();
+      empty = new VIntHashSet();
       type = ColumnTypes.BYTE;
       setIsNominal(true);
     }
@@ -543,7 +545,7 @@ public class SparseByteColumn extends AbstractSparseColumn {
     public static  byte toByte(Object obj){
 
       if (obj == null)
-	  return SparseByteColumn.NOT_EXIST;
+	  return DEFAULT;
 
       if (obj instanceof byte[])
             return ((byte[])obj)[0];
@@ -610,6 +612,7 @@ public class SparseByteColumn extends AbstractSparseColumn {
       elements = (VIntByteHashMap)elements.reorder(newOrder);
 
       missing = missing.reorder(newOrder);
+      empty = empty.reorder(newOrder);
 
 
    }
@@ -677,6 +680,7 @@ public class SparseByteColumn extends AbstractSparseColumn {
       setByte(val2, pos1);
 
      missing.swapRows(pos1, pos2);
+     empty.swapRows(pos1, pos2);
 
    }
 

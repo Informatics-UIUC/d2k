@@ -23,6 +23,8 @@ public class SparseCharArrayColumn extends SparseObjectColumn {
    * array column and an object column are concerning the get and set methods.
    */
 
+	public static char[] DEFAULT = null;
+
 
 /**
  * Creates a new <code>SparseCharArrayColumn</code> with capacity sero and a default
@@ -340,7 +342,7 @@ public class SparseCharArrayColumn extends SparseObjectColumn {
   public static char[] toCharArray(Object obj){
 
     if(obj == null)
-      return null;
+      return DEFAULT;
 
 
 

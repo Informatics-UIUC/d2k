@@ -28,6 +28,8 @@ public class SparseObjectColumn extends AbstractSparseColumn {
    * the value j mapped to key i is the value j in line i in this column.
    */
 
+	public static Object DEFAULT = null;
+
 
 
    protected VIntObjectHashMap elements;   //holds the data of this column
@@ -108,7 +110,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
       if(obj != null && isDataNumeric(row))
         return SparseByteColumn.toByte(obj);
 
-      return SparseByteColumn.NOT_EXIST;
+      return SparseByteColumn.DEFAULT;
     }
 
 /**
@@ -127,7 +129,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
       if(obj != null)
         return SparseBooleanColumn.toBoolean(obj);
 
-      return SparseBooleanColumn.NOT_EXIST;
+      return SparseBooleanColumn.DEFAULT;
     }
 
    /**
@@ -155,7 +157,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
       if(obj != null)
         return SparseCharColumn.toChar(obj);
 
-      return SparseCharColumn.NOT_EXIST;
+      return SparseCharColumn.DEFAULT;
     }
 
   /**
@@ -187,7 +189,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
       if(obj != null && isDataNumeric(row))
         return SparseDoubleColumn.toDouble(obj);
 
-      return SparseDoubleColumn.NOT_EXIST;
+      return SparseDoubleColumn.DEFAULT;
 
     }
 
@@ -206,7 +208,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
       if(obj != null && isDataNumeric(row))
         return SparseFloatColumn.toFloat(obj);
 
-      return SparseFloatColumn.NOT_EXIST;
+      return SparseFloatColumn.DEFAULT;
 
     }
 
@@ -224,7 +226,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
       if(obj != null && isDataNumeric(row))
         return SparseIntColumn.toInt(obj);
 
-      return SparseIntColumn.NOT_EXIST;
+      return SparseIntColumn.DEFAULT;
 
     }
 
@@ -247,7 +249,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
       if(obj != null && isDataNumeric(row))
         return SparseLongColumn.toLong(obj);
 
-      return SparseLongColumn.NOT_EXIST;
+      return SparseLongColumn.DEFAULT;
     }
 
 
@@ -257,7 +259,10 @@ public class SparseObjectColumn extends AbstractSparseColumn {
    * @return the object at row # row. if no such object exists - returns null.
    */
     public Object getObject(int row)    {
-        return elements.get(row);
+		if (elements.containsKey(row))
+			return elements.get(row);
+		else
+			return this.DEFAULT;
     }
 
 
@@ -276,7 +281,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
       if(obj != null && isDataNumeric(row))
         return SparseShortColumn.toShort(obj);
 
-      return SparseShortColumn.NOT_EXIST;
+      return SparseShortColumn.DEFAULT;
     }
 
   /**
@@ -416,6 +421,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
     elements = (VIntObjectHashMap)elements.reorder(newOrder);
 
       missing = missing.reorder(newOrder);
+      empty = empty.reorder(newOrder);
    }
 
 
@@ -775,6 +781,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
       setObject(obj2, pos1);
 
     missing.swapRows(pos1, pos2);
+    empty.swapRows(pos1, pos2);
 
 
    }

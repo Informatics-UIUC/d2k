@@ -19,6 +19,8 @@ import ncsa.d2k.modules.core.datatype.table.basic.Column;
 
 public class SparseByteArrayColumn extends SparseObjectColumn {
 
+	public static byte[] DEFAULT = null;
+
 
 /**
  * Creates a new <code>SparseByteArrayColumn</code> with capacity sero and a default
@@ -260,7 +262,7 @@ public class SparseByteArrayColumn extends SparseObjectColumn {
      */
     public static byte[] toByteArray(Object obj){
       if(obj == null)
-      return null;
+      return DEFAULT;
 
       if(obj instanceof byte[])
 	return (byte[])obj;

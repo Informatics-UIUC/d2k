@@ -32,6 +32,8 @@ public class SparseLongColumn extends AbstractSparseColumn {
    //that isn't valid
    public static long NOT_EXIST = Long.MIN_VALUE + 1;
 
+   public static long DEFAULT = 0;
+
 
      /**
      * Creates a new <code>SparseLongColumn</code> instance with the
@@ -106,7 +108,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
      */
     public byte getByte(int row) {
       if (!elements.containsKey(row))
-	return SparseByteColumn.NOT_EXIST;
+	return SparseByteColumn.DEFAULT;
       return (byte)getLong(row);
     }
 
@@ -129,7 +131,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
      */
     public boolean getBoolean(int row) {
       if (!elements.containsKey(row))
-	return SparseBooleanColumn.NOT_EXIST;
+	return SparseBooleanColumn.DEFAULT;
       return (getLong(row) != 0);
     }
 
@@ -156,7 +158,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
      */
     public byte[] getBytes(int row) {
       if (!elements.containsKey(row))
-	return null;
+	return SparseByteArrayColumn.DEFAULT;
       return String.valueOf(getLong(row)).getBytes();
     }
 
@@ -182,7 +184,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
      */
     public char getChar(int row)  {
       if(!elements.containsKey(row))
-	return SparseCharColumn.NOT_EXIST;
+	return SparseCharColumn.DEFAULT;
       return (char)getInt(row);
     }
 
@@ -206,7 +208,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
    */
     public char[] getChars(int row)  {
       if (!elements.containsKey(row))
-	return null;
+	return SparseCharArrayColumn.DEFAULT;
        return  Long.toString(getLong(row)).toCharArray();
     }
 
@@ -231,7 +233,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
    */
     public double getDouble(int row) {
       if(!elements.containsKey(row))
-	return SparseDoubleColumn.NOT_EXIST;
+	return SparseDoubleColumn.DEFAULT;
       return (double)getLong(row);
     }
 
@@ -244,7 +246,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
    */
     public float getFloat(int row) {
       if(!elements.containsKey(row))
-	return SparseFloatColumn.NOT_EXIST;
+	return SparseFloatColumn.DEFAULT;
       return (float)getLong(row);
     }
 
@@ -257,7 +259,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
      */
     public int getInt(int row) {
        if (!elements.containsKey(row))
-	return SparseIntColumn.NOT_EXIST;
+	return SparseIntColumn.DEFAULT;
       return (int)getLong(row);
     }
 
@@ -271,7 +273,10 @@ public class SparseLongColumn extends AbstractSparseColumn {
    * as defined by this class.
    */
     public long getLong(int row)  {
-      return elements.get(row);
+		if (elements.containsKey(row))
+			return elements.get(row);
+		else
+			return this.DEFAULT;
     }
 
 
@@ -283,7 +288,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
     public Object getObject(int row)    {
       if(elements.containsKey(row))
         return new Long(elements.get(row));
-      else return null;
+      else return SparseObjectColumn.DEFAULT;
     }
 
 
@@ -297,7 +302,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
    */
     public short getShort(int row) {
        if (!elements.containsKey(row))
-	return SparseShortColumn.NOT_EXIST;
+	return SparseShortColumn.DEFAULT;
       return (short)getLong(row);
     }
 
@@ -309,7 +314,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
    */
     public String getString(int row) {
       if (!elements.containsKey(row))
-	return null;
+	return SparseStringColumn.DEFAULT;
       return String.valueOf(getLong(row));
     }
 
@@ -521,6 +526,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
     VIntIntHashMap newOrder = elements.getSortedOrder();
    elements = (VIntLongHashMap)elements.reorder(newOrder);
       missing = missing.reorder(newOrder);
+      empty = empty.reorder(newOrder);
    }
 
 
@@ -544,7 +550,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
    public static long toLong(Object obj){
 
     if (obj == null)
-      return SparseLongColumn.NOT_EXIST;
+      return SparseLongColumn.DEFAULT;
 
     if (obj instanceof Number)
       return ((Number)obj).longValue();
@@ -592,6 +598,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
     if(valid_2)
       setLong(val2, pos1);
     missing.swapRows(pos1, pos2);
+    empty.swapRows(pos1, pos2);
 
 
 

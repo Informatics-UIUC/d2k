@@ -29,6 +29,8 @@ public class SparseCharColumn extends AbstractSparseColumn {
    private VIntCharHashMap elements;
 
    public static char NOT_EXIST = '\0';
+
+   public static char DEFAULT = '\0';
      /**
      * Creates a new <code>SparseCharColumn</code> instance with the default
      * capacity and load factor.
@@ -136,7 +138,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
      */
     public byte getByte(int row)    {
       if (!elements.containsKey(row))
-	return SparseByteColumn.NOT_EXIST;
+	return SparseByteColumn.DEFAULT;
       return (byte)getChar(row);
     }
 
@@ -166,7 +168,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
       retVal[0] = (byte)getChar(row);
       return retVal;*/
       if (!elements.containsKey(row))
-	return null;
+	return SparseByteArrayColumn.DEFAULT;
       return getString(row).getBytes();
     }
 
@@ -199,7 +201,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
    */
     public char[] getChars(int row){
        if (!elements.containsKey(row))
-	return null;
+	return SparseCharArrayColumn.DEFAULT;
 
       char[] retVal = new char[1];
       retVal[0] = getChar(row);
@@ -228,7 +230,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
    */
     public double getDouble(int row)  {
       if (!elements.containsKey(row))
-	return SparseDoubleColumn.NOT_EXIST;
+	return SparseDoubleColumn.DEFAULT;
       return (double)getChar(row);
     }
 
@@ -241,7 +243,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
    */
     public float getFloat(int row)   {
      if (!elements.containsKey(row))
-	return SparseFloatColumn.NOT_EXIST;
+	return SparseFloatColumn.DEFAULT;
       return (float)getChar(row);
     }
 
@@ -254,7 +256,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
      */
     public int getInt(int row) {
       if (!elements.containsKey(row))
-	return SparseIntColumn.NOT_EXIST;
+	return SparseIntColumn.DEFAULT;
       return (int)getChar(row);
     }
 
@@ -269,7 +271,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
    */
     public long getLong(int row) {
       if (!elements.containsKey(row))
-	return SparseLongColumn.NOT_EXIST;
+	return SparseLongColumn.DEFAULT;
       return (long)getChar(row);
     }
 
@@ -283,7 +285,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
     public Object getObject(int row)   {
       if (elements.containsKey(row))
         return new Character(getChar(row));
-      else return null;
+      else return SparseObjectColumn.DEFAULT;
     }
 
 
@@ -297,7 +299,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
    */
     public short getShort(int row)  {
       if (!elements.containsKey(row))
-	return SparseShortColumn.NOT_EXIST;
+	return SparseShortColumn.DEFAULT;
       return (short)getChar(row);
     }
 
@@ -309,7 +311,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
    */
     public String getString(int row) {
        if (!elements.containsKey(row))
-	return null;
+	return SparseStringColumn.DEFAULT;
       return new String(getChars(row));
     }
 
@@ -530,6 +532,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
     VIntIntHashMap newOrder = elements.getSortedOrder();
       elements = (VIntCharHashMap)elements.reorder(newOrder);
       missing = missing.reorder(newOrder);
+      empty = empty.reorder(newOrder);
    }
 
 
@@ -549,7 +552,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
    public static char toChar(Object obj){
 
    if (obj == null)
-    return SparseCharColumn.NOT_EXIST;
+    return DEFAULT;
 
 
 
@@ -594,6 +597,7 @@ public class SparseCharColumn extends AbstractSparseColumn {
 
 
     missing.swapRows(pos1, pos2);
+    empty.swapRows(pos1, pos2);
 
    }
 

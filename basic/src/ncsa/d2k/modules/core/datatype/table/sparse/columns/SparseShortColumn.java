@@ -34,6 +34,8 @@ public class SparseShortColumn extends AbstractSparseColumn {
    //that isn't valid
     public static short NOT_EXIST = Short.MIN_VALUE;
 
+    public static short DEFAULT = 0;
+
      /**
      * Creates a new <code>SparseShortColumn</code> instance with default
      * capacity and defualt load factor.
@@ -60,6 +62,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
 	setIsScalar(true);
 
         missing = new VIntHashSet();
+        empty = new VIntHashSet();
       	type = ColumnTypes.SHORT;
     }
 
@@ -111,7 +114,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
      */
     public byte getByte(int row)    {
       if (!elements.containsKey(row))
-	return SparseByteColumn.NOT_EXIST;
+	return SparseByteColumn.DEFAULT;
       return (byte)elements.get(row);
     }
 
@@ -132,7 +135,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
      */
     public boolean getBoolean(int row)    {
       if (!elements.containsKey(row))
-	return SparseBooleanColumn.NOT_EXIST;
+	return SparseBooleanColumn.DEFAULT;
       return (elements.get(row) != 0);
     }
 
@@ -159,7 +162,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
      */
     public byte[] getBytes(int row)    {
        if (!elements.containsKey(row))
-	return null;
+	return SparseByteArrayColumn.DEFAULT;
       return String.valueOf(elements.get(row)).getBytes();
     }
 
@@ -184,7 +187,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
      */
     public char getChar(int row)    {
       if(!elements.containsKey(row))
-	return SparseCharColumn.NOT_EXIST;
+	return SparseCharColumn.DEFAULT;
       return (char)elements.get(row);
     }
 
@@ -207,7 +210,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
    */
     public char[] getChars(int row) {
        if (!elements.containsKey(row))
-	return null;
+	return SparseCharArrayColumn.DEFAULT;
        return  Short.toString(elements.get(row)).toCharArray();
     }
 
@@ -234,7 +237,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
    */
     public double getDouble(int row)    {
        if(!elements.containsKey(row))
-	return SparseDoubleColumn.NOT_EXIST;
+	return SparseDoubleColumn.DEFAULT;
       return (double)elements.get(row);
     }
 
@@ -246,7 +249,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
    */
     public float getFloat(int row)    {
        if(!elements.containsKey(row))
-	return SparseFloatColumn.NOT_EXIST;
+	return SparseFloatColumn.DEFAULT;
       return (float)elements.get(row);
     }
 
@@ -259,7 +262,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
      */
     public int getInt(int row)    {
       if (!elements.containsKey(row))
-	return SparseIntColumn.NOT_EXIST;
+	return SparseIntColumn.DEFAULT;
       return (int)elements.get(row);
     }
 
@@ -274,7 +277,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
    */
     public long getLong(int row)   {
       if (!elements.containsKey(row))
-	return SparseLongColumn.NOT_EXIST;
+	return SparseLongColumn.DEFAULT;
       return (long)elements.get(row);
     }
 
@@ -288,7 +291,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
     public Object getObject(int row){
       if (elements.containsKey(row))
        return new Short(elements.get(row));
-      else return null;
+      else return SparseObjectColumn.DEFAULT;
     }
 
 
@@ -301,7 +304,10 @@ public class SparseShortColumn extends AbstractSparseColumn {
    * as defined by this class.
    */
     public short getShort(int row)    {
-      return elements.get(row);
+		if (elements.containsKey(row))
+			return elements.get(row);
+		else
+			return this.DEFAULT;
     }
 
   /**
@@ -312,7 +318,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
    */
     public String getString(int row) {
        if (!elements.containsKey(row))
-	return null;
+	return SparseStringColumn.DEFAULT;
       return String.valueOf(elements.get(row));
     }
 
@@ -445,6 +451,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
       elements = (VIntShortHashMap)elements.reorder(newOrder);
 
       missing = missing.reorder(newOrder);
+      empty = empty.reorder(newOrder);
 
    }
 
@@ -701,6 +708,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
 
 
      missing.swapRows(pos1, pos2);
+     empty.swapRows(pos1, pos2);
 
    }
 
@@ -723,7 +731,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
    public static short toShort(Object obj){
 
     if (obj == null)
-      return NOT_EXIST;
+      return DEFAULT;
 
     if (obj instanceof Number)
       return ((Number)obj).shortValue();

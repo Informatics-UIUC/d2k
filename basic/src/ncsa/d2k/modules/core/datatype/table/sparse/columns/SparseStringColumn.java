@@ -57,6 +57,8 @@ public class SparseStringColumn extends AbstractSparseColumn{
 
   /* determine the load on the array and its expanding factor*/
 
+  public static String DEFAULT = null;
+
 
   public static float DEFAULT_LOAD_FACTOR = 0.5f;
 
@@ -505,7 +507,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public byte getByte(int pos){
 
       if (!row2Id.containsKey(pos))
-	return SparseByteColumn.NOT_EXIST;
+	return SparseByteColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return SparseByteColumn.toByte(valuesInColumn[id]);
@@ -522,7 +524,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public char getChar(int pos){
 
       if (!row2Id.containsKey(pos))
-	return SparseCharColumn.NOT_EXIST;
+	return SparseCharColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return SparseCharColumn.toChar(valuesInColumn[id]);
@@ -539,7 +541,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public byte[] getBytes(int pos){
 
       if (!row2Id.containsKey(pos))
-	return null;
+	return SparseByteArrayColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return valuesInColumn[id].getBytes();
@@ -556,7 +558,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public char[] getChars(int pos){
 
       if (!row2Id.containsKey(pos))
-	return null;
+	return SparseCharArrayColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return valuesInColumn[id].toCharArray();
@@ -573,7 +575,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public boolean getBoolean(int pos){
 
       if (!row2Id.containsKey(pos))
-	return SparseBooleanColumn.NOT_EXIST;
+	return SparseBooleanColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return SparseBooleanColumn.toBoolean(valuesInColumn[id]);
@@ -590,7 +592,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public double getDouble(int pos){
 
       if (!row2Id.containsKey(pos))
-	return SparseDoubleColumn.NOT_EXIST;
+	return SparseDoubleColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return SparseDoubleColumn.toDouble(valuesInColumn[id]);
@@ -607,7 +609,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public float getFloat(int pos){
 
       if (!row2Id.containsKey(pos))
-	return SparseFloatColumn.NOT_EXIST;
+	return SparseFloatColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return SparseFloatColumn.toFloat(valuesInColumn[id]);
@@ -624,7 +626,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public int getInt(int pos){
 
       if (!row2Id.containsKey(pos))
-	return SparseIntColumn.NOT_EXIST;
+	return SparseIntColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return SparseIntColumn.toInt(valuesInColumn[id]);
@@ -642,7 +644,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public short getShort(int pos){
 
       if (!row2Id.containsKey(pos))
-	return SparseShortColumn.NOT_EXIST;
+	return SparseShortColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return SparseShortColumn.toShort(valuesInColumn[id]);
@@ -659,7 +661,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public long getLong(int pos){
 
       if (!row2Id.containsKey(pos))
-	return SparseLongColumn.NOT_EXIST;
+	return SparseLongColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return SparseLongColumn.toLong(valuesInColumn[id]);
@@ -676,7 +678,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public Object getObject(int pos){
 
       if (!row2Id.containsKey(pos))
-	return null;
+	return SparseObjectColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return valuesInColumn[id];
@@ -693,7 +695,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
     public String getString(int pos){
 
       if (!row2Id.containsKey(pos))
-	return null;
+	return SparseStringColumn.DEFAULT;
 
       int id = row2Id.get(pos);
       return valuesInColumn[id];
@@ -713,6 +715,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
 
       row2Id.insertObject(new Integer(index), pos);
       missing.increment(pos);
+      empty.increment(pos);
 
     }
 
@@ -837,6 +840,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
       row2Id.put(pos1, val2);
 
      missing.swapRows(pos1, pos2);
+     empty.swapRows(pos1, pos2);
 
    }
 

@@ -27,10 +27,13 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
 
   protected VIntHashSet missing;
 
+  protected VIntHashSet empty;
+
 
   public AbstractSparseColumn() {
      super();
     missing = new VIntHashSet();
+	empty = new VIntHashSet();
     super.setLabel("");
   }
 
@@ -58,7 +61,8 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
    * @param srcCol    the column from which the data is copied.
    */
     public void copy(AbstractSparseColumn srcCol) {
-      missing = srcCol.missing.copy();
+      this.missing = srcCol.missing.copy();
+      this.empty = srcCol.empty.copy();
       copyAttributes(srcCol);
     }
 
@@ -325,15 +329,16 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
 
 
       /**
-       * Verifies if row no. <codE>pos</codE> holds a value.
+       * Verifies if row no. <code>pos</code> holds a value.
        *
        * @param pos     the inspected row no.
        * @return        true if row no. <code>pos</code> holds a value, otherwise
        *                returns false.
        */
-      public boolean doesValueExist(int pos){
-	return ( ((VHashMap)getElements()).containsKey(pos) );
-      }
+	public boolean doesValueExist(int pos)
+	{
+		return (((VHashMap) getElements()).containsKey(pos));
+	}
 
 
         /**
@@ -342,7 +347,7 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
      * @return true if the value is empty, false otherwise
      */
     public boolean isValueEmpty(int row) {
-      return !doesValueExist(row);
+		return empty.contains(row);
     }
 
 
@@ -617,8 +622,12 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
      *                    (if false).
      * @param row - the row number to be set.
      */
-    public void setValueToEmpty(boolean isEmpty, int row) {
-	if(isEmpty) removeRow(row);
+	public void setValueToEmpty(boolean isEmpty, int row) 
+	{
+		if (isEmpty) 
+			empty.add(row);
+		else
+			empty.remove(row);
     }
 
 
@@ -629,6 +638,17 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
 	missing.remove(pos);
    }
 
+
+
+	/**
+	 * Remove the designation that this particular row is empty.
+	 *
+	 */
+	public void removeRowEmpty(int pos) 
+	{
+		if (empty.contains(pos))
+			empty.remove(pos);
+	}
 
 	/**
 	 * Inserts a new entry in the Column at position <code>pos</code>.
