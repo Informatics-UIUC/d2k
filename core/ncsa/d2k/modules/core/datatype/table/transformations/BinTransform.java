@@ -82,7 +82,8 @@ public class BinTransform implements Transformation {
                 }
         }
         //StringColumn[] sc = new StringColumn[table.getNumColumns()];
-        for (int i = 0; i < mt.getNumColumns(); i++) {
+        int numColumns = mt.getNumColumns();
+        for (int i = 0; i < numColumns; i++) {
             if (binRelevant[i]) {
                 //sc[i] = new StringColumn(newcols[i]);
                 //sc[i].setComment(table.getColumn(i).getComment());

@@ -510,15 +510,15 @@ public class BinColumns extends UIModule {
                     weightField.setText(EMPTY);
                 }
             });
-            JButton showWeight = new JButton("Show");
-            showWeight.setEnabled(false);
+            // JButton showWeight = new JButton("Show");
+            // showWeight.setEnabled(false);
             Constrain.setConstraints(weightpnl, new JLabel("Number in each bin"),
                                      0, 0, 1, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                      1, 1);
             Box b3 = new Box(BoxLayout.X_AXIS);
             b3.add(weightField);
             b3.add(addWeight);
-            b3.add(showWeight);
+            // b3.add(showWeight);
             Constrain.setConstraints(weightpnl, b3, 1, 0, 1, 1, GridBagConstraints.NONE,
                                      GridBagConstraints.EAST, 1, 1);
             // add all numeric components
