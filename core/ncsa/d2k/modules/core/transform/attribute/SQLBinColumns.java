@@ -35,8 +35,8 @@ public class SQLBinColumns extends UIModule {
     private NumberFormat nf;
 
     /**
-     * put your documentation comment here
-     * @return
+     * get the name of the module
+     * @return module's name
      */
     public String getModuleName () {
         return  "SQLBinColumns";
@@ -181,6 +181,10 @@ public class SQLBinColumns extends UIModule {
         wrapper = cw;
       }
 
+      /** verify whether the column is a numeric column
+       *  @param i the index of the column
+       *  @return return true if the column is numeric column, false otherwise
+       */
       public boolean isColumnNumeric(int i) {
         try {
           String colName = fieldNames[i];
@@ -217,6 +221,10 @@ public class SQLBinColumns extends UIModule {
         }
       }
 
+      /** get the minimum value in a column
+       *  @param col the index of the column
+       *  @return the minimum value
+       */
       public double getMin(int col) {
         try {
           String colName = fieldNames[col];
@@ -238,7 +246,10 @@ public class SQLBinColumns extends UIModule {
         }
       }
 
-
+      /** get the maximum value in a column
+       *  @param col the index of the column
+       *  @return the maximum value
+       */
       public double getMax(int col) {
         try {
           String colName = fieldNames[col];
@@ -249,7 +260,6 @@ public class SQLBinColumns extends UIModule {
           maxSet.next();
           double val = maxSet.getDouble(1);
           stmt.close();
-          //return (maxSet.getDouble(1));
           return (val);
         }
         catch (Exception e) {
@@ -261,7 +271,9 @@ public class SQLBinColumns extends UIModule {
         }
       }
 
-
+      /** get the number of rows in a table
+       *  @return the number of rows
+       */
       public int getNumRows() {
         try {
           String colName = fieldNames[0];
@@ -283,10 +295,15 @@ public class SQLBinColumns extends UIModule {
         }
       }
 
+      /** get the count of rows which have values in specified ranges
+       *  @param col the column to check values
+       *  @param borders the specified range
+       *  @return the row count for each specified range
+       */
       public int[] getCounts(int col, double[] borders) {
         int[] counts = new int[borders.length+1];
         String colName = fieldNames[col];
-        double low = -9000000.00;
+        double low = -9999999.99;
         double high;
         try {
           con = wrapper.getConnection();
@@ -320,6 +337,10 @@ public class SQLBinColumns extends UIModule {
         }
       }
 
+      /** get sum of all values in a column
+       *  @param col the column to check for
+       *  @return sum of all values
+       */
       public double getTotal(int col) {
         try {
           String colName = fieldNames[col];
@@ -342,6 +363,8 @@ public class SQLBinColumns extends UIModule {
       }
     }
 
+    /** user view
+     */
     private class SQLBinColumnsView extends JUserPane {
         private boolean setup_complete;
         private BinDescriptor currentSelectedBin;
@@ -387,9 +410,9 @@ public class SQLBinColumns extends UIModule {
         private String queryStr;
 
         /**
-         * put your documentation comment here
-         * @param o
-         * @param id
+         * set up input
+         * @param o input object
+         * @param id input ID
          */
         public void setInput (Object o, int id) {
             if(id == 0) {
@@ -443,6 +466,7 @@ public class SQLBinColumns extends UIModule {
 
         /**
          * Create all of the components and add them to the view.
+         * @param m ViewModule object
          */
         public void initView (ViewModule m) {
             currentBins = new JList();
@@ -615,8 +639,8 @@ public class SQLBinColumns extends UIModule {
                                  final JSlider intervalSlider = H.getSlider();
 
                                  /**
-                                  * put your documentation comment here
-                                  * @param e
+                                  * event for add bin interval
+                                  * @param e the action event
                                   */
                                  public void actionPerformed (ActionEvent e) {
                                      int sel = H.getSelection();
@@ -654,8 +678,8 @@ public class SQLBinColumns extends UIModule {
             addWeight.addActionListener(new AbstractAction() {
 
                 /**
-                 * put your documentation comment here
-                 * @param e
+                 * event for button "Add"
+                 * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
                     addFromWeight();
@@ -705,8 +729,8 @@ public class SQLBinColumns extends UIModule {
             addTextToGroup.addActionListener(new AbstractAction() {
 
                 /**
-                 * put your documentation comment here
-                 * @param e
+                 * event for button ">"
+                 * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
                     if (!setup_complete)
@@ -721,10 +745,6 @@ public class SQLBinColumns extends UIModule {
             JButton removeTextFromGroup = new JButton("<");
             removeTextFromGroup.addActionListener(new AbstractAction() {
 
-                /**
-                 * put your documentation comment here
-                 * @param e
-                 */
                 public void actionPerformed (ActionEvent e) {
                     if (!setup_complete)
                         return;
@@ -758,8 +778,8 @@ public class SQLBinColumns extends UIModule {
             addTextBin.addActionListener(new AbstractAction() {
 
                 /**
-                 * put your documentation comment here
-                 * @param e
+                 * event for "Add" button
+                 * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
                     Object[] sel = textCurrentModel.toArray();
@@ -809,8 +829,8 @@ public class SQLBinColumns extends UIModule {
             updateCurrent.addActionListener(new AbstractAction() {
 
                 /**
-                 * put your documentation comment here
-                 * @param e
+                 * event for "Update" button
+                 * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
                     if (!setup_complete)
@@ -825,8 +845,8 @@ public class SQLBinColumns extends UIModule {
             removeBin.addActionListener(new AbstractAction() {
 
                 /**
-                 * put your documentation comment here
-                 * @param e
+                 * event for "Remove Bin" button
+                 * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
                     if (!setup_complete)
@@ -856,8 +876,8 @@ public class SQLBinColumns extends UIModule {
             removeAllBins.addActionListener(new AbstractAction() {
 
                 /**
-                 * put your documentation comment here
-                 * @param e
+                 * event for "Romove All" button
+                 * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
                     if (!setup_complete)
@@ -895,8 +915,8 @@ public class SQLBinColumns extends UIModule {
             abort.addActionListener(new AbstractAction() {
 
                 /**
-                 * put your documentation comment here
-                 * @param e
+                 * event for Abort button
+                 * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
                     viewCancel();
@@ -906,19 +926,14 @@ public class SQLBinColumns extends UIModule {
             done.addActionListener(new AbstractAction() {
 
                 /**
-                 * put your documentation comment here
-                 * @param e
+                 * event for Done button
+                 * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
                     Object[] tmp = binListModel.toArray();
                     BinDescriptor[] bins = new BinDescriptor[tmp.length];
                     for (int i = 0; i < bins.length; i++)
                         bins[i] = (BinDescriptor)tmp[i];
-                    //for (int i = 0; i < bins.length; i++) {
-                      //System.out.println("bins[" + i + "]: column_number is " + bins[i].column_number);
-                      //System.out.println("      name is " + bins[i].name);
-                      //System.out.println("      label is " + bins[i].label);
-                    //}
                     pushOutput(bins, 0);
                     viewDone("Done");
                 }
@@ -927,8 +942,8 @@ public class SQLBinColumns extends UIModule {
             helpButton.addActionListener(new AbstractAction() {
 
                 /**
-                 * put your documentation comment here
-                 * @param e
+                 * event for button "Help"
+                 * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
                     HelpWindow help = new HelpWindow();
@@ -943,14 +958,13 @@ public class SQLBinColumns extends UIModule {
             add(buttonPanel, BorderLayout.SOUTH);
         }
 
+        /** find unique values in a column
+         *  @param col the column to check for
+         *  @return a HashSet object that stores all unique values
+         */
         private HashSet uniqueValues (int col) {
             // count the number of unique items in this column
             HashSet set = new HashSet();
-            /*for (int i = 0; i < tbl.getNumRows(); i++) {
-                String s = tbl.getString(i, col);
-                if (!set.contains(s))
-                    set.add(s);
-            }*/
           try {
             String colName = fieldNames[col];
             con = connectionWrapper.getConnection();
@@ -972,8 +986,8 @@ public class SQLBinColumns extends UIModule {
           }
         }
 
-        /**
-         * Get the column indices of the selected numeric columns.
+        /** Get the column indices of the selected numeric columns.
+         *  @return an int[] that stores column indices
          */
         private int[] getSelectedNumericIndices () {
             Object[] setVals = numericColumnLabels.getSelectedValues();
@@ -984,15 +998,15 @@ public class SQLBinColumns extends UIModule {
         }
 
         /**
-         * put your documentation comment here
-         * @param index
+         * mark the selected column
+         * @param index the column selected
          */
         private void setSelectedNumericIndex (int index) {
             numericColumnLabels.setSelectedIndex(index);
         }
 
-        /**
-         * Get the range of the first selected column.
+        /** Get the range of the first selected column.
+         *  @return the difference between max and min
          */
         private double getInterval () {
             int colIdx = numericColumnLabels.getSelectedIndex();
@@ -1209,21 +1223,25 @@ public class SQLBinColumns extends UIModule {
         }
 
         /**
-         * put your documentation comment here
-         * @param idx
-         * @param name
-         * @param sel
-         * @return
+         * create bins for categorical data
+         * @param idx the index of the column
+         * @param name the name of the bin
+         * @param sel the values in the bin
+         * @return a BinDescriptor object
          */
         private BinDescriptor createTextualBin (int idx, String name, Object[] sel) {
             String[] vals = new String[sel.length];
             for (int i = 0; i < vals.length; i++)
                 vals[i] = sel[i].toString();
-            return  new TextualBinDescriptor(idx, name, vals, /*tbl.getColumnLabel(idx)*/(String)fieldNames[idx]);
+            return  new TextualBinDescriptor(idx, name, vals, (String)fieldNames[idx]);
         }
 
         /**
          * Create a numeric bin that goes from min to max.
+         * @param col the index of the column
+         * @param min the min value in the bin
+         * @param max the max value in the bin
+         * @return a BinDescriptor object
          */
         private BinDescriptor createNumericBinDescriptor (int col, double min,
                 double max) {
@@ -1240,9 +1258,12 @@ public class SQLBinColumns extends UIModule {
 
         /**
          * Create a numeric bin that goes from Double.MIN_VALUE to max
+         * @param col the index of the column
+         * @param max the max value in the bin
+         * @return a BinDescriptor object
          */
         private BinDescriptor createMinNumericBinDescriptor (int col, double max) {
-            double min = -9000000.00;
+            double min = -9999999.99;
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(OPEN_BRACKET);
             nameBuffer.append(DOTS);
@@ -1256,6 +1277,9 @@ public class SQLBinColumns extends UIModule {
 
         /**
          * Create a numeric bin that goes from min to Double.MAX_VALUE
+         * @param col the index of the column
+         * @param min the min value in the bin
+         * @return a BinDescriptor object
          */
         private BinDescriptor createMaxNumericBinDescriptor (int col, double min) {
             StringBuffer nameBuffer = new StringBuffer();
@@ -1270,8 +1294,8 @@ public class SQLBinColumns extends UIModule {
         }
 
         /**
-         * put your documentation comment here
-         * @param bd
+         * add an item to a bin
+         * @param bd the BinDescriptor to use
          */
         private void addItemToBinList (BinDescriptor bd) {
             binListModel.addElement(bd);
@@ -1281,8 +1305,8 @@ public class SQLBinColumns extends UIModule {
                 implements ListSelectionListener {
 
             /**
-             * put your documentation comment here
-             * @param e
+             * verify a value has been changed
+             * @param e an event
              */
             public void valueChanged (ListSelectionEvent e) {
                 if (!setup_complete)
@@ -1314,8 +1338,8 @@ public class SQLBinColumns extends UIModule {
                 implements ListSelectionListener {
 
             /**
-             * put your documentation comment here
-             * @param e
+             * verify a value has been changed
+             * @param e an event
              */
             public void valueChanged (ListSelectionEvent e) {
                 if (!setup_complete)
@@ -1338,7 +1362,7 @@ public class SQLBinColumns extends UIModule {
         private class HelpWindow extends JD2KFrame {
 
             /**
-             * put your documentation comment here
+             * help window
              */
             public HelpWindow () {
                 super("About BinColumns");
@@ -1350,8 +1374,8 @@ public class SQLBinColumns extends UIModule {
         }
 
         /**
-         * put your documentation comment here
-         * @return
+         * display help message
+         * @return help message
          */
         private String getHelpString () {
             StringBuffer sb = new StringBuffer();
