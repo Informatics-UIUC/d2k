@@ -142,10 +142,12 @@ public class ScalarizeNominals extends DataPrepModule {
          HashMap uniqueIndexMap = new HashMap();
 
          for (int i = 0; i < inputs.length; i++)
-            uniqueIndexMap.put(new Integer(inputs[i]), null);
+            if (et.isColumnNominal(inputs[i]))
+                uniqueIndexMap.put(new Integer(inputs[i]), null);
 
          for (int i = 0; i < outputs.length; i++)
-            uniqueIndexMap.put(new Integer(outputs[i]), null);
+            if (et.isColumnNominal(outputs[i]))
+               uniqueIndexMap.put(new Integer(outputs[i]), null);
 
          // retrieve column indices
 
