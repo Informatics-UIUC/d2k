@@ -393,3 +393,12 @@ public class AutoBin extends AutoBinOPT {
 /**
  * 01-04-04: vered - module is ready for basic.
 */
+
+
+/**
+ * 01-11-04: Vered
+ * Module is pulled back into qa process.
+ * bug 216 - array index out of bounds exception when performing weight binning
+ * ona subset table (which its subset does not include all of the records of the
+ * original table) with missing values. (the exception is thrown by AutoBinOPT)
+*/

@@ -1808,10 +1808,15 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
  *
  * 12-23-03 unique values maintenance and overlapping binning of nominal columns in
  *          second run. [bug 169].
- *          error with weight binning [bug 177]
+ *          error with weight binning [bug 177] (fixed)
  *
  * 01-08-04: vered.
   * user may create bins with identical names in same attribute [bug 207].
+  *
 *01-08-04 Anca:
 *fixed bug 177 by checking to see if binMaxes in addFromWeigth does have two maxes or only one
+  *
+ * 01-11-04: vered.
+ * creates one bin too many with weight binning, and this last bin is expendable,
+ * non of the items are being binned into it [bug 215].
  */

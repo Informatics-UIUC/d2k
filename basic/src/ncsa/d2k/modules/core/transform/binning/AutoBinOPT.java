@@ -287,6 +287,9 @@ public class AutoBinOPT extends DataPrepModule {
 		String[] cn = TableUtilities.uniqueValues(tbl, outputs[0]);
 
 		for (int i = 0; i < inputs.length; i++) {
+
+
+
 			// if it is scalar, get the data and sort it.  put (num) into each bin,
 			// and create a new bin when the last one fills up
 			boolean isScalar = tbl.isColumnScalar(inputs[i]);
@@ -454,3 +457,12 @@ public class AutoBinOPT extends DataPrepModule {
 * 12 -15-03 Anca  - added support for eliminating missing values when bin boundaries are defined
 * 12 -16 -03 Anca - moved creation of "unknown" bins to BinTransform constructor
 **/
+
+
+/**
+ * 01-11-04: Vered
+ * Module is pulled back into qa process.
+ * bug 216 - array index out of bounds exception when performing weight binning
+ * ona subset table (which its subset does not include all of the records of the
+ * original table) with missing values.
+*/

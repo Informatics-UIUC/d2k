@@ -1010,3 +1010,10 @@ public class SQLAutoBin extends AutoBin {
 //12-12--03 Anca - added check and exception for input table that is not an ExampleTable
 
 // 12 -16-03 Anca moved creation of "unknown" bins to BinTransform
+
+
+ /**
+ * 01-11-04: Vered
+ * bug 215 - creates one bin too many, the last one, which is expendable, as non of the
+ * data is being binned into it.
+*/

@@ -1312,4 +1312,8 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
             the values to assign missing values of various types is gone since this
             is now carried with the table.
  12-05-03 - modules is ready for basic 4
+
+ 01-11-04 - module is pulled back into qa process
+ bug 217 - array index out of bounds exception with subset table that includes
+ only part of the original set of data.
   */

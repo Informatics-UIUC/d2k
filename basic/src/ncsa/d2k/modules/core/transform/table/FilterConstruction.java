@@ -74,8 +74,7 @@ public class FilterConstruction extends HeadlessUIModule {
 "      default, if an expression operates on any missing value, the row "+
 "      containing the missing value is included in the result. There is a "+
 "      property that can be changed to reverse this behavior."+
-"    </p>" +  "<P>Missiing Values Handling: Missing values in attributes that a filter " +
-                    "is constructed by them, are not filtered, by default.</P> ";
+"    </p>";
 	}
 
    public String[] getInputTypes() {
