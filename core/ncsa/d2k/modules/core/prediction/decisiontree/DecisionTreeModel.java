@@ -48,6 +48,8 @@ public class DecisionTreeModel extends PredictionModelModule
 //        private boolean[] inputIsScalar;
 //       private boolean[] outputIsScalar;
 
+        public DecisionTreeModel() {}
+
 	/**
 		Constructor
 		@param rt the root of the decision tree

@@ -89,6 +89,8 @@ public final class NaiveBayesModel
   private String[] outputTypes;
  */
 
+  public NaiveBayesModel() {}
+
   /**
    Constructor
    @param bt the bin tree
@@ -658,7 +660,7 @@ public final class NaiveBayesModel
 
     }
 */
-    int numCorrect = 0;
+//    int numCorrect = 0;
 
     int[] ins = pt.getInputFeatures();
     int[] outs = pt.getOutputFeatures();
@@ -706,9 +708,9 @@ public final class NaiveBayesModel
         String predictedClass = cn[id];
         pt.setStringPrediction(predictedClass, row, 0);
 
-        if (predictedClass.trim().equals(pt.getString(row, outs[0]))) {
-          numCorrect++;
-        }
+//        if (outs != null && outs.length > 0 && predictedClass.trim().equals(pt.getString(row, outs[0]))) {
+//          numCorrect++;
+//        }
       }
       else {
         pt.setStringPrediction(null, row, 0);
