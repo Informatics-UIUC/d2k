@@ -19,7 +19,7 @@ package ncsa.d2k.modules.core.discovery.cluster.sample;
 
 import ncsa.d2k.core.modules.*;
 
-public class OnetimeInputBroker
+public class OneTimeInputBroker
     extends DataPrepModule {
 
   //==============
@@ -44,7 +44,7 @@ public class OnetimeInputBroker
   //================
   // Constructor(s)
   //================
-  public OnetimeInputBroker() {
+  public OneTimeInputBroker() {
   }
 
   //================
