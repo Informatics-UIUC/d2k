@@ -1,11 +1,8 @@
 package ncsa.d2k.modules.core.io.file.input;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.gui.*;
 import java.io.*;
-import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -414,7 +411,8 @@ public class CreateDelimitedParser extends InputModule {
              df = new DelimitedFileParser(file, lbl, typ);
          else {
              String s = getSpecDelim();
-             char[] del = s.toCharArray();
+			char[] del = s.toCharArray();
+			if(del.length == 0 ) throw new Exception("User specified delimiter has not been set");
              df = new DelimitedFileParser(file, lbl, typ, del[0]);
          }
 
