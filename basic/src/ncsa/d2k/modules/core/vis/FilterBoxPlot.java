@@ -149,7 +149,8 @@ public class FilterBoxPlot extends HeadlessUIModule {
           //tabbedpane.add(table.getColumnLabel(column), boxplotpane);
         }
       }
-
+      if (features.size() == 0)
+      	throw new RuntimeException ("No scalar columns found in the table.");
       list = new JList(features.toArray());
 
       panel = new JPanel();
@@ -167,6 +168,7 @@ public class FilterBoxPlot extends HeadlessUIModule {
         }
       });
 
+      
       list.setSelectedIndex(0);
 
       done = new JButton("Done");

@@ -148,6 +148,8 @@ public class BoxPlot extends UIModule {
                   tabbedpane.addTab(table.getColumnLabel(column), boxplotpane);
                }
             }
+            if (tabbedpane.getTabCount() == 0)
+            	throw new RuntimeException ("There were no scalar columns in the table.");
          }
 
          done = new JButton("Done");
