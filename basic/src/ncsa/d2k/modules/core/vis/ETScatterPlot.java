@@ -142,6 +142,5 @@ public class ETScatterPlot extends VisModule
  * Problem with resulting vis: resolution of x and y axis is not the same when
   * viewing hte larger plot. this bug is in the widget file. [bug 187]
  *
- * 01-12-04:
- * bug 222 - accepting non-ExampleTables as input.
+ *
 */

@@ -82,8 +82,5 @@ public class ETLinearRegression extends ETScatterPlot {
  * Problem with resulting vis: resolution of x and y axis is not the same when
   * viewing hte larger plot. this bug is in the widget file. [bug 187]
   *
-  * 01-12-04:
-  * bug 222 - the input type is ExampleTable but this module works also with
-  * TableImpl. the class cast exception is thrown only when trying to view the generated
-  * vis.
+  *
 */
