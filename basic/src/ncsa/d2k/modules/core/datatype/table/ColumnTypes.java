@@ -1,5 +1,7 @@
 package ncsa.d2k.modules.core.datatype.table;
 
+import ncsa.d2k.modules.core.io.file.input.FlatFileParser;
+
 /**
  * Defines the different types of columns that can make up a table.
  */
@@ -44,5 +46,49 @@ public final class ColumnTypes {
 
   public static String getTypeName(int i){
     return _names[i];
+  }
+
+  public static boolean isEqualNumeric(String inString)
+  {
+    if(inString.toLowerCase().equals("number") ||
+       inString.toLowerCase().equals("numeric") ||
+       inString.toLowerCase().equals("decimal") ||
+       inString.toLowerCase().equals("bigint") ||
+       inString.toLowerCase().equals("smallint") ||
+       inString.toLowerCase().equals("integer") ||
+       inString.toLowerCase().equals("real") ||
+       inString.toLowerCase().equals("double"))
+
+      return true;
+
+    // for file parser numeric data type
+    else if(inString.toLowerCase().equals(FlatFileParser.INT_TYPE.toLowerCase()) ||
+            inString.toLowerCase().equals(FlatFileParser.FLOAT_TYPE.toLowerCase()) ||
+            inString.toLowerCase().equals(FlatFileParser.DOUBLE_TYPE.toLowerCase()) ||
+            inString.toLowerCase().equals(FlatFileParser.LONG_TYPE.toLowerCase()) ||
+            inString.toLowerCase().equals(FlatFileParser.SHORT_TYPE.toLowerCase()))
+      return true;
+
+    else
+      return false;
+
+  }
+
+  public static boolean isContainNumeric(String inString)
+  {
+    if(inString.toLowerCase().indexOf("number")>=0 ||
+       inString.toLowerCase().indexOf("numeric")>=0 ||
+       inString.toLowerCase().indexOf("decimal")>=0 ||
+       inString.toLowerCase().indexOf("bigint")>=0 ||
+       inString.toLowerCase().indexOf("smallint")>=0 ||
+       inString.toLowerCase().indexOf("integer")>=0 ||
+       inString.toLowerCase().indexOf("real")>=0 ||
+       inString.toLowerCase().indexOf("double")>=0)
+
+      return true;
+
+    else
+      return false;
+
   }
 }
