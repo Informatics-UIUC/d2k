@@ -26,6 +26,16 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
   /** number of points in solution space. */
   int solutionSpaceDimensions = 0;
 
+  private boolean _verbose = false;
+  public boolean getVerbose() {
+    return _verbose;
+  }
+
+  public void setVerbose(boolean b) {
+    _verbose = b;
+  }
+
+
   /**
    * returns information about the input at the given index.
    * @return information about the input at the given index.
@@ -171,6 +181,8 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
 
   public void beginExecution() {
     folds = new ArrayList(200);
+    this.numberFolds = -1;
+    counter = 0;
   }
 
    /**
@@ -181,20 +193,20 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
    public boolean isReady () {
 
       // If we have a fold number, we will run and queue it up.
-      if (this.getInputPipeSize(0) > 0)
+      if (this.getFlags()[0] > 0)
          return true;
 
       if (numberFolds == -1){
 
          // We are not currently processing a set of folds, we must
          // have some folds queued up before we can run.
-         if (this.folds.size() > 0 && this.getInputPipeSize(1) > 0) {
+         if (this.folds.size() > 0 && this.getFlags()[1] > 0) {
             return true;
          }
       } else {
 
          // we are already working on a set of folds.
-         if (this.getInputPipeSize(1) > 0) {
+         if (this.getFlags()[1] > 0) {
             return true;
          }
       }
@@ -211,7 +223,7 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
 
       // If we have a number of folds, just put it into the
       // folds list and return.
-      if (this.getInputPipeSize(0) > 0) {
+      if (this.getFlags()[0] > 0) {
          this.folds.add(this.pullInput(0));
          return;
       }
@@ -240,8 +252,6 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
       this.counter++;
       if (this.counter == this.numberFolds) {
 
-         // Done.
-         this.numberFolds = -1;
 
          // From the sum, compute the mean
          for (int i = 0 ; i < this.solutionSpaceDimensions; i++)
@@ -269,6 +279,17 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
              outs[i] = i;
          }
          ExampleTable eti = new MutableTableImpl(cols).toExampleTable();
+         if (this.getVerbose()){
+           System.out.println("\nAverageModelScores for " + this.numberFolds + " folds.");
+           for (int i = 0, n = eti.getNumColumns(); i < n; i++){
+             System.out.println(eti.getColumnLabel(i) + " -- avg error: " + eti.getDouble(0, i) + " avg correct: " + (1-eti.getDouble(0, i)));
+           }
+           System.out.println();
+         }
+
+         // Done.
+         this.numberFolds = -1;
+
          eti.setOutputFeatures(outs);
          ParameterPoint objectivepp = pp.createFromTable(eti); //names, avgs);
          this.pushOutput(objectivepp, 0);
