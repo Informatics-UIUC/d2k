@@ -264,11 +264,11 @@ public class C45TreeBuilderOPT
     int[] cols = {
         attCol};
 
-    //int[] examCopy = new int[examples.length];
-    //System.arraycopy(examples, 0, examCopy, 0, examples.length);
-    //int[] sortedExamples = TableUtilities.multiSort(t, cols, examCopy);
+    int[] examCopy = new int[examples.length];
+    System.arraycopy(examples, 0, examCopy, 0, examples.length);
+    int[] sortedExamples = TableUtilities.multiSort(t, cols, examCopy);
 
-    double mean = TableUtilities.mean(t, attCol);
+    //double mean = TableUtilities.mean(t, attCol);
 
     /*for(int i = 0; i < examples.length; i++) {
               int rowIdx = examples[i];
@@ -295,12 +295,12 @@ public class C45TreeBuilderOPT
     // this is the return value
     EntrSplit split = new EntrSplit();
 
-    //double lastTest = /*vt*/t.getDouble(sortedExamples[0], attCol);
-    //boolean allSame = true;
+    double lastTest = /*vt*/t.getDouble(sortedExamples[0], attCol);
+    boolean allSame = true;
     double baseGain = outputInfo(t, outCol, examples);
     //double baseGain = outputInfo(t, outCol, sortedExamples);
 
-    double gain = baseGain = numericAttributeInfo(t, mean,
+/*    double gain = baseGain = numericAttributeInfo(t, mean,
                                                   examples, attCol, outCol);
 
     double spliter = splitInfo(t, attCol, mean, examples);
@@ -309,9 +309,10 @@ public class C45TreeBuilderOPT
     split.gain = gain;
     split.splitValue = mean;
     return split;
+ */
 
     // test the halfway point between the last value and the current value
-    /*for(int i = 1; i < sortedExamples.length; i++) {
+    for(int i = 1; i < sortedExamples.length; i++) {
      double next = t.getDouble(sortedExamples[i], attCol);
      if(next != lastTest) {
       allSame = false;
@@ -342,7 +343,6 @@ public class C45TreeBuilderOPT
        if(allSame)
      return null;
        return split;
-     */
   }
 
   /**
@@ -681,7 +681,7 @@ public class C45TreeBuilderOPT
         "with a split point chosen that offer the greatest information gain. "+
         "The choosing of split points for a scalar input is potentially an "+
         "O(n^2) operation at each node of the tree."+
-        "<p>References: C4.5:Programs for Machine Learning by J. Ross Quinlan"+
+        "<p>References: C4.5: Programs for Machine Learning by J. Ross Quinlan"+
         "<p>Data Type Restrictions: This module will only classify examples with "+
         "nominal outputs."+
         "<p>Data Handling: This module does not modify the input data."+
@@ -695,7 +695,7 @@ public class C45TreeBuilderOPT
   // C4.5:Programs for Machine Learning J. Ross Quinlan
 
   public String getModuleName() {
-    return "C4.5TreeBuilder";
+    return "C4.5 Tree Builder";
   }
 
   public String getInputInfo(int i) {

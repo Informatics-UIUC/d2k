@@ -48,9 +48,9 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 	public String getInputName(int i) {
 		switch(i) {
 			case(0):
-				return "ET";
+				return "Example Table";
 			case(1):
-				return "UnprunedRoot";
+				return "Unpruned Root";
 			default:
 				return "";
 		}
@@ -76,20 +76,34 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 	public String getOutputName(int i) {
 		switch(i) {
 			case(0):
-				return "PrunedRoot";
+				return "Pruned Root";
 			case(1):
-				return "ET";
+				return "Example Table";
 			default:
 				return "";
 		}
 	}
 
 	public String getModuleInfo() {
-		return "C45TreePruner";
+          String s = "<p>Overview: Prune a decision tree built by the C4.5 Tree Builder. "+
+              "<p>Detailed Description: Prune a decision tree by using a reduced-error "+
+              "pruning technique.  Error estimates for the leaves and subtrees are "+
+              "computed by classifying all the examples of the Example Table. "+
+              "Both subtree replacement and subtree raising are used.  Subtree "+
+              "replacement will replace a node by one of its leaves if the "+
+              "induced error of the replacement is less than the sum of the errors "+
+              "for the leaves of the node.  Subtree raising will lift a subtree if "+
+              "the error for the raised subtree is less than the original."+
+              "<p>References: C4.5: Programs for Machine Learning by J. Ross Quinlan"+
+              "<p>Data Type Restrictions: The Unpruned Root must be a DecisionTreeNode "+
+              "built by the C4.5 Tree Builder."+
+              "<p>Data Handling: This module will attempt to classify the examples "+
+              "in the Example Table N times, where N is the number of nodes in the tree.";
+              return s;
 	}
 
 	public String getModuleName() {
-		return "C4.5TreePruner";
+		return "C4.5 Tree Pruner";
 	}
 
 	private DecisionTreeNode rootNode;
