@@ -188,12 +188,12 @@ public class ParseFileToTable extends InputModule {
                     else {
                         // put 0 in a numeric column and set the value to missing
                         // if(ti.isColumnNumeric(j)) {
-                       if (df.getColumnType(i) == ColumnTypes.INTEGER ||
-                           df.getColumnType(i) == ColumnTypes.DOUBLE ||
-                           df.getColumnType(i) == ColumnTypes.FLOAT ||
-                           df.getColumnType(i) == ColumnTypes.LONG ||
-                           df.getColumnType(i) == ColumnTypes.SHORT ||
-                           df.getColumnType(i) == ColumnTypes.BYTE) {
+                       if (df.getColumnType(j) == ColumnTypes.INTEGER ||
+                           df.getColumnType(j) == ColumnTypes.DOUBLE ||
+                           df.getColumnType(j) == ColumnTypes.FLOAT ||
+                           df.getColumnType(j) == ColumnTypes.LONG ||
+                           df.getColumnType(j) == ColumnTypes.SHORT ||
+                           df.getColumnType(j) == ColumnTypes.BYTE) {
 
 
 
