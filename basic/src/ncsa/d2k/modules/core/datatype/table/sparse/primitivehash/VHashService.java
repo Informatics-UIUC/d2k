@@ -177,19 +177,17 @@ public class VHashService {
    * @param map a hashmap that its values should be incremented.
    */
    public static void incrementValues(int val, VIntIntHashMap map){
-     TIntIntIterator it = map.iterator();
+     int[] keys = map.keys();
      //iterating over keys in the map
-     while(it.hasNext()){
-       int currKey = it.key();
-       int currVal = map.get(currKey);
+     for (int i=0; i<keys.length; i++){
+
+       int currVal = map.get(keys[i]);
        //if current value is equal to or greater than val
-       if(currVal >= val){
-         //removing this value
-         map.remove(currKey);
-         //putting a new one, incremented.
-         map.put(currKey, currVal+1);
-       }
-     }
+       if(currVal >= val)
+         map.increment(keys[i]);
+
+
+     }//for
 
    }
 
@@ -200,7 +198,7 @@ public class VHashService {
     * @param val lower boundary of values to be decremented.
     * @param map a hashmap that its values should be decremented.
     */
-    public static void decrementValues(int val, VIntIntHashMap map){
+ /*  public static void decrementValues(int val, VIntIntHashMap map){
       TIntIntIterator it = map.iterator();
       //iterating over keys in the map
       while(it.hasNext()){
@@ -215,7 +213,7 @@ public class VHashService {
         }
       }
 
-    }
+    }*/
 
 
    /**
