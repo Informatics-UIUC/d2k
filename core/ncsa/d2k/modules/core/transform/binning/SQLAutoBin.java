@@ -307,10 +307,18 @@ public class SQLAutoBin extends AutoBin {
 			bins.add(nbd);
 		    }
 		    // now add the last bin
+		    if(binMaxes.length > 1)
 		    nbd =
 			BinDescriptorFactory.createMaxNumericBinDescriptor(
 									   i,
 									   binMaxes[binMaxes.length - 2],
+									   nf,
+									   tbl);
+		    else
+		    nbd =
+			BinDescriptorFactory.createMaxNumericBinDescriptor(
+									   i,
+									   binMaxes[binMaxes.length - 1],
 									   nf,
 									   tbl);
 		    bins.add(nbd);

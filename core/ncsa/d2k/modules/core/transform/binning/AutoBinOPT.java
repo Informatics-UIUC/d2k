@@ -309,8 +309,12 @@ public class AutoBinOPT
         }
 
         // now add the last bin
-        bd = BinDescriptorFactory.createMaxNumericBinDescriptor(inputs[i],
-                                                binMaxes[binMaxes.length - 2], nf, tbl);
+	if(binMaxes.length > 1)
+	    bd = BinDescriptorFactory.createMaxNumericBinDescriptor(inputs[i],
+								    binMaxes[binMaxes.length - 2], nf, tbl);
+	else
+	    bd = BinDescriptorFactory.createMaxNumericBinDescriptor(inputs[i],
+								    binMaxes[binMaxes.length - 1], nf, tbl);
         bins.add(bd);
       }
 
