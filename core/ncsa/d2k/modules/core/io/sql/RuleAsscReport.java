@@ -111,22 +111,6 @@ public class RuleAsscReport extends UIModule
     public void setInput(Object input, int index) {
       closeIt();
       removeAll();
-
-      /*if (index == 0) {
-        ruleTable = new TableImpl();
-        ruleTable = (TableImpl)input;
-      }
-      else if (index == 1) {
-        itemLabels = new ArrayList();
-        itemLabels = (ArrayList)input;
-      }
-      else if (index == 2) {
-        freqItemSets = new ArrayList();
-        freqItemSets = (ArrayList)input;
-        doGUI();
-        displayRules();
-      }
-      */
       ruleTable = (TableImpl)input;
       itemLabels = (ArrayList)((RuleTable)ruleTable).getNamesList();
       freqItemSets = (ArrayList)((RuleTable)ruleTable).getItemSetsList();
@@ -139,20 +123,6 @@ public class RuleAsscReport extends UIModule
     }
 
     public void initView(ViewModule mod) {
-      /*removeAll();
-      ruleTable = new TableImpl();
-      ruleTable = (TableImpl)pullInput(0);
-      itemLabels = new ArrayList();
-      itemLabels = (ArrayList)pullInput(1);
-      freqItemSets = new ArrayList();
-      freqItemSets = (ArrayList)pullInput(2);
-      ruleTable = (TableImpl)pullInput(0);
-      itemLabels = (ArrayList)((RuleTable)ruleTable).getNamesList();
-      freqItemSets = (ArrayList)((RuleTable)ruleTable).getItemSetsList();
-
-      doGUI();
-      displayRules();
-      */
     }
 
     public void doGUI() {
@@ -247,8 +217,8 @@ public class RuleAsscReport extends UIModule
           ruleList.setValueAt(rightRule,ruleIdx,2);
         }
       }
-      ruleList.setValueAt(Float.toString(ruleTable.getFloat(ruleIdx,2)),ruleIdx,3);
-      ruleList.setValueAt(Float.toString(ruleTable.getFloat(ruleIdx,3)),ruleIdx,4);
+      ruleList.setValueAt(Float.toString(ruleTable.getFloat(ruleIdx,2)),ruleIdx,4);
+      ruleList.setValueAt(Float.toString(ruleTable.getFloat(ruleIdx,3)),ruleIdx,3);
     }
   }
 
