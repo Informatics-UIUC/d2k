@@ -46,6 +46,8 @@ public class ScalarView implements View {
 
   double brushwidth, brushheight;
 
+  double featurewidth;
+
   DecisionTreeScheme scheme;
 
   NumberFormat numberformat;
@@ -183,7 +185,7 @@ public class ScalarView implements View {
 
       String[] features = scalarmodel.getOutputFeatureNames();
 
-      double featurewidth = 0;
+      featurewidth = 0;
       double valuewidth = 0;
       double stringwidth = 0;
       for (int index = 0; index<features.length; index++) {
@@ -444,6 +446,12 @@ public class ScalarView implements View {
         g2.setColor(scheme.getNextColor());
         g2.fill(new Rectangle2D.Double(x+barspace, y-barheight, barwidth, barheight));
 
+        // Label
+        String feature = scalarmodel.getOutputFeatureName(index);
+        double featurenamewidth = smallmetrics.stringWidth(feature);
+        g2.setColor(scheme.textcolor);
+        g2.drawString(feature, (int) (x+barspace+(barwidth-featurenamewidth)/2), (int) (y+smallascent));
+
         x += 2*barspace+barwidth+graphspacing;
       }
     }
@@ -489,6 +497,9 @@ public class ScalarView implements View {
       xgraph = xpath+pathwidth+graphspace;
 
       graphheight = graphtop+gridheight+graphbottom;
+
+      if (featurewidth > barwidth)
+        barwidth = featurewidth;
 
       graphwidth = 0;
       valuewidths = new double[maximumvalues.length];
