@@ -26,27 +26,51 @@ public class CreateBinTree extends DataPrepModule {
    }
 
    public String getInputInfo(int i) {
-      return "";
+       switch (i) { 
+       case 0 : 
+	   return "Binning Transformation containing the bin definitions"; 
+       case 1 : 
+	   return "ExampleTable containing the names of the input/output features"; 
+       default : 
+	   return "No such input"; 
+       } 
    }
 
    public String getOutputInfo(int i) {
-      return "";
+      return "BinTree structure without counts";
    }
 
    public String getInputName(int i) {
-      return "";
+       switch (i) { 
+       case 0 : 
+	   return "Bin Transform"; 
+       case 1 : 
+	   return "Example Table"; 
+       default : 
+	   return "No such input"; 
+       } 
    }
 
    public String getOutputName(int i) {
-      return "";
+      return "Bin Tree";
    }
 
    public String getModuleInfo() {
-      return "";
+       StringBuffer sb = new StringBuffer("<p>Overview: "); 
+       sb.append("Creates an empty BinTree."); 
+       sb.append("<p>Detailed Description: "); 
+       sb.append( "Given a BinTransform containing the definition of the bins, "); 
+       sb.append( "an ExampleTable "); 
+       sb.append( "that has the input/ output attribute labels and types, builds a BinTree "); 
+       sb.append( "that can be later used to clasify data. " );
+       sb.append( "<p> Scalability:  "); 
+       sb.append( " ");
+       return sb.toString(); 
+
    }
 
    public String getModuleName() {
-      return "";
+      return "Create Bin Tree";
    }
 
    public void doit() {
@@ -109,3 +133,5 @@ public class CreateBinTree extends DataPrepModule {
    }
 
 }
+// QA comments Anca:
+// added input/output names, description, module info text
