@@ -40,6 +40,28 @@ public class CreateDelimitedParser extends InputModule {
         return specDelim;
     }
 
+    private boolean hasLabels = true;
+    public void setHasLabels(boolean b) {
+        hasLabels = b;
+    }
+    public boolean getHasLabels() {
+        return hasLabels;
+    }
+    private boolean hasTypes = true;
+    public void setHasTypes(boolean b) {
+        hasTypes = b;
+    }
+    public boolean getHasTypes() {
+        return hasTypes;
+    }
+    private boolean hasSpecDelim = false;
+    public void setHasSpecDelim(boolean b) {
+        hasSpecDelim = b;
+    }
+    public boolean getHasSpecDelim() {
+        return hasSpecDelim;
+    }
+
     /*public PropertyDescription [] getPropertiesDescriptions () {
         PropertyDescription[] retVal = new PropertyDescription[2];
         retVal[0] = new PropertyDescription("labelsRow", "Labels Row Index",
@@ -72,13 +94,13 @@ public class CreateDelimitedParser extends InputModule {
         private PropEdit() {
             int lr = getLabelsRow();
 
-            /*final JRadioButton*/ lblbtn = new JRadioButton("File Has Labels Row", getLabelsRow() > -1);
+            /*final JRadioButton*/ lblbtn = new JRadioButton("File Has Labels Row", getHasLabels());
             lblbtn.setToolTipText("Select this option if the file has a row of column labels.");
             /*final JLabel*/ lbllbl = new JLabel("Labels Row:");
             lbllbl.setToolTipText("This is the index of the labels row in the file.");
             /*final JTextField*/ lblrow = new JTextField(5);
 
-            if(!lblbtn.isSelected()) {
+            if(!getHasLabels()) {
                 lbllbl.setEnabled(false);
                 lblrow.setEnabled(false);
             }
@@ -104,19 +126,18 @@ public class CreateDelimitedParser extends InputModule {
                 }
             });
 
-            /*final JRadioButton*/ typbtn = new JRadioButton("File Has Types Row", getTypesRow() > -1);
+            /*final JRadioButton*/ typbtn = new JRadioButton("File Has Types Row", getHasTypes());
             typbtn.setToolTipText("Select this option if the file has a row of data types for columns.");
             /*final JTextField*/ typrow = new JTextField(5);
             /*final JLabel*/ typlbl = new JLabel("Types Row");
             typlbl.setToolTipText("This is the index of the types row in the file.");
 
-            if(getTypesRow() == -1) {
+            if(!getHasTypes()) {
                 typrow.setEnabled(false);
                 typlbl.setEnabled(false);
             }
 
             typrow.setText(Integer.toString(getTypesRow()));
-            typrow.setText(Integer.toString(getLabelsRow()));
             typrow.addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent e) {
                     typChange = true;
@@ -137,10 +158,10 @@ public class CreateDelimitedParser extends InputModule {
                 }
             });
 
-            /*final JRadioButton*/ delim = new JRadioButton("File Has User-specified Delimiter", getSpecDelim() != null);
+            /*final JRadioButton*/ delim = new JRadioButton("File Has User-specified Delimiter", getHasSpecDelim());
             /*final JTextField*/ delimfld = new JTextField(5);
             /*final JLabel*/ dellbl = new JLabel("Delimiter:");
-            if(getSpecDelim() != null)
+            if(getHasSpecDelim())
                 delimfld.setText(specDelim);
             else {
                 delimfld.setEnabled(false);
@@ -221,48 +242,74 @@ public class CreateDelimitedParser extends InputModule {
             boolean didChange = false;
 
             if(lblChange) {
-                String lrow = lblrow.getText();
-                int lrownum;
-                try {
-                    lrownum = Integer.parseInt(lrow);
+                if(!lblbtn.isSelected()) {
+                    setLabelsRow(-1);
+                    setHasLabels(false);
                 }
-                catch(NumberFormatException e) {
-                    throw new Exception("The Labels Row was not a number.");
-                }
-                if(lrownum != getLabelsRow()) {
-                    setLabelsRow(lrownum);
-                    didChange = true;
+                else {
+                    String lrow = lblrow.getText();
+                    int lrownum;
+                    try {
+                        lrownum = Integer.parseInt(lrow);
+                    }
+                    catch(NumberFormatException e) {
+                        throw new Exception("The Labels Row was not a number.");
+                    }
+                    if(lrownum != getLabelsRow()) {
+                        setLabelsRow(lrownum);
+                        if(lrownum >= 0)
+                            setHasLabels(true);
+                        else
+                            setHasLabels(false);
+                        didChange = true;
+                    }
                 }
             }
 
             if(typChange) {
-                String trow = typrow.getText();
-                int trownum;
-                try {
-                    trownum = Integer.parseInt(trow);
+                if(!typbtn.isSelected()) {
+                    setTypesRow(-1);
+                    setHasTypes(false);
                 }
-                catch(NumberFormatException e) {
-                    throw new Exception("The Types Row was not a number.");
-                }
-                if(trownum != getTypesRow()) {
-                    setTypesRow(trownum);
-                    didChange = true;
+                else {
+                    String trow = typrow.getText();
+                    int trownum;
+                    try {
+                        trownum = Integer.parseInt(trow);
+                    }
+                    catch(NumberFormatException e) {
+                        throw new Exception("The Types Row was not a number.");
+                    }
+                    if(trownum != getTypesRow()) {
+                        setTypesRow(trownum);
+                        if(trownum >= 0)
+                            setHasTypes(true);
+                        else
+                            setHasTypes(false);
+                        didChange = true;
+                    }
                 }
             }
 
             if(delChange) {
-                String dd = null;
-                if(delim.isSelected()) {
-                    dd = delim.getText();
-                    if(dd.length() > 1)
-                        throw new Exception("The delimiter must be one character long.");
+                if(!delim.isSelected()) {
+                    setHasSpecDelim(false);
+                    setSpecDelim(null);
                 }
-                if(dd != getSpecDelim()) {
-                    setSpecDelim(dd);
-                    didChange = true;
+                else {
+                    String dd = null;
+                    if(delim.isSelected()) {
+                        dd = delim.getText();
+                        if(dd.length() > 1)
+                            throw new Exception("The delimiter must be one character long.");
+                    }
+                    if(dd != getSpecDelim()) {
+                        setSpecDelim(dd);
+                        setHasSpecDelim(true);
+                        didChange = true;
+                    }
                 }
             }
-
             return didChange;
         }
     }
@@ -346,12 +393,20 @@ public class CreateDelimitedParser extends InputModule {
         if(!file.exists())
             throw new FileNotFoundException(getAlias()+": "+file+" did not exist.");
         DelimitedFileParser df;
-        String s = getSpecDelim();
-        if(s == null || s.length() == 0)
-            df = new DelimitedFileParser(file, getLabelsRow(), getTypesRow());
+
+        int lbl = -1;
+        if(getHasLabels())
+            lbl = getLabelsRow();
+        int typ = -1;
+        if(getHasTypes())
+            typ = getTypesRow();
+
+        if(!getHasSpecDelim())
+            df = new DelimitedFileParser(file, lbl, typ);
         else {
+            String s = getSpecDelim();
             char[] del = s.toCharArray();
-            df = new DelimitedFileParser(file, labelsRow, typesRow, del[0]);
+            df = new DelimitedFileParser(file, lbl, typ, del[0]);
         }
         pushOutput(df, 0);
     }
