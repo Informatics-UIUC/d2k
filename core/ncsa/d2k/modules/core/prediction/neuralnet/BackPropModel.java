@@ -433,14 +433,28 @@ public class BackPropModel extends PredictionModelModule
 			upperBound=upperTanh;
 		}
 		int numOutputs=et.getNumOutputFeatures();
-		double[] maxs=new double[numOutputs];
-		double[] mins=new double[numOutputs];
-		for(int i=0;i<numOutputs;i++){
+		int numInputs=et.getNumInputFeatures();
+		
+		int colsToScale=numOutputs+numInputs;
+		int[] colIndices=new int[colsToScale];
+		
+		double[] maxs=new double[colsToScale];
+		double[] mins=new double[colsToScale];
+		int i;
+		for(i=0;i<numInputs;i++){
+			maxs[i]=-2;
+			mins[i]=2;
+			colIndices[i]=et.getInputFeatures()[i];
+
+		}
+
+		for(;i<colsToScale;i++){
 			maxs[i]=upperBound;
 			mins[i]=lowerBound;
+			colIndices[i]=et.getOutputFeatures()[i-numInputs];
 		}
 		ScalingTransformation scaler=new ScalingTransformation(
-				et.getOutputFeatures(), mins, maxs, et);
+				colIndices, mins, maxs, et);
 		scaler.transform(et);
 		this.getTransformations().add(scaler);
 
@@ -1240,6 +1254,7 @@ abstract public class NNupdate implements Serializable{
 	public NNupdate(BackPropModel mod){
 
 		model=mod;
+		/*
 		weights=model.getWeights();
 		sums=model.getSums();
 		activations=model.getActivations();
@@ -1247,6 +1262,7 @@ abstract public class NNupdate implements Serializable{
 		data=(TrainTable)model.getData();
 		act=model.getActivationFunction();
 		learnFn=model.getLearnFunction();
+		*/
 
 		/*
 			setup results table, just needs to be right size, everything will be
