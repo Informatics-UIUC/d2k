@@ -51,10 +51,11 @@ public class ReadFileToADTree extends InputModule {
 
     public String getModuleInfo() {
         StringBuffer sb = new StringBuffer("<p>Overview: ");
-        sb.append("Read a file into an ADTree. ");
+        sb.append("Read a file into an ADTree index structure ");
         sb.append("<p>Detailed Description: ");
-        sb.append("Given a FlatFileParser, read the data into an ADTree. ");
-        sb.append("An ExampleTable that contains the meta data for the ADTree ");
+        sb.append("Given a FlatFileParser, read the data and store all counts");
+				sb.append("into an ADTree.");
+        sb.append("An ExampleTable that contains the meta data for the ADTree");
         sb.append("is also created.");
         return sb.toString();
     }
@@ -129,9 +130,18 @@ public class ReadFileToADTree extends InputModule {
 		boolean debug = false;
 
 
+		/**
+	    Set the value for the debug variable
+	    @param b boolean value for the debug variable
+    */
 		public void setDebug(boolean b){
 		  debug=b;
 	  }
+
+		/**
+	    Get the debug setting
+	    @return The boolean value of debug
+    */
 
 		public boolean getDebug(){
 		  return debug;
