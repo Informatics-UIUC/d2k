@@ -15,6 +15,10 @@ public class SaveNthObject extends ComputeModule
 	//d2k Props
 	////////////////////
 	boolean debug=false;	
+
+	int objectCount=4;
+
+	boolean usePropObjectCount=false;
 	
 	/////////////////////////
 	/// other fields
@@ -50,7 +54,11 @@ public class SaveNthObject extends ComputeModule
 	
 	private void reset(){
 		//just so it doesn't think it's done before it even starts
-		maxfires=Integer.MAX_VALUE;
+		if(usePropObjectCount){
+			maxfires=objectCount;
+		}else{
+			maxfires=Integer.MAX_VALUE;
+		}
 		lastPushed=true;
 		savedObjs=new Vector();
 		//numfires=0;
@@ -64,6 +72,17 @@ public class SaveNthObject extends ComputeModule
 		does it
 	*/
 	public void doit() throws Exception{
+		if(usePropObjectCount){
+			numfires++;
+			savedObjs.add(pullInput(0));
+			if(savedObjs.size()>1){
+				savedObjs.remove(0);
+			}
+			if(numfires>=maxfires){
+				pushOutput(savedObjs.get(0), 0);
+				numfires=0;
+			}
+		}else{
 		if(inputFlags[0]>0){
 			savedObjs.add(pullInput(0));
 				numfires++;
@@ -97,6 +116,7 @@ public class SaveNthObject extends ComputeModule
 				}
 			}else
 				return;
+		}
 		}
 	}
 		
@@ -161,6 +181,18 @@ public class SaveNthObject extends ComputeModule
 	}
 	public void setDebug(boolean b){
 		debug=b;
+	}
+	public boolean getUsePropObjectCount(){
+		return usePropObjectCount;
+	}
+	public void setUsePropObjectCount(boolean b){
+		usePropObjectCount=b;
+	}
+	public int getObjectCount(){
+		return objectCount;
+	}
+	public void setObjectCount(int i){
+		objectCount=i;
 	}
 	/*
 	public boolean get(){
