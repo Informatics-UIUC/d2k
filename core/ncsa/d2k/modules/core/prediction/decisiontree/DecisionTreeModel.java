@@ -273,6 +273,10 @@ public class DecisionTreeModel extends PredictionModelModule
 		return uniqueOutputs;
 	}
 
+        public void setUniqueOutputvalues(String[] values) {
+          uniqueOutputs = values;
+        }
+
 	/**
 		Get the unique values in a column of a Table
 		@param vt the Table

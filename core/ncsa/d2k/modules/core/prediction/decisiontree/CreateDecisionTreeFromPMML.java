@@ -12,10 +12,12 @@ import java.util.*;
 
 public class CreateDecisionTreeFromPMML extends InputModule implements DecisionTreePMMLTags {
   HashMap datafields;
+  ArrayList uniqueoutputs;
 
   public void doit() throws Exception {
     String pmml = (String) pullInput(0);
     datafields = new HashMap();
+    uniqueoutputs = new ArrayList();
 
     SAXReader reader = new SAXReader(false);
     Document document = reader.read(pmml);
@@ -28,14 +30,28 @@ public class CreateDecisionTreeFromPMML extends InputModule implements DecisionT
     if (set != null)
       throw new Exception("Simple predicate sets not supported");
 
+    Element outputelement = (Element) document.selectSingleNode("//MiningField[@usageType='predicted']");
+    String outputname = outputelement.valueOf("@name");
+
     Element dictionary = (Element) document.selectSingleNode("/PMML/DataDictionary");
     for (int count=0; count < dictionary.nodeCount(); count++) {
       Node node = dictionary.node(count);
+
       if (node.getName().equals("DataField")) {
         Element field = (Element) node;
         String name = field.valueOf("@name");
         String type = field.valueOf("@optype");
         datafields.put(name, type);
+
+        if (name.equals(outputname)) {
+          for (int fieldcount=0; fieldcount < field.nodeCount(); fieldcount++) {
+            Node fieldnode = field.node(fieldcount);
+            if (fieldnode.getName().equals("Value")) {
+              Element value = (Element) fieldnode;
+              uniqueoutputs.add(value.valueOf("@value"));
+            }
+          }
+        }
       }
     }
 
@@ -51,72 +67,89 @@ public class CreateDecisionTreeFromPMML extends InputModule implements DecisionT
       decisionnode = new CategoricalDecisionTreeNode(markupnode.childfield, null);
     build(markupnode, decisionnode);
 
+    Element miningschema = (Element) document.selectSingleNode("/PMML/TreeModel/MiningSchema");
+    List inputlist = new LinkedList();
+    List outputlist = new LinkedList();
 
-    // added by DC
-    Element miningSchema = (Element) document.selectSingleNode("/PMML/MiningSchema");
-    List ins = new LinkedList();
-    List outs = new LinkedList();
+    for (int count=0; count < miningschema.nodeCount(); count++) {
+      Node node = miningschema.node(count);
 
-    List miningFields = miningSchema.elements("MiningField");
-    for(int i = 0; i < miningFields.size(); i++) {
-      Element fld = (Element)miningFields.get(i);
-      Attribute usage = fld.attribute("usageType");
-      if(usage == null || usage.getValue().equals("active"))
-        ins.add(fld.attributeValue("name"));
-      else if(usage.getValue().equals("predicted"))
-        outs.add(fld.attributeValue("name"));
+      if (node.getName().equals("MiningField")) {
+        Element field = (Element) node;
+        String name = field.valueOf("@name");
+        String usage = field.valueOf("@usageType");
+
+        if (usage == null || usage.equals("active"))
+          inputlist.add(name);
+
+        else if (usage.equals("predicted")) {
+          String type = (String) datafields.get(name);
+
+          if (!type.equals("categorical"))
+            throw new Exception("Outputs must be nominal");
+
+          if (outputlist.size() > 0)
+            throw new Exception("Multiple outputs not supported");
+
+          outputlist.add(name);
+        }
+      }
     }
 
-    String[] inputs = new String[ins.size()];
-    for(int i = 0; i < ins.size(); i++)
-      inputs[i] = (String)ins.get(i);
+    String[] outputarray = new String[uniqueoutputs.size()];
+    for (int output=0; output < uniqueoutputs.size(); output++) {
+      String outputvalue = (String) uniqueoutputs.get(output);
+      outputarray[output] = outputvalue;
+    }
 
-    String[] outputs = new String[outs.size()];
-    for(int i = 0; i < outs.size(); i++)
-      outputs[i] = (String)outs.get(i);
+    String[] inputs = new String[inputlist.size()];
+    for(int index=0; index < inputlist.size(); index++)
+      inputs[index] = (String) inputlist.get(index);
 
+    String[] outputs = new String[outputlist.size()];
+    for(int index=0; index < outputlist.size(); index++)
+      outputs[index] = (String) outputlist.get(index);
 
-    // now make the ExampleTable.
-    int[] inFeat = new int[inputs.length];
-    int[] outFeat = new int[outputs.length];
+    // Create ExampleTable
+    int[] inputfeatures = new int[inputs.length];
+    int[] outputfeatures = new int[outputs.length];
 
-    MutableTableImpl ti = new MutableTableImpl();
-    for(int i = 0; i < inputs.length; i++) {
-      String optype = (String)datafields.get(inputs[i]);
-      if(optype.equals("categorical")) {
-        ti.addColumn(new String[0]);
-        ti.setColumnIsNominal(true, i);
-        ti.setColumnIsScalar(false, i);
-        ti.setColumnLabel(inputs[i], i);
+    MutableTableImpl table = new MutableTableImpl();
+    for (int index = 0; index < inputs.length; index++) {
+      String optype = (String) datafields.get(inputs[index]);
+      if (optype.equals("categorical")) {
+        table.addColumn(new String[0]);
+        table.setColumnIsNominal(true, index);
+        table.setColumnIsScalar(false, index);
+        table.setColumnLabel(inputs[index], index);
       }
       else {
-        ti.addColumn(new double[0]);
-        ti.setColumnIsNominal(false, i);
-        ti.setColumnIsScalar(true, i);
-        ti.setColumnLabel(inputs[i], i);
+        table.addColumn(new double[0]);
+        table.setColumnIsNominal(false, index);
+        table.setColumnIsScalar(true, index);
+        table.setColumnLabel(inputs[index], index);
       }
-      inFeat[i] = i;
+      inputfeatures[index] = index;
     }
 
-    for(int i = 0; i < outputs.length; i++) {
-      ti.addColumn(new String[0]);
-      ti.setColumnIsNominal(true, i+inputs.length);
-        ti.setColumnLabel(outputs[i], i+inputs.length);
-      outFeat[i] = i+inputs.length;
+    for(int index=0; index < outputs.length; index++) {
+      table.addColumn(new String[0]);
+      table.setColumnIsNominal(true, index+inputs.length);
+      table.setColumnLabel(outputs[index], index+inputs.length);
+      outputfeatures[index] = index+inputs.length;
     }
 
-    ExampleTable et = ti.toExampleTable();
-    et.setInputFeatures(inFeat);
-    et.setOutputFeatures(outFeat);
+    ExampleTable example = table.toExampleTable();
+    example.setInputFeatures(inputfeatures);
+    example.setOutputFeatures(outputfeatures);
 
-    DecisionTreeModel dtm = new DecisionTreeModel(decisionnode, et);
-
-    //pushOutput(decisionnode, 0);
-    pushOutput(dtm, 0);
+    DecisionTreeModel model = new DecisionTreeModel(decisionnode, example);
+    model.setUniqueOutputvalues(outputarray);
+    pushOutput(model, 0);
   }
 
   void walk(Element element, MarkupNode markupnode) {
-    System.out.println(element.getUniquePath());
+    //System.out.println(element.getUniquePath());
 
     for (int count=0; count < element.nodeCount(); count++) {
       Node childnode = element.node(count);
@@ -143,12 +176,12 @@ public class CreateDecisionTreeFromPMML extends InputModule implements DecisionT
     }
 
     if (markupnode.isLeaf()) {
-      System.out.println("Leaf, " + markupnode.element.getUniquePath());
+      //System.out.println("Leaf, " + markupnode.element.getUniquePath());
       return;
     }
 
     for (int child=0; child < markupnode.children.size(); child++) {
-      System.out.println("Node, " + markupnode.element.getUniquePath());
+      //System.out.println("Node, " + markupnode.element.getUniquePath());
 
       if (markupnode.isContinuous()) {
         if (markupnode.children.size() > 2)
@@ -195,9 +228,18 @@ public class CreateDecisionTreeFromPMML extends InputModule implements DecisionT
 
   void attributes(MarkupNode markupnode) {
     Element element = markupnode.element;
-    Element predicate = (Element) element.selectSingleNode(element.getUniquePath() + "/SimplePredicate");
+
+    List list = element.selectNodes(element.getUniquePath() + "/ScoreDistribution");
+    for (int index=0; index < list.size(); index++) {
+      Element distribution = (Element) list.get(index);
+      String output = distribution.valueOf("@value");
+      int count = Integer.parseInt(distribution.valueOf("@recordCount"));
+      markupnode.tallies.put(output, new Integer(count));
+    }
 
     markupnode.score = element.valueOf("@score");
+
+    Element predicate = (Element) element.selectSingleNode(element.getUniquePath() + "/SimplePredicate");
 
     if (predicate != null) {
       markupnode.field = predicate.valueOf("@field");
@@ -215,13 +257,7 @@ public class CreateDecisionTreeFromPMML extends InputModule implements DecisionT
     else
       markupnode.childfield = markupnode.score;
 
-    List list = element.selectNodes(element.getUniquePath() + "/ScoreDistribution");
-    for (int index=0; index < list.size(); index++) {
-      Element distribution = (Element) list.get(index);
-      String output = distribution.valueOf("@value");
-      int count = Integer.parseInt(distribution.valueOf("@recordCount"));
-      markupnode.tallies.put(output, new Integer(count));
-    }
+
   }
 
   private class MarkupNode {
@@ -283,7 +319,6 @@ public class CreateDecisionTreeFromPMML extends InputModule implements DecisionT
   }
 
   public String[] getOutputTypes() {
-    //String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode"};
     String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel"};
     return types;
   }

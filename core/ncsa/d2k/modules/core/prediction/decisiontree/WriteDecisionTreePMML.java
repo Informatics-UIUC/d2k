@@ -166,7 +166,7 @@ public class WriteDecisionTreePMML
     // now we must make the TreeModel element
     DecisionTreeNode treeRoot = dtm.getRoot();
     Element treeRootElement = treeModel.addElement("Node");
-    treeRootElement.addAttribute(SCORE, "xxx");
+    treeRootElement.addAttribute(SCORE, "meaningless");
     treeRootElement.addAttribute(RECORD_COUNT,
                                  Integer.toString(treeRoot.getTotal()));
     treeRootElement.addElement("True");
@@ -220,7 +220,7 @@ public class WriteDecisionTreePMML
       Element newNode = rtElement.addElement("Node");
       newNode.addAttribute("recordCount", Integer.toString(childNde.getTotal()));
 
-      //newNode.addAttribute("score", "xxx");
+      //newNode.addAttribute("score", "meaningless");
       String label = nde.getBranchLabel(i);
       //System.out.println("LABEL: "+label);
       //System.out.println("CHILD: "+childNde);
@@ -273,7 +273,7 @@ public class WriteDecisionTreePMML
         //return;
       }
       else {
-        newNode.addAttribute("score", "xxx");
+        newNode.addAttribute("score", "meaningless");
         writeNode(childNde, newNode, outValues);
       }
     }
