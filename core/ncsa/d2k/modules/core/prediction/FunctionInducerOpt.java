@@ -73,7 +73,7 @@ public class FunctionInducerOpt extends OrderedReentrantModule implements Clonea
     }
   }
 
-  public void instantiateBias(ParameterPoint point) throws Exception {
+  public void setControlParameters(ParameterPoint point) throws Exception {
     System.out.println("override this method");
     throw new Exception();
   }
@@ -97,7 +97,7 @@ public class FunctionInducerOpt extends OrderedReentrantModule implements Clonea
     ExampleTable   exampleSet     = (ExampleTable)   this.pullInput(1);
     ErrorFunction  errorFunction  = (ErrorFunction)  this.pullInput(2);
 
-    instantiateBias(parameterPoint);
+    setControlParameters(parameterPoint);
 
     Model model = null;
 

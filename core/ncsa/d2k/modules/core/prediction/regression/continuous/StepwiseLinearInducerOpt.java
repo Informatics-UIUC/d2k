@@ -23,7 +23,7 @@ public class StepwiseLinearInducerOpt
     return "StepwiseLinearInducerOpt";
   }
 
-  public void instantiateBias(ParameterPoint parameterPoint) {
+  public void setControlParameters(ParameterPoint parameterPoint) {
 
     double useStepwise = parameterPoint.getValue(0);
     Direction = (int) parameterPoint.getValue(1);

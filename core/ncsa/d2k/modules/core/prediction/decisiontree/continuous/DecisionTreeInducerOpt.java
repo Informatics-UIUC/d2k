@@ -31,7 +31,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
   }
 
 
-  public void instantiateBias(ParameterPoint parameterPoint) {
+  public void setControlParameters(ParameterPoint parameterPoint) {
 
     MinDecompositionPopulation  = (int) parameterPoint.getValue(0);
     MinErrorReduction           =       parameterPoint.getValue(1);

@@ -5,24 +5,26 @@ import ncsa.d2k.core.modules.ComputeModule;
 
 public class GenerateFunctionInducer extends ComputeModule {
 
-  public String getModuleInfo() {
-    return "GenerateFunctionInducer";
-  }
   public String getModuleName() {
-    return "GenerateFunctionInducer";
+    return "Generate Function Inducer";
+  }
+  public String getModuleInfo() {
+    return "This module is used in the optimization of modules.  "  +
+           "It takes as input the module (class) to be optimized and a point in control paramter space from the optimizer.  " +
+           "Next it creates the module from the class, sets the module control parameters, and outputs the module for evaluation.  ";
   }
 
   public String getInputName(int i) {
     switch(i) {
-      case  0: return "FunctionInducerClass";
-      case  1: return "Control Parameters";
-      default: return "NO SUCH INPUT!";
+      case  0: return "Function Inducer Opt Module";
+      case  1: return "Control Parameter Point";
+      default: return "No such input";
     }
   }
   public String getInputInfo(int i) {
     switch (i) {
-      case  0: return "FunctionInducerClass";
-      case  1: return "ParameterPoint";
+      case  0: return "A class that defines a optimizable module";
+      case  1: return "A point in control parameter space for defining the module behavior";
       default: return "No such input";
     }
   }
@@ -36,13 +38,13 @@ public class GenerateFunctionInducer extends ComputeModule {
 
   public String getOutputName(int i) {
     switch(i) {
-      case  0: return "FunctionInducer";
-      default: return "NO SUCH OUTPUT!";
+      case  0: return "Function Inducer Module";
+      default: return "No such output";
     }
   }
   public String getOutputInfo(int i) {
     switch (i) {
-      case  0: return "FunctionInducer";
+      case  0: return "A module that has its control parameters set and is ready to evaluate";
       default: return "No such output";
     }
   }
@@ -89,7 +91,7 @@ public class GenerateFunctionInducer extends ComputeModule {
       throw new Exception();
     }
 
-    functionInducerOpt.instantiateBias(parameterPoint);
+    functionInducerOpt.setControlParameters(parameterPoint);
 
     this.pushOutput(functionInducerOpt, 0);
   }

@@ -6,25 +6,26 @@ import ncsa.d2k.modules.core.datatype.table.continuous.*;
 
 public class CreateExample extends ComputeModule {
 
-  public String getModuleInfo() {
-    return "CreateExample";
-  }
   public String getModuleName() {
-    return "CreateExample";
+    return "Create Example";
+  }
+
+  public String getModuleInfo() {
+    return "This module creates an example for function induction given a point in control space paired with a point in objective space.  ";
   }
 
   public String getInputName(int i) {
     switch(i) {
-      case  0: return "Control Paramter Point";
-      case  1: return "Objective Paramter Point";
-      default: return "NO SUCH INPUT!";
+      case  0: return "Control Parameter Point";
+      case  1: return "Objective Parameter Point";
+      default: return "No such input";
     }
   }
   public String getInputInfo(int i) {
     switch (i) {
-      case  0: return "Control Paramter Point";
-      case  1: return "Output";
-      default: return "Objective Paramter Point";
+      case  0: return "The point in control parameter space that defines the behavior of the module being optimized.  ";
+      case  1: return "The point in objective parameter space that defines the performance of the module given the control point.  ";
+      default: return "No such input";
     }
   }
   public String[] getInputTypes() {
@@ -34,17 +35,17 @@ public class CreateExample extends ComputeModule {
     return types;
   }
 
-  public String getOutputInfo(int i) {
-    switch (i) {
-      case 0: return "Example";
-      default: return "No such output";
-    }
-  }
   public String getOutputName(int i) {
     switch(i) {
       case 0:
         return "Example";
       default: return "NO SUCH OUTPUT!";
+    }
+  }
+  public String getOutputInfo(int i) {
+    switch (i) {
+      case 0: return "A supervised learning example that is used for guiding the optimization process";
+      default: return "No such output";
     }
   }
   public String[] getOutputTypes() {

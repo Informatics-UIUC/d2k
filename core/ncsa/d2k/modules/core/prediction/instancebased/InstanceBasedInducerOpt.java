@@ -19,7 +19,7 @@ public class InstanceBasedInducerOpt extends FunctionInducerOpt {
     return "InstanceBasedInducerOpt";
   }
 
-  public void instantiateBias(ParameterPoint parameterPoint) {
+  public void setControlParameters(ParameterPoint parameterPoint) {
 
     NeighborhoodSize       = (int) parameterPoint.getValue(0);
     DistanceWeightingPower =       parameterPoint.getValue(1);

@@ -15,7 +15,7 @@ public class MeanOutputInducerOpt extends FunctionInducerOpt {
     return "MeanOutputInducerOpt";
   }
 
-  public void instantiateBias(ParameterPoint point) throws Exception {
+  public void setControlParameters(ParameterPoint point) throws Exception {
   }
 
   public void instantiateBiasFromProperties() {
