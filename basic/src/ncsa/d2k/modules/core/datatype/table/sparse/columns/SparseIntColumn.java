@@ -282,9 +282,12 @@ public class SparseIntColumn extends AbstractSparseColumn {
    */
     public Object getObject(int row)
     {
-      if (elements.containsKey(row))
+      if (elements.containsKey(row)){
         return new Integer(getInt(row));
-      else return SparseObjectColumn.DEFAULT;
+      }
+      else{
+        return new Integer(DEFAULT);
+      }
     }
 
 

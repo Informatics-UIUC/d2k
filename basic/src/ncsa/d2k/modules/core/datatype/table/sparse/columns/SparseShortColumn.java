@@ -287,7 +287,7 @@ public class SparseShortColumn
       return new Short(elements.get(row));
     }
     else {
-      return SparseObjectColumn.DEFAULT;
+      return new Short(DEFAULT);
     }
   }
 

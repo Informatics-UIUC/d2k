@@ -651,7 +651,7 @@ public class SparseStringColumn
   public Object getObject(int pos) {
 
     if (!row2Id.containsKey(pos)) {
-      return SparseObjectColumn.DEFAULT;
+      return new String(DEFAULT);
     }
 
     int id = row2Id.get(pos);

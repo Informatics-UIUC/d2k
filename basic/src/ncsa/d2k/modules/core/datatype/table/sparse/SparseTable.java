@@ -813,6 +813,17 @@ protected static SparseTableFactory factory = new SparseTableFactory();
 
   }
 
+  public int[] getRowIndicesUnsorted(int rowNumber){
+    int[] indices = null;
+    if (rows.containsKey(rowNumber))
+      indices =  ((VIntHashSet)rows.get(rowNumber)).toArray();
+    if (indices == null)
+      indices =  columns.keys();
+
+    return indices;
+
+  }
+
   /**
    * Returns the numbers of all the valid columns in this table
    *

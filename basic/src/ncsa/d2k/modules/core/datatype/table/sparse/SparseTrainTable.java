@@ -394,6 +394,10 @@ public class SparseTrainTable extends SparseExampleTable implements TrainTable {
       return super.getRowIndices(trainSet[position]);
     }
 
+    public int[] getRowIndicesUnsorted(int position){
+      return super.getRowIndicesUnsorted(trainSet[position]);
+    }
+
     /**
      * Add a row to the end of this Table, initialized with integer data.
      * @param newEntry the data to put into the new row.

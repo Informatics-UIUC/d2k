@@ -317,7 +317,7 @@ public class SparseDoubleColumn
       return new Double(getDouble(row));
     }
     else {
-      return SparseObjectColumn.DEFAULT;
+      return new Double(DEFAULT);
     }
   }
 

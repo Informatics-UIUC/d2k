@@ -283,7 +283,7 @@ public class SparseCharColumn
       return new Character(getChar(row));
     }
     else {
-      return SparseObjectColumn.DEFAULT;
+      return new Character(DEFAULT);
     }
   }
 

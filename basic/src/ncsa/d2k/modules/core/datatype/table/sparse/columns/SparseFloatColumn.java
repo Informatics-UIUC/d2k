@@ -361,7 +361,7 @@ public class SparseFloatColumn
       return new Float(getFloat(row));
     }
     else {
-      return SparseObjectColumn.DEFAULT;
+      return new Float(DEFAULT);
     }
   }
 

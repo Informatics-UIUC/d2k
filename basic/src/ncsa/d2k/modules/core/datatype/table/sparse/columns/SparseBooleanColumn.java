@@ -332,7 +332,7 @@ public class SparseBooleanColumn
       return new Boolean(getBoolean(row));
     }
     else {
-      return null;
+      return new Boolean(DEFAULT);
     }
   }
 

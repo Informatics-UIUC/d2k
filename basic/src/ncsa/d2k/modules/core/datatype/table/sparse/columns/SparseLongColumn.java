@@ -291,7 +291,7 @@ public class SparseLongColumn
       return new Long(elements.get(row));
     }
     else {
-      return SparseObjectColumn.DEFAULT;
+      return new Long(DEFAULT);
     }
   }
 

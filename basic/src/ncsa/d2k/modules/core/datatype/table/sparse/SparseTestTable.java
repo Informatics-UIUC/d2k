@@ -378,6 +378,10 @@ public class SparseTestTable
     return super.getRowIndices(testSet[position]);
   }
 
+  public int[] getRowIndicesUnsorted(int position) {
+    return super.getRowIndicesUnsorted(testSet[position]);
+  }
+
   /* **************************************************
      OVERRIDING SET TYPE PREDICTION METHODS
    **************************************************

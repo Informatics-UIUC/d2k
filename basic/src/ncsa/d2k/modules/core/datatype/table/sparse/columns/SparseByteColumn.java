@@ -282,7 +282,7 @@ public class SparseByteColumn
       return new Byte(getByte(row));
     }
     else {
-      return null;
+      return new Byte(DEFAULT);
     }
   }
 
