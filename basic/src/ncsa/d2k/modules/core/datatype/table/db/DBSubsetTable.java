@@ -357,6 +357,20 @@ public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection){
              return retVal;
      }
 
+     public boolean isValueMissing(int row, int col) {
+             if (this.getObject(subset[row],col) == null)
+                 return true;
+             else
+         return false;
+         }
+
+         public boolean isValueEmpty(int row, int col) {
+             if (this.getObject(subset[row],col) == null)
+                 return true;
+             else
+                 return false;
+         }
+
 
 
 }

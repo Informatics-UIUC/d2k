@@ -92,7 +92,7 @@ public class TestGetRowModule extends ComputeModule {
   public void doit(){
     Table table = (Table)this.pullInput(0);
     System.out.println(table.getClass().getName());
-    ((DBTable)table).debugging();
+  //  ((DBTable)table).debugging();
     Row row = table.getRow();
 
     int numColumns = table.getNumColumns();

@@ -648,9 +648,6 @@ public class DBTable extends AbstractTable implements Table {
           return new DBRow(dataSource, dbConnection, this);
         }
 
-        public void debugging(){
-        System.out.println("if you can read this it means d2k reloads classes");
-        }
 
 
         /**
