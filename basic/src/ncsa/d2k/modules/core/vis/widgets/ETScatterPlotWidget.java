@@ -248,12 +248,14 @@ public class ETScatterPlotWidget extends JUserPane implements
 
     // add the buttons
     JPanel buttonPanel = new JPanel();
+    System.out.println(buttonPanel.getLayout().getClass().getName());
+    buttonPanel.setLayout(new BorderLayout());
     showComposite = new JButton("Show Composite");
     showComposite.addActionListener(this);
     buttonPanel.add(showComposite, BorderLayout.NORTH);
     clearSelected = new JButton("Clear Selection");
     clearSelected.addActionListener(this);
-    buttonPanel.add(clearSelected);
+    buttonPanel.add(clearSelected, BorderLayout.SOUTH);
     this.add(buttonPanel, BorderLayout.SOUTH);
   }
 
@@ -429,7 +431,7 @@ public class ETScatterPlotWidget extends JUserPane implements
     ImageIcon[][] images;
 
     ColumnPlotTableModel() {
-    	
+
     	// If there are not any labels for any of the ouputs,
     	// we will not include that collumn, we will set the row
     	// headers array to null.
@@ -497,7 +499,19 @@ public class ETScatterPlotWidget extends JUserPane implements
     }
 
     public String getColumnName(int col) {
-      return et.getColumnLabel(inputs[col-1]);
+      //return "HI";
+      if (rowheaders!=null)
+        if (col == 0)
+          return "";
+        else
+          return et.getColumnLabel(inputs[col-1]);
+       else {
+         String tt = et.getColumnLabel(inputs[col]);
+         if (tt.length() == 0)
+           System.out.println("Hi");
+         System.out.println("TT == "+tt);
+         return tt;
+       }
     }
 
     public Object getValueAt(int row, int col) {
