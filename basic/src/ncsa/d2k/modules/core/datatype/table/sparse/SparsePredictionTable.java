@@ -242,7 +242,7 @@ public class SparsePredictionTable
    *                            in <code>predictionColumns</code>.
    */
   public void setIntPrediction(int prediction, int row, int predictionColIdx) {
-    predictionColumns.setInt(prediction, row, getPredictionSet()[predictionColIdx]);
+    super.setInt(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -258,7 +258,7 @@ public class SparsePredictionTable
    */
   public void setFloatPrediction(float prediction, int row,
                                  int predictionColIdx) {
-    predictionColumns.setFloat(prediction, row, getPredictionSet()[predictionColIdx]);
+    super.setFloat(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -274,7 +274,7 @@ public class SparsePredictionTable
    */
   public void setDoublePrediction(double prediction, int row,
                                   int predictionColIdx) {
-    predictionColumns.setDouble(prediction, row, getPredictionSet()[predictionColIdx]);
+    super.setDouble(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -289,7 +289,7 @@ public class SparsePredictionTable
    *                            in <code>predictionColumns</code>.
    */
   public void setLongPrediction(long prediction, int row, int predictionColIdx) {
-    predictionColumns.setLong(prediction, row, getPredictionSet()[predictionColIdx]);
+    super.setLong(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -305,7 +305,7 @@ public class SparsePredictionTable
    */
   public void setShortPrediction(short prediction, int row,
                                  int predictionColIdx) {
-    predictionColumns.setShort(prediction, row, predictionColIdx);
+    super.setShort(prediction, row, predictionColIdx);
   }
 
   /**
@@ -321,7 +321,7 @@ public class SparsePredictionTable
    */
   public void setBooleanPrediction(boolean prediction, int row,
                                    int predictionColIdx) {
-    predictionColumns.setBoolean(prediction, row, getPredictionSet()[predictionColIdx]);
+    super.setBoolean(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -333,12 +333,12 @@ public class SparsePredictionTable
    * @param prediction    the value to be set.
    * @param row           the row number of the entry to be set
    * @param predictionColIdx    the index of the prediction column
-   *                            in <code>predictionColumns</code>.
+   *                            in <code>super</code>.
    */
   public void setStringPrediction(String prediction, int row,
                                   int predictionColIdx) {
 
-    predictionColumns.setString(prediction, row, getPredictionSet()[predictionColIdx]);
+    super.setString(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -354,7 +354,7 @@ public class SparsePredictionTable
    */
   public void setCharsPrediction(char[] prediction, int row,
                                  int predictionColIdx) {
-    predictionColumns.setChars(prediction, row, getPredictionSet()[predictionColIdx]);
+    super.setChars(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -370,7 +370,7 @@ public class SparsePredictionTable
    */
   public void setBytesPrediction(byte[] prediction, int row,
                                  int predictionColIdx) {
-    predictionColumns.setBytes(prediction, row, getPredictionSet()[predictionColIdx]);
+    super.setBytes(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -386,7 +386,7 @@ public class SparsePredictionTable
    */
   public void setObjectPrediction(Object prediction, int row,
                                   int predictionColIdx) {
-    predictionColumns.setObject(prediction, row, getPredictionSet()[predictionColIdx]);
+    super.setObject(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -401,7 +401,7 @@ public class SparsePredictionTable
    *                            in <code>predictionColumns</code>.
    */
   public void setBytePrediction(byte prediction, int row, int predictionColIdx) {
-    predictionColumns.setByte(prediction, row, getPredictionSet()[predictionColIdx]);
+    super.setByte(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -416,7 +416,7 @@ public class SparsePredictionTable
    *                            in <code>predictionColumns</code>.
    */
   public void setCharPrediction(char prediction, int row, int predictionColIdx) {
-    predictionColumns.setChar(prediction, row, getPredictionSet()[predictionColIdx]);
+    super.setChar(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -436,7 +436,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public int getIntPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getInt(row, getPredictionSet()[predictionColIdx]);
+    return super.getInt(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -450,7 +450,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public float getFloatPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getFloat(row, getPredictionSet()[predictionColIdx]);
+    return super.getFloat(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -464,7 +464,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public double getDoublePrediction(int row, int predictionColIdx) {
-    return predictionColumns.getDouble(row, getPredictionSet()[predictionColIdx]);
+    return super.getDouble(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -478,7 +478,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public long getLongPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getLong(row, getPredictionSet()[predictionColIdx]);
+    return super.getLong(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -492,7 +492,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public short getShortPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getShort(row, getPredictionSet()[predictionColIdx]);
+    return super.getShort(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -506,7 +506,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public boolean getBooleanPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getBoolean(row, getPredictionSet()[predictionColIdx]);
+    return super.getBoolean(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -520,7 +520,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public String getStringPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getString(row, getPredictionSet()[predictionColIdx]);
+    return super.getString(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -534,7 +534,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public char[] getCharsPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getChars(row, getPredictionSet()[predictionColIdx]);
+    return super.getChars(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -548,7 +548,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public byte[] getBytesPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getBytes(row, getPredictionSet()[predictionColIdx]);
+    return super.getBytes(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -562,7 +562,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public Object getObjectPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getObject(row, getPredictionSet()[predictionColIdx]);
+    return super.getObject(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -576,7 +576,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public byte getBytePrediction(int row, int predictionColIdx) {
-    return predictionColumns.getByte(row, getPredictionSet()[predictionColIdx]);
+    return super.getByte(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -590,7 +590,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public char getCharPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getChar(row, getPredictionSet()[predictionColIdx]);
+    return super.getChar(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**

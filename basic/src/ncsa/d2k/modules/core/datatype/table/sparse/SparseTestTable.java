@@ -396,7 +396,7 @@ public class SparseTestTable
    */
   public void setStringPrediction(String prediction, int row,
                                   int predictionColIdx) {
-    predictionColumns.setString(prediction, testSet[row], predictionColIdx);
+    super.setStringPrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
@@ -412,7 +412,7 @@ public class SparseTestTable
    */
   public void setBooleanPrediction(boolean prediction, int row,
                                    int predictionColIdx) {
-    predictionColumns.setBoolean(prediction, testSet[row], predictionColIdx);
+    super.setBooleanPrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
@@ -427,7 +427,7 @@ public class SparseTestTable
    *                            in <code>predictionColumns</code>.
    */
   public void setCharPrediction(char prediction, int row, int predictionColIdx) {
-    predictionColumns.setChar(prediction, testSet[row], predictionColIdx);
+    super.setCharPrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
@@ -442,7 +442,7 @@ public class SparseTestTable
    *                            in <code>predictionColumns</code>.
    */
   public void setBytePrediction(byte prediction, int row, int predictionColIdx) {
-    predictionColumns.setByte(prediction, testSet[row], predictionColIdx);
+    super.setBytePrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
@@ -458,7 +458,7 @@ public class SparseTestTable
    */
   public void setFloatPrediction(float prediction, int row,
                                  int predictionColIdx) {
-    predictionColumns.setFloat(prediction, testSet[row], predictionColIdx);
+    super.setFloatPrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
@@ -474,7 +474,7 @@ public class SparseTestTable
    */
   public void setDoublePrediction(double prediction, int row,
                                   int predictionColIdx) {
-    predictionColumns.setDouble(prediction, testSet[row], predictionColIdx);
+    super.setDoublePrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
@@ -490,7 +490,7 @@ public class SparseTestTable
    */
   public void setCharsPrediction(char[] prediction, int row,
                                  int predictionColIdx) {
-    predictionColumns.setChars(prediction, testSet[row], predictionColIdx);
+    super.setCharsPrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
@@ -506,7 +506,7 @@ public class SparseTestTable
    */
   public void setBytesPrediction(byte[] prediction, int row,
                                  int predictionColIdx) {
-    predictionColumns.setBytes(prediction, testSet[row], predictionColIdx);
+    super.setBytesPrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
@@ -522,7 +522,7 @@ public class SparseTestTable
    */
   public void setObjectPrediction(Object prediction, int row,
                                   int predictionColIdx) {
-    predictionColumns.setObject(prediction, testSet[row], predictionColIdx);
+    super.setObjectPrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
@@ -538,7 +538,7 @@ public class SparseTestTable
    */
   public void setShortPrediction(short prediction, int row,
                                  int predictionColIdx) {
-    predictionColumns.setShort(prediction, testSet[row], predictionColIdx);
+    super.setShortPrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
@@ -553,7 +553,7 @@ public class SparseTestTable
    *                            in <code>predictionColumns</code>.
    */
   public void setLongPrediction(long prediction, int row, int predictionColIdx) {
-    predictionColumns.setLong(prediction, testSet[row], predictionColIdx);
+    super.setLongPrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
@@ -568,7 +568,7 @@ public class SparseTestTable
    *                            in <code>predictionColumns</code>.
    */
   public void setIntPrediction(int prediction, int row, int predictionColIdx) {
-    predictionColumns.setInt(prediction, testSet[row], predictionColIdx);
+    super.setIntPrediction(prediction, testSet[row], predictionColIdx);
   }
 
   /**
