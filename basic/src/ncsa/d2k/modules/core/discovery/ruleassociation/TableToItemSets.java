@@ -157,6 +157,7 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public void doit () throws Exception {
 		ItemSets iss = new ItemSets((Table)this.pullInput(0));
+
 		this.pushOutput(iss,0);
 	}
 

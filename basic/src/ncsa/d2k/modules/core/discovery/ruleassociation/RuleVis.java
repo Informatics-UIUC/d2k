@@ -166,15 +166,15 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("consequents and antecedents of the highest ranking rules to the ");
           sb.append("top of the attribute-value list. ");
           sb.append("</p><p>");
-          sb.append("On the right side of the toolbar are four additional buttons. ");
+          sb.append("On the right side of the toolbar are four additional buttons:<br> ");
           sb.append("Restore Original reverts ");
           sb.append("back to the original table that was displayed before any sorting was done. ");
-          sb.append("Filter provides an interface that allows the user to display a subset of the generated rules. ");
-          sb.append("Print prints a screen capture of the visual display. ");
+          sb.append("<br>Filter provides an interface that allows the user to display a subset of the generated rules. ");
+          sb.append("<br>Print prints a screen capture of the visual display. ");
           sb.append("The print output contains only the cells that are visible in the display window, not all the cells ");
           sb.append("in the rule table.  The user can scroll to different part of the matrix and print multiple times ");
           sb.append("to get the full picture of a large matrix. Printing is also accessible via the Options menu. ");
-          sb.append("Help displays information describing the visualization. ");
+          sb.append("<br>Help displays information describing the visualization. ");
           sb.append("</p><p>Scalability: ");
           sb.append("While the visualization can display a large number of items and rules, there can be a noticeable delay " );
 	  sb.append("in opening the visualization when a large number of cells are involved. " );
@@ -2432,7 +2432,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
              */
             private final class HelpWindow extends JD2KFrame {
               HelpWindow() {
-                super("About RuleVis");
+                super("About Rule Visualization");
                 JEditorPane jep = new JEditorPane("text/html", getModuleInfo());
                 jep.setBackground(yellowish);
                 getContentPane().add(new JScrollPane(jep));
@@ -2460,3 +2460,9 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 // 4/5/03  - Updated Info a bit after Loretta changed so items that aren't in any rules
 //           are no longer displayed.  Also, removed that from the Wish List. - ruth
 // End QA Comments.
+
+
+   /**
+ * 01-23-04: vered
+ * edited about text.
+ */
