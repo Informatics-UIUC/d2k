@@ -574,13 +574,17 @@ public class SQLFilterConstruction extends HeadlessUIModule {
    public String getQueryCondition(){return queryCondition;}
    public void setQueryCondition(String str){queryCondition = str;}
 
-   protected void doit()throws Exception{
+   public void doit()throws Exception{
      //pulling input...
      ConnectionWrapper cw = (ConnectionWrapper) pullInput(0);
      String tableName = (String) pullInput(1);
 
      String goodCondition = ""; //this will be pushed out.
 
+     //debug
+     System.out.println("\n\nSQL Filter Construction:");
+     System.out.println("The old query condition: " + queryCondition);
+     //end debug
 
 
      //connecting to data base and getting all the available attributes
@@ -590,9 +594,20 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      DatabaseMetaData metadata = con.getMetaData();
      ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
      int counter = 0;
+
+ //debug
+     System.out.println("\nAvailable Columns:");
+     //end debug
+
      while (columns.next()) {
-       availableAttributes.put( columns.getString("COLUMN_NAME"), new Integer(counter));
+       String columnName = columns.getString("COLUMN_NAME");
+       availableAttributes.put(columnName , new Integer(counter));
        counter++;
+
+       //debug
+    System.out.println("column no. " + counter + ": " + columnName);
+    //end debug
+
      }//while column
 
      if(counter == 0){
@@ -609,17 +624,25 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      //parsing the condition, each sub condition that holds a valid
      //attribute name will be copied into goodCondition
 
+
+            //debug
+         System.out.println("\nparsing the condition:");
+         //end debug
+
+
+
      boolean first = true;
      //assuming the expression could be malformed.
      //if it has at least 3 more tokens then there is still yet another
      //sub expression to parse.
-     while(tok.countTokens() >= 3){
+     while((first && tok.countTokens() >= 3) || (!first && tok.countTokens() >= 4)){
+       boolean added = false;
        String currentToken = tok.nextToken();
        if(currentToken == null) continue;
        //now currentToken holds the attribute name
        if(availableAttributes.containsKey(currentToken)){
          if(!first)
-           goodCondition += " ";
+           goodCondition += " " + tok.nextToken();
           else first = false;
 
          goodCondition += currentToken + " ";
@@ -627,6 +650,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
          goodCondition += tok.nextToken() + " ";
 
          goodCondition += tok.nextToken();
+         added = true;
        }//if contain key
 
  //could be that the value is left side of expression and the attribute is a right side
@@ -646,9 +670,16 @@ public class SQLFilterConstruction extends HeadlessUIModule {
            //parsing the relation and the value
            goodCondition += relation + " ";
            goodCondition += value;
+           added = true;
          }//if contain key
 
        }//else
+
+
+       //debug
+       System.out.println(goodCondition);
+       //end debug
+
 
      }//while has more tokens
 
