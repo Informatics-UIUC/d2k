@@ -78,7 +78,7 @@ public class DSTPTreePanel extends JPanel implements MouseInputListener {
         m_model = new DSTPTreeModel(m_root);
         m_model.setAsksAllowsChildren(true);
         m_tree = new DSTPTree(m_model);
-        m_tree.setFont(new Font("Arial", Font.BOLD, 14));
+        //m_tree.setFont(new Font("Arial", Font.BOLD, 14));
         DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
         //renderer.setClosedIcon(m_folderIcon);
         //renderer.setOpenIcon(m_folderSelIcon);
