@@ -59,15 +59,20 @@ public class SparseExampleTable
     outputColumns = null;
     testSet = null;
     trainSet = null;
-
   }
 
   /* Instantiate this table with the content of <codE>table</code>*/
   public SparseExampleTable(SparseTable table) {
     super(table);
     if (table instanceof SparseExampleTable) {
-      copyArrays( (SparseExampleTable) table);
+      copyArrays((SparseExampleTable) table);
     }
+	else {
+		inputColumns = null;
+		outputColumns = null;
+		testSet = null;
+		trainSet = null;
+	}
   }
 
   protected void copyArrays(SparseExampleTable table) {
@@ -317,21 +322,23 @@ public class SparseExampleTable
   }
 
   /**
-       * Returns a SparseExampleTable containing rows no. <code>start</code> through
-   * </codE>start+len</code> from this table.
+   * Returns a SparseExampleTable containing rows no. <code>start</code>
+   * through </codE>start+len</code> from this table.
    *
-   * @param start     row number at which the subset starts.
-   * @param len       number of consequentinve rows in the retrieved subset.
-       * @return          SparseExampleTable with data from rows no. <code>start</code>
-   *                  through </codE>start+len</code> from this table.
+   * @param start row number at which the subset starts.
+   * @param len   number of consequentinve rows in the retrieved subset.
+   * @return      SparseExampleTable with data from rows no.
+   * 			  <code>start</code> through </codE>start+len</code>
+   * 			  from this table.
    */
   public Table getSubset(int start, int len) {
 		SparseExampleTable retVal = (SparseExampleTable) ( (SparseMutableTable)
         SparseMutableTable.getSubset(start, len, this)).toExampleTable();
 
+	// copy the training and testing sets
     retVal.getSubArrays(this, start, len);
 
-    //copying hte input and output columns
+    // copy the input and output columns
     retVal.inputColumns = this.copyArray(inputColumns);
     retVal.outputColumns = this.copyArray(outputColumns);
 
@@ -339,12 +346,13 @@ public class SparseExampleTable
   }
 
   public Table getSubset(int[] rows) {
-    SparseExampleTable retVal = (SparseExampleTable) ( (SparseMutableTable)
-        SparseMutableTable.getSubset(rows, this)).toExampleTable();
+	SparseExampleTable retVal = (SparseExampleTable)
+		((SparseMutableTable) SparseMutableTable.getSubset(rows, this)).toExampleTable();
 
+	// copy the training and testing sets
     retVal.getSubArrays(this, rows);
 
-    //copying hte input and output columns
+    // copy the input and output columns
     retVal.inputColumns = this.copyArray(inputColumns);
     retVal.outputColumns = this.copyArray(outputColumns);
 
@@ -407,27 +415,37 @@ public class SparseExampleTable
     testSet = getSubArray(srcTable.testSet, start, len);
     trainSet = getSubArray(srcTable.trainSet, start, len);
 
+	/*
 	// XIAOLEI
 	for (int i = 0; i < this.testSet.length; i++)
 		testSet[i] = i;
 
 	for (int i = 0; i < this.trainSet.length; i++)
 		trainSet[i] = i;
+	*/
   }
 
   protected void getSubArrays(SparseExampleTable srcTable, int[] rows) {
     testSet = getSubArray(srcTable.testSet, rows);
     trainSet = getSubArray(srcTable.trainSet, rows);
 
+	/*
 	// XIAOLEI
 	for (int i = 0; i < this.testSet.length; i++)
 		testSet[i] = i;
 
 	for (int i = 0; i < this.trainSet.length; i++)
 		trainSet[i] = i;
+	*/
   }
 
   protected int[] getSubArray(int[] arr, int start, int len) {
+
+	  // Xiaolei
+	  if (arr == null) {
+		  return new int[0];
+	  }
+
     int[] tempSet = new int[len];
     int j = 0;
     for (int i = 0; i < arr.length; i++) {
@@ -446,15 +464,21 @@ public class SparseExampleTable
   }
 
   /**
-   * Make a subset of the train or test set.  The subset will only contain
-   * the indices that are included in rows.  The indices in the returned value
-   * are numbered so that zero corresponds to rows[0].
+   * Make a subset of the train or test set.  The subset will only
+   * contain the indices that are included in rows.  The indices in the
+   * returned value are numbered so that zero corresponds to rows[0].
    *
    * @param ts
    * @param rows
    * @return
    */
   protected static int[] getSubArray(int[] ts, int[] rows) {
+
+	  // Xiaolei
+	  if (ts == null) {
+		return new int[0];
+	  }
+
     // put all the indices of ts into a set
     HashSet oldset = new HashSet();
     for(int i = 0; i < ts.length; i++)
@@ -484,18 +508,18 @@ public class SparseExampleTable
 
 
   /**
-   * Returns a TestTable or a TrainTable with data from row index no. <code>
-   * start</code> in the test/train set through row index no. <code>start+len</code>
-   * in the test/train set.
+   * Returns a TestTable or a TrainTable with data from row index no.
+   * <code> start</code> in the test/train set through row index no.
+   * <code>start+len</code> in the test/train set.
    *
    * @param start       index number into the test/train set of the row at which begins
    *                    the subset.
    * @param len         number of consequetive rows to include in the subset.
    * @param test        if true - the returned value is a TestTable. else - the
    *                    returned value is a TrainTable
-       * @return            a TestTable (if <code>test</code> is true) or a TrainTable
+   * @return            a TestTable (if <code>test</code> is true) or a TrainTable
    *                    (if <code>test</code> is false) with data from row index no.
-       *                    <code>start</code> in the test/train set through row index
+   *                    <code>start</code> in the test/train set through row index
    *                    no. <code>start+len</code> in the test/train set.
    */
   protected Table getSubset(int start, int len, boolean test) {

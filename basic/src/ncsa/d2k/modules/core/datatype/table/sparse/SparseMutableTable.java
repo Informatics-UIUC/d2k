@@ -5083,8 +5083,8 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    */
   public static Table getSubset(int[] indices, SparseTable table) {
 
-  //the returned vlaue
-  SparseMutableTable retVal = new SparseMutableTable ();
+  // the returned value
+  SparseMutableTable retVal = new SparseMutableTable();
 
     int[] cols = table.getAllColumns();
     for(int i=0; i<cols.length; i++){
