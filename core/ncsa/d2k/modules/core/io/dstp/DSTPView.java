@@ -509,7 +509,7 @@ public class DSTPView extends JUserPane implements  ActionListener, ComponentLis
     public void setDatafileDate(String datafiledate){_datafiledate = datafiledate;}
 
     private String _datafiledescription = null;
-    public String getDatafileDescription(){return _servername;}
+    public String getDatafileDescription(){return _datafiledescription;}
     public void setDatafileDescription(String datafiledescription){_datafiledescription = datafiledescription;}
 
     private String _datafilenumrecords = null;
