@@ -85,7 +85,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
       s += "a small nominal data set, binning may not be necessary. The user can omit ";
       s += "the binning step by clicking the 'Done' button without performing any binning actions. ";
       s += "<p> Restrictions: ";
-      s += "Only support Oracle and SQLServer databases are currently supported. ";
+      s += "Only support Oracle, SQLServer, DB2 and MySql databases are currently supported. ";
       s += "</p><p>Scalability ";
       s += "This module consumes ";
       s += "substantial CPU and memory to display data histograms. The amount of memory ";

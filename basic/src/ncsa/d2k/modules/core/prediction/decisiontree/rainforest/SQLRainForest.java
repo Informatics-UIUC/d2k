@@ -196,7 +196,7 @@ public class SQLRainForest extends SQLRainForestOPT {
     s += "of Large Datasets by J. Gehrke et al. </li></ul></p>";
     s += "<p>Restrictions: ";
     s += "This module will only classify examples with ";
-    s += "nominal outputs. We currently only support Oracle and SQLServer databases. ";
+    s += "nominal outputs. We currently only support Oracle, SQLServer, DB2 and MySql databases. ";
     s += "There are two implementations on RainForest. <i>SQLRainForest</i> does ";
     s += "not do parameter optimization, but <i>SQLRainForestOPT<i> does.</p>";
     s += "<p>Data Handling: This module does not modify the input data. </p>";

@@ -63,7 +63,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      s += "that filters rows from a database table. Details can be found ";
      s += "in the module's online help. </p>";
      s += "<p> Restrictions: ";
-     s += "We currently only support Oracle and SQLServer database.";
+     s += "We currently only support Oracle, SQLServer, DB2 and MySql database.";
 
      return s;
    }

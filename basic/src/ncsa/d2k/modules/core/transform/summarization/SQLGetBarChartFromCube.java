@@ -120,7 +120,7 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
     s += "codes, but also in detailed descriptions by choosing the 'Use Code Book' ";
     s += "option and specifying a code book for use. ";
     s += "<p> Restrictions: ";
-    s += "We currently only support Oracle and SQLServer databases.";
+    s += "We currently only support Oracle, SQLServer, DB2 and MySql databases.";
     return s;
   }
 
