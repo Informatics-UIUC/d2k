@@ -451,7 +451,7 @@ nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 			done = false;
 			ItemSets iss = (ItemSets)this.pullInput(0);
 			sNames = iss.unique;
-			targetIndices = iss.outputIndices;
+			targetIndices = iss.targetIndices;
 			names = sNames;
 			nameAry = iss.names;
 			numExamples = iss.numExamples;

@@ -73,8 +73,8 @@ public class ConvertTableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public void doit () throws Exception {
 		ItemSets iss = new ItemSets((Table)this.pullInput(0));
-		if (iss.outputNames != null)
-			this.pushOutput(iss.outputNames, 1);
+		if (iss.targetNames != null)
+			this.pushOutput(iss.targetNames, 1);
 		this.pushOutput(iss,0);
 	}
 
