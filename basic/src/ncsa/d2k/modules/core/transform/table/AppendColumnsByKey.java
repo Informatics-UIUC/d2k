@@ -339,8 +339,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 								} else {
 									vals[row_index] = t2.getFloat(matches[row_index][1], secondColumn);
 									missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-								} 
-							} else { 
+								}
+							} else {
 								vals[row_index] = t1.getFloat(matches[row_index][0], firstColumn);
 								missing[row_index] = t1.isValueMissing(matches[row_index][0], firstColumn);
 							}
@@ -374,9 +374,9 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 									vals[row_index] = this.getFillerNumeric();
 									missing[row_index] = true;
 								} else {
-									 vals[row_index] = t2.getDouble(matches[row_index][1], secondColumn); 
+									 vals[row_index] = t2.getDouble(matches[row_index][1], secondColumn);
 									missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-								} 
+								}
 							} else {
 								vals[row_index] = t1.getDouble(matches[row_index][0], firstColumn);
 								missing[row_index] = t1.isValueMissing(matches[row_index][0], firstColumn);
@@ -407,8 +407,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					for (int row_index = 0 ; row_index < numRows ; row_index++) {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
-								if (matches[row_index][1] == -1 || secondColumn == -1) { 
-									vals[row_index] = (short) this.getFillerNumeric(); 
+								if (matches[row_index][1] == -1 || secondColumn == -1) {
+									vals[row_index] = (short) this.getFillerNumeric();
 									missing[row_index] = true;
 								} else{
 									vals[row_index] = t2.getShort(matches[row_index][1], secondColumn);
@@ -422,10 +422,10 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							if (secondColumn == -1) {
 								vals[row_index] = (short) this.getFillerNumeric();
 								missing[row_index] = true;
-							} else { 
+							} else {
 								vals[row_index] = t2.getShort(matches[row_index][1], secondColumn);
 								missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-							} 
+							}
 						}
 					}
 
@@ -450,7 +450,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 								} else {
 									vals[row_index] = t2.getLong(matches[row_index][1], secondColumn);
 									missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-								} 
+								}
 							} else {
 								vals[row_index] = t1.getLong(matches[row_index][0], firstColumn);
 								missing[row_index] = t1.isValueMissing(matches[row_index][0], firstColumn);
@@ -459,10 +459,10 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							if (secondColumn == -1) {
 								vals[row_index] = this.getFillerNumeric();
 								missing[row_index] = true;
-							} else { 
+							} else {
 								vals[row_index] = t2.getLong(matches[row_index][1], secondColumn);
 								missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-							} 
+							}
 						}
 					}
 
@@ -484,10 +484,10 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 								if (matches[row_index][1] == -1 || secondColumn == -1){
 									vals[row_index] = this.getFillerString();
 									missing[row_index] = true;
-								} else { 
+								} else {
 									vals[row_index] = t2.getString(matches[row_index][1], secondColumn);
 									missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-								} 
+								}
 							} else {
 								vals[row_index] = t1.getString(matches[row_index][0], firstColumn);
 								missing[row_index] = t1.isValueMissing(matches[row_index][0], firstColumn);
@@ -499,7 +499,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							} else {
 								vals[row_index] = t2.getString(matches[row_index][1], secondColumn);
 								missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-							} 
+							}
 						}
 					}
 
@@ -518,13 +518,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					for (int row_index = 0 ; row_index < numRows ; row_index++) {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
-								if (matches[row_index][1] == -1 || secondColumn == -1) { 
+								if (matches[row_index][1] == -1 || secondColumn == -1) {
 									vals[row_index] = this.getFillerChars();
 									missing[row_index] = true;
 								} else {
 									vals[row_index] = t2.getChars(matches[row_index][1], secondColumn);
 									missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-								} 
+								}
 							} else {
 								vals[row_index] = t1.getChars(matches[row_index][0], firstColumn);
 								missing[row_index] = t1.isValueMissing(matches[row_index][0], firstColumn);
@@ -536,7 +536,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							} else {
 								vals[row_index] = t2.getChars(matches[row_index][1], secondColumn);
 								missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-							} 
+							}
 						}
 					}
 
@@ -565,7 +565,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							} else {
 								vals[row_index] = t1.getBytes(matches[row_index][0], firstColumn);
 								missing[row_index] = t1.isValueMissing(matches[row_index][0], firstColumn);
-							} 
+							}
 						else {
 							if (secondColumn == -1) {
 								vals[row_index] = this.getFillerBytes();
@@ -573,7 +573,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							} else {
 								vals[row_index] = t2.getBytes(matches[row_index][1], secondColumn);
 								missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-							} 
+							}
 						}
 					}
 
@@ -598,7 +598,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 								} else {
 									vals[row_index] = t2.getBoolean(matches[row_index][1], secondColumn);
 									missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-								} 
+								}
 							} else {
 								vals[row_index] = t1.getBoolean(matches[row_index][0], firstColumn);
 								missing[row_index] = t1.isValueMissing(matches[row_index][0], firstColumn);
@@ -613,7 +613,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						}
 					}
-					
+
 					// add the column
 					Column col = new BooleanColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
@@ -635,11 +635,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 								} else {
 									vals[row_index] = t2.getObject(matches[row_index][1], secondColumn);
 									missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-								} 
+								}
 							} else {
 								vals[row_index] = t1.getObject(matches[row_index][0], firstColumn);
 								missing[row_index] = t1.isValueMissing(matches[row_index][0], firstColumn);
-							} 
+							}
 						else {
 							if (secondColumn == -1) {
 								vals[row_index] = null;
@@ -647,7 +647,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							} else {
 								vals[row_index] = t2.getObject(matches[row_index][1], secondColumn);
 								missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-							} 
+							}
 						}
 					}
 
@@ -666,7 +666,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					for (int row_index = 0 ; row_index < numRows ; row_index++) {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
-								if (matches[row_index][1] == -1 || secondColumn == -1){ 
+								if (matches[row_index][1] == -1 || secondColumn == -1){
 									vals[row_index] = this.getFillerByte();
 									missing[row_index] = true;
 								} else {
@@ -684,7 +684,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							} else {
 								vals[row_index] = t2.getByte(matches[row_index][1], secondColumn);
 								missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-							} 
+							}
 						}
 					}
 
@@ -709,11 +709,11 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 								} else {
 									vals[row_index] = t2.getChar(matches[row_index][1], secondColumn);
 									missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-								} 
+								}
 							} else {
 								vals[row_index] = t1.getChar(matches[row_index][0], firstColumn);
 								missing[row_index] = t1.isValueMissing(matches[row_index][0], firstColumn);
-							} 
+							}
 						else {
 							if (secondColumn == -1) {
 								vals[row_index] = this.getFillerChar();
@@ -721,7 +721,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							} else {
 								vals[row_index] = t2.getChar(matches[row_index][1], secondColumn);
 								missing[row_index] = t2.isValueMissing(matches[row_index][1], secondColumn);
-							} 
+							}
 						}
 					}
 
@@ -753,10 +753,14 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
            /**
            * 10-24-03: vered started QA process
            * an itinerary containing this module cannot be loaded. and classes cannot be
-           * loaded too while said itinerary is open.
+           * loaded too while said itinerary is open. [fixed 11-03-03]
            *
            * Module does not handle missing values well: the new appended table does
       *      not "know" that some values are missing, apparently the missing values
       *      array is not updated. whereas values that were missing are represented by
-      *      default value for missing values (for example 0.0 for doubles).
+      *      default value for missing values (for example 0.0 for doubles). [fixed - 11-03-03]
+           *
+           * 11-03-03: Columns with a missing value are not considered as key columns.
+           *           the algorithm for isKeyColumn is in TableUtilities. a method and
+           *           a genral approach to missing values should be determined.
             */
