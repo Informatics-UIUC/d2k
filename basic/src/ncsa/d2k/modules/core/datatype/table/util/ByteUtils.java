@@ -211,13 +211,16 @@ public class ByteUtils
 		try {
 			if (bytes == null)
 				return 0.0;
-			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+			String s = new String (bytes);
+			return Double.parseDouble(s);
+			/*ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 			DataInputStream dis = new DataInputStream(bis);
 			retVal = dis.readDouble();
 			dis.close();
 		}
 		catch(IOException e) {
-		}
+		}*/
+		} catch (NumberFormatException nfe) {}
 		return retVal;
 		}
 
