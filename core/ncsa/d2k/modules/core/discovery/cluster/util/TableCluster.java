@@ -257,7 +257,7 @@ public class TableCluster implements Serializable {
 //    if (_table = null){
 //      out = "" + this.getClusterLabel();
 //    } else {
-      out = "< ";
+      out = "[ ";
       double[] centroid = this.getCentroid();
 //      int[] ifeatures = null;
 //      if (_table instanceof ExampleTable) {
@@ -284,9 +284,14 @@ public class TableCluster implements Serializable {
 //        } else if (_table.getColumnType(ifeatures[i])== ColumnTypes.SHORT){
 //          out += (short)centroid[i] + " ";
 //        }
-          out += centroid[i] + " ";
+          if (i == 0){
+            out += centroid[i] + " ... ";
+          }
+          if (i == (n-1)){
+            out += centroid[i];
+          }
         }
-      out += ">";
+      out += "]";
       _txtLabel = out;
 //    }
     return out;

@@ -23,7 +23,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
  */
 
 public class HierAgglomClustererOPT
-    extends ReentrantComputeModule {
+    extends OrderedReentrantModule {
 
   //==============
   // Data Members
