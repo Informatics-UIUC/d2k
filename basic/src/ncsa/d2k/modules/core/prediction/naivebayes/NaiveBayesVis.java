@@ -89,8 +89,8 @@ public final class NaiveBayesVis
 
 
     public PropertyDescription[] getPropertiesDescriptions() {
-	return new PropertyDescription[0]; // so that "windowName" property
-	// is invisible
+   return new PropertyDescription[0]; // so that "windowName" property
+   // is invisible
     }
 
   public String[] getFieldNameMapping() {
@@ -302,7 +302,7 @@ public final class NaiveBayesVis
     public void setInput(Object o, int i) throws Exception {
       model = (NaiveBayesModel) o;
       if(!model.isReadyForVisualization())
-	  throw new Exception("NaiveBayesModel has to be processed by PrepareForVisualization module before entering NaiveBayesVisualization");
+     throw new Exception("NaiveBayesModel has to be processed by PrepareForVisualization module before entering NaiveBayesVisualization");
       all_ranked_attribute_names = model.getAttributeNames();
       //for(int j = 0; j < all_ranked_attribute_names.length; j++)
       //	  System.out.println("Ranked attr" + all_ranked_attribute_names[j]);
@@ -327,7 +327,7 @@ public final class NaiveBayesVis
       // get the row data
       for (int j = 0; j < attribute_names.length; j++) {
         row_data[j] = model.getData(attribute_names[j]);
-	//	System.out.println("row_data[" +j+ "] " + row_data[j]);
+   //	System.out.println("row_data[" +j+ "] " + row_data[j]);
         predictor_values[j] = model.getPredictionValue(attribute_names[j]);
         selected[j] = -1;
         if (attribute_names[j].length() > longest) {
@@ -1809,18 +1809,17 @@ public final class NaiveBayesVis
     sb.append("</ul>");
     sb.append("</html>");
     return sb.toString();
-	  */
+     */
 
-	StringBuffer sb = new StringBuffer("<html><h1>Naive Bayes Vis Help</h1>");
+   StringBuffer sb = new StringBuffer("<html><h1>Naive Bayes Vis Help</h1>");
 sb.append("<p>Overview: Naive Bayes Vis provides an interactive evidence ");
 sb.append("visualization for a Naive Bayes Model.");
-sb.append("<p>Detailed Description: This evidence visualization shows the data");
-sb.append("the Naive Bayes Model uses to make its predictions.  The window");
-sb.append("is split into two halves.  The left side contains the Attributes and");
+sb.append("<p>Detailed Description: This evidence visualization shows the data ");
+sb.append("the Naive Bayes Model uses to make its predictions.  The window ");
+sb.append("is split into two panes.  The left pane contains the Attributes and ");
 sb.append("Evidence.  The right side contains the Conclusion.  Evidence items ");
 sb.append("can be selected to update the Conclusion.  The Evidence can be scaled ");
-sb.append("by right-clicking the mouse and dragging toward the northwest or");
-sb.append("southwest corners.");
+sb.append("by right-clicking the mouse and dragging up or down.");
 sb.append("<hr> <p>");
 sb.append("Attributes and Evidence: The attributes (inputs) used to train the ");
 sb.append("Naive Bayes Model are displayed on the far left.  The attributes to ");
@@ -1876,6 +1875,6 @@ sb.append("<li>Zoom: When this button is toggled on, left-click the evidence ");
 sb.append("to zoom in, or right-click the evidence to zoom out. ");
 sb.append("</ul> ");
 sb.append("</html> ");
-	return sb.toString();
+   return sb.toString();
   }
 }
