@@ -101,15 +101,6 @@ public class ReadContinuousDoubleExampleTable
     return this.ConvertStringsToIndices;
   }
 
-  private boolean PrintStringsAndIndices = false;
-  public void setPrintStringsAndIndices(boolean value) {
-    this.PrintStringsAndIndices = value;
-  }
-
-  public boolean getPrintStringsAndIndices() {
-    return this.PrintStringsAndIndices;
-  }
-
   private int CharsPerColumn = 16;
   public void setCharsPerColumn(int value) {
     this.CharsPerColumn = value;
@@ -137,26 +128,43 @@ public class ReadContinuousDoubleExampleTable
     return this.FeatureTypeString;
   }
 
+  public String getModuleName() {
+    return "ReadContinuousExampleTable";
+  }
   public String getModuleInfo() {
     return "ReadContinuousExampleTable";
   }
 
-  public String getModuleName() {
-    return "ReadContinuousExampleTable";
-  }
 
-  public String[] getOutputTypes() {
-    String[] out = {
-        "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-    return out;
-  }
 
+  public String getOutputName(int i) {
+    switch (i) {
+      case 0:
+        return "ExampleTable";
+      case 1:
+        return "InputFeatureStrings";
+      case 2:
+        return "OutputFeatureStrings";
+    }
+    return "";
+  }
   public String getOutputInfo(int i) {
     switch (i) {
       case 0:
-        return "ExampleSet";
+        return "ExampleTable";
+      case 1:
+        return "InputFeatureStrings";
+      case 2:
+        return "OutputFeatureStrings";
     }
     return "";
+  }
+  public String[] getOutputTypes() {
+    String[] out = {
+        "ncsa.d2k.modules.core.datatype.table.ExampleTable",
+        "[S",
+        "[S"};
+    return out;
   }
 
   /**
@@ -169,14 +177,6 @@ public class ReadContinuousDoubleExampleTable
       default:
         return "NO SUCH INPUT!";
     }
-  }
-
-  public String getOutputName(int i) {
-    switch (i) {
-      case 0:
-        return "DoubleExampleSet";
-    }
-    return "";
   }
 
   public String getInputInfo(int index) {
@@ -226,11 +226,6 @@ public class ReadContinuousDoubleExampleTable
 
     int numFeatures = numInputs + numOutputs;
 
-    System.out.println("numExamples........ " + numExamples);
-    System.out.println("numFeatures... " + numFeatures);
-    System.out.println("numInputs... " + numInputs);
-    System.out.println("numOutputs.. " + numOutputs);
-
     double[] data = new double[numExamples * numFeatures];
     String[] columnNames = new String[numColumns];
 
@@ -240,56 +235,56 @@ public class ReadContinuousDoubleExampleTable
 
     int example_index = 0;
 
-    FlatFile rio = new FlatFile(DataPath, "r", ReadBufferSize, true);
-    buffer = rio.Buffer;
-    rio.DelimiterByte = DelimiterByte;
-    rio.EOLByte = EOLByte;
+    // read column names
 
-    for (int r = 0; r < NumRowsToSkip; r++) {
-      rio.readLine();
-      if (r == 0) {
-        String name;
-
-        for (int f = 0; f < numColumns; f++) {
-          if (FixedFormat)
-            name = new String(buffer, rio.LineStart + (f * CharsPerColumn),
-                              CharsPerColumn);
-          else
-            name = new String(buffer, rio.ColumnStarts[f],
-                              rio.ColumnEnds[f] - rio.ColumnStarts[f]);
-
-          columnNames[f] = name;
-
-        }
-      }
-    }
-
-    Hashtable hashTable = new Hashtable();
-    int count = 0;
-    double[] columnValues = new double[numColumns];
-    for (int e = 0; e < NumRowsToRead; e++) {
+    {
+      FlatFile rio = new FlatFile(DataPath, "r", ReadBufferSize, true);
+      buffer = rio.Buffer;
+      rio.DelimiterByte = DelimiterByte;
+      rio.EOLByte = EOLByte;
 
       rio.readLine();
+      String name;
 
       for (int f = 0; f < numColumns; f++) {
+        if (FixedFormat)
+          name = new String(buffer, rio.LineStart + (f * CharsPerColumn),
+                            CharsPerColumn);
+        else
+          name = new String(buffer, rio.ColumnStarts[f],
+                            rio.ColumnEnds[f] - rio.ColumnStarts[f]);
 
-        if (!ConvertStringsToIndices) {
+        columnNames[f] = name;
 
-          double value = 0.0;
+      }
 
-          if (FixedFormat)
-            value = rio.ByteStringToDouble(buffer,
-                                           rio.LineStart + (f * CharsPerColumn),
-                                           rio.LineStart +
-                                           ( (f + 1) * CharsPerColumn) - 1);
-          else
-            value = rio.ByteStringToDouble(buffer, rio.ColumnStarts[f],
-                                           rio.ColumnEnds[f]);
+      rio.close();
+    }
 
-          columnValues[f] = value;
-        }
 
-        else {
+    if (ConvertStringsToIndices)
+
+    {
+      FlatFile rio = new FlatFile(DataPath, "r", ReadBufferSize, true);
+      buffer = rio.Buffer;
+      rio.DelimiterByte = DelimiterByte;
+      rio.EOLByte = EOLByte;
+
+      for (int r = 0; r < NumRowsToSkip; r++) {
+        rio.readLine();
+      }
+
+      Hashtable inputFeatureHashTable = new Hashtable();
+      Hashtable outputFeatureHashTable = new Hashtable();
+      int inputUniqueValueCount = 0;
+      int outputUniqueValueCount = 0;
+      double[] columnValues = new double[numColumns];
+      for (int e = 0; e < NumRowsToRead; e++) {
+
+        rio.readLine();
+
+        for (int f = 0; f < numColumns; f++) {
+
           String name;
           if (FixedFormat)
             name = new String(buffer, rio.LineStart + (f * CharsPerColumn),
@@ -300,41 +295,104 @@ public class ReadContinuousDoubleExampleTable
 
           double value = 0.0;
 
-          if (hashTable.containsKey(name)) {
-            value = ( (Integer) hashTable.get(name)).intValue();
+          if (inputColumnSelected[f]) {
+            if (inputFeatureHashTable.containsKey(name)) {
+              value = ( (Integer) inputFeatureHashTable.get(name)).intValue();
+            }
+            else {
+              value = inputUniqueValueCount;
+              inputFeatureHashTable.put(name, new Integer(inputUniqueValueCount));
+              inputUniqueValueCount++;
+            }
           }
-          else {
-            value = count;
-            hashTable.put(name, new Integer(count));
-            count++;
+
+          if (outputColumnSelected[f]) {
+            if (outputFeatureHashTable.containsKey(name)) {
+              value = ( (Integer) outputFeatureHashTable.get(name)).intValue();
+            }
+            else {
+              value = outputUniqueValueCount;
+              outputFeatureHashTable.put(name, new Integer(outputUniqueValueCount));
+              outputUniqueValueCount++;
+            }
           }
 
           columnValues[f] = value;
 
         }
 
+        for (int i = 0; i < numInputs; i++)
+          data[e * numFeatures +
+              i] = (double) columnValues[inputColumnIndices[i]];
+        for (int i = 0; i < numOutputs; i++)
+          data[e * numFeatures + numInputs +
+              i] = (double) columnValues[outputColumnIndices[i]];
+
+      }
+      rio.close();
+
+      String inputNominalNames[] = new String[inputUniqueValueCount];
+      Enumeration inputKeys = inputFeatureHashTable.keys();
+      for (int i = 0; i < inputUniqueValueCount; i++) {
+        String key = (String) inputKeys.nextElement();
+        int index = ( (Integer) inputFeatureHashTable.get(key)).intValue();
+        inputNominalNames[index] = key;
       }
 
-      for (int i = 0; i < numInputs; i++)
-        data[e * numFeatures + i] = (double) columnValues[inputColumnIndices[i]];
-      for (int i = 0; i < numOutputs; i++)
-        data[e * numFeatures + numInputs +
-            i] = (double) columnValues[outputColumnIndices[i]];
+      this.pushOutput(inputNominalNames, 1);
 
-    }
-
-    if (PrintStringsAndIndices) {
-      String nominalNames[] = new String[count];
-      Enumeration keys = hashTable.keys();
-      for (int i = 0; i < count; i++) {
+      String outputNominalNames[] = new String[outputUniqueValueCount];
+      Enumeration keys = outputFeatureHashTable.keys();
+      for (int i = 0; i < outputUniqueValueCount; i++) {
         String key = (String) keys.nextElement();
-        int index = ( (Integer) hashTable.get(key)).intValue();
-        nominalNames[index] = key;
+        int index = ( (Integer) outputFeatureHashTable.get(key)).intValue();
+        outputNominalNames[index] = key;
       }
-      for (int i = 0; i < count; i++) {
-        System.out.println("name = " + nominalNames[i] + "  index = " + i);
-      }
+
+      this.pushOutput(outputNominalNames, 2);
+
+
     }
+    else {
+      FlatFile rio = new FlatFile(DataPath, "r", ReadBufferSize, true);
+      buffer = rio.Buffer;
+      rio.DelimiterByte = DelimiterByte;
+      rio.EOLByte = EOLByte;
+
+      for (int r = 0; r < NumRowsToSkip; r++) {
+        rio.readLine();
+      }
+
+      double[] columnValues = new double[numColumns];
+      for (int e = 0; e < NumRowsToRead; e++) {
+
+        rio.readLine();
+
+        for (int f = 0; f < numColumns; f++) {
+
+          if (FixedFormat)
+            columnValues[f] = rio.ByteStringToDouble(buffer,
+                                           rio.LineStart +
+                                           (f * CharsPerColumn),
+                                           rio.LineStart +
+                                           ( (f + 1) * CharsPerColumn) - 1);
+          else
+            columnValues[f] = rio.ByteStringToDouble(buffer, rio.ColumnStarts[f],
+                                           rio.ColumnEnds[f]);
+
+        }
+
+        for (int i = 0; i < numInputs; i++)
+          data[e * numFeatures +
+              i] = (double) columnValues[inputColumnIndices[i]];
+        for (int i = 0; i < numOutputs; i++)
+          data[e * numFeatures + numInputs +
+              i] = (double) columnValues[outputColumnIndices[i]];
+
+      }
+      rio.close();
+    }
+
 
     String[] inputNames = new String[numInputs];
     String[] outputNames = new String[numOutputs];

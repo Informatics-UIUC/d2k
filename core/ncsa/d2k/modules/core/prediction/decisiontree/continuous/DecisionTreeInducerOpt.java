@@ -6,6 +6,8 @@ import ncsa.d2k.modules.core.prediction.mean.continuous.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
+import ncsa.d2k.modules.core.datatype.parameter.basic.*;
+
 import ncsa.d2k.core.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
@@ -153,10 +155,28 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     }
     if (UseLinearNodeModels) {
 
-      StepwiseLinearInducer inducer = new StepwiseLinearInducer();
+      double[] bias = new double[3];
+      String[] biasNames = new String[3];
 
-      inducer.setNumRounds(0);
-      inducer.setDirection(0);
+      int biasIndex = 0;
+
+      biasNames[biasIndex] = "UseStepwise";
+      bias[biasIndex] = 1;
+      biasIndex++;
+      biasNames[biasIndex] = "Direction";
+      bias[biasIndex] = 1;
+      biasIndex++;
+      biasNames[biasIndex] = "NumRounds";
+      bias[biasIndex] = 1;
+      biasIndex++;
+
+      ParameterPointImpl parameterPoint = new ParameterPointImpl();
+
+      parameterPoint.createFromData(biasNames, bias);
+
+      StepwiseLinearInducerOpt inducer = new StepwiseLinearInducerOpt();
+
+      inducer.setControlParameters(parameterPoint);
 
       Model model = inducer.generateModel(examples, errorFunction);
 
