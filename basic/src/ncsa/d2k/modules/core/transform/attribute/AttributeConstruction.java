@@ -52,6 +52,11 @@ public class AttributeConstruction extends HeadlessUIModule {
       sb.append("The available operations on numeric attributes are addition, ");
       sb.append("subtraction, multiplication, division, and modulus. The ");
       sb.append("operations available on boolean attributes are AND and OR.");
+      sb.append("</p><p>Missing Values Handling: Missing values are preserved by " +
+                "the output Transformation of this module. An attribute that is " +
+                "constructed from a missing values will be a missing value in the " +
+                "result Table.");
+
       sb.append("</p><p>Data Type Restrictions: ");
       sb.append("Attribute construction operations can only be performed on the ");
       sb.append("numeric and boolean attributes of a table. Other attributes will ");
@@ -120,7 +125,10 @@ public class AttributeConstruction extends HeadlessUIModule {
 
    protected Object[] lastCons = null;
    public Object[] getLastCons() { return lastCons; }
-   public void setLastCons(Object[] value) { lastCons = (Object[])value; }
+   public void setLastCons(Object[] value) {
+   lastCons = (Object[])value;
+
+ }
 
 
 
@@ -500,6 +508,9 @@ public class AttributeConstruction extends HeadlessUIModule {
           //headless conversion support
 
             pushOutput(new AttributeTransform(newColumnModel.toArray()), 0);
+
+
+
             viewDone("Done");
          }
 
@@ -748,5 +759,7 @@ public class AttributeConstruction extends HeadlessUIModule {
  * 11-05-03 the headless version does not validates the constructing expressions.
  *          if the input table does not match the expressions - the transformation
  *          will fail. - now it validates [11-06-03]
+ *
+ * 11-25-03 Missing Values handling - handles mising values as real values. [bug 145]
  */
 
