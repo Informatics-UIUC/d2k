@@ -66,10 +66,10 @@ public class AttributeTransform implements Transformation {
                short[] s = (short[])evaluation;
                table.addColumn(s);
                break;
-             case ColumnExpression.TYPE_STRING:
-               String[] p = (String[]) evaluation;
-               table.addColumn(p);
-            break;
+             //case ColumnExpression.TYPE_STRING:
+             //  String[] p = (String[]) evaluation;
+             //  table.addColumn(p);
+            //break;
 
             default:
                return false;
