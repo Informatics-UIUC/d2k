@@ -15,9 +15,7 @@ public class DBTestTable extends DBPredictionTable implements TestTable {
 
     private DBExampleTable original;
 
-
-    public DBTestTable (DBExampleTable orig, DBDataSource _dbtableconnection, DBConnection _dbconnection) {
-
+    DBTestTable (DBExampleTable orig, DBDataSource _dbtableconnection, DBConnection _dbconnection) {
         super(orig, _dbtableconnection, _dbconnection);
         original = orig;
     }

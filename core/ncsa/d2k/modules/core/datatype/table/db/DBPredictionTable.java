@@ -46,7 +46,7 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
             predictionSet[i] = dataSource.getNumDistinctColumns() + i;
 
         // This is temporary, remove when runFinalizers is added to d2k.
-        System.runFinalizersOnExit(true);
+        //System.runFinalizersOnExit(true);
 
         // 1. Generate a name for the Prediction Table and the Prediction Sequence
         Random random = new Random();

@@ -99,6 +99,10 @@ public class MutablePagingTable extends PagingTable
 
    }
 
+   public void addTable(Table newTable, boolean keepInMemory) {
+       super.addTable(newTable, keepInMemory);
+   }
+
 /******************************************************************************/
 /* interface Table                                                            */
 /******************************************************************************/

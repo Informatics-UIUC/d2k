@@ -37,7 +37,7 @@ public class PagingTable extends AbstractTable implements Serializable {
       managerCapacity = 0;
    }
 
-   public void addTable(Table newTable, boolean keepInMemory) {
+   protected void addTable(Table newTable, boolean keepInMemory) {
 
       File newFile = null;
       try {
