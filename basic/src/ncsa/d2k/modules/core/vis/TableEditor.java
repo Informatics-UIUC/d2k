@@ -207,7 +207,7 @@ public class TableEditor extends TableViewer {
 
       JMenuItem rows;
 
-      String[] typeList =
+      protected String[] typeList =
          {
             STRING_TYPE,
             DOUBLE_TYPE,
@@ -217,7 +217,8 @@ public class TableEditor extends TableViewer {
             BOOLEAN_TYPE,
             FLOAT_TYPE,
             LONG_TYPE,
-            SHORT_TYPE };
+            SHORT_TYPE,
+       OBJECT_TYPE };
 
       public void initView(ViewModule module) {
          super.initView(module);
@@ -758,6 +759,32 @@ public class TableEditor extends TableViewer {
                         mt.setChar(buffer[j], j, i);
                }
             }
+            // Added by DC 6.9.2004
+            else if (selected.equals(OBJECT_TYPE)) {
+              Object[] buffer = new Object[table.getNumRows()];
+              boolean[] missing = new boolean[table.getNumRows()];
+
+              for (int row = 0; row < buffer.length; row++) {
+                missing[row] = table.isValueMissing(row, i);
+                if(missing[row])
+                  // what goes in here if it is an object column
+                  buffer[row] = null;
+                else
+                  buffer[row] = table.getObject(row, i);
+              }
+                  // Clone the column.
+                  MutableTable mt = (MutableTable)table;
+                  Column column = ColumnUtilities.toObjectColumn(mt.getColumn(i));
+                  mt.setColumn(column, i);
+
+                  // set missing values
+                  for (int j = 0; j < missing.length; j++)
+                     if (missing[j])
+                        mt.setValueToMissing(true, j, i);
+                     else
+                        mt.setObject(buffer[j], j, i);
+            }
+
             indices[i] = types[i].getSelectedIndex();
          } catch (Exception exception) {
             types[i].setSelectedIndex(indices[i]);
