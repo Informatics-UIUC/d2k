@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.geom.*;
 import java.text.*;
 import java.util.*;
@@ -10,7 +11,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.util.*;
 
-public class ClusterBarChart extends BarChart {
+public class ClusterBarChart extends BarChart implements MouseListener {
   private static final int LEFTOFFSET = 20;
   private static final int RIGHTOFFSET = 20;
   private static final int TOPOFFSET = 20;
@@ -34,6 +35,8 @@ public class ClusterBarChart extends BarChart {
   private int longestwidthx;
   private int longestwidthy;
   private int longestwidthz;
+
+  Color[] clustercolors;
 
   public ClusterBarChart(Table table, DataSet set, GraphSettings settings, int xincrement, int yincrement) throws Exception {
     super(table, set, settings);
@@ -116,6 +119,12 @@ public class ClusterBarChart extends BarChart {
     // Include bins for spacing runs
     // Impacts mapping of bins to table values
     bins = (runsize+1)*runs;
+
+    clustercolors = new Color[runs];
+    for (int index=0; index < clustercolors.length; index++)
+      clustercolors[index] = getColor(index);
+
+    addMouseListener(this);
   }
 
   public void initOffsets() {
@@ -164,10 +173,17 @@ public class ClusterBarChart extends BarChart {
           legendwidth = stringwidth;
       }
 
+      legendwidth += 3*smallspace+samplecolorsize;
+
+      if (legendwidth < longestwidthz)
+        legendwidth = longestwidthz;
+
+      /*
       if (legendwidth > longestwidthz)
         legendwidth += 3*smallspace+samplecolorsize;
       else
         legendwidth = longestwidthz;
+      */
 
       legendheight = (fontheight+smallspace)+(values.length*fontheight);
     }
@@ -362,6 +378,43 @@ public class ClusterBarChart extends BarChart {
     }
   }
 
+  public void mouseClicked(MouseEvent event) {
+    double x = event.getX();
+    double y = event.getY();
+
+    Set keys = map.keySet();
+    Iterator iterator = keys.iterator();
+    while (iterator.hasNext()) {
+      Point2D.Double point = (Point2D.Double) iterator.next();
+
+      if (x >= point.x && x <= point.x+samplecolorsize) {
+        if (y >= point.y && y <= point.y+samplecolorsize) {
+          Integer integer = (Integer) map.get(point);
+
+          Color color = JColorChooser.showDialog(this, "Select Color", getClusterColor(integer.intValue()));
+          if (color != null) {
+            setClusterColor(integer.intValue(), color);
+            repaint();
+          }
+        }
+      }
+    }
+  }
+
+  public void mousePressed(MouseEvent event) {
+  }
+
+  public void mouseReleased(MouseEvent event) {
+  }
+
+  public void mouseEntered(MouseEvent event) {
+  }
+
+  public void mouseExited(MouseEvent event) {
+  }
+
+  HashMap map = new HashMap();
+
   public void drawLegend(Graphics2D g2) {
     Color previouscolor = g2.getColor();
 
@@ -374,30 +427,26 @@ public class ClusterBarChart extends BarChart {
 
     g2.draw(new Rectangle.Double(x, y, legendwidth, legendheight));
 
-    x += smallspace;
-    y += fontheight-samplecolorsize;
-
+    map.clear();
     String[] values = new String[runsize];
     mutable.getSubset(0, runsize).getColumn(values, 2);
     for (int index=0; index < values.length; index++) {
-      double gradient = (double) ((double) index)/((double) runsize);
-      g2.setColor(new Color((int)(255 - 255*gradient), 25, (int)(255*gradient)));
+      x = legendleftoffset + smallspace;
+      y += fontheight - samplecolorsize;
+
+      g2.setColor(getClusterColor(index));
       g2.fill(new Rectangle.Double(x, y, samplecolorsize, samplecolorsize));
-      y += fontheight;
-    }
 
-    g2.setColor(previouscolor);
+      Point2D.Double point = new Point2D.Double(x, y);
 
-    x = legendleftoffset;
-    y = legendtopoffset;
+      map.put(point, new Integer(index));
 
-    x += 2*smallspace+samplecolorsize;
-    y += fontheight+smallspace;
+      x += samplecolorsize+smallspace;
+      y += samplecolorsize;
 
-    for (int index=0; index < values.length; index++) {
       String value = values[index];
+      g2.setColor(previouscolor);
       g2.drawString(value, (int) x, (int) y);
-      y += fontheight;
     }
   }
 
@@ -421,9 +470,9 @@ public class ClusterBarChart extends BarChart {
         double barheight = (value-yminimum)/yscale;
         double y = getGraphHeight()-bottomoffset-barheight;
 
-        double gradient = (double)((bin-offset) % runsize)/(double)runsize;
-        g2.setColor(new Color((int)(255 - 255*gradient), 25, (int)(255*gradient)));
+        g2.setColor(getClusterColor(counter));
         g2.fill(new Rectangle2D.Double(x, y, barwidth, barheight));
+
         g2.setColor(Color.black);
         g2.draw(new Rectangle2D.Double(x, y, barwidth, barheight));
 
@@ -432,5 +481,13 @@ public class ClusterBarChart extends BarChart {
 
       x += xoffsetincrement;
     }
+  }
+
+  public Color getClusterColor(int index) {
+    return clustercolors[index];
+  }
+
+  public void setClusterColor(int index, Color color) {
+    clustercolors[index] = color;
   }
 }
