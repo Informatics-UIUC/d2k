@@ -1,5 +1,7 @@
 package ncsa.d2k.modules.core.prediction.svm;
 
+
+import ncsa.d2k.modules.core.prediction.UpdateableModelModule;
 import ncsa.d2k.modules.*;
 import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.*;
