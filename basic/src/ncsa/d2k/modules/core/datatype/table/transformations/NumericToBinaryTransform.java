@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.datatype.table.transformations;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.Transformation;
-
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
  * NumericToBinaryTransform encapsulates a transformation on a Table.
  * If the value of the numeric column is zero it will remain zero,
@@ -40,7 +40,8 @@ public class NumericToBinaryTransform implements Transformation, Cloneable {
 					}
 				}
 				label = mt.getColumnLabel(col);
-				mt.setColumn(intColumn, col);
+				IntColumn iCol = new IntColumn(intColumn);
+				mt.setColumn(iCol, col);
 				mt.setColumnLabel(label, col);
 				mt.setColumnIsNominal(false, col);
 				mt.setColumnIsScalar(true, col);
