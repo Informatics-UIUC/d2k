@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.datatype;
 
 import java.util.*;
-import java.io.*;
 
 
 /**
