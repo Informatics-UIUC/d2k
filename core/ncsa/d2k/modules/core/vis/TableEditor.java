@@ -352,13 +352,31 @@ public class TableEditor extends TableViewer {
           //		newCol = ColumnUtilities.toDoubleColumn(origCol);
           //	}
           if(!(table.getColumnType(i) == ColumnTypes.DOUBLE)) {
+
             String lbl = table.getColumnLabel(i);
             String comm = table.getColumnComment(i);
+
+            // get data
             double[] buffer = new double[table.getNumRows()];
             table.getColumn(buffer, i);
-            ((MutableTable)table).setColumn(buffer, i);
-            ((MutableTable)table).setColumnLabel(lbl, i);
-            ((MutableTable)table).setColumnComment(comm, i);
+
+            // get missing values
+            boolean[] missing = new boolean[table.getNumRows()];
+            for (int j = 0; j < missing.length; j++)
+               missing[j] = table.isValueMissing(j, i);
+
+            MutableTable mt = (MutableTable)table;
+
+            // set data
+            mt.setColumn(buffer, i);
+            mt.setColumnLabel(lbl, i);
+            mt.setColumnComment(comm, i);
+
+            // set missing values
+            for (int j = 0; j < missing.length; j++)
+               if (missing[j])
+                  mt.setValueToMissing(true, j, i);
+
           }
         }
         else if(selected.equals(INT_TYPE)) {
@@ -366,27 +384,66 @@ public class TableEditor extends TableViewer {
           //		newCol = ColumnUtilities.toIntColumn(origCol);
           //	}
           if(!(table.getColumnType(i) == ColumnTypes.INTEGER)) {
+
             String lbl = table.getColumnLabel(i);
             String comm = table.getColumnComment(i);
+
+            // get data
             int[] buffer = new int[table.getNumRows()];
             table.getColumn(buffer, i);
-            ((MutableTable)table).setColumn(buffer, i);
-            ((MutableTable)table).setColumnLabel(lbl, i);
-            ((MutableTable)table).setColumnComment(comm, i);
+
+            // get missing values
+            boolean[] missing = new boolean[table.getNumRows()];
+            for (int j = 0; j < missing.length; j++)
+               missing[j] = table.isValueMissing(j, i);
+
+            MutableTable mt = (MutableTable)table;
+
+            // set data
+            mt.setColumn(buffer, i);
+            mt.setColumnLabel(lbl, i);
+            mt.setColumnComment(comm, i);
+
+            // set missing values
+            for (int j = 0; j < missing.length; j++)
+               if (missing[j])
+                  mt.setValueToMissing(true, j, i);
           }
+
         }
         else if(selected.equals(STRING_TYPE)) {
           //	if(!(table.getColumn(i) instanceof StringColumn)) {
           //		newCol = ColumnUtilities.toStringColumn(origCol);
           //	}
           if(!(table.getColumnType(i) == ColumnTypes.STRING)) {
+
             String lbl = table.getColumnLabel(i);
             String comm = table.getColumnComment(i);
+
+            // get data
             String[] buffer = new String[table.getNumRows()];
             table.getColumn(buffer, i);
-            ((MutableTable)table).setColumn(buffer, i);
-            ((MutableTable)table).setColumnLabel(lbl, i);
-            ((MutableTable)table).setColumnComment(comm, i);
+
+            // get missing values
+            boolean[] missing = new boolean[table.getNumRows()];
+            for (int j = 0; j < missing.length; j++)
+               missing[j] = table.isValueMissing(j, i);
+
+            MutableTable mt = (MutableTable)table;
+
+            // set data
+            mt.setColumn(buffer, i);
+            mt.setColumnLabel(lbl, i);
+            mt.setColumnComment(comm, i);
+
+            // set missing values
+            for (int j = 0; j < missing.length; j++) {
+               if (missing[j]) {
+                  mt.setString("?", j, i);
+                  mt.setValueToMissing(true, j, i);
+               }
+            }
+
           }
         }
         else if(selected.equals(BYTE_ARRAY_TYPE)) {
@@ -394,13 +451,31 @@ public class TableEditor extends TableViewer {
           //		newCol = ColumnUtilities.toByteArrayColumn(origCol);
           //	}
           if(!(table.getColumnType(i) == ColumnTypes.BYTE_ARRAY)) {
+
             String lbl = table.getColumnLabel(i);
             String comm = table.getColumnComment(i);
+
+            // get data
             byte[][] buffer = new byte[table.getNumRows()][];
             table.getColumn(buffer, i);
-            ((MutableTable)table).setColumn(buffer, i);
-            ((MutableTable)table).setColumnLabel(lbl, i);
-            ((MutableTable)table).setColumnComment(comm, i);
+
+            // get missing values
+            boolean[] missing = new boolean[table.getNumRows()];
+            for (int j = 0; j < missing.length; j++)
+               missing[j] = table.isValueMissing(j, i);
+
+            MutableTable mt = (MutableTable)table;
+
+            // set data
+            mt.setColumn(buffer, i);
+            mt.setColumnLabel(lbl, i);
+            mt.setColumnComment(comm, i);
+
+            // set missing values
+            for (int j = 0; j < missing.length; j++)
+               if (missing[j])
+                  mt.setValueToMissing(true, j, i);
+
           }
         }
         else if(selected.equals(CHAR_ARRAY_TYPE)) {
@@ -408,13 +483,33 @@ public class TableEditor extends TableViewer {
           //		newCol = ColumnUtilities.toCharArrayColumn(origCol);
           //	}
           if(!(table.getColumnType(i) == ColumnTypes.CHAR_ARRAY)) {
+
             String lbl = table.getColumnLabel(i);
             String comm = table.getColumnComment(i);
+
+            // get data
             char[][] buffer = new char[table.getNumRows()][];
             table.getColumn(buffer, i);
-            ((MutableTable)table).setColumn(buffer, i);
-            ((MutableTable)table).setColumnLabel(lbl, i);
-            ((MutableTable)table).setColumnComment(comm, i);
+
+            // get missing values
+            boolean[] missing = new boolean[table.getNumRows()];
+            for (int j = 0; j < missing.length; j++)
+               missing[j] = table.isValueMissing(j, i);
+
+            MutableTable mt = (MutableTable)table;
+
+            // set data
+            mt.setColumn(buffer, i);
+            mt.setColumnLabel(lbl, i);
+            mt.setColumnComment(comm, i);
+
+            // set missing values
+            for (int j = 0; j < missing.length; j++)
+               if (missing[j]) {
+                  mt.setString("?", j, i);
+                  mt.setValueToMissing(true, j, i);
+               }
+
           }
         }
         else if(selected.equals(FLOAT_TYPE)) {
@@ -422,13 +517,31 @@ public class TableEditor extends TableViewer {
           //		newCol = ColumnUtilities.toFloatColumn(origCol);
           //	}
           if(!(table.getColumnType(i) == ColumnTypes.FLOAT)) {
+
             String lbl = table.getColumnLabel(i);
             String comm = table.getColumnComment(i);
+
+            // get data
             float[] buffer = new float[table.getNumRows()];
             table.getColumn(buffer, i);
-            ((MutableTable)table).setColumn(buffer, i);
-            ((MutableTable)table).setColumnLabel(lbl, i);
-            ((MutableTable)table).setColumnComment(comm, i);
+
+            // get missing values
+            boolean[] missing = new boolean[table.getNumRows()];
+            for (int j = 0; j < missing.length; j++)
+               missing[j] = table.isValueMissing(j, i);
+
+            MutableTable mt = (MutableTable)table;
+
+            // set data
+            mt.setColumn(buffer, i);
+            mt.setColumnLabel(lbl, i);
+            mt.setColumnComment(comm, i);
+
+            // set missing values
+            for (int j = 0; j < missing.length; j++)
+               if (missing[j])
+                  mt.setValueToMissing(true, j, i);
+
           }
         }
         else if(selected.equals(LONG_TYPE)) {
@@ -436,13 +549,31 @@ public class TableEditor extends TableViewer {
           //		newCol = ColumnUtilities.toLongColumn(origCol);
           //	}
           if(!(table.getColumnType(i) == ColumnTypes.LONG)) {
+
             String lbl = table.getColumnLabel(i);
             String comm = table.getColumnComment(i);
+
+            // get data
             long[] buffer = new long[table.getNumRows()];
             table.getColumn(buffer, i);
-            ((MutableTable)table).setColumn(buffer, i);
-            ((MutableTable)table).setColumnLabel(lbl, i);
-            ((MutableTable)table).setColumnComment(comm, i);
+
+            // get missing values
+            boolean[] missing = new boolean[table.getNumRows()];
+            for (int j = 0; j < missing.length; j++)
+               missing[j] = table.isValueMissing(j, i);
+
+            MutableTable mt = (MutableTable)table;
+
+            // set data
+            mt.setColumn(buffer, i);
+            mt.setColumnLabel(lbl, i);
+            mt.setColumnComment(comm, i);
+
+            // set missing values
+            for (int j = 0; j < missing.length; j++)
+               if (missing[j])
+                  mt.setValueToMissing(true, j, i);
+
           }
         }
         else if(selected.equals(SHORT_TYPE)) {
@@ -450,13 +581,31 @@ public class TableEditor extends TableViewer {
           //		newCol = ColumnUtilities.toShortColumn(origCol);
           //	}
           if(!(table.getColumnType(i) == ColumnTypes.SHORT)) {
+
             String lbl = table.getColumnLabel(i);
             String comm = table.getColumnComment(i);
+
+            // get data
             short[] buffer = new short[table.getNumRows()];
             table.getColumn(buffer, i);
-            ((MutableTable)table).setColumn(buffer, i);
-            ((MutableTable)table).setColumnLabel(lbl, i);
-            ((MutableTable)table).setColumnComment(comm, i);
+
+            // get missing values
+            boolean[] missing = new boolean[table.getNumRows()];
+            for (int j = 0; j < missing.length; j++)
+               missing[j] = table.isValueMissing(j, i);
+
+            MutableTable mt = (MutableTable)table;
+
+            // set data
+            mt.setColumn(buffer, i);
+            mt.setColumnLabel(lbl, i);
+            mt.setColumnComment(comm, i);
+
+            // set missing values
+            for (int j = 0; j < missing.length; j++)
+               if (missing[j])
+                  mt.setValueToMissing(true, j, i);
+
           }
         }
         else if(selected.equals(BOOLEAN_TYPE)) {
@@ -464,35 +613,92 @@ public class TableEditor extends TableViewer {
           //		newCol = ColumnUtilities.toBooleanColumn(origCol);
           //	}
           if(!(table.getColumnType(i) == ColumnTypes.BOOLEAN)) {
+
             String lbl = table.getColumnLabel(i);
             String comm = table.getColumnComment(i);
+
+            // get data
             boolean[] buffer = new boolean[table.getNumRows()];
             table.getColumn(buffer, i);
-            ((MutableTable)table).setColumn(buffer, i);
-            ((MutableTable)table).setColumnLabel(lbl, i);
-            ((MutableTable)table).setColumnComment(comm, i);
+
+            // get missing values
+            boolean[] missing = new boolean[table.getNumRows()];
+            for (int j = 0; j < missing.length; j++)
+               missing[j] = table.isValueMissing(j, i);
+
+            MutableTable mt = (MutableTable)table;
+
+            // set data
+            mt.setColumn(buffer, i);
+            mt.setColumnLabel(lbl, i);
+            mt.setColumnComment(comm, i);
+
+            // set missing values
+            for (int j = 0; j < missing.length; j++)
+               if (missing[j])
+                  mt.setValueToMissing(true, j, i);
+
           }
         }
         else if(selected.equals(BYTE_TYPE)) {
           if(!(table.getColumnType(i) == ColumnTypes.BYTE)) {
+
             String lbl = table.getColumnLabel(i);
             String comm = table.getColumnComment(i);
+
+            // get data
             byte[] buffer = new byte[table.getNumRows()];
             table.getColumn(buffer, i);
-            ((MutableTable)table).setColumn(buffer, i);
-            ((MutableTable)table).setColumnLabel(lbl, i);
-            ((MutableTable)table).setColumnComment(comm, i);
+
+            // get missing values
+            boolean[] missing = new boolean[table.getNumRows()];
+            for (int j = 0; j < missing.length; j++)
+               missing[j] = table.isValueMissing(j, i);
+
+            MutableTable mt = (MutableTable)table;
+
+            // set data
+            mt.setColumn(buffer, i);
+            mt.setColumnLabel(lbl, i);
+            mt.setColumnComment(comm, i);
+
+            // set missing values
+            for (int j = 0; j < missing.length; j++)
+               if (missing[j])
+                  mt.setValueToMissing(true, j, i);
+
           }
         }
         else if(selected.equals(CHAR_TYPE)) {
           if(!(table.getColumnType(i) == ColumnTypes.CHAR)) {
+
             String lbl = table.getColumnLabel(i);
             String comm = table.getColumnComment(i);
+
+            // get data
             byte[] buffer = new byte[table.getNumRows()];
             table.getColumn(buffer, i);
-            ((MutableTable)table).setColumn(buffer, i);
-            ((MutableTable)table).setColumnLabel(lbl, i);
-            ((MutableTable)table).setColumnComment(comm, i);
+
+            // get missing values
+            boolean[] missing = new boolean[table.getNumRows()];
+            for (int j = 0; j < missing.length; j++)
+               missing[j] = table.isValueMissing(j, i);
+
+            MutableTable mt = (MutableTable)table;
+
+            // set data
+            mt.setColumn(buffer, i);
+            mt.setColumnLabel(lbl, i);
+            mt.setColumnComment(comm, i);
+
+            // set missing values
+            for (int j = 0; j < missing.length; j++) {
+               if (missing[j]) {
+                  mt.setChar('?', j, i);
+                  mt.setValueToMissing(true, j, i);
+               }
+            }
+
           }
         }
         indices[i] = types[i].getSelectedIndex();
