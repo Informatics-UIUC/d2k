@@ -76,6 +76,13 @@ public class EvaluatePopulation
         int funcIndex = functions.indexOf(f);
         fitnessFunctionColumnIndex[i] =
             funcIndex + numDecisionVariables;
+        //***************************************
+        // Added DC 10.19.2004
+        // add a column to the table for the function
+        //***************************************
+        DoubleColumn dc = new DoubleColumn(popSize);
+        dc.setLabel(f.getName());
+        popTable.addColumn(dc);
       }
 
       numCon = constraints.size();
@@ -85,9 +92,16 @@ public class EvaluatePopulation
         int funcIndex = functions.indexOf(f);
         constraintFunctionColumnIndex[i] =
             funcIndex + numDecisionVariables;
+        //***************************************
+        // Added DC 10.19.2004
+        // add a column to the table for the function
+        //***************************************
+        DoubleColumn dc = new DoubleColumn(popSize);
+        dc.setLabel(f.getName());
+        popTable.addColumn(dc);
       }
     }
-
+    
     // copy the decision variables to the table
     copyPopulationToTable(pop, popTable);
 
@@ -100,16 +114,27 @@ public class EvaluatePopulation
       Function func = (Function) functions.get(i);
       try {
         double[] vals = func.evaluate(pop, popTable);
-        DoubleColumn dc = new DoubleColumn(vals);
-        dc.setLabel(func.getName());
-        popTable.addColumn(dc);
+        //************************************
+        // Commented out by DC 10.19.2004
+        // This kept adding columns to the table, but never removed them!
+        // Solution is to only add the columns when creating the table and
+        // simply copy the values from evaluate() into the proper column
+        //************************************
+        //DoubleColumn dc = new DoubleColumn(vals);
+        //dc.setLabel(func.getName());
+        //popTable.addColumn(dc);
+        
+        // now set the values in popTable
+        for(int z = 0; z < vals.length; z++) {
+          popTable.setDouble(vals[z], z, numDecisionVariables+i);  
+        }
       }
       catch (Exception ex) {
         // throw the exception??
         ex.printStackTrace();
       }
     }
-
+    
     // now simply iterate through and set the values
     // on the population
 
@@ -145,7 +170,6 @@ public class EvaluatePopulation
         sols[j].setConstraint(val, i);
       }
     }
-
   }
 
   private void copyPopulationToTable(Population pop, MutableTable mt) {
