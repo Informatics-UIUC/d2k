@@ -329,7 +329,9 @@ public class BooleanColumn extends AbstractColumn {
     	@param pos the position in the column
      */
     public void setChar (char newEntry, int pos) {
-		;
+		char[] c = new char[1];
+		c[0] = newEntry;
+		setChars(c, pos);
     }
 
     /**

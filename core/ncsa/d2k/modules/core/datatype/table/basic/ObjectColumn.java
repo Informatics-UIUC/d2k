@@ -368,7 +368,7 @@ final public class ObjectColumn extends AbstractColumn {
      @return the entry at pos as a byte[]
      */
     public byte getByte (int pos) {
-		return (byte)0;
+		return getBytes(pos)[0];
     }
 
     /**
@@ -377,7 +377,9 @@ final public class ObjectColumn extends AbstractColumn {
      @param pos the position
      */
     public void setByte (byte newEntry, int pos) {
-		;
+		byte[] b = new byte[1];
+		b[0] = newEntry;
+		setBytes(b, pos);
     }
 
     /**
@@ -428,7 +430,7 @@ final public class ObjectColumn extends AbstractColumn {
      @return the item at pos as a char[]
      */
     public char getChar (int pos) {
-		return 'a';
+		return getChars(pos)[0];
     }
 
     /**
@@ -437,7 +439,9 @@ final public class ObjectColumn extends AbstractColumn {
      @param pos the position
      */
     public void setChar (char newEntry, int pos) {
-		;
+		char[] c = new char[1];
+		c[0] = newEntry;
+		setChars(c, pos);
     }
 
     /**

@@ -231,7 +231,7 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
     	@return the byte array at pos
      */
     public byte getByte(int pos) {
-		return (byte)0;
+		return getBytes(pos)[0];
     }
 
     /**
@@ -240,7 +240,9 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
     	@param pos the position to place newEntry
      */
     public void setByte (byte newEntry, int pos) {
-		;
+		byte[] b = new byte[1];
+		b[0] = newEntry;
+		setBytes(b, pos);
     }
 
     /**
@@ -268,7 +270,7 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
     	@return the value of the byte array at pos as a char[]
      */
     public char getChar (int pos) {
-		return 'a';
+		return getChars(pos)[0];
     }
 
     /**
@@ -277,7 +279,9 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
     	@param pos the position to place newEntry
      */
     public void setChar (char newEntry, int pos) {
-		;
+		char[] c = new char[1];
+		c[0] = newEntry;
+		setChars(c, pos);
     }
 
     /**

@@ -290,7 +290,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      @return the value at pos as a byte
      */
     public byte getByte (int pos) {
-		return (byte)0;
+		return getBytes(pos)[0];
     }
 
     /**
@@ -299,7 +299,9 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      @param pos the position
      */
     public void setByte (byte newEntry, int pos) {
-		;
+		byte[] b = new byte[1];
+		b[0] = newEntry;
+		setBytes(b, pos);
     }
 
     /**
@@ -348,7 +350,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      @return the value at pos as an array of chars
      */
     public char getChar (int pos) {
-		return 'a';
+		return getChars(pos)[0];
     }
 
     /**
@@ -357,7 +359,9 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      @param pos the position
      */
     public void setChar (char newEntry, int pos) {
-		;
+		char[] c = new char[1];
+		c[0] = newEntry;
+		setChars(c, pos);
     }
 
     /**

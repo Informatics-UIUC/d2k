@@ -484,7 +484,7 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 	 * @return the value at row
 	 */
 	public byte getByte(int row) {
-		return (byte)0;
+		return getBytes(row)[0];
 	}
 
 	/**
@@ -493,7 +493,9 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 	 * @param row the row to insert the entry in
 	 */
 	public void setByte(byte b, int row) {
-		;
+		byte[] by = new byte[1];
+		by[0] = b;
+		setBytes(by, row);
 	}
 
 	/**
@@ -520,7 +522,7 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 	 * @return the value at row as an array of char
 	 */
 	public char getChar(int row) {
-		return 'a';
+		return getChars(row)[0];
 	}
 
 	/**
@@ -529,7 +531,9 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 	 * @param row the row to insert the entry in
 	 */
 	public void setChar(char c, int row) {
-		;
+		char[] cy = new char[1];
+		cy[0] = c;
+		setChars(cy, row);
 	}
 
 	/**

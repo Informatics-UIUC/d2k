@@ -349,7 +349,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      */
     public byte getByte (int pos) {
         //return (String.valueOf(this.internal[pos])).getBytes();
-		return (byte)0;
+		return getBytes(pos)[0];
     }
 
     /**
@@ -358,7 +358,9 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      * @param pos the position
      */
     public void setByte (byte newEntry, int pos) {
-		;
+		byte[] b = new byte[1];
+		b[0] = newEntry;
+		setBytes(b, pos);
     }
 
     /**
@@ -408,7 +410,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      * @return the entry at pos as a char[]
      */
     public char getChar (int pos) {
-		return 'a';
+		return getChars(pos)[0];
     }
 
     /**
@@ -417,7 +419,9 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      * @param pos the position
      */
     public void setChar (char newEntry, int pos) {
-        //setString(new String(newEntry), pos);
+        char[] c = new char[1];
+        c[0] = newEntry;
+        setChars(c, pos);
     }
 
     /**

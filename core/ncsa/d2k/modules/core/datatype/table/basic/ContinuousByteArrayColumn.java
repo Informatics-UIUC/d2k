@@ -493,7 +493,8 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 	 * @return the value at row
 	 */
 	public byte getByte(int row) {
-		return (byte)0;
+		byte[] b = getBytes(row);
+		return b[0];
 	}
 
 	/**
@@ -502,7 +503,9 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 	 * @param row the row to insert the entry in
 	 */
 	public void setByte(byte b, int row) {
-		;
+		byte[] by = new byte[1];
+		by[0] = b;
+		setBytes(by, row);
 	}
 
 	/**
@@ -535,7 +538,8 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 	 * @return the value at row as an array of char
 	 */
 	public char getChar(int row) {
-		return 'a';
+		char[] c = getChars(row);
+		return c[0];
 	}
 
 	/**
@@ -545,7 +549,9 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 	 * @param row the row to insert the entry in
 	 */
 	public void setChar(char c, int row) {
-		;
+		char[] cy = new char[1];
+		cy[0] = c;
+		setChars(cy, row);
 	}
 
 	/**
