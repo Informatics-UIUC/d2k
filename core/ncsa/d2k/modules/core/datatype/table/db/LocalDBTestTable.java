@@ -19,6 +19,14 @@ class LocalDBTestTable extends LocalDBPredictionTable implements TestTable {
 		}
 
 		/**
+		 * This is a prediction table, return this.
+		 * @return this which is a prediction table
+		 */
+		public PredictionTable toPredictionTable() {
+		  return this;
+		}
+
+		/**
 		 * Get the example table from which this table was derived.
 			 * @return the example table from which this table was derived
 		 */

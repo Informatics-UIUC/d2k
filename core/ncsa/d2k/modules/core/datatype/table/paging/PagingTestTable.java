@@ -22,6 +22,13 @@ class PagingTestTable
 
 	  /******************************************************************************/
 
+  /**
+  * This is a prediction table, return this.
+  * @return this which is a prediction table
+  */
+  public PredictionTable toPredictionTable() {
+	return this;
+  }
   private void readObject(ObjectInputStream in) throws IOException,
 	  ClassNotFoundException {
 
@@ -731,91 +738,91 @@ class PagingTestTable
   }
 
   public void setColumn(char[] data, int pos) {
-     //CharColumn cc = new CharColumn(data);
-     //setColumn(cc, pos);
-     for(int i = 0; i < data.length; i++) {
-       setChar(data[i], i,  pos);
-     }
+	 //CharColumn cc = new CharColumn(data);
+	 //setColumn(cc, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setChar(data[i], i,  pos);
+	 }
   }
   public void setColumn(byte[] data, int pos) {
-     //ByteColumn bc = new ByteColumn(data);
-     //setColumn(bc, pos);
-     for(int i = 0; i < data.length; i++) {
-       setByte(data[i], i,  pos);
-     }
+	 //ByteColumn bc = new ByteColumn(data);
+	 //setColumn(bc, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setByte(data[i], i,  pos);
+	 }
   }
 
   public void setColumn(int[] data, int pos) {
-     //IntColumn ic = new IntColumn(data);
-     //setColumn(ic, pos);
-     for(int i = 0; i < data.length; i++) {
-       setInt(data[i], i,  pos);
-     }
+	 //IntColumn ic = new IntColumn(data);
+	 //setColumn(ic, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setInt(data[i], i,  pos);
+	 }
   }
   public void setColumn(float[] data, int pos) {
-     //FloatColumn ic = new FloatColumn(data);
-     //setColumn(ic, pos);
-     for(int i = 0; i < data.length; i++) {
-       setFloat(data[i], i,  pos);
-     }
+	 //FloatColumn ic = new FloatColumn(data);
+	 //setColumn(ic, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setFloat(data[i], i,  pos);
+	 }
   }
   public void setColumn(double[] data, int pos) {
-     //DoubleColumn ic = new DoubleColumn(data);
-     //setColumn(ic, pos);
-     for(int i = 0; i < data.length; i++) {
-       setDouble(data[i], i,  pos);
-     }
+	 //DoubleColumn ic = new DoubleColumn(data);
+	 //setColumn(ic, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setDouble(data[i], i,  pos);
+	 }
   }
   public void setColumn(long[] data, int pos) {
-     //LongColumn ic = new LongColumn(data);
-     //setColumn(ic, pos);
-     for(int i = 0; i < data.length; i++) {
-       setDouble(data[i], i,  pos);
-     }
+	 //LongColumn ic = new LongColumn(data);
+	 //setColumn(ic, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setDouble(data[i], i,  pos);
+	 }
   }
   public void setColumn(short[] data, int pos) {
-     //ShortColumn ic = new ShortColumn(data);
-     //setColumn(ic, pos);
-     for(int i = 0; i < data.length; i++) {
-       setShort(data[i], i,  pos);
-     }
+	 //ShortColumn ic = new ShortColumn(data);
+	 //setColumn(ic, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setShort(data[i], i,  pos);
+	 }
   }
   public void setColumn(String[] data, int pos) {
-     //StringColumn ic = new StringColumn(data);
-     //setColumn(ic, pos);
-     for(int i = 0; i < data.length; i++) {
-       setString(data[i], i,  pos);
-     }
+	 //StringColumn ic = new StringColumn(data);
+	 //setColumn(ic, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setString(data[i], i,  pos);
+	 }
   }
   public void setColumn(byte[][] data, int pos) {
-     //ContinuousByteArrayColumn bc = new ContinuousByteArrayColumn(data);
-     //setColumn(bc, pos);
-     for(int i = 0; i < data.length; i++) {
-       setBytes(data[i], i,  pos);
-     }
+	 //ContinuousByteArrayColumn bc = new ContinuousByteArrayColumn(data);
+	 //setColumn(bc, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setBytes(data[i], i,  pos);
+	 }
   }
   public void setColumn(char[][] data, int pos) {
-     //ContinuousCharArrayColumn cc = new ContinuousCharArrayColumn(data);
-     //setColumn(cc, pos);
-     for(int i = 0; i < data.length; i++) {
-       setChars(data[i], i,  pos);
-     }
+	 //ContinuousCharArrayColumn cc = new ContinuousCharArrayColumn(data);
+	 //setColumn(cc, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setChars(data[i], i,  pos);
+	 }
   }
   public void setColumn(Object[] data, int pos) {
-     //ObjectColumn ic = new ObjectColumn(data);
-     //setColumn(ic, pos);
-     for(int i = 0; i < data.length; i++) {
-       setObject(data[i], i,  pos);
-     }
+	 //ObjectColumn ic = new ObjectColumn(data);
+	 //setColumn(ic, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setObject(data[i], i,  pos);
+	 }
   }
   public void setColumn(boolean[] data, int pos) {
-     //BooleanColumn ic = new BooleanColumn(data);
-     //ic.setLabel(getColumnLabel(pos));
-     //ic.setComment(getColumnComment(pos));
-     //setColumn(ic, pos);
-     for(int i = 0; i < data.length; i++) {
-       setBoolean(data[i], i,  pos);
-     }
+	 //BooleanColumn ic = new BooleanColumn(data);
+	 //ic.setLabel(getColumnLabel(pos));
+	 //ic.setComment(getColumnComment(pos));
+	 //setColumn(ic, pos);
+	 for(int i = 0; i < data.length; i++) {
+	   setBoolean(data[i], i,  pos);
+	 }
   }
 
 }

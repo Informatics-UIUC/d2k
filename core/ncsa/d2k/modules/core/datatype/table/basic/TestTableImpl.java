@@ -23,6 +23,10 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
 		super(i);
 	}
 
+	/**
+	 * This is a prediction table, return this.
+	 * @return this which is a prediction table
+	 */
 	public PredictionTable toPredictionTable() {
 	  return this;
 	}
