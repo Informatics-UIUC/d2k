@@ -9,7 +9,7 @@ import ncsa.d2k.util.datatype.*;
  * the predict() method of each PredictionModelModule.  Only the model with
  * the highest number of correct predictions is returned.  This model is passed as an output.
  */
-public class PredictionModelSelector extends ModelSelectorModule implements HasNames {
+public class PredictionModelSelector extends ModelSelectorModule implements HasNames, ModelEvaluator {
 
 	public String getModuleInfo() {
 		String s = "Meant to be used in conjunction with NFoldTTables.  ";

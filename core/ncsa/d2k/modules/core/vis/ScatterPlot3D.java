@@ -1118,7 +1118,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
         }
        	private class HelpWindow extends JD2KFrame {
             HelpWindow() {
-			    super("About ParallelCoordinateVis");
+			    super("About ScatterPlot3D");
 			    JEditorPane jep = new JEditorPane("text/html", getHelpString());
 			    getContentPane().add(new JScrollPane(jep));
 			    setSize(400, 200);
