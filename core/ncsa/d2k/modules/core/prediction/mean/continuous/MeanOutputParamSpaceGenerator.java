@@ -61,8 +61,7 @@ public class MeanOutputParamSpaceGenerator extends AbstractParamSpaceGenerator {
      * @return a list of the property descriptions.
      */
     public PropertyDescription[] getPropertiesDescriptions() {
-	PropertyDescription[] pds = new PropertyDescription[0];
-	return pds;
+        return new PropertyDescription[0];
     }
 
     /**
