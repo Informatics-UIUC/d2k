@@ -1668,13 +1668,13 @@ public class ExampleTableImpl
        */
       protected void incrementInOut(int position) {
         for (int i = 0; i < this.inputColumns.length; i++) {
-          if (inputColumns[i] >= position) { // !: change
+          if (inputColumns[i] > position) { // !: change?
             inputColumns[i]++;
           }
         }
         // setInputFeatures(inputColumns); // !: change
         for (int i = 0; i < this.outputColumns.length; i++) {
-          if (outputColumns[i] >= position) { // !: change
+          if (outputColumns[i] > position) { // !: change?
             outputColumns[i]++;
           }
         }
