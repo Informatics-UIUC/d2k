@@ -85,9 +85,18 @@ public class SparseStringObjectColumn extends SparseObjectColumn{
 
 
  protected SparseStringObjectColumn (SparseStringColumn column){
+
+
+
    int[] keys = column.getIndices();
-    for (int i=0; i<keys.length; i++)
-      setString(getString(keys[i]), keys[i]);
+
+
+
+    for (int i=0; i<keys.length; i++){
+
+
+      setString(column.getString(keys[i]), keys[i]);
+    }
     missing = column.missing.copy();
 
     type = ColumnTypes.STRING;
