@@ -50,7 +50,8 @@ public class ARFFFileParser extends DelimitedFileParser {
         }
 
         lineReader = new LineNumberReader(filereader);
-        try {
+
+       try {
             initialize();
         }
         catch(Exception e) {
@@ -64,16 +65,18 @@ public class ARFFFileParser extends DelimitedFileParser {
         ArrayList attributes = new ArrayList();
         ArrayList types = new ArrayList();
 
-        int linectr = 0;
         // find all the attributes
-        String line = null;
-        while( (line = lineReader.readLine()).indexOf(DATA_TAG) == -1) {
+        String line = lineReader.readLine();
+        while( line.toLowerCase().indexOf(DATA_TAG) == -1) {
             if( line.toLowerCase().indexOf(ATTRIBUTE_TAG) != -1) {
                 // drop the attribute tag, find the attribute name, type
                 // if it is nominal, add its values to the allowedAttributes.
                 parseAttributeLine(line, attributes, types);
             }
-            linectr++;
+            line = lineReader.readLine();
+            if ( line == null ) {
+                throw new Exception ( "Keyword DATA not found in input file" );
+            }
         }
 
         // now we have the names of the attributes and the types.
@@ -95,8 +98,6 @@ public class ARFFFileParser extends DelimitedFileParser {
                 allowedAttributes[i] = parseAllowedAttributes(line);
             }
         }
-
-
 
         // now count the number of data lines
         int ctr = 0;
