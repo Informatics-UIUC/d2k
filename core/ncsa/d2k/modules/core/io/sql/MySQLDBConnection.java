@@ -7,11 +7,11 @@ import java.sql.*;
 import javax.swing.*;
 import java.util.*;
 
-public class mySQLDBConnection extends SQLDBConnection {
+public class MySQLDBConnection extends SQLDBConnection {
 
     private String dbInstance;
 
-    public mySQLDBConnection(String _url, String _driver, String _username, String _password,
+    public MySQLDBConnection(String _url, String _driver, String _username, String _password,
                            String _dbinstance) {
         super(_url, _driver, _username, _password);
         dbInstance = _dbinstance;
