@@ -35,6 +35,10 @@ public class ParallelCoordinateVis extends VisModule {
       sb.append("other hand, each unique value will be mapped to a unique ");
       sb.append("point on the axis.");
       sb.append("</p><p>");
+      sb.append("If the input <i>Table</i> is an <i>ExampleTable</i>, only ");
+      sb.append("those columns designated as inputs or outputs will be ");
+      sb.append("displayed.");
+      sb.append("</p><p>");
       sb.append("The lines on the graph are colored according to the <i>key ");
       sb.append("column</i>, which is the last column by default. This and ");
       sb.append("other options can be changed in the visualization's menu.");
