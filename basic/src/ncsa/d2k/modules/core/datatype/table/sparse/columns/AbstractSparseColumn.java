@@ -121,12 +121,15 @@ abstract public class AbstractSparseColumn
   /**
    * Returns the total number of data items that this column holds.
    *
+   * VERED - added the doesValueExist test... (7-12-04)
+   *
    * @return    the total number of data items that this column holds.
    */
   public int getNumEntries() {
     int numEntries = 0;
     for (int i = 0; i < getNumRows(); i++) {
-      if (!isValueMissing(i) && !isValueEmpty(i)) {
+
+      if (doesValueExist(i) && !isValueMissing(i) && !isValueEmpty(i)) {
         numEntries++;
       }
     }
@@ -679,10 +682,15 @@ abstract public class AbstractSparseColumn
     if(!(other instanceof AbstractSparseColumn)) return false;
 
     AbstractSparseColumn col = (AbstractSparseColumn) other;
+    /*
     VHashMap elements = getElements();
     if(!elements.equals(col.getElements())) return false;
     if(!missing.equals(col.missing)) return false;
     if(!empty.equals(col.empty)) return false;
+*/
+    for (int i=0; i<col.getNumRows(); i++){
+      if(col.getBoolean(i) != this.getBoolean(i)) return false;
+    }
     return retVal;
   }
 

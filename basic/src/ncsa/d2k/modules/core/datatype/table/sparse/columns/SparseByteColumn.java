@@ -467,6 +467,7 @@ public class SparseByteColumn
    */
   public Column getSubset(int pos, int len) {
     SparseByteColumn subCol = new SparseByteColumn();
+    subCol.elements = (VIntByteHashMap) elements.getSubset(pos, len);
     getSubset(subCol, pos, len);
 
     return subCol;
