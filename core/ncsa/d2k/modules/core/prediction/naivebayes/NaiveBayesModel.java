@@ -703,9 +703,6 @@ public final class NaiveBayesModel
     //System.out.println(" out of: "+pt.getNumRows());
   }
 
-  protected void makePrediction(ExampleTable example, int row, double [] predictedOutputs) {
-  }
-
   /**
    Predict the classes based on the attributes.  The binning data
    from the training set is used.  If the correct class is present,

@@ -41,7 +41,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
     return decisionTree;
   }
 
-  public double [] Evaluate(ExampleTable testExampleSet, int e) throws Exception {
+  public double [] evaluate(ExampleTable testExampleSet, int e) throws Exception {
 
     DecisionTreeNode node = decisionTree;
 
@@ -56,7 +56,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable /*,
 
     double [] outputs = null;
     try {
-      outputs = node.model.Evaluate(testExampleSet, e);
+      outputs = node.model.evaluate(testExampleSet, e);
     }
     catch (Exception e2) {
       throw e2;

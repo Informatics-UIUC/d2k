@@ -79,7 +79,7 @@ public class ErrorFunction implements java.io.Serializable {
 
         double [] outputs = outputsMemory;
 
-        model.Evaluate(examples, exampleIndex, outputs);
+        model.evaluate(examples, exampleIndex, outputs);
 
         if (numOutputs == 1) {
           double predictedOutput = examples.getOutputDouble(exampleIndex, 0);
@@ -121,7 +121,7 @@ public class ErrorFunction implements java.io.Serializable {
       double errorSum = 0.0;
 
       double [] outputs = outputsMemory;
-      model.Evaluate(examples, exampleIndex, outputs);
+      model.evaluate(examples, exampleIndex, outputs);
       for (int f = 0; f < numOutputs; f++) {
         double difference = outputs[f] - examples.getOutputDouble(exampleIndex, f);
         errorSum += Math.abs(difference);
@@ -136,7 +136,7 @@ public class ErrorFunction implements java.io.Serializable {
     double errorSum = 0.0;
 
     double [] outputs = outputsMemory;
-    model.Evaluate(examples, exampleIndex, outputs);
+    model.evaluate(examples, exampleIndex, outputs);
     for (int f = 0; f < numOutputs; f++) {
       double difference = outputs[f] - examples.getOutputDouble(exampleIndex, f);
       errorSum += difference * difference;
@@ -152,7 +152,7 @@ case likelihoodErrorFunctionIndex: {
 
   double [] predictedOutputs = outputsMemory;
 
-  model.Evaluate(examples, exampleIndex, predictedOutputs);
+  model.evaluate(examples, exampleIndex, predictedOutputs);
 
   for (int f = 0; f < numOutputs; f++) {
 

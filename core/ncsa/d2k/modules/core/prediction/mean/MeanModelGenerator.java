@@ -150,9 +150,6 @@ public class MeanModelGenerator extends ModelGeneratorModule
 		//return predTable;
 	}
 
-        protected void makePrediction(ExampleTable example, int row, double [] predictedOutputs) {
-        }
-
 	/* just calls predict on the pulled in table*/
   	 public void doit() throws Exception {
 		 pushOutput(predict((ExampleTable)pullInput(0)), 0);

@@ -29,7 +29,7 @@ public class MeanModel extends Model implements java.io.Serializable
     return outputs;
     }
 
-  public double [] Evaluate(ExampleTable exampleSet, int e) {
+  public double [] evaluate(ExampleTable exampleSet, int e) {
     double [] outputs = new double[exampleSet.getNumOutputFeatures()];
     for (int f = 0; f < meanOutputValues.length; f++) {
       outputs[f] = meanOutputValues[f];
@@ -37,7 +37,7 @@ public class MeanModel extends Model implements java.io.Serializable
     return outputs;
     }
 
-  public void Evaluate(ExampleTable exampleSet, int e, double [] outputs) {
+  public void evaluate(ExampleTable exampleSet, int e, double [] outputs) {
     for (int f = 0; f < meanOutputValues.length; f++) {
       outputs[f] = meanOutputValues[f];
       }

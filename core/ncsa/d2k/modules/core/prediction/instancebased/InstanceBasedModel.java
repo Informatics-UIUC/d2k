@@ -38,7 +38,7 @@ public class InstanceBasedModel extends Model implements java.io.Serializable
 
 
 
-  public double [] Evaluate(ExampleTable testExampleSet, int testE)
+  public double [] evaluate(ExampleTable testExampleSet, int testE)
     {
     int numExamples = trainExampleSet.getNumExamples();
     int numInputs   = trainExampleSet.getNumInputFeatures();

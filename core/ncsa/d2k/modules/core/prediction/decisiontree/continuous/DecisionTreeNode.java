@@ -45,7 +45,7 @@ public class DecisionTreeNode implements java.io.Serializable /*, ViewableDTNode
 
       DecisionTreeNode root = this.root;
        if (outputVal.equals("0")) {
-        count = (int) ((root.outputMaxs[0] - this.model.Evaluate(null, 0)[0]) /
+        count = (int) ((root.outputMaxs[0] - this.model.evaluate(null, 0)[0]) /
                        (root.outputMaxs[0] - root.outputMins[0]) * this.numExamples + 0.5);
       }
       else {

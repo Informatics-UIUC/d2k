@@ -42,7 +42,7 @@ public class LinearModel extends Model implements java.io.Serializable
   }
 
 
-  public double [] Evaluate(ExampleTable examples, int e)
+  public double [] evaluate(ExampleTable examples, int e)
     {
     double [] outputs = new double[getNumOutputs()];
     for (int o = 0; o < weights.length; o++)

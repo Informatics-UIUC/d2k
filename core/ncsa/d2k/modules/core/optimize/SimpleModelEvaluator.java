@@ -94,20 +94,17 @@ public class SimpleModelEvaluator extends OrderedReentrantModule {
     int numInputs   = examples.getNumInputFeatures();
     int numOutputs  = examples.getNumOutputFeatures();
 
-    model.predict(exampleTable);
+    // change to call make prediction
 
-
-    double [][] predictedOutputs = new double[numExamples][];
+    PredictionTable predictionTable = model.predict(exampleTable);
 
     for (int e = 0; e < numExamples; e++) {
-
-      predictedOutputs[e] = model.Evaluate(examples, e);
 
       if (PrintPredictions) {
         for (int o = 0; o < numOutputs; o++) {
           synchronized( System.out ) {
-          System.out.println(OutputLabel + "e = " + e + "  predicted = " + predictedOutputs[e][o] +
-          "  actual = " + examples.getOutputDouble(e, o));
+          System.out.println(OutputLabel + "e = " + e + "  predicted = " + predictionTable.getDoublePrediction(e, o) +
+          "  actual = " + exampleTable.getOutputDouble(e, o));
         }
         }
       }
@@ -125,7 +122,7 @@ public class SimpleModelEvaluator extends OrderedReentrantModule {
       for (int e = 0; e < numExamples; e++) {
         double outputSum = 0.0;
         for (int o = 0; o < numOutputs; o++) {
-          outputSum += predictedOutputs[e][0];
+          outputSum += predictionTable.getDoublePrediction(e, 0);
         }
         double predicted = outputSum / numOutputs;
 
