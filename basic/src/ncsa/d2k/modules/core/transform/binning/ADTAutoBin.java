@@ -245,4 +245,8 @@ public class ADTAutoBin extends DataPrepModule {
  * bug 227 - when a column has NO missing values all items are being binned into
  * the UNKNOWN bin. plus missing values are preserved as missing, though seemed
  * to be really binned into unknown bins (as testified by test missing values in bins module)
+ * (fixed)
+ *
+ * 01-15-04:
+ * bug 227 is fixed.
 */

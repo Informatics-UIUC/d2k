@@ -8,6 +8,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Vector;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -1334,19 +1335,46 @@ public class BinAttributes extends HeadlessUIModule {
 		 maxes[i] = ss.getMaximum();
 		mins[i] = ss.getMinimum();
 
+                //vered: (01-16-04) added this code to create the desired number of bins.
+                                //not too few and not too many.
 
+                   double up;
+                   int idx;
+                   Vector bounds = new Vector();
+                   for(idx=0,up=mins[i]; up<maxes[i]; idx++, up+=intrval){
+                     bounds.add(idx, new Double(up));
+                   }
+
+                   //now bounds holds the upper bounds for all bins except the last one.
+                  //end of vered's code.
+
+
+//vered: (01-16-04) commented out this line, to create exactly the desired number of bins
 		// the number of bins is (max - min) / (bin width)
-		int num = (int)Math.round((maxes[i] - mins[i])/intrval);
+//		int num = (int)Math.round((maxes[i] - mins[i])/intrval);
+
+
+
 
 		//System.out.println("column " + i + " max " + maxes[i] + " min " + mins[i] + " num " + num+ " original " +( maxes[i]-mins[i])/intrval + " interval " + intrval);
-		double[] binMaxes = new double[num];
-		binMaxes[0] = mins[i];
+
+                //vered: (01-16-04)replaced *num* with *bounds.size()*
+		double[] binMaxes = new double[/*num*/bounds.size()];
+
+
+//vered: (01-16-04)replaced *mins[i]* with *((Double)bounds.get(0)).doubleValue()*
+		binMaxes[0] = /*mins[i]*/ ((Double)bounds.get(0)).doubleValue();
+
+
 		// add the first bin manually
 		//ANCA BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],binMaxes[0]);
 		BinDescriptor nbd = BinDescriptorFactory.createMinNumericBinDescriptor(colIdx[i],binMaxes[0],nf,tbl);
 		addItemToBinList(nbd);
 		for (int j = 1; j < binMaxes.length; j++) {
-		  binMaxes[j] = binMaxes[j - 1] + intrval;
+
+                  //vered: (01-16-04)replaced *binMaxes[k - 1] + intrval* with *((Double)bounds.get(k)).doubleValue()*
+                    binMaxes[j] = /*binMaxes[k - 1] + intrval*/ ((Double)bounds.get(j)).doubleValue();
+
 		  //System.out.println("binMax j " + binMaxes[j] + " " + j);
 		  // now create the BinDescriptor and add it to the bin list
 		  //ANCA nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j]);
@@ -1401,7 +1429,7 @@ public class BinAttributes extends HeadlessUIModule {
 		double[] data =  new double[tbl.getNumRows()-missing];
 		int k=0;
 		for (int j = 0; j < data.length; j++) {
-		
+
 		 if (missing > 0) {
 		 		 	if(!tbl.isValueMissing(j,colIdx[i])) {
 		 		 		data[k++] = tbl.getDouble(j,colIdx[i]);
@@ -1446,16 +1474,16 @@ public class BinAttributes extends HeadlessUIModule {
 		//System.out.println("BEFORE");
 		double[] binMaxes = new double[list.size()];
 		for (int j = 0; j < binMaxes.length; j++) {
-		
+
 		  binMaxes[j] = ((Double)list.get(j)).doubleValue();
 		  //System.out.println("binmaxes for j = " + j + " is " +  binMaxes[j]);
 		}
-		
+
 		if (binMaxes.length < 2) {
 			 BinDescriptor nbd = BinDescriptorFactory.createMinMaxBinDescriptor(colIdx[i],tbl);
 				addItemToBinList(nbd);
 	 } else { // binMaxes has more than one element
-				  
+
 		// add the first bin manually
 		//ANCA BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],binMaxes[0]);
 		BinDescriptor nbd = BinDescriptorFactory.createMinNumericBinDescriptor(colIdx[i],binMaxes[0],nf,tbl);
@@ -1799,12 +1827,18 @@ class TableBinCounts implements BinCounts {
  *           the nominal column which was binned in previous run. [bug 174]
  *
  *           bug 178 - with interval binning, creates one bin too many. that happens
- *           when the interval values devided (max-min) into an integer...
+ *           when the interval values devided (max-min) into an integer... (fixed)
  *
  *           bug 179 - array index out of bounds exception with weight binning.
  *
  * 01-08-04: vered.
   * user may create bins with identical names in same attribute - bug 207.
+
+
+   * 01-16-04: vered.
+   * changed the way bin maxes are computed in the addFromInterval method. now it is Math methods independant.
+   * all code lines that were changed or added are preceeded by a comment line "//vered"
+   * and description of change.
 
  *
 */

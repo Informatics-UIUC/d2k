@@ -1394,20 +1394,47 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             for (int i = 0; i < fieldNames.length; i++) {
               for (int j = 0; j < colIdx.length; j++) {
                 if (i == colIdx[j]) {
+
+                  //vered: (01-16-04) added this code to create the desired number of bins.
+                  //not too few and not too many.
+
+                     double up;
+                     int idx;
+                     Vector bounds = new Vector();
+                     for(idx=0,up=mins[i]; up<maxes[i]; idx++, up+=intrval){
+                       bounds.add(idx, new Double(up));
+                     }
+
+                     //now bounds holds the upper bounds for all bins except the last one.
+                  //end of vered's code.
+
+
+                  //vered: (01-16-04) commented out this line, to create exactly the desired number of bins
                   // the number of bins is (max - min) / (bin width)
-                  int num = (int)Math.round((maxes[i] - mins[i])/intrval);
+                  //int num = (int)Math.round((maxes[i] - mins[i])/intrval);
+
 				  //System.out.println("column " + i + " max " + maxes[i] + " min " + mins[i] + " num " + num  + "original " +( maxes[i]-mins[i])/intrval);
+
+//vered: (01-16-04)replaced *num* with *bounds.size()*
                   //Anca replaced num-1 with num to fix bug  175
-                  double[] binMaxes = new double[num];
+                  double[] binMaxes = new double[/*num*/bounds.size()];
+
+
+//vered: (01-16-04)replaced *mins[i]* with *((Double)bounds.get(0)).doubleValue()*
                  //Anca replaced: binMaxes[0] = mins[i] + intrval;
                  //System.out.println("interval " + intrval + " i " + i + " num " + num);
                  //System.out.println("binMaxes[0]  " + binMaxes[0] + " mins[i]" + mins[i]);
-                  binMaxes[0] = mins[i];
+                  binMaxes[0] = /*mins[i]*/ ((Double)bounds.get(0)).doubleValue();
+
+
                   // add the first bin manually
                   BinDescriptor nbd = createMinNumericBinDescriptor(i, binMaxes[0]);
                   addItemToBinList(nbd);
                   for (int k = 1; k < binMaxes.length; k++) {
-                    binMaxes[k] = binMaxes[k - 1] + intrval;
+
+                   //vered: (01-16-04)replaced *binMaxes[k - 1] + intrval* with *((Double)bounds.get(k)).doubleValue()*
+                    binMaxes[k] = /*binMaxes[k - 1] + intrval*/ ((Double)bounds.get(k)).doubleValue();
+
 					//System.out.println("binMax j " + binMaxes[k] + " " + k);
                     // now create the BinDescriptor and add it to the bin list
                     nbd = createNumericBinDescriptor(i, binMaxes[k - 1], binMaxes[k]);
@@ -1845,4 +1872,9 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
  * 01-11-04: vered.
  * creates one bin too many with weight binning, and this last bin is expendable,
  * non of the items are being binned into it [bug 215]. (fixed)
+ *
+ * 01-16-04: vered.
+ * changed the way bin maxes are computed in the addFromInterval method. now it is Math methods independant.
+ * all code lines that were changed or added are preceeded by a comment line "//vered"
+ * and description of change.
  */

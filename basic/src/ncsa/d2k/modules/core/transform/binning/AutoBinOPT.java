@@ -299,7 +299,7 @@ public class AutoBinOPT extends DataPrepModule {
                     for (int ri = 0, ci = inputs[i] ; ri < numRows ; ri++) {
                         if (tbl.isValueMissing(ri, ci))
                             missing++;
-                    }        
+                    }
                 }
 				double[] vals =  new double[tbl.getNumRows()-missing];
 
@@ -417,7 +417,7 @@ public class AutoBinOPT extends DataPrepModule {
 							tbl);
 					bins.add(bd);
 				}
-			
+
 
 			}
 		}
