@@ -95,7 +95,7 @@ public class Input1FileName extends InputModule {
     public void setFileName(String s) throws PropertyVetoException {
      /**
       ** Remove checks as too annoying... would like to add them back if
-      ** module info eventually available w/o triggering this so just 
+      ** module info eventually available w/o triggering this so just
       ** commenting out this section for now.
       **
 
@@ -160,8 +160,15 @@ public class Input1FileName extends InputModule {
                     JFileChooser chooser = new JFileChooser();
 
                     String d = getFileName();
-                    if(d != null)
-                        chooser.setSelectedFile(new File(d));
+                    if(d == null)
+                      d = jtf.getText();
+                    if(d != null) {
+                      File thefile = new File(d);
+                      if(thefile.isDirectory())
+                        chooser.setCurrentDirectory(thefile);
+                      else
+                        chooser.setSelectedFile(thefile);
+                    }
 
                     // set the title of the FileDialog
                     StringBuffer sb = new StringBuffer("Select File");

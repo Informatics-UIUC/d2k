@@ -219,8 +219,15 @@ public class Input2FileNames extends InputModule {
                     JFileChooser chooser = new JFileChooser();
 
                     String d = getFileName0();
-                    if(d != null)
-                        chooser.setSelectedFile(new File(d));
+                    if(d == null)
+                      d = fn0.getText();
+                    if(d != null) {
+                      File thefile = new File(d);
+                      if(thefile.isDirectory())
+                        chooser.setCurrentDirectory(thefile);
+                      else
+                        chooser.setSelectedFile(thefile);
+                    }
 
                     // set the title of the FileDialog
                     StringBuffer sb = new StringBuffer("Select File 1");
@@ -248,8 +255,15 @@ public class Input2FileNames extends InputModule {
                     JFileChooser chooser = new JFileChooser();
 
                     String d = getFileName1();
-                    if(d != null)
-                        chooser.setSelectedFile(new File(d));
+                    if(d == null)
+                      d = fn1.getText();
+                    if(d != null) {
+                      File thefile = new File(d);
+                      if(thefile.isDirectory())
+                        chooser.setCurrentDirectory(thefile);
+                      else
+                        chooser.setSelectedFile(thefile);
+                    }
 
                     // set the title of the FileDialog
                     StringBuffer sb = new StringBuffer("Select File 2");
