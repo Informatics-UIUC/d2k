@@ -1,7 +1,5 @@
 package ncsa.d2k.modules.core.io.sql;
 
-import ncsa.d2k.modules.core.datatype.table.db.sql.*;
-import ncsa.d2k.modules.core.io.sql.*;
 import java.sql.*;
 import java.util.*;
 /**
