@@ -178,17 +178,26 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
     throw new Exception();
   }
 
+  public int getSubspaceParameterStartIndex(int subspaceIndex) throws Exception {
+
+    if (subspaceIndex < 0 || subspaceIndex >= numSubspaces) {
+      System.out.println("Error!  subspaceIndex (" + subspaceIndex + ") invalid.  ");
+      throw new Exception();
+    }
+
+    int startIndex = 0;
+    for (int i = 0; i < subspaceIndex; i++) {
+      startIndex += subspaceNumParameters[i];
+    }
+    return startIndex;
+  }
+
   public int getNumSubspaces() {
     return numSubspaces;
   }
 
-  public int [] getSubspaceNumParameters() {
-    return subspaceNumParameters;
-  }
-
-  public ParameterSpace getSubspace(int subspaceIndex) {
-    //!!!
-    return null;
+  public int getSubspaceNumParameters(int subspaceIndex) {
+    return subspaceNumParameters[subspaceIndex];
   }
 
   public void setMinValue(int parameterIndex, double value) {
@@ -211,16 +220,18 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
     this.setInt(value, typeRowIndex, parameterIndex);
   }
 
-  public ParameterSpace joinSubspaces(ParameterSpace firstSpace, ParameterSpace secondSpace) {
-    //!!!
-    return null;
-  }
+  public ParameterSpace [] segmentSpace(ParameterSpace space, int splitIndex) {
 
-  public ParameterSpace [] segmentSpace(ParameterSpace point, int splitIndex) {
-
-    int numParameters = point.getNumParameters();
+    int numParameters = space.getNumParameters();
     int [] headCols = new int[splitIndex];
     int [] tailCols = new int[numParameters - splitIndex];
+
+    for (int i = 0; i < splitIndex; i++) {
+      headCols[i] = i;
+    }
+    for (int i = 0; i < numParameters - splitIndex; i++) {
+      headCols[i] = splitIndex + i;
+    }
 
 
     ParameterSpace headSpace = (ParameterSpace) getSubsetByColumnsReference(headCols);
@@ -232,6 +243,70 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
     spaces[1] = tailSpace;
 
     return spaces;
+  }
+
+  public ParameterSpace getSubspace(int subspaceIndex) throws Exception {
+
+    int numParameters = this.subspaceNumParameters[subspaceIndex];
+
+    int [] cols = new int[numParameters];
+    int offset = this.getSubspaceParameterStartIndex(subspaceIndex);
+    for (int i = 0; i < numParameters; i++) {
+      cols[i] = i + offset;
+    }
+
+    ParameterSpace space = (ParameterSpace) getSubsetByColumnsReference(cols);
+
+    return space;
+  }
+
+
+  public ParameterSpace joinSubspaces(ParameterSpace space1, ParameterSpace space2) {
+
+    int space1NumSubspaces = space1.getNumSubspaces();
+    int space2NumSubspaces = space2.getNumSubspaces();
+    int newSpaceNumSubspaces = space1NumSubspaces + space2NumSubspaces;
+    int [] newSubspaceNumParameters = new int[newSpaceNumSubspaces];
+    int index = 0;
+    for (int i = 0; i < space1NumSubspaces; i++) {
+      newSubspaceNumParameters[index++] = space1.getSubspaceNumParameters(i);
+    }
+    for (int i = 0; i < space2NumSubspaces; i++) {
+      newSubspaceNumParameters[index++] = space2.getSubspaceNumParameters(i);
+    }
+
+    int space1NumParameters = space1.getNumParameters();
+    int space2NumParameters = space2.getNumParameters();
+    int newNumParameters = space1NumParameters + space2NumParameters;
+
+    ParameterSpace space = new ParameterSpaceImpl();
+
+    String [] names         = new String[newNumParameters];
+    double [] minValues     = new double[newNumParameters];
+    double [] maxValues     = new double[newNumParameters];
+    double [] defaultValues = new double[newNumParameters];
+    int    [] resolutions   = new int   [newNumParameters];
+    int    [] types         = new int   [newNumParameters];
+
+    for (int i = 0; i < space1NumParameters; i++) {
+      names        [i] = space1.getName        (i);
+      minValues    [i] = space1.getMinValue    (i);
+      maxValues    [i] = space1.getMaxValue    (i);
+      defaultValues[i] = space1.getDefaultValue(i);
+      resolutions  [i] = space1.getResolution  (i);
+      types        [i] = space1.getType        (i);
+    }
+
+    for (int i = 0; i < space2NumParameters; i++) {
+      names        [space1NumParameters + i] = space2.getName        (i);
+      minValues    [space1NumParameters + i] = space2.getMinValue    (i);
+      maxValues    [space1NumParameters + i] = space2.getMaxValue    (i);
+      defaultValues[space1NumParameters + i] = space2.getDefaultValue(i);
+      resolutions  [space1NumParameters + i] = space2.getResolution  (i);
+      types        [space1NumParameters + i] = space2.getType        (i);
+    }
+
+    return createFromData(names, minValues, maxValues, defaultValues, resolutions, types);
   }
 
 }

@@ -136,10 +136,10 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
   public int getNumSubspaces();
 
   /**
-   * Get the number of parameters in each subspace.
-   * @return a int array of values the number of parameters defining each subspace.
+   * Get the number of parameters in a subspace.
+   * @return the number of parameters the subspace.
    */
-  public int [] getSubspaceNumParameters();
+  public int getSubspaceNumParameters(int subspaceIndex);
 
   /**
    * Get the subspace index of a parameter.

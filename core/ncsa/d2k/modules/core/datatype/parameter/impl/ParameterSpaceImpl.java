@@ -260,8 +260,8 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	 * Get the number of parameters in each subspace.
 	 * @return a int array of values the number of parameters defining each subspace.
 	 */
-	public int [] getSubspaceNumParameters() {
-		return this.parameterCount;
+	public int getSubspaceNumParameters(int subspaceIndex) {
+		return this.parameterCount[subspaceIndex];
 	}
 
 	/**
