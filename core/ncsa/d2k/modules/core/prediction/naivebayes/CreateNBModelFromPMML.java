@@ -11,6 +11,16 @@ import org.dom4j.io.*;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Create a NaiveBayesModel from a PMML file.  The file must conform to the PMML
+ * 2.0 DTD.
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2002</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
 public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMMLTags {
 
     public String[] getInputTypes() {
@@ -19,7 +29,11 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
     }
 
     public String getInputInfo(int i) {
-        return "";
+      return "Absolute path to the PMML file containing a NaiveBayesModel.";
+    }
+
+    public String getInputName(int i) {
+      return "File Name";
     }
 
     public String[] getOutputTypes() {
@@ -27,16 +41,40 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
         return out;
     }
 
+    public String getOutputName(int i) {
+      return "Naive Bayes Model";
+    }
+
     public String getOutputInfo(int i) {
-        return "";
+      return "A NaiveBayesModel generated from the contents of the PMML file.";
     }
 
     public String getModuleInfo() {
-        return "";
+      String s = "<p>Overview: Create a NaiveBayesModel from a PMML file."+
+          "<p>Detailed Description: Parse an XML file containing a PMML "+
+          "description of a naive bayes predictive model.  A NaiveBayesModel "+
+          "is generated from the contents of this file.  The PMML description "+
+          "must adhere to the PMML 2.0 DTD."+
+          "<p>Data Type Restrictions: The PMML file must conform to the PMML 2.0 "+
+          "DTD.  The predictive field must be categorical.  Active fields may "+
+          "be continuous or categorical.  Active continuous fields must be "+
+          "properly discretized, complying with the PMML 2.0 DTD."+
+          "<p>Data Handling: This module will not modify the input data."+
+          "<p>Scalability: This module will create a structure to hold the "+
+          "sums of features and outputs.  This structure is very compact.";
+      return s;
+    }
+
+    public String getModuleName() {
+      return "Create NaiveBayesModel from a PMML file";
     }
 
     public void doit() throws Exception {
         String fileName = (String)pullInput(0);
+
+        if(!(new File(fileName).exists())) {
+          throw new Exception(getAlias()+": "+fileName+" did not exist.");
+        }
 
         // read in the file
         FileInputStream fis = new FileInputStream(fileName);
@@ -46,17 +84,30 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
 
         // get the root element
         Element pmml = document.getRootElement();
+        if(!pmml.getName().equals(PMML)) {
+          throw new Exception(getAlias()+": Not a valid PMML document.");
+        }
 
         // get the data dictionary
         Element dictionary = pmml.element(DATA_DICT);
+
+        if(dictionary == null)
+          throw new Exception(getAlias()+": DataDictionary not found.");
+
         // get the naive bayes model element
         Element model = pmml.element(NBM);
+
+        if(model == null)
+          throw new Exception(getAlias()+": NaiveBayesModel not found.");
+
         String modelName = model.attributeValue(MODEL_NAME);
         String functionName = model.attributeValue(FUNCTION_NAME);
         String threshold = model.attributeValue(THRESHOLD);
 
         // get the mining schema
         Element miningSchema = model.element(MINING_SCHEMA);
+        if(miningSchema == null)
+          throw new Exception(getAlias()+": MiningSchema not found.");
 
         List ins = new LinkedList();
         List outs = new LinkedList();
@@ -67,7 +118,7 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
         for(int i = 0; i < miningFields.size(); i++) {
             Element miningFld = (Element)miningFields.get(i);
             Attribute usage = miningFld.attribute(USAGE_TYPE);
-            if(usage == null || usage.getValue().equals("active"))
+            if(usage == null || usage.getValue().equals(ACTIVE))
                 ins.add(miningFld.attributeValue(NAME));
             else if(usage.getValue().equals(PREDICTED))
                 outs.add(miningFld.attributeValue(NAME));
@@ -94,7 +145,7 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
             if(name.equals(outputs[0])) {
                 String optype = dataField.attributeValue(OPTYPE);
                 if(!optype.equals(CATEGORICAL))
-                    throw new Exception("Not a categorical output");
+                    throw new Exception(getAlias()+": Output was not categorical.");
                 List uniques = dataField.elements(VALUE_ELEMENT);
                 uniqueOutputs = new String[uniques.size()];
                 for(int j = 0; j < uniques.size(); j++) {
@@ -109,7 +160,7 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
                 else if(optype.equals(CONTINUOUS))
                     continuousInputs.add(name);
                 else
-                    throw new Exception("Unknown type input!");
+                    throw new Exception(getAlias()+": Input "+name+" was neither continous nor categorical.");
             }
         }
 
@@ -125,7 +176,6 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
 
         // for each input
         for(int i = 0; i < inputsList.size(); i++) {
-
             // get the input
             Element input = (Element)inputsList.get(i);
             String name = input.attributeValue(FIELD_NAME);
@@ -222,8 +272,7 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
             }
         }
 
-        // define the bins
-
+        // get the output element
         Element outputElement = model.element(BAYES_OUTPUT);
 
         // for each output get the class total
@@ -240,6 +289,8 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
         binTree.setTotalClassified(totalClassified);
 
         // now make the ExampleTable.
+        // this will be a table with zero rows.  It is given to the constructor
+        // of NaiveBayesModel.
         int[] inFeat = new int[inputs.length];
         int[] outFeat = new int[outputs.length];
 

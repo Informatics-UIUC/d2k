@@ -26,4 +26,5 @@ public interface NaiveBayesPMMLTags extends PMMLTags {
   public static final String OPEN_CLOSED = "openClosed";
   public static final String OPEN_OPEN = "openOpen";
   public static final String BAYES_OUTPUT = "BayesOutput";
+  public static final String NO_FIELDS = "numberOfFields";
 }

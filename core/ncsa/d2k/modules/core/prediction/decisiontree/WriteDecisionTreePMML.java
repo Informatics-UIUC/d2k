@@ -60,7 +60,14 @@ public class WriteDecisionTreePMML
   }
 
   public String getModuleInfo() {
-    return "write out the pmml.";
+    String s = "<p>Overview: Write a DecisionTreeModel out as a PMML file."+
+        "<p>Detailed Description: Write a DecisionTreeModel out in PMML format "+
+        "complying with the PMML 2.0 DTD."+
+        "<p>Data Type Restrictions: A DecisionTreeModel must be the input to this module."+
+        "<p>Data Handling: The module does not destroy or modify the input data."+
+        "<p>Scalability: The module creates a DOM for the DecisionTreeModel and "+
+        "queries the model for several statistics.";
+    return s;
   }
 
   public void doit() throws Exception {

@@ -17,12 +17,30 @@ public class WriteNaiveBayesPMML
   public String[] getInputTypes() {
     String[] in = {
         "ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel",
-        "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+        "java.lang.String"};
     return in;
   }
 
   public String getInputInfo(int i) {
-    return "";
+    switch (i) {
+      case (0):
+        return "The NaiveBayesModel to write out.";
+      case (1):
+        return "The absolute path for the file to write the XML file to.";
+      default:
+        return "No such input";
+    }
+  }
+
+  public String getInputName(int i) {
+    switch(i) {
+      case(0):
+        return "Naive Bayes Model";
+      case(1):
+        return "File Name";
+      default:
+        return "Unknown";
+    }
   }
 
   public String[] getOutputTypes() {
@@ -34,31 +52,48 @@ public class WriteNaiveBayesPMML
   }
 
   public String getModuleInfo() {
-    return "";
+    String s = "<p>Overview: Write a NaiveBayesModel out as a PMML file."+
+        "<p>Detailed Description: Write a NaiveBayesModel out in PMML format "+
+        "complying with the PMML 2.0 DTD."+
+        "<p>Data Type Restrictions: A NaiveBayesModel must be the input to this module."+
+        "<p>Data Handling: The module does not destroy or modify the input data."+
+        "<p>Scalability: The module creates a DOM for the NaiveBayesModel and "+
+        "queries the model for several statistics.";
+    return s;
   }
 
-  private static final String NO_FIELDS = "numberOfFields";
+  public String getModuleName() {
+    return "Write NaiveBayesModel as PMML";
+  }
 
   public void doit() throws Exception {
     NaiveBayesModel nbm = (NaiveBayesModel) pullInput(0);
-    ExampleTable et = (ExampleTable) pullInput(1);
+//    ExampleTable et = (ExampleTable) pullInput(1);
+    String filename = (String) pullInput(2);
+
+    writePMML(nbm, filename);
+  }
+
+  public static void writePMML(NaiveBayesModel nbm, String filename) throws Exception {
+    // get the bin tree
+    BinTree binTree = nbm.getBinTree();
 
     Document document = DocumentHelper.createDocument();
-    document.addDocType("PMML", "pmml20.dtd", "pmml20.dtd");
+    document.addDocType(PMML, "pmml20.dtd", "pmml20.dtd");
 
-    Element pmml = document.addElement("PMML");
+    Element pmml = document.addElement(PMML);
     pmml.addAttribute("version", "2.0");
 
     Element header = pmml.addElement("Header");
     header.addAttribute("copyright", "NCSA ALG");
-    header.addAttribute("description", "a naive bayes model");
+    header.addAttribute("description", "A naive bayes model");
 
     String[] inputNames = nbm.getInputColumnLabels();
     int[] inputTypes = nbm.getInputFeatureTypes();
     String[] outNames = nbm.getOutputColumnLabels();
     int[] outTypes = nbm.getOutputFeatureTypes();
 
-    HashMap inputToIndexMap = new HashMap();
+/*    HashMap inputToIndexMap = new HashMap();
     for (int i = 0; i < inputNames.length; i++) {
       for (int j = 0; j < et.getNumColumns(); j++) {
         if (et.getColumnLabel(j).equals(inputNames[i])) {
@@ -76,7 +111,7 @@ public class WriteNaiveBayesPMML
           break;
         }
       }
-    }
+    }*/
 
     // do the data dictionary
     Element dictionary = pmml.addElement(DATA_DICT);
@@ -90,13 +125,15 @@ public class WriteNaiveBayesPMML
       field.addAttribute(NAME, inputNames[i]);
 
       // if it is Scalar, mark the input as continuous
-      Integer idx = (Integer) inputToIndexMap.get(inputNames[i]);
+      /*Integer idx = (Integer) inputToIndexMap.get(inputNames[i]);
       if (idx == null) {
-        throw new Exception("Could not find input column: " + inputNames[i]);
-      }
+        throw new Exception(getAlias() + ": Could not find input column: " +
+                            inputNames[i]);
+      }*/
 
-      if (et.isColumnScalar(idx.intValue())) {
-        field.addAttribute(OPTYPE, "continuous");
+      //if (et.isColumnScalar(idx.intValue())) {
+      if (nbm.getScalarInputs()[i]) {
+        field.addAttribute(OPTYPE, CONTINUOUS);
       }
 
       // otherwise it is categorical.  mark it as such and list
@@ -106,7 +143,11 @@ public class WriteNaiveBayesPMML
         // now get the unique values
         // !!!!!
         // String[] vals = nbm.getUniqueInputValues(i);
-        String[] vals = TableUtilities.uniqueValues(et, idx.intValue());
+
+        // this is also the names of the bins for this input..
+        String[] vals = binTree.getBinNames(inputNames[i]);
+
+        //String[] vals = TableUtilities.uniqueValues(et, idx.intValue());
         for (int j = 0; j < vals.length; j++) {
           Element e = catAtt.addElement(VALUE_ELEMENT);
           e.addAttribute(VALUE, vals[j]);
@@ -119,18 +160,16 @@ public class WriteNaiveBayesPMML
       Element field = dictionary.addElement(DATA_FIELD);
       field.addAttribute(NAME, outNames[i]);
 
-      // if it is scalar, mark the output as continous
-      //if(outTypes[i].equals("Scalar"))
-      //    field.addAttribute("optype", "continuous");
-
       // if it is Scalar, mark the input as continuous
-      Integer idx = (Integer) outputToIndexMap.get(outNames[i]);
+/*      Integer idx = (Integer) outputToIndexMap.get(outNames[i]);
       if (idx == null) {
-        throw new Exception("Could not find output column: " + outNames[i]);
-      }
+        throw new Exception(getAlias() + ": Could not find output column: " +
+                            outNames[i]);
+      }*/
 
-      if (et.isColumnScalar(idx.intValue())) {
-        field.addAttribute(OPTYPE, "continuous");
+      //if (et.isColumnScalar(idx.intValue())) {
+      if (nbm.getScalarOutputs()[i]) {
+        field.addAttribute(OPTYPE, CONTINUOUS);
       }
 
       // otherwise it is categorical.  mark it as such and list
@@ -139,7 +178,8 @@ public class WriteNaiveBayesPMML
         Element catAtt = field.addAttribute(OPTYPE, CATEGORICAL);
         // now get the unique values
 //                String[] vals = dtm.getUniqueOutputValues();
-        String[] vals = TableUtilities.uniqueValues(et, idx.intValue());
+        String[] vals = binTree.getClassNames();
+//        String[] vals = TableUtilities.uniqueValues(et, idx.intValue());
         for (int j = 0; j < vals.length; j++) {
           Element e = catAtt.addElement(VALUE_ELEMENT);
           e.addAttribute(VALUE, vals[j]);
@@ -148,26 +188,24 @@ public class WriteNaiveBayesPMML
     }
     // finished with the dictionary.
 
-    Element modelElement = pmml.addElement("NaiveBayesModel");
-    modelElement.addAttribute("modelName", "foo");
+    Element modelElement = pmml.addElement(NBM);
+    modelElement.addAttribute("modelName", nbm.getName());
     modelElement.addAttribute("functionName", "classification");
     modelElement.addAttribute("threshold", "0.001");
 
     // add the mining schema
-    Element schema = modelElement.addElement("MiningSchema");
+    Element schema = modelElement.addElement(MINING_SCHEMA);
     for (int i = 0; i < inputNames.length; i++) {
-      Element field = schema.addElement("MiningField");
-      field.addAttribute("name", inputNames[i]);
+      Element field = schema.addElement(MINING_FIELD);
+      field.addAttribute(NAME, inputNames[i]);
     }
 
     for (int i = 0; i < outNames.length; i++) {
-      Element field = schema.addElement("MiningField");
-      field.addAttribute("name", outNames[i]);
-      field.addAttribute(USAGE_TYPE, "predicted");
+      Element field = schema.addElement(MINING_FIELD);
+      field.addAttribute(NAME, outNames[i]);
+      field.addAttribute(USAGE_TYPE, PREDICTED);
     }
 
-    // get the bin tree
-    BinTree binTree = nbm.getBinTree();
 
     Element bayesInputs = modelElement.addElement(BAYES_INPUTS);
     String[] outputs = nbm.getClassNames();
@@ -180,9 +218,10 @@ public class WriteNaiveBayesPMML
 
       // now add a PairCounts for each bin...
 
-      Integer idx = (Integer) inputToIndexMap.get(inputNames[i]);
+//      Integer idx = (Integer) inputToIndexMap.get(inputNames[i]);
       // if it is nominal....
-      if (!et.isColumnScalar(idx.intValue())) {
+      //if (!et.isColumnScalar(idx.intValue())) {
+      if (!nbm.getScalarInputs()[i]) {
         String[] binNames = binTree.getBinNames(inputName);
 
         // for each bin, create a pair counts
@@ -203,16 +242,16 @@ public class WriteNaiveBayesPMML
       else {
         String[] binNames = binTree.getBinNames(inputName);
 
-        Element derivedField = bayesInput.addElement("DerivedField");
-        Element discretize = derivedField.addElement("Discretize");
+        Element derivedField = bayesInput.addElement(DERIVED_FIELD);
+        Element discretize = derivedField.addElement(DISCRETIZE);
         discretize.addAttribute("field", inputName);
 
         // for each bin
         for (int j = 0; j < binNames.length; j++) {
-          Element bin = discretize.addElement("DiscretizeBin");
+          Element bin = discretize.addElement(DISCRETIZE_BIN);
           bin.addAttribute("binValue", binNames[j]);
 
-          Element interval = bin.addElement("Interval");
+          Element interval = bin.addElement(INTERVAL);
 
           boolean includeLower = binTree.includeLowerBound(
               outputs[0], inputName, binNames[j]);
@@ -220,16 +259,16 @@ public class WriteNaiveBayesPMML
               outputs[0], inputName, binNames[j]);
 
           if (includeLower && includeUpper) {
-            interval.addAttribute("closure", "openOpen");
+            interval.addAttribute(CLOSURE, OPEN_OPEN);
           }
           else if (includeLower && !includeUpper) {
-            interval.addAttribute("closure", "openClosed");
+            interval.addAttribute(CLOSURE, OPEN_CLOSED);
           }
           else if (!includeLower && includeUpper) {
-            interval.addAttribute("closure", "closedOpen");
+            interval.addAttribute(CLOSURE, CLOSED_OPEN);
           }
           else if (!includeLower && !includeUpper) {
-            interval.addAttribute("closure", "closedClosed");
+            interval.addAttribute(CLOSURE, CLOSED_CLOSED);
 
           }
           double lowerBound = binTree.getLowerBound(outputs[0],
@@ -237,8 +276,8 @@ public class WriteNaiveBayesPMML
           double upperBound = binTree.getUpperBound(outputs[0],
               inputName, binNames[j]);
 
-          interval.addAttribute("leftMargin", Double.toString(lowerBound));
-          interval.addAttribute("rightMargin", Double.toString(upperBound));
+          interval.addAttribute(LEFT_MARGIN, Double.toString(lowerBound));
+          interval.addAttribute(RIGHT_MARGIN, Double.toString(upperBound));
         }
 
         // for each bin, create a pair counts
@@ -263,20 +302,14 @@ public class WriteNaiveBayesPMML
     for (int i = 0; i < outputs.length; i++) {
       Element tvc = targetValueCounts.addElement(TARGET_VALUE_COUNT);
       int tally = binTree.getClassTotal(outputs[i]);
-      tvc.addAttribute("value", outputs[i]);
-      tvc.addAttribute("count", Integer.toString(tally));
+      tvc.addAttribute(VALUE, outputs[i]);
+      tvc.addAttribute(COUNT, Integer.toString(tally));
     }
 
-    try {
-      XMLWriter writer = new XMLWriter(new FileWriter("/home/clutter/testnb.pmml"),
-                                       OutputFormat.createPrettyPrint());
-      writer.write(document);
-      writer.flush();
-      writer.close();
-
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
+    XMLWriter writer = new XMLWriter(new FileWriter(filename),
+                                     OutputFormat.createPrettyPrint());
+    writer.write(document);
+    writer.flush();
+    writer.close();
   }
 }

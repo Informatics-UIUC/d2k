@@ -17,4 +17,5 @@ public interface PMMLTags {
   public static final String CONTINUOUS = "continuous";
   public static final String VALUE_ELEMENT = "Value";
   public static final String VALUE = "value";
+  public static final String ACTIVE = "active";
 }

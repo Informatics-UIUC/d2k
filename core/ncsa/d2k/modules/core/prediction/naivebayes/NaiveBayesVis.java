@@ -190,6 +190,7 @@ public final class NaiveBayesVis
     private transient AttributeMenuItem[] attributeItems;
     private transient JCheckBoxMenuItem miPercentage;
     private transient JMenuItem helpItem;
+    private transient JMenuItem saveAsPmml;
 
     private transient JToggleButton zoom;
     private transient JButton printButton;
@@ -566,6 +567,8 @@ public final class NaiveBayesVis
       m1.addSeparator();
       m1.add(miPrint = new JMenuItem("Print.."));
       miPrint.addActionListener(this);
+      m1.add(saveAsPmml = new JMenuItem("Save as PMML..."));
+      saveAsPmml.addActionListener(this);
 
       JMenu helpMenu = new JMenu("Help");
       helpItem = new JMenuItem("About NaiveBayesVis..");
@@ -854,6 +857,24 @@ public final class NaiveBayesVis
 
 
       }
+      else if(src == saveAsPmml) {
+        JFileChooser jfc = new JFileChooser();
+
+        int returnVal = jfc.showSaveDialog(null);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+          try {
+            // get the selected file
+            File newFile = jfc.getSelectedFile();
+
+            WriteNaiveBayesPMML.writePMML(model, newFile.getAbsolutePath());
+          }
+          catch(Exception ex) {
+              ncsa.gui.ErrorDialog.showDialog(ex, "Error Writing PMML");
+          }
+        }
+      }
+
+
     }
 
     private final Color getColor(String s) {

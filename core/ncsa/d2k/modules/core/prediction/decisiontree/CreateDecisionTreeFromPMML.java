@@ -255,15 +255,26 @@ public class CreateDecisionTreeFromPMML extends InputModule implements DecisionT
   }
 
   public String getModuleInfo() {
-    return "";
+    String s = "<p>Overview: Create a DecisionTreeModel from a PMML file."+
+        "<p>Detailed Description: Parse an XML file containing a PMML "+
+        "description of a decision tree predictive model.  A NaiveBayesModel "+
+        "is generated from the contents of this file.  The PMML description "+
+        "must adhere to the PMML 2.0 DTD."+
+        "<p>Data Type Restrictions: The PMML file must conform to the PMML 2.0 "+
+        "DTD.  The predictive field must be categorical.  Active fields may "+
+        "be continuous or categorical."+
+        "<p>Data Handling: This module will not modify the input data."+
+        "<p>Scalability: This module will create a structure to hold the "+
+        "decision tree.";
+    return s;
   }
 
   public String getInputInfo(int index) {
-    return "";
+      return "Absolute path to the PMML file containing a DecisionTreeModel.";
   }
 
   public String getOutputInfo(int index) {
-    return "";
+    return "A DecisionTreeModel generated from the contents of the PMML file.";
   }
 
   public String[] getInputTypes() {
@@ -278,10 +289,10 @@ public class CreateDecisionTreeFromPMML extends InputModule implements DecisionT
   }
 
   public String getInputName(int index) {
-    return "";
+    return "File Name";
   }
 
   public String getOutputName(int index) {
-    return "";
+    return "Decision Tree Model";
   }
 }
