@@ -616,4 +616,8 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
  * 3-4-03 Vered started qa process.
  *        changed module info.
  * 3-6-03 added to module info a note about missing vlaue handling
+ *
+ * 11-04-03 Vered started QA process
+ *          properties editor allows insertion of nominal values for property -
+ *          Number of attributes to user for sorting. [bug 116]
  */
