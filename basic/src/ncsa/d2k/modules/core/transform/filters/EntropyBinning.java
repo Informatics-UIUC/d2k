@@ -261,10 +261,10 @@ public class EntropyBinning extends DataPrepModule {
       if ((mt.isColumnScalar(j))) {
        //System.out.println("calculating cut points for column "  + j);
 	// Use copy to preserve order
-	if (copy == null) {
-	  copy =(ExampleTable) mt.copy();
-	}
-	calculateCutPointsByMDL(i, j, copy, numClasses);
+      	if (copy == null) {
+      		copy =(ExampleTable) mt.copy();
+		}
+		calculateCutPointsByMDL(i, j, copy, numClasses);
       }
     }
   }
@@ -423,7 +423,7 @@ public class EntropyBinning extends DataPrepModule {
 
 
   /** Selects cutpoints for sorted subset. */
-  private double[] cutPointsForSubset(ExampleTable instances, int attIndex,
+  private double[] cutPointsForSubset(ExampleTable table, int attIndex,
 				      int first, int lastPlusOne, int numClasses) {
 
   	
@@ -439,14 +439,13 @@ public class EntropyBinning extends DataPrepModule {
     }
 
     //System.out.println("cutPointsForSubset: index " + attIndex);
+    
+    //determine class counts
     counts = new double[2][numClasses];
-    int classIndex = instances.getOutputFeatures()[0];
+    int classIndex = table.getOutputFeatures()[0];
     for (int i = first; i < lastPlusOne; i++) {
-    //BEFORE    numInstances += instances.instance(i).weight();
-     // counts[1][(int)instances.instance(i).classValue()] +=
-    //	instances.instance(i).weight();
       numInstances += 1;
-      counts[1][(int)instances.getInt(i,classIndex)] += 1;
+      counts[1][(int)table.getInt(i,classIndex)] += 1;
     }
 
     // Save prior counts
@@ -460,30 +459,26 @@ public class EntropyBinning extends DataPrepModule {
     // Find best entropy.
     bestCounts = new double[2][numClasses];
     for (int i = first; i < (lastPlusOne - 1); i++) {
-      //BEFORE counts[0][(int)instances.instance(i).classValue()] +=
-	//instances.instance(i).weight();
-      //counts[1][(int)instances.instance(i).classValue()] -=
-	//instances.instance(i).weight();
-
-        counts[0][(int)instances.getInt(i,classIndex)] += 1;
-        counts[1][(int)instances.getInt(i,classIndex)] -= 1;
-      if (instances.getDouble(i,attIndex)<
-		   instances.getDouble(i+1,attIndex)) {
-     // 	System.out.println("i attIndex " + i + " " + attIndex);
-      //	System.out.println("instances " + instances.getDouble(i, attIndex) + " " + instances.getDouble(i+1,attIndex));
-      	currentCutPoint = (instances.getDouble(i,attIndex) + instances.getDouble(i+1,attIndex))/2.0;
-	
-	currentEntropy = ContingencyTables.entropyConditionedOnRows(counts);
-	
-	if (currentEntropy < bestEntropy) {
-	  bestCutPoint = currentCutPoint;
-	  bestEntropy = currentEntropy;
-	  bestIndex = i;
-	
-	  System.arraycopy(counts[0], 0,  bestCounts[0], 0, numClasses);
-	  System.arraycopy(counts[1], 0,  bestCounts[1], 0, numClasses);
-	}
-	numCutPoints++;
+    	
+    	counts[0][(int)table.getInt(i,classIndex)] += 1;
+    	counts[1][(int)table.getInt(i,classIndex)] -= 1;
+    	if (table.getDouble(i,attIndex)<
+    			table.getDouble(i+1,attIndex)) {
+    		// 	System.out.println("i attIndex " + i + " " + attIndex);
+    		//	System.out.println("instances " + instances.getDouble(i, attIndex) + " " + instances.getDouble(i+1,attIndex));
+    		currentCutPoint = (table.getDouble(i,attIndex) + table.getDouble(i+1,attIndex))/2.0;
+    		
+    		currentEntropy = ContingencyTables.entropyConditionedOnRows(counts);
+    		
+    		if (currentEntropy < bestEntropy) {
+    			bestCutPoint = currentCutPoint;
+    			bestEntropy = currentEntropy;
+    			bestIndex = i;
+    			
+    			System.arraycopy(counts[0], 0,  bestCounts[0], 0, numClasses);
+    			System.arraycopy(counts[1], 0,  bestCounts[1], 0, numClasses);
+    		}
+    		numCutPoints++;
       }
     }
     
@@ -509,8 +504,8 @@ public class EntropyBinning extends DataPrepModule {
 					       numInstances, numCutPoints))) {
 
       // Select split points for the left and right subsets
-      left = cutPointsForSubset(instances, attIndex, first, bestIndex + 1,numClasses);
-      right = cutPointsForSubset(instances, attIndex,
+      left = cutPointsForSubset(table, attIndex, first, bestIndex + 1,numClasses);
+      right = cutPointsForSubset(table, attIndex,
 				 bestIndex + 1, lastPlusOne, numClasses);
 /*      System.out.println("CutPointsForSubset: attIndex " + attIndex +" left " + left + " right " + right);
       if ( left != null ) {
