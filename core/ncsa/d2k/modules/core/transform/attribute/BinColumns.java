@@ -684,7 +684,7 @@ public class BinColumns extends UIModule {
                         bins[i] = (BinDescriptor)tmp[i];
                     BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
                     pushOutput(bt, 0);
-                    pushOutput(tbl, 1);
+                     // pushOutput(tbl, 1);
                     viewDone("Done");
                 }
             });
