@@ -369,10 +369,24 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
 
     // Reorder columns
     public void reorder() {
-      for(int i = 0; i < sortorder.length; i++) {
-        table.swapColumns(sortorder[i], i);
-      }
+
+       int[] indirection = new int[table.getNumColumns()];
+
+       for (int i = 0; i < indirection.length; i++)
+          indirection[i] = i;
+
+       for(int i = 0; i < sortorder.length; i++) {
+
+          table.swapColumns(i, indirection[sortorder[i]]);
+
+          int tmp = indirection[i];
+          indirection[i] = indirection[sortorder[i]];
+          indirection[sortorder[i]] = tmp;
+
+       }
+
     }
+
   }
 
   public void initialize(int[] array) {
