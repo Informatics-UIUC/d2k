@@ -113,6 +113,13 @@ public class ChooseAttributes extends UIModule  {
     }
   }
 
+
+    public PropertyDescription[] getPropertiesDescriptions() { 
+	return new PropertyDescription[0]; // so that "windowName" property 
+	// is invisible 
+    }
+
+
   /**
    Return the UserView
    @returns the UserView
@@ -422,3 +429,5 @@ public class ChooseAttributes extends UIModule  {
     }
   }
 }
+
+//QA Comments Anca - added getPropertyDescription

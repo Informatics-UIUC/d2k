@@ -23,11 +23,11 @@ public class ChooseAttributeTypes extends UIModule {
    */
   public String getModuleInfo() {
     String info = "<p>Overview: ";
-    info += "This module allows the user to choose which columns of a table are scalar or nominal.";
+    info += "This module allows the user to choose which columns/attributes of a table are scalar or nominal.";
     info += "</p><p>Detailed Description: ";
-    info += "This module outputs a Table with the field types assigned. ";
+    info += "This module outputs a Table with the attributes assigned to be either scalar or nominal. The user has the power to mark a numeric (e.g double) attribute as nominal and a string type attribute as scalar. Extreme care must be exercised when making these assignments, because the learning algorithms use these assignments.  ";
     info += "</p><p>Data Handling: ";
-    info += "This module does not modify the data in the table. It only changes the field types.";
+    info += "This module does not modify the data in the table, but it does assign attributes to be either scalar or nominal.";
     return info;
   }
 
@@ -36,7 +36,7 @@ public class ChooseAttributeTypes extends UIModule {
    @return The name of this module.
    */
   public String getModuleName() {
-    return "Choose Field Types";
+    return "Choose Attribute Types";
   }
 
   /**
@@ -106,6 +106,13 @@ public class ChooseAttributeTypes extends UIModule {
     else
       return "No such output";
   }
+
+
+    public PropertyDescription[] getPropertiesDescriptions() { 
+        return new PropertyDescription[0]; // so that "windowName" property 
+        // is invisible 
+    }
+
 
   /**
    Return the UserView
@@ -450,3 +457,6 @@ public class ChooseAttributeTypes extends UIModule {
     }
   }
 }
+
+//QA Comments Anca - added getPropertyDescription
+// modified module info
