@@ -56,7 +56,8 @@ public class FilterBoxPlot extends HeadlessUIModule {
     sb.append("This module does not modify its input data directly. ");
     sb.append("Rather, its output is a <i>Transformation</i> that can ");
     sb.append("later be applied to filter the data.");
-    sb.append("Missing Values Handling: This module treats missing values as regular ones.");
+    sb.append("Missing Values Handling: Missing values are ignored as far as the display " +
+              "of statistics, but are being treated as regular ones when actually filtering.");
 
     sb.append("</p>");
     return sb.toString();
@@ -437,4 +438,9 @@ public class FilterBoxPlot extends HeadlessUIModule {
  * 01-01-04:
  * Vered started qa process.
  * added to module into documentation about missing values handling (As regular ones).
+ *
+ * 01-04-04:
+ * bug 195 - what to do about missing values. awaiting decision regarding this one.
+ * right now missing values are not participating in the statistics but do get
+ * to be filtered as regular ones. added this to module info.
 */

@@ -773,3 +773,16 @@ public class TableEditor extends TableViewer {
 //         - Ready for Basic
 // End QA comments.
 // End QA comments.
+
+
+/**
+ * basic 4 QA comments
+ * 01-04-04:
+ * Vered started qa process
+ *
+ * bug 196 -  preservation of double values when converting from double
+ * to byte[] type and then back to double. all values are being zeroed.
+ *
+ * Bug 197 - cannot convert from String type to a numeric type when a column
+ * holds missing values. same problem is with converting char[] to a numeric type.
+*/

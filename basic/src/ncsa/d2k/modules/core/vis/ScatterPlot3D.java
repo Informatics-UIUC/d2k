@@ -45,7 +45,7 @@ public class ScatterPlot3D extends VisModule {
       StringBuffer sb = new StringBuffer();
       sb.append("<p>Overview: ");
       sb.append("ScatterPlot3D is a three-dimensional visualization of ");
-      sb.append("<i>Table</i> data as a scatter plot. This visualization ");
+      sb.append("<i>Table</i> scalar data as a scatter plot. This visualization ");
       sb.append("can be rotated and manipulated via the mouse and keyboard; ");
       sb.append("see the visualization's on-line help for details.");
       sb.append("</p><p>Scalability: ");
@@ -55,6 +55,7 @@ public class ScatterPlot3D extends VisModule {
       sb.append("plot points as cubes rather than spheres in the ");
       sb.append("\"Settings\" tab that appears when the visualization is ");
       sb.append("enabled.");
+       sb.append("</P>Missing Values Handling: This module treats missing values as regular ones. ");
       sb.append("</p>");
       return sb.toString();
    }
@@ -1386,3 +1387,12 @@ public class ScatterPlot3D extends VisModule {
    }
 
 } // /ScatterPlot3D
+
+
+ /**
+ * QA comments
+ * 01-04-04:
+ * Vered started qa process.
+ * added missing values handling doc to module info.
+ *
+*/
