@@ -86,7 +86,7 @@ public class CatchModel extends ModelSelectorModule  {
 		if (mm.getAlias() == null)
 			mm.setAlias(this.getAlias());
 		//LAM-tlr
-		System.out.println("CatchModel is executing: "+mm.getAlias());
+
 		theModel = mm;
 	}
 
