@@ -51,14 +51,25 @@ public class ParseFileToADTree extends InputModule {
 
     public String getModuleInfo() {
         StringBuffer sb = new StringBuffer("<p>Overview: ");
-        sb.append("Reads a file into an ADTree index structure ");
+        sb.append("Reads a file and stores attribute occurence counts into an ADTree index structure ");
         sb.append("<p>Detailed Description: ");
-        sb.append("Given a FlatFileParser, reads the data and stores all counts ");
-        sb.append("into an ADTree. ");
-        sb.append("An ExampleTable that contains the meta data for the ADTree ");
+        sb.append("Given a parser, reads the data, counting how many times each attribute value occurs.");
+        sb.append("All these counts are stored into an ADTree structure. See B. Anderson and A. Moore ");
+				sb.append("in \"ADTrees for fast counting and for fast learning of association rules\".");
+				sb.append("The purpose of the tree is to answer questions like \" how many instances with x, y and z");
+				sb.append(" are in the dataset?\" in constant time. It cannot answer these questions for continuous data ");
+				sb.append("An ExampleTable that contains the column types and labels of the input data ");
         sb.append("is also created.");
+   			sb.append("<p> Data Issues: Designed to work with nominal data, cannot handle real data.");
+				sb.append( "In practice the tree is not useful for real data.");
+				sb.append("<p> Scalability: The ADTree is in fact an index structure for a datacube.");
+				sb.append("If there are a lot of attributes and they have many values the structure");
+			  sb.append("will easily run out of memory. Optimizations have been made so that only the");
+  			sb.append("first branch of the tree is stored in memory and the rest are built as needed when ");
+			  sb.append("the counts are retrived");
         return sb.toString();
     }
+
 
     public String getModuleName() {
         return "Create an ADTree";
@@ -72,22 +83,24 @@ public class ParseFileToADTree extends InputModule {
         Column[] cols = new Column[ffr.getNumColumns()];
         for(int i = 0; i < cols.length; i++) {
             int typ = ffr.getColumnType(i);
-
             // create the column
             if(typ == ColumnTypes.STRING)
                 cols[i] = new StringColumn(numRows);
             else if(typ == ColumnTypes.DOUBLE)
                 //cols[i] = new DoubleColumn(numRows);
-                          throw new Exception ( "Cannot build ADTree for continuous data in column " + i);
+							  throw new Exception ( "ADTrees cannot be built for numeric data. Discretize col" + i);
             else if(typ == ColumnTypes.FLOAT)
                 //cols[i] = new FloatColumn(numRows);
-			throw new Exception ( "Cannot build ADTree for continuous data in column " + i);
+				  			throw new Exception ( "ADTrees cannot be built for numeric data. Discretize col " + i);
             else if(typ == ColumnTypes.INTEGER)
-                cols[i] = new IntColumn(numRows);
-            else if(typ == ColumnTypes.SHORT)
-                cols[i] = new ShortColumn(numRows);
+                //cols[i] = new IntColumn(numRows);
+          			throw new Exception ( "ADTrees cannot be built for numeric data. Discretize col " + i);
+					  else if(typ == ColumnTypes.SHORT)
+                //cols[i] = new ShortColumn(numRows);
+          			throw new Exception ( "ADTrees cannot be built for numeric data. Discretize col " + i);
             else if(typ == ColumnTypes.LONG)
-                cols[i] = new LongColumn(numRows);
+                //cols[i] = new LongColumn(numRows);
+          			throw new Exception ( "ADTrees cannot be built for numeric data. Discretize col " + i);
             else if(typ == ColumnTypes.CHAR_ARRAY)
                 cols[i] = new CharArrayColumn(numRows);
             else if(typ == ColumnTypes.BYTE_ARRAY)
