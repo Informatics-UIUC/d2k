@@ -171,14 +171,6 @@ public class SQLDefineBins extends DefineBins {
 			int [] ins = table.getInputFeatures();
 			int [] outs = table.getOutputFeatures();
 
-			// determine whether the inputs are numeric or text
-			/*for(int i = 0; i < ins.length; i++) {
-				String label = table.getColumnLabel(ins[i]);
-				if(table.getColumn(ins[i]) instanceof NumericColumn)
-					numericAn.add(label);
-				else
-					textAn.add(label);
-			}*/
 
 			// determine whether the inputs are numeric or text
 			for(int i = 0; i < ins.length; i++) {
@@ -189,19 +181,6 @@ public class SQLDefineBins extends DefineBins {
 				else
 					textAn.add(label);
 			}
-
-			//classColumn = table.getColumn(outs[0]);
-
-			// get all unique outputs from the output column
-			/*	if(classColumn != null) {
-				for(int i = 0; i < classColumn.getNumRows(); i++) {
-					Object ob = classColumn.getRow(i);
-					String s = ob.toString();
-					if(!cn.containsKey(s))
-						cn.put(s, s);
-				}
-			}
-			*/
 
 			Statement stmt = null;
 			try {
