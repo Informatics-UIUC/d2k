@@ -27,7 +27,7 @@ TriggerPush.java		save
 ./datatype:
 ADTree.java			done
 AsciiHashMap.java		removed 4/5
-CloneBinTransform.java		?
+CloneBinTransform.java		save
 ExpressionException.java	move
 Expression.java			move
 ExpressionListener.java		move
@@ -311,6 +311,14 @@ TableCluster.java				submitted
 TableColumnTypeException.java			submitted
 TableMissingValuesException.java		submitted
 
+.discovery/cluster/vis/dendogram
+BaseGraph.java            to be submitted
+DendogramPanel.java	  to be submitted
+DendogramClusterVis.java  to be submitted
+GraphSettings.java	  to be submitted
+RectWrapper.java	  to be submitted
+RectGraph.java		  to be submitted
+
 ./discovery/cvs:
 <Empty>
 
@@ -373,7 +381,7 @@ InputSerializedObject.java	done
 ParsedLine.java			move
 ParseFileToADTree.java		done
 ParseFileToPagingTable.java	done
-ParseFileToSparseExamples.java	?
+ParseFileToSparseExamples.java	save
 ParseFileToSparseTable.java	waiting
 ParseFileToTable.java		done
 ReadDelimited2ADT.java		removed 
@@ -439,7 +447,7 @@ MetaTableModel.java		done
 MySQLDBConnection.java		maybe later release
 OracleDBConnection.java		done
 OracleURLInput.java		replaced by OracleDBConnection; will be removed
-QueryCondition.java		replaced by SQLFilterConstruction; will be removed
+QueryCondition.java	        move
 ReadQueryResults.java		done
 ResultSetTableModel.java	done (support for SaveFileToDB)
 SaveFileToDB.java		done
@@ -663,11 +671,11 @@ NFoldPTCollector.java				removed 4/5
 PercentErrorClassification.java			save
 RootMeanSquared.java				save
 
-./prediction/instancebased:			?
-CreateInstanceBasedParameterPoint.java		submitted
-CreateInstanceBasedParameterSpace.java		submitted
-InstanceBasedBiasSpaceGenerator.java		?
-InstanceBasedInducer.java			?
+./prediction/instancebased:			
+CreateInstanceBasedParameterPoint.java		save
+CreateInstanceBasedParameterSpace.java		save
+InstanceBasedParamSpaceGenerator.java		move
+InstanceBasedInducer.java			submitted
 InstanceBasedInducerOpt.java			submitted
 InstanceBasedModel.javaA			submitted
 
@@ -690,10 +698,10 @@ MarkovReport.java
 MeanModelGenerator.java
 
 ./prediction/mean/continuous:
-CreateMeanOutputParameterPoint.java		submitted
-CreateMeanOutputParameterSpace.java		submitted
-MeanOutputBiasSpaceGenerator.java		removed
-MeanOutputInducer.java				removed
+CreateMeanOutputParameterPoint.java		save
+CreateMeanOutputParameterSpace.java		save
+MeanOutputParamSpaceGenerator.java		submitted
+MeanOutputInducer.java				submitted
 MeanOutputInducerOpt.java			submitted
 MeanOutputModel.java				submitted
 
@@ -727,10 +735,10 @@ RegressionModelGenerator.java
 RegressionModel.java
 
 ./prediction/regression/continuous:
-CreateStepwiseLinearParameterPoint.java		submitted
-CreateStepwiseLinearParameterSpace.java		submitted
-StepwiseLinearBiasSpaceGenerator.java		removed
-StepwiseLinearInducer.java			removed
+CreateStepwiseLinearParameterPoint.java		save
+CreateStepwiseLinearParameterSpace.java		save
+StepwiseLinearParamSpaceGenerator.java		submitted
+StepwiseLinearInducer.java			submitted
 StepwiseLinearInducerOpt.java			submitted
 StepwiseLinearModel.java			submitted
 
@@ -760,6 +768,7 @@ SelectAttributeOrdered.java	save, Greg, Time Series Vis
 VTColumnSelect.java		save, Greg, Time Series Vis
 VTReference.java		save, Greg, Time Series Vis
 VTReferenceModule.java		save, Greg, Time Series Vis
+SQLCodeBook.java		???
 
 ./transform/binning:
 ADTAutoBin.java			submitted
@@ -779,7 +788,7 @@ SQLAutoBin.java			done
 SQLBinColumns.java		done
 SQLCreateBinTree.java		submitted
 TextualBinDescriptor.java	done
-ValidateBinCounts.java		submitted
+ValidateBinCounts.java		save - for testing purposes only
 
 ./transform/sort:
 QuickSort.java			submitted
