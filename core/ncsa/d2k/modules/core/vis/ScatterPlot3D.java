@@ -32,13 +32,24 @@ public class ScatterPlot3D extends VisModule {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+   public String getModuleName() {
+      return "3D Scatter Plot";
+   }
+
    /**
     * Returns a description of this module.
     *
     * @return                the description
     */
    public String getModuleInfo() {
-      return "ScatterPlot3D is a three-dimensional visualization of Table data as a scatter plot.";
+      StringBuffer sb = new StringBuffer();
+      sb.append("<p>Overview: ");
+      sb.append("ScatterPlot3D is a three-dimensional visualization of ");
+      sb.append("<i>Table</i> data as a scatter plot. This visualization ");
+      sb.append("can be rotated and manipulated via the mouse and keyboard; ");
+      sb.append("see the visualization's on-line help for details.");
+      sb.append("</p>");
+      return sb.toString();
    }
 
    /**
@@ -52,6 +63,12 @@ public class ScatterPlot3D extends VisModule {
       return i;
    }
 
+   public String getInputName(int index) {
+      if (index == 0)
+         return "Table";
+      return null;
+   }
+
    /**
     * Returns a description of the input corresponding to the given index.
     *
@@ -59,8 +76,8 @@ public class ScatterPlot3D extends VisModule {
     * @return                a description of this input
     */
    public String getInputInfo(int index) {
-      if (index == 0) return "The Table to be visualized.";
-      else return "ScatterPlot3D has no such input.";
+      if (index == 0) return "The <i>Table</i> with data to be visualized.";
+      else return "NO SUCH INPUT.";
    }
 
    /**
@@ -71,6 +88,10 @@ public class ScatterPlot3D extends VisModule {
     */
    public String[] getOutputTypes() { return null; }
 
+   public String getOutputName(int index) {
+      return null;
+   }
+
    /**
     * Returns a description of the output corresponding to the given index.
     *
@@ -78,7 +99,7 @@ public class ScatterPlot3D extends VisModule {
     * @return                a description of this output
     */
    public String getOutputInfo(int index) {
-      return "ScatterPlot3D has no outputs.";
+      return "NO SUCH OUTPUT.";
    }
 
    /**
@@ -95,6 +116,12 @@ public class ScatterPlot3D extends VisModule {
     */
    protected UserView createUserView() {
       return new ScatterPlot3DView();
+   }
+
+////////////////////////////////////////////////////////////////////////////////
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+      return new PropertyDescription[0];
    }
 
 ////////////////////////////////////////////////////////////////////////////////

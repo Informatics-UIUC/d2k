@@ -1,96 +1,75 @@
 package ncsa.d2k.modules.core.vis;
 
-
 import java.io.*;
-import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
- * 	A two-dimensional scatter plot.  Displays any two columns of numeric data.
-*/
-public class ScatterPlot2D extends ncsa.d2k.core.modules.VisModule
-     {
+ * This module creates a two-dimensional scatter plot of <i>Table</i> data,
+ * plotting any numeric column against itself or any other numeric column.
+ */
+public class ScatterPlot2D extends VisModule {
 
-	/**
-		This pair returns the description of the various inputs.
-		@return the description of the indexed input.
-	*/
-	public String getInputInfo(int index) {
-		switch (index) {
-			case 0: return "A Table to visualize.";
-			default: return "No such input";
-		}
-	}
+////////////////////////////////////////////////////////////////////////////////
+// Module methods                                                             //
+////////////////////////////////////////////////////////////////////////////////
 
-    public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "Table";
-			default: return "NO SUCH INPUT!";
-		}
-	}
+   protected UserView createUserView() {
+      return new ScatterPlotUserPane();
+   }
 
-	/**
-		This pair returns an array of strings that contains the data types for the inputs.
-		@return the data types of all inputs.
-	*/
-	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
-		return types;
-	}
+   public String[] getFieldNameMapping() {
+      return null;
+   }
 
-	/**
-		This pair returns the description of the outputs.
-		@return the description of the indexed output.
-	*/
-	public String getOutputInfo(int index) {
-		switch (index) {
-			default: return "No such output";
-		}
-	}
+   public String getInputInfo(int index) {
+      if (index == 0)
+         return "A <i>Table</i> with data to be visualized.";
+      return "NO SUCH INPUT";
+   }
 
-    public String getOutputName(int index) {
-		switch(index) {
-			default: return "NO SUCH OUTPUT!";
-		}
-	}
+   public String getInputName(int index) {
+      if (index == 0)
+         return "Table";
+      return "NO SUCH INPUT";
+   }
 
-	/**
-		This pair returns an array of strings that contains the data types for the outputs.
-		@return the data types of all outputs.
-	*/
-	public String[] getOutputTypes() {
-		String[] types = {		};
-		return types;
-	}
+   public String[] getInputTypes() {
+      return new String[] {
+         "ncsa.d2k.modules.core.datatype.table.Table"
+      };
+   }
 
-	/**
-		This pair returns the description of the module.
-		@return the description of the module.
-	*/
-	public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    Visualizes the NumericColumns of a Table in a 2D scatter plot.  </body></html>";
-	}
+   public String getModuleInfo() {
+      StringBuffer sb = new StringBuffer("<p>Overview: ");
+      sb.append("This module creates a two-dimensional scatter plot of ");
+      sb.append("<i>Table</i> data, plotting any numeric column against ");
+      sb.append("itself or any other numeric column.");
+      return sb.toString();
+   }
 
-    public String getModuleName() {
-		return "ScatterPlot2D";
-	}
+   public String getModuleName() {
+      return "2D Scatter Plot";
+   }
 
-	/**
-		This pair is called by D2K to get the UserView for this module.
-		@return the UserView.
-	*/
-	protected UserView createUserView() {
-		return new ScatterPlotUserPane();
-	}
+   public String getOutputInfo(int index) {
+      return "NO SUCH OUTPUT";
+   }
 
-	/**
-		This pair returns an array with the names of each DSComponent in the UserView
-		that has a value.  These DSComponents are then used as the outputs of this module.
-	*/
-	public String[] getFieldNameMapping() {
-		return null;
+   public String getOutputName(int index) {
+      return "NO SUCH OUTPUT";
+   }
 
-	}
+   public String[] getOutputTypes() {
+      return null;
+   }
+
+////////////////////////////////////////////////////////////////////////////////
+// properties                                                                 //
+////////////////////////////////////////////////////////////////////////////////
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+      return new PropertyDescription[0];
+   }
+
 }

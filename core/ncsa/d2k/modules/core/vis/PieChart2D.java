@@ -1,159 +1,142 @@
 package ncsa.d2k.modules.core.vis;
 
-
 import java.awt.*;
 import java.io.*;
-import ncsa.d2k.core.modules.*;
+import javax.swing.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.userviews.swing.*;
 
 /**
-	Creates a PieChart visualization.  The data is kept in a Table.
-	The first column must be a labels column, and the second column must contain
-	the ratios.
-*/
-public class PieChart2D extends VisModule
-{
+ * This module creates a pie chart visualization for <i>Table</i> data.
+ * <p>
+ * One column (by default, column 0) must contain the labels of the
+ * components of the chart, and another column (by default, column 1) must
+ * contain their corresponding ratios.
+ */
+public class PieChart2D extends VisModule {
 
-	/**
-		This pair returns the description of the various inputs.
-		@return the description of the indexed input.
-	*/
-	public String getInputInfo(int index) {
-		switch (index) {
-			case 0: return "A Table that holds the data to show.";
-			default: return "No such input";
-		}
-	}
+////////////////////////////////////////////////////////////////////////////////
+// Module methods                                                             //
+////////////////////////////////////////////////////////////////////////////////
 
-	/**
-		This pair returns an array of strings that contains the data types for the inputs.
-		@return the data types of all inputs.
-	*/
-	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
-		return types;
-	}
+   public String[] getFieldNameMapping() {
+      return null;
+   }
 
-	/**
-		This pair returns the description of the outputs.
-		@return the description of the indexed output.
-	*/
-	public String getOutputInfo(int index) {
-		switch (index) {
-			default: return "No such output";
-		}
-	}
+   public String getInputInfo(int index) {
+      if (index == 0)
+         return "A <i>Table</i> containing the data to be visualized.";
+      return "NO SUCH INPUT";
+   }
 
-	/**
-		This pair returns an array of strings that contains the data types for the outputs.
-		@return the data types of all outputs.
-	*/
-	public String[] getOutputTypes() {
-		String[] types = {		};
-		return types;
-	}
+   public String getInputName(int index) {
+      if (index == 0)
+         return "Table";
+      return "NO SUCH INPUT";
+   }
 
-	/**
-		This pair returns the description of the module.
-		@return the description of the module.
-	*/
-	public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    Creates a PieChart visualization. The data is kept in a Table. The first     column must be a labels column, and the second column must contain the     ratios.  </body></html>";
-	}
+   public String[] getInputTypes() {
+      return new String[] {"ncsa.d2k.modules.core.datatype.table.Table"};
+   }
 
-	/**
-		PUT YOUR CODE HERE.
-	*/
-	public void doit() throws Exception {
-	}
+   public String getModuleInfo() {
+      StringBuffer sb = new StringBuffer("<p>Overview: ");
+      sb.append("This module creates a pie chart visualization from ");
+      sb.append("<i>Table</i> data. One column (by default, column 0) ");
+      sb.append("must contain the labels of components of the chart, and ");
+      sb.append("another column (by default, column 1) must contain their ");
+      sb.append("corresponding ratios.");
+      sb.append("</p><p>Data Type Restrictions: ");
+      sb.append("Negative ratio values (which make no sense for a pie chart) ");
+      sb.append("will lead to inconsistent results.");
+      sb.append("</p>");
+      return sb.toString();
+   }
 
+   public String getModuleName() {
+      return "2D Pie Chart";
+   }
 
-	/**
-		This pair is called by D2K to get the UserView for this module.
-		@return the UserView.
-	*/
-	protected UserView createUserView() {
-		return new PieChartUserPane();
-	}
+   public String getOutputInfo(int index) {
+      return "NO SUCH OUTPUT";
+   }
 
-	/**
-		This pair returns an array with the names of each DSComponent in the UserView
-		that has a value.  These DSComponents are then used as the outputs of this module.
-	*/
-	public String[] getFieldNameMapping() {
-		return null;
-	}
+   public String getOutputName(int index) {
+      return "NO SUCH OUTPUT";
+   }
+
+   public String[] getOutputTypes() {
+      return null;
+   }
+
+   protected UserView createUserView() {
+      return new PieChartUserPane();
+   }
+
+////////////////////////////////////////////////////////////////////////////////
+// properties                                                                 //
+////////////////////////////////////////////////////////////////////////////////
+
+   private int _labelsColumn = 0;
+   public int getLabelsColumn() { return _labelsColumn; }
+   public void setLabelsColumn(int value) { _labelsColumn = value; }
+
+   private int _ratiosColumn = 1;
+   public int getRatiosColumn() { return _ratiosColumn; }
+   public void setRatiosColumn(int value) { _ratiosColumn = value; }
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      PropertyDescription[] pds = new PropertyDescription[2];
+
+      pds[0] = new PropertyDescription("labelsColumn", "Labels column",
+         "Specifies which column of the table contains the data labels.");
+
+      pds[1] = new PropertyDescription("ratiosColumn", "Ratios column",
+         "Specifies which column of the table contains the data ratios.");
+
+      return pds;
+
+   }
+
+////////////////////////////////////////////////////////////////////////////////
+// user pane                                                                  //
+////////////////////////////////////////////////////////////////////////////////
+
+   private class PieChartUserPane extends JUserPane {
+
+      private Dimension preferredSize = new Dimension(300, 300);
+      private Table table;
+
+      public void initView(ViewModule mod) { }
+
+      public void setInput(Object obj, int ind) {
+         table = (Table)obj;
+         buildView();
+      }
+
+      public void buildView() {
+
+         DataSet set = new DataSet("dataset", Color.gray,
+            _labelsColumn, _ratiosColumn);
+
+         GraphSettings settings = new GraphSettings();
+         String xaxis = table.getColumnLabel(_labelsColumn);
+         String yaxis = table.getColumnLabel(_ratiosColumn);
+         settings.title = xaxis + " and " + yaxis;
+         settings.xaxis = xaxis;
+         settings.yaxis = yaxis;
+
+         add(new JScrollPane(new PieChart(table, set, settings, true)));
+
+      }
+
+      public Dimension getPreferredSize() {
+         return preferredSize;
+      }
+
+   }
 
 }
-
-
-/**
-	PieChartUserPane
-*/
-class PieChartUserPane extends ncsa.d2k.userviews.swing.JUserPane {
-	PieChart2D module;
-
-	Table table;
-
-	public void initView(ViewModule viewmodule) {
-		module = (PieChart2D) viewmodule;
-	}
-
-	public void setInput(Object object, int index) {
-		table = (Table) object;
-
-		buildView();
-	}
-
-	public void buildView() {
-		DataSet set = new DataSet("dataset", Color.gray, 0, 1);
-
-		GraphSettings settings = new GraphSettings();
-		String xaxis = table.getColumnLabel(0);
-		String yaxis = table.getColumnLabel(1);
-		settings.title = xaxis + " and " + yaxis;
-		settings.xaxis = xaxis;
-		settings.yaxis = yaxis;
-
-		add(new PieChart(table, set, settings, true));
-	}
-
-	public Dimension getPreferredSize() {
-		return new Dimension(300, 300);
-	}
-
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "PieChart2D";
-	}
-
-	/**
-	 * Return the human readable name of the indexed input.
-	 * @param index the index of the input.
-	 * @return the human readable name of the indexed input.
-	 */
-	public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "input0";
-			default: return "NO SUCH INPUT!";
-		}
-	}
-
-	/**
-	 * Return the human readable name of the indexed output.
-	 * @param index the index of the output.
-	 * @return the human readable name of the indexed output.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			default: return "NO SUCH OUTPUT!";
-		}
-	}
-}
-
