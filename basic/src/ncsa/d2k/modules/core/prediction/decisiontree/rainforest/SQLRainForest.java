@@ -344,7 +344,7 @@ public class SQLRainForest extends SQLRainForestOPT {
       JOptionPane.showMessageDialog(msgBoard,
                 "No data", "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in doit, no data.");
+      System.out.println("Error occurred in doit, no data.");
     }
   }
 
@@ -371,7 +371,7 @@ public class SQLRainForest extends SQLRainForestOPT {
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in getClassValues.");
+      System.out.println("Error occurred in getClassValues.");
       return null;
     }
   }
@@ -499,7 +499,7 @@ public class SQLRainForest extends SQLRainForestOPT {
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in extractDataFromDB.");
+      System.out.println("Error occurred in extractDataFromDB.");
       return null;
     }
   };
@@ -1573,7 +1573,7 @@ public class SQLRainForest extends SQLRainForestOPT {
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in createDataTable.");
+      System.out.println("Error occurred in createDataTable.");
       return null;
     }
   }
@@ -1774,7 +1774,7 @@ public class SQLRainForest extends SQLRainForestOPT {
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in getUniqValue (db mode).");
+      System.out.println("Error occurred in getUniqValue (db mode).");
       return null;
     }
   }
