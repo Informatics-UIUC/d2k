@@ -521,8 +521,10 @@ public class DefineBins extends UIModule implements HasNames {
 				autoStringBin();
 			else if(src == remove)
 				removeBin();
-			else if(src == done)
+			else if(src == done) {
 				parent.finish(binTree, table/*, types*/);
+				table = null;
+			}
 			else if(src == abort)
 				parent.viewCancel();
 		}

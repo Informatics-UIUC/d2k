@@ -193,7 +193,11 @@ public class ChooseFields extends UIModule implements HasNames {
 			}
 
 			inputList=new JList(labels);
+			if(vt instanceof ExampleTable)
+				inputList.setSelectedIndices(((ExampleTable)vt).getInputFeatures());
 			outputList=new JList(labels);
+			if(vt instanceof ExampleTable)
+				outputList.setSelectedIndices(((ExampleTable)vt).getOutputFeatures());
 			JScrollPane leftScrollPane=new JScrollPane(inputList);
 			JScrollPane rightScrollPane=new JScrollPane(outputList);
 
@@ -235,6 +239,7 @@ public class ChooseFields extends UIModule implements HasNames {
 				if(checkChoices()) {
 					setFieldsInTable();
 					module.finish(et);
+					et = null;
 					this.removeAll();
 				}
 			}
@@ -244,7 +249,7 @@ public class ChooseFields extends UIModule implements HasNames {
 			et=new ExampleTable(vt);
 			et.setInputFeatures(inputList.getSelectedIndices());
 			et.setOutputFeatures(outputList.getSelectedIndices());
-
+			vt = null;
 		}
 
 		/**
