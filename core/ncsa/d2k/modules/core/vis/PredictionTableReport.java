@@ -23,7 +23,6 @@ public class PredictionTableReport extends VisModule  {
        @return A description of this module.
     */
     public String getModuleInfo() {
-//		return "<html>  <head>      </head>  <body>    Display some statistics about a PredictionTable, including the number of     correct predictions and a confusion matrix.  </body></html>";
       StringBuffer sb = new StringBuffer("<p>Overview: Provides a visualization");
       sb.append(" to evaluate the performance of a predictive model.");
       sb.append("<p>Detailed Description: Given a PredictionTable with both ");
@@ -62,7 +61,7 @@ public class PredictionTableReport extends VisModule  {
        @return The name of this module.
     */
     public String getModuleName() {
-		return "PredictionTableReport";
+		return "Prediction Table Report";
 	}
 
     /**
