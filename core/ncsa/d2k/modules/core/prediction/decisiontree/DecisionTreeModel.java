@@ -118,7 +118,7 @@ public class DecisionTreeModel extends PredictionModelModule
     }
 
 	public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return in;
 	}
 
