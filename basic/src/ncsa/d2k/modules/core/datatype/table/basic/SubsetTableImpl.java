@@ -1,7 +1,5 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
-import java.lang.reflect.Array;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
