@@ -4,21 +4,18 @@ import ncsa.d2k.modules.TransformationModule;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-public class ContinuousExampleSet implements ExampleTable, java.io.Serializable {
+public class ContinuousExampleSet implements ExampleTable, TestTable, java.io.Serializable {
 
-  int numExamples;
-  int numFeatures;
+  int       numExamples;
+  int       numFeatures;
   String [] names;
   int       numInputs;
   int       numOutputs;
-  //String [] inputNames;
-  //String [] outputNames;
   int    [] inputIndices;
   int    [] outputIndices;
   int    [] exampleIndices;
   int    [] testingSet;
-
-  double data[];
+  double [] data;
 
   public ContinuousExampleSet () {
   }
@@ -37,9 +34,6 @@ public class ContinuousExampleSet implements ExampleTable, java.io.Serializable 
     }
     this.numInputs   = numInputs;
     this.numOutputs  = numOutputs;
-
-    //this.inputNames   = inputNames;
-    //this.outputNames  = outputNames;
 
     this.inputIndices = new int[numInputs];
     for (int i = 0; i < numInputs; i++) {
@@ -103,14 +97,28 @@ public ContinuousExampleSet (double [][][] data, String [] inputNames, String []
     copy.names              = (String []) this.names.clone();
     copy.numInputs          = this.numInputs;
     copy.numOutputs         = this.numOutputs;
-    //copy.inputNames         = (String []) this.inputNames.clone();
-    //copy.outputNames        = (String []) this.outputNames.clone();
     copy.inputIndices       = (int    []) this.inputIndices.clone();
     copy.outputIndices      = (int    []) this.outputIndices.clone();
     copy.exampleIndices     = (int    []) this.exampleIndices.clone();
     if (testingSet != null)
       copy.testingSet       = (int    []) this.testingSet.clone();
     copy.data               = (double []) this.data.clone();
+    return (Table) copy;
+  }
+
+  public Table copyByReference() {
+    ContinuousExampleSet copy   = new ContinuousExampleSet();
+
+    copy.numExamples        = this.numExamples;
+    copy.numFeatures        = this.numFeatures;
+    copy.names              = this.names;
+    copy.numInputs          = this.numInputs;
+    copy.numOutputs         = this.numOutputs;
+    copy.inputIndices       = this.inputIndices;
+    copy.outputIndices      = this.outputIndices;
+    copy.exampleIndices     = this.exampleIndices;
+    copy.testingSet         = this.testingSet;
+    copy.data               = this.data;
     return (Table) copy;
   }
 
@@ -534,7 +542,20 @@ public ContinuousExampleSet (double [][][] data, String [] inputNames, String []
     return null;
   }
   public Table getSubsetByReference(int rows[]){
-    return null;
+
+    ContinuousExampleSet table = (ContinuousExampleSet) this.copyByReference();
+
+    int numExamples = rows.length;
+    int [] newExampleIndices = new int[numExamples];
+
+    // set up new example indices
+    for (int i = 0; i < numExamples; i++) {
+      newExampleIndices[i] = this.exampleIndices[rows[i]];
+    }
+    table.numExamples    = numExamples;
+    table.exampleIndices = newExampleIndices;
+
+    return table;
   }
 
   public TableFactory getTableFactory() {
