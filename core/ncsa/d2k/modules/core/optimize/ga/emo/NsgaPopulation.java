@@ -30,7 +30,7 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 	int numObjectives;
 
 	/** the combined population of parents and progeny. */
-	NsgaSolution [] combinedPopulation = null;
+	protected NsgaSolution [] combinedPopulation = null;
 
 	/** the Pareto fronts. */
 	public ParetoFront fronts;
@@ -139,6 +139,39 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 		this.minFitnessMembers = new int [numObjectives];
 		this.numObjectives = numObjectives;
 	}
+
+	/********
+	*	A constructor that only initializes the objectiveConstraints info.
+	*   To be used by a subclass that needs to use its own class of
+	*   Individuals
+	*	@param ranges The traits
+	*	@param objConstraints The objective constraints array
+	*	@param targ 
+	**/
+	public NsgaPopulation(Range[] ranges, 
+		ObjectiveConstraints[] objConstraints, double targ){
+		super(ranges);
+		this.target = targ;
+		this.objectiveConstraints = objConstraints;
+
+		// Find the best and worst objective values.
+		this.worst = objConstraints[0].getMin ();
+		this.best = objConstraints [0].getMax ();
+		for (int i = 1 ; i < objConstraints.length ; i++) {
+			if (objConstraints [i].getMax () > best)
+				this.best = objConstraints [i].getMax ();
+			if (objConstraints [i].getMin () < worst)
+				this.worst = objConstraints [i].getMin ();
+		}
+		this.numObjectives = objectiveConstraints.length;
+
+		this.maxFitnesses = new double [numObjectives];
+		this.maxFitnessMembers = new int [numObjectives];
+		this.minFitnesses = new double [numObjectives];
+		this.minFitnessMembers = new int [numObjectives];
+		this.numObjectives = numObjectives;
+	}
+		
 
 	/**
 	 * Compares two individuals returns a value that indicates which individual
@@ -338,7 +371,7 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 		@param order the objects to compare.
 		@param obj the index of the objective value to sort on.
 	*/
-	private void quickSortObj(NsgaSolution [] members, int l, int r,
+	protected void quickSortObj(NsgaSolution [] members, int l, int r,
 				int [] order, int obj) {
 
 		// This is the (poorly chosen) pivot value.
@@ -379,8 +412,10 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 	 *     Sort the individuals in front i in ascending order of objective j
 	 *     Set the crowding distance of the first and the last individual to infinity
 	 *     For every individual k in the front i except the first and the last individuals
-	 *       Normalize the fitness j by dividing the fitness j of individual k-1  and individual k+1 by maximum jth fitness.
-	 *       Add absolute value of (Normalized jth fitness of individual k+1 - Normalized jth fitness of individual k-1) to the crowding distance of kth individual.
+	 *       Normalize the fitness j by dividing the fitness j of individual k-1
+	 *  and individual k+1 by maximum jth fitness.
+	 *       Add absolute value of (Normalized jth fitness of individual k+1 
+	 *- Normalized jth fitness of individual k-1) to the crowding distance of kth individual.
 	 */
 	public void computeCrowdingDistance (int [] sortListByObj, int frontSize) {
 		NsgaSolution [] theGuys = (NsgaSolution []) combinedPopulation;
