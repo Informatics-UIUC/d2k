@@ -23,12 +23,18 @@ public class ExampleImpl extends TableImpl implements Example {
         // for each input and output, make a column
         int[] ins = et.getInputFeatures();
         int[] outs = et.getOutputFeatures();
-        inputs = new int[ins.length];
-        outputs = new int[outputs.length];
+        if(ins != null)
+          inputs = new int[ins.length];
+        else
+          inputs = new int[0];
+        if(outs != null)
+          outputs = new int[outputs.length];
+        else
+          outputs = new int[0];
 
         int colidx = 0;
-        columns = new Column[ins.length+outs.length];
-        for(int i = 0; i < ins.length; i++) {
+        columns = new Column[inputs.length+outputs.length];
+        for(int i = 0; i < inputs.length; i++) {
             int typ = et.getInputType(i);
             Column c = ColumnUtilities.createColumn(typ, 1);
             c.setLabel(et.getInputName(i));
@@ -77,7 +83,7 @@ public class ExampleImpl extends TableImpl implements Example {
             inputs[i] = colidx;
             colidx++;
         }
-        for(int i = 0; i < outs.length; i++) {
+        for(int i = 0; i < outputs.length; i++) {
             int typ = et.getOutputType(i);
             Column c = ColumnUtilities.createColumn(typ, 1);
             c.setLabel(et.getOutputName(i));
