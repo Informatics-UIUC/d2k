@@ -75,12 +75,14 @@ public class ConnectToDB extends UIModule {
       s += "This module establishes a connection to a database. </p>";
       s += "<p> Detailed Description: ";
       s += "This module takes the following inputs from a user: database vendor, ";
-      s += "database name, server machine, user name, password, connection port, ";
+      s += "user name, password, server machine, connection port, database name, ";
       s += "JDBC driver. All these input parameters are mandatory for connecting to ";
-      s += "a database. After a successfule connection is established, it is ";
+      s += "a database. If you do not know what values to put in for these ";
+      s += "parameters, you should ask your database administrator. ";
+      s += "After you successfully log onto a database, this connection is ";
       s += "passed to next modules for use. </p>";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle database.";
+      s += "We currently only support Oracle databases.";
 
         return s;
 
@@ -213,14 +215,14 @@ public class ConnectToDB extends UIModule {
     }
 
     public PropertyDescription [] getPropertiesDescriptions () {
-      PropertyDescription [] pds = new PropertyDescription [7];
+      PropertyDescription [] pds = new PropertyDescription [6];
       pds[0] = new PropertyDescription ("username", "User Name", "The login account to use.");
       pds[1] = new PropertyDescription ("password", "Password", "The password to use.");
       pds[2] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
       pds[3] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
       pds[4] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
-      pds[5] = new PropertyDescription ("url", "Connection URL", "The connection URL to use (for MicroSoft SQLServer).");
-      pds[6] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
+      //pds[5] = new PropertyDescription ("url", "Connection URL", "The connection URL to use (for MicroSoft SQLServer).");
+      pds[5] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
       return pds;
     }
 
