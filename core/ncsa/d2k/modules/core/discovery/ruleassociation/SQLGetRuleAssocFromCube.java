@@ -220,9 +220,9 @@ public class SQLGetRuleAssocFromCube extends UIModule
       thresholdChosen.setText(Double.toString(threshold));
     }
 
-    public Dimension getPreferredSize() {
+    /*public Dimension getPreferredSize() {
       return new Dimension (500, 240);
-    }
+    }*/
 
     public void initView(ViewModule mod) {
       removeAll();
