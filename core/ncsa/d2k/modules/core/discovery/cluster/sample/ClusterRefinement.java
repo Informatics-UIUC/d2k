@@ -6,8 +6,8 @@ package ncsa.d2k.modules.core.discovery.cluster.sample;
  * </p>
  * <p>
  * Description: Takes a set of centroids and a table and repeatedly assigns
-     * table rows to clusters whose centroids are closest in vector space.  When one
- * assisgnment is completed new centroids are calulated and the process is repeated.
+ * table rows to clusters whose centroids are closest in vector space.  When one
+ * assignment is completed, new centroids are calculated and the process is repeated.
  * </p>
  * <p>
  * Copyright: Copyright (c) 2003
@@ -96,15 +96,25 @@ public class ClusterRefinement {
     _mvCheck = b;
   }
 
+  private String _alias = "ClusterRefinement";
+  public String getAlias() {
+    return _alias;
+  }
+
+  public void setAlias( String moduleAlias ) {
+    _alias = moduleAlias;
+  }
+
   //================
   // Constructor(s)
   //================
-  public ClusterRefinement(int cm, int dm, int na, boolean ver, boolean check) {
+  public ClusterRefinement(int cm, int dm, int na, boolean ver, boolean check, String moduleAlias) {
     this._distanceMetric = dm;
     this._clusterMethod = cm;
     this.m_numAssignments = na;
     this.m_verbose = ver;
     this.setCheckMissingValues(check);
+    this._alias = moduleAlias;
   }
 
   //================
@@ -113,8 +123,8 @@ public class ClusterRefinement {
 
   /**
    * Takes a set of centroids and a table and repeatedly assigns
-       * table rows to clusters whose centroids are closest in vector space.  When one
-   * assisgnment is completed new centroids are calulated and the process is repeated.
+   * table rows to clusters whose centroids are closest in vector space.  When one
+   * assignment is completed, new centroids are calculated and the process is repeated.
    * @param initcenters The initial cluster points (rows in a table)
    * @param initEntities The set of examples to be clustered
    * @return ClusterModel
@@ -127,17 +137,20 @@ public class ClusterRefinement {
     if (this.getCheckMissingValues()) {
       if (initEntities.hasMissingValues()) {
         throw new TableMissingValuesException(
-            "ClusterAssignment: Please replace or filter out missing values in your data.");
+	    getAlias() +
+            ": Please replace or filter out missing values in your data.\n" +
+            "This module does not work with missing values. ");
       }
     }
 
+    boolean exceptionFlag = false;
     try {
       m_start = System.currentTimeMillis();
       ArrayList centers = null;
       ArrayList entities = null;
 
       /**
-           * Assume that both tables input have the exact same input features in the
+       * Assume that both tables input have the exact same input features in the
        * same columns.
        */
 
@@ -164,13 +177,16 @@ public class ClusterRefinement {
                  (ctype == ColumnTypes.LONG) ||
                  (ctype == ColumnTypes.INTEGER) ||
                  (ctype == ColumnTypes.SHORT))) {
+
+            exceptionFlag = true; // so we don't print message 2X
+            String cname = initcenters.getColumnLabel(_ifeatures[i]);
             Exception ex1 = new TableColumnTypeException(ctype,
-                "Only boolean and numeric types are permitted."
-                +
-                " For nominal input types use a scalarization transformation or remove"
-                + " them from the input set.");
-            System.out.println("EXCEPTION -- ClusterRefinement.doit(): " +
-                               ex1.getMessage());
+                "\n" +
+                getAlias() +
+                " module: Only boolean and numeric types are permitted.\n" +
+                "Nominal data types must be transformed by a scalarization module or removed " +
+                "prior to this module. \n" +
+                "Column named " + cname + " has type " + ColumnTypes.getTypeName(ctype) );
             throw ex1;
           }
         }
@@ -204,13 +220,16 @@ public class ClusterRefinement {
                (ctype == ColumnTypes.LONG) ||
                (ctype == ColumnTypes.INTEGER) ||
                (ctype == ColumnTypes.SHORT))) {
-          Exception ex1 = new TableColumnTypeException(ctype,
-              "Only boolean and numeric types are permitted."
-              +
-              " For nominal input types use a scalarization transformation or remove"
-              + " them from the input set.");
-          System.out.println("EXCEPTION -- ClusterRefinement.doit(): " +
-                             ex1.getMessage());
+
+            exceptionFlag = true; // so we don't print message 2X
+            String cname = initEntities.getColumnLabel(_ifeatures[i]);
+            Exception ex1 = new TableColumnTypeException(ctype,
+                "\n" +
+                getAlias() +
+                " module: Only boolean and numeric types are permitted.\n" +
+                "Nominal data types must be transformed by a scalarization module or removed " +
+                "prior to this module. \n" +
+                "Column " + cname + " has type " + ColumnTypes.getTypeName(ctype));
           throw ex1;
         }
       }
@@ -268,9 +287,10 @@ public class ClusterRefinement {
 
     }
     catch (Exception ex) {
-      ex.printStackTrace();
-      System.out.println(ex.getMessage());
-      System.out.println("ERROR: ClusterRefinement.doit()");
+      if ( ! exceptionFlag ) {
+        ex.printStackTrace();
+        System.out.println( "ERROR: " + getAlias() + ": " + ex.getMessage());
+      }
       throw ex;
     }
     return model;
@@ -333,3 +353,11 @@ public class ClusterRefinement {
   }
 
 }
+// Start QA Comments
+// 4/8/03 - Ruth started QA;  Added arg to constructor so that module name from
+//          calling module can be passed in.  This way, can distinguish which
+//          module in itinerary is causing problems.  Updated exception messages
+//          to use getAlias() rather than hard-coded name, and to add \n to msgs
+//          for readability.  Also, so that multiple copies of msg not printed.
+//        - Ready for Basic.
+// End QA Comments

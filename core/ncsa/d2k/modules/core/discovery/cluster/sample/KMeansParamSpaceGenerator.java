@@ -19,7 +19,7 @@ import ncsa.d2k.modules.core.prediction.*;
 
 public class KMeansParamSpaceGenerator
     extends AbstractParamSpaceGenerator
-    implements KMeansParameterDefns {
+    implements ClusterParameterDefns {
 
   //==============
   // Data Members

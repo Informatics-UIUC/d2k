@@ -6,8 +6,8 @@ package ncsa.d2k.modules.core.discovery.cluster.sample;
  * </p>
  * <p>
  * Description: Takes a set of centroids and a table and repeatedly assigns
-     * table rows to clusters whose centroids are closest in vector space.  When one
- * assisgnment is completed new centroids are calulated and the process is repeated.
+ * table rows to clusters whose centroids are closest in vector space.  When one
+ * assignment is completed new centroids are calculated and the process is repeated.
  * </p>
  * <p>
  * Copyright: Copyright (c) 2003
@@ -32,7 +32,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.discovery.cluster.gui.properties.*;
 
 public class ClusterAssignment
-    extends ClusterAssignmentOPT {
+    extends ClusterAssignmentOPT  {
 
   //==============
   // Data Members
@@ -85,9 +85,11 @@ public class ClusterAssignment
    */
   public PropertyDescription[] getPropertiesDescriptions() {
     PropertyDescription[] descriptions = new PropertyDescription[5];
-    descriptions[0] = new PropertyDescription("clusterMethod",
-                                              "Clustering Method",
+
+      descriptions[0] = new PropertyDescription("clusterMethod",
+                                                CLUSTER_METHOD,
         "The method to use for determining the distance between two clusters. " +
+        "This distance is used in formulating the tree that is part of the final cluster model. " +
         "<p>WARDS METHOD: Use a minimum variance approach that sums the squared error " +
         "(distance) for every point in the cluster to the cluster centroid.</p>" +
         "<p>SINGLE LINK: Distance of closest pair (one from each cluster).</p>" +
@@ -96,23 +98,33 @@ public class ClusterAssignment
         "<p>WPGMA: Weighted pair group method using arithmetic averages.</p>" +
         "<p>UPGMC: Unweighted pair group method using centroids.</p>" +
         "<p>WPGMC: Weighted pair group method using centroids.</p>");
-    descriptions[1] = new PropertyDescription("distanceMetric",
-                                              "Distance Metric",
-        "This property determine the type of distance fucntion used to calculate " +
-        "distance between two examples." +
+
+     descriptions[1] = new PropertyDescription("numAssignments",
+                                               MAX_ITERATIONS,
+        "This property specifies the maximum number of iterations of cluster " +
+        "assignment/refinement to perform. " +
+        "It must be greater than 0.  A check is performed after each iteration to determine if " +
+        "the cluster centers have moved more than a small threshold amount.  If they have not, " +
+        "the refinement process is stopped before the specified number of iterations. " );
+
+     descriptions[2] = new PropertyDescription("distanceMetric",
+                                               DISTANCE_METRIC,
+        "This property determines the type of distance function to use in calculating the " +
+        "distance between two examples.  This distance is used in assigning points to clusters, and " +
+        "in determining if there was sufficient movement since the last assignment iteration "+
+        "to continue the refinement process. " +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +
-        "<p>COSINE: 1 minus the cosine of the angle between the norms of the vectors denoted by two points.</p>"
-        );
-    descriptions[2] = new PropertyDescription("numAssignments",
-                                              "Number of Assignments",
-        "This property specifies the number of iterations to perform (> 0).");
-    descriptions[3] = new PropertyDescription("CheckMissingValues",
-                                              "Check Missing Values",
-        "Perform a check for missing values on the table inputs (or not).");
-    descriptions[4] = new PropertyDescription("verbose",
-                                              "Verbose Ouput",
-        "Do you want verbose output to the console.");
+        "<p>COSINE: 1 minus the cosine of the angle between the norms of the vectors denoted by two points.</p>");
+
+     descriptions[3] = new PropertyDescription("checkMissingValues",
+                                               CHECK_MV,
+        "If this property is true, the module will perform a check for missing values in the input table. ");
+
+     descriptions[4] = new PropertyDescription("verbose",
+                                               VERBOSE,
+        "If this property is true, the module will write verbose status information to the console.");
+
     return descriptions;
   }
 
@@ -131,11 +143,11 @@ public class ClusterAssignment
    */
   public String getInputInfo(int parm1) {
     if (parm1 == 0) {
-      return "Table of initial centroids";
+      return "Table containing initial centroids.";
     } else if (parm1 == 1) {
-      return "Table of entities to cluster";
+      return "Table containing all the examples to cluster.";
     } else {
-      return "";
+      return "No such input.";
     }
   }
 
@@ -146,11 +158,11 @@ public class ClusterAssignment
    */
   public String getInputName(int parm1) {
     if (parm1 == 0) {
-      return "Table";
+      return "Sample Table";
     } else if (parm1 == 1) {
       return "Table";
     } else {
-      return "";
+      return "No such input";
     }
   }
 
@@ -175,7 +187,11 @@ public class ClusterAssignment
     Table initEntities = (Table)this.pullInput(1);
     ClusterRefinement refiner = new ClusterRefinement(this.getClusterMethod(),
         this.getDistanceMetric(), this.getNumAssignments(), this.getVerbose(),
-        this.getCheckMissingValues());
+        this.getCheckMissingValues(), getAlias() );
     this.pushOutput(refiner.assign(initcenters, initEntities), 0);
   }
 }
+
+// Start QA Comments
+// 4/8/03 - Ruth starts QA;  Updated Input Info for consistence;  add getAlias()
+//          to ClusterRefinement ctor;

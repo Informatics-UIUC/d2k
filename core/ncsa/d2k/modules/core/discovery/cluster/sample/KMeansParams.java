@@ -21,7 +21,7 @@ import ncsa.d2k.modules.core.discovery.cluster.gui.properties.*;
 
 public class KMeansParams
     extends KMeansParamsOPT
-    implements KMeansParameterDefns {
+    implements ClusterParameterDefns {
 
   //==============
   // Data Members

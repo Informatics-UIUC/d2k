@@ -6,8 +6,8 @@ package ncsa.d2k.modules.core.discovery.cluster.sample;
  * </p>
  * <p>
  * Description: Takes a set of centroids and a table and repeatedly assigns
-     * table rows to clusters whose centroids are closest in vector space.  When one
- * assisgnment is completed new centroids are calulated and the process is repeated.
+ * table rows to clusters whose centroids are closest in vector space.  When one
+ * assignment is completed new centroids are calculated and the process is repeated.
  * </p>
  * <p>
  * Copyright: Copyright (c) 2003
@@ -33,7 +33,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.discovery.cluster.hac.*;
 
 public class ClusterAssignmentOPT
-    extends ComputeModule {
+    extends ComputeModule implements ClusterParameterDefns{
 
   //==============
   // Data Members
@@ -94,12 +94,12 @@ public class ClusterAssignmentOPT
     PropertyDescription[] descriptions = new PropertyDescription[2];
 
     descriptions[0] = new PropertyDescription("checkMissingValues",
-                                              "Check Missing Values",
-        "Perform a check for missing values on the table inputs (or not).");
+                                              CHECK_MV,
+        "If this property is true, the module will perform a check for missing values in the input table. ");
 
     descriptions[1] = new PropertyDescription("verbose",
-                                              "Verbose Ouput",
-        "Do you want verbose output to the console.");
+                        		      VERBOSE,
+        "If this property is true, the module will write verbose status information to the console.");
 
     return descriptions;
   }
@@ -119,13 +119,13 @@ public class ClusterAssignmentOPT
    */
   public String getInputInfo(int parm1) {
     if (parm1 == 0) {
-      return "Control Parameters";
+      return "Control parameters for the module.";
     } else if (parm1 == 1) {
-      return "Table of initial centroids";
+      return "Table containing initial centroids.";
     } else if (parm1 == 2) {
-      return "Table of entities to cluster";
+      return "Table containing all the examples to cluster.";
     } else {
-      return "";
+      return "No such input.";
     }
   }
 
@@ -136,13 +136,13 @@ public class ClusterAssignmentOPT
    */
   public String getInputName(int parm1) {
     if (parm1 == 0) {
-      return "ParameterPoint";
+      return "Parameter Point";
     } else if (parm1 == 1) {
-      return "Table";
+      return "Sample Table";
     } else if (parm1 == 2) {
       return "Table";
     } else {
-      return "";
+      return "No such input";
     }
   }
 
@@ -164,39 +164,75 @@ public class ClusterAssignmentOPT
     @return A detailed description of the module.
    */
   public String getModuleInfo() {
+
     String s = "<p>Overview: ";
-    s += "Finds a locally optimal clustering by iteratively assigning examples to ";
-    s += "selected points in vector space.";
+    s += "This module finds a locally optimal clustering by iteratively assigning examples to ";
+    s += "selected points in vector space. ";
+    s += "The clustering method, distance metric, and maximum number of iterations are determined by the ";
+    s += "input <i>Parameter Point</i>. ";
     s += "</p>";
 
     s += "<p>Detailed Description: ";
-    s += "Takes a set of cluster centroids (a table) and a table of cluster entites and repeatedly assigns ";
-    s += "the entities to the cluster whose centroid is closest in vector space. ";
-    s += "When one assisgnment is completed new centroids are calulated form the clusters just formed and ";
-    s += "the process is repeated.  The algorithm will iterate <i>number of iterations</i> times but will ";
-    s += "halt if the current iteration produces results not significantly different from the previous iteration.";
+    s += "There are two versions of this module. ";
+    s += "The <i>OPT</i>, optimizable, version uses control ";
+    s += "parameters encapsulated in a <i>Parameter Point</i> to direct the cluster assignment and refinement behavior. ";
+    s += "The control parameters specify a <i>";
+    s += CLUSTER_METHOD ;
+    s += "</i>, a <i>";
+    s += DISTANCE_METRIC;
+    s += "</i>, and a <i>";
+    s += MAX_ITERATIONS;
+    s += "</i>.  These parameters are set as properties in the non-OPT version of the module. ";
     s += "</p>";
-    s += "<p>The HAC algorithm is run on the final set of clusters to build the cluster tree from the ";
-    s += "cut to the root.  This tree is stored in the newly formed model along with the initial table ";
-    s += "of examples and the set of TableClusters formed.";
+
+    s += "<p>";
+    s += "This module takes a set of cluster centroids (<i>Sample Table</i>) ";
+    s += "and a table of examples to be clustered (<i>Table</i>) and repeatedly assigns ";
+    s += "the examples to the cluster whose centroid is closest in vector space, where distance is ";
+    s += "computed using the specified <i>";
+    s += DISTANCE_METRIC;
+    s += "</i>.  When one assignment is completed, new centroids are calculated from the clusters just formed and ";
+    s += "the process is repeated.  The algorithm will iterate at most <i>";
+    s += MAX_ITERATIONS;
+    s += "</i> times, halting sooner if the current iteration produces results not significantly ";
+    s += "different from the previous iteration. ";
+    s += "The number of original centroids in <i>Sample Table</i> determines the <i>Number of Clusters</i> formed. ";
+    s += "The number of rows in the <i>Table</i> determines the <i>Number of Examples</i> in the final clusters. ";
+    s += "</p>";
+
+    s += "<p>The Hierarchical Agglomerative Clustering (HAC) algorithm, a bottom-up strategy, ";
+    s += "is run on the final set of clusters to build the cluster tree from the cut to the root. ";
+    s += "The method used to determine intercluster similarity is controlled by the <i>";
+    s += CLUSTER_METHOD;
+    s += "</i> parameter. ";
+    s += "The cluster tree is stored in the newly formed model, <i>Cluster Model</i>, along with the initial table ";
+    s += "of examples and the set of table clusters formed.";
     s += "</p>";
 
     s += "<p>Data Type Restrictions: ";
-    s += "The second table input should be a mutable implementation. ";
-    s += "The tables must have the same structure -- attribute types and order (and input features ";
-    s += "if example tables).";
+    s += "The second input table (<i>Table</i>) should be a mutable implementation. ";
+    s += "The <i>Sample Table</i> and <i>Table</i> inputs must have the same structure ";
+    s += "-- attribute types and order (and input features ";
+    s += "if example tables), must be identical. ";
+    s += "</p>";
+
+    s += "<p>";
+    s += "The clustering does not work if the input data being clustered contains missing values. ";
+    s += "The algorithm operates on numeric and boolean datatypes.  If the data to be clustered ";
+    s += "contains nominal data types, it should be converted prior to performing the clustering. ";
+    s += "The <i>Scalarize Nominals</i> module can be used to convert nominal types into boolean values. ";
     s += "</p>";
 
     s += "<p>Data Handling: ";
-    s += "The second input table is included in the ClusterModel.  Neither table ";
-    s += "input is modified.";
+    s += "The second input table, <i>Table</i>, is included in the ClusterModel.  Neither input table ";
+    s += "is modified.";
     s += "</p>";
 
     s += "<p>Scalability: ";
     s += "The time complexity is linear in the number of examples times the number of iterations. ";
-    s += "The algorithm repeatedly builds two times <i>number of clusters</i> TableClusters from ";
-    s += "\"number of examples\" TableClusters and requires heap resources to that extent.  A single ";
-    s += "TableCluster's memory size will vary as the size of the individual examples being clustered.";
+    s += "The algorithm repeatedly builds two times <i>Number of Clusters</i> table clusters from ";
+    s += "<i>Number of Examples</i> table clusters, and requires heap resources to that extent.  A single ";
+    s += "table cluster's memory size will vary as the size of the individual examples being clustered.";
     s += "</p>";
     return s;
   }
@@ -208,9 +244,9 @@ public class ClusterAssignmentOPT
    */
   public String getOutputInfo(int parm1) {
     if (parm1 == 0) {
-      return "Newly created ClusterModel";
+      return "Newly created Cluster Model.";
     } else {
-      return "";
+      return "No such output.";
     }
   }
 
@@ -221,9 +257,9 @@ public class ClusterAssignmentOPT
    */
   public String getOutputName(int parm1) {
     if (parm1 == 0) {
-      return "ClusterModel";
+      return "Cluster Model";
     } else {
-      return "";
+      return "No such output";
     }
   }
 
@@ -253,7 +289,12 @@ public class ClusterAssignmentOPT
 
     ClusterRefinement refiner = new ClusterRefinement(_clusterMethod,
         _distanceMetric, m_numAssignments, this.getVerbose(),
-        this.getCheckMissingValues());
+        this.getCheckMissingValues(), getAlias() );
     this.pushOutput(refiner.assign(initcenters, initEntities), 0);
   }
 }
+// Start QA Comments
+// 4/8/03 - Ruth started QA;  Updates to Module Info;  Added getAlias() arg to
+//          ClusterRefinement constructor.
+//        - Waiting to hear back from Duane on why Table must be mutable if not changed.
+// End QA Comments
