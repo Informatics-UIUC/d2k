@@ -86,7 +86,7 @@ public class ApplyFunctionInducer
     exampleSet = (ExampleTable)this.pullInput(2);
 
     //!!! do i need this?
-    exampleSet = (ExampleTable) exampleSet.copy();
+    //exampleSet = (ExampleTable) exampleSet.copy();
 
     Model model = functionInducer.generateModel(exampleSet, errorFunction);
 
