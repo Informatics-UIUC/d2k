@@ -23,7 +23,7 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "      This is a list of the fields that available.   ";
+			case 0: return "A list of available fields in the selected table.";
 			default: return "No such input";
 		}
 	}
@@ -43,7 +43,7 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "      This is the list of selected fields.   ";
+			case 0: return "A list of selected fields.   ";
 			default: return "No such output";
 		}
 	}
@@ -62,7 +62,17 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    Given a list of the fields available, this guy will present a gui that     will allow the user to select from among them, the fields to be extracted     from the database.  </body></html>";
+          String s = "<p> Overview: ";
+          s += "This module allows users to make the field selection. </p>";
+          s += "<p> Detailed Description: ";
+          s += "Given a list of available fields, this module provides an user-interface ";
+          s += "to allows users to select from among them. ";
+          s += "The selected list will be used to construct SQL queries. </p>";
+          s += "<p> Restrictions: ";
+          s += "We currently only support Oracle database.";
+
+          return s;
+
 	}
 
 	/**
@@ -78,7 +88,7 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "Select Fields";
+		return "SelectFields";
 	}
 
 	/**
