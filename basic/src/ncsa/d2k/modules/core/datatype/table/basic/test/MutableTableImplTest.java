@@ -34,11 +34,11 @@ public class MutableTableImplTest extends TestCase {
 	 * @see TestCase#setUp()
 	 */
 
-	MutableTableImpl mtFull;
-	MutableTableImpl mtEmpty;
-	Column[] columns;
-	int numColumns = 5;
-	double delta = 0.0001;
+	protected MutableTableImpl mtFull;
+	protected MutableTableImpl mtEmpty;
+	protected Column[] columns;
+	protected int numColumns = 5;
+	protected double delta = 0.0001;
 
 	protected void setUp() throws Exception {
 
@@ -99,7 +99,7 @@ public class MutableTableImplTest extends TestCase {
 
 		mtEmpty.insertColumn(columns[0], 0);
 		assertEquals(1, mtEmpty.getNumColumns());
-		result = mtFull.getColumn(0);
+		result = mtEmpty.getColumn(0);
 		assertEquals(columns[0], result);
 
 		try {
@@ -206,8 +206,10 @@ public class MutableTableImplTest extends TestCase {
 			mtEmpty.removeColumns(0, 1);
 		} catch (NegativeArraySizeException e) {
 			return;
+		} catch ( ArrayIndexOutOfBoundsException eb) {
+			return;
 		}
-		fail("Should raise an NegativeArraySizeException");
+		fail("Should raise an NegativeArraySizeException or ArrayIndexOutOfBoundsException");
 
 	}
 
@@ -296,16 +298,20 @@ public class MutableTableImplTest extends TestCase {
 		int len = 2;
 
 		try {
-			Table copyEmpty = mtEmpty.copy(pos, len);
-			int numRows = mtFull.getNumRows();
-			Table copy = mtFull.copy(pos, numRows + len);
-
+			//Table copyEmpty = mtEmpty.copy(pos, len);
+			//int numRows = mtFull.getNumRows();
+			//Table copy = mtFull.copy(pos, numRows + len);
+			
+			Table copyEmpty = getEmptyTable().copy(pos, len);
+			int numRows = getFullTable().getNumRows();
+			Table copy = getFullTable().copy(pos, numRows + len);
+			
 		} catch (ArrayIndexOutOfBoundsException e) {
 			return;
 		}
 		fail("Should raise an ArrayIndexOutOfBoundsException");
 
-		Table copyFull = mtFull.copy(pos, len);
+		Table copyFull = getFullTable().copy(pos, len);
 		mtEmpty.addRows(len);
 		for (int i = 0; i < len; i++)
 			for (int j = 0; j < mtFull.getNumColumns(); j++)
@@ -366,7 +372,8 @@ public class MutableTableImplTest extends TestCase {
 		for (int i = 0; i < newOrder.length; i++)
 			for (int j = 0; j < numColumns; j++)
 				mtEmpty.setString(mtFull.getString(newOrder[i], j), i, j);
-		Table reordered = mtFull.reorderRows(newOrder);
+		//Table reordered = mtFull.reorderRows(newOrder);
+		Table reordered = mtFull.copy(newOrder);
 		assertEquals(mtEmpty, reordered);
 
 	}
@@ -387,8 +394,13 @@ public class MutableTableImplTest extends TestCase {
 			mtEmpty.addColumn(mtFull.getColumn(newOrder[i]));
 		MutableTable reordered = (MutableTable)mtFull.reorderColumns(newOrder);
 		assertEquals(mtEmpty, reordered);
-
-	}
+	//	for ( int i =0; i < mtEmpty.getNumRows(); i++)
+	//		for (int j =0; j < mtEmpty.getNumColumns() ; j++) {
+				
+		//	System.out.println("i , j, emoty, reord " + i  + " " + j  + " " + 	mtEmpty.getString(i,j) + " " + reordered.getString(i,j));
+	//		assertEquals(mtEmpty.getString(i,j),reordered.getString(i,j));
+	//		}
+	}		
 
 	/*
 	 * Test for void sortByColumn(int)

@@ -6,6 +6,8 @@
  */
 package ncsa.d2k.modules.core.datatype.table.basic.test;
 
+import ncsa.d2k.modules.core.datatype.sort.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
