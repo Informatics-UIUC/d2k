@@ -75,12 +75,21 @@ public class Scale extends HeadlessUIModule {
 			" the gui is suppressed, this modules will use the last entries       the user made to apply"+
 			" to the input table, however, the current range is       always gotten from the table, the previous"+
 			" selection made via the gui is       ignored. If the columns the user has previously selected"+
-			" did not exist       or if they are no longer scalar, it will fail.    </p>    <p>      <u>Missing"+
+			" did not exist       or if they are no longer scalar, it will fail.    </p>  " +
+
+                        /*"  <p>      <u>Missing"+
 			" Values Handling:</u> This module handles missing values as if       they were real meaningful"+
 			" values. For example, if a missing values is       represented by a number (e.g. zero), then"+
 			" this number may appear as       lower or upper bound of its column, although it is marked as"+
 			" a missing       value in its table. If it indeed becomes a lower or upper bound, it       affects"+
-			" of course the scaling results.    </p>    <p>      Data Handling: This module does not modify"+
+			" of course the scaling results.    </p>" +
+                        */
+
+                       "</p><p>Missing Values Handling: Missing values are preserved by " +
+              "the output Transformation of this module. Missing values are left as they are " +
+              "and are not being scaled or considered during scaling. " +
+
+                        "    <p>      Data Handling: This module does not modify"+
 			" its input data. Rather, its       output is a <i>Transformation</i> that can later be used"+
 			" to scale the       specified columns. All transformed columns will be converted to type <i>"+
 			"      double</i>.    </p>";
@@ -483,7 +492,7 @@ public class Scale extends HeadlessUIModule {
          boolean addSeparator) {
 
          super();
-		 
+
 		 lbl = label;
          scaleCheck = new JCheckBox();
          scaleCheck.setSelected(true);
@@ -659,4 +668,9 @@ class ScalingTransformation implements Transformation {
  * 11-04-03 Vered started QA process
  *          UI allows insertion of min values that are greater than the max values.
  *          [bug 115]
+ *
+ * 11-25-03 handles missing values as if they were real values. missing values
+ *          should be preserved and left as they are, and not be considered when
+ *          calculating upper and lower bounds for each column, and while
+ *          scaling. [bug 147]
  */
