@@ -83,6 +83,10 @@ public class DelimitedFileParser implements FlatFileParser {
         this(f, _labelsRow, _typesRow, -1, -1);
     }
 
+    public DelimitedFileParser(File f, int _labelsRow, int _typesRow, char delim) throws Exception {
+        this(f, _labelsRow, _typesRow, -1, -1, delim);
+    }
+
     /**
      * Create a new DelimitedFileReader with the specified labels, types, and
      * in-out rows.
@@ -91,7 +95,7 @@ public class DelimitedFileParser implements FlatFileParser {
      * @param _typesRow the index of the types row
      * @param _inOutRow the index of the in-out row
      */
-    public DelimitedFileParser(File f, int _labelsRow, int _typesRow, int _inOutRow)
+/*    public DelimitedFileParser(File f, int _labelsRow, int _typesRow, int _inOutRow)
             throws Exception {
         this(f, _labelsRow, _typesRow, _inOutRow, -1);
     }
@@ -159,6 +163,85 @@ public class DelimitedFileParser implements FlatFileParser {
             featureTypes = null;
         */
         lineReader.setLineNumber(0);
+    }
+
+    /**
+     * Create a new DelimitedFileReader with the specified labels, types, inout,
+     * and nominal/scalar rows.
+     * @param f the file to read
+     * @param _labelsRow the index of the labels row
+     * @param _typesRow the index of the types row
+     * @param _inOutRow the index of the in-out row
+     * @param _nomScalarRow the index of the nominal-scalar row
+     */
+    public DelimitedFileParser(File f, int _labelsRow, int _typesRow, int _inOutRow,
+                               int _nomScalarRow, char delim) throws Exception {
+        file = f;
+        typesRow = _typesRow;
+        labelsRow = _labelsRow;
+        inOutRow = _inOutRow;
+        nomScalarRow = _nomScalarRow;
+        //_blankRows = new ArrayList();
+        //_blankColumns = new ArrayList();
+
+        // read through the file to count the number of rows, columns, and find
+        // the delimiter
+        try {
+            scanFile();
+        }
+        catch(Exception e) {
+        }
+
+        setDelimiter(delim);
+        lineReader = new LineNumberReader(new FileReader(file));
+
+        // now read in the types, scalar, in out rows, labels
+        if(typesRow > -1) {
+            numRows--;
+
+            // now parse the line and get the types
+            ArrayList row = getLineElements(typesRow);
+            createColumnTypes(row);
+        }
+        else
+            columnTypes = null;
+        if(labelsRow > -1) {
+            numRows--;
+
+            // now parse the line and the the labels
+            ArrayList row = getLineElements(labelsRow);
+            createColumnLabels(row);
+        }
+        else
+            columnLabels = null;
+        /*if(inOutRow > -1) {
+            numRows--;
+
+            // now parse the line and get the in-out features
+            ArrayList row = getLineElements(inOutRow);
+            createDataTypes(row);
+        }
+        else
+            dataTypes = null;
+        if(nomScalarRow > -1) {
+            numRows--;
+
+            // now parse the line and get the nom-scalar features
+            ArrayList row = getLineElements(nomScalarRow);
+        }
+        else
+            featureTypes = null;
+        */
+        lineReader.setLineNumber(0);
+    }
+
+
+    public void setDelimiter(char d) {
+        delimiter = d;
+    }
+
+    public char getDelimiter() {
+        return delimiter;
     }
 
     /**
@@ -374,19 +457,19 @@ public class DelimitedFileParser implements FlatFileParser {
 
         // Did one of the possible delimiters come up a winner?
         if (isComma && !isSpace && !isTab && !isPipe) {
-            delimiter = COMMA;
+            setDelimiter(COMMA);
             delimiterFound = true;
         }
         else if (!isComma && isSpace && !isTab && !isPipe) {
-            delimiter = SPACE;
+            setDelimiter(SPACE);
             delimiterFound = true;
         }
         else if (!isComma && !isSpace && isTab && !isPipe) {
-            delimiter = TAB;
+            setDelimiter(TAB);
             delimiterFound = true;
         }
         else if(!isComma && !isSpace && !isTab && isPipe) {
-            delimiter = PIPE;
+            setDelimiter(PIPE);
             delimiterFound = true;
         }
 
@@ -451,19 +534,19 @@ public class DelimitedFileParser implements FlatFileParser {
 
             // Did one of the possible delimiters come up a winner?
             if (isComma && !isSpace && !isTab && !isPipe) {
-                delimiter = COMMA;
+                setDelimiter(COMMA);
                 delimiterFound = true;
             }
             else if (!isComma && isSpace && !isTab && !isPipe) {
-                delimiter = SPACE;
+                setDelimiter(SPACE);
                 delimiterFound = true;
             }
             else if (!isComma && !isSpace && isTab && !isPipe) {
-                delimiter = TAB;
+                setDelimiter(TAB);
                 delimiterFound = true;
             }
             else if (!isComma && !isSpace && !isTab && isPipe) {
-                delimiter = PIPE;
+                setDelimiter(PIPE);
                 delimiterFound = true;
             }
 
@@ -646,7 +729,7 @@ public class DelimitedFileParser implements FlatFileParser {
      * not including the optional meta data rows.
      * @param rowNum the row number to skip to
      */
-    protected void skipToRow(int rowNum) {
+    protected String skipToRow(int rowNum) {
         if(labelsRow > -1)
             rowNum++;
         if(typesRow > -1)
@@ -663,8 +746,10 @@ public class DelimitedFileParser implements FlatFileParser {
                 lineReader.readLine();
                 current++;
             }
+            return lineReader.readLine();
         }
         catch(Exception e) {
+            return null;
         }
     }
 
@@ -675,13 +760,15 @@ public class DelimitedFileParser implements FlatFileParser {
      */
     public char[][] getRowElements(int rowNum) {
         try {
-            skipToRow(rowNum);
-            String row = lineReader.readLine();
+            String row = skipToRow(rowNum);
+            //String row = lineReader.readLine();
+            if(row == null)
+                return null;
             int current = 0;
             char[][] thisRow = new char[numColumns][];
             int counter = 0;
             char [] bytes = row.toCharArray();
-            char del = delimiter;
+            char del = getDelimiter();
             int len = bytes.length;
 
             for (int i = 0 ; i < len ; i++) {
@@ -732,7 +819,7 @@ public class DelimitedFileParser implements FlatFileParser {
             int current = 0;
             ArrayList thisRow = new ArrayList();
             char [] bytes = row.toCharArray();
-            char del = delimiter;
+            char del = getDelimiter();
             int len = bytes.length;
 
             for (int i = 0 ; i < len ; i++) {
@@ -774,7 +861,7 @@ public class DelimitedFileParser implements FlatFileParser {
         int numToks = 0;
 
         for (int i = 0 ; i < len ; i++) {
-            if (bytes[i] == delimiter) {
+            if (bytes[i] == getDelimiter()) {
                 current = i+1;
                 numToks++;
             }

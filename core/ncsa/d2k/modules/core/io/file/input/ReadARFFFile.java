@@ -12,7 +12,7 @@ public class ReadARFFFile extends InputModule {
     }
 
     public String getInputInfo(int i) {
-        return "";
+        return "The absolute path to an ARFF file.";
     }
 
     public String[] getOutputTypes() {
@@ -21,11 +21,19 @@ public class ReadARFFFile extends InputModule {
     }
 
     public String getOutputInfo(int i) {
-        return "";
+        return "An ARFF File Parser.";
     }
 
     public String getModuleInfo() {
-        return "";
+        StringBuffer s = new StringBuffer("<p>Overview: ");
+        s.append("This module creates an ARFFFileParser for the specified file. ");
+        s.append("<p>DetailedDescription: ");
+        s.append("ARFFFileParser is used to read data from an ARFF file. ");
+        s.append("<p>Data Type Restrictions: ");
+        s.append("The input to this module must be an ARFF file.");
+        s.append("<p>Data Handling: ");
+        s.append("The module does not destroy or modify the input data.");
+        return s.toString();
     }
 
     public void doit() throws Exception {

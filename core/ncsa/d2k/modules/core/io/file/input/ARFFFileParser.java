@@ -32,6 +32,7 @@ public class ARFFFileParser extends DelimitedFileParser {
     private static final String MISSING = "?";
     private static final String DATA_TAG = FLAG+DATA;
     private static final String ATTRIBUTE_TAG = FLAG+ATTRIBUTE;
+    private static final char QUESTION = '?';
 
     private HashSet[] allowedAttributes;
     private int dataRow;
@@ -39,13 +40,19 @@ public class ARFFFileParser extends DelimitedFileParser {
     public ARFFFileParser(File f) throws Exception {
         file = f;
         lineReader = new LineNumberReader(new FileReader(file));
-        initialize();
+        try {
+            initialize();
+        }
+        catch(Exception e) {
+            throw new Exception("ARFF File Parser: Could not be initialized.");
+        }
     }
 
     private void initialize() throws Exception {
         ArrayList attributes = new ArrayList();
         ArrayList types = new ArrayList();
 
+        int linectr = 0;
         // find all the attributes
         String line = null;
         while( (line = lineReader.readLine().toLowerCase()).indexOf(DATA_TAG) == -1) {
@@ -54,6 +61,7 @@ public class ARFFFileParser extends DelimitedFileParser {
                 // if it is nominal, add its values to the allowedAttributes.
                 parseAttributeLine(line, attributes, types);
             }
+            linectr++;
         }
 
         // now we have the names of the attributes and the types.
@@ -76,11 +84,20 @@ public class ARFFFileParser extends DelimitedFileParser {
             }
         }
 
+        //int commentoffset = 0;
+        //boolean beginData = true;
+
         // now count the number of data lines
         int ctr = 0;
         while( (line = lineReader.readLine()) != null) {
-            if(line.trim().length() != 0 && !line.startsWith(COMMENT))
+            /*if(line.startsWith(COMMENT) && beginData) {
+                //System.out.println(line);
+                commentoffset++;
+            }*/
+            if(line.trim().length() != 0 && !line.startsWith(COMMENT)) {
                 ctr++;
+                //beginData = false;
+            }
         }
         numRows = ctr;
         numColumns = columnLabels.length;
@@ -98,8 +115,27 @@ public class ARFFFileParser extends DelimitedFileParser {
             else
                 dataRow++;
         }
-        //_blankRows = new ArrayList();
-        //_blankColumns = new ArrayList();
+
+        //dataRow += commentoffset;
+
+        /*resetReader();
+        skipToRow(0);
+        line = lineReader.readLine();
+        done = false;
+        while(!done) {
+            line = lineReader.readLine();
+            if(line.startsWith(COMMENT))
+                dataRow++;
+            else {
+                //System.out.println("DIDN'T START WITH COMMENT");
+                //dataRow++;
+                done = true;
+            }
+        }*/
+
+        //resetReader();
+        //skipToRow(0);
+
         blanks = new boolean[numRows][numColumns];
         for(int i = 0; i < numRows; i++) {
             for(int j = 0; j < numColumns; j++)
@@ -126,6 +162,28 @@ public class ARFFFileParser extends DelimitedFileParser {
         }
     }
 
+    /**
+    * Get the elements that make up row i of the file.
+    * @return the elements of row i in the file.
+    */
+    public char[][] getRowElements(int i) {
+        char[][] retVal = super.getRowElements(i);
+
+        if(retVal != null && retVal.length > 0) {
+        // here we check each element to see if it was a missing value
+        for(int j = 0; j < this.numColumns; j++) {
+            if(retVal[j].length > 0 && retVal[j][0] == QUESTION) {
+                //System.out.println("YES!");
+                addBlank(i, j);
+            }
+        }
+        }
+
+        return retVal;
+    }
+
+
+
     private void resetReader() {
         try {
             lineReader = new LineNumberReader(new FileReader(file));
@@ -139,7 +197,7 @@ public class ARFFFileParser extends DelimitedFileParser {
      * not including the optional meta data rows.
      * @param rowNum the row number to skip to
      */
-    protected void skipToRow(int rowNum) {
+    protected String skipToRow(int rowNum) {
         rowNum += dataRow;
         try {
             if(rowNum < lineReader.getLineNumber())
@@ -149,8 +207,14 @@ public class ARFFFileParser extends DelimitedFileParser {
                 lineReader.readLine();
                 current++;
             }
+            String line;
+            while( (line = lineReader.readLine()).startsWith(COMMENT))
+                dataRow++;
+
+            return line;
         }
         catch(Exception e) {
+            return null;
         }
     }
 }
