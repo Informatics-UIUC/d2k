@@ -86,15 +86,14 @@ public class PGraphUI extends UIModule {
       private JMenuItem kkLayoutItem, frLayoutItem, circleLayoutItem,
          springLayoutItem, isomLayoutItem, dagLayoutItem;
       private JMenuItem edgeClustItem, weakClustItem, biClustItem;
-      private JCheckBoxMenuItem aaOptItem, labelsOptItem, brushingOptItem;
+      private JCheckBoxMenuItem aaOptItem, labelsOptItem, brushingOptItem,
+         centerOnZoomOptItem;
 
       private AdvanceControl advanceControl;
       private ClusterControl clusterControl;
 
       private boolean aa_set = true, labels_set = true, brushing_set = false;
-
-      private JButton debugButton;
-      private boolean debug_set = false;
+      private boolean czoom_set = false;
 
       public void actionPerformed(ActionEvent e) {
 
@@ -200,6 +199,12 @@ public class PGraphUI extends UIModule {
               canvas.setLabelsVisible(labels_set);
             }
          }
+         else if (source == centerOnZoomOptItem) {
+
+            czoom_set = !czoom_set;
+            centerOnZoomOptItem.setSelected(czoom_set);
+
+         }
          else if(source == brushingOptItem)
          {
            brushing_set = !brushing_set;
@@ -279,14 +284,6 @@ public class PGraphUI extends UIModule {
             canvas.repaint();
 
          }
-         else if (source == debugButton) {
-
-            debug_set = !debug_set;
-            debugButton.setText("(debug) center on zoom: " + debug_set);
-            //canvas.setAntialiasing(debug_set);
-            //debug_set = !debug_set;
-
-         }
 
          if (did_suspend) {
             canvas.unsuspend();
@@ -314,9 +311,12 @@ public class PGraphUI extends UIModule {
          labelsOptItem.addActionListener(this);
          brushingOptItem = new JCheckBoxMenuItem("Use brushing to show labels", brushing_set);
          brushingOptItem.addActionListener(this);
+         centerOnZoomOptItem = new JCheckBoxMenuItem("Center on zoom", czoom_set);
+         centerOnZoomOptItem.addActionListener(this);
          optMenu.add(aaOptItem);
          optMenu.add(brushingOptItem);
          optMenu.add(labelsOptItem);
+         optMenu.add(centerOnZoomOptItem);
          menuBar.add(optMenu);
 
          JMenu layoutMenu = new JMenu("Layout");
@@ -367,7 +367,7 @@ public class PGraphUI extends UIModule {
 
       public void graphZoomed() {
 
-         if (debug_set) {
+         if (czoom_set) {
             canvas.reinitializeAndCenter();
          }
 
@@ -412,9 +412,6 @@ public class PGraphUI extends UIModule {
          controls.add(sep1);
          controls.add(clusterControl);
 
-         debugButton = new JButton("(debug) center on zoom: " + debug_set);
-         debugButton.addActionListener(this);
-
          removeAll();
          createMenuBar();
 
@@ -430,17 +427,8 @@ public class PGraphUI extends UIModule {
             GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
             emptyInsets, 0, 0));
 
-
-         glayout.addLayoutComponent(debugButton, new GridBagConstraints(
-            0, 1, 2, 1, 1.0, 0.0,
-            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-            emptyInsets, 0, 0));
-
-
          add(canvas);
          add(controls);
-
-         add(debugButton);
 
       }
 
