@@ -187,12 +187,10 @@ public class MergeTableRows extends UIModule {
         /////
 
 	protected UserView createUserView() {
-System.out.println( "createUserView\n" );
 		return new CleanView();
 	}
 
 	public String [] getFieldNameMapping() {
-System.out.println( "getFieldNameMapping() \n" );
 		return null;
 	}
 
@@ -215,8 +213,7 @@ System.out.println( "getFieldNameMapping() \n" );
 
 		HashMap columnLookup;
 
-		public void setInput(Object o, int id) {
-System.out.println( "setInput\n" );
+		public void setInput (Object o, int id) throws Exception {
 			table = (TableImpl)o;
 
 			// clear all lists
@@ -262,21 +259,10 @@ System.out.println( "setInput\n" );
 			}
 
                         // Don't force user to Abort if table data is wrong - abort for them with message.
-                        // Waiting for Exception option to implement "real way"
                         if (controlListModel.size() == 0 ) {
-                        /*
-                            // RuntimeException here doesn't get popup dialog - just in stderr; not desired outcome
-                            throw new RuntimeException( getAlias() +
+                            throw new Exception( getAlias() +
                                ": Input Table does not contain any numeric attributes - itinerary will be aborted" );
-                        */
-                             ErrorDialog.showDialog( getAlias() +
-                               ": Input Table does not contain any numeric attributes.\n" +
-                               "Choose 'Abort' in the module dialog to abort itinerary and reselect Input Table.",
-                               "Error" );
-                             // viewCancel() here doesn't seem to have any impact
-                             viewCancel();
-
-                       }
+                        }
 
 			keyAttributeList.setPrototypeCellValue(longest);
 			controlAttribute.setPrototypeCellValue(longest);
@@ -316,8 +302,6 @@ System.out.println( "setInput\n" );
                 }
 
 		public void initView(ViewModule m) {
-System.out.println( "initView\n" );
-
 			keyAttributeList = new JList();
 			keyListModel = new DefaultListModel();
 			keyAttributeList.setModel(keyListModel);
@@ -693,6 +677,7 @@ System.out.println( "initView\n" );
 // 2/27/03 - Want to raise Exception if InputTable doesn't have numeric
 //           attributes but not possible in UI module.  David C is looking into
 //           fix.   Committing current version (w/ debug stments) to CVS core.
+// 3/5/03  - A6 allows Exeception in setValue;  Commmited to Basic
 //           WISH:  After discussion with Tom this should be reworked at
 //           some point to use Tables, not TableImpls.
 // END QA Comments
