@@ -72,8 +72,7 @@ public class ApplyTransformation extends DataPrepModule {
                 else
                         mt.addTransformation(t);
 
-                //vered - debug
-//                System.out.println( ( (mt.getTransformations().get(0)) == null ? "no " : "there are " + "transformations" ));
+
 		pushOutput(mt, 0);
 	}
 }

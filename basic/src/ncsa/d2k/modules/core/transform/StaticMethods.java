@@ -32,6 +32,23 @@ public class StaticMethods {
     return map;
   }
 
+
+    /**
+     * builds a hash map of scalar columns' labels in <code>table</code>.
+     * maps scalar column's name <-> column's id.
+     * @param table - its scalar column labels are the keys in the map.
+     * @return - a HashMap with scalar column's label <-> column's index.
+     */
+    static public HashMap getScalarAttributes(Table table){
+      HashMap map = new HashMap(table.getNumColumns());
+      for (int i=0; i< table.getNumColumns(); i++)
+        if(table.isColumnScalar(i))
+          map.put(table.getColumnLabel(i), new Integer(i));
+
+      return map;
+    }
+
+
   /**
    * returns an array of boolean such that if <code>names[i]</code< is a key in
    * <code>available</code> then the i_th boolean in the array is true.
