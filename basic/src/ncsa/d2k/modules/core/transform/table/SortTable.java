@@ -168,7 +168,7 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
           cSort.sort(sortorder);
 
         pushOutput(table,0);
-}
+}//doit
 
        //vered - added this method, to figure out the cascading sort order
        //according to sortOrderNames
@@ -182,22 +182,48 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 
          retVal = StaticMethods.getIntersectIds(sortOrderNames, columns);
-         if(retVal.length < sortOrderNames.length)
+         if(retVal.length < sortOrderNames.length){
+
+           //vered - debug
+           System.out.println("retVal length = " + retVal.length);
+           for (int i=0; i<retVal.length; i++)
+             System.out.println("retVal[" + i + "] = " + retVal[i]);
+
+           System.out.println("sortOrderNames length = " + sortOrderNames.length);
+           for (int i=0; i<sortOrderNames.length; i++)
+             System.out.println("sortOrderNames[" + i + "] = " + sortOrderNames[i]);
+           //end debug
            throw new Exception(getAlias() +
                ": Some of the configured labels were found in the input table. " +
                "\nPlease reconfigure this module.");
+         }
 
          return retVal;
        }//getSortOrder
 
 
-//vered: added this property, to remember the cancading order of the sort:
+//vered: added this property, to remember the cascading order of the sort:
        private String[] sortOrderNames;
        public void setSortOrderNames(Object[] names){
-       sortOrderNames = new String[names.length];
-       for (int i=0; i<names.length; i++)
-         sortOrderNames[i] = (String)names[i];
-     }
+         //becasue names holds also default labels as "None"
+         //these needed to be removed.
+         //counting first how many non-"None" labels are there
+
+         int relevant = 0;
+         for (int i=0; i<names.length; i++)
+           if(!((String)names[i]).equalsIgnoreCase("none"))
+             relevant++;
+
+       sortOrderNames = new String[relevant];
+       for (int i=0, j=0; i<relevant; i++){
+         String current = (String) names[j];
+         if(!current.equalsIgnoreCase("none")){
+           sortOrderNames[i] = current;
+           j++;
+         }//if
+       }//for i,j
+     }//setSortOrderNames
+
        public Object[] getSortOrderNames(){return sortOrderNames;}
 
 
