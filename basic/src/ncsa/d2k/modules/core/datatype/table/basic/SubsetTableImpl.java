@@ -291,7 +291,9 @@ public class SubsetTableImpl extends MutableTableImpl {
 				}
 				expandedColumn = col;
 			}
-		} else {
+		} else if (numRows == col.getNumRows()) {
+            expandedColumn = col;
+        } else {
 			expandedColumn.addRows(numRows);
 			expandedColumn.setLabel(col.getLabel());
 			expandedColumn.setComment(col.getComment());
@@ -305,9 +307,13 @@ public class SubsetTableImpl extends MutableTableImpl {
 			//set the elements of the column where appropriate as determined by subset
 			Object el;
 			for (int i = 0; i < subset.length; i++) {
-				el = col.getObject(i);
-				expandedColumn.setObject(el, subset[i]);
-				expandedColumn.setValueToMissing(false, subset[i]);
+                if (col.isValueMissing(i)) {
+                    expandedColumn.setValueToMissing(true, i);
+                } else {
+				    el = col.getObject(i);
+				    expandedColumn.setObject(el, subset[i]);
+				    expandedColumn.setValueToMissing(false, subset[i]);
+                }
 			}
 		}
 		newColumns[newColumns.length - 1] = expandedColumn;
