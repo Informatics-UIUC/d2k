@@ -913,8 +913,16 @@ public class ScatterPlot3D extends VisModule {
                }
 
             xCombo = new JComboBox(columnLabels);
+
             yCombo = new JComboBox(columnLabels);
+            if (columnLabels.size() > 1)
+               yCombo.setSelectedIndex(1);
+
             zCombo = new JComboBox(columnLabels);
+            if (columnLabels.size() > 2)
+               zCombo.setSelectedIndex(2);
+            else if (columnLabels.size() > 1)
+               zCombo.setSelectedIndex(1);
 
             nameField = new JTextField();
             colorPanel = new ColorPanel();
