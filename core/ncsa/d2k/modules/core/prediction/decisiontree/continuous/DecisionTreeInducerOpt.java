@@ -357,7 +357,8 @@ and the example table assigned to node2 contains the examples that the decomposi
     int numDecompositions = decompositions.length;
 
     //!!!
-    ExampleTable examples = (ExampleTable) node.examples.copy();
+    //ExampleTable examples = (ExampleTable) node.examples.copy();
+    ExampleTable examples = node.examples;
     int    numExamples = examples.getNumExamples();
 
 

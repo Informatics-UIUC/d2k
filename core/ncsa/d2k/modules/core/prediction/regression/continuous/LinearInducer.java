@@ -41,6 +41,10 @@ public class LinearInducer extends FunctionInducer
     MinOutputValue  =       bias[2];
     MaxOutputValue  =       bias[3];
   }
+  public void instantiateBiasFromProperties() {
+    // Nothing to do in this case since properties are reference directly by the algorithm and no other control
+    // parameters need be set.  This may not be the case in general so this stub is left open for future development.
+  }
 
   Object [] computeError(ExampleTable examples, boolean [] selectedInputs) throws Exception
   {

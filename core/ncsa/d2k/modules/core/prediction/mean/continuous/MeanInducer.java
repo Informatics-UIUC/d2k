@@ -17,6 +17,11 @@ public class MeanInducer extends FunctionInducer {
   public void instantiateBias(double [] bias) {
   }
 
+  public void instantiateBiasFromProperties() {
+    // Nothing to do in this case since properties are reference directly by the algorithm and no other control
+    // parameters need be set.  This may not be the case in general so this stub is left open for future development.
+  }
+
 
   public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) throws Exception {
 
