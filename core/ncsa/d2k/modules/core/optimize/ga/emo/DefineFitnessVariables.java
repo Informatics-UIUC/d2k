@@ -173,34 +173,36 @@ public class DefineFitnessVariables
         //     ccwFit.getnewConstructions());
 
         constructions = (Object[]) getLastCons();
-        EMOConstruction[] tmp = new EMOConstruction[constructions.length];
-        for (int i = 0; i < constructions.length; i++) {
-          tmp[i] = (EMOConstruction) constructions[i];
+        if(constructions != null) {
+          EMOConstruction[] tmp = new EMOConstruction[constructions.length];
+          for (int i = 0; i < constructions.length; i++) {
+            tmp[i] = (EMOConstruction) constructions[i];
 
-          float[] tmpfloat = new float[0];
-          // add an empty column of floats to the table
-          table.addColumn(tmpfloat);
-          // set the label of the new column added to the table
-          table.setColumnLabel(tmp[i].getLabel(), (table.getNumColumns() - 1));
-        }
+            float[] tmpfloat = new float[0];
+            // add an empty column of floats to the table
+            table.addColumn(tmpfloat);
+            // set the label of the new column added to the table
+            table.setColumnLabel(tmp[i].getLabel(), (table.getNumColumns() - 1));
+          }
 
-        if (data.fitnessVariableConstructions == null) {
-          data.fitnessVariableConstructions = tmp;
-        }
-        // append the new constructions onto the older constructions
-        else {
-          EMOConstruction[] tmp2 = new EMOConstruction[tmp.length +
-              data.fitnessVariableConstructions.length];
-          int i = 0;
-          for (; i < data.fitnessVariableConstructions.length; i++) {
-            tmp2[i] = data.fitnessVariableConstructions[i];
+          if (data.fitnessVariableConstructions == null) {
+            data.fitnessVariableConstructions = tmp;
           }
-          int j = 0;
-          for (; i < tmp2.length; i++) {
-            tmp2[i] = tmp[j];
-            j++;
+          // append the new constructions onto the older constructions
+          else {
+            EMOConstruction[] tmp2 = new EMOConstruction[tmp.length +
+                data.fitnessVariableConstructions.length];
+            int i = 0;
+            for (; i < data.fitnessVariableConstructions.length; i++) {
+              tmp2[i] = data.fitnessVariableConstructions[i];
+            }
+            int j = 0;
+            for (; i < tmp2.length; i++) {
+              tmp2[i] = tmp[j];
+              j++;
+            }
+            data.fitnessVariableConstructions = tmp2;
           }
-          data.fitnessVariableConstructions = tmp2;
         }
 
         pushOutput(data, 0);

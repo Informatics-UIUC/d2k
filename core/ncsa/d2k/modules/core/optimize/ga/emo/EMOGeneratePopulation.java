@@ -227,6 +227,7 @@ public class EMOGeneratePopulation
       this.maxGenerations = 2*stringLength;
       System.out.println("MaxGen: "+maxGenerations);
       this.CalculateAndSetPopulationSize();
+      //populationSize = 10;
       System.out.println("Pop Size: "+this.populationSize);
     }
     else {
@@ -290,6 +291,7 @@ public class EMOGeneratePopulation
     //and fitness function, generate the NSGA population.
     NsgaPopulation pop = new ConstrainedNsgaPopulation(xyz, oc,
         this.populationSize, this.getTargetFitness());
+    pop.setPopulationInfo(popInfo);
     //pop.setFitnessVariables(fitvarConstructions);
     pop.getPopulationInfo().fitnessVariableConstructions = fitvarConstructions;
     //pop.setFitnessFunctions(fitConstructions);
@@ -299,9 +301,31 @@ public class EMOGeneratePopulation
     //pop.setConstraintFunctions(popInfo.constraintFunctionConstructions);
     pop.getPopulationInfo().constraintFunctionConstructions = popInfo.constraintFunctionConstructions;
     //pop.setAllVarNames(populationTbl);
-    pop.getPopulationInfo().varNames = populationTbl;
+    pop.getPopulationInfo().varNames = variableNames;
     //set the maximum number of generation
     pop.setMaxGenerations(this.maxGenerations);
+
+    // remove all columns that are created by EMOConstructions
+    if(fitvarConstructions != null) {
+      for(int i = 0; i < fitvarConstructions.length; i++) {
+        removeColumn(variableNames, fitvarConstructions[i].getLabel());
+      }
+    }
+    if(fitnessFunctionConstructions != null) {
+      for(int i = 0; i < fitnessFunctionConstructions.length; i++) {
+        removeColumn(variableNames, fitnessFunctionConstructions[i].getLabel());
+      }
+    }
+    if(popInfo.constraintVariableConstructions != null) {
+      for(int i = 0; i < popInfo.constraintVariableConstructions.length; i++) {
+        removeColumn(variableNames, popInfo.constraintVariableConstructions[i].getLabel());
+      }
+    }
+    if(popInfo.constraintFunctionConstructions != null) {
+      for(int i = 0; i < popInfo.constraintFunctionConstructions.length; i++) {
+        removeColumn(variableNames, popInfo.constraintFunctionConstructions[i].getLabel());
+      }
+    }
 
     //update the third input, the mutable table,
     //by adding rows using the generated population
@@ -310,7 +334,7 @@ public class EMOGeneratePopulation
     //the rows corresponds to the member of the population
     //therefore the number of rows equal to the the number of
     //members in the population
-    populationTbl.setNumRows(populationSize);
+/*    populationTbl.setNumRows(populationSize);
     for (int i = 0; i < this.populationSize; i++) {
       double[] tabrows = (double[]) ( (pop.getMember(i)).getGenes());
       float[] ftabrows = new float[populationTbl.getNumColumns()];
@@ -321,7 +345,17 @@ public class EMOGeneratePopulation
       populationTbl.setRow(ftabrows, i);
     }
 
-    pop.setTbl(populationTbl);
+    pop.setTbl(populationTbl);*/
     this.pushOutput( (Population) pop, 0);
+  }
+
+  private void removeColumn(MutableTable t, String lbl) {
+    for(int i = 0; i < t.getNumColumns(); i++) {
+      String colLabel = t.getColumnLabel(i);
+      if(colLabel.equals(lbl)) {
+        t.removeColumn(i);
+        return;
+      }
+    }
   }
 }

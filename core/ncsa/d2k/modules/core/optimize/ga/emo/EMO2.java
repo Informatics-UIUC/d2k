@@ -22,6 +22,7 @@ public class EMO2 extends UIModule {
   public String[] getOutputTypes() {
     return new String[] {
         "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo",
+        "ncsa.d2k.modules.core.optimize.ga.emo.NsgaPopulation",
         "ncsa.d2k.modules.core.optimize.ga.emo.NsgaPopulation"};
   }
 
@@ -100,12 +101,26 @@ public class EMO2 extends UIModule {
     int maxGen = 0;
     int currentGen = 0;
 
+    MutableTable dataTable;
+
     public void setInput(Object o, int z) {
       pop = (NsgaPopulation)o;
       if(newPop) {
-        System.out.println(pop.getNumObjectives());
+        //System.out.println(pop.getNumObjectives());
         maxGen = pop.getMaxGenerations();
         newPop = false;
+
+        int numObjs = pop.getNumObjectives ();
+        NsgaSolution[] nis = (NsgaSolution []) (pop.getMembers ());
+        int num = nis.length;
+
+        dataTable = (MutableTable)DefaultTableFactory.getInstance().createTable();
+        for(int i = 0; i < numObjs; i++) {
+          dataTable.addColumn(new double[num]);
+          dataTable.setColumnLabel(pop.getObjectiveConstraints()[i].getName(),
+                               dataTable.getNumColumns()-1);
+        }
+
       }
       currentGen = pop.getCurrentGeneration();
       //System.out.println("Current Gen: "+currentGen);
@@ -118,28 +133,27 @@ public class EMO2 extends UIModule {
       nis = (NsgaSolution []) (pop.getMembers ());
       int num = nis.length;
 
-      TableImpl table = (TableImpl)DefaultTableFactory.getInstance().createTable(2);
-      // instatiate some more variables
-      double [] objx = new double [num];
-      double [] objy = new double [num];
-      // assign objective function values to objy and objx
+      //TableImpl table = (TableImpl)DefaultTableFactory.getInstance().createTable();
+
+      /*for(int i = 0; i < numObjs; i++) {
+        dataTable.addColumn(new double[num]);
+        table.setColumnLabel(pop.getObjectiveConstraints()[i].getName(),
+                             table.getNumColumns()-1);
+      }*/
+      dataTable.setNumRows(num);
+
       for (int i = 0 ; i < num ; i++) {
-          objy [i] = nis [i].getObjective (0);
-          objx [i] = nis [i].getObjective (1);
+          for(int j = 0; j < numObjs; j++) {
+            dataTable.setDouble(nis[i].getObjective(j), i, j);
+          }
       }
-
-      // create a double column out of the
-      // fitness function variables assigned to objx and objy
-      DoubleColumn f1 = new DoubleColumn (objx);
-      DoubleColumn f2 = new DoubleColumn (objy);
-      // add the columns to the table
-      table.setColumn (f1, 0);
-      table.setColumn (f2, 1);
-
-      int[] sc = new int[]{0, 1};
       //table.print();
 
-      spw.setTable(table, sc);
+      if(currentGen != maxGen-1)
+        pushOutput(pop, 2);
+
+      int[] sc = new int[]{0, 1};
+      spw.setTable(dataTable, sc);
     }
 
     private class MainView extends JPanel {
@@ -440,10 +454,10 @@ public class EMO2 extends UIModule {
                                       Color.red, scalarColumns[j], scalarColumns[i]);
                 settings.xaxis = table.getColumnLabel(scalarColumns[j]);
                 settings.yaxis = table.getColumnLabel(scalarColumns[i]);
-                settings.xmaximum = new Integer(5);
-                settings.xminimum = new Integer(-5);
-                settings.yminimum = new Integer(-5);
-                settings.ymaximum = new Integer(5);
+                settings.xmaximum = new Integer(0);
+                settings.xminimum = new Integer(-20);
+                settings.yminimum = new Integer(-20);
+                settings.ymaximum = new Integer(0);
 
                 Graph graph = createSmallGraph(table, data, settings);
                 //img = new BufferedImage(ROW_WIDTH, ROW_HEIGHT,

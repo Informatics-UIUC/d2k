@@ -703,7 +703,7 @@ abstract public class NsgaPopulation extends Population implements Serializable 
           return allVarNames;
         }*/
 
-        MutableTable tbl;
+/*        MutableTable tbl;
 
         public MutableTable getTbl() {
           return tbl;
@@ -711,7 +711,7 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 
         public void setTbl(MutableTable t) {
           tbl = t;
-        }
+        }*/
 
         public void setPopulationInfo(EMOPopulationInfo popI) {
           popInfo = popI;

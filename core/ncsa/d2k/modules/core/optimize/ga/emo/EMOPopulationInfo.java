@@ -6,7 +6,7 @@ public class EMOPopulationInfo implements java.io.Serializable {
 
   // a Table with zero rows.  the columns are the variables
   public Table varNames;
-  //public ArrEMOConstruction fitnessConstructions;
+
   public EMOConstruction[] fitnessVariableConstructions;
   public EMOConstruction[] fitnessFunctionConstructions;
 

@@ -28,36 +28,24 @@ public class EMOEvaluateModule
     return types;
   }
 
-  //private int iiEval;
-  //private ArrEMOConstruction arremoconstructions;
-  //private ArrEMOConstruction arremoconstructions1;
-  //private MutableTable newmt;
+/*  private double[] decode(BinaryIndividual binaryInd){
+    double[] doubleInd;
 
-  //initialize the variables at the begining of the itinerary
-  //public void beginExecution() {
-    //iiEval = 1;
-  //}
+    int i,l,k,m,j,iparam,nparam;
 
-  // reset the value of variables at the end of itinerary
-  //public void endExecution() {
-    //int iiEval = 1;
-  //}
+    //nparam = string length
+    l=1;
+    for(k = 0; k < nparam; k++) { // where nparam is the string length
+       iparam = 0;
+       m = 1;
+       for(j = m; j <= m+ig2(k)-1; m++){
+          l = l+1;
+          iparam = iparam + binaryInd[j]*(2*(m+ig2[k]-1-j));
+      }
+      doubleInd[k] =g0[k]+g1[k]*(double)iparam;
+    }
+   }*/
 
-  /*public boolean isReady() {
-    if ( (newmt == null) && (inputFlags[0] > 0)) {
-      return true;
-    }
-    if ( (arremoconstructions == null) && (inputFlags[1] > 0)) {
-      return true;
-    }
-    if ( (arremoconstructions1 == null) && (inputFlags[2] > 0)) {
-      return true;
-    }
-    else if (inputFlags[3] > 0) {
-      return true;
-    }
-    return false;
-  }*/
 
   /**
      Do the evaluation, using the evaluate function provided by the population
@@ -65,171 +53,99 @@ public class EMOEvaluateModule
      @param outV the array to contain output object.
    */
   public void doit() throws Exception {
-    /*if (newmt == null) {
-      newmt = (MutableTable) pullInput(0);
-      return;
-    }
-    else if (arremoconstructions == null) {
-      arremoconstructions = (ArrEMOConstruction)this.pullInput(1);
-      return;
-    }
-    else if (arremoconstructions1 == null) {
-      arremoconstructions1 = (ArrEMOConstruction)this.pullInput(2);
-      return;
-    }*/
-    //else {
-    {
-
-      // the mutable containing the population
-      // MutableTable newmttemp = (MutableTable) this.pullInput(0);
-//	if(iiEval ==1){
-//	    newmt = newmttemp;
-//	}
-
-      // the data structure containing the fitness function information
-//	ArrEMOConstruction arremoconstructionstemp1 = (ArrEMOConstruction)this.pullInput(1);
-      // if this is the first time the module is executed
-      // the incoming inputs are from the GUI and
-      //the correct input to be used and hence use them
-//	if(iiEval ==1){
-//	    arremoconstructions = arremoconstructionstemp1;
-//	}
-      //data structure containing the constraints information
-//	ArrEMOConstruction arremoconstructionstemp2 = (ArrEMOConstruction)this.pullInput(2);
-      // if this is the first time the module is executed
-      // the incoming inputs are from the GUI and
-      //the correct input to be used and hence use them
-//	if(iiEval ==1){
-//	    arremoconstructions1 = arremoconstructionstemp2;
-//	}
-      // increase the module execution counter
-      //iiEval++;
-
       // the current population of the GA run
       NsgaPopulation pop = (NsgaPopulation)this.pullInput(0);
 
-      MutableTable newmt = pop.getTbl();//pop.getAllVarNames();
+      //MutableTable newmt = pop.getTbl();//pop.getAllVarNames();
+      MutableTable newmt = (MutableTable)pop.getPopulationInfo().varNames.copy();
+
+      Individual[] individuals = pop.getMembers();
+      boolean binaryType = false;
+      if(individuals.length > 0) {
+        if(individuals[0] instanceof BinaryIndividual)
+          binaryType = true;
+        else
+          binaryType = false;
+      }
 
       int numOfvar = pop.getNumGenes();
-      for (int i = 0; i < pop.size(); i++) {
-        double[] tabrows = (double[]) ( (pop.getMember(i)).getGenes());
-        for (int j = 0; j < numOfvar; j++) {
-          newmt.setFloat( (float) tabrows[j], i, j);
+      newmt.setNumRows(pop.size());
+      if(!binaryType) {
+        for (int i = 0; i < pop.size(); i++) {
+          double[] tabrows = (double[]) ( (pop.getMember(i)).getGenes());
+          for (int j = 0; j < numOfvar; j++) {
+            newmt.setDouble(tabrows[j], i, j);
+          }
         }
+      }
+      // do the decoding so that the entries copied into the table are
+      // real-valued
+      else {
+          // we should do decoding here.
       }
 
       //extract the fitness function variables information
-      //Construction[] fitvarConstructions = arremoconstructions.
-      //    getVarConstructions();
       EMOConstruction[] fitvarConstructions = pop.getPopulationInfo().fitnessVariableConstructions;
 
       //extract the fitness function information
-      //Construction[] fitConstructions = arremoconstructions.
-      //    getFuncConstructions();
       EMOConstruction[] fitConstructions = pop.getPopulationInfo().fitnessFunctionConstructions;
 
       // update the mutable table by calculating the
       //fitness function varaibles
       for (int i = 0; i < fitvarConstructions.length; i++) {
-        int fitvarpos = 0;
-        while ( ( (fitvarConstructions[i]).getLabel()).compareTo(newmt.
-            getColumnLabel(fitvarpos)) != 0) {
-          fitvarpos++;
-        }
-        //fitpos has the column number of the corresponding
-        //fitness function variable
-        //remove that row
-        newmt.removeColumn(fitvarpos);
-        //create a column transform for the corresponding
-        //fitness function variable
-        //ColumnTransformation myvarct = new ColumnTransformation(
         AttributeTransform myvarct = new AttributeTransform(
             new Object[]{fitvarConstructions[i]});
         //apply the transformation
-        // It is important to note that transform function adds
-        // a new column to the table and hence we deleted the column
-        // corresponding to the fitness function before transforming
         myvarct.transform(newmt);
       }
 
       // update the mutable table by calculating the
-      //fitness function
+      // fitness function
       for (int i = 0; i < fitConstructions.length; i++) {
-        int fitpos = 0;
-        while ( ( (fitConstructions[i]).getLabel()).compareTo(newmt.
-            getColumnLabel(fitpos)) != 0) {
-          fitpos++;
-        }
-        //fitpos has the column number of the corresponding
-        //fitness function
-        //remove that row
-        newmt.removeColumn(fitpos);
-        //create a column transform for the corresponding
-        //fitness function
-        //ColumnTransformation myfitct = new ColumnTransformation(
         AttributeTransform myfitct = new AttributeTransform(
             new Object[]{fitConstructions[i]});
         //apply the transformation
-        // It is important to note that transform function adds
-        // a new column to the table and hence we deleted the column
-        // corresponding to the fitness function before transforming
-        myfitct.transform(newmt);
+        boolean retVal = myfitct.transform(newmt);
+        if(!retVal)
+          throw new Exception("Couldn't transform.");
+        int column = newmt.getNumColumns()-1;
+
         // after updating the mutable table, we update the
-        //population by filling in the corresponding fitness
-        //function values into it.
+        // population by filling in the corresponding fitness
+        // function values into it.
         for (int mynewii = 0; mynewii < pop.size(); mynewii++) {
-          Individual mymember = pop.getMember(i);
+          Individual mymember = pop.getMember(mynewii);
           MONumericIndividual myni = (MONumericIndividual) mymember;
-          myni.setObjective(i, newmt.getFloat(mynewii, fitpos));
+          myni.setObjective(i, newmt.getFloat(mynewii, column));
         }
       }
 
       //extract the fitness constraints variables information
-      //Construction[] fitvarConstructions1 = arremoconstructions1.
-      //    getVarConstructions();
       EMOConstruction[] constraintVarConstructions = pop.getPopulationInfo().constraintVariableConstructions;
 
       //extract the fitness constraints information
-      //Construction[] fitConstructions1 = arremoconstructions1.
-      //    getFuncConstructions();
       EMOConstruction[] constraintVariableConstructions = pop.getPopulationInfo().constraintFunctionConstructions;
 
       // update the mutable table by calculating the
-      //constraint varaibles
+      // constraint varaibles
       for (int i = 0; i < constraintVarConstructions.length; i++) {
-        int fitvarpos = 0;
-        while ( ( (constraintVarConstructions[i]).getLabel()).compareTo(newmt.
-            getColumnLabel(fitvarpos)) != 0) {
-          fitvarpos++;
-        }
-        //fitpos has the column number of the corresponding
-        //constraint variable
-        //remove that row
-        newmt.removeColumn(fitvarpos);
-        //create a column transform for the corresponding
-        //fitness function
-        //ColumnTransformation myvarct = new ColumnTransformation(
         AttributeTransform myvarct = new AttributeTransform(
             new Object[]{constraintVarConstructions[i]});
         //apply the transformation
-        // It is important to note that transform function adds
-        // a new column to the table and hence we deleted the column
-        // corresponding to the constraint variable before transforming
         myvarct.transform(newmt);
       }
 
-      // update the mutable table by calculating the
-      //constraints
+      // update the mutable table by calculating the constraints
       for (int i = 0; i < constraintVariableConstructions.length; i++) {
-        int fitpos = 0;
+        /*int fitpos = 0;
         while ( ( (constraintVariableConstructions[i]).getLabel()).compareTo(newmt.
             getColumnLabel(fitpos)) != 0) {
           fitpos++;
-        }
+        }*/
         //fitpos has the column number of the corresponding
         //constraint
         //remove that row
-        newmt.removeColumn(fitpos);
+        //newmt.removeColumn(fitpos);
         //create a column transform for the corresponding
         //constraint
         EMOFilter myfitct = new EMOFilter(
@@ -266,11 +182,8 @@ public class EMOEvaluateModule
         MONumericIndividual myni = (MONumericIndividual) mymember;
         ( (NsgaSolution) myni).setConstraint(constrvalue);
       }
-      //push the output
-      //this.pushOutput(newmt, 0);
-      //this.pushOutput(pop, 1);
+
       this.pushOutput(pop, 0);
-    }
   }
 
   /**
