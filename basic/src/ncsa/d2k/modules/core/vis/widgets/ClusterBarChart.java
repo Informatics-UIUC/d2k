@@ -120,7 +120,7 @@ public class ClusterBarChart extends BarChart implements MouseListener {
     // Impacts mapping of bins to table values
     bins = (runsize+1)*runs;
 
-    clustercolors = new Color[runs];
+    clustercolors = new Color[runsize];
     for (int index=0; index < clustercolors.length; index++)
       clustercolors[index] = getColor(index);
 
