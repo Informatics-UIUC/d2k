@@ -377,8 +377,14 @@ public class EvaluatePopulation
     }
 
     int numOfvar = pop.getNumGenes();
+      for (int i = 0; i < pop.size(); i++) {
+        double[] tabrows = pop.getMember(i).toDoubleValues();
+        for (int j = 0; j < numOfvar; j++) {
+          populationTable.setDouble(tabrows[j], i, j);
+        }
+      }
     // copy real-valued variables directly into the table
-    if (!binaryType) {
+    /*if (!binaryType) {
       for (int i = 0; i < pop.size(); i++) {
         double[] tabrows = (double[]) ( (pop.getMember(i)).getGenes());
         for (int j = 0; j < numOfvar; j++) {
@@ -404,7 +410,7 @@ public class EvaluatePopulation
 
         int curPos = 0;
 */
-        for (int k = 0; k < numTraits; k++) {
+//        for (int k = 0; k < numTraits; k++) {
 /*          int numBits = traits[k].getNumBits();
           double num = 0.0d;
           double max = dv.getVariableMax(k);
@@ -429,10 +435,10 @@ public class EvaluatePopulation
           if (num < min) {
             num = min;
           }*/
-          populationTable.setDouble(values[k], j, k);
+/*          populationTable.setDouble(values[k], j, k);
         }
       }
-    }
+    }*/
   }
 
   private static final String SPACE = " ";

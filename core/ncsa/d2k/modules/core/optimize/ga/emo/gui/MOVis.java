@@ -18,14 +18,17 @@ import javax.swing.plaf.*;
 import javax.swing.plaf.basic.*;
 import java.util.*;
 
-public class MOVis extends UIModule {
+public class MOVis
+    extends UIModule {
 
   public String[] getInputTypes() {
-    return new String[] {"ncsa.d2k.modules.core.optimize.ga.Population"};
+    return new String[] {
+        "ncsa.d2k.modules.core.optimize.ga.Population"};
   }
 
   public String[] getOutputTypes() {
-    return new String[] {"ncsa.d2k.modules.core.optimize.ga.Population"};
+    return new String[] {
+        "ncsa.d2k.modules.core.optimize.ga.Population"};
   }
 
   public String getInputInfo(int i) {
@@ -48,9 +51,11 @@ public class MOVis extends UIModule {
     return null;
   }
 
-  protected class MOView extends JUserPane {
-    protected FitnessTable [] fitnessTables;
+  protected class MOView
+      extends JUserPane {
+    protected FitnessTable[] fitnessTables;
     protected NsgaPopulation populations[];
+    
     protected RunView[] runViews;
 
     protected boolean paused = false;
@@ -66,14 +71,14 @@ public class MOVis extends UIModule {
     public void initView(ViewModule vm) {
       populations = new NsgaPopulation[4];
       fitnessTables = new FitnessTable[4];
-      for(int i = 0; i < 4; i++) {
+      for (int i = 0; i < 4; i++) {
         populations[i] = null;
         fitnessTables[i] = null;
       }
       runViews = new RunView[4];
-      for(int i = 0; i < 4; i++)
-        runViews[i] = new RunView();
-
+      for (int i = 0; i < 4; i++) {
+        runViews[i] = new RunView(i);
+      }
       setLayout(new BorderLayout());
 
       JPanel bg = new JPanel(new GridLayout(2, 2));
@@ -83,7 +88,7 @@ public class MOVis extends UIModule {
       bg.add(runViews[CUMUL_THREE]);
 
       JScrollPane jsp = new JScrollPane(bg);
-      jsp.setPreferredSize(new Dimension(750, 375));
+      jsp.setPreferredSize(new Dimension(750, 415));
       add(jsp, BorderLayout.CENTER);
 
       continueButton = new JButton("Continue");
@@ -141,15 +146,15 @@ public class MOVis extends UIModule {
     protected NsgaPopulation tmpPopulation;
 
     public void setInput(Object o, int i) {
-      NsgaPopulation p = (NsgaPopulation)o;
+      NsgaPopulation p = (NsgaPopulation) o;
 
       // if this is a new population, reset the cumulative populations
-      if(p != populations[CURRENT]) {
+      if (p != populations[CURRENT]) {
 
         // CUMUL_THREE becomes CUMUL_TWO
         populations[CUMUL_THREE] = populations[CUMUL_TWO];
         fitnessTables[CUMUL_THREE] = fitnessTables[CUMUL_TWO];
-        if(populations[CUMUL_THREE] != null) {
+        if (populations[CUMUL_THREE] != null) {
           runViews[CUMUL_THREE].setPopulationTable(fitnessTables[CUMUL_THREE]);
           runViews[CUMUL_THREE].redraw();
 
@@ -165,7 +170,7 @@ public class MOVis extends UIModule {
         // CUMUL_TWO becomes CUMUL_ONE
         populations[CUMUL_TWO] = populations[CUMUL_ONE];
         fitnessTables[CUMUL_TWO] = fitnessTables[CUMUL_ONE];
-        if(populations[CUMUL_TWO] != null) {
+        if (populations[CUMUL_TWO] != null) {
           runViews[CUMUL_TWO].setPopulationTable(fitnessTables[CUMUL_TWO]);
           runViews[CUMUL_TWO].redraw();
 
@@ -179,23 +184,25 @@ public class MOVis extends UIModule {
         }
 
         // CUMUL_ONE becomes
-        if(populations[CUMUL_ONE] == null) {
+        if (populations[CUMUL_ONE] == null) {
           //if(tmpPopulation == null)
-          if(run == 1)
+          if (run == 1) {
             tmpPopulation = populations[CURRENT];
+          }
           else if (run > 1) {
             // make a new NewNsgaPopulation from tmpPopulation and current pop
             populations[CUMUL_ONE] = new NewNsgaPopulation(tmpPopulation,
                 populations[CURRENT]);
-            ((NewNsgaPopulation)populations[CUMUL_ONE]).filtering();
+            ( (NewNsgaPopulation) populations[CUMUL_ONE]).filtering();
             // set tmpPopulation to be null
             tmpPopulation = null;
 
             // copy pop into a fitness table
             FitnessTable ft = new FitnessTable(populations[CUMUL_ONE].size(),
-                populations[CUMUL_ONE].getNumObjectives());
+                                               populations[CUMUL_ONE].
+                                               getNumObjectives());
             int rankZero = copyPopulationToTable(populations[CUMUL_ONE],
-                ft);
+                                                 ft);
             fitnessTables[CUMUL_ONE] = ft;
 
             // set the fitness table
@@ -220,31 +227,32 @@ public class MOVis extends UIModule {
         else {
           populations[CUMUL_ONE] = new NewNsgaPopulation(populations[CUMUL_ONE],
               populations[CURRENT]);
-            ((NewNsgaPopulation)populations[CUMUL_ONE]).filtering();
+          ( (NewNsgaPopulation) populations[CUMUL_ONE]).filtering();
 
-            // copy pop into a fitness table
-            FitnessTable ft = new FitnessTable(populations[CUMUL_ONE].size(),
-                populations[CUMUL_ONE].getNumObjectives());
-            int rankZero = copyPopulationToTable(populations[CUMUL_ONE],
-                ft);
-            fitnessTables[CUMUL_ONE] = ft;
+          // copy pop into a fitness table
+          FitnessTable ft = new FitnessTable(populations[CUMUL_ONE].size(),
+                                             populations[CUMUL_ONE].
+                                             getNumObjectives());
+          int rankZero = copyPopulationToTable(populations[CUMUL_ONE],
+                                               ft);
+          fitnessTables[CUMUL_ONE] = ft;
 
-            // set the fitness table
-            runViews[CUMUL_ONE].setPopulationTable(fitnessTables[CUMUL_ONE]);
+          // set the fitness table
+          runViews[CUMUL_ONE].setPopulationTable(fitnessTables[CUMUL_ONE]);
 
           // set the labels
-            StringBuffer sb = new StringBuffer(CUMULATIVE);
-            sb.append(RUN);
-            sb.append(Integer.toString(run));
+          StringBuffer sb = new StringBuffer(CUMULATIVE);
+          sb.append(RUN);
+          sb.append(Integer.toString(run));
 
-            runViews[CUMUL_ONE].runLabel.setText(sb.toString());
-            sb = new StringBuffer(POP_SIZE);
-            sb.append(Integer.toString(populations[CUMUL_ONE].size()));
-            runViews[CUMUL_ONE].sizeLabel.setText(sb.toString());
-            sb = new StringBuffer(NUM_SOL);
-            sb.append(Integer.toString(rankZero));
-            runViews[CUMUL_ONE].solutionsLabel.setText(sb.toString());
-            runViews[CUMUL_ONE].redraw();
+          runViews[CUMUL_ONE].runLabel.setText(sb.toString());
+          sb = new StringBuffer(POP_SIZE);
+          sb.append(Integer.toString(populations[CUMUL_ONE].size()));
+          runViews[CUMUL_ONE].sizeLabel.setText(sb.toString());
+          sb = new StringBuffer(NUM_SOL);
+          sb.append(Integer.toString(rankZero));
+          runViews[CUMUL_ONE].solutionsLabel.setText(sb.toString());
+          runViews[CUMUL_ONE].redraw();
         }
 
         // reset the current population
@@ -264,16 +272,14 @@ public class MOVis extends UIModule {
         sz.append(currentSize);
         runViews[CURRENT].sizeLabel.setText(sz.toString());
 
-        if(run == 1) {
+        if (run == 1) {
           objectiveNames = new String[numObj];
-          for(int j = 0; j < numObj; j++) {
+          for (int j = 0; j < numObj; j++) {
             objectiveNames[j] = p.getObjectiveConstraints()[j].getName();
           }
-          for(int j = 0; j < 4; j++) {
+          for (int j = 0; j < 4; j++) {
             runViews[j].om.setObjectiveNames(objectiveNames);
           }
-
-          Range[] ranges = p.getTraits();
         }
       }
 
@@ -285,17 +291,17 @@ public class MOVis extends UIModule {
       runViews[CURRENT].solutionsLabel.setText(rank.toString());
       runViews[CURRENT].redraw();
 
-      if(p.getCurrentGeneration() == p.getMaxGenerations()-1) {
+      if (p.getCurrentGeneration() == p.getMaxGenerations() - 1) {
         pauseExecution();
       }
 
-      if(!paused) {
+      if (!paused) {
         pushOutput(p, 0);
       }
     }
 
     /**
-     * Copy the population into the table and return the number of rank 0 solutions
+         * Copy the population into the table and return the number of rank 0 solutions
      * @param pop
      * @return
      */
@@ -303,11 +309,12 @@ public class MOVis extends UIModule {
       int size = pop.size();
       int numObj = pop.getNumObjectives();
       int numRankZero = 0;
-      for(int j = 0; j < size; j++) {
-        NsgaSolution sol = (NsgaSolution)pop.getMember(j);
-        if(sol.getRank() == 0)
+      for (int j = 0; j < size; j++) {
+        NsgaSolution sol = (NsgaSolution) pop.getMember(j);
+        if (sol.getRank() == 0) {
           numRankZero++;
-        for(int k = 0; k < numObj; k++) {
+        }
+        for (int k = 0; k < numObj; k++) {
           ft.setFitnessValue(sol.getObjective(k), j, k);
         }
       }
@@ -320,7 +327,8 @@ public class MOVis extends UIModule {
     private static final String NUM_SOL = "Number of Nondominated Solutions: ";
 
     // class that holds the jtables and the info area
-    class RunView extends JPanel {
+    class RunView
+        extends JPanel {
       protected int ROW_HEIGHT = 150;
       protected int ROW_WIDTH = 150;
       protected int NUM_ROW = 2;
@@ -331,18 +339,40 @@ public class MOVis extends UIModule {
       JLabel runLabel;
       JLabel sizeLabel;
       JLabel solutionsLabel;
+      
+      int populationIndex;
+      
+      JButton viewSelected;
 
-      RunView() {
+      RunView(int index) {
+        populationIndex = index;
         setLayout(new BorderLayout());
         om = new FitnessPlotMatrix();
         add(om, BorderLayout.CENTER);
 
         JPanel labelPanel = new JPanel(new GridLayout(3, 1));
-        labelPanel.add( (runLabel = new JLabel(" ")) );
-        labelPanel.add( (sizeLabel = new JLabel(" ")) );
-        labelPanel.add( (solutionsLabel = new JLabel(" ")) );
+        labelPanel.add( (runLabel = new JLabel(" ")));
+        labelPanel.add( (sizeLabel = new JLabel(" ")));
+        labelPanel.add( (solutionsLabel = new JLabel(" ")));
 
         add(labelPanel, BorderLayout.NORTH);
+        
+        viewSelected = new JButton("View Selected");
+        JPanel bPanel = new JPanel();
+        bPanel.add(viewSelected);
+        add(bPanel, BorderLayout.SOUTH);
+        viewSelected.setEnabled(false);
+        viewSelected.addActionListener(new AbstractAction() {
+          public void actionPerformed(ActionEvent e) {
+            TableModel tModel = om.tblModel.getSelected();
+            JTable jt = new JTable(tModel);
+            JScrollPane jsp = new JScrollPane(jt);
+            JFrame f = new JFrame();
+            f.getContentPane().add(jsp);
+            f.pack();
+            f.show();
+          }
+        });
       }
 
       void redraw() {
@@ -351,16 +381,17 @@ public class MOVis extends UIModule {
 
       void enableSelection() {
         om.enableSelection();
+        viewSelected.setEnabled(true);
       }
 
       void disableSelection() {
         om.disableSelection();
+        viewSelected.setEnabled(false);
       }
 
       void setPopulationTable(FitnessTable ft) {
         om.setPopulationTable(ft);
       }
-
 
       /**
          Shows all the Graphs in a JTable
@@ -377,24 +408,24 @@ public class MOVis extends UIModule {
         }
 
         void enableSelection() {
-          for(int i = 0; i < tblModel.plots.length; i++) {
-            for(int j = 0; j < tblModel.plots[i].length; j++) {
+          for (int i = 0; i < tblModel.plots.length; i++) {
+            for (int j = 0; j < tblModel.plots[i].length; j++) {
               tblModel.plots[i][j].enableSelection();
             }
           }
         }
 
         void disableSelection() {
-          for(int i = 0; i < tblModel.plots.length; i++) {
-            for(int j = 0; j < tblModel.plots[i].length; j++) {
+          for (int i = 0; i < tblModel.plots.length; i++) {
+            for (int j = 0; j < tblModel.plots[i].length; j++) {
               tblModel.plots[i][j].disableSelection();
             }
           }
         }
 
         void redraw() {
-          for(int i = 0; i < tblModel.plots.length; i++) {
-            for(int j = 0; j < tblModel.plots[i].length; j++) {
+          for (int i = 0; i < tblModel.plots.length; i++) {
+            for (int j = 0; j < tblModel.plots[i].length; j++) {
               tblModel.plots[i][j].redraw();
             }
           }
@@ -431,7 +462,8 @@ public class MOVis extends UIModule {
 
           for (int i = 0; i < 2; i++) {
             tblModel.setColumnSelection(i, names[i]);
-            col = (EditableHeaderTableColumn) jTable.getColumnModel().getColumn(i);
+            col = (EditableHeaderTableColumn) jTable.getColumnModel().getColumn(
+                i);
             col.setHeaderEditor(new DefaultCellEditor(combo));
             col.setHeaderValue(combo.getItemAt(i));
           }
@@ -477,7 +509,8 @@ public class MOVis extends UIModule {
           headerColumn.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
           headerColumn.getTableHeader().setReorderingAllowed(false);
           headerColumn.createDefaultColumnsFromModel();
-          headerColumn.setDefaultRenderer(String.class, new RotatedLabelRenderer());
+          headerColumn.setDefaultRenderer(String.class,
+                                          new RotatedLabelRenderer());
           headerColumn.setDefaultEditor(String.class,
                                         new DefaultCellEditor(combobox));
 
@@ -611,7 +644,8 @@ public class MOVis extends UIModule {
 
           public void setHeaderValue(Object value) {
             super.setHeaderValue(value);
-            FitnessPlotMatrix.this.tblModel.setColumnSelection(this.getModelIndex() -
+            FitnessPlotMatrix.this.tblModel.setColumnSelection(this.
+                getModelIndex() -
                 1, (String) value);
           }
 
@@ -722,7 +756,8 @@ public class MOVis extends UIModule {
 
           protected void recreateTableColumn(TableColumnModel columnModel) {
             int n = columnModel.getColumnCount();
-            EditableHeaderTableColumn[] newCols = new EditableHeaderTableColumn[n];
+            EditableHeaderTableColumn[] newCols = new EditableHeaderTableColumn[
+                n];
             TableColumn[] oldCols = new TableColumn[n];
             for (int i = 0; i < n; i++) {
               oldCols[i] = columnModel.getColumn(i);
@@ -890,7 +925,8 @@ public class MOVis extends UIModule {
       }
 
       class ComponentEditor
-          extends AbstractCellEditor implements TableCellEditor {
+          extends AbstractCellEditor
+          implements TableCellEditor {
 
         Object val;
 
@@ -912,8 +948,9 @@ public class MOVis extends UIModule {
         }
       }
 
-
-      class RotatedLabelRenderer extends JComponent implements TableCellRenderer {
+      class RotatedLabelRenderer
+          extends JComponent
+          implements TableCellRenderer {
         public RotatedLabelRenderer() {
         }
 
@@ -925,7 +962,7 @@ public class MOVis extends UIModule {
             int column) {
 //        JPanel pnl = new JPanel(new BorderLayout());
           Box box = new Box(BoxLayout.Y_AXIS);
-          ncsa.gui.RotatedLabel rot = new ncsa.gui.RotatedLabel((String)value);
+          ncsa.gui.RotatedLabel rot = new ncsa.gui.RotatedLabel( (String) value);
           box.add(box.createVerticalGlue());
           box.add(rot);
           box.add(box.createVerticalGlue());
@@ -942,7 +979,8 @@ public class MOVis extends UIModule {
          Graphs.
        */
       class ObjectiveModel
-          extends AbstractTableModel implements SelectionChangedListener {
+          extends AbstractTableModel
+          implements SelectionChangedListener {
 
         TableFitnessPlot[][] plots;
 
@@ -962,7 +1000,7 @@ public class MOVis extends UIModule {
 
           ySelections = new int[2];
           xSelections = new int[2];
-          for(int i = 0; i < 2; i++) {
+          for (int i = 0; i < 2; i++) {
             ySelections[i] = i;
             xSelections[i] = i;
           }
@@ -984,13 +1022,48 @@ public class MOVis extends UIModule {
          * @return
          */
         TableModel getSelected() {
-          return null;
+          // get the list of selected index
+          int[] selected = plots[0][0].fitnessTable.getSelectedRows();
+          // get the population table
+          Population p = MOView.this.populations[populationIndex];
+          Table t = p.getTable();
+          
+          return new SelectedTableModel(t, selected);
+        }
+        
+        class SelectedTableModel extends DefaultTableModel {
+          Table tbl;  
+          int[] selectedRows;
+          
+          SelectedTableModel(Table t, int[] rows) {
+            tbl = t;
+            selectedRows = rows;
+          }
+          
+          public int getRowCount() {
+            if(selectedRows != null)
+              return selectedRows.length;
+            else 
+              return 0;
+          }
+          
+          public int getColumnCount() {
+            return tbl.getNumColumns();  
+          }
+          
+          public String getColumnName(int i) {
+            return tbl.getColumnLabel(i);
+          }
+          
+          public Object getValueAt(int r, int c) {
+            return tbl.getString(selectedRows[r], c);
+          }
         }
 
         void reinit() {
           // now, for all the plots in this row, update the objectives
           for (int i = 0; i < 2; i++) {
-            for(int j = 0; j < 2; j++) {
+            for (int j = 0; j < 2; j++) {
               plots[i][j].setObjectives(i, j);
             }
           }
@@ -1014,7 +1087,6 @@ public class MOVis extends UIModule {
 
           // now, for all the plots in this row, update the objectives
           for (int i = 0; i < 2; i++) {
-            //plots[index][i].setObjectives(val, ySelections[i]);
             plots[index][i].setObjectives(xSelections[i], val);
             plots[index][i].redraw();
           }
@@ -1033,7 +1105,6 @@ public class MOVis extends UIModule {
 
           // now, for all the plots in this column, update the objectives
           for (int i = 0; i < 2; i++) {
-            //plots[i][index].setObjectives(xSelections[i], val);
             plots[i][index].setObjectives(val, ySelections[i]);
             plots[i][index].redraw();
           }
@@ -1046,40 +1117,17 @@ public class MOVis extends UIModule {
           for (int i = 0; i < names.length; i++) {
             nameToIndexMap.put(names[i], new Integer(i));
           }
-          /*for (int i = 0; i < 2; i++) {
-            setRowSelection(i, objectiveNames[i]);
-            setColumnSelection(i, objectiveNames[i]);
-          }*/
         }
 
         void setPopulationTable(FitnessTable popTable) {
           for (int i = 0; i < plots.length; i++) {
             for (int j = 0; j < plots[i].length; j++) {
-//              ( (ObjectiveScatterPlot) plots[i][j]).setTable(popTable);
-              //( (ObjectiveScatterPlot) plots[i][j]).setObjectives(xSelections[i],
-              //    ySelections[j]);
-//              ( (ObjectiveScatterPlot) plots[i][j]).setObjectives(xSelections[j],
-//                  ySelections[i]);
               plots[i][j].setTable(popTable);
               plots[i][j].redraw();
             }
           }
           fireTableDataChanged();
         }
-
-/*        void setPopulation(NsgaPopulation p) {
-          for (int i = 0; i < plots.length; i++) {
-            for (int j = 0; j < plots[i].length; j++) {
-//              ( (ObjectiveScatterPlot) plots[i][j]).setPopulation(p);
-              //( (ObjectiveScatterPlot) plots[i][j]).setObjectives(xSelections[i],
-              //    ySelections[j]);
-//              ( (ObjectiveScatterPlot) plots[i][j]).setObjectives(xSelections[j],
-//                  ySelections[i]);
-            }
-          }
-          //this.fireTableDataChanged();
-          fireTableDataChanged();
-        }*/
 
         /**
            There is one more column than there are input features.
@@ -1123,9 +1171,6 @@ public class MOVis extends UIModule {
 
         public void setValueAt(Object value, int row, int col) {
           if (col == 0) {
-            //rowheaders[row] = (String) value;
-            //ScatterPlotWidget.this.setup();
-            //ScatterPlotWidget.this.revalidate();
             setRowSelection(row, (String) value);
           }
         }
@@ -1146,7 +1191,6 @@ public class MOVis extends UIModule {
         }
       } // Objective Model
 
-
-    }
-  }
+    } // Run View
+  } // MO View
 }
