@@ -48,7 +48,7 @@ public class ADTBinColumns extends HeadlessUIModule {
       return "<html>  <head>      </head>  <body>"
          + "<P><b>Overview:</B> This module allows a user to interactively bin data using counts stored in an ADTree.</P>"
          + "<P><B>Detailed Description:</B> Numeric data cannot be binned."
-         + "The user may bin only nominal data.</P>"
+         + " The user may bin only nominal data.</P>"
          + "<P>For further information on how to use this module the user may click on the \"Help\" button during run time and get detailed description of each functionality.</P>"
          + "<P><B>Data Handling:</b><BR> This module does not change its input. Rather than that it outputs a Transformation that can be then applied to the data.</P>"
          + "</body></html>";
@@ -1841,4 +1841,7 @@ class ADTBinCounts implements BinCounts {
  *
  *           missing values are considered as '?', and therefore are listed in the
  *           unique values list. [bug 134] the bug is in support class ADTree.
+ *
+ * 11-21-03 The modules treats Table and ExampleTable the same. it ignores the
+ *          selection of input/output features. [bug 136]
  */

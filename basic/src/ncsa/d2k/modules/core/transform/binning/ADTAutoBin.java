@@ -97,16 +97,26 @@ public class ADTAutoBin extends DataPrepModule {
 
 	public String getModuleInfo() {
 		String s =
-			"<p>Overview: Automatically discretize nominal data for the "
-				+ "Naive Bayesian classification model using ADTrees. "
-				+ "<p>Detailed Description: Given an ADTree and an Example table containing labels and "
-				+ "types of the columns, define the bins for each nominal input column, one bin "
-				+ "for each unique value in the column."
-				+ "<p>Properties: none"
-				+ "<p>Data Type Restrictions: This module does not bin numeric data. It does not modify data.";
+                "<p>Overview: Automatically discretize nominal data for the "
+                + "Naive Bayesian classification model using ADTrees. "
+                + "<p>Detailed Description: Given an ADTree and an Example table containing labels and "
+                + "types of the columns, define the bins for each nominal input column, one bin "
+                + "for each unique value in the column."
+                + "<P>Data Handling: This module does not change its input. "
+                +"Rather, it outputs a Transformation that can later be applied to the tree."
+                +" The Transformation will be applied only to the input/output features defined by "
+                + "the <i>Meta Data Example Table</i>."
+                + "<p><u>Note</u>: The output of this modules should be used "
+                + "to create a binned tree. Applying the Transformation on a Table "
+                + "won't change the Table's content."
+                + "<p>Data Type Restrictions: This module does not bin numeric data.";
 		return s;
 	}
 
+
+        /**
+         * Rather, it outputs a Transformation that can later be applied to the original table data
+         */
 
 	ADTree adt;
 	ExampleTable tbl;

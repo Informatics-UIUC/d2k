@@ -78,11 +78,18 @@ public class AutoBinOPT
         "scalar input column.  Nominal input columns will have a bin defined " +
         "for each unique value in the column." +
         "<p>Data Type Restrictions: This module does not modify the input data." +
+
+
+
+
         "<p>Data Handling: When binning scalar columns by the number of bins, " +
         "the maximum and minimum values of each column must be found.  When " +
         "binning scalar columns by weight, the data in each individual column " +
         "is first sorted using a merge sort and then another pass is used to " +
         "find the bounds of the bins." +
+
+
+
         "<p>Scalability: The module requires enough memory to make copies of " +
         "each of the scalar input columns.";
     return s;
@@ -171,6 +178,7 @@ public class AutoBinOPT
 
 
   protected BinDescriptor[] numberOfBins(int num) throws Exception {
+
     List bins = new ArrayList();
     String[] an = new String[inputs.length];
     for (int i = 0; i < inputs.length; i++) {
@@ -239,6 +247,8 @@ public class AutoBinOPT
   }
 
   protected BinDescriptor[] sameWeight(int weight) throws Exception {
+
+
     List bins = new ArrayList();
 
        String[] an = new String[inputs.length];
@@ -292,14 +302,15 @@ public class AutoBinOPT
           // add the value at this index to the list
           //Double dbl = new Double(vals[curIdx]);
           list.add(vals[curIdx]);
-        }
+        }//while curIdx
+
         double[] binMaxes = new double[list.size()];
         for (int j = 0; j < binMaxes.length; j++) {
           binMaxes[j] = list.get(j);
-
           // now we have the binMaxes.  add the bins to the bin tree.
           // add the first one manually
         }
+
 
         BinDescriptor bd = BinDescriptorFactory.createMinNumericBinDescriptor(inputs[i],
             binMaxes[0], nf, tbl);
