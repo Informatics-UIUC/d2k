@@ -30,39 +30,11 @@ public class ColumnConstruction extends UIModule {
 /******************************************************************************/
 
    public String getModuleName() {
-      return "Construct New Columns";
+      return "DO NOT USE _ SEE Attribute Construction";
    }
 
    public String getModuleInfo() {
-      // return "Allows the user to construct new columns from operations on existing columns.";
-      StringBuffer sb = new StringBuffer("<p>Overview: ");
-      sb.append("This module provides a GUI that enables the user to construct ");
-      sb.append("new columns in a table from operations on existing columns.");
-      sb.append("</p>");
-      sb.append("<p>Detailed Description: ");
-      sb.append("This module provides a GUI used to specify expression strings. ");
-      sb.append("These expressions are interpreted as operations on existing ");
-      sb.append("columns in the table and are used to construct new columns. ");
-      sb.append("When the GUI is dismissed, the information needed to construct ");
-      sb.append("these new columns is encapsulated in a <i>Transformation</i> ");
-      sb.append("object that can be applied downstream in order to actually ");
-      sb.append("add the new columns to the table.");
-      sb.append("</p><p>");
-      sb.append("The available operations on numeric columns are addition, ");
-      sb.append("subtraction, multiplication, division, and modulus. The ");
-      sb.append("operations available on boolean columns are AND and OR.");
-      sb.append("</p><p>Data Type Restrictions: ");
-      sb.append("Column construction operations can only be performed on the ");
-      sb.append("numeric and boolean columns of a table. Other columns will ");
-      sb.append("be ignored, but they will not be modified.");
-      sb.append("</p><p>Data Handling: ");
-      sb.append("This module <i>might</i> immediately modify the table: ");
-      sb.append("columns with blank labels will be assigned default ones. ");
-      sb.append("Other than that, this module does not modify its input data. ");
-      sb.append("Rather, its output is a <i>Transformation</i> that can then ");
-      sb.append("be used to modify the table.");
-      sb.append("</p>");
-      return sb.toString();
+      return "MODULE GOING AWAY _ SEE Attribute Construction";
    }
 
    public String[] getInputTypes() {
