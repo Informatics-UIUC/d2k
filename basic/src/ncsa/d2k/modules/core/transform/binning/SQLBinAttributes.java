@@ -134,7 +134,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
         }
     }
 
-/*	public boolean isReady() {
+	public boolean isReady() {
 			  if (!isInputPipeConnected(3)) {
 				return (getInputPipeSize(0)>0 &&
 						getInputPipeSize(1)>0 &&
@@ -142,7 +142,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
 			  }
 			  return super.isReady();
 			}
-			*/
+		
     /**
      * Get the data types for the input parameters
      * @return Connection Wrapper, list of columns chosed, table name, where clause

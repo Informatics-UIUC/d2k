@@ -15,8 +15,15 @@ final public class ColumnUtilities {
 	*/
 	public static DoubleColumn toDoubleColumn(Column sc) {
 		DoubleColumn dc = new DoubleColumn(sc.getNumRows());
+        try {
 		for(int i = 0; i < sc.getNumRows(); i++)
 			dc.setDouble(sc.getDouble(i), i);
+        } catch (NumberFormatException nfe) {
+            
+            // This column is not numberic.
+            for(int i = 0; i < sc.getNumRows(); i++)
+                dc.setDouble(0.0, i);
+        }
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
 		ColumnUtilities.copyMissingValues(sc, dc);
@@ -51,8 +58,15 @@ final public class ColumnUtilities {
 	*/
 	public static LongColumn toLongColumn(Column sc) {
 		LongColumn dc = new LongColumn(sc.getNumRows());
-		for(int i = 0; i < sc.getNumRows(); i++)
-			dc.setLong(sc.getLong(i), i);
+        try {
+    		for(int i = 0; i < sc.getNumRows(); i++)
+    			dc.setLong(sc.getLong(i), i);
+        } catch (NumberFormatException nfe) {
+                
+            // This column is not numberic.
+            for(int i = 0; i < sc.getNumRows(); i++)
+                dc.setLong(0, i);
+        }
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
 		ColumnUtilities.copyMissingValues(sc, dc);
@@ -67,8 +81,16 @@ final public class ColumnUtilities {
 	*/
 	public static ShortColumn toShortColumn(Column sc) {
 		ShortColumn dc = new ShortColumn(sc.getNumRows());
-		for(int i = 0; i < sc.getNumRows(); i++)
-			dc.setShort(sc.getShort(i), i);
+		try {
+            for(int i = 0; i < sc.getNumRows(); i++)
+			    dc.setShort(sc.getShort(i), i);
+        } catch (NumberFormatException nfe) {
+            
+            // This column is not numberic.
+            for(int i = 0; i < sc.getNumRows(); i++)
+                dc.setShort((short) 0, i);
+        }
+
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
 		ColumnUtilities.copyMissingValues(sc, dc);
@@ -83,8 +105,15 @@ final public class ColumnUtilities {
 	*/
 	public static FloatColumn toFloatColumn(Column sc) {
 		FloatColumn dc = new FloatColumn(sc.getNumRows());
-		for(int i = 0; i < sc.getNumRows(); i++)
-			dc.setFloat(sc.getFloat(i), i);
+		try {
+            for(int i = 0; i < sc.getNumRows(); i++)
+			    dc.setFloat(sc.getFloat(i), i);
+        } catch (NumberFormatException nfe) {
+            
+            // This column is not numberic.
+            for(int i = 0; i < sc.getNumRows(); i++)
+                dc.setFloat((float) 0.0, i);
+        }
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
 		ColumnUtilities.copyMissingValues(sc, dc);
