@@ -635,22 +635,43 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      //assuming the expression could be malformed.
      //if it has at least 3 more tokens then there is still yet another
      //sub expression to parse.
+     String currentToken = null;
      while((first && tok.countTokens() >= 3) || (!first && tok.countTokens() >= 4)){
-       boolean added = false;
-       String currentToken = tok.nextToken();
-       if(currentToken == null) continue;
-       //now currentToken holds the attribute name
-       if(availableAttributes.containsKey(currentToken)){
-         if(!first)
-           goodCondition += " " + tok.nextToken();
+
+     boolean added = false;
+
+
+     String joint = null;
+         if(!first){ //meaning the following token is "and" or "or".
+
+       joint = tok.nextToken();
+
+       //debug
+       System.out.println("joint = " + joint);
+       //end debug
+
+           goodCondition += " " + joint + " ";
+         }//if !first
           else first = false;
+
+          currentToken = tok.nextToken();
+          if(availableAttributes.containsKey(currentToken)){
 
          goodCondition += currentToken + " ";
          //parsing the relation and the value
-         goodCondition += tok.nextToken() + " ";
 
-         goodCondition += tok.nextToken();
+         //debug
+
+         String rel = tok.nextToken();
+         System.out.println("relation = "  + rel);
+         goodCondition +=  rel + " ";
+
+         String val = tok.nextToken();
+         System.out.println("value = "  + val);
+         goodCondition += val;
+
          added = true;
+
        }//if contain key
 
  //could be that the value is left side of expression and the attribute is a right side
@@ -660,21 +681,38 @@ public class SQLFilterConstruction extends HeadlessUIModule {
          String relation = tok.nextToken();
          String attribute = tok.nextToken();
 
+         //debug
+         System.out.println("attribute = " + attribute);
+         System.out.println("relation = " + relation);
+         System.out.println("value = " + value);
+         //end debug
+
          if (availableAttributes.containsKey(attribute)) {
-           if (!first)
-             goodCondition += " ";
-           else
-             first = false;
+
 
            goodCondition += attribute + " ";
            //parsing the relation and the value
            goodCondition += relation + " ";
            goodCondition += value;
+
            added = true;
+
          }//if contain key
 
        }//else
 
+       if(!added && joint != null){
+         //now the joint that was added should be taken off
+         int index = goodCondition.lastIndexOf(joint);
+
+         String temp = goodCondition.substring(0, index);
+
+         //debug
+         System.out.println("had to remove last joint. temp condition = " + temp);
+         //debug
+         goodCondition = temp;
+
+       }//if !added
 
        //debug
        System.out.println(goodCondition);
