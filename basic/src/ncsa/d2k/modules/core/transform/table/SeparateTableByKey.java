@@ -181,7 +181,10 @@ public class SeparateTableByKey extends DataPrepModule {
 				tables [i] = t;
 			}
 		}
-		this.pushOutput (tables[currentTable++], 0);
+           this.pushOutput (tables[currentTable++], 0);
+           if (currentTable == tables.length) {
+             this.beginExecution();
+           }
 	}
 
 	public PropertyDescription[] getPropertiesDescriptions () {

@@ -108,6 +108,9 @@ public abstract class Graph extends JPanel {
       this.sets = sets;
       this.settings = settings;
 
+// Added by Ritesh ..Error- When adding inside another pane, the size of Chart becomes 0,0
+      this.setPreferredSize(new Dimension(400,400));
+
       xStringLookup = new HashMap[table.getNumColumns()];
       yStringLookup = new HashMap[table.getNumColumns()];
 

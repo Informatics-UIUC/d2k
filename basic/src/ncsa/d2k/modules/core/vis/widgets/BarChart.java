@@ -18,7 +18,7 @@ public class BarChart extends Chart
 
   // private variable
   // Added by Ritesh
-  boolean debug = true;
+  boolean debug = false;
 
   // Minimum and maximum scale values
   protected double xminimum, xmaximum;
