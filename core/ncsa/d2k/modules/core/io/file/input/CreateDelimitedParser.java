@@ -249,6 +249,7 @@ public class CreateDelimitedParser extends InputModule {
                 if(!lblbtn.isSelected()) {
                     setLabelsRow(-1);
                     setHasLabels(false);
+                    didChange = true;
                 }
                 else {
                     String lrow = lblrow.getText();
@@ -274,6 +275,7 @@ public class CreateDelimitedParser extends InputModule {
                 if(!typbtn.isSelected()) {
                     setTypesRow(-1);
                     setHasTypes(false);
+                    didChange = true;
                 }
                 else {
                     String trow = typrow.getText();
@@ -299,6 +301,7 @@ public class CreateDelimitedParser extends InputModule {
                 if(!delim.isSelected()) {
                     setHasSpecDelim(false);
                     setSpecDelim(null);
+                    didChange = true;
                 }
                 else {
                     String dd = null;
