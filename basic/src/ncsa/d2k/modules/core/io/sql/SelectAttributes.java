@@ -11,7 +11,7 @@ import ncsa.d2k.userviews.swing.*;
 /**
 	SelectAttributes.java
 */
-public class SelectAttributes extends ncsa.d2k.core.modules.UIModule {
+public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 
   JOptionPane msgBoard = new JOptionPane();
 
@@ -227,6 +227,7 @@ public class SelectAttributes extends ncsa.d2k.core.modules.UIModule {
 						retVal[i] = (String)values[i];
                                           }
                                           pushOutput(retVal, 0);
+                                          setSelectedAttributes(retVal);
                                           viewDone("Done");
                                         }
 				}
@@ -281,6 +282,33 @@ public class SelectAttributes extends ncsa.d2k.core.modules.UIModule {
 			selectedAttributes.setPrototypeCellValue(longest);
 		}
 	}
+
+        //headless conversion support
+        private String[] selectedAttributes;
+        public void setSelectedAttributes(Object[] att){selectedAttributes = (String[])att;}
+        public Object[] getSelectedAttributes( ){return selectedAttributes;}
+
+        protected void doit() throws Exception{
+
+          Vector availableAttributes = (Vector)pullInput(0);
+          int numTarget = 0;  //counter for elements in intersection of selectedAttributes and availableAttributes.
+          for(int i=0; i<selectedAttributes.length; i++)
+            if(availableAttributes.contains(selectedAttributes[i]))
+              numTarget++;
+
+          String[] targetAttributes = new String[numTarget];
+          int j =0;
+          for (int i=0; i<selectedAttributes.length; i++)
+            if(availableAttributes.contains(selectedAttributes[i])){
+              targetAttributes[j] = selectedAttributes[i];
+              j++;
+            }//if
+
+          pushOutput(targetAttributes, 0);
+
+
+        }//doit
+        //headless conversion support
 }
 
 // QA Comments
