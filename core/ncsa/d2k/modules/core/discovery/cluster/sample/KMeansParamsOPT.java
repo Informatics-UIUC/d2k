@@ -73,11 +73,11 @@ public class KMeansParamsOPT
    */
   public String getInputInfo(int parm1) {
     if (parm1 == 0) {
-      return "Control Parameters";
+      return "Control parameters.";
     } else if (parm1 == 1) {
-      return "Table of Entities to Cluster";
+      return "Table of entities to cluster.";
     } else {
-      return "";
+      return "No such input.";
     }
   }
 
@@ -88,11 +88,11 @@ public class KMeansParamsOPT
    */
   public String getInputName(int parm1) {
     if (parm1 == 0) {
-      return "ParameterPoint";
+      return "Parameter Point";
     } else if (parm1 == 1) {
       return "Table";
     } else {
-      return "";
+      return "No such input";
     }
   }
 
@@ -115,27 +115,38 @@ public class KMeansParamsOPT
    */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "The KMeans clustering algorithm is an approach where a sample ";
-    s += "of size num_clusters is chosen at random from the input table ";
-    s += "of examples.  These samples form vectors in the eaxmple space and are used as the initial ";
-    s += "\"means\" for the cluster assignment module. ";
-    s += "The assignment module, once it has made refinements, outputs the final cluster model. ";
+    s += "This module is used to set control parameters for the KMeans clustering algorithm. ";
+    s += "The complete KMeans algorithm is implemented by this module and two others. ";
     s += "</p>";
 
     s += "<p>Detailed Description: ";
-    s += "This algorithm is comprised of three modules: this module (KMeansParams), the sampler ";
-    s += "(SampleTableRowsOPT), and the cluster refiner ";
-    s += "(ClusterAssignment).";
+    s += "The KMeans clustering algorithm is an approach where a sample set of ";
+    s += "<i>Number of Clusters</i> rows are chosen from an input table of examples, and ";
+    s += "used as initial cluster centers. ";
+    s += "These initial clusters are refined by a series of assignment passes, resulting in a ";
+    s += "final cluster model. ";
+    s += "</p>";
+
+    s += "<p>";
+    s += "The KMeans algorithm implementation is comprised of three modules. ";
+    s += "This module, <i>KMeans Parameters</i>, is used to set control parameters for the ";
+    s += "algorithm. ";
+    s += "A second module, <i>Sample Table Rows</i>, builds the sample set from the input <i>Table</i>. ";
+    s += "The third module, <i>Cluster Assignment</i>, refines the initial clusters in a series of assignment passes. ";
+    s += "The control parameters set in this module determine the behavior of the <i>Sample Table Rows</i> ";
+    s += "and <i>Cluster Assignment</i> modules. ";
+    s += "Control parameters are updated via the property editor. ";
     s += "</p>";
 
     s += "<p>Data Handling: ";
-    s += "The input table is not modified by this algorithm, however it is include as part of ";
-    s += "the ClusterModel that is created.";
+    s += "The input table is not modified by this algorithm. However, it is passed on to the other modules via ";
+    s += "the <i>Table</i> output port, ";
+    s += "and included as part of the <i>Cluster Model</i> that is created.";
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "This algortihm runs in time O(num_examples).  See the component modules ";
-    s += "information to understand the memory requirements overall.";
+    s += "This algorithm runs in time O(num_examples).  See the information for the component modules ";
+    s += "to understand the overall memory requirements.";
     s += "</p>";
     return s;
   }
@@ -147,13 +158,13 @@ public class KMeansParamsOPT
    */
   public String getOutputInfo(int parm1) {
     if (parm1 == 0) {
-      return "Parameters for Cluster Assignment";
+      return "Parameters for Cluster Assignment module.";
     } else if (parm1 == 1) {
-      return "Parameters for Sample Table Rows";
+      return "Parameters for Sample Table Rows module.";
     } else if (parm1 == 2) {
-      return "Table of entities to cluster";
+      return "Table of entities to cluster, unchanged by module.";
     } else {
-      return "";
+      return "No such output.";
     }
   }
 
@@ -170,7 +181,7 @@ public class KMeansParamsOPT
     } else if (parm1 == 2) {
       return "Table";
     } else {
-      return "";
+      return "No such output";
     }
   }
 
@@ -230,3 +241,9 @@ public class KMeansParamsOPT
     this.pushOutput(pp, 1);
   }
 }
+
+// Start QA Comments
+// 4/6/03 - QA Started by Ruth
+//        - Updated module info and some formatting changes for consistency.
+// 
+// End QA Comments

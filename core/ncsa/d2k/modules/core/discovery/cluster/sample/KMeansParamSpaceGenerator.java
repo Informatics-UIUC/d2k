@@ -53,9 +53,8 @@ public class KMeansParamSpaceGenerator extends AbstractParamSpaceGenerator {
    * @return a name
    */
   public String getModuleName() {
-    return "KMeans Space Generator";
+    return "KMeans Parameter Space Generator";
   }
-
 
   /**
    * Return a list of the property descriptions.
@@ -63,16 +62,7 @@ public class KMeansParamSpaceGenerator extends AbstractParamSpaceGenerator {
    */
   public PropertyDescription[] getPropertiesDescriptions() {
     PropertyDescription[] pds = new PropertyDescription[6];
-    pds[0] = new PropertyDescription(NUM_CLUSTERS,
-                                     "Number of Clusters",
-        "This property specifies the number of clusters to form (>= 2).");
-    pds[1] = new PropertyDescription(SEED,
-                                     "Seed",
-                                     "The seed for the random number generater used to select the random sampling of table rows. If this value is set to the same value for different runs, the results be the exact same.");
-    pds[2] = new PropertyDescription(USE_FIRST,
-                                     "Use First",
-                                     "If this option is selected, the first entries in the original table will be used as the sample.");
-    pds[3] = new PropertyDescription(CLUSTER_METHOD,
+    pds[0] = new PropertyDescription(CLUSTER_METHOD,
                                      "Clustering Method",
         "The method to use for determining the distance between two clusters. " +
         "<p>WARDS METHOD: Use a minimum variance approach that sums the squared error " +
@@ -83,9 +73,23 @@ public class KMeansParamSpaceGenerator extends AbstractParamSpaceGenerator {
         "<p>WPGMA: Weighted pair group method using arithmetic averages.</p>" +
         "<p>UPGMC: Unweighted pair group method using centroids.</p>" +
         "<p>WPGMC: Weighted pair group method using centroids.</p>");
+    pds[1] = new PropertyDescription(SEED,
+                                     "Random Seed",
+        "The seed for the random number generater used to select the set of <i>Number of Clusters</i> " +
+        "table rows that defines the initial cluster centers. " +
+        "If the same seed is used across runs with the same input table, the same sets will be identical . " +
+        "If <i>Use First Rows</i> is selected, this seed is not used. ");
+    pds[2] = new PropertyDescription(USE_FIRST,
+                                     "Use First Rows",
+        "If this option is selected, the first <i>Number of Clusters</i> entries in the input table " +
+        "will be used as the initial cluster centers, " +
+        "rather than selecting a random set of table rows. ");
+    pds[3] = new PropertyDescription(NUM_CLUSTERS,
+                                     "Number of Clusters",
+        "This property specifies the number of clusters to form. It must be greater than 1.");
     pds[4] = new PropertyDescription(DISTANCE_METRIC,
                                      "Distance Metric",
-        "This property determine the type of distance fucntion used to calculate " +
+        "This property determines the type of distance function to use in calculating the " +
         "distance between two examples." +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +
@@ -93,8 +97,16 @@ public class KMeansParamSpaceGenerator extends AbstractParamSpaceGenerator {
         );
     pds[5] = new PropertyDescription(MAX_ITERATIONS,
                                      "Number of Assignment Passes",
-                                     "This property specifies the number of iterations of cluster refinement to perform (> 0).");
+        "This property specifies the number of iterations of cluster refinement to perform.  " +
+        "It must be greater than 0.");
     return pds;
   }
 
 }
+
+// Start QA Comments
+// 4/6/03 - Ruth started QA
+//        - Reordered Property Descriptions & words to match KMeansParams.
+//        - Updated Module Name
+//
+// End QA Comments

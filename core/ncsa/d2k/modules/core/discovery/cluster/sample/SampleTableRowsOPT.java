@@ -79,7 +79,7 @@ public class SampleTableRowsOPT
      @return A description of this module.
    */
   public String getModuleInfo() {
-    return "Overview: This version of this module takes an additional input that is a ParameterPoint" +
+    return "Overview: This version of this module takes an additional input that is a Parameter Point" +
         " representing the properties (or control parameters) for this module.  Creates a sample of the" +
         " given Table, by either randomly selecting     rows, or using" +
         " the first rows.<p>Detailed Description: This module will take the inputs table, and select <i>" +
@@ -146,7 +146,7 @@ public class SampleTableRowsOPT
   public String getInputName(int i) {
     switch (i) {
       case 0:
-        return "ParameterPoint";
+        return "Parameter Point";
       case 1:
         return "Table";
       default:
@@ -203,7 +203,13 @@ public class SampleTableRowsOPT
     Table newTable = null;
 
     if (N > (orig.getNumRows()-1)){
-      throw new Exception("SampleTableRows: Sample size is >= the number of table rows.  Use a smaller value.");
+      int numRows = orig.getNumRows() - 1;
+      throw new Exception( "SampleTableRows: " +
+			   "Sample size (" + N +
+			   ") is >= the number of rows in the table (" + numRows +
+			   "). \n" +
+ 			   "Use a smaller sample size.");
+
     }
 
     System.out.println("Sampling " + N + " rows from a table of " +
@@ -273,3 +279,7 @@ public class SampleTableRowsOPT
 //  }
 
 }
+
+// Start QA Comments
+// 4/6/03 - Ruth started QA
+//        - Changed message for case where #samples too big (more info)
