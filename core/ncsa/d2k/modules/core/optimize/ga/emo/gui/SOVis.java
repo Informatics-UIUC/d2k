@@ -34,7 +34,7 @@ public class SOVis extends UIModule {
   }
 
   public String getInputName(int i) {
-    return "Population";
+    return "EMOPopulation";
   }
 
   public String getOutputInfo(int i) {
@@ -50,8 +50,14 @@ public class SOVis extends UIModule {
     }
   }
 
-  public String getOutputName() {
-    return "Population";
+  public String getOutputName(int i) {
+    if(i == 0)
+      return "EMOPopulation";
+    if(i == 1)
+      return "Decision Variables";
+    if(i == 2)
+      return "Genes";
+    return "";
   }
 
   public String getModuleInfo() {

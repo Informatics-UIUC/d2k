@@ -4,7 +4,7 @@ import ncsa.d2k.modules.core.optimize.ga.crossover.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
- *
+ * A extension of SimulatedBinaryCrossover that exposes the property N.
  * @author David Clutter
  * @version 1.0
  */

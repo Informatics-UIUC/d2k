@@ -4,12 +4,7 @@ import ncsa.d2k.modules.core.optimize.ga.crossover.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
- * A special subclass of CrossoverModule that gets its properties
- * from the EMOPopulationParams.  This class implements the Crossover interface
- * so that the performCrossover() method can be called by EMOCrossover.
- *
- * This module can be placed in an itinerary or used by EMOCrossover.
- *
+ * An extends of Crossover that can be used in EMO.
  * @author David Clutter
  * @version 1.0
  */

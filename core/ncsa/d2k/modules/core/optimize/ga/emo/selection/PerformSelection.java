@@ -25,8 +25,16 @@ public class PerformSelection extends ComputeModule {
     return "";
   }
 
+  public String getInputName(int i) {
+    return "EMOPopulation";
+  }
+
   public String getOutputInfo(int i) {
     return "";
+  }
+
+  public String getOutputName(int i) {
+    return "EMOPopulation";
   }
 
   public String getModuleInfo() {

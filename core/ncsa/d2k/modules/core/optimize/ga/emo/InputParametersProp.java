@@ -10,6 +10,15 @@ import ncsa.d2k.modules.core.optimize.ga.emo.mutation.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.selection.*;
 
+/**
+ * Input all the parameters for EMO in a property editor instead of a UI module.
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2002</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
 public class InputParametersProp extends DataPrepModule {
 
   public String[] getInputTypes() {

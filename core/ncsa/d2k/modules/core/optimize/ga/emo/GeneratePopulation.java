@@ -8,7 +8,10 @@ import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
- * Generate a population.
+ * Generate a population.  The population created depends on the number of
+ * objectives -- SOPopulation for one objective, NsgaPopulation for multiple
+ * objectives.  If a seeding is present, this will set the first N individuals
+ * with the seed values, where N is the number of seeds.
  */
 public class GeneratePopulation
     extends ComputeModule {
@@ -36,11 +39,16 @@ public class GeneratePopulation
   }
 
   public String getOutputName(int i) {
-    return "Population";
+    return "EMOPopulation";
   }
 
   public String getModuleInfo() {
-    return "";
+    String s = "Generate a population.  The population created depends on the ";
+        s += "number of objectives -- SOPopulation for one objective, ";
+        s += "NsgaPopulation for multiple objectives.  If a seeding is ";
+        s += "present, this will set the first N individuals with the seed ";
+        s += "values, where N is the number of seeds.";
+    return s;
   }
 
   /** the total number of fitness functions defined */

@@ -249,6 +249,9 @@ public class DefineExternalConstraints extends UIModule {
       Constrain.setConstraints(mainPanel, weight, 1, 4, 1, 1,
                                GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
+      Constrain.setConstraints(mainPanel, new JPanel(), 0, 5, 1, 1,
+                               GridBagConstraints.BOTH, GridBagConstraints.NORTHWEST,
+                               1,1);
 
       JButton add = new JButton("Add Constraint");
       add.addActionListener(new AbstractAction() {

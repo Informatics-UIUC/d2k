@@ -3,6 +3,9 @@ package ncsa.d2k.modules.core.optimize.ga.emo.mutation;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.mutation.*;
 
+/**
+ * An extension of RealMutationObj that can be used in EMO and exposes the N property.
+ */
 class EMORealMutation
     extends RealMutationObj implements RealIndividualFunction, java.io.Serializable {
 

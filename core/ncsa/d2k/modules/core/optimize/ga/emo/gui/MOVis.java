@@ -60,7 +60,21 @@ public class MOVis
     return "";
   }
 
+  public String getInputName(int i) {
+    return "EMOPopulation";
+  }
+
   public String getOutputInfo(int i) {
+    return "";
+  }
+
+  public String getOutputName(int i) {
+    if(i == 0)
+      return "EMOPopulation";
+    if(i == 1)
+      return "Decision Variables";
+    if(i == 2)
+      return "Genes";
     return "";
   }
 

@@ -13,7 +13,12 @@ import ncsa.d2k.modules.core.optimize.util.*;
 import ncsa.d2k.modules.core.optimize.ga.nsga.*;
 
 /**
- * Evaluate the fitness functions and constraints for an EMOPopulation.
+ * Evaluate the fitness functions and constraints for an EMOPopulation.  If
+ * external executables are used, copy the population to a file (the 'input file'
+ * as defined in FitnessFunctions and Constrants).
+ *
+ * If FF or Constraints by formula are defined, copy hte population to a table
+ * and perform the transformations on the table.
  */
 public class EvaluatePopulation
     extends ComputeModule {
@@ -32,12 +37,20 @@ public class EvaluatePopulation
     return "";
   }
 
+  public String getInputName(int i) {
+    return "EMOPopulation";
+  }
+
   public String getOutputInfo(int i) {
     return "";
   }
 
+  public String getOutputName(int i) {
+    return "EMOPopulation";
+  }
+
   public String getModuleInfo() {
-    return "";
+    return "Evaluate the fitness functions and constraints for an EMOPopulation.";
   }
 
   public void beginExecution() {

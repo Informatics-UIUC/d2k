@@ -25,8 +25,16 @@ public class PerformMutation extends ComputeModule {
     return "The population to mutate.";
   }
 
+  public String getInputName(int i) {
+    return "EMOPopulation";
+  }
+
   public String getOutputInfo(int i) {
     return "The mutated population.";
+  }
+
+  public String getOutputName(int i) {
+    return "EMOPopulation";
   }
 
   public String getModuleInfo() {

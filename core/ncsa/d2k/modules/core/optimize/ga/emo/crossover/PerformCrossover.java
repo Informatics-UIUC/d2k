@@ -18,7 +18,7 @@ public class PerformCrossover extends ComputeModule {
   }
 
   public String getInputName(int i) {
-    return "Population";
+    return "EMOPopulation";
   }
 
   public String[] getOutputTypes() {
@@ -27,7 +27,7 @@ public class PerformCrossover extends ComputeModule {
   }
 
   public String getOutputName(int i) {
-    return "Population";
+    return "EMOPopulation";
   }
 
   public String getInputInfo(int i) {

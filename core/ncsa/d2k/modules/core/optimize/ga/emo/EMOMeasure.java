@@ -24,6 +24,16 @@ public class EMOMeasure extends MeasureModule {
         "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
   }
 
+  public String getInputName(int i) {
+    return "EMOPopulation";
+  }
+
+  public String getOutputName(int i) {
+    if(i ==0)
+      return "EMOPopulation";
+    return "Parameters";
+  }
+
   public void doit() {
     EMOPopulation pop = (EMOPopulation)pullInput(0);
 

@@ -3,6 +3,10 @@ package ncsa.d2k.modules.core.optimize.ga.emo.selection;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
+/**
+ * An extension of RankSelectionObj that can be used in EMO.  THe property
+ * pressureProp is exposed for use in InputParameters.
+ */
 class EMORankSelection extends RankSelectionObj
     implements BinaryIndividualFunction, RealIndividualFunction, java.io.Serializable {
 

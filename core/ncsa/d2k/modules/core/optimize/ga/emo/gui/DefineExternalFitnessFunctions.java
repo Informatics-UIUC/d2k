@@ -309,6 +309,9 @@ public class DefineExternalFitnessFunctions
       Constrain.setConstraints(mainPanel, min, 1, 4, 1, 1,
                                GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
+      Constrain.setConstraints(mainPanel, new JPanel(), 0, 5, 1, 1,
+                               GridBagConstraints.BOTH, GridBagConstraints.NORTHWEST,
+                               2,2);
 
       JButton add = new JButton("Add Fitness Function");
       add.addActionListener(new AbstractAction() {
