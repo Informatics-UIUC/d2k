@@ -257,7 +257,7 @@ MinEncodingLenClusterModelEvaluator.java	will be submitted soon
 
 ./discovery/cluster/gui/properties:
 BuckshotParams_Props.java			submitted
-ClusterAssignment_Props.java			submitted
+ClusterAssignment_Props.java			done
 CoverageParams_Props.java			submitted
 CoverageSampler_Props.java			submitted
 FractionationParams_Props.java			submitted
@@ -278,9 +278,10 @@ HierAgglomClustererParamSpaceGenerator.java	submitted
 BuckshotParams.java				submitted
 BuckshotParamsOPT.java				submitted
 BuckshotParamSpaceGenerator.java		submitted
-ClusterAssignment.java				submitted
-ClusterAssignmentOPT.java			submitted
-ClusterRefinement.java				submitted
+ClusterAssignment.java				done
+ClusterAssignmentOPT.java			submitted; waiting for ?
+ClusterParameterDefns.java			done
+ClusterRefinement.java				done
 Coverage.java					submitted
 CoverageParams.java				submitted
 CoverageParamsOPT.java				submitted
@@ -292,10 +293,9 @@ FractionationParamsOPT.java			submitted
 FractionationParamSpaceGenerator.java	submitted
 FractionationSampler.java			submitted
 FractionationSamplerOPT.java			submitted
-KMeansParameterDefns.java			done
-KMeansParams.java				done
+KMeansParams.java					done
 KMeansParamsOPT.java				done
-KMeansParamSpaceGenerator.java			done
+KMeansParamSpaceGenerator.java		done
 OneTimeInputBroker.java				submitted
 SampleTableRowsOPT.java				done
 
@@ -873,5 +873,6 @@ TableEditorModel.java			move
 TableMatrix.java			done
 TableViewerModel.java			move
 UniformHistogram.java			done
+
 
 
