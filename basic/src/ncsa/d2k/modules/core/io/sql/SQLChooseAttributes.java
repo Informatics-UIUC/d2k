@@ -8,6 +8,11 @@ package ncsa.d2k.modules.core.io.sql;
  * <p>Company: NCSA ALG </p>
  * @author Dora Cai
  * @version 1.0
+ *
+ * @todo: unlike in choose attributes from transform/attribute package
+ * this module forces the user to choose at least one input column and
+ * exactly one output column.
+ * why? especially why not supporting multi labeling (more than one output columns).
  */
 
 
@@ -551,55 +556,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
        throw new Exception("Table " + _table + " is either not in the database or has no columns in it");
 
 
-     //mapping name <-> meaningless integer
-/*     HashMap inputMap = new HashMap();
-     for (int i=0; i<selectedInputNames.length; i++)
-       inputMap.put(selectedInputNames[i], new Integer(i));
 
-
-       //mapping name <-> meaningless integer
-     HashMap outputMap = new HashMap();
-    for (int i=0; i<selectedOutputNames.length; i++)
-      outputMap.put(selectedOutputNames[i], new Integer(i));
- */
-
-
-
-
-      //validation that output features contains exactly one column is done through gui.
-      //validation that input features contains at least one column is done through gui.
-/*      if(outputMap.size() > 1)
-        throw new Exception("\nSQLChooseAttributes:\nyou cannot choose more than one output column.\n");
-
-      //more validating.
-      if(outputMap.size() == 0)
-        throw new Exception("\nSQLChooseAttributes:\nyou must choose one output column.\n");
-      if(inputMap.size() == 0)
-        throw new Exception("\nSQLChooseAttributes:\nyou must choose at least one input column.\n");
-
-*/
-
-
-/* validating no intersection between input and output features.
-
-
- Iterator it = availableColumnMap.keySet().iterator();
-
-
-
-    while(it.hasNext()){
-      String temp = (String)it.next();
-        if(inputMap.containsKey(temp) && outputMap.containsKey(temp))
-          throw new Exception("SQLChooseAttributes:\nA column can be chosen as either " +
-        "input column or output column. It cannot be both.\n");
-
-      }*/
-
-      //verifying that the selected inputs and outputs are available.
-      //and retrieving the indices of the target inputs and outputs.
-
-      /* inputFeatures holds the target input columns ids, as they are in the
-       table in the database.*/
 
 //the following line was commented out and replaced by calling to a static method.
  //     inputFeatures = getTargetColumns(availableColumnMap, selectedInputNames);
@@ -692,47 +649,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
       }//for i output features
 
 
-/*
-for (int colId = 0; colId < Id2ColumnNameMap.size(); colId++) {
-        currentColName = (String) Id2ColumnNameMap.get(new Integer(colId));
-      if (inputMap.containsKey(currentColName) || outputMap.containsKey(currentColName)) {
-        cols[selectedColumn] = new ObjectColumn();
-        cols[selectedColumn].setLabel(currentColName);
-        // data type may be in uppercase or lowercase
-       // int colId = ((Integer)availableColumnMap.get(currentColName)).intValue();
-        String type = (String) columTypes.get(new Integer(colId));
-        if (type.equals("NUMBER") ||
-            type.equals("number") ||
-            type.equals("NUMERIC") ||
-            type.equals("numeric")) {
-          cols[selectedColumn].setIsScalar(true);
 
-          //@todo: why assuming only one output feature?
-            //mend this in createMetaTable too.
-
-          // cannot choose numeric column as the output column
-          if (outputFeatures[0] == colId)
-            throw new Exception("\nSQLChooseAttributes:\n" +
-                      "You cannot choose a numeric column as the output column");
-
-
-        }//if type equals
-
-        else           cols[selectedColumn].setIsScalar(false);
-
-        if (inputMap.containsKey(currentColName)) {
-          selectedInput[inputIndex] = selectedColumn;
-          inputIndex ++;
-        }
-        else if (outputMap.containsKey(currentColName)) {
-          selectedOutput[outputIndex] = selectedColumn;
-          outputIndex ++;
-        }
-
-        selectedColumn ++;
-      }//if current name is in either map.
-    }//for
-*/
     // create a Table to hold the meta data
     MutableTableImpl table = new MutableTableImpl(cols);
     for (int colIdx = 0; colIdx < selectedColumn; colIdx++) {
@@ -790,7 +707,7 @@ for (int colId = 0; colId < Id2ColumnNameMap.size(); colId++) {
    *                  <code>available</code> and <code>desired</code>.
    *                  the indices are the mapped values in <codE>available</code>.
    */
-  private int[] getTargetColumns(HashMap available, String[] desired){
+  /*private int[] getTargetColumns(HashMap available, String[] desired){
     int[] retVal;
     //boolean[] isTarget = new boolean[desired.length];
     int count = 0;
@@ -813,7 +730,7 @@ for (int colId = 0; colId < Id2ColumnNameMap.size(); colId++) {
 
     return retVal;
 
-  }
+  }*/
   //headless conversion
 
 }
