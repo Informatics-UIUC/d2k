@@ -7,21 +7,6 @@ package ncsa.d2k.modules.core.io.file.input;
  */
 public interface FlatFileParser {
 
-    /*public static final int SCALAR = 0;
-    public static final int NOMINAL = 1;
-    public static final int IN = 2;
-    public static final int OUT = 3;
-    public static final int OMIT = 4;
-    */
-
-	/*public static final String NOMINAL_TYPE = "Nominal";
-	public static final String SCALAR_TYPE = "Scalar";
-	public static final String IN_TYPE = "in";
-	public static final String OUT_TYPE = "out";
-    public static final String IN_TYPE2 = "input";
-    public static final String OUT_TYPE2 = "output";
-    */
-
 	public static final String STRING_TYPE = "String";
 	public static final String FLOAT_TYPE = "float";
 	public static final String DOUBLE_TYPE = "double";
@@ -45,8 +30,7 @@ public interface FlatFileParser {
      * Get the elements that make up row i of the file.
      * @return the elements of row i in the file.
      */
-    //public char[][] getRowElements(int i);
-    public ParsedLine getRowElements(int i);
+     public ParsedLine getRowElements(int i);
 
     /**
      * Get the number of columns.

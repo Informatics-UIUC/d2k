@@ -14,7 +14,7 @@ import java.io.*;
  * of Table.
  * <br>
  */
-abstract public class TableImpl implements Table {
+abstract public class TableImpl extends DefaultMissingValuesTable /*implements Table*/ {
 
 	/** the columns of data. */
     protected Column[] columns = null;

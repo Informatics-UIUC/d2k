@@ -8,7 +8,9 @@ import java.util.*;
 
 public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 	//begin setting Properties
-	String fillerString = new String("*");
+/*
+ * 
+ 	String fillerString = new String("*");
 	int fillerNumeric = 0;
 	boolean fillerBol = false;
 	byte[] fillerByte = new byte[1];
@@ -68,7 +70,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 	/**
 	 * Return a list of the property descriptions.
 	 * @return a list of the property descriptions.
-	 */
+	 
 	public PropertyDescription [] getPropertiesDescriptions () {
 		PropertyDescription [] pds = new PropertyDescription [3];
 		pds[0] = new PropertyDescription ("fillerBol", "Boolean Column Filler", "This value fills boolean columns.");
@@ -302,7 +304,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
 								if (matches[row_index][1] == -1 || secondColumn == -1) {
-									vals[row_index] = this.getFillerNumeric();
+									vals[row_index] = t1.getMissingInt();//this.getFillerNumeric();
 									missing[row_index] = true;
 								} else {
 									vals[row_index] = t2.getInt(matches[row_index][1], secondColumn);
@@ -314,7 +316,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						else {
 							if (secondColumn == -1) {
-								vals[row_index] = this.getFillerNumeric();
+								vals[row_index] = t1.getMissingInt();//this.getFillerNumeric();
 								missing[row_index] = true;
 							} else {
 								vals[row_index] = t2.getInt(matches[row_index][1], secondColumn);
@@ -327,6 +329,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new IntColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setInt(t1.getMissingInt(),ri);
 					}
 					result.addColumn(col);
 					break;
@@ -339,7 +343,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
 								if (matches[row_index][1] == -1 || secondColumn == -1) {
-									vals[row_index] = this.getFillerNumeric();
+									vals[row_index] = (float)t1.getMissingDouble();//this.getFillerNumeric();
 									missing[row_index] = true;
 								} else {
 									vals[row_index] = t2.getFloat(matches[row_index][1], secondColumn);
@@ -351,7 +355,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						else {
 							if (secondColumn == -1) {
-								vals[row_index] = this.getFillerNumeric();
+								vals[row_index] = (float) t1.getMissingDouble();//this.getFillerNumeric();
 								missing[row_index] = true;
 							} else {
 								vals[row_index] = t2.getFloat(matches[row_index][1], secondColumn);
@@ -364,6 +368,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new FloatColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setDouble(t1.getMissingDouble(),ri);
 					}
 					result.addColumn(col);
 					break;
@@ -376,7 +382,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
 								if (matches[row_index][1] == -1 || secondColumn == -1) {
-									vals[row_index] = this.getFillerNumeric();
+									vals[row_index] = t1.getMissingDouble();//this.getFillerNumeric();
 									missing[row_index] = true;
 								} else {
 									 vals[row_index] = t2.getDouble(matches[row_index][1], secondColumn);
@@ -388,7 +394,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						else {
 							if (secondColumn == -1) {
-								vals[row_index] = this.getFillerNumeric();
+								vals[row_index] = t1.getMissingDouble();//this.getFillerNumeric();
 								missing[row_index] = true;
 							} else {
 								vals[row_index] = t2.getDouble(matches[row_index][1], secondColumn);
@@ -401,6 +407,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new DoubleColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setDouble(t1.getMissingDouble(),ri);
 					}
 					result.addColumn(col);
 					break;
@@ -413,7 +421,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
 								if (matches[row_index][1] == -1 || secondColumn == -1) {
-									vals[row_index] = (short) this.getFillerNumeric();
+									vals[row_index] = (short)t1.getMissingInt();// this.getFillerNumeric();
 									missing[row_index] = true;
 								} else{
 									vals[row_index] = t2.getShort(matches[row_index][1], secondColumn);
@@ -425,7 +433,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						else {
 							if (secondColumn == -1) {
-								vals[row_index] = (short) this.getFillerNumeric();
+								vals[row_index] = (short)t1.getMissingInt();// this.getFillerNumeric();
 								missing[row_index] = true;
 							} else {
 								vals[row_index] = t2.getShort(matches[row_index][1], secondColumn);
@@ -438,6 +446,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new ShortColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setInt(t1.getMissingInt(),ri);
 					}
 					result.addColumn(col);
 					break;
@@ -450,7 +460,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
 								if (matches[row_index][1] == -1 || secondColumn == -1) {
-									vals[row_index] = this.getFillerNumeric();
+									vals[row_index] = t1.getMissingInt();//this.getFillerNumeric();
 									missing[row_index] = true;
 								} else {
 									vals[row_index] = t2.getLong(matches[row_index][1], secondColumn);
@@ -462,7 +472,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						else {
 							if (secondColumn == -1) {
-								vals[row_index] = this.getFillerNumeric();
+								vals[row_index] = t1.getMissingInt();//this.getFillerNumeric();
 								missing[row_index] = true;
 							} else {
 								vals[row_index] = t2.getLong(matches[row_index][1], secondColumn);
@@ -475,6 +485,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new LongColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setInt(t1.getMissingInt(),ri);
 					}
 					result.addColumn(col);
 					break;
@@ -487,7 +499,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
 								if (matches[row_index][1] == -1 || secondColumn == -1){
-									vals[row_index] = this.getFillerString();
+									vals[row_index] = t1.getMissingString();//this.getFillerString();
 									missing[row_index] = true;
 								} else {
 									vals[row_index] = t2.getString(matches[row_index][1], secondColumn);
@@ -499,7 +511,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						else {
 							if (secondColumn == -1) {
-								vals[row_index] = this.getFillerString();
+								vals[row_index] = t1.getMissingString();//this.getFillerString();
 								missing[row_index] = true;
 							} else {
 								vals[row_index] = t2.getString(matches[row_index][1], secondColumn);
@@ -512,6 +524,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new StringColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setString(t1.getMissingString(),ri);
 					}
 					result.addColumn(col);
 					break;
@@ -524,7 +538,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
 								if (matches[row_index][1] == -1 || secondColumn == -1) {
-									vals[row_index] = this.getFillerChars();
+									vals[row_index] = t1.getMissingChars();//this.getFillerChars();
 									missing[row_index] = true;
 								} else {
 									vals[row_index] = t2.getChars(matches[row_index][1], secondColumn);
@@ -536,7 +550,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						else {
 							if (secondColumn == -1) {
-								vals[row_index] = this.getFillerChars();
+								vals[row_index] = t1.getMissingChars();//this.getFillerChars();
 								missing[row_index] = true;
 							} else {
 								vals[row_index] = t2.getChars(matches[row_index][1], secondColumn);
@@ -549,6 +563,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new CharArrayColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setChars(t1.getMissingChars(),ri);
 					}
 					result.addColumn(col);
 					break;
@@ -561,7 +577,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
 								if (matches[row_index][1] == -1 || secondColumn == -1) {
-									vals[row_index] = this.getFillerBytes();
+									vals[row_index] = t1.getMissingBytes();//this.getFillerBytes();
 									missing[row_index] = true;
 								} else {
 									vals[row_index] = t2.getBytes(matches[row_index][1], secondColumn);
@@ -573,7 +589,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						else {
 							if (secondColumn == -1) {
-								vals[row_index] = this.getFillerBytes();
+								vals[row_index] = t1.getMissingBytes();//this.getFillerBytes();
 								missing[row_index] = true;
 							} else {
 								vals[row_index] = t2.getBytes(matches[row_index][1], secondColumn);
@@ -586,6 +602,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new ByteArrayColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setBytes(t1.getMissingBytes(),ri);
 					}
 					result.addColumn(col);
 					break;
@@ -598,7 +616,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
 								if (matches[row_index][1] == -1 || secondColumn == -1) {
-									vals[row_index] = this.getFillerBol();
+									vals[row_index] = t1.getMissingBoolean();//this.getFillerBol();
 									missing[row_index] = true;
 								} else {
 									vals[row_index] = t2.getBoolean(matches[row_index][1], secondColumn);
@@ -610,7 +628,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						else {
 							if (secondColumn == -1) {
-								vals[row_index] = this.getFillerBol();
+								vals[row_index] = t1.getMissingBoolean();//this.getFillerBol();
 								missing[row_index] = true;
 							} else {
 								vals[row_index] = t2.getBoolean(matches[row_index][1], secondColumn);
@@ -623,6 +641,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new BooleanColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setBoolean(t1.getMissingBoolean(),ri);
 					}
 					result.addColumn(col);
 					break;
@@ -660,6 +680,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new ObjectColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setObject (null, ri);
 					}
 					result.addColumn(col);
 					break;
@@ -672,7 +694,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
 								if (matches[row_index][1] == -1 || secondColumn == -1){
-									vals[row_index] = this.getFillerByte();
+									vals[row_index] = t1.getMissingByte();//this.getFillerByte();
 									missing[row_index] = true;
 								} else {
 									vals[row_index] = t2.getByte(matches[row_index][1], secondColumn);
@@ -684,7 +706,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						else {
 							if (secondColumn == -1) {
-								vals[row_index] = this.getFillerByte();
+								vals[row_index] = t1.getMissingByte();//this.getFillerByte();
 								missing[row_index] = true;
 							} else {
 								vals[row_index] = t2.getByte(matches[row_index][1], secondColumn);
@@ -697,6 +719,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new ByteColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setByte(t1.getMissingByte(),ri);
 					}
 					result.addColumn(col);
 					break;
@@ -709,7 +733,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 						if (matches[row_index][0] != -1)
 							if (firstColumn == -1) {
 								if (matches[row_index][1] == -1 || secondColumn == -1) {
-									vals[row_index] = this.getFillerChar();
+									vals[row_index] = t1.getMissingChar();//this.getFillerChar();
 									missing[row_index] = true;
 								} else {
 									vals[row_index] = t2.getChar(matches[row_index][1], secondColumn);
@@ -721,7 +745,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 							}
 						else {
 							if (secondColumn == -1) {
-								vals[row_index] = this.getFillerChar();
+								vals[row_index] = t1.getMissingChar();//this.getFillerChar();
 								missing[row_index] = true;
 							} else {
 								vals[row_index] = t2.getChar(matches[row_index][1], secondColumn);
@@ -734,6 +758,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					Column col = new CharColumn(vals);
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
+						if (missing[ri])
+							col.setChar(t1.getMissingChar(),ri);
 					}
 					result.addColumn(col);
 					break;

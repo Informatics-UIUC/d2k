@@ -80,26 +80,7 @@ public class ParseFileToTable extends InputModule {
     public void doit() throws Exception {
         FlatFileParser fle = (FlatFileParser)pullInput(0);
         Table t = createTable(fle);
-        //Table bt = createBlanks(fle);
-
-        /*if(useBlanks) {
-            // if a value was blank, make it a 'missing value' in the table
-            MutableTable mt = (MutableTable)t;
-            boolean[][] blanks = fle.getBlanks();
-            int nr = t.getNumRows();
-            int nc = t.getNumColumns();
-            for(int i = 0; i < nr; i++) {
-                for(int j = 0; j < nc; j++) {
-                    if(blanks[i][j]) {
-                        mt.setValueToMissing(true, i, j);
-                    }
-                }
-            }
-        }*/
-
-        // System.out.println("check at end: " + t.isValueMissing(24, 0));
         pushOutput(t, 0);
-        //pushOutput(bt, 1);
     }
 
     protected Table createTable(FlatFileParser df) {
@@ -111,37 +92,7 @@ public class ParseFileToTable extends InputModule {
         Column[] columns = new Column[numColumns];
         for(int i = 0; i < columns.length; i++) {
             int type = df.getColumnType(i);
-
-/*            // create the column
-            if(type == ColumnTypes.STRING)
-                columns[i] = new StringColumn(numRows);
-            else if(type == ColumnTypes.DOUBLE)
-                columns[i] = new DoubleColumn(numRows);
-            else if(type == ColumnTypes.FLOAT)
-                columns[i] = new FloatColumn(numRows);
-            else if(type == ColumnTypes.INTEGER)
-                columns[i] = new IntColumn(numRows);
-            else if(type == ColumnTypes.SHORT)
-                columns[i] = new ShortColumn(numRows);
-            else if(type == ColumnTypes.LONG)
-                columns[i] = new LongColumn(numRows);
-            else if(type == ColumnTypes.CHAR_ARRAY)
-                columns[i] = new CharArrayColumn(numRows);
-            else if(type == ColumnTypes.BYTE_ARRAY)
-                columns[i] = new ByteArrayColumn(numRows);
-            else if(type == ColumnTypes.CHAR)
-                columns[i] = new CharColumn(numRows);
-            else if(type == ColumnTypes.BYTE)
-                columns[i] = new ByteColumn(numRows);
-            else if(type == ColumnTypes.BOOLEAN)
-                columns[i] = new BooleanColumn(numRows);
-            else
-                columns[i] = new StringColumn(numRows);
-            */
             columns[i] = ColumnUtilities.createColumn(type, numRows);
-
-            // System.out.println(i + ": " + columns[i]);
-
             if(type != -1)
                 hasTypes = true;
 
@@ -185,30 +136,39 @@ public class ParseFileToTable extends InputModule {
                     // if the value was missing..
                     else {
                         // put 0 in a numeric column and set the value to missing
-                        // if(ti.isColumnNumeric(j)) {
-                       if (df.getColumnType(j) == ColumnTypes.INTEGER ||
-                           df.getColumnType(j) == ColumnTypes.DOUBLE ||
-                           df.getColumnType(j) == ColumnTypes.FLOAT ||
-                           df.getColumnType(j) == ColumnTypes.LONG ||
-                           df.getColumnType(j) == ColumnTypes.SHORT ||
-                           df.getColumnType(j) == ColumnTypes.BYTE) {
-
-
-
-                           // System.out.println("setting missing at " + i + ", " + j);
-                            ti.setChars(Integer.toString(0).toCharArray(), i, j);
-                            ti.setValueToMissing(true, i, j);
-                           // System.out.println("confirming missing at " + i + ", " + j + ": " + ti.isValueMissing(i, j));
-                        }
-                        // otherwise put the '?' in the table and set the value to missing
-                        else {
-                            ti.setChars(elem, i, j);
-                            ti.setValueToMissing(true, i, j);
-                        }
+						ti.setValueToMissing(true, i, j);
+                        switch (df.getColumnType(j)) {
+                        	case ColumnTypes.INTEGER:
+                        	case ColumnTypes.SHORT:
+                        	case ColumnTypes.LONG:
+                        		ti.setInt(ti.getMissingInt(), i, j);
+                        		break;
+							case ColumnTypes.DOUBLE:
+							case ColumnTypes.FLOAT:
+								ti.setDouble(ti.getMissingDouble(), i, j);
+								break;
+							case ColumnTypes.CHAR_ARRAY:
+								ti.setChars(ti.getMissingChars(), i, j);
+								break;
+							case ColumnTypes.BYTE_ARRAY:
+								ti.setBytes(ti.getMissingBytes(), i, j);
+								break;
+							case ColumnTypes.BYTE:
+								ti.setByte(ti.getMissingByte(), i, j);
+								break;
+							case ColumnTypes.CHAR:
+								ti.setChar(ti.getMissingChar(), i, j);
+								break;
+							case ColumnTypes.STRING:
+								ti.setString(ti.getMissingString(), i, j);
+								break;
+							case ColumnTypes.BOOLEAN:
+								ti.setBoolean(ti.getMissingBoolean(), i, j);
+								break;
+	                     }
                     }
                }
             }
-            
         }
 
         // if types were not specified, we should try to convert to double columns
@@ -255,87 +215,6 @@ public class ParseFileToTable extends InputModule {
                 }
             }
         }
-        // else {
-        //    System.out.println("has types");
-        // }
-
-        // set the feature (nom-scalar) type
-        /*for(int i = 0; i < numColumns; i++) {
-            int featureType = df.getFeatureType(i);
-            if(featureType != -1) {
-                if(featureType == df.SCALAR)
-                    columns[i].setIsScalar(true);
-                else
-                    columns[i].setIsNominal(true);
-            }
-        }*/
-
-        // set the in-out types if specified
-/*        boolean hasInOut = false;
-        // set the data (in-out) type
-        for(int i = 0; i < numColumns; i++) {
-            if(df.getDataType(i) != -1) {
-                hasInOut = true;
-                break;
-            }
-        }
-
-        if(hasInOut) {
-            int[] ins = new int[0];
-            int[] outs = new int[0];
-            for(int i = 0; i < numColumns; i++) {
-                int ty = df.getDataType(i);
-                if(ty == df.IN) {
-                    ins = expandArray(ins);
-                    ins[ins.length-1] = ty;
-                }
-                else if(ty == df.OUT) {
-                    outs = expandArray(outs);
-                    outs[outs.length-1] = ty;
-                }
-            }
-
-            ExampleTable et = ti.toExampleTable();
-            et.setInputFeatures(ins);
-            et.setOutputFeatures(outs);
-            return et;
-        }
-        */
-
-       return ti;
+        return ti;
     }
-
-    /**
-     * Return an int array of size orig.length+1 and copy the items of
-     * orig into the new array.
-     /
-    private int[] expandArray(int[] orig) {
-        int[] retVal = new int[orig.length+1];
-        for(int i = 0; i < orig.length; i++)
-            retVal[i] = orig[i];
-        return retVal;
-    }*/
-
-   /**
-      returns a VT that has 2 columns, corresponding
-      to the row and column indices of the fields
-      that were blank in the file that was read in
-      /
-   private Table createBlanks(FlatFileReader ffr){
-        int[][] blanks = ffr.getBlanks();
-
-      IntColumn rowsColumn=new IntColumn(blanks[0]);
-      rowsColumn.setLabel("Rows");
-
-      IntColumn colsColumn=new IntColumn(blanks[1]);
-      colsColumn.setLabel("Column");
-
-      Column[] internal=new Column[2];
-      internal[0]=rowsColumn;
-      internal[1]=colsColumn;
-
-      TableImpl table= (TableImpl)DefaultTableFactory.getInstance().createTable(internal);
-      return table;
-        return null;
-   }*/
 }

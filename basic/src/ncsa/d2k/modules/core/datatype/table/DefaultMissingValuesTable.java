@@ -1,16 +1,18 @@
+/*
+ * Created on Nov 21, 2003
+ *
+ * To change the template for this generated file go to
+ * Window - Preferences - Java - Code Generation - Code and Comments
+ */
 package ncsa.d2k.modules.core.datatype.table;
 
 /**
- * AbstractTable implements several meta methods common to all Tables.
+ * @author redman
+ *
+ * To change the template for this generated type comment go to
+ * Window - Preferences - Java - Code Generation - Code and Comments
  */
-public abstract class AbstractTable implements Table {
-
- //static final long serialVersionUID = 7799682534587814277L;
-	static final long serialVersionUID = 2147035826260285698L;
-
-	private String label;
-	private String comment;
-	private int keyColumn;
+abstract public class DefaultMissingValuesTable implements Table {
 	
 	/** this is the missing value for longs, ints, and shorts. */
 	protected int defaultMissingInt = 0;
@@ -146,45 +148,5 @@ public abstract class AbstractTable implements Table {
 	 */
 	public void setMissingByte(byte newMissingByte) {
 		this.defaultMissingByte = newMissingByte;
-	}
-
-	/**
-		Get the label associated with this Table.
-		@return the label which describes this Table
-	*/
-	public String getLabel( ) {
-		return label;
-	}
-
-	/**
-		Set the label associated with this Table.
-		@param labl the label which describes this Table
-	*/
-	public void setLabel( String labl ) {
-		label = labl;
-	}
-
-	/**
-		Get the comment associated with this Table.
-		@return the comment which describes this Table
-	*/
-	public String getComment( ) {
-		return comment;
-	}
-
-	/**
-		Set the comment associated with this Table.
-		@param cmt the comment which describes this Table
-	*/
-	public void setComment( String cmt ) {
-		comment = cmt;
-	}
-
-	public void setKeyColumn(int idx) {
-		keyColumn = idx;
-	}
-
-	public int getKeyColumn() {
-		return keyColumn;
 	}
 }
