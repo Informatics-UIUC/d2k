@@ -82,6 +82,9 @@ public class BarChart extends Chart
     settings.displaylegend = false;
 
     gridsize = settings.gridsize;
+    // Dora add the following 2 lines to fix the problem when ymaximum < 10
+    if ((ymaximum-yminimum) < gridsize)
+      gridsize = (int) (ymaximum-yminimum);
 
     yvalueincrement = (ymaximum-yminimum)/gridsize;
   }
