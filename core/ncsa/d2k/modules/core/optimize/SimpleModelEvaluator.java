@@ -276,7 +276,9 @@ public class SimpleModelEvaluator
       if (filterByPredictedOutput && !useExamples[e])
         continue;
 
-      errorSum += errorFunction.evaluate(examples, e, model);
+      //errorSum += errorFunction.evaluate(examples, e, model);
+
+      errorSum += errorFunction.evaluate(examples, e, predictionTable);
 
       numPredictions++;
     }

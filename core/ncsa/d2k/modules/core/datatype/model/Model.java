@@ -31,7 +31,7 @@ public class Model extends PredictionModelModule implements java.io.Serializable
 	throw new Exception();
   }
 
-  public int getNumInputs() {
+  public int getNumInputFeatures() {
 	return getInputColumnLabels().length;
   }
 
@@ -45,7 +45,7 @@ public class Model extends PredictionModelModule implements java.io.Serializable
 	return this.getInputColumnLabels()[i];
   }
 
-  public int getNumOutputs() {
+  public int getNumOutputFeatures() {
 	return getOutputColumnLabels().length;
   }
 

@@ -18,9 +18,9 @@ public class StepwiseLinearModel
     super(examples);
 
     int numSelectedInputs = 0;
-    int[] selectedInputIndices = new int[getNumInputs()];
+    int[] selectedInputIndices = new int[getNumInputFeatures()];
 
-    for (int i = 0; i < getNumInputs(); i++) {
+    for (int i = 0; i < getNumInputFeatures(); i++) {
       if (selectedInputs[i] == true) {
         selectedInputIndices[numSelectedInputs] = i;
         numSelectedInputs++;
@@ -34,7 +34,7 @@ public class StepwiseLinearModel
   }
 
   public double[] evaluate(ExampleTable examples, int e) {
-    double[] outputs = new double[getNumOutputs()];
+    double[] outputs = new double[getNumOutputFeatures()];
     for (int o = 0; o < weights.length; o++) {
       double sum = weights[o][numSelectedInputs];
       for (int i = 0; i < numSelectedInputs; i++) {
@@ -75,7 +75,7 @@ public class StepwiseLinearModel
   public void print(ModelPrintOptions printOptions) throws Exception {
     System.out.println("Linear Model");
     System.out.println("numSelectedInputs = " + numSelectedInputs);
-    for (int o = 0; o < getNumOutputs(); o++) {
+    for (int o = 0; o < getNumOutputFeatures(); o++) {
       System.out.println(this.getOutputFeatureName(o) + " = ");
       for (int i = 0; i < numSelectedInputs; i++) {
         System.out.println(weights[o][i] + " * " +

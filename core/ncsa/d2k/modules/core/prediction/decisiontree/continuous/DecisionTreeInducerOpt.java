@@ -192,9 +192,11 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     ExampleTable examples = node.examples;
 
     int numExamples = examples.getNumExamples();
-    int numOutputs  = examples.getNumOutputFeatures();
 
-    double error = errorFunction.evaluate(node.examples, node.model) * numExamples;
+    PredictionTable predictionTable = examples.toPredictionTable();
+    node.model.predict(predictionTable);
+
+    double error = errorFunction.evaluate(node.examples, predictionTable) * numExamples;
 
     node.error = error;
 
@@ -563,7 +565,7 @@ and the example table assigned to node2 contains the examples that the decomposi
     //QA Anca added this:
     public PropertyDescription[] getPropertiesDescriptions() {
 	// so that "ordered and _trace" property are invisible
-        return new PropertyDescription[0]; 
+        return new PropertyDescription[0];
     }
 
 }

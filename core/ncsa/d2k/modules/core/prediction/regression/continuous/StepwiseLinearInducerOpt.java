@@ -180,9 +180,12 @@ public class StepwiseLinearInducerOpt
 
     StepwiseLinearModel model = new StepwiseLinearModel(examples, selectedInputs, weights);
 
-    ErrorFunction errorFunction = new ErrorFunction(ErrorFunction.
-        varianceErrorFunctionIndex);
-    double error = errorFunction.evaluate(examples, model);
+    ErrorFunction errorFunction = new ErrorFunction(ErrorFunction.varianceErrorFunctionIndex);
+
+    PredictionTable predictionTable = examples.toPredictionTable();
+    model.predict(predictionTable);
+
+    double error = errorFunction.evaluate(examples, predictionTable);
 
     Object[] returnValues = new Object[2];
 
@@ -266,7 +269,7 @@ public class StepwiseLinearInducerOpt
     //QA Anca added this:
     public PropertyDescription[] getPropertiesDescriptions() {
         // so that "ordered and _trace" property are invisible
-        return new PropertyDescription[0]; 
+        return new PropertyDescription[0];
     }
 
 

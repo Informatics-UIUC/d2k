@@ -58,7 +58,7 @@ public class MeanOutputModel extends Model implements java.io.Serializable
 
     Format.setMaximumFractionDigits(options.MaximumFractionDigits);
 
-    for (int i = 0; i < getNumOutputs(); i++) {
+    for (int i = 0; i < getNumOutputFeatures(); i++) {
       if (i > 0)
         System.out.print("  ");
       System.out.print(this.getOutputFeatureName(i) + " = " + Format.format(this.meanOutputValues[i]));
