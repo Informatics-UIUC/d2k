@@ -621,6 +621,10 @@ public class BinColumns extends UIModule {
                  */
                 public void actionPerformed (ActionEvent e) {
                     Object[] sel = textCurrentModel.toArray();
+
+                    if (sel.length == 0)
+                       ErrorDialog.showDialog("You must select some nominal values to group.", "Error");
+
                     Object val = textualColumnLabels.getSelectedValue();
                     int idx = ((Integer)columnLookup.get(val)).intValue();
 
