@@ -380,3 +380,9 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
       array[index] = index;
   }
 }
+
+/**
+ * QA comments:
+ * 3-4-03 Vered started qa process.
+ *        changed module info.
+ */
