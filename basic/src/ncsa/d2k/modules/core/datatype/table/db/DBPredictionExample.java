@@ -2,6 +2,8 @@ package ncsa.d2k.modules.core.datatype.table.db;
 
 import ncsa.d2k.modules.core.datatype.table.PredictionExample;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.basic.SubsetTableImpl;
 import ncsa.d2k.modules.core.io.sql.*;
 
 /**
@@ -12,167 +14,173 @@ import ncsa.d2k.modules.core.io.sql.*;
  * @author vered goren
  * @version 1.0
  *
- * this is an extension of DBExample which wraps a MutableExample in it for
- * representation of the prediction part.
+ * this is an extension of DBExample which wraps another Row int it for getter methods
+ * that relates to the prediction part. it also wraps a MutableTable in it for
+ * the setter methods relating the prediction part.
  *
- * setPrediction methods were implemented in a very premitive way, the only one
- * available at the time of coding this. [8-26-03] relying on the implementation of
- * the prediction columns in a LocalDBPredictionTable, it is known to be
- * represented by a MutableTable. hence the careless casting in these methods.
  *
- * @todo: change constructor to receive a subset table impl and not a mutabl etable.
+ *
  *
  */
 
 public class DBPredictionExample extends DBExample implements PredictionExample {
 
-  protected Row predictionExample;
+ // protected Row predictionExample;
+  //protected SubsetTableImpl predictionTable;
+ // protected MutableTable predictionColumns;
+ protected Column[] predictionColumns;
   protected int[] indirection;
   protected boolean[] prediction;
 
 
   public DBPredictionExample(DBDataSource _dataSource,  DBConnection _dbConnection,
-                             Row predictionRow, DBTable _table, int[] indices,
+                             Column[] _predictionColumns, DBTable _table, int[] indices,
                              int[] _indirection, boolean[] _prediction) {
     super(_dataSource, _dbConnection, _table, indices);
-    predictionExample = predictionRow;
+    predictionColumns = _predictionColumns;
+    //predictionExample = predictionColumns.getRow();
     indirection = _indirection;
     prediction = _prediction;
+
 
 
   }
 
   public int getNumPredictions() {
 
-    return predictionExample.getTable().getNumColumns();
+    return predictionColumns.length;
 
   }
 
 
   public void setDoublePrediction(double pred, int p) {
-   ((MutableTable)predictionExample.getTable()).setDouble(pred, index, p);
+   predictionColumns[p].setDouble(pred, index);
   }
 
   public double getDoublePrediction(int p) {
-    return predictionExample.getDouble(p);
+    return predictionColumns[p].getDouble(index);
   }
 
   public void setIntPrediction(int pred, int p) {
-       ((MutableTable)predictionExample.getTable()).setInt(pred, index, p);
+      predictionColumns[p].setInt(pred, index);
   }
 
   public int getIntPrediction(int p) {
-        return predictionExample.getInt(p);
+        return predictionColumns[p].getInt(index);
   }
 
   public void setFloatPrediction(float pred, int p) {
-       ((MutableTable)predictionExample.getTable()).setFloat(pred, index, p);
+       predictionColumns[p].setFloat(pred, index);
   }
 
   public float getFloatPrediction(int p) {
-    return predictionExample.getFloat(p);
+    return predictionColumns[p].getFloat(index);
   }
 
   public void setShortPrediction(short pred, int p) {
-   ((MutableTable)predictionExample.getTable()).setShort(pred, index, p);
+   predictionColumns[p].setShort(pred, index);
   }
 
   public short getShortPrediction(int p) {
-       return predictionExample.getShort(p);
+       return predictionColumns[p].getShort(index);
   }
 
   public void setLongPrediction(long pred, int p) {
-   ((MutableTable)predictionExample.getTable()).setLong(pred, index, p);
+   predictionColumns[p].setLong(pred, index);
   }
 
   public long getLongPrediction(int p) {
-    return predictionExample.getLong(p);
+    return predictionColumns[p].getLong(index);
   }
 
   public void setStringPrediction(String pred, int p) {
-   ((MutableTable)predictionExample.getTable()).setString(pred, index, p);
+   predictionColumns[p].setString(pred, index);
   }
 
   public String getStringPrediction(int p) {
-      return predictionExample.getString(p);
+      return predictionColumns[p].getString(index);
   }
 
   public void setCharsPrediction(char[] pred, int p) {
-   ((MutableTable)predictionExample.getTable()).setChars(pred, index, p);
+  predictionColumns[p].setChars(pred, index);
   }
   public char[] getCharsPrediction(int p) {
-        return predictionExample.getChars(p);
+        return predictionColumns[p].getChars(index);
   }
   public void setCharPrediction(char pred, int p) {
-    ((MutableTable)predictionExample.getTable()).setChar(pred, index, p);
+    predictionColumns[p].setChar(pred, index);
   }
 
   public char getCharPrediction(int p) {
-        return predictionExample.getChar(p);
+        return predictionColumns[p].getChar(index);
   }
 
   public void setBytesPrediction(byte[] pred, int p) {
-((MutableTable)predictionExample.getTable()).setBytes(pred, index, p);
+    predictionColumns[p].setBytes(pred, index);
   }
   public byte[] getBytesPrediction(int p) {
-        return predictionExample.getBytes(p);
+        return predictionColumns[p].getBytes(index);
   }
   public void setBytePrediction(byte pred, int p) {
-((MutableTable)predictionExample.getTable()).setByte(pred, index, p);
+    predictionColumns[p].setByte(pred, index);
   }
 
   public byte getBytePrediction(int p) {
-        return predictionExample.getByte(p);
+        return  predictionColumns[p].getByte(index);
   }
 
   public void setBooleanPrediction(boolean pred, int p) {
-((MutableTable)predictionExample.getTable()).setBoolean(pred, index, p);
+    predictionColumns[p].setBoolean(pred, index);
   }
 
   public boolean getBooleanPrediction(int p) {
-        return predictionExample.getBoolean(p);
+        return  predictionColumns[p].getBoolean(index);
   }
 
   public void setObjectPrediction(Object pred, int p) {
-((MutableTable)predictionExample.getTable()).setObject(pred, index, p);
+    predictionColumns[p].setObject(pred, index);
   }
 
   public Object getObjectPrediction(int p) {
-        return predictionExample.getObject(p);
+        return predictionColumns[p].getObject(index);
   }
 
 
 
 
   public void setIndex(int i) {
-    predictionExample.setIndex(i);
+
+   // predictionExample.setIndex(i);
     index = subset[i];
   }
 
+
+
   public double getDouble(int i) {
     if (prediction[i])
-              return predictionExample.getDouble(indirection[i]);
+              return predictionColumns[indirection[i]].getDouble(index);
     else
         return (double)dataSource.getNumericData(index, indirection[i]);
 
   }
   public String getString(int i) {
     if (prediction[i])
-           return predictionExample.getString(indirection[i]);
+           return predictionColumns[indirection[i]].getString(index);
    else
      return dataSource.getTextData(index, indirection[i]);
 
   }
   public int getInt(int i) {
     if (prediction[i])
-           return predictionExample.getInt(indirection[i]);
+       return predictionColumns[indirection[i]].getInt(index);
+
    else
      return (int)dataSource.getNumericData(index, indirection[i]);
 
   }
   public float getFloat(int i) {
     if (prediction[i])
-            return predictionExample.getFloat(indirection[i]);
+            return predictionColumns[indirection[i]].getFloat(index);
   else
       return (float)dataSource.getNumericData(index, indirection[i]);
 
@@ -180,7 +188,7 @@ public class DBPredictionExample extends DBExample implements PredictionExample 
 
   public short getShort(int i) {
     if (prediction[i])
-          return predictionExample.getShort(indirection[i]);
+          return predictionColumns[indirection[i]].getShort(index);
     else
       return (short)dataSource.getNumericData(index, indirection[i]);
 
@@ -189,7 +197,7 @@ public class DBPredictionExample extends DBExample implements PredictionExample 
 
   public long getLong(int i) {
     if (prediction[i])
-          return predictionExample.getLong(indirection[i]);
+          return predictionColumns[indirection[i]].getLong(index);
     else
      return (long)dataSource.getNumericData(index, indirection[i]);
 
@@ -198,7 +206,7 @@ public class DBPredictionExample extends DBExample implements PredictionExample 
 
   public byte getByte(int i) {
     if (prediction[i])
-          return predictionExample.getByte(indirection[i]);
+          return predictionColumns[indirection[i]].getByte(index);
     else
      return dataSource.getTextData(index, indirection[i]).getBytes()[0];
 
@@ -207,7 +215,7 @@ public class DBPredictionExample extends DBExample implements PredictionExample 
 
   public Object getObject(int i) {
     if (prediction[i])
-          return predictionExample.getObject(indirection[i]);
+          return predictionColumns[indirection[i]].getObject(index);
     else
      return (Object)dataSource.getObjectData(index, indirection[i]).toString();
 
@@ -216,28 +224,28 @@ public class DBPredictionExample extends DBExample implements PredictionExample 
 
   public char getChar(int i) {
     if (prediction[i])
-       return predictionExample.getChar(indirection[i]);
+       return predictionColumns[indirection[i]].getChar(index);
  else
   return dataSource.getTextData(index, indirection[i]).toCharArray()[0];
 
   }
   public char[] getChars(int i) {
     if (prediction[i])
-          return predictionExample.getChars(indirection[i]);
+          return predictionColumns[indirection[i]].getChars(index);
     else
      return dataSource.getTextData(index, indirection[i]).toCharArray();
 
   }
   public byte[] getBytes(int i) {
     if (prediction[i])
-          return predictionExample.getBytes(indirection[i]);
+          return predictionColumns[indirection[i]].getBytes(index);
     else
      return dataSource.getTextData(index, indirection[i]).getBytes();
 
   }
   public boolean getBoolean(int i) {
     if (prediction[i])
-          return predictionExample.getBoolean(indirection[i]);
+          return predictionColumns[indirection[i]].getBoolean(index);
     else
      return new Boolean(dataSource.getTextData(index, indirection[i])).booleanValue();
 

@@ -175,6 +175,7 @@ int inputs, outputs=0;
     }//for i
 
     }//instance of prediction example
+
     pushOutput(table, 0);
 
   }//doit

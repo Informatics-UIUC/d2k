@@ -7,8 +7,7 @@
  * @version 1.0
  *
  *
- * @todo: change the predictionColumnsTable to be a SubsetTable.
- * change also the respective class member in DBPredictionExample.
+ *
  */
 
 package ncsa.d2k.modules.core.datatype.table.db;
@@ -23,9 +22,13 @@ import ncsa.d2k.modules.core.io.sql.*;
 class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
 
     protected int[] predictionSet;
-    protected MutableTableImpl predictionColumnsTable;
+    protected SubsetTableImpl predictionColumnsTable;
+    protected Column[] predictionColumns;
 
-    protected int[] indirection;
+
+    protected int num_original_columns;
+
+  protected int[] indirection;
     protected boolean[] prediction;
 
     protected ExampleTable original;
@@ -45,18 +48,21 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
 
         newTableHackVariable = false;
 
+
+
     //    subset = pet.subset;
+    num_original_columns = original.getNumColumns();
 
             predictionSet = new int[outputColumns.length];
             for (int j = 0; j < predictionSet.length; j++)
                 predictionSet[j] = j + original.getNumColumns();
 
             // handle indirection and prediction
-            indirection = new int[original.getNumColumns() + predictionSet.length];
+           indirection = new int[original.getNumColumns() + predictionSet.length];
             prediction = new boolean[indirection.length];
 
             for (int j = 0; j < original.getNumColumns(); j++) {
-                indirection[j] = j;
+       //         indirection[j] = j;
                 prediction[j] = false;
             }
             for (int j = 0; j < predictionSet.length; j++) {
@@ -64,73 +70,79 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
                 prediction[original.getNumColumns() + j] = true;
             }
 
-            Column[] c = new Column[outputColumns.length];
-            int numRows = getNumRows(); // old: original.getNumRows()
+           predictionColumns = new Column[outputColumns.length];
+
+
+
+
+            //this will make sure that the prediction columns are as long
+            //as the redular columns and subsetted.
+            int numRows = dataSource.getNumRows();
 
             for(int i = 0; i < outputColumns.length; i++) {
                 int type = original.getColumnType(outputColumns[i]);
                 switch(type) {
                     case ColumnTypes.BOOLEAN:
-                        c[i] = new BooleanColumn(numRows);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new BooleanColumn(numRows);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     case ColumnTypes.BYTE:
-                        c[i] = new ByteColumn(numRows);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new ByteColumn(numRows);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     case ColumnTypes.BYTE_ARRAY:
-                        c[i] = new ContinuousByteArrayColumn(numRows, true);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new ContinuousByteArrayColumn(numRows, true);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     case ColumnTypes.CHAR:
-                        c[i] = new CharColumn(numRows);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new CharColumn(numRows);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     case ColumnTypes.CHAR_ARRAY:
-                        c[i] = new ContinuousCharArrayColumn(numRows, true);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new ContinuousCharArrayColumn(numRows, true);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     case ColumnTypes.DOUBLE:
-                        c[i] = new DoubleColumn(numRows);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new DoubleColumn(numRows);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     case ColumnTypes.FLOAT:
-                        c[i] = new FloatColumn(numRows);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new FloatColumn(numRows);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     case ColumnTypes.INTEGER:
-                        c[i] = new IntColumn(numRows);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new IntColumn(numRows);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     case ColumnTypes.LONG:
-                        c[i] = new LongColumn(numRows);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new LongColumn(numRows);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     case ColumnTypes.OBJECT:
-                        c[i] = new ObjectColumn(numRows);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new ObjectColumn(numRows);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     case ColumnTypes.SHORT:
-                        c[i] = new ShortColumn(numRows);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new ShortColumn(numRows);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     case ColumnTypes.STRING:
-                        c[i] = new StringColumn(numRows);
-                        c[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
+                        predictionColumns[i] = new StringColumn(numRows);
+                        predictionColumns[i].setLabel(original.getColumnLabel(outputColumns[i]) + " Predictions");
                         break;
                     default:
                         break;
                 }
-            predictionColumnsTable = new MutableTableImpl(c);
+            predictionColumnsTable = new SubsetTableImpl(predictionColumns, subset);
             //(MutableTableImpl)DefaultTableFactory.getInstance().createTable(c);
         }
     }
 
-//todo: return DBPredictionRow here.
+
 public Row getRow(){
 
-    return new DBPredictionExample(dataSource, dbConnection, predictionColumnsTable.getRow(),
-                                   this, subset, this.indirection, this.prediction);
+    return new DBPredictionExample(dataSource, dbConnection, predictionColumns,
+                                  this, subset, indirection, prediction);
 
     }
 
@@ -138,6 +150,8 @@ public Row getRow(){
 /*****************************************************************************/
 /* utility methods                                                           */
 /*****************************************************************************/
+
+
 
     private void insertIndirectionAndPrediction(boolean isPrediction, int position) {
 
@@ -259,101 +273,120 @@ public Row getRow(){
 
    public Object getObject(int row, int column) {
        if (prediction[column])
-           return predictionColumnsTable.getObject(row, indirection[column]);
+           return predictionColumns[indirection[column]].getObject(subset[row]);
        else
-           return original.getObject(row, indirection[column]);
+           //return original.getObject(row, indirection[column]);
+      return (Object)dataSource.getObjectData(subset[row], column).toString();
    }
 
    public int getInt(int row, int column) {
        if (prediction[column])
-           return predictionColumnsTable.getInt(row, indirection[column]);
+           return predictionColumns[indirection[column]].getInt(subset[row]);
+
        else
-           return original.getInt(row, indirection[column]);
+           //return original.getInt(row, indirection[column]);
+
+           return (int)dataSource.getNumericData(subset[row], column);
    }
 
    public short getShort(int row, int column) {
-       if (prediction[column])
-           return predictionColumnsTable.getShort(row, indirection[column]);
+     if (prediction[column])
+           return predictionColumns[indirection[column]].getShort(subset[row]);
        else
-           return original.getShort(row, indirection[column]);
+              return (short)dataSource.getNumericData(subset[row], column);
+           //return original.getShort(row, indirection[column]);
    }
 
    public float getFloat(int row, int column) {
-       if (prediction[column])
-           return predictionColumnsTable.getFloat(row, indirection[column]);
+     if (prediction[column])
+           return predictionColumns[indirection[column]].getFloat(subset[row]);
        else
-           return original.getFloat(row, indirection[column]);
+              return (float)dataSource.getNumericData(subset[row], column);
+           //return original.getFloat(row, indirection[column]);
    }
 
    public double getDouble(int row, int column) {
-       if (prediction[column])
-           return predictionColumnsTable.getDouble(row, indirection[column]);
+     if (prediction[column])
+           return predictionColumns[indirection[column]].getDouble(subset[row]);
        else
-           return original.getDouble(row, indirection[column]);
+              return (double)dataSource.getNumericData(subset[row], column);
+           //return original.getDouble(row, indirection[column]);
    }
 
    public long getLong(int row, int column) {
-       if (prediction[column])
-           return predictionColumnsTable.getLong(row, indirection[column]);
+     if (prediction[column])
+           return predictionColumns[indirection[column]].getLong(subset[row]);
        else
-           return original.getLong(row, indirection[column]);
+         return (long)dataSource.getNumericData(subset[row], column);
+           //return original.getLong(row, indirection[column]);
    }
 
    public String getString(int row, int column) {
-       if (prediction[column]) {
-           return predictionColumnsTable.getString(row, indirection[column]);
-       }
+     if (prediction[column])
+           return predictionColumns[indirection[column]].getString(subset[row]);
+
        else
-           return original.getString(row, indirection[column]);
+              return dataSource.getTextData(subset[row], column);
+         //  return original.getString(row, indirection[column]);
    }
 
    public byte[] getBytes(int row, int column) {
-       if (prediction[column])
-           return predictionColumnsTable.getBytes(row, indirection[column]);
+     if (prediction[column])
+           return predictionColumns[indirection[column]].getBytes(subset[row]);
        else
-           return original.getBytes(row, indirection[column]);
+           return dataSource.getTextData(subset[row], column).getBytes();
+          // return original.getBytes(row, indirection[column]);
    }
 
    public boolean getBoolean(int row, int column) {
-       if (prediction[column])
-           return predictionColumnsTable.getBoolean(row, indirection[column]);
+     if (prediction[column])
+           return predictionColumns[indirection[column]].getBoolean(subset[row]);
        else
-           return original.getBoolean(row, indirection[column]);
+         return new Boolean(dataSource.getTextData(subset[row], column)).booleanValue();
+           //return original.getBoolean(row, indirection[column]);
    }
 
    public char[] getChars(int row, int column) {
-       if (prediction[column])
-           return predictionColumnsTable.getChars(row, indirection[column]);
+     if (prediction[column])
+           return predictionColumns[indirection[column]].getChars(subset[row]);
        else
-           return original.getChars(row, indirection[column]);
+         return dataSource.getTextData(subset[row], column).toCharArray();
+           //return original.getChars(row, indirection[column]);
    }
 
    public byte getByte(int row, int column) {
-       if (prediction[column])
-           return predictionColumnsTable.getByte(row, indirection[column]);
+     if (prediction[column])
+           return predictionColumns[indirection[column]].getByte(subset[row]);
        else
-           return original.getByte(row, indirection[column]);
+          return dataSource.getTextData(subset[row], column).getBytes()[0];
+          // return original.getByte(row, indirection[column]);
    }
 
    public char getChar(int row, int column) {
-       if (prediction[column])
-           return predictionColumnsTable.getChar(row, indirection[column]);
+     if (prediction[column])
+           return predictionColumns[indirection[column]].getChar(subset[row]);
        else
-           return original.getChar(row, indirection[column]);
+         return dataSource.getTextData(subset[row], column).toCharArray()[0];
+         //  return original.getChar(row, indirection[column]);
    }
+
+
+
 
    public String getColumnLabel(int position) {
        if (prediction[position])
-           return predictionColumnsTable.getColumnLabel(indirection[position]);
+         return predictionColumns[indirection[position]].getLabel();
+
        else
-           return original.getColumnLabel(indirection[position]);
+           return original.getColumnLabel(position);
    }
 
    public String getColumnComment(int position) {
        if (prediction[position])
-           return predictionColumnsTable.getColumnComment(indirection[position]);
+           return predictionColumns[indirection[position]].getComment();
+
        else
-           return original.getColumnComment(indirection[position]);
+           return original.getColumnComment(position);
    }
 
    /*public String getLabel() {
@@ -379,9 +412,9 @@ public Row getRow(){
    }
    */
 
-   public int getNumRows() {
+/*   public int getNumRows() {
        return original.getNumRows();
-   }
+   }*/
 
    /*public int getNumEntries() {
        return (original.getNumEntries() + predictionColumnsTable.getNumEntries());
@@ -390,6 +423,8 @@ public Row getRow(){
    public int getNumColumns() {
        if (newTableHackVariable)
            return original.getNumColumns();
+
+
        return (original.getNumColumns() + predictionColumnsTable.getNumColumns());
    }
 
@@ -538,43 +573,49 @@ public TableFactory getTableFactory() {
    public boolean isColumnNominal(int position) {
        if (prediction[position])
            return predictionColumnsTable.isColumnNominal(indirection[position]);
+
        else
-           return original.isColumnNominal(indirection[position]);
+           return original.isColumnNominal(position);
    }
 
    public boolean isColumnScalar(int position) {
-       if (prediction[position])
-           return predictionColumnsTable.isColumnScalar(indirection[position]);
+   if (prediction[position])
+          return predictionColumnsTable.isColumnScalar(indirection[position]);
+
        else
-           return original.isColumnScalar(indirection[position]);
+           return original.isColumnScalar(position);
    }
 
    public void setColumnIsNominal(boolean value, int position) {
        if (prediction[position])
            predictionColumnsTable.setColumnIsNominal(value, indirection[position]);
+
        else
-           original.setColumnIsNominal(value, indirection[position]);
+           original.setColumnIsNominal(value, position);
    }
 
    public void setColumnIsScalar(boolean value, int position) {
        if (prediction[position])
            predictionColumnsTable.setColumnIsScalar(value, indirection[position]);
+
        else
-           original.setColumnIsScalar(value, indirection[position]);
+           original.setColumnIsScalar(value, position);
    }
 
    public boolean isColumnNumeric(int position) {
        if (prediction[position])
            return predictionColumnsTable.isColumnNumeric(indirection[position]);
+
        else
-           return original.isColumnNumeric(indirection[position]);
+           return original.isColumnNumeric(position);
    }
 
    public int getColumnType(int position) {
        if (prediction[position])
            return predictionColumnsTable.getColumnType(indirection[position]);
+
        else
-           return original.getColumnType(indirection[position]);
+           return original.getColumnType(position);
    }
 
 /*   public ExampleTable toExampleTable() {
@@ -747,7 +788,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public int getIntPrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getInt(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getInt(row);
    }
 
    /**
@@ -758,7 +799,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public float getFloatPrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getFloat(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getFloat(row);
    }
 
    /**
@@ -769,7 +810,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public double getDoublePrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getDouble(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getDouble(row);
    }
 
    /**
@@ -780,7 +821,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public long getLongPrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getLong(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getLong(row);
    }
 
    /**
@@ -791,7 +832,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public short getShortPrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getShort(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getShort(row);
    }
 
    /**
@@ -802,7 +843,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public boolean getBooleanPrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getBoolean(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getBoolean(row);
    }
 
    /**
@@ -813,7 +854,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public String getStringPrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getString(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getString(row);
    }
 
    /**
@@ -824,7 +865,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public char[] getCharsPrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getChars(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getChars(row);
    }
 
    /**
@@ -835,7 +876,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public byte[] getBytesPrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getBytes(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getBytes(row);
    }
 
    /**
@@ -846,7 +887,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public Object getObjectPrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getObject(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getObject(row);
    }
 
    /**
@@ -857,7 +898,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public byte getBytePrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getByte(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getByte(row);
    }
 
    /**
@@ -868,7 +909,7 @@ public TableFactory getTableFactory() {
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public char getCharPrediction(int row, int predictionColIdx) {
-       return predictionColumnsTable.getChar(row, predictionColIdx);
+       return predictionColumns[predictionColIdx].getChar(row);
    }
 
    /**
