@@ -21,15 +21,17 @@ File Name 2, java.lang.String, Output, Second file name - possibly with path,   
 File Name,   java.lang.String, Input,  A file name where serialized object is read,    InputSerializedObject (Input Serialized Object)
 File Name,   java.lang.String, Input,  A file name where serialized object is written, OutputSerializedObject (Output Serialized Object)
 File Name,   java.lang.String, Input,  Absolute path to and ARFF  file, 	       CreateARFFParser (Create ARFF File Parser)
+File Name,   java.lang.String, Input,  A file name where table is written,             WriteTableToFile (Write Table To File)
 
 File Parser, d2k.modules.core.io.file.input.ARFFFileParser, Output,  An ARFF File Parser, CreateARFFParser (Create ARFF File Parser)
 
 Java Object, java.lang.Object, Output, The object that was deserialized, InputSerializedObject (Input Serialized Object)
 Java Object, java.lang.Object, Input,  The object to be serialized,      OutputSerializedObject (Output Serialized Object)
 
-Input Table,   d2k.modules.core.datatype.table.basic.TableImpl, Original Table to be operated on,   MergeTableRows (Merge Table Rows)
-Output Table,  d2k.modules.core.datatype.table.basic.TableImpl, Resulting Table after merges,       MergeTableRows (Merge Table Rows)
-First Table, ncsa.d2k.modules.core.datatype.table.Table, First table to combine,                    AppendTables (Append Tables)
-Second Table, ncsa.d2k.modules.core.datatype.table.Table, Second table to combine,                  AppendTables (Append Tables)
-Result Table, ncsa.d2k.modules.core.datatype.table.ExampleTable, Table resulting from combination,  AppendTables (Append Tables)
+Input Table,  d2k.modules.core.datatype.table.basic.TableImpl,  Input,  Original Table to be operated on,   MergeTableRows (Merge Table Rows)
+Output Table, d2k.modules.core.datatype.table.basic.TableImpl,  Output, Resulting Table after merges,       MergeTableRows (Merge Table Rows)
+First Table,  ncsa.d2k.modules.core.datatype.table.Table,        Input,  First table to combine,             AppendTables (Append Tables)
+Second Table, ncsa.d2k.modules.core.datatype.table.Table,        Input,  Second table to combine,            AppendTables (Append Tables)
+Result Table, ncsa.d2k.modules.core.datatype.table.ExampleTable, Output, Table resulting from combination,   AppendTables (Append Tables)
+Table,        ncsa.d2k.modules.core.datatype.table.Table,        Input,  Table to write,  		     WriteTableToFile (Write Table To File)
 
