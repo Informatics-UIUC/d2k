@@ -298,9 +298,59 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
                     predSet[i] = pt.getNumColumns()-1;
                     break;
 
-                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    // fill in for all column types
+//VERED: added cases for all column types
+                  case ColumnTypes.INTEGER:
 
+                    //vered - debug
+              System.out.println("adding an int columns as a prediction column");
+              //end debug
+                 pt.addColumn(new IntColumn(pt.getNumRows()));
+                 predSet[i] = pt.getNumColumns()-1;
+                 break;
+               case ColumnTypes.FLOAT:
+                 pt.addColumn(new FloatColumn(pt.getNumRows()));
+                 predSet[i] = pt.getNumColumns()-1;
+                 break;
+
+               case ColumnTypes.LONG:
+                 pt.addColumn(new LongColumn(pt.getNumRows()));
+                 predSet[i] = pt.getNumColumns()-1;
+                 break;
+               case ColumnTypes.SHORT:
+                 pt.addColumn(new ShortColumn(pt.getNumRows()));
+                 predSet[i] = pt.getNumColumns()-1;
+                 break;
+
+               case ColumnTypes.BYTE:
+              pt.addColumn(new ByteColumn(pt.getNumRows()));
+              predSet[i] = pt.getNumColumns()-1;
+              break;
+            case ColumnTypes.CHAR:
+              pt.addColumn(new CharColumn(pt.getNumRows()));
+              predSet[i] = pt.getNumColumns()-1;
+              break;
+
+
+            case ColumnTypes.BYTE_ARRAY:
+              pt.addColumn(new ByteArrayColumn(pt.getNumRows()));
+              predSet[i] = pt.getNumColumns() - 1;
+              break;
+            case ColumnTypes.CHAR_ARRAY:
+              pt.addColumn(new CharArrayColumn(pt.getNumRows()));
+              predSet[i] = pt.getNumColumns() - 1;
+              break;
+
+            case ColumnTypes.OBJECT:
+              pt.addColumn(new ObjectColumn(pt.getNumRows()));
+              predSet[i] = pt.getNumColumns() - 1;
+              break;
+            case ColumnTypes.BOOLEAN:
+              pt.addColumn(new BooleanColumn(pt.getNumRows()));
+              predSet[i] = pt.getNumColumns() - 1;
+              break;
+            default: throw new RuntimeException("no such column type " + type);
+
+                    //todo - check the following:
                     // is it ok to call pt.addColumn() ?  Will this work with
                     // different implementations of Table?
                 }
