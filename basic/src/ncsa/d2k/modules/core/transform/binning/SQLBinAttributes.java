@@ -1387,7 +1387,8 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
               for (int j = 0; j < colIdx.length; j++) {
                 if (i == colIdx[j]) {
                   // the number of bins is (max - min) / (bin width)
-                  int num = (int)Math.ceil((maxes[i] - mins[i])/intrval);
+                  int num = (int)Math.round((maxes[i] - mins[i])/intrval);
+				  //System.out.println("column " + i + " max " + maxes[i] + " min " + mins[i] + " num " + num  + "original " +( maxes[i]-mins[i])/intrval);
                   //Anca replaced num-1 with num to fix bug  175
                   double[] binMaxes = new double[num];
                  //Anca replaced: binMaxes[0] = mins[i] + intrval;
@@ -1399,6 +1400,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                   addItemToBinList(nbd);
                   for (int k = 1; k < binMaxes.length; k++) {
                     binMaxes[k] = binMaxes[k - 1] + intrval;
+					//System.out.println("binMax j " + binMaxes[k] + " " + k);
                     // now create the BinDescriptor and add it to the bin list
                     nbd = createNumericBinDescriptor(i, binMaxes[k - 1], binMaxes[k]);
                     addItemToBinList(nbd);

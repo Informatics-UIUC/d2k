@@ -1336,9 +1336,9 @@ public class BinAttributes extends HeadlessUIModule {
 
 
 		// the number of bins is (max - min) / (bin width)
-		int num = (int)Math.ceil((maxes[i] - mins[i])/intrval);
+		int num = (int)Math.round((maxes[i] - mins[i])/intrval);
 
-
+		//System.out.println("column " + i + " max " + maxes[i] + " min " + mins[i] + " num " + num+ " original " +( maxes[i]-mins[i])/intrval + " interval " + intrval); 
 		double[] binMaxes = new double[num];
 		binMaxes[0] = mins[i];
 		// add the first bin manually
@@ -1347,6 +1347,7 @@ public class BinAttributes extends HeadlessUIModule {
 		addItemToBinList(nbd);
 		for (int j = 1; j < binMaxes.length; j++) {
 		  binMaxes[j] = binMaxes[j - 1] + intrval;
+		  //System.out.println("binMax j " + binMaxes[j] + " " + j);
 		  // now create the BinDescriptor and add it to the bin list
 		  //ANCA nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j]);
 		  nbd = BinDescriptorFactory.createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j],nf,tbl);
