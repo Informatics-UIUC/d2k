@@ -64,7 +64,7 @@ public class EvaluatePopulation
   private int numFitnessFunctions;
   /** the number of fitness functions calculated by an executle */
   private int numExternalFF;
-  
+
   private Constraints constraints;
   private int numConstraintVars;
   private int numConstraintFunctions;
@@ -75,7 +75,7 @@ public class EvaluatePopulation
   private boolean hasFVars;
   /** true if FF through executables are present */
   private boolean hasExternalFF;
-  
+
   private boolean hasCon;
   private boolean hasCVars;
   private boolean hasExternalCon;
@@ -156,7 +156,7 @@ public class EvaluatePopulation
         externFFInputFiles = new TIntArrayList(rows.toArray());
         externFFInputFiles.sort();
       }
-      
+
       constraints = pop.getParameters().constraints;
       numConstraintVars = constraints.getNumConstraintVariables();
       hasCVars = (numConstraintVars > 0);
@@ -164,13 +164,13 @@ public class EvaluatePopulation
       hasCon = (numConstraintFunctions > 0);
       numExternalConstraints = constraints.getNumExternConstraints();
       hasExternalCon = (numExternalConstraints > 0);
-      
+
       if(hasCon) {
-        ;  
+        ;
       }
-      
+
       if(hasExternalCon) {
-        ;  
+        ;
       }
 
       // determine if the population contains binary or real-coded genes
@@ -182,13 +182,13 @@ public class EvaluatePopulation
           binaryType = false;
       }
     }
-    
+
     // copy the population into the population table
     // if any constructions are used
     if(hasFVars || hasCVars || hasFF || hasCon) {
-      copyPopulationToTable();  
+      copyPopulationToTable();
     }
-    
+
     // this is the number of columns in the table by default
     int numDecisionVariables = populationTable.getNumColumns();
 
@@ -250,7 +250,7 @@ public class EvaluatePopulation
         populationTable.removeColumns(numDecisionVariables, numAddedColumns);
       }
     }
-    
+
     // write out the population if external executables are used
     // we only need to write out the first file, and make copies for
     // the rest
@@ -261,7 +261,7 @@ public class EvaluatePopulation
         this.writeBinaryGenesToFile(firstFileName);
       else
         this.writeNumericGenesToFile(firstFileName);
-      
+
       for(int i = 1; i < externFFInputFiles.size(); i++) {
         int idx = externFFInputFiles.get(i);
         String fileName = fitnessFunctions.getExternFitnessFunctionInput(idx);
@@ -281,9 +281,9 @@ public class EvaluatePopulation
         this.readExternalFFOutput(i);
       }
     }
-    
+
     if(hasExternalCon) {
-      
+
     }
 
     pushOutput(pop, 0);
@@ -509,10 +509,10 @@ public class EvaluatePopulation
     ExecRunner er = new ExecRunner();
     er.exec(fitnessFunctions.getExternFitnessFunctionExec(ffIndex));
   }
-  
+
   private void callExternalConExecutable(int conIndex) throws Exception {
     ExecRunner er = new ExecRunner();
-    er.exec(constraintFunctions.
+    er.exec(constraints.getExternConstraintExec(conIndex));
   }
 
   /**
