@@ -175,13 +175,16 @@ public class SQLChooseAttributes extends UIModule {
       tableList.setLayout(new GridBagLayout());
       Constrain.setConstraints(tableList, new JLabel("Table Name"),
         0,0,1,1,GridBagConstraints.NONE,GridBagConstraints.EAST,1,1);
-      Constrain.setConstraints(tableList, tableName = new JTextField(10),
+      Constrain.setConstraints(tableList, tableName = new JTextField(5),
         1,0,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       tableName.setText(tblName);
       tableName.addActionListener(this);
-      Constrain.setConstraints(tableList, tableBrowseBtn = new JButton ("Browse"),
+      tableName.setEditable(false);
+      Constrain.setConstraints(tableList, new JLabel(" "),
         3,0,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
-      tableBrowseBtn.addActionListener(this);
+      //Constrain.setConstraints(tableList, tableBrowseBtn = new JButton ("Browse"),
+        //3,0,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
+      //tableBrowseBtn.addActionListener(this);
 
 
       inputList=new JList();
