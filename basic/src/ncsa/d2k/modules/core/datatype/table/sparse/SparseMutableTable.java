@@ -189,11 +189,30 @@ public class SparseMutableTable
    *                <code>start+len</code>
    */
   public Table getSubset(int start, int len) {
+    if ((start + len - 1) >= getNumColumns()){
+      throw new IndexOutOfBoundsException("num rows is " + getNumRows() + " range enterred is " + start + " through " + (start + len - 1));
+    }
+
+    if (start < 0) {
+      throw new IndexOutOfBoundsException("num rows is " + getNumRows() + " range enterred is " + start + " through " + (start + len - 1));
+    }
+
+    if (len < 0) {
+      throw new IndexOutOfBoundsException("length invalid -- num rows is " + getNumRows() + " range enterred is start:" + start + " through length: " + len);
+    }
     return getSubset(start, len, this);
   } //getSubset
 
 
   public Table getSubset(int[] rows) {
+    for (int i = 0, n = rows.length; i < n; i++){
+      if (rows[i] < 0){
+        throw new IndexOutOfBoundsException("num rows is " + getNumRows() + " row index out of bounds value " + rows[i]);
+      }
+      if (rows[i] >= getNumRows()){
+        throw new IndexOutOfBoundsException("num rows is " + getNumRows() + " row index out of bounds value " + rows[i]);
+      }
+    }
     return getSubset(rows, this);
   }
 
@@ -234,15 +253,15 @@ public class SparseMutableTable
   public Table copy(int start, int length) {
 
     if ((start + length - 1) >= getNumColumns()){
-      throw new IndexOutOfBoundsException("num cols is " + getNumColumns() + " range enterred is " + start + " through " + (start + length - 1));
+      throw new IndexOutOfBoundsException("num rows is " + getNumRows() + " range enterred is " + start + " through " + (start + length - 1));
     }
 
     if (start < 0) {
-      throw new IndexOutOfBoundsException("num cols is " + getNumColumns() + " range enterred is " + start + " through " + (start + length - 1));
+      throw new IndexOutOfBoundsException("num rows is " + getNumRows() + " range enterred is " + start + " through " + (start + length - 1));
     }
 
     if (length < 0) {
-      throw new IndexOutOfBoundsException("length invalid -- num cols is " + getNumColumns() + " range enterred is start:" + start + " through length: " + length);
+      throw new IndexOutOfBoundsException("length invalid -- num rows is " + getNumRows() + " range enterred is start:" + start + " through length: " + length);
     }
 
     // Subset the columns to get new columns.
@@ -824,30 +843,6 @@ public class SparseMutableTable
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /**
    * Set entry <code>(row, column)</code> to hold the data represented by
    * <code>element</code>
@@ -866,7 +861,8 @@ public class SparseMutableTable
 
     if (numRows <= row) {
       numRows = row + 1;
-    }
+      Column col = getColumn(column);
+     }
     if (numColumns <= column) {
       numColumns = column + 1;
     }
@@ -1153,14 +1149,18 @@ public class SparseMutableTable
   }
 
   /**
-       * Sets <code>label</code> to be the label of column no. <code>position</code>
+   * Sets <code>label</code> to be the label of column no. <code>position</code>
+   *
+   * If column does not exist in the table then no comment will be set.
    *
    * @param label     the new label to be set
    * @param position  the column index which its label is being set
    */
   public void setColumnLabel(String label, int position) {
     if (columns.containsKey(position)) {
-      ( (AbstractSparseColumn) columns.get(position)).setLabel(label);
+      ( (AbstractSparseColumn) getColumn(position)).setLabel(label);
+    } else {
+        System.out.println("SparseMutableTable.setColumnLabel() -- column does not exist in table ... label not set.");
     }
   }
 
@@ -1172,7 +1172,9 @@ public class SparseMutableTable
    */
   public void setColumnComment(String comment, int position) {
     if (columns.containsKey(position)) {
-      ( (AbstractSparseColumn) columns.get(position)).setComment(comment);
+      ( (AbstractSparseColumn) getColumn(position)).setComment(comment);
+    } else {
+        System.out.println("SparseMutableTable.setColumnLabel() -- column does not exist in table ... label not set.");
     }
   }
 
@@ -1197,9 +1199,15 @@ public class SparseMutableTable
    * @param edn       the row number at which ends the section to be sorted.
    */
   public void sortByColumn(int col, int begin, int end) {
+    if ((begin < 0) || (begin >= this.getNumRows())){
+      throw new java.lang.RuntimeException("Column index out of range: " + begin);
+    }
+    if ((end < 0) || (end >= this.getNumRows())){
+      throw new java.lang.RuntimeException("Column index out of range: " + end);
+    }
 
     if (end < begin) {
-      return;
+      throw new java.lang.RuntimeException("End parameter, " + end + ", is less than begin, " + begin);
     }
 
     Column sorting = getColumn(col);
@@ -1237,7 +1245,9 @@ public class SparseMutableTable
    */
   public void setValueToMissing(boolean val, int row, int col) {
     if (columns.containsKey(col)) {
-      ( (AbstractSparseColumn) columns.get(col)).setValueToMissing(val, row);
+      ( (AbstractSparseColumn) getColumn(col)).setValueToMissing(val, row);
+    } else {
+      System.out.println("SparseMutableTable.setValueToMissing() -- column does not exist in table ... value not set to missing.");
     }
   }
 
@@ -1250,7 +1260,9 @@ public class SparseMutableTable
    */
   public void setValueToEmpty(boolean val, int row, int col) {
     if (columns.containsKey(col)) {
-      ( (AbstractSparseColumn) columns.get(col)).setValueToEmpty(val, row);
+      ( (AbstractSparseColumn) getColumn(col)).setValueToEmpty(val, row);
+    } else {
+      System.out.println("SparseMutableTable.setValueToMissing() -- column does not exist in table ... value not set to empty.");
     }
   }
 

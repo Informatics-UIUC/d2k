@@ -163,14 +163,14 @@ public abstract class SparseTable
    *                returns false if such column does not exist.
    */
   public boolean getBoolean(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getBoolean(row);
+      return getColumn(column).getBoolean(row);
     }
     else {
       return SparseDefaultValues.getDefaultBoolean();
@@ -188,14 +188,14 @@ public abstract class SparseTable
    *                by SparseCharColumn if such column does not exist.
    */
   public char getChar(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getChar(row);
+      return getColumn(column).getChar(row);
     }
     else {
       return SparseDefaultValues.getDefaultChar();
@@ -212,17 +212,17 @@ public abstract class SparseTable
    *                returns null if such column does not exist.
    */
   public char[] getChars(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getChars(row);
+      return getColumn(column).getChars(row);
     }
     else {
-      return null;
+      return SparseDefaultValues.getDefaultChars();
     }
   }
 
@@ -237,14 +237,14 @@ public abstract class SparseTable
    *                position is empty, as defined by SparseDoubleColumn.
    */
   public double getDouble(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getDouble(row);
+      return getColumn(column).getDouble(row);
     }
     else {
       return SparseDefaultValues.getDefaultDouble();
@@ -261,14 +261,14 @@ public abstract class SparseTable
        *                returns Float.NEGATIVE_INFINITY if such column does not exist.
    */
   public float getFloat(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getFloat(row);
+      return getColumn(column).getFloat(row);
     }
     else {
       return (float)SparseDefaultValues.getDefaultDouble();
@@ -285,17 +285,17 @@ public abstract class SparseTable
    *                returns null if such column does not exist.
    */
   public byte[] getBytes(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getBytes(row);
+      return getColumn(column).getBytes(row);
     }
     else {
-      return null;
+      return SparseDefaultValues.getDefaultBytes();
     }
   }
 
@@ -310,14 +310,14 @@ public abstract class SparseTable
    *                by SparseByteColumn if such column does not exist.
    */
   public byte getByte(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getByte(row);
+      return getColumn(column).getByte(row);
     }
     else {
       return SparseDefaultValues.getDefaultByte();
@@ -336,14 +336,14 @@ public abstract class SparseTable
    *                position is empty, as defined by SparseLongColumn.
    */
   public long getLong(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getLong(row);
+      return getColumn(column).getLong(row);
     }
     else {
       return (long)SparseDefaultValues.getDefaultInt();
@@ -361,14 +361,14 @@ public abstract class SparseTable
    *                returns null if such column does not exist.
    */
   public Object getObject(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getObject(row);
+      return getColumn(column).getObject(row);
     }
     else {
       // Return default value
@@ -387,14 +387,14 @@ public abstract class SparseTable
    *                position is empty, as defined by SparseIntColumn.
    */
   public int getInt(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getInt(row);
+      return getColumn(column).getInt(row);
     }
     else {
       return SparseDefaultValues.getDefaultInt();
@@ -412,14 +412,14 @@ public abstract class SparseTable
        *                as defined by SparseShortColumn, if such column does not exist.
    */
   public short getShort(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getShort(row);
+      return getColumn(column).getShort(row);
     }
     else {
       return (short)SparseDefaultValues.getDefaultInt();
@@ -436,17 +436,17 @@ public abstract class SparseTable
    *                returns null if such column does not exist.
    */
   public String getString(int row, int column) {
-    if ((column < 0) || (column >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + column);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((column < 0) || (column >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + column);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(column)) {
-      return ( (Column) columns.get(column)).getString(row);
+      return getColumn(column).getString(row);
     }
     else {
-      return null;
+      return SparseDefaultValues.getDefaultString();
     }
   }
 
@@ -462,11 +462,11 @@ public abstract class SparseTable
    *                null if such column does not exit.
    */
   public String getColumnLabel(int position) {
-    if ((position < 0) || (position >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("SparseTable.getColumnLabel :: column index out of range: " + position);
-    }
+//    if ((position < 0) || (position >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("SparseTable.getColumnLabel :: column index out of range: " + position);
+//    }
     if (columns.containsKey(position)) {
-      String retval = ( (Column) columns.get(position)).getLabel();
+      String retval = getColumn(position).getLabel();
       if (retval == null){
         return  "column_" + position;
       } else {
@@ -486,11 +486,11 @@ public abstract class SparseTable
    *            null if such column does not exit.
    */
   public String getColumnComment(int position) {
-    if ((position < 0) || (position >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("SparseTable.getColumnComment :: column index out of range: " + position);
-    }
+//    if ((position < 0) || (position >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("SparseTable.getColumnComment :: column index out of range: " + position);
+//    }
     if (columns.containsKey(position)) {
-      String retval = ( (Column) columns.get(position)).getComment();
+      String retval = getColumn(position).getComment();
       if (retval == null){
         return  "column_" + position;
       } else {
@@ -596,11 +596,11 @@ public abstract class SparseTable
    *                    false.
    */
   public boolean isColumnNominal(int position) {
-    if ((position < 0) || (position >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("SparseTable.isColumnNominal :: column index out of range: " + position);
-    }
+//    if ((position < 0) || (position >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("SparseTable.isColumnNominal :: column index out of range: " + position);
+//    }
     if (columns.containsKey(position)) {
-      return ( (Column) columns.get(position)).getIsNominal();
+      return getColumn(position).getIsNominal();
     }
     else {
       return false;
@@ -617,11 +617,11 @@ public abstract class SparseTable
    *                    false.
    */
   public boolean isColumnScalar(int position) {
-    if ((position < 0) || (position >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("SparseTable.isColumnScalar :: column index out of range: " + position);
-    }
+//    if ((position < 0) || (position >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("SparseTable.isColumnScalar :: column index out of range: " + position);
+//    }
     if (columns.containsKey(position)) {
-      return ( (Column) columns.get(position)).getIsScalar();
+      return getColumn(position).getIsScalar();
     }
     else {
       return false;
@@ -639,11 +639,11 @@ public abstract class SparseTable
    *
    */
   public void setColumnIsNominal(boolean value, int position) {
-    if ((position < 0) || (position >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("SparseTable.setColumnIsNominal :: column index out of range: " + position);
-    }
+//    if ((position < 0) || (position >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("SparseTable.setColumnIsNominal :: column index out of range: " + position);
+//    }
     if (columns.containsKey(position)) {
-      ( (Column) columns.get(position)).setIsNominal(value);
+      getColumn(position).setIsNominal(value);
     }
   }
 
@@ -657,11 +657,11 @@ public abstract class SparseTable
    *
    */
   public void setColumnIsScalar(boolean value, int position) {
-    if ((position < 0) || (position >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("SparseTable.setColumnIsScalar :: column index out of range: " + position);
-    }
+//    if ((position < 0) || (position >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("SparseTable.setColumnIsScalar :: column index out of range: " + position);
+//    }
     if (columns.containsKey(position)) {
-      ( (Column) columns.get(position)).setIsScalar(value);
+      getColumn(position).setIsScalar(value);
     }
   }
 
@@ -676,11 +676,11 @@ public abstract class SparseTable
        *                    returns false if otherwise (also if column does not exit).
    */
   public boolean isColumnNumeric(int position) {
-    if ((position < 0) || (position >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("SparseTable.isColumnNumeric :: column index out of range: " + position);
-    }
+//    if ((position < 0) || (position >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("SparseTable.isColumnNumeric :: column index out of range: " + position);
+//    }
     if (columns.containsKey(position)) {
-      return ( (AbstractSparseColumn) columns.get(position)).isNumeric();
+      return ((AbstractSparseColumn)getColumn(position)).isNumeric();
     }
     else {
       return false;
@@ -695,11 +695,11 @@ public abstract class SparseTable
    *                  return -1 if such column does not exist.
    */
   public int getColumnType(int position) {
-    if ((position < 0) || (position >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("SparseTable.getColumnType :: column index out of range: " + position);
-    }
+//    if ((position < 0) || (position >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("SparseTable.getColumnType :: column index out of range: " + position);
+//    }
     if (columns.containsKey(position)) {
-      return ( (Column) columns.get(position)).getType();
+      return getColumn(position).getType();
     } else {
       return ColumnTypes.UNSPECIFIED;
     }
@@ -712,14 +712,14 @@ public abstract class SparseTable
    * @return true if the value is missing, false otherwise
    */
   public boolean isValueMissing(int row, int col) {
-    if ((col < 0) || (col >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + col);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((col < 0) || (col >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + col);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(col)) {
-      return ( (Column) columns.get(col)).isValueMissing(row);
+      return getColumn(col).isValueMissing(row);
     }
     else {
       return false;
@@ -733,14 +733,14 @@ public abstract class SparseTable
    * @return true if the value is empty, false otherwise
    */
   public boolean isValueEmpty(int row, int col) {
-    if ((col < 0) || (col >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + col);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((col < 0) || (col >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + col);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(col)) {
-      return ( (Column) columns.get(col)).isValueEmpty(row);
+      return getColumn(col).isValueEmpty(row);
     }
     else {
       return false;
@@ -769,11 +769,11 @@ public abstract class SparseTable
    * @see ncsa.d2k.modules.core.datatype.table.Table#hasMissingValues(int)
    */
   public boolean hasMissingValues(int columnIndex) {
-    if ((columnIndex < 0) || (columnIndex >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + columnIndex);
-    }
+//    if ((columnIndex < 0) || (columnIndex >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + columnIndex);
+//    }
     if (columns.containsKey(columnIndex)) {
-      return this.getColumn(columnIndex).hasMissingValues();
+      return getColumn(columnIndex).hasMissingValues();
     } else {
       return false;
     }
@@ -787,7 +787,7 @@ public abstract class SparseTable
    */
   public Column getColumn(int pos) {
     if ((pos < 0) || (pos >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + pos);
+      throw new java.lang.RuntimeException("Column index out of range 0 -- " + getNumColumns() + ": " + pos);
     }
     return (Column) columns.get(pos);
   }
@@ -809,12 +809,12 @@ public abstract class SparseTable
    *                        </code>, sorted
    */
   public int[] getColumnIndices(int columnNumber) {
-    if ((columnNumber < 0) || (columnNumber >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + columnNumber);
-    }
+//    if ((columnNumber < 0) || (columnNumber >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + columnNumber);
+//    }
     int[] indices = null;
     if (columns.containsKey(columnNumber)) {
-      return ( (AbstractSparseColumn) columns.get(columnNumber)).getIndices();
+      return ( (AbstractSparseColumn) getColumn(columnNumber)).getIndices();
     }
     return indices;
   }
@@ -827,11 +827,11 @@ public abstract class SparseTable
    *                      return zero if no such column exists.
    */
   public int getColumnNumEntries(int position) {
-    if ((position < 0) || (position >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + position);
-    }
+//    if ((position < 0) || (position >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + position);
+//    }
     if (columns.containsKey(position)) {
-      return ( (AbstractSparseColumn) columns.get(position)).getNumEntries();
+      return ( (AbstractSparseColumn) getColumn(position)).getNumEntries();
     }
     else {
       return 0;
@@ -845,7 +845,7 @@ public abstract class SparseTable
    * @return             the number of entries in row #<code>position</code>
    */
   public int getRowNumEntries(int position) {
-    if ((position < 0) || (position >= this.getNumColumns())){
+    if ((position < 0) || (position >= this.getNumRows())){
       throw new java.lang.RuntimeException("Column index out of range: " + position);
     }
     if (rows.containsKey(position)) {
@@ -900,14 +900,14 @@ public abstract class SparseTable
    *                return false.
    */
   public boolean doesValueExist(int row, int col) {
-    if ((col < 0) || (col >= this.getNumColumns())){
-      throw new java.lang.RuntimeException("Column index out of range: " + col);
-    }
-    if ((row < 0) || (row >= this.getNumRows())){
-      throw new java.lang.RuntimeException("Row index out of range: " + row);
-    }
+//    if ((col < 0) || (col >= this.getNumColumns())){
+//      throw new java.lang.RuntimeException("Column index out of range: " + col);
+//    }
+//    if ((row < 0) || (row >= this.getNumRows())){
+//      throw new java.lang.RuntimeException("Row index out of range: " + row);
+//    }
     if (columns.containsKey(col)) {
-      return ( (AbstractSparseColumn) columns.get(col)).doesValueExist(row);
+      return ( (AbstractSparseColumn) getColumn(col)).doesValueExist(row);
     }
     else {
       return false;

@@ -1,32 +1,36 @@
 package ncsa.d2k.modules.core.datatype.table.sparse;
 
-//import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
+//===============
+// Other Imports
+//===============
+
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
-//import ncsa.d2k.modules.projects.vered.sparse.example.SparseExample;
-import ncsa.d2k.modules.core.datatype.table.sparse.examples.SparseExample;
-import ncsa.d2k.modules.core.datatype.table.sparse.examples.SparseShallowExample;
-import ncsa.d2k.modules.core.datatype.table.ExampleTable;
-import ncsa.d2k.modules.core.datatype.table.TestTable;
-import ncsa.d2k.modules.core.datatype.table.TrainTable;
-import ncsa.d2k.modules.core.datatype.table.PredictionTable;
-import ncsa.d2k.modules.core.datatype.table.Table;
-import ncsa.d2k.modules.core.datatype.table.Example;
-import ncsa.d2k.modules.core.datatype.table.TableFactory;
+import ncsa.d2k.modules.core.datatype.table.sparse.examples.*;
+import ncsa.d2k.modules.core.datatype.table.*;
+
+//==============
+// Java Imports
+//==============
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.*;
 
 /**
  * SparseExampleTable is identical to SparseTable with a few addtions:
-     * Sparse Example Table holds 4 sets of integers, 2 of which define which are the
- * input columns and which are the output columns. the other 2 define which are
- * the test rows and which are the train rows.
+ * Sparse Example Table holds 4 sets of integers, 2 of which define which are
+ * the input columns and which are the output columns. the other 2 define which
+ * are the test rows and which are the train rows.
  * A row in an ExampleTable is an example.
  */
 
 public class SparseExampleTable
     extends SparseMutableTable
     implements ExampleTable {
+
+  //==============
+  // Data Members
+  //==============
 
   /** the indicies of the records in the various training sets. */
   protected int[] trainSet;
@@ -42,6 +46,10 @@ public class SparseExampleTable
 
   protected String[] outputNames;
   protected String[] inputNames;
+
+  //================
+  // Constructor(s)
+  //================
 
   /* Creates an empty table */
   public SparseExampleTable() {
@@ -65,36 +73,19 @@ public class SparseExampleTable
   public SparseExampleTable(SparseTable table) {
     super(table);
     if (table instanceof SparseExampleTable) {
-      copyArrays((SparseExampleTable) table);
+      copyArrays( (SparseExampleTable) table);
     }
-	else {
-		inputColumns = null;
-		outputColumns = null;
-		testSet = null;
-		trainSet = null;
-	}
-  }
-
-  protected void copyArrays(SparseExampleTable table) {
-    if (table.inputColumns != null){
-      inputColumns = copyArray(table.inputColumns);
-    }
-    if (table.outputColumns != null){
-      outputColumns = copyArray(table.outputColumns);
-    }
-    if (table.testSet != null){
-      testSet = copyArray(table.testSet);
-    }
-    if (table.trainSet != null){
-      trainSet = copyArray(table.trainSet);
+    else {
+      inputColumns = null;
+      outputColumns = null;
+      testSet = null;
+      trainSet = null;
     }
   }
 
-  protected int[] copyArray(int[] arr) {
-    int[] retVal = new int[arr.length];
-    System.arraycopy(arr, 0, retVal, 0, retVal.length);
-    return retVal;
-  }
+  //=========================================================================
+  //                      Example Table Interface
+  //=========================================================================
 
   /**
    * returns an int array containing indices of input columns of this table.
@@ -107,35 +98,6 @@ public class SparseExampleTable
   }
 
   /**
-   * returns the valid input indices of row no. <codE>row</code> in a
-   * sorted array.
-   *
-   * @param row      the row number to retrieve its input features.
-   * @return            a sorted integer array with the valid input indices
-   *                  of row no. <codE>row</code>.
-   */
-
-  public int[] getInputFeatures(int row) {
-    int[] retVal = new int[0];
-    if (!rows.containsKey(row)) {
-      return retVal;
-    }
-    VIntHashSet temp = (VIntHashSet) rows.get(row);
-    int[] tempArr = new int[temp.size()];
-    int j = 0;
-    for (int i = 0; i < inputColumns.length; i++) {
-      if (temp.contains(inputColumns[i])) {
-        tempArr[j] = inputColumns[i];
-        j++;
-      }
-    }
-    retVal = new int[j];
-    System.arraycopy(tempArr, 0, retVal, 0, j);
-    return retVal;
-
-  }
-
-  /**
    * Returns the total number of input columns.
    *
    * @retuen     the total number of input features.
@@ -145,15 +107,6 @@ public class SparseExampleTable
       return 0;
     }
     return inputColumns.length;
-  }
-
-  /**
-       * Returns the total number of examples in this table, meaning the total number
-   * of rows.
-   * @retuen     the total number of examples.
-   */
-  public int getNumExamples() {
-    return getNumRows();
   }
 
   /**
@@ -291,323 +244,9 @@ public class SparseExampleTable
     return new SparsePredictionTable(this);
   }
 
-  /**
-   * Copies the content of <code>srcTable</code> into this table
-   *
-   */
-  public void copy(SparseTable srcTable) {
-    if (srcTable instanceof SparseExampleTable) {
-      copyArrays( (SparseExampleTable) srcTable);
-
-    }
-    super.copy(srcTable);
-  }
-
-  /**
-   * Returns a deep copy of this column.
-   *
-   * @return a deep copy of this SparseExampleTable
-   */
-  public Table copy() {
-    SparseExampleTable retVal;
-    try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      ObjectOutputStream oos = new ObjectOutputStream(baos);
-      oos.writeObject(this);
-      byte buf[] = baos.toByteArray();
-      oos.close();
-      ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-      ObjectInputStream ois = new ObjectInputStream(bais);
-      retVal = (SparseExampleTable) ois.readObject();
-      ois.close();
-      return retVal;
-    }
-    catch (Exception e) {
-      retVal = new SparseExampleTable(this);
-
-      return retVal;
-    }
-  }
-
-  /**
-   * Returns a SparseExampleTable containing rows no. <code>start</code>
-   * through </codE>start+len</code> from this table.
-   *
-   * @param start row number at which the subset starts.
-   * @param len   number of consequentinve rows in the retrieved subset.
-   * @return      SparseExampleTable with data from rows no.
-   * 			  <code>start</code> through </codE>start+len</code>
-   * 			  from this table.
-   */
-  public Table getSubset(int start, int len) {
-		SparseExampleTable retVal = (SparseExampleTable) ( (SparseMutableTable)
-        SparseMutableTable.getSubset(start, len, this)).toExampleTable();
-
-	// copy the training and testing sets
-    retVal.getSubArrays(this, start, len);
-
-    // copy the input and output columns
-    retVal.inputColumns = this.copyArray(inputColumns);
-    retVal.outputColumns = this.copyArray(outputColumns);
-
-    return retVal;
-  }
-
-  public Table getSubset(int[] rows) {
-	SparseExampleTable retVal = (SparseExampleTable)
-		((SparseMutableTable) SparseMutableTable.getSubset(rows, this)).toExampleTable();
-
-	// copy the training and testing sets
-    retVal.getSubArrays(this, rows);
-
-    // copy the input and output columns
-    retVal.inputColumns = this.copyArray(inputColumns);
-    retVal.outputColumns = this.copyArray(outputColumns);
-
-    return retVal;
-  }
-
-  public Table getSubsetByReference(int pos, int len) {
-    Table t = super.getSubsetByReference(pos, len);
-    ExampleTable et  = t.toExampleTable();
-
-    int[] newin = new int[inputColumns.length];
-    System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
-    int[] newout = new int[outputColumns.length];
-    System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
-
-    et.setInputFeatures(newin);
-    et.setOutputFeatures(newout);
-
-    // now figure out the test and train sets
-    int[] traincpy = new int[trainSet.length];
-    System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
-    int[] testcpy = new int[testSet.length];
-    System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
-
-    int[] newtrain = getSubArray(traincpy, pos, len);
-    int[] newtest = getSubArray(testcpy, pos, len);
-
-    et.setTrainingSet(newtrain);
-    et.setTestingSet(newtest);
-
-    return et;
-  }
-
-  public Table getSubsetByReference(int[] rows) {
-    Table t = super.getSubsetByReference(rows);
-    ExampleTable et = t.toExampleTable();
-    int[] newin = new int[inputColumns.length];
-    System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
-    int[] newout = new int[outputColumns.length];
-    System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
-
-    et.setInputFeatures(newin);
-    et.setOutputFeatures(newout);
-
-    // now figure out the test and train sets
-    int[] traincpy = new int[trainSet.length];
-    System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
-    int[] testcpy = new int[testSet.length];
-    System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
-
-    int[] newtrain = getSubArray(traincpy, rows);
-    int[] newtest = getSubArray(testcpy, rows);
-
-    et.setTrainingSet(newtrain);
-    et.setTestingSet(newtest);
-    return et;
-  }
-
-  protected void getSubArrays(SparseExampleTable srcTable, int start, int len) {
-    testSet = getSubArray(srcTable.testSet, start, len);
-    trainSet = getSubArray(srcTable.trainSet, start, len);
-
-	/*
-	// XIAOLEI
-	for (int i = 0; i < this.testSet.length; i++)
-		testSet[i] = i;
-
-	for (int i = 0; i < this.trainSet.length; i++)
-		trainSet[i] = i;
-	*/
-  }
-
-  protected void getSubArrays(SparseExampleTable srcTable, int[] rows) {
-    testSet = getSubArray(srcTable.testSet, rows);
-    trainSet = getSubArray(srcTable.trainSet, rows);
-
-	/*
-	// XIAOLEI
-	for (int i = 0; i < this.testSet.length; i++)
-		testSet[i] = i;
-
-	for (int i = 0; i < this.trainSet.length; i++)
-		trainSet[i] = i;
-	*/
-  }
-
-  protected int[] getSubArray(int[] arr, int start, int len) {
-
-	  // Xiaolei
-	  if (arr == null) {
-		  return new int[0];
-	  }
-
-    int[] tempSet = new int[len];
-    int j = 0;
-    for (int i = 0; i < arr.length; i++) {
-      //if (arr[i] >= start && arr[i] <= start + len) {
-		//XIAOLEI fixed <= to <
-      if (arr[i] >= start && arr[i] < start + len) {
-        tempSet[j] = arr[i];
-        j++;
-      } //if
-    } //for i
-
-    int[] retVal = new int[j];
-    System.arraycopy(tempSet, 0, retVal, 0, j);
-    return retVal;
-
-  }
-
-  /**
-   * Make a subset of the train or test set.  The subset will only
-   * contain the indices that are included in rows.  The indices in the
-   * returned value are numbered so that zero corresponds to rows[0].
-   *
-   * @param ts
-   * @param rows
-   * @return
-   */
-  protected static int[] getSubArray(int[] ts, int[] rows) {
-
-	  // Xiaolei
-	  if (ts == null) {
-		return new int[0];
-	  }
-
-    // put all the indices of ts into a set
-    HashSet oldset = new HashSet();
-    for(int i = 0; i < ts.length; i++)
-      oldset.add(new Integer(ts[i]));
-
-    // create a list to hold the new indices
-    List newset = new ArrayList();
-    // for each row
-    for(int i = 0; i < rows.length; i++) {
-      // look up the value of the row in oldset
-      Integer ii = new Integer(rows[i]);
-      if(oldset.contains(ii)) {
-        // if it was contained, add i to the newset
-        newset.add(new Integer(i));
-      }
-    }
-
-    // copy all the values into an int array
-    int[] retVal = new int[newset.size()];
-    for(int i = 0; i < retVal.length; i++) {
-      Integer ii = (Integer)newset.get(i);
-      retVal[i] = ii.intValue();
-    }
-
-    return retVal;
-  }
-
-
-  /**
-   * Returns a TestTable or a TrainTable with data from row index no.
-   * <code> start</code> in the test/train set through row index no.
-   * <code>start+len</code> in the test/train set.
-   *
-   * @param start       index number into the test/train set of the row at which begins
-   *                    the subset.
-   * @param len         number of consequetive rows to include in the subset.
-   * @param test        if true - the returned value is a TestTable. else - the
-   *                    returned value is a TrainTable
-   * @return            a TestTable (if <code>test</code> is true) or a TrainTable
-   *                    (if <code>test</code> is false) with data from row index no.
-   *                    <code>start</code> in the test/train set through row index
-   *                    no. <code>start+len</code> in the test/train set.
-   */
-  protected Table getSubset(int start, int len, boolean test) {
-
-    //initializing the returned value
-    SparseExampleTable retVal;
-    if (test) {
-      retVal = new SparseTestTable();
-    }
-    else {
-      retVal = new SparseTrainTable();
-
-      //retrieving the test rows indices
-    }
-    int[] rowIdx;
-    if (test) {
-      rowIdx = testSet;
-    }
-    else {
-      rowIdx = trainSet;
-
-      //if the start index is not in the range of the test rows
-      //or if len is zero - return an empty table
-    }
-    if (start >= rowIdx.length || len == 0) {
-      return retVal;
-    }
-
-    //calculating the true rows dimension of the returned table
-    //int size = len;
-    if (start + len > getNumRows()) {
-      len = getNumRows() - start;
-
-      //retrieving the indices to include in the sub set.
-    }
-    int[] indices = new int[len];
-    for (int i = 0; i < len; i++) {
-      indices[i] = rowIdx[start + i];
-
-      //retrieving a subset from the example part of this table
-    }
-    SparseMutableTable tempTbl = (SparseMutableTable) SparseMutableTable.
-        getSubset(indices, this);
-
-    //getting a test table from tempTbl. setting the test set.
-    //getting a subset from the prediction columns
-    if (test) {
-      retVal = (SparseTestTable) tempTbl.toExampleTable().getTestTable();
-      ( (SparseTestTable) retVal).predictionColumns = (SparseMutableTable)
-          SparseMutableTable.getSubset(indices,
-                                       ( (SparseTestTable)this).
-                                       predictionColumns);
-      retVal.setTestingSet(indices);
-    }
-    //getting a train table from tempTbl. setting the train set.
-    else {
-      retVal = (SparseTrainTable) tempTbl.toExampleTable().getTrainTable();
-      retVal.setTrainingSet(indices);
-
-    }
-
-    //setting input and output feature
-    retVal.setInputFeatures(getInputFeatures());
-    retVal.setOutputFeatures(outputColumns);
-
-    return retVal;
-  }
-
-  /**
-   * Returns a reference to this table.
-   */
-  public ExampleTable toExampleTable() {
-    return this;
-  }
-
-  /**
-   * ***********************************
-   * GET INPUT TYPE METHODS
-   * ***********************************
-   */
+  //========================================================================
+  //        DATA ACCESSOR METHODS FOR ExampleTable INTERFACE
+  //========================================================================
 
   /**
    * Returns a boolean representation of the data at row no. <codE>row</code>
@@ -777,11 +416,6 @@ public class SparseExampleTable
     return getString(row, inputColumns[index]);
   }
 
-  /*
-   * ********************************************
-   * GET OUTPUT TYPES
-   * *******************************************
-   */
 
   /**
    * Returns a float representation of the data at row no. <codE>row</code>
@@ -951,11 +585,9 @@ public class SparseExampleTable
     return getString(row, outputColumns[index]);
   }
 
-  /**
-   * *****************************
-   * General Get Methods
-   * *****************************
-   */
+
+  // END DATA ACCESSORS =====================================================
+
 
   /**
    * @return number of input columns
@@ -1003,21 +635,21 @@ public class SparseExampleTable
   }
 
   /**
-   * Return true if the any of the input or output columns contains missing values.
+       * Return true if the any of the input or output columns contains missing values.
    * @return true if the any of the input or output columns contains missing values.
    */
   public boolean hasMissingInputsOutputs() {
-    for (int i = 0 ; i < inputColumns.length ; i++) {
+    for (int i = 0; i < inputColumns.length; i++) {
       if (this.hasMissingValues(inputColumns[i]))
         return true;
     }
-    for (int i = 0 ; i < outputColumns.length ; i++) {
+    for (int i = 0; i < outputColumns.length; i++) {
       if (this.hasMissingValues(outputColumns[i]))
         return true;
     }
     return false;
   }
-	
+
   /**
    * Returns true if the column associated with index <codE>inputIndex</code>
    * into the input set is nominal. otherwise returns false.
@@ -1171,6 +803,443 @@ public class SparseExampleTable
     return outputNames;
   }
 
+  //=========================================================================
+  //                     END ExampleTable INTERFACE
+  //=========================================================================
+
+  //=========================================================================
+  //                         Table Overrides
+  //=========================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  protected void copyArrays(SparseExampleTable table) {
+    if (table.inputColumns != null) {
+      inputColumns = copyArray(table.inputColumns);
+    }
+    if (table.outputColumns != null) {
+      outputColumns = copyArray(table.outputColumns);
+    }
+    if (table.testSet != null) {
+      testSet = copyArray(table.testSet);
+    }
+    if (table.trainSet != null) {
+      trainSet = copyArray(table.trainSet);
+    }
+  }
+
+  protected int[] copyArray(int[] arr) {
+    int[] retVal = new int[arr.length];
+    System.arraycopy(arr, 0, retVal, 0, retVal.length);
+    return retVal;
+  }
+
+
+  /**
+   * returns the valid input indices of row no. <codE>row</code> in a
+   * sorted array.
+   *
+   * @param row      the row number to retrieve its input features.
+   * @return            a sorted integer array with the valid input indices
+   *                  of row no. <codE>row</code>.
+   */
+
+  public int[] getInputFeatures(int row) {
+    int[] retVal = new int[0];
+    if (!rows.containsKey(row)) {
+      return retVal;
+    }
+    VIntHashSet temp = (VIntHashSet) rows.get(row);
+    int[] tempArr = new int[temp.size()];
+    int j = 0;
+    for (int i = 0; i < inputColumns.length; i++) {
+      if (temp.contains(inputColumns[i])) {
+        tempArr[j] = inputColumns[i];
+        j++;
+      }
+    }
+    retVal = new int[j];
+    System.arraycopy(tempArr, 0, retVal, 0, j);
+    return retVal;
+
+  }
+
+
+  /**
+       * Returns the total number of examples in this table, meaning the total number
+   * of rows.
+   * @retuen     the total number of examples.
+   */
+  public int getNumExamples() {
+    return getNumRows();
+  }
+
+
+
+
+  /**
+   * Copies the content of <code>srcTable</code> into this table
+   *
+   */
+  public void copy(SparseTable srcTable) {
+    if (srcTable instanceof SparseExampleTable) {
+      copyArrays( (SparseExampleTable) srcTable);
+
+    }
+    super.copy(srcTable);
+  }
+
+  /**
+   * Returns a deep copy of this column.
+   *
+   * @return a deep copy of this SparseExampleTable
+   */
+  public Table copy() {
+    SparseExampleTable retVal;
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ObjectOutputStream oos = new ObjectOutputStream(baos);
+      oos.writeObject(this);
+      byte buf[] = baos.toByteArray();
+      oos.close();
+      ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+      ObjectInputStream ois = new ObjectInputStream(bais);
+      retVal = (SparseExampleTable) ois.readObject();
+      ois.close();
+      return retVal;
+    }
+    catch (Exception e) {
+      retVal = new SparseExampleTable(this);
+
+      return retVal;
+    }
+  }
+
+  /**
+   * Returns a SparseExampleTable containing rows no. <code>start</code>
+   * through </codE>start+len</code> from this table.
+   *
+   * @param start row number at which the subset starts.
+   * @param len   number of consequentinve rows in the retrieved subset.
+   * @return      SparseExampleTable with data from rows no.
+   * 			  <code>start</code> through </codE>start+len</code>
+   * 			  from this table.
+   */
+  public Table getSubset(int start, int len) {
+    SparseExampleTable retVal = (SparseExampleTable) ( (SparseMutableTable)
+        SparseMutableTable.getSubset(start, len, this)).toExampleTable();
+
+    // copy the training and testing sets
+    retVal.getSubArrays(this, start, len);
+
+    // copy the input and output columns
+    retVal.inputColumns = this.copyArray(inputColumns);
+    retVal.outputColumns = this.copyArray(outputColumns);
+
+    return retVal;
+  }
+
+  public Table getSubset(int[] rows) {
+    SparseExampleTable retVal = (SparseExampleTable)
+        ( (SparseMutableTable) SparseMutableTable.getSubset(rows, this)).
+        toExampleTable();
+
+    // copy the training and testing sets
+    retVal.getSubArrays(this, rows);
+
+    // copy the input and output columns
+    retVal.inputColumns = this.copyArray(inputColumns);
+    retVal.outputColumns = this.copyArray(outputColumns);
+
+    return retVal;
+  }
+
+  public Table getSubsetByReference(int pos, int len) {
+    Table t = super.getSubsetByReference(pos, len);
+    ExampleTable et = t.toExampleTable();
+
+    int[] newin = new int[inputColumns.length];
+    System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+    int[] newout = new int[outputColumns.length];
+    System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+
+    et.setInputFeatures(newin);
+    et.setOutputFeatures(newout);
+
+    // now figure out the test and train sets
+    int[] traincpy = new int[trainSet.length];
+    System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+    int[] testcpy = new int[testSet.length];
+    System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+    int[] newtrain = getSubArray(traincpy, pos, len);
+    int[] newtest = getSubArray(testcpy, pos, len);
+
+    et.setTrainingSet(newtrain);
+    et.setTestingSet(newtest);
+
+    return et;
+  }
+
+  public Table getSubsetByReference(int[] rows) {
+    Table t = super.getSubsetByReference(rows);
+    ExampleTable et = t.toExampleTable();
+    int[] newin = new int[inputColumns.length];
+    System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+    int[] newout = new int[outputColumns.length];
+    System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+
+    et.setInputFeatures(newin);
+    et.setOutputFeatures(newout);
+
+    // now figure out the test and train sets
+    int[] traincpy = new int[trainSet.length];
+    System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+    int[] testcpy = new int[testSet.length];
+    System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+    int[] newtrain = getSubArray(traincpy, rows);
+    int[] newtest = getSubArray(testcpy, rows);
+
+    et.setTrainingSet(newtrain);
+    et.setTestingSet(newtest);
+    return et;
+  }
+
+  protected void getSubArrays(SparseExampleTable srcTable, int start, int len) {
+    testSet = getSubArray(srcTable.testSet, start, len);
+    trainSet = getSubArray(srcTable.trainSet, start, len);
+
+    /*
+      // XIAOLEI
+      for (int i = 0; i < this.testSet.length; i++)
+     testSet[i] = i;
+      for (int i = 0; i < this.trainSet.length; i++)
+     trainSet[i] = i;
+     */
+  }
+
+  protected void getSubArrays(SparseExampleTable srcTable, int[] rows) {
+    testSet = getSubArray(srcTable.testSet, rows);
+    trainSet = getSubArray(srcTable.trainSet, rows);
+
+    /*
+      // XIAOLEI
+      for (int i = 0; i < this.testSet.length; i++)
+     testSet[i] = i;
+      for (int i = 0; i < this.trainSet.length; i++)
+     trainSet[i] = i;
+     */
+  }
+
+  protected int[] getSubArray(int[] arr, int start, int len) {
+
+    // Xiaolei
+    if (arr == null) {
+      return new int[0];
+    }
+
+    int[] tempSet = new int[len];
+    int j = 0;
+    for (int i = 0; i < arr.length; i++) {
+      //if (arr[i] >= start && arr[i] <= start + len) {
+      //XIAOLEI fixed <= to <
+      if (arr[i] >= start && arr[i] < start + len) {
+        tempSet[j] = arr[i];
+        j++;
+      } //if
+    } //for i
+
+    int[] retVal = new int[j];
+    System.arraycopy(tempSet, 0, retVal, 0, j);
+    return retVal;
+
+  }
+
+  /**
+   * Make a subset of the train or test set.  The subset will only
+   * contain the indices that are included in rows.  The indices in the
+   * returned value are numbered so that zero corresponds to rows[0].
+   *
+   * @param ts
+   * @param rows
+   * @return
+   */
+  protected static int[] getSubArray(int[] ts, int[] rows) {
+
+    // Xiaolei
+    if (ts == null) {
+      return new int[0];
+    }
+
+    // put all the indices of ts into a set
+    HashSet oldset = new HashSet();
+    for (int i = 0; i < ts.length; i++)
+      oldset.add(new Integer(ts[i]));
+
+      // create a list to hold the new indices
+    List newset = new ArrayList();
+    // for each row
+    for (int i = 0; i < rows.length; i++) {
+      // look up the value of the row in oldset
+      Integer ii = new Integer(rows[i]);
+      if (oldset.contains(ii)) {
+        // if it was contained, add i to the newset
+        newset.add(new Integer(i));
+      }
+    }
+
+    // copy all the values into an int array
+    int[] retVal = new int[newset.size()];
+    for (int i = 0; i < retVal.length; i++) {
+      Integer ii = (Integer) newset.get(i);
+      retVal[i] = ii.intValue();
+    }
+
+    return retVal;
+  }
+
+  /**
+   * Returns a TestTable or a TrainTable with data from row index no.
+   * <code> start</code> in the test/train set through row index no.
+   * <code>start+len</code> in the test/train set.
+   *
+   * @param start       index number into the test/train set of the row at which begins
+   *                    the subset.
+   * @param len         number of consequetive rows to include in the subset.
+   * @param test        if true - the returned value is a TestTable. else - the
+   *                    returned value is a TrainTable
+       * @return            a TestTable (if <code>test</code> is true) or a TrainTable
+   *                    (if <code>test</code> is false) with data from row index no.
+       *                    <code>start</code> in the test/train set through row index
+   *                    no. <code>start+len</code> in the test/train set.
+   */
+  protected Table getSubset(int start, int len, boolean test) {
+
+    //initializing the returned value
+    SparseExampleTable retVal;
+    if (test) {
+      retVal = new SparseTestTable();
+    }
+    else {
+      retVal = new SparseTrainTable();
+
+      //retrieving the test rows indices
+    }
+    int[] rowIdx;
+    if (test) {
+      rowIdx = testSet;
+    }
+    else {
+      rowIdx = trainSet;
+
+      //if the start index is not in the range of the test rows
+      //or if len is zero - return an empty table
+    }
+    if (start >= rowIdx.length || len == 0) {
+      return retVal;
+    }
+
+    //calculating the true rows dimension of the returned table
+    //int size = len;
+    if (start + len > getNumRows()) {
+      len = getNumRows() - start;
+
+      //retrieving the indices to include in the sub set.
+    }
+    int[] indices = new int[len];
+    for (int i = 0; i < len; i++) {
+      indices[i] = rowIdx[start + i];
+
+      //retrieving a subset from the example part of this table
+    }
+    SparseMutableTable tempTbl = (SparseMutableTable) SparseMutableTable.
+        getSubset(indices, this);
+
+    //getting a test table from tempTbl. setting the test set.
+    //getting a subset from the prediction columns
+    if (test) {
+      retVal = (SparseTestTable) tempTbl.toExampleTable().getTestTable();
+      ( (SparseTestTable) retVal).predictionColumns = (SparseMutableTable)
+          SparseMutableTable.getSubset(indices,
+                                       ( (SparseTestTable)this).
+                                       predictionColumns);
+      retVal.setTestingSet(indices);
+    }
+    //getting a train table from tempTbl. setting the train set.
+    else {
+      retVal = (SparseTrainTable) tempTbl.toExampleTable().getTrainTable();
+      retVal.setTrainingSet(indices);
+
+    }
+
+    //setting input and output feature
+    retVal.setInputFeatures(getInputFeatures());
+    retVal.setOutputFeatures(outputColumns);
+
+    return retVal;
+  }
+
+  /**
+   * Returns a reference to this table.
+   */
+  public ExampleTable toExampleTable() {
+    return this;
+  }
+
+
+
+
+
+
+
+
+  /**
+   * *****************************
+   * General Get Methods
+   * *****************************
+   */
+
+
   // MutableTable support
 
   /**
@@ -1180,12 +1249,12 @@ public class SparseExampleTable
    */
   public void insertRow(int[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1195,12 +1264,12 @@ public class SparseExampleTable
    */
   public void insertRow(float[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1210,12 +1279,12 @@ public class SparseExampleTable
    */
   public void insertRow(double[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1225,12 +1294,12 @@ public class SparseExampleTable
    */
   public void insertRow(long[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1240,12 +1309,12 @@ public class SparseExampleTable
    */
   public void insertRow(short[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1255,12 +1324,12 @@ public class SparseExampleTable
    */
   public void insertRow(boolean[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1270,12 +1339,12 @@ public class SparseExampleTable
    */
   public void insertRow(String[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1285,12 +1354,12 @@ public class SparseExampleTable
    */
   public void insertRow(char[][] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1300,12 +1369,12 @@ public class SparseExampleTable
    */
   public void insertRow(byte[][] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1315,12 +1384,12 @@ public class SparseExampleTable
    */
   public void insertRow(Object[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1330,12 +1399,12 @@ public class SparseExampleTable
    */
   public void insertRow(byte[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1345,12 +1414,12 @@ public class SparseExampleTable
    */
   public void insertRow(char[] newEntry, int position) {
     //insertTraining(trainSet[position]);
-	  if (position < 0 || position >= numRows)
-		  super.addRow(newEntry);
-	  else {
-		incrementTrainTest(position);
-		super.insertRow(newEntry, trainSet[position]);
-	  }
+    if (position < 0 || position >= numRows)
+      super.addRow(newEntry);
+    else {
+      incrementTrainTest(position);
+      super.insertRow(newEntry, trainSet[position]);
+    }
   }
 
   /**
@@ -1647,7 +1716,7 @@ public class SparseExampleTable
     boolean containsPos = false;
     int idx = -1;
 
-    if (testSet != null){
+    if (testSet != null) {
       for (int i = 0; i < testSet.length; i++) {
         if (testSet[i] == position) {
           containsPos = true;
@@ -1675,7 +1744,7 @@ public class SparseExampleTable
       idx = -1;
     }
 
-    if (trainSet != null){
+    if (trainSet != null) {
       for (int i = 0; i < trainSet.length; i++) {
         if (trainSet[i] == position) {
           containsPos = true;
@@ -1710,7 +1779,7 @@ public class SparseExampleTable
     boolean containsPos = false;
     int idx = -1;
 
-    if (inputColumns != null){
+    if (inputColumns != null) {
       for (int i = 0; i < inputColumns.length; i++) {
         if (inputColumns[i] == position) {
           containsPos = true;
@@ -1734,22 +1803,20 @@ public class SparseExampleTable
         setInputFeatures(newin);
       }
 
-
       //adjust input/output array values to account for column indice shifts -- DDS
-     int[] newin = this.getInputFeatures();
-     for (int i = 0, n = newin.length; i < n; i++){
-       if (newin[i] > position){
-         newin[i]--;
-       }
-     }
-     this.setInputFeatures(newin);
-   }
-
+      int[] newin = this.getInputFeatures();
+      for (int i = 0, n = newin.length; i < n; i++) {
+        if (newin[i] > position) {
+          newin[i]--;
+        }
+      }
+      this.setInputFeatures(newin);
+    }
 
     containsPos = false;
     idx = -1;
 
-    if (outputColumns != null){
+    if (outputColumns != null) {
 
       for (int i = 0; i < outputColumns.length; i++) {
         if (outputColumns[i] == position) {
@@ -1776,14 +1843,13 @@ public class SparseExampleTable
 
       //adjust input/output array values to account for column indice shifts -- DDS
       int[] newout = this.getOutputFeatures();
-      for (int i = 0, n = newout.length; i < n; i++){
-        if (newout[i] > position){
+      for (int i = 0, n = newout.length; i < n; i++) {
+        if (newout[i] > position) {
           newout[i]--;
         }
       }
       this.setOutputFeatures(newout);
     }
-
 
   }
 
