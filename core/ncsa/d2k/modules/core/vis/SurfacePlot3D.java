@@ -171,11 +171,11 @@ public class SurfacePlot3D extends VisModule {
          MouseTranslate mt = new MouseTranslate(objScale);
          mt.setSchedulingBounds(new BoundingSphere(new Point3d(), 1000.0));
          objRoot.addChild(mt);
-/*
+
          KeyNavigatorBehavior keyNav = new KeyNavigatorBehavior(objScale);
          keyNav.setSchedulingBounds(new BoundingSphere(new Point3d(), 1000.0));
          objRoot.addChild(keyNav);
-*/
+
          BranchGroup b0 = new BranchGroup();
          b0.setCapability(BranchGroup.ALLOW_DETACH);
          BranchGroup b1 = new BranchGroup();

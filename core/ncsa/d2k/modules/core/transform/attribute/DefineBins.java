@@ -20,8 +20,8 @@ import ncsa.gui.*;
 */
 public class DefineBins extends UIModule implements HasNames {
 
-	static final String NUMERIC = "num";
-	static final String TEXT = "text";
+	protected static final String NUMERIC = "num";
+	protected static final String TEXT = "text";
 
     /**
        Return a description of the function of this module.
@@ -391,9 +391,8 @@ public class DefineBins extends UIModule implements HasNames {
 			// get all unique outputs from the output column
 			if(classColumn != null) {
 				for(int i = 0; i < numRows; i++) {
-					Object ob = classColumn.getRow(i);
-					String s = ob.toString();
-					if(!cn.containsKey(s))
+					String s = ((SimpleColumn)classColumn).getString(i);
+					if(s != null && !cn.containsKey(s))
 						cn.put(s, s);
 				}
 			}
@@ -832,7 +831,7 @@ public class DefineBins extends UIModule implements HasNames {
                                 int numRows = attCol.getNumRows();
 				for(int i = 0; i < numRows; i++) {
 					String s = attCol.getString(i);
-					if(!items.containsKey(s))
+					if(s != null && !items.containsKey(s))
 						items.put(s, s);
 				}
 

@@ -224,13 +224,15 @@ public class ChooseFields extends UIModule implements HasNames {
 			if(vt instanceof ExampleTable) {
 				//inputList.setSelectedIndices(((ExampleTable)vt).getInputFeatures());
                 int[] ins = ((ExampleTable)vt).getInputFeatures();
-                int[] sel = new int[ins.length];
-                for(int i = 0; i < ins.length; i++) {
-                    String s = vt.getColumnLabel(ins[i]);
-                    Integer ii = (Integer)inputToIndexMap.get(s);
-                    sel[i] = ii.intValue();
-                }
-                inputList.setSelectedIndices(sel);
+				if(ins != null) {
+                	int[] sel = new int[ins.length];
+                	for(int i = 0; i < ins.length; i++) {
+                 	   String s = vt.getColumnLabel(ins[i]);
+                 	   Integer ii = (Integer)inputToIndexMap.get(s);
+                 	   sel[i] = ii.intValue();
+                	}
+                	inputList.setSelectedIndices(sel);
+				}
             }
 			outputList=new JList(/*labels*/);
             dlm = new DefaultListModel();
@@ -240,13 +242,15 @@ public class ChooseFields extends UIModule implements HasNames {
 			if(vt instanceof ExampleTable) {
 				//outputList.setSelectedIndices(((ExampleTable)vt).getOutputFeatures());
                 int[] ins = ((ExampleTable)vt).getOutputFeatures();
-                int[] sel = new int[ins.length];
-                for(int i = 0; i < ins.length; i++) {
-                    String s = vt.getColumnLabel(ins[i]);
-                    Integer ii = (Integer)outputToIndexMap.get(s);
-                    sel[i] = ii.intValue();
-                }
-                outputList.setSelectedIndices(sel);
+				if(ins != null) {
+                	int[] sel = new int[ins.length];
+                	for(int i = 0; i < ins.length; i++) {
+                 	   String s = vt.getColumnLabel(ins[i]);
+                 	   Integer ii = (Integer)outputToIndexMap.get(s);
+                 	   sel[i] = ii.intValue();
+                	}
+                	outputList.setSelectedIndices(sel);
+				}
             }
 			JScrollPane leftScrollPane=new JScrollPane(inputList);
 			JScrollPane rightScrollPane=new JScrollPane(outputList);
