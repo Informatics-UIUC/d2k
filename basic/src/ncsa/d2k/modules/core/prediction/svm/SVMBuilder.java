@@ -20,7 +20,7 @@ import ncsa.gui.*;
 
   @author Xiaolei Li
   */
-class SVMBuilder extends SVMBuilderOPT
+public class SVMBuilder extends SVMBuilderOPT
 {
 	/**
 	  Type of SVM.  Has 5 possible choices: C-SVC, nu-SVC, one-class
@@ -95,7 +95,7 @@ class SVMBuilder extends SVMBuilderOPT
 
         public String getModuleName()
         {
-          return "new SVM Builder";
+          return "SVM Builder";
 
         }
 
@@ -279,14 +279,12 @@ private class PropEdit extends JPanel implements CustomModuleEditor {
     public  final int FALSE = 0;
     public  final int TRUE = 1;
 
-//the labels
+
     private JLabel[] propLabels;
-    //drop down list objects
     private JComboBox svm_type_list = new JComboBox(SVMParameters.SVM_TYPE_NAMES);
     private JComboBox kernel_type_list = new JComboBox(SVMParameters.KERNEL_TYPE_NAMES);
     private JComboBox shrinking_list = new JComboBox(BOOLEANS);
 
-//text fields properties objects
     private JTextField _gamma = new JTextField(Double.toString(getGamma()));
     private JTextField _nu = new JTextField(Double.toString(getNu()));
     private JTextField _c = new JTextField(Double.toString(getC()));
@@ -296,7 +294,10 @@ private class PropEdit extends JPanel implements CustomModuleEditor {
     private JTextField _cache = new JTextField(Double.toString(getCacheSize()));
     private JTextField _coef = new JTextField(Double.toString(getCoef0()));
 
-    private boolean[] change; //change[i] is true if property i (according to SVMParameters) was changed
+    private boolean[] change;
+
+
+
 
     private PropEdit() {
 
@@ -313,7 +314,7 @@ private class PropEdit extends JPanel implements CustomModuleEditor {
       kernel_type_list.setSelectedIndex(getKernelType());
       shrinking_list.setSelectedIndex(getShrinking());
 
-      //adding listeners to text fields
+      //adding listeners
       _gamma.addKeyListener(new KeyAdapter() {
         public void keyPressed(KeyEvent e) {
           change[SVMParameters.GAMMA] = true;
@@ -363,19 +364,17 @@ private class PropEdit extends JPanel implements CustomModuleEditor {
            change[SVMParameters.DEGREE] = true;
          }
        });
-       //adding listeners to drop down lists
        svm_type_list.addActionListener(new SVMTypeListener());
        kernel_type_list.addActionListener(new KernelTypeListener());
        shrinking_list.addActionListener(new ShrinkingListener());
 
-//enabling and disabling dependent text fields
+
        enableKernelDependencies();
       enableSvmDependencies();
 
-
-//adding the components:
-
    setLayout(new GridBagLayout());
+
+
 
    //adding svm type drop down list
    Constrain.setConstraints(this, propLabels[SVMParameters.SVM_TYPE], 1, 0,
@@ -430,6 +429,7 @@ private class PropEdit extends JPanel implements CustomModuleEditor {
 
 
 
+
    //adding kernel type drop down list
      Constrain.setConstraints(this, propLabels[SVMParameters.KERNEL_TYPE], 1, 2,
                               1, 1,
@@ -441,7 +441,6 @@ private class PropEdit extends JPanel implements CustomModuleEditor {
                               GridBagConstraints.HORIZONTAL,
                               GridBagConstraints.WEST,
                               1, 1);
-
      //adding parameters that are kernel type dependencies
      JPanel kernel_panel = new JPanel(new GridBagLayout());
 
@@ -486,56 +485,66 @@ private class PropEdit extends JPanel implements CustomModuleEditor {
 
 
 
-//adding the rest of the properties
+
      Constrain.setConstraints(this, propLabels[SVMParameters.EPS], 1, 4,
                                  1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
+
+
      Constrain.setConstraints(this, _epsilon, 2, 4,
                                  1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
+
         Constrain.setConstraints(this, propLabels[SVMParameters.CACHE_SIZE], 1, 5,
                                  1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
+
         Constrain.setConstraints(this, _cache, 2, 5,
                                  1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
+
         Constrain.setConstraints(this, propLabels[SVMParameters.SHRINKING], 1, 6,
                                  1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
+
         Constrain.setConstraints(this, shrinking_list, 2, 6,
                                  1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
 
-//adding place holders
+
         Constrain.setConstraints(this, new Label("\t"), 4, 0,
                                  1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
+
+
         Constrain.setConstraints(this, new Label("\t"), 0, 0,
                                  1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
 
-      } //PropEdit ctor
 
 
-      /**
-       * Enables and disables text fileds that are SVM type dependent.
-       */
+
+
+
+
+      } //PropEdit
+
       private void enableSvmDependencies() {
         int selected = svm_type_list.getSelectedIndex();
 
@@ -558,10 +567,6 @@ private class PropEdit extends JPanel implements CustomModuleEditor {
 
       } //enableSvmDependencies
 
-
-      /**
-       * Enables and disables text fileds that are kernel type dependent.
-       */
       private void enableKernelDependencies() {
         int selected = kernel_type_list.getSelectedIndex();
 
@@ -583,12 +588,10 @@ private class PropEdit extends JPanel implements CustomModuleEditor {
 
       } //enableKernelDependencies
 
-
-//drop down lists listeners
-
     private class ShrinkingListener implements ActionListener{
       public void actionPerformed(ActionEvent e) {
-
+        int selected = shrinking_list.getSelectedIndex();
+//        setShrinking(selected);
         change[SVMParameters.SHRINKING] = true;
       }
     }
@@ -615,13 +618,6 @@ private class PropEdit extends JPanel implements CustomModuleEditor {
 
 
 
-  /**
-   * updates the module: for each component that was changed - calls the
-   * respective setter method of this module. also validates the inserted values.
-   *
-   * @return returns true if all's well and setter methods calls returned normally.
-   * @throws java.lang.Exception - if an inserted values was found invalid.
-   */
     public boolean updateModule() throws Exception {
       boolean didChange = false;
 
@@ -738,8 +734,7 @@ private class PropEdit extends JPanel implements CustomModuleEditor {
       } //change coef0
 
         return didChange;
-    }//updateModule
-
+    }
 }//class prop edit
 
-}//SVMBuilder
+}
