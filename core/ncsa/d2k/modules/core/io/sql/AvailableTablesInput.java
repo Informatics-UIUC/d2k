@@ -43,7 +43,7 @@ public class AvailableTablesInput extends InputModule
 		Vector v = new Vector();
 
 		Statement stmt = con.createStatement();
-		ResultSet tableSet = stmt.executeQuery("select table_name from all_tables where owner not like '%SYS%'");
+		ResultSet tableSet = stmt.executeQuery("select table_name from user_tables");
 		while (tableSet.next())
 		    v.addElement(tableSet.getString(1));
 
