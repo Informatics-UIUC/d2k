@@ -23,8 +23,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	static final Color RULE_VIS_CONFIDENCE = new Color (196, 195, 26);
 	static final Color RULE_VIS_SUPPORT = new Color (87, 87, 100);
 	static final Color RULE_VIS_HIGHLIGHT = new Color (247, 247, 247);
-	//static final String IMAGE_LOC =
-	//	"/ncsa/d2k/modules/core/discovery/ruleassociation/";
+
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
@@ -135,9 +134,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		This is the UserView class.
 	*/
 	private class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionListener, Printable {
-		//ViewModule module;
 		java.util.List itemLabels = null;
-		//TableImpl ruleTable;
 		RuleTable ruleTable;
 		int numExamples;
 		ValueVisDataModel vvdm;
@@ -234,7 +231,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		JTable vhjt = null;
 		private JViewport getConfSupHeadTable ()
 		{
-			String [][] rowNames = new String[ruleTable.getNumColumns()][1];
+			String [][] rowNames = new String[ruleTable.getNumColumns()-2][1];
 			for(int i=2;i<ruleTable.getNumColumns();i++)
 				rowNames[i-2][0]=ruleTable.getColumnLabel(i);
 			JViewport jv = new JViewport();
@@ -379,15 +376,14 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				tmp.setOpaque(false);
 				tmp.setLayout(new GridBagLayout());
 				Constrain.setConstraints(tmp, vjt, 0, 0, 1, 1, GridBagConstraints.NONE,
-						GridBagConstraints.CENTER, 0.0, 0.0, new Insets(0, 0, 0, 0));
+						GridBagConstraints.WEST, 0.0, 0.0, new Insets(0, 0, 0, 0));
 				JPanel filler = new JPanel();
 				Dimension fillSize = new Dimension(12, 12);
 				filler.setMinimumSize(fillSize);
-				filler.setMaximumSize(fillSize);
 				filler.setPreferredSize(fillSize);
 				filler.setOpaque(false);
-				Constrain.setConstraints(tmp, filler, 1, 0, 1, 1, GridBagConstraints.NONE,
-						GridBagConstraints.CENTER, 0.0, 0.0, new Insets(0, 0, 0, 0));
+				Constrain.setConstraints(tmp, filler, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+						GridBagConstraints.CENTER, 1.0, 0.0, new Insets(0, 0, 0, 0));
 
 				JScrollPane valueScroller = new JScrollPane (tmp,
 						JScrollPane.VERTICAL_SCROLLBAR_NEVER,
