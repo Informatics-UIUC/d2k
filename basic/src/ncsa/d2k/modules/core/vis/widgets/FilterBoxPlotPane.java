@@ -11,8 +11,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.text.*;
 import java.util.*;
+import ncsa.d2k.modules.core.vis.FilterBoxPlot;
+
+import ncsa.d2k.modules.core.vis.FilterBoxPlot;
 
 public class FilterBoxPlotPane extends JPanel {
+
 
    MutableBoxPlotPanel ppanel;
    JPanel spanel;
@@ -41,6 +45,8 @@ public class FilterBoxPlotPane extends JPanel {
       setLayout(new GridBagLayout());
       Constrain.setConstraints(this, ppanel, 0, 0, 1, 1, GridBagConstraints.BOTH, GridBagConstraints.NORTHWEST, 0, 0);
       Constrain.setConstraints(this, spanel, 1, 0, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST, 1, 1, new Insets(10, 10, 10, 10));
+
+
    }
 
    public void layoutLabels() {
@@ -61,10 +67,29 @@ public class FilterBoxPlotPane extends JPanel {
       ppanel.calculate();
    }
 
+   //headless conversion support
+   protected double _lowerbound;
+   protected double _upperbound;
+   public double getLower(){return _lowerbound;}
+   public double getUpper(){return _upperbound;}
+
+   protected boolean changed;
+   public boolean getChanged(){return changed;}
+   //headless conversion support
+
+
+
    private class MutableBoxPlotPanel extends BoxPlotPane implements ActionListener, MouseListener, MouseMotionListener {
       ArrayList flist;
       ArrayList slist;
       BoxPlotGroup group;
+
+      //headless conversion support
+      private Vector upVec;
+      private Vector lowVec;
+      private int vecCounter;
+      //headless conversion support
+
 
       // Plot constants
       double BOUNDWIDTH = 50;
@@ -78,6 +103,9 @@ public class FilterBoxPlotPane extends JPanel {
 
       // Data and statistics
       double lowerbound, upperbound;
+
+      private FilterBoxPlot parent;
+
 
       MutableBoxPlotPanel(ArrayList flist, ArrayList slist, BoxPlotGroup group, Table table, int column) {
          this.flist = flist;
@@ -94,6 +122,17 @@ public class FilterBoxPlotPane extends JPanel {
          undo.addActionListener(this);
          addMouseListener(this);
          addMouseMotionListener(this);
+
+         //headless conversion support
+    upVec = new Vector ();
+    lowVec = new Vector ();
+    vecCounter = 0;
+    upVec.add(vecCounter, new Double(upperbound));
+    lowVec.add(vecCounter, new Double(lowerbound));
+    vecCounter ++;
+    //headless conversion support
+
+
       }
 
       public void calculate() {
@@ -174,12 +213,32 @@ public class FilterBoxPlotPane extends JPanel {
       public void actionPerformed(ActionEvent event) {
          Object source = event.getSource();
 
+
          if (source == undo) {
             flist.remove(flist.size()-1);
             slist.remove(slist.size()-1);
             group.calculate(flist.size() > 1);
+            //headless conversion support
+            upVec.remove(vecCounter - 1);
+           lowVec.remove(vecCounter - 1);
+           vecCounter--;
+           _lowerbound = ((Double)lowVec.get(vecCounter - 1)).doubleValue();
+           _upperbound = ((Double)upVec.get(vecCounter - 1)).doubleValue();
+
+           //headless conversion support
+
          }
          else if (source == filter) {
+
+           //headless conversion support
+           _lowerbound = lowerbound;
+           _upperbound = upperbound;
+           upVec.add(vecCounter, new Double(upperbound));
+           lowVec.add(vecCounter, new Double(lowerbound));
+           vecCounter++;
+           changed = true;
+           //headless conversion support
+
             boolean[] flags = (boolean[]) flist.get(flist.size()-1);
             boolean[] clone = new boolean[flags.length];
 
@@ -208,6 +267,9 @@ public class FilterBoxPlotPane extends JPanel {
                group.calculate(true);
             }
          }
+
+
+
       }
 
       public void mousePressed(MouseEvent event) {
