@@ -51,10 +51,6 @@ public class DelimitedFileParser implements FlatFileParser {
     /** the delimter for this file */
     protected char delimiter;
 
-    //protected ArrayList _blankRows;
-    //protected ArrayList _blankColumns;
-    //protected boolean[][] blanks;
-
     protected DelimitedFileParser() {}
 
     /**
@@ -89,18 +85,6 @@ public class DelimitedFileParser implements FlatFileParser {
         this(f, _labelsRow, _typesRow, -1, -1, delim);
     }
 
-    /**
-     * Create a new DelimitedFileReader with the specified labels, types, and
-     * in-out rows.
-     * @param f the file to read
-     * @param _labelsRow the index of the labels row
-     * @param _typesRow the index of the types row
-     * @param _inOutRow the index of the in-out row
-     */
-/*    public DelimitedFileParser(File f, int _labelsRow, int _typesRow, int _inOutRow)
-            throws Exception {
-        this(f, _labelsRow, _typesRow, _inOutRow, -1);
-    }
 
     /**
      * Create a new DelimitedFileReader with the specified labels, types, inout,
@@ -118,8 +102,6 @@ public class DelimitedFileParser implements FlatFileParser {
         labelsRow = _labelsRow;
         inOutRow = _inOutRow;
         nomScalarRow = _nomScalarRow;
-        //_blankRows = new ArrayList();
-        //_blankColumns = new ArrayList();
 
         // read through the file to count the number of rows, columns, and find
         // the delimiter
@@ -155,25 +137,6 @@ public class DelimitedFileParser implements FlatFileParser {
         else
             columnLabels = null;
 
-
-        /*if(inOutRow > -1) {
-            numRows--;
-
-            // now parse the line and get the in-out features
-            ArrayList row = getLineElements(inOutRow);
-            createDataTypes(row);
-        }
-        else
-            dataTypes = null;
-        if(nomScalarRow > -1) {
-            numRows--;
-
-            // now parse the line and get the nom-scalar features
-            ArrayList row = getLineElements(nomScalarRow);
-        }
-        else
-            featureTypes = null;
-        */
         lineReader.setLineNumber(0);
     }
 
@@ -193,16 +156,6 @@ public class DelimitedFileParser implements FlatFileParser {
         labelsRow = _labelsRow;
         inOutRow = _inOutRow;
         nomScalarRow = _nomScalarRow;
-        //_blankRows = new ArrayList();
-        //_blankColumns = new ArrayList();
-
-        // read through the file to count the number of rows, columns, and find
-        // the delimiter
-        /*try {
-            scanFile();
-        }
-        catch(Exception e) {
-        }*/
 
         setDelimiter(delim);
         this.scanRowsCols();
@@ -230,24 +183,7 @@ public class DelimitedFileParser implements FlatFileParser {
         }
         else
             columnLabels = null;
-        /*if(inOutRow > -1) {
-            numRows--;
 
-            // now parse the line and get the in-out features
-            ArrayList row = getLineElements(inOutRow);
-            createDataTypes(row);
-        }
-        else
-            dataTypes = null;
-        if(nomScalarRow > -1) {
-            numRows--;
-
-            // now parse the line and get the nom-scalar features
-            ArrayList row = getLineElements(nomScalarRow);
-        }
-        else
-            featureTypes = null;
-        */
         lineReader.setLineNumber(0);
     }
 
@@ -302,33 +238,6 @@ public class DelimitedFileParser implements FlatFileParser {
             columnLabels[i] = new String((char[])row.get(i));
     }
 
-    /*private void createDataTypes(ArrayList row) {
-        dataTypes = new int[row.size()];
-        for(int i = 0; i < row.size(); i++) {
-            char[] ty = (char[])row.get(i);
-            String type = new String(ty);
-            if(type.equalsIgnoreCase(IN_TYPE) || type.equalsIgnoreCase(IN_TYPE2))
-                dataTypes[i] = IN;
-            else if(type.equalsIgnoreCase(OUT_TYPE) || type.equalsIgnoreCase(OUT_TYPE2))
-                dataTypes[i] = OUT;
-            else
-                dataTypes[i] = OMIT;
-        }
-    }*/
-
-    /*private void createFeatureTypes(ArrayList row) {
-        featureTypes = new int[row.size()];
-        for(int i = 0; i < featureTypes.length; i++) {
-            char[] ty = (char[])row.get(i);
-            String type = new String(ty);
-            if(type.equalsIgnoreCase(NOMINAL_TYPE))
-                featureTypes[i] = NOMINAL;
-            else if(type.equalsIgnoreCase(SCALAR_TYPE))
-                featureTypes[i] = SCALAR;
-            else
-                featureTypes[i] = NOMINAL;
-        }
-    }*/
 
     /**
      * Get the number of columns.
@@ -479,6 +388,16 @@ public class DelimitedFileParser implements FlatFileParser {
             currentRow++;
         }
 
+        if ( lines.size() < 2 ) {
+	    throw new Exception(
+		"The input file must have at least 2 rows for"
+		+ " the delimiter to be identified automatically. \n"
+                + file.getName()
+                + " has only "
+                + lines.size()
+                + " row(s). ");
+        }
+
         char delim = '0';
         boolean delimiterFound = false;
 
@@ -536,7 +455,7 @@ public class DelimitedFileParser implements FlatFileParser {
                     case PIPE:
                         counters [pipeIndex] ++;
                         break;
-                }
+                    }
                 }
 
                 // If first row, just init the counts...
@@ -611,142 +530,9 @@ public class DelimitedFileParser implements FlatFileParser {
         }
         numRows = nr;
         numColumns = nc;
-        /*blanks = new boolean[nr][nc];
-        for(int i = 0; i < numRows; i++) {
-            for(int j = 0; j < numColumns; j++)
-                blanks[i][j] = false;
-        }*/
+
     }
 
-    /**
-     * This method will search the document, counting the number of each
-     * possible delimiter per line to identify the delimiter to use. If in
-     * the first pass we can not find a single delimiter that that can be found
-     * the same number of times in each line, we will strip all the whitespace
-     * off the start and end of the lines, and try again. If then we still can
-     * not find the delimiter, we will fail.
-     * @param f the file to check for delimiters
-     * @returns one from among the set of delimiters we look for (',', ' ', '\t'), or '=' if the search failed.
-     /
-    private char findDelimiter() {
-        int counters [] = new int [3];
-        final int tabIndex = 0, spaceIndex = 1, commaIndex = 2;
-
-        // Now just count them.
-        int commaCount = -1, spaceCount = -1, tabCount = -1;
-        boolean isComma = true, isSpace = true, isTab = true;
-        String line [];
-        if(numRows < 10)
-            line = new String [numRows];
-        else
-            line = new String[10];
-        try {
-            BufferedReader reader = new BufferedReader (new FileReader (file));
-
-            // read the file in one row at a time
-            int currentRow = 0;
-            while ((line[currentRow] = reader.readLine ()) != null) {
-                char[] bytes = line [currentRow].toCharArray ();
-
-                // In this row, count instances of each delimiter
-                for (int i = 0 ; i < bytes.length ; i++) {
-                    switch (bytes [i]) {
-                        case TAB:
-                            counters [tabIndex] ++;
-                            break;
-                        case SPACE:
-                            counters [spaceIndex] ++;
-                            break;
-                        case COMMA:
-                            counters [commaIndex] ++;
-                            break;
-                    }
-                }
-
-                // If first row, just init the counts...
-                if (currentRow == 0) {
-                    commaCount = counters [commaIndex] == 0 ? -1 : counters[commaIndex];
-                    spaceCount = counters [spaceIndex] == 0 ? -1 : counters[spaceIndex];
-                    tabCount = counters [tabIndex] == 0 ? -1 : counters[tabIndex];
-                } else {
-
-                    // Check that the counts remain the same.
-                    if (counters [commaIndex] != commaCount)
-                        isComma = false;
-                    if (counters [spaceIndex] != spaceCount)
-                        isSpace = false;
-                    if (counters [tabIndex] != tabCount)
-                        isTab = false;
-                }
-                counters [tabIndex] = counters [spaceIndex] = counters [commaIndex] = 0;
-                if (++currentRow == line.length)
-                    break;
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return EQUALS;
-        }
-
-        // Did one of the possible delimiters come up a winner?
-        if (isComma && !isSpace && !isTab)
-            return COMMA;
-        if (!isComma && isSpace && !isTab)
-            return SPACE;
-        if (!isComma && !isSpace && isTab)
-            return TAB;
-
-        // OK, that didn't work. Lets trim the strings and see if it will work the.
-        // read the file in one row at a time
-        isComma = true;
-        isSpace = true;
-        isTab = true;
-        for (int currentRow = 0; currentRow < line.length ;currentRow++) {
-            String tmp = line [currentRow].trim ();
-            char [] bytes = tmp.toCharArray ();
-            counters [tabIndex] = counters [spaceIndex] = counters [commaIndex] = 0;
-            // In this row, count instances of each delimiter
-            for (int i = 0 ; i < bytes.length ; i++) {
-                switch (bytes [i]) {
-                case TAB:
-                    counters [tabIndex] ++;
-                    break;
-                case SPACE:
-                    counters [spaceIndex] ++;
-                    break;
-                case COMMA:
-                    counters [commaIndex] ++;
-                    break;
-            }
-            }
-
-            // If first row, just init the counts...
-            if (currentRow == 0) {
-                commaCount = counters [commaIndex] == 0 ? -1 : counters[commaIndex];
-                spaceCount = counters [spaceIndex] == 0 ? -1 : counters[spaceIndex];
-                tabCount = counters [tabIndex] == 0 ? -1 : counters[tabIndex];
-            } else {
-
-                // Check that the counts remain the same.
-                if (counters [commaIndex] != commaCount)
-                    isComma = false;
-                if (counters [spaceIndex] != spaceCount)
-                    isSpace = false;
-                if (counters [tabIndex] != tabCount)
-                    isTab = false;
-            }
-        }
-
-        // Did one of the possible delimiters come up a winner?
-        if (isComma && !isSpace && !isTab)
-            return COMMA;
-        if (!isComma && isSpace && !isTab)
-            return SPACE;
-        if (!isComma && !isSpace && isTab)
-            return TAB;
-
-        return EQUALS;
-    }*/
 
     /**
      * Skip to a specific line in the file.
@@ -790,15 +576,6 @@ public class DelimitedFileParser implements FlatFileParser {
                 current++;
             }
 
-            /*String line = lineReader.readLine();
-            if(line.trim().length() == 0) {
-              blankRows++;
-              return skipToRow(rowNum);
-            }
-            else
-              return line;
-             */
-
             String line;
             while( ( (line = lineReader.readLine()) != null) && (line.trim().length() == 0))
               blankRows++;
@@ -837,7 +614,6 @@ public class DelimitedFileParser implements FlatFileParser {
                         thisRow[counter] = newBytes;
                         counter++;
                     } else {
-                        //this.addBlank(rowNum, counter);
                         bl[counter] = true;
                         thisRow[counter] = new char[0];
                         counter++;
@@ -855,21 +631,18 @@ public class DelimitedFileParser implements FlatFileParser {
 
             for(int i = counter; i < thisRow.length; i++) {
                 thisRow[i] = new char[0];
-                //this.addBlank(rowNum, i);
                 bl[i] = true;
             }
 
             pl.elements = thisRow;
             pl.blanks = bl;
 
-            //return thisRow;
             return pl;
         }
         catch(Exception e) {
             return null;
         }
     }
-
     /**
      * Read in a row and put its elements into an ArrayList.
      * @param row the row to tokenize
@@ -877,7 +650,6 @@ public class DelimitedFileParser implements FlatFileParser {
      */
     private ArrayList getLineElements(int rowNum) {
         try {
-            //skipToRow(lineNum);
             skipToLine(rowNum);
             String row = lineReader.readLine();
             int current = 0;
@@ -934,70 +706,9 @@ public class DelimitedFileParser implements FlatFileParser {
         if ((len-current) > 0) {
             numToks++;
         }
-        //return thisRow;
+
         return numToks;
     }
-
-   /**
-      returns a Table that has 2 columns, corresponding
-      to the row and column indices of the fields
-      that were blank in the file that was read in
-      */
-   /*public Table getBlanks(){
-      Object[] rowsObjArray=_blankRows.toArray();
-      Object[] colsObjArray=_blankColumns.toArray();
-      int numBlanks=rowsObjArray.length;
-      //use these to make the kind of rows that VT's like
-
-      IntColumn rowsColumn=new IntColumn(numBlanks);
-      rowsColumn.setLabel("Rows");
-
-      IntColumn colsColumn=new IntColumn(numBlanks);
-      colsColumn.setLabel("Column");
-
-      Column[] internal=new Column[2];
-      internal[0]=rowsColumn;
-      internal[1]=colsColumn;
-
-      TableImpl table= (TableImpl)DefaultTableFactory.getInstance().createTable(internal);
-      Object[] tableRow=new Object[2];
-      for(int i=0; i<numBlanks; i++){
-         tableRow[0]=rowsObjArray[i];
-         tableRow[1]=colsObjArray[i];
-         table.setRow(tableRow, i);
-      }
-      return table;
-   }*/
-
-   /*
-      keeps track of which fields that were read were actually
-      blank
-   */
-/*	protected void addBlank(int r, int c){
-      //_blankRows.add(new Integer(r));
-      //_blankColumns.add(new Integer(c));
-        blanks[r][c] = true;
-   }
-
-   /**
-      returns a Table that has 2 columns, corresponding
-      to the row and column indices of the fields
-      that were blank in the file that was read in
-   /
-   public int[][] getBlanks(){
-      int numBlanks = _blankRows.size();
-
-        int[][] blanks = new int[2][numBlanks];
-        for(int i = 0; i < numBlanks; i++) {
-            blanks[0][i] = ((Integer)_blankRows.get(i)).intValue();
-            blanks[1][i] = ((Integer)_blankRows.get(i)).intValue();
-        }
-        return blanks;
-   }*/
-
-/*   public boolean[][] getBlanks() {
-       return blanks;
-   }*/
 }
 
 // QA Comments
@@ -1006,4 +717,6 @@ public class DelimitedFileParser implements FlatFileParser {
 //           type row numbers. Added error handling for types and labels
 //           row numbers out of bound.
 // 2/18/03 - checked into basic.
+// 3/21/03 - added except if too few rows to find delim;  deleted code
+//           that was commented out so clearer what's actually being used.
 // END QA Comments
