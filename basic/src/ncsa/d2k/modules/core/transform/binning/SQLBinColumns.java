@@ -32,6 +32,10 @@ public class SQLBinColumns extends UIModule {
     public boolean[] colTypes;
     public int totalRows;
     public ConnectionWrapper wrapper;
+    private BinDescriptor[] savedBins;
+    public Object getSavedBins() { return savedBins; }
+    public void setSavedBins(Object value) { savedBins = (BinDescriptor[])value; }
+
 
     /**
      * get the name of the module
@@ -63,7 +67,7 @@ public class SQLBinColumns extends UIModule {
       s += "a small nominal data set, binning may not be necessary. You can skip ";
       s += "this step by clicking 'Done' button without any actions. ";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle databases. This module consumes ";
+      s += "We currently only support Oracle and SQLServer databases. This module consumes ";
       s += "substantial CPU and memory to display data histograms. Sufficient ";
       s += "memory is essential to run this module for a huge data set.";
 
@@ -78,7 +82,6 @@ public class SQLBinColumns extends UIModule {
         String[] types =  {
             "ncsa.d2k.modules.core.io.sql.DBConnection",
             "[Ljava.lang.String;",
-            "java.lang.String",
             "java.lang.String"
         };
         return  types;
@@ -107,8 +110,6 @@ public class SQLBinColumns extends UIModule {
                 return "The fields selected from the specified table.";
             case 2:
                 return "The selected table from a database.";
-            case 3:
-                return "The query conditions.";
             default:
                 return  "No such input";
         }
@@ -141,8 +142,6 @@ public class SQLBinColumns extends UIModule {
                 return "Selected Fields";
             case 2:
                 return "Selected Table";
-            case 3:
-                return "Query Condition";
             default:
                 return  "No such input";
         }
@@ -156,7 +155,7 @@ public class SQLBinColumns extends UIModule {
     public String getOutputInfo (int i) {
         switch (i) {
             case 0:
-                return  "A BinTransformation object that contains column_numbers, names and labels";
+                return  "A BinTransformation object that contains column_numbers, names and lables";
             default:
                 return  "No such output";
         }
@@ -195,17 +194,15 @@ public class SQLBinColumns extends UIModule {
     private class SQLBinCounts implements BinCounts {
         String[] fieldNames;
         String tableName;
-        String whereClause;
         Connection con;
         Statement stmt;
         String queryStr;
         DatabaseMetaData metadata = null;
 
 
-      SQLBinCounts(String tn, String[] fn, String wc, ConnectionWrapper cw) {
+      SQLBinCounts(String tn, String[] fn, ConnectionWrapper cw) {
         tableName = tn;
         fieldNames = fn;
-        whereClause = wc;
         wrapper = cw;
       }
 
@@ -332,7 +329,6 @@ public class SQLBinColumns extends UIModule {
         private ConnectionWrapper connectionWrapper;
         private String[] fieldNames;
         private String tableName;
-        private String whereClause;
         private SQLBinCounts binCounts;
         private Connection con;
         private Statement stmt;
@@ -360,13 +356,9 @@ public class SQLBinColumns extends UIModule {
                 tableName = (String)o;
                 numArrived++;
             }
-            if(id == 3) {
-                whereClause = (String)o;
-                numArrived++;
-            }
 
-            if(numArrived == 4) {
-                binCounts = new SQLBinCounts(tableName, fieldNames, whereClause, connectionWrapper);
+            if(numArrived == 3) {
+                binCounts = new SQLBinCounts(tableName, fieldNames, connectionWrapper);
 
                 // clear all text fields and lists...
                 ((DefaultListModel)textUniqueVals.getModel()).removeAllElements();
@@ -384,6 +376,12 @@ public class SQLBinColumns extends UIModule {
                 totals = new double[fieldNames.length];
                 colTypes = new boolean[fieldNames.length];
                 binListModel.removeAllElements();
+
+                if (savedBins != null)
+                   for (int i = 0; i < savedBins.length; i++) {
+                      binListModel.addElement(savedBins[i]);
+                   }
+
                 DefaultListModel numModel = (DefaultListModel)numericColumnLabels.getModel(),
                 txtModel = (DefaultListModel)textualColumnLabels.getModel();
                 numModel.removeAllElements();
@@ -469,7 +467,7 @@ public class SQLBinColumns extends UIModule {
               ResultSet columns = metadata.getColumns(null, "%", tableNames.getString("TABLE_NAME"), "%");
               while (columns.next()) {
                 String columnName = columns.getString("COLUMN_NAME");
-                String dataType = columns.getString("TYPE_NAME");
+                String dataType = (columns.getString("TYPE_NAME")).toUpperCase();
                 for (int col = 0; col < fieldNames.length; col++) {
                   if (fieldNames[col].equals(columnName)) {
                     if (dataType.equals("NUMBER") ||
@@ -1031,6 +1029,11 @@ public class SQLBinColumns extends UIModule {
                     BinDescriptor[] bins = new BinDescriptor[tmp.length];
                     for (int i = 0; i < bins.length; i++)
                         bins[i] = (BinDescriptor)tmp[i];
+
+                    savedBins = new BinDescriptor[bins.length];
+                    for (int i = 0; i < bins.length; i++)
+                       savedBins[i] = bins[i];
+
                     BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
                               pushOutput(bt, 0);
                     viewDone("Done");

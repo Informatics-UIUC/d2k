@@ -14,7 +14,6 @@ import  ncsa.d2k.userviews.swing.*;
 import  ncsa.gui.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 
-
 /**
  * put your documentation comment here
  */
@@ -41,26 +40,26 @@ public class BinColumns extends UIModule {
         StringBuffer sb = new StringBuffer( "<p>Overview: ");
         sb.append( "This module allows a user to interactively bin data from a table.");
 
-	sb.append( "</p><p>Detailed Description: ");
+   sb.append( "</p><p>Detailed Description: ");
         sb.append( "This module provides a powerful interface that allows the user to ");
         sb.append( "control how numeric (continuous/scalar) and nominal (categorical) data in the input ");
         sb.append( "Table should be divided into bins. ");
 
         sb.append( "</p><p> Numeric data can be binned in four ways:<br>" );
-	sb.append( "<U>Uniform range:</U><br>" );
-	sb.append( "Enter a positive integer value for the number of bins. Bin Columns will divide the ");
-	sb.append( "binning range evenly over these bins. <br> ");
+   sb.append( "<U>Uniform range:</U><br>" );
+   sb.append( "Enter a positive integer value for the number of bins. Bin Columns will divide the ");
+   sb.append( "binning range evenly over these bins. <br> ");
         sb.append( "<U>Specified range:</U><br> ");
         sb.append( "Enter a comma-separated sequence of integer or floating-point values for the endpoints of each bin. <br> ");
         sb.append( "<U>Bin Interval:</u><br> ");
         sb.append( "Enter an integer or floating-point value for the width of each bin.<br> ");
         sb.append( "<u>Uniform Weight:</U><br> ");
-	sb.append( "Enter a positive integer value for even binning with that number in each bin. ");
+   sb.append( "Enter a positive integer value for even binning with that number in each bin. ");
 
         sb.append( "</P><P>The user may also bin nominal data. ");
 
         sb.append( "</P><P>For further information on how to use this module the user may click on the \"Help\" button ");
-	sb.append( "during run time and get a detailed description of the functionality." );
+   sb.append( "during run time and get a detailed description of the functionality." );
 
         sb.append( "</p><P>Missing and Empty Values Handling: In scalar columns, missing and empty values will be binned into " );
         sb.append( "\"UNKNOWN\". In nominal columns however, missing/empty values which are represented by " );
@@ -68,9 +67,9 @@ public class BinColumns extends UIModule {
         sb.append( "the '?' and assign it a bin, then it would also be binned into \"UNKNOWN\".");
 
         sb.append( "</p><P>Data Handling:  This module does not change its input.  ");
-	sb.append( "Rather, it outputs a Transformation that can later be applied to the original table data.</P>" );
+   sb.append( "Rather, it outputs a Transformation that can later be applied to the original table data.</P>" );
 
-	return sb.toString();
+   return sb.toString();
     }
 
     /**
@@ -143,14 +142,19 @@ public class BinColumns extends UIModule {
     public String getOutputInfo (int i) {
         switch (i) {
             case 0:
- 		String s = "A Binning Transformation, as defined by the user via this module.  " +
-			   "This output is typically connected to a <i>Create Bin Tree</i> module " +
-			   "or to an <i>Apply Transformation</i> module where it is applied to the input Table. ";
-		return s;
+      String s = "A Binning Transformation, as defined by the user via this module.  " +
+            "This output is typically connected to a <i>Create Bin Tree</i> module " +
+            "or to an <i>Apply Transformation</i> module where it is applied to the input Table. ";
+      return s;
             default:
                 return  "No such output";
         }
     }
+
+    private BinDescriptor[] savedBins;
+
+    public Object getSavedBins() { return savedBins; }
+    public void setSavedBins(Object value) { savedBins = (BinDescriptor[])value; }
 
    /**
     * This method returns and array of property descriptions.  In this case,
@@ -241,6 +245,12 @@ public class BinColumns extends UIModule {
             columnLookup = new HashMap();
             uniqueColumnValues = new HashSet[tbl.getNumColumns()];
             binListModel.removeAllElements();
+
+            if (savedBins != null)
+               for (int i = 0; i < savedBins.length; i++) {
+                  binListModel.addElement(savedBins[i]);
+               }
+
             DefaultListModel numModel = (DefaultListModel)numericColumnLabels.getModel(),
             txtModel = (DefaultListModel)textualColumnLabels.getModel();
             numModel.removeAllElements();
@@ -843,6 +853,11 @@ public class BinColumns extends UIModule {
                     BinDescriptor[] bins = new BinDescriptor[tmp.length];
                     for (int i = 0; i < bins.length; i++)
                         bins[i] = (BinDescriptor)tmp[i];
+
+                    savedBins = new BinDescriptor[bins.length];
+                    for (int i = 0; i < bins.length; i++)
+                       savedBins[i] = bins[i];
+
                     BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
                     pushOutput(bt, 0);
                     viewDone("Done");
