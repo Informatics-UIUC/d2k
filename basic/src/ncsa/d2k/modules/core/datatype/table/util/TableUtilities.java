@@ -213,14 +213,22 @@ public class TableUtilities
 
     // count the number of unique items in this column
     HashSet set = new HashSet ();
-    for (int i = 0; i < numRows; i++) {
-      if (!table.isValueMissing(i, colNum)) {
-        String s = table.getString (i, colNum);
-        if (!set.contains (s)) {
-          set.add (s);
+    if (table.hasMissingValues(colNum)) {
+		for (int i = 0; i < numRows; i++) {
+		 if (!table.isValueMissing(i, colNum)) {
+				String s = table.getString (i, colNum);
+				if (!set.contains (s)) {
+				  set.add (s);
+				}
+			}
         }
-      }
-    }
+    } else
+        for (int i = 0; i < numRows; i++) {
+    	    String s = table.getString (i, colNum);
+        	if (!set.contains (s)) {
+          		set.add (s);
+        	}
+    	}
 
     String[]retVal = new String[set.size ()];
     int idx = 0;
@@ -238,12 +246,24 @@ public class TableUtilities
 
     // count the number of unique items in this column
     HashSet set = new HashSet ();
-    for (int i = 0; i < numRows; i++) {
-	String s = table.getString (i, colNum);
-	if (!set.contains (s)) {
-	  set.add (s);
-        }
-    }
+    
+	if (table.hasMissingValues(colNum)) {
+			for (int i = 0; i < numRows; i++) {
+			 if (!table.isValueMissing(i, colNum)) {
+					String s = table.getString (i, colNum);
+					if (!set.contains (s)) {
+					  set.add (s);
+					}
+				}
+			}
+		} else
+			for (int i = 0; i < numRows; i++) {
+				String s = table.getString (i, colNum);
+				if (!set.contains (s)) {
+					set.add (s);
+				}
+			}
+
     return set;
   }
 
@@ -326,9 +346,26 @@ public class TableUtilities
     int[] outtally = new int[0];
     HashMap outIndexMap = new HashMap ();
     int numRows = table.getNumRows ();
-    for (int i = 0; i < numRows; i++) {
+    if (table.hasMissingValues()) {
+	for (int i = 0; i < numRows; i++) {
+	  if(!table.isValueMissing(i,colNum)) {
+	   String s = table.getString (i, colNum);
+	  
+	   if (outIndexMap.containsKey (s)) {
+		   Integer in = (Integer) outIndexMap.get (s);
+		   outtally[in.intValue ()]++;
+	   } else {
+		   outIndexMap.put (s, new Integer (outIndexMap.size ()));
+		   outtally = expandArray (outtally);
+		   outtally[outtally.length - 1] = 1;
+	   }
+	  }
+     }
+    }
+    else {   
+	
+	 for (int i = 0; i < numRows; i++) {
 	String s = table.getString (i, colNum);
-
 	if (outIndexMap.containsKey (s)) {
 	    Integer in = (Integer) outIndexMap.get (s);
 	    outtally[in.intValue ()]++;
@@ -338,7 +375,7 @@ public class TableUtilities
 	    outtally[outtally.length - 1] = 1;
 	}
     }
-
+}
     HashMap retVal = new HashMap ();
     Iterator ii = outIndexMap.keySet ().iterator ();
     while (ii.hasNext ()) {
