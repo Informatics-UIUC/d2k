@@ -90,6 +90,13 @@ public final class DecisionTreeVis
     return "Decision Tree Visualization";
   }
 
+    public PropertyDescription[] getPropertiesDescriptions() {
+	return new PropertyDescription[0]; // so that "WindowName" property
+	// is invisible
+    }
+
+
+
   protected UserView createUserView() {
     return new DecisionTreeUserView();
   }

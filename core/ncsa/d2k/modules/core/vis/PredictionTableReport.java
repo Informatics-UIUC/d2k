@@ -74,7 +74,7 @@ public class PredictionTableReport extends VisModule  {
     public String getInputName(int i) {
 		switch(i) {
 			case 0:
-				return "predTable";
+				return "Prediction Table";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -100,6 +100,13 @@ public class PredictionTableReport extends VisModule  {
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
+
+
+    public PropertyDescription[] getPropertiesDescriptions() {
+	return new PropertyDescription[0]; // so that "windowName" property
+	// is invisible
+    }
+
 
     /**
        Not used.
