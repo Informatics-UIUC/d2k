@@ -301,11 +301,12 @@ public class GetRuleAsscFromDB extends UIModule
         }
         else if (sortC.getState()) {
           sortList(1);
+          convertToRuleTable();
         }
         else if (sortS.getState()) {
           sortList(2);
+          convertToRuleTable();
         }
-        //ruleTable.initTableModel(100,5);
         if (finalRules.size() > 0) {
           pushOutput (ruleTable, 0);
           pushOutput (itemLabels, 1);
