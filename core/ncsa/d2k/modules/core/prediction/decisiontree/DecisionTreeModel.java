@@ -206,8 +206,9 @@ public class DecisionTreeModel extends PredictionModelModule
 		Pull in the table and pass it to predict.
 	*/
 	public void doit() throws Exception {
-		ExampleTable et = (ExampleTable)pullInput(0);
-		PredictionTable retVal = predict(et);
+		//ExampleTable et = (ExampleTable)pullInput(0);
+                Table t = (Table)pullInput(0);
+		PredictionTable retVal = predict(t);
 		pushOutput(retVal, 0);
         pushOutput(this, 1);
 	}
