@@ -72,7 +72,7 @@ public class SetParameterSpace extends JPanel implements CustomModuleEditor {
 			if (res[i] != space.getResolution(i)) {
 				changed = true;
 			}
-			if (max[i] <= min[i]) throw new Exception ("The max must be greater than the min.");
+			if (max[i] < min[i]) throw new Exception ("The max must be greater than or equal to the min.");
 		}
 
 
