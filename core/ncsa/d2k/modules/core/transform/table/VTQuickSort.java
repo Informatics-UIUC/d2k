@@ -154,7 +154,7 @@ public class VTQuickSort extends DataPrepModule
 
 	for(int i=0; i<newOrder.length; i++){
 		Object[] row = new Object[raw.getNumColumns()];
-		raw.getRow(row, i);
+		raw.getRow(row, newOrder[i]);
 		fullSorted.setRow(/*raw.getRow(newOrder[i])*/row, i);
 	}
 	if(!ascending){
@@ -243,6 +243,7 @@ public class VTQuickSort extends DataPrepModule
 			int j;
 			Object[] v;//the row
 			Object w;
+			Object[] rr= new Object[sorted.getNumColumns()];//buffer row
 			for(j=l+1; j<=r; j++){
 				v = new Object[sorted.getNumColumns()];
 				sorted.getRow(v, j);
@@ -250,8 +251,7 @@ public class VTQuickSort extends DataPrepModule
 				w=sortColumn.getRow(j);
 				i=j-1;
 				while((i>=l) && (sortColumn.compareRows(w, i)<0)){
-					Object [] rr = new Object[sorted.getNumColumns()];
-					sorted.getRow(rr, i+1);
+					sorted.getRow(rr, i);
 					sorted.setRow(/*sorted.getRow(i)*/rr, i+1);
 					i--;
 				}
@@ -272,7 +272,7 @@ public class VTQuickSort extends DataPrepModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "Basic Vertical Table Quick Sort";
+		return "Basic Table Quick Sort";
 	}
 
 	/**
