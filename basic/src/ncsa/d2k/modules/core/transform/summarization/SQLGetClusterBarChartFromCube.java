@@ -274,7 +274,6 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
       else if (src == displayBtn) {
         Object[] values = selectedModel.toArray();
         String[] retVal = new String[values.length];
-        System.out.println("retVal length is " + retVal.length);
         if (retVal.length != 2) {
           JOptionPane.showMessageDialog(msgBoard,
           "You must choose two features from the selected table.", "Error",
@@ -286,6 +285,12 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
           "Click the button 'Browse' to choose a table first.", "Error",
           JOptionPane.ERROR_MESSAGE);
           System.out.println("There is no table selected.");
+        }
+        else if (cubeTableName.getText().toString().indexOf("_CUBE")<0) {
+          JOptionPane.showMessageDialog(msgBoard,
+          "To display a chart, you must select a cube table rather than a data table.", "Error",
+          JOptionPane.ERROR_MESSAGE);
+          System.out.println("A cube table is selected instead of a data table.");
         }
         else if (cubeTableName.getText().length()>0 && retVal.length > 0) {
           // if code book is required and the code book is not retrieved yet, then get it
