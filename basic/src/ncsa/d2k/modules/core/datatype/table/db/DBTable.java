@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.datatype.table.db;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.Column;
 import ncsa.d2k.modules.core.io.sql.*;
 
 /**
@@ -9,6 +10,9 @@ import ncsa.d2k.modules.core.io.sql.*;
  * <p>Company: </p>
  * @author Sameer Mathur, David Clutter
  * @version 1.0
+ *
+ * @todo: 8-22-03
+ * change getSubset(int[]) so that it would return a SubsetTable no Train table.
  */
 
 public class DBTable extends AbstractTable implements Table {
@@ -209,10 +213,15 @@ public class DBTable extends AbstractTable implements Table {
 	/**
 		Get the number of entries this Table holds.
 		@return this Table's number of entries
-	*/
-	public int getNumEntries(){
+
+
+        VERED - 8-22-03
+        this method was dexlared redundant, asn getNumRows should be used instead.
+
+        public int getNumEntries(){
             return dataSource.getNumRows();
-    }
+  }
+  */
 
 	/**
 		Return the number of columns this table holds.
@@ -223,12 +232,15 @@ public class DBTable extends AbstractTable implements Table {
     }
 
 	/**
+         * VERED 8-22-03
+         * this method was declared unnecessary - thus was removed.
+         *
 	 * Get a row from the table at the specified position.  The table will
 	 * copy the entries into the buffer, in a format that is appropriate for
 	 * the buffer's data type.
 	 * @param buffer a buffer to copy the data into
 	 * @param position the position
-	*/
+	*
 	public void getRow(Object buffer, int pos) {
             if(buffer instanceof int[]) {
                int[] b1 = (int[])buffer;
@@ -291,8 +303,12 @@ public class DBTable extends AbstractTable implements Table {
                   b1[i] = getChar(pos, i);
       }
         }
+        */
 
 	/**
+         * VERED 8-22-03
+         * this method was declared unnecessary - thus was removed.
+         *
 	 * Get a copy of the data from a column from the Table at the specified
 	 * position.  The Table will copy the entries into the buffer, in a format
 	 * that is appropriate for the buffer's data type.  The buffer must be an
@@ -301,7 +317,7 @@ public class DBTable extends AbstractTable implements Table {
 	 * @param buffer a buffer to copy the data into
 	 * @param position the position
 	 * @see ColumnTypes
-	 */
+	 *
 	public void getColumn(Object buffer, int pos) {
             if(buffer instanceof int[]) {
                int[] b1 = (int[])buffer;
@@ -364,6 +380,7 @@ public class DBTable extends AbstractTable implements Table {
                   b1[i] = getChar(i, pos);
             }
         }
+        */
 
 	/**
 		Get a subset of this Table, given a start position and length.  The
@@ -374,23 +391,38 @@ public class DBTable extends AbstractTable implements Table {
 	*/
 	public Table getSubset(int start, int len){
             // here we will return a TrainDBTable.
-            ExampleTable et = this.toExampleTable();
+          //  ExampleTable et = this.toExampleTable();
             int[] trSet = new int[len];
             int ctr = 0;
-            for(int i = start; i < start+len; i++) {
+            for(int i = start; i < start+len && ctr < trSet.length; i++) {
                 trSet[ctr] = i;
                 ctr++;
             }
-            et.setTrainingSet(trSet);
-            TrainTable tt = et.getTrainTable();
-            return tt;
+
+            //VERED 8-22-03
+            // calling getSubSet(int[]) instead of the following lines
+
+            //et.setTrainingSet(trSet);
+            //TrainTable tt = et.getTrainTable();
+            //return tt;
+            return getSubset(trSet);
         }
 
+        //VERED 8-25-03
+        //changing this method to return a shallow copy of the subset.
+        //it will return now a subset table.
         public Table getSubset(int[] rows) {
-            ExampleTable et = this.toExampleTable();
-            et.setTrainingSet(rows);
-            return et.getTrainTable();
+          return new DBSubsetTable(this, rows);
+          //  ExampleTable et = this.toExampleTable();
+          //  et.setTrainingSet(rows);
+          //  return et.getTrainTable();
         }
+
+        /**
+         * VERED 8-22-03
+         * the following methods were replaced by getSubset(int, int)
+         * and getSubset(int[])
+         *
 
         public Table getSubsetByReference(int start, int len) {
           return getSubset(start, len);
@@ -399,6 +431,7 @@ public class DBTable extends AbstractTable implements Table {
         public Table getSubsetByReference(int[] rows){
           return getSubset(rows);
         }
+*/
 
 	/**
 		Create a copy of this Table.
@@ -406,12 +439,59 @@ public class DBTable extends AbstractTable implements Table {
 	*/
 	public Table copy(){
             DBTable retVal = new DBTable(dataSource.copy(), dbConnection);
-            boolean[] retIsNom = new boolean[isNominal.length];
+         /*   boolean[] retIsNom = new boolean[isNominal.length];
             for(int i = 0; i < retIsNom.length; i++)
                 retIsNom[i] = isNominal[i];
             retVal.isNominal = retIsNom;
+            this all happens in constructor anyhow. */
+
             return retVal;
         }
+
+
+        /**
+         * Creates a shallow copy of this Table
+         * @returns DBTable.
+         */
+
+         public Table shallowCopy(){
+          DBTable retVal = new DBTable(this.dataSource, this.dbConnection);
+//          retVal.isNominal = this.isNominal; //redundant. will be copied in constructor...
+          return retVal;
+         }
+
+
+         /**
+          * Creates a depp copy of a subset of this table. rows to be included are
+          * rows <code>start</code> through <code>start + len</code>.
+          * @param start - first row to be included in the copied subset.
+          * @param len -   number of rows to be included in the copied subset.
+          * @returns DBSubsetTable.
+          */
+
+          public Table copy(int start, int len){
+            int[] subset = new int[len];
+            for (int i=0; i<len && i+len < subset.length; i++)
+              subset[i] = start+i;
+
+            return copy(subset);
+          }
+
+
+
+          /**
+          * Creates a deep copy of a subset of this table. rows to be included are
+          * the indices in <code>reindex</code>.
+          * @param reindex - indices to be included in the copied subset.
+          * @returns DBSubsetTable.
+          */
+
+          public Table copy(int[] reindex){
+            DBTable retVal = (DBTable)this.getSubset(reindex).copy();
+            return retVal;
+
+          }
+
 
 	/**
 	 * Get a TableFactory for this Table.
@@ -545,5 +625,26 @@ public class DBTable extends AbstractTable implements Table {
               return true;
         return false;
        }
+
+
+       /**
+        * Return a Row object of this Table.
+        */
+        public Row getRow(){
+          return new DBRow(dataSource, dbConnection, this);
+        }
+
+
+        /**
+	 * Create a new empty table of the same type as the implementation
+	 * @return a new empty table.
+	 */
+	public MutableTable createTable(){
+          return toExampleTable();
+        }
+
+        public Column getColumn(int i){
+          throw new RuntimeException("getColumn is not supported in DBTable.");
+        }
 
 } //DBTable

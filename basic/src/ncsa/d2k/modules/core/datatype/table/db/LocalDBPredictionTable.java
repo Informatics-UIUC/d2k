@@ -445,12 +445,15 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
 
    }
 
+   //VEREd 8-25-03
+   //this method was declared unnecessary - thus is removed.
+   /*
    public void getColumn(Object buffer, int position) {
        if (prediction[position])
            predictionColumnsTable.getColumn(buffer, indirection[position]);
        else
            original.getColumn(buffer, indirection[position]);
-   }
+   }*/
 
 /*   public Table getSubset(int start, int len) {
 
@@ -848,8 +851,13 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    *
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
     */
-   public int addPredictionColumn(int[] predictions, String label) {
+
+/*   public int addPredictionColumn(int[] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
            predictionColumnsTable.insertColumn(predictions, 0);
@@ -864,14 +872,17 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            return (predictionColumnsTable.getNumColumns() - 1);
        }
    }
-
+*/
    /**
     * Add a column of float predictions to this PredictionTable.
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
     */
-   public int addPredictionColumn(float[] predictions, String label) {
+/*   public int addPredictionColumn(float[] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
            predictionColumnsTable.insertColumn(predictions, 0);
@@ -885,15 +896,18 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            predictionColumnsTable.setColumnLabel(label, predictionColumnsTable.getNumColumns() - 1);
            return (predictionColumnsTable.getNumColumns() - 1);
        }
-   }
+   }*/
 
    /**
     * Add a column of double predictions to this PredictionTable.
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
     */
-   public int addPredictionColumn(double[] predictions, String label) {
+/*   public int addPredictionColumn(double[] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
            predictionColumnsTable.insertColumn(predictions, 0);
@@ -908,13 +922,18 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            return (predictionColumnsTable.getNumColumns() - 1);
        }
    }
-
+*/
    /**
     * Add a column of long predictions to this PredictionTable.
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    *
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
     */
+    /*
    public int addPredictionColumn(long[] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
@@ -930,13 +949,18 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            return (predictionColumnsTable.getNumColumns() - 1);
        }
    }
-
+*/
    /**
     * Add a column of short predictions to this PredictionTable.
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    *
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
     */
+    /*
    public int addPredictionColumn(short[] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
@@ -952,13 +976,18 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            return (predictionColumnsTable.getNumColumns() - 1);
        }
    }
-
+*/
    /**
     * Add a column of boolean predictions to this PredictionTable.
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    *
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
     */
+    /*
    public int addPredictionColumn(boolean[] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
@@ -974,13 +1003,19 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            return (predictionColumnsTable.getNumColumns() - 1);
        }
    }
+*/
 
    /**
     * Add a column of String predictions to this PredictionTable.
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    *
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
     */
+    /*
    public int addPredictionColumn(String[] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
@@ -995,15 +1030,20 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            predictionColumnsTable.setColumnLabel(label, predictionColumnsTable.getNumColumns() - 1);
            return (predictionColumnsTable.getNumColumns() - 1);
        }
-   }
+   }*/
 
    /**
     * Add a column of char[] predictions to this PredictionTable.
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    *
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
+
     */
-   public int addPredictionColumn(char[][] predictions, String label) {
+/*   public int addPredictionColumn(char[][] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
            predictionColumnsTable.insertColumn(predictions, 0);
@@ -1018,14 +1058,20 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            return (predictionColumnsTable.getNumColumns() - 1);
        }
    }
+*/
 
    /**
     * Add a column of byte[] predictions to this PredictionTable.
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    *
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
+
     */
-   public int addPredictionColumn(byte[][] predictions, String label) {
+/*   public int addPredictionColumn(byte[][] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
            predictionColumnsTable.insertColumn(predictions, 0);
@@ -1040,14 +1086,20 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            return (predictionColumnsTable.getNumColumns() - 1);
        }
    }
+*/
 
    /**
     * Add a column of Object predictions to this PredictionTable.
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    *
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
+
     */
-   public int addPredictionColumn(Object[] predictions, String label) {
+/*   public int addPredictionColumn(Object[] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
            predictionColumnsTable.insertColumn(predictions, 0);
@@ -1062,14 +1114,20 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            return (predictionColumnsTable.getNumColumns() - 1);
        }
    }
+*/
 
-   /**
+/**
     * Add a column of byte predictions to this PredictionTable.
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    *
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
+
     */
-   public int addPredictionColumn(byte[] predictions, String label) {
+/*   public int addPredictionColumn(byte[] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
            predictionColumnsTable.insertColumn(predictions, 0);
@@ -1084,14 +1142,20 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            return (predictionColumnsTable.getNumColumns() - 1);
        }
    }
+*/
 
    /**
     * Add a column of char predictions to this PredictionTable.
     * @param predictions the predictions
     * @param label the label for the new column
     * @return the index of the prediction column in the prediction set
+    *
+    * VERED 8-25-03
+    * this method was replaced by addColumns(int datatype, int num) in colaboration
+    * with the setter methods for the population of data.
+
     */
-   public int addPredictionColumn(char[] predictions, String label) {
+/*   public int addPredictionColumn(char[] predictions, String label) {
        insertIndirectionAndPrediction(true, getNumColumns());
        if (newTableHackVariable) {
            predictionColumnsTable.insertColumn(predictions, 0);
@@ -1106,5 +1170,5 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
            return (predictionColumnsTable.getNumColumns() - 1);
        }
    }
-
+*/
 }
