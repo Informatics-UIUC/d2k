@@ -39,7 +39,7 @@ public class SQLBinColumns extends UIModule {
      * @return module's name
      */
     public String getModuleName () {
-        return  "SQLBinColumns";
+        return  "BinColumns Using SQL";
     }
 
     /**
@@ -56,7 +56,7 @@ public class SQLBinColumns extends UIModule {
      */
     public String[] getInputTypes () {
         String[] types =  {
-            "ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
+            "ncsa.d2k.modules.core.io.sql.DBConnection",
             "[Ljava.lang.String;",
             "java.lang.String",
             "java.lang.String"
@@ -70,7 +70,7 @@ public class SQLBinColumns extends UIModule {
      */
     public String[] getOutputTypes () {
         String[] types =  {
-            "ncsa.d2k.modules.core.datatype.BinDescriptor"
+				  "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"
         };
         return  types;
     }
@@ -83,7 +83,7 @@ public class SQLBinColumns extends UIModule {
     public String getInputInfo (int i) {
         switch (i) {
             case 0:
-                return "ConnectionWrapper";
+                return "DBConnection";
             case 1:
                 return "Field names.";
             case 2:
@@ -103,7 +103,7 @@ public class SQLBinColumns extends UIModule {
     public String getOutputName (int i) {
         switch (i) {
             case 0:
-                return "BinDescriptor";
+                return "BinTransformation";
             default:
                 return  "no such output!";
         }
@@ -117,7 +117,7 @@ public class SQLBinColumns extends UIModule {
     public String getInputName (int i) {
         switch (i) {
             case 0:
-                return "ConnectionWrapper";
+                return "DBConnection";
             case 1:
                 return "FieldName";
             case 2:
@@ -137,7 +137,7 @@ public class SQLBinColumns extends UIModule {
     public String getOutputInfo (int i) {
         switch (i) {
             case 0:
-                return  "An BinDescriptor object that contains column_number, name and lable";
+                return  "A BinTransformation object that contains column_numbers, names and lables";
             default:
                 return  "No such output";
         }
@@ -934,7 +934,8 @@ public class SQLBinColumns extends UIModule {
                     BinDescriptor[] bins = new BinDescriptor[tmp.length];
                     for (int i = 0; i < bins.length; i++)
                         bins[i] = (BinDescriptor)tmp[i];
-                    pushOutput(bins, 0);
+                    BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
+										pushOutput(bt, 0);
                     viewDone("Done");
                 }
             });
