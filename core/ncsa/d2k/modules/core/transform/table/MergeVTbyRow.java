@@ -121,9 +121,10 @@ public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 	 * @return a list of the property descriptions.
 	 */
 	public PropertyDescription [] getPropertiesDescriptions () {
-		PropertyDescription [] pds = new PropertyDescription [2];
+		PropertyDescription [] pds = new PropertyDescription [3];
 		pds[0] = new PropertyDescription ("fillerBol", "Boolean Column Filler", "This value will be used to fill boolean columns.");
 		pds[1] = new PropertyDescription ("fillerString", "String Column Filler", "This string fills the string columns.");
+		pds[2] = new PropertyDescription ("fillerNumeric", "Numeric Column Filler", "This value fills the numeric columns.");
 		return pds;
 	}
 
@@ -135,11 +136,11 @@ public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 		counter = 0;
 		table1 = (MutableTableImpl) pullInput(0);
 		table2 = (MutableTableImpl) pullInput(1);
-		String[] uid = (String[]) pullInput(2);
+		String uid = (String) pullInput(2);
 
 		//System.out.println(uid[0]);
-		Column col1 = findColumn(uid[0], table1);
-		Column col2 = findColumn(uid[0], table2);
+		Column col1 = findColumn(uid, table1);
+		Column col2 = findColumn(uid, table2);
 
 		int index1 = findIndex(col1, table1);
 		int index2 = findIndex(col2, table2);
