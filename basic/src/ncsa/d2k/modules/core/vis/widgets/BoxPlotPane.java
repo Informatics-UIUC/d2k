@@ -89,6 +89,9 @@ public class BoxPlotPane extends JPanel {
    public void paintComponent(Graphics graphic) {
       super.paintComponent(graphic);
 
+      Graphics2D g2 = (Graphics2D) graphic;
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
       width = getWidth();
       height = getHeight();
       // Make sure plot is at 'top' of tabbed pane display area.
@@ -102,10 +105,10 @@ public class BoxPlotPane extends JPanel {
       nformat = NumberFormat.getInstance();
       nformat.setMaximumFractionDigits(2);
       nformat.setMinimumFractionDigits(2);
-      metrics = graphic.getFontMetrics();
+      metrics = g2.getFontMetrics();
 
-      drawScale(graphic);
-      drawPlot(graphic);
+      drawScale(g2);
+      drawPlot(g2);
    }
 
    public void drawScale(Graphics graphic) {

@@ -18,7 +18,7 @@ public class FilterBoxPlotPane extends JPanel {
    JPanel spanel;
    JLabel lminimum, lmaximum, lmedian, lfquartile, ltquartile;
    JLabel llowerbound, lupperbound, lrows;
-   JButton remove, undo;
+   JButton filter, undo;
 
    public FilterBoxPlotPane(ArrayList flist, ArrayList slist, BoxPlotGroup group, Table table, int column) {
       // Statistics
@@ -33,7 +33,7 @@ public class FilterBoxPlotPane extends JPanel {
       Constrain.setConstraints(spanel, llowerbound, 0, 5, 1, 1, GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
       Constrain.setConstraints(spanel, lupperbound, 0, 6, 1, 1, GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
       Constrain.setConstraints(spanel, lrows, 0, 7, 1, 1, GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
-      Constrain.setConstraints(spanel, remove, 0, 8, 1, 1, GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
+      Constrain.setConstraints(spanel, filter, 0, 8, 1, 1, GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
       Constrain.setConstraints(spanel, undo, 0, 9, 1, 1, GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 1, 1);
 
       // Plot
@@ -52,7 +52,7 @@ public class FilterBoxPlotPane extends JPanel {
       llowerbound = new JLabel();
       lupperbound = new JLabel();
       lrows = new JLabel();
-      remove = new JButton("Filter");
+      filter = new JButton("Filter");
       undo = new JButton("Undo");
       undo.setEnabled(false);
    }
@@ -90,7 +90,7 @@ public class FilterBoxPlotPane extends JPanel {
          lowerbound = sminimum;
          upperbound = smaximum;
 
-         remove.addActionListener(this);
+         filter.addActionListener(this);
          undo.addActionListener(this);
          addMouseListener(this);
          addMouseMotionListener(this);
@@ -179,24 +179,24 @@ public class FilterBoxPlotPane extends JPanel {
             slist.remove(slist.size()-1);
             group.calculate(flist.size() > 1);
          }
-         else if (source == remove) {
+         else if (source == filter) {
             boolean[] flags = (boolean[]) flist.get(flist.size()-1);
             boolean[] clone = new boolean[flags.length];
 
             int csize = flags.length;
             for (int row = 0; row < flags.length; row++) {
-               if (!flags[row]) {
+               if (flags[row]) {
                   double data = table.getDouble(row, column);
 
                   if (data < lowerbound || data > upperbound) {
-                     clone[row] = true;
+                     clone[row] = false;
                      csize--;
                   }
                   else
-                     clone[row] = false;
+                     clone[row] = true;
                }
                else {
-                  clone[row] = true;
+                  clone[row] = false;
                   csize--;
                }
             }
