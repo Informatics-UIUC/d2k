@@ -102,6 +102,17 @@ public class ParseFileToPagingTable extends ParseFileToTable {
         //pushOutput(bt, 1);
     }*/
 
+  public void doit() throws Exception {
+    try {
+      super.doit();
+    }
+    catch(OutOfMemoryError e) {
+      throw new Exception(getAlias()+": The file could not be read in.  Try reducing "+
+                          "the number of rows per page.");
+    }
+  }
+
+
     protected Table createTable(FlatFileParser df) {
         int numRows = df.getNumRows();
         int numColumns = df.getNumColumns();

@@ -1,21 +1,22 @@
 package ncsa.d2k.modules.core.prediction.naivebayes;
 
+import java.io.*;
+import java.text.*;
+import java.util.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.print.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import ncsa.d2k.userviews.swing.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.gui.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
-import javax.help.*;
+//import javax.help.*;
 
 /**
  * An evidence visualization for a NaiveBayesModel.
@@ -66,7 +67,7 @@ public final class NaiveBayesVis
         "<p>Data Type Restrictions: none"+
         "<p>Data Handling:  This module does not destroy or modify the "+
         "input data."+
-        "<p>Scalability: This module keeps data structures to represent the pie "+
+        "<p>Scalability: This module keeps data structures to represent the evidence "+
         "charts.  The amount of memory required is proportional to the number of "+
         "bins used in the discretization process.";
   }
@@ -569,10 +570,10 @@ public final class NaiveBayesVis
       JMenu helpMenu = new JMenu("Help");
       helpItem = new JMenuItem("About NaiveBayesVis..");
       helpMenu.add(helpItem);
-     // helpItem.addActionListener(this);
+      helpItem.addActionListener(this);
 
     //  HelpSet hs = new HelpSet(getClass().getClassLoader(), url);
-    HelpSet hs = getHelpSet("help/nbvis");
+    /*HelpSet hs = getHelpSet("help/nbvis");
     if(hs != null) {
       HelpBroker helpbroker = hs.createHelpBroker();
       ActionListener listener = new CSH.DisplayHelpFromSource(helpbroker);
@@ -580,6 +581,7 @@ public final class NaiveBayesVis
     }
     else
       helpItem.setEnabled(false);
+     */
 
       menuBar.add(helpMenu);
     }
@@ -847,7 +849,7 @@ public final class NaiveBayesVis
         hp.revalidate();
       }
       else if (src == helpItem) {
-        //helpWindow.setVisible(true);
+        helpWindow.setVisible(true);
 
 
 
@@ -1734,12 +1736,12 @@ public final class NaiveBayesVis
       JEditorPane jep = new JEditorPane("text/html", getHelpString());
       jep.setBackground(yellowish);
       getContentPane().add(new JScrollPane(jep));
-      setSize(400, 200);
+      setSize(400, 400);
     }
   }
 
   private static final String getHelpString() {
-    StringBuffer sb = new StringBuffer("<html>");
+/*    StringBuffer sb = new StringBuffer("<html>");
     sb.append("<h2>NaiveBayesVis</h2>");
     sb.append("NaiveBayesVis provides an evidence visualization for a ");
     sb.append("NaiveBayesModel.  Evidence items can be selected by clicking ");
@@ -1775,5 +1777,72 @@ public final class NaiveBayesVis
     sb.append("</ul>");
     sb.append("</html>");
     return sb.toString();
+	  */
+
+	StringBuffer sb = new StringBuffer("<html><h1>Naive Bayes Vis Help</h1>");
+sb.append("<p>Overview: Naive Bayes Vis provides an interactive evidence ");
+sb.append("visualization for a Naive Bayes Model.");
+sb.append("<p>Detailed Description: This evidence visualization shows the data");
+sb.append("the Naive Bayes Model uses to make its predictions.  The window");
+sb.append("is split into two halves.  The left side contains the Attributes and");
+sb.append("Evidence.  The right side contains the Conclusion.  Evidence items ");
+sb.append("can be selected to update the Conclusion.  The Evidence can be scaled ");
+sb.append("by right-clicking the mouse and dragging toward the northwest or");
+sb.append("southwest corners.");
+sb.append("<hr> <p>");
+sb.append("Attributes and Evidence: The attributes (inputs) used to train the ");
+sb.append("Naive Bayes Model are displayed on the far left.  The attributes to ");
+sb.append("show and the sorting order can be changed using menu options.  The ");
+sb.append("evidence items for an attribute are listed next to the attribute ");
+sb.append("name.  These are displayed as pie charts by default.  They can be ");
+sb.append("changed to bar charts using a menu option.  Above each pie chart is a ");
+sb.append("line showing the relevance for each pie chart.  This is the ratio of ");
+sb.append("examples that fall into this bin to the number of total examples. ");
+sb.append("The bar can be changed to a percentage using a menu option.  The user ");
+sb.append("can select an evidence item by clicking on it to update the conclusion. ");
+sb.append("<p>Conclusion: The conclusion shows the probabilities of prediction ");
+sb.append("of the outputs given the selected evidence items.  The Legend shows the ");
+sb.append("colors of each of the unique outputs and its percentage of the ");
+sb.append("Conclusion.  The colors can be changed using a menu option.  The lowest ");
+sb.append("portion of the Conclusion shows information about the evidence item ");
+sb.append("currently under the mouse cursor.  This shows the name, the number ");
+sb.append("of records that fall into this bin, and the breakdown of the items ");
+sb.append("by class. ");
+sb.append("<hr> ");
+sb.append("Menu Options: ");
+sb.append("<ul> ");
+sb.append("<li>Options: ");
+sb.append("	<ul> ");
+sb.append("	<li>Views: Toggle the views between pie charts and bar charts. ");
+sb.append("	<li>Sort Attributes By: Sort the attributes by either the best  ");
+sb.append("	predictor or alphabetical order.  The best predictor is the ");
+sb.append("	attribute that induces the largest error when omitted. ");
+sb.append("	<li>Show Attributes: Select which attributes to display. ");
+sb.append("	<li>Set Colors: Select the colors for each of the unique  ");
+sb.append("	outputs. ");
+sb.append("	<li>Show Predictor Values: Display the error induced when the ");
+sb.append("	attribute was omitted from a prediction calculation.  The ");
+sb.append("	attribute with the highest error would be considered to be ");
+sb.append("	the best predictor. ");
+sb.append("	<li>Show Bin Weight Percentage: Show the weights assigned to ");
+sb.append("	each evidence item as a percentage or display a bar with its ");
+sb.append("	weight relative to all other items in its row. ");
+sb.append("	<li>Print: Print the visualization window. ");
+sb.append("	</ul> ");
+sb.append("<li>Help: ");
+sb.append("	<ul> ");
+sb.append("	<li>Help: Show this help window. ");
+sb.append("	</ul> ");
+sb.append("</ul> ");
+sb.append("<hr> ");
+sb.append("Toolbar Options: ");
+sb.append("<ul> ");
+sb.append("<li>Reset View: Reset the evidence to the default size. ");
+sb.append("<li>Print: Print this visualization. ");
+sb.append("<li>Zoom: When this button is toggled on, left-click the evidence ");
+sb.append("to zoom in, or right-click the evidence to zoom out. ");
+sb.append("</ul> ");
+sb.append("</html> ");
+	return sb.toString();
   }
 }
