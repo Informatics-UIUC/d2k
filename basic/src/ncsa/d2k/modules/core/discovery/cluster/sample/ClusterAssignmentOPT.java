@@ -207,7 +207,7 @@ public class ClusterAssignmentOPT
     s += CLUSTER_METHOD;
     s += "</i> parameter. ";
     s += "The cluster tree is stored in a newly formed model, <i>Cluster Model</i>, along with the initial table ";
-    s += "of examples and the set of table clusters formed.";
+    s += "of examples and the set of clusters formed.";
     s += "</p>";
 
     s += "<p>Data Type Restrictions: ";
@@ -221,12 +221,12 @@ public class ClusterAssignmentOPT
     s += "</p>";
 
     s += "<p>Data Handling: ";
-    s += "The second input table, <i>Table</i>, is included in the ClusterModel.  Neither input table ";
+    s += "The second input table, <i>Table</i>, is included in the <i>Cluster Model</i>.  Neither input table ";
     s += "is modified.";
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "The time complexity is linear in the number of examples times the number of iterations. ";
+    s += "The time complexity is linear in the <i>Number of Examples</i> times the <i>Number of Iterations</i>. ";
     s += "The algorithm repeatedly builds two times <i>Number of Clusters</i> table clusters from ";
     s += "<i>Number of Examples</i> table clusters, and requires heap resources to that extent.  A single ";
     s += "table cluster's memory size will vary as the size of the individual examples being clustered.";

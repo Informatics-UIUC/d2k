@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.transform.sort;
+package ncsa.d2k.modules.core.datatype.sort;
 
 /*
 This function sorts a 2-d double array by row based on the first column value.

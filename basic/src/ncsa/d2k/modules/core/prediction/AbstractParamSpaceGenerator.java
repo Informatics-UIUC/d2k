@@ -148,7 +148,7 @@ abstract public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.
 
         s += "</p><p>";
         s += "Enumerated parameters, for example the choice between multiple distance metrics, are implemented as integer parameters. ";
-        s += "The first choice in the list of choices enumerated in the <i>Property Descriptions</i>, is assigned the value 0. ";
+        s += "The first choice in the list of choices enumerated in the <i>Property Descriptions</i> is assigned the value 0. ";
         s += "The second choice is assigned the value 1, and so on. ";
         s += "For enumerated parameters, the user must select <i>Min</i> and <i>Max</i> values that fall within the default ";
         s += "range shown, as that range encompasses the entire set of valid choices. ";

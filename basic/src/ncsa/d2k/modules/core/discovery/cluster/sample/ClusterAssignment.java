@@ -88,8 +88,8 @@ public class ClusterAssignment
 
       descriptions[0] = new PropertyDescription("clusterMethod",
                                                 CLUSTER_METHOD,
-        "The method to use for determining the distance between two clusters. " +
-        "This distance is used in formulating the tree that is part of the final cluster model. " +
+        "The method to use for determining the similarity between two clusters. " +
+        "This similarity measure is used in formulating the tree that is part of the final cluster model. " +
         "<p>WARDS METHOD: Use a minimum variance approach that sums the squared error " +
         "(distance) for every point in the cluster to the cluster centroid.</p>" +
         "<p>SINGLE LINK: Distance of closest pair (one from each cluster).</p>" +
@@ -143,7 +143,7 @@ public class ClusterAssignment
    */
   public String getInputInfo(int parm1) {
     if (parm1 == 0) {
-      return "Table containing initial centroids.";
+      return "Cluster Model or Table containing the initial centroids.";
     } else if (parm1 == 1) {
       return "Table containing all the examples to cluster.";
     } else {
@@ -158,7 +158,7 @@ public class ClusterAssignment
    */
   public String getInputName(int parm1) {
     if (parm1 == 0) {
-      return "Sample Table";
+      return "Cluster Model or Table";
     } else if (parm1 == 1) {
       return "Table";
     } else {
@@ -194,5 +194,8 @@ public class ClusterAssignment
 
 // Start QA Comments
 // 4/8/03 - Ruth starts QA;  Updated Input Info for consistence;  add getAlias()
-//          to ClusterRefinement ctor; 
+//          to ClusterRefinement ctor;
 // 	  - Ready for Basic.
+// 4/13/03 - Edited input port 1 name & info to reflect that more types can be used.
+//           (Not just SampleTable but other representations as well)
+// End QA Comments

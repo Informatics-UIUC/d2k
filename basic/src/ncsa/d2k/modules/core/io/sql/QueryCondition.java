@@ -57,7 +57,7 @@ public class QueryCondition extends ncsa.d2k.core.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    This module pushes a string containing the condition for the where clause     of the sql query.  </body></html>";
+		return "<html>  <head>      </head>  <body>    This module pushes a string containing the condition for the where clause  of the sql query. It should be employed by users experienced with the SQL syntax. Less experienced users are encouraged to use SQLFilterConstruction module.  </body></html>";
 	}
 	
 	String query = "";

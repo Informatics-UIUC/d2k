@@ -125,7 +125,7 @@ public class FractionationParams extends FractionationParamsOPT {
  */
   public String getInputInfo (int parm1) {
     if (parm1 == 0) {
-      return  "Table of entities to cluster";
+      return  "Table of examples to cluster";
     } else {
       return  "";
     }

@@ -349,7 +349,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			int retVal = fileChooser.showSaveDialog(null);
 			if(retVal == fileChooser.APPROVE_OPTION) {
 				java.io.File file = fileChooser.getSelectedFile();
-				WriteRuleAssocPMML.writePMML(ruleTable, file.getAbsolutePath());
+				//TODO add back pmml
+				//WriteRuleAssocPMML.writePMML(ruleTable, file.getAbsolutePath());
 			}
 
 			}

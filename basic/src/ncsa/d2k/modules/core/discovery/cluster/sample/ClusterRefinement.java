@@ -280,8 +280,7 @@ public class ClusterRefinement {
 
       //build the rest of the tree and add the cluster row to the model
       HAC hac = new HAC(this.getClusterMethod(), getDistanceMetric(),
-                        centers.size(), 0, false, false);
-      hac.setVerbose( getVerbose() );
+                        centers.size(), 0, getVerbose(), false, getAlias() );
       model = hac.buildModel(model);
 
       long end = System.currentTimeMillis();

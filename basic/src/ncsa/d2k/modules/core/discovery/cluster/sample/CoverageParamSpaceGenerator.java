@@ -46,7 +46,7 @@ public class CoverageParamSpaceGenerator extends AbstractParamSpaceGenerator {
             COV_DIST_THRESH,
             COV_MAX_NUM_SAMPLES,
             MAX_ITERATIONS};
-        double[] min = { 0, 0, 0, 0, 0, 1, 1};
+        double[] min = { 0, 0, 0, 0, 1, 1, 1};
         double[] max = { Integer.MAX_VALUE, 6, 3, 100, 100, Integer.MAX_VALUE, Integer.MAX_VALUE};
         double[] def = { 5, 0, 0, 0, 25, 500, 5};
         int[] res = { 1, 1, 1, 1, 1, 1, 1};
@@ -95,9 +95,11 @@ public class CoverageParamSpaceGenerator extends AbstractParamSpaceGenerator {
     pds[3] = new PropertyDescription(HAC_DISTANCE_THRESHOLD,
                                      "HAC Distance Threshold",
                                      "This property specifies the percent of the max distance to use " +
-                                     "as a cutoff value to halt clustering ([1...100].  The max distance between examples " +
+                                     "as a cutoff value to halt clustering ([0...100].  The max distance between examples " +
                                      "is approximated by taking the min and max of each attribute and forming a " +
-                                     "min example and a max example -- then finding the distance between the two.");
+                                     "min example and a max example -- then finding the distance between the two. " +
+                                     "This property when set with a value > 0 becomes the dominant halting criteria for " +
+                                     "clustering (overriding the <i>Number of Clusters</i> property.");
     pds[4] = new PropertyDescription(COV_DIST_THRESH,
                                      "Coverage Distance Threshold",
                                      "This property specifies the percent of the max distance to use " +

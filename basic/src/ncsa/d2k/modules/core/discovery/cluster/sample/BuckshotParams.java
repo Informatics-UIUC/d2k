@@ -126,7 +126,7 @@ public class BuckshotParams
         "<p>WPGMC: Weighted pair group method using centroids.</p>");
     pds[4] = new PropertyDescription("distanceMetric",
                                               "Distance Metric",
-        "This property determine the type of distance fucntion used to calculate " +
+        "This property determines the type of distance fucntion used to calculate " +
         "distance between two examples." +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +
@@ -138,7 +138,7 @@ public class BuckshotParams
                                      "as a cutoff value to halt clustering ([1...100].  The max distance between examples " +
                                      "is approximated by taking the min and max of each attribute and forming a " +
                                      "min example and a max example -- then finding the distance between the two. " +
-                                     "For this algorithm, the number of cluisters value is still used to generate the " +
+                                     "For this algorithm, the number of clusters value is still used to generate the " +
                                      "initial sample size, even if auto is selected.");
     pds[6] = new PropertyDescription("maxIterations",
                                               "Number of Assignment Passes",

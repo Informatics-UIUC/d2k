@@ -95,9 +95,11 @@ public class FractionationParamSpaceGenerator extends AbstractParamSpaceGenerato
     pds[3] = new PropertyDescription(HAC_DISTANCE_THRESHOLD,
                                      "HAC Distance Threshold",
                                      "This property specifies the percent of the max distance to use " +
-                                     "as a cutoff value to halt clustering ([1...100].  The max distance between examples " +
+                                     "as a cutoff value to halt clustering ([0...100].  The max distance between examples " +
                                      "is approximated by taking the min and max of each attribute and forming a " +
-                                     "min example and a max example -- then finding the distance between the two.");
+                                     "min example and a max example -- then finding the distance between the two. " +
+                                     "This property when set with a value > 0 becomes the dominant halting criteria for " +
+                                     "clustering (overriding the <i>Number of Clusters</i> property.");
     pds[4] = new PropertyDescription(FRACT_PART_SZ,
                                               "Max Partition Size",
         "The size of partitions to use in the sampling process."
