@@ -89,7 +89,7 @@ public class ConstraintConstructionFunction extends ConstructionFunction impleme
                   if(flags[i]) {
                     double sum = 0;
                     for(int j = 0; j < numViol; j++) {
-                      sum += violationResults[j][i];  
+                      sum += Math.abs(violationResults[j][i]);  
                     }
                     sums[i] = sum; 
                   }
