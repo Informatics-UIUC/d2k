@@ -88,7 +88,7 @@ public class CoverageSampler extends CoverageSamplerOPT {
         "Check Missing Values",
         "Perform a check for missing values on the table inputs (or not).");
     descriptions[4] = new PropertyDescription("verbose",
-        "Verbose Ouput",
+        "Verbose Output",
         "Do you want verbose output to the console.");
     return descriptions;
   }

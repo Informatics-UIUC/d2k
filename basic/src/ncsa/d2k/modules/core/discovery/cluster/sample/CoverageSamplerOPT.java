@@ -81,7 +81,7 @@ public class CoverageSamplerOPT
         "Perform a check for missing values on the table inputs (or not).");
 
     descriptions[1] = new PropertyDescription("verbose",
-                                              "Verbose Ouput",
+                                              "Verbose Output",
         "Do you want verbose output to the console.");
 
     return descriptions;
