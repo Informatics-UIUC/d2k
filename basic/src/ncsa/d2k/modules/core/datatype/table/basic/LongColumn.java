@@ -810,7 +810,7 @@ final public class LongColumn extends MissingValuesColumn implements NumericColu
      @param t the Table to swap rows for
     @return a sorted array of longs
      */
-    private static long[] doSort (long[] A, int p, int r, MutableTable t) {
+    private long[] doSort (long[] A, int p, int r, MutableTable t) {
         if (p < r) {
             int q = partition(A, p, r, t);
             doSort(A, p, q, t);
@@ -827,29 +827,34 @@ final public class LongColumn extends MissingValuesColumn implements NumericColu
      @param t the Table to swap rows for
     @return the partition point
      */
-    private static int partition (long[] A, int p, int r, MutableTable t) {
+    private int partition (long[] A, int p, int r, MutableTable t) {
         long x = A[p];
-        int i = p - 1;
-        int j = r + 1;
-        while (true) {
-            do {
-                j--;
-            } while (A[j] > x);
-            do {
-                i++;
-            } while (A[i] < x);
-            if (i < j) {
-                if (t == null) {
-                    long temp = A[i];
-                    A[i] = A[j];
-                    A[j] = temp;
-                }
-                else
-                    t.swapRows(i, j);
-            }
-            else
-                return  j;
-        }
+		boolean xMissing = this.isValueMissing(p);
+		int i = p - 1;
+		int j = r + 1;
+		while (true) {
+			if (xMissing) {
+				j--;
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+				} while (this.isValueMissing(j) || (A[j] > x));
+				do {
+					i++;
+				} while (!this.isValueMissing(i) && (A[i] < x));
+			}
+			if (i < j) {
+				if (t == null)
+					this.swapRows(i, j);
+				else
+					t.swapRows(i, j);
+			}
+			else
+				return  j;
+		}
     }
 
     public void setValueToEmpty(boolean b, int row) {

@@ -771,35 +771,36 @@ final public class StringObjectColumn extends MissingValuesColumn implements Tex
     @return the partition index
      */
     private int partition (String[] A, int p, int r, MutableTable t) {
-
-      //vered: replaced compareRows method with TableUtilities.compareValues
-      //method, so that binned columns could be sorted too.
-
-        //String x = A[p];
-        int i = p - 1;
-        int j = r + 1;
-        while (true) {
-            do {
-                j--;
-            } //while (compareRows(A[j], p) > 0);
-            while (TableUtilities.compareStrings(A[j], this.getString(p)) > 0);
-            do {
-                i++;
-            } //while (compareRows(A[i], p) < 0);
-            while (TableUtilities.compareStrings(A[i], this.getString(p)) < 0);
-            if (i < j) {
-                if (t == null) {
-                    String temp = A[i];
-                    A[i] = A[j];
-                    A[j] = temp;
-                }
-                else
-                    t.swapRows(i, j);
-            }
-            else
-                return  j;
-        }
-    }
+		boolean xMissing = this.isValueMissing(p);
+		int i = p - 1;
+		int j = r + 1;
+		String pStr = this.getString(p);
+		while (true) {
+			if (xMissing) {
+				j--;
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+				} while (this.isValueMissing(j) || 
+					TableUtilities.compareStrings(A[j], pStr) > 0);
+				do {
+					i++;
+				} while (!this.isValueMissing(i) && 
+					TableUtilities.compareStrings(A[i], pStr) < 0);
+			}
+			if (i < j) {
+				if (t == null)
+					this.swapRows(i, j);
+				else
+					t.swapRows(i, j);
+			}
+			else
+				return  j;
+		}
+     }
     public void setValueToEmpty(boolean b, int row) {
         empty[row] = b;
     }

@@ -306,33 +306,30 @@ public class StringColumn extends MissingValuesColumn implements TextualColumn {
 	 @param t the Table to swap rows for
 	@return the new partition point
 	 */
-	private int partition (int[] A, int p, int r, MutableTable t) {
-		int x = A[p];
+	private int partition (int[] B, int p, int r, MutableTable t) {
+		boolean xMissing = this.isValueMissing(p);
+		String pStr = this.getString(p);
 		int i = p - 1;
 		int j = r + 1;
 		while (true) {
-			do {
+			if (xMissing) {
 				j--;
-			} //while (A[j] > x);
-
-//vered: replaced compareRows with TableUtilities method
-//so that sorting of binned columns will work
-//		 while(compareRows(j, p) > 0);
-                 while(TableUtilities.compareValues(this, j, this, p) > 0);
-			do {
-				i++;
-			} //while (A[i] < x);
-
-//commented out by vered to support sorting binned attributes.
-		 //while(compareRows(i, p) < 0);
-                  while(TableUtilities.compareValues(this, i, this, p) < 0);
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+				} while (this.isValueMissing(j) || 
+					TableUtilities.compareStrings(this.getString(j), pStr) > 0);
+				do {
+					i++;
+				} while (!this.isValueMissing(i) && 
+					TableUtilities.compareStrings(this.getString(i), pStr) < 0);
+			}
 			if (i < j) {
-				if (t == null) {
-					//short temp = A[i];
-					//A[i] = A[j];
-					//A[j] = temp;
-			   swapRows(i, j);
-				}
+				if (t == null)
+					this.swapRows(i, j);
 				else
 					t.swapRows(i, j);
 			}

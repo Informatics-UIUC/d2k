@@ -850,7 +850,7 @@ final public class DoubleColumn extends MissingValuesColumn implements NumericCo
      @param t the Table to swap rows for
      @return a sorted array of doubles
      */
-    private static double[] doSort (double[] A, int p, int r, MutableTable t) {
+    private double[] doSort (double[] A, int p, int r, MutableTable t) {
         if (p < r) {
             int q = partition(A, p, r, t);
             doSort(A, p, q, t);
@@ -867,29 +867,34 @@ final public class DoubleColumn extends MissingValuesColumn implements NumericCo
      @param t the Table to swap rows for
      @return the partition point
      */
-    private static int partition (double[] A, int p, int r, MutableTable t) {
-        double x = A[p];
-        int i = p - 1;
-        int j = r + 1;
-        while (true) {
-            do {
-                j--;
-            } while (A[j] > x);
-            do {
-                i++;
-            } while (A[i] < x);
-            if (i < j) {
-                if (t == null) {
-                    double temp = A[i];
-                    A[i] = A[j];
-                    A[j] = temp;
-                }
-                else
-                    t.swapRows(i, j);
-            }
-            else
-                return  j;
-        }
+    private int partition (double[] A, int p, int r, MutableTable t) {
+		double x = A[p];
+		boolean xMissing = this.isValueMissing(p);
+		int i = p - 1;
+		int j = r + 1;
+		while (true) {
+			if (xMissing) {
+				j--;
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+				} while (this.isValueMissing(j) || (A[j] > x));
+				do {
+					i++;
+				} while (!this.isValueMissing(i) && (A[i] < x));
+			}
+			if (i < j) {
+				if (t == null)
+					this.swapRows(i, j);
+				else
+					t.swapRows(i, j);
+			}
+			else
+				return  j;
+		}
     }
 
     public void setValueToEmpty(boolean b, int row) {

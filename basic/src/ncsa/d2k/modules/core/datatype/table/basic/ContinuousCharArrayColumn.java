@@ -1177,27 +1177,33 @@ public class ContinuousCharArrayColumn extends MissingValuesColumn implements Te
      @param t the VerticalTable to swap rows for
 	 @return the new partition point
      */
-    private int partition (/*char[] A,*/ int p, int r, MutableTable t) {
-        //String x = A[p];
-        int i = p - 1;
-        int j = r + 1;
-        while (true) {
-            do {
-                j--;
-            } while (compareRows(j, p) > 0);
-            do {
-                i++;
-            } while (compareRows(i, p) < 0);
-            if (i < j) {
-                if (t == null) {
-					swapRows(i, j);
-                }
-                else
-                    t.swapRows(i, j);
-            }
-            else
-                return  j;
-        }
+    private int partition (int p, int r, MutableTable t) {
+		boolean xMissing = this.isValueMissing(p);
+		int i = p - 1;
+		int j = r + 1;
+		while (true) {
+			if (xMissing) {
+				j--;
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+				} while (this.isValueMissing(j) || compareRows(j, p) > 0);
+				do {
+					i++;
+				} while (!this.isValueMissing(i) && compareRows(i, p) < 0);
+			}
+			if (i < j) {
+				if (t == null)
+					this.swapRows(i, j);
+				else
+					t.swapRows(i, j);
+			}
+			else
+				return  j;
+		}
     }
     public void setValueToEmpty(boolean b, int row) {
         empty[row] = b;

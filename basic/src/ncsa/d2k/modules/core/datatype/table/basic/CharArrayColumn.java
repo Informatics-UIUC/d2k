@@ -890,25 +890,31 @@ final public class CharArrayColumn
 	 @return the new partition point
 	 */
 	private int partition(char[][] A, int p, int r, MutableTable t) {
-		//String x = A[p];
+		boolean xMissing = this.isValueMissing(p);
 		int i = p - 1;
 		int j = r + 1;
 		while (true) {
-			do {
+			if (xMissing) {
 				j--;
-			} while (compareRows(A[j], p) > 0);
-			do {
-				i++;
-			} while (compareRows(A[i], p) < 0);
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+				} while (this.isValueMissing(j) || (compareRows(A[j], p) > 0));
+				do {
+					i++;
+				} while (!this.isValueMissing(i) && (compareRows(A[i], p) < 0));
+			}
 			if (i < j) {
-				if (t == null) {
-					char[] temp = A[i];
-					A[i] = A[j];
-					A[j] = temp;
-				} else
+				if (t == null)
+					this.swapRows(i, j);
+				else
 					t.swapRows(i, j);
-			} else
-				return j;
+			}
+			else
+				return  j;
 		}
 	}
 

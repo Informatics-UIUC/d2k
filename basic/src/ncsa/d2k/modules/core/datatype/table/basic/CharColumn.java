@@ -885,31 +885,38 @@ final public class CharColumn extends MissingValuesColumn implements TextualColu
 	    @param t the Table to swap rows for
 	    @return the new partition point
 	 */
-private int partition(char[] A, int p, int r, MutableTable t) {
-		//String x = A[p];
+	private int partition(char[] A, int p, int r, MutableTable t) {
+		boolean xMissing = this.isValueMissing(p);
 		int i = p - 1;
 		int j = r + 1;
+		
 		//ANCA introduced Object el , because A[j] is treated like an int and compareRows(int,int) is
 		//called instead of compareRows(object,int);
-	Character el;
+		Character el;
 		while (true) {
-			do {
+			if (xMissing) {
 				j--;
-				el = new Character(A[j]);
-			} while (compareRows(el, p) > 0);
-			do {
-				i++;
-				el  = new Character(A[i]);
-			} while (compareRows(el, p) < 0);
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+					el = new Character(A[j]);
+				} while (this.isValueMissing(j) || compareRows(el, p) > 0);
+				do {
+					i++;
+					el = new Character(A[i]);
+				} while (!this.isValueMissing(i) && compareRows(el, p) < 0);
+			}
 			if (i < j) {
-				if (t == null) {
-					char temp = A[i];
-					A[i] = A[j];
-					A[j] = temp;
-				} else
+				if (t == null)
+					this.swapRows(i, j);
+				else
 					t.swapRows(i, j);
-			} else
-				return j;
+			}
+			else
+				return  j;
 		}
 	}  
 	

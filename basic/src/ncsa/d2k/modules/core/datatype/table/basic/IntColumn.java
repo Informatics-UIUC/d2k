@@ -823,8 +823,7 @@ final public class IntColumn extends MissingValuesColumn implements NumericColum
 	   System.err.println(" end index was out of bounds");
 	   end = internal.length -1;
    }
-   internal = doSort(internal, begin, end, t);
-
+   	internal = doSort(internal, begin, end, t);
 	}
 
 	/**
@@ -836,7 +835,7 @@ final public class IntColumn extends MissingValuesColumn implements NumericColum
 	 * @param t the VerticalTable to swap rows for
 	* @return a sorted array of ints
 	 */
-	private static int[] doSort (int[] A, int p, int r, MutableTable t) {
+	private int[] doSort (int[] A, int p, int r, MutableTable t) {
 		if (p < r) {
 			int q = partition(A, p, r, t);
 			doSort(A, p, q, t);
@@ -853,23 +852,28 @@ final public class IntColumn extends MissingValuesColumn implements NumericColum
 	 * @param t the Table to swap rows for
 	* @return the partition point
 	 */
-	final private static int partition (int[] A, int p, int r, MutableTable t) {
+	final private int partition (int[] A, int p, int r, MutableTable t) {
 		int x = A[p];
+		boolean xMissing = this.isValueMissing(p);
 		int i = p - 1;
 		int j = r + 1;
 		while (true) {
-			do {
+			if (xMissing) {
 				j--;
-			} while (A[j] > x);
-			do {
-				i++;
-			} while (A[i] < x);
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+				} while (this.isValueMissing(j) || (A[j] > x));
+				do {
+					i++;
+				} while (!this.isValueMissing(i) && (A[i] < x));
+			}
 			if (i < j) {
-				if (t == null) {
-					int temp = A[i];
-					A[i] = A[j];
-					A[j] = temp;
-				}
+				if (t == null)
+					this.swapRows(i, j);
 				else
 					t.swapRows(i, j);
 			}

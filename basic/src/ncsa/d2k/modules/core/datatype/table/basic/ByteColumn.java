@@ -1008,35 +1008,38 @@ final public class ByteColumn extends MissingValuesColumn implements NumericColu
         @return the new partition point
      */
     private int partition (byte[] A, int p, int r, MutableTable t) {
-        //String x = A[p];
-        int i = p - 1;
-        int j = r + 1;
+		boolean xMissing = this.isValueMissing(p);
+		int i = p - 1;
+		int j = r + 1;
+		
 		//ANCA introduced Object el , because A[j] is treated like an int and compareRows(int,int) is
-			//called instead of compareRows(object,int);
+		//called instead of compareRows(object,int);
 		Byte el;
-        while (true) {
-            do {
-                j--;
-				el = new Byte(A[j]);
-            } while (compareRows(el, p) > 0);
-            do {
-                i++;
-				el  = new Byte(A[i]);
-            } while (compareRows(el, p) < 0);
-            if (i < j) {
-                if (t == null) {
-                    /*byte temp = A[i];
-                    A[i] = A[j];
-                    A[j] = temp;
-					*/
-					swapRows(i, j);
-                }
-                else
-                    t.swapRows(i, j);
-            }
-            else
-                return  j;
-        }
+		while (true) {
+			if (xMissing) {
+				j--;
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+					el = new Byte(A[j]);
+				} while (this.isValueMissing(j) || compareRows(el, p) > 0);
+				do {
+					i++;
+					el = new Byte(A[i]);
+				} while (!this.isValueMissing(i) && compareRows(el, p) < 0);
+			}
+			if (i < j) {
+				if (t == null)
+					this.swapRows(i, j);
+				else
+					t.swapRows(i, j);
+			}
+			else
+				return  j;
+		}
     }
 
 

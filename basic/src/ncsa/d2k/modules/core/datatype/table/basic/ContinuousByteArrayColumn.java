@@ -1157,30 +1157,33 @@ final public class ContinuousByteArrayColumn extends MissingValuesColumn impleme
      @param t the Table to swap rows for
 	 @return the new partition point
      */
-    protected int partition (/*byte[] A,*/ int p, int r, MutableTable t) {
-        //String x = A[p];
-        int i = p - 1;
-        int j = r + 1;
-        while (true) {
-            do {
-                j--;
-            } while (compareRows(/*A[j]*/getBytes(j), p) > 0);
-            do {
-                i++;
-            } while (compareRows(/*A[i]*/getBytes(i), p) < 0);
-            if (i < j) {
-                if (t == null) {
-                    //byte[] temp = A[i];
-                    //A[i] = A[j];
-                    //A[j] = temp;
-					swapRows(i, j);
-                }
-                else
-                    t.swapRows(i, j);
-            }
-            else
-                return  j;
-        }
+    protected int partition (int p, int r, MutableTable t) {
+		boolean xMissing = this.isValueMissing(p);
+		int i = p - 1;
+		int j = r + 1;
+		while (true) {
+			if (xMissing) {
+				j--;
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+				} while (this.isValueMissing(j) || compareRows(j, p) > 0);
+				do {
+					i++;
+				} while (!this.isValueMissing(i) && compareRows(i, p) < 0);
+			}
+			if (i < j) {
+				if (t == null)
+					this.swapRows(i, j);
+				else
+					t.swapRows(i, j);
+			}
+			else
+				return  j;
+		}
     }
     public void setValueToEmpty(boolean b, int row) {
         empty[row] = b;

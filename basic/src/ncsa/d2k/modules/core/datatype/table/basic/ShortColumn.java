@@ -861,29 +861,32 @@ final public class ShortColumn extends MissingValuesColumn implements NumericCol
      */
     private int partition (short[] A, int p, int r, MutableTable t) {
         short x = A[p];
-        int i = p - 1;
-        int j = r + 1;
-        while (true) {
-            do {
-                j--;
-            } while (A[j] > x);
-            do {
-                i++;
-            } while (A[i] < x);
-            if (i < j) {
-                if (t == null) {
-                    /*short temp = A[i];
-                    A[i] = A[j];
-                    A[j] = temp;
-					*/
-					swapRows(i, j);
-                }
-                else
-                    t.swapRows(i, j);
-            }
-            else
-                return  j;
-        }
+		boolean xMissing = this.isValueMissing(p);
+		int i = p - 1;
+		int j = r + 1;
+		while (true) {
+			if (xMissing) {
+				j--;
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+				} while (this.isValueMissing(j) || (A[j] > x));
+				do {
+					i++;
+				} while (!this.isValueMissing(i) && (A[i] < x));
+			}
+			if (i < j) {
+				if (t == null)
+					this.swapRows(i, j);
+				else
+					t.swapRows(i, j);
+			}
+			else
+				return  j;
+		}
     }
 
     public void setValueToEmpty(boolean b, int row) {

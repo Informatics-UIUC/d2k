@@ -865,7 +865,7 @@ final public class FloatColumn extends MissingValuesColumn implements NumericCol
      * @param t the Table to swap rows for
     * @return a sorted array of floats
      */
-    private static float[] doSort (float[] A, int p, int r, MutableTable t) {
+    private float[] doSort (float[] A, int p, int r, MutableTable t) {
         if (p < r) {
             int q = partition(A, p, r, t);
             doSort(A, p, q, t);
@@ -882,29 +882,34 @@ final public class FloatColumn extends MissingValuesColumn implements NumericCol
      * @param t the Table to swap rows for
     * @return the parition index
      */
-    private static int partition (float[] A, int p, int r, MutableTable t) {
+    private int partition (float[] A, int p, int r, MutableTable t) {
         float x = A[p];
-        int i = p - 1;
-        int j = r + 1;
-        while (true) {
-            do {
-                j--;
-            } while (A[j] > x);
-            do {
-                i++;
-            } while (A[i] < x);
-            if (i < j) {
-                if (t == null) {
-                    float temp = A[i];
-                    A[i] = A[j];
-                    A[j] = temp;
-                }
-                else
-                    t.swapRows(i, j);
-            }
-            else
-                return  j;
-        }
+		boolean xMissing = this.isValueMissing(p);
+		int i = p - 1;
+		int j = r + 1;
+		while (true) {
+			if (xMissing) {
+				j--;
+				do {
+					i++;
+				} while (!this.isValueMissing(i));
+			} else {
+				do {
+					j--;
+				} while (this.isValueMissing(j) || (A[j] > x));
+				do {
+					i++;
+				} while (!this.isValueMissing(i) && (A[i] < x));
+			}
+			if (i < j) {
+				if (t == null)
+					this.swapRows(i, j);
+				else
+					t.swapRows(i, j);
+			}
+			else
+				return  j;
+		}
     }
 
 
