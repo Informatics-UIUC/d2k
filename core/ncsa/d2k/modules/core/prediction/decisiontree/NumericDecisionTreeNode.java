@@ -9,13 +9,13 @@ import ncsa.d2k.util.datatype.VerticalTable;
 	A DecisionTreeNode for numerical data.  These are binary nodes that
 	split on a value of an attribute.
 */
-public class NumericDecisionTreeNode extends DecisionTreeNode
+public final class NumericDecisionTreeNode extends DecisionTreeNode
 	implements Serializable {
 
 	/** everything less than the split value goes left */
-	static int LEFT = 0;
+	final static int LEFT = 0;
 	/** everything greater than the split value goes right */
-	static int RIGHT = 1;
+	final static int RIGHT = 1;
 
 	/** the value used to compare whether to go left or right */
 	double splitValue;
@@ -45,7 +45,7 @@ public class NumericDecisionTreeNode extends DecisionTreeNode
 		Should never be called, because NumericDecisionTreeNodes use
 		a split value.
 	*/
-	public void addBranch(String val, DecisionTreeNode child) {
+	public final void addBranch(String val, DecisionTreeNode child) {
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class NumericDecisionTreeNode extends DecisionTreeNode
 		@param rightLabel the label for the right branch
 		@param right the right child
 	*/
-	public void addBranches(double split, String leftLabel,
+	public final void addBranches(double split, String leftLabel,
 		DecisionTreeNode left, String rightLabel, DecisionTreeNode right) {
 
 		//left.setLabel(leftLabel);
@@ -83,7 +83,7 @@ public class NumericDecisionTreeNode extends DecisionTreeNode
 		@param row the row of the table to evaluate
 		@return the result of evaluating the record
 	*/
-	public Object evaluate(VerticalTable vt, int row) {
+	public final Object evaluate(VerticalTable vt, int row) {
 
 		if(isLeaf()) {
 			parent.incrementOutputTally(label);

@@ -10,11 +10,11 @@ import ncsa.d2k.util.datatype.VerticalTable;
 	as there are values of the attribute that this node tests on.
 	@author David Clutter
 */
-public class CategoricalDecisionTreeNode extends DecisionTreeNode
+public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 	implements Serializable {
 
 	/* Maps an output to a specific child.  Used in evaluate() */
-	HashMap outputToChildMap;
+	private HashMap outputToChildMap;
 
 	/**
 		Create a new, blank node.
@@ -51,7 +51,7 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
 		@param val the label of the branch
 		@param child the child node
 	*/
-	public void addBranch(String val, DecisionTreeNode child) {
+	public final void addBranch(String val, DecisionTreeNode child) {
 		//child.setLabel(val);
 		outputToChildMap.put(val, child);
 		children.add(child);
@@ -63,7 +63,7 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
 		This should never be called, because CategoricalDecisionTreeNodes
 		do not use a split value.
 	*/
-	public void addBranches(double split, String leftlabel,
+	public final void addBranches(double split, String leftlabel,
 		DecisionTreeNode left, String rightlabel, DecisionTreeNode right) {
 	}
 
@@ -78,7 +78,7 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
 		@param row the row of the table to evaluate
 		@return the result of evaluating the record
 	*/
-	public Object evaluate(VerticalTable vt, int row) {
+	public final Object evaluate(VerticalTable vt, int row) {
 
 		if(isLeaf()) {
 			incrementOutputTally(label);
