@@ -1,8 +1,6 @@
 package ncsa.d2k.modules.core.datatype.table.paging;
 
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -120,6 +118,7 @@ public class Page {
 		ObjectOutputStream O = new ObjectOutputStream(new FileOutputStream(subsetFile));
 		O.writeObject(s);
 		O.close();
+		
 		timestamp = System.currentTimeMillis();
 	}
 	

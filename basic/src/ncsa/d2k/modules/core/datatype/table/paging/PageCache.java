@@ -1240,6 +1240,7 @@ public class PageCache {
 			currentPage = this.pages[which];
 			currentTable = currentPage.getTable();
 			currentSubset = currentPage.getSubset();
+			this.freeIfUnreferenced(which);
 			currentOffset = this.offsets[which];
 			newsubset = this.populateSubset(rows, total, currentSubset, currentOffset);
 			

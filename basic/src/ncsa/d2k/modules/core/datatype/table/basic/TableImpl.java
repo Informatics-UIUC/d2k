@@ -1,9 +1,6 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import java.io.*;
-
-
 
 /**
  * TableImpl is an implementation of Table where each Column is represented by a
@@ -14,16 +11,10 @@ import java.io.*;
  * of Table.
  * <br>
  */
-abstract public class TableImpl extends DefaultMissingValuesTable /*implements Table*/ {
+abstract public class TableImpl extends AbstractTable {
 
 	/** the columns of data. */
     protected Column[] columns = null;
-
-	/** this is the label for the table.*/
-	protected String label;
-
-	/** comment for the table. */
-	protected String comment;
 
    /**
     * Create a new Table with zero columns.
@@ -49,52 +40,6 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
         columns = c;
     }
 
-	/**
-	 * Read the serialized object from the data stream.
-	 * @param in the data input stream
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-    private void readObject(ObjectInputStream in)
-       throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-    }
-
-	////////////////////////////
-	// access metadata for the table.
-	//
-	/**
-	 * Get the label associated with this Table.
-	 * @return the label which describes this Table
-	 */
-	public String getLabel( ) {
-		return label;
-	}
-
-	/**
-		Set the label associated with this Table.
-		@param labl the label which describes this Table
-	*/
-	public void setLabel( String labl ) {
-		label = labl;
-	}
-
-	/**
-		Get the comment associated with this Table.
-		@return the comment which describes this Table
-	*/
-	public String getComment( ) {
-		return comment;
-	}
-
-	/**
-		Set the comment associated with this Table.
-		@param cmt the comment which describes this Table
-	*/
-	public void setComment( String cmt ) {
-		comment = cmt;
-	}
-
     //////////////////////////////////////
     //// ACCESSING Table Fields
 
@@ -114,6 +59,16 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
 	Column [] getColumns () {
 		return columns;
 	}
+	
+	/**
+	 * This returns the data columns unmodified, so it may not provide a view of the 
+	 * data consistent with the view presented by the table.
+	 * @return
+	 */
+	final public Column [] getRawColumns() {
+		return columns;
+	}
+	
 	/**
 	 * Get a Column from the table.
 	 * @param pos the position of the Column to get from table
