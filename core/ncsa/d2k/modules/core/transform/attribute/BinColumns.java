@@ -613,6 +613,12 @@ public class BinColumns extends UIModule {
                 public void actionPerformed (ActionEvent e) {
                     Object[] sel = textCurrentModel.toArray();
                     Object val = textualColumnLabels.getSelectedValue();
+                    //vered:
+                    if(val == null){
+                      ErrorDialog.showDialog("you must choose a column to bin.", "Error");
+                      return;
+                    }
+
                     int idx = ((Integer)columnLookup.get(val)).intValue();
                     BinDescriptor bd = createTextualBin(idx, textBinName.getText(),
                             sel);
