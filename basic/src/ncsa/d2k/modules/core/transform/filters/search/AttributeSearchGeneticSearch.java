@@ -12,7 +12,7 @@ package ncsa.d2k.modules.core.transform.filters.search;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.transform.filters.*;
-import ncsa.d2k.modules.projects.anca.attributeSelection.*;
+
 
 /**
  * Class for performing a genetic based search. <p>
