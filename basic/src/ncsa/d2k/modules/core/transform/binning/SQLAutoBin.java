@@ -34,13 +34,13 @@ public class SQLAutoBin extends AutoBin {
 	}
 
 	/**
-	
+
 	* Get the name of the input parameter
-	
+
 	* @param i is the index of the input parameter
-	
+
 	* @return Name of the input parameter
-	
+
 	*/
 
 	public String getInputName(int i) {
@@ -72,11 +72,11 @@ public class SQLAutoBin extends AutoBin {
 	}
 
 	/**
-	
+
 	* Get the data types for the output parameters
-	
+
 	* @return A object of class BinTransform
-	
+
 	*/
 
 	public String[] getOutputTypes() {
@@ -89,13 +89,13 @@ public class SQLAutoBin extends AutoBin {
 	}
 
 	/**
-	
+
 	 * Get input information
-	
+
 	 * @param i is the index of the input parameter
-	
+
 	 * @return A description of the input parameter
-	
+
 	 */
 
 	public String getInputInfo(int i) {
@@ -127,13 +127,13 @@ public class SQLAutoBin extends AutoBin {
 	}
 
 	/**
-	
+
 	 * Get the name of the output parameters
-	
+
 	 * @param i is the index of the output parameter
-	
+
 	 * @return Name of the output parameter
-	
+
 	 */
 
 	public String getOutputName(int i) {
@@ -153,13 +153,13 @@ public class SQLAutoBin extends AutoBin {
 	}
 
 	/**
-	
+
 	 * Get output information
-	
+
 	 * @param i is the index of the output parameter
-	
+
 	 * @return A description of the output parameter
-	
+
 	 */
 
 	public String getOutputInfo(int i) {
@@ -201,11 +201,11 @@ public class SQLAutoBin extends AutoBin {
 				+ "The values are then binned so that in each bin there is the same number of items. ";
 
 		/*
-		
+
 		+ "<p>Data Handling: When binning scalar columns by the number of bins, "
-		
+
 		+ "the maximum and minimum values of each column must be found.  When "
-		
+
 		+ "binning scalar columns by weight, group by statements are used.";*/
 
 		return s;
@@ -538,7 +538,7 @@ public class SQLAutoBin extends AutoBin {
 					//if (binMaxes.length > 1)
 					nbd = BinDescriptorFactory.createMaxNumericBinDescriptor(i,
 				 						binMaxes[binMaxes.length - 2], nf, tbl);
-					
+
 					bins.add(nbd);
 				}
 
@@ -582,11 +582,11 @@ public class SQLAutoBin extends AutoBin {
 	}
 
 	/** verify whether the column is a numeric column
-	
+
 	         *  @return a boolean array, numeric columns are flaged as true, and
-	
+
 	         *          categorical columns are flaged as false.
-	
+
 	         */
 
 	public boolean[] getColTypes(int len) {
@@ -644,9 +644,9 @@ public class SQLAutoBin extends AutoBin {
 		} catch (Exception e) {
 
 			/*  JOptionPane.showMessageDialog(msgBoard,
-			
+
 			        e.getMessage(), "Error",
-			
+
 			        JOptionPane.ERROR_MESSAGE); */
 
 			System.out.println("Error occured in getColTypes.");
@@ -694,9 +694,9 @@ public class SQLAutoBin extends AutoBin {
 		} catch (Exception e) {
 
 			/* JOptionPane.showMessageDialog(msgBoard,
-			
+
 			       e.getMessage(), "Error",
-			
+
 			       JOptionPane.ERROR_MESSAGE); */
 
 			System.out.println("Error occured in getMMTValues.");
@@ -708,11 +708,11 @@ public class SQLAutoBin extends AutoBin {
 	}
 
 	/** find unique values in a column
-	
+
 	 *  @param col the column to check for
-	
+
 	 *  @return a HashSet object that stores all unique values
-	
+
 	 */
 
 	private HashSet uniqueValues(int col) {
@@ -747,9 +747,9 @@ public class SQLAutoBin extends AutoBin {
 		} catch (Exception e) {
 
 			/* JOptionPane.showMessageDialog(msgBoard,
-			
+
 			         e.getMessage(), "Error",
-			
+
 			         JOptionPane.ERROR_MESSAGE); */
 
 			System.out.println("Error occurred in uniqueValues.");
@@ -785,5 +785,5 @@ public class SQLAutoBin extends AutoBin {
 /**
 * 01-11-04: Vered
 * bug 215 - creates one bin too many, the last one, which is expendable, as non of the
-* data is being binned into it.
+* data is being binned into it. (fixed)
 */

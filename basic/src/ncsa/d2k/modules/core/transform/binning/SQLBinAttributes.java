@@ -1499,13 +1499,13 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                   binMaxes[j] = ((Double)list.get(j)).doubleValue();
                 // System.out.println("binmaxes for j = " + j + " is " +  binMaxes[j]);
                 }
-             
+
 				if (binMaxes.length < 2) {
 							 BinDescriptor nbd = createMinMaxBinDescriptor(colIdx[i]);
 								addItemToBinList(nbd);
 					 } else {
-					 
-             
+
+
                 // add the first bin manually
                 BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
                         binMaxes[0]);
@@ -1518,11 +1518,11 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                 }
                         // add the last bin - anca:
                         // Dora commented out the following 2 lines.
-                        
-                   //if(binMaxes.length-2>0) 
+
+                   //if(binMaxes.length-2>0)
                        nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-2]);
-                   //else 
-                     //  nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[0]); 
+                   //else
+                     //  nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[0]);
 
                 // Dora added the following line.
                 //nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-1]);
@@ -1541,7 +1541,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
          */
         private BinDescriptor createTextualBin (int idx, String name, Object[] sel) {
             String[] vals = new String[sel.length];
-            
+
           System.out.println("creating bin named " + name);
             for (int i = 0; i < vals.length; i++) {
             	   vals[i] = sel[i].toString();
@@ -1844,5 +1844,5 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
   *
  * 01-11-04: vered.
  * creates one bin too many with weight binning, and this last bin is expendable,
- * non of the items are being binned into it [bug 215].
+ * non of the items are being binned into it [bug 215]. (fixed)
  */
