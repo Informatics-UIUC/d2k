@@ -504,7 +504,7 @@ public class SubsetTableImpl extends MutableTableImpl {
       vt = new MutableTableImpl(cols);
       vt.setLabel(this.getLabel());
       vt.setComment(this.getComment());
-      return vt;
+      return (Table)vt;
    }
 
    /**
@@ -524,10 +524,10 @@ public class SubsetTableImpl extends MutableTableImpl {
          cols[i] = oldcols[i].getSubset(newsubset);
       }
 
-      vt = new SubsetTableImpl(cols);
+      vt = new MutableTableImpl(cols);
       vt.setLabel(this.getLabel());
       vt.setComment(this.getComment());
-      return vt;
+      return (Table)vt;
    }
 
    /**
@@ -671,6 +671,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the float in the Table at (row, column)
     */
    public double getDouble(int row, int column) {
+
       return columns[column].getDouble(subset[row]);
    }
 
