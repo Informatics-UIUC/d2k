@@ -10,19 +10,8 @@ package ncsa.d2k.modules.core.io.sql;
  */
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.PredictionModelModule;
-import ncsa.d2k.core.modules.UserView;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.gui.Constrain;
-import ncsa.gui.JOutlinePanel;
-import java.sql.*;
-import java.util.*;
-import java.text.*;
 import javax.swing.*;
-import java.io.*;
-import java.awt.*;
-import java.awt.event.*;
 
 public class MatchModelWithData extends ComputeModule {
   JOptionPane msgBoard = new JOptionPane();
