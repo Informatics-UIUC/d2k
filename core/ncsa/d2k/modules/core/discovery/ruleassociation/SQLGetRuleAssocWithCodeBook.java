@@ -1161,7 +1161,7 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
          * @return the human readable name of the module.
          */
         public String getModuleName() {
-                return "SQLGetRuleAssocWithCodeBook";
+                return "SQL Get Rule Assoc With Code Book";
         }
 
         /**

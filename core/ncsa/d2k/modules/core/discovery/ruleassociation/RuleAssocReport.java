@@ -120,7 +120,7 @@ public class RuleAssocReport extends UIModule
   }
 
   public String getModuleName() {
-        return "RuleAssocReport";
+        return "Rule Assoc Report";
   }
 
   protected String[] getFieldNameMapping () {

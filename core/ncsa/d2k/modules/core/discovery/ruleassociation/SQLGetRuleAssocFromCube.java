@@ -1023,7 +1023,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
          * @return the human readable name of the module.
          */
         public String getModuleName() {
-                return "SQLGetRuleAssocFromCube";
+                return "SQL Get Rule Assoc From Cube";
         }
 
         /**
