@@ -17,7 +17,7 @@ import java.util.*;
 public class PredictionTableImpl extends ExampleTableImpl implements PredictionTable {
     protected int[] predictionSet;
 
-	protected PredictionTableImpl(int i) {
+	public PredictionTableImpl(int i) {
 		super(i);
 	}
 

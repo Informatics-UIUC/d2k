@@ -14,7 +14,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 	/**
 	 * default constructor, creates a table with no columns or rows.
 	 */
-	SubsetTableImpl() {
+	 public SubsetTableImpl() {
 		super();
 		subset = new int[0];
 	}
