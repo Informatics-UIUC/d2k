@@ -30,6 +30,7 @@ public class Histogram extends JPanel {
    private int behavior;
    private int[] counts;
    private double[] heights;
+   private double[] borders;
 
    private Table table;
    //private NumericColumn current;
@@ -124,6 +125,7 @@ public class Histogram extends JPanel {
             for (int i = 0; i < counts.length; i++)
                counts[i] = 0;
             heights = new double[counts.length];
+            borders = new double[counts.length - 1];
 
             max = Double.MIN_VALUE; min = Double.MAX_VALUE;
 
@@ -135,6 +137,12 @@ public class Histogram extends JPanel {
             }
 
             double increment = (max - min) / (double)counts.length, ceiling;
+
+            if (borders.length > 0) {
+               borders[0] = min + increment;
+               for (int i = 1; i < borders.length; i++)
+                  borders[i] = borders[i - 1] + increment;
+            }
 
             for (int i = 0; i < table.getNumRows(); i++) {
                index = (int)((table.getDouble(i, currentColumnIndex) - min)/increment);
@@ -150,21 +158,23 @@ public class Histogram extends JPanel {
          case HISTOGRAM_RANGE:
 
             StringTokenizer strTok = new StringTokenizer(parameter, ",");
-            double[] binMaxes = new double[strTok.countTokens()];
+            borders = new double[strTok.countTokens()];
+            // double[] binMaxes = borders;
 
             int idx = 0;
             try {
                while(strTok.hasMoreElements()) {
                   String s = (String)strTok.nextElement();
-                  binMaxes[idx++] = Double.parseDouble(s);
+                  borders[idx++] = Double.parseDouble(s);
                }
             }
             catch(NumberFormatException e) { return; }
 
-            Arrays.sort(binMaxes);
+            Arrays.sort(borders);
 
-            counts = new int[binMaxes.length + 1];
+            counts = new int[borders.length + 1];
             heights = new double[counts.length];
+            // borders = new double[0];
 
             for (int i = 0; i < counts.length; i++)
                counts[i] = 0;
@@ -173,15 +183,15 @@ public class Histogram extends JPanel {
             boolean found;
             for (int i = 0; i < table.getNumRows(); i++) {
                found = false;
-               for (int j = 0; j < binMaxes.length; j++) {
-                  if (table.getDouble(i, currentColumnIndex) <= binMaxes[j] && !found) {
+               for (int j = 0; j < borders.length; j++) {
+                  if (table.getDouble(i, currentColumnIndex) <= borders[j] && !found) {
                      counts[j]++;
                      found = true;
                      break;
                   }
                }
                if (!found)
-                  counts[binMaxes.length]++;
+                  counts[borders.length]++;
             }
 
             for (int i = 0; i < heights.length; i++)
@@ -204,6 +214,13 @@ public class Histogram extends JPanel {
 
             counts = new int[(int)Math.ceil(100.0/(double)slider.getValue())];
             heights = new double[counts.length];
+            borders = new double[counts.length - 1];
+
+            if (borders.length > 0) {
+               borders[0] = min + interval;
+               for (int i = 1; i < borders.length; i++)
+                  borders[i] = borders[i - 1] + interval;
+            }
 
             for (int i = 0; i < counts.length; i++)
                counts[i] = 0;
@@ -258,7 +275,7 @@ public class Histogram extends JPanel {
 
    }
 
-   private class HistogramPanel extends JPanel {
+   private class HistogramPanel extends JPanel implements MouseMotionListener {
 
       boolean calculated;
       int width, height, offset_x, offset_y, hist_x, hist_y;
@@ -267,6 +284,7 @@ public class Histogram extends JPanel {
 
       public HistogramPanel() {
          calculated = false;
+         addMouseMotionListener(this);
       }
 
       public void setBounds(int x, int y, int w, int h) {
@@ -287,11 +305,18 @@ public class Histogram extends JPanel {
 
          double increment = (double)hist_x/(double)heights.length;
 
+         NumberFormat N = NumberFormat.getInstance();
+         N.setMaximumFractionDigits(3);
+         String str;
+
          g2 = (Graphics2D)g;
          g2.setColor(new Color(235, 235, 235));
          g2.fillRect(0, 0, width, height);
 
+         FontMetrics M = g2.getFontMetrics();
+
          double xloc = (double)offset_x;
+         double xlast = 0;
          for (int i = 0; i < heights.length; i++) {
 
             g2.setColor(new Color((int)(255 - 255*i/heights.length), 51, (int)(255*i/heights.length)));
@@ -306,9 +331,74 @@ public class Histogram extends JPanel {
                (int)(offset_y + (1-heights[i])*hist_y),
                (int)(xloc + increment) - (int)(xloc),
                (offset_y + hist_y) - (int)(offset_y + (1-heights[i])*hist_y));
+/*
+            if (i > 0 && borders.length > 0) {
 
+               str = N.format(borders[i-1]);
+
+               if (xloc - M.stringWidth(str)/2 - 4 > xlast) {
+
+                  g2.drawString(
+                     str,
+                     (int)(xloc - M.stringWidth(str)/2),
+                     offset_y + hist_y + M.getAscent() + 5
+                  );
+                  xlast = xloc + M.stringWidth(str)/2;
+
+               }
+
+            }
+*/
             xloc += increment;
 
+         }
+
+      }
+
+      public void mouseDragged(MouseEvent e) { }
+
+      public void mouseMoved(MouseEvent e) {
+
+         if (heights == null || heights.length < 2) {
+            setToolTipText(null);
+            return;
+         }
+
+         int x = e.getX(), y = e.getY();
+
+         double xloc = (double)offset_x;
+         double increment = (double)(hist_x / heights.length);
+
+         NumberFormat N = NumberFormat.getInstance();
+         N.setMaximumFractionDigits(3);
+
+         boolean hit = false;
+         for (int i = 0; i < heights.length; i++) {
+            if (x >= xloc && x <= xloc + increment) {
+               if (y <= offset_y + hist_y &&
+                   y >= offset_y + hist_y - heights[i]*hist_y) {
+
+                  if (i == 0)
+                     setToolTipText("(..., " + N.format(borders[0]) + "]: " +
+                        counts[i]);
+                  else if (i == heights.length - 1)
+                     setToolTipText("(" + N.format(borders[borders.length - 1])
+                        + ", ...): " + counts[i]);
+                  else
+                     setToolTipText("(" + N.format(borders[i - 1]) + ", " +
+                        N.format(borders[i]) + "]: " + counts[i]);
+
+                  hit = true;
+
+               }
+            }
+            if (hit)
+               break;
+            else
+               xloc += increment;
+         }
+         if (!hit) {
+            setToolTipText(null);
          }
 
       }
