@@ -54,7 +54,7 @@ public class BarChart extends Chart
 
   boolean resize = true;
   Rectangle2D.Double rectangle;
-  Rectangle2D.Double[]  barBoundary;    //array to keep rectangle boundary infomation
+  protected Rectangle2D.Double[]  barBoundary;    //array to keep rectangle boundary infomation
 
   public BarChart(Table table, DataSet set, GraphSettings settings) {
     super(table, set, settings);

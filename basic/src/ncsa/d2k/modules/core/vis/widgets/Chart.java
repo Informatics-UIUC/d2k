@@ -33,9 +33,9 @@ public abstract class Chart extends JPanel {
 	double samplecolorsize = 8;
 
 	// the data
-	DataSet set;
+	protected DataSet set;
 	GraphSettings settings;
-	Table table;
+	protected Table table;
 	int bins;
 
 	// dimensions of the chart
