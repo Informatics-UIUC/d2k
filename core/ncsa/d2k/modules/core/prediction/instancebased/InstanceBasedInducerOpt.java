@@ -3,7 +3,7 @@ import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
-import ncsa.d2k.core.modules.ComputeModule;
+import ncsa.d2k.core.modules.*;
 
 public class InstanceBasedInducerOpt extends FunctionInducerOpt {
 
@@ -66,5 +66,11 @@ public class InstanceBasedInducerOpt extends FunctionInducerOpt {
 
     return (Model) model;
   }
+
+    //QA Anca added this:
+    public PropertyDescription[] getPropertiesDescriptions() { 
+        // so that "ordered and _trace" property are invisible 
+        return new PropertyDescription[0];  
+    }
 
 }
