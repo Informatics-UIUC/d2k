@@ -55,10 +55,17 @@ public class ReplaceNominalsWithInts extends ComputeModule {
       sb.append("replace each unique value in every nominal column of a ");
       sb.append("<i>MutableTable</i> with an integer unique to that column.");
 
-      sb.append("</P><P><u>Missing Values Handling:</u> This module handles missing values as if they were " +
+/*      sb.append("</P><P><u>Missing Values Handling:</u> This module handles missing values as if they were " +
          "real meaningful values. For Example: If a missing value in a string column " +
          "is represented by '?', then after applying the transformation, a unique integer will "+
          "be assigned to all the missing values");
+ */
+
+      sb.append("</P><P><u>Missing Values Handling:</u> This Transformation output by this module" +
+                " preserves missing values. " +
+           "The internal representation of a missing value will be converted to that of " +
+           "and integer missing value, and the fact that the value was missing in the original" +
+           "table is preserved in the resulting table.");
 
       sb.append("</p><p>Data Handling: ");
       sb.append("This module does not modify its input data. Rather, its ");
@@ -110,4 +117,8 @@ public class ReplaceNominalsWithInts extends ComputeModule {
  * QA comments:
  * 2-28-03  Vered started qa.
  *          added to module info a note about missing values handling.
+ *
+ * 11-25-03 Vered started qa:
+ *          according to new guide lines - missing values should be preserved. thus
+ *          changed module info. reported bug 144 on missing values preservation.
  */
