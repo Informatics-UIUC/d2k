@@ -3,23 +3,23 @@ package ncsa.d2k.modules.core.optimize.util;
 import java.io.Serializable;
 
 /**
-        Represents a solution in the a space where the parameters 
-        are bits. 
+        Represents a solution in the a space where the parameters
+        are bits.
 */
 abstract public class BinarySolution implements Solution, java.io.Serializable  {
 
         /** the parameters. */
         protected boolean [] parameters;
-        
+
         /** the ranges with describe the parameters. */
         protected BinaryRange [] ranges;
-        
+
         protected double [] constraints;
-        
+
         public BinarySolution (BinaryRange [] ranges) {
-          this(ranges, 0);  
+          this(ranges, 0);
         }
-        
+
         /**
          * the constructor takes a list of BinaryRanges for the parameters,
          * and a list of objective constraints for the objective.
@@ -30,7 +30,7 @@ abstract public class BinarySolution implements Solution, java.io.Serializable  
                 int number = 0;
                 for (int i = 0 ; i < ranges.length ;i++)
                         number += ranges [i].getNumBits ();
-                        
+
                 this.parameters = new boolean [number];
                 for (int j = 0; j < number; j++) {
                         double tmp = Math.random ();
@@ -38,19 +38,19 @@ abstract public class BinarySolution implements Solution, java.io.Serializable  
                 }
         }
         public BinarySolution(){}
-        
+
         public int getNumConstraints() {
           return constraints.length;
         }
-        
+
         public void setConstraint(double val,  int i) {
           constraints[i] = val;
         }
-        
+
         public double getConstraint(int i) {
           return constraints[i];
         }
-        
+
         /**
          * returns the array of booleans containing the parameters to the
          * solution.
@@ -61,7 +61,7 @@ abstract public class BinarySolution implements Solution, java.io.Serializable  
         }
         /**
          * sets the array of booleans containing the parameters to the
-         * solution. 
+         * solution.
          * @param parameters the list of parameters yielding the solution.
 	 *                     	 *                             	 *			Must be a boolean array
          */
@@ -76,7 +76,7 @@ abstract public class BinarySolution implements Solution, java.io.Serializable  
         public double getDoubleParameter(int i){
                 if(parameters[i])
                         return 1.0;
-                return 0.0;	
+                return 0.0;
         }
 
         /*
@@ -89,7 +89,7 @@ abstract public class BinarySolution implements Solution, java.io.Serializable  
 
                 parameters[paramIndex]=(newParam>.5);
         }
-        
+
         abstract public Object clone();
 
         /**
@@ -110,4 +110,41 @@ abstract public class BinarySolution implements Solution, java.io.Serializable  
           return dparams;
         }
 
+        public double[] toDoubleValues() {
+          boolean[] params = (boolean[])this.getParameters();
+          int numTraits = ranges.length;
+          double[] retVal = new double[numTraits];
+
+          int curPos = 0;
+          for (int k = 0; k < numTraits; k++) {
+            BinaryRange binaryRange = ranges[k];
+            int numBits = binaryRange.getNumBits();
+            double num = 0.0d;
+            double max = binaryRange.getMax();
+            double min = binaryRange.getMin();
+            double precision = binaryRange.getPrecision();
+
+            double interval = (max - min) * precision;
+
+            // this is one trait
+            for (int l = 0; l < numBits; l++) {
+              if (params[curPos] != false) {
+                num = num + Math.pow(2.0, l);
+              }
+              curPos++;
+            }
+
+            // if it is above the max, scale it down
+            num = num * precision + min;
+            if (num > max) {
+              num = max;
+            }
+            if (num < min) {
+              num = min;
+            }
+            retVal[k] = num;
+          }
+
+          return retVal;
+        }
 }

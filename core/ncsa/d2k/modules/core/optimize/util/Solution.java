@@ -40,7 +40,7 @@ public interface Solution extends java.lang.Cloneable{
         /* subclasses should implement a deep copy method for clone*/
 
         public Object clone();
-        
+
 
         /**
          * returns the constraint value, representing a constraint violation.
@@ -53,10 +53,12 @@ public interface Solution extends java.lang.Cloneable{
          * @param the new constraint value.
          */
         public void setConstraint(double val, int idx);
-        
+
         /**
          * Get the number of constraints.
          * @return
          */
         public int getNumConstraints();
+
+        public double[] toDoubleValues();
 }

@@ -8,6 +8,7 @@ package ncsa.d2k.modules.core.optimize.util;
 public class BinaryRange extends NamedRange implements Range {
 
 	int numBits;
+        double precision;
 
 	/**
 	 * the constructor will take a name and number of bits.
@@ -18,6 +19,16 @@ public class BinaryRange extends NamedRange implements Range {
 		super (name);
 		this.numBits = numBits;
 	}
+
+        public BinaryRange(String name, int numBits, double precision) {
+          super(name);
+          this.numBits = numBits;
+          this.precision = precision;
+        }
+
+        public double getPrecision() {
+          return precision;
+        }
 
 	/**
 	 * returns the maximum value of the range.

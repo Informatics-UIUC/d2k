@@ -13,9 +13,9 @@ abstract public class IntSolution implements Solution, java.io.Serializable  {
 
         /** the ranges with describe the parameters. */
         protected IntRange [] ranges;
-        
+
         protected double [] constraints;
-        
+
         public IntSolution (IntRange [] ranges) {
           this (ranges, 0);
         }
@@ -35,15 +35,15 @@ abstract public class IntSolution implements Solution, java.io.Serializable  {
                                                 (double)((ranges [j].getMaxInt () - ranges [j].getMinInt ()))));
                 }
         }
-        
+
         public int getNumConstraints() {
           return constraints.length;
         }
-        
+
         public void setConstraint(double d, int i) {
           constraints[i] = d;
         }
-        
+
         public double getConstraint(int i) {
           return constraints[i];
         }
@@ -81,4 +81,13 @@ abstract public class IntSolution implements Solution, java.io.Serializable  {
                 parameters[paramIndex]=(int)(newParam+.5);
         }
         abstract public Object clone();
+
+        public double[] toDoubleValues() {
+          int numParameters = ranges.length;
+          double[] retVal = new double[numParameters];
+          for(int i = 0; i < numParameters; i++) {
+            retVal[i] = getDoubleParameter(i);
+          }
+          return retVal;
+        }
 }

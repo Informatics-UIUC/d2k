@@ -11,16 +11,16 @@ abstract public class MixedSolution implements Solution, java.io.Serializable  {
         /** the parameters. */
         protected double [] parameters;
 
-        
+
         /** the ranges with describe the parameters. */
         protected Range [] ranges;
-        
+
         protected double [] constraints;
-        
+
         public MixedSolution (Range [] ranges) {
           this(ranges, 0);
         }
-        
+
         /**
          * the constructor takes a list of Ranges for the parameters,
          * and a list of objective constraints for the objective.
@@ -36,22 +36,22 @@ abstract public class MixedSolution implements Solution, java.io.Serializable  {
                                                 (ranges [j].getMax () - ranges [j].getMin ()));
                         setDoubleParameter(initDouble, j);
                 }
-                
+
         }
-        public MixedSolution(){}	
-        
+        public MixedSolution(){}
+
         public int getNumConstraints() {
           return constraints.length;
         }
-        
+
         public void setConstraint(double d, int i) {
           constraints[i] = d;
         }
-        
+
         public double getConstraint(int i) {
           return constraints[i];
         }
-        
+
         /**
          * returns the array of doubles containing the parameters to the
          * solution.
@@ -60,7 +60,7 @@ abstract public class MixedSolution implements Solution, java.io.Serializable  {
         public Object getParameters () {
                 return parameters;
         }
-        
+
         /**
         * sets the parameters to a new double array
         *@param parameters the list of parameters to the solution
@@ -79,7 +79,7 @@ abstract public class MixedSolution implements Solution, java.io.Serializable  {
         /**
                 assigns the new double as is to the parameter set
         */
-        
+
         public void setDoubleParameter(double newParam, int paramIndex){
                 switch(ranges[paramIndex].getType()){
                         case(Range.INTEGER):{
@@ -97,8 +97,18 @@ abstract public class MixedSolution implements Solution, java.io.Serializable  {
                         }
                         default:{return;}
                 }
-	}                    	
+	}
 
 
         abstract public Object clone();
+
+        public double[] toDoubleValues() {
+          int numParameters = ranges.length;
+          double[] retVal = new double[numParameters];
+          for(int i = 0; i < numParameters; i++) {
+            retVal[i] = getDoubleParameter(i);
+          }
+          return retVal;
+        }
+
 }

@@ -119,7 +119,8 @@ public class GeneratePopulation
     if (params.createBinaryIndividuals) {
       xyz = new BinaryRange[numVariables];
       for (int i = 0; i < numVariables; i++) {
-        xyz[i] = new BinaryRange(X, (int)dv.getVariableStringLength(i));
+        xyz[i] = new BinaryRange(X, (int)dv.getVariableStringLength(i),
+                                 dv.getVariablePrecision(i));
       }
     }
     // use DoubleRange for real-coded individuals
@@ -178,14 +179,14 @@ public class GeneratePopulation
         pop = new EMOConstrainedSOPopulation(xyz, fit[0],
                                              params.populationSize, 0.01,
                                              this.numConstraints);
-        
-        // for each constraint, set the weight on the population object 
-        ConstrainedPopulation cp = (ConstrainedPopulation)pop; 
+
+        // for each constraint, set the weight on the population object
+        ConstrainedPopulation cp = (ConstrainedPopulation)pop;
         for(int i = 0; i < this.numFormulaConstraints; i++) {
           double weight = params.constraints.getConstraintFunctionWeight(i);
           cp.setConstraintWeight(weight, i);
         }
-        
+
         for(int i = numFormulaConstraints; i < this.numExternalConstraints; i++) {
           double weight = params.constraints.getExternConstraintWeight(i);
           cp.setConstraintWeight(weight, i);
@@ -214,13 +215,13 @@ public class GeneratePopulation
       if (constrained) {
         pop = new EMOConstrainedNsgaPopulation(xyz, fit,
                                             params.populationSize, 0.01, this.numConstraints);
-        // for each constraint, set the weight on the population object 
-        ConstrainedPopulation cp = (ConstrainedPopulation)pop; 
+        // for each constraint, set the weight on the population object
+        ConstrainedPopulation cp = (ConstrainedPopulation)pop;
         for(int i = 0; i < this.numFormulaConstraints; i++) {
           double weight = params.constraints.getConstraintFunctionWeight(i);
           cp.setConstraintWeight(weight, i);
         }
-        
+
         for(int i = numFormulaConstraints; i < this.numExternalConstraints; i++) {
           double weight = params.constraints.getExternConstraintWeight(i);
           cp.setConstraintWeight(weight, i);

@@ -12,9 +12,9 @@ abstract public class DoubleSolution implements Solution, java.io.Serializable {
 
         /** the ranges with describe the parameters. */
         protected DoubleRange [] ranges;
-        
+
         protected double [] constraints;
-        
+
         public DoubleSolution (DoubleRange[] ranges) {
           this(ranges, 0);
         }
@@ -34,15 +34,15 @@ abstract public class DoubleSolution implements Solution, java.io.Serializable {
                                                 (ranges [j].getMax () - ranges [j].getMin ()));
                 }
         }
-        
+
         public int getNumConstraints() {
           return constraints.length;
         }
-        
+
         public void setConstraint(double val, int i) {
           constraints[i] = val;
         }
-        
+
         public double getConstraint(int i) {
           return constraints[i];
         }
@@ -80,4 +80,14 @@ abstract public class DoubleSolution implements Solution, java.io.Serializable {
         }
 
         abstract public Object clone();
+
+        public double[] toDoubleValues() {
+          int numParameters = ranges.length;
+          double[] retVal = new double[numParameters];
+          for(int i = 0; i < numParameters; i++) {
+            retVal[i] = getDoubleParameter(i);
+          }
+          return retVal;
+        }
+
 }

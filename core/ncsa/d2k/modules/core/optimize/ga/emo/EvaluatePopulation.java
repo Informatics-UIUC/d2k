@@ -332,10 +332,10 @@ public class EvaluatePopulation
       // we need to write out the file.  Only write out the first file,
       // make copies for all other executables
       String firstFile = (String)this.inputFileList.get(0);
-      if (binaryType)
+      //if (binaryType)
         this.writeBinaryGenesToFile(firstFile);
-      else
-        this.writeNumericGenesToFile(firstFile);
+      //else
+      //  this.writeNumericGenesToFile(firstFile);
 
       // now make copies of the file for the other inputs
       for (int i = 1; i < inputFileList.size(); i++) {
@@ -392,17 +392,20 @@ public class EvaluatePopulation
     else {
       int numTraits = 0;
       BinaryRange[] traits = (BinaryRange[]) pop.getTraits();
+      numTraits = traits.length;
 
       // for each individual
       for (int j = 0; j < pop.size(); j++) {
-        double[] genes = ( (MOBinaryIndividual) pop.getMember(j)).toDouble();
+        double[] values = ((BinaryIndividual)pop.getMember(j)).toDoubleValues();
+/*        double[] genes = ( (MOBinaryIndividual) pop.getMember(j)).toDouble();
 
         // the max and precision are contained in the boundsAndPrecision table
         DecisionVariables dv = population.getParameters().decisionVariables;
 
         int curPos = 0;
-        for (int k = 0; k < traits.length; k++) {
-          int numBits = traits[k].getNumBits();
+*/
+        for (int k = 0; k < numTraits; k++) {
+/*          int numBits = traits[k].getNumBits();
           double num = 0.0d;
           double max = dv.getVariableMax(k);
           double min = dv.getVariableMin(k);
@@ -425,8 +428,8 @@ public class EvaluatePopulation
           }
           if (num < min) {
             num = min;
-          }
-          populationTable.setDouble(num, j, k);
+          }*/
+          populationTable.setDouble(values[k], j, k);
         }
       }
     }
@@ -448,19 +451,20 @@ public class EvaluatePopulation
     BufferedWriter bw = new BufferedWriter(stringFileWriter);
     PrintWriter pw = new PrintWriter(bw);
 
-    int numTraits = 0;
-
-    BinaryRange[] traits = (BinaryRange[]) popul.getTraits();
+    Range[] traits = popul.getTraits();
+    int numTraits = traits.length;
+    int size = popul.size();
 
     // write population size in file
-    pw.println(popul.size());
+    pw.println(size);
 
     // write length of each gene/chromosome
-    pw.println(traits.length);
+    pw.println(numTraits);
 
     // write genes
-    for (int j = 0; j < popul.size(); j++) {
-      double[] genes = ( (BinaryIndividual) popul.getMember(j)).toDouble();
+    for (int j = 0; j < size; j++) {
+      double[] values = popul.getMember(j).toDoubleValues();
+      /*double[] genes = ( (BinaryIndividual) popul.getMember(j)).toDouble();
 
       // the max and precision are contained in the DecisionVariables
       DecisionVariables dv = population.getParameters().decisionVariables;
@@ -494,6 +498,10 @@ public class EvaluatePopulation
         //pw.print(num + SPACE);
         pw.print(num);
         pw.print(SPACE);
+      }*/
+      for(int k = 0; k < numTraits; k++) {
+        pw.print(values[k]);
+        pw.print(SPACE);
       }
 
       pw.println();
@@ -514,7 +522,7 @@ public class EvaluatePopulation
    *
    * Right now this only works for MO populations!!!
    */
-  private void writeNumericGenesToFile(String fileName) throws
+/*  private void writeNumericGenesToFile(String fileName) throws
       IOException {
     Population popul = (Population) population;
 
@@ -522,9 +530,9 @@ public class EvaluatePopulation
     BufferedWriter bw = new BufferedWriter(stringFileWriter);
     PrintWriter pw = new PrintWriter(bw);
 
-    Individual ni = (Individual) popul.getMember(0);
-    double[] genes = (double[]) ni.getGenes();
-    int numTraits = genes.length;
+    //Individual ni = (Individual) popul.getMember(0);
+    //double[] genes = (double[]) ni.getGenes();
+    int numTraits = popul.getTraits().length;
 
     // write population size in file
     pw.println(popul.size());
@@ -539,7 +547,7 @@ public class EvaluatePopulation
       // if an IntInvidual is used, an int[] will be returned...
       // right now IntIndividuals are not used so thia is currently
       // not a problem
-      genes = (double[]) ( (Individual) popul.getMember(j)).getGenes();
+      double[] genes = (double[]) ( (Individual) popul.getMember(j)).getGenes();
       numTraits = genes.length;
 
       // write to file
@@ -558,7 +566,7 @@ public class EvaluatePopulation
     pw.close();
     bw.close();
     stringFileWriter.close();
-  }
+  }*/
 
   private double[] readOutput(String fileName) throws IOException {
     double[] fit = new double[ ( (Population) population).size()];

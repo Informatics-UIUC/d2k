@@ -12,11 +12,9 @@ public class TableFitnessPlot
     extends FitnessPlot {
 
   protected FitnessTable fitnessTable;
-  protected TIntArrayList selected;
 
   public TableFitnessPlot() {
     super();
-    selected = new TIntArrayList();
   }
 
   public void setTable(FitnessTable t) {
@@ -24,6 +22,10 @@ public class TableFitnessPlot
       fitnessTable = t;
       setChanged(true);
     }
+  }
+
+  public FitnessTable getFitnessTable() {
+    return fitnessTable;
   }
 
   protected int getNumIndividuals() {
@@ -63,16 +65,11 @@ public class TableFitnessPlot
     }
   }
 
-  public TIntArrayList getSelectedList() {
-    return selected;
-  }
-
   protected void addSelection(int i) {
     super.addSelection(i);
     synchronized (fitnessTable) {
       fitnessTable.setSelectedFlag(true, i);
     }
-    selected.add(i);
   }
 
   protected void removeAllSelections() {
@@ -82,8 +79,8 @@ public class TableFitnessPlot
       for (int i = 0; i < numRows; i++) {
         fitnessTable.setSelectedFlag(false, i);
       }
+      fitnessTable.clearSelectionList();
     }
-    selected.clear();
   }
 
   public void setObjectives(int x, int y) {
@@ -99,7 +96,7 @@ public class TableFitnessPlot
     // reset min/max for both objectives by looping through pop
     xMin = yMin = Float.POSITIVE_INFINITY;
     xMax = yMax = Float.NEGATIVE_INFINITY;
-    
+
     if(fitnessTable == null)
       return;
 

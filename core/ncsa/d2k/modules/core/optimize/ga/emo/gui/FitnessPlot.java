@@ -43,6 +43,8 @@ abstract public class FitnessPlot
 
   protected boolean selectionEnabled;
 
+  protected java.util.List selectionChangedListeners;
+
   public FitnessPlot() {
     setDoubleBuffered(false);
     top = left = right = bottom = 20.0f;
@@ -54,6 +56,7 @@ abstract public class FitnessPlot
     nf.setMaximumFractionDigits(1);
     font = new Font("Arial", Font.PLAIN, 5);
     selectionEnabled = false;
+    selectionChangedListeners = new ArrayList();
   }
 
   public void setBounds(int x, int y, int w, int h) {
@@ -176,6 +179,7 @@ abstract public class FitnessPlot
         }
       }
     repaint();
+    this.fireSelectionChanged();
     }
   }
 
@@ -322,4 +326,19 @@ abstract public class FitnessPlot
   }
 
   abstract protected void drawPoints(Graphics2D g, double xscale, double yscale);
+
+  public void addSelectionChangedListeners(SelectionChangedListener rl) {
+    selectionChangedListeners.add(rl);
+  }
+  public void removeSelectionChangedListener(SelectionChangedListener rl) {
+    selectionChangedListeners.remove(rl);
+  }
+
+  protected void fireSelectionChanged() {
+      int size = selectionChangedListeners.size();
+      for(int i = 0; i < size; i++) {
+        SelectionChangedListener rl = (SelectionChangedListener)selectionChangedListeners.get(i);
+        rl.selectionChanged();
+      }
+  }
 }
