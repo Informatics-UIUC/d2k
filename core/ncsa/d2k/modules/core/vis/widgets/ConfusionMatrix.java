@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.util.*;
+import java.text.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 
@@ -27,6 +28,7 @@ public class ConfusionMatrix extends JScrollPane {
 	}
 
 	public int correct;
+	private NumberFormat nf;
 
 	/**
 		Create a new ConfusionMatrix
@@ -36,6 +38,8 @@ public class ConfusionMatrix extends JScrollPane {
 	*/
 	public ConfusionMatrix(int[][] d, String[] r, String[] c) {
 		super();
+		nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(1);
 		setupTable(d, r, c);
 	}
 
@@ -48,6 +52,8 @@ public class ConfusionMatrix extends JScrollPane {
 	public ConfusionMatrix(Table vt, int o, int p) {
 		super();
 		int numRows = vt.getNumRows();
+		nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(1);
 
 		// keep the unique outputs and predictions
 		HashSet outNames = new HashSet();
@@ -72,7 +78,7 @@ public class ConfusionMatrix extends JScrollPane {
 		while(it.hasNext()) {
 			String s = (String)it.next();
 			outs[idx] = s;
-			outlabels[idx] = "Out: "+s;
+			outlabels[idx] = s;
 			idx++;
 		}
 
@@ -82,7 +88,7 @@ public class ConfusionMatrix extends JScrollPane {
 		it = outNames.iterator();
 		while(it.hasNext()) {
 			String s = (String)it.next();
-			predlabels[idx] = "Pred: "+s;
+			predlabels[idx] = s;
 			idx++;
 		}
 
@@ -169,6 +175,7 @@ public class ConfusionMatrix extends JScrollPane {
 		JTable headerColumn = new JTable(tblModel, rowHeaderModel);
 		headerColumn.createDefaultColumnsFromModel();
 		headerColumn.setMaximumSize(new Dimension(75, 10000));
+		table.setSelectionModel(headerColumn.getSelectionModel());
 
 		JViewport jv = new JViewport();
 		jv.setView(headerColumn);
@@ -189,34 +196,74 @@ public class ConfusionMatrix extends JScrollPane {
 		The TableModel for the ConfusionMatrix
 	*/
 	class MatrixModel extends AbstractTableModel {
-		int[][] data;
-		String[] rowNames;
-		String[] colNames;
+		//int[][] tallydata;
+		//String[] rowNames;
+		//String[] colNames;
+
+		String[][] data;
 
 		MatrixModel(int[][] d, String[] r, String[] c) {
-			data = d;
-			rowNames = r;
-			colNames = c;
+			int colLength = c.length+3;
+			int rowLength = r.length+4;
+
+			data = new String[rowLength][colLength];
+
+			// do the zeroth row
+			data[0][0] = "Prediction =";
+			for(int i = 0; i < c.length; i++)
+				data[0][i+1] = c[i];
+			data[0][colLength-2] = "";
+
+			data[1][0] = "Ground Truth";
+			for(int i = 0; i < c.length; i++)
+				data[1][i+1] = "";
+			data[1][colLength-2] = "RECALL";
+			data[1][colLength-1] = "Type II Error";
+
+			for(int i = 0; i < c.length; i++)
+				data[i+2][0] = c[i];
+			data[rowLength-2][0] = "PRECISION";
+			data[rowLength-1][0] = "Type I Error";
+
+			// for each row
+			for(int i = 0; i < r.length; i++) {
+				int total = 0;
+				for(int j = 0; j < c.length; j++) {
+					total += d[i][j];
+					data[i+2][j+1] = Integer.toString(d[i][j]);
+				}
+
+				double percent = ((double)d[i][i])/total;
+				data[i+2][colLength-2] = nf.format(percent*100)+"%";
+				data[i+2][colLength-1] = nf.format((1-percent)*100)+"%";
+			}
+
+			// for each column
+			for(int j = 0; j < c.length; j++) {
+				int total = 0;
+				for(int i = 0; i < r.length; i++) {
+					total += d[i][j];
+				}
+				double percent = ((double)d[j][j])/total;
+				data[rowLength-2][j+1] = nf.format(percent*100)+"%";
+				data[rowLength-1][j+1] = nf.format((1-percent)*100)+"%";
+			}
 		}
 
 		public String getColumnName(int col) {
-			if(col == 0)
-				return "";
-			return colNames[col-1];
+			return "";
 		}
 
 		public int getRowCount() {
-			return rowNames.length;
+			return data.length;
 		}
 
 		public int getColumnCount() {
-			return colNames.length+1;
+			return data[0].length;
 		}
 
 		public Object getValueAt(int row, int col) {
-			if(col == 0)
-				return rowNames[row];
-			return Integer.toString(data[row][col-1]);
+			return data[row][col];
 		}
 
 		public boolean isCellEditable(int row, int col) {

@@ -51,12 +51,20 @@ public abstract class Chart extends JPanel {
 	int fontheight, fontascent;
 
 	// color generation
-	Color[] colors = {
+	/*Color[] colors = {
 		new Color(253, 204, 138), new Color(148, 212, 161),
 		new Color(153, 185, 216), new Color(189, 163, 177),
 		new Color(213, 213, 157), new Color(193,  70,  72),
 		new Color( 29, 136, 161), new Color(187, 116, 130),
 		new Color(200, 143,  93), new Color(127, 162, 133)
+	};*/
+
+	Color[] colors = {new Color(71, 74, 98), new Color(191, 191, 115),
+		new Color(111, 142, 116), new Color(178, 198, 181),
+		new Color(153, 185, 216), new Color(96, 93, 71),
+		new Color(146, 205, 163), new Color(203, 84, 84),
+		new Color(217, 183, 170), new Color(140, 54, 57),
+		new Color(203, 136, 76)
 	};
 
 	abstract public void initOffsets();
