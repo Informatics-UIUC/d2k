@@ -8,7 +8,7 @@ import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.sql.*;
 import java.util.*;
@@ -31,7 +31,7 @@ public class WriteVTToDB extends UIModule
     /* Input holder for ConnectionWrapper */
     protected ConnectionWrapper cw;
     /* Input holder for VerticalTable */
-    protected VerticalTable vt;
+    protected TableImpl vt;
     /* SQL Query String */
     protected String query;
     /* The resultset table model */
@@ -65,9 +65,9 @@ public class WriteVTToDB extends UIModule
        @return A description of this module.
     */
     public String getModuleInfo() {
-	return "This module takes an Oracle database Connection and a vertical " +
+	return "This module takes an Oracle database Connection and a " +
                "table as the input, and save the data from "+
-               "the vertical table to a database table. There are two options are " +
+               "the input table to a database table. There are two options are " +
                "provided. You can either create a new database table to save the data, " +
                "or append the data to an existing database table.";
     }
@@ -84,7 +84,7 @@ public class WriteVTToDB extends UIModule
     */
     public String[] getInputTypes () {
         String [] in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-                        "ncsa.d2k.util.datatype.VerticalTable" };
+                        "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
         return in;
     }
     /**
@@ -104,7 +104,7 @@ public class WriteVTToDB extends UIModule
         switch(i)
         {
           case 0: return "JDBC data source to make database connection.";
-          case 1: return "The VerticalTable to upload to database.";
+          case 1: return "The input table to upload to database.";
           default: return "No such input.";
         }
     }
@@ -166,8 +166,8 @@ public class WriteVTToDB extends UIModule
 	public void initView(ViewModule mod) {
             removeAll();
             cw = (ConnectionWrapper)pullInput(0);
-            vt = (VerticalTable)pullInput(1);
-            /* the number of rows in vt JTables is determined by inputed vertical table */
+            vt = (TableImpl)pullInput(1);
+            /* the number of rows in vt JTables is determined by inputed table */
             maxNumRow = vt.getNumColumns();
 
             System.out.println("enter initView");
@@ -190,7 +190,7 @@ public class WriteVTToDB extends UIModule
             /* Allow to select a single row only */
             newTableDef.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-            /* Use input information on VerticalTable as the default column definition */
+            /* Use input information on the table as the default column definition */
             setUpColumnDefault(newTableDef);
 
             /* The second column "Data Type" has comboBox for choosing data type */
@@ -282,7 +282,7 @@ public class WriteVTToDB extends UIModule
 
 	} /* end of initView */
 
-        /** Fill up column information based on the input vertical table
+        /** Fill up column information based on the input table
 	    @param newTable The JTable to fill up the column information
         */
         protected void setUpColumnDefault(JTable newTable) {
@@ -332,7 +332,7 @@ public class WriteVTToDB extends UIModule
 		return "unknown";
         }
 
-        /** get maximum length of the string column from the vertical table
+        /** get maximum length of the string column from the table
             @param c The index of the column.
             @return The maximum length of the column.
         */
@@ -380,7 +380,7 @@ public class WriteVTToDB extends UIModule
             System.out.println("the input 1 in setInput is " + cw.toString());
           }
           else if (index == 1) {
-            vt = (VerticalTable)input;
+            vt = (TableImpl)input;
             System.out.println("the input 2 in setInput is " + vt.toString());
             newModel.initTableModel(maxNumRow,3);
             newModel.fireTableDataChanged();
@@ -547,7 +547,7 @@ public class WriteVTToDB extends UIModule
       return (true);
     }
 
-    /** insert data from a vertical table into a database table
+    /** insert data from an input table into a database table
         @param dTableName The name of the table to create in the database
         @param vTableDef The structure of the table to create in the database
     */
@@ -642,10 +642,10 @@ public class WriteVTToDB extends UIModule
         }
     }
 
-    /** verify the data type and length of the vertical table suitable to
+    /** verify the data type and length of the input table suitable to
         insert into database
         @param dbTable The JTable keeping the structure of the database table
-        @param vtTable The JTable keeping the structure of the vertical table
+        @param vtTable The JTable keeping the structure of the input table
         @return The validation result (pass or fail)
     */
     protected boolean doValidate(JTable dbTable, JTable vtTable) {
@@ -679,7 +679,7 @@ public class WriteVTToDB extends UIModule
         if (!isLengthMatch(dbTable.getValueAt(i,2),vtTable.getValueAt(i,2))) {
           JOptionPane.showMessageDialog(msgBoard,
                 "The column " + (i+1) +
-                " in vertical table is too big. Data cannot be " +
+                " in input table is too big. Data cannot be " +
                 "appended. ", "Error", JOptionPane.ERROR_MESSAGE);
           System.out.println("column is too big.");
           return (false);
@@ -689,9 +689,9 @@ public class WriteVTToDB extends UIModule
       return (true);
     }
 
-    /** verify the vertical table's datatype matches the database table's
+    /** verify the input table's datatype matches the database table's
         @param type1 The database table's data type
-        @param type2 The vertical table's data type
+        @param type2 The input table's data type
         @return Dose the data type match? (yes or no)
     */
     protected boolean isTypeMatch (Object type1, Object type2) {
@@ -713,9 +713,9 @@ public class WriteVTToDB extends UIModule
       return (false);
     }
 
-    /** verify the vertical table's data length matches the database table's
+    /** verify the input table's data length matches the database table's
         @param length1 The database table's data length
-        @param length2 The vertical table's data length
+        @param length2 The input table's data length
         @return Dose the data length match? (yes or no)
     */
     protected boolean isLengthMatch (Object length1, Object length2) {
@@ -723,7 +723,7 @@ public class WriteVTToDB extends UIModule
       if (length2.equals(NOTHING)) {
         return (true);
       }
-      /* if vertical column length > database column length, return false */
+      /* if the input column length > database column length, return false */
       else if (Integer.valueOf(length1.toString()).intValue()
                 < Integer.valueOf(length2.toString()).intValue()) {
         return (false);

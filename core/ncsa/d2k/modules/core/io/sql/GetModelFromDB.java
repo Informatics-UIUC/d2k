@@ -10,6 +10,7 @@ package ncsa.d2k.modules.core.io.sql;
  */
 import ncsa.d2k.infrastructure.*;
 import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.controller.classloading.*;
 import ncsa.d2k.infrastructure.views.UserView;
 import ncsa.d2k.io.*;
@@ -77,7 +78,7 @@ public class GetModelFromDB extends UIModule
   }
 
   public String[] getOutputTypes () {
-    String [] out = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
+    String [] out = {"ncsa.d2k.modules.PredictionModelModule"};
     return out;
   }
 

@@ -11,6 +11,7 @@ package ncsa.d2k.modules.core.io.sql;
  */
 
 import ncsa.d2k.infrastructure.modules.UIModule;
+import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.infrastructure.modules.ViewModule;
 import ncsa.d2k.infrastructure.views.UserView;
 import ncsa.d2k.controller.userviews.swing.*;
@@ -62,7 +63,7 @@ public class SaveModelToDB extends UIModule {
 
   public String[] getInputTypes () {
     String [] in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-                    "ncsa.d2k.infrastructure.module.PredictionModelModule" };
+                    "ncsa.d2k.module.PredictionModelModule" };
     return in;
   }
 
