@@ -121,9 +121,12 @@ public class AttributeConstruction extends HeadlessUIModule {
    public Object[] getLastCons() { return lastCons; }
    public void setLastCons(Object[] value) { lastCons = (Object[])value; }
 
-   public PropertyDescription[] getPropertiesDescriptions() {
 
-   /*  PropertyDescription pds[] = new PropertyDescription[3];
+//headless conversion - vered: this method is already implemented by the super class.
+   //and there is no point in listing properties which are not basic type.
+   /*public PropertyDescription[] getPropertiesDescriptions() {
+
+     PropertyDescription pds[] = new PropertyDescription[3];
      pds[0] = new PropertyDescription( "newLab",
                 "Column Labels",
                 "Saves the labels of the columns created by the user");
@@ -137,10 +140,10 @@ public class AttributeConstruction extends HeadlessUIModule {
                   "Saves the construction strings of the columns created by the user");
 
 
-      return pds;*/
-   return null;
+      return pds;
 
-   }
+
+   }*/
 
 /******************************************************************************/
 /* GUI                                                                        */

@@ -110,10 +110,11 @@ public class Normalize extends HeadlessUIModule {
       };
    }
 
-    public PropertyDescription[] getPropertiesDescriptions() {
+//this method is already implemented by super class.
+  /*  public PropertyDescription[] getPropertiesDescriptions() {
 	return new PropertyDescription[0]; // so that "last expression" property
 	// is invisible
-    }
+    }*/
 
 
 
@@ -407,6 +408,7 @@ public class Normalize extends HeadlessUIModule {
      int[] transform = new int[0]; //with this array the normalization trasform will be build
 
      if(numericLabels == null || numericLabels.length ==0){
+       System.out.println("\n\nNormalize:\nno numeric columns were selected. the transformation will be an empty one.\n");
         pushOutput(new NormalizingTransformation(transform), 0);
        return;
      }
@@ -419,19 +421,38 @@ public class Normalize extends HeadlessUIModule {
        if(_table.isColumnNumeric(i))
          availableNumericColumns.put(_table.getColumnLabel(i), new Integer(i));
 
-
-     int numNumeric = 0;
-     for (int i=0; i<numericLabels.length; i++)
-       if(availableNumericColumns.containsKey(numericLabels[i]))
-         numNumeric++;
-
-     transform = new int[numNumeric];
-     for (int i=0; i<numericLabels.length; i++)
-       if(availableNumericColumns.containsKey(numericLabels[i]))
-         transform[i] = ((Integer)availableNumericColumns.get(numericLabels[i])).intValue();
+      if(availableNumericColumns.size() == 0){
+        System.out.println("\n\nNormalize:\nTable " + _table.getLabel() +
+                           " has no numeric columns. The transformation will be " +
+                           "an empty one");
+         pushOutput(new NormalizingTransformation(transform), 0);
+         return;
+      }
 
 
-  pushOutput(new NormalizingTransformation(transform), 0);
+        int numNumeric = 0;
+        for (int i = 0; i < numericLabels.length; i++)
+          if (availableNumericColumns.containsKey(numericLabels[i]))
+            numNumeric++;
+
+
+        if(numNumeric == 0){
+          System.out.println("\n\nNormalize:\nTable " + _table.getLabel() +
+                          " does not contain any of the numeric columns you chose. " +
+                          "The transformation will be an empty one");
+        pushOutput(new NormalizingTransformation(transform), 0);
+        return;
+
+        }
+
+        transform = new int[numNumeric];
+        for (int i = 0; i < numericLabels.length; i++)
+          if (availableNumericColumns.containsKey(numericLabels[i]))
+            transform[i] = ( (Integer) availableNumericColumns.get(numericLabels[
+                i])).intValue();
+
+        pushOutput(new NormalizingTransformation(transform), 0);
+
 
    }
 //headless conversion support

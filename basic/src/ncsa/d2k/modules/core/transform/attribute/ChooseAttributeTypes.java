@@ -551,7 +551,9 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
     if(nominalColumns == null) nominalColumns = new String[0];
     if(scalarColumns.length == 0 && nominalColumns.length == 0){
       System.out.println("\n\nChooseAttributeTypes:\nYou did not choose any " +
-          "nominal or scalar columns.\nthe itinerary will continue " +
+          "nominal or scalar columns (or that the column names that were chosen " +
+          "don't match the column names in the input table)." +
+          "\nthe itinerary will continue " +
           "without changing the columns' scalar\nominal properties.\n");
       return false;
     }//if length
