@@ -62,6 +62,13 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      s += "This module allows the user to specify the query condition ";
      s += "that filters rows from a database table. Details can be found ";
      s += "in the module's online help. </p>";
+     s += "<P>Missing Values Handling: When the filter expression is edited via " +
+         "the properties editor and 'Supress User Interface Display' is set to true, " +
+     "if the user whishes to include missing values " +
+         "in the result dataset, each simple condition should be paired with the " +
+         "condition 'ATT_NAME is NULL' using the 'or' operand. For Example: " +
+         "If the basic condition is 'Att1 = value' then the pair should be " +
+         "((Att1 = value) or (Att1 is NULL))'.</P>";
      s += "<p> Restrictions: ";
      s += "We currently only support Oracle, SQLServer, DB2 and MySql database.";
 
@@ -126,7 +133,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
    public void setLastExpression(String value) {
       _lastExpression = value;
    }
-   
+
    private boolean _includeMissingValues = true;
    public boolean getIncludeMissingValues() {
 	  return _includeMissingValues;
@@ -141,8 +148,9 @@ public class SQLFilterConstruction extends HeadlessUIModule {
       pds[0] = super.getPropertiesDescriptions()[0];
       pds[1] = new PropertyDescription("queryCondition", "Query Condition",
                                        "SQL query condition");
-	  pds[2] = new PropertyDescription("includeMissingValues", "Include Missing Values", 
-			"If set, rows with missing values will be included in the result table.");
+	  pds[2] = new PropertyDescription("includeMissingValues", "Include Missing Values",
+			"If set, rows with missing values will be included in the result table. " +
+                        "This property is used when the module runs with GUI.");
       return pds;
    }
 
@@ -441,10 +449,10 @@ public class SQLFilterConstruction extends HeadlessUIModule {
          else if (src == addColumnButton) {
 	     // ANCA added condition related to missing values
          	if (getIncludeMissingValues()) {
-         		gui.getTextArea().insert((String)columnBox.getSelectedItem() + 
-				      " is NULL || " + 
+         		gui.getTextArea().insert((String)columnBox.getSelectedItem() +
+				      " is NULL || " +
 				      (String)columnBox.getSelectedItem(),
-				      gui.getTextArea().getCaretPosition()); 
+				      gui.getTextArea().getCaretPosition());
 			} else {
              gui.getTextArea().insert((String)columnBox.getSelectedItem(),
                 gui.getTextArea().getCaretPosition());
@@ -523,7 +531,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 
 //          //_lastExpression = new String(queryCondition);
 //          //if(getIncludeMissingValues())
-         
+
 
 	  String queryCondition = expression.toSQLString();
 	  // System.out.println("query condition " + queryCondition);
@@ -713,3 +721,11 @@ public class SQLFilterConstruction extends HeadlessUIModule {
    //headless conversion support
 
 }
+ /**
+  * qa comments:
+  * 01-21-04: vered
+  * bug 201 - ignores include missing values property.
+  *
+  * 01-26-03: vered
+  * bug 201 is fixed. updated module info.
+  */
