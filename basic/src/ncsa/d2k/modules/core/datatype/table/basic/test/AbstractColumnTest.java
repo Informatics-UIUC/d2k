@@ -7,7 +7,7 @@
 package ncsa.d2k.modules.core.datatype.table.basic.test;
 
 import junit.framework.TestCase;
-import ncsa.d2k.modules.core.datatype.basic.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * @author anca
