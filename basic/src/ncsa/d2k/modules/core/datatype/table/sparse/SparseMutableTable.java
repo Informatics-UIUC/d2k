@@ -602,6 +602,11 @@ public class SparseMutableTable
 
   public void addRows(int add_num_rows) {
     numRows += add_num_rows;
+    //add rows to each column
+    int[] col_keys = columns.keys();
+    for (int i = 0; i < col_keys.length; i++) {
+      ( (AbstractSparseColumn) columns.get(col_keys[i])).addRows(add_num_rows);
+    }
   }
 
   /**
@@ -676,45 +681,6 @@ public class SparseMutableTable
     numRows = VHashService.getMaxKey(rows) + 1;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /**
    * Reorders the rows in this table, s.t.:
    * If the row numbers were sorted in an array - "row" then when this method returns
@@ -762,6 +728,50 @@ public class SparseMutableTable
   }
 
   /**
+   * Reorders the rows in this table, s.t.:
+   * for each key k in <codE>newOrder</code>: put the row which its index is
+   * mapped to k in <code>newOrder</code> at index k in the returned value.
+   *
+       * @param newOrder    an int to int hashmap that defines the new order of rows
+       * @return            a SparseMutableTable with same content as this one, only
+   *                    with different order of rows.
+   */
+  protected Table reorderRows(VIntIntHashMap newOrder) {
+    SparseMutableTable retVal = new SparseMutableTable();
+    int[] cols = columns.keys();
+    for (int i = 0; i < cols.length; i++) {
+      retVal.setColumn(cols[i],
+                       ( (AbstractSparseColumn) ( (AbstractSparseColumn)
+                                                 getColumn(cols[i])).
+                        reorderRows(newOrder)));
+
+    }
+    retVal.transformations = (ArrayList) transformations.clone();
+    //copying general attributes
+    retVal.copyAttributes(this);
+    return retVal;
+  }
+
+
+
+  /**
+   * Reorders the columns in this table, s.t.:
+   * for each key k in <codE>newOrder</code>: put the column which its index is
+   * mapped to k in <code>newOrder</code> at index k in the returned value.
+   *
+       * @param newOrder    an int to int hashmap that defines the new order of columns
+       * @return            a SparseMutableTable with same content as this one, only
+   *                    with different order of columns.
+   */
+  protected Table reorderColumns(VIntIntHashMap newOrder) {
+    SparseMutableTable retVal = new SparseMutableTable(this);
+
+    retVal.columns = (VIntObjectHashMap) columns.reorder(newOrder);
+    return retVal;
+
+  }
+
+  /**
    * Swaps rows no. <code>pos1</code> and <code>pos2</code>
    *
    * @param pos1    the index of the first row to be swapped
@@ -789,11 +799,9 @@ public class SparseMutableTable
     validColumn = tempSet.toArray(); //now validColumns hold all the neede indices
     //for each valid column in those 2 rows
     for (int i = 0; i < validColumn.length; i++) {
-
       //swap the rows.
       ( (Column) columns.get(validColumn[i])).swapRows(pos1, pos2);
     }
-
   }
 
   /**
@@ -816,6 +824,30 @@ public class SparseMutableTable
     }
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /**
    * Set entry <code>(row, column)</code> to hold the data represented by
    * <code>element</code>
@@ -837,7 +869,6 @@ public class SparseMutableTable
     }
     if (numColumns <= column) {
       numColumns = column + 1;
-
     }
   }
 
@@ -4992,50 +5023,6 @@ public class SparseMutableTable
    * *****************************************************
    */
 
-
-  /**
-   * Reorders the rows in this table, s.t.:
-   * for each key k in <codE>newOrder</code>: put the row which its index is
-   * mapped to k in <code>newOrder</code> at index k in the returned value.
-   *
-       * @param newOrder    an int to int hashmap that defines the new order of rows
-       * @return            a SparseMutableTable with same content as this one, only
-   *                    with different order of rows.
-   */
-  protected Table reorderRows(VIntIntHashMap newOrder) {
-    SparseMutableTable retVal = new SparseMutableTable();
-    int[] cols = columns.keys();
-    for (int i = 0; i < cols.length; i++) {
-      retVal.setColumn(cols[i],
-                       ( (AbstractSparseColumn) ( (AbstractSparseColumn)
-                                                 getColumn(cols[i])).
-                        reorderRows(newOrder)));
-
-    }
-    retVal.transformations = (ArrayList) transformations.clone();
-    //copying general attributes
-    retVal.copyAttributes(this);
-    return retVal;
-  }
-
-
-
-  /**
-   * Reorders the columns in this table, s.t.:
-   * for each key k in <codE>newOrder</code>: put the column which its index is
-   * mapped to k in <code>newOrder</code> at index k in the returned value.
-   *
-       * @param newOrder    an int to int hashmap that defines the new order of columns
-       * @return            a SparseMutableTable with same content as this one, only
-   *                    with different order of columns.
-   */
-  protected Table reorderColumns(VIntIntHashMap newOrder) {
-    SparseMutableTable retVal = new SparseMutableTable(this);
-
-    retVal.columns = (VIntObjectHashMap) columns.reorder(newOrder);
-    return retVal;
-
-  }
 
 
 
