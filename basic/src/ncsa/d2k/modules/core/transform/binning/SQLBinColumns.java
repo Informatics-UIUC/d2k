@@ -1025,6 +1025,7 @@ public class SQLBinColumns extends UIModule {
                  * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
+                  if (validateBins(binListModel)) {
                     Object[] tmp = binListModel.toArray();
                     BinDescriptor[] bins = new BinDescriptor[tmp.length];
                     for (int i = 0; i < bins.length; i++)
@@ -1037,6 +1038,7 @@ public class SQLBinColumns extends UIModule {
                     BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
                               pushOutput(bt, 0);
                     viewDone("Done");
+                  }
                 }
             });
             JButton helpButton = new JButton("Help");
@@ -1058,6 +1060,32 @@ public class SQLBinColumns extends UIModule {
             add(bxl, BorderLayout.CENTER);
             add(buttonPanel, BorderLayout.SOUTH);
           }  // initView
+
+          private boolean validateBins(DefaultListModel newBins) {
+            boolean match = false;
+            for (int binIdx = 0; binIdx < newBins.size(); binIdx++) {
+              match = false;
+              System.out.println("bin label is " + newBins.get(binIdx));
+              for (int colIdx = 0; colIdx < fieldNames.length; colIdx++) {
+                System.out.println("field name is " + fieldNames[colIdx]);
+                if (newBins.get(binIdx).toString().indexOf(fieldNames[colIdx])>=0) {
+                  match = true;
+                  break;
+                }
+                else {
+                  continue;
+                }
+              }
+              if (!match) {
+                JOptionPane.showMessageDialog(msgBoard,
+                         "Current bins contain unselected attributes. Please remove them.", "Error",
+                         JOptionPane.ERROR_MESSAGE);
+                return false;
+              }
+            }
+            System.out.println("will return true for validateBins");
+            return true;
+          }
 
 
         /** find unique values in a column
