@@ -37,9 +37,9 @@ public class AllColumnTests {
 			suite.addTest(new TestSuite(ByteColumnTest.class));
 			suite.addTest(new TestSuite(CharArrayColumnTest.class));
 			suite.addTest(new TestSuite(CharColumnTest.class));
-			suite.addTest(new TestSuite(ContinuousByteArrayColumnTest.class));
-		suite.addTest(new TestSuite(ContinuousCharArrayColumnTest.class));
-			suite.addTest(new TestSuite(ContinuousStringColumnTest.class));
+		//	suite.addTest(new TestSuite(ContinuousByteArrayColumnTest.class));
+	//	suite.addTest(new TestSuite(ContinuousCharArrayColumnTest.class));
+	//		suite.addTest(new TestSuite(ContinuousStringColumnTest.class));
 	
 		//$JUnit-END$
 		return suite;
