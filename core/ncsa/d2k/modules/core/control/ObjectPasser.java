@@ -6,12 +6,15 @@ import ncsa.d2k.infrastructure.modules.*;
 	@author pgroves
 	*/
 
-public class ObjectPasser extends ComputeModule 
+public class ObjectPasser extends DataPrepModule 
 	implements java.io.Serializable, HasNames{
 
 	//////////////////////
 	//d2k Props
 	////////////////////
+	String inputName="Object In";
+
+	String outputName="Object Out";
 	
 	
 	/////////////////////////
@@ -50,11 +53,17 @@ public class ObjectPasser extends ComputeModule
 
 
 	public String getModuleInfo(){
-		return "";
+		return "Does nothing but passes the input object through."+
+				" Intended to be used when an input into an embedded"+
+				" itinerary needs to be fanned out. <br><b>Properties</b>"+
+				"<ul><li>inputName: the name for the input to appear in the"+
+				" module info window. (to keep track of similar inputs/outputs"+
+				" when using embedded itins).<li>outputName: the name of the "+
+				" output" ;
 	}
 	
    	public String getModuleName() {
-		return "Does nothing but passes the input object through";
+		return "Pass unchanged object";
 	}
 	public String[] getInputTypes(){
 		String[] s= {"java.lang.Object"};
@@ -64,7 +73,7 @@ public class ObjectPasser extends ComputeModule
 	public String getInputInfo(int index){
 		switch (index){
 			case(0): {
-				return "";
+				return inputName;
 			}
 			default:{
 				return "No such input.";
@@ -75,7 +84,7 @@ public class ObjectPasser extends ComputeModule
 	public String getInputName(int index) {
 		switch (index){
 			case(0): {
-				return "";
+				return inputName;
 			}
 			default:{
 				return "No such input.";
@@ -90,7 +99,7 @@ public class ObjectPasser extends ComputeModule
 	public String getOutputInfo(int index){
 		switch (index){
 			case(0): {
-				return "";
+				return outputName;
 			}
 			default:{
 				return "No such output.";
@@ -100,7 +109,7 @@ public class ObjectPasser extends ComputeModule
 	public String getOutputName(int index) {
 		switch (index){
 			case(0): {
-				return "";
+				return outputName;
 			}
 			default:{
 				return "No such output.";
@@ -110,8 +119,23 @@ public class ObjectPasser extends ComputeModule
 	////////////////////////////////
 	//D2K Property get/set methods
 	///////////////////////////////
+	
+	public void setInput_Name(String s){
+		inputName=s;
+	}
+	public String getInput_Name(){
+		return inputName;
+	}
+	public void setOutput_Name(String s){
+		outputName=s;
+	}
+	public String getOutput_Name(){
+		return outputName;
+	}
+
 
 	/*
+	
 	public boolean get(){
 		return ;
 	}
