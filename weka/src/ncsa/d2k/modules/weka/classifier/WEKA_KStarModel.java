@@ -14,7 +14,7 @@ import java.io.Serializable;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-import weka.classifiers.kstar.*;
+import weka.classifiers.lazy.*;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
@@ -136,12 +136,14 @@ public class WEKA_KStarModel extends PredictionModelModule implements Serializab
   /**
    * Predict the classes based on the attributes.
    */
-  public PredictionTable predict(ExampleTable src) {
+  // public PredictionTable predict(ExampleTable src) {
+  public void makePredictions(PredictionTable pt) {
     /*
 		ExampleTable vt = (ExampleTable)src;
 		return vt;
   */
-    return null;
+    // return null;
+    return;
   }
 
 

@@ -61,7 +61,7 @@ public class WEKA_AttributeSelectionEvaluationRanker_OneR extends ComputeModule 
 
   public String getOutputInfo(int parm1) {
 		switch (parm1) {
-			case 0: return "ASEvaluation";
+			case 0: return "WEKA Evaluation Module";
 			default: return "No such output";
 		}
 	}
@@ -101,7 +101,7 @@ public class WEKA_AttributeSelectionEvaluationRanker_OneR extends ComputeModule 
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
+				return "WEKA Evaluation Module";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}

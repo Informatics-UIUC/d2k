@@ -149,12 +149,14 @@ public class WEKA_SimpleKMeansClustererModel extends PredictionModelModule imple
   /**
    * Predict the classes based on the attributes.
    */
-  public PredictionTable predict(ExampleTable src) {
+  // public PredictionTable predict(ExampleTable src) {
+  public void makePredictions(PredictionTable pt) {
     /*
 		ExampleTable vt = (ExampleTable)src;
 		return vt;
   */
-    return null;
+    // return null;
+    return;
   }
 
     /**

@@ -67,7 +67,7 @@ public class WEKA_AttributeSelectionEvaluationRanker_ChiSquared extends ComputeM
 
   public String getOutputInfo(int parm1) {
 		switch (parm1) {
-			case 0: return "ASEvaluation";
+			case 0: return "WEKA Evaluation Module";
 			default: return "No such output";
 		}
 	}
@@ -171,8 +171,27 @@ public class WEKA_AttributeSelectionEvaluationRanker_ChiSquared extends ComputeM
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
+				return "WEKA Evaluation Module";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      PropertyDescription[] pds = new PropertyDescription[2];
+
+      pds[0] = new PropertyDescription(
+         "missingMerge",
+         "Missing as Separate",
+         "Treat missing values as a separate value?");
+
+      pds[1] = new PropertyDescription(
+         "binarizeNumericAttributes",
+         "Binarize Numeric Attributes",
+         "Just binarize numeric attributes?");
+
+      return pds;
+
+   }
+
 }

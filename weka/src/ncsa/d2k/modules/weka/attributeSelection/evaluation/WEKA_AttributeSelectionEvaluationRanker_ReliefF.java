@@ -79,7 +79,7 @@ public class WEKA_AttributeSelectionEvaluationRanker_ReliefF extends ComputeModu
 
   public String getOutputInfo(int parm1) {
 		switch (parm1) {
-			case 0: return "ASEvaluation";
+			case 0: return "WEKA Evaluation Module";
 			default: return "No such output";
 		}
 	}
@@ -252,8 +252,47 @@ public class WEKA_AttributeSelectionEvaluationRanker_ReliefF extends ComputeModu
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
+				return "WEKA Evaluation Module";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      PropertyDescription[] pds = new PropertyDescription[5];
+
+      pds[0] = new PropertyDescription(
+         "weightByDistance",
+         "Weight by Distance",
+         "Weight by distance rather than equal weights?"
+      );
+
+      pds[1] = new PropertyDescription(
+         "sigma",
+         "Sigma",
+         "The sigma value."
+      );
+
+      pds[2] = new PropertyDescription(
+         "seed",
+         "Seed",
+         "The random number seed used for sampling instances."
+      );
+
+      pds[3] = new PropertyDescription(
+         "sampleSize",
+         "Sample Size",
+         "The number of instances to sample when estimating attributes. The default, -1, uses all instances."
+      );
+
+      pds[4] = new PropertyDescription(
+         "numNeighbours",
+         "Number of Neighbours",
+         "The number of nearest hits/misses."
+      );
+
+      return pds;
+
+   }
+
 }

@@ -14,7 +14,7 @@ import java.io.Serializable;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-import weka.classifiers.NaiveBayes;
+import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
@@ -140,12 +140,14 @@ public class WEKA_NaiveBayesModel extends PredictionModelModule implements Seria
   /**
    * Predict the classes based on the attributes.
    */
-  public PredictionTable predict(ExampleTable src) {
+  // public PredictionTable predict(ExampleTable src) {
+  public void makePredictions(PredictionTable pt) {
     /*
 		ExampleTable vt = (ExampleTable)src;
 		return vt;
   */
-    return null;
+    // return null;
+    return;
   }
 
 

@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.*;
 import ncsa.d2k.core.modules.*;
 import weka.core.*;
-import weka.filters.StringToNominalFilter;
+import weka.filters.unsupervised.attribute.StringToNominal;
 
 public class WEKA_FilterAttsStringToNominal extends DataPrepModule {
 
@@ -124,7 +124,7 @@ public class WEKA_FilterAttsStringToNominal extends DataPrepModule {
           int numatts = in.numAttributes();
           for (int i = 0; i < numatts; i++) {
             if (in.attribute(i).isString()){
-              StringToNominalFilter filter = new StringToNominalFilter();
+              StringToNominal filter = new StringToNominal();
               filter.setAttributeIndex(i); //must come before setInputFormat (this type of dependency is bad)
               filter.setInputFormat(in);
               int numinsts = in.numInstances();

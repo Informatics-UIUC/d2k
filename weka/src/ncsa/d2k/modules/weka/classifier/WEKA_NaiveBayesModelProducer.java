@@ -11,7 +11,7 @@ package ncsa.d2k.modules.weka.classifier;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import weka.classifiers.j48.J48;
+// import weka.classifiers.j48.J48;
 import weka.core.Instances;
 
 /**
@@ -45,7 +45,8 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule  {
    * @return A description of this module.
    */
   public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    Class for a Naive Bayes classifier using estimator classes. Numeric     estimator precision values are chosen based on analysis of the training     data. For this reason, the classifier is not an UpdateableClassifier     (which in typical usage are initialized with zero training instances) --     if you need the UpdateableClassifier functionality, Create an empty class     such as the following:    <p>          </p>    <pre><code> public class NaiveBayesUpdateable extends NaiveBayes      implements UpdateableClassifier {  } </code>    </pre>    This classifier will use a default precision of 0.1 for numeric attributes     when buildClassifier is called with zero training instances.    <p>      For more information on Naive Bayes classifiers, see    </p>    <p>      George H. John and Pat Langley (1995). <i>Estimating Continuous       Distributions in Bayesian Classifiers</i>. Proceedings of the Eleventh       Conference on Uncertainty in Artificial Intelligence. pp. 338-345.       Morgan Kaufmann, San Mateo.    </p>    <p>      Valid options are:    </p>    <p>      -K<br>Use kernel estimation for modelling numeric attributes rather than       a single normal distribution.    </p>  </body></html>";
+		return "<html>  <head>      </head>  <body>    Class for a Naive Bayes classifier using estimator classes. Numeric     estimator precision values are chosen based on analysis of the training     data. For this reason, the classifier is not an UpdateableClassifier     (which in typical usage are initialized with zero training instances) --     if you need the UpdateableClassifier functionality, Create an empty class     such as the following:    <p>          </p>    <pre><code> public class NaiveBayesUpdateable extends NaiveBayes      implements UpdateableClassifier {  } </code>    </pre>    This classifier will use a default precision of 0.1 for numeric attributes     when buildClassifier is called with zero training instances.    <p>      For more information on Naive Bayes classifiers, see    </p>    <p>      George H. John and Pat Langley (1995). <i>Estimating Continuous       Distributions in Bayesian Classifiers</i>. Proceedings of the Eleventh       " +
+         "Conference on Uncertainty in Artificial Intelligence. pp. 338-345.       Morgan Kaufmann, San Mateo.    </p>    "+/*<p>      Valid options are:    </p>    <p>      -K<br>Use kernel estimation for modelling numeric attributes rather than       a single normal distribution.    </p>  */"</body></html>";
 	}
 
   /**
@@ -118,7 +119,7 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule  {
   public String getOutputName(int i) {
 		switch(i) {
 			case 0:
-				return "WEKA_NaiveBayesModel";
+				return "PredictionModelModule (NaiveBayes)";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
@@ -182,5 +183,13 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule  {
     m_UseKernelEstimator = v;
   }
 
+  public PropertyDescription[] getPropertiesDescriptions() {
+     return new PropertyDescription[] {
+        new PropertyDescription(
+           "useKernelEstimator",
+           "User Kernel Estimator",
+           "Whether to use the kernel density estimator rather than normal distribution for numeric attributes.")
+     };
+  }
 
 }

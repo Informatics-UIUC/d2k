@@ -14,7 +14,7 @@ import java.io.Serializable;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-import weka.classifiers.j48.J48;
+import weka.classifiers.trees.J48;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.Drawable;
@@ -42,6 +42,9 @@ public class WEKA_J48Model extends PredictionModelModule implements Serializable
   // Public Functions
   //==================
 
+  public int graphType() {
+     return m_modelDelegate.graphType();
+  }
 
   /**
    * Return a description of the function of this module.
@@ -141,12 +144,14 @@ public class WEKA_J48Model extends PredictionModelModule implements Serializable
   /**
    * Predict the classes based on the attributes.
    */
-  public PredictionTable predict(ExampleTable src) {
+  // public PredictionTable predict(ExampleTable src) {
+  public void makePredictions(PredictionTable pt) {
     /*
 		ExampleTable vt = (ExampleTable)src;
 		return vt;
   */
-    return null;
+    // return null;
+    return;
   }
 
 

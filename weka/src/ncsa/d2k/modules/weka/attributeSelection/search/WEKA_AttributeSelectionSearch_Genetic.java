@@ -55,7 +55,7 @@ public class WEKA_AttributeSelectionSearch_Genetic extends ComputeModule {
 
   public String getOutputInfo(int parm1) {
 		switch (parm1) {
-			case 0: return "weka.attributeSelection.ASSearch";
+			case 0: return "WEKA Search Module";
 			default: return "No such output";
 		}
 	}
@@ -272,8 +272,52 @@ public class WEKA_AttributeSelectionSearch_Genetic extends ComputeModule {
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
+				return "WEKA Search Module";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      PropertyDescription[] pds = new PropertyDescription[7];
+
+      pds[0] = new PropertyDescription(
+         "startSet",
+         "Start Set",
+         "The start set as a range.");
+
+      pds[1] = new PropertyDescription(
+         "populationSize",
+         "Population Size",
+         "The number of individual solutions.");
+
+      pds[2] = new PropertyDescription(
+         "maxGenerations",
+         "Max Generations",
+         "The maximum number of generations to evaluate.");
+
+      pds[3] = new PropertyDescription(
+         "crossoverProb",
+         "Crossover Probability",
+         "The probability of crossover occurring.");
+
+      pds[4] = new PropertyDescription(
+         "mutationProb",
+         "Mutation Probability",
+         "The probability of mutation occurring.");
+
+      pds[5] = new PropertyDescription(
+         "reportFrequency",
+         "Report Frequency",
+         "How often reports are generated.");
+
+      pds[6] = new PropertyDescription(
+         "seed",
+         "Seed",
+         "The seed for random number generation.");
+
+      return pds;
+
+   }
+
 }

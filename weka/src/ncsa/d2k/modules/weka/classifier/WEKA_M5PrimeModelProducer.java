@@ -11,7 +11,7 @@ package ncsa.d2k.modules.weka.classifier;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import weka.classifiers.m5.*;
+// import weka.classifiers.m5.*;
 import weka.core.Instances;
 
 public class WEKA_M5PrimeModelProducer extends ModelProducerModule  {
@@ -120,7 +120,7 @@ public class WEKA_M5PrimeModelProducer extends ModelProducerModule  {
   public String getOutputName(int i) {
 		switch(i) {
 			case 0:
-				return "WEKA_M5PrimeModel";
+				return "PredictionModelModule (M5Prime)";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
@@ -248,6 +248,34 @@ public class WEKA_M5PrimeModelProducer extends ModelProducerModule  {
   public void setVerbosity(int v) {
 
     m_Verbosity = v;
+  }
+
+  public PropertyDescription[] getPropertiesDescriptions() {
+
+     PropertyDescription[] pds = new PropertyDescription[4];
+
+     pds[0] = new PropertyDescription(
+        "useUnsmoothed",
+        "Use Unsmoothed",
+        "No smoothing?");
+
+     pds[1] = new PropertyDescription(
+        "pruningFactor",
+        "Pruning Factor",
+        "The pruning factor.");
+
+     pds[2] = new PropertyDescription(
+        "modelType",
+        "Model Type",
+        "The model type.");
+
+     pds[3] = new PropertyDescription(
+        "verbosity",
+        "Verbosity",
+        "The verbosity.");
+
+     return pds;
+
   }
 
 }

@@ -74,7 +74,7 @@ public class WEKA_ReadARFF extends DataPrepModule {
     */
     public String getInputName(int i) {
 	if(i == 0) {
-	    return "WEKA Instances object";
+	    return "File Name";
 	} else {
 	    return "No such input!";
 	}
@@ -99,7 +99,7 @@ public class WEKA_ReadARFF extends DataPrepModule {
     */
     public String getOutputName(int i) {
 	if(i == 0) {
-	    return "Instances";
+	    return "WEKA Instance Set";
 	} else {
 	    return "No such output!";
 	}
@@ -173,6 +173,29 @@ public class WEKA_ReadARFF extends DataPrepModule {
 
     public void setHasClass(boolean b){
       m_hasClass = b;
+    }
+
+    public PropertyDescription[] getPropertiesDescriptions() {
+
+       PropertyDescription[] pds = new PropertyDescription[3];
+
+       pds[0] = new PropertyDescription(
+          "classIndex",
+          "Class Index",
+          "Index of the class attribute (assumes only one). Default of -1 specifies the last attribute.");
+
+       pds[1] = new PropertyDescription(
+          "hasClass",
+          "Has Class",
+          "Has class?");
+
+       pds[2] = new PropertyDescription(
+          "verbose",
+          "Verbose",
+          "Verbose output?");
+
+       return pds;
+
     }
 
 }

@@ -43,7 +43,7 @@ public class WEKA_AttributeSelectionSearch_Random extends ComputeModule {
 
   public String getOutputInfo(int parm1) {
 		switch (parm1) {
-			case 0: return "weka.attributeSelection.ASSearch";
+			case 0: return "WEKA Search Module";
 			default: return "No such output";
 		}
 	}
@@ -194,8 +194,32 @@ public class WEKA_AttributeSelectionSearch_Random extends ComputeModule {
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
+				return "WEKA Search Module";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      PropertyDescription[] pds = new PropertyDescription[3];
+
+      pds[0] = new PropertyDescription(
+         "startSet",
+         "Start Set",
+         "The start set as a range.");
+
+      pds[1] = new PropertyDescription(
+         "searchPercent",
+         "Search Percent",
+         "The percentage of the search space to consider.");
+
+      pds[2] = new PropertyDescription(
+         "verbose",
+         "Verbose",
+         "Output new best subsets as the search progresses?");
+
+      return pds;
+
+   }
+
 }

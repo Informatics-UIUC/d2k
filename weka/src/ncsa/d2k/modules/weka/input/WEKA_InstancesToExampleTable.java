@@ -78,7 +78,7 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
     */
     public String getInputName(int i) {
 	if(i == 0) {
-	    return "WEKA Instances";
+	    return "WEKA Instance Set";
 	} else {
 	    return "No such input!";
 	}
@@ -103,7 +103,7 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
     */
     public String getOutputName(int i) {
 	if(i == 0) {
-	    return "D2K ExampleTable";
+	    return "Example Table";
 	} else {
 	    return "No such output!";
 	}
@@ -168,7 +168,8 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
         }
 
         Column[] simps = new Column[0];
-        Table verticaltable = DefaultTableFactory.getInstance().createTable((Column[])tableColumns.toArray(simps));
+        //Table verticaltable = DefaultTableFactory.getInstance().createTable((Column[])tableColumns.toArray(simps));
+        Table verticaltable = new MutableTableImpl((Column[])tableColumns.toArray(simps));
         //ExampleTable exampletable = new ExampleTable((Table)verticaltable);
         ExampleTable exampletable = verticaltable.toExampleTable();
 
@@ -237,5 +238,17 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
       m_verbose = b;
     }
 
+    public PropertyDescription[] getPropertiesDescriptions() {
+
+       PropertyDescription[] pds = new PropertyDescription[1];
+
+       pds[0] = new PropertyDescription(
+          "verbose",
+          "Verbose",
+          "Verbose output?");
+
+       return pds;
+
+    }
 
 }

@@ -50,7 +50,7 @@ public class WEKA_AttributeSelectionEvaluation_Classifier extends ComputeModule 
 
   public String getOutputInfo(int parm1) {
 		switch (parm1) {
-			case 0: return "ASEvaluation";
+			case 0: return "WEKA Evaluation Module";
 			default: return "No such output";
 		}
 	}
@@ -194,7 +194,7 @@ public class WEKA_AttributeSelectionEvaluation_Classifier extends ComputeModule 
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "input0";
+				return "PredictionModelModule";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -207,8 +207,27 @@ public class WEKA_AttributeSelectionEvaluation_Classifier extends ComputeModule 
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
+				return "WEKA Evaluation Module";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      PropertyDescription[] pds = new PropertyDescription[2];
+
+      pds[0] = new PropertyDescription(
+         "holdOutFile",
+         "Hold Out File",
+         "The file that contains hold out/test instances.");
+
+      pds[1] = new PropertyDescription(
+         "useTraining",
+         "Use Training Data",
+         "Evaluate on training data rather than separate hold out/test set?");
+
+      return pds;
+
+   }
+
 }

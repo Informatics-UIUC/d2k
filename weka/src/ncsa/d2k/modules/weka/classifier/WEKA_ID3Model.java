@@ -14,7 +14,7 @@ import java.io.Serializable;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-import weka.classifiers.Id3;
+import weka.classifiers.trees.Id3;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
@@ -138,12 +138,14 @@ public class WEKA_ID3Model extends PredictionModelModule implements Serializable
   /**
    * Predict the classes based on the attributes.
    */
-  public PredictionTable predict(ExampleTable src) {
+  // public PredictionTable predict(ExampleTable src) {
+  public void makePredictions(PredictionTable pt) {
     /*
 		ExampleTable vt = (ExampleTable)src;
 		return vt;
   */
-    return null;
+    // return null;
+    return;
   }
 
 

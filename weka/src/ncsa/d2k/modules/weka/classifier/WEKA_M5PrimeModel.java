@@ -14,7 +14,7 @@ import java.io.Serializable;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-import weka.classifiers.m5.*;
+import weka.classifiers.trees.*;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
@@ -25,14 +25,14 @@ public class WEKA_M5PrimeModel extends PredictionModelModule implements Serializ
   // Data Members
   //==============
 
-  M5Prime m_modelDelegate = null;
+  M5P m_modelDelegate = null;
 
   //================
   // Constructor(s)
   //================
 
   public WEKA_M5PrimeModel() {
-    m_modelDelegate = new M5Prime();
+    m_modelDelegate = new M5P();
   }
 
   //==================
@@ -138,12 +138,14 @@ public class WEKA_M5PrimeModel extends PredictionModelModule implements Serializ
   /**
    * Predict the classes based on the attributes.
    */
-  public PredictionTable predict(ExampleTable src) {
+  // public PredictionTable predict(ExampleTable src) {
+  public void makePredictions(PredictionTable pt) {
     /*
 		ExampleTable vt = (ExampleTable)src;
 		return vt;
   */
-    return null;
+    // return null;
+    return;
   }
 
 

@@ -12,10 +12,10 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 import weka.core.*;
 
 /**
- * This module takes a vertical table as input and outputs a WEKA Instances object.
+ * This module takes a table as input and outputs a WEKA Instances object.
 */
 
-public class WEKA_VerticalTableToInstances extends DataPrepModule {
+public class WEKA_TableToInstances extends DataPrepModule {
 
   //==============
   // Data Members
@@ -27,7 +27,7 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
   // Constructor(s)
   //================
 
-  public WEKA_VerticalTableToInstances() {
+  public WEKA_TableToInstances() {
   }
 
     //================
@@ -59,7 +59,7 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
     */
     public String getInputInfo(int i) {
 		switch (i) {
-			case 0: return "A D2K Vertical Table";
+			case 0: return "A D2K Table";
 			default: return "No such input";
 		}
 	}
@@ -71,7 +71,7 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
     */
     public String getInputName(int i) {
 	if(i == 0) {
-	    return "WEKA Instances object";
+	    return "Table";
 	} else {
 	    return "No such input!";
 	}
@@ -84,7 +84,7 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
     */
     public String getOutputInfo(int i) {
 		switch (i) {
-			case 0: return "WEKA Instances object built from D2K Vertical Table";
+			case 0: return "WEKA Instances object built from D2K Table";
 			default: return "No such output";
 		}
 	}
@@ -96,7 +96,7 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
     */
     public String getOutputName(int i) {
 	if(i == 0) {
-	    return "Instances";
+	    return "WEKA Instance Set";
 	} else {
 	    return "No such output!";
 	}
@@ -107,7 +107,7 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
        @return A description of this module.
     */
     public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    This module will read in a D2K Vertical Table and construct a WEKA     Instances object. The instances object is the primary data structure for     holding table information in the WEKA framework.  </body></html>";
+		return "<html>  <head>      </head>  <body>    This module will read in a D2K Table and construct a WEKA     Instances object. The instances object is the primary data structure for     holding table information in the WEKA framework.  </body></html>";
 	}
 
    /**
@@ -115,7 +115,7 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
        @return The name of this module.
     */
     public String getModuleName() {
-	return "WEKA_VerticalTableToInstances";
+	return "WEKA_TableToInstances";
     }
 
     /**
@@ -137,10 +137,10 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
               atts.addElement(new Attribute(vt.getColumnLabel(i)));
             } else {
             //assume the column is of a string type (VT's don't have explicitly nominal values)
-              atts.addElement(new Attribute(vt.getColumnLabel(i), null));
+              atts.addElement(new Attribute(vt.getColumnLabel(i), (FastVector)null));
             }
           }
-          Instances instances = new Instances("Vertical Table", atts, 1000);
+          Instances instances = new Instances("Table", atts, 1000);
           long numinstances = vt.getNumRows();
           for (int i = 0; i < numinstances; i++){
             Instance inst = new Instance(numatts);
@@ -180,7 +180,7 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
 	  this.pushOutput(instances, 0);
 	} catch (Exception ex) {
             ex.printStackTrace();
-	    System.err.println("ERROR in WEKA_VerticalTableToInstances: " + ex);
+	    System.err.println("ERROR in WEKA_TableToInstances: " + ex);
             throw ex;
 	}
     }
@@ -192,6 +192,15 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
 
     public void setVerbose(boolean b){
       m_verbose = b;
+    }
+
+    public PropertyDescription[] getPropertiesDescriptions() {
+       PropertyDescription[] pds = new PropertyDescription[1];
+       pds[0] = new PropertyDescription(
+          "verbose",
+          "Verbose",
+          "Verbose output?");
+       return pds;
     }
 
 }

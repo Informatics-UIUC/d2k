@@ -127,7 +127,7 @@ public class WEKA_SimpleKMeansClustererModelProducer extends ModelProducerModule
   public String getOutputName(int i) {
 		switch(i) {
 			case 0:
-				return "SimpleKMeansClustererModel";
+				return "PredictionModelModule";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
@@ -207,6 +207,24 @@ public class WEKA_SimpleKMeansClustererModelProducer extends ModelProducerModule
    */
   public int getSeed () {
     return  m_Seed;
+  }
+
+  public PropertyDescription[] getPropertiesDescriptions() {
+
+     PropertyDescription[] pds = new PropertyDescription[2];
+
+     pds[0] = new PropertyDescription(
+        "seed",
+        "Random Seed",
+        "The seed for random number generation.");
+
+     pds[1] = new PropertyDescription(
+        "numClusters",
+        "Number of Clusters",
+        "The number of clusters to generate.");
+
+     return pds;
+
   }
 
 }

@@ -11,7 +11,7 @@ package ncsa.d2k.modules.weka.evaluation;
 
 import ncsa.d2k.modules.weka.classifier.WEKA_ModelDelegator;
 import ncsa.d2k.modules.PredictionModelModule;
-import ncsa.d2k.core.modules.ModelEvaluatorModule;
+import ncsa.d2k.core.modules.*;
 import weka.core.*;
 import weka.classifiers.*;
 
@@ -147,9 +147,9 @@ public class WEKA_CVClassifierEvaluator extends ModelEvaluatorModule {
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "input0";
+				return "PredictionModelModule";
 			case 1:
-				return "input1";
+				return "WEKA Instance Set";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -162,8 +162,22 @@ public class WEKA_CVClassifierEvaluator extends ModelEvaluatorModule {
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
+				return "PredictionModelModule";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      PropertyDescription[] pds = new PropertyDescription[1];
+
+      pds[0] = new PropertyDescription(
+         "crossValidationFolds",
+         "Cross-validation Folds",
+         "The number of folds for cross-validation.");
+
+      return pds;
+
+   }
+
 }

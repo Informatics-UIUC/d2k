@@ -29,7 +29,7 @@ public class WEKA_CastModelToDrawable extends DataPrepModule {
 	}
 
 	public String getInputName(int i) {
-		return "PredModel";
+		return "PredictionModelModule";
 	}
 
 	public String[] getOutputTypes() {
@@ -45,7 +45,7 @@ public class WEKA_CastModelToDrawable extends DataPrepModule {
 	}
 
 	public String getOutputName(int i) {
-		return "DrawableObject";
+		return "Drawable";
 	}
 
 	public String getModuleInfo() {

@@ -93,7 +93,7 @@ public class WEKA_SimpleModelSelector extends ModelSelectorModule {
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "input0";
+				return "PredictionModelModule";
 			default: return "NO SUCH INPUT!";
 		}
 	}

@@ -57,9 +57,9 @@ public class WEKA_AttributeSelector extends ComputeModule {
 
   public String getInputInfo(int parm1) {
 		switch (parm1) {
-			case 0: return "WEKA instance set";
-			case 1: return "WEKA search module";
-			case 2: return "WEKA evaluation module";
+			case 0: return "WEKA Instance Set";
+			case 1: return "WEKA Search Module";
+			case 2: return "WEKA Evaluation Module";
 			default: return "No such input";
 		}
 	}
@@ -141,11 +141,11 @@ public class WEKA_AttributeSelector extends ComputeModule {
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "input0";
+				return "WEKA Instance Set";
 			case 1:
-				return "input1";
+				return "WEKA Search Module";
 			case 2:
-				return "input2";
+				return "WEKA Evaluation Module";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -160,4 +160,23 @@ public class WEKA_AttributeSelector extends ComputeModule {
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      PropertyDescription[] pds = new PropertyDescription[2];
+
+      pds[0] = new PropertyDescription(
+         "folds",
+         "Number of Folds",
+         "The number of folds for use in cross-validation.");
+
+      pds[1] = new PropertyDescription(
+         "seed",
+         "Seed",
+         "The seed for use in cross-validation.");
+
+      return pds;
+
+   }
+
 }

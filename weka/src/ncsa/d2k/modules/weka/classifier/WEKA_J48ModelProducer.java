@@ -11,7 +11,7 @@ package ncsa.d2k.modules.weka.classifier;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import weka.classifiers.j48.J48;
+//import weka.classifiers.j48.J48;
 import weka.core.Instances;
 
 /**
@@ -144,7 +144,7 @@ public class WEKA_J48ModelProducer extends ModelProducerModule  {
   public String getOutputName(int i) {
 		switch(i) {
 			case 0:
-				return "WEKA_J48Model";
+				return "PredictionModelModule (J48)";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
@@ -393,5 +393,57 @@ public class WEKA_J48ModelProducer extends ModelProducerModule  {
     m_noCleanup = v;
   }
 
+  public PropertyDescription[] getPropertiesDescriptions() {
+
+     PropertyDescription[] pds = new PropertyDescription[9];
+
+     pds[0] = new PropertyDescription(
+        "unpruned",
+        "Unpruned Tree",
+        "Unpruned trees?");
+
+     pds[1] = new PropertyDescription(
+        "confidenceFactor",
+        "Confidence Factor",
+        "The confidence level.");
+
+     pds[2] = new PropertyDescription(
+        "minNumObj",
+        "Minimum Number of Instances",
+        "The minimum number of instances.");
+
+     pds[3] = new PropertyDescription(
+        "useLaplace",
+        "Use Laplace",
+        "Determines whether probabilities are smoothed using Laplace correction when predictions are generated.");
+
+     pds[4] = new PropertyDescription(
+        "reducedErrorPruning",
+        "Reduced Error Pruning",
+        "Use reduced-error pruning? Turns unpruned trees off if set.");
+
+     pds[5] = new PropertyDescription(
+        "numFolds",
+        "Number of Folds",
+        "The number of folds for reduced-error pruning.");
+
+     pds[6] = new PropertyDescription(
+        "binarySplits",
+        "Binary Splits",
+        "Binary splits on nominal attributes?");
+
+     pds[7] = new PropertyDescription(
+        "subtreeRaising",
+        "Subtree Raising",
+        "Subtree raising to be performed?");
+
+     pds[8] = new PropertyDescription(
+        "saveInstanceData",
+        "Save Instance Data",
+        "Sets whether instance data is to be saved.");
+
+     return pds;
+
+  }
 
 }

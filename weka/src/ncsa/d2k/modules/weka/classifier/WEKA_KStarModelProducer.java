@@ -11,7 +11,7 @@ package ncsa.d2k.modules.weka.classifier;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import weka.classifiers.kstar.*;
+import weka.classifiers.lazy.kstar.*;
 import weka.core.Instances;
 
 public class WEKA_KStarModelProducer extends ModelProducerModule implements KStarConstants {
@@ -119,7 +119,7 @@ public class WEKA_KStarModelProducer extends ModelProducerModule implements KSta
   public String getOutputName(int i) {
 		switch(i) {
 			case 0:
-				return "WEKA_KStarModel";
+				return "PredictionModelModule (KStar)";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
@@ -238,5 +238,27 @@ public class WEKA_KStarModelProducer extends ModelProducerModule implements KSta
       }
   }
 
+  public PropertyDescription[] getPropertiesDescriptions() {
+
+     PropertyDescription[] pds = new PropertyDescription[3];
+
+     pds[0] = new PropertyDescription(
+        "missingMode",
+        "Missing Mode",
+        "The missing value treatment.");
+
+     pds[1] = new PropertyDescription(
+        "entropicAutoBlend",
+        "Blend Method",
+        "0 = use specified blend, 1 = entropic blend setting.");
+
+     pds[2] = new PropertyDescription(
+        "globalBlend",
+        "Global Blend",
+        "The default sphere of influence blend setting.");
+
+     return pds;
+
+  }
 
 }

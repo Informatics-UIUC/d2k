@@ -65,8 +65,8 @@ public class WEKA_ModelBuilder extends ComputeModule {
 	}
   public String getInputInfo(int parm1) {
 		switch (parm1) {
-			case 0: return "ncsa.d2k.modules.PredictionModelModule: input model.";
-			case 1: return "weka.core.Instances: training set.";
+			case 0: return "weka.core.Instances: training set.";
+			case 1: return "ncsa.d2k.modules.PredictionModelModule: input model.";
 			default: return "No such input";
 		}
 	}
@@ -87,9 +87,9 @@ public class WEKA_ModelBuilder extends ComputeModule {
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "input0";
+				return "WEKA Instance Set";
 			case 1:
-				return "input1";
+				return "PredictionModelModule";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -102,7 +102,7 @@ public class WEKA_ModelBuilder extends ComputeModule {
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
+				return "PredictionModelModule";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}

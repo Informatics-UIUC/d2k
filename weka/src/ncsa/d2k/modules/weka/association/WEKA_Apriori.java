@@ -160,7 +160,7 @@ public class WEKA_Apriori extends ComputeModule {
    */
   public String getInputName(int i) {
     switch(i) {
-      case 0: return "Instances";
+      case 0: return "WEKA Instance Set";
       default: return "no such input";
     }
   }
@@ -467,6 +467,55 @@ public class WEKA_Apriori extends ComputeModule {
 
   public boolean getVerbose() {
     return m_verbose;
+  }
+
+  public PropertyDescription[] getPropertiesDescriptions() {
+
+     PropertyDescription[] pds = new PropertyDescription[10];
+
+     pds[0] = new PropertyDescription(
+        "lowerBoundMinSupport",
+        "Minimum Support Lower Bound",
+        "The lower bound for the minimum support.");
+     pds[1] = new PropertyDescription(
+        "upperBoundMinSupport",
+        "Minimum Support Upper Bound",
+        "The upper bound for the minimum support.");
+     pds[2] = new PropertyDescription(
+        "metricType",
+        "Metric Type",
+        "The metric type.");
+     pds[3] = new PropertyDescription(
+        "minMetric",
+        "Minimum Metric Score",
+        "The minimum metric score.");
+     pds[4] = new PropertyDescription(
+        "numRules",
+        "Number of Rules",
+        "The maximum number of rules that are output.");
+     pds[5] = new PropertyDescription(
+        "delta",
+        "Delta",
+        "Delta by which minimum support is decreased in each iteration.");
+     pds[6] = new PropertyDescription(
+        "outputItemSets",
+        "Output Item Sets",
+        "Output itemsets found?");
+     pds[7] = new PropertyDescription(
+        "removeAllMissingCols",
+        "Remove Missing Columns",
+        "Remove missing columns?");
+     pds[8] = new PropertyDescription(
+        "verbose",
+        "Verbose",
+        "Verbose?");
+     pds[9] = new PropertyDescription(
+        "significanceLevel",
+        "Significance Level",
+        "The significance level.");
+
+     return pds;
+
   }
 
 }

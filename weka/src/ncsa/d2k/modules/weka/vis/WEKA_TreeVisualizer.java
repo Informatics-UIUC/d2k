@@ -104,7 +104,7 @@ public class WEKA_TreeVisualizer extends VisModule {
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "input0";
+				return "Drawable";
 			default: return "NO SUCH INPUT!";
 		}
 	}

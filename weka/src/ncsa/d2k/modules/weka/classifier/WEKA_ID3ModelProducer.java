@@ -95,7 +95,7 @@ public class WEKA_ID3ModelProducer extends ModelProducerModule {
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
+				return "PredictionModelModule (ID3)";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
