@@ -55,18 +55,18 @@ public class SetParameterSpace extends JPanel implements CustomModuleEditor {
 		boolean changed = false;
 		for (int i = 0 ; i < count ; i++) {
 			if (min[i] != space.getMinValue(i)) {
-				if (min[i] < mydef.getMinValue(i))
-					throw new Exception ("User minimum must not be less than the default settings.");
+				//if (min[i] < mydef.getMinValue(i))
+				//	throw new Exception ("User minimum must not be less than the default settings.");
 				changed = true;
 			}
 			if (max[i] != space.getMaxValue(i)) {
-				if (max[i] > mydef.getMaxValue(i))
-					throw new Exception ("User maximum must not be greater than the default maximum.");
+				//if (max[i] > mydef.getMaxValue(i))
+				//	throw new Exception ("User maximum must not be greater than the default maximum.");
 				changed = true;
 			}
 			if (def[i] != space.getDefaultValue(i)) {
-				if (def[i] < mydef.getMinValue(i) || def[i] > mydef.getMaxValue(i))
-					throw new Exception ("Default must be between the min and max of the factory settings.");
+				//if (def[i] < mydef.getMinValue(i) || def[i] > mydef.getMaxValue(i))
+				//	throw new Exception ("Default must be between the min and max of the factory settings.");
 				changed = true;
 			}
 			if (res[i] != space.getResolution(i)) {
