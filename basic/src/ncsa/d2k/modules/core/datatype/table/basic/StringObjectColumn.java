@@ -316,13 +316,15 @@ final public class StringObjectColumn extends MissingValuesColumn implements Tex
     }
 
    public byte getByte(int pos) {
-      return getBytes(pos)[0];
+      return Byte.parseByte(getString(pos));
+      //return getBytes(pos)[0];
    }
 
    public void setByte(byte b, int pos) {
-      byte[] ba = new byte[1];
+      /*byte[] ba = new byte[1];
       ba[0] = b;
-      setBytes(ba, pos);
+      setBytes(ba, pos);*/
+      this.setString(Byte.toString(b), pos);
    }
 
    public char getChar(int pos) {

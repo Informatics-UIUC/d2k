@@ -240,13 +240,15 @@ public class StringColumn extends MissingValuesColumn implements TextualColumn {
    }
 
    public byte getByte(int row) {
-	  return getString(row).getBytes()[0];
+      return Byte.parseByte(getString(row));
+	  //return getString(row).getBytes()[0];
 	  //ANCA: the above was commented but it 's the corect one- return Byte.parseByte(getString(row));
    }
 
    public void setByte(byte b, int row) {
-	  byte[] ar = {b};
-	  setString(new String(ar), row);
+      setString(Byte.toString(b), row);
+	  /*byte[] ar = {b};
+	  setString(new String(ar), row);*/
    }
 
    public void setBoolean(boolean b, int row) {
