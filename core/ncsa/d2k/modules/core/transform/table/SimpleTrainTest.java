@@ -26,13 +26,13 @@ public class SimpleTrainTest extends DataPrepModule  {
 	public String getModuleInfo() {
 		return "<p>      Overview: From the input table, will generate a training table and a       testing"+
 			" table. The percent test and the percent train are indicated by       properties.    </p>  "+
-			"  <p>      Detailed Description: The percent test and the percent train is entered       using"+
-			" a custom gui. The test and train data can be either selected at       random, or if the <i>Use"+
-			" First</i> property is set, the first entries       are taken as the test data, and the last"+
-			" entries are taken as the       training data. If the percent test and the percent train is"+
+			"  <p>      Detailed Description: The percent train and the percent test is entered       using"+
+			" a custom gui. The train and test data can be either selected at       random, or if the <i>Use"+
+			" First</i> property is set, the first entries       are taken as the train data, and the last"+
+			" entries are taken as the       test data. If the percent test and the percent train is"+
 			" more than       100 percent, some entries will have to be used more than once. If you want to " +
-			" change only train or test percentages drag the blue arrows, if you want to change them at the " +
-			" same time drag the line invisible line between the percentages.   </p>    <p>"+
+			" change only train or test percentages drag the side arrows, if you want to change them at the " +
+			" same time drag the invisible line between the percentages.   </p>    <p>"+
 			"      Data Type Restrictions: Although this module can take tables containing       any type"+
 			" of data, most supervised learing algorithms will work only on       doubles. If one of these"+
 			" algorithms is to be used, the conversion to       floating point data should take place upstream"+
@@ -239,6 +239,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 		et.setTrainingSet(train);
 		this.pushOutput(et.getTrainTable(), 0);
 		this.pushOutput(et.getTestTable(), 1);
+
 	}
 
 	/**
