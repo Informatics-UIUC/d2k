@@ -95,19 +95,19 @@ public class HierAgglomClustererParamSpaceGenerator
                                       NUM_CLUSTERS,
                                       "This property specifies the number of clusters to form. It must be greater than 1. "+
                                       "If <i>"+
-                                      AUTO_CLUSTER +
-                                      "</i> is enabled, the <i>" +
                                       DISTANCE_THRESHOLD +
-                                      "</i> value will halt cluster agglomeration thus determining the number of clusters formed "+
-                                      "independent of this property's setting.");
+                                      "</i> is greater than 0, that will be used to halt cluster agglomeration and "+
+				      "determine the number of clusters formed, "+
+                                      "independent of this property's setting.  ");
     pds[3] = new PropertyDescription( DISTANCE_THRESHOLD,
 				      DISTANCE_THRESHOLD,
                                       "This property specifies the percentage of the <i>maximum distance</i> to use " +
                                        "as a cutoff value to halt cluster agglomeration.  " +
-                                       "When the distance between the two clusters that are closest exceeds the cutoff value, cluster agglomeration stops, " +
-                                       "even if more or less than <i>" +
+                                       "When the distance between the two clusters that are closest exceeds the cutoff value, "+
+				       "cluster agglomeration stops, " +
+                                       "independent of the value of the <i>" +
                                        NUM_CLUSTERS +
-                                       "</i> remain.  Lower values for the <i>" +
+                                       "</i> property.  Lower values for the <i>" +
                                        DISTANCE_THRESHOLD +
                                        "</i> result in more clusters.   "+
                                        "If the value is 0 (the default), then no cutoff occurs and cluster " +
