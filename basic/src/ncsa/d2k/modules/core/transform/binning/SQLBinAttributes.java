@@ -21,7 +21,7 @@ import java.sql.*;
 /**
  * This module does binning for database data
  */
-public class SQLBinAttributes extends UIModule {
+public class SQLBinAttributes extends HeadlessUIModule {
     private static final String EMPTY = "",
     COLON = " : ", COMMA = ",", DOTS = "...",
     OPEN_PAREN = "(", CLOSE_PAREN = ")", OPEN_BRACKET = "[", CLOSE_BRACKET = "]";
@@ -33,8 +33,8 @@ public class SQLBinAttributes extends UIModule {
     public int totalRows;
     public ConnectionWrapper wrapper;
     private BinDescriptor[] savedBins;
-    public Object getSavedBins() { return savedBins; }
-    public void setSavedBins(Object value) { savedBins = (BinDescriptor[])value; }
+    public Object[] getSavedBins() { return savedBins; }
+    public void setSavedBins(Object[] value) { savedBins = (BinDescriptor[])value; }
 
 
     /**
@@ -182,7 +182,7 @@ public class SQLBinAttributes extends UIModule {
     //headless conversion - vered:
     public PropertyDescription[] getPropertiesDescriptions() {
         PropertyDescription[] pds = new PropertyDescription[2];
-        pds[0] = super.getPropertiesDescriptions()[0];
+        pds[0] = super.supressDescription;
         pds[1] = new PropertyDescription("newColumn", "Create In New Column",
             "Set this property to true if you wish the binned columns to be created in new columns");
         return pds;
@@ -1053,6 +1053,7 @@ public class SQLBinAttributes extends UIModule {
                     for (int i = 0; i < bins.length; i++)
                         bins[i] = (BinDescriptor)tmp[i];
 
+
                     savedBins = new BinDescriptor[bins.length];
                     for (int i = 0; i < bins.length; i++)
                        savedBins[i] = bins[i];
@@ -1613,7 +1614,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
       wrapper = (ConnectionWrapper) pullInput(0);
       String tableName = (String)pullInput(1);
       String[] fieldNames = (String[]) pullInput(2);
-      String condition = (String) pullInput(3);
+//      String condition = (String) pullInput(3);
 
       if(savedBins == null) {
         savedBins = new BinDescriptor[0];

@@ -25,8 +25,16 @@ import java.sql.*;
  * string and its format.)
  *
  * @author Dora Cai based on gpape's non-database version
+ *
+ * @todo: the user interface has a problem:
+ * at the beginning it shows the first attribute and its unique values.
+ * when changing to another attribute, the drop down list of the attributes does not
+ * change, but when you add one of this irrelevant values to the expression -
+ * it inserts a relevant value.
+ * sometimes it shows the relevant vlues of an attributes but when you add one
+ * attribute it, for somewhat reason, adds its sibling attribute. strange.
  */
-public class SQLFilterConstruction extends UIModule {
+public class SQLFilterConstruction extends HeadlessUIModule {
   JOptionPane msgBoard = new JOptionPane();
   private String tableName = "";
   private ConnectionWrapper cw;
@@ -119,8 +127,11 @@ public class SQLFilterConstruction extends UIModule {
    }
 
    public PropertyDescription[] getPropertiesDescriptions() {
-      return new PropertyDescription[0]; // so that "last expression" property
-                                         // is invisible
+      PropertyDescription[] pds = new PropertyDescription[2];
+      pds[0] = super.getPropertiesDescriptions()[0];
+      pds[1] = new PropertyDescription("queryCondition", "Query Condition",
+                                       "SQL query condition");
+      return pds;
    }
 
 /******************************************************************************/
@@ -493,6 +504,10 @@ public class SQLFilterConstruction extends UIModule {
 
          //_lastExpression = new String(queryCondition);
 
+         //headless conversion support
+         setQueryCondition(queryCondition);
+         //headless conversion support
+
          pushOutput(queryCondition,0);
          viewDone("Done");
       }
@@ -553,4 +568,95 @@ public class SQLFilterConstruction extends UIModule {
       return sb.toString();
 
    }
+
+   //headless conversion support
+   private String queryCondition;
+   public String getQueryCondition(){return queryCondition;}
+   public void setQueryCondition(String str){queryCondition = str;}
+
+   protected void doit()throws Exception{
+     //pulling input...
+     ConnectionWrapper cw = (ConnectionWrapper) pullInput(0);
+     String tableName = (String) pullInput(1);
+
+     String goodCondition = ""; //this will be pushed out.
+
+
+
+     //connecting to data base and getting all the available attributes
+     //in the given table name.
+     Connection con = cw.getConnection();
+     HashMap availableAttributes = new HashMap();
+     DatabaseMetaData metadata = con.getMetaData();
+     ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
+     int counter = 0;
+     while (columns.next()) {
+       availableAttributes.put( columns.getString("COLUMN_NAME"), new Integer(counter));
+       counter++;
+     }//while column
+
+     if(counter == 0){
+       //this means either the table was not found in the data base, or that
+       //it has no columns. the query condition will be empty anyway
+       System.out.println("\n\nSQL Filter Construction:\nEither Table " +
+                          tableName + " is not in the given database, or " +
+                          "it has no columns. The filter will be empty");
+       pushOutput(goodCondition, 0);
+       return;
+     }
+
+     StringTokenizer tok = new StringTokenizer(queryCondition);
+     //parsing the condition, each sub condition that holds a valid
+     //attribute name will be copied into goodCondition
+
+     boolean first = true;
+     //assuming the expression could be malformed.
+     //if it has at least 3 more tokens then there is still yet another
+     //sub expression to parse.
+     while(tok.countTokens() >= 3){
+       String currentToken = tok.nextToken();
+       if(currentToken == null) continue;
+       //now currentToken holds the attribute name
+       if(availableAttributes.containsKey(currentToken)){
+         if(!first)
+           goodCondition += " ";
+          else first = false;
+
+         goodCondition += currentToken + " ";
+         //parsing the relation and the value
+         goodCondition += tok.nextToken() + " ";
+
+         goodCondition += tok.nextToken();
+       }//if contain key
+
+ //could be that the value is left side of expression and the attribute is a right side
+
+       else{
+         String value = currentToken;
+         String relation = tok.nextToken();
+         String attribute = tok.nextToken();
+
+         if (availableAttributes.containsKey(attribute)) {
+           if (!first)
+             goodCondition += " ";
+           else
+             first = false;
+
+           goodCondition += attribute + " ";
+           //parsing the relation and the value
+           goodCondition += relation + " ";
+           goodCondition += value;
+         }//if contain key
+
+       }//else
+
+     }//while has more tokens
+
+
+     pushOutput(goodCondition,0);
+
+
+   }
+   //headless conversion support
+
 }

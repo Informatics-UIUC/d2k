@@ -127,7 +127,7 @@ public class ChooseAttributes extends HeadlessUIModule {
 		return desc;
 	}
 
-	public void doit () throws Exception {
+	protected void doit () throws Exception {
 		Table table = (Table) this.pullInput (0);
 
 		// Map each column name to an index for the column

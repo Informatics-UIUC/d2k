@@ -1736,7 +1736,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 
   public PropertyDescription[] getPropertiesDescriptions(){
     PropertyDescription[] pds = new PropertyDescription[2];
-    pds[0] = super.getPropertiesDescriptions()[0];
+    pds[0] = super.supressDescription;
     pds[1] = new PropertyDescription("newColumn", "Create In New Column",
             "Set this property to true if you wish the binned columns to be created in new columns");
     return pds;

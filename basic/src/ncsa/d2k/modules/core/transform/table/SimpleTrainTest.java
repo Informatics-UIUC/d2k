@@ -258,6 +258,11 @@ public class SimpleTrainTest extends DataPrepModule
 		int numTest = (nr*this.getTestPercent())/100;
 		int numTrain = (nr*this.getTrainPercent())/100;
 		if (numTest < 1 || numTrain < 1) {
+
+                  //debug - vered
+                  System.out.println("\n\n table type: " + orig.getClass().getName() + "\n\n");
+                  System.out.println("\n\nnumber of rows " + orig.getNumRows() + "\n\n");
+                  //end debug
 		  throw new Exception (this.getAlias() +
 			": The selected table was to small to be practical with the percentages specified.");
                 }
@@ -344,7 +349,7 @@ public class SimpleTrainTest extends DataPrepModule
   		javax.swing.JComboBox m_sampling_methods = null;
 
 	    String[] sampling_method_labels = {"Random", "Sequential"};
-	    String[] sampling_method_desc = {"Randomly sample to build train and test tables. ", 
+	    String[] sampling_method_desc = {"Randomly sample to build train and test tables. ",
 		   "First entries in original table used as training examples and last entries used as testing examples."};
 
 		/** if random sampling is used, these will be exposed. */
