@@ -4,15 +4,15 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.TransformationModule;
 import java.util.*;
 
-public class ContinuousExample implements Example, java.io.Serializable {
+public class ContinuousDoubleExample implements Example, java.io.Serializable {
 
-  ContinuousExampleTable exampleSet;
+  ContinuousDoubleExampleTable exampleSet;
   int              exampleIndex;
 
-  public ContinuousExample() {
+  public ContinuousDoubleExample() {
   }
 
-  public ContinuousExample(ContinuousExampleTable exampleSet, int exampleIndex) {
+  public ContinuousDoubleExample(ContinuousDoubleExampleTable exampleSet, int exampleIndex) {
     this.exampleSet   = exampleSet;
     this.exampleIndex = exampleIndex;
   }
@@ -193,11 +193,11 @@ public class ContinuousExample implements Example, java.io.Serializable {
     }
 */
 
-  public ContinuousExample shallowCopy() throws Exception {
-    return (ContinuousExample) this.clone();
+  public ContinuousDoubleExample shallowCopy() throws Exception {
+    return (ContinuousDoubleExample) this.clone();
   }
 
-  public ContinuousExample deepCopy() throws Exception {
+  public ContinuousDoubleExample deepCopy() throws Exception {
 
     Exception e = new Exception();
     System.out.println("Error!  Can not deep copy float Example.  ");

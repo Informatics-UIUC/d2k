@@ -1,27 +1,32 @@
 package ncsa.d2k.modules.core.datatype.table.continuous;
+
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.TransformationModule;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.Serializable {
+public class ContinuousDoubleExampleTable
+    implements ExampleTable, TestTable, java.io.Serializable {
 
-  int       numExamples;
-  int       numFeatures;
-  String [] names;
-  int       numInputs;
-  int       numOutputs;
-  int    [] inputIndices;
-  int    [] outputIndices;
-  int    [] exampleIndices;
-  int    [] trainingSet;
-  int    [] testingSet;
-  double [] data;
+  int numExamples;
+  int numFeatures;
+  String[] names;
+  int numInputs;
+  int numOutputs;
+  int[] inputIndices;
+  int[] outputIndices;
+  int[] exampleIndices;
+  int[] trainingSet;
+  int[] testingSet;
+  double[] data;
+  double[] predictionData;
 
-  public ContinuousExampleTable () {
+  public ContinuousDoubleExampleTable() {
   }
 
-  public void initialize(double [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
+  public void initialize(double[] data, int numExamples, int numInputs,
+                         int numOutputs, String[] inputNames,
+                         String[] outputNames) {
 
     this.numExamples = numExamples;
     this.numFeatures = numInputs + numOutputs;
@@ -33,8 +38,8 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     for (int i = 0; i < numOutputs; i++) {
       this.names[numInputs + i] = outputNames[i];
     }
-    this.numInputs   = numInputs;
-    this.numOutputs  = numOutputs;
+    this.numInputs = numInputs;
+    this.numOutputs = numOutputs;
 
     this.inputIndices = new int[numInputs];
     for (int i = 0; i < numInputs; i++) {
@@ -52,54 +57,54 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     this.data = data;
   }
 
-
-
-  public ContinuousExampleTable (double [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
-    initialize(data, numExamples, numInputs, numOutputs, inputNames, outputNames);
+  public ContinuousDoubleExampleTable(double[] data, int numExamples,
+                                      int numInputs, int numOutputs,
+                                      String[] inputNames, String[] outputNames) {
+    initialize(data, numExamples, numInputs, numOutputs, inputNames,
+               outputNames);
   }
 
-
-  public ContinuousExampleTable (int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
-    double [] data = new double[numExamples * (numInputs + numOutputs)];
-    initialize(data, numExamples, numInputs, numOutputs, inputNames, outputNames);
+  public ContinuousDoubleExampleTable(int numExamples, int numInputs,
+                                      int numOutputs, String[] inputNames,
+                                      String[] outputNames) {
+    double[] data = new double[numExamples * (numInputs + numOutputs)];
+    initialize(data, numExamples, numInputs, numOutputs, inputNames,
+               outputNames);
   }
-
-
 
   public Table copy() {
 
-    ContinuousExampleTable copy   = new ContinuousExampleTable();
+    ContinuousDoubleExampleTable copy = new ContinuousDoubleExampleTable();
 
-    copy.numExamples        = this.numExamples;
-    copy.numFeatures        = this.numFeatures;
-    copy.names              = (String []) this.names.clone();
-    copy.numInputs          = this.numInputs;
-    copy.numOutputs         = this.numOutputs;
-    copy.inputIndices       = (int    []) this.inputIndices.clone();
-    copy.outputIndices      = (int    []) this.outputIndices.clone();
-    copy.exampleIndices     = (int    []) this.exampleIndices.clone();
+    copy.numExamples = this.numExamples;
+    copy.numFeatures = this.numFeatures;
+    copy.names = (String[])this.names.clone();
+    copy.numInputs = this.numInputs;
+    copy.numOutputs = this.numOutputs;
+    copy.inputIndices = (int[])this.inputIndices.clone();
+    copy.outputIndices = (int[])this.outputIndices.clone();
+    copy.exampleIndices = (int[])this.exampleIndices.clone();
     if (testingSet != null)
-      copy.testingSet       = (int    []) this.testingSet.clone();
-    copy.data               = (double []) this.data.clone();
+      copy.testingSet = (int[])this.testingSet.clone();
+    copy.data = (double[])this.data.clone();
     return (Table) copy;
   }
 
   public Table copyByReference() {
-    ContinuousExampleTable copy   = new ContinuousExampleTable();
+    ContinuousDoubleExampleTable copy = new ContinuousDoubleExampleTable();
 
-    copy.numExamples        = this.numExamples;
-    copy.numFeatures        = this.numFeatures;
-    copy.names              = this.names;
-    copy.numInputs          = this.numInputs;
-    copy.numOutputs         = this.numOutputs;
-    copy.inputIndices       = this.inputIndices;
-    copy.outputIndices      = this.outputIndices;
-    copy.exampleIndices     = this.exampleIndices;
-    copy.testingSet         = this.testingSet;
-    copy.data               = this.data;
+    copy.numExamples = this.numExamples;
+    copy.numFeatures = this.numFeatures;
+    copy.names = this.names;
+    copy.numInputs = this.numInputs;
+    copy.numOutputs = this.numOutputs;
+    copy.inputIndices = this.inputIndices;
+    copy.outputIndices = this.outputIndices;
+    copy.exampleIndices = this.exampleIndices;
+    copy.testingSet = this.testingSet;
+    copy.data = this.data;
     return (Table) copy;
   }
-
 
   public double getInputDouble(int e, int i) {
     return (double) data[exampleIndices[e] * numFeatures + inputIndices[i]];
@@ -109,13 +114,14 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     return (double) data[exampleIndices[e] * numFeatures + outputIndices[i]];
   }
 
-
   public String getInputString(int e, int i) {
-    return Double.toString(data[exampleIndices[e] * numFeatures + inputIndices[i]]);
+    return Double.toString(data[exampleIndices[e] * numFeatures +
+                           inputIndices[i]]);
   }
 
   public String getOutputString(int e, int i) {
-    return Double.toString(data[exampleIndices[e] * numFeatures + outputIndices[i]]);
+    return Double.toString(data[exampleIndices[e] * numFeatures +
+                           outputIndices[i]]);
   }
 
   public int getInputInt(int e, int i) {
@@ -123,7 +129,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public int getOutputInt(int e, int i) {
-    return (int) data[exampleIndices[e] * numFeatures  + outputIndices[i]];
+    return (int) data[exampleIndices[e] * numFeatures + outputIndices[i]];
   }
 
   public float getInputFloat(int e, int i) {
@@ -139,7 +145,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public short getOutputShort(int e, int i) {
-    return (short) data[exampleIndices[e] * numFeatures  + outputIndices[i]];
+    return (short) data[exampleIndices[e] * numFeatures + outputIndices[i]];
   }
 
   public long getInputLong(int e, int i) {
@@ -147,7 +153,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public long getOutputLong(int e, int i) {
-    return (long) data[exampleIndices[e] * numFeatures  + outputIndices[i]];
+    return (long) data[exampleIndices[e] * numFeatures + outputIndices[i]];
   }
 
   public byte getInputByte(int e, int i) {
@@ -159,12 +165,13 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public Object getInputObject(int e, int i) {
-    return (Object) new Double(data[exampleIndices[e] * numFeatures + inputIndices[i]]);
+    return (Object)new Double(data[exampleIndices[e] * numFeatures +
+                              inputIndices[i]]);
   }
 
-  public Object getOutputObject(int e, int i)
-  {
-    return (Object) new Double(data[exampleIndices[e] * numFeatures + outputIndices[i]]);
+  public Object getOutputObject(int e, int i) {
+    return (Object)new Double(data[exampleIndices[e] * numFeatures +
+                              outputIndices[i]]);
   }
 
   public char getInputChar(int e, int i) {
@@ -176,25 +183,25 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public byte[] getInputBytes(int e, int i) {
-    byte [] bytes = new byte[1];
+    byte[] bytes = new byte[1];
     bytes[0] = (byte) data[exampleIndices[e] * numFeatures + inputIndices[i]];
     return bytes;
   }
 
   public byte[] getOutputBytes(int e, int i) {
-    byte [] bytes = new byte[1];
+    byte[] bytes = new byte[1];
     bytes[0] = (byte) data[exampleIndices[e] * numFeatures + outputIndices[i]];
     return bytes;
   }
 
   public char[] getInputChars(int e, int i) {
-    char [] chars = new char[1];
+    char[] chars = new char[1];
     chars[0] = (char) data[exampleIndices[e] * numFeatures + inputIndices[i]];
     return chars;
   }
 
   public char[] getOutputChars(int e, int i) {
-    char [] chars = new char[1];
+    char[] chars = new char[1];
     chars[0] = (char) data[exampleIndices[e] * numFeatures + outputIndices[i]];
     return chars;
   }
@@ -222,15 +229,15 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public Example getExample(int e) {
-    return (Example) new ContinuousExample(this, e);
+    return (Example)new ContinuousDoubleExample(this, e);
   }
-
 
   public String getInputName(int i) {
     return this.names[inputIndices[i]];
   }
-  public String [] getInputNames() {
-    String [] names = new String[this.numInputs];
+
+  public String[] getInputNames() {
+    String[] names = new String[this.numInputs];
     for (int i = 0; i < this.numInputs; i++) {
       names[i] = getInputName(i);
     }
@@ -240,14 +247,14 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   public String getOutputName(int i) {
     return this.names[outputIndices[i]];
   }
-  public String [] getOutputNames() {
-    String [] names = new String[this.numOutputs];
+
+  public String[] getOutputNames() {
+    String[] names = new String[this.numOutputs];
     for (int i = 0; i < this.numOutputs; i++) {
       names[i] = getOutputName(i);
     }
     return names;
   }
-
 
   public int getInputType(int i) {
     return ColumnTypes.DOUBLE;
@@ -273,12 +280,11 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     return true;
   }
 
-
-
-
-  public void setExample(int e1, ContinuousExampleTable exampleSet, int e2) {
+  public void setExample(int e1, ContinuousDoubleExampleTable exampleSet,
+                         int e2) {
     for (int i = 0; i < numFeatures; i++) {
-      data[exampleIndices[e1] * numFeatures + i] = data[exampleIndices[e2] * numFeatures + i];
+      data[exampleIndices[e1] * numFeatures +
+          i] = data[exampleIndices[e2] * numFeatures + i];
     }
   }
 
@@ -290,11 +296,11 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     data[exampleIndices[e] * numFeatures + outputIndices[i]] = (float) value;
   }
 
-/*
-  public void deleteInputs(boolean [] deleteFeatures)
-  {
-  }
-*/
+  /*
+    public void deleteInputs(boolean [] deleteFeatures)
+    {
+    }
+   */
 
   public Object getObject(int row, int column) {
     return null;
@@ -315,7 +321,6 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   public double getDouble(int row, int column) {
     return (double) data[exampleIndices[row] * numFeatures + column];
   }
-
 
   public long getLong(int row, int column) {
     return (long) data[exampleIndices[row] * numFeatures + column];
@@ -356,8 +361,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   public void setKeyColumn(int position) {
   }
 
-  public String getColumnLabel(int position)
-  {
+  public String getColumnLabel(int position) {
     String label = null;
     if (position < numInputs)
       label = getInputName(position);
@@ -365,155 +369,164 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
       label = getOutputName(position - numInputs);
     return label;
   }
+
   public String getColumnComment(int position) {
     return null;
   }
+
   public String getLabel() {
     return null;
   }
+
   public void setLabel(String labl) {
   }
+
   public String getComment() {
     return null;
   }
+
   public void setComment(String comment) {
   }
+
   public int getNumRows() {
     return numExamples;
   }
+
   public int getNumEntries() {
     return numExamples;
   }
+
   public int getNumColumns() {
     return numFeatures;
   }
-  public void getRow (Object buffer, int pos) {
-    if(buffer instanceof int[]) {
-      int[] b1 = (int[])buffer;
-      for(int i = 0; i < b1.length; i++)
+
+  public void getRow(Object buffer, int pos) {
+    if (buffer instanceof int[]) {
+      int[] b1 = (int[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getInt(pos, i);
     }
-    else if(buffer instanceof float[]) {
-      float[] b1 = (float[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof float[]) {
+      float[] b1 = (float[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getFloat(pos, i);
     }
-    else if(buffer instanceof double[]) {
-      double[] b1 = (double[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof double[]) {
+      double[] b1 = (double[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getDouble(pos, i);
     }
-    else if(buffer instanceof long[]) {
-      long[] b1 = (long[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof long[]) {
+      long[] b1 = (long[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getLong(pos, i);
     }
-    else if(buffer instanceof short[]) {
-      short[] b1 = (short[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof short[]) {
+      short[] b1 = (short[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getShort(pos, i);
     }
-    else if(buffer instanceof boolean[]) {
-      boolean[] b1 = (boolean[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof boolean[]) {
+      boolean[] b1 = (boolean[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getBoolean(pos, i);
     }
-    else if(buffer instanceof String[]) {
-      String[] b1 = (String[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof String[]) {
+      String[] b1 = (String[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getString(pos, i);
     }
-    else if(buffer instanceof char[][]) {
-      char[][] b1 = (char[][])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof char[][]) {
+      char[][] b1 = (char[][]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getChars(pos, i);
     }
-    else if(buffer instanceof byte[][]) {
-      byte[][] b1 = (byte[][])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof byte[][]) {
+      byte[][] b1 = (byte[][]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getBytes(pos, i);
     }
-    else if(buffer instanceof Object[]) {
-      Object[] b1 = (Object[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof Object[]) {
+      Object[] b1 = (Object[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getObject(pos, i);
     }
-    else if(buffer instanceof byte[]) {
-      byte[] b1 = (byte[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof byte[]) {
+      byte[] b1 = (byte[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getByte(pos, i);
     }
-    else if(buffer instanceof char[]) {
-      char[] b1 = (char[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof char[]) {
+      char[] b1 = (char[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getChar(pos, i);
     }
   }
 
-  public void getColumn (Object buffer, int pos) {
-    if(buffer instanceof int[]) {
-      int[] b1 = (int[])buffer;
-      for(int i = 0; i < b1.length; i++)
+  public void getColumn(Object buffer, int pos) {
+    if (buffer instanceof int[]) {
+      int[] b1 = (int[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getInt(i, pos);
     }
-    else if(buffer instanceof float[]) {
-      float[] b1 = (float[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof float[]) {
+      float[] b1 = (float[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getFloat(i, pos);
     }
-    else if(buffer instanceof double[]) {
-      double[] b1 = (double[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof double[]) {
+      double[] b1 = (double[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getDouble(i, pos);
     }
-    else if(buffer instanceof long[]) {
-      long[] b1 = (long[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof long[]) {
+      long[] b1 = (long[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getLong(i, pos);
     }
-    else if(buffer instanceof short[]) {
-      short[] b1 = (short[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof short[]) {
+      short[] b1 = (short[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getShort(i, pos);
     }
-    else if(buffer instanceof boolean[]) {
-      boolean[] b1 = (boolean[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof boolean[]) {
+      boolean[] b1 = (boolean[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getBoolean(i, pos);
     }
-    else if(buffer instanceof String[]) {
-      String[] b1 = (String[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof String[]) {
+      String[] b1 = (String[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getString(i, pos);
     }
-    else if(buffer instanceof char[][]) {
-      char[][] b1 = (char[][])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof char[][]) {
+      char[][] b1 = (char[][]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getChars(i, pos);
     }
-    else if(buffer instanceof byte[][]) {
-      byte[][] b1 = (byte[][])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof byte[][]) {
+      byte[][] b1 = (byte[][]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getBytes(i, pos);
     }
-    else if(buffer instanceof Object[]) {
-      Object[] b1 = (Object[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof Object[]) {
+      Object[] b1 = (Object[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getObject(i, pos);
     }
-    else if(buffer instanceof byte[]) {
-      byte[] b1 = (byte[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof byte[]) {
+      byte[] b1 = (byte[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getByte(i, pos);
     }
-    else if(buffer instanceof char[]) {
-      char[] b1 = (char[])buffer;
-      for(int i = 0; i < b1.length; i++)
+    else if (buffer instanceof char[]) {
+      char[] b1 = (char[]) buffer;
+      for (int i = 0; i < b1.length; i++)
         b1[i] = getChar(i, pos);
     }
   }
 
-  public Table getSubset(int [] rows) {
+  public Table getSubset(int[] rows) {
     Table newTable = this.copy();
     return newTable.getSubsetByReference(rows);
   }
@@ -525,25 +538,26 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
   public Table getSubsetByReference(int start, int len) {
     int numExamples = len;
-    int [] newExampleIndices = new int[numExamples];
+    int[] newExampleIndices = new int[numExamples];
     for (int i = 0; i < numExamples; i++) {
       newExampleIndices[i] = start + i;
     }
     return this.getSubsetByReference(newExampleIndices);
   }
 
-  public Table getSubsetByReference(int rows[]){
+  public Table getSubsetByReference(int rows[]) {
 
-    ContinuousExampleTable table = (ContinuousExampleTable) this.copyByReference();
+    ContinuousDoubleExampleTable table = (ContinuousDoubleExampleTable)this.
+        copyByReference();
 
     int numExamples = rows.length;
-    int [] newExampleIndices = new int[numExamples];
+    int[] newExampleIndices = new int[numExamples];
 
     // set up new example indices
     for (int i = 0; i < numExamples; i++) {
       newExampleIndices[i] = this.exampleIndices[rows[i]];
     }
-    table.numExamples    = numExamples;
+    table.numExamples = numExamples;
     table.exampleIndices = newExampleIndices;
 
     return table;
@@ -551,17 +565,18 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
   public Table getSubsetByColumnsReference(int cols[]) {
 
-    ContinuousExampleTable table = (ContinuousExampleTable) this.copyByReference();
+    ContinuousDoubleExampleTable table = (ContinuousDoubleExampleTable)this.
+        copyByReference();
 
     int numInputs = cols.length;
-    int [] newInputIndices = new int[numInputs];
+    int[] newInputIndices = new int[numInputs];
 
     // set up new input indices
     for (int i = 0; i < numInputs; i++) {
       newInputIndices[i] = this.inputIndices[cols[i]];
     }
 
-    table.numInputs    = numInputs;
+    table.numInputs = numInputs;
     table.inputIndices = newInputIndices;
 
     return table;
@@ -584,6 +599,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
   public void setColumnIsScalar(boolean value, int position) {
   }
+
   public boolean isColumnNumeric(int position) {
     return true;
   }
@@ -593,157 +609,164 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public ExampleTable toExampleTable() {
-    return (ExampleTable) this;
+    return (ExampleTable)this;
   }
 
-  public void addTransformation (TransformationModule tm) {
+  public void addTransformation(TransformationModule tm) {
   }
 
-  public List getTransformations () {
+  public List getTransformations() {
     return null;
   }
 
-  public int[] getInputFeatures () {
-    int [] inputFeatures = new int[numInputs];
+  public int[] getInputFeatures() {
+    int[] inputFeatures = new int[numInputs];
     for (int i = 0; i < numInputs; i++) {
       inputFeatures[i] = i;
     }
     return inputFeatures;
   }
 
-  public int getNumInputFeatures () {
+  public int getNumInputFeatures() {
     return numInputs;
   }
 
-  public int getNumExamples () {
+  public int getNumExamples() {
     return numExamples;
   }
 
-  public int getNumTrainExamples () {
+  public int getNumTrainExamples() {
     return 0;
   }
 
-  public int getNumTestExamples () {
+  public int getNumTestExamples() {
     return 0;
   }
 
-  public int[] getOutputFeatures () {
+  public int[] getOutputFeatures() {
     return outputIndices;
   }
 
-  public int getNumOutputFeatures () {
+  public int getNumOutputFeatures() {
     return numOutputs;
   }
 
-  public void setInputFeatures (int[] inputs) {
+  public void setInputFeatures(int[] inputs) {
     inputIndices = inputs;
   }
 
-  public void setOutputFeatures (int[] outs) {
+  public void setOutputFeatures(int[] outs) {
     outputIndices = outs;
   }
 
-  public void setTrainingSet (int[] trainingSet) {
+  public void setTrainingSet(int[] trainingSet) {
     this.trainingSet = trainingSet;
   }
 
-  public int[] getTrainingSet () {
+  public int[] getTrainingSet() {
     return trainingSet;
   }
 
-  public void setTestingSet (int[] testingSet) {
+  public void setTestingSet(int[] testingSet) {
     this.testingSet = testingSet;
   }
 
-  public int[] getTestingSet () {
+  public int[] getTestingSet() {
     return testingSet;
   }
 
-
   public ExampleTable getExampleTable() {
-    return (ExampleTable) this.copy();
+    return (ExampleTable)this.copy();
   }
 
-  public TestTable getTestTable () {
+  public TestTable getTestTable() {
 
-    ContinuousExampleTable table = (ContinuousExampleTable) this.copy();
+    ContinuousDoubleExampleTable table = (ContinuousDoubleExampleTable)this.
+        copy();
 
-    int [] newExampleIndices = new int[testingSet.length];
+    int[] newExampleIndices = new int[testingSet.length];
 
     for (int i = 0; i < testingSet.length; i++) {
       newExampleIndices[i] = exampleIndices[testingSet[i]];
     }
 
     table.exampleIndices = newExampleIndices;
-    table.numExamples    = testingSet.length;
+    table.numExamples = testingSet.length;
 
     return (TestTable) table;
   }
 
-  public TrainTable getTrainTable () {
+  public TrainTable getTrainTable() {
     return null;
   }
 
   public PredictionTable toPredictionTable() {
+    predictionData = new double[numOutputs * numExamples];
     return this;
   }
 
-
-  public int[] getPredictionSet () {
-    return null;
+  public int[] getPredictionSet() {
+    return outputIndices;
   }
 
-  public void setPredictionSet (int[] p) {
+  public void setPredictionSet(int[] p) {
   }
 
   public void setIntPrediction(int prediction, int row, int predictionColIdx) {
   }
 
-
-  public void setFloatPrediction(float prediction, int row, int predictionColIdx) {
+  public void setFloatPrediction(float prediction, int row,
+                                 int predictionColIdx) {
   }
 
-
-  public void setDoublePrediction(double prediction, int row, int predictionColIdx) {
+  public void setDoublePrediction(double prediction, int row,
+                                  int predictionColIdx) {
+    predictionData[row * numOutputs + predictionColIdx] = prediction;
   }
 
   public void setLongPrediction(long prediction, int row, int predictionColIdx) {
   }
 
-  public void setShortPrediction(short prediction, int row, int predictionColIdx) {
+  public void setShortPrediction(short prediction, int row,
+                                 int predictionColIdx) {
   }
 
-
-  public void setBooleanPrediction(boolean prediction, int row, int predictionColIdx) {
+  public void setBooleanPrediction(boolean prediction, int row,
+                                   int predictionColIdx) {
   }
 
-  public void setStringPrediction(String prediction, int row, int predictionColIdx) {
+  public void setStringPrediction(String prediction, int row,
+                                  int predictionColIdx) {
   }
 
-  public void setCharsPrediction(char[] prediction, int row, int predictionColIdx) {
+  public void setCharsPrediction(char[] prediction, int row,
+                                 int predictionColIdx) {
   }
 
-  public void setBytesPrediction(byte[] prediction, int row, int predictionColIdx) {
+  public void setBytesPrediction(byte[] prediction, int row,
+                                 int predictionColIdx) {
   }
 
-  public void setObjectPrediction(Object prediction, int row, int predictionColIdx) {
+  public void setObjectPrediction(Object prediction, int row,
+                                  int predictionColIdx) {
   }
 
-  public void setBytePrediction(byte prediction, int row, int predictionColIdx)
-  {
+  public void setBytePrediction(byte prediction, int row, int predictionColIdx) {
   }
-  public void setCharPrediction(char prediction, int row, int predictionColIdx)
-  {
+
+  public void setCharPrediction(char prediction, int row, int predictionColIdx) {
   }
+
   public int getIntPrediction(int row, int predictionColIdx) {
     return 0;
   }
+
   public float getFloatPrediction(int row, int predictionColIdx) {
     return 0;
   }
 
   public double getDoublePrediction(int row, int predictionColIdx) {
-    return 0;
+    return predictionData[row * numOutputs + predictionColIdx];
   }
 
   public long getLongPrediction(int row, int predictionColIdx) {
@@ -854,7 +877,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     return null;
   }
 
-  public void deleteInputs(boolean [] deleteFeatures) {
+  public void deleteInputs(boolean[] deleteFeatures) {
     int numFeaturesToDelete = 0;
     for (int i = 0; i < numInputs; i++) {
       if (deleteFeatures[i])
@@ -865,17 +888,18 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     int newNumFeatures = newNumInputs + numOutputs;
     int newIndex;
 
-
-    double [] newData = new double[numExamples * (newNumInputs + numOutputs)];
+    double[] newData = new double[numExamples * (newNumInputs + numOutputs)];
 
     for (int e = 0; e < numExamples; e++) {
       newIndex = 0;
       for (int i = 0; i < numInputs; i++) {
         if (!deleteFeatures[i])
-          newData[e * newNumFeatures + (newIndex++)] = data[e * numFeatures + (newIndex++)];
+          newData[e * newNumFeatures + (newIndex++)] = data[e * numFeatures +
+              (newIndex++)];
       }
       for (int i = 0; i < numOutputs; i++) {
-        newData[e * newNumFeatures + newNumInputs + i] = data[e * numFeatures + numInputs + i];
+        newData[e * newNumFeatures + newNumInputs + i] = data[e * numFeatures +
+            numInputs + i];
       }
 
     }
@@ -885,51 +909,53 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public void setExample(int e1, ExampleTable exampleSet, int e2) {
-    exampleIndices[e1] = ((ContinuousExampleTable) exampleSet).exampleIndices[e2];
-      /*
-      for (int i = 0; i < numInputs; i++)
-      {
-        this.setInput(e1, i, exampleSet.getInputFloat(e2, i));
-      }
-      for (int i = 0; i < numOutputs; i++)
-      {
-        this.setOutput(e1, i, exampleSet.getOutputFloat(e2, i));
-      }
-      */
+    exampleIndices[e1] = ( (ContinuousDoubleExampleTable) exampleSet).
+        exampleIndices[e2];
+    /*
+           for (int i = 0; i < numInputs; i++)
+           {
+      this.setInput(e1, i, exampleSet.getInputFloat(e2, i));
+           }
+           for (int i = 0; i < numOutputs; i++)
+           {
+      this.setOutput(e1, i, exampleSet.getOutputFloat(e2, i));
+           }
+     */
   }
 
   public boolean scalarInput(int index) {
     return true;
   }
 
-
-
   public void addRow(int[] newEntry) {
-    double [] doubleValues = new double[newEntry.length];
+    double[] doubleValues = new double[newEntry.length];
     for (int i = 0; i < newEntry.length; i++) {
       doubleValues[i] = newEntry[i];
     }
     addRow(doubleValues);
   }
 
-  public void addRow(float[] newEntry){
-    double [] doubleValues = new double[newEntry.length];
+  public void addRow(float[] newEntry) {
+    double[] doubleValues = new double[newEntry.length];
     for (int i = 0; i < newEntry.length; i++) {
       doubleValues[i] = newEntry[i];
     }
     addRow(doubleValues);
   }
 
-  public void addRow(double[] newEntry){
+  public void addRow(double[] newEntry) {
 
     int newNumExamples = this.numExamples + 1;
-    int [] newExampleIndices = new int[newNumExamples];
-    System.arraycopy(this.exampleIndices, 0, newExampleIndices, 0, this.numExamples);
+    int[] newExampleIndices = new int[newNumExamples];
+    System.arraycopy(this.exampleIndices, 0, newExampleIndices, 0,
+                     this.numExamples);
     newExampleIndices[this.numExamples] = this.numExamples;
 
-    double [] newData = new double[newNumExamples * this.numFeatures];
-    System.arraycopy(this.data, 0, newData, 0, this.numExamples * this.numFeatures);
-    System.arraycopy(newEntry, 0, newData, this.numExamples * this.numFeatures, this.numFeatures);
+    double[] newData = new double[newNumExamples * this.numFeatures];
+    System.arraycopy(this.data, 0, newData, 0,
+                     this.numExamples * this.numFeatures);
+    System.arraycopy(newEntry, 0, newData, this.numExamples * this.numFeatures,
+                     this.numFeatures);
 
     this.data = newData;
 
@@ -937,26 +963,24 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
   }
 
-  public void addRow(long[] newEntry){
-    double [] doubleValues = new double[newEntry.length];
+  public void addRow(long[] newEntry) {
+    double[] doubleValues = new double[newEntry.length];
     for (int i = 0; i < newEntry.length; i++) {
       doubleValues[i] = newEntry[i];
     }
     addRow(doubleValues);
   }
 
-
-  public void addRow(short[] newEntry){
-    double [] doubleValues = new double[newEntry.length];
+  public void addRow(short[] newEntry) {
+    double[] doubleValues = new double[newEntry.length];
     for (int i = 0; i < newEntry.length; i++) {
       doubleValues[i] = newEntry[i];
     }
     addRow(doubleValues);
   }
 
-
-  public void addRow(boolean[] newEntry){
-    double [] doubleValues = new double[newEntry.length];
+  public void addRow(boolean[] newEntry) {
+    double[] doubleValues = new double[newEntry.length];
     for (int i = 0; i < newEntry.length; i++) {
       if (newEntry[i])
         doubleValues[i] = 1.0;
@@ -966,9 +990,8 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     addRow(doubleValues);
   }
 
-
-  public void addRow(String[] newEntry){
-    double [] doubleValues = new double[newEntry.length];
+  public void addRow(String[] newEntry) {
+    double[] doubleValues = new double[newEntry.length];
     for (int i = 0; i < newEntry.length; i++) {
       Double doubleValue = new Double(newEntry[i]);
       doubleValues[i] = doubleValue.doubleValue();
@@ -976,111 +999,87 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     addRow(doubleValues);
   }
 
-
   public void addRow(char[][] newEntry) {
     System.out.println("addRow(char[][] newEntry) not supported");
   }
 
-
-  public void addRow(byte[][] newEntry){
+  public void addRow(byte[][] newEntry) {
     System.out.println("addRow(char[][] newEntry) not supported");
   }
 
-
-  public void addRow(Object[] newEntry){
+  public void addRow(Object[] newEntry) {
     System.out.println("addRow(char[][] newEntry) not supported");
   }
 
-
-  public void addRow(byte[] newEntry){
-    double [] doubleValues = new double[newEntry.length];
+  public void addRow(byte[] newEntry) {
+    double[] doubleValues = new double[newEntry.length];
     for (int i = 0; i < newEntry.length; i++) {
       doubleValues[i] = newEntry[i];
     }
     addRow(doubleValues);
   }
 
-
-  public void addRow(char[] newEntry){
-    double [] doubleValues = new double[newEntry.length];
+  public void addRow(char[] newEntry) {
+    double[] doubleValues = new double[newEntry.length];
     for (int i = 0; i < newEntry.length; i++) {
       doubleValues[i] = newEntry[i];
     }
     addRow(doubleValues);
   }
 
-
-  public void insertRow(int[] newEntry, int position){
+  public void insertRow(int[] newEntry, int position) {
   }
 
-
-  public void insertRow(float[] newEntry, int position){
+  public void insertRow(float[] newEntry, int position) {
   }
 
-
-  public void insertRow(double[] newEntry, int position){
+  public void insertRow(double[] newEntry, int position) {
   }
 
-
-  public void insertRow(long[] newEntry, int position){
+  public void insertRow(long[] newEntry, int position) {
   }
 
-
-  public void insertRow(short[] newEntry, int position){
+  public void insertRow(short[] newEntry, int position) {
   }
 
-
-  public void insertRow(boolean[] newEntry, int position){
+  public void insertRow(boolean[] newEntry, int position) {
   }
 
-
-  public void insertRow(String[] newEntry, int position){
+  public void insertRow(String[] newEntry, int position) {
   }
 
-
-  public void insertRow(char[][] newEntry, int position){
+  public void insertRow(char[][] newEntry, int position) {
   }
 
-
-  public void insertRow(byte[][] newEntry, int position){
+  public void insertRow(byte[][] newEntry, int position) {
   }
 
-
-  public void insertRow(Object[] newEntry, int position){
+  public void insertRow(Object[] newEntry, int position) {
   }
 
-
-  public void insertRow(byte[] newEntry, int position){
+  public void insertRow(byte[] newEntry, int position) {
   }
 
-
-  public void insertRow(char[] newEntry, int position){
+  public void insertRow(char[] newEntry, int position) {
   }
-
 
   public void addColumn(int[] newEntry) {
   }
 
-
   public void addColumn(float[] newEntry) {
   }
-
 
   public void addColumn(double[] newEntry) {
   }
 
-
   public void addColumn(long[] newEntry) {
   }
-
 
   public void addColumn(short[] newEntry) {
   }
 
-
   public void addColumn(boolean[] newEntry) {
   }
-
 
   public void addColumn(String[] newEntry) {
   }
@@ -1284,39 +1283,47 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public void setColumnLabel(String label, int position) {
-    System.out.println("setColumnLabel not supported in this table implementation");
+    System.out.println(
+        "setColumnLabel not supported in this table implementation");
   }
 
   public void setColumnComment(String comment, int position) {
-    System.out.println("setColumnComment not supported in this table implementation");
+    System.out.println(
+        "setColumnComment not supported in this table implementation");
   }
 
   public void setNumColumns(int numColumns) {
-    System.out.println("setNumColumns not supported in this table implementation");
+    System.out.println(
+        "setNumColumns not supported in this table implementation");
   }
 
   public void sortByColumn(int col) {
-    System.out.println("sortByColumn not supported in this table implementation");
+    System.out.println(
+        "sortByColumn not supported in this table implementation");
   }
 
   public void sortByColumn(int col, int begin, int end) {
-    System.out.println("sortByColumn not supported in this table implementation");
+    System.out.println(
+        "sortByColumn not supported in this table implementation");
   }
 
   public void setNumRows(int newCapacity) {
     this.numExamples = newCapacity;
   }
 
-  public void addTransformation (Transformation tm) {
-    System.out.println("addTransformation not supported in this table implementation");
+  public void addTransformation(Transformation tm) {
+    System.out.println(
+        "addTransformation not supported in this table implementation");
   }
 
   public void setValueToMissing(boolean b, int row, int col) {
-    System.out.println("setValueToMissing not supported in this table implementation");
+    System.out.println(
+        "setValueToMissing not supported in this table implementation");
   }
 
   public void setValueToEmpty(boolean b, int row, int col) {
-    System.out.println("setValueToEmpty not supported in this table implementation");
+    System.out.println(
+        "setValueToEmpty not supported in this table implementation");
   }
 
   /**
@@ -1324,11 +1331,11 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
    * @return true if there are any missing values, false if there are no missing values
    */
   public boolean hasMissingValues() {
-   for(int i = 0; i < getNumColumns(); i++)
-     for(int j = 0; j < getNumRows(); j++)
-       if(isValueMissing(j, i))
-         return true;
-   return false;
+    for (int i = 0; i < getNumColumns(); i++)
+      for (int j = 0; j < getNumRows(); j++)
+        if (isValueMissing(j, i))
+          return true;
+    return false;
   }
 
 }

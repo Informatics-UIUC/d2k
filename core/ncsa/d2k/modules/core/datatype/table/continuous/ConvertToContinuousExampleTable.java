@@ -57,7 +57,7 @@ public class ConvertToContinuousExampleTable extends ComputeModule {
     String [] inputNames  = exampleSet.getInputNames();
     String [] outputNames = exampleSet.getOutputNames();
 
-    ContinuousExampleTable continuousExampleSet = new ContinuousExampleTable(
+    ContinuousDoubleExampleTable continuousExampleSet = new ContinuousDoubleExampleTable(
         numExamples,
         numInputs,
         numOutputs,

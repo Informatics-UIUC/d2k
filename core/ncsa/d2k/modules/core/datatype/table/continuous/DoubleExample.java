@@ -239,11 +239,11 @@ public class DoubleExample implements Example, java.io.Serializable
     return outputNames[i];
   }
 
-  public ContinuousExample shallowCopy() throws Exception {
-    return (ContinuousExample) this.clone();
+  public ContinuousDoubleExample shallowCopy() throws Exception {
+    return (ContinuousDoubleExample) this.clone();
   }
 
-  public ContinuousExample deepCopy() throws Exception {
+  public ContinuousDoubleExample deepCopy() throws Exception {
     Exception e = new Exception();
     System.out.println("Error!  Can not deep copy ContinuousExample.  ");
     throw e;

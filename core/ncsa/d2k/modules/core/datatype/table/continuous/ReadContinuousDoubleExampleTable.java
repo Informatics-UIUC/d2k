@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.*;
 import java.text.*;
 
-public class ReadContinuousExampleTable extends InputModule {
+public class ReadContinuousDoubleExampleTable extends InputModule {
 
   //////////////////
   //  PROPERTIES  //
@@ -269,7 +269,7 @@ public class ReadContinuousExampleTable extends InputModule {
         }
 
 
-    ContinuousExampleTable exampleSet = new ContinuousExampleTable(data, numExamples, numInputs, numOutputs, inputNames, outputNames);
+    ContinuousDoubleExampleTable exampleSet = new ContinuousDoubleExampleTable(data, numExamples, numInputs, numOutputs, inputNames, outputNames);
     this.pushOutput((ExampleTable) exampleSet, 0);
 
   }
