@@ -1,10 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo;
 
-import java.util.*;
-
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
@@ -13,8 +10,6 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.userviews.swing.*;
-
-import gnu.trove.*;
 
 public class EMO2 extends UIModule {
 
@@ -111,8 +106,8 @@ public class EMO2 extends UIModule {
         newPop = false;
       }
       currentGen = pop.getCurrentGeneration();
-      //System.out.println("Current Gen: "+currentGen);
-      if(currentGen == (maxGen-1))
+      System.out.println("Current Gen: "+currentGen);
+      if(currentGen >= (maxGen-1))
         continueButton.setEnabled(true);
 
       NsgaSolution[] nis;

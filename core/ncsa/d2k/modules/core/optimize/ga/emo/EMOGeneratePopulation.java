@@ -191,7 +191,7 @@ public class EMOGeneratePopulation
    */
 
   public void CalculateAndSetPopulationSize() {
-    double k2;
+    /*double k2;
     double k1 = 1.0;
     double temp1;
     temp1 = Math.pow(this.maxGenerations, -1);
@@ -202,6 +202,8 @@ public class EMOGeneratePopulation
     this.populationSize = (int) (k1 * (this.NoOfDesiredPeaks) *
                                  (k2 + Math.log(this.NoOfDesiredPeaks)));
     this.populationSize /= 2;
+        */
+    this.populationSize = 2*100;
   }
 
   private EMOPopulationInfo popInfo;
@@ -224,16 +226,17 @@ public class EMOGeneratePopulation
       this.maxGenerations = 2*stringLength;
       System.out.println("MaxGen: "+maxGenerations);
       this.CalculateAndSetPopulationSize();
+      System.out.println("PS: "+this.populationSize);
     }
     else {
       // consume the dummy input
       Object o = pullInput(0);
       bounds = (MutableTable)popInfo.boundsAndPrecision;
       populationTbl = (MutableTable)variableNames.copy();
+      // Double the population size
+      this.populationSize = 2 * (this.populationSize);
     }
 
-    // Double the population size
-    this.populationSize = 2 * (this.populationSize);
     // the number of variables in the encoded problem
     int numOfvar = bounds.getNumRows();
     // generate DoubleRange for variables
