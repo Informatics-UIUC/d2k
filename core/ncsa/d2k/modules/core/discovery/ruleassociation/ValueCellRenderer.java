@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation;
-//package ncsa.d2k.modules.projects.clutter.ruleassociation;
 
+import java.text.NumberFormat;
 import java.awt.*;
 
 import javax.swing.*;
@@ -60,7 +60,10 @@ class ValueCellRenderer extends DefaultTableCellRenderer  {
 		this.myrow = row;
 		this.mycolumn = column;
 		this.what = (Float) value;
-		this.setToolTipText (what.toString ());
+                NumberFormat percentFormat = NumberFormat.getPercentInstance();
+                percentFormat.setMaximumFractionDigits(2);
+                String tip = new String( percentFormat.format( this.what.floatValue() ) );
+                this.setToolTipText( tip );
 		return super.getTableCellRendererComponent (table, value, isSelected, hasFocus,
 			row, column);
 	}
