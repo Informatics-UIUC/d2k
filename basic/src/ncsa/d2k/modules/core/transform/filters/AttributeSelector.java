@@ -66,7 +66,8 @@ public class AttributeSelector extends ComputeModule {
 			}
 
   public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.Table","ncsa.d2k.modules.projects.anca.attributeSelection.search.ASSearch","ncsa.d2k.modules.projects.anca.attributeSelection.evaluation.ASEvaluation"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.Table","ncsa.d2k.modules.projects.anca.attributeSelection.search.ASSearch",
+				"ncsa.d2k.modules.projects.anca.attributeSelection.evaluation.ASEvaluation","java.lang.String"};
 		return types;
 	}
 
@@ -80,18 +81,30 @@ public class AttributeSelector extends ComputeModule {
 			case 0: return "Table containing the input training set";
 			case 1: return  "Search module - searches over the feature space";
 			case 2: return  "Evaluation module - evaluates the features";
+			case 3: return  "Results file name";
 			default: return "No such input";
 		}
 	}
 
+  public boolean isReady() {
+    if (!isInputPipeConnected(3)) {
+            return (getInputPipeSize(0)>0 &&
+                          getInputPipeSize(1)>0 &&
+                          getInputPipeSize(2)>0 );
+    }
+     return super.isReady();
+  }
 
 
   protected void doit() throws java.lang.Exception {
 
-
       ExampleTable instances = (ExampleTable)this.pullInput(0);
       ASSearch search = (ASSearch)this.pullInput(1);
       ASEvaluation eval = (ASEvaluation)this.pullInput(2);
+      String resultsFile = null;
+      if (isInputPipeConnected(3)) {
+        resultsFile = (String)pullInput(3);
+      }	
       int [] selectedAttributes;
       double [][] rankedAttributes;
       
@@ -117,15 +130,15 @@ public class AttributeSelector extends ComputeModule {
       System.out.println(m_attSel.toResultsString());
       
       selectedAttributes = m_attSel.selectedAttributes();
-      rankedAttributes = m_attSel.rankedAttributes();
-      String resultsFile = "PhotoObjAll.Results";
-      FileWriter fw = new FileWriter(resultsFile,true);
-      fw.write(instances.getColumnLabel((int)rankedAttributes[0][0]));
-	  String score = " " + rankedAttributes[0][1] + "\n";
-      fw.write( score);
-      fw.flush();
-      fw.close();
-      
+     // rankedAttributes = m_attSel.rankedAttributes();
+      if (resultsFile !=null) {
+      	FileWriter fw = new FileWriter(resultsFile,true);
+      	fw.write(instances.getColumnLabel((int)selectedAttributes[0]));
+      	String score = " " + selectedAttributes[0] + "\n";
+      	fw.write( score);
+      	fw.flush();
+      	fw.close();
+      }
       //TODO - what is the real output of this module ???
       this.pushOutput(selectedAttributes,0);
     
@@ -190,6 +203,8 @@ public class AttributeSelector extends ComputeModule {
 				return "Search";
 			case 2:
 				return "Evaluator";
+			case 3:
+				return "Results File Name";
 			default: return "NO SUCH INPUT!";
 		}
 	}
