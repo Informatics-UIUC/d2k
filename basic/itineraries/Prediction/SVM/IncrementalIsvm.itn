@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAgdwgAAAAMAAAAEHQAKERlbGltaXRlZEZpbGVUb1RhYmxlX1BhcnNlIEZpbGUgVG8gVGFibGVz
+cgAbbmNzYS5kMmsuY29yZS5SZXNvdXJjZUVudHJ51S4sIEIDJtICAAJMAAxjYWNoZWRPYmplY3R0
+ABJMamF2YS9sYW5nL09iamVjdDtMAA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmlu
+Zzt4cHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1Rh
+YmxldAARSW5jcmVtZW50YWxNb2R1bGVzcQB+AARwdAA1bmNzYS5kMmsubW9kdWxlcy5wcm9qZWN0
+cy52ZXJlZC5zdm0uSW5jcmVtZW50YWxNb2R1bGV0ABFDcmVhdGUgSXN2bSBNb2RlbHNxAH4ABHB0
+ADNuY3NhLmQyay5tb2R1bGVzLnByb2plY3RzLnZlcmVkLnN2bS5DcmVhdGVJc3ZtTW9kZWx0AA9F
+dmFsdWF0ZSBNb2RlbHNzcQB+AARwdAAybmNzYS5kMmsubW9kdWxlcy5wcm9qZWN0cy52ZXJlZC5z
+dm0uRXZhbHVhdGVNb2RlbHN0ADFEZWxpbWl0ZWRGaWxlVG9UYWJsZV9DcmVhdGUgRGVsaW1pdGVk
+IEZpbGUgUGFyc2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0
+LkNyZWF0ZURlbGltaXRlZFBhcnNlcnQABkZhbk91dHNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1v
+ZHVsZXMuRmFuT3V0TW9kdWxldAAkQ2hvb3NlIEF0dHJpYnV0ZXMgZm9yIFN0cmVhbWluZyBEYXRh
+c3EAfgAEcHQAOm5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYXR0cmlidXRlLkNob29z
+ZUF0dHJpYnV0ZXN0ACJDaG9vc2UgQXR0cmlidXRlcyBmb3IgdGVzdCBkYXRhc2V0c3EAfgAEcHEA
+fgAadAAGRmFuSW4xc3EAfgAEcHQAIW5jc2EuZDJrLmNvcmUubW9kdWxlcy5GYW5Jbk1vZHVsZXQA
+F1ByZWRpY3Rpb24gVGFibGUgUmVwb3J0c3EAfgAEcHQAL25jc2EuZDJrLm1vZHVsZXMuY29yZS52
+aXMuUHJlZGljdGlvblRhYmxlUmVwb3J0dAANTG9hZCBUZXN0IFNldHNxAH4ABHB0ACxuY3NhLmQy
+ay5jb3JlLm1vZHVsZXMuYWdlbmRhLkl0aW5lcmFyeU1vZHVsZXQAHUNyZWF0ZSBNb2RlbCBDb21w
+YXJpc29uIFRhYmxlc3EAfgAEcHQAP25jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLnN2
+bS5DcmVhdGVNb2RlbENvbXBhcmlzb25UYWJsZXQAB0Zhbk91dDFzcQB+AARwdAAibmNzYS5kMmsu
+Y29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQAE0luY3JlbWVudGluZyBNb2R1bGVzcQB+AARwdAAz
+bmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24uSW5jcmVtZW50aW5nTW9kdWxldAALQ2F0
+Y2ggTW9kZWxzcQB+AARwdAArbmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24uQ2F0Y2hN
+b2RlbHQAJERlbGltaXRlZEZpbGVUb1RhYmxlX0lucHV0IEZpbGUgTmFtZXNxAH4ABHB0ADJuY3Nh
+LmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5JbnB1dDFGaWxlTmFtZXg=" label="IncrementalIsvm.itn">
+    <annotation><![CDATA[<p>
+      <b>Incremental Isvm: </b>
+    </p>
+    <p>
+      This itinerary trains an Isvm model over a streaming data.
+    </p>
+    <p>
+      <i>Create Isvm Model</i> initializes the model.
+    </p>
+    <p>
+      During each iteration the model is trained over a new dataset by <i>
+      Incrementing Module </i>and tested over the same test dataset by <i>
+      Evaluate Models</i>. The performances of each model are saved into a 
+      comparison table by <i>Create Model Comparison Table</i> module, and at 
+      the end of the itinerary it is saved into a binary file. You may use <i>
+      PlotPerformances</i> itinerary to generate visualizations of this 
+      comparison.
+    </p>
+    <p>
+      <i>Prediction Table Report</i> evaluates each of the generated models 
+      and generates a visualization of the performances of each model.
+    </p>
+    <p>
+      <i>Catch Model</i> catches the last (not necessarily the best) generated 
+      model into the Generated Models jump-up pane.
+    </p>
+    <p>
+      <b>How to use this itinerary?</b>
+    </p>
+    <p>
+      The input port of module <i>ChooseAttributes for Streaming Data</i> 
+      should be hooked to the output port of either <i>streamData.itn</i> or <i>
+imitateDataStream.itn</i> (hereinafter - &quot;<i>streaming data itinerary</i> 
+      &quot;).
+    </p>
+    <p>
+      <b>Data Restrictions:</b>
+    </p>
+    <p>
+      The input dataset to this itinerary should be all scalar with a single 
+      output feature. The output feature should be binary, and the values of 
+      this feature should be 1 and -1 (instead of 1 and 0.) See <i>
+      PrepareDataForIsvm</i> itinerary, it preprocess nominal data and also 
+      creates 2 separate files, one for streaming data (train set) and one for 
+      the test set. The train set is the input to the streaming data itinerary 
+      and the test set is the input to <i>Load Test Set</i>.
+    </p>
+    <p>
+      <b>Setting Properties: </b>
+    </p>
+    <p>
+      <b><i>Create Isvm Model -</i></b>
+    </p>
+    <p>
+      Nu - is the nu parameter of the svm kernel.
+    </p>
+    <p>
+      Number Input Features - this number should match the number of input 
+      features in the input datasets or an exception will be thrown and the 
+      itinerary will be terminated.
+    </p>
+    <p>
+      <b><i>Incrementing Module -</i></b>
+    </p>
+    <p>
+      Create Deep Copy - it is esential that this property is set to true if 
+      the user wishes to test each of the models. otherwise it may be set to 
+      false. In such case the output of <i>Evaluate Models</i> and <i>Create 
+      Model Comparison Table</i> has no true meaning.
+    </p>
+    <p>
+      <b><i>Create Model Comparison Table -</i> </b>
+    </p>
+    <p>
+      Output File Name - full or relative path into which this module saves 
+      the generated Table.
+    </p>
+    <p>
+      Approximate Number of Models - this property helps initializing the 
+      comparison table to a reasonable size.
+    </p>
+    <p>
+      <b>BEFORE running the itinerary for the first time: </b>
+    </p>
+    <p>
+      the streaming data itineraries will stream lots of Tables into the 
+      itinerary. This will make the GUI of ChooseAttributes worthless. You 
+      should remove the nested streaming data itinerary, and run the 
+      itinerary. This will invoke the UI of <i>Choose Attrobutes for test 
+      dataset</i> and allow you to choose the attributes. Then you should set <i>
+Choose Attributes for test dataset </i>to suppress UI. Copy the module and 
+      replace the copy with <i>Choose Attributes for Streaming Data. </i>
+    </p>]]></annotation>
+    <module alias="Prediction Table Report" classname="ncsa.d2k.modules.core.vis.PredictionTableReport" xloc="596" yloc="328">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAAA"/>
+      <property name="windowName" value="Prediction Table Report"/>
+    </module>
+    <module alias="Evaluate Models" classname="ncsa.d2k.modules.core.prediction.svm.EvaluateModels" xloc="435" yloc="308">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <input index="1" classname="ncsa.d2k.modules.PredictionModelModule"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAIg=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAACI///////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAACI="/>
+    </module>
+    <module alias="Choose Attributes for Streaming Data" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="99" yloc="146">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Incrementing Module" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
+      <property name="windowName" value="Choose Attributes for Streaming Data"/>
+      <property name="supressGui" value="false"/>
+    </module>
+    <module alias="Catch Model" classname="ncsa.d2k.modules.core.prediction.CatchModel" xloc="566" yloc="148">
+      <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAAA"/>
+    </module>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="539" yloc="331">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable">
+        <destination alias="Create Model Comparison Table" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable">
+        <destination alias="Prediction Table Report" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Incrementing Module" classname="ncsa.d2k.modules.core.prediction.IncrementingModule" xloc="303" yloc="108">
+      <input index="0" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule">
+        <destination alias="FanOut1" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAA="/>
+      <property name="deepCopy" value="true"/>
+    </module>
+    <module alias="Choose Attributes for test dataset" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="209" yloc="266">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Evaluate Models" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
+      <property name="windowName" value="Choose Attributes for test dataset"/>
+      <property name="supressGui" value="false"/>
+    </module>
+    <module alias="FanIn1" classname="ncsa.d2k.core.modules.FanInModule" xloc="205" yloc="38">
+      <input index="0" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule"/>
+      <input index="1" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule"/>
+      <output index="0" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule">
+        <destination alias="Incrementing Module" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAA="/>
+    </module>
+    <module alias="Create Model Comparison Table" classname="ncsa.d2k.modules.core.prediction.svm.CreateModelComparisonTable" xloc="530" yloc="228">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="fileName" value=""/>
+      <property name="aproxNumModels" value="50"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAAA"/>
+    </module>
+    <module alias="Load Test Set" classname="ncsa.d2k.core.modules.agenda.ItineraryModule" xloc="42" yloc="270">
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Choose Attributes for test dataset" index="0"/>
+      </output>
+      <itinerary label="Load Test Set">
+        <module alias="DelimitedFileToTable_Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="326" yloc="18">
+          <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+            <destination alias="Load Test Set" index="0"/>
+          </output>
+          <property name="useBlanks" value="true"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
+        </module>
+        <module alias="DelimitedFileToTable_Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="23" yloc="18">
+          <output index="0" classname="java.lang.String">
+            <destination alias="DelimitedFileToTable_Create Delimited File Parser" index="0"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAA"/>
+        </module>
+        <module alias="DelimitedFileToTable_Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="130" yloc="18">
+          <input index="0" classname="java.lang.String"/>
+          <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+            <destination alias="DelimitedFileToTable_Parse File To Table" index="0"/>
+          </output>
+          <property name="typesRow" value="1"/>
+          <property name="hasSpecDelim" value="false"/>
+          <property name="labelsRow" value="0"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
+          <property name="hasTypes" value="true"/>
+          <property name="hasLabels" value="true"/>
+        </module>
+      </itinerary>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAA"/>
+    </module>
+    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="393" yloc="184">
+      <input index="0" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule"/>
+      <output index="0" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule">
+        <destination alias="FanIn1" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule">
+        <destination alias="Evaluate Models" index="1"/>
+      </output>
+      <output index="2" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule">
+        <destination alias="Catch Model" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAADAAAAAAAAAAAAAAAA"/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAADAAAAAAAAAAAAAAAA"/>
+    </module>
+    <module alias="Create Isvm Model" classname="ncsa.d2k.modules.core.prediction.svm.CreateIsvmModel" xloc="49" yloc="28">
+      <output index="0" classname="ncsa.d2k.modules.PredictionModelModule">
+        <destination alias="FanIn1" index="1"/>
+      </output>
+      <property name="numAttributes" value="22"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAB"/>
+      <property name="nu" value="0.1"/>
+    </module>
+  </itinerary>
+</toolkit>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAIdwgAAAAFAAAAA3QAEkRhdGFDb2xsZWN0b3JJbnB1dHNyABtuY3NhLmQyay5jb3JlLlJlc291
+cmNlRW50cnnVLiwgQgMm0gIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wA
+D29iamVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAPW5jc2EuZDJrLm1vZHVs
+ZXMucHJvamVjdHMubWFpZHMuaW50ZWdyYXRlZC5EYXRhQ29sbGVjdG9ySW5wdXR0AAxDb25uZWN0
+aW9uVUlzcQB+AARwdAA3bmNzYS5kMmsubW9kdWxlcy5wcm9qZWN0cy5tYWlkcy5pbnRlZ3JhdGVk
+LkNvbm5lY3Rpb25VSXQAD1B1bGwgRGF0YSBDaHVua3NxAH4ABHB0ADFuY3NhLmQyay5tb2R1bGVz
+LnByb2plY3RzLnZlcmVkLnN2bS5QdWxsRGF0YUNodW5reA==" label="StreamData.itn">
+    <annotation><![CDATA[<p>
+      <b>Stream Data:</b>
+    </p>
+    <p>
+      This itinerary establishes a connection with a remote machine and 
+      collects streaming data from a certain port into a Table. The Table is 
+      the output of <i>Pull Data Chunk</i>.
+    </p>
+    <p>
+      <b>Before</b> running this itinerary, first run class 
+      ncsa.d2k.modules.projects.maids.util.SendSmallChunks the following way:
+    </p>
+    <div>
+      <div>
+        
+      </div>
+      <div>
+        ncsa.d2k.modules.projects.maids.util.SendSmallChunks port_number 
+        header_file data_file time_wait
+      </div>
+    </div>
+    <p>
+      data_file should not include the header lines (labels and types) and the 
+      data should be clean of missing values.
+    </p>
+    <p>
+      After <i>SendDamllChunks</i> started running you may run this itinerary 
+      parallel to it.
+    </p>
+    <p>
+      When the User Interfce of <i>ConnectionUI</i> appears set the host to be 
+      the machine <i>SendSmallChunks</i> runs on, and the port number should 
+      be same as argument <i>port_number</i>.
+    </p>]]></annotation>
+    <module alias="DataCollectorInput" classname="ncsa.d2k.modules.projects.maids.integrated.DataCollectorInput" xloc="146" yloc="64">
+      <input index="0" classname="java.lang.String"/>
+      <input index="1" classname="java.lang.Integer"/>
+      <output index="0" classname="ncsa.d2k.modules.projects.maids.integrated.DataCollector">
+        <destination alias="Pull Data Chunk" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAA="/>
+    </module>
+    <module alias="ConnectionUI" classname="ncsa.d2k.modules.projects.maids.integrated.ConnectionUI" xloc="35" yloc="64">
+      <output index="0" classname="java.lang.String">
+        <destination alias="DataCollectorInput" index="0"/>
+      </output>
+      <output index="1" classname="java.lang.Integer">
+        <destination alias="DataCollectorInput" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAIAAAAAAAAAAA=="/>
+      <property name="windowName" value="ConnectionUI"/>
+      <property name="host" value=""/>
+      <property name="supressGui" value="false"/>
+      <property name="port" value="0"/>
+    </module>
+    <module alias="Pull Data Chunk" classname="ncsa.d2k.modules.core.io.PullDataChunk" xloc="282" yloc="59">
+      <input index="0" classname="ncsa.d2k.modules.projects.maids.integrated.DataCollector"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
+dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
+RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
+AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
+    </module>
+  </itinerary>
+</toolkit>
