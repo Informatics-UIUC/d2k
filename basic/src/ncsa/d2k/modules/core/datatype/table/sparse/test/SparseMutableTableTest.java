@@ -394,6 +394,8 @@ public class SparseMutableTableTest
       }
     }
     Table reordered = mtFull.copy(newOrder);
+    //((SparseMutableTable)mtEmpty).print();
+    //((SparseMutableTable)reordered).print();
     assertEquals(mtEmpty, reordered);
 
   }

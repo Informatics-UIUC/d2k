@@ -621,7 +621,7 @@ public class SparseExampleTable
     Column[] cols = new Column[this.getNumColumns()];
     Column[] oldcols = this.getColumns();
     for (int i = 0; i < cols.length; i++) {
-      cols[i] = oldcols[i].copy();
+      cols[i] = oldcols[i].getSubset(start, length);
     }
 
     // Copy the subset, the inputs set, the output set, and the test and train sets.
@@ -635,15 +635,15 @@ public class SparseExampleTable
     if (len > 0)
       System.arraycopy(outputColumns, 0, newouts, 0, outputColumns.length);
 
-    len = testSet == null ? 0 : testSet.length;
-    int[] newtest = new int[len];
-    if (len > 0)
-      System.arraycopy(testSet, 0, newtest, 0, testSet.length);
-
-    len = trainSet == null ? 0 : trainSet.length;
-    int[] newtrain = new int[len];
-    if (len > 0)
-      System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
+//    len = testSet == null ? 0 : testSet.length;
+//    int[] newtest = new int[len];
+//    if (len > 0)
+//      System.arraycopy(testSet, 0, newtest, 0, testSet.length);
+//
+//    len = trainSet == null ? 0 : trainSet.length;
+//    int[] newtrain = new int[len];
+//    if (len > 0)
+//      System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
 
     SparseExampleTable mti = new SparseExampleTable(cols);
 //          int [] ns = new int [newsubset.length];
@@ -654,8 +654,8 @@ public class SparseExampleTable
     mti.setOutputFeatures(newouts);
 
     // LAM-tlr wrong, subset the subsets.
-    mti.setTestingSet(newtest);
-    mti.setTrainingSet(newtrain);
+    mti.setTestingSet(new int[0]);
+    mti.setTrainingSet(new int[0]);
     mti.setLabel(this.getLabel());
     mti.setComment(this.getComment());
 
@@ -687,7 +687,7 @@ public class SparseExampleTable
     Column[] oldcols = this.getColumns();
 
     for (int i = 0; i < cols.length; i++) {
-      cols[i] = oldcols[i].copy();
+      cols[i] = oldcols[i].getSubset(subset);
     }
 
     // Copy the subset, the inputs set, the output set, and the test and train sets.
@@ -701,15 +701,15 @@ public class SparseExampleTable
     if (len > 0)
       System.arraycopy(outputColumns, 0, newouts, 0, outputColumns.length);
 
-    len = testSet == null ? 0 : testSet.length;
-    int[] newtest = new int[len];
-    if (len > 0)
-      System.arraycopy(testSet, 0, newtest, 0, testSet.length);
-
-    len = trainSet == null ? 0 : trainSet.length;
-    int[] newtrain = new int[len];
-    if (len > 0)
-      System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
+//    len = testSet == null ? 0 : testSet.length;
+//    int[] newtest = new int[len];
+//    if (len > 0)
+//      System.arraycopy(testSet, 0, newtest, 0, testSet.length);
+//
+//    len = trainSet == null ? 0 : trainSet.length;
+//    int[] newtrain = new int[len];
+//    if (len > 0)
+//      System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
 
     SparseExampleTable mti = new SparseExampleTable(cols);
 //          int [] ns = new int [newsubset.length];
@@ -719,8 +719,8 @@ public class SparseExampleTable
     mti.setOutputFeatures(newouts);
 
     // LAM-tlr, this is wrong, we need to subset the test and train sets here.
-    mti.setTestingSet(newtest);
-    mti.setTrainingSet(newtrain);
+    mti.setTestingSet(new int[0]);
+    mti.setTrainingSet(new int[0]);
     mti.setLabel(this.getLabel());
     mti.setComment(this.getComment());
 
@@ -1825,7 +1825,8 @@ public class SparseExampleTable
    @return a copy of this column with the rows reordered
    */
   public Table reorderColumns(int[] newOrder) {
-    SparseTable tab = (SparseTable) super.reorderColumns(newOrder);
+    SparseMutableTable tab = (SparseMutableTable)super.copy();
+    tab = (SparseMutableTable)tab.reorderColumns(newOrder);
     SparseExampleTable etab = new SparseExampleTable(tab);
     etab.setTestingSet(this.getTrainingSet());
     etab.setTrainingSet(this.getTrainingSet());
