@@ -16,7 +16,7 @@ import ncsa.gui.*;
 
 
 
-public class ConnectToDB extends UIModule {
+public class ConnectToDB extends HeadlessUIModule {
 
 /**
 
@@ -80,9 +80,9 @@ public class ConnectToDB extends UIModule {
       s += "a database. If you do not know what values to put in for these ";
       s += "parameters, you should ask your database administrator. ";
       s += "After you successfully log onto a database, this connection is ";
-      s += "passed to next modules for use. </p>";
+      s += "passed to other modules for use. </p>";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle, SQLServer , DB2 and MySQL databases.";
+      s += "We currently support Oracle, SQLServer, DB2 and MySQL databases.";
 
         return s;
 
@@ -215,13 +215,14 @@ public class ConnectToDB extends UIModule {
     }
 
     public PropertyDescription [] getPropertiesDescriptions () {
-      PropertyDescription [] pds = new PropertyDescription [6];
-      pds[0] = new PropertyDescription ("dbVendor", "Database Vendor", "The database vendor.");
-      pds[1] = new PropertyDescription ("username", "User Name", "The login account to use.");
-      pds[2] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
-      pds[3] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
-      pds[4] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
-      pds[5] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
+      PropertyDescription [] pds = new PropertyDescription [7];
+	  pds[0] = super.supressDescription;
+      pds[1] = new PropertyDescription ("dbVendor", "Database Vendor", "The database vendor: Oracle, MS SQLSer, IBM DB2");
+      pds[2] = new PropertyDescription ("username", "User Name", "The login account to use.");
+      pds[3] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
+      pds[4] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
+      pds[5] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
+      pds[6] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
       return pds;
     }
 
@@ -1099,39 +1100,124 @@ public class ConnectToDB extends UIModule {
 
 
         protected void abort() {
-
             viewCancel();
-
         }
 
 
 
         /**
-
     When a button is pressed..
-
     @param e An ActionEvent
-
     */
-
         public void actionPerformed(ActionEvent e) {
 
             Object src = e.getSource();
-
-
-
             if(src == bDo)
-
                 done(); // User clicked 'Done'
 
-
-
-            else if (src == bAb)
-
-                abort(); // User clicked 'Abort'
-
+           else if (src == bAb)
+               abort(); // User clicked 'Abort'
         }
-
     }// end inner class
 
+
+//	headless conversion support
+		
+		  public void doit() throws Exception{
+
+
+			if(getDriver() == null ||  getDriver().length() == 0)
+						  throw new Exception(getAlias() + " has not been configured. Before running " +
+											  "headless configure the properties via running with GUI.");
+
+			if(getUsername() == null ||  getUsername().length() == 0)
+						  throw new Exception(getAlias() + " has not been configured. Before running " +
+											  "headless configure the properties via running with GUI.");
+
+			if(getMachine() == null ||  getMachine().length() == 0)
+						  throw new Exception(getAlias() + " has not been configured. Before running " +
+											  "headless configure the properties via running with GUI.");
+
+			if(getPort() == null ||  getPort().length() == 0)
+						  throw new Exception(getAlias() + " has not been configured. Before running " +
+											  "headless configure the properties via running with GUI.");
+
+			if(getDbInstance() == null ||  getDbInstance().length() == 0)
+						  throw new Exception(getAlias() + " has not been configured. Before running " +
+											  "headless configure the properties via running with GUI.");
+
+			if(getPassword() == null ||  getPassword().length() == 0)
+						  throw new Exception(getAlias() + " has not been configured. Before running " +
+											  "headless configure the properties via running with GUI.");
+
+											  
+			if ( getDriver().equals("oracle.jdbc.driver.OracleDriver")) {
+
+				setUrl("jdbc:oracle:thin:@"+getMachine()+":"+getPort()+":"+getDbInstance());
+				System.out.println("URL :" + getUrl());
+				OracleDBConnection oc = new OracleDBConnection(getUrl().trim(),
+						getDriver().trim(),
+						getUsername().trim(),
+						getPassword().trim());
+
+				if (oc.getConnection() != null) {
+				  pushOutput (oc, 0);
+				}
+
+			}
+
+			else if (getDriver().equals("com.mysql.jdbc.Driver")) {
+
+				setUrl("jdbc:mysql://" + getMachine()+ "/" + getDbInstance());
+
+				MySQLDBConnection mc = new MySQLDBConnection(getUrl().trim(),
+						getDriver().trim(),
+						getUsername().trim(),
+						getPassword().trim(),
+						getDbInstance().trim());
+				pushOutput (mc, 0);
+
+			}
+
+			else if(getDriver().equals("com.microsoft.jdbc.sqlserver.SQLServerDriver")) {
+
+			  setUrl("jdbc:microsoft:sqlserver://"+getMachine()+":"+getPort()+";"
+					   +"DatabaseName="+getDbInstance());
+
+				System.out.println("URL :" + getUrl());
+				SQLServerDBConnection sc = new SQLServerDBConnection(getUrl().trim(),
+						getDriver().trim(),
+						getUsername().trim(),
+						getPassword().trim());
+
+				if (sc.getConnection() != null) {
+				  pushOutput (sc, 0);
+				  viewDone("Done");
+				}
+			}
+
+			else if(getDriver().equals("COM.ibm.db2.jdbc.net.DB2Driver")) {
+
+			  setUrl("jdbc:db2://" + getMachine() + ":" + getPort() + "/" + getDbInstance());
+
+             System.out.println("URL :" + getUrl());
+				DB2DBConnection dc = new DB2DBConnection(getUrl().trim(),
+						getDriver().trim(),
+						getUsername().trim(),
+						getPassword().trim());
+
+				if (dc.getConnection() != null) {
+				  pushOutput (dc, 0);
+				}
+			}
+
+			else {
+			  System.out.println("no match driver");
+				pushOutput(null, 0);
+			  }
+
+		  }
+
+			
+     
 }
