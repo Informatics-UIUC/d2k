@@ -341,6 +341,8 @@ public class LWRModel
   protected void makePredictions(PredictionTable pt) {
   }
 
+  protected void makePrediction(ExampleTable example, int row, double [] predictedOutputs) {
+  }
   /**
    constructX
    makes 2-D array used to construct the matrix X, the matrix of all of the

@@ -253,6 +253,8 @@ public class DecisionTreeModel extends PredictionModelModule
             }
         }
 
+        protected void makePrediction(ExampleTable example, int row, double [] predictedOutputs) {
+        }
 
 	/**
 	 * Get the number of examples from the data set passed to

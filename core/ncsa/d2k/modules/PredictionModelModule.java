@@ -2,6 +2,7 @@ package ncsa.d2k.modules;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.examples.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
 
@@ -363,6 +364,8 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
     }
 
     abstract protected void makePredictions(PredictionTable pt) throws Exception;
+
+    abstract protected void makePrediction(ExampleTable examples, int row, double [] predictedOutputs) throws Exception;
 
     /**
      * Set up all the meta-data related to the training set for this model.

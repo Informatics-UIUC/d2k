@@ -14,6 +14,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   int    [] inputIndices;
   int    [] outputIndices;
   int    [] exampleIndices;
+  int    [] trainingSet;
   int    [] testingSet;
   double [] data;
 
@@ -627,12 +628,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public int[] getOutputFeatures () {
-    int [] outputFeatures = new int[numOutputs];
-    for (int i = 0; i < numOutputs; i++)
-    {
-      outputFeatures[i] = i + numInputs;
-    }
-    return outputFeatures;
+    return outputIndices;
   }
 
   public int getNumOutputFeatures () {
@@ -640,16 +636,19 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public void setInputFeatures (int[] inputs) {
+    inputIndices = inputs;
   }
 
   public void setOutputFeatures (int[] outs) {
+    outputIndices = outs;
   }
 
   public void setTrainingSet (int[] trainingSet) {
+    this.trainingSet = trainingSet;
   }
 
   public int[] getTrainingSet () {
-    return null;
+    return trainingSet;
   }
 
   public void setTestingSet (int[] testingSet) {
@@ -662,7 +661,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
 
   public ExampleTable getExampleTable() {
-    return (ExampleTable) null;
+    return (ExampleTable) this.copy();
   }
 
   public TestTable getTestTable () {
@@ -686,7 +685,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public PredictionTable toPredictionTable() {
-    return null;
+    return this;
   }
 
 
@@ -906,9 +905,19 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
 
   public void addRow(int[] newEntry) {
+    double [] doubleValues = new double[newEntry.length];
+    for (int i = 0; i < newEntry.length; i++) {
+      doubleValues[i] = newEntry[i];
+    }
+    addRow(doubleValues);
   }
 
   public void addRow(float[] newEntry){
+    double [] doubleValues = new double[newEntry.length];
+    for (int i = 0; i < newEntry.length; i++) {
+      doubleValues[i] = newEntry[i];
+    }
+    addRow(doubleValues);
   }
 
   public void addRow(double[] newEntry){
@@ -929,38 +938,75 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public void addRow(long[] newEntry){
+    double [] doubleValues = new double[newEntry.length];
+    for (int i = 0; i < newEntry.length; i++) {
+      doubleValues[i] = newEntry[i];
+    }
+    addRow(doubleValues);
   }
 
 
   public void addRow(short[] newEntry){
+    double [] doubleValues = new double[newEntry.length];
+    for (int i = 0; i < newEntry.length; i++) {
+      doubleValues[i] = newEntry[i];
+    }
+    addRow(doubleValues);
   }
 
 
   public void addRow(boolean[] newEntry){
+    double [] doubleValues = new double[newEntry.length];
+    for (int i = 0; i < newEntry.length; i++) {
+      if (newEntry[i])
+        doubleValues[i] = 1.0;
+      else
+        doubleValues[i] = 0.0;
+    }
+    addRow(doubleValues);
   }
 
 
   public void addRow(String[] newEntry){
+    double [] doubleValues = new double[newEntry.length];
+    for (int i = 0; i < newEntry.length; i++) {
+      Double doubleValue = new Double(newEntry[i]);
+      doubleValues[i] = doubleValue.doubleValue();
+    }
+    addRow(doubleValues);
   }
 
 
   public void addRow(char[][] newEntry) {
+    System.out.println("addRow(char[][] newEntry) not supported");
   }
 
 
   public void addRow(byte[][] newEntry){
+    System.out.println("addRow(char[][] newEntry) not supported");
   }
 
 
   public void addRow(Object[] newEntry){
+    System.out.println("addRow(char[][] newEntry) not supported");
   }
 
 
   public void addRow(byte[] newEntry){
+    double [] doubleValues = new double[newEntry.length];
+    for (int i = 0; i < newEntry.length; i++) {
+      doubleValues[i] = newEntry[i];
+    }
+    addRow(doubleValues);
   }
 
 
   public void addRow(char[] newEntry){
+    double [] doubleValues = new double[newEntry.length];
+    for (int i = 0; i < newEntry.length; i++) {
+      doubleValues[i] = newEntry[i];
+    }
+    addRow(doubleValues);
   }
 
 
@@ -1234,21 +1280,27 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public void setChar(char data, int row, int column) {
+    System.out.println("setChar not supported in this table implementation");
   }
 
   public void setColumnLabel(String label, int position) {
+    System.out.println("setColumnLabel not supported in this table implementation");
   }
 
   public void setColumnComment(String comment, int position) {
+    System.out.println("setColumnComment not supported in this table implementation");
   }
 
   public void setNumColumns(int numColumns) {
+    System.out.println("setNumColumns not supported in this table implementation");
   }
 
   public void sortByColumn(int col) {
+    System.out.println("sortByColumn not supported in this table implementation");
   }
 
   public void sortByColumn(int col, int begin, int end) {
+    System.out.println("sortByColumn not supported in this table implementation");
   }
 
   public void setNumRows(int newCapacity) {
@@ -1256,12 +1308,15 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public void addTransformation (Transformation tm) {
+    System.out.println("addTransformation not supported in this table implementation");
   }
 
   public void setValueToMissing(boolean b, int row, int col) {
+    System.out.println("setValueToMissing not supported in this table implementation");
   }
 
   public void setValueToEmpty(boolean b, int row, int col) {
+    System.out.println("setValueToEmpty not supported in this table implementation");
   }
 
   /**

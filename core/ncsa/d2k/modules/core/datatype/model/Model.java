@@ -13,18 +13,15 @@ public class Model extends PredictionModelModule implements java.io.Serializable
     super(trainingSetSize, inputColumnLabels, outputColumnLabels, inputFeatureTypes, outputFeatureTypes);
   }
 
-  public double [] Evaluate(ExampleTable exampleSet, int e) throws Exception
-  {
+  public double [] Evaluate(ExampleTable exampleSet, int e) throws Exception {
     System.out.println("must override this method");
     throw new Exception();
   }
 
-  public void Evaluate(ExampleTable exampleSet, int e, double [] outputs) throws Exception
-  {
+  public void Evaluate(ExampleTable exampleSet, int e, double [] outputs) throws Exception {
     int numOutputs = exampleSet.getNumOutputFeatures();
     double [] internalOutputs = Evaluate(exampleSet, e);
-    for (int i = 0; i < numOutputs; i++)
-    {
+    for (int i = 0; i < numOutputs; i++) {
       outputs[i] = internalOutputs[i];
     }
   }
@@ -62,7 +59,9 @@ public class Model extends PredictionModelModule implements java.io.Serializable
 
 
   public void makePredictions(PredictionTable pt) {
+  }
 
+  protected void makePrediction(ExampleTable example, int row, double [] predictedOutputs) {
   }
 
 }

@@ -3,7 +3,9 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 import java.io.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
+
 public class ErrorFunction implements java.io.Serializable {
+
   public int    errorFunctionIndex;
   public String errorFunctionObjectPathName;
 
@@ -11,23 +13,14 @@ public class ErrorFunction implements java.io.Serializable {
   public static final int absoluteErrorFunctionIndex           = 1;
   public static final int varianceErrorFunctionIndex           = 2;
   public static final int likelihoodErrorFunctionIndex         = 3;
-  public static final int negativeOutputSumErrorFunctionIndex  = 4;
-  //public static final int allstateErrorFunctionIndex           = 5;
+
   public static final String [] errorFunctionNames = {
     "classification",
     "absolute",
     "variance",
     "likelihood",
     "negativeOutputSum",
-    //"allstate"
   };
-
-/*
-  public ErrorFunction(int errorFunctionIndex, String errorFunctionObjectPathName) {
-    this.errorFunctionIndex          = errorFunctionIndex;
-    this.errorFunctionObjectPathName = errorFunctionObjectPathName;
-  }
-*/
 
   public ErrorFunction(int errorFunctionIndex) {
     this.errorFunctionIndex          = errorFunctionIndex;
@@ -152,20 +145,23 @@ public class ErrorFunction implements java.io.Serializable {
     error = errorSum;
   }
   break;
+
 case likelihoodErrorFunctionIndex: {
+
   double likelihoodSum = 0.0;
 
-  double [] outputs = outputsMemory;
+  double [] predictedOutputs = outputsMemory;
 
-  model.Evaluate(examples, exampleIndex, outputs);
+  model.Evaluate(examples, exampleIndex, predictedOutputs);
+
   for (int f = 0; f < numOutputs; f++) {
-    int ActualOutputClass = (int) examples.getOutputDouble(exampleIndex, f);
 
-    double predictedClassProbability = outputs[f];
+    double actualOutputClassProbability = examples.getOutputDouble(exampleIndex, f);
 
-    if (ActualOutputClass == 0)
+    double predictedClassProbability = predictedOutputs[f];
+
+    if (actualOutputClassProbability == 0.0)
       predictedClassProbability = 1.0 - predictedClassProbability;
-
 
     likelihoodSum += Math.log(predictedClassProbability);
   }
@@ -173,51 +169,7 @@ case likelihoodErrorFunctionIndex: {
   error = - likelihoodSum;
 }
 break;
-case negativeOutputSumErrorFunctionIndex: {
-  error = 0.0;
-  for (int f = 0; f < numOutputs; f++) {
-    error += - examples.getOutputDouble(exampleIndex, 0);
-  }
-}
-break;
-/*
-case allstateErrorFunctionIndex:
-{
 
-
-  if (AllstateRatios == null) {
-    try {
-      FileInputStream   file = new FileInputStream(errorFunctionObjectPathName);
-      ObjectInputStream in   = new ObjectInputStream(file);
-
-      try {
-        AllstateRatios = (double []) in.readObject();
-      }
-      catch (java.lang.ClassNotFoundException IOE) {
-        System.out.println("java.lang.ClassNotFoundException " + IOE);
-      }
-
-      in.close();
-
-    }
-    catch (java.io.IOException IOE) {
-      IOE.printStackTrace();
-      System.out.println("IOException!!! could not open " + errorFunctionObjectPathName);
-    }
-  }
-
-  double errorSum = 0.0;
-  double [] outputs = outputsMemory;
-  model.Evaluate(examples, exampleIndex, outputs);
-  for (int f = 0; f < numOutputs; f++) {
-    double difference = outputs[f] - examples.getOutputDouble(exampleIndex, f);
-    errorSum += AllstateRatios[f] * (difference * difference);
-  }
-
-  error = errorSum;
-  break;
-}
-*/
 default: {
   System.out.println("errorFunctionIndex (" + errorFunctionIndex + ") not recognized");
   error = Double.NaN;

@@ -245,6 +245,9 @@ import Jama.*;
 //                return predTable;
         }
 
+        protected void makePrediction(ExampleTable example, int row, double [] predictedOutputs) {
+        }
+
 
 	public double predictRow(ExampleTable et, int row, int outputColumn){
 	//	System.out.println("outputCol:"+outputColumn);

@@ -9,29 +9,29 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 public class SimpleModelEvaluator extends OrderedReentrantModule {
 
-  private boolean PrintErrors          = false;
-  public  void    setPrintErrors       (boolean value) {       this.PrintErrors       = value;}
-  public  boolean getPrintErrors       ()              {return this.PrintErrors;}
+  private boolean PrintErrors            = false;
+  public  void    setPrintErrors         (boolean value) {       this.PrintErrors        = value;}
+  public  boolean getPrintErrors         ()              {return this.PrintErrors;}
 
-  private boolean PrintPredictions          = false;
-  public  void    setPrintPredictions       (boolean value) {       this.PrintPredictions       = value;}
-  public  boolean getPrintPredictions       ()              {return this.PrintPredictions;}
+  private boolean PrintPredictions       = false;
+  public  void    setPrintPredictions    (boolean value) {       this.PrintPredictions   = value;}
+  public  boolean getPrintPredictions    ()              {return this.PrintPredictions;}
 
-  private boolean    FilterByOutputRank = false;
-  public  void    setFilterByOutputRank (boolean value) {       this.FilterByOutputRank = value;}
-  public  boolean getFilterByOutputRank ()              {return this.FilterByOutputRank;}
+  private boolean    FilterByOutputRank  = false;
+  public  void    setFilterByOutputRank  (boolean value) {       this.FilterByOutputRank = value;}
+  public  boolean getFilterByOutputRank  ()              {return this.FilterByOutputRank;}
 
-  private double  FilterLowerFraction = 0.2;
+  private double  FilterLowerFraction    = 0.2;
   public  void    setFilterLowerFraction (double value) {       this.FilterLowerFraction = value;}
-  public  double  getFilterLowerFraction ()          {return this.FilterLowerFraction;}
+  public  double  getFilterLowerFraction ()             {return this.FilterLowerFraction;}
 
-  private double  FilterUpperFraction = 0.2;
+  private double  FilterUpperFraction    = 0.2;
   public  void    setFilterUpperFraction (double value) {       this.FilterUpperFraction = value;}
-  public  double  getFilterUpperFraction ()          {return this.FilterUpperFraction;}
+  public  double  getFilterUpperFraction ()             {return this.FilterUpperFraction;}
 
-  private String OutputLabel = "SimpleModelEvaluator: ";
-  public  void   setOutputLabel (String value) {this.OutputLabel = value;}
-  public  String getOutputLabel ()          {return this.OutputLabel;}
+  private String OutputLabel             = "SimpleModelEvaluator: ";
+  public  void   setOutputLabel          (String value) {this.OutputLabel = value;}
+  public  String getOutputLabel          ()             {return this.OutputLabel;}
 
 
   public String getModuleName() {
@@ -60,12 +60,10 @@ public class SimpleModelEvaluator extends OrderedReentrantModule {
   public String[] getInputTypes() {
     String [] in = {
       "ncsa.d2k.modules.projects.dtcheng.ErrorFunction",
-      "ncsa.d2k.modules.projects.dtcheng.Model",
+      "ncsa.d2k.modules.PredictionModelModule",
       "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
     return in;
   }
-
-
 
   public String getOutputName(int i) {
     switch (i) {
@@ -84,30 +82,25 @@ public class SimpleModelEvaluator extends OrderedReentrantModule {
     return out;
   }
 
-  boolean InitialExecution = true;
-  public void beginExecution() {
-    InitialExecution = true;
-  }
-
-  ErrorFunction      errorFunction = null;
-  double     [] allstateRatios;
-
   public void doit() throws Exception {
 
-    ExampleTable exampleSet = null;
+    ErrorFunction errorFunction = (ErrorFunction) this.pullInput(0);
+    Model         model         = (Model)         this.pullInput(1);
+    ExampleTable  exampleTable  = (ExampleTable)  this.pullInput(2);
 
-    errorFunction  = (ErrorFunction) this.pullInput(0);
-    Model model    = (Model) this.pullInput(1);
-    exampleSet     = (ExampleTable) this.pullInput(2);
-
-    ExampleTable examples = exampleSet;
+    ExampleTable examples = exampleTable;
 
     int numExamples = examples.getNumExamples();
-    int numOutputs = examples.getNumOutputFeatures();
+    int numInputs   = examples.getNumInputFeatures();
+    int numOutputs  = examples.getNumOutputFeatures();
+
+    model.predict(exampleTable);
+
 
     double [][] predictedOutputs = new double[numExamples][];
 
     for (int e = 0; e < numExamples; e++) {
+
       predictedOutputs[e] = model.Evaluate(examples, e);
 
       if (PrintPredictions) {
@@ -166,16 +159,7 @@ public class SimpleModelEvaluator extends OrderedReentrantModule {
       numPredictions++;
     }
 
-    double error = Double.NaN;
-    if (errorFunction.errorFunctionIndex == ErrorFunction.negativeOutputSumErrorFunctionIndex) {
-      synchronized( System.out ) {
-        System.out.println(OutputLabel + "errorSum = " + errorSum + "  numPredictions = " + numPredictions);
-      }
-      error = errorSum;
-    }
-    else {
-      error = errorSum / numPredictions;
-    }
+    double error = errorSum / numPredictions;
 
     double [] utility = new double [1];
     utility[0] = error;

@@ -578,6 +578,8 @@ public class NNModelGenerator
 		return predTable;
 */
 	}
+        protected void makePrediction(ExampleTable example, int row, double [] predictedOutputs) {
+        }
 
     /**
        Perform these actions when this module is executed.

@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.prediction.decisiontree.rainforest;
 
 import ncsa.d2k.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.examples.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 import java.io.Serializable;
 import java.util.*;
@@ -255,6 +256,9 @@ public class DecisionForestModel extends PredictionModelModule
                 String pred = (String)root.evaluate(root, pt, i);
                 pt.setStringPrediction(pred, i, 0);
             }
+        }
+
+        protected void makePrediction(ExampleTable example, int row, double [] predictedOutputs) {
         }
 
 
