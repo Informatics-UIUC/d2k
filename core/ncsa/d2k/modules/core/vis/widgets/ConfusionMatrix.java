@@ -58,12 +58,12 @@ public class ConfusionMatrix extends JScrollPane {
 		}
 
 		// keep the unique outputs and predictions
-		HashSet predNames = new HashSet();
+		/*HashSet predNames = new HashSet();
 		for(int i = 0; i < numRows; i++) {
 			String s = vt.getString(i, p);
 			if(!predNames.contains(s))
 				predNames.add(s);
-		}
+		}*/
 
 		String []outs = new String[outNames.size()];
 		String []outlabels = new String[outNames.size()];
@@ -76,19 +76,18 @@ public class ConfusionMatrix extends JScrollPane {
 			idx++;
 		}
 
-		String []preds = new String[predNames.size()];
-		String []predlabels = new String[predNames.size()];
+		String []preds = outs;
+		String []predlabels = new String[outNames.size()];
 		idx = 0;
-		it = predNames.iterator();
+		it = outNames.iterator();
 		while(it.hasNext()) {
 			String s = (String)it.next();
-			preds[idx] = s;
 			predlabels[idx] = "Pred: "+s;
 			idx++;
 		}
 
 		// calculate the confusion matrix
-		int[][] d = new int[outs.length][preds.length];
+		int[][] d = new int[outs.length][outs.length];
 
 		for(int row = 0; row < vt.getNumRows(); row++) {
 			int actual = 0;
@@ -105,13 +104,17 @@ public class ConfusionMatrix extends JScrollPane {
 					break;
 				}
 			}
+
 			//d[predicted][actual]++;
-			d[actual][predicted]++;
+			if(actual < outs.length && predicted < outs.length)
+				d[predicted][actual]++;
+			else
+				System.out.println("p: "+preds[predicted]);
 		}
 
 		correct = 0;
 		for(int i = 0; i < outs.length; i++)
-			for(int j = 0; j < preds.length; j++)
+			for(int j = 0; j < outs.length; j++)
 				if(i == j)
 					correct += d[i][j];
 
@@ -122,7 +125,7 @@ public class ConfusionMatrix extends JScrollPane {
 		Setup the row headers.
 	*/
 	private void setupTable(int[][] d, String[] r, String[] c) {
-		MatrixModel tblModel = new MatrixModel(d, r, c);
+		MatrixModel tblModel = new MatrixModel(d, r, r);
 		/*JTable tmp = new JTable();
 		Graphics g = tmp.getGraphics();
 		FontMetrics fm = g.getFontMetrics();
