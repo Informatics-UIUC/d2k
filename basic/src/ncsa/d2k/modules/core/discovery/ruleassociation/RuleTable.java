@@ -1,8 +1,6 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation;
 
 import java.util.*;
-
-
 import gnu.trove.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.discovery.ruleassociation.*;
@@ -28,8 +26,9 @@ public class RuleTable extends MutableTableImpl {
     private int numberOfTransactions;
 
     private List items;
-
     private List itemSets;
+    private LinkedList origItems;
+    private LinkedList origItemSets;
 
     //--------------------
 
@@ -51,6 +50,26 @@ public class RuleTable extends MutableTableImpl {
         minimumSupport = minSupp;
         this.items = names;
         this.itemSets = sets;
+        initializeOriginals();
+    }
+
+    /**
+     * This method remembers the original values that were in the RuleTable before
+     * any alterations.
+     */
+    private void initializeOriginals(){
+      	this.origItems = new LinkedList(items);
+	this.origItemSets = new LinkedList(itemSets);
+        for(int i = 0; i < origItemSets.size(); i++){
+          FreqItemSet I = (FreqItemSet) itemSets.get(i);
+          FreqItemSet newItems = new FreqItemSet();
+          newItems.support = I.support;
+          newItems.numberOfItems = I.numberOfItems;
+          int[] array = new int[I.items.size()];
+          array = I.items.toNativeArray();
+          newItems.items = new TIntArrayList(array);
+          origItemSets.set(i, newItems);
+      }
     }
 
     /**
@@ -62,36 +81,130 @@ public class RuleTable extends MutableTableImpl {
      * This method By Loretta Auvil
      */
     public void cleanup() {
-        // assign value of 1 if attribute-value is used
-        int [] remap = new int[items.size()];
-        for (int i=0; i < getNumRules(); i++) {
-          int[] ante = getRuleAntecedent(i);
-          for (int j=0; j < ante.length; j++)
-            if (remap[ante[j]] != 1)
-              remap[ante[j]] = 1;
-          int[] conseq = getRuleConsequent(i);
-          for (int j=0; j < conseq.length; j++)
-            if (remap[conseq[j]] != 1)
-              remap[conseq[j]] = 1;
+      // assign value of 1 if attribute-value is used
+      int [] remap = new int[items.size()];
+      for (int i=0; i < getNumRules(); i++) {
+        int[] ante = getRuleAntecedent(i);
+        for (int j=0; j < ante.length; j++)    {
+          if (remap[ante[j]] != 1)
+            remap[ante[j]] = 1;
         }
-        //calculate new index for attribute-value
-        int adjustment = 0;
-        int len = items.size();
-        for (int i=0; i < len; i++)
-          if (remap[i] != 1) {
-            items.remove(i-adjustment);
-            adjustment++;
-            remap[i] = -1;
+        int[] conseq = getRuleConsequent(i);
+        for (int j=0; j < conseq.length; j++)   {
+          if (remap[conseq[j]] != 1)
+            remap[conseq[j]] = 1;
+        }
+      }
+      //calculate new index for attribute-value
+      int adjustment = 0;
+      int len = items.size();
+      for (int i=0; i < len; i++)
+        if (remap[i] != 1) {
+          items.remove(i-adjustment);
+          adjustment++;
+          remap[i] = -1;
+        }
+        else
+          remap[i] = i-adjustment;
+      //adjust the values of frequent item sets by the remap data
+
+      for (int i=0; i < itemSets.size(); i++) {
+        FreqItemSet fis = (FreqItemSet)itemSets.get(i);
+        len = fis.items.size();
+        for (int j=0; j<len; j++){
+            fis.items.set(j, remap[fis.items.get(j)]);
+        }
+      }
+    }
+
+    /**
+     * alphaSort orders the attribute-value combinations alphabetically
+     * and then updates the corresponding rule associations (in itemSets)
+     * to reflect the new ordering.
+     */
+    public void alphaSort(){
+      //set swapMirror to its starting values
+      int [] swapMirror = new int[items.size()];
+      for(int i=0; i<items.size(); i++){swapMirror[i] = i;}
+      //sort the attribute-value combinations
+      int begin = 0;
+      while(begin < items.size()){
+        ListIterator I = items.listIterator(begin);
+        String min = I.next().toString();
+        int minIndex = begin;
+        for (int i = begin; i < (items.size()-1); i++) {
+          String current = I.next().toString();
+          if (min.compareTo(current) > 0) {
+            min = current;
+            minIndex = I.previousIndex();
           }
-          else
-            remap[i] = i-adjustment;
-        //adjust the values of frequent item sets by the remap data
-        for (int i=0; i < itemSets.size(); i++) {
-          FreqItemSet fis = (FreqItemSet)itemSets.get(i);
-          len = fis.items.size();
-          for (int j=0; j<len; j++)
-            fis.items.set(j,remap[fis.items.get(j)]);
         }
+        //swap the first string with the minimal string
+        items.set(minIndex, items.get(begin));
+        items.set(begin, min);
+        //update the mirror
+        int temp = swapMirror[begin];
+        swapMirror[begin] = swapMirror[minIndex];
+        swapMirror[minIndex] = temp;
+        begin++;
+      }
+      this.reOrderRowVals(swapMirror);
+    }
+
+    /**
+     * This method moves the values in the table around according to the
+     * array that is passed in using this convention:  newOrder[0] contains
+     * the index of the row that should be moved to row 0.
+     * @param newOrder is the re-mapping array
+     */
+    public void reOrderRowVals(int[] newOrder){
+      int [] rowMap = new int [items.size()];
+      for(int x = 0; x < items.size(); x++){
+        rowMap[newOrder[x]] = x;
+      }
+      int len;
+      for (int i=0; i < itemSets.size(); i++) {
+        FreqItemSet fis = (FreqItemSet)itemSets.get(i);
+        len = fis.items.size();
+        for (int j=0; j<len; j++){
+          if(fis.items.get(j) < 0)
+            j = len;
+          else
+            fis.items.set(j, rowMap[fis.items.get(j)]);
+        }
+      }
+    }
+
+    /**
+     * This method moves the attribute-value combinations around according to the
+     * array that is passed in using the same convention as reOrderRowVals.
+     * @param newOrder is the re-mapping array
+     */
+    public void reOrderRowHeads(int[] newOrder){
+      LinkedList newList = new LinkedList();
+      for(int i = 0; i < items.size(); i++){
+        newList.add(i,items.get(newOrder[i]));
+      }
+      items = newList;
+    }
+
+    /**
+     * This method moves the rows of the entire table (heads and vals) according
+     * to the remapping array newOrder.
+     * @param newOrder is the re-mapping array
+     */
+    public void reOrderRows(int[] newOrder){
+      reOrderRowHeads(newOrder);
+      reOrderRowVals(newOrder);
+    }
+
+    /**
+     * This method restores items and itemSets to their original values.
+     */
+    public void setToOriginal(){
+      items = origItems;
+      itemSets = origItemSets;
+      initializeOriginals();
     }
 
     /**
