@@ -150,10 +150,12 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
  public void doit() {
         MutableTable table =(MutableTable) pullInput(0);
         CascadeSort cSort = new CascadeSort(table);
-        //vered - commented out this line - it makes the sorting to always
-        //be the same, sort by first column.
-        //int[] sortorder = cSort.getDefaultSortOrder();
-        int[] sortorder = getSortOrder(table);
+
+        int[] sortorder;
+        if(sortOrderNames == null || sortOrderNames.length == 0)
+          sortorder = cSort.getDefaultSortOrder();
+        else
+          sortorder = getSortOrder(table);
 
         if(sortorder != null && sortorder.length != 0)
           cSort.sort(sortorder);
@@ -164,6 +166,7 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
        //vered - added this method, to figure out the cascading sort order
        //according to sortOrderNames
        private int[] getSortOrder(Table table){
+
          int[] retVal = new int[0];
          HashMap columns = StaticMethods.getAvailableAttributes(table);
          if(columns.size() == 0)
