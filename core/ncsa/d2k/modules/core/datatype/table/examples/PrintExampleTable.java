@@ -131,8 +131,8 @@ public class PrintExampleTable
 
     ExampleTable exampleSet = (ExampleTable)this.pullInput(0);
     int numExamples = exampleSet.getNumExamples();
-    int numInputs = exampleSet.getNumInputs(0);
-    int numOutputs = exampleSet.getNumOutputs(0);
+    int numInputs  = exampleSet.getNumInputFeatures();
+    int numOutputs = exampleSet.getNumOutputFeatures();
 
     if (PrintNumExamples)
       System.out.println(Label + " numExamples = " + numExamples);
