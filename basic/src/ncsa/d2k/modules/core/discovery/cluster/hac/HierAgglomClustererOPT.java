@@ -234,7 +234,7 @@ public class HierAgglomClustererOPT
     ParameterPoint pp = (ParameterPoint) pullInput(0);
     HAC hac = new HAC( (int) pp.getValue(0), (int) pp.getValue(1),
                       (int) pp.getValue(2), (int) pp.getValue(3), getVerbose(),
-                      this.getCheckMissingValues());
+                      this.getCheckMissingValues(), getAlias() );
     this.pushOutput(hac.buildModel( (Table)this.pullInput(1)), 0);
   }
 

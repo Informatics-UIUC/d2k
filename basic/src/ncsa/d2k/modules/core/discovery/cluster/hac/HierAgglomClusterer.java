@@ -176,7 +176,7 @@ public class HierAgglomClusterer
   protected void doit() throws Exception {
     HAC hac = new HAC(this.getClusterMethod(), this.getDistanceMetric(),
                       this.getNumberOfClusters(), this.getDistanceThreshold(),
-                      getVerbose(), this.getCheckMissingValues());
+                      getVerbose(), this.getCheckMissingValues(), getAlias() );
     this.pushOutput(hac.buildModel( (Table)this.pullInput(0)), 0);
   }
 
