@@ -1,4 +1,5 @@
 package ncsa.d2k.modules.core.prediction.decisiontree.continuous;
+
 import ncsa.d2k.modules.core.transform.sort.*;
 import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.modules.core.prediction.regression.continuous.*;
@@ -10,7 +11,7 @@ import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 
 import ncsa.d2k.core.modules.*;
 
-import ncsa.d2k.modules.core.datatype.table.*;
+
 public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
    boolean UseMeanNodeModels          = true;
@@ -558,5 +559,11 @@ and the example table assigned to node2 contains the examples that the decomposi
     return node;
   }
 
+
+    //QA Anca added this:
+    public PropertyDescription[] getPropertiesDescriptions() {
+	// so that "ordered and _trace" property are invisible
+        return new PropertyDescription[0]; 
+    }
 
 }
