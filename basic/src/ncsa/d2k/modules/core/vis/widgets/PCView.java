@@ -22,6 +22,55 @@ import ncsa.gui.*;
  *
  */
 public class PCView extends JUserPane implements ActionListener, Printable {
+	/**
+	 * Generate an image of the text label in the given font rotated 90degrees.
+	 * @param font the text font.
+	 * @param text the text to rotate.
+	 * @param fg the foreground color.
+	 * @param bg the background color.
+	 * @param c the component.
+	 */
+	static final public Image generateRotatedTextImage (Font font, String text, Color fg, Color bg, Component c) {
+		
+		// get a buffered image, draw the text into it.
+		BufferedImage bi = new BufferedImage (1, 1, BufferedImage.TYPE_INT_ARGB);
+		Graphics g = bi.getGraphics ();
+		((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+				
+		g.setFont (font);
+		FontMetrics fm = g.getFontMetrics (font);
+		Rectangle2D bounds = fm.getStringBounds (text, g);
+		bi.flush ();
+		int width = (int) Math.ceil (bounds.getWidth ());
+
+		//int width = fm.stringWidth (title);
+		int height = fm.getHeight ();
+
+		// Get tthe tranformation and create the image to rotate.
+		Image origImg = new BufferedImage (width, height, BufferedImage.TYPE_INT_RGB);		
+		Graphics2D g2 = (Graphics2D) origImg.getGraphics ();
+		g2.setFont (font);
+
+		// make the background brighter if this is selected or active
+		g2.setColor (bg);
+		g2.fillRect (0, 0, width, height);
+		g2.setColor (fg);
+		g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.drawString (text, 0, fm.getAscent ());
+
+		// rotate the image.
+		Image timage = new BufferedImage (height, width, BufferedImage.TYPE_INT_RGB);
+		AffineTransform af = AffineTransform.getRotateInstance ((3.0*Math.PI) / 2.0);
+		af.translate (-width, 0);//-height);
+		g2 = (Graphics2D) timage.getGraphics ();
+		g2.setColor (bg);
+		g2.fillRect (0, 0, height, width);
+		g2.drawImage (origImg, af, c);
+		origImg.flush ();
+		return timage;
+	}
 	/** The length of the line used for the gradient paint */
 	private static final int LINE_LENGTH = 250;
 
@@ -1119,7 +1168,7 @@ public class PCView extends JUserPane implements ActionListener, Printable {
 			g2.fill(r);
 			g2.setPaint(Color.black);
 			g2.draw(r);
-			Image img = RotatedText.generateRotatedTextImage(this.getFont(), name, this.getForeground(),
+			Image img = PCView.generateRotatedTextImage(this.getFont(), name, this.getForeground(),
 					this.getBackground(), this);
 			int y = r.y + 3;
 			int x = r.x + ((r.width - img.getWidth(this))/2);

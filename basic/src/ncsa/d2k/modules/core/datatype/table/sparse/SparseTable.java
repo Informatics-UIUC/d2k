@@ -68,7 +68,6 @@ protected static SparseTableFactory factory = new SparseTableFactory();
       rows = new VIntObjectHashMap();
     else
       rows = new VIntObjectHashMap(numRows);
-    setKeyColumn(0);
     numRows = 0;
     numColumns = 0;
   }
@@ -128,7 +127,6 @@ protected static SparseTableFactory factory = new SparseTableFactory();
   */
  protected void copyAttributes(SparseTable srcTable){
   setComment(srcTable.getComment());
-  setKeyColumn(srcTable.getKeyColumn());
   setLabel(srcTable.getLabel());
  }
 

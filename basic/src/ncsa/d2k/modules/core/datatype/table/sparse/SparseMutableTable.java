@@ -4972,7 +4972,6 @@ public class SparseMutableTable
     SparseMutableTable new_table = new SparseMutableTable();
     new_table.setLabel(this.getLabel());
     new_table.setComment(this.getComment());
-    new_table.setKeyColumn(this.getKeyColumn());
     for (int i = 0, n = this.getNumColumns(); i < n;i++){
       new_table.addColumn((AbstractSparseColumn)getColumn(i));
     }

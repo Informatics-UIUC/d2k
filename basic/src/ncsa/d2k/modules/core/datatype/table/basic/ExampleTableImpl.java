@@ -453,7 +453,6 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		mti.setOutputFeatures(newouts);
 		mti.setTestingSet(newtest);
 		mti.setTrainingSet(newtest);
-		mti.setKeyColumn (this.getKeyColumn());
 		mti.setLabel (this.getLabel());
 		mti.setComment (this.getComment());
 
@@ -514,7 +513,6 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		// LAM-tlr wrong, subset the subsets.
 		mti.setTestingSet(newtest);
 		mti.setTrainingSet(newtest);
-		mti.setKeyColumn (this.getKeyColumn());
 		mti.setLabel (this.getLabel());
 		mti.setComment (this.getComment());
 
@@ -576,7 +574,6 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		// LAM-tlr, this is wrong, we need to subset the test and train sets here.
 		mti.setTestingSet(newtest);
 		mti.setTrainingSet(newtest);
-		mti.setKeyColumn (this.getKeyColumn());
 		mti.setLabel (this.getLabel());
 		mti.setComment (this.getComment());
 
@@ -605,7 +602,6 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		eti.setTestingSet(this.getTestingSet());
 		eti.setInputFeatures(this.getInputFeatures());
 		eti.setOutputFeatures(this.getOutputFeatures());
-		eti.setKeyColumn (this.getKeyColumn());
 		eti.setLabel (this.getLabel());
 		eti.setComment (this.getComment());
 		eti.transformations = this.transformations;

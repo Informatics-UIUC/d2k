@@ -91,7 +91,6 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
             return  vt;
         } catch (Exception e) {
             vt = new PredictionTableImpl(getNumColumns());
-            vt.setKeyColumn(getKeyColumn());
             for (int i = 0; i < getNumColumns(); i++)
                 vt.setColumn(getColumn(i).copy(), i);
             vt.setLabel(getLabel());

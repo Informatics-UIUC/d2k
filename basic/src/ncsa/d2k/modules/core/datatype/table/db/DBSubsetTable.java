@@ -260,12 +260,6 @@ public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection){
   public char getChar(int row, int column) {
     return dataSource.getTextData(row, column).toCharArray()[0];
   }
-  public int getKeyColumn() {
-    throw new RuntimeException("Table mutation not supported in DBTable.");
-  }
-  public void setKeyColumn(int position) {
-    throw new RuntimeException("Table mutation not supported in DBTable.");
-  }
 
   public void setLabel(String labl) {
         throw new RuntimeException("Table mutation not supported in DBTable.");

@@ -147,18 +147,6 @@ public interface Table extends java.io.Serializable {
 	//// Accessing Table Metadata
 
 	/**
-		Return the index which represents the key column of this table.
-		@return the key column index
-	*/
-	public int getKeyColumn();
-
-	/**
-		Sets the key column index of this table.
-		@param position the Column which is key for identifying unique rows
-	*/
-	public void setKeyColumn(int position);
-
-	/**
 		Returns the name associated with the column.
 		@param position the index of the Column name to get.
 		@returns the name associated with the column.

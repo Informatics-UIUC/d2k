@@ -383,7 +383,6 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 			return vt;
 		} catch (Exception e) {
 			vt = new MutableTableImpl(getNumColumns());
-			vt.setKeyColumn(getKeyColumn());
 			for (int i = 0; i < getNumColumns(); i++)
 				vt.setColumn(getColumn(i).copy(), i);
 			vt.setLabel(getLabel());
@@ -409,7 +408,6 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 
 		// make a table from the new columns
 		MutableTableImpl vt = new MutableTableImpl(cols);
-		vt.setKeyColumn(getKeyColumn());
 		vt.setLabel(getLabel());
 		vt.setComment(getComment());
 		return vt;
@@ -432,7 +430,6 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 
 		// make a table from the new columns
 		MutableTableImpl vt = new MutableTableImpl(cols);
-		vt.setKeyColumn(getKeyColumn());
 		vt.setLabel(getLabel());
 		vt.setComment(getComment());
 		return vt;
@@ -447,7 +444,6 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 		MutableTableImpl mti = new MutableTableImpl(this.columns);
 		mti.setLabel(this.getLabel());
 		mti.setComment(this.getComment());
-		mti.setKeyColumn(this.getKeyColumn());
 		return mti;
 	}
 

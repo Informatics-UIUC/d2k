@@ -180,11 +180,4 @@ public abstract class AbstractTable implements Table {
 		comment = cmt;
 	}
 
-	public void setKeyColumn(int idx) {
-		keyColumn = idx;
-	}
-
-	public int getKeyColumn() {
-		return keyColumn;
-	}
 }

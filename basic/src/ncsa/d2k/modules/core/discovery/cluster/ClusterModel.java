@@ -533,30 +533,6 @@ public class ClusterModel
   /**
    * See Table in ncsa.d2k.modules.core.datatype.table
    */
-  public int getKeyColumn() {
-    if (_table == null) {
-      System.out.println("ERROR: " + getAlias() + ".getKeyColumn(...) -- Model does not contain table data -- will return Integer.MIN_VALUE");
-      return Integer.MIN_VALUE;
-    } else {
-      return _table.getKeyColumn();
-    }
-  }
-
-  /**
-   * See Table in ncsa.d2k.modules.core.datatype.table
-   */
-  public void setKeyColumn(int position) {
-    if (_table == null) {
-      System.out.println(
-          "ERROR: " + getAlias() + ".getKeyColumn(...) -- Model does not contain table data.");
-    } else {
-      _table.setKeyColumn(position);
-    }
-  }
-
-  /**
-   * See Table in ncsa.d2k.modules.core.datatype.table
-   */
   public String getColumnLabel(int position) {
     if (_table == null) {
       System.out.println("ERROR: " + getAlias() + ".getColumnLabel(...) -- Model does not contain table data -- will return null");

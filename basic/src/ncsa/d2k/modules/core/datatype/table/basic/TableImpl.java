@@ -25,9 +25,6 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
 	/** comment for the table. */
 	protected String comment;
 
-	/** the index of the key column. */
-	protected int keyColumn;
-
    /**
     * Create a new Table with zero columns.
     */
@@ -41,7 +38,6 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
      * @param numColumns the initial number of columns
      */
     public TableImpl (int numColumns) {
-		setKeyColumn(0);
 		columns = new Column[numColumns];
     }
 
@@ -50,7 +46,6 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
      * @param c the initial columns
      */
     public TableImpl (Column[] c) {
-		setKeyColumn(0);
         columns = c;
     }
 
@@ -98,23 +93,6 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
 	*/
 	public void setComment( String cmt ) {
 		comment = cmt;
-	}
-
-	/**
-	 * Set the column containing the unique key, if there is one.
-	 * @param idx the index of the key column.
-	 */
-	public void setKeyColumn(int idx) {
-		keyColumn = idx;
-	}
-
-	/**
-	 * The key column is the index of the column containing a key which is
-	 * unique for each row.
-	 * @return the key column index.
-	 */
-	public int getKeyColumn() {
-		return keyColumn;
 	}
 
     //////////////////////////////////////

@@ -37,7 +37,6 @@ public class SubsetTableImpl extends MutableTableImpl {
 		this.columns = table.getColumns();
 		this.label = table.label;
 		this.comment = table.comment;
-		this.keyColumn = table.keyColumn;
 		this.subset = new int[table.getNumRows()];
 		if (table instanceof SubsetTableImpl) {
 			int[] tmp = ((SubsetTableImpl) table).getSubset();
@@ -88,7 +87,6 @@ public class SubsetTableImpl extends MutableTableImpl {
 		this.columns = table.getColumns();
 		this.label = table.label;
 		this.comment = table.comment;
-		this.keyColumn = table.keyColumn;
 		this.subset = subset;
 	}
 
@@ -401,7 +399,6 @@ public class SubsetTableImpl extends MutableTableImpl {
 		int[] newsubset = new int[subset.length];
 		System.arraycopy(subset, 0, newsubset, 0, subset.length);
 		vt = new SubsetTableImpl(cols, newsubset);
-		vt.setKeyColumn(this.getKeyColumn());
 		vt.setLabel(this.getLabel());
 		vt.setComment(this.getComment());
 		return vt;
@@ -425,7 +422,6 @@ public class SubsetTableImpl extends MutableTableImpl {
 		}
 
 		vt = new MutableTableImpl(cols);
-		vt.setKeyColumn(this.getKeyColumn());
 		vt.setLabel(this.getLabel());
 		vt.setComment(this.getComment());
 		return vt;
@@ -449,7 +445,6 @@ public class SubsetTableImpl extends MutableTableImpl {
 		}
 
 		vt = new MutableTableImpl(cols);
-		vt.setKeyColumn(this.getKeyColumn());
 		vt.setLabel(this.getLabel());
 		vt.setComment(this.getComment());
 		return vt;
@@ -463,7 +458,6 @@ public class SubsetTableImpl extends MutableTableImpl {
 	public Table shallowCopy() {
 		SubsetTableImpl vt =
 			new SubsetTableImpl(this.getColumns(), this.subset);
-		vt.setKeyColumn(getKeyColumn());
 		vt.setLabel(getLabel());
 		vt.setComment(getComment());
 		return vt;
