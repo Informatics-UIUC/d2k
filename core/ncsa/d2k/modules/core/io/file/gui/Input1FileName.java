@@ -14,15 +14,15 @@ import java.io.*;
  */
 public class Input1FileName extends UIModule {
 
-	private String lastPath;
+	private String lastFile;
 	private String defaultPath;
 
-	public void setLastPath(String s) {
-        lastPath = s;
+	public void setLastFile(String s) {
+        lastFile = s;
 	}
 
-	public String getLastPath() {
-		return lastPath;
+	public String getLastFile() {
+		return lastFile;
 	}
 
 	public void setDefaultPath(String s) {
@@ -86,7 +86,7 @@ public class Input1FileName extends UIModule {
 		}
 
         void doSetup() {
-            String lastpath = getLastPath();
+            String lastpath = getLastFile();
             if(lastpath != null)
                 setSelectedFile(new File(lastpath));
             else {
@@ -98,7 +98,7 @@ public class Input1FileName extends UIModule {
 
         public void approveSelection() {
             String filename = getSelectedFile().getAbsolutePath();
-            setLastPath(filename);
+            setLastFile(filename);
             pushOutput(filename, 0);
             viewDone("Done");
         }
