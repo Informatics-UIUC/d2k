@@ -88,6 +88,8 @@ public class CreateBinTree extends DataPrepModule {
       if (out == null || out.length == 0)
 	  throw new Exception(getAlias() + ": Please select an output feature, it is missing");
 
+      if (bt == null)
+	  throw new Exception(getAlias() + ": Bins must be defined before creating a BinTree");
 
       // we only support one out variable..
       int classColumn = out[0];
@@ -95,7 +97,17 @@ public class CreateBinTree extends DataPrepModule {
       if (et.isColumnScalar(classColumn)) 
 	  throw new Exception(getAlias() + ": Output feature must be nominal. Please transform it.");
 
+
+      BinDescriptor [] bins = bt.getBinDescriptors();
+
+      if(bins.length == 0 || bins.length < ins.length )
+	  throw new Exception(getAlias() + 
+			      ": Bins must be defined for each input before creating BinTree.");
+
+   
       BinTree tree = createBinTree(bt, et);
+
+
 
       int numRows = et.getNumRows();
       long startTime = System.currentTimeMillis();
@@ -170,6 +182,7 @@ public class CreateBinTree extends DataPrepModule {
          }
 	 
       }
+      
       return bt;
 
    }
