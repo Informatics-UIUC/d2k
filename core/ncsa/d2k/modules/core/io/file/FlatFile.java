@@ -36,6 +36,7 @@ public class FlatFile
 
   public byte DelimiterByte = (byte) ',';
   public byte SpaceByte = (byte) ' ';
+  public byte TabByte = 9;
   public byte EOLByte = 10; // new line = 10 (unix) !!!
   public byte UnixEOLByte = 10;
   public byte MacEOLByte = 13;
@@ -83,6 +84,7 @@ public class FlatFile
         if (File == null) {
 
           EOF = true;
+          System.out.println("user.dir: " + System.getProperty("user.dir"));
           System.out.println("couldn't open file: " + FileName);
           throw new Exception();
         }
@@ -92,12 +94,14 @@ public class FlatFile
         eraseFile(FileName);
         File = new RandomAccessFile(FileName, "rw");
         if (File == null) {
+          System.out.println("user.dir: " + System.getProperty("user.dir"));
           System.out.println("couldn't open file: " + FileName);
           throw new Exception();
         }
       }
     }
     catch (Exception e) {
+      System.out.println("user.dir: " + System.getProperty("user.dir"));
       System.out.println("couldn't open file: " + FileName);
       throw new Exception();
     }

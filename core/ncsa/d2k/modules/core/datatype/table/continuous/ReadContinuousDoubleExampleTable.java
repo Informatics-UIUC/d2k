@@ -237,7 +237,10 @@ public class ReadContinuousDoubleExampleTable
 
     // read column names
 
+    //System.out.println("user.dir = " + System.getProperty("user.dir"));
+
     {
+      File.listRoots();
       FlatFile rio = new FlatFile(DataPath, "r", ReadBufferSize, true);
       buffer = rio.Buffer;
       rio.DelimiterByte = DelimiterByte;
