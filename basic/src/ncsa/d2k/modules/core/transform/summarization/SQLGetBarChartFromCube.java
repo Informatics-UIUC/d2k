@@ -9,7 +9,7 @@ package ncsa.d2k.modules.core.transform.summarization;
  * @version 1.0
  */
 
-
+import ncsa.d2k.core.modules.HeadlessUIModule;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Checkbox;
@@ -54,8 +54,9 @@ import ncsa.d2k.modules.core.io.sql.ConnectionWrapper;
 import ncsa.d2k.modules.core.transform.attribute.SQLCodeBook;
 import ncsa.d2k.userviews.swing.JUserPane;
 import ncsa.gui.Constrain;
+import ncsa.d2k.modules.core.transform.StaticMethods;
 
-public class SQLGetBarChartFromCube extends UIModule {
+public class SQLGetBarChartFromCube extends HeadlessUIModule {
   JOptionPane msgBoard = new JOptionPane();
   ConnectionWrapper cw;
   Connection con;
@@ -141,7 +142,12 @@ public class SQLGetBarChartFromCube extends UIModule {
     //QA Anca added this:
     public PropertyDescription[] getPropertiesDescriptions() {
         // so that "WindowName" property is invisible
-        return new PropertyDescription[0];
+        PropertyDescription[] pds = new PropertyDescription[3];
+        pds[0] = super.supressDescription;
+        pds[1] = new PropertyDescription("book", "Use Code Book", "Set this property to true if you wish to use a code book");
+        pds[2] = new PropertyDescription("codeBook", "Code Book", "Supply a code book if 'Use Code Book' is set to true");
+        return pds;
+
     }
 
 
@@ -307,6 +313,13 @@ public class SQLGetBarChartFromCube extends UIModule {
       Object src = e.getSource();
       if (src == displayBtn) {
         Object[] values = selectedModel.toArray();
+
+        //headless conversion support
+        setSelectedAttributes(values);
+        setBook(useCodeBook.getState());
+        setCodeBook(bookName.getText());
+        //headless conversion support
+
         String[] retVal = new String[values.length];
         if (useCodeBook.getState() && bookName.getText().length()<=0) {
           // The user has not chosen a code book yet
@@ -566,5 +579,144 @@ public class SQLGetBarChartFromCube extends UIModule {
                         default: return "NO SUCH OUTPUT!";
                 }
         }
+
+        //headless conversion support
+
+        private String[] selectedAttributes;
+        public Object[] getSelectedAttributes(){return selectedAttributes;}
+        public void setSelectedAttributes(Object[] atts){
+        selectedAttributes = new String[atts.length];
+        for (int i=0; i<atts.length; i++)
+          selectedAttributes[i] = (String)atts[i];
+      }
+
+        private String codeBook;
+        public void setCodeBook(String book){codeBook = book;}
+        public String getCodeBook(){return codeBook;}
+
+       private boolean book;
+        public void setBook(boolean val){book = val;}
+        public boolean getBook(){return book;}
+
+
+public boolean createItemDataTableHeadless(int col, String[] attributes, String tableName){
+  int rowCnt = 0;
+   try {
+     con = cw.getConnection();
+     // only pick up the cube records that have values in the selected
+     // columns and is a 1-item set
+     String cntQry = new String("select count(*) from " + tableName +
+                                " where ");
+ /*    for (int idx=0; idx<attributes.length; idx++) {
+       if (idx == col) {
+         cntQry = cntQry + attributes[idx] + " is not null ";
+       }
+     }*/
+    if (col < attributes.length)
+      cntQry = cntQry + attributes[col] + " is not null ";
+
+     cntQry = cntQry + " AND set_size = 1";
+     //System.out.println("cntQry is " + cntQry);
+     Statement cntStmt = con.createStatement();
+     ResultSet cntSet = cntStmt.executeQuery(cntQry);
+     while (cntSet.next()) {
+       rowCnt = cntSet.getInt(1);
+     }
+     cntStmt.close();
+   }
+   catch (Exception e){
+     System.out.println("Error occurred in create1ItemDataTable.");
+     e.printStackTrace();
+     return false;
+   }
+   // data table will contains one of the columns the user selected and one
+   // extra column for count
+   Column[] cols = new Column[2];
+   cols[0] = new ObjectColumn(rowCnt);
+   cols[0].setLabel(attributes[col]);
+   cols[1] = new ObjectColumn(rowCnt);
+   cols[1].setLabel("COUNT");
+   data = new MutableTableImpl (cols);
+
+   try {
+     con = cw.getConnection();
+     String dataQry = new String("select ");
+     dataQry = dataQry + attributes[col] + ", ";
+     dataQry = dataQry + "CNT from " + tableName + " where ";
+     dataQry = dataQry + attributes[col] + " is not null ";
+     dataQry = dataQry + " AND set_size = 1";
+     //dataQry = dataQry + " AND set_size = 1 order by " + selectedModel.get(col);
+     //System.out.println("dataQry is " + dataQry);
+     Statement dataStmt = con.createStatement();
+     ResultSet dataSet = dataStmt.executeQuery(dataQry);
+     int rowIdx = 0;
+     while (dataSet.next()) {
+       data.setString(dataSet.getString(1),rowIdx,0);
+       data.setInt(dataSet.getInt(2),rowIdx,1);
+       rowIdx ++;
+     }
+     dataStmt.close();
+     return true;
+   }
+   catch (Exception e){
+
+     System.out.println("Error occurred in createDataTable.");
+     e.printStackTrace();
+     return false;
+   }
+
+
+}//createItemDataTableHeadless
+
+        public void doit() throws Exception{
+
+          if(book && (codeBook == null || codeBook.length() == 0))
+            throw new Exception("You must choose a code book or set 'Use Code Book' to false\n");
+
+          if(selectedAttributes == null || selectedAttributes.length == 0)
+            throw new Exception("You must select attributes!\n");
+
+
+
+          ConnectionWrapper cw = (ConnectionWrapper) pullInput(0);
+          String tableName = (String) pullInput(1);
+
+          if(tableName == null || tableName.length() == 0)
+            throw new Exception("Illegal table name!\n");
+
+          con = cw.getConnection();
+          DatabaseMetaData metadata = con.getMetaData();
+          ResultSet columns = metadata.getColumns(null, "%", tableName,
+                                                  "%");
+          Vector columnsVector = new Vector();
+          int counter = 0;
+          while (columns.next()) {
+            String colName = columns.getString("COLUMN_NAME");
+            if (!colName.equals("SET_SIZE") && !colName.equals("CNT")) {
+              columnsVector.add(counter, colName);
+              counter ++;
+            }//if
+          }//while
+
+          String[] targetAttributes = StaticMethods.getIntersection(selectedAttributes, columnsVector);
+          if(targetAttributes.length == 0)
+            throw new Exception ("None of the selected attributes is in table " + tableName);
+
+          if (book) {
+            aBook = new SQLCodeBook(cw, codeBook);
+            codeTable = aBook.codeBook;
+         }
+
+         for (int idx = 0; idx < targetAttributes.length; idx++)
+           // if code book is required and the code book is not retrieved yet, then get it
+           if (createItemDataTableHeadless(idx, targetAttributes, tableName) ){
+             if (book)
+               replaceCode(data);
+
+             pushOutput(data, 0);
+           }//if create table
+        }//doit
+        //headless conversion support
+
 
 }
