@@ -41,7 +41,7 @@ public class SQLHTree extends ComputeModule
   static String DELIMITER = "\t";
   static String ELN = "\n";
   static String NA = "____";
-  // String for the list of column names seperated by ","
+  // String for the list of column names separated by ","
   String columnStr;
 
   // ArrayList of Column for columns
@@ -94,130 +94,43 @@ public class SQLHTree extends ComputeModule
     int sameValueIdx;
   }
 
-  public String getOutputInfo (int i) {
-    switch(i) {
-      case 0: return "JDBC data source to make database connection.";
-      case 1: return "The name of the table that stores data statistics.";
-      default: return "No such output";
-    }
-  }
-
-  public String getInputInfo (int i) {
-    switch(i) {
-      case 0: return "JDBC data source to make database connection.";
-      case 1: return "Table Name";
-      case 2: return "Field Names";
-      case 3: return "Query Condition (Optional)";
-      case 4: return "Bin Transform (Optional)";
-      default: return "No such input";
-    }
-  }
-
-  public String getModuleInfo () {
-    String s = "<p> Overview: ";
-      s += "This module computes a cube table from a selected database table. </p>";
-      s += "<p> Detailed Description: ";
-      s += "This module takes 5 inputs: a database connection, a database table ";
-      s += "name, a list of selected attributes, a user specified query condition, ";
-      s += "and a binning transform schema. The last two inputs are optional. ";
-      s += "The input <i>Query Condition</i> is used to subset or filter ";
-      s += "your data set. If you are only interesting in the subset of your data, ";
-      s += "you should link the module <i>SQLFilterConstruction</i> to this input port. ";
-      s += "The input <i>Bin Transform</i> is used to group values. For the ";
-      s += "attributes that have many distinct values, especially for the continuous ";
-      s += "numeric attributes, you usually need to group values into several bins. ";
-      s += "You can perform this task by linking the module <i>SQLBinColumns</i> to ";
-      s += "this input port. </p>";
-      s += "<p>This module first makes a connection to a database, retrieves the ";
-      s += "data from a specified database table for the specified attributes, ";
-      s += "and then computes a data cube using the H-Tree algorithm. ";
-      s += "You can control the cube construction by two parameters: <i>maximum ";
-      s += "rule size</i> and <i>minimum support</i>'. The <i>maximum rule size</i> is the ";
-      s += "maximum number of items in a rule. To avoid the exponential computation, ";
-      s += "only up to 5 items per rule are allowed. The <i>minimum support</i> is used ";
-      s += "to control the usefulness of discovered rules. A support of 2% ";
-      s += "for a rule means that 2% of data under analysis support this rule. ";
-      s += "By setting <i>minimum support</i> lower, you would get more trivial rules. ";
-      s += "However, by setting <i>minimum support</i> too high, you might loose some ";
-      s += "important rules. ";
-      s += "<p>References: ";
-      s += "<i>Efficient Computation of Iceberg Cubes with Complex Measures </i>";
-      s += "by J Han et al. </p>";
-      s += "<p> Restrictions: ";
-      s += "We currently only support Oracle and SQLServer databases. Due to the intensive ";
-      s += "computation involved in constructing a data cube, the memory and CPU requirements ";
-      s += "may be substantially increased when more attributes and more unique values ";
-      s += "are included. It is recommended only to choose a data set that has less ";
-      s += "than 25 attributes for analysis. It is also recommended that an attribute with a ";
-      s += "large number of data values be grouped into bins. ";
-      s += "If the number of unique values for an attribute is greater than 5% of the total ";
-      s += "number of records, then execution stops with a recommendation that this attribute be binned.";
-      return s;
-  }
-
-    /**
+  /**
      * Get the name of the input parameter
      * @param i is the index of the input parameter
      * @return Name of the input parameter
      */
-    public String getInputName (int i) {
-        switch (i) {
-            case 0:
-                return "Database Connection";
-            case 1:
-                return "Selected Table";
-            case 2:
-                  return "Selected Attributes";
-            case 3:
-                return "Query Condition (Optional)";
-            case 4:
-                return "Bin Transform (Optional)";
-            default:
-                return  "No such input";
-        }
+  public String getInputName (int i) {
+   switch (i) {
+     case 0:
+        return "Database Connection";
+     case 1:
+        return "Selected Table";
+     case 2:
+        return "Selected Attributes";
+     case 3:
+        return "Query Condition (Optional)";
+     case 4:
+        return "Binning Transformation (Optional)";
+     default:
+         return "No such input";
+   }
+ }
+
+  public String getInputInfo (int i) {
+    switch(i) {
+      case 0:
+	  return "A connection to the database from which the cube is built.";
+      case 1:
+	  return "The name of the database table for which the cube is built.";
+      case 2:
+	  return "The name of the table attribute(s) included in the cube.";
+      case 3:
+	  return "An optional query condition to filter the data.";
+      case 4:
+	  return "An optional binning transformation to group the data.";
+      default:
+	  return "No such input.";
     }
-
-    /**
-     * Get the name of the output parameters
-     * @param i is the index of the output parameter
-     * @return Name of the output parameter
-     */
-    public String getOutputName (int i) {
-        switch (i) {
-            case 0:
-                return "Database Connection";
-            case 1:
-                return "Cube Table";
-            default:
-                return  "no such output!";
-        }
-    }
-
-    /**
-     * Return the human readable name of the module.
-     * @return the human readable name of the module.
-     */
-    public String getModuleName() {
-            return "SQL HTree";
-    }
-
-
-  // this property is the min acceptable support score.
-  public void setSupport (double i)  throws PropertyVetoException {
-          if( i < 0 || i  >100) throw new PropertyVetoException ("Support must be between 0 and 100", null);
-    support = i;
-  }
-  public double getSupport () {
-    return support;
-  }
-
-  // this property is the maximum acceptable rule size.
-  public void setMaxRuleSize (int yy) throws PropertyVetoException {
-   if( yy <= 0 ) throw new PropertyVetoException("Rule size must be a positive integer", null);
-    maxRuleSize = yy;
-  }
-  public int getMaxRuleSize () {
-    return maxRuleSize;
   }
 
   public String[] getInputTypes () {
@@ -229,17 +142,156 @@ public class SQLHTree extends ComputeModule
     return in;
   }
 
+  /**
+   * Get the name of the output parameters
+   * @param i is the index of the output parameter
+   * @return Name of the output parameter
+   */
+  public String getOutputName (int i) {
+    switch (i) {
+      case 0:
+          return "Database Connection";
+      case 1:
+          return "Cube Table";
+      default:
+          return  "No such output";
+    }
+  }
+
+  public String getOutputInfo (int i) {
+    switch(i) {
+      case 0:
+	  return "A connection to the database where the cube table is saved. ";
+      case 1:
+	  return "The name of the cube table that was constructed. ";
+      default:
+          return "No such output.";
+    }
+  }
+
   public String[] getOutputTypes () {
     String [] in =  {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
                      "java.lang.String"};
     return in;
   }
 
+  /**
+   * Return the human readable name of the module.
+   * @return the human readable name of the module.
+   */
+  public String getModuleName() {
+     return "SQL HTree";
+  }
+
+  public String getModuleInfo () {
+    String s = "<p>Overview: ";
+      s += "This module creates a cube representation for data in a database table. ";
+
+      s += "</p><p>Detailed Description: ";
+      s += "This module constructs a data cube table from selected data in a database table, optionally applying ";
+      s += "data filtering and grouping operations on the original data prior to building the cube. ";
+      s += "The HTree algorithm is used. ";
+
+      s += "</p><p> ";
+      s += "A cube is an efficient representation used to maintain statistics for itemsets ";
+      s += "that appear frequently in table data. An itemset is a collection of items, and an ";
+      s += "item is an [attribute, value] pair that is found in the table data.  An itemset is ";
+      s += "considered frequent if the items in the itemset occur together in more than a minimum ";
+      s += "percentage of the examples in the table.  ";
+
+      s += "</p><p>";
+      s += "The user sets the minimum percentage threshold via the <i>Minimum Support % </i>property.  ";
+      s += "If an itemset has support of 12%, then 12% of the data under analysis includes ";
+      s += "the particular collection of [attribute,value] pairs that make up the itemset. ";
+      s += "The goal is to set the <i>Minimum Support</i> value such that important relationships are captured ";
+      s += "without using excessive resources and computing statistics for collections of items that only rarely ";
+      s += "occur together. ";
+      s += "The user can also control the maximum number of items included in any itemset via the ";
+      s += "<i>Maximum Items per Itemset</i> property.  To avoid excessive computation, ";
+      s += "a general guideline is that no more than five items should be included in any itemset. ";
+
+      s += "</p><p>";
+      s += "This module takes five inputs that determine the data to be included in the cube ";
+      s += "representation and the optional filtering and grouping operations. ";
+      s += "The first three inputs specify a database connection, a database table ";
+      s += "name, and a list of selected attributes. ";
+      s += "Typically these input ports are connected to the output ports of ";
+      s += "<i>Connect To DB</i>, <i>Select Table</i>, and <i>Select Attributes</i> modules. ";
+
+      s += "</p><p>";
+      s += "The last two inputs are optional. ";
+      s += "The input <i>Query Condition</i> specifies how the data should be subset or filtered. ";
+      s += "When this input port is used, it is typically linked to the output port of a <i>SQL Filter Construction</i> module. ";
+      s += "The input <i>Binning Transformation</i> specifies how attribute values should be grouped. ";
+      s += "For attributes that have many distinct values, especially for continuous ";
+      s += "numeric attributes, grouping values into bins helps reduce ";
+      s += "computation and memory requirements. In addition, grouping the data can lead to insights ";
+      s += "that may not be apparent when each unique values is considered independently. ";
+      s += "The module <i>SQL Bin Columns</i> specifies the binning operations, and its output port ";
+      s += "is typically linked to the <i>Binning Transformation</i> input port when grouping is desired. ";
+
+      s += "</p><p>";
+      s += "At runtime this module makes a connection to a database, retrieves the ";
+      s += "data from a specified database table for the specified attributes, ";
+      s += "applies filtering and grouping if specified, and ";
+      s += "computes a data cube using the H-Tree algorithm. ";
+      s += "Once a cube is built, it can be used to quickly perform further analysis on the data.  ";
+      s += "Rules can be extracted from the cube that have a <i>Minimum Support %</i> greater than or equal to the ";
+      s += "support level used to build the cube.  Any rule built from the cube will contain at most ";
+      s += "<i>Maximum Items per Itemset</i> attributes.  ";
+
+      s += "</p><p>References: ";
+      s += "J. Han, J. Pei, G. Dong, and K. Wang. ";
+      s += "Efficient Computation of Iceberg Cubes with Complex Measures. ";
+      s += "In <i>ACM SIGMOD</i>, 2001.";
+
+      s += "</p><p>Scalability: ";
+      s += "Due to the intense computation involved in constructing a data cube, the memory and CPU requirements ";
+      s += "are substantial when the input data contains numerous attributes and many unique values. ";
+      s += "In general, it is recommended that the input data have fewer than 25 attributes. ";
+      s += "It is also recommended that data be grouped into bins for attributes with large numbers of unique data values. ";
+      s += "If the number of unique values for an attribute is greater than 5% of the total ";
+      s += "number of records, execution stops with a recommendation that the binning should be performed. ";
+
+      s += "</p><p>Restrictions: ";
+      s += "Only Oracle and SQLServer databases are currently supported. ";
+
+      s += "</p>";
+
+      return s;
+  }
+
   public PropertyDescription [] getPropertiesDescriptions () {
     PropertyDescription [] pds = new PropertyDescription [2];
-    pds[0] = new PropertyDescription ("maxRuleSize", "Maximum Rule Size", "The maximum number of components in each rule is restricted by Maximum Rule Size.");
-    pds[1] = new PropertyDescription ("support", "Minimum Support %", "If the occurrence ratio of a rule is below the Minimum Support, it is pruned.");
+    pds[0] = new PropertyDescription ("maxRuleSize",
+		"Maximum Items per Itemset",
+		"The maximum number of items included in any itemset.");
+    pds[1] = new PropertyDescription ("support",
+		"Minimum Support %",
+		"The threshold that determines if an itemset is considered frequent. Only frequent itemsets are included in the cube. ");
     return pds;
+  }
+
+  // this property is the min acceptable support score.
+  public void setSupport (double i)  throws PropertyVetoException {
+    if( i <= 0 || i  >100) {
+	throw new PropertyVetoException ("Minimum Support % must be greater than 0 and less than or equal to 100", null);
+    }
+    support = i;
+  }
+  public double getSupport () {
+    return support;
+  }
+
+  // this property is the maximum acceptable rule size.
+  public void setMaxRuleSize (int yy) throws PropertyVetoException {
+    if( yy <= 0 ) {
+	throw new PropertyVetoException("Rule size must be a positive integer", null);
+    }
+    maxRuleSize = yy;
+  }
+  public int getMaxRuleSize () {
+    return maxRuleSize;
   }
 
   protected String[] getFieldNameMapping () {
@@ -389,7 +441,7 @@ public class SQLHTree extends ComputeModule
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in getRowCount.");
+      System.out.println("Error occurred in getRowCount.");
       return(0);
     }
   }
@@ -415,7 +467,7 @@ public class SQLHTree extends ComputeModule
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in getCubeRowCount.");
+      System.out.println("Error occurred in getCubeRowCount.");
       return(0);
     }
   }
@@ -461,7 +513,7 @@ public class SQLHTree extends ComputeModule
           JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-        System.out.println("Error occoured in setColumnList.");
+        System.out.println("Error occurred in setColumnList.");
         return false;
       }
     }
@@ -509,7 +561,7 @@ public class SQLHTree extends ComputeModule
         JOptionPane.showMessageDialog(msgBoard,
           e.getMessage(), "Error",
           JOptionPane.ERROR_MESSAGE);
-        System.out.println("Error occoured in isColumnNumeric.");
+        System.out.println("Error occurred in isColumnNumeric.");
         return (0);
       }
     }
@@ -551,7 +603,7 @@ public class SQLHTree extends ComputeModule
       JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in isColumnNumeric.");
+      System.out.println("Error occurred in isColumnNumeric.");
       return false;
     }
   }
@@ -662,7 +714,7 @@ public class SQLHTree extends ComputeModule
         else { // this column is not binned, get the unique value from the database table
           String valueQry = new String("select distinct " + colName + " from ");
           if (aColumn.dataType.equals("NUMBER"))
-            // conver all numeric value to string before order it
+            // convert all numeric value to string before order it
             valueQry = valueQry + tableName + " where " + colName + " is not null order by (to_char(" + colName + "))";
           else
             valueQry = valueQry + tableName + " where " + colName + " is not null order by " + colName;
@@ -692,7 +744,7 @@ public class SQLHTree extends ComputeModule
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in initBaseHeadTbl.");
+      System.out.println("Error occurred in initBaseHeadTbl.");
     }
   }
 
@@ -785,7 +837,7 @@ public class SQLHTree extends ComputeModule
       JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
-        System.out.println("Error occoured in buildHTree.");
+        System.out.println("Error occurred in buildHTree.");
         return false;
     }
   }
@@ -1117,7 +1169,7 @@ public class SQLHTree extends ComputeModule
       JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
-        System.out.println("Error occoured in createCubeTable.");
+        System.out.println("Error occurred in createCubeTable.");
       return false;
     }
   }
@@ -1141,7 +1193,7 @@ public class SQLHTree extends ComputeModule
       JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
-        System.out.println("Error occoured in tableFound.");
+        System.out.println("Error occurred in tableFound.");
       return false;
     }
     return false;
@@ -1192,7 +1244,7 @@ public class SQLHTree extends ComputeModule
           JOptionPane.showMessageDialog(msgBoard,
             e.getMessage(), "Error",
             JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occoured in saveBaseHeadTbl.");
+            System.out.println("Error occurred in saveBaseHeadTbl.");
         }
       }
     }
@@ -1411,7 +1463,7 @@ public class SQLHTree extends ComputeModule
         columnOrder = ((Head)baseHeadTbl.get(prefixList[prefixIdx])).columnOrder;
         columnName = ((Column)columnList.get(columnOrder)).columnName;
         if (prefixIdx>0) {
-          // add "," to seperate column names
+          // add "," to separate column names
           insertStr1 = insertStr1 + ", ";
           insertStr2 = insertStr2 + ", ";
         }
@@ -1449,7 +1501,7 @@ public class SQLHTree extends ComputeModule
           JOptionPane.showMessageDialog(msgBoard,
             e.getMessage(), "Error",
             JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occoured in saveBaseHeadTbl.");
+            System.out.println("Error occurred in saveBaseHeadTbl.");
         }
       }
     }
