@@ -241,7 +241,7 @@ public class EMOEvaluateModule
         myfitct.transform(newmt);
 
       }
-      ((ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl)newmt).print();
+      //((ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl)newmt).print();
       //this is the array of integers that contain the column
       // number of the constraints
       int[] myconstraintpos = new int[constraintVariableConstructions.length];
