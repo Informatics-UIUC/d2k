@@ -59,25 +59,6 @@ public class ReadDelimitedFormat extends AbstractDelimitedReader
 	/** the row containing the in/out/omit declarations */
 	protected int inOutRow = -1;
 
-	/** the value to replace missing numerics values with. */
-	protected double missingValue = 0;
-
-	public double getMissingValue() {
-		return missingValue;
-	}
-
-	/*public void setComment(String s) {
-		comment = s;
-	}
-
-	public String getComment() {
-		return comment;
-	}*/
-
-	public void setMissingValue(double d) {
-		missingValue = d;
-	}
-
 	/**
 		Get the index of the types row.
 		@return the index of the types row.
@@ -155,11 +136,16 @@ public class ReadDelimitedFormat extends AbstractDelimitedReader
         str += "This module has several properties. labelsRow indicates which ";
         str += "row specifies attribute labels, if none specify '-l'. ";
         str += "typesRow indicates which row specifies data types, if none ";
-        str += "specify '-1'.  inoutRow indicates which row specifies the ";
+        str += "specify '-1'.  inOutRow indicates which row specifies the ";
         str += "attributes to use as input and output, if none specify '-1'. ";
         str += "useStringAndDouble indicates whether or not the system needs ";
-        str += "to determine data types. missingValue is the value to use for ";
-        str += "missing numeric values.";
+        str += "to determine data types. missingNumericFillerValue is the ";
+		str += "value put into the table when a missing value is encountered in ";
+		str += "a numeric column.  missingTextualFillerValue is the value put ";
+		str += "into the table when a missing value is encountered in a textual ";
+		str += "column.  useCompactStrings will use the most compact representation ";
+		str += "of strings in memory when true, and will use a less efficient ";
+		str += "memory scheme when false.";
         return str;
 	}
 
@@ -239,6 +225,8 @@ public class ReadDelimitedFormat extends AbstractDelimitedReader
 		// get our delimiter set
 		String fileName = (String)pullInput(0);
 		File file = new File (fileName);
+		if(!file.exists())
+			throw new FileNotFoundException(fileName+" did not exist.");
 		delimiterOne = this.findDelimiter (file);
 		if (delimiterOne == EQUALS) {
 			throw new Exception ("No single character delimiter could be identified.");
@@ -251,10 +239,7 @@ public class ReadDelimitedFormat extends AbstractDelimitedReader
 		if(inOutRow >= 0)
 			hasVariables = true;
 
-		if(file.exists())
-			pushOutput(readSDFile(file), 0);
-		else
-			System.out.println("File did not exist.");
+		pushOutput(readSDFile(file), 0);
 	}
 
 

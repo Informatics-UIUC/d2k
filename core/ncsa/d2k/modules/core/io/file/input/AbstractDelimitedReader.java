@@ -12,6 +12,48 @@ import java.util.*;
  */
 abstract public class AbstractDelimitedReader extends InputModule {
 
+	/**
+	 * If this is true, use the ContinousCharArrayColumn version of StringColumn,
+	 * otherwise use the StringObjectColumn
+	 */
+	protected boolean useCompactStrings = true;
+
+	public void setUseCompactStrings(boolean b) {
+		useCompactStrings = b;
+	}
+
+	public boolean getUseCompactStrings() {
+		return useCompactStrings;
+	}
+
+	/**
+	 * The value to fill in the table when this encounters a missing numeric
+	 * value in the delimited file.
+	 */
+	protected double missingNumericFillerValue = Double.MIN_VALUE;
+
+	public void setMissingNumericFillerValue(double d) {
+		missingNumericFillerValue = d;
+	}
+
+	public double getMissingNumericFillerValue() {
+		return missingNumericFillerValue;
+	}
+
+	/**
+	 * The value to fill in the table when this encounters a missing textual
+	 * value in the delimited file.
+	 */
+	protected String missingTextualFillerValue = "?";
+
+	public void setMissingTextualFillerValue(String s) {
+		missingTextualFillerValue = s;
+	}
+
+	public String getMissingTextualFillerValue() {
+		return missingTextualFillerValue;
+	}
+
 	/** the delimiter identified. */
 	protected char delimiterOne;
 
@@ -37,8 +79,12 @@ abstract public class AbstractDelimitedReader extends InputModule {
 		@return a new, empty column
 	*/
 	protected Column createColumn(String type, int size) {
-		if(type.compareToIgnoreCase(STRING_TYPE) == 0)
-			return new StringColumn(size);
+		if(type.compareToIgnoreCase(STRING_TYPE) == 0) {
+			if(useCompactStrings)
+				return new StringColumn(size);
+			else
+				return new StringObjectColumn(size);
+		}
 		else if(type.compareToIgnoreCase(FLOAT_TYPE) == 0)
 			return new FloatColumn(size);
 		else if(type.compareToIgnoreCase(DOUBLE_TYPE) == 0)
@@ -55,8 +101,12 @@ abstract public class AbstractDelimitedReader extends InputModule {
 			return new LongColumn(size);
 		else if(type.compareToIgnoreCase(SHORT_TYPE) == 0)
 			return new ShortColumn(size);
-		else
-			return new StringColumn(size);
+		else {
+			if(useCompactStrings)
+				return new StringColumn(size);
+			else
+				return new StringObjectColumn(size);
+		}
 	}
 
 	/**
@@ -69,7 +119,10 @@ abstract public class AbstractDelimitedReader extends InputModule {
         int numRows = column.getNumRows();
 		for(int row = 0; row < numRows; row++) {
 			try {
-				Double d = Double.valueOf(column.getString(row));
+				String s = column.getString(row);
+				if(!s.equals(missingTextualFillerValue)) {
+					Double.valueOf(column.getString(row));
+				}
 			}
 			catch(Exception e) {
 				return false;
@@ -83,12 +136,17 @@ abstract public class AbstractDelimitedReader extends InputModule {
 		@param sc the original column
 		@return a DoubleColumn with the values from sc
 	*/
-	protected DoubleColumn toDoubleColumn(ContinuousCharArrayColumn sc) {
+	protected DoubleColumn toDoubleColumn(Column sc) {
 		int numRows = sc.getNumRows ();
 		DoubleColumn retVal = new DoubleColumn(numRows);
-		for(int row = 0; row < numRows; row++)
-			retVal.setDouble( Double.valueOf(
-				sc.getString(row)).doubleValue(), row);
+		for(int row = 0; row < numRows; row++) {
+			String s = sc.getString(row);
+			if(s.equals(missingTextualFillerValue))
+				retVal.setDouble(missingNumericFillerValue, row);
+			else
+				retVal.setDouble( Double.valueOf(
+					sc.getString(row)).doubleValue(), row);
+		}
 		retVal.setLabel(sc.getLabel());
 		retVal.setComment(sc.getComment());
 		return retVal;
@@ -99,7 +157,7 @@ abstract public class AbstractDelimitedReader extends InputModule {
 		@param sc the original column
 		@return a StringColumn with the values from sc
 	*/
-	protected StringColumn toStringColumn(ContinuousCharArrayColumn sc) {
+	protected StringColumn toStringColumn(Column sc) {
 		int numRows = sc.getNumRows ();
 		StringColumn retVal = new StringColumn(numRows);
 		for(int row = 0; row < numRows; row++) {
@@ -266,10 +324,26 @@ abstract public class AbstractDelimitedReader extends InputModule {
 				if ((i-current) > 0) {
 					char [] newBytes = new char [i-current];
 					System.arraycopy (bytes, current, newBytes, 0, i-current);
-					vt.setChars(newBytes, curRow, curCol);
+					if(isNumericType(vt.getColumnType(curCol))) {
+						try {
+							vt.setChars(newBytes, curRow, curCol);
+						}
+						catch(NumberFormatException nfe) {
+							vt.setDouble(missingNumericFillerValue, curRow, curCol);
+						}
+					}
+					else {
+						if(newBytes.length == 0)
+							vt.setChars(missingTextualFillerValue.toCharArray(), curRow, curCol);
+						else
+							vt.setChars(newBytes, curRow, curCol);
+					}
 					curCol++;
 				} else {
-					vt.setChars(new char[0], curRow, curCol);
+					if(isNumericType(vt.getColumnType(curCol)))
+						vt.setDouble(missingNumericFillerValue, curRow, curCol);
+					else
+						vt.setChars(missingTextualFillerValue.toCharArray(), curRow, curCol);
 					curCol++;
 				}
 				current = i+1;
@@ -279,16 +353,34 @@ abstract public class AbstractDelimitedReader extends InputModule {
 		if ((len-current) > 0) {
 			char [] newBytes = new char [len-current];
 			System.arraycopy (bytes, current, newBytes, 0, len-current);
-			vt.setChars(newBytes, curRow, curCol);
+			if(isNumericType(vt.getColumnType(curCol))) {
+				try {
+					vt.setChars(newBytes, curRow, curCol);
+				}
+				catch(NumberFormatException nfe) {
+					vt.setDouble(missingNumericFillerValue, curRow, curCol);
+				}
+			}
+			else {
+				if(newBytes.length == 0)
+					vt.setChars(missingTextualFillerValue.toCharArray(), curRow, curCol);
+				else
+					vt.setChars(newBytes, curRow, curCol);
+			}
 			curCol++;
 		}
 
 		// fill in blank entries at the end..
 		for(int i = curCol; i <= vt.getNumColumns()-1; i++) {
-			vt.setChars(new char[0], curRow, i);
+			vt.setChars(missingTextualFillerValue.toCharArray(), curRow, i);
 		}
 	}
 
+	/**
+	 * Read in a row and put its elements into an ArrayList.
+	 * @param row the row to tokenize
+	 * @return an ArrayList containing each of the elements in the row
+	 */
 	protected ArrayList createSDRow (String row) {
 		int current = 0;
 		ArrayList thisRow = new ArrayList();
@@ -318,7 +410,19 @@ abstract public class AbstractDelimitedReader extends InputModule {
 	}
 
 	/**
+	 * Return true if the type is one of the numeric types in ColumnTypes, false otherwise.
+	 * @param type
+	 * @return
+	 */
+	protected boolean isNumericType(int type) {
+		return type == ColumnTypes.DOUBLE || type == ColumnTypes.FLOAT || type == ColumnTypes.INTEGER
+			|| type == ColumnTypes.SHORT || type == ColumnTypes.LONG;
+	}
+
+	/**
 		Count the number of tokens in a row.
+		@param row the row to count
+		@return the number of tokens in the row
 	*/
 	protected int countSDRow (String row) {
 		int current = 0;
