@@ -223,8 +223,6 @@ public class ScalarizeNominals extends DataPrepModule {
 
 		 if (table.isValueMissing(row, index))
 			continue;
-		 else if (table.isValueMissing(row, index))
-			continue;
 
 		 String s = table.getString(row, index);
 
@@ -270,15 +268,19 @@ public class ScalarizeNominals extends DataPrepModule {
 		 // or empty, set to -1.
 
 		 int[] match = new int[numRows];
+		 boolean[] missing = new boolean [numRows];
+		 
 		 for (int row = 0; row < numRows; row++) {
 
 			if (table.isValueMissing(row, index) ||
 			   table.isValueEmpty  (row, index)) {
 			  match[row] = -1;
+			  missing[row] = true;
 			  continue;
 			}
 
 			String s = table.getString(row, index);
+			missing[row] = false;
 
 			for (int j = 0; j < uniqueValues.length; j++) {
 			  if (s.equals(uniqueValues[indirection[j]])) {
@@ -329,13 +331,17 @@ public class ScalarizeNominals extends DataPrepModule {
 			  boolean[] newColumn = new boolean[numRows];
 
 			  for (int row = 0; row < match.length; row++) {
-				if (match[row] == k)
+			  	if (missing[row])
+			  		newColumn[row] = table.getMissingBoolean();
+				else if (match[row] == k)
 				  newColumn[row] = true;
 				else
 				  newColumn[row] = false;
 			  }
 
-			  table.insertColumn(new BooleanColumn(newColumn), index + k);
+              BooleanColumn column = new BooleanColumn(newColumn);
+              column.setMissingValues(missing);
+			  table.insertColumn(column, index + k);
 			  table.setColumnLabel(columnLabel + "=" +
 				uniqueValues[indirection[k]], index + k);
 
@@ -345,13 +351,17 @@ public class ScalarizeNominals extends DataPrepModule {
 			  double [] newColumn = new double[numRows];
 
 			  for (int row = 0; row < match.length; row++) {
-				if (match[row] == k)
+				if (missing[row])
+					newColumn[row] = table.getMissingDouble();
+				else if (match[row] == k)
 				  newColumn[row] = 1;
 				else
 				  newColumn[row] = 0;
 			  }
 
-			  table.insertColumn(new DoubleColumn(newColumn), index + k);
+			  DoubleColumn column = new DoubleColumn(newColumn);
+			  column.setMissingValues(missing);
+			  table.insertColumn(column, index + k);
 			  table.setColumnLabel(columnLabel + "=" +
 				uniqueValues[indirection[k]], index + k);
 
@@ -437,10 +447,10 @@ public class ScalarizeNominals extends DataPrepModule {
    */
 
 }
-
-
 /**
  * QA comment
  * 11-26-03 Vered started qa process.
  *          the moduel does not preserve missing values. [bug 148].
+ * 12-1-03  Tom, fixed bug #148. Now resulting columns will all contain
+ *          missing values where the original column contained a missing value.
  */

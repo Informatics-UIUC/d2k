@@ -1,1396 +1,963 @@
 package ncsa.d2k.modules.core.transform.table;
 
-
-
 import java.util.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.*;
 
-
-
 /**
-
  * A <code>FilterExpression</code> object encapsulates a single expression of
-
  * arbitrary length that specifies a set of conditions under which rows should
-
  * (or should not) be filtered out of a <code>Table</code>.
-
  *
-
  * @author gpape
  *
  *att == att throws number format exception.
  *
  *
-
  */
-
 public class FilterExpression implements Expression {
+	private HashMap labelToIndex;
+	private Node root;
+	private Table table;
+	private boolean includeMissingValues = true;
+	
+	/**
+	 * Constructor for a <code>FilterExpression</code> object that should use
+	 * the given <code>Table</code> as its context.
+	 *
+	 * @param table           the <code>Table</code> that this
+	 *                        <code>FilterExpression</code> object should
+	 *                        reference
+	 * @param includeMissing  indicates if missing values should be included in the filtered
+	 * 						  table or not.
+	 */
+	public FilterExpression(Table table, boolean includeMissing) {
+		this.table = table;
+		labelToIndex = new HashMap();
+		for (int i = 0; i < table.getNumColumns(); i++)
+			labelToIndex.put(table.getColumnLabel(i), new Integer(i));
+		includeMissingValues = includeMissing;
+	}
+
+	/******************************************************************************/
+	/* Expression interface                                                       */
+	/******************************************************************************/
+
+	/**
+	 * Returns a <code>boolean</code> array (cast to an <code>Object</code>) of
+	 * length equal to the number of rows in the <code>Table</code> that was
+	 * passed to the constructor. Each entry in the array is <code>true</code> if
+	 * and only if that row of the <code>Table</code> satisfies the last filter
+	 * expression string passed to <code>setExpression</code>.
+	 *
+	 * @return                the <code>boolean</code> array
+	 * @throws ExpressionException
+	 *    if there was any error in evaluation
+	 */
+	public Object evaluate() throws ExpressionException {
+		if (root == null || table == null || table.getObject(0, 0) == null)
+			return null;
+		boolean[] b = new boolean[table.getNumRows()];
+		for (int i = 0; i < b.length; i++) {
+			try {
+				b[i] = root.evaluate(i);
+			} catch (MissingValueException mve) {
+				b[i] = includeMissingValues;
+			}
+		}
+		return (Object) b;
+	}
+
+	/**
+	 * Sets this <code>FilterExpression</code>'s internal state to represent
+	 * the given filter expression string.
+	 * <p>
+	 * This filter expression string must be composed entirely of the following
+	 * elements (ignoring whitespace):
+	 * <ul>
+	 *    <li>valid column labels from <code>table</code>,
+	 *    <li>valid nominal column elements from <code>table</code>,
+	 *    <li>valid symbols for filter operations, namely:
+	 *       <ul>
+	 *          <li><code>==</code> for equals,
+	 *          <li><code>!=</code> for not equals,
+	 *          <li><code>&lt;</code> for less than,
+	 *          <li><code>&lt;=</code> for less than or equal to,
+	 *          <li><code>&gt;</code> for greater than,
+	 *          <li><code>&gt;=</code> for greater than or equal to,
+	 *          <li><code>&&</code> for boolean AND, and
+	 *          <li><code>||</code> for boolean OR,
+	 *       </ul>
+	 *       and
+	 *    <li>left and right parentheses: <code>(</code> and <code>)</code>.
+	 * </ul>
+	 * <p>
+	 * In the absence of parentheses, AND takes precedence over OR. Column labels
+	 * <b>may not contain</b> spaces or the following symbols:
+	 * <code>=</code>, <code>!</code>, <code>&lt;</code>, <code>&gt;</code>,
+	 * <code>&</code>, <code>|</code>.
+	 * <p>
+	 * Nominal values from columns must be enclosed by single-quote tick marks
+	 * (<code>'</code>) so as to distinguish them from column labels.
+	 * <p>
+	 * An example of a sensible filter expression string would be:
+	 * <p>
+	 * <code>ColumnA &lt;= 5.0 && (ColumnB &gt; ColumnC || ColumnD == 'value')</code>
+	 *
+	 * @param expression      an expression which, if valid, will specify the
+	 *                        behavior of this <code>FilterExpression</code>
+	 *
+	 * @throws ExpressionException
+	 *   if the given expression is not valid with regards to the given table
+	 */
+	public void setExpression(String expression) throws ExpressionException {
+		root = parse(expression);
+	}
+
+	public String toString() {
+		return root.toString();
+	}
 
+	/******************************************************************************/
+	/* The filter expression string is parsed into a tree in which each node is   */
+	/* either a subexpression or a terminal.                                      */
+	/*                                                                            */
+	/* subexpression:   <terminal> <boolean operator> <terminal>                  */
+	/* terminal:        <element> <comparison operator> <element>                 */
+	/******************************************************************************/
 
+	private static final int OP_EQ = 100, // equal to
+		OP_NEQ = 101, // not equal to
+		OP_LT = 102, // less than
+		OP_LTE = 103, // less than or equal to
+		OP_GT = 104, // greater than
+		OP_GTE = 105, // greater than or equal to
 
-   private HashMap labelToIndex;
+		// NOTE: if you add any more boolean operators to the following list, make
+		//       sure that their int values remain sorted such that lesser int values
+		//       correspond to greater operator precedence. (This is how the parser
+		//       operates.)
 
-   private Node root;
+		BOOL_AND = 106, // boolean AND operator
+		BOOL_OR = 107; // boolean OR operator
 
-   private Table table;
+	private abstract class Node {
+		abstract boolean evaluate(int rowNumber) throws ExpressionException;
+		public abstract String toString();
+	}
+	private class Subexpression extends Node {
 
+		private int opcode;
 
+		private Node left, right;
 
-   /**
+		Subexpression(int opcode, Node left, Node right) {
 
-    * Constructor for a <code>FilterExpression</code> object that should use
+			this.opcode = opcode;
 
-    * the given <code>Table</code> as its context.
+			this.left = left;
 
-    *
+			this.right = right;
 
-    * @param table           the <code>Table</code> that this
+		}
 
-    *                        <code>FilterExpression</code> object should
+		boolean evaluate(int rowNumber) throws ExpressionException {
 
-    *                        reference
+			switch (opcode) {
 
-    */
+				case BOOL_AND :
 
-   public FilterExpression(Table table) {
+					return left.evaluate(rowNumber)
+						&& right.evaluate(rowNumber);
 
+				case BOOL_OR :
 
+					return left.evaluate(rowNumber)
+						|| right.evaluate(rowNumber);
 
-      this.table = table;
+				default :
 
+					throw new ExpressionException(
+						"FilterExpression: illegal opcode: " + opcode);
 
+			}
 
-      labelToIndex = new HashMap();
+		}
 
-      for (int i = 0; i < table.getNumColumns(); i++)
+		public String toString() {
 
-         labelToIndex.put(table.getColumnLabel(i), new Integer(i));
+			StringBuffer buffer = new StringBuffer();
 
+			buffer.append('(');
 
+			buffer.append(left.toString());
 
-   }
+			buffer.append(' ');
 
+			switch (opcode) {
 
+				case BOOL_AND :
+					buffer.append("&&");
+					break;
 
-/******************************************************************************/
+				case BOOL_OR :
+					buffer.append("||");
+					break;
 
-/* Expression interface                                                       */
+				default :
+					buffer.append("??");
+					break;
 
-/******************************************************************************/
+			}
 
+			buffer.append(' ');
 
+			buffer.append(right.toString());
 
-   /**
+			buffer.append(')');
 
-    * Returns a <code>boolean</code> array (cast to an <code>Object</code>) of
+			return buffer.toString();
 
-    * length equal to the number of rows in the <code>Table</code> that was
+		}
 
-    * passed to the constructor. Each entry in the array is <code>true</code> if
+	}
 
-    * and only if that row of the <code>Table</code> satisfies the last filter
+	private class Terminal extends Node {
 
-    * expression string passed to <code>setExpression</code>.
+		private int opcode;
 
-    *
+		private Element left, right;
 
-    * @return                the <code>boolean</code> array
+		Terminal() {
+		}
 
-    * @throws ExpressionException
+		Terminal(int opcode, Element left, Element right) {
 
-    *    if there was any error in evaluation
+			this.opcode = opcode;
 
-    */
+			this.left = left;
 
-   public Object evaluate() throws ExpressionException {
+			this.right = right;
 
-      if (root == null || table == null || table.getObject(0,0) == null)
+		}
 
-         return null;
+		boolean evaluate(int rowNumber) throws ExpressionException {
 
+			// Each element (left and right) may represent a column label, a
 
+			// scalar value, or a column nominal value. All nine combinations,
 
-      boolean[] b = new boolean[table.getNumRows()];
+			// unfortunately, must be handled differently...
 
-      for (int i = 0; i < b.length; i++)
+			if (left instanceof ColumnElement) {
+				if (right instanceof ColumnElement) {
+					ColumnElement cleft = (ColumnElement) left;
+					ColumnElement cright = (ColumnElement) right;
+					switch (opcode) {
 
-         b[i] = root.evaluate(i);
+						case OP_EQ :
 
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								== ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
+						case OP_NEQ :
 
-      return (Object)b;
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								!= ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
+						case OP_LT :
 
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								< ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
-   }
+						case OP_LTE :
 
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								<= ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
+						case OP_GT :
 
-   /**
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								> ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
-    * Sets this <code>FilterExpression</code>'s internal state to represent
+						case OP_GTE :
 
-    * the given filter expression string.
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								>= ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
-    * <p>
+						default :
 
-    * This filter expression string must be composed entirely of the following
+							throw new ExpressionException(
+								"FilterExpression: illegal opcode: " + opcode);
 
-    * elements (ignoring whitespace):
+					}
 
-    * <ul>
+				} else if (right instanceof ScalarElement) {
 
-    *    <li>valid column labels from <code>table</code>,
+					switch (opcode) {
 
-    *    <li>valid nominal column elements from <code>table</code>,
+						case OP_EQ :
 
-    *    <li>valid symbols for filter operations, namely:
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								== ((ScalarElement) right).evaluate();
 
-    *       <ul>
+						case OP_NEQ :
 
-    *          <li><code>==</code> for equals,
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								!= ((ScalarElement) right).evaluate();
 
-    *          <li><code>!=</code> for not equals,
+						case OP_LT :
 
-    *          <li><code>&lt;</code> for less than,
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								< ((ScalarElement) right).evaluate();
 
-    *          <li><code>&lt;=</code> for less than or equal to,
+						case OP_LTE :
 
-    *          <li><code>&gt;</code> for greater than,
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								<= ((ScalarElement) right).evaluate();
 
-    *          <li><code>&gt;=</code> for greater than or equal to,
+						case OP_GT :
 
-    *          <li><code>&&</code> for boolean AND, and
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								> ((ScalarElement) right).evaluate();
 
-    *          <li><code>||</code> for boolean OR,
+						case OP_GTE :
 
-    *       </ul>
+							return ((ColumnElement) left).evaluateDouble(
+								rowNumber)
+								>= ((ScalarElement) right).evaluate();
 
-    *       and
+						default :
 
-    *    <li>left and right parentheses: <code>(</code> and <code>)</code>.
+							throw new ExpressionException(
+								"FilterExpression: illegal opcode: " + opcode);
 
-    * </ul>
+					}
 
-    * <p>
+				} else { // right instanceof NominalElement
 
-    * In the absence of parentheses, AND takes precedence over OR. Column labels
+					switch (opcode) {
 
-    * <b>may not contain</b> spaces or the following symbols:
+						case OP_EQ :
 
-    * <code>=</code>, <code>!</code>, <code>&lt;</code>, <code>&gt;</code>,
+							return ((ColumnElement) left).evaluateString(
+								rowNumber).equals(
+								((NominalElement) right).evaluate());
 
-    * <code>&</code>, <code>|</code>.
+						case OP_NEQ :
 
-    * <p>
+							return !((ColumnElement) left).evaluateString(
+								rowNumber).equals(
+								((NominalElement) right).evaluate());
 
-    * Nominal values from columns must be enclosed by single-quote tick marks
+						default :
 
-    * (<code>'</code>) so as to distinguish them from column labels.
+							throw new ExpressionException(
+								"FilterExpression: illegal opcode on nominal: "
+									+ opcode);
 
-    * <p>
+					}
 
-    * An example of a sensible filter expression string would be:
+				}
 
-    * <p>
+			} else if (left instanceof ScalarElement) {
 
-    * <code>ColumnA &lt;= 5.0 && (ColumnB &gt; ColumnC || ColumnD == 'value')</code>
+				if (right instanceof ColumnElement) {
 
-    *
+					switch (opcode) {
 
-    * @param expression      an expression which, if valid, will specify the
+						case OP_EQ :
 
-    *                        behavior of this <code>FilterExpression</code>
+							return ((ScalarElement) left).evaluate()
+								== ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
-    *
+						case OP_NEQ :
 
-    * @throws ExpressionException
+							return ((ScalarElement) left).evaluate()
+								!= ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
-    *    if the given expression is not valid with regards to the given table
+						case OP_LT :
 
-    */
+							return ((ScalarElement) left).evaluate()
+								< ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
-   public void setExpression(String expression) throws ExpressionException {
+						case OP_LTE :
 
-      root = parse(expression);
+							return ((ScalarElement) left).evaluate()
+								>= ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
-   }
+						case OP_GT :
 
+							return ((ScalarElement) left).evaluate()
+								> ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
+						case OP_GTE :
 
-   public String toString() {
+							return ((ScalarElement) left).evaluate()
+								>= ((ColumnElement) right).evaluateDouble(
+									rowNumber);
 
-      return root.toString();
+						default :
 
-   }
+							throw new ExpressionException(
+								"FilterExpression: illegal opcode: " + opcode);
 
+					}
 
+				} else if (right instanceof ScalarElement) {
 
-/******************************************************************************/
+					switch (opcode) {
 
-/* The filter expression string is parsed into a tree in which each node is   */
+						case OP_EQ :
 
-/* either a subexpression or a terminal.                                      */
+							return ((ScalarElement) left).evaluate()
+								== ((ScalarElement) right).evaluate();
 
-/*                                                                            */
+						case OP_NEQ :
 
-/* subexpression:   <terminal> <boolean operator> <terminal>                  */
+							return ((ScalarElement) left).evaluate()
+								!= ((ScalarElement) right).evaluate();
 
-/* terminal:        <element> <comparison operator> <element>                 */
+						case OP_LT :
 
-/******************************************************************************/
+							return ((ScalarElement) left).evaluate()
+								< ((ScalarElement) right).evaluate();
 
+						case OP_LTE :
 
+							return ((ScalarElement) left).evaluate()
+								>= ((ScalarElement) right).evaluate();
 
-   private static final int OP_EQ = 100,    // equal to
+						case OP_GT :
 
-                            OP_NEQ = 101,   // not equal to
+							return ((ScalarElement) left).evaluate()
+								> ((ScalarElement) right).evaluate();
 
-                            OP_LT = 102,    // less than
+						case OP_GTE :
 
-                            OP_LTE = 103,   // less than or equal to
+							return ((ScalarElement) left).evaluate()
+								>= ((ScalarElement) right).evaluate();
 
-                            OP_GT = 104,    // greater than
+						default :
 
-                            OP_GTE = 105,   // greater than or equal to
+							throw new ExpressionException(
+								"FilterExpression: illegal opcode: " + opcode);
 
+					}
 
+				} else { // right instanceof NominalElement
 
-   // NOTE: if you add any more boolean operators to the following list, make
+					throw new ExpressionException("FilterExpression: invalid operation: <scalar> <op> <nominal>");
 
-   //       sure that their int values remain sorted such that lesser int values
+				}
 
-   //       correspond to greater operator precedence. (This is how the parser
+			} else { // left instanceof NominalElement
 
-   //       operates.)
+				if (right instanceof ColumnElement) {
 
+					switch (opcode) {
 
+						case OP_EQ :
 
-                            BOOL_AND = 106, // boolean AND operator
+							return ((NominalElement) left).evaluate().equals(
+								((ColumnElement) right).evaluateString(
+									rowNumber));
 
-                            BOOL_OR = 107;  // boolean OR operator
+						case OP_NEQ :
 
+							return !((NominalElement) left).evaluate().equals(
+								((ColumnElement) right).evaluateString(
+									rowNumber));
 
+						default :
 
-   private abstract class Node {
+							throw new ExpressionException(
+								"FilterExpression: illegal opcode on nominal: "
+									+ opcode);
 
-      abstract boolean evaluate(int rowNumber) throws ExpressionException;
+					}
 
-      public abstract String toString();
+				} else if (right instanceof ScalarElement) {
 
-   }
+					throw new ExpressionException("FilterExpression: invalid operation: <nominal> <op> <scalar>");
 
+				} else { // right instanceof NominalElement
 
+					throw new ExpressionException("FilterExpression: invalid operation: <nominal> <op> <nominal>");
 
-   private class Subexpression extends Node {
+				}
 
+			}
 
+		}
 
-      private int opcode;
+		public String toString() {
 
-      private Node left, right;
+			StringBuffer buffer = new StringBuffer();
 
+			buffer.append('(');
 
+			buffer.append(left.toString());
 
-      Subexpression(int opcode, Node left, Node right) {
+			buffer.append(' ');
 
-         this.opcode = opcode;
+			switch (opcode) {
 
-         this.left = left;
+				case OP_EQ :
+					buffer.append("==");
+					break;
 
-         this.right = right;
+				case OP_NEQ :
+					buffer.append("!=");
+					break;
 
-      }
+				case OP_LT :
+					buffer.append("<");
+					break;
 
+				case OP_LTE :
+					buffer.append("<=");
+					break;
 
+				case OP_GT :
+					buffer.append(">");
+					break;
 
-      boolean evaluate(int rowNumber) throws ExpressionException {
+				case OP_GTE :
+					buffer.append(">=");
+					break;
 
-         switch(opcode) {
+				default :
+					buffer.append("??");
+					break;
 
-            case BOOL_AND:
+			}
 
-               return left.evaluate(rowNumber) && right.evaluate(rowNumber);
+			buffer.append(' ');
 
-            case BOOL_OR:
+			buffer.append(right.toString());
 
-               return left.evaluate(rowNumber) || right.evaluate(rowNumber);
+			buffer.append(')');
 
-            default:
+			return buffer.toString();
 
-               throw new ExpressionException("FilterExpression: illegal opcode: " + opcode);
+		}
 
-         }
+	}
 
-      }
+	private class TrueTerminal extends Terminal {
 
+		TrueTerminal() {
+		}
 
+		public boolean evaluate(int rowNumber) {
+			return true;
+		}
 
-      public String toString() {
+		public String toString() {
+			return "true";
+		}
 
-         StringBuffer buffer = new StringBuffer();
+	}
 
-         buffer.append('(');
+	/******************************************************************************/
 
-         buffer.append(left.toString());
+	/* Elements -- the building blocks of a filter expression string -- can be    */
 
-         buffer.append(' ');
+	/* labels of columns from the table, scalars, or nominal values taken from a  */
 
-         switch (opcode) {
+	/* particular column of the table.                                            */
 
-            case BOOL_AND: buffer.append("&&"); break;
+	/******************************************************************************/
 
-            case BOOL_OR:  buffer.append("||"); break;
+	private abstract class Element {
 
-            default:       buffer.append("??"); break;
+		public abstract String toString();
 
-         }
+	}
 
-         buffer.append(' ');
+	private class ColumnElement extends Element {
 
-         buffer.append(right.toString());
+		private int columnNumber;
 
-         buffer.append(')');
+		private String columnLabel;
 
-         return buffer.toString();
+		ColumnElement(String columnLabel) throws ExpressionException {
 
-      }
+			Integer I = (Integer) labelToIndex.get(columnLabel);
 
+			if (I == null)
+				throw new ExpressionException(
+					"FilterExpression: invalid column label: " + columnLabel);
 
+			columnNumber = I.intValue();
 
-   }
+			this.columnLabel = columnLabel;
 
+		}
 
+		public String evaluateString(int rowNumber)  throws MissingValueException {
+			if (this.isMissing(rowNumber))
+				throw new MissingValueException (table.getColumnLabel(columnNumber), rowNumber);
+			return table.getString(rowNumber, columnNumber);
+		}
 
-   private class Terminal extends Node {
+		public double evaluateDouble(int rowNumber) throws MissingValueException {
+			if (this.isMissing(rowNumber))
+				throw new MissingValueException (table.getColumnLabel(columnNumber), rowNumber);
+			return table.getDouble(rowNumber, columnNumber);
+		}
 
+		private boolean isMissing(int rowNumber) {
+			return table.isValueMissing(rowNumber, columnNumber);
+		}
+		
+		public String toString() {
+			return columnLabel;
+		}
+	}
 
+	private class ScalarElement extends Element {
+		private double value;
+		ScalarElement(double value) {
+			this.value = value;
+		}
+		double evaluate() {
+			return value;
+		}
+		public String toString() {
+			return Double.toString(value);
+		}
+	}
 
-      private int opcode;
+	private class NominalElement extends Element {
 
-      private Element left, right;
+		private String value;
 
+		NominalElement(String value) {
 
-      Terminal() { }
+			this.value = value;
 
-      Terminal(int opcode, Element left, Element right) {
+		}
 
-         this.opcode = opcode;
+		String evaluate() {
 
-         this.left = left;
+			return value;
 
-         this.right = right;
+		}
 
-      }
+		public String toString() {
 
+			StringBuffer buffer = new StringBuffer();
 
+			buffer.append('\'');
 
-      boolean evaluate(int rowNumber) throws ExpressionException {
+			buffer.append(value);
 
+			buffer.append('\'');
 
+			return buffer.toString();
 
-         // Each element (left and right) may represent a column label, a
+		}
 
-         // scalar value, or a column nominal value. All nine combinations,
+	}
 
-         // unfortunately, must be handled differently...
+	/******************************************************************************/
 
+	/* The expression string is broken down into subexpressions and parsed        */
 
+	/* recursively.                                                               */
 
-         if (left instanceof ColumnElement) {
+	/******************************************************************************/
 
+	private Node parse(String expression) throws ExpressionException {
 
+		if (expression.length() == 0)
+			return null;
 
-            if (right instanceof ColumnElement) {
+		char c;
 
+		// we are interested in the shallowest *boolean* operator of least
 
+		// precedence (i.e., we break ties by going to the right). if we don't
 
-               switch (opcode) {
+		// find one, we must be at a terminal.
 
+		boolean booleanOperatorFound = false;
 
+		int currentDepth = 0,
+			leastDepth = Integer.MAX_VALUE,
+			maximumDepth = 0,
+			leastPrecedenceType = BOOL_AND,
+			leastPrecedencePosition = -1;
 
-                  case OP_EQ:
+		int leftParens = 0;
+		int rightParens = 0;
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+		for (int i = 0; i < expression.length(); i++) {
 
-                        == ((ColumnElement)right).evaluateDouble(rowNumber);
+			c = expression.charAt(i);
 
-                  case OP_NEQ:
+			switch (c) {
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+				case '(' :
+					currentDepth++;
+					leftParens++;
+					break;
 
-                        != ((ColumnElement)right).evaluateDouble(rowNumber);
+				case ')' :
+					currentDepth--;
+					rightParens++;
+					break;
 
-                  case OP_LT:
+				case '&' :
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+					if (expression.charAt(i + 1) != '&')
+						throw new ExpressionException(
+							"FilterExpression: invalid single '&' at position "
+								+ i);
 
-                        <  ((ColumnElement)right).evaluateDouble(rowNumber);
+					booleanOperatorFound = true;
 
-                  case OP_LTE:
+					if (currentDepth < leastDepth
+						|| currentDepth == leastDepth
+						&& BOOL_AND >= leastPrecedenceType) {
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+						leastDepth = currentDepth;
 
-                        <= ((ColumnElement)right).evaluateDouble(rowNumber);
+						leastPrecedenceType = BOOL_AND;
 
-                  case OP_GT:
+						leastPrecedencePosition = i;
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+					}
 
-                        >  ((ColumnElement)right).evaluateDouble(rowNumber);
+					i++;
 
-                  case OP_GTE:
+					break;
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+				case '|' :
 
-                        >= ((ColumnElement)right).evaluateDouble(rowNumber);
+					if (expression.charAt(i + 1) != '|')
+						throw new ExpressionException(
+							"FilterExpression: invalid single '|' at position "
+								+ i);
 
-                  default:
+					booleanOperatorFound = true;
 
-                     throw new ExpressionException("FilterExpression: illegal opcode: " + opcode);
+					if (currentDepth < leastDepth
+						|| currentDepth == leastDepth
+						&& BOOL_OR >= leastPrecedenceType) {
 
+						leastDepth = currentDepth;
 
+						leastPrecedenceType = BOOL_OR;
 
-               }
+						leastPrecedencePosition = i;
 
+					}
 
+					i++;
 
-            }
+					break;
 
-            else if (right instanceof ScalarElement) {
+					// !: if we supported escape sequences, we'd handle them here...
 
+			}
 
+			if (currentDepth > maximumDepth)
+				maximumDepth = currentDepth;
 
-               switch (opcode) {
+		}
 
+		if (leftParens != rightParens) {
+			throw new ExpressionException("FilterExpression: parentheses do not match.");
+		}
 
+		if (leastDepth > maximumDepth) // ...there were no parentheses
 
-                  case OP_EQ:
+			leastDepth = 0;
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+		if (booleanOperatorFound) { // ...we must recurse
 
-                        == ((ScalarElement)right).evaluate();
+			// remove extraneous parentheses first
 
-                  case OP_NEQ:
+			for (int i = 0; i < leastDepth; i++) {
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+				expression = expression.trim();
 
-                        != ((ScalarElement)right).evaluate();
+				expression = expression.substring(1, expression.length() - 1);
 
-                  case OP_LT:
+				leastPrecedencePosition--;
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+			}
 
-                        <  ((ScalarElement)right).evaluate();
+			return new Subexpression(
+				leastPrecedenceType,
+				parse(expression.substring(0, leastPrecedencePosition).trim()),
+				parse(
+					expression
+						.substring(
+							leastPrecedencePosition + 2,
+							expression.length())
+						.trim()));
 
-                  case OP_LTE:
+		} else { // ...this is a terminal
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+			// remove extraneous parentheses first (slightly different here)
 
-                        <= ((ScalarElement)right).evaluate();
+			for (int i = 0; i < maximumDepth; i++) {
 
-                  case OP_GT:
+				expression = expression.trim();
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+				expression = expression.substring(1, expression.length() - 1);
 
-                        >  ((ScalarElement)right).evaluate();
+			}
 
-                  case OP_GTE:
+			return parseTerminal(expression);
 
-                     return ((ColumnElement)left).evaluateDouble(rowNumber)
+		}
 
-                        >= ((ScalarElement)right).evaluate();
+	}
 
-                  default:
+	private Node parseTerminal(String expression) throws ExpressionException {
 
-                     throw new ExpressionException("FilterExpression: illegal opcode: " + opcode);
+		char c, d;
 
+		boolean operatorFound = false;
 
+		for (int i = 0; i < expression.length(); i++) {
 
-               }
+			c = expression.charAt(i);
 
+			switch (c) {
 
+				case '=' :
 
-            }
+					if (expression.charAt(i + 1) != '=')
+						throw new ExpressionException("FilterExpression: invalid single '=' in expression");
 
-            else { // right instanceof NominalElement
+					return new Terminal(
+						OP_EQ,
+						parseElement(expression.substring(0, i).trim()),
+						parseElement(
+							expression
+								.substring(i + 2, expression.length())
+								.trim()));
 
+				case '!' :
 
+					if (expression.charAt(i + 1) != '=')
+						throw new ExpressionException("FilterExpression: invalid single '!' in expression");
 
-               switch (opcode) {
+					return new Terminal(
+						OP_NEQ,
+						parseElement(expression.substring(0, i).trim()),
+						parseElement(
+							expression
+								.substring(i + 2, expression.length())
+								.trim()));
 
+				case '>' :
 
+					if (expression.charAt(i + 1) == '=')
+						return new Terminal(
+							OP_GTE,
+							parseElement(expression.substring(0, i).trim()),
+							parseElement(
+								expression
+									.substring(i + 2, expression.length())
+									.trim()));
 
-                  case OP_EQ:
+					else
+						return new Terminal(
+							OP_GT,
+							parseElement(expression.substring(0, i).trim()),
+							parseElement(
+								expression
+									.substring(i + 1, expression.length())
+									.trim()));
 
-                     return ((ColumnElement)left).evaluateString(rowNumber).equals(
+				case '<' :
 
-                        ((NominalElement)right).evaluate());
+					if (expression.charAt(i + 1) == '=')
+						return new Terminal(
+							OP_LTE,
+							parseElement(expression.substring(0, i).trim()),
+							parseElement(
+								expression
+									.substring(i + 2, expression.length())
+									.trim()));
 
-                  case OP_NEQ:
+					else
+						return new Terminal(
+							OP_LT,
+							parseElement(expression.substring(0, i).trim()),
+							parseElement(
+								expression
+									.substring(i + 1, expression.length())
+									.trim()));
 
-                     return !((ColumnElement)left).evaluateString(rowNumber).equals(
+			}
 
-                        ((NominalElement)right).evaluate());
+		}
 
-                  default:
+		// check to see if it's just empty parentheses
+		String test = expression.trim();
+		if (test.length() == 0) {
+			return new TrueTerminal();
+		}
 
-                     throw new ExpressionException("FilterExpression: illegal opcode on nominal: " + opcode);
+		throw new ExpressionException("FilterExpression: apparently malformed expression.");
 
+	}
 
+	private Element parseElement(String expression)
+		throws ExpressionException {
 
-               }
+		if (expression.length() == 0)
+			throw new ExpressionException("FilterExpression: encountered empty element");
 
+		double value = Double.NaN;
 
+		try {
 
-            }
+			value = Double.parseDouble(expression);
 
+		} catch (Exception e) {
 
+			if (expression.charAt(0) == '\'')
+				return new NominalElement(
+					expression.substring(1, expression.length() - 1));
 
-         }
+			return new ColumnElement(expression);
 
-         else if (left instanceof ScalarElement) {
+		}
 
+		return new ScalarElement(value);
 
-
-            if (right instanceof ColumnElement) {
-
-
-
-               switch (opcode) {
-
-
-
-                  case OP_EQ:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        == ((ColumnElement)right).evaluateDouble(rowNumber);
-
-                  case OP_NEQ:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        != ((ColumnElement)right).evaluateDouble(rowNumber);
-
-                  case OP_LT:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        <  ((ColumnElement)right).evaluateDouble(rowNumber);
-
-                  case OP_LTE:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        >= ((ColumnElement)right).evaluateDouble(rowNumber);
-
-                  case OP_GT:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        >  ((ColumnElement)right).evaluateDouble(rowNumber);
-
-                  case OP_GTE:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        >= ((ColumnElement)right).evaluateDouble(rowNumber);
-
-                  default:
-
-                     throw new ExpressionException("FilterExpression: illegal opcode: " + opcode);
-
-
-
-               }
-
-
-
-            }
-
-            else if (right instanceof ScalarElement) {
-
-
-
-               switch (opcode) {
-
-
-
-                  case OP_EQ:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        == ((ScalarElement)right).evaluate();
-
-                  case OP_NEQ:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        != ((ScalarElement)right).evaluate();
-
-                  case OP_LT:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        <  ((ScalarElement)right).evaluate();
-
-                  case OP_LTE:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        >= ((ScalarElement)right).evaluate();
-
-                  case OP_GT:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        >  ((ScalarElement)right).evaluate();
-
-                  case OP_GTE:
-
-                     return ((ScalarElement)left).evaluate()
-
-                        >= ((ScalarElement)right).evaluate();
-
-                  default:
-
-                     throw new ExpressionException("FilterExpression: illegal opcode: " + opcode);
-
-
-
-               }
-
-
-
-            }
-
-            else { // right instanceof NominalElement
-
-
-
-               throw new ExpressionException("FilterExpression: invalid operation: <scalar> <op> <nominal>");
-
-
-
-            }
-
-
-
-         }
-
-         else { // left instanceof NominalElement
-
-
-
-            if (right instanceof ColumnElement) {
-
-
-
-               switch (opcode) {
-
-
-
-                  case OP_EQ:
-
-                     return ((NominalElement)left).evaluate().equals(
-
-                        ((ColumnElement)right).evaluateString(rowNumber));
-
-                  case OP_NEQ:
-
-                     return !((NominalElement)left).evaluate().equals(
-
-                        ((ColumnElement)right).evaluateString(rowNumber));
-
-                  default:
-
-                     throw new ExpressionException("FilterExpression: illegal opcode on nominal: " + opcode);
-
-
-
-               }
-
-
-
-            }
-
-            else if (right instanceof ScalarElement) {
-
-
-
-               throw new ExpressionException("FilterExpression: invalid operation: <nominal> <op> <scalar>");
-
-
-
-            }
-
-            else { // right instanceof NominalElement
-
-
-
-               throw new ExpressionException("FilterExpression: invalid operation: <nominal> <op> <nominal>");
-
-
-
-            }
-
-
-
-         }
-
-
-
-      }
-
-
-
-      public String toString() {
-
-         StringBuffer buffer = new StringBuffer();
-
-         buffer.append('(');
-
-         buffer.append(left.toString());
-
-         buffer.append(' ');
-
-         switch (opcode) {
-
-            case OP_EQ:  buffer.append("=="); break;
-
-            case OP_NEQ: buffer.append("!="); break;
-
-            case OP_LT:  buffer.append("<" ); break;
-
-            case OP_LTE: buffer.append("<="); break;
-
-            case OP_GT:  buffer.append(">" ); break;
-
-            case OP_GTE: buffer.append(">="); break;
-
-            default:     buffer.append("??"); break;
-
-         }
-
-         buffer.append(' ');
-
-         buffer.append(right.toString());
-
-         buffer.append(')');
-
-         return buffer.toString();
-
-      }
-
-
-
-   }
-
-   private class TrueTerminal extends Terminal {
-
-      TrueTerminal() { }
-
-      public boolean evaluate(int rowNumber) {
-         return true;
-      }
-
-      public String toString() {
-         return "true";
-      }
-
-   }
-
-
-/******************************************************************************/
-
-/* Elements -- the building blocks of a filter expression string -- can be    */
-
-/* labels of columns from the table, scalars, or nominal values taken from a  */
-
-/* particular column of the table.                                            */
-
-/******************************************************************************/
-
-
-
-   private abstract class Element {
-
-      public abstract String toString();
-
-   }
-
-
-
-   private class ColumnElement extends Element {
-
-
-
-      private int columnNumber;
-
-      private String columnLabel;
-
-
-
-      ColumnElement(String columnLabel) throws ExpressionException {
-
-
-
-         Integer I = (Integer)labelToIndex.get(columnLabel);
-
-
-
-
-
-         if (I == null)
-
-            throw new ExpressionException("FilterExpression: invalid column label: " + columnLabel);
-
-
-
-         columnNumber = I.intValue();
-
-         this.columnLabel = columnLabel;
-
-
-
-      }
-
-
-
-      public String evaluateString(int rowNumber) {
-
-         return table.getString(rowNumber, columnNumber);
-
-      }
-
-
-
-      public double evaluateDouble(int rowNumber) {
-
-         return table.getDouble(rowNumber, columnNumber);
-
-      }
-
-
-
-      public String toString() {
-
-         return columnLabel;
-
-      }
-
-
-
-   }
-
-
-
-   private class ScalarElement extends Element {
-
-
-
-      private double value;
-
-
-
-      ScalarElement(double value) {
-
-         this.value = value;
-
-      }
-
-
-
-      double evaluate() {
-
-         return value;
-
-      }
-
-
-
-      public String toString() {
-
-         return Double.toString(value);
-
-      }
-
-
-
-   }
-
-
-
-   private class NominalElement extends Element {
-
-
-
-      private String value;
-
-
-
-      NominalElement(String value) {
-
-         this.value = value;
-
-      }
-
-
-
-      String evaluate() {
-
-         return value;
-
-      }
-
-
-
-      public String toString() {
-
-         StringBuffer buffer = new StringBuffer();
-
-         buffer.append('\'');
-
-         buffer.append(value);
-
-         buffer.append('\'');
-
-         return buffer.toString();
-
-      }
-
-
-
-   }
-
-
-
-/******************************************************************************/
-
-/* The expression string is broken down into subexpressions and parsed        */
-
-/* recursively.                                                               */
-
-/******************************************************************************/
-
-
-
-   private Node parse(String expression) throws ExpressionException {
-
-      if (expression.length() == 0)
-        return null;
-
-      char c;
-
-
-
-      // we are interested in the shallowest *boolean* operator of least
-
-      // precedence (i.e., we break ties by going to the right). if we don't
-
-      // find one, we must be at a terminal.
-
-
-
-      boolean booleanOperatorFound = false;
-
-      int currentDepth = 0, leastDepth = Integer.MAX_VALUE, maximumDepth = 0,
-
-          leastPrecedenceType = BOOL_AND, leastPrecedencePosition = -1;
-
-      int leftParens = 0;
-      int rightParens = 0;
-
-
-      for (int i = 0; i < expression.length(); i++) {
-
-
-
-         c = expression.charAt(i);
-
-
-
-         switch(c) {
-
-
-
-            case '(':
-               currentDepth++;
-               leftParens++;
-               break;
-
-            case ')':
-               currentDepth--;
-               rightParens++;
-               break;
-
-
-
-            case '&':
-
-
-
-               if (expression.charAt(i + 1) != '&')
-
-                  throw new ExpressionException("FilterExpression: invalid single '&' at position " + i);
-
-
-
-               booleanOperatorFound = true;
-
-
-
-               if (currentDepth < leastDepth ||
-
-                   currentDepth == leastDepth && BOOL_AND >= leastPrecedenceType) {
-
-
-
-                  leastDepth = currentDepth;
-
-                  leastPrecedenceType = BOOL_AND;
-
-                  leastPrecedencePosition = i;
-
-
-
-               }
-
-
-
-               i++;
-
-               break;
-
-
-
-            case '|':
-
-
-
-               if (expression.charAt(i + 1) != '|')
-
-                  throw new ExpressionException("FilterExpression: invalid single '|' at position " + i);
-
-
-
-               booleanOperatorFound = true;
-
-
-
-               if (currentDepth < leastDepth ||
-
-                   currentDepth == leastDepth && BOOL_OR >= leastPrecedenceType) {
-
-
-
-                  leastDepth = currentDepth;
-
-                  leastPrecedenceType = BOOL_OR;
-
-                  leastPrecedencePosition = i;
-
-
-
-               }
-
-
-
-               i++;
-
-               break;
-
-
-
-            // !: if we supported escape sequences, we'd handle them here...
-
-
-
-         }
-
-
-
-         if (currentDepth > maximumDepth)
-
-            maximumDepth = currentDepth;
-
-
-
-      }
-
-      if (leftParens != rightParens) {
-         throw new ExpressionException("FilterExpression: parentheses do not match.");
-      }
-
-      if (leastDepth > maximumDepth) // ...there were no parentheses
-
-         leastDepth = 0;
-
-
-
-      if (booleanOperatorFound) { // ...we must recurse
-
-
-
-         // remove extraneous parentheses first
-
-         for (int i = 0; i < leastDepth; i++) {
-
-            expression = expression.trim();
-
-            expression = expression.substring(1, expression.length() - 1);
-
-            leastPrecedencePosition--;
-
-         }
-
-
-
-         return new Subexpression(
-
-            leastPrecedenceType,
-
-            parse(expression.substring(0, leastPrecedencePosition).trim()),
-
-            parse(expression.substring(leastPrecedencePosition + 2, expression.length()).trim())
-
-         );
-
-
-
-      }
-
-      else { // ...this is a terminal
-
-
-
-         // remove extraneous parentheses first (slightly different here)
-
-         for (int i = 0; i < maximumDepth; i++) {
-
-            expression = expression.trim();
-
-            expression = expression.substring(1, expression.length() - 1);
-
-         }
-
-
-
-         return parseTerminal(expression);
-
-
-
-      }
-
-
-
-   }
-
-
-
-   private Node parseTerminal(String expression) throws ExpressionException {
-
-
-
-      char c, d;
-
-
-
-      boolean operatorFound = false;
-
-
-
-      for (int i = 0; i < expression.length(); i++) {
-
-
-
-         c = expression.charAt(i);
-
-
-
-         switch(c) {
-
-
-
-            case '=':
-
-
-
-               if (expression.charAt(i + 1) != '=')
-
-                  throw new ExpressionException("FilterExpression: invalid single '=' in expression");
-
-
-
-               return new Terminal(
-
-                  OP_EQ,
-
-                  parseElement(expression.substring(0, i).trim()),
-
-                  parseElement(expression.substring(i + 2, expression.length()).trim())
-
-               );
-
-
-
-            case '!':
-
-
-
-               if (expression.charAt(i + 1) != '=')
-
-                  throw new ExpressionException("FilterExpression: invalid single '!' in expression");
-
-
-
-               return new Terminal(
-
-                  OP_NEQ,
-
-                  parseElement(expression.substring(0, i).trim()),
-
-                  parseElement(expression.substring(i + 2, expression.length()).trim())
-
-               );
-
-
-
-            case '>':
-
-
-
-               if (expression.charAt(i + 1) == '=')
-
-
-
-                  return new Terminal(
-
-                     OP_GTE,
-
-                     parseElement(expression.substring(0, i).trim()),
-
-                     parseElement(expression.substring(i + 2, expression.length()).trim())
-
-                  );
-
-
-
-               else
-
-
-
-                  return new Terminal(
-
-                     OP_GT,
-
-                     parseElement(expression.substring(0, i).trim()),
-
-                     parseElement(expression.substring(i + 1, expression.length()).trim())
-
-                  );
-
-
-
-            case '<':
-
-
-
-               if (expression.charAt(i + 1) == '=')
-
-
-
-                  return new Terminal(
-
-                     OP_LTE,
-
-                     parseElement(expression.substring(0, i).trim()),
-
-                     parseElement(expression.substring(i + 2, expression.length()).trim())
-
-                  );
-
-
-
-               else
-
-
-
-                  return new Terminal(
-
-                     OP_LT,
-
-                     parseElement(expression.substring(0, i).trim()),
-
-                     parseElement(expression.substring(i + 1, expression.length()).trim())
-
-                  );
-
-
-
-         }
-
-
-
-      }
-
-      // check to see if it's just empty parentheses
-      String test = expression.trim();
-      if (test.length() == 0) {
-         return new TrueTerminal();
-      }
-
-
-      throw new ExpressionException("FilterExpression: apparently malformed expression.");
-
-
-
-   }
-
-
-
-   private Element parseElement(String expression) throws ExpressionException {
-
-      if (expression.length() == 0)
-         throw new ExpressionException("FilterExpression: encountered empty element");
-
-      double value = Double.NaN;
-
-      try {
-
-         value = Double.parseDouble(expression);
-
-      }
-
-      catch(Exception e) {
-
-
-
-         if (expression.charAt(0) == '\'')
-
-            return new NominalElement(expression.substring(1, expression.length() - 1));
-
-
-
-         return new ColumnElement(expression);
-
-
-
-      }
-
-
-
-      return new ScalarElement(value);
-
-
-
-   }
-
-
+	}
 
 }
-

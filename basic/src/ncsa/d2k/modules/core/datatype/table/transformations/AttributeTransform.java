@@ -26,11 +26,12 @@ public class AttributeTransform implements Transformation {
 
          ColumnExpression exp = new ColumnExpression(table);
          Construction current = (Construction)constructions[i];
-
+		 boolean [] missing;
          Object evaluation = null;
          try {
             exp.setExpression(current.expression);
             evaluation = exp.evaluate();
+            missing = exp.getMissingValues();
          }
          catch(Exception e) {
             e.printStackTrace();
@@ -39,42 +40,64 @@ public class AttributeTransform implements Transformation {
 
          switch (exp.evaluateType()) {
 
-            case ColumnExpression.TYPE_BOOLEAN:
-               boolean[] b = (boolean[])evaluation;
-               table.addColumn(new BooleanColumn(b));
-               break;
-            case ColumnExpression.TYPE_BYTE:
-               byte[] bb = (byte[])evaluation;
-               table.addColumn(new ByteColumn(bb));
-               break;
-            case ColumnExpression.TYPE_DOUBLE:
-               double[] d = (double[])evaluation;
-               table.addColumn(new DoubleColumn(d));
-               break;
-            case ColumnExpression.TYPE_FLOAT:
-               float[] f = (float[])evaluation;
-               table.addColumn(new FloatColumn(f));
-               break;
-            case ColumnExpression.TYPE_INTEGER:
-               int[] I = (int[])evaluation;
-               table.addColumn(new IntColumn(I));
-               break;
-            case ColumnExpression.TYPE_LONG:
-               long[] l = (long[])evaluation;
-               table.addColumn(new LongColumn(l));
-               break;
-            case ColumnExpression.TYPE_SHORT:
-               short[] s = (short[])evaluation;
-               table.addColumn(new ShortColumn(s));
-               break;
-             case ColumnExpression.TYPE_STRING:
-               String[] p = (String[]) evaluation;
-               table.addColumn(new StringColumn(p));
-            break;
+            case ColumnExpression.TYPE_BOOLEAN: {
+               boolean[] data = (boolean[])evaluation;
+			   BooleanColumn col = new BooleanColumn(data);
+               col.setMissingValues(missing);
+               table.addColumn(col);
+               } break;
+               
+            case ColumnExpression.TYPE_BYTE:{
+               byte[] data = (byte[])evaluation;
+			   ByteColumn col = new ByteColumn(data);
+			   col.setMissingValues(missing);
+               table.addColumn(col);
+               } break;
+               
+            case ColumnExpression.TYPE_DOUBLE:{
+               double[] data = (double[])evaluation;
+			   DoubleColumn col = new DoubleColumn(data);
+			   col.setMissingValues(missing);
+			   table.addColumn(col);
+              } break;
+               
+            case ColumnExpression.TYPE_FLOAT:{
+               float[] data = (float[])evaluation;
+			   FloatColumn col = new FloatColumn(data);
+			   col.setMissingValues(missing);
+			   table.addColumn(col);
+               } break;
+               
+            case ColumnExpression.TYPE_INTEGER:{
+               int[] data = (int[])evaluation;
+			   IntColumn col = new IntColumn(data);
+			   col.setMissingValues(missing);
+			   table.addColumn(col);
+               } break;
+               
+            case ColumnExpression.TYPE_LONG:{
+               long[] data = (long[])evaluation;
+			   LongColumn col = new LongColumn(data);
+			   col.setMissingValues(missing);
+			   table.addColumn(col);
+               } break;
+               
+            case ColumnExpression.TYPE_SHORT:{
+               short[] data = (short[])evaluation;
+			   ShortColumn col = new ShortColumn(data);
+			   col.setMissingValues(missing);
+			   table.addColumn(col);
+               } break;
+               
+            case ColumnExpression.TYPE_STRING:{
+               String[] data = (String[]) evaluation;
+			   StringColumn col = new StringColumn(data);
+			   col.setMissingValues(missing);
+			   table.addColumn(col);
+           	   } break;
 
             default:
                return false;
-
          }
 
          table.setColumnLabel(current.label, table.getNumColumns() - 1);
@@ -82,30 +105,5 @@ public class AttributeTransform implements Transformation {
       }
 
       return true;
-
    }
-
-
-   /**
-    * <code>AttributeConstruction.Construction</code> is a simple inner class
-    * used to store the label and contents of an expression.
-    *
-    * this is a duplicated code of Construction.java from package
-    * core.datatype.table.transformations
-    */
-   /*public class Construction implements java.io.Serializable {
-
-      public String label, expression;
-
-      public Construction(String label, String expression) {
-         this.label = label;
-         this.expression = expression;
-      }
-
-      public String toString() {
-         return label + ": " + expression;
-      }
-
-   }*/
-
 }

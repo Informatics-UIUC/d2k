@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.transform.table;
 
 
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -13,7 +14,6 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.gui.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
-
 import ncsa.d2k.modules.core.transform.StaticMethods;
 
 /**
@@ -34,55 +34,72 @@ public class FilterConstruction extends HeadlessUIModule {
 /******************************************************************************/
 
    public String getModuleInfo() {
-      return "<p>      Overview: This module will provide a gui to be employed by the user to       create"+
-         " a filter to eliminate the rows of the input table which do not       meet the criterion specified."+
-         "    </p>    <p>      Detailed Description: This module provides a gui used to specify      "+
-         " expressions. These expressions are used to eliminate rows of the table       that do not meet"+
-         " the criterion specified in those expressions. Complex       expressions are supported. When"+
-         " the gui is dismissed, the filters are       all collected into a <i>Transformation</i> object"+
-         " that is then passed as       an output. The expressions are not applied to the data by this"+
-         " module,       that can be done downstream using the transformation object passed.    </p> "+
-         "   <p>      The expressions which can be applied to columns support the following       operators:"+
-         " &quot;&gt;&quot;, &quot;&gt;=&quot;, &quot;&lt;&quot;, &quot;&lt;=&quot;, &quot;!=&quot; and"+
-         " &quot;==&quot;. These operators are       greater than, greater than or equal to, less than,"+
-         " less than or equal       to, not equal, and equal. The result of these expressions, which we"+
-         " will       call attribute expressions, are either true or false. We can construct       more"+
-         " complex expressions using the boolean operators &quot;and&quot; (&amp;&amp;) or       &quot;or&quot;(||)"+
-         " on the results of the attribute expressions. For example, if we       had an attribute named"+
-         " <i>sepal_length</i> which is numeric, a filter       resulting from the following expression"+
-         " (sepal_length &gt;= 6.0) &amp;&amp;       (sepal_length &lt;= 7.0) will result in the removal"+
-         " of all rows where the       sepal_length is not in the range from 6.0 to 7.0, inclusive.  "+
-         " Please note that names of columns are case sensitive." +
-         "  </p>    <p>      Data Type Restrictions: Filter operations are supported for numeric data"+
-         "       only at this point.    </p>" +
-         "<p>Data Handling: This module <i>may</i> modify its input data: columns with blank labels " +
-         "will be assigned default ones. Other than that, this module does not modify its input. " +
-         "Rather, its output is a <i>Transformation</i> that can later be applied to filter the table.</p>";
-   }
+		return "<p>"+
+"      Overview: This module will provide a gui to be employed by the user to "+
+"      create a filter to eliminate the rows of the input table which do not "+
+"      meet the criterion specified."+
+"    </p>"+
+"    <p>"+
+"      Detailed Description: This module provides a gui used to specify "+
+"      expressions. These expressions are used to eliminate rows of the table "+
+"      that do not meet the criterion specified in those expressions. Complex "+
+"      expressions are supported. When the gui is dismissed, the filters are "+
+"      all collected into a <i>Transformation</i> object that is then passed as "+
+"      an output. The expressions are not applied to the data by this module, "+
+"      that can be done downstream using the transformation object passed."+
+"    </p>"+
+"    <p>"+
+"      The expressions which can be applied to columns support the following "+
+"      operators: &quot;&gt;&quot;, &quot;&gt;=&quot;, &quot;&lt;&quot;, &quot;&lt;=&quot;, &quot;!=&quot; and &quot;==&quot;. These operators are "+
+"      greater than, greater than or equal to, less than, less than or equal "+
+"      to, not equal, and equal. The result of these expressions, which we will "+
+"      call attribute expressions, are either true or false. We can construct "+
+"      more complex expressions using the boolean operators &quot;and&quot; (&amp;&amp;) or "+
+"      &quot;or&quot;(||) on the results of the attribute expressions. For example, if we "+
+"      had an attribute named <i>sepal_length</i> which is numeric, a filter "+
+"      resulting from the following expression (sepal_length &gt;= 6.0) &amp;&amp; "+
+"      (sepal_length &lt;= 7.0) will result in the removal of all rows where the "+
+"      sepal_length is not in the range from 6.0 to 7.0, inclusive. Please note "+
+"      that names of columns are case sensitive."+
+"    </p>"+
+"    <p>"+
+"      Data Type Restrictions: Filter operations are supported for numeric data "+
+"      only at this point."+
+"    </p>"+
+"    <p>"+
+"      Data Handling: This module <i>may</i> modify its input data: columns "+
+"      with blank labels will be assigned default ones. Other than that, this "+
+"      module does not modify its input. Rather, its output is a <i>"+
+"      Transformation</i> that can later be applied to filter the table. By "+
+"      default, if an expression operates on any missing value, the row "+
+"      containing the missing value is included in the result. There is a "+
+"      property that can be changed to reverse this behavior."+
+"    </p>";
+	}
 
    public String[] getInputTypes() {
-      String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-      return types;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
    public String getInputInfo(int index) {
-      switch (index) {
-         case 0: return "This is the mutable table for which a filter will be constructed.";
-         default: return "No such input";
-      }
-   }
+		switch (index) {
+			case 0: return "This is the mutable table for which a filter will be constructed.";
+			default: return "No such input";
+		}
+	}
 
    public String[] getOutputTypes() {
-      String[] types = {"ncsa.d2k.modules.core.datatype.table.Transformation"};
-      return types;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Transformation"};
+		return types;
+	}
 
    public String getOutputInfo(int index) {
-      switch (index) {
-         case 0: return "This is the transformation the user constructed using the gui associated     with this module.";
-         default: return "No such output";
-      }
-   }
+		switch (index) {
+			case 0: return "This is the transformation the user constructed using the gui associated     with this module.";
+			default: return "No such output";
+		}
+	}
 
    public String[] getFieldNameMapping() { return null; }
 
@@ -95,20 +112,28 @@ public class FilterConstruction extends HeadlessUIModule {
 /******************************************************************************/
 
    private String _lastExpression = "";
-
    public String getLastExpression() {
       return _lastExpression;
    }
-
    public void setLastExpression(String value) {
       _lastExpression = value;
+   }
+   
+   private boolean _includeMissingValues = true;
+   public boolean getIncludeMissingValues() {
+	  return _includeMissingValues;
+   }
+   public void setIncludeMissingValues(boolean value) {
+	  _includeMissingValues = value;
    }
 
 
    public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] pds = new PropertyDescription[2];
+    PropertyDescription[] pds = new PropertyDescription[3];
     pds[0] = super.supressDescription;
     pds[1] = new PropertyDescription("expression", "Filter Expression", "Set this expression to filter out rows in the table, when \"Supress User Interface Display\" is set to true. Validation of the expression is done during run time.");
+	pds[2] = new PropertyDescription("includeMissingValues", "Include Missing Values", 
+			"If set, rows with missing values will be included in the result table.");
     return pds;
 
    }
@@ -165,7 +190,7 @@ public class FilterConstruction extends HeadlessUIModule {
 
        this.removeAll();
 
-       expression = new FilterExpression(table);
+       expression = new FilterExpression(table, getIncludeMissingValues());
 
        gui = new ExpressionGUI(expression, false);
        gui.addExpressionListener(this);
@@ -543,8 +568,8 @@ try {
     * @return the human readable name of the module.
     */
    public String getModuleName() {
-      return "Filter Construction";
-   }
+		return "Filter Construction";
+	}
 
    /**
     * Return the human readable name of the indexed input.
@@ -552,12 +577,12 @@ try {
     * @return the human readable name of the indexed input.
     */
    public String getInputName(int index) {
-      switch(index) {
-         case 0:
-            return "Mutable Table";
-         default: return "NO SUCH INPUT!";
-      }
-   }
+		switch(index) {
+			case 0:
+				return "Mutable Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
    /**
     * Return the human readable name of the indexed output.
@@ -565,12 +590,12 @@ try {
     * @return the human readable name of the indexed output.
     */
    public String getOutputName(int index) {
-      switch(index) {
-         case 0:
-            return "Transformation";
-         default: return "NO SUCH OUTPUT!";
-      }
-   }
+		switch(index) {
+			case 0:
+				return "Transformation";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
 
    //headless conversion support
@@ -610,13 +635,12 @@ try {
 
 
       //assuming that filter expression is parsing and validating the expression.
-      FilterExpression fEx = new FilterExpression(table);
+      FilterExpression fEx = new FilterExpression(table, getIncludeMissingValues());
       fEx.setExpression(expression);
       //getting the array of booleans - which row to filter.
       boolean[] eval = ( boolean[] )fEx.evaluate();
       //pushing out the transformation
       pushOutput(new FilterTransformation(eval, false), 0);
-
 
    }//doit
 

@@ -66,7 +66,9 @@ public class AttributeConstruction extends HeadlessUIModule {
       sb.append("attributes with blank labels will be assigned default ones. ");
       sb.append("Other than that, this module does not modify its input data. ");
       sb.append("Rather, its output is a <i>Transformation</i> that can then ");
-      sb.append("be used to modify the table.");
+      sb.append("be used to modify the table. In this module, and computation ");
+	  sb.append("performed with a missing value will result in a missing value ");
+	  sb.append("in the constructed attribute column.");
       sb.append("</p>");
       return sb.toString();
    }

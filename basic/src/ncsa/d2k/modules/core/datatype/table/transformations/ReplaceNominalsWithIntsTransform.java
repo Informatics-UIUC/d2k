@@ -50,7 +50,9 @@ public class ReplaceNominalsWithIntsTransform
 
 		 numItems = 0;
 		 for (int j = 0; j < numRows; j++) {
-
+			if (mt.isValueMissing(j, col))
+				continue;
+				
 			item = mt.getString(j, col);
 			if (!nominalToInteger[i].containsKey(item)) {
 			   nominalToInteger[i].put(item, new Integer(numItems));
@@ -94,70 +96,56 @@ public class ReplaceNominalsWithIntsTransform
    }
 
    public boolean transform(MutableTable mt) {
-
 	  int numRows = mt.getNumRows();
 	  String item, label;
 	  for (int i = 0; i < indirection.length; i++) {
-
 		 int[] intColumn = new int[numRows];
-
 		 int col = indirection[i];
-
-		 //TODO: Support for missing values- just take out the comments
-		 // ArrayList missingValues = new ArrayList();
-
+		 boolean [] missing = new boolean [numRows];
 		 for (int j = 0; j < numRows; j++) {
-		     //if(!mt.isValueMissing(j,col)) {
-			 item = (String)mt.getString(j, col);
-			 intColumn[j] = ((Integer)nominalToInteger[i].get(item)).intValue();
-			 // } else {
-			 //	 intColumn[j] = 0;
-			 // missingValues.add(new Integer(j));
-			 //}
+		     if (!mt.isValueMissing(j,col)) {
+			 	item = (String)mt.getString(j, col);
+			 	intColumn[j] = ((Integer)nominalToInteger[i].get(item)).intValue();
+			 	missing[j] = false;
+			 } else {
+			 	intColumn[j] = mt.getMissingInt();
+			 	missing[j] = true;
+			 }
 		 }
-
 		 label = mt.getColumnLabel(col);
-		 mt.setColumn(new IntColumn(intColumn), col);
+		 IntColumn ic = new IntColumn(intColumn);
+		 ic.setMissingValues(missing);
+		 mt.setColumn(ic, col);
 		 mt.setColumnLabel(label, col);
 		 mt.setColumnIsNominal(true,col);
 		 mt.setColumnIsScalar(false,col);
-
 	  }
 
-	  // 4/7/02 commented out by Loretta...
-          // this add gets done by applyTransformation
-          //mt.addTransformation(this);
 	  return true;
-
    }
 
    public boolean untransform(MutableTable mt) {
-
-	  //MutableTable mt = (MutableTable)t.copy();
-
 	  int numRows = mt.getNumRows();
 	  Integer item;
 	  String label;
 	  for (int i = 0; i < indirection.length; i++) {
-
 		 String[] stringColumn = new String[numRows];
-
 		 int col = indirection[i];
-		 //TODO: Support for missing values- just take out the comments
-		 //ArrayList missingValues = new ArrayList();
-
+		 boolean missing [] = new boolean [numRows];
 		 for (int j = 0; j < numRows; j++) {
-		     //		     if (!mt.isValueMissing(j,col)) {
-			item = new Integer(mt.getInt(j, col));
-			stringColumn[j] = (String)integerToNominal[i].get(item);
-			//} else {
-			//	 stringColumn[j] = "";
-			// missingValues.add(new Integer(j));
-			//}
+		    if (!mt.isValueMissing(j,col)) {
+				item = new Integer(mt.getInt(j, col));
+				stringColumn[j] = (String)integerToNominal[i].get(item);
+				missing[j] = false;
+			} else {
+				stringColumn[j] = mt.getMissingString();
+				missing[j] = true;
+			}
 		 }
-
 		 label = mt.getColumnLabel(col);
-		 mt.setColumn(new StringColumn(stringColumn), col);
+		 StringColumn sc = new StringColumn(stringColumn);
+		 sc.setMissingValues (missing);
+		 mt.setColumn(sc, col);
 		 mt.setColumnLabel(label, col);
 	  }
 
@@ -168,4 +156,4 @@ public class ReplaceNominalsWithIntsTransform
 }
 
 // QA Anca - added setColumnIsNominal in transform to keep the column nominal
-// TODO: added support for missing values when needed
+// QA Tom - added support for missing values when needed

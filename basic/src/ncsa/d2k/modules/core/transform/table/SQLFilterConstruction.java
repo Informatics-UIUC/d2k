@@ -126,12 +126,23 @@ public class SQLFilterConstruction extends HeadlessUIModule {
    public void setLastExpression(String value) {
       _lastExpression = value;
    }
+   
+   private boolean _includeMissingValues = true;
+   public boolean getIncludeMissingValues() {
+	  return _includeMissingValues;
+   }
+   public void setIncludeMissingValues(boolean value) {
+	  _includeMissingValues = value;
+   }
+
 
    public PropertyDescription[] getPropertiesDescriptions() {
-      PropertyDescription[] pds = new PropertyDescription[2];
+      PropertyDescription[] pds = new PropertyDescription[3];
       pds[0] = super.getPropertiesDescriptions()[0];
       pds[1] = new PropertyDescription("queryCondition", "Query Condition",
                                        "SQL query condition");
+	  pds[2] = new PropertyDescription("includeMissingValues", "Include Missing Values", 
+			"If set, rows with missing values will be included in the result table.");
       return pds;
    }
 
@@ -181,7 +192,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
          table = createMetaTable();
          this.removeAll();
 
-         expression = new FilterExpression(table);
+         expression = new FilterExpression(table, getIncludeMissingValues());
 
          gui = new ExpressionGUI(expression, false);
          gui.addExpressionListener(this);

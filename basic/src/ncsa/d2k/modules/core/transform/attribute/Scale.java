@@ -328,12 +328,15 @@ public class Scale extends HeadlessUIModule {
                double min = Double.POSITIVE_INFINITY,
                       max = Double.NEGATIVE_INFINITY, d;
 
+			   
                for (int j = 0; j < table.getNumRows(); j++) {
-                  d = table.getDouble(j, index);
-                  if (d < min)
-                     min = d;
-                  if (d > max)
-                     max = d;
+               	  if (!table.isValueMissing(j, index)) {
+                     d = table.getDouble(j, index);
+                     if (d < min)
+                        min = d;
+                     if (d > max)
+                        max = d;
+               	  }
                }
 
                // add column panel
@@ -613,7 +616,7 @@ class ScalingTransformation implements Transformation {
 		   continue;
 
 		double[] data = new double[table.getNumRows()];
-
+		boolean[] missing = new boolean[table.getNumRows()];
 		double from_range = from_max[count] - from_min[count];
 		double to_range = to_max[count] - to_min[count];
 
@@ -625,38 +628,46 @@ class ScalingTransformation implements Transformation {
 
 		   if (d >= to_min[count] && d <= to_max[count]) {
 			  // data is in new range; leave it alone
-			  for (int j = 0; j < data.length; j++)
+			  for (int j = 0; j < data.length; j++) {
 				 data[j] = table.getDouble(j, index);
+				 missing[j] = table.isValueMissing(j, index);
+			  }
 		   }
 		   else {
 			  // data is out of new range; set to min
-			  for (int j = 0; j < data.length; j++)
-				 data[j] = to_min[count];
+			  for (int j = 0; j < data.length; j++) {
+			     missing[j] = table.isValueMissing(j, index);
+			     if (missing[j])
+			     	data[j] = table.getDouble(j, index);
+			     else
+				    data[j] = to_min[count];
+		      }
 		   }
-
 		}
 		else { // ordinary data; scale away!
 
 		   for (int j = 0; j < data.length; j++) {
-			  d = table.getDouble(j, index);
-			  data[j] = (d - from_min[count])*to_range/from_range
+		   	  if (table.isValueMissing(j, index)) {
+		   	   	 data[j] = table.getDouble(j, index);
+		   	     missing[j] = true;
+		   	  } else {
+			     d = table.getDouble(j, index);
+			     data[j] = (d - from_min[count])*to_range/from_range
 					  + to_min[count];
+				 missing[j] = false;
+		   	  }
 		   }
-
 		}
 
 		String columnLabel = table.getColumnLabel(index);
 		String columnComment = table.getColumnComment(index);
-
-		table.setColumn(new DoubleColumn(data), index);
-
+		DoubleColumn col = new DoubleColumn(data);
+		col.setMissingValues(missing);
+		table.setColumn(col, index);
 		table.setColumnLabel(columnLabel, index);
 		table.setColumnComment(columnComment, index);
-
 	 }
-
 	 return true;
-
   }
 }
 
@@ -673,4 +684,7 @@ class ScalingTransformation implements Transformation {
  *          should be preserved and left as they are, and not be considered when
  *          calculating upper and lower bounds for each column, and while
  *          scaling. [bug 147]
+ * 
+ * 11-25-03 Tom added missing value support (bug 147). Missing values are simply ignored. and
+ * 			preserved in the new column.
  */

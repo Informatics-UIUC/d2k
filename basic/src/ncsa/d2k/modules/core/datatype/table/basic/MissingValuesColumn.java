@@ -54,7 +54,7 @@ public abstract class MissingValuesColumn extends AbstractColumn {
 	 * Set missing values to the array passed in and update the count.
 	 * @param missing the missing value flags.
 	 */
-	final protected void setMissingValues(boolean[] miss) {
+	final public void setMissingValues(boolean[] miss) {
 		missing = miss;
 		this.numMissingValues = 0;
 		for (int i = 0 ; i < miss.length ; i++)

@@ -341,36 +341,45 @@ public class Normalize extends HeadlessUIModule {
          for (int count = 0; count < indices.length; count++) {
 
             double[] data = new double[table.getNumRows()];
-
+			boolean [] missing = new boolean[data.length];
+			
             int index = indices[count];
 
             // data first represents the data from the table:
-            for (int j = 0; j < data.length; j++)
+            for (int j = 0; j < data.length; j++) {
                data[j] = table.getDouble(j, index);
+               missing[j] = table.isValueMissing(j, index);
+            }
 
             // calculate mean
             double mean = 0;
+            int totalNotMissing = 0;
             for (int j = 0; j < data.length; j++)
-               mean += data[j];
+               if (!missing[j]) {
+                  totalNotMissing++;
+               	  mean += data[j];
+               }
 
-            mean /= data.length;
+            mean /= totalNotMissing;
 
             // data now represents differences from the mean:
             for (int j = 0; j < data.length; j++)
-               data[j] = data[j] - mean;
+               if (!missing[j])
+                  data[j] = data[j] - mean;
 
             // calculate sum of squares of differences
             double sq_diff_sum = 0;
             for (int j = 0; j < data.length; j++)
-               sq_diff_sum += (data[j] * data[j]);
+               if (!missing[j])
+                  sq_diff_sum += (data[j] * data[j]);
 
             // calculate sample variance
             double sample_variance = 0;
 
-            if (data.length == 1)
+            if (totalNotMissing == 1)
                sample_variance = sq_diff_sum;
             else
-               sample_variance = sq_diff_sum / (data.length - 1);
+               sample_variance = sq_diff_sum / (totalNotMissing - 1);
 
             // calculate sample standard deviation
             double sample_std_dev = Math.sqrt(sample_variance);
@@ -378,18 +387,20 @@ public class Normalize extends HeadlessUIModule {
             // divide to normalize data:
             if (sample_std_dev == 0.0) {
                for (int j = 0; j < data.length; j++)
-                  data[j] = 0;
+               	  if (!missing[j])
+                     data[j] = 0;
             }
             else {
                for (int j = 0; j < data.length; j++)
-                  data[j] = data[j] /= sample_std_dev;
+			      if (!missing[j])
+			   	     data[j] = data[j] / sample_std_dev;
             }
 
             String columnLabel = table.getColumnLabel(index);
             String columnComment = table.getColumnComment(index);
-
-            table.setColumn(new DoubleColumn(data), index);
-
+			DoubleColumn col = new DoubleColumn(data);
+            table.setColumn(col, index);
+			col.setMissingValues(missing);
             table.setColumnLabel(columnLabel, index);
             table.setColumnComment(columnComment, index);
 
