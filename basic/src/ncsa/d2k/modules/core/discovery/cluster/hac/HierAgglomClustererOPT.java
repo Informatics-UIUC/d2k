@@ -221,7 +221,7 @@ public class HierAgglomClustererOPT
 
     s += "<p>";
     s += "Two arrays of <i>Number of Examples</i> squared doubles ";
-    s += "are created. Sufficient heap space is required to accomodate these arrays. ";
+    s += "are created. Sufficient heap space is required to accommodate these arrays. ";
     s += "</p>";
     return s;
   }

@@ -147,7 +147,7 @@ public class HierAgglomClusterer
 				      AUTO_CLUSTER,
         "If this property is true, the <i>" +
         DISTANCE_THRESHOLD +
-        "</i> will be used to control when the cluster formation process halts indepenedent of the value set " +
+        "</i> will be used to control when the cluster formation process halts independent of the value set " +
         "for <i>" +
         NUM_CLUSTERS +
         "</i>");
