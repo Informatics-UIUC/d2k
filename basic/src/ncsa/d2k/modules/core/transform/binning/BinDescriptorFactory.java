@@ -107,12 +107,13 @@ public class BinDescriptorFactory {
 
 	  public static double round(double number, int decimalPositions) {
 
-	  	NumberFormat nf;
-	  	nf = NumberFormat.getInstance();
-	  	nf.setMaximumFractionDigits(decimalPositions);
-	  	
-	  	String rounded = nf.format(number).toString();
-	  	//System.out.println("rounded " + rounded); // 0.67
+	  	NumberFormat nf =  new DecimalFormat("0.##");
+	  	//ANCA the code below will print 1873.02 like 1,873.02
+	  	//nf = NumberFormat.getInstance();
+	  	//nf.setMaximumFractionDigits(decimalPositions);
+	  
+	  	//String rounded = nf.format(number).toString();
+	  	System.out.println("rounded " + rounded); // 0.67
 	  	
 	  	 return (new Double(rounded)).doubleValue();
 	  		
