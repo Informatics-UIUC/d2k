@@ -66,6 +66,7 @@ public class DefineExternalFitnessFunctions extends UIModule {
     JTextField execPath;
     JTextField inputFilePath;
     JTextField outputFilePath;
+    JComboBox min;
 
     EMOPopulationInfo popInfo;
 
@@ -200,6 +201,15 @@ public class DefineExternalFitnessFunctions extends UIModule {
                                GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
 
+      Constrain.setConstraints(mainPanel, new JLabel("Minimize/Maximize"), 0, 4, 1, 1,
+                               GridBagConstraints.NONE, GridBagConstraints.WEST,
+                               1, 1);
+      Object[] items = {"Minimize", "Maximize"};
+      min = new JComboBox(items);
+      Constrain.setConstraints(mainPanel, min, 1, 4, 1, 1,
+                               GridBagConstraints.NONE, GridBagConstraints.WEST,
+                               1, 1);
+
       JButton add = new JButton("Add Fitness Function");
       add.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
@@ -229,10 +239,11 @@ public class DefineExternalFitnessFunctions extends UIModule {
                                           "Error", JOptionPane.ERROR_MESSAGE);
             return;
           }
+          String minmax = (String)min.getSelectedItem();
 
           // if we get to here, everything checks out ok
           // add the function
-          FitnessFunction ff = new FitnessFunction(nme, exec, input, output);
+          FitnessFunction ff = new FitnessFunction(nme, exec, input, output, minmax);
           definedFunctionsModel.addElement(ff);
 
           functionName.setText("");
@@ -242,7 +253,7 @@ public class DefineExternalFitnessFunctions extends UIModule {
         }
       });
 
-      Constrain.setConstraints(mainPanel, add, 1, 4, 1, 1,
+      Constrain.setConstraints(mainPanel, add, 1, 5, 1, 1,
                                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                1, 1);
 
@@ -260,11 +271,13 @@ public class DefineExternalFitnessFunctions extends UIModule {
           tbl.addColumn(new String[numFunctions]);
           tbl.addColumn(new String[numFunctions]);
           tbl.addColumn(new String[numFunctions]);
+          tbl.addColumn(new String[numFunctions]);
 
           tbl.setColumnLabel("Function Name", 0);
           tbl.setColumnLabel("Executable", 1);
           tbl.setColumnLabel("Input File", 2);
           tbl.setColumnLabel("Output File", 3);
+          tbl.setColumnLabel("Min/Max", 4);
 
           for(int i = 0; i < functions.length; i++) {
             FitnessFunction f = (FitnessFunction)functions[i];
@@ -272,6 +285,7 @@ public class DefineExternalFitnessFunctions extends UIModule {
             tbl.setString(f.exec, i, 1);
             tbl.setString(f.input, i, 2);
             tbl.setString(f.output, i, 3);
+            tbl.setString(f.minmax, i, 4);
           }
 
           // push out the pop info
@@ -311,16 +325,18 @@ public class DefineExternalFitnessFunctions extends UIModule {
       String exec;
       String input;
       String output;
+      String minmax;
 
-      FitnessFunction(String n, String e, String i, String o) {
+      FitnessFunction(String n, String e, String i, String o, String m) {
         name = n;
         exec = e;
         input = i;
         output = o;
+        minmax = m;
       }
 
       public String toString() {
-        return name+" : "+exec+" "+input+" "+output;
+        return name+" : "+exec+" "+input+" "+output+" "+minmax;
       }
     }
   }

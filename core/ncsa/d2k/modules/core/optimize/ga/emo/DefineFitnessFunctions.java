@@ -557,6 +557,7 @@ public class DefineFitnessFunctions
 
         FitnessFunctionConstruction added = new FitnessFunctionConstruction(
             newNameField.getText(), gui.getTextArea().getText());
+System.out.println(added.label+" "+added.expression);
         added.setIsMinimizing(true);
         newColumnModel.addElement(added);
         newColumnList.setMinimumSize(new Dimension(200, 200));

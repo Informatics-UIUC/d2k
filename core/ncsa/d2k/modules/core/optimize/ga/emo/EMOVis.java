@@ -13,9 +13,8 @@ import javax.swing.table.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.userviews.swing.*;
-
 import ncsa.d2k.modules.core.optimize.util.*;
+import ncsa.d2k.userviews.swing.*;
 
 public class EMOVis
     extends UIModule {
@@ -33,15 +32,26 @@ public class EMOVis
   }
 
   public String getInputInfo(int i) {
-    return "";
+    return "The current NsgaPopulation";
   }
 
   public String getOutputInfo(int i) {
+    if (i == 0) {
+      return "The current NsgaPopulation.";
+    }
+    else if (i == 1) {
+      return "";
+    }
+    else if (i == 2) {
+      return "";
+    }
     return "";
   }
 
   public String getModuleInfo() {
-    return "";
+    return
+        "Displays the current population and the last 3 cumulative populations " +
+        "in a matrix of scatter plots.";
   }
 
   protected UserView createUserView() {
@@ -57,6 +67,11 @@ public class EMOVis
    */
   public PropertyDescription[] getPropertiesDescriptions() {
     return new PropertyDescription[0];
+  }
+
+  private boolean firstTime = true;
+  public void beginExecution() {
+    firstTime = true;
   }
 
   private int runNumber = 0;
@@ -122,6 +137,8 @@ public class EMOVis
       continueButton.setEnabled(false);
       continueButton.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
+          SwingUtilities.invokeLater(new Runner() {
+            public void run() {
               // reset the twoCumulativeAgo pop to be the lastCumulativePop
               twoCumulativeAgo = lastCumulativePop;
               // reset the lastCumulativePop to be the cumulativePop
@@ -143,37 +160,41 @@ public class EMOVis
               }
 
               if (twoCumulativeAgo != null) {
-                new Thread("twoCumulative") {
-                  public void run() {
+                //new Thread("twoCumulative") {
+                //  public void run() {
                 twoCumulativeAgoInfo.setPopulation(twoCumulativeAgo, null);
                 twoCumulativeAgoInfo.setRunNumber(runNumber - 2);
-                  }
-                }.start();
+                //  }
+                //}
+
+                //.start();
               }
               if (lastCumulativePop != null) {
-                new Thread("lastCumulative") {
-                  public void run() {
+                //new Thread("lastCumulative") {
+                //  public void run() {
                 lastCumulativePopInfo.setPopulation(lastCumulativePop, null);
                 lastCumulativePopInfo.setRunNumber(runNumber - 1);
-                  }
-                }.start();
+                //  }
+                //}.start();
               }
               if (cumulativePop != null) {
-                new Thread("cumulative") {
-                  public void run() {
+                //new Thread("cumulative") {
+                //  public void run() {
                 cumulativePopInfo.setPopulation(cumulativePop, null);
                 cumulativePopInfo.setRunNumber(runNumber);
-                  }
-                }.start();
+                //  }
+                //}.start();
               }
 
-              // send this to EMOGeneratePopulation to double the pop size
-              // for the next run
-              pushOutput(new EMOPopulationInfo(), 0);
-              pushOutput(currentPop, 1);
-              continueButton.setEnabled(false);
-              // the next input should be a new population
-              newPop = true;
+          // send this to EMOGeneratePopulation to double the pop size
+          // for the next run
+          pushOutput(new EMOPopulationInfo(), 0);
+          pushOutput(currentPop, 1);
+          continueButton.setEnabled(false);
+          // the next input should be a new population
+          newPop = true;
+            }
+          });
         }
       });
       stopButton = new JButton("Stop");
@@ -204,7 +225,7 @@ public class EMOVis
       pnl.add(twoCumulativeAgoInfo);
 
       JScrollPane jsp = new JScrollPane(pnl);
-      jsp.setPreferredSize(new Dimension(800, 400));
+      jsp.setPreferredSize(new Dimension(800, 375));
 
       add(jsp, BorderLayout.CENTER);
 
@@ -216,8 +237,6 @@ public class EMOVis
       firstPop = null;
     }
 
-    boolean firstTime = true;
-
     public void setInput(Object o, int z) {
       NsgaPopulation pop = (NsgaPopulation) o;
 
@@ -226,15 +245,31 @@ public class EMOVis
         ObjectiveConstraints[] con = (ObjectiveConstraints[]) pop.
             getObjectiveConstraints();
 
+        MutableTableImpl clean = new MutableTableImpl();
         String[] names = new String[con.length];
         for (int i = 0; i < names.length; i++) {
-          names[i] = con[i].getName();
-//System.out.println("name: "+names[i]);
+          clean.addColumn(new double[0]);
         }
+        for (int i = 0; i < names.length; i++) {
+          names[i] = con[i].getName();
+          clean.setColumnLabel(names[i], i);
+        }
+
+        cumulativePop = null;
+        currentPop = null;
+        lastCumulativePop = null;
+        twoCumulativeAgo = null;
+        newPop = true;
+        firstPop = null;
+
         currentPopInfo.scatterPlot.setObjectiveNames(names);
+        currentPopInfo.setPopulation(null, clean);
         cumulativePopInfo.scatterPlot.setObjectiveNames(names);
+        cumulativePopInfo.setPopulation(null, clean);
         lastCumulativePopInfo.scatterPlot.setObjectiveNames(names);
+        lastCumulativePopInfo.setPopulation(null, clean);
         twoCumulativeAgoInfo.scatterPlot.setObjectiveNames(names);
+        twoCumulativeAgoInfo.setPopulation(null, clean);
         firstTime = false;
       }
 
@@ -249,7 +284,6 @@ public class EMOVis
       }
 
       currentGen = currentPop.getCurrentGeneration();
-//System.out.println("currentGen: "+currentGen+" max: "+maxGen);
 
       // now copy the data from the currentPop into the currentPopTable
       // we need to make a copy because the current population will be
@@ -291,11 +325,11 @@ public class EMOVis
       }
 
       if (currentPop != null) {
-        new Thread("current") {
-          public void run() {
+        //new Thread("current") {
+        //  public void run() {
             currentPopInfo.setPopulation(currentPop, currentPopTable);
-          }
-        } .start();
+        //  }
+        //}.start();
       }
 
       // if we are at max gens, enable the continue button
@@ -352,16 +386,16 @@ public class EMOVis
       }
 
       void setRunNumber(int r) {
-        runNumber.setText(CUMUL+RUN + r);
+        runNumber.setText(CUMUL + RUN + r);
       }
 
       void setPopulation(NsgaPopulation p, MutableTable table) {
         if (!isCumulative) {
           runNumber.setText(RUN + run);
         }
-        popSize.setText(POP_SIZE + p.getMembers().length);
-
         if (p != null) {
+          popSize.setText(POP_SIZE + p.getMembers().length);
+
           NsgaSolution[] nis = (NsgaSolution[]) p.getMembers();
           int numRankZero = 0;
           for (int i = 0; i < nis.length; i++) {
@@ -371,11 +405,15 @@ public class EMOVis
           }
           numSolutions.setText(NUM_SOL + numRankZero);
         }
+        else {
+          popSize.setText(POP_SIZE);
+          numSolutions.setText(NUM_SOL);
+        }
 
         if (table != null) {
           tableModel.setPopulationTable(table);
         }
-        else {
+        else if(p != null){
           tableModel.setPopulation(p);
         }
       }
@@ -408,23 +446,28 @@ public class EMOVis
         if (!isCumulative) {
           runNumber.setText(RUN + EMOVis.this.runNumber);
         }
-        popSize.setText(POP_SIZE + p.getMembers().length);
 
         if (p != null) {
-          NsgaSolution[] nis = (NsgaSolution[]) p.getMembers();
-          int numRankZero = 0;
-          for (int i = 0; i < nis.length; i++) {
-            if (nis[i].getRank() == 0) {
-              numRankZero++;
+          popSize.setText(POP_SIZE + p.getMembers().length);
+
+            NsgaSolution[] nis = (NsgaSolution[]) p.getMembers();
+            int numRankZero = 0;
+            for (int i = 0; i < nis.length; i++) {
+              if (nis[i].getRank() == 0) {
+                numRankZero++;
+              }
             }
-          }
-          numSolutions.setText(NUM_SOL + numRankZero);
+            numSolutions.setText(NUM_SOL + numRankZero);
+        }
+        else {
+          popSize.setText(POP_SIZE);
+          numSolutions.setText(NUM_SOL);
         }
 
         if (table != null) {
           tableModel.setPopulationTable(table);
         }
-        else {
+        else if(p != null){
           tableModel.setPopulation(p);
         }
       }

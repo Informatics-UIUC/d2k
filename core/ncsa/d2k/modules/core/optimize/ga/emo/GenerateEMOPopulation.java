@@ -244,7 +244,7 @@ public class GenerateEMOPopulation
 
       for(int i = 0; i < numFunctions; i++) {
         String name = functionTable.getString(i, 0);
-          if(true) {
+          if(functionTable.getString(i, 4).equals("Minimize")) {
             oc[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
                 name, 0.0, 100.0);
           }
