@@ -179,6 +179,10 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
       columnlabels[0] = NONE;
       for(int index=0; index < columns; index++) {
         String columnlabel = table.getColumnLabel(index);
+
+        if (columnlabel == null || columnlabel.length() == 0)
+           columnlabel = "column " + index;
+
         columnlabels[index+1] = columnlabel;
       }
 

@@ -56,7 +56,9 @@ public class ColumnConstruction extends UIModule {
       sb.append("numeric and boolean columns of a table. Other columns will ");
       sb.append("be ignored, but they will not be modified.");
       sb.append("</p><p>Data Handling: ");
-      sb.append("This module does not immediately modify its input data. ");
+      sb.append("This module <i>might</i> immediately modify the table: ");
+      sb.append("columns with blank labels will be assigned default ones. ");
+      sb.append("Other than that, this module does not modify its input data. ");
       sb.append("Rather, its output is a <i>Transformation</i> that can then ");
       sb.append("be used to modify the table.");
       sb.append("</p>");
@@ -154,9 +156,18 @@ public class ColumnConstruction extends UIModule {
          mod = m;
       }
 
-      public void setInput(Object o, int i) {
-         if (i != 0) return;
-         table = (MutableTable)o;
+      public void setInput(Object obj, int ind) {
+         if (ind != 0)
+            return;
+
+         table = (MutableTable)obj;
+
+         for (int i = 0; i < table.getNumColumns(); i++) {
+            String label = table.getColumnLabel(i);
+            if (label == null || label.length() == 0)
+               table.setColumnLabel("column_" + i, i);
+         }
+
          initialize();
       }
 
@@ -708,8 +719,3 @@ public class ColumnConstruction extends UIModule {
    }
 
 }
-/**
- * QA comments:
- * 3-4-03 vered started qa:
- * 3-6-03 sent back to greg to support default labels.
- */

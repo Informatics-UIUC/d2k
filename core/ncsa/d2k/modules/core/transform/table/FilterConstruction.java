@@ -50,7 +50,10 @@ public class FilterConstruction extends UIModule {
          " (sepal_length &gt;= 6.0) &amp;&amp;       (sepal_length &lt;= 7.0) will result in the removal"+
          " of all rows where the       sepal_length is not in the range from 6.0 to 7.0, inclusive.  "+
          "  </p>    <p>      Data Type Restrictions: Filter operations are supported for numeric data"+
-         "       only at this point.    </p>";
+         "       only at this point.    </p>" +
+         "<p>Data Handling: This module <i>may</i> modify its input data: columns with blank labels " +
+         "will be assigned default ones. Other than that, this module does not modify its input. " +
+         "Rather, its output is a <i>Transformation</i> that can later be applied to filter the table.</p>";
    }
 
    public String[] getInputTypes() {
@@ -135,9 +138,18 @@ public class FilterConstruction extends UIModule {
         mod = m;
      }
 
-     public void setInput(Object o, int i) {
-        if (i != 0) return;
-        table = (MutableTable)o;
+     public void setInput(Object obj, int ind) {
+        if (ind != 0)
+           return;
+
+        table = (MutableTable)obj;
+
+        for (int i = 0; i < table.getNumColumns(); i++) {
+           String label = table.getColumnLabel(i);
+           if (label == null || label.length() == 0)
+              table.setColumnLabel("column_" + i, i);
+        }
+
         initialize();
      }
 
@@ -531,9 +543,3 @@ public class FilterConstruction extends UIModule {
       }
    }
 }
-
-/**
- * QA comments:
- * 3-4-03 vered started qa:
- * 3-6-03 sent back to greg to support default labels.
- */
