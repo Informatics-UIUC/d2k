@@ -114,7 +114,10 @@ public class ConfusionMatrix extends JScrollPane {
 
 			//d[predicted][actual]++;
 			if(actual < outs.length && predicted < outs.length)
-				d[predicted][actual]++;
+				//d[predicted][actual]++;
+                                d[actual][predicted]++;
+                        //if(actual != predicted)
+                        //  System.out.println("INCOR: "+row);
 		}
 
 		correct = 0;
