@@ -1507,10 +1507,7 @@ public class BinAttributes extends HeadlessUIModule {
 		  // add the value at this index to the list
 		  Double dbl = new Double(data[curIdx]);
 
-                  //vered - debug
-                 System.out.println("adding bin when - curIdx = " + curIdx + " and points to element " +
-                                    data[curIdx]);
-                 //end debug
+
 
 
 		  list.add(dbl);
