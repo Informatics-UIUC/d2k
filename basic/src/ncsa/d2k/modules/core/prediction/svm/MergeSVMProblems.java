@@ -89,13 +89,13 @@ private boolean first = true;
       merged.y[i] = newData.y[i];
     }
 
-//getting the labels for the vectors.
-    int[] labels = new int[sv.length];
-    svm.svm_get_labels(oldModel, labels);
+
+//    int[] labels = new int[sv.length];
+//    svm.svm_get_labels(oldModel, labels);
     //copy nodes from oldModel's vectors and its labels
     for (int j=0, i=newData.l; i<merged.l && j < sv.length; i++, j++){
       merged.x[i] = sv[j];
-      merged.y[i] =  labels[j];
+      merged.y[i] =  svm.svm_predict(oldModel, sv[j]);
     }
     return merged;
 
