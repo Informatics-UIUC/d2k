@@ -69,16 +69,16 @@ public final class NaiveBayesModel
   private int[] inputFeatures;
   private int[] outputFeatures;
 
-  private boolean isReadyForVisualization;  
-  
+  private boolean isReadyForVisualization;
+
     boolean isReadyForVisualization () {
 	return isReadyForVisualization;
     }
-    
+
     void setIsReadyForVisualization ( boolean val ) {
 	isReadyForVisualization = val;
     }
- 
+
 
 /*  private int trainingSetSize;
 
@@ -103,7 +103,7 @@ public final class NaiveBayesModel
 
     inputFeatures = table.getInputFeatures();
     outputFeatures = table.getOutputFeatures();
-    
+
     isReadyForVisualization = false;
 
 /*    trainingSetSize = table.getNumRows();
@@ -175,7 +175,7 @@ public final class NaiveBayesModel
         // get the tallies for each class name
         for (int q = 0; q < tallies.length; q++) {
           tallies[q] = binTree.getTally(cn[q], an[i], bn[j]);
-	
+
         }
         cd[j] = new NaiveBayesPieChartData(an[i],
                                            bn[j], cn, tallies);
@@ -287,7 +287,7 @@ public final class NaiveBayesModel
                     table.getDouble(row, ins[col]));
               }
               else {
-		  
+
 		  //  System.out.println("BNFV: "+actualClass+" "+table.getColumnLabel(ins[col])+" "+  table.getString(row, ins[col]));
 
 
@@ -547,7 +547,7 @@ public final class NaiveBayesModel
   public String[] getOutputTypes() {
     String[] out = {
         "ncsa.d2k.modules.core.datatype.table.PredictionTable",
-        "ncsa.d2k.modules.compute.learning.modelgen.naivebayes.NaiveBayesModel"};
+        "ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
     return out;
   }
 
