@@ -17,7 +17,7 @@ import ncsa.d2k.userviews.swing.*;
 
 import ncsa.d2k.modules.core.optimize.util.*;
 
-public class EMO2
+public class EMOVis
     extends UIModule {
 
   public String[] getInputTypes() {
@@ -239,32 +239,33 @@ public class EMO2
       int numSolutions = nis.length;
 
       // we only copy the rank zero members
-      int numRankZero = 0;
-      for(int i = 0; i < nis.length; i++) {
-        if(nis[i].getRank() == 0)
-          numRankZero++;
-      }
+      //int numRankZero = 0;
+      //for(int i = 0; i < nis.length; i++) {
+      //  if(nis[i].getRank() == 0)
+      //    numRankZero++;
+      //}
 
       // create the table
       MutableTable currentPopTable = (MutableTable) DefaultTableFactory.getInstance().createTable();
       for (int i = 0; i < numObjs; i++) {
-        currentPopTable.addColumn(new float[numRankZero]);
+        //currentPopTable.addColumn(new float[numRankZero]);
+        currentPopTable.addColumn(new float[numSolutions]);
         currentPopTable.setColumnLabel(currentPop.getObjectiveConstraints()[
                                        i].getName(),
                                        currentPopTable.getNumColumns() - 1);
       }
       // fill the table
-      int curRow = 0;
+//      int curRow = 0;
 
       // for each solution
       for (int i = 0; i < numSolutions; i++) {
         // if it is rank 0
-        if(nis[i].getRank() == 0) {
+//        if(nis[i].getRank() == 0) {
           // copy each objective into the table
           for (int j = 0; j < numObjs; j++)
-            currentPopTable.setFloat((float)nis[i].getObjective(j), curRow, j);
-          curRow++;
-        }
+            currentPopTable.setFloat((float)nis[i].getObjective(j), i, j);
+//          curRow++;
+//        }
       }
 
       if (currentPop != null)
@@ -938,7 +939,7 @@ public class EMO2
         for(int i = 0; i < 2; i++) {
           plots[index][i].setObjectives(val, columnSelections[i]);
         }
-        this.fireTableDataChanged();
+        fireTableDataChanged();
       }
 
       void setColumnSelection(int index, String value) {
@@ -955,7 +956,7 @@ public class EMO2
         for(int i = 0; i < 2; i++) {
           plots[i][index].setObjectives(rowSelections[i], val);
         }
-        this.fireTableDataChanged();
+        fireTableDataChanged();
       }
 
       void setObjectiveNames(String[] names) {
@@ -975,7 +976,7 @@ public class EMO2
             ((ObjectiveScatterPlot)plots[i][j]).setObjectives(rowSelections[i],
                 columnSelections[j]);
         }
-        this.fireTableDataChanged();
+        fireTableDataChanged();
       }
 
       void setPopulation(NsgaPopulation p) {
@@ -985,7 +986,8 @@ public class EMO2
             ((ObjectiveScatterPlot)plots[i][j]).setObjectives(rowSelections[i],
                 columnSelections[j]);
         }
-        this.fireTableDataChanged();
+        //this.fireTableDataChanged();
+        fireTableDataChanged();
       }
 
       /**

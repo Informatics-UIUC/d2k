@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo;
 
 import java.io.*;
+import java.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -174,6 +175,7 @@ public class DefineVariables
       // number of variables as many times as he wants
       // and this will update the number of rows in the table.
       JButton updateBt = new JButton("Update");
+      JButton readFromFileBt = new JButton("Read File");
 
       /**
        The Color object, buttonColor, creates a yellowish
@@ -233,6 +235,12 @@ public class DefineVariables
         }
       });
 
+      readFromFileBt.addActionListener(new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          readFromFile();
+        }
+      });
+
       // this button is pressed after the user has entered
       // the ranges for all the variables and also the
       // precision values for all the variables. When this button
@@ -250,7 +258,6 @@ public class DefineVariables
               flag = true;
               break;
             }
-
             if ( ( (String) model.getValueAt(i, 3)).trim().length() == 0) {
               flag = true;
               break;
@@ -260,13 +267,11 @@ public class DefineVariables
               break;
             }
           }
-
           if (flag) {
             JOptionPane.showMessageDialog(null,
                                           "Please enter all information",
                                           "alert", JOptionPane.ERROR_MESSAGE);
           }
-
           //this is the total length of the binary
           //string that will be used to encode the
           //individuals in the GA population.
@@ -274,7 +279,6 @@ public class DefineVariables
             int totalLength = 0;
             for (int i = 0; i < model.getRowCount(); i++) {
               float numU, numL, numP, temp;
-
               int sLength;
               numU = Float.parseFloat( (String) model.getValueAt(i, 3));
               numL = Float.parseFloat( (String) model.getValueAt(i, 2));
@@ -303,7 +307,7 @@ public class DefineVariables
                                         totalLength + " ");
           }
         }
-      });*/
+             });*/
 
       /**
        * 4 panels created, 2 of JPanel type, and 2 of Box type
@@ -330,6 +334,7 @@ public class DefineVariables
       bottom_left_panel.add(Box.createHorizontalStrut(100));
       bottom_left_panel.add(updateBt);
       bottom_left_panel2.add(Box.createHorizontalStrut(55));
+      bottom_left_panel2.add(readFromFileBt);
       //bottom_left_panel2.add(calStrLenBt);
 
       /**
@@ -375,7 +380,7 @@ public class DefineVariables
 
         /*public Class getColumnClass(int c) {
           return getValueAt(0, c).getClass();
-        }*/
+                 }*/
 
         public boolean isCellEditable(int row, int col) {
           return (col != 5 && col != 0);
@@ -384,19 +389,21 @@ public class DefineVariables
         public void setValueAt(Object value, int row, int col) {
           super.setValueAt(value, row, col);
           if (col == 4) {
-            String val = (String)value;
+            String val = (String) value;
 
             try {
 //              double d = Double.parseDouble(val);
 //System.out.println("hello: "+d);
               boolean flag = false;
               for (int i = 0; i < model.getRowCount(); i++) {
-                if ( model.getValueAt(i, 2) != null && ((String) model.getValueAt(i, 2)).trim().length() == 0) {
+                if (model.getValueAt(i, 2) != null &&
+                    ( (String) model.getValueAt(i, 2)).trim().length() == 0) {
                   flag = true;
                   break;
                 }
 
-                if ( model.getValueAt(i, 3) != null &&  ((String) model.getValueAt(i, 3)).trim().length() == 0) {
+                if (model.getValueAt(i, 3) != null &&
+                    ( (String) model.getValueAt(i, 3)).trim().length() == 0) {
                   flag = true;
                   break;
                 }
@@ -409,45 +416,45 @@ public class DefineVariables
               /*if (flag) {
                 JOptionPane.showMessageDialog(null,
                                               "Please enter all information",
-                                              "alert", JOptionPane.ERROR_MESSAGE);
-              }*/
+                   "alert", JOptionPane.ERROR_MESSAGE);
+                             }*/
 
               //this is the total length of the binary
               //string that will be used to encode the
               //individuals in the GA population.
               //else {
-                int totalLength = 0;
-                for (int i = 0; i < model.getRowCount(); i++) {
-                  float numU, numL, numP, temp;
+              int totalLength = 0;
+              for (int i = 0; i < model.getRowCount(); i++) {
+                float numU, numL, numP, temp;
 
-                  int sLength;
-                  numU = Float.parseFloat( (String) model.getValueAt(i, 3));
-                  numL = Float.parseFloat( (String) model.getValueAt(i, 2));
-                  numP = Float.parseFloat( (String) model.getValueAt(i, 4));
-                  if (numU < numL) {
-                    JOptionPane.showMessageDialog(null,
-                        "Upper Value is less than lower value at row" + (i + 1) +
-                        " ", "alert",
-                        JOptionPane.ERROR_MESSAGE);
-                    break;
-                  }
-                  temp = (numU - numL) / numP;
-                  temp = temp + 1;
-                  temp = (float) Math.log( (double) temp);
-                  double temp1 = 2.0;
-                  temp = (float) (temp / Math.log(temp1));
-                  sLength = (int) temp;
-                  if ( (temp - sLength) > 0.00001) {
-                    sLength = sLength + 1;
-                  }
-                  totalLength += sLength;
-                  model.setValueAt(new Integer(sLength), i, 5);
+                int sLength;
+                numU = Float.parseFloat( (String) model.getValueAt(i, 3));
+                numL = Float.parseFloat( (String) model.getValueAt(i, 2));
+                numP = Float.parseFloat( (String) model.getValueAt(i, 4));
+                if (numU < numL) {
+                  JOptionPane.showMessageDialog(null,
+                      "Upper Value is less than lower value at row" + (i + 1) +
+                      " ", "alert",
+                      JOptionPane.ERROR_MESSAGE);
+                  break;
                 }
-                // display the total length of the string
-                total_string_length.setText(" Total String Length : " +
-                                            totalLength + " ");
+                temp = (numU - numL) / numP;
+                temp = temp + 1;
+                temp = (float) Math.log( (double) temp);
+                double temp1 = 2.0;
+                temp = (float) (temp / Math.log(temp1));
+                sLength = (int) temp;
+                if ( (temp - sLength) > 0.00001) {
+                  sLength = sLength + 1;
+                }
+                totalLength += sLength;
+                model.setValueAt(new Integer(sLength), i, 5);
+              }
+              // display the total length of the string
+              total_string_length.setText(" Total String Length : " +
+                                          totalLength + " ");
             }
-            catch(Exception e) {
+            catch (Exception e) {
               return;
             }
           }
@@ -455,10 +462,10 @@ public class DefineVariables
       };
 
       CachedRowValue[] cvr = getSavedRows();
-      if(cvr != null) {
+      if (cvr != null) {
         model.setRowCount(cvr.length);
         numVarTf.setText(Integer.toString(cvr.length));
-        for(int i = 0; i < cvr.length; i++) {
+        for (int i = 0; i < cvr.length; i++) {
           model.setValueAt(cvr[i].xNum, i, 0);
           model.setValueAt(cvr[i].varName, i, 1);
           model.setValueAt(cvr[i].lower, i, 2);
@@ -618,9 +625,9 @@ public class DefineVariables
      * displayed table is also passed.
      */
     private void passOutput() {
-      table1 = new MutableTableImpl(Integer.parseInt(numVarTf.getText()));
+      table1 = new MutableTableImpl(model.getRowCount());
       float[] tempdata = new float[0];
-      for (int i = 0; i < (Integer.parseInt(numVarTf.getText())); i++) {
+      for (int i = 0; i < model.getRowCount(); i++) {
         table1.setColumn(tempdata, i);
         table1.setColumnLabel( (String) (model.getValueAt(i, 1)), i);
       }
@@ -640,21 +647,72 @@ public class DefineVariables
         cols[1].setString(min, i);
         String max = (String) model.getValueAt(i, 3);
         cols[2].setString(max, i);
-        String pred = (String)model.getValueAt(i, 4);
+        String pred = (String) model.getValueAt(i, 4);
         cols[3].setString(pred, i);
         Object len = model.getValueAt(i, 5);
         cols[4].setObject(len, i);
       }
-      Table varTable = new MutableTableImpl(cols);
+      MutableTableImpl varTable = new MutableTableImpl(cols);
 
       EMOPopulationInfo data = new EMOPopulationInfo();
       data.boundsAndPrecision = varTable;
       data.varNames = table1;
 
       pushOutput(data, 0);
+    }
 
-      //pushOutput(table1, 0);
-      //pushOutput(varTable, 1);
+    private void readFromFile() {
+      JFileChooser jfc = new JFileChooser();
+      int retVal = jfc.showOpenDialog(null);
+
+      if (retVal == jfc.APPROVE_OPTION) {
+        String file = jfc.getSelectedFile().getAbsolutePath();
+
+        try {
+          BufferedReader br = new BufferedReader(new FileReader(file));
+          String line = null;
+
+          int numLines = 0;
+          while( (line = br.readLine()) != null)
+            numLines++;
+
+          numVarTf.setText(Integer.toString(numLines));
+          // now set the model to have this number of lines
+          model.setNumRows(numLines);
+          for(int i = 0; i < numLines; i++)
+            model.setValueAt("x"+i, i, 0);
+
+          br = new BufferedReader(new FileReader(file));
+
+          int lineNum = 0;
+          while ( (line = br.readLine()) != null) {
+            StringTokenizer st = new StringTokenizer(line);
+            if(st.countTokens() != 4)
+              throw new Exception("File format is incorrect.  File should have exactly four columns.");
+            int colNum = 0;
+            while(st.hasMoreTokens()) {
+              String s = st.nextToken();
+
+              model.setValueAt(s, lineNum, colNum+1);
+              colNum++;
+            }
+
+            lineNum++;
+          }
+        }
+        catch (FileNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "The file was not found.",
+                                        "File not found",
+                                        JOptionPane.ERROR_MESSAGE);
+        }
+        catch (IOException e) {
+        }
+        catch(Exception e) {
+          JOptionPane.showMessageDialog(null, e.getMessage(),
+                                        "Error",
+                                        JOptionPane.ERROR_MESSAGE);
+        }
+      }
     }
   }
 

@@ -209,6 +209,14 @@ public class EMOGeneratePopulation
     this.populationSize = 2*10;
   }
 
+  private boolean createBinaryIndividuals = true;
+  public void setCreateBinaryIndividuals(boolean b) {
+    createBinaryIndividuals = b;
+  }
+  public boolean getCreateBinaryIndividuals() {
+    return createBinaryIndividuals;
+  }
+
   private EMOPopulationInfo popInfo;
   private MutableTable variableNames;
 
@@ -249,14 +257,16 @@ public class EMOGeneratePopulation
     //use the first input, the default table model, to get the
     //information about decision variables of the problem
     Range[] xyz;
-    if(popInfo.getType() == EMOPopulationInfo.DOUBLE_TYPE) {
+    //if(popInfo.getType() == EMOPopulationInfo.DOUBLE_TYPE) {
+    if(!createBinaryIndividuals) {
       xyz = new DoubleRange[numOfvar];
       for (int i = 0; i < numOfvar; i++) {
         xyz[i] = new DoubleRange(bounds.getString(i, 0), bounds.getFloat(i, 2),
                                  bounds.getFloat(i, 1));
       }
     }
-    else if(popInfo.getType() == EMOPopulationInfo.BINARY_TYPE) {
+    //else if(popInfo.getType() == EMOPopulationInfo.BINARY_TYPE) {
+    else if(createBinaryIndividuals) {
       xyz = new BinaryRange[numOfvar];
       for(int i = 0; i < numOfvar; i++) {
         xyz[i] = new BinaryRange("x", bounds.getInt(i, 4));
@@ -265,68 +275,97 @@ public class EMOGeneratePopulation
     else
       throw new Exception("Could not determine population type.");
 
-    // fitness variables of the problem
-    EMOConstruction[] fitvarConstructions = popInfo.fitnessVariableConstructions;
-    // fitness functions of the problem
-    EMOConstruction[] fitnessFunctionConstructions = popInfo.fitnessFunctionConstructions;
+    NsgaPopulation pop = null;
 
-    //number of objective functions
-    int numOfFunc = fitnessFunctionConstructions.length;
+    // if we are using an external fitness eval..
+    if(popInfo.getUseExternalFitnessEvaluation()) {
+      Table functionTable = popInfo.externalFitnessInfo;
+      int numFunctions = functionTable.getNumRows();
+      ObjectiveConstraints[] oc = new ObjectiveConstraints[numFunctions];
 
-    // set up the fitness function
-    ObjectiveConstraints oc[] = new ObjectiveConstraints[numOfFunc];
-    // if getmyflag() returns 0, the corresponding objective
-    //function needs to be minimized
-    // if getmyflag() returns 1, the corresponding objective
-    //function needs to be maximized
-    for (int i = 0; i < numOfFunc; i++) {
-      if (fitnessFunctionConstructions[i].getmyflag() == 0) {
-        oc[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
-            fitnessFunctionConstructions[i].getLabel(), 0.0, 100.0);
+      for(int i = 0; i < numFunctions; i++) {
+        String name = functionTable.getString(i, 0);
+          if(true) {
+            oc[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
+                name, 0.0, 100.0);
+          }
+          else {
+            oc[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
+                name, 100.0, 0.0);
+          }
       }
-      else {
-        oc[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
-            fitnessFunctionConstructions[i].getLabel(), 100.0, 0.0);
-      }
+      pop = new ConstrainedNsgaPopulation(xyz, oc,
+           this.populationSize, this.getTargetFitness());
+      pop.setPopulationInfo(popInfo);
     }
+    else {
+      // fitness variables of the problem
+      EMOConstruction[] fitvarConstructions = popInfo.
+          fitnessVariableConstructions;
+      // fitness functions of the problem
+      EMOConstruction[] fitnessFunctionConstructions = popInfo.
+          fitnessFunctionConstructions;
 
-    //after getting information regarding the decision variables
-    //and fitness function, generate the NSGA population.
-    NsgaPopulation pop = new ConstrainedNsgaPopulation(xyz, oc,
-        this.populationSize, this.getTargetFitness());
-    pop.setPopulationInfo(popInfo);
-    //pop.setFitnessVariables(fitvarConstructions);
-    pop.getPopulationInfo().fitnessVariableConstructions = fitvarConstructions;
-    //pop.setFitnessFunctions(fitConstructions);
-    pop.getPopulationInfo().fitnessFunctionConstructions = fitnessFunctionConstructions;
-    //pop.setConstraintVariables(popInfo.constraintVariableConstructions);
-    pop.getPopulationInfo().constraintVariableConstructions = popInfo.constraintVariableConstructions;
-    //pop.setConstraintFunctions(popInfo.constraintFunctionConstructions);
-    pop.getPopulationInfo().constraintFunctionConstructions = popInfo.constraintFunctionConstructions;
-    //pop.setAllVarNames(populationTbl);
-    pop.getPopulationInfo().varNames = variableNames;
-    //set the maximum number of generation
-    pop.setMaxGenerations(this.maxGenerations);
+      //number of objective functions
+      int numFunctions = fitnessFunctionConstructions.length;
 
-    // remove all columns that are created by EMOConstructions
-    if(fitvarConstructions != null) {
-      for(int i = 0; i < fitvarConstructions.length; i++) {
-        removeColumn(variableNames, fitvarConstructions[i].getLabel());
+      // set up the fitness function
+      ObjectiveConstraints[] oc = new ObjectiveConstraints[numFunctions];
+      // if getmyflag() returns 0, the corresponding objective
+      //function needs to be minimized
+      // if getmyflag() returns 1, the corresponding objective
+      //function needs to be maximized
+      for (int i = 0; i < numFunctions; i++) {
+        if (fitnessFunctionConstructions[i].getmyflag() == 0) {
+          oc[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
+              fitnessFunctionConstructions[i].getLabel(), 0.0, 100.0);
+        }
+        else {
+          oc[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
+              fitnessFunctionConstructions[i].getLabel(), 100.0, 0.0);
+        }
       }
-    }
-    if(fitnessFunctionConstructions != null) {
-      for(int i = 0; i < fitnessFunctionConstructions.length; i++) {
-        removeColumn(variableNames, fitnessFunctionConstructions[i].getLabel());
+
+      //after getting information regarding the decision variables
+      //and fitness function, generate the NSGA population.
+      pop = new ConstrainedNsgaPopulation(xyz, oc,
+          this.populationSize, this.getTargetFitness());
+      pop.setPopulationInfo(popInfo);
+      //pop.setFitnessVariables(fitvarConstructions);
+//    pop.getPopulationInfo().fitnessVariableConstructions = fitvarConstructions;
+      //pop.setFitnessFunctions(fitConstructions);
+//    pop.getPopulationInfo().fitnessFunctionConstructions = fitnessFunctionConstructions;
+      //pop.setConstraintVariables(popInfo.constraintVariableConstructions);
+//    pop.getPopulationInfo().constraintVariableConstructions = popInfo.constraintVariableConstructions;
+      //pop.setConstraintFunctions(popInfo.constraintFunctionConstructions);
+//    pop.getPopulationInfo().constraintFunctionConstructions = popInfo.constraintFunctionConstructions;
+      //pop.setAllVarNames(populationTbl);
+//    pop.getPopulationInfo().varNames = variableNames;
+      //set the maximum number of generation
+      pop.setMaxGenerations(this.maxGenerations);
+
+      // remove all columns that are created by EMOConstructions
+      if (fitvarConstructions != null) {
+        for (int i = 0; i < fitvarConstructions.length; i++) {
+          removeColumn(variableNames, fitvarConstructions[i].getLabel());
+        }
       }
-    }
-    if(popInfo.constraintVariableConstructions != null) {
-      for(int i = 0; i < popInfo.constraintVariableConstructions.length; i++) {
-        removeColumn(variableNames, popInfo.constraintVariableConstructions[i].getLabel());
+      if (fitnessFunctionConstructions != null) {
+        for (int i = 0; i < fitnessFunctionConstructions.length; i++) {
+          removeColumn(variableNames, fitnessFunctionConstructions[i].getLabel());
+        }
       }
-    }
-    if(popInfo.constraintFunctionConstructions != null) {
-      for(int i = 0; i < popInfo.constraintFunctionConstructions.length; i++) {
-        removeColumn(variableNames, popInfo.constraintFunctionConstructions[i].getLabel());
+      if (popInfo.constraintVariableConstructions != null) {
+        for (int i = 0; i < popInfo.constraintVariableConstructions.length; i++) {
+          removeColumn(variableNames,
+                       popInfo.constraintVariableConstructions[i].getLabel());
+        }
+      }
+      if (popInfo.constraintFunctionConstructions != null) {
+        for (int i = 0; i < popInfo.constraintFunctionConstructions.length; i++) {
+          removeColumn(variableNames,
+                       popInfo.constraintFunctionConstructions[i].getLabel());
+        }
       }
     }
 

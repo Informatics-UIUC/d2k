@@ -38,6 +38,8 @@ public class ObjectiveScatterPlot extends JPanel implements MouseListener, Mouse
 
   protected NsgaPopulation population;
 
+  private PaintThread paintThread;
+
   public ObjectiveScatterPlot() {
     //population = null;
     setDoubleBuffered(false);
@@ -48,6 +50,7 @@ public class ObjectiveScatterPlot extends JPanel implements MouseListener, Mouse
     addMouseListener(this);
     addMouseMotionListener(this);
     startx = starty = endx = endy = -1;
+    paintThread = new PaintThread();
   }
 
   public void setBounds(int x, int y, int w, int h) {
@@ -247,7 +250,12 @@ public class ObjectiveScatterPlot extends JPanel implements MouseListener, Mouse
       }
     }
     changed = true;
-    repaint();
+  }
+
+  private class PaintThread extends Thread {
+    public void run() {
+      repaint();
+    }
   }
 
   public String getToolTipText(MouseEvent e) {
@@ -303,66 +311,70 @@ public class ObjectiveScatterPlot extends JPanel implements MouseListener, Mouse
 
       // draw population
       if(table != null) {
-        imgG2.setColor(Color.red);
-        int numMembers = table.getNumRows();
-        for (int index = 0; index < numMembers; index++) {
-          float xvalue = table.getFloat(index, xObjective);
-          float yvalue = table.getFloat(index, yObjective);
-
-          float x = (xvalue - xMin) / xscale + left;
-          float y = graphheight - bottom - (yvalue - yMin) / yscale;
-
-          imgG2.fill(new Rectangle2D.Float(x, y, 2, 2));
-        }
-
-        if (selected != null) {
-          imgG2.setColor(Color.blue);
+        synchronized(table) {
+          imgG2.setColor(Color.red);
+          int numMembers = table.getNumRows();
           for (int index = 0; index < numMembers; index++) {
-            if (selected[index]) {
+            float xvalue = table.getFloat(index, xObjective);
+            float yvalue = table.getFloat(index, yObjective);
 
-              float xvalue = table.getFloat(index, xObjective);
-              float yvalue = table.getFloat(index, yObjective);
-
-              float x = (xvalue - xMin) / xscale + left;
-              float y = graphheight - bottom - (yvalue - yMin) / yscale;
-
-              imgG2.fill(new Rectangle2D.Float(x, y, 2, 2));
-            }
-          }
-        }
-        changed = false;
-      }
-      else if(population != null) {
-        imgG2.setColor(Color.red);
-        NsgaSolution[] members = (NsgaSolution[])population.getMembers();
-        int numMembers = members.length;
-        for(int i = 0; i < numMembers; i++) {
-          if(members[i].getRank() == 0)  {
-            float xvalue = (float)members[i].getObjective(xObjective);
-            float yvalue = (float)members[i].getObjective(yObjective);
             float x = (xvalue - xMin) / xscale + left;
             float y = graphheight - bottom - (yvalue - yMin) / yscale;
 
             imgG2.fill(new Rectangle2D.Float(x, y, 2, 2));
           }
-        }
-        if(selected != null) {
-          imgG2.setColor(Color.blue);
-          for(int i = 0; i < numMembers; i++) {
-            if(members[i].getRank() == 0 && selected[i]) {
-              float xvalue = table.getFloat(i, xObjective);
-              float yvalue = table.getFloat(i, yObjective);
 
+          if (selected != null) {
+            imgG2.setColor(Color.blue);
+            for (int index = 0; index < numMembers; index++) {
+              if (selected[index]) {
+
+                float xvalue = table.getFloat(index, xObjective);
+                float yvalue = table.getFloat(index, yObjective);
+
+                float x = (xvalue - xMin) / xscale + left;
+                float y = graphheight - bottom - (yvalue - yMin) / yscale;
+
+                imgG2.fill(new Rectangle2D.Float(x, y, 2, 2));
+              }
+            }
+          }
+          changed = false;
+        }
+      }
+      else if(population != null) {
+        synchronized (population) {
+          imgG2.setColor(Color.red);
+          NsgaSolution[] members = (NsgaSolution[]) population.getMembers();
+          int numMembers = members.length;
+          for (int i = 0; i < numMembers; i++) {
+            if (members[i].getRank() == 0) {
+              float xvalue = (float) members[i].getObjective(xObjective);
+              float yvalue = (float) members[i].getObjective(yObjective);
               float x = (xvalue - xMin) / xscale + left;
               float y = graphheight - bottom - (yvalue - yMin) / yscale;
 
               imgG2.fill(new Rectangle2D.Float(x, y, 2, 2));
             }
+          }
+          if (selected != null) {
+            imgG2.setColor(Color.blue);
+            for (int i = 0; i < numMembers; i++) {
+              if (members[i].getRank() == 0 && selected[i]) {
+                float xvalue = table.getFloat(i, xObjective);
+                float yvalue = table.getFloat(i, yObjective);
+
+                float x = (xvalue - xMin) / xscale + left;
+                float y = graphheight - bottom - (yvalue - yMin) / yscale;
+
+                imgG2.fill(new Rectangle2D.Float(x, y, 2, 2));
+              }
+
+            }
 
           }
-
+          changed = false;
         }
-        changed = false;
       }
     }
     g2.drawImage(image, 0, 0, null);

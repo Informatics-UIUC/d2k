@@ -19,6 +19,11 @@ public class EMOPopulationInfo implements java.io.Serializable {
   public static final int DOUBLE_TYPE = 0;
 
   private int type;
+  private boolean useExternalFitnessEvaluation;
+  private boolean useExternalConstraintEvaluation;
+
+  public Table externalFitnessInfo;
+  public Table externalConstraintInfo;
 
   public EMOPopulationInfo() {
     fitnessVariableConstructions = new EMOConstruction[0];
@@ -33,5 +38,19 @@ public class EMOPopulationInfo implements java.io.Serializable {
 
   public int getType() {
     return type;
+  }
+
+  public void setUseExternalFitnessEvaluation(boolean b) {
+    useExternalFitnessEvaluation = b;
+  }
+  public boolean getUseExternalFitnessEvaluation() {
+    return useExternalFitnessEvaluation;
+  }
+
+  public void setUseExternalConstrainEvaluation(boolean b) {
+    useExternalConstraintEvaluation = b;
+  }
+  public boolean getUseExternalConstraintEvaluation() {
+    return useExternalConstraintEvaluation;
   }
 }

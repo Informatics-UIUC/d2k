@@ -602,10 +602,13 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 	 * @returns a table represeting the population.
 	 */
 	public Table getTable () {
-		int numTraits = this.traits.length;
+/*		int numTraits = this.traits.length;
 		int popSize = this.size();
 		double [][] dc = new double [numTraits+numObjectives+2][popSize];
 
+                // check to see if binary or real
+
+                // if real
 		for (int i = 0 ; i < popSize; i++) {
 			NsgaSolution ni = (NsgaSolution) members [i];
 			double [] genes = (double []) ((Individual) ni).getGenes ();
@@ -642,7 +645,77 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 		col = new DoubleColumn (dc [i++]);
 		col.setLabel ("Crowding");
 		vt.addColumn (col);
-		return vt;
+
+                // else if binary
+
+
+		return vt;*/
+              int numGenes = 0;
+               int numTraits;
+               NsgaSolution nis = (NsgaSolution) members [0];
+               if (nis instanceof MONumericIndividual) {
+                       numTraits = this.traits.length;
+               }
+               else{
+                       for(int i=0; i<this.traits.length; i++)
+                         numGenes += ((BinaryRange) this.traits[i]).getNumBits();
+                       numTraits = numGenes;
+               }
+               System.out.println("numtraits :" + numTraits);
+               int popSize = this.size();
+               double [][] dc = new double [numTraits+numObjectives+2][popSize];
+
+               for (int i = 0 ; i < popSize; i++) {
+                  NsgaSolution ni = (NsgaSolution) members [i];
+                  double [] genes;
+                  if (ni instanceof MONumericIndividual) {
+                       genes = (double []) ((Individual) ni).getGenes ();
+                  }
+                  else{
+                       genes = (double []) ((MOBinaryIndividual) ni).toDouble();
+                  }
+                       int j = 0;
+
+                       // first do the genes.
+                       for (; j < numTraits ; j++)
+                               dc [j][i] = genes [j];
+
+                       // Now the objectives.
+                       for (int k = 0 ; k < numObjectives ; k++, j++)
+                               dc [j][i] = ni.getObjective (k);
+                       dc [j++][i] = ni.getRank ();
+                       dc [j++][i] = ni.getCrowdingDistance ();
+
+               }
+              // Now make the table
+               TableImpl vt = (TableImpl)DefaultTableFactory.getInstance().createTable(0);
+               int i = 0;
+
+               for (; i < numTraits ; i++) {
+                       DoubleColumn col = new DoubleColumn (dc [i]);
+                       // NsgaSolution nis0 = (NsgaSolution) members[0];
+                       if(nis instanceof MONumericIndividual){
+                          col.setLabel (this.traits [i].getName ());
+                       }
+                       else{
+                          col.setLabel ("Variable "+i);
+                       }
+                       vt.addColumn (col);
+               }
+
+               for (int k = 0 ; k < numObjectives ; k++, i++) {
+                       DoubleColumn col = new DoubleColumn (dc [i]);
+                       col.setLabel (this.objectiveConstraints [k].getName ());
+                       vt.addColumn (col);
+               }
+               DoubleColumn col = new DoubleColumn (dc [i++]);
+               col.setLabel ("Rank");
+               vt.addColumn (col);
+               col = new DoubleColumn (dc [i++]);
+               col.setLabel ("Crowding");
+               vt.addColumn (col);
+               return vt;
+
 	}
 
 	/**
