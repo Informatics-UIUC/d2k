@@ -100,8 +100,8 @@ public class ParseDSTPToDBTable
     descriptions[1] = new PropertyDescription("serverName",
                                               "DSTP Server DNS or IP",
         "This is the address of the DSTP server.");
-    descriptions[2] = new PropertyDescription("category", "Category", "Category of the datafile to be loaded");
-    descriptions[3] = new PropertyDescription("datafileName", "Datafile Name", "The data file to be loaded");
+    descriptions[2] = new PropertyDescription("category", "Category", "Category of the datafile to be loaded (this property is used when 'Supress User Interface Display' is set to true)");
+    descriptions[3] = new PropertyDescription("datafileName", "Datafile Name", "The data file to be loaded (this property is used when 'Supress User Interface Display' is set to true)");
     //descriptions[4] = new PropertyDescription("datafileSource", "Datafile Source", "The data file to be loaded");
 
     return descriptions;
@@ -202,7 +202,7 @@ public class ParseDSTPToDBTable
 
     s += "<p>Data Handling: ";
     s += "The DBTable that is created uses a primitive implementation of a DBDataSource ";
-    s += "that lads the entire dataset into memory.  The DBTable is serializable ";
+    s += "that loads the entire dataset into memory.  The DBTable is serializable ";
     s += "but the data is transient.  The data is reacquired from the DSTP server ";
     s += "when the object is deserialized. The DBTable is not mutable.";
     s += "</p>";
@@ -586,3 +586,13 @@ public class ParseDSTPToDBTable
 
 
 }
+
+/**
+ * basic 4 qa comments
+ *
+ * 01-23-04:
+ * vered started qa process.
+ * fixed typo in module info.
+ * updated properties descriptions.
+ * module is ready for basic 4.
+ */
