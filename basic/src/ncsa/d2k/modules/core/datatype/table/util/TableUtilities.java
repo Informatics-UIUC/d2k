@@ -764,7 +764,7 @@ public class TableUtilities
   }
 
   /**
-     * Compare two bin names
+     * Compare the minimum values of two bin names
      * @param b1 the first bin name to compare
      * @param b2 the second bin name to compare
      * @return -1, 0, 1
@@ -782,6 +782,11 @@ public class TableUtilities
       return -1;
     }
 
+    /**
+       * Get the minimum value from the bin name.
+       * @param s the bin name
+       * @return the minimum value from the bin name
+       */
     private static double getBinMin(String s) {
       String minStr;
       int idx=0;
