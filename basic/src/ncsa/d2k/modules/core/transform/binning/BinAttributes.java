@@ -1292,7 +1292,9 @@ public class BinAttributes extends HeadlessUIModule {
 		// now find the bin maxes...
 		// loop through the sorted data.  the next max will lie at
 		// data[curLoc+weight] items
-		int curIdx = 0;
+
+                //vered - changed curIdx from 0 to -1. this way, first bin won't be too large.
+		int curIdx = -1;
 		while (curIdx < data.length - 1) {
 		  curIdx += weight;
 		  if (curIdx > data.length - 1)
@@ -1625,4 +1627,6 @@ class TableBinCounts implements BinCounts {
  * 12-02-03 vered started qa.
  *          modules does not bin missing scalar values into "UNKNOWN" bin. [bug 140]
  *          modules allows overlapping binning of same column. [bug 142]
+ * 12-03-03 incorrect uniform binning [bug 153]
+ *          missing values are binned as real values [bug 150]
  */
