@@ -31,10 +31,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
         private static final String printicon = File.separator+"images"+File.separator+"printit.gif";
         private static final String refreshicon = File.separator+"images"+File.separator+"home.gif";
         private static final String helpicon = File.separator+"images"+File.separator+"help.gif";
-        //note that the following are used only because alpha and rank
-        //icons are not available now
-        private static final String tableicon = File.separator+"images"+File.separator+"table.gif";
-        private static final String zoomicon = File.separator+"images"+File.separator+"zoom.gif";
+        private static final String abcicon = File.separator+"images"+File.separator+"abc.gif";
+        private static final String rankicon = File.separator+"images"+File.separator+"rank.gif";
 
 	/**	This method returns an array of strings that contains the data types for the inputs.
 		@return the data types of all inputs.
@@ -156,6 +154,18 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("If support is selected, rules will be sorted using support as the primary key and confidence as the secondary key. ");
           sb.append("Conversely, if the confidence button is chosen, confidence is the primary sort key and support is the secondary key.  ");
 
+          sb.append("</p><p>");
+          sb.append("Directly above the confidence and support display lies a toolbar which provides alternate functionality.  ");
+          sb.append("On the left side of this toolbar are two buttons that allow the rows of this table to be displayed ");
+          sb.append("according to the sorting schemes specified by their icons.  Exactly one of these buttons will be selected ");
+          sb.append(" at all times.  The <i>ABC</i> button simply sorts the [attribute=value] combinations alphabetically.  ");
+          sb.append("The <i>123</i> button will rank the rows based on the current Confidence/Support selection, moving the ");
+          sb.append("consequents and antecedents of the highest ranking rules (according to Confidence/Support) to the ");
+          sb.append("top of the [attribute=value] list.  Opposite these buttons lie four others.  The leftmost button will revert ");
+          sb.append("back to the original table that was first displayed before any sorting or re-ordering was done.  The next button ");
+          sb.append("loads a filter that can create a much more specifically defined rule display.  The print button will print a screen ");
+          sb.append("capture of the module display.  The help button displays this dialog.");
+
           sb.append("</p><p> ");
           sb.append("The options menu allows the user to print a screen capture of the module display. ");
 	  sb.append("The print output contains only the cells that are visible in the display window, not all the cells ");
@@ -211,8 +221,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                 JButton refreshButton;
                 JButton printButton;
                 JButton helpButton;
-                JToggleButton tableButton;
-                JToggleButton zoomButton;
+                JToggleButton abcButton;
+                JToggleButton rankButton;
                 HelpWindow help;
 		JMenuItem pmml;
 		JMenuBar menuBar;
@@ -291,45 +301,43 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                         refreshButton.addActionListener(this);
                         refreshButton.setToolTipText("Restore Original");
 
-                        //the Alphabetize image is not available yet
                         im = null;
                         icon = null;
-                        im = mod.getImage(tableicon);
+                        im = mod.getImage(abcicon);
                         if(im != null)
                           icon = new ImageIcon(im);
                         if(icon != null) {
-                          tableButton = new JToggleButton(icon,true);
-                          tableButton.setMaximumSize(buttonsize);
-                          tableButton.setPreferredSize(buttonsize);
+                          abcButton = new JToggleButton(icon,true);
+                          abcButton.setMaximumSize(buttonsize);
+                          abcButton.setPreferredSize(buttonsize);
                         }
                         else
-                          tableButton = new JToggleButton("A");
-                        tableButton.addActionListener(this);
-                        tableButton.setToolTipText("Alphabetize");
+                          abcButton = new JToggleButton("A");
+                        abcButton.addActionListener(this);
+                        abcButton.setToolTipText("Alphabetize");
 
-                        //the Rank image is not available yet
                         im = null;
                         icon = null;
-                        im = mod.getImage(zoomicon);
+                        im = mod.getImage(rankicon);
                         if(im != null)
                           icon = new ImageIcon(im);
                         if(icon != null) {
-                          zoomButton = new JToggleButton(icon);
-                          zoomButton.setMaximumSize(buttonsize);
-                          zoomButton.setPreferredSize(buttonsize);
+                          rankButton = new JToggleButton(icon);
+                          rankButton.setMaximumSize(buttonsize);
+                          rankButton.setPreferredSize(buttonsize);
                         }
                         else
-                          zoomButton = new JToggleButton("R");
-                        zoomButton.addActionListener(this);
-                        zoomButton.setToolTipText("Rank");
+                          rankButton = new JToggleButton("R");
+                        rankButton.addActionListener(this);
+                        rankButton.setToolTipText("Rank");
 
                         //set up the tool bar
                         JPanel tools_right = new JPanel();
                         tools_right.setLayout(new GridLayout(1,4));
                         JPanel tools_left = new JPanel();
                         tools_left.setLayout(new GridLayout(1,2));
-                        tools_left.add(tableButton);
-                        tools_left.add(zoomButton);
+                        tools_left.add(abcButton);
+                        tools_left.add(rankButton);
                         tools_right.add(refreshButton);
                         tools_right.add(filterButton);
                         tools_right.add(printButton);
@@ -532,8 +540,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                       help.setVisible(true);
                     }
                     else if (e.getSource() == refreshButton){
-                      tableButton.setSelected(true);
-                      zoomButton.setSelected(false);
+                      abcButton.setSelected(true);
+                      rankButton.setSelected(false);
                       ruleTable.setToOriginal();
                       ruleTable.cleanup();
                       ruleTable.alphaSort();
@@ -543,25 +551,30 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                       ALPHA = true;
                     }
                     //this is the alphabetize button
-                    else if (e.getSource() == tableButton){
-                      tableButton.setSelected(true);
-                      zoomButton.setSelected(false);
+                    else if (e.getSource() == abcButton){
+                      abcButton.setSelected(true);
+                      rankButton.setSelected(false);
                       ruleTable.alphaSort();
                       this.setAttributes();
                       this.repaint();
                       ALPHA = true;
                     }
                     //this is the rank button
-                    else if (e.getSource() == zoomButton){
-                      tableButton.setSelected(false);
-                      zoomButton.setSelected(true);
+                    else if (e.getSource() == rankButton){
+                      abcButton.setSelected(false);
+                      rankButton.setSelected(true);
                       this.rvdm.rank();
                       this.setAttributes();
                       this.repaint();
                       ALPHA = false;
                     }
                     else if (e.getSource() == filterButton){
-                      //no acion because the filter is not completed
+                      JFrame F = new JFrame("RuleFilter");
+                      RuleFilter R = new RuleFilter();
+                      R.setInput(ruleTable,0);
+                      F.getContentPane().add(R);
+                      F.setSize(600,262);
+                      F.setVisible(true);
                     }
                     else if (e.getSource() == print || e.getSource() == printButton) {
                       PrinterJob pj = PrinterJob.getPrinterJob();
@@ -780,8 +793,6 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 						GridBagConstraints.WEST, 1, 0, new Insets (0, 0, 0, 0));
 				this.setConstraints (jp, ruleScroller, 0, 1, 1, 1, GridBagConstraints.BOTH,
 						GridBagConstraints.WEST, 1, 1, new Insets (0, 0, 0, 0));
-				//this.setConstraints (this, jp, 0, 0, 1, 1, GridBagConstraints.BOTH,
-				//		GridBagConstraints.WEST, 1, 1, new Insets (35, 10,10, 10));
                                 this.setConstraints(this,jp,0,0,1,1,GridBagConstraints.BOTH,
                                     GridBagConstraints.WEST,1,1,new Insets(35,10,10,10));
 
@@ -1071,8 +1082,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 
                         /**
                          * Rank the rows depending on where they lie on in the table, that
-                         * is figure out which rules are important based on the sort and
-                         * reorder them accordingly
+                         * is figure out which rows are important based on the Confidence/Support
+                         * selection and reorder them accordingly
                          */
                         public void rank(){
                           int[] done = new int[this.getRowCount()];
@@ -1191,8 +1202,6 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 
         /**
          * This small class runs the HelpWindow.
-         * NOTE: as of 6/09/03 the help window was not up to date, because the toolbar
-         * was added. --Scott
          */
         private final class HelpWindow extends JD2KFrame {
           HelpWindow() {
