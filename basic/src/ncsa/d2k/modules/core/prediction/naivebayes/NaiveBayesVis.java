@@ -301,7 +301,7 @@ public final class NaiveBayesVis
 
     public void setInput(Object o, int i) throws Exception {
       model = (NaiveBayesModel) o;
-      if(!model.isReadyForVisualization()) 
+      if(!model.isReadyForVisualization())
 	  throw new Exception("NaiveBayesModel has to be processed by PrepareForVisualization module before entering NaiveBayesVisualization");
       all_ranked_attribute_names = model.getAttributeNames();
       //for(int j = 0; j < all_ranked_attribute_names.length; j++)
@@ -578,6 +578,7 @@ public final class NaiveBayesVis
       m1.add(miPrint = new JMenuItem("Print.."));
       miPrint.addActionListener(this);
       m1.add(saveAsPmml = new JMenuItem("Save as PMML..."));
+      saveAsPmml.setEnabled(false);
       saveAsPmml.addActionListener(this);
 
       JMenu helpMenu = new JMenu("Help");
@@ -876,7 +877,7 @@ public final class NaiveBayesVis
             // get the selected file
             File newFile = jfc.getSelectedFile();
 
-            WriteNaiveBayesPMML.writePMML(model, newFile.getAbsolutePath());
+            //WriteNaiveBayesPMML.writePMML(model, newFile.getAbsolutePath());
           }
           catch(Exception ex) {
               ncsa.gui.ErrorDialog.showDialog(ex, "Error Writing PMML");
