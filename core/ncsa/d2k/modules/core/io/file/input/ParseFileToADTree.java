@@ -122,7 +122,9 @@ public class ParseFileToADTree extends InputModule {
             adt.setLabel(i+1, ffr.getColumnLabel(i));
         for(int i = 0; i < ffr.getNumRows(); i++) {
             String[] vals = new String[ffr.getNumColumns()];
-            char[][] row = ffr.getRowElements(i);
+            //char[][] row = ffr.getRowElements(i);
+            ParsedLine pl = ffr.getRowElements(i);
+            char[][] row = pl.elements;
             for(int j = 0; j < row.length; j++)
                 vals[j] = new String(row[j]);
              //System.out.println("countingLine for " + i + ": " +  vals.toString());

@@ -138,6 +138,75 @@ class PagingExampleTable extends MutablePagingTable implements ExampleTable {
 
    }
 
+   public Table copy() {
+
+      Page[] newPages = new Page[pages.length],
+             newInitialPages = new Page[manager.capacity];
+
+      try {
+
+         manager.globalLock.acquireRead();
+
+         for (int i = 0; i < pages.length; i++) {
+
+            boolean correct = false;
+            do {
+
+               Lock lock = manager.request(pages[i]);
+
+               lock.acquireWrite();
+
+                  correct = manager.check(pages[i], lock);
+
+                  if (correct) {
+
+                     if (i < newInitialPages.length) {
+                        newPages[i] = pages[i].copy(true);
+                        newInitialPages[i] = newPages[i];
+                     }
+                     else {
+                        newPages[i] = pages[i].copy(false);
+                     }
+
+                  }
+
+               lock.releaseWrite();
+
+            } while (!correct);
+
+         }
+
+         manager.globalLock.releaseRead();
+
+      }
+      catch(InterruptedException e) { e.printStackTrace(); }
+
+      PagingExampleTable pet = new PagingExampleTable(newPages, new PageManager(newPages, newInitialPages));
+      int[] ar = copyIntArray(getInputFeatures());
+      if(ar != null)
+        pet.setInputFeatures(ar);
+      else
+        pet.setInputFeatures(new int[0]);
+      ar = copyIntArray(getOutputFeatures());
+      if(ar != null)
+        pet.setOutputFeatures(ar);
+      else
+        pet.setOutputFeatures(new int[0]);
+      ar = copyIntArray(getTestingSet());
+      if(ar != null)
+        pet.setTestingSet(ar);
+      else
+        pet.setTestingSet(new int[0]);
+      ar = copyIntArray(getTrainingSet());
+      if(ar != null)
+        pet.setTrainingSet(ar);
+      else
+        pet.setTrainingSet(new int[0]);
+      return pet;
+   }
+
+
+
 /******************************************************************************/
 /* interface ExampleTable                                                     */
 /******************************************************************************/
@@ -204,26 +273,36 @@ class PagingExampleTable extends MutablePagingTable implements ExampleTable {
 
    public void setInputFeatures(int[] inputs) {
       inputFeatures = inputs;
-      inputNames = new String[inputs.length];
-      for(int i = 0; i < inputNames.length; i++)
-        inputNames[i] = getColumnLabel(inputs[i]);
+      if(inputs != null) {
+        inputNames = new String[inputs.length];
+        for (int i = 0; i < inputNames.length; i++)
+          inputNames[i] = getColumnLabel(inputs[i]);
+      }
+      else
+        inputNames = new String[0];
    }
 
    public void setOutputFeatures(int[] outputs) {
       outputFeatures = outputs;
-      outputNames = new String[outputs.length];
-      for(int i = 0; i < outputNames.length; i++)
-        outputNames[i] = getColumnLabel(outputs[i]);
+      if(outputs != null) {
+        outputNames = new String[outputs.length];
+        for (int i = 0; i < outputNames.length; i++)
+          outputNames[i] = getColumnLabel(outputs[i]);
+      }
+      else
+        outputNames = new String[0];
    }
 
    public void setTestingSet(int[] testingSet) {
       testSet = testingSet;
-      Arrays.sort(testSet);
+      if(testSet != null)
+        Arrays.sort(testSet);
    }
 
    public void setTrainingSet(int[] trainingSet) {
       trainSet = trainingSet;
-      Arrays.sort(trainSet);
+      if(trainSet != null)
+        Arrays.sort(trainSet);
    }
 
    public PredictionTable toPredictionTable() {

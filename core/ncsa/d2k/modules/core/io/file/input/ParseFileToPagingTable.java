@@ -174,7 +174,11 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 
             int offset = nt * numRowsPerPage; //
             for(int i = 0; i < pageRowNums[nt]; i++) {
-                char[][] row = df.getRowElements(i + offset); //
+                //char[][] row = df.getRowElements(i + offset); //
+                ParsedLine pl = df.getRowElements(i+offset);
+//                char[][] row = df.getRowElements(i + offset); //
+                    char[][] row = pl.elements;
+                    boolean[] bl = pl.blanks;
                 curNum++;
                 if(row != null)
                     for(int j = 0; j < columns.length; j++) {
@@ -199,7 +203,7 @@ public class ParseFileToPagingTable extends ParseFileToTable {
                     }
 
                     // if the value was not missing, just put it in the table
-                    if(!isMissing) {
+                    if(!isMissing && !bl[j]) {
                         try {
                             ti.setChars(elem, i, j);
                         }
@@ -225,8 +229,10 @@ public class ParseFileToPagingTable extends ParseFileToTable {
                     }
                 }
             }
-            pt.addTable(ti, nt == 0);
+            //pt.addTable(ti, nt == 0);
+            pt.addTable(ti);
         }
+        pt.pageInFirstPage();
 
         // if types were not specified, we should try to convert to double columns
         // where appropriate

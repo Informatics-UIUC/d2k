@@ -146,7 +146,10 @@ public class ParseFileToSparseTable extends ParseFileToTable {
         for(int i = 0; i < columns.length; i++)
             ti.addColumn((AbstractSparseColumn)columns[i]);
         for(int i = 0; i < numRows; i++) {
-            char[][] row = df.getRowElements(i);
+            ParsedLine pl = df.getRowElements(i);
+//            char[][] row = df.getRowElements(i);
+            char[][] row = pl.elements;
+            boolean[] bl = pl.blanks;
             if(row != null) {
                 for(int j = 0; j < columns.length; j++) {
 
@@ -163,7 +166,7 @@ public class ParseFileToSparseTable extends ParseFileToTable {
                     }
 
                     // if the value was not missing, just put it in the table
-                    if(!isMissing) {
+                    if(!isMissing && !bl[j]) {
                         try {
                             ti.setChars(elem, i, j);
                         }

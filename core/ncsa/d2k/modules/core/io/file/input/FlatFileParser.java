@@ -44,7 +44,8 @@ public interface FlatFileParser {
      * Get the elements that make up row i of the file.
      * @return the elements of row i in the file.
      */
-    public char[][] getRowElements(int i);
+    //public char[][] getRowElements(int i);
+    public ParsedLine getRowElements(int i);
 
     /**
      * Get the number of columns.
@@ -80,7 +81,7 @@ public interface FlatFileParser {
      * value was present
      * @return
      */
-    public boolean[][] getBlanks();
+//    public boolean[][] getBlanks();
 
     /**
      * in-out-omit

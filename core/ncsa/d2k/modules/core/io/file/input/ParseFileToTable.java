@@ -84,7 +84,7 @@ public class ParseFileToTable extends InputModule {
         Table t = createTable(fle);
         //Table bt = createBlanks(fle);
 
-        if(useBlanks) {
+        /*if(useBlanks) {
             // if a value was blank, make it a 'missing value' in the table
             MutableTable mt = (MutableTable)t;
             boolean[][] blanks = fle.getBlanks();
@@ -97,7 +97,7 @@ public class ParseFileToTable extends InputModule {
                     }
                 }
             }
-        }
+        }*/
 
         pushOutput(t, 0);
         //pushOutput(bt, 1);
@@ -152,7 +152,9 @@ public class ParseFileToTable extends InputModule {
 
         MutableTableImpl ti = new MutableTableImpl(columns);
         for(int i = 0; i < numRows; i++) {
-            char[][] row = df.getRowElements(i);
+            ParsedLine pl = df.getRowElements(i);
+            char[][] row = pl.elements;
+            boolean[] blanks = pl.blanks;
             if(row != null) {
                 for(int j = 0; j < columns.length; j++) {
                     boolean isMissing = true;
@@ -168,7 +170,7 @@ public class ParseFileToTable extends InputModule {
                     }
 
                     // if the value was not missing, just put it in the table
-                    if(!isMissing) {
+                    if(!isMissing && !blanks[j]) {
                         try {
                             ti.setChars(elem, i, j);
                         }

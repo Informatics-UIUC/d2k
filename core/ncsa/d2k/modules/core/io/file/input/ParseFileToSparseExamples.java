@@ -146,7 +146,10 @@ public class ParseFileToSparseExamples extends InputModule {
         SparseMutableTable ti = new SparseMutableTable(1, 0);
         for(int i = 0; i < columns.length; i++)
             ti.addColumn((AbstractSparseColumn)columns[i]);
-        char[][] data = rdr.getRowElements(row);
+        ParsedLine pl = rdr.getRowElements(row);
+//        char[][] data = rdr.getRowElements(row);
+        char[][] data = pl.elements;
+        boolean[] blanks = pl.blanks;
         if(data != null) {
             for(int j = 0; j < columns.length; j++) {
                 char[] elem = data[j];//(char[])row.get(j);

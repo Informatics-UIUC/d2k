@@ -123,11 +123,11 @@ public class ARFFFileParser extends DelimitedFileParser {
                 dataRow++;
         }
 
-        blanks = new boolean[numRows][numColumns];
+/*        blanks = new boolean[numRows][numColumns];
         for(int i = 0; i < numRows; i++) {
             for(int j = 0; j < numColumns; j++)
                 blanks[i][j] = false;
-        }
+        }*/
     }
 
     private HashSet parseAllowedAttributes(String line) {
@@ -153,15 +153,18 @@ public class ARFFFileParser extends DelimitedFileParser {
     * Get the elements that make up row i of the file.
     * @return the elements of row i in the file.
     */
-    public char[][] getRowElements(int i) {
-        char[][] retVal = super.getRowElements(i);
+    //public char[][] getRowElements(int i) {
+    public ParsedLine getRowElements(int i) {
+//        char[][] retVal = super.getRowElements(i);
+        ParsedLine retVal = super.getRowElements(i);
 
-        if(retVal != null && retVal.length > 0) {
+        if(retVal != null && retVal.elements != null && retVal.elements.length > 0) {
         // here we check each element to see if it was a missing value
         for(int j = 0; j < this.numColumns; j++) {
-            if(retVal[j].length > 0 && retVal[j][0] == QUESTION) {
+            if(retVal.elements[j].length > 0 && retVal.elements[j][0] == QUESTION) {
                 //System.out.println("YES!");
-                addBlank(i, j);
+                //addBlank(i, j);
+                retVal.blanks[j] = true;
             }
         }
         }

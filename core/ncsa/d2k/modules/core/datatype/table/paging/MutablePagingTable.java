@@ -104,6 +104,10 @@ public class MutablePagingTable extends PagingTable implements MutableTable, Ser
        super.addTable(newTable, keepInMemory);
    }
 
+   public void addTable(Table newTable) {
+     super.addTable(newTable);
+   }
+
 /******************************************************************************/
 /* interface Table                                                            */
 /******************************************************************************/

@@ -51,7 +51,7 @@ public class DelimitedFileParser implements FlatFileParser {
 
     //protected ArrayList _blankRows;
     //protected ArrayList _blankColumns;
-    protected boolean[][] blanks;
+    //protected boolean[][] blanks;
 
     protected DelimitedFileParser() {}
 
@@ -590,11 +590,11 @@ public class DelimitedFileParser implements FlatFileParser {
         }
         numRows = nr;
         numColumns = nc;
-        blanks = new boolean[nr][nc];
+        /*blanks = new boolean[nr][nc];
         for(int i = 0; i < numRows; i++) {
             for(int j = 0; j < numColumns; j++)
                 blanks[i][j] = false;
-        }
+        }*/
     }
 
     /**
@@ -779,14 +779,16 @@ public class DelimitedFileParser implements FlatFileParser {
      * @param row the row to tokenize
      * @return an ArrayList containing each of the elements in the row
      */
-    public char[][] getRowElements(int rowNum) {
+    public ParsedLine getRowElements(int rowNum) {
         try {
+          ParsedLine pl = new ParsedLine();
             String row = skipToRow(rowNum);
             //String row = lineReader.readLine();
             if(row == null)
                 return null;
             int current = 0;
             char[][] thisRow = new char[numColumns][];
+            boolean[] bl = new boolean[numColumns];
             int counter = 0;
             char [] bytes = row.toCharArray();
             char del = getDelimiter();
@@ -800,7 +802,8 @@ public class DelimitedFileParser implements FlatFileParser {
                         thisRow[counter] = newBytes;
                         counter++;
                     } else {
-                        this.addBlank(rowNum, counter);
+                        //this.addBlank(rowNum, counter);
+                        bl[counter] = true;
                         thisRow[counter] = new char[0];
                         counter++;
                     }
@@ -817,10 +820,15 @@ public class DelimitedFileParser implements FlatFileParser {
 
             for(int i = counter; i < thisRow.length; i++) {
                 thisRow[i] = new char[0];
-                this.addBlank(rowNum, i);
+                //this.addBlank(rowNum, i);
+                bl[i] = true;
             }
 
-            return thisRow;
+            pl.elements = thisRow;
+            pl.blanks = bl;
+
+            //return thisRow;
+            return pl;
         }
         catch(Exception e) {
             return null;
@@ -930,7 +938,7 @@ public class DelimitedFileParser implements FlatFileParser {
 		keeps track of which fields that were read were actually
 		blank
 	*/
-	protected void addBlank(int r, int c){
+/*	protected void addBlank(int r, int c){
 		//_blankRows.add(new Integer(r));
 		//_blankColumns.add(new Integer(c));
         blanks[r][c] = true;
@@ -952,9 +960,9 @@ public class DelimitedFileParser implements FlatFileParser {
         return blanks;
 	}*/
 
-   public boolean[][] getBlanks() {
+/*   public boolean[][] getBlanks() {
        return blanks;
-   }
+   }*/
 }
 
 // QA Comments

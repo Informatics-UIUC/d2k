@@ -408,6 +408,7 @@ class Page implements Serializable {
    }
 
    void addColumn(double[] newEntry) {
+     System.out.println(table);
       ((MutableTable)table).addColumn(newEntry);
       numColumns++;
       if (newEntry.length > numRows)

@@ -195,7 +195,8 @@ public class FixedFileParser implements FlatFileParser {
     }
 
 
-    public char[][] getRowElements(int i) {
+    //public char[][] getRowElements(int i) {
+    public ParsedLine getRowElements(int i) {
         try {
             return parseLine(i);
         }
@@ -243,10 +244,15 @@ public class FixedFileParser implements FlatFileParser {
 
 		boolean debug = false;
 
-    private char[][] parseLine(int row) throws Exception {
+    //private char[][] parseLine(int row) throws Exception {
+    private ParsedLine parseLine(int row) throws Exception {
+
+        ParsedLine pl = new ParsedLine();
+
 	  	if(debug) System.out.println("noOfColumns:"+_noOfColumns);
         //ArrayList retVal = new ArrayList();
       char[][] retVal = new char[_noOfColumns][];
+      boolean[] bl = new boolean[_noOfColumns];
 
 			//these will be used for eliminating trailing and
 		  //leading whitespace
@@ -317,7 +323,10 @@ public class FixedFileParser implements FlatFileParser {
 		      addBlank(row, col);
        } */
 		  }
-        return retVal;
+        //return retVal;
+        pl.blanks = bl;
+        pl.elements = retVal;
+        return pl;
     }
 
     private void skipToLine(int lineNum) {

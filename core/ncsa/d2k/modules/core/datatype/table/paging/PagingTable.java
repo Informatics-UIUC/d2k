@@ -39,6 +39,33 @@ class PagingTable extends AbstractTable implements Serializable {
       managerCapacity = 0;
    }
 
+/*   public void pageIn() {
+
+    int pageNum = 0;
+
+     boolean correct = false;
+      do {
+
+         try {
+
+            Lock lock = manager.request(pages[pageNum]);
+
+            lock.acquireRead();
+
+               correct = manager.check(pages[pageNum], lock);
+
+               if (correct)
+                  ;//b = pages[pageNum].getBytes(row - offsets[pageNum], column);
+
+            lock.releaseRead();
+
+         }
+         catch(InterruptedException e) { e.printStackTrace(); }
+
+      } while (!correct);
+
+   }*/
+
    protected void addTable(Table newTable, boolean keepInMemory) {
 
       File newFile = null;
@@ -52,6 +79,7 @@ class PagingTable extends AbstractTable implements Serializable {
       for (int i = 0; i < pages.length; i++)
          newPages[i] = pages[i];
       newPages[pages.length] = new Page(newFile, newTable, keepInMemory);
+      newPages[pages.length].pageOut();
 
       pages = newPages;
 
@@ -82,6 +110,103 @@ class PagingTable extends AbstractTable implements Serializable {
       manager = new PageManager(pages, managerCapacity);
 
    }
+
+   protected void addTable(Table newTable) {
+
+      File newFile = null;
+      try {
+         newFile = File.createTempFile(PREFIX, null);
+         newFile.deleteOnExit();
+      }
+      catch(IOException e) { e.printStackTrace(); }
+
+      Page[] newPages = new Page[pages.length + 1];
+      for (int i = 0; i < pages.length; i++)
+         newPages[i] = pages[i];
+      newPages[pages.length] = new Page(newFile, newTable, false);
+//      newPages[pages.length].pageOut();
+
+      pages = newPages;
+
+      if (offsets.length == 0) {
+         offsets = new int[1];
+         offsets[0] = 0;
+      }
+      else {
+         int[] newOffsets = new int[offsets.length + 1];
+         for (int i = 0; i < offsets.length; i++)
+            newOffsets[i] = offsets[i];
+         // newOffsets[offsets.length] = offsets[offsets.length - 1] + newTable.getNumRows(); // <- logic error
+         newOffsets[offsets.length] = offsets[offsets.length - 1] + pages[pages.length - 2].getNumRows();
+         offsets = newOffsets;
+      }
+
+      numPages++;
+
+//      if (keepInMemory)
+//         managerCapacity++;
+      managerCapacity = 1;
+
+      if (columnIsNominal == null) {
+         columnIsNominal = new boolean[newTable.getNumColumns()];
+         for (int i = 0; i < columnIsNominal.length; i++)
+            columnIsNominal[i] = newTable.isColumnNominal(i);
+      }
+
+      manager = new PageManager(pages, managerCapacity);
+
+   }
+
+   public void pageInFirstPage() {
+      pages[0].pageIn();
+   }
+
+
+/*   protected void addTable(Table newTable) {
+
+      File newFile = null;
+      try {
+         newFile = File.createTempFile(PREFIX, null);
+         newFile.deleteOnExit();
+      }
+      catch(IOException e) { e.printStackTrace(); }
+
+      Page[] newPages = new Page[pages.length + 1];
+      for (int i = 0; i < pages.length; i++)
+         newPages[i] = pages[i];
+      //newPages[pages.length] = new Page(newFile, newTable, keepInMemory);
+      newPages[pages.length] = new Page(newFile, newTable, false);
+
+      pages = newPages;
+
+      if (offsets.length == 0) {
+         offsets = new int[1];
+         offsets[0] = 0;
+      }
+      else {
+         int[] newOffsets = new int[offsets.length + 1];
+         for (int i = 0; i < offsets.length; i++)
+            newOffsets[i] = offsets[i];
+         // newOffsets[offsets.length] = offsets[offsets.length - 1] + newTable.getNumRows(); // <- logic error
+         newOffsets[offsets.length] = offsets[offsets.length - 1] + pages[pages.length - 2].getNumRows();
+         offsets = newOffsets;
+      }
+
+      numPages++;
+
+//      if (keepInMemory)
+//         managerCapacity++;
+
+      if (columnIsNominal == null) {
+         columnIsNominal = new boolean[newTable.getNumColumns()];
+         for (int i = 0; i < columnIsNominal.length; i++)
+            columnIsNominal[i] = newTable.isColumnNominal(i);
+      }
+
+      manager = new PageManager(pages, managerCapacity);
+
+   }*/
+
 
    PagingTable(Table table, int totalPages, int pagesInMemory) {
 
