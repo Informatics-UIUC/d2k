@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-/*
+/***
 	DistFunctions
 
 	Contains static functions that are probability
@@ -20,38 +20,38 @@ public class DistFunctions {
 	///CLASS VARIABLES
 	////////////////////
 
-	/*gives a count of the number of pdf's defined in this class */
+	/**gives a count of the number of pdf's defined in this class */
 	public static int AVAILABLE_PDF_COUNT=8;
 
 	////////////////////
 	//DISTRIBUTION ID'S
 	///////////////////
 
-	/*The id for the normal distribution*/
+	/**The id for the normal distribution*/
 	public static final int NORMAL=0;
 
-	/*The id for the uniformdistribution*/
+	/**The id for the uniformdistribution*/
 	public static final int UNIFORM=1;
 
-	/*The id for the cauchy distribution*/
+	/**The id for the cauchy distribution*/
 	public static final int CAUCHY=2;
 
-	/*The id for the exponential distribution*/
+	/**The id for the exponential distribution*/
 	public static final int EXPONENTIAL=3;
 
-	/*The id for the weibull distribution*/
+	/**The id for the weibull distribution*/
 	public static final int WEIBULL=4;
 
-	/*The id for the lognormaldistribution*/
+	/**The id for the lognormaldistribution*/
 	public static final int LOGNORMAL=5;
 
-	/*The id for the double exponential distribution*/
+	/**The id for the double exponential distribution*/
 	public static final int DOUBLE_EXPONENTIAL=6;
 
-	/*The id for the gamma distribution*/
+	/**The id for the gamma distribution*/
 	public static final int GAMMA=7;
 
-	/*the theshold accuracy level, always equal to .00001*/
+	/**the theshold accuracy level, always equal to .00001*/
 	public static final double threshold=.00001;
 
 
@@ -60,7 +60,7 @@ public class DistFunctions {
 	//and info
 	//////////////////
 
-	/* calculatePDF
+	/** calculatePDF
 
 		just calls the appropriate pdf function, but allows the user
 		to access it with an int and not have to type the distribution
@@ -108,7 +108,7 @@ public class DistFunctions {
 	}
 
 
-	/*
+	/**
 		getNumParams
 
 		returns the number of params the desired distribution needs
@@ -153,7 +153,7 @@ public class DistFunctions {
 		}
 	}
 
-	/*
+	/**
 		distributionIntegrate
 
 		calls the theortetical density functions to find an 'integrated' value
@@ -280,7 +280,7 @@ public class DistFunctions {
 
 	}
 
-	/* cummulative distribution
+	/** cummulative distribution
 
 		uses distributionIntegrate to calculate the
 		CDF value at point x, with the accuracy being
@@ -324,7 +324,7 @@ public class DistFunctions {
 		return sum;
 	}
 
-	/*
+	/**
 		randomGen
 
 		generates a random number with a probability
@@ -371,7 +371,7 @@ public class DistFunctions {
 	///// Here are the pdf's
 	///////////////////////////////////////////////////////
 
-	/*normal
+	/**normal
 
 		f(x)=e^{(-(x-a)^2/(2b^2)}/{b(2pi^.5))}
 		a-location=params[0]
@@ -389,7 +389,7 @@ public class DistFunctions {
 
 	}
 
-	/*uniform
+	/**uniform
 
 		f(x)= 1/(b-a)
 
@@ -412,7 +412,7 @@ public class DistFunctions {
 		return(1/(b-a));
 	}
 
-	/*cauchy
+	/**cauchy
 
 		f(x)=1/{a*pi*(1+((x-b)/a)^2)}
 
@@ -430,7 +430,7 @@ public class DistFunctions {
 		return 1/(t1*(1+t2*t2));
 	}
 
-	/*Exponential
+	/**Exponential
 
 		f(x)=(1/b)e^(-(x-a)/b)
 
@@ -447,7 +447,7 @@ public class DistFunctions {
 		return (1/b)*Math.exp(t1);
 	}
 
-	/*weibull
+	/**weibull
 
 		f(x)=(b/a)*{((x-c)/a)^(b-1)}*exp(-((x-c)/a)^b)
 
@@ -476,7 +476,7 @@ public class DistFunctions {
 
 	}
 
-	/*lognormal
+	/**lognormal
 
 		f(x)=1/{(x-t)*s*(2pi)^.5}*exp(-.5*(ln(x-t)-m)^2/s^2)
 
@@ -505,7 +505,7 @@ public class DistFunctions {
 		return k2/k3;
 	}
 
-	/*doubleExponential
+	/**doubleExponential
 
 		f(x) = {exp(-abs((x-a)/b))}/(2b)
 
@@ -530,16 +530,16 @@ public class DistFunctions {
 
 
 
-	/*////////////////////////////////////////////////////////
+	/**////////////////////////////////////////////////////////
 	**a bunch of functions concerning the gamma distribution**
 	**														**
 	**														**
 	**														**
-	///////////////////////////////////////////////////////*/
+	///////////////////////////////////////////////////////**/
 
 
 
-	/* gamma   - the pdf
+	/** gamma   - the pdf
 
 		f(x)=[{((x-a)/b)^(g-1)}*exp{-(x-a)/b}]/{b*sub(g)}
 
@@ -565,7 +565,7 @@ public class DistFunctions {
 	}
 
 
-	/*
+	/**
 		gammaln
 
 		returns the natural logarithm of the gamma function
@@ -592,7 +592,7 @@ public class DistFunctions {
 		}
 		return -tmp+Math.log(2.5066282746310005*ser/x);
 	}
-	/*
+	/**
 		computes the incomplete gamma function as described in
 		Numerical Recipes(NR) in C, section 6.2
 		(where it is named gammp(double, double))
@@ -617,7 +617,7 @@ public class DistFunctions {
 		}
 	}
 
-	/*
+	/**
 		gammaSer
 
 		the incomplete gamma function evaluated by its series representation
@@ -656,7 +656,7 @@ public class DistFunctions {
 		return gammser;
 	}
 
-	/*
+	/**
 		gammaCF
 
 		the incomplete gamma function evaluated by its continued fraction representation
