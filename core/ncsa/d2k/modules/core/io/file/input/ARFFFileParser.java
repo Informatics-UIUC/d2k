@@ -1,10 +1,10 @@
-//package ncsa.d2k.modules.projects.clutter.rdr;
+
 package ncsa.d2k.modules.core.io.file.input;
 
 import java.io.*;
 import java.util.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
+
 
 /**
  * A FlatFileReader that reads an ARFF File.  This is a delimited file with
@@ -39,12 +39,24 @@ public class ARFFFileParser extends DelimitedFileParser {
 
     public ARFFFileParser(File f) throws Exception {
         file = f;
-        lineReader = new LineNumberReader(new FileReader(file));
+        FileReader filereader = null;
+        try {
+           filereader = new FileReader(file);
+        }
+        catch (FileNotFoundException e) {
+           throw new FileNotFoundException( "ARFF File Parser: " +
+                    "Could not open file: " + file +
+                    "\n" + e );
+        }
+
+        lineReader = new LineNumberReader(filereader);
         try {
             initialize();
         }
         catch(Exception e) {
-            throw new Exception("ARFF File Parser: Could not be initialized.");
+            throw new Exception( "ARFF File Parser: " +
+                    "Problems parsing ARFF file: " + file +
+                    "\n" + e );
         }
     }
 
@@ -55,8 +67,8 @@ public class ARFFFileParser extends DelimitedFileParser {
         int linectr = 0;
         // find all the attributes
         String line = null;
-        while( (line = lineReader.readLine().toLowerCase()).indexOf(DATA_TAG) == -1) {
-            if( line.indexOf(ATTRIBUTE_TAG) != -1) {
+        while( (line = lineReader.readLine()).indexOf(DATA_TAG) == -1) {
+            if( line.toLowerCase().indexOf(ATTRIBUTE_TAG) != -1) {
                 // drop the attribute tag, find the attribute name, type
                 // if it is nominal, add its values to the allowedAttributes.
                 parseAttributeLine(line, attributes, types);
@@ -84,19 +96,14 @@ public class ARFFFileParser extends DelimitedFileParser {
             }
         }
 
-        //int commentoffset = 0;
-        //boolean beginData = true;
+
 
         // now count the number of data lines
         int ctr = 0;
         while( (line = lineReader.readLine()) != null) {
-            /*if(line.startsWith(COMMENT) && beginData) {
-                //System.out.println(line);
-                commentoffset++;
-            }*/
+
             if(line.trim().length() != 0 && !line.startsWith(COMMENT)) {
                 ctr++;
-                //beginData = false;
             }
         }
         numRows = ctr;
@@ -115,26 +122,6 @@ public class ARFFFileParser extends DelimitedFileParser {
             else
                 dataRow++;
         }
-
-        //dataRow += commentoffset;
-
-        /*resetReader();
-        skipToRow(0);
-        line = lineReader.readLine();
-        done = false;
-        while(!done) {
-            line = lineReader.readLine();
-            if(line.startsWith(COMMENT))
-                dataRow++;
-            else {
-                //System.out.println("DIDN'T START WITH COMMENT");
-                //dataRow++;
-                done = true;
-            }
-        }*/
-
-        //resetReader();
-        //skipToRow(0);
 
         blanks = new boolean[numRows][numColumns];
         for(int i = 0; i < numRows; i++) {
@@ -157,7 +144,7 @@ public class ARFFFileParser extends DelimitedFileParser {
                 atts.add(tok);
             // this is the datatype of the attribute.
             else if(ctr == 2)
-                types.add(tok);
+                types.add(tok.toLowerCase());
             ctr++;
         }
     }
@@ -236,8 +223,18 @@ public class ARFFFileParser extends DelimitedFileParser {
 // sunny, 85
 // overcast, 64
 // windy, hot
-//	     Ruth emailed.   Error checking shoudl be fixed.  Perhaps
-//          just state (in CreateARFFParser) that careful checking
-//          for content is not performed
-//
+//     Ruth emailed.   Error checking should be fixed.  Perhaps
+//     just state (in CreateARFFParser) that careful checking
+//     for content is not performed
+// 2/25/03 - Got confirmation that parser not validating.  Documented
+//           in CreateARFFParser
+//         - Found that all attribute variable names and nominal
+//           values converted to lower case;  fixed
+//         - Added more extensive exception handlers.
+//         - ARFF sparse data not handled - documented in CreateARFFParser.
+//         - Removed code that was commented out.
+//         - Missing values denoted by ? in inputs not translated
+//           to d2K missing values.  Documented in CreateARFFParser but
+//           decided w/ other QA folks not to put into basic until some of
+//           these resolved (next release).
 // END QA Comments
