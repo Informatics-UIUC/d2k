@@ -133,9 +133,9 @@ public class WriteDBToFile extends OutputModule
         */
         public String getModuleInfo () {
           String s = "<p>Overview: ";
-          s += "This module constructs a SQL statement, and retrieves data from a database and writes to a file. </p>";
+          s += "This module constructs a SQL statement, and retrieves data from a database and writes it to a file. </p>";
           s += "<p>Detailed Description: ";
-          s += "This module constructs a SQL query based on 5 inputs: the database ";
+          s += "This module constructs an SQL query based on 5 inputs: the database ";
           s += "connection object, the selected table, the selected fields, ";
           s += "the query condition (optional), and the name of the file to write to. ";
           s += "This module then executes the query and retrieves ";
