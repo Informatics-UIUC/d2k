@@ -21,17 +21,7 @@ import ncsa.d2k.modules.core.datatype.*;
 
  * @author gpape
  *
- * //added by vered:
- * @todo: parenthenses support is not perfect. for example:
- * (att1 == val1) && att2 == val2
- * is causing a null pointer exception.
- * () are not considered legal.
- * on the other hand the following expression was considered legal
- * att1 == val1 ) && att2 == val2
- *
- * in my opinion - in the parse method - a check for is currentDepth
- * a negative number should be done after each ')' is found. and a respective
- * exception should be thrown.
+ *att == att throws number format exception.
  *
  *
 

@@ -585,6 +585,10 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
       public void getSecondColumn(String col){secondColumn = col;}
 */
       public void doit() throws Exception{
+
+        cw = (ConnectionWrapper) pullInput(0);
+        String tableName = (String) pullInput(1);
+
         if(book && (codeBook == null || codeBook.length() == 0))
           throw new Exception(getAlias() + ": Code Book properties were not configured correctly. " +
                                 "You must choose a code book or set 'Use Code Book' to false. " +
@@ -595,8 +599,7 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
         if(selectedAttributes == null || selectedAttributes.length != 2  )
           throw new Exception(getAlias() + " has not been configured. Before running headless, run with the gui and configure the parameters.");
 
-         cw = (ConnectionWrapper) pullInput(0);
-        String tableName = (String) pullInput(1);
+
 
         if(tableName == null || tableName.length() == 0)
           throw new Exception(getAlias() + ": Illegal table name on input port 2.");

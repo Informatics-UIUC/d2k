@@ -34,10 +34,7 @@ import ncsa.d2k.modules.core.transform.StaticMethods;
  * att == val == att
  * the result was an empty table.
  *
- * @todo: expressions that are equivalent yield different output.
- * for example: att_1 == val_1 && ( att_2 != val_2 || att_3 != val_3)
- * gives different output than:
- * att_1 == val_1 && ( val_2 != att_2 || att_3 != val_3)
+ *
  *
  *
  */

@@ -1750,10 +1750,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 
     Table table = (Table) pullInput(1);
 
-    //debug
-    System.out.print("binDes == null : ");
-    System.out.println(binDes == null);
-    //end debug
+
 
     if(binDes == null)
       throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");

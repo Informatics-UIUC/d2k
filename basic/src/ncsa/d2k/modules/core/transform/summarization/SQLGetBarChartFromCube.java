@@ -670,6 +670,9 @@ public boolean createItemDataTableHeadless(int col, String[] attributes, String 
 
         public void doit() throws Exception{
 
+          cw = (ConnectionWrapper) pullInput(0);
+          String tableName = (String) pullInput(1);
+
           //validating code book use
           if(book && (codeBook == null || codeBook.length() == 0))
             throw new Exception(getAlias() + ": Code Book properties were not configured correctly. " +
@@ -682,8 +685,7 @@ public boolean createItemDataTableHeadless(int col, String[] attributes, String 
 
           //validating table name
 
-         cw = (ConnectionWrapper) pullInput(0);
-          String tableName = (String) pullInput(1);
+
 
 
           if(tableName == null || tableName.length() == 0)
