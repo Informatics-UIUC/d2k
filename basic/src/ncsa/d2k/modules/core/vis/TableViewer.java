@@ -68,6 +68,11 @@ public class TableViewer extends UIModule {
       sb.append("it to the right while keeping the mouse button pressed. ");
       sb.append("Releasing the button sets the new column size.");
 
+      sb.append("</p><p>");
+      sb.append("Should you wish to limit the number of decimal digits displayed ");
+      sb.append("in the table view, please see the <i>maximum fraction digits</i> ");
+      sb.append("property. The underlying data will not be affected.");
+
       sb.append("</p><p>" );
       sb.append("The <i>File</i> pull-down menu offers a <i>Save</i> option to ");
       sb.append("save the displayed table to a tab-delimited file. ");

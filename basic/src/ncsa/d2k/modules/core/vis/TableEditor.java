@@ -43,6 +43,14 @@ public class TableEditor extends TableViewer {
     info += "</p>";
 
     info += "<p>";
+    info += "Should you wish to limit the number of decimal digits displayed ";
+    info += "in the table view, please see the <i>maximum fraction digits</i> ";
+    info += "property. The underlying data will not be affected <i>unless</i> ";
+    info += "you click on a cell in the table (which will be interpreted as an ";
+    info += "edit operation).";
+    info += "</p>";
+
+    info += "<p>";
     info += "The <i>File</i> pull-down menu offers a <i>Save</i> option to ";
     info += "save the displayed table to a tab-delimited file. ";
     info += "A file browser window pops up, allowing the user to select ";
