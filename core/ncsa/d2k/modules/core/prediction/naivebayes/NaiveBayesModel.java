@@ -7,7 +7,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
 import java.io.Serializable;
 
-import ncsa.d2k.modules.core.datatype.BinTree;
+import ncsa.d2k.modules.core.transform.binning.BinTree;
 
 /**
  NaiveBayesModel performs all the necessary calculations for the

@@ -4,7 +4,7 @@ import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.util.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.d2k.modules.core.transform.binning.*;
 
 /**
  * BinTransform encapsulates a binning transformation on a Table.

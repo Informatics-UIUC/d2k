@@ -8,9 +8,8 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.*;
+import ncsa.d2k.modules.core.transform.binning.*;
 import ncsa.gui.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
 
 /**
  * A histogram panel.

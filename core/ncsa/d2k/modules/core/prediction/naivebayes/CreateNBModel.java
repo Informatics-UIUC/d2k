@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.prediction.naivebayes;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.*;
+import ncsa.d2k.modules.core.transform.binning.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**

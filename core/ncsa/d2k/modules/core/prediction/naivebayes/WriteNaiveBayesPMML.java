@@ -6,7 +6,7 @@ import java.util.*;
 import org.dom4j.*;
 import org.dom4j.io.*;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.*;
+import ncsa.d2k.modules.core.transform.binning.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.util.*;
 

@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.prediction.naivebayes;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.datatype.BinTree;
+import ncsa.d2k.modules.core.transform.binning.BinTree;
 
 import org.dom4j.*;
 import org.dom4j.io.*;

@@ -10,7 +10,7 @@ package ncsa.d2k.modules.core.transform.summarization;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.io.sql.*;
-import ncsa.d2k.modules.core.datatype.*;
+import ncsa.d2k.modules.core.transform.binning.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import java.sql.*;
 import java.util.ArrayList;

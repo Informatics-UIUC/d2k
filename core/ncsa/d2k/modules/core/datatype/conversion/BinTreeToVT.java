@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.datatype.conversion;
 
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.d2k.modules.core.transform.binning.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
