@@ -384,7 +384,14 @@ public class RectGraph  extends BaseGraph implements MouseInputListener  {
           }
 
 
+
           double[] vals = tc.getCentroid();
+          int[] ind = null;
+
+          if (tc.getSparse()){
+            vals = tc.getSparseCentroidValues();
+            ind = tc.getSparseCentroidInd();
+          }
 
           Column[] cols = new DoubleColumn[vals.length];
 
@@ -392,7 +399,15 @@ public class RectGraph  extends BaseGraph implements MouseInputListener  {
             double[] dval = new double[1];
             dval[0] = vals[a];
             cols[a] = new DoubleColumn(dval);
-            cols[a].setLabel(tab.getColumnLabel(ifeatures[a]));
+            if (tc.getSparse()){
+              if (tc.getTable() instanceof ncsa.d2k.modules.t2k.datatype.DocumentTermTable){
+                cols[a].setLabel(((ncsa.d2k.modules.t2k.datatype.DocumentTermTable)tc.getTable()).getTermData(ind[a]).getImage());
+              } else {
+                cols[a].setLabel(tab.getColumnLabel(ind[a]));
+              }
+            } else {
+              cols[a].setLabel(tab.getColumnLabel(ifeatures[a]));
+            }
           }
 
           Table newtab = new MutableTableImpl(cols);

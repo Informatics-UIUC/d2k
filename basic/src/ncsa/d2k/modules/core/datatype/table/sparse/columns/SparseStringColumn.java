@@ -57,7 +57,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
 
   /* determine the load on the array and its expanding factor*/
 
-  public static String DEFAULT = null;
+  public static String DEFAULT = "";
 
 
   public static float DEFAULT_LOAD_FACTOR = 0.5f;
@@ -899,7 +899,7 @@ public class SparseStringColumn extends AbstractSparseColumn{
 	  * Add the specified number of blank rows.
 	  * @param number number of rows to add.
 	  */
-	public void addRows(int number) 
+	public void addRows(int number)
 	{
 		// table is already sparse.  nothing to do.
 	}

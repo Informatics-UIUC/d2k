@@ -220,15 +220,34 @@ public class TableCluster implements Serializable {
       }
     } else {
       double sum = 0;
-      double[] temp = new double[_table.getNumColumns()];
+      double[] temp = null;
+      double[] tempv = null;
+      int[] tempi = null;
+      java.util.HashSet ofeats = new java.util.HashSet();
+      if (_table instanceof ExampleTable) {
+        ofeats = new java.util.HashSet();
+        int[] xfeats = ( (ExampleTable) _table).getOutputFeatures();
+        for (int x = 0, y = xfeats.length; x < y; x++){
+          ofeats.add(new Integer(xfeats[x]));
+        }
+        int numcols = ( (ExampleTable) _table).getInputFeatures().length;
+        temp = new double[numcols];
+        tempv = new double[numcols];
+        tempi = new int[numcols];
+      } else {
+        int numcols = _table.getNumColumns();
+        temp = new double[numcols];
+        tempv = new double[numcols];
+        tempi = new int[numcols];
+      }
       for (int j = 0, m = members.length; j < m; j++) {
         int feats[] = ((SparseTable)_table).getRowIndices(members[j]);
         for (int i = 0, n = feats.length; i < n; i++) {
-          temp[i] += _table.getDouble(members[j], feats[i]);
+          if (!ofeats.contains(new Integer(feats[i]))){
+            temp[feats[i]] += _table.getDouble(members[j], feats[i]);
+          }
         }
       }
-      double[] tempv = new double[_table.getNumColumns()];
-      int[] tempi = new int[_table.getNumColumns()];
       int cnt = 0;
       for (int i = 0, n = temp.length; i < n; i++){
         if (temp[i] != 0){
