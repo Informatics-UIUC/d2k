@@ -40,7 +40,7 @@ public class ChooseAttributes extends UIModule  {
    @return The name of this module.
    */
   public String getModuleName() {
-    return "Choose Input and Output Attributes";
+    return "Choose Attributes";
   }
 
   /**
