@@ -182,7 +182,7 @@ public class KMeansParams_Props extends JPanel implements CustomModuleEditor, Ac
     m_gbc.insets = new Insets(2,2,2,2);
     m_gbc.anchor = GridBagConstraints.CENTER;
     m_useFirst = new JCheckBox("Use First Rows", _src.getUseFirst());
-    m_useFirst.setToolTipText("Use first N rows as sample set.");
+    m_useFirst.setToolTipText("Use first rows in table as sample set.");
     m_gbl.setConstraints(m_useFirst, m_gbc);
 
 
