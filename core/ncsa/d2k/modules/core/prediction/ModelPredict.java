@@ -10,43 +10,50 @@ import ncsa.d2k.modules.core.datatype.table.*;
 =======
 	ModelPredict
 
-		takes in a model and a predictionTable
+		takes in a model and an example Table
 		and runs the model's predict function
-		on the test table
+		on the input table
 */
 public class ModelPredict extends ncsa.d2k.core.modules.ComputeModule
 {
+	/**
+		This pair returns an array of strings that contains the data types for the inputs.
+		@return the data types of all inputs.
+	*/
+	public String[] getInputTypes() {
+		String[] types = {
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable",
+			"ncsa.d2k.modules.PredictionModelModule"};
+		return types;
+	}
 
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Example Table";
+			case 1:
+				return "Prediction Model";
+			default: 
+				return "No such input";
+		}
+	}
 	/**
 		This pair returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "      The test set  ";
-			case 1: return "      The model  ";
-			default: return "No such input";
-		}
-	}
-
-	/**
-		This pair returns an array of strings that contains the data types for the inputs.
-		@return the data types of all inputs.
-	*/
-	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable","ncsa.d2k.modules.PredictionModelModule"};
-		return types;
-	}
-
-	/**
-		This pair returns the description of the outputs.
-		@return the description of the indexed output.
-	*/
-	public String getOutputInfo(int index) {
-		switch (index) {
-			case 0: return "      The PredictionTable with the prediction columns filled in by the model  ";
-			case 1: return "      The Model.  ";
-			default: return "No such output";
+			case 0: 
+				return "The table containing the examples that the model will be applied to.";
+			case 1: 
+				return "The prediction model to apply.";
+			default: 
+				return "No such input";
 		}
 	}
 
@@ -55,34 +62,35 @@ public class ModelPredict extends ncsa.d2k.core.modules.ComputeModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.PredictionTable","ncsa.d2k.modules.PredictionModelModule"};
+		String[] types = {
+			"ncsa.d2k.modules.core.datatype.table.PredictionTable" };
 		return types;
 	}
 
 	/**
-		This pair returns the description of the module.
-		@return the description of the module.
-	*/
-	public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    takes in a model and a TestTable and runs the model's predict function on     the test table  </body></html>";
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Prediction Table";
+			default: 
+				return "No such output";
+		}
 	}
-
-
 	/**
+		This pair returns the description of the outputs.
+		@return the description of the indexed output.
 	*/
-	public void doit() throws Exception {
-		ExampleTable tt= (ExampleTable)pullInput(0);
-		PredictionModelModule pmm=(PredictionModelModule)pullInput(1);
-
-		PredictionTable pt=pmm.predict(tt);
-		pushOutput(pt, 0);
-		pushOutput(pmm, 1);
-
-		/*ExampleTable tt= (ExampleTable) pullInput (0);
-		PredictionModelModule pmm = (PredictionModelModule) pullInput (1);
-		tt = (PredictionTable) pmm.predict (tt);
-		pushOutput(tt, 0);
-		*/
+	public String getOutputInfo(int index) {
+		switch (index) {
+			case 0: 
+				return "A table with the prediction columns filled in by the model.";
+			default: 
+				return "No such output";
+		}
 	}
 
 	/**
@@ -94,33 +102,36 @@ public class ModelPredict extends ncsa.d2k.core.modules.ComputeModule
 	}
 
 	/**
-	 * Return the human readable name of the indexed input.
-	 * @param index the index of the input.
-	 * @return the human readable name of the indexed input.
-	 */
-	public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "TestTable";
-			case 1:
-				return "PredictionModel";
-			default: return "NO SUCH INPUT!";
-		}
+		This pair returns the description of the module.
+		@return the description of the module.
+	*/
+	public String getModuleInfo() {
+		StringBuffer sb = new StringBuffer( "Overview: This module applies a prediction model to an table of examples and ");
+		sb.append("makes predictions for each output attribute based on the values of the input attributes. ");
+
+		sb.append("</p><p>Description:  This module applies a previously built model to a new set of examples that have the ");
+		sb.append("same attributes as those used to train/build the model.  The module creates a new table that contains ");
+		sb.append("columns for each of the values the model predicts, in addition to the columns found in the original table. ");
+		sb.append("The new columns are filled in with values predicted by the model based on the values of the input attributes. ");
+	
+		return sb.toString();
 	}
+
 
 	/**
-	 * Return the human readable name of the indexed output.
-	 * @param index the index of the output.
-	 * @return the human readable name of the indexed output.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			case 0:
-				return "TTout";
-			case 1:
-				return "pmm";
-			default: return "NO SUCH OUTPUT!";
-		}
+	*/
+	public void doit() throws Exception {
+		ExampleTable tt= (ExampleTable)pullInput(0);
+		PredictionModelModule pmm=(PredictionModelModule)pullInput(1);
+
+		PredictionTable pt=pmm.predict(tt);
+		pushOutput(pt, 0);
+
 	}
+
 }
 
+// Start QA Comments
+// 3/30/03   Ruth removed output port for model - no longer copy through
+//           Still needs comments about impact on input table and if possible better description.
+// 
