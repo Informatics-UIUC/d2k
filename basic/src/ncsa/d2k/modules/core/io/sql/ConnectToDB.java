@@ -215,15 +215,15 @@ public class ConnectToDB extends UIModule {
     }
 
     public PropertyDescription [] getPropertiesDescriptions () {
-      PropertyDescription [] pds = new PropertyDescription [7];
+      PropertyDescription [] pds = new PropertyDescription [6];
       pds[0] = new PropertyDescription ("dbVendor", "Database Vendor", "The database vendor.");
       pds[1] = new PropertyDescription ("username", "User Name", "The login account to use.");
-      pds[2] = new PropertyDescription ("password", "Password", "The password to use.");
-      pds[3] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
-      pds[4] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
-      pds[5] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
+      //pds[2] = new PropertyDescription ("password", "Password", "The password to use.");
+      pds[2] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
+      pds[3] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
+      pds[4] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
       //pds[5] = new PropertyDescription ("url", "Connection URL", "The connection URL to use (for MicroSoft SQLServer).");
-      pds[6] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
+      pds[5] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
       return pds;
     }
 
