@@ -9,7 +9,8 @@ package ncsa.d2k.modules.weka.attributeSelection.search;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import weka.attributeSelection.Ranker;
 
 public class WEKA_AttributeSelectionSearch_Ranker extends ComputeModule {
@@ -45,8 +46,11 @@ public class WEKA_AttributeSelectionSearch_Ranker extends ComputeModule {
   //================
 
   public String getOutputInfo(int parm1) {
-    return "weka.attributeSelection.ASSearch";
-  }
+		switch (parm1) {
+			case 0: return "weka.attributeSelection.ASSearch";
+			default: return "No such output";
+		}
+	}
 
   protected void doit() throws java.lang.Exception {
     try {
@@ -61,21 +65,24 @@ public class WEKA_AttributeSelectionSearch_Ranker extends ComputeModule {
   }
 
   public String getModuleInfo() {
-    return "This modules provides a ranking mechanism in conjunction with attribute evaluators.";
-  }
+		return "<html>  <head>      </head>  <body>    This modules provides a ranking mechanism in conjunction with attribute     evaluators.  </body></html>";
+	}
 
   public String[] getInputTypes() {
-    return null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   public String[] getOutputTypes() {
-    String[] out = {"weka.attributeSelection.ASSearch"};
-    return out;
-  }
+		String[] types = {"weka.attributeSelection.ASSearch"};
+		return types;
+	}
 
   public String getInputInfo(int parm1) {
-    return "";
-  }
+		switch (parm1) {
+			default: return "No such input";
+		}
+	}
 
   // Options
 
@@ -162,4 +169,36 @@ public class WEKA_AttributeSelectionSearch_Ranker extends ComputeModule {
   public String getStartSet () {
     return m_startRange;
   }
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WEKA_AttributeSelectionSearch_Ranker";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

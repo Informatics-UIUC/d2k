@@ -8,8 +8,8 @@ package ncsa.d2k.modules.weka.classifier;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
 
+import ncsa.d2k.core.modules.*;
 import weka.core.*;
 import weka.classifiers.*;
 
@@ -42,24 +42,61 @@ public class WEKA_ID3ModelProducer extends ModelProducerModule {
   }
 
   public String getInputInfo(int parm1) {
-    return "";
-  }
+		switch (parm1) {
+			default: return "No such input";
+		}
+	}
 
   public String getModuleInfo() {
-	StringBuffer sb = new StringBuffer("Generates an ID3 tree. NOTE: This classifier will accept only nominal attributes, a nominal class, and no missing values.");
-	return sb.toString();
-  }
+		return "<html>  <head>      </head>  <body>    Generates an ID3 tree. NOTE: This classifier will accept only nominal     attributes, a nominal class, and no missing values.  </body></html>";
+	}
 
   public String getOutputInfo(int parm1) {
-    return "ncsa.d2k.infrastructure.modules.PredictionModelModule: WEKA_ID3Model";
-  }
+		switch (parm1) {
+			case 0: return "ncsa.d2k.infrastructure.modules.PredictionModelModule: WEKA_ID3Model";
+			default: return "No such output";
+		}
+	}
 
   public String[] getInputTypes() {
-    return null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   public String[] getOutputTypes() {
-    String[] out = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
-    return out;
-  }
+		String[] types = {"ncsa.d2k.core.modules.PredictionModelModule"};
+		return types;
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WEKA_ID3ModelProducer";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

@@ -1,8 +1,9 @@
 package ncsa.d2k.modules.weka.vis;
 
+
 import weka.core.Drawable;
 import ncsa.d2k.modules.PredictionModelModule;
-import ncsa.d2k.infrastructure.modules.DataPrepModule;
+import ncsa.d2k.core.modules.DataPrepModule;
 
 /**
  * Casts a PredictionModelModule to a weka.core.Drawable, if appropriate.
@@ -16,12 +17,15 @@ import ncsa.d2k.infrastructure.modules.DataPrepModule;
 public class WEKA_CastModelToDrawable extends DataPrepModule {
 
 	public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.PredictionModelModule"};
-		return in;
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule"};
+		return types;
 	}
 
 	public String getInputInfo(int i) {
-		return "A PredictionModelModule that implements the Drawable interface.";
+		switch (i) {
+			case 0: return "A PredictionModelModule that implements the Drawable interface.";
+			default: return "No such input";
+		}
 	}
 
 	public String getInputName(int i) {
@@ -29,12 +33,15 @@ public class WEKA_CastModelToDrawable extends DataPrepModule {
 	}
 
 	public String[] getOutputTypes() {
-		String[] out = {"weka.core.Drawable"};
-		return out;
+		String[] types = {"weka.core.Drawable"};
+		return types;
 	}
 
 	public String getOutputInfo(int i) {
-		return "A weka.core.Drawable object.";
+		switch (i) {
+			case 0: return "A weka.core.Drawable object.";
+			default: return "No such output";
+		}
 	}
 
 	public String getOutputName(int i) {
@@ -42,8 +49,7 @@ public class WEKA_CastModelToDrawable extends DataPrepModule {
 	}
 
 	public String getModuleInfo() {
-		String s = "Casts a PredictionModelModule to a weka.core.Drawable.";
-		return s;
+		return "<html>  <head>      </head>  <body>    Casts a PredictionModelModule to a weka.core.Drawable.  </body></html>";
 	}
 
 	public void doit() {
@@ -51,4 +57,13 @@ public class WEKA_CastModelToDrawable extends DataPrepModule {
 		if(pmm instanceof weka.core.Drawable)
 			pushOutput((Drawable)pmm, 0);
 	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WEKA_CastModelToDrawable";
+	}
+
 }

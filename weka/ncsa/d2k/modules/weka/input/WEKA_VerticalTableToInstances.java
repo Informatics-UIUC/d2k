@@ -3,15 +3,10 @@ package ncsa.d2k.modules.weka.input;
 // Java Imports
 //==============
 
+
 import java.io.*;
 import java.util.*;
-
-//===============
-// Other Imports
-//===============
-
-import ncsa.d2k.infrastructure.modules.*;
-//import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import weka.core.*;
@@ -44,18 +39,18 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
        @return An array containing the datatypes of the inputs.
     */
     public String[] getInputTypes() {
-	String []in = {"ncsa.d2k.modules.core.datatype.table.Table"};
-	return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
+	}
 
     /**
        Describe the output types.
        @return An array containing the datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-	String []out = {"weka.core.Instances"};
-	return out;
-    }
+		String[] types = {"weka.core.Instances"};
+		return types;
+	}
 
     /**
        Describe the inputs.
@@ -63,8 +58,11 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
        @return A description of the selected input.
     */
     public String getInputInfo(int i) {
-	return "A D2K Vertical Table";
-    }
+		switch (i) {
+			case 0: return "A D2K Vertical Table";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -85,8 +83,11 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
        @return A description of the selected output.
     */
     public String getOutputInfo(int i) {
-	return "WEKA Instances object built from D2K Vertical Table";
-    }
+		switch (i) {
+			case 0: return "WEKA Instances object built from D2K Vertical Table";
+			default: return "No such output";
+		}
+	}
 
    /**
        Return the name of a specific output.
@@ -106,12 +107,8 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
        @return A description of this module.
     */
     public String getModuleInfo() {
-	StringBuffer sb = new StringBuffer("This module will read in a D2K Vertical Table ");
-	sb.append("and construct a WEKA Instances object.  The instances object ");
-	sb.append("is the primary data structure for holding table information in the WEKA ");
-	sb.append("framework. ");
-	return sb.toString();
-    }
+		return "<html>  <head>      </head>  <body>    This module will read in a D2K Vertical Table and construct a WEKA     Instances object. The instances object is the primary data structure for     holding table information in the WEKA framework.  </body></html>";
+	}
 
    /**
        Return the name of this module.

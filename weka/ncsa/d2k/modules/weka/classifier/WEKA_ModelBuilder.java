@@ -8,8 +8,9 @@ package ncsa.d2k.modules.weka.classifier;
 // Other Imports
 //===============
 
+
 import ncsa.d2k.modules.PredictionModelModule;
-import ncsa.d2k.infrastructure.modules.ComputeModule;
+import ncsa.d2k.core.modules.ComputeModule;
 import weka.classifiers.*;
 import weka.core.Instances;
 import ncsa.d2k.modules.weka.classifier.WEKA_ModelDelegator;
@@ -46,27 +47,63 @@ public class WEKA_ModelBuilder extends ComputeModule {
   }
 
   public String getOutputInfo(int parm1) {
-    return "ncsa.d2k.modules.PredictionModelModule: Classifier model built on training set of instances.";
-  }
+		switch (parm1) {
+			case 0: return "ncsa.d2k.modules.PredictionModelModule: Classifier model built on training set of instances.";
+			default: return "No such output";
+		}
+	}
   public String getModuleInfo() {
-    return "Takes the input instances and uses them to train the input classifier.  Outputs the trained model.";
-  }
+		return "<html>  <head>      </head>  <body>    Takes the input instances and uses them to train the input classifier.     Outputs the trained model.  </body></html>";
+	}
   public String[] getInputTypes() {
-    String []in = {"weka.core.Instances","ncsa.d2k.modules.PredictionModelModule"};
-    return in;
-  }
+		String[] types = {"weka.core.Instances","ncsa.d2k.modules.PredictionModelModule"};
+		return types;
+	}
   public String[] getOutputTypes() {
-    String[] out = {"ncsa.d2k.modules.PredictionModelModule"};
-    return out;
-  }
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule"};
+		return types;
+	}
   public String getInputInfo(int parm1) {
-    if (parm1 == 1) {
-      return "weka.core.Instances: training set.";
-    } else if (parm1 == 0) {
-      return "ncsa.d2k.modules.PredictionModelModule: input model.";
-    } else {
-      return "No such input.";
-    }
+		switch (parm1) {
+			case 0: return "ncsa.d2k.modules.PredictionModelModule: input model.";
+			case 1: return "weka.core.Instances: training set.";
+			default: return "No such input";
+		}
+	}
 
-  }
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WEKA_ModelBuilder";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

@@ -20,9 +20,9 @@ import java.awt.Dimension;
 //===============
 
 import weka.gui.treevisualizer.*;
-import ncsa.d2k.infrastructure.modules.ViewModule;
+import ncsa.d2k.core.modules.*;
 
-public class WEKA_TreeUserView extends TreeVisualizer implements ncsa.d2k.infrastructure.views.UserView {
+public class WEKA_TreeUserView extends TreeVisualizer implements UserView {
 
     //==============
     // Data Members

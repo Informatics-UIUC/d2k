@@ -8,9 +8,10 @@ package ncsa.d2k.modules.weka.evaluation;
 //===============
 // Other Imports
 //===============
+
 import ncsa.d2k.modules.weka.classifier.WEKA_ModelDelegator;
 import ncsa.d2k.modules.PredictionModelModule;
-import ncsa.d2k.infrastructure.modules.ModelEvaluatorModule;
+import ncsa.d2k.core.modules.ModelEvaluatorModule;
 import weka.core.*;
 import weka.classifiers.*;
 
@@ -34,32 +35,33 @@ public class WEKA_CVClassifierEvaluator extends ModelEvaluatorModule {
   //================
 
   public String getOutputInfo(int parm1) {
-    return "PredictionModelModule";
-  }
+		switch (parm1) {
+			case 0: return "PredictionModelModule";
+			default: return "No such output";
+		}
+	}
 
   public String[] getOutputTypes() {
-    String [] out = {"ncsa.d2k.modules.PredictionModelModule"};
-    return out;
-  }
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule"};
+		return types;
+	}
 
   public String getModuleInfo() {
-    return "This module executes classifier generic performance tests on WEKA "
-            + " classifier models.";
-  }
+		return "<html>  <head>      </head>  <body>    This module executes classifier generic performance tests on WEKA     classifier models.  </body></html>";
+	}
 
   public String[] getInputTypes() {
-    String []in = {"ncsa.d2k.modules.PredictionModelModule", "weka.core.Instances"};
-    return in;
-  }
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule","weka.core.Instances"};
+		return types;
+	}
 
   public String getInputInfo(int i) {
-    if(i == 0)
-      return "A weka classifier model.";
-    else if(i == 1)
-      return "A weka.core.Instances instance.";
-    else
-      return "No such input";
-  }
+		switch (i) {
+			case 0: return "A weka classifier model.";
+			case 1: return "A weka.core.Instances instance.";
+			default: return "No such input";
+		}
+	}
 
   protected void doit() throws java.lang.Exception {
 
@@ -128,4 +130,40 @@ public class WEKA_CVClassifierEvaluator extends ModelEvaluatorModule {
     m_folds = folds;
   }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WEKA_CVClassifierEvaluator";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

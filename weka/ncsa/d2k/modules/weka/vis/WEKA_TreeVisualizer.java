@@ -18,8 +18,9 @@ package ncsa.d2k.modules.weka.vis;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.UserView;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.UserView;
 import weka.core.Drawable;
 
 
@@ -42,27 +43,31 @@ public class WEKA_TreeVisualizer extends VisModule {
 //================
 
   public String getInputInfo(int parm1) {
-    return "Object implementing WEKA Drawable interface";
-  }
+		switch (parm1) {
+			case 0: return "Object implementing WEKA Drawable interface";
+			default: return "No such input";
+		}
+	}
 
   public String[] getInputTypes() {
-    String[] in = {"weka.core.Drawable"};
-    return in;
-  }
+		String[] types = {"weka.core.Drawable"};
+		return types;
+	}
 
   public String getOutputInfo(int parm1) {
-    return "This module has no outputs.";
-  }
+		switch (parm1) {
+			default: return "No such output";
+		}
+	}
 
   public String[] getOutputTypes() {
-    return null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   public String getModuleInfo() {
-    StringBuffer sb = new StringBuffer("Produces a graphical visualization of a tree model.");
-    sb = sb.append(" Requires the input model to implement the weka.core.Drawable interface.");
-    return sb.toString();
-  }
+		return "<html>  <head>      </head>  <body>    Produces a graphical visualization of a tree model. Requires the input     model to implement the weka.core.Drawable interface.  </body></html>";
+	}
 
   protected UserView createUserView() {
     String graphstr = null;
@@ -82,4 +87,36 @@ public class WEKA_TreeVisualizer extends VisModule {
     //TODO: implement this ncsa.d2k.infrastructure.modules.ViewModule abstract method
   }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WEKA_TreeVisualizer";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

@@ -8,9 +8,9 @@ package ncsa.d2k.modules.weka.classifier;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import weka.classifiers.j48.J48;
 import weka.core.Instances;
 
@@ -18,7 +18,7 @@ import weka.core.Instances;
  * ModelGen wrapper around WEKA implementation of C4.5
  * @author D. Searsmith
  */
-public class WEKA_J48ModelProducer extends ModelProducerModule implements HasNames {
+public class WEKA_J48ModelProducer extends ModelProducerModule  {
 
   //==============
   // Data Members
@@ -71,54 +71,16 @@ public class WEKA_J48ModelProducer extends ModelProducerModule implements HasNam
    * @return A description of this module.
    */
   public String getModuleInfo() {
-    StringBuffer sb = new StringBuffer("Class for generating an unpruned or a pruned C4.5 decision tree. ");
-    sb = sb.append("For more information, see \n\n");
-
-    sb = sb.append("Ross Quinlan (1993). C4.5: Programs for Machine Learning,");
-    sb = sb.append("Morgan Kaufmann Publishers, San Mateo, CA. \n\n\n");
-
-    sb = sb.append("Valid options are: \n\n");
-
-    sb = sb.append("unpruned \n");
-    sb = sb.append("Use unpruned tree. \n\n");
-
-    sb = sb.append("confidenceFactor \n");
-    sb = sb.append("Set confidence threshold for pruning. (Default: 0.25) \n\n");
-
-    sb = sb.append("minNumObj \n");
-    sb = sb.append("Set minimum number of instances per leaf. (Default: 2) \n\n");
-
-    sb = sb.append("reducedErrorPruning \n");
-    sb = sb.append("Use reduced error pruning. No subtree raising is performed. \n\n");
-
-    sb = sb.append("numFolds \n");
-    sb = sb.append("Set number of folds for reduced error pruning. One fold is ");
-    sb = sb.append("used as the pruning set. (Default: 3) \n\n");
-
-    sb = sb.append("binarySplits \n");
-    sb = sb.append("Use binary splits for nominal attributes. \n\n");
-
-    sb = sb.append("subtreeRaising \n");
-    sb = sb.append("Don't perform subtree raising. \n\n");
-
-    sb = sb.append(" saveInstances -- FIXED TO FALSE \n");
-    sb = sb.append("Do not clean up after the tree has been built. \n");
-
-    sb = sb.append("useLaplace \n");
-    sb = sb.append("If set, Laplace smoothing is used for predicted probabilites. \n\n\n");
-
-    sb = sb.append("@author Eibe Frank (eibe@cs.waikato.ac.nz)");
-    return sb.toString();
-
-  }
+		return "<html>  <head>      </head>  <body>    Class for generating an unpruned or a pruned C4.5 decision tree. For more     information, see Ross Quinlan (1993). C4.5: Programs for Machine     Learning,Morgan Kaufmann Publishers, San Mateo, CA. Valid options are:     unpruned Use unpruned tree. confidenceFactor Set confidence threshold for     pruning. (Default: 0.25) minNumObj Set minimum number of instances per     leaf. (Default: 2) reducedErrorPruning Use reduced error pruning. No     subtree raising is performed. numFolds Set number of folds for reduced     error pruning. One fold is used as the pruning set. (Default: 3)     binarySplits Use binary splits for nominal attributes. subtreeRaising     Don't perform subtree raising. saveInstances -- FIXED TO FALSE Do not     clean up after the tree has been built. useLaplace If set, Laplace     smoothing is used for predicted probabilites. @author Eibe Frank     (eibe@cs.waikato.ac.nz)  </body></html>";
+	}
 
   /**
    * Return the name of this module.
    * @return The name of this module.
    */
   public String getModuleName() {
-    return "WEKA_J48ModelGen";
-  }
+		return "WEKA_J48ModelGen";
+	}
 
   /**
    * Return a String array containing the datatypes the inputs to this
@@ -126,8 +88,9 @@ public class WEKA_J48ModelProducer extends ModelProducerModule implements HasNam
    * @return The datatypes of the inputs.
    */
   public String[] getInputTypes() {
-    return null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   /**
    * Return a String array containing the datatypes of the outputs of this
@@ -135,9 +98,9 @@ public class WEKA_J48ModelProducer extends ModelProducerModule implements HasNam
    * @return The datatypes of the outputs.
    */
   public String[] getOutputTypes() {
-    String [] out = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
-    return out;
-  }
+		String[] types = {"ncsa.d2k.core.modules.PredictionModelModule"};
+		return types;
+	}
 
   /**
    * Return a description of a specific input.
@@ -145,8 +108,10 @@ public class WEKA_J48ModelProducer extends ModelProducerModule implements HasNam
    * @return The description of the input
    */
   public String getInputInfo(int i) {
-    return "";
-  }
+		switch (i) {
+			default: return "No such input";
+		}
+	}
 
   /**
    * Return the name of a specific input.
@@ -154,8 +119,10 @@ public class WEKA_J48ModelProducer extends ModelProducerModule implements HasNam
    * @return The name of the input
    */
   public String getInputName(int i) {
-    return "";
-  }
+		switch(i) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
   /**
    * Return the description of a specific output.
@@ -163,12 +130,11 @@ public class WEKA_J48ModelProducer extends ModelProducerModule implements HasNam
    * @return The description of the output.
    */
   public String getOutputInfo(int i) {
-    if(i == 0) {
-      return "ncsa.d2k.infrastructure.modules.PredictionModelModule: A WEKA_J48Model module.";
-    } else {
-      return "no such output";
-    }
-  }
+		switch (i) {
+			case 0: return "ncsa.d2k.infrastructure.modules.PredictionModelModule: A WEKA_J48Model module.";
+			default: return "No such output";
+		}
+	}
 
   /**
    * Return the name of a specific output.
@@ -176,11 +142,12 @@ public class WEKA_J48ModelProducer extends ModelProducerModule implements HasNam
    * @return The name of the output
    */
   public String getOutputName(int i) {
-    switch(i) {
-      case 0: return "WEKA_J48Model";
-      default: return "no such output";
-    }
-  }
+		switch(i) {
+			case 0:
+				return "WEKA_J48Model";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
   /**
    * Create the model and push it out.

@@ -8,7 +8,8 @@ package ncsa.d2k.modules.weka.attributeSelection.evaluation;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.CfsSubsetEval;
 
@@ -51,25 +52,31 @@ public class WEKA_AttributeSelectionEvaluation_CFS extends ComputeModule {
   }
 
   public String getModuleInfo() {
-    return "A module for supplying a CFS attribute subset evaluator to the attribute selector.";
-  }
+		return "<html>  <head>      </head>  <body>    A module for supplying a CFS attribute subset evaluator to the attribute     selector.  </body></html>";
+	}
 
   public String[] getInputTypes() {
-    return null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   public String getInputInfo(int parm1) {
-    return "";
-  }
+		switch (parm1) {
+			default: return "No such input";
+		}
+	}
 
   public String getOutputInfo(int parm1) {
-    return "ASEvaluation";
-  }
+		switch (parm1) {
+			case 0: return "ASEvaluation";
+			default: return "No such output";
+		}
+	}
 
   public String[] getOutputTypes() {
-    String[] out = {"weka.attributeSelection.ASEvaluation"};
-    return out;
-  }
+		String[] types = {"weka.attributeSelection.ASEvaluation"};
+		return types;
+	}
 
 
   //Properties
@@ -137,4 +144,36 @@ public class WEKA_AttributeSelectionEvaluation_CFS extends ComputeModule {
     return  m_missingSeperate;
   }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WEKA_AttributeSelectionEvaluation_CFS";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

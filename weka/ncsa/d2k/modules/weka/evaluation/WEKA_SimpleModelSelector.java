@@ -8,9 +8,10 @@ package ncsa.d2k.modules.weka.evaluation;
 // Other Imports
 //===============
 
+
 import ncsa.d2k.modules.PredictionModelModule;
-import ncsa.d2k.infrastructure.modules.ModelSelectorModule;
-import ncsa.d2k.infrastructure.modules.ModelModule;
+import ncsa.d2k.core.modules.ModelSelectorModule;
+import ncsa.d2k.core.modules.ModelModule;
 
 
 public class WEKA_SimpleModelSelector extends ModelSelectorModule {
@@ -33,26 +34,31 @@ public class WEKA_SimpleModelSelector extends ModelSelectorModule {
   //================
 
   public String getModuleInfo() {
-    return "Simply selects the last model it has received for storage.";
-
-  }
+		return "<html>  <head>      </head>  <body>    Simply selects the last model it has received for storage.  </body></html>";
+	}
 
   public String[] getInputTypes() {
-    String[] in = {"ncsa.d2k.modules.PredictionModelModule"};
-    return in;
-  }
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule"};
+		return types;
+	}
 
   public String getInputInfo(int parm1) {
-    return "A PredicitonModelModule.";
-  }
+		switch (parm1) {
+			case 0: return "A PredicitonModelModule.";
+			default: return "No such input";
+		}
+	}
 
   public String getOutputInfo(int parm1) {
-    return "";
-  }
+		switch (parm1) {
+			default: return "No such output";
+		}
+	}
 
   public String[] getOutputTypes() {
-    return null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   protected void doit() throws java.lang.Exception {
     try {
@@ -70,4 +76,36 @@ public class WEKA_SimpleModelSelector extends ModelSelectorModule {
     return m_model;
   }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WEKA_SimpleModelSelector";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

@@ -8,7 +8,8 @@ package ncsa.d2k.modules.weka.attributeSelection.evaluation;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.weka.classifier.WEKA_ModelDelegator;
 import weka.core.Utils;
 import weka.attributeSelection.ASEvaluation;
@@ -48,8 +49,11 @@ public class WEKA_AttributeSelectionEvaluation_Classifier extends ComputeModule 
   //================
 
   public String getOutputInfo(int parm1) {
-    return "ASEvaluation";
-  }
+		switch (parm1) {
+			case 0: return "ASEvaluation";
+			default: return "No such output";
+		}
+	}
 
   protected void doit() throws java.lang.Exception {
     try {
@@ -64,19 +68,22 @@ public class WEKA_AttributeSelectionEvaluation_Classifier extends ComputeModule 
     }
   }
   public String getModuleInfo() {
-    return "A module for supplying a classification attribute subset evaluator to the attribute selector.";
-  }
+		return "<html>  <head>      </head>  <body>    A module for supplying a classification attribute subset evaluator to the     attribute selector.  </body></html>";
+	}
   public String[] getInputTypes() {
-    String[] in = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
-    return in;
-  }
+		String[] types = {"ncsa.d2k.core.modules.PredictionModelModule"};
+		return types;
+	}
   public String[] getOutputTypes() {
-    String[] out = {"weka.attributeSelection.ASEvaluation"};
-    return out;
-  }
+		String[] types = {"weka.attributeSelection.ASEvaluation"};
+		return types;
+	}
   public String getInputInfo(int parm1) {
-    return "ncsa.d2k.infrastructure.modules.PredictionModelModule";
-  }
+		switch (parm1) {
+			case 0: return "ncsa.d2k.infrastructure.modules.PredictionModelModule";
+			default: return "No such input";
+		}
+	}
 
   //Properties
 
@@ -170,4 +177,38 @@ public class WEKA_AttributeSelectionEvaluation_Classifier extends ComputeModule 
   }
 
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WEKA_AttributeSelectionEvaluation_Classifier";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

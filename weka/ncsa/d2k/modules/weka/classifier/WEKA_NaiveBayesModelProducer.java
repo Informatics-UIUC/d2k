@@ -8,9 +8,9 @@ package ncsa.d2k.modules.weka.classifier;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import weka.classifiers.j48.J48;
 import weka.core.Instances;
 
@@ -18,7 +18,7 @@ import weka.core.Instances;
  * ModelGen wrapper around WEKA implementation of C4.5
  * @author D. Searsmith
  */
-public class WEKA_NaiveBayesModelProducer extends ModelProducerModule implements HasNames {
+public class WEKA_NaiveBayesModelProducer extends ModelProducerModule  {
 
   //==============
   // Data Members
@@ -45,47 +45,16 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule implements
    * @return A description of this module.
    */
   public String getModuleInfo() {
-
-    String info =  "Class for a Naive Bayes classifier using estimator classes. Numeric"
-                    + " estimator precision values are chosen based on analysis of the "
-                    + " training data. For this reason, the classifier is not an "
-                    + " UpdateableClassifier (which in typical usage are initialized with zero"
-                    + " training instances) -- if you need the UpdateableClassifier functionality,"
-                    + " Create an empty class such as the following: <p>"
-                    + "  <pre><code>"
-                    + " public class NaiveBayesUpdateable extends NaiveBayes"
-                    + "      implements UpdateableClassifier {"
-                    + ""
-                    + "  }"
-                    + " </code></pre>"
-                    + " This classifier will use a default precision of 0.1 for numeric attributes"
-                    + " when buildClassifier is called with zero training instances."
-                    + " <p>"
-                    + " For more information on Naive Bayes classifiers, see<p>"
-                    + " "
-                    + "  George H. John and Pat Langley (1995). <i>Estimating"
-                    + " Continuous Distributions in Bayesian Classifiers</i>. Proceedings"
-                    + " of the Eleventh Conference on Uncertainty in Artificial"
-                    + " Intelligence. pp. 338-345. Morgan Kaufmann, San Mateo.<p>"
-                    + ""
-                    + " Valid options are:<p>"
-                    + ""
-                    + " -K <br>"
-                    + " Use kernel estimation for modelling numeric attributes rather than"
-                    + " a single normal distribution.<p>";
-
-
-    return info;
-
-  }
+		return "<html>  <head>      </head>  <body>    Class for a Naive Bayes classifier using estimator classes. Numeric     estimator precision values are chosen based on analysis of the training     data. For this reason, the classifier is not an UpdateableClassifier     (which in typical usage are initialized with zero training instances) --     if you need the UpdateableClassifier functionality, Create an empty class     such as the following:    <p>          </p>    <pre><code> public class NaiveBayesUpdateable extends NaiveBayes      implements UpdateableClassifier {  } </code>    </pre>    This classifier will use a default precision of 0.1 for numeric attributes     when buildClassifier is called with zero training instances.    <p>      For more information on Naive Bayes classifiers, see    </p>    <p>      George H. John and Pat Langley (1995). <i>Estimating Continuous       Distributions in Bayesian Classifiers</i>. Proceedings of the Eleventh       Conference on Uncertainty in Artificial Intelligence. pp. 338-345.       Morgan Kaufmann, San Mateo.    </p>    <p>      Valid options are:    </p>    <p>      -K<br>Use kernel estimation for modelling numeric attributes rather than       a single normal distribution.    </p>  </body></html>";
+	}
 
   /**
    * Return the name of this module.
    * @return The name of this module.
    */
   public String getModuleName() {
-    return "WEKA_NaiveBayesianModelGen";
-  }
+		return "WEKA_NaiveBayesianModelGen";
+	}
 
   /**
    * Return a String array containing the datatypes the inputs to this
@@ -93,8 +62,9 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule implements
    * @return The datatypes of the inputs.
    */
   public String[] getInputTypes() {
-    return null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   /**
    * Return a String array containing the datatypes of the outputs of this
@@ -102,9 +72,9 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule implements
    * @return The datatypes of the outputs.
    */
   public String[] getOutputTypes() {
-    String [] out = {"ncsa.d2k.modules.PredictionModelModule"};
-    return out;
-  }
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule"};
+		return types;
+	}
 
   /**
    * Return a description of a specific input.
@@ -112,8 +82,10 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule implements
    * @return The description of the input
    */
   public String getInputInfo(int i) {
-    return "";
-  }
+		switch (i) {
+			default: return "No such input";
+		}
+	}
 
   /**
    * Return the name of a specific input.
@@ -121,11 +93,10 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule implements
    * @return The name of the input
    */
   public String getInputName(int i) {
-    switch(i) {
-      case 0: return "Instances";
-      default: return "no such input";
-    }
-  }
+		switch(i) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
   /**
    * Return the description of a specific output.
@@ -133,12 +104,11 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule implements
    * @return The description of the output.
    */
   public String getOutputInfo(int i) {
-    if(i == 0) {
-      return "ncsa.d2k.modules.PredictionModelModule: A WEKA_NaiveBayesModel module.";
-    } else {
-      return "no such output";
-    }
-  }
+		switch (i) {
+			case 0: return "ncsa.d2k.modules.PredictionModelModule: A WEKA_NaiveBayesModel module.";
+			default: return "No such output";
+		}
+	}
 
   /**
    * Return the name of a specific output.
@@ -146,11 +116,12 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule implements
    * @return The name of the output
    */
   public String getOutputName(int i) {
-    switch(i) {
-      case 0: return "WEKA_NaiveBayesModel";
-      default: return "no such output";
-    }
-  }
+		switch(i) {
+			case 0:
+				return "WEKA_NaiveBayesModel";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
   /**
    * Create the model and push it out.

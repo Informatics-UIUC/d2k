@@ -9,7 +9,8 @@ package ncsa.d2k.modules.weka.attributeSelection;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import weka.core.Instances;
 import weka.attributeSelection.*;
 
@@ -35,32 +36,33 @@ public class WEKA_AttributeSelector extends ComputeModule {
   //================
 
   public String getOutputInfo(int parm1) {
-    return "";
-  }
+		switch (parm1) {
+			default: return "No such output";
+		}
+	}
 
   public String getModuleInfo() {
-    return "This module will implement attribute selection using the input training set, search method, and evaluation metric.";
-  }
+		return "<html>  <head>      </head>  <body>    This module will implement attribute selection using the input training     set, search method, and evaluation metric.  </body></html>";
+	}
 
   public String[] getInputTypes() {
-    String[] in = {"weka.core.Instances", "weka.attributeSelection.ASSearch", "weka.attributeSelection.ASEvaluation"};
-    return in;
-  }
+		String[] types = {"weka.core.Instances","weka.attributeSelection.ASSearch","weka.attributeSelection.ASEvaluation"};
+		return types;
+	}
 
   public String[] getOutputTypes() {
-    return  null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   public String getInputInfo(int parm1) {
-    if (parm1 == 0) {
-      return "WEKA instance set";
-    } else if (parm1 == 1) {
-      return "WEKA search module";
-    } else if (parm1 == 2) {
-      return "WEKA evaluation module";
-    }
-    return "Not a valid input.";
-  }
+		switch (parm1) {
+			case 0: return "WEKA instance set";
+			case 1: return "WEKA search module";
+			case 2: return "WEKA evaluation module";
+			default: return "No such input";
+		}
+	}
 
   protected void doit() throws java.lang.Exception {
     try {
@@ -122,4 +124,40 @@ public class WEKA_AttributeSelector extends ComputeModule {
     return m_numFolds;
   }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WEKA_AttributeSelector";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			case 2:
+				return "input2";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

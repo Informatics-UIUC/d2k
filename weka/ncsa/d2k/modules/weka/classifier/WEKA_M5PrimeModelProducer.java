@@ -8,13 +8,13 @@ package ncsa.d2k.modules.weka.classifier;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import weka.classifiers.m5.*;
 import weka.core.Instances;
 
-public class WEKA_M5PrimeModelProducer extends ModelProducerModule implements HasNames {
+public class WEKA_M5PrimeModelProducer extends ModelProducerModule  {
 
   //==============
   // Data Members
@@ -47,18 +47,16 @@ public class WEKA_M5PrimeModelProducer extends ModelProducerModule implements Ha
    * @return A description of this module.
    */
   public String getModuleInfo() {
-    StringBuffer sb = new StringBuffer("Class for generating a model tree model (M5Prime)");
- return sb.toString();
-
-  }
+		return "<html>  <head>      </head>  <body>    Class for generating a model tree model (M5Prime)  </body></html>";
+	}
 
   /**
    * Return the name of this module.
    * @return The name of this module.
    */
   public String getModuleName() {
-    return "WEKA_M5PrimeModelProducer";
-  }
+		return "WEKA_M5PrimeModelProducer";
+	}
 
   /**
    * Return a String array containing the datatypes the inputs to this
@@ -66,8 +64,9 @@ public class WEKA_M5PrimeModelProducer extends ModelProducerModule implements Ha
    * @return The datatypes of the inputs.
    */
   public String[] getInputTypes() {
-    return null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   /**
    * Return a String array containing the datatypes of the outputs of this
@@ -75,9 +74,9 @@ public class WEKA_M5PrimeModelProducer extends ModelProducerModule implements Ha
    * @return The datatypes of the outputs.
    */
   public String[] getOutputTypes() {
-    String [] out = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
-    return out;
-  }
+		String[] types = {"ncsa.d2k.core.modules.PredictionModelModule"};
+		return types;
+	}
 
   /**
    * Return a description of a specific input.
@@ -85,8 +84,10 @@ public class WEKA_M5PrimeModelProducer extends ModelProducerModule implements Ha
    * @return The description of the input
    */
   public String getInputInfo(int i) {
-    return "";
-  }
+		switch (i) {
+			default: return "No such input";
+		}
+	}
 
   /**
    * Return the name of a specific input.
@@ -94,11 +95,10 @@ public class WEKA_M5PrimeModelProducer extends ModelProducerModule implements Ha
    * @return The name of the input
    */
   public String getInputName(int i) {
-    switch(i) {
-      case 0: return "Instances";
-      default: return "no such input";
-    }
-  }
+		switch(i) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
   /**
    * Return the description of a specific output.
@@ -106,12 +106,11 @@ public class WEKA_M5PrimeModelProducer extends ModelProducerModule implements Ha
    * @return The description of the output.
    */
   public String getOutputInfo(int i) {
-    if(i == 0) {
-      return "ncsa.d2k.infrastructure.modules.PredictionModelModule: A WEKA_M5PrimeModel module.";
-    } else {
-      return "no such output";
-    }
-  }
+		switch (i) {
+			case 0: return "ncsa.d2k.infrastructure.modules.PredictionModelModule: A WEKA_M5PrimeModel module.";
+			default: return "No such output";
+		}
+	}
 
   /**
    * Return the name of a specific output.
@@ -119,11 +118,12 @@ public class WEKA_M5PrimeModelProducer extends ModelProducerModule implements Ha
    * @return The name of the output
    */
   public String getOutputName(int i) {
-    switch(i) {
-      case 0: return "WEKA_M5PrimeModel";
-      default: return "no such output";
-    }
-  }
+		switch(i) {
+			case 0:
+				return "WEKA_M5PrimeModel";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
   /**
    * Create the model and push it out.

@@ -13,15 +13,10 @@ package ncsa.d2k.modules.weka.classifier;
 // Java Imports
 //==============
 
+
 import java.util.StringTokenizer;
-
-//===============
-// Other Imports
-//===============
-
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-
 import weka.classifiers.neural.*;
 import weka.core.Instances;
 
@@ -181,25 +176,31 @@ public class WEKA_NeuralNetModelProducer extends ModelProducerModule {
 
 
   public String getInputInfo(int parm1) {
-    return "";
-  }
+		switch (parm1) {
+			default: return "No such input";
+		}
+	}
 
   public String getModuleInfo() {
-    return "This neural network uses backpropagation to train.";
-  }
+		return "<html>  <head>      </head>  <body>    This neural network uses backpropagation to train.  </body></html>";
+	}
 
   public String getOutputInfo(int parm1) {
-    return "ncsa.d2k.infrastructure.modules.PredictionModelModule";
-  }
+		switch (parm1) {
+			case 0: return "ncsa.d2k.infrastructure.modules.PredictionModelModule";
+			default: return "No such output";
+		}
+	}
 
   public String[] getInputTypes() {
-    return null;
-   }
+		String[] types = {		};
+		return types;
+	}
 
   public String[] getOutputTypes() {
-    String [] out = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
-    return out;
-  }
+		String[] types = {"ncsa.d2k.core.modules.PredictionModelModule"};
+		return types;
+	}
 
   /**
    * @param d True if the learning rate should decay.
@@ -502,4 +503,36 @@ public class WEKA_NeuralNetModelProducer extends ModelProducerModule {
     return m_numEpochs;
   }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WEKA_NeuralNetModelProducer";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

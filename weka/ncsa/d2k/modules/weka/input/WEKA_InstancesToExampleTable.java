@@ -4,15 +4,10 @@ package ncsa.d2k.modules.weka.input;
 // Java Imports
 //==============
 
+
 import java.io.*;
 import java.util.*;
-
-//===============
-// Other Imports
-//===============
-
-import ncsa.d2k.infrastructure.modules.*;
-//import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import weka.core.*;
@@ -51,18 +46,18 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
        @return An array containing the datatypes of the inputs.
     */
     public String[] getInputTypes() {
-	String []in = {"weka.core.Instances"};
-	return in;
-    }
+		String[] types = {"weka.core.Instances"};
+		return types;
+	}
 
     /**
        Describe the output types.
        @return An array containing the datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-	String []out = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-	return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
+	}
 
     /**
        Describe the inputs.
@@ -70,8 +65,11 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
        @return A description of the selected input.
     */
     public String getInputInfo(int i) {
-	return "WEKA Instances object";
-    }
+		switch (i) {
+			case 0: return "WEKA Instances object";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -92,8 +90,11 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
        @return A description of the selected output.
     */
     public String getOutputInfo(int i) {
-	return "A D2K ExampleTable";
-    }
+		switch (i) {
+			case 0: return "A D2K ExampleTable";
+			default: return "No such output";
+		}
+	}
 
    /**
        Return the name of a specific output.
@@ -113,10 +114,8 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
        @return A description of this module.
     */
     public String getModuleInfo() {
-	StringBuffer sb = new StringBuffer("This module will read in a WEKA Instances object ");
-	sb.append("and construct a D2K Example Table. ");
-	return sb.toString();
-    }
+		return "<html>  <head>      </head>  <body>    This module will read in a WEKA Instances object and construct a D2K     Example Table.  </body></html>";
+	}
 
    /**
        Return the name of this module.
@@ -237,5 +236,6 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
     public void setVerbose(boolean b){
       m_verbose = b;
     }
+
 
 }

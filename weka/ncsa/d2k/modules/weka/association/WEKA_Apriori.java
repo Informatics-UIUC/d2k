@@ -8,9 +8,9 @@ package ncsa.d2k.modules.weka.association;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import weka.associations.Apriori;
 import weka.core.*;
 
@@ -110,10 +110,8 @@ public class WEKA_Apriori extends ComputeModule {
    * @return A description of this module.
    */
   public String getModuleInfo() {
-    StringBuffer sb = new StringBuffer("WEKA Apriori implmentation. ");
-    return sb.toString();
-
-  }
+		return "<html>  <head>      </head>  <body>    WEKA Apriori implmentation.  </body></html>";
+	}
 
   /**
    * Return the name of this module.
@@ -129,9 +127,9 @@ public class WEKA_Apriori extends ComputeModule {
    * @return The datatypes of the inputs.
    */
   public String[] getInputTypes() {
-    String []in = {"weka.core.Instances"};
-    return in;
-  }
+		String[] types = {"weka.core.Instances"};
+		return types;
+	}
 
   /**
    * Return a String array containing the datatypes of the outputs of this
@@ -139,8 +137,9 @@ public class WEKA_Apriori extends ComputeModule {
    * @return The datatypes of the outputs.
    */
   public String[] getOutputTypes() {
-    return null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   /**
    * Return a description of a specific input.
@@ -148,11 +147,11 @@ public class WEKA_Apriori extends ComputeModule {
    * @return The description of the input
    */
   public String getInputInfo(int i) {
-    switch(i) {
-      case 0: return "The Instances object";
-      default: return "no such input";
-    }
-  }
+		switch (i) {
+			case 0: return "The Instances object";
+			default: return "No such input";
+		}
+	}
 
   /**
    * Return the name of a specific input.
@@ -172,8 +171,10 @@ public class WEKA_Apriori extends ComputeModule {
    * @return The description of the output.
    */
   public String getOutputInfo(int i) {
-    return "";
-  }
+		switch (i) {
+			default: return "No such output";
+		}
+	}
 
   /**
    * Return the name of a specific output.
@@ -467,6 +468,5 @@ public class WEKA_Apriori extends ComputeModule {
   public boolean getVerbose() {
     return m_verbose;
   }
-
 
 }
