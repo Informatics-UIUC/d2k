@@ -4,7 +4,7 @@ import ncsa.d2k.modules.TransformationModule;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.Serializable {
+public class ContinuousFloatExampleTable implements ExampleTable, TestTable, java.io.Serializable {
 
   int       numExamples;
   int       numFeatures;
@@ -15,12 +15,12 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   int    [] outputIndices;
   int    [] exampleIndices;
   int    [] testingSet;
-  double [] data;
+  float [] data;
 
-  public ContinuousExampleTable () {
+  public ContinuousFloatExampleTable () {
   }
 
-  public void initialize(double [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
+  public void initialize(float [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
 
     this.numExamples = numExamples;
     this.numFeatures = numInputs + numOutputs;
@@ -53,13 +53,13 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
 
 
-  public ContinuousExampleTable (double [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
+  public ContinuousFloatExampleTable (float [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
     initialize(data, numExamples, numInputs, numOutputs, inputNames, outputNames);
   }
 
 
-  public ContinuousExampleTable (int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
-    double [] data = new double[numExamples * (numInputs + numOutputs)];
+  public ContinuousFloatExampleTable (int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
+    float [] data = new float[numExamples * (numInputs + numOutputs)];
     initialize(data, numExamples, numInputs, numOutputs, inputNames, outputNames);
   }
 
@@ -67,7 +67,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
   public Table copy() {
 
-    ContinuousExampleTable copy   = new ContinuousExampleTable();
+    ContinuousFloatExampleTable copy   = new ContinuousFloatExampleTable();
 
     copy.numExamples        = this.numExamples;
     copy.numFeatures        = this.numFeatures;
@@ -79,12 +79,12 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     copy.exampleIndices     = (int    []) this.exampleIndices.clone();
     if (testingSet != null)
       copy.testingSet       = (int    []) this.testingSet.clone();
-    copy.data               = (double []) this.data.clone();
+    copy.data               = (float []) this.data.clone();
     return (Table) copy;
   }
 
   public Table copyByReference() {
-    ContinuousExampleTable copy   = new ContinuousExampleTable();
+    ContinuousFloatExampleTable copy   = new ContinuousFloatExampleTable();
 
     copy.numExamples        = this.numExamples;
     copy.numFeatures        = this.numFeatures;
@@ -221,7 +221,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public Example getExample(int e) {
-    return (Example) new ContinuousExample(this, e);
+    return (Example) new ContinuousFloatExample(this, e);
   }
 
 
@@ -275,7 +275,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
 
 
-  public void setExample(int e1, ContinuousExampleTable exampleSet, int e2) {
+  public void setExample(int e1, ContinuousFloatExampleTable exampleSet, int e2) {
     for (int i = 0; i < numFeatures; i++) {
       data[exampleIndices[e1] * numFeatures + i] = data[exampleIndices[e2] * numFeatures + i];
     }
@@ -533,7 +533,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
   public Table getSubsetByReference(int rows[]){
 
-    ContinuousExampleTable table = (ContinuousExampleTable) this.copyByReference();
+    ContinuousFloatExampleTable table = (ContinuousFloatExampleTable) this.copyByReference();
 
     int numExamples = rows.length;
     int [] newExampleIndices = new int[numExamples];
@@ -550,7 +550,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
   public Table getSubsetByColumnsReference(int cols[]) {
 
-    ContinuousExampleTable table = (ContinuousExampleTable) this.copyByReference();
+    ContinuousFloatExampleTable table = (ContinuousFloatExampleTable) this.copyByReference();
 
     int numInputs = cols.length;
     int [] newInputIndices = new int[numInputs];
@@ -667,7 +667,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
 
   public TestTable getTestTable () {
 
-    ContinuousExampleTable table = (ContinuousExampleTable) this.copy();
+    ContinuousFloatExampleTable table = (ContinuousFloatExampleTable) this.copy();
 
     int [] newExampleIndices = new int[testingSet.length];
 
@@ -867,7 +867,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     int newIndex;
 
 
-    double [] newData = new double[numExamples * (newNumInputs + numOutputs)];
+    float [] newData = new float[numExamples * (newNumInputs + numOutputs)];
 
     for (int e = 0; e < numExamples; e++) {
       newIndex = 0;
@@ -886,7 +886,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
   }
 
   public void setExample(int e1, ExampleTable exampleSet, int e2) {
-    exampleIndices[e1] = ((ContinuousExampleTable) exampleSet).exampleIndices[e2];
+    exampleIndices[e1] = ((ContinuousFloatExampleTable) exampleSet).exampleIndices[e2];
       /*
       for (int i = 0; i < numInputs; i++)
       {
@@ -918,7 +918,7 @@ public class ContinuousExampleTable implements ExampleTable, TestTable, java.io.
     System.arraycopy(this.exampleIndices, 0, newExampleIndices, 0, this.numExamples);
     newExampleIndices[this.numExamples] = this.numExamples;
 
-    double [] newData = new double[newNumExamples * this.numFeatures];
+    float [] newData = new float[newNumExamples * this.numFeatures];
     System.arraycopy(this.data, 0, newData, 0, this.numExamples * this.numFeatures);
     System.arraycopy(newEntry, 0, newData, this.numExamples * this.numFeatures, this.numFeatures);
 
