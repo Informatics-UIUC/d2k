@@ -170,10 +170,10 @@ public class ContinuousExample implements Example, java.io.Serializable {
 */
 
   public String getInputName(int i) {
-    return exampleSet.inputNames[i];
+    return exampleSet.getInputName(i);
   }
   public String getOutputName(int i) {
-    return exampleSet.outputNames[i];
+    return exampleSet.getOutputName(i);
   }
 
   public void setInputDouble(int i, double value) {
@@ -198,8 +198,12 @@ public class ContinuousExample implements Example, java.io.Serializable {
   }
 
   public ContinuousExample deepCopy() throws Exception {
-    Failure.report("Error!  Can not deep copy float Example.  ");
-    return (ContinuousExample) this.clone();
+
+    Exception e = new Exception();
+    System.out.println("Error!  Can not deep copy float Example.  ");
+    throw e;
+
+   // return (ContinuousExample) this.clone();
   }
 
 
