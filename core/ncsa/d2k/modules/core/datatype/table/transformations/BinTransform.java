@@ -9,7 +9,7 @@ import ncsa.d2k.modules.core.transform.binning.*;
 /**
  * BinTransform encapsulates a binning transformation on a Table.
  */
-public class BinTransform implements Transformation {
+public class BinTransform implements Transformation, Cloneable {
     private BinDescriptor[] bins;
     private boolean new_column;
     private static final String UNKNOWN = "Unknown";
@@ -108,6 +108,10 @@ public class BinTransform implements Transformation {
 
     public BinDescriptor[] getBinDescriptors() {
        return bins;
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+      return super.clone();
     }
 
 }
