@@ -494,7 +494,9 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
      * @param t   a table this column is part of, to be sorted.
      */
    public void sort(MutableTable t){
-      ((SparseMutableTable)t).reorderRows(getNewOrder());
+     ((SparseMutableTable)t).sort(getNewOrder());
+
+
    }
 
 
