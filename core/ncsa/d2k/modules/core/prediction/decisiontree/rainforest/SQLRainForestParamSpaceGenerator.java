@@ -24,7 +24,7 @@ public class SQLRainForestParamSpaceGenerator extends AbstractParamSpaceGenerato
     String[] names = {MIN_RATIO,MODE_THRESHOLD,BIN_NUMBER,DOMINATE_RATIO};
     double[] min = {0,0,1,1};
     double[] max = {1,Integer.MAX_VALUE,Integer.MAX_VALUE,Double.MAX_VALUE};
-    double[] def = {0.001,20000,100,40};
+    double[] def = {0.001,20000,100,100};
     int[] res = {1000,1000,1000,1000};
     int[] types = {ColumnTypes.DOUBLE,ColumnTypes.DOUBLE,ColumnTypes.DOUBLE,ColumnTypes.DOUBLE};
     psi.createFromData(names, min, max, def, res, types);
@@ -51,13 +51,4 @@ public class SQLRainForestParamSpaceGenerator extends AbstractParamSpaceGenerato
     pds[3] = new PropertyDescription (DOMINATE_RATIO, DOMINATE_RATIO, "Ratio of most-common class to second-most-common class. The tree construction is terminated after this ratio is reached.");
     return pds;
   }
-/*
-  public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] pds = new PropertyDescription[1];
-    pds[0] = new PropertyDescription(MIN_RATIO, MIN_RATIO,
-      "Ratio of the record on a leaf to in a tree.  The tree construction is "+
-      "terminated when this ratio is reached.");
-    return pds;
-  }
-*/
 }
