@@ -119,7 +119,7 @@ abstract public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.
 	/**
 	 * All we have to do here is push the parameter space.
 	 */
-	public void doit() {
+	public void doit() throws Exception {
 		if (space == null) space = this.getDefaultSpace();
 		this.pushOutput(space, 0);
 	}
