@@ -1,7 +1,4 @@
 package ncsa.d2k.modules.core.optimize;
-
-// remove error function and use repeat object
-
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.modules.core.prediction.*;
