@@ -204,19 +204,19 @@ public class ChooseAttributeNames
 				public void valueChanged(ListSelectionEvent e) {
 					// TODO Auto-generated method stub
 					if (selectedAttributes.getSelectedIndex() == -1)
-						remove.setEnabled(true);
-					else
 						remove.setEnabled(false);
+					else
+						remove.setEnabled(true);
 				}
 			});
 			possibleAttributes.setModel(possibleModel);
 			possibleAttributes.addListSelectionListener (new ListSelectionListener() {
 				public void valueChanged(ListSelectionEvent e) {
 					// TODO Auto-generated method stub
-					if (selectedAttributes.getSelectedIndex() == -1)
-						add.setEnabled(true);
-					else
+					if (possibleAttributes.getSelectedIndex() == -1)
 						add.setEnabled(false);
+					else
+						add.setEnabled(true);
 				}
 			});
 			JScrollPane jsp = new JScrollPane(possibleAttributes);
@@ -269,7 +269,7 @@ public class ChooseAttributeNames
 			This method is called whenever an input arrives, and is responsible
 			for modifying the contents of any gui components that should reflect
 			the value of the input.
-		
+
 			@param input this is the object that has been input.
 			@param index the index of the input that has been received.
 		*/
@@ -283,7 +283,15 @@ public class ChooseAttributeNames
 			for (int i = 0; i < num; i++) {
 				if (!missingOnly || table.hasMissingValues(i)) {
 					String elem = (String) table.getColumnLabel(i);
-					possibleModel.addElement(elem);
+
+               if (ChooseAttributeNames.this.contains(
+                   ChooseAttributeNames.this.selectedAttributes, elem)) {
+                  selectedModel.addElement(elem);
+               }
+               else {
+                  possibleModel.addElement(elem);
+               }
+
 					if (elem.length() > lengthOfLongest) {
 						longest = elem;
 						lengthOfLongest = elem.length();
@@ -304,6 +312,22 @@ public class ChooseAttributeNames
 		}
 	}
 
+   boolean contains(String[] ss, String s) {
+
+      if (ss == null) {
+         return false;
+      }
+
+      for (int i = 0; i < ss.length; i++) {
+         if (ss[i].equals(s)) {
+            return true;
+         }
+      }
+
+      return false;
+
+   }
+
 	//headless conversion support
 	private String[] selectedAttributes;
 	public void setSelectedAttributes(Object[] att) {
@@ -321,13 +345,13 @@ public class ChooseAttributeNames
 				getAlias()
 					+ " has not been configured. Before running "
 					+ "headless configure the properties via running with GUI.");
-		
+
 		// Populate a vector with a list of all column names.
 		HashMap availableAttributes = new HashMap();
 		for (int i = 0 ; i < table.getNumColumns() ; i++) {
 			availableAttributes.put(table.getColumnLabel(i), table);
 		}
-		
+
 		for (int i = 0 ; i < selectedAttributes.length ; i++) {
 			if (availableAttributes.get(selectedAttributes[i]) == null)
 				throw new Exception(
