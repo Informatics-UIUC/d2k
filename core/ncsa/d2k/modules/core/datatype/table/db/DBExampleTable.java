@@ -13,7 +13,7 @@ import ncsa.d2k.modules.core.io.sql.*;
  * @version 1.0
  */
 
-public class DBExampleTable extends DBTable implements ExampleTable{
+class DBExampleTable extends DBTable implements ExampleTable{
 
     /** the indicies of the records in the various training sets. */
     protected int trainSet[];
@@ -27,7 +27,7 @@ public class DBExampleTable extends DBTable implements ExampleTable{
     /**the indicies of the attributes that are inputs (to the model). */
     protected int outputColumns[];
 
-    public DBExampleTable(DBTable orig, DBDataSource _dbdatasource, DBConnection _dbconnection) {
+    DBExampleTable(DBTable orig, DBDataSource _dbdatasource, DBConnection _dbconnection) {
         super(_dbdatasource, _dbconnection);
 
         if (orig instanceof ExampleTable) {

@@ -16,7 +16,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
 
 	//static final long serialVersionUID = -7408690070856124087L;
 	static final long serialVersionUID = -3816781677534840220L;
-	
+
    	private ExampleTable original;
 
    	private TestTableImpl(int i) {

@@ -11,7 +11,7 @@ import ncsa.d2k.modules.core.io.sql.*;
  * @version 1.0
  */
 
-public class DBTrainTable extends DBExampleTable implements TrainTable{
+class DBTrainTable extends DBExampleTable implements TrainTable{
 
     private DBExampleTable original;
     DBTrainTable(DBExampleTable orig, DBDataSource _dbtableconnection, DBConnection _dbconnection) {

@@ -9,7 +9,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
  * @version 1.0
  */
 
-    public class LocalDBTestTable extends LocalDBPredictionTable implements TestTable {
+class LocalDBTestTable extends LocalDBPredictionTable implements TestTable {
 
         private DBExampleTable original;
 

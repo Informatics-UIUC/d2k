@@ -15,7 +15,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.io.sql.*;
 
-public class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
+class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
 
     protected int[] predictionSet;
     protected TableImpl predictionColumnsTable;

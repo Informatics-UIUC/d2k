@@ -15,7 +15,7 @@ import ncsa.d2k.modules.core.io.sql.*;
  * @version 1.0
  */
 
-public class DBPredictionTable extends DBExampleTable implements PredictionTable{
+class DBPredictionTable extends DBExampleTable implements PredictionTable{
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,7 +35,7 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-    public DBPredictionTable (DBExampleTable orig,
+    DBPredictionTable (DBExampleTable orig,
                               DBDataSource _dbdatasource,
                               DBConnection _dbconnection) {
 

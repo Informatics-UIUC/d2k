@@ -11,7 +11,7 @@ import ncsa.d2k.modules.core.io.sql.*;
  * @version 1.0
  */
 
-public class DBTestTable extends DBPredictionTable implements TestTable {
+class DBTestTable extends DBPredictionTable implements TestTable {
 
     private DBExampleTable original;
 
