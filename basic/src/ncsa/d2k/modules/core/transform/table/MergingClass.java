@@ -35,24 +35,35 @@ public class MergingClass {
   static public MutableTableImpl mergeTable(int[] keys, int[] merges, int control, String type, Table table) {
        HashMap keyLookup = new HashMap(20);
        // loop through table to find rows where all the key columns are identical
+
+       //for each row
        for(int i = 0; i < table.getNumRows(); i++) {
                // get the keys for this row
+
+               //alocating an array for the keys
                String [] kys = new String[keys.length];
+               //for each columns id in keys
                for(int j = 0; j < kys.length; j++)
+                 //getting the value at row i
                        kys[j] = table.getString(i, keys[j]);
-               KeySet set = new KeySet(kys);
+              //cereating a set
+              KeySet set = new KeySet(kys);
+              //if the look up map does nto contain such set yet - adding it with this row ID
                if(!keyLookup.containsKey(set)) {
                        ArrayList list = new ArrayList();
                        list.add(new Integer(i));
                        keyLookup.put(set, list);
                }
                else {
+                 //if it does contain this set - reteiving its array list and adding this row ID
                        ArrayList list = (ArrayList)keyLookup.get(set);
                        list.add(new Integer(i));
                        // necessary?
                        keyLookup.put(set, list);
                }
-       }
+       }//for i
+
+       //now KeyLookup contains all the unique keys and their respective row Ids.
 
        // create the table
        MutableTableImpl newTable = createTable(keyLookup.size(), table);
@@ -61,8 +72,11 @@ public class MergingClass {
        // now convert the array lists to int[]
        Iterator iter = keyLookup.keySet().iterator();
        while(iter.hasNext()) {
+         //for each set in keyLookup
                Object key = iter.next();
+               //getting it's row IDs
                ArrayList list = (ArrayList)keyLookup.get(key);
+               //converting the IDS into an array
                int [] array = new int[list.size()];
                for(int q = 0; q < list.size(); q++)
                        array[q] = ((Integer)list.get(q)).intValue();

@@ -145,8 +145,12 @@ public class RemoveDuplicateRows extends DataPrepModule {
       /**
       * QA Comments:
       * 10-23-03: vered started qa process.
-      *           the module does not handle missing values well.
+      *
       *           array index out of bound exception is throws by removeRow of
-      *           Column. meaning - method removeRow in Table should be fixed
-      *           (no check-up for missing value is done before removal)
+      *           Column [bug 87]. On other dataset the removal is incorrect.
+      *           [bug 100]
+      *           data set files can be found in basic archive under QA/bugs_data_set
+      *
+      *
+      *
  */

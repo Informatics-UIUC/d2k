@@ -862,4 +862,10 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
              need to send a different parameter to arraycopy or replace it by a special
              copying method.
 
+       10/30/03 - does not handle missing values well. the output table does not
+  *               "know" which of the values were missing in the original table.
+  *               this is not being updated using setValueToMissing or any other
+  *               method. [bug 103]
+
+
        */
