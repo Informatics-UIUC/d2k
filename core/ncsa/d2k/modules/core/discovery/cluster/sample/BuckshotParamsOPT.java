@@ -241,6 +241,7 @@ public class BuckshotParamsOPT
       uf = 1;
     }
     long sampsz = Math.round(Math.sqrt(N * tab.getNumRows()));
+    sampsz = (sampsz > (tab.getNumRows()-1)) ? (tab.getNumRows()-1) : sampsz;
     String[] names3 = {
         "sampleSize", "seed", "useFirst"};
     double[] values3 = {

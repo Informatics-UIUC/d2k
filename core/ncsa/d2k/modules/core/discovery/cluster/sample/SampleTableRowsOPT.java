@@ -107,7 +107,7 @@ public class SampleTableRowsOPT
   public String[] getInputTypes() {
     String[] types = {
         "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
-        "ncsa.d2k.modules.core.datatype.table.MutableTable"};
+        "ncsa.d2k.modules.core.datatype.table.Table"};
     return types;
   }
 
@@ -118,7 +118,7 @@ public class SampleTableRowsOPT
    */
   public String[] getOutputTypes() {
     String[] types = {
-        "ncsa.d2k.modules.core.datatype.table.MutableTable"};
+        "ncsa.d2k.modules.core.datatype.table.Table"};
     return types;
   }
 
@@ -186,7 +186,7 @@ public class SampleTableRowsOPT
   /**
      Perform the calculation.
    */
-  public void doit() {
+  public void doit() throws Exception {
 
     ParameterPoint pp = (ParameterPoint)this.pullInput(0);
 
@@ -198,31 +198,48 @@ public class SampleTableRowsOPT
     }
     this.useFirst = uf;
 
-    MutableTable orig = (MutableTable) pullInput(1);
-    MutableTable newTable = null;
+
+    Table orig = (Table) pullInput(1);
+    Table newTable = null;
+
+    if (N > (orig.getNumRows()-1)){
+      throw new Exception("SampleTableRows: Sample size is >= the number of table rows.  Use a smaller value.");
+    }
 
     System.out.println("Sampling " + N + " rows from a table of " +
                        orig.getNumRows() + " rows.");
 
     // only keep the first N rows
     if (useFirst) {
-      newTable = (MutableTable) orig.getSubset(0, N);
+      newTable = (Table) orig.getSubset(0, N);
     } else {
+      int numRows = orig.getNumRows();
       int[] keeps = new int[N];
       Random r = new Random(seed);
-      int numRows = orig.getNumRows();
-      ArrayList keepers = new ArrayList();
-      for (int i = 0; i < N; i++) {
-        int ind = Math.abs(r.nextInt()) % numRows;
-        Integer indO = new Integer(ind);
-        if (keepers.contains(indO)) {
-          i--;
-        } else {
-          keeps[i] = ind;
-          keepers.add(indO);
+      if (N < (orig.getNumRows()/2)){
+        ArrayList keepers = new ArrayList();
+        for (int i = 0; i < N; i++) {
+          int ind = Math.abs(r.nextInt()) % numRows;
+          Integer indO = new Integer(ind);
+          if (keepers.contains(indO)) {
+            i--;
+          } else {
+            keeps[i] = ind;
+            keepers.add(indO);
+          }
+        }
+      } else {
+        ArrayList pickers = new ArrayList();
+        for (int i = 0, n = numRows; i < n; i++) {
+          pickers.add(new Integer(i));
+        }
+        for (int i = 0; i < N; i++) {
+          int ind = Math.abs(r.nextInt()) % pickers.size();
+          //System.out.println(pickers.size() + " " + ind);
+          keeps[i] = ( (Integer) pickers.remove(ind)).intValue();
         }
       }
-      newTable = (MutableTable) orig.getSubset(keeps);
+      newTable = orig.getSubset(keeps);
     }
 
     System.out.println("Sampled table contains " + newTable.getNumRows() +
