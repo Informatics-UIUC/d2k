@@ -13,9 +13,11 @@ import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
-/**
- * Filter rows from a Table
- */
+/*
+	Filter rows from a table
+	Two filters can be combined to form a boolean expression using replace
+	Remaining filters are combined using logical and
+*/
 public class FilterTable extends UIModule {
 
 	private static final String GREATER_THAN = ">";
@@ -25,133 +27,117 @@ public class FilterTable extends UIModule {
 	private static final String NOT_EQUAL_TO = "!=";
 	private static final String EQUAL_TO = "==";
 
-    /**
-     This pair returns the description of the various inputs.
-     @return the description of the indexed input.
-     */
-    public String getInputInfo (int index) {
+	private static final String AND = "&&";
+	private static final String OR = "||";
+
+   public String getInputInfo (int index) {
         switch (index) {
             case 0:
-                return  "A Table to filter.";
+                return "Table to filter";
             default:
-                return  "No such input";
+                return "No such input";
         }
     }
 
-    /**
-     This pair returns an array of strings that contains the data types for the inputs.
-     @return the data types of all inputs.
-     */
     public String[] getInputTypes () {
-        String[] types =  { "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
-        return  types;
+        String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+        return types;
     }
 
-    /**
-     This pair returns the description of the outputs.
-     @return the description of the indexed output.
-     */
     public String getOutputInfo (int index) {
         switch (index) {
             case 0:
-                return  "A filtered table.";
+                return "Filtered table";
             default:
-                return  "No such output";
+                return "No such output";
         }
     }
 
-    /**
-     This pair returns an array of strings that contains the data types for the outputs.
-     @return the data types of all outputs.
-     */
     public String[] getOutputTypes () {
-        String[] types =  { "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
-        return  types;
+        String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+        return types;
     }
 
-    /**
-     This pair returns the description of the module.
-     @return the description of the module.
-     */
     public String getModuleInfo () {
-        return  "Filter rows out of a Table.";
+        return "Filter rows out of a table";
     }
 
-    /**
-     This pair is called by D2K to get the UserView for this module.
-     @return the UserView.
-     */
     protected UserView createUserView () {
         return new Filter();
     }
 
-    /**
-     This pair returns an array with the names of each DSComponent in the UserView
-     that has a value.  These DSComponents are then used as the outputs of this module.
-     */
-    public String[] getFieldNameMapping () {
+	public String[] getFieldNameMapping () {
         return null;
     }
 
-    /**
-     * Filtering lines.
-     */
     class Filter extends JUserPane implements ActionListener {
 		TableImpl table;
-		boolean []linemap;
+		boolean[] linemap;
 
-        HashMap numericColumnLookup;
-        HashMap stringColumnLookup;
+        HashMap numColumnLookup;
+        HashMap strColumnLookup;
+		HashMap strValueLookup;
+
         JComboBox numColumns;
         JComboBox strColumns;
         JComboBox numOps;
         JComboBox strOps;
-        JTextField numValue;
-        JTextField strValue;
+
+		JTextField numValue;
+		JComboBox strValue;
+
         JButton numAdd;
         JButton strAdd;
+        JButton replace;
+        JButton remove;
+
         JButton cancel;
         JButton done;
-        JButton update;
+
+        JComboBox operators;
+
         JList filterList;
-        JButton remove;
         DefaultListModel listModel;
 
-        /**
-         * put your documentation comment here
-         * @param         MainArea m
-         */
-		 public void initView(ViewModule m) {
-		 }
+		public void initView(ViewModule module) {
+		}
 
-		public void setInput(Object o, int id) {
+		public void setInput(Object object, int id) {
 			removeAll();
-			table = (TableImpl)o;
+			table = (TableImpl) object;
 			linemap = new boolean[table.getNumRows()];
 
-            numericColumnLookup = new HashMap();
-            stringColumnLookup = new HashMap();
+            numColumnLookup = new HashMap();
+            strColumnLookup = new HashMap();
+            strValueLookup = new HashMap();
+
             LinkedList numCols = new LinkedList();
             LinkedList strCols = new LinkedList();
-            for (int i = 0; i < table.getNumColumns(); i++) {
-                Column c = table.getColumn(i);
-                if (c instanceof NumericColumn) {
-                    numericColumnLookup.put(c.getLabel(), new Integer(i));
-                    numCols.add(c.getLabel());
+
+            for (int index = 0; index < table.getNumColumns(); index++) {
+                Column column = table.getColumn(index);
+
+                if (column instanceof NumericColumn) {
+                    numColumnLookup.put(column.getLabel(), new Integer(index));
+                    numCols.add(column.getLabel());
                 }
                 else {
-                    stringColumnLookup.put(c.getLabel(), new Integer(i));
-                    strCols.add(c.getLabel());
+                    strColumnLookup.put(column.getLabel(), new Integer(index));
+                    strValueLookup.put(column.getLabel(), getUniqueValues(column));
+                    strCols.add(column.getLabel());
                 }
             }
-            JOutlinePanel num = new JOutlinePanel("Numeric");
-            //num.setLayout(new GridLayout(2, 3));
-            num.setLayout(new GridBagLayout());
+
+            // Numeric attributes
+            JOutlinePanel numericpanel = new JOutlinePanel("Numeric");
+            numericpanel.setLayout(new GridBagLayout());
             numColumns = new JComboBox();
-            Iterator i = numCols.iterator();
-            while (i.hasNext())
-                numColumns.addItem(i.next());
+            Iterator iterator = numCols.iterator();
+
+            while (iterator.hasNext())
+                numColumns.addItem(iterator.next());
             numCols.clear();
+
             numOps = new JComboBox();
             numOps.addItem(GREATER_THAN);
             numOps.addItem(LESS_THAN);
@@ -159,347 +145,430 @@ public class FilterTable extends UIModule {
             numOps.addItem(LESS_THAN_EQUAL_TO);
             numOps.addItem(EQUAL_TO);
             numOps.addItem(NOT_EQUAL_TO);
+
             numValue = new JTextField(5);
+
             numAdd = new JButton("Add");
             numAdd.addActionListener(this);
-            /*num.add(numColumns);
-             num.add(numOps);
-             num.add(numValue);
-             num.add(new JPanel());
-             num.add(numAdd);
-             num.add(new JPanel());
-             */
-            Constrain.setConstraints(num, numColumns, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+
+            Constrain.setConstraints(numericpanel, numColumns, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
                     GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(num, numOps, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+            Constrain.setConstraints(numericpanel, numOps, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
                     GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(num, numValue, 2, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+            Constrain.setConstraints(numericpanel, numValue, 2, 0, 1, 1, GridBagConstraints.HORIZONTAL,
                     GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(num, numAdd, 1, 1, 1, 1, GridBagConstraints.HORIZONTAL,
+            Constrain.setConstraints(numericpanel, numAdd, 2, 1, 1, 1, GridBagConstraints.HORIZONTAL,
                     GridBagConstraints.WEST, 1, 1);
-            JPanel str = new JOutlinePanel("String");
-            //str.setLayout(new GridLayout(2, 3));
-            str.setLayout(new GridBagLayout());
+
+            // String attributes
+            JPanel stringpanel = new JOutlinePanel("String");
+            stringpanel.setLayout(new GridBagLayout());
             strColumns = new JComboBox();
-            i = strCols.iterator();
-            while (i.hasNext())
-                strColumns.addItem(i.next());
+            iterator = strCols.iterator();
+
+            while (iterator.hasNext())
+                strColumns.addItem(iterator.next());
             strCols.clear();
+
             strOps = new JComboBox();
             strOps.addItem(EQUAL_TO);
             strOps.addItem(NOT_EQUAL_TO);
-            strValue = new JTextField(5);
+
+            if (strColumns.getItemCount() > 0) {
+            	String column = (String) strColumns.getItemAt(0);
+            	String[] value = (String[]) strValueLookup.get(column);
+            	strValue = new JComboBox(new DefaultComboBoxModel(value));
+			}
+			else
+				strValue = new JComboBox();
+
+			strColumns.addActionListener(this);
+
             strAdd = new JButton("Add");
             strAdd.addActionListener(this);
-            /*str.add(strColumns);
-             str.add(strOps);
-             str.add(strValue);
-             str.add(new JPanel());
-             str.add(strAdd);
-             str.add(new JPanel());
-             */
-            Constrain.setConstraints(str, strColumns, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+
+            Constrain.setConstraints(stringpanel, strColumns, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
                     GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(str, strOps, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+            Constrain.setConstraints(stringpanel, strOps, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
                     GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(str, strValue, 2, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+            Constrain.setConstraints(stringpanel, strValue, 2, 0, 1, 1, GridBagConstraints.HORIZONTAL,
                     GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(str, strAdd, 1, 1, 1, 1, GridBagConstraints.HORIZONTAL,
+            Constrain.setConstraints(stringpanel, strAdd, 2, 1, 1, 1, GridBagConstraints.HORIZONTAL,
                     GridBagConstraints.WEST, 1, 1);
-            JPanel one = new JPanel();
-            //one.setLayout(new GridLayout(2, 1));
-            /*one.setLayout(new BoxLayout(one, BoxLayout.Y_AXIS));
-             one.add(num);
-             one.add(Box.createGlue());
-             one.add(str);
-             */
-            one.setLayout(new GridBagLayout());
-            Constrain.setConstraints(one, num, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                    GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(one, new JPanel(), 0, 1, 1, 1, GridBagConstraints.HORIZONTAL,
-                    GridBagConstraints.WEST, 1, 1);
-            Constrain.setConstraints(one, str, 0, 2, 1, 1, GridBagConstraints.HORIZONTAL,
-                    GridBagConstraints.WEST, 1, 1);
-            JScrollPane jsp = new JScrollPane(one);
-            jsp.setMinimumSize(jsp.getPreferredSize());
-            //bg.setLayout(new BorderLayout());
-            //bg.add(one, BorderLayout.CENTER);
+
+            // Attribute panel
+            JPanel attributepanel = new JPanel();
+            attributepanel.setLayout(new GridBagLayout());
+
+            Constrain.setConstraints(attributepanel, numericpanel, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+                    GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
+            Constrain.setConstraints(attributepanel, stringpanel, 0, 1, 1, 1, GridBagConstraints.HORIZONTAL,
+                    GridBagConstraints.NORTHWEST, 1, 1, new Insets(5, 5, 5, 5));
+
+            JScrollPane attributescroll = new JScrollPane(attributepanel);
+            attributescroll.setMinimumSize(attributescroll.getPreferredSize());
+
+            // Filters
             filterList = new JList();
             listModel = new DefaultListModel();
-            JLabel lbl = new JLabel("Current Filters");
-            Dimension d = lbl.getPreferredSize();
-            //filterList.setFixedCellWidth(d.width);
-            filterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            JLabel filterlabel = new JLabel("Current Filters");
             filterList.setModel(listModel);
-            JScrollPane jsp1 = new JScrollPane(filterList);
-            JViewport jview = new JViewport();
-            jview.setView(lbl);
-            jsp1.setColumnHeader(jview);
-            JPanel two = new JPanel();
-            two.setLayout(new BorderLayout());
-            two.add(jsp1, BorderLayout.CENTER);
+
+            JScrollPane filterscroll = new JScrollPane(filterList);
+            JViewport viewport = new JViewport();
+            viewport.setView(filterlabel);
+            filterscroll.setColumnHeader(viewport);
+
+			// Filter panel
+            JPanel filterpanel = new JPanel();
+            filterpanel.setLayout(new BorderLayout());
+            filterpanel.add(filterscroll, BorderLayout.CENTER);
+
             remove = new JButton("Remove");
             remove.addActionListener(this);
-            JPanel rp = new JPanel();
-            rp.add(remove);
-            two.add(rp, BorderLayout.SOUTH);
-            //bg.add(two, BorderLayout.EAST);
-            JSplitPane bg = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-            /*one*/
-            jsp, two);
+
+            operators = new JComboBox();
+			operators.addItem(AND);
+			operators.addItem(OR);
+
+            replace = new JButton("Replace");
+            replace.addActionListener(this);
+
+            JPanel filterbuttons = new JPanel();
+            filterbuttons.setLayout(new GridBagLayout());
+
+            Constrain.setConstraints(filterbuttons, remove, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+            	GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
+            Constrain.setConstraints(filterbuttons, new JPanel(), 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.NORTHWEST, 1, 1, new Insets(5, 5, 5, 5));
+			Constrain.setConstraints(filterbuttons, operators, 2, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+			    GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
+			Constrain.setConstraints(filterbuttons, replace, 3, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+			    GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
+
+			filterpanel.add(filterbuttons, BorderLayout.SOUTH);
+
+            JSplitPane splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, attributescroll, filterpanel);
+
             cancel = new JButton("Cancel");
             cancel.addActionListener(this);
+
             done = new JButton("Done");
             done.addActionListener(this);
-            //update = new JButton("Update");
-            //update.addActionListener(this);
-            JPanel buttonPanel = new JPanel();
-            buttonPanel.add(cancel);
-            buttonPanel.add(done);
-            //buttonPanel.add(update);
-            JPanel whole = new JPanel();
-            whole.setLayout(new BorderLayout());
-            whole.add(bg, BorderLayout.CENTER);
-            whole.add(buttonPanel, BorderLayout.SOUTH);
-			setLayout(new BorderLayout());
-			add(whole, BorderLayout.CENTER);
-        }
 
-        /**
-         * Update the lines to show based on the current filteritems.
-         */
+            JPanel buttonpanel = new JPanel();
+            buttonpanel.add(cancel);
+            buttonpanel.add(done);
+
+            setLayout(new BorderLayout());
+            add(splitpane, BorderLayout.CENTER);
+            add(buttonpanel, BorderLayout.SOUTH);
+		}
+
+        String[] getUniqueValues(Column column) {
+			HashMap map = new HashMap();
+
+			for (int index = 0; index < table.getNumRows(); index++) {
+				String key = column.getString(index);
+
+				if (!map.containsKey(key))
+					map.put(key, new Integer(index));
+			}
+
+			Set set = map.keySet();
+			String[] keys = new String[set.size()];
+			Iterator iterator = set.iterator();
+			int index = 0;
+
+			while (iterator.hasNext()) {
+				keys[index] = (String) iterator.next();
+				index++;
+			}
+
+			return keys;
+		}
+
         void updateLineMap () {
             Object[] filters = listModel.toArray();
+
             if (filters.length == 0) {
-                for (int i = 0; i < table.getNumRows(); i++)
-                    linemap[i] = true;
+                for (int row = 0; row < table.getNumRows(); row++)
+                    linemap[row] = true;
+
                 return;
             }
-            for (int i = 0; i < table.getNumRows(); i++) {
-                boolean start = true;
-                for (int j = 0; j < filters.length; j++) {
-                    FilterItem fi = (FilterItem)filters[j];
-                    int col = fi.colNum;
-                    boolean retVal;
-                    if (table.getColumn(col) instanceof NumericColumn)
-                        retVal = fi.evaluate(table.getDouble(i, col));
-                    else
-                        retVal = fi.evaluate(table.getString(i, col));
-                    start = start && retVal;
-                }
-                linemap[i] = start;
+
+            FilterItem filteritem = (FilterItem) filters[0];
+
+            if (filters.length > 1) {
+				for (int index = 1; index < filters.length; index++)
+					filteritem = new CompoundFilterItem(filteritem, (FilterItem) filters[index], AND);
+			}
+
+            if (filteritem instanceof CompoundFilterItem) {
+				for (int row = 0; row < table.getNumRows(); row++)
+					linemap[row] = filteritem.evaluate(filteritem, row);
+			}
+			else {
+				int column = filteritem.column;
+				boolean value;
+
+				for (int row = 0; row < table.getNumRows(); row++) {
+
+					if (table.getColumn(column) instanceof NumericColumn)
+						value = filteritem.evaluate(table.getDouble(row, column));
+					else
+						value = filteritem.evaluate(table.getString(row, column));
+
+                	linemap[row] = value;
+				}
             }
         }
 
-        /**
-         * Listen for button presses.
-         */
-        public void actionPerformed (ActionEvent e) {
-            Object src = e.getSource();
-            if (src == strAdd) {
+        public void actionPerformed (ActionEvent event) {
+            Object source = event.getSource();
+
+            if (source == strColumns) {
+				String column = (String) strColumns.getSelectedItem();
+				String[] value = (String[]) strValueLookup.get(column);
+
+				strValue.setModel(new DefaultComboBoxModel(value));
+				strValue.revalidate();
+				strValue.repaint();
+
+			}
+
+            if (source == strAdd) {
                 String colLabel = strColumns.getSelectedItem().toString();
                 String op = strOps.getSelectedItem().toString();
-                String value = strValue.getText();
-                int colNum = ((Integer)stringColumnLookup.get(colLabel)).intValue();
-                FilterItem fi = new StringFilterItem(colLabel, colNum, op,
-                        value);
+                String value = (String) strValue.getSelectedItem();
+                int colNum = ((Integer) strColumnLookup.get(colLabel)).intValue();
+                FilterItem fi = new StringFilterItem(colLabel, colNum, op, value);
                 listModel.addElement(fi);
-                strValue.setText("");
             }
-            else if (src == numAdd) {
+
+            else if (source == numAdd) {
                 String colLabel = numColumns.getSelectedItem().toString();
                 String op = numOps.getSelectedItem().toString();
                 String value = numValue.getText();
-                int colNum = ((Integer)numericColumnLookup.get(colLabel)).intValue();
+                int colNum = ((Integer) numColumnLookup.get(colLabel)).intValue();
                 double d = 0;
                 try {
                     d = Double.parseDouble(value);
-                } catch (Exception ex) {}
-                FilterItem fi = new NumericFilterItem(colLabel, colNum, op,
-                        d);
+                } catch (Exception exception) {}
+                FilterItem fi = new NumericFilterItem(colLabel, colNum, op, d);
                 listModel.addElement(fi);
                 numValue.setText("");
             }
-            else if (src == remove) {
+
+            else if (source == remove) {
                 int selected = filterList.getSelectedIndex();
                 if (selected != -1)
                     listModel.remove(selected);
             }
-            else if (src == cancel) {
+
+            else if (source == replace) {
+				String operator = (String) operators.getSelectedItem();
+
+				int[] indices = filterList.getSelectedIndices();
+				if (indices.length < 2)
+					return;
+
+				FilterItem first = (FilterItem) listModel.getElementAt(indices[0]);
+				FilterItem second = (FilterItem) listModel.getElementAt(indices[1]);
+				FilterItem three = new CompoundFilterItem(first, second, operator);
+
+				listModel.removeElementAt(indices[0]);
+				listModel.removeElementAt(indices[1] - 1);
+				listModel.add(0, three);
+			}
+
+            else if (source == cancel) {
                 listModel.removeAllElements();
 				viewCancel();
-                /*for (int i = 0; i < oldFilters.length; i++) {
-                    listModel.addElement(oldFilters[i]);
-                }
-                oldFilters = null;
-                setVisible(false);
-				*/
             }
-            else if (src == done) {
+
+            else if (source == done) {
                 updateLineMap();
 
-				for(int i = 0; i < linemap.length; i++)
-					linemap[i] = !linemap[i];
+				for(int index = 0; index < linemap.length; index++)
+					linemap[index] = !linemap[index];
 
 				table.removeRowsByFlag(linemap);
 				pushOutput(table, 0);
 				viewDone("");
-
-                //oldFilters = null;
-                //setVisible(false);
             }
-            /*else if (src == update) {
-                updateLineMap();
-                oldFilters = listModel.toArray();
-            }*/
-        }
-        //Object[] oldFilters;
+		}
 
-        /**
-         * Base class for filters.
-         */
-        abstract class FilterItem {
-            String label;
-            int colNum;
-            String op;
+        /*
+        	Base class for filters
+        */
+        class FilterItem {
+            FilterItem first, second;
 
-            /**
-             * put your documentation comment here
-             * @param s
-             * @return
-             */
-            abstract boolean evaluate (String s);
+            String attribute;
+            int column;
+            String operator;
 
-            /**
-             * put your documentation comment here
-             * @param d
-             * @return
-             */
-            abstract boolean evaluate (double d);
+            boolean evaluate(String value) {
+				return false;
+			}
+
+            boolean evaluate(double value) {
+				return false;
+			}
+
+			boolean evaluate(FilterItem filteritem, int row) {
+				return false;
+			}
         }
 
-        /**
-         * Filter out items for numeric columns
-         */
+        /*
+        	Class for binary boolean expressions
+        */
+        class CompoundFilterItem extends FilterItem {
+
+			CompoundFilterItem(FilterItem first, FilterItem second, String operator) {
+				this.first = first;
+				this.second = second;
+				this.operator = operator;
+			}
+
+			boolean evaluate(String value) {
+				return false;
+			}
+
+			boolean evaluate(double value) {
+				return false;
+			}
+
+			boolean evaluate(FilterItem filteritem, int row) {
+				boolean expression;
+
+				if (filteritem instanceof CompoundFilterItem) {
+					expression = evaluate(filteritem.first, row);
+
+					if (filteritem.operator == AND)
+						expression = expression && evaluate(filteritem.second, row);
+					else if (filteritem.operator == OR)
+						expression = expression || evaluate(filteritem.second, row);
+				}
+				else {
+					int column = filteritem.column;
+
+					if (table.getColumn(column) instanceof NumericColumn)
+						return filteritem.evaluate(table.getDouble(row, column));
+					else
+						return filteritem.evaluate(table.getString(row, column));
+				}
+
+				return expression;
+			}
+
+			public String toString() {
+				return toString(this);
+			}
+
+			String toString(FilterItem filteritem) {
+				String expression;
+
+				if (filteritem instanceof CompoundFilterItem) {
+					expression = "(" + toString(filteritem.first) + " " + filteritem.operator;
+					expression = expression + " " + toString(filteritem.second) + ")";
+				}
+				else
+					return filteritem.toString();
+
+				return expression;
+			}
+		}
+
         class NumericFilterItem extends FilterItem {
             double value;
 
-            /**
-             * put your documentation comment here
-             * @param             String l
-             * @param             int c
-             * @param             String o
-             * @param             double v
-             */
-            NumericFilterItem (String l, int c, String o, double v) {
-                label = l;
-                colNum = c;
-                op = o;
-                value = v;
+            NumericFilterItem(String attribute, int column, String operator, double value) {
+                this.attribute = attribute;
+                this.column = column;
+                this.operator = operator;
+                this.value = value;
             }
 
-            /**
-             * put your documentation comment here
-             * @param s
-             * @return
-             */
-            boolean evaluate (String s) {
-                double d = 0;
+            boolean evaluate(String svalue) {
+                double dvalue = 0;
+
                 try {
-                    d = Double.parseDouble(s);
-                } catch (Exception e) {
-                    return  false;
+                    dvalue = Double.parseDouble(svalue);
+                } catch(Exception exception) {
+                    return false;
                 }
-                return  evaluate(d);
+
+                return evaluate(dvalue);
             }
 
-            /**
-             * put your documentation comment here
-             * @param d
-             * @return
-             */
-            boolean evaluate (double d) {
-                if (op == GREATER_THAN)
-                    //return value > d;
-                    return  value < d;
-                else if (op == GREATER_THAN_EQUAL_TO)
-                    //return value >= d;
-                    return  value <= d;
-                else if (op == LESS_THAN)
-                    //return value < d;
-                    return  value > d;
-                else if (op == LESS_THAN_EQUAL_TO)
-                    //return value <= d;
-                    return  value >= d;
-                else if (op == EQUAL_TO)
-                    //return value == d;
-                    return  value != d;
-                else if (op == NOT_EQUAL_TO)
-                    //return value != d;
-                    return  value == d;
-                return  false;
+            boolean evaluate(double dvalue) {
+                if (operator == GREATER_THAN)
+                    return value < dvalue;
+
+                else if (operator == GREATER_THAN_EQUAL_TO)
+                    return value <= dvalue;
+
+                else if (operator == LESS_THAN)
+                    return value > dvalue;
+
+                else if (operator == LESS_THAN_EQUAL_TO)
+                    return value >= dvalue;
+
+                else if (operator == EQUAL_TO)
+                    return value == dvalue;
+
+                else if (operator == NOT_EQUAL_TO)
+                    return value != dvalue;
+
+                return false;
             }
 
-            /**
-             */
-            public String toString () {
-                return  label + " " + op + " " + value;
+			public String toString() {
+                return attribute + " " + operator + " " + value;
             }
         }
 
-        /**
-         * Filter out items for non-numeric columns.
-         * String equality and inequality is used
-         */
         class StringFilterItem extends FilterItem {
             String value;
 
-            /**
-             * put your documentation comment here
-             * @param             String l
-             * @param             int c
-             * @param             String o
-             * @param             String v
-             */
-            StringFilterItem (String l, int c, String o, String v) {
-                label = l;
-                colNum = c;
-                op = o;
-                value = v;
+            StringFilterItem(String attribute, int column, String operator, String value) {
+                first = null;
+                second = null;
+
+                this.attribute = attribute;
+                this.column = column;
+                this.operator = operator;
+                this.value = value;
             }
 
-            /**
-             Return true if the item should be shown
-             */
-            boolean evaluate (String s) {
-                if (op == EQUAL_TO)
-                    return  value.trim().equals(s.trim());
-                else if (op == NOT_EQUAL_TO)
-                    return  !value.trim().equals(s.trim());
-                return  false;
+            boolean evaluate(String svalue) {
+                if (operator == EQUAL_TO)
+                    return value.trim().equals(svalue.trim());
+
+                else if (operator == NOT_EQUAL_TO)
+                    return !(value.trim().equals(svalue.trim()));
+
+                return false;
             }
 
-            /**
-             * put your documentation comment here
-             * @param d
-             * @return
-             */
-            boolean evaluate (double d) {
-                String s;
+            boolean evaluate(double dvalue) {
+                String svalue;
+
                 try {
-                    s = Double.toString(d);
-                } catch (Exception e) {
-                    return  false;
+                    svalue = Double.toString(dvalue);
+                } catch (Exception exception) {
+                    return false;
                 }
-                return  evaluate(s);
+
+                return evaluate(svalue);
             }
 
-            /**
-             * put your documentation comment here
-             * @return
-             */
-            public String toString () {
-                return  label + " " + op + " " + value;
+            public String toString() {
+                return attribute + " " + operator + " " + value;
             }
         }
     }
