@@ -25,7 +25,7 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	static final String SHORT_TYPE = "short";
 
 	/** the delimiter identified. */
-	private byte delimiterOne;
+	protected byte delimiterOne;
 
 	/** the datatype for each column. */
 	transient protected ArrayList typesList;
@@ -496,7 +496,7 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 		@return a VerticalTable containing the data from the file, or null
 		if any errors occur
 	*/
-	private VerticalTable readSDFile(File f) {
+	protected VerticalTable readSDFile(File f) {
 		int maxRowLength = 0;
 		ArrayList rowPtrs = new ArrayList();
 		try {
