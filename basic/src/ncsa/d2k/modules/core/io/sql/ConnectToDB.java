@@ -218,11 +218,9 @@ public class ConnectToDB extends UIModule {
       PropertyDescription [] pds = new PropertyDescription [6];
       pds[0] = new PropertyDescription ("dbVendor", "Database Vendor", "The database vendor.");
       pds[1] = new PropertyDescription ("username", "User Name", "The login account to use.");
-      //pds[2] = new PropertyDescription ("password", "Password", "The password to use.");
       pds[2] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
       pds[3] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
       pds[4] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
-      //pds[5] = new PropertyDescription ("url", "Connection URL", "The connection URL to use (for MicroSoft SQLServer).");
       pds[5] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
       return pds;
     }
@@ -621,7 +619,7 @@ public class ConnectToDB extends UIModule {
 
                     }
                     /*
-                    // we don't support MySQL and SQLServer at this point
+                    // we don't support MySQL at this point
                     else if (newSelection == "MySQL") {
 
                         tfPo.setText("1520");
@@ -932,16 +930,6 @@ public class ConnectToDB extends UIModule {
                 cbV.setSelectedItem("Oracle");
 
             }
-/*
-            if (cbV.getItemAt(0) == "Oracle") {
-                tfPo.setText("1521");
-                tfD.setText("oracle.jdbc.driver.OracleDriver");
-            }
-            else if (cbV.getItemAt(0) == "SQLServer") {
-              tfPo.setText("1433");
-              tfD.setText("com.microsoft.jdbc.sqlserver.SQLServerDriver");
-            }
-*/
 
             setLayout(new BorderLayout());
 
@@ -1029,10 +1017,10 @@ public class ConnectToDB extends UIModule {
 
                               getPassword().trim());
 
-                      //dbi.setConnectionWrapper(out);
-
-                      pushOutput (oc, 0);
-                      viewDone("Done");
+                      if (oc.getConnection() != null) {
+                        pushOutput (oc, 0);
+                        viewDone("Done");
+                      }
 
                   }
 
@@ -1070,10 +1058,10 @@ public class ConnectToDB extends UIModule {
 
                               getPassword().trim());
 
-                      //System.out.println("sc is " + sc);
-                      pushOutput (sc, 0);
-                      viewDone("Done");
-
+                      if (sc.getConnection() != null) {
+                        pushOutput (sc, 0);
+                        viewDone("Done");
+                      }
                   }
 
                   else {

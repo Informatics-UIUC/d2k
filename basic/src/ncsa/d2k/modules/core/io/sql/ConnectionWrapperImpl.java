@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.io.sql;
 
 import java.sql.*;
+import javax.swing.*;
 
 /**
   ConnectionWrapper is a wrapper to java.sql.Connection
@@ -28,40 +29,50 @@ public class ConnectionWrapperImpl implements ConnectionWrapper, java.io.Seriali
 	  that takes username and password arguments will be used. */
 	private String username;
 	private String password;
+        JOptionPane msgBoard = new JOptionPane();
 
 	public ConnectionWrapperImpl
 		(String _url, String _driver, String _username, String _password)
 	{
 		url = _url;
-//System.out.println("url is : " + url);
 		driver = _driver;
-//System.out.println("driver : " + driver);
 		username = _username;
-//System.out.println("username : " + username);
 		password = _password;
-//System.out.println("password is : " + password);
 	} /* ConnectionWrapper(String,String,String,String) */
 
-    public Connection getConnection() throws SQLException, ClassNotFoundException,
-    InstantiationException, IllegalAccessException
-    {
-	//System.out.println ("Entering getConnection");
-	if (connection == null) {
-	    Class classNm = Class.forName (driver);
-	    //System.out.println ("driver has class : "+classNm.getName ());
-	    DriverManager.registerDriver ((Driver) Class.forName (driver).newInstance ());
 
-	    // make the connection
-	    if (username == null) {
-		connection = DriverManager.getConnection( url );
-			} else {
-				//System.out.println ("URL is "+url);
-				connection = DriverManager.getConnection( url, username, password );
-			}
-	}
-	//System.out.println("Successful Connection");
-	return connection;
-    } /* getConnection() */
+    public Connection getConnection()
+    {
+      try {
+        //System.out.println ("Entering getConnection");
+        if (connection == null) {
+          Class classNm = Class.forName (driver);
+          DriverManager.registerDriver ((Driver) Class.forName (driver).newInstance ());
+
+          // make the connection
+          if (username == null) {
+            connection = DriverManager.getConnection( url );
+          }
+          else {
+            //System.out.println ("URL is "+url);
+            connection = DriverManager.getConnection( url, username, password );
+          }
+        }
+        //System.out.println("Successful Connection");
+        return connection;
+      }
+      catch (Exception e){
+        JOptionPane.showMessageDialog(msgBoard,
+          "Cannot connect to the database. Please make sure you have " +
+          "entered the correct user name, pass word, server machine, " +
+          "and database instance.", "Error",
+          JOptionPane.ERROR_MESSAGE);
+        System.out.println("Error occoured when connecting to a database.");
+        return null;
+      }
+
+    }
+
 
     protected void finalize() {
         try {
