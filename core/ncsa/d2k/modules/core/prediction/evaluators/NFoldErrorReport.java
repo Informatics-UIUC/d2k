@@ -15,14 +15,14 @@ import java.util.*;
 /**
  * Shows some statistics about models evaluated using ClassificationErrorEvaluator.
  */
-public class ClassificationErrorReport extends VisModule  {
+public class NFoldErrorReport extends VisModule  {
 
 	public String getModuleInfo() {
 		return "<html>  <head>      </head>  <body>    Shows statistics about each model built.  </body></html>";
 	}
 
 	public String getModuleName() {
-		return "ClassificationErrorReport";
+		return "NFoldErrorReport";
 	}
 
 	public String[] getInputTypes() {

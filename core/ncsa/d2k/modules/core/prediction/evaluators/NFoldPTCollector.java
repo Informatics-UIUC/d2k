@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Collects N PredictionTables and pushes them out in an ArrayList
  */
-public class ClassificationErrorPTCollector extends DataPrepModule  {
+public class NFoldPTCollector extends DataPrepModule  {
 
 	public String getModuleInfo() {
 		return "<html>  <head>      </head>  <body> Collects N PredictionTables and pushes out an ArrayList containing all N PredictionTables. </body></html>";
@@ -62,7 +62,7 @@ public class ClassificationErrorPTCollector extends DataPrepModule  {
 	}
 
 	public String getModuleName() {
-		return "ClassificationErrorPTCollector";
+		return "NFoldPTCollector";
 	}
 
 	public void beginExecution() {
