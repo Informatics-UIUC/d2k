@@ -1185,7 +1185,9 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	 * share the same data.
 	 */
 	public Table shallowCopy() {
-		return new SubsetPagingTable(cache);
+		SubsetPagingTable spt = new SubsetPagingTable(cache);
+		spt.subset = this.subset;
+		return spt;
 	}
 	
 	/**

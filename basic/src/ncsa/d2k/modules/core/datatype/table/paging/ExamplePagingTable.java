@@ -857,9 +857,21 @@ public class ExamplePagingTable extends SubsetPagingTable implements ExampleTabl
 	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#toPredictionTable()
 	 */
 	public PredictionTable toPredictionTable() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PredictionTable(this);
 	}
-
-
+	
+	/**
+	 * make a copy of the tables internal data structures but not the data, or in
+	 * this case the pages. Return a reference to the new table structure.
+	 */
+	public Table shallowCopy() {
+		ExamplePagingTable ept = new ExamplePagingTable(cache);
+		ept.outputIndices = this.outputIndices;
+		ept.outputColumns = this.outputColumns;
+		ept.inputIndices = this.inputIndices;
+		ept.inputColumns = this.inputColumns;
+		ept.trainSet = this.trainSet;
+		ept.testSet = this.testSet;
+		return ept;
+	}
 }
