@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class InputEMOParams extends UIModule {
 
@@ -71,12 +72,40 @@ public class InputEMOParams extends UIModule {
       JLabel l2 = new JLabel("Estimated Time Factor");
       l2.setBorder(new EmptyBorder(20, 10, 20, 5));
       rightPanel.add(l2, BorderLayout.NORTH);
-      rightPanel.add(new RunTimeChart(), BorderLayout.CENTER);
+      JPanel pp = new JPanel(new BorderLayout());
+      pp.add(new RunTimeChart(), BorderLayout.NORTH);
+      pp.add(new RunTimePanel(), BorderLayout.CENTER);
+      rightPanel.add(pp, BorderLayout.CENTER);
 
       rightPanel.setBorder(new EmptyBorder(10, 50, 10, 50));
       add(rightPanel, BorderLayout.EAST);
 
       advanced.setEnabled(false);
+      tips.setEnabled(false);
+
+      numSolutions.addKeyListener(new KeyAdapter() {
+        public void keyTyped(KeyEvent e) {
+          String txt = numSolutions.getText();
+          char c = e.getKeyChar();
+          StringBuffer sb = new StringBuffer(txt);
+          sb.append(c);
+
+          txt = sb.toString();
+
+          // now parse this
+          try {
+            double d = Double.parseDouble(txt);
+            int recPop = (int)(2*d+1);
+            paramsModel.setValueAt(Double.toString(recPop), 0, 1);
+          }
+          catch(Exception ex) {
+            return;
+          }
+        }
+      });
+        paramsModel.setValueAt("30", 0, 1);
+        paramsModel.setValueAt("4", 2, 1);
+        paramsModel.setValueAt("1", 5, 1);
     }
 
     private JLabel timeRequired = new JLabel();
@@ -86,11 +115,12 @@ public class InputEMOParams extends UIModule {
     private RunTimeChart runTimeChart;
 
     private JLabel timeRequired2 = new JLabel("   ");
+    private JLabel maxTime2 = new JLabel("    ");
 
     class RunTimePanel extends JPanel {
       RunTimePanel() {
         setLayout(new GridBagLayout());
-        Constrain.setConstraints(this, new JLabel("Estimated Time Required:", JLabel.RIGHT),
+        Constrain.setConstraints(this, new JLabel("Estimated Time Required", JLabel.RIGHT),
                                                   0, 0, 1, 1,
                                                   GridBagConstraints.HORIZONTAL,
                                                   GridBagConstraints.WEST,
@@ -99,13 +129,32 @@ public class InputEMOParams extends UIModule {
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.WEST,
                                   1, 1);
-        Constrain.setConstraints(this, new JLabel("Specified Maximum Run Time:", JLabel.RIGHT),
-                                 1, 0, 1, 1,
+        Constrain.setConstraints(this, new JLabel("Specified Maximum Run Time", JLabel.RIGHT),
+                                 0, 1, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
+        Constrain.setConstraints(this, maxTime2, 1,1,1,1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, new JLabel("Difference of ", JLabel.RIGHT),
+                                 0,2,1,1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, new JLabel("   "), 0,2,1,1,
+                                 GridBagConstraints.BOTH,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, tips, 0, 3, 1, 1,
+                                 GridBagConstraints.NONE,
+                                 GridBagConstraints.EAST,
+                                 1, 1);
+
       }
     }
+    JButton tips = new JButton("Optimization Tips");
 
     class RunTimeChart extends JPanel {
       RunTimeChart() {}
@@ -155,7 +204,7 @@ public class InputEMOParams extends UIModule {
     class TimePanel extends JPanel {
       TimePanel() {
         setLayout(new GridBagLayout());
-        JLabel lbl = new JLabel("Time Required:", JLabel.RIGHT);
+        JLabel lbl = new JLabel("Time Required", JLabel.RIGHT);
         Constrain.setConstraints(this, lbl,
                                  0, 0, 1, 1,
                                  GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
@@ -171,7 +220,7 @@ public class InputEMOParams extends UIModule {
                                  0, 1, 1, 1,
                                  GridBagConstraints.BOTH, GridBagConstraints.WEST,
                                  1, 1);
-        JLabel lbl2 = new JLabel("Maximum Run Time:", JLabel.RIGHT);
+        JLabel lbl2 = new JLabel("Maximum Run Time", JLabel.RIGHT);
         Constrain.setConstraints(this, lbl2,
                                  0, 2, 1, 1,
                                  GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
@@ -184,7 +233,7 @@ public class InputEMOParams extends UIModule {
                                  2, 2, 1, 1,
                                  GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                  1, 1);
-        JLabel lbl3 = new JLabel("Number of Solutions Desired:", JLabel.RIGHT);
+        /*JLabel lbl3 = new JLabel("Number of Solutions Desired:", JLabel.RIGHT);
         Constrain.setConstraints(this, lbl3,
                                  0, 3, 1, 1,
                                  GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
@@ -196,9 +245,9 @@ public class InputEMOParams extends UIModule {
         Constrain.setConstraints(this, new JLabel("  "),
                                  0, 4, 1, 1,
                                  GridBagConstraints.BOTH, GridBagConstraints.WEST,
-                                 1, 1);
+                                 1, 1);*/
         Constrain.setConstraints(this, advanced,
-                                 0, 5, 1, 1,
+                                 0, 4, 1, 1,
                                  GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                  1, 1);
       }
@@ -211,23 +260,27 @@ public class InputEMOParams extends UIModule {
       else
         multiObjective = true;
 
+multiObjective = true;
       if(!multiObjective) {
       }
       else {
+        paramsModel.setValueAt("30", 1, 1);
+        paramsModel.setValueAt("4", 2, 1);
+        paramsModel.setValueAt("1", 5, 1);
       }
     }
 
     private class MultiObjectiveParamsTableModel extends DefaultTableModel {
 
-      String[] col0 = {/*"Number of Nondominated Solutions",*/
+      String[] col0 = {"Number of Nondominated Solutions",
           "Starting Population Size",
           "Tournament Size",
           "Probability of Crossover",
           "Probability of Mutation",
           "Generation Gap"};
 
-      String[] col1 = {"", "", "", "", ""};
-      String[] col2 = {"", "", "", "", ""};
+      String[] col1 = {"", "", "", "", "", ""};
+      String[] col2 = {"", "", "", "", "", ""};
 
       String[] names = {"", "Recommended", "Override"};
 
@@ -245,7 +298,7 @@ public class InputEMOParams extends UIModule {
       }
 
       public int getRowCount() {
-        return 5;
+        return 6;
       }
 
       public String getColumnName(int i) {
@@ -264,10 +317,68 @@ public class InputEMOParams extends UIModule {
       public void setValueAt(Object value, int r, int c) {
         if(c == 0)
           col0[r] = (String)value;
-        else if(c == 1)
-          col1[r] = (String)value;
-        else if(c == 2)
-          col2[r] = (String)value;
+        else if(c == 1) {
+          col1[r] = (String) value;
+          if(r == 0) {
+            try {
+              String str = (String)value;
+              double vl = Double.parseDouble(str);
+              double popSize = 2*vl+1;
+              setValueAt(Double.toString(popSize), 1, 1);
+              double mut = 1/vl;
+              mut = mut*100;
+              setValueAt(Double.toString(mut), 4, 1);
+            }
+            catch(Exception ex) {
+              return;
+            }
+          }
+          if(r == 2) {
+            String val = (String)value;
+            try {
+              double d = Double.parseDouble(val);
+              double crossover = (d-1)/d;
+              crossover = crossover * 100;
+              setValueAt(Double.toString(crossover), 3, 1);
+            }
+            catch(Exception e) {
+              return;
+            }
+          }
+
+        }
+        else if(c == 2) {
+          col2[r] = (String) value;
+          // the user set the number of solutions
+          if(r == 0) {
+            try {
+              String str = (String)value;
+              double vl = Double.parseDouble(str);
+              double popSize = 2*vl+1;
+              setValueAt(Double.toString(popSize), 1, 1);
+              double mut = 1/vl;
+              mut = mut*100;
+              setValueAt(Double.toString(mut), 4, 1);
+            }
+            catch(Exception ex) {
+              return;
+            }
+          }
+
+          // user set the tournament size
+          if(r == 2) {
+            String val = (String)value;
+            try {
+              double d = Double.parseDouble(val);
+              double crossover = (d-1)/d;
+              crossover = crossover * 100;
+              setValueAt(Double.toString(crossover), 3, 1);
+            }
+            catch(Exception e) {
+              return;
+            }
+          }
+        }
       }
 
       public boolean isCellEditable(int r, int c) {
