@@ -61,14 +61,17 @@ public class CreateDelimitedParser extends InputModule {
         return hasSpecDelim;
     }
 
-    /*public PropertyDescription [] getPropertiesDescriptions () {
-        PropertyDescription[] retVal = new PropertyDescription[2];
-        retVal[0] = new PropertyDescription("labelsRow", "Labels Row Index",
+    public PropertyDescription [] getPropertiesDescriptions () {
+        PropertyDescription[] retVal = new PropertyDescription[3];
+        retVal[0] = new PropertyDescription("labelsRow", "Labels Row",
             "This is the index of the labels row in the file, or -1 if there is no labels row.");
-        retVal[1] = new PropertyDescription("typesRow", "Types Row Index",
+        retVal[1] = new PropertyDescription("typesRow", "Types Row",
             "This is the index of the types row in the file, or -1 if there is no types row.");
+        retVal[2] =  new PropertyDescription("specDelim", "Delimiter",
+                  "The delimiter of this file if it is different than space, tab '|' or '='");
+
         return retVal;
-    }*/
+    }
 
     public CustomModuleEditor getPropertyEditor() {
         return new PropEdit();
@@ -158,8 +161,10 @@ public class CreateDelimitedParser extends InputModule {
             });
 
             /*final JRadioButton*/ delim = new JRadioButton("File Has User-specified Delimiter", getHasSpecDelim());
+            delim.setToolTipText("Select this option if the file has a special delimiter.");
             /*final JTextField*/ delimfld = new JTextField(5);
             /*final JLabel*/ dellbl = new JLabel("Delimiter:");
+            dellbl.setToolTipText("Specify the special delimiter.");
             if(getHasSpecDelim())
                 delimfld.setText(specDelim);
             else {
@@ -300,7 +305,7 @@ public class CreateDelimitedParser extends InputModule {
                     if(delim.isSelected()) {
                         dd = delimfld.getText(); // dd = delim.getText();
 												//System.out.println("dd.lenght " + dd.length() + " dd " + dd);
-                        if(dd.length() > 1)
+                        if(dd.length() != 1)
                             throw new Exception("The delimiter must be one character long.");
                     }
                     if(dd != getSpecDelim()) {
@@ -376,7 +381,7 @@ public class CreateDelimitedParser extends InputModule {
         s.append("<p>Properties are used to specify the delimiter, the labels row number, ");
         s.append("and the types row number. The row numbers are indexed from zero.");
         s.append("<p>Data Type Restrictions: ");
-        s.append("The input to this module must be a delimited file. If the file is");
+        s.append("The input to this module must be a delimited file. If the file is ");
 				s.append("large a java OutOfMemory error might occur");
         s.append("<p>Data Handling: ");
 				s.append("The module does not destroy or modify the input data.");
