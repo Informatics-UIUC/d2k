@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.optimize.random;
 
 
-
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -317,6 +316,7 @@ public class RandomSampling extends ComputeModule {
 	 */
 	private void pushParameterPoint () {
 		int numParams = space.getNumParameters ();
+		
 		double[] point = new double[numParams];
 
 		// Create one point in parameter space.
@@ -362,10 +362,11 @@ public class RandomSampling extends ComputeModule {
 			names[i] = space.getName (i);
 		}
 		ParameterPointImpl parameterPoint = (ParameterPointImpl) ParameterPointImpl.getParameterPoint (names, point);
-		this.pushOutput (parameterPoint, 0);
-		if (trace) System.out.println("Pushed point "+pointsPushed);
+		if (trace) System.out.println("RandomSampling: Pushed point "+pointsPushed + " " + parameterPoint);
+		
 		if (verbose)
 			this.printExample (pointsPushed + " - Pushed a point : ", parameterPoint);
+		this.pushOutput (parameterPoint, 0);
 		if (pointsPushed++ == maxIterations) {
 			if (verbose) System.out.println ("\nPushed Max Points.\n");
 			donePushing = true;
@@ -381,8 +382,11 @@ public class RandomSampling extends ComputeModule {
 	public ExampleTable getTable (ArrayList ss) {
 		Example ex = (Example) ss.get (0);
 		ExampleTable et = (ExampleTable) ex.getTable();
-		int numInputs = et.getNumInputs (0);
-		int numOutputs = et.getNumOutputs (0);
+		//ANCA replaced obsolete methods
+		//int numInputs = et.getNumInputs (0);
+		//int numOutputs = et.getNumOutputs (0);
+		int numInputs = et.getNumInputFeatures ();
+		int numOutputs = et.getNumOutputFeatures ();
 		int numColumns = numInputs + numOutputs;
 		int numExamples = ss.size ();
 		double[][] data = new double[numColumns][numExamples];
@@ -449,8 +453,12 @@ public class RandomSampling extends ComputeModule {
 		System.out.println (label);
 		System.out.println ("  Inputs");
 		ExampleTable et = (ExampleTable)ex.getTable();
-		int ni = et.getNumInputs(0);
-		int no = et.getNumOutputs(0);
+		//ANCA replaced obsolete methods
+		//int ni = et.getNumInputs(0);
+		//int no = et.getNumOutputs(0);
+		int ni = et.getNumInputFeatures();
+		int no = et.getNumOutputFeatures();
+		
 		for (int i = 0; i < ni; i++) {
 			System.out.println ("    " + et.getInputName (i) + " = " + ex.getInputDouble (i));
 		}

@@ -55,7 +55,9 @@ public class TableToParameterPoint extends DataPrepModule{
 	}
 	public void doit () throws Exception {
 		ExampleTable et = (ExampleTable) this.pullInput(0);
-		int numInputs = et.getNumInputs(0);
+		//ANCA replaced obsolete method
+		//int numInputs = et.getNumInputs(0);
+		int numInputs = et.getNumInputFeatures();
 		double [] parameters = new double [numInputs];
 		String [] labels = new String [numInputs];
 		for (int i = 0 ; i < numInputs ; i++) {
