@@ -35,16 +35,23 @@ public class VHashService {
    */
    public static int[] getIndicesInRange(int begin, int end, VHashMap map){
 
+
      int[] keysInRange = new int[0];      //the returned value
 
      if(end < begin) return keysInRange;
 
       //retrieving all valid rows and sorting them
       int[] validIndices = map.keys();
+
+
       Arrays.sort(validIndices);
+
+
 
       int beginIndex = findPlace(validIndices, begin);
       int endIndex = findPlace(validIndices, end);
+
+
 
       //if begin is greater than any valid row number - return an empty array
       if(beginIndex >= validIndices.length)   return keysInRange;
@@ -114,8 +121,12 @@ public class VHashService {
   public static int findPlace(int[] arr, int value){
 
     int retVal =  Arrays.binarySearch(arr, value);
-    if(retVal < 0)
+
+    if(retVal < 0){
+
+
       retVal = (retVal +1) * -1;
+    }
 
     return retVal;
   }

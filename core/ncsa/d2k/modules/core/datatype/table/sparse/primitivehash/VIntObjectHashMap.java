@@ -337,15 +337,25 @@ public class VIntObjectHashMap extends TIntObjectHashMap implements VHashMap{
       * @param key    the insertion key
       */
      public void insertObject(Object obj, int key){
+
+
       //moving all elements mapped to key through the maximal key
       //to be mapped to a key greater in 1.
       int max = VHashService.getMaxKey(this);
+
+
+
       int[] keysInRange = VHashService.getIndicesInRange(key, max, this);
-      for(int i=keysInRange.length-1; i>=0; i++){
+      for(int i=keysInRange.length-1; i>=0; i--){
+
+
+
 	Object removed = remove(keysInRange[i]);
 	put(keysInRange[i]+1, removed);
       }
       //putting the new object in key.
+
+
       put(key, obj);
      }
 

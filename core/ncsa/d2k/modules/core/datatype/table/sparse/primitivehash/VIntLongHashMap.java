@@ -350,7 +350,7 @@ public class VIntLongHashMap extends TIntLongHashMap implements VHashMap{
       //to be mapped to a key greater in 1.
       int max = VHashService.getMaxKey(this);
       int[] keysInRange = VHashService.getIndicesInRange(key, max, this);
-      for(int i=keysInRange.length-1; i>=0; i++){
+      for(int i=keysInRange.length-1; i>=0; i--){
 	long removed = remove(keysInRange[i]);
 	put(keysInRange[i]+1, removed);
       }

@@ -796,7 +796,7 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
 
   protected void addDefaultColumn(int index){
     if(!columns.containsKey(index))
-      columns.put(index, new SparseStringColumn());
+      setColumn(index, new SparseStringColumn());
   }
 
    /**
@@ -2025,7 +2025,8 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    */
   protected void addColumn(int[] newEntry, int colIndex, int[] validRows){
     SparseIntColumn iColumn = new SparseIntColumn(newEntry, validRows);
-    columns.put(colIndex, iColumn);
+    //columns.put(colIndex, iColumn);
+    setColumn(colIndex, iColumn);
   }
 
 
@@ -3413,7 +3414,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(int[] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
+
+     int[] validRows ;
+     if(columns.contains(position))
+       validRows = getColumnIndices(position);
+
+    else    validRows = getAllRows();
+
     setColumn(newEntry, position, validRows);
   }
 
@@ -3633,7 +3640,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(float[] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
+
+     int[] validRows ;
+     if(columns.contains(position))
+       validRows = getColumnIndices(position);
+
+    else    validRows = getAllRows();
+
     setColumn(newEntry, position, validRows);
   }
 
@@ -3652,7 +3665,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(double[] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
+
+     int[] validRows ;
+     if(columns.contains(position))
+       validRows = getColumnIndices(position);
+
+    else    validRows = getAllRows();
+
     setColumn(newEntry, position, validRows);
   }
 
@@ -3671,7 +3690,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(long[] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
+
+     int[] validRows ;
+     if(columns.contains(position))
+       validRows = getColumnIndices(position);
+
+    else    validRows = getAllRows();
+
     setColumn(newEntry, position, validRows);
   }
 
@@ -3691,7 +3716,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(short[] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
+
+     int[] validRows ;
+     if(columns.contains(position))
+       validRows = getColumnIndices(position);
+
+    else    validRows = getAllRows();
+
     setColumn(newEntry, position, validRows);
   }
 
@@ -3711,9 +3742,14 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(boolean[] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
-    setColumn(newEntry, position, validRows);
 
+   int[] validRows ;
+   if(columns.contains(position))
+      validRows = getColumnIndices(position);
+
+   else    validRows = getAllRows();
+
+   setColumn(newEntry, position, validRows);
 
   }
 
@@ -3733,7 +3769,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(String[] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
+
+     int[] validRows ;
+     if(columns.contains(position))
+       validRows = getColumnIndices(position);
+
+    else    validRows = getAllRows();
+
     setColumn(newEntry, position, validRows);
   }
 
@@ -3752,7 +3794,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(char[][] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
+
+     int[] validRows ;
+     if(columns.contains(position))
+       validRows = getColumnIndices(position);
+
+    else    validRows = getAllRows();
+
     setColumn(newEntry, position, validRows);
   }
 
@@ -3773,7 +3821,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(byte[][] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
+
+     int[] validRows ;
+     if(columns.contains(position))
+       validRows = getColumnIndices(position);
+
+    else    validRows = getAllRows();
+
     setColumn(newEntry, position, validRows);
   }
 
@@ -3792,7 +3846,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(Object[] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
+
+     int[] validRows ;
+     if(columns.contains(position))
+       validRows = getColumnIndices(position);
+
+    else    validRows = getAllRows();
+
     setColumn(newEntry, position, validRows);
   }
 
@@ -3811,7 +3871,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(byte[] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
+
+     int[] validRows ;
+     if(columns.contains(position))
+       validRows = getColumnIndices(position);
+
+    else    validRows = getAllRows();
+
     setColumn(newEntry, position, validRows);
   }
 
@@ -3830,7 +3896,13 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param position      the column number to be set.
    */
   public void setColumn(char[] newEntry, int position) {
-    int[] validRows = getColumnIndices(position);
+
+     int[] validRows ;
+     if(columns.contains(position))
+       validRows = getColumnIndices(position);
+
+    else    validRows = getAllRows();
+
     setColumn(newEntry, position, validRows);
   }
 

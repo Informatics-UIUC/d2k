@@ -846,10 +846,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
 	    //sorting the valid row numbers
     int[] validRows = getRowsInRange(begin, end);
 
-    //vered - debug
-    if(validRows.length == 0)
-     System.out.println("begin = " + begin + " end = " + end);
-     //end debug
+
     return getNewOrder(validRows);
 
    }

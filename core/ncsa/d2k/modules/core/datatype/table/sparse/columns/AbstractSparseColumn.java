@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
 //import gnu.trove.*;
 import java.util.Arrays;
+import java.util.zip.DataFormatException;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
@@ -313,6 +314,7 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
       //from the data
       boolean retVal = true;
       for (int i=0; i< rowNumbers.length && retVal; i++)
+          if(!isValueMissing(rowNumbers[i]) && !isValueEmpty(rowNumbers[i]))
 	   retVal = retVal && isDataNumeric(rowNumbers[i]);
 
         return retVal;
@@ -366,36 +368,60 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
     int[] rowNumbers = this.getIndices();
     int size = rowNumbers.length;
 
+    boolean numeric = isNumeric();
+
       if(buffer instanceof int[]) {
+     //   if(!numeric) throw new DataFormatException("The columns in not numeric. Could not convert data to type int[]");
+
          int[] b1 = (int[])buffer;
          for(int i = 0; i < b1.length && i < size; i++)
             b1[i] = getInt(rowNumbers[i]);
       }
       else if(buffer instanceof float[]) {
+       // if(!numeric)
+         // throw new DataFormatException(
+           //     "The columns in not numeric. Could not convert data to type float[]");
+
          float[] b1 = (float[])buffer;
          for(int i = 0; i < b1.length && i < size; i++)
             b1[i] = getFloat(rowNumbers[i]);
       }
       else if(buffer instanceof double[]) {
+
+        //if(!numeric)
+          //throw new DataFormatException(
+            //    "The columns in not numeric. Could not convert data to type double[]");
+
          double[] b1 = (double[])buffer;
          for(int i = 0; i < b1.length && i < size; i++)
             b1[i] = getDouble(rowNumbers[i]);
       }
       else if(buffer instanceof long[]) {
+
+        //if(!numeric)
+          //throw new DataFormatException(
+            //    "The columns in not numeric. Could not convert data to type long[]");
+
          long[] b1 = (long[])buffer;
          for(int i = 0; i < b1.length && i < size; i++)
             b1[i] = getLong(rowNumbers[i]);
       }
       else if(buffer instanceof short[]) {
+        //if(!numeric)
+          //throw new DataFormatException(
+            //    "The columns in not numeric. Could not convert data to type short[]");
+
          short[] b1 = (short[])buffer;
          for(int i = 0; i < b1.length && i < size; i++)
             b1[i] = getShort(rowNumbers[i]);
       }
+
       else if(buffer instanceof boolean[]) {
          boolean[] b1 = (boolean[])buffer;
          for(int i = 0; i < b1.length && i < size; i++)
             b1[i] = getBoolean(rowNumbers[i]);
       }
+
       else if(buffer instanceof String[]) {
          String[] b1 = (String[])buffer;
          for(int i = 0; i < b1.length && i < size; i++)

@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse;
 
 //import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
-
+import java.util.zip.DataFormatException;
 
 //import ncsa.d2k.modules.projects.vered.sparse.column.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
