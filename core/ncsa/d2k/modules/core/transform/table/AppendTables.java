@@ -73,7 +73,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 		PropertyDescription [] pds = new PropertyDescription [3];
 		pds[0] = new PropertyDescription ("fillerBol", "Boolean Column Filler", "This value fills boolean columns.");
 		pds[1] = new PropertyDescription ("fillerString", "String Column Filler", "This string fills the string columns.");
-		pds[2] = new PropertyDescription ("fillerNumeric", "Numeric Column Filler", "This value fills any numberic columns.");
+		pds[2] = new PropertyDescription ("fillerNumeric", "Numeric Column Filler", "This value fills any numeric columns.");
 		return pds;
 	}
 
@@ -173,7 +173,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "Append Table";
+		return "Append Tables";
 	}
 
 	/**
@@ -710,3 +710,9 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 		this.pushOutput(result, 0);
 	}
 }
+
+// QA comments
+// 3/3/03 - Handed to QA by Tom;  Ruth starts QA
+//        - Fixed some typos in documentation
+// 3/4/03 - Emailed Tom;  Expect Table1 then Table2 in result - both in rows and columns. And,
+//          don't expect order of columns to be shuffled.  Waiting for feedback.
