@@ -77,9 +77,7 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
 //MetaData is now a stand alone class. [vered - conversion to headless]
   public DSTPDataSource(/*DSTPView.*/MetaNode meta, Vector data){
 
-    //vered - debug
-    System.out.println("some value is a ssigned to _data, and its size = " + data.size());
-    //end debug
+
     _meta = meta;
     _data = data;
   }
@@ -187,9 +185,7 @@ private ParseDSTPToDBTable _module = null;
       System.out.println("Starting read ...");
       _data = new Vector();
 
-      //vered - debug
-      System.out.println("size of vector _data = " + _data.size());
-      //end debug
+
 
       int cnt = 0;
       try {
