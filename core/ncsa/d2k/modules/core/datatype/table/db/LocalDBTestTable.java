@@ -234,9 +234,9 @@ class LocalDBTestTable extends LocalDBPredictionTable implements TestTable {
 
 		  // Remove the prediction columns, since they will get readded
 		  // when we create the test table.
-		  for (int i = this.predictionSet.length - 1 ; i > -1; i--) {
+		  /*for (int i = this.predictionSet.length - 1 ; i > -1; i--) {
 			  et.removeColumn(this.predictionSet[i]);
-		  }
+		  }*/
 
 		  // now figure out the test and train sets
 		  int[] testcpy = new int[rows.length];

@@ -456,19 +456,21 @@ nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 			nameAry = iss.names;
 			numExamples = iss.numExamples;
 			cutoff = (int) ((double)numExamples * score);
+			if (((double)numExamples * score) > (double)cutoff)
+				cutoff++;
 			int numItems = names.size();
 
 			// Compile an array of names where the name is referenced by he index.
 			nameList = iss.names;
-
-			for (int i = 0 ; i < nameList.length ;i++)
-				System.out.println (i+":"+nameList[i]);
-
-			System.out.println ("--------------------------");
-			System.out.println ("number examples : "+numExamples);
-			System.out.println ("cutoff : "+cutoff);
-			System.out.println ("number unique items : "+numItems);
-			System.out.println ("--------------------------");
+			if (debug) {
+				for (int i = 0 ; i < nameList.length ;i++)
+					System.out.println (i+":"+nameList[i]);
+				System.out.println ("--------------------------");
+				System.out.println ("number examples : "+numExamples);
+				System.out.println ("cutoff : "+cutoff);
+				System.out.println ("number unique items : "+numItems);
+				System.out.println ("--------------------------");
+			}
 
 			boolean [][] itemFlags = iss.getItemFlags();
 			documentMap = new MutableIntegerArray [numItems];
@@ -511,7 +513,7 @@ nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 		// sorted array of indices.
 		int [] currentItemIndices = this.convertFlagsToIndices (currentItemsFlags);
 		if (currentItemIndices == null) {
-			System.out.println ("DONE: No elements.");
+			System.out.println ("DONE");
 			this.finish();
 			return;
 		}
@@ -531,7 +533,7 @@ nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 		int newRules = results.size() - oldRuleSize;
 		validRules = oldRuleSize;
 		if (fixedResultSets == null) {
-			System.out.println ("DONE: No sets.");
+			System.out.println ("DONE");
 			this.finish();
 			return;
 		}
