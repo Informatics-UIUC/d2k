@@ -497,13 +497,7 @@ public class ETScatterPlotWidget extends JUserPane implements
     }
 
     public String getColumnName(int col) {
-    	if (rowheaders != null)
-        if (col==0)
-          return "";
-        else
-          return et.getColumnLabel(inputs[col-1]);
-      else
-	     return et.getColumnLabel(inputs[col]);
+      return et.getColumnLabel(inputs[col-1]);
     }
 
     public Object getValueAt(int row, int col) {
