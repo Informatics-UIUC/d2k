@@ -220,3 +220,24 @@ public class ARFFFileParser extends DelimitedFileParser {
         }
     }
 }
+
+// QA Comments
+// 2/14/03 - Handed off to QA by David Clutter
+// 2/12/03 - Ruth started QA process in conjunction with CreateARFFParser
+//           module.   There needs to be better error checking - if a
+//           file that can't be read is passed in, the exception message
+//           isn't user friendly.   If the ARFF file has bogus data (for
+//           example, illegal attributes or wrong type, no error is
+//           shown, For example (last line bogus):
+// @relation weather
+// @attribute outlook {sunny, overcast, rainy}
+// @attribute temperature numeric
+// @data
+// sunny, 85
+// overcast, 64
+// windy, hot
+//	     Ruth emailed.   Error checking shoudl be fixed.  Perhaps
+//          just state (in CreateARFFParser) that careful checking
+//          for content is not performed
+//
+// END QA Comments
