@@ -3,8 +3,6 @@ package ncsa.d2k.modules.core.discovery.ruleassociation;
 import java.util.*;
 import gnu.trove.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 
 /** This class contains the following components:
  * minimumSupport - minimum support specified by a user
@@ -25,12 +23,11 @@ public class RuleTable extends MutableTableImpl {
     private double minimumConfidence;
     private double minimumSupport;
     private int numberOfTransactions;
-
+    private int numRulesShowing;
     private List items;
     private List itemSets;
     private LinkedList origItems;
     private LinkedList origItemSets;
-
     //--------------------
 
     /**
@@ -70,12 +67,14 @@ public class RuleTable extends MutableTableImpl {
           array = I.items.toNativeArray();
           newItems.items = new TIntArrayList(array);
           origItemSets.set(i, newItems);
+          numRulesShowing = getNumRules();
       }
     }
 
     /**
      * cleanup removes attribute-value combinations from the visualization
-     * that are not part of any rule. First the remap field identifies which
+     * that are not part of any rule or that don't meet the filter criteria.
+     * First the remap field identifies which
      * items(attribute-values) are not used. Then the remap field is used to
      * determine the items to be removed and identify the new value that items
      * should use.  Then it adjusts the frequent item sets.
@@ -86,13 +85,13 @@ public class RuleTable extends MutableTableImpl {
       int [] remap = new int[items.size()];
       for (int i=0; i < getNumRules(); i++) {
         int[] ante = getRuleAntecedent(i);
-        for (int j=0; j < ante.length; j++)    {
-          if (remap[ante[j]] != 1)
+        for (int j=0; j < ante.length; j++)  {
+          if (ante[j] != -1 && remap[ante[j]] != 1)
             remap[ante[j]] = 1;
         }
         int[] conseq = getRuleConsequent(i);
         for (int j=0; j < conseq.length; j++)   {
-          if (remap[conseq[j]] != 1)
+          if (conseq[j] != -1 && remap[conseq[j]] != 1)
             remap[conseq[j]] = 1;
         }
       }
@@ -108,15 +107,61 @@ public class RuleTable extends MutableTableImpl {
         else
           remap[i] = i-adjustment;
       //adjust the values of frequent item sets by the remap data
-
       for (int i=0; i < itemSets.size(); i++) {
-        FreqItemSet fis = (FreqItemSet)itemSets.get(i);
+        FreqItemSet fis = (FreqItemSet) itemSets.get(i);
         len = fis.items.size();
-        for (int j=0; j<len; j++){
-            fis.items.set(j, remap[fis.items.get(j)]);
+        int j = 0;
+        while(j < fis.items.size() && fis.items.get(j) != -1){
+          fis.items.set(j, remap[fis.items.get(j)]);
+          j++;
         }
       }
     }
+
+
+    /**
+     * This is the same as cleanup(), but the order of the rules has changed due
+     * to a user's filtering criteria.
+     * @param order the order the rows appear in the RuleVis
+     */
+    public void cleanup(int[] order) {
+      // assign value of 1 if attribute-value is used
+      int [] remap = new int[items.size()];
+      for (int i=0; i < numRulesShowing; i++) {
+        int[] ante = getRuleAntecedent(order[i]);
+        for (int j=0; j < ante.length; j++)  {
+          if (ante[j] != -1 && remap[ante[j]] != 1)
+            remap[ante[j]] = 1;
+        }
+        int[] conseq = getRuleConsequent(order[i]);
+        for (int j=0; j < conseq.length; j++)   {
+          if (conseq[j] != -1 && remap[conseq[j]] != 1)
+            remap[conseq[j]] = 1;
+        }
+      }
+      //calculate new index for attribute-value
+      int adjustment = 0;
+      int len = items.size();
+      for (int i=0; i < len; i++)
+        if (remap[i] != 1) {
+          items.remove(i-adjustment);
+          adjustment++;
+          remap[i] = -1;
+        }
+        else
+          remap[i] = i-adjustment;
+      //adjust the values of frequent item sets by the remap data
+      for (int i=0; i < itemSets.size(); i++) {
+        FreqItemSet fis = (FreqItemSet) itemSets.get(i);
+        len = fis.items.size();
+        int j = 0;
+        while(j < fis.items.size() && fis.items.get(j) != -1){
+          fis.items.set(j, remap[fis.items.get(j)]);
+          j++;
+        }
+      }
+    }
+
 
     /**
      * alphaSort orders the attribute-value combinations alphabetically
@@ -152,6 +197,59 @@ public class RuleTable extends MutableTableImpl {
       this.reOrderRowVals(swapMirror);
     }
 
+
+    /**
+     * Some 'items' cannot be removed because others reference that same 'items'
+     * in memory.  Thus, the important 'items' are remembered in this HashSet.
+     * @param order is the current order of the rows in the Vis
+     * @return h, the HashSet of 'items' used by the filter criteria
+     */
+    private HashSet findUsedItems(int[] order){
+      HashSet h = new HashSet();
+      FreqItemSet F;
+      for(int i = 0; i < order.length; i++){
+        //the rules contained in order[] are the important rules that need to be seen
+        int ante = this.getRuleAntecedentID(order[i]);
+        F = (FreqItemSet)itemSets.get(ante);
+        h.add(F.items);
+        int cons = this.getRuleConsequentID(order[i]);
+        F = (FreqItemSet)itemSets.get(cons);
+        h.add(F.items);
+      }
+      return h;
+    }
+
+    /**
+     * Rules have been filtered and this method prepares the itemSets according
+     * to the list of rules that the filter selects.  A -1 value is assigned to
+     * the items list in the itemSets if the value is not to be displayed.
+     * @param rowList is the array produced by the filter to specify the rules to be removed
+     * @param order is the current order of the rules in the Vis.
+     */
+    public void rulesToDisplay(boolean[] ruleList, int[] order){
+      numRulesShowing = order.length;
+      HashSet hSet = findUsedItems(order);
+      int ante;
+      int cons;
+      FreqItemSet F;
+      for(int c = 0; c < ruleList.length; c++){
+        if(ruleList[c] == false){
+          ante = this.getRuleAntecedentID(c);
+          cons = this.getRuleConsequentID(c);
+          F = (FreqItemSet)itemSets.get(ante);
+          //'remove' the items not used by the Vis.
+          if(!hSet.contains(F.items))
+            for(int i = 0; i < F.items.size(); i++)
+              F.items.set(i, -1);
+          F = (FreqItemSet)itemSets.get(cons);
+          if(!hSet.contains(F.items))
+            F.items.set(0, -1);
+        }
+      }
+      //remove now unused rows in the Vis
+      cleanup(order);
+    }
+
     /**
      * This method moves the values in the table around according to the
      * array that is passed in using this convention:  newOrder[0] contains
@@ -160,9 +258,8 @@ public class RuleTable extends MutableTableImpl {
      */
     public void reOrderRowVals(int[] newOrder){
       int [] rowMap = new int [items.size()];
-      for(int x = 0; x < items.size(); x++){
+      for(int x = 0; x < items.size(); x++)
         rowMap[newOrder[x]] = x;
-      }
       int len;
       for (int i=0; i < itemSets.size(); i++) {
         FreqItemSet fis = (FreqItemSet)itemSets.get(i);
@@ -209,6 +306,15 @@ public class RuleTable extends MutableTableImpl {
     }
 
     /**
+     * Get the number of rules showing in the Vis
+     * @return the number of rules
+     */
+    public int getNumRulesShowing(){
+      return numRulesShowing;
+    }
+
+
+    /**
      * Sort the rules by confidence.
      */
     public void sortByConfidence() {
@@ -229,6 +335,7 @@ public class RuleTable extends MutableTableImpl {
     public void sortByConsequent() {
       this.itemSetSort(THEN);
     }
+
 
     /**
      * Get the minimum confidence
@@ -338,7 +445,7 @@ public class RuleTable extends MutableTableImpl {
         return itemSets;
     }
 
-    /**
+        /**
      * Sort the table using one of the item set columns as the key.
      * @param col the column index (must be IF or THEN)
      */
