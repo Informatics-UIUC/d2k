@@ -531,3 +531,9 @@ public class FilterConstruction extends UIModule {
       }
    }
 }
+
+/**
+ * QA comments:
+ * 3-4-03 vered started qa:
+ * 3-6-03 sent back to greg to support default labels.
+ */
