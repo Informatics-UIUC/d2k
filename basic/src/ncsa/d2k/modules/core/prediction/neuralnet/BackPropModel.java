@@ -138,7 +138,7 @@ public class BackPropModel extends PredictionModelModule
 	public final static int NODES_IN_LAYER_03=11;
 	public final static int NODES_IN_LAYER_04=12;
 
-	/* weights [i][j][k]
+	/** weights [i][j][k] for connections between nodes.
 		where 	i=the layer of the 'to' node
 				j=the 'to' node (including outputs)
 				k=the 'from' node
@@ -149,12 +149,12 @@ public class BackPropModel extends PredictionModelModule
 	   etc.  NaN is used so no one accidentally uses them later on without
 	   there being something obviously wrong
 
-	*/
+	**/
 
 	public double[][][] weights;
 
-	/*sums[i][j]
-		the weighted sums for each node (before activation),
+	/**sums[i][j]
+		the weighted sums for each node (before activation).
 		the column (i) corresponds to layer (outputs
 		are the last layer), row (j) is index within the layer,
 		row zero is the threshold node, therefore set to NaN
@@ -163,38 +163,39 @@ public class BackPropModel extends PredictionModelModule
 	*/
 	private double[][] sums;
 
-	/*the activation function values for all nodes, including outputs
+	/**the activation function values for all nodes, including outputs.
 	  same mapping as 'sums'. row zero is set to the threshold/bias value
 	  (normally -1)
 	*/
 
 	private double[][] activations;
 
-	/*The 'deltas', or error distribution values, for each node
+	/**The 'deltas', or error distribution values, for each node.
 	  same mapping as 'sums'
 	*/
 	private double[][] deltas;
 
-	/* The parameters
+	/** The parameters for the neural net architecture.
 	*/
 	public final ParameterPoint params;
 
-	/* The data set being trained or tested
+	/** The data set being trained or tested.
 	*/
 	public ExampleTable data;
 
 
-	/* the activation the compute class will use
+	/** The activation the compute class will use.
 	*/
 	protected NNactivation act;
 
 
-	/*the function that controls the learning rate and the learning time
+	/**The function that controls the learning rate and the learning time.
 	*/
 	protected NNlearn learnFn;
 
-	/*controls the scaling/unscaling of the inputs and outputs*/
+	/**controls the scaling/unscaling of the inputs and outputs*/
 	ScalingTransformation scaler;
+	
 	public final double bias=-1.0;
 
 	public final boolean trainingSuccess;
@@ -206,6 +207,21 @@ public class BackPropModel extends PredictionModelModule
 	final double upperTanh=.9;
 	final double lowerSig=.1;
 	final double upperSig=.9;
+
+	/**
+		These may be different than the input features in the training 
+		table, if the inputs in the training table are invalid
+		*/
+	protected int[] inputFeatures;
+	protected int numInputs;
+	/**
+		These may be different than the output features in the training 
+		table, if the outputs in the training table are invalid
+		*/
+	protected int[] outputFeatures;
+	protected int numOutputs;
+	
+		
 	/////////////////////
 	//work methods
 	////////////////////
@@ -221,10 +237,7 @@ public class BackPropModel extends PredictionModelModule
 
 
 	/*************************************************
-	CONSTRUCTOR
-
-
-	  Builds a BackPropModel with the given parameters
+	  Builds a BackPropModel with the given parameters.
 
 	  @param et= the data set to train on
 	  @param prms= a table with the parameters to use
@@ -243,7 +256,7 @@ public class BackPropModel extends PredictionModelModule
 		}
 
 
-		transform((TrainTable)data);
+		transformTrainTable();
 
 		//set up arrays, fill w/ random values
 		initArrays();
@@ -359,7 +372,7 @@ public class BackPropModel extends PredictionModelModule
 
 			for(j=1; j<numNodesPrevLayer; j++){
 				tempSum+=weights[0][i][j]*data.getDouble(
-								e, data.getInputFeatures()[j-1]);
+								e, inputFeatures[j-1]);
 			}
 			sums[0][i]=tempSum;
 			activations[0][i]=act.activationOf(tempSum);
@@ -389,13 +402,13 @@ public class BackPropModel extends PredictionModelModule
 	}
 
 
-	/** transform
-
-		scales the outputs of the training data to the range required
-		by the activation function chosen
+		/**Scales the outputs of the training data to the range required
+		by the activation function chosen. No longer scales the inputs
+		to the range -2,2. It will now be up to the user to scale the
+		inputs appropriately (it may be helpful to optimize the range).
 		*/
 
-	private void transform(TrainTable et){
+	private void transformTrainTable(){
 		boolean sig=false;
 
 		switch ((int)params.getValue(ACTIVATION_FUNCTION)){
@@ -432,6 +445,7 @@ public class BackPropModel extends PredictionModelModule
 			lowerBound=lowerTanh;
 			upperBound=upperTanh;
 		}
+		/*
 		int numOutputs=et.getNumOutputFeatures();
 		int numInputs=et.getNumInputFeatures();
 
@@ -453,29 +467,41 @@ public class BackPropModel extends PredictionModelModule
 			mins[i]=lowerBound;
 			colIndices[i]=et.getOutputFeatures()[i-numInputs];
 		}
-		scaler=new ScalingTransformation(
-				colIndices, mins, maxs, et);
-		scaler.transform(et);
+		*/
+		int i;
+
+		int colsToScale=numOutputs;
+		int[] colIndices=new int[colsToScale];
+
+		double[] maxs=new double[colsToScale];
+		double[] mins=new double[colsToScale];
+
+		for(i=0;i<colsToScale;i++){
+			maxs[i]=upperBound;
+			mins[i]=lowerBound;
+			colIndices[i]=outputFeatures[i];
+		}
+
+		scaler=new ScalingTransformation(colIndices, mins, maxs, this.data);
+		
+		scaler.transform(this.data);
 		this.getTransformations().add(scaler);
 
 
 	}
 
-	/**verifyData
+	/**
 
-		checks for non-numeric (or boolean) inputs and outputs.
+		Checks for non-numeric (or non-boolean) inputs and outputs.
 		will remove them and
-		reset the data. if removing them leaves either zero inputs
+		reset the data if found. if removing them leaves either zero inputs
 		or zero outputs, this will return false and the model-building
 		will have to fail
 		*/
 	protected boolean verifyData(){
 		int i,j;
-		int numInputs = data.getNumInputFeatures();
-		int numOutputs = data.getNumOutputFeatures();
-		//hold the inputs and outputs that have been proved to be useable
-		int[] useableIns=null;
-		int[] useableOuts=null;
+		numInputs = data.getNumInputFeatures();
+		numOutputs = data.getNumOutputFeatures();
 
 		//int numericInputs=0;
 		//int numericOutputs=0;
@@ -546,33 +572,48 @@ public class BackPropModel extends PredictionModelModule
 			}
 		}
 		if(gg==0){//we were using inputs
-			 useableIns=useableCols;
+			 this.inputFeatures = useableCols;
+			 this.numInputs = this.inputFeatures.length;
 
 			 //switch to outputs
 			 numCols=numOutputs;
+			 
 			 features=data.getOutputFeatures();
+			 
 			 noms=new boolean[numOutputs];
 		}else{//it was the outputs
-			useableOuts=useableCols;
+			this.outputFeatures = useableCols;
+			this.numOutputs = this.outputFeatures.length;
 		}
 		}//for gg
 
-		data.setInputFeatures(useableIns);
-		data.setOutputFeatures(useableOuts);
-
 		//reset the superclass's info about training data
+		//this is kind of a hack to get the local input features 
+		//to be known by the superclass (PMM), but ultimately 
+		//we don't want to change the input features of the 
+		//data table (TrainTable)
+		int[] it = data.getInputFeatures();
+		int[] ot = data.getOutputFeatures();
+		
+		data.setInputFeatures(this.inputFeatures);
+		data.setOutputFeatures(this.outputFeatures);
+		
 		this.setTrainingTable(data);
+		
+		data.setInputFeatures(it);
+		data.setOutputFeatures(ot);
+		
+		
 		return true;
 
 	}//verifyData()
 
-	/** alertRemoving
-
+	/**
 		tells the user that a column was of the wrong type and will not be
-		part of training
+		part of training.
 
-		inout - 0 for inputs, 1 for outputs
-		colIdx- column in table 'data'
+		@param inout  0 for inputs, 1 for outputs
+		@param colIdx column in table 'data'
 		*/
 	private void alertRemoving(int colIdx, int inout){
 		String io;
@@ -586,10 +627,10 @@ public class BackPropModel extends PredictionModelModule
 		" types.");
 	}
 
-	/*alertFailure
+	/**
 
-		called if the data verification process removed either all input or
-		all output columns
+		Called if the data verification process removed either all input or
+		all output columns.
 		*/
 	private void alertFailure(int inout){
 		String io;
@@ -632,15 +673,15 @@ public class BackPropModel extends PredictionModelModule
 		*/
 
 		for(i=0; i<numLayers; i++){
-			sums[i]=new double[((int)params.getValue(NODES_IN_LAYER_01+i))+1];
-			deltas[i]=new double[((int)params.getValue(NODES_IN_LAYER_01+i))+1];
-			activations[i]=new double[
-				((int)params.getValue(NODES_IN_LAYER_01+i))+1];
+			j=((int)params.getValue(NODES_IN_LAYER_01+i))+1;
+			sums[i]=new double[j];
+			deltas[i]=new double[j];
+			activations[i]=new double[j];
 		}
 		//also add a column for the outputs
-		sums[numLayers]=new double[data.getNumOutputFeatures()+1];
-		deltas[numLayers]=new double[data.getNumOutputFeatures()+1];
-		activations[numLayers]=new double[data.getNumOutputFeatures()+1];
+		sums[numLayers]=new double[numOutputs+1];
+		deltas[numLayers]=new double[numOutputs+1];
+		activations[numLayers]=new double[numOutputs+1];
 
 		//////////////////////
 		//initialize weights array
@@ -660,7 +701,7 @@ public class BackPropModel extends PredictionModelModule
 			weights[weightColIdx]=new double [numNodes][];
 			for(k=0;k<numNodes;k++){
 				weights[weightColIdx][k]=
-					new double[data.getNumInputFeatures()+1];
+					new double[numInputs+1];
 			}
 			weightColIdx++;
 
@@ -1104,7 +1145,7 @@ public class SigmoidAct extends NNactivation{
 public class TanhAct extends NNactivation{
 
   public double activationOf(double x){
-	double z= ((2/(1+Math.exp(-2*x)))-1);
+	double z= (2/(1+Math.exp(-2*x)))-1;
 	return z;
   }
 
@@ -1131,35 +1172,35 @@ public class TanhAct extends NNactivation{
 	on iterations and time.
 */
 abstract public class NNlearn implements Serializable{
-/*
+/**
 	The initial learning rate
 */
 
 	protected final double initAlpha;
-/*
+/**
 	The final learning rate (at last learning iteration)
 */
 
 	protected final double finalAlpha;
 
-/*
+/**
 	The number of epochs for learning
 */
 	public final int totalEpochs;
-/*
+/**
 	the maximum time allowed for learning
 */
 	protected double maxTime;
-/*
+/**
 	the range of values the learning rate can take on
 */
 	protected final double rangeAlpha;
-/**
-	Constructor-
+/***
+	Constructor for using epochs as limit.
 
-	@param: iA- initial learning rate
-		fA- final learning rate
-		e- the number of epochs
+	@param iA initial learning rate
+	@param fA final learning rate
+	@param e the number of epochs
 */
 
 	public NNlearn(double iA, double fA, int e){
@@ -1171,11 +1212,11 @@ abstract public class NNlearn implements Serializable{
 	}
 
 /**
-	Constructor-
+	Constructor for using time as limit.
 
-	@param: iA- initial learning rate
-		fA- final learning rate
-		timeLimit- the maximum time allowed for the entire learning process
+	@param iA initial learning rate
+	@param fA final learning rate
+	@param timeLimit the maximum time allowed for the entire learning process
 */
 	public NNlearn(double iA, double fA, double timeLimit){
 
@@ -1194,7 +1235,7 @@ abstract public class NNlearn implements Serializable{
 
 
 /**
-	tells the learning accelerator that the current epoch is finished
+	tells this learning accelerator that the current epoch is finished
 	and a new learning rate should be computed, returns the new learning rate
 */
 	abstract public double newLearningRate();
@@ -1209,7 +1250,7 @@ abstract public class NNlearn implements Serializable{
 /******************************************************************
 	Linear
 		the learning rate changes over time in a linear fashion
-		from initAlpha at epoch one to initAlpha at the final epoch
+		from initAlpha at epoch one to initAlpha at the final epoch.
 */
 
 public class Linear extends NNlearn implements Serializable{
@@ -1259,7 +1300,7 @@ abstract public class NNupdate implements Serializable{
 	//protected final NNlearn learnFn;
 
 	protected final BackPropModel model;
-	/* to put calculated outputs in as the computeFn determines them\
+	/* to put calculated outputs in as the computeFn determines them
 	*/
 	protected double[][] computedResults;
 
@@ -1283,7 +1324,7 @@ abstract public class NNupdate implements Serializable{
 		*/
 
 		computedResults=new double[data.getNumRows()]
-									[data.getNumOutputFeatures()];
+									[model.numOutputs];
 
 	}
 
@@ -1304,7 +1345,6 @@ abstract public class NNupdate implements Serializable{
 public class StandardIncrementalBP extends NNupdate implements Serializable{
 
 	protected double alpha;
-	private boolean bugg=true;
 
 	public  StandardIncrementalBP(BackPropModel mod){
 		super(mod);
@@ -1314,7 +1354,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 	public void create() {
 		//System.out.println("table num rows:"+data.getNumRows());
 		//System.out.println(" o.f. numrows:"
-		//	+((TrainTableImpl)data).getColumn(data.getOutputFeatures()[0]).
+		//	+((TrainTableImpl)data).getColumn(outputFeatures[0]).
 		//		getNumRows());
 
 
@@ -1361,17 +1401,17 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 		double c;
 		double thisDelta;
 
-		int numInputs=data.getNumInputFeatures();
+		int numInputs=model.numInputs;//data.getNumInputFeatures();
 		int numLayers=weights.length;
 
 		//compute output deltas
-		final int span=data.getNumOutputFeatures()+1;
+		final int span=model.numOutputs+1;//data.getNumOutputFeatures()+1;
 		final int lastLayer=deltas.length-1;
 		for (t=1; t<span; t++){//don't forget there is that -1 in index 0
 
 
-			d=data.getDouble(g, data.getOutputFeatures()[t-1])-
-									computedResults[g][t-1];
+			d=data.getDouble(g, model.outputFeatures[t-1]) - 
+				computedResults[g][t-1];
 
 			d*=act.derivativeOf(sums[lastLayer][t]);
 			deltas[lastLayer][t]=d;
@@ -1397,7 +1437,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 				useWeightUpdate(c, 0, t, 0);
 
 				for(n=0; n<numInputs; n++){
-					c=data.getDouble(g, data.getInputFeatures()[n]);
+					c=data.getDouble(g, inputFeatures[n]);
 					c*=alpha*d;
 					useWeightUpdate(c, n+1, t, 0);
 				}
@@ -1410,7 +1450,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 		int nodesInPrevLayer=0;
 
 		for (int layer=numLayers-2; layer>0; layer--){
-			//n is this node
+			//n in this node
 			nodesInLayer=weights[layer].length;;
 			for(n=1; n<nodesInLayer; n++){
 				thisDelta=0;
@@ -1457,7 +1497,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 				for(i=0; i<numInputs; i++){
 					d=alpha*
 						data.getDouble(g,
-								data.getInputFeatures()[i])*thisDelta;
+								inputFeatures[i])*thisDelta;
 
 					//there is no 'filler' bias node among the inputs(above)
 					//so the indices are off by one for getting the data
@@ -1503,6 +1543,7 @@ public class StandardBatchBP extends StandardIncrementalBP{
 				runExample(d);
 			}
 			batchUpdate();
+			wipeUpdates();
 		}
 	}
 	/**
@@ -1522,7 +1563,7 @@ public class StandardBatchBP extends StandardIncrementalBP{
 		runningUpdates[l][j][i]+=dw;
 	}
 
-	/*
+	/**
 		set all the running weight tallies to zero
 	*/
 
@@ -1541,9 +1582,9 @@ public class StandardBatchBP extends StandardIncrementalBP{
 		}
 	}
 
-	/*
+	/**
 		updates the weights in the model with the weight changes in the
-		running tally
+		running tally.
 	*/
 
 	public void batchUpdate(){
