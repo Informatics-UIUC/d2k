@@ -53,6 +53,13 @@ public class CreateSVMModel extends ModelProducerModule
 		return "Given a native libSVM model, produces a D2K SVM prediction model.";
 	}
 
+        public String getModuleName()
+        {
+                return "Create SVM Model";
+        }
+
+
+
 	public String getOutputInfo(int index)
 	{
 		switch (index) {

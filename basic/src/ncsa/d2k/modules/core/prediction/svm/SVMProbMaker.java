@@ -24,6 +24,13 @@ public class SVMProbMaker extends DataPrepModule
 	{
 	}
 
+        public String getModuleName()
+       {
+         return "Create SVM Problem";
+
+       }
+
+
 	public String getModuleInfo()
 	{
 		return "Given an ExampleTable, this module will produce the " +

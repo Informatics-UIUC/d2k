@@ -27,6 +27,13 @@ public class SVMProbReader extends InputModule
 	public SVMProbReader()
 	{
 	}
+
+        public String getModuleName()
+   {
+     return "SVM Problem Reader";
+
+   }
+
 	public String getModuleInfo()
 	{
 		return "This module will read a text file that is already in " +

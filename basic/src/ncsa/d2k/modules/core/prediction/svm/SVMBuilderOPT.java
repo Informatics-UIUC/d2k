@@ -10,7 +10,7 @@ import libsvm.*;
   popular libsvm library (the Java version).  The desired SVM could
   be of several types and kernel types.<p>
 
-  The original libsvm can be found at http://www.csie.ntu.edu.tw/~cjlin/libsvm/.  
+  The original libsvm can be found at http://www.csie.ntu.edu.tw/~cjlin/libsvm/.
   It has a modified BSD licence that is compatible with GPL.
 
   @author Xiaolei Li
@@ -22,6 +22,13 @@ public class SVMBuilderOPT extends ComputeModule
 	{
 	}
 
+        public String getModuleName()
+         {
+           return "Optimized SVM Builder";
+
+         }
+
+
 	public String getModuleInfo()
 	{
 		return "<b>Overview</b>: Builds a Support Vector Machine (SVM).<p> " +
@@ -32,8 +39,8 @@ public class SVMBuilderOPT extends ComputeModule
 			+ " due to its marginal maximization property which finds "
 			+ "a decision hyperplane that maximizes the distance to"
 			+ " the separate classes.  This makes for better " +
-			"generalization.<p>" + 
-			
+			"generalization.<p>" +
+
 			"<b>Properties</b>: None.  All to be passed in via a " +
 			"parameter point.<p>" +
 
@@ -41,7 +48,7 @@ public class SVMBuilderOPT extends ComputeModule
 			"multi-class classification.  The classes need to be " +
 			"integers and the attribute values need to be numerical.<p>"
 			+
-			
+
 			"<b>Reference</b>: Chih-Chung Chang and Chih-Jen Lin, LIBSVM : a "
 			+ "library for support vector machines, 2001. Software " +
 			"available at http://www.csie.ntu.edu.tw/~cjlin/libsvm/." +
@@ -102,7 +109,7 @@ public class SVMBuilderOPT extends ComputeModule
 	{
 		switch (index) {
 			case 0:
-				return "SVM";
+				return "SVM Model";
 			default:
 				return "";
 		}
@@ -159,7 +166,7 @@ public class SVMBuilderOPT extends ComputeModule
 	  that is used by svm_train().
 
 	  @param num_attributes The number of attributes in the input data
-	  (i.e., size of input vector). 
+	  (i.e., size of input vector).
 
 	  @return The parameters chosen for training the SVM encapsulated in
 	  the native svm_parameter class.
@@ -181,7 +188,7 @@ public class SVMBuilderOPT extends ComputeModule
 		/* if the user entered 0.0, default to 1/k where k is the
 		 * number of attributes in the input data. */
 		param.gamma = (double) pp.getValue(SVMParamSpaceGenerator.GAMMA);
-		if (param.gamma == 0.0) 
+		if (param.gamma == 0.0)
 			param.gamma = 1.0 / num_attributes.doubleValue();
 
 		param.coef0 = (double) pp.getValue(SVMParamSpaceGenerator.COEF0);
@@ -198,5 +205,5 @@ public class SVMBuilderOPT extends ComputeModule
 		param.weight = new double[0];
 
 		return param;
-	} 
+	}
 }

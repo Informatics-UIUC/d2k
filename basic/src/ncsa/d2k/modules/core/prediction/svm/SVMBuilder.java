@@ -95,6 +95,12 @@ public class SVMBuilder extends SVMBuilderOPT
 	{
 	}
 
+        public String getModuleName()
+        {
+          return "SVM Builder";
+
+        }
+
 	public String getModuleInfo()
 	{
 		return "<b>Overview</b>: Builds a Support Vector Machine (SVM).<p> " +

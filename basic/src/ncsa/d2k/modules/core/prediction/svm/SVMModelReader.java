@@ -44,6 +44,14 @@ public class SVMModelReader extends ModelProducerModule
 		return in;
 	}
 
+
+        public String getModuleName()
+       {
+         return "SVM Model Reader";
+
+       }
+
+
 	public String getModuleInfo()
 	{
 		return "Given a native libSVM model file, produces a D2K SVM prediction model.";
