@@ -256,7 +256,7 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
         0,1,5,5,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(getStatPanel, options2,
         0,7,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
-      Constrain.setConstraints(getStatPanel, cancelBtn = new JButton (" Cancel "),
+      Constrain.setConstraints(getStatPanel, cancelBtn = new JButton (" Abort "),
         2,8,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,1,1);
       cancelBtn.addActionListener(this);
       Constrain.setConstraints(getStatPanel, displayBtn = new JButton ("Display"),
