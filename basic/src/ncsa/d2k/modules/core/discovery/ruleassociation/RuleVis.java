@@ -7,12 +7,15 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
-import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 import ncsa.gui.*;
 import java.io.*;
 import ncsa.d2k.gui.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.modules.core.datatype.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.modules.core.discovery.ruleassociation.*;
+
 
 /**
 	RuleVis.java
@@ -24,19 +27,15 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	static final Color RULE_VIS_CONFIDENCE = new Color (196, 195, 26);
 	static final Color RULE_VIS_SUPPORT = new Color (87, 87, 100);
 	static final Color RULE_VIS_HIGHLIGHT = new Color (247, 247, 247);
-        private boolean ALPHA = true;
         private static final Dimension buttonsize = new Dimension(22, 22);
         private static final Color yellowish = new Color(255, 255, 240);
         private static final String filtericon = File.separator+"images"+File.separator+"filter.gif";
         private static final String printicon = File.separator+"images"+File.separator+"printit.gif";
         private static final String refreshicon = File.separator+"images"+File.separator+"home.gif";
         private static final String helpicon = File.separator+"images"+File.separator+"help.gif";
-        //note that the following are used only because alpha and rank
-        //icons are not available now
-        //private static final String tableicon = File.separator+"images"+File.separator+"table.gif";
-        //private static final String zoomicon = File.separator+"images"+File.separator+"zoom.gif";
+        private static final String abcicon = File.separator+"images"+File.separator+"abc.gif";
         private static final String rankicon = File.separator+"images"+File.separator+"rank.gif";
-        private static final String alphaicon = File.separator+"images"+File.separator+"abc.gif";
+
 
 	/**	This method returns an array of strings that contains the data types for the inputs.
 		@return the data types of all inputs.
@@ -110,7 +109,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	/**	This method returns the description of the module.
 		@return the description of the module.
 	*/
-	public String getModuleInfo () {
+       	public String getModuleInfo () {
 	  StringBuffer sb = new StringBuffer( "<p>Overview: ");
           sb.append( "This module provides a visual representation of the association rules encapsulated in the ");
           sb.append("input <i>Rule Table<i>. ");
@@ -197,7 +196,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		@return the UserView.
 	*/
 	protected UserView createUserView() {
-		return new RuleVisView();
+          return new RuleVisView();
 	}
 
 	/**	This method returns an array with the names of each DSComponent in the UserView
@@ -307,8 +306,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 
                         im = null;
                         icon = null;
-                        im = mod.getImage(alphaicon);
-
+                        im = mod.getImage(abcicon);
                         if(im != null)
                           icon = new ImageIcon(im);
                         if(icon != null) {
@@ -464,7 +462,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		*/
 		JTable vhjt = null;
 		private JViewport getConfSupHeadTable ()
-		{
+                {
 			String [][] rowNames = new String[ruleTable.getNumColumns()-2][1];
 			for(int i=2;i<ruleTable.getNumColumns();i++)
 				rowNames[i-2][0]=ruleTable.getColumnLabel(i);
@@ -492,13 +490,15 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		*/
 		//JButton conf = new JButton("Confidence");
 		//JButton  sup = new JButton("Support");
-		JRadioButton conf = new JRadioButton("Confidence", false);
+      		JRadioButton conf = new JRadioButton("Confidence", false);
 		JRadioButton sup = new JRadioButton("Support", false);
 		final int BSIZE = 13;
 		private JPanel getSortPanel () {
 			JPanel buttons = new JPanel ();
 			return buttons;
 		}
+
+
 
                 /**
                  * Update the row headers after a change to their order in the
@@ -522,15 +522,66 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                   col.setCellRenderer (lcr);
                 }
 
+                /**
+                 * update the body of the table after a change in the set of rules
+                 * we want to see
+                 */
+                private void setBody(){
+                  rvdm = new RuleVisDataModel (ruleTable);
+                  Image a = /*module.*/getImage ("/images/rulevis/checkmark-blue.gif");
+                  Image b = /*module.*/getImage ("/images/rulevis/box-beige.gif");
+                  int imgWidth = b.getWidth (this) > a.getWidth (this) ?
+                      b.getWidth (this) : a.getWidth (this);
+                  int imgHeight = b.getHeight (this) > a.getHeight(this) ?
+                      b.getHeight (this) : a.getHeight (this);
+                  //table that holds the confidence and support buttons
+                  vhjt = new JTable (rvdm);
+                  //this is the table for the confidence/support bars at the top
+                  vjt.setModel(vvdm);
+                  TableColumnModel tcm = vjt.getColumnModel();
+                  ValueCellRenderer vcr = new ValueCellRenderer (
+                       imgWidth + vjt.getIntercellSpacing ().height*2);
+                  for (int i = 0; i < vvdm.getColumnCount (); i++) {
+                    TableColumn col = tcm.getColumn (i);
+                    col.setCellRenderer (vcr);
+                    col.setMinWidth (30);
+                    col.setMaxWidth (30);
+                    col.setPreferredWidth (30);
+                  }
+                  vjt.setRowHeight (RuleVis.BAR_HEIGHT + vjt.getIntercellSpacing ().height*2);
+                  vjt.setAutoResizeMode (JTable.AUTO_RESIZE_OFF);
+
+                  //this is the body of the vis table... where the boxes and checks go
+                  rjt.setModel(rvdm);
+                  rjt.createDefaultColumnsFromModel ();
+                  rjt.setBackground (RuleVis.RULE_VIS_BACKGROUND);
+                  tcm = rjt.getColumnModel();
+                  RuleCellRenderer rcr = new RuleCellRenderer (
+                     imgHeight + rjt.getIntercellSpacing ().height*2,
+                     imgWidth + rjt.getIntercellSpacing ().width*2,
+                     a, b);
+                  for(int i = 0; i < ruleTable.getNumRulesShowing(); i++){
+                    TableColumn col = tcm.getColumn (i);
+                    col.setCellRenderer (rcr);
+                    col.setMinWidth (30);
+                    col.setMaxWidth (30);
+                    col.setPreferredWidth (30);
+                  }
+                  rjt.setRowHeight (imgHeight + rjt.getIntercellSpacing ().height*2);
+                  rjt.setAutoResizeMode (JTable.AUTO_RESIZE_OFF);
+                }
+
 
 		/**	A sorting or tool button was clicked.  Actions are defined here
 			@param e the action event.
 		*/
-
+                private boolean ALPHA = true;
 		public void actionPerformed(ActionEvent e) {
 
                     if (e.getSource() == conf){
                       this.rvdm.sortConfidenceSupport();
+                      sup.setSelected(false);
+                      conf.setSelected(true);
                       if(!ALPHA)
                         this.rvdm.rank();
                       this.setAttributes();
@@ -538,6 +589,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                     }
                     else if (e.getSource() == sup){
                       this.rvdm.sortSupportConfidence();
+                      conf.setSelected(false);
+                      sup.setSelected(true);
                       if(!ALPHA)
                         this.rvdm.rank();
                       this.setAttributes();
@@ -547,17 +600,20 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                       help.setVisible(true);
                     }
                     else if (e.getSource() == refreshButton){
+                      sup.setSelected(false);
+                      conf.setSelected(false);
                       abcButton.setSelected(true);
                       rankButton.setSelected(false);
                       ruleTable.setToOriginal();
                       ruleTable.cleanup();
                       ruleTable.alphaSort();
                       rvdm = new RuleVisDataModel (ruleTable, itemLabels, numExamples);
+                      vvdm = new ValueVisDataModel (ruleTable, numExamples);
                       this.setAttributes();
+                      this.setBody();
                       this.repaint();
                       ALPHA = true;
                     }
-                    //this is the alphabetize button
                     else if (e.getSource() == abcButton){
                       abcButton.setSelected(true);
                       rankButton.setSelected(false);
@@ -566,7 +622,6 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                       this.repaint();
                       ALPHA = true;
                     }
-                    //this is the rank button
                     else if (e.getSource() == rankButton){
                       abcButton.setSelected(false);
                       rankButton.setSelected(true);
@@ -576,13 +631,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                       ALPHA = false;
                     }
                     else if (e.getSource() == filterButton){
-                      /*JFrame F = new JFrame("RuleFilter");
-                      RuleFilter R = new RuleFilter();
+                      RuleFilter R = new RuleFilter(this);
                       R.setInput(ruleTable,0);
-                      F.getContentPane().add(R);
-                      F.setSize(600,262);
-                      F.setVisible(true);
-                      */
                     }
                     else if (e.getSource() == print || e.getSource() == printButton) {
                       PrinterJob pj = PrinterJob.getPrinterJob();
@@ -604,11 +654,21 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                         //TODO add back pmml
                         //WriteRuleAssocPMML.writePMML(ruleTable, file.getAbsolutePath());
                       }
-
                     }
-
                     vvdm.fireTableDataChanged();
                   }
+
+
+                /**
+                 * This updates the entire view after some rules have been filtered.
+                 */
+                public void updateView(){
+                      vvdm = new ValueVisDataModel (ruleTable);
+                      this.setAttributes();
+                      this.setBody();
+                      this.repaint();
+                }
+
 
 
 		/**	Set up the labels. We will find the width of the longest label,
@@ -649,6 +709,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			@param input this is the object that has been input.
 			@param index the index of the input that has been received.
 		*/
+                JTable rjt;
+                JTable vjt;
 		public void setInput(Object o, int index) {
 			if (index == 0)
 				ruleTable = (RuleTable)o;
@@ -668,11 +730,14 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				Image a = /*module.*/getImage ("/images/rulevis/checkmark-blue.gif");
 				Image b = /*module.*/getImage ("/images/rulevis/box-beige.gif");
 
-                                ButtonGroup group = new ButtonGroup();
+                                /*ButtonGroup group = new ButtonGroup();
                                 group.add(conf);
-                                group.add(sup);
+                                group.add(sup);*/
 				conf.addActionListener (this);
 				sup.addActionListener (this);
+
+				//conf.addActionListener (this);
+				//sup.addActionListener (this);
 
 				int imgHeight = b.getHeight (this) > a.getHeight(this) ?
 						b.getHeight (this) : a.getHeight (this);
@@ -683,7 +748,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				// Create the table that will go on the top, it will show the confidence
 				// support and the row headers.
 				vvdm = new ValueVisDataModel (ruleTable, numExamples);
-				final JTable vjt = new JTable (vvdm);
+				/*final JTable*/ vjt = new JTable (vvdm);
 				vjt.setBackground (RuleVis.RULE_VIS_BACKGROUND);
 				vjt.createDefaultColumnsFromModel ();
 				JViewport valueRowHeaders = this.getConfSupHeadTable ();
@@ -715,7 +780,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				// will also have row headers in a different table, the scroller
 				// understands and deals with the concept of table row headers.
 				rvdm = new RuleVisDataModel (ruleTable, itemLabels, numExamples);
-				JTable rjt = new JTable (rvdm);
+				rjt = new JTable (rvdm);
 				rjt.createDefaultColumnsFromModel ();
 				rjt.setBackground (RuleVis.RULE_VIS_BACKGROUND);
 
@@ -950,14 +1015,31 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				index so we may exclude those items are are not represented from
 				the display.
 			*/
-			RuleVisDataModel (RuleTable rls, java.util.List tbl, int numsets) {
+			RuleVisDataModel (RuleTable rls, java.util.List itemNames, int numsets) {
 				rules = rls;
-				numRows = tbl.size();
+				numRows = itemNames.size();
 				numColumns = rules.getNumRows();
-						this.numsets = numsets;
+                                this.numsets = numsets;
 
-				// I added this so we could do a dual key sort.
-				this.unSort ();
+                                int numRules = rls.getNumRules();
+                                order = new int[numRules];
+                                //initially set the default order
+                                for (int i = 0; i < numRules; i++)
+                                  order[i] = i;
+
+			}
+
+                        /**
+                         * A constructor that will grab all of it's table information
+                         * from the RuleTable 'rls' so the data reflected in this DataModel is
+                         * completely current with that in rls.
+                         *
+                         * @param rls is the RuleTable to visualize
+                         */
+   			RuleVisDataModel (RuleTable rls) {
+				rules = rls;
+				numRows = rules.getNamesList().size();
+				numColumns = rules.getNumRulesShowing();
 			}
 
 			public int getColumnCount() {
@@ -971,19 +1053,17 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			/**	return text that indicates if the cell at row, column is
 				an antecedent, a result or not.
 			*/
-
-
 			public Object getValueAt (int row, int column) {
 				String returnval = "";
 				int[] head = rules.getRuleAntecedent(order[column]);
 				for (int i=0; i<head.length; i++)
 					if (head[i] == row)
-				returnval = IF;
-				int[] body = rules.getRuleConsequent(order[column]);
-				for (int i=0; i<body.length; i++)
-					if (body[i] == row)
-						returnval = THEN;
-				return returnval;
+                                          returnval = IF;
+                                int[] body = rules.getRuleConsequent(order[column]);
+                                for (int i=0; i<body.length; i++)
+                                  if (body[i] == row)
+                                    returnval = THEN;
+                                return returnval;
 			}
 
 			public String getColumnName (int columnIndex) {
@@ -1084,13 +1164,32 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				Bubble sort on confidence as primary key.
 			*/
 			private void unSort () {
-				int numRules = rules.getNumRules();
+                          int numRules = rules.getNumRules();
 
-				// Create and init a new handle array.
-				order = new int [numRules];
-				for (int i = 0 ; i < numRules ; i++)
-					order[i] = i;
-			}
+                          if (order != null && order.length < numRules)//means we're currently filtered
+                           ;
+                          else{
+                            // Create and init a new order array.
+                            order = new int[numRules];
+                            for (int i = 0; i < numRules; i++)
+                              order[i] = i;
+                          }
+                        }
+
+                        /**
+                         * Collapse the table horizontally to remove the empty rows after
+                         * some have been filtered out.
+                         */
+                        public void condenseRules(boolean[] rules, int numTrue){
+                          int[] newOrder = new int[numTrue];
+                          int inserted = 0;
+                          for(int i = 0; i < rules.length; i++)
+                            if(rules[i] == true){
+                              newOrder[inserted] = order[i];
+                              inserted++;
+                            }
+                          order = newOrder;
+                        }
 
                         /**
                          * Rank the rows depending on where they lie on in the table, that
@@ -1119,9 +1218,9 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			*/
 			public void sortConfidenceSupport () {
 				sortOnConfidence = true;
-				int numRules = rules.getNumRules();
+				//int numRules = rules.getNumRules();
 				this.unSort();
-				this.quickSort (0, numRules-1);
+				this.quickSort (0, order.length-1);
 
 			}
 
@@ -1130,9 +1229,9 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			*/
 			public void sortSupportConfidence () {
 				sortOnConfidence = false;
-				int numRules = rules.getNumRules();
+				//int numRules = rules.getNumRules();
 				this.unSort();
-				this.quickSort (0, numRules-1);
+				this.quickSort (0, order.length-1);
 
 			}
 
@@ -1153,84 +1252,878 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			attribute is not represented in the rule.
 		*/
 		class ValueVisDataModel extends AbstractTableModel {
-			/** this is the data, we use just the last two entries in each row. */
-			//TableImpl results = null;
-			RuleTable results = null;
+                  /** this is the data, we use just the last two entries in each row. */
+                  //TableImpl results = null;
+                  RuleTable results = null;
 
-			/** this is the number of documents in the original dataset, to compute percent */
-			int numsets = 0;
+                  /** this is the number of documents in the original dataset, to compute percent */
+                  int numsets = 0;
 
-			// Save array lengths for performance reasons
-			private int numColumns = 0;
-			private int numRows = 0;
+                  // Save array lengths for performance reasons
+                  private int numColumns = 0;
+                  private int numRows = 0;
 
-			/**	Init this guy given the rules. Figure out which items are
-				represented in the rule set and with are totally absent. When
-				we know what items are represented, we create an secondary item
-				index so we may exclude those items are are not represented from
-				the display.
-			*/
-			ValueVisDataModel (RuleTable rls, int numsets) {
-				results = rls;
-				//First 2 columns of rls represent body and head of a rule
-				numRows = rls.getNumColumns() - 2;
-				numColumns = rls.getNumRows();
-				this.numsets = numsets;
-			}
+                  /**	Init this guy given the rules. Figure out which items are
+                   represented in the rule set and with are totally absent. When
+                   we know what items are represented, we create an secondary item
+                   index so we may exclude those items are are not represented from
+                   the display.
+                   */
+                  ValueVisDataModel(RuleTable rls, int numsets) {
+                    results = rls;
+                    //First 2 columns of rls represent body and head of a rule
+                    numRows = rls.getNumColumns() - 2;
+                    numColumns = rls.getNumRows();
+                    this.numsets = numsets;
+                  }
 
-			/**	return the number of columns.
-				@returns the number of columns.
-			*/
-			public int getColumnCount() {
-				return numColumns;
-			}
+                  /**
+                   * Constructor to grab all updated information from the RuleTable rls.
+                   * This data affects the actual associations reflected in the vis.
+                   *
+                   * @param rls is the RuleTable we wish to visualize
+                   */
+                  ValueVisDataModel(RuleTable rls) {
+                    results = rls;
+                    //First 2 columns of rls represent body and head of a rule
+                    numRows = rls.getNumColumns() - 2;
+                    numColumns = rls.getNumRulesShowing();
+                  }
 
-			/**	return the number of rows.
-				@returns the number of rows.
-			*/
-			public int getRowCount() {
-			return numRows;
-			}
 
-			public String getColumnName (int columnIndex) {
-				return "";
-			}
+                  /**	return the number of columns.
+                   @returns the number of columns.
+                   */
+                  public int getColumnCount() {
+                    return numColumns;
+                    //return ruleTable.getNumRulesShowing();
+                  }
 
-			/**
-				Compute the value at row and column
-				@returns the value at row and column.
-			*/
-			public Object getValueAt (int row, int column) {
-				float percent = 0;
-				if(row == 0)
-					percent = (float)results.getConfidence(order[column]);
-				else
-					percent = (float)results.getSupport(order[column]);
-				return new Float(percent);
-			}
+                  /**	return the number of rows.
+                   @returns the number of rows.
+                   */
+                  public int getRowCount() {
+                    return numRows;
+                  }
 
-		}
-	}
+                  public String getColumnName(int columnIndex) {
+                    return "";
+                  }
 
-        /**
-         * This small class runs the HelpWindow.
-         */
-        private final class HelpWindow extends JD2KFrame {
-          HelpWindow() {
-            super("About RuleVis");
-            JEditorPane jep = new JEditorPane("text/html", getModuleInfo());
-            jep.setBackground(yellowish);
-            getContentPane().add(new JScrollPane(jep));
-            setSize(400, 400);
-          }
-        }
+                  /**
+                   Compute the value at row and column
+                   @returns the value at row and column.
+                   */
+                  public Object getValueAt(int row, int column) {
+                    float percent = 0;
+                    if (row == 0)
+                      percent = (float) results.getConfidence(order[column]);
+                    else
+                      percent = (float) results.getSupport(order[column]);
+                    return new Float(percent);
+                  }
+                }
 
-      	private static final String HEAD = "Head";
-	private static final String BODY = "Body";
-	private static final String IF = "If";
-	private static final String THEN = "Then";
 
-}
+
+            private final ImageIcon I = new ImageIcon(getImage("/images/addbutton.gif"));
+            /*************************************************************************
+             * This is the private class that runs the RuleFilter.  It is based on the
+             * FilterConstruction module.
+             */
+            public class RuleFilter extends JUserPane
+                    implements ActionListener, ExpressionListener {
+                  private ExpressionGUI gui;
+                  private RuleFilterExpression expression;
+                  private RuleVisView view;
+                  private RuleTable table;
+                  private java.util.List names;
+                  private LinkedList attributes = new LinkedList();
+                  private LinkedList values = new LinkedList();
+                  private JButton addColumnButton, addValueButton, addOperationButton,
+                      addBooleanButton, abortButton, doneButton, helpButton,
+                      addAnteConsButton;
+                  private JComboBox attributeBox, valueBox, operationBox, booleanBox,
+                      anteConsBox;
+                  //private JPanel comboOrFieldPanel;
+                  //private CardLayout nominalOrScalarLayout;
+                  private ViewModule mod;
+                  private String _lastExpression = "";
+                  private boolean initialized = false;
+
+                  JFrame F;
+                  /**
+                   * Constructor to create the JFrame in which the filter will operate
+                   * @param view is the RuleVisView upon which the filter will operate
+                   */
+                  public RuleFilter(RuleVisView view){
+                    F = new JFrame("RuleFilter");
+                    F.getContentPane().add(this);
+                    F.setSize(600,262);
+                    F.setVisible(true);
+                    this.view = view;
+                  }
+
+                  public void initView(ViewModule m) {
+                    mod = m;
+                  }
+
+                  public void setInput(Object obj, int ind) {
+                    if (ind != 0)
+                      return;
+                    table = (RuleTable)obj;
+                    names = table.getNamesList();  //<-the full att/val description
+                    parse(names);
+                    initialize();
+                  }
+
+                  /**
+                   *Seperate the attributes from the values (the combinations
+                   *given by RuleTable).  This assumes the 'names' list is in the form of
+                   *'attribute=value'.
+                   */
+                  private void parse(java.util.List names){
+                    for(int i = 0; i < names.size(); i++){
+                      if(names.get(i) == null)
+                        ;
+                      else{
+                        String name = names.get(i).toString();
+                        int index = name.indexOf("=");
+                        String att = name.substring(0,index);
+                        String val = name.substring(index+1);
+                        index = attributes.indexOf(att);
+                        //indexOf returns a -1 if the member is not in the list
+                        if(index == -1){
+                          attributes.add(att);
+                          //values contains linked lists of values for each attribute
+                          values.add(new LinkedList());
+                          LinkedList temp = (LinkedList)values.getLast();
+                          temp.add(val); //adding the value specified in 'attribute=value'
+                        }
+                        else{  //the attribute has already been stored
+                          LinkedList temp = (LinkedList)values.get(index);
+                          temp.add(val);
+                        }
+                      }
+                    }
+                  }
+
+
+                  private void initialize() {  //set up the visuals for the filter
+                    expression = new RuleFilterExpression(table, attributes, values, view);
+                    gui = new ExpressionGUI(expression, false);
+                    gui.addExpressionListener(this);
+                    gui.getTextArea().setText(_lastExpression);
+
+                    attributeBox = new JComboBox();
+                    attributeBox.addActionListener(this);
+                    //load the attribute combobox with those that show up in the RuleVis
+                    for(int i = 0; i < attributes.size(); i++){
+                      attributeBox.addItem(attributes.get(i));
+                    }
+                    //initialize valueBox to default
+                    valueBox = new JComboBox();
+                    LinkedList temp = (LinkedList)values.get(0);
+                    for(int j = 0; j < temp.size(); j++)
+                      valueBox.addItem(temp.get(j));
+
+                    addColumnButton = new JButton(I);
+                    addColumnButton.addActionListener(this);
+                    JPanel columnPanel = new JPanel();
+                    columnPanel.setLayout(new GridBagLayout());
+                    Constrain.setConstraints(columnPanel, new JLabel(), 0, 0, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+                    Constrain.setConstraints(columnPanel, attributeBox, 1, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+                    Constrain.setConstraints(columnPanel, addColumnButton, 2, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+
+                    addValueButton = new JButton(I);
+                    addValueButton.addActionListener(this);
+                    JPanel nominalOrScalarPanel = new JPanel();
+                    nominalOrScalarPanel.setLayout(new GridBagLayout());
+                    Constrain.setConstraints(nominalOrScalarPanel, new JLabel(), 0, 0, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+                    Constrain.setConstraints(nominalOrScalarPanel, valueBox, 1, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+                    Constrain.setConstraints(nominalOrScalarPanel, addValueButton, 2, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+
+                    operationBox = new JComboBox();
+                    operationBox.addItem("==");
+                    operationBox.addItem("!=");
+                    addOperationButton = new JButton(I);
+                    addOperationButton.addActionListener(this);
+                    JPanel operationPanel = new JPanel();
+                    operationPanel.setLayout(new GridBagLayout());
+                    Constrain.setConstraints(operationPanel, new JLabel(), 0, 0, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+                    Constrain.setConstraints(operationPanel, operationBox, 1, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+                    Constrain.setConstraints(operationPanel, addOperationButton, 2, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+
+                    booleanBox = new JComboBox();
+                    booleanBox.addItem("&&");
+                    booleanBox.addItem("||");
+                    addBooleanButton = new JButton(I);
+                    addBooleanButton.addActionListener(this);
+                    JPanel booleanPanel = new JPanel();
+                    booleanPanel.setLayout(new GridBagLayout());
+                    Constrain.setConstraints(booleanPanel, new JLabel(), 0, 0, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+                    Constrain.setConstraints(booleanPanel, booleanBox, 1, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+                    Constrain.setConstraints(booleanPanel, addBooleanButton, 2, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+
+                    anteConsBox = new JComboBox();
+                    anteConsBox.addItem("antecedent");
+                    anteConsBox.addItem("consequent");
+                    addAnteConsButton = new JButton(I);
+                    addAnteConsButton.addActionListener(this);
+                    JPanel anteConsPanel = new JPanel();
+                    anteConsPanel.setLayout(new GridBagLayout());
+                    Constrain.setConstraints(anteConsPanel, new JLabel(), 0, 0, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+                    Constrain.setConstraints(anteConsPanel, anteConsBox, 1, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+                    Constrain.setConstraints(anteConsPanel, addAnteConsButton, 2, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+
+
+                    JPanel leftPanel = new JPanel();
+                    leftPanel.setLayout(new GridBagLayout());
+                    Constrain.setConstraints(leftPanel, columnPanel, 0, 0, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
+                    Constrain.setConstraints(leftPanel, nominalOrScalarPanel, 0, 1, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
+                    Constrain.setConstraints(leftPanel, operationPanel, 0, 2, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
+                    Constrain.setConstraints(leftPanel, booleanPanel, 0, 3, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
+                    Constrain.setConstraints(leftPanel, anteConsPanel, 0, 4, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
+                    Constrain.setConstraints(leftPanel, new JLabel(), 0, 5, 1, 1,
+                                             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+
+                    JPanel topPanel = new JPanel();
+                    topPanel.setLayout(new GridBagLayout());
+                    Constrain.setConstraints(topPanel, leftPanel, 0, 0, 1, 1,
+                                             GridBagConstraints.VERTICAL, GridBagConstraints.WEST, 0, 1);
+                    Constrain.setConstraints(topPanel, gui, 1, 0, 1, 1,
+                                             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+
+                    abortButton = new JButton("Abort");
+                    abortButton.addActionListener(this);
+                    helpButton = new JButton("Help");
+                    helpButton.addActionListener(new AbstractAction() {
+                      public void actionPerformed(ActionEvent e) {
+                        HelpWindow help = new HelpWindow();
+                        help.setVisible(true);
+                      }
+                    });
+
+                    JButton addButton = gui.getAddButton();
+                    addButton.setText("Done");
+                    JPanel bottomPanel = new JPanel();
+                    bottomPanel.setLayout(new GridBagLayout());
+                    Constrain.setConstraints(bottomPanel, helpButton, 0, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+                    Constrain.setConstraints(bottomPanel, new JLabel(), 1, 0, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+                    Constrain.setConstraints(bottomPanel, abortButton, 2, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+                    Constrain.setConstraints(bottomPanel, addButton, 3, 0, 1, 1,
+                                             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+
+                    this.setLayout(new GridBagLayout());
+                    Constrain.setConstraints(this, topPanel, 0, 0, 1, 1,
+                                             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+                    Constrain.setConstraints(this, new JSeparator(), 0, 1, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 0);
+                    Constrain.setConstraints(this, bottomPanel, 0, 2, 1, 1,
+                                             GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 0);
+
+                    initialized = true;
+                  }
+
+
+                  //specifiy actions
+                  public void actionPerformed(ActionEvent e) {
+                    Object src = e.getSource();
+
+                    if (src == attributeBox && initialized) {
+                      //populate the other combobox with the various choices for the selected attribute
+                      int index = attributeBox.getSelectedIndex();
+                      valueBox.removeAllItems();
+                      LinkedList temp = (LinkedList)values.get(index);
+                      for(int i = 0; i < temp.size(); i++)
+                        valueBox.addItem(temp.get(i));
+                    }
+
+                    else if (src == addColumnButton)
+                      gui.getTextArea().insert((String)attributeBox.getSelectedItem(),
+                                               gui.getTextArea().getCaretPosition());
+                    else if (src == addValueButton)
+                      gui.getTextArea().insert((String)valueBox.getSelectedItem(),
+                                               gui.getTextArea().getCaretPosition());
+                    else if (src == addOperationButton)
+                      gui.getTextArea().insert(" " + operationBox.getSelectedItem() + " ",
+                                               gui.getTextArea().getCaretPosition());
+                    else if (src == addBooleanButton)
+                      gui.getTextArea().insert(" " + booleanBox.getSelectedItem() + " ",
+                                               gui.getTextArea().getCaretPosition());
+                    else if(src == addAnteConsButton){
+                      gui.getTextArea().insert(" " + anteConsBox.getSelectedItem() + "(  )",
+                                               gui.getTextArea().getCaretPosition());
+                      gui.getTextArea().moveCaretPosition(gui.getTextArea().getCaretPosition() - 2);
+                    }
+                    else if (src == abortButton)
+                      F.dispose();
+                  }
+
+                  public void expressionChanged(Object evaluation) {
+                    _lastExpression = gui.getTextArea().getText();
+                  }
+
+                  //Loads the RuleFilter help text
+                  private class HelpWindow extends JD2KFrame {
+                    public HelpWindow() {
+                      super ("RuleFilter Help");
+                      JEditorPane ep = new JEditorPane("text/html", getHelpString());
+                      ep.setCaretPosition(0);
+                      ep.setBackground(yellowish);
+                      getContentPane().add(new JScrollPane(ep));
+                      setSize(510, 390);
+                    }
+                  }
+
+                  private String getHelpString() {
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("<html><body><h2>RuleFilter</h2>");
+                    sb.append("This module allows a user to filter rules from the RuleVis ");
+                    sb.append("by specifying an appropriate filtering expression.");
+                    sb.append("<br><br>");
+                    sb.append("The user can construct an expression for filtering ");
+                    sb.append("using the lists of values and operators on the left. ");
+                    sb.append("It is important that this expression be well-formed: that ");
+                    sb.append("parentheses match, that attributes and values surround ");
+                    sb.append("operators, and so forth.");
+                    sb.append("<br><br>");
+                    sb.append("Attributes may not contain the following ");
+                    sb.append("characters: =, !, |, &.  The words 'antecedent' or ");
+                    sb.append("'consequent' may be added to specify that what is desired ");
+                    sb.append("is only the antecedent or consequent of the given criteria.  These two options ");
+                    sb.append("must evaluate over a simple == or != statement.  For ");
+                    sb.append("instance, consequent(attribute1 == value1) is valid while ");
+                    sb.append("consequent(attribute1 == value1 && attribute2 == value2) is not.  ");
+                    sb.append("However, several attribute/consequent specifiers may be strung ");
+                    sb.append("together with the boolean operators && and ||.  For instance, the string ");
+                    sb.append("consequent(attribute1 == value1) && antecedent(attribute2 != value2) is valid");
+                    sb.append("</body></html>");
+                    return sb.toString();
+                  }
+                }
+
+                /**
+                 * This class interprets the expression entered in RuleFilter.  This implementation
+                 * is modled after FilterExpression.
+                 */
+                public class RuleFilterExpression implements Expression {
+
+                  private HashMap attributeToIndex;
+                  private HashMap valueToIndex;
+                  private Node root;
+                  private RuleTable table;
+                  private java.util.List attributes;
+                  private java.util.List values;
+                  private RuleVisView view;
+
+                  public RuleFilterExpression(RuleTable table, java.util.List attributes,
+                                                   java.util.List values, RuleVisView view){
+                         this.table = table;
+                         this.attributes = attributes;
+                         this.values = values;
+                         this.view = view;
+
+                         //create these HashMaps to reference the members of the lists later for
+                         //error checking
+                         attributeToIndex = new HashMap();
+                         valueToIndex = new HashMap();
+                         for (int i = 0; i < attributes.size(); i++)
+                           attributeToIndex.put(attributes.get(i), new Integer(i));
+                         for (int i = 0; i < values.size(); i++)
+                           for (int j = 0; j < ((LinkedList)values.get(i)).size(); j++){
+                           valueToIndex.put(((LinkedList)values.get(i)).get(j), new Integer(i));
+                         }
+                     }
+
+
+                     /**
+                      * This evalutates the expression entered in the RuleFilter for each rule
+                      * that exists in the RuleVis visual.  It makes a call to root.evaluate and
+                      * from there it recursively evaluates the expression.
+                      *
+                      * @return a boolean (Object) array that contains an entry for each
+                      * rule in this manner:  true if the rule meets the expression criteria,
+                      * false if it fails to meet the expression criteria
+                      * @throws ExpressionException if there is an error in the entered expression.
+                      */
+                  public Object evaluate() throws ExpressionException {
+                    if(root == null || attributes == null)
+                      return null;
+
+                    //boolean isValid = false;
+                    int numTrue = 0;
+                    boolean[] rulesToShow = new boolean[table.getNumRulesShowing()];
+                    for (int i = 0; i < rulesToShow.length; i++){
+                      rulesToShow[i] = root.evaluate(i);
+                      if(rulesToShow[i] == true)
+                        numTrue++;
+                    }
+                    if(numTrue == 0)
+                      throw new ExpressionException("FilterExpression: no rules meet your filter criteria");
+                    rvdm = new RuleVisDataModel (ruleTable);
+                    rvdm.condenseRules(rulesToShow, numTrue);
+                    table.rulesToDisplay(rulesToShow, order);  //make the filter changes in RuleTable
+                    view.updateView();   //make the filter changes in the Vis
+                    return (Object)rulesToShow;
+                  }
+
+
+                  /**
+                   * The expression is set by ExpressionGui.
+                   * @param expression is the string entered in the filter
+                   * @throws ExpressionException if the filter criteria is invalid.
+                   */
+                  public void setExpression(String expression) throws ExpressionException {
+                    root = parse(expression);
+                  }
+
+                  public String toString() {
+                    return root.toString();
+                  }
+
+                  /******************************************************************************/
+                  /* The filter expression string is parsed into a tree in which each node is   */
+                  /* either a subexpression or a terminal.                                      */
+                  /*                                                                            */
+                  /* subexpression:   <terminal> <boolean operator> <terminal>                  */
+                  /* terminal:        <element> <comparison operator> <element>                 */
+                  /******************************************************************************/
+
+                  private static final int OP_EQ = 100,    // equal to
+
+                      OP_NEQ = 101,   // not equal to
+                      BOOL_AND = 106, // boolean AND operator
+                      BOOL_OR = 107;  // boolean OR operator
+
+                  private abstract class Node {
+                    abstract boolean evaluate(int rowNumber) throws ExpressionException;
+                    public abstract String toString();
+                  }
+
+                  private class Subexpression extends Node {
+                    private int opcode;
+                    private Node left, right;
+
+                    Subexpression(int opcode, Node left, Node right) {
+                      this.opcode = opcode;
+                      this.left = left;
+                      this.right = right;
+                    }
+
+                    /*
+                     * Evaluates expressions in the form terminal op terminal
+                     */
+                    boolean evaluate(int rowNumber) throws ExpressionException {
+
+                      if(left == null || right == null)
+                        throw new ExpressionException("FilterExpression:  && and || must operate on two values");
+
+                      switch(opcode) {
+                        case BOOL_AND:
+                          return left.evaluate(rowNumber) && right.evaluate(rowNumber);
+                        case BOOL_OR:
+                          return left.evaluate(rowNumber) || right.evaluate(rowNumber);
+                        default:
+                          throw new ExpressionException("FilterExpression: illegal opcode: " + opcode);
+                      }
+                    }
+
+                    public String toString() {
+
+                      StringBuffer buffer = new StringBuffer();
+                      buffer.append('(');
+                      buffer.append(left.toString());
+                      buffer.append(' ');
+
+                      switch (opcode) {
+                          case BOOL_AND: buffer.append("&&"); break;
+                          case BOOL_OR:  buffer.append("||"); break;
+                          default:       buffer.append("??"); break;
+                      }
+                      buffer.append(' ');
+                      buffer.append(right.toString());
+                      buffer.append(')');
+                      return buffer.toString();
+                    }
+                  }
+
+
+                  private class Terminal extends Node {
+                    private int opcode;
+                    private Element left, right;
+
+                    Terminal(int opcode, Element left, Element right) {
+                      this.opcode = opcode;
+                      this.left = left;
+                      this.right = right;
+                    }
+
+                    /*
+                     * Evaluates expression in the form element eq element
+                     */
+                    boolean evaluate(int rowNumber) throws ExpressionException {
+
+                    if (left instanceof AttributeElement) {
+                        if (right instanceof AttributeElement) { //attribute op attribute
+                            throw new ExpressionException("FilterExpression: invalid operation <attribute> <op> <attribute>");
+                          }
+                          else { //attribute op nominal
+                            int[] rows;
+
+                            switch (opcode) {
+                              case OP_EQ:
+                                rows = ((AttributeElement)left).evaluateString(order[rowNumber]);
+                                for(int i = 0; i < rows.length; i++){
+                                  //compare if the criteria in the filter match the att/value combinations
+                                  if(table.getNamesList().get(rows[i]).equals(
+                                    ((AttributeElement)left).toString() + "=" + ((NominalElement) right).evaluate())){
+                                    return true;}
+                                }
+                                return false;
+
+                              case OP_NEQ:
+                                rows = ((AttributeElement)left).evaluateString(order[rowNumber]);
+                                for(int i = 0; i < rows.length; i++){
+                                  if(table.getNamesList().get(rows[i]).equals(
+                                    ((AttributeElement)left).toString() + "=" + ((NominalElement) right).evaluate()))
+                                    return false;
+                                }
+                                return true;
+
+                              default:
+                                throw new ExpressionException("FilterExpression: illegal opcode on nominal: " + opcode);
+                            }
+                          }
+                      }
+
+                      else { // left instanceof NominalElement
+                        if (right instanceof AttributeElement) { //nominal op attribute
+                          int[] rows;
+                          switch (opcode) {
+                            case OP_EQ:
+                              rows = ((AttributeElement)right).evaluateString(order[rowNumber]);
+                              for(int i = 0; i < rows.length; i++){
+                                if(table.getNamesList().get(rows[i]).equals(
+                                  ((AttributeElement)right).toString() + "=" + ((NominalElement)left).evaluate()))
+                                  return true;
+                              }
+                              return false;
+
+                            case OP_NEQ:
+                              rows = ((AttributeElement)right).evaluateString(order[rowNumber]);
+                              for(int i = 0; i < rows.length; i++){
+                                if(table.getNamesList().get(rows[i]).equals(
+                                  ((AttributeElement)right).toString() + "=" + ((NominalElement)left).evaluate()))
+                                  return false;
+                              }
+                              return true;
+
+                            default:
+                              throw new ExpressionException("FilterExpression: illegal opcode on nominal: " + opcode);
+                          }
+                        }
+
+                        else { // right instanceof NominalElement
+                          throw new ExpressionException("FilterExpression: invalid operation: <nominal> <op> <nominal>");
+                        }
+                      }
+                    }
+                  //end Terminal.evaluate
+
+                  public String toString() {
+                    StringBuffer buffer = new StringBuffer();
+                    buffer.append('(');
+                    buffer.append(left.toString());
+                    buffer.append(' ');
+                    switch (opcode) {
+                        case OP_EQ:  buffer.append("=="); break;
+                        case OP_NEQ: buffer.append("!="); break;
+                        default:     buffer.append("??"); break;
+                    }
+                    buffer.append(' ');
+                    buffer.append(right.toString());
+                    buffer.append(')');
+
+                    return buffer.toString();
+                  }
+                }
+
+
+                /******************************************************************************/
+                /* Elements -- the building blocks of a filter expression string -- can be    */
+                /* attributes or values, which are necessary to make up a rule.               */
+                /******************************************************************************/
+
+                private abstract class Element {
+                  public abstract String toString();
+                }
+
+                private class AttributeElement extends Element{
+                  private int attributeNumber;
+                  private String attributeLabel;
+                  private int condition;
+
+                  AttributeElement(String attributeLabel, int condition) throws ExpressionException {
+                    Integer I = (Integer)attributeToIndex.get(attributeLabel);
+                    if (I == null){
+/*                      if (condition == 1)
+                        throw new ExpressionException(
+                            "FilterExpression: antecedent() must contain <valid attribute> op <valid value>");
+                      else if (condition == 2)
+                        throw new ExpressionException(
+                            "FilterExpression: consequent() must contain <valid attribute> op <valid value>");
+                      else*/
+                        throw new ExpressionException(
+                            "FilterExpression: invalid attribute label: " + attributeLabel);
+                    }
+                    this.attributeLabel = attributeLabel;
+                    this.condition = condition;
+                  }
+
+                  public int[] evaluateString(int ruleNumber) {
+
+                    if(this.condition == 1) //the element was in an antecedent()
+                      return table.getRuleAntecedent(ruleNumber);
+                    if(this.condition == 2){ //the element was in a consequent()
+                      return table.getRuleConsequent(ruleNumber);
+                    }
+                    //we want either consequent or antecedent
+                    int[] ante = table.getRuleAntecedent(ruleNumber);
+                    int[] both = new int[ante.length + 1];
+                    for(int i = 0; i < ante.length; i++){
+                      both[i] = ante[i];
+                    }
+                    //the next line assumes that there can only be one consequent per rule
+                    both[ante.length] = table.getRuleConsequent(ruleNumber)[0];
+                    return both;
+                  }
+
+                  public String toString() {
+                    return attributeLabel;
+                  }
+                }
+
+                //NominalElements are the values
+                private class NominalElement extends Element {
+                  private String value;
+
+                  NominalElement(String value) throws ExpressionException{
+                    Integer I = (Integer)valueToIndex.get(value);
+                    if (I == null)
+                      throw new ExpressionException("FilterExpression: invalid value label: " + value);
+                    this.value = value;
+                  }
+
+                  String evaluate() {
+                    return value;
+                  }
+
+                  public String toString() {
+                    StringBuffer buffer = new StringBuffer();
+                    buffer.append('\'');
+                    buffer.append(value);
+                    buffer.append('\'');
+                    return buffer.toString();
+                  }
+                }
+
+                /******************************************************************************/
+                /* The expression string is broken down into subexpressions and parsed        */
+                /* recursively.                                                               */
+                /******************************************************************************/
+
+                private Node parse(String expression) throws ExpressionException {
+                  if (expression.length() == 0)
+                    return null;
+                  char c;
+                  int condition = 0;
+                  boolean booleanOperatorFound = false;
+                  boolean inAntecedent = false;
+                  boolean inConsequent = false;
+                  int currentDepth = 0, leastDepth = Integer.MAX_VALUE, maximumDepth = 0,
+                      leastPrecedenceType = BOOL_AND, leastPrecedencePosition = -1;
+
+                  for (int i = 0; i < expression.length(); i++) {
+                    c = expression.charAt(i);
+                    switch(c) {
+
+                      case 'a':
+                        if((i + 10) < expression.length() && expression.substring(i, i + 10).equals("antecedent")){
+                          inAntecedent = true;
+                        }
+                        break;
+
+                      case 'c':
+                        if((i + 10) < expression.length() && expression.substring(i, i + 10).equals("consequent")){
+                          inConsequent = true;
+                        }
+                        break;
+
+                      case '(': currentDepth++; break;
+                      case ')': currentDepth--; break;
+                      case '&':
+                        if (i + 1 == expression.length())
+                              throw new ExpressionException(
+                                  "FilterExpression:  atecedent( ) and consequent( ) must contain\n              <valid attribute> op <valid value>");
+                        else if(expression.charAt(i+1) != '&')
+                              throw new ExpressionException(
+                                  "FilterExpression: invalid single '&' at position " + i);
+
+                        booleanOperatorFound = true;
+                        if (currentDepth < leastDepth ||
+                                    currentDepth == leastDepth && BOOL_AND >= leastPrecedenceType) {
+                          leastDepth = currentDepth;
+                          leastPrecedenceType = BOOL_AND;
+                          leastPrecedencePosition = i;
+                        }
+                        i++;
+                        break;
+
+                      case '|':
+                        if (i + 1 == expression.length())
+                              throw new ExpressionException(
+                                  "FilterExpression:  atecedent( ) and consequent( ) must contain\n              <valid attribute> op <valid value>");
+                        else if (expression.charAt(i + 1) != '|')
+                          throw new ExpressionException("FilterExpression: invalid single '|' at position " + i);
+                        booleanOperatorFound = true;
+                        if (currentDepth < leastDepth ||
+                                    currentDepth == leastDepth && BOOL_OR >= leastPrecedenceType) {
+                          leastDepth = currentDepth;
+                          leastPrecedenceType = BOOL_OR;
+                          leastPrecedencePosition = i;
+                        }
+                        i++;
+                        break;
+                    }
+                    if (currentDepth > maximumDepth)
+                      maximumDepth = currentDepth;
+                  }
+
+                  if (leastDepth > maximumDepth) // ...there were no parentheses
+                    leastDepth = 0;
+
+                  if (booleanOperatorFound) { // ...we must recurse
+                    // remove extraneous parentheses first
+                    for (int i = 0; i < leastDepth; i++) {
+                      expression = expression.trim();
+                      expression = expression.substring(1, expression.length() - 1);
+                      leastPrecedencePosition--;
+                    }
+                    return new Subexpression(
+                                leastPrecedenceType,
+                                parse(expression.substring(0, leastPrecedencePosition).trim()),
+                                parse(expression.substring(leastPrecedencePosition + 2, expression.length()).trim())
+                                );
+                  }
+                  else { // ...this is a terminal
+                    // remove extraneous parentheses
+                    if(inAntecedent){
+                      expression = expression.trim();
+                      expression = expression.substring(10);
+                      condition = 1;  //set the condition to reflect that an antecedent only is desired
+                    }
+                    if(inConsequent){
+                      expression = expression.trim();
+                      expression = expression.substring(10);
+                      condition = 2;  //set the condition to reflect that an consequent only is desired
+                    }
+                    for (int i = 0; i < maximumDepth; i++) {
+                      expression = expression.trim();
+                      expression = expression.substring(1, expression.length() - 1);
+                    }
+                    return parseTerminal(expression, condition);
+                  }
+                }
+
+                //At this point, we're dealing with attribute <op> value or value <op> attribute only
+                private Node parseTerminal(String expression, int condition) throws ExpressionException {
+                  char c, d;
+                  boolean operatorFound = false;
+
+                  for (int i = 0; i < expression.length(); i++) {
+                    c = expression.charAt(i);
+                    switch(c) {
+
+                      case '=':
+                        if (i + 1 == expression.length() || expression.charAt(i + 1) != '=')
+                          throw new ExpressionException("FilterExpression: invalid single '=' in expression");
+
+                        return new Terminal(
+                                  OP_EQ,
+                                  parseElement(expression.substring(0, i).trim(), condition),
+                                  parseElement(expression.substring(i + 2, expression.length()).trim(), condition)
+                                  );
+
+                      case '!':
+                        if (i + 1 == expression.length() || expression.charAt(i + 1) != '=')
+                          throw new ExpressionException("FilterExpression: invalid single '!' in expression");
+
+                        return new Terminal(
+                                  OP_NEQ,
+                                  parseElement(expression.substring(0, i).trim(), condition),
+                                  parseElement(expression.substring(i + 2, expression.length()).trim(), condition)
+                                  );
+                    }
+                  }
+                  throw new ExpressionException("FilterExpression: apparently malformed expression.");
+                }
+
+
+                private Element parseElement(String expression, int condition) throws ExpressionException {
+                  if (expression.length() == 0)
+                    throw new ExpressionException("FilterExpression: encountered empty element");
+
+                  Integer I = (Integer)attributeToIndex.get(expression);
+                  if(I == null)
+                    return new NominalElement(expression);
+                  return new AttributeElement(expression, condition);
+                }
+              }
+            } //end RuleVisView class
+
+            /**
+             * This small class runs the HelpWindow.
+             */
+            private final class HelpWindow extends JD2KFrame {
+              HelpWindow() {
+                super("About RuleVis");
+                JEditorPane jep = new JEditorPane("text/html", getModuleInfo());
+                jep.setBackground(yellowish);
+                getContentPane().add(new JScrollPane(jep));
+                setSize(400, 400);
+              }
+            }
+
+       private static final String HEAD = "Head";
+       private static final String BODY = "Body";
+       private static final String IF = "If";
+       private static final String THEN = "Then";
+
+   }
 
 // Start QA Comments
 //
