@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 
 /**
  * This is a subset of the original table. It contains an array of the
@@ -162,9 +163,9 @@ public class SubsetTableImpl extends MutableTableImpl {
    // column.
    //
    /**
-   	Sort the specified column and rearrange the rows of the table to
-   	correspond to the sorted column.
-   	@param col the column to sort by
+           Sort the specified column and rearrange the rows of the table to
+           correspond to the sorted column.
+           @param col the column to sort by
    */
    public void sortByColumn(int col) {
 
@@ -261,7 +262,7 @@ public class SubsetTableImpl extends MutableTableImpl {
       this.subset[pos1] = this.subset[pos2];
       this.subset[pos2] = swap;
    }
-   
+
    /**
     * Get a Column from the table. The columns must be compressed to provide
     * a consistent view of the data.
@@ -274,51 +275,45 @@ public class SubsetTableImpl extends MutableTableImpl {
          copyColumns[i] = this.compressColumn(i);
       return copyColumns;
    }
-   
+
    /**
     * Sets the reference to the internal representation of this Table.
     * @param newColumns a new internal representation for this Table
     */
    public void setColumns (Column[] newColumns) {
       Column copyColumns [] = new Column [this.getNumColumns()];
-     
       for (int i = 0 ; i < this.getNumColumns() ; i++)
-      	this.setColumn(this.expandColumn(newColumns[i]),i);
-      	//for (int i = 0 ; i < newColumns.length ; i++) {
-      	  //copyColumns[i]= this.expandColumn(newColumns[i]);
-        //    this.setColumn (newColumns[i], i);
-      //}
-         
+              this.setColumn(this.expandColumn(newColumns[i]),i);
    }
 
    /**
-    * 
+    *
     * Get a Column from the table.
     * @param pos the position of the Column to get from table
     * @return the Column at in the table at pos
     */
    public Column getColumn (int pos) {
-   	//System.out.println("position " + pos);
-   	//Thread.dumpStack();
-   	
+           //System.out.println("position " + pos);
+           //Thread.dumpStack();
+
       return this.compressColumn(pos);
-   } 
-  
-   
+   }
+
+
      /**
-    * 
+    *
     * Get a Column from the table.
     * @param pos the position of the Column to get from table
     * @return the Column at in the table at pos
     */
    public void setColumn (Column col, int where) {
       columns[where] = this.expandColumn(col);
-   } 
+   }
 
    /**
     * Column may or may not be the correct size for this table, it may only
     * be the size of the subset. If it is the size of the subset, create a
-    * new column of the correct size, then assign the data from the original 
+    * new column of the correct size, then assign the data from the original
     * column to the new column.
     * @param col the column to expand
     * @return the expanded column.
@@ -326,11 +321,12 @@ public class SubsetTableImpl extends MutableTableImpl {
    protected Column expandColumn (Column col) {
       String columnClass = (col.getClass()).getName();
       Column expandedColumn = null;
+      int type = col.getType();
 
       //if col is the first column in the table add it as is and initialize subset
       int numRows = super.getNumRows();
       if (columns.length == 0 && subset.length == 0) {
-         
+
          // This is the first column added. Set the subset to include everything
          // and submist the column unmodified.
          numRows = col.getNumRows();
@@ -342,8 +338,8 @@ public class SubsetTableImpl extends MutableTableImpl {
       } else if (numRows == col.getNumRows()) {
          expandedColumn = col;
       } else {
-         
-         // the column is not the correct size, resize it to size of the 
+
+         // the column is not the correct size, resize it to size of the
          // other columns in the table.
          try {
             expandedColumn = (Column)Class.forName(columnClass).newInstance();
@@ -357,20 +353,53 @@ public class SubsetTableImpl extends MutableTableImpl {
          expandedColumn.setIsNominal(col.getIsNominal());
 
          //set the elements of the column where appropriate as determined by subset
-         Object el;
          for (int i = 0; i < subset.length; i++) {
             if (col.isValueMissing(i)) {
                expandedColumn.setValueToMissing(true, subset[i]);
             } else {
-               el = col.getObject(i);
-               expandedColumn.setObject(el, subset[i]);
-               expandedColumn.setValueToMissing(false, subset[i]);
+              switch (type) {
+                case ColumnTypes.SHORT:
+                  expandedColumn.setShort(col.getShort(i), subset[i]);
+                  break;
+
+                case ColumnTypes.INTEGER:
+                  expandedColumn.setInt(col.getInt(i), subset[i]);
+                  break;
+
+                case ColumnTypes.LONG:
+                  expandedColumn.setLong(col.getLong(i), subset[i]);
+                  break;
+
+                case ColumnTypes.DOUBLE:
+                  expandedColumn.setFloat(col.getFloat(i), subset[i]);
+                  break;
+
+                case ColumnTypes.FLOAT:
+                  expandedColumn.setFloat(col.getFloat(i), subset[i]);
+                  break;
+
+                case ColumnTypes.NOMINAL:
+                case ColumnTypes.CHAR_ARRAY:
+                case ColumnTypes.BYTE_ARRAY:
+                case ColumnTypes.STRING:
+                  expandedColumn.setString(col.getString(i), subset[i]);
+                  break;
+
+                case ColumnTypes.BOOLEAN:
+                  expandedColumn.setBoolean(col.getBoolean(i), subset[i]);
+                  break;
+
+                default:
+                  expandedColumn.setObject(col.getObject(i), subset[i]);
+                  break;
+              }
+              expandedColumn.setValueToMissing(false, subset[i]);
             }
          }
       }
-      return expandedColumn;      
+      return expandedColumn;
    }
-   
+
    /**
     * Return a compressed representation of the column identified by the index
     * passed in..
@@ -378,44 +407,79 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the expanded compress.
     */
    private Column compressColumn (int colindex) {
-      
+
       // init our data objects, create a new column
       Column col = columns[colindex];
+      int type = col.getType();
       String columnClass = (col.getClass()).getName();
-      Column expandedColumn = null;
+      Column compressedColumn = null;
       try {
-         expandedColumn = (Column)Class.forName(columnClass).newInstance();
+         compressedColumn = (Column)Class.forName(columnClass).newInstance();
       } catch (Exception e) {
          System.out.println(e);
       }
-      
+
       // create a new column
       int numTableRows = this.getNumRows();
-      expandedColumn.addRows(numTableRows);
-      expandedColumn.setLabel(col.getLabel());
-      expandedColumn.setComment(col.getComment());
-      expandedColumn.setIsScalar(col.getIsScalar());
-      expandedColumn.setIsNominal(col.getIsNominal());
+      compressedColumn.addRows(numTableRows);
+      compressedColumn.setLabel(col.getLabel());
+      compressedColumn.setComment(col.getComment());
+      compressedColumn.setIsScalar(col.getIsScalar());
+      compressedColumn.setIsNominal(col.getIsNominal());
 
       //set the elements of the column where appropriate as determined by subset
       for (int i = 0; i < this.getNumRows(); i++) {
          if (this.isValueMissing(i, colindex)) {
-            expandedColumn.setValueToMissing(true, i);
+            compressedColumn.setValueToMissing(true, i);
          } else {
-            expandedColumn.setObject(this.getObject(i, colindex), i);
-            // ANCA: replaced line: expandedColumn.setValueToMissing(false, subset[i]);
-            expandedColumn.setValueToMissing(false, i);
+            switch (type) {
+              case ColumnTypes.SHORT:
+                compressedColumn.setShort(this.getShort(i, colindex), i);
+                break;
+
+              case ColumnTypes.INTEGER:
+                compressedColumn.setInt(this.getInt(i, colindex), i);
+                break;
+
+              case ColumnTypes.LONG:
+                compressedColumn.setLong(this.getLong(i, colindex), i);
+                break;
+
+              case ColumnTypes.DOUBLE:
+                compressedColumn.setFloat(this.getFloat(i, colindex), i);
+                break;
+
+              case ColumnTypes.FLOAT:
+                compressedColumn.setFloat(this.getFloat(i, colindex), i);
+                break;
+
+              case ColumnTypes.NOMINAL:
+              case ColumnTypes.CHAR_ARRAY:
+              case ColumnTypes.BYTE_ARRAY:
+              case ColumnTypes.STRING:
+                compressedColumn.setString(this.getString(i, colindex), i);
+                break;
+
+              case ColumnTypes.BOOLEAN:
+                compressedColumn.setBoolean(this.getBoolean(i, colindex), i);
+                break;
+
+              default:
+                compressedColumn.setObject(this.getObject(i, colindex), i);
+                break;
+            }
+            compressedColumn.setValueToMissing(false, i);
          }
       }
-      return expandedColumn;      
+      return compressedColumn;
    }
-   
+
    /**
-   	 * Add a new Column after the last occupied position in this Table.
-   	 * If this is the first column in the table it will be added as is.
-   	 * If not, it will be expanded to match the other columns and corresponding subset
-   	 * @param newColumn the Column to be added to the table
-   	 */
+            * Add a new Column after the last occupied position in this Table.
+            * If this is the first column in the table it will be added as is.
+            * If not, it will be expanded to match the other columns and corresponding subset
+            * @param newColumn the Column to be added to the table
+            */
    public void addColumn(Column col) {
       col = this.expandColumn(col);
       super.addColumn(col);
@@ -426,7 +490,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @param newColumn the Column to be added to the table
     */
    public void addColumns(Column[] cols) {
-      
+
       // Expand the columns before adding them.
       for (int i = 0 ; i < cols.length ; i++) {
          cols[i] = this.expandColumn(cols[i]);
@@ -462,7 +526,7 @@ public class SubsetTableImpl extends MutableTableImpl {
         super.insertColumn(newCols[i], where+i);
       }
    }
-   
+
    /**
     * Return a copy of this Table.
     * @return A new Table with a copy of the contents of this table.
@@ -536,7 +600,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return a shallow copy of the table.
     */
    public Table shallowCopy() {
-      
+
       // make a copy of the columns array, we don't want to share that.
       Column [] newCols = new Column [this.columns.length];
       for (int i = 0 ; i < newCols.length ; i++) {
@@ -553,13 +617,13 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @param howMany
     */
    public void addRows(int howMany) {
-    
-   	int numRows =0;
-   	if (getNumColumns()>0) numRows = columns[0].getNumRows();
-   	for (int i = 0; i < getNumColumns(); i++) {
-       		columns[i].addRows(howMany);
+
+           int numRows =0;
+           if (getNumColumns()>0) numRows = columns[0].getNumRows();
+           for (int i = 0; i < getNumColumns(); i++) {
+                       columns[i].addRows(howMany);
       }
-      
+
       int[] newsubset = new int[subset.length + howMany];
       System.arraycopy(subset, 0, newsubset, 0, subset.length);
       for (int i = subset.length; i < subset.length + howMany; i++)
@@ -568,9 +632,9 @@ public class SubsetTableImpl extends MutableTableImpl {
       subset = newsubset;
    }
    /**
-   	 * Remove a row from this Table.
-   	 * @param pos the row to remove
-   	 */
+            * Remove a row from this Table.
+            * @param pos the row to remove
+            */
    public void removeRows(int pos, int cnt) {
       int[] newsubset = new int[subset.length - cnt];
       System.arraycopy(subset, 0, newsubset, 0, pos);
@@ -874,26 +938,26 @@ public class SubsetTableImpl extends MutableTableImpl {
    public void setBoolean(boolean data, int row, int column) {
       columns[column].setBoolean(data, subset[row]);
    }
-   
+
 //		ANCA: method for comparing two Table objects.
    // Could be more efficient but as is used only in Junit tests,
    // less code is more important than speed of execution.
    // should also compare missing and empty arrays for columns or use column.equals
   /* public boolean equals(Object tbl) {
    SubsetTableImpl table;
-   	try {
-   		table = (SubsetTableImpl) tbl;
-   	} catch (Exception e) {
-   		return false;
-   	}
+           try {
+                   table = (SubsetTableImpl) tbl;
+           } catch (Exception e) {
+                   return false;
+           }
 
-   	if(getNumRows() != table.getNumRows()) return false;
-   	if(getNumColumns() != table.getNumColumns()) return false;
-   	for (int i =0; i < getNumRows(); i ++) {
-   		for (int j =0; j < getNumColumns(); j ++)
-   			if(!getObject(i,j).equals(table.getObject(i,j))) return false;
-   	}
-   	return true;
+           if(getNumRows() != table.getNumRows()) return false;
+           if(getNumColumns() != table.getNumColumns()) return false;
+           for (int i =0; i < getNumRows(); i ++) {
+                   for (int j =0; j < getNumColumns(); j ++)
+                           if(!getObject(i,j).equals(table.getObject(i,j))) return false;
+           }
+           return true;
 
    }
 */

@@ -13,19 +13,19 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
 
    /** number of folds to average scores for. */
    private int numberFolds =-1;
-   
+
    /** number of scores currently obtained. */
    int counter = 0;
-   
+
    /** the accumulated points in objective space. */
    ArrayList objectivePoints = new ArrayList();
-   
+
    /** used to store the average score for each of the objective features. */
    double [] avgs = null;
-   
+
    /** number of points in solution space. */
    int solutionSpaceDimensions = 0;
-   
+
    /**
     * returns information about the input at the given index.
     * @return information about the input at the given index.
@@ -157,7 +157,7 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
     * have an input on pipe 1.
     */
    public boolean isReady () {
-      if (numberFolds == -1 && this.getInputPipeSize(0) > 0 && 
+      if (numberFolds == -1 && this.getInputPipeSize(0) > 0 &&
          this.getInputPipeSize(1) > 0)
          return true;
       else if (this.getInputPipeSize(1) > 0)
@@ -165,7 +165,7 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
       else
          return false;
    }
-   
+
    /**
     * Take each paramter point, accumulate the sum of the various solutions
     * in the solution space for each fold, and when we have the objective
@@ -173,54 +173,42 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
     * and pass it on.
     */
    public void doit () {
-      
+
       // Get the parameter point.
       ParameterPoint pp = (ParameterPoint) this.pullInput(1);
       if (numberFolds == -1) {
-         
+
          // First time through, we need to get num folds, number of
          // attributes in solution space, allocate array for the
-         // sums of all the solutions. 
+         // sums of all the solutions.
          this.numberFolds = ((Integer) this.pullInput(0)).intValue();
          solutionSpaceDimensions = pp.getNumParameters();
          this.avgs = new double [solutionSpaceDimensions];
-         for (int i = 0 ; i < solutionSpaceDimensions ; i++) 
+         for (int i = 0 ; i < solutionSpaceDimensions ; i++)
             this.avgs[i] = 0.0;
-         System.out.println("AverageModelScores: First run, folds = "
-            +numberFolds+" solution space dims = "+solutionSpaceDimensions);
       }
-      
+
       // add each objective value to the sum of the objective value.
       for (int i = 0 ; i < this.solutionSpaceDimensions; i++) {
          this.avgs[i] += pp.getValue(i);
       }
-      
-      System.out.print ("AverageModelScores: Values to average -");
-      for (int i = 0 ; i < this.solutionSpaceDimensions; i++)
-         System.out.print (pp.getValue(i)+",");
-      System.out.println("");
-      
+
       // Average the objective scores.
       this.objectivePoints.add(pp);
       this.counter++;
       if (this.counter == this.numberFolds) {
-         
+
          // Done.
          this.numberFolds = -1;
-         
-         // From the sum, compute the mean         
+
+         // From the sum, compute the mean
          for (int i = 0 ; i < this.solutionSpaceDimensions; i++)
             this.avgs[i] /= this.numberFolds;
-            
-         System.out.print ("AverageModelScores: Produce results -");
-         for (int i = 0 ; i < this.solutionSpaceDimensions; i++)
-            System.out.print (avgs[i]+",");
-         System.out.println("");
-         
+
          // Reset the counter and the object points array.
          this.counter = 0;
          this.objectivePoints.clear();
-         
+
          // create a new table from which we construct a new paramter point
          String [] names = new String [this.solutionSpaceDimensions];
          for (int i = 0; i < this.solutionSpaceDimensions; i++)
@@ -228,7 +216,7 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
          int numColumns = names.length;
          Column [] cols = new Column[avgs.length];
          int [] outs = new int [cols.length];
-         
+
          // compute the averages
          for (int i = 0 ; i < avgs.length; i++) {
              double [] vals = new double [1];
