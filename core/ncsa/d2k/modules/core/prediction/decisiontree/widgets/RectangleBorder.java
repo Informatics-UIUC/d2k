@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.vis.widgets;
+package ncsa.d2k.modules.core.prediction.decisiontree.widgets;
 
 import java.awt.*;
 import java.awt.geom.*;

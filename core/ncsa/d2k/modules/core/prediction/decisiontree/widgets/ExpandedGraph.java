@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.vis.widgets;
+package ncsa.d2k.modules.core.prediction.decisiontree.widgets;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -6,6 +6,7 @@ import java.text.*;
 import java.util.*;
 import javax.swing.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
 
 /*
 	DecisionTreeVis

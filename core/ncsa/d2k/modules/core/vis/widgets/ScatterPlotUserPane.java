@@ -1,12 +1,13 @@
-package ncsa.d2k.modules.core.vis;
+package ncsa.d2k.modules.core.vis.widgets;
 
 import java.awt.*;
 
-import ncsa.d2k.modules.core.vis.widgets.*;
+
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.controller.userviews.swing.JUserPane;
 import ncsa.d2k.util.datatype.*;
 import ncsa.gui.*;
+import ncsa.d2k.modules.core.vis.*;
 
 /**
 	ScatterPlotUserPane

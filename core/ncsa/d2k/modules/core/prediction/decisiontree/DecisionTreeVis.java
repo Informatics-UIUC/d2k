@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.vis;
+package ncsa.d2k.modules.core.prediction.decisiontree;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -8,9 +8,10 @@ import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.*;
 import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.d2k.modules.core.prediction.decisiontree.*;
+
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.gui.*;
+import ncsa.d2k.modules.core.prediction.decisiontree.widgets.*;
 
 /*
 	DecisionTreeVis
