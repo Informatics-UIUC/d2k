@@ -246,7 +246,7 @@ public class TableUtilities
 
     // count the number of unique items in this column
     HashSet set = new HashSet ();
-    
+
 	if (table.hasMissingValues(colNum)) {
 			for (int i = 0; i < numRows; i++) {
 			 if (!table.isValueMissing(i, colNum)) {
@@ -350,7 +350,7 @@ public class TableUtilities
 	for (int i = 0; i < numRows; i++) {
 	  if(!table.isValueMissing(i,colNum)) {
 	   String s = table.getString (i, colNum);
-	  
+
 	   if (outIndexMap.containsKey (s)) {
 		   Integer in = (Integer) outIndexMap.get (s);
 		   outtally[in.intValue ()]++;
@@ -362,8 +362,8 @@ public class TableUtilities
 	  }
      }
     }
-    else {   
-	
+    else {
+
 	 for (int i = 0; i < numRows; i++) {
 	String s = table.getString (i, colNum);
 	if (outIndexMap.containsKey (s)) {
@@ -753,12 +753,20 @@ public static int compareStrings(String str1, String str2){
          it = compareBytes (c1.getBytes (row1), c2.getBytes (row2));
          break;
      }
+
+     //VERED: 12-11-03
+    //changed the case for boolean to return 0 if identical
+    //otherwise - 1 if value at (row1,col1) is true. else -1.
      case (ColumnTypes.BOOLEAN): {
-         if (c1.getBoolean (row1) == c2.getBoolean (row2)) {
-             it = 0;
-         } else {
-             it = 1;
-         }
+           boolean val1 = c1.getBoolean (row1);
+           boolean val2 =  c2.getBoolean (row2);
+         if ( val1 == val2) {
+               it = 0;
+           } else {
+             if(val1)     it = 1;
+             else it = -1;
+           }
+
 
          break;
      }
@@ -881,11 +889,20 @@ public static int compareStrings(String str1, String str2){
 	  it = compareBytes (t1.getBytes (row1, col1), t2.getBytes (row2, col2));
 	  break;
       }
+
+      //VERED: 12-11-03
+      //changed the case for boolean to return 0 if identical
+      //otherwise - 1 if value at (row1,col1) is true. else -1.
       case (ColumnTypes.BOOLEAN): {
-	  if (t1.getBoolean (row1, col1) == t2.getBoolean (row2, col2)) {
+
+
+        boolean val1 = t1.getBoolean (row1, col1);
+        boolean val2 = t1.getBoolean (row2, col2);
+	  if ( val1 == val2) {
 	      it = 0;
 	  } else {
-	      it = 1;
+            if(val1)     it = 1;
+            else it = -1;
 	  }
 
 	  break;
