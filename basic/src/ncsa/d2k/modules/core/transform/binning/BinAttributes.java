@@ -1317,16 +1317,23 @@ public class BinAttributes extends HeadlessUIModule {
 		maxes[i] = Double.NEGATIVE_INFINITY;
 		mins[i] = Double.POSITIVE_INFINITY;
 	  }
-	  for (int i = 0; i < colIdx.length; i++) {
+	  
+	   for (int i = 0; i < colIdx.length; i++) {
 		// find the max and min
 		//NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-		for (int j = 0; j < tbl.getNumRows(); j++) {
+	/*	for (int j = 0; j < tbl.getNumRows(); j++) {
 		  double d = tbl.getDouble(j, colIdx[i]);
 		  if (d > maxes[i])
 			maxes[i] = d;
 		  if (d < mins[i])
 			mins[i] = d;
-		}
+	    }
+	*/	
+      //ANCA added support for missing  values
+		ScalarStatistics ss = TableUtilities.getScalarStatistics(tbl, colIdx[i]);
+		 maxes[i] = ss.getMaximum();
+		mins[i] = ss.getMinimum();
+	
 		// the number of bins is (max - min) / (bin width)
 		int num = (int)Math.ceil((maxes[i] - mins[i])/intrval);
 		double[] binMaxes = new double[num];
@@ -1453,61 +1460,61 @@ public class BinAttributes extends HeadlessUIModule {
 	 */
 	private BinDescriptor createTextualBin (int idx, String name, Object[] sel) {
 	  String[] vals = new String[sel.length];
-	  for (int i = 0; i < vals.length; i++)
+	  	  for (int i = 0; i < vals.length; i++)
 		vals[i] = sel[i].toString();
 	  return  new TextualBinDescriptor(idx, name, vals, tbl.getColumnLabel(idx));
 	}
-
-	/**
-	 * Create a numeric bin that goes from min to max.
-	 */
-	private BinDescriptor createNumericBinDescriptor (int col, double min,
-		double max) {
-      System.out.println(" min " + min + " max " + max);
-	  StringBuffer nameBuffer = new StringBuffer();
-	  nameBuffer.append(OPEN_PAREN);
-	  //ANCA nameBuffer.append(nf.format(min));
-	  nameBuffer.append(min);
-	  nameBuffer.append(COLON);
-	  //ANCA nameBuffer.append(nf.format(max));
-	  nameBuffer.append(max);
-	  nameBuffer.append(CLOSE_BRACKET);
-	  BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-		  min, max, tbl.getColumnLabel(col));
-	  return  nb;
-	}
-
-	/**
-	 * Create a numeric bin that goes from Double.NEGATIVE_INFINITY to max
-	 */
-	private BinDescriptor createMinNumericBinDescriptor (int col, double max) {
-	  StringBuffer nameBuffer = new StringBuffer();
-	  nameBuffer.append(OPEN_BRACKET);
-	  nameBuffer.append(DOTS);
-	  nameBuffer.append(COLON);
-	  //ANCA nameBuffer.append(nf.format(max));
-	  nameBuffer.append(max);
-	  nameBuffer.append(CLOSE_BRACKET);
-	  BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-		  Double.NEGATIVE_INFINITY, max, tbl.getColumnLabel(col));
-	  return  nb;
-	}
-
-	/**
-	 * Create a numeric bin that goes from min to Double.POSITIVE_INFINITY
-	 */
-	private BinDescriptor createMaxNumericBinDescriptor (int col, double min) {
-	  StringBuffer nameBuffer = new StringBuffer();
-	  nameBuffer.append(OPEN_PAREN);
-	 //ANCA nameBuffer.append(nf.format(min));
-	 nameBuffer.append(min);
-	  nameBuffer.append(COLON);
-	  nameBuffer.append(DOTS);
-	  nameBuffer.append(CLOSE_BRACKET);
-	  BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-		  min, Double.POSITIVE_INFINITY, tbl.getColumnLabel(col));
-	  return  nb;
-	}
+//
+//	/**
+//	 * Create a numeric bin that goes from min to max.
+//	 */
+//	private BinDescriptor createNumericBinDescriptor (int col, double min,
+//		double max) {
+//      System.out.println(" min " + min + " max " + max);
+//	  StringBuffer nameBuffer = new StringBuffer();
+//	  nameBuffer.append(OPEN_PAREN);
+//	  //ANCA nameBuffer.append(nf.format(min));
+//	  nameBuffer.append(min);
+//	  nameBuffer.append(COLON);
+//	  //ANCA nameBuffer.append(nf.format(max));
+//	  nameBuffer.append(max);
+//	  nameBuffer.append(CLOSE_BRACKET);
+//	  BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
+//		  min, max, tbl.getColumnLabel(col));
+//	  return  nb;
+//	}
+//
+//	/**
+//	 * Create a numeric bin that goes from Double.NEGATIVE_INFINITY to max
+//	 */
+//	private BinDescriptor createMinNumericBinDescriptor (int col, double max) {
+//	  StringBuffer nameBuffer = new StringBuffer();
+//	  nameBuffer.append(OPEN_BRACKET);
+//	  nameBuffer.append(DOTS);
+//	  nameBuffer.append(COLON);
+//	  //ANCA nameBuffer.append(nf.format(max));
+//	  nameBuffer.append(max);
+//	  nameBuffer.append(CLOSE_BRACKET);
+//	  BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
+//		  Double.NEGATIVE_INFINITY, max, tbl.getColumnLabel(col));
+//	  return  nb;
+//	}
+//
+//	/**
+//	 * Create a numeric bin that goes from min to Double.POSITIVE_INFINITY
+//	 */
+//	private BinDescriptor createMaxNumericBinDescriptor (int col, double min) {
+//	  StringBuffer nameBuffer = new StringBuffer();
+//	  nameBuffer.append(OPEN_PAREN);
+//	 //ANCA nameBuffer.append(nf.format(min));
+//	 nameBuffer.append(min);
+//	  nameBuffer.append(COLON);
+//	  nameBuffer.append(DOTS);
+//	  nameBuffer.append(CLOSE_BRACKET);
+//	  BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
+//		  min, Double.POSITIVE_INFINITY, tbl.getColumnLabel(col));
+//	  return  nb;
+//	}
 
 	/**
 	 * put your documentation comment here
