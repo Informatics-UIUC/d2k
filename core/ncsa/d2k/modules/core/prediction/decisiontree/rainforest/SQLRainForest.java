@@ -34,6 +34,7 @@ import ncsa.d2k.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
+import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
@@ -48,10 +49,10 @@ public class SQLRainForest extends ReentrantComputeModule {
   JOptionPane msgBoard = new JOptionPane();
 
   // the number of split values for numeric attribute
-  int binNumber = 10;
+  double binNumber = 100;
   // minimum records ratio (% of totalRow) for leaf node
-  double minimumRecordsRatio = 0.001;
-  // minimum records for leaf node: minimumRecordsRatio * totalRow
+  double minimumRatioPerLeaf = 0.001;
+  // minimum records for leaf node: minimumRatioPerLeaf * totalRow
   double minimumRecordsPerLeaf = 0.00;
   // dominateRatio = (% of MostCommonClass) / (% of SecondMostCommonClass)
   // if dominateRatio > specified Ratio, the node should not be split further,
@@ -60,7 +61,7 @@ public class SQLRainForest extends ReentrantComputeModule {
   // the threshold for choosing in-memory or in-database mode
   // If the totalRow < modeThreshold, the entire data set is retrieved and load in memory.
   // Otherwise, the data set is partitioned at each tree node
-  int modeThreshold = 20000;
+  double modeThreshold = 20000;
   // the ration calculated by: abs(parent node's dominate ratio - child node's dominate ratio)
   // When below this ratio, the child node is pruned.
   double improvementRatio = dominateRatio * 0.05;
@@ -145,19 +146,22 @@ public class SQLRainForest extends ReentrantComputeModule {
   }
 
   public String getInputInfo (int i) {
-    switch (i) {
-      case 0: return "JDBC data source to make database connection.";
-      case 1: return "The name of the data table.";
-      case 2: return "The table that contains meta information.";
-      default: return "No such input";
-    }
+      switch (i) {
+        case 0: return "JDBC data source to make database connection.";
+        case 1: return "The name of the data table.";
+        case 2: return "The table that contains meta information.";
+        case 3: return "The parameters used in this module.";
+        default: return "No such input";
+      }
   }
+
 
   public String getInputName(int i) {
     switch (i) {
-      case 0: return "DatabaseConnection";
-      case 1: return "DatabaseTableName";
-      case 2: return "MetaTable";
+      case 0: return "Database Connection";
+      case 1: return "Database Table";
+      case 2: return "Meta Table";
+      case 3: return "Parameters";
       default: return "NoInput";
     }
   }
@@ -167,9 +171,11 @@ public class SQLRainForest extends ReentrantComputeModule {
         }
 
   public String[] getInputTypes () {
-                String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","java.lang.String","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-                return types;
-        }
+    String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","java.lang.String",
+                      "ncsa.d2k.modules.core.datatype.table.ExampleTable",
+                      "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"};
+      return types;
+  }
 
   public String[] getOutputTypes () {
                 String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.rainforest.DecisionForestModel"};
@@ -184,19 +190,20 @@ public class SQLRainForest extends ReentrantComputeModule {
     return "SQLRainForest";
   }
 
-  public void setBinNumber (int i) {
+  public void setBinNumber (double i) {
     binNumber = i;
   }
-  public int getBinNumber () {
+
+  public double getBinNumber () {
     return binNumber;
   }
 
-  public void setMinimumRecordsRatio(double num) {
-    minimumRecordsRatio = num;
+  public void setMinimumRatioPerLeaf(double num) {
+    minimumRatioPerLeaf = num;
   }
 
-  public double getMinimumRecordsRatio() {
-    return minimumRecordsRatio;
+  public double getMinimumRatioPerLeaf() {
+    return minimumRatioPerLeaf;
   }
 
   public void setDominateRatio(double num) {
@@ -208,14 +215,13 @@ public class SQLRainForest extends ReentrantComputeModule {
     return dominateRatio;
   }
 
-  public void setModeThreshold(int num) {
+  public void setModeThreshold(double num) {
     modeThreshold = num;
   }
 
-  public int getModeThreshold() {
+  public double getModeThreshold() {
     return modeThreshold;
-  }
-
+  }/*
   public PropertyDescription [] getPropertiesDescriptions () {
     PropertyDescription [] pds = new PropertyDescription [4];
     pds[0] = new PropertyDescription ("modeThreshold", "Mode Threshold", "If the number of data records is greater than this threshold, the in-database mode is used. Otherwise, the in-memory mode is used.");
@@ -223,7 +229,7 @@ public class SQLRainForest extends ReentrantComputeModule {
     pds[2] = new PropertyDescription ("minimumRecordsRatio", "Minimum Leaf Ratio", "Ratio of the record on a leaf to in a tree. The tree construction is terminated when this ratio is reached.");
     pds[3] = new PropertyDescription ("dominateRatio", "Dominate Ratio", "Ratio of most-common class to second-most-common class. The tree construction is terminated after this ratio is reached.");
     return pds;
-  }
+  } */
 
   protected String[] getFieldNameMapping () {
     return null;
@@ -239,6 +245,7 @@ public class SQLRainForest extends ReentrantComputeModule {
     cw = (ConnectionWrapper)pullInput(0);
     dbTable = (String)pullInput(1);
     meta = (ExampleTable)pullInput(2);
+    ParameterPoint pp = (ParameterPoint)pullInput(3);
     inputFeatures = new int[meta.getInputFeatures().length];
     inputFeatures = meta.getInputFeatures();
     outputFeatures = new int[meta.getOutputFeatures().length];
@@ -251,7 +258,18 @@ public class SQLRainForest extends ReentrantComputeModule {
       availableCols[colIdx] = meta.getColumnLabel(inputFeatures[colIdx]);
     }
     totalRow = meta.getNumEntries();
-    minimumRecordsPerLeaf = totalRow * minimumRecordsRatio;
+    setMinimumRatioPerLeaf(pp.getValue(SQLRainForestParamSpaceGenerator.MIN_RATIO));
+    minimumRecordsPerLeaf = totalRow * minimumRatioPerLeaf;
+    setModeThreshold(pp.getValue(SQLRainForestParamSpaceGenerator.MODE_THRESHOLD));
+    setBinNumber(pp.getValue(SQLRainForestParamSpaceGenerator.BIN_NUMBER));
+    setDominateRatio(pp.getValue(SQLRainForestParamSpaceGenerator.DOMINATE_RATIO));
+    /*
+    System.out.println("minimum recored per leaf is " + minimumRecordsPerLeaf);
+    System.out.println("minimum ratio per leaf is " + minimumRatioPerLeaf);
+    System.out.println("dominate ratio is " + dominateRatio);
+    System.out.println("mode threshold is " + modeThreshold);
+    System.out.println("bin number is " + binNumber);
+    */
     // if totalRow < modeThreshold, use in-memory mode
     if (totalRow > 0 && totalRow < modeThreshold) {
       NodeInfo aNodeInfo = createDataTable(dbTable, meta, splitValues, totalRow);
