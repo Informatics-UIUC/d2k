@@ -217,21 +217,27 @@ public class SubsetTableImpl extends MutableTableImpl {
 	 @return the partition point
 	 */
 	private int partition (Column A, int [] ix, int p, int r, int begin) {
-
-
 		int i = p - 1;
 		int j = r + 1;
+		boolean isMissing = A.isValueMissing(ix[p]);
 		while (true) {
-
-			// find the first entry [j] <= entry [p].
-			do {
+			if (isMissing) {
 				j--;
-			} while (A.compareRows (ix[j], ix[p]) > 0);
+				do {
+					i++;
+				} while (!A.isValueMissing(ix[i]));
+			} else {
 
-			// now find the first entry [i] >= entry [p].
-			do {
-				i++;
-			} while (A.compareRows (ix[i], ix[p]) < 0);
+				// find the first entry [j] <= entry [p].
+				do {
+					j--;
+				} while (A.isValueMissing(ix[j]) || A.compareRows (ix[j], ix[p]) > 0);
+	
+				// now find the first entry [i] >= entry [p].
+				do {
+					i++;
+				} while (!A.isValueMissing(ix[i]) && A.compareRows (ix[i], ix[p]) < 0);
+			}
 
 			if (i < j) {
 				this.swapRows(i+begin, j+begin);
