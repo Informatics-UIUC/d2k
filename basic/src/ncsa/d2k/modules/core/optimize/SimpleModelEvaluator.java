@@ -178,7 +178,7 @@ public class SimpleModelEvaluator
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.projects.dtcheng.ErrorFunction",
+        "ncsa.d2k.modules.core.prediction.ErrorFunction",
         "ncsa.d2k.modules.PredictionModelModule",
         "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
     return in;
