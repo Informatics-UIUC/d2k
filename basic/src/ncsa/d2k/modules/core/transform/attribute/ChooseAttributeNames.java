@@ -93,7 +93,7 @@ public class ChooseAttributeNames
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.mmodules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
