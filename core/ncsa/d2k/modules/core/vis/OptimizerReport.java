@@ -1,15 +1,15 @@
 package ncsa.d2k.modules.core.vis;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.swing.JUserPane;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.JUserPane;
 import ncsa.d2k.modules.core.vis.widgets.TableMatrix;
 import ncsa.gui.JEasyConstrainsPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import ncsa.d2k.modules.core.optimize.util.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /*
@@ -22,7 +22,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 	*/
 
 public class OptimizerReport extends VisModule
-	implements HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -303,60 +303,44 @@ public class OptimizerReport extends VisModule
 
 
 	public String getModuleInfo(){
-		return "Prepares a brief report based on information in the (evaluated)"+
-				"solution space";
+		return "<html>  <head>      </head>  <body>    Prepares a brief report based on information in the (evaluated)solution     space  </body></html>";
 	}
 
    	public String getModuleName() {
 		return "Optimizer Report Visualization";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The Solution Space object that has been optimized,"+
-					" or at least evaluated";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "The Solution Space object that has been optimized, or at least evaluated";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Space";
-			}
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={};
-		return s;
+		String[] types = {		};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

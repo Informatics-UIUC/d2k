@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.control;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /*
 	takes in an object once, saves it, and then
@@ -11,7 +12,7 @@ import ncsa.d2k.infrastructure.modules.*;
 	*/
 
 public class TriggerPushB extends DataPrepModule 
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -84,81 +85,50 @@ public class TriggerPushB extends DataPrepModule
 
 
 	public String getModuleInfo(){
-		return "Takes in an object and saves it. Every time an object"+
-				"enters the <i>other</i> input pipe, the saved object"+
-				"will be pushed out the single output. This will also"+
-				" assign a new object to the saved object field whenever"+
-				" a new one arrives, and that new one will become the "+
-				"one to get pushed at each triggering";
+		return "<html>  <head>      </head>  <body>    Takes in an object and saves it. Every time an objectenters the <i>other</i> input pipe, the saved objectwill be pushed out the single output. This will     also assign a new object to the saved object field whenever a new one     arrives, and that new one will become the one to get pushed at each     triggering  </body></html>";
 	}
 	
    	public String getModuleName() {
 		return "";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"java.lang.Object","java.lang.Object"
-					/*,"java.lang.Object"*/};
-		return s;
+		String[] types = {"java.lang.Object","java.lang.Object"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The object to be saved and passed";
-			}
-			case(1): {
-				return "The triggering object";
-			}
-
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "The object to be saved and passed";
+			case 1: return "The triggering object";
+			default: return "No such input";
 		}
 	}
 	
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Saved Object";
-			}
-			case(1): {
+			case 1:
 				return "Trigger";
-			}/*case(2): {
-				return "Reset Trigger";
-			}*/
-
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"java.lang.Object"/*,"java.lang.Object"*/};
-		return s;
+		String[] types = {"java.lang.Object"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The saved object pushed out every time there"+
-						"is a trigger object";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "The saved object pushed out every time thereis a trigger object";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "The Saved Object";
-			}/*			case(1): {
-				return "Ready Trigger";
-			}*/
-
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}		
 	////////////////////////////////

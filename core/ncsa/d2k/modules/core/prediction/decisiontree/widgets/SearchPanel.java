@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.prediction.decisiontree.widgets;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.core.modules.*;
+//import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.gui.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;

@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.io.sql;
 
-import ncsa.d2k.infrastructure.modules.InputModule;
 
+import ncsa.d2k.core.modules.InputModule;
 import java.sql.*;
 import java.util.Vector;
 
@@ -9,39 +9,34 @@ import java.util.Vector;
 public class ExecuteSelect extends InputModule
 {
 	public String getOutputInfo (int index) {
-		String[] outputDescriptions = { "The reslut of the query." };
-		return outputDescriptions[index];
+		switch (index) {
+			case 0: return "The reslut of the query.";
+			default: return "No such output";
+		}
 	}
 
 	public String getInputInfo (int index) {
-		String[] inputDescriptions = {
-			"This is the data source.",
-			"A String array containing field names to be selected.",
-			"The where clause if appropriate, or null",
-			"The name of the table to select from."
-		};
-		return inputDescriptions[index];
+		switch (index) {
+			case 0: return "This is the data source.";
+			case 1: return "A String array containing field names to be selected.";
+			case 2: return "The where clause if appropriate, or null";
+			case 3: return "The name of the table to select from.";
+			default: return "No such input";
+		}
 	}
 
 	public String getModuleInfo () {
-		String text = "Executes the Query String.";
-		return text;
+		return "<html>  <head>      </head>  <body>    Executes the Query String.  </body></html>";
 	}
 
 	public String[] getInputTypes () {
-		String[] temp = {
-			"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-			"[Ljava.lang.String;", // field(s) to select
-			"java.lang.String", // table(s) to select from
-			"java.lang.String" // table(s) to select from
-			//"java.lang.String" // the WHERE clause
-		};
-		return temp;
+		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","[Ljava.lang.String;","java.lang.String","java.lang.String"};
+		return types;
 	}
 
 	public String[] getOutputTypes () {
-		String[] temp = {"java.sql.ResultSet"};
-		return temp;
+		String[] types = {"java.sql.ResultSet"};
+		return types;
 	}
 
 	protected void doit () throws Exception
@@ -63,5 +58,45 @@ public class ExecuteSelect extends InputModule
 		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		this.pushOutput (rs, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "ExecuteSelect";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			case 2:
+				return "input2";
+			case 3:
+				return "input3";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

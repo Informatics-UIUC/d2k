@@ -1,26 +1,24 @@
 package ncsa.d2k.modules.core.io.numeric;
 
+
 import java.awt.*;
 import java.awt.event.*;
-
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.UserView;
-
-import ncsa.d2k.controller.userviews.UserInputPane;
-import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.d2k.controller.userviews.AddField;
-
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.userviews.UserInputPane;
+import ncsa.d2k.userviews.widgets.*;
+import ncsa.d2k.userviews.AddField;
 import ncsa.gui.Constrain;
 import java.util.Hashtable;
 import javax.swing.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.controller.userviews.widgits.swing.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.userviews.widgets.swing.*;
 
 /**
 
 */
 public class GetDoubleArray extends UIModule
-	implements java.io.Serializable, HasNames, HasProperties {
+	 {
 
     protected int arraySize;
 
@@ -37,9 +35,8 @@ public class GetDoubleArray extends UIModule
        @return A description of this module.
     */
     public String getModuleInfo() {
-	return "Gets list of doubles from the user and passes it as a double[]" ;
-
-    }
+		return "<html>  <head>      </head>  <body>    Gets list of doubles from the user and passes it as a double[]  </body></html>";
+	}
 
    	public String getModuleName() {
 		return "GetDoubles";
@@ -50,33 +47,36 @@ public class GetDoubleArray extends UIModule
        @return The input types.
     */
     public String[] getInputTypes() {
-		String[] s= {"java.lang.Object"};
-		return s;
-    }
+		String[] types = {"java.lang.Object"};
+		return types;
+	}
 
     /**
        Return an array containing the output types of this module.
        @return The output types.
     */
     public String[] getOutputTypes() {
-	String []out = {"[D"};
-	return out;
-    }
+		String[] types = {"[D"};
+		return types;
+	}
 
     /**
        Return the info for a particular input.
        @param i The index of the input to get info about
     */
     public String getInputInfo(int i) {
-		if(i==0)
-			return "a dummy object for triggering";
-	return "No such input!";
-    }
+		switch (i) {
+			case 0: return "a dummy object for triggering";
+			default: return "No such input";
+		}
+	}
 
 	public String getInputName(int i) {
-		if(i==0)
-			return "trigger";
-		return "No such input!";
+		switch(i) {
+			case 0:
+				return "trigger";
+			default: return "NO SUCH INPUT!";
+		}
 	}
 
     /**
@@ -84,19 +84,18 @@ public class GetDoubleArray extends UIModule
        @param i The index of the output to get info about
     */
     public String getOutputInfo(int i) {
-	switch(i) {
-	case(0):
-	    return "The double array ";
-			default:
-	    return "No such output!";
+		switch (i) {
+			case 0: return "The double array ";
+			default: return "No such output";
+		}
 	}
-    }
 
    	public String getOutputName(int i) {
-		if(i == 0)
-			return "dArray";
-		else
-			return "No such output!";
+		switch(i) {
+			case 0:
+				return "dArray";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 
     /**
@@ -128,6 +127,7 @@ public class GetDoubleArray extends UIModule
     public void moduleFinish(double[] da) {
 		doubles=da;
 		this.pushOutput(da, 0);
+		//System.out.println("da finishing");
 		//executionManager.moduleDone(this);
 		viewDone("Done");
     }

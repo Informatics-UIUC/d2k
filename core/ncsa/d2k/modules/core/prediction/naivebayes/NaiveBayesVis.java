@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.prediction.naivebayes;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -9,50 +10,61 @@ import java.text.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.gui.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.gui.*;
 
 /**
  * An evidence visualization for a NaiveBayesModel.
  */
-public final class NaiveBayesVis extends VisModule implements HasNames {
+public final class NaiveBayesVis extends VisModule  {
 
    public String getInputInfo(int i) {
-      return "A NaiveBayesModel to visualize.";
-   }
+		switch (i) {
+			case 0: return "A NaiveBayesModel to visualize.";
+			default: return "No such input";
+		}
+	}
 
     public String getInputName(int i) {
-        return "NBModel";
-    }
+		switch(i) {
+			case 0:
+				return "NBModel";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
    public String getOutputInfo(int i) {
-      return "";
-   }
+		switch (i) {
+			default: return "No such output";
+		}
+	}
 
     public String getOutputName(int i) {
-        return "";
-    }
+		switch(i) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
    public String getModuleInfo() {
-      return "An evidence visualization for a NaiveBayesModel.  The model performs "+
-         "any necessary calculations.";
-   }
+		return "<html>  <head>      </head>  <body>    An evidence visualization for a NaiveBayesModel. The model performs any     necessary calculations.  </body></html>";
+	}
 
     public String getModuleName() {
-        return "NBVis";
-    }
+		return "NBVis";
+	}
 
    public String[] getInputTypes() {
-      String[] in = {"ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
-      return in;
-   }
+		String[] types = {"ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
+		return types;
+	}
 
    public String[] getOutputTypes() {
-      return null;
-   }
+		String[] types = {		};
+		return types;
+	}
 
    public String[] getFieldNameMapping() {
       return null;
@@ -325,28 +337,20 @@ public final class NaiveBayesVis extends VisModule implements HasNames {
          jp1.setViewportBorder(new SPBorder2());
          JScrollPane jp2 = new SameSizeSP(ma, ma.getPreferredSize());
          JScrollPane jp3 = new SameSizeSP(legend, ma.getPreferredSize());
-		 //legend.setPreferredSize(ma.getPreferredSize());
-		 //JSplitPane splitter = new JSplitPane(JSplitPane.VERTICAL_SPLIT, legend, ma);
-		 //splitter.setDividerSize(4);
          JViewport jch = new JViewport();
          JPanel cnr = new JPanel();
          cnr.setBackground(yellowish);
-         //jp3.setCorner(ScrollPaneConstants.UPPER_RIGHT_CORNER, cnr);
-         //jp2.setMaximumSize(ma.getPreferredSize());
-         //jp3.setMaximumSize(ma.getPreferredSize());
+         jp3.setCorner(ScrollPaneConstants.UPPER_RIGHT_CORNER, cnr);
+         jp2.setMaximumSize(ma.getPreferredSize());
+         jp3.setMaximumSize(ma.getPreferredSize());
          JPanel pq = new JPanel();
          JPanel pq1 = new JPanel();
          pq1.setLayout(new GridLayout(2, 1));
          pq1.add(jp3);
          pq1.add(jp2);
-		 //pq1.setLayout(new BorderLayout());
-		 //pq1.add(pq, BorderLayout.CENTER);
-		 //JSplitPane pq = new JSplitPane(JSplitPane.VERTICAL_SPLIT, cp, splitter);
-		 //pq.setDividerSize(4);
          pq.setLayout(new BorderLayout());
          pq.add(jp1, BorderLayout.CENTER);
          pq.add(pq1, BorderLayout.SOUTH);
-
          JViewport jv2 = new JViewport();
          JLabel clLabel = new AALabel(CONC);
          clLabel.setBorder(new EmptyBorder(10, 3, 10, 0));

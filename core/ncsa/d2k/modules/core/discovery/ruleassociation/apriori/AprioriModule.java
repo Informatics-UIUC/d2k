@@ -1,5 +1,6 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
+
 import java.io.*;
 import java.util.*;
 import ncsa.d2k.modules.core.discovery.ruleassociation.*;
@@ -9,9 +10,9 @@ import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 	AprioriModule.java
 
 */
-public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
+public class AprioriModule extends ncsa.d2k.core.modules.ComputeModule
 /*#end^2 Continue editing. ^#&*/
-		    implements Serializable {
+		     {
 
 	/** the names of the various items. */
 	String [] nameList;
@@ -64,7 +65,7 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"item sets\">    <Text>ITem set object. </Text>  </Info></D2K>";
+			case 0: return "      ITem set object.   ";
 			default: return "No such input";
 		}
 	}
@@ -74,8 +75,7 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-		String [] types =  {
-			"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"};
+		String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"};
 		return types;
 	}
 
@@ -85,7 +85,7 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"rules\">    <Text>Each rull consists of a list of distinct item ids followed by a confidence and a support value. The support is the percentage of the sets that contained that combination, the confidence is, well , we don't know what that is. </Text>  </Info></D2K>";
+			case 0: return "      Each rull consists of a list of distinct item ids followed by a confidence and a support value. The support is the percentage of the sets that contained that combination, the confidence is, well , we don't know what that is.   ";
 			default: return "No such output";
 		}
 	}
@@ -95,8 +95,7 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-		String [] types =  {
-			"[[I"};
+		String[] types = {"[[I"};
 		return types;
 	}
 
@@ -105,7 +104,7 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"A Priori Rule Assoc\">    <Text>This module will take a number of sets and a hashtable as it's inputs. The sets is a list of co-occurances, for example, a list purchases from a store, where each purchase entry (a set) is a list of items purchased. This module will find rules that define a high probability that combinations of items will be purchased together. </Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    This module will take a number of sets and a hashtable as it's inputs. The     sets is a list of co-occurances, for example, a list purchases from a     store, where each purchase entry (a set) is a list of items purchased.     This module will find rules that define a high probability that     combinations of items will be purchased together.  </body></html>";
 	}
 
 	/** this property is the min acceptable support score. */
@@ -546,5 +545,39 @@ nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 	}
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "A Priori Rule Assoc";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "item sets";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "rules";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

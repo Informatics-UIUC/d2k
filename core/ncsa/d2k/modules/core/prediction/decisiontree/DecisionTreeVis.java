@@ -1,17 +1,16 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.awt.print.*;
-
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
-
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.userviews.widgets.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.gui.*;
 import ncsa.gui.*;
@@ -20,7 +19,7 @@ import ncsa.d2k.modules.core.prediction.decisiontree.widgets.*;
 /*
 	DecisionTreeVis
 */
-public final class DecisionTreeVis extends VisModule implements HasNames {
+public final class DecisionTreeVis extends VisModule  {
 
 	private static final String zoomicon = File.separator + "images" + File.separator + "zoom.gif";
 	private static final String searchicon = File.separator + "images" + File.separator + "search.gif";
@@ -39,8 +38,12 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 	}
 
     public String getInputName(int index) {
-        return "DTModel";
-    }
+		switch(index) {
+			case 0:
+				return "DTModel";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
 	public String[] getInputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel"};
@@ -54,8 +57,10 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 	}
 
     public String getOutputName(int index) {
-        return "";
-    }
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
 	public String[] getOutputTypes() {
 		String[] types = {		};
@@ -63,12 +68,12 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 	}
 
 	public String getModuleInfo() {
-		return "Visualizes a decision tree.";
+		return "<html>  <head>      </head>  <body>    Visualizes a decision tree.  </body></html>";
 	}
 
     public String getModuleName() {
-        return "DTVis";
-    }
+		return "DTVis";
+	}
 
 	public void doit() throws Exception {
 	}
@@ -84,7 +89,7 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 	/*
 		DecisionTreeUserView
 	*/
-	class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane implements ActionListener, Printable {
+	class DecisionTreeUserView extends ncsa.d2k.userviews.swing.JUserPane implements ActionListener, Printable {
 
 		BrushPanel brushpanel;
 		TreeScrollPane treescrollpane;

@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.core.io.file.input;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.pipes.*;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.pipes.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.*;
@@ -24,8 +25,8 @@ import ncsa.d2k.modules.core.io.file.*;
  * The fields will have to be ordered and next to each other.
  */
 
-public class ReadFixed2ADT extends ncsa.d2k.infrastructure.modules.InputModule
-    implements Serializable
+public class ReadFixed2ADT extends ncsa.d2k.core.modules.InputModule
+    
 {
     protected boolean _ignoreSyntaxErrors;
     protected String  _comments;
@@ -40,69 +41,51 @@ public class ReadFixed2ADT extends ncsa.d2k.infrastructure.modules.InputModule
        @return the description of the indexed input.
     */
     public String getInputInfo(int index) {
-	switch (index) {
-	case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>" +
-		    " <Info common=\"_fileName\"> "+
-		    "  <Text>input file name </Text>  </Info></D2K>";
-	case 1: return "Vertical Table containing type/label data";
-	default: return "No such input";
+		switch (index) {
+			case 0: return "    input file name   ";
+			case 1: return "Vertical Table containing type/label data";
+			default: return "No such input";
+		}
 	}
-
-    }
 
     /**
        This pair returns an array of strings that contains the data types for the inputs.
        @return the data types of all inputs.
     */
     public String[] getInputTypes() {
-	String[] types = {"java.lang.String", 
-			  "ncsa.d2k.modules.core.datatype.table.Table"};
-	return types;
-
-    }
+		String[] types = {"java.lang.String","ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
+	}
 
     /**
        This pair returns the description of the outputs.
        @return the description of the indexed output.
     */
     public String getOutputInfo(int index) {
-	switch (index) {
-	case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"_dataTable\">    <Text>an ADTree  containing summary data from the file </Text>  </Info></D2K>";
-	case 1: return " a Table containing metadata about the file";
-	case 2: return "Contains row/column info on which fields were blank in"+
-		    "the read in file";
-	default: return "No such output";
+		switch (index) {
+			case 0: return "      an ADTree  containing summary data from the file   ";
+			case 1: return " a Table containing metadata about the file";
+			case 2: return "Contains row/column info on which fields were blank inthe read in file";
+			default: return "No such output";
+		}
 	}
-
-    }
 
     /**
        This pair returns an array of strings that contains the data types for the outputs.
        @return the data types of all outputs.
     */
     public String[] getOutputTypes() {
-	String[] types = {"ncsa.d2k.modules.core.datatype.ADTree",
-			  "ncsa.d2k.modules.core.datatype.table.Table",
-			  "ncsa.d2k.modules.core.datatype.table.Table"};
-
-	return types;
-
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.ADTree","ncsa.d2k.modules.core.datatype.table.Table","ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
+	}
 
     /**
        This pair returns the description of the module.
        @return the description of the module.
     */
     public String getModuleInfo() {
-	return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>"+
-	    "  <Info common=\"\"> " +
-	    "  <Text> Implements a line oriented parser with a fixed format. <p>" + " The user can set the format of the data in the columns using the following " +
-"  syntax: " +
-"  start_column-end_column type " +
-"  type can be  int, String , double, float, long, short, boolean, char[], byte[].<p>" +
-" </Text>    <Text> </Text>  </Info></D2K>";
-
-    }
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
+	}
 
     // ---------------------------------------------------------------------
     // Properties
@@ -204,6 +187,46 @@ public class ReadFixed2ADT extends ncsa.d2k.infrastructure.modules.InputModule
 
     }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "ReadFixed2ADT";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "_fileName";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "_dataTable";
+			case 1:
+				return "output1";
+			case 2:
+				return "output2";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 
 

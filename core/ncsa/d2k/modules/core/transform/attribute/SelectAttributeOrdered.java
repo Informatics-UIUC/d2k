@@ -1,21 +1,21 @@
 
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.userviews.widgets.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.*;
 import java.lang.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	SelectAttributeOrdered.java
 */
-public class SelectAttributeOrdered extends ncsa.d2k.infrastructure.modules.UIModule
+public class SelectAttributeOrdered extends ncsa.d2k.core.modules.UIModule
 {
 
 	/**
@@ -24,10 +24,9 @@ public class SelectAttributeOrdered extends ncsa.d2k.infrastructure.modules.UIMo
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table\">    <Text>The input table to select columns from. </Text>  </Info></D2K>";
+			case 0: return "      The input table to select columns from.   ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -37,7 +36,6 @@ public class SelectAttributeOrdered extends ncsa.d2k.infrastructure.modules.UIMo
 	public String[] getInputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.Table"};
 		return types;
-
 	}
 
 	/**
@@ -46,11 +44,10 @@ public class SelectAttributeOrdered extends ncsa.d2k.infrastructure.modules.UIMo
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"attArray\">    <Text>A String array containing the attributes in the desired order. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table\">    <Text>The original table. </Text>  </Info></D2K>";
+			case 0: return "      A String array containing the attributes in the desired order.   ";
+			case 1: return "      The original table.   ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -58,9 +55,8 @@ public class SelectAttributeOrdered extends ncsa.d2k.infrastructure.modules.UIMo
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"[Ljava.lang.String;", "ncsa.d2k.modules.core.datatype.Table"};
+		String[] types = {"[Ljava.lang.String;","ncsa.d2k.modules.core.datatype.Table"};
 		return types;
-
 	}
 
 	/**
@@ -68,8 +64,7 @@ public class SelectAttributeOrdered extends ncsa.d2k.infrastructure.modules.UIMo
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"\">    <Text> </Text>  </Info></D2K>";
-
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
 	}
 
 	/**
@@ -107,7 +102,7 @@ public class SelectAttributeOrdered extends ncsa.d2k.infrastructure.modules.UIMo
 	SelectUserView
 	This is the UserView class.
 */
-class SelectUserView extends ncsa.d2k.controller.userviews.UserPane implements ActionListener{
+class SelectUserView extends ncsa.d2k.userviews.UserPane implements ActionListener{
 
 	Table table;
 	JPanel panel;
@@ -184,6 +179,42 @@ class SelectUserView extends ncsa.d2k.controller.userviews.UserPane implements A
 
 		if (source.equals(done)){
 			module.done(values, table ,0);
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "attArray";
+			case 1:
+				return "table";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

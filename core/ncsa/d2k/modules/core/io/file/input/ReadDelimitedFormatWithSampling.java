@@ -1,8 +1,9 @@
 package ncsa.d2k.modules.core.io.file.input;
 
+
 import java.io.*;
 import java.util.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
@@ -16,13 +17,7 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 	   @return A description of this module.
 	*/
 	public String getModuleInfo() {
-		String s = super.getModuleInfo();
-		s += " Allows a sample of the file to be read in.  The ";
-		s += "value of N determines the number of rows in the table. ";
-		s += "If the useFirst property is set, only the first N rows ";
-		s += "will be in the table.  Otherwise N random rows will be ";
-		s += "put into the table.";
-		return s;
+		return "<html>  <head>      </head>  <body>    Loads data that is in a delimited format from the input filename into a     Table and outputs this Table. This is optimized for a file with a single     character delimiter. This module has several properties. labelsRow     indicates which row specifies attribute labels, if none specify '-l'.     typesRow indicates which row specifies data types, if none specify '-1'.     inOutRow indicates which row specifies the attributes to use as input and     output, if none specify '-1'. useStringAndDouble indicates whether or not     the system needs to determine data types. missingNumericFillerValue is the     value put into the table when a missing value is encountered in a numeric     column. missingTextualFillerValue is the value put into the table when a     missing value is encountered in a textual column. useCompactStrings will     use the most compact representation of strings in memory when true, and     will use a less efficient memory scheme when false. Allows a sample of the     file to be read in. The value of N determines the number of rows in the     table. If the useFirst property is set, only the first N rows will be in     the table. Otherwise N random rows will be put into the table.  </body></html>";
 	}
 
 	/** the number of rows to sample */
@@ -192,5 +187,39 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "ReadDelimitedFormatWithSampling";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

@@ -1,18 +1,18 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.text.*;
 import java.util.*;
 import javax.swing.*;
-import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.gui.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
 import ncsa.gui.*;
 
 /**
@@ -20,7 +20,7 @@ import ncsa.gui.*;
    a data set.
    @author David Clutter
 */
-public class DefineBins extends UIModule implements HasNames {
+public class DefineBins extends UIModule  {
 
 	protected static final String NUMERIC = "num";
 	protected static final String TEXT = "text";
@@ -30,7 +30,7 @@ public class DefineBins extends UIModule implements HasNames {
        @return A description of this module.
     */
     public String getModuleInfo() {
-    	return "Allows the user to bin data.";
+		return "<html>  <head>      </head>  <body>    Allows the user to bin data.  </body></html>";
 	}
 
     /**
@@ -39,7 +39,7 @@ public class DefineBins extends UIModule implements HasNames {
     */
     public String getModuleName() {
 		return "DefineBins";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -47,8 +47,8 @@ public class DefineBins extends UIModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-		return in;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
 	}
 
     /**
@@ -57,9 +57,8 @@ public class DefineBins extends UIModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
 	}
 
     /**
@@ -68,9 +67,9 @@ public class DefineBins extends UIModule implements HasNames {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-    	switch(i) {
+		switch (i) {
 			case 0: return "ExampleTable with data in it.";
-			default: return "no such input!";
+			default: return "No such input";
 		}
 	}
 
@@ -80,9 +79,10 @@ public class DefineBins extends UIModule implements HasNames {
        @return The name of the input
     */
     public String getInputName(int i) {
-    	switch(i) {
-			case 0: return "Table";
-			default: return "no such input!";
+		switch(i) {
+			case 0:
+				return "Table";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 
@@ -92,10 +92,10 @@ public class DefineBins extends UIModule implements HasNames {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-    	switch(i) {
+		switch (i) {
 			case 0: return "Contains binning info.";
 			case 1: return "Table, unchanged.";
-			default: return "no such output!";
+			default: return "No such output";
 		}
 	}
 
@@ -105,10 +105,12 @@ public class DefineBins extends UIModule implements HasNames {
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	switch(i) {
-			case 0: return "BinTree";
-			case 1: return "Table";
-			default: return "no such output!";
+		switch(i) {
+			case 0:
+				return "BinTree";
+			case 1:
+				return "Table";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 
@@ -457,7 +459,6 @@ public class DefineBins extends UIModule implements HasNames {
 			else if(src == done) {
 		        pushOutput(binTree, 0);
 		        pushOutput(table, 1);
-		        //executionManager.moduleDone(parent);
 				viewDone("Done");
 				table = null;
 			}

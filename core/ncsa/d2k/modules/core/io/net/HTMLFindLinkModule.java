@@ -1,10 +1,9 @@
 package ncsa.d2k.modules.core.io.net;
+
 import java.net.*;
 import java.io.*;
 import java.util.*;
-
-import ncsa.d2k.infrastructure.modules.*;
-
+import ncsa.d2k.core.modules.*;
 import javax.swing.text.html.*;
 import javax.swing.text.html.parser.*;
 import javax.swing.text.ChangedCharSetException;
@@ -24,11 +23,11 @@ public class HTMLFindLinkModule extends DataPrepModule {
 		@return the description of the indexed input.
 	*/
 	public String getOutputInfo (int index) {
-		String[] outputDescriptions = {
-				"The byte array containing the HTML text.",
-				"A list of more unique anchors."
-		};
-		return outputDescriptions[index];
+		switch (index) {
+			case 0: return "The byte array containing the HTML text.";
+			case 1: return "A list of more unique anchors.";
+			default: return "No such output";
+		}
 	}
 
 	/**
@@ -37,11 +36,11 @@ public class HTMLFindLinkModule extends DataPrepModule {
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo (int index) {
-		String[] inputDescriptions = {
-				"This is the url of the parent document.",
-				"This is an array of bytes containing the HTML text."
-		};
-		return inputDescriptions[index];
+		switch (index) {
+			case 0: return "This is the url of the parent document.";
+			case 1: return "This is an array of bytes containing the HTML text.";
+			default: return "No such input";
+		}
 	}
 
 	/**
@@ -50,20 +49,17 @@ public class HTMLFindLinkModule extends DataPrepModule {
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		String text = "Given an array of bytes and the URL of the original document, this module will search the HTML text for all anchors, generating a list of anchors and also including the original bytes as an output. When the text input is null, we are done.";
-		return text;
+		return "<html>  <head>      </head>  <body>    Given an array of bytes and the URL of the original document, this module     will search the HTML text for all anchors, generating a list of anchors     and also including the original bytes as an output. When the text input is     null, we are done.  </body></html>";
 	}
 
 	public String[] getInputTypes() {
-		String[] temp = {"java.net.URL",
-						"[B"};
-		return temp;
+		String[] types = {"java.net.URL","[B"};
+		return types;
 	}
 
 	public String[] getOutputTypes() {
-		String[] temp = {"java.util.Vector",
-						"[B"};
-		return temp;
+		String[] types = {"java.util.Vector","[B"};
+		return types;
 	}
 
 	/**
@@ -252,4 +248,42 @@ class ByteParser extends javax.swing.text.html.parser.Parser {
 			}
 		}
     }
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "HTMLFindLinkModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

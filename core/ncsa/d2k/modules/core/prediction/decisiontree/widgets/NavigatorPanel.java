@@ -8,7 +8,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.image.*;
 
-import ncsa.d2k.util.*;
+import ncsa.util.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 import ncsa.gui.*;
 

@@ -1,7 +1,8 @@
 
 package ncsa.d2k.modules.core.prediction.LWR;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import Jama.*;
@@ -13,7 +14,7 @@ import Jama.*;
 	@talumbau
 
 */
-public class LWRModelGen extends ModelGeneratorModule implements HasNames
+public class LWRModelGen extends ModelGeneratorModule 
 {
 
 	/**
@@ -22,11 +23,10 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Traintable\">    <Text> </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Testtable\">    <Text> </Text>  </Info></D2K>";
+			case 0: return "         ";
+			case 1: return "         ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -34,17 +34,17 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
-
 	}
 
 	public String getInputName(int i) {
 		switch(i) {
-			case 0: return "Traintree";
-			case 1: return "Testtree";
-			default: return "so such input";
+			case 0:
+				return "Traintable";
+			case 1:
+				return "Testtable";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 
@@ -54,10 +54,9 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"theModel\">    <Text> </Text>  </Info></D2K>";
+			case 0: return "         ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -67,13 +66,13 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 	public String[] getOutputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.prediction.LWR.LWRModel"};
 		return types;
-
 	}
 
 	public String getOutputName(int i) {
 		switch(i) {
-			case 0: return "model";
-			default: return "no such output";
+			case 0:
+				return "theModel";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 
@@ -82,10 +81,7 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer("Generates an LWRModel ");
-		sb = sb.append("from the Tables.  The LWRModel ");
-		sb = sb.append("performs all the necessary calculations.");
-		return sb.toString();
+		return "<html>  <head>      </head>  <body>    Generates an LWRModel from the Tables. The LWRModel performs all the     necessary calculations.  </body></html>";
 	}
 
 	public String getModuleName() {

@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.DataPrepModule;
-import java.io.Serializable;
 
+import ncsa.d2k.core.modules.DataPrepModule;
+import java.io.Serializable;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
@@ -14,7 +14,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 		@author Peter Groves
 */
-public class VTLinearScaler extends ncsa.d2k.infrastructure.modules.DataPrepModule implements Serializable {
+public class VTLinearScaler extends ncsa.d2k.core.modules.DataPrepModule  {
 
 
 public double lowerBound=0;
@@ -58,12 +58,10 @@ private void updateBounds(){
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"dataIn\">    <Text>The data table that will be normalized in every column </Text>    <Text>of doubles </Text>    <Text> </Text>  </Info></D2K>";
+			case 0: return "      The data table that will be normalized in every column     of doubles        ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -71,11 +69,8 @@ private void updateBounds(){
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -83,12 +78,10 @@ private void updateBounds(){
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"dataOut\">    <Text>The normalized data table </Text>  </Info></D2K>";
+			case 0: return "      The normalized data table   ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -96,11 +89,8 @@ private void updateBounds(){
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -108,9 +98,7 @@ private void updateBounds(){
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Data Table Normalizer\">    <Text>This modules takes in a VerticalTable and outputs it with all the columns of doubles scaled. PROPS: upper/lowerBound - define the range that all DoubleColumns will be scaled to. </Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    This modules takes in a VerticalTable and outputs it with all the columns     of doubles scaled. PROPS: upper/lowerBound - define the range that all     DoubleColumns will be scaled to.  </body></html>";
 	}
 
 	/**
@@ -158,6 +146,40 @@ private void updateBounds(){
 
 
 	  pushOutput(newVT, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Data Table Normalizer";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "dataIn";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "dataOut";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }
 

@@ -1,17 +1,15 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.swing.*;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
-
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
@@ -26,36 +24,32 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 public class CleanAndMergeTable extends UIModule {
 
 	public String getInputInfo(int i) {
-		return "A Table to clean.";
+		switch (i) {
+			case 0: return "A Table to clean.";
+			default: return "No such input";
+		}
 	}
 
 	public String getOutputInfo(int i) {
-		if(i == 0)
-			return "The original Table.";
-		return "The cleaned and merged Table.";
+		switch (i) {
+			case 0: return "The original Table.";
+			case 1: return "The cleaned and merged Table.";
+			default: return "No such output";
+		}
 	}
 
 	public String [] getInputTypes() {
-		String [] in = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
-		return in;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
 	}
 
 	public String [] getOutputTypes() {
-		String [] out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
 	}
 
 	public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer("Cleans a Table by merging duplicate records.  ");
-		sb.append("The Key is the column that uniquely identifies rows.  This can be a combination ");
-		sb.append("of columns.  The To Merge columns are the columns to merge together.  ");
-		sb.append("The rows of these columns are merged into one row by taking the maximum value, ");
-		sb.append("averaging the values, or summing the values together.  The Control is the ");
-		sb.append("column that determines which record is the basis for the new row.  All ");
-		sb.append("data that is not merged is simply copied from the record with the maximum value ");
-		sb.append("in the Control column.");
-		return sb.toString();
+		return "<html>  <head>      </head>  <body>    Cleans a Table by merging duplicate records. The Key is the column that     uniquely identifies rows. This can be a combination of columns. The To     Merge columns are the columns to merge together. The rows of these columns     are merged into one row by taking the maximum value, averaging the values,     or summing the values together. The Control is the column that determines     which record is the basis for the new row. All data that is not merged is     simply copied from the record with the maximum value in the Control column.  </body></html>";
 	}
 
 	protected UserView createUserView() {
@@ -398,6 +392,42 @@ public class CleanAndMergeTable extends UIModule {
 
 		public Dimension getPreferredSize() {
 			return new Dimension(400, 300);
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "CleanAndMergeTable";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

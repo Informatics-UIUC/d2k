@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo.examples;
 
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.modules.core.vis.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 
 /**
  * Title:        Modules Dev

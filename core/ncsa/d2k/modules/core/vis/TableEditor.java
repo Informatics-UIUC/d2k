@@ -1,11 +1,12 @@
 package ncsa.d2k.modules.core.vis;
 
+
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 
@@ -17,11 +18,7 @@ import ncsa.d2k.modules.core.vis.widgets.*;
 public class TableEditor extends TableViewer {
 
 	public String getModuleInfo() {
-		StringBuffer b = new StringBuffer("A table editor.  This displays");
-		b.append(" the contents of a Table and allows the editing");
-		b.append(" of the table.  The first row contains combo boxes to ");
-		b.append(" change the datatype of the associated column.");
-		return b.toString();
+		return "<html>  <head>      </head>  <body>    A table editor. This displays the contents of a Table and allows the     editing of the table. The first row contains combo boxes to change the     datatype of the associated column.  </body></html>";
 	}
 
 	public String getModuleName() {
@@ -34,9 +31,9 @@ public class TableEditor extends TableViewer {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-		return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -44,11 +41,11 @@ public class TableEditor extends TableViewer {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		if(i == 0)
-	    	return "The MutableTable to edit.";
-		else
-	    	return "No such input!";
-    }
+		switch (i) {
+			case 0: return "The MutableTable to edit.";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -56,9 +53,9 @@ public class TableEditor extends TableViewer {
        @return The datatypes of the outputs.
     */
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-		return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
     /**
        Return the description of a specific output.
@@ -66,14 +63,11 @@ public class TableEditor extends TableViewer {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		if(i == 0) {
-	    	StringBuffer b = new StringBuffer("The Table, with any changes ");
-			b.append("that were made.");
-	    	return b.toString();
+		switch (i) {
+			case 0: return "The Table, with any changes that were made.";
+			default: return "No such output";
 		}
-		else
-	    	return "No such output!";
-    }
+	}
 
     /**
        Override the superclass' implementation.  Return a TableEditorView
@@ -452,5 +446,31 @@ public class TableEditor extends TableViewer {
 		}
 		public void keyReleased(KeyEvent e) {}
 		*/
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

@@ -1,11 +1,11 @@
 package ncsa.d2k.modules.core.optimize.ga;
 
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 /**
 	Evaluate the new population. The population object does all the work,
 	this module will simply invoke the <code>evaluateAll</code> method of the population.
 */
-abstract public class EvaluateModule extends ncsa.d2k.infrastructure.modules.ComputeModule 	{
+abstract public class EvaluateModule extends ncsa.d2k.core.modules.ComputeModule 	{
 
 	//////////////////////////////////
 	// Info methods

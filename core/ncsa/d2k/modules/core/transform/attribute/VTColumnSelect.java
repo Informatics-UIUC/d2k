@@ -1,53 +1,51 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
+
 import java.io.Serializable;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import ncsa.gui.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.controller.userviews.swing.*;
-
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
  * VTColumnSelectUI
  * @author gpape
  */
-public class VTColumnSelect extends UIModule implements Serializable {
+public class VTColumnSelect extends UIModule  {
 
    public String getModuleInfo() {
-      return "Allows the user to visually split one Table into " +
-             "two and reorder the columns of these tables.";
-   }
+		return "<html>  <head>      </head>  <body>    Allows the user to visually split one Table into two and reorder the     columns of these tables.  </body></html>";
+	}
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"}; return i;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
+	}
 
    public String getInputInfo(int index) {
-      if (index == 0)
-         return "The Table to be manipulated.";
-      else
-         return "VTColumnSelectUI has no such input.";
-   }
+		switch (index) {
+			case 0: return "The Table to be manipulated.";
+			default: return "No such input";
+		}
+	}
 
    public String[] getOutputTypes() {
-      String[] o = {"ncsa.d2k.modules.core.datatype.basic.TableImpl",
-         "ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
-      return o;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.basic.TableImpl","ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
+	}
 
    public String getOutputInfo(int index) {
-      if (index == 0)
-         return "One of the new Tables.";
-      else if (index == 1)
-         return "The other new Table.";
-      else
-         return "VTColumnSelectUI has no such output.";
-   }
+		switch (index) {
+			case 0: return "One of the new Tables.";
+			case 1: return "The other new Table.";
+			default: return "No such output";
+		}
+	}
 
    VTColumnSelectUIView vis;
 
@@ -353,10 +351,45 @@ public class VTColumnSelect extends UIModule implements Serializable {
             vt = null;
             pushOutput(out_all, 0);
             pushOutput(out_red, 1);
-            //executionManager.moduleDone(parent);
 			viewDone("Done");
 
          }
       }
    }
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "VTColumnSelect";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

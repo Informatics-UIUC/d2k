@@ -1,13 +1,14 @@
 package ncsa.d2k.modules.core.io.file.output;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.util.*;
 import java.io.*;
 
 /**
 	This module will strip all the html tags out of the given data. A byte array output stream is used to generate the resulting byte array.
 */
-public class WriteBytesModule extends ncsa.d2k.infrastructure.modules.OutputModule implements Serializable {
+public class WriteBytesModule extends ncsa.d2k.core.modules.OutputModule  {
 	private String filename = null;
 
 	/**
@@ -34,11 +35,11 @@ public class WriteBytesModule extends ncsa.d2k.infrastructure.modules.OutputModu
 		@return the description of the indexed input.
 	*/
 	public String getOutputInfo (int index) {
-		String[] outputDescriptions = {
-				"This is just a trigger to start the ngram procedure.",
-				"The name of the generated file is output."
-		};
-		return outputDescriptions[index];
+		switch (index) {
+			case 0: return "This is just a trigger to start the ngram procedure.";
+			case 1: return "The name of the generated file is output.";
+			default: return "No such output";
+		}
 	}
 
 	/**
@@ -47,10 +48,10 @@ public class WriteBytesModule extends ncsa.d2k.infrastructure.modules.OutputModu
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo (int index) {
-		String[] inputDescriptions = {
-			"This input contains the byte data that we will next run through the NGram code."
-		};
-		return inputDescriptions[index];
+		switch (index) {
+			case 0: return "This input contains the byte data that we will next run through the NGram code.";
+			default: return "No such input";
+		}
 	}
 
 	/**
@@ -59,18 +60,17 @@ public class WriteBytesModule extends ncsa.d2k.infrastructure.modules.OutputModu
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		String text = "The module takes the input byte array and writes it to a file, passing the filename and a boolean trigger.";
-		return text;
+		return "<html>  <head>      </head>  <body>    The module takes the input byte array and writes it to a file, passing the     filename and a boolean trigger.  </body></html>";
 	}
 
 	public String[] getInputTypes () {
-		String[] temp = {"[B"};
-		return temp;
+		String[] types = {"[B"};
+		return types;
 	}
 
 	public String[] getOutputTypes () {
-		String[] temp = {"java.lang.Boolean", "java.lang.String"};
-		return temp;
+		String[] types = {"java.lang.Boolean","java.lang.String"};
+		return types;
 	}
 
 	public void doit () {
@@ -87,5 +87,41 @@ public class WriteBytesModule extends ncsa.d2k.infrastructure.modules.OutputModu
 		}
 		this.pushOutput (new Boolean (true), 0);
 		this.pushOutput (filename, 1);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "WriteBytesModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

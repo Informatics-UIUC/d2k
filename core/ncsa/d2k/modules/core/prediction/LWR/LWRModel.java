@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.prediction.LWR;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.util.splaytree.*;
+import ncsa.util.splaytree.*;
 import Jama.*;
 import java.util.*;
 import java.lang.Number;
@@ -111,14 +111,14 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		//It is overwritten as we iterate through the queries.
 		//It must be as big as the number of training values.
 
-		
+
 		weights = new double[TraintableSubset.getNumRows()];
 		kernels = new double[TraintableSubset.getNumRows()];
 		distances = new double[TraintableSubset.getNumRows()];
 
 
 		//This is a value associated with a prediction.
-		//There is one prediction per query.  Therefore, 
+		//There is one prediction per query.  Therefore,
 		//there is one element of this array per prediction
 		criterion = new double[TestTable.getNumRows()];
 
@@ -742,7 +742,7 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		@return  a TableImpl object of testing data
 	*/
 	public TableImpl testTableLWRGen(Table xTble, int i) {
-		//the output column of the Traintable has already been copied 
+		//the output column of the Traintable has already been copied
 		//into the last column of the xTable.
 		//Thus, we can grab column N-1 for the
 		//predictions.  Returns a TableImpl with two columns, possibly w/o
@@ -787,7 +787,7 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		Uses the Traintable ExampleTable to generate a TableImple
 		with a column for each input Column in Traintable.  There are
 		num_pts values in each column, equally spaced from the min to
-		the max.  Also include the column of predicted values, which 
+		the max.  Also include the column of predicted values, which
 		will not have the same number of rows.
 		@param double[] x - a vector
 		@param double[] q - a vector
@@ -876,8 +876,8 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 	/**
 		fillXs
 		Given a minimum and maximum value, the method returns a double[]
-		of size numval, which contains equally spaced values values in 
-		the range from min to max 
+		of size numval, which contains equally spaced values values in
+		the range from min to max
 		@param double min
 		@param double max
 		@param int numval

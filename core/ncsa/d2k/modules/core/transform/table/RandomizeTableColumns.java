@@ -1,9 +1,9 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.util.*;
 import java.io.Serializable;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
@@ -11,7 +11,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
    columns.
    @author David Clutter
 */
-public class RandomizeTableColumns extends DataPrepModule implements Serializable {
+public class RandomizeTableColumns extends DataPrepModule  {
 
 
   //////////////////
@@ -23,11 +23,7 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
        @return A description of this module.
     */
     public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer("Randomly rearranges the columns ");
-		sb.append(" of a Table.  A Column is chosen at random and ");
-		sb.append(" inserted into a new table, until all Columns have been ");
-		sb.append(" inserted.");
-    	return sb.toString();
+		return "<html>  <head>      </head>  <body>    Randomly rearranges the columns of a Table. A Column is chosen at random     and inserted into a new table, until all Columns have been inserted.  </body></html>";
 	}
 
     /**
@@ -44,9 +40,9 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String [] in = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-		return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -54,9 +50,9 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-		return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -64,8 +60,11 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "The Table to randomize.";
-    }
+		switch (i) {
+			case 0: return "The Table to randomize.";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -82,8 +81,11 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		return "The randomized table.";
-    }
+		switch (i) {
+			case 0: return "The randomized table.";
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.

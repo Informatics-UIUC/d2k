@@ -13,6 +13,7 @@ package ncsa.d2k.modules.core.io.javaspaces;
 // Other Imports
 //===============
 
+
 import net.jini.space.*;
 import net.jini.core.transaction.server.TransactionManager;
 import net.jini.core.lease.Lease;
@@ -21,8 +22,7 @@ import net.jini.discovery.*;
 import net.jini.core.entry.*;
 import net.jini.lookup.entry.Name;
 import net.jini.core.discovery.*;
-
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 
 
 public class JSTriggerWriter  extends OutputModule {
@@ -61,34 +61,32 @@ public class JSTriggerWriter  extends OutputModule {
   // D2K Abstract Overrides
 
   public String getInputInfo(int parm1) {
-    if (parm1 == 0){
-      return "net.jini.core.entry.Entry";
-    } else {
-      return "";
-    }
-  }
+		switch (parm1) {
+			case 0: return "net.jini.core.entry.Entry";
+			default: return "No such input";
+		}
+	}
 
   public String[] getInputTypes() {
-    String[] in = {"net.jini.core.entry.Entry"};
-    return in;
-  }
+		String[] types = {"net.jini.core.entry.Entry"};
+		return types;
+	}
 
   public String getModuleInfo() {
-    return "This module will write an entry to a JavaSpace";
-  }
+		return "<html>  <head>      </head>  <body>    This module will write an entry to a JavaSpace  </body></html>";
+	}
 
   public String getOutputInfo(int parm1) {
-    if (parm1 == 0){
-      return "java.lang.Object";
-    } else {
-      return "";
-    }
-  }
+		switch (parm1) {
+			case 0: return "java.lang.Object";
+			default: return "No such output";
+		}
+	}
 
   public String[] getOutputTypes() {
-    String[] out = {"java.lang.Object"};
-    return out;
-  }
+		String[] types = {"java.lang.Object"};
+		return types;
+	}
 
   public void beginExecution(){
     if (!m_inited){
@@ -247,4 +245,38 @@ public class JSTriggerWriter  extends OutputModule {
     return m_space;
   }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "JSTriggerWriter";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

@@ -1,12 +1,12 @@
 package ncsa.d2k.modules.core.prediction.evaluators;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.swing.*;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
 import javax.swing.*;
 import java.text.*;
 import java.awt.*;
@@ -14,10 +14,10 @@ import java.awt.*;
 /**
  * Shows some statistics about models evaluated using ClassificationErrorEvaluator.
  */
-public class ClassificationErrorReport extends VisModule implements HasNames {
+public class ClassificationErrorReport extends VisModule  {
 
 	public String getModuleInfo() {
-		return "Shows statistics about each model built.";
+		return "<html>  <head>      </head>  <body>    Shows statistics about each model built.  </body></html>";
 	}
 
 	public String getModuleName() {
@@ -25,35 +25,43 @@ public class ClassificationErrorReport extends VisModule implements HasNames {
 	}
 
 	public String[] getInputTypes() {
-		String[] t = {"ncsa.d2k.modules.core.prediction.evaluators.ClassificationErrorStats",
-			"java.lang.Integer"};
-		return t;
+		String[] types = {"ncsa.d2k.modules.core.prediction.evaluators.ClassificationErrorStats","java.lang.Integer"};
+		return types;
 	}
 
 	public String[] getOutputTypes() {
-		return null;
+		String[] types = {		};
+		return types;
 	}
 
 	public String getInputInfo(int i) {
-		if(i == 0)
-			return "Statistics about each model built.";
-		else
-			return "The number of models built.";
+		switch (i) {
+			case 0: return "Statistics about each model built.";
+			case 1: return "The number of models built.";
+			default: return "No such input";
+		}
 	}
 
 	public String getInputName(int i) {
-		if(i == 0)
-			return "Stats";
-		else
-			return "N";
+		switch(i) {
+			case 0:
+				return "Stats";
+			case 1:
+				return "N";
+			default: return "NO SUCH INPUT!";
+		}
 	}
 
 	public String getOutputInfo(int i) {
-		return "";
+		switch (i) {
+			default: return "No such output";
+		}
 	}
 
 	public String getOutputName(int i) {
-		return "";
+		switch(i) {
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 
 	public String[] getFieldNameMapping() {

@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.util.reconstruct;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 /**
 	Space2Solutions<br>
@@ -12,7 +13,7 @@ import ncsa.d2k.modules.core.optimize.util.*;
 	*/
 
 public class Space2Solutions extends DataPrepModule
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -75,62 +76,47 @@ public class Space2Solutions extends DataPrepModule
 
 
 	public String getModuleInfo(){
-		return "Takes a solution space and pushes out every solution (parameter set)"+
-				" it contains so that they can be evaluated";
+		return "<html>  <head>      </head>  <body>    Takes a solution space and pushes out every solution (parameter set) it     contains so that they can be evaluated  </body></html>";
 	}
 
    	public String getModuleName() {
 		return "Solution Extractor";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The solution space with solution to evaluate";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "The solution space with solution to evaluate";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "The Solution Space";
-			}
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.optimize.util.Solution"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.Solution"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "An individual solution from the solution space";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "An individual solution from the solution space";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Individual Solution";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

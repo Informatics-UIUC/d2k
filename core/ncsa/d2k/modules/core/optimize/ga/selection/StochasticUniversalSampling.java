@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.selection;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.util.*;
@@ -19,7 +20,7 @@ import ncsa.d2k.modules.core.optimize.util.*;
 	individual resides there on the line, and that individual is selected.
 */
 public class StochasticUniversalSampling extends SelectionModule
-	implements Serializable {
+	 {
 
 	//////////////////////////////////
 	// Info methods
@@ -31,10 +32,10 @@ public class StochasticUniversalSampling extends SelectionModule
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>the population after selection </Text>  </Info></D2K>";
+			case 0: return "      the population after selection   ";
 			default: return "No such output";
 		}
-}
+	}
 
 	/**
 		This method returns the description of the various inputs.
@@ -42,7 +43,7 @@ public class StochasticUniversalSampling extends SelectionModule
 	*/
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>the input population </Text>  </Info></D2K>";
+			case 0: return "      the input population   ";
 			default: return "No such input";
 		}
 	}
@@ -52,7 +53,7 @@ public class StochasticUniversalSampling extends SelectionModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"SUS\">    <Text>This will select individuals on the basis of an unranked evaluation function, namely </Text>    <Text>the stochastic universal Sampling (J. E. Baker, \"Reducing bias and inefficiency in the selection algorithm\", 1987). </Text>    <Text> </Text>    <Text>Imagine that each of the individuals of the current population is assigned a start and end point on a line where the length betwee the start </Text>    <Text>and end point is perportional to their fitness relative to the total fitness of the population. Then assign N equidistant points along the line such that the points are evenly </Text>    <Text>distributed all the way along the line. The only variable is where the first point is placed, </Text>    <Text>this is determined by a role of the dice. For each of the N points, it is determined which </Text>    <Text>individual resides there on the line, and that individual is selected. </Text>    <Text> </Text>    <Text>The advantage of this mechanism is that it will reduce the chance fluctuations between the expected number of individuals to be selected and the actual number of copies actually allocated to the new population when fliping a coin. </Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    This will select individuals on the basis of an unranked evaluation     function, namely the stochastic universal Sampling (J. E. Baker, &quot;Reducing     bias and inefficiency in the selection algorithm&quot;, 1987). Imagine that     each of the individuals of the current population is assigned a start and     end point on a line where the length betwee the start and end point is     perportional to their fitness relative to the total fitness of the     population. Then assign N equidistant points along the line such that the     points are evenly distributed all the way along the line. The only     variable is where the first point is placed, this is determined by a role     of the dice. For each of the N points, it is determined which individual     resides there on the line, and that individual is selected. The advantage     of this mechanism is that it will reduce the chance fluctuations between     the expected number of individuals to be selected and the actual number of     copies actually allocated to the new population when fliping a coin.  </body></html>";
 	}
 
 	//////////////////////////////////
@@ -67,7 +68,7 @@ public class StochasticUniversalSampling extends SelectionModule
 	public String[] getOutputTypes () {
 		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
 		return types;
-}
+	}
 
 	/**
 		This will select individuals on the basis of an unranked evaluation function, namely
@@ -108,6 +109,40 @@ public class StochasticUniversalSampling extends SelectionModule
 			for (sum += expected; sum > ptr; ptr++) {
 				this.sample[k++] = i;
 			}
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SUS";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

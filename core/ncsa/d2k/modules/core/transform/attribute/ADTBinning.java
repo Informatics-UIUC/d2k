@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import java.util.*;
-import ncsa.d2k.infrastructure.modules.*;
 
+import java.util.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
@@ -11,15 +11,15 @@ import ncsa.d2k.modules.core.datatype.table.*;
    ADTBinning.java
 */
 
-public class ADTBinning extends DataPrepModule implements HasNames {
+public class ADTBinning extends DataPrepModule  {
 
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleInfo() {
-		return "An ADTree, BinTree and an ExampleTable and classifies all input variables.";
-    }
+		return "<html>  <head>      </head>  <body>    An ADTree, BinTree and an ExampleTable and classifies all input variables.  </body></html>";
+	}
 
     /**
        Return the name of this module.
@@ -27,7 +27,7 @@ public class ADTBinning extends DataPrepModule implements HasNames {
     */
     public String getModuleName() {
 		return "ADTBinning";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -35,11 +35,9 @@ public class ADTBinning extends DataPrepModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-	String []in = {"ncsa.d2k.modules.core.datatype.ADTree",
-		       "ncsa.d2k.modules.core.datatype.BinTree",
-		       "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-	return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.ADTree","ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -47,11 +45,9 @@ public class ADTBinning extends DataPrepModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-	String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-		       "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-
-		return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -59,15 +55,13 @@ public class ADTBinning extends DataPrepModule implements HasNames {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		if(i == 0)
-			return "An ADTree containing counts";
-		else if(i == 1)
-			return "An empty BinTree.";
-		else if(i == 2)
-			return "An ExampleTable.";
-		else
-			return "No such input";
-    }
+		switch (i) {
+			case 0: return "An ADTree containing counts";
+			case 1: return "An empty BinTree.";
+			case 2: return "An ExampleTable.";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -75,16 +69,16 @@ public class ADTBinning extends DataPrepModule implements HasNames {
        @return The name of the input
     */
     public String getInputName(int i) {
-
-		if(i == 0)
-			return "ADTree.";
-		else if(i == 1)
-			return "BinTree";
-		else if(i == 2)
-			return "exampleTable.";
-		else
-			return "No such input";
-    }
+		switch(i) {
+			case 0:
+				return "ADTree.";
+			case 1:
+				return "BinTree";
+			case 2:
+				return "exampleTable.";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
     /**
        Return the description of a specific output.
@@ -92,13 +86,12 @@ public class ADTBinning extends DataPrepModule implements HasNames {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		if(i == 0)
-			return "The full BinTree.";
-		else if(i == 1)
-			return "The ExampleTable, unchanged";
-		else
-			return "No such input";
-    }
+		switch (i) {
+			case 0: return "The full BinTree.";
+			case 1: return "The ExampleTable, unchanged";
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.
@@ -106,13 +99,14 @@ public class ADTBinning extends DataPrepModule implements HasNames {
        @return The name of the output
     */
     public String getOutputName(int i) {
-		if(i == 0)
-			return "binTree.";
-		else if(i == 1)
-			return "exampleTable";
-		else
-			return "No such input";
-    }
+		switch(i) {
+			case 0:
+				return "binTree.";
+			case 1:
+				return "exampleTable";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
     /**
        Perform the calculation.

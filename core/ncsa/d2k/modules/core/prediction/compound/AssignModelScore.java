@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.prediction.compound;
 
-import ncsa.d2k.infrastructure.modules.DataPrepModule;
-import ncsa.d2k.infrastructure.modules.HasNames;
+
+import ncsa.d2k.core.modules.DataPrepModule;
 import ncsa.d2k.modules.PredictionModelModule;
 
 /**
@@ -14,7 +14,7 @@ import ncsa.d2k.modules.PredictionModelModule;
 	*/
 
 public class AssignModelScore extends DataPrepModule
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -111,86 +111,53 @@ public class AssignModelScore extends DataPrepModule
 
 
 	public String getModuleInfo(){
-		return "Used with CompoundModelGen and OutputAtATime."+
-				" Takes the output count from OutputAtATime and waits"+
-				" for that many models and error values from crossvalidation"+
-				".  Puts them in a single object to be given to CompoundMod"+
-				"elGen so that it can find the best model for each output"+
-				".  <br><b>Properties</b><ul><li><b>ModelName</b>: A inique"+
-				" name for the type of model being scored</ul>";
+		return "<html>  <head>      </head>  <body>    Used with CompoundModelGen and OutputAtATime. Takes the output count from     OutputAtATime and waits for that many models and error values from     crossvalidation. Puts them in a single object to be given to     CompoundModelGen so that it can find the best model for each output.<br><b>    Properties</b>    <ul>      <li>        <b>ModelName</b>: A inique name for the type of model being scored      </li>    </ul>  </body></html>";
 	}
 
    	public String getModuleName() {
 		return "Assign Models to Errors";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"java.lang.Double",
-					"ncsa.d2k.infrastructure.modules."+
-					"PredictionModelModule",
-					"java.lang.Integer"};
-		return s;
+		String[] types = {"java.lang.Double","ncsa.d2k.core.modules.PredictionModelModule","java.lang.Integer"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The error value or score to be associated with the "+
-						"incoming model";
-			}
-			case(1): {
-				return "The model to be scored";
-			}
-			case(2): {
-				return "The number of models to wait for. Output from"+
-						" OutputAtATime";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "The error value or score to be associated with the incoming model";
+			case 1: return "The model to be scored";
+			case 2: return "The number of models to wait for. Output from OutputAtATime";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Error";
-			}
-			case(1): {
+			case 1:
 				return "Model";
-			}
-			case(2): {
+			case 2:
 				return "Model Count";
-			}
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.prediction.compound.ModelScore"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.prediction.compound.ModelScore"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The object to pass to CompoundModelGen."+
-						" Contains a model for every output feature"+
-						" and a score for every model.";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "The object to pass to CompoundModelGen. Contains a model for every output feature and a score for every model.";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Model Score Object";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

@@ -1,11 +1,11 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 import java.util.Random;
 import java.util.ArrayList;
 import ncsa.d2k.modules.TransformationModule;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
@@ -26,7 +26,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 	@author Peter Groves
 
 *********************/
-public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModule implements Serializable{
+public class VTRandomSubset extends ncsa.d2k.core.modules.DataPrepModule {
 
 	/*the 1-100 int that indicates the fraction to split into*/
 	int splitPercent=75;
@@ -55,7 +55,7 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Table\">    <Text>The Vertical Table to split</Text>  </Info></D2K>";
+			case 0: return "      The Vertical Table to split  ";
 			default: return "No such input";
 		}
 	}
@@ -66,13 +66,8 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"
-
-			};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -80,14 +75,11 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"TableSetBig\">    <Text>The table containing the larger percentage of rows </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"TableSetSmall\">    <Text>The table containing the smaller percentage of rows </Text>  </Info></D2K>";
-
+			case 0: return "      The table containing the larger percentage of rows   ";
+			case 1: return "      The table containing the smaller percentage of rows   ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -95,12 +87,8 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -108,9 +96,7 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-
-		 return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Basic Vertical Table Stat Generator\">    <Text>This module takes in a VerticalTable and outputs two new VerticalTables that are exhaustive of the original.  The fraction that is in each set is determined by the property \"splitPercent\".  ExampleTables will have their input/outputFeatures and transforms transferred to new ExampleTables but not their test/trainExample sets(they'll be left null).  PROPS:  splitPercent should be an integer between 0 and 100. seed is the seed of the random generator.  A constant seed with the same Table will generate identical subsets every time the alg is run. It should be noted that rows remain in the same order that they were in in the original table</Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    This module takes in a VerticalTable and outputs two new VerticalTables     that are exhaustive of the original. The fraction that is in each set is     determined by the property &quot;splitPercent&quot;. ExampleTables will have their     input/outputFeatures and transforms transferred to new ExampleTables but     not their test/trainExample sets(they'll be left null). PROPS:     splitPercent should be an integer between 0 and 100. seed is the seed of     the random generator. A constant seed with the same Table will generate     identical subsets every time the alg is run. It should be noted that rows     remain in the same order that they were in in the original table  </body></html>";
 	}
 
   /*///////////////////
@@ -197,5 +183,41 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	}
 	pushOutput(subsetSmall, 1);
 	pushOutput(subsetBig, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Basic Vertical Table Stat Generator";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "TableSetBig";
+			case 1:
+				return "TableSetSmall";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

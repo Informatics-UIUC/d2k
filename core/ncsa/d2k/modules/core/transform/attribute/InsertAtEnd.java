@@ -1,20 +1,20 @@
 
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.userviews.widgets.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	InsertAtEnd.java
 */
-public class InsertAtEnd extends ncsa.d2k.infrastructure.modules.UIModule
+public class InsertAtEnd extends ncsa.d2k.core.modules.UIModule
 {
 
 	/**
@@ -23,10 +23,9 @@ public class InsertAtEnd extends ncsa.d2k.infrastructure.modules.UIModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table\">    <Text> </Text>  </Info></D2K>";
+			case 0: return "         ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -36,7 +35,6 @@ public class InsertAtEnd extends ncsa.d2k.infrastructure.modules.UIModule
 	public String[] getInputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -45,10 +43,9 @@ public class InsertAtEnd extends ncsa.d2k.infrastructure.modules.UIModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"outputTable\">    <Text>The original table with the selected column removed and then inserted at the end. </Text>  </Info></D2K>";
+			case 0: return "      The original table with the selected column removed and then inserted at the end.   ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -58,7 +55,6 @@ public class InsertAtEnd extends ncsa.d2k.infrastructure.modules.UIModule
 	public String[] getOutputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -66,8 +62,7 @@ public class InsertAtEnd extends ncsa.d2k.infrastructure.modules.UIModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"\">    <Text> </Text>  </Info></D2K>";
-
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
 	}
 
 	/**
@@ -105,7 +100,7 @@ public class InsertAtEnd extends ncsa.d2k.infrastructure.modules.UIModule
 	Viewer
 	This is the UserView class.
 */
-class Viewer extends ncsa.d2k.controller.userviews.swing.JUserPane implements ActionListener{
+class Viewer extends ncsa.d2k.userviews.swing.JUserPane implements ActionListener{
 
 	InsertAtEnd module;
 	TableImpl table;
@@ -174,6 +169,40 @@ class Viewer extends ncsa.d2k.controller.userviews.swing.JUserPane implements Ac
 			table.removeColumn(theIndex);
 			table.addColumn(col);
 			module.done(table,0);
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "outputTable";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

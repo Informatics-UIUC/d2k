@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.io.file.output;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.io.*;
 
 /**
@@ -10,7 +10,7 @@ import java.io.*;
    @author David Clutter
 */
 public class WriteTableToFile extends OutputModule
-	implements HasNames, Serializable {
+	 {
 
 	transient String delimiter;
 
@@ -65,13 +65,7 @@ public class WriteTableToFile extends OutputModule
        @return A description of this module.
     */
     public String getModuleInfo() {
-    	StringBuffer sb = new StringBuffer("Write the contents of a ");
-		sb.append("Table to a flat file.  Can use space, comma, ");
-		sb.append("or tab as a delimiter.  If useColumnLabels is set, ");
-		sb.append("the first row of the file will be the column labels.");
-		sb.append(" If useDataTypes is set, the data type of each row will ");
-		sb.append(" be written.");
-		return sb.toString();
+		return "<html>  <head>      </head>  <body>    Write the contents of a Table to a flat file. Can use space, comma, or tab     as a delimiter. If useColumnLabels is set, the first row of the file will     be the column labels. If useDataTypes is set, the data type of each row     will be written.  </body></html>";
 	}
 
     /**
@@ -80,7 +74,7 @@ public class WriteTableToFile extends OutputModule
     */
     public String getModuleName() {
 		return "writeVT";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -88,8 +82,8 @@ public class WriteTableToFile extends OutputModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-    	String []in = {"java.lang.String", "ncsa.d2k.modules.core.datatype.table.Table"};
-		return in;
+		String[] types = {"java.lang.String","ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
 	}
 
     /**
@@ -98,8 +92,9 @@ public class WriteTableToFile extends OutputModule
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		return null;
-    }
+		String[] types = {		};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -107,10 +102,10 @@ public class WriteTableToFile extends OutputModule
        @return The description of the input
     */
     public String getInputInfo(int i) {
-    	switch(i) {
+		switch (i) {
 			case 0: return "The name of the file to write.";
 			case 1: return "The Table to write.";
-			default: return "No such input.";
+			default: return "No such input";
 		}
 	}
 
@@ -120,10 +115,12 @@ public class WriteTableToFile extends OutputModule
        @return The name of the input
     */
     public String getInputName(int i) {
-       	switch(i) {
-			case 0: return "fileName";
-			case 1: return "table";
-			default: return "No such input.";
+		switch(i) {
+			case 0:
+				return "fileName";
+			case 1:
+				return "table";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 
@@ -133,8 +130,10 @@ public class WriteTableToFile extends OutputModule
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		return "No such output!";
-    }
+		switch (i) {
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.
@@ -142,8 +141,10 @@ public class WriteTableToFile extends OutputModule
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	return "No such output!";
-    }
+		switch(i) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
     /**
     	Write the table to the file.

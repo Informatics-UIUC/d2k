@@ -1,15 +1,15 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
-import java.util.*;
 
+import ncsa.d2k.core.modules.*;
+import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
 	MergeVTbyRow.java
 */
-public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 {
 
 	/**
@@ -18,12 +18,11 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table1\">    <Text> </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table2\">    <Text> </Text>  </Info></D2K>";
-			case 2: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"uniqueId\">    <Text> </Text>  </Info></D2K>";
+			case 0: return "         ";
+			case 1: return "         ";
+			case 2: return "         ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -31,10 +30,8 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","java.lang.String"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","ncsa.d2k.modules.core.datatype.table.basic.TableImpl","java.lang.String"};
 		return types;
-
 	}
 
 	/**
@@ -43,10 +40,9 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"returnTable\">    <Text> </Text>  </Info></D2K>";
+			case 0: return "         ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -56,7 +52,6 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	public String[] getOutputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -64,8 +59,7 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"MergeVTbyRow\">    <Text>Merges the rows of two vertical tables by a specified column </Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    Merges the rows of two vertical tables by a specified column  </body></html>";
 	}
 
 	/**
@@ -548,5 +542,43 @@ public class MergeVTbyRow extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	}
 
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "MergeVTbyRow";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "table1";
+			case 1:
+				return "table2";
+			case 2:
+				return "uniqueId";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "returnTable";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

@@ -7,17 +7,16 @@ package ncsa.d2k.modules.core.io.sql;
  * @author Dora Cai
  * @version 1.0
  */
-import ncsa.d2k.infrastructure.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.controller.classloading.*;
-import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.io.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.core.*;
+import ncsa.d2k.core.modules.*;
+//import ncsa.d2k.controller.classloading.*;
+import ncsa.d2k.core.modules.UserView;
+//import ncsa.d2k.io.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.util.table.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
-
 import java.sql.*;
 import java.util.*;
 import java.util.ArrayList;
@@ -26,12 +25,11 @@ import javax.swing.*;
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
-
 import oracle.sql.*;
 import oracle.jdbc.driver.*;
 
 public class CalculateCount extends ComputeModule
-       implements java.io.Serializable {
+        {
   JOptionPane msgBoard = new JOptionPane();
   File file;
   FileWriter fw;
@@ -67,27 +65,26 @@ public class CalculateCount extends ComputeModule
   }
 
   public String getOutputInfo (int i) {
-    switch(i) {
-      case 0: return "JDBC data source to make database connection.";
-      case 1: return "The name of the table that stores data statistics.";
-      default: return "No such output";
-    }
-  }
+		switch (i) {
+			case 0: return "JDBC data source to make database connection.";
+			case 1: return "The name of the table that stores data statistics.";
+			default: return "No such output";
+		}
+	}
 
   public String getInputInfo (int i) {
-    switch(i) {
-      case 0: return "JDBC data source to make database connection.";
-      case 1: return "Field Names";
-      case 2: return "Table Name";
-      case 3: return "Where Clause";
-      default: return "No such input";
-    }
-  }
+		switch (i) {
+			case 0: return "JDBC data source to make database connection.";
+			case 1: return "Field Names";
+			case 2: return "Table Name";
+			case 3: return "Where Clause";
+			default: return "No such input";
+		}
+	}
 
   public String getModuleInfo () {
-    String text = "Calculate counts for all possible combinations for the selected table";
-    return text;
-  }
+		return "<html>  <head>      </head>  <body>    Calculate counts for all possible combinations for the selected table  </body></html>";
+	}
 
 	/** this property is the min acceptable support score. */
   public void setMinimumSupport (double i) {
@@ -104,18 +101,14 @@ public class CalculateCount extends ComputeModule
   }
 
   public String[] getInputTypes () {
-    String [] in =  {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-                     "[Ljava.lang.String;",
-                     "java.lang.String",
-                     "java.lang.String"};
-    return in;
-  }
+		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","[Ljava.lang.String;","java.lang.String","java.lang.String"};
+		return types;
+	}
 
   public String[] getOutputTypes () {
-    String [] in =  {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-                     "java.lang.String"};
-    return in;
-  }
+		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","java.lang.String"};
+		return types;
+	}
 
   protected String[] getFieldNameMapping () {
     return null;
@@ -741,4 +734,46 @@ public class CalculateCount extends ComputeModule
       //e.printStackTrace();
     //}
   //}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "CalculateCount";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			case 2:
+				return "input2";
+			case 3:
+				return "input3";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

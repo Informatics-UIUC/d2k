@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.util.reconstruct;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 /**
 	GetBestSolution<br>
@@ -12,7 +13,7 @@ import ncsa.d2k.modules.core.optimize.util.*;
 	*/
 
 public class GetBestSolution extends DataPrepModule
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -67,70 +68,50 @@ public class GetBestSolution extends DataPrepModule
 
 
 	public String getModuleInfo(){
-		return "Takes a solution space (single objective) and pushes out the best solution";
+		return "<html>  <head>      </head>  <body>    Takes a solution space (single objective) and pushes out the best solution  </body></html>";
 	}
 
    	public String getModuleName() {
 		return "Best Solution Extractor";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.optimize.util.SOSolutionSpace"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SOSolutionSpace"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The solution space with solutions evaluated";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "The solution space with solutions evaluated";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "The Solution Space";
-			}
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.optimize.util.SOSolution",
-					"java.lang.Double"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SOSolution","java.lang.Double"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The best individual solution from the solution space";
-			}
-			case(1): {
-				return "The best individual's objective";
-			}
-
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "The best individual solution from the solution space";
+			case 1: return "The best individual's objective";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Best Solution";
-			}
-			case(1): {
+			case 1:
 				return "Best Objective";
-			}
-
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

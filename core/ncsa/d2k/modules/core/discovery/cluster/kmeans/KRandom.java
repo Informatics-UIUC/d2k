@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.discovery.cluster.kmeans;
 
-import ncsa.d2k.infrastructure.modules.*;
-//import ncsa.d2k.util.datatype.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
 import java.lang.*;
@@ -12,7 +12,7 @@ import java.lang.*;
 	Angela Bottum
 	7/01
 */
-public class KRandom extends ncsa.d2k.infrastructure.modules.ComputeModule
+public class KRandom extends ncsa.d2k.core.modules.ComputeModule
 {
 	/**
 		This pair returns the description of the various inputs.
@@ -20,7 +20,7 @@ public class KRandom extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"VerticalTable\"><Text>This is the verticaltable to be clustered. </Text></Info></D2K>";
+			case 0: return "This is the verticaltable to be clustered. ";
 			default: return "No such input";
 		}
 	}
@@ -40,7 +40,7 @@ public class KRandom extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"table\"><Text>This verticaltable contains a column at the end with the random point closest to the data point.</Text></Info></D2K>";
+			case 0: return "This verticaltable contains a column at the end with the random point closest to the data point.";
 			default: return "No such output";
 		}
 	}
@@ -59,7 +59,7 @@ public class KRandom extends ncsa.d2k.infrastructure.modules.ComputeModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"KRandom\"><Text>The verticaltable will be split into k clusters, using the k-means algorithm.  K is a property of this module, the default value is 3.  You must also specify if you would like to use a specific random seed, and if so, which one to use.  The default is to use none.  The output verticaltable is the original verticaltable with a final column with cluster point closest to the data point.</Text></Info></D2K>";
+		return "<html>  <head>      </head>  <body>    The verticaltable will be split into k clusters, using the k-means     algorithm. K is a property of this module, the default value is 3. You     must also specify if you would like to use a specific random seed, and if     so, which one to use. The default is to use none. The output verticaltable     is the original verticaltable with a final column with cluster point     closest to the data point.  </body></html>";
 	}
 
 	int kValue = 3;
@@ -196,5 +196,39 @@ public class KRandom extends ncsa.d2k.infrastructure.modules.ComputeModule
 		clustercol.setLabel("cluster no.");
 		vt.addColumn(clustercol);
 		pushOutput(vt, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "KRandom";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "VerticalTable";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "table";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

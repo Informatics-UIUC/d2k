@@ -1,12 +1,13 @@
 package ncsa.d2k.modules.core.vis;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
 import ncsa.d2k.gui.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.gui.*;
@@ -14,20 +15,27 @@ import ncsa.gui.*;
 /**
 	LinearRegression2D.java
 */
-public final class LinearRegression2D extends ncsa.d2k.infrastructure.modules.VisModule
-    implements Serializable, HasNames {
+public final class LinearRegression2D extends ncsa.d2k.core.modules.VisModule
+     {
 
 	/**
 		This pair returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-        return "A Table to visualize.";
+		switch (index) {
+			case 0: return "A Table to visualize.";
+			default: return "No such input";
+		}
 	}
 
     public String getInputName(int index) {
-        return "Table";
-    }
+		switch(index) {
+			case 0:
+				return "Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
 	/**
 		This pair returns an array of strings that contains the data types for the inputs.
@@ -36,7 +44,6 @@ public final class LinearRegression2D extends ncsa.d2k.infrastructure.modules.Vi
 	public String[] getInputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
-
 	}
 
 	/**
@@ -50,8 +57,10 @@ public final class LinearRegression2D extends ncsa.d2k.infrastructure.modules.Vi
 	}
 
     public String getOutputName(int index) {
-        return "";
-    }
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
 	/**
 		This pair returns an array of strings that contains the data types for the outputs.
@@ -60,7 +69,6 @@ public final class LinearRegression2D extends ncsa.d2k.infrastructure.modules.Vi
 	public String[] getOutputTypes() {
 		String[] types = {		};
 		return types;
-
 	}
 
 	/**
@@ -68,14 +76,12 @@ public final class LinearRegression2D extends ncsa.d2k.infrastructure.modules.Vi
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-       String s = "Visualize the NumericColumns in a 2D scatter plot.  A line ";
-       s += "is approximated through the points.";
-       return s;
+		return "<html>  <head>      </head>  <body>    Visualize the NumericColumns in a 2D scatter plot. A line is approximated     through the points.  </body></html>";
 	}
 
     public String getModuleName() {
-        return "LinearRegression";
-    }
+		return "LinearRegression";
+	}
 
 	/**
 		This pair is called by D2K to get the UserView for this module.
@@ -99,7 +105,7 @@ public final class LinearRegression2D extends ncsa.d2k.infrastructure.modules.Vi
 /**
 	LinearRegressionUserPane
 */
-class LinearRegressionUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane
+class LinearRegressionUserPane extends ncsa.d2k.userviews.swing.JUserPane
 	implements ActionListener {
 	LinearRegression2D module;
 

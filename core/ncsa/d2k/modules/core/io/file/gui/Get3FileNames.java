@@ -1,21 +1,18 @@
 package ncsa.d2k.modules.core.io.file.gui;
 
+
 import java.awt.*;
 import java.awt.event.*;
-
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.controller.userviews.AddField;
-
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.userviews.widgets.*;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.userviews.AddField;
 import ncsa.gui.Constrain;
-
 import java.util.Hashtable;
-
 import javax.swing.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.controller.userviews.widgits.swing.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.userviews.widgets.swing.*;
 
 /**
    This module allows a user to choose the name of three files.  The UserView 
@@ -27,7 +24,7 @@ import ncsa.d2k.controller.userviews.widgits.swing.*;
    @author David Clutter
 */
 public class Get3FileNames extends UIModule 
-	implements java.io.Serializable, HasNames, HasProperties {
+	 {
     
     /** The absolute path to file0 */
     String file0;
@@ -145,9 +142,8 @@ public class Get3FileNames extends UIModule
        @return A description of this module.	
     */
     public String getModuleInfo() {
-	return "This module allows the user to choose three files using file"+
-	    " dialogs.  The absolute pathnames of the files are the output.";
-    }
+		return "<html>  <head>      </head>  <body>    This module allows the user to choose three files using file dialogs. The     absolute pathnames of the files are the output.  </body></html>";
+	}
    
    	public String getModuleName() {
 		return "Get3Files";
@@ -158,29 +154,33 @@ public class Get3FileNames extends UIModule
        @return The input types.
     */
     public String[] getInputTypes() {
-	return null;
-    }
+		String[] types = {		};
+		return types;
+	}
     
     /**
        Return an array containing the output types of this module.
        @return The output types.
     */
     public String[] getOutputTypes() {
-	String []out = {"java.lang.String", "java.lang.String", 
-			"java.lang.String"};
-	return out;
-    }
+		String[] types = {"java.lang.String","java.lang.String","java.lang.String"};
+		return types;
+	}
 
     /**
        Return the info for a particular input.
        @param i The index of the input to get info about
     */
     public String getInputInfo(int i) {
-	return "No such input!";
-    }
+		switch (i) {
+			default: return "No such input";
+		}
+	}
    
    	public String getInputName(int i) {
-		return "No such input!";
+		switch(i) {
+			default: return "NO SUCH INPUT!";
+		}
 	}
     
     /**
@@ -188,28 +188,23 @@ public class Get3FileNames extends UIModule
        @param i The index of the output to get info about
     */
     public String getOutputInfo(int i) {
-	switch(i) {
-	case(0):
-	    return "The absolute path to the first selected file.";
-	case(1):
-	    return "The absolute path to the second selected file.";
-	case(2):
-	    return "The absolute path to the third selected file.";
-	default:
-	    return "No such output!";
+		switch (i) {
+			case 0: return "The absolute path to the first selected file.";
+			case 1: return "The absolute path to the second selected file.";
+			case 2: return "The absolute path to the third selected file.";
+			default: return "No such output";
+		}
 	}
-    }
    
    	public String getOutputName(int i) {
 		switch(i) {
-			case(0):
+			case 0:
 				return "file0";
-			case(1):
+			case 1:
 				return "file1";
-			case(2):
+			case 2:
 				return "file2";
-			default:
-				return "No such output!";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
     

@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
 
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
@@ -13,19 +13,17 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 	 @author Peter Groves
 */
-public class VTNormalizer extends ncsa.d2k.infrastructure.modules.DataPrepModule {
+public class VTNormalizer extends ncsa.d2k.core.modules.DataPrepModule {
 
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"dataIn\">    <Text>The vertical table that will be normalized in every column </Text>    <Text>of doubles </Text>    <Text> </Text>  </Info></D2K>";
+			case 0: return "      The vertical table that will be normalized in every column     of doubles        ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -33,11 +31,8 @@ public class VTNormalizer extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -45,12 +40,10 @@ public class VTNormalizer extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"dataOut\">    <Text>The normalized vertical table </Text>  </Info></D2K>";
+			case 0: return "      The normalized vertical table   ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -58,11 +51,8 @@ public class VTNormalizer extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -70,9 +60,7 @@ public class VTNormalizer extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Data Table Normalizer\">    <Text>This modules takes in a VerticalTable and outputs it with all the columns of doubles normalized. PROPS: printInfo- if true will print mean and st dev info for each column to standard out </Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    This modules takes in a VerticalTable and outputs it with all the columns     of doubles normalized. PROPS: printInfo- if true will print mean and st     dev info for each column to standard out  </body></html>";
 	}
 	public boolean printInfo=false;
 
@@ -142,6 +130,40 @@ public class VTNormalizer extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	  pushOutput(newVT, 0);
 
 
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Data Table Normalizer";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "dataIn";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "dataOut";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }
 

@@ -1,13 +1,14 @@
 package ncsa.d2k.modules.core.control;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /*
 	@author pgroves
 	*/
 
-public class ObjectPasser extends DataPrepModule 
-	implements java.io.Serializable, HasNames{
+public class ObjectPasser extends ComputeModule 
+	{
 
 	//////////////////////
 	//d2k Props
@@ -15,7 +16,7 @@ public class ObjectPasser extends DataPrepModule
 	String inputName="Object In";
 
 	String outputName="Object Out";
-	
+
 	
 	/////////////////////////
 	/// other fields
@@ -53,73 +54,58 @@ public class ObjectPasser extends DataPrepModule
 
 
 	public String getModuleInfo(){
-		return "Does nothing but passes the input object through."+
+		return "<paragraph>  <head>  </head>  <body>    <p>Does nothing but passes the input object through."+
 				" Intended to be used when an input into an embedded"+
-				" itinerary needs to be fanned out. <br><b>Properties</b>"+
+				" itinerary needs to be fanned out.  <br><b>Properties</b>"+
 				"<ul><li>inputName: the name for the input to appear in the"+
 				" module info window. (to keep track of similar inputs/outputs"+
-				" when using embedded itins).<li>outputName: the name of the "+
-				" output" ;
+				" when using embedded itins).<li>outputName: the name of the"+
+				" output</ul></p>  </body></paragraph>";
 	}
 	
    	public String getModuleName() {
 		return "Pass unchanged object";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"java.lang.Object"};
-		return s;
+		String[] types = {"java.lang.Object"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return inputName;
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return inputName;
+			default: return "No such input";
 		}
 	}
 	
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return inputName;
-			}
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
-	public String[] getOutputTypes(){
-		String[] s={"java.lang.Object"};
-		return s;
+	public String[] getOutputTypes(){	
+		String[] types = {"java.lang.Object"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return outputName;
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return outputName;
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return outputName;
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}		
 	////////////////////////////////
 	//D2K Property get/set methods
 	///////////////////////////////
-	
 	public void setInput_Name(String s){
 		inputName=s;
 	}
@@ -133,9 +119,7 @@ public class ObjectPasser extends DataPrepModule
 		return outputName;
 	}
 
-
 	/*
-	
 	public boolean get(){
 		return ;
 	}

@@ -1,15 +1,16 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.text.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.gui.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.gui.*;
@@ -35,25 +36,25 @@ public class BinColumns extends UIModule {
    }
 
    public String getModuleInfo() {
-      return "Allows the user to interactively bin data.";
-   }
+		return "<html>  <head>      </head>  <body>    Allows the user to interactively bin data.  </body></html>";
+	}
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-      return i;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
    public String[] getOutputTypes() {
-      String[] o = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-      return o;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
    public String getInputInfo(int i) {
-      switch(i) {
-         case 0: return "A MutableTable with columns to bin.  The columns may be replaced, so the table must be mutable.";
-         default: return "no such input!";
-      }
-   }
+		switch (i) {
+			case 0: return "A MutableTable with columns to bin.  The columns may be replaced, so the table must be mutable.";
+			default: return "No such input";
+		}
+	}
 
    public String getOutputName(int i) {
       switch(i) {
@@ -69,10 +70,11 @@ public class BinColumns extends UIModule {
    }
 
    public String getOutputInfo(int i) {
-      if (i == 0)
-         return "A Table with its columns binned up.";
-      return "BinColumns has no such output.";
-   }
+		switch (i) {
+			case 0: return "A Table with its columns binned up.";
+			default: return "No such output";
+		}
+	}
 
    protected UserView createUserView() {
       return new BinColumnsView();
@@ -1301,5 +1303,4 @@ public class BinColumns extends UIModule {
       }
 
    } // BinColumnsView
-
 }

@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.DataPrepModule;
-import java.io.Serializable;
 
+import ncsa.d2k.core.modules.DataPrepModule;
+import java.io.Serializable;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
@@ -20,7 +20,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 	   @author Peter Groves
 
 */
-public class ETLinearScaler extends ncsa.d2k.modules.TransformationModule implements Serializable {
+public class ETLinearScaler extends ncsa.d2k.modules.TransformationModule  {
 
 
 public double lowerBound=0;
@@ -81,12 +81,10 @@ public void setClearPreviousTransforms(boolean b){
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"dataIn\">    <Text>The ExampleTable whose input and output columns are to be scaled</Text>  </Info></D2K>";
+			case 0: return "      The ExampleTable whose input and output columns are to be scaled  ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -94,11 +92,8 @@ public void setClearPreviousTransforms(boolean b){
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -106,12 +101,10 @@ public void setClearPreviousTransforms(boolean b){
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"dataOut\">    <Text>The scaled ExampleTable </Text>  </Info></D2K>";
+			case 0: return "      The scaled ExampleTable   ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -119,11 +112,8 @@ public void setClearPreviousTransforms(boolean b){
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -131,9 +121,7 @@ public void setClearPreviousTransforms(boolean b){
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Data Table Linearizer\">    <Text>This modules takes in an ExampleTable and outputs it with all the features scaled (only input and output features that are NumericColumns). Also has the ability to untransform the last example table that was past through it and any Test/TrainTables made from it. PROPS: upperBound/lowerBound - define the range that all NumericColumns will be scaled to. </Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    This modules takes in an ExampleTable and outputs it with all the features     scaled (only input and output features that are NumericColumns). Also has     the ability to untransform the last example table that was past through it     and any Test/TrainTables made from it. PROPS: upperBound/lowerBound -     define the range that all NumericColumns will be scaled to.  </body></html>";
 	}
 
 	/**
@@ -301,6 +289,40 @@ public void setClearPreviousTransforms(boolean b){
 	}
 
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Data Table Linearizer";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "dataIn";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "dataOut";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 
 

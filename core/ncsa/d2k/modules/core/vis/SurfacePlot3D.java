@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.vis;
 
+
 import com.sun.j3d.utils.behaviors.keyboard.*;
 import com.sun.j3d.utils.behaviors.mouse.*;
 import com.sun.j3d.utils.geometry.*;
@@ -12,10 +13,10 @@ import javax.media.j3d.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.vecmath.*;
-import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.gui.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
@@ -31,25 +32,31 @@ import ncsa.gui.*;
 public class SurfacePlot3D extends VisModule {
 
    public String getModuleInfo() {
-      return "SurfacePlot3D is a three-dimensional visualization of Table data as a surface plot.";
-   }
+		return "<html>  <head>      </head>  <body>    SurfacePlot3D is a three-dimensional visualization of Table data as a     surface plot.  </body></html>";
+	}
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.table.Table"}; return i;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
+	}
 
    public String[] getOutputTypes() {
-      return null;
-   }
+		String[] types = {		};
+		return types;
+	}
 
    public String getInputInfo(int index) {
-      if (index == 0) return "The Table to be visualized.";
-      else return "SurfacePlot3D has no such input.";
-   }
+		switch (index) {
+			case 0: return "The Table to be visualized.";
+			default: return "No such input";
+		}
+	}
 
    public String getOutputInfo(int index) {
-      return "SurfacePlot3D has no outputs.";
-   }
+		switch (index) {
+			default: return "No such output";
+		}
+	}
 
    public String[] getFieldNameMapping() { return null; }
    protected UserView createUserView() { return new SurfacePlot3DVis(); }
@@ -788,4 +795,36 @@ public class SurfacePlot3D extends VisModule {
 
    } // SurfacePlot3DVis
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SurfacePlot3D";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 } // SurfacePlot3D

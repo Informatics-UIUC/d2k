@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.prediction.LWR;
 
-import ncsa.d2k.util.splaytree.*;
+import ncsa.util.splaytree.*;
 
 public class DoubleNode extends BNode {
 

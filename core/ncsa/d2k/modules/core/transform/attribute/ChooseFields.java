@@ -1,16 +1,14 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.infrastructure.views.UserView;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.core.modules.UserView;
 import ncsa.gui.Constrain;
-
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 /**
    ChooseFields.java
@@ -20,23 +18,23 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
    @author Peter Groves, c/o David Clutter
 */
-public class ChooseFields extends UIModule implements HasNames {
+public class ChooseFields extends UIModule  {
 
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleInfo() {
-	return "Allows the user to choose which columns are inputs and which are outputs, assigns them in an ET.";
-    }
+		return "<html>  <head>      </head>  <body>    Allows the user to choose which columns are inputs and which are outputs,     assigns them in an ET.  </body></html>";
+	}
 
     /**
        Return the name of this module.
        @return The name of this module.
     */
     public String getModuleName() {
-	return "ChsFlds";
-    }
+		return "ChsFlds";
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -44,8 +42,8 @@ public class ChooseFields extends UIModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
-    	return in;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
 	}
 
     /**
@@ -54,8 +52,8 @@ public class ChooseFields extends UIModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.modules.core.datatype.table.ExampleTable" };
-    	return out;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
 	}
 
     /**
@@ -64,10 +62,10 @@ public class ChooseFields extends UIModule implements HasNames {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-    	if(i == 0)
-			return "the Verticaltable with labels on the columns";
-		else
-			return "no such output";
+		switch (i) {
+			case 0: return "the Verticaltable with labels on the columns";
+			default: return "No such input";
+		}
 	}
 
     /**
@@ -76,10 +74,11 @@ public class ChooseFields extends UIModule implements HasNames {
        @return The name of the input
     */
     public String getInputName(int i) {
-    	if(i == 0)
-			return "rawtable";
-		else
-			return "no such input";
+		switch(i) {
+			case 0:
+				return "rawtable";
+			default: return "NO SUCH INPUT!";
+		}
 	}
 
     /**
@@ -88,10 +87,10 @@ public class ChooseFields extends UIModule implements HasNames {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-    	if(i == 0)
-			return "ExampleTable with input and output features assigned";
-		else
-			return "no such output";
+		switch (i) {
+			case 0: return "ExampleTable with input and output features assigned";
+			default: return "No such output";
+		}
 	}
 
     /**
@@ -100,10 +99,11 @@ public class ChooseFields extends UIModule implements HasNames {
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	if(i == 0)
-			return "exampletable";
-		else
-			return "no such output";
+		switch(i) {
+			case 0:
+				return "exampletable";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 
 	/**
@@ -292,7 +292,6 @@ public class ChooseFields extends UIModule implements HasNames {
 					setFieldsInTable();
 					//module.finish(et);
 		            pushOutput(et, 0);
-		            //executionManager.moduleDone(module);
 					viewDone("Done");
 					et = null;
 					this.removeAll();

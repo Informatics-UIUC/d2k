@@ -1,9 +1,10 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.io.sql;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.userviews.widgets.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -11,21 +12,19 @@ import java.util.*;
 /*&%^2 Do not modify this section. */
 /**
 	SelectFields.java
-	
+
 */
-public class SelectFields extends ncsa.d2k.infrastructure.modules.UIModule {
+public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 /*#end^2 Continue editing. ^#&*/
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Fields\">    <Text>This is a list of the fields that available. </Text>  </Info></D2K>";
+			case 0: return "      This is a list of the fields that available.   ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -33,11 +32,8 @@ public class SelectFields extends ncsa.d2k.infrastructure.modules.UIModule {
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"java.util.Vector"};
+		String[] types = {"java.util.Vector"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -45,12 +41,10 @@ public class SelectFields extends ncsa.d2k.infrastructure.modules.UIModule {
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Selected Fields\">    <Text>This is the list of selected fields. </Text>  </Info></D2K>";
+			case 0: return "      This is the list of selected fields.   ";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -58,11 +52,8 @@ public class SelectFields extends ncsa.d2k.infrastructure.modules.UIModule {
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-			"[Ljava.lang.String;"};
+		String[] types = {"[Ljava.lang.String;"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -70,9 +61,7 @@ public class SelectFields extends ncsa.d2k.infrastructure.modules.UIModule {
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Select Fields\">    <Text>Given a list of the fields available, this guy will present a gui that will allow the user to select from among them, the fields to be extracted from the database. </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<html>  <head>      </head>  <body>    Given a list of the fields available, this guy will present a gui that     will allow the user to select from among them, the fields to be extracted     from the database.  </body></html>";
 	}
 
 	/**
@@ -116,9 +105,9 @@ public class SelectFields extends ncsa.d2k.infrastructure.modules.UIModule {
 	SelectFieldsView
 	This is the UserView class.
 */
-class SelectFieldsView extends ncsa.d2k.controller.userviews.UserInputPane {
+class SelectFieldsView extends ncsa.d2k.userviews.UserInputPane {
 /*#end^12 Continue editing. ^#&*/
-	
+
 	/**
 		In the case of this selection list, everything in the list
 		is to be passed along, rather than just the selected items.
@@ -134,15 +123,15 @@ class SelectFieldsView extends ncsa.d2k.controller.userviews.UserInputPane {
 			return stringArray;
 		}
 	};
-	
+
 	java.awt.List possibleFields = new java.awt.List (15);
 	Button add = new Button ("Add");
 	Button remove = new Button ("Remove");
-	
+
 	class ActionListenerAdapter implements ActionListener {
 		public void actionPerformed (ActionEvent e) {}
 	}
-	
+
 	/**
 		This method adds the components to a Panel and then adds the Panel
 		to the view.
@@ -160,7 +149,7 @@ class SelectFieldsView extends ncsa.d2k.controller.userviews.UserInputPane {
 		buttons.setLayout (new BorderLayout ());
 		buttons.add ("North", add);
 		buttons.add ("South", remove);
-		
+
 		// The listener for the add button moves stuff from the possible list
 		// to the selected list.
 		add.addActionListener (new ActionListenerAdapter () {
@@ -170,7 +159,7 @@ class SelectFieldsView extends ncsa.d2k.controller.userviews.UserInputPane {
 				selectedFields.add (selection);
 			}
 		});
-		
+
 		// The listener for the add button moves stuff from the possible list
 		// to the selected list.
 		remove.addActionListener (new ActionListenerAdapter () {
@@ -180,7 +169,7 @@ class SelectFieldsView extends ncsa.d2k.controller.userviews.UserInputPane {
 				possibleFields.add (selection);
 			}
 		});
-		
+
 		canvasArea.add ("Center", buttons);
 		canvasArea.add ("West", selectedFields);
 		canvasArea.add ("East", possibleFields);
@@ -204,5 +193,39 @@ class SelectFieldsView extends ncsa.d2k.controller.userviews.UserInputPane {
 
 /*&%^14 Do not modify this section. */
 /*#end^14 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Select Fields";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Fields";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Selected Fields";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

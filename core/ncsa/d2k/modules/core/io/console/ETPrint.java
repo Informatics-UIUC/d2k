@@ -1,23 +1,22 @@
 package ncsa.d2k.modules.core.io.console;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  * Print statistics about an ExampleTable.
  */
-public class ETPrint extends ncsa.d2k.infrastructure.modules.OutputModule{
+public class ETPrint extends ncsa.d2k.core.modules.OutputModule{
 
 	public String getInputInfo(int index) {
 		switch (index) {
 			case 0: return "";
 			default: return "No such input";
 		}
-
 	}
 
 	public String[] getInputTypes () {
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 	}
 
@@ -28,12 +27,12 @@ public class ETPrint extends ncsa.d2k.infrastructure.modules.OutputModule{
 	}
 
 	public String[] getOutputTypes () {
-		String [] types =  { };
+		String[] types = {		};
 		return types;
 	}
 
 	public String getModuleInfo () {
-		return "";
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
 	}
 	public void doit () throws Exception {
 
@@ -74,5 +73,37 @@ public class ETPrint extends ncsa.d2k.infrastructure.modules.OutputModule{
 		}
 		*/
 
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "ETPrint";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

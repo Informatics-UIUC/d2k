@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.simplex;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 import java.util.Vector;
 
@@ -20,7 +21,7 @@ import java.util.Vector;
 	*/
 
 public class SimplexOptimizer extends ComputeModule
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -609,78 +610,56 @@ public class SimplexOptimizer extends ComputeModule
 
 
 	public String getModuleInfo(){
-		return "";
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
 	}
 
    	public String getModuleName() {
 		return "";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.optimize.util.SOSolutionSpace",
-						"ncsa.d2k.modules.core.optimize.util.SOSolution",
-						"ncsa.d2k.modules.core.optimize.util.SOSolution"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SOSolutionSpace","ncsa.d2k.modules.core.optimize.util.SOSolution","ncsa.d2k.modules.core.optimize.util.SOSolution"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "";
-			}
-			case(1): {
-				return "the initialization solution";
-			}
-			case(2): {
-				return "the return/evaluated solution";
-			}
-
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "";
+			case 1: return "the initialization solution";
+			case 2: return "the return/evaluated solution";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "";
-			}
-			default:{
+			case 1:
 				return "No such input.";
-			}
+			case 2:
+				return "No such input.";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.optimize.util.SOSolutionSpace",
-					"ncsa.d2k.modules.core.optimize.util.SOSolution",
-					/*"ncsa.d2k.modules.compute.learning.optimize.util.SOSolution"*/};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SOSolutionSpace","ncsa.d2k.modules.core.optimize.util.SOSolution"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "";
-			}
-			case(1): {
-				return "";
-			}
-			case(2): {
-				return "The best solution";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "";
+			case 1: return "";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "";
-			}
-			default:{
+			case 1:
 				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

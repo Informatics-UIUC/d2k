@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.control;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /*
 	Has an output pipe that never is filled. 
@@ -9,7 +10,7 @@ import ncsa.d2k.infrastructure.modules.*;
 	*/
 
 public class DummyOutput extends ComputeModule 
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -51,62 +52,44 @@ public class DummyOutput extends ComputeModule
 
 
 	public String getModuleInfo(){
-		return "	Has an output pipe that never is filled. "+
-		"Used to clean up unused inputs in nested itins.";
+		return "<html>  <head>      </head>  <body>    Has an output pipe that never is filled. Used to clean up unused inputs in     nested itins.  </body></html>";
 	}
 	
    	public String getModuleName() {
 		return "Nested Input Cleanup";
 	}
 	public String[] getInputTypes(){
-		String[] s= {};
-		return s;
+		String[] types = {		};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			default: return "No such input";
 		}
 	}
 	
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch(index) {
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"java.lang.Object"};
-		return s;
+		String[] types = {"java.lang.Object"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "This pipe will never be filled";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "This pipe will never be filled";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Dummy Pipe";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}		
 	////////////////////////////////

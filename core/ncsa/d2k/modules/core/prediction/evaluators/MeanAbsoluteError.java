@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.prediction.evaluators;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	MeanAbsoluteError.java
@@ -22,8 +23,8 @@ public class MeanAbsoluteError extends ncsa.d2k.modules.core.prediction.evaluato
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"error metric\">    <Text>A Table with the mean absolute  error for each feature in a separate column, rows are the different crossValidation tests. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"average\">    <Text>The average of all the cross-validation trials (for the first output)</Text>  </Info></D2K>";
+			case 0: return "      A Table with the mean absolute  error for each feature in a separate column, rows are the different crossValidation tests.   ";
+			case 1: return "      The average of all the cross-validation trials (for the first output)  ";
 			default: return "No such output";
 		}
 	}
@@ -33,7 +34,7 @@ public class MeanAbsoluteError extends ncsa.d2k.modules.core.prediction.evaluato
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"M ABS Evaluator\">    <Text>Given an example set and a model, check the models performance against the data, returning the Mean Absolute error for each output feature <i>separately</i> in the output table. </Text>"+props+"  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    Given an example set and a model, check the models performance against the     data, returning the Mean Absolute error for each output feature separately     in the output table. PROPS: untransformFirst - applies any untransforms to     the data after prediction and before calculating any errors. crossValidate     - if true, will wait for 'n ' TestTables, if false, will just wait for one     and not wait for an Integer to be passed into input(1). printResults -     will print each target/prediction pair to System.out  </body></html>";
 	}
 
 	/*the only function that's here, it does the actual error
@@ -69,6 +70,44 @@ public class MeanAbsoluteError extends ncsa.d2k.modules.core.prediction.evaluato
 			metrics.setDouble(mabse[j], m, j);
 		}
 
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "M ABS Evaluator";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "example set";
+			case 1:
+				return "nl";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "error metric";
+			case 1:
+				return "average";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }
 

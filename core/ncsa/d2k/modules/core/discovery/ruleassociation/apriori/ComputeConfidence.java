@@ -2,6 +2,7 @@
 
 package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
 
+
 import java.io.*;
 import java.util.*;
 import ncsa.d2k.modules.core.discovery.ruleassociation.*;
@@ -11,9 +12,9 @@ import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 /**
 	ComputeConfidence.java
 */
-public class ComputeConfidence extends ncsa.d2k.infrastructure.modules.ComputeModule
+public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 /*#end^2 Continue editing. ^#&*/
-implements Serializable
+
 {
 
 	/**
@@ -21,14 +22,12 @@ implements Serializable
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"itemset\">    <Text>the itemset contains the examples </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"rules\">    <Text>Rules generated.</Text>  </Info></D2K>";
-			case 2: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"targets\">    <Text>These are the target items we are trying to predict, if there are any.</Text>  </Info></D2K>";
+			case 0: return "      the itemset contains the examples   ";
+			case 1: return "      Rules generated.  ";
+			case 2: return "      These are the target items we are trying to predict, if there are any.  ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -36,13 +35,8 @@ implements Serializable
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets",
-			"[[I",
-			"[Ljava.lang.String;"};
+		String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets","[[I","[Ljava.lang.String;"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -50,12 +44,10 @@ implements Serializable
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"confident rules\">    <Text>The resulting rules with a high enough confidence. </Text>  </Info></D2K>";
+			case 0: return "      The resulting rules with a high enough confidence.   ";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -63,11 +55,8 @@ implements Serializable
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-			"[[I"};
+		String[] types = {"[[I"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -75,9 +64,7 @@ implements Serializable
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"\">    <Text> </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
 	}
 
 	private boolean debug = true;
@@ -269,6 +256,44 @@ implements Serializable
 
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "itemset";
+			case 1:
+				return "rules";
+			case 2:
+				return "targets";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "confident rules";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 
 

@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.optimize.random;
 
+
 import ncsa.d2k.modules.core.optimize.util.*;
 import java.util.Random;
 import java.io.Serializable;
@@ -14,7 +15,7 @@ import java.io.Serializable;
 	@author pgroves
 	*/
 
-public class RandomOptimizer extends ncsa.d2k.infrastructure.modules.ComputeModule implements Serializable{
+public class RandomOptimizer extends ncsa.d2k.core.modules.ComputeModule {
 
 	//////////////////////
 	//d2k Props
@@ -159,50 +160,33 @@ public class RandomOptimizer extends ncsa.d2k.infrastructure.modules.ComputeModu
 
 
 	public String getModuleInfo(){
-		return "Makes parameter sets at random, sends solutions holding them to be evaluated,"+
-				" compiles a list (array) containing all the evaluated solutions and then passes"+
-				"that array at the end.<br>Properties:<ul><li>Seed-The seed used by the random"+
-				"number generator<li>NumSolutions-the number of random parameter sets to make"+
-				"and evaluate</ul>";
+		return "<html>  <head>      </head>  <body>    Makes parameter sets at random, sends solutions holding them to be     evaluated, compiles a list (array) containing all the evaluated solutions     and then passesthat array at the end.<br>Properties:    <ul>      <li>        Seed-The seed used by the randomnumber generator      </li>      <li>        NumSolutions-the number of random parameter sets to makeand evaluate      </li>    </ul>  </body></html>";
 	}
 
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.optimize.util.SolutionSpace",
-					"ncsa.d2k.modules.core.optimize.util.Solution"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SolutionSpace","ncsa.d2k.modules.core.optimize.util.Solution"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		if(index==0){
-			return "The solution space object containing definitions for the ranges to bind the parameters to";
+		switch (index) {
+			case 0: return "The solution space object containing definitions for the ranges to bind the parameters to";
+			case 1: return "The individual, evaluated solutions (sent from this module to an evaluator then back)";
+			default: return "No such input";
 		}
-		if(index==1){
-			return"The individual, evaluated solutions (sent from this module to an evaluator then back)";
-		}
-		else
-			return "No such input";
 	}
 
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.optimize.util.Solution",
-					"ncsa.d2k.modules.core.optimize.util.SolutionSpace",
-					/*"ncsa.d2k.modules.compute.learning.optimize.util.Solution"*/};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.Solution","ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
+		return types;
 	}
 
 	public String getOutputInfo(int i){
-		if(i==0){
-			return "The random solution that will need to be evaluated then sent back";
+		switch (i) {
+			case 0: return "The random solution that will need to be evaluated then sent back";
+			case 1: return "All of the evaluated solutions in a solution space object";
+			default: return "No such output";
 		}
-		if(i==1){
-			return "All of the evaluated solutions in a solution space object";
-		}
-		/*if(i==2){
-			return "The best solution, available only if this is a single-objective optimization";
-		}*/
-
-		else
-			return "no such output";
 	}
 
 	////////////////////
@@ -221,6 +205,44 @@ public class RandomOptimizer extends ncsa.d2k.infrastructure.modules.ComputeModu
 		seed=l;
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "RandomOptimizer";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 
 

@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
 import ncsa.d2k.modules.*;
-import ncsa.d2k.infrastructure.modules.HasNames;
 import ncsa.d2k.modules.core.datatype.table.*;
 import java.io.Serializable;
 import java.util.*;
@@ -12,7 +11,7 @@ import java.util.*;
 	in the data set.
 */
 public class DecisionTreeModel extends PredictionModelModule
-	implements Serializable, ViewableDTModel, HasNames {
+	implements Serializable, ViewableDTModel {
 
 	static final long serialVersionUID = 6788778863299676465L;
 

@@ -9,7 +9,7 @@ package ncsa.d2k.modules.core.io.sql;
  * @author Dora Cai
  * @version 1.0
  */
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 //import ncsa.d2k.modules.core.datatype.table.*;
 
 import javax.swing.*;

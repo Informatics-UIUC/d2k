@@ -1,11 +1,11 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.swing.*;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
-
 import java.util.*;
 import java.sql.*;
 import javax.swing.*;
@@ -22,7 +22,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
  @author Anca Suvaiala
 */
 
-public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
+public class SQLCannedAttrSelection extends DataPrepModule  {
 
 	static String NUMERIC = "num";
 	static String TEXT = "text";
@@ -32,8 +32,7 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
        @return A description of this module.
     */
     public String getModuleInfo() {
-    	StringBuffer sb = new StringBuffer("Defines the binning tree ");
-		return sb.toString();
+		return "<html>  <head>      </head>  <body>    Defines the binning tree  </body></html>";
 	}
 
     /**
@@ -42,7 +41,7 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
     */
     public String getModuleName() {
 		return "defineBin";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -50,9 +49,8 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-
-	String []in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper"};
-	return in;
+		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper"};
+		return types;
 	}
 
     /**
@@ -61,10 +59,8 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-				"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl",
-				"java.lang.String"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl","java.lang.String"};
+		return types;
 	}
 
     /**
@@ -73,9 +69,9 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-    	switch(i) {
+		switch (i) {
 			case 0: return "Connection to the database";
-			default: return "no such input!";
+			default: return "No such input";
 		}
 	}
 
@@ -85,9 +81,10 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
        @return The name of the input
     */
     public String getInputName(int i) {
-    	switch(i) {
-			case 0: return "sql connection";
-			default: return "no such input!";
+		switch(i) {
+			case 0:
+				return "sql connection";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 
@@ -97,11 +94,11 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-    	switch(i) {
+		switch (i) {
 			case 0: return "Contains binning info";
 			case 1: return "table containing metadata";
 			case 2: return "name of the table containing the actual data";
-			default: return "no such output!";
+			default: return "No such output";
 		}
 	}
 
@@ -111,11 +108,14 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	switch(i) {
-			case 0: return "binInfo";
-			case 1: return "table";
-			case 2: return "sqltable";
-			default: return "no such output!";
+		switch(i) {
+			case 0:
+				return "binInfo";
+			case 1:
+				return "table";
+			case 2:
+				return "sqltable";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 

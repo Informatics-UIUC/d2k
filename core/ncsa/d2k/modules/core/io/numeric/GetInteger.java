@@ -1,26 +1,24 @@
 package ncsa.d2k.modules.core.io.numeric;
 
+
 import java.awt.*;
 import java.awt.event.*;
-
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.UserView;
-
-import ncsa.d2k.controller.userviews.UserInputPane;
-import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.d2k.controller.userviews.AddField;
-
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.userviews.UserInputPane;
+import ncsa.d2k.userviews.widgets.*;
+import ncsa.d2k.userviews.AddField;
 import ncsa.gui.Constrain;
 import java.util.Hashtable;
 import javax.swing.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.controller.userviews.widgits.swing.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.userviews.widgets.swing.*;
 
 /**
 
 */
 public class GetInteger extends UIModule
-	implements java.io.Serializable, HasNames, HasProperties {
+	 {
 
     protected int integer;
 	public int getInteger(){
@@ -36,9 +34,8 @@ public class GetInteger extends UIModule
        @return A description of this module.
     */
     public String getModuleInfo() {
-	return "Gets an int from the user and passes it as an Integer" ;
-
-    }
+		return "<html>  <head>      </head>  <body>    Gets an int from the user and passes it as an Integer  </body></html>";
+	}
 
    	public String getModuleName() {
 		return "GetInteger";
@@ -49,28 +46,33 @@ public class GetInteger extends UIModule
        @return The input types.
     */
     public String[] getInputTypes() {
-	return null;
-    }
+		String[] types = {		};
+		return types;
+	}
 
     /**
        Return an array containing the output types of this module.
        @return The output types.
     */
     public String[] getOutputTypes() {
-	String []out = {"java.lang.Integer"};
-	return out;
-    }
+		String[] types = {"java.lang.Integer"};
+		return types;
+	}
 
     /**
        Return the info for a particular input.
        @param i The index of the input to get info about
     */
     public String getInputInfo(int i) {
-	return "No such input!";
-    }
+		switch (i) {
+			default: return "No such input";
+		}
+	}
 
 	public String getInputName(int i) {
-		return "No such input!";
+		switch(i) {
+			default: return "NO SUCH INPUT!";
+		}
 	}
 
     /**
@@ -78,19 +80,18 @@ public class GetInteger extends UIModule
        @param i The index of the output to get info about
     */
     public String getOutputInfo(int i) {
-	switch(i) {
-	case(0):
-	    return "The integer ";
-			default:
-	    return "No such output!";
+		switch (i) {
+			case 0: return "The integer ";
+			default: return "No such output";
+		}
 	}
-    }
 
    	public String getOutputName(int i) {
-		if(i == 0)
-			return "Integer";
-		else
-			return "No such output!";
+		switch(i) {
+			case 0:
+				return "Integer";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 
     /**

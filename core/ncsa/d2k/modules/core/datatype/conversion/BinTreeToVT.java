@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.datatype.conversion;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.transform.attribute.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
@@ -16,20 +16,14 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
    particular bin.  The column label is set to the name of the bin.
    @author David Clutter
 */
-public class BinTreeToVT extends DataPrepModule implements HasNames {
+public class BinTreeToVT extends DataPrepModule  {
 
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleInfo() {
-    	StringBuffer sb = new StringBuffer("Create a Table from a");
-		sb.append(" BinTree.  Each column corresponds to a bin.");
-		sb.append(" The first row contains the class name.  The second row");
-		sb.append(" contains the attribute name.  The third row contains the");
-		sb.append(" bin name.  The tally is in the fourth row. Each column");
-		sb.append("label is the bin name.");
-		return sb.toString();
+		return "<html>  <head>      </head>  <body>    Create a Table from a BinTree. Each column corresponds to a bin. The first     row contains the class name. The second row contains the attribute name.     The third row contains the bin name. The tally is in the fourth row. Each     columnlabel is the bin name.  </body></html>";
 	}
 
     /**
@@ -37,8 +31,8 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
        @return The name of this module.
     */
     public String getModuleName() {
-	return "bt2vt";
-    }
+		return "bt2vt";
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -46,8 +40,8 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-    	String []in = {"ncsa.d2k.modules.core.datatype.BinTree"};
-		return in;
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree"};
+		return types;
 	}
 
     /**
@@ -56,8 +50,8 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-    	String []out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
 	}
 
     /**
@@ -66,7 +60,10 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "The BinTree.";
+		switch (i) {
+			case 0: return "The BinTree.";
+			default: return "No such input";
+		}
 	}
 
     /**
@@ -75,7 +72,11 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
        @return The name of the input
     */
     public String getInputName(int i) {
-    	return "binTree";
+		switch(i) {
+			case 0:
+				return "binTree";
+			default: return "NO SUCH INPUT!";
+		}
 	}
 
     /**
@@ -84,7 +85,10 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-    	return "The Table.";
+		switch (i) {
+			case 0: return "The Table.";
+			default: return "No such output";
+		}
 	}
 
     /**
@@ -93,8 +97,12 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	return "table";
-    }
+		switch(i) {
+			case 0:
+				return "table";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
     /**
        Perform the calculation.

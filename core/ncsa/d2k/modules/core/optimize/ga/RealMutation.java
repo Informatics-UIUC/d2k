@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.core.optimize.ga;
 
+
 import ncsa.d2k.modules.core.optimize.util.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 import java.util.Random;
 
@@ -12,7 +13,7 @@ import java.util.Random;
 		Simulated Binary Crossover see "Self-Adaptive Genetic Algorithms with Simulated
 		Binary Crossover", Deb, Beyer (1995).
 */
-public class RealMutation extends DataPrepModule 			implements Serializable {
+public class RealMutation extends DataPrepModule 			 {
 
 	///////////////////////////////
 	// Properties.
@@ -73,10 +74,10 @@ public class RealMutation extends DataPrepModule 			implements Serializable {
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>The resulting output population which has been crossed. </Text>  </Info></D2K>";
+			case 0: return "      The resulting output population which has been crossed.   ";
 			default: return "No such output";
 		}
-}
+	}
 
 	/**
 		This method returns the description of the various inputs.
@@ -85,7 +86,7 @@ public class RealMutation extends DataPrepModule 			implements Serializable {
 	*/
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>This is the input </Text>    <Text I=\"t\">population </Text>    <Text>, containing the population which is to be </Text>    <Text I=\"t\">mutated </Text>    <Text>. </Text>  </Info></D2K>";
+			case 0: return "      This is the input     <I>population </I>    , containing the population which is to be     <I>mutated </I>    .   ";
 			default: return "No such input";
 		}
 	}
@@ -96,7 +97,7 @@ public class RealMutation extends DataPrepModule 			implements Serializable {
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"\">    <Text>This module will take the given population of Individuals and mate them, mutate them at using a mutation rate applied to each individual gene in the population.       <BR />    </Text>    <Text>       <BR />    </Text>    <Text>For this type of crossover, there are two parameters. </Text>    <Text I=\"t\">Mutation Rate </Text>    <Text>is the probability that each individual gene will be mutated. </Text>    <Text I=\"t\">N </Text>    <Text I=\"t\"> </Text>    <Text>is a factor used to define the magnitude of the mutations, smaller values of N case small mutations, larger values cause larger mutations. Typical values will range from .1 to 100. </Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    This module will take the given population of Individuals and mate them,     mutate them at using a mutation rate applied to each individual gene in     the population.<br><br>For this type of crossover, there are two     parameters. <i>Mutation Rate </i> is the probability that each individual     gene will be mutated. <i>N </i> <i> </i> is a factor used to define the     magnitude of the mutations, smaller values of N case small mutations,     larger values cause larger mutations. Typical values will range from .1 to     100.  </body></html>";
 	}
 
 	//////////////////////////////////
@@ -111,7 +112,7 @@ public class RealMutation extends DataPrepModule 			implements Serializable {
 	public String[] getOutputTypes () {
 		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
 		return types;
-}
+	}
 
 	/**
 		Do the selection.
@@ -185,5 +186,39 @@ public class RealMutation extends DataPrepModule 			implements Serializable {
 		}
 
 		this.pushOutput (population, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

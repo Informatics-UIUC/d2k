@@ -1,13 +1,13 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
 
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	MergeByColumns.java
 */
-public class MergeByColumns extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class MergeByColumns extends ncsa.d2k.core.modules.DataPrepModule
 {
 	/**
 		This pair returns the description of the various inputs.
@@ -15,7 +15,8 @@ public class MergeByColumns extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"VerticalTable\"><Text>These verticaltable will be merged into one larger verticaltable.</Text></Info></D2K>";
+			case 0: return "These verticaltable will be merged into one larger verticaltable.";
+			case 1: return "No such input";
 			default: return "No such input";
 		}
 	}
@@ -25,8 +26,7 @@ public class MergeByColumns extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 	}
 
@@ -36,7 +36,7 @@ public class MergeByColumns extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"table\"><Text>This verticaltable contains the contents of the two verticaltables, merged by column.</Text></Info></D2K>";
+			case 0: return "This verticaltable contains the contents of the two verticaltables, merged by column.";
 			default: return "No such output";
 		}
 	}
@@ -55,7 +55,7 @@ public class MergeByColumns extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"MergeByColumns\"><Text>Two verticaltables are merged by similar columns into one larger one.  Each column in the final verticaltable contains the contents of the two input tables.  If there is no matching column, the column is added with filler values.</Text></Info></D2K>";
+		return "<html>  <head>      </head>  <body>    Two verticaltables are merged by similar columns into one larger one. Each     column in the final verticaltable contains the contents of the two input     tables. If there is no matching column, the column is added with filler     values.  </body></html>";
 	}
 
 	//fill two arrays with filler properties that corespond to columns of two input verticaltables
@@ -222,5 +222,41 @@ public class MergeByColumns extends ncsa.d2k.infrastructure.modules.DataPrepModu
 			}
 		}
 		pushOutput(vt1, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "MergeByColumns";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "VerticalTable";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "table";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

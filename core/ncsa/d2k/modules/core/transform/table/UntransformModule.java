@@ -1,9 +1,9 @@
 
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
-import java.util.ArrayList;
 
+import ncsa.d2k.core.modules.*;
+import java.util.ArrayList;
 import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	UntransformModule.java
@@ -14,7 +14,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 	@author Peter Groves
 	8/01/01
 */
-public class UntransformModule extends ncsa.d2k.infrastructure.modules.ComputeModule
+public class UntransformModule extends ncsa.d2k.core.modules.ComputeModule
 {
 
 	/**
@@ -23,10 +23,9 @@ public class UntransformModule extends ncsa.d2k.infrastructure.modules.ComputeMo
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"TransformedET\">    <Text>The example table to untransform </Text>  </Info></D2K>";
+			case 0: return "      The example table to untransform   ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -36,7 +35,6 @@ public class UntransformModule extends ncsa.d2k.infrastructure.modules.ComputeMo
 	public String[] getInputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
-
 	}
 
 	/**
@@ -45,10 +43,9 @@ public class UntransformModule extends ncsa.d2k.infrastructure.modules.ComputeMo
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"untransformed\">    <Text>The ET after the untransforms have been run </Text>  </Info></D2K>";
+			case 0: return "      The ET after the untransforms have been run   ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -58,7 +55,6 @@ public class UntransformModule extends ncsa.d2k.infrastructure.modules.ComputeMo
 	public String[] getOutputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
-
 	}
 
 	/**
@@ -66,8 +62,7 @@ public class UntransformModule extends ncsa.d2k.infrastructure.modules.ComputeMo
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"\">    <Text>Runs all the untransforms of an ExampleTable on itself </Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    Runs all the untransforms of an ExampleTable on itself  </body></html>";
 	}
 
 	/**
@@ -87,5 +82,39 @@ public class UntransformModule extends ncsa.d2k.infrastructure.modules.ComputeMo
 		pushOutput(et, 0);
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "TransformedET";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "untransformed";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

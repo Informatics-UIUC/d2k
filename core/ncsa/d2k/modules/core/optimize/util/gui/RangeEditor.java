@@ -1,16 +1,15 @@
 package ncsa.d2k.modules.core.optimize.util.gui;
 
+
 import ncsa.d2k.modules.core.optimize.util.*;
-
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.controller.userviews.UserInputPane;
-
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.userviews.UserInputPane;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.controller.userviews.widgits.swing.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.userviews.widgets.swing.*;
 
 /*
 
@@ -22,7 +21,7 @@ import ncsa.d2k.controller.userviews.widgits.swing.*;
 	*/
 
 public class RangeEditor extends UIModule
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -62,6 +61,7 @@ public class RangeEditor extends UIModule
 		pushOutput(space, 0);
 	//executionManager.moduleDone(this);
 		viewDone("Done");
+
 	}
 
 
@@ -178,66 +178,47 @@ public class RangeEditor extends UIModule
 
 
 	public String getModuleInfo(){
-		return "Allows a user to change the min and max values of a"+
-				"parameter/bias search space in an optimization problem.";
-
+		return "<html>  <head>      </head>  <body>    Allows a user to change the min and max values of aparameter/bias search     space in an optimization problem.  </body></html>";
 	}
 
    	public String getModuleName() {
 		return "Range Editor";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The Solution Space that defines the ranges of the"+
-						"parameters in an optimization problem";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "The Solution Space that defines the ranges of theparameters in an optimization problem";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Space";
-			}
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "A space with the same internal types as the one"+
-						" passed in, but with min/max values that were"+
-						" defined by the user";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "A space with the same internal types as the one passed in, but with min/max values that were defined by the user";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Edited Space";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

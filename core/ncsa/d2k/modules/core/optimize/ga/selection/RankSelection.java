@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.selection;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 import ncsa.d2k.modules.core.optimize.ga.*;
 
@@ -21,7 +22,7 @@ import ncsa.d2k.modules.core.optimize.ga.*;
 	popSize is the size of the population.
 */
 public class RankSelection extends SelectionModule
-		implements Serializable {
+		 {
 
 	/** selective pressure determins how rapidly the population converges. */
 	protected double selection_pressure = 1.6;
@@ -58,7 +59,7 @@ public class RankSelection extends SelectionModule
 			case 0: return "";
 			default: return "No such output";
 		}
-}
+	}
 
 	/**
 		This method returns the description of the various inputs.
@@ -76,7 +77,7 @@ public class RankSelection extends SelectionModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Rank\">    <Text>In this method, individuals are sorted according to fitness and thereafter are ranked only on the basis of their relative position to one another. This serves to prevent \"super-individuals\" from dominating the population and causing premature convergence.       <BR />    </Text>    <Text>       <BR />    </Text>    <Text>This method requires one property, </Text>    <Text B=\"t\" I=\"t\">selectivePressure </Text>    <Text>. This property will range from 1 - 2, with higher values meaning more selective pressure. With the objective values for the population computed, the members are sorted into an order of ascending goodness. Then the rank for each member is computed using the following formula:       <BR />    </Text>    <Text>       <BR />    </Text>    <Text>f(y) = 2.0 - SP + 2.0 * (SP - 1.0) * order (y) / popSize - 1       <BR />    </Text>    <Text>       <BR />    </Text>    <Text>where SP is the selective pressure, order (y) is the order of the individual y after the sort, and popSize is the size of the population. With this done, stochastic universal sampling is performed, however instead of the objective fitness value being used, the value of f(y) is used. </Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    In this method, individuals are sorted according to fitness and thereafter     are ranked only on the basis of their relative position to one another.     This serves to prevent &quot;super-individuals&quot; from dominating the population     and causing premature convergence.<br><br>This method requires one     property, <b>selectivePressure </b> . This property will range from 1 - 2,     with higher values meaning more selective pressure. With the objective     values for the population computed, the members are sorted into an order     of ascending goodness. Then the rank for each member is computed using the     following formula:<br><br>f(y) = 2.0 - SP + 2.0 * (SP - 1.0) * order (y) /     popSize - 1<br><br>where SP is the selective pressure, order (y) is the     order of the individual y after the sort, and popSize is the size of the     population. With this done, stochastic universal sampling is performed,     however instead of the objective fitness value being used, the value of     f(y) is used.  </body></html>";
 	}
 
 	//////////////////////////////////
@@ -91,7 +92,7 @@ public class RankSelection extends SelectionModule
 	public String[] getOutputTypes () {
 		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
 		return types;
-}
+	}
 
 	/**
 		This will select individuals on the basis of a ranked evaluation function.
@@ -147,6 +148,40 @@ public class RankSelection extends SelectionModule
 					break;
 				this.sample[k++] = i;
 			}
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Rank";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.core.io.net;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 
 public class SelectURLModule extends UIModule  {
 		
@@ -11,12 +12,13 @@ public class SelectURLModule extends UIModule  {
 	}
 
 	public String [] getInputTypes () {
-		return null;
+		String[] types = {		};
+		return types;
 	}
 
 	public String [] getOutputTypes () {
-		String [] outputs = {"java.lang.String"};
-		return outputs;
+		String[] types = {"java.lang.String"};
+		return types;
 	}
 	
 	/**
@@ -41,7 +43,7 @@ public class SelectURLModule extends UIModule  {
 		@returns a text description of the modules function
 	*/
 	public String getModuleInfo () {
-		return "This module allows the user to enter a URL and it will pass the resulting string as it's output.";
+		return "<html>  <head>      </head>  <body>    This module allows the user to enter a URL and it will pass the resulting     string as it's output.  </body></html>";
 	}
 	
 	/**
@@ -52,7 +54,9 @@ public class SelectURLModule extends UIModule  {
 		@returns a text description of the indexed input
 	*/
 	public String getInputInfo (int index) {
-		return "There is no such input.";
+		switch (index) {
+			default: return "No such input";
+		}
 	}
 	
 	/**
@@ -64,10 +68,40 @@ public class SelectURLModule extends UIModule  {
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
+			case 0: return "This output is a string containing the URL the user entered.";
+			default: return "No such output";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SelectURLModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
 			case 0:
-				return "This output is a string containing the URL the user entered.";
-			default:
-				return "There is no such output.";
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

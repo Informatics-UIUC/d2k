@@ -1,6 +1,7 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.io.sql;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.sql.*;
 import java.io.*;
 
@@ -10,7 +11,7 @@ import java.io.*;
 	CountResults.java
 
 */
-public class CountResults extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class CountResults extends ncsa.d2k.core.modules.DataPrepModule
 /*#end^2 Continue editing. ^#&*/
 {
 
@@ -19,13 +20,11 @@ public class CountResults extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Connection\">    <Text>This is the database connection </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Table\">    <Text>This is the name of the database table to read from. </Text>  </Info></D2K>";
+			case 0: return "      This is the database connection   ";
+			case 1: return "      This is the name of the database table to read from.   ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -33,12 +32,8 @@ public class CountResults extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-			"java.lang.String"};
+		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","java.lang.String"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -46,12 +41,10 @@ public class CountResults extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Hits\">    <Text>This is a count of the number of hits against the database. </Text>  </Info></D2K>";
+			case 0: return "      This is a count of the number of hits against the database.   ";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -59,11 +52,8 @@ public class CountResults extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-			"java.lang.Integer"};
+		String[] types = {"java.lang.Integer"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -71,9 +61,7 @@ public class CountResults extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Count Hits\">    <Text>This module will count the number of entries in a database table. </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<html>  <head>      </head>  <body>    This module will count the number of entries in a database table.  </body></html>";
 	}
 
 	/**
@@ -97,5 +85,41 @@ public class CountResults extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	}
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Count Hits";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Connection";
+			case 1:
+				return "Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Hits";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

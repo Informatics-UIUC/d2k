@@ -1,52 +1,48 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
+
 import java.io.*;
 import java.util.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.vis.*;
-import ncsa.d2k.modules.core.datatype.*; // eliminate this when HLT gets added to d2k
+import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 /**
  * VTReferenceModule
  * @author gpape
  */
 public class VTReferenceModule extends DataPrepModule
-   implements Serializable, HasProperties {
+    {
 
    public String getModuleInfo() {
-      return "Converts one of its two input VerticalTables into a " +
-             "HashLookupTable that references the other with VTReferences.";
-   }
+		return "<html>  <head>      </head>  <body>    Converts one of its two input VerticalTables into a HashLookupTable that     references the other with VTReferences.  </body></html>";
+	}
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.table.Table",
-         "ncsa.d2k.modules.core.datatype.table.Table"};
-      return i;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table","ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
+	}
 
    public String getInputInfo(int index) {
-      if (index == 0)
-         return "The VerticalTable to be referenced to (unchanged).";
-      else if (index == 1)
-         return "The VerticalTable to be converted to a HashLookupTable";
-      else
-         return "VTReferenceModule has no such input.";
-   }
+		switch (index) {
+			case 0: return "The VerticalTable to be referenced to (unchanged).";
+			case 1: return "The VerticalTable to be converted to a HashLookupTable";
+			default: return "No such input";
+		}
+	}
 
    public String[] getOutputTypes() {
-      String[] o = {"ncsa.d2k.modules.core.datatype.HashLookupTable",
-         "ncsa.d2k.modules.core.datatype.table.Table"};
-      return o;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.HashLookupTable","ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
+	}
 
    public String getOutputInfo(int index) {
-      if (index == 0)
-         return "A HashLookupTable referencing the output VerticalTable.";
-      else if (index == 1)
-         return "The first VerticalTable input, unaltered.";
-      else
-         return "VTReferenceModule has no such output.";
-   }
+		switch (index) {
+			case 0: return "A HashLookupTable referencing the output VerticalTable.";
+			case 1: return "The first VerticalTable input, unaltered.";
+			default: return "No such output";
+		}
+	}
 
    public String referenceLabel;
 
@@ -106,4 +102,42 @@ public class VTReferenceModule extends DataPrepModule
 
    }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "VTReferenceModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

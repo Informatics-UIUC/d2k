@@ -1,8 +1,18 @@
 package ncsa.d2k.modules.core.vis;
 
+
+import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.table.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.gui.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
@@ -14,20 +24,15 @@ import ncsa.d2k.modules.core.vis.widgets.*;
    @author David Clutter
 */
 public class ETScatterPlot extends VisModule
-	implements HasNames, Serializable {
+	 {
 
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer("Given an ExampleTable, plot ");
-		sb.append("each numeric input variable against each numeric ");
-		sb.append("output variable in a ScatterPlot.  A matrix of these ");
-		sb.append("plots is shown.  The plots can be selected and a ");
-		sb.append("larger composite graph of these plots can be displayed.");
-		return sb.toString();
-    }
+		return "<html>  <head>      </head>  <body>    Given an ExampleTable, plot each numeric input variable against each     numeric output variable in a ScatterPlot. A matrix of these plots is     shown. The plots can be selected and a larger composite graph of these     plots can be displayed.  </body></html>";
+	}
 
     /**
        Return the name of this module.
@@ -35,7 +40,7 @@ public class ETScatterPlot extends VisModule
     */
     public String getModuleName() {
 		return "ETScatterPlot";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -43,9 +48,9 @@ public class ETScatterPlot extends VisModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-		return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -53,8 +58,9 @@ public class ETScatterPlot extends VisModule
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		return null;
-    }
+		String[] types = {		};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -62,8 +68,11 @@ public class ETScatterPlot extends VisModule
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "The ExampleTable to plot.";
-    }
+		switch (i) {
+			case 0: return "The ExampleTable to plot.";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -71,8 +80,12 @@ public class ETScatterPlot extends VisModule
        @return The name of the input
     */
     public String getInputName(int i) {
-		return "ET";
-    }
+		switch(i) {
+			case 0:
+				return "ET";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
     /**
        Return the description of a specific output.
@@ -80,8 +93,10 @@ public class ETScatterPlot extends VisModule
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		return "";
-    }
+		switch (i) {
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.
@@ -89,11 +104,12 @@ public class ETScatterPlot extends VisModule
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	return "";
-    }
+		switch(i) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
 	protected UserView createUserView() {
-		//return new ETPlotView();
 		return new ETScatterPlotWidget();
 	}
 

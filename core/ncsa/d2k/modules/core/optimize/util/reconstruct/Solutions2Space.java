@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.util.reconstruct;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -15,7 +16,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 	*/
 
 public class Solutions2Space extends DataPrepModule
-	implements HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -112,71 +113,50 @@ public class Solutions2Space extends DataPrepModule
 
 
 	public String getModuleInfo(){
-		return "Takes a solution space and solutions (solutions one at a time)"+
-				" and puts the solutions in the space in the order they come in";
+		return "<html>  <head>      </head>  <body>    Takes a solution space and solutions (solutions one at a time) and puts     the solutions in the space in the order they come in  </body></html>";
 	}
 
    	public String getModuleName() {
 		return "Solution Compiler";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.optimize.util.SolutionSpace",
-					"ncsa.d2k.modules.core.optimize.util.Solution"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SolutionSpace","ncsa.d2k.modules.core.optimize.util.Solution"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The solution space with no solutions or unevaluated solutions";
-			}
-			case(1): {
-				return "The individual, evaluated solutions";
-			}
-
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "The solution space with no solutions or unevaluated solutions";
+			case 1: return "The individual, evaluated solutions";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "The Solution Space";
-			}
-			case(1): {
+			case 1:
 				return "Evalutated Solution";
-			}
-
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The solution space containing evaluated solutions";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "The solution space containing evaluated solutions";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Evaluated Solution Space";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

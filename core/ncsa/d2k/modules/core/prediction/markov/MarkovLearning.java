@@ -6,16 +6,16 @@ package ncsa.d2k.modules.core.prediction.markov;
 //import ncsa.d2k.dtcheng.general.*;
 //import ncsa.d2k.dtcheng.io.*;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import java.io.*;
 import java.util.*;
 import java.text.*;
 
 
 
-public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModule implements Serializable
+public class MarkovLearning extends ncsa.d2k.core.modules.ComputeModule 
   {
 
   //////////////////////
@@ -41,22 +41,25 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
 
   public String getInputInfo (int index)
     {
-    String[] inputDescriptions = {"ExampleSetTable",
-		"LearningBiasTable"};
-    return inputDescriptions[index];
-    }
+		switch (index) {
+			case 0: return "ExampleSetTable";
+			case 1: return "LearningBiasTable";
+			default: return "No such input";
+		}
+	}
 
   public String getOutputInfo (int index)
     {
-    String[] outputDescriptions = {"MarkovModel"};
-    return outputDescriptions[index];
-    }
+		switch (index) {
+			case 0: return "MarkovModel";
+			default: return "No such output";
+		}
+	}
 
   public String getModuleInfo()
     {
-    String text = this.getClass().getName();
-    return text;
-    }
+		return "<html>  <head>      </head>  <body>    ncsa.d2k.modules.core.prediction.markov.MarkovLearning  </body></html>";
+	}
 
 
   ////////////////////////
@@ -65,16 +68,15 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
 
   public String[] getInputTypes()
     {
-    String[] temp = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl",
-                     "ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
-    return temp;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl","ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
+	}
 
   public String[] getOutputTypes()
     {
-    String[] temp = {"ncsa.d2k.modules.core.prediction.markov.MarkovModel"};
-    return temp;
-    }
+		String[] types = {"ncsa.d2k.modules.core.prediction.markov.MarkovModel"};
+		return types;
+	}
 
 
 
@@ -472,4 +474,40 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
 		return new MarkovModel();
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "MarkovLearning";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
   }

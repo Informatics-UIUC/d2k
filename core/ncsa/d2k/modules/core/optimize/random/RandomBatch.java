@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.optimize.random;
 
+
 import ncsa.d2k.modules.core.optimize.util.*;
 import java.util.Random;
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.io.Serializable;
 	@author pgroves
 	*/
 
-public class RandomBatch extends ncsa.d2k.infrastructure.modules.ComputeModule implements Serializable{
+public class RandomBatch extends ncsa.d2k.core.modules.ComputeModule {
 
 	//////////////////////
 	//d2k Props
@@ -86,37 +87,31 @@ public class RandomBatch extends ncsa.d2k.infrastructure.modules.ComputeModule i
 
 
 	public String getModuleInfo(){
-		return "Makes parameter sets at random, sends them out as a solution space"+
-				"<br>Properties:<ul><li>Seed-The seed used by the random"+
-				"number generator<li>NumSolutions-the number of random parameter sets to make"+
-				"and evaluate</ul>";
+		return "<html>  <head>      </head>  <body>    Makes parameter sets at random, sends them out as a solution space<br>    Properties:    <ul>      <li>        Seed-The seed used by the randomnumber generator      </li>      <li>        NumSolutions-the number of random parameter sets to makeand evaluate      </li>    </ul>  </body></html>";
 	}
 
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		if(index==0){
-			return "The solution space object containing definitions for the ranges to bind the parameters to";
+		switch (index) {
+			case 0: return "The solution space object containing definitions for the ranges to bind the parameters to";
+			default: return "No such input";
 		}
-
-		else
-			return "No such input";
 	}
 
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SolutionSpace"};
+		return types;
 	}
 
 	public String getOutputInfo(int i){
-		if(i==0){
-			return "The random solutions that will need to be evaluated ";
+		switch (i) {
+			case 0: return "The random solutions that will need to be evaluated ";
+			default: return "No such output";
 		}
-		else
-			return "no such output";
 	}
 
 	////////////////////
@@ -135,6 +130,40 @@ public class RandomBatch extends ncsa.d2k.infrastructure.modules.ComputeModule i
 		seed=l;
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "RandomBatch";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 
 

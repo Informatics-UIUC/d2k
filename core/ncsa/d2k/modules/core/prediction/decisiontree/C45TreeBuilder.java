@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.util.*;
@@ -24,8 +24,7 @@ import java.text.NumberFormat;
 
 	@author David Clutter
 */
-public class C45TreeBuilder extends ComputeModule
-    implements Serializable, HasNames, HasProperties {
+public class C45TreeBuilder extends ComputeModule {
 
 	public static void main(String[] args) {
 		double d1 = (double)9/(double)14;

@@ -1,13 +1,13 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.awt.event.*;
 import java.lang.*;
 import java.io.*;
 import java.awt.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
@@ -15,7 +15,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 	BinnedTable.java
 */
 
-public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule implements Serializable
+public class BinTable extends ncsa.d2k.core.modules.DataPrepModule 
 {
 	boolean rmvCol;
 	/**
@@ -24,11 +24,10 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"BT\">    <Text>This is the bin tree.</Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ET\">    <Text> The example table.</Text>  </Info></D2K>";
+			case 0: return "      This is the bin tree.  ";
+			case 1: return "       The example table.  ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -36,10 +35,8 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -48,10 +45,9 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ET\">    <Text> </Text>The resulting table.</Info></D2K>";
+			case 0: return "       The resulting table.";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -61,7 +57,6 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 	public String[] getOutputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -69,8 +64,7 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Bin Table\">    <Text>This module will use a module tree to bin the input columns of the example table passed in. If removeColumns is true, the old unbinned columns will not be included in the resulting table.</Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    This module will use a module tree to bin the input columns of the example     table passed in. If removeColumns is true, the old unbinned columns will     not be included in the resulting table.  </body></html>";
 	}
 
 	// Method : getRemoveColumns
@@ -146,5 +140,41 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 		outs[0] = currCol;
 		ET.setColumns(newCols);
 		pushOutput(ET, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Bin Table";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "BT";
+			case 1:
+				return "ET";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "ET";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

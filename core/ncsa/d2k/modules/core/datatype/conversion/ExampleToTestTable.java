@@ -1,9 +1,9 @@
 package ncsa.d2k.modules.core.datatype.conversion;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-
 import java.util.*;
 
 /**
@@ -18,7 +18,7 @@ public class ExampleToTestTable extends DataPrepModule {
        @return A description of this module.
     */
     public String getModuleInfo() {
-		return "This module will simply convert an ExampleTable to a TestTable.";
+		return "<html>  <head>      </head>  <body>    This module will simply convert an ExampleTable to a TestTable.  </body></html>";
 	}
 
     /**
@@ -27,8 +27,8 @@ public class ExampleToTestTable extends DataPrepModule {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-    	String []in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-		return in;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
 	}
 
     /**
@@ -37,8 +37,8 @@ public class ExampleToTestTable extends DataPrepModule {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-    	String []out = {"ncsa.d2k.modules.core.datatype.table.TestTable"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.TestTable"};
+		return types;
 	}
 
     /**
@@ -47,7 +47,10 @@ public class ExampleToTestTable extends DataPrepModule {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "The input ExampleTable.";
+		switch (i) {
+			case 0: return "The input ExampleTable.";
+			default: return "No such input";
+		}
 	}
 
     /**
@@ -56,7 +59,10 @@ public class ExampleToTestTable extends DataPrepModule {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-    	return "The test table";
+		switch (i) {
+			case 0: return "The test table";
+			default: return "No such output";
+		}
 	}
 
     /**
@@ -66,5 +72,39 @@ public class ExampleToTestTable extends DataPrepModule {
 		Object obj = pullInput (0);
     	ExampleTable et = (ExampleTable) obj;
 		pushOutput (et.getTestTable (), 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "ExampleToTestTable";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

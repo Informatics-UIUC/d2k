@@ -1,11 +1,9 @@
 package ncsa.d2k.modules.core.prediction.compound;
 
-import ncsa.d2k.infrastructure.modules.ModelGeneratorModule;
-import ncsa.d2k.infrastructure.modules.HasNames;
-import ncsa.d2k.infrastructure.modules.ModelModule;
-import ncsa.d2k.infrastructure.modules.HasNames;
-import ncsa.d2k.modules.PredictionModelModule;
 
+import ncsa.d2k.core.modules.ModelGeneratorModule;
+import ncsa.d2k.core.modules.ModelModule;
+import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.optimize.util.*;
@@ -21,7 +19,7 @@ import ncsa.d2k.modules.core.optimize.util.*;
 	*/
 
 public class CompoundModelGen extends ModelGeneratorModule
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -154,7 +152,7 @@ public class CompoundModelGen extends ModelGeneratorModule
 	//////////////////////////////////////////////////////////////
 
 	public class CompoundModel extends PredictionModelModule
-					implements java.io.Serializable, HasNames
+					implements java.io.Serializable
 	{
 
 		////////////////////
@@ -439,93 +437,49 @@ public class CompoundModelGen extends ModelGeneratorModule
 
 
 	public String getModuleInfo(){
-		return
-					"Makes a modelmodule that uses the best of the input"+
-					"models to predict any particular feature.  For instance,"+
-					" if regression predicts feature A better than a decision"+
-					" tree, but the tree beats the regression for feature B,"+
-					" a compound model will be made that will always predict"+
-					"feature A w/ the regression model and B w/ the decision "+
-					"tree. The resulting compound model will behave the same"+
-					"as any other prediction model module, but it will not"+
-					"be apparent what modeling algorithm is generating any"+
-					"particular set of predictions.<br><b>Properties</b>:"+
-					"<ul><li>AllowDifferentModelTypes: if false, all of the"+
-					"models will be of the same type, with the winner being"+
-					"determined by the lowest average error over all outputs."+
-					"  Therefore, the error metrics should all be on the same"+
-					" scale. Otherwise, the models will be compared for"+
-					" every output, and the lowest error for that output will"+
-					" win.<li>InputModelCount: Basically the number of Model"+
-					"Score objects to expect for determining each compound mo"+
-					"del -or- the number of different models being considered"+
-					".<li>MakeModelAvailable: whether to let d2k save the last"+
-					" model created in the execution of the itinerary</ul>";
+		return "<html>  <head>      </head>  <body>    Makes a modelmodule that uses the best of the inputmodels to predict any     particular feature. For instance, if regression predicts feature A better     than a decision tree, but the tree beats the regression for feature B, a     compound model will be made that will always predictfeature A w/ the     regression model and B w/ the decision tree. The resulting compound model     will behave the sameas any other prediction model module, but it will     notbe apparent what modeling algorithm is generating anyparticular set of     predictions.<br><b>Properties</b>:    <ul>      <li>        AllowDifferentModelTypes: if false, all of themodels will be of the         same type, with the winner beingdetermined by the lowest average error         over all outputs. Therefore, the error metrics should all be on the         same scale. Otherwise, the models will be compared for every output,         and the lowest error for that output will win.      </li>      <li>        InputModelCount: Basically the number of ModelScore objects to expect         for determining each compound model -or- the number of different         models being considered.      </li>      <li>        MakeModelAvailable: whether to let d2k save the last model created in         the execution of the itinerary      </li>    </ul>  </body></html>";
 	}
    	public String getModuleName() {
 		return "Compound Model Generator";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
-					"ncsa.d2k.modules.core.prediction.compound.ModelScore" };
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable","ncsa.d2k.modules.core.prediction.compound.ModelScore"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "This is only used to get Features' names";
-			}
-			case(1): {
-				return "The ModelScore Objects";
-			}
-
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "This is only used to get Features' names";
+			case 1: return "The ModelScore Objects";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Training Data";
-			}
-			case(1): {
+			case 1:
 				return "Score Object";
-			}
-
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.PredictionModelModule"
-
-					/*"modules.compute.learning.modelgen."+
-					"compound.CompoundModelGen$CompoundModel"*/};
-		return s;
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The model that was produced";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "The model that was produced";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "The Model";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

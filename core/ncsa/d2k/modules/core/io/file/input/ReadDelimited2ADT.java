@@ -1,11 +1,11 @@
 package ncsa.d2k.modules.core.io.file.input;
 
+
 import java.io.*;
 import java.util.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
 import ncsa.d2k.modules.core.datatype.ADTree;
 
 /**
@@ -19,16 +19,16 @@ public class ReadDelimited2ADT extends ReadDelimitedFormat {
        @return A description of this module.
     */
     public String getModuleInfo() {
-	return "Reads a delimited format file and creates an ADTree ";
-    }
+		return "<html>  <head>      </head>  <body>    Reads a delimited format file and creates an ADTree  </body></html>";
+	}
     
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleName() {
-	return "ReadDelimited2ADT";
-    }
+		return "ReadDelimited2ADT";
+	}
     
     /**
        Return a String array containing the datatypes the inputs to this
@@ -36,9 +36,9 @@ public class ReadDelimited2ADT extends ReadDelimitedFormat {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-	String []in = {"java.lang.String"};
-	return in;
-    }
+		String[] types = {"java.lang.String"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -46,10 +46,9 @@ public class ReadDelimited2ADT extends ReadDelimitedFormat {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.ADTree",
-				"ncsa.d2k.core.datatype.table.ExampleTable"};
-		return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.ADTree","ncsa.d2k.core.datatype.table.ExampleTable"};
+		return types;
+	}
     
     /**
        Return a description of a specific input.
@@ -57,11 +56,11 @@ public class ReadDelimited2ADT extends ReadDelimitedFormat {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-	if(i == 0)
-	    return "The name of the file to read.";
-	else
-	    return "No such input";
-    }
+		switch (i) {
+			case 0: return "The name of the file to read.";
+			default: return "No such input";
+		}
+	}
     
     /**
        Return the description of a specific output.
@@ -69,13 +68,12 @@ public class ReadDelimited2ADT extends ReadDelimitedFormat {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-	if(i == 0)
-	    return "The ADTree";
-	else if( i == 1)
-	    return "ExampleTable containing metadata";
-	else
-	    return "No such output";
-    }
+		switch (i) {
+			case 0: return "The ADTree";
+			case 1: return "ExampleTable containing metadata";
+			default: return "No such output";
+		}
+	}
     
     /**
        Return the name of a specific input.
@@ -83,11 +81,12 @@ public class ReadDelimited2ADT extends ReadDelimitedFormat {
        @return The description of the input
     */
     public String getInputName(int i) {
-	if(i == 0)
-	    return "fileName";
-	else
-	    return "No such input";
-    }
+		switch(i) {
+			case 0:
+				return "fileName";
+			default: return "NO SUCH INPUT!";
+		}
+	}
     
     
     /**
@@ -96,13 +95,14 @@ public class ReadDelimited2ADT extends ReadDelimitedFormat {
        @return The description of the output.
     */
     public String getOutputName(int i) {
-	if(i == 0)
-	    return "TheADTree";
-	else if( i == 1)
-	    return "ExampleTable";
-	else
-	    return "No such output";
-    }
+		switch(i) {
+			case 0:
+				return "TheADTree";
+			case 1:
+				return "ExampleTable";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
     
     int numCols=0 ;
     int numRows =0;

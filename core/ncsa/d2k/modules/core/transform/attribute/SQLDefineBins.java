@@ -1,11 +1,11 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.swing.*;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
-
 import java.util.*;
 import java.sql.*;
 import javax.swing.*;
@@ -29,8 +29,7 @@ public class SQLDefineBins extends DefineBins {
        @return A description of this module.
     */
     public String getModuleInfo() {
-    	StringBuffer sb = new StringBuffer("Allows the user to bin data comming from a database.");
-		return sb.toString();
+		return "<html>  <head>      </head>  <body>    Allows the user to bin data comming from a database.  </body></html>";
 	}
 
     /**
@@ -39,7 +38,7 @@ public class SQLDefineBins extends DefineBins {
     */
     public String getModuleName() {
 		return "SQLDefineBins";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -47,10 +46,8 @@ public class SQLDefineBins extends DefineBins {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-	String []in = {	"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-			"java.lang.String",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-	return in;
+		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","java.lang.String","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
 	}
 
     /**
@@ -59,9 +56,8 @@ public class SQLDefineBins extends DefineBins {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
 	}
 
     /**
@@ -70,13 +66,13 @@ public class SQLDefineBins extends DefineBins {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-    	switch(i) {
-	case 0: return "SQL Connection ";
-	case 1: return "Table with data in it .";
-	case 2: return "Table with metadata in it .";
-	default: return "no such input!";
+		switch (i) {
+			case 0: return "SQL Connection ";
+			case 1: return "Table with data in it .";
+			case 2: return "Table with metadata in it .";
+			default: return "No such input";
+		}
 	}
-    }
 
     /**
        Return the name of a specific input.
@@ -84,13 +80,16 @@ public class SQLDefineBins extends DefineBins {
        @return The name of the input
     */
     public String getInputName(int i) {
-    	switch(i) {
-	case 0: return "Connection";
-	case 1: return "Table";
-	case 2: return "MetadataTable";
-	default: return "no such input!";
+		switch(i) {
+			case 0:
+				return "Connection";
+			case 1:
+				return "Table";
+			case 2:
+				return "MetadataTable";
+			default: return "NO SUCH INPUT!";
+		}
 	}
-    }
 
     /**
        Return the description of a specific output.
@@ -490,6 +489,21 @@ public class SQLDefineBins extends DefineBins {
 	}
 
 
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 
 

@@ -1,6 +1,7 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.io.net;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.util.*;
 import java.io.*;
 import java.net.*;
@@ -10,19 +11,17 @@ import java.net.*;
 	ReadURLText.java
 	
 */
-public class ReadURLText extends ncsa.d2k.infrastructure.modules.InputModule implements Serializable {
+public class ReadURLText extends ncsa.d2k.core.modules.InputModule  {
 /*#end^2 Continue editing. ^#&*/
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<D2K>\r\n  <Info common=\"URL\">\r\n    <Text>This input can be either a string or a URL object that is to be read.\n</Text>\r\n  </Info>\r\n</D2K>\r\n\r\n";
+			case 0: return "      This input can be either a string or a URL object that is to be read.  ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -30,11 +29,8 @@ public class ReadURLText extends ncsa.d2k.infrastructure.modules.InputModule imp
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"java.lang.Object"};
+		String[] types = {"java.lang.Object"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -42,12 +38,10 @@ public class ReadURLText extends ncsa.d2k.infrastructure.modules.InputModule imp
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<D2K>\r\n  <Info common=\"Text\">\r\n    <Text>THis is the textual data read from the url.\n</Text>\r\n  </Info>\r\n</D2K>\r\n\r\n";
+			case 0: return "      THis is the textual data read from the url.  ";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -55,11 +49,8 @@ public class ReadURLText extends ncsa.d2k.infrastructure.modules.InputModule imp
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-			"[B"};
+		String[] types = {"[B"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -67,9 +58,7 @@ public class ReadURLText extends ncsa.d2k.infrastructure.modules.InputModule imp
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<D2K>\r\n  <Info common=\"URLReader\">\r\n    <Text>This guy reads text from a given url into a byte array which is the output. The URL can be either a string or a URL.\n</Text>\r\n  </Info>\r\n</D2K>\r\n\r\n";
-/*#end^7 Continue editing. ^#&*/
+		return "<html>  <head>      </head>  <body>    This guy reads text from a given url into a byte array which is the     output. The URL can be either a string or a URL.  </body></html>";
 	}
 
 	/** 
@@ -144,5 +133,39 @@ public class ReadURLText extends ncsa.d2k.infrastructure.modules.InputModule imp
 
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "URLReader";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "URL";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Text";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

@@ -1,22 +1,21 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.discovery.ruleassociation;
 
+
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
 
 /**
 	RuleVis.java
 */
-public class RuleVis extends ncsa.d2k.infrastructure.modules.VisModule
+public class RuleVis extends ncsa.d2k.core.modules.VisModule
 /*#end^2 Continue editing. ^#&*/
 {
 	static final int BAR_HEIGHT = 56;
@@ -31,13 +30,11 @@ public class RuleVis extends ncsa.d2k.infrastructure.modules.VisModule
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Rules\">    <Text>These rules consist of an array of rules where each rule is some number of antecedants, followed by one target or prediction, the support value, then the confidence value. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"item sets\">    <Text>This structure contains the examples used to generate the itemsets.</Text>  </Info></D2K>";
+			case 0: return "      These rules consist of an array of rules where each rule is some number of antecedants, followed by one target or prediction, the support value, then the confidence value.   ";
+			case 1: return "      This structure contains the examples used to generate the itemsets.  ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -45,12 +42,8 @@ public class RuleVis extends ncsa.d2k.infrastructure.modules.VisModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"[[I",
-			"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"};
+		String[] types = {"[[I","ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -58,11 +51,9 @@ public class RuleVis extends ncsa.d2k.infrastructure.modules.VisModule
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -70,11 +61,8 @@ public class RuleVis extends ncsa.d2k.infrastructure.modules.VisModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-};
+		String[] types = {		};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -82,9 +70,7 @@ public class RuleVis extends ncsa.d2k.infrastructure.modules.VisModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Rule Visualizer\">    <Text>Display rules in a tabular form. </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<html>  <head>      </head>  <body>    Display rules in a tabular form.  </body></html>";
 	}
 
 	/**
@@ -126,7 +112,7 @@ public class RuleVis extends ncsa.d2k.infrastructure.modules.VisModule
 	RuleVisView
 	This is the UserView class.
 */
-class RuleVisView extends ncsa.d2k.controller.userviews.swing.JUserPane implements ActionListener {
+class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionListener {
 /*#end^12 Continue editing. ^#&*/
 	ViewModule module;
 	/**
@@ -731,5 +717,39 @@ class ValueVisDataModel extends AbstractTableModel {
 			percent = (percent * 100) / this.numsets;
 		}
 		return new Float (percent);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Rule Visualizer";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Rules";
+			case 1:
+				return "item sets";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

@@ -6,7 +6,7 @@
 
 package ncsa.d2k.modules.core.io.grid;
 
-import  ncsa.d2k.infrastructure.modules.*;
+import  ncsa.d2k.core.modules.*;
 import  java.io.*;
 import  org.globus.gram.*;
 import  org.globus.mds.*;

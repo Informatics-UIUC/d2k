@@ -1,8 +1,9 @@
 package ncsa.d2k.modules.core.io.file.input;
 
+
 import java.io.*;
 import java.util.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
@@ -10,7 +11,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
  * Read in a file with a single delimiter.
 */
 public class ReadDelimitedFormat extends AbstractDelimitedReader
-    implements Serializable, HasNames, HasProperties {
+     {
 
 	/*protected static final String STRING_TYPE = "String";
 	protected static final String FLOAT_TYPE = "float";
@@ -130,28 +131,12 @@ public class ReadDelimitedFormat extends AbstractDelimitedReader
 	   @return A description of this module.
 	*/
 	public String getModuleInfo() {
-		String str = "Loads data that is in a delimited format ";
-        str += "from the input filename into a Table and outputs this Table. ";
-        str += "This is optimized for a file with a single character delimiter. ";
-        str += "This module has several properties. labelsRow indicates which ";
-        str += "row specifies attribute labels, if none specify '-l'. ";
-        str += "typesRow indicates which row specifies data types, if none ";
-        str += "specify '-1'.  inOutRow indicates which row specifies the ";
-        str += "attributes to use as input and output, if none specify '-1'. ";
-        str += "useStringAndDouble indicates whether or not the system needs ";
-        str += "to determine data types. missingNumericFillerValue is the ";
-		str += "value put into the table when a missing value is encountered in ";
-		str += "a numeric column.  missingTextualFillerValue is the value put ";
-		str += "into the table when a missing value is encountered in a textual ";
-		str += "column.  useCompactStrings will use the most compact representation ";
-		str += "of strings in memory when true, and will use a less efficient ";
-		str += "memory scheme when false.";
-        return str;
+		return "<html>  <head>      </head>  <body>    Loads data that is in a delimited format from the input filename into a     Table and outputs this Table. This is optimized for a file with a single     character delimiter. This module has several properties. labelsRow     indicates which row specifies attribute labels, if none specify '-l'.     typesRow indicates which row specifies data types, if none specify '-1'.     inOutRow indicates which row specifies the attributes to use as input and     output, if none specify '-1'. useStringAndDouble indicates whether or not     the system needs to determine data types. missingNumericFillerValue is the     value put into the table when a missing value is encountered in a numeric     column. missingTextualFillerValue is the value put into the table when a     missing value is encountered in a textual column. useCompactStrings will     use the most compact representation of strings in memory when true, and     will use a less efficient memory scheme when false.  </body></html>";
 	}
 
     public String getModuleName() {
-        return "ReadDelimitedFormat";
-    }
+		return "ReadDelimitedFormat";
+	}
 
 	/**
 	   Return a String array containing the datatypes the inputs to this
@@ -159,8 +144,8 @@ public class ReadDelimitedFormat extends AbstractDelimitedReader
 	   @return The datatypes of the inputs.
 	*/
 	public String[] getInputTypes() {
-		String []in = {"java.lang.String"};
-		return in;
+		String[] types = {"java.lang.String"};
+		return types;
 	}
 
    /**
@@ -169,8 +154,8 @@ public class ReadDelimitedFormat extends AbstractDelimitedReader
 	   @return The datatypes of the outputs.
 	*/
 	public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
 	}
 
 	/**
@@ -179,15 +164,19 @@ public class ReadDelimitedFormat extends AbstractDelimitedReader
 	   @return The description of the input
 	*/
 	public String getInputInfo(int i) {
-		if(i == 0)
-			return "The name of the file to read.";
-		else
-			return "No such input";
+		switch (i) {
+			case 0: return "The name of the file to read.";
+			default: return "No such input";
+		}
 	}
 
     public String getInputName(int i) {
-        return "FileName";
-    }
+		switch(i) {
+			case 0:
+				return "FileName";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
 	/**
 	   Return the description of a specific output.
@@ -195,15 +184,19 @@ public class ReadDelimitedFormat extends AbstractDelimitedReader
 	   @return The description of the output.
 	*/
 	public String getOutputInfo(int i) {
-		if(i == 0)
-			return "The Table";
-		else
-			return "No such output";
+		switch (i) {
+			case 0: return "The Table";
+			default: return "No such output";
+		}
 	}
 
     public String getOutputName(int i) {
-        return "Table";
-    }
+		switch(i) {
+			case 0:
+				return "Table";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
 	/**
 		Called when the itinerary begins execution.  Initialize

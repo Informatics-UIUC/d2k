@@ -22,7 +22,7 @@ import net.jini.core.entry.*;
 import net.jini.lookup.entry.Name;
 import net.jini.core.discovery.*;
 
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 
 public class SpaceReader extends InputModule {
 

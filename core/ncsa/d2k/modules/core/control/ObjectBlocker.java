@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.control;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /*
 	Takes in an object, does nothing with it.
@@ -11,7 +12,7 @@ import ncsa.d2k.infrastructure.modules.*;
 	*/
 
 public class ObjectBlocker extends ComputeModule 
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -54,62 +55,44 @@ public class ObjectBlocker extends ComputeModule
 
 
 	public String getModuleInfo(){
-		return "Takes in an object, does nothing with it."+
-				"Used to clean up unused outputs in nested itins ";
+		return "<html>  <head>      </head>  <body>    Takes in an object, does nothing with it.Used to clean up unused outputs     in nested itins  </body></html>";
 	}
 	
    	public String getModuleName() {
 		return "";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"java.lang.Object"};
-		return s;
+		String[] types = {"java.lang.Object"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "";
+			default: return "No such input";
 		}
 	}
 	
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Unwanted Object";
-			}
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={};
-		return s;
+		String[] types = {		};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
 		}
 	}		
 	////////////////////////////////

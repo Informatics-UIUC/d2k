@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.core.prediction.neuralnet;
 
-import ncsa.d2k.infrastructure.modules.ModelGeneratorModule;
-import ncsa.d2k.infrastructure.modules.ModelModule;
+
+import ncsa.d2k.core.modules.ModelGeneratorModule;
+import ncsa.d2k.core.modules.ModelModule;
 import java.io.*;
 import java.util.*;
 import ncsa.d2k.modules.PredictionModelModule;
@@ -23,8 +24,8 @@ import ncsa.d2k.modules.core.optimize.util.*;
 */
 
 public class NNModelGenerator
-			extends ncsa.d2k.infrastructure.modules.ModelGeneratorModule
-			implements Serializable/*, Reentrant*/{
+			extends ncsa.d2k.core.modules.ModelGeneratorModule
+			/*, Reentrant*/{
 
 
 	boolean debug=true;
@@ -154,8 +155,8 @@ public class NNModelGenerator
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"data\">    <Text>The data set to train on (will train only on trainExamples. The output columns must be scaled to [-1,1] if using activation functions Elliot, Tanh, or FastTanh and [0,1] for Sigmoid and FastSigmoid</Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Parameters\">    <Text>The architecture and learning method parameters. See NNSolutionMaker for details</Text>  </Info></D2K>";
+			case 0: return "      The data set to train on (will train only on trainExamples. The output columns must be scaled to [-1,1] if using activation functions Elliot, Tanh, or FastTanh and [0,1] for Sigmoid and FastSigmoid  ";
+			case 1: return "      The architecture and learning method parameters. See NNSolutionMaker for details  ";
 			default: return "No such input";
 		}
 	}
@@ -165,13 +166,8 @@ public class NNModelGenerator
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TrainTableImpl",
-			"ncsa.d2k.modules.core.optimize.util.MixedSolution"
-			};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TrainTableImpl","ncsa.d2k.modules.core.optimize.util.MixedSolution"};
 		return types;
-
 	}
 
 	/**
@@ -179,10 +175,8 @@ public class NNModelGenerator
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"model\">    <Text>The model created.</Text></Info></D2K>";
-
+			case 0: return "      The model created.";
 			default: return "No such output";
 		}
 	}
@@ -192,10 +186,7 @@ public class NNModelGenerator
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.PredictionModelModule"
-};
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule"};
 		return types;
 	}
 
@@ -204,7 +195,7 @@ public class NNModelGenerator
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Neural Network Module Generator\">    <Text>A Neural Network Model Generator that works for both manually setting parameters and using an optimizer. </Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    A Neural Network Model Generator that works for both manually setting     parameters and using an optimizer.  </body></html>";
 	}
 
 
@@ -933,4 +924,40 @@ public class NNModelGenerator
 
 
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Neural Network Module Generator";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "data";
+			case 1:
+				return "Parameters";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "model";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

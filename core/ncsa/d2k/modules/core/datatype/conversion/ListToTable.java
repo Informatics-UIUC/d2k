@@ -1,15 +1,15 @@
 package ncsa.d2k.modules.core.datatype.conversion;
 
-import ncsa.d2k.infrastructure.modules.*;
-import java.util.*;
 
+import ncsa.d2k.core.modules.*;
+import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
 	ListToVT.java
 */
-public class ListToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class ListToTable extends ncsa.d2k.core.modules.DataPrepModule
 {
 
 	/**
@@ -18,7 +18,7 @@ public class ListToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"list\"><Text>Objects to be put in the verticaltable </Text></Info></D2K>";
+			case 0: return "Objects to be put in the verticaltable ";
 			default: return "No such input";
 		}
 	}
@@ -38,7 +38,7 @@ public class ListToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"table\"><Text>Contains the objects from the list in single column </Text></Info></D2K>";
+			case 0: return "Contains the objects from the list in single column ";
 			default: return "No such output";
 		}
 	}
@@ -57,7 +57,7 @@ public class ListToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"ListToVT\"><Text>For each item in the list, create a row in the table. The table will only have one column. </Text></Info></D2K>";
+		return "<html>  <head>      </head>  <body>    For each item in the list, create a row in the table. The table will only     have one column.  </body></html>";
 	}
 
 	/**
@@ -78,5 +78,39 @@ public class ListToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		cc[0] = col;
 		Table table = DefaultTableFactory.getInstance().createTable(cc);
 		pushOutput(table, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "ListToVT";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "list";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "table";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

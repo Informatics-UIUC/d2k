@@ -1,11 +1,12 @@
 package ncsa.d2k.modules.core.vis;
 
+
 import java.awt.*;
 import java.text.*;
 import javax.swing.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
@@ -15,17 +16,15 @@ import ncsa.d2k.modules.core.vis.widgets.*;
  * predictions and a confusion matrix are included.
    @author David Clutter
 */
-public class PredictionTableReport extends VisModule implements HasNames {
+public class PredictionTableReport extends VisModule  {
 
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleInfo() {
-		String s = "Display some statistics about a PredictionTable, including ";
-		s += "the number of correct predictions and a confusion matrix.";
-		return s;
-    }
+		return "<html>  <head>      </head>  <body>    Display some statistics about a PredictionTable, including the number of     correct predictions and a confusion matrix.  </body></html>";
+	}
 
     /**
        Return the name of this module.
@@ -33,7 +32,7 @@ public class PredictionTableReport extends VisModule implements HasNames {
     */
     public String getModuleName() {
 		return "PredictionTableReport";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -41,9 +40,9 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
-		return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -51,8 +50,9 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		return null;
-    }
+		String[] types = {		};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -60,8 +60,11 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "A PredictionTable.";
-    }
+		switch (i) {
+			case 0: return "A PredictionTable.";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -69,8 +72,12 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The name of the input
     */
     public String getInputName(int i) {
-		return "predTable";
-    }
+		switch(i) {
+			case 0:
+				return "predTable";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
     /**
        Return the description of a specific output.
@@ -78,8 +85,10 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		return "";
-    }
+		switch (i) {
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.
@@ -87,8 +96,10 @@ public class PredictionTableReport extends VisModule implements HasNames {
        @return The name of the output
     */
     public String getOutputName(int i) {
-		return "";
-    }
+		switch(i) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
     /**
        Not used.

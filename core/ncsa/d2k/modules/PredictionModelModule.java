@@ -1,6 +1,6 @@
 package ncsa.d2k.modules;
 
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
@@ -9,8 +9,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
  * the predict() method.  A subclass can still override the basic
  * functionality, if desired.
  */
-abstract public class PredictionModelModule extends ModelModule
-	implements HasNames {
+abstract public class PredictionModelModule extends ModelModule {
 
 	static final long serialVersionUID = -9161888039007606151L;
 

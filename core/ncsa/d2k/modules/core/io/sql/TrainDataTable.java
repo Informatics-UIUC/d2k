@@ -1,89 +1,69 @@
 package ncsa.d2k.modules.core.io.sql;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.sql.*;
 
 
 /**
    TrainDataTable.java   
 */
-public class TrainDataTable extends ncsa.d2k.infrastructure.modules.InputModule {
+public class TrainDataTable extends ncsa.d2k.core.modules.InputModule {
     
     /**
        This method returns the description of the various inputs.
        @return the description of the indexed input.
     */
     public String getInputInfo(int index) {
-	
-	switch (index) {
-	case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Connection Wrapper\">    <Text>This is the data source </Text>  </Info></D2K>";
-	case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Selected Fields\">    <Text>Selected fields from the table </Text>  </Info></D2K>";
-	case 2: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Selected Fields\">    <Text>Selected table from the database that contains the train data </Text>  </Info></D2K>";
-	case 3: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Fields with Delimiters\">    <Text>Selected fields with its delimiters. </Text>  </Info></D2K>";
-	default: return "No such input";
+		switch (index) {
+			case 0: return "      This is the data source   ";
+			case 1: return "      Selected fields from the table   ";
+			case 2: return "      Selected table from the database that contains the train data   ";
+			case 3: return "      Selected fields with its delimiters.   ";
+			default: return "No such input";
+		}
 	}
-	
-    }
     
     /**
        This method returns an array of strings that contains the data types for the inputs.
        @return the data types of all inputs.
     */
     public String[] getInputTypes () {
-	
-	String [] types =  {
-	    "ncsa.d2k.modules.sql.ConnectionWrapper", //The data source, connection wrapper
-	    "[Ljava.lang.String;",                    //selected fields
-	    "java.lang.String",                       //selected table
-	    "[[Ljava.lang.String;",                   // Fields with delimiters
-	}; 
-	return types;
-	
-    }
+		String[] types = {"ncsa.d2k.modules.sql.ConnectionWrapper","[Ljava.lang.String;","java.lang.String","[[Ljava.lang.String;"};
+		return types;
+	}
     
     /**
        This method returns the description of the outputs.
        @return the description of the indexed output.
     */
     public String getOutputInfo (int index) {
-	
-	switch (index) {
-	case 0: return  "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Number of Rows\">    <Text>This is the number of rows in the train data.  </Text>  </Info></D2K>";
-	case 1: return  "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Number of Columns\">    <Text>This is the number of columns in the train data.  </Text>  </Info></D2K>";
-	case 2: return  "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Number of Classes\">    <Text>This is the number of classes in the train data.  </Text>  </Info></D2K>";
-	case 3: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Result Set\">    <Text>This Result Set contains the train data itself. </Text>  </Info></D2K>";
-	case 4: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Fields with Delimiters\">    <Text>Selected fields with its corresponding delimiters. </Text>  </Info></D2K>";
-	default: return "No such output";
-	    
-	}
-    }	
+		switch (index) {
+			case 0: return "      This is the number of rows in the train data.    ";
+			case 1: return "      This is the number of columns in the train data.    ";
+			case 2: return "      This is the number of classes in the train data.    ";
+			case 3: return "      This Result Set contains the train data itself.   ";
+			case 4: return "      Selected fields with its corresponding delimiters.   ";
+			default: return "No such output";
+		}
+	}	
     
     /**
        This method returns an array of strings that contains the data types for the outputs.
        @return the data types of all outputs.
     */
-    public String[] getOutputTypes () {	    
-
-	String [] types =  {
-	    "java.lang.Integer", // the number of rows in the train data
-	    "java.lang.Integer", // the number of columns in the train data
-	    "java.lang.Integer", // the number of classes in the train data
-	    "java.sql.ResultSet", // train data itself 
-	    "[[Ljava.lang.String;" // Fields and corresponding delimiters
-	};
-	return types;
-
-    }
+    public String[] getOutputTypes () {
+		String[] types = {"java.lang.Integer","java.lang.Integer","java.lang.Integer","java.sql.ResultSet","[[Ljava.lang.String;"};
+		return types;
+	}
     
     /**
        This method returns the description of the module.
        @return the description of the module.
     */
     public String getModuleInfo () {
-	
-	return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"\">    <Text>This will obtain the train data from the database in a form of a result set. It will also return the number of rows, columns, and classes there are in the train data.  </Text>  </Info></D2K>";
-	
-    }
+		return "<html>  <head>      </head>  <body>    This will obtain the train data from the database in a form of a result     set. It will also return the number of rows, columns, and classes there     are in the train data.  </body></html>";
+	}
     
     /**
        PUT YOUR CODE HERE.
@@ -187,6 +167,54 @@ public class TrainDataTable extends ncsa.d2k.infrastructure.modules.InputModule 
 	this.pushOutput(temp,4);
     }
     
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Connection Wrapper";
+			case 1:
+				return "Selected Fields";
+			case 2:
+				return "Selected Fields";
+			case 3:
+				return "Fields with Delimiters";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Number of Rows";
+			case 1:
+				return "Number of Columns";
+			case 2:
+				return "Number of Classes";
+			case 3:
+				return "Result Set";
+			case 4:
+				return "Fields with Delimiters";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 } /* TestDataTable */
 
     

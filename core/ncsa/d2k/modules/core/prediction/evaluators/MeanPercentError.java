@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.prediction.evaluators;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	MeanPercentError.java
@@ -21,9 +22,8 @@ public class MeanPercentError extends ncsa.d2k.modules.core.prediction.evaluator
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"error metric\">    <Text>A Table with A column for each outputfeature and a row for every iteration of crossvalidation  </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Average Over All CrossVal\">    <Text>The average error  </Text>  </Info></D2K>";
-
+			case 0: return "      A Table with A column for each outputfeature and a row for every iteration of crossvalidation    ";
+			case 1: return "      The average error    ";
 			default: return "No such output";
 		}
 	}
@@ -33,7 +33,7 @@ public class MeanPercentError extends ncsa.d2k.modules.core.prediction.evaluator
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"M % Evaluator\">    <Text>Takes a TestTable with the prediction columns filled in returns a table with mean percent errors."+props+" </Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    Takes a TestTable with the prediction columns filled in returns a table     with mean percent errors.PROPS: untransformFirst - applies any     untransforms to the data after prediction and before calculating any     errors. crossValidate - if true, will wait for 'n ' TestTables, if false,     will just wait for one and not wait for an Integer to be passed into     input(1). printResults - will print each target/prediction pair to     System.out  </body></html>";
 	}
 
 
@@ -70,6 +70,44 @@ public class MeanPercentError extends ncsa.d2k.modules.core.prediction.evaluator
 		}
 
 
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "M % Evaluator";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "example set";
+			case 1:
+				return "nl";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "error metric";
+			case 1:
+				return "Average Over All CrossVal";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }
 

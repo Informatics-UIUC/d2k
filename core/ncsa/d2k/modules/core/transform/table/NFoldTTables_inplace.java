@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.transform.table;
-import ncsa.d2k.infrastructure.modules.*;
 
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /*
@@ -133,29 +133,18 @@ public class NFoldTTables_inplace extends NFoldTTables{
 	}
 
 	public String getModuleInfo(){
-		String str=super.getModuleInfo();
-		str+=". **This version returns the same tables every time"+
-			" with different test/train sets.  the trigger input"+
-			" is used to prevent referencing problems";
-		return str;
+		return "<html>  <head>      </head>  <body>    Will produce and push N TestTable/TrainTable pairs. The test sets are of     size (1/N)*numExamples and the train sets the rest. The sets are are     randomly created based on the seed. PROPS: N - the number of exampleTables     to make, Seed - the basis of the random subsampling, allows the user to     create the same subsets or insure it changes. **This version returns the     same tables every time with different test/train sets. the trigger input     is used to prevent referencing problems  </body></html>";
 	}
 
 	public String getInputInfo(int i){
-		if(i==0){
-			return "The table that contains the data";
-		}
-		if(i==1){
-			return "The object that triggers the next set of"+
-				" tables to be pushed";
-		}
-		else{
-			return "No such input";
+		switch (i) {
+			case 0: return "The table that contains the data";
+			case 1: return "The object that triggers the next set of tables to be pushed";
+			default: return "No such input";
 		}
 	}
 	public String[] getInputTypes(){
-		String[] types = {
-			"ncsa.d2k.util.datatype.Table",
-			"java.lang.Object"};
+		String[] types = {"ncsa.util.table.Table","java.lang.Object"};
 		return types;
 	}
 
@@ -171,4 +160,29 @@ public class NFoldTTables_inplace extends NFoldTTables{
 		}
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "NFoldTTables_inplace";
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			case 2:
+				return "output2";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

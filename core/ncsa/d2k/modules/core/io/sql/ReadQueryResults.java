@@ -1,6 +1,7 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.io.sql;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
@@ -14,7 +15,7 @@ import java.util.*;
 	ReadQueryResults.java
 
 */
-public class ReadQueryResults extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 /*#end^2 Continue editing. ^#&*/
 {
 
@@ -23,15 +24,13 @@ public class ReadQueryResults extends ncsa.d2k.infrastructure.modules.DataPrepMo
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Connection Wrapper\">    <Text>This manages the sql database connection object. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Field Names\">    <Text>The names of the fields needed from within the table. </Text>  </Info></D2K>";
-			case 2: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Table Name\">    <Text>The name of the table containing the fields. </Text>  </Info></D2K>";
-			case 3: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Where Clause\">    <Text>Contains the where clause for the sq1 query. </Text>  </Info></D2K>";
+			case 0: return "      This manages the sql database connection object.   ";
+			case 1: return "      The names of the fields needed from within the table.   ";
+			case 2: return "      The name of the table containing the fields.   ";
+			case 3: return "      Contains the where clause for the sq1 query.   ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -39,14 +38,8 @@ public class ReadQueryResults extends ncsa.d2k.infrastructure.modules.DataPrepMo
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-			"[Ljava.lang.String;",
-			"java.lang.String",
-			"java.lang.String"};
+		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","[Ljava.lang.String;","java.lang.String","java.lang.String"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -54,12 +47,10 @@ public class ReadQueryResults extends ncsa.d2k.infrastructure.modules.DataPrepMo
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Resulting Table\">    <Text>This table object contains the results when we are completely done reading. </Text>  </Info></D2K>";
+			case 0: return "      This table object contains the results when we are completely done reading.   ";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -67,11 +58,8 @@ public class ReadQueryResults extends ncsa.d2k.infrastructure.modules.DataPrepMo
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -79,9 +67,7 @@ public class ReadQueryResults extends ncsa.d2k.infrastructure.modules.DataPrepMo
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Read Table\">    <Text>This method given the array of fields name, a jdbc connection wrapper, the table name and the where clause (or null) for the query, will fully populate the table. </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<html>  <head>      </head>  <body>    This method given the array of fields name, a jdbc connection wrapper, the     table name and the where clause (or null) for the query, will fully     populate the table.  </body></html>";
 	}
 
 	/**
@@ -211,5 +197,45 @@ System.out.println ("---- Entries - "+count);
 	}
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Read Table";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Connection Wrapper";
+			case 1:
+				return "Field Names";
+			case 2:
+				return "Table Name";
+			case 3:
+				return "Where Clause";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Resulting Table";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.prediction.evaluators;
-import ncsa.d2k.infrastructure.modules.ComputeModule;
+
+import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.TransformationModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -17,7 +18,7 @@ import java.io.Serializable;
 
 
 */
-public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModule implements Serializable
+public class RootMeanSquared extends ncsa.d2k.core.modules.ComputeModule 
 {
 
 	/**
@@ -26,9 +27,8 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"example set\">    <Text>This is the example set, a TestTable with the prediction columns filled in. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"nl\">    <Text>How many time this module will need to fire </Text>  </Info></D2K>";
-
+			case 0: return "      This is the example set, a TestTable with the prediction columns filled in.   ";
+			case 1: return "      How many time this module will need to fire   ";
 			default: return "No such input";
 		}
 	}
@@ -38,9 +38,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.TestTable",
-			"java.lang.Integer"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.TestTable","java.lang.Integer"};
 		return types;
 	}
 
@@ -50,9 +48,8 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"error metric\">    <Text>A Table with each column the rms errors for an output feature </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"average\">    <Text>The average of all the cross-validation trials </Text>  </Info></D2K>";
-
+			case 0: return "      A Table with each column the rms errors for an output feature   ";
+			case 1: return "      The average of all the cross-validation trials   ";
 			default: return "No such output";
 		}
 	}
@@ -62,9 +59,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table",
-			"java.lang.Double"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table","java.lang.Double"};
 		return types;
 	}
 
@@ -73,7 +68,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"RMSEvaluator\">    <Text>Given an example set and a model, check the models performance against the data, returning the room mean squared error for each output feature <i>separately</i> in the output table. "+props+"</Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    Given an example set and a model, check the models performance against the     data, returning the room mean squared error for each output feature     separately in the output table. PROPS: untransformFirst - applies any     untransforms to the data after prediction and before calculating any     errors. crossValidate - if true, will wait for 'n ' TestTables, if false,     will just wait for one and not wait for an Integer to be passed into     input(1). printResults - will print each target/prediction pair to     System.out  </body></html>";
 	}
 	/*this is here so subclasses can put it in their getModuleInfo*/
 	protected String props="PROPS: untransformFirst - applies any untransforms to the data after prediction and "+
@@ -242,6 +237,44 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 
 		}
 
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "RMSEvaluator";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "example set";
+			case 1:
+				return "nl";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "error metric";
+			case 1:
+				return "average";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }
 

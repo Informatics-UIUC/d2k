@@ -1,15 +1,12 @@
 package ncsa.d2k.modules.core.io.sql;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.UserView;
 
-import ncsa.d2k.controller.userviews.swing.*;
-
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
-
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
 import java.sql.*;
 import java.util.*;
 import java.text.*;
@@ -27,7 +24,7 @@ import java.awt.event.*;
  */
 
 public class WriteVTToDB extends UIModule
-       implements java.io.Serializable {
+        {
     /* Input holder for ConnectionWrapper */
     protected ConnectionWrapper cw;
     /* Input holder for VerticalTable */
@@ -65,12 +62,8 @@ public class WriteVTToDB extends UIModule
        @return A description of this module.
     */
     public String getModuleInfo() {
-	return "This module takes an Oracle database Connection and a " +
-               "table as the input, and save the data from "+
-               "the input table to a database table. There are two options are " +
-               "provided. You can either create a new database table to save the data, " +
-               "or append the data to an existing database table.";
-    }
+		return "<html>  <head>      </head>  <body>    This module takes an Oracle database Connection and a table as the input,     and save the data from the input table to a database table. There are two     options are provided. You can either create a new database table to save     the data, or append the data to an existing database table.  </body></html>";
+	}
     /**
        Provide the module name.
        @return The name of this module.
@@ -83,31 +76,30 @@ public class WriteVTToDB extends UIModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes () {
-        String [] in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-                        "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
-        return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
+	}
     /**
         Return a String array containing the datatypes of the outputs of this
         module.
         @return The datatypes of the outputs.
     */
     public String [] getOutputTypes() {
-        return null;
-    }
+		String[] types = {		};
+		return types;
+	}
     /**
         Return the info for a particular input.
         @param i The index of the input to get info about
         @return The information on the input
      */
     public String getInputInfo (int i) {
-        switch(i)
-        {
-          case 0: return "JDBC data source to make database connection.";
-          case 1: return "The input table to upload to database.";
-          default: return "No such input.";
-        }
-    }
+		switch (i) {
+			case 0: return "JDBC data source to make database connection.";
+			case 1: return "The input table to upload to database.";
+			default: return "No such input";
+		}
+	}
     public String getInputName (int i) {
         return null;
     }
@@ -117,8 +109,10 @@ public class WriteVTToDB extends UIModule
         @return The information on the output
      */
     public String getOutputInfo (int i) {
-        return null;
-    }
+		switch (i) {
+			default: return "No such output";
+		}
+	}
     public String getOutputName (int i) {
         return null;
     }
@@ -730,6 +724,7 @@ public class WriteVTToDB extends UIModule
       }
       return(true);
     }
+
 }
 
 

@@ -1,30 +1,29 @@
 package ncsa.d2k.modules.core.datatype.array;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /**
    Compute the mean of an array of numbers.
    @author David Clutter
 */
-public class Mean extends ComputeModule implements HasNames {
+public class Mean extends ComputeModule  {
 
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleInfo() {
-	return "This module computes the mean of an array of numbers.  The"+
-	    " array can be an array of ints, an array of floats, or an array"+
-	    " of doubles.";
-    }
+		return "<html>  <head>      </head>  <body>    This module computes the mean of an array of numbers. The array can be an     array of ints, an array of floats, or an array of doubles.  </body></html>";
+	}
     
     /**
        Return the name of this module.
        @return The name of this module.
     */
     public String getModuleName() {
-	return "Mean";
-    }
+		return "Mean";
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this 
@@ -32,9 +31,9 @@ public class Mean extends ComputeModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-	String[] in = {"java.lang.Object"};
-	return in;
-    }
+		String[] types = {"java.lang.Object"};
+		return types;
+	}
  
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -42,9 +41,9 @@ public class Mean extends ComputeModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-	String[] out = {"java.lang.Double"};
-	return out;
-    }
+		String[] types = {"java.lang.Double"};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -52,12 +51,11 @@ public class Mean extends ComputeModule implements HasNames {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-	if(i == 0)
-	    return "An array of numbers.  This can be an array of ints, "+
-		"floats, or doubles.";
-	else
-	    return "No such input!";
-    }
+		switch (i) {
+			case 0: return "An array of numbers.  This can be an array of ints, floats, or doubles.";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -65,11 +63,12 @@ public class Mean extends ComputeModule implements HasNames {
        @return The name of the input
     */
     public String getInputName(int i) {
-	if(i == 0)
-	    return "Numbers";
-	else
-	    return "No such input!";
-    }
+		switch(i) {
+			case 0:
+				return "Numbers";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
     /**
        Return the description of a specific output.
@@ -77,11 +76,11 @@ public class Mean extends ComputeModule implements HasNames {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-	if(i == 0)
-	    return "The mean of the input array.";
-	else
-	    return "No such output!";
-    }
+		switch (i) {
+			case 0: return "The mean of the input array.";
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.
@@ -89,11 +88,12 @@ public class Mean extends ComputeModule implements HasNames {
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	if(i == 0)
-	    return "Mean";
-	else
-	    return "No such output!";
-    }
+		switch(i) {
+			case 0:
+				return "Mean";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
     /**
        Perform the calculation.

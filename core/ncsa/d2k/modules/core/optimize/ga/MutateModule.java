@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 import java.math.*;
 import java.util.*;
@@ -9,7 +10,7 @@ import java.util.*;
 		This module will mutate the population at a rate relative to the mutationRate property.
 		There is a debugging flag as well.
 */
-public class MutateModule extends ncsa.d2k.infrastructure.modules.DataPrepModule 	implements Serializable {
+public class MutateModule extends ncsa.d2k.core.modules.DataPrepModule 	 {
 
 	private double M_rate = .0005;
 
@@ -58,10 +59,10 @@ public class MutateModule extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>The output is the mutated population. </Text>  </Info></D2K>";
+			case 0: return "      The output is the mutated population.   ";
 			default: return "No such output";
 		}
-}
+	}
 
 	/**
 		This method returns the description of the various inputs.
@@ -70,7 +71,7 @@ public class MutateModule extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	*/
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>The input population. </Text>  </Info></D2K>";
+			case 0: return "      The input population.   ";
 			default: return "No such input";
 		}
 	}
@@ -81,7 +82,7 @@ public class MutateModule extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Mutate\">    <Text>Take the input population and apply mutations randomly to individuals with rate of mutation equal to the mutation rate property. Mutation rates are generally very small numbers, but may be increased for some specialized problems. The property should range from 0.0 to 1.0. </Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    Take the input population and apply mutations randomly to individuals with     rate of mutation equal to the mutation rate property. Mutation rates are     generally very small numbers, but may be increased for some specialized     problems. The property should range from 0.0 to 1.0.  </body></html>";
 	}
 
 	public String[] getInputTypes () {
@@ -152,5 +153,39 @@ public class MutateModule extends ncsa.d2k.infrastructure.modules.DataPrepModule
 
 		Mu_next = Mu_next - totalGenes;
 		this.pushOutput (population, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Mutate";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.prediction;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.io.Serializable;
@@ -20,7 +21,7 @@ import java.io.Serializable;
 	@author Peter Groves
 	*/
 
-public class SensitivityAnalysis extends ncsa.d2k.infrastructure.modules.ComputeModule implements Serializable{
+public class SensitivityAnalysis extends ncsa.d2k.core.modules.ComputeModule {
 	//////////////
 	//PROPS
 	/////////////
@@ -266,22 +267,17 @@ public class SensitivityAnalysis extends ncsa.d2k.infrastructure.modules.Compute
 
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "An exampleTable with the TestSet set.  The test examples will"
-							+"be the synthetically varied examples";
+			case 0: return "An exampleTable with the TestSet set.  The test examples willbe the synthetically varied examples";
 			case 1: return "The testTable that come back from Model, all filled in";
 			default: return "No such input";
 		}
 	}
 
 	public String[] getInputTypes () {
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl",
-			"ncsa.d2k.modules.core.datatype.table.basic.TestTableImpl"
-			};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl","ncsa.d2k.modules.core.datatype.table.basic.TestTableImpl"};
 		return types;
 	}
 	public String getOutputInfo (int index) {
-
 		switch (index) {
 			case 0: return "The generated TestTable for the model to fill in";
 			case 1: return "The final results, with all the predicted values organized by inputFeature";
@@ -289,27 +285,52 @@ public class SensitivityAnalysis extends ncsa.d2k.infrastructure.modules.Compute
 		}
 	}
 	public String[] getOutputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TestTableImpl",
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
-			};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TestTableImpl","ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 	}
 
 	public String getModuleInfo () {
-
-		 return "Performs the basis of a sensitivity analysis.  Will vary every testinput double over"
-		 	+" some range and organize the resulting predictions by inputFeature.  analyzing a feature's"
-			+"column will show the extent to which a feature can influence the output (a larger range means"
-			+"more influence). PROPS: trialsPerExample- every test example will be duplicated this many"
-			+" times with the input feature under consideration incremented equally every time. autoRange-"
-			+"if true, will find the min and max of each input feature and vary it over that interval"
-			+". lowVal, highVal- when autorange is false, these are the bounds that the inputs will be varied"
-			+"over.  Regardless of autoRange, there will always be 'trialsPerExample' false examples made"
-			+"for every input in every example";
+		return "<html>  <head>      </head>  <body>    Performs the basis of a sensitivity analysis. Will vary every testinput     double over some range and organize the resulting predictions by     inputFeature. analyzing a feature'scolumn will show the extent to which a     feature can influence the output (a larger range meansmore influence).     PROPS: trialsPerExample- every test example will be duplicated this many     times with the input feature under consideration incremented equally every     time. autoRange-if true, will find the min and max of each input feature     and vary it over that interval. lowVal, highVal- when autorange is false,     these are the bounds that the inputs will be variedover. Regardless of     autoRange, there will always be 'trialsPerExample' false examples madefor     every input in every example  </body></html>";
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SensitivityAnalysis";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 
 

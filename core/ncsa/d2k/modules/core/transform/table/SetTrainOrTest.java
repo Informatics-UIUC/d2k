@@ -1,9 +1,9 @@
 
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
-import java.io.Serializable;
 
+import ncsa.d2k.core.modules.*;
+import java.io.Serializable;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
@@ -14,7 +14,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 	with all the examples either as test or train examples. PROPS: TrainVsTest:
 	true- all rows set to train examples, false- all rows to test examples
 */
-public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModule implements Serializable
+public class SetTrainOrTest extends ncsa.d2k.core.modules.DataPrepModule 
 {
 
 	/**
@@ -24,9 +24,8 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	public String getInputInfo(int index) {
 		switch (index) {
 			case 0: return "The raw table";
-						default: return "No such input";
+			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -36,7 +35,6 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	public String[] getInputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
-
 	}
 
 	/**
@@ -48,7 +46,6 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 			case 0: return "Either a TestTable or TrainTable with all the examples either as test or all as train";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -58,7 +55,6 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	public String[] getOutputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
-
 	}
 
 	/**
@@ -66,8 +62,7 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ET\">    <Text>Takes a VT and outputs it as an ET (actually a TrainTable or TestTablewith all the examples either as test or train examples. PROPS: TrainVsTest: true- all rows set to train examples, false- all rows to test examples </Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    Takes a VT and outputs it as an ET (actually a TrainTable or TestTablewith     all the examples either as test or train examples. PROPS: TrainVsTest:     true- all rows set to train examples, false- all rows to test examples  </body></html>";
 	}
 	/*true - everything train examples
 	  false - everything test examples
@@ -116,5 +111,39 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		pushOutput(et, 0);
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "ET";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

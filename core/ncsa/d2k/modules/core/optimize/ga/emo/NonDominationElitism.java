@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.core.optimize.ga.emo;
 
+
 import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 
 /**
@@ -11,8 +12,8 @@ import java.io.Serializable;
 	Sorting Genetic Algorithm for Multi-Objective Optimization: NSGA-II".<p>
 
 */
-public class NonDominationElitism extends ncsa.d2k.infrastructure.modules.ComputeModule
-			implements Serializable {
+public class NonDominationElitism extends ncsa.d2k.core.modules.ComputeModule
+			 {
 
 	//////////////////////////////////
 	// Info methods
@@ -23,7 +24,7 @@ public class NonDominationElitism extends ncsa.d2k.infrastructure.modules.Comput
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>When we are done we simply pass the population along. </Text>  </Info></D2K>";
+			case 0: return "      When we are done we simply pass the population along.   ";
 			default: return "No such output";
 		}
 	}
@@ -34,7 +35,7 @@ public class NonDominationElitism extends ncsa.d2k.infrastructure.modules.Comput
 	*/
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Population\">    <Text>This is the population that will be printed. </Text>  </Info></D2K>";
+			case 0: return "      This is the population that will be printed.   ";
 			default: return "No such input";
 		}
 	}
@@ -44,7 +45,7 @@ public class NonDominationElitism extends ncsa.d2k.infrastructure.modules.Comput
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"\"><Text>Prints All This Crap out</Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    Prints All This Crap out  </body></html>";
 	}
 
 	//////////////////////////////////
@@ -111,5 +112,39 @@ public class NonDominationElitism extends ncsa.d2k.infrastructure.modules.Comput
 		}
 
 		this.pushOutput (population, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Population";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

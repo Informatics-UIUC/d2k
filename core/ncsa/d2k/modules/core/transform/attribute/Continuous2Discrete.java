@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -15,7 +16,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 **	@author: Peter Groves
 **************************************************/
 
-public class Continuous2Discrete extends ncsa.d2k.infrastructure.modules.ComputeModule implements Serializable{
+public class Continuous2Discrete extends ncsa.d2k.core.modules.ComputeModule {
 
 
 	/**
@@ -24,7 +25,7 @@ public class Continuous2Discrete extends ncsa.d2k.infrastructure.modules.Compute
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Continous Data Column\">    <Text>The column of continously distributed data</Text>  </Info></D2K>";
+			case 0: return "      The column of continously distributed data  ";
 			default: return "No such input";
 		}
 	}
@@ -35,13 +36,8 @@ public class Continuous2Discrete extends ncsa.d2k.infrastructure.modules.Compute
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.NumericColumn"
-
-			};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.NumericColumn"};
 		return types;
-
 	}
 
 	/**
@@ -49,12 +45,10 @@ public class Continuous2Discrete extends ncsa.d2k.infrastructure.modules.Compute
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"PDF/PMF Table\">    <Text>A VerticalTable, the first column is the midpoints of the bins, the second column is probability of that bin  </Text>  </Info></D2K>";
+			case 0: return "      A VerticalTable, the first column is the midpoints of the bins, the second column is probability of that bin    ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -62,11 +56,8 @@ public class Continuous2Discrete extends ncsa.d2k.infrastructure.modules.Compute
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
-
 	}
 
 	/**
@@ -74,9 +65,7 @@ public class Continuous2Discrete extends ncsa.d2k.infrastructure.modules.Compute
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-
-		 return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Continous to Discrete data converter\">    <Text>Takes a column (any NumericColumn) of data and bins it according to how the Properties are set.  The output is a 2 column VT with the first column being the midpoints of the bins and the second the probabilty (number of points in the bin over total points) of that bin. PROPS: binInterval-the range of numbers each bin should hold, numBins-the number of bins to make, useNumBins- to have the number of bins determined by the numBins property, set to true, to use binInterval, set to false</Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    Takes a column (any NumericColumn) of data and bins it according to how     the Properties are set. The output is a 2 column VT with the first column     being the midpoints of the bins and the second the probabilty (number of     points in the bin over total points) of that bin. PROPS: binInterval-the     range of numbers each bin should hold, numBins-the number of bins to make,     useNumBins- to have the number of bins determined by the numBins property,     set to true, to use binInterval, set to false  </body></html>";
 	}
 
 
@@ -185,6 +174,40 @@ public class Continuous2Discrete extends ncsa.d2k.infrastructure.modules.Compute
 
 
 	pushOutput(discreteTable, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Continous to Discrete data converter";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Continous Data Column";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "PDF/PMF Table";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }
 

@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.prediction.naivebayes;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
@@ -9,17 +10,14 @@ import ncsa.d2k.modules.core.datatype.table.*;
  *  	@author David Clutter
  */
 public class CreateNBModel extends ModelProducerModule
-	implements HasNames {
+	 {
 
     /**
        	Return a description of the function of this module.
        	@return A description of this module.
     */
     public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer("Generates a NaiveBayesModel ");
-    	sb = sb.append("from the given BinTree.  The NaiveBayesModel ");
-		sb = sb.append("performs all necessary calculations.");
-		return sb.toString();
+		return "<html>  <head>      </head>  <body>    Generates a NaiveBayesModel from the given BinTree. The NaiveBayesModel     performs all necessary calculations.  </body></html>";
 	}
 
     /**
@@ -28,7 +26,7 @@ public class CreateNBModel extends ModelProducerModule
     */
     public String getModuleName() {
 		return "createNBModel";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -36,14 +34,9 @@ public class CreateNBModel extends ModelProducerModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		/*String []in = {"ncsa.d2k.modules.dataprep.field.BinTree",
-			"ncsa.d2k.modules.util.datatype.VerticalTable",
-			"java.util.HashMap"};
-		*/
-		String []in = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-		return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -51,9 +44,9 @@ public class CreateNBModel extends ModelProducerModule
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String [] out = {"ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
-		return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -61,12 +54,11 @@ public class CreateNBModel extends ModelProducerModule
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		switch(i) {
-	    	case 0: return "The BinTree which contains counts.";
+		switch (i) {
+			case 0: return "The BinTree which contains counts.";
 			case 1: return "The ExampleTable with the data in it.";
-	    	//case 2: return "Lookup table with the data from ChooseAttributes.";
-			default: return "no such input";
-    	}
+			default: return "No such input";
+		}
 	}
 
     /**
@@ -75,11 +67,13 @@ public class CreateNBModel extends ModelProducerModule
        @return The name of the input
     */
     public String getInputName(int i) {
-	    switch(i) {
-			case 0: return "BinTree";
-			case 1: return "Table";
-			default: return "no such input";
-    	}
+		switch(i) {
+			case 0:
+				return "BinTree";
+			case 1:
+				return "Table";
+			default: return "NO SUCH INPUT!";
+		}
 	}
 
     /**
@@ -88,11 +82,11 @@ public class CreateNBModel extends ModelProducerModule
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		if(i == 0)
-	    	return "A NaiveBayesModel module.";
-		else
-	    	return "no such output";
-    }
+		switch (i) {
+			case 0: return "A NaiveBayesModel module.";
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.
@@ -100,10 +94,11 @@ public class CreateNBModel extends ModelProducerModule
        @return The name of the output
     */
     public String getOutputName(int i) {
-	    switch(i) {
-			case 0: return "NBModel";
-			default: return "no such output";
-    	}
+		switch(i) {
+			case 0:
+				return "NBModel";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 
     /**

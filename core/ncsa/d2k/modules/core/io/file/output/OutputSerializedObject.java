@@ -1,68 +1,72 @@
 package ncsa.d2k.modules.core.io.file.output;
 
+
 import java.io.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 
 /**
 OutputSerializedObject.java
 Writes a serialized object to a file.
 @author David Tcheng
 */
-public class OutputSerializedObject extends OutputModule implements HasNames, HasProperties, java.io.Serializable 
+public class OutputSerializedObject extends OutputModule  
   {
 
     public String getModuleInfo() 
       {
-      StringBuffer sb = new StringBuffer("Writes a serialized object to a file. PROPS-usePropFileName"
-	  					+" is true if you don't want it to wait for an input for a filename and instead"+
-						" use the filename in the properties");
-      return sb.toString();
-      }
+		return "<html>  <head>      </head>  <body>    Writes a serialized object to a file. PROPS-usePropFileName is true if you     don't want it to wait for an input for a filename and instead use the     filename in the properties  </body></html>";
+	}
 
     public String getModuleName() 
-      { 
-      return "Writes a serialized object to a file.";
-      }
+      {
+		return "Writes a serialized object to a file.";
+	}
 
     public String[] getInputTypes() 
       {
-      String [] in = {"java.lang.Object", 
-	  					"java.lang.String"};
-      return in;
-      }
+		String[] types = {"java.lang.Object","java.lang.String"};
+		return types;
+	}
 
     public String[] getOutputTypes() 
       {
-      String [] out = {};
-      return out;
-      }
+		String[] types = {		};
+		return types;
+	}
 
     public String getInputInfo(int i) 
       {
-      if(i == 0)
-        return "The Object to Serialize.";
-	  if (i==1)
-		  return "The filename to write to";	
-			
-      return "no such input!";
-      }
+		switch (i) {
+			case 0: return "The Object to Serialize.";
+			case 1: return "The filename to write to";
+			default: return "No such input";
+		}
+	}
 
     public String getInputName(int i) 
       {
-      if(i ==0)
-        return "SerializedObject";
-      return "no such input!";
-      }
+		switch(i) {
+			case 0:
+				return "SerializedObject";
+			case 1:
+				return "no such input!";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
     public String getOutputInfo(int i) 
       {
-      return "no such output";
-      }
+		switch (i) {
+			default: return "No such output";
+		}
+	}
 
     public String getOutputName(int i) 
       {
-      return "no such output.";
-      }
+		switch(i) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
 
 

@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
 
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /*
@@ -14,7 +14,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 	*/
 
 public class CombinePredictionTables extends ComputeModule
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -103,66 +103,47 @@ public class CombinePredictionTables extends ComputeModule
 
 
 	public String getModuleInfo(){
-		return "Takes in a number of Prediction Tables and puts all of"+
-				"the prediction columns in one of them. Returns it."+
-				"meant to be used when several models were assigned to"+
-				"the same problem and one master table is wanted for"+
-				"output that holds all of the models' predictions";
+		return "<html>  <head>      </head>  <body>    Takes in a number of Prediction Tables and puts all ofthe prediction     columns in one of them. Returns it.meant to be used when several models     were assigned tothe same problem and one master table is wanted foroutput     that holds all of the models' predictions  </body></html>";
 	}
 
    	public String getModuleName() {
 		return "Predictions Compiler";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.datatype.table.basic.PredictionTableImpl"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.PredictionTableImpl"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The Prediction Tables that will be combined";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "The Prediction Tables that will be combined";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Tables w/ Predictions";
-			}
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.datatype.table.basic.PredictionTableImpl"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.PredictionTableImpl"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "One of the input tables, now holding all prediction"+
-						"columns";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "One of the input tables, now holding all predictioncolumns";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Compiled Predictions";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

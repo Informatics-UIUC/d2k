@@ -1,6 +1,7 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.optimize.ga;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 /*#end^1 Continue editing. ^#&*/
@@ -9,7 +10,7 @@ import ncsa.d2k.modules.core.optimize.util.*;
 	AssignFitness.java
 
 */
-public class AssignFitness extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class AssignFitness extends ncsa.d2k.core.modules.DataPrepModule
 /*#end^2 Continue editing. ^#&*/
 {
 	private boolean debug = false;
@@ -35,13 +36,11 @@ public class AssignFitness extends ncsa.d2k.infrastructure.modules.DataPrepModul
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>This is the input population, the members of this population will have fitness values when we are done here. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Fitness\">    <Text>The table contains in each column a different measure of fitness, we are only interested in the first, which is assumed to be a number between 0 and 1, higher is better. </Text>  </Info></D2K>";
+			case 0: return "      This is the input population, the members of this population will have fitness values when we are done here.   ";
+			case 1: return "      The table contains in each column a different measure of fitness, we are only interested in the first, which is assumed to be a number between 0 and 1, higher is better.   ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -49,12 +48,8 @@ public class AssignFitness extends ncsa.d2k.infrastructure.modules.DataPrepModul
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.optimize.ga.Population",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population","ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -62,12 +57,10 @@ public class AssignFitness extends ncsa.d2k.infrastructure.modules.DataPrepModul
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>This population will have fitness values for each member. </Text>  </Info></D2K>";
+			case 0: return "      This population will have fitness values for each member.   ";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -75,11 +68,8 @@ public class AssignFitness extends ncsa.d2k.infrastructure.modules.DataPrepModul
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.optimize.ga.Population"};
+		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -87,9 +77,7 @@ public class AssignFitness extends ncsa.d2k.infrastructure.modules.DataPrepModul
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Assign Fitness\">    <Text>This module will receive a population, and a fitness for each of the individuals in the population. The fitness field of the population member is filled in, one for each fitness table input, until each member of the population has a fitness. This module allows the evaluation of the members to be done by a seperate model builder algorithm. </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<html>  <head>      </head>  <body>    This module will receive a population, and a fitness for each of the     individuals in the population. The fitness field of the population member     is filled in, one for each fitness table input, until each member of the     population has a fitness. This module allows the evaluation of the members     to be done by a seperate model builder algorithm.  </body></html>";
 	}
 
 	int memberCounter = 0;
@@ -139,5 +127,41 @@ public class AssignFitness extends ncsa.d2k.infrastructure.modules.DataPrepModul
 	}
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Assign Fitness";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			case 1:
+				return "Fitness";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

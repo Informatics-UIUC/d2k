@@ -1,15 +1,13 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
+
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
-
-
-
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
@@ -29,8 +27,7 @@ public class ADTDefineBins extends DefineBins {
        @return A description of this module.
     */
     public String getModuleInfo() {
-    	StringBuffer sb = new StringBuffer("Allows the user to bin string data using an ADTree");
-		return sb.toString();
+		return "<html>  <head>      </head>  <body>    Allows the user to bin string data using an ADTree  </body></html>";
 	}
 
     /**
@@ -39,7 +36,7 @@ public class ADTDefineBins extends DefineBins {
     */
     public String getModuleName() {
 		return "ADTDefineBin";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -47,9 +44,8 @@ public class ADTDefineBins extends DefineBins {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-	String []in = {	"ncsa.d2k.modules.core.datatype.ADTree",
-		       "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-	return in;
+		String[] types = {"ncsa.d2k.modules.core.datatype.ADTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
 	}
 
 
@@ -62,10 +58,9 @@ public class ADTDefineBins extends DefineBins {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-	String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-		       "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-	return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -73,12 +68,12 @@ public class ADTDefineBins extends DefineBins {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-    	switch(i) {
-	case 0: return "ADTree containing counts";
-	case 1: return "Table with metadata in it .";
-	default: return "no such input!";
+		switch (i) {
+			case 0: return "ADTree containing counts";
+			case 1: return "Table with metadata in it .";
+			default: return "No such input";
+		}
 	}
-    }
 
     /**
        Return the name of a specific input.
@@ -86,12 +81,14 @@ public class ADTDefineBins extends DefineBins {
        @return The name of the input
     */
     public String getInputName(int i) {
-    	switch(i) {
-	case 0: return "ADTree";
-	case 1: return "Metadata Table";
-	default: return "no such input!";
+		switch(i) {
+			case 0:
+				return "ADTree";
+			case 1:
+				return "Metadata Table";
+			default: return "NO SUCH INPUT!";
+		}
 	}
-    }
 
     /**
        Return the description of a specific output.
@@ -99,12 +96,12 @@ public class ADTDefineBins extends DefineBins {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-    	switch(i) {
-	case 0: return "Bin tree with binning info";
-   	case 1: return " metadata table, unchanged";
-	default: return "no such output!";
+		switch (i) {
+			case 0: return "Bin tree with binning info";
+			case 1: return " metadata table, unchanged";
+			default: return "No such output";
+		}
 	}
-    }
 
     /**
        Return the name of a specific output.
@@ -112,12 +109,14 @@ public class ADTDefineBins extends DefineBins {
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	switch(i) {
-	case 0: return "bin tree";
-	case 1: return "metadata table";
-	default: return "no such output!";
+		switch(i) {
+			case 0:
+				return "bin tree";
+			case 1:
+				return "metadata table";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
-    }
 
     public UserView createUserView() {
 	return new SQLBinView();

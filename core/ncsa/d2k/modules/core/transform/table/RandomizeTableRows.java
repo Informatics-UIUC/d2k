@@ -1,15 +1,15 @@
 
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
-import java.util.*;
 
+import ncsa.d2k.core.modules.*;
+import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	RandomizeVTRows.java
 */
-public class RandomizeTableRows extends ncsa.d2k.infrastructure.modules.DataPrepModule implements java.io.Serializable
+public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule 
 {
 	/**
 		This pair returns the description of the various inputs.
@@ -17,10 +17,9 @@ public class RandomizeTableRows extends ncsa.d2k.infrastructure.modules.DataPrep
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table\">    <Text>Table to be randomized </Text>  </Info></D2K>";
+			case 0: return "      Table to be randomized   ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -30,7 +29,6 @@ public class RandomizeTableRows extends ncsa.d2k.infrastructure.modules.DataPrep
 	public String[] getInputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return types;
-
 	}
 
 	/**
@@ -39,10 +37,9 @@ public class RandomizeTableRows extends ncsa.d2k.infrastructure.modules.DataPrep
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"returnTable\">    <Text>Table that has been randomized </Text>  </Info></D2K>";
+			case 0: return "      Table that has been randomized   ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -52,7 +49,6 @@ public class RandomizeTableRows extends ncsa.d2k.infrastructure.modules.DataPrep
 	public String[] getOutputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return types;
-
 	}
 
 	/**
@@ -60,8 +56,7 @@ public class RandomizeTableRows extends ncsa.d2k.infrastructure.modules.DataPrep
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"RandomizeVTRows\">    <Text>Randomizes the rows of a Table </Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    Randomizes the rows of a Table  </body></html>";
 	}
 
 	/**
@@ -119,6 +114,40 @@ public class RandomizeTableRows extends ncsa.d2k.infrastructure.modules.DataPrep
 			double rnd = (Math.abs(rand.nextDouble()))*(n-m+1) + m;
 			int theNum = (int) (rnd);
 			return theNum;
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "RandomizeVTRows";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "returnTable";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

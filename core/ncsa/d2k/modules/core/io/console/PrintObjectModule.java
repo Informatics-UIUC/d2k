@@ -1,13 +1,14 @@
 /*&%^1 DO NOT MODIFY THE CODE TO THE NEXT COMMENT!!! */
 package ncsa.d2k.modules.core.io.console;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.util.*;
 /*#end^1 CONTINUE EDITING FOLLOWING THIS LINE. ^#&*/
 /*&%^2 DO NOT MODIFY THE CODE TO THE NEXT COMMENT!!! */
 /**
 	Print an Object by calling its toString() method.
 */
-public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputModule {
+public class PrintObjectModule extends ncsa.d2k.core.modules.OutputModule {
 
 /*#end^2 CONTINUE EDITING FOLLOWING THIS LINE. ^#&*/
 	/**
@@ -15,12 +16,10 @@ public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputMod
 		@returns the description of the indexed input.
 	*/
 	public String getInputInfo (int index) {
-/*&%^3 DO NOT MODIFY THE CODE TO THE NEXT COMMENT!!! */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\r<D2K>\r  <Info common=\"Print Object\">\r    <Text>This is the object to be printed.\n</Text>\r  </Info>\r</D2K>\r\r";
+			case 0: return "      This is the object to be printed.  ";
 			default: return "No such input";
 		}
-/*#end^3 CONTINUE EDITING FOLLOWING THIS LINE. ^#&*/
 	}
 
 	/**
@@ -28,11 +27,8 @@ public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputMod
 		@returns the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 DO NOT MODIFY THE CODE TO THE NEXT COMMENT!!! */
-		String [] types =  {
-			"java.lang.Object"};
-			return types;
-/*#end^4 CONTINUE EDITING FOLLOWING THIS LINE. ^#&*/
+		String[] types = {"java.lang.Object"};
+		return types;
 	}
 
 	/**
@@ -40,11 +36,9 @@ public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputMod
 		@returns the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 DO NOT MODIFY THE CODE TO THE NEXT COMMENT!!! */
 		switch (index) {
 			default: return "No such output";
 		}
-/*#end^5 CONTINUE EDITING FOLLOWING THIS LINE. ^#&*/
 	}
 
 	/**
@@ -52,11 +46,8 @@ public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputMod
 		@returns the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 DO NOT MODIFY THE CODE TO THE NEXT COMMENT!!! */
-		String [] types =  {
-};
-			return types;
-/*#end^6 CONTINUE EDITING FOLLOWING THIS LINE. ^#&*/
+		String[] types = {		};
+		return types;
 	}
 
 	/**
@@ -64,9 +55,7 @@ public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputMod
 		@returns the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 DO NOT MODIFY THE CODE TO THE NEXT COMMENT!!! */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\r<D2K>\r  <Info common=\"Print Object\">\r    <Text>This module will print the input object to the best of it's ability. It will print a variety of arrays of primitive data types, and will otherwise invoke the objects toString method and print that.\n</Text>\r  </Info>\r</D2K>\r\r";
-/*#end^7 CONTINUE EDITING FOLLOWING THIS LINE. ^#&*/
+		return "<html>  <head>      </head>  <body>    This module will print the input object to the best of it's ability. It     will print a variety of arrays of primitive data types, and will otherwise     invoke the objects toString method and print that.  </body></html>";
 	}
 
 	/**
@@ -248,4 +237,36 @@ public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputMod
 	}
 /*&%^8 DO NOT MODIFY THE CODE TO THE NEXT COMMENT!!! */
 /*#end^8 CONTINUE EDITING FOLLOWING THIS LINE. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Print Object";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Print Object";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

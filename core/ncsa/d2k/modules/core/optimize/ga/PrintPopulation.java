@@ -1,14 +1,15 @@
 
 package ncsa.d2k.modules.core.optimize.ga;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 
 /**
 	Prints the population out to the console.
 */
-public class PrintPopulation extends ncsa.d2k.infrastructure.modules.OutputModule
-		implements Serializable {
+public class PrintPopulation extends ncsa.d2k.core.modules.OutputModule
+		 {
 
 
 	//////////////////////////////////
@@ -21,10 +22,10 @@ public class PrintPopulation extends ncsa.d2k.infrastructure.modules.OutputModul
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>When we are done we simply pass the population along. </Text>  </Info></D2K>";
+			case 0: return "      When we are done we simply pass the population along.   ";
 			default: return "No such output";
 		}
-}
+	}
 
 	/**
 		This method returns the description of the various inputs.
@@ -33,7 +34,7 @@ public class PrintPopulation extends ncsa.d2k.infrastructure.modules.OutputModul
 	*/
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Population\">    <Text>This is the population that will be printed. </Text>  </Info></D2K>";
+			case 0: return "      This is the population that will be printed.   ";
 			default: return "No such input";
 		}
 	}
@@ -44,7 +45,7 @@ public class PrintPopulation extends ncsa.d2k.infrastructure.modules.OutputModul
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Print\">    <Text>Print all </Text>    <Text I=\"t\">the </Text>    <Text>individuals in the current population. </Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    Print all <i>the </i> individuals in the current population.  </body></html>";
 	}
 
 	//////////////////////////////////
@@ -60,24 +61,7 @@ public class PrintPopulation extends ncsa.d2k.infrastructure.modules.OutputModul
 		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
 		return types;
 	}
-	public void beginExecution () {
-		setTriggers = false;
-	}
 
-	private boolean setTriggers = false;
-	/**
-		Set the triggers when this module does converge.
-	 */
-	protected void activateTriggers()
-	{
-		// hit all triggers
-		if (oTriggers != null && setTriggers)
-		{
-			setTriggers = false;
-			for(int i = 0; i < oTriggers.length; i++)
-				oTriggers [i].trigger ();
-		}
-	}
 	boolean sorting = true;
 	public void setSorting (boolean sort) { sorting = sort; }
 	public boolean getSorting () { return sorting; }
@@ -106,5 +90,39 @@ public class PrintPopulation extends ncsa.d2k.infrastructure.modules.OutputModul
 				population.printIndividual (i);
 
 		this.pushOutput (population, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Print";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Population";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

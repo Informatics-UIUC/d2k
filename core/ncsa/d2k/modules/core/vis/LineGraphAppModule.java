@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.vis;
 
+
 import com.sun.j3d.utils.behaviors.keyboard.*;
 import com.sun.j3d.utils.geometry.*;
 import com.sun.j3d.utils.picking.*;
@@ -14,8 +15,8 @@ import javax.swing.*;
 import javax.swing.plaf.basic.*;
 import javax.swing.plaf.metal.*;
 import javax.vecmath.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -37,31 +38,32 @@ import ncsa.gui.*;
 public class LineGraphAppModule extends VisModule {
 
    public String getModuleInfo () {
-      return "LineGraphAppModule is a three-dimensional visualization of " +
-             "Table data (referenced in a HashLookupTable) as a " +
-             "line graph.";
-   }
+		return "<html>  <head>      </head>  <body>    LineGraphAppModule is a three-dimensional visualization of Table data     (referenced in a HashLookupTable) as a line graph.  </body></html>";
+	}
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.HashLookupTable",
-         "ncsa.d2k.modules.core.datatype.table.Table"};
-      return i;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.HashLookupTable","ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
+	}
 
    public String getInputInfo(int index) {
-      if (index == 0)
-         return "A HashLookupTable referencing the related VerticalTable.";
-      else if (index == 1)
-         return "A VerticalTable to be visualized.";
-      else
-         return "LineGraphAppModule has no such input.";
-   }
+		switch (index) {
+			case 0: return "A HashLookupTable referencing the related VerticalTable.";
+			case 1: return "A VerticalTable to be visualized.";
+			default: return "No such input";
+		}
+	}
 
-   public String[] getOutputTypes () { return null; }
+   public String[] getOutputTypes () {
+		String[] types = {		};
+		return types;
+	}
 
    public String getOutputInfo (int index) {
-      return "LineGraphAppModule has no outputs.";
-   }
+		switch (index) {
+			default: return "No such output";
+		}
+	}
 
    protected UserView createUserView() {
       return new LineGraphAppModuleView();
@@ -72,7 +74,7 @@ public class LineGraphAppModule extends VisModule {
    }
 
    protected class LineGraphAppModuleView
-      extends ncsa.d2k.controller.userviews.swing.JUserPane
+      extends ncsa.d2k.userviews.swing.JUserPane
       implements ActionListener, ItemListener {
 
       public HashLookupTable hlt;
@@ -1949,4 +1951,38 @@ public class LineGraphAppModule extends VisModule {
 
    }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "LineGraphAppModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

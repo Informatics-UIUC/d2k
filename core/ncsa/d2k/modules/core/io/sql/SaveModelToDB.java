@@ -10,19 +10,18 @@ package ncsa.d2k.modules.core.io.sql;
  * @version 1.0
  */
 
-import ncsa.d2k.infrastructure.modules.UIModule;
+
+import ncsa.d2k.core.modules.UIModule;
 import ncsa.d2k.modules.PredictionModelModule;
-import ncsa.d2k.infrastructure.modules.ViewModule;
-import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.prediction.naivebayes.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
-
 import ncsa.d2k.modules.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
-
 import java.sql.*;
 import java.util.*;
 import java.text.*;
@@ -30,7 +29,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-
 import oracle.sql.*;
 import oracle.jdbc.driver.*;
 
@@ -45,31 +43,32 @@ public class SaveModelToDB extends UIModule {
   }
 
   public String getOutputInfo (int i) {
-    return null;
-  }
+		switch (i) {
+			default: return "No such output";
+		}
+	}
 
   public String getInputInfo (int i) {
-    switch(i) {
-      case 0: return "JDBC data source to make database connection.";
-      case 1: return "A model to save.";
-      default: return "No such input.";
-    }
-  }
+		switch (i) {
+			case 0: return "JDBC data source to make database connection.";
+			case 1: return "A model to save.";
+			default: return "No such input";
+		}
+	}
 
   public String getModuleInfo () {
-    String text = "Save a data mining model to a database table.";
-    return text;
-  }
+		return "<html>  <head>      </head>  <body>    Save a data mining model to a database table.  </body></html>";
+	}
 
   public String[] getInputTypes () {
-    String [] in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-                    "ncsa.d2k.module.PredictionModelModule" };
-    return in;
-  }
+		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","ncsa.d2k.module.PredictionModelModule"};
+		return types;
+	}
 
   public String[] getOutputTypes () {
-    return null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   protected String[] getFieldNameMapping () {
     return null;
@@ -529,4 +528,38 @@ public class SaveModelToDB extends UIModule {
     }
   }
   }
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SaveModelToDB";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.prediction.mean;
 
-import ncsa.d2k.infrastructure.modules.ModelGeneratorModule;
-import ncsa.d2k.infrastructure.modules.HasNames;
-import ncsa.d2k.infrastructure.modules.ModelModule;
+
+import ncsa.d2k.core.modules.ModelGeneratorModule;
+import ncsa.d2k.core.modules.ModelModule;
 import ncsa.d2k.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -16,7 +16,7 @@ import ncsa.d2k.modules.core.optimize.util.*;
 */
 
 public class MeanModelGenerator extends ModelGeneratorModule
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -66,7 +66,7 @@ public class MeanModelGenerator extends ModelGeneratorModule
 	//////////////////////////////////////////////////////////////
 
 	public class MeanModel extends PredictionModelModule
-					implements java.io.Serializable, HasNames
+					implements java.io.Serializable
 	{
 
 		////////////////////
@@ -232,68 +232,47 @@ public class MeanModelGenerator extends ModelGeneratorModule
 
 
 	public String getModuleInfo(){
-		return "Creates a model based on the mean of any given output/predict"+
-				"ion feature. Every prediction will simply be the average of"+
-				" that feature in the training set, regardless of the "+
-				"inputs";
+		return "<html>  <head>      </head>  <body>    Creates a model based on the mean of any given output/prediction feature.     Every prediction will simply be the average of that feature in the     training set, regardless of the inputs  </body></html>";
 	}
 
    	public String getModuleName() {
 		return "Mean Model Generator";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The training data set. Only row indices ind"+
-						"icated by the trainingSet will be considered"+
-						" during model generation";
-			}
-
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "The training data set. Only row indices indicated by the trainingSet will be considered during model generation";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Training Data";
-			}
-
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.prediction.mean.MeanModelGenerator$MeanModel"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.prediction.mean.MeanModelGenerator$MeanModel"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The model that was produced";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "The model that was produced";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "The Model";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

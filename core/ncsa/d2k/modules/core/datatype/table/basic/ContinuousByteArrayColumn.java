@@ -4,7 +4,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
-import ncsa.d2k.util.*;
+import ncsa.util.*;
 
 /**
  * A TextualColumn that keeps its data as a continuous array of bytes.  This

@@ -1,30 +1,27 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
+
 import java.io.Serializable;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
-public class RandomGenerator extends ncsa.d2k.infrastructure.modules.DataPrepModule implements Serializable {
+public class RandomGenerator extends ncsa.d2k.core.modules.DataPrepModule  {
 
 	public String getOutputInfo (int index) {
 		switch (index) {
 			case 0: return "A DoubleColumn containing the randomly generated numbers";
-
 			default: return "No such output";
 		}
-
 	}
 
 	public String getInputInfo (int index) {
 		switch (index) {
-
-			default: return "No such output";
+			default: return "No such input";
 		}
 	}
 
 	public String getModuleInfo () {
-		String text = "Produces a set of randomly generated numbers with the distribution indicated in props. <br>PROPS:<ul><li>setSize - the size of the set of numbers to generate<li>LowerBound/UpperBound - define the range of the set (make sure they make sense for the params of the distribution function)<li>DistFamily - the distribution type <ul><li>0-normal<li>1-Uniform<li>2-Cauchy<li>3-Exponential<li>4-Weibull<li>5-lognormal<li>6-Double Exponential<li>7-Gamma</ul><li>Param1- usually the location, but check the api<li>Param2- usually scale, check the api<li>Param3- sometimes shape, sometimes not used, check api</ul> ";
-		return text;
+		return "<html>  <head>      </head>  <body>    Produces a set of randomly generated numbers with the distribution     indicated in props.<br>PROPS:    <ul>      <li>        setSize - the size of the set of numbers to generate      </li>      <li>        LowerBound/UpperBound - define the range of the set (make sure they         make sense for the params of the distribution function)      </li>      <li>        DistFamily - the distribution type        <ul>          <li>            0-normal          </li>          <li>            1-Uniform          </li>          <li>            2-Cauchy          </li>          <li>            3-Exponential          </li>          <li>            4-Weibull          </li>          <li>            5-lognormal          </li>          <li>            6-Double Exponential          </li>          <li>            7-Gamma          </li>        </ul>      </li>      <li>        Param1- usually the location, but check the api      </li>      <li>        Param2- usually scale, check the api      </li>      <li>        Param3- sometimes shape, sometimes not used, check api      </li>    </ul>  </body></html>";
 	}
 
 	//////////////////////////////////
@@ -32,12 +29,13 @@ public class RandomGenerator extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	//////////////////////////////////
 
 	public String[] getInputTypes () {
-		return null;
+		String[] types = {		};
+		return types;
 	}
 
 	public String[] getOutputTypes () {
-		String[] temp = {"ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn"};
-		return temp;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn"};
+		return types;
 	}
 
 	//set like 'the set of numbers', not like 'set it to 1'
@@ -108,6 +106,38 @@ public class RandomGenerator extends ncsa.d2k.infrastructure.modules.DataPrepMod
 
 		pushOutput(col, 0);
 
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "RandomGenerator";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }
 

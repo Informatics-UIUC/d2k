@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.optimize.ga;
 
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 
 /**
@@ -9,7 +9,7 @@ import java.io.Serializable;
 		of the individuals which will populate the next generation.
 		.
 */
-abstract public class SelectionModule extends ncsa.d2k.infrastructure.modules.ComputeModule implements Serializable {
+abstract public class SelectionModule extends ncsa.d2k.core.modules.ComputeModule implements Serializable {
 
 	/** this property is set for debugging. */
 	protected boolean debug = false;

@@ -1,40 +1,41 @@
 package ncsa.d2k.modules.core.datatype.conversion;
 
+
 import java.io.Serializable;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.HashLookupTable;
 
 public class VTtoHashLookupTable extends DataPrepModule
-   implements Serializable {
+    {
 
    public String getModuleInfo() {
-      return "This module converts a Table into a HashLookupTable.";
-   }
+		return "<html>  <head>      </head>  <body>    This module converts a Table into a HashLookupTable.  </body></html>";
+	}
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.Table"};
-      return i;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.Table"};
+		return types;
+	}
 
    public String getInputInfo(int index) {
-      if (index == 0)
-         return "A Table to be converted to a HashLookupTable.";
-      else
-         return "No such input exists.";
-   }
+		switch (index) {
+			case 0: return "A Table to be converted to a HashLookupTable.";
+			default: return "No such input";
+		}
+	}
 
    public String[] getOutputTypes() {
-      String[] o = {"ncsa.d2k.modules.core.datatype.HashLookupTable"};
-      return o;
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.HashLookupTable"};
+		return types;
+	}
 
    public String getOutputInfo(int index) {
-      if (index == 0)
-         return "A HashLookupTable built from the Table input.";
-      else
-         return "No such output exists.";
-   }
+		switch (index) {
+			case 0: return "A HashLookupTable built from the Table input.";
+			default: return "No such output";
+		}
+	}
 
    public void doit() {
 
@@ -59,4 +60,38 @@ public class VTtoHashLookupTable extends DataPrepModule
 
    }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "VTtoHashLookupTable";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

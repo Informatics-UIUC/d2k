@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.util.ErrorDialog;
+import ncsa.gui.ErrorDialog;
 
 import javax.swing.JComboBox;
 

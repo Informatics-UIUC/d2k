@@ -1,15 +1,14 @@
 package ncsa.d2k.modules.core.prediction.LWR;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.gui.JD2KFrame;
-
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.modules.core.vis.*;
-
 import java.io.Serializable;
 import javax.swing.*;
 import javax.swing.table.*;
@@ -28,7 +27,7 @@ import java.awt.event.*;
    @author David Clutter
 */
 public class LWRPlotVis extends VisModule
-	implements HasNames, Serializable {
+	 {
 
 	static int ROW_HEIGHT = 150;
 	static int ROW_WIDTH = 150;
@@ -38,13 +37,8 @@ public class LWRPlotVis extends VisModule
        @return A description of this module.
     */
     public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer("Given an ExampleTable, plot ");
-		sb.append("each numeric input variable against each numeric ");
-		sb.append("output variable in a ScatterPlot.  A matrix of these ");
-		sb.append("plots is shown.  The plots can be selected and a ");
-		sb.append("larger composite graph of these plots can be displayed.");
-		return sb.toString();
-    }
+		return "<html>  <head>      </head>  <body>    Given an ExampleTable, plot each numeric input variable against each     numeric output variable in a ScatterPlot. A matrix of these plots is     shown. The plots can be selected and a larger composite graph of these     plots can be displayed.  </body></html>";
+	}
 
     /**
        Return the name of this module.
@@ -52,7 +46,7 @@ public class LWRPlotVis extends VisModule
     */
     public String getModuleName() {
 		return "ETScatterPlot";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -60,10 +54,9 @@ public class LWRPlotVis extends VisModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.PredictionTable",
-					"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-		return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.PredictionTable","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -71,8 +64,9 @@ public class LWRPlotVis extends VisModule
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		return null;
-    }
+		String[] types = {		};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -80,11 +74,12 @@ public class LWRPlotVis extends VisModule
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		if (i == 0)
-			return "The PredictionTable to plot.";
-		else
-			return "A original data to graph in a ScatterPlot.";
-    }
+		switch (i) {
+			case 0: return "The PredictionTable to plot.";
+			case 1: return "A original data to graph in a ScatterPlot.";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -92,8 +87,14 @@ public class LWRPlotVis extends VisModule
        @return The name of the input
     */
     public String getInputName(int i) {
-		return "ET";
-    }
+		switch(i) {
+			case 0:
+				return "ET";
+			case 1:
+				return "ET";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
     /**
        Return the description of a specific output.
@@ -101,8 +102,10 @@ public class LWRPlotVis extends VisModule
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		return "";
-    }
+		switch (i) {
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.
@@ -110,8 +113,10 @@ public class LWRPlotVis extends VisModule
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	return "";
-    }
+		switch(i) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
 	protected UserView createUserView() {
 		return new LWRPlotView();

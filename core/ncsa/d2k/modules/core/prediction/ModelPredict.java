@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.prediction;
 
-import ncsa.d2k.infrastructure.modules.ComputeModule;
+
+import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 /**
@@ -13,7 +14,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 		and runs the model's predict function
 		on the test table
 */
-public class ModelPredict extends ncsa.d2k.infrastructure.modules.ComputeModule
+public class ModelPredict extends ncsa.d2k.core.modules.ComputeModule
 {
 
 	/**
@@ -22,12 +23,10 @@ public class ModelPredict extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"TestTable\">    <Text>The test set</Text>  </Info></D2K>";
-				case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"PredictionModel\">    <Text>The model</Text>  </Info></D2K>";
-
+			case 0: return "      The test set  ";
+			case 1: return "      The model  ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -35,10 +34,8 @@ public class ModelPredict extends ncsa.d2k.infrastructure.modules.ComputeModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
-						"ncsa.d2k.modules.PredictionModelModule"	};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable","ncsa.d2k.modules.PredictionModelModule"};
 		return types;
-
 	}
 
 	/**
@@ -47,11 +44,10 @@ public class ModelPredict extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"TTout\">    <Text>The PredictionTable with the prediction columns filled in by the model</Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"pmm\">    <Text>The Model.</Text>  </Info></D2K>";
+			case 0: return "      The PredictionTable with the prediction columns filled in by the model  ";
+			case 1: return "      The Model.  ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -59,10 +55,8 @@ public class ModelPredict extends ncsa.d2k.infrastructure.modules.ComputeModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.PredictionTable",
-			"ncsa.d2k.modules.PredictionModelModule"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.PredictionTable","ncsa.d2k.modules.PredictionModelModule"};
 		return types;
-
 	}
 
 	/**
@@ -70,7 +64,7 @@ public class ModelPredict extends ncsa.d2k.infrastructure.modules.ComputeModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Predictor\">    <Text>takes in a model and a TestTable and runs the model's predict function on the test table </Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    takes in a model and a TestTable and runs the model's predict function on     the test table  </body></html>";
 	}
 
 
@@ -89,6 +83,44 @@ public class ModelPredict extends ncsa.d2k.infrastructure.modules.ComputeModule
 		tt = (PredictionTable) pmm.predict (tt);
 		pushOutput(tt, 0);
 		*/
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Predictor";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "TestTable";
+			case 1:
+				return "PredictionModel";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "TTout";
+			case 1:
+				return "pmm";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }
 

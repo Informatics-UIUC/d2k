@@ -1,13 +1,14 @@
 package ncsa.d2k.modules.core.io.net;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.net.*;
 import java.io.*;
 
 /**
 		Given a valid URL, this module will read in an HTML file, write it into a byte array, and provide the byte array as it's only output.
 */
-public class HTMLReaderModule extends ncsa.d2k.infrastructure.modules.InputModule implements Serializable {
+public class HTMLReaderModule extends ncsa.d2k.core.modules.InputModule  {
 
 	/**
 		This method returns the description of the various inputs.
@@ -15,11 +16,11 @@ public class HTMLReaderModule extends ncsa.d2k.infrastructure.modules.InputModul
 		@return the description of the indexed input.
 	*/
 	public String getOutputInfo (int index) {
-		String[] outputDescriptions = {
-				"This byte array contains the result.",
-				"The reference to the document that contained the bytes."
-		};
-		return outputDescriptions[index];
+		switch (index) {
+			case 0: return "This byte array contains the result.";
+			case 1: return "The reference to the document that contained the bytes.";
+			default: return "No such output";
+		}
 	}
 
 	/**
@@ -28,11 +29,11 @@ public class HTMLReaderModule extends ncsa.d2k.infrastructure.modules.InputModul
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo (int index) {
-		String[] inputDescriptions = {
-				"This is the URL from which we load the initial document.",
-				"This is the URL which we are to load the current document."
-		};
-		return inputDescriptions[index];
+		switch (index) {
+			case 0: return "This is the URL from which we load the initial document.";
+			case 1: return "This is the URL which we are to load the current document.";
+			default: return "No such input";
+		}
 	}
 
 	/**
@@ -41,18 +42,17 @@ public class HTMLReaderModule extends ncsa.d2k.infrastructure.modules.InputModul
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		String text = "Given a valid URL, this module will read in an HTML file, write it into a byte array, and provide the byte array as it's only output.";
-		return text;
+		return "<html>  <head>      </head>  <body>    Given a valid URL, this module will read in an HTML file, write it into a     byte array, and provide the byte array as it's only output.  </body></html>";
 	}
 
 	public String[] getInputTypes () {
-		String[] temp = {"java.net.URL", "java.net.URL"};
-		return temp;
+		String[] types = {"java.net.URL","java.net.URL"};
+		return types;
 	}
 
 	public String[] getOutputTypes () {
-		String[] temp = {"[B", "java.net.URL"};
-		return temp;
+		String[] types = {"[B","java.net.URL"};
+		return types;
 	}
 
 	/**
@@ -135,6 +135,44 @@ public class HTMLReaderModule extends ncsa.d2k.infrastructure.modules.InputModul
 			this.pushOutput (out.toByteArray (), 0);
 			this.pushOutput (webLoc, 1);
 
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "HTMLReaderModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.control;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.util.Vector;
 
 /*
@@ -8,7 +9,7 @@ import java.util.Vector;
 	*/
 
 public class SaveNthObject extends ComputeModule 
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -67,23 +68,24 @@ public class SaveNthObject extends ComputeModule
 			savedObjs.add(pullInput(0));
 				numfires++;
 			if(debug)
-				System.out.println(getAlias()+" numfires:"+numfires);
+				System.out.println("numfires:"+numfires);
 	
 		}
 		if(lastPushed&&(inputFlags[1]>0)){
 			maxfires=((Integer)pullInput(1)).intValue();
 			lastPushed=false;
 			if(debug)
-				System.out.println(getAlias()+" maxfires set to "+maxfires);
+				System.out.println("maxfires set to "+maxfires);
+			return;
 		}
 		
 		if(numfires>=maxfires){
 			if(debug)
-				System.out.println(getAlias()+" numfires>=maxfires");
+					System.out.println(getAlias()+" numfiles>=maxfires");
 			numfires-=maxfires;
 			if(savedObjs.size()!=0){
 				if(debug)
-					System.out.println(getAlias()+" Pushing");
+						System.out.println(getAlias()+" Pushing");
 				pushOutput(savedObjs.get(maxfires-1), 0);
 				Vector t=savedObjs;
 				
@@ -105,71 +107,50 @@ public class SaveNthObject extends ComputeModule
 
 
 	public String getModuleInfo(){
-		return "Will save objects that come in into a buffer. Will then push"+
-			" out the Nth one where N is the other input. Because of the buffer"
-			+", N can be pulled in after N+K (K>0) objects have come in";
-
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
 	}
 	
    	public String getModuleName() {
-		return "Buffered Sequencer";
+		return "";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"java.lang.Object","java.lang.Integer"};
-		return s;
+		String[] types = {"java.lang.Object","java.lang.Integer"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The objects, of which the Nth one is wanted to be "+
-				"pushed.";
-			}case(1): {
-				return "The Nth object will be pushed, all others will be "+
-				"ignored";
-			}
-
-
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "";
+			case 1: return "";
+			default: return "No such input";
 		}
 	}
 	
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
-				return "Objects";
-			}
-			case(1):{return "Object Count (N)";}
-			default:{
-				return "No such input.";
-			}
+		switch(index) {
+			case 0:
+				return "Saved Object";
+			case 1:
+				return "Object Count";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"java.lang.Object"};
-		return s;
+		String[] types = {"java.lang.Object"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The Nth object pulled in";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "The Nth object";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}		
 	////////////////////////////////

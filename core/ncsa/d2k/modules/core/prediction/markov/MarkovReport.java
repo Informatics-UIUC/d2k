@@ -1,10 +1,10 @@
 //package opie;
 package ncsa.d2k.modules.core.prediction.markov;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.infrastructure.views.*;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.core.modules.*;
 import java.awt.*;
 
 
@@ -12,15 +12,15 @@ import java.awt.*;
    Template.java
    @author David Clutter
 */
-public class MarkovReport extends VisModule implements HasNames, java.io.Serializable {
+public class MarkovReport extends VisModule  {
 
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleInfo() {
-		return "Display some basic stats about a MarkovModel.";
-    }
+		return "<html>  <head>      </head>  <body>    Display some basic stats about a MarkovModel.  </body></html>";
+	}
 
     /**
        Return the name of this module.
@@ -28,7 +28,7 @@ public class MarkovReport extends VisModule implements HasNames, java.io.Seriali
     */
     public String getModuleName() {
 		return "markovReport";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -36,9 +36,9 @@ public class MarkovReport extends VisModule implements HasNames, java.io.Seriali
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.prediction.markov.MarkovModel"};
-		return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.prediction.markov.MarkovModel"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -46,8 +46,9 @@ public class MarkovReport extends VisModule implements HasNames, java.io.Seriali
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		return null;
-    }
+		String[] types = {		};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -55,8 +56,11 @@ public class MarkovReport extends VisModule implements HasNames, java.io.Seriali
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "The MarkovModel to display.";
-    }
+		switch (i) {
+			case 0: return "The MarkovModel to display.";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -64,8 +68,12 @@ public class MarkovReport extends VisModule implements HasNames, java.io.Seriali
        @return The name of the input
     */
     public String getInputName(int i) {
-		return "";
-    }
+		switch(i) {
+			case 0:
+				return "";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
     /**
        Return the description of a specific output.
@@ -73,8 +81,10 @@ public class MarkovReport extends VisModule implements HasNames, java.io.Seriali
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		return "";
-    }
+		switch (i) {
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.
@@ -82,8 +92,10 @@ public class MarkovReport extends VisModule implements HasNames, java.io.Seriali
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	return "";
-    }
+		switch(i) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
 	public String[] getFieldNameMapping() {
 		return null;

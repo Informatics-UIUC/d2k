@@ -1,9 +1,9 @@
 package ncsa.d2k.modules.core.io.javaspaces;
 
+
 import net.jini.core.entry.*;
 import net.jini.lookup.entry.Name;
-
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 
 
 
@@ -34,30 +34,31 @@ public class JSJobWriter extends DataPrepModule {
   // D2K Abstract Overrides
 
   public String getOutputInfo(int parm1) {
-    if (parm1 == 0){
-      return "net.jini.core.entry.Entry";
-    } else {
-      return "";
-    }
-  }
+		switch (parm1) {
+			case 0: return "net.jini.core.entry.Entry";
+			default: return "No such output";
+		}
+	}
 
   public String[] getOutputTypes() {
-    String[] in = {"net.jini.core.entry.Entry"};
-    return in;
-  }
+		String[] types = {"net.jini.core.entry.Entry"};
+		return types;
+	}
 
   public String getModuleInfo() {
-    return "This module will write an entry out.";
-  }
+		return "<html>  <head>      </head>  <body>    This module will write an entry out.  </body></html>";
+	}
 
   public String getInputInfo(int parm1) {
-    return "";
-  }
+		switch (parm1) {
+			default: return "No such input";
+		}
+	}
 
   public String[] getInputTypes() {
-    String[] out = null;
-    return out;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   public void beginExecution(){
   }
@@ -100,4 +101,36 @@ public class JSJobWriter extends DataPrepModule {
     m_debug = b;
   }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "JSJobWriter";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

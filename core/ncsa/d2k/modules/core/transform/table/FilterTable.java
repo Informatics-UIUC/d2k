@@ -1,12 +1,13 @@
 package ncsa.d2k.modules.core.transform.table;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.gui.*;
 
@@ -28,36 +29,32 @@ public class FilterTable extends UIModule {
 	private static final String OR = "||";
 
    public String getInputInfo (int index) {
-        switch (index) {
-            case 0:
-                return "Table to filter";
-            default:
-                return "No such input";
-        }
-    }
+		switch (index) {
+			case 0: return "Table to filter";
+			default: return "No such input";
+		}
+	}
 
     public String[] getInputTypes () {
-        String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-        return types;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
     public String getOutputInfo (int index) {
-        switch (index) {
-            case 0:
-                return "Filtered table";
-            default:
-                return "No such output";
-        }
-    }
+		switch (index) {
+			case 0: return "Filtered table";
+			default: return "No such output";
+		}
+	}
 
     public String[] getOutputTypes () {
-        String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-        return types;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
     public String getModuleInfo () {
-        return "Filter rows out of a table";
-    }
+		return "<html>  <head>      </head>  <body>    Filter rows out of a table  </body></html>";
+	}
 
     protected UserView createUserView () {
         return new Filter();
@@ -571,4 +568,38 @@ public class FilterTable extends UIModule {
             }
         }
     }
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "FilterTable";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

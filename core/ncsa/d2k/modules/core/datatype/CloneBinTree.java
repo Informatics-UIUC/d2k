@@ -1,59 +1,66 @@
 package ncsa.d2k.modules.core.datatype;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /**
  * Clones a BinTree.
  */
-public class CloneBinTree extends DataPrepModule implements HasNames {
+public class CloneBinTree extends DataPrepModule  {
 
 	public String getModuleInfo() {
-		return "Clones a BinTree N times.";
+		return "<html>  <head>      </head>  <body>    Clones a BinTree N times.  </body></html>";
 	}
 
     public String getModuleName() {
-        return "Clone BinTree";
-    }
+		return "Clone BinTree";
+	}
 
 	public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"java.lang.Integer"};
-		return in;
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","java.lang.Integer"};
+		return types;
 	}
 
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"java.lang.Integer"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","java.lang.Integer"};
+		return types;
 	}
 
 	public String getInputInfo(int i) {
-		if(i == 0)
-			return "The BinTree to clone.";
-		else
-			return "The number of times to clone the bin tree.";
+		switch (i) {
+			case 0: return "The BinTree to clone.";
+			case 1: return "The number of times to clone the bin tree.";
+			default: return "No such input";
+		}
 	}
 
     public String getInputName(int i) {
-        if(i == 0)
-            return "BinTree";
-        else
-            return "N";
-    }
+		switch(i) {
+			case 0:
+				return "BinTree";
+			case 1:
+				return "N";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
 	public String getOutputInfo(int i) {
-		if(i == 0)
-			return "A cloned BinTree.";
-		else
-			return "The number of times to clone the bin tree.";
+		switch (i) {
+			case 0: return "A cloned BinTree.";
+			case 1: return "The number of times to clone the bin tree.";
+			default: return "No such output";
+		}
 	}
 
     public String getOutputName(int i) {
-        if(i == 0)
-            return "Cloned Bin Tree";
-        else
-            return "N";
-    }
+		switch(i) {
+			case 0:
+				return "Cloned Bin Tree";
+			case 1:
+				return "N";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
 	public void doit() {
 		// pull in the inputs

@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.optimize.ga.niching;
 
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.ga.crossover.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 
 /**

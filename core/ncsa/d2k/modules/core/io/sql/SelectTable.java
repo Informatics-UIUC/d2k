@@ -1,30 +1,29 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.io.sql;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.userviews.widgets.*;
 import java.awt.*;
 import java.util.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
 /**
 	SelectTable.java
-	
+
 */
-public class SelectTable extends ncsa.d2k.infrastructure.modules.UIModule {
+public class SelectTable extends ncsa.d2k.core.modules.UIModule {
 /*#end^2 Continue editing. ^#&*/
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Tables List\">    <Text>This vector contains a list of all the tables in the database. </Text>  </Info></D2K>";
+			case 0: return "      This vector contains a list of all the tables in the database.   ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -32,11 +31,8 @@ public class SelectTable extends ncsa.d2k.infrastructure.modules.UIModule {
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"java.util.Vector"};
+		String[] types = {"java.util.Vector"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -44,12 +40,10 @@ public class SelectTable extends ncsa.d2k.infrastructure.modules.UIModule {
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Selected Table\">    <Text>The name of the table that the user selected. </Text>  </Info></D2K>";
+			case 0: return "      The name of the table that the user selected.   ";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -57,11 +51,8 @@ public class SelectTable extends ncsa.d2k.infrastructure.modules.UIModule {
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-			"java.lang.String"};
+		String[] types = {"java.lang.String"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -69,9 +60,7 @@ public class SelectTable extends ncsa.d2k.infrastructure.modules.UIModule {
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Select Table\">    <Text>This module will provide a user interface from which the user can select one from among the database tables available in the targeted database. </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<html>  <head>      </head>  <body>    This module will provide a user interface from which the user can select     one from among the database tables available in the targeted database.  </body></html>";
 	}
 
 	/**
@@ -121,7 +110,7 @@ public class SelectTable extends ncsa.d2k.infrastructure.modules.UIModule {
 	SelectTablesView
 	This is the UserView class.
 */
-class SelectTablesView extends ncsa.d2k.controller.userviews.UserInputPane {
+class SelectTablesView extends ncsa.d2k.userviews.UserInputPane {
 	java.awt.Label availTablesLabel = new java.awt.Label("availTablesLabel");
 	DSList availTablesList = new DSList("availTablesList");
 /*#end^12 Continue editing. ^#&*/
@@ -158,4 +147,38 @@ class SelectTablesView extends ncsa.d2k.controller.userviews.UserInputPane {
 
 /*&%^14 Do not modify this section. */
 /*#end^14 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Select Table";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Tables List";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Selected Table";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
 
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
@@ -13,7 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 	*/
 
 public class RenamePredictionColumn extends ComputeModule
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -59,62 +59,47 @@ public class RenamePredictionColumn extends ComputeModule
 
 
 	public String getModuleInfo(){
-		return "Renames the first column of predictions to the name given in properties"+
-			"PROPS: newPredictionName - the new column label ";
+		return "<html>  <head>      </head>  <body>    Renames the first column of predictions to the name given in     propertiesPROPS: newPredictionName - the new column label  </body></html>";
 	}
 
    	public String getModuleName() {
 		return "Rename Prediction Column";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The table w/ a column of predictions";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "The table w/ a column of predictions";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Table w/ Predictions";
-			}
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The input table w/ the prediction column renamed";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "The input table w/ the prediction column renamed";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Table w/ Renamed Predictions";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

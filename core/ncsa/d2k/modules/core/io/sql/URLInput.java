@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.io.sql;
 
 import java.io.Serializable;
-import ncsa.d2k.infrastructure.modules.InputModule;
+import ncsa.d2k.core.modules.InputModule;
 
 /**
 	This module contains properties that are used to

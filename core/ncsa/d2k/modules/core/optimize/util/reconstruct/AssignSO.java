@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.util.reconstruct;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.util.SOSolution;
 /**
 
@@ -11,7 +12,7 @@ import ncsa.d2k.modules.core.optimize.util.SOSolution;
 	*/
 
 public class AssignSO extends DataPrepModule
-	implements HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -60,71 +61,50 @@ public class AssignSO extends DataPrepModule
 
 
 	public String getModuleInfo(){
-		return "Assigns an objective value (the double) to a solution object";
+		return "<html>  <head>      </head>  <body>    Assigns an objective value (the double) to a solution object  </body></html>";
 	}
 
    	public String getModuleName() {
 		return "Assign Single Objective";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"java.lang.Double",
-					"ncsa.d2k.modules.core.optimize.util.SOSolution"
-					};
-		return s;
+		String[] types = {"java.lang.Double","ncsa.d2k.modules.core.optimize.util.SOSolution"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The objective value";
-			}
-			case(1): {
-				return "The solution the assign the objective to";
-			}
-
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "The objective value";
+			case 1: return "The solution the assign the objective to";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Objective";
-			}
-			case(1): {
+			case 1:
 				return "Solution";
-			}
-
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.optimize.util.SOSolution"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SOSolution"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "The solution with the objective now assigned";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "The solution with the objective now assigned";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Evaluated Solution";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

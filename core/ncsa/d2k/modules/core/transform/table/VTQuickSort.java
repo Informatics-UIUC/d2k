@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.Date;
@@ -17,7 +18,7 @@ import java.io.Serializable;
 ***/
 
 public class VTQuickSort extends DataPrepModule
-	implements Serializable{
+	{
 
 	TableImpl sorted;
 	NumericColumn sortColumn;
@@ -52,7 +53,7 @@ public class VTQuickSort extends DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Table\">    <Text>The Vertical Table to sort</Text>  </Info></D2K>";
+			case 0: return "      The Vertical Table to sort  ";
 			default: return "No such input";
 		}
 	}
@@ -63,13 +64,8 @@ public class VTQuickSort extends DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.datatype.table.basic.TableImpl"
-
-			};
+		String[] types = {"ncsa.d2k.modules.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -77,12 +73,10 @@ public class VTQuickSort extends DataPrepModule
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Sorted Table\">    <Text>The Sorted Table </Text>  </Info></D2K>";
+			case 0: return "      The Sorted Table   ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -90,11 +84,8 @@ public class VTQuickSort extends DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -102,9 +93,7 @@ public class VTQuickSort extends DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-
-		 return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Basic Vertical Table Quick Sort\">    <Text>This module takes in a VerticalTable and uses quick sort to sort the table based on the column (must be an instance of NumericColumn) indicated by the property sortColumn. PROPS: sortColumn - the column to sort by. printTime - will print the time taken by the algorithms two parts to standard out. ascending- if true, results will be in ascending order, if not, descending (descending requires a rather inefficient reversal of a table sorted to be ascending).</Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    This module takes in a VerticalTable and uses quick sort to sort the table     based on the column (must be an instance of NumericColumn) indicated by     the property sortColumn. PROPS: sortColumn - the column to sort by.     printTime - will print the time taken by the algorithms two parts to     standard out. ascending- if true, results will be in ascending order, if     not, descending (descending requires a rather inefficient reversal of a     table sorted to be ascending).  </body></html>";
 	}
 
   /*///////////////////
@@ -273,6 +262,40 @@ public class VTQuickSort extends DataPrepModule
 		int halfWay=(int)(numRows/2D);
 		for(int i=0;i<halfWay; i++){
 			vt.swapRows(i, numRows-i-1);
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Basic Vertical Table Quick Sort";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Sorted Table";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

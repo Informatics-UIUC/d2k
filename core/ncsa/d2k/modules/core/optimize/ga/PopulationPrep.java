@@ -1,6 +1,6 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.optimize.ga;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import java.io.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
@@ -16,7 +16,7 @@ import java.io.*;
 	<UL>
 
 */
-abstract public class PopulationPrep extends ncsa.d2k.infrastructure.modules.DataPrepModule
+abstract public class PopulationPrep extends ncsa.d2k.core.modules.DataPrepModule
 /*#end^2 Continue editing. ^#&*/
 implements Serializable {
 

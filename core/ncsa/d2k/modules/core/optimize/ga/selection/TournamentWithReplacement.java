@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.optimize.ga.selection;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 import ncsa.d2k.modules.core.optimize.ga.*;
 
@@ -12,7 +13,7 @@ import ncsa.d2k.modules.core.optimize.ga.*;
 
 	The only property is the tournament size, denoted as S above.
 */
-public class TournamentWithReplacement extends SelectionModule implements Serializable {
+public class TournamentWithReplacement extends SelectionModule  {
 
 	/** selective pressure determins how rapidly the population converges. */
 	protected int tsize = 4;
@@ -45,10 +46,10 @@ public class TournamentWithReplacement extends SelectionModule implements Serial
 		@return the description of the indexed input.
 	*/
 	public String getOutputInfo (int index) {
-		String[] outputDescriptions = {
-				"This population is the resulting progeny."
-		};
-		return outputDescriptions[index];
+		switch (index) {
+			case 0: return "This population is the resulting progeny.";
+			default: return "No such output";
+		}
 	}
 
 	/**
@@ -56,10 +57,10 @@ public class TournamentWithReplacement extends SelectionModule implements Serial
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo (int index) {
-		String[] inputDescriptions = {
-				"This is the next generation population to be selected on."
-		};
-		return inputDescriptions[index];
+		switch (index) {
+			case 0: return "This is the next generation population to be selected on.";
+			default: return "No such input";
+		}
 	}
 
 	/**
@@ -67,8 +68,7 @@ public class TournamentWithReplacement extends SelectionModule implements Serial
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		String text = "This module will take the given population of Individuals and select based on fitness, or random draw. The result will be a population that was selected.\n RankIndividuals is set if the individuals are to be ranked on the basis of some fitness function.\n Gap is set if there is a generation gap. 1.0 is no generation gap, and the smaller the number (> 0) the greater the gap.";
-		return text;
+		return "<html>  <head>      </head>  <body>    This module will take the given population of Individuals and select based     on fitness, or random draw. The result will be a population that was     selected. RankIndividuals is set if the individuals are to be ranked on     the basis of some fitness function. Gap is set if there is a generation     gap. 1.0 is no generation gap, and the smaller the number (&gt; 0) the     greater the gap.  </body></html>";
 	}
 
 	//////////////////////////////////
@@ -76,13 +76,13 @@ public class TournamentWithReplacement extends SelectionModule implements Serial
 	//////////////////////////////////
 
 	public String[] getInputTypes () {
-		String[] temp = {"ncsa.d2k.modules.core.optimize.ga.Population"};
-		return temp;
+		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
+		return types;
 	}
 
 	public String[] getOutputTypes () {
-		String[] temp = {"ncsa.d2k.modules.core.optimize.ga.Population"};
-		return temp;
+		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
+		return types;
 	}
 
 	/**
@@ -115,6 +115,40 @@ public class TournamentWithReplacement extends SelectionModule implements Serial
 					best = shuffle [j];
 			}
 			sample [nextSample] = best;
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "TournamentWithReplacement";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

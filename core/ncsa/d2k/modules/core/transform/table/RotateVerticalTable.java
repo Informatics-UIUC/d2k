@@ -1,27 +1,22 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
 
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
    RotateVerticalTable.java
    @author David Clutter
 */
-public class RotateVerticalTable extends DataPrepModule implements HasNames {
+public class RotateVerticalTable extends DataPrepModule  {
 
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer("Rotates a table so that ");
-		sb.append("the columns become the rows.  The new table will have ");
-		sb.append("an extra column.  The labels of the columns in the ");
-		sb.append("original table become the first column of the new table.");
-    	return sb.toString();
+		return "<html>  <head>      </head>  <body>    Rotates a table so that the columns become the rows. The new table will     have an extra column. The labels of the columns in the original table     become the first column of the new table.  </body></html>";
 	}
 
     /**
@@ -29,8 +24,8 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
        @return The name of this module.
     */
     public String getModuleName() {
-	return "rotate";
-    }
+		return "rotate";
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -38,9 +33,9 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
-		return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -48,9 +43,9 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
-		return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -58,9 +53,10 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		if(i == 0)
-			return "The table to rotate.";
-		return "no such input";
+		switch (i) {
+			case 0: return "The table to rotate.";
+			default: return "No such input";
+		}
 	}
 
     /**
@@ -69,10 +65,12 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
        @return The name of the input
     */
     public String getInputName(int i) {
-		if(i ==0)
-			return "originalTable.";
-		return "no such input.";
-    }
+		switch(i) {
+			case 0:
+				return "originalTable.";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
     /**
        Return the description of a specific output.
@@ -80,15 +78,11 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		if(i == 0) {
-			StringBuffer sb = new StringBuffer("The rotated table.  The ");
-			sb.append("labels of the columns in the original table become ");
-			sb.append("the first column of the new table.  The data in ");
-			sb.append("column 0 becomes the data in row0, and so on.");
-			return sb.toString();
+		switch (i) {
+			case 0: return "The rotated table.  The labels of the columns in the original table become the first column of the new table.  The data in column 0 becomes the data in row0, and so on.";
+			default: return "No such output";
 		}
-		return "no such output.";
-    }
+	}
 
     /**
        Return the name of a specific output.
@@ -96,8 +90,12 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	return "rotatedTable";
-    }
+		switch(i) {
+			case 0:
+				return "rotatedTable";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
     /**
        Perform the calculation.

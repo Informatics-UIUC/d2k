@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.io.sql;
 
-import ncsa.d2k.infrastructure.modules.DataPrepModule;
+
+import ncsa.d2k.core.modules.DataPrepModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.sql.*;
@@ -10,38 +11,33 @@ import java.util.Vector;
 public class SQLMeta2VT extends DataPrepModule
 {
 	public String getOutputInfo (int index) {
-	    String[] outputDescriptions = {
-		"Pass this on to the next module that needs a connection to this data source.",
-		"Table containing only metadata related to the SQL table "
-	    };
-	    return outputDescriptions[index];
+		switch (index) {
+			case 0: return "Pass this on to the next module that needs a connection to this data source.";
+			default: return "No such output";
+		}
 	}
 
     public String getInputInfo (int index) {
-	String[] inputDescriptions = {
-	    "Connection to the database ",
-	    " Name of the SQL table used"
-	};
-	return inputDescriptions[index];
-    }
+		switch (index) {
+			case 0: return "Connection to the database ";
+			case 1: return " Name of the SQL table used";
+			default: return "No such input";
+		}
+	}
 
     public String getModuleInfo () {
-	String text = "Retrieves  SQL table metadata ";
-	return text;
-    }
+		return "<html>  <head>      </head>  <body>    Retrieves SQL table metadata  </body></html>";
+	}
 
     public String[] getInputTypes () {
-	String[] temp = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-			 "java.lang.String"};
-	return temp;
-    }
+		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","java.lang.String"};
+		return types;
+	}
 
     public String[] getOutputTypes () {
-	String[] temp = {
-	    //	    "ncsa.d2k.modules.io.input.sql.ConnectionWrapper",
-	    "ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
-	return temp;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
+	}
 
     protected void doit ()  throws Exception
     {
@@ -116,4 +112,40 @@ public class SQLMeta2VT extends DataPrepModule
 	this.pushOutput (vt, 0);
     }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SQLMeta2VT";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

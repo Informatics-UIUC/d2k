@@ -1,7 +1,8 @@
 
 package ncsa.d2k.modules.core.control;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 /**
 	MultiPusher.java
@@ -12,7 +13,7 @@ import java.io.Serializable;
 	@author Peter Groves
 	7/15/01
 */
-public class MultiPusher extends ncsa.d2k.infrastructure.modules.DataPrepModule implements Serializable
+public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule 
 {
 
 	protected boolean debug=false;
@@ -24,12 +25,10 @@ public class MultiPusher extends ncsa.d2k.infrastructure.modules.DataPrepModule 
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"objIn\">    <Text>The object to be passed multiple times </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"N\">    <Text>The number of times to pass it</Text>  </Info></D2K>";
-
+			case 0: return "      The object to be passed multiple times   ";
+			case 1: return "      The number of times to pass it  ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -37,9 +36,8 @@ public class MultiPusher extends ncsa.d2k.infrastructure.modules.DataPrepModule 
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"java.lang.Object", "java.lang.Integer"};
+		String[] types = {"java.lang.Object","java.lang.Integer"};
 		return types;
-
 	}
 
 	/**
@@ -48,10 +46,9 @@ public class MultiPusher extends ncsa.d2k.infrastructure.modules.DataPrepModule 
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"objOut\">    <Text>One of multiple pushes of the object </Text>  </Info></D2K>";
+			case 0: return "      One of multiple pushes of the object   ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -61,7 +58,6 @@ public class MultiPusher extends ncsa.d2k.infrastructure.modules.DataPrepModule 
 	public String[] getOutputTypes() {
 		String[] types = {"java.lang.Object"};
 		return types;
-
 	}
 
 	/**
@@ -69,8 +65,7 @@ public class MultiPusher extends ncsa.d2k.infrastructure.modules.DataPrepModule 
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ObjectPusher\">    <Text>Takes an Object, pushes it out N times.PROPS: N-the number of pushes, usePropNValue - false- will wait for and use the Integer in input 1; true - will use the N in properties </Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    Takes an Object, pushes it out N times.PROPS: N-the number of pushes,     usePropNValue - false- will wait for and use the Integer in input 1; true     - will use the N in properties  </body></html>";
 	}
 	/* the number of times to push the object*/
 	int N=4;
@@ -153,5 +148,41 @@ public class MultiPusher extends ncsa.d2k.infrastructure.modules.DataPrepModule 
 		return debug;
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "ObjectPusher";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "objIn";
+			case 1:
+				return "N";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "objOut";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

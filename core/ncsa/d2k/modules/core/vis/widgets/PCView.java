@@ -12,9 +12,9 @@ import javax.swing.table.*;
 import java.io.*;
 
 import ncsa.d2k.modules.core.vis.*;
-import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.gui.*;
 import ncsa.gui.*;
 

@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.discovery.cluster.kmeans;
 
-import ncsa.d2k.infrastructure.modules.*;
-//import ncsa.d2k.util.datatype.*;
+
+import ncsa.d2k.core.modules.*;
 import java.util.*;
 import java.lang.reflect.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -14,7 +14,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 	Fixed the algorithm up 4/02 - pgroves
 */
-public class KMeans extends ncsa.d2k.infrastructure.modules.ComputeModule
+public class KMeans extends ncsa.d2k.core.modules.ComputeModule
 implements Reentrant
 {
 	int maxIterations=-1;
@@ -30,7 +30,7 @@ implements Reentrant
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"VerticalTable\"><Text>This is the verticaltable that already has a cluster column from the KRandom module and is to be re-clustered.</Text></Info></D2K>";
+			case 0: return "This is the verticaltable that already has a cluster column from the KRandom module and is to be re-clustered.";
 			default: return "No such input";
 		}
 	}
@@ -50,7 +50,7 @@ implements Reentrant
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"table\"><Text>This verticaltable contains a column at the end with the cluster point closest to the data point.</Text></Info></D2K>";
+			case 0: return "This verticaltable contains a column at the end with the cluster point closest to the data point.";
 			default: return "No such output";
 		}
 	}
@@ -69,7 +69,7 @@ implements Reentrant
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"KMeans\"><Text>The verticaltable will be split into k clusters, using the k-means algorithm.  The output verticaltable is the original verticaltable with an additional final column with the cluster point closest to the data point.PROPS: maxIterations - the number of cluster recomputions to allow. A value less than zero will let the algorithm continue until no examples change clusters. (A good way to have it hang)</Text></Info></D2K>";
+		return "<html>  <head>      </head>  <body>    The verticaltable will be split into k clusters, using the k-means     algorithm. The output verticaltable is the original verticaltable with an     additional final column with the cluster point closest to the data     point.PROPS: maxIterations - the number of cluster recomputions to allow.     A value less than zero will let the algorithm continue until no examples     change clusters. (A good way to have it hang)  </body></html>";
 	}
 
 	public void doit() throws Exception {
@@ -274,5 +274,39 @@ implements Reentrant
 		}
 		vt.setColumn(clustercol, addclustercol);
 		pushOutput(vt, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "KMeans";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "VerticalTable";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "table";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

@@ -6,16 +6,16 @@ package ncsa.d2k.modules.core.prediction.markov;
 //import ncsa.d2k.dtcheng.general.*;
 //import ncsa.d2k.dtcheng.io.*;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
 import java.io.*;
 import java.util.*;
 import java.text.*;
 
 
-public class GenerateMarkovBias extends ncsa.d2k.infrastructure.modules.ComputeModule implements Serializable
+public class GenerateMarkovBias extends ncsa.d2k.core.modules.ComputeModule 
   {
 
   //////////////////////
@@ -43,21 +43,24 @@ public class GenerateMarkovBias extends ncsa.d2k.infrastructure.modules.ComputeM
 
   public String getInputInfo (int index)
     {
-    String[] inputDescriptions = {"TriggerObject"};
-    return inputDescriptions[index];
-    }
+		switch (index) {
+			case 0: return "TriggerObject";
+			default: return "No such input";
+		}
+	}
 
   public String getOutputInfo (int index)
     {
-    String[] outputDescriptions = {"MarkovBiasTable"};
-    return outputDescriptions[index];
-    }
+		switch (index) {
+			case 0: return "MarkovBiasTable";
+			default: return "No such output";
+		}
+	}
 
   public String getModuleInfo()
     {
-    String text = this.getClass().getName();
-    return text;
-    }
+		return "<html>  <head>      </head>  <body>    ncsa.d2k.modules.core.prediction.markov.GenerateMarkovBias  </body></html>";
+	}
 
 
   ////////////////////////
@@ -66,15 +69,15 @@ public class GenerateMarkovBias extends ncsa.d2k.infrastructure.modules.ComputeM
 
   public String[] getInputTypes()
     {
-    String[] temp = {"java.lang.Object"};
-    return temp;
-    }
+		String[] types = {"java.lang.Object"};
+		return types;
+	}
 
   public String[] getOutputTypes()
     {
-    String[] temp = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
-    return temp;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		return types;
+	}
 
 
 
@@ -108,6 +111,40 @@ public class GenerateMarkovBias extends ncsa.d2k.infrastructure.modules.ComputeM
     this.pushOutput(transform_bias_table, 0);
     }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "GenerateMarkovBias";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
   }
 
 

@@ -1,13 +1,14 @@
 package ncsa.d2k.modules.core.control;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /*
 	@author pgroves
 	*/
 
 public class SaveLastObject extends ComputeModule 
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -65,66 +66,50 @@ public class SaveLastObject extends ComputeModule
 
 
 	public String getModuleInfo(){
-		return "";
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
 	}
 	
    	public String getModuleName() {
 		return "";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"java.lang.Object","java.lang.Object"};
-		return s;
+		String[] types = {"java.lang.Object","java.lang.Object"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "";
-			}case(1): {
-				return "";
-			}
-
-
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "";
+			case 1: return "";
+			default: return "No such input";
 		}
 	}
 	
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Saved Object";
-			}
-			case(1):{return "End Trigger";}
-			default:{
-				return "No such input.";
-			}
+			case 1:
+				return "End Trigger";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"java.lang.Object"};
-		return s;
+		String[] types = {"java.lang.Object"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}		
 	////////////////////////////////

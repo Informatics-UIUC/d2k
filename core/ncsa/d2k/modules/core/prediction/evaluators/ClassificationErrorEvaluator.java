@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.prediction.evaluators;
 
-import ncsa.d2k.infrastructure.modules.ModelEvaluatorModule;
-import ncsa.d2k.infrastructure.modules.ModelModule;
-import ncsa.d2k.infrastructure.modules.HasNames;
+
+import ncsa.d2k.core.modules.ModelEvaluatorModule;
+import ncsa.d2k.core.modules.ModelModule;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 
@@ -12,38 +12,28 @@ import ncsa.d2k.modules.core.datatype.table.*;
  * the predict() method of each PredictionModelModule.  Only the model with
  * the highest number of correct predictions is passed as an output.
  */
-public class ClassificationErrorEvaluator extends ModelEvaluatorModule implements HasNames {
+public class ClassificationErrorEvaluator extends ModelEvaluatorModule  {
 
 	public String getModuleInfo() {
-		String s = "Meant to be used in conjunction with NFoldTTables.  ";
-		s += "This module takes N PredictionModelModules and N testing sets.  ";
-		s += "The testing set is passed to the predict() method of each ";
-		s += "PredictionModelModule.  Only the model with the highest number of";
-		s += "correct predictions is passed as an output.";
-		return s;
+		return "<html>  <head>      </head>  <body>    Meant to be used in conjunction with NFoldTTables. This module takes N     PredictionModelModules and N testing sets. The testing set is passed to     the predict() method of each PredictionModelModule. Only the model with     the highest number ofcorrect predictions is passed as an output.  </body></html>";
 	}
 
 	public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.PredictionModelModule",
-			"ncsa.d2k.modules.core.datatype.table.PredictionTable",
-			"java.lang.Integer"};
-		return in;
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule","ncsa.d2k.modules.core.datatype.table.PredictionTable","java.lang.Integer"};
+		return types;
 	}
 
 	public String[] getOutputTypes() {
-		String[] out = 	{"ncsa.d2k.modules.core.prediction.evaluators.ClassificationErrorStats",
-			"java.lang.Integer"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.core.prediction.evaluators.ClassificationErrorStats","java.lang.Integer"};
+		return types;
 	}
 
 	public String getInputInfo(int i) {
-		switch(i) {
-			case 0:
-				return "A testing data set.";
-			case 1:
-				return "The number of folds.";
-			default:
-				return "No such input.";
+		switch (i) {
+			case 0: return "A testing data set.";
+			case 1: return "The number of folds.";
+			case 2: return "No such input.";
+			default: return "No such input";
 		}
 	}
 
@@ -53,19 +43,17 @@ public class ClassificationErrorEvaluator extends ModelEvaluatorModule implement
 				return "TestSet";
 			case 1:
 				return "N";
-			default:
+			case 2:
 				return "No such input.";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 
 	public String getOutputInfo(int i) {
-		switch(i) {
-			case 0:
-				return "The statistics about each fold.";
-			case 2:
-				return "The number of folds.";
-			default:
-				return "No such output.";
+		switch (i) {
+			case 0: return "The statistics about each fold.";
+			case 1: return "No such output.";
+			default: return "No such output";
 		}
 	}
 
@@ -73,10 +61,9 @@ public class ClassificationErrorEvaluator extends ModelEvaluatorModule implement
 		switch(i) {
 			case 0:
 				return "Stats";
-			case 2:
-				return "N";
-			default:
+			case 1:
 				return "No such output";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 

@@ -1,8 +1,8 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.transform.attribute;
-import ncsa.d2k.infrastructure.modules.*;
-import java.util.*;
 
+import ncsa.d2k.core.modules.*;
+import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
@@ -12,7 +12,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 	ScaleDoubles.java
 
 */
-public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class ScaleDoubles extends ncsa.d2k.core.modules.DataPrepModule
 /*#end^2 Continue editing. ^#&*/
 {
 
@@ -21,12 +21,10 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Example table\">    <Text>This is the input example table with the inputs and outputs selected. </Text>  </Info></D2K>";
+			case 0: return "      This is the input example table with the inputs and outputs selected.   ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -34,11 +32,8 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -46,12 +41,10 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Scalarized Table\">    <Text>Scales all double and float columns to the range 0-1. </Text>  </Info></D2K>";
+			case 0: return "      Scales all double and float columns to the range 0-1.   ";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -59,11 +52,8 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -71,9 +61,7 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Scalarize Nominals\">    <Text>This module will examine each input column and output column, and if they contain nominal values, it will convert them to multiple colunms (of booleans) one for each possible value of the attribute. </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<html>  <head>      </head>  <body>    This module will examine each input column and output column, and if they     contain nominal values, it will convert them to multiple colunms (of     booleans) one for each possible value of the attribute.  </body></html>";
 	}
 
 	private Column getScaledColumn (DoubleColumn col) {
@@ -144,5 +132,39 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	}
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Scalarize Nominals";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Example table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Scalarized Table";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

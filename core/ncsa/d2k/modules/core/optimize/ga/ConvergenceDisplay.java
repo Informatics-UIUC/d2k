@@ -1,12 +1,13 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.optimize.ga;
 
+
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.vis.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.userviews.widgets.*;
 import ncsa.gui.Constrain;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,61 +17,49 @@ import ncsa.d2k.modules.core.vis.widgets.*;
 /**
 	Used to display convergence to some objective function for a Genetic algorithm population.
 */
-public class ConvergenceDisplay extends ncsa.d2k.infrastructure.modules.UIModule {
+public class ConvergenceDisplay extends ncsa.d2k.core.modules.UIModule {
 /*#end^2 Continue editing. ^#&*/
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Target\"><Text>This input is the target fitness score.</Text></Info></D2K>";
+			case 0: return "  This input is the target fitness score.";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 	/**
 		This method returns an array of strings that contains the data types for the inputs.
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.optimize.ga.Population"};
+		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 	/**
 		This method returns the description of the outputs.
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 	/**
 		This method returns an array of strings that contains the data types for the outputs.
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-};
+		String[] types = {		};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 	/**
 		This method returns the description of the module.
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Convergence Plot\">    <Text>This module displays a plot which renders the current fitness value over time, and the target fitness.</Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<html>  <head>      </head>  <body>    This module displays a plot which renders the current fitness value over     time, and the target fitness.  </body></html>";
 	}
 
 	/**
@@ -115,7 +104,7 @@ public class ConvergenceDisplay extends ncsa.d2k.infrastructure.modules.UIModule
 	ConvergenceDisplayView
 	This is the UserView class.
 */
-class ConvergenceDisplayView extends ncsa.d2k.controller.userviews.UserInputPane {
+class ConvergenceDisplayView extends ncsa.d2k.userviews.UserInputPane {
 /*#end^12 Continue editing. ^#&*/
 	/**
 		This method adds the components to a Panel and then adds the Panel
@@ -277,6 +266,38 @@ class ConvergenceDisplayView extends ncsa.d2k.controller.userviews.UserInputPane
 
 /*&%^14 Do not modify this section. */
 /*#end^14 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Convergence Plot";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Target";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 
 

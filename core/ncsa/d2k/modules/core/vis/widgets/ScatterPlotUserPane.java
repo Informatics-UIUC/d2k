@@ -4,8 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.controller.userviews.swing.JUserPane;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.JUserPane;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.gui.*;
@@ -15,7 +15,7 @@ import ncsa.d2k.gui.*;
 /**
 	ScatterPlotUserPane
 */
-public class ScatterPlotUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane
+public class ScatterPlotUserPane extends ncsa.d2k.userviews.swing.JUserPane
 	implements ActionListener {
 	ScatterPlot2D module;
 

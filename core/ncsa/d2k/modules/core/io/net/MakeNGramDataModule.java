@@ -1,13 +1,14 @@
 package ncsa.d2k.modules.core.io.net;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.util.*;
 import java.io.*;
 
 /**
 		This module will strip all the html tags out of the given data. A byte array output stream is used to generate the resulting byte array.
 */
-public class MakeNGramDataModule extends ncsa.d2k.infrastructure.modules.DataPrepModule {
+public class MakeNGramDataModule extends ncsa.d2k.core.modules.DataPrepModule {
 	ByteArrayOutputStream byteOutput = null;
 
 	/**
@@ -16,10 +17,10 @@ public class MakeNGramDataModule extends ncsa.d2k.infrastructure.modules.DataPre
 		@return the description of the indexed input.
 	*/
 	public String getOutputInfo (int index) {
-		String[] outputDescriptions = {
-				"The output is the input data for use by the ngram procedure."
-		};
-		return outputDescriptions[index];
+		switch (index) {
+			case 0: return "The output is the input data for use by the ngram procedure.";
+			default: return "No such output";
+		}
 	}
 
 	/**
@@ -28,12 +29,11 @@ public class MakeNGramDataModule extends ncsa.d2k.infrastructure.modules.DataPre
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo (int index) {
-		String[] inputDescriptions = {
-				"The input is the text we want to run through ngram.",
-				"This is just an input indicating the process is done."
-
-		};
-		return inputDescriptions[index];
+		switch (index) {
+			case 0: return "The input is the text we want to run through ngram.";
+			case 1: return "This is just an input indicating the process is done.";
+			default: return "No such input";
+		}
 	}
 
 	/**
@@ -42,18 +42,17 @@ public class MakeNGramDataModule extends ncsa.d2k.infrastructure.modules.DataPre
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		String text = "This module will take the given textual data and format it for use by the ngram program.";
-		return text;
+		return "<html>  <head>      </head>  <body>    This module will take the given textual data and format it for use by the     ngram program.  </body></html>";
 	}
 
 	public String[] getInputTypes () {
-		String[] temp = {"[B","java.lang.Boolean"};
-		return temp;
+		String[] types = {"[B","java.lang.Boolean"};
+		return types;
 	}
 
 	public String[] getOutputTypes () {
-		String[] temp = {"[B"};
-		return temp;
+		String[] types = {"[B"};
+		return types;
 	}
 
 	/**
@@ -139,6 +138,42 @@ public class MakeNGramDataModule extends ncsa.d2k.infrastructure.modules.DataPre
 			this.pushOutput (byteOutput.toByteArray (), 0);
 			System.out.println ("~~~~ have completed prep.....");
 			byteOutput = null;
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "MakeNGramDataModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

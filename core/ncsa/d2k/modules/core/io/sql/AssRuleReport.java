@@ -9,17 +9,16 @@ package ncsa.d2k.modules.core.io.sql;
  * @version 1.0
  */
 
-import ncsa.d2k.infrastructure.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.controller.classloading.*;
-import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.io.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.util.datatype.*;
 
+import ncsa.d2k.core.*;
+import ncsa.d2k.core.modules.*;
+//import ncsa.d2k.controller.classloading.*;
+import ncsa.d2k.core.modules.UserView;
+//import ncsa.d2k.io.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.util.table.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
-
 import java.sql.*;
 import java.util.*;
 import java.util.ArrayList;
@@ -31,12 +30,11 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.table.TableColumnModel;
 import javax.swing.JTable;
-
 import oracle.sql.*;
 import oracle.jdbc.driver.*;
 
 public class AssRuleReport extends UIModule
-       implements java.io.Serializable {
+        {
   JOptionPane msgBoard = new JOptionPane();
   File file;
   FileWriter fw;
@@ -70,30 +68,32 @@ public class AssRuleReport extends UIModule
   }
 
   public String getInputInfo (int i) {
-    switch (i) {
-      case 0: return "Each rule consists of a list of distinct rule ids followed by a confidence and a support value. ";
-      case 1: return "An array that contains all rule labels (column name = column value).";
-      default: return "No such output";
-    }
-  }
+		switch (i) {
+			case 0: return "Each rule consists of a list of distinct rule ids followed by a confidence and a support value. ";
+			case 1: return "An array that contains all rule labels (column name = column value).";
+			default: return "No such input";
+		}
+	}
 
   public String getOutputInfo (int i) {
-      return null;
-  }
+		switch (i) {
+			default: return "No such output";
+		}
+	}
 
   public String getModuleInfo () {
-    String text = "Display the association rules in text format.";
-    return text;
-  }
+		return "<html>  <head>      </head>  <body>    Display the association rules in text format.  </body></html>";
+	}
 
   public String[] getOutputTypes () {
-     return null;
-  }
+		String[] types = {		};
+		return types;
+	}
 
   public String[] getInputTypes () {
-    String [] types =  {"[[I", "java.util.ArrayList"};
-    return types;
-  }
+		String[] types = {"[[I","java.util.ArrayList"};
+		return types;
+	}
 
   protected String[] getFieldNameMapping () {
     return null;
@@ -226,4 +226,38 @@ public class AssRuleReport extends UIModule
     executionManager.moduleDone(this);
   }
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "AssRuleReport";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.prediction.regression;
 
 import ncsa.d2k.modules.PredictionModelModule;
-import ncsa.d2k.infrastructure.modules.HasNames;
 import ncsa.d2k.modules.core.datatype.table.*;
 //import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.optimize.util.*;
@@ -35,9 +34,7 @@ import Jama.*;
 	//// The model
 	//////////////////////////////////////////////////////////////
 
-	public class RegressionModel extends PredictionModelModule
-					implements java.io.Serializable, HasNames
-	{
+	public class RegressionModel extends PredictionModelModule {
 
 		////////////////////
 		//model's fields
@@ -81,9 +78,9 @@ import Jama.*;
 			//make sure to make room for a constant
 			if(!predictMean){
 			try{
-			
+
 			Matrix matA=new Matrix(numRows, numIns+1);
-			
+
 			for(int i=0;i<numRows; i++){//row
 				matA.set(i, 0, 1.0);//the constant
 				for(int j=0;j<numIns; j++){//column

@@ -1,5 +1,6 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
+
 import java.util.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
@@ -7,7 +8,7 @@ import java.util.*;
 	StringBinModule.java
 
 */
-public class StringBinModule extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class StringBinModule extends ncsa.d2k.core.modules.DataPrepModule
 /*#end^2 Continue editing. ^#&*/
 {
 
@@ -16,12 +17,10 @@ public class StringBinModule extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"purchase array\">    <Text>This is an array of purchases, each purchase consisting of a list of the item names of the items purchased. </Text>  </Info></D2K>";
+			case 0: return "      This is an array of purchases, each purchase consisting of a list of the item names of the items purchased.   ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -29,11 +28,8 @@ public class StringBinModule extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"[[Ljava.lang.String;"};
+		String[] types = {"[[Ljava.lang.String;"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -41,12 +37,10 @@ public class StringBinModule extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"item map\">    <Text>This hashtable is keyed against the distinct items found, containing as the value an </Text>    <Text I=\"t\">Integer containing the index </Text>    <Text> </Text>    <Text> </Text>  </Info></D2K>";
+			case 0: return "      This hashtable is keyed against the distinct items found, containing as the value an     <I>Integer containing the index </I>            ";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -54,11 +48,8 @@ public class StringBinModule extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-			"java.util.Hashtable"};
+		String[] types = {"java.util.Hashtable"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -66,9 +57,7 @@ public class StringBinModule extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Bin Text Items\">    <Text>This module will take as input a list of purchases, each purchase consisting of an array of item names of items purchased. It will produce a hashtable contain each of the distinct words in the column of the original table at the column indicated by the index. The value of the hashtable will be the index of the associated distinct item. </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<html>  <head>      </head>  <body>    This module will take as input a list of purchases, each purchase     consisting of an array of item names of items purchased. It will produce a     hashtable contain each of the distinct words in the column of the original     table at the column indicated by the index. The value of the hashtable     will be the index of the associated distinct item.  </body></html>";
 	}
 
 	/**
@@ -123,5 +112,39 @@ public class StringBinModule extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	}
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Bin Text Items";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "purchase array";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "item map";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

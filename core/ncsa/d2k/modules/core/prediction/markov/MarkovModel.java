@@ -2,7 +2,7 @@
 //package opie;
 package ncsa.d2k.modules.core.prediction.markov;
 
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 

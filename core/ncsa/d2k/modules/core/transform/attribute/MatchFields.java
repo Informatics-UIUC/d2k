@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
 
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 /**
 	MatchFields.java
@@ -11,7 +11,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 	 @author Peter Groves
 */
-public class MatchFields extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class MatchFields extends ncsa.d2k.core.modules.DataPrepModule
 {
 
 	/**
@@ -20,11 +20,10 @@ public class MatchFields extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"FieldSourceTable\">    <Text>The table that contains the input and output columns already set </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"FieldSetTable\">    <Text>The table that will become a new ExampleTable (shallow copy) with the input and output columns set to be the same as the other input table </Text>  </Info></D2K>";
+			case 0: return "      The table that contains the input and output columns already set   ";
+			case 1: return "      The table that will become a new ExampleTable (shallow copy) with the input and output columns set to be the same as the other input table   ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -32,10 +31,8 @@ public class MatchFields extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable","ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
-
 	}
 
 	/**
@@ -44,10 +41,9 @@ public class MatchFields extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 1: return "The table with the columns of the second and the input and output features of the first";
+			case 0: return "No such output";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -57,7 +53,6 @@ public class MatchFields extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	public String[] getOutputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
-
 	}
 
 	/**
@@ -65,8 +60,7 @@ public class MatchFields extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"FieldMatch\">    <Text>Takes two Tables, sets the second's inputFeatures and output features to that of the first (which must be an Example Table) </Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    Takes two Tables, sets the second's inputFeatures and output features to     that of the first (which must be an Example Table)  </body></html>";
 	}
 
 	/**
@@ -89,5 +83,41 @@ public class MatchFields extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		pushOutput(et2, 0);
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "FieldMatch";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "FieldSourceTable";
+			case 1:
+				return "FieldSetTable";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

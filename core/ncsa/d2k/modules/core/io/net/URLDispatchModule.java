@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.io.net;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.util.*;
 import java.io.*;
 import java.net.*;
@@ -8,7 +9,7 @@ import java.net.*;
 /**
 		This module takes two inputs; One is a vector containing a list of URLs, the other is a trigger that will always cause it to fire. When it fires, will simply take the next URL from the list and provide it as output.
 */
-public class URLDispatchModule extends ncsa.d2k.infrastructure.modules.DataPrepModule {
+public class URLDispatchModule extends ncsa.d2k.core.modules.DataPrepModule {
 
 	/** This is the list of links we will process. */
 	Vector links = new Vector ();
@@ -32,11 +33,11 @@ public class URLDispatchModule extends ncsa.d2k.infrastructure.modules.DataPrepM
 		@return the description of the indexed input.
 	*/
 	public String getOutputInfo (int index) {
-		String[] outputDescriptions = {
-				"This output is the URL to be loaded next.",
-				"This is a list of URLs that were traversed."
-		};
-		return outputDescriptions[index];
+		switch (index) {
+			case 0: return "This output is the URL to be loaded next.";
+			case 1: return "This is a list of URLs that were traversed.";
+			default: return "No such output";
+		}
 	}
 
 	/**
@@ -45,11 +46,11 @@ public class URLDispatchModule extends ncsa.d2k.infrastructure.modules.DataPrepM
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo (int index) {
-		String[] inputDescriptions = {
-				"This string contains the name of the host we want to search.",
-				"This vector will contain a list of URLs."
-		};
-		return inputDescriptions[index];
+		switch (index) {
+			case 0: return "This string contains the name of the host we want to search.";
+			case 1: return "This vector will contain a list of URLs.";
+			default: return "No such input";
+		}
 	}
 
 	/**
@@ -58,18 +59,17 @@ public class URLDispatchModule extends ncsa.d2k.infrastructure.modules.DataPrepM
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		String text = "This module takes two inputs; One is a vector containing a list of strings containing urls.";
-		return text;
+		return "<html>  <head>      </head>  <body>    This module takes two inputs; One is a vector containing a list of strings     containing urls.  </body></html>";
 	}
 
 	public String[] getInputTypes() {
-		String[] temp = {"java.lang.String", "java.util.Vector"};
-		return temp;
+		String[] types = {"java.lang.String","java.util.Vector"};
+		return types;
 	}
 
 	public String[] getOutputTypes() {
-		String[] temp = {"java.net.URL", "java.util.Hashtable"};
-		return temp;
+		String[] types = {"java.net.URL","java.util.Hashtable"};
+		return types;
 	}
 
 	/**
@@ -139,6 +139,44 @@ public class URLDispatchModule extends ncsa.d2k.infrastructure.modules.DataPrepM
 			processedCount++;
 			this.pushOutput (links.elementAt (index), 0);
 			links.removeElementAt (index);
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "URLDispatchModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

@@ -1,17 +1,17 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /**
 	Given a DecisionTreeNode that is the root of a decision tree,
 	create a new DecisionTreeModel from it.
 */
-public class ClearDTTallies extends DataPrepModule implements HasNames {
+public class ClearDTTallies extends DataPrepModule  {
 
 
 	public String getModuleInfo() {
-		String s = "Given a DecisionTreeModel, clear the values from its nodes.";
-		return s;
+		return "<html>  <head>      </head>  <body>    Given a DecisionTreeModel, clear the values from its nodes.  </body></html>";
 	}
 
 	public String getModuleName() {
@@ -19,30 +19,44 @@ public class ClearDTTallies extends DataPrepModule implements HasNames {
 	}
 
 	public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel"};
-		return in;
+		String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel"};
+		return types;
 	}
 
 	// change to prediction table
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel"};
+		return types;
 	}
 
 	public String getInputInfo(int i) {
-		return "A DecisionTreeModel.";
+		switch (i) {
+			case 0: return "A DecisionTreeModel.";
+			default: return "No such input";
+		}
 	}
 
 	public String getInputName(int i) {
-		return "DTModel";
+		switch(i) {
+			case 0:
+				return "DTModel";
+			default: return "NO SUCH INPUT!";
+		}
 	}
 
 	public String getOutputInfo(int i) {
-		return "The same DecisionTreeModel with its values cleared.";
+		switch (i) {
+			case 0: return "The same DecisionTreeModel with its values cleared.";
+			default: return "No such output";
+		}
 	}
 
 	public String getOutputName(int i) {
-		return "DTModel";
+		switch(i) {
+			case 0:
+				return "DTModel";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 
 	/**

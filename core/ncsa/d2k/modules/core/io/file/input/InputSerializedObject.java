@@ -7,56 +7,50 @@
 
 package ncsa.d2k.modules.core.io.file.input;
 
-import  java.io.*;
-import  ncsa.d2k.infrastructure.modules.*;
+
+import java.io.*;
+import ncsa.d2k.core.modules.*;
 
 /*
  * Reads a serialized object from a file.
  * @author David Tcheng
  */
 public class InputSerializedObject extends InputModule
-    implements HasNames, HasProperties, java.io.Serializable {
+     {
 
   /**
    * put your documentation comment here
    * @return
    */
   public String getModuleInfo () {
-    StringBuffer sb = new StringBuffer("Reads a serialized object from a file PROPS-usePropFileName"
-        + " is true if you don't want it to wait for an input for a filename and instead"
-        + " use the filename in the properties");
-    return  sb.toString();
-  }
+		return "<html>  <head>      </head>  <body>    Reads a serialized object from a file PROPS-usePropFileName is true if you     don't want it to wait for an input for a filename and instead use the     filename in the properties  </body></html>";
+	}
 
   /**
    * put your documentation comment here
    * @return
    */
   public String getModuleName () {
-    return  "Reads a serialized object from a file.";
-  }
+		return "Reads a serialized object from a file.";
+	}
 
   /**
    * put your documentation comment here
    * @return
    */
   public String[] getInputTypes () {
-    String[] in =  {
-      "java.lang.String"
-    };
-    return  in;
-  }
+		String[] types = {"java.lang.String"};
+		return types;
+	}
 
   /**
    * put your documentation comment here
    * @return
    */
   public String[] getOutputTypes () {
-    String[] out =  {
-      "java.lang.Object"
-    };
-    return  out;
-  }
+		String[] types = {"java.lang.Object"};
+		return types;
+	}
 
   /**
    * put your documentation comment here
@@ -64,10 +58,11 @@ public class InputSerializedObject extends InputModule
    * @return
    */
   public String getInputInfo (int i) {
-    if (i == 0)
-      return  "The filename to read in";
-    return  "no such input!";
-  }
+		switch (i) {
+			case 0: return "The filename to read in";
+			default: return "No such input";
+		}
+	}
 
   /**
    * put your documentation comment here
@@ -75,8 +70,12 @@ public class InputSerializedObject extends InputModule
    * @return
    */
   public String getInputName (int i) {
-    return  "no such input!";
-  }
+		switch(i) {
+			case 0:
+				return "no such input!";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
   /**
    * put your documentation comment here
@@ -84,10 +83,11 @@ public class InputSerializedObject extends InputModule
    * @return
    */
   public String getOutputInfo (int i) {
-    if (i == 0)
-      return  "SerializedObject";
-    return  "no such output!";
-  }
+		switch (i) {
+			case 0: return "SerializedObject";
+			default: return "No such output";
+		}
+	}
 
   /**
    * put your documentation comment here
@@ -95,10 +95,12 @@ public class InputSerializedObject extends InputModule
    * @return
    */
   public String getOutputName (int i) {
-    if (i == 0)
-      return  "SerializedObject";
-    return  "no such output!";
-  }
+		switch(i) {
+			case 0:
+				return "SerializedObject";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
   ////////////////
   // Properties //
   ////////////////

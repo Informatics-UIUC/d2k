@@ -1,6 +1,7 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.optimize.ga;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /*#end^1 Continue editing. ^#&*/
@@ -9,7 +10,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 	GAFieldSelection.java
 
 */
-public class GAFieldSelection extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class GAFieldSelection extends ncsa.d2k.core.modules.DataPrepModule
 /*#end^2 Continue editing. ^#&*/
 {
 
@@ -18,13 +19,11 @@ public class GAFieldSelection extends ncsa.d2k.infrastructure.modules.DataPrepMo
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>This is the GA population, from the genes present here we will determine of the possible inputs have been selected. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Original Examples\">    <Text>This table contains the original examples passed in, and the original inputs selected by the user. </Text>  </Info></D2K>";
+			case 0: return "      This is the GA population, from the genes present here we will determine of the possible inputs have been selected.   ";
+			case 1: return "      This table contains the original examples passed in, and the original inputs selected by the user.   ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -32,12 +31,8 @@ public class GAFieldSelection extends ncsa.d2k.infrastructure.modules.DataPrepMo
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.optimize.ga.Population",
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population","ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -45,12 +40,10 @@ public class GAFieldSelection extends ncsa.d2k.infrastructure.modules.DataPrepMo
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Test Inputs\">    <Text>This example table contains the inputs to be tested. </Text>  </Info></D2K>";
+			case 0: return "      This example table contains the inputs to be tested.   ";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -58,11 +51,8 @@ public class GAFieldSelection extends ncsa.d2k.infrastructure.modules.DataPrepMo
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -70,9 +60,7 @@ public class GAFieldSelection extends ncsa.d2k.infrastructure.modules.DataPrepMo
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"\">    <Text> </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
 	}
 
 	ExampleTable originalExamples = null;
@@ -105,22 +93,6 @@ public class GAFieldSelection extends ncsa.d2k.infrastructure.modules.DataPrepMo
 	*/
 	public boolean getDebug () {
 		return this.debug;
-	}
-
-	/**
-		This method is called at then end of each execution cycle
-		for the module, by default, tripping any output triggers.
-		Modules which need to set triggers at other times will override
-		this method to apply the appropriate logic.
-	 */
-	protected void activateTriggers()
-	{
-		// hit all triggers
-		if (oTriggers != null && pop == null)
-		{
-			for(int i = 0; i < oTriggers.length; i++)
-				oTriggers [i].trigger ();
-		}
 	}
 
 	/**
@@ -198,5 +170,41 @@ public class GAFieldSelection extends ncsa.d2k.infrastructure.modules.DataPrepMo
 	}
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			case 1:
+				return "Original Examples";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Test Inputs";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

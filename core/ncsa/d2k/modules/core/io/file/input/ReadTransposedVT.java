@@ -1,9 +1,9 @@
 package ncsa.d2k.modules.core.io.file.input;
 
+
 import java.util.*;
 import java.io.*;
-
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
@@ -16,7 +16,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 	@author Peter Groves
 */
 public class ReadTransposedVT extends ReadDelimitedFormat
-			implements Serializable {
+			 {
 
 	/**the column that contains the types of the VT columns*/
 	int typesColumn= 1;
@@ -314,5 +314,31 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 			numToks++;
 		}
 		return null;
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

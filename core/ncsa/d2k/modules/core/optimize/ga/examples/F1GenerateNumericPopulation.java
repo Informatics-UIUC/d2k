@@ -1,14 +1,15 @@
 package ncsa.d2k.modules.core.optimize.ga.examples;
+
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.util.*;
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 
 /**
 		CrossoverModule.java
 
 */
-public class F1GenerateNumericPopulation extends PopulationPrep implements Serializable {
+public class F1GenerateNumericPopulation extends PopulationPrep  {
 	public F1GenerateNumericPopulation () {
 	}
 
@@ -18,8 +19,7 @@ public class F1GenerateNumericPopulation extends PopulationPrep implements Seria
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		String text = "This module sets up the initial population, and will set all the fields of the population that are used to steer the genetic algorithm.";
-		return text;
+		return "<html>  <head>      </head>  <body>    This module sets up the initial population, and will set all the fields of     the population that are used to steer the genetic algorithm.  </body></html>";
 	}
 
 /*	protected int getNumberBits () {
@@ -47,5 +47,37 @@ public class F1GenerateNumericPopulation extends PopulationPrep implements Seria
 		SOPopulation pop = new SOPopulation (xyz, oc, this.getPopulationSize (), this.getTargetFitness ());
 		pop.setMaxGenerations (this.maxGenerations);
 		this.pushOutput (pop, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "F1GenerateNumericPopulation";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Population";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

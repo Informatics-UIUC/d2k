@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.prediction.neuralnet;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 /*
@@ -12,7 +13,7 @@ import ncsa.d2k.modules.core.optimize.util.*;
 	*/
 
 public class NNBiasByProps extends ComputeModule
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -53,62 +54,44 @@ public class NNBiasByProps extends ComputeModule
 
 
 	public String getModuleInfo(){
-		return "	Set the biases for the NNModelGenerator"+
-				" w/ properties so that a gui doesn't pop up each time";
+		return "<html>  <head>      </head>  <body>    Set the biases for the NNModelGenerator w/ properties so that a gui     doesn't pop up each time  </body></html>";
 	}
 
    	public String getModuleName() {
 		return "NN Biases";
 	}
 	public String[] getInputTypes(){
-		String[] s= {};
-		return s;
+		String[] types = {		};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-		/*	case(0): {
-				return "";
-			}*/
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-		/*	case(0): {
-				return "";
-			}*/
-			default:{
-				return "No such input.";
-			}
+		switch(index) {
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.optimize.util.SOMixedSolution"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SOMixedSolution"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "A solution object defined by properties";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "A solution object defined by properties";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "Biases";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

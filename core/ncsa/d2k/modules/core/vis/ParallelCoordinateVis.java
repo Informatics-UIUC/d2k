@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.vis;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -10,10 +11,10 @@ import java.text.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.table.*;
-import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.gui.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.gui.*;
@@ -24,24 +25,30 @@ import ncsa.gui.*;
 public class ParallelCoordinateVis extends VisModule {
 
 	public String getModuleInfo() {
-		return "Plots the data in a Table on parallel axes.";
+		return "<html>  <head>      </head>  <body>    Plots the data in a Table on parallel axes.  </body></html>";
 	}
 
 	public String getInputInfo(int i) {
-		return "A table to plot.";
+		switch (i) {
+			case 0: return "A table to plot.";
+			default: return "No such input";
+		}
 	}
 
 	public String getOutputInfo(int i) {
-		return "";
+		switch (i) {
+			default: return "No such output";
+		}
 	}
 
 	public String[] getInputTypes() {
-		String[] i = {"ncsa.d2k.modules.core.datatype.table.Table"};
-		return i;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
 	}
 
 	public String[] getOutputTypes() {
-		return null;
+		String[] types = {		};
+		return types;
 	}
 
 	public UserView createUserView() {
@@ -52,5 +59,36 @@ public class ParallelCoordinateVis extends VisModule {
 		return null;
 	}
 
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "ParallelCoordinateVis";
+	}
 
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
+

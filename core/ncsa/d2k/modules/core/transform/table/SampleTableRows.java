@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
 
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.Random;
@@ -15,20 +15,15 @@ import java.util.Random;
 
    @author David Clutter
 */
-public class SampleTableRows extends DataPrepModule implements HasNames,
-	java.io.Serializable {
+public class SampleTableRows extends DataPrepModule  {
 
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer("Creates a sample of the given Table.");
-		sb.append(" If the useFirst property is set, then the first N rows of the table ");
-		sb.append(" will be the sample.  Otherwise, the sampled table will contain N ");
-		sb.append(" random rows from the table.  The original table is left untouched.");
-		return sb.toString();
-    }
+		return "<html>  <head>      </head>  <body>    Creates a sample of the given Table. If the useFirst property is set, then     the first N rows of the table will be the sample. Otherwise, the sampled     table will contain N random rows from the table. The original table is     left untouched.  </body></html>";
+	}
 
     /**
        Return the name of this module.
@@ -36,7 +31,7 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
     */
     public String getModuleName() {
 		return "SampleTableRows";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -44,9 +39,9 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-		return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -54,9 +49,9 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-		return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -64,8 +59,11 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "The Table to create a sample from.";
-    }
+		switch (i) {
+			case 0: return "The Table to create a sample from.";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -73,8 +71,12 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The name of the input
     */
     public String getInputName(int i) {
-		return "original table";
-    }
+		switch(i) {
+			case 0:
+				return "original table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
     /**
        Return the description of a specific output.
@@ -82,8 +84,11 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		return "The sample table";
-    }
+		switch (i) {
+			case 0: return "The sample table";
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.
@@ -91,8 +96,12 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	return "sample table";
-    }
+		switch(i) {
+			case 0:
+				return "sample table";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
 	/** the number of rows to sample */
 	int N;

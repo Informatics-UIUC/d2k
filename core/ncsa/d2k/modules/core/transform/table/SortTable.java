@@ -1,25 +1,28 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.d2k.util.*;
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.userviews.widgets.*;
+import ncsa.util.*;
 import ncsa.gui.*;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  * Perform a cascading Excel-style sort on a MutableTable.
 */
-public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule {
+public class SortTable extends ncsa.d2k.core.modules.UIModule {
 
 	public String getInputInfo(int index) {
-		return "";
+		switch (index) {
+			case 0: return "";
+			default: return "No such input";
+		}
 	}
 
 	public String[] getInputTypes() {
@@ -28,7 +31,10 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule {
 	}
 
 	public String getOutputInfo(int index) {
-		return "";
+		switch (index) {
+			case 0: return "";
+			default: return "No such output";
+		}
 	}
 
 	public String[] getOutputTypes() {
@@ -37,7 +43,7 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule {
 	}
 
 	public String getModuleInfo() {
-		return "Sort the columns of a Table.";
+		return "<html>  <head>      </head>  <body>    Sort the columns of a Table.  </body></html>";
 	}
 
 	protected UserView createUserView() {
@@ -78,7 +84,7 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule {
 	/**
 		SortTableView
 	*/
-	private class SortTableView extends ncsa.d2k.controller.userviews.swing.JUserPane {
+	private class SortTableView extends ncsa.d2k.userviews.swing.JUserPane {
 
 		MutableTable table;
 		int columns;
@@ -324,5 +330,39 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule {
 	public void initialize(int[] array) {
 		for (int index=0; index < array.length; index++)
 			array[index] = index;
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SortTable";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

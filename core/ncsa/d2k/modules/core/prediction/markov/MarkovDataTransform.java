@@ -1,11 +1,10 @@
 //package opie;
 package ncsa.d2k.modules.core.prediction.markov;
 
+
 import ncsa.d2k.modules.TransformationModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.infrastructure.modules.HasNames;
-
 import java.util.*;
 
 /**
@@ -15,18 +14,15 @@ import java.util.*;
 	@author David Clutter
 */
 public class MarkovDataTransform extends TransformationModule
-	implements HasNames, java.io.Serializable {
+	 {
 
     /**
        Return a description of the function of this module.
        @return A description of this module.
     */
     public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer("Transforms a table of Strings to a ");
-		sb.append("Table of ints.  The transformation logic is saved with this ");
-		sb.append("object.");
-		return sb.toString();
-    }
+		return "<html>  <head>      </head>  <body>    Transforms a table of Strings to a Table of ints. The transformation logic     is saved with this object.  </body></html>";
+	}
 
     /**
        Return the name of this module.
@@ -34,7 +30,7 @@ public class MarkovDataTransform extends TransformationModule
     */
     public String getModuleName() {
 		return "MarkovDataTransform";
-    }
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -42,9 +38,9 @@ public class MarkovDataTransform extends TransformationModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
-		return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -52,9 +48,9 @@ public class MarkovDataTransform extends TransformationModule
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
-		return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -62,8 +58,11 @@ public class MarkovDataTransform extends TransformationModule
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		return "The ExampleTable to transform.";
-    }
+		switch (i) {
+			case 0: return "The ExampleTable to transform.";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -71,8 +70,12 @@ public class MarkovDataTransform extends TransformationModule
        @return The name of the input
     */
     public String getInputName(int i) {
-		return "untransformedTable";
-    }
+		switch(i) {
+			case 0:
+				return "untransformedTable";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
     /**
        Return the description of a specific output.
@@ -80,10 +83,11 @@ public class MarkovDataTransform extends TransformationModule
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		StringBuffer sb = new StringBuffer("The new, transformed table.  This module ");
-		sb.append("is added to the list of transformations.");
-		return sb.toString();
-    }
+		switch (i) {
+			case 0: return "The new, transformed table.  This module is added to the list of transformations.";
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.
@@ -91,8 +95,12 @@ public class MarkovDataTransform extends TransformationModule
        @return The name of the output
     */
     public String getOutputName(int i) {
-    	return "transformedTable";
-    }
+		switch(i) {
+			case 0:
+				return "transformedTable";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
     /**
        Perform the calculation.

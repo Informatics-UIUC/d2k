@@ -1,12 +1,13 @@
 package ncsa.d2k.modules.core.vis;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.io.file.output.*;
@@ -16,26 +17,23 @@ import ncsa.d2k.modules.core.vis.widgets.*;
    Display the contents of a VerticalTable.
    @author David Clutter
 */
-public class TableViewer extends UIModule implements HasNames {
+public class TableViewer extends UIModule  {
 
    /**
       Return a description of the function of this module.
       @return A description of this module.
    */
    public String getModuleInfo() {
-      StringBuffer b = new StringBuffer( "A table viewer.  This displays");
-      b.append(" the contents of a Table.  The table is then");
-      b.append(" passed along as the output.");
-      return b.toString();
-    }
+		return "<html>  <head>      </head>  <body>    A table viewer. This displays the contents of a Table. The table is then     passed along as the output.  </body></html>";
+	}
 
     /**
        Return the name of this module.
        @return The name of this module.
     */
     public String getModuleName() {
-      return "TableViewer";
-    }
+		return "TableViewer";
+	}
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -43,9 +41,9 @@ public class TableViewer extends UIModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-      String[] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
-      return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
+	}
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -53,9 +51,9 @@ public class TableViewer extends UIModule implements HasNames {
        @return The datatypes of the outputs.
     */
    public String[] getOutputTypes() {
-      String[] out = {"ncsa.d2k.modules.core.datatype.table.Table"};
-      return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
+	}
 
     /**
        Return a description of a specific input.
@@ -63,11 +61,11 @@ public class TableViewer extends UIModule implements HasNames {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-      if(i == 0)
-         return "The Table to display.";
-      else
-         return "No such input!";
-    }
+		switch (i) {
+			case 0: return "The Table to display.";
+			default: return "No such input";
+		}
+	}
 
     /**
        Return the name of a specific input.
@@ -75,11 +73,12 @@ public class TableViewer extends UIModule implements HasNames {
        @return The name of the input
     */
     public String getInputName(int i) {
-      if(i == 0)
-         return "Table";
-      else
-         return "No such input!";
-    }
+		switch(i) {
+			case 0:
+				return "Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
     /**
        Return the description of a specific output.
@@ -87,15 +86,11 @@ public class TableViewer extends UIModule implements HasNames {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-      if(i == 0) {
-         StringBuffer b = new StringBuffer("The Table that was");
-         b.append(" displayed.  No changes are made to the table by");
-         b.append(" this module.");
-         return b.toString();
-      }
-      else
-         return "No such output!";
-    }
+		switch (i) {
+			case 0: return "The Table that was displayed.  No changes are made to the table by this module.";
+			default: return "No such output";
+		}
+	}
 
     /**
        Return the name of a specific output.
@@ -103,11 +98,12 @@ public class TableViewer extends UIModule implements HasNames {
        @return The name of the output
     */
     public String getOutputName(int i) {
-      if(i == 0)
-         return "Table";
-      else
-         return "No such output!";
-    }
+		switch(i) {
+			case 0:
+				return "Table";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
     /**
        Not used.
@@ -196,7 +192,6 @@ public class TableViewer extends UIModule implements HasNames {
       */
       protected void finishUp() {
          pushOutput(table, 0);
-         //executionManager.moduleDone(parent);
 		 viewDone("Done");
       }
 

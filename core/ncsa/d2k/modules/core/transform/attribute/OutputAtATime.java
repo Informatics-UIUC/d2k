@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import ncsa.d2k.infrastructure.modules.*;
 
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 /*
 	For use with CompoundModels.
@@ -16,7 +16,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 	*/
 
 public class OutputAtATime extends DataPrepModule
-	implements java.io.Serializable, HasNames{
+	{
 
 	//////////////////////
 	//d2k Props
@@ -87,63 +87,50 @@ public class OutputAtATime extends DataPrepModule
 
 
 	public String getModuleInfo(){
-		return "";
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
 	}
 
    	public String getModuleName() {
 		return "";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			case 0: return "";
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "";
-			}
-			default:{
-				return "No such input.";
-			}
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.datatype.table.ExampleTable",
-					"java.lang.Integer",
-					/*"ncsa.d2k.util.datatype.ExampleTable"*/};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable","java.lang.Integer"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "";
+			case 1: return "No such output.";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "";
-			}
-			default:{
+			case 1:
 				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

@@ -1,23 +1,22 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.examples;
 
-import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.gui.*;
 
+import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.userviews.widgets.*;
+import ncsa.gui.*;
 import java.awt.*;
 import java.io.*;
 import javax.swing.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
 	ScatterPlot2D.java
 */
-public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisModule implements Serializable
+public class LoadScatterPlotModule extends ncsa.d2k.core.modules.VisModule
 {
 
 	/**
@@ -26,10 +25,9 @@ public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisMo
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table\">    <Text>This is the table to plot.</Text>  </Info></D2K>";
+			case 0: return "      This is the table to plot.  ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -39,7 +37,6 @@ public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisMo
 	public String[] getInputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -50,7 +47,6 @@ public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisMo
 		switch (index) {
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -60,7 +56,6 @@ public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisMo
 	public String[] getOutputTypes() {
 		String[] types = {		};
 		return types;
-
 	}
 
 	/**
@@ -68,8 +63,7 @@ public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisMo
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ScatterPlot\">    <Text>This module is used only with the Load problem demo of NSGA in D2K. It will scatter plot the final pareto front on the load arm problem.</Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    This module is used only with the Load problem demo of NSGA in D2K. It     will scatter plot the final pareto front on the load arm problem.  </body></html>";
 	}
 
 	/**
@@ -102,7 +96,7 @@ public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisMo
 /**
 	ScatterPlotUserPane
 */
-class LoadPlotUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane {
+class LoadPlotUserPane extends ncsa.d2k.userviews.swing.JUserPane {
 	LoadScatterPlotModule module;
 	TableImpl table;
 
@@ -130,5 +124,37 @@ class LoadPlotUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane {
 		}
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "ScatterPlot";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

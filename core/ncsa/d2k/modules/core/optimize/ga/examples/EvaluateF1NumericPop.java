@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.examples;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
 
 /**
@@ -18,7 +19,7 @@ public class EvaluateF1NumericPop extends EvaluateModule {
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Evaluate Population\">    <Text>Evalute this F1 population. </Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    Evalute this F1 population.  </body></html>";
 	}
 
 	/**
@@ -33,5 +34,39 @@ public class EvaluateF1NumericPop extends EvaluateModule {
 		double z = genes[2];
 		member.setObjective (Math.log ((x*x) + (y*y) + (z*z))/
 			Math.log ((255*255) + (255*255) + (255*255)));
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Evaluate Population";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

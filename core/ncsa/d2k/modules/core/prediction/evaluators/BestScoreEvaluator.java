@@ -2,8 +2,9 @@ package ncsa.d2k.modules.core.prediction.evaluators;
 
 //import ncsa.d2k.core.modules.*;
 //import ncsa.util.table.*;
-import ncsa.d2k.infrastructure.modules.ModelEvaluatorModule;
-import ncsa.d2k.infrastructure.modules.ModelModule;
+
+import ncsa.d2k.core.modules.ModelEvaluatorModule;
+import ncsa.d2k.core.modules.ModelModule;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -21,23 +22,16 @@ public class BestScoreEvaluator extends ModelEvaluatorModule  {
 	public boolean getDebug () { return this.debug; }
 
 	public String getModuleInfo() {
-		String s = "Meant to be used in conjunction with NFoldTTables.  ";
-		s += "This module takes N PredictionModelModules and N testing sets.  ";
-		s += "The testing set is passed to the predict() method of each ";
-		s += "PredictionModelModule.  Only the model with the highest number of";
-		s += "correct predictions is passed as an output.";
-		return s;
+		return "<html>  <head>      </head>  <body>    Meant to be used in conjunction with NFoldTTables. This module takes N     PredictionModelModules and N testing sets. The testing set is passed to     the predict() method of each PredictionModelModule. Only the model with     the highest number ofcorrect predictions is passed as an output.  </body></html>";
 	}
 
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.PredictionModelModule",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable","java.lang.Integer"};
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule","ncsa.d2k.modules.core.datatype.table.ExampleTable","java.lang.Integer"};
 		return types;
 	}
 
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.PredictionModelModule",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule","ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
@@ -227,4 +221,5 @@ public class BestScoreEvaluator extends ModelEvaluatorModule  {
 	public ModelModule getModel() {
 		return bestModel;
 	}
+
 }

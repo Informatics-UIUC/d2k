@@ -1,11 +1,11 @@
 /*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.transform.attribute;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
-import java.awt.*;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.userviews.widgets.*;
+import java.awt.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
@@ -13,7 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 	SelectAttribute.java
 
 */
-public class SelectAttribute extends ncsa.d2k.infrastructure.modules.UIModule
+public class SelectAttribute extends ncsa.d2k.core.modules.UIModule
 /*#end^2 Continue editing. ^#&*/
 {
 
@@ -22,12 +22,10 @@ public class SelectAttribute extends ncsa.d2k.infrastructure.modules.UIModule
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-/*&%^3 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"input table\">    <Text>This table contains the names of the attributes which we will select from. </Text>  </Info></D2K>";
+			case 0: return "      This table contains the names of the attributes which we will select from.   ";
 			default: return "No such input";
 		}
-/*#end^3 Continue editing. ^#&*/
 	}
 
 	/**
@@ -35,11 +33,8 @@ public class SelectAttribute extends ncsa.d2k.infrastructure.modules.UIModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-/*&%^4 Do not modify this section. */
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
-/*#end^4 Continue editing. ^#&*/
 	}
 
 	/**
@@ -47,13 +42,11 @@ public class SelectAttribute extends ncsa.d2k.infrastructure.modules.UIModule
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-/*&%^5 Do not modify this section. */
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"SelectedAttributes\">    <Text>The list of attributes that were selected. </Text>  </Info></D2K>";
-			case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Table\">    <Text>This is the table just as it was input.</Text>  </Info></D2K>";
+			case 0: return "      The list of attributes that were selected.   ";
+			case 1: return "      This is the table just as it was input.  ";
 			default: return "No such output";
 		}
-/*#end^5 Continue editing. ^#&*/
 	}
 
 	/**
@@ -61,12 +54,8 @@ public class SelectAttribute extends ncsa.d2k.infrastructure.modules.UIModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-/*&%^6 Do not modify this section. */
-		String [] types =  {
-			"[Ljava.lang.String;",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"[Ljava.lang.String;","ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
-/*#end^6 Continue editing. ^#&*/
 	}
 
 	/**
@@ -74,9 +63,7 @@ public class SelectAttribute extends ncsa.d2k.infrastructure.modules.UIModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-/*&%^7 Do not modify this section. */
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Select Attributes\">    <Text>Construct a list containing each of the attributes in the given dataset, by name. Output the result as a list of strings the user selected from the list. </Text>  </Info></D2K>";
-/*#end^7 Continue editing. ^#&*/
+		return "<html>  <head>      </head>  <body>    Construct a list containing each of the attributes in the given dataset,     by name. Output the result as a list of strings the user selected from the     list.  </body></html>";
 	}
 
 	Table table = null;
@@ -126,7 +113,7 @@ public class SelectAttribute extends ncsa.d2k.infrastructure.modules.UIModule
 	SelectAttributeView
 	This is the UserView class.
 */
-class SelectAttributeView extends ncsa.d2k.controller.userviews.UserInputPane {
+class SelectAttributeView extends ncsa.d2k.userviews.UserInputPane {
 	DSMultiSelectList viewWidgit0 = new DSMultiSelectList("viewWidgit0");
 /*#end^12 Continue editing. ^#&*/
 	SelectAttribute module = null;
@@ -162,6 +149,42 @@ class SelectAttributeView extends ncsa.d2k.controller.userviews.UserInputPane {
 	}
 /*&%^14 Do not modify this section. */
 /*#end^14 Continue editing. ^#&*/
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Select Attributes";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "SelectedAttributes";
+			case 1:
+				return "Table";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 
 

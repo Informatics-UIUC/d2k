@@ -1,15 +1,15 @@
 package ncsa.d2k.modules.core.optimize.ga.emo;
 
+
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.userviews.widgets.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.gui.Constrain;
-
 import java.awt.*;
 import java.io.*;
 import javax.swing.*;
@@ -17,7 +17,7 @@ import javax.swing.*;
 /**
 	ScatterPlot2D.java
 */
-public class DisplayFront extends ncsa.d2k.infrastructure.modules.UIModule implements Serializable
+public class DisplayFront extends ncsa.d2k.core.modules.UIModule
 {
 	/** this is the minimum value in the x direction to scale the plot. */
 	double xmin = 0.0;
@@ -45,10 +45,9 @@ public class DisplayFront extends ncsa.d2k.infrastructure.modules.UIModule imple
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"table\">    <Text> </Text>  </Info></D2K>";
+			case 0: return "         ";
 			default: return "No such input";
 		}
-
 	}
 
 	/**
@@ -68,7 +67,6 @@ public class DisplayFront extends ncsa.d2k.infrastructure.modules.UIModule imple
 		switch (index) {
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -76,9 +74,8 @@ public class DisplayFront extends ncsa.d2k.infrastructure.modules.UIModule imple
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {};
+		String[] types = {		};
 		return types;
-
 	}
 
 	/**
@@ -86,8 +83,7 @@ public class DisplayFront extends ncsa.d2k.infrastructure.modules.UIModule imple
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"ScatterPlot\">    <Text> </Text>  </Info></D2K>";
-
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
 	}
 
 	/**
@@ -117,7 +113,7 @@ public class DisplayFront extends ncsa.d2k.infrastructure.modules.UIModule imple
 /**
 	Display the front as a scatter plot.
 */
-class FrontScatterDisplay extends ncsa.d2k.controller.userviews.swing.JUserInputPane {
+class FrontScatterDisplay extends ncsa.d2k.userviews.swing.JUserInputPane {
 
 	/** the display module. */
 	DisplayFront module;
@@ -217,5 +213,37 @@ class FrontScatterDisplay extends ncsa.d2k.controller.userviews.swing.JUserInput
 	 */
 	public void buildView() {
 		add (graph);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "ScatterPlot";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

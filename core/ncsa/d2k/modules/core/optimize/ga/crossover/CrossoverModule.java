@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.crossover;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 import ncsa.d2k.modules.core.optimize.ga.*;
 
@@ -24,8 +25,8 @@ import ncsa.d2k.modules.core.optimize.ga.*;
 		This module will also activate a trigger whenever the ga is completely done. This module can be subclassed by
 		other crossover modules to obtain the properties.
 */
-public class CrossoverModule extends ncsa.d2k.infrastructure.modules.ComputeModule
-	implements Serializable {
+public class CrossoverModule extends ncsa.d2k.core.modules.ComputeModule
+	 {
 
 	///////////////////////////////
 	// Properties.
@@ -97,10 +98,10 @@ public class CrossoverModule extends ncsa.d2k.infrastructure.modules.ComputeModu
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>The resulting output population which has been crossed. </Text>  </Info></D2K>";
+			case 0: return "      The resulting output population which has been crossed.   ";
 			default: return "No such output";
 		}
-}
+	}
 
 	/**
 		This method returns the description of the various inputs.
@@ -108,7 +109,7 @@ public class CrossoverModule extends ncsa.d2k.infrastructure.modules.ComputeModu
 	*/
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"population\">    <Text>This is the input population, containing the mating pool. </Text>  </Info></D2K>";
+			case 0: return "      This is the input population, containing the mating pool.   ";
 			default: return "No such input";
 		}
 	}
@@ -119,7 +120,7 @@ public class CrossoverModule extends ncsa.d2k.infrastructure.modules.ComputeModu
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Crossover\">    <Text>This module will take the given population of Individuals and mate them, crossing them at some random gene. The only property is the crossover rate, which ranges between 0 and 1, and this is the probability that a individual will cross. </Text>  </Info></D2K>";
+		return "<html>  <head>      </head>  <body>    This module will take the given population of Individuals and mate them,     crossing them at some random gene. The only property is the crossover     rate, which ranges between 0 and 1, and this is the probability that a     individual will cross.  </body></html>";
 	}
 
 	//////////////////////////////////
@@ -134,7 +135,7 @@ public class CrossoverModule extends ncsa.d2k.infrastructure.modules.ComputeModu
 	public String[] getOutputTypes () {
 		String[] types = {"ncsa.d2k.modules.core.optimize.ga.Population"};
 		return types;
-}
+	}
 
 	/**
 		Do the crossover.
@@ -181,5 +182,39 @@ public class CrossoverModule extends ncsa.d2k.infrastructure.modules.ComputeModu
 			}
 		}
 		this.pushOutput (population, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Crossover";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "population";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

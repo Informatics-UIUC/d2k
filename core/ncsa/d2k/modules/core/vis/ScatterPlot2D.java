@@ -1,27 +1,35 @@
 package ncsa.d2k.modules.core.vis;
 
+
 import java.io.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
  * 	A two-dimensional scatter plot.  Displays any two columns of numeric data.
 */
-public class ScatterPlot2D extends ncsa.d2k.infrastructure.modules.VisModule
-    implements Serializable, HasNames {
+public class ScatterPlot2D extends ncsa.d2k.core.modules.VisModule
+     {
 
 	/**
 		This pair returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
-        return "A Table to visualize.";
+		switch (index) {
+			case 0: return "A Table to visualize.";
+			default: return "No such input";
+		}
 	}
 
     public String getInputName(int index) {
-        return "Table";
-    }
+		switch(index) {
+			case 0:
+				return "Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
 	/**
 		This pair returns an array of strings that contains the data types for the inputs.
@@ -43,15 +51,18 @@ public class ScatterPlot2D extends ncsa.d2k.infrastructure.modules.VisModule
 	}
 
     public String getOutputName(int index) {
-        return "";
-    }
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
 	/**
 		This pair returns an array of strings that contains the data types for the outputs.
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-        return null;
+		String[] types = {		};
+		return types;
 	}
 
 	/**
@@ -59,12 +70,12 @@ public class ScatterPlot2D extends ncsa.d2k.infrastructure.modules.VisModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-        return "Visualizes the NumericColumns of a Table in a 2D scatter plot.";
+		return "<html>  <head>      </head>  <body>    Visualizes the NumericColumns of a Table in a 2D scatter plot.  </body></html>";
 	}
 
     public String getModuleName() {
-        return "ScatterPlot2D";
-    }
+		return "ScatterPlot2D";
+	}
 
 	/**
 		This pair is called by D2K to get the UserView for this module.

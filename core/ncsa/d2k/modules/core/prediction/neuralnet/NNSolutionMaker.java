@@ -1,16 +1,16 @@
 package ncsa.d2k.modules.core.prediction.neuralnet;
 
+
 import ncsa.d2k.modules.core.optimize.util.gui.*;
 import ncsa.d2k.modules.core.optimize.util.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.controller.userviews.UserInputPane;
-
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.userviews.UserInputPane;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.controller.userviews.widgits.swing.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.userviews.widgets.swing.*;
 
 /*
 	Makes a single, user defined parameter set
@@ -21,7 +21,7 @@ import ncsa.d2k.controller.userviews.widgits.swing.*;
 */
 
 public class NNSolutionMaker extends UIModule
-	implements java.io.Serializable, HasNames{
+	{
 
 
 	/* makes the ranges and initial parameter arrays*/
@@ -304,61 +304,44 @@ public class NNSolutionMaker extends UIModule
 
 
 	public String getModuleInfo(){
-		return "";
+		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
 	}
 
    	public String getModuleName() {
 		return "";
 	}
 	public String[] getInputTypes(){
-		String[] s= {};
-		return s;
+		String[] types = {		};
+		return types;
 	}
 
 	public String getInputInfo(int index){
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch (index) {
+			default: return "No such input";
 		}
 	}
 
 	public String getInputName(int index) {
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such input.";
-			}
+		switch(index) {
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.optimize.util.SOMixedSolution"};
-		return s;
+		String[] types = {"ncsa.d2k.modules.core.optimize.util.SOMixedSolution"};
+		return types;
 	}
 
 	public String getOutputInfo(int index){
-		switch (index){
-			case(0): {
-				return "";
-			}
-			default:{
-				return "No such output.";
-			}
+		switch (index) {
+			case 0: return "";
+			default: return "No such output";
 		}
 	}
 	public String getOutputName(int index) {
-		switch (index){
-			case(0): {
+		switch(index) {
+			case 0:
 				return "";
-			}
-			default:{
-				return "No such output.";
-			}
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 	////////////////////////////////

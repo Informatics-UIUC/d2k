@@ -1,22 +1,18 @@
 package ncsa.d2k.modules.core.io.file.gui;
 
+
 import java.awt.*;
 import java.awt.event.*;
-
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.UserView;
-
-import ncsa.d2k.controller.userviews.UserInputPane;
-import ncsa.d2k.controller.userviews.widgits.*;
-import ncsa.d2k.controller.userviews.AddField;
-
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.userviews.UserInputPane;
+import ncsa.d2k.userviews.widgets.*;
+import ncsa.d2k.userviews.AddField;
 import ncsa.gui.Constrain;
-
 import java.util.Hashtable;
-
 import javax.swing.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.controller.userviews.widgits.swing.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.userviews.widgets.swing.*;
 
 /**
 	This module allows a user to choose the name of one file.  The
@@ -29,7 +25,7 @@ import ncsa.d2k.controller.userviews.widgits.swing.*;
 	@author David Clutter
 */
 public class Get1FileName extends UIModule
-	implements java.io.Serializable, HasNames, HasProperties {
+	 {
 
     /** The absolute path to a file */
     protected String file0;
@@ -73,11 +69,8 @@ public class Get1FileName extends UIModule
        @return A description of this module.
     */
     public String getModuleInfo() {
-	return "This module allows a user to choose the name of one "+
-	    "file.  When the user presses the button, a FileDialog "+
-	    "is shown to navigate to the approriate directory and "+
-	    "choose a file.";
-    }
+		return "<html>  <head>      </head>  <body>    This module allows a user to choose the name of one file. When the user     presses the button, a FileDialog is shown to navigate to the approriate     directory and choose a file.  </body></html>";
+	}
 
    	public String getModuleName() {
 		return "Get1File";
@@ -88,28 +81,33 @@ public class Get1FileName extends UIModule
        @return The input types.
     */
     public String[] getInputTypes() {
-	return null;
-    }
+		String[] types = {		};
+		return types;
+	}
 
     /**
        Return an array containing the output types of this module.
        @return The output types.
     */
     public String[] getOutputTypes() {
-	String []out = {"java.lang.String"};
-	return out;
-    }
+		String[] types = {"java.lang.String"};
+		return types;
+	}
 
     /**
        Return the info for a particular input.
        @param i The index of the input to get info about
     */
     public String getInputInfo(int i) {
-	return "No such input!";
-    }
+		switch (i) {
+			default: return "No such input";
+		}
+	}
 
 	public String getInputName(int i) {
-		return "No such input!";
+		switch(i) {
+			default: return "NO SUCH INPUT!";
+		}
 	}
 
     /**
@@ -117,20 +115,18 @@ public class Get1FileName extends UIModule
        @param i The index of the output to get info about
     */
     public String getOutputInfo(int i) {
-	switch(i) {
-	case(0):
-	    return "The absolute path to the selected "+
-		"file.";
-	default:
-	    return "No such output!";
+		switch (i) {
+			case 0: return "The absolute path to the selected file.";
+			default: return "No such output";
+		}
 	}
-    }
 
    	public String getOutputName(int i) {
-		if(i == 0)
-			return "file0";
-		else
-			return "No such output!";
+		switch(i) {
+			case 0:
+				return "file0";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 
     /**
@@ -156,7 +152,7 @@ public class Get1FileName extends UIModule
        properties of the module class.  If these properties
        are null, default values are used.
     */
-    private class Get1FileView extends JUserInputPane
+    protected class Get1FileView extends JUserInputPane
 	implements ActionListener {
 	/** A label for file0 */
 	protected JLabel l0;
@@ -166,12 +162,17 @@ public class Get1FileName extends UIModule
 	    can choose file0 */
 	protected JButton b0 = new JButton("Browse");
 
+	/** The module that creates this view.  We need a
+	    reference to it so we can get and set its properties. */
+	//Get1FileName parentModule;
+
 	/**
 	   Perform initializations here.
 	   @param mod The module that created this UserView
 	*/
 	public void initView(ViewModule mod) {
 	    super.initView(mod);
+	    //parentModule = (Get1FileName)mod;
 
 	    JPanel placeholder = new JPanel() {
 		    public Dimension getPreferredSize() {

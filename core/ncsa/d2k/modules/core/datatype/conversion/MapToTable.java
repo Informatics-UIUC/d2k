@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.datatype.conversion;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -8,7 +9,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	MapToVT.java
 */
-public class MapToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class MapToTable extends ncsa.d2k.core.modules.DataPrepModule
 {
 	/**
 		This pair returns the description of the various inputs.
@@ -16,7 +17,7 @@ public class MapToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"map\"><Text>The contents of this map will be put into a verticaltable.</Text></Info></D2K>";
+			case 0: return "The contents of this map will be put into a verticaltable.";
 			default: return "No such input";
 		}
 	}
@@ -36,7 +37,7 @@ public class MapToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"table\"><Text>This verticaltable contains the data from the map.</Text></Info></D2K>";
+			case 0: return "This verticaltable contains the data from the map.";
 			default: return "No such output";
 		}
 	}
@@ -55,7 +56,7 @@ public class MapToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K><Info common=\"MapToVT\"><Text>For each key-value pair in the map, create a row in the VT. Two columns will be in the VT, one for keys and one for values. The number of rows in the VT will be the same as the size of the map.</Text></Info></D2K>";
+		return "<html>  <head>      </head>  <body>    For each key-value pair in the map, create a row in the VT. Two columns     will be in the VT, one for keys and one for values. The number of rows in     the VT will be the same as the size of the map.  </body></html>";
 	}
 
 	/**
@@ -89,5 +90,39 @@ public class MapToTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		//table.setColumn(col1,0);
 		//table.setColumn(col2,1);
 		pushOutput(table, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "MapToVT";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "map";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "table";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

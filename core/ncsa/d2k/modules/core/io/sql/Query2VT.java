@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.io.sql;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
@@ -12,7 +13,7 @@ import java.util.*;
 	Query2VT.java
 
 */
-public class Query2VT extends ncsa.d2k.infrastructure.modules.DataPrepModule
+public class Query2VT extends ncsa.d2k.core.modules.DataPrepModule
 
 {
 
@@ -21,57 +22,49 @@ public class Query2VT extends ncsa.d2k.infrastructure.modules.DataPrepModule
        @return the description of the indexed input.
     */
     public String getInputInfo(int index) {
-
-	switch (index) {
-	case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Connection Wrapper\">    <Text>This manages the sql database connection object. </Text>  </Info></D2K>";
-	case 1: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Table Name\">    <Text>The name of the table containing the fields. </Text>  </Info></D2K>";
-	case 2: return "example table contaning metadata";
-	default: return "No such input";
+		switch (index) {
+			case 0: return "      This manages the sql database connection object.   ";
+			case 1: return "      The name of the table containing the fields.   ";
+			case 2: return "example table contaning metadata";
+			default: return "No such input";
+		}
 	}
-    }
 
     /**
        This method returns an array of strings that contains the data types for the inputs.
        @return the data types of all inputs.
     */
     public String[] getInputTypes () {
-	String [] types =  {
-	    "ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-	    "java.lang.String",
-	    "ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
-	return types;
-    }
+		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","java.lang.String","ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		return types;
+	}
 
     /**
        This method returns the description of the outputs.
        @return the description of the indexed output.
     */
     public String getOutputInfo (int index) {
-	switch (index) {
-	case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Resulting Table\">    <Text>This table object contains the results when we are completely done reading. </Text>  </Info></D2K>";
-	default: return "No such output";
+		switch (index) {
+			case 0: return "      This table object contains the results when we are completely done reading.   ";
+			default: return "No such output";
+		}
 	}
-
-    }
 
     /**
        This method returns an array of strings that contains the data types for the outputs.
        @return the data types of all outputs.
     */
     public String[] getOutputTypes () {
-	String [] types =  {
-	    "ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
-	return types;
-
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		return types;
+	}
 
     /**
        This method returns the description of the module.
        @return the description of the module.
     */
     public String getModuleInfo () {
-	return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Read Table\">    <Text>This method given the array of fields name, a jdbc connection wrapper, the table name and the where clause (or null) for the query, will populate the table with the results. </Text>  </Info></D2K>";
-
+		return "<html>  <head>      </head>  <body>    This method given the array of fields name, a jdbc connection wrapper, the     table name and the where clause (or null) for the query, will populate the     table with the results.  </body></html>";
 	}
 
     /**
@@ -191,6 +184,44 @@ public class Query2VT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	this.pushOutput (vt, 0);
 	System.out.println("vt pushed ");
     }
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Read Table";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Connection Wrapper";
+			case 1:
+				return "Table Name";
+			case 2:
+				return "input2";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Resulting Table";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 
 

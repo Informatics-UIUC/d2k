@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.infrastructure.modules.*;
 
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**************************************************
@@ -14,7 +14,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 **  @author Peter Groves
 **************************************************/
 
-public class VTStats extends ncsa.d2k.infrastructure.modules.ComputeModule {
+public class VTStats extends ncsa.d2k.core.modules.ComputeModule {
 
 
 	/**
@@ -23,7 +23,7 @@ public class VTStats extends ncsa.d2k.infrastructure.modules.ComputeModule {
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Table\">    <Text>The Vertical Table to compute stats for. </Text>  </Info></D2K>";
+			case 0: return "      The Vertical Table to compute stats for.   ";
 			default: return "No such input";
 		}
 	}
@@ -34,13 +34,8 @@ public class VTStats extends ncsa.d2k.infrastructure.modules.ComputeModule {
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"
-
-			};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -48,12 +43,10 @@ public class VTStats extends ncsa.d2k.infrastructure.modules.ComputeModule {
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
-
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"Stats Table\">    <Text>A Vertical Table with the stats  </Text>  </Info></D2K>";
+			case 0: return "      A Vertical Table with the stats    ";
 			default: return "No such output";
 		}
-
 	}
 
 	/**
@@ -61,11 +54,8 @@ public class VTStats extends ncsa.d2k.infrastructure.modules.ComputeModule {
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-
-		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
-
 	}
 
 	/**
@@ -73,9 +63,7 @@ public class VTStats extends ncsa.d2k.infrastructure.modules.ComputeModule {
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-
-		 return "This module takes in a Table and computes basic stats for every NumericColumn. The results are outputed in a new Table with one row per original NumericColum and columns in the following order: <ol><li>NumericColumnsNames<li>Minimums<li>Maximums<li>Means<li>Standard Deviation<li>Skewness<li>Kurtosis</ol>";
-
+		return "<html>  <head>      </head>  <body>    This module takes in a Table and computes basic stats for every     NumericColumn. The results are outputed in a new Table with one row per     original NumericColum and columns in the following order:    <ol>      <li>        NumericColumnsNames      </li>      <li>        Minimums      </li>      <li>        Maximums      </li>      <li>        Means      </li>      <li>        Standard Deviation      </li>      <li>        Skewness      </li>      <li>        Kurtosis      </li>    </ol>  </body></html>";
 	}
 
   ////////////////////
@@ -217,6 +205,40 @@ public class VTStats extends ncsa.d2k.infrastructure.modules.ComputeModule {
 
 		//System.out.println("VTStats done");
 		pushOutput(stats, 0);
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "VTStats";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Stats Table";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }
 
