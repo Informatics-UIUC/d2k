@@ -9,37 +9,84 @@ import javax.swing.*;
 public class AvailableFieldsInput extends InputModule
 {
   JOptionPane msgBoard = new JOptionPane();
-	public String getOutputInfo (int index) {
-		switch (index) {
-			case 0: return "Pass this database connection to the next module.";
-			case 1: return "A list of the fields available in the selected table.";
-			default: return "No such output";
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Available Attributes Input";
+	}
+
+	public String getModuleInfo () {
+          String s = "<p>Overview: ";
+          s += "This module builds a list of attributes (fields) available in a specified database table. </p>";
+          s += "<p>Detailed Description: ";
+          s += "This module makes a connection to the database indicated by the ";
+          s += "<i>Database Connection</i> input port and builds a ";
+          s += "list of available attributes for the database table indicated by the ";
+          s += "<i>Selected Table</i> input port. ";
+ 	  s += "The list is made available to other modules via the <i>Attributes List</i> output port. ";
+          s += "<p>Restrictions: ";
+          s += "Only Oracle and SQLServer databases are currently supported.";
+
+          return s;
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Database Connection";
+			case 1:
+				return "Selected Table";
+			default: 
+				return "No such input";
 		}
 	}
 
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: return "The database connection.";
-			case 1: return "A list of available fields in the selected table.";
-			default: return "No such input";
+			case 0: 
+				return "The database connection.";
+			case 1: 		
+				return "The name of the selected table, as specified in a previous module.";
+			default: 
+				return "No such input";
 		}
-	}
-
-	public String getModuleInfo () {
-          String s = "<p> Overview: ";
-          s += "This module displays the list of available fields in the selected table. </p>";
-          s += "<p> Detailed Description: ";
-          s += "This module makes a connection to a database and retrieves the ";
-          s += "list of available fields in the selected table. </p>";
-          s += "<p> Restrictions: ";
-          s += "We currently only support Oracle and SQLServer database.";
-
-          return s;
 	}
 
 	public String[] getInputTypes () {
 		String[] types = {"ncsa.d2k.modules.io.input.sql.ConnectionWrapper","java.lang.String"};
 		return types;
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Database Connection";
+			case 1:
+				return "Attributes List";
+			default: 
+				return "No such output";
+		}
+	}
+
+	public String getOutputInfo (int index) {
+		switch (index) {
+ 			case 0: return "The database connection, for use by the next module.";
+			case 1: return "A list of the attributes available in the selected table.";
+                        default: return "No such output.";
+		}
 	}
 
 	public String[] getOutputTypes () {
@@ -72,41 +119,4 @@ public class AvailableFieldsInput extends InputModule
                 }
 	}
 
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "Available Fields Input";
-	}
-
-	/**
-	 * Return the human readable name of the indexed input.
-	 * @param index the index of the input.
-	 * @return the human readable name of the indexed input.
-	 */
-	public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "Database Connection";
-			case 1:
-				return "Selected Table";
-			default: return "NO SUCH INPUT!";
-		}
-	}
-
-	/**
-	 * Return the human readable name of the indexed output.
-	 * @param index the index of the output.
-	 * @return the human readable name of the indexed output.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			case 0:
-				return "Database Connection";
-			case 1:
-				return "Fields";
-			default: return "NO SUCH OUTPUT!";
-		}
-	}
 }
