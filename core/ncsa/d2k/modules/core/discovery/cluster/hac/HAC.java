@@ -267,10 +267,10 @@ public class HAC {
                       ">>>>>>>>>>>>>>>>>>>>> UNABLE TO ADD TO cRANK " +
                       dval.hashCode() + " " + simval);
                 }
-                if (getVerbose()) {
-                  System.out.println("Clusters " + x + " " + y +
-                                     " have distance: " + distval);
-                }
+//                if (getVerbose()) {
+//                  System.out.println("Clusters " + x + " " + y +
+//                                     " have distance: " + distval);
+//                }
                 //add dval to proximity matrix
                 proxm[x][y] = dval;
               }
@@ -287,9 +287,9 @@ public class HAC {
 
         }
 
-        if (getVerbose()) {
-          System.out.println("Number of clusters: " + clusters.size());
-        }
+//        if (getVerbose()) {
+//          System.out.println("Number of clusters: " + clusters.size());
+//        }
 
         Object[] o = (Object[]) cRank.first();
 
@@ -501,16 +501,13 @@ public class HAC {
 //      }
 //      itable.addColumn(new int[itable.getNumRows()]);
 //      itable.setColumnLabel(_CLUSTER_COLUMN_LABEL, itable.getNumColumns() - 1);
-//      for (int i = 0, n = resultClusters.size(); i < n; i++) {
-//        TableCluster tc = (TableCluster) resultClusters.get(i);
-//        int[] rows = tc.getMemberIndices();
-//        int col = itable.getNumColumns() - 1;
-//        for (int j = 0, m = rows.length; j < m; j++) {
-//          itable.setInt(i, rows[j], col);
-//        }
-//        System.out.println("Cluster " + tc.getClusterLabel() + " containing " +
-//                           tc.getSize() + " elements.");
-//      }
+      if (getVerbose()){
+        for (int i = 0, n = resultClusters.size(); i < n; i++) {
+          TableCluster tc = (TableCluster) resultClusters.get(i);
+          System.out.println("Cluster " + tc.getClusterLabel() + " containing " +
+                             tc.getSize() + " elements.");
+        }
+      }
 //
 //      //set prediction to class value for each row in table
 //      //output table
