@@ -238,8 +238,13 @@ public class ETScatterPlotWidget extends JUserPane implements
 
 	// setup the scroll pane
 	JScrollPane sp = new JScrollPane(jTable);
-	if (this.checkRowHeaders())
-	  sp.setRowHeader(jv);
+	if (this.checkRowHeaders()) {
+        sp.setRowHeader(jv);
+      } else {
+        System.out.println();
+        System.out.println("Don't got row header.");
+        System.out.println();
+      }
 	sp.setHorizontalScrollBarPolicy(
 		JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	sp.setVerticalScrollBarPolicy(
@@ -249,19 +254,27 @@ public class ETScatterPlotWidget extends JUserPane implements
 
 	// add the buttons
 	JPanel buttonPanel = new JPanel();
+      buttonPanel.setLayout(new BorderLayout());
 	showComposite = new JButton("Show Composite");
 	showComposite.addActionListener(this);
-	buttonPanel.add(showComposite);
-	clearSelected = new JButton("Clear Selected Graphs");
+	buttonPanel.add(showComposite, BorderLayout.NORTH);
+	clearSelected = new JButton("Clear Selection");
 	clearSelected.addActionListener(this);
-	buttonPanel.add(clearSelected);
+	buttonPanel.add(clearSelected, BorderLayout.SOUTH);
 	this.add(buttonPanel, BorderLayout.SOUTH);
   }
 
   private boolean checkRowHeaders() {
-	for (int i = 0; i < rowheaders.length; i++)
-	  if (rowheaders[i].length() > 0)
-		return true;
+    System.out.println("-------------------------");
+	for (int i = 0; i < rowheaders.length; i++) {
+        System.out.println("headers = " + rowheaders[i]);
+        if (rowheaders[i].length() > 0) {
+          System.out.println("  We have one");
+          System.out.println("-------------------------");
+          return true;
+        }
+	}
+      System.out.println("-------------------------");
 	return false;
   }
   /**
