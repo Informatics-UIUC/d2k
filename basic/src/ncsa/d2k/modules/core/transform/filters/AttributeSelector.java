@@ -26,7 +26,7 @@ public class AttributeSelector extends ComputeModule {
   // Data Members
   //==============
 
-  private AttributeSelection m_attSel = null;
+//  private AttributeSelection m_attSel = null;
   private int m_numFolds = 10;
   private int m_seed = 1;
 
@@ -41,7 +41,7 @@ public class AttributeSelector extends ComputeModule {
   // Public Methods
   //================
 
-  
+
   public String getModuleInfo() {
 	String s = "<p> Overview: ";
 	s += " This module will implement attribute selection using the input data set, ";
@@ -72,7 +72,7 @@ public class AttributeSelector extends ComputeModule {
 	}
 
   public String[] getOutputTypes() {
-		String[] types = {"I["};
+		String[] types = {"[I"};
 		return types;
 	}
 
@@ -104,11 +104,11 @@ public class AttributeSelector extends ComputeModule {
       String resultsFile = null;
       if (isInputPipeConnected(3)) {
         resultsFile = (String)pullInput(3);
-      }	
+      }
       int [] selectedAttributes;
       double [][] rankedAttributes;
-      
-      m_attSel = new AttributeSelection();
+
+      AttributeSelection m_attSel = new AttributeSelection();
       if (m_numFolds != 0) {
         m_attSel.setFolds(m_numFolds);
         m_attSel.setXval(true);
@@ -128,7 +128,7 @@ public class AttributeSelector extends ComputeModule {
 
       // return the results string
       System.out.println(m_attSel.toResultsString());
-      
+
       selectedAttributes = m_attSel.selectedAttributes();
      // rankedAttributes = m_attSel.rankedAttributes();
       if (resultsFile !=null) {
@@ -141,8 +141,8 @@ public class AttributeSelector extends ComputeModule {
       }
       //TODO - what is the real output of this module ???
       this.pushOutput(selectedAttributes,0);
-    
-   
+
+
   }
 
   /**
@@ -164,19 +164,19 @@ public class AttributeSelector extends ComputeModule {
   public void setFolds (int folds)  throws PropertyVetoException {
 	 if (folds < 0 ) throw new PropertyVetoException("number of folds must be greater than 0 ", null);
     m_numFolds = folds;
-    
+
   }
 
   public int getFolds() {
     return m_numFolds;
   }
-  
-  
+
+
   public PropertyDescription [] getPropertiesDescriptions () {
 		PropertyDescription [] pds = new PropertyDescription [2];
 		pds[0] = new PropertyDescription ("folds", "Number of folds", "How many folds will be used in the validation process");
 		pds[1] = new PropertyDescription ("seed", "Random number seed", "Seed for use in cross validation");
-      
+
 		return pds;
 	  }
 
@@ -228,6 +228,6 @@ public class AttributeSelector extends ComputeModule {
 			}
 		}
 
-	
-	
+
+
 }
