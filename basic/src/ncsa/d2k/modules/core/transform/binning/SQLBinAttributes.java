@@ -15,6 +15,7 @@ import  ncsa.gui.*;
 
 
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.sql.*;
 
@@ -501,15 +502,10 @@ public class SQLBinAttributes extends HeadlessUIModule {
                 String dataType = (columns.getString("TYPE_NAME")).toUpperCase();
                 for (int col = 0; col < fieldNames.length; col++) {
                   if (fieldNames[col].equals(columnName)) {
-                    if (dataType.equals("NUMBER") ||
-                      dataType.equals("INTEGER") ||
-                      dataType.equals("FLOAT") ||
-                      dataType.equals("NUMERIC")) {
+                    if(ColumnTypes.isEqualNumeric(dataType))
                       colTypes[col] = true;
-                    }
-                    else {
+                    else
                       colTypes[col] = false;
-                    }
                     break;
                   }
                 }

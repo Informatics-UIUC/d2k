@@ -382,15 +382,11 @@ public class SQLAutoBin extends AutoBin {
 					String dataType = columns.getString("TYPE_NAME");
 					for (int col = 0; col < len; col++) {
 						if (tbl.getColumnLabel(col).equals(columnName)) {
-							if (dataType.equals("NUMBER")
-								|| dataType.equals("INTEGER")
-								|| dataType.equals("FLOAT")
-								|| dataType.equals("NUMERIC")) {
-								colTypes[col] = true;
-							} else {
-								colTypes[col] = false;
-							}
-							break;
+                                                  if(ColumnTypes.isEqualNumeric(dataType))
+                                                    colTypes[col] = true;
+                                                  else
+                                                    colTypes[col] = false;
+                                                  break;
 						}
 					}
 				}
