@@ -210,5 +210,12 @@ public class MONumericIndividual extends MODoubleSolution
 	public void setCrowdingDistance (double crwd) {
 		this.crowding = crwd;
 	}
+        /**
+         * DC added 3.6.03
+         * @param i
+         */
+        public void printFitness(int i) {
+        }
+
 
 }

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
+
 /**
 	This class represents populations of individuals with a single objective
 	value.

@@ -61,6 +61,9 @@ abstract public class Population implements Serializable {
 	public Individual getMember (int i) {
 		return members [i];
 	}
+        public Individual getNextMember (int i) {
+            return nextMembers [i];
+        }
 
 	/**
 		Returns the traits that describe the possible ranges of the parametric

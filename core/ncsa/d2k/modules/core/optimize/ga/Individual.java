@@ -51,4 +51,5 @@ public interface Individual extends Solution {
 		@returns true if the fitness needs computed.
 	*/
 	public boolean isDirty ();
+    public void printFitness(int i);
 }

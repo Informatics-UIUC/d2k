@@ -132,4 +132,11 @@ public class IntIndividual extends SOIntSolution
 		sb.append (Double.toString (this.getObjective ()));
 		return sb.toString ();
 	}
+        /**
+         * DC added 3.6.03
+         * @param i
+         */
+        public void printFitness(int i) {
+        }
+
 }
