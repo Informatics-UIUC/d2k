@@ -410,7 +410,8 @@ public class Normalize extends HeadlessUIModule {
      int[] transform = new int[0]; //with this array the normalization trasform will be build
 
      if(numericLabels == null || numericLabels.length ==0){
-       System.out.println("\n\nNormalize:\nno numeric columns were selected. the transformation will be an empty one.\n");
+       System.out.println("\n\nNormalize:\nno numeric columns were selected. " +
+                          "the transformation will be an empty one.\n");
         pushOutput(new NormalizingTransformation(transform), 0);
        return;
      }
