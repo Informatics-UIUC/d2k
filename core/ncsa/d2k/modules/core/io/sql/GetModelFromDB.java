@@ -262,7 +262,7 @@ public class GetModelFromDB extends UIModule
       btw.addWindowListener(new WindowAdapter() {
         public void windowClosed(WindowEvent e)
         {
-          modelName.setText(btw.getChoosedRow());
+          modelName.setText(btw.getChosenRow());
           /* wipe out previously loaded information */
           trainSet.initTableModel(100,4);
           trainSet.fireTableDataChanged();

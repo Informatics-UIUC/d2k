@@ -48,7 +48,7 @@ public class WriteVTToDB extends UIModule
 
     /* variables for JTextField objects */
     JTextField newTableName;
-    JTextField choosedTableName;
+    JTextField chosenTableName;
 
     /* variables for JTable objects */
     JTable newTableDef;
@@ -223,9 +223,9 @@ public class WriteVTToDB extends UIModule
             /* first outline panel inside of appendTablePanel */
             JOutlinePanel chooseTable = new JOutlinePanel("Choose a Table");
             chooseTable.setLayout (new GridBagLayout());
-            Constrain.setConstraints(chooseTable, choosedTableName = new JTextField(20),
+            Constrain.setConstraints(chooseTable, chosenTableName = new JTextField(20),
                       0,0,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
-            choosedTableName.addActionListener(this);
+            chosenTableName.addActionListener(this);
             Constrain.setConstraints(chooseTable, browseBtn = new JButton("Browse"),
                       3,0,1,1,GridBagConstraints.NONE,GridBagConstraints.WEST,2,1);
             browseBtn.addActionListener(this);
@@ -401,18 +401,18 @@ public class WriteVTToDB extends UIModule
                 }
             }
             else if (src == appendTableBtn) {
-              /* user may not hit Enter key in the field choosedTableName before
+              /* user may not hit Enter key in the field chosenTableName before
                  clicking appendTableBtn. We need to force firing getDBTableDef */
               dbModel.initTableModel(100,3);
               dbModel.fireTableDataChanged();
               getDBTableDef();
               boolean pass = doValidate(dbTableDef, vtTableDef);
               if (pass) {
-                doInsertTable(choosedTableName.getText(), vtTableDef);
+                doInsertTable(chosenTableName.getText(), vtTableDef);
               }
             }
-            else if (src == choosedTableName) {
-              if (choosedTableName.getText()!= null && choosedTableName.getText()!=NOTHING)
+            else if (src == chosenTableName) {
+              if (chosenTableName.getText()!= null && chosenTableName.getText()!=NOTHING)
               {
                 /* wipe out previously loaded table definition */
                 dbModel.initTableModel(100,3);
@@ -446,7 +446,7 @@ public class WriteVTToDB extends UIModule
               btw.addWindowListener(new WindowAdapter() {
                   public void windowClosed(WindowEvent e)
                   {
-                    choosedTableName.setText(btw.getChoosedRow());
+                    chosenTableName.setText(btw.getChosenRow());
                     /* wipe out previously loaded table definition */
                     dbModel.initTableModel(100,3);
                     dbModel.fireTableDataChanged();
@@ -589,7 +589,7 @@ public class WriteVTToDB extends UIModule
               "Data has been loaded.", "Information",
               JOptionPane.INFORMATION_MESSAGE);
         newTableName.setText(NOTHING);
-        choosedTableName.setText(NOTHING);
+        chosenTableName.setText(NOTHING);
         newModel.initTableModel(maxNumRow,3);
         dbModel.initTableModel(100,3);
         vtModel.initTableModel(maxNumRow,3);
@@ -612,7 +612,7 @@ public class WriteVTToDB extends UIModule
           Statement stmt;
           String sb = new String("select column_name, data_type, data_length " +
             "from all_tab_columns where table_name = '" +
-            choosedTableName.getText().toUpperCase() + "' order by column_id");
+            chosenTableName.getText().toUpperCase() + "' order by column_id");
           stmt = con.createStatement ();
           ResultSet tableSet = stmt.executeQuery(sb);
           int rIdx = 0;
@@ -625,7 +625,7 @@ public class WriteVTToDB extends UIModule
           /* if rIdx == 0, that indicate the tableSet is empty, the db table does not exist */
           if (rIdx == 0) {
             JOptionPane.showMessageDialog(msgBoard,
-                "Table " + choosedTableName.getText() + " does not exist.", "Error",
+                "Table " + chosenTableName.getText() + " does not exist.", "Error",
                 JOptionPane.ERROR_MESSAGE);
             System.out.println("table does not exist.");
           }
