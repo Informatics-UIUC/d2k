@@ -813,14 +813,14 @@ public final class DecisionTreeVis extends VisModule {
     s.append("	<ul>");
     s.append("	<li>Search: ");
     s.append("Searches for nodes that satisfy the logical expression. The expression is the ");
-    s.append("logical AND or logical OR of conditions. The most basic condition is an ");
+    s.append("logical AND or logical OR of conditions.<BR>The most basic condition is an ");
     s.append("inequality based on the node population, percent, purity or split value. The ");
     s.append("population is the number of records with the given output value. The percent ");
     s.append("is the population of the given output value relative to the total number of ");
     s.append("records. The purity is a measure of the entropy. The split value is the input ");
-    s.append("value used to split the node. A series of conditions is added to the Current ");
+    s.append("value used to split the node.<BR>The user may add a series of conditions to the Current ");
     s.append("Conditions list. Pairs of conditions can then be selected and logically ");
-    s.append("combined using Replace. The single remaining condition is then used to search ");
+    s.append("combined clicking on the 'Replace' button.<br>The single remaining condition is then used to search ");
     s.append("the tree. The search result nodes can be visited  by using Next and Previous.");
     s.append("	</ul>");
     s.append("</ul>");
@@ -838,3 +838,13 @@ public final class DecisionTreeVis extends VisModule {
     return s.toString();
   }
 }
+
+/**
+ * basic 4 qa comments
+ *
+ * 01-22-04: vered
+ * [wish] search dialog: visiting nodes using next and previous. It is very unclear which
+ * node is being visited, since the focus is moved but is not inclusive to any
+ * specific node. an addition UI feedback is needed, like displaying the content
+ * of the currently visited node.
+ */
