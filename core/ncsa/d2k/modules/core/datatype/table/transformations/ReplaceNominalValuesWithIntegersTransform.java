@@ -94,8 +94,6 @@ public class ReplaceNominalValuesWithIntegersTransform
 
    public boolean transform(MutableTable mt) {
 
-	  //MutableTable mt = (MutableTable)t.copy();
-
 	  int numRows = mt.getNumRows();
 	  String item, label;
 	  for (int i = 0; i < indirection.length; i++) {
@@ -104,18 +102,31 @@ public class ReplaceNominalValuesWithIntegersTransform
 
 		 int col = indirection[i];
 
+		 //TODO: Support for missing values- just take out the comments
+		 // ArrayList missingValues = new ArrayList();
+
 		 for (int j = 0; j < numRows; j++) {
-			item = (String)mt.getString(j, col);
-			intColumn[j] = ((Integer)nominalToInteger[i].get(item)).intValue();
-		 }
+		     //if(!mt.isValueMissing(j,col)) { 
+			 item = (String)mt.getString(j, col);
+			 intColumn[j] = ((Integer)nominalToInteger[i].get(item)).intValue();
+			 // } else {
+			 //	 intColumn[j] = 0; 
+			 // missingValues.add(new Integer(j)); 
+			 //} 
+		 } 
 
 		 label = mt.getColumnLabel(col);
 		 mt.setColumn(intColumn, col);
 		 mt.setColumnLabel(label, col);
+		 //Iterator it = missingValues.iterator(); 
+		 //while(it.hasNext()) 
+		 //    mt.setValueToMissing(true,((Integer)it.next()).intValue(), col); 
+
+		 mt.setColumnIsNominal(true,col); 
+		 mt.setColumnIsScalar(false,col); 
 
 	  }
 
-	  //return mt;
 	  mt.addTransformation(this);
 	  return true;
 
@@ -133,21 +144,35 @@ public class ReplaceNominalValuesWithIntegersTransform
 		 String[] stringColumn = new String[numRows];
 
 		 int col = indirection[i];
+		 //TODO: Support for missing values- just take out the comments
+		 //ArrayList missingValues = new ArrayList(); 
 
 		 for (int j = 0; j < numRows; j++) {
+		     //		     if (!mt.isValueMissing(j,col)) { 
 			item = new Integer(mt.getInt(j, col));
 			stringColumn[j] = (String)integerToNominal[i].get(item);
-		 }
+			//} else { 
+			//	 stringColumn[j] = ""; 
+			// missingValues.add(new Integer(j)); 
+			//} 
+		 } 
+
 
 		 label = mt.getColumnLabel(col);
 		 mt.setColumn(stringColumn, col);
 		 mt.setColumnLabel(label, col);
+		 //Iterator it = missingValues.iterator(); 
+		 //while(it.hasNext()) 
+		 //    mt.setValueToMissing(true,((Integer)it.next()).intValue(), col); 
+
 
 	  }
 
-	  //return mt;
 	  return true;
 
    }
 
 }
+
+// QA Anca - added setColumnIsNominal in transform to keep the column nominal
+// TODO: added support for missing values when needed
