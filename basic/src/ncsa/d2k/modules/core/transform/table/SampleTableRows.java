@@ -25,9 +25,9 @@ public class SampleTableRows extends DataPrepModule  {
 	public final int ABSOLUTE = 10;
 	public final int PERCENTAGE = 11;
 
-	/** 
+	/**
 	  The number of rows to sample.  This could either be an absolute
-	  value or a percentage of the entire dateset.  
+	  value or a percentage of the entire dateset.
 	  */
 	double N = 1;
 
@@ -42,7 +42,7 @@ public class SampleTableRows extends DataPrepModule  {
 	  */
 	private int samplingMethod = RANDOM;
 
-	/** 
+	/**
 	  The seed for the random number generator.
 	  */
 	int seed = 0;
@@ -51,7 +51,7 @@ public class SampleTableRows extends DataPrepModule  {
 	   Return a description of the function of this module.
 	   @return A description of this module.
 	*/
-	public String getModuleInfo() 
+	public String getModuleInfo()
 	{
 		String s = "<p>Overview: ";
 		s += "This module samples the input <i>Table</i> and chooses a certain number of rows to copy ";
@@ -60,7 +60,7 @@ public class SampleTableRows extends DataPrepModule  {
 
 		s += "</p><p>Detailed Description: ";
 		s += "This module creates a new <i>Sample Table</i> by sampling rows of the input <i>Table</i>.  If <i>Random Sampling</i> ";
-		s += "is unset, the first <i>Sample Size</i> rows in the input table are copied to the new table.  If it is not ";
+		s += "is not set, the first <i>Sample Size</i> rows in the input table are copied to the new table.  If it is ";
 		s += "set, <i>Sample Size</i> rows are selected randomly from the input table, using the <i>Random Seed</i> ";
 		s += "to seed the random number generator.  If the same seed is used across runs with the same input table, ";
 		s += "the sample tables produced by the module will be identical. ";
@@ -83,10 +83,10 @@ public class SampleTableRows extends DataPrepModule  {
 	}
 
 	/**
-	  Return a custom gui for setting properties.  
+	  Return a custom gui for setting properties.
 	  @return CustomModuleEditor
 	  */
-	public CustomModuleEditor getPropertyEditor() 
+	public CustomModuleEditor getPropertyEditor()
 	{
 		return new SampleTableRows_Props(this);
 	}
@@ -95,7 +95,7 @@ public class SampleTableRows extends DataPrepModule  {
 	   Return the name of this module.
 	   @return The name of this module.
 	*/
-	public String getModuleName() 
+	public String getModuleName()
 	{
 		return "Sample Table Rows";
 	}
@@ -105,7 +105,7 @@ public class SampleTableRows extends DataPrepModule  {
 	   module.
 	   @return The datatypes of the inputs.
 	*/
-	public String[] getInputTypes() 
+	public String[] getInputTypes()
 	{
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
@@ -116,7 +116,7 @@ public class SampleTableRows extends DataPrepModule  {
 	   module.
 	   @return The datatypes of the outputs.
 	*/
-	public String[] getOutputTypes() 
+	public String[] getOutputTypes()
 	{
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
@@ -127,7 +127,7 @@ public class SampleTableRows extends DataPrepModule  {
 	   @param i The index of the input
 	   @return The description of the input
 	*/
-	public String getInputInfo(int i) 
+	public String getInputInfo(int i)
 	{
 		switch (i) {
 			case 0: return "The table that will be sampled.";
@@ -140,7 +140,7 @@ public class SampleTableRows extends DataPrepModule  {
 	   @param i The index of the input.
 	   @return The name of the input
 	*/
-	public String getInputName(int i) 
+	public String getInputName(int i)
 	{
 		switch(i) {
 			case 0: return "Table";
@@ -153,7 +153,7 @@ public class SampleTableRows extends DataPrepModule  {
 	   @param i The index of the output.
 	   @return The description of the output.
 	*/
-	public String getOutputInfo(int i) 
+	public String getOutputInfo(int i)
 	{
 		switch (i) {
 			case 0: return "A new table containing a sample of rows from the original table.";
@@ -166,7 +166,7 @@ public class SampleTableRows extends DataPrepModule  {
 	   @param i The index of the output.
 	   @return The name of the output
 	*/
-	public String getOutputName(int i) 
+	public String getOutputName(int i)
 	{
 		switch(i) {
 			case 0: return "Sample Table";
@@ -174,22 +174,22 @@ public class SampleTableRows extends DataPrepModule  {
 		}
 	}
 
-	public void setSamplingMethod(int val) 
+	public void setSamplingMethod(int val)
 	{
 		samplingMethod = val;
 	}
 
-	public int getSamplingMethod() 
+	public int getSamplingMethod()
 	{
 		return samplingMethod;
 	}
 
-	public void setSamplingSizeType(int val) 
+	public void setSamplingSizeType(int val)
 	{
 		samplingSizeType = val;
 	}
 
-	public int getSamplingSizeType() 
+	public int getSamplingSizeType()
 	{
 		return samplingSizeType;
 	}
@@ -199,17 +199,17 @@ public class SampleTableRows extends DataPrepModule  {
 		N = val;
 	}
 
-	public double getSampleSize() 
+	public double getSampleSize()
 	{
 		return N;
 	}
 
-	public void setSeed(int i) throws PropertyVetoException 
+	public void setSeed(int i) throws PropertyVetoException
 	{
 		seed = i;
 	}
 
-	public int getSeed() 
+	public int getSeed()
 	{
 		return seed;
 	}
@@ -218,7 +218,7 @@ public class SampleTableRows extends DataPrepModule  {
 	 * Return a list of the property descriptions.
 	 * @return a list of the property descriptions.
 	 */
-	public PropertyDescription [] getPropertiesDescriptions () 
+	public PropertyDescription [] getPropertiesDescriptions ()
 	{
 		PropertyDescription [] pds = new PropertyDescription [4];
 
@@ -233,10 +233,10 @@ public class SampleTableRows extends DataPrepModule  {
 				+ "the sample set of <i>Sample Size</i> rows.  It must "
 				+ "be greater than or equal to 0.  The seed is not " +
 				"used if <i>Random Sampling</i> is off.");
-		pds[2] = new PropertyDescription ("samplingSizeType", "Sample Size Type", 
+		pds[2] = new PropertyDescription ("samplingSizeType", "Sample Size Type",
 				"To calculate the sample size as either an absolute " +
 				"value or percentage of the original.");
-		pds[3] = new PropertyDescription ("sampleSize", "Sample Size", 
+		pds[3] = new PropertyDescription ("sampleSize", "Sample Size",
 				"The number of rows to include in the resulting table. "
 				+ "Could be an absolute value or percentage of " +
 				"original.");
@@ -248,7 +248,7 @@ public class SampleTableRows extends DataPrepModule  {
 	/**
 	   Perform the calculation.
 	*/
-	public void doit() throws Exception 
+	public void doit() throws Exception
 	{
 		Table orig = (Table) pullInput(0);
 		Table newTable = null;
@@ -273,7 +273,7 @@ public class SampleTableRows extends DataPrepModule  {
 		/* only use the first N rows */
 		if (samplingMethod == SEQUENTIAL) {
 			newTable = (Table) orig.getSubset(0, realN);
-		} 
+		}
 		else {
 			int numRows = orig.getNumRows();
 			int[] keeps = new int[realN];
@@ -292,13 +292,13 @@ public class SampleTableRows extends DataPrepModule  {
 
 					if (keepers.contains(indO)) {
 						i--;
-					} 
+					}
 					else {
 						keeps[i] = ind;
 						keepers.add(indO);
 					}
 				}
-			} 
+			}
 			else {
 				ArrayList pickers = new ArrayList();
 
