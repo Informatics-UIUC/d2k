@@ -169,10 +169,10 @@ public class CreateDecisionTreeParameterPoint
   public String getModuleInfo() {
     String s = "<p>Overview: ";
     s += "This module allows the user to specify the parameter settings which ";
-    s += "control the behavior of the DecisionTreeInducerOpt.  ";
-    s += "The first output is a Parameter Point which can be used as input into a DecisionTreeInducerOpt.  ";
-    s += "The second output is the Decision Tree Inducer Opt Module which can be used as input for ApplyFunctionInducer.  ";
-    s += "This decision tree building algorithm allows for multiple decomposition (splitting) strategies to be used ";
+    s += "control the behavior of the Decision Tree Inducer Opt Module.  ";
+    s += "The first output is a Parameter Point which can be used as input into a Decision Tree Inducer Opt module.  ";
+    s += "The second output is the Decision Tree Inducer Opt Module which can be used as input for Apply Function Inducer module.  ";
+    s += "This decision tree learning algorithm allows for multiple decomposition (splitting) strategies to be used ";
     s += "simultaneously.  It also allows for an exclusive choice between using mean averaging at the leaves or linear functions ";
     s += "created by multiple regression.  ";
     s += "";
