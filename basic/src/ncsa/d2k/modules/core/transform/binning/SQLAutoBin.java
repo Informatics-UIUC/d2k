@@ -792,5 +792,8 @@ public class SQLAutoBin extends AutoBin {
   * bug 228: binning and representation of missing values. missing values are binned
   * into the "UNKNOWN" bin but are still marked as missing if binning is done
   * in the same column. (fixed)
+ *
+ * 01-29-04: vered
+ * ready for basic.
 
 */

@@ -702,7 +702,7 @@ public class TableEditor extends TableViewer {
         /*
         public void itemStateChanged(ItemEvent event) {
           Object source = event.getSource();
-        
+
           if (map.containsKey(source)) {
             Integer integer = (Integer) map.get(source);
             convertColumn(integer.intValue());
@@ -751,5 +751,11 @@ public class TableEditor extends TableViewer {
  * bug 197 is also fixed.
  *
  * 01-12-04:
- * bug 223 - Exception with subset table when trying to change the type of a column.
+ * bug 223 - Exception with subset table when trying to change the type of a column. (fixed)
+ *
+ * 01-29-04:
+ * bug 200 is fixed.
+ *
+ * bug 238 - cannot convert from int/long/short to double/float then to char[] and
+ * then back to int/short/long. last conversion fails.
 */

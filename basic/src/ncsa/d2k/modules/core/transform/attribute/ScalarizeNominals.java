@@ -417,4 +417,5 @@ public class ScalarizeNominals extends DataPrepModule {
  * correctly) scalarized columns.
  *
  * 01-29-04: bugs 230, 232 are fixed.
+ * ready for basic.
  */
