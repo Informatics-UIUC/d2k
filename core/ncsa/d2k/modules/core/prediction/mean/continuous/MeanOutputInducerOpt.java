@@ -5,14 +5,14 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.core.modules.*;
 
-public class MeanInducerOpt extends FunctionInducerOpt {
+public class MeanOutputInducerOpt extends FunctionInducerOpt {
   //int NumBiasParameters = 0;
 
   public String getModuleInfo() {
-    return "MeanInducerOpt";
+    return "MeanOutputInducerOpt";
   }
   public String getModuleName() {
-    return "MeanInducerOpt";
+    return "MeanOutputInducerOpt";
   }
 
   public void instantiateBias(ParameterPoint point) throws Exception {
@@ -42,7 +42,7 @@ public class MeanInducerOpt extends FunctionInducerOpt {
     }
 
 
-    MeanModel model = new MeanModel(examples, outputSums);
+    MeanOutputModel model = new MeanOutputModel(examples, outputSums);
 
     return (Model) model;
   }

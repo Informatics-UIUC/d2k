@@ -4,16 +4,16 @@ import ncsa.d2k.modules.core.datatype.model.*;
 import java.text.*;
 import ncsa.d2k.modules.*;
 
-public class MeanModel extends Model implements java.io.Serializable
+public class MeanOutputModel extends Model implements java.io.Serializable
   {
   double [] meanOutputValues;
 
-  public MeanModel(ExampleTable examples, double [] meanOutputValues) {
+  public MeanOutputModel(ExampleTable examples, double [] meanOutputValues) {
     super(examples);
     this.meanOutputValues = meanOutputValues;
   }
 
-  public MeanModel(int trainingSetSize, String[] inputColumnLabels, String[] outputColumnLabels,
+  public MeanOutputModel(int trainingSetSize, String[] inputColumnLabels, String[] outputColumnLabels,
                    int[] inputFeatureTypes, int[] outputFeatureTypes, double [] meanOutputValues) {
     super(trainingSetSize, inputColumnLabels, outputColumnLabels, inputFeatureTypes, outputFeatureTypes);
     this.meanOutputValues = meanOutputValues;

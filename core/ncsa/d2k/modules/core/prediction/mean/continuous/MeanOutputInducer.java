@@ -4,14 +4,14 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.core.modules.*;
 
-public class MeanInducer extends FunctionInducer {
+public class MeanOutputInducer extends FunctionInducer {
   //int NumBiasParameters = 0;
 
   public String getModuleInfo() {
-    return "MeanInducer";
+    return "MeanOutputInducer";
   }
   public String getModuleName() {
-    return "MeanInducer";
+    return "MeanOutputInducer";
   }
 
   public String getInputName(int i) {
@@ -80,7 +80,7 @@ public class MeanInducer extends FunctionInducer {
     }
 
 
-    MeanModel model = new MeanModel(examples, outputSums);
+    MeanOutputModel model = new MeanOutputModel(examples, outputSums);
 
     return (Model) model;
   }

@@ -4,7 +4,7 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.core.modules.ComputeModule;
 
-public class MeanBiasSpaceGenerator extends ComputeModule {
+public class MeanOutputBiasSpaceGenerator extends ComputeModule {
 
 
   public String getModuleName() {
