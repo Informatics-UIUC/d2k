@@ -625,6 +625,31 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
       return newArray;
    }
 
+   /**
+	* Do a shallow copy on the data by creating a new instance of a MutableTable,
+	* and initialize all it's fields from this one.
+	* @return a shallow copy of the table.
+	*/
+   private Table veryShallowCopy() {
+	   ExampleTableImpl eti = new ExampleTableImpl();
+
+		// make a copy of the columns array, we don't want to share that.
+		Column [] newCols = new Column [this.columns.length];
+		for (int i = 0 ; i < newCols.length ; i++) {
+			newCols [i] = this.columns[i];
+		}
+	   eti.columns = newCols;
+	   eti.setSubset(this.getSubset());
+	   eti.setTrainingSet(this.getTrainingSet());
+	   eti.setTestingSet(this.getTestingSet());
+	   eti.setInputFeatures(this.getInputFeatures());
+	   eti.setOutputFeatures(this.getOutputFeatures());
+	   eti.setLabel (this.getLabel());
+	   eti.setComment (this.getComment());
+	   eti.transformations = this.transformations;
+	   return eti;
+   }
+
 	/**
 	 * Do a shallow copy on the data by creating a new instance of a MutableTable,
 	 * and initialize all it's fields from this one.
@@ -661,17 +686,20 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		if (testSet == null) {
 			return null;
 		}
-      ExampleTableImpl eti = (ExampleTableImpl) this.shallowCopy();
+      ExampleTableImpl eti = (ExampleTableImpl) this.veryShallowCopy();
       eti.subset=testSet;
       return eti;
 	}
 
 	/**
-	Return a reference to a Table referencing only the training data.
-	@return a reference to a Table referencing only the training data.
-	*/
+	 * Return a reference to a Table referencing only the training data. It would be
+	 * tempting to simply do a shallow copy, however, that would not be very efficient,
+	 * as it would make a copy of the input, output arrays, the test and train sets as
+	 * well. 
+	 * @return a reference to a Table referencing only the training data.
+	 */
 	public Table getTrainTable() {
-      ExampleTableImpl eti = (ExampleTableImpl) this.shallowCopy();
+      ExampleTableImpl eti = (ExampleTableImpl) this.veryShallowCopy();
       eti.subset=trainSet;
       return eti;
 	}

@@ -29,36 +29,48 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 		return this;
 	}
 
-    /**
+   /**
 	 * Given an example table, copy its input columns, and create *
-     * columns to hold the predicted values.
+    * columns to hold the predicted values.
 	 * @param ttt the ExampleTable that contains the inital values
-     */
-    public PredictionTableImpl (ExampleTableImpl ttt) {
-        super(ttt);
-        if (outputColumns == null) {
-            predictionSet = new int[0];
-            outputColumns = new int[0];
-        } else
-            predictionSet = new int[outputColumns.length];
+	 */
+	public PredictionTableImpl (ExampleTableImpl ttt) {
+		super(ttt.columns);
+        
+		// copies the fields from the example table.
+		this.comment = ttt.getComment();
+		this.setTrainingSet(ttt.getTrainingSet());
+		this.setTestingSet(ttt.getTestingSet());
+		this.setInputFeatures(ttt.getInputFeatures());
+		this.setOutputFeatures(ttt.getOutputFeatures());
+		this.setLabel (ttt.getLabel());
+		this.setComment (ttt.getComment());
+		this.transformations = ttt.transformations;
+		this.subset = ttt.subset;
+		
+		if (outputColumns == null) {
+			predictionSet = new int[0];
+			outputColumns = new int[0];
+		} else
+			predictionSet = new int[outputColumns.length];
 
-		// Copy the existing columns.
-        Column[] newColumns = new Column[columns.length + outputColumns.length];
+			// Copy the existing columns.
+		Column[] newColumns = new Column[columns.length + outputColumns.length];
 		System.arraycopy (columns, 0, newColumns, 0, columns.length);
-        int i = columns.length;
+		int i = columns.length;
 
-        // Create new columns which will contain the predicted values.
-        for (int i2 = 0; i2 < outputColumns.length; i++, i2++) {
-            Column col = ttt.getColumn(outputColumns[i2]);
-			col = ColumnUtilities.createColumn(col.getType(), col.getNumRows());
+		// Create new columns which will contain the predicted values.
+		for (int i2 = 0; i2 < outputColumns.length; i++, i2++) {
+			Column col = ColumnUtilities.createColumn(ttt.getColumnType(outputColumns[i2]), 
+						columns[outputColumns[i2]].getNumRows());
 			StringBuffer newLabel = new StringBuffer(ttt.getColumnLabel(outputColumns[i2]));
-            newLabel.append(PREDICTION_COLUMN_APPEND_TEXT);
-            col.setLabel(newLabel.toString());
-            newColumns[i] = col;
-            predictionSet[i2] = i;
-        }
-        columns = newColumns;
-    }
+         newLabel.append(PREDICTION_COLUMN_APPEND_TEXT);
+         col.setLabel(newLabel.toString());
+         newColumns[i] = col;
+         predictionSet[i2] = i;
+      }
+      columns = newColumns;
+	}
 
     /**
      * Given a prediction table, copy its input columns, and create new
