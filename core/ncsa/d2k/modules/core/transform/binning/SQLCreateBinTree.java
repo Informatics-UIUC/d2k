@@ -23,7 +23,7 @@ public class SQLCreateBinTree extends DataPrepModule {
 	}
 
 	public String[] getOutputTypes() {
-		String[] out = { "ncsa.d2k.modules.core.datatype.BinTree" };
+		String[] out = { "ncsa.d2k.modules.core.transform.binning.BinTree" };
 		return out;
 	}
 

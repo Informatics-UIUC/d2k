@@ -103,7 +103,7 @@ public class SQLAutoBin extends AutoBin {
 	}
 
 	public String getModuleName() {
-		return "Naive Bayes SQL Discretization";
+		return "SQL Auto Discretization";
 	}
 
 	public String getModuleInfo() {

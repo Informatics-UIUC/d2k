@@ -21,7 +21,7 @@ public class CreateBinTree extends DataPrepModule {
 
    public String[] getOutputTypes() {
       return new String[] {
-         "ncsa.d2k.modules.core.datatype.BinTree"
+         "ncsa.d2k.modules.core.transform.binning.BinTree"
       };
    }
 

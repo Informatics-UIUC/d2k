@@ -92,11 +92,19 @@ public class AutoBin extends AutoBinOPT {
 
 
   public void doit() throws Exception {
-    ExampleTable et = (ExampleTable) pullInput(0);
+    tbl = (ExampleTable) pullInput(0);
     //ParameterPoint pp = (ParameterPoint) pullInput(1);
 //    HashMap nameToIndexMap = new HashMap();
 
-    tbl = et;
+    inputs = tbl.getInputFeatures();
+    outputs = tbl.getOutputFeatures();
+	if ((inputs == null) || (inputs.length == 0))
+			 throw new Exception("Input features are missing. Please select the input features.");
+
+if (outputs == null || outputs.length == 0)
+			 throw new Exception("Output feature is missing. Please select an output feature.");
+
+
     nf = NumberFormat.getInstance();
     nf.setMaximumFractionDigits(3);
 
@@ -149,7 +157,7 @@ public class AutoBin extends AutoBinOPT {
     BinTransform bt = new BinTransform(bins, false);
 
     pushOutput(bt, 0);
-    pushOutput(et, 1);
+    pushOutput(tbl, 1);
 
     tbl = null;
   }

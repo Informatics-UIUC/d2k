@@ -92,7 +92,7 @@ public class ADTAutoBin extends DataPrepModule {
 	}
 
 	public String getModuleName() {
-		return "Naive Bayes ADT Discretization";
+		return " ADT Auto Discretization";
 	}
 
 	public String getModuleInfo() {

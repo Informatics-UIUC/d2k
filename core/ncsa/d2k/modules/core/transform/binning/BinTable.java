@@ -29,7 +29,7 @@ public class BinTable extends ncsa.d2k.core.modules.DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.transform.binning.BinTree","ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
 	}
 

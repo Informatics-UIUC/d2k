@@ -33,7 +33,7 @@ public class Binning extends DataPrepModule  {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.transform.binning.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 	}
 
@@ -43,7 +43,7 @@ public class Binning extends DataPrepModule  {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.transform.binning.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 	}
 

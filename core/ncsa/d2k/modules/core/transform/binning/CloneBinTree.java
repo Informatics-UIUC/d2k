@@ -17,12 +17,12 @@ public class CloneBinTree extends DataPrepModule  {
 	}
 
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","java.lang.Integer"};
+		String[] types = {"ncsa.d2k.modules.core.transform.binning.BinTree","java.lang.Integer"};
 		return types;
 	}
 
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","java.lang.Integer"};
+		String[] types = {"ncsa.d2k.modules.core.transform.binning.BinTree","java.lang.Integer"};
 		return types;
 	}
 

@@ -90,19 +90,20 @@ public class AutoBinOPT
   }
 
   public String getModuleName() {
-    return "Naive Bayes Discretization";
+    return "Auto Discretization";
   }
 
   protected ExampleTable tbl;
   protected NumberFormat nf; 
+
   int[] inputs;
   int[] outputs;
    
   public void doit() throws Exception {
-    ExampleTable tbl = (ExampleTable) pullInput(0);
+    tbl = (ExampleTable) pullInput(0);
     ParameterPoint pp = (ParameterPoint) pullInput(1);
 
-	inputs = tbl.getInputFeatures();
+    inputs = tbl.getInputFeatures();
     outputs = tbl.getOutputFeatures();
 	if ((inputs == null) || (inputs.length == 0))
 			 throw new Exception("Input features are missing. Please select the input features.");
@@ -168,9 +169,6 @@ public class AutoBinOPT
 
   protected BinDescriptor[] numberOfBins(int num) throws Exception {
     List bins = new ArrayList();
-
-    
-
     String[] an = new String[inputs.length];
     for (int i = 0; i < inputs.length; i++) {
       an[i] = tbl.getColumnLabel(inputs[i]);

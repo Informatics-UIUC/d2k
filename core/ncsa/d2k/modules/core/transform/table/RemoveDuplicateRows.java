@@ -1,7 +1,5 @@
 package ncsa.d2k.modules.core.transform.table;
 
-
-
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import gnu.trove.*;
@@ -13,7 +11,7 @@ import java.util.*;
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2002</p>
  * <p>Company: </p>
- * @author unascribed
+ * @author David Clutter, Tom Redman
  * @version 1.0
  */
 public class RemoveDuplicateRows extends DataPrepModule {

@@ -1,8 +1,4 @@
-
 package ncsa.d2k.modules.core.transform.table;
-
-
-
 
 
 import ncsa.d2k.core.modules.*;
@@ -176,3 +172,9 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 		}
 	}
 }
+
+// QA Comments
+// 2/20/03 - Handed off to QA by Loretta Auvil
+// 2/21/03 - Anca started QA process. Testing didn't show any problem. Good performanc
+// 2/21/03 - Very clean and well documented. checked into basic.
+// END QA Comments
