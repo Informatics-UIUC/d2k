@@ -951,13 +951,13 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 		/**
 		*/
 		private class Evaluate implements Serializable {
-			boolean eval(String val) { return false; }
-			boolean eval(double val) { return false; }
-			boolean eval(int val) { return false; }
-			void print() {};
-  		        String getCondition(String an) { return an; }
-
-			Evaluate() {}
+		    boolean eval(String val) { return false; }
+		    boolean eval(double val) { return false; }
+		    boolean eval(int val) { return false; }
+		    void print() {};
+		    String getCondition(String an) { return an; }
+		    ArrayList getAttrValuePair(String an) {return new ArrayList();}
+		    Evaluate() {}
 		}
 
 		/**
@@ -1022,6 +1022,10 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 
 		    public String getCondition(String an) {
                         return item.getCondition(an);
+                    }
+
+		    public ArrayList getAttrValuePair(String an) {
+                        return item.getAttrValuePair(an);
                     }
 
                     public void setTally(int n) {
@@ -1113,6 +1117,31 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 			return cond;
 		    }
 
+                    ArrayList getAttrValuePair(String an) {
+                        Iterator i = items.listIterator();
+                        ArrayList curr;
+                        ArrayList prev = new ArrayList();
+                        while(i.hasNext()) {
+                            Evaluate ev = (Evaluate)i.next();
+                            if(ev.getAttrValuePair(an)!=null) {
+                                curr = ev.getAttrValuePair(an);
+                                Iterator it1 = curr.iterator();
+                                Iterator it2 = prev.iterator();
+                                ArrayList cond = new ArrayList();
+                                while(it1.hasNext())
+                                    while(it2.hasNext()) {
+                                        HashMap hm1 = (HashMap) it1.next();
+                                        HashMap hm2 = (HashMap) it2.next();
+                                        hm1.putAll(hm2);
+                                        cond.add(hm1);
+                                        prev = cond;
+                                    }
+                            }
+                        }
+                        return prev;
+                    }
+
+
 		}
 
 		/**
@@ -1193,6 +1222,19 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 			}
 			return cond;
 		    }
+
+		    ArrayList getAttrValuePair(String an) {
+                        Iterator i = items.listIterator();
+                        ArrayList cond = new ArrayList();
+                        while(i.hasNext()) {
+                            Evaluate ev = (Evaluate)i.next();
+                            if(ev.getAttrValuePair(an)!=null)
+                                cond.add(ev.getAttrValuePair(an));
+                        }
+                        return cond;
+                    }
+
+
 		}
 
 		/**
@@ -1245,6 +1287,18 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 		    String getCondition(String an) {
 			return an + SPACE + operator + SPACE + value;
 		    }
+
+		    ArrayList getAttrValuePair(String an) {
+			if ( operator.equals(EQUAL_TO)) {
+			    HashMap hm = new HashMap();
+			    hm.put(an,String.valueOf(value));
+			    ArrayList ar = new ArrayList(1);
+			    ar.add(hm);
+			    return ar;
+			}
+			else return null;
+                    }
+
 		}
 
 		/**
@@ -1275,12 +1329,22 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 			}
 
 
-	        String getCondition(String an) {
+		    String getCondition(String an) {
 		    	return value + EQUAL_TO + an; }
-		    }
-	}
 
-	private class DefaultTree extends HashMap implements Serializable {
+	    
+	    ArrayList getAttrValuePair(String an) {
+		HashMap hm = new HashMap();
+		hm.put(an,value);
+		ArrayList ar = new ArrayList(1);
+		ar.add(hm);
+		return ar;
+	    }
+		}
+	    
+	}
+    
+    private class DefaultTree extends HashMap implements Serializable {
 
 		DefaultTree() {}
 
