@@ -4,20 +4,19 @@ import ncsa.d2k.modules.*;
 import ncsa.d2k.modules.core.datatype.sort.*;
 import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.core.modules.PropertyDescription;
 import java.beans.PropertyVetoException;
+import java.util.ArrayList;
 
 
-public class SimpleModelEvaluator
-    extends OrderedReentrantModule {
+public class SimpleModelEvaluator extends DataPrepModule {
 
 
   int numProperties = 6;
-
+  ArrayList testTables = null;
   public PropertyDescription[] getPropertiesDescriptions() {
 
     PropertyDescription[] pds = new PropertyDescription[numProperties];
@@ -212,12 +211,36 @@ public class SimpleModelEvaluator
 		"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
     return out;
   }
-
+  public void beginExecution() {
+    testTables = new ArrayList(200);
+  }
+  /**
+   * This module is the collection point for a gather operation. The scatter module
+   * is typically n-fold. In order to keep the input pipe receiving the test tables
+   * from filling, and preventing the n-fold module from the the input pipes to th
+   * reentrant compute modules full, we need to make sure we suck all the input data
+   * out of this input as soon as it becomes available.
+   */
+  public boolean isReady() {
+    if (this.getInputPipeSize(2) > 0)
+      return true;
+    
+    // we have no test tables, check to see if we
+    // have an error function and a model
+    if (this.getInputPipeSize(0) > 0 && this.getInputPipeSize(1) > 0 &&
+         testTables.size() > 0)
+      return true;
+    return false;
+  }
   public void doit() throws Exception {
 
+    if (this.getInputPipeSize(2) > 0) {
+      testTables.add(this.pullInput(2));
+      return;
+    }
     ErrorFunction errorFunction = (ErrorFunction)this.pullInput(0);
-    PredictionModelModule         model         = (PredictionModelModule)        this.pullInput(1);
-    ExampleTable  exampleTable  = (ExampleTable) this.pullInput(2);
+    PredictionModelModule model = (PredictionModelModule) this.pullInput(1);
+    ExampleTable  exampleTable  = (ExampleTable) testTables.remove(0);
 
     ExampleTable examples = exampleTable;
 
