@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.datatype.space;
+package ncsa.d2k.modules.core.datatype.parameter;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 
