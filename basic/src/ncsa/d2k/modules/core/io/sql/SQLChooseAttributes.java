@@ -131,9 +131,10 @@ public class SQLChooseAttributes extends HeadlessUIModule {
     return null;
   }
 
-  public PropertyDescription[] getPropertiesDescriptions() {
+//conversion toheadless - vered: super class already implements this method.
+  /*public PropertyDescription[] getPropertiesDescriptions() {
     return new PropertyDescription[0];
-  }
+  }*/
 
   /**
     Create the UserView object for this module-view combination.
@@ -509,8 +510,19 @@ public class SQLChooseAttributes extends HeadlessUIModule {
     cw = (ConnectionWrapper)pullInput(0);
     String _table = (String)pullInput(1);
 
+    //validating table's name
+    if(_table == null || _table.length() ==0)
+      throw new Exception("Table name is in valid.");
+
+    //validating that inputs and outputs were selected on previous run
+    if(selectedInputNames == null)
+      throw new Exception("No input names were selected on a gui run. You must select at least one input name.");
+    if(selectedOutputNames == null)
+      throw new Exception("No output names were selected on a gui run. You must select one output name.");
+
     con = cw.getConnection();
     DatabaseMetaData metadata = con.getMetaData();
+
 
      ResultSet columns = metadata.getColumns(null,"%",_table,"%");
      //will hold column name <-> column index
@@ -532,6 +544,9 @@ public class SQLChooseAttributes extends HeadlessUIModule {
        counter++;
      }//while column
 
+
+     if(counter == 0)
+       throw new Exception("Table " + _table + " is either not in the database or has no columns in it");
 
 
      //mapping name <-> meaningless integer
@@ -584,6 +599,11 @@ public class SQLChooseAttributes extends HeadlessUIModule {
       /* inputFeatures holds the target input columns ids, as they are in the
        table in the database.*/
       inputFeatures = getTargetColumns(availableColumnMap, selectedInputNames);
+
+      if(inputFeatures.length == 0)
+        throw new Exception("None of the input names which were selected on the previous run " +
+ "doesn't appear in the selected table. Cannot proceed without any valid input names.");
+
       /* selectedInput holds the input columns ids, of the output example table.*/
       selectedInput = new int[inputFeatures.length];
 
@@ -772,6 +792,8 @@ for (int colId = 0; colId < Id2ColumnNameMap.size(); colId++) {
     for(int i=0; i<desired.length; i++)
       if (available.containsKey(desired[i]))
         count++;
+      else System.out.println("\n\nSQLChooseAttributes:\n The chaosed table does not contain a column named " + desired[i] +
+                              ". This column won't be included in the output of this module.\n");
 
 
     retVal = new int[count];

@@ -114,10 +114,11 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 	}
 
     //QA Anca added this:
-    public PropertyDescription[] getPropertiesDescriptions() {
+    //conversion to headless - vered: the super class implements this method.
+  /*  public PropertyDescription[] getPropertiesDescriptions() {
         // so that "WindowName" property is invisible
         return new PropertyDescription[0];
-    }
+    }*/
 
 	/**
 		This method is called by D2K to get the UserView for this module.

@@ -218,13 +218,15 @@ public class ConnectToDB extends HeadlessUIModule {
     }
 
     public PropertyDescription [] getPropertiesDescriptions () {
-      PropertyDescription [] pds = new PropertyDescription [6];
-      pds[0] = new PropertyDescription ("dbVendor", "Database Vendor", "The database vendor.");
-      pds[1] = new PropertyDescription ("username", "User Name", "The login account to use.");
-      pds[2] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
-      pds[3] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
-      pds[4] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
-      pds[5] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
+      PropertyDescription [] super_pds = super.getPropertiesDescriptions();
+      PropertyDescription [] pds = new PropertyDescription [7];
+      pds[0] = super_pds[0];
+      pds[1] = new PropertyDescription ("dbVendor", "Database Vendor", "The database vendor.");
+      pds[2] = new PropertyDescription ("username", "User Name", "The login account to use.");
+      pds[3] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
+      pds[4] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
+      pds[5] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
+      pds[6] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
       return pds;
     }
 
@@ -487,7 +489,26 @@ public class ConnectToDB extends HeadlessUIModule {
     /**
        connects to the database, according to the settings of the properties.
        */
-        public void doit(){
+        public void doit() throws Exception{
+
+          //checking that the properties are not null
+          if(dbInstance == null)
+            throw new Exception ("Database Instance property was not set. Cannot connect to database");
+          if(this.dbVendor == null)
+            throw new Exception ("Database Vendor property was not set. Cannot connect to database");
+          if(this.driver == null)
+            throw new Exception ("Driver property was not set. Cannot connect to database");
+          if(this.machine == null)
+            throw new Exception ("Machine property was not set. Cannot connect to database");
+          if(this.password == null)
+            throw new Exception ("Password was not set. It should be set via a GUI run of this itinerary. Cannot connect to database");
+          if(this.port == null)
+            throw new Exception ("Port property was not set. Cannot connect to database");
+          if(this.username == null)
+            throw new Exception ("User Name property was not set. Cannot connect to database");
+
+
+
           if ( driver.equals("oracle.jdbc.driver.OracleDriver")) {
 
                         setUrl("jdbc:oracle:thin:@"+getMachine()+":"+getPort()+":"+getDbInstance());

@@ -114,10 +114,10 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 
     //QA Anca added this:
-    public PropertyDescription[] getPropertiesDescriptions() {
+  /*  public PropertyDescription[] getPropertiesDescriptions() {
         // so that "WindowName" property is invisible
         return new PropertyDescription[0];
-    }
+    }*/
 
 
 	/**
