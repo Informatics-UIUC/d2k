@@ -28,4 +28,21 @@ public final class ColumnTypes {
 	public static final int BYTE = 10;
 	/** A column of char values */
 	public static final int CHAR = 11;
+
+  private static final String[] _names = {"INTEGER",
+    "FLOAT",
+    "DOUBLE",
+    "SHORT",
+    "LONG",
+    "STRING",
+    "CHARACTER ARRAY",
+    "BYTE ARRAY",
+    "BOOLEAN",
+    "OBJECT",
+    "BYTE",
+    "CHAR"};
+
+  public static String getTypeName(int i){
+    return _names[i];
+  }
 }
