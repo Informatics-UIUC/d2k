@@ -173,12 +173,15 @@ public class ColumnExpression
     ti.setColumnLabel("x1", 0);
     ti.setColumnLabel("x2", 1);
     ti.setColumnLabel("x3", 2);
-    ti.print();
+//    ti.print();
 
     ColumnExpression ce = new ColumnExpression(ti);
-    String exp = "exp( neg(x1) ) * sin(x2)^6";
+    //String exp = "exp( neg(x1) ) * sin(x2)^6";
+    String exp = "exp( neg( x1+x2 ) ) * sin(x2)^6";
+    //String exp = "sin(x2)^6";
     try {
       ce.setExpression(exp);
+      System.out.println(ce.toString());
       Object o = ce.evaluate();
       double[] ar = (double[])o;
       for(int i =0; i < ar.length; i++)
@@ -212,10 +215,10 @@ public class ColumnExpression
       //EXP = 11;
 
   private static final int[] order = {
-      0, 0, 2, 2, 1, 4, 3, 3};
+      0, 0, 2, 2, 1, 4, 3, 5};
 
   private Node parse(String expression) throws ExpressionException {
-//    System.out.println("parse: "+expression);
+//System.out.println("parse:"+expression);
     char c;
 
     // we're interested in the shallowest operator of least precedence
@@ -226,18 +229,16 @@ public class ColumnExpression
     int depth = 0, max_depth = 0,
         best_depth = Integer.MAX_VALUE, best_type = AND, best_pos = -1;
     for (int i = 0; i < expression.length(); i++) {
-
       c = expression.charAt(i);
+//System.out.println("C:"+new Character(c).toString());
 
       switch (c) {
-
         case '(':
           depth++;
           break;
         case ')':
           depth--;
           break;
-
         case '+':
           operator_found = true;
           if (depth < best_depth ||
@@ -247,7 +248,6 @@ public class ColumnExpression
             best_pos = i;
           }
           break;
-
         case '-':
           operator_found = true;
           if (depth < best_depth ||
@@ -257,7 +257,6 @@ public class ColumnExpression
             best_pos = i;
           }
           break;
-
         case '*':
           operator_found = true;
           if (depth < best_depth ||
@@ -267,7 +266,6 @@ public class ColumnExpression
             best_pos = i;
           }
           break;
-
         case '/':
           operator_found = true;
           if (depth < best_depth ||
@@ -277,7 +275,6 @@ public class ColumnExpression
             best_pos = i;
           }
           break;
-
         case '%':
           operator_found = true;
           if (depth < best_depth ||
@@ -287,7 +284,6 @@ public class ColumnExpression
             best_pos = i;
           }
           break;
-
         case '&':
           operator_found = true;
           if (depth < best_depth ||
@@ -298,7 +294,6 @@ public class ColumnExpression
           }
           i++;
           break;
-
         case '|':
           operator_found = true;
           if (depth < best_depth ||
@@ -316,6 +311,7 @@ public class ColumnExpression
 
         // power
         case '^':
+//System.out.println("FOUND POW.");
           operator_found = true;
           if (depth < best_depth ||
               depth == best_depth && order[POW] <= order[best_type]) {
@@ -323,6 +319,70 @@ public class ColumnExpression
             best_type = POW;
             best_pos = i;
           }
+          break;
+        default:
+          // check and see if it starts with a function
+          StringBuffer sb = new StringBuffer(10);
+          for(int z = i; z < expression.length(); z++)
+            sb.append(expression.charAt(z));
+
+          // this is the rest of the expression
+          String ex = sb.toString();
+//System.out.println("DEF:"+ex);
+          // the amount to increment i
+          int increment = 0;
+
+          // count whitespace at the beginning
+          // we will want to skip over this
+          for(int z = 0; z < ex.length(); z++) {
+            char cc = ex.charAt(z);
+            if(cc == ' ') {
+              increment++;
+            }
+            else
+              break;
+          }
+          // trim it
+          ex = ex.trim();
+
+          // if it starts with one of our functions, use it
+          if(ex.startsWith(LOG) || ex.startsWith(EXP) ||
+                 ex.startsWith(SIN) || ex.startsWith(COS) ||
+                 ex.startsWith(TAN) || ex.startsWith(SQRT) ||
+                 ex.startsWith(NAT_LOG) || ex.startsWith(ABS) ||
+                 ex.startsWith(NEG) || ex.startsWith(ASIN) ||
+                 ex.startsWith(ACOS) || ex.startsWith(ATAN) ) {
+
+                // try to move the current location to the end of the function
+
+                // the index of the first parenthesis
+                int firstParen = ex.indexOf('(', i);
+                // the number of open paren
+                int numOpen = 1;
+                // if it had the parenthesis
+                if (firstParen != -1) {
+                  int k = firstParen+1;
+                  // for each character
+                  for (; k < ex.length(); k++) {
+                    char cc = ex.charAt(k);
+                    if (cc == '(') {
+//System.out.println("OPEN PAREN:"+k);
+                      numOpen++;
+                    }
+                    else if (cc == ')') {
+//System.out.println("CLOSE PAREN:"+k);
+                      numOpen--;
+                    }
+
+                    if (numOpen == 0) {
+                      //k++;
+                      break;
+                    }
+                  }
+                  // skip the rest of the function
+                  i = k+increment;
+                }
+              }
           break;
       }
 
@@ -335,7 +395,6 @@ public class ColumnExpression
       best_depth = 0;
     }
     if (operator_found) { // we must recurse
-
       // first, remove extraneous parentheses, which are going to confuse
       // the parser.
       if (best_depth > 0) {
@@ -353,7 +412,6 @@ public class ColumnExpression
 
         // now we recurse
       }
-//      System.out.println("new OperationNode");
       return new OperationNode(
           best_type,
           parse(expression.substring(0, best_pos).trim()),
@@ -366,7 +424,8 @@ public class ColumnExpression
             expression.indexOf(SIN) != -1 || expression.indexOf(COS) != -1 ||
            expression.indexOf(TAN) != -1 || expression.indexOf(SQRT) != -1 ||
            expression.indexOf(NAT_LOG) != -1 || expression.indexOf(ABS) != -1 ||
-           expression.indexOf(NEG) != -1) {
+           expression.indexOf(NEG) != -1 || expression.indexOf(ASIN) != -1 ||
+           expression.indexOf(ACOS) != -1 || expression.indexOf(ATAN) != -1) {
       return new FunctionNode(expression);
     }
     else { // this is a terminal
@@ -382,7 +441,7 @@ public class ColumnExpression
       }
 
       try {
-//        System.out.println("New TerminalNode "+expression);
+//System.out.println("New TerminalNode "+expression);
         return new TerminalNode(1, 1, Float.parseFloat(expression));
       }
       catch (Exception e) {
@@ -449,6 +508,7 @@ public class ColumnExpression
       ATAN = "atan",
       SQRT = "sqrt",
       NEG = "neg";
+//      POW = "pow";
 
   private static final int
     LOG_OP = 0,
@@ -463,6 +523,7 @@ public class ColumnExpression
     ATAN_OP = 9,
     SQRT_OP = 10,
     NEG_OP = 11;
+//    POW_OP = 12;
 
   /**
    * A FunctionNode is a mathematical function on another node.
@@ -482,88 +543,152 @@ public class ColumnExpression
       expression = expression.trim();
 
       // it is a log
-      if(expression.startsWith(LOG)) {
+      if (expression.startsWith(LOG)) {
         operation = LOG_OP;
         // remove the log part of the expression
-        String tmpExp = expression.substring(LOG.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(LOG.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
       // it is an exp (e^x)
-      else if(expression.startsWith(EXP)) {
+      else if (expression.startsWith(EXP)) {
         operation = EXP_OP;
         // remove the exp part of the expression
-        String tmpExp = expression.substring(EXP.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(EXP.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
-      else if(expression.startsWith(NAT_LOG)) {
+      else if (expression.startsWith(NAT_LOG)) {
         operation = NAT_LOG_OP;
-        String tmpExp = expression.substring(NAT_LOG.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(NAT_LOG.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
-      else if(expression.startsWith(ABS)) {
+      else if (expression.startsWith(ABS)) {
         operation = ABS_OP;
-        String tmpExp = expression.substring(ABS.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(ABS.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
-      else if(expression.startsWith(SIN)) {
+      else if (expression.startsWith(SIN)) {
         operation = SIN_OP;
-        String tmpExp = expression.substring(SIN.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(SIN.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
-      else if(expression.startsWith(ASIN)) {
+      else if (expression.startsWith(ASIN)) {
         operation = ASIN_OP;
-        String tmpExp = expression.substring(ASIN.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(ASIN.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
-      else if(expression.startsWith(COS)) {
+      else if (expression.startsWith(COS)) {
         operation = COS_OP;
-        String tmpExp = expression.substring(COS.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(COS.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
-      else if(expression.startsWith(ACOS)) {
+      else if (expression.startsWith(ACOS)) {
         operation = ACOS_OP;
-        String tmpExp = expression.substring(ACOS.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(ACOS.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
-      else if(expression.startsWith(TAN)) {
+      else if (expression.startsWith(TAN)) {
         operation = TAN_OP;
-        String tmpExp = expression.substring(TAN.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(TAN.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
-      else if(expression.startsWith(ATAN)) {
+      else if (expression.startsWith(ATAN)) {
         operation = ATAN_OP;
-        String tmpExp = expression.substring(ATAN.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(ATAN.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
-      else if(expression.startsWith(SQRT)) {
+      else if (expression.startsWith(SQRT)) {
         operation = SQRT_OP;
-        String tmpExp = expression.substring(SQRT.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(SQRT.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
-      else if(expression.startsWith(NEG)) {
+      else if (expression.startsWith(NEG)) {
         operation = NEG_OP;
-        String tmpExp = expression.substring(NEG.length()+1, expression.length()-1);
+        String tmpExp = expression.substring(NEG.length() + 1,
+                                             expression.length() - 1);
         // parse the argument
         argument = parse(tmpExp);
       }
+/*      else if (expression.startsWith(POW)) {
+        operation = POW_OP;
+        String tmpExp = expression.substring(POW.length() + 1,
+                                             expression.length() - 1);
+        // parse the argument
+        argument = parse(tmpExp);
+      }*/
 
       else
-        throw new ExpressionException("FunctionNode: not an expression "+expression);
+        throw new ExpressionException("FunctionNode: not an expression " +
+                                      expression);
     }
 
     public String toString() {
-      return "";
+      StringBuffer sb = new StringBuffer();
+      switch (operation) {
+        case LOG_OP:
+          sb.append(LOG);
+          break;
+        case SIN_OP:
+          sb.append(SIN);
+          break;
+        case COS_OP:
+          sb.append(COS);
+          break;
+        case TAN_OP:
+          sb.append(TAN);
+          break;
+        case SQRT_OP:
+          sb.append(SQRT);
+          break;
+        case ABS_OP:
+          sb.append(ABS);
+          break;
+        case EXP_OP:
+          sb.append(EXP);
+          break;
+        case ASIN_OP:
+          sb.append(ASIN);
+          break;
+        case ACOS_OP:
+          sb.append(ACOS);
+          break;
+        case ATAN_OP:
+          sb.append(ATAN);
+          break;
+        case NEG_OP:
+          sb.append(NEG);
+          break;
+/*        case POW_OP:
+          sb.append(POW);
+          break;
+ */
+      }
+      sb.append('(');
+      sb.append(argument.toString());
+      sb.append(')');
+
+      return sb.toString();
     }
 
     public Object evaluate() throws ExpressionException {
@@ -571,47 +696,48 @@ public class ColumnExpression
       double[] arg;
       // evaluate the argument and copy all of its results into a double
       // array for simplicity later
-      switch(argument.returnType) {
+      switch (argument.returnType) {
         case TYPE_BOOLEAN:
-          throw new ExpressionException("FunctionNode: Functions do not evaluate to boolean values.");
+          throw new ExpressionException(
+              "FunctionNode: Functions do not evaluate to boolean values.");
         case TYPE_DOUBLE:
-          arg = (double[])argument.evaluate();
+          arg = (double[]) argument.evaluate();
           break;
         case TYPE_FLOAT:
-          float[] ar = (float[])argument.evaluate();
+          float[] ar = (float[]) argument.evaluate();
           arg = new double[ar.length];
-          for(int i = 0; i < ar.length; i++)
+          for (int i = 0; i < ar.length; i++)
             arg[i] = ar[i];
           break;
         case TYPE_LONG:
-          long[] l = (long[])argument.evaluate();
+          long[] l = (long[]) argument.evaluate();
           arg = new double[l.length];
-          for(int i = 0; i < l.length; i++)
+          for (int i = 0; i < l.length; i++)
             arg[i] = l[i];
           break;
         case TYPE_BYTE:
-          byte[] b = (byte[])argument.evaluate();
+          byte[] b = (byte[]) argument.evaluate();
           arg = new double[b.length];
-          for(int i = 0; i < b.length; i++)
+          for (int i = 0; i < b.length; i++)
             arg[i] = b[i];
-           break;
+          break;
         case TYPE_INTEGER:
-          int[] ia = (int[])argument.evaluate();
+          int[] ia = (int[]) argument.evaluate();
           arg = new double[ia.length];
-          for(int i = 0; i < ia.length; i++)
+          for (int i = 0; i < ia.length; i++)
             arg[i] = ia[i];
           break;
         case TYPE_SHORT:
-          short[] s = (short[])argument.evaluate();
+          short[] s = (short[]) argument.evaluate();
           arg = new double[s.length];
-          for(int i = 0; i < s.length; i++)
+          for (int i = 0; i < s.length; i++)
             arg[i] = s[i];
           break;
         default:
           throw new ExpressionException("FunctionNode: Cannot use return type.");
       }
 
-      switch(operation) {
+      switch (operation) {
         case LOG_OP:
           for (int i = 0; i < arg.length; i++)
             retVal[i] = Math.log(arg[i]) / Math.log(10);
@@ -651,15 +777,16 @@ public class ColumnExpression
         case ATAN_OP:
           for (int i = 0; i < arg.length; i++)
             retVal[i] = Math.atan(arg[i]);
-           break;
+          break;
         case NEG_OP:
           for (int i = 0; i < arg.length; i++)
             retVal[i] = arg[i] * -1;
-            break;
-          default:
-            throw new ExpressionException("FunctionNode: Function not recognized.");
-      }
+          break;
+        default:
+          throw new ExpressionException(
+              "FunctionNode: Function not recognized.");
 
+      }
       return retVal;
     }
   }
@@ -727,7 +854,6 @@ public class ColumnExpression
             case TYPE_SHORT:
               returnType = TYPE_SHORT;
               break;
-
           }
           break;
 
@@ -1010,6 +1136,7 @@ public class ColumnExpression
                   for(int i = 0; i < b.length; i++) {
                     b[i] = (byte) Math.pow(bL[i], bR[i]);
                   }
+                  break;
                 default:
                   throw new ExpressionException(
                       "ColumnExpression: Illegal expression.");
@@ -2380,6 +2507,7 @@ public class ColumnExpression
       }
     }
   }
+
 
       /******************************************************************************/
       /* Evaluation traverses the tree recursively starting at the root.            */
