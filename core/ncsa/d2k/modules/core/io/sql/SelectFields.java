@@ -1,15 +1,12 @@
 package ncsa.d2k.modules.core.io.sql;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.userviews.*;
-import ncsa.d2k.userviews.widgets.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
 import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.userviews.widgets.swing.*;
 
 /**
 	SelectFields.java
@@ -43,7 +40,7 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "A list of selected fields.   ";
+			case 0: return "A list of selected fields.";
 			default: return "No such output";
 		}
 	}
@@ -65,15 +62,23 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
           String s = "<p> Overview: ";
           s += "This module allows users to make the field selection. </p>";
           s += "<p> Detailed Description: ";
-          s += "Given a list of available fields, this module provides an user-interface ";
-          s += "to allows users to select from among them. ";
+          s += "Given a list of available fields, this module provides a user-interface ";
+          s += "to allow users to select from them. ";
           s += "The selected list will be used to construct SQL queries. </p>";
           s += "<p> Restrictions: ";
-          s += "We currently only support Oracle database.";
+          s += "We currently only support Oracle databases.";
 
           return s;
 
 	}
+
+
+    //QA Anca added this: 
+    public PropertyDescription[] getPropertiesDescriptions() {  
+        // so that "WindowName" property is invisible  
+        return new PropertyDescription[0];   
+    } 
+
 
 	/**
 		This method is called by D2K to get the UserView for this module.
@@ -99,7 +104,7 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "Fields";
+				return "Fields List";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -132,25 +137,6 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 		This is the UserView class.
 	*/
 	private class SelectFieldsView extends JUserPane {
-
-		/**
-			In the case of this selection list, everything in the list
-			is to be passed along, rather than just the selected items.
-		/
-		DSJMultiSelectList selectedFields = new DSJMultiSelectList () {
-			/**
-				This method returns an integer array.
-				Or a String array.
-			/
-			public Object[] getSelectedValues () {
-				Object[] vals = ((DefaultListModel)getModel()).toArray();
-
-				String[] retVal = new String[vals.length];
-				for(int i = 0; i < retVal.length; i++)
-					retVal[i] = (String)vals[i];
-				return retVal;
-			}
-		};*/
 
 		JList selectedFields = new JList ();
 		JList possibleFields = new JList ();
@@ -283,3 +269,11 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 		}
 	}
 }
+
+// QA Comments
+// 2/18/03 - Handed off to QA by Dora Cai
+// 2/19/03 - Anca started QA process.  Changed input name from Fields to Fields List.
+// 2/19/03 - Very clean and well documented. checked into basic.
+// 2/28/03 - Dora added code to handle no selection of fields
+// 03/03/03 - QA and checked into basic - Anca.
+// END QA Comments

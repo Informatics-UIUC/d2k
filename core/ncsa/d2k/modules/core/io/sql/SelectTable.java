@@ -1,8 +1,6 @@
 package ncsa.d2k.modules.core.io.sql;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.userviews.*;
-import ncsa.d2k.userviews.widgets.*;
 import java.awt.event.*;
 
 import java.awt.*;
@@ -10,7 +8,6 @@ import java.util.*;
 import javax.swing.*;
 
 import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.userviews.widgets.swing.*;
 
 /**
 	SelectTable.java
@@ -67,17 +64,23 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
           String s = "<p> Overview: ";
           s += "This module allows users to select a database table. </p>";
           s += "<p> Detailed Description: ";
-          s += "Given a list of available tables, this module provides an user-interface ";
-          s += "to allows users to choose a table from it. ";
-          s += "The selected table will be used to construct SQL queries. For the security purpose, ";
-          s += "you may only view the tables you have been granted to. If you ";
-          s += "cannot see the tables you are looking for, please report the ";
+          s += "Given a list of available tables, this module provides a user-interface ";
+          s += "to allow users to choose a table from it. ";
+          s += "The selected table will be used to construct SQL queries. For security ";
+          s += "purposes, you may only view the tables you have been granted access to. ";
+          s += "If you cannot see the tables you are looking for, please report the ";
           s += "problems to your database administrator. </p>";
           s += "<p> Restrictions: ";
-          s += "We currently only support Oracle database.";
+          s += "We currently only support Oracle databases.";
 
           return s;
 	}
+
+    //QA Anca added this: 
+    public PropertyDescription[] getPropertiesDescriptions() {  
+        // so that "WindowName" property is invisible  
+        return new PropertyDescription[0];   
+    } 
 
 	/**
 		This method is called by D2K to get the UserView for this module.
@@ -209,4 +212,13 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
                   }
               }
 	}
+
+	// QA Comments
+// 2/18/03 - Handed off to QA by Dora Cai
+// 2/19/03 - Anca started QA process.  Minor changes to module info.
+// 2/19/03 - Very clean and well documented. checked into basic.
+// 2/28/03 - Dora added code to handle no selection for table name
+// 03/03/03 - QA and checked into basic - Anca.
+// END QA Comments
+
 }
