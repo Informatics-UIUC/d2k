@@ -11,14 +11,14 @@ import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
- ChooseFields.java
+ ChooseAttributes.java  (previously ChooseFields)
 
  Allows the user to choose which columns of a table are inputs and outputs.
  Then assigns them in an ExampleTable.
 
  @author Peter Groves, c/o David Clutter
  */
-public class ChooseFields extends UIModule  {
+public class ChooseAttributes extends UIModule  {
 
   /**
    Return a description of the function of this module.
@@ -40,7 +40,7 @@ public class ChooseFields extends UIModule  {
    @return The name of this module.
    */
   public String getModuleName() {
-    return "Choose Input and Output Features";
+    return "Choose Input and Output Attributes";
   }
 
   /**
@@ -143,7 +143,7 @@ public class ChooseFields extends UIModule  {
     private Table table; //Old data
     private ExampleTable et; //Updated table
 
-    private ChooseFields module;
+    private ChooseAttributes module;
     private JButton abort;
     private JButton done;
 
@@ -166,7 +166,7 @@ public class ChooseFields extends UIModule  {
      Initialize
      */
     public void initView(ViewModule v) {
-      module = (ChooseFields)v;
+      module = (ChooseAttributes)v;
       abort = new JButton("Abort");
       done = new JButton("Done");
       abort.addActionListener(this);
@@ -266,10 +266,10 @@ public class ChooseFields extends UIModule  {
       JScrollPane leftScrollPane=new JScrollPane(inputList);
       JScrollPane rightScrollPane=new JScrollPane(outputList);
 
-      inputLabel=new JLabel("Input Columns");
+      inputLabel=new JLabel("Input Attributes");
       inputLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-      outputLabel=new JLabel("Output Columns");
+      outputLabel=new JLabel("Output Attributes");
       outputLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
       back.setLayout(new GridBagLayout());

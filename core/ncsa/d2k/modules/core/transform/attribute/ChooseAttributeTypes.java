@@ -15,7 +15,7 @@ import java.util.*;
 /**
  Allows the user to choose which columns of a table are scalar or nominal.
  */
-public class ChooseFieldTypes extends UIModule {
+public class ChooseAttributeTypes extends UIModule {
 
   /**
    Return a description of the function of this module.
@@ -128,7 +128,7 @@ public class ChooseFieldTypes extends UIModule {
   private class DefineView extends JUserPane implements ActionListener {
     private Table table;
 
-    private ChooseFieldTypes module;
+    private ChooseAttributeTypes module;
     private JButton abort;
     private JButton done;
 
@@ -152,7 +152,7 @@ public class ChooseFieldTypes extends UIModule {
      Initialize
      */
     public void initView(ViewModule v) {
-      module = (ChooseFieldTypes)v;
+      module = (ChooseAttributeTypes)v;
       abort = new JButton("Abort");
       done = new JButton("Done");
       abort.addActionListener(this);
