@@ -119,7 +119,7 @@ public class MinLenEncodingClusterModelEvaluator
   public String getInputInfo(int i) {
     switch (i) {
       case 0:
-        return "This is the ClusterModel that will have it's table modified.";
+        return "This is the ClusterModel that will be evaluated.";
       default:
         return "No such input";
     }
