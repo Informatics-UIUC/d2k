@@ -36,6 +36,7 @@ public class DecisionTreeModel extends PredictionModelModule
 		@param rt the root of the decision tree
 	*/
 	DecisionTreeModel(DecisionTreeNode rt, ExampleTable table) {
+		setName("DecisionTreeModel");
 		root = rt;
 		inputFeatures = table.getInputFeatures();
 		outputFeatures = table.getOutputFeatures();

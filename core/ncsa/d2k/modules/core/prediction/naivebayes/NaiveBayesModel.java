@@ -77,6 +77,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		@param t the types lookup table
 	*/
    	NaiveBayesModel(BinTree bt, ExampleTable vt) {
+		setName("NaiveBayesModel");
 		binTree = bt;
 		table = vt;
 
