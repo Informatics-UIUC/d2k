@@ -201,7 +201,7 @@ public class ARFFFileParser extends DelimitedFileParser {
                 current++;
             }
             String line;
-            while( (line = lineReader.readLine()).startsWith(COMMENT))
+            while( (line = lineReader.readLine()).startsWith(COMMENT) || line.trim().length() == 0)
                 dataRow++;
 
             return line;
