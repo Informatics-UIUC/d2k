@@ -161,7 +161,7 @@ public class ADTBinColumns extends HeadlessUIModule {
       private BinDescriptor currentSelectedBin;
       private HashMap columnLookup;
       private TreeSet[] uniqueColumnValues;
-      private JList numericColumnLabels, textualColumnLabels, currentBins;
+      private JList /*numericColumnLabels*/ textualColumnLabels, currentBins;
       private DefaultListModel binListModel;
       private Table tbl;
       private int numArrived = 0;
@@ -217,18 +217,18 @@ public class ADTBinColumns extends HeadlessUIModule {
             // clear all text fields and lists...
             curSelName.setText(EMPTY);
             textBinName.setText(EMPTY);
-            uRangeField.setText(EMPTY);
-            specRangeField.setText(EMPTY);
-            intervalField.setText(EMPTY);
-            weightField.setText(EMPTY);
+          //  uRangeField.setText(EMPTY);
+          //  specRangeField.setText(EMPTY);
+          //  intervalField.setText(EMPTY);
+          //  weightField.setText(EMPTY);
             columnLookup = new HashMap();
             uniqueColumnValues = new TreeSet[tbl.getNumColumns() + 1];
             binListModel.removeAllElements();
-            DefaultListModel numModel =
-               (DefaultListModel) numericColumnLabels.getModel(),
-               txtModel =
+          //  DefaultListModel numModel =
+            //   (DefaultListModel) numericColumnLabels.getModel(),
+             DefaultListModel  txtModel =
                   (DefaultListModel) textualColumnLabels.getModel();
-            numModel.removeAllElements();
+            //numModel.removeAllElements();
             txtModel.removeAllElements();
 
             textCurrentModel.removeAllElements();
@@ -260,8 +260,14 @@ public class ADTBinColumns extends HeadlessUIModule {
          currentBins.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
          currentBins.addListSelectionListener(new CurrentListener());
          // set up the numeric tab
+
+         //vered: removing the numeric tab, since this module does not support
+         //binning of numeric data.
+
+         /*
          numericColumnLabels = new JList();
          numericColumnLabels.setModel(new DefaultListModel());
+
          // uniform range
          JOutlinePanel urangepnl = new JOutlinePanel("Uniform Range");
          uRangeField = new JTextField(5);
@@ -386,7 +392,7 @@ public class ADTBinColumns extends HeadlessUIModule {
                 }
                 });
                 */
-
+/*
             }
          });
          urangepnl.setLayout(new GridBagLayout());
@@ -475,7 +481,7 @@ public class ADTBinColumns extends HeadlessUIModule {
                      .getContentPane()
                      .add(new RangeHistogram(new ADTBinCounts(),
                   /*Histogram.HISTOGRAM_RANGE,*/
-                  specRangeField.getText(), colLook, col));
+ /*                 specRangeField.getText(), colLook, col));
                   frame.pack();
                   frame.setVisible(true);
                } //try
@@ -542,7 +548,7 @@ public class ADTBinColumns extends HeadlessUIModule {
                   final Histogram H =
                      new IntervalHistogram(new ADTBinCounts(),
                   /*Histogram.HISTOGRAM_INTERVAL,*/
-                  intervalField.getText(), colLook, col);
+  /*                intervalField.getText(), colLook, col);
                   JD2KFrame frame = new JD2KFrame("Bin Interval");
                   frame.getContentPane().setLayout(new GridBagLayout());
                   Constrain.setConstraints(
@@ -597,7 +603,7 @@ public class ADTBinColumns extends HeadlessUIModule {
                       * put your documentation comment here
                       * @param e
                       */
-                     public void actionPerformed(ActionEvent e) {
+   /*                  public void actionPerformed(ActionEvent e) {
                         int sel = H.getSelection();
                         numericColumnLabels.clearSelection();
                         setSelectedNumericIndex(sel);
@@ -635,7 +641,7 @@ public class ADTBinColumns extends HeadlessUIModule {
                }
                });
                */
-
+/*
             }
          });
          Constrain.setConstraints(
@@ -675,7 +681,7 @@ public class ADTBinColumns extends HeadlessUIModule {
              * put your documentation comment here
              * @param e
              */
-            public void actionPerformed(ActionEvent e) {
+ /*           public void actionPerformed(ActionEvent e) {
                addFromWeight();
                weightField.setText(EMPTY);
             }
@@ -768,6 +774,9 @@ public class ADTBinColumns extends HeadlessUIModule {
             GridBagConstraints.WEST,
             1,
             1);
+
+           */
+
          // textual bins
          JPanel txtpnl = new JPanel();
          txtpnl.setLayout(new GridBagLayout());
@@ -820,7 +829,8 @@ public class ADTBinColumns extends HeadlessUIModule {
             }
          });
          JTabbedPane jtp = new JTabbedPane(JTabbedPane.TOP);
-         jtp.add(numpnl, "Scalar");
+
+  //       jtp.add(numpnl, "Scalar");
          jtp.add(txtpnl, "Nominal");
          Box bx = new Box(BoxLayout.Y_AXIS);
          bx.add(Box.createGlue());
@@ -1019,7 +1029,8 @@ public class ADTBinColumns extends HeadlessUIModule {
          // finally add everything to this
          setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
          Box bxl = new Box(BoxLayout.X_AXIS);
-         bxl.add(jtp);
+         //bxl.add(jtp); commented out by vered. no need for a tab...
+         bxl.add(txtpnl);
          bxl.add(bgpnl);
          JPanel buttonPanel = new JPanel();
          abort = new JButton("Abort");
@@ -1174,26 +1185,30 @@ public class ADTBinColumns extends HeadlessUIModule {
 
       /**
        * Get the column indices of the selected numeric columns.
-       */
+       *
       private int[] getSelectedNumericIndices() {
          Object[] setVals = numericColumnLabels.getSelectedValues();
          int[] colIdx = new int[setVals.length];
          for (int i = 0; i < colIdx.length; i++)
             colIdx[i] = ((Integer) columnLookup.get(setVals[i])).intValue();
          return colIdx;
-      }
+      }*/
 
       /**
        * put your documentation comment here
        * @param index
-       */
+       *
       private void setSelectedNumericIndex(int index) {
          numericColumnLabels.setSelectedIndex(index);
       }
+*/
+
 
       /**
        * Get the range of the first selected column.
-       */
+       *
+       * vered - removing this method, as it i snot being called upon
+       *
       private double getInterval() {
 // !:
 // int colIdx = numericColumnLabels.getSelectedIndex();
@@ -1208,10 +1223,13 @@ public class ADTBinColumns extends HeadlessUIModule {
          }
          return max - min;
       }
+      */
 
       /**
        * Add uniform range bins
-       */
+       *
+       * vered: removed this method. as it is not being called upon.
+       *
       private void addUniRange() {
          int[] colIdx = getSelectedNumericIndices();
          //vered
@@ -1277,10 +1295,13 @@ public class ADTBinColumns extends HeadlessUIModule {
             addItemToBinList(nbd);
          }
       }
+      */
 
       /**
        * Add bins from a user-specified range
-       */
+       *
+       * this method is removed, as it is not beign called.
+       *
       private void addSpecifiedRange() {
          int[] colIdx = getSelectedNumericIndices();
          //vered:
@@ -1339,10 +1360,13 @@ public class ADTBinColumns extends HeadlessUIModule {
             addItemToBinList(nbd);
          }
       }
+      */
 
       /**
        * Add bins from an interval - the width of each bin
-       */
+       *
+       * vered: this method is removed as it is not being called
+       *
       private void addFromInterval() {
          int[] colIdx = getSelectedNumericIndices();
          //vered:
@@ -1408,11 +1432,13 @@ public class ADTBinColumns extends HeadlessUIModule {
             addItemToBinList(nbd);
          }
       }
-
+*/
       /**
        * Add bins given a weight. This will attempt to make bins with an
        * equal number of tallies in each.
-       */
+       *
+       * vered: this method is removed as it is not being called.
+       *
       private void addFromWeight() {
          int[] colIdx = getSelectedNumericIndices();
 
@@ -1498,6 +1524,7 @@ public class ADTBinColumns extends HeadlessUIModule {
             addItemToBinList(nbd);
          }
       }
+      */
 
       /**
        * put your documentation comment here
@@ -1677,45 +1704,17 @@ public class ADTBinColumns extends HeadlessUIModule {
          StringBuffer sb = new StringBuffer();
          sb.append("<html><body><h2>Bin Columns</h2>");
          sb.append(
-            "This module allows a user to interactively bin data from a table. ");
-         sb.append("Numeric data can be binned in four ways:<ul>");
-         sb.append("<li><b>Uniform range</b><br>");
+            "This module allows a user to interactively bin nominal data from a table. ");
+
          sb.append(
-            "Enter a positive integer value for the number of bins. Bin Columns will ");
-         sb.append("divide the binning range evenly over these bins.");
-         sb.append("<br><li><b>Specified range</b>:<br>");
-         sb.append(
-            "Enter a comma-separated sequence of integer or floating-point values ");
-         sb.append("for the endpoints of each bin.");
-         sb.append("<br><li><b>Bin Interval</b>:<br>");
-         sb.append(
-            "Enter an integer or floating-point value for the width of each bin.");
-         sb.append("<br><li><b>Uniform Weight</b>:<br>");
-         sb.append(
-            "Enter a positive integer value for even binning with that number in each bin.");
-         sb.append("</ul>");
-         sb.append(
-            "To bin numeric data, select columns from the \"Numeric Columns\" ");
-         sb.append(
-            "selection area (top left) and select a binning method by entering a value ");
-         sb.append(
-            "in the corresponding text field and clicking \"Add\". Data can ");
-         sb.append(
-            "alternately be previewed in histogram form by clicking the corresponding ");
-         sb.append(
-            "\"Show\" button (this accepts, but does not require, a value in the text field). ");
-         sb.append(
-            "Uniform weight binning has no histogram (it would always look the same).");
-         sb.append(
-            "<br><br>To bin nominal data, click the \"Nominal\" tab (top left) to bring ");
-         sb.append(
-            "up the \"Nominal Columns\" selection area. Click on a column to show a list ");
+            "Click on a nominal column to show a list ");
          sb.append(
             "of unique nominal values in that column in the \"Unique Values\" area below. ");
          sb.append(
             "Select one or more of these values and click the right arrow button to group ");
          sb.append(
-            "these values. They can then be assigned a collective name as before.");
+            "these values. They can then be assigned a collective name, by entering a string in " +
+            "the name text field on the left.");
          sb.append(
             "<br><br>To assign a name to a particular bin, select that bin in ");
          sb.append(
