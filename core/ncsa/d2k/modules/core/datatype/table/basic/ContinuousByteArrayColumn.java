@@ -1071,7 +1071,7 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
      */
     public void sort (MutableTable t) {
         //internal = doSort(internal, 0, internal.length - 1, t);
-		doSort(0, numRows-1, t);
+		doSort(0, getNumRows()-1, t);
 		//throw new NotSupportedException();
     }
 

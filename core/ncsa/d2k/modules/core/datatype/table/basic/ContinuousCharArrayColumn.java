@@ -1059,7 +1059,7 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
      @exception NotSupportedException when sorting is not supported
      */
     public void sort (MutableTable t) {
-        doSort(/*internal,*/ 0, internal.length - 1, t);
+        doSort(/*internal,*/ 0, getNumRows()-1, t);
     }
 
 

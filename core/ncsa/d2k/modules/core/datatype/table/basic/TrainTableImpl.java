@@ -174,6 +174,10 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
         return  this.trainSet.length;
     }
 
+	public int getNumExamples() {
+		return getNumRows();
+	}
+
 	public PredictionTable toPredictionTable() {
 		return null;
 	}

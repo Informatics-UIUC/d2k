@@ -323,6 +323,10 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
         return  testSet.length;
     }
 
+	public int getNumExamples() {
+		return getNumRows();
+	}
+
 	public ExampleTable getExampleTable() {
 		return original;
 	}
