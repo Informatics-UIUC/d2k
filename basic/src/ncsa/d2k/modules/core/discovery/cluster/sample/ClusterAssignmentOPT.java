@@ -207,7 +207,7 @@ public class ClusterAssignmentOPT
     s += CLUSTER_METHOD;
     s += "</i> parameter. ";
     s += "The cluster tree is stored in a newly formed model, <i>Cluster Model</i>, along with the initial table ";
-    s += "of examples and the set of table clusters formed.";
+    s += "of examples and the set of clusters formed.";
     s += "</p>";
 
     s += "<p>Data Type Restrictions: ";
@@ -221,7 +221,7 @@ public class ClusterAssignmentOPT
     s += "</p>";
 
     s += "<p>Data Handling: ";
-    s += "The second input table, <i>Table</i>, is included in the ClusterModel.  Neither input table ";
+    s += "The second input table, <i>Table</i>, is included in the <i>Cluster Model</i>.  Neither input table ";
     s += "is modified.";
     s += "</p>";
 
