@@ -446,6 +446,9 @@ public class FilterConstruction extends UIModule {
 	  }
 
 	  public boolean transform(MutableTable table) {
+		 // if there are no filters, do nothing.
+		 if (filter == null)
+			 return true;
 
 		 if (!filterThese)
 			for (int i = 0; i < filter.length; i++)
