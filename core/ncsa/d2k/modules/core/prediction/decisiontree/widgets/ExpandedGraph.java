@@ -203,10 +203,8 @@ public final class ExpandedGraph extends JPanel {
 		double x = xdata + dataleft;
 		double y = ydata + datatop;
 
-		BarColors barcolors = scheme.getBarColors();
-
 		for (int index = 0; index < datasize; index++) {
-			Color color = barcolors.getNextColor();
+			Color color = scheme.getNextColor();
 			g2.setColor(color);
 			g2.fill(new Rectangle2D.Double(x, y, samplesize, samplesize));
 
@@ -272,14 +270,12 @@ public final class ExpandedGraph extends JPanel {
 		}
 
 		// Bars
-		BarColors barcolors = scheme.getBarColors();
-
 		x = xgraph + graphleft + percentwidth + percentspace + largetick + tickspace + barspace;
 		double yscale = gridheight/100;
 		for (int index=0; index < values.length; index++) {
 			double barheight = yscale*values[index];
 			y = ygraph + graphheight - graphbottom - barheight;
-			g2.setColor(barcolors.getNextColor());
+			g2.setColor(scheme.getNextColor());
 			g2.fill(new Rectangle2D.Double(x, y, barwidth, barheight));
 			x += barspace + barwidth;
 		}

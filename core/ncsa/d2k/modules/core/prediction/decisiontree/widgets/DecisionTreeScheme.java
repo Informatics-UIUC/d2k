@@ -10,8 +10,6 @@ import javax.swing.*;
 */
 public final class DecisionTreeScheme {
 
-	public static final JFrame frame = new JFrame();
-
 	// Background
 	public static final Color backgroundcolor = new Color(219, 217, 203);
 
@@ -59,8 +57,25 @@ public final class DecisionTreeScheme {
 	public static final Font componentbuttonfont = new Font("Sans Serif", Font.PLAIN, 10);
 	public static final Font componentlabelfont = new Font("Sans Serif", Font.PLAIN, 12);
 
+	public static BarColors barcolors = new BarColors();
+
+	public DecisionTreeScheme() {
+	}
+
+	public DecisionTreeScheme(int size) {
+		barcolors.setColors(size);
+	}
+
 	public BarColors getBarColors() {
-		return new BarColors();
+		return barcolors;
+	}
+
+	public void setColors(Color[] values) {
+		barcolors.setColors(values);
+	}
+
+	public Color getNextColor() {
+		return barcolors.getNextColor();
 	}
 }
 
@@ -77,30 +92,27 @@ class BarColors {
 	private static final Color barcolor8 = new Color(217, 183, 170);
 	private static final Color barcolor9 = new Color(140, 54, 57);
 	private static final Color barcolor10 = new Color(203, 136, 76);
+	private static final Color[] barcolors = {barcolor0, barcolor1, barcolor2, barcolor3, barcolor4, barcolor5, barcolor6, barcolor7, barcolor8, barcolor9, barcolor10};
 
 	int size;
 	int index;
 	Color[] colors;
 
-	BarColors() {
-		size = 11;
-		index = 0;
+	public void setColors(int value) {
+		size = value;
 
 		colors = new Color[size];
-		colors[0] = barcolor0;
-		colors[1] = barcolor1;
-		colors[2] = barcolor2;
-		colors[3] = barcolor3;
-		colors[4] = barcolor4;
-		colors[5] = barcolor5;
-		colors[6] = barcolor6;
-		colors[7] = barcolor7;
-		colors[8] = barcolor8;
-		colors[9] = barcolor9;
-		colors[10] = barcolor10;
+		for (index = 0; index < size; index++)
+			colors[index] = barcolors[index%barcolors.length];
+
+		index = 0;
 	}
 
-	Color getNextColor() {
+	public void setColors(Color[] values) {
+		colors = values;
+	}
+
+	public Color getNextColor() {
 		Color color = colors[index];
 		index++;
 		if (index == size)

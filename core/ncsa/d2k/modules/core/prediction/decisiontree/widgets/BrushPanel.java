@@ -67,8 +67,6 @@ public final class BrushPanel extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.setFont(scheme.textfont);
 
-		BarColors barcolors = scheme.getBarColors();
-
 		Insets insets = getInsets();
 		double x = insets.left;
 		double y = insets.top;
@@ -96,7 +94,7 @@ public final class BrushPanel extends JPanel {
 		}
 
 		for (int index = 0; index < outputs.length; index++) {
-			g2.setColor(barcolors.getNextColor());
+			g2.setColor(scheme.getNextColor());
 			g2.fill(new Rectangle2D.Double(x, y, samplesize, samplesize));
 
 			x += samplesize + samplespace;

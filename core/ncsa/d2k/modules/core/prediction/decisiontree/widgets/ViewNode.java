@@ -69,6 +69,7 @@ public final class ViewNode {
 		findValues();
 
 		scheme = new DecisionTreeScheme();
+
 		gwidth = leftinset + tickmark + (barwidth + barspace)*values.length + rightinset;
 		yincrement = gheight/(ygrid+1);
 		yscale = (gheight - 2*yincrement)/scalesize;
@@ -304,12 +305,11 @@ public final class ViewNode {
 		}
 
 		// Bars
-		BarColors barcolors = scheme.getBarColors();
 		x1 = x - gwidth/2 + leftinset + tickmark + barspace;
 		for (int index = 0; index < values.length; index++) {
 			double barheight = yscale*values[index];
 			y1 = y + 1 + gheight - yincrement - barheight;
-			g2.setColor(barcolors.getNextColor());
+			g2.setColor(scheme.getNextColor());
 			g2.fill(new Rectangle2D.Double(x1, y1, barwidth, barheight));
 			x1 += barwidth + barspace;
 		}
@@ -377,12 +377,11 @@ public final class ViewNode {
 		}
 
 		// Bars
-		BarColors barcolors = scheme.getBarColors();
 		x1 = leftinset + tickmark + barspace;
 		for (int index = 0; index < values.length; index++) {
 			double barheight = yscale*values[index];
 			y1 = 1 + gheight - yincrement - barheight;
-			g2.setColor(barcolors.getNextColor());
+			g2.setColor(scheme.getNextColor());
 			g2.fill(new Rectangle2D.Double(x1, y1, barwidth, barheight));
 			x1 += barwidth + barspace;
 		}
