@@ -30,10 +30,10 @@ public class Isvm implements  Serializable{
 
         // private members
 
-        private DoubleMatrix2D EE;
-        private DoubleMatrix1D ED;
-        private DoubleMatrix1D Weight;
-        private static Algebra Alg;
+        private  DoubleMatrix2D myEE;
+       private DoubleMatrix1D myED;
+        private  DoubleMatrix1D Weight;
+        protected static Algebra Alg;
 
         /**
          * return a deep copy og this Isvm
@@ -43,6 +43,9 @@ public class Isvm implements  Serializable{
           return new Isvm(this);
         }
 
+
+  //moved to IsvmUtils - vered
+/*
         private DoubleMatrix2D getE(DoubleMatrix2D A) {
                 DoubleMatrix2D E = new SparseDoubleMatrix2D(A.rows(), A.columns()+1);
                 int i, j;
@@ -62,12 +65,12 @@ public class Isvm implements  Serializable{
                         I.set(i, i, 1);
                 return I;
         }
-
+*/
         // constructor
 
         public Isvm(int num_attr) {
-                EE = new SparseDoubleMatrix2D(num_attr+1, num_attr+1);
-                ED = new SparseDoubleMatrix1D(num_attr+1);
+                myEE = new SparseDoubleMatrix2D(num_attr+1, num_attr+1);
+                myED = new SparseDoubleMatrix1D(num_attr+1);
                 Weight = new SparseDoubleMatrix1D(num_attr+1);
                 Alg = new Algebra();
         }
@@ -78,8 +81,8 @@ public class Isvm implements  Serializable{
          * @param src
          */
         public Isvm(Isvm src) {
-               EE = src.EE.copy();
-               ED = src.ED.copy();
+               myEE = src.myEE.copy();
+               myED = src.myED.copy();
                Weight = src.Weight.copy();
                Alg = new Algebra();
        }
@@ -88,20 +91,20 @@ public class Isvm implements  Serializable{
         // public members
 
         public void init() {
-                EE.assign(0.0);
-                ED.assign(0.0);
+                myEE.assign(0.0);
+                myED.assign(0.0);
         }
 
         public DoubleMatrix1D train(DoubleMatrix2D A, DoubleMatrix1D D, double nu) {
-                DoubleMatrix2D E = getE(A);
-                DoubleMatrix2D I = getI(E.columns());
+                DoubleMatrix2D E = SVMUtils.getE(A);
+                DoubleMatrix2D I = SVMUtils.getI(E.columns());
 
                 // Part1 = E'E + I/nu
 
                 DoubleMatrix2D Part1 = new SparseDoubleMatrix2D(E.columns(), E.columns());
                 Part1 = Alg.mult(Alg.transpose(E), E);
-                Part1.assign(this.EE, Functions.plus);
-                this.EE.assign(Part1);
+                Part1.assign(this.myEE, Functions.plus);
+                this.myEE.assign(Part1);
 
                 I = I.assign(Functions.mult(1.0/nu));
                 Part1.assign(I, Functions.plus);
@@ -110,8 +113,8 @@ public class Isvm implements  Serializable{
 
                 DoubleMatrix1D Part2 = new SparseDoubleMatrix1D(E.columns());
                 Part2 = Alg.mult(Alg.transpose(E), D);
-                Part2.assign(this.ED, Functions.plus);
-                this.ED.assign(Part2);
+                Part2.assign(this.myED, Functions.plus);
+                this.myED.assign(Part2);
 
                 // Weight = Part1 \ Part2
 
@@ -126,7 +129,7 @@ public class Isvm implements  Serializable{
 
         // static functions
 
-        public static void printMatrix(Object A) {
+     /*   public static void printMatrix(Object A) {
                 int i, j;
 
                 if (A.getClass().getName().endsWith("1D")) {
@@ -146,6 +149,10 @@ public class Isvm implements  Serializable{
                         System.out.println();
                 }
         }
+*/
+
+
+
 
         // main function
 
@@ -178,7 +185,7 @@ public class Isvm implements  Serializable{
                 D.set(4, 1);
                 D.set(5, -1);
                 weight = isvm.train(A, D, 0.1);
-                printMatrix(weight);
+                SVMUtils.printMatrix(weight);
 
                 // train the first four data points
 
@@ -199,7 +206,7 @@ public class Isvm implements  Serializable{
                 D1.set(2, -1);
                 D1.set(3, -1);
                 weight = isvm.train(A1, D1, 0.1);
-                printMatrix(weight);
+                SVMUtils.printMatrix(weight);
 
                 // train the last two data points on top of the previous data
 
@@ -214,7 +221,7 @@ public class Isvm implements  Serializable{
                 D2.set(1, -1);
 
                 weight = isvm.train(A2, D2, 0.1);
-                printMatrix(weight);
+                SVMUtils.printMatrix(weight);
 
                 // test
 
@@ -230,11 +237,11 @@ public class Isvm implements  Serializable{
 //for debugging...
         public void printModel(){
           System.out.println("Printing ED matrix");
-          printMatrix(ED);
+          SVMUtils.printMatrix(myED);
           System.out.println("Printing EE matrix");
-          printMatrix(EE);
+          SVMUtils.printMatrix(myEE);
           System.out.println("Printing Weight matrix");
-          printMatrix(Weight);
+          SVMUtils.printMatrix(Weight);
         }
 
 

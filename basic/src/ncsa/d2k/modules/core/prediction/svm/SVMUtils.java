@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.prediction.svm;
 import ncsa.d2k.modules.core.datatype.table.*;
 import cern.colt.matrix.impl.*;
 import cern.colt.matrix.*;
+import cern.colt.matrix.linalg.Algebra;
 //import cern.colt.matrix.linalg.*;
 
 
@@ -91,6 +92,70 @@ public class SVMUtils {
     return mtrx;
 
  }
+
+ /**
+     * returns a 2D double matrix with the data of A and an additional column
+     * all with -1.
+     * @param A - data set
+     * @return - the dataset labeled -1 in an additional column
+     */
+
+  public static DoubleMatrix2D getE(DoubleMatrix2D A) {
+    DoubleMatrix2D E = new SparseDoubleMatrix2D(A.rows(), A.columns() + 1);
+    int i, j;
+
+    for (i = 0; i < A.rows(); i++) {
+      for (j = 0; j < A.columns(); j++) {
+        E.set(i, j, A.get(i, j));
+      }
+      E.set(i, j, -1.0);
+    }
+    return E;
+  }
+
+  /**
+     * creates the an Identity matrix with <codE>col</code> by <codE>col</code>
+     * dimenssions.
+     * @param col - number of columns and rows in the returned matrix
+     * @return - an Identity matrix.
+     */
+
+  public static DoubleMatrix2D getI(int col) {
+    DoubleMatrix2D I = new SparseDoubleMatrix2D(col, col);
+    for (int i = 0; i < col; i++)
+      I.set(i, i, 1);
+    return I;
+  }
+
+  public static Algebra Alg;
+
+
+  /**
+   * Prints a cern.colt matrix.
+   * @param A - supposed to be either DoubleMatrix1D or DoubleMatrix2D
+   */
+  public static void printMatrix(Object A) {
+    int i, j;
+
+    if (A.getClass().getName().endsWith("1D")) {
+      for (i = 0; i < ( (DoubleMatrix1D) A).size(); i++) {
+        System.out.print( ( (DoubleMatrix1D) A).get(i) + " ");
+      }
+      System.out.println();
+      System.out.println();
+    }
+    else if (A.getClass().getName().endsWith("2D")) {
+      for (i = 0; i < ( (DoubleMatrix2D) A).rows(); i++) {
+        for (j = 0; j < ( (DoubleMatrix2D) A).columns(); j++) {
+          System.out.print( ( (DoubleMatrix2D) A).get(i, j) + " ");
+        }
+        System.out.println();
+      }
+      System.out.println();
+    }
+  }
+
+
 
 
 
