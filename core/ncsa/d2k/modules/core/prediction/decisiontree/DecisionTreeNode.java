@@ -105,14 +105,18 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 		return retVal;
 	}
 
-	/**
+	public String[] getOutputValues() {
+          return outputValues;
+        }
+
+        /**
 		Get the count of the number of records with the given
 		output value that passed through this node.
 		@param outputVal the unique output value to get the tally of
 		@return the count of the number of records with the
 			given output value that passed through this node
 	*/
-	public int getOutputTally(String outputVal) throws Exception{
+	public int getOutputTally(String outputVal) throws Exception {
 		/*Integer i = (Integer)outputValueTallies.get(outputVal);
 		if(i == null)
 			return 0;

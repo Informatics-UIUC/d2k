@@ -88,7 +88,7 @@ public final class NumericDecisionTreeNode extends DecisionTreeNode
 	public final Object evaluate(Table vt, int row) {
 		if(isLeaf()) {
 			if(training) {
-				String actualVal = vt.getString(((ExampleTable)vt).getOutputFeatures()[0], row);
+				String actualVal = vt.getString(row, ((ExampleTable)vt).getOutputFeatures()[0]);
 				if(actualVal.equals(label))
 					incrementOutputTally(label, true);
 				else

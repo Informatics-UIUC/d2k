@@ -40,6 +40,8 @@ public class DTPMML extends DataPrepModule {
     return "";
   }
 
+  String[] outValues;
+
   public void doit() {
     DecisionTreeModel dtm = (DecisionTreeModel) pullInput(0);
 
@@ -51,12 +53,13 @@ public class DTPMML extends DataPrepModule {
 
     Element header = root.addElement("Header");
     header.addAttribute("copyright", "NCSA ALG");
-    header.addAttribute("description", "a tree model");
+    header.addAttribute("description", "Tree model");
 
     String[] inputNames = dtm.getInputColumnLabels();
-    int[] inputTypes = dtm.getInputFeatureTypes();
+    //int[] inputTypes = dtm.getInputFeatureTypes();
     String[] outNames = dtm.getOutputColumnLabels();
-    int[] outTypes = dtm.getOutputFeatureTypes();
+    //int[] outTypes = dtm.getOutputFeatureTypes();
+    outValues = dtm.getUniqueOutputValues();
     Element dictionary = root.addElement("DataDictionary");
     dictionary.addAttribute("numberOfFields", Integer.toString(inputNames.length+outNames.length));
 
@@ -66,7 +69,7 @@ public class DTPMML extends DataPrepModule {
       field.addAttribute("name", inputNames[i]);
 
       // if it is Scalar, mark the input as continuous
-      if(dtm.scalarInput(inputTypes[i]))
+      if(dtm.scalarInput(i))
         field.addAttribute("optype", "continuous");
 
       // otherwise it is categorical.  mark it as such and list
@@ -88,7 +91,7 @@ public class DTPMML extends DataPrepModule {
       field.addAttribute("name", outNames[i]);
 
       // if it is scalar, mark the output as continous
-      if(dtm.scalarOutput(outTypes[i]))
+      if(dtm.scalarOutput(i))
         field.addAttribute("optype", "continuous");
 
       // otherwise it is categorical.  mark it as such and list
@@ -123,7 +126,19 @@ public class DTPMML extends DataPrepModule {
     DecisionTreeNode treeRoot = dtm.getRoot();
     Element treeRootElement = treeModel.addElement("Node");
     treeRootElement.addAttribute("score", "xxx");
+    treeRootElement.addAttribute("recordCount", Integer.toString(treeRoot.getTotal()));
     treeRootElement.addElement("True");
+    try {
+      for (int value=0; value < outValues.length; value++) {
+        String outputvalue = outValues[value];
+        int tally = treeRoot.getOutputTally(outputvalue);
+        Element distribution = treeRootElement.addElement("ScoreDistribution");
+        distribution.addAttribute("value", outputvalue);
+        distribution.addAttribute("recordCount", Integer.toString(tally));
+        }
+    } catch (Exception exception) {
+        System.out.println(exception);
+    }
     writeNode(treeRoot, treeRootElement);
 
     try {
@@ -159,6 +174,7 @@ public class DTPMML extends DataPrepModule {
 
       DecisionTreeNode childNde = nde.getChild(i);
       Element newNode = rtElement.addElement("Node");
+      newNode.addAttribute("recordCount", Integer.toString(childNde.getTotal()));
 
       //newNode.addAttribute("score", "xxx");
       String label = nde.getBranchLabel(i);
@@ -189,10 +205,9 @@ public class DTPMML extends DataPrepModule {
       }*/
 
       try {
-        String[] outputvalues = nde.getOutputValues();
-        for (int value=0; value < outputvalues.length; value++) {
-          String outputvalue = outputvalues[value];
-          int tally = nde.getOutputTally(outputvalue);
+        for (int value=0; value < outValues.length; value++) {
+          String outputvalue = outValues[value];
+          int tally = childNde.getOutputTally(outputvalue);
           Element distribution = newNode.addElement("ScoreDistribution");
           distribution.addAttribute("value", outputvalue);
           distribution.addAttribute("recordCount", Integer.toString(tally));
