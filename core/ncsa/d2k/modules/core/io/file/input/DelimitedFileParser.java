@@ -15,6 +15,7 @@ public class DelimitedFileParser implements FlatFileParser {
     private static final char TAB = '\t';
     private static final char SPACE = ' ';
     protected static final char COMMA = ',';
+    private static final char PIPE = '|';
     private static final char EQUALS = '=';
 
     /** the file to read from */
@@ -301,12 +302,12 @@ public class DelimitedFileParser implements FlatFileParser {
      * This method also counts the number of rows and columns in the file.
      */
     private void scanFile() throws Exception {
-        int counters [] = new int [3];
-        final int tabIndex = 0, spaceIndex = 1, commaIndex = 2;
+        int counters [] = new int [4];
+        final int tabIndex = 0, spaceIndex = 1, commaIndex = 2, pipeIndex = 3;
 
         // Now just count them.
-        int commaCount = -1, spaceCount = -1, tabCount = -1;
-        boolean isComma = true, isSpace = true, isTab = true;
+        int commaCount = -1, spaceCount = -1, tabCount = -1, pipeCount = -1;
+        boolean isComma = true, isSpace = true, isTab = true, isPipe = true;
 
         String line;
         final int NUM_ROWS_TO_COUNT = 10;
@@ -332,6 +333,9 @@ public class DelimitedFileParser implements FlatFileParser {
                 case COMMA:
                     counters [commaIndex] ++;
                     break;
+                case PIPE:
+                    counters[pipeIndex]++;
+                    break;
                 }
             }
 
@@ -340,6 +344,7 @@ public class DelimitedFileParser implements FlatFileParser {
                 commaCount = counters [commaIndex] == 0 ? -1 : counters[commaIndex];
                 spaceCount = counters [spaceIndex] == 0 ? -1 : counters[spaceIndex];
                 tabCount = counters [tabIndex] == 0 ? -1 : counters[tabIndex];
+                pipeCount = counters [pipeIndex] == 0 ? -1 : counters[pipeIndex];
             } else {
                 // Check that the counts remain the same.
                 if (counters [commaIndex] != commaCount)
@@ -348,32 +353,40 @@ public class DelimitedFileParser implements FlatFileParser {
                     isSpace = false;
                 if (counters [tabIndex] != tabCount)
                     isTab = false;
+                if (counters [pipeIndex] != pipeCount)
+                    isPipe = false;
             }
-            counters [tabIndex] = counters [spaceIndex] = counters [commaIndex] = 0;
+            counters [tabIndex] = counters [spaceIndex] = counters [commaIndex] = counters[pipeIndex] = 0;
             currentRow++;
         }
 
         char delim = '0';
         boolean delimiterFound = false;
 
-        if( (commaCount <= 0) && (spaceCount <= 0) && (tabCount >= 0) )
+        if( (commaCount <= 0) && (spaceCount <= 0) && (tabCount >= 0) && (pipeCount <= 0) )
             isTab = true;
-        else if( (commaCount <= 0) && (spaceCount >= 0) && (tabCount <= 0) )
+        else if( (commaCount <= 0) && (spaceCount >= 0) && (tabCount <= 0) && (pipeCount <= 0) )
             isSpace = true;
-        else if( (commaCount >= 0) && (spaceCount <= 0) && (tabCount <= 0) )
+        else if( (commaCount >= 0) && (spaceCount <= 0) && (tabCount <= 0) && (pipeCount <= 0) )
             isComma = true;
+        else if( (commaCount <= 0) && (spaceCount <= 0) && (tabCount <= 0) && (pipeCount >= 0) )
+            isPipe = true;
 
         // Did one of the possible delimiters come up a winner?
-        if (isComma && !isSpace && !isTab) {
+        if (isComma && !isSpace && !isTab && !isPipe) {
             delimiter = COMMA;
             delimiterFound = true;
         }
-        else if (!isComma && isSpace && !isTab) {
+        else if (!isComma && isSpace && !isTab && !isPipe) {
             delimiter = SPACE;
             delimiterFound = true;
         }
-        else if (!isComma && !isSpace && isTab) {
+        else if (!isComma && !isSpace && isTab && !isPipe) {
             delimiter = TAB;
+            delimiterFound = true;
+        }
+        else if(!isComma && !isSpace && !isTab && isPipe) {
+            delimiter = PIPE;
             delimiterFound = true;
         }
 
@@ -383,6 +396,7 @@ public class DelimitedFileParser implements FlatFileParser {
             isComma = true;
             isSpace = true;
             isTab = true;
+            isPipe = false;
 
             for (currentRow = 0; currentRow < lines.size(); currentRow++) {
                 String tmp = ((String)lines.get(currentRow)).trim();
@@ -400,6 +414,9 @@ public class DelimitedFileParser implements FlatFileParser {
                     case COMMA:
                         counters [commaIndex] ++;
                         break;
+                    case PIPE:
+                        counters [pipeIndex] ++;
+                        break;
                 }
                 }
 
@@ -408,6 +425,7 @@ public class DelimitedFileParser implements FlatFileParser {
                     commaCount = counters [commaIndex] == 0 ? -1 : counters[commaIndex];
                     spaceCount = counters [spaceIndex] == 0 ? -1 : counters[spaceIndex];
                     tabCount = counters [tabIndex] == 0 ? -1 : counters[tabIndex];
+                    pipeCount = counters [pipeIndex] == 0 ? -1 : counters[pipeIndex];
                 } else {
 
                     // Check that the counts remain the same.
@@ -417,27 +435,35 @@ public class DelimitedFileParser implements FlatFileParser {
                         isSpace = false;
                     if (counters [tabIndex] != tabCount)
                         isTab = false;
+                    if (counters [pipeIndex] != pipeCount)
+                        isPipe = false;
                 }
             }
 
-            if( (commaCount <= 0) && (spaceCount <= 0) && (tabCount > 0) )
+            if( (commaCount <= 0) && (spaceCount <= 0) && (tabCount > 0) && (pipeCount <= 0))
                 isTab = true;
-            else if( (commaCount <= 0) && (spaceCount >= 0) && (tabCount <= 0) )
+            else if( (commaCount <= 0) && (spaceCount >= 0) && (tabCount <= 0) && (pipeCount <= 0))
                 isSpace = true;
-            else if( (commaCount >= 0) && (spaceCount <= 0) && (tabCount <= 0) )
+            else if( (commaCount >= 0) && (spaceCount <= 0) && (tabCount <= 0) && (pipeCount <= 0))
                 isComma = true;
+            else if( (commaCount <= 0) && (spaceCount <= 0) && (tabCount <= 0) && (pipeCount >= 0))
+                isPipe = true;
 
             // Did one of the possible delimiters come up a winner?
-            if (isComma && !isSpace && !isTab) {
+            if (isComma && !isSpace && !isTab && !isPipe) {
                 delimiter = COMMA;
                 delimiterFound = true;
             }
-            else if (!isComma && isSpace && !isTab) {
+            else if (!isComma && isSpace && !isTab && !isPipe) {
                 delimiter = SPACE;
                 delimiterFound = true;
             }
-            else if (!isComma && !isSpace && isTab) {
+            else if (!isComma && !isSpace && isTab && !isPipe) {
                 delimiter = TAB;
+                delimiterFound = true;
+            }
+            else if (!isComma && !isSpace && !isTab && isPipe) {
+                delimiter = PIPE;
                 delimiterFound = true;
             }
 
