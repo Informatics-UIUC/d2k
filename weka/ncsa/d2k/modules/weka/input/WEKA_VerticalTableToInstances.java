@@ -44,7 +44,7 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
        @return An array containing the datatypes of the inputs.
     */
     public String[] getInputTypes() {
-	String []in = {"ncsa.d2k.modules.core.datatype.Table"};
+	String []in = {"ncsa.d2k.modules.core.datatype.table.Table"};
 	return in;
     }
 
@@ -163,7 +163,7 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
             }
             instances.add(inst);
           }
-          if (vt instanceof ncsa.d2k.util.datatype.ExampleTable) {
+          if (vt instanceof ncsa.d2k.modules.core.datatype.table.ExampleTable) {
             ExampleTable et = (ExampleTable)vt;
             int numout = et.getNumOutputFeatures();
             if (numout > 1) {
