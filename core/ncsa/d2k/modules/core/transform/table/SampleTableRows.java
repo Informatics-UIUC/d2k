@@ -35,7 +35,7 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The name of this module.
     */
     public String getModuleName() {
-		return "SampleVTRows";
+		return "SampleTableRows";
     }
 
     /**

@@ -2,7 +2,6 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 /*
 	NFoldTTables
 
@@ -66,12 +65,12 @@ public class NFoldTTables extends NFoldExTable{
 		makeSets(testing, training);
 
 		// now create a new vertical table.
-		ExampleTableImpl examples = (ExampleTableImpl)DefaultTableFactory.getInstance().createExampleTable (table);
+		ExampleTable examples = table.toExampleTable();
 		examples.setTrainingSet (training);
 		examples.setTestingSet (testing);
 
-		TestTableImpl testT=(TestTableImpl)examples.getTestTable();
-		TrainTableImpl trainT=(TrainTableImpl)examples.getTrainTable();
+		TestTable testT= examples.getTestTable();
+		TrainTable trainT= examples.getTrainTable();
 
 		this.pushOutput (testT, 0);
 		this.pushOutput (trainT, 1);
