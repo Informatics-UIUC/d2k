@@ -396,8 +396,32 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 				ifstmt[j] = rule[j];
 			thenstmt[0] = rule[rule.length-3];
 
-			TIntArrayList ifitem = new TIntArrayList(ifstmt);
-			TIntArrayList thenitem = new TIntArrayList(thenstmt);
+			TIntArrayList ifitem = new TIntArrayList(ifstmt) {
+                          public int hashCode() {
+                            StringBuffer sb = new StringBuffer();
+                            int[] ar = toNativeArray();
+                            Arrays.sort(ar);
+                            for(int i = 0; i < ar.length; i++) {
+                                sb.append(Integer.toString(ar[i]));
+                                if(i != ar.length-1)
+                                    sb.append(",");
+                            }
+                            return sb.toString().hashCode();
+                          }
+                        };
+			TIntArrayList thenitem = new TIntArrayList(thenstmt) {
+                          public int hashCode() {
+                            StringBuffer sb = new StringBuffer();
+                            int[] ar = toNativeArray();
+                            Arrays.sort(ar);
+                            for(int i = 0; i < ar.length; i++) {
+                              sb.append(Integer.toString(ar[i]));
+                              if(i != ar.length-1)
+                                  sb.append(",");
+                            }
+                            return sb.toString().hashCode();
+                          }
+                        };
 
 			int ifidx;
 			int thenidx;
