@@ -16,7 +16,7 @@ import javax.swing.event.*;
 import java.sql.*;
 import java.beans.PropertyVetoException;
 import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.gui.*;
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.gui.*;

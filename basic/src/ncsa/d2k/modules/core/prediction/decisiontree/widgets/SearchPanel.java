@@ -1,9 +1,9 @@
 package ncsa.d2k.modules.core.prediction.decisiontree.widgets;
 
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.core.modules.*;
 //import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.gui.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 

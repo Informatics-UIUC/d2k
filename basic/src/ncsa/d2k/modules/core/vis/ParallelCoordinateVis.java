@@ -1,23 +1,10 @@
 package ncsa.d2k.modules.core.vis;
 
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.awt.image.*;
-import java.awt.print.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.table.*;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.gui.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.gui.*;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.core.modules.VisModule;
+import ncsa.d2k.modules.core.vis.widgets.PCView;
 
 /**
  * Plots the data in a Table on parallel axes.

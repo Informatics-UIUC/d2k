@@ -1,17 +1,21 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.event.*;
-import java.text.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.text.NumberFormat;
 
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.datatype.table.util.*;
-import ncsa.d2k.gui.*;
-import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.datatype.table.basic.Column;
 
 public class BarChart extends Chart
     implements MouseListener, MouseMotionListener {

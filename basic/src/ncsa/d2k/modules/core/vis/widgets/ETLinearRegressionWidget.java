@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import javax.swing.*;
-import ncsa.d2k.gui.*;
+
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 public class ETLinearRegressionWidget extends ETScatterPlotWidget {

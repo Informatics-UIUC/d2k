@@ -8,8 +8,8 @@ import java.util.*;
 
 import javax.swing.*;
 
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.gui.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.widgets.*;
 import ncsa.gui.*;
 
@@ -536,7 +536,7 @@ public final class DecisionTreeVis extends VisModule {
             //                                newFile.getAbsolutePath());
           }
           catch (Exception e) {
-            ncsa.gui.ErrorDialog.showDialog(e, "Error Writing PMML");
+            ncsa.d2k.core.gui.ErrorDialog.showDialog(e, "Error Writing PMML");
           }
         }
       }

@@ -16,8 +16,8 @@ import org.jdom.*;
 import org.jdom.input.*;
 //DSTP Client
 import backend.*;
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.gui.*;
 import ncsa.d2k.modules.core.datatype.table.db.*;
 import ncsa.d2k.modules.core.datatype.table.db.dstp.*;
 import ncsa.d2k.userviews.swing.*;

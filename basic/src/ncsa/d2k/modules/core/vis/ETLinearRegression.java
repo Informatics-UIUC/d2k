@@ -1,12 +1,8 @@
 package ncsa.d2k.modules.core.vis;
 
 
-import javax.swing.*;
-import ncsa.d2k.gui.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.vis.widgets.*;
-
-import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.modules.core.vis.widgets.ETLinearRegressionWidget;
 
 /**
    Given an ExampleTable, plot each numeric input variable against each

@@ -6,8 +6,10 @@ import  java.text.*;
 import  java.util.*;
 import  javax.swing.*;
 import  javax.swing.event.*;
+
+import ncsa.d2k.core.gui.ErrorDialog;
+import ncsa.d2k.core.gui.JD2KFrame;
 import  ncsa.d2k.core.modules.*;
-import  ncsa.d2k.gui.*;
 import  ncsa.d2k.modules.core.vis.widgets.*;
 import  ncsa.d2k.modules.core.io.sql.*;
 import  ncsa.d2k.userviews.swing.*;

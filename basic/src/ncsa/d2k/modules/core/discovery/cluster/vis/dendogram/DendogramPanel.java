@@ -4,28 +4,29 @@ package ncsa.d2k.modules.core.discovery.cluster.vis.dendogram;
 // Java Imports
 //==============
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.awt.event.*;
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.table.*;
-import javax.swing.border.*;
-import java.util.TreeSet;
-import java.util.Iterator;
 import java.util.Hashtable;
-import java.awt.image.*;
+import java.util.Iterator;
+import java.util.TreeSet;
 
-//===============
-// Other Imports
-//===============
+import javax.swing.*;
 
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.gui.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.gui.*;
-
-import ncsa.d2k.modules.core.discovery.cluster.*;
-import ncsa.d2k.modules.core.discovery.cluster.util.*;
+import ncsa.d2k.core.gui.JD2KFrame;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.modules.core.discovery.cluster.ClusterModel;
+import ncsa.d2k.modules.core.discovery.cluster.util.TableCluster;
+import ncsa.d2k.userviews.swing.JUserPane;
 
 /**
  *

@@ -11,8 +11,8 @@ import java.awt.print.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.gui.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
@@ -881,7 +881,7 @@ public final class NaiveBayesVis
             //WriteNaiveBayesPMML.writePMML(model, newFile.getAbsolutePath());
           }
           catch(Exception ex) {
-              ncsa.gui.ErrorDialog.showDialog(ex, "Error Writing PMML");
+              ncsa.d2k.core.gui.ErrorDialog.showDialog(ex, "Error Writing PMML");
           }
         }
       }

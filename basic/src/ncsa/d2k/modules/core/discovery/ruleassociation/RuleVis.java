@@ -6,15 +6,15 @@ import java.awt.print.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
+
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.core.modules.*;
 import java.util.*;
 import ncsa.gui.*;
 import java.io.*;
-import ncsa.d2k.gui.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 
 
 /**

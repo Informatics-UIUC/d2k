@@ -10,7 +10,7 @@ import java.util.*;
 import javax.swing.*;
 
 import ncsa.util.*;
-import ncsa.d2k.gui.*;
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.preferences.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.widgets.*;

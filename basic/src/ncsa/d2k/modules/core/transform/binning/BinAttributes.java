@@ -32,11 +32,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import ncsa.d2k.core.gui.ErrorDialog;
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.core.modules.HeadlessUIModule;
 import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.core.modules.ViewModule;
-import ncsa.d2k.gui.JD2KFrame;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.Table;
@@ -49,7 +50,6 @@ import ncsa.d2k.modules.core.vis.widgets.UniformHistogram;
 import ncsa.d2k.userviews.swing.JUserPane;
 import ncsa.gui.Constrain;
 import ncsa.gui.DisposeOnCloseListener;
-import ncsa.gui.ErrorDialog;
 import ncsa.gui.JOutlinePanel;
 import ncsa.d2k.modules.core.datatype.table.util.*;
 

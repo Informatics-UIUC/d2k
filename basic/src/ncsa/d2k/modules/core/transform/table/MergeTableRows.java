@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.transform.table;
 
+import ncsa.d2k.core.gui.ErrorDialog;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import javax.swing.*;

@@ -3,11 +3,12 @@ package ncsa.d2k.modules.core.vis;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import ncsa.d2k.core.gui.ErrorDialog;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.userviews.swing.*;
-import ncsa.gui.ErrorDialog;
 
 /**
  * This module creates a box-and-whisker plot of scalar <code>Table</code> data.

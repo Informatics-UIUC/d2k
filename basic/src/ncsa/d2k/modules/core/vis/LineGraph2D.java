@@ -1,16 +1,24 @@
 package ncsa.d2k.modules.core.vis;
 
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import javax.swing.*;
-import ncsa.d2k.gui.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.gui.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JEditorPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
+
+import ncsa.d2k.core.gui.JD2KFrame;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.vis.widgets.GraphEditor;
+import ncsa.gui.Constrain;
 
 /**
    LineGraph2D.java

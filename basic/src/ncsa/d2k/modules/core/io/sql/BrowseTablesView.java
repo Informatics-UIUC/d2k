@@ -10,13 +10,13 @@ package ncsa.d2k.modules.core.io.sql;
  * @author Dora Cai
  * @version 1.0
  */
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.UserView;
 
 import ncsa.d2k.userviews.swing.*;
 
 import ncsa.gui.Constrain;
-import ncsa.d2k.gui.*;
 
 import java.sql.*;
 import java.util.*;

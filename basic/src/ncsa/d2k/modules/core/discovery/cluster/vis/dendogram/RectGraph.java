@@ -7,9 +7,7 @@ package ncsa.d2k.modules.core.discovery.cluster.vis.dendogram;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.*;
 import java.util.ArrayList;
-import java.util.Date;
 import javax.swing.event.*;
 
 //===============
@@ -22,9 +20,7 @@ import ncsa.d2k.modules.core.datatype.table.sparse.*;
 
 import ncsa.d2k.modules.core.discovery.cluster.util.*;
 
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.gui.*;
-import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.gui.*;
 

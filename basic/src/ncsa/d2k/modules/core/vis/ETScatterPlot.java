@@ -1,19 +1,10 @@
 package ncsa.d2k.modules.core.vis;
 
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.table.*;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.gui.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.core.modules.VisModule;
+import ncsa.d2k.modules.core.vis.widgets.ETScatterPlotWidget;
 
 /**
    Given an ExampleTable, plot each numeric input variable against each

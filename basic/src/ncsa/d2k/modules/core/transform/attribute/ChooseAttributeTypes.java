@@ -1,11 +1,11 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
+import ncsa.d2k.core.gui.ErrorDialog;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.gui.*;
-import ncsa.gui.ErrorDialog;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;

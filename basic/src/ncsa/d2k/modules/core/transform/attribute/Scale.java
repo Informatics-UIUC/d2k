@@ -6,11 +6,12 @@ import java.awt.event.*;
 import java.lang.reflect.Array;
 import java.util.*;
 import javax.swing.*;
+
+import ncsa.d2k.core.gui.ErrorDialog;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.userviews.swing.*;
-import ncsa.gui.ErrorDialog;
 
 /**
  * This module presents a user interface for the interactive scaling of

@@ -14,8 +14,8 @@ import java.io.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.gui.*;
 import ncsa.gui.*;
 
 /**
