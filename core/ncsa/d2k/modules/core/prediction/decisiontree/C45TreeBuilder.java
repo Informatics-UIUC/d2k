@@ -15,23 +15,23 @@ import java.text.NumberFormat;
 	gain ratio is used, whereby the information gain is divided by the
 	information given by the size of the subsets that each branch creates.
 	This prevents highly branching attributes from always becoming the root.
-	A threshold can be used to prevent the tree from perfect fitting the
-	training data.  If the information gain ratio is not above the threshold,
-	a leaf will be created instead of a node.  This will may cause some
-	incorrect classifications, but will keep the tree from overfitting
-	the data.  The threshold should be set low.  The default value should
-	suffice for most trees.
+
+	The minimum number of records per leaf can be specified.  If a leaf is
+	created that has less than the minimum number of records per leaf, the
+	parent will be turned into a leaf itself.
 
 	@author David Clutter
 */
-public class C45TreeBuilder extends ComputeModule {
+public class C45TreeBuilder extends ReentrantComputeModule {
 
 	public static void main(String[] args) {
-		double d1 = (double)9/(double)14;
-		double d2 = (double)5/(double)14;
-		double dd[] = {d1, d2};
-		System.out.println(lg(2));
-		System.out.println(entropy(dd));
+		//double d1 = (double)9/(double)14;
+		//double d2 = (double)5/(double)14;
+		//double dd[] = {d1, d2};
+		//System.out.println(lg(2));
+		//System.out.println(entropy(dd));
+		int[] tals = {9,5};
+		System.out.println(info(tals));
 	}
 
 	/**
@@ -42,14 +42,14 @@ public class C45TreeBuilder extends ComputeModule {
 
 		@param data the probabilities
 		@return the information conveyed by the probabilities
-	*/
+	/
 	private static final double entropy(double[] data) {
 		double retVal = 0;
 		for(int i = 0; i < data.length; i++) {
 			retVal += -1*data[i]*lg(data[i]);
 		}
 		return retVal;
-	}
+	}*/
 
 	/**
 		Return the binary log of a number.  This is defined as
@@ -61,9 +61,35 @@ public class C45TreeBuilder extends ComputeModule {
 		return Math.log(d)/Math.log(2.0);
 	}
 
+	private static final double info(int[] tallies) {
+		int total = 0;
+		for(int i = 0; i < tallies.length; i++)
+			total += tallies[i];
+
+		double dtot = (double)total;
+
+		double retVal = 0;
+		for(int i = 0; i < tallies.length; i++)
+			retVal -= ((tallies[i]/dtot)*lg(tallies[i]/dtot));
+
+		return retVal;
+	}
+
+	/**
+	 * Exapand the size of an array by one.  Creates a new array and copies
+	 * all the old entries.
+	 * @param orig
+	 * @return an array of size orig.length+1 with all the entries from orig copied over
+	 */
+	private static int[] expandArray(int[] orig) {
+		int [] newarray = new int[orig.length+1];
+		System.arraycopy(orig, 0, newarray, 0, orig.length);
+		return newarray;
+	}
+
 	/**
 		The threshold for information gain
-	*/
+	/
 	private double infoGainThreshold = 0.005;
 
 	public void setInfoGainThreshold(double d) {
@@ -72,7 +98,7 @@ public class C45TreeBuilder extends ComputeModule {
 
 	public double getInfoGainThreshold() {
 		return infoGainThreshold;
-	}
+	}*/
 
 	/**
 	 * Turns debugging statements on or off.
@@ -87,7 +113,7 @@ public class C45TreeBuilder extends ComputeModule {
 		return debug;
 	}
 
-	private boolean useGainRatio = true;
+	/*private boolean useGainRatio = true;
 
 	public void setUseGainRatio(boolean b) {
 		useGainRatio = b;
@@ -95,16 +121,27 @@ public class C45TreeBuilder extends ComputeModule {
 
 	public boolean getUseGainRatio() {
 		return useGainRatio;
+	}*/
+
+	private int minimumRecordsPerLeaf = 2;
+
+	public void setMinimumRecordsPerLeaf(int num) {
+		minimumRecordsPerLeaf = num;
 	}
 
-	private NumberFormat nf;
+	public int getMinimumRecordsPerLeaf() {
+		return minimumRecordsPerLeaf;
+	}
+
+	private static NumberFormat nf;
 	private static final String LESS_THAN = " < ";
 	private static final String GREATER_THAN_EQUAL_TO = " >= ";
 	private static final int NUMERIC_VAL_COLUMN = 0;
 	private static final int NUMERIC_OUT_COLUMN = 1;
 
 	/**
-		Calculate the entropy of a numeric attribute.  This is the sum of
+		Calculate the average amount of information needed to identify a class
+		of the output column for a numeric attribute.  This is the sum of
 		the information given by the examples less than the split value and the
 		information given by the examples greater than or equal to the split
 		value.
@@ -118,7 +155,7 @@ public class C45TreeBuilder extends ComputeModule {
 		@return the information given by a numeric attribute with the given
 			split value
 	*/
-	private double numericAttributeEntropy(Table vt, double splitVal,
+	private double numericAttributeInfo(Table t, double splitVal,
 		int[] examples, int attCol, int outCol) {
 
 		int lessThanTot = 0;
@@ -128,19 +165,15 @@ public class C45TreeBuilder extends ComputeModule {
 		int [] greaterThanTally = new int[0];
 		HashMap lessThanIndexMap = new HashMap();
 		HashMap greaterThanIndexMap = new HashMap();
+
+		// for each example, check if it is less than or greater than/equal to
+		// the split point.
+		// increment the proper tally
 		for(int i = 0; i < examples.length; i++) {
 			int idx = examples[i];
 
-            double val;
-            //try {
-			    val = vt.getDouble(idx, attCol);
-            /*}
-            catch(RuntimeException e) {
-                System.out.println("IDX: "+idx);
-                System.out.println(vt.getNumRows());
-                throw e;
-            }*/
-			String out = vt.getString(idx, outCol);
+            double val = t.getDouble(idx, attCol);
+			String out = t.getString(idx, outCol);
 
 			int loc;
 			if(val < splitVal) {
@@ -174,28 +207,29 @@ public class C45TreeBuilder extends ComputeModule {
 		}
 
 		// now that we have tallies of the outputs for this att value
-		// we can calculate the entropy.
+		// we can calculate the information value.
+
+		double linfo = info(lessThanTally);
+		double ginfo = info(greaterThanTally);
+
+		return (lessThanTot/(double)examples.length)*linfo +
+			(greaterThanTot/(double)examples.length)*ginfo;
 
 		// get the probablities for the examples less than the split
-		//double[] probs = new double[lessThanTally.size()];
-		double[] probs = new double[lessThanTally.length];
-		for(int i = 0; i < lessThanTally.length; i++)
-			probs[i] = ((double)lessThanTally[i])/((double)lessThanTot);
+		//double[] lesserProbs = new double[lessThanTally.length];
+		//for(int i = 0; i < lessThanTally.length; i++)
+		//	lesserProbs[i] = ((double)lessThanTally[i])/((double)lessThanTot);
 
-		double[] greaterProbs = new double[greaterThanTally.length];
-		for(int i = 0; i < greaterThanTally.length; i++)
-			greaterProbs[i] = ((double)greaterThanTally[i])/((double)greaterThanTot);
+		//double[] greaterProbs = new double[greaterThanTally.length];
+		//for(int i = 0; i < greaterThanTally.length; i++)
+		//	greaterProbs[i] = ((double)greaterThanTally[i])/((double)greaterThanTot);
 
 		// return the sum of the information given on each side of the split
-		return (lessThanTot/(double)examples.length)*entropy(probs) +
-			(greaterThanTot/(double)examples.length)*entropy(greaterProbs);
+		//return (lessThanTot/(double)examples.length)*entropy(lesserProbs) +
+		//	(greaterThanTot/(double)examples.length)*entropy(greaterProbs);
 	}
 
-	private static int[] expandArray(int[] orig) {
-		int [] newarray = new int[orig.length+1];
-		System.arraycopy(orig, 0, newarray, 0, orig.length);
-		return newarray;
-	}
+
 
 	/**
 		Find the best split value for the given column with the given examples.
@@ -204,110 +238,116 @@ public class C45TreeBuilder extends ComputeModule {
 		split point.  (The possible split points are located halfway between
 		unique values in the set of examples)  The information on each possible
 		split is then calculated.
+		@param t the table
 		@param attCol the index of the attribute column
+		@param outCol the index of the output column
 		@param examples the list of examples, which correspond to rows of the
 			table
 		@return the split value for this attribute that gives the maximum
 			information
 	*/
-	private double findSplitValue(int attCol, int[] examples) {
+	private EntrSplit findSplitValue(Table t, int attCol, int outCol, int[] examples) {
 		// copy the examples into a new table
 		DoubleColumn dc = new DoubleColumn(examples.length);
-		//StringColumn sc = new StringColumn(examples.size());
-		IntColumn ic = new IntColumn(examples.length);
-		//StringColumn sc = new StringColumn();
-		ObjectColumn sc = new ObjectColumn(examples.length);
-		//ArrayList exams = new ArrayList();
+		StringColumn sc = new StringColumn(examples.length);
 
-		int idx = 0;
 		for(int i = 0; i < examples.length; i++) {
-			//exams.add(new Integer(i));
-			//rowIdx = (Integer)examples.get(i);
             int rowIdx = examples[i];
-		 	dc.setDouble(table.getDouble(rowIdx, attCol), idx);
-			//sc.setString(table.getString(rowIdx.intValue(), outputs[0]), idx);
-			//sc.addRow(table.getString(rowIdx.intValue(), outputs[0]));
-			ic.setInt(rowIdx, idx);
-			sc.setString(table.getString(rowIdx, outputs[0]), idx);
-			idx++;
+		 	dc.setDouble(t.getDouble(rowIdx, attCol), i);
+			sc.setString(t.getString(rowIdx, outCol), i);
 		}
-		//sc.trim();
-		//Column[] cols = {dc, sc};
+
 		Column[] cols = {dc, sc};
 		TableImpl vt = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
 
 		// sort the table
 		vt.sortByColumn(0);
 
-		// now replace ic with a string column
-		/*for(int i = 0; i < vt.getNumRows(); i++) {
-			//sc.addRow(table.getString(vt.getInt(i, 1), outputs[0]));
-			sc.setString(table.getString(vt.getInt(i, 1), outputs[0]), i);
-		}
-
-		vt.setColumn(sc, 1);
-		*/
-
 		// each row of the new table is an example
-		//ArrayList exams = new ArrayList();
         int[] exams = new int[vt.getNumRows()];
 		for(int i = 0; i < vt.getNumRows(); i++)
 			exams[i] = i;
 
 		// now test the possible split values.  these are the half-way point
 		// between two adjacent values.  keep the highest.
-		double splitValue = 0;
-		double highestGain = 0;
+		double splitValue;
+		double highestGain = Double.MIN_VALUE;
+
+		// this is the return value
+		EntrSplit split = new EntrSplit();
 
 		double lastTest = vt.getDouble(0, NUMERIC_VAL_COLUMN);
+		boolean allSame = true;
+		double baseGain = outputInfo(t, outCol, examples);
+
+		// test the halfway point between the last value and the current value
 		for(int i = 1; i < vt.getNumRows(); i++) {
 			double next = vt.getDouble(i, NUMERIC_VAL_COLUMN);
 			if(next != lastTest) {
-				double testSplitValue = (next-lastTest)/2+lastTest;
+				allSame = false;
+				double testSplitValue = ((next-lastTest)/2)+lastTest;
 
 				// count up the number greater than and the number less than
 				// the split value and calculate the information gain
-				double gain = numericAttributeEntropy(vt, testSplitValue,
+				//double gain = outputEntropy(table, outputs[0], examples);
+
+				double gain = baseGain - numericAttributeInfo(vt, testSplitValue,
 					exams, NUMERIC_VAL_COLUMN, NUMERIC_OUT_COLUMN);
+
+				double spliter = splitInfo(vt, NUMERIC_VAL_COLUMN, testSplitValue, exams);
+				gain /= spliter;
+
+				lastTest = next;
+
+				//double gain = numericAttributeEntropy(vt, testSplitValue,
+				//	exams, NUMERIC_VAL_COLUMN, NUMERIC_OUT_COLUMN);
 
 				// if the gain is better than what we have already seen, save
 				// it and the splitValue
-				if(gain > highestGain) {
+				if(gain >= highestGain) {
 					highestGain = gain;
 					splitValue = testSplitValue;
+
+					split.gain = gain;
+					split.splitValue = testSplitValue;
 				}
 			}
 		}
 
-		return splitValue;
+		if(allSame)
+			return null;
+		return split;
 	}
 
 	/**
 		Find the information gain for a numeric attribute.  The best split
 		value is found, and then the information gain is calculated using
 		the split value.
+		@param t the table
 		@param attCol the index of the attribute column
+		@param outCol the index of the output column
 		@param examples the list of examples, which correspond to rows of
 			the table
 		@return an object holding the gain and the best split value of
 			the column
 	*/
-	private EntrSplit numericGain(int attCol, int[] examples) {
-		if(debug)
-			System.out.println("Calc numericGain: "+table.getColumnLabel(attCol)+" size: "+examples.length+" out: "+table.getColumnLabel(outputs[0]));
-		double gain = outputEntropy(outputs[0], examples);
+	private EntrSplit numericGain(Table t, int attCol, int outCol, int[] examples) {
+		//if(debug)
+		//	System.out.println("Calc numericGain: "+t.getColumnLabel(attCol)+" size: "+examples.length+" out: "+t.getColumnLabel(outCol));
+		double gain = outputInfo(t, outCol, examples);
 
-		double splitVal = findSplitValue(attCol, examples);
-		double numEntr = numericAttributeEntropy(table, splitVal, examples,
-			attCol, outputs[0]);
+		//double splitVal = findSplitValue(attCol, examples);
+		EntrSplit splitVal = findSplitValue(t, attCol, outCol, examples);
+		//double numEntr = numericAttributeEntropy(table, splitVal.splitValue, examples,
+		//	attCol, outputs[0]);
 
-		gain -= numEntr;
-		if(useGainRatio) {
-			double spliter = splitInfo(attCol, splitVal, examples);
-			gain /= spliter;
-		}
+		//gain -= splitVal.gain;
+		//if(useGainRatio) {
+		//double spliter = splitInfo(table, attCol, splitVal.splitValue, examples);
+		//gain /= spliter;
+		//}
 
-		return new EntrSplit(splitVal, gain);
+		return splitVal;
 	}
 
 	/**
@@ -316,6 +356,8 @@ public class C45TreeBuilder extends ComputeModule {
 	private final class EntrSplit {
 		double splitValue;
 		double gain;
+
+		EntrSplit() {}
 
 		EntrSplit(double s, double g) {
 			splitValue = s;
@@ -328,35 +370,33 @@ public class C45TreeBuilder extends ComputeModule {
 		ratio is used, where the information gain is divided by the
 		split information.  This prevents highly branching attributes
 		from becoming dominant.
+		@param t
 		@param attCol the index of the attribute column
 		@param examples the list of examples, which correspond to rows of
 			the table
 		@return the gain of the column
 	*/
-	private double categoricalGain(int attCol, int[] examples) {
-		if(debug)
-			System.out.println("Calc categoricalGain: "+table.getColumnLabel(attCol)+" size: "+examples.length);
+	private double categoricalGain(Table t, int attCol, int outCol, int[] examples) {
+		//if(debug)
+		//	System.out.println("Calc categoricalGain: "+table.getColumnLabel(attCol)+" size: "+examples.length);
+
 		// total entropy of the class column -
 		// entropy of each of the possibilities of the attribute
 		// (p =#of that value, n=#rows)
 
 		// entropy of the class col
-		double gain = outputEntropy(outputs[0], examples);
-		double catEntr = 0.0;
+		double gain = outputInfo(t, outCol, examples);
 
 		// now subtract the entropy for each unique value in the column
 		// ie humidity=high, count # of yes and no
 		// humidity=low, count # of yes and no
-		String []vals = uniqueValues(attCol, examples);
+		String []vals = uniqueValues(t, attCol, examples);
 		for(int i = 0; i < vals.length; i++)
-			catEntr += categoricalAttributeEntropy(attCol, vals[i], examples);
+			gain -= categoricalAttributeInfo(t, attCol, outCol, vals[i], examples);
 
-		gain -= catEntr;
-		if(useGainRatio) {
-			double sInfo = splitInfo(attCol, 0, examples);
-			// divide the information gain by the split info
-			gain /= sInfo;
-		}
+		double sInfo = splitInfo(t, attCol, 0, examples);
+		// divide the information gain by the split info
+		gain /= sInfo;
 		return gain;
 	}
 
@@ -368,21 +408,20 @@ public class C45TreeBuilder extends ComputeModule {
 			the table
 		@return the information given by attValue
 	*/
-	private double categoricalAttributeEntropy(int colNum, String attValue,
-		int[] examples) {
+	private double categoricalAttributeInfo(Table t, int colNum, int outCol,
+		String attValue, int[] examples) {
 
-		//HashMap outTally = new HashMap();
-		int tot = 0;
-
+		double tot = 0;
 		int [] outtally = new int[0];
 		HashMap outIndexMap = new HashMap();
+
 		for(int i = 0; i < examples.length; i++) {
 			int idx = examples[i];
 
-			String s = table.getString(idx, colNum);
+			String s = t.getString(idx, colNum);
 
 			if(s.equals(attValue)) {
-				String out = table.getString(idx, outputs[0]);
+				String out = t.getString(idx, outCol);
 
 				if(outIndexMap.containsKey(out)) {
 					Integer in = (Integer)outIndexMap.get(out);
@@ -397,41 +436,7 @@ public class C45TreeBuilder extends ComputeModule {
 			}
 		}
 
-		/*for(int i = 0; i < examples.size(); i++) {
-			Integer rowIdx = (Integer)examples.get(i);
-			String s = table.getString(rowIdx.intValue(), colNum);
-			if(s.equals(attValue)) {
-				// check that branches are satisfied
-				String out = table.getString(rowIdx.intValue(), outputs[0]);
-
-				if(outTally.containsKey(out)) {
-					Integer in = (Integer)outTally.get(out);
-					int val = in.intValue() + 1;
-					outTally.put(out, new Integer(val));
-				}
-				else {
-					outTally.put(out, new Integer(1));
-				}
-				tot++;
-			}
-		}*/
-
-		// now that we have tallies of the outputs for this att value
-		// we can calculate the entropy.
-		/*double[] probs = new double[outTally.size()];
-		Iterator it = outTally.values().iterator();
-		int idx = 0;
-		while(it.hasNext()) {
-			Integer in = (Integer)it.next();
-			double d = (double)in.intValue();
-			probs[idx] = d/tot;
-			idx++;
-		}*/
-		double [] probs = new double[outtally.length];
-		for(int i = 0; i < probs.length; i++)
-			probs[i] = ((double)outtally[i])/((double)tot);
-
-		return (tot/(double)examples.length)*entropy(probs);
+		return (tot/(double)examples.length)*info(outtally);
 	}
 
 	/**
@@ -442,14 +447,14 @@ public class C45TreeBuilder extends ComputeModule {
 		@return an array containing all the unique values for examples in
 			this column
 	*/
-	private String[] uniqueValues(int colNum, int[] examples) {
+	private static String[] uniqueValues(Table t, int colNum, int[] examples) {
 		int numRows = examples.length;
 
 		// count the number of unique items in this column
 		HashSet set = new HashSet();
 		for(int i = 0; i < numRows; i++) {
 			int rowIdx = examples[i];
-			String s = table.getString(rowIdx, colNum);
+			String s = t.getString(rowIdx, colNum);
 			if(!set.contains(s))
 				set.add(s);
 		}
@@ -475,65 +480,54 @@ public class C45TreeBuilder extends ComputeModule {
 			the table
 		@return the information value of the branchiness of this attribute
 	*/
-	private double splitInfo(int colNum, double splitVal, int[] examples) {
+	private double splitInfo(Table t, int colNum, double splitVal, int[] examples) {
 		int numRows = examples.length;
-		double tot = 0;
 		double[] probs;
+
+		int[] tallies;
 
 		// if it is a numeric column, there will be two branches.
 		// count up the number of examples less than and greater
 		// than the split value
-		//if(table.getColumn(colNum) instanceof NumericColumn) {
-		//if(table.isNumericColumn(colNum)) {
-        if(table.isColumnScalar(colNum)) {
-			double lessThanTally = 0;
-			double greaterThanTally = 0;
+        if(t.isColumnScalar(colNum)) {
+			int lessThanTally = 0;
+			int greaterThanTally = 0;
 
 			for(int i = 0; i < numRows; i++) {
 				int rowIdx = examples[i];
-				double d = table.getDouble(rowIdx, colNum);
+				double d = t.getDouble(rowIdx, colNum);
 				if(d < splitVal)
 					lessThanTally++;
 				else
 					greaterThanTally++;
-				tot++;
 			}
-			probs = new double[2];
-			probs[0] = lessThanTally/tot;
-			probs[1] = greaterThanTally/tot;
+			tallies = new int[2];
+			tallies[0] = lessThanTally;
+			tallies[1] = greaterThanTally;
 		}
 		// otherwise it is nominal.  count up the number of
 		// unique values, because there will be a branch for
 		// each unique value
 		else {
 			HashMap map = new HashMap();
+			/*int[]*/ tallies = new int[0];
 			for(int i = 0; i < numRows; i++) {
 				int rowIdx = examples[i];
-				String s = table.getString(rowIdx, colNum);
-				if(!map.containsKey(s))
-					map.put(s, new Integer(1));
+				String s = t.getString(rowIdx, colNum);
+				if(!map.containsKey(s)) {
+					map.put(s, new Integer(tallies.length));
+					tallies = expandArray(tallies);
+					tallies[tallies.length-1] = 1;
+				}
 				else {
 					Integer ii = (Integer)map.get(s);
-					int tal = ii.intValue();
-					tal++;
-					map.put(s, new Integer(tal));
+					tallies[ii.intValue()]++;
 				}
-				tot++;
-			}
-
-			probs = new double[map.size()];
-			Iterator it = map.values().iterator();
-			int idx = 0;
-			while(it.hasNext()) {
-				Integer in = (Integer)it.next();
-				double d = (double)in.intValue();
-				probs[idx] = d/tot;
-				idx++;
 			}
 		}
 
 		// calculate the information given by the branches
-		return entropy(probs);
+		return info(tallies);
 	}
 
 	/**
@@ -543,36 +537,28 @@ public class C45TreeBuilder extends ComputeModule {
 			the table
 		@return the entropy of the output column
 	*/
-	private double outputEntropy(int colNum, int[] examples) {
+	private double outputInfo(Table t, int colNum, int[] examples) {
 		double numRows = (double)examples.length;
 
 		// count the number of unique items in this column
+		int[] tallies = new int[0];
 		HashMap map = new HashMap();
 		for(int i = 0; i < numRows; i++) {
-			//Integer rowIdx = (Integer)examples.get(i);
             int rowIdx = examples[i];
-			String s = table.getString(rowIdx, colNum);
-			if(! map.containsKey(s)) {
-				map.put(s, new Integer(1));
+			String s = t.getString(rowIdx, colNum);
+			if(map.containsKey(s)) {
+				Integer in = (Integer)map.get(s);
+				int loc = in.intValue();
+				tallies[loc]++;
 			}
 			else {
-				Integer in = (Integer)map.get(s);
-				int val = in.intValue() + 1;
-				map.put(s, new Integer(val));
+				map.put(s, new Integer(tallies.length));
+				tallies = expandArray(tallies);
+				tallies[tallies.length-1] = 1;
 			}
 		}
 
-		double[] probs = new double[map.size()];
-		Iterator it = map.values().iterator();
-		int idx = 0;
-		while(it.hasNext()) {
-			Integer in = (Integer)it.next();
-			double d = (double)in.intValue();
-			probs[idx] = d/numRows;
-			idx++;
-		}
-
-		return entropy(probs);
+		return info(tallies);
 	}
 
 	/**
@@ -584,25 +570,23 @@ public class C45TreeBuilder extends ComputeModule {
 		@param examples the list of examples, which correspond to rows of
 			the table
 		@return an object containing the index of the column with the highest
-			gain and (if numeric) the best split for that column, or null
-			if no attributes provide information gain over the threshold.
+			gain and (if numeric) the best split for that column
 	*/
-	private ColSplit getHighestGainAttribute(int[] attributes, int[] examples) {
+	private ColSplit getHighestGainAttribute(Table t, int[] attributes, int outCol, int[] examples) {
+		if(attributes.length == 0 || examples.length == 0)
+			return null;
 		ArrayList list = new ArrayList();
 
 		int topCol = 0;
-		double highestGain = 0;
+		double highestGain = Double.MIN_VALUE;
 
 		ColSplit retVal = new ColSplit();
 		// for each available column, calculate the entropy
 		for(int i = 0; i < attributes.length; i++) {
 			int col = attributes[i];
-			// categorical data
-			//if(!(table.getColumn(col) instanceof NumericColumn)) {
-			//if(table.isNumericColumn(col)) {
-            if(!table.isColumnScalar(col)) {
-				double d = categoricalGain(col, examples);
-				//System.out.println(table.getColumnLabel(col)+" "+d);
+			// nominal data
+            if(t.isColumnNominal(col)) {
+				double d = categoricalGain(t, col, outCol, examples);
 				if(d > highestGain) {
 					highestGain = d;
 					retVal.col = col;
@@ -610,8 +594,8 @@ public class C45TreeBuilder extends ComputeModule {
 			}
 			// numeric column
 			else {
-				EntrSplit sce = numericGain(col, examples);
-				if(sce.gain > highestGain) {
+				EntrSplit sce = numericGain(t, col, outCol, examples);
+				if(sce != null && sce.gain > highestGain) {
 					highestGain = sce.gain;
 					retVal.col = col;
 					retVal.splitValue = sce.splitValue;
@@ -619,9 +603,6 @@ public class C45TreeBuilder extends ComputeModule {
 			}
 		}
 
-		// return null if the highest information gain is less than threshold
-		if(highestGain < infoGainThreshold)
-			return null;
 		return retVal;
 	}
 
@@ -657,7 +638,7 @@ public class C45TreeBuilder extends ComputeModule {
 	}
 
     public String getModuleName() {
-        return "c4.5builder";
+        return "C4.5TreeBuilder";
     }
 
 	public String getInputInfo(int i) {
@@ -701,11 +682,15 @@ public class C45TreeBuilder extends ComputeModule {
         outputs = null;
     }
 
+	static {
+		nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(5);
+	}
+
 	/**
 		Build the decision tree
 	*/
-	public void doit() {
-        System.out.println("DOIT");
+	public void doit() throws Exception {
 		table = (ExampleTable)pullInput(0);
 		int[] inputs = table.getInputFeatures();
 		outputs = table.getOutputFeatures();
@@ -715,26 +700,19 @@ public class C45TreeBuilder extends ComputeModule {
 			System.out.println("Building tree for only the first output variable.");
 		}
 
-		nf = NumberFormat.getInstance();
-		nf.setMaximumFractionDigits(5);
-
         // the set of examples.  the indices of the example rows
         int[] exampleSet;
 		// use all rows as examples at first
-		System.out.println("DOIT: "+table+" "+table.getNumRows());
         exampleSet = new int[table.getNumRows()];
 		for(int i = 0; i < table.getNumRows(); i++)
             exampleSet[i] = i;
 
 		// use all columns as attributes at first
-		//ArrayList atts = new ArrayList();
         int[] atts = new int[inputs.length];
 		for(int i = 0; i < inputs.length; i++)
-			//atts.add(new Integer(inputs[i]));
             atts[i] = inputs[i];
 
 		DecisionTreeNode rootNode = buildTree(exampleSet, atts);
-        // rootNode = pruneTree();
 		pushOutput(rootNode, 0);
 		pushOutput(table, 1);
 	}
@@ -754,35 +732,34 @@ public class C45TreeBuilder extends ComputeModule {
 		@param attributes the indices of the columns to use
 		@return a tree
 	*/
-	private DecisionTreeNode buildTree(int[] examples, int[] attributes) {
-		if(debug) {
-			System.out.println("BuildTree with "+examples.length+" examples and "+attributes.length+" attributes.");
+	private DecisionTreeNode buildTree(int[] examples, int[] attributes)
+		throws MinimumRecordsPerLeafException {
+
+		//debug("BuildTree with "+examples.length+" examples and "+attributes.length+" attributes.");
+
+		if(examples.length < minimumRecordsPerLeaf) {
+			throw new MinimumRecordsPerLeafException();
 		}
+
 		DecisionTreeNode root = null;
 		String s;
-		//Integer rowIdx;
-        int rowIdx;
 
 		// if all examples have the same output value, give the root this
 		// label-- this node is a leaf.
 		boolean allSame = true;
 		int counter = 0;
-		//rowIdx = (Integer)examples.get(counter);
-		rowIdx = examples[counter];
-		s = table.getString(rowIdx/*.intValue()*/, outputs[0]);
+		s = table.getString(examples[counter], outputs[0]);
 		counter++;
 		while(allSame && counter < examples.length) {
-			rowIdx = examples[counter];
-			String t = table.getString(rowIdx, outputs[0]);
-			if(!t.equals(s)) {
+			String t = table.getString(examples[counter], outputs[0]);
+			if(!t.equals(s))
 				allSame = false;
-			}
 			counter++;
 		}
+		// create the leaf
 		if(allSame) {
-			// this is a leaf
 			if(debug)
-				System.out.println("Creating new CategoricalDTN: "+s);
+				System.out.println("***The values were all the same: "+s);
 			root = new CategoricalDecisionTreeNode(s);
 			return root;
 		}
@@ -791,10 +768,10 @@ public class C45TreeBuilder extends ComputeModule {
 		// value this will result in some incorrect classifications...
 		// this node is a leaf.
 		if(attributes.length == 0) {
-			String mostCommon = mostCommonOutputValue(examples);
+			String mostCommon = mostCommonOutputValue(table, outputs[0], examples);
 			// make a leaf
 			if(debug)
-				System.out.println("Creating new CategoricalDTN: "+mostCommon);
+				System.out.println("***Attributes empty.  Creating new Leaf with most common output value: "+mostCommon);
 			root = new CategoricalDecisionTreeNode(mostCommon);
 			return root;
 		}
@@ -804,128 +781,132 @@ public class C45TreeBuilder extends ComputeModule {
 		// calculate the information gain for each attribute
 		// select the attribute, A, with the lowest average entropy, make
 		// this be the one tested at the root
-		ColSplit best = getHighestGainAttribute(attributes, examples);
+		ColSplit best = getHighestGainAttribute(table, attributes, outputs[0], examples);
 
-		// if the information gain was above the threshold
+		// if there was a column
 		if(best != null) {
 			int col = best.col;
 
 			// categorical data
-			//if(!(table.getColumn(col) instanceof NumericColumn)) {
-			//if(!table.isNumericColumn(col)) {
             if(!table.isColumnScalar(col)) {
 				// for each possible value v of this attribute in the set
 				// of examples add a new branch below the root,
 				// corresponding to A = v
-				String[] branchVals = uniqueValues(col, examples);
-				root = new CategoricalDecisionTreeNode(
-					table.getColumnLabel(col));
-				for(int i = 0; i < branchVals.length; i++) {
-					int[] branchExam = narrowCategoricalExamples(col,
-						branchVals[i], examples);
-					int[] branchAttr = narrowAttributes(col, attributes);
-					if(branchExam.length != 0)
-						root.addBranch(branchVals[i], buildTree(branchExam,
-							branchAttr));
+				try {
+					String[] branchVals = uniqueValues(table, col, examples);
+					root = new CategoricalDecisionTreeNode(table.getColumnLabel(col));
+					for(int i = 0; i < branchVals.length; i++) {
+						int[] branchExam = narrowCategoricalExamples(col,
+							branchVals[i], examples);
+						int[] branchAttr = narrowAttributes(col, attributes);
+						if(branchExam.length >= minimumRecordsPerLeaf && branchAttr.length != 0) {
+							root.addBranch(branchVals[i], buildTree(branchExam,
+								branchAttr));
+						}
 
-					// if examples(v) is empty, make the new branch a leaf
-					// labelled with the most common value among examples
-					else {
-						String val = mostCommonOutputValue(examples);
-						DecisionTreeNode nde = new
-							CategoricalDecisionTreeNode(val);
-						root.addBranch(val, nde);
-						if(debug)
-							System.out.println("Adding Categorical Branch: "+val);
+						// if examples(v) is empty, make the new branch a leaf
+						// labelled with the most common value among examples
+						else {
+							String val = mostCommonOutputValue(table, outputs[0], examples);
+							DecisionTreeNode nde = new CategoricalDecisionTreeNode(val);
+							root.addBranch(val, nde);
+						}
 					}
+				}
+				catch(MinimumRecordsPerLeafException e) {
+					e.printStackTrace();
 				}
 			}
 
-			// else if numeric find the binary split point and create
-			// two branches
+			// else if numeric find the binary split point and create two branches
 			else {
-				DecisionTreeNode left;
-				DecisionTreeNode right;
-				root = new NumericDecisionTreeNode(table.getColumnLabel(col));
+				try {
+					DecisionTreeNode left;
+					DecisionTreeNode right;
+					root = new NumericDecisionTreeNode(table.getColumnLabel(col));
 
-				// create the less than branch
-				int[] branchExam = narrowNumericExamples(col,
-					best.splitValue, examples, false);
-				if(branchExam.length != 0) {
-					left = buildTree(branchExam, attributes);
-				}
+					// create the less than branch
+					int[] branchExam = narrowNumericExamples(col,
+						best.splitValue, examples, false);
+				//if(branchExam.length >= minimumRecordsPerLeaf) {
+						left = buildTree(branchExam, attributes);
+				//}
 
 				// else if examples(v) is empty, make the new branch a leaf
 				// labelled with the most common value among examples
-				else {
-					String val = mostCommonOutputValue(examples);
+				/*else {
+					if(debug)
+						System.out.println("Making a new Left Branch for a numeric with the most common output.");
+					String val = mostCommonOutputValue(table, outputs[0], examples);
 					left = new CategoricalDecisionTreeNode(val);
-				}
+				}*/
 
 				// create the greater than branch
-				branchExam = narrowNumericExamples(col, best.splitValue,
-					examples, true);
-				if(branchExam.length != 0) {
+					branchExam = narrowNumericExamples(col, best.splitValue,
+						examples, true);
+				//if(branchExam.length >= minimumRecordsPerLeaf) {
 					right = buildTree(branchExam, attributes);
-				}
+				//}
 
 				// else if examples(v) is empty, make the new branch a leaf
 				// labelled with the most common value among examples
-				else {
-					String val = mostCommonOutputValue(examples);
+				/*else {
+					if(debug)
+						System.out.println("Making a new Right branch for a numeric with the most common output.");
+					String val = mostCommonOutputValue(table, outputs[0], examples);
 					right = new CategoricalDecisionTreeNode(val);
-				}
-				// add the branches to the root
-				StringBuffer lesser =
-					new StringBuffer(table.getColumnLabel(col));
-				lesser.append(LESS_THAN);
-				//lesser.append(Double.toString(best.splitValue));
-				lesser.append(nf.format(best.splitValue));
+				}*/
 
-				StringBuffer greater =
-					new StringBuffer(table.getColumnLabel(col));
-				greater.append(GREATER_THAN_EQUAL_TO);
-				//greater.append(Double.toString(best.splitValue));
-				greater.append(nf.format(best.splitValue));
-				root.addBranches(best.splitValue, lesser.toString(), left,
-					greater.toString(), right);
-				if(debug)
-					System.out.println("Adding Numeric Branches: "+lesser.toString()+" and "+greater.toString());
+				// add the branches to the root
+					StringBuffer lesser = new StringBuffer(table.getColumnLabel(col));
+					lesser.append(LESS_THAN);
+					lesser.append(nf.format(best.splitValue));
+
+					StringBuffer greater = new StringBuffer(table.getColumnLabel(col));
+					greater.append(GREATER_THAN_EQUAL_TO);
+					greater.append(nf.format(best.splitValue));
+					root.addBranches(best.splitValue, lesser.toString(), left,
+						greater.toString(), right);
+				}
+				catch(MinimumRecordsPerLeafException e) {
+					String val = mostCommonOutputValue(table, outputs[0], examples);
+					return new CategoricalDecisionTreeNode(val);
+				}
 			}
 		}
 
-		// otherwise the information gain was below the threshold
-		// make a leaf labelled with the most common value among the examples
+		// otherwise we could not find a suitable column.  create
+		// a new node with the most common output
 		else {
-			//System.out.println("below threshold");
-			String val = mostCommonOutputValue(examples);
+			String val = mostCommonOutputValue(table, outputs[0], examples);
 			root = new CategoricalDecisionTreeNode(val);
 			if(debug)
-				System.out.println("Info gain below threshhold, creating new CategoricalDTN: "+val);
+				System.out.println("creating new CategoricalDTN: "+val);
 		}
 
 		return root;
 	}
+
+	private class MinimumRecordsPerLeafException extends Exception {}
 
 	/**
 		Find the most common output value from a list of examples.
 		@param examples the list of examples
 		@return the most common output value from the examples
 	*/
-	private String mostCommonOutputValue(int[] examples) {
+	private static String mostCommonOutputValue(Table t, int outCol, int[] examples) {
 		HashMap map = new HashMap();
-		int rowIdx;
+		int[] tallies = new int[0];
 		for(int i = 0; i < examples.length; i++) {
-			rowIdx = examples[i];
-			String s = table.getString(rowIdx, outputs[0]);
+			String s = t.getString(examples[i], outCol);
 			if(map.containsKey(s)) {
-				Integer tal = (Integer)map.get(s);
-				int val = tal.intValue();
-				val++;
-				map.put(s, new Integer(val));
+				Integer loc = (Integer)map.get(s);
+				tallies[loc.intValue()]++;
 			}
 			else {
-				map.put(s, new Integer(1));
+				map.put(s, new Integer(map.size()));
+				tallies = expandArray(tallies);
+				tallies[tallies.length-1] = 1;
 			}
 		}
 
@@ -935,9 +916,9 @@ public class C45TreeBuilder extends ComputeModule {
 		Iterator i = map.keySet().iterator();
 		while(i.hasNext()) {
 			String s = (String)i.next();
-			Integer tal = (Integer)map.get(s);
-			if(tal.intValue() > highestTal) {
-				highestTal = tal.intValue();
+			Integer loc = (Integer)map.get(s);
+			if(tallies[loc.intValue()] > highestTal) {
+				highestTal = tallies[loc.intValue()];
 				mostCommon = s;
 			}
 		}
@@ -953,14 +934,12 @@ public class C45TreeBuilder extends ComputeModule {
 		@return a subset of the original list of examples
 	*/
 	private int[] narrowCategoricalExamples(int col, String val, int[] exam) {
-		//ArrayList examples = new ArrayList();
         int numNewExamples = 0;
         boolean[] map = new boolean[exam.length];
 
 		for(int i = 0; i < exam.length; i++) {
 			String s = table.getString(exam[i], col);
 			if(s.equals(val)) {
-				//examples.add(rowIdx);
                 numNewExamples++;
                 map[i] = true;
             }
@@ -994,18 +973,13 @@ public class C45TreeBuilder extends ComputeModule {
 	private int[] narrowNumericExamples(int col, double splitValue, int[] exam,
 		boolean greaterThan) {
 
-		//ArrayList examples = new ArrayList();
-		int rowIdx;
         int numNewExamples = 0;
         boolean[] map = new boolean[exam.length];
 
 		for(int i = 0; i < exam.length; i++) {
-			//rowIdx = (Integer)exam.get(i);
-            rowIdx = exam[i];
-			double d = table.getDouble(rowIdx, col);
+			double d = table.getDouble(exam[i], col);
 			if(greaterThan) {
 				if(d >= splitValue) {
-					//examples.add(rowIdx);
                     numNewExamples++;
                     map[i] = true;
                 }
@@ -1014,7 +988,6 @@ public class C45TreeBuilder extends ComputeModule {
 			}
 			else {
 				if(d < splitValue) {
-					//examples.add(rowIdx);
                     numNewExamples++;
                     map[i] = true;
                  }
@@ -1042,10 +1015,7 @@ public class C45TreeBuilder extends ComputeModule {
 		@return a subset of the original list of attributes
 	*/
 	private int[] narrowAttributes(int col, int[] attr) {
-		//ArrayList attributes = (ArrayList)attr.clone();
-		//attributes.remove(new Integer(col));
         int[] retVal = new int[attr.length-1];
-		//return attributes;
         int curIdx = 0;
         for(int i = 0; i < attr.length; i++) {
             if(attr[i] != col) {
