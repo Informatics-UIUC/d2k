@@ -509,11 +509,11 @@ public class HTree extends ComputeModule
           endIdx = startIdx + aColumn.uniqCnt; // don't subtract 1, because need to add one extra item for NA
           if (aValue==null) { // it is null, replace it with value of NA
             aValue = NA;
-            System.out.println("null value is converted to " + NA);
+            //System.out.println("null value is converted to " + NA);
           }
           else if (aValue.equals(" ") || aValue.equals("")) { // it is a blank string, replace it with value of NA
             aValue = NA;
-            System.out.println("blank value is converted to " + NA);
+            //System.out.println("blank value is converted to " + NA);
           }
           if (!aColumn.isBinned) {
             // Searching baseHeadTble to find the record with this value.
