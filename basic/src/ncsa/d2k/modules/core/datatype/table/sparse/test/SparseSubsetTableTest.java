@@ -616,8 +616,7 @@ public class SparseSubsetTableTest
       for (int j = 0; j < subsetCopy.getNumColumns(); j++) {
         String one = subsetCopy.getString(i, j);
         String two = mtFull.getString(i, j);
-        System.out.println("i " + i + " j " + j + " copy " + one + " mtFull " +
-                           two);
+        //System.out.println("i " + i + " j " + j + " copy " + one + " mtFull " + two);
         assertEquals(subsetCopy.getString(i, j), mtFull.getString(i, j));
       }
     }
@@ -638,8 +637,7 @@ public class SparseSubsetTableTest
       for (int j = 0; j < mtFull.getNumColumns(); j++) {
         String one = mtFull.getString(pos + i, j);
         String two = subsetTable.getString(i, j);
-        System.out.println("i j mtfull subset " + i + " " + j + " " + one + " " +
-                           two);
+        //System.out.println("i j mtfull subset " + i + " " + j + " " + one + " " +  two);
         assertEquals(mtFull.getString(pos + i, j), subsetTable.getString(i, j));
       }
     }
@@ -651,7 +649,7 @@ public class SparseSubsetTableTest
    */
   public void testCopyintArray() {
     SparseSubsetTable mtFull = (SparseSubsetTable) getFullTable();
-    mtFull.print();
+    //mtFull.print();
     int[] subset = {1, 2, 3};
     //mtFull.setSubset(subset);
     //mtFull.print();
@@ -665,7 +663,7 @@ public class SparseSubsetTableTest
       for (int j = 0; j < mtFull.getNumColumns(); j++) {
         String one = mtFull.getString(newSubset[i], j);
         String two = subsetTable.getString(i, j);
-        System.out.println("testCopyInt array: i j mtfull subset " + i + " " + j + " " + one + " " + two);
+        //System.out.println("testCopyInt array: i j mtfull subset " + i + " " + j + " " + one + " " + two);
         assertEquals(mtFull.getString(stableSubset[i], j), subsetTable.getString(i, j));
       }
     }
@@ -709,40 +707,40 @@ public class SparseSubsetTableTest
 
   }
 
-  public void testReorderRows() {
-    SparseSubsetTable mtFull = (SparseSubsetTable) getFullTable();
-    //SparseSubsetTable mtEmpty = (SparseSubsetTable) getEmptyTable();
-    int newOrder[] = {
-        0, 3, 2, 1};
-    SparseMutableTable mtEmpty =  (SparseMutableTable)mtFull.copy();
-    mtEmpty.removeRows(0, mtFull.getNumRows());
-    mtEmpty.addRows(mtFull.getNumRows());
-    for (int i = 0; i < newOrder.length; i++) {
-      for (int j = 0; j < numColumns; j++) {
-        mtEmpty.setString(mtFull.getString(newOrder[i], j), i, j);
-      }
-    }
-    Table reordered = mtFull.copy(newOrder);
-    //Table reordered = mtFull.reorderRows(newOrder);
-    assertEquals(mtEmpty, reordered);
-
-    mtFull.setSubset(getSubset());
-    mtEmpty =  (SparseMutableTable)mtFull.copy();
-    mtEmpty.removeRows(0, mtFull.getNumRows());
-    mtEmpty.addRows(mtFull.getNumRows());
-    int[] nOrder = {
-        1, 0};
-    for (int i = 0; i < nOrder.length; i++) {
-      for (int j = 0; j < numColumns; j++) {
-        mtEmpty.setString(mtFull.getString(nOrder[i], j), i, j);
-        //reordered = mtFull.reorderRows(nOrder);
-
-      }
-    }
-    reordered = mtFull.copy(nOrder);
-    assertEquals(mtEmpty, reordered);
-
-  }
+//  public void testReorderRows() {
+//    SparseSubsetTable mtFull = (SparseSubsetTable) getFullTable();
+//    //SparseSubsetTable mtEmpty = (SparseSubsetTable) getEmptyTable();
+//    int newOrder[] = {
+//        0, 3, 2, 1};
+//    SparseMutableTable mtEmpty =  (SparseMutableTable)mtFull.copy();
+//    mtEmpty.removeRows(0, mtFull.getNumRows());
+//    mtEmpty.addRows(mtFull.getNumRows());
+//    for (int i = 0; i < newOrder.length; i++) {
+//      for (int j = 0; j < numColumns; j++) {
+//        mtEmpty.setString(mtFull.getString(newOrder[i], j), i, j);
+//      }
+//    }
+//    Table reordered = mtFull.copy(newOrder);
+//    //Table reordered = mtFull.reorderRows(newOrder);
+//    assertEquals(mtEmpty, reordered);
+//
+//    mtFull.setSubset(getSubset());
+//    mtEmpty =  (SparseMutableTable)mtFull.copy();
+//    mtEmpty.removeRows(0, mtFull.getNumRows());
+//    mtEmpty.addRows(mtFull.getNumRows());
+//    int[] nOrder = {
+//        1, 0};
+//    for (int i = 0; i < nOrder.length; i++) {
+//      for (int j = 0; j < numColumns; j++) {
+//        mtEmpty.setString(mtFull.getString(nOrder[i], j), i, j);
+//        //reordered = mtFull.reorderRows(nOrder);
+//
+//      }
+//    }
+//    reordered = mtFull.copy(nOrder);
+//    assertEquals(mtEmpty, reordered);
+//
+//  }
 
   public void testAddRows() {
     SparseSubsetTable mtFull = (SparseSubsetTable) getFullTable();

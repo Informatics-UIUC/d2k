@@ -870,6 +870,18 @@ public class SparseSubsetTable extends SparseMutableTable {
     }
   }
 
+  private void expandSubsetToRow(int row){
+    int num = super.getNumRows();
+    int subl = subset.length;
+    int diff = row + 1 - subl;
+    int[] newsubset = new int[subl + diff];
+    System.arraycopy(subset, 0, newsubset, 0, subl);
+    for (int i = 0, n = diff; i < diff; i++){
+      newsubset[subl + i] = num + i;
+    }
+    setSubset(newsubset);
+  }
+
 //  //////////////////////////////////////
 //  // Setter methods.
 //  //
@@ -880,6 +892,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setObject(Object element, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setObject(element, subset[row], column);
   }
 
@@ -890,6 +905,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setInt(int data, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setInt(data, subset[row], column);
   }
 
@@ -900,6 +918,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setShort(short data, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setShort(data, subset[row], column);
   }
 
@@ -910,6 +931,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setLong(long data, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setLong(data, subset[row], column);
   }
 
@@ -920,6 +944,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setFloat(float data, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setFloat(data, subset[row], column);
   }
 
@@ -930,6 +957,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setDouble(double data, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setDouble(data, subset[row], column);
   }
 
@@ -940,6 +970,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setString(String data, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setString(data, subset[row], column);
   }
 
@@ -950,6 +983,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setBytes(byte[] data, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setBytes(data, subset[row], column);
   }
 
@@ -960,6 +996,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setByte(byte data, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setByte(data, subset[row], column);
   }
 
@@ -970,6 +1009,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setChars(char[] data, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setChars(data, subset[row], column);
   }
 
@@ -980,6 +1022,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setChar(char data, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setChar(data, subset[row], column);
   }
 
@@ -990,6 +1035,9 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param column the column of the table
    */
   public void setBoolean(boolean data, int row, int column) {
+    if (row >= subset.length){
+      this.expandSubsetToRow(row);
+    }
     super.setBoolean(data, subset[row], column);
   }
 }

@@ -62,7 +62,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
    public ExampleTableImpl(Column [] cols) {
       super(cols);
    }
-   
+
 	/**
 	 * Given a TableImpl to represent, replicate its
 	 * contents in an ExampleTable.
@@ -210,7 +210,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
    public ExampleTableImpl(Column [] cols, int [] ss) {
       super(cols, ss);
    }
-   
+
 	/**
 	 * Create a prediction table and return it.
 	 * @return a prediction table.
@@ -346,7 +346,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	public int[] getTestingSet() {
 		return testSet;
 	}
-	
+
 	/**
 	 * when a column is removed, adjust the indices of the remaining input and output
 	 * columns.
@@ -355,7 +355,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	private void adjustRemovedColummn (int pos) {
 		if (inputColumns != null)
 			for (int i = 0 ; i < inputColumns.length ; i++) {
-				if (inputColumns[i] > pos) 
+				if (inputColumns[i] > pos)
 					inputColumns[i]--;
 			}
 		if (outputColumns != null)
@@ -364,7 +364,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 					outputColumns[i]--;
 			}
 	}
-	
+
 	/**
 	 * Remove a Column from the Table.
 	 * @param pos the position of the Column to remove
@@ -376,23 +376,23 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 				if (inputColumns[i] == pos) {
 					int [] newInputColumns = new int [inputColumns.length-1];
 					System.arraycopy(inputColumns, 0, newInputColumns, 0, i);
-					System.arraycopy(inputColumns, i+1, newInputColumns, i, 
+					System.arraycopy(inputColumns, i+1, newInputColumns, i,
 						newInputColumns.length - i);
 					inputColumns = newInputColumns;
 				}
 			}
-			
+
 		if (outputColumns != null)
 			for (int i = 0 ; i < outputColumns.length ; i++) {
 				if (outputColumns[i] == pos) {
 					int [] newColumns = new int [outputColumns.length-1];
 					System.arraycopy(outputColumns, 0, newColumns, 0, i);
-					System.arraycopy(outputColumns, i+1, newColumns, i, 
+					System.arraycopy(outputColumns, i+1, newColumns, i,
 						newColumns.length - i);
 					outputColumns = newColumns;
 				}
 			}
-			
+
 		this.adjustRemovedColummn (pos);
 		this.setInputFeatures(inputColumns);
 		this.setOutputFeatures(outputColumns);
@@ -408,10 +408,10 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 			this.removeColumn(i);
 	}
 
-	//ANCA added getSubset methods that return ExampleTableImpl 
+	//ANCA added getSubset methods that return ExampleTableImpl
 	//before these methods were inherited from MutableTableImpl and returned a SubsetTableImpl
 	//The ErrorFunction.evaluate needs subset tables that have the input/output feature information
-	
+
 	/**
 	 * Gets a subset of this Table's rows, which is actually a shallow
 	 * copy which is subsetted..
@@ -624,7 +624,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
       System.arraycopy (orig, 0, newArray, 0, orig.length);
       return newArray;
    }
-   
+
 	/**
 	 * Do a shallow copy on the data by creating a new instance of a MutableTable,
 	 * and initialize all it's fields from this one.
@@ -632,7 +632,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	 */
 	public Table shallowCopy() {
 		ExampleTableImpl eti = new ExampleTableImpl();
-      
+
       // make a copy of the columns array, we don't want to share that.
       Column [] newCols = new Column [this.columns.length];
       for (int i = 0 ; i < newCols.length ; i++) {
@@ -973,7 +973,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		}
 		return false;
 	}
-	
+
 	public boolean isInputNominal(int i) {
 		return isColumnNominal(inputColumns[i]);
 	}
