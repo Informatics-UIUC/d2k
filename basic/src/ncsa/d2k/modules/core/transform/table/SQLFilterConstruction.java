@@ -56,7 +56,7 @@ public class SQLFilterConstruction extends UIModule {
      s += "that filters rows from a database table. Details can be found ";
      s += "in the module's online help. </p>";
      s += "<p> Restrictions: ";
-     s += "We currently only support Oracle database.";
+     s += "We currently only support Oracle and SQLServer database.";
 
      return s;
    }
@@ -479,6 +479,7 @@ public class SQLFilterConstruction extends UIModule {
 
       public void expressionChanged(Object evaluation) {
          String queryCondition = gui.getTextArea().getText();
+         _lastExpression = new String(queryCondition);
          // SQL does not support "=="
          while (queryCondition.indexOf("==") >= 0)
            queryCondition = replace(queryCondition, "==", "=");
@@ -489,7 +490,7 @@ public class SQLFilterConstruction extends UIModule {
          while (queryCondition.indexOf("||") >= 0)
            queryCondition = replace(queryCondition, "||", " or ");
 
-         _lastExpression = new String(queryCondition);
+         //_lastExpression = new String(queryCondition);
 
          pushOutput(queryCondition,0);
          viewDone("Done");
@@ -503,7 +504,7 @@ public class SQLFilterConstruction extends UIModule {
          if (index > 0)
            newString = oldString.substring(0,index) + newPattern +
                      oldString.substring(index + oldPattern.length(), oldString.length());
-         // matched substring is located in the beginning of the string
+         // matched substring is located in the begining of the string
          else if (index == 0)
            newString = newPattern +
                      oldString.substring(index + oldPattern.length(), oldString.length());
