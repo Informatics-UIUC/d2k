@@ -281,8 +281,8 @@ public class ScatterPlot3D extends VisModule {
        */
       private void findMinMax(ScatterPlot3DDataSet[] sets) {
 
-         xMin = yMin = zMin = Double.MAX_VALUE;
-         xMax = yMax = zMax = Double.MIN_VALUE;
+         xMin = yMin = zMin = Double.POSITIVE_INFINITY;
+         xMax = yMax = zMax = Double.NEGATIVE_INFINITY;
 
          // loop rearranged to better support paging tables
          int x, y, z; double d;

@@ -362,7 +362,7 @@ public class NaiveBayesAutoBinOPT
     nameBuffer.append(nf.format(max));
     nameBuffer.append(CLOSE_BRACKET);
     BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                                                Double.MIN_VALUE, max,
+                                                Double.NEGATIVE_INFINITY, max,
                                                 tbl.getColumnLabel(col));
     return nb;
   }
@@ -378,7 +378,7 @@ public class NaiveBayesAutoBinOPT
     nameBuffer.append(DOTS);
     nameBuffer.append(CLOSE_BRACKET);
     BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                                                min, Double.MAX_VALUE,
+                                                min, Double.POSITIVE_INFINITY,
                                                 tbl.getColumnLabel(col));
     return nb;
   }

@@ -81,8 +81,8 @@ public abstract class Graph extends JPanel {
 
    public double[] getMinAndMax(Table table, int ndx) {
       double[] minAndMax = new double[2];
-      minAndMax[0] = Double.MAX_VALUE;
-      minAndMax[1] = Double.MIN_VALUE;
+      minAndMax[0] = Double.POSITIVE_INFINITY;
+      minAndMax[1] = Double.NEGATIVE_INFINITY;
       double mandm;
       for (int i = 0; i < table.getNumRows(); i++) {
          mandm = table.getDouble(i, ndx);

@@ -40,7 +40,7 @@ public class TableUtilities {
 
     TDoubleArrayList list = new TDoubleArrayList();
 
-    double total = 0, max = Double.MIN_VALUE, min = Double.MAX_VALUE;
+    double total = 0, max = Double.NEGATIVE_INFINITY, min = Double.POSITIVE_INFINITY;
     for (int i = 0; i < table.getNumRows(); i++) {
         if (!table.isValueMissing(i, colNum) && !table.isValueEmpty(i, colNum)) {
 	        list.add(table.getDouble(i, colNum));
@@ -145,7 +145,7 @@ public class TableUtilities {
 
     TDoubleArrayList list = new TDoubleArrayList();
 
-    double total = 0, max = Double.MIN_VALUE, min = Double.MAX_VALUE;
+    double total = 0, max = Double.NEGATIVE_INFINITY, min = Double.POSITIVE_INFINITY;
     for (int i = 0; i < table.getNumRows(); i++) {
       if (!flags[i] && !table.isValueMissing(i, colNum) && !table.isValueEmpty(i, colNum)) {
 	list.add(table.getDouble(i, colNum));
@@ -296,13 +296,13 @@ public class TableUtilities {
 	 * @return
 	 */
 	public static double[] getMinMax(Table table, int colNum) {
-         double total = 0, max = Double.MIN_VALUE, min = Double.MAX_VALUE;
+         double total = 0, max = Double.NEGATIVE_INFINITY, min = Double.POSITIVE_INFINITY;
 		 int numRows = table.getNumRows();
 		 double d;
          for (int i = 0; i < numRows; i++) {
 
             d = table.getDouble(i, colNum);
-            total += d;
+            //total += d;
 
             if (d > max)
                max = d;
@@ -324,7 +324,7 @@ public class TableUtilities {
 	public static double mean(Table table, int colNum) {
          double sample_mean;
 
-         double total = 0, max = Double.MIN_VALUE, min = Double.MAX_VALUE;
+         double total = 0, max = Double.NEGATIVE_INFINITY, min = Double.POSITIVE_INFINITY;
 		 int numRows = table.getNumRows();
          for (int i = 0; i < numRows; i++)
             total += table.getDouble(i, colNum);
@@ -359,7 +359,7 @@ public class TableUtilities {
          double[] d = new double[table.getNumRows()];
 
 		 double median, stddev;
-         double total = 0, max = Double.MIN_VALUE, min = Double.MAX_VALUE;
+         double total = 0, max = Double.NEGATIVE_INFINITY, min = Double.POSITIVE_INFINITY;
 
          for (int i = 0; i < d.length; i++) {
             d[i] = table.getDouble(i, colNum);
@@ -396,7 +396,7 @@ public class TableUtilities {
          double[] d = new double[table.getNumRows()];
 
 		 double median, stddev;
-         double total = 0, max = Double.MIN_VALUE, min = Double.MAX_VALUE;
+         double total = 0, max = Double.NEGATIVE_INFINITY, min = Double.POSITIVE_INFINITY;
 
          for (int i = 0; i < d.length; i++) {
             d[i] = table.getDouble(i, colNum);

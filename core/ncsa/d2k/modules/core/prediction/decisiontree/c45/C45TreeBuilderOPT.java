@@ -290,7 +290,7 @@ public class C45TreeBuilderOPT
     // now test the possible split values.  these are the half-way point
     // between two adjacent values.  keep the highest.
     double splitValue;
-    double highestGain = Double.MIN_VALUE;
+    double highestGain = Double.NEGATIVE_INFINITY;
 
     // this is the return value
     EntrSplit split = new EntrSplit();
@@ -611,7 +611,7 @@ public class C45TreeBuilderOPT
     ArrayList list = new ArrayList();
 
     int topCol = 0;
-    double highestGain = Double.MIN_VALUE;
+    double highestGain = Double.NEGATIVE_INFINITY;
 
     ColSplit retVal = new ColSplit();
     // for each available column, calculate the entropy

@@ -325,8 +325,8 @@ public class DecisionTreeViewer extends VisModule  {
   private boolean pruneIt(String aString, ArrayList aList) {
     int lessAt = -1;
     int equalAt = -1;
-    double minVal = Double.MIN_VALUE;
-    double maxVal = Double.MAX_VALUE;
+    double minVal = Double.NEGATIVE_INFINITY;
+    double maxVal = Double.POSITIVE_INFINITY;
     lessAt = aString.indexOf("<");
     equalAt = aString.indexOf("=");
     String labelStr = NOTHING;

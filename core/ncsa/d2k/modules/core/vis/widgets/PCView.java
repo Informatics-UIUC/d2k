@@ -1769,8 +1769,8 @@ public class PCView extends JUserPane implements ActionListener, Printable  {
 			}
 
 			private MaxMin getMaxMin(int colIdx) {
-				double min = Double.MAX_VALUE;
-				double max = Double.MIN_VALUE;
+				double min = Double.POSITIVE_INFINITY;
+				double max = Double.NEGATIVE_INFINITY;
 
 				for(int i = 0; i < table.getNumRows(); i++) {
 					double d = table.getDouble(i, colIdx);
