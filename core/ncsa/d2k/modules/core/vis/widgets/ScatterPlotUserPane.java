@@ -7,6 +7,7 @@ import javax.swing.*;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.controller.userviews.swing.JUserPane;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.gui.*;
 import ncsa.d2k.modules.core.vis.*;
 import ncsa.d2k.gui.*;
@@ -18,7 +19,7 @@ public class ScatterPlotUserPane extends ncsa.d2k.controller.userviews.swing.JUs
 	implements ActionListener {
 	ScatterPlot2D module;
 
-	Table table;
+	TableImpl table;
 	JMenuItem help;
 	JMenuBar menuBar;
 	HelpWindow hWindow;
@@ -41,7 +42,7 @@ public class ScatterPlotUserPane extends ncsa.d2k.controller.userviews.swing.JUs
 	public Module getModule () { return module; }
 
 	public void setInput(Object object, int index) {
-		table = (Table) object;
+		table = (TableImpl) object;
 		buildView();
 	}
 

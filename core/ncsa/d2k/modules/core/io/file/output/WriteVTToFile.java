@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.io.file.output;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.io.*;
 
@@ -90,7 +91,7 @@ public class WriteVTToFile extends OutputModule
     */
     public String[] getInputTypes() {
     	String []in = {"java.lang.String",
-			"ncsa.d2k.modules.datatype.table.Table"};
+			"ncsa.d2k.modules.datatype.table.basic.TableImpl"};
 		return in;
 	}
 
@@ -152,7 +153,7 @@ public class WriteVTToFile extends OutputModule
 	*/
     public void doit() {
     	String fileName = (String)pullInput(0);
-		Table vt = (Table)pullInput(1);
+		TableImpl vt = (TableImpl)pullInput(1);
 		FileWriter fw;
 		String newLine = "\n";
 

@@ -11,6 +11,8 @@ import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 import ncsa.gui.*;
 
 /**
@@ -45,7 +47,7 @@ public class DefineBins extends UIModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return in;
 	}
 
@@ -56,7 +58,7 @@ public class DefineBins extends UIModule implements HasNames {
     */
     public String[] getOutputTypes() {
 		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return out;
 	}
 
@@ -157,7 +159,7 @@ public class DefineBins extends UIModule implements HasNames {
 		private JButton help;
 
 		/** inputs */
-		ExampleTable table;
+		ExampleTableImpl table;
 
 		/** The class and attribute names, derived from the table. */
 		String []classNames;
@@ -165,7 +167,7 @@ public class DefineBins extends UIModule implements HasNames {
 
 		public void setInput(Object o, int i) {
 			if(i == 0) {
-				table = (ExampleTable)o;
+				table = (ExampleTableImpl)o;
 				initData();
 			}
 		}

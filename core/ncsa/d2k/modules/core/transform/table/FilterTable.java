@@ -11,6 +11,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * Filter rows from a Table
@@ -42,7 +43,7 @@ public class FilterTable extends UIModule {
      @return the data types of all inputs.
      */
     public String[] getInputTypes () {
-        String[] types =  { "ncsa.d2k.modules.core.datatype.table.Table" };
+        String[] types =  { "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
         return  types;
     }
 
@@ -64,7 +65,7 @@ public class FilterTable extends UIModule {
      @return the data types of all outputs.
      */
     public String[] getOutputTypes () {
-        String[] types =  { "ncsa.d2k.modules.core.datatype.table.Table" };
+        String[] types =  { "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
         return  types;
     }
 
@@ -96,7 +97,7 @@ public class FilterTable extends UIModule {
      * Filtering lines.
      */
     class Filter extends JUserPane implements ActionListener {
-		Table table;
+		TableImpl table;
 		boolean []linemap;
 
         HashMap numericColumnLookup;
@@ -125,8 +126,8 @@ public class FilterTable extends UIModule {
 
 		public void setInput(Object o, int id) {
 			removeAll();
-			table = (Table)o;
-			linemap = new boolean[table.getCapacity()];
+			table = (TableImpl)o;
+			linemap = new boolean[table.getNumRows()];
 
             numericColumnLookup = new HashMap();
             stringColumnLookup = new HashMap();
@@ -340,7 +341,7 @@ public class FilterTable extends UIModule {
 				for(int i = 0; i < linemap.length; i++)
 					linemap[i] = !linemap[i];
 
-				table.removeByFlag(linemap);
+				table.removeRowsByFlag(linemap);
 				pushOutput(table, 0);
 				viewDone("");
 

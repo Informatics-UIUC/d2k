@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.prediction.naivebayes;
 
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.util.*;
 import java.io.Serializable;
@@ -32,7 +33,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 	private CalcTree calcTree;
 
 	/** The data used */
-	private transient ExampleTable table;
+	private transient ExampleTableImpl table;
 
  	/** A lookup table of the data for the chart, indexed by attribute name */
   	private HashMap chartData;
@@ -81,7 +82,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		@param vt the vertical table
 		@param t the types lookup table
 	*/
-   	NaiveBayesModel(BinTree bt, ExampleTable vt) {
+   	NaiveBayesModel(BinTree bt, ExampleTableImpl vt) {
 		setName("NaiveBayesModel");
 		binTree = bt;
 		table = vt;
@@ -461,7 +462,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return in;
     }
 
@@ -471,7 +472,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.modules.core.datatype.table.PredictionTable",
+		String[] out = {"ncsa.d2k.modules.core.datatype.table.basic.PredictionTableImpl",
 			"ncsa.d2k.modules.compute.learning.modelgen.naivebayes.NaiveBayesModel"};
    		return out;
 	}
@@ -531,7 +532,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		if(vt instanceof ExampleTable)
 			result = predict((ExampleTable)vt);
 		else
-			result = predict(TableFactory.createExampleTable(vt));
+			result = predict(vt.toExampleTable());
 
 		pushOutput(result, 0);
 		pushOutput(this, 1);
@@ -574,11 +575,11 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		assumed to be the same as that of the training data!
 	*/
 	public PredictionTable predict(ExampleTable src) {
-		PredictionTable pt = null;
-		if (src instanceof PredictionTable)
-			pt = (PredictionTable) src;
+		PredictionTableImpl pt = null;
+		if (src instanceof PredictionTableImpl)
+			pt = (PredictionTableImpl) src;
 		else
-			pt = TableFactory.createPredictionTable(src);
+			pt = (PredictionTableImpl)src.toPredictionTable();
 
 		int numCorrect = 0;
 

@@ -2,6 +2,7 @@
 package ncsa.d2k.modules.core.io.sql;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
 import java.sql.*;
 import java.io.*;
@@ -68,7 +69,7 @@ public class ReadQueryResults extends ncsa.d2k.infrastructure.modules.DataPrepMo
 	public String[] getOutputTypes () {
 /*&%^6 Do not modify this section. */
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 /*#end^6 Continue editing. ^#&*/
 	}
@@ -128,7 +129,7 @@ System.out.println ("---- Entries - "+count);
 		rs = stmt.executeQuery(query);
 		ResultSetMetaData rsmd = rs.getMetaData ();
 		int numColumns = rsmd.getColumnCount ();
-		Table vt = TableFactory.createTable(numColumns);
+		TableImpl vt = (TableImpl)DefaultTableFactory.getInstance().createTable(numColumns);
 
 		// Now compile a list of the datatypes.
 		int [] types = new int [numColumns];

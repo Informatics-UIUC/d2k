@@ -14,7 +14,7 @@ import ncsa.d2k.controller.classloading.*;
 import ncsa.d2k.infrastructure.views.UserView;
 import ncsa.d2k.io.*;
 import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.modules.core.datatype.table.*;
+//import ncsa.d2k.modules.core.datatype.table.*;
 
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;

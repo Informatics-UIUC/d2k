@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.prediction.evaluators;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
 	PercentErrorClassification.java
@@ -42,7 +43,7 @@ public class PercentErrorClassification extends ncsa.d2k.modules.core.prediction
 	}
 
 	protected void setupMetrics(){
-			metrics=TableFactory.createTable(1);
+			metrics=(TableImpl)DefaultTableFactory.getInstance().createTable(1);
 			metrics.setColumn(new DoubleColumn(n), 0);
 			metrics.setColumnLabel("%wrong",  0);
 	}

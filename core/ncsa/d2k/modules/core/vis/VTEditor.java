@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.vis;
 import ncsa.d2k.modules.core.vis.widgets.TableEditorModel;
 import ncsa.d2k.modules.core.vis.widgets.VerticalTableMatrix;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import ncsa.d2k.infrastructure.views.UserView;
 import ncsa.d2k.util.ErrorDialog;
@@ -70,7 +71,7 @@ public class VTEditor extends VTViewer {
 		public void setInput(Object input, int idx) {
 			if(idx == 0) {
 				removeAll();
-				table = (Table)input;
+				table = (TableImpl)input;
 				// a panel to put the buttons on
 				JPanel buttonPanel = new JPanel();
 				ok = new JButton("Done");

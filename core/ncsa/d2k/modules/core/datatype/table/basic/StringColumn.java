@@ -1,4 +1,6 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 
@@ -20,8 +22,6 @@ import java.io.*;
  */
 final public class StringColumn extends ContinuousCharArrayColumn {
 
-	static final long serialVersionUID = -1556989697335911803L;
-
 	/**
 	 * Create a new StringColumn
 	 * @param initialLength the initial number of rows
@@ -29,6 +29,7 @@ final public class StringColumn extends ContinuousCharArrayColumn {
 	 */
 	public StringColumn(int initialLength, int initialSize) {
 		super(initialLength, initialSize, false);
+		type = ColumnTypes.STRING;
 	}
 
 	/**
@@ -38,6 +39,7 @@ final public class StringColumn extends ContinuousCharArrayColumn {
 	 */
 	public StringColumn(int initialLength, int initialSize, boolean fill) {
 		super(initialLength, initialSize, fill);
+		type = ColumnTypes.STRING;
 	}
 
 	/**
@@ -47,6 +49,7 @@ final public class StringColumn extends ContinuousCharArrayColumn {
 	 */
 	public StringColumn(int initialLength) {
 		this(initialLength, DEFAULT_INITIAL_SIZE, false);
+		type = ColumnTypes.STRING;
 	}
 
 	/**
@@ -56,6 +59,7 @@ final public class StringColumn extends ContinuousCharArrayColumn {
 	 */
 	public StringColumn(int initialLength, boolean fill) {
 		this(initialLength, DEFAULT_INITIAL_SIZE, fill);
+		type = ColumnTypes.STRING;
 	}
 
 	/**
@@ -64,10 +68,12 @@ final public class StringColumn extends ContinuousCharArrayColumn {
 	 */
 	public StringColumn() {
 		this(0, DEFAULT_INITIAL_SIZE);
+		type = ColumnTypes.STRING;
 	}
 
 	public StringColumn(boolean fill) {
 		this(0, DEFAULT_INITIAL_SIZE, fill);
+		type = ColumnTypes.STRING;
 	}
 
 	/**
@@ -87,6 +93,7 @@ final public class StringColumn extends ContinuousCharArrayColumn {
 		this();
 		for(int i = 0; i < intern.length; i++)
 			setString(intern[i], i);
+		type = ColumnTypes.STRING;
 	}
 
 	/**
@@ -107,14 +114,13 @@ final public class StringColumn extends ContinuousCharArrayColumn {
             ois.close();
             return  bac;
         } catch (Exception e) {
-            bac = new StringColumn(getCapacity());
-            for (int i = 0; i < getCapacity(); i++) {
+            bac = new StringColumn(getNumRows());
+            for (int i = 0; i < getNumRows(); i++) {
 				String orig = getString(i);
                 bac.setString(new String(orig), i);
             }
             bac.setLabel(getLabel());
             bac.setComment(getComment());
-            //bac.setType(getType());
             return  bac;
         }
 	}
@@ -221,7 +227,7 @@ final public class StringColumn extends ContinuousCharArrayColumn {
      @param t the VerticalTable to swap rows for
 	 @return the new partition point
      */
-    protected int partition (/*byte[] A,*/ int p, int r, TableImpl t) {
+    protected int partition (/*byte[] A,*/ int p, int r, MutableTable t) {
         //String x = A[p];
         int i = p - 1;
         int j = r + 1;

@@ -6,6 +6,7 @@ import java.awt.geom.*;
 import java.text.NumberFormat;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * A ShadedScatterPlot is a ScatterPlot with its points shaded by a gradient.
@@ -31,7 +32,7 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 * @param settings
 	 * @param shadeColumnIndex the index of the column with the values to shade by
 	 */
-	public ShadedScatterPlot(Table table, DataSet[] sets,
+	public ShadedScatterPlot(TableImpl table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex) {
 		super(table, sets, settings);
 
@@ -48,7 +49,7 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 * @param low the low color
 	 * @param high the high color
 	 */
-	public ShadedScatterPlot(Table table, DataSet[] sets,
+	public ShadedScatterPlot(TableImpl table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex, Color low, Color high) {
 		super(table, sets, settings, low, high);
 
@@ -66,7 +67,7 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 * @param high the high color
 	 * @param pos
 	 */
-	public ShadedScatterPlot(Table table, DataSet[] sets,
+	public ShadedScatterPlot(TableImpl table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex, Color low,
 		Color high, int pos) {
 		super(table, sets, settings, low, high, pos);

@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.transform.attribute;
 import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /*
 	takes multiple PredictionTables, puts all the columns
 	of prediction in the first one and returns it.
@@ -27,7 +27,7 @@ public class CombinePredictionTables extends ComputeModule
 
 	int tablesIn=0;
 
-	PredictionTable[] tables;
+	PredictionTableImpl[] tables;
 
 	//////////////////////////
 	///d2k control methods
@@ -57,9 +57,9 @@ public class CombinePredictionTables extends ComputeModule
 	*/
 	public void doit() throws Exception{
 		if(tablesIn==0){
-			tables=new PredictionTable[tablesToWaitFor];
+			tables=new PredictionTableImpl[tablesToWaitFor];
 		}
-		tables[tablesIn]=(PredictionTable)pullInput(0);
+		tables[tablesIn]=(PredictionTableImpl)pullInput(0);
 		tablesIn++;
 
 		if(tablesIn==tablesToWaitFor){
@@ -70,8 +70,8 @@ public class CombinePredictionTables extends ComputeModule
 
 	}
 
-	protected PredictionTable makeMasterTable(){
-		PredictionTable master=tables[0];
+	protected PredictionTableImpl makeMasterTable(){
+		PredictionTableImpl master=tables[0];
 		int[] predictionSet=master.getPredictionSet();
 		int addedPredCount=0;
 
@@ -114,7 +114,7 @@ public class CombinePredictionTables extends ComputeModule
 		return "Predictions Compiler";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
+		String[] s= {"ncsa.d2k.modules.core.datatype.table.basic.PredictionTableImpl"};
 		return s;
 	}
 
@@ -140,7 +140,7 @@ public class CombinePredictionTables extends ComputeModule
 		}
 	}
 	public String[] getOutputTypes(){
-		String[] s={"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
+		String[] s={"ncsa.d2k.modules.core.datatype.table.basic.PredictionTableImpl"};
 		return s;
 	}
 

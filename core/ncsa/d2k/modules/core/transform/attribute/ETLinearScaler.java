@@ -4,6 +4,8 @@ import ncsa.d2k.infrastructure.modules.DataPrepModule;
 import java.io.Serializable;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /**
        ETLinearScaler.java
 
@@ -94,7 +96,7 @@ public void setClearPreviousTransforms(boolean b){
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
 
 	}
@@ -119,7 +121,7 @@ public void setClearPreviousTransforms(boolean b){
 	public String[] getOutputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
 
 	}
@@ -157,7 +159,7 @@ public void setClearPreviousTransforms(boolean b){
 		features to the range defined by lowerBound/upperBound
 		*/
 	public Table transform(Table t){
-		ExampleTable et=(ExampleTable)t;
+		ExampleTableImpl et=(ExampleTableImpl)t;
 
 		inputInfo=new double[et.getNumInputFeatures()][2];
 		outputInfo=new double[et.getNumOutputFeatures()][2];
@@ -168,7 +170,7 @@ public void setClearPreviousTransforms(boolean b){
 
 		   		inputInfo[k][1]=((DoubleColumn)current_column).getMax()-((DoubleColumn)current_column).getMin();
 				inputInfo[k][0] = ((DoubleColumn)current_column).getMin();
-	  			int numRows=current_column.getCapacity();
+	  			int numRows=current_column.getNumRows();
 				for	(int j=0; j<numRows; j++){
 					double d=current_column.getDouble(j);
 					//transform to the interval [0,1]
@@ -188,7 +190,7 @@ public void setClearPreviousTransforms(boolean b){
 
 		   		outputInfo[k][1]=((DoubleColumn)current_column).getMax()-((DoubleColumn)current_column).getMin();
 				outputInfo[k][0] = ((DoubleColumn)current_column).getMin();
-	  			int numRows=current_column.getCapacity();
+	  			int numRows=current_column.getNumRows();
 
 				for	(int j=0; j<numRows; j++){
 					double d=current_column.getDouble(j);
@@ -217,7 +219,7 @@ public void setClearPreviousTransforms(boolean b){
 		any.
 		*/
 	public Table untransform(Table t){
-		ExampleTable et=(ExampleTable)t;
+		ExampleTableImpl et=(ExampleTableImpl)t;
 		if(firstUntransform){
 		  	for(int k=0; k<et.getNumOutputFeatures(); k++){
 				if(et.getColumn(et.getOutputFeatures()[k]) instanceof NumericColumn){
@@ -254,7 +256,7 @@ public void setClearPreviousTransforms(boolean b){
 
 	private void untransformOutputColumn(NumericColumn current_column, int k){
 	//	System.out.println("uoc");
-		final int numRows=current_column.getCapacity();
+		final int numRows=current_column.getNumRows();
 		double d;
 		for	(int j=0; j<numRows; j++){
 			d=current_column.getDouble(j);
@@ -269,7 +271,7 @@ public void setClearPreviousTransforms(boolean b){
 		}
 	}
 	private void untransformInputColumn(NumericColumn current_column, int k){
-		final int numRows=current_column.getCapacity();
+		final int numRows=current_column.getNumRows();
 
 		double d;
 		for	(int j=0; j<numRows; j++){

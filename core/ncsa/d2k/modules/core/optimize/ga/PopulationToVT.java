@@ -50,7 +50,7 @@ public class PopulationToVT extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}

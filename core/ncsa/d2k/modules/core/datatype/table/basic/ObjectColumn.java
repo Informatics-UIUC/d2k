@@ -1,5 +1,6 @@
-//package  ncsa.util.table;
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
@@ -15,8 +16,6 @@ import ncsa.d2k.util.*;
  It is very inefficient for: removals, insertions, additions
  */
 final public class ObjectColumn extends AbstractColumn {
-
-	static final long serialVersionUID = 1485541315569603141L;
 
     private static final Object emptyValue = null;
 
@@ -36,7 +35,8 @@ final public class ObjectColumn extends AbstractColumn {
      */
     public ObjectColumn (int capacity) {
         internal = new Object[capacity];
-        //setType(new Object());
+		setIsNominal(true);
+		type = ColumnTypes.OBJECT;
     }
 
     /**
@@ -44,8 +44,9 @@ final public class ObjectColumn extends AbstractColumn {
      @param vals the initial values
      */
     public ObjectColumn (Object[] vals) {
-        this.setInternal(vals);
-        //setType(new Object());
+		internal = vals;
+		setIsNominal(true);
+		type = ColumnTypes.OBJECT;
     }
 
     /**
@@ -68,12 +69,11 @@ final public class ObjectColumn extends AbstractColumn {
             ois.close();
             return  newCol;
         } catch (Exception e) {
-            newCol = new ObjectColumn(getCapacity());
-            for (int i = 0; i < getCapacity(); i++)
+            newCol = new ObjectColumn(getNumRows());
+            for (int i = 0; i < getNumRows(); i++)
                 newCol.setObject(internal[i], i);
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
-            //newCol.setType(getType());
             return  newCol;
         }
     }
@@ -82,8 +82,8 @@ final public class ObjectColumn extends AbstractColumn {
      Sort the elements in this column. Not supported for ObjectColumn.
      @exception NotSupportedException when sorting is not supported
      */
-    public void sort () throws NotSupportedException {
-        throw  new NotSupportedException();
+    public void sort () {
+		;
     }
 
     /**
@@ -92,10 +92,9 @@ final public class ObjectColumn extends AbstractColumn {
      @param t the Table to swap rows for
      @exception NotSupportedException when sorting is not supported
      */
-    public void sort (Table t) throws NotSupportedException {
-        throw  new NotSupportedException();
+    public void sort (MutableTable t) {
+		;
     }
-
 
     /**
     	Sort the items in this column.  Not supported for BooleanColumn.
@@ -104,11 +103,9 @@ final public class ObjectColumn extends AbstractColumn {
 	@param end the row no. which marks the end of the column segment to be sorted
     	@exception NotSupportedException when sorting is not supported
      */
-    public void sort (Table t, int begin, int end) throws NotSupportedException {
-        throw  new NotSupportedException();
+    public void sort (MutableTable t, int begin, int end) {
+		;
     }
-
-
 
     //////////////////////////////////////
     //// Accessing Metadata
@@ -130,16 +127,8 @@ final public class ObjectColumn extends AbstractColumn {
 	 * @return the number of rows this column can hold
 	 */
 	public int getNumRows() {
-		return getCapacity();
+		return internal.length;
 	}
-
-    /**
-     Get the capacity of this Column, its potential maximum number of entries.
-     @return the max number of entries this Column can hold
-     */
-    public int getCapacity () {
-        return  this.internal.length;
-    }
 
     /**
      Set a new capacity for this ObjectColumn.  The capacity is its potential
@@ -147,7 +136,7 @@ final public class ObjectColumn extends AbstractColumn {
 	 Column will be truncated.
      @param newCapacity the new capacity
      */
-    public void setCapacity (int newCapacity) {
+    public void setNumRows (int newCapacity) {
         if (internal != null) {
             Object[] newInternal = new Object[newCapacity];
             if (newCapacity > internal.length)
@@ -165,10 +154,10 @@ final public class ObjectColumn extends AbstractColumn {
      Gets a reference to the internal representation of this Column
      (Object[]).  Changes made to this object will be reflected in the Column.
      @return the internal representation of this Column.
-     */
+     /
     public Object getInternal () {
         return  this.internal;
-    }
+    }*/
 
     /**
      Gets a subset of this Column, given a start position and length.
@@ -186,7 +175,6 @@ final public class ObjectColumn extends AbstractColumn {
         ObjectColumn oc = new ObjectColumn(subset);
         oc.setLabel(getLabel());
         oc.setComment(getComment());
-        //oc.setType(getType());
         return  oc;
     }
 
@@ -374,6 +362,25 @@ final public class ObjectColumn extends AbstractColumn {
     }
 
     /**
+     If the entry at pos is a byte[], return the byte[], otherwise
+     convert the Object to a byte[] by calling ByteUtils.writeObject()
+     @param pos the position
+     @return the entry at pos as a byte[]
+     */
+    public byte getByte (int pos) {
+		return (byte)0;
+    }
+
+    /**
+     Set the value at pos to be newEntry.
+     @param newEntry the new item
+     @param pos the position
+     */
+    public void setByte (byte newEntry, int pos) {
+		;
+    }
+
+    /**
      Get the item at pos.
      @param pos the position
      @return the Object at pos
@@ -414,6 +421,26 @@ final public class ObjectColumn extends AbstractColumn {
     }
 
     /**
+     If the item at pos is a char[], return it.  Otherwise
+     call the toString() method on the Object and return it
+     as a char[].
+     @param pos the position
+     @return the item at pos as a char[]
+     */
+    public char getChar (int pos) {
+		return 'a';
+    }
+
+    /**
+     Set the item at pos to be newEntry.
+     @param newEntry the new item
+     @param pos the position
+     */
+    public void setChar (char newEntry, int pos) {
+		;
+    }
+
+    /**
      Get the item at pos as a Boolean.  If the item is a Boolean,
      return its boolean value, otherwise construct a new Boolean
      by calling the toString() method on the item and return its
@@ -441,11 +468,11 @@ final public class ObjectColumn extends AbstractColumn {
     /**
      Sets the reference to the internal representation of this Column.
      @param newInternal a new internal representation for this Column
-     */
+     /
     public void setInternal (Object newInternal) {
         if (newInternal instanceof Object[])
             this.internal = (Object[])newInternal;
-    }
+    }*/
 
     /**
      Gets an object representation of the entry at the indicated position in Column.
@@ -507,12 +534,12 @@ final public class ObjectColumn extends AbstractColumn {
          internal[pos] = newEntry;
          */
         Object[] newInternal = new Object[internal.length + 1];
-        if (pos > getCapacity()) {
+        if (pos > getNumRows()) {
             addRow(newEntry);
             return;
         }
         if (pos == 0)
-            System.arraycopy(internal, 0, newInternal, 1, getCapacity());        /*else if(pos == 1) {
+            System.arraycopy(internal, 0, newInternal, 1, getNumRows());        /*else if(pos == 1) {
          newInternal[0] = internal[0];
          System.arraycopy(internal, 1, newInternal, 2, getCapacity()-2);
          }*/
@@ -542,7 +569,7 @@ final public class ObjectColumn extends AbstractColumn {
      @param newOrder an array of indices indicating a new order
 	 @return a copy of this column, re-ordered
      */
-    public Column reOrderRows (int[] newOrder) {
+    public Column reorderRows (int[] newOrder) {
         Object[] newInternal = null;
         if (newOrder.length == internal.length) {
             newInternal = new Object[internal.length];
@@ -552,7 +579,6 @@ final public class ObjectColumn extends AbstractColumn {
         else
             throw  new ArrayIndexOutOfBoundsException();
         ObjectColumn oc = new ObjectColumn(newInternal);
-        //oc.setType(getType());
         oc.setComment(getComment());
         oc.setLabel(getLabel());
         return  oc;
@@ -610,53 +636,24 @@ final public class ObjectColumn extends AbstractColumn {
 
     //////////////////////////////////////
     /**
-     Given an array of booleans, will remove the positions in the Column
-     which coorespond to the positions in the boolean array which are
-     marked true.  If the boolean array and Column do not have the same
-     number of rows, the remaining elements will be discarded.
-     @param flags the boolean array of remove flags
-     */
-    public void removeByFlag (boolean[] flags) {
-        // keep a list of the row indices to remove
-        LinkedList ll = new LinkedList();
-        int i = 0;
-        for (; i < flags.length; i++) {
-            if (flags[i])
-                ll.add(new Integer(i));
-        }
-        for (; i < internal.length; i++) {
-            ll.add(new Integer(i));
-        }
-        int[] toRemove = new int[ll.size()];
-        int j = 0;
-        Iterator iter = ll.iterator();
-        while (iter.hasNext()) {
-            Integer in = (Integer)iter.next();
-            toRemove[j] = in.intValue();
-            j++;
-        }
-        // now call remove by index to remove the rows
-        removeByIndex(toRemove);
-    }
-
-    /**
      Given an array of ints, will remove the positions in the Table
      which are indicated by the ints in the array.
      @param indices the int array of remove indices
      */
-    public void removeByIndex (int[] indices) {
-        HashMap toRemove = new HashMap(indices.length);
+    public void removeRowsByIndex (int[] indices) {
+        HashSet toRemove = new HashSet(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
-            toRemove.put(id, id);
+            toRemove.add(id);
         }
         Object newInternal[] = new Object[internal.length - indices.length];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
-            Integer x = (Integer)toRemove.get(new Integer(i));
+            //Integer x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
-            if (x == null) {
+            //if (x == null) {
+			if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }

@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	MergeByColumns.java
 */
@@ -24,8 +25,8 @@ public class MergeByColumns extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 	}
 
@@ -45,7 +46,7 @@ public class MergeByColumns extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 	}
 
@@ -59,7 +60,7 @@ public class MergeByColumns extends ncsa.d2k.infrastructure.modules.DataPrepModu
 
 	//fill two arrays with filler properties that corespond to columns of two input verticaltables
 	//these arrays will be used to fill rows in the final verticaltable
-		protected void 	determineFillers(Table table1, Table table2){
+		protected void 	determineFillers(TableImpl table1, TableImpl table2){
 		int num1 = table1.getNumColumns();
 		int num2 = table2.getNumColumns();
 		for (int i=0; i<num1; i++){
@@ -147,8 +148,8 @@ public class MergeByColumns extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	Object[] fill;
 	Object[] fill2;
 	public void doit() throws Exception {
-		Table vt1 = (Table)pullInput(0);
-		Table vt2 = (Table)pullInput(1);
+		TableImpl vt1 = (TableImpl)pullInput(0);
+		TableImpl vt2 = (TableImpl)pullInput(1);
 		int numcol1 = vt1.getNumColumns();
 		int numcol2 = vt2.getNumColumns();
 		int numrows1 = vt1.getNumRows();

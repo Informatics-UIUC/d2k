@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -15,13 +16,13 @@ import javax.swing.table.*;
 */
 public class VerticalTableModel extends AbstractTableModel {
 	/** The VerticalTable that holds the data */
-	protected Table table;
+	protected TableImpl table;
 
 	/**
 		Constructor.
 		@param vt The VerticalTable that we represent
 	*/
-	public VerticalTableModel(Table vt) {
+	public VerticalTableModel(TableImpl vt) {
 		table = vt;
 	}
 

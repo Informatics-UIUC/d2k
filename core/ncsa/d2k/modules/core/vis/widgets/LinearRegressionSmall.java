@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -10,7 +11,7 @@ public class LinearRegressionSmall extends Graph {
 	int smallspace = 1;
 	int largespace = 3;
 
-	public LinearRegressionSmall(Table table, DataSet[] set, GraphSettings settings) {
+	public LinearRegressionSmall(TableImpl table, DataSet[] set, GraphSettings settings) {
 		super(table, set, settings);
 	}
 

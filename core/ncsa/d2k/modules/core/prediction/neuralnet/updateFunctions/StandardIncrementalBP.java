@@ -5,6 +5,7 @@ import ncsa.d2k.modules.core.prediction.neuralnet.learnFunctions.*;
 import java.io.Serializable;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /*
 	StandardIncrementalBP
 
@@ -82,7 +83,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 			//if 1 or more hidden layers
 			if(lastLayer>0){
 				int lastHiddenLayerIndex=lastLayer-1;//activations.getNumColumns()-2;
-				int lastLayerNodes=activations.getColumn(lastHiddenLayerIndex).getCapacity();
+				int lastLayerNodes=activations.getColumn(lastHiddenLayerIndex).getNumRows();
 				for(int n=0; n<lastLayerNodes; n++){
 					c=activations.getDouble(n, lastHiddenLayerIndex);
 					c*=alpha*d;
@@ -99,7 +100,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 				c*=alpha*d;
 				useWeightUpdate(c, 0, t, 0);
 
-				int weightsCount=weights.getColumn(0).getCapacity();
+				int weightsCount=weights.getColumn(0).getNumRows();
 				for(int n=1; n<weightsCount; n++){
 					c=data.getTrainInputDouble(g, n);
 					c*=alpha*d;
@@ -127,7 +128,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 				deltas.setDouble(thisDelta, n, layer);
 
 				//k is previous node
-				nodesInPrevLayer=sums.getColumn(layer-1).getCapacity();
+				nodesInPrevLayer=sums.getColumn(layer-1).getNumRows();
 				for(int k=0; k<nodesInPrevLayer;k++){
 					d= alpha*activations.getDouble(k, layer-1)*thisDelta;
 					useWeightUpdate(d, k, n, layer);
@@ -140,8 +141,8 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 
 		if(/*lastLayer>0*/activations.getNumColumns()>1){
 			//j is the 'to' node (this node)
-			nodeInLayerCount=weights.getColumn(0).getCapacity();
-			nodesInNextLayer=weights.getColumn(1).getCapacity();
+			nodeInLayerCount=weights.getColumn(0).getNumRows();
+			nodesInNextLayer=weights.getColumn(1).getNumRows();
 			for (int j=1; j</*weights.getColumn(0).getCapacity()*/nodeInLayerCount; j++){
 				thisDelta=0;
 				//k is the next node

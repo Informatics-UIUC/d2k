@@ -1,4 +1,6 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
@@ -171,4 +173,8 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
     public int getNumRows () {
         return  this.trainSet.length;
     }
+
+	public PredictionTable toPredictionTable() {
+		return null;
+	}
 }

@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.prediction;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.io.Serializable;
 
 /* SensitivityAnalysis
@@ -74,19 +75,19 @@ public class SensitivityAnalysis extends ncsa.d2k.infrastructure.modules.Compute
 	/*The table to hold 'synthetic' data
 	we will swap these with real columns, test, then swap them
 	back, then repeat with different columns*/
-	Table syntheticTable;
+	TableImpl syntheticTable;
 
 	/*The ExampleTable that is pulledIn on the first run,
 	this holds the examples that will be varied*/
-	ExampleTable mainData;
+	ExampleTableImpl mainData;
 
 	/*will be sent to the PredictionModel everytime
 	with a different column swapped out with a synthetic column*/
-	TestTable testTable;
+	TestTableImpl testTable;
 
 	/*holds the results, one column for every inputFeature
 	plus one with an example-trial index*/
-	Table[] resultsTables;
+	TableImpl[] resultsTables;
 
 
 	private boolean firstRun;
@@ -103,14 +104,14 @@ public class SensitivityAnalysis extends ncsa.d2k.infrastructure.modules.Compute
 	//////////////////////////////
 
 	private void setup(){
-		mainData=(ExampleTable)pullInput(0);
-		testTable=(TestTable)mainData.getTestTable();
+		mainData=(ExampleTableImpl)pullInput(0);
+		testTable=(TestTableImpl)mainData.getTestTable();
 
 		int mainDataRowCount=mainData.getNumRows();
 		int testTableRowCount=testTable.getNumRows();
 
 		//set up the synth table
-		syntheticTable= TableFactory.createTable(mainData.getNumInputFeatures());
+		syntheticTable= (TableImpl)DefaultTableFactory.getInstance().createTable(mainData.getNumInputFeatures());
 		for(int i=0; i<syntheticTable.getNumColumns(); i++){
 			DoubleColumn dc=new DoubleColumn(mainDataRowCount);
 			syntheticTable.setColumn(dc, i);
@@ -118,9 +119,9 @@ public class SensitivityAnalysis extends ncsa.d2k.infrastructure.modules.Compute
 		fillSyntheticTable();
 
 		//set up the results tables
-		resultsTables=new Table[mainData.getNumOutputFeatures()];
+		resultsTables=new TableImpl[mainData.getNumOutputFeatures()];
 		for(int k=0; k<resultsTables.length; k++){
-			resultsTables[k]= TableFactory.createTable(mainData.getNumInputFeatures()+1);
+			resultsTables[k]= (TableImpl)DefaultTableFactory.getInstance().createTable(mainData.getNumInputFeatures()+1);
 			StringColumn sc=new StringColumn(testTableRowCount*trialsPerExample);
 			for(int i=0; i<testTableRowCount; i++){
 				for(int j=0; j<trialsPerExample; j++){
@@ -191,7 +192,7 @@ public class SensitivityAnalysis extends ncsa.d2k.infrastructure.modules.Compute
 	private void pullAndSavePredictions(){
 		//this is actually the same object we pushed out earlier, but we'll
 		//pull it in so we can use the pipes to keep the sequencing right
-		testTable=(TestTable)pullInput(1);
+		testTable=(TestTableImpl)pullInput(1);
 
 		for(int k=0; k<resultsTables.length; k++){//for every output Feature
 			DoubleColumn allPredictions=(DoubleColumn)resultsTables[k].getColumn(currentFeature+1);
@@ -274,8 +275,8 @@ public class SensitivityAnalysis extends ncsa.d2k.infrastructure.modules.Compute
 
 	public String[] getInputTypes () {
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable",
-			"ncsa.d2k.modules.core.datatype.table.TestTable"
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl",
+			"ncsa.d2k.modules.core.datatype.table.basic.TestTableImpl"
 			};
 		return types;
 	}
@@ -290,8 +291,8 @@ public class SensitivityAnalysis extends ncsa.d2k.infrastructure.modules.Compute
 	public String[] getOutputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.TestTable",
-			"ncsa.d2k.modules.core.datatype.table.Table",
+			"ncsa.d2k.modules.core.datatype.table.basic.TestTableImpl",
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
 			};
 		return types;
 	}

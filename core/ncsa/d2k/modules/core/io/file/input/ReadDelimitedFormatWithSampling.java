@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * Read in a file with a single delimiter.
@@ -145,7 +146,7 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 			if(labelsList != null)
 				labelsList.clear();
 
-			Table table = TableFactory.createTable(cols);
+			TableImpl table = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
 
 			int numRowsRead = 0;
 

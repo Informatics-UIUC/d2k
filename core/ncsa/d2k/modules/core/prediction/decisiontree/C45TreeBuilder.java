@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.prediction.decisiontree;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.util.*;
 
 import java.util.*;
@@ -108,7 +109,7 @@ public class C45TreeBuilder extends ComputeModule
 		@return the information given by a numeric attribute with the given
 			split value
 	*/
-	private double numericAttributeEntropy(Table vt, double splitVal,
+	private double numericAttributeEntropy(TableImpl vt, double splitVal,
 		ArrayList examples, int attCol, int outCol) {
 
 		/*HashMap lessThanTally = new HashMap();
@@ -413,14 +414,10 @@ public class C45TreeBuilder extends ComputeModule
 		//sc.trim();
 		//Column[] cols = {dc, sc};
 		Column[] cols = {dc, sc};
-		Table vt = TableFactory.createTable(cols);
+		TableImpl vt = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
 
 		// sort the table
-		try {
-			vt.sortByColumn(0);
-		}
-		catch(Exception e) {
-		}
+		vt.sortByColumn(0);
 
 		// now replace ic with a string column
 		/*for(int i = 0; i < vt.getNumRows(); i++) {
@@ -476,7 +473,7 @@ public class C45TreeBuilder extends ComputeModule
 	*/
 	private EntrSplit numericGain(int attCol, ArrayList examples) {
 		if(debug)
-			System.out.println("Calc numericGain: "+table.getColumnLabel(attCol)+" size: "+examples.size()+" out: "+table.getColumnLabel(outputs[0])+" type: "+table.getColumn(outputs[0]));
+			System.out.println("Calc numericGain: "+table.getColumnLabel(attCol)+" size: "+examples.size()+" out: "+table.getColumnLabel(outputs[0]));
 		double gain = outputEntropy(outputs[0], examples);
 
 		double splitVal = findSplitValue(attCol, examples);
@@ -662,7 +659,8 @@ public class C45TreeBuilder extends ComputeModule
 		// if it is a numeric column, there will be two branches.
 		// count up the number of examples less than and greater
 		// than the split value
-		if(table.getColumn(colNum) instanceof NumericColumn) {
+		//if(table.getColumn(colNum) instanceof NumericColumn) {
+		if(table.isNumericColumn(colNum)) {
 			double lessThanTally = 0;
 			double greaterThanTally = 0;
 
@@ -775,6 +773,7 @@ public class C45TreeBuilder extends ComputeModule
 			int col = ((Integer)attributes.get(i)).intValue();
 			// categorical data
 			if(!(table.getColumn(col) instanceof NumericColumn)) {
+			//if(table.isNumericColumn(col)) {
 				double d = categoricalGain(col, examples);
 				//System.out.println(table.getColumnLabel(col)+" "+d);
 				if(d > highestGain) {
@@ -809,7 +808,7 @@ public class C45TreeBuilder extends ComputeModule
 	}
 
 	// the table that contains the data set
-	private transient ExampleTable table;
+	private transient ExampleTableImpl table;
 	// the indices of the columns with output variables
 	private transient int[] outputs;
 
@@ -859,13 +858,13 @@ public class C45TreeBuilder extends ComputeModule
     }
 
 	public String[] getInputTypes() {
-	    String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+	    String[] in = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
         return in;
 	}
 
 	public String[] getOutputTypes() {
 	    String[] out = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
-		    "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		    "ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
         return out;
 	}
 
@@ -879,7 +878,7 @@ public class C45TreeBuilder extends ComputeModule
 		Build the decision tree
 	*/
 	public void doit() {
-		table = (ExampleTable)pullInput(0);
+		table = (ExampleTableImpl)pullInput(0);
 		int[] inputs = table.getInputFeatures();
 		outputs = table.getOutputFeatures();
 
@@ -977,6 +976,7 @@ public class C45TreeBuilder extends ComputeModule
 
 			// categorical data
 			if(!(table.getColumn(col) instanceof NumericColumn)) {
+			//if(!table.isNumericColumn(col)) {
 				// for each possible value v of this attribute in the set
 				// of examples add a new branch below the root,
 				// corresponding to A = v

@@ -1,4 +1,6 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
@@ -9,18 +11,16 @@ import ncsa.d2k.modules.*;
  */
 public class ExampleTableImpl extends TableImpl implements ExampleTable {
 
-	static final long serialVersionUID = -5554592175150224719L;
-
-    /** the indexes of the records in the various training sets. */
+    /** the indicies of the records in the various training sets. */
     protected int trainSet[];
 
-    /** the indexes of the records in the various test sets. */
+    /** the indicies of the records in the various test sets. */
     protected int testSet[];
 
-    /**the indexes of the attributes that are inputs (to the model). */
+    /**the indicies of the attributes that are inputs (to the model). */
     protected int inputColumns[];
 
-    /**the indexes of the attributes that are inputs (to the model). */
+    /**the indicies of the attributes that are inputs (to the model). */
     protected int outputColumns[];
 
     /** list of transformations performed. */
@@ -689,4 +689,8 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
             return  null;
         return  new TrainTableImpl(this);
     }
+
+	public PredictionTable toPredictionTable() {
+		return new PredictionTableImpl(this);
+	}
 }

@@ -4,6 +4,7 @@ package ncsa.d2k.modules.core.prediction.markov;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 // should be renamed RoteMemory or TABLE LOOKUP or LITERAL KEY or EXACT_MATCH or EPISODIC ...
 public class MarkovModel extends ModelModule implements java.io.Serializable
@@ -84,7 +85,7 @@ public class MarkovModel extends ModelModule implements java.io.Serializable
 
   public String[] getInputTypes()
     {
-    String [] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+    String [] in = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
     //String [] in = {"java.lang.Object"};
     return in;
     }
@@ -92,7 +93,7 @@ public class MarkovModel extends ModelModule implements java.io.Serializable
   public String[] getOutputTypes()
     {
     //String [] out = {"java.lang.Object"};
-	String [] out = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+	String [] out = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
     return out;
     }
 
@@ -129,7 +130,7 @@ public class MarkovModel extends ModelModule implements java.io.Serializable
 
   public void doit()
     {
-		ExampleTable et = (ExampleTable)pullInput(0);
+		ExampleTableImpl et = (ExampleTableImpl)pullInput(0);
 
 		Column[] predCols = new Column[outputSpaceSize*2];
 		int numRows = et.getNumRows();

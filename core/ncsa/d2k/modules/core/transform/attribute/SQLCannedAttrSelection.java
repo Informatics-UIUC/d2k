@@ -15,6 +15,7 @@ import java.text.NumberFormat;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
  SQLCannedAttrSelection is a module in which table, attribute and bin selections are hard coded
  to speed up testing
@@ -61,7 +62,7 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
     */
     public String[] getOutputTypes() {
 		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-				"ncsa.d2k.modules.core.datatype.table.ExampleTable",
+				"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl",
 				"java.lang.String"};
 		return out;
 	}
@@ -139,7 +140,7 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
 
 	// creating ExampleTable containing metadata - from SQLMeta2VT
  	ResultSet result;
-        ExampleTable vt = null;
+        ExampleTableImpl vt = null;
 	try {
             Statement stmt = conn.getConnection().createStatement();
             result = stmt.executeQuery("SELECT * FROM " + tableName + " WHERE ROWNUM=1");
@@ -147,7 +148,8 @@ public class SQLCannedAttrSelection extends DataPrepModule implements HasNames {
             ResultSetMetaData columnMetadata = result.getMetaData();
 
             int numColumns = columnMetadata.getColumnCount();
-            vt = TableFactory.createExampleTable(numColumns);
+            Table t = DefaultTableFactory.getInstance().createTable(numColumns);
+			vt = (ExampleTableImpl)t.toExampleTable();
             for(int i = 0; i < numColumns; i++) {
                 int type = columnMetadata.getColumnType(i+1);
                 if ( type == java.sql.Types.SMALLINT ||

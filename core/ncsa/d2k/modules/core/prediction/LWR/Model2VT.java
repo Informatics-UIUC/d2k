@@ -53,7 +53,7 @@ public class Model2VT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}

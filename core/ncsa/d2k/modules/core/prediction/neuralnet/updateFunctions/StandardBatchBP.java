@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.prediction.neuralnet.updateFunctions;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.activationFunctions.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.learnFunctions.*;
@@ -14,11 +15,11 @@ import ncsa.d2k.modules.core.prediction.neuralnet.learnFunctions.*;
 
 public class StandardBatchBP extends StandardIncrementalBP{
 
-	private Table runningUpdates;
+	private TableImpl runningUpdates;
 
 	public  StandardBatchBP(ncsa.d2k.modules.core.prediction.neuralnet.NNModelGenerator.NNModel mod){
 		super(mod);
-		runningUpdates=weights.copy();
+		runningUpdates=(TableImpl)weights.copy();
 		//make it a deep copy
 		for (int k=0; k<runningUpdates.getNumColumns();k++){
 			for(int h=0; h<runningUpdates.getColumn(k).getNumRows(); h++){
@@ -76,7 +77,7 @@ public class StandardBatchBP extends StandardIncrementalBP{
 
 	public void batchUpdate(){
 		for(int i=0; i<runningUpdates.getNumColumns(); i++){
-			for(int j=0; j<runningUpdates.getColumn(i).getCapacity(); j++){
+			for(int j=0; j<runningUpdates.getColumn(i).getNumRows(); j++){
 				double[] a=(double[])((DoubleColumn)runningUpdates.getObject(j, i)).getInternal();
 				double[] b=(double[])((DoubleColumn)weights.getObject(j, i)).getInternal();
 

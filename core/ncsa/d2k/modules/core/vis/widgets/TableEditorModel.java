@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.util.ErrorDialog;
 
 import javax.swing.JComboBox;
@@ -19,7 +20,7 @@ public class TableEditorModel extends VerticalTableModel {
 		@param t the table to display
 		@param b an array of combo boxes to display in the first row
 	*/
-	public TableEditorModel(Table t, JComboBox[] b) {
+	public TableEditorModel(TableImpl t, JComboBox[] b) {
 		super(t);
 		dataTypes = b;
 	}

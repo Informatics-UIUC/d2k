@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.prediction.evaluators;
 import ncsa.d2k.infrastructure.modules.ComputeModule;
 import ncsa.d2k.modules.TransformationModule;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.ArrayList;
 import java.io.Serializable;
 /**
@@ -121,7 +122,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 	}
 
 	protected TestTable[] tts;
-	protected Table metrics;
+	protected TableImpl metrics;
 
 	int n=1;
 
@@ -136,7 +137,7 @@ public class RootMeanSquared extends ncsa.d2k.infrastructure.modules.ComputeModu
 	}
 	protected void setupMetrics(){
 		int lastIndex=n-1;
-		metrics= TableFactory.createTable(tts[lastIndex].getNumOutputFeatures());
+		metrics= (TableImpl)DefaultTableFactory.getInstance().createTable(tts[lastIndex].getNumOutputFeatures());
 		for(int i=0; i<metrics.getNumColumns();i++){
 			metrics.setColumn(new DoubleColumn(n), i);
 			metrics.setColumnLabel(tts[lastIndex].getColumnLabel(tts[lastIndex].getOutputFeatures()[i]), i);

@@ -1,4 +1,6 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
@@ -14,7 +16,9 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
 
 	static final long serialVersionUID = -7408690070856124087L;
 
-	TestTableImpl(int i) {
+	private ExampleTable original;
+
+	private TestTableImpl(int i) {
 		super(i);
 	}
 
@@ -25,6 +29,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
      */
     TestTableImpl (PredictionTableImpl ttt) {
         super(ttt);
+		original = ttt;
     }
 
     /**
@@ -34,6 +39,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
      */
     TestTableImpl (ExampleTableImpl ttt) {
         super(ttt);
+		original = ttt;
         //predictions = new int[outputColumns.length];
         //Column []newColumns = new Column[columns.length + outputColumns.length];
         //int i = 0;
@@ -316,5 +322,13 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     public int getNumRows () {
         return  testSet.length;
     }
+
+	public ExampleTable getExampleTable() {
+		return original;
+	}
+
+	public PredictionTable toPredictionTable() {
+		return this;
+	}
 }
 

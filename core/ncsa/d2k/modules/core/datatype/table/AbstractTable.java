@@ -1,20 +1,18 @@
 package ncsa.d2k.modules.core.datatype.table;
 
 /**
- * AbstractTable implements several metadata methods common to all Tables.
+ * AbstractTable implements several meta methods common to all Tables.
  */
 public abstract class AbstractTable implements Table {
 	private String label;
 	private String comment;
-	//private Object type;
-
-	static final long serialVersionUID = 7466283323917113619L;
+	private int keyColumn;
 
 	/**
 		Get the label associated with this Table.
 		@return the label which describes this Table
 	*/
-	final public String getLabel( ) {
+	public String getLabel( ) {
 		return label;
 	}
 
@@ -22,7 +20,7 @@ public abstract class AbstractTable implements Table {
 		Set the label associated with this Table.
 		@param labl the label which describes this Table
 	*/
-	final public void setLabel( String labl ) {
+	public void setLabel( String labl ) {
 		label = labl;
 	}
 
@@ -30,7 +28,7 @@ public abstract class AbstractTable implements Table {
 		Get the comment associated with this Table.
 		@return the comment which describes this Table
 	*/
-	final public String getComment( ) {
+	public String getComment( ) {
 		return comment;
 	}
 
@@ -38,23 +36,15 @@ public abstract class AbstractTable implements Table {
 		Set the comment associated with this Table.
 		@param cmt the comment which describes this Table
 	*/
-	final public void setComment( String cmt ) {
+	public void setComment( String cmt ) {
 		comment = cmt;
 	}
 
-	/**
-		Get the type associated with this Table.
-		@return the type of data this Table holds
-	*/
-	/*final public Object getType( ) {
-		return type;
-	}*/
+	public void setKeyColumn(int idx) {
+		keyColumn = idx;
+	}
 
-	/**
-		Set the type associated with this Table.
-		@param tp the type of data this Table holds
-	*/
-	/*final public void setType( Object tp ) {
-		type = tp;
-	}*/
+	public int getKeyColumn() {
+		return keyColumn;
+	}
 }

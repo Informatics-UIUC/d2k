@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**************************************************
 **	VTStats
 **
@@ -35,7 +36,7 @@ public class VTStats extends ncsa.d2k.infrastructure.modules.ComputeModule {
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table"
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"
 
 			};
 		return types;
@@ -62,7 +63,7 @@ public class VTStats extends ncsa.d2k.infrastructure.modules.ComputeModule {
 	public String[] getOutputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -82,7 +83,7 @@ public class VTStats extends ncsa.d2k.infrastructure.modules.ComputeModule {
   ///////////////////
 	public void doit () throws Exception {
 
-	Table data=(Table)pullInput(0);
+	TableImpl data=(TableImpl)pullInput(0);
 
 	String[] columnNames=new String[data.getNumColumns()];
 	double[] deviations=new double[data.getNumColumns()];
@@ -183,7 +184,7 @@ public class VTStats extends ncsa.d2k.infrastructure.modules.ComputeModule {
 		}
 
 		//create the Vertical Table for export
-		Table stats= TableFactory.createTable(7);
+		TableImpl stats= (TableImpl)DefaultTableFactory.getInstance().createTable(7);
 		stats.setLabel("Stats For"+	data.getLabel());
 
 		StringColumn col1=new StringColumn(labels);

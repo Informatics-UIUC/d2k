@@ -5,6 +5,7 @@ import javax.swing.*;
 import ncsa.d2k.gui.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
    ETScatterPlot.java
@@ -49,7 +50,7 @@ public class ETLinearRegression extends ETScatterPlot {
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createSmallGraph(Table vt, DataSet[] d,
+	protected Graph createSmallGraph(TableImpl vt, DataSet[] d,
 		GraphSettings gs) {
 		return new LinearRegressionSmall(vt, d, gs);
 	}
@@ -60,7 +61,7 @@ public class ETLinearRegression extends ETScatterPlot {
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createGraph(Table vt, DataSet[] d,
+	protected Graph createGraph(TableImpl vt, DataSet[] d,
 		GraphSettings gs) {
 		return new LinearRegression(vt, d, gs);
 	}

@@ -1,13 +1,14 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 
 public class ScatterPlot extends Graph {
 
 	public ScatterPlot () {}
-	public ScatterPlot(Table table, DataSet[] sets, GraphSettings settings) {
+	public ScatterPlot(TableImpl table, DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 	}
 

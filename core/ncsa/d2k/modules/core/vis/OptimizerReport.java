@@ -11,6 +11,7 @@ import java.awt.event.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /*
 	A simple vis for saving the information of a solution space.
 	contains a tabbed pane with the best/worst and constraint info
@@ -68,7 +69,7 @@ public class OptimizerReport extends VisModule
     public class ClassView extends JUserPane
 		implements java.io.Serializable, ActionListener{
 
-		Table vt;
+		TableImpl vt;
 		VerticalTableMatrix vtm;
 
 		ButtonGroup radios;
@@ -118,7 +119,7 @@ public class OptimizerReport extends VisModule
 			solutionTablePanel.setLayout(new BorderLayout());
 
 			//the vt part
-			vt=(Table)ss.getTable();
+			vt=(TableImpl)ss.getTable();
 			/*
 			if(ss instanceof SOSolutionSpace){
 				int[] newOrder=((SOSolutionSpace)ss).sortSolutions();
@@ -269,11 +270,7 @@ public class OptimizerReport extends VisModule
 			int colIndex=0;
 			colIndex=columnSelectList.getSelectedIndex();
 			//sort
-			try{
-				vt.sortByColumn(colIndex);
-			}catch(Exception ne){
-				ne.printStackTrace();
-			}
+			((MutableTable)vt).sortByColumn(colIndex);
 			//reverse the order if necessary
 			if(!ascend)
 				reverseOrder();
@@ -289,7 +286,7 @@ public class OptimizerReport extends VisModule
 			int swapCount=(int)vt.getNumRows()/2;
 			int numRows=vt.getNumRows();
 			for(int i=0; i<swapCount; i++){
-				vt.swapRows(i, numRows-i-1);
+				((MutableTable)vt).swapRows(i, numRows-i-1);
 			}
 		}
 	}

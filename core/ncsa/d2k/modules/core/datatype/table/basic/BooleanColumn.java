@@ -1,4 +1,6 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
@@ -8,12 +10,10 @@ import ncsa.d2k.util.*;
 	BooleanColumn is an implementation of Column which holds boolean values.
 	The values are kept in an array of booleans.
  */
-final public class BooleanColumn extends AbstractColumn {
+public class BooleanColumn extends AbstractColumn {
 
     /** holds BooleanColumn's internal data rep */
     private boolean[] internal = null;
-
-	static final long serialVersionUID = 4092267981102467184L;
 
     /**
     	Create a new, empty BooleanColumn.
@@ -28,7 +28,8 @@ final public class BooleanColumn extends AbstractColumn {
      */
     public BooleanColumn (int capacity) {
         internal = new boolean[capacity];
-        //setType(new Boolean(false));
+		setIsNominal(true);
+		type = ColumnTypes.BOOLEAN;
     }
 
     /**
@@ -36,8 +37,9 @@ final public class BooleanColumn extends AbstractColumn {
     	@param vals the initial values
      */
     public BooleanColumn (boolean[] vals) {
-        this.setInternal(vals);
-        //setType(new Boolean(false));
+		internal = vals;
+		setIsNominal(true);
+		type = ColumnTypes.BOOLEAN;
     }
 
     /**
@@ -60,12 +62,11 @@ final public class BooleanColumn extends AbstractColumn {
             ois.close();
             return  newCol;
         } catch (Exception e) {
-            newCol = new BooleanColumn(this.getCapacity());
-            for (int i = 0; i < newCol.getCapacity(); i++)
+            newCol = new BooleanColumn(this.getNumRows());
+            for (int i = 0; i < newCol.getNumRows(); i++)
                 newCol.setBoolean(internal[i], i);
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
-            //newCol.setType(getType());
             return  newCol;
         }
     }
@@ -91,20 +92,12 @@ final public class BooleanColumn extends AbstractColumn {
 	}
 
     /**
-    	Get the capacity of this Column, its potential maximum number of entries.
-    	@return the maximum number of entries this Column can hold
-     */
-    public int getCapacity () {
-        return  this.internal.length;
-    }
-
-    /**
     	Set a new capacity for this BooleanColumn.  The capacity is its
 		potential maximum number of entries.  If numEntries is greater than
 		newCapacity, the Column will be truncated.
      	@param newCapacity the new capacity
      */
-    public void setCapacity (int newCapacity) {
+    public void setNumRows(int newCapacity) {
         if (internal != null) {
             boolean[] newInternal = new boolean[newCapacity];
             if (newCapacity > internal.length)
@@ -276,6 +269,30 @@ final public class BooleanColumn extends AbstractColumn {
     }
 
     /**
+     	Returns 1 if the value at pos is true, 0 otherwise.
+     	@param pos the position in the column
+     	@return 1 if the value at pos is true, 0 otherwise
+     */
+    public byte getByte (int pos) {
+        if (internal[pos])
+            return  1;
+        return  0;
+    }
+
+    /**
+     	Set the entry at pos to true if newEntry is greater than 0.
+     	Set to false otherwise.
+     	@param newEntry the newEntry
+     	@param pos the position in the column
+     */
+    public void setByte (byte newEntry, int pos) {
+        if (newEntry > 0)
+            internal[pos] = true;
+        else
+            internal[pos] = false;
+    }
+
+    /**
     	Converts the value at pos to a String and returns the String as a char
 		array.
     	@param pos the position
@@ -293,6 +310,26 @@ final public class BooleanColumn extends AbstractColumn {
      */
     public void setChars (char[] newEntry, int pos) {
         setString(new String(newEntry), pos);
+    }
+
+    /**
+    	Converts the value at pos to a String and returns the String as a char
+		array.
+    	@param pos the position
+    	@return the String representation of the item at pos as an array of chars
+     */
+    public char getChar (int pos) {
+		return getChars(pos)[0];
+    }
+
+    /**
+    	Set the entry at pos to be newEntry.  Set to true only if newEntry is
+    	equal to "true".  Otherwise set to false.
+    	@param newEntry the new entry
+    	@param pos the position in the column
+     */
+    public void setChar (char newEntry, int pos) {
+		;
     }
 
     /**
@@ -342,10 +379,10 @@ final public class BooleanColumn extends AbstractColumn {
     	Gets a reference to the internal representation of this Column.
     	(boolean[]).  Changes made to this object will be reflected in the Column.
     	@return the internal representation of this Column.
-     */
+     /
     public Object getInternal () {
         return  this.internal;
-    }
+    }*/
 
     /**
     	Gets a subset of this Column, given a start position and length.
@@ -363,7 +400,6 @@ final public class BooleanColumn extends AbstractColumn {
         BooleanColumn bc = new BooleanColumn(subset);
         bc.setLabel(getLabel());
         bc.setComment(getComment());
-        //bc.setType(getType());
         return  bc;
     }
 
@@ -371,11 +407,11 @@ final public class BooleanColumn extends AbstractColumn {
     /**
     	Sets the reference to the internal representation of this Column.
     	@param newInternal a new internal representation for this Column
-     */
+     /
     public void setInternal (Object newInternal) {
         if (newInternal instanceof boolean[])
             this.internal = (boolean[])newInternal;
-    }
+    }*/
 
     /**
     	Gets a Boolean representation of the entry at the indicated position.
@@ -436,12 +472,12 @@ final public class BooleanColumn extends AbstractColumn {
      */
     public void insertRow (Object newEntry, int pos) {
         boolean[] newInternal = new boolean[internal.length + 1];
-        if (pos > getCapacity()) {
+        if (pos > getNumRows()) {
             addRow(newEntry);
             return;
         }
         if (pos == 0)
-            System.arraycopy(internal, 0, newInternal, 1, getCapacity());        /*else if(pos == 1) {
+            System.arraycopy(internal, 0, newInternal, 1, getNumRows());        /*else if(pos == 1) {
          newInternal[0] = internal[0];
          System.arraycopy(internal, 1, newInternal, 2, getCapacity()-2);
          }*/
@@ -471,7 +507,7 @@ final public class BooleanColumn extends AbstractColumn {
     	@param newOrder an array of indices indicating a new order
 		@return a copy of this column, re-ordered
      */
-    public Column reOrderRows (int[] newOrder) {
+    public Column reorderRows (int[] newOrder) {
         boolean[] newInternal = null;
         if (newOrder.length == internal.length) {
             newInternal = new boolean[internal.length];
@@ -482,39 +518,8 @@ final public class BooleanColumn extends AbstractColumn {
             throw  new ArrayIndexOutOfBoundsException();
         BooleanColumn bc = new BooleanColumn(newInternal);
         bc.setLabel(getLabel());
-        //bc.setType(getType());
         bc.setComment(getComment());
         return  bc;
-    }
-
-    /**
-    	Given an array of booleans, will remove the positions in the Column
-    	which coorespond to the positions in the boolean array which are
-    	marked true.  If the boolean array and Column do not have the same
-    	number of rows, the remaining elements will be discarded.
-    	@param flags the boolean array of remove flags
-     */
-    public void removeByFlag (boolean[] flags) {
-        // keep a list of the row indices to remove
-        LinkedList ll = new LinkedList();
-        int i = 0;
-        for (; i < flags.length; i++) {
-            if (flags[i])
-                ll.add(new Integer(i));
-        }
-        for (; i < internal.length; i++) {
-            ll.add(new Integer(i));
-        }
-        int[] toRemove = new int[ll.size()];
-        int j = 0;
-        Iterator iter = ll.iterator();
-        while (iter.hasNext()) {
-            Integer in = (Integer)iter.next();
-            toRemove[j] = in.intValue();
-            j++;
-        }
-        // now call remove by index to remove the rows
-        removeByIndex(toRemove);
     }
 
     /**
@@ -522,19 +527,20 @@ final public class BooleanColumn extends AbstractColumn {
     	which are indicated by the ints in the array.
     	@param indices the int array of remove indices
      */
-    public void removeByIndex (int[] indices) {
-        HashMap toRemove = new HashMap(indices.length);
+    public void removeRowsByIndex (int[] indices) {
+        HashSet toRemove = new HashSet(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
-            toRemove.put(id, id);
+            toRemove.add(id);
         }
         boolean newInternal[] = new boolean[internal.length - indices.length];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
-            Integer x = (Integer)toRemove.get(new Integer(i));
+            //Integer x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
-            if (x == null) {
+            //if (x == null) {
+			if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }
@@ -545,10 +551,9 @@ final public class BooleanColumn extends AbstractColumn {
     //////////////////////////////////////
     /**
     	Sort the items in this column.  Not supported for BooleanColumn.
-    	@exception NotSupportedException when sorting is not supported
      */
-    public void sort () throws NotSupportedException {
-        throw  new NotSupportedException();
+    public void sort () {
+		;
     }
 
     /**
@@ -556,11 +561,8 @@ final public class BooleanColumn extends AbstractColumn {
     	@param t the Table to swap rows for
     	@exception NotSupportedException when sorting is not supported
      */
-    public void sort (Table t) throws NotSupportedException {
-        throw  new NotSupportedException();
+    public void sort (MutableTable t) {
     }
-
-
 
     /**
     	Sort the items in this column.  Not supported for BooleanColumn.
@@ -569,8 +571,8 @@ final public class BooleanColumn extends AbstractColumn {
 	@param end the row no. which marks the end of the column segment to be sorted
     	@exception NotSupportedException when sorting is not supported
      */
-    public void sort (Table t, int begin, int end) throws NotSupportedException {
-        throw  new NotSupportedException();
+    public void sort (MutableTable t, int begin, int end) {
+		;
     }
 
 

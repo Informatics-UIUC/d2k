@@ -1,11 +1,14 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
 import ncsa.d2k.util.*;
 
+
 /**
-	ByteArrayColumn is an implementation of TextualColumn which stores
+	ByteColumn is an implementation of TextualColumn which stores
 	textual data in a byte form.  The internal representation is an array of
 	byte arrays.
 	<br><br>
@@ -14,50 +17,51 @@ import ncsa.d2k.util.*;
 	comparing of words
 	<br><br>
 	It is inefficient for: removals, insertions, searching(on contents of word),
-	@deprecated Use ContinuousByteArrayColumn.
  */
-final public class ByteArrayColumn extends TextualColumn {
-
-	static final long serialVersionUID = 8168639840660348669L;
+final public class ByteColumn extends AbstractColumn implements TextualColumn {
 
     /** the internal representation of this Column */
-    private byte[][] internal = null;
+    private byte[] internal = null;
 
     /**
-    	Create a new, empty ByteArrayColumn.
+    	Create a new, empty ByteColumn.
      */
-    public ByteArrayColumn () {
+    public ByteColumn () {
         this(0);
     }
 
     /**
-    	Create a new ByteArrayColumn with the specified initial capacity.
+    	Create a new ByteColumn with the specified initial capacity.
 		@param capacity the initial capacity
      */
-    public ByteArrayColumn (int capacity) {
-        internal = new byte[capacity][];
+    public ByteColumn (int capacity) {
+        internal = new byte[capacity];
         //byte[] ty = new byte[0];
         //setType(ty);
+		setIsNominal(true);
+		type = ColumnTypes.BYTE;
     }
 
     /**
-    	Create a new ByteArrayColumn with the specified data.
+    	Create a new ByteColumn with the specified data.
 		@param newInternal the default data this column holds
      */
-    public ByteArrayColumn (byte[][] newInternal) {
+    public ByteColumn (byte[] newInternal) {
         this.setInternal(newInternal);
         //byte[] ty = new byte[0];
         //setType(ty);
+		setIsNominal(true);
+		type = ColumnTypes.BYTE;
     }
 
     /**
-    	Return an exact copy of this ByteArrayColumn.  A deep copy is attempted,
+    	Return an exact copy of this ByteColumn.  A deep copy is attempted,
 		but if it fails a new column will be created, initialized with the same
 		data as this column.
     	@return A new Column with a copy of the contents of this column.
      */
     public Column copy () {
-        ByteArrayColumn bac;
+        ByteColumn bac;
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -66,18 +70,13 @@ final public class ByteArrayColumn extends TextualColumn {
             oos.close();
             ByteArrayInputStream bais = new ByteArrayInputStream(buf);
             ObjectInputStream ois = new ObjectInputStream(bais);
-            bac = (ByteArrayColumn)ois.readObject();
+            bac = (ByteColumn)ois.readObject();
             ois.close();
             return  bac;
         } catch (Exception e) {
-            bac = new ByteArrayColumn(getCapacity());
-            for (int i = 0; i < getCapacity(); i++) {
-                byte orig[] = getBytes(i);
-                byte res[] = new byte[orig.length];
-                for (int j = 0; j < orig.length; j++)
-                    res[j] = orig[j];
-                bac.setBytes(res, i);
-            }
+            bac = new ByteColumn(getCapacity());
+            for (int i = 0; i < getCapacity(); i++)
+                bac.setByte(getByte(i), i);
             bac.setLabel(getLabel());
             bac.setComment(getComment());
             //bac.setType(getType());
@@ -92,8 +91,8 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position from which to get a String
     	@return a String representation of the entry at that position
      */
-    final public String getString (int pos) {
-        return  new String(this.internal[pos]);
+    public String getString (int pos) {
+		return new Byte(getByte(pos)).toString();
     }
 
     /**
@@ -102,8 +101,8 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry the new item to put in the column
     	@param pos the position to put newEntry
      */
-    final public void setString (String newEntry, int pos) {
-        this.internal[pos] = newEntry.getBytes();
+    public void setString (String newEntry, int pos) {
+        this.internal[pos] = Byte.valueOf(newEntry).byteValue();
     }
 
     /**
@@ -111,8 +110,8 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position to get the data from
     	@return the value of the byte array at pos as an int
      */
-    final public int getInt (int pos) {
-        return  ByteUtils.toInt(internal[pos]);
+    public int getInt (int pos) {
+		return new Byte(getByte(pos)).intValue();
     }
 
     /**
@@ -120,9 +119,10 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry the new item
     	@param pos the position to place newEntry
      */
-    final public void setInt (int newEntry, int pos) {
+    public void setInt (int newEntry, int pos) {
         //internal[pos] = Integer.toString(newEntry).getBytes();
-        internal[pos] = ByteUtils.writeInt(newEntry);
+        //internal[pos] = ByteUtils.writeInt(newEntry);
+		internal[pos] = (byte)newEntry;
     }
 
     /**
@@ -130,9 +130,9 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position to get the data from
     	@return the value of the byte array at pos as a short
      */
-    final public short getShort (int pos) {
+    public short getShort (int pos) {
         //return Short.valueOf(new String(internal[pos])).shortValue();
-        return  ByteUtils.toShort(internal[pos]);
+		return new Byte(getByte(pos)).shortValue();
     }
 
     /**
@@ -140,9 +140,9 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry the new item
     	@param pos the position to place newEntry
      */
-    final public void setShort (short newEntry, int pos) {
+    public void setShort (short newEntry, int pos) {
         //internal[pos] = Short.toString(newEntry).getBytes();
-        internal[pos] = ByteUtils.writeShort(newEntry);
+        internal[pos] = (byte)newEntry;
     }
 
     /**
@@ -150,9 +150,9 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position to get the data from
     	@return the value of the byte array at pos as a long
      */
-    final public long getLong (int pos) {
+    public long getLong (int pos) {
         //return Long.valueOf(new String(internal[pos])).longValue();
-        return  ByteUtils.toLong(internal[pos]);
+		return new Byte(getByte(pos)).longValue();
     }
 
     /**
@@ -160,9 +160,9 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry the new item
     	@param pos the position to place newEntry
      */
-    final public void setLong (long newEntry, int pos) {
+    public void setLong (long newEntry, int pos) {
         //internal[pos] = Long.toString(newEntry).getBytes();
-        internal[pos] = ByteUtils.writeLong(newEntry);
+		internal[pos] = (byte)newEntry;
     }
 
     /**
@@ -170,8 +170,9 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position to get the data from
     	@return the value of the byte array at pos as a double
      */
-    final public double getDouble (int pos) {
-        return  ByteUtils.toDouble(internal[pos]);
+    public double getDouble (int pos) {
+        //return  ByteUtils.toDouble(internal[pos]);
+		return new Byte(getByte(pos)).doubleValue();
     }
 
     /**
@@ -179,9 +180,10 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry the new item
     	@param pos the position to place newEntry
      */
-    final public void setDouble (double newEntry, int pos) {
+    public void setDouble (double newEntry, int pos) {
         //internal[pos] = Double.toString(newEntry).getBytes();
-        internal[pos] = ByteUtils.writeDouble(newEntry);
+        //internal[pos] = ByteUtils.writeDouble(newEntry);
+		internal[pos] = (byte)newEntry;
     }
 
     /**
@@ -189,9 +191,10 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position to get the data from
     	@return the value of the byte array at pos as a float
      */
-    final public float getFloat (int pos) {
+    public float getFloat (int pos) {
         //return Float.valueOf(new String(internal[pos])).floatValue();
-        return  ByteUtils.toFloat(internal[pos]);
+        //return  ByteUtils.toFloat(internal[pos]);
+		return new Byte(getByte(pos)).floatValue();
     }
 
     /**
@@ -199,9 +202,10 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry the new item
     	@param pos the position to place newEntry
      */
-    final public void setFloat (float newEntry, int pos) {
+    public void setFloat (float newEntry, int pos) {
         //internal[pos] = Float.toString(newEntry).getBytes();
-        internal[pos] = ByteUtils.writeFloat(newEntry);
+        //internal[pos] = ByteUtils.writeFloat(newEntry);
+		internal[pos] = (byte)newEntry;
     }
 
     /**
@@ -209,8 +213,10 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position to get the data from
     	@return the byte array at pos
      */
-    final public byte[] getBytes (int pos) {
-        return  this.internal[pos];
+    public byte[] getBytes (int pos) {
+		byte[] retVal = new byte[1];
+		retVal[0] = getByte(pos);
+		return retVal;
     }
 
     /**
@@ -218,8 +224,26 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry the new item
     	@param pos the position to place newEntry
      */
-    final public void setBytes (byte[] newEntry, int pos) {
-        this.internal[pos] = newEntry;
+    public void setBytes (byte[] newEntry, int pos) {
+        this.internal[pos] = newEntry[0];
+    }
+
+    /**
+    	Get the value of the bytes at this position.
+    	@param pos the position to get the data from
+    	@return the byte array at pos
+     */
+    public byte getByte(int pos) {
+		return internal[pos];
+    }
+
+    /**
+    	Put newEntry into this column at pos
+    	@param newEntry the new item
+    	@param pos the position to place newEntry
+     */
+    public void setByte (byte newEntry, int pos) {
+		internal[pos] = newEntry;
     }
 
     /**
@@ -227,8 +251,10 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position to get the data from
     	@return the value of the byte array at pos as a char[]
      */
-    final public char[] getChars (int pos) {
-        return  ByteUtils.toChars(internal[pos]);
+    public char[] getChars (int pos) {
+		char[] retVal = new char[1];
+		retVal[0] = getChar(pos);
+		return retVal;
     }
 
     /**
@@ -236,9 +262,28 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry the new item
     	@param pos the position to place newEntry
      */
-    final public void setChars (char[] newEntry, int pos) {
+    public void setChars (char[] newEntry, int pos) {
         //this.internal[pos] = new String(newEntry).getBytes();
-        internal[pos] = ByteUtils.writeChars(newEntry);
+        //internal[pos] = ByteUtils.writeChars(newEntry);
+		internal[pos] = (byte)newEntry[0];
+    }
+
+    /**
+    	Get the value of the bytes as a char[] using ByteUtils.toChars()
+    	@param pos the position to get the data from
+    	@return the value of the byte array at pos as a char[]
+     */
+    public char getChar (int pos) {
+		return (char)getByte(pos);
+    }
+
+    /**
+    	Store newEntry as an array of bytes using ByteUtils.writeChars()
+    	@param newEntry the new item
+    	@param pos the position to place newEntry
+     */
+    public void setChar (char newEntry, int pos) {
+		internal[pos] = (byte)newEntry;
     }
 
     /**
@@ -246,8 +291,8 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position of interest
 		@return the Object at the specified row
      */
-    final public Object getObject (int pos) {
-        return  this.internal[pos];
+    public Object getObject (int pos) {
+		return new Byte(getByte(pos));
     }
 
     /**
@@ -257,13 +302,15 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry the new item
     	@param pos the position
      */
-    final public void setObject (Object newEntry, int pos) {
+    public void setObject (Object newEntry, int pos) {
         if (newEntry instanceof byte[])
             setBytes((byte[])newEntry, pos);
         else if (newEntry instanceof char[])
             setChars((char[])newEntry, pos);
+		else if (newEntry instanceof Byte)
+			setByte(((Byte)newEntry).byteValue(), pos);
         else
-            internal[pos] = ByteUtils.writeObject(newEntry);
+			setString(newEntry.toString(), pos);
     }
 
     /**
@@ -271,9 +318,9 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position of interest
 		@return the boolean at the specified row
      */
-    final public boolean getBoolean (int pos) {
+    public boolean getBoolean (int pos) {
         //return new Boolean(new String(internal[pos])).booleanValue();
-        return  ByteUtils.toBoolean(internal[pos]);
+        return false;//return  ByteUtils.toBoolean(internal[pos]);
     }
 
     /**
@@ -281,15 +328,15 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry the new item
     	@param pos the position to place newEntry
      */
-    final public void setBoolean (boolean newEntry, int pos) {
+    public void setBoolean (boolean newEntry, int pos) {
         //this.internal[pos] = new Boolean(newEntry).toString().getBytes();
-        internal[pos] = ByteUtils.writeBoolean(newEntry);
+        //internal[pos] = ByteUtils.writeBoolean(newEntry);
     }
 
 	/**
 	 * Trim any excess storage from the internal buffer for this TextualColumn.
 	 */
-	final public void trim() {}
+	public void trim() {}
 
     //////////////////////////////////////
     //// Accessing Metadata
@@ -299,20 +346,15 @@ final public class ByteArrayColumn extends TextualColumn {
 		inefficient.
     	@return this ByteArrayColumn's number of entries
      */
-    final public int getNumEntries () {
-        //return internal.length;
-        int numEntries = 0;
-        for (int i = 0; i < internal.length; i++)
-            if (internal[i] != null)
-                numEntries++;
-        return  numEntries;
+    public int getNumEntries () {
+        return internal.length;
     }
 
 	/**
 	 * Get the number of rows that this column can hold.  Same as getCapacity
 	 * @return the number of rows this column can hold
 	 */
-	final public int getNumRows() {
+	public int getNumRows() {
 		return getCapacity();
 	}
 
@@ -320,7 +362,7 @@ final public class ByteArrayColumn extends TextualColumn {
     	Get the capacity of this Column, its potential maximum number of entries
     	@return the max number of entries this Column can hold
      */
-    final public int getCapacity () {
+    public int getCapacity () {
         return  internal.length;
     }
 
@@ -332,16 +374,16 @@ final public class ByteArrayColumn extends TextualColumn {
     	truncated.
     	@param newCapacity a new capacity
      */
-    final public void setCapacity (int newCapacity) {
+    public void setNumRows (int newCapacity) {
         if (internal != null) {
-            byte[][] newInternal = new byte[newCapacity][];
+            byte[] newInternal = new byte[newCapacity];
             if (newCapacity > internal.length)
                 newCapacity = internal.length;
             System.arraycopy(internal, 0, newInternal, 0, newCapacity);
             internal = newInternal;
         }
         else
-            internal = new byte[newCapacity][];
+            internal = new byte[newCapacity];
     }
 
     //////////////////////////////////////
@@ -353,8 +395,8 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position
     	@return the entry at pos
      */
-    final public Object getRow (int pos) {
-        return  this.internal[pos];
+    public Object getRow (int pos) {
+        return  new Byte(internal[pos]);
     }
 
     /**
@@ -365,7 +407,7 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param len the length of the subset
     	@return a subset of this Column
      */
-    final public Column getSubset (int pos, int len) {
+    public Column getSubset (int pos, int len) {
         byte[][] subset = new byte[len][];
         System.arraycopy(internal, pos, subset, 0, len);
         ByteArrayColumn bac = new ByteArrayColumn(subset);
@@ -380,7 +422,7 @@ final public class ByteArrayColumn extends TextualColumn {
     	Changes made to this object will be reflected in the Column.
     	@return the internal representation of this Column.
      */
-    final public Object getInternal () {
+    public Object getInternal () {
         return  this.internal;
     }
 
@@ -390,8 +432,8 @@ final public class ByteArrayColumn extends TextualColumn {
     	thrown is a ClassCastException.
     	@param newInternal a new internal representation for this Column
      */
-    final public void setInternal (Object newInternal) {
-        this.internal = (byte[][])newInternal;
+    public void setInternal (Object newInternal) {
+        this.internal = (byte[])newInternal;
     }
 
     /**
@@ -399,15 +441,15 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry a new entry
     	@param pos the position to set
      */
-    final public void setRow (Object newEntry, int pos) {
-        this.internal[pos] = (byte[])newEntry;
+    public void setRow (Object newEntry, int pos) {
+		setObject(newEntry, pos);
     }
 
     /**
     	Appends the new entry to the end of the Column.
     	@param newEntry a new entry
      */
-    final public void addRow (Object newEntry) {
+    public void addRow (Object newEntry) {
         /*int last = 0;
          for(int i=internal.length-1;i>=0;i--)
          if( internal[i] != null )
@@ -415,9 +457,9 @@ final public class ByteArrayColumn extends TextualColumn {
          this.internal[last+1] = (byte[])newEntry;
          */
         int last = internal.length;
-        byte[][] newInternal = new byte[internal.length + 1][];
+        byte[] newInternal = new byte[internal.length + 1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length);
-        newInternal[last] = (byte[])newEntry;
+        newInternal[last] = ((Byte)newEntry).byteValue();
         internal = newInternal;
     }
 
@@ -427,14 +469,14 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position to remove
     	@return the removed object
      */
-    final public Object removeRow (int pos) {
-        byte[] removed = internal[pos];
+    public Object removeRow (int pos) {
+        byte removed = internal[pos];
         System.arraycopy(internal, pos + 1, internal, pos, internal.length -
                 (pos + 1));
-        byte newInternal[][] = new byte[internal.length - 1][];
+        byte newInternal[] = new byte[internal.length - 1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
         internal = newInternal;
-        return  removed;
+        return new Byte(removed);
     }
 
     /**
@@ -443,8 +485,8 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newEntry the newEntry to insert
     	@param pos the position to insert at
      */
-    final public void insertRow (Object newEntry, int pos) {
-        byte[][] newInternal = new byte[internal.length + 1][];
+    public void insertRow (Object newEntry, int pos) {
+        byte[] newInternal = new byte[internal.length + 1];
         if (pos > getCapacity()) {
             addRow(newEntry);
             return;
@@ -459,7 +501,7 @@ final public class ByteArrayColumn extends TextualColumn {
             System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
                     - pos);
         }
-        newInternal[pos] = (byte[])newEntry;
+        newInternal[pos] = ((Byte)newEntry).byteValue();
         internal = newInternal;
     }
 
@@ -468,8 +510,8 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos1 the position of the 1st entry to swap
     	@param pos2 the position of the 2nd entry to swap
      */
-    final public void swapRows (int pos1, int pos2) {
-        byte[] e1 = internal[pos1];
+    public void swapRows (int pos1, int pos2) {
+        byte e1 = internal[pos1];
         internal[pos1] = internal[pos2];
         internal[pos2] = e1;
     }
@@ -480,16 +522,16 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param newOrder an array of indices indicating a new order
 		@return a copy of this column, re-ordered
      */
-    final public Column reOrderRows (int[] newOrder) {
-        byte[][] newInternal = null;
+    public Column reorderRows (int[] newOrder) {
+        byte[] newInternal = null;
         if (newOrder.length == internal.length) {
-            newInternal = new byte[internal.length][];
+            newInternal = new byte[internal.length];
             for (int i = 0; i < internal.length; i++)
                 newInternal[i] = internal[newOrder[i]];
         }
         else
             throw  new ArrayIndexOutOfBoundsException();
-        ByteArrayColumn bac = new ByteArrayColumn(newInternal);
+        ByteColumn bac = new ByteColumn(newInternal);
         bac.setLabel(getLabel());
         //bac.setType(getType());
         bac.setComment(getComment());
@@ -504,9 +546,12 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos the position of the element in Column to be compare with
     	@return a value representing the relationship- >, <, or == 0
      */
-    final public int compareRows (Object element, int pos) {
-        byte[] b = internal[pos];
-        return  compareBytes((byte[])element, b);
+    public int compareRows (Object element, int pos) {
+		byte[] b1 = new byte[1];
+		b1[0] = ((Byte)element).byteValue();
+		byte[] b2 = new byte[1];
+		b2[0] = getByte(pos);
+		return compareBytes(b1, b2);
     }
 
     /**
@@ -516,10 +561,12 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param pos2 the position of the second element to compare
     	@return a value representing the relationship- >, <, or == 0
      */
-    final public int compareRows (int pos1, int pos2) {
-        byte[] b1 = internal[pos1];
-        byte[] b2 = internal[pos2];
-        return  compareBytes(b1, b2);
+    public int compareRows (int pos1, int pos2) {
+		byte[] b1 = new byte[1];
+		b1[0] = getByte(pos1);
+		byte[] b2 = new byte[1];
+		b2[0] = getByte(pos2);
+		return compareBytes(b1, b2);
     }
 
     /**
@@ -528,7 +575,7 @@ final public class ByteArrayColumn extends TextualColumn {
      * @param b2 the second byte array to compare
      * @return -1, 0, 1
      */
-    final private int compareBytes (byte[] b1, byte[] b2) {
+    private int compareBytes (byte[] b1, byte[] b2) {
         if (b1 == null) {
             if (b2 == null)
                 return  0;
@@ -567,47 +614,17 @@ final public class ByteArrayColumn extends TextualColumn {
     }
 
     /**
-    	Given an array of booleans, will remove the positions in the Column
-    	which coorespond to the positions in the boolean array which are
-    	marked true.  If the boolean array and Column do not have the same
-    	number of elements, the remaining elements will be discarded.
-    	@param flags the boolean array of remove flags
-     */
-    final public void removeByFlag (boolean[] flags) {
-        // keep a list of the row indices to remove
-        LinkedList ll = new LinkedList();
-        int i = 0;
-        for (; i < flags.length; i++) {
-            if (flags[i])
-                ll.add(new Integer(i));
-        }
-        for (; i < internal.length; i++) {
-            ll.add(new Integer(i));
-        }
-        int[] toRemove = new int[ll.size()];
-        int j = 0;
-        Iterator iter = ll.iterator();
-        while (iter.hasNext()) {
-            Integer in = (Integer)iter.next();
-            toRemove[j] = in.intValue();
-            j++;
-        }
-        // now call remove by index to remove the rows
-        removeByIndex(toRemove);
-    }
-
-    /**
     	Given an array of ints, will remove the positions in the Column
     	which are indicated by the ints in the array.
     	@param indices the int array of remove indices
      */
-    final public void removeByIndex (int[] indices) {
+    public void removeRowsByIndex (int[] indices) {
         HashMap toRemove = new HashMap(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
             toRemove.put(id, id);
         }
-        byte newInternal[][] = new byte[internal.length - indices.length][];
+        byte newInternal[] = new byte[internal.length - indices.length];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
@@ -625,9 +642,8 @@ final public class ByteArrayColumn extends TextualColumn {
 
     /**
     	Sort the items in this column.
-    	@exception NotSupportedException when sorting is not supported
      */
-    final public void sort () throws NotSupportedException {
+    public void sort () {
         sort(null);
     }
 
@@ -635,13 +651,10 @@ final public class ByteArrayColumn extends TextualColumn {
     	Sort the elements in this column, and swap the rows in the table
     	we are a part of.
     	@param t the Table to swap rows for
-    	@exception NotSupportedException when sorting is not supported
      */
-    final public void sort (Table t) throws NotSupportedException {
+    public void sort (MutableTable t) {
         internal = doSort(internal, 0, internal.length - 1, t);
     }
-
-
 
     /**
        Sort the elements in this column starting with row 'begin' up to row 'end',
@@ -649,17 +662,15 @@ final public class ByteArrayColumn extends TextualColumn {
        @param t the VerticalTable to swap rows for
        @param begin the row no. which marks the beginnig of the  column segment to be sorted
        @param end the row no. which marks the end of the column segment to be sorted
-       @exception NotSupportedException when sorting is not supported
     */
-    public void sort(Table t,int begin, int end)
-	throws NotSupportedException
+    public void sort(MutableTable t,int begin, int end)
     {
 	if (end > internal.length -1) {
-	    System.err.println(" end index was out of bounds"); 
+	    System.err.println(" end index was out of bounds");
 	    end = internal.length -1;
 	}
 	internal = doSort(internal, begin, end, t);
-                    
+
     }
 
 
@@ -672,7 +683,7 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param t the Table to swap rows for
 		@return a sorted array of byte arrays
      */
-    final private byte[][] doSort (byte[][] A, int p, int r, Table t) {
+    private byte[] doSort (byte[] A, int p, int r, MutableTable t) {
         if (p < r) {
             int q = partition(A, p, r, t);
             doSort(A, p, q, t);
@@ -689,7 +700,7 @@ final public class ByteArrayColumn extends TextualColumn {
     	@param t the Table to swap rows for
 		@return the new partition point
      */
-    final private int partition (byte[][] A, int p, int r, Table t) {
+    private int partition (byte[] A, int p, int r, MutableTable t) {
         //String x = A[p];
         int i = p - 1;
         int j = r + 1;
@@ -702,7 +713,7 @@ final public class ByteArrayColumn extends TextualColumn {
             } while (compareRows(A[i], p) < 0);
             if (i < j) {
                 if (t == null) {
-                    byte[] temp = A[i];
+                    byte temp = A[i];
                     A[i] = A[j];
                     A[j] = temp;
                 }

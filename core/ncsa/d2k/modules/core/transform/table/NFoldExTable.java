@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.Random;
 import java.io.Serializable;
 /*
@@ -194,7 +195,7 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		makeSets(testing, training);
 
 		// now create a new vertical table.
-		ExampleTable examples = TableFactory.createExampleTable (table);
+		ExampleTableImpl examples = (ExampleTableImpl)DefaultTableFactory.getInstance().createExampleTable (table);
 		examples.setTrainingSet (training);
 		examples.setTestingSet (testing);
 

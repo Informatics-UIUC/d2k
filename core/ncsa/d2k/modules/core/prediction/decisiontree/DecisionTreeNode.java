@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
@@ -232,15 +233,30 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 		System.out.println("Depth: "+getDepth());
 		System.out.print("\tLabel: "+getLabel());
 		if(parent != null)
-			System.out.println(" Parent: "+parent.getLabel());
+			System.out.println("\t\tParent: "+parent.getLabel());
 		else
 			System.out.println("");
 		for(int i = 0; i < getNumChildren(); i++) {
 			System.out.print("\t\tBranch: "+branchLabels.get(i));
-			System.out.println(" Node: "+getChild(i).getLabel());
+			System.out.println("\t\t\tNode: "+getChild(i).getLabel());
 		}
 		for(int i = 0; i < getNumChildren(); i++)
 			getChild(i).print();
+	}
+
+	public void print(Writer out) throws Exception {
+		out.write("Depth: "+getDepth()+"\n");
+		out.write("\tLabel: "+getLabel()+"\n");
+		if(parent != null)
+			out.write("\t\tParent: "+parent.getLabel()+"\n");
+		else
+			out.write("");
+		for(int i = 0; i < getNumChildren(); i++) {
+			out.write("\t\tBranch: "+branchLabels.get(i)+"\n");
+			out.write("\t\t\tNode: "+getChild(i).getLabel()+"\n");
+		}
+		for(int i = 0; i < getNumChildren(); i++)
+			getChild(i).print(out);
 	}
 
     /**

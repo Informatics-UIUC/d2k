@@ -25,6 +25,7 @@ import ncsa.gui.Constrain;
 import ncsa.d2k.modules.core.datatype.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 // author: mbach
 
@@ -48,7 +49,7 @@ public class LineGraphAppModule extends VisModule {
 
    public String[] getInputTypes() {
       String[] i = {"ncsa.d2k.modules.core.datatype.HashLookupTable",
-         "ncsa.d2k.modules.core.datatype.table.VerticalTable"};
+         "ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
       return i;
    }
 
@@ -80,7 +81,7 @@ public class LineGraphAppModule extends VisModule {
       implements ActionListener, ItemListener {
 
       public HashLookupTable hlt;
-      public Table vt;
+      public TableImpl vt;
       public LineGraphVerticalTable dt;
       public FindClosest fc;
 
@@ -318,7 +319,7 @@ public class LineGraphAppModule extends VisModule {
          if (index == 0)
             hlt = (HashLookupTable)o;
          else if (index == 1)
-            vt = (Table)o;
+            vt = (TableImpl)o;
 
          inputs_set[index] = true;
 
@@ -1432,10 +1433,10 @@ public class LineGraphAppModule extends VisModule {
 
       int numRecords, numFields, numLines;
       public String[] names;
-      private Table vtable;
+      private TableImpl vtable;
       private HashLookupTable htable;
 
-      public LineGraphVerticalTable(HashLookupTable inhlt, Table invt) {
+      public LineGraphVerticalTable(HashLookupTable inhlt, TableImpl invt) {
 
          htable = inhlt; vtable = invt;
          names = new String[vtable.getNumColumns()];

@@ -5,6 +5,7 @@ import java.io.*;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
 	Works the same as ReadVT, but for an input file
@@ -94,7 +95,7 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 			if(labelsList != null)
 				labelsList.clear();
 
-			Table table = TableFactory.createTable(cols);
+			TableImpl table = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
 
 			// the number of the row in the table
 			int rowNum = 0;
@@ -137,7 +138,7 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 		for the single byte value that delimits the fields.
 		@param row the line from the file
 	*/
-	protected void createSDRow (String row, Table vt, int curRow) {
+	protected void createSDRow (String row, TableImpl vt, int curRow) {
         // the current column of the table to insert into
 		int currentCol = curRow;
 

@@ -1,11 +1,12 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.awt.*;
 
 public class FunctionPlot extends Graph {
 
-	public FunctionPlot(Table Functiontable, DataSet[] set, GraphSettings settings) {
+	public FunctionPlot(TableImpl Functiontable, DataSet[] set, GraphSettings settings) {
 		super(Functiontable, set, settings);
 	}
 

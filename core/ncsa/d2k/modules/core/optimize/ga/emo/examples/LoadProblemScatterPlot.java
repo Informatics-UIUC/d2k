@@ -19,6 +19,7 @@ import java.awt.event.*;
 import java.io.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.text.*;
 
 public class LoadProblemScatterPlot extends ScatterPlot implements MouseListener {
@@ -34,7 +35,7 @@ public class LoadProblemScatterPlot extends ScatterPlot implements MouseListener
 		this.addMouseListener (this);
 	}
 
-	public LoadProblemScatterPlot(Table table, DataSet[] sets, GraphSettings settings) {
+	public LoadProblemScatterPlot(TableImpl table, DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 		this.addMouseListener (this);
 	}

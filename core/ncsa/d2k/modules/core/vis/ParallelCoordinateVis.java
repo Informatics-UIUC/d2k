@@ -23,6 +23,8 @@ import ncsa.d2k.gui.JD2KFrame;
 
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /**
  * Plots the data in a Table on parallel axes.
  */
@@ -41,7 +43,7 @@ public class ParallelCoordinateVis extends VisModule {
 	}
 
 	public String[] getInputTypes() {
-		String[] i = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] i = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return i;
 	}
 
@@ -126,7 +128,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 		private boolean zoomin;
 
 		/** the table with the data */
-		private Table table;
+		private TableImpl table;
 		private JMenuBar menuBar;
 
 		/** the choose colors menu */
@@ -180,7 +182,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 		 * Input arrived
 		 */
 		public void setInput(Object o, int i) {
-			table = (Table)o;
+			table = (TableImpl)o;
 			selectedlines = new boolean[table.getNumRows()];
 			legend = new Legend();
 			nf = NumberFormat.getInstance();

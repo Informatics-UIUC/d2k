@@ -7,6 +7,7 @@ import ncsa.d2k.infrastructure.modules.HasNames;
 import ncsa.d2k.modules.PredictionModelModule;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 /**
@@ -313,11 +314,11 @@ public class CompoundModelGen extends ModelGeneratorModule
 
 		public PredictionTable predict(ExampleTable et){
 
-			PredictionTable predTable;
+			PredictionTableImpl predTable;
 			if(et instanceof PredictionTable){
-				predTable=(PredictionTable)et;
+				predTable=(PredictionTableImpl)et;
 			}else{
-				predTable=TableFactory.createPredictionTable(et);
+				predTable= (PredictionTableImpl)et.toPredictionTable();
 			}
 
 			//if there are no spots for pred columns
@@ -343,7 +344,7 @@ public class CompoundModelGen extends ModelGeneratorModule
 				*/
 				predTable.getPredictionSet()[0]=
 					holdPredictionSet[i];
-				predTable=models[i].predict(predTable);
+				predTable=(PredictionTableImpl)models[i].predict(predTable);
 			}
 			predTable.setOutputFeatures(holdOutputFeatures);
 			predTable.setPredictionSet(holdPredictionSet);

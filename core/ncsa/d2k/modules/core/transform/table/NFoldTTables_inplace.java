@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /*
 	works just like NFoldTTables except that the test tables
 	are all the same tables w/ different test sets.  this
@@ -68,7 +69,7 @@ public class NFoldTTables_inplace extends NFoldTTables{
 			makeSets(testing, training);
 
 			// now create a new vertical table.
-			ExampleTable examples = TableFactory.createExampleTable (table);
+			ExampleTableImpl examples = (ExampleTableImpl)DefaultTableFactory.getInstance().createExampleTable (table);
 			examples.setTrainingSet (training);
 			examples.setTestingSet (testing);
 

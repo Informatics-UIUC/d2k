@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.io.sql;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
 import java.sql.*;
 import java.io.*;
@@ -37,7 +38,7 @@ public class Query2VT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	String [] types =  {
 	    "ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
 	    "java.lang.String",
-	    "ncsa.d2k.modules.core.datatype.table.Table"};
+	    "ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 	return types;
     }
 
@@ -59,7 +60,7 @@ public class Query2VT extends ncsa.d2k.infrastructure.modules.DataPrepModule
     */
     public String[] getOutputTypes () {
 	String [] types =  {
-	    "ncsa.d2k.modules.core.datatype.table.Table"};
+	    "ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 	return types;
 
     }
@@ -86,7 +87,7 @@ public class Query2VT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	String tableName = (String) this.pullInput (1);
 
 	// get the example table containing metadata
-	ExampleTable vt = (ExampleTable) this.pullInput(2);
+	ExampleTableImpl vt = (ExampleTableImpl) this.pullInput(2);
 
 	////////////////////////////
 	// Get the number of entries in the table.

@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.*;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.activationFunctions.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.updateFunctions.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.learnFunctions.*;
@@ -166,7 +167,7 @@ public class NNModelGenerator
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.TrainTable",
+			"ncsa.d2k.modules.core.datatype.table.basic.TrainTableImpl",
 			"ncsa.d2k.modules.core.optimize.util.MixedSolution"
 			};
 		return types;
@@ -193,7 +194,7 @@ public class NNModelGenerator
 	public String[] getOutputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.infrastructure.modules.PredictionModelModule"
+			"ncsa.d2k.modules.PredictionModelModule"
 };
 		return types;
 	}
@@ -214,7 +215,7 @@ public class NNModelGenerator
   public void doit () throws Exception {
 
 	MixedSolution inputParams=(MixedSolution)pullInput(1);
-	TrainTable trainingData=(TrainTable)pullInput(0);
+	TrainTableImpl trainingData=(TrainTableImpl)pullInput(0);
 
 	NNModel mod=new NNModel(trainingData, (double[])inputParams.getParameters(), doScalingHere);
 	pushOutput(mod, 0);
@@ -247,7 +248,7 @@ public class NNModelGenerator
 
 
 	*/
-	public final Table weights;
+	public final TableImpl weights;
 
 	/*the weighted sums for each node (before activation),
 	  column # corresponds to layer (outputs
@@ -256,19 +257,19 @@ public class NNModelGenerator
 	  because it should never be used, just there for that
 	  indexing thing again
 	*/
-	private final Table sums;
+	private final TableImpl sums;
 
 	/*the activation function values for all nodes, including outputs
 	  same mapping as 'sums'. row zero is set to the threshold/bias value
 	  (normally -1)
 	*/
 
-	private final  Table activations;
+	private final  TableImpl activations;
 
 	/*The 'deltas', or error distribution values, for each node
 	  same mapping as 'sums'
 	*/
-	private final Table deltas;
+	private final TableImpl deltas;
 
 	/* The parameters
 	*/
@@ -276,7 +277,7 @@ public class NNModelGenerator
 
 	/* The data set being trained or tested
 	*/
-	public ExampleTable data;
+	public ExampleTableImpl data;
 
 
 	/* the activation the compute class will use
@@ -326,7 +327,7 @@ public class NNModelGenerator
 	  @param p= a table with the parameters to use
     ****************************************************************************************/
 
-    public NNModel(TrainTable d, double[] p, boolean transform) {
+    public NNModel(TrainTableImpl d, double[] p, boolean transform) {
 		data=d;
 		doTransform=transform;
 
@@ -337,7 +338,7 @@ public class NNModelGenerator
 		//initialize sums VT
 		//////////////////////
 
-		sums= TableFactory.createTable(/*(int)params.getDouble(HIDDEN_LAYERS, 1)+1*/);
+		sums= (TableImpl)DefaultTableFactory.getInstance().createTable(/*(int)params.getDouble(HIDDEN_LAYERS, 1)+1*/);
 
 
 		/*starts at NODES_IN_LAYER_01 and goes through every NODES_IN_LAYER_XX that HIDDEN_LAYERS indicates
@@ -357,7 +358,7 @@ public class NNModelGenerator
 		//initialize weights VT
 		//////////////////////
 
-		weights= TableFactory.createTable((int)params[HIDDEN_LAYERS]+1);
+		weights= (TableImpl)DefaultTableFactory.getInstance().createTable((int)params[HIDDEN_LAYERS]+1);
 		int numWeightCols=0;
 
 		DoubleColumn tempColumn;
@@ -369,7 +370,7 @@ public class NNModelGenerator
 			weights.setColumn(new ObjectColumn((int)params[NODES_IN_LAYER_01]+1), numWeightCols);//see 'weights' comment
 			numWeightCols++;																				  //for expl of the +1
 			//System.out.println(	data.getNumInputFeatures());
-			for(int k=0; k<weights.getColumn(numWeightCols-1).getCapacity(); k++){
+			for(int k=0; k<weights.getColumn(numWeightCols-1).getNumRows(); k++){
 				tempColumn=new DoubleColumn(((int)data.getNumInputFeatures())+1);
 				//System.out.println("tc:"+tempColumn.getCapacity());
 				weights.setObject(tempColumn, k, 0);
@@ -381,7 +382,7 @@ public class NNModelGenerator
 				weights.setColumn(new ObjectColumn((int)params[NODES_IN_LAYER_01+i]+1), numWeightCols);
 				numWeightCols++;
 
-				for (int k=0; k<weights.getColumn(i).getCapacity(); k++){
+				for (int k=0; k<weights.getColumn(i).getNumRows(); k++){
 					tempColumn=new DoubleColumn((int)params[NODES_IN_LAYER_01+i-1]+1);
 
 					weights.setObject(tempColumn, k, i);
@@ -390,8 +391,8 @@ public class NNModelGenerator
 			//last hidden layer to outputs
 			weights.setColumn(new ObjectColumn(data.getNumOutputFeatures()+1), numWeightCols);
 			numWeightCols++;
-			for (int j=0; j<weights.getColumn(numWeightCols-1).getCapacity(); j++){
-				tempColumn=new DoubleColumn(weights.getColumn(numWeightCols-2).getCapacity());
+			for (int j=0; j<weights.getColumn(numWeightCols-1).getNumRows(); j++){
+				tempColumn=new DoubleColumn(weights.getColumn(numWeightCols-2).getNumRows());
 				weights.setObject(tempColumn, j, numWeightCols-1);
 			}
 
@@ -402,7 +403,7 @@ public class NNModelGenerator
 			weights.setColumn(new ObjectColumn(data.getNumOutputFeatures()+1), numWeightCols);
 			numWeightCols++;//won't use this anymore, just to keep from getting confused
 
-			for(int k=0; k<weights.getColumn(numWeightCols-1).getCapacity(); k++){
+			for(int k=0; k<weights.getColumn(numWeightCols-1).getNumRows(); k++){
 				tempColumn=new DoubleColumn((int)data.getNumInputFeatures()+1);
 				weights.setObject(tempColumn, k, 0);
 			}
@@ -412,8 +413,8 @@ public class NNModelGenerator
 
 
 		//these just need to be the right size, none of the values will be used
-		deltas=sums.copy();
-		activations=sums.copy();
+		deltas=(TableImpl)sums.copy();
+		activations=(TableImpl)sums.copy();
 		//printWeights();
  		setFiller();
 		//printWeights();
@@ -449,7 +450,7 @@ public class NNModelGenerator
 		}
 		//now that we know what activation function, we can scale the outputs
 		if(doTransform){
-			data= TableFactory.createExampleTable(data);
+			data= (ExampleTableImpl)data.toExampleTable();
 			transform(data);
 		}
 
@@ -522,10 +523,10 @@ public class NNModelGenerator
 
 	public PredictionTable predict(ExampleTable value){
 		//this now becomes the global data that the compute function uses
-		data=value;
+		data=(ExampleTableImpl)value;
 
 		//make a VT to put the predictions in, a column for every output feature
-		Table predictedResults= TableFactory.createTable(outputNames.length);
+		TableImpl predictedResults= (TableImpl)DefaultTableFactory.getInstance().createTable(outputNames.length);
 		for(int i=0; i<outputNames.length; i++){
 			//make sure to get the real length, not just the number of test examples
 			predictedResults.setColumn(new DoubleColumn(data.getNumRows()), i);
@@ -547,7 +548,7 @@ public class NNModelGenerator
 			int numOutputs=data.getNumOutputFeatures();
 			for(int i=0; i<numOutputs; i++){
 				for(int j=0; j<numTests; j++){
-					((TestTable)data).setDouble(predictedResults.getDouble(j, i), j, ((TestTable)data).getPredictionSet()[i]);
+					((TestTableImpl)data).setDouble(predictedResults.getDouble(j, i), j, ((TestTable)data).getPredictionSet()[i]);
 				}
 			}
 			//if this was a TestTable, anything down the pipe will be expecting that table back
@@ -555,7 +556,7 @@ public class NNModelGenerator
 			return (TestTable)data;
 		}
 
-		PredictionTable predTable= TableFactory.createPredictionTable(data);
+		PredictionTableImpl predTable= (PredictionTableImpl)data.toPredictionTable();
 
 		//if there are no spots for pred columns
 		if(predTable.getNumOutputFeatures()==0){
@@ -587,23 +588,23 @@ public class NNModelGenerator
 
 	//these are here in case you want to use an old model as a starting point
 	//also so the update/NNlearner can get to them
-	public Table getWeights(){
+	public TableImpl getWeights(){
 		return weights;
 	}
 
-	public Table getSums(){
+	public TableImpl getSums(){
 		return sums;
 	}
 
-	public Table getActivations(){
+	public TableImpl getActivations(){
 		return activations;
 	}
 
-	public Table getDeltas(){
+	public TableImpl getDeltas(){
 		return deltas;
 	}
 
-	public ExampleTable getData(){
+	public ExampleTableImpl getData(){
 		return data;
  	}
 
@@ -624,12 +625,12 @@ public class NNModelGenerator
 					if that's what you want to be looked at
 	*/
 
-	public void compute(int e, Table results){
+	public void compute(int e, TableImpl results){
 
 
 		//finding first hidden layer activations
 
-		for(int i=1; i<sums.getColumn(0).getCapacity(); i++){
+		for(int i=1; i<sums.getColumn(0).getNumRows(); i++){
 			double tempSum=0;
 			//DoubleColumn dc=(DoubleColumn)(weights.getObject(i,0));
 			double[] inWeights=(double[])(((DoubleColumn)(weights.getObject(i, 0))).getInternal());
@@ -729,8 +730,8 @@ public class NNModelGenerator
 	private void printWeights(){
 		System.out.println("Final Weights");
 		for(int c=0; c<weights.getNumColumns(); c++){
-			System.out.println("c:"+weights.getColumn(c).getCapacity());
-			for (int r=0; r<weights.getColumn(c).getCapacity(); r++){
+			System.out.println("c:"+weights.getColumn(c).getNumRows());
+			for (int r=0; r<weights.getColumn(c).getNumRows(); r++){
 				System.out.print(c+" "+r+":");
 				DoubleColumn dc=(DoubleColumn)weights.getObject(r,c);
 				for(int rr=0; rr<dc.getNumRows(); rr++){
@@ -750,10 +751,10 @@ public class NNModelGenerator
 		System.out.println("Acts:");
 		printVT(activations);
 	}
-	private void printVT(Table vt){
+	private void printVT(TableImpl vt){
 		for(int i=0; i<vt.getNumColumns(); i++){
 			System.out.print("col "+i+":");
-			for(int j=0; j<vt.getColumn(i).getCapacity(); j++){
+			for(int j=0; j<vt.getColumn(i).getNumRows(); j++){
 				System.out.print(vt.getDouble(j, i)+", ");
 			}
 			System.out.println();
@@ -781,7 +782,7 @@ public class NNModelGenerator
 	}
 
 	//fix this so that it only looks at training examples when determining scaling
-	private void transform(ExampleTable et){
+	private void transform(ExampleTableImpl et){
 		boolean sig=false;
 		switch ((int)params[ACTIVATION_FUNCTION]){
 			case 0:{
@@ -829,7 +830,7 @@ public class NNModelGenerator
 	   		transformOutputInfo[k][1]=((DoubleColumn)current_column).getMax()
 					-((DoubleColumn)current_column).getMin();
 			transformOutputInfo[k][0] = ((DoubleColumn)current_column).getMin();
-	 		int numRows=current_column.getCapacity();
+	 		int numRows=current_column.getNumRows();
 
 			for	(int j=0; j<numRows; j++){
 				double d=current_column.getDouble(j);
@@ -847,9 +848,9 @@ public class NNModelGenerator
 
 	}
 
-	private void unTransform(Table vt){
+	private void unTransform(TableImpl vt){
 		final int outputCount=transformOutputInfo.length;
-		final int rows=vt.getColumn(0).getCapacity();
+		final int rows=vt.getColumn(0).getNumRows();
 		double d;
 		for(int k=0;k<outputCount; k++){
 			DoubleColumn current_column=(DoubleColumn)vt.getColumn(k);

@@ -65,8 +65,8 @@ public class MarkovLearning extends ncsa.d2k.infrastructure.modules.ComputeModul
 
   public String[] getInputTypes()
     {
-    String[] temp = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
-                     "ncsa.d2k.modules.core.datatype.table.Table"};
+    String[] temp = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl",
+                     "ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
     return temp;
     }
 

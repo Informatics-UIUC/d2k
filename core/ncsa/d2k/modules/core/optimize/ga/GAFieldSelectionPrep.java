@@ -34,7 +34,7 @@ public class GAFieldSelectionPrep extends PopulationPrep
 	public String[] getInputTypes () {
 /*&%^4 Do not modify this section. */
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
 /*#end^4 Continue editing. ^#&*/
 	}

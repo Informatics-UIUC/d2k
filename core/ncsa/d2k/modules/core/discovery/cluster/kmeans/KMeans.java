@@ -1,13 +1,14 @@
 package ncsa.d2k.modules.core.discovery.cluster.kmeans;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+//import ncsa.d2k.util.datatype.*;
 import java.util.*;
 import java.lang.reflect.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
 	KMeans.java
-	
+
 	Angela Bottum
 	7/01
 
@@ -39,7 +40,7 @@ implements Reentrant
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
 	}
 
@@ -59,7 +60,7 @@ implements Reentrant
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
 	}
 
@@ -73,7 +74,7 @@ implements Reentrant
 
 	public void doit() throws Exception {
 		//VerticalTable vt = (VerticalTable)pullInput(0);
-		ExampleTable vt = (ExampleTable)pullInput(0);
+		ExampleTableImpl vt = (ExampleTableImpl)pullInput(0);
 
 		Column col;
 		int[] tempCols = vt.getInputFeatures();
@@ -154,14 +155,14 @@ implements Reentrant
 		//comparecol = (IntColumn) clustercol.copy();
 		int iters=0;
 		boolean maxIterReached=false;
-		
+
 		while((equal == false) && (!maxIterReached)) {
 			//(re)calc the means
 			q=0;
 			for(int c=0; c<numcols; c++) {
 				Integer ii = (Integer)inputCols.get(c);
 				doublecol = (NumericColumn)vt.getColumn(ii.intValue());
-				
+
 				for(v=0; v<vlen; v++,q=q+numcols) {
 					//Integer ii = (Integer)inputCols.get(c);
 					//col = vt.getColumn(ii.intValue());
@@ -179,10 +180,10 @@ implements Reentrant
 				//}
 					//else if(col instanceof StringColumn)
 					//	numpoints = 1;
-	
+
 					//else
 					//	numpoints = 1;
-	
+
 					if(q>=numcols*vlen) {
 						q=q-((numcols*vlen)-1);
 					}
@@ -222,7 +223,7 @@ implements Reentrant
 				for(p=0,square=0; p<numcols; p++) {
 					thisDist=datapoint[p]-Means[p];
 					square+=thisDist*thisDist;
-					
+
 					//PDG//square = square + Math.pow(Math.abs(datapoint[p]-Means[p]),2);
 				}
 				clustercol.setInt(1,i);
@@ -251,7 +252,7 @@ implements Reentrant
 			for(i=0; i<len; i++) {
 				if(comparecol.getInt(i) != clustercol.getInt(i)) {
 					equal = false;
-					
+
 				}
 				//do this so we don't have to reallocate and copy clustercol
 				//to comparecol every iteration
@@ -260,7 +261,7 @@ implements Reentrant
 			iters++;
 
 			if(maxIterations>0){
-			
+
 				//see if maxIterations is reached
 				if(iters==maxIterations){
 					maxIterReached=true;
@@ -269,7 +270,7 @@ implements Reentrant
 			//IntColumn tc=comparecol;
 			//comparecol = clustercol;//.copy();
 			//clustercol=tc;
-			
+
 		}
 		vt.setColumn(clustercol, addclustercol);
 		pushOutput(vt, 0);

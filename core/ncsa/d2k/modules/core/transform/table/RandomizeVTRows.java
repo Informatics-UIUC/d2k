@@ -5,6 +5,7 @@ import ncsa.d2k.infrastructure.modules.*;
 import java.util.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	RandomizeVTRows.java
 */
@@ -27,7 +28,7 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -49,7 +50,7 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -74,7 +75,7 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 
 		rand = new Random(seed);
 
-		Table table = (Table) pullInput(0);
+		TableImpl table = (TableImpl) pullInput(0);
 		int numRow = table.getNumRows();
 		int j = 0;
 		for (int i=0; i<numRow; i++){

@@ -4,6 +4,8 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	NTableLWRGen.java
 		This is a simplified version of a more complicated module
@@ -32,7 +34,7 @@ public class NTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -54,7 +56,7 @@ public class NTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -71,21 +73,21 @@ public class NTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	/**
 		PUT YOUR CODE HERE.
 	*/
-	Table xTable = null;
+	TableImpl xTable = null;
 	Column predCol = null;
 	int numFires = -1;
 	int N = 0;
 	int count = 0;
 	public void doit() throws Exception {
 		if (numFires == -1){
-			xTable = (Table) pullInput(0);
+			xTable = (TableImpl) pullInput(0);
 			numFires = 0;
 			N = xTable.getNumColumns()-1;
 			predCol = xTable.getColumn(N-1).copy();
 		}
 		Column col = ((NumericColumn) xTable.getColumn(numFires)).copy();
 		Column[] c = {col, predCol};
-		Table t = TableFactory.createTable(c);
+		TableImpl t = (TableImpl)DefaultTableFactory.getInstance().createTable(c);
 		pushOutput(t,0);
 		numFires++;
 	}

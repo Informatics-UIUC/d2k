@@ -1,6 +1,9 @@
 package ncsa.d2k.modules.core.optimize.util;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
+
 public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 
 	protected Range[] ranges;
@@ -189,7 +192,7 @@ public class MOSolutionSpace implements SolutionSpace, java.io.Serializable{
 			cols[j]=objC;
 		}
 
-		vt=TableFactory.createTable(cols);
+		vt= DefaultTableFactory.getInstance().createTable(cols);
 		return vt;
 
 	}

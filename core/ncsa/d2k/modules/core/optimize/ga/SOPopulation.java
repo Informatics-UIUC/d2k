@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.optimize.ga;
 import ncsa.d2k.modules.core.optimize.util.*;
 import java.io.Serializable;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
 	This class represents populations of individuals with a single objective
@@ -301,7 +302,7 @@ public class SOPopulation extends Population implements Serializable {
 	public Table getTable () {
 		int numTraits = traits.length;
 		int popSize = this.size ();
-		Table vt = null;
+		TableImpl vt = null;
 		if (members instanceof NumericIndividual []) {
 		    double [][] dc = new double [numTraits+1][popSize];
 			NumericIndividual [] nis = (NumericIndividual []) members;
@@ -315,7 +316,7 @@ public class SOPopulation extends Population implements Serializable {
 			}
 
 			// Now make the table
-			vt = TableFactory.createTable(0);
+			vt = (TableImpl) DefaultTableFactory.getInstance().createTable(0);
 			for (int i = 0 ; i < numTraits ; i++) {
 				DoubleColumn col = new DoubleColumn (dc [i]);
 				col.setLabel (traits [i].getName ());
@@ -339,7 +340,7 @@ public class SOPopulation extends Population implements Serializable {
 			}
 
 			// Now make the table
-			vt = TableFactory.createTable(0);
+			vt = (TableImpl)DefaultTableFactory.getInstance().createTable(0);
 			for (int i = 0 ; i < numTraits ; i++) {
 				BooleanColumn col = new BooleanColumn (dc [i]);
 				col.setLabel (Integer.toString(i));

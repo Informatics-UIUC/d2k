@@ -1,60 +1,62 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
 
 /**
- ShortColumn is an implementation of NumericColumn which holds a short array
- as its internal representation.
+ LongColumn is an implementation of NumericColumn which holds a long array as its internal
+ representation.
  <br>
- It it optimized for: retrieval of shorts by index, compact representation
- of shorts,  swapping of shorts, setting of shorts by index, reOrder-ing by index,
- compareing of shorts
+ It it optimized for: retrieval of longs by index, compact representation
+ of longs,  swapping of longs, setting of longs by index, reOrder-ing by index,
+ comparing of shorts
  It is very inefficient for: removals, insertions, additions
  */
-final public class ShortColumn extends NumericColumn {
+final public class LongColumn extends AbstractColumn implements NumericColumn {
 
-	static final long serialVersionUID = -8388343989794420885L;
+    private long min, max;
+    private static long emptyValue = Long.MIN_VALUE;
 
-    private short min, max;
-    private static short emptyValue = Short.MIN_VALUE;
-
-    /** holds ShortColumn's internal data rep */
-    private short[] internal = null;
+    /** holds LongColumn's internal data rep */
+    private long[] internal = null;
 
     /**
-     Create a new, empty ShortColumn with a capacity of zero.
+     Create a new, empty LongColumn.
      */
-    public ShortColumn () {
+    public LongColumn () {
         this(0);
     }
 
     /**
-     Create a new ShortColumn with the specified capacity.
+     Create a LongColumn with the specified capacity
      @param capacity the initial capacity
      */
-    public ShortColumn (int capacity) {
-        internal = new short[capacity];
-        //setType(new Short((short)0));
+    public LongColumn (int capacity) {
+        internal = new long[capacity];
+		setIsScalar(true);
+		type = ColumnTypes.LONG;
     }
 
     /**
-     Create a new ShortColumn with the specified values.
-     @param vals the initial values
+     Create a LongColumn with the specified values
+     @param vals the values to put into the column
      */
-    public ShortColumn (short[] vals) {
-        this.setInternal(vals);
-        //setType(new Short((short)0));
+    public LongColumn (long[] vals) {
+		internal = vals;
+		setIsScalar(true);
+		type = ColumnTypes.LONG;
     }
 
     /**
-     Return an exact copy of this ShortColumn.  A deep copy
-     is attempted, but if it fails a new ShortColumn will be created,
+     Copy method. Return an exact copy of this column.  A deep copy
+     is attempted, but if it fails a new column will be created,
      initialized with the same data as this column.
      @return A new Column with a copy of the contents of this column.
      */
     public Column copy () {
-        ShortColumn newCol = new ShortColumn(getCapacity());
+        LongColumn newCol;
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -63,12 +65,13 @@ final public class ShortColumn extends NumericColumn {
             oos.close();
             ByteArrayInputStream bais = new ByteArrayInputStream(buf);
             ObjectInputStream ois = new ObjectInputStream(bais);
-            newCol = (ShortColumn)ois.readObject();
+            newCol = (LongColumn)ois.readObject();
             ois.close();
             return  newCol;
         } catch (Exception e) {
-            for (int i = 0; i < getCapacity(); i++)
-                newCol.setShort(internal[i], i);
+            newCol = new LongColumn(getNumRows());
+            for (int i = 0; i < getNumRows(); i++)
+                newCol.setLong(internal[i], i);
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
             //newCol.setType(getType());
@@ -78,11 +81,12 @@ final public class ShortColumn extends NumericColumn {
 
     //////////////////////////////////////
     //// Accessing Metadata
+
     /**
      Return the count for the number of non-null entries.
      This variable is recomputed each time...as keeping
      track of it could be very inefficient.
-     @return this ShortColumn's number of entries
+     @return this LongColumn's number of entries
      */
     public int getNumEntries () {
         int numEntries = 0;
@@ -93,41 +97,33 @@ final public class ShortColumn extends NumericColumn {
     }
 
 	/**
-	 * Get the number of rows that this Column can hold.  Same as getCapacity().
-	 * @return the number of rows this Column can hold
+	 * Get the number of rows that this column can hold.  Same as getCapacity
+	 * @return the number of rows this column can hold
 	 */
 	public int getNumRows() {
-		return getCapacity();
+		return internal.length;
 	}
 
     /**
-     Get the capacity of this Column, its potential maximum number of entries.
-     @return the max number of entries this Column can hold
-     */
-    public int getCapacity () {
-        return  this.internal.length;
-    }
-
-    /**
-     Set a new capacity for this ShortColumn.  The capacity is its potential
-     max number of entries.  If numEntries is greater than newCapacity, the
-	 Column will be truncated.
+     Suggests a new capacity for this ShortColumn.  If the Column implementation supports
+     capacity than the suggestion may be followed. The capacity is it's potential
+     max number of entries.  If numEntries > newCapacity then Column may be truncated.
      @param newCapacity the new capacity
      */
-    public void setCapacity (int newCapacity) {
+    public void setNumRows (int newCapacity) {
         if (internal != null) {
-            short[] newInternal = new short[newCapacity];
+            long[] newInternal = new long[newCapacity];
             if (newCapacity > internal.length)
                 newCapacity = internal.length;
             System.arraycopy(internal, 0, newInternal, 0, newCapacity);
             internal = newInternal;
         }
         else
-            internal = new short[newCapacity];
+            internal = new long[newCapacity];
     }
 
     /**
-     Get the minimum value contained in this Column.
+     Get the minimum value contained in this Column
      @return the minimum value of this Column
      */
     public double getMin () {
@@ -136,7 +132,7 @@ final public class ShortColumn extends NumericColumn {
     }
 
     /**
-     Get the maximum value contained in this Column.
+     Get the maximum value contained in this Column
      @return the maximum value of this Column
      */
     public double getMax () {
@@ -146,11 +142,11 @@ final public class ShortColumn extends NumericColumn {
 
     /**
      Sets the value which indicates an empty entry.
-     This can by any subclass of Number.
+     This can by any subclass of Number
      @param emptyVal the value to which an empty entry is set
      */
     public void setEmptyValue (Number emptyVal) {
-        emptyValue = ((Number)emptyVal).shortValue();
+        emptyValue = ((Number)emptyVal).longValue();
     }
 
     /**
@@ -158,11 +154,11 @@ final public class ShortColumn extends NumericColumn {
      @return the value of an empty entry wrapped in a subclass of Number
      */
     public Number getEmptyValue () {
-        return  new Short(emptyValue);
+        return  new Long(emptyValue);
     }
 
     /**
-     Get a String from this Column at pos.
+     Get a String from this column at pos
      @param pos the position from which to get a String
      @return a String representation of the entry at that position
      */
@@ -171,16 +167,17 @@ final public class ShortColumn extends NumericColumn {
     }
 
     /**
-     Set the item at pos to be newEntry by calling Short.parseShort().
+     Converts newEntry to a Long and inserts the long value using
+     Long.parseLong()
      @param newEntry the new item
      @param pos the position
      */
     public void setString (String newEntry, int pos) {
-        internal[pos] = Short.parseShort(newEntry);
+        internal[pos] = Long.parseLong(newEntry);
     }
 
     /**
-     Get the value at pos as an int.
+     Return the value at pos as an int
      @param pos the position
      @return the value at pos cast to an int
      */
@@ -189,52 +186,52 @@ final public class ShortColumn extends NumericColumn {
     }
 
     /**
-     Set the item at pos to be newEntry by casting it to a short.
+     Set the value at pos to newEntry
      @param newEntry the new item
      @param pos the position
      */
     public void setInt (int newEntry, int pos) {
-        internal[pos] = (short)newEntry;
+        internal[pos] = (long)newEntry;
     }
 
     /**
-     Get the item at pos.
-     @param pos the position
-     @return the item at pos
+     Return the value at pos as a short
+     @param pos the postion
+     @return the value at pos cast to a short
      */
     public short getShort (int pos) {
-        return  this.internal[pos];
+        return  (short)this.internal[pos];
     }
 
     /**
-     Set the item at pos to be newEntry.
+     Set the value at pos to newEntry
      @param newEntry the new item
      @param pos the position
      */
     public void setShort (short newEntry, int pos) {
-        this.internal[pos] = newEntry;
+        internal[pos] = (long)newEntry;
     }
 
     /**
-     Get the value at pos as a long.
+     Return the value at pos
      @param pos the position
-     @return the value at pos cast to a long
+     @return the value at pos
      */
     public long getLong (int pos) {
-        return  (long)this.internal[pos];
+        return  this.internal[pos];
     }
 
     /**
-     Set the item at pos to be newEntry by casting it to a short.
+     Set the value at pos to newEntry
      @param newEntry the new item
      @param pos the position
      */
     public void setLong (long newEntry, int pos) {
-        internal[pos] = (short)newEntry;
+        this.internal[pos] = newEntry;
     }
 
     /**
-     Get the value at pos as a double.
+     Return the value at pos as a double
      @param pos the position
      @return the value at pos cast to a double
      */
@@ -243,16 +240,16 @@ final public class ShortColumn extends NumericColumn {
     }
 
     /**
-     Set the item at pos to be newEntry by casting it to a short.
+     Set the value at pos to newEntry
      @param newEntry the new item
      @param pos the position
      */
     public void setDouble (double newEntry, int pos) {
-        internal[pos] = (short)newEntry;
+        this.internal[pos] = (long)newEntry;
     }
 
     /**
-     Get the value at pos as a float.
+     Return the value at pos as a float
      @param pos the position
      @return the value at pos cast to a float
      */
@@ -261,52 +258,68 @@ final public class ShortColumn extends NumericColumn {
     }
 
     /**
-     Set the item at pos to be newEntry by casting it to a short.
+     Set the value at pos to newEntry
      @param newEntry the new item
      @param pos the position
      */
     public void setFloat (float newEntry, int pos) {
-        internal[pos] = (short)newEntry;
+        this.internal[pos] = (long)newEntry;
     }
 
     /**
-     Get the byte value of the item at pos.
+     Return the value at pos as a byte[]
      @param pos the position
-     @return the value of the item at pos as a byte[]
+     @return the value at pos as a byte[]
      */
     public byte[] getBytes (int pos) {
         return (String.valueOf(this.internal[pos])).getBytes();
-        //return  ByteUtils.writeShort(internal[pos]);
     }
 
     /**
-     Set the value at pos.
+     Set the value at pos to newEntry
      @param newEntry the new item
      @param pos the position
      */
     public void setBytes (byte[] newEntry, int pos) {
         setString(new String(newEntry), pos);
-        //internal[pos] = ByteUtils.toShort(newEntry);
     }
 
     /**
-     Get the value at pos as an Object (Short).
+     Return the value at pos as a byte
      @param pos the position
-     @return the value at pos as a Short
+     @return the value at pos as a byte
+     */
+    public byte getByte (int pos) {
+		return (byte)0;
+    }
+
+    /**
+     Set the value at pos to newEntry
+     @param newEntry the new item
+     @param pos the position
+     */
+    public void setByte (byte newEntry, int pos) {
+		;
+    }
+
+    /**
+     Return the value at pos as a Long.
+     @param pos the position
+     @return the value at pos as a Long
      */
     public Object getObject (int pos) {
-        return  new Short(internal[pos]);
+        return  new Long(internal[pos]);
     }
 
     /**
-     If newEntry is a Number, get its short value, otherwise
-     call setString() on newEntry.toString().
+     If newEntry is a Number, get its long value, otherwise
+     call setString() on newEntry.toString()
      @param newEntry the new item
      @param pos the position
      */
     public void setObject (Object newEntry, int pos) {
         if (newEntry instanceof Number)
-            internal[pos] = ((Number)newEntry).shortValue();
+            internal[pos] = ((Number)newEntry).longValue();
         else
             setString(newEntry.toString(), pos);
     }
@@ -314,24 +327,41 @@ final public class ShortColumn extends NumericColumn {
     /**
      Convert the entry at pos to a String and return it as a char[].
      @param pos the position
-     @return the value at pos as a char[]
+     @return the value at pos as an array of chars
      */
     public char[] getChars (int pos) {
-        return  Short.toString(internal[pos]).toCharArray();
+        return  Long.toString(internal[pos]).toCharArray();
     }
 
     /**
-     Convert newEntry to a String and call setString().
+     Convert newEntry to a String and call setString()
      @param newEntry the new item
      @param pos the position
      */
     public void setChars (char[] newEntry, int pos) {
-        //internal[pos] = Short.valueOf(new String(newEntry)).shortValue();
         setString(new String(newEntry), pos);
     }
 
     /**
-     If the value at pos is greater than zero, return true, else return false.
+     Convert the entry at pos to a String and return it as a char.
+     @param pos the position
+     @return the value at pos as an array of chars
+     */
+    public char getChar (int pos) {
+		return 'a';
+    }
+
+    /**
+     Convert newEntry to a String and call setString()
+     @param newEntry the new item
+     @param pos the position
+     */
+    public void setChar (char newEntry, int pos) {
+		;
+    }
+
+    /**
+     If the value at pos is greater than zero, return true.  false otherwise
      @param pos the position
      @return true if the value at pos is greater than zero, false otherwise
      */
@@ -342,20 +372,20 @@ final public class ShortColumn extends NumericColumn {
     }
 
     /**
-     If newEntry is true, set the value at pos to be 1.  Else set the value
-     at pos to be 0.
+     Set the value at pos to 1 if newEntry is true, otherwise
+     set it to 0.
      @param newEntry the new item
      @param pos the position
      */
     public void setBoolean (boolean newEntry, int pos) {
         if (newEntry)
-            internal[pos] = (short)1;
+            internal[pos] = (long)1;
         else
-            internal[pos] = 0;
+            internal[pos] = (long)0;
     }
 
     /**
-     Initializes the min and max of this FloatColumn.
+     Initializes the min and max of this LongColumn.
      */
     private void initRange () {
         max = min = internal[0];
@@ -367,19 +397,18 @@ final public class ShortColumn extends NumericColumn {
         }
     }
 
-    /*initRange*/
     //////////////////////////////////////
     //// ACCESSING FIELD ELEMENTS
     /**
      Gets a reference to the internal representation of this Column
-     (short[]).  Changes made to this object will be reflected in the Column.
+     (long[]).  Changes made to this object will be reflected in the Column.
      However, Column will be unaware of those changes until you call
      setInternal as, so state variables can get out of sync.
      @return the internal representation of this Column.
-     */
+     /
     public Object getInternal () {
         return  this.internal;
-    }
+    }*/
 
     /**
      Gets a subset of this Column, given a start position and length.
@@ -392,41 +421,42 @@ final public class ShortColumn extends NumericColumn {
     public Column getSubset (int pos, int len) {
         if ((pos + len) > internal.length)
             throw  new ArrayIndexOutOfBoundsException();
-        short[] subset = new short[len];
+        long[] subset = new long[len];
         System.arraycopy(internal, pos, subset, 0, len);
-        ShortColumn sc = new ShortColumn(subset);
-        sc.setLabel(getLabel());
-        sc.setComment(getComment());
-        //sc.setType(getType());
-        return  sc;
+        LongColumn lc = new LongColumn(subset);
+        lc.setLabel(getLabel());
+        lc.setComment(getComment());
+        return  lc;
     }
 
+    //////////////////////////////////////
+    //// SUPPORT FOR Column INTERFACE
     /**
      Sets the reference to the internal representation of this Column.
      @param newInternal a new internal representation for this Column
-     */
+     /
     public void setInternal (Object newInternal) {
-        if (newInternal instanceof short[])
-            this.internal = (short[])newInternal;
-    }
+        if (newInternal instanceof long[])
+            this.internal = (long[])newInternal;
+    }*/
 
     /**
-     Gets an object representation of the entry at the indicated position in Column.
+     Gets an object representation of the entry at the indicated position in Column
      @param pos the position
      @return the entry at pos
      */
     public Object getRow (int pos) {
-        return  new Short(internal[pos]);
+        return  new Long(internal[pos]);
     }
 
     /**
      Sets the entry at the given position to newEntry.
-     The newEntry should be a subclass of Number, preferable Short.
+     The newEntry should be a subclass of Number, preferable Long.
      @param newEntry a new entry, a subclass of Number
      @param pos the position to set
      */
     public void setRow (Object newEntry, int pos) {
-        internal[pos] = ((Number)newEntry).shortValue();
+        internal[pos] = ((Number)newEntry).longValue();
     }
 
     /**
@@ -440,59 +470,58 @@ final public class ShortColumn extends NumericColumn {
          if( internal[i] == emptyValue )
          last = i;
          if (last != (internal.length) )
-         internal[last] = ((Number)newEntry).shortValue();
+         internal[last] = ((Number)newEntry).longValue();
          else {
-         short[] newInternal = new short[internal.length+1];
+         long[] newInternal = new long[internal.length+1];
          System.arraycopy(newInternal,0,internal,0,internal.length);
-         newInternal[last] = ((Number)newEntry).shortValue();
+         newInternal[last] = ((Number)newEntry).longValue();
          internal=newInternal;
          }
          */
         int last = internal.length;
-        short[] newInternal = new short[internal.length + 1];
+        long[] newInternal = new long[internal.length + 1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length);
-        newInternal[last] = ((Short)newEntry).shortValue();
+        newInternal[last] = ((Long)newEntry).longValue();
         internal = newInternal;
     }
 
     /**
      Removes an entry from the Column, at pos.
-     All entries from pos+1 will be moved back 1 position
-     and the last entry will be set to emptyValue.
+     All entries from pos+1 will be moved back 1 position.
      @param pos the position to remove
-     @return a Short representation of the removed short
+     @return a Long representation of the removed long
      */
     public Object removeRow (int pos) {
-        short removed = internal[pos];
+        long removed = internal[pos];
         System.arraycopy(internal, pos + 1, internal, pos, internal.length -
                 (pos + 1));
-        short newInternal[] = new short[internal.length - 1];
+        long newInternal[] = new long[internal.length - 1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
         internal = newInternal;
-        return  new Short(removed);
+        return  new Long(removed);
     }
 
     /**
      Inserts a new entry in the Column at position pos.
      All elements from pos to capacity will be moved up one.
-     @param newEntry a Short wrapped short as the newEntry to insert
+     @param newEntry a Long wrapped long as the newEntry to insert
      @param pos the position to insert at
      */
     public void insertRow (Object newEntry, int pos) {
-        /*short[] newInternal = new short[internal.length+1];
-         short last = 0;
+        /*long[] newInternal = new long[internal.length+1];
+         long last = 0;
          System.arraycopy(newInternal,0,internal,0,pos-1);
          System.arraycopy(newInternal,pos,internal,pos+1,internal.length-(pos+1));
-         newInternal[pos] = ((Number)newEntry).shortValue();
+         newInternal[pos] = ((Number)newEntry).longValue();
          internal = newInternal;
          */
-        short[] newInternal = new short[internal.length + 1];
-        if (pos > getCapacity()) {
+        long[] newInternal = new long[internal.length + 1];
+        if (pos > getNumRows()) {
             addRow(newEntry);
             return;
         }
         if (pos == 0)
-            System.arraycopy(internal, 0, newInternal, 1, getCapacity());        /*else if(pos == 1) {
+            System.arraycopy(internal, 0, newInternal, 1, getNumRows());        /*else if(pos == 1) {
          newInternal[0] = internal[0];
          System.arraycopy(internal, 1, newInternal, 2, getCapacity()-2);
          }*/
@@ -501,17 +530,17 @@ final public class ShortColumn extends NumericColumn {
             System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
                     - pos);
         }
-        newInternal[pos] = ((Short)newEntry).shortValue();
+        newInternal[pos] = ((Long)newEntry).longValue();
         internal = newInternal;
     }
 
     /**
-     Swaps two entries in the Column.
+     Swaps two entries in the Column
      @param pos1 the position of the 1st entry to swap
      @param pos2 the position of the 2nd entry to swap
      */
     public void swapRows (int pos1, int pos2) {
-        short d1 = internal[pos1];
+        long d1 = internal[pos1];
         internal[pos1] = internal[pos2];
         internal[pos2] = d1;
     }
@@ -522,20 +551,19 @@ final public class ShortColumn extends NumericColumn {
      @param newOrder an array of indices indicating a new order
 	 @return a copy of this column, re-ordered
      */
-    public Column reOrderRows (int[] newOrder) {
-        short[] newInternal = null;
+    public Column reorderRows (int[] newOrder) {
+        long[] newInternal = null;
         if (newOrder.length == internal.length) {
-            newInternal = new short[internal.length];
+            newInternal = new long[internal.length];
             for (int i = 0; i < internal.length; i++)
                 newInternal[i] = internal[newOrder[i]];
         }
         else
             throw  new ArrayIndexOutOfBoundsException();
-        ShortColumn sc = new ShortColumn(newInternal);
-        //sc.setType(getType());
-        sc.setLabel(getLabel());
-        sc.setComment(getComment());
-        return  sc;
+        LongColumn lc = new LongColumn(newInternal);
+        lc.setComment(getComment());
+        lc.setLabel(getLabel());
+        return  lc;
     }
 
     /**
@@ -547,8 +575,8 @@ final public class ShortColumn extends NumericColumn {
      @return a value representing the relationship- >, <, or == 0
      */
     public int compareRows (Object element, int pos) {
-        short d1 = ((Number)element).shortValue();
-        short d2 = internal[pos];
+        long d1 = ((Number)element).longValue();
+        long d2 = internal[pos];
         if (d1 == emptyValue) {
             if (d2 == emptyValue)
                 return  0;
@@ -573,8 +601,8 @@ final public class ShortColumn extends NumericColumn {
      @return a value representing the relationship- >, <, or == 0
      */
     public int compareRows (int pos1, int pos2) {
-        short d1 = internal[pos1];
-        short d2 = internal[pos2];
+        long d1 = internal[pos1];
+        long d2 = internal[pos2];
         if (d1 == emptyValue) {
             if (d2 == emptyValue)
                 return  0;
@@ -590,59 +618,28 @@ final public class ShortColumn extends NumericColumn {
         return  0;
     }
 
-    //////////////////////////////////////
-    /**
-     Given an array of booleans, will remove the positions in the Column
-     which coorespond to the positions in the boolean array which are
-     marked true.  If the boolean array and Column do not have the same number of
-     rows, the remaining elements will be discarded.
-     @param flags the boolean array of remove flags
-     */
-    public void removeByFlag (boolean[] flags) {
-        /*for (int i=0;i<flags.length;i++)
-         if (flags[i]) removeRow(i);
-         for (i=flags.length;i<internal.length;i++)
-         removeRow(i); */
-        // keep a list of the row indices to remove
-        LinkedList ll = new LinkedList();
-        int i = 0;
-        for (; i < flags.length; i++) {
-            if (flags[i])
-                ll.add(new Integer(i));
-        }
-        for (; i < internal.length; i++) {
-            ll.add(new Integer(i));
-        }
-        int[] toRemove = new int[ll.size()];
-        int j = 0;
-        Iterator iter = ll.iterator();
-        while (iter.hasNext()) {
-            Integer in = (Integer)iter.next();
-            toRemove[j] = in.intValue();
-            j++;
-        }
-        // now call remove by index to remove the rows
-        removeByIndex(toRemove);
-    }
 
+
+    //////////////////////////////////////
     /**
      Given an array of ints, will remove the positions in the Column
      which are indicated by the ints in the array.
      @param indices the int array of remove indices
      */
-    public void removeByIndex (int[] indices) {
-        HashMap toRemove = new HashMap(indices.length);
+    public void removeRowsByIndex (int[] indices) {
+        HashSet toRemove = new HashSet(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
-            toRemove.put(id, id);
+            toRemove.add(id);
         }
-        short newInternal[] = new short[internal.length - indices.length];
+        long newInternal[] = new long[internal.length - indices.length];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
-            Integer x = (Integer)toRemove.get(new Integer(i));
+//            Integer x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
-            if (x == null) {
+ //           if (x == null) {
+			if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }
@@ -652,23 +649,21 @@ final public class ShortColumn extends NumericColumn {
 
     //////////////////////////////////////
     /**
-     Sort the elements in this Column.
-     @exception NotSupportedException when sorting is not supported
+     Sort the elements in this column.
      */
-    public void sort () throws NotSupportedException {
+    public void sort () {
         sort(null);
     }
 
     /**
-     Sort the elements in this Column, and swap the rows in the table
+     Sort the elements in this column, and swap the rows in the table
      we are a part of.
      @param t the Table to swap rows for
      @exception NotSupportedException when sorting is not supported
      */
-    public void sort (Table t) throws NotSupportedException {
+    public void sort (MutableTable t) {
         internal = doSort(internal, 0, internal.length - 1, t);
     }
-
 
     /**
        Sort the elements in this column starting with row 'begin' up to row 'end',
@@ -678,15 +673,14 @@ final public class ShortColumn extends NumericColumn {
        @param end the row no. which marks the end of the column segment to be sorted
        @exception NotSupportedException when sorting is not supported
     */
-    public void sort(Table t,int begin, int end)
-	throws NotSupportedException
+    public void sort(MutableTable t,int begin, int end)
     {
 	if (end > internal.length -1) {
-	    System.err.println(" end index was out of bounds"); 
+	    System.err.println(" end index was out of bounds");
 	    end = internal.length -1;
 	}
 	internal = doSort(internal, begin, end, t);
-                    
+
     }
 
 
@@ -697,9 +691,9 @@ final public class ShortColumn extends NumericColumn {
      @param p the beginning index
      @param r the ending index
      @param t the Table to swap rows for
-	 @return a sorted array of shorts
+	 @return a sorted array of longs
      */
-    final private static short[] doSort (short[] A, int p, int r, Table t) {
+    private static long[] doSort (long[] A, int p, int r, MutableTable t) {
         if (p < r) {
             int q = partition(A, p, r, t);
             doSort(A, p, q, t);
@@ -714,10 +708,10 @@ final public class ShortColumn extends NumericColumn {
      @param p the beginning index
      @param r the ending index
      @param t the Table to swap rows for
-	 @return the new partition point
+	 @return the partition point
      */
-    final private static int partition (short[] A, int p, int r, Table t) {
-        short x = A[p];
+    private static int partition (long[] A, int p, int r, MutableTable t) {
+        long x = A[p];
         int i = p - 1;
         int j = r + 1;
         while (true) {
@@ -729,7 +723,7 @@ final public class ShortColumn extends NumericColumn {
             } while (A[i] < x);
             if (i < j) {
                 if (t == null) {
-                    short temp = A[i];
+                    long temp = A[i];
                     A[i] = A[j];
                     A[j] = temp;
                 }
@@ -741,4 +735,4 @@ final public class ShortColumn extends NumericColumn {
         }
     }
 }
-/*ShortColumn*/
+/*LongColumn*/

@@ -15,6 +15,8 @@ import java.text.NumberFormat;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /**
    SQLDefineBins presents a GUI to allow the use to enter classifications for
    a data set.
@@ -47,7 +49,7 @@ public class SQLDefineBins extends DefineBins {
     public String[] getInputTypes() {
 	String []in = {	"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
 			"java.lang.String",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 	return in;
 	}
 
@@ -58,7 +60,7 @@ public class SQLDefineBins extends DefineBins {
     */
     public String[] getOutputTypes() {
 		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return out;
 	}
 
@@ -141,7 +143,7 @@ public class SQLDefineBins extends DefineBins {
 		    tnArrived = true;
 		}
 		if(i == 2) {
-		    table = (ExampleTable)o;
+		    table = (ExampleTableImpl)o;
 		    tableArrived = true;
 		}
 		if(connArrived && tableArrived && tnArrived) {

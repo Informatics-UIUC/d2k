@@ -4,6 +4,7 @@ import ncsa.d2k.infrastructure.modules.DataPrepModule;
 import java.io.Serializable;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
        VTLinearScaler.java
 
@@ -72,7 +73,7 @@ private void updateBounds(){
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -97,7 +98,7 @@ private void updateBounds(){
 	public String[] getOutputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -117,7 +118,7 @@ private void updateBounds(){
 	*/
 	public void doit () throws Exception {
 
-	Table raw=(Table)pullInput(0);
+	TableImpl raw=(TableImpl)pullInput(0);
 	Column[] newColumns=new Column[raw.getNumColumns()];
 
 	  for(int k=0; k<raw.getNumColumns(); k++){
@@ -145,9 +146,9 @@ private void updateBounds(){
 	      newColumns[k]=raw.getColumn(k).copy();
 	    }
 	  }
-	  Table newVT;
+	  TableImpl newVT;
 	  if(!inplace){
-		  newVT=TableFactory.createTable();
+		  newVT= (TableImpl)DefaultTableFactory.getInstance().createTable();
 		  newVT.setColumns(newColumns);
 	  }else{
 	  	newVT=raw;

@@ -1,13 +1,14 @@
 package ncsa.d2k.modules.core.discovery.cluster.kmeans;
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+//import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
 import java.lang.*;
 
 /**
 	KRandom.java
-	
+
 	Angela Bottum
 	7/01
 */
@@ -29,7 +30,7 @@ public class KRandom extends ncsa.d2k.infrastructure.modules.ComputeModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTableImpl"};
 		return types;
 	}
 
@@ -49,7 +50,7 @@ public class KRandom extends ncsa.d2k.infrastructure.modules.ComputeModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.ExampleTableImpl"};
 		return types;
 	}
 
@@ -87,7 +88,7 @@ public class KRandom extends ncsa.d2k.infrastructure.modules.ComputeModule
 
 	public void doit() throws Exception {
 		//VerticalTable vt = (VerticalTable)pullInput(0);
-		ExampleTable vt = (ExampleTable)pullInput(0);
+		ExampleTableImpl vt = (ExampleTableImpl)pullInput(0);
 		int numrows = vt.getNumRows();
 		int[] tempCols = vt.getInputFeatures();
 		Column col;
@@ -97,7 +98,7 @@ public class KRandom extends ncsa.d2k.infrastructure.modules.ComputeModule
 			if(col instanceof NumericColumn)
 				inputCols.add(new Integer(tempCols[i]));
 		}
-		
+
 		NumericColumn ncol;
 		IntColumn clustercol = new IntColumn(numrows);
 		int numcols = inputCols.size();//vt.getNumColumns();
@@ -138,7 +139,7 @@ public class KRandom extends ncsa.d2k.infrastructure.modules.ComputeModule
 				if(max[v] > 0)
 					rand[p] = r.nextInt((int)max[v]) + r.nextDouble();
 				else
-					rand[p] = r.nextDouble(); 
+					rand[p] = r.nextDouble();
 				//*************************
 				if(rand[p]<min[v]) {
 					rand[p] = rand[p] + min[v];

@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.prediction.regression;
 import ncsa.d2k.modules.*;
 import ncsa.d2k.infrastructure.modules.HasNames;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 import Jama.*;
@@ -76,7 +77,7 @@ import Jama.*;
 			for(int i=0;i<et.getNumTrainExamples(); i++){//row
 				matA.set(i, 0, 1.0);//the constant
 				for(int j=0;j<et.getNumInputFeatures(); j++){//column
-					matA.set(i, j+1, et.getTrainInputDouble(i, j));
+					matA.set(i, j+1, ((ExampleTableImpl)et).getTrainInputDouble(i, j));
 				}
 			}
 
@@ -92,7 +93,7 @@ import Jama.*;
 				//get the output/predictions matrix
 				Matrix matb=new Matrix(et.getNumTrainExamples(), 1);
 				for(int i=0;i<et.getNumTrainExamples();i++){
-					matb.set(i, 0, et.getTrainOutputDouble(i,oi));
+					matb.set(i, 0, ((ExampleTableImpl)et).getTrainOutputDouble(i,oi));
 				}
 				coefficients[oi]=regression(matA, matb, matATA, matR);
 			}
@@ -113,7 +114,7 @@ import Jama.*;
 				mean=new double[et.getNumOutputFeatures()];
 				for(int j=0;j<et.getNumOutputFeatures(); j++){//column
 					for(int i=0; i<et.getNumTrainExamples(); i++){
-						mean[j]+=et.getTrainOutputDouble(i,j);
+						mean[j]+=((ExampleTableImpl)et).getTrainOutputDouble(i,j);
 					}
 					mean[j]/=et.getNumTrainExamples();
 				}
@@ -150,11 +151,11 @@ import Jama.*;
 	public PredictionTable predict(ExampleTable et){
 
 
-		PredictionTable predTable;
+		PredictionTableImpl predTable;
 		if(et instanceof PredictionTable){
-			predTable=(PredictionTable)et;
+			predTable=(PredictionTableImpl)et;
 		}else{
-			predTable=TableFactory.createPredictionTable(et);
+			predTable= (PredictionTableImpl)et.toPredictionTable();
 		}
 
 		//if there are no spots for pred columns
@@ -222,7 +223,7 @@ import Jama.*;
 			return "RegressionModel";
 		}
 		public String[] getInputTypes(){
-			String[] s= {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			String[] s= {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 			return s;
 		}
 
@@ -249,7 +250,7 @@ import Jama.*;
 			}
 		}
 		public String[] getOutputTypes(){
-			String[] s={"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
+			String[] s={"ncsa.d2k.modules.core.datatype.table.basic.PredictionTableImpl"};
 			return s;
 		}
 

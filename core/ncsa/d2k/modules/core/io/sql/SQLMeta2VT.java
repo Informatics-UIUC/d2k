@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.io.sql;
 
 import ncsa.d2k.infrastructure.modules.DataPrepModule;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.sql.*;
 import java.util.Vector;
 
@@ -38,7 +39,7 @@ public class SQLMeta2VT extends DataPrepModule
     public String[] getOutputTypes () {
 	String[] temp = {
 	    //	    "ncsa.d2k.modules.io.input.sql.ConnectionWrapper",
-	    "ncsa.d2k.modules.core.datatype.table.Table"};
+	    "ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 	return temp;
     }
 
@@ -47,7 +48,7 @@ public class SQLMeta2VT extends DataPrepModule
 	ConnectionWrapper cw = (ConnectionWrapper) this.pullInput (0);
 	String tableName = (String) this.pullInput(1);
 	ResultSet result;
-	Table vt = null;
+	TableImpl vt = null;
 	try {
 	    Statement stmt
 		= ((Connection)cw.getConnection()).createStatement();
@@ -59,7 +60,7 @@ public class SQLMeta2VT extends DataPrepModule
 		= result.getMetaData();
 
 	    int numColumns = columnMetadata.getColumnCount();
-	    vt = TableFactory.createTable(numColumns);
+	    vt = (TableImpl)DefaultTableFactory.getInstance().createTable(numColumns);
 	    for(int i = 0; i < numColumns; i++) {
 		int type = columnMetadata.getColumnType(i+1);
 		if ( type == java.sql.Types.SMALLINT ||

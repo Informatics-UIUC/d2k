@@ -9,6 +9,7 @@ import ncsa.gui.*;
 import ncsa.d2k.gui.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -38,7 +39,7 @@ public final class LinearRegression2D extends ncsa.d2k.infrastructure.modules.Vi
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -107,7 +108,7 @@ class LinearRegressionUserPane extends ncsa.d2k.controller.userviews.swing.JUser
 	implements ActionListener {
 	LinearRegression2D module;
 
-	Table table;
+	TableImpl table;
 	JMenuItem help;
 	JMenuBar menuBar;
 	HelpWindow hWindow;
@@ -128,7 +129,7 @@ class LinearRegressionUserPane extends ncsa.d2k.controller.userviews.swing.JUser
 	}
 
 	public void setInput(Object object, int index) {
-		table = (Table) object;
+		table = (TableImpl) object;
 
 		buildView();
 	}

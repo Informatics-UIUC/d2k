@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import java.awt.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
 	A Chart is similar to a Graph, but it does not plot
@@ -34,7 +35,7 @@ public abstract class Chart extends JPanel {
 	// the data
 	DataSet set;
 	GraphSettings settings;
-	Table table;
+	TableImpl table;
 	int bins;
 
 	// dimensions of the chart
@@ -61,7 +62,7 @@ public abstract class Chart extends JPanel {
 	abstract public void initOffsets();
 	abstract public void resize();
 
-	public Chart(Table t, DataSet d, GraphSettings g) {
+	public Chart(TableImpl t, DataSet d, GraphSettings g) {
 		table = t;
 		set = d;
 		settings = g;

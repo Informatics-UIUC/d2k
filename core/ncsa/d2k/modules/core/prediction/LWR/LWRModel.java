@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.prediction.LWR;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.util.splaytree.*;
 import Jama.*;
 import java.util.*;
@@ -34,8 +35,8 @@ public class LWRModel extends ModelModule implements Serializable {
 	double[] kernels;
 	double[] distances;
 	double[] criterion;
-	Table Traintable, TraintableSubset;
-	public Table finaltable;
+	TableImpl Traintable, TraintableSubset;
+	public TableImpl finaltable;
 	Matrix X;
 	Matrix Z;
 	NumericColumn y;
@@ -48,9 +49,9 @@ public class LWRModel extends ModelModule implements Serializable {
 		@param Table table1 - the training data
 		@param Table table2 - the testing data
 	*/
-	LWRModel(Table table1, Table table2, int ker, int distance, int nearest, boolean useNearest) {
+	LWRModel(TableImpl table1, TableImpl table2, int ker, int distance, int nearest, boolean useNearest) {
 		Traintable = table1;
-		Table Testtable = table2;
+		TableImpl Testtable = table2;
 
 		//determine the subset of training data which should be used for
 		//the regresssion.
@@ -104,7 +105,7 @@ public class LWRModel extends ModelModule implements Serializable {
 
 		//making the final Table of the test data and the
 		//corresponding predicted values
-		finaltable = TableFactory.createTable();
+		finaltable = (TableImpl)DefaultTableFactory.getInstance().createTable();
 		for (int i=0; i< Testtable.getNumColumns()-1; i++){
 			finaltable.addColumn(Testtable.getColumn(i));
 		}
@@ -120,7 +121,7 @@ public class LWRModel extends ModelModule implements Serializable {
 	*/
 	public void doit() {
 		//get the testing data
-		Table table = (Table) pullInput(0);
+		TableImpl table = (TableImpl) pullInput(0);
 		determineSubset(table);
 
 		if (useNearestNeighbors){
@@ -145,7 +146,7 @@ public class LWRModel extends ModelModule implements Serializable {
 		DoubleColumn critCol = new DoubleColumn(criterion);
 		DoubleColumn copyCritCol = (DoubleColumn) critCol.copy();
 
-		Table fTable = TableFactory.createTable();
+		TableImpl fTable = (TableImpl)DefaultTableFactory.getInstance().createTable();
 		for (int i=0; i< table.getNumColumns()-1; i++){
 			fTable.addColumn(table.getColumn(i).copy());
 		}
@@ -397,7 +398,7 @@ public class LWRModel extends ModelModule implements Serializable {
 		@param Table t - the test data
 	*/
 	public void determineSubset(Table t){
-		TraintableSubset = TableFactory.createTable();
+		TraintableSubset = (TableImpl)DefaultTableFactory.getInstance().createTable();
 		for (int j=0; j<t.getNumColumns(); j++){
 			int index = findIndexInTraintable(t.getColumnLabel(j));
 			TraintableSubset.addColumn(Traintable.getColumn(index).copy());
@@ -493,7 +494,7 @@ public class LWRModel extends ModelModule implements Serializable {
 		removes the column of output values from the training data
 		@param Table table - the table of input data
 	*/
-	public NumericColumn removeYs(Table table) {
+	public NumericColumn removeYs(TableImpl table) {
 		//table.print();
 		int numCol = table.getNumColumns();
 		NumericColumn col = (NumericColumn) table.getColumn(numCol-1);
@@ -693,7 +694,7 @@ public class LWRModel extends ModelModule implements Serializable {
 		addConstant1s
 		adds a column of constant 1's
 	*/
-	protected void addConstant1s(Table table){
+	protected void addConstant1s(TableImpl table){
 		int numR = table.getNumRows();
 		int[] ar1 = new int[numR];
 		for (int i=0; i<numR; i++){

@@ -11,6 +11,7 @@ import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.controller.userviews.swing.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
  * VTColumnSelectUI
  * @author gpape
@@ -23,7 +24,7 @@ public class VTColumnSelect extends UIModule implements Serializable {
    }
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.table.Table"}; return i;
+      String[] i = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"}; return i;
    }
 
    public String getInputInfo(int index) {
@@ -34,8 +35,8 @@ public class VTColumnSelect extends UIModule implements Serializable {
    }
 
    public String[] getOutputTypes() {
-      String[] o = {"ncsa.d2k.modules.core.datatype.Table",
-         "ncsa.d2k.modules.core.datatype.table.Table"};
+      String[] o = {"ncsa.d2k.modules.core.datatype.basic.TableImpl",
+         "ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
       return o;
    }
 
@@ -62,7 +63,7 @@ public class VTColumnSelect extends UIModule implements Serializable {
       implements Serializable, ActionListener {
 
       VTColumnSelect parent;
-      Table vt;
+      TableImpl vt;
 
       Vector v_all, v_red;
 
@@ -79,7 +80,7 @@ public class VTColumnSelect extends UIModule implements Serializable {
       public void setInput(Object o, int i) {
          if (i == 0) {
 
-            vt = (Table)o;
+            vt = (TableImpl)o;
 
             v_all = new Vector(vt.getNumColumns());
             v_red = new Vector(vt.getNumColumns());
@@ -333,8 +334,8 @@ public class VTColumnSelect extends UIModule implements Serializable {
             parent.viewCancel();
          else if (src == b_done) {
 
-            Table out_all = TableFactory.createTable();
-            Table out_red = TableFactory.createTable();
+            TableImpl out_all = (TableImpl)DefaultTableFactory.getInstance().createTable();
+            TableImpl out_red = (TableImpl)DefaultTableFactory.getInstance().createTable();
 
             HashMap vt_labels = new HashMap();
 

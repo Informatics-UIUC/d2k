@@ -3,6 +3,7 @@ import ncsa.d2k.infrastructure.modules.*;
 import java.util.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	ScalarizeNominals.java
 
@@ -27,7 +28,7 @@ public class ScalarizeNominals extends ncsa.d2k.infrastructure.modules.DataPrepM
 	*/
 	public String[] getInputTypes () {
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
 	}
 
@@ -48,7 +49,7 @@ public class ScalarizeNominals extends ncsa.d2k.infrastructure.modules.DataPrepM
 	*/
 	public String[] getOutputTypes () {
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 	}
 
@@ -106,9 +107,9 @@ System.out.println ("LABEL : "+lbl);
 		PUT YOUR CODE HERE.
 	*/
 	public void doit () throws Exception {
-		Table et = (Table) this.pullInput (0);
-		Table tmpTbl = TableFactory.createTable();
-		ExampleTable newet = TableFactory.createExampleTable(tmpTbl);
+		TableImpl et = (TableImpl) this.pullInput (0);
+		TableImpl tmpTbl = (TableImpl)DefaultTableFactory.getInstance().createTable();
+		ExampleTableImpl newet = (ExampleTableImpl)tmpTbl.toExampleTable();
 		int [] inputs = null;
 		int [] outputs = null;
 		if (et instanceof ExampleTable) {

@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.prediction.evaluators;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.infrastructure.modules.ModelEvaluatorModule;
 import ncsa.d2k.infrastructure.modules.HasNames;
@@ -165,7 +166,7 @@ public class BestScoreEvaluator extends ModelEvaluatorModule implements HasNames
 			boolean ok = true;
 
 			for(int col =0; col < outs.length; col++) {
-				Column c = pt.getColumn(outs[col]);
+				Column c = ((PredictionTableImpl)pt).getColumn(outs[col]);
 				if(c instanceof NumericColumn) {
 					double real = pt.getDouble(row, outs[col]);
 					double pred = pt.getDouble(row, preds[col]);

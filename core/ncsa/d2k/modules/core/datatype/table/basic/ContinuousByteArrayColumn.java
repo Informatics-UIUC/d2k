@@ -1,4 +1,6 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
@@ -20,9 +22,7 @@ import ncsa.d2k.util.*;
  * The buffer will compact itself when a row is removed from this column.  The
  * space freed up from the removal will not be freed until trim() is called.
  */
-final public class ContinuousByteArrayColumn extends TextualColumn {
-
-	static final long serialVersionUID = 8166528232612804955L;
+final public class ContinuousByteArrayColumn extends AbstractColumn implements TextualColumn{
 
 	/** the internal buffer */
 	private byte[] internal;
@@ -65,6 +65,8 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 		if(fill)
 			for(int i = 0; i < initialLength; i++)
 				appendBytes(new byte[0]);
+		setIsNominal(true);
+		type = ColumnTypes.BYTE_ARRAY;
 	}
 
 	/**
@@ -112,7 +114,16 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 		internal = data;
 		rowPtrs = pointers;
 		numRows = getNumEntries();
+		setIsNominal(true);
+		type = ColumnTypes.BYTE_ARRAY;
 	}
+
+    public ContinuousByteArrayColumn(byte[][] data) {
+    	for(int i = 0; i < data.length; i++)
+			setBytes(data[i], i);
+		setIsNominal(true);
+		type = ColumnTypes.BYTE_ARRAY;
+    }
 
 	/**
 	 * Get an exact copy of this column.
@@ -132,8 +143,8 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
             ois.close();
             return  bac;
         } catch (Exception e) {
-            bac = new ContinuousByteArrayColumn(getCapacity());
-            for (int i = 0; i < getCapacity(); i++) {
+            bac = new ContinuousByteArrayColumn(getNumRows());
+            for (int i = 0; i < getNumRows(); i++) {
                 byte orig[] = getBytes(i);
                 byte res[] = new byte[orig.length];
                 for (int j = 0; j < orig.length; j++)
@@ -142,7 +153,6 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
             }
             bac.setLabel(getLabel());
             bac.setComment(getComment());
-            //bac.setType(getType());
             return  bac;
         }
 	}
@@ -478,6 +488,24 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 	}
 
 	/**
+	 * Get the bytes at row
+	 * @param row a row of this column
+	 * @return the value at row
+	 */
+	public byte getByte(int row) {
+		return (byte)0;
+	}
+
+	/**
+	 * Set the value at row as b.
+	 * @param b the bytes to put in the column
+	 * @param row the row to insert the entry in
+	 */
+	public void setByte(byte b, int row) {
+		;
+	}
+
+	/**
 	 * Get the value at row as an array of char
 	 * @param row a row of this column
 	 * @return the value at row as an array of char
@@ -499,6 +527,25 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 		for(int i = 0; i < c.length; i++)
 			b[i] = (byte)c[i];
 		setBytes(b, row);
+	}
+
+	/**
+	 * Get the value at row as an array of char
+	 * @param row a row of this column
+	 * @return the value at row as an array of char
+	 */
+	public char getChar(int row) {
+		return 'a';
+	}
+
+	/**
+	 * Set the value at row as c.  All chars will be cast to bytes and then
+	 * inserted.  This assumes only ASCII characters are used.
+	 * @param c the bytes to put in the column
+	 * @param row the row to insert the entry in
+	 */
+	public void setChar(char c, int row) {
+		;
 	}
 
 	/**
@@ -568,16 +615,8 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 	 * @return the number of rows this column can hold
 	 */
 	public int getNumRows() {
-		return getCapacity();
+		return numRows;
 	}
-
-    /**
-     Get the capacity of this Column, its potential maximum number of entries
-     @return the max number of entries this Column can hold
-     */
-    public int getCapacity () {
-        return numRows;//rowPtrs.length;
-    }
 
     /**
      Suggests a new capacity for this Column.  If this implementation of Column
@@ -587,7 +626,7 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
      truncated.
      @param newCapacity a new capacity
      */
-    public void setCapacity (int newCapacity) {
+    public void setNumRows(int newCapacity) {
         /*if (internal != null) {
             byte[][] newInternal = new byte[newCapacity][];
             if (newCapacity > internal.length)
@@ -635,7 +674,6 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 			idx++;
 		}
 		cac.setLabel(getLabel());
-		//cac.setType(getType());
 		cac.setComment(getComment());
 		return cac;
     }
@@ -654,13 +692,12 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
      If a miscompatable Object is passed in, the most common Exception
      thrown is a ClassCastException.
      @param newInternal a new internal representation for this Column
-     */
+     /
     public void setInternal (Object newInternal) {
-        //this.internal = (byte[][])newInternal;
 
 		//System.out.println("Not impelmented...");
 		throw new RuntimeException("This method is not yet implemented for ContinuousByteArrayColumn.");
-    }
+    }*/
 
     /**
      Sets the entry at the given position to newEntry
@@ -833,7 +870,7 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
      @param newOrder an array of indices indicating a new order
 	 @return a copy of this column, re-ordered
      */
-    public Column reOrderRows (int[] newOrder) {
+    public Column reorderRows (int[] newOrder) {
 		if(newOrder.length != numRows)
 			throw new ArrayIndexOutOfBoundsException();
 		byte[] newinternal = new byte[internal.length];
@@ -860,7 +897,6 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 
 		ContinuousByteArrayColumn bc = new ContinuousByteArrayColumn(newinternal, newrowPtrs);
 		bc.setLabel(getLabel());
-		//bc.setType(getType());
 		bc.setComment(getComment());
 		return bc;
     }
@@ -934,45 +970,15 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
     }
 
     /**
-     Given an array of booleans, will remove the positions in the Column
-     which coorespond to the positions in the boolean array which are
-     marked true.  If the boolean array and Column do not have the same
-     number of elements, the remaining elements will be discarded.
-     @param flags the boolean array of remove flags
-     */
-    public void removeByFlag (boolean[] flags) {
-        // keep a list of the row indices to remove
-        LinkedList ll = new LinkedList();
-        int i = 0;
-        for (; i < flags.length; i++) {
-            if (flags[i])
-                ll.add(new Integer(i));
-        }
-        for (; i < internal.length; i++) {
-            ll.add(new Integer(i));
-        }
-        int[] toRemove = new int[ll.size()];
-        int j = 0;
-        Iterator iter = ll.iterator();
-        while (iter.hasNext()) {
-            Integer in = (Integer)iter.next();
-            toRemove[j] = in.intValue();
-            j++;
-        }
-        // now call remove by index to remove the rows
-        removeByIndex(toRemove);
-    }
-
-    /**
      Given an array of ints, will remove the positions in the Column
      which are indicated by the ints in the array.
      @param indices the int array of remove indices
      */
-    public void removeByIndex (int[] indices) {
-        HashMap toRemove = new HashMap(indices.length);
+    public void removeRowsByIndex (int[] indices) {
+        HashSet toRemove = new HashSet(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
-            toRemove.put(id, id);
+            toRemove.add(id);
         }
 
 		int oldNumRows = getNumRows();
@@ -981,9 +987,10 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 
         int newIntIdx = 0;
 		// do the first and second elements as special cases outside the loop
-		Integer x = (Integer)toRemove.get(new Integer(0));
+		//Integer x = (Integer)toRemove.get(new Integer(0));
 		// not removing the row, copy it into newinternal
-		if(x == null) {
+		//if(x == null) {
+		if(!toRemove.contains(new Integer(0))) {
 			System.arraycopy(internal, 0, newinternal, 0, rowPtrs[0]);
 			newrowPtrs[0] = rowPtrs[0];
 			newIntIdx++;
@@ -991,8 +998,9 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 		else
 			numRows--;
 
-		x = (Integer)toRemove.get(new Integer(1));
-		if(x == null) {
+		//x = (Integer)toRemove.get(new Integer(1));
+		//if(x == null) {
+		if(!toRemove.contains(new Integer(1))) {
 			// we removed the first row
 			byte[] item = getInternalBytes(1);
 			int sz = sizeOf(1);
@@ -1015,9 +1023,10 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 		// removing
         for (int i = 2; i < oldNumRows; i++) {
             // check if this row is in the list of rows to remove
-            x = (Integer)toRemove.get(new Integer(i));
+            //x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
-            if (x == null) {
+            //if (x == null) {
+			if(!toRemove.contains(new Integer(i))) {
 				byte[] item = getInternalBytes(i);
 				int size = sizeOf(i);
 
@@ -1045,7 +1054,7 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
      Sort the items in this column.
      @exception NotSupportedException when sorting is not supported
      */
-    public void sort () throws NotSupportedException {
+    public void sort () {
         sort(null);
     }
 
@@ -1053,9 +1062,8 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
      Sort the elements in this column, and swap the rows in the table
      we are a part of.
      @param t the Table to swap rows for
-     @exception NotSupportedException when sorting is not supported
      */
-    public void sort (Table t) throws NotSupportedException {
+    public void sort (MutableTable t) {
         //internal = doSort(internal, 0, internal.length - 1, t);
 		doSort(0, numRows-1, t);
 		//throw new NotSupportedException();
@@ -1067,10 +1075,8 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
        @param t the VerticalTable to swap rows for
        @param begin the row no. which marks the beginnig of the  column segment to be sorted
        @param end the row no. which marks the end of the column segment to be sorted
-       @exception NotSupportedException when sorting is not supported
     */
-    public void sort(Table t,int begin, int end)
-	throws NotSupportedException
+    public void sort(MutableTable t,int begin, int end)
     {
 	doSort( begin, end, t);
     }
@@ -1084,7 +1090,7 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
      @param r the ending index
      @param t the Table to swap rows for
      */
-    private /*byte[]*/void doSort (/*byte[] A,*/ int p, int r, Table t) {
+    private /*byte[]*/void doSort (/*byte[] A,*/ int p, int r, MutableTable t) {
         if (p < r) {
             int q = partition(/*A,*/ p, r, t);
             doSort(/*A,*/ p, q, t);
@@ -1100,7 +1106,7 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
      @param t the Table to swap rows for
 	 @return the new partition point
      */
-    protected int partition (/*byte[] A,*/ int p, int r, Table t) {
+    protected int partition (/*byte[] A,*/ int p, int r, MutableTable t) {
         //String x = A[p];
         int i = p - 1;
         int j = r + 1;

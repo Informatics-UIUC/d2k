@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.datatype.conversion;
 import ncsa.d2k.infrastructure.modules.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
 	MapToVT.java
@@ -45,7 +46,7 @@ public class MapToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 	}
 
@@ -61,7 +62,6 @@ public class MapToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		PUT YOUR CODE HERE.
 	*/
 	public void doit() throws Exception {
-		Table table = TableFactory.createTable(2);
 		Map map = (Map)pullInput(0);
 		int mapSize = map.size();
 		ObjectColumn col1 = new ObjectColumn(mapSize); // keys
@@ -81,9 +81,13 @@ public class MapToVT extends ncsa.d2k.infrastructure.modules.DataPrepModule
 			position++;
 		}
 
+		Column [] cc = new Column[2];
+		cc[0] = col1;
+		cc[1] = col2;
+		Table table = DefaultTableFactory.getInstance().createTable(cc);
 		// add the two columns into table
-		table.setColumn(col1,0);
-		table.setColumn(col2,1);
+		//table.setColumn(col1,0);
+		//table.setColumn(col2,1);
 		pushOutput(table, 0);
 	}
 }

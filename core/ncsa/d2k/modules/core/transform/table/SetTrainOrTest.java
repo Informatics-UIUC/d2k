@@ -5,6 +5,8 @@ import ncsa.d2k.infrastructure.modules.*;
 import java.io.Serializable;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /**
 	ET1ExType.java
 
@@ -83,16 +85,16 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		does it
 	*/
 	public void doit() throws Exception {
-		Table tt=(Table)pullInput(0);
+		TableImpl tt=(TableImpl)pullInput(0);
 
-		ExampleTable et;
+		ExampleTableImpl et;
 		if(tt instanceof ExampleTable){
-			et=(ExampleTable)tt;
+			et=(ExampleTableImpl)tt;
 		}else{
-			et=TableFactory.createExampleTable(tt);
+			et= (ExampleTableImpl)DefaultTableFactory.getInstance().createExampleTable(tt);
 		}
 
-		int[] exsAll=new int[et.getColumn(0).getCapacity()];
+		int[] exsAll=new int[et.getColumn(0).getNumRows()];
 		int[] exsNone=new int[0];
 
 		for(int i=0; i<exsAll.length; i++){
@@ -103,12 +105,12 @@ public class SetTrainOrTest extends ncsa.d2k.infrastructure.modules.DataPrepModu
 			et.setTrainingSet(exsAll);
 			et.setTestingSet(exsNone);
 			if(!(et instanceof TrainTable))
-				et=(ExampleTable)et.getTrainTable();
+				et=(ExampleTableImpl)et.getTrainTable();
 		}else{
 			et.setTestingSet(exsAll);
 			et.setTrainingSet(exsNone);
 			if(!(et instanceof TestTable))
-				et=(ExampleTable)et.getTestTable();
+				et=(ExampleTableImpl)et.getTestTable();
 		}
 
 		pushOutput(et, 0);

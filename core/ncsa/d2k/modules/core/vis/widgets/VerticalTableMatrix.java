@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -29,7 +30,7 @@ public class VerticalTableMatrix extends JScrollPane {
 		Create a new VerticalTableMatrix
 		@param table the VerticalTable to display
 	*/
-	public VerticalTableMatrix(Table table) {
+	public VerticalTableMatrix(TableImpl table) {
 	    tm = new VerticalTableModel(table);
 		init();
 	}

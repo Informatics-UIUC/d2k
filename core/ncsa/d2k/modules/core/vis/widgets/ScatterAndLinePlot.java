@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.awt.*;
 
 /**
@@ -14,10 +15,10 @@ import java.awt.*;
 public class ScatterAndLinePlot extends ScatterPlot {
 
 	DataSet[] ConnectedSets;
-	Table fTable;
+	TableImpl fTable;
 	public ScatterAndLinePlot () {}
 
-	public ScatterAndLinePlot(Table Scattertable, Table Functiontable, DataSet[] Scatterset, DataSet[] Functionset, GraphSettings settings) {
+	public ScatterAndLinePlot(TableImpl Scattertable, TableImpl Functiontable, DataSet[] Scatterset, DataSet[] Functionset, GraphSettings settings) {
 		super(Scattertable, Scatterset, settings);
 		ConnectedSets = Functionset;
 		fTable = Functiontable;

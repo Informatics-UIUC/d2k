@@ -13,6 +13,7 @@ import javax.swing.table.*;
 import java.io.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
    Display the contents of a VerticalTable.
@@ -45,7 +46,7 @@ public class VTViewer extends UIModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return in;
     }
 
@@ -55,7 +56,7 @@ public class VTViewer extends UIModule implements HasNames {
        @return The datatypes of the outputs.
     */
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return out;
     }
 
@@ -133,7 +134,7 @@ public class VTViewer extends UIModule implements HasNames {
     public class TableView extends JUserPane implements ActionListener{
 		VerticalTableMatrix matrix;
 		/** the table with data */
-		protected Table table = null;
+		protected TableImpl table = null;
 		/** a reference to our parent module */
 		protected VTViewer parent;
 		/** ok button */
@@ -171,7 +172,7 @@ public class VTViewer extends UIModule implements HasNames {
 		public void setInput(Object input, int idx) {
 			if(idx == 0) {
 				removeAll();
-				table = (Table)input;
+				table = (TableImpl)input;
 			    // a panel to put the buttons on
 			    JPanel buttonPanel = new JPanel();
 			    ok = new JButton("Done");

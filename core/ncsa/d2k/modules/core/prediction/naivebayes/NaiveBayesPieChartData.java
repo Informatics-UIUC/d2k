@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.prediction.naivebayes;
 import java.util.HashMap;
 import java.io.Serializable;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
    NaiveBayesPieChartData contains all the data contained in a pie
@@ -122,7 +123,7 @@ final class NaiveBayesPieChartData extends TableImpl implements Serializable {
       }
    }
 
-   public final void sortByColumn(int c) throws NotSupportedException {
+   public final void sortByColumn(int c) {
   	    super.sortByColumn(c);
       	classLookup = new HashMap();
         int numRows = getNumRows();

@@ -9,6 +9,8 @@ import java.util.*;
 import ncsa.d2k.modules.core.datatype.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /**
 	BinnedTable.java
 */
@@ -34,7 +36,8 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.BinTree",
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
 
 	}
@@ -56,7 +59,7 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
 
 	}
@@ -92,7 +95,7 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 		// Pulls the first input which is a Bin Tree
 		BinTree BT = (BinTree) pullInput(0);
 		// Pulls the second input which is an Example Tree
-		ExampleTable ET = (ExampleTable) pullInput(1);
+		ExampleTableImpl ET = (ExampleTableImpl) pullInput(1);
 
 		// Gets the "In Variables"
 		int[] ins = ET.getInputFeatures();

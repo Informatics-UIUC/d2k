@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.awt.*;
 
 public class GradientColorScatterPlotSmall extends GradientColorScatterPlot {
@@ -14,7 +15,7 @@ public class GradientColorScatterPlotSmall extends GradientColorScatterPlot {
 	 *	@param sets
 	 *	@param settings
 	 */
-	public GradientColorScatterPlotSmall(Table table,
+	public GradientColorScatterPlotSmall(TableImpl table,
 		DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 		smallspace = 1;

@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -37,7 +38,7 @@ public class BarChart extends Chart {
 
 	int tickmarksize = 4;
 
-	public BarChart(Table table, DataSet set, GraphSettings settings) {
+	public BarChart(TableImpl table, DataSet set, GraphSettings settings) {
 		/*this.table = table;
 		this.set = set;
 		this.settings = settings;

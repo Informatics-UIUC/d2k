@@ -1,4 +1,6 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
@@ -20,9 +22,7 @@ import ncsa.d2k.util.*;
  * The buffer will compact itself when a row is removed from this column.  The
  * space freed up from the removal will not be freed until trim() is called.
  */
-public class ContinuousCharArrayColumn extends TextualColumn {
-
-	static final long serialVersionUID = 2347005850467129497L;
+public class ContinuousCharArrayColumn extends AbstractColumn implements TextualColumn {
 
 	/** the internal buffer */
 	private char[] internal;
@@ -63,6 +63,8 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 		if(fill)
 			for(int i = 0; i < initialLength; i++)
 				appendChars(new char[0]);
+		setIsNominal(true);
+		type = ColumnTypes.CHAR_ARRAY;
 	}
 
 	/**
@@ -110,7 +112,16 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 		internal = data;
 		rowPtrs = pointers;
 		numRows = getNumEntries();
+		setIsNominal(true);
+		type = ColumnTypes.CHAR_ARRAY;
 	}
+
+    public ContinuousCharArrayColumn(char[][] data) {
+		for(int i = 0; i < data.length; i++)
+			setChars(data[i], i);
+		setIsNominal(true);
+		type = ColumnTypes.CHAR_ARRAY;
+    }
 
 	/**
 	 * Create an exact copy of this column.
@@ -130,8 +141,8 @@ public class ContinuousCharArrayColumn extends TextualColumn {
             ois.close();
             return  bac;
         } catch (Exception e) {
-            bac = new ContinuousCharArrayColumn(getCapacity());
-            for (int i = 0; i < getCapacity(); i++) {
+            bac = new ContinuousCharArrayColumn(getNumRows());
+            for (int i = 0; i < getNumRows(); i++) {
                 char orig[] = getChars(i);
                 char res[] = new char[orig.length];
                 for (int j = 0; j < orig.length; j++)
@@ -140,7 +151,6 @@ public class ContinuousCharArrayColumn extends TextualColumn {
             }
             bac.setLabel(getLabel());
             bac.setComment(getComment());
-            //bac.setType(getType());
             return  bac;
         }
 	}
@@ -344,10 +354,6 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 	 */
 	public String getString(int row) {
 		return new String(getInternalChars(row));
-		//String s = new String(getInternalChars(row));
-		//if(s != null)
-		//	return s;
-		//return new String("");
 	}
 
 	/**
@@ -473,6 +479,24 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 	}
 
 	/**
+	 * Get the bytes at row.
+	 * @param row a row of this column
+	 * @return the value at row
+	 */
+	public byte getByte(int row) {
+		return (byte)0;
+	}
+
+	/**
+	 * Set the value at row as b.
+	 * @param b the bytes to put in the column
+	 * @param row the row to insert the entry in
+	 */
+	public void setByte(byte b, int row) {
+		;
+	}
+
+	/**
 	 * Get the value at row as an array of char.
 	 * @param row a row of this column
 	 * @return the value at row as an array of char
@@ -488,6 +512,24 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 	 */
 	public void setChars(char[] c, int row) {
 		insertChars(c, row);
+	}
+
+	/**
+	 * Get the value at row as an array of char.
+	 * @param row a row of this column
+	 * @return the value at row as an array of char
+	 */
+	public char getChar(int row) {
+		return 'a';
+	}
+
+	/**
+	 * Set the value at row as c.
+	 * @param c the bytes to put in the column
+	 * @param row the row to insert the entry in
+	 */
+	public void setChar(char c, int row) {
+		;
 	}
 
 	/**
@@ -567,16 +609,8 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 	 * @return the number of rows this column can hold
 	 */
 	public int getNumRows() {
-		return getCapacity();
+		return numRows;
 	}
-
-    /**
-     Get the capacity of this Column, its potential maximum number of entries.
-     @return the max number of entries this Column can hold
-     */
-    public int getCapacity () {
-        return numRows;//rowPtrs.length;
-    }
 
     /**
      Set a new capacity for this Column.  The capacity is its potential max
@@ -584,7 +618,7 @@ public class ContinuousCharArrayColumn extends TextualColumn {
      will be truncated.
      @param newCapacity a new capacity
      */
-    public void setCapacity (int newCapacity) {
+    public void setNumRows (int newCapacity) {
         /*if (internal != null) {
             char[][] newInternal = new byte[newCapacity][];
             if (newCapacity > internal.length)
@@ -639,23 +673,23 @@ public class ContinuousCharArrayColumn extends TextualColumn {
      Get a reference to the internal representation of this Column.
      Changes made to this object will be reflected in the Column.
      @return the internal representation of this Column.
-     */
+     /
     public Object getInternal () {
         return this.internal;
-    }
+    }*/
 
     /**
      Set the reference to the internal representation of this Column.
      If a miscompatable Object is passed in, the most common Exception
      thrown is a ClassCastException.
      @param newInternal a new internal representation for this Column
-     */
+     /
     public void setInternal (Object newInternal) {
         //this.internal = (char[][])newInternal;
 
 		//System.out.println("Not impelmented...");
 		throw new RuntimeException("This method is not yet implemented for ContinousCharArrayColumn.");
-    }
+    }*/
 
     /**
      Sets the entry at the given position to newEntry
@@ -826,7 +860,7 @@ public class ContinuousCharArrayColumn extends TextualColumn {
      @param newOrder an array of indices indicating a new order
 	 @return a copy of this column, re-ordered
      */
-    public Column reOrderRows (int[] newOrder) {
+    public Column reorderRows (int[] newOrder) {
 		if(newOrder.length != numRows)
 			throw new ArrayIndexOutOfBoundsException();
 		char[] newinternal = new char[internal.length];
@@ -853,7 +887,6 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 
 		ContinuousCharArrayColumn cac = new ContinuousCharArrayColumn(newinternal, newrowPtrs);
 		cac.setLabel(getLabel());
-		//cac.setType(getType());
 		cac.setComment(getComment());
 		return cac;
     }
@@ -927,45 +960,15 @@ public class ContinuousCharArrayColumn extends TextualColumn {
     }
 
     /**
-     Given an array of booleans, will remove the positions in the Column
-     which coorespond to the positions in the boolean array which are
-     marked true.  If the boolean array and Column do not have the same
-     number of elements, the remaining elements will be discarded.
-     @param flags the boolean array of remove flags
-     */
-    public void removeByFlag (boolean[] flags) {
-        // keep a list of the row indices to remove
-        LinkedList ll = new LinkedList();
-        int i = 0;
-        for (; i < flags.length; i++) {
-            if (flags[i])
-                ll.add(new Integer(i));
-        }
-        for (; i < internal.length; i++) {
-            ll.add(new Integer(i));
-        }
-        int[] toRemove = new int[ll.size()];
-        int j = 0;
-        Iterator iter = ll.iterator();
-        while (iter.hasNext()) {
-            Integer in = (Integer)iter.next();
-            toRemove[j] = in.intValue();
-            j++;
-        }
-        // now call remove by index to remove the rows
-        removeByIndex(toRemove);
-    }
-
-    /**
      Given an array of ints, will remove the positions in the Column
      which are indicated by the ints in the array.
      @param indices the int array of remove indices
      */
-    public void removeByIndex (int[] indices) {
-        HashMap toRemove = new HashMap(indices.length);
+    public void removeRowsByIndex (int[] indices) {
+        HashSet toRemove = new HashSet(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
-            toRemove.put(id, id);
+            toRemove.add(id);
         }
 
 		int oldNumRows = getNumRows();
@@ -974,9 +977,10 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 
         int newIntIdx = 0;
 		// do the first and second elements as special cases outside the loop
-		Integer x = (Integer)toRemove.get(new Integer(0));
+		//Integer x = (Integer)toRemove.get(new Integer(0));
 		// not removing the row, copy it into newinternal
-		if(x == null) {
+		//if(x == null) {
+		if(!toRemove.contains(new Integer(0))) {
 			System.arraycopy(internal, 0, newinternal, 0, rowPtrs[0]);
 			newrowPtrs[0] = rowPtrs[0];
 			newIntIdx++;
@@ -984,8 +988,9 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 		else
 			numRows--;
 
-		x = (Integer)toRemove.get(new Integer(1));
-		if(x == null) {
+		//x = (Integer)toRemove.get(new Integer(1));
+		//if(x == null) {
+		if(!toRemove.contains(new Integer(1))) {
 			// we removed the first row
 			char[] item = getInternalChars(1);
 			int sz = sizeOf(1);
@@ -1008,9 +1013,10 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 		// removing
         for (int i = 2; i < oldNumRows; i++) {
             // check if this row is in the list of rows to remove
-            x = (Integer)toRemove.get(new Integer(i));
+            //x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
-            if (x == null) {
+            //if (x == null) {
+			if(!toRemove.contains(new Integer(i))) {
 				char[] item = getInternalChars(i);
 				int size = sizeOf(i);
 
@@ -1038,7 +1044,7 @@ public class ContinuousCharArrayColumn extends TextualColumn {
      Sort the items in this column.
      @exception NotSupportedException when sorting is not supported
      */
-    public void sort () throws NotSupportedException {
+    public void sort () {
         sort(null);
     }
 
@@ -1048,7 +1054,7 @@ public class ContinuousCharArrayColumn extends TextualColumn {
      @param t the Table to swap rows for
      @exception NotSupportedException when sorting is not supported
      */
-    public void sort (Table t) throws NotSupportedException {
+    public void sort (MutableTable t) {
         doSort(/*internal,*/ 0, internal.length - 1, t);
     }
 
@@ -1061,8 +1067,7 @@ public class ContinuousCharArrayColumn extends TextualColumn {
        @param end the row no. which marks the end of the column segment to be sorted
        @exception NotSupportedException when sorting is not supported
     */
-    public void sort(Table t,int begin, int end)
-	throws NotSupportedException
+    public void sort(MutableTable t,int begin, int end)
     {
 	doSort( begin, end, t);
     }
@@ -1076,7 +1081,7 @@ public class ContinuousCharArrayColumn extends TextualColumn {
      @param r the ending index
      @param t the VerticalTable to swap rows for
      */
-    private void doSort (/*char[] A,*/ int p, int r, Table t) {
+    private void doSort (/*char[] A,*/ int p, int r, MutableTable t) {
         if (p < r) {
             int q = partition(/*A,*/ p, r, t);
             doSort(/*A,*/ p, q, t);
@@ -1092,7 +1097,7 @@ public class ContinuousCharArrayColumn extends TextualColumn {
      @param t the VerticalTable to swap rows for
 	 @return the new partition point
      */
-    private int partition (/*char[] A,*/ int p, int r, Table t) {
+    private int partition (/*char[] A,*/ int p, int r, MutableTable t) {
         //String x = A[p];
         int i = p - 1;
         int j = r + 1;

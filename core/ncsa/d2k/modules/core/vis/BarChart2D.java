@@ -12,6 +12,7 @@ import java.io.*;
 import javax.swing.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
 	Creates a BarChart visualization.  The data is kept in a Table.
@@ -38,7 +39,7 @@ public class BarChart2D extends VisModule implements Serializable
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -105,14 +106,14 @@ public class BarChart2D extends VisModule implements Serializable
 class BarChartUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane {
 	BarChart2D module;
 
-	Table table;
+	TableImpl table;
 
 	public void initView(ViewModule viewmodule) {
 		module = (BarChart2D) viewmodule;
 	}
 
 	public void setInput(Object object, int index) {
-		table = (Table) object;
+		table = (TableImpl) object;
 
 		buildView();
 	}

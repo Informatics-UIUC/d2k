@@ -1,13 +1,14 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 import java.awt.geom.*;
 
 public class LinearRegression extends Graph {
 
-	public LinearRegression(Table table, DataSet[] set, GraphSettings settings) {
+	public LinearRegression(TableImpl table, DataSet[] set, GraphSettings settings) {
 		super(table, set, settings);
 	}
 

@@ -12,6 +12,7 @@ import java.io.*;
 import javax.swing.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
 	ScatterPlot2D.java
@@ -36,7 +37,7 @@ public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisMo
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -103,14 +104,14 @@ public class LoadScatterPlotModule extends ncsa.d2k.infrastructure.modules.VisMo
 */
 class LoadPlotUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane {
 	LoadScatterPlotModule module;
-	Table table;
+	TableImpl table;
 
 	public void initView(ViewModule viewmodule) {
 		module = (LoadScatterPlotModule) viewmodule;
 	}
 	public Module getModule () { return module; }
 	public void setInput(Object object, int index) {
-		table = (Table) object;
+		table = (TableImpl) object;
 
 		buildView();
 	}

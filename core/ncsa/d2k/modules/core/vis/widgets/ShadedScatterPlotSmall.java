@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 
@@ -15,19 +16,19 @@ public class ShadedScatterPlotSmall extends ShadedScatterPlot {
 	 *	@param sets
 	 *	@param settings
 	 */
-	public ShadedScatterPlotSmall(Table table,
+	public ShadedScatterPlotSmall(TableImpl table,
 		DataSet[] sets, GraphSettings settings, int shadeColumnIndex) {
 		super(table, sets, settings, shadeColumnIndex);
 		inits();
 	}
 
-	public ShadedScatterPlotSmall(Table table, DataSet[] sets,
+	public ShadedScatterPlotSmall(TableImpl table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex, Color low, Color high) {
 		super(table, sets, settings, shadeColumnIndex, low, high);
 		inits();
 	}
 
-	public ShadedScatterPlotSmall(Table table, DataSet[] sets,
+	public ShadedScatterPlotSmall(TableImpl table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex, Color low,
 		Color high, int pos) {
 		super(table, sets, settings, shadeColumnIndex, low, high, pos);

@@ -4,6 +4,8 @@ import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /**
    RotateVerticalTable.java
    @author David Clutter
@@ -36,7 +38,7 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return in;
     }
 
@@ -46,7 +48,7 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String []out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return out;
     }
 
@@ -115,7 +117,7 @@ public class RotateVerticalTable extends DataPrepModule implements HasNames {
 		int origRows = orig.getNumRows();
 		int origCols = orig.getNumColumns();
 
-		Table newTable = TableFactory.createTable(origRows + 1);
+		TableImpl newTable = (TableImpl)DefaultTableFactory.getInstance().createTable(origRows + 1);
 		newTable.setComment(orig.getComment());
 
 		StringColumn sc = new StringColumn(origCols);

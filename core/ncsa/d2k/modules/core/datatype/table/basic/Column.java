@@ -1,4 +1,6 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
 	Column is an ordered list, generally associated with a table.  There are
@@ -12,8 +14,6 @@ package ncsa.d2k.modules.core.datatype.table;
 	provide the necessary datatype conversions.
 */
 public interface Column extends java.io.Serializable {
-
-	static final long serialVersionUID = 8637084126103716671L;
 
 	/**
 		Get the label associated with this Column.
@@ -51,12 +51,6 @@ public interface Column extends java.io.Serializable {
 		@return this Column's number of entries
 	*/
 	public int getNumEntries( );
-
-	/**
-		Get the capacity of this Column, its potential maximum number of entries.
-		@return the maximum number of entries this Column can hold
-	*/
-	public int getCapacity( );
 
     /**
     	Get a String from this column at pos
@@ -157,6 +151,20 @@ public interface Column extends java.io.Serializable {
 	public void setBytes( byte[] newEntry, int pos );
 
     /**
+    	Get the value at pos as a byte
+    	@param pos the position
+    	@return the value at pos as a byte
+     */
+	public byte getByte( int pos );
+
+    /**
+    	Set the value at pos to be newEntry
+    	@param newEntry the new item
+    	@param pos the position
+     */
+	public void setByte( byte newEntry, int pos );
+
+    /**
     	Get the value at pos as a boolean
     	@param pos the position
     	@return the value at pos as a byte array
@@ -185,6 +193,20 @@ public interface Column extends java.io.Serializable {
 	public void setChars( char[] newEntry, int pos );
 
     /**
+    	Get the value at pos as a char
+    	@param pos the position
+    	@return the value at pos as a char
+     */
+	public char getChar( int pos );
+
+    /**
+    	Set the value at pos to be newEntry
+    	@param newEntry the new item
+    	@param pos the position
+     */
+	public void setChar( char newEntry, int pos );
+
+    /**
     	Get the value at pos as an Object
     	@param pos the position
     	@return the value at pos as an Object
@@ -200,27 +222,15 @@ public interface Column extends java.io.Serializable {
 
     /**
     	Sort the elements in this column.
-    	@throws NotSupportedException when sorting is not supported
      */
-	public void sort() throws NotSupportedException;
+	public void sort();
 
-     /**
+    /**
     	Sort the elements in this column, and swap the rows in the table
 		it is a member of.
     	@param t the Table to swap rows for
-    	@exception NotSupportedException when sorting is not supported
      */
-	public void sort(Table t) throws NotSupportedException;
-
-    /**
-    	Sort the elements in this column, between the begin and end positions ,
-	and swap the rows in the table it is a member of.
-    	@param t the Table to swap rows for
-	@param begin the row no. which marks the beginnig of the  column segment to be sorted
-	@param end the row no. which marks the end of the column segment to be sorted
-    	@exception NotSupportedException when sorting is not supported
-     */
-	public void sort(Table t, int begin, int end) throws NotSupportedException;
+	public void sort(MutableTable t);
 
     /**
     	Compare the values of the object passed in and pos. Return 0 if they
@@ -243,20 +253,15 @@ public interface Column extends java.io.Serializable {
 	public int compareRows(int p1, int p2);
 
 	/**
-		Sets a new capacity for this Column.  The capacity is its potential
+		Sets the number of rows for this Column.  The capacity is its potential
 		maximum number of entries.  If numEntries is greater than newCapacity
 		then the Column will be truncated.
 		@param newCapacity a new capacity
 	*/
-	public void setCapacity(int newCapacity);
+	public void setNumRows(int newCapacity);
 
 	//////////////////////////////////////
 	//// ACCESSING Column Elements
-	/**
-	 * Set the internal representation for this column.
-	 * @param newInternal the new internal representation for this column.
-	 */
-	//public void setInternal( Object newInternal );
 
 	/**
 		Get an entry from the Column at the indicated position.
@@ -287,7 +292,7 @@ public interface Column extends java.io.Serializable {
 		@param newOrder an array of indices indicating a new order
 		@return a copy of this column with the rows re-ordered
 	*/
-	public Column reOrderRows( int[] newOrder );
+	public Column reorderRows( int[] newOrder );
 
 	/**
 		Swap the positions of two rows.
@@ -305,9 +310,15 @@ public interface Column extends java.io.Serializable {
 	/**
 	 * Remove a row from this Column.
 	 * @param row the row to remove
-	 * @return the Object held in the removed row
 	 */
 	public Object removeRow( int row );
+
+	/**
+	 * Remove a range of rows from this Column.
+	 * @param start the start position
+	 * @param len the number to remove
+	 */
+	public void removeRows(int start, int len);
 
 	/**
 	 * Add a row to the end of this column
@@ -327,12 +338,18 @@ public interface Column extends java.io.Serializable {
 	 * @param flags an array of booleans to map to this column's rows.  Those
 	 * with a true will be removed, all others will not be removed
 	 */
-	public void removeByFlag( boolean[] flags );
+	public void removeRowsByFlag( boolean[] flags );
 
 	/**
 	 * Remove rows from this column by index.
 	 * @param indices a list of the rows to remove
 	 */
-	public void removeByIndex( int[] indices );
+	public void removeRowsByIndex( int[] indices );
 
+	public void setIsNominal(boolean value);
+	public void setIsScalar(boolean value);
+	public boolean getIsNominal();
+	public boolean getIsScalar();
+
+	public int getType();
 }/*Column*/

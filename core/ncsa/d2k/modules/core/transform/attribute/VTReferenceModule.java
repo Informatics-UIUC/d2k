@@ -35,7 +35,7 @@ public class VTReferenceModule extends DataPrepModule
 
    public String[] getOutputTypes() {
       String[] o = {"ncsa.d2k.modules.core.datatype.HashLookupTable",
-         "ncsa.d2k.modules.core.datatype.table.VerticalTable"};
+         "ncsa.d2k.modules.core.datatype.table.Table"};
       return o;
    }
 

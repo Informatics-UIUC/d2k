@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import ncsa.d2k.modules.TransformationModule;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /******************
 
 	VTRandomSubset
@@ -66,7 +68,7 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table"
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"
 
 			};
 		return types;
@@ -95,8 +97,8 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	public String[] getOutputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -116,7 +118,7 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
   //////////////////*/
 	public void doit () throws Exception {
 
-	Table raw=(Table)pullInput(0);
+	TableImpl raw=(TableImpl)pullInput(0);
 
 	int subsetCountSmall=(int)(splitPercent*raw.getNumRows()*.01);
 	int subsetCountBig=raw.getNumRows()-subsetCountSmall;
@@ -132,9 +134,9 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 		splitPercent=100-splitPercent;
 	}
 
-	Table subsetBig=(Table)raw.getSubset(0, subsetCountBig);
+	TableImpl subsetBig=(TableImpl)raw.getSubset(0, subsetCountBig);
 
-	Table subsetSmall=(Table)raw.getSubset(0, subsetCountSmall);
+	TableImpl subsetSmall=(TableImpl)raw.getSubset(0, subsetCountSmall);
 
 	//VT.getSubset should do this automatically, but it doesn't
 	for(int j=0; j<raw.getNumColumns(); j++){
@@ -153,14 +155,20 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	for(int i=0; i<raw.getNumRows(); i++){
 			double d=rand.nextInt(100);
 			if((d<splitPercent)&&(smallCounter<subsetCountSmall)){
-				subsetSmall.setRow(raw.getRow(i), smallCounter);
+				Object[] rr = new Object[raw.getNumColumns()];
+				raw.getRow(rr, i);
+				subsetSmall.setRow(/*raw.getRow(i)*/rr, smallCounter);
 				smallCounter++;
 			}
 			else if(subsetCountBig>i-smallCounter){
-				subsetBig.setRow(raw.getRow(i), i-smallCounter);
+				Object[] rr = new Object[raw.getNumColumns()];
+				raw.getRow(rr, i);
+				subsetBig.setRow(/*raw.getRow(i)*/rr, i-smallCounter);
 			}
 			else{
-				subsetSmall.setRow(raw.getRow(i), smallCounter);
+				Object[] rr = new Object[raw.getNumColumns()];
+				raw.getRow(rr, i);
+				subsetSmall.setRow(/*raw.getRow(i)*/rr, smallCounter);
 				smallCounter++;
 			}
 
@@ -168,8 +176,8 @@ public class VTRandomSubset extends ncsa.d2k.infrastructure.modules.DataPrepModu
 	if(raw instanceof ExampleTable){
 		ExampleTable rawet=(ExampleTable)raw;
 
-		ExampleTable smallet= TableFactory.createExampleTable(subsetSmall);
-		ExampleTable biget= TableFactory.createExampleTable(subsetBig);
+		ExampleTable smallet= subsetSmall.toExampleTable();
+		ExampleTable biget= subsetBig.toExampleTable();
 
 		smallet.setInputFeatures(rawet.getInputFeatures());
 		biget.setInputFeatures(rawet.getInputFeatures());

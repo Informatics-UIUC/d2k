@@ -12,6 +12,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	MultipleSort.java
 
@@ -29,7 +30,7 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule
 	}
 
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 	}
 
@@ -41,7 +42,7 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule
 	}
 
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 	}
 
@@ -92,7 +93,7 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule
 class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements ActionListener {
 	SortTable module;
 
-	Table table;
+	TableImpl table;
 	int columns;
 	int rows;
 	int numsort;
@@ -112,7 +113,7 @@ class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements 
 	}
 
 	public void setInput(Object object, int inputindex) {
-		table = (Table) object;
+		table = (TableImpl) object;
 		columns = table.getNumColumns();
 		rows = table.getNumRows();
 		numsort = module.getNumsort();
@@ -227,7 +228,7 @@ class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements 
 				collect(column, sorted);
 				sortindex++;
 			}
-			table = (Table) table.reOrderRows(sorted);
+			table = (TableImpl) table.reorderRows(sorted);
 
 			if (module.getReorder()) {
 				reorder();

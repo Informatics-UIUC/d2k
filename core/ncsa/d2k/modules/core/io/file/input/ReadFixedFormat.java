@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.io.file.input;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.pipes.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.io.*;
 import java.util.*;
 import ncsa.d2k.modules.core.io.file.*;
@@ -42,7 +43,7 @@ public class ReadFixedFormat extends ncsa.d2k.infrastructure.modules.InputModule
        @return the data types of all inputs.
     */
     public String[] getInputTypes() {
-	String[] types = {"java.lang.String", "ncsa.d2k.modules.core.datatype.table.Table"};
+	String[] types = {"java.lang.String", "ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 	return types;
 
     }
@@ -67,8 +68,8 @@ public class ReadFixedFormat extends ncsa.d2k.infrastructure.modules.InputModule
        @return the data types of all outputs.
     */
     public String[] getOutputTypes() {
-	String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
-						"ncsa.d2k.modules.core.datatype.table.Table"};
+	String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
+						"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 	return types;
 
     }
@@ -161,7 +162,7 @@ public class ReadFixedFormat extends ncsa.d2k.infrastructure.modules.InputModule
     public void doit() throws Exception {
 
 	FixedFormatParser p = null;
-	p=new FixedFormatParser(new File((String)pullInput(0)),(Table)pullInput(1)/*, emptyValue*/);
+	p=new FixedFormatParser(new File((String)pullInput(0)),(TableImpl)pullInput(1)/*, emptyValue*/);
 
 	pushOutput(p.parse(), 0);
 	pushOutput(p.getBlanks(), 1);

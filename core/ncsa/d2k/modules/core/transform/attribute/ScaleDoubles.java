@@ -4,6 +4,8 @@ import ncsa.d2k.infrastructure.modules.*;
 import java.util.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /*#end^1 Continue editing. ^#&*/
 /*&%^2 Do not modify this section. */
 /**
@@ -34,7 +36,7 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	public String[] getInputTypes () {
 /*&%^4 Do not modify this section. */
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return types;
 /*#end^4 Continue editing. ^#&*/
 	}
@@ -59,7 +61,7 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	public String[] getOutputTypes () {
 /*&%^6 Do not modify this section. */
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 /*#end^6 Continue editing. ^#&*/
 	}
@@ -87,7 +89,7 @@ public class ScaleDoubles extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		PUT YOUR CODE HERE.
 	*/
 	public void doit () throws Exception {
-		Table et = (Table) this.pullInput (0);
+		TableImpl et = (TableImpl) this.pullInput (0);
 		int [] inputs = null;
 		int [] outputs = null;
 		int iIndex=0, oIndex=0;

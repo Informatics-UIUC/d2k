@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.vis.widgets;
 import java.awt.*;
 import java.awt.geom.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.text.NumberFormat;
 
 /**
@@ -29,7 +30,7 @@ public class GradientColorScatterPlot extends ScatterPlot {
 	 *	@param sets
 	 *	@param settings
 	 */
-	public GradientColorScatterPlot(Table table,
+	public GradientColorScatterPlot(TableImpl table,
 		DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 		lowColor = Color.orange;
@@ -47,7 +48,7 @@ public class GradientColorScatterPlot extends ScatterPlot {
 	 *	@param low the low color
 	 *	@param high the high color
 	 */
-	public GradientColorScatterPlot(Table table,
+	public GradientColorScatterPlot(TableImpl table,
 		DataSet[] sets, GraphSettings settings,
 		Color low, Color high) {
 		this(table, sets, settings);
@@ -64,7 +65,7 @@ public class GradientColorScatterPlot extends ScatterPlot {
 	 *	@param high the high color
 	 *	@param position
 	 */
-	public GradientColorScatterPlot(Table table,
+	public GradientColorScatterPlot(TableImpl table,
 		DataSet[] sets, GraphSettings settings,
 		Color low, Color high, int position) {
 		this(table, sets, settings, low, high);

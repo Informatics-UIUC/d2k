@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -19,7 +20,7 @@ public class PieChart extends Chart {
 		Create a new PieChart that normalizes the data.  Each item
 		will be represented as a fraction of 1.0
 	*/
-	public PieChart(Table vt, DataSet ds, GraphSettings gs,
+	public PieChart(TableImpl vt, DataSet ds, GraphSettings gs,
 		boolean normalize) {
 		this(vt, ds, gs);
 
@@ -37,13 +38,13 @@ public class PieChart extends Chart {
 			dc.setDouble((double)(val/total), i);
 		}
 
-		table = TableFactory.createTable(cols);
+		table = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
 	}
 
 	/**
 		Create a new PieChart with the data already normalized.
 	*/
-	public PieChart(Table vt, DataSet ds, GraphSettings gs) {
+	public PieChart(TableImpl vt, DataSet ds, GraphSettings gs) {
 		super(vt, ds, gs);
 
 		setBackground(Color.white);

@@ -5,6 +5,7 @@ import ncsa.d2k.infrastructure.modules.HasNames;
 import ncsa.d2k.infrastructure.modules.ModelModule;
 import ncsa.d2k.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 /*
 	Makes a model that returns the average
@@ -49,7 +50,7 @@ public class MeanModelGenerator extends ModelGeneratorModule
 		does it
 	*/
 	public void doit() throws Exception{
-		ExampleTable et=(ExampleTable)pullInput(0);
+		ExampleTableImpl et=(ExampleTableImpl)pullInput(0);
 		model=new MeanModel(et);
 		pushOutput(model, 0);
 		if(!makeModelAvailable)
@@ -86,7 +87,7 @@ public class MeanModelGenerator extends ModelGeneratorModule
 
 			does the real work, computes the averages
 		*/
-		public MeanModel(ExampleTable et){
+		public MeanModel(ExampleTableImpl et){
 			averages=new double[et.getNumOutputFeatures()];
 
 			for(int i=0; i<et.getNumOutputFeatures(); i++){
@@ -114,18 +115,18 @@ public class MeanModelGenerator extends ModelGeneratorModule
 		if(et instanceof TestTable){
 			for(int i=0; i<averages.length; i++){
 				for(int e=0; e<et.getNumTestExamples(); e++){
-					et.setDouble(averages[i], e,
+					((TestTableImpl)et).setDouble(averages[i], e,
 								((TestTable)et).getPredictionSet()[i]);
 				}
 			}
 			return (TestTable)et;
 		}
 
-		PredictionTable predTable;
+		PredictionTableImpl predTable;
 		if(et instanceof PredictionTable){
-			predTable=(PredictionTable)et;
+			predTable=(PredictionTableImpl)et;
 		}else{
-			predTable=TableFactory.createPredictionTable(et);
+			predTable=(PredictionTableImpl)et.toPredictionTable();
 		}
 		//if there are no spots for pred columns
 		if(predTable.getNumOutputFeatures()==0){
@@ -166,7 +167,7 @@ public class MeanModelGenerator extends ModelGeneratorModule
 			return "Mean Model";
 		}
 		public String[] getInputTypes(){
-			String[] s= {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			String[] s= {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 			return s;
 		}
 
@@ -193,7 +194,7 @@ public class MeanModelGenerator extends ModelGeneratorModule
 			}
 		}
 		public String[] getOutputTypes(){
-			String[] s={"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
+			String[] s={"ncsa.d2k.modules.core.datatype.table.basic.PredictionTableImpl"};
 			return s;
 		}
 
@@ -241,7 +242,7 @@ public class MeanModelGenerator extends ModelGeneratorModule
 		return "Mean Model Generator";
 	}
 	public String[] getInputTypes(){
-		String[] s= {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] s= {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return s;
 	}
 

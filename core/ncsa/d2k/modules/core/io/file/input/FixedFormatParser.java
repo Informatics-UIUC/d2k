@@ -4,6 +4,7 @@ import java.io.*;
 import java.text.ParseException;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * Class FixedFormatParser
@@ -73,7 +74,7 @@ class FixedFormatParser extends FileInputStream
 	_emptyValue = emptyValue;
     }
 
-    public FixedFormatParser(File file, Table header)
+    public FixedFormatParser(File file, TableImpl header)
         throws FileNotFoundException
     {
         super(file);
@@ -99,7 +100,7 @@ class FixedFormatParser extends FileInputStream
 
     }
 
-    public FixedFormatParser(File file, Table header, double emptyVal)
+    public FixedFormatParser(File file, TableImpl header, double emptyVal)
         throws FileNotFoundException
     {
 	this(file, header);
@@ -121,7 +122,7 @@ class FixedFormatParser extends FileInputStream
     }
 
 
-    public void setColumnTypes(Table vt, int col) {
+    public void setColumnTypes(TableImpl vt, int col) {
 	_columnType = new Vector();
 	int nr=vt.getNumRows();
 	for ( int i = 0 ; i < nr ; i++)
@@ -131,7 +132,7 @@ class FixedFormatParser extends FileInputStream
     }
 
 
-    public void setColumnBeginings(Table vt, int col) {
+    public void setColumnBeginings(TableImpl vt, int col) {
 	// _columnBegin has not been initialized by setColumnBounds
 	if (_columnBegin == null)
 	    {
@@ -143,7 +144,7 @@ class FixedFormatParser extends FileInputStream
     }
 
 
-    public void setColumnEnds(Table vt, int col) {
+    public void setColumnEnds(TableImpl vt, int col) {
 	// _columnEnd has not been initialized by setColumnBounds
 	if (_columnEnd == null)
 	    {
@@ -155,7 +156,7 @@ class FixedFormatParser extends FileInputStream
     }
 
 
-    public void setColumnLabels(Table vt, int col) {
+    public void setColumnLabels(TableImpl vt, int col) {
 	_columnLabels = new Vector();
 	int nr=vt.getNumRows();
 	for ( int i = 0 ; i <  nr ; i++)
@@ -163,7 +164,7 @@ class FixedFormatParser extends FileInputStream
     }
 
 
-    public void setColumnBounds(Table vt, int col) {
+    public void setColumnBounds(TableImpl vt, int col) {
 	_columnEnd = new Vector();
 	_columnBegin = new Vector();
 	int start = 0;
@@ -229,7 +230,7 @@ class FixedFormatParser extends FileInputStream
      * @exception ParseException
      * @exception IOException
      */
-	public Table parse() throws ParseException, IOException{
+	public TableImpl parse() throws ParseException, IOException{
 		blankRows=new ArrayList();
 		blankCols=new ArrayList();
 
@@ -343,7 +344,7 @@ class FixedFormatParser extends FileInputStream
 				}
 			}
 		}
-		return TableFactory.createTable(tableColumns);
+		return (TableImpl)DefaultTableFactory.getInstance().createTable(tableColumns);
 	}
 
 	/*
@@ -360,7 +361,7 @@ class FixedFormatParser extends FileInputStream
 		to the row and column indices of the fields
 		that were blank in the file that was read in
 		*/
-	public Table getBlanks(){
+	public TableImpl getBlanks(){
 		Object[] rowsObjArray=blankRows.toArray();
 		Object[] colsObjArray=blankCols.toArray();
 		int numBlanks=rowsObjArray.length;
@@ -376,7 +377,7 @@ class FixedFormatParser extends FileInputStream
 		internal[0]=rowsColumn;
 		internal[1]=colsColumn;
 
-		Table table= TableFactory.createTable(internal);
+		TableImpl table= (TableImpl)DefaultTableFactory.getInstance().createTable(internal);
 		Object[] tableRow=new Object[2];
 		for(int i=0; i<numBlanks; i++){
 			tableRow[0]=rowsObjArray[i];

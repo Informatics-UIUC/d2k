@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo;
 
 import java.io.Serializable;
 import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.modules.core.datatype.table.*;
+//import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 /**
  * Title:

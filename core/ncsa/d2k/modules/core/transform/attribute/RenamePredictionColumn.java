@@ -3,6 +3,8 @@ package ncsa.d2k.modules.core.transform.attribute;
 import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /*
 	Renames the first prediction column in a prediction
 	table to the value given in the properties
@@ -44,7 +46,7 @@ public class RenamePredictionColumn extends ComputeModule
 		does it
 	*/
 	public void doit() throws Exception{
-		PredictionTable pt=(PredictionTable)pullInput(0);
+		PredictionTableImpl pt=(PredictionTableImpl)pullInput(0);
 		pt.setColumnLabel(newPredictionName, pt.getPredictionSet()[0]);
 		pushOutput(pt, 0);
 

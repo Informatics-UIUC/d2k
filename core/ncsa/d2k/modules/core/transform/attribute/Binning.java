@@ -3,6 +3,8 @@ package ncsa.d2k.modules.core.transform.attribute;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /**
    BinningModule.java
    @author David Clutter
@@ -32,7 +34,7 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public String[] getInputTypes() {
 		String []in = {"ncsa.d2k.modules.core.datatype.BinTree",
-				"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+				"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return in;
     }
 
@@ -43,7 +45,7 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public String[] getOutputTypes() {
 		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return out;
     }
 
@@ -108,7 +110,7 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public void doit() {
 		BinTree bt = (BinTree)pullInput(0);
-		ExampleTable vt = (ExampleTable)pullInput(1);
+		ExampleTableImpl vt = (ExampleTableImpl)pullInput(1);
 
 		int [] ins = vt.getInputFeatures();
 		int [] out = vt.getOutputFeatures();

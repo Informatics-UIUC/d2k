@@ -4,6 +4,7 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	LWRCollect.java
 		This module collects the predictions from an LWR model
@@ -35,9 +36,9 @@ public class LWRCollect extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
-			"ncsa.d2k.modules.core.datatype.table.Table",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -60,8 +61,8 @@ public class LWRCollect extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -78,27 +79,27 @@ public class LWRCollect extends ncsa.d2k.infrastructure.modules.DataPrepModule
 	/**
 		PUT YOUR CODE HERE.
 	*/
-	Table collectTable;
-	Table inputTable;
+	TableImpl collectTable;
+	TableImpl inputTable;
 	//StringColumn colLabels;
 	int nFired = -1;
 	int N = 0;
 
 	public void doit() throws Exception {
 
-		Table predTable = (Table) pullInput(1);
-		inputTable = (Table) pullInput(2);
+		TableImpl predTable = (TableImpl) pullInput(1);
+		inputTable = (TableImpl) pullInput(2);
 
 		if (nFired == -1)
 			nFired = 0;
 
 		if (nFired < 1){ //first time through
-			collectTable = TableFactory.createTable();
+			collectTable = (TableImpl)DefaultTableFactory.getInstance().createTable();
 			//colLabels = new StringColumn();
 			N = inputTable.getNumColumns()-1;
 		}
 		else
-			collectTable = (Table) pullInput(0);
+			collectTable = (TableImpl) pullInput(0);
 
 		nFired++;	//at this point, nFired = # of times module entered here
 

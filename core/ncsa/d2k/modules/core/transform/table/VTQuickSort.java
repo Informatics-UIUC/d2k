@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.Date;
 import java.io.Serializable;
 
@@ -18,7 +19,7 @@ import java.io.Serializable;
 public class VTQuickSort extends DataPrepModule
 	implements Serializable{
 
-	Table sorted;
+	TableImpl sorted;
 	NumericColumn sortColumn;
 
 	int sortColumnIndex=0;
@@ -64,7 +65,7 @@ public class VTQuickSort extends DataPrepModule
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.datatype.table.Table"
+			"ncsa.d2k.modules.datatype.table.basic.TableImpl"
 
 			};
 		return types;
@@ -91,7 +92,7 @@ public class VTQuickSort extends DataPrepModule
 	public String[] getOutputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.datatype.table.Table"};
+			"ncsa.d2k.modules.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -111,8 +112,8 @@ public class VTQuickSort extends DataPrepModule
   //////////////////*/
 	public void doit () throws Exception {
 
-	Table raw=(Table)pullInput(0);
-	sorted=	TableFactory.createTable(2);
+	TableImpl raw=(TableImpl)pullInput(0);
+	sorted=	(TableImpl)DefaultTableFactory.getInstance().createTable(2);
 
 	sortColumn=(NumericColumn)raw.getColumn(sortColumnIndex).copy();
 	/*System.out.println(sortColumn.getNumRows());
@@ -158,10 +159,12 @@ public class VTQuickSort extends DataPrepModule
 	*/
 
 	int[] newOrder=(int[])orderColumn.getInternal();
-	Table fullSorted=(Table)raw.copy();
+	TableImpl fullSorted=(TableImpl)raw.copy();
 
 	for(int i=0; i<newOrder.length; i++){
-		fullSorted.setRow(raw.getRow(newOrder[i]), i);
+		Object[] row = new Object[raw.getNumColumns()];
+		raw.getRow(row, i);
+		fullSorted.setRow(/*raw.getRow(newOrder[i])*/row, i);
 	}
 	if(!ascending){
 		reverse(fullSorted);
@@ -250,18 +253,22 @@ public class VTQuickSort extends DataPrepModule
 			Object[] v;//the row
 			Object w;
 			for(j=l+1; j<=r; j++){
-				v=sorted.getRow(j);
+				v = new Object[sorted.getNumColumns()];
+				sorted.getRow(v, j);
+				//v=sorted.getRow(j);
 				w=sortColumn.getRow(j);
 				i=j-1;
 				while((i>=l) && (sortColumn.compareRows(w, i)<0)){
-					sorted.setRow(sorted.getRow(i), i+1);
+					Object [] rr = new Object[sorted.getNumColumns()];
+					sorted.getRow(rr, i+1);
+					sorted.setRow(/*sorted.getRow(i)*/rr, i+1);
 					i--;
 				}
 				sorted.setRow(v, i+1);
 			}
 	}
 
-	private void reverse(Table vt){
+	private void reverse(TableImpl vt){
 		int numRows=vt.getNumRows();
 		int halfWay=(int)(numRows/2D);
 		for(int i=0;i<halfWay; i++){

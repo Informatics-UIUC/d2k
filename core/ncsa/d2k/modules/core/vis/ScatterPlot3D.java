@@ -20,6 +20,7 @@ import  ncsa.gui.*;
 import ncsa.d2k.gui.JD2KFrame;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * A three-dimensional scatter plot.  Requires Java3D.
@@ -76,7 +77,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
      * @return the input types
      */
     public String[] getInputTypes () {
-        String[] i =  { "ncsa.d2k.modules.core.datatype.table.Table" };
+        String[] i =  { "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
         return  i;
     }
 
@@ -133,7 +134,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
         private ScatterPlot3DControl control;
 
         /** the table holding the data */
-        private Table table;
+        private TableImpl table;
 
         /** the canvas area */
         private ScatterPlot3DCanvas canvas;
@@ -175,7 +176,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
          */
         public void setInput (Object o, int i) {
             if (i == 0) {
-                table = (Table)o;
+                table = (TableImpl)o;
                 execute();
             }
         }

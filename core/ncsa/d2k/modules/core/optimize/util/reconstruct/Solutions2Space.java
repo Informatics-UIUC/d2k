@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.optimize.util.reconstruct;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	Solutions2Space<br>
 
@@ -95,7 +96,7 @@ public class Solutions2Space extends DataPrepModule
 				//int[] sortedOrder=((SOSolutionSpace)space).sortSolutions();
 				//String s1=((SOSolutionSpace)space).getSpaceDefinitionString();
 				//String s2=((SOSolutionSpace)space).statusString();
-				Table vt=(Table)space.getTable();
+				Table vt=(TableImpl)space.getTable();
 			//	VerticalTable vt2=(VerticalTable)vt.reOrderRows(sortedOrder);
 				//System.out.println(s1+s2);
 				((TableImpl)vt).print();

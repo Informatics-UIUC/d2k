@@ -8,6 +8,7 @@ package ncsa.d2k.modules.core.prediction.markov;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.io.*;
 import java.util.*;
@@ -71,7 +72,7 @@ public class GenerateMarkovBias extends ncsa.d2k.infrastructure.modules.ComputeM
 
   public String[] getOutputTypes()
     {
-    String[] temp = {"ncsa.d2k.modules.core.datatype.table.Table"};
+    String[] temp = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
     return temp;
     }
 
@@ -95,9 +96,9 @@ public class GenerateMarkovBias extends ncsa.d2k.infrastructure.modules.ComputeM
   public void doit()
     {
 
-    Table transform_bias_table = null;
+    TableImpl transform_bias_table = null;
 
-    transform_bias_table = TableFactory.createTable(NumBiasFeatures);
+    transform_bias_table = (TableImpl)DefaultTableFactory.getInstance().createTable(NumBiasFeatures);
 
     DoubleColumn Order_column = new DoubleColumn (1);
     Order_column.setDouble(Order, 0);

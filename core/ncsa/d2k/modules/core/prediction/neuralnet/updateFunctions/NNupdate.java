@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.prediction.neuralnet.updateFunctions;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.activationFunctions.*;
 import ncsa.d2k.modules.core.prediction.neuralnet.learnFunctions.*;
 import java.io.Serializable;
@@ -14,17 +15,17 @@ import java.io.Serializable;
 
 abstract public class NNupdate implements Serializable{
 
-	public final Table weights;
-	public final Table sums;
-	public final Table activations;
-	public final Table deltas;
-	public final ExampleTable data;
+	public final TableImpl weights;
+	public final TableImpl sums;
+	public final TableImpl activations;
+	public final TableImpl deltas;
+	public final ExampleTableImpl data;
 	public final NNactivation act;
 	public final NNlearn learnFn;
 	public ncsa.d2k.modules.core.prediction.neuralnet.NNModelGenerator.NNModel model;
 	/* to put calculated outputs in as the computeFn determines them\
 	*/
-	public Table computedResults;
+	public TableImpl computedResults;
 
 
 	public NNupdate(ncsa.d2k.modules.core.prediction.neuralnet.NNModelGenerator.NNModel mod){
@@ -42,7 +43,7 @@ abstract public class NNupdate implements Serializable{
 			written over
 		*/
 
-		computedResults=TableFactory.createTable(data.getNumOutputFeatures());
+		computedResults= (TableImpl)DefaultTableFactory.getInstance().createTable(data.getNumOutputFeatures());
 		for(int i=0; i<data.getNumOutputFeatures(); i++){
 			computedResults.setColumn(data.getColumn(data.getInputFeatures()[0]).copy(), i);
 		}

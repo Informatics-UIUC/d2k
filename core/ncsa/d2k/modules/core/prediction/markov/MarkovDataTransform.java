@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.prediction.markov;
 
 import ncsa.d2k.modules.TransformationModule;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.infrastructure.modules.HasNames;
 
 import java.util.*;
@@ -41,7 +42,7 @@ public class MarkovDataTransform extends TransformationModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return in;
     }
 
@@ -51,7 +52,7 @@ public class MarkovDataTransform extends TransformationModule
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String []out = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return out;
     }
 
@@ -128,16 +129,16 @@ public class MarkovDataTransform extends TransformationModule
 		int numRows = t.getNumRows();
 		for(int i = 0; i < newCols.length; i++) {
 			newCols[i] = new IntColumn(numRows);
-			newCols[i].setLabel(t.getColumn(i).getLabel());
+			newCols[i].setLabel(((TableImpl)t).getColumn(i).getLabel());
 		}
 
 		for(int i = 0; i < newCols.length; i++) {
 			for(int j = 0; j < numRows; j++)
 				newCols[i].setInt(stringToInt(t.getString(j, i)), j);
 		}
-		Table vt = TableFactory.createTable(newCols);
+		TableImpl vt = (TableImpl)DefaultTableFactory.getInstance().createTable(newCols);
 		newCols = null;
-		ExampleTable et = TableFactory.createExampleTable(vt);
+		ExampleTable et = vt.toExampleTable();
 		if(t instanceof ExampleTable) {
 			et.setInputFeatures( ((ExampleTable)t).getInputFeatures());
 			et.setOutputFeatures( ((ExampleTable)t).getOutputFeatures());
@@ -151,16 +152,16 @@ public class MarkovDataTransform extends TransformationModule
 		int numRows = t.getNumRows();
 		for(int i = 0; i < newCols.length; i++) {
 			newCols[i] = new StringColumn(numRows);
-			newCols[i].setLabel(t.getColumn(i).getLabel());
+			newCols[i].setLabel(((TableImpl)t).getColumn(i).getLabel());
 		}
 
 		for(int i = 0; i < newCols.length; i++) {
 			for(int j = 0; j < numRows; j++)
 				newCols[i].setString(intToString(t.getInt(j, i)), j);
 		}
-		Table vt = TableFactory.createTable(newCols);
+		TableImpl vt = (TableImpl)DefaultTableFactory.getInstance().createTable(newCols);
 		newCols = null;
-		ExampleTable et = TableFactory.createExampleTable(vt);
+		ExampleTable et = vt.toExampleTable();
 		if(t instanceof ExampleTable) {
 			et.setInputFeatures( ((ExampleTable)t).getInputFeatures());
 			et.setOutputFeatures( ((ExampleTable)t).getOutputFeatures());

@@ -1,106 +1,52 @@
 package ncsa.d2k.modules.core.datatype.table;
 
-
-public final class TableFactory {
-
-	private TableFactory() {}
+/**
+ * Defines methods used to create Tables.
+ */
+public interface TableFactory {
 
     /**
-    	Create a new, empty Table.
-		@return a new, empty Table
+     * Create a new, empty Table.
+	 * @return a new, empty Table
      */
-	public static Table createTable() {
-		return new TableImpl();
-	}
+	public Table createTable();
 
     /**
-     Create a Table with the specified number of columns.
-     @param numColumns the number of columns
-	 @return a new, emtpy Table with the specified number of columns
+     * Create a Table with the specified number of columns.
+     * @param numColumns the number of columns
+	 * @return a new, empty Table with the specified number of columns
      */
-    public static Table createTable(int numColumns) {
-		return new TableImpl(numColumns);
-	}
+    public Table createTable(int numColumns);
 
     /**
-     Create a Table with the specified columns
-     @param c the columns that make up the table
-	 @return a new Table with the specified columns
+	 * Create an ExampleTable from a Table.
+     * @param table the table to replicate.
+	 * @return an ExampleTable with the same data as table
      */
-	 public static Table createTable(Column [] c) {
-	 	return new TableImpl(c);
-	 }
+    public ExampleTable createExampleTable(Table table);
 
     /**
-     Create a Table from a StaticDocument
-     @param sd the StaticDocument
-	 @return a Table initialized with the data from a StaticDocument
+	 * Given an ExampleTable, create a new PredictionTable.  The PredictionTable
+	 * will have an extra column for each of the outputs in et.
+	 * @param et the ExampleTable that contains the inital values
+	 * @return a PredictionTable initialized with the data from et
      */
-    /*public static Table createTable(StaticDocument sd) {
-		return new TableImpl(sd);
-	}*/
+    public PredictionTable createPredictionTable(ExampleTable et);
 
     /**
-	 * Create a new ExampleTalbe given the number of columns
-	 * @param numColumns the number of columns
-	 * @return an empty ExampleTable initialized with the specified number of columns
+	 * Given an ExampleTable, create a new TestTable.  The TestTable will have
+	 * an extra column for each of the outputs in et.  The rows of the TestTable
+	 * will be the indices of the test set in et.
+	 * @param et the ExampleTable that this TestTable is derived from
+	 * @return a TestTable initialized with the data from et
+     */
+    public TestTable createTestTable(ExampleTable et);
+
+	/**
+	 * Given an ExampleTable, create a new TrainTable.  The rows of the TrainTable
+	 * will be the indicies of the train set in et.
+	 * @param et the ExampleTable that the TrainTable is derived from
+	 * @return a TrainTable initialized with the data from et
 	 */
-    public static ExampleTable createExampleTable(int numColumns) {
-		return new ExampleTableImpl(numColumns);
-	}
-
-    /**
-	 * Create a new ExampleTable given a static doc representation of the data.
-	 * @param sd the StaticDocument to fill the table with
-	 * @return an ExampleTable initialized with the data from a StaticDocument
-	 */
-    /*public static ExampleTable createExampleTable(StaticDocument sd) {
-		return new ExampleTableImpl(sd);
-	}*/
-
-    /**
-     Given a Table to represent, replicate its
-     contents in an ExampleTable table.
-     @param table the table to replicate.
-	 @return an ExampleTable with the same data as table
-     */
-    public static ExampleTable createExampleTable(Table table) {
-		if(table instanceof TableImpl)
-			return new ExampleTableImpl((TableImpl)table);
-		else
-			return null;
-	}
-
-    /**
-     Given an example table, copy its input columns, and create new
-     columns to hold the predicted values.
-	 @param ttt the ExampleTable that contains the inital values
-	 @return a PredictionTable initialized with the data from ttt
-     */
-    public static PredictionTable createPredictionTable(ExampleTable ttt) {
-		if(ttt instanceof ExampleTableImpl)
-			return new PredictionTableImpl((ExampleTableImpl)ttt);
-		else
-			return null;
-	}
-
-    /**
-     Given a prediction table, copy its input columns, and create new
-     columns to hold the predicted values.
-	 @param ttt the prediction table to start with
-	 @return a PredictionTable initialized with the data from ttt
-     */
-    public PredictionTable createPredictionTable(PredictionTableImpl ttt) {
-		return new PredictionTableImpl(ttt);
-	}
-
-    /**
-     Given a prediction table, copy it's input columns, and create new
-     columns to hold the predicted values.
-	 @param ttt the prediction table that this test table is derived from
-	 @return a TestTable initialized with the data from ttt
-     */
-    public TestTable createTestTable(PredictionTableImpl ttt) {
-		return new TestTableImpl(ttt);
-	}
+	public TrainTable createTrainTable(ExampleTable et);
 }

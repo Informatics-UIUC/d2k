@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.transform.attribute;
 import ncsa.d2k.infrastructure.modules.*;
 import java.io.Serializable;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**************************************************
 **  Continuous2Discrete.java
@@ -36,7 +37,7 @@ public class Continuous2Discrete extends ncsa.d2k.infrastructure.modules.Compute
 	public String[] getInputTypes () {
 
 		String [] types =  {
-			"ncsa.d2k.modules.core.datatype.table.NumericColumn"
+			"ncsa.d2k.modules.core.datatype.table.basic.NumericColumn"
 
 			};
 		return types;
@@ -125,7 +126,7 @@ public class Continuous2Discrete extends ncsa.d2k.infrastructure.modules.Compute
 	public void doit () throws Exception {
 
 	NumericColumn continuousData=(NumericColumn)pullInput(0);
-	Table discreteTable=TableFactory.createTable();
+	TableImpl discreteTable= (TableImpl)DefaultTableFactory.getInstance().createTable();
 
 
 	//find what size the bins should be and what the number of bins will be

@@ -4,6 +4,8 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /**
 	TestTableLWRGen.java
 		This module is only used (so far) in creating a
@@ -38,8 +40,8 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -61,7 +63,7 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -78,12 +80,12 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	/**
 		PUT YOUR CODE HERE.
 	*/
-	Table trainTable = null;
-	Table xTable = null;
+	TableImpl trainTable = null;
+	TableImpl xTable = null;
 	public void doit() throws Exception {
 
-		trainTable = (Table) pullInput(0);
-		xTable = (Table) pullInput(1);
+		trainTable = (TableImpl) pullInput(0);
+		xTable = (TableImpl) pullInput(1);
 		int N = xTable.getNumColumns();
 		int randomIndex = getRandom(N);
 		NumericColumn col = (NumericColumn) xTable.getColumn(randomIndex);
@@ -93,7 +95,7 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	}
 
 	public Table makeTable(NumericColumn col, int i) {
-		Table theTable = TableFactory.createTable(trainTable.getNumColumns());
+		TableImpl theTable = (TableImpl)DefaultTableFactory.getInstance().createTable(trainTable.getNumColumns());
 
 		for (int t=0; t<trainTable.getNumColumns(); t++){
 			double[] work = new double[col.getNumRows()];
@@ -106,7 +108,7 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		}
 
 		Column[] c1 = {col.copy()};
-		Table xTble = TableFactory.createTable(c1);
+		TableImpl xTble = (TableImpl)DefaultTableFactory.getInstance().createTable(c1);
 		//NumericColumn col2 = (NumericColumn) trainTable.getColumn(i).copy();
 		//Column[] c2 = {col2};
 		//VerticalTable trainTble = new VerticalTable(c2);
@@ -124,7 +126,7 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		NumericColumn sortedColx = (NumericColumn) xTble.getColumn(0);
 		NumericColumn sortedColt = (NumericColumn) trainTable.getColumn(i);
 		int[] indices = new int[sortedColx.getNumRows()];
-		theTable.setCapacity(indices.length);
+		theTable.setNumRows(indices.length);
 		int index = 0;
 		int last = 0;
 		for (int j=0; j<(sortedColx.getNumRows()); j++){
@@ -182,10 +184,15 @@ public class TestTableLWRGen extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		for (int k=0; k<indices.length; k++){
 			int n = indices[k];
 			//System.err.println("say what?");
-			Object o = trainTable.getRow(n);
+
+			Object[] row = new Object[trainTable.getNumColumns()];
+			//Object o = trainTable.getRow(n);
+			trainTable.getRow(row, n);
+
 			//System.err.println("snizzle");
 			//Object q = o.clone();
-			theTable.setRow((Object[])o,k);
+			theTable.setRow((Object[])row,k);
+
 			//System.out.println(" ");
 			//theTable.print();
 			//System.out.println(" ");

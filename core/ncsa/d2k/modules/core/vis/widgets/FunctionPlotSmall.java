@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.awt.*;
 
 /**
@@ -15,7 +16,7 @@ public class FunctionPlotSmall extends Graph {
 	int smallspace = 1;
 	int largespace = 3;
 
-	public FunctionPlotSmall(Table Functiontable, DataSet[] set, GraphSettings settings) {
+	public FunctionPlotSmall(TableImpl Functiontable, DataSet[] set, GraphSettings settings) {
 		super(Functiontable, set, settings);
 	}
 

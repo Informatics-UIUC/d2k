@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.vis;
 
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.gui.*;
 
 import java.awt.*;
@@ -13,7 +14,7 @@ import javax.swing.border.*;
 
 public class FPlotAll extends JPanel {
 
-	public FPlotAll(Table table1, Table table2){
+	public FPlotAll(TableImpl table1, TableImpl table2){
 		super();
 		PlotMatrix plot = new PlotMatrix(table1, table2);
 		MatrixHolder matrix = new MatrixHolder(plot);
@@ -89,8 +90,8 @@ class MatrixHolder extends JScrollPane {
 
 class PlotMatrix extends JPanel implements MouseListener{
 
-	Table plotTable;
-	Table scatterTable;
+	TableImpl plotTable;
+	TableImpl scatterTable;
 
 	int NUM_ATTRIBUTES; //the number of input variables (i.e. x_1....x_n)
 	JPanel[] graphs; //an array to store all of the graphs
@@ -101,7 +102,7 @@ class PlotMatrix extends JPanel implements MouseListener{
 		@param table1 - the table of data for lines of best fit
 		@param table2 - the table of data for scatter plots
 	*/
-	public PlotMatrix(Table table1, Table table2){
+	public PlotMatrix(TableImpl table1, TableImpl table2){
 		plotTable = table1;// the table containing line of best fit data
 		scatterTable = table2;// the table containing scatter plot data
 		NUM_ATTRIBUTES = scatterTable.getNumColumns()-1;

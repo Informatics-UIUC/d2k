@@ -6,6 +6,7 @@ import ncsa.d2k.modules.core.transform.attribute.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
    BinTreeToVT takes the data in a BinTree and inserts it into a
@@ -55,7 +56,7 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-    	String []out = {"ncsa.d2k.modules.core.datatype.table.Table"};
+    	String []out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return out;
 	}
 
@@ -100,14 +101,14 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
     */
     public void doit() {
     	BinTree bt = (BinTree)pullInput(0);
-		Table vt = toTable(bt);
+		TableImpl vt = toTable(bt);
 		pushOutput(vt, 0);
 	}
 
 	/**
 		Take the data out of the BinTree and put it in a Table
 	*/
-	private Table toTable(BinTree bt) {
+	private TableImpl toTable(BinTree bt) {
 		LinkedList columns = new LinkedList();
 
 		String []classNames = bt.getClassNames();
@@ -134,6 +135,6 @@ public class BinTreeToVT extends DataPrepModule implements HasNames {
 		Column []co = new Column[cols.length];
 		for(int i = 0; i < cols.length; i++)
 			co[i] = (Column)cols[i];
-		return TableFactory.createTable(co);
+		return (TableImpl)DefaultTableFactory.getInstance().createTable(co);
 	}
 }

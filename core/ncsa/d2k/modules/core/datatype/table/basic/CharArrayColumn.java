@@ -1,4 +1,6 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
@@ -15,11 +17,8 @@ import ncsa.d2k.util.*;
  <br><br>
  It is inefficient for: removals, insertions, searching(on contents of word),
  <br>
- @deprecated Use ContinuousCharArrayColumn.
  */
-final public class CharArrayColumn extends TextualColumn {
-
-	static final long serialVersionUID = 8598274083008776848L;
+final public class CharArrayColumn extends AbstractColumn implements TextualColumn {
 
     /** the internal representation of this Column */
     private char[][] internal = null;
@@ -39,6 +38,8 @@ final public class CharArrayColumn extends TextualColumn {
         internal = new char[capacity][];
         //char[] ty = new char[0];
         //setType(ty);
+		setIsNominal(true);
+		type = ColumnTypes.CHAR_ARRAY;
     }
 
     /**
@@ -49,6 +50,8 @@ final public class CharArrayColumn extends TextualColumn {
         this.setInternal(newInternal);
         //char[] ty = new char[0];
         //setType(ty);
+		setIsNominal(true);
+		type = ColumnTypes.CHAR_ARRAY;
     }
 
     /**
@@ -57,7 +60,7 @@ final public class CharArrayColumn extends TextualColumn {
 	 data as this column.
      @return A new Column with a copy of the contents of this column.
      */
-    final public Column copy () {
+    public Column copy () {
         CharArrayColumn cac;
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -94,7 +97,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the position from which to get a String
      @return a String representation of the entry at that position
      */
-    final public String getString (int pos) {
+    public String getString (int pos) {
         return  new String(this.internal[pos]);
     }
 
@@ -103,7 +106,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry the entry to store
      @param pos the position to put newEntry
      */
-    final public void setString (String newEntry, int pos) {
+    public void setString (String newEntry, int pos) {
         this.internal[pos] = newEntry.toCharArray();
     }
 
@@ -113,7 +116,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the position
      @return the value at pos as an int
      */
-    final public int getInt (int pos) {
+    public int getInt (int pos) {
         return  Integer.parseInt(new String(internal[pos]));
     }
 
@@ -122,7 +125,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry the new item
      @param pos the position to store newEntry
      */
-    final public void setInt (int newEntry, int pos) {
+    public void setInt (int newEntry, int pos) {
         internal[pos] = Integer.toString(newEntry).toCharArray();
     }
 
@@ -132,7 +135,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the position
      @return the value at pos as a short
      */
-    final public short getShort (int pos) {
+    public short getShort (int pos) {
         return  Short.parseShort(new String(internal[pos]));
     }
 
@@ -141,7 +144,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry the new item
      @param pos the position to store newEntry
      */
-    final public void setShort (short newEntry, int pos) {
+    public void setShort (short newEntry, int pos) {
         internal[pos] = Short.toString(newEntry).toCharArray();
     }
 
@@ -150,7 +153,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry the new item
      @param pos the position to store newEntry
      */
-    final public void setLong (long newEntry, int pos) {
+    public void setLong (long newEntry, int pos) {
         internal[pos] = Long.toString(newEntry).toCharArray();
     }
 
@@ -160,7 +163,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the position
      @return the value at pos as a long
      */
-    final public long getLong (int pos) {
+    public long getLong (int pos) {
         return  Long.parseLong(new String(internal[pos]));
     }
 
@@ -170,7 +173,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the position
      @return the value at pos as a double
      */
-    final public double getDouble (int pos) {
+    public double getDouble (int pos) {
         return  Double.parseDouble(new String(internal[pos]));
     }
 
@@ -179,7 +182,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry the new item
      @param pos the position to store newEntry
      */
-    final public void setDouble (double newEntry, int pos) {
+    public void setDouble (double newEntry, int pos) {
         internal[pos] = Double.toString(newEntry).toCharArray();
     }
 
@@ -189,7 +192,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the position
      @return the value at pos as a double
      */
-    final public float getFloat (int pos) {
+    public float getFloat (int pos) {
         return  Float.parseFloat(new String(internal[pos]));
     }
 
@@ -198,7 +201,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry the new item
      @param pos the position to store newEntry
      */
-    final public void setFloat (float newEntry, int pos) {
+    public void setFloat (float newEntry, int pos) {
         internal[pos] = Float.toString(newEntry).toCharArray();
     }
 
@@ -208,7 +211,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the position
      @return the value at pos as a double
      */
-    final public byte[] getBytes (int pos) {
+    public byte[] getBytes (int pos) {
         return  new String(internal[pos]).getBytes();
     }
 
@@ -217,9 +220,27 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry the new item
      @param pos the position to store newEntry
      */
-    final public void setBytes (byte[] newEntry, int pos) {
+    public void setBytes (byte[] newEntry, int pos) {
         //internal[pos] = new String(newEntry).toCharArray();
         internal[pos] = ByteUtils.toChars(newEntry);
+    }
+
+    /**
+     Creates a String from the entry at pos and returns it as
+     a byte[].
+     @param pos the position
+     @return the value at pos as a double
+     */
+    public byte getByte (int pos) {
+        return (byte)0;//return  new String(internal[pos]).getBytes();
+    }
+
+    /**
+     Converts newEntry to char[] by calling ByteUtils.toChars()
+     @param newEntry the new item
+     @param pos the position to store newEntry
+     */
+    public void setByte (byte newEntry, int pos) {
     }
 
     /**
@@ -227,7 +248,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the index
      @return the entry at pos
      */
-    final public char[] getChars (int pos) {
+    public char[] getChars (int pos) {
         return  this.internal[pos];
     }
 
@@ -236,8 +257,26 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry the new item
      @param pos the position
      */
-    final public void setChars (char[] newEntry, int pos) {
+    public void setChars (char[] newEntry, int pos) {
         internal[pos] = newEntry;
+    }
+
+    /**
+     Get the value at pos.
+     @param pos the index
+     @return the entry at pos
+     */
+    public char getChar (int pos) {
+		return 'a';
+    }
+
+    /**
+     Set the entry at pos to be newEntry
+     @param newEntry the new item
+     @param pos the position
+     */
+    public void setChar (char newEntry, int pos) {
+		;
     }
 
     /**
@@ -245,7 +284,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the position
      @return the entry at pos
      */
-    final public Object getObject (int pos) {
+    public Object getObject (int pos) {
         return  internal[pos];
     }
 
@@ -256,7 +295,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry the new item
      @param pos the position
      */
-    final public void setObject (Object newEntry, int pos) {
+    public void setObject (Object newEntry, int pos) {
         if (newEntry instanceof char[])
             setChars((char[])newEntry, pos);
         else if (newEntry instanceof byte[])
@@ -271,7 +310,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the postion
      @return a boolean representation of the entry at pos
      */
-    final public boolean getBoolean (int pos) {
+    public boolean getBoolean (int pos) {
         return  new Boolean(new String(internal[pos])).booleanValue();
     }
 
@@ -281,14 +320,14 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry the new item
      @param pos the position
      */
-    final public void setBoolean (boolean newEntry, int pos) {
+    public void setBoolean (boolean newEntry, int pos) {
         internal[pos] = new Boolean(newEntry).toString().toCharArray();
     }
 
 	/**
 	 * Trim any excess storage from the internal buffer for this TextualColumn.
 	 */
-	final public void trim() {}
+	public void trim() {}
 
     //////////////////////////////////////
     //// Accessing Metadata
@@ -298,7 +337,7 @@ final public class CharArrayColumn extends TextualColumn {
      track of it could be very time inefficient.
      @return this CharArrayColumn's number of non-null rows
      */
-    final public int getNumEntries () {
+    public int getNumEntries () {
         int numEntries = 0;
         for (int i = 0; i < internal.length; i++)
             if (internal[i] != null)
@@ -310,7 +349,7 @@ final public class CharArrayColumn extends TextualColumn {
 	 * Get the number of rows that this column can hold.  Same as getCapacity
 	 * @return the number of rows this column can hold
 	 */
-	final public int getNumRows() {
+	public int getNumRows() {
 		return getCapacity();
 	}
 
@@ -318,7 +357,7 @@ final public class CharArrayColumn extends TextualColumn {
      Get the capacity of this Column, its potential maximum number of entries
      @return the max number of entries this Column can hold
      */
-    final public int getCapacity () {
+    public int getCapacity () {
         return  internal.length;
     }
 
@@ -329,7 +368,7 @@ final public class CharArrayColumn extends TextualColumn {
      If internal.length > newCapacity then Column will be truncated.
      @param newCapacity a new capacity
      */
-    final public void setCapacity (int newCapacity) {
+    public void setNumRows (int newCapacity) {
         if (internal != null) {
             char[][] newInternal = new char[newCapacity][];
             if (newCapacity > internal.length)
@@ -349,7 +388,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the position
      @return the entry at pos
      */
-    final public Object getRow (int pos) {
+    public Object getRow (int pos) {
         return  this.internal[pos];
     }
 
@@ -361,7 +400,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param len the length of the subset
      @return a subset of this Column
      */
-    final public Column getSubset (int pos, int len) {
+    public Column getSubset (int pos, int len) {
         char[][] subset = new char[len][];
         System.arraycopy(internal, pos, subset, 0, len);
         CharArrayColumn cac = new CharArrayColumn(subset);
@@ -376,7 +415,7 @@ final public class CharArrayColumn extends TextualColumn {
      Changes made to this object will be reflected in the Column.
      @return the internal representation of this Column.
      */
-    final public Object getInternal () {
+    public Object getInternal () {
         return  this.internal;
     }
 
@@ -386,7 +425,7 @@ final public class CharArrayColumn extends TextualColumn {
      thrown is a ClassCastException.
      @param newInternal a new internal representation for this Column
      */
-    final public void setInternal (Object newInternal) {
+    public void setInternal (Object newInternal) {
         this.internal = (char[][])newInternal;
     }
 
@@ -395,7 +434,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry a new entry
      @param pos the position to set
      */
-    final public void setRow (Object newEntry, int pos) {
+    public void setRow (Object newEntry, int pos) {
         this.internal[pos] = (char[])newEntry;
     }
 
@@ -404,7 +443,7 @@ final public class CharArrayColumn extends TextualColumn {
      in the Column.
      @param newEntry a new entry
      */
-    final public void addRow (Object newEntry) {
+    public void addRow (Object newEntry) {
         int last = internal.length;
         char[][] newInternal = new char[internal.length + 1][];
         System.arraycopy(internal, 0, newInternal, 0, internal.length);
@@ -418,7 +457,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the position to remove
      @return the removed object
      */
-    final public Object removeRow (int pos) {
+    public Object removeRow (int pos) {
         char[] removed = internal[pos];
         System.arraycopy(internal, pos + 1, internal, pos, internal.length -
                 (pos + 1));
@@ -435,7 +474,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param newEntry the newEntry to insert
      @param pos the position to insert at
      */
-    final public void insertRow (Object newEntry, int pos) {
+    public void insertRow (Object newEntry, int pos) {
         char[][] newInternal = new char[internal.length + 1][];
         if (pos > getCapacity()) {
             addRow(newEntry);
@@ -460,7 +499,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos1 the position of the 1st entry to swap
      @param pos2 the position of the 2nd entry to swap
      */
-    final public void swapRows (int pos1, int pos2) {
+    public void swapRows (int pos1, int pos2) {
         char[] e1 = internal[pos1];
         internal[pos1] = internal[pos2];
         internal[pos2] = e1;
@@ -472,7 +511,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param newOrder an array of indices indicating a new order
 	 @return a copy of this column, re-ordered
      */
-    final public Column reOrderRows (int[] newOrder) {
+    public Column reorderRows (int[] newOrder) {
         char[][] newInternal = null;
         if (newOrder.length == internal.length) {
             newInternal = new char[internal.length][];
@@ -497,7 +536,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos the position of the element in Column to be compare with
      @return a value representing the relationship- >, <, or == 0
      */
-    final public int compareRows (Object element, int pos) {
+    public int compareRows (Object element, int pos) {
         char[] b = internal[pos];
         return  compareChars((char[])element, b);
     }
@@ -511,7 +550,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param pos2 the position of the second element to compare
      @return a value representing the relationship- >, <, or == 0
      */
-    final public int compareRows (int pos1, int pos2) {
+    public int compareRows (int pos1, int pos2) {
         char[] b1 = internal[pos1];
         char[] b2 = internal[pos2];
         return  compareChars(b1, b2);
@@ -523,7 +562,7 @@ final public class CharArrayColumn extends TextualColumn {
      * @param b2 the second char[] to compare
      * @return -1, 0, 1
      */
-    final private int compareChars (char[] b1, char[] b2) {
+    private int compareChars (char[] b1, char[] b2) {
         if (b1 == null) {
             if (b2 == null)
                 return  0;
@@ -562,41 +601,11 @@ final public class CharArrayColumn extends TextualColumn {
     }
 
     /**
-     Given an array of booleans, will remove the positions in the Column
-     which coorespond to the positions in the boolean array which are
-     marked true.  If the boolean array and Column do not have the same # of
-     elements, the remaining elements will be discarded.
-     @param flags the boolean array of remove flags
-     */
-    final public void removeByFlag (boolean[] flags) {
-        // keep a list of the row indices to remove
-        LinkedList ll = new LinkedList();
-        int i = 0;
-        for (; i < flags.length; i++) {
-            if (flags[i])
-                ll.add(new Integer(i));
-        }
-        for (; i < internal.length; i++) {
-            ll.add(new Integer(i));
-        }
-        int[] toRemove = new int[ll.size()];
-        int j = 0;
-        Iterator iter = ll.iterator();
-        while (iter.hasNext()) {
-            Integer in = (Integer)iter.next();
-            toRemove[j] = in.intValue();
-            j++;
-        }
-        // now call remove by index to remove the rows
-        removeByIndex(toRemove);
-    }
-
-    /**
      Given an array of ints, will remove the positions in the Column
      which are indicated by the ints in the array.
      @param indices the int array of remove indices
      */
-    final public void removeByIndex (int[] indices) {
+    public void removeRowsByIndex (int[] indices) {
         HashMap toRemove = new HashMap(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
@@ -623,7 +632,7 @@ final public class CharArrayColumn extends TextualColumn {
      Sort the elements in this column.
      @exception NotSupportedException when sorting is not supported
      */
-    final public void sort () throws NotSupportedException {
+    public void sort () {
         sort(null);
     }
 
@@ -631,9 +640,8 @@ final public class CharArrayColumn extends TextualColumn {
      Sort the elements in this column, and swap the rows in the table
      we are a part of.
      @param t the Table to swap rows for
-     @exception NotSupportedException when sorting is not supported
      */
-    final public void sort (Table t) throws NotSupportedException {
+    public void sort (MutableTable t) {
         internal = doSort(internal, 0, internal.length - 1, t);
     }
 
@@ -644,17 +652,15 @@ final public class CharArrayColumn extends TextualColumn {
        @param t the VerticalTable to swap rows for
        @param begin the row no. which marks the beginnig of the  column segment to be sorted
        @param end the row no. which marks the end of the column segment to be sorted
-       @exception NotSupportedException when sorting is not supported
     */
-    public void sort(Table t,int begin, int end)
-	throws NotSupportedException
+    public void sort(MutableTable t,int begin, int end)
     {
 	if (end > internal.length -1) {
-	    System.err.println(" end index was out of bounds"); 
+	    System.err.println(" end index was out of bounds");
 	    end = internal.length -1;
 	}
 	internal = doSort(internal, begin, end, t);
-	
+
     }
 
 
@@ -668,7 +674,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param t the Table to swap rows for
 	 @return a sorted array of char[]
      */
-    final private char[][] doSort (char[][] A, int p, int r, Table t) {
+    private char[][] doSort (char[][] A, int p, int r, MutableTable t) {
         if (p < r) {
             int q = partition(A, p, r, t);
             doSort(A, p, q, t);
@@ -685,7 +691,7 @@ final public class CharArrayColumn extends TextualColumn {
      @param t the Table to swap rows for
 	 @return the new partition point
      */
-    final private int partition (char[][] A, int p, int r, Table t) {
+    private int partition (char[][] A, int p, int r, MutableTable t) {
         //String x = A[p];
         int i = p - 1;
         int j = r + 1;
@@ -711,4 +717,3 @@ final public class CharArrayColumn extends TextualColumn {
     }
 }
 /*CharArrayColumn*/
-

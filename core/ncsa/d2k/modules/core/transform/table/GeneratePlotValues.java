@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	GeneratePlotValues.java
 		Given a VerticalTable of test data, this module finds the min
@@ -32,7 +33,7 @@ public class GeneratePlotValues extends ncsa.d2k.infrastructure.modules.DataPrep
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -55,8 +56,8 @@ public class GeneratePlotValues extends ncsa.d2k.infrastructure.modules.DataPrep
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -78,16 +79,16 @@ public class GeneratePlotValues extends ncsa.d2k.infrastructure.modules.DataPrep
 		return num_pts;
 	}
 
-	Table table;
+	TableImpl table;
 	int num_pts = 60;
 
 	/**
 		PUT YOUR CODE HERE.
 	*/
 	public void doit() throws Exception {
-		table = (Table) pullInput(0);
+		table = (TableImpl) pullInput(0);
 		int numCol = table.getNumColumns();
-		Table outputTable = TableFactory.createTable();
+		TableImpl outputTable = (TableImpl)DefaultTableFactory.getInstance().createTable();
 
 		for (int i=0; i< numCol-1; i++){
 			double min, max;

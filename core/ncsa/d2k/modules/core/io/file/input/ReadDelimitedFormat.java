@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * Read in a file with a single delimiter.
@@ -183,7 +184,7 @@ public class ReadDelimitedFormat extends InputModule
 	   @return The datatypes of the outputs.
 	*/
 	public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String []out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return out;
 	}
 
@@ -537,7 +538,7 @@ public class ReadDelimitedFormat extends InputModule
 			if(labelsList != null)
 				labelsList.clear();
 
-			Table table = TableFactory.createTable(cols);
+			TableImpl table = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
 
 			// the number of the row in the table
 			int rowNum = 0;
@@ -585,8 +586,8 @@ public class ReadDelimitedFormat extends InputModule
 	 * @param t
 	 * @return
 	 */
-	protected ExampleTable toExampleTable(Table t) {
-		ExampleTable retVal = TableFactory.createExampleTable(t);
+	protected ExampleTableImpl toExampleTable(TableImpl t) {
+		ExampleTableImpl retVal = (ExampleTableImpl)t.toExampleTable();
 		int [] ins;
 		int [] outs;
 
@@ -639,7 +640,7 @@ public class ReadDelimitedFormat extends InputModule
 		@param row the line from the file
 		@return an ArrayList containing the tokens from the line.
 	*/
-	protected void createSDRow (String row, Table vt, int curRow) {
+	protected void createSDRow (String row, TableImpl vt, int curRow) {
 		int current = 0;
 		char [] bytes = row.toCharArray ();
 		char del = delimiterOne;

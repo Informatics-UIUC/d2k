@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo;
 import java.io.Serializable;
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 /**
@@ -586,7 +587,7 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 		}
 
 		// Now make the table
-		Table vt = TableFactory.createTable(0);
+		TableImpl vt = (TableImpl)DefaultTableFactory.getInstance().createTable(0);
 		int i = 0;
 		for (; i < numTraits ; i++) {
 			DoubleColumn col = new DoubleColumn (dc [i]);

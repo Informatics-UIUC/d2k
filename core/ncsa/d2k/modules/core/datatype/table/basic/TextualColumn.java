@@ -1,18 +1,17 @@
-package ncsa.d2k.modules.core.datatype.table;
+package ncsa.d2k.modules.core.datatype.table.basic;
+
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  TextualColumn is an extension of Column which is implemented by all
  classes which are optimized to represent and access textual data.
  <br>
  */
-public abstract class TextualColumn extends AbstractColumn {
-
-	static final long serialVersionUID = 3996712405009613990L;
+public interface TextualColumn extends Column {
 
 	/**
 	 * Trim any excess storage from the internal buffer for this TextualColumn.
 	 */
-	abstract public void trim();
+	public void trim();
 }
-
 /*TextualColumn*/

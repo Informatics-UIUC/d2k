@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.gui.*;
 
 import java.awt.*;
@@ -15,7 +16,7 @@ public class GraphEditor extends JPanel implements ActionListener {
 	public static final int LINE_GRAPH = 1;
 	public static final int LINEAR_REGRESSION = 2;
 
-	Table table;
+	TableImpl table;
 	Hashtable hashtable;
 
 	/** this is the class object for a class of object other than the
@@ -45,7 +46,7 @@ public class GraphEditor extends JPanel implements ActionListener {
 
 	JPanel graphpane;
 
-	public GraphEditor(Table table, int type) {
+	public GraphEditor(TableImpl table, int type) {
 		this.table = table;
 
 		this.type = type;
@@ -229,7 +230,7 @@ public class GraphEditor extends JPanel implements ActionListener {
 	/**
 	 * This constructor is called when a custom graph class is to be used.
 	 */
-	public GraphEditor(Table table, Class graphCls) {
+	public GraphEditor(TableImpl table, Class graphCls) {
 		this (table, -1);
 		this.graphClass = graphCls;
 	}

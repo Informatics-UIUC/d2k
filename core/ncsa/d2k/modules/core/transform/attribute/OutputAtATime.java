@@ -66,7 +66,7 @@ public class OutputAtATime extends DataPrepModule
 			origOutputFeatures=origTable.getOutputFeatures();
 			pushOutput(new Integer(origOutputFeatures.length), 1);
 		}
-		ExampleTable et= TableFactory.createExampleTable(origTable);
+		ExampleTable et= (ExampleTable)origTable.toExampleTable();
 		int[] newOutputs=new int[1];
 		newOutputs[0]=origOutputFeatures[numFires];
 		et.setOutputFeatures(newOutputs);

@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.util;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 public class SOSolutionSpace implements SolutionSpace, java.io.Serializable{
 
@@ -193,7 +194,7 @@ public class SOSolutionSpace implements SolutionSpace, java.io.Serializable{
 		}
 		cols[colCount-1]=objC;
 
-		vt=TableFactory.createTable(cols);
+		vt= DefaultTableFactory.getInstance().createTable(cols);
 		return vt;
 	}
 	/**

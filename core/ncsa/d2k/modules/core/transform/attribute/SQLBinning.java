@@ -7,6 +7,8 @@ import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /**
    SQLBinningModule.java
    @author David Clutter
@@ -38,7 +40,7 @@ public class SQLBinning extends DataPrepModule implements HasNames {
 	String []in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
                        "java.lang.String",
 		       "ncsa.d2k.modules.core.datatype.BinTree",
-		       "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		       "ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 	return in;
     }
 
@@ -49,7 +51,7 @@ public class SQLBinning extends DataPrepModule implements HasNames {
     */
     public String[] getOutputTypes() {
 	String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
 		return out;
     }
 
@@ -120,7 +122,7 @@ public class SQLBinning extends DataPrepModule implements HasNames {
 	ConnectionWrapper conn  = (ConnectionWrapper)pullInput(0);
 	String tableName = (String)pullInput(1);
 	BinTree bt = (BinTree)pullInput(2);
-	ExampleTable vt = (ExampleTable)pullInput(3);
+	ExampleTableImpl vt = (ExampleTableImpl)pullInput(3);
 
 
 	int [] ins = vt.getInputFeatures();

@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.Random;
 
 /**
@@ -43,7 +44,7 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return in;
     }
 
@@ -53,7 +54,7 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String []out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return out;
     }
 
@@ -129,8 +130,8 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        Perform the calculation.
     */
     public void doit() {
-		Table orig = (Table)pullInput(0);
-		Table newTable = (Table)orig.copy();
+		TableImpl orig = (TableImpl)pullInput(0);
+		TableImpl newTable = (TableImpl)orig.copy();
 
 		// only keep the first N rows
 		if(useFirst) {

@@ -75,7 +75,7 @@ public class MatchFields extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		ExampleTable et=(ExampleTable)pullInput(0);
 		Table tt=(Table)pullInput(1);
 
-		ExampleTable et2=TableFactory.createExampleTable(tt);
+		ExampleTable et2= tt.toExampleTable();
 
 		int[] ins=new int[et.getNumInputFeatures()];
 		int[] outs=new int[et.getNumOutputFeatures()];

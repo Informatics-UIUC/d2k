@@ -6,6 +6,7 @@ import ncsa.d2k.controller.userviews.swing.JUserPane;
 
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -176,7 +177,7 @@ public class PredictionTableReport extends VisModule implements HasNames {
 				Column[] col = new Column[2];
 				col[0] = sc;
 				col[1] = ic;
-				Table tbl = TableFactory.createTable(col);
+				TableImpl tbl = (TableImpl)DefaultTableFactory.getInstance().createTable(col);
 				// create the pie chart
 				DataSet ds = new DataSet("Accuracy", null, 0, 1);
 				GraphSettings gs = new GraphSettings();

@@ -18,7 +18,7 @@ public class ExampleToTestTable extends DataPrepModule {
        @return A description of this module.
     */
     public String getModuleInfo() {
-		return "This module will simple convert an ExampleTable to a TestTable.";
+		return "This module will simply convert an ExampleTable to a TestTable.";
 	}
 
     /**
@@ -67,5 +67,4 @@ public class ExampleToTestTable extends DataPrepModule {
     	ExampleTable et = (ExampleTable) obj;
 		pushOutput (et.getTestTable (), 0);
 	}
-
 }

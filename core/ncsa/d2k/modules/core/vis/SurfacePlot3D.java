@@ -24,6 +24,7 @@ import ncsa.d2k.modules.core.vis.widgets.ComputationalGeometry;
 import ncsa.gui.Constrain;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * <code>SurfacePlot3D</code> is a three-dimensional visualization of
@@ -39,7 +40,7 @@ public class SurfacePlot3D extends VisModule {
    }
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.table.Table"}; return i;
+      String[] i = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"}; return i;
    }
 
    public String[] getOutputTypes() {
@@ -66,7 +67,7 @@ public class SurfacePlot3D extends VisModule {
       private Transform3D scale, transform;
       private TransformGroup objScale, objTrans;
 
-      private Table input;
+      private TableImpl input;
       private Point3d[] points;
 
       private boolean show_vertices, show_triangles;
@@ -85,10 +86,10 @@ public class SurfacePlot3D extends VisModule {
       private static final int FONT_SIZE = 14;
 
       public void initView(ViewModule m) { }
-      public void setInput(Object o, int i) { if (i == 0) go((Table)o); }
+      public void setInput(Object o, int i) { if (i == 0) go((TableImpl)o); }
       public Object getMenu() { return menuBar; }
 
-      private void go(Table table) {
+      private void go(TableImpl table) {
 
          input = table;
          points = new Point3d[input.getNumRows()];

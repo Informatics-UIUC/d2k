@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.prediction.LWR;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import Jama.*;
 
 /**
@@ -33,7 +34,8 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table", "ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 
 	}
@@ -133,8 +135,8 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 	*/
 
 	public void doit() throws Exception {
-		Table Traintable = (Table) pullInput(0);
-		Table Testtable = (Table) pullInput(1);
+		TableImpl Traintable = (TableImpl) pullInput(0);
+		TableImpl Testtable = (TableImpl) pullInput(1);
 		model = new LWRModel(Traintable, Testtable, kernelSelector, distanceSelector, nearestNeighbors, useNearestNeighbors);
 		pushOutput(model, 0);
 	}

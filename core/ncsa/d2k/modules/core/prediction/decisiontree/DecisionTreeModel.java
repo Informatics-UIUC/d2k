@@ -53,7 +53,8 @@ public class DecisionTreeModel extends PredictionModelModule
 		inputTypes = new String[inputFeatures.length];
 		for(int i = 0; i < inputFeatures.length; i++) {
 			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
-			if(table.getColumn(inputFeatures[i]) instanceof NumericColumn)
+			//if(table.getColumn(inputFeatures[i]) instanceof NumericColumn)
+			if(table.isNumericColumn(inputFeatures[i]))
 				inputTypes[i] = "Numeric";
 			else
 				inputTypes[i] = "Text";
@@ -63,7 +64,8 @@ public class DecisionTreeModel extends PredictionModelModule
 		outputTypes = new String[outputFeatures.length];
 		for(int i = 0; i < outputFeatures.length; i++) {
 			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
-			if(table.getColumn(outputFeatures[i]) instanceof NumericColumn)
+			//if(table.getColumn(outputFeatures[i]) instanceof NumericColumn)
+			if(table.isNumericColumn(outputFeatures[i]))
 				outputTypes[i] = "Numeric";
 			else
 				outputTypes[i] = "Text";
@@ -177,20 +179,21 @@ public class DecisionTreeModel extends PredictionModelModule
 		if (table instanceof PredictionTable)
 			pt = (PredictionTable) table;
 		else
-			pt = TableFactory.createPredictionTable(table);
+			pt = table.toPredictionTable();
 
 		int[] outputs = pt.getOutputFeatures();
 		int[] preds = pt.getPredictionSet();
 
 		if(preds.length == 0) {
-			StringColumn sc = new StringColumn(pt.getNumRows());
-			pt.addPredictionColumn(sc);
+			//StringColumn sc = new StringColumn(pt.getNumRows());
+			String [] predic = new String[pt.getNumRows()];
+			pt.addPredictionColumn(predic);
 			preds = pt.getPredictionSet();
 		}
 
 		for(int i = 0; i < pt.getNumRows(); i++) {
 			String pred = (String)root.evaluate(pt, i);
-			pt.setString(pred, i, preds[0]);
+			pt.setStringPrediction(pred, i, 0);
 		}
 		uniqueOutputs = uniqueValues(pt, outputs[0]);
 		return pt;

@@ -365,7 +365,7 @@ public class ChooseFields extends UIModule implements HasNames {
         }
 
 		private void setFieldsInTable(){
-			et= TableFactory.createExampleTable(vt);
+			et= vt.toExampleTable();
 			//et.setInputFeatures(inputList.getSelectedIndices());
 			//et.setOutputFeatures(outputList.getSelectedIndices());
             Object[] selected = inputList.getSelectedValues();

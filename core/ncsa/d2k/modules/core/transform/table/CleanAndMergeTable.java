@@ -11,6 +11,9 @@ import java.awt.event.*;
 import java.util.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
 /**
  * Clean the data in a Table.
  * <p>Title: </p>
@@ -33,13 +36,13 @@ public class CleanAndMergeTable extends UIModule {
 	}
 
 	public String [] getInputTypes() {
-		String [] in = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		String [] in = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return in;
 	}
 
 	public String [] getOutputTypes() {
-		String [] out = {"ncsa.d2k.modules.core.datatype.table.Table",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+		String [] out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
+			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return out;
 	}
 
@@ -77,12 +80,12 @@ public class CleanAndMergeTable extends UIModule {
 
 		JComboBox mergeMethod;
 
-		Table table;
+		TableImpl table;
 
 		HashMap columnLookup;
 
 		public void setInput(Object o, int id) {
-			table = (Table)o;
+			table = (TableImpl)o;
 
 			// clear all lists
 			keyListModel.removeAllElements();
@@ -207,7 +210,7 @@ public class CleanAndMergeTable extends UIModule {
 			}
 
 			// create the table
-			Table newTable = createTable(keyLookup.size());
+			TableImpl newTable = createTable(keyLookup.size());
 
 			int curRow = 0;
 			// now convert the array lists to int[]
@@ -234,7 +237,7 @@ public class CleanAndMergeTable extends UIModule {
 			viewDone("Done");
 		}
 
-		private void mergeMax(Table tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
+		private void mergeMax(TableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
 			// find the maximum in the control column.  this row will be the one
 			// where data is copied from
 
@@ -257,7 +260,7 @@ public class CleanAndMergeTable extends UIModule {
 			}
 		}
 
-		private void mergeAve(Table tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
+		private void mergeAve(TableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
 			// find the maximum in the control column.  this row will be the one
 			// where data is copied from
 
@@ -290,7 +293,7 @@ public class CleanAndMergeTable extends UIModule {
 			}
 		}
 
-		private void mergeSum(Table tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
+		private void mergeSum(TableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
 			// find the maximum in the control column.  this row will be the one
 			// where data is copied from
 
@@ -322,7 +325,7 @@ public class CleanAndMergeTable extends UIModule {
 			}
 		}
 
-		private Table createTable(int numRows) {
+		private TableImpl createTable(int numRows) {
 			Column[] cols = new Column[table.getNumColumns()];
 			for(int i = 0; i < table.getNumColumns(); i++) {
 				Column c = table.getColumn(i);
@@ -351,7 +354,7 @@ public class CleanAndMergeTable extends UIModule {
 				cols[i] = newCol;
 			}
 
-			Table tbl = TableFactory.createTable(cols);
+			TableImpl tbl = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
 			tbl.setLabel(table.getLabel());
 			return tbl;
 		}
