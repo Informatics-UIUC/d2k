@@ -77,7 +77,9 @@ public abstract class Chart extends JPanel {
                 new Color(150, 150, 90), new Color(150, 150, 210),
                 new Color(210, 90, 30), new Color(210, 90, 90),
                 new Color(210, 90, 150), new Color(210, 90, 210),
-                new Color(210, 150, 30), new Color(210, 210, 30)
+                new Color(210, 150, 30), new Color(210, 210, 30),
+                new Color(240, 90, 30), new Color(240, 90, 90),
+                new Color(240, 90, 120)
         };
 	abstract public void initOffsets();
 	abstract public void resize();
