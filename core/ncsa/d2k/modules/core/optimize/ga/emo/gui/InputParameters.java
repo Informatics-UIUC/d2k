@@ -69,7 +69,7 @@ public class InputParameters
   }
 
   private static final String OPTIMIZATION_TIPS =
-      "<p>1) For simple GA decrease precision of variables, which will further "+
+      "<html><p>1) For simple GA decrease precision of variables, which will further "+
       "decrease string length. String length affects both the number of "+
       "generations required for the GA to converge (which is about 2L) and the "+
       "population size (since N > 1.4 L must be satisfied to avoid genetic "+
@@ -94,7 +94,7 @@ public class InputParameters
       "<p>Yan, S., and B. Minsker, A Dynamic Meta-Model Approach to Genetic "+
       "Algorithm Solution of a Risk-Based Groundwater Remediation Design Model, EWRI WWERC, 2003. "+
       "<p>Babbar, M., and B. Minsker, Multiscale Strategies for Solving Water "+
-      "Resources Management Problems with Genetic Algorithms, EWRI WWERC, 2003. ";
+      "Resources Management Problems with Genetic Algorithms, EWRI WWERC, 2003.</html> ";
 
   public PropertyDescription[] getPropertiesDescriptions() {
     return new PropertyDescription[0];
@@ -1142,11 +1142,11 @@ public class InputParameters
         advFrame.setVisible(false);
 
         optFrame = new JD2KFrame("Optimization Tips");
-        JEditorPane jep = new JEditorPane();
-        jep.setText(OPTIMIZATION_TIPS);
+        JEditorPane jep = new JEditorPane("text/html", OPTIMIZATION_TIPS);
+        jep.setEditable(false);
         JScrollPane sp = new JScrollPane(jep);
         optFrame.getContentPane().add(sp);
-        optFrame.pack();
+        optFrame.setSize(new Dimension(500, 300));
         optFrame.setVisible(false);
       }
     }
