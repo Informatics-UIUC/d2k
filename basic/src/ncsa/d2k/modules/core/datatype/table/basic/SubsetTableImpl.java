@@ -83,7 +83,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @param subset the integer subset.
     */
    public SubsetTableImpl(TableImpl table, int[] subset) {
-      this.columns = table.getColumns();
+      this.columns = table.columns;
       this.label = table.getLabel();
       this.comment = table.getComment();
       this.subset = subset;
