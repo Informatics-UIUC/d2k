@@ -28,7 +28,7 @@ public class StaticMethods {
      int counter = 0;
      while (names.next()) {
        String currName = names.getString("TABLE_NAME");
-       retVal.put(currName, new Integer(counter));
+       retVal.put(currName.toUpperCase(), new Integer(counter));
        counter++;
      } //while
     return retVal;
@@ -43,7 +43,7 @@ public class StaticMethods {
     int counter = 0;
     while (columns.next()) {
        String columnName = columns.getString("COLUMN_NAME");
-       retVal.put(columnName , new Integer(counter));
+       retVal.put(columnName.toUpperCase() , new Integer(counter));
        counter++;
      }//while column
 
@@ -61,7 +61,7 @@ public class StaticMethods {
   static public HashMap getAvailableAttributes(Table table){
     HashMap map = new HashMap(table.getNumColumns());
     for (int i=0; i< table.getNumColumns(); i++)
-      map.put(table.getColumnLabel(i), new Integer(i));
+      map.put(table.getColumnLabel(i).toUpperCase(), new Integer(i));
 
     return map;
   }
@@ -77,7 +77,7 @@ public class StaticMethods {
       HashMap map = new HashMap(table.getNumColumns());
       for (int i=0; i< table.getNumColumns(); i++)
         if(table.isColumnScalar(i))
-          map.put(table.getColumnLabel(i), new Integer(i));
+          map.put(table.getColumnLabel(i).toUpperCase(), new Integer(i));
 
       return map;
     }
@@ -95,9 +95,9 @@ public class StaticMethods {
   static public boolean[] getRelevant(String[] names, HashMap available){
     boolean[] relevant = new boolean[names.length];
     for (int i=0; i<names.length; i++)
-      if(available.containsKey(names[i]))
+      if(available.containsKey(names[i].toUpperCase()))
         relevant[i] = true;
-      else System.out.println("Label " + names[i] + " was not found in the given input. "                               );
+      else System.out.println("Label " + names[i] + " was not found in the given input table. "                               );
 
     return relevant;
   }
@@ -115,9 +115,9 @@ public class StaticMethods {
  static public boolean[] getRelevant(String[] names, Vector available){
    boolean[] relevant = new boolean[names.length];
    for (int i=0; i<names.length; i++)
-     if(available.contains(names[i]))
+     if(available.contains(names[i].toUpperCase()))
        relevant[i] = true;
-     else System.out.println("Label " + names[i] + " was not found in the given input. " );
+     else System.out.println("Label " + names[i] + " was not found in the given input table. " );
 
    return relevant;
  }
@@ -192,7 +192,7 @@ public class StaticMethods {
    int[] retVal = new int[numPos];
    for (int i=0, j=0; i<numPos; i++)
      if(relevant[i]){
-       retVal[j] = ((Integer) available.get(desired[i])).intValue();
+       retVal[j] = ((Integer) available.get(desired[i].toUpperCase())).intValue();
        j++;
      }
    return retVal;
@@ -208,8 +208,8 @@ public class StaticMethods {
   */
  static public int getID(String name, HashMap available){
    int retVal = -1;
-   if(available.containsKey(name))
-     retVal = ((Integer) available.get(name)).intValue();
+   if(available.containsKey(name.toUpperCase()))
+     retVal = ((Integer) available.get(name.toUpperCase())).intValue();
   return retVal;
  }
 

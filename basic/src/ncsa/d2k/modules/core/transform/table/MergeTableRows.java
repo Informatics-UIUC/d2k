@@ -804,13 +804,8 @@ public class MergeTableRows extends HeadlessUIModule {
 
 
 
-
-
-
-
-
-      if(!(type.equals(MergingClass.AVE) || type.equals(MergingClass.CNT) || type.equals(MergingClass.MAX) ||
-           type.equals(MergingClass.MIN) || type.equals(MergingClass.SUM)))
+      if(!(type.equalsIgnoreCase(MergingClass.AVE) || type.equalsIgnoreCase(MergingClass.CNT) || type.equals(MergingClass.MAX) ||
+           type.equalsIgnoreCase(MergingClass.MIN) || type.equalsIgnoreCase(MergingClass.SUM)))
         throw new Exception (getAlias() + ": The merging type is illegal!\n" +
                              "Please reconfigure this module using the properties editor " +
                              "or via a GUI run, so it can run Headless.");

@@ -638,7 +638,7 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
 
 
             //verifying that tableName is in the data base
-                if(!StaticMethods.getAvailableTables(cw).containsKey(tableName))
+                if(!StaticMethods.getAvailableTables(cw).containsKey(tableName.toUpperCase()))
                   throw new Exception(getAlias()+ ": Table named " + tableName +
                                       " was not found in the database.");
 
@@ -655,7 +655,7 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
         while (columns.next()) {
           String colName = columns.getString("COLUMN_NAME");
           if (!colName.equals("SET_SIZE") && !colName.equals("CNT")) {
-            columnsVector.add(counter, colName);
+            columnsVector.add(counter, colName.toUpperCase());
             counter ++;
           }//if
         }//while

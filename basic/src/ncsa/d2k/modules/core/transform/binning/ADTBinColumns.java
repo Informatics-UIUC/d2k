@@ -1749,6 +1749,8 @@ public class ADTBinColumns extends HeadlessUIModule {
 
     Table table = (Table) pullInput(1);
 
+    System.out.println("classes were reloaded");
+
 
 
     if(binDes == null)
@@ -1765,7 +1767,7 @@ public class ADTBinColumns extends HeadlessUIModule {
     HashMap columns = StaticMethods.getAvailableAttributes(table);
   //  Vector relevant = new Vector();
     for (int i=0; i<binDes.length; i++){
-      if(!columns.containsKey(binDes[i].label))
+      if(!columns.containsKey(binDes[i].label.toUpperCase()))
         throw new Exception(getAlias() + ": Bin " +  binDes[i].toString() + " does not match any column label in the input table. Please reconfigure this module.");
 //      else relevant.add(binDes[i]);
     }//for

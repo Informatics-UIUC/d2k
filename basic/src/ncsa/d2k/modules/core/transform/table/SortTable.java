@@ -168,6 +168,8 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
         if(sortorder != null && sortorder.length != 0)
           cSort.sort(sortorder);
 
+          if(this.reorderColumns) cSort.reorder(sortorder);
+
         pushOutput(table,0);
 }//doit
 

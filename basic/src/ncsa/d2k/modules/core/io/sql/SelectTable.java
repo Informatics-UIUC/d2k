@@ -232,18 +232,22 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
         public void setSelectedTable(String name){selectedTable = name;}
 
         public void doit() throws Exception {
-          Vector available = (Vector) pullInput(0);
+          Vector vec = (Vector) pullInput(0);
+          HashMap available = new HashMap();
+          for(int i=0; i<vec.size(); i++)
+            available.put(((String)vec.elementAt(i)).toUpperCase(), new Integer (i));
 
           if (selectedTable == null || selectedTable.length() == 0)
                throw new Exception (this.getAlias()+" has not been configured. Before running headless,  " +
                                     "either configure the parameters via the properties editor " +
                                     "or run with the gui and configure the parameters.");
-          if(!available.contains(selectedTable))
+          if(!available.containsKey(selectedTable.toUpperCase()))
             throw new Exception(getAlias() + ": The selected table - " + selectedTable + " was not found in the input list of available tables."+
                                  " Please reconfigure the module (using the properties editor or via a GUI run ) so it can run headless.");
 
            else
-             pushOutput(selectedTable, 0);
+             pushOutput(selectedTable.toUpperCase(), 0);
+
         }
 
 

@@ -1634,7 +1634,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
       }
 
       //verifying that tableName is in the data base
-      if(!StaticMethods.getAvailableTables(wrapper).containsKey(tableName))
+      if(!StaticMethods.getAvailableTables(wrapper).containsKey(tableName.toUpperCase()))
         throw new Exception(getAlias()+ ": Table named " + tableName +
                             " was not found in the database.");
       /*
@@ -1701,7 +1701,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
 */
     // Vector relevant = new Vector();
    for (int i=0; i<savedBins.length; i++){
-     if(!colMap.containsKey(savedBins[i].label))
+     if(!colMap.containsKey(savedBins[i].label.toUpperCase()))
        throw new Exception(getAlias()+ ": Bin " +  savedBins[i].toString() + " does not match any column label in the database table." +
                                         " Please reconfigure this module via a GUI run so it can run Headless.");
      //else relevant.add(savedBins[i]);

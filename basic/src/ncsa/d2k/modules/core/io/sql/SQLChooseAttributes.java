@@ -545,9 +545,9 @@ public class SQLChooseAttributes extends HeadlessUIModule {
      while (columns.next()) {
        String columnName = columns.getString("COLUMN_NAME");
        String columnType = columns.getString("TYPE_NAME");
-       availableColumnMap.put( columnName, new Integer(counter));
-       Id2ColumnNameMap.put(new Integer(counter), columnName);
-       columTypes.put(new Integer(counter), columnName);
+       availableColumnMap.put( columnName.toUpperCase(), new Integer(counter));
+       Id2ColumnNameMap.put(new Integer(counter), columnName.toUpperCase());
+       columTypes.put(new Integer(counter), columnName.toUpperCase());
        counter++;
      }//while column
 
@@ -585,9 +585,9 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
       String finalSelectedOutput = null;
 
-        if (availableColumnMap.containsKey(selectedOutputNames[0])) {
+        if (availableColumnMap.containsKey(selectedOutputNames[0].toUpperCase())) {
           outputFeatures[0] = ( (Integer) availableColumnMap.get(
-              selectedOutputNames[0])).intValue();
+              selectedOutputNames[0].toUpperCase())).intValue();
           finalSelectedOutput = selectedOutputNames[0];
         }
         else throw new Exception (getAlias() +": The selected output " +

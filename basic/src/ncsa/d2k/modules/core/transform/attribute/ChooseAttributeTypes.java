@@ -531,8 +531,8 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
 
     //going over the scalar columns.
     for (int i=0; i<scalarColumns.length; i++)
-      if(availableColumns.containsKey(scalarColumns[i])){
-        int index = ( (Integer) availableColumns.get(scalarColumns[i])).intValue();
+      if(availableColumns.containsKey(scalarColumns[i].toUpperCase())){
+        int index = ( (Integer) availableColumns.get(scalarColumns[i].toUpperCase())).intValue();
         _table.setColumnIsScalar(true, index);
         _table.setColumnIsNominal(false, index);
         if(!_table.isColumnNumeric(index))
@@ -548,8 +548,8 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
 
     //going over the nominal columns.
     for (int i=0; i<nominalColumns.length; i++)
-      if(availableColumns.containsKey(nominalColumns[i])){
-        int index = ( (Integer) availableColumns.get(nominalColumns[i])).intValue();
+      if(availableColumns.containsKey(nominalColumns[i].toUpperCase())){
+        int index = ( (Integer) availableColumns.get(nominalColumns[i].toUpperCase())).intValue();
         _table.setColumnIsScalar(false, index);
         _table.setColumnIsNominal(true, index);
         if(_table.isColumnNumeric(index))
@@ -585,12 +585,12 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
 
 
     for (int i=0; i<scalarColumns.length; i++)
-      scalarMap.put(scalarColumns[i], new Integer(i));
+      scalarMap.put(scalarColumns[i].toUpperCase(), new Integer(i));
 
 
 
     for (int i=0; i<nominalColumns.length; i++)
-      if(scalarMap.containsKey(nominalColumns[i]))
+      if(scalarMap.containsKey(nominalColumns[i].toUpperCase()))
         throw new Exception(this.getAlias()+": Attribute " + nominalColumns[i] +
                             " was set as both scalar and nominal. A column can be " +
                             "only either scalar or nominal, it cannot be both!\n");

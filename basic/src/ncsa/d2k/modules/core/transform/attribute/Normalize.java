@@ -421,7 +421,7 @@ public class Normalize extends HeadlessUIModule {
           HashMap availableNumericColumns = new HashMap();
           for (int i=0; i<_table.getNumColumns(); i++)
             if(_table.isColumnNumeric(i))
-              availableNumericColumns.put(_table.getColumnLabel(i), new Integer(i));
+              availableNumericColumns.put(_table.getColumnLabel(i).toUpperCase(), new Integer(i));
 
            if(availableNumericColumns.size() == 0){
              System.out.println(getAlias() + ": Warning - Table " + _table.getLabel() +

@@ -51,7 +51,7 @@ class ConstructionValidator {
     for (int i = 0; i < _table.getNumColumns(); i++)
       if (_table.isColumnNumeric(i) ||
           (_table.getColumnType(i) == ColumnTypes.BOOLEAN))
-        columns.put(_table.getColumnLabel(i), new Integer(i));
+        columns.put(_table.getColumnLabel(i).toUpperCase(), new Integer(i));
 
 //for each expression
     for (int i = 0; i < _expressions.length; i++) {
@@ -283,7 +283,7 @@ class ConstructionValidator {
              Double.parseDouble(str);
            } //try
            catch (Exception e) {
-             if (!columns.containsKey(str))
+             if (!columns.containsKey(str.toUpperCase()))
                throw new Exception("Discovered label '" + str +
                                    "' .\nThe label could not be found in the input table. " +
                    "\nPlease reconfigure the module by running it with GUI.");

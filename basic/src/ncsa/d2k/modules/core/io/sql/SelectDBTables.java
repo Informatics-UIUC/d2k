@@ -930,7 +930,7 @@ if(selectedTablesNames.length != selectedColumnsNames.length )
       //creating a hash map with desired values as keys.
       HashMap tablesMap = new HashMap();
       for (int i=0; i<available.length; i++)
-        tablesMap.put(available[i], new Integer(i));
+        tablesMap.put(available[i].toUpperCase(), new Integer(i));
 
         //if desired[i] is in available then isTarget[i] is true
    boolean[] isTarget = new boolean[desired.length];
@@ -939,7 +939,7 @@ if(selectedTablesNames.length != selectedColumnsNames.length )
 
      //populating isTarget.
      for(int i=0; i<desired.length; i++){
-       if(tablesMap.containsKey(desired[i])){
+       if(tablesMap.containsKey(desired[i].toUpperCase())){
         // numTargets++;
          isTarget[i] = true;
        }
