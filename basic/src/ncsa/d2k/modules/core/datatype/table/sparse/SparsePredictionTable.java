@@ -116,7 +116,7 @@ public class SparsePredictionTable
         addColumn(numColumns + i, type, size);
 
         //XIAOLEI
-        System.out.println("Setting column label " + (numcols + i) + " to: " + getColumnLabel(outputColumns[i]) + PredictionTable.PREDICTION_COLUMN_APPEND_TEXT);
+        //System.out.println("Setting column label " + (numcols + i) + " to: " + getColumnLabel(outputColumns[i]) + PredictionTable.PREDICTION_COLUMN_APPEND_TEXT);
         setColumnLabel(getColumnLabel(outputColumns[i]) + PredictionTable.PREDICTION_COLUMN_APPEND_TEXT, numcols + i);
 
       } //for

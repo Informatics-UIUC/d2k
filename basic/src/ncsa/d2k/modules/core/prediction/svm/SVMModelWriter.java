@@ -82,19 +82,19 @@ public class SVMModelWriter extends OutputModule
 		super.endExecution();
 	}
 
-	public boolean isReady()
-	{
-		if (getFlags()[0] > 0 || getFlags()[1] > 0)
-			return true;
-		else
-			return false;
-	}
+//	public boolean isReady()
+//	{
+//		if (getFlags()[0] > 0 || getFlags()[1] > 0)
+//			return true;
+//		else
+//			return false;
+//	}
 
 
 	protected void doit() throws Exception
 	{
 		try {
-			// load the SVM model 
+			// load the SVM model
 			if (getFlags()[0] > 0 && model == null)
 				model = (libsvm.svm_model) this.pullInput(0);
 
@@ -107,6 +107,7 @@ public class SVMModelWriter extends OutputModule
 				svm.svm_save_model(model_file_name, model);
 				System.out.println("SVM Model written to disk.");
 				model = null;
+                                model_file_name = null;
 			}
 
 		} catch (Exception ex) {

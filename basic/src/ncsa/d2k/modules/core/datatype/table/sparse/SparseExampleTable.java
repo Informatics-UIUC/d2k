@@ -1693,70 +1693,81 @@ public class SparseExampleTable
   protected void decrementInOut(int position) {
     boolean containsPos = false;
     int idx = -1;
-    for (int i = 0; i < inputColumns.length; i++) {
-      if (inputColumns[i] == position) {
-        containsPos = true;
-        idx = i;
-      }
-      if (containsPos) {
-        break;
-      }
-    }
 
-// if the test set contained pos, remove the item
-    if (containsPos) {
-      int[] newin = new int[inputColumns.length - 1];
-      int idd = 0;
+    if (inputColumns != null){
       for (int i = 0; i < inputColumns.length; i++) {
-        if (i != idx) {
-          newin[idd] = inputColumns[i];
-          idd++;
+        if (inputColumns[i] == position) {
+          containsPos = true;
+          idx = i;
+        }
+        if (containsPos) {
+          break;
         }
       }
-      setInputFeatures(newin);
-    }
+
+// if the test set contained pos, remove the item
+      if (containsPos) {
+        int[] newin = new int[inputColumns.length - 1];
+        int idd = 0;
+        for (int i = 0; i < inputColumns.length; i++) {
+          if (i != idx) {
+            newin[idd] = inputColumns[i];
+            idd++;
+          }
+        }
+        setInputFeatures(newin);
+      }
+
+
+      //adjust input/output array values to account for column indice shifts -- DDS
+     int[] newin = this.getInputFeatures();
+     for (int i = 0, n = newin.length; i < n; i++){
+       if (newin[i] > position){
+         newin[i]--;
+       }
+     }
+     this.setInputFeatures(newin);
+   }
+
 
     containsPos = false;
     idx = -1;
 
-    for (int i = 0; i < outputColumns.length; i++) {
-      if (outputColumns[i] == position) {
-        containsPos = true;
-        idx = i;
-      }
-      if (containsPos) {
-        break;
-      }
-    }
+    if (outputColumns != null){
 
-// if the test set contained pos, remove the item
-    if (containsPos) {
-      int[] newout = new int[outputColumns.length - 1];
-      int idd = 0;
       for (int i = 0; i < outputColumns.length; i++) {
-        if (i != idx) {
-          newout[idd] = outputColumns[i];
-          idd++;
+        if (outputColumns[i] == position) {
+          containsPos = true;
+          idx = i;
+        }
+        if (containsPos) {
+          break;
         }
       }
-      setOutputFeatures(newout);
+
+// if the test set contained pos, remove the item
+      if (containsPos) {
+        int[] newout = new int[outputColumns.length - 1];
+        int idd = 0;
+        for (int i = 0; i < outputColumns.length; i++) {
+          if (i != idx) {
+            newout[idd] = outputColumns[i];
+            idd++;
+          }
+        }
+        setOutputFeatures(newout);
+      }
+
+      //adjust input/output array values to account for column indice shifts -- DDS
+      int[] newout = this.getOutputFeatures();
+      for (int i = 0, n = newout.length; i < n; i++){
+        if (newout[i] > position){
+          newout[i]--;
+        }
+      }
+      this.setOutputFeatures(newout);
     }
 
-    //adjust input/output array values to account for column indice shifts -- DDS
-    int[] newin = this.getInputFeatures();
-    for (int i = 0, n = newin.length; i < n; i++){
-      if (newin[i] > position){
-        newin[i]--;
-      }
-    }
-    this.setInputFeatures(newin);
-    int[] newout = this.getOutputFeatures();
-    for (int i = 0, n = newout.length; i < n; i++){
-      if (newout[i] > position){
-        newout[i]--;
-      }
-    }
-    this.setOutputFeatures(newout);
 
   }
 

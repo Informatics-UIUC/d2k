@@ -4638,6 +4638,8 @@ public class SparseMutableTable
 
   }
 
+
+
   /**
    * Adds an empty column at index <code>newColIndex</code> of type <code>
    * type</codE> with capacity <code>size</codE>.
@@ -4815,6 +4817,55 @@ public class SparseMutableTable
   public Column getColumn(int pos) {
     return (Column) columns.get(pos);
   }
+
+  public void addColumn(int type) {
+    AbstractSparseColumn col = null;
+    switch (type) {
+      case ColumnTypes.BOOLEAN:
+        col = new SparseBooleanColumn();
+        break;
+      case ColumnTypes.BYTE:
+        col = new SparseByteColumn();
+        break;
+      case ColumnTypes.CHAR:
+        col = new SparseCharColumn();
+        break;
+      case ColumnTypes.DOUBLE:
+        col = new SparseDoubleColumn();
+        break;
+
+      case ColumnTypes.FLOAT:
+        col = new SparseFloatColumn();
+        break;
+      case ColumnTypes.BYTE_ARRAY:
+        col = new SparseByteArrayColumn();
+        break;
+      case ColumnTypes.CHAR_ARRAY:
+        col = new SparseCharArrayColumn();
+        break;
+      case ColumnTypes.INTEGER:
+        col = new SparseIntColumn();
+        break;
+
+      case ColumnTypes.LONG:
+        col = new SparseLongColumn();
+        break;
+      case ColumnTypes.SHORT:
+        col = new SparseShortColumn();
+        break;
+      case ColumnTypes.OBJECT:
+        col = new SparseObjectColumn();
+        break;
+      case ColumnTypes.STRING: //fall through to the default...
+      default:
+        col = new SparseStringColumn();
+        break;
+
+    } //switch case
+
+    this.addColumn(col);
+  }
+
 
   /**
    * Adds a column of type <code>type</code> at index no. <code>index</code>
