@@ -37,7 +37,7 @@ public class ClassificationErrorReport extends VisModule  {
 
 	public String getInputInfo(int i) {
 		switch (i) {
-			case 0: return "Statistics about each model built.";
+			case 0: return "An ArrayList of PredictionTables.";
 			case 1: return "The number of models built.";
 			default: return "No such input";
 		}
@@ -46,7 +46,7 @@ public class ClassificationErrorReport extends VisModule  {
 	public String getInputName(int i) {
 		switch(i) {
 			case 0:
-				return "Stats";
+				return "PredictionTables";
 			case 1:
 				return "N";
 			default: return "NO SUCH INPUT!";
