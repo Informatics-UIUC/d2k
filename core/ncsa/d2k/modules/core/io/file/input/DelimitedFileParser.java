@@ -796,7 +796,7 @@ public class DelimitedFileParser implements FlatFileParser {
 		keeps track of which fields that were read were actually
 		blank
 	*/
-	private void addBlank(int r, int c){
+	protected void addBlank(int r, int c){
 		//_blankRows.add(new Integer(r));
 		//_blankColumns.add(new Integer(c));
         blanks[r][c] = true;

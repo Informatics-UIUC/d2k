@@ -12,6 +12,9 @@ import java.util.*;
  */
 public class ReadFileToTable extends InputModule {
 
+    protected static final char QUESTION = '?';
+    protected static final char SPACE = ' ';
+
     private boolean useBlanks = true;
     public void setUseBlanks(boolean b) {
         useBlanks = b;
@@ -84,8 +87,9 @@ public class ReadFileToTable extends InputModule {
             int nc = t.getNumColumns();
             for(int i = 0; i < nr; i++) {
                 for(int j = 0; j < nc; j++) {
-                    if(blanks[i][j])
+                    if(blanks[i][j]) {
                         mt.setValueToMissing(true, i, j);
+                    }
                 }
             }
         }
@@ -94,7 +98,7 @@ public class ReadFileToTable extends InputModule {
         //pushOutput(bt, 1);
     }
 
-    private Table createTable(FlatFileParser df) {
+    protected Table createTable(FlatFileParser df) {
         int numRows = df.getNumRows();
         int numColumns = df.getNumColumns();
 
@@ -145,16 +149,45 @@ public class ReadFileToTable extends InputModule {
         for(int i = 0; i < numRows; i++) {
             char[][] row = df.getRowElements(i);
             if(row != null) {
-            for(int j = 0; j < columns.length; j++) {
-                char[] elem = row[j];//(char[])row.get(j);
-                //System.out.println(new String(elem));
-                try {
-                    ti.setChars(elem, i, j);
+                for(int j = 0; j < columns.length; j++) {
+                    boolean isMissing = true;
+                    char[] elem = row[j];//(char[])row.get(j);
+
+                    // test to see if this is '?'
+                    // if it is, this value is missing.
+                    for(int k = 0; k < elem.length; k++) {
+                        if(elem[k] != QUESTION && elem[k] != SPACE) {
+                            isMissing = false;
+                            break;
+                        }
+                    }
+
+                    // if the value was not missing, just put it in the table
+                    if(!isMissing) {
+                        try {
+                            ti.setChars(elem, i, j);
+                        }
+                        // if there was a number format exception, set the value
+                        // to 0 and mark it as missing
+                        catch(NumberFormatException e) {
+                            ti.setChars(Integer.toString(0).toCharArray(), i, j);
+                            ti.setValueToMissing(true, i, j);
+                        }
+                    }
+                    // if the value was missing..
+                    else {
+                        // put 0 in a numeric column and set the value to missing
+                        if(ti.isColumnNumeric(j)) {
+                            ti.setChars(Integer.toString(0).toCharArray(), i, j);
+                            ti.setValueToMissing(true, i, j);
+                        }
+                        // otherwise put the '?' in the table and set the value to missing
+                        else {
+                            ti.setChars(elem, i, j);
+                            ti.setValueToMissing(true, i, j);
+                        }
+                    }
                 }
-                catch(NumberFormatException e) {
-                    ti.setChars(Integer.toString(0).toCharArray(), i, j);
-                }
-            }
             }
         }
 

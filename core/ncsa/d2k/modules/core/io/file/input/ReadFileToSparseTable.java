@@ -1,26 +1,16 @@
-//package ncsa.d2k.modules.projects.clutter.rdr;
-//package ncsa.d2k.modules.projects.vered.sparse.modules;
 package ncsa.d2k.modules.core.io.file.input;
 
-import ncsa.d2k.modules.core.io.file.input.*;
-//import ncsa.d2k.modules.projects.vered.sparse.column.*;
-//import ncsa.d2k.modules.projects.vered.sparse.*;
-//import ncsa.d2k.modules.projects.vered.sparse.table.*;
-import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
-import ncsa.d2k.modules.core.datatype.table.sparse.*;
-
-import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import java.io.*;
-import java.util.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 
 /**
  * Given a FlatFileReader, create a TableImpl initialized with its contents.
  */
-public class ReadFileToSparseTable extends InputModule {
+public class ReadFileToSparseTable extends ReadFileToTable {
 
-    private boolean useBlanks = true;
+    /*private boolean useBlanks = true;
     public void setUseBlanks(boolean b) {
         useBlanks = b;
     }
@@ -33,23 +23,23 @@ public class ReadFileToSparseTable extends InputModule {
         retVal[0] = new PropertyDescription("useBlanks", "Set Blanks to be Missing Values",
             "When true, any blank entries in the file will be set as missing values in the table.");
         return retVal;
-    }
+    }*/
 
-    public String[] getInputTypes() {
+    /*public String[] getInputTypes() {
         String[] in = {"ncsa.d2k.modules.core.io.file.input.FlatFileParser"};
         return in;
-    }
+    }*/
 
     public String[] getOutputTypes() {
         String[] out = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
         return out;
     }
 
-    public String getInputInfo(int i) {
+    /*public String getInputInfo(int i) {
         return "A FlatFileParser to read data from.";
-    }
+    }*/
 
-    public String getOutputInfo(int i) {
+    /*public String getOutputInfo(int i) {
         switch(i) {
             case 0:
                 return "A Table with the data from the file reader.";
@@ -73,18 +63,18 @@ public class ReadFileToSparseTable extends InputModule {
 
     public String getModuleInfo() {
         return "Given a FlatFileReader, create a Table initialized with its contents.";
-    }
+    }*/
 
     public String getModuleName() {
         return "ReadFileToSparseTable";
     }
 
-    public void doit() throws Exception {
+    /*public void doit() throws Exception {
         FlatFileParser fle = (FlatFileParser)pullInput(0);
         Table t = createTable(fle);
         //Table bt = createBlanks(fle);
 
-        if(useBlanks) {
+        if(getUseBlanks()) {
             // if a value was blank, make it a 'missing value' in the table
             MutableTable mt = (MutableTable)t;
             boolean[][] blanks = fle.getBlanks();
@@ -101,9 +91,9 @@ public class ReadFileToSparseTable extends InputModule {
 
         pushOutput(t, 0);
         //pushOutput(bt, 1);
-    }
+    }*/
 
-    private Table createTable(FlatFileParser df) {
+    protected Table createTable(FlatFileParser df) {
         int numRows = df.getNumRows();
         int numColumns = df.getNumColumns();
 
@@ -158,8 +148,47 @@ public class ReadFileToSparseTable extends InputModule {
         for(int i = 0; i < numRows; i++) {
             char[][] row = df.getRowElements(i);
             if(row != null) {
-            for(int j = 0; j < columns.length; j++) {
-                char[] elem = row[j];//(char[])row.get(j);
+                for(int j = 0; j < columns.length; j++) {
+
+                    boolean isMissing = true;
+                    char[] elem = row[j];//(char[])row.get(j);
+
+                    // test to see if this is '?'
+                    // if it is, this value is missing.
+                    for(int k = 0; k < elem.length; k++) {
+                        if(elem[k] != QUESTION && elem[k] != SPACE) {
+                            isMissing = false;
+                            break;
+                        }
+                    }
+
+                    // if the value was not missing, just put it in the table
+                    if(!isMissing) {
+                        try {
+                            ti.setChars(elem, i, j);
+                        }
+                        // if there was a number format exception, set the value
+                        // to 0 and mark it as missing
+                        catch(NumberFormatException e) {
+                            ti.setChars(Integer.toString(0).toCharArray(), i, j);
+                            ti.setValueToMissing(true, i, j);
+                        }
+                    }
+                    // if the value was missing..
+                    else {
+                        // put 0 in a numeric column and set the value to missing
+                        if(ti.isColumnNumeric(j)) {
+                            ti.setChars(Integer.toString(0).toCharArray(), i, j);
+                            ti.setValueToMissing(true, i, j);
+                        }
+                        // otherwise put the '?' in the table and set the value to missing
+                        else {
+                            ti.setChars(elem, i, j);
+                            ti.setValueToMissing(true, i, j);
+                        }
+                    }
+
+/*                char[] elem = row[j];//(char[])row.get(j);
                 //System.out.println(new String(elem));
                 if(elem.length > 0) {
                     try {
@@ -168,8 +197,8 @@ public class ReadFileToSparseTable extends InputModule {
                     catch(NumberFormatException e) {
                         ti.setChars(Integer.toString(0).toCharArray(), i, j);
                     }
+                }*/
                 }
-            }
             }
         }
 

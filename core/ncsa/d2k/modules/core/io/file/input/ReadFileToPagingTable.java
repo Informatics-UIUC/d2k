@@ -9,7 +9,7 @@ import ncsa.d2k.modules.core.datatype.table.paging.*;
 /**
  * Read a file to a MutablePagingTable.
  */
-public class ReadFileToPagingTable extends InputModule {
+public class ReadFileToPagingTable extends ReadFileToTable {
 
     private int numRowsPerPage = 5000;
     public int getNumRowsPerPage() {
@@ -19,13 +19,13 @@ public class ReadFileToPagingTable extends InputModule {
         numRowsPerPage = nr;
     }
 
-    private boolean useBlanks = true;
+    /*private boolean useBlanks = true;
     public void setUseBlanks(boolean b) {
         useBlanks = b;
     }
     public boolean getUseBlanks() {
         return useBlanks;
-    }
+    }*/
 
     public PropertyDescription [] getPropertiesDescriptions () {
         PropertyDescription[] retVal = new PropertyDescription[2];
@@ -36,7 +36,7 @@ public class ReadFileToPagingTable extends InputModule {
         return retVal;
     }
 
-    public String[] getInputTypes() {
+    /*public String[] getInputTypes() {
         String[] in = {"ncsa.d2k.modules.core.io.file.input.FlatFileParser"};
         return in;
     }
@@ -45,19 +45,19 @@ public class ReadFileToPagingTable extends InputModule {
         //String[] out = {"ncsa.d2k.modules.core.datatype.table.Table"};
         String[] out = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
         return out;
-    }
+    }*/
 
-    public String getInputInfo(int i) {
+    /*public String getInputInfo(int i) {
         return "A FlatFileReader to read data from.";
-    }
+    }*/
 
     public String getOutputInfo(int i) {
         return "The data read from the FlatFileParser in a PagingTable.";
     }
 
-    public String getInputName(int i) {
+    /*public String getInputName(int i) {
         return "filereader";
-    }
+    }*/
 
     public String getOutputName(int i) {
         return "table";
@@ -71,7 +71,7 @@ public class ReadFileToPagingTable extends InputModule {
         return "ReadFileToPagingTable";
     }
 
-    public void doit() throws Exception {
+    /*public void doit() throws Exception {
         FlatFileParser fle = (FlatFileParser)pullInput(0);
         Table t = createTable(fle);
         //Table bt = createBlanks(fle);
@@ -93,9 +93,9 @@ public class ReadFileToPagingTable extends InputModule {
 
         pushOutput(t, 0);
         //pushOutput(bt, 1);
-    }
+    }*/
 
-    private Table createTable(FlatFileParser df) {
+    protected Table createTable(FlatFileParser df) {
         int numRows = df.getNumRows();
         int numColumns = df.getNumColumns();
 
@@ -165,18 +165,56 @@ public class ReadFileToPagingTable extends InputModule {
 
             MutableTableImpl ti = new MutableTableImpl(columns);
 
-            for(int ctr = 0; ctr < pageRowNums[nt]; ctr++) {
-                char[][] row = df.getRowElements(curNum);
+            for(int i = 0; i < pageRowNums[nt]; i++) {
+                char[][] row = df.getRowElements(i);
                 curNum++;
                 if(row != null)
-                    for(int colidx = 0; colidx < columns.length; colidx++) {
-                        char[] elem = row[colidx];
+                    for(int j = 0; j < columns.length; j++) {
+/*                        char[] elem = row[colidx];
                         try {
                             ti.setChars(elem, ctr, colidx);
                         }
                         catch(NumberFormatException e) {
                             ti.setChars(Integer.toString(0).toCharArray(), ctr, colidx);
                         }
+                */
+                    boolean isMissing = true;
+                    char[] elem = row[j];//(char[])row.get(j);
+
+                    // test to see if this is '?'
+                    // if it is, this value is missing.
+                    for(int k = 0; k < elem.length; k++) {
+                        if(elem[k] != QUESTION && elem[k] != SPACE) {
+                            isMissing = false;
+                            break;
+                        }
+                    }
+
+                    // if the value was not missing, just put it in the table
+                    if(!isMissing) {
+                        try {
+                            ti.setChars(elem, i, j);
+                        }
+                        // if there was a number format exception, set the value
+                        // to 0 and mark it as missing
+                        catch(NumberFormatException e) {
+                            ti.setChars(Integer.toString(0).toCharArray(), i, j);
+                            ti.setValueToMissing(true, i, j);
+                        }
+                    }
+                    // if the value was missing..
+                    else {
+                        // put 0 in a numeric column and set the value to missing
+                        if(ti.isColumnNumeric(j)) {
+                            ti.setChars(Integer.toString(0).toCharArray(), i, j);
+                            ti.setValueToMissing(true, i, j);
+                        }
+                        // otherwise put the '?' in the table and set the value to missing
+                        else {
+                            ti.setChars(elem, i, j);
+                            ti.setValueToMissing(true, i, j);
+                        }
+                    }
                 }
             }
             pt.addTable(ti, nt == 0);

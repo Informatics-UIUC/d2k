@@ -76,7 +76,7 @@ public class ReadDelimitedFile extends InputModule {
     }
 
     public String getOutputName(int i) {
-        return "filereader";
+        return "fileparser";
     }
 
     public String getModuleInfo() {
@@ -96,7 +96,7 @@ public class ReadDelimitedFile extends InputModule {
         String fn = (String)pullInput(0);
         File file = new File(fn);
         if(!file.exists())
-            throw new FileNotFoundException(file+" did not exist.");
+            throw new FileNotFoundException(getAlias()+": "+file+" did not exist.");
         DelimitedFileParser df = new DelimitedFileParser(file, labelsRow, typesRow);
         pushOutput(df, 0);
     }
