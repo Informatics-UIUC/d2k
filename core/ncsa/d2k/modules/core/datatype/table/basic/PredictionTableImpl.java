@@ -49,6 +49,8 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
                 col = new FloatColumn(col.getNumRows());
             else if (col instanceof StringColumn)
                 col = new StringColumn(col.getNumRows(), true);
+			else if(col instanceof StringObjectColumn)
+				col = new StringObjectColumn(col.getNumRows());
             //else if (col instanceof ByteArrayColumn)
             //    col = new ByteArrayColumn(col.getNumRows());
 			else if (col instanceof ContinuousByteArrayColumn)
