@@ -123,4 +123,51 @@ public interface ExampleTable extends Table {
 	 * @return This object as a PredictionTable
 	 */
 	public PredictionTable toPredictionTable();
+
+    /*
+    /**
+     * Get the ith input double.
+     * @param i the input index
+     * @param e the example index
+     *
+    public double getInputDouble(int i, int e);
+
+    /**
+     * Get the ith output double.
+     * @param i the output index
+     * @param e the example index
+     *
+    public double getOutputDouble(int i, int e);
+    public String getInputString(int i, int e);
+    public String getOutputString(int i, int e);
+    public int getInputInt(int i, int e);
+    public int getOutputInt(int i, int e);
+    public float getInputFloat(int i, int e);
+    public float getOutputFloat(int i, int e);
+    public short getInputShort(int i, int e);
+    public short getOutputShort(int i, int e);
+    public long getInputLong(int i, int e);
+    public long getOutputLong(int i, int e);
+    public byte getInputByte(int i, int e);
+    public byte getOutputByte(int i, int e);
+    public Object getInputObject(int i, int e);
+    public Object getOutputObject(int i, int e);
+    public char getInputChar(int i, int e);
+    public char getOutputChar(int i, int e);
+    public byte[] getInputBytes(int i, int e);
+    public byte[] getOutputBytes(int i, int e);
+    public boolean getInputBoolean(int i, int e);
+    public boolean getOutputBoolean(int i, int e);
+    public int getNumInputs();
+    public int getNumOutputs();
+    public int getNumExamples();
+
+    public Example getExample(int e);
+    public String getInputName(int i);
+    public String getOutputName(int i);
+    public int getInputType(int i);
+    public int getOutputType(int i);
+    public boolean isInputNominal(int i);
+    public boolean isOutputNominal(int i);
+    */
 }
