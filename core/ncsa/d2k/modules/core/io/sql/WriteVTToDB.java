@@ -8,8 +8,7 @@ import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.util.datatype.*;
 
 import java.sql.*;
 import java.util.*;
@@ -32,7 +31,7 @@ public class WriteVTToDB extends UIModule
     /* Input holder for ConnectionWrapper */
     protected ConnectionWrapper cw;
     /* Input holder for VerticalTable */
-    protected TableImpl vt;
+    protected VerticalTable vt;
     /* SQL Query String */
     protected String query;
     /* The resultset table model */
@@ -85,7 +84,7 @@ public class WriteVTToDB extends UIModule
     */
     public String[] getInputTypes () {
         String [] in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-                        "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
+                        "ncsa.d2k.util.datatype.VerticalTable" };
         return in;
     }
     /**
@@ -167,7 +166,7 @@ public class WriteVTToDB extends UIModule
 	public void initView(ViewModule mod) {
             removeAll();
             cw = (ConnectionWrapper)pullInput(0);
-            vt = (TableImpl)pullInput(1);
+            vt = (VerticalTable)pullInput(1);
             /* the number of rows in vt JTables is determined by inputed vertical table */
             maxNumRow = vt.getNumColumns();
 
@@ -236,7 +235,7 @@ public class WriteVTToDB extends UIModule
             dbTableInfo.setLayout (new GridBagLayout());
             /* Table with scrollbar for viewing the existing table definition */
             /* the database table has up to 100 columns and not editable */
-            dbModel = new MetaTableModel(100,3,false);
+            dbModel = new MetaTableModel(900,3,false);
             dbTableDef = new JTable(dbModel);
             JScrollPane dbPane = new JScrollPane(dbTableDef);
             dbTableDef.setPreferredScrollableViewportSize(new Dimension(250,125));
@@ -381,7 +380,7 @@ public class WriteVTToDB extends UIModule
             System.out.println("the input 1 in setInput is " + cw.toString());
           }
           else if (index == 1) {
-            vt = (TableImpl)input;
+            vt = (VerticalTable)input;
             System.out.println("the input 2 in setInput is " + vt.toString());
             newModel.initTableModel(maxNumRow,3);
             newModel.fireTableDataChanged();
@@ -404,7 +403,7 @@ public class WriteVTToDB extends UIModule
             else if (src == appendTableBtn) {
               /* user may not hit Enter key in the field chosenTableName before
                  clicking appendTableBtn. We need to force firing getDBTableDef */
-              dbModel.initTableModel(100,3);
+              dbModel.initTableModel(900,3);
               dbModel.fireTableDataChanged();
               getDBTableDef();
               boolean pass = doValidate(dbTableDef, vtTableDef);
@@ -416,7 +415,7 @@ public class WriteVTToDB extends UIModule
               if (chosenTableName.getText()!= null && chosenTableName.getText()!=NOTHING)
               {
                 /* wipe out previously loaded table definition */
-                dbModel.initTableModel(100,3);
+                dbModel.initTableModel(900,3);
                 dbModel.fireTableDataChanged();
                 getDBTableDef();
               }
@@ -449,7 +448,7 @@ public class WriteVTToDB extends UIModule
                   {
                     chosenTableName.setText(btw.getChosenRow());
                     /* wipe out previously loaded table definition */
-                    dbModel.initTableModel(100,3);
+                    dbModel.initTableModel(900,3);
                     dbModel.fireTableDataChanged();
                     getDBTableDef();
                   }
@@ -584,6 +583,7 @@ public class WriteVTToDB extends UIModule
           } /* end of for colIdx */
           /* add username and create_date to the inserted row */
           sb = sb + ", '" + userName + "', to_date('" + dateStr + "', 'yyyy/mm/dd hh24:mi:ss'))";
+          //System.out.println("sb is " + sb);
           stmt = con.createStatement ();
           stmt.executeUpdate(sb);
           stmt.close();
@@ -594,7 +594,7 @@ public class WriteVTToDB extends UIModule
         newTableName.setText(NOTHING);
         chosenTableName.setText(NOTHING);
         newModel.initTableModel(maxNumRow,3);
-        dbModel.initTableModel(100,3);
+        dbModel.initTableModel(900,3);
         vtModel.initTableModel(maxNumRow,3);
         viewAbort();
       }
