@@ -97,25 +97,50 @@ public class MatchModelWithData extends ComputeModule {
   public void doit() {
     ExampleTable et = (ExampleTable)pullInput(0);
     PredictionModelModule mdl = (PredictionModelModule)pullInput(1);
+    System.out.println("rows in the testing data set is " + et.getNumRows());
+    //mdl.getTrainingSetSize()
     int etOutColumn = (et.getOutputFeatures())[0];
-    String etOutLabel = et.getColumnLabel(etOutColumn);
-    String mdlOutLabel = (mdl.getOutputColumnLabels())[0];
+    String etOutLabel = et.getColumnLabel(etOutColumn).toUpperCase();
+    // database does not allow column name containing "-", therefore in the
+    // database table, if the column name contains "-", it has been converted
+    // to "_". We have to make the convertion here before compare the column names.
+    etOutLabel = etOutLabel.replace('-','_');
+    // database does not allow column name containing spaces, therefore in the
+    // database table, if the column name contains spaces, the spaces must have been
+    // squeezed out. We have to make the convertion here before compare the column names.
+    etOutLabel = squeezeSpace(etOutLabel);
+    String mdlOutLabel = (mdl.getOutputColumnLabels())[0].toUpperCase();
+    mdlOutLabel = mdlOutLabel.replace('-','_');
+    mdlOutLabel = squeezeSpace(mdlOutLabel);
+    // Model does not match to data if output labels are different.
     if (!etOutLabel.equals(mdlOutLabel)) {
+      System.out.println("etOutLabel is " + etOutLabel.toUpperCase());
+      System.out.println("mdlOutLabel is " + mdlOutLabel.toUpperCase());
       JOptionPane.showMessageDialog(msgBoard,
         "Output features do not match. You cannot use this model.",
         "Information", JOptionPane.INFORMATION_MESSAGE);
       return;
     }
+    // Model does not match to data if the number of input features are different.
     else if (et.getNumInputFeatures() != mdl.getInputColumnLabels().length) {
       JOptionPane.showMessageDialog(msgBoard,
-        "Input features do not match. You cannot use this model.",
+        "Input number do not match. You cannot use this model.",
         "Information", JOptionPane.INFORMATION_MESSAGE);
       return;
     }
+    // Model does not match to data if the column names for input features are different.
     else {
       for (int col=0; col<et.getInputFeatures().length; col++) {
         int index = (et.getInputFeatures())[col];
-        if (!et.getColumnLabel(index).equals((mdl.getInputColumnLabels())[col])) {
+        String etInLabel = et.getColumnLabel(index).toUpperCase();
+        etInLabel = etInLabel.replace('-','_');
+        etInLabel = squeezeSpace(etInLabel);
+        String mdlInLabel = (mdl.getInputColumnLabels())[col].toUpperCase();
+        mdlInLabel = mdlInLabel.replace('-','_');
+        mdlInLabel = squeezeSpace(mdlInLabel);
+        if (!etInLabel.equals(mdlInLabel)) {
+          System.out.println("et is " + etInLabel);
+          System.out.println("mdl is " + mdlInLabel);
           JOptionPane.showMessageDialog(msgBoard,
           "Input features do not match. You cannot use this model.",
           "Information", JOptionPane.INFORMATION_MESSAGE);
@@ -125,6 +150,23 @@ public class MatchModelWithData extends ComputeModule {
     }
     pushOutput(et, 0);
     pushOutput(mdl,1);
+  }
+
+    /**
+   * Squeeze out spaces from the string value
+   * @param value The string to edit
+   * @return The string after spaces are squeezed out
+   */
+  public String squeezeSpace(String value)
+  {
+    int j;
+    String newStr = "";
+    for (j=0; j<value.length();j++)
+    {
+      if (value.charAt(j)!=' ')
+      newStr = newStr + value.charAt(j);
+    }
+    return(newStr);
   }
 
 }
