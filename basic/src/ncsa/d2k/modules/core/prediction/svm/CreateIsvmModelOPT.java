@@ -16,7 +16,7 @@ according to the properties, as they are set by the input parameter point.
   @author vered goren
   */
 
-public class CreateIsvmModelOPT extends ModelProducerModule
+public class CreateIsvmModelOPT extends CreateIsvmModel
 {
 
 
@@ -64,7 +64,7 @@ public class CreateIsvmModelOPT extends ModelProducerModule
         }
 
 
-
+/*
 	public String getOutputInfo(int index)
 	{
 		switch (index) {
@@ -89,7 +89,7 @@ public class CreateIsvmModelOPT extends ModelProducerModule
 	{
 		String[] out = {"ncsa.d2k.modules.projects.vered.svm.IsvmModel"};
 		return out;
-	}
+	}*/
 
 	public void beginExecution()
 	{
@@ -103,11 +103,18 @@ public class CreateIsvmModelOPT extends ModelProducerModule
 	protected void doit() throws Exception{
           ParameterPoint pp = (ParameterPoint) pullInput(0);
 
-           IsvmModel d2k_model = new IsvmModel( (int) pp.getValue(IsvmParamSpaceGenerator.NUM_ATTS));
+           IsvmModel d2k_model = new IsvmModel(super.numAttributes);
           d2k_model.setNu(pp.getValue(IsvmParamSpaceGenerator.NU));
 
           d2k_model.init();
           pushOutput(d2k_model, 0);
 
 	}
+
+        public PropertyDescription[] getPropertiesDescriptions() {
+              PropertyDescription[] pds = new PropertyDescription[1];
+              pds[0] = super.getPropertiesDescriptions()[1];
+              return pds;
+            }
+
 }

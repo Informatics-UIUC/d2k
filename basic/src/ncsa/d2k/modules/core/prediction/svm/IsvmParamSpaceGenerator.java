@@ -24,25 +24,25 @@ public class IsvmParamSpaceGenerator extends AbstractParamSpaceGenerator {
 
   protected ParameterSpace getDefaultSpace() {
     ParameterSpace psi = new ParameterSpaceImpl();
-                String[] names = {NU, NUM_ATTS};
-                double[] min = {0,  0};
-                double[] max = {1, 100};
-                double[] def = { 0.1, 9};
-                int[] res = {1, 1};
-                int[] types = { ColumnTypes.DOUBLE, ColumnTypes.INTEGER};
+                String[] names = {NU};
+                double[] min = {0};
+                double[] max = {1};
+                double[] def = { 0.1};
+                int[] res = {1};
+                int[] types = { ColumnTypes.DOUBLE};
                 psi.createFromData(names, min, max, def, res, types);
                 return psi;
 
   }
 public static final String NU = "Nu of Kernel";
-  public static final String NUM_ATTS = "Number of Input Feetures";
+//  public static final String NUM_ATTS = "Number of Input Feetures";
 
 
   public PropertyDescription[] getPropertiesDescriptions() {
-      PropertyDescription[] pds = new PropertyDescription[2];
-      pds[0] = new PropertyDescription("nu", "Nu", "SVM Parameter nu");
-       pds[1] = new PropertyDescription("numAttributes", "Number Input Features",
-                                        "Number of input features in the SVM problem");
+      PropertyDescription[] pds = new PropertyDescription[1];
+      pds[0] = new PropertyDescription(NU, NU, "SVM Parameter nu");
+   /*    pds[1] = new PropertyDescription("numAttributes", "Number Input Features",
+                                        "Number of input features in the SVM problem");*/
       return pds;
     }
 
