@@ -58,17 +58,17 @@ public class InstanceBasedParamSpaceGenerator extends AbstractParamSpaceGenerato
 
     biasNames       [biasIndex] = "DistanceWeightingPower";
     minControlValues[biasIndex] = 0.0;
-    maxControlValues[biasIndex] = 0.0;
+    maxControlValues[biasIndex] = 300;
     defaults        [biasIndex] = 0.0;
-    resolutions     [biasIndex] = 0;
+    resolutions     [biasIndex] =  (int) maxControlValues[biasIndex] - (int) minControlValues[biasIndex] + 1;
     types           [biasIndex] = ColumnTypes.DOUBLE;
     biasIndex++;
 
     biasNames       [biasIndex] = "ZeroDistanceWeight";
     minControlValues[biasIndex] = 0.0;
-    maxControlValues[biasIndex] = 0.0;
+    maxControlValues[biasIndex] = 500;
     defaults        [biasIndex] = 0.0;
-    resolutions     [biasIndex] = 0;
+    resolutions     [biasIndex] =  (int) maxControlValues[biasIndex] - (int) minControlValues[biasIndex] + 1;
     types           [biasIndex] = ColumnTypes.DOUBLE;
     biasIndex++;
 
