@@ -19,14 +19,18 @@ import ncsa.d2k.modules.core.transform.attribute.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 
+import java.sql.*;
+import oracle.sql.*;
+import oracle.jdbc.driver.*;
 
 /**
- * put your documentation comment here
+ * This module does binning for database data
  */
 public class SQLBinColumns extends UIModule {
     private static final String EMPTY = "",
     COLON = " : ", COMMA = ",", DOTS = "...",
     OPEN_PAREN = "(", CLOSE_PAREN = ")", OPEN_BRACKET = "[", CLOSE_BRACKET = "]";
+    JOptionPane msgBoard = new JOptionPane();
 
     private NumberFormat nf;
 
@@ -39,16 +43,16 @@ public class SQLBinColumns extends UIModule {
     }
 
     /**
-     * put your documentation comment here
-     * @return
+     * Get module information
+     * @return A description for the module
      */
     public String getModuleInfo () {
         return  "<html>  <head>      </head>  <body>    Allows the user to interactively bin data.  </body></html>";
     }
 
     /**
-     * put your documentation comment here
-     * @return
+     * Get the data types for the input parameters
+     * @return Connection Wrapper, list of columns chosed, table name, where clause
      */
     public String[] getInputTypes () {
         String[] types =  {
@@ -61,8 +65,8 @@ public class SQLBinColumns extends UIModule {
     }
 
     /**
-     * put your documentation comment here
-     * @return
+     * Get the data types for the output parameters
+     * @return A object of class BinTransform
      */
     public String[] getOutputTypes () {
         String[] types =  {
@@ -72,9 +76,9 @@ public class SQLBinColumns extends UIModule {
     }
 
     /**
-     * put your documentation comment here
-     * @param i
-     * @return
+     * Get input information
+     * @param i is the index of the input parameter
+     * @return A description of the input parameter
      */
     public String getInputInfo (int i) {
         switch (i) {
@@ -92,9 +96,9 @@ public class SQLBinColumns extends UIModule {
     }
 
     /**
-     * put your documentation comment here
-     * @param i
-     * @return
+     * Get the name of the output parameters
+     * @param i is the index of the output parameter
+     * @return Name of the output parameter
      */
     public String getOutputName (int i) {
         switch (i) {
@@ -106,9 +110,9 @@ public class SQLBinColumns extends UIModule {
     }
 
     /**
-     * put your documentation comment here
-     * @param i
-     * @return
+     * Get the name of the input parameter
+     * @param i is the index of the input parameter
+     * @return Name of the input parameter
      */
     public String getInputName (int i) {
         switch (i) {
@@ -126,9 +130,9 @@ public class SQLBinColumns extends UIModule {
     }
 
     /**
-     * put your documentation comment here
-     * @param i
-     * @return
+     * Get output information
+     * @param i is the index of the output parameter
+     * @return A description of the output parameter
      */
     public String getOutputInfo (int i) {
         switch (i) {
@@ -140,54 +144,160 @@ public class SQLBinColumns extends UIModule {
     }
 
     /**
-     * put your documentation comment here
-     * @return
+     * Create a GUI interface
+     * @return An object of SQLBinColumnsView
      */
     protected UserView createUserView () {
         return  new SQLBinColumnsView();
     }
 
     /**
-     * put your documentation comment here
-     * @return
+     * Get a field name mapping
+     * @return null
      */
     public String[] getFieldNameMapping () {
         return  null;
     }
 
+    /**
+     * A subclass of BinCounts
+     * This class get count information from a database table
+     */
     private class SQLBinCounts implements BinCounts {
         String[] fieldNames;
         String tableName;
         String whereClause;
         ConnectionWrapper wrapper;
+        Connection con;
+        Statement stmt;
+        String queryStr;
+        DatabaseMetaData metadata = null;
 
-        SQLBinCounts(String tn, String[] fn, String wc, ConnectionWrapper cw) {
-            tableName = tn;
-            fieldNames = fn;
-            whereClause = wc;
-            wrapper = cw;
-        }
 
-        public boolean isColumnNumeric(int i) {
-            return true;
-        }
+      SQLBinCounts(String tn, String[] fn, String wc, ConnectionWrapper cw) {
+        tableName = tn;
+        fieldNames = fn;
+        whereClause = wc;
+        wrapper = cw;
+      }
 
-        public double getMin(int col) {
-            return 0;
+      public boolean isColumnNumeric(int i) {
+        try {
+          String colName = fieldNames[i];
+          con = wrapper.getConnection();
+          metadata = con.getMetaData();
+          String[] names = {"TABLE"};
+          ResultSet tableNames = metadata.getTables(null,"%", tableName, names);
+          while (tableNames.next()) {
+            ResultSet columns = metadata.getColumns(null, "%", tableNames.getString("TABLE_NAME"), "%");
+            while (columns.next()) {
+              String columnName = columns.getString("COLUMN_NAME");
+              String datatype = columns.getString("TYPE_NAME");
+              if (colName.equals(columnName)) {
+                if (datatype.equals("NUMBER") ||
+                  datatype.equals("INTEGER") ||
+                  datatype.equals("FLOAT") ||
+                  datatype.equals("NUMERIC")) {
+                  return true;
+                }
+                else
+                  return false;
+              }
+            }
+            return false;
+          }
+          return false;
         }
-        public double getMax(int col) {
-            return 0;
+        catch (Exception e) {
+	  JOptionPane.showMessageDialog(msgBoard,
+                e.getMessage(), "Error",
+                JOptionPane.ERROR_MESSAGE);
+          System.out.println("Error occoured in isColumnNumeric.");
+          return false;
         }
-        public int getNumRows() {
-            return 0;
-        }
+      }
 
-        public int[] getCounts(int col, double[] borders) {
-            return null;
+      public double getMin(int col) {
+        try {
+          String colName = fieldNames[col];
+          con = wrapper.getConnection();
+          queryStr = "select min(" + colName + ") from " + tableName;
+          stmt = con.createStatement();
+          ResultSet minSet = stmt.executeQuery(queryStr);
+          minSet.next();
+          return (minSet.getDouble(1));
         }
-        public double getTotal(int col) {
-            return 0;
+        catch (Exception e) {
+	  JOptionPane.showMessageDialog(msgBoard,
+                e.getMessage(), "Error",
+                JOptionPane.ERROR_MESSAGE);
+          System.out.println("Error occoured in getMin.");
+          return 0;
         }
+      }
+
+
+      public double getMax(int col) {
+        try {
+          String colName = fieldNames[col];
+          con = wrapper.getConnection();
+          queryStr = "select max(" + colName + ") from " + tableName;
+          stmt = con.createStatement();
+          ResultSet maxSet = stmt.executeQuery(queryStr);
+          maxSet.next();
+          return (maxSet.getDouble(1));
+        }
+        catch (Exception e) {
+	  JOptionPane.showMessageDialog(msgBoard,
+                e.getMessage(), "Error",
+                JOptionPane.ERROR_MESSAGE);
+          System.out.println("Error occoured in getMax.");
+          return 0;
+        }
+      }
+
+
+      public int getNumRows() {
+        try {
+          String colName = fieldNames[0];
+          con = wrapper.getConnection();
+          queryStr = "select count(" + colName + ") from " + tableName;
+          stmt = con.createStatement();
+          ResultSet cntSet = stmt.executeQuery(queryStr);
+          cntSet.next();
+          return (cntSet.getInt(1));
+        }
+        catch (Exception e) {
+	  JOptionPane.showMessageDialog(msgBoard,
+                e.getMessage(), "Error",
+                JOptionPane.ERROR_MESSAGE);
+          System.out.println("Error occoured in getNumRows.");
+          return 0;
+        }
+      }
+
+      public int[] getCounts(int col, double[] borders) {
+        return null;
+      }
+
+      public double getTotal(int col) {
+        try {
+          String colName = fieldNames[col];
+          con = wrapper.getConnection();
+          queryStr = "select sum(" + colName + ") from " + tableName;
+          stmt = con.createStatement();
+          ResultSet totalSet = stmt.executeQuery(queryStr);
+          totalSet.next();
+          return (totalSet.getDouble(1));
+        }
+        catch (Exception e) {
+	  JOptionPane.showMessageDialog(msgBoard,
+                e.getMessage(), "Error",
+                JOptionPane.ERROR_MESSAGE);
+          System.out.println("Error occoured in getTotal.");
+          return 0;
+        }
+      }
     }
 
     private class SQLBinColumnsView extends JUserPane {
@@ -217,7 +327,7 @@ public class SQLBinColumns extends UIModule {
         private JCheckBox createInNewColumn;
 
         /**
-         * put your documentation comment here
+         * GUI interface for binning data
          */
        private SQLBinColumnsView () {
             setup_complete = false;
@@ -231,6 +341,9 @@ public class SQLBinColumns extends UIModule {
         private String tableName;
         private String whereClause;
         private SQLBinCounts binCounts;
+        private Connection con;
+        private Statement stmt;
+        private String queryStr;
 
         /**
          * put your documentation comment here
@@ -283,15 +396,13 @@ public class SQLBinColumns extends UIModule {
                 columnLookup.put(fieldNames[i], new Integer(i));
                 //if (table.getColumn(i) instanceof NumericColumn)
 
-                // ????????????????????????
                 if (binCounts.isColumnNumeric(i))
                     //numModel.addElement(tbl.getColumnLabel(i));
                     numModel.addElement((String)fieldNames[i]);
                 else {          //if (table.getColumn(i) instanceof TextualColumn) {
                     //txtModel.addElement(tbl.getColumnLabel(i));
                     txtModel.addElement((String)fieldNames[i]);
-                //!!!!!!!!!!!!!!!!!1
-                //    uniqueColumnValues[i] = uniqueValues(i);
+                    uniqueColumnValues[i] = uniqueValues(i);
                 }
             }
             // finished...
@@ -912,7 +1023,24 @@ public class SQLBinColumns extends UIModule {
                 if (!set.contains(s))
                     set.add(s);
             }*/
-            return  set;
+          try {
+            String colName = fieldNames[col];
+            con = connectionWrapper.getConnection();
+            queryStr = "select distinct " + colName + " from " + tableName;
+            stmt = con.createStatement();
+            ResultSet distinctSet = stmt.executeQuery(queryStr);
+            while (distinctSet.next()) {
+              set.add(distinctSet.getString(1));
+            }
+            return set;
+          }
+          catch (Exception e) {
+	    JOptionPane.showMessageDialog(msgBoard,
+                e.getMessage(), "Error",
+                JOptionPane.ERROR_MESSAGE);
+            System.out.println("Error occoured in uniqueValues.");
+            return null;
+          }
         }
 
         /**
@@ -957,6 +1085,7 @@ public class SQLBinColumns extends UIModule {
          */
         private void addUniRange () {
             int[] colIdx = getSelectedNumericIndices();
+
             // uniform range is the number of bins...
             String txt = uRangeField.getText();
             int num;
@@ -966,42 +1095,38 @@ public class SQLBinColumns extends UIModule {
             } catch (NumberFormatException e) {
                 return;
             }
-            // find the maxes and mins
-            double[] maxes = new double[colIdx.length];
-            double[] mins = new double[colIdx.length];
-            for (int i = 0; i < colIdx.length; i++) {
-                //maxes[i] = Double.MIN_VALUE;
-                //mins[i] = Double.MAX_VALUE;
-                maxes[i] = binCounts.getMax(i);
-                mins[i] = binCounts.getMin(i);
-            }
-            for (int i = 0; i < colIdx.length; i++) {
-                // find the max and min and make equally spaced bins
-                //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-                /*for (int j = 0; j < tbl.getNumRows(); j++) {
-                    double d = tbl.getDouble(j, colIdx[i]);
-                    if (d > maxes[i])
-                        maxes[i] = d;
-                    if (d < mins[i])
-                        mins[i] = d;
-                }*/
-                double[] binMaxes = new double[num - 1];
-                double interval = (maxes[i] - mins[i])/(double)num;
-                // add the first bin manually
-                binMaxes[0] = mins[i] + interval;
-                BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
-                        binMaxes[0]);
-                addItemToBinList(nbd);
-                for (int j = 1; j < binMaxes.length; j++) {
-                    binMaxes[j] = binMaxes[j - 1] + interval;
-                    // now create the BinDescriptor and add it to the bin list
-                    nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -
-                            1], binMaxes[j]);
-                    addItemToBinList(nbd);
+            double[] maxes = new double[fieldNames.length];
+            double[] mins = new double[fieldNames.length];
+            for (int i = 0; i < fieldNames.length; i++) {
+              for (int j = 0; j < colIdx.length; j++) {
+                // if the column is selected, then find the max and min
+                if (i == colIdx[j]) {
+                  maxes[i] = binCounts.getMax(i);
+                  mins[i] = binCounts.getMin(i);
                 }
-                nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length
+              }
+            }
+            for (int i = 0; i < fieldNames.length; i++) {
+              for (int j = 0; j < colIdx.length; j++) {
+                if (i == colIdx[j]) {
+                  double[] binMaxes = new double[num - 1];
+                  double interval = (maxes[i] - mins[i])/(double)num;
+                  // add the first bin manually
+                  binMaxes[0] = mins[i] + interval;
+                  BinDescriptor nbd = createMinNumericBinDescriptor(i,
+                        binMaxes[0]);
+                  addItemToBinList(nbd);
+                  for (int k = 1; k < binMaxes.length; k++) {
+                    binMaxes[k] = binMaxes[k - 1] + interval;
+                    // now create the BinDescriptor and add it to the bin list
+                    nbd = createNumericBinDescriptor(i, binMaxes[k -1], binMaxes[k]);
+                    addItemToBinList(nbd);
+                  }
+                  nbd = createMaxNumericBinDescriptor(i, binMaxes[binMaxes.length
                         - 1]);
-                addItemToBinList(nbd);
+                  addItemToBinList(nbd);
+                }
+              }
             }
         }
 
@@ -1025,19 +1150,22 @@ public class SQLBinColumns extends UIModule {
                 return;
             }
             // now create and add the bins
-            for (int i = 0; i < colIdx.length; i++) {
-                BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
-                binMaxes[0]);
-                addItemToBinList(nbd);
-                for (int j = 1; j < binMaxes.length; j++) {
+            for (int i = 0; i < fieldNames.length; i++) {
+              for (int j = 0; j < colIdx.length; j++) {
+                if (i == colIdx[j]) {
+                  BinDescriptor nbd = createMinNumericBinDescriptor(i,
+                      binMaxes[0]);
+                  addItemToBinList(nbd);
+                  for (int k = 1; k < binMaxes.length; k++) {
                     // now create the BinDescriptor and add it to the bin list
-                    nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -
-                    1], binMaxes[j]);
+                    nbd = createNumericBinDescriptor(i, binMaxes[k - 1], binMaxes[k]);
                     addItemToBinList(nbd);
                 }
-                nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length
+                nbd = createMaxNumericBinDescriptor(i, binMaxes[binMaxes.length
                         - 1]);
                 addItemToBinList(nbd);
+                }
+              }
             }
         }
 
@@ -1056,49 +1184,47 @@ public class SQLBinColumns extends UIModule {
             }
 
             // find the mins and maxes
-            double[] maxes = new double[colIdx.length];
-            double[] mins = new double[colIdx.length];
+            double[] maxes = new double[fieldNames.length];
+            double[] mins = new double[fieldNames.length];
 
-            for (int i = 0; i < colIdx.length; i++) {
-                //maxes[i] = Double.MIN_VALUE;
-                //mins[i] = Double.MAX_VALUE;
-                maxes[i] = binCounts.getMax(i);
-                mins[i] = binCounts.getMin(i);
-            }
-            for (int i = 0; i < colIdx.length; i++) {
-                // find the max and min
-                //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-                /*for (int j = 0; j < tbl.bc.getNumRows(); j++) {
-                    double d = tbl.getDouble(j, colIdx[i]);
-                    if (d > maxes[i])
-                        maxes[i] = d;
-                    if (d < mins[i])
-                        mins[i] = d;
-                }*/
-                // the number of bins is (max - min) / (bin width)
-                int num = (int)Math.ceil((maxes[i] - mins[i])/intrval);
-                double[] binMaxes = new double[num];
-                binMaxes[0] = mins[i];
-                // add the first bin manually
-                BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
-                        binMaxes[0]);
-                addItemToBinList(nbd);
-                for (int j = 1; j < binMaxes.length; j++) {
-                    binMaxes[j] = binMaxes[j - 1] + intrval;
-                    // now create the BinDescriptor and add it to the bin list
-                    nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -
-                            1], binMaxes[j]);
-                    addItemToBinList(nbd);
+            for (int i = 0; i < fieldNames.length; i++) {
+              for (int j = 0; j < colIdx.length; j++) {
+                // if the column is selected, then find the max and min
+                if (i == colIdx[j]) {
+                  maxes[i] = binCounts.getMax(i);
+                  mins[i] = binCounts.getMin(i);
                 }
-                nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length
+              }
+            }
+            for (int i = 0; i < fieldNames.length; i++) {
+              for (int j = 0; j < colIdx.length; j++) {
+                if (i == colIdx[j]) {
+                  // the number of bins is (max - min) / (bin width)
+                  int num = (int)Math.ceil((maxes[i] - mins[i])/intrval);
+                  double[] binMaxes = new double[num-1];
+                  binMaxes[0] = mins[i] + intrval;
+                  // add the first bin manually
+                  BinDescriptor nbd = createMinNumericBinDescriptor(i,
+                        binMaxes[0]);
+                  addItemToBinList(nbd);
+                  for (int k = 1; k < binMaxes.length; k++) {
+                    binMaxes[k] = binMaxes[k - 1] + intrval;
+                    // now create the BinDescriptor and add it to the bin list
+                    nbd = createNumericBinDescriptor(i, binMaxes[k - 1], binMaxes[k]);
+                    addItemToBinList(nbd);
+                  }
+                  nbd = createMaxNumericBinDescriptor(i, binMaxes[binMaxes.length
                         - 1]);
-                addItemToBinList(nbd);
+                  addItemToBinList(nbd);
+                }
+              }
             }
         }
 
         /**
          * Add bins given a weight. This will attempt to make bins with an
          * equal number of tallies in each.
+         *
          */
         private void addFromWeight () {
             int[] colIdx = getSelectedNumericIndices();
@@ -1107,44 +1233,36 @@ public class SQLBinColumns extends UIModule {
             int weight;
             try {
                 weight = Integer.parseInt(txt);
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e) {
                 return;
             }
-            // we need to sort the data, but do not want to sort the
-            // actual column, so we get a copy of the data
             for (int i = 0; i < colIdx.length; i++) {
-                //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-                double[] data = new double[/*tbl.*/binCounts.getNumRows()];
-                //for (int j = 0; j < data.length; j++)
-                //    data[j] = tbl.getDouble(j, colIdx[i]);
-                // sort it
-                Arrays.sort(data);
+              try {
+                Double db1 = null;
                 ArrayList list = new ArrayList();
-                // now find the bin maxes...
-                // loop through the sorted data.  the next max will lie at
-                // data[curLoc+weight] items
-                int curIdx = 0;
-                while (curIdx < data.length - 1) {
-                    curIdx += weight;
-                    if (curIdx > data.length - 1)
-                        curIdx = data.length - 1;
-                    // now loop until the next unique item is found
-                    boolean done = false;
-                    if (curIdx == data.length - 1)
-                        done = true;
-                    while (!done) {
-                        if (data[curIdx] != data[curIdx + 1])
-                            done = true;
-                        else
-                            curIdx++;
-                        if (curIdx == data.length - 1)
-                            done = true;
-                    }
-                    // now we have the current index
-                    // add the value at this index to the list
-                    Double dbl = new Double(data[curIdx]);
-                    list.add(dbl);
+                int aColIdx = colIdx[i];
+                String colName = fieldNames[aColIdx];
+                con = connectionWrapper.getConnection();
+                queryStr = "select " + colName + ", count(" + colName + ") from " +
+                           tableName + " group by " + colName;
+                stmt = con.createStatement();
+                ResultSet groupSet = stmt.executeQuery(queryStr);
+                int itemCnt = 0;
+                while (groupSet.next()) {
+                  itemCnt += groupSet.getInt(2);
+                  db1 = new Double(groupSet.getDouble(1));
+                  if (itemCnt >= (weight - 1)) {
+                    // itemCnt >= specified weight, add the value to the list
+                    list.add(db1);
+                    // reset itemCnt
+                    itemCnt = 0;
+                  }
                 }
+                // put anything left in a bin
+                if (itemCnt > 0)
+                  list.add(db1);
+
                 double[] binMaxes = new double[list.size()];
                 for (int j = 0; j < binMaxes.length; j++)
                     binMaxes[j] = ((Double)list.get(j)).doubleValue();
@@ -1158,9 +1276,16 @@ public class SQLBinColumns extends UIModule {
                     1], binMaxes[j]);
                     addItemToBinList(nbd);
                 }
-                nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length
-                        - 1]);
-                addItemToBinList(nbd);
+                //nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length
+                        //- 1]);
+                //addItemToBinList(nbd);
+              }
+              catch (Exception e) {
+	          JOptionPane.showMessageDialog(msgBoard,
+                    e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+                  System.out.println("Error occoured in addFromWeight.");
+              }
             }
         }
 
