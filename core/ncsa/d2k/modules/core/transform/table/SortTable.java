@@ -18,38 +18,35 @@ import javax.swing.*;
 	Bradley Berkin
 	5/01
 */
-public class Sort extends ncsa.d2k.infrastructure.modules.UIModule
+public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule
 {
 
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"unsorted\">    <Text>Unsorted vertical table </Text>  </Info></D2K>";
+			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"unsorted\">    <Text>Unsorted table </Text>  </Info></D2K>";
 			default: return "No such input";
 		}
 	}
 
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.util.datatype.Table"};
 		return types;
 	}
 
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"sorted\">    <Text>Sorted vertical table </Text>  </Info></D2K>";
+			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"sorted\">    <Text>Sorted table </Text>  </Info></D2K>";
 			default: return "No such output";
 		}
 	}
 
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.util.datatype.VerticalTable"};
+		String[] types = {"ncsa.d2k.util.datatype.Table"};
 		return types;
 	}
 
 	public String getModuleInfo() {
 		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"MultipleSort\">    <Text>Sorts the rows of the table by the first specified column. Finds equivalent rows and sorts by the second specified column. Repeats for specified number of columns. </Text>  </Info></D2K>";
-	}
-
-	public void doit() throws Exception {
 	}
 
 	protected UserView createUserView() {
@@ -93,7 +90,7 @@ public class Sort extends ncsa.d2k.infrastructure.modules.UIModule
 	SortView
 */
 class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements ActionListener {
-	Sort module;
+	SortTable module;
 
 	VerticalTable table;
 	int columns;
@@ -111,7 +108,7 @@ class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements 
 	JButton done, abort;
 
 	public void initView(ViewModule viewmod) {
-		module = (Sort) viewmod;
+		module = (SortTable) viewmod;
 	}
 
 	public void setInput(Object object, int inputindex) {
