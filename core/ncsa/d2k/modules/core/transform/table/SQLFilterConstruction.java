@@ -120,7 +120,6 @@ public class SQLFilterConstruction extends UIModule {
 
       private JButton addColumnButton, addScalarButton, addOperationButton,
                       addBooleanButton, abortButton, addButton, helpButton;
-      //addBooleanButton, abortButton, doneButton, helpButton;
       private JComboBox columnBox, operationBox, booleanBox;
       private JTextField scalarField;
 
@@ -425,18 +424,20 @@ public class SQLFilterConstruction extends UIModule {
       }
 
       private Vector getUniqueValues(int columnIndex) {
-        HashMap columnValues = new HashMap();
+
+        Vector columnValues = new Vector();
         int index = 0;
         try {
           Connection con = cw.getConnection();
           String valueQry = new String("select distinct " + colNames.get(columnIndex) + " from ");
           valueQry = valueQry + tableName + " where " + colNames.get(columnIndex) + " is not null";
+          valueQry = valueQry + " order by " + colNames.get(columnIndex);
           Statement valueStmt = con.createStatement();
           ResultSet valueSet = valueStmt.executeQuery(valueQry);
           while (valueSet.next()) {
-            columnValues.put(valueSet.getString(1), new Integer(index++));
+            columnValues.add(valueSet.getString(1));
           }
-          return new Vector(columnValues.keySet());
+          return columnValues;
         }
         catch (Exception e){
           JOptionPane.showMessageDialog(msgBoard,
