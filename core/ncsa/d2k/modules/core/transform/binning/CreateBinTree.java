@@ -30,20 +30,20 @@ public class CreateBinTree extends DataPrepModule {
        case 0 : 
 	   return "Binning Transformation containing the bin definitions"; 
        case 1 : 
-	   return "ExampleTable containing the names of the input/output features"; 
+	   return "Example Table containing the names of the input/output features"; 
        default : 
 	   return "No such input"; 
        } 
    }
 
    public String getOutputInfo(int i) {
-      return "BinTree structure without counts";
+      return "Bin Tree structure without counts";
    }
 
    public String getInputName(int i) {
        switch (i) { 
        case 0 : 
-	   return "Bin Transform"; 
+	   return "Binning Transformation"; 
        case 1 : 
 	   return "Example Table"; 
        default : 
@@ -58,13 +58,15 @@ public class CreateBinTree extends DataPrepModule {
    public String getModuleInfo() {
        StringBuffer sb = new StringBuffer("<p>Overview: "); 
        sb.append("Creates an empty BinTree."); 
-       sb.append("<p>Detailed Description: "); 
-       sb.append( "Given a BinTransform containing the definition of the bins, "); 
-       sb.append( "an ExampleTable that has the input/ output attribute labels and types, "); 
-       sb.append( "builds a BinTree that can be later used to clasify data. The BinTree can "); 
-       sb.append( "use only one output feature. If more are selected only the first one will be used." );
-       sb.append( "<p> Scalability: a large enough number of features will result "); 
-       sb.append( "in an OutOfMemory error. Use feature selection to reduce the number of features.");
+       sb.append("</p><p>Detailed Description: "); 
+       sb.append( "Given a Binning Transformation containing the definition of the bins, "); 
+       sb.append( "and an Example Table that has the input/ output attribute labels and types, "); 
+       sb.append( "this module builds a Bin Tree that can be later used to clasify data. ");
+       sb.append( "</p><p>A Bin Tree holds information about the number of examples that fall into each bin. ");
+       sb.append( "The Bin Tree can "); 
+       sb.append( "use only one output feature. If more are selected in the Example Table, only the first one will be used." );
+       sb.append( "</p><p> Scalability: a large enough number of features will result "); 
+       sb.append( "in an OutOfMemory error. Use feature selection to reduce the number of features.</p>");
        return sb.toString(); 
 
    }
@@ -197,7 +199,7 @@ public class CreateBinTree extends DataPrepModule {
 
     public PropertyDescription[] getPropertiesDescriptions(){ 
 	PropertyDescription[] pd = new PropertyDescription[1] ; 
-	pd[0] = new PropertyDescription("debug", "Debug Mode", 
+	pd[0] = new PropertyDescription("debug", "Verbose Mode", 
 					"This property controls the module's output to the stdout. " + 
 					"If set to true the created BinTree will be printed. ");
 					

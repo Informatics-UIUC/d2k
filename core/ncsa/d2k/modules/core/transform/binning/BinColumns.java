@@ -38,28 +38,39 @@ public class BinColumns extends UIModule {
      * @return
      */
     public String getModuleInfo () {
-        return  "<html>  <head>      </head>  <body>" +
-        "<P><b>Overview:</B> This module allows a user to interactively bin data from a table.</P>"+
-        "<P><B>Detailed Description:</B><br>Numeric data can be binned in four ways:<br>" +
-         " <UL>          <LI><U>Uniform range:</U><br>" +
-          "Enter a positive integer value for the number of bins. Bin Columns will divide the binning range evenly over these bins. </li>"+
-          "<li><u>Specified range:</u><br>"+
-          "Enter a comma-separated sequence of integer or floating-point values for the endpoints of each bin.</li>"+
-          "<li><U>Bin Interval:</u><br>"+
-          "Enter an integer or floating-point value for the width of each bin.</li>"+
-          "<li><u>Uniform Weight:</U><br> Enter a positive integer value for even binning with that number in each bin.</li>"+
-          "</ul></P><P>The user may also bin nominal data.</P>"+
-          "<P>For further information on how to use this module the user may click on the \"Help\" button during run time and get detailed description of each functionality.</P>"+
+        StringBuffer sb = new StringBuffer( "<p>Overview: ");
+        sb.append( "This module allows a user to interactively bin data from a table.");
 
-          "<P><U>Missing/Empty Values Handling:</u> In scalar columns missing and empty values will be binned into " +
-          "\"UNKNOWN\". In nominal columns how ever, missing/empty values which are represented by " +
-          "'?' will be treated as a unique value in the column. In this case, if the user does not group " +
-          "the '?' and assign it a bin, then it would also be binned into \"UNKNOWN\".</P>"+
+	sb.append( "</p><p>Detailed Description: ");
+        sb.append( "This module provides a powerful interface that allows the user to ");
+        sb.append( "control how numeric (continuous/scalar) and nominal (categorical) data in the input ");
+        sb.append( "Table should be divided into bins. ");
 
-          "<P><B>Data Handling:</b><BR> This module may change its input " +
-          "<i>MutableTable</i>: any column labels that are null will be assigned " +
-          "default labels. Otherwise, this module does not change its input. Rather than that it outputs a Transformation that can be then applied to the data.</P>"+
-          "</body></html>";
+        sb.append( "</p><p> Numeric data can be binned in four ways:<br>" );
+	sb.append( "<U>Uniform range:</U><br>" );
+	sb.append( "Enter a positive integer value for the number of bins. Bin Columns will divide the ");
+	sb.append( "binning range evenly over these bins. <br> ");
+        sb.append( "<U>Specified range:</U><br> ");
+        sb.append( "Enter a comma-separated sequence of integer or floating-point values for the endpoints of each bin. <br> ");
+        sb.append( "<U>Bin Interval:</u><br> ");
+        sb.append( "Enter an integer or floating-point value for the width of each bin.<br> ");
+        sb.append( "<u>Uniform Weight:</U><br> ");
+	sb.append( "Enter a positive integer value for even binning with that number in each bin. ");
+
+        sb.append( "</P><P>The user may also bin nominal data. ");
+
+        sb.append( "</P><P>For further information on how to use this module the user may click on the \"Help\" button ");
+	sb.append( "during run time and get a detailed description of the functionality." );
+
+        sb.append( "</p><P>Missing and Empty Values Handling: In scalar columns, missing and empty values will be binned into " );
+        sb.append( "\"UNKNOWN\". In nominal columns however, missing/empty values which are represented by " );
+        sb.append( "'?' will be treated as a unique value in the column. In this case, if the user does not group " );
+        sb.append( "the '?' and assign it a bin, then it would also be binned into \"UNKNOWN\".");
+
+        sb.append( "</p><P>Data Handling:  This module does not change its input.  ");
+	sb.append( "Rather, it outputs a Transformation that can later be applied to the original table data.</P>" );
+
+	return sb.toString();
     }
 
     /**
@@ -68,20 +79,20 @@ public class BinColumns extends UIModule {
      */
     public String[] getInputTypes () {
         String[] types =  {
-            "ncsa.d2k.modules.core.datatype.table.MutableTable"
+            "ncsa.d2k.modules.core.datatype.table.Table"
         };
         return  types;
     }
 
     /**
      * put your documentation comment here
+     * @param i
      * @return
      */
-    public String[] getOutputTypes () {
-        String[] types =  {
-            "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform", "ncsa.d2k.modules.core.datatype.table.MutableTable"
-        };
-        return  types;
+    public String getInputName (int i) {
+        if (i == 0)
+            return  "Table";
+        return  "no such input";
     }
 
     /**
@@ -92,11 +103,23 @@ public class BinColumns extends UIModule {
     public String getInputInfo (int i) {
         switch (i) {
             case 0:
-                return  "A MutableTable with columns to bin.";
+                return  "A Table with columns to bin.";
             default:
                 return  "No such input";
         }
     }
+
+    /**
+     * put your documentation comment here
+     * @return
+     */
+    public String[] getOutputTypes () {
+        String[] types =  {
+            "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"
+        };
+        return  types;
+    }
+
 
     /**
      * put your documentation comment here
@@ -106,9 +129,7 @@ public class BinColumns extends UIModule {
     public String getOutputName (int i) {
         switch (i) {
             case 0:
-                return "Bin Transformation";
-            case 1:
-                return  "Mutable Table";
+                return "Binning Transformation";
             default:
                 return  "no such output!";
         }
@@ -119,27 +140,28 @@ public class BinColumns extends UIModule {
      * @param i
      * @return
      */
-    public String getInputName (int i) {
-        if (i == 0)
-            return  "Mutable Table";
-        return  "no such input";
-    }
-
-    /**
-     * put your documentation comment here
-     * @param i
-     * @return
-     */
     public String getOutputInfo (int i) {
         switch (i) {
             case 0:
-                return "A BinTransform, as defined by the user, that can be applied to the input Table.";
-            case 1:
-                return  "The input Table, unchanged.  In order to bin the columns of this table the Bin Transformation should be Applied to it.";
+ 		String s = "A Binning Transformation, as defined by the user via this module.  " +
+			   "This output is typically connected to a <i>Create Bin Tree</i> module " +
+			   "or to an <i>Apply Transformation</i> module where it is applied to the input Table. ";
+		return s;
             default:
                 return  "No such output";
         }
     }
+
+   /**
+    * This method returns and array of property descriptions.  In this case,
+    * there are no user-editable properties so we return an empty array.
+    * If this method isn't defined here, then the user sees the windowName
+    * property which they really should not be shown.
+    **/
+   public PropertyDescription[] getPropertiesDescriptions() {
+      PropertyDescription[] pds = new PropertyDescription[0];
+      return pds;
+   }
 
     /**
      * put your documentation comment here
@@ -823,7 +845,6 @@ public class BinColumns extends UIModule {
                         bins[i] = (BinDescriptor)tmp[i];
                     BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
                     pushOutput(bt, 0);
-                    pushOutput(tbl, 1);
                     viewDone("Done");
                 }
             });
@@ -1500,10 +1521,13 @@ class TableBinCounts implements BinCounts {
     }
 }
 
-/**
- * QA comments:
- * 2-27-03 vered started qa. added module description, exception handling.
- * 2-27-03 commit back to core and back to greg - to reveiw bin nominal columns tab.
- * 3-6-03 added to module info a note about missing values handling.
- * 3-17 -3 anca: changed last bin in addFromWeigth 
- */
+//  QA comments:
+// 2-27-03 vered started qa. added module description, exception handling.
+// 2-27-03 commit back to core and back to greg - to reveiw bin nominal columns tab.
+// 3-6-03 added to module info a note about missing values handling.
+// 3-17 -3 anca: changed last bin in addFromWeigth
+// 3-24-03 ruth: changed QA comment char so that they won't be seen by JavaDocs
+//               changed input type to Table; deleted output Table port; updated
+//               output port name; updated descriptions; added getPropertiesDescriptions
+//               so no properties a user can't edit are shown.
+//
