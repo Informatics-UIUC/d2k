@@ -394,6 +394,4 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 		psi.addSubspace(secondSpace.getNumParameters());
 		return psi;
 	}
-
-	public ParameterSpace [] segmentSpace(ParameterSpace space, int splitPoint) { return null; }
 }
