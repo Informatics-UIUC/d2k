@@ -223,11 +223,11 @@ public class RuleTable extends MutableTableImpl {
     }
 
     public void sortByAntecedent() {
-      this.itemSetSort(THEN);
+      this.itemSetSort(IF);
     }
 
     public void sortByConsequent() {
-      this.itemSetSort(IF);
+      this.itemSetSort(THEN);
     }
 
     /**

@@ -460,7 +460,7 @@ public class RuleAssocReport extends UIModule
         rightRule = NOTHING;
         // display the head part (left) of the rule
         //headIdx = ruleTable.getInt(ruleIdx, RuleTable.IF);
-        headIdx = ruleTable.getRuleConsequentID(ruleIdx);
+        headIdx = ruleTable.getRuleAntecedentID(ruleIdx);
         aSet = (FreqItemSet)freqItemSets.get(headIdx);
         for (int itemIdx = 0; itemIdx < aSet.numberOfItems; itemIdx++) {
              labelIdx = aSet.items.get(itemIdx);
@@ -476,7 +476,7 @@ public class RuleAssocReport extends UIModule
        //ruleList.setValueAt(" -->",ruleIdx,1);
        data[ruleIdx][1] = " -->";
        //bodyIdx = ruleTable.getInt(ruleIdx, RuleTable.THEN);
-       bodyIdx = ruleTable.getRuleAntecedentID(ruleIdx);
+       bodyIdx = ruleTable.getRuleConsequentID(ruleIdx);
        aSet = (FreqItemSet)freqItemSets.get(bodyIdx);
        for (int itemIdx = 0; itemIdx < aSet.numberOfItems; itemIdx++) {
              labelIdx = aSet.items.get(itemIdx);
