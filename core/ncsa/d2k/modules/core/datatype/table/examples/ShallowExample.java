@@ -2,6 +2,16 @@ package ncsa.d2k.modules.core.datatype.table.examples;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 
+/**
+ * A ShallowExample is an Example that keeps a reference to the
+ * ExampleTable and row that it represents.
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2002</p>
+ * <p>Company: </p>
+ * @author unascribed
+ * @version 1.0
+ */
 public class ShallowExample implements Example {
     protected ExampleTable et;
     protected int rowIdx;

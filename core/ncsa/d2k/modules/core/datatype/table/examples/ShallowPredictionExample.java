@@ -2,6 +2,16 @@ package ncsa.d2k.modules.core.datatype.table.examples;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 
+/**
+ * A ShallowPredictionExample is a PredictionExample that keeps a reference
+ * to the table and the row it represents.
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2002</p>
+ * <p>Company: </p>
+ * @author unascribed
+ * @version 1.0
+ */
 public class ShallowPredictionExample extends ShallowExample
         implements PredictionExample {
 

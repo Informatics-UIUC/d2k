@@ -157,7 +157,6 @@ public class ReadRuleAssocPMML extends InputModule implements RulePMMLTags {
 
         ArrayList sets = new ArrayList(fis.length);
         for(int i = 0; i < fis.length; i++) {
-            System.out.println(fis[i].items.size());
             sets.add(fis[i]);
         }
 
