@@ -40,7 +40,7 @@ public class SampleTableRows extends DataPrepModule  {
     	  s += "the sample tables produced by the module will be identical. ";
 
     	  s += "</p><p>";
-    	  s += "If the input table has fewer than <i>Sample Size</i> rows, an exception will be raised. ";
+    	  s += "If the input table has <i>Sample Size</i> or fewer rows, an exception will be raised. ";
 
     	  s += "</p><p>";
     	  s += "An <i>OPT</i>, optimizable, version of this module that uses control ";
@@ -183,7 +183,7 @@ public class SampleTableRows extends DataPrepModule  {
 		pds[0] = new PropertyDescription ("sampleSize",
 						  "Sample Size",
 			"The number of rows to include in the resulting table. " +
-			"It must be greater than 0 and no more than the number of rows in the input table. " );
+			"It must be greater than 0 and less than the number of rows in the input table. " );
 		pds[1] = new PropertyDescription ("seed",
 						  "Random Seed",
                         "The seed for the random number generator used to select the sample set of " +
