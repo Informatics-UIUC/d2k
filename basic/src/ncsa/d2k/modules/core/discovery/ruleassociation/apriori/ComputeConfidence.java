@@ -272,18 +272,20 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 ///////////////////////////////////////
 // Compute the confidence for each Rule.
 //
-		int previousAttrCnt = 0;
+//		int previousAttrCnt = 0;
 		for (int i = 0 ; i < numFis ; i++) {
 			int [] currentRule = fis [i];
 			int ruleLen = currentRule.length - 1;
 
 			if ( showProgress ) {
-				if ( previousAttrCnt != ruleLen ) {
-				    System.out.println( getAlias() +
-						": Beginning to compute confidence for frequent itemsets containing " +
-						(ruleLen) +
-						" attributes. ");
-				    previousAttrCnt = ruleLen;
+//				if ( previousAttrCnt != ruleLen ) {
+                          if ((i % 250) == 0){
+                            System.out.println("Processed " + i + " rules out of " + numFis + ".");
+//				    System.out.println( getAlias() +
+//						": Beginning to compute confidence for frequent itemsets containing " +
+//						(ruleLen) +
+//						" attributes. ");
+//				    previousAttrCnt = ruleLen;
 				}
 			}
 
