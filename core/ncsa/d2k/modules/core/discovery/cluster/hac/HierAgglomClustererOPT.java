@@ -9,6 +9,7 @@ package ncsa.d2k.modules.core.discovery.cluster.hac;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.discovery.cluster.sample.*;    
 
 /**
  *
@@ -23,7 +24,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
  */
 
 public class HierAgglomClustererOPT
-    extends OrderedReentrantModule {
+    extends OrderedReentrantModule implements ClusterParameterDefns {
 
   //==============
   // Data Members
@@ -72,12 +73,12 @@ public class HierAgglomClustererOPT
     PropertyDescription[] descriptions = new PropertyDescription[2];
 
     descriptions[0] = new PropertyDescription("checkMissingValues",
-        "Check Missing Values",
-        "Perform a check for missing values on the table inputs (or not).");
-
+                                               CHECK_MV,
+        "If this property is true, the module will perform a check for missing values in the input table. ");
+ 
     descriptions[1] = new PropertyDescription("verbose",
-        "Verbose Ouput",
-        "Do you want verbose output to the console.");
+                                               VERBOSE,
+        "If this property is true, the module will write verbose status information to the console.");
 
     return descriptions;
   }
@@ -213,7 +214,9 @@ public class HierAgglomClustererOPT
      Code to execute before doit.
    */
   public void beginExecution() {
-    System.out.println("Beginning execution: " + this);
+    if (getVerbose() ) {
+      System.out.println("Beginning execution: " + this);
+    }
   }
 
   /**
@@ -236,3 +239,5 @@ public class HierAgglomClustererOPT
   }
 
 }
+// Start QA Comments
+// 4/10/03 - Ruth Started QA; Updated properties for consistency
