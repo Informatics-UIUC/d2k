@@ -16,7 +16,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
    boolean UseMeanNodeModels          = true;
    boolean UseLinearNodeModels        = false;
-   boolean UseSimpleBooleanSplit      = false;
+   boolean UseOneHalfSplit      = false;
    boolean UseMidPointBasedSplit      = false;
    boolean UseMeanBasedSplit          = true;
    boolean UsePopulationBasedSplit    = false;
@@ -79,8 +79,8 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     MinDecompositionPopulation  = (int) parameterPoint.getValue(0);
     MinErrorReduction           =       parameterPoint.getValue(1);
 
-    UseSimpleBooleanSplit       = false;
-    if (parameterPoint.getValue(2) > 0.5) UseSimpleBooleanSplit   = true;
+    UseOneHalfSplit       = false;
+    if (parameterPoint.getValue(2) > 0.5) UseOneHalfSplit   = true;
     UseMidPointBasedSplit       = false;
     if (parameterPoint.getValue(3) > 0.5) UseMidPointBasedSplit   = true;
     UseMeanBasedSplit           = false;
@@ -301,7 +301,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
     int numSplitMethods = 0;
 
-    if (UseSimpleBooleanSplit)   numSplitMethods++;
+    if (UseOneHalfSplit)   numSplitMethods++;
     if (UseMidPointBasedSplit)   numSplitMethods++;
     if (UseMeanBasedSplit)       numSplitMethods++;
     if (UsePopulationBasedSplit) numSplitMethods++;
@@ -315,7 +315,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
     for (int inputIndex = 0; inputIndex < numInputs; inputIndex++){
 
-      if (UseSimpleBooleanSplit){
+      if (UseOneHalfSplit){
         decompositions[decompositionIndex] = new Decomposition();
         decompositions[decompositionIndex].inputIndex = inputIndex;
         decompositions[decompositionIndex].value      = 0.5;
