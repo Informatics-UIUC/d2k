@@ -1901,5 +1901,8 @@ class TableBinCounts implements BinCounts {
    the new binned columns with identical labels as the original ones have.
 
 
+   bug 235 - module does not allow creation of bins with identical names even if
+   bins belong to different attributes.
+
  *
 */

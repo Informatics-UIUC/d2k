@@ -1900,5 +1900,11 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
  *
  * bug 229 - when checking the "create in a new column" box, the module creates
    the new binned columns with identical labels as the original ones have.
+ (fixed)
+
+
+   bug 235 - module does not allow creation of bins with identical names even if
+   bins belong to different attributes.
+
 
  */
