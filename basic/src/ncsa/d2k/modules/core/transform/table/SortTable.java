@@ -210,11 +210,13 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
              relevant++;
 
        sortOrderNames = new String[relevant];
-       for (int i=0, j=0; i<relevant; i++){
+       //i is counter for sortOrderNames
+       //j is counter for names
+       for (int i=0, j=0; i<relevant; j++){
          String current = (String) names[j];
          if(!current.equalsIgnoreCase("none")){
            sortOrderNames[i] = current;
-           j++;
+           i++;
          }//if
        }//for i,j
      }//setSortOrderNames
