@@ -66,13 +66,22 @@ public class BackPropModelGenerator
 			System.out.println(getAlias()+":Firing");
 		}
 		ExampleTable trainData=(ExampleTable)pullInput(0);
+		int [] outputs = trainData.getOutputFeatures();
+		if (outputs == null || outputs.length == 0) 
+		    throw new Exception(getAlias() + "Please select an output attribute.");
+		int [] inputs = trainData.getInputFeatures();
+		if (inputs == null || inputs.length == 0) 
+		    throw new Exception(getAlias() + "Please select an intput attribute.");
+		//if(trainData.isColumnScalar(outputs[0]))
+		//   throw new Exception("Output feature must be nominal.");
+
 		ParameterPoint params=(ParameterPoint)pullInput(1);
 		model=new BackPropModel(trainData,params);
 		if(model.trainingSuccess){
 			pushOutput(model, 0);
 		}else{
 			 model=null;
-			 System.out.println(this.getAlias()+": A valid model was not able"+
+			 throw new Exception(this.getAlias()+": A valid model was not able"+
 			 " to be produced. No model pushed out.");
 		}
 		if(!makeModelAvailable)
@@ -91,11 +100,11 @@ public class BackPropModelGenerator
 			" back-propagation (conjugate-gradient descent). There are many"+
 			" user specified parameters that allow for a good deal of customizat"+
 			"ion of the architecture and behaviour of the neural network."+
-			"</p><p><b>Detailed Description</b>:"+
+		    "</p><p><b>Detailed Description</b>:"+
 			"A perceptron can be thought of as a gadget that has multiple input"+
 			" pipes and produces one output."+
 			" Every input pipe has an associated weight, and the "+
-			"output is a function of the sum of the the values in the inputs pipes"
+			"output is a function of the sum of the values in the inputs pipes"
 			+" multiplied by the "+
 			"weight of the pipe. The actual output is this"+
 			" sum put through what is called an activation function."+
@@ -115,7 +124,7 @@ public class BackPropModelGenerator
 			" only the most basic principles of neural nets. To get a better "+
 			"understanding of the underlying mathematics, see the references "+
 			"below."+
-			BackPropParamSpaceGenerator.PARAM_DESCRIPTION+
+		    //BackPropParamSpaceGenerator.PARAM_DESCRIPTION+
 			
 		
 			"<p><b>Data Type Restrictions</b>: This model can only use"+
@@ -195,9 +204,9 @@ public class BackPropModelGenerator
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "Training Data";
+				return "Training Table";
 			case 1:
-				return "Parameters";
+				return "Parameter Point";
 			case 2:
 				return "";
 			default: return "No such input";

@@ -69,7 +69,7 @@ public class BuckshotParamSpaceGenerator extends AbstractParamSpaceGenerator {
                                     "This property specifies the number of clusters to form (>= 2).");
     pds[1] = new PropertyDescription(SEED,
                                      "Seed",
-                                     "The seed for the random number generater used to select the random sampling of table rows. If this value is set to the same value for different runs, the results be the exact same.");
+                                     "The seed for the random number generater used to select the random sampling of table rows. If this value is set to the same value for different runs, the results could be exactly the same.");
     pds[2] = new PropertyDescription(USE_FIRST,
                                      "Use First",
                                      "If this option is selected, the first entries in the original table will be used as the sample.");
@@ -95,9 +95,11 @@ public class BuckshotParamSpaceGenerator extends AbstractParamSpaceGenerator {
     pds[5] = new PropertyDescription(DISTANCE_THRESHOLD,
                                               "Distance Threshold",
                                      "This property specifies the percent of the max distance to use " +
-                                     "as a cutoff value to halt clustering ([1...100].  The max distance between examples " +
+                                     "as a cutoff value to halt clustering ([0...100].  The max distance between examples " +
                                      "is approximated by taking the min and max of each attribute and forming a " +
-                                     "min example and a max example -- then finding the distance between the two.");
+                                     "min example and a max example -- then finding the distance between the two. " +
+                                     "This property when set with a value > 0 becomes the dominant halting criteria for " +
+                                     "clustering (overriding the <i>Number of Clusters</i> property.");
     pds[6] = new PropertyDescription(MAX_ITERATIONS,
                                               "Number of Assignment Passes",
         "This property specifies the number of iterations of cluster refinement to perform (> 0).");

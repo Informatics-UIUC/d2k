@@ -13,7 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.discovery.cluster.util.*;
 
 public class CoverageSamplerOPT
-    extends DataPrepModule {
+    extends DataPrepModule implements ClusterParameterDefns {
 
   //==============
   // Data Members
@@ -135,14 +135,14 @@ public class CoverageSamplerOPT
    */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "Chooses a sample set of rows that \"cover\" the space of all table rows.  The ";
-    s += "table rows are treated as vectors of a vector space.";
+    s += "Chooses a sample set of examples that \"cover\" the space of all table examples.  The ";
+    s += "table examples are treated as vectors of a vector space.";
     s += "</p>";
 
     s += "<p>Detailed Description: ";
-    s += "This module selects a sample set of the input table rows such that ";
-    s += "the set of samples formed is approximately the minimum number of samples ";
-    s += "needed such that for every row in the table there is at least one sample in ";
+    s += "This module selects a sample set of the input table examples such that ";
+    s += "the set of sampled examples formed is approximately the minimum number of samples ";
+    s += "needed such that for every example in the table there is at least one example in ";
     s += "the sample set of distance &lt= <i>Distance Cutoff</i>";
     s += "</p>";
 
@@ -151,7 +151,7 @@ public class CoverageSamplerOPT
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "This module has a worst case time complexity of O(num_examples^2).  However, ";
+    s += "This module has a worst case time complexity of O(<i>Number of Examples</i>^2).  However, ";
     s += "it typically runs much more quickly.  A new table of samples rows is created in memory.";
     s += "</p>";
     return s;

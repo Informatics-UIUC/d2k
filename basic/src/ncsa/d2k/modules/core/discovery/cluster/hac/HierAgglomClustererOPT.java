@@ -9,7 +9,7 @@ package ncsa.d2k.modules.core.discovery.cluster.hac;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.discovery.cluster.sample.*;    
+import ncsa.d2k.modules.core.discovery.cluster.sample.*;
 
 /**
  *
@@ -75,7 +75,7 @@ public class HierAgglomClustererOPT
     descriptions[0] = new PropertyDescription("checkMissingValues",
                                                CHECK_MV,
         "If this property is true, the module will perform a check for missing values in the input table. ");
- 
+
     descriptions[1] = new PropertyDescription("verbose",
                                                VERBOSE,
         "If this property is true, the module will write verbose status information to the console.");
@@ -99,11 +99,11 @@ public class HierAgglomClustererOPT
    */
   public String getInputInfo(int parm1) {
     if (parm1 == 0) {
-      return "Control parameters";
+      return "Control parameters, available as a Parameter Point.";
     } else if (parm1 == 1) {
-      return "Table of examples to be clustered";
+      return "Table of entities to cluster.";
     } else {
-      return "";
+      return "No such input.";
     }
   }
 
@@ -114,11 +114,11 @@ public class HierAgglomClustererOPT
    */
   public String getInputName(int parm1) {
     if (parm1 == 0) {
-      return "ParameterPoint";
+      return "Parameter Point";
     } else if (parm1 == 1) {
       return "Table";
     } else {
-      return "";
+      return "No such input";
     }
   }
 
@@ -139,36 +139,89 @@ public class HierAgglomClustererOPT
     @return A detailed description of the module.
    */
   public String getModuleInfo() {
+
     String s = "<p>Overview: ";
-    s += "Perform a bottom-up, hierarchical clustering of the examples in the input ";
+    s += "This module performs a bottom-up, hierarchical clustering of the examples in the input ";
     s += "table.";
     s += "</p>";
 
     s += "<p>Detailed Description: ";
-    s += "A ClusterModel is created for the clustering performed by this module.  This model ";
-    s += "contains the unchanged table of original example (the one input), a tree of TableCluster ";
-    s += "objects, and an ArrayList of the clusters formed.";
+    s += "There are two versions of this module. ";
+    s += "The <i>OPT</i>, optimizable, version uses control ";
+    s += "parameters encapsulated in a <i>Parameter Point</i> to direct the clustering behavior. ";
+    s += "The control parameters specify a <i>";
+    s += CLUSTER_METHOD ;
+    s += "</i>, a <i>";
+    s += NUM_CLUSTERS;
+    s += "</i>, a <i>";
+    s += DISTANCE_THRESHOLD;
+    s += "</i>, and a <i>";
+    s += DISTANCE_METRIC;
+    s += "</i>.  These parameters are set as properties in the non-OPT version of the module. ";
     s += "</p>";
-    s += "<p>If <i>auto clustering</i> is activated then a <i>threshold</i> value is used to determine ";
-    s += "a distance cutoff value.  The <i>threshold</i> represents a certain percentage of the approximate ";
-    s += "max distance of all example pairs.  When the next two most similar clusters have distance > this value ";
-    s += "the clsutering is stopped (in actuality the clustering continues all the way to the root of the ";
-    s += "cluster tree so that the complete tree can be placed in the model).  The clusters at the cutoff (also ";
-    s += "known as the \"cut\") are saved to the model separately.  If <i>auto clustering</i> is NOT activated ";
-    s += "then clustering is halted when the number of clusters is equal to the <i>number of clusters</i> ";
-    s += "property.";
+
+    s += "<p>The Hierarchical Agglomerative Clustering (HAC) algorithm, a bottom-up strategy, ";
+    s += "is run on the examples in the input <i>Table</i> to build the cluster tree. ";
+    s += "The cluster tree is stored in a newly formed model, <i>Cluster Model</i>, along with the initial table ";
+    s += "of examples and the set of clusters formed.";
+    s += "</p>";
+
+    s += "<p>If the <i>";
+    s += DISTANCE_THRESHOLD;
+    s += "</i> is being used (non-zero in OPT case, controlled by property in non-OPT case), ";
+    s += "then it determines a <i>distance cutoff</i> value that can halt cluster agglomeration.  ";
+    s += "The <i> ";
+    s += DISTANCE_THRESHOLD;
+    s += "</i> represents a certain percentage of the approximate ";
+    s += "<i>maximum distance</i> of all example pairs.  ";
+    s += "The <i>maximum distance</i> between examples is approximated by taking ";
+    s += "the minimum and maximum of each attribute and forming a ";
+    s += "minimum example and a maximum example.  ";
+    s += "The <i>maximum distance</i> is defined to be the distance between these ";
+    s += "two constructed examples. The specified percentage of this maximum distance ";
+    s += "is the <i>distance cutoff</i> value. ";
+    s += "When the next two most similar clusters have distance greater than the <i>distance cutoff</i> value, ";
+    s += "the cluster agglomeration is stopped. ";
+    s += "</p>";
+
+    s += "<p>If the <i>";
+    s += DISTANCE_THRESHOLD;
+    s += "</i> is NOT being used, then clustering is halted when the number of clusters is equal to <i>";
+    s += NUM_CLUSTERS;
+    s += "</i>. ";
+    s += "</p>";
+
+    s += "<p>In actuality, clustering continues all the way to the root of the cluster tree regardless of the halting ";
+    s += "criteria.  This allows the complete cluster tree to be placed in the <i>Cluster Model</i>. ";
+    s += "The clusters at the cutoff, also known as the \"cut\",  are saved to the model separately. ";
+    s += "</p>";
+
+    s += "<p>References: ";
+    s += "A discussion of the Hierarchical Agglomerative clustering can be found in the book ";
+    s += "<i>Algorithms for Clustering Data</i>, A.K. Jain and R. C. Dubes, Prentice Hall, 1988. ";
+    s += "</p>";
+
+    s += "<p>Data Type Restrictions: ";
+    s += "The clustering does not work if the input data contains missing values. ";
+    s += "The algorithm operates on numeric and boolean data types.  If the data to be clustered ";
+    s += "contains nominal data types, it should be converted prior to performing the clustering. ";
+    s += "The <i>Scalarize Nominals</i> module can be used to convert nominal types into boolean values. ";
     s += "</p>";
 
     s += "<p>Data Handling: ";
-    s += "The table is unchanged by this module, however, it is included in the ";
-    s += "output ClusterModel.";
+    s += "The input <i>Table</i> is included in the <i>Cluster Model</i>.  It is not ";
+    s += "changed by this module.";
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "The algoruthm is quadratic in time complexity and therefore will run impossibly ";
-    s += "long for large numbers of examples.  It is recommended to use one of the sampling ";
-    s += "cluster methods (i.e. KMeans) for very large datasets.  An array of N squared doubles ";
-    s += "is created twice requiring sufficient heap resources for the size of N (number of examples).";
+    s += "The algorithm is quadratic in time complexity and therefore will run impossibly ";
+    s += "long for large numbers of examples.  It is recommended that one of the sampling ";
+    s += "cluster methods (i.e. KMeans) be used for very large datasets. ";
+    s += "</p>";
+
+    s += "<p>";
+    s += "Two arrays of <i>Number of Examples</i> squared doubles ";
+    s += "are created. Sufficient heap space is required to accommodate these arrays. ";
     s += "</p>";
     return s;
   }
@@ -215,7 +268,7 @@ public class HierAgglomClustererOPT
    */
   public void beginExecution() {
     if (getVerbose() ) {
-      System.out.println("Beginning execution: " + this);
+      System.out.println( getAlias() + ": Beginning execution. " );
     }
   }
 
@@ -233,11 +286,18 @@ public class HierAgglomClustererOPT
   protected void doit() throws Exception {
     ParameterPoint pp = (ParameterPoint) pullInput(0);
     HAC hac = new HAC( (int) pp.getValue(0), (int) pp.getValue(1),
-                      (int) pp.getValue(2), (int) pp.getValue(3), getVerbose(),
-                      this.getCheckMissingValues());
+                      (int) pp.getValue(2), (int) pp.getValue(3),
+		      getVerbose(), this.getCheckMissingValues(), getAlias() );
     this.pushOutput(hac.buildModel( (Table)this.pullInput(1)), 0);
   }
 
 }
 // Start QA Comments
 // 4/10/03 - Ruth Started QA; Updated properties for consistency
+// 4/13/03 - Asked Duane to clarify if 2 arrays are created at same time or
+//           not (scalability comment).  Yes
+//         - Not sure if full tree in model if max number of clusters causes halt.
+// 4/14/03 - Heard from Duane; Few more updates 
+//         - Ready for Basic.
+// End QA Comments
+

@@ -116,7 +116,7 @@ public class ClusterModel
      @return The description of the input
    */
   public String getInputInfo(int parm1) {
-    return "NO SUCH INPUT!";
+    return "No such input";
   }
 
   /**
@@ -127,7 +127,7 @@ public class ClusterModel
   public String getInputName(int i) {
     switch (i) {
       default:
-        return "NO SUCH INPUT!";
+        return "No such input";
     }
   }
 
@@ -146,24 +146,24 @@ public class ClusterModel
   */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "This module is a model for a hierarchical, bottom-up clustering.";
+    s += "This module encapsulates a model for a hierarchical, bottom-up clustering.";
     s += "</p>";
 
     s += "<p>Detailed Description: ";
-    s += "The cluster model contains the original table of examples that were clustered, ";
-    s += "a tree of TableCluster objects (this is the tree built during the bottom-up ";
-    s += "clustering process), and an ArrayList of the clusters that were created (this is ";
-    s += "a subset of the clusters from the cluster tree -- it represents a \"cut\" in ";
+    s += "The <i>Cluster Model</i> in this module contains the original table of examples that were clustered, ";
+    s += "a tree of <i>Table Cluster</i> objects that was built during the bottom-up ";
+    s += "clustering process, and a list of the clusters that were created.  The list of created ";
+    s += "clusters is a subset of the clusters from the cluster tree, and represents a \"cut\" in ";
     s += "the tree.";
     s += "</p>";
-    s += "<p>This module implements the Table interface.  It delegates all table interface ";
-    s += "functions to the contained table.  As a result it can be passed to modules that take ";
-    s += "tables as input (for example TableViewer).";
+    s += "<p>The <i>Cluster Model</i> implements the Table interface.  It delegates all table interface ";
+    s += "functions to the contained table.  As a result, it can be passed to modules that take ";
+    s += "a table as input, such as <i>TableViewer</i>.";
     s += "</p>";
 
     s += "<p>Scalability: ";
     s += "The model scalability is limited principally by the size of the example table it contains ";
-    s += "and the memory limitations that follow from that fact.";
+    s += "and the memory limitations that follow from that.";
     s += "</p>";
     return s;
   }
@@ -175,9 +175,9 @@ public class ClusterModel
    */
   public String getOutputInfo(int parm1) {
     if (parm1 == 0) {
-      return "This ClusterModel object.";
+      return "The Cluster Model object.";
     } else {
-      return "";
+      return "No such output.";
     }
   }
 
@@ -186,11 +186,11 @@ public class ClusterModel
      @param i The index of the output.
      @return The name of the output
    */
-  public String getOutputNames(int parm1) {
+  public String getOutputName(int parm1) {
     if (parm1 == 0) {
       return "Cluster Model";
     } else {
-      return "";
+      return "No such output";
     }
   }
 
@@ -206,6 +206,15 @@ public class ClusterModel
   }
 
 
+  /**
+     Return an array of the property variables, labels, and descriptions.
+     @return The editable properties of the module - none in this case
+   */
+  public PropertyDescription[] getPropertiesDescriptions() {
+    // hide properties that the user shouldn't udpate
+    return new PropertyDescription[0];
+  }
+
   protected void doit() throws java.lang.Exception {
     this.pushOutput(this, 0);
   }
@@ -219,7 +228,9 @@ public class ClusterModel
    */
   public Object getObject(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getObject(...) -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " +
+			 getAlias() +
+			 ".getObject(...) --  Model does not contain table data and will return null");
       return null;
     } else {
       return _table.getObject(row, column);
@@ -231,7 +242,9 @@ public class ClusterModel
    */
   public int getInt(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getInt(...) -- Model does not contain table data -- will return Integer.MIN_VALUE");
+      System.out.println("ERROR: " +
+		         getAlias() +
+			 ".getInt(...) -- Model does not contain table data and will return Integer.MIN_VALUE");
       return Integer.MIN_VALUE;
     } else {
       return _table.getInt(row, column);
@@ -243,7 +256,9 @@ public class ClusterModel
    */
   public short getShort(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getShort(...) -- Model does not contain table data -- will return Short.MIN_VALUE");
+      System.out.println("ERROR: " +
+		         getAlias() +
+			 ".getShort(...) -- Model does not contain table data and will return Short.MIN_VALUE");
       return Short.MIN_VALUE;
     } else {
       return _table.getShort(row, column);
@@ -255,7 +270,9 @@ public class ClusterModel
    */
   public float getFloat(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getFloat(...) -- Model does not contain table data -- will return Float.MIN_VALUE");
+      System.out.println("ERROR: " +
+		         getAlias() +
+			 ".getFloat(...) -- Model does not contain table data and will return Float.MIN_VALUE");
       return Float.MIN_VALUE;
     } else {
       return _table.getFloat(row, column);
@@ -267,7 +284,9 @@ public class ClusterModel
    */
   public double getDouble(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getDouble(...) -- Model does not contain table data -- will return Double.MIN_VALUE");
+      System.out.println("ERROR: " +
+		         getAlias() +
+			 ".getDouble(...) -- Model does not contain table data and will return Double.MIN_VALUE");
       return Double.MIN_VALUE;
     } else {
       return _table.getDouble(row, column);
@@ -279,7 +298,9 @@ public class ClusterModel
    */
   public long getLong(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getLong(...) -- Model does not contain table data -- will return Long.MIN_VALUE");
+      System.out.println("ERROR: " +
+		         getAlias() +
+			 ".getLong(...) -- Model does not contain table data and will return Long.MIN_VALUE");
       return Long.MIN_VALUE;
     } else {
       return _table.getLong(row, column);
@@ -291,7 +312,9 @@ public class ClusterModel
    */
   public String getString(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getString(...) -- Model does not contain table data -- will return \"\"");
+      System.out.println("ERROR: " +
+		         getAlias() +
+			 ".getString(...) -- Model does not contain table data and will return \"\"");
       return "";
     } else {
       return _table.getString(row, column);
@@ -303,7 +326,9 @@ public class ClusterModel
    */
   public byte[] getBytes(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getBytes(...) -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " +
+		         getAlias() +
+			 ".getBytes(...) -- Model does not contain table data and will return null");
       return null;
     } else {
       return _table.getBytes(row, column);
@@ -315,7 +340,9 @@ public class ClusterModel
    */
   public boolean getBoolean(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getBoolean(...) -- Model does not contain table data -- will return false");
+      System.out.println("ERROR: " +
+		         getAlias() +
+			 ".getBoolean(...) -- Model does not contain table data and will return false");
       return false;
     } else {
       return _table.getBoolean(row, column);
@@ -327,7 +354,9 @@ public class ClusterModel
    */
   public char[] getChars(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getChars(...) -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " +
+		         getAlias() +
+			 ".getChars(...) -- Model does not contain table data and will return null");
       return null;
     } else {
       return _table.getChars(row, column);
@@ -339,7 +368,9 @@ public class ClusterModel
    */
   public byte getByte(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getByte(...) -- Model does not contain table data -- will return Byte.MIN_VALUE");
+      System.out.println("ERROR: " +
+		         getAlias() +
+			 ".getByte(...) -- Model does not contain table data and will return Byte.MIN_VALUE");
       return Byte.MIN_VALUE;
     } else {
       return _table.getByte(row, column);
@@ -351,7 +382,9 @@ public class ClusterModel
    */
   public char getChar(int row, int column) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getChar(...) -- Model does not contain table data -- will return Character.MIN_VALUE");
+      System.out.println("ERROR: " +
+		         getAlias() +
+			 ".getChar(...) -- Model does not contain table data and will return Character.MIN_VALUE");
       return Character.MIN_VALUE;
     } else {
       return _table.getChar(row, column);
@@ -366,7 +399,7 @@ public class ClusterModel
    */
   public int getKeyColumn() {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getKeyColumn(...) -- Model does not contain table data -- will return Integer.MIN_VALUE");
+      System.out.println("ERROR: " + getAlias() + ".getKeyColumn(...) -- Model does not contain table data -- will return Integer.MIN_VALUE");
       return Integer.MIN_VALUE;
     } else {
       return _table.getKeyColumn();
@@ -379,7 +412,7 @@ public class ClusterModel
   public void setKeyColumn(int position) {
     if (_table == null) {
       System.out.println(
-          "ERROR: ClusterModel.getKeyColumn(...) -- Model does not contain table data.");
+          "ERROR: " + getAlias() + ".getKeyColumn(...) -- Model does not contain table data.");
     } else {
       _table.setKeyColumn(position);
     }
@@ -390,7 +423,7 @@ public class ClusterModel
    */
   public String getColumnLabel(int position) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getColumnLabel(...) -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " + getAlias() + ".getColumnLabel(...) -- Model does not contain table data -- will return null");
       return null;
     } else {
       return _table.getColumnLabel(position);
@@ -402,7 +435,7 @@ public class ClusterModel
    */
   public String getColumnComment(int position) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getColumnComment(...) -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " + getAlias() + ".getColumnComment(...) -- Model does not contain table data -- will return null");
       return null;
     } else {
       return _table.getColumnComment(position);
@@ -414,7 +447,7 @@ public class ClusterModel
    */
   public String getLabel() {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getLabel() -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " + getAlias() + ".getLabel() -- Model does not contain table data -- will return null");
       return null;
     } else {
       return _table.getLabel();
@@ -427,7 +460,7 @@ public class ClusterModel
   public void setLabel(String labl) {
     if (_table == null) {
       System.out.println(
-          "ERROR: ClusterModel.setLabel(...) -- Model does not contain table data.");
+          "ERROR: " + getAlias() + ".setLabel(...) -- Model does not contain table data.");
     } else {
       _table.setLabel(labl);
     }
@@ -438,7 +471,7 @@ public class ClusterModel
    */
   public String getComment() {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getComment() -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " + getAlias() + ".getComment() -- Model does not contain table data -- will return null");
       return null;
     } else {
       return _table.getComment();
@@ -451,7 +484,7 @@ public class ClusterModel
   public void setComment(String comment) {
     if (_table == null) {
       System.out.println(
-          "ERROR: ClusterModel.setComment(...) -- Model does not contain table data.");
+          "ERROR: " + getAlias() + ".setComment(...) -- Model does not contain table data.");
     } else {
       _table.setComment(comment);
     }
@@ -462,7 +495,7 @@ public class ClusterModel
    */
   public int getNumRows() {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getNumRows() -- Model does not contain table data -- will return Integer.MIN_VALUE");
+      System.out.println("ERROR: " + getAlias() + ".getNumRows() -- Model does not contain table data -- will return Integer.MIN_VALUE");
       return Integer.MIN_VALUE;
     } else {
       return _table.getNumRows();
@@ -474,7 +507,7 @@ public class ClusterModel
    */
   public int getNumEntries() {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getNumEntries() -- Model does not contain table data -- will return Integer.MIN_VALUE");
+      System.out.println("ERROR: " + getAlias() + ".getNumEntries() -- Model does not contain table data -- will return Integer.MIN_VALUE");
       return Integer.MIN_VALUE;
     } else {
       return _table.getNumEntries();
@@ -486,7 +519,7 @@ public class ClusterModel
    */
   public int getNumColumns() {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getNumColumns() -- Model does not contain table data -- will return Integer.MIN_VALUE");
+      System.out.println("ERROR: " + getAlias() + ".getNumColumns() -- Model does not contain table data -- will return Integer.MIN_VALUE");
       return Integer.MIN_VALUE;
     } else {
       return _table.getNumColumns();
@@ -499,7 +532,7 @@ public class ClusterModel
   public void getRow(Object buffer, int position) {
     if (_table == null) {
       System.out.println(
-          "ERROR: ClusterModel.getRow(...) -- Model does not contain table data.");
+          "ERROR: " + getAlias() + ".getRow(...) -- Model does not contain table data.");
     } else {
       _table.getRow(buffer, position);
     }
@@ -511,7 +544,7 @@ public class ClusterModel
   public void getColumn(Object buffer, int position) {
     if (_table == null) {
       System.out.println(
-          "ERROR: ClusterModel.getColumn(...) -- Model does not contain table data.");
+          "ERROR: " + getAlias() + ".getColumn(...) -- Model does not contain table data.");
     } else {
       _table.getColumn(buffer, position);
     }
@@ -522,7 +555,7 @@ public class ClusterModel
    */
   public Table getSubset(int start, int len) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getSubset(...) -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " + getAlias() + ".getSubset(...) -- Model does not contain table data -- will return null");
       return null;
     } else {
       return _table.getSubset(start, len);
@@ -534,7 +567,7 @@ public class ClusterModel
    */
   public Table copy() {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.copy() -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " + getAlias() + ".copy() -- Model does not contain table data -- will return null");
       return null;
     } else {
       return _table.copy();
@@ -546,7 +579,7 @@ public class ClusterModel
    */
   public TableFactory getTableFactory() {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getTableFactory() -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " + getAlias() + ".getTableFactory() -- Model does not contain table data -- will return null");
       return null;
     } else {
       return _table.getTableFactory();
@@ -558,7 +591,7 @@ public class ClusterModel
    */
   public boolean isColumnNominal(int position) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.isColumnNominal(...) -- Model does not contain table data -- will return false");
+      System.out.println("ERROR: " + getAlias() + ".isColumnNominal(...) -- Model does not contain table data -- will return false");
       return false;
     } else {
       return _table.isColumnNominal(position);
@@ -570,7 +603,7 @@ public class ClusterModel
    */
   public boolean isColumnScalar(int position) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.isColumnScalar(...) -- Model does not contain table data -- will return false");
+      System.out.println("ERROR: " + getAlias() + ".isColumnScalar(...) -- Model does not contain table data -- will return false");
       return false;
     } else {
       return _table.isColumnScalar(position);
@@ -583,7 +616,7 @@ public class ClusterModel
   public void setColumnIsNominal(boolean value, int position) {
     if (_table == null) {
       System.out.println(
-          "ERROR: ClusterModel.setColumnIsNominal(...) -- Model does not contain table data.");
+          "ERROR: " + getAlias() + ".setColumnIsNominal(...) -- Model does not contain table data.");
     } else {
       _table.setColumnIsNominal(value, position);
     }
@@ -595,7 +628,7 @@ public class ClusterModel
   public void setColumnIsScalar(boolean value, int position) {
     if (_table == null) {
       System.out.println(
-          "ERROR: ClusterModel.setColumnIsScalar(...) -- Model does not contain table data.");
+          "ERROR: " + getAlias() + ".setColumnIsScalar(...) -- Model does not contain table data.");
     } else {
       _table.setColumnIsScalar(value, position);
     }
@@ -606,7 +639,7 @@ public class ClusterModel
    */
   public boolean isColumnNumeric(int position) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.isColumnNumeric(...) -- Model does not contain table data -- will return false");
+      System.out.println("ERROR: " + getAlias() + ".isColumnNumeric(...) -- Model does not contain table data and will return false");
       return false;
     } else {
       return _table.isColumnNumeric(position);
@@ -618,7 +651,7 @@ public class ClusterModel
    */
   public int getColumnType(int position) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getColumnType(...) -- Model does not contain table data -- will return Integer.MIN_VALUE");
+      System.out.println("ERROR: " + getAlias() + ".getColumnType(...) -- Model does not contain table data and will return Integer.MIN_VALUE");
       return Integer.MIN_VALUE;
     } else {
       return _table.getColumnType(position);
@@ -630,7 +663,7 @@ public class ClusterModel
    */
   public ExampleTable toExampleTable() {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.toExampleTable() -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " + getAlias() + ".toExampleTable() -- Model does not contain table data and will return null");
       return null;
     } else {
       return _table.toExampleTable();
@@ -642,7 +675,7 @@ public class ClusterModel
    */
   public boolean isValueMissing(int row, int col) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.isValueMissing(...) -- Model does not contain table data -- will return false");
+      System.out.println("ERROR: " + getAlias() + ".isValueMissing(...) -- Model does not contain table data and will return false");
       return false;
     } else {
       return _table.isValueMissing(row, col);
@@ -654,7 +687,7 @@ public class ClusterModel
    */
   public boolean isValueEmpty(int row, int col) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.isValueEmpty(...) -- Model does not contain table data -- will return false");
+      System.out.println("ERROR: " + getAlias() + ".isValueEmpty(...) -- Model does not contain table data and will return false");
       return false;
     } else {
       return _table.isValueEmpty(row, col);
@@ -666,7 +699,7 @@ public class ClusterModel
    */
   public Table getSubsetByReference(int start, int len) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getSubsetByReference(...) -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " + getAlias() + ".getSubsetByReference(...) -- Model does not contain table data and will return null");
       return null;
     } else {
       return _table.getSubsetByReference(start, len);
@@ -678,7 +711,7 @@ public class ClusterModel
    */
   public Table getSubsetByReference(int[] rows) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getSubsetByReference(...) -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " + getAlias() + ".getSubsetByReference(...) -- Model does not contain table data and will return null");
       return null;
     } else {
       return _table.getSubsetByReference(rows);
@@ -690,7 +723,7 @@ public class ClusterModel
    */
   public Table getSubset(int[] rows) {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.getSubset(...) -- Model does not contain table data -- will return null");
+      System.out.println("ERROR: " + getAlias() + ".getSubset(...) -- Model does not contain table data and will return null");
       return null;
     } else {
       return _table.getSubset(rows);
@@ -702,7 +735,7 @@ public class ClusterModel
    */
   public boolean hasMissingValues() {
     if (_table == null) {
-      System.out.println("ERROR: ClusterModel.hasMissingValues() -- Model does not contain table data -- will return false");
+      System.out.println("ERROR: " + getAlias() + ".hasMissingValues() -- Model does not contain table data and will return false");
       return false;
     } else {
       return _table.hasMissingValues();
@@ -710,3 +743,10 @@ public class ClusterModel
   }
 
 }
+// Start QA Comments
+// 4/11/03 - Ruth started QA;   Updates to error messages to use getAlias() rather than
+//           hardcoded name.   Updated to ModuleInfo to add spaces & remove some tech
+//           terms.  Added getPropertiesDescriptions() as no editable properties.
+//           Changed getOutputNames() to getOutputName() so output port labeled correctly.
+//           Ready for basic.
+// End QA Comments

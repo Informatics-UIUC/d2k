@@ -127,7 +127,7 @@ public class ClusterAssignment_Props extends JPanel
     m_gbc.anchor = GridBagConstraints.EAST;
     m_cmLbl = new JLabel();
     m_cmLbl.setText(CLUSTER_METHOD + ": ");
-    m_cmLbl.setToolTipText("Select method to use in determining distance between two clusters."); 
+    m_cmLbl.setToolTipText("Select method to use in determining similarity between two clusters."); 
     //m_cmLbl.setFont(new Font("Arial", Font.BOLD,10));
     m_gbl.setConstraints(m_cmLbl, m_gbc);
 

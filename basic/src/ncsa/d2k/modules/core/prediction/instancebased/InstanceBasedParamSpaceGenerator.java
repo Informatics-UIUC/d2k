@@ -50,25 +50,25 @@ public class InstanceBasedParamSpaceGenerator extends AbstractParamSpaceGenerato
 
     biasNames       [biasIndex] = NEIGHBORHOOD_SIZE;//"NeighborhoodSize";
     minControlValues[biasIndex] = 1.0;
-    maxControlValues[biasIndex] = Double.MAX_VALUE;
+    maxControlValues[biasIndex] = 100;
     defaults        [biasIndex] = 20;
     resolutions     [biasIndex] = (int) maxControlValues[biasIndex] - (int) minControlValues[biasIndex] + 1;
     types           [biasIndex] = ColumnTypes.INTEGER;
     biasIndex++;
 
     biasNames       [biasIndex] = "DistanceWeightingPower";
-    minControlValues[biasIndex] = Double.MIN_VALUE;
-    maxControlValues[biasIndex] = Double.MAX_VALUE;
+    minControlValues[biasIndex] = 0.0;
+    maxControlValues[biasIndex] = 0.0;
     defaults        [biasIndex] = 0.0;
-    resolutions     [biasIndex] = 1000;
+    resolutions     [biasIndex] = 0;
     types           [biasIndex] = ColumnTypes.DOUBLE;
     biasIndex++;
 
     biasNames       [biasIndex] = "ZeroDistanceWeight";
-    minControlValues[biasIndex] = 1.0E-99;
-    maxControlValues[biasIndex] = Double.MAX_VALUE;
-    defaults        [biasIndex] = 1.0E-99;
-    resolutions     [biasIndex] = 1000;
+    minControlValues[biasIndex] = 0.0;
+    maxControlValues[biasIndex] = 0.0;
+    defaults        [biasIndex] = 0.0;
+    resolutions     [biasIndex] = 0;
     types           [biasIndex] = ColumnTypes.DOUBLE;
     biasIndex++;
 

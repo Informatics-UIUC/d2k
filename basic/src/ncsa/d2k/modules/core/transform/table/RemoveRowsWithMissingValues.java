@@ -65,6 +65,11 @@ public class RemoveRowsWithMissingValues extends DataPrepModule {
     for(int i = 0; i < toRemove.size(); i++)
       idx[i] = ((Integer)toRemove.get(i)).intValue();
 
+
     mt.removeRowsByIndex(idx);
+    pushOutput(mt,0);
+
   }
+    
+
 }

@@ -128,8 +128,8 @@ public class KMeansParams
 
      pds[0] = new PropertyDescription("clusterMethod",
                                        CLUSTER_METHOD,
-        "The method to use for determining the distance between two clusters. " +
-        "This distance is used in formulating the tree that is part of the final cluster model. " +
+        "The method to use for determining the similarity between two clusters. " +
+        "This similarity measure is used in formulating the tree that is part of the final cluster model. " +
         "<p>WARDS METHOD: Use a minimum variance approach that sums the squared error " +
         "(distance) for every point in the cluster to the cluster centroid.</p>" +
         "<p>SINGLE LINK: Distance of closest pair (one from each cluster).</p>" +
@@ -178,7 +178,7 @@ public class KMeansParams
    */
   public String getInputInfo(int parm1) {
     if (parm1 == 0) {
-      return "Table of entities to cluster.";
+      return "Table of examples to cluster.";
     } else {
       return "No such input.";
     }
