@@ -62,7 +62,7 @@ public class LWRPlotVis extends VisModule
     */
     public String[] getInputTypes() {
 		String []in = {"ncsa.d2k.modules.core.datatype.table.PredictionTable",
-					"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+					"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
     }
 
@@ -603,7 +603,7 @@ public class LWRPlotVis extends VisModule
 							Graphics imgG = img.getGraphics();
 							graph.setSize(new Dimension(ROW_WIDTH, ROW_HEIGHT));
 							graph.paintComponent(imgG);*/
-							
+
 
 						}
 						else {

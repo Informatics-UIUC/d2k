@@ -122,13 +122,13 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		//Each of these arrays stores the corresponding value for each query.
 		//Thus, their length is the number of queries
 
-		
+
 		weights = new double[TraintableSubset.getNumRows()];
 		kernels = new double[TraintableSubset.getNumRows()];
 		distances = new double[TraintableSubset.getNumRows()];
 		criterion = new double[TraintableSubset.getNumRows()];
 
-		
+
 		//if the number of nearest neighbors given is too big,
 		//default to not using k-nearest neighbors bandwith selection
 		if (useNearestNeighbors){
@@ -149,7 +149,7 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		addConstant1s(TraintableSubset);
 		int numRows = TestTable.getNumRows();
 		int numColumns = TestTable.getNumColumns();
-		
+
 		//This array will hold the predicted values for the queries
 		prediction = new double[TestTable.getNumRows()];
 
@@ -240,8 +240,8 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		/*for (int j=0; j< TestTable.getNumColumns()-1; j++){
 			finalTable.addColumn(TestTable.getColumn(j));
 		}*/
-		finalTable.addPredictionColumn(prediction);
-		finalTable.addPredictionColumn(criterion);
+		finalTable.addPredictionColumn(prediction, "Predictions");
+		finalTable.addPredictionColumn(criterion, "Criterion");
 
 
 	}	//end big if statement; should collect predCols
@@ -727,7 +727,7 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 	}
 
 	public TableImpl testTableLWRGen(Table xTble, int i) {
-		//the output column of the Traintable is copied into the last 
+		//the output column of the Traintable is copied into the last
 		//column of the xTable.  Thus, we can grab column N-1 for the
 		//predictions
 
@@ -751,8 +751,8 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 	/**
 		generatePlotValues()
 		Uses the Traintable ExampleTable to generate a TableImple
-		with a column for each input Column in Traintable.  There are 
-		num_pts values in each column, equally spaced from the min to 
+		with a column for each input Column in Traintable.  There are
+		num_pts values in each column, equally spaced from the min to
 		the max.
 		@param double[] x - a vector
 		@param double[] q - a vector
@@ -779,7 +779,7 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 			doubCol.setLabel(Traintable.getColumnLabel(inputCols[i]));
 			returnTable.addColumn(doubCol);
 		}
-		
+
 		for (int j=0; j< outputCols.length; j++){
 			double min, max;
 			//System.out.println("outputCols["+j+"] = "+outputCols[j]);

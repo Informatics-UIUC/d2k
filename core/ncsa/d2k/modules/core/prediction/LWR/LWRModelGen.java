@@ -34,8 +34,8 @@ public class LWRModelGen extends ModelGeneratorModule implements HasNames
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
-			"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 
 	}
