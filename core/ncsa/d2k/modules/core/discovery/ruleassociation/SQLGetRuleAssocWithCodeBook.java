@@ -315,7 +315,7 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
       thresholdChosen.setText(Double.toString(threshold));
       thresholdChosen.addActionListener(this);
 
-      useCodeBook = new Checkbox ( "Use Code Book", null, true);
+      useCodeBook = new Checkbox ( "Use Code Book", null, false);
       useCodeBook.addItemListener( this );
       Constrain.setConstraints(options, useCodeBook,
         0,6,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
@@ -342,7 +342,7 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
       Constrain.setConstraints(blankPanel, new JPanel(),
         0,0,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
       codeBookPanel.add(blankPanel, BLANK);
-      codeBookLayout.show(codeBookPanel, FILLED);
+      codeBookLayout.show(codeBookPanel, BLANK);
 
       Constrain.setConstraints(options, codeBookPanel,
         5,6,15,1,GridBagConstraints.NONE,GridBagConstraints.EAST,1,1);
