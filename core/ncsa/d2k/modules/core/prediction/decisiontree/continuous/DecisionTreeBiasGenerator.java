@@ -138,7 +138,7 @@ public class DecisionTreeBiasGenerator extends ComputeModule
 
     Class [] functionInducerClass = new Class[1];
     try {
-      functionInducerClass[0] = Class.forName("ncsa.d2k.modules.core.prediction.decisiontree.continuous.DecisionTreeInducer");
+      functionInducerClass[0] = Class.forName("ncsa.d2k.modules.core.prediction.decisiontree.continuous.DecisionTreeInducerOpt");
     }
     catch (Exception e) {
       System.out.println("could not find class");

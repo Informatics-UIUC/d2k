@@ -317,7 +317,7 @@ public class LinearInducer extends FunctionInducer
                       selectedInputs, weights,
                       MinOutputValue, MaxOutputValue);
 
-    ErrorFunction errorFunction = new ErrorFunction(ErrorFunction.varianceErrorFunctionIndex, null);
+    ErrorFunction errorFunction = new ErrorFunction(ErrorFunction.varianceErrorFunctionIndex);
     double error = errorFunction.evaluate(examples, model);
 
     //System.out.println("linear error = " + error);
