@@ -1,0 +1,14 @@
+%
+% ARFF file for testing parser (not sparse data)
+% This file doesn't contain a data keyword (not even
+% a commented one.
+%
+
+@relation LCCvsLCSH 
+
+@attribute LCC STRING  
+@attribute LCSH STRING 
+
+% no data keyword causes error (yeah!)
+@deta
+AG5, 'Str'

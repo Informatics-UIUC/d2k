@@ -1,0 +1,57 @@
+%
+% ARFF file for testing parser (not sparse data)
+% This file has bogus things in it - how are they handled?
+%
+
+@relation LCCvsLCSH
+
+% Do strings work?   Are attribute variable names case-sensitive?
+@attribute LCC string
+@attribute LCSH STRING
+
+% What about numerics?  If 2 that only differ by case, what happens?
+@ATTRIBUTE sepallength  NUMERIC
+@ATTRIBUTE SepalLength  NUMERIC
+
+% What about nominals?  Again, how is case treated?
+@ATTRIBUTE Class        {A,b,E}
+
+% What about dates?
+@ATTRIBUTE timestamp DATE "yyyy-MM-dd HH:mm:ss" 
+@ATTRIBUTE timestamp2 date "yy-mm-dd"
+
+@data
+% Should be all valid
+AG5, 'Str', 1, 2.2, A, "2001-04-03 12:12:12", "01-04-03"
+% Add a space in the LCSH
+AG5, 'Str A', 1, 2.2, A, "2001-04-03 12:12:12", "01-04-03"
+% Make sepallength real value
+AG5, 'Str A', 1.1, 2.2, A, "2001-04-03 12:12:12", "01-04-03"
+% Make SepalLength missing value
+AG5, 'Str A', 1.1, ?, A, "2001-04-03 12:12:12", "01-04-03"
+% Make Class Invalid value
+AG5, 'Str A', 1.1, ?, B, "2001-04-03 12:12:12", "01-04-03"
+% Make timestamp Invalid format
+AG5, 'Str A', 1.1, ?, B, "01-04-03 12:12:12", "01-04-03"
+% Make timestamp2 Invalid 
+AG5, 'Str A', 1.1, ?, B, "01-04-03 12:12:12", Hi
+% Should be all valid
+AG6, 'StrB', 100, 200.2, A, "2001-04-03 12:12:12", "01-04-03"
+% Make LCC missing value
+?, 'StrB', 100, 200.2, A, "2001-04-03 12:12:12", "01-04-03"
+% add invalid space in LCSH (not quoted)
+?, Str B, 100, 200.2, A, "2001-04-03 12:12:12", "01-04-03"
+% make sepallength invalid type
+0, Str B, HI, 200.2, A, "2001-04-03 12:12:12", "01-04-03"
+% make sepalLength zero value
+0, Str B, HI, 0, A, "2001-04-03 12:12:12", "01-04-03"
+% make Class missing value
+0, Str B, HI, 0, ?, "2001-04-03 12:12:12", "01-04-03"
+% make timestamp missing value
+0, Str B, HI, 0, ?, ?, "01-04-03"
+% make timestamp2 invalid format
+0, Str B, HI, 0, ?, ?, "2001-04-03"
+% 1 value too few
+0, Str B, HI, 0, ?, ?
+% many values too few
+0 
