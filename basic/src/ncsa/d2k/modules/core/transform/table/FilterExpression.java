@@ -154,13 +154,13 @@ public class FilterExpression implements Expression {
 		BOOL_AND = 130, // boolean AND operator
 		BOOL_OR = 135; // boolean OR operator
 
-	private abstract class Node {
+	protected abstract class Node {
 		abstract boolean evaluate(int rowNumber) throws ExpressionException;
 		public abstract String toString();
 	    // ANCA added this method
 		public abstract String toSQLString();
 	}
-	private class Subexpression extends Node {
+	protected class Subexpression extends Node {
 
 		private int opcode;
 
@@ -262,7 +262,7 @@ public class FilterExpression implements Expression {
 		}
 	}
 
-	private class Terminal extends Node {
+	protected class Terminal extends Node {
 
 		private int opcode;
 
@@ -362,7 +362,7 @@ public class FilterExpression implements Expression {
                   switch (opcode) {
 
                      case OP_EQ :
-		     case OP_IS:      // ANCA added this case 
+		     case OP_IS:      // ANCA added this case
 
                         return ((ColumnElement) left).evaluateString(
                            rowNumber)
@@ -652,7 +652,7 @@ public class FilterExpression implements Expression {
 
      // ANCA added this method
 		 public String toSQLString() {
-			  
+
 			  StringBuffer buffer = new StringBuffer();
 			  buffer.append("( ");
 			  buffer.append(left.toSQLString());
@@ -694,7 +694,7 @@ public class FilterExpression implements Expression {
 	}
 
 
-	private class TrueTerminal extends Terminal {
+	protected class TrueTerminal extends Terminal {
 
 		TrueTerminal() {
 		}
@@ -719,7 +719,7 @@ public class FilterExpression implements Expression {
 
 	/******************************************************************************/
 
-	private abstract class Element {
+	protected abstract class Element {
 
 		public abstract String toString();
 
@@ -727,13 +727,13 @@ public class FilterExpression implements Expression {
 		 public abstract String toSQLString();
 	}
 
-	private class ColumnElement extends Element {
+	protected class ColumnElement extends Element {
 
 		private int columnNumber;
 
 		private String columnLabel;
 
-		ColumnElement(String columnLabel) throws ExpressionException {
+		public ColumnElement(String columnLabel) throws ExpressionException {
 
 			Integer I = (Integer) labelToIndex.get(columnLabel);
 
@@ -763,6 +763,10 @@ public class FilterExpression implements Expression {
 			return table.isValueMissing(rowNumber, columnNumber);
 		}
 
+                public int getColumnNumber() {
+                  return columnNumber;
+                }
+
 		public String toString() {
 			return columnLabel;
 		}
@@ -773,12 +777,12 @@ public class FilterExpression implements Expression {
 		}
 	}
 
-	private class ScalarElement extends Element {
+	protected class ScalarElement extends Element {
 		private double value;
-		ScalarElement(double value) {
+		public ScalarElement(double value) {
 			this.value = value;
 		}
-		double evaluate() {
+		public double evaluate() {
 			return value;
 		}
 		public String toString() {
@@ -791,17 +795,17 @@ public class FilterExpression implements Expression {
 
 	}
 
-	private class NominalElement extends Element {
+	protected class NominalElement extends Element {
 
 		private String value;
 
-		NominalElement(String value) {
+		public NominalElement(String value) {
 
 			this.value = value;
 
 		}
 
-		String evaluate() {
+		public String evaluate() {
 
 			return value;
 
@@ -837,7 +841,7 @@ public class FilterExpression implements Expression {
 
 	/******************************************************************************/
 
-	private Node parse(String expression) throws ExpressionException {
+	protected Node parse(String expression) throws ExpressionException {
 
 		if (expression.length() == 0)
 			return null;
@@ -986,7 +990,7 @@ public class FilterExpression implements Expression {
 
 	}
 
-	private Node parseTerminal(String expression) throws ExpressionException {
+	protected Node parseTerminal(String expression) throws ExpressionException {
 
 		char c, d;
 
@@ -1092,7 +1096,7 @@ public class FilterExpression implements Expression {
 
 	}
 
-	private Element parseElement(String expression)
+	protected Element parseElement(String expression)
 		throws ExpressionException {
 
 		if (expression.length() == 0)
