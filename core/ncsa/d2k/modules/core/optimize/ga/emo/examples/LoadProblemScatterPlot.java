@@ -35,7 +35,7 @@ public class LoadProblemScatterPlot extends ScatterPlot implements MouseListener
 		this.addMouseListener (this);
 	}
 
-	public LoadProblemScatterPlot(TableImpl table, DataSet[] sets, GraphSettings settings) {
+	public LoadProblemScatterPlot(Table table, DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 		this.addMouseListener (this);
 	}
@@ -76,12 +76,10 @@ public class LoadProblemScatterPlot extends ScatterPlot implements MouseListener
 				for (int j = 0 ; j < vertPoints[0].length; j++)
 					vertPoints [i][j] = -1;
 			int cnt = 0;
-			NumericColumn xcolumn = (NumericColumn) table.getColumn(sets[0].x);
-			NumericColumn ycolumn = (NumericColumn) table.getColumn(sets[0].y);
-			int size = xcolumn.getNumRows();
+			int size = table.getNumRows();
 			for (int index=0; index < size; index++) {
-				double xvalue = xcolumn.getDouble(index);
-				double yvalue = ycolumn.getDouble(index);
+				double xvalue = table.getDouble(index, sets[0].x);
+				double yvalue = table.getDouble(index, sets[0].y);
 				int x = (int) ((xvalue-xminimum)/xscale);
 				int y = (int) ((yvalue-yminimum)/yscale);
 				if (x < this.getSize().width && y < this.getSize().height)
@@ -99,12 +97,9 @@ public class LoadProblemScatterPlot extends ScatterPlot implements MouseListener
 
 	public void drawSelected (Graphics2D g2) {
 		final Font paramFnt = new Font ("Helvetica", Font.ITALIC, 8);
-		NumericColumn x1column = (NumericColumn) table.getColumn(0);
-		NumericColumn x2column = (NumericColumn) table.getColumn(1);
-		NumericColumn x3column = (NumericColumn) table.getColumn(2);
-		double x1 = x1column.getDouble (selected);
-		double x2 = x2column.getDouble (selected);
-		double x3 = x3column.getDouble (selected);
+		double x1 = table.getDouble (selected, 0);
+		double x2 = table.getDouble (selected, 1);
+		double x3 = table.getDouble (selected, 2);
 		Dimension sz = this.getSize ();
 		g2.setFont (paramFnt);
 		FontMetrics fm = g2.getFontMetrics (paramFnt);
@@ -129,10 +124,8 @@ public class LoadProblemScatterPlot extends ScatterPlot implements MouseListener
 				df.format(x3)+")";
 		g2.drawString (form, left - (fm.stringWidth (form)/2), top);
 
-		x2column = (NumericColumn) table.getColumn(3);
-		x3column = (NumericColumn) table.getColumn(4);
-		x1 = x2column.getDouble (selected);
-		x2 = x3column.getDouble (selected);
+		x1 = table.getDouble (selected, 3);
+		x2 = table.getDouble (selected, 4);
 		form = "f1("+df.format(x1)+") f2("+df.format(x2)+")";
 		g2.drawString (form, left - (fm.stringWidth (form)/2), top + fm.getHeight ());
 	}
@@ -143,14 +136,13 @@ public class LoadProblemScatterPlot extends ScatterPlot implements MouseListener
 	public void drawDataSet(Graphics2D g2, DataSet set) {
 		if (allBars == null)
 			this.loadImages ();
-		NumericColumn xcolumn = (NumericColumn) table.getColumn(set.x);
-		NumericColumn ycolumn = (NumericColumn) table.getColumn(set.y);
+
 		if (selected != -1)
 			this.drawSelected (g2);
-		int size = xcolumn.getNumRows();
+		int size = table.getNumRows();
 		for (int index=0; index < size; index++) {
-			double xvalue = xcolumn.getDouble(index);
-			double yvalue = ycolumn.getDouble(index);
+			double xvalue = table.getDouble(index, set.x);
+			double yvalue = table.getDouble(index, set.y);
 
 			if (selected == index)
 				drawSelectedPoint (g2, Color.red/*set.color*/, xvalue, yvalue);
