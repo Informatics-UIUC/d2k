@@ -109,20 +109,35 @@ public class AttributeConstruction extends UIModule {
 /* properties                                                                 */
 /******************************************************************************/
 
-   private String[] _newLab = null;
+   protected String[] _newLab = null;
    public Object getNewLab() { return _newLab; }
    public void setNewLab(Object value) { _newLab = (String[])value; }
 
-   private int[] _newTyp = null;
+   protected int[] _newTyp = null;
    public Object getNewTyp() { return _newTyp; }
    public void setNewTyp(Object value) { _newTyp = (int[])value; }
 
-   private Object[] _lastCons = null;
+   protected Object[] _lastCons = null;
    public Object getLastCons() { return _lastCons; }
    public void setLastCons(Object value) { _lastCons = (Object[])value; }
 
    public PropertyDescription[] getPropertiesDescriptions() {
-      return new PropertyDescription[0];
+
+     PropertyDescription pds[] = new PropertyDescription[3];
+     pds[0] = new PropertyDescription( "newLab",
+                "Column Labels",
+                "Saves the labels of the columns created by the user");
+
+     pds[1] = new PropertyDescription( "newTyp",
+                  "Column Types",
+                  "Saves the types of the columns created by the user");
+
+     pds[2] = new PropertyDescription( "lastCons",
+                  "Column Construction Strings",
+                  "Saves the construction strings of the columns created by the user");
+
+
+      return pds;
    }
 
 /******************************************************************************/
@@ -132,29 +147,54 @@ public class AttributeConstruction extends UIModule {
    protected class ColumnConstructionGUI extends JUserPane
       implements ActionListener, ExpressionListener {
 
-      private ExpressionGUI gui;
-      private ColumnExpression expression;
-      private MutableTable table;
+      protected ExpressionGUI gui;
+      protected  ColumnExpression expression;
+      protected  MutableTable table;
 
-      private String[]           newLabels; // for use in constructing
-      private int[]              newTypes;  // the transformation
+      protected  String[]           newLabels; // for use in constructing
+      protected  int[]              newTypes;  // the transformation
+      protected Object[] constructions;
 
-      private JButton addColumnButton, addOperationButton, addBooleanButton,
+      protected  JButton addColumnButton, addOperationButton, addBooleanButton,
                       deleteButton, abortButton, doneButton, helpButton, addScalarButton;
-      private JComboBox columnBox, operationBox, booleanBox;
-      private JTextField newNameField;
-      private JTextField scalarField;
-      private JScrollPane thatPane;
-      private HelpWindow help = new HelpWindow();
+      protected  JComboBox columnBox, operationBox, booleanBox;
+      protected JTextField newNameField;
+      protected JTextField scalarField;
+      protected JScrollPane thatPane;
+      protected HelpWindow help = new HelpWindow();
+      protected JPanel columnPanel;
+      protected JPanel rightPanel;
+      protected JPanel bottomPanel;
+      protected JPanel guiPanel;
+      protected JPanel operationPanel;
+      protected JPanel newNamePanel;
+      protected JList newColumnList;
+      protected DefaultListModel newColumnModel;
+      protected HashMap stringsToColumnBoxEntries;
 
-      private JList newColumnList;
-      private DefaultListModel newColumnModel;
-      private JPanel columnPanel;
-      private HashMap stringsToColumnBoxEntries;
+      protected JLabel constructionLabel;
+      protected ViewModule mod;
 
-      private Object[] constructions;
+      public ColumnConstructionGUI() {
+        newLabels = (String[])AttributeConstruction.this.getNewLab();
+        newTypes = (int[])getNewTyp();
+        constructions = (Object[])getLastCons();
+      }
 
-      private ViewModule mod;
+     public ColumnConstructionGUI(String[] nl, int[] nt, Object[] con) {
+        newLabels = nl;
+        newTypes = nt;
+        constructions = con;
+      }
+
+      public void setValues(String[] nl, int[] nt, Object[] con)
+      {
+        newLabels = nl;
+      newTypes = nt;
+      constructions = con;
+
+      }
+
 
       public void initView(ViewModule m) {
          mod = m;
@@ -175,7 +215,7 @@ public class AttributeConstruction extends UIModule {
          initialize();
       }
 
-      private void initialize() {
+     public void initialize() {
 
          mod.setWindowName( getAlias() );
 
@@ -185,21 +225,15 @@ public class AttributeConstruction extends UIModule {
          gui = new ExpressionGUI(expression, true);
          gui.addExpressionListener(this);
 
-         newLabels = _newLab;
-         newTypes = _newTyp;
-         constructions = _lastCons;
-
          newNameField = new JTextField(16);
-
+         newNameField.setMinimumSize(new Dimension(180, 20));
+         newNameField.setPreferredSize(new Dimension(180, 20));
          stringsToColumnBoxEntries = new HashMap();
 
-         JPanel newNamePanel = new JPanel();
+         newNamePanel = new JPanel();
          newNamePanel.setLayout(new GridBagLayout());
-         Constrain.setConstraints(newNamePanel,
-            new JLabel("New attribute label:"), 0, 0, 1, 1,
-            GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
-         Constrain.setConstraints(newNamePanel, newNameField, 0, 1, 1, 1,
-            GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+         Constrain.setConstraints(newNamePanel, newNameField, 0, 0, 1, 1,
+                   GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
 
          columnBox = new JComboBox();
          for (int i = 0; i < table.getNumColumns(); i++) {
@@ -252,6 +286,7 @@ public class AttributeConstruction extends UIModule {
          if (newLabels != null) {
             for (int i = 0; i < newLabels.length; i++) {
                columnBox.addItem(newLabels[i]);
+
             }
          }
 
@@ -279,7 +314,7 @@ public class AttributeConstruction extends UIModule {
                new ImageIcon(mod.getImage("/images/addbutton.gif")));
          addOperationButton.addActionListener(this);
 
-         JPanel operationPanel = new JPanel();
+         operationPanel = new JPanel();
          operationPanel.setLayout(new GridBagLayout());
          Constrain.setConstraints(operationPanel, new JLabel(), 0, 0, 1, 1,
             GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
@@ -305,7 +340,7 @@ public class AttributeConstruction extends UIModule {
 
          addScalarButton = new JButton(new ImageIcon(mod.getImage("/images/addbutton.gif")));
          addScalarButton.addActionListener(this);
-         scalarField = new JTextField(16);
+         scalarField = new JTextField(10);
 
          scalarField.setMinimumSize(new Dimension(150, 20));
          scalarField.setPreferredSize(new Dimension(150, 20));
@@ -318,31 +353,36 @@ public class AttributeConstruction extends UIModule {
             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
          Constrain.setConstraints(booleanPanel, addBooleanButton, 2, 0, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
-
-        Constrain.setConstraints(scalarPanel, scalarField, 1, 0, 1, 1,
+         Constrain.setConstraints(scalarPanel, scalarField, 1, 0, 1, 1,
                  GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
-        Constrain.setConstraints(scalarPanel, addScalarButton, 2, 0, 1, 1,
+         Constrain.setConstraints(scalarPanel, addScalarButton, 2, 0, 1, 1,
                  GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
 
 
          JPanel leftPanel = new JPanel();
          leftPanel.setLayout(new GridBagLayout());
-         Constrain.setConstraints(leftPanel, newNamePanel, 0, 0, 1, 1,
+
+         Constrain.setConstraints(leftPanel,  new JLabel("              "), 0, 0, 1, 1,
+             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 0, 0);
+         Constrain.setConstraints(leftPanel,  new JLabel("New attribute label:"), 0, 0, 1, 1,
+                 GridBagConstraints.NONE, GridBagConstraints.NORTH, 0, 0);
+         Constrain.setConstraints(leftPanel, new JLabel("   "), 0, 1, 1, 1,
+                 GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
+         Constrain.setConstraints(leftPanel, new JLabel("   "), 0, 2, 1, 1,
+                 GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
+
+         Constrain.setConstraints(leftPanel, columnPanel, 0, 3, 1, 1,
             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
-         Constrain.setConstraints(leftPanel, new JSeparator(), 0, 1, 1, 1,
+         Constrain.setConstraints(leftPanel, operationPanel, 0, 4, 1, 1,
             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
-         Constrain.setConstraints(leftPanel, columnPanel, 0, 2, 1, 1,
-            GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
-         Constrain.setConstraints(leftPanel, operationPanel, 0, 3, 1, 1,
-            GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
-         Constrain.setConstraints(leftPanel, booleanPanel, 0, 4, 1, 1,
+         Constrain.setConstraints(leftPanel, booleanPanel, 0, 5, 1, 1,
             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
 
 
 
-      Constrain.setConstraints(leftPanel, scalarPanel ,0, 6, 1, 1,
+         Constrain.setConstraints(leftPanel, scalarPanel ,0, 6, 1, 1,
             GridBagConstraints.BOTH, GridBagConstraints.NORTH, 1, 0);
-      Constrain.setConstraints(leftPanel, new JLabel(), 0, 7, 1, 1,
+         Constrain.setConstraints(leftPanel, new JLabel(), 0, 7, 1, 1,
             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
 
          newColumnList = new JList();
@@ -370,13 +410,13 @@ public class AttributeConstruction extends UIModule {
          deleteButton = new JButton("Delete");
          deleteButton.addActionListener(this);
 
-
-         JPanel rightPanel = new JPanel();
-
          thatPane = new JScrollPane(newColumnList);
          thatPane.setPreferredSize(new Dimension(200,200));
 
+         rightPanel = new JPanel();
          rightPanel.setLayout(new GridBagLayout());
+         rightPanel.setPreferredSize(new Dimension(thatPane.getPreferredSize()));
+
          Constrain.setConstraints(rightPanel, new JLabel("New attributes defined:  "), 0, 0, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
          Constrain.setConstraints(rightPanel, thatPane, 0, 1, 1, 1,
@@ -385,21 +425,30 @@ public class AttributeConstruction extends UIModule {
             GridBagConstraints.NONE, GridBagConstraints.SOUTHEAST, 0, 0);
 
 
-         JPanel guiPanel = new JPanel();
+         guiPanel = new JPanel();
          guiPanel.setLayout(new GridBagLayout());
-         Constrain.setConstraints(guiPanel, new JLabel("Construction string:"), 0, 0, 1, 1,
-            GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
-         Constrain.setConstraints(guiPanel, gui, 0, 1, 1, 1,
-            GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+         constructionLabel = new JLabel("Construction String:");
+
+         Constrain.setConstraints(guiPanel, newNamePanel, 0, 0, 1, 1,
+                    GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
+         Constrain.setConstraints(guiPanel, new JSeparator(), 0, 1, 1, 1,
+                    GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
+
+         Constrain.setConstraints(guiPanel, constructionLabel, 0, 2, 1, 1,
+                    GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
+                 Constrain.setConstraints(guiPanel, gui, 0, 3, 1, 1,
+                    GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+
 
          JPanel topPanel = new JPanel();
          topPanel.setLayout(new GridBagLayout());
+
          Constrain.setConstraints(topPanel, leftPanel, 0, 0, 1, 1,
             GridBagConstraints.VERTICAL, GridBagConstraints.WEST, 0, 1);
          Constrain.setConstraints(topPanel, guiPanel, 1, 0, 1, 1,
             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
          Constrain.setConstraints(topPanel, new JSeparator(SwingConstants.VERTICAL), 2, 0, 1, 1,
-            GridBagConstraints.VERTICAL, GridBagConstraints.EAST, 0, 1);
+              GridBagConstraints.VERTICAL, GridBagConstraints.EAST, 0, 1);
          Constrain.setConstraints(topPanel, rightPanel, 3, 0, 1, 1,
             GridBagConstraints.VERTICAL, GridBagConstraints.EAST, 0, 1);
 
@@ -415,7 +464,8 @@ public class AttributeConstruction extends UIModule {
             }
          });
 
-         JPanel bottomPanel = new JPanel();
+         bottomPanel = new JPanel();
+
          bottomPanel.setLayout(new GridBagLayout());
          Constrain.setConstraints(bottomPanel, helpButton, 0, 0, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
@@ -453,7 +503,7 @@ public class AttributeConstruction extends UIModule {
             gui.getTextArea().insert(" " + booleanBox.getSelectedItem() + " ",
                gui.getTextArea().getCaretPosition());
 
-      else if (src == addScalarButton)
+        else if (src == addScalarButton)
                  gui.getTextArea().insert(" " + scalarField.getText() + " ",
                     gui.getTextArea().getCaretPosition());
 
@@ -507,6 +557,10 @@ public class AttributeConstruction extends UIModule {
                _newTyp = newTypes;
                _lastCons = newColumnModel.toArray();
 
+
+
+
+
             }
          }
 
@@ -533,6 +587,7 @@ public class AttributeConstruction extends UIModule {
             // determine new expression, label, and type
 
             ColumnExpression newExp = new ColumnExpression(table);
+
             try {
                // System.out.println("new " + newLabels + " " + newTypes);
                newExp.setLazyExpression(gui.getTextArea().getText(), newLabels, newTypes);
@@ -662,7 +717,7 @@ public class AttributeConstruction extends UIModule {
 // 3-4-03 vered started qa:
 // 3-6-03 sent back to greg to support default labels.
 // 7-17-03 Ruth changed module name to be Attribute Construction.
-//         Deleted commented out code - it's in CVS if needed. 
+//         Deleted commented out code - it's in CVS if needed.
 //         Explicitly call setWindowName so it matches module alias.
 //
 

@@ -230,7 +230,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		JMenuItem pmml;
 		JMenuBar menuBar;
 
-
+                JTable rjt;
+                JTable vjt;
 		/** this identifies the order the rules are displayed in, also what rules are
 		 * displayed. */
 		int [] order = null;
@@ -377,31 +378,352 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			return menuBar;
 		}
 
+
+
+
 		public int print(Graphics g, PageFormat pf, int pi) throws PrinterException {
-			double pageHeight = pf.getImageableHeight();
-			double pageWidth = pf.getImageableWidth();
+                  //System.out.println("The current pi is " + pi);
+                  Graphics2D g2=(Graphics2D)g;
 
-			double cWidth = getWidth();
-			double cHeight = getHeight();
+                  if (!pageinfoCalculated) //Checks to see if page info has been calculated-gathered yet
+                  {
+                    getPageInfo(g, pf);
+                  }
+                  g2.setColor(Color.black); //Sets printing color to black
 
-			double scale = 1;
-			if(cWidth >= pageWidth)
-				scale = pageWidth/cWidth;
-			if(cHeight >= pageHeight)
-				scale = Math.min(scale, pageHeight/cHeight);
+                  //if page index is greater than or equal to number of pages in table
+                  //numHorizontalPages+ ((numHorizontalPages-1)*(numVerticalPages-1)) +numVerticalPages is allows for
+                  //first section of table (top 12 rows, 15 columns);  + next section (first left side row, first left side column)
+                  //on every vertical section of table + last section of table (all horizontal sections on second vertical pages to last)
+              if (pi >= (int)(numHorizontalPages+ ((numHorizontalPages-1)*(numVerticalPages-1)) +numVerticalPages))
+                 {
+                  return Printable.NO_SUCH_PAGE;
+                  }
 
-			double cWidthOnPage = cWidth*scale;
-			double cHeightOnPage = cHeight*scale;
+              pf.setOrientation(PageFormat.LANDSCAPE);
+              g2.translate((int)pf.getImageableX(), (int)pf.getImageableY());
 
-			if (pi >= 1)
-				return Printable.NO_SUCH_PAGE;
+               printTablePartAll(g2, pf, pi);
+                return Printable.PAGE_EXISTS;
 
-			Graphics2D g2 = (Graphics2D) g;
-			g2.translate(pf.getImageableX(), pf.getImageableY());
-			g2.scale(scale, scale);
-			print(g2);
-			return Printable.PAGE_EXISTS;
 		}
+
+
+
+                      JTableHeader tableHeader;
+                      boolean pageinfoCalculated=false;
+
+                  //WIDTH INFORMATION
+                      double pageWidth;    //The width available for each printed page
+                      int fontDesent;      //Font depth
+                      double tableHeaderWidth;  //The width of tableHeader
+                      double verticalTableWidth = 0;
+                      int columnWidth;     //The width of each column of main table
+                  //WIDTH INFORMATION
+
+                  //HEIGHT INFORMATION
+                      double tableHeaderHeight; //The height of tableHeader
+                      double pageHeight;    //The height available for each printed page
+                      int fontHeight;       //Font height
+                      double barHeaderHeight = 0; //The height of bar graph table (header of top-most pages)
+                      int oneRowHeight;     //The height of each row of main table
+                 //HEIGHT INFORMATION
+
+                 //NUMBER OF PAGES INFORMATION
+                      int numVerticalPages = 0; //Total number of pages needed for rows
+                      int numHorizontalPages = 0;//Total number of pages needed for columns
+                  //NUMBER OF PAGES INFORMATION
+
+                  //COLUMN AND ROW INFORMATION
+                      int numRowsOnAPage = 0;//Number of rows per printed page
+                      int numColumnOnAPage = 0;//Number of columns per printed page
+                      int currentHorizontalPage = 2; //Current page that horizontal shift is on
+                      int currentVerticalPage = 2;   //Current page that vertical shift is on
+                      int pageRight = 450;           //Page Edge on right side, printed to this max X value
+                      TableColumnModel tableColumnModel;
+                      int tableWidthPerPage;  //The width of table printed per page (after page 1)
+                      int pageLeft;          //Page Edge on left side, printed from this min X value
+                      double topPageLeft = 0; //Page Edge at top of vertical shift
+                      int onLevelCount = 0;   //Tracks horizontal shift on all vertical-horizontally shifting pages
+                      int printHorizontalCount = 0; //Prevents premature changing of horizontal values when Printing Index refers to a method twice
+                      int printVerticalCount = 0;    //Prevents premature changing of vertical values when Printing Index refers to a method twice
+                      int printHorizontalVerticalCount = 0; //Prevents premature changing of horizontal and vertical values when Printing Index refers to a method twice
+                      int bottomLeft = 450;   //Page Edge on bottom of page, printed to this max Y value
+                      int currentHorizontalPage2; //Current page that horizontal page of vertical shift is on
+                 //COLUMN AND ROW INFORMATION
+
+
+                  //Gathers general information about one page and the 4 different tables
+                         public void getPageInfo(Graphics g, PageFormat pageFormat)
+                         {
+
+                           //determine font size, height and depth
+                           fontHeight = g.getFontMetrics().getHeight();
+                           fontDesent = g.getFontMetrics().getDescent();
+
+                           //header information gathered
+                           tableHeader = rjt.getTableHeader();
+                           tableHeaderWidth = tableHeader.getWidth();
+                           tableHeaderHeight = tableHeader.getHeight() + rjt.getRowMargin();
+                           barHeaderHeight = vjt.getHeight();
+
+                           //If-then table width gathered
+                           verticalTableWidth = rhjt.getWidth();
+
+                           //Height and Width avaliable for printed page gathered
+                           pageHeight = pageFormat.getImageableHeight();
+                           pageWidth = pageFormat.getImageableWidth();
+
+                           //Individual Column information gathered
+                           tableColumnModel = rjt.getColumnModel();
+                           columnWidth = 0;
+                           columnWidth = tableColumnModel.getColumn(0).getWidth();
+
+                           //Row Calculations
+                           oneRowHeight = rjt.getRowHeight();
+                           numRowsOnAPage=(int)((pageHeight-tableHeaderHeight + barHeaderHeight)/oneRowHeight)/2;
+                           numVerticalPages= (int)Math.ceil(((double)rjt.getRowCount())/numRowsOnAPage);
+
+                           //Column Calculations
+                           numColumnOnAPage = (int) (pageWidth)/(columnWidth);
+                           numHorizontalPages =(int) Math.ceil(((double)rjt.getColumnCount())/numColumnOnAPage);
+                           tableWidthPerPage =  numColumnOnAPage * columnWidth + rhjt.getWidth();
+
+                           pageinfoCalculated = true;
+
+
+                        }
+
+
+
+
+                      //All part of RuleVis printed (If-Then column, Button Table, Bar Graph Table, TableHeader, and Main Table)
+                      public void printTablePartAll(Graphics2D g2, PageFormat pageFormat, int pi)
+                      {
+                      //Printing Left-Right-Width-Height's calculated
+                       int printablePageLeft = 0;
+                       int printablePageRight = numColumnOnAPage * columnWidth;
+                       int printablePageWidth =  printablePageRight-printablePageLeft;
+                       int newPageHeight = numRowsOnAPage * oneRowHeight;
+
+                       //moves graphic object to starting location of current page
+                       g2.translate(-printablePageLeft, 0);
+
+                      if (pi == 0) //IF FIRST PAGE, THEN PRINT ALL ITEMS
+                      {
+
+
+                            String pageNumber1 = "Page: " + "1 - 1";
+                            g2.drawString(pageNumber1,  (int)pageWidth/2, (int)(500));
+                           // System.out.println("The page number for first page is " + pageNumber1);
+
+                        //All Set Clip Code goes to X,Y position, then cuts out from there a Width,Height section
+
+                          //BAR-GRAPH TABLE (Header part to all first row-horizontal pages)
+                           g2.translate(rhjt.getWidth(), 0);
+                           g2.setClip(printablePageLeft, 0, printablePageWidth, (int) barHeaderHeight);
+                           vjt.paint(g2); // draw's the graph bars table
+
+                          //BUTTON TABLE
+                           g2.translate( -rhjt.getWidth(), 0);
+                           g2.setClip(printablePageLeft, 0, vhjt.getWidth(), (int) barHeaderHeight);
+                           vhjt.paint(g2); //draws the radio-button table
+
+                           //IF-THEN TABLE
+                           g2.translate(pageLeft, barHeaderHeight+tableHeaderHeight);
+                           g2.setClip(printablePageLeft, 0, (int) verticalTableWidth, (int) newPageHeight); //modified, goes to same height as main table
+                           rhjt.paint(g2); //draws if-then table
+
+                           //TABLE HEADER OF MAIN TABLE
+                           g2.translate(rhjt.getWidth(),-tableHeaderHeight );
+                           g2.setClip(printablePageLeft, 0, printablePageWidth, (int) tableHeaderHeight);
+                           tableHeader.paint(g2); //draws header for rjt table (numbers)
+
+                           // CHECK AND BOX TABLE (MAIN TABLE)
+                           g2.translate(0, tableHeaderHeight);
+                           g2.setClip(printablePageLeft, 0, printablePageWidth, (int) newPageHeight);
+                           rjt.paint(g2); //draws check and box table
+
+
+                      }
+
+                      else //ELSE PRINT CERTAIN PARTS OF TABLE, BASED ON PAGE POSITION CONDITIONS
+                      {
+                        g2.translate(0, -40);
+
+                        /*
+                         This Code prints the complete first visible rows of table with all necessary headers;
+                         Once that is complete, the next set of rowso f the table are printed by shifting the graphics objected downwards to
+                         the last printed row of previous page and clip from there.  Then the following
+                         else if statement involving onLevelCount, indicates that the printer
+                         should continued printing on same Y, but change X (Shifting horizontally)
+                         When onLevelCount hits max, sets back to zero and then shifts downward to next row
+                         And that process continues until all rows printed.  The printing being done is one in which
+                         the top visible rows are printed with headers and all, then we first shift horizontally, then shift down one whole page and print that by shifting
+                         horizontally on that set of rows and continuing on as such.
+
+                         *Note* The use of onLevelCount variable, allows for the horizontal shifting on vertical pages 2 -> end.
+                         Also the use of printCounts is to deal with the fact that printIndex is used twice by printing, meaning methods are
+                         called twice and inside methods, we only want values that shift for clipping, to change once.
+
+                         */
+                          //all top horizontal sections
+                           if (currentHorizontalPage <= numHorizontalPages)
+                           {
+
+                             String pageNumber2 = "Page: 1" + "-" + currentHorizontalPage;
+
+                             g2.drawString(pageNumber2,  (int)pageWidth / 2, (int)500);
+
+                               printTablePart2(g2, pageFormat, currentHorizontalPage, pi);
+                               if (printHorizontalCount == 1) //If second call to print index made, move to next page, reset print count
+                               {
+                                   currentHorizontalPage = currentHorizontalPage + 1;
+                                   printHorizontalCount = 0;
+                               }
+                               else //First print index call, increment print count
+                                   printHorizontalCount++;
+                            }
+                            //top-left side section, all vertical, executed once for each vertical page
+                           else if (currentVerticalPage <= numVerticalPages || currentHorizontalPage2 <= numHorizontalPages)
+                            {
+                                //g2.translate(0, -40);
+                                if (onLevelCount == 0) //If zero then at new row so, print it first page of it
+                                {
+
+                                     String pageNumber3 = "Page:" + currentVerticalPage + "-" + "1";
+                                     g2.drawString(pageNumber3,  (int)pageWidth/2, (int)(500));
+                                     printTablePart3(g2, pageFormat, currentVerticalPage, pi);
+
+                                    if (printVerticalCount == 1)//If second call to print index made, move to next page, reset print count
+                                    {
+                                        currentVerticalPage = currentVerticalPage + 1;
+                                        printVerticalCount = 0;
+                                        onLevelCount++;
+                                        currentHorizontalPage2 = 2;
+                                    }
+                                    else//First print index call, increment print count
+                                        printVerticalCount++;
+
+                                }
+                                //At same set of visible rows as above, shift page horizontally, printing columnsPerPage and rowsPerPage on each page
+
+                               else if (onLevelCount <= numHorizontalPages)
+                               {
+
+                                 String pageNumber4 = "Page:" + (currentVerticalPage-1) + "-" + (onLevelCount+1);
+                                 g2.drawString(pageNumber4,  (int)pageWidth/2, (int)(500));
+                                 printTablePart4(g2, pageFormat, currentVerticalPage, currentHorizontalPage, pi);
+
+                                   if (printHorizontalVerticalCount == 1)//If second call to print index made, move to next page, reset print count
+                                   {
+                                      onLevelCount++;
+                                      printHorizontalVerticalCount = 0;
+                                      currentHorizontalPage2++;
+                                   }
+                                   else//First print index call, increment print count
+                                      printHorizontalVerticalCount++;
+
+                               }
+                                else
+                                 onLevelCount = 0;
+
+                            }
+
+
+                         }
+
+
+              }
+                      //Part of RuleVis printed (Bar Graph Table, TableHeader, and Main Table  )
+                      public void printTablePart2(Graphics2D g2, PageFormat pageFormat, int currentHorizontalPage, int pi)
+                      {
+
+                          pageLeft = pageRight;
+
+                          int newPageHeight = numRowsOnAPage * oneRowHeight;
+
+
+                          g2.translate(-pageLeft, 0); //moves graphic object to starting location of current page
+                          g2.setColor(Color.black);
+
+                         //BAR GRAPH TABLE
+
+
+
+                          g2.setClip(pageLeft, 0,(int) tableWidthPerPage , (int) barHeaderHeight);
+                          vjt.paint(g2); // draw's the graph bars table
+
+                          //TABLE HEADER OF MAIN TABLE
+                          g2.translate(0, barHeaderHeight);
+                          g2.setClip(pageLeft, 0, (int)tableWidthPerPage , (int) tableHeaderHeight);
+                          tableHeader.paint(g2); //draws header for rjt table (numbers)
+
+
+                          // CHECK AND BOX TABLE (MAIN TABLE)
+                          g2.translate(0, tableHeaderHeight);
+                          g2.setClip(pageLeft, 0,(int) tableWidthPerPage , (int) newPageHeight);
+                          rjt.paint(g2); //draws check and box table
+
+
+
+                          if (printHorizontalCount == 1)
+                          {
+
+
+                            pageRight = pageLeft + (int) tableWidthPerPage;
+                          }
+
+              }
+
+                     //Part of RuleVis printed (If-Then column and Main Table)
+                     public void printTablePart3(Graphics2D g2, PageFormat pageFormat, int currentVerticalPage, int pi)
+                     {
+                         int printablePageLeft = (int)topPageLeft;
+                         int printablePageRight = (numColumnOnAPage * columnWidth);
+                         int printablePageWidth =  printablePageRight-printablePageLeft;
+                         int newPageHeight = numRowsOnAPage * oneRowHeight;
+
+
+
+
+                         g2.translate(-printablePageLeft, -newPageHeight); //moves graphic object to starting location of current page
+
+                         //IF-THEN TABLE
+                         g2.setClip(printablePageLeft,newPageHeight, (int) verticalTableWidth, newPageHeight); //modified, goes to same height as main table
+                         rhjt.paint(g2);
+
+                         // CHECK AND BOX TABLE (MAIN TABLE)
+                         g2.translate((int) verticalTableWidth, 0);
+                         g2.setClip(printablePageLeft, newPageHeight, (int)printablePageWidth,  newPageHeight);
+                         rjt.paint(g2); //draws check and box table
+
+                         if (printVerticalCount == 1)
+                              topPageLeft = topPageLeft + (int)newPageHeight + vjt.getHeight() + tableHeader.getHeight();
+                }
+
+
+
+
+                    //Part of RuleVis printed (Main Table)
+                    public void printTablePart4(Graphics2D g2, PageFormat pageFormat, int currentVerticalPage, int currentHorizontalPage, int pi)
+                    {
+                        int printablePageLeft = bottomLeft;
+                        int newPageHeight = numRowsOnAPage * oneRowHeight;
+                        g2.translate(-bottomLeft, -newPageHeight); //moves graphic object to starting location of current page
+
+                        // CHECK AND BOX TABLE (MAIN TABLE)
+                        g2.setClip(printablePageLeft, newPageHeight, tableWidthPerPage, (int) newPageHeight);
+                        rjt.paint(g2); //draws check and box table
+
+                        if (printHorizontalVerticalCount == 1)
+                        {
+                           bottomLeft = bottomLeft + tableWidthPerPage;
+
+                        }
+                }
+
+
 
                 private class RowHeadTable extends JTable {
                   RowHeadTable(TableModel tm) {
@@ -423,7 +745,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                 }
 
 
-		/** construct a table for the row heads.
+		/**
+                 * construct a table for the row heads.
 		*/
 		JTable rhjt = null;
 		private JViewport getRowHeadTable (int imageHeight)
@@ -709,8 +1032,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			@param input this is the object that has been input.
 			@param index the index of the input that has been received.
 		*/
-                JTable rjt;
-                JTable vjt;
+
 		public void setInput(Object o, int index) {
 			if (index == 0)
 				ruleTable = (RuleTable)o;

@@ -7,7 +7,8 @@ import ncsa.d2k.modules.core.datatype.*;
 /**
  * A <code>ColumnExpression</code> object encapsulates a single mathematical
  * expression of arbitrary length in which columns of a <code>Table</code> are
- * combined by various operators.
+ * combined by various operators.  It also encapsulates a single string object
+ * which can not be combined with operators at the moment.
  *
  * @author gpape
  */
@@ -293,11 +294,22 @@ public class ColumnExpression implements Expression {
          try{
                         return new TerminalNode(1,1,Float.parseFloat(expression));
                     }catch(Exception e){
+                      try
+                      {
                         float tempmyfloat = 0;
-                        return new TerminalNode(0,getIndex(expression),tempmyfloat);
-                    }
+                        return new TerminalNode(0, getIndex(expression), tempmyfloat);
+                      }
+                      catch(Exception f)
+                     {
+                    /**
+                     * If failed to find string value in table, create new terminal node just for string
+                     * Use a flag of 2, distinguish from other terminal nodes
+                     */
+                       float tempmyfloat = 0;
+                       return new TerminalNode(2, expression, tempmyfloat);
+                      }
 
-
+           }
       }
 
    }
@@ -333,7 +345,8 @@ public class ColumnExpression implements Expression {
       TYPE_FLOAT = 3,
       TYPE_INTEGER = 4,
       TYPE_LONG = 5,
-      TYPE_SHORT = 6;
+      TYPE_SHORT = 6,
+      TYPE_STRING = 7;
 
    private abstract class Node {
 
@@ -1519,6 +1532,7 @@ public class ColumnExpression implements Expression {
            private int column;
            int myownflag;
            float myownscalarvalue;
+           String myValue;
            public TerminalNode(int myownflag, int column, float myownscalarvalue) throws ExpressionException {
 
                this.myownflag = myownflag;
@@ -1559,6 +1573,23 @@ public class ColumnExpression implements Expression {
                    this.myownscalarvalue = myownscalarvalue;
                }
            }
+
+        /**
+         *
+         * @param myownflag
+         * @param expression
+         * @param tempFloat
+         * @throws ExpressionException
+         * TerminalNode constructor for solo String values
+         */
+          public TerminalNode(int myownflag, String expression, float tempFloat) throws ExpressionException {
+
+            this.myownflag = myownflag;
+            myValue = expression;
+            returnType = TYPE_STRING;
+
+          }
+
 
            public String toString() {
                if(myownflag ==0){
@@ -1618,12 +1649,24 @@ public class ColumnExpression implements Expression {
                    }
 
                }
-               else{
+               else if (myownflag == 1){
                    float[] myf = new float[table.getNumRows()];
                    for (int i = 0; i < myf.length; i++)
                        myf[i] = myownscalarvalue;
                    return (Object)myf;
                }
+               else
+             {
+                String[] p = new String[table.getNumRows()];
+                     for (int i = 0; i < p.length; i++)
+                     {
+                       p[i] = myValue;
+
+                     }
+                     return (Object) p;
+
+             }
+
            }
        }
 
