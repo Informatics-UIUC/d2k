@@ -351,4 +351,9 @@ public interface Table extends java.io.Serializable {
 	 */
 	//public String getNominalEmptyValue(int col);
 
+        public Table getSubsetByReference(int start, int len);
+        public Table getSubsetByReference(int[] rows);
+
+        public Table getSubset(int[] rows);
+
 }/*Table*/

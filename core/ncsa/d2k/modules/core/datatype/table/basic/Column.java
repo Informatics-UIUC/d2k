@@ -291,6 +291,8 @@ public interface Column extends java.io.Serializable {
 	*/
 	public Column getSubset( int pos, int len );
 
+        public Column getSubset(int[] rows);
+
 	/**
 		Set the entry at the given position to newEntry.
 		@param newEntry a new entry

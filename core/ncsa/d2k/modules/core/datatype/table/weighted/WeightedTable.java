@@ -468,6 +468,129 @@ public class WeightedTable implements Table {
         return  new TableImpl(subsetCols);
     } //end Table getSubset(int start, int len)
 
+
+    /**
+     * Get a subset of len rows of the Weighted Table,
+     * beginning from row# start?
+     * For every column in the Weighted Table :
+     *   -Check the Data type
+     *   -Initialize and Populate a new column
+     * Finally return all the new columns as a new TableImpl
+     * @param start
+     * @param len
+     * @return a new TableImpl
+     */
+   public Table getSubset(int[] rows) {
+        int len = rows.length;
+        int start = 0;
+       Column[] subsetCols = new Column[this.getNumColumns()];
+       for (int i = 0; i < subsetCols.length; i++) { // i : column #
+           if (this.getColumnType(i) == ColumnTypes.BOOLEAN) {
+               subsetCols[i] = new BooleanColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setBoolean(this.getBoolean(rows[j],i), j);
+           }
+           else if (this.getColumnType(i) == ColumnTypes.BYTE) {
+               subsetCols[i] = new ByteColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setByte(this.getByte(rows[j],i), j);
+           }
+           else if (this.getColumnType(i) == ColumnTypes.BYTE_ARRAY) {
+               subsetCols[i] = new ByteArrayColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setBytes(this.getBytes(rows[j],i), j);
+           }
+           else if (this.getColumnType(i) == ColumnTypes.CHAR) {
+               subsetCols[i] = new CharColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setChar(this.getChar(rows[j],i), j);
+           }
+           else if (this.getColumnType(i) == ColumnTypes.CHAR_ARRAY) {
+               subsetCols[i] = new CharColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setChars(this.getChars(rows[j],i), j);
+           }
+           else if (this.getColumnType(i) == ColumnTypes.DOUBLE) {
+               subsetCols[i] = new DoubleColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setDouble(this.getDouble(rows[j],i), j);
+           }
+           else if (this.getColumnType(i) == ColumnTypes.FLOAT) {
+               subsetCols[i] = new FloatColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setFloat(this.getFloat(rows[j],i), j);
+           }
+           else if (this.getColumnType(i) == ColumnTypes.INTEGER) {
+               subsetCols[i] = new IntColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setInt(this.getInt(rows[j],i), j);
+           }
+           else if (this.getColumnType(i) == ColumnTypes.LONG) {
+               subsetCols[i] = new LongColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setLong(this.getLong(rows[j],i), j);
+           }
+           else if (this.getColumnType(i) == ColumnTypes.OBJECT) {
+               subsetCols[i] = new ObjectColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setObject(this.getObject(rows[j],i), j);
+           }
+           else if (this.getColumnType(i) == ColumnTypes.SHORT) {
+               subsetCols[i] = new ShortColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setShort(this.getShort(rows[j],i), j);
+           }
+           else if (this.getColumnType(i) == ColumnTypes.STRING) {
+               subsetCols[i] = new StringColumn(len);
+               subsetCols[i].setLabel(this.getColumnLabel(i));
+               subsetCols[i].setComment(this.getColumnComment(i));
+               for (int j = start; j < len; j++)
+                   subsetCols[i].setString(this.getString(rows[j],i), j);
+           }
+       } //end for loop
+       return  new TableImpl(subsetCols);
+   } //end Table getSubset(int start, int len)
+
+   public Table getSubsetByReference(int start, int len) {
+     int[] rows = new int[len];
+     int ctr = start;
+     for(int i = 0; i < len; i++) {
+       rows[i] = start;
+       start++;
+     }
+     ExampleTable et = toExampleTable();
+     et.setTrainingSet(rows);
+     return et.getTrainTable();
+   }
+
+  public Table getSubsetByReference(int[] rows) {
+    ExampleTable et = toExampleTable();
+    et.setTrainingSet(rows);
+    return et.getTrainTable();
+  }
+
     /**
      * Create a copy of the Weighted table
      * @return Table

@@ -325,6 +325,10 @@ class Page implements Serializable {
       return table.getSubset(start, len);
    }
 
+   Table getSubset(int[] rows) {
+    return table.getSubset(rows);
+   }
+
    boolean isColumnNominal(int position) {
       mark(false);
       return table.isColumnNominal(position);

@@ -65,6 +65,17 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 		}
     }
 
+    private CharColumn(char[] newInt, boolean[] miss, boolean[] emp,
+                       String lbl, String comm) {
+                internal = newInt;
+        setIsNominal(true);
+        type = ColumnTypes.CHAR;
+        missing = miss;
+        empty = emp;
+        setLabel(lbl);
+        setComment(comm);
+    }
+
     /**
      * Returns an exact copy of this <code>CharColumn<code>. A deep copy is
      * attempted, but if it fails, a new column will be created, initialized
@@ -531,6 +542,38 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
         return  bc;
         */
     }
+
+    /**
+     * Gets a subset of this <code>Column</code>, given a start position and
+     * length. The primitive values are copied, so they have no destructive
+     * abilities as far as the <code>Column</code> is concerned.
+     *
+     * @param pos            the start position for the subset
+     * @param len            the length of the subset
+     * @return               a subset of this <code>Column</code>
+     */
+    public Column getSubset (int[] rows) {
+        char[] subset = new char[rows.length];
+        boolean[] newMissing = new boolean[rows.length];
+        boolean[] newEmpty = new boolean[rows.length];
+        for(int i = 0; i < rows.length; i++) {
+          subset[i] = internal[rows[i]];
+          newMissing[i] = missing[rows[i]];
+          newEmpty[i] = empty[rows[i]];
+        }
+
+//                System.arraycopy(missing, pos, newMissing, 0, len);
+//                System.arraycopy(empty, pos, newEmpty, 0, len);
+        /*BooleanColumn bc = new BooleanColumn(subset);
+                bc.missing = newMissing;
+                bc.empty = newEmpty;
+        bc.setLabel(getLabel());
+        bc.setComment(getComment());
+        */
+        CharColumn bc = new CharColumn(subset, newMissing, newEmpty, getLabel(), getComment());
+        return  bc;
+    }
+
 
     /**
         Gets a reference to the internal representation of this Column.

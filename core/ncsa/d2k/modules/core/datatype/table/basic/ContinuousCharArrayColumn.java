@@ -686,6 +686,43 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
     }
 
     /**
+     * Gets a subset of this <code>Column</code>, given a start position and
+     * length. The primitive values are copied, so they have no destructive
+     * abilities as far as the <code>Column</code> is concerned.
+     *
+     * @param pos            the start position for the subset
+     * @param len            the length of the subset
+     * @return               a subset of this <code>Column</code>
+     */
+    public Column getSubset (int[] rows) {
+        char[][] subset = new char[rows.length][];
+        boolean[] newMissing = new boolean[rows.length];
+        boolean[] newEmpty = new boolean[rows.length];
+        for(int i = 0; i < rows.length; i++) {
+          subset[i] = getChars(rows[i]);
+          newMissing[i] = missing[rows[i]];
+          newEmpty[i] = empty[rows[i]];
+        }
+
+//                System.arraycopy(missing, pos, newMissing, 0, len);
+//                System.arraycopy(empty, pos, newEmpty, 0, len);
+        /*BooleanColumn bc = new BooleanColumn(subset);
+                bc.missing = newMissing;
+                bc.empty = newEmpty;
+        bc.setLabel(getLabel());
+        bc.setComment(getComment());
+        */
+        //BooleanColumn bc = new BooleanColumn(subset, newMissing, newEmpty, getLabel(), getComment());
+        ContinuousCharArrayColumn cbac = new ContinuousCharArrayColumn(subset);
+        cbac.missing = newMissing;
+        cbac.empty = newEmpty;
+        cbac.setLabel(getLabel());
+        cbac.setComment(getComment());
+        return cbac;
+    }
+
+
+    /**
      Get a reference to the internal representation of this Column.
      Changes made to this object will be reflected in the Column.
      @return the internal representation of this Column.

@@ -483,6 +483,124 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
          removeRow(indices[i] - offset++);
    }
 
+   /**
+    * Set the row at the given position to an array of int data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(int[] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    * Set the row at the given position to an array of float data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(float[] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    * Set the row at the given position to an array of double data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(double[] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    * Set the row at the given position to an array of long data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(long[] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    * Set the row at the given position to an array of short data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(short[] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    * Set the row at the given position to an array of boolean data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(boolean[] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    * Set the row at the given position to an array of String data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(String[] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    * Set the row at the given position to an array of char[] data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(char[][] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    * Set the row at the given position to an array of byte[] data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(byte[][] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    * Set the row at the given position to an array of Object data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(Object[] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    * Set the row at the given position to an array of byte data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(byte[] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    * Set the row at the given position to an array of char data.
+    *	@param newEntry the new values of the row.
+    *	@param position the position to set
+    */
+   public void setRow(char[] newEntry, int position) {
+     super.setRow(newEntry, testSet[position]);
+   }
+
+   /**
+    Swap the positions of two rows.
+    @param pos1 the first row to swap
+    @param pos2 the second row to swap
+    */
+   public void swapRows(int pos1, int pos2) {
+     super.swapRows(trainSet[pos1], trainSet[pos2]);
+     this.swapTestTrain(pos1, pos2);
+   }
+
    // maintenance methods:
 
    private void addTesting() {

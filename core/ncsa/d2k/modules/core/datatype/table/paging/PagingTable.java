@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.datatype.table.paging;
 import java.io.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import java.util.*;
 
 /**
  * <code>PagingTable</code> is an implementation of <code>Table</code> that can
@@ -973,6 +974,111 @@ class PagingTable extends AbstractTable implements Serializable {
       return s;
 
    }
+
+   public Table getSubset(int[] r) {
+     /*int[] pageNums = new int[r.length];
+           for(int i = 0; i < pageNums.length; i++) {
+      pageNums[i] = getPageNumber(r[i]);
+           }
+           int numRowsPerPage = offsets[0];
+           int numPages = Math.ceil( ((double)r.length)/numRowsPerPage);
+      int ctr = 0;
+      for(int i = 0; i < r.length; i++) {
+      }
+      return null;
+      */
+     int numRows = r.length;
+
+     int numRowsPerPage = 0;
+     if (offsets.length >= 2)
+       numRowsPerPage = offsets[1];
+     else
+       numRowsPerPage = getNumRows();
+
+       // now figure out how many sub-tables we will make.
+     int numTables = (int) Math.ceil( ( (double) numRows) /
+                                     ( (double) numRowsPerPage));
+     // the number of rows per page
+     int[] pageRowNums = new int[numTables];
+     int curNum = 0;
+     for (int i = 0; i < numTables; i++) {
+       if ( (curNum + numRowsPerPage) <= numRows) {
+         pageRowNums[i] = numRowsPerPage;
+         curNum += pageRowNums[i];
+       }
+       else
+         pageRowNums[i] = numRows - curNum;
+     }
+
+     curNum = 0;
+
+     boolean hasTypes = false;
+     MutableTable[] tables = new MutableTable[numTables];
+
+     // for each table
+     for (int nt = 0; nt < numTables; nt++) {
+
+       // create the columns
+       Column[] columns = new Column[getNumColumns()];
+       for (int col = 0; col < columns.length; col++) {
+         int type = getColumnType(col);
+
+         columns[col] = ColumnUtilities.createColumn(type, pageRowNums[nt]);
+
+         if (type != -1)
+           hasTypes = true;
+
+           // set the label
+         String label = getColumnLabel(col);
+         if (label != null)
+           columns[col].setLabel(label);
+       }
+
+       MutableTableImpl ti = new MutableTableImpl(columns);
+       tables[nt] = ti;
+     }
+
+      int curTableIdx = 0;
+      int tableRow = 0;
+      for(int i = 0; i < r.length; i++) {
+        // get each row as an object
+        Object[] buffer = new Object[getNumColumns()];
+        getRow(buffer, r[i]);
+
+        // now insert into the table
+        tables[curTableIdx].setRow(buffer, tableRow);
+        tableRow++;
+        if(tableRow == numRowsPerPage) {
+          tableRow = 0;
+          curTableIdx++;
+        }
+      }
+
+      // now make a PagingTable with these tables
+      PagingTable pt = new PagingTable();
+      for(int i = 0; i < tables.length; i++)
+        pt.addTable(tables[i], i == 0);
+
+      return pt;
+   }
+
+   public Table getSubsetByReference(int start, int len) {
+     int[] rows = new int[len];
+     int ctr = start;
+     for(int i = 0; i < len; i++) {
+       rows[i] = start;
+       start++;
+     }
+     ExampleTable et = toExampleTable();
+     et.setTrainingSet(rows);
+     return et.getTrainTable();
+   }
+
+  public Table getSubsetByReference(int[] r) {
+    ExampleTable et = this.toExampleTable();
+    et.setTrainingSet(r);
+    return et.getTrainTable();
+  }
 
    public Table getSubset(int start, int len) {
 

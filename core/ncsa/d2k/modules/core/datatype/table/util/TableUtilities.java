@@ -42,21 +42,28 @@ public class TableUtilities {
 
     double total = 0, max = Double.MIN_VALUE, min = Double.MAX_VALUE;
     for (int i = 0; i < table.getNumRows(); i++) {
-      if (!table.isValueMissing(i, colNum) && !table.isValueEmpty(i, colNum)) {
-	list.add(table.getDouble(i, colNum));
-	total += table.getDouble(i, colNum);
+        if (!table.isValueMissing(i, colNum) && !table.isValueEmpty(i, colNum)) {
+	        list.add(table.getDouble(i, colNum));
+	        total += table.getDouble(i, colNum);
 
-	if (table.getDouble(i, colNum) > max) {
-	  max = table.getDouble(i, colNum);
-	}
+	        if (table.getDouble(i, colNum) > max) {
+	            max = table.getDouble(i, colNum);
+	        }
 
-	if (table.getDouble(i, colNum) < min) {
-	  min = table.getDouble(i, colNum);
-	}
+	        if (table.getDouble(i, colNum) < min) {
+	            min = table.getDouble(i, colNum);
+	        }
       }
+      /*else {
+          if(table.isValueMissing(i, colNum))
+          System.out.println(table.getColumnLabel(colNum)+" was missing");
+          else if(table.isValueEmpty(i, colNum))
+          System.out.println(table.getColumnLabel(colNum)+" was empty");
+      }*/
     }
 
     double[] d = list.toNativeArray();
+    //System.out.println(list);
 
     sample_mean = total/(double)d.length;
 
@@ -459,6 +466,12 @@ public class TableUtilities {
 		multiInsertionSort(tbl, sortByCols, order);
 		return order;
 	}
+
+    public static int[] multiSort(Table tbl, int[] sortByCols, int[] order) {
+		multiQuickSort(tbl, sortByCols, order, 0, order.length-1);
+		multiInsertionSort(tbl, sortByCols, order);
+		return order;
+    }
 
 	/** multiQuickSort.
 

@@ -386,6 +386,20 @@ public class DBTable extends AbstractTable implements Table {
             return tt;
         }
 
+        public Table getSubset(int[] rows) {
+            ExampleTable et = this.toExampleTable();
+            et.setTrainingSet(rows);
+            return et.getTrainTable();
+        }
+
+        public Table getSubsetByReference(int start, int len) {
+          return getSubset(start, len);
+        }
+
+        public Table getSubsetByReference(int[] rows){
+          return getSubset(rows);
+        }
+
 	/**
 		Create a copy of this Table.
 		@return a copy of this Table

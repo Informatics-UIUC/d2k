@@ -85,6 +85,7 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
             missing[i] = false;
             empty[i] = false;
 		}
+        setLabel(lbl);
    }
 
    private int addValue(String newVal) {
@@ -377,6 +378,40 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
         return  bc;
         */
    }
+
+   /**
+    * Gets a subset of this <code>Column</code>, given a start position and
+    * length. The primitive values are copied, so they have no destructive
+    * abilities as far as the <code>Column</code> is concerned.
+    *
+    * @param pos            the start position for the subset
+    * @param len            the length of the subset
+    * @return               a subset of this <code>Column</code>
+    */
+   public Column getSubset (int[] rows) {
+       int[] subset = new int[rows.length];
+       boolean[] newMissing = new boolean[rows.length];
+       boolean[] newEmpty = new boolean[rows.length];
+       for(int i = 0; i < rows.length; i++) {
+         subset[i] = rowIndicies[rows[i]];
+         newMissing[i] = missing[rows[i]];
+         newEmpty[i] = empty[rows[i]];
+       }
+
+//                System.arraycopy(missing, pos, newMissing, 0, len);
+//                System.arraycopy(empty, pos, newEmpty, 0, len);
+       /*BooleanColumn bc = new BooleanColumn(subset);
+               bc.missing = newMissing;
+               bc.empty = newEmpty;
+       bc.setLabel(getLabel());
+       bc.setComment(getComment());
+       */
+       StringColumn ic = new StringColumn(subset, values, setOfValues, newMissing,
+                newEmpty, getLabel(), getComment());
+       //BooleanColumn bc = new BooleanColumn(subset, newMissing, newEmpty, getLabel(), getComment());
+       return ic;
+   }
+
 
    public Column reorderRows(int[] newOrder) {
         int[] newInternal = null;

@@ -1385,4 +1385,29 @@ public class TableImpl extends AbstractTable implements /*Mutable*/Table {
 		getColumn(col).setNominalEmptyValue(val);
 	}
     */
+
+   public Table getSubsetByReference(int start, int len) {
+     int[] rows = new int[len];
+     int ctr = start;
+     for(int i = 0; i < len; i++) {
+       rows[i] = start;
+       start++;
+     }
+     ExampleTable et = toExampleTable();
+     et.setTrainingSet(rows);
+     return et.getTrainTable();
+   }
+
+   public Table getSubsetByReference(int[] rows) {
+     ExampleTable et = toExampleTable();
+     et.setTrainingSet(rows);
+     return et.getTrainTable();
+   }
+
+   public Table getSubset(int [] rows) {
+     TableImpl subset = new TableImpl(columns.length);
+     for (int i = 0; i < columns.length; i++)
+         subset.setColumn((Column)columns[i].getSubset(rows), i);
+     return  subset;
+   }
 }

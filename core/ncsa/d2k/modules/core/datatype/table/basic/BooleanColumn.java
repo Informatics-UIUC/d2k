@@ -536,6 +536,38 @@ public class BooleanColumn extends AbstractColumn {
         return  bc;
     }
 
+    /**
+     * Gets a subset of this <code>Column</code>, given a start position and
+     * length. The primitive values are copied, so they have no destructive
+     * abilities as far as the <code>Column</code> is concerned.
+     *
+     * @param pos            the start position for the subset
+     * @param len            the length of the subset
+     * @return               a subset of this <code>Column</code>
+     */
+    public Column getSubset (int[] rows) {
+        boolean[] subset = new boolean[rows.length];
+        boolean[] newMissing = new boolean[rows.length];
+        boolean[] newEmpty = new boolean[rows.length];
+        for(int i = 0; i < rows.length; i++) {
+          subset[i] = internal[rows[i]];
+          newMissing[i] = missing[rows[i]];
+          newEmpty[i] = empty[rows[i]];
+        }
+
+//                System.arraycopy(missing, pos, newMissing, 0, len);
+//                System.arraycopy(empty, pos, newEmpty, 0, len);
+        /*BooleanColumn bc = new BooleanColumn(subset);
+                bc.missing = newMissing;
+                bc.empty = newEmpty;
+        bc.setLabel(getLabel());
+        bc.setComment(getComment());
+        */
+        BooleanColumn bc = new BooleanColumn(subset, newMissing, newEmpty, getLabel(), getComment());
+        return  bc;
+    }
+
+
     //////////////////////////////////////
     /**
       Sets the reference to the internal representation of this Column.

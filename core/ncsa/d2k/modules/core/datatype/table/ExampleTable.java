@@ -23,7 +23,7 @@ import java.util.*;
  of reversable transformations that have been performed on the dataset in this
  Table.
  */
-public interface ExampleTable extends Table {
+public interface ExampleTable extends MutableTable {
 
 	static final long serialVersionUID = 6037200533380375292L;
 
@@ -396,4 +396,7 @@ public interface ExampleTable extends Table {
      * @return true if the ith output is scalar, false otherwise.
      */
     public boolean isOutputScalar(int o);
+
+    public String[] getInputNames();
+    public String[] getOutputNames();
 }

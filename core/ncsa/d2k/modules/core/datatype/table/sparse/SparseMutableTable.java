@@ -4758,7 +4758,28 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
     return getSubset(start, len, this);
   }//getSubset
 
+  public Table getSubset(int[] rows) {
+    return getSubset(rows, this);
+  }
 
+  public Table getSubsetByReference(int start, int len) {
+    int[] rows = new int[len];
+    int ctr = start;
+    for(int i = 0; i < len; i++) {
+      rows[i] = start;
+      start++;
+    }
+    ExampleTable et = toExampleTable();
+    et.setTrainingSet(rows);
+    return et.getTrainTable();
+
+  }
+
+  public Table getSubsetByReference(int[] rows) {
+    ExampleTable et = toExampleTable();
+    et.setTrainingSet(rows);
+    return et.getTrainTable();
+  }
 
   /**
    * Returns a subset of <code>table</code> consisted of rows no. <code>start</code>
@@ -4785,8 +4806,6 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
     return retVal;
 
   }//getSubset
-
-
 
    /**
    * updates the columns and rows maps regarding the insertion of a new column.

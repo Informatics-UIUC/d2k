@@ -528,9 +528,407 @@ public int getNumExamples() {
   }
 
 
+  /**
+  * Set an int value in the table.
+  * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setInt (int data, int row, int column) {
+      super.setInt(data, this.testSet[row], column);
+  }
 
+  /**
+  * Set a short value in the table.
+  * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setShort (short data, int row, int column) {
+      super.setShort(data, this.testSet[row], column);
+  }
 
+  /**
+  * Set a long value in the table.
+  * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setLong (long data, int row, int column) {
+      super.setLong(data, this.testSet[row], column);
+  }
 
+  /**
+  * Set a float value in the table.
+  * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setFloat (float data, int row, int column) {
+      super.setFloat(data, this.testSet[row], column);
+  }
+
+  /**
+  * Set a double value in the table.
+  * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setDouble (double data, int row, int column) {
+      super.setDouble(data, this.testSet[row], column);
+  }
+
+  /**
+  * Set a String value in the table.
+  * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setString (String data, int row, int column) {
+      super.setString(data, this.testSet[row], column);
+  }
+
+  /**
+  * Set a byte[] value in the table.
+  * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setBytes (byte[] data, int row, int column) {
+      super.setBytes(data, this.testSet[row], column);
+  }
+
+  /**
+  * Set a char[] value in the table.
+  * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setChars (char[] data, int row, int column) {
+      super.setChars(data, this.testSet[row], column);
+  }
+
+  /**
+  * Set a boolean value in the table.
+  * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setBoolean (boolean data, int row, int column) {
+      super.setBoolean(data, this.testSet[row], column);
+  }
+
+ /*public PredictionTable toPredictionTable() {
+    return this;
+ }*/
+
+ ////////////////////////////////////
+ // now, TestTableImpl must override all methods that add, insert, and
+ // remove rows in order to correctly keep track of its test set.
+
+ public void addRow(int[] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void addRow(float[] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void addRow(double[] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void addRow(long[] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void addRow(short[] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void addRow(boolean[] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void addRow(String[] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void addRow(char[][] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void addRow(byte[][] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void addRow(Object[] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void addRow(byte[] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void addRow(char[] newEntry) {
+    addTesting();
+    super.addRow(newEntry);
+ }
+
+ public void insertRow(int[] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void insertRow(float[] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void insertRow(double[] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void insertRow(long[] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void insertRow(short[] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void insertRow(boolean[] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void insertRow(String[] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void insertRow(char[][] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void insertRow(byte[][] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void insertRow(Object[] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void insertRow(byte[] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void insertRow(char[] newEntry, int position) {
+    insertTesting(testSet[position]);
+    super.insertRow(newEntry, testSet[position]);
+ }
+
+ public void removeRow(int row) {
+    super.removeRow(testSet[row]);
+    removeTesting(row);
+ }
+
+ public void removeRows(int start, int len) {
+    for (int i = 0; i < len; i++)
+       removeRow(start);
+ }
+
+ public void removeRowsByFlag(boolean[] flags) {
+    int offset = 0;
+    for (int i = 0; i < flags.length; i++)
+       if (flags[i])
+          removeRow(i - offset++);
+ }
+
+ public void removeRowsByIndex(int[] indices) {
+    int offset = 0;
+    for (int i = 0; i < indices.length; i++)
+       removeRow(indices[i] - offset++);
+ }
+
+ /**
+  * Set the row at the given position to an array of int data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(int[] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  * Set the row at the given position to an array of float data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(float[] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  * Set the row at the given position to an array of double data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(double[] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  * Set the row at the given position to an array of long data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(long[] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  * Set the row at the given position to an array of short data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(short[] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  * Set the row at the given position to an array of boolean data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(boolean[] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  * Set the row at the given position to an array of String data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(String[] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  * Set the row at the given position to an array of char[] data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(char[][] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  * Set the row at the given position to an array of byte[] data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(byte[][] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  * Set the row at the given position to an array of Object data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(Object[] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  * Set the row at the given position to an array of byte data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(byte[] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  * Set the row at the given position to an array of char data.
+  *	@param newEntry the new values of the row.
+  *	@param position the position to set
+  */
+ public void setRow(char[] newEntry, int position) {
+   super.setRow(newEntry, testSet[position]);
+ }
+
+ /**
+  Swap the positions of two rows.
+  @param pos1 the first row to swap
+  @param pos2 the second row to swap
+  */
+ public void swapRows(int pos1, int pos2) {
+   super.swapRows(trainSet[pos1], trainSet[pos2]);
+   this.swapTestTrain(pos1, pos2);
+ }
+
+ // maintenance methods:
+
+ private void addTesting() {
+
+    int[] newTestingSet = new int[testSet.length + 1];
+    for (int i = 0; i < testSet.length; i++)
+       newTestingSet[i] = testSet[i];
+    newTestingSet[testSet.length] = super.getNumRows();
+
+    testSet = newTestingSet;
+
+ }
+
+ private void insertTesting(int tablePosition) {
+
+    for (int i = 0; i < testSet.length; i++)
+       if (testSet[i] >= tablePosition)
+          testSet[i]++;
+
+    int[] newTestingSet = new int[testSet.length + 1];
+    for (int i = 0; i < testSet.length; i++)
+       newTestingSet[i] = testSet[i];
+    newTestingSet[testSet.length] = tablePosition;
+
+    Arrays.sort(newTestingSet);
+
+    testSet = newTestingSet;
+
+ }
+
+ private void removeTesting(int testingPosition) {
+
+    int[] newTestingSet = new int[testSet.length - 1];
+    for (int i = 0; i < testingPosition; i++)
+       newTestingSet[i] = testSet[i];
+
+    for (int i = testingPosition + 1; i < testSet.length; i++)
+       newTestingSet[i - 1] = testSet[i] - 1;
+
+    testSet = newTestingSet;
+
+ }
 
 
 }//SparseTestTable
