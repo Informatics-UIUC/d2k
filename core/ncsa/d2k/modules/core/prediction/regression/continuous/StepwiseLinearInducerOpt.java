@@ -217,8 +217,8 @@ public class StepwiseLinearInducerOpt
     if (Direction != 0) {
       for (int roundIndex = 0; roundIndex < NumRounds; roundIndex++) {
 
-        System.out.println("roundIndex = " + roundIndex);
-        System.out.println("NumRounds = " + NumRounds);
+        //System.out.println("roundIndex = " + roundIndex);
+        //System.out.println("NumRounds = " + NumRounds);
         double bestError = Double.POSITIVE_INFINITY;
         int bestV = 0;
 
