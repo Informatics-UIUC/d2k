@@ -87,4 +87,40 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 	* @return a double value representing the minimum possible value of the parameter.
 	*/
 	public double getValue(int parameterIndex) { return values[parameterIndex]; }
+
+
+          /**
+   * Get the value of a parameter.
+   * @param name is a string which names the parameter of interest.
+   * @return a double value representing the minimum possible value of the parameter.
+   */
+  public double getValue(String name) throws Exception {
+    return getValue(getParameterIndex(name));
+  }
+
+
+  /**
+   * Get the parameter index of that corresponds to the given name.
+   * @return an integer representing the index of the parameters.
+   */
+  public int getParameterIndex(String name) throws Exception {
+
+    for (int i = 0; i < getNumParameters(); i++) {
+      if (getName(i).equals(name))
+        return i;
+    }
+    Exception e = new Exception();
+    System.out.println("Error!  Can not find name (" + name + ").  ");
+    throw e;
+  }
+
+
+  /**
+   * Get the parameter index of that corresponds to the given name.
+   * @return an integer representing the index of the parameters.
+   */
+  public ParameterPoint [] segmentPoint(ParameterPoint point, int splitIndex) {
+    return null;
+  }
+
 } /* ParameterPoint */
