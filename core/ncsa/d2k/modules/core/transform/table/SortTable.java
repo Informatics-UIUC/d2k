@@ -225,8 +225,8 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
         int idx = sortchoices[i].getSelectedIndex();
         if(idx != 0)
           sortList.add(new Integer(idx-1));
-        else
-          break;
+        // else
+        //   break;
       }
       sortorder = new int[sortList.size()];
       for(int i = 0; i < sortList.size(); i++)
