@@ -298,6 +298,13 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 					ruleIndex++;
 
 				if (rulebuffer[ruleIndex] != items[itemIndex]) {
+					/*if (cardinality == 2) {
+						for (int i = 0, targetIndex = 0 ; i < cardinality; i++) {
+							while (targetIndex < targetIndices.length &&
+								    targetIndices [targetIndex] < rulebuffer[i])
+								targetIndex++;
+							if (targetIndices.length*/
+
 
 					// Find the number of examples that demonstrate the current rule and the new item.
 					tmp.count = 0;
@@ -493,6 +500,8 @@ public class AprioriModule extends ncsa.d2k.infrastructure.modules.ComputeModule
 			this.finish();
 			return;
 		}
+
+		// In the first round, we will discard any rule that does not contain a target value.
 		if (debug) {
 			System.out.println ("APriori -> validRules : "+newRules);
 		}
