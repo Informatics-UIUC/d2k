@@ -55,20 +55,46 @@ public class TableViewer extends UIModule {
    public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
       sb.append("This module displays the contents of a <i>Table</i>.");
+
       sb.append("</p><p>Detailed Description: " );
       sb.append("This module creates a display window and shows the contents ");
       sb.append("of the input <i>Table</i>.  Table entries that contain ");
       sb.append("missing values are indicated by a  ?  in the display. ");
+
       sb.append("</p><p>The window can be resized and has both horizontal ");
       sb.append("and vertical scroll bars to accomodate large ");
       sb.append("table sizes.  An individual column can be made wider by ");
       sb.append("clicking on the column divider in the labels row and moving ");
       sb.append("it to the right while keeping the mouse button pressed. ");
       sb.append("Releasing the button sets the new column size.");
+
+      sb.append("</p><p>" );
+      sb.append("The <i>File</i> pull-down menu offers a <i>Save</i> option to ");
+      sb.append("save the displayed table to a tab-delimited file. ");
+      sb.append("A file browser window pops up, allowing the user to select ");
+      sb.append("where the table should be saved. ");
+      sb.append("Missing values in the table appear as blanks in the saved file. ");
+
+      sb.append("</p><p>" );
+      sb.append("The <i>Done</i> button closes the table viewer window. ");
+      sb.append("The <i>Abort</i> button closes the table viewer window and aborts itinerary execution. ");
+
+      sb.append("</p><p>Known Limitations in Current Release: ");
+      sb.append("This module was designed to work with a single input table per itinerary run. ");
+      sb.append("It will not work properly if it receives multiple inputs per run. ");
+      sb.append("If you accidently direct multiple inputs to the module, it may be necessary ");
+      sb.append("to resize the Table Viewer Window before the table contents and <i>Abort</i> ");
+      sb.append("and <i>Done</i> buttons are visible and/or operational.   Until you reize it may ");
+      sb.append("seem that you have no way to stop the itinerary and correct the problem. ");
+
       sb.append("</p><p>Data Handling: ");
       sb.append("This module does not modify its input. The <i>Table</i> ");
       sb.append("is passed, unchanged, as the module's output.");
-      sb.append("</p>");
+      sb.append("Only the Table data that is presently visible in the window is requested. ");
+      sb.append("For some table representations, in particular those where the table data is not all kept in memory, ");
+      sb.append("refocusing the window view on different table cells can result in some noticable ");
+      sb.append("delay while the new table data is loaded. ");
+
       return sb.toString();
    }
 
@@ -97,15 +123,15 @@ public class TableViewer extends UIModule {
 ////////////////////////////////////////////////////////////////////////////////
 // properties                                                                 //
 ////////////////////////////////////////////////////////////////////////////////
- 
+
    public PropertyDescription[] getPropertiesDescriptions() {
 
       // This module doesn't have any properties that the user should edit.
       // so we return an empty list
- 
+
       PropertyDescription[] pds = new PropertyDescription[0];
       return pds;
- 
+
    }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -237,7 +263,18 @@ public class TableViewer extends UIModule {
 //        - Expanded module info text; Changed module name from view table
 //        - to table viewer; Asked developers about "Save" option format,
 //        - undoc properties, and labels types.
-//  
 // 3/24/03  - Added getPropertiesDescriptions() so that no properties the user
-//            can't edit are shown.
+//            can't edit are shown. (RA)
+// 3/31/03 - Added docs about the save option.
+//	     Added docs about how to close the display.
+//           Added docs about limitations.
+//           OK for basic.
+//
+// WISH: Want to have column types shown, or at least offer an option to do so.
+// WISH: Work (or behave consistently) if multiple input tables are received.  Currently
+//       it seems to "mangle together" entries from the multiple tables in an inconsistent
+//       manner. And, it must be resized sometimes to get the buttons to respond.
+//
+// End QA Comments
+//
 //
