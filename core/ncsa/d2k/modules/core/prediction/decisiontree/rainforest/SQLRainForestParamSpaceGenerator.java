@@ -24,7 +24,7 @@ public class SQLRainForestParamSpaceGenerator extends AbstractParamSpaceGenerato
     String[] names = {MIN_RATIO,MODE_THRESHOLD,BIN_NUMBER,DOMINATE_RATIO};
     double[] min = {0,0,1,1};
     double[] max = {1,Integer.MAX_VALUE,Integer.MAX_VALUE,Double.MAX_VALUE};
-    double[] def = {0.001,20000,100,100};
+    double[] def = {0.001,200000,100,100};
     int[] res = {1000,1000,1000,1000};
     int[] types = {ColumnTypes.DOUBLE,ColumnTypes.DOUBLE,ColumnTypes.DOUBLE,ColumnTypes.DOUBLE};
     psi.createFromData(names, min, max, def, res, types);
