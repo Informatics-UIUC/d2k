@@ -64,7 +64,7 @@ public class ConnectionWrapperImpl implements ConnectionWrapper, java.io.Seriali
       catch (Exception e){
         JOptionPane.showMessageDialog(msgBoard,
           "Cannot connect to the database. Please make sure you have " +
-          "entered the correct user name, pass word, server machine, " +
+          "entered the correct user name, password, server machine, " +
           "and database instance.", "Error",
           JOptionPane.ERROR_MESSAGE);
         System.out.println("Error occoured when connecting to a database.");
