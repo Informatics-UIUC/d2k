@@ -262,9 +262,14 @@ public class SQLHTree extends ComputeModule
   }
 
   public void doit() {
+    boolean rightInput = true;
     cw = (ConnectionWrapper)pullInput(0);
     fieldNames = (String[])pullInput(1);
     tableName = ((String)pullInput(2)).toUpperCase();
+    if (tableName.indexOf("_CUBE") >= 0) {
+      System.out.println("The user has selected a cube to build a new cube.");
+      rightInput = false;
+    }
     //String userName = System.getProperty("user.name").toUpperCase();
     //cubeTableName = userName + "_" + tableName + "_CUBE";
     if (isInputPipeConnected(3)) {
@@ -286,8 +291,9 @@ public class SQLHTree extends ComputeModule
     baseHeadTbl = new ArrayList();
     hTree = new ArrayList();
 
-    totalRow = getRowCount(tableName);
-    if (totalRow > 0) {
+    if (rightInput)
+      totalRow = getRowCount(tableName);
+    if (totalRow > 0 && rightInput) {
       cutOff = totalRow * support / 100;
       if (setColumnList()) {
         sortColumnList();
@@ -307,39 +313,51 @@ public class SQLHTree extends ComputeModule
         initBaseHeadTbl();
         //printBaseHeadTbl();  // for debugging
         //printColumnList();  // for debugging
-        buildHTree();
-        //printColumnList();  // for debugging
-        //printBaseHeadTbl();  // for debugging
-        //printHTree();  // for debugging
+        if (buildHTree()) {
+          //printColumnList();  // for debugging
+          //printBaseHeadTbl();  // for debugging
+          //printHTree();  // for debugging
 
-        if (createCubeTable()) {
-          saveBaseHeadTbl();
-          createLocalHeadTbls();
-          prefixList = new int[ruleSize];
-          initPrefixList();
-          computeTree();
-          if (getCubeRowCount(cubeTableName) > 0) {
-            this.pushOutput(cw, 0);
-            this.pushOutput(cubeTableName, 1);
-          }
-          else {
-            JOptionPane.showMessageDialog(msgBoard,
+          if (createCubeTable()) {
+            saveBaseHeadTbl();
+            createLocalHeadTbls();
+            prefixList = new int[ruleSize];
+            initPrefixList();
+            computeTree();
+            if (getCubeRowCount(cubeTableName) > 0) {
+              this.pushOutput(cw, 0);
+              this.pushOutput(cubeTableName, 1);
+            }
+            else {
+              JOptionPane.showMessageDialog(msgBoard,
                 "There is no rule discovered in the data set. You may like to adjust " +
                 "Minimum Support in SQLHTree module, and run again.", "Error",
                 JOptionPane.ERROR_MESSAGE);
-            System.out.println("There is no data in the data set.");
+              System.out.println("There is no rule discovered.");
+            }
+          }
+          else { // fail to create a cube table
+            JOptionPane.showMessageDialog(msgBoard,
+                      "Fail to build a cube table.", "Error",
+                      JOptionPane.ERROR_MESSAGE);
+            System.out.println("fail to build a cube table.");
           }
         }
         else {
-          System.out.println("fail to create a cube table");
+          JOptionPane.showMessageDialog(msgBoard,
+                    "Fail to build a HTree.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+          System.out.println("fail to build a HTree.");
         }
       }
     }
-    else {// totalRow <= 0
+    else {// totalRow <= 0 || !rightInput
       JOptionPane.showMessageDialog(msgBoard,
-                "There is no data in the data set.", "Error",
+                "There is no data in the data table, or you have selected " +
+                "an incorrect input table. You must select a data table to " +
+                "build a data cube.", "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("There is no data in the data set.");
+      System.out.println("There is no data in the data table or a wrong table is selected.");
     }
   }
 
@@ -647,7 +665,7 @@ public class SQLHTree extends ComputeModule
 
   /** Build a HTree.
   */
-  protected void buildHTree() {
+  protected boolean buildHTree() {
     // The record for root
     Node aNode;
     aNode = new Node();
@@ -704,6 +722,8 @@ public class SQLHTree extends ComputeModule
             // To speed up the search, first find the starting index and ending index
             // in baseHeadTbl for this column.
             itemIdx = getIndex(startIdx, endIdx, aValue, false);
+            if (itemIdx < 0)
+              return false;
           }
           else if (aColumn.isBinned && aValue.equals(NA)) {
             itemIdx = endIdx; // NA value is always the last item for the column
@@ -711,10 +731,14 @@ public class SQLHTree extends ComputeModule
           else if (aColumn.isBinned && aColumn.dataType.equals("STRING")) {
             aValue = binValue(colIdx, aValue);
             itemIdx = getIndex(startIdx, endIdx, aValue, true);
+            if (itemIdx < 0)
+              return false;
           }
           else if (aColumn.isBinned && aColumn.dataType.equals("NUMBER")) {
             aValue = binValue(colIdx, Double.valueOf(aValue).doubleValue());
             itemIdx = getIndex(startIdx, endIdx, aValue, true);
+            if (itemIdx < 0)
+              return false;
           }
           if (itemIdx >= 0) {
             newParentIdx = updLinks(itemIdx, parentIdx);
@@ -722,12 +746,14 @@ public class SQLHTree extends ComputeModule
           parentIdx = newParentIdx;
         }
       }
+      return true;
     }
     catch (Exception e){
       JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
         System.out.println("Error occoured in buildHTree.");
+        return false;
     }
   }
 
@@ -797,9 +823,10 @@ public class SQLHTree extends ComputeModule
       }
       else { // should never get to this point
         JOptionPane.showMessageDialog(msgBoard,
-                "Can't find the item in the baseHeadTbl for " + val, "Error",
+                "An error is found in getIndex. " +
+                "The cube table cannot be created.", "Error",
                 JOptionPane.ERROR_MESSAGE);
-        System.out.println("Error occoured in getIndex 1.");
+        System.out.println("Can't find the non-binning item in the baseHeadTbl for " + val);
         return (-1); // not found the item
       }
     }
@@ -811,9 +838,10 @@ public class SQLHTree extends ComputeModule
       }
       // should never get to this point
       JOptionPane.showMessageDialog(msgBoard,
-                "Can't find the item in the baseHeadTbl for " + val, "Error",
-                JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in getIndex 2.");
+              "An error is found in getIndex. " +
+              "The cube table cannot be created.", "Error",
+              JOptionPane.ERROR_MESSAGE);
+      System.out.println("Can't find the binning item in the baseHeadTbl for " + val);
       return (-1); // not found the item
     }
   }
