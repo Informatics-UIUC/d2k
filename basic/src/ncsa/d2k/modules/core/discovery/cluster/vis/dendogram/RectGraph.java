@@ -18,6 +18,7 @@ import javax.swing.event.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
 
 import ncsa.d2k.modules.core.discovery.cluster.util.*;
 
@@ -317,7 +318,13 @@ public class RectGraph  extends BaseGraph implements MouseInputListener  {
         //System.out.println("MOUSE: img to chg: " + evt.getX() + " "  + " "  + evt.getX() + " " + i);
         if (i >= 0){
           TableCluster c = ((RectWrapper)m_shapes.get(i)).getCluster();
-          Table tab = c.getTable().getSubset(c.getMemberIndices());
+          Table tab = null;
+          if (tab instanceof SparseTable){
+            tab = ((SparseMutableTable)c.getTable()).getSubsetByReference(c.getMemberIndices());
+          } else {
+            tab = c.getTable().getSubset(c.getMemberIndices());
+          }
+
           JD2KFrame frame = new JD2KFrame("Values for Cluster ID " + c.getClusterLabel());
           TableMatrix vtm = new TableMatrix(tab);
           frame.getContentPane().add(vtm);
@@ -331,7 +338,12 @@ public class RectGraph  extends BaseGraph implements MouseInputListener  {
           Object[] obs = (Object[])m_ends.get(j);
           TableCluster c = ((RectWrapper)obs[1]).getCluster();
           JD2KFrame frame = new JD2KFrame("Values for Cluster ID " + c.getClusterLabel());
-          Table tab = c.getTable().getSubset(c.getMemberIndices());
+          Table tab = null;
+          if (tab instanceof SparseTable){
+            tab = ((SparseMutableTable)c.getTable()).getSubsetByReference(c.getMemberIndices());
+          } else {
+            tab = c.getTable().getSubset(c.getMemberIndices());
+          }
           TableMatrix vtm = new TableMatrix(tab);
           frame.getContentPane().add(vtm);
           frame.addWindowListener(new DisposeOnCloseListener(frame));
