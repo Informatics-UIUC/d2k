@@ -4,6 +4,8 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.transform.table.NFoldExTable;
 import java.util.*;
+import gnu.trove.*;
+
 /**
  * <p>Title: </p>
  * <p>Description: </p>
@@ -15,9 +17,7 @@ import java.util.*;
 
 public class NFoldStatified extends NFoldExTable{
     Hashtable uniqueOutputToRows; //maps a uniqueOutput to a vector of rows that have this output
-
-    Vector testIndices;
-    Vector trainIndices;
+    TIntArrayList testIndices, trainIndices;
 
     /**
      * Return the human readable name of the module.
@@ -110,17 +110,16 @@ public class NFoldStatified extends NFoldExTable{
         if (once == null) {
             setup ();
         }
-
         // Set up the train and test sets indices
         //convert a Vector of Integer objects to an array of ints
         int testing [] = new int [testIndices.size()];
         for (int i=0; i<testing.length; i++) {
-            testing[i] = ((Integer)testIndices.elementAt(i)).intValue();
+            testing[i] = testIndices.get(i);
         }
 
         int training [] = new int [trainIndices.size()];
         for (int i=0; i<training.length; i++) {
-            training[i] = ((Integer)trainIndices.elementAt(i)).intValue();
+            training[i] = trainIndices.get(i);
         }
 
         // now create a new table.
@@ -191,7 +190,8 @@ public class NFoldStatified extends NFoldExTable{
     private void createUniqueOutputToRowsHash() {
         uniqueOutputToRows = new Hashtable();
         Vector    output; //a vector that holds the output column values for a particular row
-        Vector    rowIndices;
+        TIntArrayList rowIndices;
+
         int[] outputCols = table.toExampleTable().getOutputFeatures();
 
         for (int r=0; r< this.table.getNumRows(); r++) {
@@ -201,13 +201,13 @@ public class NFoldStatified extends NFoldExTable{
 //printVector(output);
             // try to add output to the HashSet uniqueOutput,
             if (uniqueOutputToRows.containsKey(output)){ // success: lookup output in Hashtable
-                rowIndices = (Vector)uniqueOutputToRows.get(output);
-                rowIndices.add(new Integer(r));
+                rowIndices = (TIntArrayList)uniqueOutputToRows.get(output);
+                rowIndices.add(r);
                 uniqueOutputToRows.put(output, rowIndices);
             }
             else {    // failure: create a new entry in the Hashtable
-                rowIndices = new Vector(1);
-                rowIndices.add(new Integer(r));
+                rowIndices = new TIntArrayList(1);
+                rowIndices.add(r);
                 uniqueOutputToRows.put(output, rowIndices);
             }
         }//outer for
@@ -240,43 +240,42 @@ public class NFoldStatified extends NFoldExTable{
                 // add them all to the training set for now  (TODO)
             // repeat for every key in the hashtable
 
-        testIndices = new Vector();
-        trainIndices = new Vector();
+        testIndices = new TIntArrayList();
+        trainIndices = new TIntArrayList();
         Random rdm0 = new Random(this.seed);
         Random rdm = new Random(this.seed);
 
-        //Set keyset = uniqueOutputToRows.keySet();
         Enumeration keyEnum = uniqueOutputToRows.keys();
         while ( keyEnum.hasMoreElements() ) {
-            Vector rowIndices = (Vector) uniqueOutputToRows.get(keyEnum.nextElement());
+            TIntArrayList rowIndices = (TIntArrayList) uniqueOutputToRows.get(keyEnum.nextElement());
             if (rowIndices.size() < N) {         //if the number of row indices retrived 'n' is < N
                 for (int i=0; i<rowIndices.size(); i++) {
                     int coin = rdm0.nextInt(2);//add them randomly to either the test or the train set
                     if (coin == 0)
-                        testIndices.add(rowIndices.elementAt(i));
+                        testIndices.add(rowIndices.get(i));
                     else if (coin == 1)
-                        trainIndices.add(rowIndices.elementAt(i));
+                        trainIndices.add(rowIndices.get(i));
                 }//for
             }//if
 
             else {
-                HashSet testIndicesSet = new HashSet();//randomly pick (n/N) of them
+                TIntHashSet testIndicesSet = new TIntHashSet();//randomly pick (n/N) of them
                 while (testIndicesSet.size() < (int)(rowIndices.size()/N)){
                     int index = rdm.nextInt(rowIndices.size());
-                    testIndicesSet.add(rowIndices.elementAt(index));
+                    testIndicesSet.add(rowIndices.get(index));
                 }//while
 
-                testIndices.addAll(testIndicesSet);
+                testIndices.add(testIndicesSet.toArray());
                 for (int i=0; i<rowIndices.size(); i++) {
-                    if (! testIndicesSet.contains(rowIndices.elementAt(i)))
-                        trainIndices.add(rowIndices.elementAt(i));
+                    if (! testIndicesSet.contains(rowIndices.get(i)))
+                        trainIndices.add(rowIndices.get(i));
                 }//for
             }//else
         }//while
-System.out.println("Test Indices:");
-this.printVector(testIndices);
-System.out.println("Train Indices:");
-this.printVector(trainIndices);
+//System.out.println("Test Indices:");
+//this.printVector(testIndices);
+//System.out.println("Train Indices:");
+//this.printVector(trainIndices);
     }//createTestTrainSets
 
 } //NFoldStatified

@@ -97,13 +97,18 @@ System.out.println("Total Row Count: " + numRows);
                 Map.Entry e = (Map.Entry) i.next();
 
                 for (int j=0; j< ((Vector)e.getKey()).toArray().length; j++){
-                    System.out.print( ((Vector)e.getKey()).toArray()[j] + "&");
+                    System.out.print( ((Vector)e.getKey()).toArray()[j] + " ");
                 }
                 System.out.println("");
 
 //                System.out.println(e.getKey() + " Count: " + e.getValue() +
-                System.out.println(" Count: " + e.getValue() +
-                " Percent: " +  (((((Integer)e.getValue()).intValue())*100))/numRows );
+                int count = ((Integer)e.getValue()).intValue();
+                float percent = (float)count/(float)numRows *100;
+
+                System.out.println(" Count: " + count +
+                " Percent: " +  percent);
+//                System.out.println(" Count: " + e.getValue() +
+//                " Percent: " +  (((((Integer)e.getValue()).intValue())*100))/numRows );
             }
         }
 
