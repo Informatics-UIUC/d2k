@@ -316,7 +316,7 @@ public class DSTPView extends JUserPane implements  ActionListener, ComponentLis
   private void addServerInfoToTree (String server) {
     try {
       _cats = new Hashtable();
-      _treepan.getTree().removeAll();
+      //_treepan.getTree().removeAll();
       DSTPConnection conn = new DSTPConnection(server);
       parseMetaData(conn);
       DSTPTreeModel model = _treepan.getModel();

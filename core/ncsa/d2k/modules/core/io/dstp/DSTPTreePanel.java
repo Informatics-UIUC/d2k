@@ -79,11 +79,11 @@ public class DSTPTreePanel extends JPanel implements MouseInputListener {
         m_model.setAsksAllowsChildren(true);
         m_tree = new DSTPTree(m_model);
         //m_tree.setFont(new Font("Arial", Font.BOLD, 14));
-        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+        //DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
         //renderer.setClosedIcon(m_folderIcon);
         //renderer.setOpenIcon(m_folderSelIcon);
         //renderer.setLeafIcon(m_leafIcon);
-        m_tree.setCellRenderer(renderer);
+        //m_tree.setCellRenderer(renderer);
         m_tree.setShowsRootHandles(true);
         m_scroll = new JScrollPane(m_tree);
         m_tree.setEditable(false);
