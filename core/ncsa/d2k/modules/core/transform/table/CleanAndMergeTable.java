@@ -254,7 +254,7 @@ public class CleanAndMergeTable extends UIModule {
 			// where data is copied from
 
 			int maxRow = rows[0];
-			double maxVal = Double.MIN_VALUE;
+			double maxVal = table.getDouble(rows[0], control);
 			for(int i = 1; i < rows.length; i++) {
 				if(table.getDouble(rows[i], control) > maxVal) {
 					maxVal = table.getDouble(rows[i], control);
@@ -277,7 +277,7 @@ public class CleanAndMergeTable extends UIModule {
 			// where data is copied from
 
 			int maxRow = rows[0];
-			double maxVal = Double.MIN_VALUE;
+			double maxVal = table.getDouble(rows[0], control);
 			for(int i = 1; i < rows.length; i++) {
 				if(table.getDouble(rows[i], control) > maxVal) {
 					maxVal = table.getDouble(rows[i], control);
@@ -310,7 +310,7 @@ public class CleanAndMergeTable extends UIModule {
 			// where data is copied from
 
 			int maxRow = rows[0];
-			double maxVal = Double.MIN_VALUE;
+			double maxVal = table.getDouble(rows[0], control);
 			for(int i = 1; i < rows.length; i++) {
 				if(table.getDouble(rows[i], control) > maxVal) {
 					maxVal = table.getDouble(rows[i], control);
