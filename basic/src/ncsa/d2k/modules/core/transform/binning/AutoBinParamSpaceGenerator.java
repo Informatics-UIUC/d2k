@@ -36,7 +36,7 @@ public class AutoBinParamSpaceGenerator extends AbstractParamSpaceGenerator {
    * @return a name
    */
   public String getModuleName() {
-    return "Auto Bin Param Space Generator";
+    return "Auto Bin Parameter Space Generator";
   }
 
   /**
@@ -56,8 +56,8 @@ public class AutoBinParamSpaceGenerator extends AbstractParamSpaceGenerator {
 				       "When binning by weight, this is the number of items" +
 				       " that will go in each bin.   However, the bins may contain more or fewer values than "+
 				       "<i>weight</i> values, depending on how many items equal the bin limits. Typically " +
-				       "the last bin will contain less or equal to <i>weight</i> values and the rest of the " +
-				       "bins will contain a number that is  equal or greater to <i>weight</i> values." +
+				       "the last bin will contain less than or equal to <i>weight</i> values and the rest of the " +
+				       "bins will contain a number that is  equal to or greater than <i>weight</i> values. " +
 				       "Minimum value must be 1, maximum is unlimited here but practically is limited by " +
 				       "the number of values.");
       pds[2] = new PropertyDescription(NUMBER_OF_BINS, "Number of Bins - Space Definition",
