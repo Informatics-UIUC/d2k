@@ -420,19 +420,45 @@ public class DSTPView
       }
       ArrayList alist = new ArrayList();
       for (int i = 0, n = vals.length; i < n; i++) {
+
         StringTokenizer toker = new StringTokenizer( (String) vals[i]);
         alist.add(toker.nextToken());
       }
       Iterator atts = _chosenNode.getAttributes();
       ArrayList sels = new ArrayList();
       while (atts.hasNext()) {
+
         attribute att = (attribute) atts.next();
+
+
+
         if (alist.contains(att.getAttName())) {
+
+
           sels.add(att);
         }
       }
       _chosenNode.setSelectedAttributes(sels);
       disableAll();
+
+//headless conversion support
+      String[] attNames = new String [sels.size()];
+      String[] attTypes = new String[sels.size()];
+      for (int i=0; i<attNames.length; i++){
+        attribute att = (attribute) sels.get(i);
+        attNames[i] = att.getAttName();
+        attTypes[i] = att.getAttType();
+      }
+      _select.setAttNames(attNames);
+      _select.setAttTypes(attTypes);
+
+
+
+      _select.setCategory(_chosenNode.getCategory());
+
+      _select.setDatafileName(_chosenNode.getDatafileName());
+//headless conversion support
+
       new DSTPDataSource(this, _chosenNode);
     } else if (src == _helpItem) {
       helpWindow.setVisible(true);
@@ -484,349 +510,6 @@ public class DSTPView
    */
   public void componentHidden(ComponentEvent e) {}
 
-  //=============
-  // Inner Class
-  //=============
-
-  public class MetaNode
-      implements java.io.Serializable {
-
-    //==============
-    // Data Members
-    //==============
-    private ArrayList _ucks = new ArrayList();
-    private ArrayList _atts = new ArrayList();
-    private ArrayList _selatts = null;
-
-    //============
-    // Properties
-    //============
-    private String _category = null;
-    public String getCategory() {
-      return _category;
-    }
-
-    public void setCategory(String cat) {
-      _category = cat;
-    }
-
-    private String _servername = null;
-    public String getServerName() {
-      return _servername;
-    }
-
-    public void setServerName(String servername) {
-      _servername = servername;
-    }
-
-    private String _serverlocation = null;
-    public String getServerLocation() {
-      return _serverlocation;
-    }
-
-    public void setServerLocation(String serverlocation) {
-      _serverlocation = serverlocation;
-    }
-
-    private String _datafilename = null;
-    public String getDatafileName() {
-      return _datafilename;
-    }
-
-    public void setDatafileName(String datafilename) {
-      _datafilename = datafilename;
-    }
-
-    private String _datafiledate = null;
-    public String getDatafileDate() {
-      return _datafiledate;
-    }
-
-    public void setDatafileDate(String datafiledate) {
-      _datafiledate = datafiledate;
-    }
-
-    private String _datafiledescription = null;
-    public String getDatafileDescription() {
-      return _datafiledescription;
-    }
-
-    public void setDatafileDescription(String datafiledescription) {
-      _datafiledescription = datafiledescription;
-    }
-
-    private String _datafilenumrecords = null;
-    public String getDatafileNumRecords() {
-      return _datafilenumrecords;
-    }
-
-    public void setDatafileNumRecords(String datafilenumrecords) {
-      _datafilenumrecords = datafilenumrecords;
-    }
-
-    private String _datafilesource = null;
-    public String getDatafileSource() {
-      return _datafilesource;
-    }
-
-    public void setDatafileSource(String datafilesource) {
-      _datafilesource = datafilesource;
-    }
-
-    //===============
-    // Constructor(s)
-    //===============
-    public MetaNode() {
-    }
-
-    public MetaNode(String cat,
-                    String servername,
-                    String serverlocation,
-                    String datafilename,
-                    String datafiledate,
-                    String datafiledescription,
-                    String datafilenumrecords,
-                    String datafilesource) {
-      _category = cat;
-      _servername = servername;
-      _serverlocation = serverlocation;
-      _datafilename = datafilename;
-      _datafiledate = datafiledate;
-      _datafiledescription = datafiledescription;
-      _datafilenumrecords = datafilenumrecords;
-      _datafilesource = datafilesource;
-    }
-
-    //================
-    // Static Methods
-    //================
-
-    //================
-    // Public Methods
-    //================
-
-    public void buildSubTree(DSTPTreeModel model, DefaultMutableTreeNode root) {
-      DefaultMutableTreeNode datafilenode = new DefaultMutableTreeNode(new
-          DSTPTreeNodeData(this, getDatafileName()));
-      model.insertNodeInto(datafilenode, root, 0);
-
-      DefaultMutableTreeNode servernamenode = new DefaultMutableTreeNode(
-          "Server: " + this.getServerName(), false);
-      model.insertNodeInto(servernamenode, datafilenode, 0);
-
-      DefaultMutableTreeNode serverlocnode = new DefaultMutableTreeNode(
-          "Server Location: " + this.getServerLocation(), false);
-      model.insertNodeInto(serverlocnode, datafilenode, 0);
-
-      DefaultMutableTreeNode datenode = new DefaultMutableTreeNode("Date: " +
-          this.getDatafileDate(), false);
-      model.insertNodeInto(datenode, datafilenode, 0);
-
-      DefaultMutableTreeNode descnode = new DefaultMutableTreeNode(
-          "Description: " + this.getDatafileDescription(), false);
-      model.insertNodeInto(descnode, datafilenode, 0);
-
-      DefaultMutableTreeNode numnode = new DefaultMutableTreeNode(
-          "Number of Records: " + this.getDatafileNumRecords(), false);
-      model.insertNodeInto(numnode, datafilenode, 0);
-
-      DefaultMutableTreeNode srcnode = new DefaultMutableTreeNode("Source: " +
-          this.getDatafileSource(), false);
-      model.insertNodeInto(srcnode, datafilenode, 0);
-
-      Iterator ucks = getUCK();
-      String ucklbl = "UCK's ";
-      while (ucks.hasNext()) {
-        ucklbl += ( (uck) ucks.next()).getUCKName();
-        if (ucks.hasNext()) {
-          ucklbl += ", ";
-        }
-      }
-      DefaultMutableTreeNode ucknode = new DefaultMutableTreeNode(ucklbl);
-      model.insertNodeInto(ucknode, datafilenode, 0);
-      ucks = getUCK();
-      while (ucks.hasNext()) {
-        uck ukey = (uck) ucks.next();
-        DefaultMutableTreeNode ucknodedetail = new DefaultMutableTreeNode(ukey.
-            getUCKName() + " " + ukey.getUCKID(), false);
-        model.insertNodeInto(ucknodedetail, ucknode,
-                             model.getChildCount(ucknode));
-      }
-
-      Iterator atts = this.getAttributes();
-      DefaultMutableTreeNode attsnode = new DefaultMutableTreeNode("Attributes");
-      model.insertNodeInto(attsnode, datafilenode, 0);
-      while (atts.hasNext()) {
-        attribute att = (attribute) atts.next();
-        DefaultMutableTreeNode attnamenode = new DefaultMutableTreeNode(att.
-            getAttName());
-        model.insertNodeInto(attnamenode, attsnode,
-                             model.getChildCount(attsnode));
-
-        DefaultMutableTreeNode atttypenode = new DefaultMutableTreeNode(
-            "Type: " + att.getAttType(), false);
-        model.insertNodeInto(atttypenode, attnamenode,
-                             model.getChildCount(attnamenode));
-        DefaultMutableTreeNode attunitnode = new DefaultMutableTreeNode(
-            "Unit: " + att.getAttUnit(), false);
-        model.insertNodeInto(attunitnode, attnamenode,
-                             model.getChildCount(attnamenode));
-        DefaultMutableTreeNode attnumnode = new DefaultMutableTreeNode(
-            "Number: " + att.getAttNumber(), false);
-        model.insertNodeInto(attnumnode, attnamenode,
-                             model.getChildCount(attnamenode));
-        DefaultMutableTreeNode attnotenode = new DefaultMutableTreeNode(
-            "Note: " + att.getAttNote(), false);
-        model.insertNodeInto(attnotenode, attnamenode,
-                             model.getChildCount(attnamenode));
-      }
-    }
-
-    public void addAttribute(attribute att) {
-      this._atts.add(att);
-    }
-
-    public void removeAttribute(attribute att) {
-      _atts.remove(att);
-    }
-
-    public Iterator getAttributes() {
-      return _atts.iterator();
-    }
-
-    public void setSelectedAttributes(ArrayList alist) {
-      _selatts = alist;
-    }
-
-    public Iterator getSelectedAttributes() {
-      if (_selatts != null) {
-        return _selatts.iterator();
-      }
-      return null;
-    }
-
-    public void addUCK(uck u) {
-      this._ucks.add(u);
-    }
-
-    public Iterator getUCK() {
-      return _ucks.iterator();
-    }
-
-    public String toString() {
-      return _servername;
-    }
-
-    public String getKey() {
-      return getDatafileName() + "::" + getServerName();
-    }
-  }
-
-  public class uck
-      implements java.io.Serializable {
-    uck() {}
-
-    uck(String name, String id) {
-      _uckname = name;
-      _uckid = id;
-    }
-
-    private String _uckname = null;
-    public String getUCKName() {
-      return _uckname;
-    }
-
-    public void setUCKName(String name) {
-      _uckname = name;
-    }
-
-    private String _uckid = null;
-    public String getUCKID() {
-      return _uckid;
-    }
-
-    public void setUCKID(String id) {
-      _uckid = id;
-    }
-  }
-
-  public class attribute
-      implements java.io.Serializable {
-    attribute() {}
-
-    attribute(Element att) {
-      _attname = att.getAttributeValue("NAME");
-      _attnumber = att.getAttributeValue("NUMBER");
-      _atttype = att.getAttributeValue("DATA-TYPE");
-      _attunit = att.getAttributeValue("UNIT");
-      _attnote = att.getAttributeValue("NOTE");
-      _attuckname = att.getAttributeValue("UCKNAME");
-      _attuckid = att.getAttributeValue("UCKID");
-    }
-
-    private String _attname = null;
-    public String getAttName() {
-      return _attname;
-    }
-
-    public void setAttName(String name) {
-      _attname = name;
-    }
-
-    private String _attnumber = null;
-    public String getAttNumber() {
-      return _attnumber;
-    }
-
-    public void setAttNumber(String number) {
-      _attnumber = number;
-    }
-
-    private String _atttype = null;
-    public String getAttType() {
-      return _atttype;
-    }
-
-    public void setAttType(String type) {
-      _atttype = type;
-    }
-
-    private String _attunit = null;
-    public String getAttUnit() {
-      return _attunit;
-    }
-
-    public void setAttUnit(String unit) {
-      _attunit = unit;
-    }
-
-    private String _attnote = null;
-    public String getAttNote() {
-      return _attnote;
-    }
-
-    public void setAttNote(String note) {
-      _attnote = note;
-    }
-
-    private String _attuckname = null;
-    public String getAttUCKName() {
-      return _attuckname;
-    }
-
-    public void setAttUCKName(String uckname) {
-      _attuckname = uckname;
-    }
-
-    private String _attuckid = null;
-    public String getAttUCKID() {
-      return _attuckid;
-    }
-
-    public void setAttUCKID(String uckid) {
-      _attuckid = uckid;
-    }
-  }
 
   private final class HelpWindow
       extends JD2KFrame {
@@ -889,3 +572,349 @@ public class DSTPView
   }
 
 }
+
+
+//=============
+// Inner Class
+//=============
+
+/*  public class MetaNode
+    implements java.io.Serializable {
+
+  //==============
+  // Data Members
+  //==============
+  private ArrayList _ucks = new ArrayList();
+  private ArrayList _atts = new ArrayList();
+  private ArrayList _selatts = null;
+
+  //============
+  // Properties
+  //============
+  private String _category = null;
+  public String getCategory() {
+    return _category;
+  }
+
+  public void setCategory(String cat) {
+    _category = cat;
+  }
+
+  private String _servername = null;
+  public String getServerName() {
+    return _servername;
+  }
+
+  public void setServerName(String servername) {
+    _servername = servername;
+  }
+
+  private String _serverlocation = null;
+  public String getServerLocation() {
+    return _serverlocation;
+  }
+
+  public void setServerLocation(String serverlocation) {
+    _serverlocation = serverlocation;
+  }
+
+  private String _datafilename = null;
+  public String getDatafileName() {
+    return _datafilename;
+  }
+
+  public void setDatafileName(String datafilename) {
+    _datafilename = datafilename;
+  }
+
+  private String _datafiledate = null;
+  public String getDatafileDate() {
+    return _datafiledate;
+  }
+
+  public void setDatafileDate(String datafiledate) {
+    _datafiledate = datafiledate;
+  }
+
+  private String _datafiledescription = null;
+  public String getDatafileDescription() {
+    return _datafiledescription;
+  }
+
+  public void setDatafileDescription(String datafiledescription) {
+    _datafiledescription = datafiledescription;
+  }
+
+  private String _datafilenumrecords = null;
+  public String getDatafileNumRecords() {
+    return _datafilenumrecords;
+  }
+
+  public void setDatafileNumRecords(String datafilenumrecords) {
+    _datafilenumrecords = datafilenumrecords;
+  }
+
+  private String _datafilesource = null;
+  public String getDatafileSource() {
+    return _datafilesource;
+  }
+
+  public void setDatafileSource(String datafilesource) {
+    _datafilesource = datafilesource;
+  }
+
+  //===============
+  // Constructor(s)
+  //===============
+  public MetaNode() {
+  }
+
+  public MetaNode(String cat,
+                  String servername,
+                  String serverlocation,
+                  String datafilename,
+                  String datafiledate,
+                  String datafiledescription,
+                  String datafilenumrecords,
+                  String datafilesource) {
+    _category = cat;
+    _servername = servername;
+    _serverlocation = serverlocation;
+    _datafilename = datafilename;
+    _datafiledate = datafiledate;
+    _datafiledescription = datafiledescription;
+    _datafilenumrecords = datafilenumrecords;
+    _datafilesource = datafilesource;
+  }
+
+  //================
+  // Static Methods
+  //================
+
+  //================
+  // Public Methods
+  //================
+
+  public void buildSubTree(DSTPTreeModel model, DefaultMutableTreeNode root) {
+    DefaultMutableTreeNode datafilenode = new DefaultMutableTreeNode(new
+        DSTPTreeNodeData(this, getDatafileName()));
+    model.insertNodeInto(datafilenode, root, 0);
+
+    DefaultMutableTreeNode servernamenode = new DefaultMutableTreeNode(
+        "Server: " + this.getServerName(), false);
+    model.insertNodeInto(servernamenode, datafilenode, 0);
+
+    DefaultMutableTreeNode serverlocnode = new DefaultMutableTreeNode(
+        "Server Location: " + this.getServerLocation(), false);
+    model.insertNodeInto(serverlocnode, datafilenode, 0);
+
+    DefaultMutableTreeNode datenode = new DefaultMutableTreeNode("Date: " +
+        this.getDatafileDate(), false);
+    model.insertNodeInto(datenode, datafilenode, 0);
+
+    DefaultMutableTreeNode descnode = new DefaultMutableTreeNode(
+        "Description: " + this.getDatafileDescription(), false);
+    model.insertNodeInto(descnode, datafilenode, 0);
+
+    DefaultMutableTreeNode numnode = new DefaultMutableTreeNode(
+        "Number of Records: " + this.getDatafileNumRecords(), false);
+    model.insertNodeInto(numnode, datafilenode, 0);
+
+    DefaultMutableTreeNode srcnode = new DefaultMutableTreeNode("Source: " +
+        this.getDatafileSource(), false);
+    model.insertNodeInto(srcnode, datafilenode, 0);
+
+    Iterator ucks = getUCK();
+    String ucklbl = "UCK's ";
+    while (ucks.hasNext()) {
+      ucklbl += ( (uck) ucks.next()).getUCKName();
+      if (ucks.hasNext()) {
+        ucklbl += ", ";
+      }
+    }
+    DefaultMutableTreeNode ucknode = new DefaultMutableTreeNode(ucklbl);
+    model.insertNodeInto(ucknode, datafilenode, 0);
+    ucks = getUCK();
+    while (ucks.hasNext()) {
+      uck ukey = (uck) ucks.next();
+      DefaultMutableTreeNode ucknodedetail = new DefaultMutableTreeNode(ukey.
+          getUCKName() + " " + ukey.getUCKID(), false);
+      model.insertNodeInto(ucknodedetail, ucknode,
+                           model.getChildCount(ucknode));
+    }
+
+    Iterator atts = this.getAttributes();
+    DefaultMutableTreeNode attsnode = new DefaultMutableTreeNode("Attributes");
+    model.insertNodeInto(attsnode, datafilenode, 0);
+    while (atts.hasNext()) {
+      attribute att = (attribute) atts.next();
+      DefaultMutableTreeNode attnamenode = new DefaultMutableTreeNode(att.
+          getAttName());
+      model.insertNodeInto(attnamenode, attsnode,
+                           model.getChildCount(attsnode));
+
+      DefaultMutableTreeNode atttypenode = new DefaultMutableTreeNode(
+          "Type: " + att.getAttType(), false);
+      model.insertNodeInto(atttypenode, attnamenode,
+                           model.getChildCount(attnamenode));
+      DefaultMutableTreeNode attunitnode = new DefaultMutableTreeNode(
+          "Unit: " + att.getAttUnit(), false);
+      model.insertNodeInto(attunitnode, attnamenode,
+                           model.getChildCount(attnamenode));
+      DefaultMutableTreeNode attnumnode = new DefaultMutableTreeNode(
+          "Number: " + att.getAttNumber(), false);
+      model.insertNodeInto(attnumnode, attnamenode,
+                           model.getChildCount(attnamenode));
+      DefaultMutableTreeNode attnotenode = new DefaultMutableTreeNode(
+          "Note: " + att.getAttNote(), false);
+      model.insertNodeInto(attnotenode, attnamenode,
+                           model.getChildCount(attnamenode));
+    }
+  }
+
+  public void addAttribute(attribute att) {
+    this._atts.add(att);
+  }
+
+  public void removeAttribute(attribute att) {
+    _atts.remove(att);
+  }
+
+  public Iterator getAttributes() {
+    return _atts.iterator();
+  }
+
+  public void setSelectedAttributes(ArrayList alist) {
+    _selatts = alist;
+  }
+
+  public Iterator getSelectedAttributes() {
+    if (_selatts != null) {
+      return _selatts.iterator();
+    }
+    return null;
+  }
+
+  public void addUCK(uck u) {
+    this._ucks.add(u);
+  }
+
+  public Iterator getUCK() {
+    return _ucks.iterator();
+  }
+
+  public String toString() {
+    return _servername;
+  }
+
+  public String getKey() {
+    return getDatafileName() + "::" + getServerName();
+  }
+}
+*/
+/*  public class uck
+    implements java.io.Serializable {
+  uck() {}
+
+  uck(String name, String id) {
+    _uckname = name;
+    _uckid = id;
+  }
+
+  private String _uckname = null;
+  public String getUCKName() {
+    return _uckname;
+  }
+
+  public void setUCKName(String name) {
+    _uckname = name;
+  }
+
+  private String _uckid = null;
+  public String getUCKID() {
+    return _uckid;
+  }
+
+  public void setUCKID(String id) {
+    _uckid = id;
+  }
+}
+
+public class attribute
+    implements java.io.Serializable {
+  attribute() {}
+
+  attribute(Element att) {
+    _attname = att.getAttributeValue("NAME");
+    _attnumber = att.getAttributeValue("NUMBER");
+    _atttype = att.getAttributeValue("DATA-TYPE");
+    _attunit = att.getAttributeValue("UNIT");
+    _attnote = att.getAttributeValue("NOTE");
+    _attuckname = att.getAttributeValue("UCKNAME");
+    _attuckid = att.getAttributeValue("UCKID");
+  }
+
+  private String _attname = null;
+  public String getAttName() {
+    return _attname;
+  }
+
+  public void setAttName(String name) {
+    _attname = name;
+  }
+
+  private String _attnumber = null;
+  public String getAttNumber() {
+    return _attnumber;
+  }
+
+  public void setAttNumber(String number) {
+    _attnumber = number;
+  }
+
+  private String _atttype = null;
+  public String getAttType() {
+    return _atttype;
+  }
+
+  public void setAttType(String type) {
+    _atttype = type;
+  }
+
+  private String _attunit = null;
+  public String getAttUnit() {
+    return _attunit;
+  }
+
+  public void setAttUnit(String unit) {
+    _attunit = unit;
+  }
+
+  private String _attnote = null;
+  public String getAttNote() {
+    return _attnote;
+  }
+
+  public void setAttNote(String note) {
+    _attnote = note;
+  }
+
+  private String _attuckname = null;
+  public String getAttUCKName() {
+    return _attuckname;
+  }
+
+  public void setAttUCKName(String uckname) {
+    _attuckname = uckname;
+  }
+
+  private String _attuckid = null;
+  public String getAttUCKID() {
+    return _attuckid;
+  }
+
+  public void setAttUCKID(String uckid) {
+    _attuckid = uckid;
+  }
+}
+*/

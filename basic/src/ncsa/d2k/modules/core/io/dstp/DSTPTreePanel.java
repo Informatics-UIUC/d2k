@@ -44,6 +44,23 @@ public class DSTPTreePanel extends JPanel implements MouseInputListener {
         init();
     }
 
+    //headless conversion support for ParseDSTPTpDBTable
+  public DSTPTreePanel (String server_name) {
+      setLayout(new BorderLayout());
+      m_root = new DefaultMutableTreeNode("DSTP " + server_name, true);
+      m_model = new DSTPTreeModel(m_root);
+      m_model.setAsksAllowsChildren(true);
+      m_tree = new DSTPTree(m_model);
+      m_tree.setShowsRootHandles(true);
+      m_scroll = new JScrollPane(m_tree);
+      m_tree.setEditable(false);
+      add(m_scroll, BorderLayout.CENTER);
+      m_tree.addMouseListener(this);
+      m_tree.addMouseMotionListener(this);
+ }
+ //headless conversion support
+
+
     //================
     // Public Methods
     //================
@@ -106,7 +123,7 @@ public class DSTPTreePanel extends JPanel implements MouseInputListener {
           try {
             DSTPTreeNodeData ndata = (DSTPTreeNodeData)ob;
             System.out.println("it is a DSTPTreeNodeData");
-            DSTPView.MetaNode node = ndata.getNode();
+            MetaNode node = ndata.getNode();
             m_view.setChosenNode(node);
           } catch (Exception e){
             System.out.println("EXCEPTION in building datasource: " + e);

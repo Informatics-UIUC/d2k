@@ -19,13 +19,13 @@ public class DSTPTreeNodeData {
   //==============
 
   private String _print = null;
-  private DSTPView.MetaNode _node = null;
+  private MetaNode _node = null;
 
   //================
   // Constructor(s)
   //================
 
-  public DSTPTreeNodeData(DSTPView.MetaNode node, String msg){
+  public DSTPTreeNodeData(MetaNode node, String msg){
     _print = msg;
     _node = node;
   }
@@ -34,7 +34,7 @@ public class DSTPTreeNodeData {
     return _print;
   }
 
-  public DSTPView.MetaNode getNode(){
+  public MetaNode getNode(){
     return _node;
   }
 }

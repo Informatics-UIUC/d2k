@@ -8,6 +8,31 @@ package ncsa.d2k.modules.core.io.dstp;
 //===============
 import ncsa.d2k.core.modules.*;
 
+//==============
+// Java Imports
+//==============
+import java.io.*;
+import java.util.*;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.tree.*;
+
+//JDOM
+import org.jdom.*;
+import org.jdom.input.*;
+//DSTP Client
+import backend.*;
+//import ncsa.d2k.core.modules.*;
+import ncsa.d2k.gui.*;
+import ncsa.d2k.modules.core.datatype.table.db.*;
+import ncsa.d2k.modules.core.datatype.table.db.dstp.*;
+import ncsa.d2k.userviews.swing.*;
+
+
+import ncsa.d2k.modules.core.transform.StaticMethods;
+
 /**
  *
  * <p>Title: ParseDSTPToDBTable</p>
@@ -18,7 +43,7 @@ import ncsa.d2k.core.modules.*;
  * @version 1.0
  */
 public class ParseDSTPToDBTable
-    extends UIModule {
+    extends HeadlessUIModule {
   //==============
   // Data Members
   //==============
@@ -70,11 +95,14 @@ public class ParseDSTPToDBTable
    * @return array
    */
   public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] descriptions = new PropertyDescription[2];
-    descriptions[0] = super.getPropertiesDescriptions()[0];
+    PropertyDescription[] descriptions = new PropertyDescription[5];
+    descriptions[0] = super.supressDescription;
     descriptions[1] = new PropertyDescription("serverName",
                                               "DSTP Server DNS or IP",
         "This is the address of the DSTP server.");
+    descriptions[2] = new PropertyDescription("category", "Category", "Category of the datafile to be loaded");
+    descriptions[3] = new PropertyDescription("datafileName", "Datafile Name", "The data file to be loaded");
+    descriptions[4] = new PropertyDescription("datafileSource", "Datafile Source", "The data file to be loaded");
 
     return descriptions;
   }
@@ -238,5 +266,311 @@ public class ParseDSTPToDBTable
     String[] out = null;
     return out;
   }
+
+//headless conversion support
+
+
+
+//[when gui is supressed]
+  private String category;       //category of chosen node
+
+  private String datafileName;   //datafile name
+  private String[] attNames;     //selected attribute names in datafileSource
+  private String[] attTypes;     //selected attribute types in datafileSource
+
+  //setter and getter methods
+  public String getCategory(){return category;}
+
+  public String getDatafileName(){return datafileName;}
+
+  public void setCategory(String cat){category = cat;}
+
+  public void setDatafileName(String name){datafileName = name;}
+
+  public Object[] getAttNames(){return attNames;}
+  public Object[] getAttTypes(){return attTypes;}
+
+    public void setAttNames(Object[] names){
+    attNames  = new String[names.length];
+    for(int i=0; i<names.length; i++)
+      attNames[i] = (String)names[i];
+  }
+    public void setAttTypes(Object[] types){
+      attTypes  = new String[types.length];
+       for(int i=0; i<types.length; i++)
+         attTypes[i] = (String)types[i];
+  }
+
+//end setter and getter.
+
+
+
+  public void doit() throws Exception{
+
+
+  //creating a tree panel to hold the data in the dataspace.
+  DSTPTreePanel tree = new DSTPTreePanel(m_servername);
+  buildTree(tree);
+
+//retrieving the root
+  DefaultMutableTreeNode root = tree.getRoot();
+
+//retrieving the root's children - categories.
+  Enumeration e_category = root.children();
+
+
+//if selected category is an element in the enumeration - categoryNode will point to its node.
+  DefaultMutableTreeNode categoryNode = null;
+  //going over the categories and looking for the selected category.
+  while(e_category.hasMoreElements()){
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode) e_category.nextElement();
+    String currCat = (String)node.getUserObject();
+    //categoryMap.put(currCat, new Integer(counter));
+    //counter++;
+    if(currCat.equals(category))
+      categoryNode = node;
+  }//while e_category
+
+//validating that the chosen category was found in the dataspace
+
+  if(categoryNode == null)
+    throw new Exception ("The chosen category " + category + " does not exist in the chosen server " + m_servername + " dataspace");
+
+//everything is ok...
+  //retrieving the category's children - datafiles.
+  Enumeration e_datafile = categoryNode.children();
+
+  //if the selected datafile name is in the enumeration fileNode will point to its meta node.
+ MetaNode fileNode = null;
+ //going over the tree node (datafiles) looking for the selected data file name.
+   while(e_datafile.hasMoreElements()){
+     DefaultMutableTreeNode node = (DefaultMutableTreeNode) e_datafile.nextElement();
+     DSTPTreeNodeData currFile = (DSTPTreeNodeData) node.getUserObject();
+     MetaNode currFileNode = currFile.getNode();
+     if(currFileNode.getDatafileName().equals(datafileName))
+       fileNode = currFileNode;
+
+   }//while fileMap
+
+//validating that the chosen datafile is in the chosen category
+
+  if(fileNode == null)
+    throw new Exception ("The chosen datafile name " + datafileName + " does not exist in the chosen category " + category);
+
+//everything is fine...
+
+//getting the attributes of this file, building lookup hash maps
+  Iterator attIt = fileNode.getAttributes();
+  int counter = 0;
+  //maps name <-> id
+   HashMap attsNameMap = new HashMap();
+   //maps id <-> attribute object
+   HashMap attsIdMap = new HashMap();
+
+  while(attIt.hasNext()){
+    attribute currAtt = (attribute) attIt.next();
+    attsNameMap.put(currAtt.getAttName(), new Integer(counter));
+    attsIdMap.put( new Integer(counter), currAtt);
+    counter++;
+  }//while fileMap
+
+  //building a map name <-> id of the selected attribute names (by the user).
+  HashMap selectedAtts = new HashMap();
+  for(int i=0; i<attNames.length; i++)
+    selectedAtts.put(attNames[i], new Integer(i));
+
+  //verifying that the chosen attributes match the maps
+
+  //getting the target attribute names. only attribute names that were selected
+  //and also in attNamesMap will be in targetAttNames.
+  String[] targetAttNames = StaticMethods.getIntersection(attNames, attsNameMap);
+
+  if(targetAttNames.length == 0)
+    throw new Exception("None of the selected attributes is in the given dataspace");
+
+//verifying that each type matches.
+
+  //validAtt will hold attribute objects with names from targetAttNames, that their selected
+  //types (by the user) match their types in the dataspace.
+  ArrayList validAtt = new ArrayList();
+
+//so - for each targetAttNames[i]
+  for (int i=0; i<targetAttNames.length; i++){
+    //finding its id in the dataspace map
+    Integer id = (Integer ) attsNameMap.get(targetAttNames[i]);
+    //finding its attribute object in the id map (again matching the dataspace.
+    attribute currAtt = (attribute) attsIdMap.get(id);
+    //getting its type (according to dataspace)
+    String currType = currAtt.getAttType();
+    //finding the type that was selected by the user prior to this run.
+    String selectedType = attTypes[((Integer)selectedAtts.get(targetAttNames[i])).intValue()];
+
+    //validating matching between the types.
+    if(! currType.equals(selectedType))
+      throw new Exception("The selected type for attribute name " + targetAttNames[i] +
+    " does not match the type is the data space.");
+
+      //if everything is ok, adding to the array list.
+    validAtt.add(i, currAtt);
+
+  }//for target att names
+
+
+  //setting the meta node.
+  fileNode.setSelectedAttributes(validAtt);
+  //creating the data source that will hold all of the data of this datafile
+  //(pushOutput is called by run method of DSTPDataSource...
+  DSTPDataSource dsource = new DSTPDataSource(fileNode, this);
+
+
+  }//doit
+
+  //methods copied from DSTPView.
+
+  private void buildTree(DSTPTreePanel tree){
+    try {
+         Hashtable _cats = new Hashtable();
+         //_treepan.getTree().removeAll();
+         DSTPConnection conn = new DSTPConnection(m_servername);
+         parseMetaData(conn, _cats);
+         DSTPTreeModel model = tree.getModel();
+         DefaultMutableTreeNode root = tree.getRoot();
+
+         model.setRoot(root);
+         //rebuild the tree
+         Enumeration cats = _cats.keys();
+         while (cats.hasMoreElements()) {
+           Element cat = (Element) cats.nextElement();
+           DefaultMutableTreeNode newnode = new DefaultMutableTreeNode(cat.
+               getAttributeValue("NAME"));
+
+           model.insertNodeInto(newnode, root, 0);
+           Iterator mnodes = ( (ArrayList) _cats.get(cat)).iterator();
+           while (mnodes.hasNext()) {
+             MetaNode mnode = (MetaNode) mnodes.next();
+             mnode.buildSubTree(model, newnode);
+           }
+         }
+       }
+       catch (Exception e) {
+         /*JOptionPane.showMessageDialog(this, e.getMessage());
+         System.out.println("EXCEPTION: " + e.getMessage());*/
+         e.printStackTrace();
+         return;
+       }
+
+
+
+  }//buildTree
+
+
+  private void parseMetaData(DSTPConnection conn, Hashtable _cats)
+ throws Exception {
+
+    Vector data = null;
+    data = conn.getServerDataVector("METADATA EXPAND", 0);
+    String concat = "<DSML>";
+    for (int j = 0, k = data.size(); j < k; j++) {
+      String datum = (String) data.get(j);
+      if (j > 0) {
+        concat += datum;
+      }
+    }
+    concat += "</DSML>";
+
+    SAXBuilder sb = new SAXBuilder();
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    DataOutputStream dos = new DataOutputStream(baos);
+    dos.writeBytes(concat);
+    dos.flush();
+    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+    Document doc = sb.build(bais);
+
+    System.out.println("Metadata parsed and document built ...");
+
+    Iterator cats = doc.getRootElement().getChildren("CATEGORY").iterator();
+
+    while (cats.hasNext()) {
+      Element cat = (Element) cats.next();
+      ArrayList nodes = new ArrayList();
+      _cats.put(cat, nodes);
+      buildMetaNodes(nodes, cat);
+    }//while
+
+
+
+
+
+}//parseMetaData
+
+
+  private void buildMetaNodes(ArrayList nodes, Element cat) {
+
+
+
+
+
+ Hashtable ht = new Hashtable();
+
+ Iterator ucks = cat.getChildren("UCK").iterator();
+ while (ucks.hasNext()) {
+   Element uck = (Element) ucks.next();
+   String uckname = uck.getAttributeValue("NAME");
+   String uckid = uck.getAttributeValue("ID");
+   Iterator servers = uck.getChildren("SERVER").iterator();
+   while (servers.hasNext()) {
+     Element server = (Element) servers.next();
+     String servername = server.getAttributeValue("NAME");
+     String serverlocation = server.getAttributeValue("Location");
+     Iterator datafiles = server.getChildren("DATAFILE").iterator();
+     while (datafiles.hasNext()) {
+       Element datafile = (Element) datafiles.next();
+       String datafilename = datafile.getAttributeValue("NAME");
+       String datafiledate = datafile.getAttributeValue("DATE");
+       String datafiledescription = datafile.getAttributeValue("DESCRIPTION");
+       String datafilenumrecords = datafile.getAttributeValue("NUMRECORDS");
+       String datafilesource = datafile.getAttributeValue("SOURCE");
+       //type
+       //delimiter
+       //dsfilename
+       //address
+       String key = datafilename + "::" + servername;
+    MetaNode node = (MetaNode) ht.get(key);
+       if (node == null) {
+         //put a new metanode
+         node = new MetaNode(cat.getAttributeValue("NAME"),
+                             servername,
+                             serverlocation,
+                             datafilename,
+                             datafiledate,
+                             datafiledescription,
+                             datafilenumrecords,
+                             datafilesource);
+         node.addUCK(new uck(uckname, uckid));
+         ht.put(key, node);
+         nodes.add(node);
+         Iterator atts = datafile.getChildren("ATTRIBUTE-DESCRIPTOR").
+             iterator();
+         while (atts.hasNext()) {
+           Element att = (Element) atts.next();
+           //add att to metanode
+           node.addAttribute(new attribute(att));
+         }
+       } else {
+         //update existing metanode with a new uck
+         node.addUCK(new uck(uckname, uckid));
+       }
+     }
+   }
+ }
+
+
+}//buildMetaNode
+
+
+
+  //headless conversion support
+
+
 
 }
