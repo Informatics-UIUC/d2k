@@ -50,25 +50,25 @@ public class ConfusionMatrix extends JScrollPane {
 		int numRows = vt.getNumRows();
 
 		// keep the unique outputs and predictions
-		HashMap outNames = new HashMap();
+		HashSet outNames = new HashSet();
 		for(int i = 0; i < numRows; i++) {
 			String s = vt.getString(i, o);
-			if(!outNames.containsKey(s))
-				outNames.put(s, s);
+			if(!outNames.contains(s))
+				outNames.add(s);
 		}
 
 		// keep the unique outputs and predictions
-		HashMap predNames = new HashMap();
+		HashSet predNames = new HashSet();
 		for(int i = 0; i < numRows; i++) {
 			String s = vt.getString(i, p);
-			if(!predNames.containsKey(s))
-				predNames.put(s, s);
+			if(!predNames.contains(s))
+				predNames.add(s);
 		}
 
 		String []outs = new String[outNames.size()];
 		String []outlabels = new String[outNames.size()];
 		int idx = 0;
-		Iterator it = outNames.keySet().iterator();
+		Iterator it = outNames.iterator();
 		while(it.hasNext()) {
 			String s = (String)it.next();
 			outs[idx] = s;
@@ -79,7 +79,7 @@ public class ConfusionMatrix extends JScrollPane {
 		String []preds = new String[predNames.size()];
 		String []predlabels = new String[predNames.size()];
 		idx = 0;
-		it = predNames.keySet().iterator();
+		it = predNames.iterator();
 		while(it.hasNext()) {
 			String s = (String)it.next();
 			preds[idx] = s;
@@ -105,20 +105,13 @@ public class ConfusionMatrix extends JScrollPane {
 					break;
 				}
 			}
-			//try {
-			d[predicted][actual]++;
-			/*}
-			catch(Exception e) {
-				System.out.println("pred: "+predicted);
-				System.out.println("act: "+actual);
-				System.out.println(preds.length);
-				System.out.println(outs.length);
-			}*/
+			//d[predicted][actual]++;
+			d[actual][predicted]++;
 		}
 
 		correct = 0;
 		for(int i = 0; i < outs.length; i++)
-			for(int j = 0; j < outs.length; j++)
+			for(int j = 0; j < preds.length; j++)
 				if(i == j)
 					correct += d[i][j];
 
@@ -182,6 +175,13 @@ public class ConfusionMatrix extends JScrollPane {
 
 		setViewportView(table);
 		setRowHeader(jv);
+		table.getTableHeader().setReorderingAllowed(false);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		//jTable.setPreferredScrollableViewportSize(d);
+		setHorizontalScrollBarPolicy(
+			JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		setVerticalScrollBarPolicy(
+			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	}
 
 	/**
