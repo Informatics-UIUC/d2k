@@ -93,11 +93,14 @@ public class Input1FileName extends InputModule {
     private String fileName;
 
     public void setFileName(String s) throws PropertyVetoException {
-        if (s == null || s.length() == 0) {
+        // here we check for length of 0 but not for null as we don't want this
+        // to get thrown if an itinerary is saved/reloaded without the
+        // property dialog being used
+        if ( s != null && s.length() == 0) {
             throw new PropertyVetoException("No file name was given.", null);
         }
+
         fileName =  s;
-        //jtf.setText(fileName);
     }
 
     public String getFileName() {
@@ -190,3 +193,15 @@ public class Input1FileName extends InputModule {
         pushOutput(fn, 0);
     }
 }
+
+// QA Comments
+// 2/12/03 - Handed off to QA by David Clutter - replaces Get1FileName
+//           using property editor instead of UI
+// 2/12/03 - Ruth started QA process.  Updated documentation; added a couple
+//           methods to help users see information;  added except handler
+//           in property setter method
+// 2/12/03 - emailed david c to see if text box could be variable size
+// 2/13/03 - text box std as is;  david c pointed out error in except handler
+//           ruth fixed error (with help) and committed
+// 2/13/03 - checked into basic.
+// END QA Comments
