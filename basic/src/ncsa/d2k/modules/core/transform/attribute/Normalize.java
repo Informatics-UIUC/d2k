@@ -430,11 +430,11 @@ public class Normalize extends HeadlessUIModule {
          availableNumericColumns.put(_table.getColumnLabel(i), new Integer(i));
 
       if(availableNumericColumns.size() == 0){
-        System.out.println(getAlias() + ": Table " + _table.getLabel() +
+        System.out.println(getAlias() + ": Warning - Table " + _table.getLabel() +
                            " has no numeric columns. The transformation will be " +
                            "an empty one");
-         pushOutput(new NormalizingTransformation(transform), 0);
-         return;
+         //pushOutput(new NormalizingTransformation(transform), 0);
+         //return;
       }
 
 
@@ -445,10 +445,10 @@ public class Normalize extends HeadlessUIModule {
             numNumeric++;
 */
 
-        if(transform.length == 0){
-          System.out.println(getAlias() + ": Table " + _table.getLabel() +
-                          " does not contain any of the configured numeric columns. " +
-                          "The transformation will be an empty one");
+        if(transform.length < numericLabels.length){
+          throw new Exception(getAlias() + ": Table " + _table.getLabel() +
+                              " does not contain all of the configured numeric columns." +
+                              " Please reconfigure this moduel via a GUI run so it can run Headless.");
         //pushOutput(new NormalizingTransformation(transform), 0);
         //return;
 

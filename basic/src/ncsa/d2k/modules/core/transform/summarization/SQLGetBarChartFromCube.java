@@ -696,10 +696,6 @@ public boolean createItemDataTableHeadless(int col, String[] attributes, String 
             throw new Exception (getAlias() +": The input table must be a cubed table, and must have the string '_CUBE' in its name");
 
 
-          if(!StaticMethods.getAvailableTables(cw).containsKey(tableName))
-            throw new Exception (getAlias() + ": Table " + tableName + " was not found in the database!");
-
-
         //verifying that tableName is in the data base
             if(!StaticMethods.getAvailableTables(cw).containsKey(tableName))
               throw new Exception(getAlias()+ ": Table named " + tableName +
@@ -721,8 +717,10 @@ public boolean createItemDataTableHeadless(int col, String[] attributes, String 
           }//while
 
           String[] targetAttributes = StaticMethods.getIntersection(selectedAttributes, columnsVector);
-          if(targetAttributes.length == 0)
-            throw new Exception (getAlias() + ": None of the selected attributes is in table " + tableName);
+          if(targetAttributes.length < selectedAttributes.length)
+            throw new Exception (getAlias() + ": Some of the configured attributes were not found " +
+                                 "in the database table " + tableName +
+                                 ". Please reconfigure this moduel via a GUI run so it can run Headless.");
 
           if (book) {
             aBook = new SQLCodeBook(cw, codeBook);

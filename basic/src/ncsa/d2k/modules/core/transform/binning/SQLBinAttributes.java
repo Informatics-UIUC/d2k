@@ -1627,7 +1627,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
 
       if(savedBins.length == 0) {
         savedBins = new BinDescriptor[0];
-        System.out.println(getAlias()+ ": No bins were configured.\n" +
+        System.out.println(getAlias()+ ": Warning - No bins were configured.\n" +
                            "The transformation will be empty.\n");
         pushOutput(new BinTransform(savedBins, newColumn), 0);
         return;
@@ -1657,23 +1657,29 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
       HashMap colMap = StaticMethods.getAvailableAttributes(wrapper, tableName);
 
       if(colMap.size() == 0){
-        System.out.println(getAlias()+ ": Table " + tableName + " has no columns. The transformation " +
-                           "will be empty");
-        BinDescriptor[] targetBins = new BinDescriptor[0];
-        pushOutput(new BinTransform(targetBins, newColumn), 0);
-        return;
+        System.out.println(getAlias()+ ": Warning - Table " + tableName + " has no columns." );
+//        BinDescriptor[] targetBins = new BinDescriptor[0];
+  //      pushOutput(new BinTransform(targetBins, newColumn), 0);
+    //    return;
       }
 
 
       //getting intersection between colMap and selected attributes.
-      HashMap newColMap = new HashMap();
-      for (int i=0; i<fieldNames.length; i++)
+
+      String[] targetFields = StaticMethods.getIntersection(fieldNames, colMap);
+      if(targetFields.length < fieldNames.length)
+        throw new Exception (getAlias() + ": Some of the input field names were " +
+                             "not found in the database table.");
+      /*for (int i=0; i<fieldNames.length; i++)
         if(colMap.containsKey(fieldNames[i]))
           newColMap.put(fieldNames[i], new Integer(i));
         else System.out.println(getAlias()+ ": The attribute " + fieldNames[i] + " was not found in table " +
                                 tableName + " and it will be ignored.");
+*/
+      /*    HashMap newColMap = new HashMap();
 
-      if(newColMap.size() == 0){
+       if(newColMap.size() == 0){
+
         System.out.println(getAlias()+ ": Table " + tableName + " has no columns labeled as the configured attributes " +
                            "on input port no. 3. The transformation " +
                            "will be empty");
@@ -1681,7 +1687,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
         pushOutput(new BinTransform(targetBins, newColumn), 0);
         return;
 
-      }
+      }*/
 
       /*
      ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
@@ -1693,25 +1699,26 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
        counter++;
      }//while columns
 */
-     Vector relevant = new Vector();
+    // Vector relevant = new Vector();
    for (int i=0; i<savedBins.length; i++){
-     if(!newColMap.containsKey(savedBins[i].label))
-       System.out.println(getAlias()+ ": Bin " +  savedBins[i].toString() + " does not match any column label in the input table. It will be ignored.");
-     else relevant.add(savedBins[i]);
+     if(!colMap.containsKey(savedBins[i].label))
+       throw new Exception(getAlias()+ ": Bin " +  savedBins[i].toString() + " does not match any column label in the database table." +
+                                        " Please reconfigure this moduel via a GUI run so it can run Headless.");
+     //else relevant.add(savedBins[i]);
    }//for
 
-   if(relevant.size() == 0)
+/*   if(relevant.size() == 0)
      System.out.println(getAlias() + ": None of the configured bins matched the columns in the " +
                         "configured table in the database. The transformation will be empty.");
 
    BinDescriptor[] targetBins =  new BinDescriptor[relevant.size()];
    for(int i=0; i<targetBins.length; i++)
      targetBins[i] = (BinDescriptor) relevant.get(i);
-
+*/
       //is in the database and that the fieldNames are in this table.
       //verification of relevancy of the bins will be done by applyTransformation.
 
-      pushOutput(new BinTransform(targetBins, newColumn), 0);
+      pushOutput(new BinTransform(savedBins, newColumn), 0);
 
     }//doit
     //headless conversion support

@@ -172,25 +172,20 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
        //vered - added this method, to figure out the cascading sort order
        //according to sortOrderNames
-       private int[] getSortOrder(Table table){
+       private int[] getSortOrder(Table table) throws Exception{
 
          int[] retVal = new int[0];
          HashMap columns = StaticMethods.getAvailableAttributes(table);
          if(columns.size() == 0)
-           System.out.println("The input table has no columns. It is output as is");
+           System.out.println(getAlias() + ": Warning - The input table has no columns.");
 
 
 
          retVal = StaticMethods.getIntersectIds(sortOrderNames, columns);
-         if(retVal == null || retVal.length == 0){
-           System.out.println(
-               "None of the configured labels were found in the input table. " +
-               "\nThe table will be ordered by default.");
-          retVal = null;
-         }
-
-
-
+         if(retVal.length < sortOrderNames.length)
+           throw new Exception(getAlias() +
+               ": Some of the configured labels were found in the input table. " +
+               "\nPlease reconfigure this module.");
 
          return retVal;
        }//getSortOrder

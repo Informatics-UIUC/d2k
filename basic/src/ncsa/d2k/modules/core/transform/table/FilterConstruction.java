@@ -606,16 +606,18 @@ try {
        throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
 
        if(availableColumns.size() == 0){
-         System.out.println(getAlias()+": Table " + table.getLabel() + " has no columns.");
-         System.out.println("The transformation will be an empty one");
+         System.out.println(getAlias()+": Warning - Table " + table.getLabel() + " has no columns.");
+         /*System.out.println("The transformation will be an empty one");
          boolean[] val = new boolean[0];
          pushOutput(new FilterTransformation(val, false), 0);
-         return;
+         return;*/
        }
 
-//      String goodCondition = ExpressionParser.parseExpression(expression, availableColumns, false);
+ //     String goodCondition = ExpressionParser.parseExpression(expression, availableColumns, false);
       //now good condition holds only relevant filters.
       //building a filter expression
+
+
 
 
       //assuming that filter expression is parsing and validating the expression.

@@ -517,9 +517,9 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
     }
 
     if(availableColumns.size() == 0){
-      System.out.println(getAlias() + ": The input table has no columns. It will be output as is.");
-      pushOutput(_table, 0);
-      return;
+      System.out.println(getAlias() + ": Warning - The input table has no columns. It will be output as is.");
+      //pushOutput(_table, 0);
+      //return;
     }
 
 
@@ -541,8 +541,8 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
 
       }//if contains
     else
-      System.out.println(getAlias() + ": The table does not contain a column named " + scalarColumns[i] +
-                         ".\nIgnoring this attribute.");
+      throw new Exception (getAlias() + ": The table does not contain a column named " + scalarColumns[i]  +
+                           ". Please reconfigure this module");
 
 
 
@@ -558,8 +558,9 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
 
       }//if contains
       else
-        System.out.println(getAlias() + ": The table does not contain a column named " + nominalColumns[i] +
-                           ".\nIgnoring this attribute.");
+        throw new Exception(getAlias() + ": The table does not contain a column named " + nominalColumns[i] +
+                            ". Please reconfigure this module");
+
 
 
 

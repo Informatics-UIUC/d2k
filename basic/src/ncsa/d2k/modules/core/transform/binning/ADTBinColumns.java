@@ -1764,21 +1764,22 @@ public class ADTBinColumns extends HeadlessUIModule {
 
 //validating relevancy of bins to the input table.
     HashMap columns = StaticMethods.getAvailableAttributes(table);
-    Vector relevant = new Vector();
+  //  Vector relevant = new Vector();
     for (int i=0; i<binDes.length; i++){
       if(!columns.containsKey(binDes[i].label))
-        System.out.println(getAlias() + ": Bin " +  binDes[i].toString() + " does not match any column label in the input table. It will be ignored.");
-      else relevant.add(binDes[i]);
+        throw new Exception(getAlias() + ": Bin " +  binDes[i].toString() + " does not match any column label in the input table. Please reconfigure this module.");
+//      else relevant.add(binDes[i]);
     }//for
 
-    binDes =  new BinDescriptor[relevant.size()];
+
+    /*binDes =  new BinDescriptor[relevant.size()];
     for(int i=0; i<binDes.length; i++)
       binDes[i] = (BinDescriptor) relevant.get(i);
 
     if(binDes == null || binDes.length == 0){
       System.out.println(getAlias() + ": None of the bins matched the input table, the transformation will be an empty one.");
       binDes = new BinDescriptor[0];
-    }
+    }*/
 
     pushOutput(new BinTransform(binDes, newColumn), 0);
 

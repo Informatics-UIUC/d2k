@@ -30,6 +30,7 @@ public class ExpressionParser {
     //expecting an operator (&&, ||) or ')' or nothing.
     static final int AFTER_CLOSE = 1;
     static final int AFTER_RIGHT = 1;
+    static final int AFTER_MAL_EXPRESSION = 1;
 
     static final int RELATION = 2; //after a right hand operand expecting a relation (<, > etc.)
     static final int AFTER_LEFT = 2;
@@ -73,7 +74,7 @@ public class ExpressionParser {
 
      String goodCondition = ""; //the returned value
 
-     StringTokenizer tok = new StringTokenizer(expression, " \n\t\f\r()", true);
+     StringTokenizer tok = new StringTokenizer(expression, " \n\t\f\r()<>=!&|", true);
 
 
        int numOpen = 0;  //number of opening parenthese without matching closing ones.
@@ -86,9 +87,9 @@ public class ExpressionParser {
 
        //whenparsing a sub expression - it will be added at once after the left hand
        //operand was parsed and the attribute was verifies.
-       String rightHand = null;
-       String leftHand = null;
-       String relation = null;
+       String rightHand = "";
+       String leftHand = "";
+       String relation = "";
        String operator = ""; //the operator will be added before the sub expression.
 
 
@@ -96,7 +97,7 @@ public class ExpressionParser {
           //attribute name will be copied into goodCondition
           //assuming the expression could be malformed.
 
-
+          String secondChar = null;
 
        while(tok.hasMoreTokens()){
 
@@ -108,7 +109,7 @@ public class ExpressionParser {
            if(currTok.equals(and) || currTok.equals(or)){
              //are we expecting an operator now?
               if(!(expected == Expected.CLOSE_OPERATOR_NOTHING))
-                throw new Exception ("Did not expect to find operator " + currTok + " after " + goodCondition);
+                throw new Exception ("Did not expect to find operator " + currTok + " after " + goodCondition + " " + leftHand + " " + relation + " " + rightHand);
 
               operator = currTok; //we are not adding the operator yet.
               //if the following sub expression is valid it will be added.
@@ -133,16 +134,18 @@ public class ExpressionParser {
    //         if(currTok.length() > 1) throw new Exception("there must be a space before and after each parentheses!");
             //are we expecting this token?
             if(!(expected == Expected.OPEN_CLOSE_LEFT || expected == Expected.OPEN_LEFT))
-              throw new Exception("Did not expect to find '(' after " + goodCondition);
+              throw new Exception("Did not expect to find '(' after " + goodCondition +
+                                  " " + leftHand + " " + relation + " " + rightHand);
 
             //the token is legal at this point
             numOpen++;
 
             //checking if the last good token was an operator - if so, adding it.
-            if(!operator.equals("")){
+            //actually no need to check, it will be empty if it isn't
+            //if(!operator.equals("")){
               goodCondition += " " + operator;
               operator = ""; //initializing the operator...
-            }
+            //}
 
             goodCondition += " " + currTok;
             expected = Expected.AFTER_OPEN;
@@ -156,7 +159,8 @@ public class ExpressionParser {
  //           if(currTok.length() > 1) throw new Exception("there must be a space before and after each parentheses!");
              //are we expecting this token?
              if(!(expected == Expected.CLOSE_OPERATOR_NOTHING || expected == Expected.OPEN_CLOSE_LEFT))
-               throw new Exception("Did not expect to find ')' after " + goodCondition);
+               throw new Exception("Did not expect to find ')' after " + goodCondition +
+                                  " " + leftHand + " " + relation + " " + rightHand);
              //so far it is legal
              numOpen--;
              //do we have too many closing parentheses?
@@ -172,16 +176,23 @@ public class ExpressionParser {
              //this is an operator
           case '&':
          case '|':
-                  //is it a legal operator?
-                  if(!(currTok.equals(and) || currTok.equals(or)))
-                     throw new Exception ("Found illegal operator: " + currTok);
-                   //are we expecting an operator now?
-                   if(!(expected == Expected.CLOSE_OPERATOR_NOTHING))
-                     throw new Exception ("Did not expect to find operator " + currTok + " after " + goodCondition);
+           //are we expecting an operator now?
+               if(!(expected == Expected.CLOSE_OPERATOR_NOTHING))
+                 throw new Exception ("Did not expect to find operator " + currTok + " after " + goodCondition+
+                              " " + leftHand + " " + relation + " " + rightHand);
 
-                   operator = currTok; //we are not adding the operator yet.
+     //parsing the next token, expecting to find a delimiter '&' or '|'
+         secondChar = tok.nextToken();
+        if(!currTok.equals(secondChar))
+            //is it a legal operator?
+            //if(!(currTok.equals(and) || currTok.equals(or)))
+               throw new Exception ("Found illegal operator: " + currTok + secondChar.charAt(0));
+
+             if(goodCondition.length() != 0 && goodCondition.charAt(goodCondition.length() -1) != '(')
+                   operator = currTok + secondChar.charAt(0); //we are not adding the operator yet.
                    //if the following sub expression is valid it will be added.
                    //or if a '(' comes right after this currTok.
+
                    expected = Expected.AFTER_OPERATOR;
                  //  lastGoodToken = currTok;
                    break;
@@ -189,14 +200,30 @@ public class ExpressionParser {
          case '!':
          case '<':
          case '>':
+                  //are we expecting a relation?
+                  if(!(expected == Expected.RELATION))
+                    throw new Exception ("Did not expect to find relation " + currTok + " after " + goodCondition +
+                                 " " + leftHand + " " + relation + " " + rightHand);
+
+          //parsing the rest of the relation. if there is:
+           secondChar = tok.nextToken();
+
+           if(secondChar.length() != 1 )
+             throw new Exception ("Found illegal relation: " + currTok );
+
+           char c = secondChar.charAt(0);
+
+          if(c == '=')
+            currTok += secondChar;
+           //if it is not a white space - it is illegal.
+           else if (c != ' ' || c != '\n' || c != '\t' ||  c != '\f' || c != '\r')
+             throw new Exception ("Found illegal relation: " );
 
                    //verifying validity of the relation
                    if (!( currTok.equals(equal) || currTok.equals("!=") || currTok.equals("<") ||
                        currTok.equals(">") || currTok.equals("<=")  || currTok.equals(">=") ))
                      throw new Exception ("Found illegal relation: " + currTok);
-                   //are we expecting a relation?
-                   if(!(expected == Expected.RELATION))
-                     throw new Exception ("Did not expect to find relation " + currTok + " after " + goodCondition);
+
                    //the relation will be added if the sub expression is relevant and valid.
                    relation = currTok;
                    expected = Expected.AFTER_RELATION;
@@ -209,7 +236,8 @@ public class ExpressionParser {
 
                   //are we expecting an operand?
                   if(!(expected == Expected.RIGHT || expected == Expected.OPEN_CLOSE_LEFT || expected == Expected.OPEN_LEFT))
-                     throw new Exception ("Did not expect to find operand " + currTok + " after " + goodCondition);
+                    throw new Exception ("Did not expect to find operand " + currTok + " after " + goodCondition +
+                                  " " + leftHand + " " + relation + " " + rightHand);
 
                   if(expected == Expected.RIGHT){ //it is a right hand operand
 
@@ -221,20 +249,36 @@ public class ExpressionParser {
                       leftHand = currTok;
                     }//if contains currTok
 
+                    //testing that the right hadn operand is really a value.
+                    //trying first to parse a number...
+                    try{
+                      double d = Double.parseDouble(rightHand);
+                    }
+                    catch(Exception e){
+                      //if it did not work looking for ' at the beginning and end.
+                      if(rightHand.charAt(0) != '\'' || rightHand.charAt(rightHand.length() -1) != '\'')
+                        throw new Exception ("Found illegal value - " + rightHand + ". Nominal values should be surounded with single quotes!");
+
+                    }
+
 
                     //now verifying that the left hand is indeed an attribute
                     if(map.containsKey(leftHand)){
 
-                      //testing that value is between ' '
-                      char first = rightHand.charAt(0);
+                      //testing that value is between ' ' was done before
+                      /*char first = rightHand.charAt(0);
                       char last = rightHand.charAt(rightHand.length()-1);
 
                       if(!(first == '\'' && last == '\'' ))
                         throw new Exception ("\nValues have to be surounded by single quotes (\')\n");
-
+*/
                       //adding to good condition operator right hand relation and left hand
                       goodCondition += " " + operator + " " + leftHand + " " + relation + " " + rightHand;
                       operator = "";
+                      leftHand = "";
+                      rightHand = "";
+                      relation = "";
+
                       expected = Expected.AFTER_RIGHT;
                       lastGoodExpected = expected;
                    //   lastGoodToken = currTok;
@@ -248,7 +292,13 @@ public class ExpressionParser {
                                          "The expression is being removed");
 
                       //restoring the last good expected
-                        expected = lastGoodExpected;
+                        expected = Expected.AFTER_MAL_EXPRESSION;
+                        lastGoodExpected = expected;
+                        operator = "";
+                     leftHand = "";
+                     rightHand = "";
+                     relation = "";
+
 
                     }//else contains leftHand
 

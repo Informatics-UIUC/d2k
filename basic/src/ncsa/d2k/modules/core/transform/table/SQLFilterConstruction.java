@@ -616,12 +616,12 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      if(availableAttributes.size() == 0){
        //this means either the table was not found in the data base, or that
        //it has no columns. the query condition will be empty anyway
-       System.out.println(getAlias() + ": Table " +
+       System.out.println(getAlias() + ": Warning - Table " +
                           tableName +
-                          " has no columns. The filter will be empty");
+                          " has no columns.");
        //pushOutput(goodCondition, 0);
-       pushOutput("", 0);
-       return;
+     //  pushOutput("", 0);
+    //   return;
      }
 
      //goodCondition = ExpressionParser.parseExpression(queryCondition, availableAttributes, true);

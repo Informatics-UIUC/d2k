@@ -773,20 +773,33 @@ public class MergeTableRows extends HeadlessUIModule {
 
       HashMap columns = StaticMethods.getAvailableAttributes(table);
 
+      //validating that properties are not null.
+      if(keys == null || keys.length == 0 || merges == null || merges.length == 0 ||
+        control == null || control.length() == 0 ||  type == null || type.length() == 0)
+         throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+
+
       //fnding out which of keys are relevant to the input table.
 
       final int[] ks = StaticMethods.getIntersectIds(keys, columns); //ks[i] is index of column keys[i]
+      if(ks.length < keys.length)
+        throw new Exception ("Some of the configured Key Columns were not found in the " +
+                             "input table " + table.getLabel() + ". Please reconfigure the module.");
+
       final int[] ms = StaticMethods.getIntersectIds(merges, columns); ; //ms[i] is index of column merges[i]
+      if(ms.length < merges.length)
+        throw new Exception ("Some of the configured Merging Columns were not found in the " +
+                             "input table " + table.getLabel() + ". Please reconfigure the module.");
+
       final int cntrl = StaticMethods.getID(control, columns);   //cntrl is index of column control
+      if(cntrl == -1)
+        throw new Exception (getAlias() + "The control column " + control + " could not be found in " +
+                             "the input table " + table.getLabel() + ". Please " +
+                             "reconfigure the module.");
       final String _type = type;
 
 
 
-      //validating that properties are not null. if they are - pushing out the
-      //table without any changes.
-      if(ks == null || ks.length == 0 || ms == null || ms.length == 0 ||
-        control == null || cntrl == -1 ||  type == null || type.length() == 0)
-         throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
 
 
 
@@ -794,7 +807,9 @@ public class MergeTableRows extends HeadlessUIModule {
 
       if(!(type.equals(MergingClass.AVE) || type.equals(MergingClass.CNT) || type.equals(MergingClass.MAX) ||
            type.equals(MergingClass.MIN) || type.equals(MergingClass.SUM)))
-        throw new Exception (getAlias() + ": The merging type is illegal!");
+        throw new Exception (getAlias() + ": The merging type is illegal!\n" +
+                             "Please reconfigure this module using the properties editor " +
+                             "or via a GUI run, so it can run Headless.");
 
       //end validation.
 

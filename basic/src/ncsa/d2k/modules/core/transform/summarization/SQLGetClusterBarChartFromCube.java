@@ -610,19 +610,16 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
 
 
 
-        if(!StaticMethods.getAvailableTables(cw).containsKey(tableName))
-          throw new Exception (getAlias() + ": Table " + tableName + " was not found in the database!");
+            //verifying that tableName is in the data base
+                if(!StaticMethods.getAvailableTables(cw).containsKey(tableName))
+                  throw new Exception(getAlias()+ ": Table named " + tableName +
+                                      " was not found in the database.");
+
+
 
 
         con = cw.getConnection();
         DatabaseMetaData metadata = con.getMetaData();
-
-
-    //verifying that tableName is in the data base
-        if(!StaticMethods.getAvailableTables(cw).containsKey(tableName))
-          throw new Exception(getAlias()+ ": Table named " + tableName +
-                              " was not found in the database.");
-
 
         ResultSet columns = metadata.getColumns(null, "%", tableName,
                                                 "%");
@@ -638,8 +635,10 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
 
 
         String[] targetAttributes = StaticMethods.getIntersection(selectedAttributes, columnsVector);
-         if(targetAttributes.length == 0)
-           throw new Exception (getAlias() + ": None of the selected attributes is in table " + tableName);
+         if(targetAttributes.length < selectedAttributes.length)
+           throw new Exception (getAlias() + ": Some of the configured attributes were not found " +
+                                "in the database table " + tableName +
+                                ". Please reconfigure this moduel via a GUI run so it can run Headless.");
 
         if (book) {
             aBook = new SQLCodeBook(cw, codeBook);

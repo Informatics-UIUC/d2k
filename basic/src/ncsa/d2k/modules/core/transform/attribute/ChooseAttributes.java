@@ -144,10 +144,9 @@ public class ChooseAttributes extends HeadlessUIModule {
 		}
 
                 if(colindices.size() == 0){
-                  System.out.println(getAlias() + ": The input table has no columns in it. " +
-                                     "Thus it will be output as is.");
-                  ExampleTable et = table.toExampleTable();
-                this.pushOutput(et, 0);
+                  System.out.println(getAlias() + ": Warning - The input table has no columns in it.");
+//                  ExampleTable et = table.toExampleTable();
+  //              this.pushOutput(et, 0);
                 return;
                 }
 
@@ -157,7 +156,7 @@ public class ChooseAttributes extends HeadlessUIModule {
                 String[] selectedNames;
 
                 if(selected == null || selected.length == 0){
-                  System.out.println(getAlias() + ": No input attributes were selected. Skipping " +
+                  System.out.println(getAlias() + ": Warning - No input attributes were configured. Skipping " +
                                      "setting of input features.");
                 }
 
@@ -169,9 +168,9 @@ public class ChooseAttributes extends HeadlessUIModule {
 
                   inputFeatures = StaticMethods.getIntersectIds(selectedNames, colindices);
 
-                  if(inputFeatures.length == 0)
-                    System.out.println(getAlias() + ": None of the selected input attributes is in the input table. " +
-                                       "Skipping setting of input features.");
+                  if(inputFeatures.length < selectedNames.length)
+                    throw new Exception(getAlias() + ": Some of the configured input attributes were not found in the input table."  +
+                                        " Please reconfigure this moduel via a GUI run so it can run Headless.");
                   //the following was commented out and replaced by the previous code line.
                   //vered.
                   /*
@@ -200,9 +199,9 @@ public class ChooseAttributes extends HeadlessUIModule {
                 //vered.
                 outputFeatures = StaticMethods.getIntersectIds(selectedNames, colindices);
 
-                if(outputFeatures.length == 0)
-                  System.out.println(getAlias() + ": None of the selected output attributes is in the input table. " +
-                                     "Skipping setting of output features.");
+                if(outputFeatures.length < selectedNames.length)
+                  throw new Exception(getAlias() + ": Some of the configured output attributes were not found in the input table." +
+                                        " Please reconfigure this moduel via a GUI run so it can run Headless.");
 
 		/*int[] outputFeatures = new int[selected.length];
 		for (int i = 0; i < selected.length; i++) {
