@@ -987,9 +987,17 @@ public class FilterExpression implements Expression {
 
 		} catch (Exception e) {
 
-			if (expression.charAt(0) == '\'')
-				return new NominalElement(
-					expression.substring(1, expression.length() - 1));
+			if (expression.charAt(0) == '\'') {
+
+            if (expression.indexOf('\'', 1) != expression.length() - 1) {
+               throw new ExpressionException("invalid attribute value: " + expression);
+            }
+            else {
+               return new NominalElement(
+                  expression.substring(1, expression.length() - 1));
+            }
+
+			}
 
 			return new ColumnElement(expression);
 
