@@ -16,6 +16,7 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
 
     private ExampleTable originalExampleTable;
 
+
     /**
      Given an WeightedPredictionTable, create a WeightedTestTable
     @param ttt the prediction table that this test table is derived from
@@ -31,6 +32,8 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
      */
     WeightedTestTable (WeightedExampleTable ttt) {
         super(ttt);
+        original = ((ExampleTable)ttt.original).getTestTable();
+        originalExampleTable = ttt;
     }
 
     /*public PredictionTable toPredictionTable() {
@@ -57,7 +60,7 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
 /*        int ro = testSet[row];
         return super.getInt(ro, column);
         */
-        if (column < original.getNumColumns())
+/*        if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getInt(testSet[row], column);
         else {
@@ -65,6 +68,8 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
             return predictionColumns.getInt(row,
                                              column - original.getNumColumns());
         }
+        */
+        return ((TestTable)original).getInt(row, column);
     }
 
     /**
@@ -78,14 +83,15 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
 /*        int ro = testSet[row];
         return super.getShort(ro, column);
         */
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getShort(testSet[row], column);
         else {
             //return predictionColumns.getString(this.rowIndices[row],
             return predictionColumns.getShort(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((TestTable)original).getShort(row, column);
     }
 
     /**
@@ -98,14 +104,15 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
 /*        int ro = rowIndices[testSet[row]];
         return super.getLong(ro, column);
         */
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getLong(testSet[row], column);
         else {
             //return predictionColumns.getString(this.rowIndices[row],
             return predictionColumns.getLong(row,
                                       column - original.getNumColumns());
-        }
+        }*/
+        return ((TestTable)original).getLong(row, column);
     }
 
     /**
@@ -118,14 +125,15 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
 /*        int ro = rowIndices[testSet[row]];
         return super.getFloat(ro, column);
         */
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getFloat(testSet[row], column);
         else {
             //return predictionColumns.getString(this.rowIndices[row],
             return predictionColumns.getFloat(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((TestTable)original).getFloat(row, column);
     }
 
     /**
@@ -139,14 +147,15 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
         /*int ro = testSet[row];
         return super.getDouble(ro, column);
         */
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getDouble(testSet[row], column);
         else {
             //return predictionColumns.getString(this.rowIndices[row],
             return predictionColumns.getDouble(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((TestTable)original).getDouble(row, column);
     }
 
     /**
@@ -156,14 +165,15 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
      * @return the String value at (row, column)
      */
     public String getString(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getString(testSet[row], column);
         else {
             //return predictionColumns.getString(this.rowIndices[row],
             return predictionColumns.getString(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((TestTable)original).getString(row, column);
     }
 
     /**
@@ -176,14 +186,15 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
         /*int ro = rowIndices[testSet[row]];
         return super.getBytes(ro, column);
         */
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getBytes(testSet[row], column);
         else {
             //return predictionColumns.getString(this.rowIndices[row],
             return predictionColumns.getBytes(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((TestTable)original).getBytes(row, column);
     }
 
     /**
@@ -196,14 +207,15 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
         /*int ro = rowIndices[testSet[row]];
         return super.getChars(ro, column);
         */
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getChars(testSet[row], column);
         else {
             //return predictionColumns.getString(this.rowIndices[row],
             return predictionColumns.getChars(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((TestTable)original).getChars(row, column);
     }
 
     /**
@@ -216,14 +228,15 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
         /*int ro = rowIndices[testSet[row]];
         return super.getBoolean(ro, column);
         */
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getBoolean(testSet[row], column);
         else {
             //return predictionColumns.getString(this.rowIndices[row],
             return predictionColumns.getBoolean(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((TestTable)original).getBoolean(row, column);
     }
 
     /**
@@ -236,14 +249,15 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
 /*        int ro = rowIndices[testSet[row]];
         return super.getByte(ro, column);
         */
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getByte(testSet[row], column);
         else {
             //return predictionColumns.getString(this.rowIndices[row],
             return predictionColumns.getByte(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((TestTable)original).getByte(row, column);
     }
 
     /**
@@ -256,14 +270,15 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
 /*        int ro = rowIndices[testSet[row]];
         return super.getChar(ro, column);
         */
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getChar(testSet[row], column);
         else {
             //return predictionColumns.getString(this.rowIndices[row],
             return predictionColumns.getChar(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((TestTable)original).getChar(row, column);
     }
 
     /**
@@ -271,7 +286,8 @@ public class WeightedTestTable extends WeightedPredictionTable implements TestTa
      @return the size of the train set
      */
     public int getNumRows (){
-        return this.testSet.length;
+        //return this.testSet.length;
+        return ((TestTable)original).getNumRows();
     }
 
 }//WeightedTestTable

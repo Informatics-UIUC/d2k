@@ -20,6 +20,8 @@ public class WeightedTable implements Table {
     //protected int[] rowIndices; // array of rowIndex into the physical Table
     protected double[] rowWeights;
 
+    protected WeightedTable() { }
+
     /**
      * Create and Initialize Weighted Table
      * Note: This constructor is for *local testing* purpose only

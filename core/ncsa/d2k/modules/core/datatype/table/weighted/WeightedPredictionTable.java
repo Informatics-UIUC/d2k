@@ -24,10 +24,10 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 class WeightedPredictionTable extends WeightedExampleTable implements PredictionTable {
 
     // An array that holds the column indices of the prediction columns
-    protected int[] predictionColIndices;
+    //protected int[] predictionColIndices;
 
     // predictionTable : a new TableImpl created for the prediction columns
-    protected TableImpl predictionColumns;
+    //protected TableImpl predictionColumns;
 
     /** Constructor
      *  Takes in a WeightedExampleTable and constructs a corresponding
@@ -37,7 +37,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     WeightedPredictionTable(WeightedExampleTable wet) {
         super(wet);
-        if (wet.outputColumns == null) {
+     /*   if (wet.outputColumns == null) {
             predictionColIndices = new int[0];
             outputColumns = new int[0];
             //wet.getNumOutputFeatures();
@@ -60,14 +60,14 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
              * predictionColIndices.length = 2
              * predictionColIndices[0] = 4; predicitonColIndices[1] = 5
              */
-            for (int i = 0; i < outputColumns.length; i++) { // i : column #
+      /*      for (int i = 0; i < outputColumns.length; i++) { // i : column #
                 if (wet.getColumnType(outputColumns[i]) == ColumnTypes.BOOLEAN) {
                     predictionCols[i] = new BooleanColumn(getNumRows());
                 }
                 /*else if (wet.getColumnType(outputColumns[i]) == ColumnTypes.BOOLEAN) {
                     predictionCols[i] = new BooleanColumn(wet.rowIndices.length);
                 }*/
-                else if (wet.getColumnType(outputColumns[i]) == ColumnTypes.BYTE) {
+       /*         else if (wet.getColumnType(outputColumns[i]) == ColumnTypes.BYTE) {
                     predictionCols[i] = new ByteColumn(getNumRows());
                 }
                 else if (wet.getColumnType(outputColumns[i]) == ColumnTypes.BYTE_ARRAY) {
@@ -103,7 +103,9 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                 predictionColIndices[i] = wet.getNumColumns() + i;
             } // end for loop
             predictionColumns = new TableImpl(predictionCols);
-        }
+        }*/
+
+       original = ((ExampleTable)wet.original).toPredictionTable();
     }   // end constructor
 
 
@@ -112,7 +114,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
 	 * @return the prediciton set
      */
     public int[] getPredictionSet () {
-        return predictionColIndices;
+        //return predictionColIndices;
+        return ((PredictionTable)original).getPredictionSet();
     }
 
     /**
@@ -120,7 +123,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
 	 * @param p the new prediciton set
      */
     public void setPredictionSet (int[] p){
-        predictionColIndices = p;
+        //predictionColIndices = p;
+        ((PredictionTable)original).setPredictionSet(p);
     }
 
     /**
@@ -131,7 +135,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param predictionColIdx the index into the prediction set
      */
     public void setIntPrediction(int prediction, int row, int predictionColIdx){
-        predictionColumns.setInt(prediction, row, predictionColIdx);
+//        predictionColumns.setInt(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setIntPrediction(prediction, row, predictionColIdx);
     }
 
     /**
@@ -142,7 +147,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param predictionColIdx the index into the prediction set
      */
     public void setFloatPrediction(float prediction, int row, int predictionColIdx){
-        predictionColumns.setFloat(prediction, row, predictionColIdx);
+        //predictionColumns.setFloat(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setFloatPrediction(prediction, row, predictionColIdx);
     }
 
     /**
@@ -153,7 +159,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param predictionColIdx the index into the prediction set
      */
     public void setDoublePrediction(double prediction, int row, int predictionColIdx){
-        predictionColumns.setDouble(prediction, row, predictionColIdx);
+        //predictionColumns.setDouble(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setDoublePrediction(prediction, row, predictionColIdx);
     }
 
     /**
@@ -164,7 +171,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param predictionColIdx the index into the prediction set
      */
     public void setLongPrediction(long prediction, int row, int predictionColIdx){
-        predictionColumns.setLong(prediction, row, predictionColIdx);
+        //predictionColumns.setLong(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setLongPrediction(prediction, row, predictionColIdx);
     }
 
     /**
@@ -175,7 +183,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param predictionColIdx the index into the prediction set
      */
     public void setShortPrediction(short prediction, int row, int predictionColIdx){
-        predictionColumns.setShort(prediction, row, predictionColIdx);
+        //predictionColumns.setShort(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setShortPrediction(prediction, row, predictionColIdx);
     }
 
     /**
@@ -186,7 +195,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param predictionColIdx the index into the prediction set
      */
     public void setBooleanPrediction(boolean prediction, int row, int predictionColIdx){
-        predictionColumns.setBoolean(prediction, row, predictionColIdx);
+        //predictionColumns.setBoolean(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setBooleanPrediction(prediction, row, predictionColIdx);
     }
 
     /**
@@ -197,7 +207,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param predictionColIdx the index into the prediction set
      */
     public void setStringPrediction(String prediction, int row, int predictionColIdx){
-        predictionColumns.setString(prediction, row, predictionColIdx);
+        //predictionColumns.setString(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setStringPrediction(prediction, row, predictionColIdx);
     }
 
     /**
@@ -208,7 +219,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param predictionColIdx the index into the prediction set
      */
     public void setCharsPrediction(char[] prediction, int row, int predictionColIdx){
-        predictionColumns.setChars(prediction, row, predictionColIdx);
+        //predictionColumns.setChars(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setCharsPrediction(prediction, row, predictionColIdx);
     }
 
     /**
@@ -219,7 +231,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param predictionColIdx the index into the prediction set
      */
     public void setBytesPrediction(byte[] prediction, int row, int predictionColIdx){
-        predictionColumns.setBytes(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setBytesPrediction(prediction, row, predictionColIdx);
+        //predictionColumns.setBytes(prediction, row, predictionColIdx);
     }
 
     /**
@@ -230,7 +243,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param predictionColIdx the index into the prediction set
      */
     public void setObjectPrediction(Object prediction, int row, int predictionColIdx){
-        predictionColumns.setObject(prediction, row, predictionColIdx);
+        //predictionColumns.setObject(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setObjectPrediction(prediction, row, predictionColIdx);
     }
 
     /**
@@ -241,7 +255,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param predictionColIdx the index into the prediction set
      */
     public void setBytePrediction(byte prediction, int row, int predictionColIdx){
-        predictionColumns.setByte(prediction, row, predictionColIdx);
+        //predictionColumns.setByte(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setBytePrediction(prediction, row, predictionColIdx);
     }
 
     /**
@@ -253,7 +268,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public void setCharPrediction(char prediction, int row, int predictionColIdx){
         //((PredictionTable)original).setCharPrediction(prediction, row, predictionColIdx);
-        predictionColumns.setChar(prediction, row, predictionColIdx);
+        //predictionColumns.setChar(prediction, row, predictionColIdx);
+        ((PredictionTable)original).setCharPrediction(prediction, row, predictionColIdx);
     }
 
     /**
@@ -264,7 +280,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public int getIntPrediction(int row, int predictionColIdx){
-        return predictionColumns.getInt(row, predictionColIdx);
+//        return predictionColumns.getInt(row, predictionColIdx);
+        return ((PredictionTable)original).getIntPrediction(row, predictionColIdx);
     }
 
     /**
@@ -275,7 +292,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public float getFloatPrediction(int row, int predictionColIdx){
-        return predictionColumns.getFloat(row, predictionColIdx);
+        //return predictionColumns.getFloat(row, predictionColIdx);
+        return ((PredictionTable)original).getFloatPrediction(row, predictionColIdx);
     }
 
     /**
@@ -286,7 +304,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public double getDoublePrediction(int row, int predictionColIdx){
-        return predictionColumns.getDouble(row, predictionColIdx);
+        //return predictionColumns.getDouble(row, predictionColIdx);
+        return ((PredictionTable)original).getDoublePrediction(row, predictionColIdx);
     }
 
     /**
@@ -297,7 +316,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public long getLongPrediction(int row, int predictionColIdx){
-        return predictionColumns.getLong(row, predictionColIdx);
+        //return predictionColumns.getLong(row, predictionColIdx);
+        return ((PredictionTable)original).getLongPrediction(row, predictionColIdx);
     }
 
     /**
@@ -308,7 +328,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public short getShortPrediction(int row, int predictionColIdx){
-        return predictionColumns.getShort(row, predictionColIdx);
+        //return predictionColumns.getShort(row, predictionColIdx);
+        return ((PredictionTable)original).getShortPrediction(row, predictionColIdx);
     }
 
     /**
@@ -319,8 +340,9 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public boolean getBooleanPrediction(int row, int predictionColIdx){
-        return predictionColumns.getBoolean(row, predictionColIdx);
+        //return predictionColumns.getBoolean(row, predictionColIdx);
         //return  ((PredictionTable)original).getBooleanPrediction(row, predictionColIdx);
+        return ((PredictionTable)original).getBooleanPrediction(row, predictionColIdx);
     }
 
     /**
@@ -331,7 +353,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public String getStringPrediction(int row, int predictionColIdx){
-        return predictionColumns.getString(row, predictionColIdx);
+        //return predictionColumns.getString(row, predictionColIdx);
+        return ((PredictionTable)original).getStringPrediction(row, predictionColIdx);
     }
 
     /**
@@ -342,7 +365,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public char[] getCharsPrediction(int row, int predictionColIdx){
-        return predictionColumns.getChars(row, predictionColIdx);
+        //return predictionColumns.getChars(row, predictionColIdx);
+        return ((PredictionTable)original).getCharsPrediction(row, predictionColIdx);
     }
 
     /**
@@ -353,7 +377,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public byte[] getBytesPrediction(int row, int predictionColIdx){
-        return predictionColumns.getBytes(row, predictionColIdx);
+        //return predictionColumns.getBytes(row, predictionColIdx);
+        return ((PredictionTable)original).getBytesPrediction(row, predictionColIdx);
     }
 
     /**
@@ -364,7 +389,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public Object getObjectPrediction(int row, int predictionColIdx){
-        return predictionColumns.getObject(row, predictionColIdx);
+        //return predictionColumns.getObject(row, predictionColIdx);
+        return ((PredictionTable)original).getObjectPrediction(row, predictionColIdx);
     }
 
     /**
@@ -375,7 +401,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public byte getBytePrediction(int row, int predictionColIdx){
-         return predictionColumns.getByte(row, predictionColIdx);
+        // return predictionColumns.getByte(row, predictionColIdx);
+        return ((PredictionTable)original).getBytePrediction(row, predictionColIdx);
     }
 
     /**
@@ -386,7 +413,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the prediction at (row, getPredictionSet()[predictionColIdx])
      */
     public char getCharPrediction(int row, int predictionColIdx){
-        return predictionColumns.getChar(row, predictionColIdx);
+        //return predictionColumns.getChar(row, predictionColIdx);
+        return ((PredictionTable)original).getCharPrediction(row, predictionColIdx);
     }
 
 
@@ -405,7 +433,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(int[] predictions, String label){
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+        /*predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
 
         // Increment array size of predictionColIndices //
@@ -419,6 +447,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                     predictionColIndices[predictionColIndicesBkup.length-1] + 1;
 
         return predictionColIndices[predictionColIndicesBkup.length];
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     /**
@@ -428,7 +458,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(float[] predictions, String label){
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+        /*predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
         // Increment array size of predictionColIndices //
         int[] predictionColIndicesBkup = predictionColIndices;
@@ -441,6 +471,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                     predictionColIndices[predictionColIndicesBkup.length-1] + 1;
 
         return predictionColIndices[predictionColIndicesBkup.length];
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     /**
@@ -450,7 +482,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(double[] predictions, String label){
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+        /*predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
         // Increment array size of predictionColIndices //
         int[] predictionColIndicesBkup = predictionColIndices;
@@ -463,6 +495,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                     predictionColIndices[predictionColIndicesBkup.length-1] + 1;
 
         return predictionColIndices[predictionColIndicesBkup.length];
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     /**
@@ -472,7 +506,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(long[] predictions, String label){
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+        /*predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
         // Increment array size of predictionColIndices //
         int[] predictionColIndicesBkup = predictionColIndices;
@@ -485,6 +519,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                     predictionColIndices[predictionColIndicesBkup.length-1] + 1;
 
         return predictionColIndices[predictionColIndicesBkup.length];
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     /**
@@ -494,7 +530,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(short[] predictions, String label){
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+        /*predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
         // Increment array size of predictionColIndices //
         int[] predictionColIndicesBkup = predictionColIndices;
@@ -507,6 +543,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                     predictionColIndices[predictionColIndicesBkup.length-1] + 1;
 
         return predictionColIndices[predictionColIndicesBkup.length];
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     /**
@@ -516,7 +554,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(boolean[] predictions, String label) {
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+        /*predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
         // Increment array size of predictionColIndices //
         int[] predictionColIndicesBkup = predictionColIndices;
@@ -529,6 +567,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                     predictionColIndices[predictionColIndicesBkup.length-1] + 1;
 
         return predictionColIndices[predictionColIndicesBkup.length];
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     /**
@@ -538,7 +578,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(String[] predictions, String label){
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+        /*predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
         // Increment array size of predictionColIndices //
         int[] predictionColIndicesBkup = predictionColIndices;
@@ -551,6 +591,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                     predictionColIndices[predictionColIndicesBkup.length-1] + 1;
 
         return predictionColIndices[predictionColIndicesBkup.length];
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     /**
@@ -560,7 +602,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(char[][] predictions, String label){
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+        /*predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
         // Increment array size of predictionColIndices //
         int[] predictionColIndicesBkup = predictionColIndices;
@@ -573,6 +615,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                     predictionColIndices[predictionColIndicesBkup.length-1] + 1;
 
         return predictionColIndices[predictionColIndicesBkup.length];
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     /**
@@ -582,7 +626,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(byte[][] predictions, String label){
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+        /*predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
         // Increment array size of predictionColIndices //
         int[] predictionColIndicesBkup = predictionColIndices;
@@ -595,6 +639,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                     predictionColIndices[predictionColIndicesBkup.length-1] + 1;
 
         return predictionColIndices[predictionColIndicesBkup.length];
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     /**
@@ -604,7 +650,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(Object[] predictions, String label){
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+        /*predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
         // Increment array size of predictionColIndices //
         int[] predictionColIndicesBkup = predictionColIndices;
@@ -617,6 +663,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                     predictionColIndices[predictionColIndicesBkup.length-1] + 1;
 
         return predictionColIndices[predictionColIndicesBkup.length];
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     /**
@@ -626,7 +674,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(byte[] predictions, String label){
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+        /*predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
         // Increment array size of predictionColIndices //
         int[] predictionColIndicesBkup = predictionColIndices;
@@ -641,6 +689,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
         return predictionColIndices[predictionColIndicesBkup.length];
 //            return ((PredictionTable)original).addPredictionColumn(predictions);
 //           return original.addPredictionColumn(predictions);
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     /**
@@ -650,7 +700,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      */
     public int addPredictionColumn(char[] predictions, String label){
         // Add the prediction column to the TableImpl predictionTable //
-        predictionColumns.addColumn(predictions);
+    /*    predictionColumns.addColumn(predictions);
 		predictionColumns.setColumnLabel(label, predictionColumns.getNumColumns()-1);
         // Increment array size of predictionColIndices //
         int[] predictionColIndicesBkup = predictionColIndices;
@@ -663,6 +713,8 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
                     predictionColIndices[predictionColIndicesBkup.length-1] + 1;
 
         return predictionColIndices[predictionColIndicesBkup.length];
+        */
+        return ((PredictionTable)original).addPredictionColumn(predictions, label);
     }
 
     public PredictionTable toPredictionTable() {
@@ -681,12 +733,14 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the Object value at (row, column)
      */
     public Object getObject(int row, int column) {
-        if (column < original.getNumColumns())
+    /*    if (column < original.getNumColumns())
             return original.getObject(row, column);
         else {
             return predictionColumns.getObject(row,
                                              column - original.getNumColumns());
         }
+        */
+        return ((PredictionTable)original).getObject(row, column);
     }
 
     /**
@@ -696,12 +750,13 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the Int value at (row, column)
      */
     public int getInt(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             return original.getInt(row, column);
         else {
             return predictionColumns.getInt(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((PredictionTable)original).getInt(row, column);
     }
 
     /**
@@ -711,12 +766,13 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the Short value at (row, column)
      */
     public short getShort(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             return original.getShort(row, column);
         else {
             return predictionColumns.getShort(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((PredictionTable)original).getShort(row, column);
     }
 
     /**
@@ -726,12 +782,13 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the Float value at (row, column)
      */
     public float getFloat(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             return original.getFloat(row, column);
         else {
             return predictionColumns.getFloat(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((PredictionTable)original).getFloat(row, column);
     }
 
     /**
@@ -741,12 +798,13 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the Double value at (row, column)
      */
     public double getDouble(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             return original.getDouble(row, column);
         else {
             return predictionColumns.getDouble(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((PredictionTable)original).getDouble(row, column);
     }
 
     /**
@@ -756,12 +814,13 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the Long value at (row, column)
      */
     public long getLong(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             return original.getLong(row, column);
         else {
             return predictionColumns.getLong(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((PredictionTable)original).getLong(row, column);
     }
 
     /**
@@ -771,14 +830,15 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the String value at (row, column)
      */
     public String getString(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             //return original.getString(rowIndices[row], column);
             return super.getString(row, column);
         else {
             //return predictionColumns.getString(this.rowIndices[row],
             return predictionColumns.getString(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((PredictionTable)original).getString(row, column);
     }
 
     /**
@@ -788,12 +848,13 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the byte[] value at (row, column)
      */
     public byte[] getBytes(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             return original.getBytes(row, column);
         else {
             return predictionColumns.getBytes(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((PredictionTable)original).getBytes(row, column);
     }
 
     /**
@@ -803,12 +864,13 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the boolean value at (row, column)
      */
     public boolean getBoolean(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             return original.getBoolean(row, column);
         else {
             return predictionColumns.getBoolean(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((PredictionTable)original).getBoolean(row, column);
     }
 
     /**
@@ -818,12 +880,13 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the boolean value at (row, column)
      */
     public char[] getChars(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             return original.getChars(row, column);
         else {
             return predictionColumns.getChars(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((PredictionTable)original).getChars(row, column);
     }
 
     /**
@@ -833,12 +896,13 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the boolean value at (row, column)
      */
     public byte getByte(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             return original.getByte(row, column);
         else {
             return predictionColumns.getByte(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((PredictionTable)original).getByte(row, column);
     }
 
     /**
@@ -848,12 +912,13 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @return the boolean value at (row, column)
      */
     public char getChar(int row, int column) {
-        if (column < original.getNumColumns())
+        /*if (column < original.getNumColumns())
             return original.getChar(row, column);
         else {
             return predictionColumns.getChar(row,
                                              column - original.getNumColumns());
-        }
+        }*/
+        return ((PredictionTable)original).getChar(row, column);
     }
 
     /**
@@ -861,10 +926,12 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param position
      */
     public String getColumnLabel(int position) {
-        if (position < original.getNumColumns())
+        /*if (position < original.getNumColumns())
             return original.getColumnLabel(position);
         else
             return predictionColumns.getColumnLabel(position - original.getNumColumns());
+        */
+        return ((PredictionTable)original).getColumnLabel(position);
     }
 
     /**
@@ -872,10 +939,12 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param position
      */
     public String getColumnComment(int position) {
-        if (position < original.getNumColumns())
+        /*if (position < original.getNumColumns())
             return original.getColumnComment(position);
         else
             return predictionColumns.getColumnComment(position - original.getNumColumns());
+        */
+        return ((PredictionTable)original).getColumnComment(position);
     }
 
     /**
@@ -883,10 +952,12 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param
      */
     public boolean isColumnNominal(int position) {
-        if (position < original.getNumColumns())
+        /*if (position < original.getNumColumns())
             return original.isColumnNominal(position);
         else
             return predictionColumns.isColumnNominal(position - original.getNumColumns());
+        */
+        return ((PredictionTable)original).isColumnNominal(position);
      }
 
     /**
@@ -894,16 +965,18 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param
      */
      public boolean isColumnScalar(int position) {
-        if (position < original.getNumColumns())
+        /*if (position < original.getNumColumns())
             return original.isColumnScalar(position);
         else
             return predictionColumns.isColumnScalar(position - original.getNumColumns());
+         */
+        return ((PredictionTable)original).isColumnScalar(position);
      }
 
     /**
      *
      * @param
-     */
+     /
      public void setColumnIsNominal(boolean value, int position) {
         if (position < original.getNumColumns())
             original.setColumnIsNominal(value, position);
@@ -914,7 +987,7 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
     /**
      *
      * @param
-     */
+     /
      public void setColumnIsScalar(boolean value, int position) {
         if (position < original.getNumColumns())
             original.setColumnIsScalar(value, position);
@@ -927,10 +1000,12 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param
      */
      public boolean isColumnNumeric(int position) {
-        if (position < original.getNumColumns())
+        /*if (position < original.getNumColumns())
             return original.isColumnNumeric(position);
         else
             return predictionColumns.isColumnNumeric(position - original.getNumColumns());
+         */
+        return ((PredictionTable)original).isColumnNumeric(position);
      }
 
     /**
@@ -938,9 +1013,11 @@ class WeightedPredictionTable extends WeightedExampleTable implements Prediction
      * @param
      */
      public int getColumnType(int position) {
-        if (position < original.getNumColumns())
+        /*if (position < original.getNumColumns())
             return original.getColumnType(position);
         else
             return predictionColumns.getColumnType(position - original.getNumColumns());
+         */
+        return ((PredictionTable)original).getColumnType(position);
      }
 }
