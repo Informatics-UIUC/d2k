@@ -695,3 +695,10 @@ public class MergeTableRows extends HeadlessUIModule {
 //           missing values.
 
 //12-05-03: modules is ready for basic 4.
+
+
+      /**
+ * 12-29-03:
+ * pulling back module into qa process:
+ * bug 190 - Array Index Out of Bound Exception with average merging and missing values.
+*/
