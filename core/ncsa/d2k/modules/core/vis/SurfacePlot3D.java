@@ -1,26 +1,35 @@
 package ncsa.d2k.modules.core.vis;
 
-import java.io.*;
+import com.sun.j3d.utils.behaviors.keyboard.*;
+import com.sun.j3d.utils.behaviors.mouse.*;
+import com.sun.j3d.utils.geometry.*;
+import com.sun.j3d.utils.universe.*;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.event.*;
-import java.util.*;
+import java.lang.StrictMath;
+import java.util.HashMap;
+import java.util.Vector;
 import javax.media.j3d.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.vecmath.*;
-import com.sun.j3d.utils.geometry.*;
-import com.sun.j3d.utils.universe.*;
-import com.sun.j3d.utils.behaviors.mouse.*;
-import com.sun.j3d.utils.behaviors.keyboard.*;
-import ncsa.gui.Constrain;
-import ncsa.d2k.gui.JD2KFrame;
-import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.controller.userviews.*;
 import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.d2k.controller.userviews.widgits.*;
+import ncsa.d2k.gui.JD2KFrame;
+import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.vis.widgets.ComputationalGeometry;
 import ncsa.d2k.util.datatype.*;
+import ncsa.gui.Constrain;
+
+/**
+ * <code>SurfacePlot3D</code> is a three-dimensional visualization of
+ * <code>VerticalTable</code> data as a surface plot. Java3D is required.
+ *
+ * @author gpape
+ */
 
 public class SurfacePlot3D extends VisModule {
 
@@ -37,10 +46,8 @@ public class SurfacePlot3D extends VisModule {
    }
 
    public String getInputInfo(int index) {
-      if (index == 0)
-         return "The VerticalTable to be visualized.";
-      else
-         return "SurfacePlot3D has no such input.";
+      if (index == 0) return "The VerticalTable to be visualized.";
+      else return "SurfacePlot3D has no such input.";
    }
 
    public String getOutputInfo(int index) {
@@ -48,13 +55,15 @@ public class SurfacePlot3D extends VisModule {
    }
 
    public String[] getFieldNameMapping() { return null; }
-   protected UserView createUserView() { return new SurfacePlot3DView(); }
+   protected UserView createUserView() { return new SurfacePlot3DVis(); }
 
-   private class SurfacePlot3DView extends JUserPane {
+   private class SurfacePlot3DVis extends JUserPane {
 
       private SurfacePlot3DControl control;
       private SurfacePlot3DCanvas canvas;
-      private TransformGroup objTrans;
+      private BranchGroup objRoot;
+      private Transform3D scale, transform;
+      private TransformGroup objScale, objTrans;
 
       private VerticalTable input;
       private Point3d[] points;
@@ -71,32 +80,27 @@ public class SurfacePlot3D extends VisModule {
       private final Color3f plainColor = new Color3f(0.8f, 0.9254901f, .9568627f);
       private final Color3f labelColor = new Color3f(1.0f, 1.0f, .4f);
 
-      private Vector inCH;
-      private Vector notInCH;
+      private static final String FONT_TYPE = "Helvetica";
+      private static final int FONT_SIZE = 14;
 
       public void initView(ViewModule m) { }
+      public void setInput(Object o, int i) { if (i == 0) go((VerticalTable)o); }
+      public Object getMenu() { return menuBar; }
 
-      public void setInput(Object o, int i) {
-         if (i == 0) {
-            input = (VerticalTable)o;
-            initialize();
-         }
-      }
+      private void go(VerticalTable table) {
 
-      public Object getMenu() {
-         return menuBar;
-      }
+         input = table;
+         points = new Point3d[input.getNumRows()];
 
-      private void initialize() {
+         /* initialize data structures                                      */
 
          control = new SurfacePlot3DControl();
          canvas = new SurfacePlot3DCanvas();
 
-         points = new Point3d[input.getNumRows()];
-
          show_vertices = show_triangles = true;
 
-         // create java3d universe
+         /* create java3d universe                                          */
+
          SimpleUniverse su = new SimpleUniverse(canvas);
          su.getViewingPlatform().setNominalViewingTransform();
 
@@ -105,14 +109,17 @@ public class SurfacePlot3D extends VisModule {
 
          su.addBranchGraph(scene);
 
-         // set vis layout
-         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, control, canvas);
+         /* set vis layout                                                  */
+
+         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+            control, canvas);
          split.setOneTouchExpandable(true);
 
          setLayout(new BorderLayout());
          add(split, BorderLayout.CENTER);
 
-         // set up menu
+         /* set up menu                                                     */
+
          helpWindow = new HelpWindow();
          menuBar = new JMenuBar();
          JMenu helpMenu = new JMenu("Help");
@@ -125,44 +132,67 @@ public class SurfacePlot3D extends VisModule {
 
       private BranchGroup createInitialScene() {
 
-         BranchGroup objRoot = new BranchGroup();
+         objRoot = new BranchGroup();
          objRoot.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
          objRoot.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 
-         objTrans = new TransformGroup();
+         transform = new Transform3D();
+         objTrans = new TransformGroup(transform);
          objTrans.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
          objTrans.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
          objTrans.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
          objTrans.setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
          objTrans.setCapability(TransformGroup.ALLOW_CHILDREN_EXTEND);
 
-         MouseRotate mr = new MouseRotate(objTrans);
+         scale = new Transform3D();
+         objScale = new TransformGroup(scale);
+         objScale.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+         objScale.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+         objScale.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
+         objScale.setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
+         objScale.setCapability(TransformGroup.ALLOW_CHILDREN_EXTEND);
+
+         BranchGroup dummy = new BranchGroup();         // just to have a BG
+         dummy.setCapability(BranchGroup.ALLOW_DETACH); // between scale and
+                                                        // trans
+
+         objRoot.addChild(objScale);
+         objScale.addChild(dummy);
+         dummy.addChild(objTrans);
+
+         MouseRotate mr = new MouseRotate(objScale);
          mr.setSchedulingBounds(new BoundingSphere(new Point3d(), 1000.0));
          objRoot.addChild(mr);
 
-         MouseZoom mz = new MouseZoom(objTrans);
+         MouseZoom mz = new MouseZoom(objScale);
          mz.setSchedulingBounds(new BoundingSphere(new Point3d(), 1000.0));
          objRoot.addChild(mz);
 
-         MouseTranslate mt = new MouseTranslate(objTrans);
+         MouseTranslate mt = new MouseTranslate(objScale);
          mt.setSchedulingBounds(new BoundingSphere(new Point3d(), 1000.0));
          objRoot.addChild(mt);
 /*
-         KeyNavigatorBehavior keyNav = new KeyNavigatorBehavior(objTrans);
+         KeyNavigatorBehavior keyNav = new KeyNavigatorBehavior(objScale);
          keyNav.setSchedulingBounds(new BoundingSphere(new Point3d(), 1000.0));
          objRoot.addChild(keyNav);
 */
-         objRoot.addChild(objTrans);
-
          BranchGroup b0 = new BranchGroup();
          b0.setCapability(BranchGroup.ALLOW_DETACH);
          BranchGroup b1 = new BranchGroup();
          b1.setCapability(BranchGroup.ALLOW_DETACH);
          BranchGroup b2 = new BranchGroup();
          b2.setCapability(BranchGroup.ALLOW_DETACH);
+         BranchGroup b3 = new BranchGroup();
+         b3.setCapability(BranchGroup.ALLOW_DETACH);
          objTrans.addChild(b0); // child 0: axes
          objTrans.addChild(b1); // child 1: vertices
          objTrans.addChild(b2); // child 2: triangles
+         objTrans.addChild(b3); // child 3: labels
+
+         Background background = new Background(backgroundColor);
+         background.setApplicationBounds(
+            new BoundingSphere(new Point3d(0.0d, 0.0d, 0.0d), 1000));
+         objRoot.addChild(background);
 
          return objRoot;
 
@@ -277,6 +307,73 @@ public class SurfacePlot3D extends VisModule {
 
       }
 
+      private BranchGroup drawLabels(double xx, double yy, double zz) {
+
+         BranchGroup L = new BranchGroup();
+         L.setCapability(BranchGroup.ALLOW_DETACH);
+
+         Text2D text;
+         Transform3D T3D;
+         TransformGroup TG;
+
+         // xmin
+         T3D = new Transform3D();
+         T3D.setTranslation(new Vector3d(xmin + .1*(xmax - xmin), ymin - yy*FONT_SIZE/256, zmax));
+         T3D.setScale(new Vector3d(xx, yy, zz));
+         TG = new TransformGroup(T3D);
+         text = new Text2D("-X", plainColor, FONT_TYPE, FONT_SIZE, 1);
+         TG.addChild(text);
+         L.addChild(TG);
+
+         // xmax
+         T3D = new Transform3D();
+         T3D.setTranslation(new Vector3d(xmax - .1*(xmax - xmin), ymin - yy*FONT_SIZE/256, zmax));
+         T3D.setScale(new Vector3d(xx, yy, zz));
+         TG = new TransformGroup(T3D);
+         text = new Text2D("+X", plainColor, FONT_TYPE, FONT_SIZE, 1);
+         TG.addChild(text);
+         L.addChild(TG);
+
+         // ymin
+         T3D = new Transform3D();
+         T3D.setTranslation(new Vector3d(xmax, ymin + .1*(ymax - ymin), zmax));
+         T3D.setScale(new Vector3d(xx, yy, zz));
+         TG = new TransformGroup(T3D);
+         text = new Text2D("-Y", plainColor, FONT_TYPE, FONT_SIZE, 1);
+         TG.addChild(text);
+         L.addChild(TG);
+
+         // ymax
+         T3D = new Transform3D();
+         T3D.setTranslation(new Vector3d(xmax, ymax - .1*(ymax - ymin), zmax));
+         T3D.setScale(new Vector3d(xx, yy, zz));
+         TG = new TransformGroup(T3D);
+         text = new Text2D("+Y", plainColor, FONT_TYPE, FONT_SIZE, 1);
+         TG.addChild(text);
+         L.addChild(TG);
+
+         // zmin
+         T3D = new Transform3D();
+         T3D.setTranslation(new Vector3d(xmax, ymin - yy*FONT_SIZE/256, zmin + .1*(zmax - zmin)));
+         T3D.setScale(new Vector3d(xx, yy, zz));
+         TG = new TransformGroup(T3D);
+         text = new Text2D("-Z", plainColor, FONT_TYPE, FONT_SIZE, 1);
+         TG.addChild(text);
+         L.addChild(TG);
+
+         // zmax
+         T3D = new Transform3D();
+         T3D.setTranslation(new Vector3d(xmax, ymin - yy*FONT_SIZE/256, zmax - .1*(zmax - zmin)));
+         T3D.setScale(new Vector3d(xx, yy, zz));
+         TG = new TransformGroup(T3D);
+         text = new Text2D("+Z", plainColor, FONT_TYPE, FONT_SIZE, 1);
+         TG.addChild(text);
+         L.addChild(TG);
+
+         return L;
+
+      }
+
       private BranchGroup drawVertices() {
 
          BranchGroup all = new BranchGroup();
@@ -315,55 +412,48 @@ public class SurfacePlot3D extends VisModule {
 
       private BranchGroup drawTriangles() {
 
+         Vector V = triangulate();
+
          BranchGroup b = new BranchGroup();
          b.setCapability(BranchGroup.ALLOW_DETACH);
-
-         Vector tri = triangulate();
-
-         IndexedTriangleArray A;
-         TriangleArray t1;
 
          Shape3D s; Appearance a;
 
          Color lc = control.getLowColor(),
                hc = control.getHighColor();
 
-         Point3d p0 = new Point3d(), p1 = new Point3d(), p2 = new Point3d();
+         Point3d p0, p1, p2;
          double midpoint;
+         for (int j = 0; j < V.size(); j += 3) {
 
-         for (int j = 0; j < tri.size(); j++) {
+            s = new Shape3D();
+            a = new Appearance();
 
-            A = (IndexedTriangleArray)tri.get(j);
+            p0 = (Point3d)V.get(j);
+            p1 = (Point3d)V.get(j + 1);
+            p2 = (Point3d)V.get(j + 2);
 
-            for (int i = 0; i < A.getVertexCount(); i += 3) {
+            if (p0 == null || p1 == null || p2 == null)
+               break;
 
-               A.getCoordinate(i, p0);
-               A.getCoordinate(i + 1, p1);
-               A.getCoordinate(i + 2, p2);
+            midpoint = (p0.y + p1.y + p2.y) / 3;
 
-               midpoint = (p0.y + p1.y + p2.y) / 3;
+            a.setColoringAttributes(new ColoringAttributes( interpolateColor(lc, hc,
+               ((ymax - midpoint) / (ymax - ymin))), ColoringAttributes.FASTEST));
 
-               t1 = new TriangleArray(6, TriangleArray.COORDINATES);
+            TriangleArray t1 = new TriangleArray(6, TriangleArray.COORDINATES);
 
-               t1.setCoordinate(0, p0);
-               t1.setCoordinate(1, p1);
-               t1.setCoordinate(2, p2);
-               t1.setCoordinate(3, p2);
-               t1.setCoordinate(4, p1);
-               t1.setCoordinate(5, p0);
+            t1.setCoordinate(0, p0);
+            t1.setCoordinate(1, p1);
+            t1.setCoordinate(2, p2);
+            t1.setCoordinate(3, p2);
+            t1.setCoordinate(4, p1);
+            t1.setCoordinate(5, p0);
 
-               s = new Shape3D();
-               a = new Appearance();
+            s.setGeometry(t1);
+            s.setAppearance(a);
 
-               a.setColoringAttributes(new ColoringAttributes( interpolateColor(lc, hc,
-                  ((ymax - midpoint) / (ymax - ymin))), ColoringAttributes.FASTEST));
-
-               s.setGeometry(t1);
-               s.setAppearance(a);
-
-               b.addChild(s);
-
-            }
+            b.addChild(s);
 
          }
 
@@ -373,66 +463,68 @@ public class SurfacePlot3D extends VisModule {
 
       private Vector triangulate() {
 
-         /* remove duplicate (x, *, z) pairs. */
+         /* remove duplicate (x, *, z) pairs, since we'll be projecting     */
+         /* onto the x-z plane.                                             */
 
-         HashMap X = new HashMap(), Z;
+         HashMap map = new HashMap();
+
+         Point2D.Double P;
          for (int i = 0; i < points.length; i++) {
 
-            if (X.containsKey(new Double(points[i].x))) {
-               Z = (HashMap)X.get(new Double(points[i].x));
-               if (Z.containsKey(new Double(points[i].z))) {
-                  Point3d old = (Point3d)Z.get(new Double(points[i].z));
-                  if (old.y < points[i].y)
-                     Z.put(new Double(points[i].z), points[i]);
-               }
-               else {
-                  Z.put(new Double(points[i].z), points[i]);
-               }
+            P = new Point2D.Double(points[i].x, -points[i].z);
+            if (map.containsKey(P)) {
+               Point3d old = (Point3d)map.get(P);
+               if (points[i].y > old.y)
+                  map.put(P, points[i]);
             }
             else {
-               Z = new HashMap();
-               X.put(new Double(points[i].x), Z);
-               Z.put(new Double(points[i].z), points[i]);
+               map.put(P, points[i]);
             }
 
          }
 
-         /* HashMap X now contains as values HashMaps that themselves contain */
-         /* as values all the relevant vertices; we must iterate over them.   */
+         /* map now contains all the relevant vertices as values. their     */
+         /* keys are the corresponding projections into the x-z plane. we   */
+         /* want to iterate over them to build a Vector.                    */
 
-         Vector v = new Vector();
+         Vector V = new Vector();
 
-         Object[] Xs = X.values().toArray();
-         for (int i = 0; i < Xs.length; i++) {
-            Object[] Zs = ((HashMap)Xs[i]).values().toArray();
-            for (int j = 0; j < Zs.length; j++)
-               v.add(Zs[j]);
-         }
+         Object[] relevant2D = map.keySet().toArray();
+         for (int i = 0; i < relevant2D.length; i++)
+            V.add(relevant2D[i]);
 
-         /* v is now a Vector of all relevant Point3d objects. we want their */
-         /* convex hull with respect to the xz plane.                        */
+         // first convex hull:
 
-         Vector inHull = new Vector(), notInHull = new Vector(),
-                inNextHull = new Vector(), notInNextHull = new Vector();
-         ComputationalGeometry.convexHullXZ(v, inHull, notInHull);
+         Vector all = new Vector(), // vector of vectors of points
+                current;
 
-         Vector tri = new Vector();
+         Vector[] hullInfo = ComputationalGeometry.convexHull(V);
+         Vector inHull = hullInfo[0], notInHull = hullInfo[1];
 
          while (notInHull.size() > 2) {
-            System.out.println("go");
-            ComputationalGeometry.convexHullXZ(
-               notInHull,
-               inNextHull,
-               notInNextHull);
-            tri.add(ComputationalGeometry.naiveSingleTriangulationXZ(inHull, inNextHull));
-            inHull = (Vector)inNextHull.clone();
-            notInHull = (Vector)notInNextHull.clone();
-            System.out.println(inHull.size() + " " + notInHull.size());
-            inNextHull.clear();
-            notInNextHull.clear();
+
+            hullInfo = ComputationalGeometry.convexHull(notInHull);
+            current = ComputationalGeometry.holeTriangulation
+               (inHull, hullInfo[0]);
+            inHull = hullInfo[0];
+            notInHull = hullInfo[1];
+
+            for (int i = 0; i < current.size(); i++)
+               all.add((Point3d)map.get((Point2D.Double)current.get(i)));
+
          }
 
-         return tri;
+         if (inHull.size() > 2) {
+
+            current = ComputationalGeometry.holeTriangulation
+               (inHull, notInHull);
+
+            for (int i = 0; i < current.size(); i++)
+               all.add((Point3d)map.get((Point2D.Double)current.get(i)));
+
+         }
+
+         return all;
 
       }
 
@@ -490,14 +582,16 @@ public class SurfacePlot3D extends VisModule {
             Constrain.setConstraints(
                properties, zsel, 2, 2, 2, 1,
                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 0, 0);
+            // high and low colors got switched somehow, so we account for
+            // that by switching the labels here.
             Constrain.setConstraints(
-               properties, new JLabel("Low color: "), 0, 3, 1, 1,
+               properties, new JLabel("High color: "), 0, 3, 1, 1,
                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 0, 0);
             Constrain.setConstraints(
                properties, color_low, 1, 3, 1, 1,
                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 0, 0);
             Constrain.setConstraints(
-               properties, new JLabel("High color: "), 2, 3, 1, 1,
+               properties, new JLabel("Low color: "), 2, 3, 1, 1,
                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 0, 0);
             Constrain.setConstraints(
                properties, color_high, 3, 3, 1, 1,
@@ -545,6 +639,25 @@ public class SurfacePlot3D extends VisModule {
 
             findMinMax();
 
+            double xx = xmax - xmin,
+                   yy = ymax - ymin,
+                   zz = zmax - zmin;
+
+            transform.setTranslation(new Vector3d(
+               - ((xx / 2) + xmin),
+               - ((yy / 2) + ymin),
+               - ((zz / 2) + zmin)
+            ));
+
+            if (xx == 0) xx = 1;
+            if (yy == 0) yy = 1;
+            if (zz == 0) zz = 1;
+
+            scale.setScale(new Vector3d(1/xx, 1/yy, 1/zz));
+
+            objScale.setTransform(scale);
+            objTrans.setTransform(transform);
+
             objTrans.setChild(drawAxes(), 0);
 
             if (show_vertices)
@@ -556,6 +669,10 @@ public class SurfacePlot3D extends VisModule {
                objTrans.setChild(drawTriangles(), 2);
             else
                objTrans.setChild(new BranchGroup(), 2);
+
+            if (show_vertices || show_triangles) {
+               objTrans.setChild(drawLabels(xx, yy, zz), 3);
+            }
 
          }
 
@@ -612,7 +729,7 @@ public class SurfacePlot3D extends VisModule {
             super("About SurfacePlot3D");
             JEditorPane ep = new JEditorPane("text/html", getHelpString());
             getContentPane().add(new JScrollPane(ep));
-            setSize(400, 200);
+            setSize(300, 400);
          }
       }
 
@@ -623,7 +740,28 @@ public class SurfacePlot3D extends VisModule {
       }
 
       private final String getHelpString() {
-         return "All your base are belong to us";
+        StringBuffer sb = new StringBuffer();
+        sb.append("<html><body><h2>SurfacePlot3D</h2>");
+        sb.append("This module visualizes a data set in three dimensions.");
+        sb.append("It is intended to uncover patterns in data; random data ");
+        sb.append("may not produce appealing plots.");
+        sb.append("<h3>Keyboard controls</h3>");
+        sb.append("<ul><li>number pad -: zoom out");
+        sb.append("<li>number pad +: zoom in");
+        sb.append("<li>up arrow: move scene back");
+        sb.append("<li>down arrow: move scene forward");
+        sb.append("<li>left arrow: rotate scene about +y axis");
+        sb.append("<li>right arrow: rotate scene about -y axis");
+        sb.append("<li>Page Up: rotate scene about -x axis");
+        sb.append("<li>Page Down: rotate scene about +x axis");
+        sb.append("</ul>");
+        sb.append("<h3>Mousing Functions</h3>");
+        sb.append("<ul><li>Drag with left mouse button: rotate scene");
+        sb.append("<li>Drag with right mouse button: move scene");
+        sb.append("<li>Drag with middle mouse button: zoom scene");
+        sb.append("<li>'Refresh' button: bring scene to home view");
+        sb.append("</ul></body></html>");
+        return sb.toString();
       }
 
       private final Color3f interpolateColor(Color L, Color H, double f) {
@@ -652,6 +790,6 @@ public class SurfacePlot3D extends VisModule {
 
       }
 
-   }
+   } // SurfacePlot3DVis
 
-}
+} // SurfacePlot3D
