@@ -392,7 +392,7 @@ public class SQLGetBarChartFromCube extends UIModule {
         JOptionPane.showMessageDialog(msgBoard,
           "There is no any code book in the database", "Error",
           JOptionPane.ERROR_MESSAGE);
-        System.out.println("There is no any code books in the database.");
+        System.out.println("There is no any code book in the database.");
       }
       else {
         bt = new BrowseTables(cw, v);
