@@ -3,7 +3,6 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.gui.Constrain;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.Random;
 import javax.swing.*;
 import java.awt.event.*;
@@ -31,7 +30,9 @@ public class SimpleTrainTest extends DataPrepModule  {
 			" a custom gui. The test and train data can be either selected at       random, or if the <i>Use"+
 			" First</i> property is set, the first entries       are taken as the test data, and the last"+
 			" entries are taken as the       training data. If the percent test and the percent train is"+
-			" more than       100 percent, some entries will have to be used more than once.    </p>    <p>"+
+			" more than       100 percent, some entries will have to be used more than once. If you want to " +
+			" change only train or test percentages drag the blue arrows, if you want to change them at the " +
+			" same time drag the line invisible line between the percentages.   </p>    <p>"+
 			"      Data Type Restrictions: Although this module can take tables containing       any type"+
 			" of data, most supervised learing algorithms will work only on       doubles. If one of these"+
 			" algorithms is to be used, the conversion to       floating point data should take place upstream"+
