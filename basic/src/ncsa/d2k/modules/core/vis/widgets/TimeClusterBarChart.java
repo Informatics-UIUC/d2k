@@ -616,6 +616,9 @@ public class TimeClusterBarChart extends BarChart
       else if (Long.parseLong(granString[i]) >= 60000L) {
         legend[i] = "Minute";
       }
+      else if (Long.parseLong(granString[i]) >= 1000L) {
+         legend[i] = "Second";
+      }
     }
     return (legend);
   }
