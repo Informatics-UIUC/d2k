@@ -16,7 +16,7 @@ public class ReadFileToSparseExamples extends InputModule {
     }
 
     public String[] getOutputTypes() {
-        String[] out = {"ncsa.d2k.modules.core.datatype.table.sparse.examples.SparseExample"};
+        String[] out = {"ncsa.d2k.modules.core.datatype.table.sparse.examples.SparseExample", "java.lang.Integer"};
         return out;
     }
 
@@ -91,6 +91,7 @@ public class ReadFileToSparseExamples extends InputModule {
             curExample++;
             // push it out
             pushOutput(e, 0);
+            pushOutput(new Integer(totalNumExamples), 1);
         }
         else {
             // read the ith example
