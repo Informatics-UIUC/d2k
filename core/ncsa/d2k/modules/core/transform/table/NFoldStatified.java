@@ -99,8 +99,6 @@ public class NFoldStatified extends NFoldExTable{
         once = new String("first");
         table = (Table) this.pullInput (0);
 //printTable(table);
-        createUniqueOutputToRowsHash();
-        createTestTrainSets();
     }
 
     /**
@@ -110,6 +108,10 @@ public class NFoldStatified extends NFoldExTable{
         if (once == null) {
             setup ();
         }
+
+        createUniqueOutputToRowsHash();
+        createTestTrainSets();
+
         // Set up the train and test sets indices
         //convert a Vector of Integer objects to an array of ints
         int testing [] = new int [testIndices.size()];
