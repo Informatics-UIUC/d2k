@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.*;
 import ncsa.d2k.userviews.swing.*;
 
-public class BoxPlotGroup {
+public class BoxPlotGroup implements java.io.Serializable {  // MRC added impl serializable
 
    JUserPane userpane;
    ArrayList group;
