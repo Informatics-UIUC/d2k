@@ -301,9 +301,7 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
 //VERED: added cases for all column types
                   case ColumnTypes.INTEGER:
 
-                    //vered - debug
-              System.out.println("adding an int columns as a prediction column");
-              //end debug
+
                  pt.addColumn(new IntColumn(pt.getNumRows()));
                  predSet[i] = pt.getNumColumns()-1;
                  break;
