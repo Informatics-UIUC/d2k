@@ -313,14 +313,8 @@ public class SimpleTrainTest extends DataPrepModule
 		et.setTestingSet(test);
 		et.setTrainingSet(train);
 		
-		// LAM-tlr testing
-		System.out.println("get train table");
 		this.pushOutput(et.getTrainTable(), 0);
-		
-		// LAM-tlr testing
-		System.out.println("get test table");
 		this.pushOutput(et.getTestTable(), 1);
-
 	}
 
 	/**

@@ -218,6 +218,15 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	public PredictionTable toPredictionTable() {
 		return new PredictionTableImpl(this);
 	}
+	
+	/**
+	 * Returns this, which is an example table.
+	 * @return an example table for the data in this table.
+	 */
+	public ExampleTable toExampleTable() {
+		return this;
+	}
+
 
 	//////////////  Input, output, test and train. ///////////////
 

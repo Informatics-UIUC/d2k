@@ -38,9 +38,13 @@ public class SubsetTableImpl extends MutableTableImpl {
       this.columns = table.columns;
       this.label = table.getLabel();
       this.comment = table.getComment();
-      this.subset = new int[table.getNumRows()];
-      for (int i = 0; i < this.subset.length; i++) {
-         this.subset[i] = i;
+      if (table instanceof SubsetTableImpl) {
+      	this.subset = ((SubsetTableImpl)table).subset;
+      } else {
+			this.subset = new int[table.getNumRows()];
+			for (int i = 0; i < this.subset.length; i++) {
+			   this.subset[i] = i;
+			}
       }
    }
 
@@ -282,6 +286,16 @@ public class SubsetTableImpl extends MutableTableImpl {
     */
    public void setColumns (Column[] newColumns) {
       Column copyColumns [] = new Column [this.getNumColumns()];
+      
+      // Resize the columns array if necessary
+      if (columns.length != newColumns.length) {
+      	Column [] nc = new Column[newColumns.length];
+      	int l = columns.length > nc.length ? nc.length : columns.length;
+      	for (int i = 0; i < l; i++)
+      		nc[i] = columns[i];
+      	columns = nc;
+      }
+      	
       for (int i = 0 ; i < this.getNumColumns() ; i++)
               this.setColumn(this.expandColumn(newColumns[i]),i);
    }
@@ -299,8 +313,7 @@ public class SubsetTableImpl extends MutableTableImpl {
       return this.compressColumn(pos);
    }
 
-
-     /**
+   /**
     *
     * Get a Column from the table.
     * @param pos the position of the Column to get from table

@@ -35,7 +35,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 * @param ttt the ExampleTable that contains the inital values
 	 */
 	public PredictionTableImpl (ExampleTableImpl ttt) {
-		super(ttt.columns);
+ 		super(ttt.columns);
         
 		// copies the fields from the example table.
 		this.comment = ttt.getComment();
@@ -412,5 +412,32 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	public char getCharPrediction(int row, int predictionColIdx) {
 		return getChar(row, predictionSet[predictionColIdx]);
 	}
+	
+	/**
+	 * When we compare to a non prediction table, we will skip the prediction columns.
+	 * @param mt the object to compare to.
+	 */
+	public boolean equals(Object mt) {
+		MutableTableImpl mti = (MutableTableImpl)mt;
+		int numColumns = mti.getNumColumns();
+		int numRows = mti.getNumRows();
+		int myColumns = getNumColumns();
+		
+		/** if this is not  a prediction table, don't compare those columns */
+		if (!(mt instanceof PredictionTableImpl))
+			if (this.getPredictionSet() != null)
+				myColumns -= this.getPredictionSet().length;
+			
+		if (myColumns != numColumns)
+			return false;
+		if (getNumRows() != numRows)
+			return false;
+		for (int i = 0; i < numRows; i++)
+			for (int j = 0; j < numColumns; j++)
+				if (!getString(i, j).equals(mti.getString(i, j)))
+					return false;
+		return true;
+	}
+
 }
 
