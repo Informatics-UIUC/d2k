@@ -40,16 +40,16 @@ public class TableUtilities
   public static ScalarStatistics getScalarStatistics (Table table, int colNum)
   {
     if (!table.isColumnNumeric (colNum)) {
-	return null;
+        return null;
     }
 
     // Create a list of samples that should be included
     // Make an array of doubles from the list.
     TDoubleArrayList list = new TDoubleArrayList ();
     for (int i = 0; i < table.getNumRows (); i++) {
-	if (!table.isValueMissing (i, colNum) && !table.isValueEmpty (i, colNum)) {
-	    list.add (table.getDouble (i, colNum));
-	}
+        if (!table.isValueMissing (i, colNum) && !table.isValueEmpty (i, colNum)) {
+            list.add (table.getDouble (i, colNum));
+        }
     }
     double[] d = list.toNativeArray ();
 
@@ -72,19 +72,19 @@ public class TableUtilities
    */
 
   public static ScalarStatistics getScalarStatistics (boolean[]flags,
-						      Table table, int colNum)
+                                                      Table table, int colNum)
   {
     if (!table.isColumnNumeric (colNum)) {
-	return null;
+        return null;
     }
 
     // Create a list of samples that should be included
     // Make an array of doubles from the list.
     TDoubleArrayList list = new TDoubleArrayList ();
     for (int i = 0; i < table.getNumRows (); i++) {
-	if (flags[i] && !table.isValueMissing (i, colNum) && !table.isValueEmpty (i, colNum)) {
-	    list.add (table.getDouble (i, colNum));
-	}
+        if (flags[i] && !table.isValueMissing (i, colNum) && !table.isValueEmpty (i, colNum)) {
+            list.add (table.getDouble (i, colNum));
+        }
     }
     double[] d = list.toNativeArray ();
 
@@ -108,13 +108,13 @@ public class TableUtilities
     double nsamples = d.length;	// number of samples as a double for later computations
 
     if (nsamples == 0) {
-	System.out.println ("There were no sample values for the specified attribute. "
-		             + "Therefore, statistics will be reported as zeros. ");
-	return new ScalarStatistics (0, 0, 0, 0, 0, 0, 0, 0);
+        System.out.println ("There were no sample values for the specified attribute. "
+                             + "Therefore, statistics will be reported as zeros. ");
+        return new ScalarStatistics (0, 0, 0, 0, 0, 0, 0, 0);
     }
 
     if (nsamples == 1) {
-	return new ScalarStatistics (d[0], d[0], 0, 0, d[0], d[0], d[0], d[0]);
+        return new ScalarStatistics (d[0], d[0], 0, 0, d[0], d[0], d[0], d[0]);
     }
 
     // Do the computations that make sense when there is more than 1 sample then
@@ -122,13 +122,13 @@ public class TableUtilities
 
     double total = 0;
     for (int i = 0; i < nsamples; i++) {
-	total += d[i];
+        total += d[i];
     }
     double sample_mean = total / nsamples;
 
     double sum_of_sq_of_deviation = 0;
     for (int i = 0; i < nsamples; i++) {
-	sum_of_sq_of_deviation += (d[i] - sample_mean) * (d[i] - sample_mean);
+        sum_of_sq_of_deviation += (d[i] - sample_mean) * (d[i] - sample_mean);
     }
     double sample_variance = sum_of_sq_of_deviation / (nsamples - 1.0);	// unbiased estimator
     double stddev = Math.sqrt (sample_variance);
@@ -161,9 +161,9 @@ public class TableUtilities
     // Q1 = min;  Q3 = max;    Seems most sensible compared to what we get with 3 points - the
     // references consulted didn't deal with this small of a sample set.
     if (d.length == 2) {
-	return new ScalarStatistics (sample_mean, sample_mean,
-				     sample_variance, stddev, d[0], d[1],
-				     d[0], d[1]);
+        return new ScalarStatistics (sample_mean, sample_mean,
+                                     sample_variance, stddev, d[0], d[1],
+                                     d[0], d[1]);
     }
 
     // If 3 samples, median set to sample 2. Q1 = min and Q3 = max.  The formula
@@ -171,9 +171,9 @@ public class TableUtilities
     // multiply it by the weight 0, therefore has an array index problem in the
     // computations below.  Hence this special case.
     if (d.length == 3) {
-	return new ScalarStatistics (sample_mean, d[1],
-				     sample_variance, stddev, d[0], d[2],
-				     d[0], d[2]);
+        return new ScalarStatistics (sample_mean, d[1],
+                                     sample_variance, stddev, d[0], d[2],
+                                     d[0], d[2]);
     }
 
     // From here on it's okay to use standard formula without getting into trouble with
@@ -189,15 +189,15 @@ public class TableUtilities
     double quartile[] = new double[4];	// quartile[0] won't be used but easier to index from 1
 
     for (int q = 1; q < 4; q++) {
-	product = (nsamples + 1.0) * (q * .25);
-	productInteger = (int) Math.floor (product);
-	productDecimal = product - productInteger;
-	quartile[q] = (1 - productDecimal) * d[productInteger - 1] + (productDecimal) * d[productInteger];
+        product = (nsamples + 1.0) * (q * .25);
+        productInteger = (int) Math.floor (product);
+        productDecimal = product - productInteger;
+        quartile[q] = (1 - productDecimal) * d[productInteger - 1] + (productDecimal) * d[productInteger];
     }
 
     return new ScalarStatistics (sample_mean, quartile[2], sample_variance,
-				 stddev, d[0], d[(int) nsamples - 1],
-				 quartile[1], quartile[3]);
+                                 stddev, d[0], d[(int) nsamples - 1],
+                                 quartile[1], quartile[3]);
   }
 
 
@@ -214,9 +214,9 @@ public class TableUtilities
     // count the number of unique items in this column
     HashSet set = new HashSet ();
     for (int i = 0; i < numRows; i++) {
-	String s = table.getString (i, colNum);
-	if (!set.contains (s)) {
-	  set.add (s);
+        String s = table.getString (i, colNum);
+        if (!set.contains (s)) {
+          set.add (s);
         }
     }
 
@@ -224,8 +224,8 @@ public class TableUtilities
     int idx = 0;
     Iterator it = set.iterator ();
     while (it.hasNext ()) {
-	retVal[idx] = (String) it.next ();
-	idx++;
+        retVal[idx] = (String) it.next ();
+        idx++;
     }
     return retVal;
   }
@@ -237,9 +237,9 @@ public class TableUtilities
     // count the number of unique items in this column
     HashSet set = new HashSet ();
     for (int i = 0; i < numRows; i++) {
-	String s = table.getString (i, colNum);
-	if (!set.contains (s)) {
-	  set.add (s);
+        String s = table.getString (i, colNum);
+        if (!set.contains (s)) {
+          set.add (s);
         }
     }
     return set;
@@ -279,7 +279,7 @@ public class TableUtilities
 
     double[] pdfs = new double[t.getNumRows ()];
     for (int i = 0; i < t.getNumRows (); i++) {
-	pdfs[i] = pdfCalc (vals[i], mean, stdDev);
+        pdfs[i] = pdfCalc (vals[i], mean, stdDev);
     }
 
     Column[]c = new Column[2];
@@ -314,24 +314,24 @@ public class TableUtilities
     HashMap outIndexMap = new HashMap ();
     int numRows = table.getNumRows ();
     for (int i = 0; i < numRows; i++) {
-	String s = table.getString (i, colNum);
+        String s = table.getString (i, colNum);
 
-	if (outIndexMap.containsKey (s)) {
-	    Integer in = (Integer) outIndexMap.get (s);
-	    outtally[in.intValue ()]++;
-	} else {
-	    outIndexMap.put (s, new Integer (outIndexMap.size ()));
-	    outtally = expandArray (outtally);
-	    outtally[outtally.length - 1] = 1;
-	}
+        if (outIndexMap.containsKey (s)) {
+            Integer in = (Integer) outIndexMap.get (s);
+            outtally[in.intValue ()]++;
+        } else {
+            outIndexMap.put (s, new Integer (outIndexMap.size ()));
+            outtally = expandArray (outtally);
+            outtally[outtally.length - 1] = 1;
+        }
     }
 
     HashMap retVal = new HashMap ();
     Iterator ii = outIndexMap.keySet ().iterator ();
     while (ii.hasNext ()) {
-	String val = (String) ii.next ();
-	Integer idx = (Integer) outIndexMap.get (val);
-	retVal.put (val, new Integer (outtally[idx.intValue ()]));
+        String val = (String) ii.next ();
+        Integer idx = (Integer) outIndexMap.get (val);
+        retVal.put (val, new Integer (outtally[idx.intValue ()]));
     }
     return retVal;
   }
@@ -357,14 +357,14 @@ public class TableUtilities
     double d;
 
     for (int i = 0; i < numRows; i++) {
-	d = table.getDouble (i, colNum);
+        d = table.getDouble (i, colNum);
 
-	if (d > max) {
-	    max = d;
-	}
-	if (d < min) {
-	    min = d;
-	}
+        if (d > max) {
+            max = d;
+        }
+        if (d < min) {
+            min = d;
+        }
     }
 
     double[] retVal = new double[2];
@@ -387,7 +387,7 @@ public class TableUtilities
     int numRows = table.getNumRows ();
 
     for (int i = 0; i < numRows; i++) {
-	total += table.getDouble (i, colNum);
+        total += table.getDouble (i, colNum);
     }
 
     sample_mean = total / (double) numRows;
@@ -407,15 +407,15 @@ public class TableUtilities
     int numRows = table.getNumRows ();
 
     if (numRows == 0) {
-	sample_median = Double.NaN;
+        sample_median = Double.NaN;
     } else if (numRows == 1) {
-	sample_median = table.getDouble (0, colNum);
+        sample_median = table.getDouble (0, colNum);
     } else {
-	double[]d = new double[ numRows ];
-	table.getColumn (d, colNum);
-	Arrays.sort (d);
-	sample_median = (d[(int) Math.floor ((numRows - 1) / 2.0)] +
-			 d[(int) Math.ceil  ((numRows - 1) / 2.0)]) / 2.0;
+        double[]d = new double[ numRows ];
+        table.getColumn (d, colNum);
+        Arrays.sort (d);
+        sample_median = (d[(int) Math.floor ((numRows - 1) / 2.0)] +
+                         d[(int) Math.ceil  ((numRows - 1) / 2.0)]) / 2.0;
     }
     return sample_median;
   }
@@ -477,9 +477,9 @@ public class TableUtilities
   {
 
     if (t1.isColumnNumeric (col1)) {
-	t2.setDouble (t1.getDouble (row1, col1), row2, col2);
+        t2.setDouble (t1.getDouble (row1, col1), row2, col2);
     } else {
-	t2.setObject (t1.getObject (row1, col1), row2, col2);
+        t2.setObject (t1.getObject (row1, col1), row2, col2);
     }
   }
 
@@ -505,7 +505,7 @@ public class TableUtilities
     int size = tbl.getNumRows ();
     int[]order = new int[size];
     for (int i = 0; i < size; i++) {
-	order[i] = i;
+        order[i] = i;
     }
 
     multiQuickSort (tbl, sortByCols, order, 0, size - 1);
@@ -527,11 +527,11 @@ public class TableUtilities
    * use multiSortIndex)
    */
   private static void multiQuickSort (Table tbl, int[] sortByCols,
-				      int[] order, int l, int r)
+                                      int[] order, int l, int r)
   {
 
     if (r - l <= 3) {
-	return;
+        return;
     }
     int pivot;
 
@@ -553,18 +553,18 @@ public class TableUtilities
 
     while (j > i) {
 
-	while ((compareMultiCols (tbl, tbl, order[i], order[pivot], sortByCols, sortByCols) <= 0)
-	       && (i < j)) {
-	    i++;
-	}
-	while ((compareMultiCols (tbl, tbl, order[j], order[pivot], sortByCols, sortByCols) >= 0)
-	       && (i < j)) {
-	    j--;
-	}
+        while ((compareMultiCols (tbl, tbl, order[i], order[pivot], sortByCols, sortByCols) <= 0)
+               && (i < j)) {
+            i++;
+        }
+        while ((compareMultiCols (tbl, tbl, order[j], order[pivot], sortByCols, sortByCols) >= 0)
+               && (i < j)) {
+            j--;
+        }
 
-	if (i < j) {
-	    swap (order, i, j);
-	}
+        if (i < j) {
+            swap (order, i, j);
+        }
     }
     swap (order, r - 1, j);
 
@@ -592,13 +592,13 @@ public class TableUtilities
     int j;
     int v;
     for (j = 1; j < size; j++) {
-	i = j - 1;
-	v = order[j];
-	while ((i >= 0) && (0 < compareMultiCols (tbl, tbl, order[i], v, sortByCols, sortByCols))) {
-	    order[i + 1] = order[i];
-	    i--;
-	}
-	order[i + 1] = v;
+        i = j - 1;
+        v = order[j];
+        while ((i >= 0) && (0 < compareMultiCols (tbl, tbl, order[i], v, sortByCols, sortByCols))) {
+            order[i + 1] = order[i];
+            i--;
+        }
+        order[i + 1] = v;
     }
   }
 
@@ -615,16 +615,16 @@ public class TableUtilities
    * e1<e2 -> -1
    **/
   public static int compareMultiCols (Table t1, Table t2, int row1, int row2,
-				      int[] cols1, int[] cols2)
+                                      int[] cols1, int[] cols2)
   {
 
     int numCompareCols = cols1.length;
     int eq = 0;
     for (int i = 0; i < numCompareCols; i++) {
-	eq = compareValues (t1, row1, cols1[i], t2, row2, cols2[i]);
-	if (eq != 0) {
-	    return eq;
-	}
+        eq = compareValues (t1, row1, cols1[i], t2, row2, cols2[i]);
+        if (eq != 0) {
+            return eq;
+        }
     }
     return 0;
   }
@@ -643,21 +643,20 @@ public class TableUtilities
    * Assumes columns are of same type.
    */
   public static int compareValues (Table t1, int row1, int col1, Table t2,
-				   int row2, int col2)
+                                   int row2, int col2)
   {
-
     int type = t1.getColumnType (col1);
 
     //the numeric case
     if (t1.isColumnNumeric (col1)) {
-	double d1 = t1.getDouble (row1, col1);
-	double d2 = t2.getDouble (row2, col2);
-	if (d1 == d2) {
-	    return 0;
+        double d1 = t1.getDouble (row1, col1);
+        double d2 = t2.getDouble (row2, col2);
+        if (d1 == d2) {
+            return 0;
         } else if (d1 > d2) {
-	    return 1;
+            return 1;
         } else {
-	  return -1;
+          return -1;
         }
       }
 
@@ -667,74 +666,147 @@ public class TableUtilities
     switch (type) {
 
       case (ColumnTypes.STRING): {
-	  it = t1.getString (row1, col1).compareTo (t2.getString (row2, col2));
-	  break;
+          // Determine whether the strings are bin names,
+          // because bin names need a special method to compare
+          if ((t1.getString(row1, col1).indexOf("[")>=0 ||
+                t1.getString(row1, col1).indexOf("]")>=0) &&
+                (t2.getString(row2, col2).indexOf("[")>=0 ||
+                t2.getString(row2, col2).indexOf("]")>=0) &&
+                t1.getString(row1, col1).indexOf(":")>=0 &&
+                t2.getString(row2, col2).indexOf(":")>=0) {
+              it = compareBinNames(t1.getString (row1, col1), t2.getString (row2, col2));
+              break;
+          }
+          else { // data type is regular string, not bin name
+            it = t1.getString (row1, col1).compareTo (t2.getString (row2, col2));
+            break;
+          }
       }
       case (ColumnTypes.CHAR_ARRAY): {
-	  it = compareChars (t1.getChars (row1, col1), t2.getChars (row2, col2));
-	  break;
+          it = compareChars (t1.getChars (row1, col1), t2.getChars (row2, col2));
+          break;
       }
       case (ColumnTypes.BYTE_ARRAY): {
-	  it = compareBytes (t1.getBytes (row1, col1), t2.getBytes (row2, col2));
-	  break;
+          it = compareBytes (t1.getBytes (row1, col1), t2.getBytes (row2, col2));
+          break;
       }
       case (ColumnTypes.BOOLEAN): {
-	  if (t1.getBoolean (row1, col1) == t2.getBoolean (row2, col2)) {
-	      it = 0;
-	  } else {
-	      it = 1;
-	  }
+          if (t1.getBoolean (row1, col1) == t2.getBoolean (row2, col2)) {
+              it = 0;
+          } else {
+              it = 1;
+          }
 
-	  break;
+          break;
       }
       case (ColumnTypes.OBJECT): {
-	  boolean null1 = false;
-	  boolean null2 = false;
-	  Object ob1;
-	  Object ob2;
-	  ob1 = t1.getObject (row1, col1);
-	  if (ob1 == null) {
-	      null1 = true;
-	  }
-	  ob2 = t2.getObject (row2, col2);
-	  if (ob2 == null) {
-	      null2 = true;
-	  }
-	  if (null1) {
-	      if (null2) {
-		  return 0;
+          boolean null1 = false;
+          boolean null2 = false;
+          Object ob1;
+          Object ob2;
+          ob1 = t1.getObject (row1, col1);
+          if (ob1 == null) {
+              null1 = true;
+          }
+          ob2 = t2.getObject (row2, col2);
+          if (ob2 == null) {
+              null2 = true;
+          }
+          if (null1) {
+              if (null2) {
+                  return 0;
               }
-	      return -1;
-	  }
-	  if (null2)
-	    return 1;
-	  if (ob1.equals (ob2))
-	    return 0;
+              return -1;
+          }
+          if (null2)
+            return 1;
+          if (ob1.equals (ob2))
+            return 0;
 
-	  return t1.getString (row1, col1).compareTo (t2.getString (row2, col2));
+
+          // Determine whether the objects are bin names,
+          // because bin names need a special method to compare
+          if ((t1.getString(row1, col1).indexOf("[")>=0 ||
+               t1.getString(row1, col1).indexOf("]")>=0) &&
+              (t2.getString(row2, col2).indexOf("[")>=0 ||
+               t2.getString(row2, col2).indexOf("]")>=0) &&
+              t1.getString(row1, col1).indexOf(":")>=0 &&
+              t2.getString(row2, col2).indexOf(":")>=0) {
+              it = compareBinNames(t1.getString (row1, col1), t2.getString (row2, col2));
+              return it;
+          }
+          else { // data type is regular string, not bin name
+            it = t1.getString (row1, col1).compareTo (t2.getString (row2, col2));
+            return it;
+          }
       }
       case (ColumnTypes.BYTE): {
-	  byte[]b1 = new byte[1];
-	  b1[0] = t1.getByte (row1, col1);
-	  byte[]b2 = new byte[1];
-	  b2[0] = t2.getByte (row2, col2);
-	  it = compareBytes (b1, b2);
-	  break;
+          byte[]b1 = new byte[1];
+          b1[0] = t1.getByte (row1, col1);
+          byte[]b2 = new byte[1];
+          b2[0] = t2.getByte (row2, col2);
+          it = compareBytes (b1, b2);
+          break;
       }
       case (ColumnTypes.CHAR): {
-	  byte[]b1 = new byte[1];
-	  b1[0] = t1.getByte (row1, col1);
-	  byte[]b2 = new byte[1];
-	  b2[0] = t2.getByte (row2, col2);
-	  it = compareBytes (b1, b2);
-	  break;
+          byte[]b1 = new byte[1];
+          b1[0] = t1.getByte (row1, col1);
+          byte[]b2 = new byte[1];
+          b2[0] = t2.getByte (row2, col2);
+          it = compareBytes (b1, b2);
+          break;
       }
       default: {
-	  System.err.println ("TableUtilities:CompareVals: Error");
+          System.err.println ("TableUtilities:CompareVals: Error");
       }
     }
     return it;
   }
+
+  /**
+     * Compare two bin names
+     * @param b1 the first bin name to compare
+     * @param b2 the second bin name to compare
+     * @return -1, 0, 1
+     */
+    private static int compareBinNames (String b1, String b2)
+    {
+      double f1 = getBinMin(b1);
+      double f2 = getBinMin(b2);
+      if (f1 == f2)
+        return 0;
+      else if (f1 > f2)
+        return 1;
+      else if (f1 < f2)
+        return -1;
+      return -1;
+    }
+
+    private static double getBinMin(String s) {
+      String minStr;
+      int idx=0;
+      for (int i=0; i<s.length(); i++) {
+        if (s.charAt(i) == ':') {
+          minStr = s.substring(1,i);
+          // get rid of thousand comma
+          String newStr="";
+          for (int j=0; j<minStr.length(); j++) {
+            if (minStr.charAt(j) != ',') {
+              newStr = newStr + minStr.charAt(j);
+            }
+          }
+          try {
+            return Double.parseDouble(newStr);
+          }
+          catch (NumberFormatException e) {  // the number is negative infinity
+            return Double.NEGATIVE_INFINITY;
+          }
+        }
+      }
+      return 0;  // should never reach here
+    }
+
+
   /**
    * Compare two byte arrays
    * @param b1 the first byte array to compare
@@ -744,38 +816,38 @@ public class TableUtilities
   private static int compareBytes (byte[] b1, byte[] b2)
   {
     if (b1 == null) {
-	if (b2 == null)
-	  return 0;
-	else
-	  return -1;
+        if (b2 == null)
+          return 0;
+        else
+          return -1;
     } else if (b2 == null) {
-	return 1;
+        return 1;
     }
 
     if (b1.length < b2.length) {
-	for (int i = 0; i < b1.length; i++) {
-	    if (b1[i] < b2[i])
-	      return -1;
-	    else if (b1[i] > b2[i])
-	      return 1;
-	}
-	return -1;
+        for (int i = 0; i < b1.length; i++) {
+            if (b1[i] < b2[i])
+              return -1;
+            else if (b1[i] > b2[i])
+              return 1;
+        }
+        return -1;
     } else if (b1.length > b2.length) {
-	for (int i = 0; i < b2.length; i++) {
-	    if (b1[i] < b2[i])
-	      return -1;
-	    else if (b1[i] > b2[i])
-	      return 1;
-	}
-	return 1;
+        for (int i = 0; i < b2.length; i++) {
+            if (b1[i] < b2[i])
+              return -1;
+            else if (b1[i] > b2[i])
+              return 1;
+        }
+        return 1;
     } else {
-	for (int i = 0; i < b2.length; i++) {
-	    if (b1[i] < b2[i])
-	      return -1;
-	    else if (b1[i] > b2[i])
-	      return 1;
-	}
-	return 0;
+        for (int i = 0; i < b2.length; i++) {
+            if (b1[i] < b2[i])
+              return -1;
+            else if (b1[i] > b2[i])
+              return 1;
+        }
+        return 0;
     }
   }
 
@@ -788,38 +860,38 @@ public class TableUtilities
   private static int compareChars (char[] b1, char[] b2)
   {
     if (b1 == null) {
-	if (b2 == null)
-	  return 0;
-	else
-	  return -1;
+        if (b2 == null)
+          return 0;
+        else
+          return -1;
     } else if (b2 == null) {
         return 1;
     }
 
     if (b1.length < b2.length) {
-	for (int i = 0; i < b1.length; i++) {
-	    if (b1[i] < b2[i])
-	      return -1;
-	    else if (b1[i] > b2[i])
-	      return 1;
-	}
-	return -1;
+        for (int i = 0; i < b1.length; i++) {
+            if (b1[i] < b2[i])
+              return -1;
+            else if (b1[i] > b2[i])
+              return 1;
+        }
+        return -1;
     } else if (b1.length > b2.length) {
-	for (int i = 0; i < b2.length; i++) {
-	    if (b1[i] < b2[i])
-	      return -1;
-	    else if (b1[i] > b2[i])
-	      return 1;
-	}
-	return 1;
+        for (int i = 0; i < b2.length; i++) {
+            if (b1[i] < b2[i])
+              return -1;
+            else if (b1[i] > b2[i])
+              return 1;
+        }
+        return 1;
     } else {
-	for (int i = 0; i < b2.length; i++) {
-	    if (b1[i] < b2[i])
-	      return -1;
-	    else if (b1[i] > b2[i])
-	      return 1;
-	}
-	return 0;
+        for (int i = 0; i < b2.length; i++) {
+            if (b1[i] < b2[i])
+              return -1;
+            else if (b1[i] > b2[i])
+              return 1;
+        }
+        return 0;
     }
   }
 
