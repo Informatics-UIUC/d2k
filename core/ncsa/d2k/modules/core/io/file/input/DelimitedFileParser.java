@@ -206,7 +206,6 @@ public class DelimitedFileParser implements FlatFileParser {
         this.scanRowsCols();
 
         char[] ar = {delim};
-        System.out.println("MY DELIM: /"+new String(ar)+"/");
 
         lineReader = new LineNumberReader(new FileReader(file));
 
