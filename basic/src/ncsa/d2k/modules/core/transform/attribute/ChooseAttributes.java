@@ -22,9 +22,14 @@ import ncsa.d2k.modules.core.transform.StaticMethods;
 
  @author Peter Groves, c/o David Clutter
  *
- *@todo: lines 407 and 413 are currently commented out. which causes this module
+ *comment by vered: lines 407 and 413 are currently commented out. which causes this module
  * to accept any selection of the user (no selection at all, selecting only
  * inputs, or only outputs, or having inputs and outputs with intersecting items.)
+ *
+ * comment by vered about doit: if this module is run headless without being
+ * first configured via a gui run, the properties will be null and the itinerary
+ * will abort. if during a gui run no properties were selected - then the
+ * headless run will skip setting of these features.
  */
 public class ChooseAttributes extends HeadlessUIModule {
 
@@ -134,7 +139,13 @@ public class ChooseAttributes extends HeadlessUIModule {
 	}
 
 	public void doit () throws Exception {
+
+
+
 		Table table = (Table) this.pullInput (0);
+
+                if(selectedInputs == null || selectedOutputs == null)
+                  throw new Exception (getAlias() + " has not been configured. Before running headless, run with the gui and configure the parameters.");
 
 		// Map each column name to an index for the column
 		HashMap colindices = new HashMap ();
@@ -143,21 +154,15 @@ public class ChooseAttributes extends HeadlessUIModule {
 			colindices.put (label, new Integer(i));
 		}
 
-                if(colindices.size() == 0){
-                  System.out.println(getAlias() + ": Warning - The input table has no columns in it.");
-//                  ExampleTable et = table.toExampleTable();
-  //              this.pushOutput(et, 0);
-                return;
-                }
 
 		// Create the input feature index array.
 		Object[] selected = this.getSelectedInputs ();
                 int[] inputFeatures = new int[0];
                 String[] selectedNames;
 
-                if(selected == null || selected.length == 0){
+                if(selected.length == 0){
                   System.out.println(getAlias() + ": Warning - No input attributes were configured. Skipping " +
-                                     "setting of input features.");
+                                     "setting of input attributes.");
                 }
 
                 else{
@@ -187,9 +192,10 @@ public class ChooseAttributes extends HeadlessUIModule {
 		selected = this.getSelectedOutputs ();
                 int[] outputFeatures = new int[0];
 
+
                 if(selected == null || selected.length == 0){
-                  System.out.println(getAlias() + ": No output attributes were selected. Skipping " +
-                                     "setting of output features.");
+                  System.out.println(getAlias() + ": Warning - No output attributes were selected. Skipping " +
+                                     "setting of output attributes.");
                 }
                 else{
                 selectedNames = new String[selected.length];
@@ -211,6 +217,8 @@ public class ChooseAttributes extends HeadlessUIModule {
 		}
 */
                 }
+
+
 		// Create the example table and push it.
 		ExampleTable et = table.toExampleTable();
 		et.setInputFeatures (inputFeatures);
@@ -513,7 +521,7 @@ public class ChooseAttributes extends HeadlessUIModule {
 		}
 
 		/**
-
+                 Not used
 		 Make sure all choices are valid.
                  vered - added test that input features and output featurs have no intersection
 		 */

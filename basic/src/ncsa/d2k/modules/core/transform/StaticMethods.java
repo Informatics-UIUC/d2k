@@ -97,8 +97,7 @@ public class StaticMethods {
     for (int i=0; i<names.length; i++)
       if(available.containsKey(names[i]))
         relevant[i] = true;
-      else System.out.println("Label " + names[i] + " was not found in the given input. " +
-                              "It won't beincluded in the output.");
+      else System.out.println("Label " + names[i] + " was not found in the given input. "                               );
 
     return relevant;
   }

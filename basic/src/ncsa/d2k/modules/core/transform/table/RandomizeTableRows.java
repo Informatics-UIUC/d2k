@@ -62,7 +62,7 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 			" generate a random number without a seed initialization.    </p>    <p> Data Handling:"+
 			" This module does its work on the data in place, so it doesn't need to allocate more memory."+
 			" However, it does actually swap the rows of the data.    </p>    <p> Scalability:"+
-			" For large data sets this module could do a lot of row swapping, which would mean alot"+
+			" For large data sets this module could do a lot of row swapping, which would mean a lot"+
 			" of data movement. </p>";
 	}
 
@@ -78,6 +78,9 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 
 		MutableTable table = (MutableTable) pullInput(0);
 		int numRow = table.getNumRows();
+
+
+
 		int j = 0;
 		for (int i=0; i<numRow; i++){
 			j = getRandomNumber(i, numRow-1);
@@ -178,3 +181,8 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 // 2/21/03 - Anca started QA process. Testing didn't show any problem. Good performanc
 // 2/21/03 - Very clean and well documented. checked into basic.
 // END QA Comments
+
+
+
+//QA Comments
+// 10/23/03 - Vered started QA process.
