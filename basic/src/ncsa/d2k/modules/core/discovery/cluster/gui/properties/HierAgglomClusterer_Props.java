@@ -139,7 +139,7 @@ public class HierAgglomClusterer_Props extends JPanel
     m_gbc.anchor = GridBagConstraints.EAST;
     m_cmLbl = new JLabel();
     m_cmLbl.setText(CLUSTER_METHOD + ": ");
-    m_cmLbl.setToolTipText("Select method to use in determining distance between two clusters.");
+    m_cmLbl.setToolTipText("Select method to use in determining similarity between two clusters.");
     m_gbl.setConstraints(m_cmLbl, m_gbc);
 
     m_gbc.gridx = 1;
@@ -211,7 +211,7 @@ public class HierAgglomClusterer_Props extends JPanel
     m_gbc.gridwidth = 1;
     m_dmLbl = new JLabel();
     m_dmLbl.setText(DISTANCE_METRIC + ": ");
-    m_dmLbl.setToolTipText("Select method to use in determining distance between two examples.");
+    m_dmLbl.setToolTipText("Select method to use in determining distance between two cluster centroids.");
     m_gbl.setConstraints(m_dmLbl, m_gbc);
 
     m_gbc.gridx = 1;
@@ -332,6 +332,6 @@ public class HierAgglomClusterer_Props extends JPanel
 // Start QA Comments
 // 4/12/03 - Ruth Starts QA;  updated text some and uses ClusterParameterDefns to
 //           be more consistent across modules.
-// 4/13/03 - Finished tooltips;  
+// 4/13/03 - Finished tooltips;
 //         - Ready for basic
 // End QA Comments
