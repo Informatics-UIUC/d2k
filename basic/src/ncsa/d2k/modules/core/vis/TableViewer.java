@@ -311,3 +311,9 @@ public class TableViewer extends UIModule {
 // End QA Comments
 //
 //
+
+
+
+// 12-25-03: Vered - started qa process for basic 4 release.
+//           no changes were made since last release.
+//           module is ready.

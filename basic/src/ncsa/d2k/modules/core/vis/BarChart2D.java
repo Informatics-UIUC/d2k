@@ -148,3 +148,13 @@ public class BarChart2D extends VisModule {
     }
   }
 }
+
+
+/**
+ * QA comments:
+ *
+ * 12-25-03 Vered started qa process.
+ *          all seems well. would like to test the handling of missing values
+ *          and add documentation or fix if needed. need to create cube table with
+ *          missing vlaues for this.
+*/

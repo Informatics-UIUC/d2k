@@ -28,6 +28,8 @@ public class ETFunctionPlot extends ETScatterPlot {
       sb.append("variable in a function plot. A matrix of these plots is ");
       sb.append("displayed. These plots can be selected and a larger ");
       sb.append("composite graph of these plots can be displayed.");
+       sb.append("<P>Missing Values Handling: This module treats missing values as");
+       sb.append("regular values.");
       sb.append("</p>");
       return sb.toString();
    }
@@ -68,3 +70,9 @@ public class ETFunctionPlot extends ETScatterPlot {
       return new ETFunctionPlotWidget();
    }
 }
+ /**
+  * QA comments:
+  * 12-25-03:
+  * vered started qa process.
+  * added documnetation about handling of missing values.
+ */
