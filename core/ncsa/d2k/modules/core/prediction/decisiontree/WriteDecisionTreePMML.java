@@ -85,7 +85,8 @@ public class WriteDecisionTreePMML
       Exception {
 
     Document document = DocumentHelper.createDocument();
-    document.addDocType("PMML", "pmml20.dtd", "pmml20.dtd");
+    document.addDocType("PMML", "http://www.dmg.org/v2-0/pmml_v2_0.dtd",
+                        "http://www.dmg.org/v2-0/pmml_v2_0.dtd");
 
     Element root = document.addElement(PMML);
     root.addAttribute("version", "2.0");
