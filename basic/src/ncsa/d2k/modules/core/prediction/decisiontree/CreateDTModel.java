@@ -12,8 +12,8 @@ public class CreateDTModel
 
   public String getModuleInfo() {
     return "<p>Overview: Given a DecisionTreeNode that is the root " +
-        " of a decision tree, create a new DecisionTreeModel." +
-        "<p>Detailed Description: Create a DecisionTreeModel from " +
+        " of a decision tree, creates a new DecisionTreeModel." +
+        "<p>Detailed Description: Creates a DecisionTreeModel from " +
         "<i>Decision Tree Root</i>.  The <i>Example Table</i> must " +
         "be the same set of examples used to construct the decision tree." +
         "<p>Data Type Restrictions: Output feature must be nominal." +

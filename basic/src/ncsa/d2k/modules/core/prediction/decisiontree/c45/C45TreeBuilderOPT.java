@@ -677,16 +677,16 @@ public class C45TreeBuilderOPT
     s += "this module.";
     return s;
  */
-    String s = "<p>Overview: Build a decision tree.  The tree is built "+
+    String s = "<p>Overview: Builds a decision tree.  The tree is built "+
         "recursively using the information gain metric to choose the root."+
-        "<p>Detailed Description: Build a decision tree using the C4.5 "+
+        "<p>Detailed Description: Builds a decision tree using the C4.5 "+
         "algorithm.  The decision tree is built recursively, choosing the "+
         "attribute with the highest information gain as the root.  For "+
         "a nominal input, the node will have branches for each unique value "+
         "in the nominal column.  For scalar inputs, a binary node is created "+
         "with a split point chosen that offers the greatest information gain. "+
         "The complexity of building the entire tree is O(mn log n) where m is "+
-        " the number of inputs and n is the number of examples."+
+        " the number of inputs and n is the number of examples. "+
         "The choosing of split points for a scalar input is potentially an "+
         "O(n log n) operation at each node of the tree."+
         "<p>References: C4.5: Programs for Machine Learning by J. Ross Quinlan"+
@@ -702,7 +702,7 @@ public class C45TreeBuilderOPT
   // C4.5:Programs for Machine Learning J. Ross Quinlan
 
   public String getModuleName() {
-    return "C4.5 Tree Builder";
+    return "Optimized C4.5 Tree Builder";
   }
 
   public String getInputInfo(int i) {
@@ -711,14 +711,14 @@ public class C45TreeBuilderOPT
     if (i == 0)
 	return in;
     else
-	return "Control Point in Parameter Space";
+	return "Point in Parameter Space to control the minimum leaf ratio.";
   }
 
   public String getInputName(int i) {
       if( i == 0)
 	  return "Example Table";
       else
-	  return "Parameter Point";
+	  return "Minimum Leaf Ratio";
   }
 
   public String getOutputInfo(int i) {
@@ -1163,3 +1163,14 @@ public class C45TreeBuilderOPT
     return retVal;
   }
 }
+
+
+/**
+ * basic 4 qa comments.
+ *
+ * 02-02-04: vered
+ * changed the name of this module to differ from C45TreeBuilder's.
+ * changed name and description of second input to be more specific.
+ * as this input is not just any parameter point, but one that is used to
+ * control the min leaf ratio.
+ */

@@ -48,7 +48,7 @@ public class PrepareForVis extends DataPrepModule {
         "This is done by performing predictions on the training data and leaving "+
         "out one input feature each time.  Data structures to hold values for "+
         "the pie charts in NaiveBayesVis are also created here."+
-        "<p>Properties: none"+
+
         "<p>Data Type Restrictions: none"+
         "<p>Data Handling: The data structures used to display pie charts in "+
         "NaiveBayesVis are created by this module.  These structures are stored "+

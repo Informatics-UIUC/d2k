@@ -37,7 +37,7 @@ public class ModelPredict extends ncsa.d2k.core.modules.ComputeModule
 				return "Example Table";
 			case 1:
 				return "Prediction Model";
-			default: 
+			default:
 				return "No such input";
 		}
 	}
@@ -47,11 +47,11 @@ public class ModelPredict extends ncsa.d2k.core.modules.ComputeModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: 
+			case 0:
 				return "The table containing the examples that the model will be applied to.";
-			case 1: 
+			case 1:
 				return "The prediction model to apply.";
-			default: 
+			default:
 				return "No such input";
 		}
 	}
@@ -75,7 +75,7 @@ public class ModelPredict extends ncsa.d2k.core.modules.ComputeModule
 		switch(index) {
 			case 0:
 				return "Prediction Table";
-			default: 
+			default:
 				return "No such output";
 		}
 	}
@@ -85,9 +85,9 @@ public class ModelPredict extends ncsa.d2k.core.modules.ComputeModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: 
+			case 0:
 				return "A table with the prediction columns filled in by the model.";
-			default: 
+			default:
 				return "No such output";
 		}
 	}
@@ -105,14 +105,14 @@ public class ModelPredict extends ncsa.d2k.core.modules.ComputeModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		StringBuffer sb = new StringBuffer( "Overview: This module applies a prediction model to an table of examples and ");
+		StringBuffer sb = new StringBuffer( "Overview: This module applies a prediction model to a table of examples and ");
 		sb.append("makes predictions for each output attribute based on the values of the input attributes. ");
 
-		sb.append("</p><p>Description:  This module applies a previously built model to a new set of examples that have the ");
+		sb.append("</p><p>Detailed Description:  This module applies a previously built model to a new set of examples that have the ");
 		sb.append("same attributes as those used to train/build the model.  The module creates a new table that contains ");
 		sb.append("columns for each of the values the model predicts, in addition to the columns found in the original table. ");
 		sb.append("The new columns are filled in with values predicted by the model based on the values of the input attributes. ");
-	
+
 		return sb.toString();
 	}
 
@@ -133,4 +133,4 @@ public class ModelPredict extends ncsa.d2k.core.modules.ComputeModule
 // Start QA Comments
 // 3/30/03   Ruth removed output port for model - no longer copy through
 //           Still needs comments about impact on input table and if possible better description.
-// 
+//

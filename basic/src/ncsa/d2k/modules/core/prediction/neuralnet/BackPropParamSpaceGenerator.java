@@ -14,7 +14,7 @@ public class BackPropParamSpaceGenerator extends AbstractParamSpaceGenerator
 		func_names[BackPropModel.UPDATE_FUNCTION] = "Training Method";
 		func_names[BackPropModel.EPOCHS] = "Epochs";
 		func_names[BackPropModel.SEED] = "Seed";
-		func_names[BackPropModel.WEIGHT_INIT_RANGE] = "Weight Init Range";
+		func_names[BackPropModel.WEIGHT_INIT_RANGE] = "Weight Initial Range";
 		func_names[BackPropModel.LEARNING_RATE_FUNCTION] = "Learning Rate Function";
 		func_names[BackPropModel.INITIAL_LEARNING_RATE] = "Initial Learning Rate";
 		func_names[BackPropModel.FINAL_LEARNING_RATE] = "Final Learning Rate";
@@ -98,7 +98,7 @@ public class BackPropParamSpaceGenerator extends AbstractParamSpaceGenerator
 		pds[BackPropModel.LEARNING_RATE_FUNCTION] = new PropertyDescription (
 			"lacc",
 			func_names[BackPropModel.LEARNING_RATE_FUNCTION],
-			"The learning rate indicates how much of an adjustment to the weights during "+
+			"The learning rate indicates how much of an adjustment to the weights will be done during "+
 			"every update. "+
 			"Learning acceleration refers to changing "+
 			"	the learning rate as the training process proceeds. This can be based on "+
@@ -387,7 +387,7 @@ public class BackPropParamSpaceGenerator extends AbstractParamSpaceGenerator
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "NN Parameter Space Generator";
+		return "Neural Net Parameter Space Generator";
 	}
 
 

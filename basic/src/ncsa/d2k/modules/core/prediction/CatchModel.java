@@ -24,7 +24,7 @@ public class CatchModel extends ModelSelectorModule  {
           sb.append( "target (output) attributes based on the values of one or more input attributes. ");
           sb.append( "These predictive models can be saved and applied at a later time to other datasets " );
           sb.append( "with the same input attributes, generating predictions of the target attribute values ");
-          sb.append( "for the each of the examples in the dataset. ");
+          sb.append( "for each of the examples in the dataset. ");
 
           sb.append( "</p><p>This module can be used to capture a predictive model that has been generated ");
           sb.append( "to the <i>Generated Models</i> session pane.  From there it can be saved permanently ");
@@ -82,6 +82,11 @@ public class CatchModel extends ModelSelectorModule  {
 	private ModelModule theModel;
 
 	public void doit() {
+
+//vered qa:
+          System.out.println("CatchModel is executing");
+          //end qa
+
 		ModelModule mm = (ModelModule)pullInput(0);
 		theModel = mm;
 	}

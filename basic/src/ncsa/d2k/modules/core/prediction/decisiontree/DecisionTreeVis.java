@@ -78,7 +78,7 @@ public final class DecisionTreeVis extends VisModule {
 
   public String getModuleInfo() {
     String s = "<p>Overview: Visualize a decision tree. "+
-        "<p>Detailed Description: Given a ViewableDTModel, display the structure "+
+        "<p>Detailed Description: Given a ViewableDTModel, displays the structure "+
         "and contents of the nodes of the decision tree.  The <i>Navigator</i> "+
         "on the left shows a small view of the entire tree.  The main area "+
         "shows an expanded view of the tree. For more information look up the help "+
