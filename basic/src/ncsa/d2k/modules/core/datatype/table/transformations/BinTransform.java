@@ -20,9 +20,14 @@ public class BinTransform implements Transformation, Cloneable {
 	 * @param new_col true if a new column should be constructed for each
 	 *  binned column, false if the original column should be overwritten
 	 */
-	public BinTransform(BinDescriptor[] b, boolean new_col) {
-		bins = b;
+	public BinTransform(Table tbl, BinDescriptor[] b, boolean new_col) {
+		if (tbl == null) // no missing values information is provided
+				bins = b;
+		else		//missing values info is contained in tbl and "unknown" bins are added for relevant atrbs
+		 bins = BinningUtils.addMissingValueBins(tbl,b);
+		
 		new_column = new_col;
+		
 	}
 
 	/**
