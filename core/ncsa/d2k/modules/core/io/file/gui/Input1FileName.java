@@ -81,6 +81,10 @@ public class Input1FileName extends UIModule {
      */
 	private class FileView extends JFileChooser implements UserView {
 
+        private FileView() {
+            setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        }
+
 		public void initView(ViewModule m) {
             doSetup();
 		}
