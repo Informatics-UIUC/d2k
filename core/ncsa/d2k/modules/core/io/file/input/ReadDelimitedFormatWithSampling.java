@@ -85,7 +85,7 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 					typesList = createSDRow(line);
 				else if(numLines == labelsRow)
 					labelsList = createSDRow(line);
-				else if(numLines == variableRow)
+				else if(numLines == inOutRow)
 					variablesList = createSDRow(line);
 				numLines++;
 			}
@@ -106,7 +106,7 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 				int i = 0;
 				int row = 0;
 				while (row <= N) {
-					if(row != typesRow && row != labelsRow && row != variableRow) {
+					if(row != typesRow && row != labelsRow && row != inOutRow) {
 						rowMap[row] = true;
 					}
 					row++;
@@ -118,7 +118,7 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 				int i = 0;
 				while(i < N) {
 					int row = r.nextInt() % numRows;
-					if(row != typesRow && row != labelsRow && row != variableRow){
+					if(row != typesRow && row != labelsRow && row != inOutRow){
 						rowMap[Math.abs(row)] = true;
 						i++;
 					}
@@ -155,7 +155,7 @@ public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 			int lineNum = 0;
 			reader = new BufferedReader(new FileReader(f));
 			while( (line = reader.readLine()) != null) {
-				if(lineNum != typesRow && lineNum != labelsRow && lineNum != variableRow && rowMap[lineNum]) {
+				if(lineNum != typesRow && lineNum != labelsRow && lineNum != inOutRow && rowMap[lineNum]) {
 					createSDRow(line, table, rowNum);
 					rowNum++;
 					numRowsRead++;

@@ -56,7 +56,7 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	protected int typesRow = 1;
 
 	/** the row containing the in/out/omit declarations */
-	protected int variableRow = -1;
+	protected int inOutRow = -1;
 
 	/** the value to replace missing numerics values with. */
 	protected double emptyValue = 0;
@@ -97,16 +97,16 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 		Get the index of the variable row.
 		@return the index of the types row.
 	*/
-	public int getVariableRow() {
-		return variableRow;
+	public int getInOutRow() {
+		return inOutRow;
 	}
 
 	/**
 		Set the index of the variable row.
 		@param i the new index
 	*/
-	public void setVariableRow(int i) {
-		variableRow = i;
+	public void setInOutRow(int i) {
+		inOutRow = i;
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 			hasTypes = true;
 		if(labelsRow >= 0)
 			hasLabels = true;
-		if(variableRow >= 0)
+		if(inOutRow >= 0)
 			hasVariables = true;
 
 		if(file.exists())
@@ -482,7 +482,7 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 					typesList = createSDRow(line);
 				else if(numLines == labelsRow)
 					labelsList = createSDRow(line);
-				else if(numLines == variableRow)
+				else if(numLines == inOutRow)
 					variablesList = createSDRow(line);
 				numLines++;
 			}
@@ -523,7 +523,7 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 			int lineNum = 0;
 			reader = new BufferedReader(new FileReader(f));
 			while( (line = reader.readLine()) != null) {
-				if(lineNum != typesRow && lineNum != labelsRow && lineNum != variableRow) {
+				if(lineNum != typesRow && lineNum != labelsRow && lineNum != inOutRow) {
 					createSDRow(line, table, rowNum);
 					rowNum++;
 				}

@@ -244,7 +244,7 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 		variableColumn = i;
 		//we need to fool the superclasses doit so
 		//that it knows we have labels
-		variableRow=i;
+		inOutRow=i;
 	}
 
 	/**
