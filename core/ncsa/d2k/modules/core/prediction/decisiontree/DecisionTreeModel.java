@@ -16,13 +16,18 @@ public class DecisionTreeModel extends PredictionModelModule
 
 	static final long serialVersionUID = 6788778863299676465L;
 
-	/** The root of the decision tree */
+	// The root of the decision tree
 	private DecisionTreeNode root;
-	/** The table that is passed to the tree to perform predictions */
+
+	// The table that is passed to the tree to perform predictions
 	private transient ExampleTable table;
-	/** The unique values in the output column of the table */
+
+	// The unique values in the output column of the table
 	private String[] uniqueOutputs;
-	/** The number of examples in the data set */
+
+	private String[][] uniqueInputs;
+
+	// The number of examples in the data set
 	private int numExamples;
 
 	private int[] inputFeatures;
@@ -36,7 +41,7 @@ public class DecisionTreeModel extends PredictionModelModule
 	private String[] inputTypes;
 	private String[] outputTypes;
 
-	private String [] classNames;
+	private String[] classNames;
 
 	/**
 		Constructor
@@ -72,6 +77,10 @@ public class DecisionTreeModel extends PredictionModelModule
 		}
 
 		classNames = uniqueValues(table, outputFeatures[0]);
+
+		uniqueInputs = new String[inputFeatures.length][];
+		for (int index = 0; index < inputFeatures.length; index++)
+			uniqueInputs[index] = uniqueValues(table, inputFeatures[index]);
 	}
 
 	public String getModuleInfo() {
@@ -139,11 +148,11 @@ public class DecisionTreeModel extends PredictionModelModule
 		return outputFeatures;
 	}
 
-	public String [] getInputFeatureTypes() {
+	public String[] getInputFeatureTypes() {
 		return inputTypes;
 	}
 
-	public String [] getOutputFeatureTypes() {
+	public String[] getOutputFeatureTypes() {
 		return outputTypes;
 	}
 
@@ -151,7 +160,7 @@ public class DecisionTreeModel extends PredictionModelModule
 		Get the class names.
 		@return the class names
 	*/
-  	public final String []getClassNames() {
+  	public final String[] getClassNames() {
 		return classNames;
 	}
 
@@ -187,7 +196,7 @@ public class DecisionTreeModel extends PredictionModelModule
 		if(preds.length == 0) {
 			//StringColumn sc = new StringColumn(pt.getNumRows());
 			String [] predic = new String[pt.getNumRows()];
-			pt.addPredictionColumn(predic, "Predictions");
+			pt.addPredictionColumn(predic);
 			preds = pt.getPredictionSet();
 		}
 
@@ -240,6 +249,7 @@ public class DecisionTreeModel extends PredictionModelModule
 			retVal[idx] = (String)it.next();
 			idx++;
 		}
+
 		return retVal;
 	}
 
@@ -250,11 +260,27 @@ public class DecisionTreeModel extends PredictionModelModule
 	public DecisionTreeNode getRoot() {
 		return root;
 	}
+
 	/**
 		Get the Viewable root of this decision tree.
 		@return the root of the tree
 	*/
 	public ViewableDTNode getViewableRoot() {
 		return root;
+	}
+
+	public String[] getInputs() {
+		return getInputColumnLabels();
+	}
+
+	public String[] getUniqueInputValues(int index) {
+		return uniqueInputs[index];
+	}
+
+	public boolean scalarInput(int index) {
+		if (inputTypes[index].equals("Scalar"))
+			return true;
+
+		return false;
 	}
 }
