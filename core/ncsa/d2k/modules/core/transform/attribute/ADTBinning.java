@@ -5,7 +5,6 @@ import ncsa.d2k.infrastructure.modules.*;
 
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 
 /**
@@ -38,7 +37,7 @@ public class ADTBinning extends DataPrepModule implements HasNames {
     public String[] getInputTypes() {
 	String []in = {"ncsa.d2k.modules.core.datatype.ADTree",
 		       "ncsa.d2k.modules.core.datatype.BinTree",
-		       "ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		       "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 	return in;
     }
 
@@ -49,7 +48,7 @@ public class ADTBinning extends DataPrepModule implements HasNames {
     */
     public String[] getOutputTypes() {
 	String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-		       "ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		       "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 
 		return out;
     }
@@ -121,7 +120,7 @@ public class ADTBinning extends DataPrepModule implements HasNames {
     public void doit() {
 	ADTree adt =(ADTree)pullInput(0);
 	BinTree bt = (BinTree)pullInput(1);
-	ExampleTableImpl vt = (ExampleTableImpl)pullInput(2);
+	ExampleTable vt = (ExampleTable)pullInput(2);
 
 
 	//int [] ins = vt.getInputFeatures();
@@ -129,7 +128,7 @@ public class ADTBinning extends DataPrepModule implements HasNames {
 
 	// we only support one out variable..
 	int classColumn = out[0];
-	String classLabel = vt.getColumn(classColumn).getLabel();
+	String classLabel = vt.getColumnLabel(classColumn);
 	int totalClassified = 0;
 	int classTotal;
 	int binListTotal;

@@ -33,7 +33,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 	private CalcTree calcTree;
 
 	/** The data used */
-	private transient ExampleTableImpl table;
+	private transient ExampleTable table;
 
  	/** A lookup table of the data for the chart, indexed by attribute name */
   	private HashMap chartData;
@@ -82,7 +82,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		@param vt the vertical table
 		@param t the types lookup table
 	*/
-   	NaiveBayesModel(BinTree bt, ExampleTableImpl vt) {
+   	NaiveBayesModel(BinTree bt, ExampleTable vt) {
 		setName("NaiveBayesModel");
 		binTree = bt;
 		table = vt;
@@ -95,20 +95,22 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		inputTypes = new String[inputFeatures.length];
 		for(int i = 0; i < inputFeatures.length; i++) {
 			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
-			if(table.getColumn(inputFeatures[i]) instanceof NumericColumn)
-				inputTypes[i] = "Numeric";
+			//if(table.getColumn(inputFeatures[i]) instanceof NumericColumn)
+            if(table.isColumnScalar(inputFeatures[i]))
+				inputTypes[i] = "Scalar";
 			else
-				inputTypes[i] = "Text";
+				inputTypes[i] = "Nominal";
 		}
 
 		outputColumnNames = new String[outputFeatures.length];
 		outputTypes = new String[outputFeatures.length];
 		for(int i = 0; i < outputFeatures.length; i++) {
 			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
-			if(table.getColumn(outputFeatures[i]) instanceof NumericColumn)
-				outputTypes[i] = "Numeric";
+			//if(table.getColumn(outputFeatures[i]) instanceof NumericColumn)
+            if(table.isColumnScalar(outputFeatures[i]))
+				outputTypes[i] = "Scalar";
 			else
-				outputTypes[i] = "Text";
+				outputTypes[i] = "Nominal";
 		}
 
 		cn = bt.getClassNames();
@@ -205,7 +207,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		try {
 			HashMap predictions = new HashMap();
 
-			HashMap toDrop = new HashMap();
+			HashSet toDrop = new HashSet();
 
 			// first find the column that has the correct classes in it
 			//String classLabel = null;
@@ -240,11 +242,12 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 							// skip over the class col and the excluded col
 							if(ins[col] != ins[exclude]) {
 								// add evidence for the item in this row, col
-								Column c = table.getColumn(ins[col]);
+								//Column c = table.getColumn(ins[col]);
 
 								// get the bin name that this value fits in
 								String bn;
-								if(c instanceof NumericColumn)
+								//if(c instanceof NumericColumn)
+                                if(table.isColumnScalar(ins[col]))
 									bn = binTree.getBinNameForValue(
 										actualClass,
 										table.getColumnLabel(ins[col]),
@@ -256,7 +259,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 										table.getString(row, ins[col]));
 
 								if(bn == null) {
-									toDrop.put(c.getLabel(), c.getLabel());
+									toDrop.add(table.getColumnLabel(ins[col]));
 								}
 								// call add evidence with the attribute
 								//and bin name
@@ -299,7 +302,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 			rankedAttributes = new String[tempAttributes.length-toDrop.size()];
 			int q = 0;
 			for(int r = 0; r < tempAttributes.length; r++) {
-				if(!toDrop.containsKey(tempAttributes[r])) {
+				if(!toDrop.contains(tempAttributes[r])) {
 					rankedAttributes[q] = tempAttributes[r];
 					q++;
 				}
@@ -462,7 +465,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
     }
 
@@ -472,7 +475,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.modules.core.datatype.table.basic.PredictionTableImpl",
+		String[] out = {"ncsa.d2k.modules.core.datatype.table.PredictionTable",
 			"ncsa.d2k.modules.compute.learning.modelgen.naivebayes.NaiveBayesModel"};
    		return out;
 	}
@@ -575,11 +578,11 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		assumed to be the same as that of the training data!
 	*/
 	public PredictionTable predict(ExampleTable src) {
-		PredictionTableImpl pt = null;
-		if (src instanceof PredictionTableImpl)
-			pt = (PredictionTableImpl) src;
+		PredictionTable pt = null;
+		if (src instanceof PredictionTable)
+			pt = (PredictionTable) src;
 		else
-			pt = (PredictionTableImpl)src.toPredictionTable();
+			pt = (PredictionTable)src.toPredictionTable();
 
 		int numCorrect = 0;
 
@@ -588,8 +591,8 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		int [] preds = pt.getPredictionSet();
 
 		if(preds.length == 0) {
-			StringColumn sc = new StringColumn(pt.getNumRows());
-			pt.addPredictionColumn(sc);
+            String[] newPreds = new String[pt.getNumRows()];
+			pt.addPredictionColumn(newPreds);
 			preds = pt.getPredictionSet();
 		}
 
@@ -603,9 +606,10 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 				String bn = null;
 
 				// skip over the class column and omitted columns.
-				Column c = pt.getColumn(ins[col]);
+				//Column c = pt.getColumn(ins[col]);
 
-				if(c instanceof NumericColumn)
+				//if(c instanceof NumericColumn)
+                if(table.isColumnScalar(ins[col]))
 					bn = binTree.getBinNameForValue(pt.getColumnLabel(ins[col]),
 						pt.getDouble(row, ins[col]));
 				else
@@ -622,13 +626,13 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 
 				// get the predicted class
 				String predictedClass = cn[id];
-				pt.setString(predictedClass, row, preds[0]);
+				pt.setStringPrediction(predictedClass, row, 0);
 
 				if(predictedClass.trim().equals(pt.getString(row, outs[0])))
 					numCorrect++;
 			}
 			else {
-				pt.setString(null, row, preds[0]);
+				pt.setStringPrediction(null, row, 0);
 			}
 			clearEvidence();
 		}

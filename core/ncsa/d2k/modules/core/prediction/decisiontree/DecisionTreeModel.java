@@ -55,9 +55,9 @@ public class DecisionTreeModel extends PredictionModelModule
 			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
 			//if(table.getColumn(inputFeatures[i]) instanceof NumericColumn)
 			if(table.isNumericColumn(inputFeatures[i]))
-				inputTypes[i] = "Numeric";
+				inputTypes[i] = "Scalar";
 			else
-				inputTypes[i] = "Text";
+				inputTypes[i] = "Nominal";
 		}
 
 		outputColumnNames = new String[outputFeatures.length];
@@ -66,9 +66,9 @@ public class DecisionTreeModel extends PredictionModelModule
 			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
 			//if(table.getColumn(outputFeatures[i]) instanceof NumericColumn)
 			if(table.isNumericColumn(outputFeatures[i]))
-				outputTypes[i] = "Numeric";
+				outputTypes[i] = "Scalar";
 			else
-				outputTypes[i] = "Text";
+				outputTypes[i] = "Nominal";
 		}
 
 		classNames = uniqueValues(table, outputFeatures[0]);

@@ -3,7 +3,6 @@ package ncsa.d2k.modules.core.transform.attribute;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
    BinningModule.java
@@ -34,7 +33,7 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public String[] getInputTypes() {
 		String []in = {"ncsa.d2k.modules.core.datatype.BinTree",
-				"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+				"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
     }
 
@@ -45,7 +44,7 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public String[] getOutputTypes() {
 		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return out;
     }
 
@@ -110,7 +109,7 @@ public class Binning extends DataPrepModule implements HasNames {
     */
     public void doit() {
 		BinTree bt = (BinTree)pullInput(0);
-		ExampleTableImpl vt = (ExampleTableImpl)pullInput(1);
+		ExampleTable vt = (ExampleTable)pullInput(1);
 
 		int [] ins = vt.getInputFeatures();
 		int [] out = vt.getOutputFeatures();
@@ -122,13 +121,14 @@ public class Binning extends DataPrepModule implements HasNames {
 		int numRows = vt.getNumRows();
 		//long startTime = System.currentTimeMillis();
 		for(int i = 0; i < ins.length; i++) {
-			Column sc = vt.getColumn(ins[i]);
+			//Column sc = vt.getColumn(ins[i]);
 
 			// numeric columns
-			if(sc instanceof NumericColumn) {
+			//if(sc instanceof NumericColumn) {
+            if(vt.isColumnScalar(ins[i])) {
 				for(int j = 0; j < numRows; j++) {
 					bt.classify(vt.getString(j, classColumn),
-						sc.getLabel(), vt.getDouble(j, ins[i]));
+						vt.getColumnLabel(ins[i]), vt.getDouble(j, ins[i]));
 					}
 			}
 
@@ -136,7 +136,7 @@ public class Binning extends DataPrepModule implements HasNames {
 			else {
 				for(int j = 0; j < numRows; j++)
 					bt.classify(vt.getString(j, classColumn),
-						sc.getLabel(), vt.getString(j, ins[i]));
+						vt.getColumnLabel(ins[i]), vt.getString(j, ins[i]));
 			}
 		}
 

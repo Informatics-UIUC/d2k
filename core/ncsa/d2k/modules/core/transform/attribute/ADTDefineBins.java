@@ -2,7 +2,6 @@ package ncsa.d2k.modules.core.transform.attribute;
 
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.controller.userviews.swing.*;
@@ -145,7 +144,7 @@ public class ADTDefineBins extends DefineBins {
 		    adtArrived = true;
 		}
 		if(i == 1) {
-		    table = (ExampleTableImpl)o;
+		    table = (ExampleTable)o;
 		    tableArrived = true;
 
 		}
@@ -163,12 +162,15 @@ public class ADTDefineBins extends DefineBins {
 		if(binListModel != null)
 		    binListModel.clear();
 
+        indexLookup = new HashMap();
+        for(int i = 0;  i< table.getNumColumns(); i++)
+            indexLookup.put(table.getColumnLabel(i), new Integer(i));
+
 		// get the class and attribute names
-		Column classColumn = null;
-		HashMap cn = new HashMap();
+		//Column classColumn = null;
+		HashSet cn = new HashSet();
 		LinkedList numericAn = new LinkedList();
 		LinkedList textAn = new LinkedList();
-
 
 		int [] ins = table.getInputFeatures();
 		int [] outs = table.getOutputFeatures();
@@ -176,13 +178,14 @@ public class ADTDefineBins extends DefineBins {
 		// determine whether the inputs are numeric or text
 		for(int i = 0; i < ins.length; i++) {
 		    String label = table.getColumnLabel(ins[i]);
-		    if(table.getColumn(ins[i]) instanceof NumericColumn)
+		    //if(table.getColumn(ins[i]) instanceof NumericColumn)
+            if(table.isColumnScalar(ins[i]))
 			numericAn.add(label);
 		    else
 			textAn.add(label);
 		}
 
-		classColumn = table.getColumn(outs[0]);
+		//classColumn = table.getColumn(outs[0]);
 
 		// get all unique outputs from the output column
 		/*	if(classColumn != null) {
@@ -196,15 +199,14 @@ public class ADTDefineBins extends DefineBins {
 		*/
 
 
-		int index = adt.getIndexForLabel((classColumn).getLabel());
+		int index = adt.getIndexForLabel(table.getColumnLabel(outs[0]));
 
 		String [] uniqueValues = adt.getUniqueValues(index);
 		for (int i = 0; i < uniqueValues.length; i ++)
-		    cn.put(uniqueValues[i],uniqueValues[i]);
+		    cn.add(uniqueValues[i]);
 
-
-		System.out.println("classCol = " +
-				   classColumn.getLabel() );
+		//System.out.println("classCol = " +
+		//		   table.getColumnLabel(index) );
 
 
 
@@ -214,7 +216,7 @@ public class ADTDefineBins extends DefineBins {
 		DefaultListModel numericModel = new DefaultListModel();
 		DefaultListModel textModel = new DefaultListModel();
 
-		Iterator i = cn.values().iterator();
+		Iterator i = cn.iterator();
 		int idx = 0;
 		while(i.hasNext() && idx < classNames.length) {
 		    String el = i.next().toString();
@@ -423,16 +425,17 @@ public class ADTDefineBins extends DefineBins {
 						      JOptionPane.ERROR_MESSAGE);
 			return;
 		    }
-		    Column attCol = null;
+		    /*Column attCol = null;
 		    for(int i = 0; i < table.getNumColumns(); i++) {
 			Column c = table.getColumn(i);
 			if(c.getLabel().trim() == attName.trim()) {
 			    attCol = (Column)c;
 			    break;
 			}
-		    }
+		    }*/
+            int attidx = ((Integer)indexLookup.get(attName.trim())).intValue();
 
-		    String stringColumn = attCol.getLabel().trim();
+		    String stringColumn = table.getColumnLabel(attidx).trim();
 		    // find all the unique entries for this column
 		    HashMap items = new HashMap();
 				/*

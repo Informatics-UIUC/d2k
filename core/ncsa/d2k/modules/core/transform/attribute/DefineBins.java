@@ -47,7 +47,7 @@ public class DefineBins extends UIModule implements HasNames {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
 	}
 
@@ -58,7 +58,7 @@ public class DefineBins extends UIModule implements HasNames {
     */
     public String[] getOutputTypes() {
 		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return out;
 	}
 
@@ -159,15 +159,17 @@ public class DefineBins extends UIModule implements HasNames {
 		private JButton help;
 
 		/** inputs */
-		ExampleTableImpl table;
+		ExampleTable table;
 
 		/** The class and attribute names, derived from the table. */
 		String []classNames;
 		String []attributeNames;
 
+        protected HashMap indexLookup;
+
 		public void setInput(Object o, int i) {
 			if(i == 0) {
-				table = (ExampleTableImpl)o;
+				table = (ExampleTable)o;
 				initData();
 			}
 		}
@@ -217,7 +219,7 @@ public class DefineBins extends UIModule implements HasNames {
 			JPanel numeric = new JPanel();
 			numeric.setLayout(new GridBagLayout());
 			JScrollPane scrollNumeric = new JScrollPane(numericAttributes);
-			JLabel inLabel = new JLabel("Numeric Inputs");
+			JLabel inLabel = new JLabel("Scalar Inputs");
 			//scrollNumeric.setColumnHeaderView(inLabel);
 
 			// an outline panel for uniform range
@@ -287,7 +289,7 @@ public class DefineBins extends UIModule implements HasNames {
 			JPanel str = new JPanel();
 			str.setLayout(new GridBagLayout());
 			JScrollPane textScroll = new JScrollPane(textAttributes);
-			JLabel textLabel = new JLabel("Textual Inputs");
+			JLabel textLabel = new JLabel("Nominal Inputs");
 			//textScroll.setColumnHeaderView(textLabel);
 
 			JOutlinePanel usp = new JOutlinePanel("User Specified");
@@ -335,8 +337,8 @@ public class DefineBins extends UIModule implements HasNames {
 			autoText.addActionListener(this);
 
 			JTabbedPane jtp = new JTabbedPane(JTabbedPane.TOP);
-			jtp.add(numeric, "Numeric Inputs");
-			jtp.add(str, "Textual Inputs");
+			jtp.add(numeric, "Scalar Inputs");
+			jtp.add(str, "Nominal Inputs");
 
 			JPanel binArea = new JPanel();
 			binArea.setLayout(new BorderLayout());
@@ -365,9 +367,12 @@ public class DefineBins extends UIModule implements HasNames {
 			if(binListModel != null)
 				binListModel.clear();
 
+            indexLookup = new HashMap();
+            for(int i = 0; i< table.getNumColumns(); i++)
+                indexLookup.put(table.getColumnLabel(i), new Integer(i));
 			// get the class and attribute names
-			Column classColumn = null;
-			HashMap cn = new HashMap();
+			//Column classColumn = null;
+			HashSet cn = new HashSet();
 			LinkedList numericAn = new LinkedList();
 			LinkedList textAn = new LinkedList();
 
@@ -377,30 +382,31 @@ public class DefineBins extends UIModule implements HasNames {
 			// determine whether the inputs are numeric or text
 			for(int i = 0; i < ins.length; i++) {
 				String label = table.getColumnLabel(ins[i]);
-				if(table.getColumn(ins[i]) instanceof NumericColumn)
+				//if(table.getColumn(ins[i]) instanceof NumericColumn)
+                if(table.isColumnScalar(ins[i]))
 					numericAn.add(label);
 				else
 					textAn.add(label);
 			}
 
-			classColumn = table.getColumn(outs[0]);
-            int numRows = classColumn.getNumRows();
+			//classColumn = table.getColumn(outs[0]);
+            //int numRows = classColumn.getNumRows();
 
 			// get all unique outputs from the output column
-			if(classColumn != null) {
-				for(int i = 0; i < numRows; i++) {
-					String s = classColumn.getString(i);
-					if(s != null && !cn.containsKey(s))
-						cn.put(s, s);
-				}
+			//if(classColumn != null) {
+			for(int i = 0; i < table.getNumRows(); i++) {
+				String s = table.getString(i, outs[0]);
+				if(s != null && !cn.contains(s))
+					cn.add(s);
 			}
+
 			classNames = new String[cn.size()];
 			attributeNames = new String[numericAn.size()+textAn.size()];
 
 			DefaultListModel numericModel = new DefaultListModel();
 			DefaultListModel textModel = new DefaultListModel();
 
-			Iterator i = cn.values().iterator();
+			Iterator i = cn.iterator();
 			int idx = 0;
 			while(i.hasNext() && idx < classNames.length) {
 				String el = i.next().toString();
@@ -534,17 +540,20 @@ public class DefineBins extends UIModule implements HasNames {
 				for(int id = 0; id < selected.length; id++) {
 					String attName = selected[id].toString();
 
-					NumericColumn nc = null;
+					//NumericColumn nc = null;
+                    /*int colIdx = -1;
 					for(int z = 0; z < table.getNumColumns(); z++) {
-						if(table.getColumn(z).getLabel().trim().equals(
-								attName.trim())) {
-							nc = (NumericColumn)table.getColumn(z);
+						if(table.getColumnLabel(z).trim().equals(attName.trim())) {
+							//nc = (NumericColumn)table.getColumn(z);
+                            colIdx = z;
 							break;
 						}
-					}
+					}*/
+                    int colIdx = ((Integer)indexLookup.get(attName.trim())).intValue();
 
-					double max = nc.getMax();
-					double min = nc.getMin();
+                    MaxMin mm = getMaxMin(colIdx);
+					double max = mm.max;//nc.getMax();
+					double min = mm.min;//nc.getMin();
 					double diff = max - min;
 					double increment = diff / (double)numBins;
 
@@ -623,6 +632,28 @@ public class DefineBins extends UIModule implements HasNames {
 					JOptionPane.ERROR_MESSAGE);
 			}
 		}
+
+			private class MaxMin {
+				double min;
+				double max;
+			}
+
+			private MaxMin getMaxMin(int colIdx) {
+				double min = Double.MAX_VALUE;
+				double max = Double.MIN_VALUE;
+
+				for(int i = 0; i < table.getNumRows(); i++) {
+					double d = table.getDouble(i, colIdx);
+					if(d < min)
+						min = d ;
+					if(d > max)
+						max = d;
+				}
+				MaxMin mm = new MaxMin();
+				mm.min = min;
+				mm.max = max;
+				return mm;
+			}
 
 		void addSpecifiedRange() {
 			// use string tokenizer to get the tokens.  the only delimiter should
@@ -815,25 +846,19 @@ public class DefineBins extends UIModule implements HasNames {
 						JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				Column attCol = null;
-				for(int i = 0; i < table.getNumColumns(); i++) {
-					Column c = table.getColumn(i);
-					if(c.getLabel().trim() == attName.trim()) {
-						attCol = c;
-						break;
-					}
-				}
+				//Column attCol = null;
+                int attIdx = ((Integer)indexLookup.get(attName.trim())).intValue();
 
 				// find all the unique entries for this column
-				HashMap items = new HashMap();
-                                int numRows = attCol.getNumRows();
+				HashSet items = new HashSet();
+                int numRows = table.getNumRows();
 				for(int i = 0; i < numRows; i++) {
-					String s = attCol.getString(i);
-					if(s != null && !items.containsKey(s))
-						items.put(s, s);
+					String s = table.getString(i, attIdx);
+					if(s != null && !items.contains(s))
+						items.add(s);
 				}
 
-				Iterator i = items.values().iterator();
+				Iterator i = items.iterator();
 				while(i.hasNext()) {
 					String s = (String)i.next();
 					try {
@@ -942,7 +967,7 @@ public class DefineBins extends UIModule implements HasNames {
 		sb.append("<h2>DefineBins</h2>");
 		sb.append("Allows for the grouping of data.  The data is spilt into two ");
 		sb.append("types, numeric and textual.");
-		sb.append("<h3>Numeric Inputs</h3>");
+		sb.append("<h3>Scalar Inputs</h3>");
 		sb.append("<ul><li>Uniform Range: Creates N evenly-spaced bins for each of the");
 		sb.append("selected inputs, where N is the number entered in the text field.");
 		sb.append("<li>User Specified Range: Specify a comma-separated list of ");
@@ -966,7 +991,7 @@ public class DefineBins extends UIModule implements HasNames {
 		sb.append("equation would be valid:<br>");
 		sb.append("((Length = 5) && (Length = 10))<br>");
 		sb.append("</ul>");
-		sb.append("<h3>Textual Inputs</h3>");
+		sb.append("<h3>Nominal Inputs</h3>");
 		sb.append("<ul><li>User Specified: An equation can be entered manually ");
 		sb.append("to create bins.  These equations must be properly parenthesized.  ");
 		sb.append("The following symbols can be used: ");

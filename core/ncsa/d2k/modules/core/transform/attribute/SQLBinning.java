@@ -40,7 +40,7 @@ public class SQLBinning extends DataPrepModule implements HasNames {
 	String []in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
                        "java.lang.String",
 		       "ncsa.d2k.modules.core.datatype.BinTree",
-		       "ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		       "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 	return in;
     }
 
@@ -51,7 +51,7 @@ public class SQLBinning extends DataPrepModule implements HasNames {
     */
     public String[] getOutputTypes() {
 	String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return out;
     }
 
@@ -122,7 +122,7 @@ public class SQLBinning extends DataPrepModule implements HasNames {
 	ConnectionWrapper conn  = (ConnectionWrapper)pullInput(0);
 	String tableName = (String)pullInput(1);
 	BinTree bt = (BinTree)pullInput(2);
-	ExampleTableImpl vt = (ExampleTableImpl)pullInput(3);
+	ExampleTable vt = (ExampleTable)pullInput(3);
 
 
 	int [] ins = vt.getInputFeatures();
@@ -130,7 +130,7 @@ public class SQLBinning extends DataPrepModule implements HasNames {
 
 	// we only support one out variable..
 	int classColumn = out[0];
-	String classLabel = vt.getColumn(classColumn).getLabel();
+	String classLabel = vt.getColumnLabel(classColumn);
 	int totalClassified = 0;
 	int classTotal;
 	int binListTotal;

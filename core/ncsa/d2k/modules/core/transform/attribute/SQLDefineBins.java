@@ -49,7 +49,7 @@ public class SQLDefineBins extends DefineBins {
     public String[] getInputTypes() {
 	String []in = {	"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
 			"java.lang.String",
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 	return in;
 	}
 
@@ -60,7 +60,7 @@ public class SQLDefineBins extends DefineBins {
     */
     public String[] getOutputTypes() {
 		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return out;
 	}
 
@@ -143,7 +143,7 @@ public class SQLDefineBins extends DefineBins {
 		    tnArrived = true;
 		}
 		if(i == 2) {
-		    table = (ExampleTableImpl)o;
+		    table = (ExampleTable)o;
 		    tableArrived = true;
 		}
 		if(connArrived && tableArrived && tnArrived) {
@@ -158,9 +158,13 @@ public class SQLDefineBins extends DefineBins {
 			if(binListModel != null)
 				binListModel.clear();
 
+            indexLookup = new HashMap();
+            for(int i = 0; i < table.getNumColumns(); i++)
+                indexLookup.put(table.getColumnLabel(i), new Integer(i));
+
 			// get the class and attribute names
-			Column classColumn = null;
-			HashMap cn = new HashMap();
+			//Column classColumn = null;
+			HashSet cn = new HashSet();
 			LinkedList numericAn = new LinkedList();
 			LinkedList textAn = new LinkedList();
 
@@ -169,15 +173,25 @@ public class SQLDefineBins extends DefineBins {
 			int [] outs = table.getOutputFeatures();
 
 			// determine whether the inputs are numeric or text
-			for(int i = 0; i < ins.length; i++) {
+			/*for(int i = 0; i < ins.length; i++) {
 				String label = table.getColumnLabel(ins[i]);
 				if(table.getColumn(ins[i]) instanceof NumericColumn)
 					numericAn.add(label);
 				else
 					textAn.add(label);
+			}*/
+
+			// determine whether the inputs are numeric or text
+			for(int i = 0; i < ins.length; i++) {
+				String label = table.getColumnLabel(ins[i]);
+				//if(table.getColumn(ins[i]) instanceof NumericColumn)
+                if(table.isColumnScalar(ins[i]))
+					numericAn.add(label);
+				else
+					textAn.add(label);
 			}
 
-			classColumn = table.getColumn(outs[0]);
+			//classColumn = table.getColumn(outs[0]);
 
 			// get all unique outputs from the output column
 			/*	if(classColumn != null) {
@@ -194,14 +208,14 @@ public class SQLDefineBins extends DefineBins {
 			try {
 			    stmt = conn.getConnection().createStatement();
 			    System.out.println("classCol = " +
-					       classColumn.getLabel() +
+					       table.getColumnLabel(outs[0])+//classColumn.getLabel() +
 					       " table name = " + tableName);
 			    ResultSet classes =
-				stmt.executeQuery("SELECT DISTINCT " + (classColumn).getLabel() + " FROM " + tableName);
+				stmt.executeQuery("SELECT DISTINCT " + table.getColumnLabel(outs[0]) + " FROM " + tableName);
 
 			    while (classes.next()) {
 				String s = classes.getString(1);
-				cn.put(s, s);
+				cn.add(s);
 			    }
                         } catch (SQLException e) {
 			    try {
@@ -221,7 +235,7 @@ public class SQLDefineBins extends DefineBins {
 			DefaultListModel numericModel = new DefaultListModel();
 			DefaultListModel textModel = new DefaultListModel();
 
-			Iterator i = cn.values().iterator();
+			Iterator i = cn.iterator();
 			int idx = 0;
 			while(i.hasNext() && idx < classNames.length) {
 				String el = i.next().toString();
@@ -286,18 +300,19 @@ public class SQLDefineBins extends DefineBins {
 				for(int id = 0; id < selected.length; id++) {
 					String attName = selected[id].toString();
 
-					NumericColumn nc = null;
+					/*NumericColumn nc = null;
 					for(int z = 0; z < table.getNumColumns(); z++) {
 					    if(table.getColumn(z).getLabel().trim().equals(attName.trim())) {
 						nc = (NumericColumn)table.getColumn(z);
 						break;
 					    }
-					}
+					}*/
+                    int ncidx = ((Integer)indexLookup.get(attName.trim())).intValue();
 
 					double max=0.0;
-                                        double min=0.0;
+                    double min=0.0;
 
-					String numericColumn= nc.getLabel().trim();
+					String numericColumn= table.getColumnLabel(ncidx).trim();
                                         try {
                                             Statement stmt = conn.getConnection().createStatement();
 
@@ -418,16 +433,17 @@ public class SQLDefineBins extends DefineBins {
 						JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				Column attCol = null;
+				/*Column attCol = null;
 				for(int i = 0; i < table.getNumColumns(); i++) {
 					Column c = table.getColumn(i);
 					if(c.getLabel().trim() == attName.trim()) {
 						attCol = c;
 						break;
 					}
-				}
+				}*/
+                int stridx = ((Integer)indexLookup.get(attName.trim())).intValue();
 
-				String stringColumn = attCol.getLabel().trim();
+				String stringColumn = table.getColumnLabel(stridx).trim();
 				// find all the unique entries for this column
 				HashMap items = new HashMap();
 

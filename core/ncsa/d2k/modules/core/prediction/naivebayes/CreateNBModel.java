@@ -3,7 +3,6 @@ package ncsa.d2k.modules.core.prediction.naivebayes;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * 	CreateNBModel simply creates a NaiveBayesModel.
@@ -42,7 +41,7 @@ public class CreateNBModel extends ModelProducerModule
 			"java.util.HashMap"};
 		*/
 		String []in = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
     }
 
@@ -112,7 +111,7 @@ public class CreateNBModel extends ModelProducerModule
 	*/
     public void doit() {
 		BinTree bins = (BinTree)pullInput(0);
-		ExampleTableImpl et = (ExampleTableImpl)pullInput(1);
+		ExampleTable et = (ExampleTable)pullInput(1);
 		ModelModule mdl = new NaiveBayesModel(bins, et);
 		pushOutput(mdl, 0);
 	}
