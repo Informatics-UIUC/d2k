@@ -32,7 +32,17 @@ import ncsa.gui.*;
 public class SurfacePlot3D extends VisModule {
 
    public String getModuleInfo() {
-      return "<html>  <head>      </head>  <body>    SurfacePlot3D is a three-dimensional visualization of Table data as a     surface plot.  </body></html>";
+      StringBuffer sb = new StringBuffer();
+      sb.append("<p>Overview: ");
+      sb.append("This module creates a three-dimensional visualization of ");
+      sb.append("<i>Table</i> data as a surface plot. The visualization ");
+      sb.append("can be rotated and manipulated via the mouse and keyboard; ");
+      sb.append("see the visualization's on-line help for details.");
+      sb.append("</p><p>Scalability: ");
+      sb.append("The memory and processor requirements for this visualization ");
+      sb.append("increase very quickly with the number of data points plotted.");
+      sb.append("</p>");
+      return sb.toString();
    }
 
    public String[] getInputTypes() {
@@ -47,7 +57,7 @@ public class SurfacePlot3D extends VisModule {
 
    public String getInputInfo(int index) {
       switch (index) {
-         case 0: return "The Table to be visualized.";
+         case 0: return "The <i>Table</i> with data to be visualized.";
          default: return "No such input";
       }
    }
@@ -423,7 +433,18 @@ public class SurfacePlot3D extends VisModule {
          double[] offsets = new double[offsetLength];
          int index = 0;
 
-         double c = .05,
+         /*
+         double multFactor = Math.abs(xmax - xmin);
+         if (Math.abs(ymax - ymin) > multFactor)
+            multFactor = Math.abs(ymax - ymin);
+         if (Math.abs(zmax - zmin) > multFactor)
+            multFactor = Math.abs(zmax - zmin);
+         */
+         double xfact = Math.abs(xmax - xmin);
+         double yfact = Math.abs(ymax - ymin);
+         double zfact = Math.abs(zmax - zmin);
+
+         double c = .01,
                 x, y, z,
                 x1, x2, x3, x4,
                 y1, y2, y3, y4,
@@ -433,20 +454,20 @@ public class SurfacePlot3D extends VisModule {
          for (int theta = -90; theta < 90; theta += dtheta)
             for (int phi = 0; phi < 360; phi += dphi) {
 
-               x1 = c*Math.cos(Math.toRadians(theta))*Math.cos(Math.toRadians(phi));
-               x2 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.cos(Math.toRadians(phi));
-               x3 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.cos(Math.toRadians(phi + dphi));
-               x4 = c*Math.cos(Math.toRadians(theta))*Math.cos(Math.toRadians(phi + dphi));
+               x1 = xfact*c*Math.cos(Math.toRadians(theta))*Math.cos(Math.toRadians(phi));
+               x2 = xfact*c*Math.cos(Math.toRadians(theta + dtheta))*Math.cos(Math.toRadians(phi));
+               x3 = xfact*c*Math.cos(Math.toRadians(theta + dtheta))*Math.cos(Math.toRadians(phi + dphi));
+               x4 = xfact*c*Math.cos(Math.toRadians(theta))*Math.cos(Math.toRadians(phi + dphi));
 
-               y1 = c*Math.cos(Math.toRadians(theta))*Math.sin(Math.toRadians(phi));
-               y2 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.sin(Math.toRadians(phi));
-               y3 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.sin(Math.toRadians(phi + dphi));
-               y4 = c*Math.cos(Math.toRadians(theta))*Math.sin(Math.toRadians(phi + dphi));
+               y1 = yfact*c*Math.cos(Math.toRadians(theta))*Math.sin(Math.toRadians(phi));
+               y2 = yfact*c*Math.cos(Math.toRadians(theta + dtheta))*Math.sin(Math.toRadians(phi));
+               y3 = yfact*c*Math.cos(Math.toRadians(theta + dtheta))*Math.sin(Math.toRadians(phi + dphi));
+               y4 = yfact*c*Math.cos(Math.toRadians(theta))*Math.sin(Math.toRadians(phi + dphi));
 
-               z1 = c*Math.sin(Math.toRadians(theta));
-               z2 = c*Math.sin(Math.toRadians(theta + dtheta));
-               z3 = c*Math.sin(Math.toRadians(theta + dtheta));
-               z4 = c*Math.sin(Math.toRadians(theta));
+               z1 = zfact*c*Math.sin(Math.toRadians(theta));
+               z2 = zfact*c*Math.sin(Math.toRadians(theta + dtheta));
+               z3 = zfact*c*Math.sin(Math.toRadians(theta + dtheta));
+               z4 = zfact*c*Math.sin(Math.toRadians(theta));
 
                // two triangles per iteration.
                // first triangle:
@@ -651,8 +672,16 @@ public class SurfacePlot3D extends VisModule {
             }
 
             xsel = new JComboBox(labels);
+
             ysel = new JComboBox(labels);
+            if (labels.size() > 1)
+               ysel.setSelectedIndex(1);
+
             zsel = new JComboBox(labels);
+            if (labels.size() > 2)
+               zsel.setSelectedIndex(2);
+            else if (labels.size() > 1)
+               zsel.setSelectedIndex(1);
 
             color_low = new ColorPanel(new Color(255, 0, 0));
             color_high = new ColorPanel(new Color(255, 255, 0));
@@ -893,7 +922,7 @@ public class SurfacePlot3D extends VisModule {
     * @return the human readable name of the module.
     */
    public String getModuleName() {
-      return "SurfacePlot3D";
+      return "3D Surface Plot";
    }
 
    /**
@@ -904,7 +933,7 @@ public class SurfacePlot3D extends VisModule {
    public String getInputName(int index) {
       switch(index) {
          case 0:
-            return "input0";
+            return "Table";
          default: return "NO SUCH INPUT!";
       }
    }
