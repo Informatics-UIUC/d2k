@@ -369,8 +369,8 @@ public class AttributeConstruction extends HeadlessUIModule {
          if (constructions != null) {
             for (int i = 0; i < constructions.length; i++) {
 
-               AttributeTransform.Construction current =
-                  (AttributeTransform.Construction)constructions[i];
+               Construction current =
+                  (Construction)constructions[i];
 
                try {
                   expression.setLazyExpression(current.expression, newLabels, newTypes);
@@ -508,7 +508,7 @@ public class AttributeConstruction extends HeadlessUIModule {
             int selected = newColumnList.getSelectedIndex();
             if (selected != -1) {
 
-               String label = ((AttributeTransform.Construction)(newColumnModel.elementAt(selected))).label;
+               String label = ((Construction)(newColumnModel.elementAt(selected))).label;
 
                columnBox.removeItem(label);
                newColumnModel.removeElementAt(selected);
@@ -626,8 +626,8 @@ public class AttributeConstruction extends HeadlessUIModule {
             }
             gui.setExpression(newExp);
 
-            AttributeTransform.Construction added =
-               new AttributeTransform(null).new Construction(
+            Construction added =
+               new Construction(
                   newNameField.getText(), gui.getTextArea().getText());
             newColumnModel.addElement(added);
             newColumnList.setMinimumSize(new Dimension(200, 200));
@@ -709,7 +709,7 @@ public class AttributeConstruction extends HeadlessUIModule {
 
 
        for(int i=0; i<lastCons.length; i++)
-         exps[i] = ((AttributeTransform.Construction)lastCons[i]).expression;
+         exps[i] = ((Construction)lastCons[i]).expression;
 
       ConstructionValidator validator = new ConstructionValidator(exps, t);
 
