@@ -49,136 +49,206 @@ public class CreateDelimitedParser extends InputModule {
         return retVal;
     }*/
 
-    public Component getPropertyEditor() {
-        JPanel pnl = new JPanel();
+    public CustomModuleEditor getPropertyEditor() {
+        return new PropEdit();
+    }
 
-        int lr = getLabelsRow();
+    private class PropEdit extends JPanel implements CustomModuleEditor {
 
-        final JRadioButton lblbtn = new JRadioButton("File Has Labels Row", true);
-        lblbtn.setToolTipText("Select this option if the file has a row of column labels.");
-        final JLabel lbllbl = new JLabel("Labels Row:");
-        lbllbl.setToolTipText("This is the index of the labels row in the file.");
-        final JTextField lblrow = new JTextField(5);
+        JRadioButton lblbtn;
+        JLabel lbllbl;
+        JTextField lblrow;
+        JRadioButton typbtn;
+        JTextField typrow;
+        JLabel typlbl;
+        JRadioButton delim;
+        JTextField delimfld;
+        JLabel dellbl;
 
-        if(getLabelsRow() == -1) {
-            lbllbl.setEnabled(false);
-            lblrow.setEnabled(false);
-        }
+        boolean lblChange = false;
+        boolean typChange = false;
+        boolean delChange = false;
 
-        lblrow.setText(Integer.toString(getLabelsRow()));
+        private PropEdit() {
+            int lr = getLabelsRow();
 
-        lblbtn.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                if(lblbtn.isSelected()) {
-                    lbllbl.setEnabled(true);
-                    lblrow.setEnabled(true);
-                }
-                else {
-                    lbllbl.setEnabled(false);
-                    lblrow.setEnabled(false);
-                }
+            /*final JRadioButton*/ lblbtn = new JRadioButton("File Has Labels Row", getLabelsRow() > -1);
+            lblbtn.setToolTipText("Select this option if the file has a row of column labels.");
+            /*final JLabel*/ lbllbl = new JLabel("Labels Row:");
+            lbllbl.setToolTipText("This is the index of the labels row in the file.");
+            /*final JTextField*/ lblrow = new JTextField(5);
+
+            if(!lblbtn.isSelected()) {
+                lbllbl.setEnabled(false);
+                lblrow.setEnabled(false);
             }
-        });
 
-        final JRadioButton typbtn = new JRadioButton("File Has Types Row", true);
-        typbtn.setToolTipText("Select this option if the file has a row of data types for columns.");
-        final JTextField typrow = new JTextField(5);
-        final JLabel typlbl = new JLabel("Types Row");
-        typlbl.setToolTipText("This is the index of the types row in the file.");
+            lblrow.setText(Integer.toString(getLabelsRow()));
 
-        if(getTypesRow() == -1) {
-            typrow.setEnabled(false);
-            typlbl.setEnabled(false);
-        }
-
-        typrow.setText(Integer.toString(getTypesRow()));
-
-        typbtn.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                if(typbtn.isSelected()) {
-                    typlbl.setEnabled(true);
-                    typrow.setEnabled(true);
+            lblbtn.addActionListener(new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    lblChange = true;
+                    if(lblbtn.isSelected()) {
+                        lbllbl.setEnabled(true);
+                        lblrow.setEnabled(true);
+                    }
+                    else {
+                        lbllbl.setEnabled(false);
+                        lblrow.setEnabled(false);
+                    }
                 }
-                else {
-                    typlbl.setEnabled(false);
-                    typrow.setEnabled(false);
-                }
+            });
+
+            /*final JRadioButton*/ typbtn = new JRadioButton("File Has Types Row", getTypesRow() > -1);
+            typbtn.setToolTipText("Select this option if the file has a row of data types for columns.");
+            /*final JTextField*/ typrow = new JTextField(5);
+            /*final JLabel*/ typlbl = new JLabel("Types Row");
+            typlbl.setToolTipText("This is the index of the types row in the file.");
+
+            if(getTypesRow() == -1) {
+                typrow.setEnabled(false);
+                typlbl.setEnabled(false);
             }
-        });
 
-        final JRadioButton delim = new JRadioButton("File Has User-specified Delimiter", false);
-        final JTextField delimfld = new JTextField(5);
-        final JLabel dellbl = new JLabel("Delimiter:");
-        if(getSpecDelim() != null)
-            delimfld.setText(specDelim);
-        else {
-            delimfld.setEnabled(false);
-            dellbl.setEnabled(false);
-        }
+            typrow.setText(Integer.toString(getTypesRow()));
 
-        delim.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                if(delim.isSelected()) {
-                    dellbl.setEnabled(true);
-                    delimfld.setEnabled(true);
+            typbtn.addActionListener(new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    typChange = true;
+                    if(typbtn.isSelected()) {
+                        typlbl.setEnabled(true);
+                        typrow.setEnabled(true);
+                    }
+                    else {
+                        typlbl.setEnabled(false);
+                        typrow.setEnabled(false);
+                    }
                 }
-                else {
-                    dellbl.setEnabled(false);
-                    delimfld.setEnabled(false);
-                }
+            });
+
+            /*final JRadioButton*/ delim = new JRadioButton("File Has User-specified Delimiter", getSpecDelim() != null);
+            /*final JTextField*/ delimfld = new JTextField(5);
+            /*final JLabel*/ dellbl = new JLabel("Delimiter:");
+            if(getSpecDelim() != null)
+                delimfld.setText(specDelim);
+            else {
+                delimfld.setEnabled(false);
+                dellbl.setEnabled(false);
             }
-        });
 
-        if(getLabelsRow() > 0)
-            lblbtn.setSelected(true);
-        else
-            lblbtn.setSelected(false);
+            delim.addActionListener(new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    delChange = true;
+                    if(delim.isSelected()) {
+                        dellbl.setEnabled(true);
+                        delimfld.setEnabled(true);
+                    }
+                    else {
+                        dellbl.setEnabled(false);
+                        delimfld.setEnabled(false);
+                    }
+                }
+            });
 
-        if(getTypesRow() > 0)
-            typbtn.setSelected(true);
-        else
-            typbtn.setSelected(false);
+            /*if(getLabelsRow() > 0)
+                lblbtn.setSelected(true);
+            else
+                lblbtn.setSelected(false);
 
-        if(getSpecDelim() == null)
-            delim.setSelected(false);
-        else
-            delim.setSelected(true);
+            if(getTypesRow() > 0)
+                typbtn.setSelected(true);
+            else
+                typbtn.setSelected(false);
 
-        // add the components for delimited properties
-        pnl.setLayout(new GridBagLayout());
+            if(getSpecDelim() == null)
+                delim.setSelected(false);
+            else
+                delim.setSelected(true);
+            */
+
+            // add the components for delimited properties
+            setLayout(new GridBagLayout());
         /*Constrain.setConstraints(pnl, new JLabel("Delimited Format File Properties"), 0, 0, 2, 1,
                                  GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                  1,1, new Insets(2, 2, 15, 2));
         */
-        Constrain.setConstraints(pnl, lblbtn, 0, 0, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                 1,1);
-        Constrain.setConstraints(pnl, lbllbl, 1, 1, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                 1,1);
-        Constrain.setConstraints(pnl , lblrow, 2, 1, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                 1,1);
-        Constrain.setConstraints(pnl, typbtn, 0, 2, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                 1,1);
-        Constrain.setConstraints(pnl, typlbl, 1, 3, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                 1,1);
-        Constrain.setConstraints(pnl, typrow, 2, 3, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+            Constrain.setConstraints(this, lblbtn, 0, 0, 1, 1,
+                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                      1,1);
-        Constrain.setConstraints(pnl, delim, 0, 4, 1, 1,
-                                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                1,1);
-        Constrain.setConstraints(pnl, dellbl, 1, 5, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                 1, 1);
-        Constrain.setConstraints(pnl, delimfld, 2, 5, 1, 1,
-                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                 1, 1);
+            Constrain.setConstraints(this, lbllbl, 1, 1, 1, 1,
+                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                     1,1);
+            Constrain.setConstraints(this , lblrow, 2, 1, 1, 1,
+                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                     1,1);
+            Constrain.setConstraints(this, typbtn, 0, 2, 1, 1,
+                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                     1,1);
+            Constrain.setConstraints(this, typlbl, 1, 3, 1, 1,
+                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                     1,1);
+            Constrain.setConstraints(this, typrow, 2, 3, 1, 1,
+                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                     1,1);
+            Constrain.setConstraints(this, delim, 0, 4, 1, 1,
+                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                     1,1);
+            Constrain.setConstraints(this, dellbl, 1, 5, 1, 1,
+                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                     1, 1);
+            Constrain.setConstraints(this, delimfld, 2, 5, 1, 1,
+                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                     1, 1);
+        }
 
-        return pnl;
+        public boolean updateModule() throws Exception {
+            boolean didChange = false;
+
+            if(lblChange) {
+                String lrow = lblrow.getText();
+                int lrownum;
+                try {
+                    lrownum = Integer.parseInt(lrow);
+                }
+                catch(NumberFormatException e) {
+                    throw new Exception("The Labels Row was not a number.");
+                }
+                if(lrownum != getLabelsRow()) {
+                    setLabelsRow(lrownum);
+                    didChange = true;
+                }
+            }
+
+            if(typChange) {
+                String trow = typrow.getText();
+                int trownum;
+                try {
+                    trownum = Integer.parseInt(trow);
+                }
+                catch(NumberFormatException e) {
+                    throw new Exception("The Types Row was not a number.");
+                }
+                if(trownum != getTypesRow()) {
+                    setTypesRow(trownum);
+                    didChange = true;
+                }
+            }
+
+            if(delChange) {
+                String dd = null;
+                if(delim.isSelected()) {
+                    dd = delim.getText();
+                    if(dd.length() > 1)
+                        throw new Exception("The delimiter must be one character long.");
+                }
+                if(dd != getSpecDelim()) {
+                    setSpecDelim(dd);
+                    didChange = true;
+                }
+            }
+
+            return didChange;
+        }
     }
 
     /*private int inOutRow = -1;
@@ -260,8 +330,13 @@ public class CreateDelimitedParser extends InputModule {
         if(!file.exists())
             throw new FileNotFoundException(getAlias()+": "+file+" did not exist.");
         DelimitedFileParser df;
-        df = new DelimitedFileParser(file, labelsRow, typesRow);
-        // df = new DelimitedFileParser(file, labelsRow, typesRow, delimiter);
+        String s = getSpecDelim();
+        if(s == null || s.length() == 0)
+            df = new DelimitedFileParser(file, getLabelsRow(), getTypesRow());
+        else {
+            char[] del = s.toCharArray();
+            df = new DelimitedFileParser(file, labelsRow, typesRow, del[0]);
+        }
         pushOutput(df, 0);
     }
 }

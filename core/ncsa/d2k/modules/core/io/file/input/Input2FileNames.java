@@ -20,13 +20,6 @@ import ncsa.gui.*;
  * @version 1.0
  */
 public class Input2FileNames extends InputModule {
-    private JTextField fn0;
-    private JTextField fn1;
-
-    public Input2FileNames() {
-        fn0 = new JTextField(20);
-        fn1 = new JTextField(20);
-    }
 
     public String[] getInputTypes() {
         return null;
@@ -63,7 +56,7 @@ public class Input2FileNames extends InputModule {
 
     public void setFileName0(String s) {
         fileName0 =  s;
-        fn0.setText(fileName0);
+        //fn0.setText(fileName0);
     }
 
     public String getFileName0() {
@@ -75,7 +68,7 @@ public class Input2FileNames extends InputModule {
 
     public void setFileName1(String s) {
         fileName1 = s;
-        fn1.setText(fileName1);
+        //fn1.setText(fileName1);
     }
 
     public String getFileName1() {
@@ -86,102 +79,129 @@ public class Input2FileNames extends InputModule {
      * Return a custom property editor.
      * @return
      */
-    public Component getPropertyEditor() {
-        JPanel pnl = new JPanel();
-        pnl.setLayout(new GridBagLayout());
+    public CustomModuleEditor getPropertyEditor() {
+        return new PropEdit();
+    }
 
-        // first file name
-        JButton b0 = new JButton("Browse");
+    private class PropEdit extends JPanel implements CustomModuleEditor {
+        private JTextField fn0;
+        private JTextField fn1;
 
-        JPanel p2 = new JPanel();
-        p2.setLayout(new BorderLayout());
-        p2.add(fn0, BorderLayout.CENTER);
-        p2.add(b0, BorderLayout.EAST);
+        PropEdit() {
+            setLayout(new GridBagLayout());
+            fn0 = new JTextField(20);
+            fn1 = new JTextField(20);
 
-        JPanel p1 = new JPanel();
-        p1.setLayout(new GridLayout(2, 1));
-        p1.add(new JLabel("File Name 1"));
-        p1.add(p2);
+            // first file name
+            JButton b0 = new JButton("Browse");
 
-        // second file name
-        JButton b1 = new JButton("Browse");
-        JPanel p3 = new JPanel();
-        p3.setLayout(new BorderLayout());
-        p3.add(fn1, BorderLayout.CENTER);
-        p3.add(b1, BorderLayout.EAST);
+            JPanel p2 = new JPanel();
+            p2.setLayout(new BorderLayout());
+            p2.add(fn0, BorderLayout.CENTER);
+            p2.add(b0, BorderLayout.EAST);
 
-        JPanel p4 = new JPanel();
-        p4.setLayout(new GridLayout(2, 1));
-        p4.add(new JLabel("File Name 2"));
-        p4.add(p3);
+            JPanel p1 = new JPanel();
+            p1.setLayout(new GridLayout(2, 1));
+            p1.add(new JLabel("File Name 1"));
+            p1.add(p2);
 
-        Constrain.setConstraints(pnl, p1, 0, 0, 1, 1,
-                                 GridBagConstraints.NONE,
-                                 GridBagConstraints.WEST, 0, 0);
+            // second file name
+            JButton b1 = new JButton("Browse");
+            JPanel p3 = new JPanel();
+            p3.setLayout(new BorderLayout());
+            p3.add(fn1, BorderLayout.CENTER);
+            p3.add(b1, BorderLayout.EAST);
 
-        Constrain.setConstraints(pnl, p4, 0, 1, 1, 1,
-                                 GridBagConstraints.NONE,
-                                 GridBagConstraints.WEST, 0, 0);
+            JPanel p4 = new JPanel();
+            p4.setLayout(new GridLayout(2, 1));
+            p4.add(new JLabel("File Name 2"));
+            p4.add(p3);
 
-        Constrain.setConstraints(pnl, new JPanel(), 0, 3, 2, 1,
-                                 GridBagConstraints.BOTH,
-                                 GridBagConstraints.WEST, 2, 1);
+            Constrain.setConstraints(this, p1, 0, 0, 1, 1,
+                                     GridBagConstraints.NONE,
+                                     GridBagConstraints.WEST, 0, 0);
 
-        b0.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
+            Constrain.setConstraints(this, p4, 0, 1, 1, 1,
+                                     GridBagConstraints.NONE,
+                                     GridBagConstraints.WEST, 0, 0);
 
-                String d = getFileName0();
-                if(d != null)
-                    chooser.setSelectedFile(new File(d));
+            Constrain.setConstraints(this, new JPanel(), 0, 3, 2, 1,
+                                     GridBagConstraints.BOTH,
+                                     GridBagConstraints.WEST, 2, 1);
 
-                // set the title of the FileDialog
-                StringBuffer sb = new StringBuffer("Select File 1");
-                chooser.setDialogTitle(sb.toString());
+            b0.addActionListener(new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser chooser = new JFileChooser();
 
-                // get the file
-                String fn;
-                int retVal = chooser.showOpenDialog(null);
-                if(retVal == JFileChooser.APPROVE_OPTION)
-                    fn = chooser.getSelectedFile().getAbsolutePath();
-                else
-                    return;
+                    String d = getFileName0();
+                    if(d != null)
+                        chooser.setSelectedFile(new File(d));
 
-                if(fn != null)
-                    // display the path to the chosen file
-                    //jtf.setText(fileName);
-                    setFileName0(fn);
+                    // set the title of the FileDialog
+                    StringBuffer sb = new StringBuffer("Select File 1");
+                    chooser.setDialogTitle(sb.toString());
+
+                    // get the file
+                    String fn;
+                    int retVal = chooser.showOpenDialog(null);
+                    if(retVal == JFileChooser.APPROVE_OPTION)
+                        fn = chooser.getSelectedFile().getAbsolutePath();
+                    else
+                        return;
+
+                    if(fn != null) {
+                        // display the path to the chosen file
+                        //jtf.setText(fileName);
+                        //setFileName0(fn);
+                        fn0.setText(fn);
+                    }
+                }
+            });
+
+            b1.addActionListener(new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser chooser = new JFileChooser();
+
+                    String d = getFileName1();
+                    if(d != null)
+                        chooser.setSelectedFile(new File(d));
+
+                    // set the title of the FileDialog
+                    StringBuffer sb = new StringBuffer("Select File 2");
+                    chooser.setDialogTitle(sb.toString());
+
+                    // get the file
+                    String fn;
+                    int retVal = chooser.showOpenDialog(null);
+                    if(retVal == JFileChooser.APPROVE_OPTION)
+                        fn = chooser.getSelectedFile().getAbsolutePath();
+                    else
+                        return;
+
+                    if(fn != null) {
+                        // display the path to the chosen file
+                        //jtf.setText(fileName);
+                        //setFileName1(fn);
+                        fn1.setText(fn);
+                    }
+                }
+            });
+        }
+
+        public boolean updateModule() throws Exception {
+            boolean didChange = false;
+            String f0 = fn0.getText();
+            if(f0 != getFileName0()) {
+                setFileName0(f0);
+                didChange = true;
             }
-        });
-
-        b1.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
-
-                String d = getFileName1();
-                if(d != null)
-                    chooser.setSelectedFile(new File(d));
-
-                // set the title of the FileDialog
-                StringBuffer sb = new StringBuffer("Select File 2");
-                chooser.setDialogTitle(sb.toString());
-
-                // get the file
-                String fn;
-                int retVal = chooser.showOpenDialog(null);
-                if(retVal == JFileChooser.APPROVE_OPTION)
-                    fn = chooser.getSelectedFile().getAbsolutePath();
-                else
-                    return;
-
-                if(fn != null)
-                    // display the path to the chosen file
-                    //jtf.setText(fileName);
-                    setFileName1(fn);
+            String f1 = fn1.getText();
+            if(f1 != getFileName1()) {
+                setFileName1(f1);
+                didChange = true;
             }
-        });
-
-        return pnl;
+            return didChange;
+        }
     }
 
     public void doit() throws Exception {
