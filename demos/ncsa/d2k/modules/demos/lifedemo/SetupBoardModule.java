@@ -97,12 +97,16 @@ public class SetupBoardModule extends ComputeModule {
 		}
 	}
 
-	public void doit() {
+	public void doit() throws Exception {
 		String w = (String)this.pullInput(0);
 		String h = (String)this.pullInput(1);
 
 		int width = Integer.valueOf(w).intValue();
 		int height = Integer.valueOf(h).intValue();
+
+        if(width < 4 || height < 4) {
+            throw new Exception("The width and height must both be greater than 4.");
+        }
 
 		LifeGameBoard brd = new LifeGameBoard();
 		brd.board = new boolean[width][height];
