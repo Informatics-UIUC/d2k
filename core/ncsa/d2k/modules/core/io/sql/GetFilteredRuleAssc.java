@@ -123,6 +123,31 @@ public class GetFilteredRuleAssc extends UIModule
 		return types;
 	}
 
+  /** this property is the min acceptable support score. */
+  public void setMinimumSupport (double i) {
+    minSupport = i;
+  }
+  public double getMinimumSupport () {
+    return minSupport;
+  }
+
+  /** this property is the min acceptable confidence score. */
+  public void setMinimumConfidence (double i) {
+    minConfidence = i;
+  }
+  public double getMinimumConfidence () {
+    return minConfidence;
+  }
+
+  /** this property is the min acceptable pruning threshold. */
+  public void setPruningThreshold (double i) {
+    threshold = i;
+  }
+  public double getPruningThreshold () {
+    return threshold;
+  }
+
+
   protected String[] getFieldNameMapping () {
     return null;
   }
