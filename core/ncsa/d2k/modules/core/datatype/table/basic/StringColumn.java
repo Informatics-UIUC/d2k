@@ -34,6 +34,7 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
 		values = new String[0];
 		rowIndicies = new int[numRows];
 		type = ColumnTypes.STRING;
+		setIsNominal(true);
 	}
 
 	public StringColumn(String[] data) {
@@ -42,6 +43,7 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
 			setString(data[i], i);
 		}
 		type = ColumnTypes.STRING;
+		setIsNominal(true);
 	}
 
 	/**
@@ -54,6 +56,7 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
 		setOfValues = set;
 		values = vals;
 		rowIndicies = rows;
+		setIsNominal(true);
 	}
 
 	private int addValue(String newVal) {
