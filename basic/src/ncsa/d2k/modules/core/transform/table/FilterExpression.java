@@ -103,7 +103,7 @@ public class FilterExpression implements Expression {
 
    public Object evaluate() throws ExpressionException {
 
-      if (root == null || table == null || table.getObject(0,0) == null)
+      if (root == null || table == null /*|| table.getObject(0,0) == null*/)
 
          return null;
 
