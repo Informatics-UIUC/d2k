@@ -150,7 +150,7 @@ public class CrossoverModule extends ncsa.d2k.core.modules.ComputeModule
 		this.pushOutput (population, 0);
 	}
 
-        protected void performCrossover(Population population) {
+        public void performCrossover(Population population) {
           Individual [] individuals = population.getMembers ();
           int [] x = new int [2];
 

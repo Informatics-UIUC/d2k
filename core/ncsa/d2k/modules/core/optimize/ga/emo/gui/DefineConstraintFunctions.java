@@ -31,13 +31,13 @@ public class DefineConstraintFunctions
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
     return in;
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
     return out;
   }
 
@@ -87,7 +87,7 @@ public class DefineConstraintFunctions
     // using the widget. It is used in the redoBox() function.
     private DefaultComboBoxModel columnModel;
 
-    private EMOPopulationParams data;
+    private EMOParams data;
 
     public void paintComponent(Graphics g) {
       Graphics2D g2 = (Graphics2D) g;
@@ -101,8 +101,9 @@ public class DefineConstraintFunctions
       if (i != 0) {
         return;
       }
-      data = (EMOPopulationParams)o;
-      table = (MutableTable)data.varNames;
+      data = (EMOParams)o;
+//      table = (MutableTable)data.varNames;
+      table = data.decisionVariables.createVariableNameTable();
       initialize();
     }
 
@@ -452,7 +453,7 @@ public class DefineConstraintFunctions
              table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
            }
 
-           if (data.constraintFunctionConstructions == null) {
+/*           if (data.constraintFunctionConstructions == null) {
              data.constraintFunctionConstructions = tmp;
            }
            // append the new constructions onto the older constructions
@@ -468,7 +469,7 @@ public class DefineConstraintFunctions
                j++;
              }
              data.constraintFunctionConstructions = tmp2;
-           }
+           }*/
          }
 
          pushOutput(data, 0);

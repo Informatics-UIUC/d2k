@@ -24,13 +24,13 @@ public class DefineConstraintVariables
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
     return in;
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
     return out;
   }
 
@@ -67,7 +67,7 @@ public class DefineConstraintVariables
     // It is used in the redoBox() function
     private DefaultComboBoxModel columnModel;
 
-    private EMOPopulationParams data;
+    private EMOParams data;
 
     public void paintComponent(Graphics g) {
       Graphics2D g2 = (Graphics2D) g;
@@ -77,8 +77,9 @@ public class DefineConstraintVariables
     }
 
     public void setInput(Object o, int i) {
-      data = (EMOPopulationParams) o;
-      table = (MutableTable) data.varNames;
+      data = (EMOParams) o;
+//      table = (MutableTable) data.varNames;
+      table = data.decisionVariables.createVariableNameTable();
       this.initialize();
     }
 
@@ -193,7 +194,7 @@ public class DefineConstraintVariables
             table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
           }
 
-         if(data.constraintVariableConstructions == null) {
+/*         if(data.constraintVariableConstructions == null) {
            data.constraintVariableConstructions = tmp;
          }
         // append the new constructions onto the older constructions
@@ -208,7 +209,7 @@ public class DefineConstraintVariables
               j++;
             }
             data.constraintVariableConstructions = tmp2;
-         }
+         }*/
 
          pushOutput(data, 0);
          data = null;

@@ -105,7 +105,7 @@ public class SimulatedBinaryCrossover extends CrossoverModule
 		this.pushOutput (population, 0);
 	}*/
 
-        protected void performCrossover(Population population) {
+        public void performCrossover(Population population) {
           Individual [] individuals = (Individual []) population.getMembers ();
 
           // Compute the last individual to cross.

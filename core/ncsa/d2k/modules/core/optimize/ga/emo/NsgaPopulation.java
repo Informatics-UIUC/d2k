@@ -25,7 +25,7 @@ import ncsa.d2k.modules.core.optimize.util.*;
 	value. This class overrides the evaluateAll method to accumulate the best objective
 	values after the members have all been evalutated.
 */
-abstract public class NsgaPopulation extends MOPopulation implements Serializable, EMOPopulation {
+abstract public class NsgaPopulation extends MOPopulation implements Serializable {
 
 	/** number of objectives to optimize on.*/
 	int numObjectives;
@@ -715,15 +715,16 @@ abstract public class NsgaPopulation extends MOPopulation implements Serializabl
                     double[] binaryGenes = (double[]) ( (MOBinaryIndividual) ni).toDouble();
 
                     // the max and precision are contained in the boundsAndPrecision table
-                    Table bounds = getPopulationInfo().boundsAndPrecision;
+                    //Table bounds = getPopulationInfo().decisionVariables;
+                    DecisionVariables dv = getParameters().decisionVariables;
 
                     int curPos = 0;
                     for (int k = 0; k < traits.length; k++) {
                       int numBits = ((BinaryRange)traits[k]).getNumBits();
                       double num = 0.0d;
-                      double max = bounds.getDouble(k, 2);
-                      double min = bounds.getDouble(k, 1);
-                      double precision = bounds.getDouble(k, 3);
+                      double max = dv.getVariableMax(k);//.getDouble(k, 2);
+                      double min = dv.getVariableMin(k);//.getDouble(k, 1);
+                      double precision = dv.getVariablePrecision(k);//.getDouble(k, 3);
 
                       double interval = (max - min) * precision;
 

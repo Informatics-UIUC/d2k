@@ -101,7 +101,7 @@ abstract public class SelectionModule extends ncsa.d2k.core.modules.ComputeModul
 		this.pushOutput (population, 0);
 	}
 
-        protected void performSelection(Population population) {
+        public void performSelection(Population population) {
           if (debug) {
                   System.out.println ("==================================================");
                   System.out.println ("-------------- BEFORE SELECTION ------------------");

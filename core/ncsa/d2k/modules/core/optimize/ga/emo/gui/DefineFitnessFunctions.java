@@ -42,13 +42,13 @@ public class DefineFitnessFunctions
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
     return in;
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
     return out;
   }
 
@@ -90,11 +90,12 @@ public class DefineFitnessFunctions
     //for use in displaying fitness function
     private JTable tableData;
     private DefaultTableModel modelData;
-    private EMOPopulationParams data;
+    private EMOParams data;
 
     public void setInput(Object o, int i) {
-      data = (EMOPopulationParams) o;
-      this.table = (MutableTable) data.varNames;
+      data = (EMOParams) o;
+//      this.table = (MutableTable) data.varNames;
+      this.table = data.decisionVariables.createVariableNameTable();
       this.initialize();
     }
 
@@ -453,7 +454,7 @@ public class DefineFitnessFunctions
           table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
         }
 
-        if (data.fitnessFunctionConstructions == null) {
+        /*if (data.fitnessFunctionConstructions == null) {
           data.fitnessFunctionConstructions = tmp;
         }
         // append the new constructions onto the older constructions
@@ -469,6 +470,10 @@ public class DefineFitnessFunctions
             j++;
           }
           data.fitnessFunctionConstructions = tmp2;
+        }*/
+        FitnessFunctions ff = data.fitnessFunctions;
+        for(int i = 0; i < tmp.length; i++) {
+          ff.addFitnessFunction((FitnessFunctionConstruction)tmp[i]);
         }
 
         pushOutput(data, 0);

@@ -27,7 +27,7 @@ public class EMOVis
 
   public String[] getOutputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams",
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams",
         "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulation",
         "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulation"};
   }
@@ -215,7 +215,7 @@ public class EMOVis
 
           // send this to EMOGeneratePopulation to double the pop size
           // for the next run
-          pushOutput(new EMOPopulationParams(), 0);
+          pushOutput(new EMOParams(), 0);
           //pushOutput(currentPop, 1);
           continueButton.setEnabled(false);
           // the next input should be a new population

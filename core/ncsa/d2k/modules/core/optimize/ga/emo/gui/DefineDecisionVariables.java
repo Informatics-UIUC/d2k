@@ -11,8 +11,8 @@ import javax.swing.border.*;
 
 import ncsa.gui.*;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+//import ncsa.d2k.modules.core.datatype.table.*;
+//import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
 /**
@@ -44,7 +44,7 @@ public class DefineDecisionVariables
      @return the data types of all outputs.
   */
   public String[] getOutputTypes() {
-    String[] types = {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+    String[] types = {"ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
     return types;
   }
 
@@ -582,7 +582,7 @@ public class DefineDecisionVariables
      * displayed table is also passed.
      */
     private void passOutput() {
-      MutableTable table1 = new MutableTableImpl(model.getRowCount());
+      /*MutableTable table1 = new MutableTableImpl(model.getRowCount());
       float[] tempdata = new float[0];
       for (int i = 0; i < model.getRowCount(); i++) {
         table1.setColumn(tempdata, i);
@@ -597,23 +597,56 @@ public class DefineDecisionVariables
       cols[2] = new FloatColumn(numVars);
       cols[3] = new FloatColumn(numVars);
       cols[4] = new FloatColumn(numVars);
+      */
+
+     DecisionVariables varTable = new DecisionVariables();
+     int numVars = model.getRowCount();
 
       for (int i = 0; i < numVars; i++) {
-        cols[0].setString( (String) model.getValueAt(i, 1), i);
+        String name = (String)model.getValueAt(i, 1);
         String min = (String) model.getValueAt(i, 2);
-        cols[1].setString(min, i);
         String max = (String) model.getValueAt(i, 3);
-        cols[2].setString(max, i);
-        String pred = (String) model.getValueAt(i, 4);
-        cols[3].setString(pred, i);
+        String prec = (String) model.getValueAt(i, 4);
         Object len = model.getValueAt(i, 5);
-        cols[4].setObject(len, i);
-      }
-      MutableTableImpl varTable = new MutableTableImpl(cols);
+        String strLen = len.toString();
 
-      EMOPopulationParams data = new EMOPopulationParams();
-      data.boundsAndPrecision = varTable;
-      data.varNames = table1;
+        double dmin;
+        try {
+          dmin = Double.parseDouble(min);
+        }
+        catch(Exception e) {
+          dmin = 0;
+        }
+
+        double dmax;
+        try {
+          dmax = Double.parseDouble(max);
+        }
+        catch(Exception e) {
+          dmax = 0;
+        }
+
+        double dprec;
+        try {
+          dprec = Double.parseDouble(prec);
+        }
+        catch(Exception e) {
+          dprec = 0;
+        }
+
+        double dstr;
+        try {
+          dstr = Double.parseDouble(strLen);
+        }
+        catch(Exception e) {
+          dstr = 0;
+        }
+
+        varTable.addVariable(name, dmin, dmax, dprec, dstr);
+      }
+
+      EMOParams data = new EMOParams();
+      data.decisionVariables = varTable;
 
       pushOutput(data, 0);
     }

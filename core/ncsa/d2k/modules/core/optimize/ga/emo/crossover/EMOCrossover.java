@@ -43,7 +43,6 @@ public class EMOCrossover extends ComputeModule {
 
   public void beginExecution() {
     population = null;
-    crossoverType = -1;
   }
 
   public void endExecution() {
@@ -51,7 +50,6 @@ public class EMOCrossover extends ComputeModule {
     crossoverModule = null;
   }
 
-  private int crossoverType = -1;
   private EMOPopulation population;
   private Crossover crossoverModule;
 
@@ -60,26 +58,9 @@ public class EMOCrossover extends ComputeModule {
 
     // if the population has changed or the crossoverType has not been set,
     // create a Crossover object
-    if(crossoverType == -1 || population != pop) {
-      EMOPopulationParams info = pop.getPopulationInfo();
-      // set the crossover type
-      crossoverType = info.crossoverType;
-
-      // get the class name
-      String classname = Crossover.CLASSES[crossoverType];
-      population = pop;
-
-      // create the Crossover object
-      Class moduleClass;
-      try {
-        moduleClass = Class.forName(classname);
-        crossoverModule = (Crossover)moduleClass.newInstance();
-      }
-      // if the class could not be found, this is a fatal error.  re-throw
-      // the execption
-      catch(ClassNotFoundException nfe) {
-        throw nfe;
-      }
+    if(population != pop) {
+      EMOParams info = pop.getParameters();
+      crossoverModule = info.crossover;
     }
 
     // do the crossover

@@ -128,7 +128,7 @@ public class UniformCrossoverModule extends ncsa.d2k.core.modules.ComputeModule
 		this.pushOutput (population, 0);
 	}
 
-        protected void performCrossover(Population population) {
+        public void performCrossover(Population population) {
           Individual [] individuals = population.getMembers ();
           int [] x = new int[2] ;
           double xwin = 0.0;

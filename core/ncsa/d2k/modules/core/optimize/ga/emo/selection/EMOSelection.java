@@ -30,7 +30,6 @@ public class EMOSelection extends ComputeModule {
 
   public void beginExecution() {
     population = null;
-    selectionType = -1;
   }
 
   public void endExecution() {
@@ -38,30 +37,15 @@ public class EMOSelection extends ComputeModule {
     selectionModule = null;
   }
 
-  private int selectionType = -1;
   private EMOPopulation population;
   private Selection selectionModule;
 
   public void doit() throws Exception {
     EMOPopulation pop = (EMOPopulation)pullInput(0);
 
-    if(selectionType == -1 || population != pop) {
-      EMOPopulationParams info = pop.getPopulationInfo();
-      selectionType = info.selectionType;
-
-      String classname = Selection.CLASSES[selectionType];
-
-      population = pop;
-
-      // create the module
-      Class moduleClass;
-      try {
-        moduleClass = Class.forName(classname);
-        selectionModule = (Selection)moduleClass.newInstance();
-      }
-      catch(ClassNotFoundException nfe) {
-        throw nfe;
-      }
+    if(population != pop) {
+      EMOParams info = pop.getParameters();
+      selectionModule = info.selection;
     }
 
     selectionModule.performSelection((Population)pop);

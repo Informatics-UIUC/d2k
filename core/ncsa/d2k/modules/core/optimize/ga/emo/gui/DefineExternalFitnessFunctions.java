@@ -24,12 +24,12 @@ public class DefineExternalFitnessFunctions
 
   public String[] getInputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
   }
 
   public String[] getOutputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
   }
 
   public String getInputInfo(int i) {
@@ -71,6 +71,9 @@ public class DefineExternalFitnessFunctions
     return fitnessFunctions;
   }
 
+  private static final String MINIMIZE = "Minimize";
+  private static final String MAXIMIZE = "Maximize";
+
   /*  Return an array with information on the properties the user may update.
    *  @return The PropertyDescriptions for properties the user may update.
    */
@@ -99,7 +102,7 @@ public class DefineExternalFitnessFunctions
     /** minimize/maximize */
     JComboBox min;
 
-    EMOPopulationParams popInfo;
+    EMOParams popInfo;
 
     public Dimension getPreferredSize() {
       return new Dimension(600, 250);
@@ -283,8 +286,7 @@ public class DefineExternalFitnessFunctions
                                1, 1,
                                GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
-      Object[] items = {
-          "Minimize", "Maximize"};
+      Object[] items = {MINIMIZE, MAXIMIZE};
       min = new JComboBox(items);
       Constrain.setConstraints(mainPanel, min, 1, 4, 1, 1,
                                GridBagConstraints.NONE, GridBagConstraints.WEST,
@@ -353,7 +355,7 @@ public class DefineExternalFitnessFunctions
           setFitnessFunctions(functions);
 
           // now create the table and add it to the pop info
-          MutableTableImpl tbl = new MutableTableImpl();
+          /*MutableTableImpl tbl = new MutableTableImpl();
           int numFunctions = functions.length;
           tbl.addColumn(new String[numFunctions]);
           tbl.addColumn(new String[numFunctions]);
@@ -376,9 +378,19 @@ public class DefineExternalFitnessFunctions
             tbl.setString(f.output, i, 3);
             tbl.setString(f.minmax, i, 4);
           }
+              */
+          FitnessFunctions ff = popInfo.fitnessFunctions;
+          int numFunctions = functions.length;
 
-          popInfo.useExternalFitnessEvaluation = true;
-          popInfo.externalFitnessInfo = tbl;
+          for(int i = 0; i < functions.length; i++) {
+            FitnessFunction f = (FitnessFunction) functions[i];
+            boolean b;
+            if(f.minmax.equals(MINIMIZE))
+              b = true;
+            else
+              b = false;
+            ff.addExternFitnessFunction(f.name, f.exec, f.input, f.output, b);
+          }
 
           // push out the pop info
           pushOutput(popInfo, 0);
@@ -421,7 +433,7 @@ public class DefineExternalFitnessFunctions
     }
 
     public void setInput(Object o, int i) {
-      popInfo = (EMOPopulationParams) o;
+      popInfo = (EMOParams) o;
     }
 
     class FitnessFunction

@@ -1,35 +1,54 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.mutation;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
+import ncsa.d2k.modules.core.optimize.ga.*;
 
-public class EMOMutation
-    extends MutateModule implements Mutation {
-
-  /** Return an array with information on the properties the user may update.
-   *  @return The PropertyDescriptions for properties the user may update.
-   */
-  public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] pds = new PropertyDescription[0];
-    return pds;
-  }
+public class EMOMutation extends ComputeModule {
 
   public String[] getInputTypes() {
-    String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulation"};
+    String[] in = {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulation"};
     return in;
   }
 
   public String[] getOutputTypes() {
-    String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulation"};
-    return out;
+    String[] in = {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulation"};
+    return in;
   }
 
-  public void mutatePopulation(Population p) {
-    EMOPopulation pop = (EMOPopulation) p;
-    this.setMutationRate(pop.getPopulationInfo().mutationRate);
-    super.mutatePopulation(p);
+  public String getInputInfo(int i) {
+    return "";
+  }
+
+  public String getOutputInfo(int i) {
+    return "";
+  }
+
+  public String getModuleInfo() {
+    return "";
+  }
+
+  public void beginExecution() {
+    population = null;
+  }
+
+  public void endExecution() {
+    population = null;
+    mutateModule = null;
+  }
+
+  private EMOPopulation population;
+  private Mutation mutateModule;
+
+  public void doit() throws Exception {
+    EMOPopulation pop = (EMOPopulation)pullInput(0);
+
+    if(population != pop) {
+      EMOParams info = pop.getParameters();
+      mutateModule = info.mutation;
+    }
+
+    mutateModule.mutatePopulation((Population)pop);
+    pushOutput(pop, 0);
   }
 }

@@ -126,7 +126,7 @@ public class RealMutation extends DataPrepModule 			 {
 		this.pushOutput (population, 0);
 	}
 
-        protected void mutatePopulation(Population population) {
+        public void mutatePopulation(Population population) {
           Individual [] individuals = (Individual []) population.getMembers ();
 
           double oneOverNPlus1 = 1.0 / (n + 1.0);

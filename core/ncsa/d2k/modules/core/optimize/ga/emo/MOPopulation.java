@@ -5,19 +5,19 @@ import ncsa.d2k.modules.core.optimize.util.*;
 
 /**
  */
-public abstract class MOPopulation extends Population {
+public abstract class MOPopulation extends Population implements EMOPopulation {
 
   public MOPopulation(Range[] ranges) {
     super (ranges);
   }
 
-  private EMOPopulationParams popInfo;
+  private EMOParams popInfo;
 
-  public void setPopulationInfo(EMOPopulationParams popI) {
+  public void setParameters(EMOParams popI) {
     popInfo = popI;
   }
 
-  public EMOPopulationParams getPopulationInfo() {
+  public EMOParams getParameters() {
     return popInfo;
   }
 }

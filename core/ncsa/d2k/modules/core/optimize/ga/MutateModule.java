@@ -117,7 +117,7 @@ public class MutateModule extends ncsa.d2k.core.modules.DataPrepModule 	 {
 		this.pushOutput (population, 0);
 	}
 
-        protected void mutatePopulation(Population population) {
+        public void mutatePopulation(Population population) {
           int i, j;
 
           // How many genes in the entire population.

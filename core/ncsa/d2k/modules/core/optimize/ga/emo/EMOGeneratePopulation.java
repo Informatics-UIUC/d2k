@@ -1,19 +1,17 @@
 package ncsa.d2k.modules.core.optimize.ga.emo;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.util.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.transformations.*;
 
-import java.util.*;
-
+/**
+ * Generate a population.
+ */
 public class EMOGeneratePopulation
     extends ComputeModule {
 
   public String[] getInputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
   }
 
   public String[] getOutputTypes() {
@@ -25,8 +23,16 @@ public class EMOGeneratePopulation
     return "";
   }
 
+  public String getInputName(int i) {
+    return "Params";
+  }
+
   public String getOutputInfo(int i) {
     return "";
+  }
+
+  public String getOutputName(int i) {
+    return "Population";
   }
 
   public String getModuleInfo() {
@@ -34,16 +40,26 @@ public class EMOGeneratePopulation
   }
 
   private int populationSize;
-  // the number of fitness functions defined
+  /** the total number of fitness functions defined */
   private int numFF;
+  /** the number of fitness functions defined using a formula
+   * (using a transformation on a table) */
   private int numFormulaFF;
+  /** the number of fitness functions calculated using an executable */
   private int numExternalFF;
 
+  /** the total number of constraints imposed on the prob */
   private int numConstraints;
+  /** the number of constraints defined using a formula
+   * (using a transformation on a table) */
   private int numFormulaConstraints;
+  /** the number of constraints calculated using an executable */
   private int numExternalConstraints;
 
-  private EMOPopulationParams params;
+  /** the parameters for the problem */
+  private EMOParams params;
+
+  /** is this the first time the module has been run? */
   private boolean firstTime;
 
   private static final String X = "x";
@@ -58,68 +74,58 @@ public class EMOGeneratePopulation
 
   public void doit() throws Exception {
     if (firstTime) {
-      params = (EMOPopulationParams) pullInput(0);
+      // pull in the parameters
+      params = (EMOParams) pullInput(0);
+      // the starting population size
       populationSize = params.populationSize;
 
-      // determine what type of population to create.  a different pop is
-      // created for SO and MO problems.  simply count the number of FF
-      // to determine if it is an SO or MO problem.
-      Construction[] ffs = params.fitnessFunctionConstructions;
-      Table externalFfs = params.externalFitnessInfo;
+      // count the number of fitness functions
+      FitnessFunctions ff = params.fitnessFunctions;
+      numFF = ff.getTotalNumFitnessFunctions();
+      numFormulaFF = ff.getNumFitnessFunctions();
+      numExternalFF = ff.getNumExternFitnessFunctions();
 
-      numFF = 0;
-      numFormulaFF = 0;
-      numExternalFF = 0;
-      if (ffs != null) {
-        numFF += ffs.length;
-        numFormulaFF = ffs.length;
-      }
-      if (externalFfs != null) {
-        numFF += externalFfs.getNumRows();
-        numExternalFF = externalFfs.getNumRows();
-      }
-
-      // determine how many constraints are imposed on the problem
-      Construction[] constraints = params.constraintFunctionConstructions;
-      Table externalConstraints = params.externalConstraintInfo;
-      numConstraints = 0;
-      numFormulaConstraints = 0;
-      numExternalConstraints = 0;
-
-      if (constraints != null) {
-        numConstraints += constraints.length;
-        numFormulaConstraints = constraints.length;
-      }
-      if (externalConstraints != null) {
-        numConstraints += externalConstraints.getNumRows();
-        numExternalConstraints = externalConstraints.getNumRows();
-      }
+      // count the number of constraints
+      Constraints con = params.constraints;
+      numConstraints = con.getTotalNumConstriants();
+      numFormulaConstraints = con.getNumConstraintFunctions();
+      numExternalConstraints = con.getNumExternConstraints();
 
       if (numFF == 0) {
-        throw new Exception("No Fitness Functions were defined");
+        throw new Exception("No Fitness Functions were defined.");
       }
 
       firstTime = false;
     }
+    else {
+      // pull in the dummy input
+      pullInput(0);
+      // double the population size, but use the same parameters
+      populationSize *= 2;
+    }
 
-    // first create the individuals
-    int numVariables = params.boundsAndPrecision.getNumRows();
+    // the decision variables for the problem
+    DecisionVariables dv = params.decisionVariables;
+    // the fitness functions
+    FitnessFunctions ff = params.fitnessFunctions;
+
+    int numVariables = dv.getNumVariables();
     Range[] xyz;
 
     // use BinaryRange for binary-coded individuals
     if (params.createBinaryIndividuals) {
       xyz = new BinaryRange[numVariables];
       for (int i = 0; i < numVariables; i++) {
-        xyz[i] = new BinaryRange(X, params.boundsAndPrecision.getInt(i, 4));
+        xyz[i] = new BinaryRange(X, (int)dv.getVariableStringLength(i));
       }
     }
     // use DoubleRange for real-coded individuals
     else {
       xyz = new DoubleRange[numVariables];
       for (int i = 0; i < numVariables; i++) {
-        xyz[i] = new DoubleRange(params.boundsAndPrecision.getString(i, 0),
-                                 params.boundsAndPrecision.getFloat(i, 2),
-                                 params.boundsAndPrecision.getFloat(i, 1));
+        xyz[i] = new DoubleRange(dv.getVariableName(i),
+                                 dv.getVariableMax(i),
+                                 dv.getVariableMin(i));
       }
     }
 
@@ -128,27 +134,26 @@ public class EMOGeneratePopulation
 
     // first create the objective constraints for FF by formula
     for (int i = 0; i < numFormulaFF; i++) {
-      if ( ( (FitnessFunctionConstruction) params.
-            fitnessFunctionConstructions[i]).getIsMinimizing()) {
+       if(ff.functionIsMinimizing(i)) {
         formulas[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
-            params.fitnessFunctionConstructions[i].label, 0.0, 100.0);
+            ff.getFitnessFunctionName(i), 0.0, 1.0);
       }
       else {
         formulas[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
-            params.fitnessFunctionConstructions[i].label, 100.0, 0.0);
+            ff.getFitnessFunctionName(i), 1.0, 0.0);
       }
     }
 
     // now create the objective constraints for FF by extern
     for (int i = 0; i < numExternalFF; i++) {
-      String name = params.externalFitnessInfo.getString(i, 0);
-      if (params.externalFitnessInfo.getString(i, 4).equals("Minimize")) {
+      String name = ff.getExternFitnessFunctionName(i);
+      if(ff.getExternIsMinimizing(i)) {
         externs[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
-            name, 0.0, 100.0);
+            name, 0.0, 1.0);
       }
       else {
         externs[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
-            name, 100.0, 0.0);
+            name, 1.0, 0.0);
       }
     }
 
@@ -158,17 +163,17 @@ public class EMOGeneratePopulation
     System.arraycopy(formulas, 0, fit, 0, numFormulaFF);
     System.arraycopy(externs, 0, fit, numFormulaFF, numExternalFF);
 
-    // for an SO problem (one fitness function) create
+    // for an SO problem (one fitness function) create an SO population
     if (numFF == 1) {
       boolean constrained = (numConstraints > 0);
 
       if(constrained) {
-        // create a constrained SO pop  
+        // create a constrained SO pop
       }
       else {
-        // create an unconstrained SO pop  
+        // create an unconstrained SO pop
       }
-      
+
       // pop.setPopulationInfo(params);
       // pushOutput(pop, 0);
     }
@@ -182,17 +187,17 @@ public class EMOGeneratePopulation
       if (constrained) {
         pop = new ConstrainedNsgaPopulation(xyz, fit,
                                             this.populationSize, 0.01);
-
       }
       // if there are no constraints, we create an Unconstrained pop
       else {
         pop = new UnconstrainedNsgaPopulation(xyz, fit,
                                               this.populationSize, 0.01);
       }
-      pop.setPopulationInfo(params);
-      //set the maximum number of generation
+      // the parameters tag along with the population
+      pop.setParameters(params);
+      //set the maximum number of generations
       pop.setMaxGenerations(params.maxGenerations);
-      
+
       pushOutput(pop, 0);
     }
   }

@@ -25,13 +25,13 @@ public class DefineFitnessVariables
 
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
     return in;
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationParams"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOParams"};
     return out;
   }
 
@@ -68,11 +68,12 @@ public class DefineFitnessVariables
     // It is used in the redoBox() function
     private DefaultComboBoxModel columnModel;
 
-    private EMOPopulationParams data;
+    private EMOParams data;
 
     public void setInput(Object o, int i) {
-      data = (EMOPopulationParams) o;
-      table = (MutableTable) data.varNames;
+      data = (EMOParams) o;
+//      table = (MutableTable) data.varNames;
+      table = data.decisionVariables.createVariableNameTable();
       this.initialize();
     }
 
@@ -194,7 +195,7 @@ public class DefineFitnessVariables
             table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
           }
 
-          if (data.fitnessVariableConstructions == null) {
+          /*if (data.fitnessVariableConstructions == null) {
             data.fitnessVariableConstructions = tmp;
           }
           // append the new constructions onto the older constructions
@@ -211,6 +212,11 @@ public class DefineFitnessVariables
               j++;
             }
             data.fitnessVariableConstructions = tmp2;
+          }*/
+
+          FitnessFunctions ff = data.fitnessFunctions;
+          for(int i = 0; i < tmp.length; i++) {
+            ff.addFitnessVariable(tmp[i]);
           }
         }
 
