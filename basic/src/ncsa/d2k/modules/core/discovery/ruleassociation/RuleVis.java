@@ -10,7 +10,9 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
 import ncsa.d2k.modules.core.discovery.ruleassociation.*;
-import ncsa.gui.Constrain;
+import ncsa.gui.*;
+import java.io.*;
+import ncsa.d2k.gui.*;
 
 /**
 	RuleVis.java
@@ -22,6 +24,17 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	static final Color RULE_VIS_CONFIDENCE = new Color (196, 195, 26);
 	static final Color RULE_VIS_SUPPORT = new Color (87, 87, 100);
 	static final Color RULE_VIS_HIGHLIGHT = new Color (247, 247, 247);
+        private boolean ALPHA = true;
+        private static final Dimension buttonsize = new Dimension(22, 22);
+        private static final Color yellowish = new Color(255, 255, 240);
+        private static final String filtericon = File.separator+"images"+File.separator+"filter.gif";
+        private static final String printicon = File.separator+"images"+File.separator+"printit.gif";
+        private static final String refreshicon = File.separator+"images"+File.separator+"home.gif";
+        private static final String helpicon = File.separator+"images"+File.separator+"help.gif";
+        //note that the following are used only because alpha and rank
+        //icons are not available now
+        private static final String tableicon = File.separator+"images"+File.separator+"table.gif";
+        private static final String zoomicon = File.separator+"images"+File.separator+"zoom.gif";
 
 	/**	This method returns an array of strings that contains the data types for the inputs.
 		@return the data types of all inputs.
@@ -185,14 +198,25 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		This is the UserView class.
 	*/
 	private class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionListener, Printable {
+
 		java.util.List itemLabels = null;
+
 		RuleTable ruleTable;
 		int numExamples;
 		ValueVisDataModel vvdm;
 		RuleVisDataModel rvdm;
 		JMenuItem print;
+                JPanel header;
+                JButton filterButton;
+                JButton refreshButton;
+                JButton printButton;
+                JButton helpButton;
+                JToggleButton tableButton;
+                JToggleButton zoomButton;
+                HelpWindow help;
 		JMenuItem pmml;
 		JMenuBar menuBar;
+
 
 		/** this identifies the order the rules are displayed in, also what rules are
 		 * displayed. */
@@ -208,9 +232,124 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			JMenu options = new JMenu("Options");
 			print = new JMenuItem("Print...");
 			print.addActionListener(this);
+
+                        //load the images one by one
+                        Image im = mod.getImage(filtericon);
+                        ImageIcon icon = null;
+                        if(im != null)
+                           icon = new ImageIcon(im);
+                        if(icon != null) {
+                           filterButton = new JButton(icon);
+                           filterButton.setMaximumSize(buttonsize);
+                           filterButton.setPreferredSize(buttonsize);
+                        }
+                        else
+                          filterButton = new JButton("F");
+                        filterButton.addActionListener(this);
+                        filterButton.setToolTipText("Filter");
+
+                        im = mod.getImage(printicon);
+                        icon = null;
+                        if(im != null)
+                          icon = new ImageIcon(im);
+                        if(icon != null) {
+                          printButton = new JButton(icon);
+                          printButton.setMaximumSize(buttonsize);
+                          printButton.setPreferredSize(buttonsize);
+                        }
+                        else
+                          printButton = new JButton("P");
+                        printButton.addActionListener(this);
+                        printButton.setToolTipText("Print");
+
+                        im = mod.getImage(helpicon);
+                        icon = null;
+                        if(im != null)
+                          icon = new ImageIcon(im);
+                        if(icon != null) {
+                          helpButton = new JButton(icon);
+                          helpButton.setMaximumSize(buttonsize);
+                          helpButton.setPreferredSize(buttonsize);
+                        }
+                        else
+                          helpButton = new JButton("H");
+                        helpButton.addActionListener(this);
+                        helpButton.setToolTipText("Help");
+
+                        im = null;
+                        icon = null;
+                        im = mod.getImage(refreshicon);
+                        if(im != null)
+                          icon = new ImageIcon(im);
+                        if(icon != null) {
+                          refreshButton = new JButton(icon);
+                          refreshButton.setMaximumSize(buttonsize);
+                          refreshButton.setPreferredSize(buttonsize);
+                        }
+                        else
+                          refreshButton = new JButton("R");
+                        refreshButton.addActionListener(this);
+                        refreshButton.setToolTipText("Restore Original");
+
+                        //the Alphabetize image is not available yet
+                        im = null;
+                        icon = null;
+                        im = mod.getImage(tableicon);
+                        if(im != null)
+                          icon = new ImageIcon(im);
+                        if(icon != null) {
+                          tableButton = new JToggleButton(icon,true);
+                          tableButton.setMaximumSize(buttonsize);
+                          tableButton.setPreferredSize(buttonsize);
+                        }
+                        else
+                          tableButton = new JToggleButton("A");
+                        tableButton.addActionListener(this);
+                        tableButton.setToolTipText("Alphabetize");
+
+                        //the Rank image is not available yet
+                        im = null;
+                        icon = null;
+                        im = mod.getImage(zoomicon);
+                        if(im != null)
+                          icon = new ImageIcon(im);
+                        if(icon != null) {
+                          zoomButton = new JToggleButton(icon);
+                          zoomButton.setMaximumSize(buttonsize);
+                          zoomButton.setPreferredSize(buttonsize);
+                        }
+                        else
+                          zoomButton = new JToggleButton("R");
+                        zoomButton.addActionListener(this);
+                        zoomButton.setToolTipText("Rank");
+
+                        //set up the tool bar
+                        JPanel tools_right = new JPanel();
+                        tools_right.setLayout(new GridLayout(1,4));
+                        JPanel tools_left = new JPanel();
+                        tools_left.setLayout(new GridLayout(1,2));
+                        tools_left.add(tableButton);
+                        tools_left.add(zoomButton);
+                        tools_right.add(refreshButton);
+                        tools_right.add(filterButton);
+                        tools_right.add(printButton);
+                        tools_right.add(helpButton);
+                        JPanel east = new JPanel();
+                        JPanel west = new JPanel();
+                        west.setLayout(new BoxLayout(west, BoxLayout.Y_AXIS));
+                        east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
+                        west.add(Box.createGlue());
+                        east.add(Box.createGlue());
+                        west.add(tools_left);
+                        east.add(tools_right);
+                        header = new JPanel();
+                        header.setLayout(new BorderLayout());
+                        header.add(west, BorderLayout.WEST);
+                        header.add(east, BorderLayout.EAST);
+                        help = new HelpWindow();
 			options.add(print);
 
-			// Commented out for Basic as PMML not working right.  - Ruth
+			// Commented out for Bsic as PMML not working right.  - Ruth
 			// pmml = new JMenuItem("Save as PMML..");
 			// pmml.addActionListener(this);
 			// options.add(pmml);
@@ -259,13 +398,19 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		JTable rhjt = null;
 		private JViewport getRowHeadTable (int imageHeight)
 		{
-			String [][] rowNames = new String [itemLabels.size()][1];
+			itemLabels = ruleTable.getNamesList();
+
+                        String [][] rowNames = new String [itemLabels.size()][1];
 			String [] cn = {"attributes"};
-			for (int i = 0; i < itemLabels.size(); i++)
-				rowNames  [i][0] = ((String)itemLabels.get(i));
-			JViewport jv = new JViewport ();
-			DefaultTableModel dtm = new DefaultTableModel (rowNames, cn);
-			rhjt = new JTable (dtm);
+
+                    for (int i = 0; i < itemLabels.size(); i++)
+                            rowNames  [i][0] = ((String)itemLabels.get(i));
+
+                    JViewport jv = new JViewport ();
+                    DefaultTableModel dtm = new DefaultTableModel (rowNames, cn);
+                    rhjt = new JTable (dtm);
+
+
 			rhjt.setBackground (RuleVis.RULE_VIS_BACKGROUND);
 			jv.setBackground (RuleVis.RULE_VIS_BACKGROUND);
 
@@ -277,6 +422,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			// be that of the value cells
 			rhjt.setRowHeight (imageHeight + rhjt.getIntercellSpacing ().height*2);
 			rhjt.setAutoResizeMode (JTable.AUTO_RESIZE_OFF);
+
+
 			return jv;
 		}
 
@@ -318,46 +465,110 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			return buttons;
 		}
 
-		/**	A sorting button was clicked, resort by confidence or support.
+                /**
+                 * Update the row headers after a change to their order in the
+                 * RuleTable
+                 */
+                private void setAttributes(){
+                  itemLabels = ruleTable.getNamesList();
+                  String [][] rowNames = new String [itemLabels.size()][1];
+                  String [] cn = {"attributes"};
+                  for (int i = 0; i < itemLabels.size(); i++)
+                    rowNames  [i][0] = ((String)itemLabels.get(i));
+                  DefaultTableModel dtm = new DefaultTableModel (rowNames, cn);
+                  rhjt.setModel(dtm);
+                  setupRowHeaders(ruleTable.getNamesList());
+                  // Set the cell renderer for the rule labels
+                  TableColumnModel tcm = rhjt.getColumnModel();
+                  tcm = rhjt.getColumnModel();
+                  LabelCellRenderer lcr = new LabelCellRenderer ();
+                  TableColumn col = tcm.getColumn (0);
+                  lcr.setBackground (Color.white);
+                  col.setCellRenderer (lcr);
+                }
+
+
+		/**	A sorting or tool button was clicked.  Actions are defined here
 			@param e the action event.
 		*/
+
 		public void actionPerformed(ActionEvent e) {
-			if (e.getSource() == conf){
-				//ruleTable.sortByConfidence();
-				this.rvdm.sortConfidenceSupport();
-				this.repaint();
-			}
-			else if (e.getSource() == sup){
-				//ruleTable.sortBySupport();
-				this.rvdm.sortSupportConfidence();
-				this.repaint();
-			}
-			else if (e.getSource() == print) {
-				PrinterJob pj = PrinterJob.getPrinterJob();
-				pj.setPrintable(this);
-				if (pj.printDialog()) {
-					try {
-						pj.print();
-					}
-					catch(Exception exception) {
-						exception.printStackTrace();
-					}
-				}
-			}
-			else if(e.getSource() == pmml) {
-			JFileChooser fileChooser = new JFileChooser();
-			int retVal = fileChooser.showSaveDialog(null);
-			if(retVal == fileChooser.APPROVE_OPTION) {
-				java.io.File file = fileChooser.getSelectedFile();
-				//TODO add back pmml
-				//WriteRuleAssocPMML.writePMML(ruleTable, file.getAbsolutePath());
-			}
 
-			}
+                    if (e.getSource() == conf){
+                      this.rvdm.sortConfidenceSupport();
+                      if(!ALPHA)
+                        this.rvdm.rank();
+                      this.setAttributes();
+                      this.repaint();
+                    }
+                    else if (e.getSource() == sup){
+                      this.rvdm.sortSupportConfidence();
+                      if(!ALPHA)
+                        this.rvdm.rank();
+                      this.setAttributes();
+                      this.repaint();
+                    }
+                    else if (e.getSource() == helpButton){
+                      help.setVisible(true);
+                    }
+                    else if (e.getSource() == refreshButton){
+                      tableButton.setSelected(true);
+                      zoomButton.setSelected(false);
+                      ruleTable.setToOriginal();
+                      ruleTable.cleanup();
+                      ruleTable.alphaSort();
+                      rvdm = new RuleVisDataModel (ruleTable, itemLabels, numExamples);
+                      this.setAttributes();
+                      this.repaint();
+                      ALPHA = true;
+                    }
+                    //this is the alphabetize button
+                    else if (e.getSource() == tableButton){
+                      tableButton.setSelected(true);
+                      zoomButton.setSelected(false);
+                      ruleTable.alphaSort();
+                      this.setAttributes();
+                      this.repaint();
+                      ALPHA = true;
+                    }
+                    //this is the rank button
+                    else if (e.getSource() == zoomButton){
+                      tableButton.setSelected(false);
+                      zoomButton.setSelected(true);
+                      this.rvdm.rank();
+                      this.setAttributes();
+                      this.repaint();
+                      ALPHA = false;
+                    }
+                    else if (e.getSource() == filterButton){
+                      //no acion because the filter is not completed
+                    }
+                    else if (e.getSource() == print || e.getSource() == printButton) {
+                      PrinterJob pj = PrinterJob.getPrinterJob();
+                      pj.setPrintable(this);
+                      if (pj.printDialog()) {
+                        try {
+                          pj.print();
+                        }
+                        catch(Exception exception) {
+                          exception.printStackTrace();
+                        }
+                      }
+                    }
+                    else if(e.getSource() == pmml) {
+                      JFileChooser fileChooser = new JFileChooser();
+                      int retVal = fileChooser.showSaveDialog(null);
+                      if(retVal == fileChooser.APPROVE_OPTION) {
+                        java.io.File file = fileChooser.getSelectedFile();
+                        //TODO add back pmml
+                        //WriteRuleAssocPMML.writePMML(ruleTable, file.getAbsolutePath());
+                      }
 
-			rvdm.fireTableDataChanged();
-			vvdm.fireTableDataChanged();
-		}
+                    }
+
+                    vvdm.fireTableDataChanged();
+                  }
+
 
 		/**	Set up the labels. We will find the width of the longest label,
 			then we will set the width of each of the labels header rows
@@ -387,6 +598,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			vhjt.setPreferredScrollableViewportSize (dim);
 			dim.height = vhjt.getPreferredSize ().height;
 			rhjt.setPreferredScrollableViewportSize (dim);
+
 		}
 
 		/**	This method is called whenever an input arrives, and is responsible
@@ -402,6 +614,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                                 // Added call to cleanup() to remove items
                                 // from the RuleTable that are not used in any rules
                                 ruleTable.cleanup();
+                                //initially sort the attribute/values alphabetically
+                                ruleTable.alphaSort();
 				itemLabels = ruleTable.getNamesList();
 				// Do we have all the inputs we need?
 				if ((ruleTable != null) /*&& (itemLabels != null)*/){
@@ -459,6 +673,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				JTable rjt = new JTable (rvdm);
 				rjt.createDefaultColumnsFromModel ();
 				rjt.setBackground (RuleVis.RULE_VIS_BACKGROUND);
+
 				JViewport rowHeaders = this.getRowHeadTable (imgHeight);
 
 				// Set up the scroller for the rules.
@@ -471,9 +686,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				ruleScroller.setCorner (ScrollPaneConstants.UPPER_LEFT_CORNER, this.getSortPanel ());
 
 				// Set up the viewports and scrollers for the row labels.
-				this.setupRowHeaders (ruleTable.getNamesList());
-
-				// Set up a table model listener so when rows move in the rules, rows also
+                                this.setupRowHeaders (ruleTable.getNamesList());
+                                // Set up a table model listener so when rows move in the rules, rows also
 				// move appropriately in the confidences.
 				rjt.getColumnModel ().addColumnModelListener (new TableColumnModelListener () {
 					public void columnAdded(TableColumnModelEvent e) {}
@@ -523,11 +737,11 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				vjt.setAutoResizeMode (JTable.AUTO_RESIZE_OFF);
 
 				// Set the cell renderer for the rule labels
-				tcm = rhjt.getColumnModel();
-				LabelCellRenderer lcr = new LabelCellRenderer ();
-				TableColumn col = tcm.getColumn (0);
-				lcr.setBackground (Color.white);
-				col.setCellRenderer (lcr);
+                                tcm = rhjt.getColumnModel();
+                                LabelCellRenderer lcr = new LabelCellRenderer ();
+                                TableColumn col = tcm.getColumn (0);
+                                lcr.setBackground (Color.white);
+                                col.setCellRenderer (lcr);
 
 				// Same renderer for the conf/support labels
 				tcm = vhjt.getColumnModel();
@@ -540,12 +754,16 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				// Put them into a frame, then place the frame in this view with an inset.
 				JPanel jp = new JPanel ();
 				jp.setLayout (new GridBagLayout ());
-				this.setConstraints (jp, valueScroller, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+                                this.setConstraints (this, header, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+						GridBagConstraints.NORTH, 1, 0, new Insets (0, 0, 0, 0));
+                                this.setConstraints (jp, valueScroller, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
 						GridBagConstraints.WEST, 1, 0, new Insets (0, 0, 0, 0));
 				this.setConstraints (jp, ruleScroller, 0, 1, 1, 1, GridBagConstraints.BOTH,
 						GridBagConstraints.WEST, 1, 1, new Insets (0, 0, 0, 0));
-				this.setConstraints (this, jp, 0, 0, 1, 1, GridBagConstraints.BOTH,
-						GridBagConstraints.WEST, 1, 1, new Insets (10, 10,10, 10));
+				//this.setConstraints (this, jp, 0, 0, 1, 1, GridBagConstraints.BOTH,
+				//		GridBagConstraints.WEST, 1, 1, new Insets (35, 10,10, 10));
+                                this.setConstraints(this,jp,0,0,1,1,GridBagConstraints.BOTH,
+                                    GridBagConstraints.WEST,1,1,new Insets(35,10,10,10));
 
 				// Now fix up the sizes of the scroll panels considering the
 				// usage of scroll bars. The value scroller never has a scroll bar
@@ -568,6 +786,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				// Now link the conf/supp viewport to the rules viewport
 				ruleScroller.getViewport ().addChangeListener (new ScrollLinkageChangeListener(
 						ruleScroller.getViewport (), valueScroller.getViewport()));
+
+
 			}
 		}
 
@@ -708,6 +928,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			/**	return text that indicates if the cell at row, column is
 				an antecedent, a result or not.
 			*/
+
+
 			public Object getValueAt (int row, int column) {
 				String returnval = "";
 				int[] head = rules.getRuleAntecedent(order[column]);
@@ -827,6 +1049,28 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 					order[i] = i;
 			}
 
+                        /**
+                         * Rank the rows depending on where they lie on in the table, that
+                         * is figure out which rules are important based on the sort and
+                         * reorder them accordingly
+                         */
+                        public void rank(){
+                          int[] done = new int[this.getRowCount()];
+                          int[] priority = new int[this.getRowCount()];
+                          int numInserted = 0;
+                          for(int j = 0; j < this.getColumnCount(); j++){
+                            for(int i = 0; i < this.getRowCount(); i++){
+                              if(!getValueAt(i,j).equals("") && done[i] != 1){
+                                priority[numInserted] = i;
+                                done[i] = 1;
+                                numInserted++;
+                              }
+                            }
+                          }
+                           ruleTable.reOrderRows(priority);
+                        }
+
+
 			/**
 				Bubble sort on confidence as primary key.
 			*/
@@ -835,6 +1079,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				int numRules = rules.getNumRules();
 				this.unSort();
 				this.quickSort (0, numRules-1);
+
 			}
 
 			/**
@@ -845,6 +1090,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				int numRules = rules.getNumRules();
 				this.unSort();
 				this.quickSort (0, numRules-1);
+
 			}
 
 			/**
@@ -923,10 +1169,26 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		}
 	}
 
-	private static final String HEAD = "Head";
+        /**
+         * This small class runs the HelpWindow.
+         * NOTE: as of 6/09/03 the help window was not up to date, because the toolbar
+         * was added. --Scott
+         */
+        private final class HelpWindow extends JD2KFrame {
+          HelpWindow() {
+            super("About RuleVis");
+            JEditorPane jep = new JEditorPane("text/html", getModuleInfo());
+            jep.setBackground(yellowish);
+            getContentPane().add(new JScrollPane(jep));
+            setSize(400, 400);
+          }
+        }
+
+      	private static final String HEAD = "Head";
 	private static final String BODY = "Body";
 	private static final String IF = "If";
 	private static final String THEN = "Then";
+
 }
 
 // Start QA Comments
