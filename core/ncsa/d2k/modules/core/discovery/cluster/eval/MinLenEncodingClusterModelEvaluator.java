@@ -207,8 +207,19 @@ public class MinLenEncodingClusterModelEvaluator
         score = clusters.size()*2*s;
         score += clusters.size()*tab.getNumRows();
 
+//        System.out.println(score);
+
       for (int i = 0, n = clusters.size(); i < n; i++) {
         TableCluster tc = (TableCluster)clusters.get(i);
+
+//        System.out.println("Cluster: " + tc.getClusterLabel());
+//        System.out.print("rows: ");
+        int[] rows = tc.getMemberIndices();
+//        for (int a = 0, b = tc.getMemberIndices().length; a < b; a++){
+//          System.out.print(rows[a] + " ");
+//        }
+//        System.out.println();
+
         Table ctab = tab.getSubset(tc.getMemberIndices());
         obs = this.calculateMinMax(ctab, ifeatures);
         min = (double[])obs[0];
@@ -221,8 +232,10 @@ public class MinLenEncodingClusterModelEvaluator
             s += ((max[j] - min[j]) > .5) ? 2 : 1;
           }
         }
+//        System.out.println(tc.getSize() + " " + s);
         score += tc.getSize()*s;
       }
+//      System.out.println(score + "\n\n");
 
       double[] utility = new double[1];
       utility[0] = score;
@@ -292,6 +305,17 @@ public class MinLenEncodingClusterModelEvaluator
     Object[] ret = new Object[2];
     ret[0] = min;
     ret[1] = max;
+//    System.out.println("Num tab rows: " + itable.getNumRows());
+//    System.out.print("min: ");
+//    for (int i = 0, n = min.length; i < n; i++){
+//      System.out.print(min[i] + " ");
+//    }
+//    System.out.println();
+//    System.out.print("max: ");
+//    for (int i = 0, n = max.length; i < n; i++){
+//      System.out.print(max[i] + " ");
+//    }
+//    System.out.println();
     return ret;
   }
 
