@@ -263,8 +263,22 @@ public class ColumnExpression implements Expression {
 	// if you add any more with higher precedence than
 	// AND, make sure you update best_type in parse()!
 
-	private static final int[] order = { 0, 0, 2, 2, 1, 4, 3 };
+//vered - merging with updates from basic3
+        private static final int
+      POW = 7;
+      //SQRT = 8,
+      //LOG = 9,
+      //LN = 10,
+      //EXP = 11;
 
+  private static final int[] order = {
+      0, 0, 2, 2, 1, 4, 3, 5};
+
+
+//vered - replace this oerder with the one above, from basic3. ?
+	//private static final int[] order = { 0, 0, 2, 2, 1, 4, 3 };
+
+//vered - end merging.
 	private Node parse(String expression) throws ExpressionException {
 
 		char c;
@@ -375,6 +389,87 @@ public class ColumnExpression implements Expression {
 					i++;
 					break;
 
+                                //vered - merging updates form absic3.
+                                // power
+                                case '^':
+
+                              //System.out.println("FOUND POW.");
+                                        operator_found = true;
+                                        if (depth < best_depth ||
+                                            depth == best_depth && order[POW] <= order[best_type]) {
+                                          best_depth = depth;
+                                          best_type = POW;
+                                          best_pos = i;
+                                        }
+                                        break;
+                                      default:
+
+                                        // check and see if it starts with a function
+                                        StringBuffer sb = new StringBuffer(10);
+                                        for (int z = i; z < expression.length(); z++)
+                                          sb.append(expression.charAt(z));
+
+                                          // this is the rest of the expression
+                                        String ex = sb.toString();
+                              //System.out.println("DEF:"+ex);
+                                        // the amount to increment i
+                                        int increment = 0;
+
+                                        // count whitespace at the beginning
+                                        // we will want to skip over this
+                                        for (int z = 0; z < ex.length(); z++) {
+                                          char cc = ex.charAt(z);
+                                          if (cc == ' ') {
+                                            increment++;
+                                          }
+                                          else
+                                            break;
+                                        }
+
+                                        // trim it
+                                        ex = ex.trim();
+
+                                        // if it starts with one of our functions, use it
+                                        if (ex.startsWith(LOG) || ex.startsWith(EXP) ||
+                                            ex.startsWith(SIN) || ex.startsWith(COS) ||
+                                            ex.startsWith(TAN) || ex.startsWith(SQRT) ||
+                                            ex.startsWith(NAT_LOG) || ex.startsWith(ABS) ||
+                                            ex.startsWith(NEG) || ex.startsWith(ASIN) ||
+                                            ex.startsWith(ACOS) || ex.startsWith(ATAN)) {
+                                          // try to move the current location to the end of the function
+
+                                          // the index of the first parenthesis
+                                          int firstParen = expression.indexOf('(', i);
+                                          // the number of open paren
+                                          int numOpen = 1;
+                                          // if it had the parenthesis
+                                          if (firstParen != -1) {
+                                            int k = firstParen + 1;
+                                            // for each character
+                                            for (; k < expression.length(); k++) {
+                                              char cc = expression.charAt(k);
+                                              if (cc == '(') {
+                              //System.out.println("OPEN PAREN:"+k);
+                                                numOpen++;
+                                              }
+                                              else if (cc == ')') {
+                              //System.out.println("CLOSE PAREN:"+k);
+                                                numOpen--;
+                                              }
+
+                                              if (numOpen == 0) {
+                                                //k++;
+                                                break;
+                                              }
+                                            }
+                                            // skip the rest of the function
+                                            i = k + increment;
+                                          }
+                                        }
+                                        break;
+                                        //end of default section
+                              //vered - end of merging
+
 			}
 
 			if (depth > max_depth)
@@ -414,7 +509,24 @@ public class ColumnExpression implements Expression {
 						.substring(best_pos + offset, expression.length())
 						.trim()));
 
-		} else { // this is a terminal
+		}
+
+           //vered - merging updates from basic3
+                // check if it is a function node before checking if it is a terminal node
+                else if(expression.indexOf(LOG) != -1 || expression.indexOf(EXP) != -1 ||
+                        expression.indexOf(SIN) != -1 || expression.indexOf(COS) != -1 ||
+                       expression.indexOf(TAN) != -1 || expression.indexOf(SQRT) != -1 ||
+                       expression.indexOf(NAT_LOG) != -1 || expression.indexOf(ABS) != -1 ||
+                       expression.indexOf(NEG) != -1 || expression.indexOf(ASIN) != -1 ||
+                       expression.indexOf(ACOS) != -1 || expression.indexOf(ATAN) != -1) {
+           //System.out.println("***New FunctionNode: "+expression);
+                  return new FunctionNode(expression);
+                }
+            //vered - end of merging
+
+
+
+                else { // this is a terminal
 
 			// we still have to remove extraneous parentheses, but it's a
 			// little different this time
@@ -501,6 +613,41 @@ public class ColumnExpression implements Expression {
 		public abstract Object evaluate() throws ExpressionException;
 
 	}
+
+
+        //vered - merging with basic3 updates
+        /**
+   * supported functions
+   */
+  private static final String LOG = "log",
+      EXP = "exp",
+      NAT_LOG = "ln",
+      ABS = "abs",
+      SIN = "sin",
+      ASIN = "asin",
+      COS = "cos",
+      ACOS = "acos",
+      TAN = "tan",
+      ATAN = "atan",
+      SQRT = "sqrt",
+      NEG = "neg";
+//      POW = "pow";
+
+  private static final int
+    LOG_OP = 0,
+    EXP_OP = 1,
+    NAT_LOG_OP = 2,
+    ABS_OP = 3,
+    SIN_OP = 4,
+    ASIN_OP = 5,
+    COS_OP = 6,
+    ACOS_OP = 7,
+    TAN_OP = 8,
+    ATAN_OP = 9,
+    SQRT_OP = 10,
+    NEG_OP = 11;
+//    POW_OP = 12;
+//vered - end of merging.
 
 	private class OperationNode extends Node {
 
@@ -724,6 +871,12 @@ public class ColumnExpression implements Expression {
 				case OR :
 					buffer.append("||");
 					break;
+                              //vered - merging updates form basic3
+                                case POW:
+                                  buffer.append("^");
+                                  break;
+                              //vered - end merging
+
 			}
 			buffer.append(' ');
 
@@ -742,7 +895,9 @@ public class ColumnExpression implements Expression {
 		////////////////////////////////////////////////////////////////////////////////
 		// The big one. Operation evaluation is the main chunk of this class.         //
 		////////////////////////////////////////////////////////////////////////////////
-
+                //vered - mergin updates from basic 3:
+                //added another case to all switches of operation type
+                //the POW case.
 		public Object evaluate() throws ExpressionException {
 
 			int numRows = table.getNumRows();
@@ -807,6 +962,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < b.length; i++)
 										b[i] = (byte) (bL[i] % bR[i]);
 									break;
+
+                                                                case POW:
+                                                                  for(int i = 0; i < b.length; i++) {
+                                                                    b[i] = (byte) Math.pow(bL[i], bR[i]);
+                                                                  }
+                                                                  break;
+
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -836,6 +999,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < d.length; i++)
 										d[i] = (double) bL[i] % dR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < d.length; i++) {
+                                                                    d[i] = Math.pow(bL[i], dR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -865,6 +1036,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < f.length; i++)
 										f[i] = (float) bL[i] % fR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < f.length; i++) {
+                                                                    f[i] = (float)Math.pow(bL[i], fR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -893,7 +1072,14 @@ public class ColumnExpression implements Expression {
 								case MODULUS :
 									for (int i = 0; i < I.length; i++)
 										I[i] = (int) bL[i] % iR[i];
-									break;
+                                                                              break;
+
+                                                                case POW:
+                                                                  for (int i = 0; i < I.length; i++) {
+                                                                    I[i] = (int) Math.pow(bL[i], iR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -923,6 +1109,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < l.length; i++)
 										l[i] = (long) bL[i] % lR[i];
 									break;
+
+                                                                case POW:
+                                                                  for (int i = 0; i < l.length; i++) {
+                                                                    l[i] = (long)Math.pow(bL[i], lR[i]);
+                                                                  }
+                                                                  break;
+
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -952,6 +1146,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < s.length; i++)
 										s[i] = (short) ((short) bL[i] % sR[i]);
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < s.length; i++) {
+                                                                    s[i] = (short) Math.pow(bL[i], sR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -992,6 +1194,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < d.length; i++)
 										d[i] = dL[i] % (double) bR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < d.length; i++) {
+                                                                    d[i] = Math.pow(dL[i], bR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal Expression.");
 							}
@@ -1021,6 +1231,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < d.length; i++)
 										d[i] = dL[i] % dR[i];
 									break;
+
+
+                                                                  case POW:
+                                                                    for (int i = 0; i < d.length; i++) {
+                                                                      d[i] = Math.pow(dL[i], dR[i]);
+                                                                    }
+                                                                    break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1050,6 +1268,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < d.length; i++)
 										d[i] = dL[i] % (double) fR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < d.length; i++) {
+                                                                    d[i] = Math.pow(dL[i], fR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1079,6 +1305,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < d.length; i++)
 										d[i] = dL[i] % (double) iR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < d.length; i++) {
+                                                                    d[i] = Math.pow(dL[i], iR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1108,6 +1342,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < d.length; i++)
 										d[i] = dL[i] % (double) lR[i];
 									break;
+
+                                                                case POW:
+                                                                  for (int i = 0; i < d.length; i++) {
+                                                                    d[i] = Math.pow(dL[i], lR[i]);
+                                                                  }
+                                                                  break;
+
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1137,6 +1379,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < d.length; i++)
 										d[i] = dL[i] % (double) sR[i];
 									break;
+
+
+                                                              case POW:
+                                                                for (int i = 0; i < d.length; i++) {
+                                                                  d[i] = Math.pow(dL[i], sR[i]);
+                                                                }
+                                                                break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1177,6 +1427,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < f.length; i++)
 										f[i] = fL[i] % (float) bR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < f.length; i++) {
+                                                                    f[i] = (float)Math.pow(fL[i], bR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal Expression.");
 							}
@@ -1206,6 +1464,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < d.length; i++)
 										d[i] = (double) fL[i] % dR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < d.length; i++) {
+                                                                    d[i] = Math.pow(fL[i], dR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1235,6 +1501,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < f.length; i++)
 										f[i] = fL[i] % fR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < f.length; i++) {
+                                                                    f[i] = (float)Math.pow(fL[i], fR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1264,6 +1538,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < f.length; i++)
 										f[i] = fL[i] % (float) iR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < f.length; i++) {
+                                                                    f[i] = (float)Math.pow(fL[i], iR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1293,6 +1575,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < d.length; i++)
 										d[i] = (double) fL[i] % (double) lR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < d.length; i++) {
+                                                                    d[i] = Math.pow(fL[i], lR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1322,6 +1612,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < f.length; i++)
 										f[i] = fL[i] % (float) sR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < f.length; i++) {
+                                                                    f[i] = (float)Math.pow(fL[i], sR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1362,6 +1660,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < I.length; i++)
 										I[i] = iL[i] % (int) bR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < I.length; i++) {
+                                                                    I[i] = (int)Math.pow(iL[i], bR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal Expression.");
 							}
@@ -1391,6 +1697,13 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < d.length; i++)
 										d[i] = (double) iL[i] % dR[i];
 									break;
+
+                                                                case POW:
+                                                                  for (int i = 0; i < d.length; i++) {
+                                                                    d[i] = Math.pow(iL[i], dR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1420,6 +1733,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < f.length; i++)
 										f[i] = (float) iL[i] % fR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < f.length; i++) {
+                                                                    f[i] = (float)Math.pow(iL[i], fR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1449,6 +1770,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < I.length; i++)
 										I[i] = iL[i] % iR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < I.length; i++) {
+                                                                    I[i] = (int)Math.pow(iL[i], iR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1478,6 +1807,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < l.length; i++)
 										l[i] = (long) iL[i] % lR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < l.length; i++) {
+                                                                    l[i] = (long)Math.pow(iL[i], lR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1507,6 +1844,13 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < I.length; i++)
 										I[i] = iL[i] % (int) sR[i];
 									break;
+
+                                                                case POW:
+                                                                  for (int i = 0; i < I.length; i++) {
+                                                                    I[i] = (int) Math.pow(iL[i], sR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1547,6 +1891,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < s.length; i++)
 										s[i] = (short) (sL[i] % (short) bR[i]);
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < s.length; i++) {
+                                                                    s[i] = (short) Math.pow(sL[i], bR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1576,6 +1928,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < d.length; i++)
 										d[i] = (double) sL[i] % dR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < d.length; i++) {
+                                                                    d[i] = (double) Math.pow(sL[i], dR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1605,6 +1965,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < f.length; i++)
 										f[i] = (float) sL[i] % fR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < f.length; i++) {
+                                                                    f[i] = (float) Math.pow(sL[i], fR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1634,6 +2002,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < I.length; i++)
 										I[i] = (int) sL[i] % iR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < I.length; i++) {
+                                                                    I[i] = (int) Math.pow(sL[i], iR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1663,6 +2039,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < l.length; i++)
 										l[i] = (long) sL[i] % lR[i];
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < l.length; i++) {
+                                                                    l[i] = (long) Math.pow(sL[i], lR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1692,6 +2076,14 @@ public class ColumnExpression implements Expression {
 									for (int i = 0; i < s.length; i++)
 										s[i] = (short) (sL[i] % sR[i]);
 									break;
+
+
+                                                                case POW:
+                                                                  for (int i = 0; i < s.length; i++) {
+                                                                    s[i] = (short) Math.pow(sL[i], sR[i]);
+                                                                  }
+                                                                  break;
+
 								default :
 									throw new ExpressionException("ColumnExpression: Illegal expression.");
 							}
@@ -1699,14 +2091,14 @@ public class ColumnExpression implements Expression {
 						default :
 							throw new ExpressionException("ColumnExpression: Illegal expression.");
 
-					}
+					}//switch(right return type)
 
-			}
+			}//switch(left return type)
 
 			throw new ExpressionException("ColumnExpression: apparently malformed expression.");
 			// return null;
 
-		}
+		}//evaluate
 
 		////////////////////////////////////////////////////////////////////////////////
 		// end operation evaluation                                                   //
@@ -1903,4 +2295,279 @@ public class ColumnExpression implements Expression {
 		return root.returnType;
 	}
 
-}
+//vered - merging updates from basic3.
+        /**
+         * A FunctionNode is a mathematical function on another node.
+         * Currently log, exp, ln, abs, sin, asin, cos, acos, tan, atan,
+         * sqrt, and neg are supported.
+         */
+        private class FunctionNode extends Node {
+
+          private Node argument;
+          //private String operation;
+          private int operation;
+
+          FunctionNode(String expression) throws ExpressionException {
+            // all the functions return doubles
+            returnType = TYPE_DOUBLE;
+
+            expression = expression.trim();
+
+            // it is a log
+            if (expression.startsWith(LOG)) {
+              operation = LOG_OP;
+              // remove the log part of the expression
+              String tmpExp = expression.substring(LOG.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+            // it is an exp (e^x)
+            else if (expression.startsWith(EXP)) {
+              operation = EXP_OP;
+              // remove the exp part of the expression
+              String tmpExp = expression.substring(EXP.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+            else if (expression.startsWith(NAT_LOG)) {
+              operation = NAT_LOG_OP;
+              String tmpExp = expression.substring(NAT_LOG.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+            else if (expression.startsWith(ABS)) {
+              operation = ABS_OP;
+              String tmpExp = expression.substring(ABS.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+            else if (expression.startsWith(SIN)) {
+              operation = SIN_OP;
+              String tmpExp = expression.substring(SIN.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+            else if (expression.startsWith(ASIN)) {
+              operation = ASIN_OP;
+              String tmpExp = expression.substring(ASIN.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+            else if (expression.startsWith(COS)) {
+              operation = COS_OP;
+              String tmpExp = expression.substring(COS.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+            else if (expression.startsWith(ACOS)) {
+              operation = ACOS_OP;
+              String tmpExp = expression.substring(ACOS.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+            else if (expression.startsWith(TAN)) {
+              operation = TAN_OP;
+              String tmpExp = expression.substring(TAN.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+            else if (expression.startsWith(ATAN)) {
+              operation = ATAN_OP;
+              String tmpExp = expression.substring(ATAN.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+            else if (expression.startsWith(SQRT)) {
+              operation = SQRT_OP;
+              String tmpExp = expression.substring(SQRT.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+            else if (expression.startsWith(NEG)) {
+              operation = NEG_OP;
+              String tmpExp = expression.substring(NEG.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }
+      /*      else if (expression.startsWith(POW)) {
+              operation = POW_OP;
+              String tmpExp = expression.substring(POW.length() + 1,
+                                                   expression.length() - 1);
+              // parse the argument
+              argument = parse(tmpExp);
+            }*/
+
+            else
+              throw new ExpressionException("FunctionNode: not an expression " +
+                                            expression);
+          }
+
+          public String toString() {
+            StringBuffer sb = new StringBuffer();
+            switch (operation) {
+              case LOG_OP:
+                sb.append(LOG);
+                break;
+              case SIN_OP:
+                sb.append(SIN);
+                break;
+              case COS_OP:
+                sb.append(COS);
+                break;
+              case TAN_OP:
+                sb.append(TAN);
+                break;
+              case SQRT_OP:
+                sb.append(SQRT);
+                break;
+              case ABS_OP:
+                sb.append(ABS);
+                break;
+              case EXP_OP:
+                sb.append(EXP);
+                break;
+              case ASIN_OP:
+                sb.append(ASIN);
+                break;
+              case ACOS_OP:
+                sb.append(ACOS);
+                break;
+              case ATAN_OP:
+                sb.append(ATAN);
+                break;
+              case NEG_OP:
+                sb.append(NEG);
+                break;
+      /*        case POW_OP:
+                sb.append(POW);
+                break;
+       */
+            }
+            sb.append('(');
+            sb.append(argument.toString());
+            sb.append(')');
+
+            return sb.toString();
+          }
+
+          public Object evaluate() throws ExpressionException {
+            double[] retVal = new double[table.getNumRows()];
+            double[] arg;
+            // evaluate the argument and copy all of its results into a double
+            // array for simplicity later
+            switch (argument.returnType) {
+              case TYPE_BOOLEAN:
+                throw new ExpressionException(
+                    "FunctionNode: Functions do not evaluate to boolean values.");
+              case TYPE_DOUBLE:
+                arg = (double[]) argument.evaluate();
+                break;
+              case TYPE_FLOAT:
+                float[] ar = (float[]) argument.evaluate();
+                arg = new double[ar.length];
+                for (int i = 0; i < ar.length; i++)
+                  arg[i] = ar[i];
+                break;
+              case TYPE_LONG:
+                long[] l = (long[]) argument.evaluate();
+                arg = new double[l.length];
+                for (int i = 0; i < l.length; i++)
+                  arg[i] = l[i];
+                break;
+              case TYPE_BYTE:
+                byte[] b = (byte[]) argument.evaluate();
+                arg = new double[b.length];
+                for (int i = 0; i < b.length; i++)
+                  arg[i] = b[i];
+                break;
+              case TYPE_INTEGER:
+                int[] ia = (int[]) argument.evaluate();
+                arg = new double[ia.length];
+                for (int i = 0; i < ia.length; i++)
+                  arg[i] = ia[i];
+                break;
+              case TYPE_SHORT:
+                short[] s = (short[]) argument.evaluate();
+                arg = new double[s.length];
+                for (int i = 0; i < s.length; i++)
+                  arg[i] = s[i];
+                break;
+              default:
+                throw new ExpressionException("FunctionNode: Cannot use return type.");
+            }
+
+            switch (operation) {
+              case LOG_OP:
+                for (int i = 0; i < arg.length; i++)
+                  retVal[i] = Math.log(arg[i]) / Math.log(10);
+                break;
+              case SIN_OP:
+                for (int i = 0; i < arg.length; i++)
+                  retVal[i] = Math.sin(arg[i]);
+                break;
+              case COS_OP:
+                for (int i = 0; i < arg.length; i++)
+                  retVal[i] = Math.cos(arg[i]);
+                break;
+              case TAN_OP:
+                for (int i = 0; i < arg.length; i++)
+                  retVal[i] = Math.tan(arg[i]);
+                break;
+              case SQRT_OP:
+                for (int i = 0; i < arg.length; i++)
+                  retVal[i] = Math.sqrt(arg[i]);
+                break;
+              case ABS_OP:
+                for (int i = 0; i < arg.length; i++)
+                  retVal[i] = Math.abs(arg[i]);
+                break;
+              case EXP_OP:
+                for (int i = 0; i < arg.length; i++)
+                  retVal[i] = Math.exp(arg[i]);
+                break;
+              case ASIN_OP:
+                for (int i = 0; i < arg.length; i++)
+                  retVal[i] = Math.asin(arg[i]);
+                break;
+              case ACOS_OP:
+                for (int i = 0; i < arg.length; i++)
+                  retVal[i] = Math.acos(arg[i]);
+                break;
+              case ATAN_OP:
+                for (int i = 0; i < arg.length; i++)
+                  retVal[i] = Math.atan(arg[i]);
+                break;
+              case NEG_OP:
+                for (int i = 0; i < arg.length; i++)
+                  retVal[i] = arg[i] * -1;
+                break;
+              default:
+                throw new ExpressionException(
+                    "FunctionNode: Function not recognized.");
+
+            }
+            return retVal;
+          }
+        }//FunctionNode
+//vered - end merging
+
+
+}//ColumnExpression
+
+
+      /**
+      * vered: 03-10-04: merged basic4 version with basic3 version (added support
+ * in new operations from basic3).
+*/

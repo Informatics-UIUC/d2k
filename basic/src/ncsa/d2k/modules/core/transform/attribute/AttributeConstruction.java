@@ -49,15 +49,23 @@ public class AttributeConstruction extends HeadlessUIModule {
       sb.append("object that can be applied downstream in order to actually ");
       sb.append("add the new attributes to the table.");
       sb.append("</p><p>");
+
+//vered - merging with basic3 updates, added details about new operations.
       sb.append("The available operations on numeric attributes are addition, ");
-      sb.append("subtraction, multiplication, division, and modulus. The ");
-      sb.append("operations available on boolean attributes are AND and OR.");
+      sb.append("subtraction, multiplication, division, and modulus.<BR>");
+      sb.append("<BR>In addition there are also the following scientific operations: ");
+      sb.append("<BR>^ = by the power of...<BR>neg(x) = -1*x<BR>log(x) = base 10 logarithm");
+      sb.append("<BR>ln() = base e logarithm<BR>abs() = absulute value<BR>exp(x) = e^x");
+      sb.append("<BR>sin() = sine<BR>asin() = arc sine<BR>cosin() = cosine<BR>acosin() = arc cosine");
+      sb.append("<BR>tan() = tangent<BR>atan() = arc tangent");
+      //vered - end merge
+
+      sb.append("<P>The operations available on boolean attributes are AND and OR.");
       sb.append("</p><p>Missing Values Handling: Missing values are preserved by " +
                 "the output Transformation of this module. An attribute that is " +
                 "constructed from a missing values will be a missing value in the " +
                 "result Table.");
-
-      sb.append("</p><p>Data Type Restrictions: ");
+         sb.append("</p><p>Data Type Restrictions: ");
       sb.append("Attribute construction operations can only be performed on the ");
       sb.append("numeric and boolean attributes of a table. Other attributes will ");
       sb.append("be ignored, but they will not be modified.");
@@ -110,7 +118,10 @@ public class AttributeConstruction extends HeadlessUIModule {
    public String[] getFieldNameMapping() { return null; }
 
    protected UserView createUserView() {
-      return new ColumnConstructionGUI(null, null, null);
+     //vered - incorporating changes form basic 3
+     //replacing this call to Ctor with the other
+//      return new ColumnConstructionGUI(null, null, null);
+           return new ColumnConstructionGUI();
    }
 
 /******************************************************************************/
@@ -175,11 +186,13 @@ public class AttributeConstruction extends HeadlessUIModule {
         this.constructions = (Object[])AttributeConstruction.this.getLastCons();
       }
 
-     public ColumnConstructionGUI(String[] nl, int[] nt, Object[] con) {
+//vered - incorporating changes form basic 3
+      //commented this constructor out?
+/*     public ColumnConstructionGUI(String[] nl, int[] nt, Object[] con) {
         this.newLabels = nl;
         this.newTypes = nt;
         this.constructions = con;
-      }
+      }*/
 
       public void initView(ViewModule m) {
          mod = m;
@@ -202,6 +215,9 @@ public class AttributeConstruction extends HeadlessUIModule {
 
      public void initialize() {
 
+       //vered - merging with basic3 version
+       mod.setWindowName(getAlias());
+//vered end merge
          this.removeAll();
 		 this.newLabels = null;
 		 this.newTypes = null;
@@ -239,6 +255,7 @@ public class AttributeConstruction extends HeadlessUIModule {
                   StringBuffer buffer = new StringBuffer(table.getColumnLabel(i));
 
                   for (int j = 0; j < buffer.length(); j++) {
+                    //vered - merging with basic3 updates - shouldn't we support the scientific
 
                      switch (buffer.charAt(j)) {
 
@@ -295,6 +312,22 @@ public class AttributeConstruction extends HeadlessUIModule {
          operationBox.addItem("*");
          operationBox.addItem("/");
          operationBox.addItem("%");
+
+         //vered - merging with absic 3
+         operationBox.addItem("^");
+      operationBox.addItem("neg()");
+      operationBox.addItem("log()");
+      operationBox.addItem("ln()");
+      operationBox.addItem("sqrt()");
+      operationBox.addItem("abs()");
+      operationBox.addItem("exp()");
+      operationBox.addItem("sin()");
+      operationBox.addItem("asin()");
+      operationBox.addItem("cos()");
+      operationBox.addItem("acos()");
+      operationBox.addItem("tan()");
+      operationBox.addItem("atan()");
+//vered end merge
 
          addOperationButton = new JButton(
                new ImageIcon(mod.getImage("/images/addbutton.gif")));
@@ -680,8 +713,18 @@ public class AttributeConstruction extends HeadlessUIModule {
       sb.append("table from operations on existing attributes.");
       sb.append("<br><br>");
       sb.append("The available operations on numeric attributes are addition, ");
-      sb.append("subtraction, multiplication, division, and modulus. The ");
-      sb.append("operations available on boolean attributes are AND and OR. ");
+      sb.append("subtraction, multiplication, division, and modulus.<BR> ");
+
+
+//vered - merging with basic3 updates, added details about new operations.
+      sb.append("<BR>In addition there are also the following scientific operations: ");
+      sb.append("<BR>^ = by the power of...<BR>neg(x) = -1*x<BR>log(x) = base 10 logarithm");
+      sb.append("<BR>ln() = base e logarithm<BR>abs() = absulute value<BR>exp(x) = e^x");
+      sb.append("<BR>sin() = sine<BR>asin() = arc sine<BR>cosin() = cosine<BR>acosin() = arc cosine");
+      sb.append("<BR>tan() = tangent<BR>atan() = arc tangent");
+//vered - end merge.
+
+      sb.append("<P>The operations available on boolean attributes are AND and OR. ");
       sb.append("The user can construct an expression for the new attribute ");
       sb.append("using the lists of attributes and/or the scalar textfield and the operators on the left. ");
       sb.append("It is important that this expression be well-formed: that ");
@@ -769,3 +812,8 @@ public class AttributeConstruction extends HeadlessUIModule {
  * 01-06-04: ready for basic.
  */
 
+
+/**
+ * vered - 3-10-2004: merged basic4 version with basic3 version (added support
+ * in new operations from basic3).
+*/

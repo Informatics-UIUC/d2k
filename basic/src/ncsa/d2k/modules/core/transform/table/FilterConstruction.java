@@ -546,6 +546,7 @@ try {
            table.removeRow(i);
 
 
+
          // 4/7/02 commented out by Loretta...
          // this add gets done by applyTransformation
          //table.addTransformation(this);
