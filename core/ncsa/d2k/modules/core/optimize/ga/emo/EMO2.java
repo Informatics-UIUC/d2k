@@ -139,7 +139,7 @@ public class EMO2 extends UIModule {
       int[] sc = new int[]{0, 1};
       //table.print();
 
-      //spw.setTable(table, sc);
+      spw.setTable(table, sc);
     }
 
     private class MainView extends JPanel {
@@ -440,10 +440,10 @@ public class EMO2 extends UIModule {
                                       Color.red, scalarColumns[j], scalarColumns[i]);
                 settings.xaxis = table.getColumnLabel(scalarColumns[j]);
                 settings.yaxis = table.getColumnLabel(scalarColumns[i]);
-                settings.xmaximum = new Integer(100);
-                settings.xminimum = new Integer(-100);
-                settings.yminimum = new Integer(-100);
-                settings.ymaximum = new Integer(100);
+                settings.xmaximum = new Integer(5);
+                settings.xminimum = new Integer(-5);
+                settings.yminimum = new Integer(-5);
+                settings.ymaximum = new Integer(5);
 
                 Graph graph = createSmallGraph(table, data, settings);
                 //img = new BufferedImage(ROW_WIDTH, ROW_HEIGHT,

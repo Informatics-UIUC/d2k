@@ -244,19 +244,30 @@ public class EMOGeneratePopulation
     // generate DoubleRange for variables
     //use the first input, the default table model, to get the
     //information about decision variables of the problem
-    DoubleRange[] xyz = new DoubleRange[numOfvar];
-    for (int i = 0; i < numOfvar; i++) {
-      xyz[i] = new DoubleRange(bounds.getString(i, 1), bounds.getFloat(i, 3),
-                               bounds.getFloat(i, 2));
+    Range[] xyz;
+    if(popInfo.getType() == EMOPopulationInfo.DOUBLE_TYPE) {
+      xyz = new DoubleRange[numOfvar];
+      for (int i = 0; i < numOfvar; i++) {
+        xyz[i] = new DoubleRange(bounds.getString(i, 0), bounds.getFloat(i, 2),
+                                 bounds.getFloat(i, 1));
+      }
     }
+    else if(popInfo.getType() == EMOPopulationInfo.BINARY_TYPE) {
+      xyz = new BinaryRange[numOfvar];
+      for(int i = 0; i < numOfvar; i++) {
+        xyz[i] = new BinaryRange("x", bounds.getInt(i, 4));
+      }
+    }
+    else
+      throw new Exception("Could not determine population type.");
 
     // fitness variables of the problem
     EMOConstruction[] fitvarConstructions = popInfo.fitnessVariableConstructions;
     // fitness functions of the problem
-    EMOConstruction[] fitConstructions = popInfo.fitnessFunctionConstructions;
+    EMOConstruction[] fitnessFunctionConstructions = popInfo.fitnessFunctionConstructions;
 
     //number of objective functions
-    int numOfFunc = fitConstructions.length;
+    int numOfFunc = fitnessFunctionConstructions.length;
 
     // set up the fitness function
     ObjectiveConstraints oc[] = new ObjectiveConstraints[numOfFunc];
@@ -265,13 +276,13 @@ public class EMOGeneratePopulation
     // if getmyflag() returns 1, the corresponding objective
     //function needs to be maximized
     for (int i = 0; i < numOfFunc; i++) {
-      if (fitConstructions[i].getmyflag() == 0) {
+      if (fitnessFunctionConstructions[i].getmyflag() == 0) {
         oc[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
-            fitConstructions[i].getLabel(), 0.0, 100.0);
+            fitnessFunctionConstructions[i].getLabel(), 0.0, 100.0);
       }
       else {
         oc[i] = ObjectiveConstraintsFactory.getObjectiveConstraints(
-            fitConstructions[i].getLabel(), 100.0, 0.0);
+            fitnessFunctionConstructions[i].getLabel(), 100.0, 0.0);
       }
     }
 
@@ -282,7 +293,7 @@ public class EMOGeneratePopulation
     //pop.setFitnessVariables(fitvarConstructions);
     pop.getPopulationInfo().fitnessVariableConstructions = fitvarConstructions;
     //pop.setFitnessFunctions(fitConstructions);
-    pop.getPopulationInfo().fitnessFunctionConstructions = fitConstructions;
+    pop.getPopulationInfo().fitnessFunctionConstructions = fitnessFunctionConstructions;
     //pop.setConstraintVariables(popInfo.constraintVariableConstructions);
     pop.getPopulationInfo().constraintVariableConstructions = popInfo.constraintVariableConstructions;
     //pop.setConstraintFunctions(popInfo.constraintFunctionConstructions);
