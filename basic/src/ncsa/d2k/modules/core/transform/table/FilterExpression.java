@@ -799,7 +799,7 @@ public class FilterExpression implements Expression {
 
 
 
-   private abstract class Element {
+   protected abstract class Element {
 
       public abstract String toString();
 
@@ -807,7 +807,7 @@ public class FilterExpression implements Expression {
 
 
 
-   private class ColumnElement extends Element {
+   protected class ColumnElement extends Element {
 
 
 
@@ -817,7 +817,7 @@ public class FilterExpression implements Expression {
 
 
 
-      ColumnElement(String columnLabel) throws ExpressionException {
+      public ColumnElement(String columnLabel) throws ExpressionException {
 
 
 
@@ -839,6 +839,9 @@ public class FilterExpression implements Expression {
 
       }
 
+      public int getColumnNumber() {
+        return columnNumber;
+      }
 
 
       public String evaluateString(int rowNumber) {
@@ -869,7 +872,7 @@ public class FilterExpression implements Expression {
 
 
 
-   private class ScalarElement extends Element {
+   protected class ScalarElement extends Element {
 
 
 
@@ -877,7 +880,7 @@ public class FilterExpression implements Expression {
 
 
 
-      ScalarElement(double value) {
+      public ScalarElement(double value) {
 
          this.value = value;
 
@@ -905,7 +908,7 @@ public class FilterExpression implements Expression {
 
 
 
-   private class NominalElement extends Element {
+   protected class NominalElement extends Element {
 
 
 
@@ -913,7 +916,7 @@ public class FilterExpression implements Expression {
 
 
 
-      NominalElement(String value) {
+      public NominalElement(String value) {
 
          this.value = value;
 
@@ -1318,7 +1321,7 @@ public class FilterExpression implements Expression {
 
 
 
-   private Element parseElement(String expression) throws ExpressionException {
+   protected Element parseElement(String expression) throws ExpressionException {
 
       if (expression.length() == 0)
          throw new ExpressionException("FilterExpression: encountered empty element");
