@@ -821,6 +821,15 @@ public class SQLRainForest extends ReentrantComputeModule {
                   root.addBranch(newValue,tmpRoot);
                 }
               }
+              else {// tallies < minimumRecordsPerLeaf
+                //System.out.println("create a leaf because the tallies < minimumRecordsPerLeaf.");
+                String mostCommon = mostCommonOutputValue(newNodeInfo.classTallies);
+                CategoricalDecisionForestNode tmpRoot = new CategoricalDecisionForestNode(mostCommon,classValues.length);
+                tmpRoot.outputTallies = newNodeInfo.classTallies;
+                tmpRoot.outputValues = classValues;
+                branchCount++;
+                root.addBranch(newValue, tmpRoot);
+              }
             }
           } // end of loop for each distinct value
           // if branchCount == 0, that indicates all branches have been pruned, create a leaf to attach to the root
@@ -845,8 +854,8 @@ public class SQLRainForest extends ReentrantComputeModule {
           String leftAttrValue = meta.getColumnLabel(col) + " < " + newValue;
           String leftLabel = meta.getColumnLabel(col) + " < " + nf.format(newValue);
           newPath = expandSplitValues(path, leftAttrValue);
-          NodeInfo newNodeInfo;
-          int[] branchExam;
+          NodeInfo newNodeInfo = null;
+          int[] branchExam = null;
           int subTot = subTotal(avcs, meta.getColumnLabel(col), "<"+Double.toString(newValue));
           // Stay in in-database mode
           if (examples == null && subTot >= modeThreshold) {
@@ -856,11 +865,11 @@ public class SQLRainForest extends ReentrantComputeModule {
           }
           // Switch to in-memory mode from in-database mode
           else if (examples == null && subTot < modeThreshold) {
-            newNodeInfo = createDataTable(dbTable, meta, newPath, subTot);
-            branchExam = new int[data.getNumRows()];
-            for (int rowIdx=0; rowIdx<data.getNumRows(); rowIdx++) {
-              branchExam[rowIdx] = rowIdx;
-            }
+              newNodeInfo = createDataTable(dbTable, meta, newPath, subTot);
+              branchExam = new int[newNodeInfo.data.getNumRows()];
+              for (int rowIdx=0; rowIdx<newNodeInfo.data.getNumRows(); rowIdx++) {
+                branchExam[rowIdx] = rowIdx;
+              }
           }
           else { // in-memory mode
             branchExam = narrowNumericExamples(data, col, best.splitValue, examples, false);
@@ -874,16 +883,35 @@ public class SQLRainForest extends ReentrantComputeModule {
               if (isRatioUp(aNodeInfo.classTallies, newNodeInfo.classTallies)) {
                 left = buildTree(newPath, availCols, newNodeInfo, branchExam);
               }
+              else { // create a leaf because dominate ratio is not up
+                //System.out.println("create a left leaf because the dominate ratio is not up.");
+                String mostCommon = mostCommonOutputValue(newNodeInfo.classTallies);
+                CategoricalDecisionForestNode tmpRoot = new CategoricalDecisionForestNode(mostCommon,classValues.length);
+                tmpRoot.outputTallies = newNodeInfo.classTallies;
+                tmpRoot.outputValues = classValues;
+                left = (DecisionForestNode) tmpRoot;
+              }
             }
             else { // the numeric attribute has not been used
               left = buildTree(newPath, availCols, newNodeInfo, branchExam);
             }
           }
+          else {// total tallies are < minimumRecordsPerLeaf
+            //System.out.println("create a left leaf because tallies are < minimumRecordsPerLeaf");
+            String mostCommon = mostCommonOutputValue(newNodeInfo.classTallies);
+            CategoricalDecisionForestNode tmpRoot = new CategoricalDecisionForestNode(mostCommon,classValues.length);
+            tmpRoot.outputTallies = newNodeInfo.classTallies;
+            tmpRoot.outputValues = classValues;
+            left = (DecisionForestNode) tmpRoot;
+          }
           // build right branch
+          //isEmpty = false;
+          newNodeInfo = null;
           String rightAttrValue = meta.getColumnLabel(col) + " >= " + newValue;
           String rightLabel = meta.getColumnLabel(col) + " >= " + nf.format(newValue);
           newPath = expandSplitValues(path, rightAttrValue);
           subTot = subTotal(avcs, meta.getColumnLabel(col), ">="+Double.toString(newValue));
+          branchExam = null;
           // Stay in in-database mode
           if (examples == null && subTot >= modeThreshold) {
             newUniqValues = getUniqValues(dbTable, newPath, availCols);
@@ -892,11 +920,11 @@ public class SQLRainForest extends ReentrantComputeModule {
           }
           // Switch to in-memory mode from in-database mode
           else if (examples == null && subTot < modeThreshold) {
-            newNodeInfo = createDataTable(dbTable, meta, newPath, subTot);
-            branchExam = new int[data.getNumRows()];
-            for (int rowIdx=0; rowIdx<data.getNumRows(); rowIdx++) {
-              branchExam[rowIdx] = rowIdx;
-            }
+              newNodeInfo = createDataTable(dbTable, meta, newPath, subTot);
+              branchExam = new int[newNodeInfo.data.getNumRows()];
+              for (int rowIdx=0; rowIdx<newNodeInfo.data.getNumRows(); rowIdx++) {
+                branchExam[rowIdx] = rowIdx;
+              }
           }
           else { // in-memory mode
             branchExam = narrowNumericExamples(data, col, best.splitValue, examples, true);
@@ -910,10 +938,26 @@ public class SQLRainForest extends ReentrantComputeModule {
               if (isRatioUp(aNodeInfo.classTallies, newNodeInfo.classTallies)) {
                 right = buildTree(newPath, availCols, newNodeInfo, branchExam);
               }
+              else { // create a leaf because dominate ratio is not up
+                //System.out.println("create a right leaf because the dominate ratio is not up.");
+                String mostCommon = mostCommonOutputValue(newNodeInfo.classTallies);
+                CategoricalDecisionForestNode tmpRoot = new CategoricalDecisionForestNode(mostCommon,classValues.length);
+                tmpRoot.outputTallies = newNodeInfo.classTallies;
+                tmpRoot.outputValues = classValues;
+                right = (DecisionForestNode) tmpRoot;
+              }
             }
             else { // the numeric attribute has not been used
               right = buildTree(newPath, availCols, newNodeInfo, branchExam);
             }
+          }
+          else {// total tallies are < minimumRecordsPerLeaf
+            //System.out.println("create a right leaf because tallies are < minimumRecordsPerLeaf");
+            String mostCommon = mostCommonOutputValue(newNodeInfo.classTallies);
+            CategoricalDecisionForestNode tmpRoot = new CategoricalDecisionForestNode(mostCommon,classValues.length);
+            tmpRoot.outputTallies = newNodeInfo.classTallies;
+            tmpRoot.outputValues = classValues;
+            right = (DecisionForestNode) tmpRoot;
           }
           if (left != null && right != null) {
             // add two branches to the root
@@ -1273,14 +1317,14 @@ public class SQLRainForest extends ReentrantComputeModule {
    */
   private int subTotal(ArrayList[] avcs, String columnLabel, String columnValue) {
     int colIdx = getColIdx(columnLabel);
-    int subTot = 0;
+    int subTotal = 0;
     // for non-numeric columns
     if (!meta.isColumnScalar(colIdx)) {
       for (int setIdx = 0; setIdx < avcs[colIdx].size(); setIdx++) {
         AvcSet aSet = (AvcSet)avcs[colIdx].get(setIdx);
         if (aSet.attrName.equals(columnLabel) &&
           aSet.lowValue.equals(columnValue)) {
-          subTot = subTot + aSet.count;
+          subTotal = subTotal + aSet.count;
         }
       }
     }
@@ -1293,7 +1337,7 @@ public class SQLRainForest extends ReentrantComputeModule {
           AvcSet aSet = (AvcSet)avcs[colIdx].get(setIdx);
           if (aSet.attrName.equals(columnLabel) &&
              Double.parseDouble(aSet.lowValue) >= tmpValue) {
-            subTot = subTot + aSet.count;
+            subTotal = subTotal + aSet.count;
           }
         }
       }
@@ -1302,14 +1346,14 @@ public class SQLRainForest extends ReentrantComputeModule {
         // only use the records in avcs that match the column and the value
         for (int setIdx = 0; setIdx < avcs[colIdx].size(); setIdx++) {
           AvcSet aSet = (AvcSet)avcs[colIdx].get(setIdx);
-          if (aSet.attrName.equals(columnValue) &&
-              Double.parseDouble(aSet.highValue) < tmpValue) {
-            subTot = subTot + aSet.count;
+          if (aSet.attrName.equals(columnLabel) &&
+              Double.parseDouble(aSet.highValue) <= tmpValue) {
+            subTotal = subTotal + aSet.count;
           }
         }
       }
     }
-    return subTot;
+    return subTotal;
   }
 
    /** Determine the split info. This is the information given by the
@@ -1678,7 +1722,7 @@ public class SQLRainForest extends ReentrantComputeModule {
                              Double.parseDouble(aUniqCol.get(listIdx+1).toString()))/2;
               newUniqCol.add(Double.toString(tmpVal));
             }
-            uniqCols[colIdx] = aUniqCol;
+            uniqCols[colIdx] = newUniqCol;
           }
           // if the uniq value > binNumber, calculate the split points
           else {
@@ -1692,7 +1736,7 @@ public class SQLRainForest extends ReentrantComputeModule {
               double tmpval = min+(interval*valueIdx);
               newUniqCol.add(Double.toString(tmpval));
             }
-            uniqCols[colIdx] = aUniqCol;
+            uniqCols[colIdx] = newUniqCol;
           }
         } // numeric column
       } // for each column
