@@ -315,7 +315,7 @@ public class SparseShortColumn
    */
   public String getString(int row) {
     if (!elements.containsKey(row)) {
-      return SparseStringColumn.DEFAULT;
+      return "" + DEFAULT;
     }
     return String.valueOf(elements.get(row));
   }

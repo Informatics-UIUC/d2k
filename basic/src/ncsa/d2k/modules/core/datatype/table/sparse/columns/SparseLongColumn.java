@@ -317,7 +317,7 @@ public class SparseLongColumn
    */
   public String getString(int row) {
     if (!elements.containsKey(row)) {
-      return SparseStringColumn.DEFAULT;
+      return "" + DEFAULT;
     }
     return String.valueOf(getLong(row));
   }

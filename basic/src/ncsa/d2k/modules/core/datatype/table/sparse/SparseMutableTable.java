@@ -4698,7 +4698,8 @@ public class SparseMutableTable
         break;
     } //switch
 
-    columns.put(newColIndex, newCol);
+    //columns.put(newColIndex, newCol);
+    this.insertColumn((AbstractSparseColumn)newCol, newColIndex);
 
     if (newColIndex >= numColumns) {
       numColumns = newColIndex + 1;

@@ -387,7 +387,7 @@ public class SparseFloatColumn
    */
   public String getString(int row) {
     if (!elements.containsKey(row)) {
-      return SparseStringColumn.DEFAULT;
+      return "" + DEFAULT;
     }
     return String.valueOf(getFloat(row));
   }

@@ -200,7 +200,7 @@ public class SVMProbMaker extends DataPrepModule
 		if ((s == null) || (s.length() == 0))
 			return 0.0;
 		else
-			return Double.valueOf(s).doubleValue();
+			return Double.parseDouble(s);
 	}
 
 	private static int atoi(String s)

@@ -9,7 +9,7 @@ import libsvm.*;
   popular libsvm library (the Java version).  The desired SVM could
   be of several types and kernel types.<p>
 
-  The original libsvm can be found at http://www.csie.ntu.edu.tw/~cjlin/libsvm/.  
+  The original libsvm can be found at http://www.csie.ntu.edu.tw/~cjlin/libsvm/.
   It has a modified BSD licence that is compatible with GPL.
 
   @author Xiaolei Li
@@ -54,7 +54,7 @@ public class SVMBuilder extends SVMBuilderOPT
 
 	/**
 	  Tolerance of termination (stopping criterion).  Default is 0.001.
-	 */ 
+	 */
 	private double Eps = 0.001;
 
 	/**
@@ -105,8 +105,8 @@ public class SVMBuilder extends SVMBuilderOPT
 			+ " due to its marginal maximization property which finds "
 			+ "a decision hyperplane that maximizes the distance to"
 			+ " the separate classes.  This makes for better " +
-			"generalization.<p>" + 
-			
+			"generalization.<p>" +
+
 			"<b>Properties</b>:" +
 			"<ul>" +
 				"<li>SVM Type: " +
@@ -149,7 +149,7 @@ public class SVMBuilder extends SVMBuilderOPT
 			"multi-class classification.  The classes need to be " +
 			"integers and the attribute values need to be numerical.<p>"
 			+
-			
+
 			"<b>Reference</b>: Chih-Chung Chang and Chih-Jen Lin, LIBSVM : a "
 			+ "library for support vector machines, 2001. Software " +
 			"available at http://www.csie.ntu.edu.tw/~cjlin/libsvm/." +
@@ -226,7 +226,7 @@ public class SVMBuilder extends SVMBuilderOPT
 	  svm_parameter class that is used by svm_train().
 
 	  @param num_attributes The number of attributes in the input data
-	  (i.e., size of input vector). 
+	  (i.e., size of input vector).
 
 	  @return The parameters chosen for training the SVM encapsulated in
 	  the native svm_parameter class.
@@ -242,7 +242,7 @@ public class SVMBuilder extends SVMBuilderOPT
 		/* if the user entered 0.0, default to 1/k where k is the
 		 * number of attributes in the input data. */
 		param.gamma = this.Gamma;
-		if (this.Gamma == 0.0) 
+		if (this.Gamma == 0.0)
 			param.gamma = 1.0 / num_attributes.doubleValue();
 
 		param.coef0 = this.Coef0;
@@ -259,7 +259,7 @@ public class SVMBuilder extends SVMBuilderOPT
 		param.weight = new double[0];
 
 		return param;
-	} 
+	}
 
 	public int getSvmType() { return SvmType; }
 	public void setSvmType(int val) { SvmType = val; }
@@ -294,7 +294,7 @@ public class SVMBuilder extends SVMBuilderOPT
 	public int getShrinking() { return Shrinking; }
 	public void setShrinking(int val) { Shrinking = val; }
 
-	public PropertyDescription[] getPropertiesDescriptions() 
+	public PropertyDescription[] getPropertiesDescriptions()
 	{
 		PropertyDescription[] pds = new PropertyDescription[11];
 

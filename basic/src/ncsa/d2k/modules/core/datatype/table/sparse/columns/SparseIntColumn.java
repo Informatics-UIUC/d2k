@@ -310,7 +310,7 @@ public class SparseIntColumn extends AbstractSparseColumn {
    */
     public String getString(int row)    {
       if (!elements.containsKey(row))
-	return SparseStringColumn.DEFAULT;
+	return "" + DEFAULT;
       return String.valueOf(getInt(row));
     }
 

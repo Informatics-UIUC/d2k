@@ -43,17 +43,17 @@ public class SparsePredictionTable
   /* a mutable table will hold the prediction columns */
   protected SparseMutableTable predictionColumns;
 
-	// XIAOLEI - temp fix
-	public String getColumnLabel(int position)
-	{
-		if (columns.containsKey(position))
-			return ((Column)columns.get(position)).getLabel();
-		else if (predictionColumns.getColumnLabel(position - super.getNumColumns()) != null) {
-			return predictionColumns.getColumnLabel(position - super.getNumColumns());
-		}
-		else 
-			return null;
-	}
+//	// XIAOLEI - temp fix
+//	public String getColumnLabel(int position)
+//	{
+//		if (columns.containsKey(position))
+//			return ((Column)columns.get(position)).getLabel();
+//		else if (predictionColumns.getColumnLabel(position - super.getNumColumns()) != null) {
+//			return predictionColumns.getColumnLabel(position - super.getNumColumns());
+//		}
+//		else
+//			return null;
+//	}
 
   /**
    * *********************************************************
@@ -66,7 +66,7 @@ public class SparsePredictionTable
     super();
     predictions = new int[0];
     numPredictions = 0;
-    predictionColumns = new SparseMutableTable();
+    predictionColumns = this;//new SparseMutableTable();
   }
 
   /**
@@ -83,48 +83,86 @@ public class SparsePredictionTable
     //if table is just an exmaple table and not a prediction table
     //create prediction columns.
     if (! (table instanceof SparsePredictionTable)) {
+
       //instantiating the prediction part.
-      predictionColumns = new SparseMutableTable();
+      predictionColumns = this;
 
       int numPredictions = table.getNumOutputFeatures();
+      int numcols = table.getNumColumns();
 
       //instantiating the prediction set to the correct size.
       predictions = new int[numPredictions];
 
       //retrieving the number of columns in the example part.
-//	int numExampleCols = table.getNumColumns();
+ //	int numExampleCols = table.getNumColumns();
 
       //newColIndex is the index for the new prediction column - as presented
       // to the outside world - the natural continueing of the ExampleTable.
-//	int newColIndex = numExampleCols;
+ //	int newColIndex = numExampleCols;
 
       //retrieving the indices of output columns
-//	int[] outputCols = table.getOutputFeatures();
+ //	int[] outputCols = table.getOutputFeatures();
 
       //for each output column
-      for (int i = 0; i < numPredictions && i < outputColumns.length; i++) {
+      for (int i = 0; i < numPredictions; i++) {
 
         //add the new column index to the prediction set.
-        predictions[i] = numColumns + i;
+        predictions[i] = numcols + i;
         //get the type of the output column.
-        int type = table.getColumnType(outputColumns[i]);
+        int type = getColumnType(outputColumns[i]);
         //get its size.
-        int size = table.getColumnNumEntries(outputColumns[i]);
+        int size = getColumnNumEntries(outputColumns[i]);
         //add a prediction column of the same type and size.
-        predictionColumns.addColumn(i, type, size);
+        addColumn(numColumns + i, type, size);
 
-		//XIAOLEI
-		predictionColumns.setColumnLabel(table.getColumnLabel(i) +
-				PredictionTable.PREDICTION_COLUMN_APPEND_TEXT, i);
+        //XIAOLEI
+        System.out.println("Setting column label " + (numcols + i) + " to: " + getColumnLabel(outputColumns[i]) + PredictionTable.PREDICTION_COLUMN_APPEND_TEXT);
+        setColumnLabel(getColumnLabel(outputColumns[i]) + PredictionTable.PREDICTION_COLUMN_APPEND_TEXT, numcols + i);
 
       } //for
+
+//      //instantiating the prediction part.
+//      predictionColumns = new SparseMutableTable();
+//
+//      int numPredictions = table.getNumOutputFeatures();
+//
+//      //instantiating the prediction set to the correct size.
+//      predictions = new int[numPredictions];
+//
+//      //retrieving the number of columns in the example part.
+// //	int numExampleCols = table.getNumColumns();
+//
+//      //newColIndex is the index for the new prediction column - as presented
+//      // to the outside world - the natural continueing of the ExampleTable.
+// //	int newColIndex = numExampleCols;
+//
+//      //retrieving the indices of output columns
+// //	int[] outputCols = table.getOutputFeatures();
+//
+//      //for each output column
+//      for (int i = 0; i < numPredictions && i < outputColumns.length; i++) {
+//
+//        //add the new column index to the prediction set.
+//        predictions[i] = numColumns + i;
+//        //get the type of the output column.
+//        int type = table.getColumnType(outputColumns[i]);
+//        //get its size.
+//        int size = table.getColumnNumEntries(outputColumns[i]);
+//        //add a prediction column of the same type and size.
+//        predictionColumns.addColumn(i, type, size);
+//
+//		//XIAOLEI
+//		predictionColumns.setColumnLabel(table.getColumnLabel(i) +
+//				PredictionTable.PREDICTION_COLUMN_APPEND_TEXT, i);
+//
+//      } //for
 
     } //if !instanceof
 
     else {
       predictions = ( (SparsePredictionTable) table).predictions;
-      predictionColumns = new SparseMutableTable( ( (SparsePredictionTable)
-          table).predictionColumns);
+      predictionColumns = this;//new SparseMutableTable( ( (SparsePredictionTable)table).predictionColumns);
+      numPredictions = predictions.length;
     }
 
   } //end ctor
@@ -143,10 +181,8 @@ public class SparsePredictionTable
   public void copy(SparseTable t) {
     if (t instanceof SparsePredictionTable) {
       predictions = copyArray( ( (SparsePredictionTable) t).predictions);
-      predictionColumns = (SparseMutableTable) ( (SparsePredictionTable) t).
-          predictionColumns.copy();
+      //predictionColumns = (SparseMutableTable) ( (SparsePredictionTable) t).predictionColumns.copy();
     }
-
     super.copy(t);
   }
 
@@ -176,7 +212,7 @@ public class SparsePredictionTable
         return retVal;
      */
 
-    return predictionColumns.getRowIndices(index);
+    return this.getPredictionSet();// predictionColumns.getRowIndices(index);
   }
 
   /**
@@ -206,7 +242,7 @@ public class SparsePredictionTable
    *                            in <code>predictionColumns</code>.
    */
   public void setIntPrediction(int prediction, int row, int predictionColIdx) {
-    predictionColumns.setInt(prediction, row, predictionColIdx);
+    predictionColumns.setInt(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -222,7 +258,7 @@ public class SparsePredictionTable
    */
   public void setFloatPrediction(float prediction, int row,
                                  int predictionColIdx) {
-    predictionColumns.setFloat(prediction, row, predictionColIdx);
+    predictionColumns.setFloat(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -238,7 +274,7 @@ public class SparsePredictionTable
    */
   public void setDoublePrediction(double prediction, int row,
                                   int predictionColIdx) {
-    predictionColumns.setDouble(prediction, row, predictionColIdx);
+    predictionColumns.setDouble(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -253,7 +289,7 @@ public class SparsePredictionTable
    *                            in <code>predictionColumns</code>.
    */
   public void setLongPrediction(long prediction, int row, int predictionColIdx) {
-    predictionColumns.setLong(prediction, row, predictionColIdx);
+    predictionColumns.setLong(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -285,7 +321,7 @@ public class SparsePredictionTable
    */
   public void setBooleanPrediction(boolean prediction, int row,
                                    int predictionColIdx) {
-    predictionColumns.setBoolean(prediction, row, predictionColIdx);
+    predictionColumns.setBoolean(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -302,7 +338,7 @@ public class SparsePredictionTable
   public void setStringPrediction(String prediction, int row,
                                   int predictionColIdx) {
 
-    predictionColumns.setString(prediction, row, predictionColIdx);
+    predictionColumns.setString(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -318,7 +354,7 @@ public class SparsePredictionTable
    */
   public void setCharsPrediction(char[] prediction, int row,
                                  int predictionColIdx) {
-    predictionColumns.setChars(prediction, row, predictionColIdx);
+    predictionColumns.setChars(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -334,7 +370,7 @@ public class SparsePredictionTable
    */
   public void setBytesPrediction(byte[] prediction, int row,
                                  int predictionColIdx) {
-    predictionColumns.setBytes(prediction, row, predictionColIdx);
+    predictionColumns.setBytes(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -350,7 +386,7 @@ public class SparsePredictionTable
    */
   public void setObjectPrediction(Object prediction, int row,
                                   int predictionColIdx) {
-    predictionColumns.setObject(prediction, row, predictionColIdx);
+    predictionColumns.setObject(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -365,7 +401,7 @@ public class SparsePredictionTable
    *                            in <code>predictionColumns</code>.
    */
   public void setBytePrediction(byte prediction, int row, int predictionColIdx) {
-    predictionColumns.setByte(prediction, row, predictionColIdx);
+    predictionColumns.setByte(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -380,7 +416,7 @@ public class SparsePredictionTable
    *                            in <code>predictionColumns</code>.
    */
   public void setCharPrediction(char prediction, int row, int predictionColIdx) {
-    predictionColumns.setChar(prediction, row, predictionColIdx);
+    predictionColumns.setChar(prediction, row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -400,7 +436,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public int getIntPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getInt(row, predictionColIdx);
+    return predictionColumns.getInt(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -414,7 +450,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public float getFloatPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getFloat(row, predictionColIdx);
+    return predictionColumns.getFloat(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -428,7 +464,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public double getDoublePrediction(int row, int predictionColIdx) {
-    return predictionColumns.getDouble(row, predictionColIdx);
+    return predictionColumns.getDouble(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -442,7 +478,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public long getLongPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getLong(row, predictionColIdx);
+    return predictionColumns.getLong(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -456,7 +492,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public short getShortPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getShort(row, predictionColIdx);
+    return predictionColumns.getShort(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -470,7 +506,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public boolean getBooleanPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getBoolean(row, predictionColIdx);
+    return predictionColumns.getBoolean(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -484,7 +520,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public String getStringPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getString(row, predictionColIdx);
+    return predictionColumns.getString(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -498,7 +534,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public char[] getCharsPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getChars(row, predictionColIdx);
+    return predictionColumns.getChars(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -512,7 +548,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public byte[] getBytesPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getBytes(row, predictionColIdx);
+    return predictionColumns.getBytes(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -526,7 +562,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public Object getObjectPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getObject(row, predictionColIdx);
+    return predictionColumns.getObject(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -540,7 +576,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public byte getBytePrediction(int row, int predictionColIdx) {
-    return predictionColumns.getByte(row, predictionColIdx);
+    return predictionColumns.getByte(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -554,7 +590,7 @@ public class SparsePredictionTable
    *                and column.
    */
   public char getCharPrediction(int row, int predictionColIdx) {
-    return predictionColumns.getChar(row, predictionColIdx);
+    return predictionColumns.getChar(row, getPredictionSet()[predictionColIdx]);
   }
 
   /**
@@ -563,277 +599,277 @@ public class SparsePredictionTable
    * ****************************************************************
    */
 
-  /**
-   * Appends <code>newCol</code> to this table as a prediction column, and sets
-   * <codE>label</code> to be its label.
-   *
-   * @param newCol    the column to be inserted.
-   * @param lable     the label of the new column
-       * @return          the index of the added prediction column in <codE>prediction
-   *                  </code>
-   */
-  protected int addPredictionColumn(AbstractSparseColumn newCol, String label) {
-    newCol.setLabel(label);
-    int index = getNumColumns();
-    if (numPredictions >= predictions.length) {
-      int[] newArr = new int[numPredictions * 2];
-      System.arraycopy(predictions, 0, newArr, 0, predictions.length);
-    }
-    predictions[numPredictions] = index;
-    numPredictions++;
-
-    predictionColumns.setColumn(predictionColumns.getNumColumns(), newCol);
-    predictionColumns.numColumns++;
-
-    return index;
-  }
-
-  /**
-   * returns true if there is a value at row no. <codE>row</code> and column
-   * no. <code>col</code>
-   *
-   * @param row     the inpected row number
-   * @param col     the inspected column number, as shown to the outside world.
-   * @return        true if there is a value at the specified position
-   */
-  public boolean doesValueExist(int row, int col) {
-    //checking if the column is in the example portion of the table
-    if (col < super.getNumColumns()) {
-
-      //if so - activating the super does values exist method.
-      return super.doesValueExist(row, col);
-    }
-
-    else { //the column is one of the prediction columns
-
-      //translating the column index into the mutable table indices range.
-      return predictionColumns.doesValueExist(row, col - super.getNumColumns());
-    }
-  }
+//  /**
+//   * Appends <code>newCol</code> to this table as a prediction column, and sets
+//   * <codE>label</code> to be its label.
+//   *
+//   * @param newCol    the column to be inserted.
+//   * @param lable     the label of the new column
+//       * @return          the index of the added prediction column in <codE>prediction
+//   *                  </code>
+//   */
+//  protected int addPredictionColumn(AbstractSparseColumn newCol, String label) {
+//    newCol.setLabel(label);
+//    int index = getNumColumns();
+//    if (numPredictions >= predictions.length) {
+//      int[] newArr = new int[numPredictions * 2];
+//      System.arraycopy(predictions, 0, newArr, 0, predictions.length);
+//    }
+//    predictions[numPredictions] = index;
+//    numPredictions++;
+//
+//    predictionColumns.setColumn(predictionColumns.getNumColumns(), newCol);
+//    predictionColumns.numColumns++;
+//
+//    return index;
+//  }
+//
+//  /**
+//   * returns true if there is a value at row no. <codE>row</code> and column
+//   * no. <code>col</code>
+//   *
+//   * @param row     the inpected row number
+//   * @param col     the inspected column number, as shown to the outside world.
+//   * @return        true if there is a value at the specified position
+//   */
+//  public boolean doesValueExist(int row, int col) {
+//    //checking if the column is in the example portion of the table
+//    if (col < super.getNumColumns()) {
+//
+//      //if so - activating the super does values exist method.
+//      return super.doesValueExist(row, col);
+//    }
+//
+//    else { //the column is one of the prediction columns
+//
+//      //translating the column index into the mutable table indices range.
+//      return predictionColumns.doesValueExist(row, col - super.getNumColumns());
+//    }
+//  }
 
   public int getNumPredictions() {
     return numPredictions;
   }
 
-  public int getNumColumns() {
-    return numColumns + predictionColumns.numColumns;
-  }
-
-  /**
-       * Adds a SparseIntColumn as a prediction column to this table, populized with
-   * the data in <code>predictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(int[], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(int[] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
-
-  /**
-       * Adds a SparseFloatColumn as a prediction column to this table, populized with
-   * the data in <cod>Epredictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(float[], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(float[] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
-
-  /**
-       * Adds a SparseDoubleColumn as a prediction column to this table, populized with
-   * the data in <cod>Epredictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(double[], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(double[] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
-
-  /**
-       * Adds a SparseLongColumn as a prediction column to this table, populized with
-   * the data in <cod>Epredictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(long[], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(long[] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
-
-  /**
-       * Adds a SparseShortColumn as a prediction column to this table, populized with
-   * the data in <cod>Epredictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(short[], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(short[] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
-
-  /**
-   * Adds a SparseBooleanColumn as a prediction column to this table, populized with
-   * the data in <cod>Epredictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(boolean[], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(boolean[] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
-
-  /**
-       * Adds a SparseStringColumn as a prediction column to this table, populized with
-   * the data in <cod>Epredictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(String[], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(String[] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
-
-  /**
-   * Adds a SparseCharArrayColumn as a prediction column to this table, populized with
-   * the data in <cod>Epredictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(char[][], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(char[][] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
-
-  /**
-   * Adds a SparseByteArrayColumn as a prediction column to this table, populized with
-   * the data in <cod>Epredictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(byte[][], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(byte[][] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
-
-  /**
-       * Adds a SparseObjectColumn as a prediction column to this table, populized with
-   * the data in <cod>Epredictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(Object[], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(Object[] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
-
-  /**
-       * Adds a SparseByteColumn as a prediction column to this table, populized with
-   * the data in <cod>Epredictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(byte[], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(byte[] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
-
-  /**
-       * Adds a SparseCharColumn as a prediction column to this table, populized with
-   * the data in <cod>Epredictions</code>. The row indices in the added column
-   * will be the valid rows of the example portion of this table.
-   *
-   * Note:  since this is a Sparse Table it is recommended to use
-   * addPredictionColumn(char[], String, int[]) for more expressive and
-   * accurate results.
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(char[] predictions, String label) {
-    return addPredictionColumn(predictions, label, getAllRows());
-  }
+//  public int getNumColumns() {
+//    return numColumns + predictionColumns.numColumns;
+//  }
+//
+//  /**
+//       * Adds a SparseIntColumn as a prediction column to this table, populized with
+//   * the data in <code>predictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(int[], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(int[] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
+//
+//  /**
+//       * Adds a SparseFloatColumn as a prediction column to this table, populized with
+//   * the data in <cod>Epredictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(float[], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(float[] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
+//
+//  /**
+//       * Adds a SparseDoubleColumn as a prediction column to this table, populized with
+//   * the data in <cod>Epredictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(double[], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(double[] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
+//
+//  /**
+//       * Adds a SparseLongColumn as a prediction column to this table, populized with
+//   * the data in <cod>Epredictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(long[], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(long[] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
+//
+//  /**
+//       * Adds a SparseShortColumn as a prediction column to this table, populized with
+//   * the data in <cod>Epredictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(short[], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(short[] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
+//
+//  /**
+//   * Adds a SparseBooleanColumn as a prediction column to this table, populized with
+//   * the data in <cod>Epredictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(boolean[], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(boolean[] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
+//
+//  /**
+//       * Adds a SparseStringColumn as a prediction column to this table, populized with
+//   * the data in <cod>Epredictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(String[], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(String[] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
+//
+//  /**
+//   * Adds a SparseCharArrayColumn as a prediction column to this table, populized with
+//   * the data in <cod>Epredictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(char[][], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(char[][] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
+//
+//  /**
+//   * Adds a SparseByteArrayColumn as a prediction column to this table, populized with
+//   * the data in <cod>Epredictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(byte[][], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(byte[][] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
+//
+//  /**
+//       * Adds a SparseObjectColumn as a prediction column to this table, populized with
+//   * the data in <cod>Epredictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(Object[], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(Object[] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
+//
+//  /**
+//       * Adds a SparseByteColumn as a prediction column to this table, populized with
+//   * the data in <cod>Epredictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(byte[], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(byte[] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
+//
+//  /**
+//       * Adds a SparseCharColumn as a prediction column to this table, populized with
+//   * the data in <cod>Epredictions</code>. The row indices in the added column
+//   * will be the valid rows of the example portion of this table.
+//   *
+//   * Note:  since this is a Sparse Table it is recommended to use
+//   * addPredictionColumn(char[], String, int[]) for more expressive and
+//   * accurate results.
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(char[] predictions, String label) {
+//    return addPredictionColumn(predictions, label, getAllRows());
+//  }
 
   /* Returns a reference to this table */
   public PredictionTable toPredictionTable() {
@@ -846,255 +882,255 @@ public class SparsePredictionTable
    * ********************************************************
    */
 
-  /**
-   * Adds a SparseIntColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(int[] predictions, String label, int[] indices) {
-    return addPredictionColumn(new SparseIntColumn(predictions, indices), label);
-  }
-
-  /**
-   * Adds a SparseByteColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(byte[] predictions, String label,
-                                 int[] indices) {
-    return addPredictionColumn(new SparseByteColumn(predictions, indices),
-                               label);
-  }
-
-  /**
-       * Adds a SparseBooleanColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(boolean[] predictions, String label,
-                                 int[] indices) {
-    return addPredictionColumn(new SparseBooleanColumn(predictions, indices),
-                               label);
-  }
-
-  /**
-       * Adds a SparseDoubleColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(double[] predictions, String label,
-                                 int[] indices) {
-    return addPredictionColumn(new SparseDoubleColumn(predictions, indices),
-                               label);
-  }
-
-  /**
-   * Adds a SparseCharColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(char[] predictions, String label,
-                                 int[] indices) {
-    return addPredictionColumn(new SparseCharColumn(predictions, indices),
-                               label);
-  }
-
-  /**
-       * Adds a SparseByteArrayColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(byte[][] predictions, String label,
-                                 int[] indices) {
-    return addPredictionColumn(new SparseByteArrayColumn(predictions, indices),
-                               label);
-  }
-
-  /**
-   * Adds a SparseFloatColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(float[] predictions, String label,
-                                 int[] indices) {
-    return addPredictionColumn(new SparseFloatColumn(predictions, indices),
-                               label);
-  }
-
-  /**
-       * Adds a SparseCharArrayColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(char[][] predictions, String label,
-                                 int[] indices) {
-    return addPredictionColumn(new SparseCharArrayColumn(predictions, indices),
-                               label);
-  }
-
-  /**
-       * Adds a SparseObjectColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(Object[] predictions, String label,
-                                 int[] indices) {
-    return addPredictionColumn(new SparseObjectColumn(predictions, indices),
-                               label);
-  }
-
-  /**
-       * Adds a SparseStringColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(String[] predictions, String label,
-                                 int[] indices) {
-    return addPredictionColumn(new SparseStringColumn(predictions, indices),
-                               label);
-  }
-
-  /**
-   * Adds a SparseShortColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(short[] predictions, String label,
-                                 int[] indices) {
-    return addPredictionColumn(new SparseShortColumn(predictions, indices),
-                               label);
-  }
-
-  /**
-   * Adds a SparseLongColumn as a prediction column to this table. The data in
-   * <code>predictions</code> will be inserted into the new column at indices
-   * specified by <code>indices</code>. the new column will be labeled <code>
-   * label</coe>
-   *
-   *
-   * @param predictions   ints values to be held by the new prediction column
-   * @param label         the label for the new prediction column.
-   * @param indices       the row indices of the data of the new column.
-   *                      each item <codE>prediction[i]</code> will be put at
-   *                      row no. <code>indices[i]</codE>.
-   * @return              the index of the added prediction column in <codE>
-   *                      predictions</code>.
-   */
-  public int addPredictionColumn(long[] predictions, String label,
-                                 int[] indices) {
-    return addPredictionColumn(new SparseLongColumn(predictions, indices),
-                               label);
-  }
+//  /**
+//   * Adds a SparseIntColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(int[] predictions, String label, int[] indices) {
+//    return addPredictionColumn(new SparseIntColumn(predictions, indices), label);
+//  }
+//
+//  /**
+//   * Adds a SparseByteColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(byte[] predictions, String label,
+//                                 int[] indices) {
+//    return addPredictionColumn(new SparseByteColumn(predictions, indices),
+//                               label);
+//  }
+//
+//  /**
+//       * Adds a SparseBooleanColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(boolean[] predictions, String label,
+//                                 int[] indices) {
+//    return addPredictionColumn(new SparseBooleanColumn(predictions, indices),
+//                               label);
+//  }
+//
+//  /**
+//       * Adds a SparseDoubleColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(double[] predictions, String label,
+//                                 int[] indices) {
+//    return addPredictionColumn(new SparseDoubleColumn(predictions, indices),
+//                               label);
+//  }
+//
+//  /**
+//   * Adds a SparseCharColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(char[] predictions, String label,
+//                                 int[] indices) {
+//    return addPredictionColumn(new SparseCharColumn(predictions, indices),
+//                               label);
+//  }
+//
+//  /**
+//       * Adds a SparseByteArrayColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(byte[][] predictions, String label,
+//                                 int[] indices) {
+//    return addPredictionColumn(new SparseByteArrayColumn(predictions, indices),
+//                               label);
+//  }
+//
+//  /**
+//   * Adds a SparseFloatColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(float[] predictions, String label,
+//                                 int[] indices) {
+//    return addPredictionColumn(new SparseFloatColumn(predictions, indices),
+//                               label);
+//  }
+//
+//  /**
+//       * Adds a SparseCharArrayColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(char[][] predictions, String label,
+//                                 int[] indices) {
+//    return addPredictionColumn(new SparseCharArrayColumn(predictions, indices),
+//                               label);
+//  }
+//
+//  /**
+//       * Adds a SparseObjectColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(Object[] predictions, String label,
+//                                 int[] indices) {
+//    return addPredictionColumn(new SparseObjectColumn(predictions, indices),
+//                               label);
+//  }
+//
+//  /**
+//       * Adds a SparseStringColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(String[] predictions, String label,
+//                                 int[] indices) {
+//    return addPredictionColumn(new SparseStringColumn(predictions, indices),
+//                               label);
+//  }
+//
+//  /**
+//   * Adds a SparseShortColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(short[] predictions, String label,
+//                                 int[] indices) {
+//    return addPredictionColumn(new SparseShortColumn(predictions, indices),
+//                               label);
+//  }
+//
+//  /**
+//   * Adds a SparseLongColumn as a prediction column to this table. The data in
+//   * <code>predictions</code> will be inserted into the new column at indices
+//   * specified by <code>indices</code>. the new column will be labeled <code>
+//   * label</coe>
+//   *
+//   *
+//   * @param predictions   ints values to be held by the new prediction column
+//   * @param label         the label for the new prediction column.
+//   * @param indices       the row indices of the data of the new column.
+//   *                      each item <codE>prediction[i]</code> will be put at
+//   *                      row no. <code>indices[i]</codE>.
+//   * @return              the index of the added prediction column in <codE>
+//   *                      predictions</code>.
+//   */
+//  public int addPredictionColumn(long[] predictions, String label,
+//                                 int[] indices) {
+//    return addPredictionColumn(new SparseLongColumn(predictions, indices),
+//                               label);
+//  }
 
   /**
        * Returns a SparsePredictionTable containing rows no. <code>start</code> through
@@ -1128,8 +1164,7 @@ public class SparsePredictionTable
     SparsePredictionTable retVal = new SparsePredictionTable(temp, true);
 
     //retVal.setPredictionSet(newpred);
-    retVal.predictionColumns = (SparseMutableTable) predictionColumns.getSubset(
-        pos, len);
+    retVal.predictionColumns = retVal;//(SparseMutableTable) predictionColumns.getSubset(pos, len);
     //copying the prediction indices.
     retVal.predictions = copyArray(predictions);
     retVal.numPredictions = numPredictions;
@@ -1150,8 +1185,7 @@ public class SparsePredictionTable
     SparsePredictionTable retVal = new SparsePredictionTable(temp, true);
 
     //retVal.setPredictionSet(newpred);
-    retVal.predictionColumns = (SparseMutableTable) predictionColumns.getSubset(
-        rows);
+    retVal.predictionColumns = this;//(SparseMutableTable) predictionColumns.getSubset(rows);
     //copying the prediction indices.
     retVal.predictions = copyArray(predictions);
     retVal.numPredictions = numPredictions;
@@ -1166,16 +1200,13 @@ public class SparsePredictionTable
   public Table getSubsetByReference(int pos, int len) {
 //Table t = super.getSubset(pos, len);
 //ExampleTable et  = t.toExampleTable();
-    SparseExampleTable temp = (SparseExampleTable)super.getSubsetByReference(
-        pos, len);
+    SparseExampleTable temp = (SparseExampleTable)super.getSubsetByReference(pos, len);
 
 //PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
     SparsePredictionTable retVal = new SparsePredictionTable(temp, true);
 
 //retVal.setPredictionSet(newpred);
-    retVal.predictionColumns = (SparseMutableTable) predictionColumns.
-        getSubsetByReference(
-        pos, len);
+    retVal.predictionColumns = this;//(SparseMutableTable) predictionColumns.getSubsetByReference(pos, len);
 //copying the prediction indices.
     retVal.predictions = copyArray(predictions);
     retVal.numPredictions = numPredictions;
@@ -1195,9 +1226,7 @@ public class SparsePredictionTable
     SparsePredictionTable retVal = new SparsePredictionTable(temp, true);
 
 //retVal.setPredictionSet(newpred);
-    retVal.predictionColumns = (SparseMutableTable) predictionColumns.
-        getSubsetByReference(
-        rows);
+    retVal.predictionColumns = this;//(SparseMutableTable) predictionColumns.getSubsetByReference(rows);
 //copying the prediction indices.
     retVal.predictions = copyArray(predictions);
     retVal.numPredictions = numPredictions;
@@ -1211,197 +1240,197 @@ public class SparsePredictionTable
    * ***************************************************************
    */
 
-  /**
-   * Get a boolean value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the boolean value at (row, column)
-   */
-  public boolean getBoolean(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getBoolean(row, column);
-    }
-    else {
-      return predictionColumns.getBoolean(row, column - super.getNumColumns());
-    }
-
-  }
-
-  /**
-   * Get a byte value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the byte value at (row, column)
-   */
-  public byte getByte(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getByte(row, column);
-    }
-    else {
-      return predictionColumns.getByte(row, column - super.getNumColumns());
-    }
-
-  }
-
-  /**
-   * Get a char value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the char value at (row, column)
-   */
-  public char getChar(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getChar(row, column);
-    }
-    else {
-      return predictionColumns.getChar(row, column - super.getNumColumns());
-    }
-
-  }
-
-  /**
-   * Get a byte array value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the byte array value at (row, column)
-   */
-  public byte[] getBytes(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getBytes(row, column);
-    }
-    else {
-      return predictionColumns.getBytes(row, column - super.getNumColumns());
-    }
-
-  }
-
-  /**
-   * Get a char array value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the char array  value at (row, column)
-   */
-  public char[] getChars(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getChars(row, column);
-    }
-    else {
-      return predictionColumns.getChars(row, column - super.getNumColumns());
-    }
-
-  }
-
-  /**
-   * Get a float value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the float value at (row, column)
-   */
-  public float getFloat(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getFloat(row, column);
-    }
-    else {
-      return predictionColumns.getFloat(row, column - super.getNumColumns());
-    }
-
-  }
-
-  /**
-   * Get an int value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the int value at (row, column)
-   */
-  public int getInt(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getInt(row, column);
-    }
-    else {
-      return predictionColumns.getInt(row, column - super.getNumColumns());
-    }
-
-  }
-
-  /**
-   * Get a double value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the double value at (row, column)
-   */
-  public double getDouble(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getDouble(row, column);
-    }
-    else {
-      return predictionColumns.getDouble(row, column - super.getNumColumns());
-    }
-
-  }
-
-  /**
-   * Get a String value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the String value at (row, column)
-   */
-  public String getString(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getString(row, column);
-    }
-    else {
-      return predictionColumns.getString(row, column - super.getNumColumns());
-    }
-
-  }
-
-  /**
-   * Get a Object value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the Object value at (row, column)
-   */
-  public Object getObject(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getObject(row, column);
-    }
-    else {
-      return predictionColumns.getObject(row, column - super.getNumColumns());
-    }
-
-  }
-
-  /**
-   * Get a short value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the short value at (row, column)
-   */
-  public short getShort(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getShort(row, column);
-    }
-    else {
-      return predictionColumns.getShort(row, column - super.getNumColumns());
-    }
-
-  }
-
-  /**
-   * Get a long value from the table.
-   * @param row the row of the table
-   * @param column the column of the table
-   * @return the long value at (row, column)
-   */
-  public long getLong(int row, int column) {
-    if (column < super.getNumColumns()) {
-      return super.getLong(row, column);
-    }
-    else {
-      return predictionColumns.getLong(row, column - super.getNumColumns());
-    }
-
-  }
+//  /**
+//   * Get a boolean value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the boolean value at (row, column)
+//   */
+//  public boolean getBoolean(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getBoolean(row, column);
+//    }
+//    else {
+//      return predictionColumns.getBoolean(row, column - super.getNumColumns());
+//    }
+//
+//  }
+//
+//  /**
+//   * Get a byte value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the byte value at (row, column)
+//   */
+//  public byte getByte(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getByte(row, column);
+//    }
+//    else {
+//      return predictionColumns.getByte(row, column - super.getNumColumns());
+//    }
+//
+//  }
+//
+//  /**
+//   * Get a char value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the char value at (row, column)
+//   */
+//  public char getChar(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getChar(row, column);
+//    }
+//    else {
+//      return predictionColumns.getChar(row, column - super.getNumColumns());
+//    }
+//
+//  }
+//
+//  /**
+//   * Get a byte array value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the byte array value at (row, column)
+//   */
+//  public byte[] getBytes(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getBytes(row, column);
+//    }
+//    else {
+//      return predictionColumns.getBytes(row, column - super.getNumColumns());
+//    }
+//
+//  }
+//
+//  /**
+//   * Get a char array value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the char array  value at (row, column)
+//   */
+//  public char[] getChars(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getChars(row, column);
+//    }
+//    else {
+//      return predictionColumns.getChars(row, column - super.getNumColumns());
+//    }
+//
+//  }
+//
+//  /**
+//   * Get a float value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the float value at (row, column)
+//   */
+//  public float getFloat(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getFloat(row, column);
+//    }
+//    else {
+//      return predictionColumns.getFloat(row, column - super.getNumColumns());
+//    }
+//
+//  }
+//
+//  /**
+//   * Get an int value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the int value at (row, column)
+//   */
+//  public int getInt(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getInt(row, column);
+//    }
+//    else {
+//      return predictionColumns.getInt(row, column - super.getNumColumns());
+//    }
+//
+//  }
+//
+//  /**
+//   * Get a double value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the double value at (row, column)
+//   */
+//  public double getDouble(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getDouble(row, column);
+//    }
+//    else {
+//      return predictionColumns.getDouble(row, column - super.getNumColumns());
+//    }
+//
+//  }
+//
+//  /**
+//   * Get a String value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the String value at (row, column)
+//   */
+//  public String getString(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getString(row, column);
+//    }
+//    else {
+//      return predictionColumns.getString(row, column - super.getNumColumns());
+//    }
+//
+//  }
+//
+//  /**
+//   * Get a Object value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the Object value at (row, column)
+//   */
+//  public Object getObject(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getObject(row, column);
+//    }
+//    else {
+//      return predictionColumns.getObject(row, column - super.getNumColumns());
+//    }
+//
+//  }
+//
+//  /**
+//   * Get a short value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the short value at (row, column)
+//   */
+//  public short getShort(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getShort(row, column);
+//    }
+//    else {
+//      return predictionColumns.getShort(row, column - super.getNumColumns());
+//    }
+//
+//  }
+//
+//  /**
+//   * Get a long value from the table.
+//   * @param row the row of the table
+//   * @param column the column of the table
+//   * @return the long value at (row, column)
+//   */
+//  public long getLong(int row, int column) {
+//    if (column < super.getNumColumns()) {
+//      return super.getLong(row, column);
+//    }
+//    else {
+//      return predictionColumns.getLong(row, column - super.getNumColumns());
+//    }
+//
+//  }
 
   /**
        * Copies the values at row no. <codE>position</code> into <codE>buffer<c/doe>.
@@ -1422,18 +1451,18 @@ public class SparsePredictionTable
        * @param columnNumbers   will hold the corresponding column number of the values
    *                        that are stored in <code>buffeR</code>.
    */
-  public void getRow(Object buffer, int position, int[] columnNumbers) {
-    if (!rows.containsKey(position)) {
-      return;
-    }
-
-    //getting the example portion of the table.
-    super.getRow(buffer, position, columnNumbers);
-
-    columnNumbers = getRowIndices(position);
-
-  }
-
+//  public void getRow(Object buffer, int position, int[] columnNumbers) {
+//    if (!rows.containsKey(position)) {
+//      return;
+//    }
+//
+//    //getting the example portion of the table.
+//    super.getRow(buffer, position, columnNumbers);
+//
+//    columnNumbers = getRowIndices(position);
+//
+//  }
+//
   /**
        * Copies the content of row mo. <code>position</codE> into <code>buffer</code>.
    * <code>buffer</codE> is an array of some type. the data will be converted
@@ -1447,198 +1476,198 @@ public class SparsePredictionTable
    * @param buffer     an array of some type into which the data is copied.
    * @param position   the row number which its data is retrieved.
    */
-  public void getRow(Object buffer, int position) {
-    if (!rows.containsKey(position)) {
-      return;
-    }
-
-    super.getRow(buffer, position);
-    int numExampleEntries = super.getRowNumEntries(position);
-
-    if (buffer instanceof boolean[]) {
-      int size = ( (boolean[]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      boolean[] predBuff = new boolean[size];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-
-    if (buffer instanceof byte[]) {
-      int size = ( (byte[]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      byte[] predBuff = new byte[size];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-
-    if (buffer instanceof char[]) {
-      int size = ( (char[]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      char[] predBuff = new char[size];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-
-    if (buffer instanceof double[]) {
-      int size = ( (double[]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      double[] predBuff = new double[size];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-
-    if (buffer instanceof float[]) {
-      int size = ( (float[]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      float[] predBuff = new float[size];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-
-    if (buffer instanceof byte[][]) {
-      int size = ( (byte[][]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      byte[][] predBuff = new byte[size][];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-
-    if (buffer instanceof char[][]) {
-      int size = ( (char[][]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      char[][] predBuff = new char[size][];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-
-    if (buffer instanceof int[]) {
-      int size = ( (int[]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      int[] predBuff = new int[size];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-
-    if (buffer instanceof Object[]) {
-      int size = ( (Object[]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      Object[] predBuff = new Object[size];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-
-    if (buffer instanceof String[]) {
-      int size = ( (String[]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      String[] predBuff = new String[size];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-
-    if (buffer instanceof short[]) {
-      int size = ( (short[]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      short[] predBuff = new short[size];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-
-    if (buffer instanceof long[]) {
-      int size = ( (long[]) buffer).length - numExampleEntries;
-      if (size <= 0) {
-        return;
-      }
-      long[] predBuff = new long[size];
-      predictionColumns.getRow(predBuff, position);
-      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
-      return;
-    }
-  } //getRow
-
+//  public void getRow(Object buffer, int position) {
+//    if (!rows.containsKey(position)) {
+//      return;
+//    }
+//
+//    super.getRow(buffer, position);
+//    int numExampleEntries = super.getRowNumEntries(position);
+//
+//    if (buffer instanceof boolean[]) {
+//      int size = ( (boolean[]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      boolean[] predBuff = new boolean[size];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//
+//    if (buffer instanceof byte[]) {
+//      int size = ( (byte[]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      byte[] predBuff = new byte[size];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//
+//    if (buffer instanceof char[]) {
+//      int size = ( (char[]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      char[] predBuff = new char[size];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//
+//    if (buffer instanceof double[]) {
+//      int size = ( (double[]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      double[] predBuff = new double[size];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//
+//    if (buffer instanceof float[]) {
+//      int size = ( (float[]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      float[] predBuff = new float[size];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//
+//    if (buffer instanceof byte[][]) {
+//      int size = ( (byte[][]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      byte[][] predBuff = new byte[size][];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//
+//    if (buffer instanceof char[][]) {
+//      int size = ( (char[][]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      char[][] predBuff = new char[size][];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//
+//    if (buffer instanceof int[]) {
+//      int size = ( (int[]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      int[] predBuff = new int[size];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//
+//    if (buffer instanceof Object[]) {
+//      int size = ( (Object[]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      Object[] predBuff = new Object[size];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//
+//    if (buffer instanceof String[]) {
+//      int size = ( (String[]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      String[] predBuff = new String[size];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//
+//    if (buffer instanceof short[]) {
+//      int size = ( (short[]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      short[] predBuff = new short[size];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//
+//    if (buffer instanceof long[]) {
+//      int size = ( (long[]) buffer).length - numExampleEntries;
+//      if (size <= 0) {
+//        return;
+//      }
+//      long[] predBuff = new long[size];
+//      predictionColumns.getRow(predBuff, position);
+//      System.arraycopy(predBuff, 0, buffer, numExampleEntries, size);
+//      return;
+//    }
+//  } //getRow
+//
   /**
    * Return the total number of entries in row no. <code>position</code>.
-   */
-  public int getRowNumEntries(int position) {
-    int retVal = super.getRowNumEntries(position);
-    retVal += predictionColumns.getRowNumEntries(position);
-    return retVal;
-  }
-
+//   */
+//  public int getRowNumEntries(int position) {
+//    int retVal = super.getRowNumEntries(position);
+//    retVal += predictionColumns.getRowNumEntries(position);
+//    return retVal;
+//  }
+//
   /**
    * Returns the valid column numbers of row no. <code>position</code>.
    */
-  public int[] getRowIndices(int position) {
-    int[] retVal = new int[getRowNumEntries(position)];
-    int[] exampleIdx = super.getRowIndices(position);
+//  public int[] getRowIndices(int position) {
+//    int[] retVal = new int[getRowNumEntries(position)];
+//    int[] exampleIdx = super.getRowIndices(position);
+//
+//    System.arraycopy(exampleIdx, 0, retVal, 0, exampleIdx.length);
+//    System.arraycopy(predictions, 0, retVal, exampleIdx.length,
+//                     predictions.length);
+//    return retVal;
+//  }
 
-    System.arraycopy(exampleIdx, 0, retVal, 0, exampleIdx.length);
-    System.arraycopy(predictions, 0, retVal, exampleIdx.length,
-                     predictions.length);
-    return retVal;
-  }
+//  public int getColumnNumEntries(int position) {
+//    if (position < super.getNumColumns()) {
+//      return super.getColumnNumEntries(position);
+//    }
+//    else {
+//      return predictionColumns.getColumnNumEntries(position -
+//          super.getNumColumns());
+//    }
+//  }
 
-  public int getColumnNumEntries(int position) {
-    if (position < super.getNumColumns()) {
-      return super.getColumnNumEntries(position);
-    }
-    else {
-      return predictionColumns.getColumnNumEntries(position -
-          super.getNumColumns());
-    }
-  }
+//  public int[] getColumnIndices(int position) {
+//    if (position < super.getNumColumns()) {
+//      return super.getColumnIndices(position);
+//    }
+//    else {
+//      return predictionColumns.getColumnIndices(position - super.getNumColumns());
+//    }
+//  }
 
-  public int[] getColumnIndices(int position) {
-    if (position < super.getNumColumns()) {
-      return super.getColumnIndices(position);
-    }
-    else {
-      return predictionColumns.getColumnIndices(position - super.getNumColumns());
-    }
-  }
-
-  /**
-   * Returns a single row SparsePredictionTable, containing data from row
-   * no. <codE>i</code>.
-   */
-  public Example getExample(int i) {
-    return new SparsePredictionExample(this, i);
-  }
-
-  public Example getShallowExample(int i) {
-    return new SparseShallowPredictionExample(this, i);
-  }
+//  /**
+//   * Returns a single row SparsePredictionTable, containing data from row
+//   * no. <codE>i</code>.
+//   */
+//  public Example getExample(int i) {
+//    return new SparsePredictionExample(this, i);
+//  }
+//
+//  public Example getShallowExample(int i) {
+//    return new SparseShallowPredictionExample(this, i);
+//  }
 
 } //SparsePredictionTable

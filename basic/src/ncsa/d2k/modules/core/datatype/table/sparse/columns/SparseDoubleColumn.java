@@ -343,7 +343,7 @@ public class SparseDoubleColumn
    */
   public String getString(int row) {
     if (!elements.containsKey(row)) {
-      return SparseStringColumn.DEFAULT;
+      return "" + DEFAULT;
     }
     return String.valueOf(getDouble(row));
   }
