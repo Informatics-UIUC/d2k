@@ -195,7 +195,7 @@ public class BackPropModel extends PredictionModelModule
 
 	/**controls the scaling/unscaling of the inputs and outputs*/
 	ScalingTransformation scaler;
-	
+
 	public final double bias=-1.0;
 
 	public final boolean trainingSuccess;
@@ -209,19 +209,19 @@ public class BackPropModel extends PredictionModelModule
 	final double upperSig=.9;
 
 	/**
-		These may be different than the input features in the training 
+		These may be different than the input features in the training
 		table, if the inputs in the training table are invalid
 		*/
 	protected int[] inputFeatures;
 	protected int numInputs;
 	/**
-		These may be different than the output features in the training 
+		These may be different than the output features in the training
 		table, if the outputs in the training table are invalid
 		*/
 	protected int[] outputFeatures;
 	protected int numOutputs;
-	
-		
+
+
 	/////////////////////
 	//work methods
 	////////////////////
@@ -245,7 +245,8 @@ public class BackPropModel extends PredictionModelModule
 	public BackPropModel(ExampleTable et, ParameterPoint prms){
 		super(et);
 		int i,j,k;
-		data=et.getTrainTable();
+		//data=et.getTrainTable(); !!!
+                data=et;
 
 		params=prms;
 		/* make sure all of the columns we have to work with are
@@ -256,7 +257,7 @@ public class BackPropModel extends PredictionModelModule
 		}
 
 
-		transformTrainTable();
+		//transformTrainTable();  !!!
 
 		//set up arrays, fill w/ random values
 		initArrays();
@@ -483,7 +484,7 @@ public class BackPropModel extends PredictionModelModule
 		}
 
 		scaler=new ScalingTransformation(colIndices, mins, maxs, this.data);
-		
+
 		scaler.transform(this.data);
 		this.getTransformations().add(scaler);
 
@@ -577,9 +578,9 @@ public class BackPropModel extends PredictionModelModule
 
 			 //switch to outputs
 			 numCols=numOutputs;
-			 
+
 			 features=data.getOutputFeatures();
-			 
+
 			 noms=new boolean[numOutputs];
 		}else{//it was the outputs
 			this.outputFeatures = useableCols;
@@ -588,22 +589,22 @@ public class BackPropModel extends PredictionModelModule
 		}//for gg
 
 		//reset the superclass's info about training data
-		//this is kind of a hack to get the local input features 
-		//to be known by the superclass (PMM), but ultimately 
-		//we don't want to change the input features of the 
+		//this is kind of a hack to get the local input features
+		//to be known by the superclass (PMM), but ultimately
+		//we don't want to change the input features of the
 		//data table (TrainTable)
 		int[] it = data.getInputFeatures();
 		int[] ot = data.getOutputFeatures();
-		
+
 		data.setInputFeatures(this.inputFeatures);
 		data.setOutputFeatures(this.outputFeatures);
-		
+
 		this.setTrainingTable(data);
-		
+
 		data.setInputFeatures(it);
 		data.setOutputFeatures(ot);
-		
-		
+
+
 		return true;
 
 	}//verifyData()
@@ -800,7 +801,7 @@ public class BackPropModel extends PredictionModelModule
 
 		try{
 			//must scale the inputs before making predicitons
-			scaler.transform(pt);
+			//!!!scaler.transform(pt);
 		}catch(Exception e){
 			System.out.println("Error scaling the prediction table. A possible"+
 			" reason for this is that the prediction table *must* have its"+
@@ -825,7 +826,7 @@ public class BackPropModel extends PredictionModelModule
 			}
 		}
 		//now must untransform for the sake of the predictions
-		scaler.untransform(pt);
+		//!!!scaler.untransform(pt);
 	}
 
 	/**
@@ -1410,7 +1411,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 		for (t=1; t<span; t++){//don't forget there is that -1 in index 0
 
 
-			d=data.getDouble(g, model.outputFeatures[t-1]) - 
+			d=data.getDouble(g, model.outputFeatures[t-1]) -
 				computedResults[g][t-1];
 
 			d*=act.derivativeOf(sums[lastLayer][t]);

@@ -8,8 +8,8 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
  @author pgroves
  */
 
-public class BackPropModelGenerator
-    extends ncsa.d2k.core.modules.ModelGeneratorModule
+public class BackPropModelGeneratorReentrant
+    extends OrderedReentrantModule
     implements java.io.Serializable {
 
   //////////////////////
