@@ -9,7 +9,7 @@ public class AvailableFieldsInput extends InputModule
 {
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "Pass this on to the next module that needs a connection to this data source.";
+			case 0: return "Pass this database connection to the next module.";
 			case 1: return "This is a list of the fields available in the specified table.";
 			default: return "No such output";
 		}
@@ -17,14 +17,22 @@ public class AvailableFieldsInput extends InputModule
 
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: return "This is the data source queried.";
-			case 1: return "A list of the fields in this table is returned.";
+			case 0: return "The database connection.";
+			case 1: return "A list of available fields in the selected table.";
 			default: return "No such input";
 		}
 	}
 
 	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    Retrieves a list of available fields in a table.  </body></html>";
+          String s = "<p> Overview: ";
+          s += "This module displays the list of available fields in the selected table. </p>";
+          s += "<p> Detailed Description: ";
+          s += "This module makes a connection to a database and retrieves the ";
+          s += "list of available fields in the selected table. </p>";
+          s += "<p> Restrictions: ";
+          s += "We currently only support Oracle database.";
+
+          return s;
 	}
 
 	public String[] getInputTypes () {
@@ -69,7 +77,7 @@ public class AvailableFieldsInput extends InputModule
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "DBConnection";
+				return "Database Connection";
 			case 1:
 				return "Selected Table";
 			default: return "NO SUCH INPUT!";
@@ -84,7 +92,7 @@ public class AvailableFieldsInput extends InputModule
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "DBConnection";
+				return "Database Connection";
 			case 1:
 				return "Fields";
 			default: return "NO SUCH OUTPUT!";
