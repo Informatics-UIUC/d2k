@@ -82,7 +82,7 @@ public class ClassificationErrorEvaluator extends ModelEvaluatorModule {
       }
 
       names[i] = pt.getColumnLabel(preds[i]);
-      errors[i] = ((double)numCorrect)/((double)numRows);
+      errors[i] = 1- ((double)numCorrect)/((double)numRows);
     }
 
     ParameterPoint pp = ParameterPointImpl.getParameterPoint(names, errors);
