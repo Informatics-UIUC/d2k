@@ -20,18 +20,11 @@ import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 import java.sql.*;
-import java.util.*;
 import java.util.ArrayList;
 import java.text.*;
-import javax.swing.table.*;
 import javax.swing.*;
-import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.table.TableColumnModel;
-import javax.swing.JTable;
-import oracle.sql.*;
-import oracle.jdbc.driver.*;
 import gnu.trove.*;
 
 public class SQLGetRuleAsscFromCube extends UIModule
@@ -123,23 +116,32 @@ public class SQLGetRuleAsscFromCube extends UIModule
 		return types;
 	}
 
-  /** this property is the min acceptable support score. */
-  public void setMinimumSupport (double i) {
+  /** this property is the min acceptable support score.
+   *  @param i the minimum support to set
+   */
+  public void setMinSupport (double i) {
     minSupport = i;
   }
-  public double getMinimumSupport () {
+  public double getMinSupport () {
     return minSupport;
   }
 
-  /** this property is the min acceptable confidence score. */
-  public void setMinimumConfidence (double i) {
+  /** this property is the min acceptable confidence score.
+   *  @param i the minimum confidence to set
+   */
+  public void setMinConfidence (double i) {
     minConfidence = i;
   }
-  public double getMinimumConfidence () {
+  public double getMinConfidence () {
     return minConfidence;
   }
 
-  /** this property is the min acceptable pruning threshold. */
+  /** this property is the min acceptable pruning threshold.
+   *  @param i the pruning threshold. If the confidence difference of two
+   *           similar rules is less than this threshold, the more specific
+   *           rule is pruned. E.g. A=>C (confidence 0.95) and (A,B)=>C
+   *           (confidence 0.94), with pruningThreshold 0.1, (A,B)=>C is pruned
+   */
   public void setPruningThreshold (double i) {
     threshold = i;
   }
@@ -147,12 +149,19 @@ public class SQLGetRuleAsscFromCube extends UIModule
     return threshold;
   }
 
+  public PropertyDescription [] getPropertiesDescriptions () {
+    PropertyDescription [] pds = new PropertyDescription [3];
+    pds[0] = new PropertyDescription ("minSupport", "Minimum Support", "If the occurrence ratio of a rule is below Minimum Support, it is pruned.");
+    pds[1] = new PropertyDescription ("minConfidence", "Minimum Confidence", "If the accuracy confidence is below Minimum Confidence, it is pruned.");
+    pds[2] = new PropertyDescription ("threshold", "Pruning Threshold", "If the confidence difference between two similar rules is below Pruning Threshold, one rule is pruned.");
+    return pds;
+  }
 
   protected String[] getFieldNameMapping () {
     return null;
   }
 
-    /**
+  /**
     Create the UserView object for this module-view combination.
     @return The UserView associated with this module.
   */
@@ -358,6 +367,10 @@ public class SQLGetRuleAsscFromCube extends UIModule
       }
     }
 
+    /** toggle the sorting methods. Disable confidence-sorting if support-sorting
+     *  is choosed, and disable support-sorting if confidence-sorting is choosed.
+     *  @param e the event user has triggered
+     */
     public void itemStateChanged(ItemEvent e) {
       if (e.getSource() == sortS) {
         if (sortS.getState()) {
@@ -378,7 +391,8 @@ public class SQLGetRuleAsscFromCube extends UIModule
     }
   }
 
-  /** connect to a database and retrieve the list of available cube tables */
+  /** connect to a database and retrieve the list of available cube tables
+   */
   protected void doTableBrowse() {
     String query = "select table_name from all_tables where table_name like '%_CUBE'";
     try {
@@ -404,10 +418,10 @@ public class SQLGetRuleAsscFromCube extends UIModule
     }
   }
 
-  /** connect to a database and retrieve the column list of the cube table */
+  /** connect to a database and retrieve the column list of the cube table
+   *  @param colType the column type: 0 for condition column and 1 for target column
+   */
   protected void doColumnBrowse(int colType) {
-    // get condition column use colType = 0 and
-    // get target column use colType = 1
     String query = new String("select column_name from all_tab_columns where table_name = '");
     query = query + tableName.getText() + "' order by column_id";
     try {
@@ -449,6 +463,10 @@ public class SQLGetRuleAsscFromCube extends UIModule
     }
   }
 
+  /** build an ArrayList itemLables to keep strings "colName=colValue".
+   *  to speed up search and filtering, build an int[2] to keep the min index
+   *  and max index for each column.
+   */
   protected void getItemLabels() {
     itemLabels = new ArrayList();
     Statement valueStmt;
@@ -468,7 +486,7 @@ public class SQLGetRuleAsscFromCube extends UIModule
       // the last 2 columns are "set_size" and "cnt" which are added during building cube, not the original column.
       while (colIdx < colNames.size()) {
         String colName = colNames.get(colIdx).toString();
-        // add a column name to ArrayList colNames
+        // add a column name and values to ArrayList itemLabels.
         String valueQry = new String("select distinct " + colName + " from ");
         valueQry = valueQry + tableName.getText() + " where " + colName + " is not null";
         valueStmt = con.createStatement();
@@ -478,6 +496,7 @@ public class SQLGetRuleAsscFromCube extends UIModule
           itemLabels.add(colName+"="+valueSet.getString(1));
         }
         max = itemLabels.size()-1;
+        // use itemRange to trace the min index and max index for each column.
         itemRange[colIdx][0] = min;
         itemRange[colIdx][1] = max;
         //valueStmt.close();
@@ -493,6 +512,8 @@ public class SQLGetRuleAsscFromCube extends UIModule
     }
   }
 
+  /** get column names
+   */
   protected void getColNames() {
     Statement nameStmt;
     Statement cntStmt;
@@ -524,6 +545,8 @@ public class SQLGetRuleAsscFromCube extends UIModule
     }
   }
 
+  /** extract association rules from a database cube table
+   */
   protected void extractRules() {
     Statement totalStmt;
     Statement cubeStmt;
@@ -647,6 +670,10 @@ public class SQLGetRuleAsscFromCube extends UIModule
   }
 
 
+  /** get the index of ArrayList itemLabels for the given item
+   *  @param aItemLabel the item to check
+   *  @return the index of the item in ArrayList itemLabels
+   */
   protected int getItemIdx(String aItemLabel) {
     // find the index for the input item label
     for (int idx = 0; idx < itemLabels.size(); idx++) {
@@ -662,8 +689,12 @@ public class SQLGetRuleAsscFromCube extends UIModule
     return (-1);
   }
 
+  /** find the index of freqItemSets for the if-part or the then-part
+   *  @param indexes the frequent item set to search. Frequent item set is
+   *         represented as a list of indexes.
+   *  @return the index of freqItemSets that matches the pass-in item set.
+   */
   protected int getSetIdx(TIntArrayList indexes) {
-    // find the index of freqItemSets for the head part or the body part of the rule
     boolean found = true;
     for (int setIdx = 0; setIdx < freqItemSets.size(); setIdx++) {
       found = true;
@@ -692,6 +723,10 @@ public class SQLGetRuleAsscFromCube extends UIModule
     return (-1);
   }
 
+  /** get the value of support
+   *  @param setIdx the item set to check
+   *  @return the support for the given item set
+   */
   protected double getSupport(int setIdx) {
     double aSupport = ((FreqItemSet)freqItemSets.get(setIdx)).support;
     return(aSupport);
@@ -701,6 +736,9 @@ public class SQLGetRuleAsscFromCube extends UIModule
     executionManager.moduleDone(this);
   }
 
+  /** filter rules based on user specified support, confidence, condition columns
+   *  and target columns.
+   */
   protected void filterRules() {
     if (target.getText().length() < 1) {
       targetIdx = -1;
@@ -725,6 +763,11 @@ public class SQLGetRuleAsscFromCube extends UIModule
     }
   }
 
+  /** check whether the rule match user specified condition column
+   *  @param rule1 the rule to check
+   *  @param conditionIdx the condition column user has chosen
+   *  @return true if the rule matches user chosen column, false otherwise
+   */
   protected boolean matchCondition(Rule rule1, int conditionIdx) {
     if (conditionIdx == -1) { // no condition attribute is specified
       return (true);
@@ -743,6 +786,11 @@ public class SQLGetRuleAsscFromCube extends UIModule
     return (false);
   }
 
+  /** check whether the rule match user specified target column
+   *  @param rule1 the rule to check
+   *  @param targetIdx the target column user has chosen
+   *  @return true if the rule matches user chosen column, false otherwise
+   */
   protected boolean matchTarget(Rule rule1, int targetIdx) {
     if (targetIdx == -1) { // no target attribute is specified
       return (true);
@@ -762,9 +810,13 @@ public class SQLGetRuleAsscFromCube extends UIModule
   }
 
   /** search allRules to find whether this rule is significant:
-  *  such as: Immediate parent rule has much lower significant
-  **/
+  *   such as: Immediate parent rule has much lower confidence.
+  *   @param rule1 the rule to verify
+  *   @return true if the rule has significant higher confidence than parents,
+  *           false otherwise.
+  */
   protected boolean isARule(Rule rule1) {
+    // head is if-part (left-hand-side), and body is then-part (right-hand-side)
     FreqItemSet head1 = (FreqItemSet)freqItemSets.get(rule1.headIdx);
     FreqItemSet body1 = (FreqItemSet)freqItemSets.get(rule1.bodyIdx);
     // no parent rule for 2-item (1 for head and 1 for body) set
@@ -814,6 +866,9 @@ public class SQLGetRuleAsscFromCube extends UIModule
     return(true);
   }
 
+  /** sort the rule table based on the user specified mode
+   *  @param mode either sort by confidence or by support.
+   */
   protected void sortRuleTable(int mode) {
     for (int i=0; i<ruleTable.getNumRows()-1; i++) {
       for (int j=ruleTable.getNumRows()-1; j>i; j--) {
@@ -831,6 +886,8 @@ public class SQLGetRuleAsscFromCube extends UIModule
     }
   }
 
+  /** convert ArrayList to table
+   */
   protected void convertToRuleTable() {
     Column[] cols = new Column[4];
     cols[0] = new ObjectColumn(finalRules.size());
@@ -930,9 +987,9 @@ public class SQLGetRuleAsscFromCube extends UIModule
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "input0";
+				return "Connect Wrapper";
 			case 1:
-				return "input1";
+				return "Cube Table Name";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -945,12 +1002,9 @@ public class SQLGetRuleAsscFromCube extends UIModule
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
-			case 1:
-				return "output1";
-                        case 2:
-                                return "output2";
+				return "Rule Table";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
+
 }
