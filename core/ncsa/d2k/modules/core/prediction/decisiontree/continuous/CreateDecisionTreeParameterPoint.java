@@ -34,13 +34,13 @@ public class CreateDecisionTreeParameterPoint
         "This works fine for boolean values and continuous ones.  " +
         "If used as the sole decomposition strategy, it forces thes system to only split on a variable once.  ");
 
-    pds[4] = new PropertyDescription(
+    pds[3] = new PropertyDescription(
         "useMeanBasedSplit",
         "Generate mean splits",
         "The mean of each attribute value is calculated in the given node and used to generate " +
         "splits for that node.  One or more split methods (mean, midpoint, and median) can be use simultaneously.  ");
 
-    pds[3] = new PropertyDescription(
+    pds[4] = new PropertyDescription(
         "useMidPointBasedSplit",
         "Generate midpoint splits",
         "The min and max values of each attribute at each node in the tree are used to generate splits for that node.  " +

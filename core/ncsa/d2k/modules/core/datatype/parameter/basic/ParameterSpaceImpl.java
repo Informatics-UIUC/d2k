@@ -3,7 +3,7 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.continuous.*;
 
-public class ParameterSpaceImpl extends ContinuousExampleTable implements ParameterSpace, ExampleTable, java.io.Serializable {
+public class ParameterSpaceImpl extends ContinuousDoubleExampleTable implements ParameterSpace, ExampleTable, java.io.Serializable {
 
 
   final static int minValueRowIndex     = 0;

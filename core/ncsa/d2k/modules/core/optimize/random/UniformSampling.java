@@ -208,7 +208,7 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
   //int           BiasSpaceNumDimensions;
   double [][][] InitialExampleSet;
   int           InitialNumExamples;
-  ContinuousExampleTable ExampleSet;
+  ContinuousDoubleExampleTable ExampleSet;
   int           NumExamples;
   double [][]   ExampleData;
 
@@ -238,7 +238,7 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
           ObjectiveSpaceDimensionNames[i] = example.getOutputName(i);
         }
 
-        ExampleSet = new ContinuousExampleTable(MaxNumIterations,
+        ExampleSet = new ContinuousDoubleExampleTable(MaxNumIterations,
             BiasSpace.getNumParameters(),
             example.getNumOutputs(),
             ControlSpaceDimensionNames,
@@ -332,7 +332,7 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
       }
 
 
-      ContinuousExampleTable optimalExampleSet = new ContinuousExampleTable(
+      ContinuousDoubleExampleTable optimalExampleSet = new ContinuousDoubleExampleTable(
           data,
           1,
           ExampleSet.getNumInputFeatures(),
