@@ -22,18 +22,18 @@ public class FreqItemSet implements java.io.Serializable {
     public int numberOfItems; // confidence for the frequent item set
 
     public int hashCode() {
-        if(items != null) {
+        if (items != null) {
             StringBuffer sb = new StringBuffer();
             int[] ar = items.toNativeArray();
             Arrays.sort(ar);
             for(int i = 0; i < ar.length; i++) {
                 sb.append(Integer.toString(ar[i]));
-                if(i != ar.length-1)
+                if (i != ar.length-1)
                     sb.append(",");
             }
             return sb.toString().hashCode();
         }
         else
-            return super.hashCode();
+          return super.hashCode();
     }
 }
