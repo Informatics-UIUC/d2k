@@ -632,7 +632,6 @@ public class LWRPlotVis extends VisModule
 				The first column shows the output variables.
 			*/
 			public int getColumnCount() {
-				//return scatterTable.getNumColumns();
 				return scatterTable.getNumInputFeatures()+1;
 			}
 
@@ -640,7 +639,6 @@ public class LWRPlotVis extends VisModule
 				There are the same number of rows as output features.
 			*/
 			public int getRowCount() {
-				//return scatterTable.getNumColumns();
 				return scatterTable.getNumInputFeatures()+1;
 			}
 

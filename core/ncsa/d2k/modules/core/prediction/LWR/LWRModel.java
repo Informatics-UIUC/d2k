@@ -93,11 +93,9 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 
 		N = xTable.getNumColumns();
 
-		//System.out.println("exTable has "+exTable.getNumColumns()+" columns");
 		//place to put the final predictions (will become a PredictionTable)
 		//finalTable = ((ExampleTable) exTable.copy()).toPredictionTable();
 		finalTable = new PredictionTableImpl((ExampleTableImpl) (new ExampleTableImpl(xTable).copy()));
-		//System.out.println("finalTable has "+finalTable.getNumColumns()+" columns");
 		//finalTable.removeColumn(finalTable.getNumColumns()-1);
 
 	for (int i=0; i<N; i++){
@@ -107,19 +105,9 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		//determine the subset of training data which should be used for
 		//the regression (redefines TraintableSubset)
 		determineSubset(TestTable);
-		/*System.out.println("***************TrainTable Subset *****************");
-		TraintableSubset.print();
-		System.out.println("***************end TrainTable    *****************");
-		System.out.println("   ");*/
 
-		/*System.out.println("***************TestTable looks like *****************");
-		TestTable.print();
-		System.out.println("***************end TestTable    *****************");
-		System.out.println("   ");*/
 		//Each of these arrays stores the corresponding value for each query.
 		//Thus, their length is the number of queries
-
-
 		weights = new double[TraintableSubset.getNumRows()];
 		kernels = new double[TraintableSubset.getNumRows()];
 		distances = new double[TraintableSubset.getNumRows()];
@@ -158,7 +146,7 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 			//getting a query from the test data
 			double[] q = getQuery(c, TestTable);
 
-			//System.out.println("here's X");
+			//System.out.println("****begin X****");
 			//X.print(4,3);
 			//System.out.println("****end X****");
 
@@ -213,8 +201,6 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 				double[] doubAr = new double[Traintable.getNumRows()];
 				Traintable.getColumn(doubAr, Traintable.getNumColumns()-1);
 				double ans = doubAr[minDistIndex];
-
-				//double ans = ((Double) Traintable.getColumn(Traintable.getNumColumns()-1).getRow(minDistIndex)).doubleValue();
 				prediction[c] = ans;
 
 
@@ -232,11 +218,6 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 
 		}
 
-
-
-		/*for (int j=0; j< TestTable.getNumColumns()-1; j++){
-			finalTable.addColumn(TestTable.getColumn(j));
-		}*/
 		finalTable.addPredictionColumn(prediction, "Predictions");
 		finalTable.addPredictionColumn(criterion, "Criterion");
 
@@ -480,9 +461,12 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 				ker = kInversePlusOne(c);
 				break;
 			case 2:
-				ker = kInverse(c);
+				ker = keAbs(c);
 				break;
 			case 3:
+				ker = kInverse(c);
+				break;
+			case 4:
 				ker = kInverseSquare(c);
 				break;
 
@@ -663,6 +647,17 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 	}
 
 	/**
+		keAbs
+		a kernel fuction k(x) = e^(-|d|)
+		@param double x
+	*/
+	public double keAbs(double x) {
+		double val = Math.abs(x);
+		double y = Math.exp(-val);
+		return y;
+	}
+
+	/**
 		kLinear
 		a kernel function: k(x) = 1-x
 		@param double x
@@ -677,7 +672,7 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		the normal Euclidean distance for two n-dimensional vectors
 		@param double[] x - a vector
 		@param double[] q - a vector
-		return double ans - the distance
+		@return double ans - the distance
 	*/
 	public double distUnweightedEuclidean( double[] x, double[] q) {
 		int num1 = x.length;
@@ -790,7 +785,6 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		int outputCols[] = Traintable.getOutputFeatures();
 
 		for (int i=0; i< inputCols.length; i++){
-			//System.out.println("inputCols["+i+"] = "+inputCols[i]);
 			double min, max;
 			double[] doubAr = new double[numRow];
 			Traintable.getColumn(doubAr, inputCols[i]);
@@ -803,7 +797,6 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 
 		for (int j=0; j< outputCols.length; j++){
 			double min, max;
-			//System.out.println("outputCols["+j+"] = "+outputCols[j]);
 			double[] doubAr2 = new double[numRow];
 			Traintable.getColumn(doubAr2, outputCols[j]);
 			returnTable.addColumn(doubAr2);
