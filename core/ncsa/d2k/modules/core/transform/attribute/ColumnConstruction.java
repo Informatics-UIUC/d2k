@@ -29,13 +29,49 @@ public class ColumnConstruction extends UIModule {
 /* Module methods                                                             */
 /******************************************************************************/
 
+   public String getModuleName() {
+      return "Construct New Columns";
+   }
+
    public String getModuleInfo() {
-      return "Allows the user to construct new columns from operations on existing columns.";
+      // return "Allows the user to construct new columns from operations on existing columns.";
+      StringBuffer sb = new StringBuffer("<p>Overview: ");
+      sb.append("This module provides a GUI that enables the user to construct ");
+      sb.append("new columns in a table from operations on existing columns.");
+      sb.append("</p>");
+      sb.append("<p>Detailed Description: ");
+      sb.append("This module provides a GUI used to specify expression strings. ");
+      sb.append("These expressions are interpreted as operations on existing ");
+      sb.append("columns in the table and are used to construct new columns. ");
+      sb.append("When the GUI is dismissed, the information needed to construct ");
+      sb.append("these new columns is encapsulated in a <i>Transformation</i> ");
+      sb.append("object that can be applied downstream in order to actually ");
+      sb.append("add the new columns to the table.");
+      sb.append("</p><p>");
+      sb.append("The available operations on numeric columns are addition, ");
+      sb.append("subtraction, multiplication, division, and modulus. The ");
+      sb.append("operations available on boolean columns are AND and OR.");
+      sb.append("</p><p>Data Type Restrictions: ");
+      sb.append("Column construction operations can only be performed on the ");
+      sb.append("numeric and boolean columns of a table. Other columns will ");
+      sb.append("be ignored, but they will not be modified.");
+      sb.append("</p><p>Data Handling: ");
+      sb.append("This module does not immediately modify its input data. ");
+      sb.append("Rather, its output is a <i>Transformation</i> that can then ");
+      sb.append("be used to modify the table.");
+      sb.append("</p>");
+      return sb.toString();
    }
 
    public String[] getInputTypes() {
       String[] i = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
       return i;
+   }
+
+   public String getInputName(int index) {
+      if (index == 0)
+         return "Mutable Table";
+      return null;
    }
 
    public String getInputInfo(int index) {
@@ -49,6 +85,12 @@ public class ColumnConstruction extends UIModule {
       return o;
    }
 
+   public String getOutputName(int index) {
+      if (index == 0)
+         return "Transformation";
+      return null;
+   }
+
    public String getOutputInfo(int index) {
       if (index == 0)
          return "The transformation to construct the new columns.";
@@ -59,6 +101,25 @@ public class ColumnConstruction extends UIModule {
 
    protected UserView createUserView() {
       return new ColumnConstructionGUI();
+   }
+
+/******************************************************************************/
+/* properties                                                                 */
+/******************************************************************************/
+
+   private String _lastExpression = "";
+
+   public String getLastExpression() {
+      return _lastExpression;
+   }
+
+   public void setLastExpression(String value) {
+      _lastExpression = value;
+   }
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+      return new PropertyDescription[0]; // so that "last expression" property
+                                         // is invisible
    }
 
 /******************************************************************************/
@@ -87,7 +148,11 @@ public class ColumnConstruction extends UIModule {
 
       private HashMap stringsToColumnBoxEntries;
 
-      public void initView(ViewModule m) { }
+      private ViewModule mod;
+
+      public void initView(ViewModule m) {
+         mod = m;
+      }
 
       public void setInput(Object o, int i) {
          if (i != 0) return;
@@ -103,6 +168,8 @@ public class ColumnConstruction extends UIModule {
 
          gui = new ExpressionGUI(expression, true);
          gui.addExpressionListener(this);
+
+         gui.getTextArea().setText(_lastExpression);
 
          newNameField = new JTextField(16);
 
@@ -164,7 +231,8 @@ public class ColumnConstruction extends UIModule {
 
          }
 
-         addColumnButton = new JButton("Add");
+         addColumnButton = new JButton(
+               new ImageIcon(mod.getImage("/images/addbutton.gif")));
          addColumnButton.addActionListener(this);
 
          JPanel columnPanel = new JPanel();
@@ -183,7 +251,8 @@ public class ColumnConstruction extends UIModule {
          operationBox.addItem("/");
          operationBox.addItem("%");
 
-         addOperationButton = new JButton("Add");
+         addOperationButton = new JButton(
+               new ImageIcon(mod.getImage("/images/addbutton.gif")));
          addOperationButton.addActionListener(this);
 
          JPanel operationPanel = new JPanel();
@@ -199,7 +268,8 @@ public class ColumnConstruction extends UIModule {
          booleanBox.addItem("&&");
          booleanBox.addItem("||");
 
-         addBooleanButton = new JButton("Add");
+         addBooleanButton = new JButton(
+               new ImageIcon(mod.getImage("/images/addbutton.gif")));
          addBooleanButton.addActionListener(this);
 
          JPanel booleanPanel = new JPanel();
@@ -479,6 +549,8 @@ public class ColumnConstruction extends UIModule {
             gui.setExpression(newExp);
 
             newColumnModel.addElement(new Construction(newNameField.getText(), gui.getTextArea().getText()));
+
+            _lastExpression = gui.getTextArea().getText();
 
             newNameField.setText("");
             gui.getTextArea().setText("");

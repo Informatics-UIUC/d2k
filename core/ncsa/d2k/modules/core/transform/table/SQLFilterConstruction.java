@@ -107,6 +107,25 @@ public class SQLFilterConstruction extends UIModule {
    }
 
 /******************************************************************************/
+/* properties                                                                 */
+/******************************************************************************/
+
+   private String _lastExpression = "";
+
+   public String getLastExpression() {
+      return _lastExpression;
+   }
+
+   public void setLastExpression(String value) {
+      _lastExpression = value;
+   }
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+      return new PropertyDescription[0]; // so that "last expression" property
+                                         // is invisible
+   }
+
+/******************************************************************************/
 /* GUI                                                                        */
 /******************************************************************************/
 
@@ -130,9 +149,13 @@ public class SQLFilterConstruction extends UIModule {
       private int nominalShowing = -1; // which nominal combobox is showing?
                                        // -1 if scalar textfield is showing
 
+      private ViewModule mod;
+
       private boolean initialized = false;
 
-      public void initView(ViewModule m) { }
+      public void initView(ViewModule m) {
+         mod = m;
+      }
 
       public void setInput(Object o, int i) {
         if (i == 0) {
@@ -153,12 +176,15 @@ public class SQLFilterConstruction extends UIModule {
          gui = new ExpressionGUI(expression, false);
          gui.addExpressionListener(this);
 
+         gui.getTextArea().setText(_lastExpression);
+
          columnBox = new JComboBox();
          columnBox.addActionListener(this);
          for (int i = 0; i < table.getNumColumns(); i++)
             columnBox.addItem(table.getColumnLabel(i));
 
-         addColumnButton = new JButton("Add");
+         addColumnButton = new JButton(
+               new ImageIcon(mod.getImage("/images/addbutton.gif")));
          addColumnButton.addActionListener(this);
 
          JPanel columnPanel = new JPanel();
@@ -175,7 +201,8 @@ public class SQLFilterConstruction extends UIModule {
 
          scalarField = new JTextField(10);
 
-         addScalarButton = new JButton("Add");
+         addScalarButton = new JButton(
+               new ImageIcon(mod.getImage("/images/addbutton.gif")));
          addScalarButton.addActionListener(this);
 
          nominalComboBoxLookup = new HashMap();
@@ -224,7 +251,8 @@ public class SQLFilterConstruction extends UIModule {
          operationBox.addItem(">");
          operationBox.addItem(">=");
 
-         addOperationButton = new JButton("Add");
+         addOperationButton = new JButton(
+               new ImageIcon(mod.getImage("/images/addbutton.gif")));
          addOperationButton.addActionListener(this);
 
          JPanel operationPanel = new JPanel();
@@ -240,7 +268,8 @@ public class SQLFilterConstruction extends UIModule {
          booleanBox.addItem("&&");
          booleanBox.addItem("||");
 
-         addBooleanButton = new JButton("Add");
+         addBooleanButton = new JButton(
+               new ImageIcon(mod.getImage("/images/addbutton.gif")));
          addBooleanButton.addActionListener(this);
 
          JPanel booleanPanel = new JPanel();
@@ -459,6 +488,9 @@ public class SQLFilterConstruction extends UIModule {
          // SQL does not support "||"
          while (queryCondition.indexOf("||") >= 0)
            queryCondition = replace(queryCondition, "||", " or ");
+
+         _lastExpression = new String(queryCondition);
+
          pushOutput(queryCondition,0);
          viewDone("Done");
       }
