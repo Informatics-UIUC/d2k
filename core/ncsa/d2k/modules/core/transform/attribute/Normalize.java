@@ -94,6 +94,13 @@ public class Normalize extends UIModule {
       };
    }
 
+    public PropertyDescription[] getPropertiesDescriptions() { 
+	return new PropertyDescription[0]; // so that "last expression" property 
+	// is invisible 
+    } 
+    
+    
+
 /******************************************************************************/
 /* GUI                                                                        */
 /******************************************************************************/
@@ -363,6 +370,7 @@ public class Normalize extends UIModule {
 
    }
 
+
 }
 
 
@@ -370,4 +378,5 @@ public class Normalize extends UIModule {
  * QA comments:
  * 2-28-03  Vered started qa.
  *          added to module info a note about missing values handling.
+ * 3-24-03 Anca: added getPropertyDescription()
  */
