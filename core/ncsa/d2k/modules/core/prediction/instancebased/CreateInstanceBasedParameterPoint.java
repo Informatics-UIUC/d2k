@@ -41,7 +41,7 @@ public class CreateInstanceBasedParameterPoint
   private int NeighborhoodSize = 20;
   public void setNeighborhoodSize(int value) throws PropertyVetoException {
     if (value < 1) {
-      throw new PropertyVetoException("Neighborhood Size < 1", null);
+      throw new PropertyVetoException(" < 1", null);
     }
     this.NeighborhoodSize = value;
   }
@@ -62,7 +62,7 @@ public class CreateInstanceBasedParameterPoint
   private double ZeroDistanceValue = 0.0;
   public void setZeroDistanceValue(double value) throws PropertyVetoException {
     if (value < 0.0) {
-      throw new PropertyVetoException("ZeroDistanceValue < 0.0", null);
+      throw new PropertyVetoException(" < 0.0", null);
     }
     this.ZeroDistanceValue = value;
   }

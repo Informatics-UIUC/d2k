@@ -227,8 +227,10 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
         stop = true;
       if (NumExamples >= MaxNumIterations)
         stop = true;
-      if (BiasSpace.getNumParameters() == 0)
+      if (BiasSpace.getNumParameters() == 0) {
+        System.out.println("Halting execution of optimizer after on iteration because numParameters = 0.  ");
         stop = true;
+      }
     }
 
     /////////////////////////////////////////

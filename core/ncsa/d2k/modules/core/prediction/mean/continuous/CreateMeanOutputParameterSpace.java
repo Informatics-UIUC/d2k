@@ -3,25 +3,43 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.core.modules.ComputeModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+import java.beans.PropertyVetoException;
 
-public class MeanOutputBiasSpaceGenerator extends ComputeModule {
+public class CreateMeanOutputParameterSpace extends ComputeModule {
 
 
   public String getModuleName() {
-    return "MeanOutputBiasSpaceGenerator";
+    return "Create Mean Output Parameter Space";
   }
+
   public String getModuleInfo() {
-    return "MeanOutputBiasSpaceGenerator";
+    return "This creates a Parameter Space for an optimizer to search.  " +
+           "It takes as input two parameter points, one representing the minimum allowable parameter values and one " +
+           "representing the maximum allowable parameter values.  "  +
+           "It outputs a Parameter Space for input into an optimizer and the Mean Output Inducer Opt module for input " +
+           "into Generate Function Inducer.  ";
   }
 
   public String getInputName(int i) {
-    return "";
+    switch (i) {
+      case 0: return "Minimum Parameter Point";
+      case 1: return "Maximum Parameter Point";
+      default: return "";
+    }
   }
+
   public String getInputInfo(int i) {
-    return "";
+    switch (i) {
+      case 0: return "The minimum allowable parameter values";
+      case 1: return "The maximum allowable parameter values";
+      default: return "";
+    }
   }
   public String[] getInputTypes() {
-    String [] in = {};
+    String[] in = {
+        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"};
     return in;
   }
 
@@ -46,7 +64,12 @@ public class MeanOutputBiasSpaceGenerator extends ComputeModule {
     return out;
   }
 
+
+
   public void doit() throws Exception {
+
+    ParameterPoint minParameterPoint = (ParameterPoint)  this.pullInput(0);
+    ParameterPoint maxParameterPoint = (ParameterPoint)  this.pullInput(1);
 
     int         numControlParameters = 0;
     double []   minControlValues = new double[numControlParameters];
@@ -58,11 +81,12 @@ public class MeanOutputBiasSpaceGenerator extends ComputeModule {
 
     int biasIndex = 0;
 
+
     ParameterSpaceImpl parameterSpace = new ParameterSpaceImpl();
     parameterSpace.createFromData(biasNames, minControlValues, maxControlValues, defaults, resolutions, types);
     Class functionInducerClass = null;
     try {
-      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.mean.continuous.MeanInducerOpt");
+      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.mean.continuous.MeanOutputInducerOpt");
     }
     catch (Exception e) {
       System.out.println("could not find class");

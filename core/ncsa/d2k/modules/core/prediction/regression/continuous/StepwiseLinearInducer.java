@@ -6,8 +6,7 @@ import ncsa.d2k.core.modules.*;
 import Jama.Matrix;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-public class StepwiseLinearInducer extends StepwiseLinearInducerOpt
-{
+public class StepwiseLinearInducer extends StepwiseLinearInducerOpt {
   private int        NumRounds = 0;
   public  void    setNumRounds (int value) {       this.NumRounds = value;}
   public  int     getNumRounds ()          {return this.NumRounds;}

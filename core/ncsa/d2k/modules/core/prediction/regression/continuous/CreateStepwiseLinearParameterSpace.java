@@ -3,38 +3,43 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.core.modules.ComputeModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+import java.beans.PropertyVetoException;
 
-public class StepwiseLinearBiasSpaceGenerator extends ComputeModule {
+public class CreateStepwiseLinearParameterSpace extends ComputeModule {
 
-  private int        NumRoundsMin = 0;
-  public  void    setNumRoundsMin (int value) {       this.NumRoundsMin = value;}
-  public  int     getNumRoundsMin ()          {return this.NumRoundsMin;}
-  private int        NumRoundsMax = 0;
-  public  void    setNumRoundsMax (int value) {       this.NumRoundsMax = value;}
-  public  int     getNumRoundsMax ()          {return this.NumRoundsMax;}
-
-  private int        DirectionMin = 0;
-  public  void    setDirectionMin (int value) {       this.DirectionMin = value;}
-  public  int     getDirectionMin ()          {return this.DirectionMin;}
-  private int        DirectionMax = 0;
-  public  void    setDirectionMax (int value) {       this.DirectionMax = value;}
-  public  int     getDirectionMax ()          {return this.DirectionMax;}
 
   public String getModuleName() {
-    return "StepwiseLinearBiasSpaceGenerator";
+    return "Create Stepwise Linear Parameter Space";
   }
+
   public String getModuleInfo() {
-    return "StepwiseLinearBiasSpaceGenerator";
+    return "This creates a Parameter Space for an optimizer to search.  " +
+           "It takes as input two parameter points, one representing the minimum allowable parameter values and one " +
+           "representing the maximum allowable parameter values.  "  +
+           "It outputs a Parameter Space for input into an optimizer and the Stepwise Linear Inducer Opt module for input " +
+           "into Generate Function Inducer.  ";
   }
 
   public String getInputName(int i) {
-    return "";
+    switch (i) {
+      case 0: return "Minimum Parameter Point";
+      case 1: return "Maximum Parameter Point";
+      default: return "";
+    }
   }
+
   public String getInputInfo(int i) {
-    return "";
+    switch (i) {
+      case 0: return "The minimum allowable parameter values";
+      case 1: return "The maximum allowable parameter values";
+      default: return "";
+    }
   }
   public String[] getInputTypes() {
-    String [] in = {};
+    String[] in = {
+        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"};
     return in;
   }
 
@@ -59,9 +64,14 @@ public class StepwiseLinearBiasSpaceGenerator extends ComputeModule {
     return out;
   }
 
+
+
   public void doit() throws Exception {
 
-    int         numControlParameters = 2;
+    ParameterPoint minParameterPoint = (ParameterPoint)  this.pullInput(0);
+    ParameterPoint maxParameterPoint = (ParameterPoint)  this.pullInput(1);
+
+    int         numControlParameters = 3;
     double []   minControlValues = new double[numControlParameters];
     double []   maxControlValues = new double[numControlParameters];
     double []   defaults         = new double[numControlParameters];
@@ -71,19 +81,27 @@ public class StepwiseLinearBiasSpaceGenerator extends ComputeModule {
 
     int biasIndex = 0;
 
-    biasNames       [biasIndex] = "NumRounds";
-    minControlValues[biasIndex] = NumRoundsMin;
-    maxControlValues[biasIndex] = NumRoundsMax;
+    biasNames       [biasIndex] = "UseStepwise";
+    minControlValues[biasIndex] = minParameterPoint.getValue(biasNames[biasIndex]);
+    maxControlValues[biasIndex] = maxParameterPoint.getValue(biasNames[biasIndex]);
     defaults        [biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
-    resolutions     [biasIndex] = NumRoundsMax - NumRoundsMin + 1;
-    types           [biasIndex] = ColumnTypes.INTEGER;
+    resolutions     [biasIndex] = 2;
+    types           [biasIndex] = ColumnTypes.BOOLEAN;
     biasIndex++;
 
     biasNames       [biasIndex] = "Direction";
-    minControlValues[biasIndex] = DirectionMin;
-    maxControlValues[biasIndex] = DirectionMax;
+    minControlValues[biasIndex] = minParameterPoint.getValue(biasNames[biasIndex]);
+    maxControlValues[biasIndex] = maxParameterPoint.getValue(biasNames[biasIndex]);
     defaults        [biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
-    resolutions     [biasIndex] = DirectionMax - DirectionMin + 1;
+    resolutions     [biasIndex] = 2;
+    types           [biasIndex] = ColumnTypes.INTEGER;
+    biasIndex++;
+
+    biasNames       [biasIndex] = "NumRounds";
+    minControlValues[biasIndex] = minParameterPoint.getValue(biasNames[biasIndex]);
+    maxControlValues[biasIndex] = maxParameterPoint.getValue(biasNames[biasIndex]);
+    defaults        [biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
+    resolutions     [biasIndex] = (int) maxControlValues[biasIndex] - (int) minControlValues[biasIndex] + 1;
     types           [biasIndex] = ColumnTypes.INTEGER;
     biasIndex++;
 
