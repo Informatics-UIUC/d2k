@@ -163,7 +163,6 @@ public class TableViewer extends UIModule {
          */
       public void initView(ViewModule mod) {
          parent = (TableViewer)mod;
-	 parent.setWindowName( getAlias() );
          menuBar = new JMenuBar();
          JMenu fileMenu = new JMenu("File");
          print = new JMenuItem("Save...");
@@ -201,6 +200,8 @@ public class TableViewer extends UIModule {
             add(matrix, BorderLayout.CENTER);
             add(buttonPanel, BorderLayout.SOUTH);
          }
+         // Make sure window name matches current module alias
+         parent.setWindowName( getAlias() );
       }
 
       /**
