@@ -11,7 +11,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 	@author David Clutter
 */
 public final class CategoricalDecisionTreeNode extends DecisionTreeNode
-	implements Serializable {
+	implements Serializable, CategoricalViewableDTNode {
 
 	/* Maps an output to a specific child.  Used in evaluate() */
 	private HashMap outputToChildMap;
@@ -118,5 +118,23 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 
 		incrementOutputTally(UNKNOWN);
 		return UNKNOWN;
+	}
+
+	/**
+	 * Get the values for each branch of the node.
+	 * @return the values for each branch of the node
+	 */
+	public String[] getSplitValues() {
+		String[] retVal = new String[0];
+		retVal = (String[])branchLabels.toArray(retVal);
+		return retVal;
+	}
+
+	/**
+	 * Get the split attribute.
+	 * @return the split attribute.
+	 */
+	public String getSplitAttribute() {
+		return getLabel();
 	}
 }

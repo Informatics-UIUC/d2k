@@ -10,7 +10,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 	split on a value of an attribute.
 */
 public final class NumericDecisionTreeNode extends DecisionTreeNode
-	implements Serializable {
+	implements Serializable, NumericViewableDTNode {
 
 	/** everything less than the split value goes left */
 	private static final int LEFT = 0;
@@ -111,5 +111,21 @@ public final class NumericDecisionTreeNode extends DecisionTreeNode
 			DecisionTreeNode dtn = (DecisionTreeNode)children.get(RIGHT);
 			return dtn.evaluate(vt, row);
 		}
+	}
+
+	/**
+	 * Get the values for each branch of the node.
+	 * @return the values for each branch of the node
+	 */
+	public double getSplitValue() {
+		return splitValue;
+	}
+
+	/**
+	 * Get the split attribute.
+	 * @return the split attribute.
+	 */
+	public String getSplitAttribute() {
+		return getLabel();
 	}
 }
