@@ -86,7 +86,6 @@ public class NaiveBayesAutoBin extends DataPrepModule {
     private ExampleTable tbl;
     private NumberFormat nf;
 
-
     private BinDescriptor[] numberOfBins(ExampleTable et, int num) throws Exception {
         List bins = new ArrayList();
 
@@ -171,7 +170,8 @@ public class NaiveBayesAutoBin extends DataPrepModule {
                             vals[j]);
                         //counter++;
  */
-                        BinDescriptor bd = this.createTextualBin(inputs[i], vals);
+                        String[] st = {vals[j]};
+                        BinDescriptor bd = this.createTextualBin(inputs[i], vals[j], st);
                         bins.add(bd);
                 }
             }
@@ -294,7 +294,8 @@ public class NaiveBayesAutoBin extends DataPrepModule {
                 for(int j = 0; j < vals.length; j++) {
                         //bt.addStringBin(et.getColumnLabel(inputs[i]), vals[j], vals[j]);
                 //        counter++;
-                        BinDescriptor bd = this.createTextualBin(inputs[i], vals);
+                        String[] st = {vals[j]};
+                        BinDescriptor bd = this.createTextualBin(inputs[i], vals[j], st);
                         bins.add(bd);
                 }
             }
@@ -316,13 +317,13 @@ public class NaiveBayesAutoBin extends DataPrepModule {
      * @param sel
      * @return
      */
-    private BinDescriptor createTextualBin (int idx, String[] vals) {
+    private BinDescriptor createTextualBin (int idx, String name, String[] vals) {
 /*        String[] vals = new String[sel.length];
         for (int i = 0; i < vals.length; i++)
             vals[i] = sel[i].toString();
  */
 
-        return  new TextualBinDescriptor(idx, tbl.getColumnLabel(idx), vals, tbl.getColumnLabel(idx));
+        return  new TextualBinDescriptor(idx, name, vals, tbl.getColumnLabel(idx));
     }
 
     /**

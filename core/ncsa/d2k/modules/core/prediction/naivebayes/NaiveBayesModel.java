@@ -219,7 +219,6 @@ public final class NaiveBayesModel
    the most significant attribute, and will be ranked first.
    */
   final private void rank() {
-    System.out.println("RANK!");
     try {
       HashMap predictions = new HashMap();
 
@@ -271,6 +270,11 @@ public final class NaiveBayesModel
                     table.getDouble(row, ins[col]));
               }
               else {
+
+                //System.out.println("BNFV: "+actualClass+" "+table.getColumnLabel(ins[col])+" "+
+                //                   table.getString(row, ins[col]));
+
+
                 bn = binTree.getBinNameForValue(
                     actualClass,
                     table.getColumnLabel(ins[col]),
@@ -278,6 +282,7 @@ public final class NaiveBayesModel
 
               }
               if (bn == null) {
+                //System.out.println("BN WAS NULL.");
                 toDrop.add(table.getColumnLabel(ins[col]));
               }
               // call add evidence with the attribute
@@ -321,7 +326,6 @@ public final class NaiveBayesModel
 
       // now drop the ones from the toDrop list
       rankedAttributes = new String[tempAttributes.length - toDrop.size()];
-      System.out.println("HERE: "+rankedAttributes.length);
       int q = 0;
       for (int r = 0; r < tempAttributes.length; r++) {
         if (!toDrop.contains(tempAttributes[r])) {

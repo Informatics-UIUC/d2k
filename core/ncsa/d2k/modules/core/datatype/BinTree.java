@@ -1391,9 +1391,12 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 		private class MultiStringEvaluate extends Evaluate implements Serializable {
 			HashSet values;
 
-			MultiStringEvaluate() {}
+			MultiStringEvaluate() {
+                          values = new HashSet();
+                        }
 
 			MultiStringEvaluate(String[] vals) {
+                                values = new HashSet();
 				for(int i = 0; i < vals.length; i++)
 					values.add(vals[i]);
 			}

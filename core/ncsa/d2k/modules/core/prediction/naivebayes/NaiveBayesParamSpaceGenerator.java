@@ -21,15 +21,15 @@ public class NaiveBayesParamSpaceGenerator extends AbstractParamSpaceGenerator {
     protected ParameterSpace getDefaultSpace(){
 
     ParameterSpace psi = new ParameterSpaceImpl();
-    String[] names = {BIN_METHOD, ITEMS_PER_BIN, NUMBER_OF_BINS};
-    double[] min = {0, 1, 1};
-    double[] max = {1, Integer.MAX_VALUE, Integer.MAX_VALUE};
-    double[] def = {0, 3, 3};
-    int[] res = {1, 1, 1};
-    int[] types = {ColumnTypes.INTEGER, ColumnTypes.INTEGER, ColumnTypes.INTEGER};
-    psi.createFromData(names, min, max, def, res, types);
-    return psi;
-  }
+      String[] names = {BIN_METHOD, ITEMS_PER_BIN, NUMBER_OF_BINS};
+      double[] min = {0, 1, 1};
+      double[] max = {1, Integer.MAX_VALUE, Integer.MAX_VALUE};
+      double[] def = {0, 3, 3};
+      int[] res = {1, 1, 1};
+      int[] types = {ColumnTypes.INTEGER, ColumnTypes.INTEGER, ColumnTypes.INTEGER};
+      psi.createFromData(names, min, max, def, res, types);
+      return psi;
+    }
 
   /**
    * REturn a name more appriate to the module.
