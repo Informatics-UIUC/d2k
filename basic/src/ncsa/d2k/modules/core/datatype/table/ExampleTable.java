@@ -316,14 +316,14 @@ public interface ExampleTable extends MutableTable {
      * @param e the example of interest
      * @return the number of inputs
      */
-    public int getNumInputs(int e);
+    // ANCA: methods not used public int getNumInputs(int e);
 
     /**
      * Get the number of outputs for a specific example.
      * @param e the example of interest
      * @return the number of outputs
      */
-    public int getNumOutputs(int e);
+   // ANCA methods not used public int getNumOutputs(int e);
 
     /**
      * Get the name of an input.
