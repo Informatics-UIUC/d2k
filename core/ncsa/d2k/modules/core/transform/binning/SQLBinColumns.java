@@ -38,7 +38,7 @@ public class SQLBinColumns extends UIModule {
      * @return module's name
      */
     public String getModuleName () {
-        return  "BinColumns Using SQL";
+        return  "SQL Bin Columns";
     }
 
     /**
@@ -122,7 +122,7 @@ public class SQLBinColumns extends UIModule {
     public String getOutputName (int i) {
         switch (i) {
             case 0:
-                return "Bin Transform";
+                return "Binning Transformation";
             default:
                 return  "no such output!";
         }

@@ -46,7 +46,7 @@ public class ADTCreateBinTree extends DataPrepModule {
 	   @return The name of this module.
 	*/
 	public String getModuleName() {
-		return "ADTCreateBinTree";
+		return "AD Tree Create Bin Tree";
 	}
 
 	/**
@@ -99,11 +99,11 @@ public class ADTCreateBinTree extends DataPrepModule {
 	public String getInputName(int i) {
 		switch (i) {
 			case 0 :
-				return "ADTree";
+				return "AD Tree";
 			case 1 :
-				return "BinningTransformation";
+				return "Binning Transformation";
 			case 2 :
-				return "MetaDataExampleTable";
+				return "Meta Data Example Table";
 			default :
 				return "No such input";
 		}
@@ -124,7 +124,7 @@ public class ADTCreateBinTree extends DataPrepModule {
 	   @return The name of the output
 	*/
 	public String getOutputName(int i) {
-		return "BinTree";
+		return "Bin Tree";
 	}
 
 	/**

@@ -49,20 +49,20 @@ public class SQLCreateBinTree extends DataPrepModule {
 	public String getInputName(int i) {
 		switch (i) {
 			case 0 :
-				return "BinningTransformation";
+				return "Binning Transformation";
 			case 1 :
-				return "DatabaseConnection";
+				return "Database Connection";
 			case 2 :
-				return "DatabaseTableName";
+				return "Database Table Name";
 			case 3 :
-				return "MetaDataExampleTable";
+				return "Meta Data Example Table";
 			default :
 				return "No such input";
 		}
 	}
 
 	public String getOutputName(int i) {
-		return "BinTree";
+		return "Bin Tree";
 	}
 
 	public String getModuleInfo() {
@@ -87,7 +87,7 @@ public class SQLCreateBinTree extends DataPrepModule {
 	}
 
 	public String getModuleName() {
-		return "SQLCreateBinTree";
+		return "SQL Create Bin Tree";
 	}
 
 	public void doit() throws Exception{

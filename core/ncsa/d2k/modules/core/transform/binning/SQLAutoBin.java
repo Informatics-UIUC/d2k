@@ -32,13 +32,13 @@ public class SQLAutoBin extends AutoBin {
 	public String getInputName(int i) {
 		switch (i) {
 			case 0 :
-				return "DatabaseConnection";
+				return "Database Connection";
 			case 1 :
-				return "DatabaseTableName";
+				return "Database Table Name";
 			case 2 :
-				return "MetaDataExampleTable";
+				return "Meta Data Example Table";
 			case 3 :
-				return "QueryCondition";
+				return "Query Condition";
 			default :
 				return "No such input";
 		}
@@ -82,7 +82,7 @@ public class SQLAutoBin extends AutoBin {
 	public String getOutputName(int i) {
 		switch (i) {
 			case 0 :
-				return "Bin Transform";
+				return "Binning Transformation";
 			default :
 				return "no such output!";
 		}

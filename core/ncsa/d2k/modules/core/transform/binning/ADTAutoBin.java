@@ -29,9 +29,9 @@ public class ADTAutoBin extends DataPrepModule {
 	public String getInputName(int i) {
 		switch (i) {
 			case 0 :
-				return "ADTree";
+				return "AD Tree";
 			case 1 :
-				return "MetaDataExampleTable";
+				return "Meta Data Example Table";
 			default :
 				return "No such input";
 		}
@@ -71,7 +71,7 @@ public class ADTAutoBin extends DataPrepModule {
 	public String getOutputName(int i) {
 		switch (i) {
 			case 0 :
-				return "BinningTransformation";
+				return "Binning Transformation";
 			default :
 				return "no such output!";
 		}
@@ -92,7 +92,7 @@ public class ADTAutoBin extends DataPrepModule {
 	}
 
 	public String getModuleName() {
-		return " ADT Auto Discretization";
+		return " AD Tree Auto Discretization";
 	}
 
 	public String getModuleInfo() {

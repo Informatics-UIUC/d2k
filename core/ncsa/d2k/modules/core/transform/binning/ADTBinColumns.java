@@ -35,7 +35,7 @@ public class ADTBinColumns extends UIModule {
 	 * @return
 	 */
 	public String getModuleName() {
-		return "ADT Bin Columns";
+		return "AD Tree Bin Columns";
 	}
 
 	/**
@@ -70,9 +70,8 @@ public class ADTBinColumns extends UIModule {
 	 */
 	public String[] getOutputTypes() {
 		String[] types =
-			{
-				"ncsa.d2k.modules.core.datatype.table.transformations.BinTransform",
-				"ncsa.d2k.modules.core.datatype.table.Table" };
+			{  "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform" };
+
 		return types;
 	}
 
@@ -100,9 +99,9 @@ public class ADTBinColumns extends UIModule {
 	public String getOutputName(int i) {
 		switch (i) {
 			case 0 :
-				return "BinningTransformation";
+				return "Binning Transformation";
 			case 1 :
-				return "MetaDataExampleTable";
+				return "Meta Data Example Table";
 			default :
 				return "no such output!";
 		}
@@ -115,9 +114,7 @@ public class ADTBinColumns extends UIModule {
 	 */
 	public String getInputName(int i) {
 		if (i == 0)
-			return "ADTree";
-		if (i == 1)
-			return "MetaDataExampleTable";
+			return "AD Tree";
 		return "no such input";
 	}
 
@@ -130,8 +127,6 @@ public class ADTBinColumns extends UIModule {
 		switch (i) {
 			case 0 :
 				return "A BinTransform, as defined by the user, that can be applied to the input Table.";
-			case 1 :
-				return "The input table unchanged.";
 			default :
 				return "No such output";
 		}
@@ -1046,7 +1041,7 @@ public class ADTBinColumns extends UIModule {
 					BinTransform bt =
 						new BinTransform(bins, createInNewColumn.isSelected());
 					pushOutput(bt, 0);
-					pushOutput(tbl, 1);
+					//pushOutput(tbl, 1);
 					viewDone("Done");
 				}
 			});
