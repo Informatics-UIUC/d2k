@@ -52,7 +52,8 @@ import gnu.trove.*;
 class VSerializationProcedure implements
 
    VIntBooleanProcedure,
-   VIntShortProcedure {
+   VIntShortProcedure,
+VIntCharProcedure{
 
     private final ObjectOutputStream stream;
     IOException exception;
@@ -236,6 +237,20 @@ class VSerializationProcedure implements
        try {
            stream.writeInt(key);
            stream.writeShort(val);
+       } catch (IOException e) {
+           this.exception = e;
+           return false;
+       }
+       return true;
+   }
+
+
+
+
+   public boolean execute(int key, char val) {
+       try {
+           stream.writeInt(key);
+           stream.writeChar(val);
        } catch (IOException e) {
            this.exception = e;
            return false;

@@ -2891,23 +2891,28 @@ for(int i=0; i<keys.length && (col1Ref == -1 || col2Ref == -1); i++){
   protected void insertRow(int[] newEntry, int rowIndex, int[] validColumns) {
 
     int i;
+    //inserting the new entry in each of the valid columns
     for (i = 0; i < newEntry.length && i < validColumns.length; i++) {
       getCol(validColumns[i]).insertRow(new Integer(newEntry[i]), rowIndex);
     }
 
-    if (validColumns.length > 0) {
+/*    if (validColumns.length > 0) {
       ;
-    }
+    }*/
     numColumns = validColumns[validColumns.length - 1] + 1;
 
 //todo: the objected iserted here should consist of keys of validColumns in
     //columnRef and not validColumns.
     //implement reveresed map to cut on costs?
     //in the meantime - costly but working:
-    int[] indirections = VHashService.getKeys(validColumns, columnRef);
 
+
+    //getting the indirection
+    int[] indirections = VHashService.getKeys(validColumns, columnRef);
+//inserting a new row object
     rows.insertObject(new VIntHashSet(indirections), rowIndex);
 
+//if there are still new entries left - adding them
     for (; i < newEntry.length; i++) {
       //     addDefaultColumn(colIndex);
       setInt(newEntry[i], rowIndex, numColumns);

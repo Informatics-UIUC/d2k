@@ -21,6 +21,10 @@ import java.util.*;
  * Company:      ncsa
  * @author vered goren
  * @version 1.0
+ *
+ * @todo rethink removeRowMissing and removeRowEmpty methods. they are kind-a
+ * redundant as one can call setValueToMissing or setValueToEmpty with a true
+ * value.
  */
 abstract public class AbstractSparseColumn
     extends AbstractColumn {
@@ -654,7 +658,7 @@ abstract public class AbstractSparseColumn
   }
 
   /**
-   * put your documentation comment here
+   * Remove the designation that this particular row is missing.
    * @param pos
    */
   public void removeRowMissing(int pos) {
@@ -687,6 +691,12 @@ abstract public class AbstractSparseColumn
 
   /**
    * Replaces a row's entry at position <code>pos</code>.
+   *
+   * @todo (vered): if this column is a string column - this method might change
+   * the entry of many rows... why use this method when one can use setObject?
+   * setType as implemented - removes the old entry and puts in the new one.
+   * it does not set the value to be non missing, we assumed this is under the
+   * resposibility of the user.
    *
    * Xiaolei - 07/08/2003
    */
@@ -798,28 +808,40 @@ abstract public class AbstractSparseColumn
   }
 
   /**
-   * put your documentation comment here
-   * @param destCol
-   * @param pos
-   * @param len
+   * retrieves a subset map of the empty and missing maps and assigns it to
+   * <code>destCol</code>. the subset includes rows <codE>pos</codE> through
+   * <code>pos + len -1 </code>.
+   * @param destCol - destination column to holdthe subset maps.
+   * @param pos - first row in the subset
+   * @param len - number of consecutive rows in the subset.
    */
   protected void getSubset(AbstractSparseColumn destCol, int pos, int len) {
     destCol.missing = missing.getSubset(pos, len);
+    destCol.empty = empty.getSubset(pos, len);
     destCol.copyAttributes(this);
   }
 
   /**
-   * put your documentation comment here
-   * @param destCol
-   * @param indices
+   * retrieves a subset map of the empty and missing maps and assigns it to
+   * <code>destCol</code>. <code>indices </codE> indicates which rows are
+   * to be included in the subset.
+
+   * @param destCol - destination column to holdthe subset maps.
+   * @param indices - defines which rows are to be included in the subset
    */
   protected void getSubset(AbstractSparseColumn destCol, int[] indices) {
     destCol.missing = missing.getSubset(indices);
+    destCol.empty = empty.getSubset(indices);
     destCol.copyAttributes(this);
   }
 
   /**
-   * put your documentation comment here
+   * creates a copy of empty and missing maps and reorders the mapping.
+   * then the reordered maps are assigned to <code>toOrder</code>.
+   * the new order is defined as follows:
+   * for each pair <key, val> in <code>newOrder</code>, the value that is
+   * mapped to val in either empty or missing, will be mapped to key in
+   * empty and missing of <code>toOrder</code>.
    * @param toOrder
    * @param newOrder
    */

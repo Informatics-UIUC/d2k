@@ -619,13 +619,10 @@ public class VIntCharHashMap
     // number of entries
     stream.writeInt(_size);
 
-    /**
-         * TODO: SOLVE NON-PUBLIC CLASS PROBLEM WITH  gnu.trove.SerializationProcedure
-     */
-    /*        VSerializationProcedure writeProcedure = new VSerializationProcedure(stream);
+            VSerializationProcedure writeProcedure = new VSerializationProcedure(stream);
             if (! forEachEntry(writeProcedure)) {
                 throw writeProcedure.exception;
-            }*/
+            }
   }
 
   private void readObject(ObjectInputStream stream) throws IOException,
