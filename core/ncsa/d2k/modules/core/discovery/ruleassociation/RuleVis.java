@@ -85,7 +85,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "Rule Visualizer";
+		return "Rule Visualization";
 	}
 
 	/**
