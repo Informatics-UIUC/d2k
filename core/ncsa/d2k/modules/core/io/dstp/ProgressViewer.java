@@ -7,9 +7,13 @@ import  java.awt.*;
 import  java.awt.event.*;
 import  javax.swing.*;
 
-
 /**
- * put your documentation comment here
+ *
+ * <p>Title: ProgressViewer</p>
+ * <p>Description: This is a support class for ParseDSTPToDBTable</p>
+ * <p>Copyright: Copyright (c) 2003</p>
+ * <p>Company: NCSA Automated Learning Group</p>
+ * @version 1.0
  */
 public class ProgressViewer extends JFrame {
     //==============
@@ -74,10 +78,6 @@ public class ProgressViewer extends JFrame {
         timer.start();
         addWindowListener(new WindowAdapter() {
 
-            /**
-             * put your documentation comment here
-             * @param e
-             */
             public void windowClosing (WindowEvent e) {
                 if (timer != null) {
                     timer.stop();

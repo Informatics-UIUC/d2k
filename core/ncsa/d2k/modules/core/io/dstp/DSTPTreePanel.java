@@ -15,6 +15,15 @@ import  java.util.*;
 //===============
 import backend.*;
 
+/**
+ *
+ * <p>Title: DSTPTreePanel</p>
+ * <p>Description: This is a support class for ParseDSTPToDBTable</p>
+ * <p>Copyright: Copyright (c) 2003</p>
+ * <p>Company: NCSA Automated Learning Group</p>
+ * @author D. Searsmith
+ * @version 1.0
+ */
 public class DSTPTreePanel extends JPanel implements MouseInputListener {
     //==============
     // Data Members
@@ -26,14 +35,6 @@ public class DSTPTreePanel extends JPanel implements MouseInputListener {
     private JScrollPane m_scroll = null;
     private DefaultMutableTreeNode m_root = null;
 
-    /*
-    private ImageIcon m_folderIcon = new ImageIcon(ThemeViewController.makePath(ThemeViewController.getImagesDir(),
-            "folder.gif"));
-    private ImageIcon m_folderSelIcon = new ImageIcon(ThemeViewController.makePath(ThemeViewController.getImagesDir(),
-            "folder_selected.gif"));
-    private ImageIcon m_leafIcon = new ImageIcon(ThemeViewController.makePath(ThemeViewController.getImagesDir(),
-            "file.gif"));
-    */
 
     //================
     // Constructor(s)
@@ -74,21 +75,13 @@ public class DSTPTreePanel extends JPanel implements MouseInputListener {
     private void init () {
         setLayout(new BorderLayout());
         m_root = new DefaultMutableTreeNode("DSTP Sources", true);
-        //m_root.setUserObject(new DSTPTreeNodeData(null, "DSTP Sources"));
         m_model = new DSTPTreeModel(m_root);
         m_model.setAsksAllowsChildren(true);
         m_tree = new DSTPTree(m_model);
-        //m_tree.setFont(new Font("Arial", Font.BOLD, 14));
-        //DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-        //renderer.setClosedIcon(m_folderIcon);
-        //renderer.setOpenIcon(m_folderSelIcon);
-        //renderer.setLeafIcon(m_leafIcon);
-        //m_tree.setCellRenderer(renderer);
         m_tree.setShowsRootHandles(true);
         m_scroll = new JScrollPane(m_tree);
         m_tree.setEditable(false);
         add(m_scroll, BorderLayout.CENTER);
-        //m_model.insertNodeInto(new DefaultMutableTreeNode("Test Child", false), m_root, 0);
         m_tree.addMouseListener(this);
         m_tree.addMouseMotionListener(this);
    }

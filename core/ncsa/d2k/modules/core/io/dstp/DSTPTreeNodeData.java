@@ -3,6 +3,15 @@ package ncsa.d2k.modules.core.io.dstp;
 import javax.swing.tree.*;
 import backend.*;
 
+/**
+ *
+ * <p>Title: DSTPTreeNodeData</p>
+ * <p>Description: This is a support class for ParseDSTPToDBTable</p>
+ * <p>Copyright: Copyright (c) 2003</p>
+ * <p>Company: NCSA Automated Learning Group</p>
+ * @author D. Searsmith
+ * @version 1.0
+ */
 public class DSTPTreeNodeData {
 
   //==============

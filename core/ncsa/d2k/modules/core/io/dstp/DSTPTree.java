@@ -9,7 +9,13 @@ import  javax.swing.tree.*;
 
 
 /**
- * put your documentation comment here
+ *
+ * <p>Title: DSTPTree</p>
+ * <p>Description: This is a support class for ParseDSTPToDBTable</p>
+ * <p>Copyright: Copyright (c) 2003</p>
+ * <p>Company: NCSA Automated Learning Group</p>
+ * @author D. Searsmith
+ * @version 1.0
  */
 public class DSTPTree extends JTree {
     //==============
