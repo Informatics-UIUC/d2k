@@ -14,9 +14,11 @@ import ncsa.d2k.core.modules.*;
 
 public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
+   boolean Trace = false;
+
    boolean UseMeanNodeModels          = true;
    boolean UseLinearNodeModels        = false;
-   boolean UseOneHalfSplit      = false;
+   boolean UseOneHalfSplit            = false;
    boolean UseMidPointBasedSplit      = false;
    boolean UseMeanBasedSplit          = true;
    boolean UsePopulationBasedSplit    = false;
@@ -240,7 +242,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
     node.error = error;
 
-    if (_Trace) {
+    if (Trace) {
       System.out.println("node.error = " + node.error);
     }
   }
@@ -260,17 +262,17 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
     calculateOutputMeansMinsMaxs(RootNode);
 
-    if (_Trace) {
+    if (Trace) {
       System.out.println("calculating average outputs");
     }
 
-    if (_Trace) {
+    if (Trace) {
       System.out.println("creating initial tree");
     }
 
     createModel(RootNode);
 
-    if (_Trace) {
+    if (Trace) {
       System.out.println("evaluating initial tree");
     }
 
@@ -283,7 +285,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       System.out.println();
     }
 
-    if (_Trace) {
+    if (Trace) {
       System.out.println("recursive partitioning");
     }
 
@@ -453,7 +455,7 @@ and the example table assigned to node2 contains the examples that the decomposi
     double parentError = node.error;
 
 
-    if (_Trace){
+    if (Trace){
     System.out.println("creating decompositions");}
 
     Decomposition [] decompositions = createDecompositions(node);
@@ -485,11 +487,17 @@ and the example table assigned to node2 contains the examples that the decomposi
     //bestChildNode2.examples = examples.shallowCopy();
     //bestChildNode2.examples.allocateExamplePointers(numExamples);
 
-    if (_Trace) {
+    if (Trace) {
       System.out.println("evaluating decompositions");
     }
 
     for (int decompositionIndex = 0; decompositionIndex < numDecompositions; decompositionIndex++) {
+
+
+      if (true) {
+        System.out.println("decompositionIndex = " + decompositionIndex);
+      }
+
 
       Decomposition decomposition = decompositions[decompositionIndex];
 
@@ -506,7 +514,7 @@ and the example table assigned to node2 contains the examples that the decomposi
         }
       }
 
-      if (_Trace) {
+      if (Trace) {
         System.out.println("numNode1Examples = " + numNode1Examples);
         System.out.println("numNode2Examples = " + numNode2Examples);
       }
@@ -533,7 +541,7 @@ and the example table assigned to node2 contains the examples that the decomposi
 
       double errorReduction = parentError - error1 - error2;
 
-      if (_Trace) {
+      if (Trace) {
         System.out.println("error1 = " + error1);
         System.out.println("error2 = " + error2);
         System.out.println("errorReduction = " + errorReduction);
@@ -553,7 +561,7 @@ and the example table assigned to node2 contains the examples that the decomposi
 
     }
 
-    if (_Trace) {
+    if (Trace) {
       System.out.println("bestErrorReduction = " + bestErrorReduction);
     }
 
@@ -567,7 +575,7 @@ and the example table assigned to node2 contains the examples that the decomposi
 
 
     if ((bestErrorReduction > MinErrorReduction * RootNode.numExamples)) {
-      if (_Trace) {
+      if (Trace) {
         System.out.println("bestDecomposition.inputIndex = " + bestDecomposition.inputIndex);
         System.out.println("bestDecomposition.value      = " + bestDecomposition.value);
       }
@@ -604,7 +612,7 @@ and the example table assigned to node2 contains the examples that the decomposi
 
     //QA Anca added this:
     public PropertyDescription[] getPropertiesDescriptions() {
-	// so that "ordered and _trace" property are invisible
+	// so that "ordered and _Trace" property are invisible
         return new PropertyDescription[0];
     }
 
