@@ -271,11 +271,22 @@ public class TableUtilities
     return newarray;
   }
 
+  /**
+   * Take the data from the columna and put it into a double array.
+   * @param col the column to get the data from.
+   * @return the data from the column represented as a double arry.
+   */
+  protected static double [] populateDoubleArray (Column col)
+  {
+	double[] vals = new double[col.getNumRows ()];
+	for (int i = 0 ; i < vals.length ; i++)
+	  vals[i] = col.getDouble(i);
+	return vals;
+  }
 
   public static Table getPDFTable (Table t, int idx, double mean, double stdDev)
   {
-    double[] vals = new double[t.getNumRows ()];
-    t.getColumn (vals, idx);
+    double[] vals = populateDoubleArray(t.getColumn(idx));
 
     double[] pdfs = new double[t.getNumRows ()];
     for (int i = 0; i < t.getNumRows (); i++) {
@@ -411,8 +422,7 @@ public class TableUtilities
     } else if (numRows == 1) {
 	sample_median = table.getDouble (0, colNum);
     } else {
-	double[]d = new double[ numRows ];
-	table.getColumn (d, colNum);
+	double[]d = populateDoubleArray(table.getColumn(colNum));
 	Arrays.sort (d);
 	sample_median = (d[(int) Math.floor ((numRows - 1) / 2.0)] +
 			 d[(int) Math.ceil  ((numRows - 1) / 2.0)]) / 2.0;
