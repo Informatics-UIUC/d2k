@@ -494,8 +494,8 @@ public class ConnectToDB extends HeadlessUIModule {
           //checking that the properties are not null
           if(dbInstance == null)
             throw new Exception ("Database Instance property was not set. Cannot connect to database");
-          if(this.dbVendor == null)
-            throw new Exception ("Database Vendor property was not set. Cannot connect to database");
+   //       if(this.dbVendor == null)
+     //       throw new Exception ("Database Vendor property was not set. Cannot connect to database");
           if(this.driver == null)
             throw new Exception ("Driver property was not set. Cannot connect to database");
           if(this.machine == null)
