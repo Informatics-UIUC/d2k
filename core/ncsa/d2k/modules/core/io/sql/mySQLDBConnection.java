@@ -1,23 +1,17 @@
 package ncsa.d2k.modules.core.io.sql;
+
+//import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.db.sql.*;
+
 import java.sql.*;
 import javax.swing.*;
 import java.util.*;
 
-/**
- * <p>Title: mySQLDBConnection </p>
- * <p>Description: Provides a connection to an mySQL Database </p>
- * <p>Copyright: NCSA (c) 2002</p>
- * <p>Company: </p>
- * @author Sameer Mathur, David Clutter
- * @version 1.0
- */
-
-public class mySQLDBConnection extends SQLDBConnection {
+public class MySQLDBConnection extends SQLDBConnection {
 
     private String dbInstance;
 
-    public mySQLDBConnection(String _url, String _driver, String _username, String _password,
+    public MySQLDBConnection(String _url, String _driver, String _username, String _password,
                            String _dbinstance) {
         super(_url, _driver, _username, _password);
         dbInstance = _dbinstance;
@@ -25,6 +19,7 @@ public class mySQLDBConnection extends SQLDBConnection {
 //////////////////////////////////////////////////////////////////////////////////////////
 
     public String     getAllTableNamesQuery() {
+//System.out.println("mySQLConnect:QueryTableNames:dbI:" + this.dbInstance);
         String str = "SHOW TABLES FROM " + this.dbInstance;
         return str;
     }
@@ -53,6 +48,7 @@ public class mySQLDBConnection extends SQLDBConnection {
                                                             colTypeNames,
                                                             colDisplaySizes);
             int createTableFlag = stmt1.executeUpdate(query1);
+//System.out.println("createTableFlag = " + createTableFlag);
             stmt1.close();
         }
         catch (Exception s) {
@@ -80,6 +76,7 @@ public class mySQLDBConnection extends SQLDBConnection {
                                                          colTypeNames,
                                                          colDisplaySizes);
             int createTableFlag = stmt1.executeUpdate(query1);
+//System.out.println("createTableFlag = " + createTableFlag);
             stmt1.close();
 
             // 6. Insert 'tableConnection.getNumRows()' Sequence # and NULL's into the table
@@ -89,7 +86,9 @@ public class mySQLDBConnection extends SQLDBConnection {
                                                          colNames,
                                                          colTypeNames,
                                                          colDisplaySizes);
+//System.out.println("query2 : " + query2);
             int insertTableFlag;
+
             for (int i=0; i<numRows; i++) {
                 stmt2 = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                                             ResultSet.CONCUR_UPDATABLE);
@@ -102,7 +101,12 @@ public class mySQLDBConnection extends SQLDBConnection {
         }
     } // createTable
 //////////////////////////////////////////////////////////////////////////////////////////
-
+/*          String createmySQL0 =  "CREATE TABLE IRIS2DD ("
+                             + " SEQ_NUM int NOT NULL AUTO_INCREMENT, PRIMARY KEY (SEQ_NUM),"
+	                     + " SEPAL_LENGTH varchar(6) ,"
+	                     + " SEPAL_WIDTH varchar(6) ,"
+	                     + " PETAL_LENGTH varchar(6) )";
+*/
     private String createTableWithSeqQuery (String _tableName,
                                      String[] _colNames,
                                      String[] _colTypeNames,
@@ -129,6 +133,7 @@ public class mySQLDBConnection extends SQLDBConnection {
                 str += ", ";
         } //for
         str += ")";
+//System.out.println("createTableQuery with SEQ_NUM" + str);
         return str;
     }
 
@@ -157,6 +162,7 @@ public class mySQLDBConnection extends SQLDBConnection {
                 str += ", ";
         } //for
         str += ")";
+//System.out.println("createTableQuery without SEQ_NUM" + str);
         return str;
     }
 
@@ -190,6 +196,8 @@ public class mySQLDBConnection extends SQLDBConnection {
                 str += ", ";
         } //for
         str += ")";
+
+//System.out.println("insertTableQuery " + str);
         return str;
     }
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -220,6 +228,8 @@ public class mySQLDBConnection extends SQLDBConnection {
                         query.append(", ");
                 }
 
+//    System.out.println("*****************QUERY: ONE TABLE *****************");
+//    System.out.println(query.toString());
             return query.toString();
         }
         else {                                                   //USER SELECTED >1 TABLES
@@ -238,6 +248,7 @@ public class mySQLDBConnection extends SQLDBConnection {
             Vector duplicateVec = new Vector(dups);
 
             // First : Create SELECT Clause
+//            query.append("SELECT * FROM (SELECT ");
             query.append("SELECT ");
 
             for (int l=0; l<duplicateVec.size(); l++){
@@ -272,6 +283,16 @@ public class mySQLDBConnection extends SQLDBConnection {
             if ((duplicateVec.size() > 0) && (uniqueVec.size() > 0))
                 query.append(", ");
 
+/*
+System.out.println("printing uniqueColumns ");
+for (int q=0; q<uniqueVec.size(); q++){
+    System.out.println(uniqueVec.elementAt(q));
+}
+System.out.println("printing duplicateColumns ");
+for (int q=0; q<duplicateVec.size(); q++){
+    System.out.println(duplicateVec.elementAt(q));
+}
+*/
             int ct = 0;
             for (int tabl = 0; tabl < columns.length; tabl++) {
                 for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
@@ -295,7 +316,10 @@ public class mySQLDBConnection extends SQLDBConnection {
                 if (k<tables.length-1)
                     query.append(", ");
             }
+//System.out.println("str part2 : " + str);
+
             // Thrid : Create WHERE Clause
+
             if ((where != null) && (where.length() > 0)) {
                 query.append(" WHERE ");
                 query.append(where);
@@ -334,6 +358,13 @@ public class mySQLDBConnection extends SQLDBConnection {
             if ((duplicateVec.size() > 0) && (uniqueVec.size() > 0))
                 query.append(", ");
 
+/*
+            for (int m=0; m<uniqueVec.size(); m++){
+                query.append(uniqueVec.elementAt(m));
+                if (m<uniqueVec.size()-1)
+                    query.append(", ");
+            }
+*/
             int ct2 = 0;
             for (int tabl = 0; tabl < columns.length; tabl++) {
                 for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
@@ -349,6 +380,11 @@ public class mySQLDBConnection extends SQLDBConnection {
                     }
                 }
             }
+
+//            query.append(")");
+
+ //   System.out.println("*****************QUERY: MULTIPLE TABLES *****************");
+//    System.out.println(query.toString());
             return query.toString();
         }//else
 

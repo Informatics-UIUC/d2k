@@ -1,6 +1,5 @@
 package ncsa.d2k.modules.core.transform.table;
 
-
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
@@ -24,49 +23,62 @@ import ncsa.gui.*;
  */
 public class CleanAndMergeTable extends UIModule {
 
-    private String lastControl;
-    public String getLastControl() {
-        return lastControl;
-    }
-    public void setLastControl(String s) {
-        lastControl = s;
-    }
+	private String lastControl;
+	public String getLastControl() {
+		return lastControl;
+	}
+	public void setLastControl(String s) {
+		lastControl = s;
+	}
 
-    private HashSet lastKeys;
-    public HashSet getLastKeys() {
-        return lastKeys;
-    }
-    public void setLastKeys(HashSet s) {
-        lastKeys = s;
-    }
+	private HashSet lastKeys;
+	public HashSet getLastKeys() {
+		return lastKeys;
+	}
+	public void setLastKeys(HashSet s) {
+		lastKeys = s;
+	}
 
-    private HashSet lastToMerge;
-    public HashSet getLastToMerge() {
-        return lastToMerge;
-    }
-    public void setLastToMerge(HashSet s) {
-        lastToMerge = s;
-    }
+	private HashSet lastToMerge;
+	public HashSet getLastToMerge() {
+		return lastToMerge;
+	}
+	public void setLastToMerge(HashSet s) {
+		lastToMerge = s;
+	}
 
-    private String lastMergeMethod;
-    public String getLastMergeMethod() {
-        return lastMergeMethod;
-    }
-    public void setLastMergeMethod(String s) {
-        lastMergeMethod = s;
-    }
+	private String lastMergeMethod;
+	public String getLastMergeMethod() {
+		return lastMergeMethod;
+	}
+	public void setLastMergeMethod(String s) {
+		lastMergeMethod = s;
+	}
+
+	/**
+	 * Return a list of the property descriptions.
+	 * @return a list of the property descriptions.
+	 */
+	public PropertyDescription [] getPropertiesDescriptions () {
+		PropertyDescription [] pds = new PropertyDescription [0];
+		/*
+		pds[0] = new PropertyDescription ("lastControl", "Control Field", "If this flag is set, there will be some console output indicating the indices of the the train and test sets.");
+		pds[1] = new PropertyDescription ("lastMergeMethod", "Merge Method", "This is the see for the random number generator. If the seed is the same between different runs, you should get the same result sets.");
+		*/
+		return pds;
+	}
 
 	public String getInputInfo(int i) {
 		switch (i) {
-			case 0: return "A Table to clean.";
+			case 0: return "This is the original table that will be compressed by the row merge     operation.";
 			default: return "No such input";
 		}
 	}
 
 	public String getOutputInfo(int i) {
 		switch (i) {
-			case 0: return "The original Table.";
-			case 1: return "The cleaned and merged Table.";
+			case 0: return "This is the original unmodified table.";
+			case 1: return "The merged table is the result of the row merge operation.";
 			default: return "No such output";
 		}
 	}
@@ -77,13 +89,24 @@ public class CleanAndMergeTable extends UIModule {
 	}
 
 	public String [] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl",
-                    "ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 	}
 
 	public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    Cleans a Table by merging duplicate records. The Key is the column that     uniquely identifies rows. This can be a combination of columns. The To     Merge columns are the columns to merge together. The rows of these columns     are merged into one row by taking the maximum value, averaging the values,     or summing the values together. The Control is the column that determines     which record is the basis for the new row. All data that is not merged is     simply copied from the record with the maximum value in the Control column.  </body></html>";
+		return "Overview: Cleans a Table by merging records sharing the same values for key     field(s) the"+
+			" user specifies.<p>Detailed Description: The Key is the column that uniquely identifies rows. "+
+			"    This can be a combination of columns. The To Merge columns are the columns     to merge"+
+			" together. The entries in these columns are merged into one row by     taking the maximum value,"+
+			" averaging the values, or summing the values     together. The Control is the column that determines"+
+			" which record is the     basis for the new row. All data that is not merged is simply copied"+
+			" from     the record with the maximum value in the Control column.</p><p>Data Type Restrictions: The"+
+			" data that is to be merged is expected to be     numeric. The control is also expected to be"+
+			" numberic.</p><p>Data Handling: The newly created table is passed on the second output, the     original"+
+			" table is passed on the first. The original data in unmodified.</p><p>Scalability: This module should"+
+			" scale very well on tables where the key field     selected produces a limited number of unique"+
+			" records. In those cases where     that is not the case, in other words, the key field selected"+
+			" is not     nominal, this module will not scale well.</p>";
 	}
 
 	protected UserView createUserView() {
@@ -123,30 +146,30 @@ public class CleanAndMergeTable extends UIModule {
 			columnLookup = new HashMap(table.getNumColumns());
 			String longest = "";
 
-                        HashSet selectedKeys = new HashSet();
-                        HashSet selectedMerges = new HashSet();
-                        HashSet selectedControls = new HashSet();
+						HashSet selectedKeys = new HashSet();
+						HashSet selectedMerges = new HashSet();
+						HashSet selectedControls = new HashSet();
 
-			// now add the column labels 
+			// now add the column labels
 			// keyListModel entries can be string or numeric type columns
 			// mergeListModel and controlListModel entries must be numeric type columns
-  			int ni = 0;		// index for numeric type selections
+			int ni = 0;		// index for numeric type selections
 			for(int i = 0; i < table.getNumColumns(); i++) {
 				columnLookup.put(table.getColumnLabel(i), new Integer(i));
 
 				keyListModel.addElement(table.getColumnLabel(i));
-                                if(lastKeys != null && lastKeys.contains(table.getColumnLabel(i)))
-                                   selectedKeys.add(new Integer(i));
+								if(lastKeys != null && lastKeys.contains(table.getColumnLabel(i)))
+								   selectedKeys.add(new Integer(i));
 
 				if(table.getColumn(i) instanceof NumericColumn) {
 					mergeListModel.addElement(table.getColumnLabel(i));
-                                        if(lastToMerge != null && lastToMerge.contains(table.getColumnLabel(i)))
-                                            selectedMerges.add(new Integer(ni));
+										if(lastToMerge != null && lastToMerge.contains(table.getColumnLabel(i)))
+											selectedMerges.add(new Integer(ni));
 
 					controlListModel.addElement(table.getColumnLabel(i));
-                                        if(lastControl != null && lastControl.equals(table.getColumnLabel(i)))
-                                            selectedControls.add(new Integer(ni));
-                                      
+										if(lastControl != null && lastControl.equals(table.getColumnLabel(i)))
+											selectedControls.add(new Integer(ni));
+
 					ni++;
 				}
 				if(table.getColumnLabel(i).length() > longest.length())
@@ -157,37 +180,37 @@ public class CleanAndMergeTable extends UIModule {
 			attributesToMerge.setPrototypeCellValue(longest);
 			controlAttribute.setPrototypeCellValue(longest);
 
-                        int[] selKeys = new int[selectedKeys.size()];
-                        int idx = 0;
-                        Iterator iter = selectedKeys.iterator();
-                        while(iter.hasNext()) {
-                            Integer num = (Integer)iter.next();
-                            selKeys[idx] = num.intValue();
-                            idx++;
-                        }
+						int[] selKeys = new int[selectedKeys.size()];
+						int idx = 0;
+						Iterator iter = selectedKeys.iterator();
+						while(iter.hasNext()) {
+							Integer num = (Integer)iter.next();
+							selKeys[idx] = num.intValue();
+							idx++;
+						}
 
-                        int[] selMerge = new int[selectedMerges.size()];
-                        idx = 0;
-                        iter = selectedMerges.iterator();
-                        while(iter.hasNext()) {
-                            Integer num = (Integer)iter.next();
-                            selMerge[idx] = num.intValue();
-                            idx++;
-                        }
+						int[] selMerge = new int[selectedMerges.size()];
+						idx = 0;
+						iter = selectedMerges.iterator();
+						while(iter.hasNext()) {
+							Integer num = (Integer)iter.next();
+							selMerge[idx] = num.intValue();
+							idx++;
+						}
 
-                        int[] selControls = new int[selectedControls.size()];
-                        idx = 0;
-                        iter = selectedControls.iterator();
-                        while(iter.hasNext()) {
-                            Integer num = (Integer)iter.next();
-                            selControls[idx] = num.intValue();
-                            idx++;
-                        }
+						int[] selControls = new int[selectedControls.size()];
+						idx = 0;
+						iter = selectedControls.iterator();
+						while(iter.hasNext()) {
+							Integer num = (Integer)iter.next();
+							selControls[idx] = num.intValue();
+							idx++;
+						}
 
-                        keyAttributeList.setSelectedIndices(selKeys);
-                        attributesToMerge.setSelectedIndices(selMerge);
-                        controlAttribute.setSelectedIndices(selControls);
-                        mergeMethod.setSelectedItem(lastMergeMethod);
+						keyAttributeList.setSelectedIndices(selKeys);
+						attributesToMerge.setSelectedIndices(selMerge);
+						controlAttribute.setSelectedIndices(selControls);
+						mergeMethod.setSelectedItem(lastMergeMethod);
 		}
 
 		public void initView(ViewModule m) {
@@ -244,26 +267,26 @@ public class CleanAndMergeTable extends UIModule {
 					Object control = controlAttribute.getSelectedValue();
 					final Object type = mergeMethod.getSelectedItem();
 
-                                        if(keys == null || keys.length == 0) {
-                                            ErrorDialog.showDialog(
-                                                    "You must select a key attribute.", "Error");
-                                            return;
-                                        }
-                                        if(merges == null || merges.length == 0) {
-                                            ErrorDialog.showDialog(
-                                                    "You must select attributes to merge.", "Error");
-                                            return;
-                                        }
-                                        if(control == null) {
-                                            ErrorDialog.showDialog(
-                                                    "You must select a control attribute.", "Error");
-                                            return;
-                                        }
-                                        if(type == null) {
-                                            ErrorDialog.showDialog(
-                                                    "You must select a method to merge by.", "Error");
-                                            return;
-                                        }
+										if(keys == null || keys.length == 0) {
+											ErrorDialog.showDialog(
+													"You must select a key attribute.", "Error");
+											return;
+										}
+										if(merges == null || merges.length == 0) {
+											ErrorDialog.showDialog(
+													"You must select attributes to merge.", "Error");
+											return;
+										}
+										if(control == null) {
+											ErrorDialog.showDialog(
+													"You must select a control attribute.", "Error");
+											return;
+										}
+										if(type == null) {
+											ErrorDialog.showDialog(
+													"You must select a method to merge by.", "Error");
+											return;
+										}
 
 					final int [] ks = new int[keys.length];
 					for(int i = 0; i < keys.length; i++)
@@ -280,18 +303,18 @@ public class CleanAndMergeTable extends UIModule {
 							cleanTable(ks, ms, ctrl, (String)type);
 						}
 					});
-                                        HashSet usedKeys = new HashSet();
-                                        for(int i = 0; i < keys.length; i++)
-                                            usedKeys.add(keys[i]);
+										HashSet usedKeys = new HashSet();
+										for(int i = 0; i < keys.length; i++)
+											usedKeys.add(keys[i]);
 
-                                        HashSet usedMerges = new HashSet();
-                                        for(int i = 0; i < merges.length; i++)
-                                            usedMerges.add(merges[i]);
+										HashSet usedMerges = new HashSet();
+										for(int i = 0; i < merges.length; i++)
+											usedMerges.add(merges[i]);
 
-                                        setLastControl(control.toString());
-                                        setLastKeys(usedKeys);
-                                        setLastToMerge(usedMerges);
-                                        setLastMergeMethod(type.toString());
+										setLastControl(control.toString());
+										setLastKeys(usedKeys);
+										setLastToMerge(usedMerges);
+										setLastMergeMethod(type.toString());
 				}
 			});
 			buttonPanel.add(abort);
@@ -509,6 +532,42 @@ public class CleanAndMergeTable extends UIModule {
 
 		public Dimension getPreferredSize() {
 			return new Dimension(400, 300);
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Merge Table Rows";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Original Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Original Table";
+			case 1:
+				return "Merged Table";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

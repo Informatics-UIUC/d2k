@@ -1,6 +1,9 @@
 package ncsa.d2k.modules.core.transform.table;
 
 
+
+
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -15,8 +18,8 @@ public class MergeByColumns extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "These verticaltable will be merged into one larger verticaltable.";
-			case 1: return "No such input";
+			case 0: return "This is one of the two tables that will be merged.";
+			case 1: return "<p>      This is the second table that is to be merged.    </p>";
 			default: return "No such input";
 		}
 	}
@@ -36,7 +39,7 @@ public class MergeByColumns extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "This verticaltable contains the contents of the two verticaltables, merged by column.";
+			case 0: return "<p>      The merged table containing the contents of both of the input tables.    </p>";
 			default: return "No such output";
 		}
 	}
@@ -55,7 +58,18 @@ public class MergeByColumns extends ncsa.d2k.core.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    Two verticaltables are merged by similar columns into one larger one. Each     column in the final verticaltable contains the contents of the two input     tables. If there is no matching column, the column is added with filler     values.  </body></html>";
+		return "<p>      Overview: Given two tables of data, concatinate the second table to the       first."+
+			"    </p>    <p>      Detailed Description: Takes two tables, and merge the contents of the "+
+			"      second table into the first table. Columns of the two tables which share       the same"+
+			" name will be merged. Columns unique to one table or the other       will be filled with default"+
+			" values the user enters in the properties.    </p>    <p>      Data Handling: Both input tables"+
+			" are modified.    </p>    <p>      Scalability: This module will convert each column of both"+
+			" input tables       to <i>ObjectColumns</i>, which require each entry to be an object. This"+
+			"       can be very expensive in terms of space, and in terms of time, since a       memory allocation"+
+			" may be required for each entry in the table in some       cases. For example, if the input"+
+			" table contained a column containing       doubles, each of the doubles would be converted to"+
+			" a <i>java.lang.Double</i>, put into another <i>ObjectColumn</i> which would end up replacing"+
+			" the       original.    </p>";
 	}
 
 	//fill two arrays with filler properties that corespond to columns of two input verticaltables
@@ -140,6 +154,18 @@ public class MergeByColumns extends ncsa.d2k.core.modules.DataPrepModule
 	public char[] getFillerChar(){
 		return fillerChar;
 	}
+
+	/**
+	 * Return a list of the property descriptions.
+	 * @return a list of the property descriptions.
+	 */
+	public PropertyDescription [] getPropertiesDescriptions () {
+		PropertyDescription [] pds = new PropertyDescription [2];
+		pds[0] = new PropertyDescription ("fillerBol", "Boolean Column Filler", "This value will be used to fill boolean columns.");
+		pds[1] = new PropertyDescription ("fillerString", "String Column Filler", "This string fills the string columns.");
+		return pds;
+	}
+
 	//end setting Properties
 
 	/**
@@ -229,7 +255,7 @@ public class MergeByColumns extends ncsa.d2k.core.modules.DataPrepModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "MergeByColumns";
+		return "Merge By Column";
 	}
 
 	/**
@@ -240,9 +266,9 @@ public class MergeByColumns extends ncsa.d2k.core.modules.DataPrepModule
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "VerticalTable";
+				return "First Table";
 			case 1:
-				return "input1";
+				return "Second Table";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -255,7 +281,7 @@ public class MergeByColumns extends ncsa.d2k.core.modules.DataPrepModule
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "table";
+				return "Merged Table";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}

@@ -1,10 +1,10 @@
 package ncsa.d2k.modules.core.transform.table;
 
+
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-
 import gnu.trove.*;
-
 import java.util.*;
 
 /**
@@ -19,26 +19,41 @@ import java.util.*;
 public class RemoveDuplicateRows extends DataPrepModule {
 
     public String[] getInputTypes() {
-        String[] in = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-        return in;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
     public String[] getOutputTypes() {
-        String[] out = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-        return out;
-    }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
     public String getInputInfo(int i) {
-        return "A Mutable Table";
-    }
+		switch (i) {
+			case 0: return "This is the table that will have duplication rows removed.";
+			default: return "No such input";
+		}
+	}
 
     public String getOutputInfo(int i) {
-        return "The input table, with all duplicate rows removed.";
-    }
+		switch (i) {
+			case 0: return "The same table as the input table, with the duplicate rows removed.";
+			default: return "No such output";
+		}
+	}
 
     public String getModuleInfo() {
-        return "Remove all the duplicate rows from a MutableTable.";
-    }
+		return "<p>      Overview: This module will remove all duplicate rows. A row is a       duplicate if"+
+			" each value for each attribute is the same as those in a       previously encountered row. "+
+			"   </p>    <p>      Detailed Description: For each row in the table, we collect a vector of"+
+			"       strings that is the text encoding. We then check a hash table to see if       an entry"+
+			" with the same values has already been encountered. If it has,       we just mark the row as"+
+			" a duplicate to delete when we are done. If it       hasn't been encountered, we add it to the"+
+			" hash table. When we have       examined each row, we just trash the duplicates.    </p>   "+
+			" <p>      Scalability: If there are not a lot of duplicates, this hashtable can       get very"+
+			" large. The entries in this hash table store a string       representation of each value in"+
+			" each field in each unique row. Do the       math.    </p>";
+	}
 
     public void doit() {
         MutableTable mt = (MutableTable)pullInput(0);
@@ -89,5 +104,39 @@ public class RemoveDuplicateRows extends DataPrepModule {
                 result *= keys[i].hashCode();
             return result;
         }
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Remove Duplicate Rows";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "Input Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "Result Table";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

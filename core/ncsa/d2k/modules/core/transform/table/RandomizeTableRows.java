@@ -2,6 +2,8 @@
 package ncsa.d2k.modules.core.transform.table;
 
 
+
+
 import ncsa.d2k.core.modules.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
@@ -9,7 +11,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	RandomizeVTRows.java
 */
-public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule 
+public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 {
 	/**
 		This pair returns the description of the various inputs.
@@ -17,7 +19,7 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "      Table to be randomized   ";
+			case 0: return "The table to be randomized";
 			default: return "No such input";
 		}
 	}
@@ -37,7 +39,7 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "      Table that has been randomized   ";
+			case 0: return "The resulting tables rows are randomly ordered.";
 			default: return "No such output";
 		}
 	}
@@ -56,7 +58,10 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    Randomizes the rows of a Table  </body></html>";
+		return "Overview: Randomizes the order of rows of a Table.    <p>      Detailed Description: Randomly"+
+			" swap rows in the table to ensure a random       ordering of the data. This simple module does"+
+			" it's work on the data in       place, so it doesn't need to allocation memory or move much"+
+			" data.    </p>";
 	}
 
 	/**
@@ -122,7 +127,7 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "RandomizeVTRows";
+		return "Randomize Table Rows";
 	}
 
 	/**
@@ -133,7 +138,7 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "table";
+				return "Original Table";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -146,7 +151,7 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "returnTable";
+				return "Randomized Table";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}

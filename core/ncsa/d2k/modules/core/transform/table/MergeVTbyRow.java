@@ -1,6 +1,11 @@
 package ncsa.d2k.modules.core.transform.table;
 
 
+
+
+
+
+
 import ncsa.d2k.core.modules.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
@@ -18,9 +23,9 @@ public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "         ";
-			case 1: return "         ";
-			case 2: return "         ";
+			case 0: return "First of the two tables to merge.";
+			case 1: return "The second of the two tables to merge.";
+			case 2: return "This string is the label of the attribute to be used as the key.";
 			default: return "No such input";
 		}
 	}
@@ -40,7 +45,7 @@ public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "         ";
+			case 0: return "This is the merged table.";
 			default: return "No such output";
 		}
 	}
@@ -59,7 +64,16 @@ public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    Merges the rows of two vertical tables by a specified column  </body></html>";
+		return "Overview: This module will merge two tables by, for each row, appending     the columns of one"+
+			" table to the other.    <p>      Detailed Description: The key passed in is used to identify"+
+			" the column       of both tables that contains the unique ID field. Then for each row in   "+
+			"    the table, it is determined if there is row in the other table sharing       the same key"+
+			" value from that key column. If there is, the columns from       one table row is appended to"+
+			" the columns for the other table row. If       there is no match, the attribute values from"+
+			" the table row that could       not be matched is placed into the resulting table, the other"+
+			" attribute       values are set to filler values.    </p>    <p>      Data Type Restrictions:"+
+			" Obviously, this module will not work if the       tables do not share an attribute named by"+
+			" the unique ID which is used to       match the rows.    </p>";
 	}
 
 	/**
@@ -108,6 +122,17 @@ public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 		return fillerChar;
 	}
 	//end setting Properties
+	/**
+	 * Return a list of the property descriptions.
+	 * @return a list of the property descriptions.
+	 */
+	public PropertyDescription [] getPropertiesDescriptions () {
+		PropertyDescription [] pds = new PropertyDescription [2];
+		pds[0] = new PropertyDescription ("fillerBol", "Boolean Column Filler", "This value will be used to fill boolean columns.");
+		pds[1] = new PropertyDescription ("fillerString", "String Column Filler", "This string fills the string columns.");
+		return pds;
+	}
+
 
 	MutableTableImpl table1, table2;
 	Object[] fill;
@@ -134,81 +159,81 @@ public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 		}
 		else {
 
-		boolean test = isOK(col1, col2);
+			boolean test = isOK(col1, col2);
 
-		if (!test){
-			System.out.println("the test was not ok");
-			returnTable = (TableImpl)DefaultTableFactory.getInstance().createTable();
-			pushOutput(returnTable, 0);
-		}
-		else {
+			if (!test){
+				System.out.println("the test was not ok");
+				returnTable = (TableImpl)DefaultTableFactory.getInstance().createTable();
+				pushOutput(returnTable, 0);
+			}
+			else {
 
-		int numCol1 = table1.getNumColumns();
-		int numCol2 = table2.getNumColumns();
+				int numCol1 = table1.getNumColumns();
+				int numCol2 = table2.getNumColumns();
 
-		//returnTable = new VerticalTable(numCol1 + numCol2);
+				//returnTable = new VerticalTable(numCol1 + numCol2);
 
-		//returnTable.suggestCapacity(table1.getNumRows() + table2.getNumRows());
-		//System.out.println("#rows of returntable is "+returnTable.getNumRows());
-		fill = new Object[numCol1 + numCol2];
+				//returnTable.suggestCapacity(table1.getNumRows() + table2.getNumRows());
+				//System.out.println("#rows of returntable is "+returnTable.getNumRows());
+				fill = new Object[numCol1 + numCol2];
 
-		fillerByte[0] = 0;
-		fillerChar[0] = '*';
-		determineFillers();
-		System.out.println("# columns in table1 is "+numCol1);
-		System.out.println("# columns in table2 is "+numCol2);
-		System.out.println("index 1 is "+index1);
-		System.out.println("index 2 is "+index2);
+				fillerByte[0] = 0;
+				fillerChar[0] = '*';
+				determineFillers();
+				System.out.println("# columns in table1 is "+numCol1);
+				System.out.println("# columns in table2 is "+numCol2);
+				System.out.println("index 1 is "+index1);
+				System.out.println("index 2 is "+index2);
 
-		/*System.out.println("here is table1 in makeBigTable: ");
-		table1.print();
-		System.out.println("here is table2 in makeBigTable: ");
-		table2.print();
-		*/
+				/*System.out.println("here is table1 in makeBigTable: ");
+				table1.print();
+				System.out.println("here is table2 in makeBigTable: ");
+				table2.print();
+				*/
 
-		table1.sortByColumn(index1);
-		table2.sortByColumn(index2);
+				table1.sortByColumn(index1);
+				table2.sortByColumn(index2);
 
-		/*System.out.println("here is table1 in makeBigTable: ");
-		table1.print();
-		System.out.println("here is table2 in makeBigTable: ");
-		table2.print();
-		*/
+				/*System.out.println("here is table1 in makeBigTable: ");
+				table1.print();
+				System.out.println("here is table2 in makeBigTable: ");
+				table2.print();
+				*/
 
-		table1.swapColumns(numCol1-1, index1);
-		table2.swapColumns(0, index2);
+				table1.swapColumns(numCol1-1, index1);
+				table2.swapColumns(0, index2);
 
-		Column[] colArray = new Column[numCol1+numCol2-1];
-		for (int m=0; m<(numCol1); m++){
-			colArray[m] = (Column) ((table1.getColumn(m)).getClass()).newInstance();
-		}
+				Column[] colArray = new Column[numCol1+numCol2-1];
+				for (int m=0; m<(numCol1); m++){
+					colArray[m] = (Column) ((table1.getColumn(m)).getClass()).newInstance();
+				}
 
-		for (int h=0; h<(numCol2-1); h++){
-			colArray[h+numCol1] = (Column) ((table2.getColumn(h+1)).getClass()).newInstance();
-		}
+				for (int h=0; h<(numCol2-1); h++){
+					colArray[h+numCol1] = (Column) ((table2.getColumn(h+1)).getClass()).newInstance();
+				}
 
-		returnTable = (TableImpl)DefaultTableFactory.getInstance().createTable(colArray);
+				returnTable = (TableImpl)DefaultTableFactory.getInstance().createTable(colArray);
 
-		for (int u=0; u<(numCol1); u++){
-			returnTable.getColumn(u).setLabel(table1.getColumnLabel(u));
-		}
+				for (int u=0; u<(numCol1); u++){
+					returnTable.getColumn(u).setLabel(table1.getColumnLabel(u));
+				}
 
-		for (int v=0; v<(numCol2-1); v++){
-			returnTable.getColumn(v+numCol1).setLabel(table2.getColumnLabel(v+1));
-		}
+				for (int v=0; v<(numCol2-1); v++){
+					returnTable.getColumn(v+numCol1).setLabel(table2.getColumnLabel(v+1));
+				}
 
-		returnTable.setNumRows(table1.getNumRows());
+				returnTable.setNumRows(table1.getNumRows());
 
-		/*System.out.println("here is table1 in makeBigTable: ");
-		table1.print();
-		System.out.println("here is table2 in makeBigTable: ");
-		table2.print();
-		*/
+				/*System.out.println("here is table1 in makeBigTable: ");
+				table1.print();
+				System.out.println("here is table2 in makeBigTable: ");
+				table2.print();
+				*/
 
-		makeBigTable();
+				makeBigTable();
 
-		pushOutput(returnTable, 0);
-		}
+				pushOutput(returnTable, 0);
+			}
 
 		}
 	}
@@ -548,7 +573,7 @@ public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "MergeVTbyRow";
+		return "Merge By Row";
 	}
 
 	/**
@@ -559,11 +584,11 @@ public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "table1";
+				return "First Table";
 			case 1:
-				return "table2";
+				return "Second Table";
 			case 2:
-				return "uniqueId";
+				return "ID Field";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -576,7 +601,7 @@ public class MergeVTbyRow extends ncsa.d2k.core.modules.DataPrepModule
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "returnTable";
+				return "Result Table";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
