@@ -79,7 +79,7 @@ public class BinDescriptorFactory {
 	  
 	  public static BinDescriptor createMissingValuesBin ( int idx, Table tbl) {
 	  	String [] vals = { tbl.getMissingString()};
-	  	return new TextualBinDescriptor(idx,"Unkown",vals,tbl.getColumnLabel(idx));
+	  	return new TextualBinDescriptor(idx,"Unknown",vals,tbl.getColumnLabel(idx));
 	  }
 
 }

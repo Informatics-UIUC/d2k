@@ -177,11 +177,14 @@ public class SQLCreateBinTree extends DataPrepModule {
 							(BinTree.ClassTree.Bin) bl.get(bn[k]);
 						String condition = b.getCondition(an[j]);
 
+						if (bn[k].equals("Unknown")) condition = an[j] + " is null";
+						//else System.out.println("not unknown");
 						//condition = bt.getCondition(cn[i],an[j],bn[k]);
 						//System.out.println("condition1" + condition);
 						//System.out.println("cn, an, bn, BIN Condition: "
-						//               + cn[i] + " " + an[j] + " "
-						//              + bn[k] + " " + condition);
+						 //              + cn[i] + " " + an[j] + " "
+						  //            + bn[k] + " " + condition);
+						
 
 						String query =
 							"SELECT COUNT(*)  FROM "
@@ -259,4 +262,6 @@ public class SQLCreateBinTree extends DataPrepModule {
 
 }
 
+//12-11 -03 Anca - for "unknown" named bins query condition "an is null " is generated now
 //12-12--03 Anca - added check and exception for input table that is not an ExampleTable
+
