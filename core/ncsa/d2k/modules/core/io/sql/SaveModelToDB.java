@@ -58,18 +58,67 @@ public class SaveModelToDB extends UIModule {
 	}
 
   public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    Save a data mining model to a database table.  </body></html>";
-	}
+    String s = "<p> Overview: ";
+    s += "This module saves a model built from a data mining process. </p>";
+    s += "<p> Detailed Description: ";
+    s += "This module makes a connection to a database and saves a model ";
+    s += "built either from a file or from a database table. ";
+    s += "Three database tables are used ";
+    s += "to store the model information: model_master, model_attribute and ";
+    s += "model_classes. The table model_master keeps model name, model type, ";
+    s += "train set size, the serialized model object, the name of the user ";
+    s += "who creats the model, and the date the model is created. The table ";
+    s += "model_attribute keeps the attributes information in the model. ";
+    s += "The table model_class keeps class labels in the model. ";
+    s += "<p> Restrictions: ";
+    s += "We currently only support Oracle databases and only support decision ";
+    s += "tree models and Naive Bayes models. ";
+    return s;
+  }
 
   public String[] getInputTypes () {
 		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","ncsa.d2k.module.PredictionModelModule"};
 		return types;
-	}
+  }
 
   public String[] getOutputTypes () {
 		String[] types = {		};
 		return types;
-	}
+  }
+
+  /**
+   * Return the human readable name of the module.
+   * @return the human readable name of the module.
+   */
+  public String getModuleName() {
+    return "SaveModelToDB";
+  }
+
+  /**
+   * Return the human readable name of the indexed input.
+   * @param index the index of the input.
+   * @return the human readable name of the indexed input.
+   */
+  public String getInputName(int index) {
+    switch(index) {
+      case 0:
+        return "Database Connection";
+      case 1:
+        return "Prediction Model";
+      default: return "NO SUCH INPUT!";
+    }
+  }
+
+  /**
+   * Return the human readable name of the indexed output.
+   * @param index the index of the output.
+   * @return the human readable name of the indexed output.
+   */
+  public String getOutputName(int index) {
+    switch(index) {
+      default: return "NO SUCH OUTPUT!";
+    }
+  }
 
   protected String[] getFieldNameMapping () {
     return null;
@@ -189,6 +238,7 @@ public class SaveModelToDB extends UIModule {
       else if (modelType.equals(RF)) {
         modelDesc.setText("Decision Tree");
       }
+      modelDesc.setEditable(false);
       Constrain.setConstraints(modelInfo, new JLabel("Training Data Size (Records)"),
         0,3,1,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(modelInfo, dataSize = new JTextField(10),
@@ -272,6 +322,7 @@ public class SaveModelToDB extends UIModule {
     public void displayRowCount() {
         int totalRow = model.getTrainingSetSize();
         dataSize.setText(Integer.toString(totalRow));
+        dataSize.setEditable(false);
     }
 
     /**
@@ -552,37 +603,4 @@ public class SaveModelToDB extends UIModule {
   }
   }
 
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "SaveModelToDB";
-	}
-
-	/**
-	 * Return the human readable name of the indexed input.
-	 * @param index the index of the input.
-	 * @return the human readable name of the indexed input.
-	 */
-	public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "DBConnection";
-			case 1:
-				return "PredictionModel";
-			default: return "NO SUCH INPUT!";
-		}
-	}
-
-	/**
-	 * Return the human readable name of the indexed output.
-	 * @param index the index of the output.
-	 * @return the human readable name of the indexed output.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			default: return "NO SUCH OUTPUT!";
-		}
-	}
 }

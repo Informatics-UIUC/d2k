@@ -62,8 +62,21 @@ public class GetModelFromDB extends UIModule
   }
 
   public String getModuleInfo () {
-    String text = "Retrieve a saved prediction model from a database.";
-    return text;
+    String s = "<p> Overview: ";
+    s += "This module retrieves a model from a database. </p>";
+    s += "<p> Detailed Description: ";
+    s += "This module makes a connection to a database and retrieves a model ";
+    s += "from a database. The model information is retrieved from three ";
+    s += "database tables: model_master, model_attribute and ";
+    s += "model_classes. The table model_master keeps model name, model type, ";
+    s += "train set size, the serialized model object, the name of the user";
+    s += "who creats the model, and the date the model is created. The table ";
+    s += "model_attribute keeps the attributes information in the model. ";
+    s += "The table model_class keeps class labels in the model. ";
+    s += "<p> Restrictions: ";
+    s += "We currently only support Oracle databases and only support decision ";
+    s += "tree models and Naive Bayes models. ";
+    return s;
   }
 
   public String[] getInputTypes () {
@@ -92,7 +105,7 @@ public class GetModelFromDB extends UIModule
   public String getInputName(int index) {
     switch(index) {
       case 0:
-        return "DBConnection";
+        return "Database Connection";
       default: return "NO SUCH INPUT!";
     }
   }
@@ -105,7 +118,7 @@ public class GetModelFromDB extends UIModule
    public String getOutputName(int index) {
     switch(index) {
       case 0:
-        return "PredictionModel";
+        return "Prediction Model";
       default: return "NO SUCH OUTPUT!";
     }
   }
@@ -169,10 +182,12 @@ public class GetModelFromDB extends UIModule
       Constrain.setConstraints(modelInfo, modelDesc = new JTextField(10),
         1,1,2,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       modelDesc.setText(NOTHING);
+      modelDesc.setEditable(false);
       Constrain.setConstraints(modelInfo, new JLabel("Training Data Size (Records)"),
         0,3,1,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(modelInfo, dataSize = new JTextField(10),
         1,3,2,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
+      dataSize.setEditable(false);
 
       // Outline panel for info of training set contents
       String [] columnHeading = {"Attribute Name","Attribute Type","Number of Bins","Input/Output"};
@@ -204,6 +219,7 @@ public class GetModelFromDB extends UIModule
       notes.setAutoscrolls(true);
       notes.setText(NOTHING);
       notes.setBackground(Color.white);
+      notes.setEditable(false);
       JScrollPane textPane = new JScrollPane();
       textPane.setAutoscrolls(true);
       textPane.getViewport().add(notes);
