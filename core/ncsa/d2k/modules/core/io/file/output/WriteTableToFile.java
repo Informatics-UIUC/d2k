@@ -86,6 +86,22 @@ public class WriteTableToFile extends OutputModule
        return sb.toString();
    }
 
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      PropertyDescription[] descriptions = new PropertyDescription [2];
+
+      descriptions[0] = new PropertyDescription("useColumnLabels",
+         "Write Column Labels",
+         "Controls whether the table's column labels are written to the file.");
+
+      descriptions[1] = new PropertyDescription("useDataTypes",
+         "Write Data Types",
+         "Controls whether the table's column data types are written to the file.");
+
+      return descriptions;
+
+   }
+
     /**
        Return the name of this module.
        @return The name of this module.
