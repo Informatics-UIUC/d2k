@@ -210,14 +210,10 @@ public class ClusterAssignmentOPT
     s += "</p>";
 
     s += "<p>Data Type Restrictions: ";
-    s += "The second input table (<i>Table</i>) should be a mutable implementation. ";
-    s += "The <i>Sample Table</i> and <i>Table</i> inputs must have the same structure ";
-    s += "-- attribute types and order (and input features ";
+    s += "The <i>Sample Table</i> and <i>Table</i> inputs must have the same structure; ";
+    s += "attribute types and order (and input features ";
     s += "if example tables), must be identical. ";
-    s += "</p>";
-
-    s += "<p>";
-    s += "The clustering does not work if the input data being clustered contains missing values. ";
+    s += "The clustering does not work if the input data contains missing values. ";
     s += "The algorithm operates on numeric and boolean datatypes.  If the data to be clustered ";
     s += "contains nominal data types, it should be converted prior to performing the clustering. ";
     s += "The <i>Scalarize Nominals</i> module can be used to convert nominal types into boolean values. ";
@@ -297,4 +293,6 @@ public class ClusterAssignmentOPT
 // 4/8/03 - Ruth started QA;  Updates to Module Info;  Added getAlias() arg to
 //          ClusterRefinement constructor.
 //        - Waiting to hear back from Duane on why Table must be mutable if not changed.
+// 4/9/03 - Don't need mutable - slipped thru cracks from earlier version.
+//        - Ready for basic.
 // End QA Comments
