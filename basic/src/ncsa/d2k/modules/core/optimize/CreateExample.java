@@ -2,8 +2,11 @@ package ncsa.d2k.modules.core.optimize;
 
 import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.core.datatype.parameter.*;
+import ncsa.d2k.modules.core.datatype.parameter.impl.ParameterPointImpl;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
+import ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl;
 import ncsa.d2k.modules.core.optimize.random.UniformSampling;
 
 import java.util.ArrayList;
@@ -133,9 +136,28 @@ public class CreateExample extends ComputeModule {
 					outputNames[v] = "out" + (v + 1);
 				outputs[v] = index;
 			}
-
+			
+			// Make the column objects and build the table.
+			int totCol = numInputs+numOutputs;
+			Column [] cols = new Column [totCol];
+			int colIdx = 0;
+			for (; colIdx < numInputs ; colIdx++) {
+				cols[colIdx] = new DoubleColumn(data[colIdx]);
+				cols[colIdx].setLabel(inputNames[colIdx]);
+			}
+			for (int i = 0; i < numOutputs; i++){
+				cols[colIdx] = new DoubleColumn(data[colIdx]);
+				cols[colIdx].setLabel(outputNames[i]);
+				colIdx++;
+			}
+			
+			// Create the example table.
+			ExampleTableImpl et = new ExampleTableImpl(cols);
+			et.setInputFeatures(inputs);
+			et.setOutputFeatures(outputs);
+			
 			// construct an example, first create a table.
-			Example example = (Example) UniformSampling.getTable (data, inputNames, outputNames, inputs, outputs, 1).getRow ();
+			Example example = new ParameterPointImpl(et);
 			example.setIndex (0);
 			this.pushOutput (example, 0);
 		}

@@ -10,8 +10,6 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.projects.dtcheng.*;
-import ncsa.d2k.modules.projects.dtcheng.datatype.*;
 
 public class DecisionTreeInducerOpt
     extends FunctionInducerOpt {
@@ -425,12 +423,13 @@ public class DecisionTreeInducerOpt
     //ExampleTable node1ExampleSet = (ExampleTable) examples.copy();
     //node1ExampleSet.setTestingSet(node1ExampleIndicies);
     //node1.examples = (ExampleTable) examples.getSubset(node1ExampleIndicies);
-    node1.examples = (ExampleTable) ((ContinuousDoubleExampleTable) examples).getSubset(node1ExampleIndicies);
+    node1.examples = (ExampleTable) examples.getSubset(node1ExampleIndicies);
+
 
     //ExampleTable node2ExampleSet = (ExampleTable) examples.copy();
     //node2ExampleSet.setTestingSet(node2ExampleIndicies);
     //node2.examples = (ExampleTable) examples.getSubset(node2ExampleIndicies);
-    node2.examples = (ExampleTable) ((ContinuousDoubleExampleTable) examples).getSubset(node2ExampleIndicies);
+    node2.examples = (ExampleTable) examples.getSubset(node2ExampleIndicies);
 
     //System.out.println("node1.examples.numExamples() = " + node1.examples.getNumRows());
     //System.out.println("node2.examples.numExamples() = " + node2.examples.getNumRows());

@@ -202,7 +202,7 @@ public class ParameterPointImpl extends ExampleImpl implements Serializable, Par
 	  *
 	  * @param et
 	  */
-	ParameterPointImpl(ExampleTableImpl et) {
+	public ParameterPointImpl(ExampleTableImpl et) {
 		super(et);
 	}
 

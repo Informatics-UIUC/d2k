@@ -82,12 +82,11 @@ public class CatchModel extends ModelSelectorModule  {
 	private ModelModule theModel;
 
 	public void doit() {
-
-//vered qa:
-          System.out.println("CatchModel is executing");
-          //end qa
-
 		ModelModule mm = (ModelModule)pullInput(0);
+		if (mm.getAlias() == null)
+			mm.setAlias(this.getAlias());
+		//LAM-tlr
+		System.out.println("CatchModel is executing: "+mm.getAlias());
 		theModel = mm;
 	}
 

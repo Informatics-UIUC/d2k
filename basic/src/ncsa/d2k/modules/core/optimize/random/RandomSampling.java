@@ -13,10 +13,10 @@ import java.beans.PropertyVetoException;
 public class RandomSampling extends ComputeModule {
 
    /** these are the paramter points to test. */
-   int pointsPushed = 0;
+   protected int pointsPushed = 0;
 
    public PropertyDescription[] getPropertiesDescriptions() {
-      PropertyDescription[] descriptions = new PropertyDescription[5];
+      PropertyDescription[] descriptions = new PropertyDescription[4];
       descriptions[0] = new PropertyDescription(
             "maxIterations",
             "Maximum Number of Iterations",
@@ -30,10 +30,6 @@ public class RandomSampling extends ComputeModule {
             "Trace",
             "Report each scored point in parameter space as it becomes available.");
       descriptions[3] = new PropertyDescription(
-            "verbose",
-            "Verbose Output",
-            "Report each scored point in parameter space as it becomes available, and each parameter point that has been pushed.");
-      descriptions[4] = new PropertyDescription(
             "useResolution",
             "Constrain Resolution",
             "If this parameter is set, we will use the resolution defined in the paramter space value for each paramter to define the number of distinct values in the ranges.");
@@ -57,35 +53,22 @@ public class RandomSampling extends ComputeModule {
    public void setSeed(int value) {
       this.seed = value;
    }
-
    public int getSeed() {
       return this.seed;
    }
 
-   private boolean trace = false;
+   protected boolean trace = false;
    public void setTrace(boolean value) {
       this.trace = value;
    }
-
    public boolean getTrace() {
       return this.trace;
    }
 
-   private boolean verbose = false;
-   public void setVerbose(boolean value) {
-      this.verbose = value;
-   }
-
-   public boolean getVerbose() {
-      return this.verbose;
-   }
-
    private boolean useresolution = false;
-
    public void setUseResolution(boolean value) {
       this.useresolution = value;
    }
-
    public boolean getUseResolution() {
       return this.useresolution;
    }
@@ -220,7 +203,7 @@ public class RandomSampling extends ComputeModule {
    /**
     * Push another paramter point, and update the accounting.
     */
-   private void pushParameterPoint() {
+   protected void pushParameterPoint() {
       int numParams = space.getNumParameters();
       double[] point = new double[numParams];
 
@@ -281,10 +264,6 @@ public class RandomSampling extends ComputeModule {
          System.out.println("RandomSampling: Pushed point " + pointsPushed +
                             " " + parameterPoint);
 
-      }
-      if (verbose) {
-         this.printExample(pointsPushed + " - Pushed a point : ",
-                           parameterPoint);
       }
       this.pushOutput(parameterPoint, 0);
    }

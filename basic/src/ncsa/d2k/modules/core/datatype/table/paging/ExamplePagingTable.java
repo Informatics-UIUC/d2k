@@ -757,58 +757,69 @@ public class ExamplePagingTable extends SubsetPagingTable implements ExampleTabl
 		return cache.getColumnLabel(outputIndices[0]);
 	}
 
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#getInputType(int)
+	/**
+	 * Get the java data types for the input at i.
+	 * @param i the index of the input.
+	 * @return the data type for the input.
 	 */
 	public int getInputType(int i) {
 		return inputColumns[i].getType();
 	}
 
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#getOutputType(int)
+	/**
+	 * Get the java data types for the output at i.
+	 * @param i the index of the output.
+	 * @return the data type for the output.
 	 */
 	public int getOutputType(int o) {
 		return outputColumns[0].getType();
 	}
 
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#hasMissingInputsOutputs()
+	/**
+	 * return true if the table contains any missing values in the inputs or outputs
+	 * columns.
+	 * @return true if the table has missing values in the inputs or outputs.
 	 */
 	public boolean hasMissingInputsOutputs() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#isInputNominal(int)
+	/**
+	 * Return true if the input column is nominal.
+	 * @return true if the input column is nominal.
 	 */
 	public boolean isInputNominal(int i) {
 		return cache.isColumnNominal(inputIndices[i]);
 	}
 
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#isOutputNominal(int)
+	/**
+	 * If the output column is nominal, return true.
+	 * @return true if the output column is nominal.
 	 */
 	public boolean isOutputNominal(int o) {
 		return cache.isColumnNominal(outputIndices[o]);
 	}
 
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#isInputScalar(int)
+	/**
+	 * return true if the input column is scalar.
+	 * @return true if the input column is scalar.
 	 */
 	public boolean isInputScalar(int i) {
 		return cache.isColumnScalar(inputIndices[i]);
 	}
 
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#isOutputScalar(int)
+	/**
+	 * return true if the output column is scalar.
+	 * @return true if the oiutput column is scalar.
 	 */
 	public boolean isOutputScalar(int o) {
 		return cache.isColumnScalar(outputIndices[o]);
 	}
 
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#getInputNames()
+	/**
+	 * return a list of the names of the input columns.
+	 * @return a list of the names of the input columns.
 	 */
 	public String[] getInputNames() {
 		String [] inputNames = new String [inputIndices.length];
@@ -818,8 +829,9 @@ public class ExamplePagingTable extends SubsetPagingTable implements ExampleTabl
 		return inputNames;
 	}
 
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#getOutputNames()
+	/**
+	 * return an array of strings containing the names of all the output columns.
+	 * @return an array of strings containing the names of all the output columns.
 	 */
 	public String[] getOutputNames() {
 		String [] outputNames = new String [outputIndices.length];
@@ -829,8 +841,9 @@ public class ExamplePagingTable extends SubsetPagingTable implements ExampleTabl
 		return outputNames;
 	}
 	
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#getTestTable()
+	/**
+	 * return the test table for this dataset.
+	 * @return the test table for this dataset.
 	 */
 	public Table getTestTable() {
 		try {
@@ -841,8 +854,9 @@ public class ExamplePagingTable extends SubsetPagingTable implements ExampleTabl
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#getTrainTable()
+	/**
+	 * return the train table for this dataset.
+	 * @return the train table for this dataset.
 	 */
 	public Table getTrainTable() {
 		try {
@@ -853,8 +867,9 @@ public class ExamplePagingTable extends SubsetPagingTable implements ExampleTabl
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#toPredictionTable()
+	/**
+	 * return the prediction table for this dataset.
+	 * @return the prediction table for this dataset.
 	 */
 	public PredictionTable toPredictionTable() {
 		try {

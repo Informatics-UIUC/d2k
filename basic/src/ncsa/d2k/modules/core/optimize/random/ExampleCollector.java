@@ -200,8 +200,9 @@ public class ExampleCollector
             throw new RuntimeException("The input on the first port must be an Integer greater than 0.");
       }
 
-      examples.add(this.pullInput(1));
-      System.out.println ("EXAMPLE : "+n);
+		Object tmp = this.pullInput(1);
+      examples.add(tmp);
+      System.out.println ("EXAMPLE ("+tmp.getClass().getName()+"): "+n);
       n--;
       if (n == 0) {
 

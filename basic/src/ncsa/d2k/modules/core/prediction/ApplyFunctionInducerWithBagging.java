@@ -2,14 +2,18 @@ package ncsa.d2k.modules.core.prediction;
 
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.projects.dtcheng.primitive.Utility;
+//import ncsa.d2k.modules.projects.dtcheng.primitive.Utility;
 
 import ncsa.d2k.core.modules.*;
 import java.util.Random;
-import ncsa.d2k.modules.projects.dtcheng.datatype.ContinuousDoubleExampleTable;
-import ncsa.d2k.modules.projects.dtcheng.EnsembleModel;
-import ncsa.d2k.modules.projects.dtcheng.datatype.*;
 
+// LAM-tlr I removed these. EnsembleModel is in this package, so we don't need to
+// import and datatype doesn't seem to be used.
+//
+//import ncsa.d2k.modules.projects.dtcheng.datatype.ContinuousDoubleExampleTable;
+//import ncsa.d2k.modules.projects.dtcheng.EnsembleModel;
+//import ncsa.d2k.modules.projects.dtcheng.datatype.*;
+import ncsa.d2k.modules.core.prediction.evaluators.Utility;
 
 public class ApplyFunctionInducerWithBagging
     extends OrderedReentrantModule {
@@ -116,13 +120,13 @@ public class ApplyFunctionInducerWithBagging
 
   public void doit() throws Exception {
 
-    ContinuousDoubleExampleTable OriginalExamples = null;
-    ContinuousDoubleExampleTable Examples = null;
+    ExampleTable OriginalExamples = null;
+    ExampleTable Examples = null;
 
     FunctionInducerOpt FunctionInducer = (FunctionInducerOpt)this.pullInput(0);
     ErrorFunction ErrorFunction = (ErrorFunction)this.pullInput(1);
 
-    OriginalExamples = (ContinuousDoubleExampleTable)this.pullInput(2);
+    OriginalExamples = (ExampleTable)this.pullInput(2);
 
 
     ////////////////////////////////////////////////////////////////////////
@@ -132,7 +136,7 @@ public class ApplyFunctionInducerWithBagging
     if (NumberOfModelsInEnsemble == 1)
       Examples = OriginalExamples;
     else
-      Examples = (ContinuousDoubleExampleTable) OriginalExamples.copy();
+      Examples = (ExampleTable) OriginalExamples.copy();
 
     int NumExamples = Examples.getNumRows();
 

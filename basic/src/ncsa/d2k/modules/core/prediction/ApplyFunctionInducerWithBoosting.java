@@ -2,10 +2,10 @@ package ncsa.d2k.modules.core.prediction;
 
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.projects.dtcheng.*;
+//import ncsa.d2k.modules.projects.dtcheng.*;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.projects.dtcheng.datatype.*;
+//import ncsa.d2k.modules.projects.dtcheng.datatype.*;
 
 public class ApplyFunctionInducerWithBoosting
     extends OrderedReentrantModule {
@@ -89,18 +89,18 @@ public class ApplyFunctionInducerWithBoosting
 
   public void doit() throws Exception {
 
-    ContinuousDoubleExampleTable OriginalExamples = null;
-    ContinuousDoubleExampleTable examples = null;
+    ExampleTable OriginalExamples = null;
+    ExampleTable examples = null;
 
     FunctionInducerOpt FunctionInducer = (FunctionInducerOpt)this.pullInput(0);
     ErrorFunction ErrorFunction = (ErrorFunction)this.pullInput(1);
 
-    OriginalExamples = (ContinuousDoubleExampleTable)this.pullInput(2);
+    OriginalExamples = (ExampleTable)this.pullInput(2);
 
     if (NumberOfRounds == 1)
       examples = OriginalExamples;
     else
-      examples = (ContinuousDoubleExampleTable) OriginalExamples.copy();
+      examples = (ExampleTable) OriginalExamples.copy();
 
       //examples = OriginalExamples;
 
@@ -172,6 +172,7 @@ public class ApplyFunctionInducerWithBoosting
       //////////////////////////
       // tranform example set //
       //////////////////////////
+      int [] outputIndices = examples.getOutputFeatures();
       for (int e = 0; e < NumExamples; e++) {
 
         for (int o = 0; o < NumOutputs; o++) {
@@ -179,7 +180,7 @@ public class ApplyFunctionInducerWithBoosting
           double predicted = predictionTable.getDoublePrediction(e, o);
           double actual = OriginalExamples.getOutputDouble(e, o);
           double residual = actual - predicted;
-          ( (ContinuousDoubleExampleTable) examples).setOutput(e, o, residual);
+          examples.setDouble(residual, e, outputIndices[o]);
         }
       }
 
