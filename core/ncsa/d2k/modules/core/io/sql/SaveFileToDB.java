@@ -141,6 +141,15 @@ public class SaveFileToDB extends UIModule
     public String getOutputName (int i) {
         return null;
     }
+
+    //QA Anca added this:
+    public PropertyDescription[] getPropertiesDescriptions() { 
+        // so that "WindowName" property is invisible 
+        return new PropertyDescription[0];  
+    }
+
+
+
     /**
         Get the field name map for this module-view combination.
         @return The field name map.
@@ -786,3 +795,6 @@ public class SaveFileToDB extends UIModule
 // QA Comments Anca 03/12/03
 // changed the input from TableImpl to Table to be more generic
 // WISH : to be able select only certain columns to be loaded when a new database table is created.
+// or else column names should not be editable/deletable when creating a new table
+// 
+
