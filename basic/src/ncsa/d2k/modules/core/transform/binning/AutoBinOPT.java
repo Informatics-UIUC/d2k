@@ -194,6 +194,7 @@ public class AutoBinOPT extends DataPrepModule {
 				double[] binMaxes = new double[num - 1];
 				double interval = (max - min) / (double) num;
 				binMaxes[0] = min + interval;
+				//System.out.println("binmaxes[0] " + binMaxes[0]);
 
 				// add the first bin manually
 
@@ -219,7 +220,9 @@ public class AutoBinOPT extends DataPrepModule {
 					bins.add(bd);
 				}
 
+				//System.out.println("binmaxes[length-1] " + binMaxes[binMaxes.length-1]);
 				// now add the last bin
+				
 
 				bd =
 					BinDescriptorFactory.createMaxNumericBinDescriptor(
