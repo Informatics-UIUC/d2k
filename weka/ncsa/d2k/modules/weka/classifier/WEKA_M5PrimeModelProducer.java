@@ -9,7 +9,7 @@ package ncsa.d2k.modules.weka.classifier;
 //===============
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import weka.classifiers.m5.*;
 import weka.core.Instances;

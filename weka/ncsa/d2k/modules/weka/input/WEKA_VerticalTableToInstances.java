@@ -11,7 +11,9 @@ import java.util.*;
 //===============
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+//import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import weka.core.*;
 
 /**
@@ -42,7 +44,7 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
        @return An array containing the datatypes of the inputs.
     */
     public String[] getInputTypes() {
-	String []in = {"ncsa.d2k.util.datatype.VerticalTable"};
+	String []in = {"ncsa.d2k.modules.core.datatype.Table"};
 	return in;
     }
 
@@ -124,17 +126,21 @@ public class WEKA_VerticalTableToInstances extends DataPrepModule {
     */
     public void doit() throws java.lang.Exception {
         try{
-	  VerticalTable vt = (VerticalTable)pullInput(0);
+	  /*Vertical*/Table vt = (/*Vertical*/Table)pullInput(0);
           int numatts = vt.getNumColumns();
           FastVector atts = new FastVector(numatts);
           for (int i = 0; i < numatts; i++){
-            Object attType = vt.getColumn(i).getType();
-            if ((attType instanceof Short) || (attType instanceof Float) || (attType instanceof Double)
+            //Object attType = vt.getColumn(i).getType();
+            int attType = vt.getColumnType(i);
+            /*if ((attType instanceof Short) || (attType instanceof Float) || (attType instanceof Double)
               || (attType instanceof Integer) || (attType instanceof Long)){
-              atts.addElement(new Attribute(vt.getColumn(i).getLabel()));
+              */
+             if( (attType == ColumnTypes.SHORT) || (attType == ColumnTypes.FLOAT) || (attType == ColumnTypes.DOUBLE)
+                || (attType == ColumnTypes.INTEGER) || (attType == ColumnTypes.LONG)){
+              atts.addElement(new Attribute(vt.getColumnLabel(i)));
             } else {
             //assume the column is of a string type (VT's don't have explicitly nominal values)
-              atts.addElement(new Attribute(vt.getColumn(i).getLabel(), null));
+              atts.addElement(new Attribute(vt.getColumnLabel(i), null));
             }
           }
           Instances instances = new Instances("Vertical Table", atts, 1000);

@@ -12,7 +12,9 @@ import java.util.*;
 //===============
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+//import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import weka.core.*;
 
 public class WEKA_InstancesToExampleTable extends DataPrepModule {
@@ -58,7 +60,7 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
        @return An array containing the datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-	String []out = {"ncsa.d2k.util.datatype.ExampleTable"};
+	String []out = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 	return out;
     }
 
@@ -154,21 +156,22 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
           for(int col = 0; col < numatts; col++){
             Attribute att = instances.attribute(col);
             if (att.isNumeric()){
-		((SimpleColumn)tableColumns.elementAt(col)).setString(Double.toString(instances.instance(row).value(col)), row);
+		((Column)tableColumns.elementAt(col)).setString(Double.toString(instances.instance(row).value(col)), row);
             } else {
-		((SimpleColumn)tableColumns.elementAt(col)).setString(att.value((int)instances.instance(row).value(col)), row);
+		((Column)tableColumns.elementAt(col)).setString(att.value((int)instances.instance(row).value(col)), row);
             }
           }
         }
 
 	// set the labels if given
 	for(int i = 0; i < numatts; i++){
-          ((SimpleColumn)tableColumns.elementAt(i)).setLabel(instances.attribute(i).name());
+          ((Column)tableColumns.elementAt(i)).setLabel(instances.attribute(i).name());
         }
 
-        SimpleColumn[] simps = new SimpleColumn[0];
-        VerticalTable verticaltable = new VerticalTable((SimpleColumn[])tableColumns.toArray(simps));
-        ExampleTable exampletable = new ExampleTable((Table)verticaltable);
+        Column[] simps = new Column[0];
+        Table verticaltable = DefaultTableFactory.getInstance().createTable((Column[])tableColumns.toArray(simps));
+        //ExampleTable exampletable = new ExampleTable((Table)verticaltable);
+        ExampleTable exampletable = verticaltable.toExampleTable();
 
         int classind = instances.classIndex();
         int[] ins = null;
@@ -187,7 +190,7 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
         exampletable.setInputFeatures(ins);
 
         if (getVerbose()){
-          exampletable.print();
+          ((ExampleTableImpl)exampletable).print();
         }
         System.gc();
 	this.pushOutput(exampletable, 0);
@@ -204,7 +207,7 @@ public class WEKA_InstancesToExampleTable extends DataPrepModule {
 		@param size the initial size of the column
 		@return a new, empty column
 	*/
-	protected SimpleColumn createColumn(String type, int size) {
+	protected Column createColumn(String type, int size) {
 		if(type.equals(STRING_TYPE))
 			return new StringColumn(size);
 		else if(type.equals(FLOAT_TYPE))

@@ -11,8 +11,8 @@ import java.io.Serializable;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.PredictionModelModule;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import weka.classifiers.kstar.*;
 import weka.classifiers.Classifier;

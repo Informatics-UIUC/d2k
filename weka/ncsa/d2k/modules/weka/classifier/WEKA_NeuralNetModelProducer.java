@@ -20,7 +20,7 @@ import java.util.StringTokenizer;
 //===============
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import weka.classifiers.neural.*;
 import weka.core.Instances;

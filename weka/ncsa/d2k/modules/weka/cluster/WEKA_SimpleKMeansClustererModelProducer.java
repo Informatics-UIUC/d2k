@@ -9,7 +9,7 @@ package ncsa.d2k.modules.weka.cluster;
 //===============
 
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import weka.clusterers.*;
 import weka.core.Instances;

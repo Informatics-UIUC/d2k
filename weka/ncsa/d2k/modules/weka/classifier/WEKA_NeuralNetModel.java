@@ -9,8 +9,8 @@
  */
 package ncsa.d2k.modules.weka.classifier;
 
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.PredictionModelModule;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import weka.classifiers.neural.*;
 import weka.classifiers.Classifier;
@@ -62,7 +62,7 @@ public class WEKA_NeuralNetModel extends PredictionModelModule implements WEKA_M
    * @return The datatypes of the inputs.
    */
   public String[] getInputTypes() {
-    String[] in = {"ncsa.d2k.util.datatype.ExampleTable"};
+    String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
     return in;
   }
 
@@ -72,7 +72,7 @@ public class WEKA_NeuralNetModel extends PredictionModelModule implements WEKA_M
    * @return The datatypes of the outputs.
    */
   public String[] getOutputTypes() {
-    String[] out = {"ncsa.d2k.util.datatype.ExampleTable"};
+    String[] out = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
     return out;
   }
 
