@@ -5,8 +5,7 @@ import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
-public class MutablePagingTable extends PagingTable
-   implements MutableTable, Serializable {
+public class MutablePagingTable extends PagingTable implements MutableTable, Serializable {
 
    public MutablePagingTable() {
       super();

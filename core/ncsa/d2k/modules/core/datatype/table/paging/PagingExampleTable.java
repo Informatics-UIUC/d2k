@@ -12,8 +12,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
  * <code>PagingExampleTable</code> provides a functionally paging
  * <code>ExampleTable</code> implementation.
  */
-class PagingExampleTable extends PagingTable
-   implements ExampleTable {
+class PagingExampleTable extends PagingTable implements ExampleTable {
 
    protected int[] inputFeatures;
    protected int[] outputFeatures;
@@ -32,7 +31,7 @@ class PagingExampleTable extends PagingTable
     * @param pages           existing <code>Page</code>s
     * @param manager         an existing <code>PageManager</code>
     */
-   public PagingExampleTable(Page[] pages, PageManager manager) {
+   PagingExampleTable(Page[] pages, PageManager manager) {
       super(pages, manager);
     //  transformations = new ArrayList();
    }

@@ -12,7 +12,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
  * Disk space used by the <code>PagingTable</code> will be reclaimed provided
  * that the virtual machine terminates normally.
  */
-public class PagingTable extends AbstractTable implements Serializable {
+class PagingTable extends AbstractTable implements Serializable {
 
    protected Page[] pages;
    protected int[] offsets;
@@ -28,7 +28,7 @@ public class PagingTable extends AbstractTable implements Serializable {
 /* constructors                                                               */
 /******************************************************************************/
 
-   public PagingTable() {
+   PagingTable() {
       pages = new Page[0];
       offsets = new int[0];
       manager = null;
@@ -81,9 +81,7 @@ public class PagingTable extends AbstractTable implements Serializable {
 
    }
 
-
-
-   public PagingTable(Table table, int totalPages, int pagesInMemory) {
+   PagingTable(Table table, int totalPages, int pagesInMemory) {
 
       numPages = totalPages;
       managerCapacity = pagesInMemory;

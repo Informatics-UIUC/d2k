@@ -4,8 +4,7 @@ import java.io.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
-public class PagingPredictionTable extends PagingExampleTable
-   implements PredictionTable {
+class PagingPredictionTable extends PagingExampleTable implements PredictionTable {
 
    protected int[] predictionSet;
    protected MutablePagingTable predictionColumnsTable;
