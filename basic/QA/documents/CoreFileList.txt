@@ -126,6 +126,7 @@ ReadContinuousDoubleExampleTable.java	save
 ReadContinuousFloatExampleTable.java	save
 
 ./datatype/table/db:     Dora says these were developed by summer student and will need additional work.  Will not be in basic release.However, Duane needs these for his DSTP stuff, so they will go in. He has used and tested them a little anyway.
+
 CacheFactory.java		submitted
 Cache.java			submitted
 CacheMissException.java		submitted
@@ -232,7 +233,7 @@ VShortProcedure.java		move
 
 ./datatype/table/transformations:
 BinTransform.java				done
-ReplaceNominalValuesWithIntegersTransform.java	done
+ReplaceNominalWithIntsTransform.java	done
 ScalingTransformation.java			submitted 
 
 ./datatype/table/util:
@@ -248,6 +249,9 @@ WeightedTestTable.java		save
 WeightedTrainTable.java		save
 
 ----------------
+
+./discovery/bioinformatics
+FindInteractions.java		noticed this new file 4/10  - put there by david T.
 
 ./discovery/cluster:
 ClusterModel.java				submitted
@@ -279,7 +283,7 @@ BuckshotParams.java				submitted
 BuckshotParamsOPT.java				submitted
 BuckshotParamSpaceGenerator.java		submitted
 ClusterAssignment.java				done
-ClusterAssignmentOPT.java			submitted; waiting for ?
+ClusterAssignmentOPT.java			done
 ClusterParameterDefns.java			done
 ClusterRefinement.java				done
 Coverage.java					submitted
@@ -300,7 +304,7 @@ OneTimeInputBroker.java				submitted
 SampleTableRowsOPT.java				done
 
 ./discovery/cluster/util:
-AddClusterAssignmentsToTable.java		submitted
+AddClusterAssignmentsToTable.java		done
 ClusterModelSelector.java			submitted
 CreateTableOfClusterCentroids.java		submitted
 TableCluster.java				submitted
@@ -383,7 +387,7 @@ ReadTransposedVT.java		removed 4/5
 ./io/file/output:
 OutputSerializedObject.java	done
 WriteBytesModule.java		removed 4/5
-WriteSerializedTable.java	removed 4/5
+WriteSerializedTable.java	removed 4/5 (but above I see Read Serialized was suppose to be saved?)
 WriteTableToFile.java		done
 
 ./io/grid:
@@ -748,6 +752,7 @@ Normalize.java			submitted
 OutputAtATime.java		?, ask Peter G.
 RandomGenerator.java		?, ask Peter G.
 RenamePredictionColumn.java	?, ask Peter G.
+ReplaceNominalsWithInts.java	done
 ScalarizeNominals.java		submitted
 Scale.java			submitted
 SelectAttribute.java		removed 4/5
@@ -800,7 +805,6 @@ NFoldTTables_inplace.java		?, ask Peter G.
 RandomizeTableColumns.java		?, ask Peter G.
 RandomizeTableRows.java			done
 RemoveDuplicateRows.java		done
-ReplaceNominalsWithInts.java		done
 RotateVerticalTable.java		?, ask Peter G.
 SampleTableRows.java			done
 SetTrainOrTest.java			save
@@ -830,8 +834,8 @@ PredictionTableReport.java		David C working on this one
 ScatterPlot2D.java			submitted
 ScatterPlot3D.java			submitted
 SurfacePlot3D.java			still being worked on
-TableEditor.java			move
-TableViewer.java			submitted
+TableEditor.java			done
+TableViewer.java			done
 
 ./vis/widgets:
 BarChart.java				submitted
