@@ -648,6 +648,138 @@ public class TableUtilities
     ar[j] = t;
   }
 
+
+public static int compareStrings(String str1, String str2){
+
+    //vered: copied from basic3-0 version:
+
+       // Determine whether the strings are bin names,
+        // because bin names need a special method to compare
+        if ((str1.indexOf("[")>=0 || str1.indexOf("]")>=0) &&
+              (str2.indexOf("[")>=0 ||  str2.indexOf("]")>=0) &&
+              str1.indexOf(":")>=0 &&  str2.indexOf(":")>=0) {
+            return compareBinNames(str1, str2);
+
+        }
+        else { // data type is regular string, not bin name
+          return str1.compareTo(str2);
+
+        }
+
+}
+
+    /**
+     * Return 0 if they
+     * are the same, greater than zero if element is greater,
+     * and less than zero if element is less.
+     * Assumes columns are of same type.
+     * (added by vered to support sort method of Column objects)
+     */
+
+  public static int compareValues (Column c1, int row1, Column c2, int row2){
+    int type = c1.getType();
+
+   //the numeric case
+   if (type == ColumnTypes.DOUBLE || type == ColumnTypes.INTEGER ||
+       type == ColumnTypes.FLOAT  || type == ColumnTypes.LONG || type == ColumnTypes.SHORT) {
+       double d1 = c1.getDouble (row1);
+       double d2 = c2.getDouble (row2);
+       if (d1 == d2) {
+           return 0;
+       } else if (d1 > d2) {
+           return 1;
+       } else {
+         return -1;
+       }
+     }//end if column numeric
+
+   int it = -2;
+
+   //the other cases
+   switch (type) {
+
+     case (ColumnTypes.STRING): {
+
+
+            it = compareStrings(c1.getString (row1), c2.getString (row2));
+            break;
+
+         /*//vered: was replaced by the above code from basic 3-0 version
+          it = t1.getString (row1, col1).compareTo (t2.getString (row2, col2));
+         break;*/
+     }
+     case (ColumnTypes.CHAR_ARRAY): {
+         it = compareChars (c1.getChars (row1), c2.getChars (row2));
+         break;
+     }
+     case (ColumnTypes.BYTE_ARRAY): {
+         it = compareBytes (c1.getBytes (row1), c2.getBytes (row2));
+         break;
+     }
+     case (ColumnTypes.BOOLEAN): {
+         if (c1.getBoolean (row1) == c2.getBoolean (row2)) {
+             it = 0;
+         } else {
+             it = 1;
+         }
+
+         break;
+     }
+     case (ColumnTypes.OBJECT): {
+         boolean null1 = false;
+         boolean null2 = false;
+         Object ob1;
+         Object ob2;
+         ob1 = c1.getObject (row1);
+         if (ob1 == null) {
+             null1 = true;
+         }
+         ob2 = c2.getObject (row2);
+         if (ob2 == null) {
+             null2 = true;
+         }
+         if (null1) {
+             if (null2) {
+                 return 0;
+             }
+             return -1;
+         }
+         if (null2)
+           return 1;
+         if (ob1.equals (ob2))
+           return 0;
+
+
+
+                return compareStrings(c1.getString(row1), c2.getString(row2));
+
+//vered: commented out - no need after the incorporation of basic 3-0 version.
+//	  return t1.getString (row1, col1).compareTo (t2.getString (row2, col2));
+     }
+     case (ColumnTypes.BYTE): {
+         byte[]b1 = new byte[1];
+         b1[0] = c1.getByte (row1);
+         byte[]b2 = new byte[1];
+         b2[0] = c2.getByte (row2);
+         it = compareBytes (b1, b2);
+         break;
+     }
+     case (ColumnTypes.CHAR): {
+         byte[]b1 = new byte[1];
+         b1[0] = c1.getByte (row1);
+         byte[]b2 = new byte[1];
+         b2[0] = c2.getByte (row2);
+         it = compareBytes (b1, b2);
+         break;
+     }
+     default: {
+         System.err.println ("TableUtilities:CompareVals: Error");
+     }
+   }
+   return it;
+
+  }//compare values of columns.
+
   /**
    * Return 0 if they
    * are the same, greater than zero if element is greater,
@@ -679,8 +811,30 @@ public class TableUtilities
     switch (type) {
 
       case (ColumnTypes.STRING): {
-	  it = t1.getString (row1, col1).compareTo (t2.getString (row2, col2));
-	  break;
+
+        it = compareStrings(t1.getString(row1, col1), t2.getString(row2, col2));
+        break;
+/*
+        // Determine whether the strings are bin names,
+         // because bin names need a special method to compare
+         if ((t1.getString(row1, col1).indexOf("[")>=0 ||
+               t1.getString(row1, col1).indexOf("]")>=0) &&
+               (t2.getString(row2, col2).indexOf("[")>=0 ||
+               t2.getString(row2, col2).indexOf("]")>=0) &&
+               t1.getString(row1, col1).indexOf(":")>=0 &&
+               t2.getString(row2, col2).indexOf(":")>=0) {
+             it = compareBinNames(t1.getString (row1, col1), t2.getString (row2, col2));
+             break;
+         }
+         else { // data type is regular string, not bin name
+           it = t1.getString(row1, col1).compareTo(t2.getString(row2, col2));
+           break;
+         }
+         */
+
+	  /*//vered: was replaced by the above code from basic 3-0 version
+           it = t1.getString (row1, col1).compareTo (t2.getString (row2, col2));
+	  break;*/
       }
       case (ColumnTypes.CHAR_ARRAY): {
 	  it = compareChars (t1.getChars (row1, col1), t2.getChars (row2, col2));
@@ -723,7 +877,30 @@ public class TableUtilities
 	  if (ob1.equals (ob2))
 	    return 0;
 
-	  return t1.getString (row1, col1).compareTo (t2.getString (row2, col2));
+
+
+          return compareStrings(t1.getString(row1, col1), t2.getString(row2, col2));
+
+  //vered: copied form basic 3-0 version:
+/*
+                    // Determine whether the objects are bin names,
+                    // because bin names need a special method to compare
+                    if ((t1.getString(row1, col1).indexOf("[")>=0 ||
+                         t1.getString(row1, col1).indexOf("]")>=0) &&
+                        (t2.getString(row2, col2).indexOf("[")>=0 ||
+                         t2.getString(row2, col2).indexOf("]")>=0) &&
+                        t1.getString(row1, col1).indexOf(":")>=0 &&
+                        t2.getString(row2, col2).indexOf(":")>=0) {
+                        it = compareBinNames(t1.getString (row1, col1), t2.getString (row2, col2));
+                        return it;
+                    }
+                    else { // data type is regular string, not bin name
+                      it = t1.getString (row1, col1).compareTo (t2.getString (row2, col2));
+                      return it;
+                    }
+*/
+//vered: commented out - no need after the incorporation of basic 3-0 version.
+//	  return t1.getString (row1, col1).compareTo (t2.getString (row2, col2));
       }
       case (ColumnTypes.BYTE): {
 	  byte[]b1 = new byte[1];
@@ -834,6 +1011,66 @@ public class TableUtilities
 	return 0;
     }
   }
+
+
+
+  //vered: following methods are incorporated from basic 3-0 version:
+  /**
+     * Compare the minimum values of two bin names
+     * @param b1 the first bin name to compare
+     * @param b2 the second bin name to compare
+     * @return -1, 0, 1
+     */
+
+    private static int compareBinNames (String b1, String b2)
+    {
+      double f1 = getBinMin(b1);
+      double f2 = getBinMin(b2);
+      if (f1 == f2)
+        return 0;
+      else if (f1 > f2)
+        return 1;
+      else if (f1 < f2)
+        return -1;
+      return -1;
+    }
+
+    /**
+       * Get the minimum value from the bin name.
+       * @param s the bin name
+       * @return the minimum value from the bin name
+       */
+    private static double getBinMin(String s) {
+
+
+
+      String minStr;
+      int idx=0;
+      for (int i=0; i<s.length(); i++) {
+        if (s.charAt(i) == ':') {
+          minStr = s.substring(1,i);
+
+
+
+          // get rid of thousand comma
+          String newStr="";
+          for (int j=0; j<minStr.length(); j++) {
+            if (minStr.charAt(j) != ',') {
+              newStr = newStr + minStr.charAt(j);
+            }
+          }
+
+          try {
+            return Double.parseDouble(newStr);
+          }
+          catch (NumberFormatException e) {  // the number is negative infinity
+            return Double.NEGATIVE_INFINITY;
+          }
+        }
+      }
+      return 0;  // should never reach here
+    }
+
 
 }
 
