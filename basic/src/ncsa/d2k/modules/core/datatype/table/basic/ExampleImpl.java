@@ -17,6 +17,7 @@ public class ExampleImpl extends RowImpl implements Serializable, Example {
 	public ExampleImpl () {
 		super ();
 	}
+	
 	public ExampleImpl (ExampleTableImpl et) {
 		super(et);
 

@@ -41,6 +41,14 @@ public class ParameterPointImpl extends ExampleImpl implements Serializable, Par
 	/** default missing string. */
 	protected byte defaultMissingByte = (byte)'\000';
 	
+	/**
+	 *
+	 * @param et
+	 */
+   public ParameterPointImpl(ExampleTableImpl et) {
+	   super(et);
+   }
+   
 	/** return the default missing value for integers, both short, int and long.
 	 * @returns the integer for missing value.
 	 */
@@ -198,13 +206,6 @@ public class ParameterPointImpl extends ExampleImpl implements Serializable, Par
 		 return new ParameterPointImpl((ExampleTableImpl)mt);
 	 }
 
-	 /**
-	  *
-	  * @param et
-	  */
-	public ParameterPointImpl(ExampleTableImpl et) {
-		super(et);
-	}
 
 	/**
 	* Get the number of parameters that define the space.
