@@ -24,8 +24,7 @@ import ncsa.d2k.modules.core.optimize.ga.*;
 */
 public class UniformCrossoverEMOPopulation extends ncsa.d2k.core.modules.ComputeModule
 	 {
-
-           public PropertyDescription[] getPropertyDescriptions() {
+           public PropertyDescription[] getPropertiesDescriptions() {
              return new PropertyDescription[0];
            }
 

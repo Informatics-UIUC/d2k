@@ -31,6 +31,18 @@ public class EMOVis
         "ncsa.d2k.modules.core.optimize.ga.emo.NsgaPopulation"};
   }
 
+  public String getInputName(int i) {
+    return "population";
+  }
+
+  public String getOutputName(int i) {
+    if(i == 0)
+      return "Dummy Population Info";
+    else if(i == 1)
+      return "population";
+    return "population";
+  }
+
   public String getInputInfo(int i) {
     return "The current NsgaPopulation";
   }
@@ -132,7 +144,7 @@ public class EMOVis
       setLayout(new BorderLayout());
 
       // add the buttons
-      JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       continueButton = new JButton("Continue");
       continueButton.setEnabled(false);
       continueButton.addActionListener(new AbstractAction() {
@@ -380,7 +392,7 @@ public class EMOVis
         tableModel = (ObjectiveModel) scatterPlot.jTable.getModel();
 
         this.setLayout(new BorderLayout());
-        labels.setBorder(new EmptyBorder(0, 15, 0, 0));
+        labels.setBorder(new EmptyBorder(0, 30, 0, 0));
         add(labels, BorderLayout.NORTH);
         add(scatterPlot, BorderLayout.CENTER);
       }
@@ -437,7 +449,7 @@ public class EMOVis
         tableModel = (ObjectiveModel) scatterPlot.jTable.getModel();
 
         this.setLayout(new BorderLayout());
-        labels.setBorder(new EmptyBorder(0, 15, 0, 0));
+        labels.setBorder(new EmptyBorder(0, 30, 0, 0));
         add(labels, BorderLayout.NORTH);
         add(scatterPlot, BorderLayout.CENTER);
       }
@@ -1011,9 +1023,16 @@ public class EMOVis
       public Component getTableCellRendererComponent(JTable table,
           Object value, boolean isSelected, boolean hasFocus, int row,
           int column) {
-        JPanel pnl = new JPanel(new BorderLayout());
-        pnl.add(new ncsa.gui.RotatedLabel((String)value), BorderLayout.CENTER);
-        return pnl;
+//        JPanel pnl = new JPanel(new BorderLayout());
+        Box box = new Box(BoxLayout.Y_AXIS);
+        ncsa.gui.RotatedLabel rot = new ncsa.gui.RotatedLabel((String)value);
+        box.add(box.createVerticalGlue());
+        box.add(rot);
+        box.add(box.createVerticalGlue());
+        rot.setBackground(Color.white);
+//        pnl.add(rot, BorderLayout.CENTER);
+//        return pnl;
+        return box;
       }
     }
 

@@ -17,6 +17,12 @@ public class MultiFanIn extends ComputeModule {
     return "";
   }
 
+  public String getInputName(int i) {
+    if(i == 0)
+      return "Population Info";
+    return "Population";
+  }
+
   public String getOutputInfo(int i) {
     return "";
   }

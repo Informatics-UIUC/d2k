@@ -1,17 +1,17 @@
 package ncsa.d2k.modules.core.optimize.ga.emo;
 
+import java.text.*;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.table.*;
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
-
-import javax.swing.*;
-import javax.swing.table.*;
-import javax.swing.border.*;
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.event.*;
-
-import java.text.*;
 
 public class InputEMOParams
     extends UIModule {
@@ -31,6 +31,14 @@ public class InputEMOParams
     return "";
   }
 
+  public String getOutputName(int i) {
+    return "Population Info";
+  }
+
+  public String getInputName(int i) {
+    return "Population Info";
+  }
+
   public String getOutputInfo(int i) {
     return "";
   }
@@ -47,11 +55,23 @@ public class InputEMOParams
     return null;
   }
 
+  public PropertyDescription[] getPropertiesDescriptions() {
+    return new PropertyDescription[0];
+  }
+
+  private CachedParams cachedParams;
+  public void setCachedParams(CachedParams cp) {
+    cachedParams = cp;
+  }
+  public CachedParams getCachedParams() {
+    return cachedParams;
+  }
+
   private class ParamView
       extends JUserPane {
 
     private JTable paramsTable;
-    private DefaultTableModel paramsModel;
+    private MultiObjectiveParamsTableModel paramsModel;
     private boolean multiObjective;
     private EMOPopulationInfo popInfo;
     private JLabel timeRequired = new JLabel();
@@ -118,7 +138,7 @@ public class InputEMOParams
           // now parse this
           try {
             double d = Double.parseDouble(txt);
-            int recPop = (int) (2 * d + 1);
+            int recPop = (int) (2 * d);
             paramsModel.setValueAt(Double.toString(recPop), 0, 1);
           }
           catch (Exception ex) {
@@ -140,69 +160,94 @@ public class InputEMOParams
           // set all the proper fields on the pop info
 
           // get the pop size
-          String override = (String)paramsModel.getValueAt(1, 2);
-          String rec = (String)paramsModel.getValueAt(1, 1);
+          String override = (String) paramsModel.getValueAt(1, 2);
+          String rec = (String) paramsModel.getValueAt(1, 1);
 
           double popSize;
           try {
             popSize = Double.parseDouble(override);
           }
-          catch(Exception ex) {
+          catch (Exception ex) {
             popSize = Double.parseDouble(rec);
           }
-          popInfo.populationSize = (int)popSize;
+          popInfo.populationSize = (int) popSize;
 
-          override = (String)paramsModel.getValueAt(2, 2);
-          rec = (String)paramsModel.getValueAt(2, 1);
+          override = (String) paramsModel.getValueAt(2, 2);
+          rec = (String) paramsModel.getValueAt(2, 1);
           try {
             popSize = Double.parseDouble(override);
           }
-          catch(Exception ex) {
+          catch (Exception ex) {
             popSize = Double.parseDouble(rec);
           }
-          popInfo.maxGenerations = (int)popSize;
+          popInfo.maxGenerations = (int) popSize;
 
-          override = (String)paramsModel.getValueAt(3, 2);
-          rec = (String)paramsModel.getValueAt(3, 1);
+          override = (String) paramsModel.getValueAt(3, 2);
+          rec = (String) paramsModel.getValueAt(3, 1);
           try {
             popSize = Double.parseDouble(override);
           }
-          catch(Exception ex) {
+          catch (Exception ex) {
             popSize = Double.parseDouble(rec);
           }
-          popInfo.tournamentSize = (int)popSize;
+          popInfo.tournamentSize = (int) popSize;
 
-          override = (String)paramsModel.getValueAt(4, 2);
-          rec = (String)paramsModel.getValueAt(4, 1);
+          override = (String) paramsModel.getValueAt(4, 2);
+          rec = (String) paramsModel.getValueAt(4, 1);
           try {
             popSize = Double.parseDouble(override);
           }
-          catch(Exception ex) {
+          catch (Exception ex) {
             popSize = Double.parseDouble(rec);
           }
           popInfo.crossoverRate = popSize / 100;
 
-          override = (String)paramsModel.getValueAt(5, 2);
-          rec = (String)paramsModel.getValueAt(5, 1);
+          override = (String) paramsModel.getValueAt(5, 2);
+          rec = (String) paramsModel.getValueAt(5, 1);
           try {
             popSize = Double.parseDouble(override);
           }
-          catch(Exception ex) {
+          catch (Exception ex) {
             popSize = Double.parseDouble(rec);
           }
           popInfo.mutationRate = popSize / 100;
 
-          override = (String)paramsModel.getValueAt(6, 2);
-          rec = (String)paramsModel.getValueAt(6, 1);
+          override = (String) paramsModel.getValueAt(6, 2);
+          rec = (String) paramsModel.getValueAt(6, 1);
           try {
             popSize = Double.parseDouble(override);
           }
-          catch(Exception ex) {
+          catch (Exception ex) {
             popSize = Double.parseDouble(rec);
           }
-          popInfo.generationGap  = popSize;
-          // push out
+          popInfo.generationGap = popSize;
 
+          // save the values that were input
+          CachedParams cp = new CachedParams();
+          String[] recVals = paramsModel.col1;
+          String[] recCpy = new String[recVals.length];
+          System.arraycopy(recVals, 0, recCpy, 0, recVals.length);
+
+          cp.recommended = recCpy;
+
+          String[] overVals = paramsModel.col2;
+          String[] overCpy = new String[recVals.length];
+          System.arraycopy(overVals, 0, overCpy, 0, overVals.length);
+          cp.override = overCpy;
+
+          cp.maxRunTime = maxTime.getText();
+          cp.estimatedTimeReq = timeRequired.getText();
+          cp.diff = differenceLabel.getText();
+          cp.numVars = popInfo.boundsAndPrecision.getNumRows();
+          int stringLength = 0;
+          for (int i = 0; i < popInfo.boundsAndPrecision.getNumRows(); i++) {
+            stringLength += popInfo.boundsAndPrecision.getInt(i,
+                popInfo.boundsAndPrecision.getNumColumns() - 1);
+          }
+          cp.stringLength = stringLength;
+          setCachedParams(cp);
+
+          // push out
           pushOutput(popInfo, 0);
           viewDone("Done");
         }
@@ -211,7 +256,6 @@ public class InputEMOParams
       buttonsPanel.add(done);
       add(buttonsPanel, BorderLayout.SOUTH);
 
-      maxTime.setText("10");
       maxTime.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           String txt = maxTime.getText();
@@ -219,9 +263,26 @@ public class InputEMOParams
           runTimeChart.repaint();
         }
       });
-      maxTime2.setText("10");
       maxTime2.setHorizontalAlignment(JLabel.CENTER);
       timeRequired2.setHorizontalAlignment(JLabel.CENTER);
+
+      CachedParams cp = getCachedParams();
+      if(cp != null) {
+        paramsModel.col1 = cp.recommended;
+        paramsModel.col2 = cp.override;
+
+        maxTime.setText(cp.maxRunTime);
+        maxTime2.setText(cp.maxRunTime);
+
+        timeRequired.setText(cp.estimatedTimeReq);
+        timeRequired2.setText(cp.estimatedTimeReq);
+
+        differenceLabel.setText(cp.diff);
+      }
+      else {
+        maxTime.setText("10");
+        maxTime2.setText("10");
+      }
     }
 
     class RunTimePanel
@@ -320,10 +381,10 @@ public class InputEMOParams
         double startx = width * .1;
         double barLength = width * .8;
 
-        double barHeight = height *.1;
+        double barHeight = height * .1;
         double starty = height * .2;
 
-        double nexty = height *.7;
+        double nexty = height * .7;
 
         int strheight = g2.getFontMetrics().getHeight();
 
@@ -331,23 +392,27 @@ public class InputEMOParams
           g2.setPaint(Color.darkGray);
           g2.fill(new Rectangle2D.Double(startx, starty, barLength, barHeight));
 
-          double len = (maxTime*barLength)/timeReq;
+          double len = (maxTime * barLength) / timeReq;
           g2.fill(new Rectangle2D.Double(startx, nexty, len, barHeight));
           g2.setColor(Color.black);
-          g2.drawString("Estimated Required Time", (int)startx, (int)(.35*height+(strheight/2)));
-          g2.drawString("Specified Max Runtime", (int)startx, (int)(.9*height+(strheight/2)));
+          g2.drawString("Estimated Required Time", (int) startx,
+                        (int) (.35 * height + (strheight / 2)));
+          g2.drawString("Specified Max Runtime", (int) startx,
+                        (int) (.9 * height + (strheight / 2)));
         }
         else {
           g2.setPaint(Color.darkGray);
-          double len = (timeReq*barLength)/maxTime;
+          double len = (timeReq * barLength) / maxTime;
           g2.fill(new Rectangle2D.Double(startx, starty, len, barHeight));
 
           g2.fill(new Rectangle2D.Double(startx, nexty, barLength, barHeight));
           g2.setColor(Color.black);
-          g2.drawString("Estimated Required Time", (int)startx, (int)(.35*height+(strheight/2)));
+          g2.drawString("Estimated Required Time", (int) startx,
+                        (int) (.35 * height + (strheight / 2)));
           //g2.drawString("Estimated Required Time", (int)startx, (int)(.5*height-2));
           //g2.drawString("Specified Max Runtime", (int)startx, (int)height-2);
-          g2.drawString("Specified Max Runtime", (int)startx, (int)(.9*height+(strheight/2)));
+          g2.drawString("Specified Max Runtime", (int) startx,
+                        (int) (.9 * height + (strheight / 2)));
         }
       }
 
@@ -385,82 +450,88 @@ public class InputEMOParams
           public void actionPerformed(ActionEvent e) {
             EMOPopulationInfo testPopInfo = new EMOPopulationInfo();
             testPopInfo.boundsAndPrecision = popInfo.boundsAndPrecision;
-            testPopInfo.constraintFunctionConstructions = popInfo.constraintFunctionConstructions;
-            testPopInfo.constraintVariableConstructions = popInfo.constraintVariableConstructions;
+            testPopInfo.constraintFunctionConstructions = popInfo.
+                constraintFunctionConstructions;
+            testPopInfo.constraintVariableConstructions = popInfo.
+                constraintVariableConstructions;
 
             testPopInfo.externalConstraintInfo = popInfo.externalConstraintInfo;
             testPopInfo.externalFitnessInfo = popInfo.externalFitnessInfo;
-            testPopInfo.fitnessFunctionConstructions = popInfo.fitnessFunctionConstructions;
-            testPopInfo.fitnessVariableConstructions = popInfo.fitnessVariableConstructions;
+            testPopInfo.fitnessFunctionConstructions = popInfo.
+                fitnessFunctionConstructions;
+            testPopInfo.fitnessVariableConstructions = popInfo.
+                fitnessVariableConstructions;
 
-            testPopInfo.useExternalConstraintEvaluation = popInfo.useExternalConstraintEvaluation;
-            testPopInfo.useExternalFitnessEvaluation = popInfo.useExternalFitnessEvaluation;
+            testPopInfo.useExternalConstraintEvaluation = popInfo.
+                useExternalConstraintEvaluation;
+            testPopInfo.useExternalFitnessEvaluation = popInfo.
+                useExternalFitnessEvaluation;
             testPopInfo.varNames = popInfo.varNames;
 
             // get the pop size
-            String override = (String)paramsModel.getValueAt(1, 2);
-            String rec = (String)paramsModel.getValueAt(1, 1);
+            String override = (String) paramsModel.getValueAt(1, 2);
+            String rec = (String) paramsModel.getValueAt(1, 1);
 
             double popSize;
-/*            try {
-              popSize = Double.parseDouble(override);
-            }
-            catch(Exception ex) {
-              popSize = Double.parseDouble(rec);
-            }*/
+            /*            try {
+                          popSize = Double.parseDouble(override);
+                        }
+                        catch(Exception ex) {
+                          popSize = Double.parseDouble(rec);
+                        }*/
 //            testPopInfo.populationSize = (int)popSize;
             testPopInfo.populationSize = 2;
 
-            override = (String)paramsModel.getValueAt(2, 2);
-            rec = (String)paramsModel.getValueAt(2, 1);
+            override = (String) paramsModel.getValueAt(2, 2);
+            rec = (String) paramsModel.getValueAt(2, 1);
             /*try {
               popSize = Double.parseDouble(override);
-            }
-            catch(Exception ex) {
+                         }
+                         catch(Exception ex) {
               popSize = Double.parseDouble(rec);
-            }*/
+                         }*/
 //            testPopInfo.maxGenerations = (int)popSize;
             testPopInfo.maxGenerations = 1;
 
-            override = (String)paramsModel.getValueAt(3, 2);
-            rec = (String)paramsModel.getValueAt(3, 1);
+            override = (String) paramsModel.getValueAt(3, 2);
+            rec = (String) paramsModel.getValueAt(3, 1);
             try {
               popSize = Double.parseDouble(override);
             }
-            catch(Exception ex) {
+            catch (Exception ex) {
               popSize = Double.parseDouble(rec);
             }
-            testPopInfo.tournamentSize = (int)popSize;
+            testPopInfo.tournamentSize = (int) popSize;
 
-            override = (String)paramsModel.getValueAt(4, 2);
-            rec = (String)paramsModel.getValueAt(4, 1);
+            override = (String) paramsModel.getValueAt(4, 2);
+            rec = (String) paramsModel.getValueAt(4, 1);
             try {
               popSize = Double.parseDouble(override);
             }
-            catch(Exception ex) {
+            catch (Exception ex) {
               popSize = Double.parseDouble(rec);
             }
             testPopInfo.crossoverRate = popSize / 100;
 
-            override = (String)paramsModel.getValueAt(5, 2);
-            rec = (String)paramsModel.getValueAt(5, 1);
+            override = (String) paramsModel.getValueAt(5, 2);
+            rec = (String) paramsModel.getValueAt(5, 1);
             try {
               popSize = Double.parseDouble(override);
             }
-            catch(Exception ex) {
+            catch (Exception ex) {
               popSize = Double.parseDouble(rec);
             }
             testPopInfo.mutationRate = popSize / 100;
 
-            override = (String)paramsModel.getValueAt(6, 2);
-            rec = (String)paramsModel.getValueAt(6, 1);
+            override = (String) paramsModel.getValueAt(6, 2);
+            rec = (String) paramsModel.getValueAt(6, 1);
             try {
               popSize = Double.parseDouble(override);
             }
-            catch(Exception ex) {
+            catch (Exception ex) {
               popSize = Double.parseDouble(rec);
             }
-            testPopInfo.generationGap  = popSize;
+            testPopInfo.generationGap = popSize;
             // push out
 
             doingTiming = true;
@@ -470,7 +541,7 @@ public class InputEMOParams
           }
         });
         Constrain.setConstraints(this, estimate,
-                                 3,0,1,1,
+                                 3, 0, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
@@ -496,18 +567,18 @@ public class InputEMOParams
                                  GridBagConstraints.WEST,
                                  1, 1);
             /*JLabel lbl3 = new JLabel("Number of Solutions Desired:", JLabel.RIGHT);
-                 Constrain.setConstraints(this, lbl3,
-                                 0, 3, 1, 1,
-             GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                 1, 1);
-                 Constrain.setConstraints(this, numSolutions,
-                                 1, 3, 1, 1,
-             GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                 1, 1);
-                 Constrain.setConstraints(this, new JLabel("  "),
-                                 0, 4, 1, 1,
-             GridBagConstraints.BOTH, GridBagConstraints.WEST,
-                                 1, 1);*/
+             Constrain.setConstraints(this, lbl3,
+                             0, 3, 1, 1,
+         GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                             1, 1);
+             Constrain.setConstraints(this, numSolutions,
+                             1, 3, 1, 1,
+         GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                             1, 1);
+             Constrain.setConstraints(this, new JLabel("  "),
+                             0, 4, 1, 1,
+         GridBagConstraints.BOTH, GridBagConstraints.WEST,
+                             1, 1);*/
         Constrain.setConstraints(this, advanced,
                                  0, 4, 1, 1,
                                  GridBagConstraints.NONE,
@@ -517,7 +588,7 @@ public class InputEMOParams
     }
 
     public void setInput(Object o, int z) {
-      if(!doingTiming) {
+      if (!doingTiming) {
         popInfo = (EMOPopulationInfo) o;
         if (popInfo.fitnessFunctionConstructions.length == 1) {
           multiObjective = false;
@@ -528,26 +599,44 @@ public class InputEMOParams
         }
         multiObjective = true;
         if (!multiObjective) {
+          ;
         }
         else {
-          paramsModel.setValueAt("30", 0, 1);
-          // set the rec. max gens to be 2*string length
-          int stringLength = 0;
-          for (int i = 0; i < popInfo.boundsAndPrecision.getNumRows(); i++) {
-            stringLength += popInfo.boundsAndPrecision.getInt(i,
-                popInfo.boundsAndPrecision.getNumColumns() - 1);
-          }
-          int maxGenerations = 2 * stringLength;
-          paramsModel.setValueAt(Integer.toString(maxGenerations), 2, 1);
+          CachedParams cp = getCachedParams();
+          // only use the cached values if the number of variables and string length are equal
+          boolean useCached = false;
+          if(cp != null) {
+            int numVars = cp.numVars;
+            int stringLen = cp.stringLength;
 
-          paramsModel.setValueAt("4", 3, 1);
-          paramsModel.setValueAt("1", 6, 1);
+            int stringLength = 0;
+            for (int i = 0; i < popInfo.boundsAndPrecision.getNumRows(); i++) {
+              stringLength += popInfo.boundsAndPrecision.getInt(i,
+                  popInfo.boundsAndPrecision.getNumColumns() - 1);
+            }
+            if(stringLength == stringLen && numVars == popInfo.boundsAndPrecision.getNumRows())
+              useCached = true;
+          }
+          if(!useCached) {
+            paramsModel.setValueAt("30", 0, 1);
+            // set the rec. max gens to be 2*string length
+            int stringLength = 0;
+            for (int i = 0; i < popInfo.boundsAndPrecision.getNumRows(); i++) {
+              stringLength += popInfo.boundsAndPrecision.getInt(i,
+                  popInfo.boundsAndPrecision.getNumColumns() - 1);
+            }
+            int maxGenerations = 2 * stringLength;
+            paramsModel.setValueAt(Integer.toString(maxGenerations), 2, 1);
+
+            paramsModel.setValueAt("4", 3, 1);
+            paramsModel.setValueAt("1", 6, 1);
+          }
         }
       }
       else {
         doingTiming = false;
         stopTime = System.currentTimeMillis();
-        long timeNeeded = stopTime-startTime;
+        long timeNeeded = stopTime - startTime;
         int stringLength = 0;
         for (int i = 0; i < popInfo.boundsAndPrecision.getNumRows(); i++) {
           stringLength += popInfo.boundsAndPrecision.getInt(i,
@@ -555,18 +644,18 @@ public class InputEMOParams
         }
 
         // this is the time in MS needed to evaluate one individual
-        double msNeeded = timeNeeded/2;
+        double msNeeded = timeNeeded / 2;
 
         // now multiply by the pop size
         // get the pop size
-        String override = (String)paramsModel.getValueAt(1, 2);
-        String rec = (String)paramsModel.getValueAt(1, 1);
+        String override = (String) paramsModel.getValueAt(1, 2);
+        String rec = (String) paramsModel.getValueAt(1, 1);
 
         double popSize;
         try {
           popSize = Double.parseDouble(override);
         }
-        catch(Exception ex) {
+        catch (Exception ex) {
           popSize = Double.parseDouble(rec);
         }
         msNeeded *= popSize;
@@ -575,19 +664,19 @@ public class InputEMOParams
         // now multiply by the number of gens
         // now multiply by the pop size
         // get the pop size
-        override = (String)paramsModel.getValueAt(2, 2);
-        rec = (String)paramsModel.getValueAt(2, 1);
+        override = (String) paramsModel.getValueAt(2, 2);
+        rec = (String) paramsModel.getValueAt(2, 1);
 
         try {
           popSize = Double.parseDouble(override);
         }
-        catch(Exception ex) {
+        catch (Exception ex) {
           popSize = Double.parseDouble(rec);
         }
         msNeeded *= popSize;
 
         //double minsNeeded = 3 * Math.pow(stringLength, 2) * timeNeeded;
-        msNeeded = msNeeded / (1000*60);
+        msNeeded = msNeeded / (1000 * 60);
         //minsNeeded = minsNeeded / 2;
         timeRequired.setText(nf.format(msNeeded));
         timeRequired2.setText(nf.format(msNeeded));
@@ -599,12 +688,13 @@ public class InputEMOParams
         try {
           maxtime = Double.parseDouble(mx);
         }
-        catch(Exception e) {
+        catch (Exception e) {
         }
-        double diff = msNeeded-maxtime;
+        double diff = msNeeded - maxtime;
         this.differenceLabel.setText(nf.format(diff));
       }
     }
+
     private JButton estimate;
 
     private long startTime;
@@ -664,7 +754,7 @@ public class InputEMOParams
             try {
               String str = (String) value;
               double vl = Double.parseDouble(str);
-              double popSize = 2 * vl + 1;
+              double popSize = 2 * vl;
               setValueAt(Double.toString(popSize), 1, 1);
               double mut = 1 / vl;
               mut = mut * 100;
@@ -696,7 +786,7 @@ public class InputEMOParams
             try {
               String str = (String) value;
               double vl = Double.parseDouble(str);
-              double popSize = 2 * vl + 1;
+              double popSize = 2 * vl;
               setValueAt(Double.toString(popSize), 1, 1);
               double mut = 1 / vl;
               mut = mut * 100;
@@ -733,4 +823,14 @@ public class InputEMOParams
       }
     }
   }
+
+    class CachedParams implements java.io.Serializable {
+      String[] recommended;
+      String[] override;
+      String estimatedTimeReq;
+      String maxRunTime;
+      String diff;
+      int numVars;
+      int stringLength;
+    }
 }

@@ -12,7 +12,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
-public class DefineExternalFitnessFunctions extends UIModule {
+public class DefineExternalConstraints extends UIModule {
 
   public String[] getInputTypes() {
     return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
@@ -30,16 +30,16 @@ public class DefineExternalFitnessFunctions extends UIModule {
     return "A data structure to hold the information about the fitness functions.";
   }
 
-  public String getModuleInfo() {
-    return "";
-  }
-
   public String getInputName(int i) {
     return "Population Info";
   }
 
   public String getOutputName(int i) {
     return "Population Info";
+  }
+
+  public String getModuleInfo() {
+    return "";
   }
 
   protected UserView createUserView() {
@@ -168,7 +168,7 @@ public class DefineExternalFitnessFunctions extends UIModule {
         }
       });
 
-      Constrain.setConstraints(mainPanel, new JLabel("Function Name"), 0, 0, 1,
+      Constrain.setConstraints(mainPanel, new JLabel("Constraint Name"), 0, 0, 1,
                                1, GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
       functionName = new JTextField(20);
@@ -218,14 +218,14 @@ public class DefineExternalFitnessFunctions extends UIModule {
                                GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
 
-      JButton add = new JButton("Add Fitness Function");
+      JButton add = new JButton("Add Constraint");
       add.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           // add the ff
 
           String nme = functionName.getText();
           if(nme == null || nme.trim().length() == 0) {
-            JOptionPane.showMessageDialog(null, "Function name not specified",
+            JOptionPane.showMessageDialog(null, "Constraint name not specified",
                                           "Error", JOptionPane.ERROR_MESSAGE);
             return;
           }
@@ -281,7 +281,7 @@ public class DefineExternalFitnessFunctions extends UIModule {
           tbl.addColumn(new String[numFunctions]);
           tbl.addColumn(new String[numFunctions]);
 
-          tbl.setColumnLabel("Function Name", 0);
+          tbl.setColumnLabel("Constraint Name", 0);
           tbl.setColumnLabel("Executable", 1);
           tbl.setColumnLabel("Input File", 2);
           tbl.setColumnLabel("Output File", 3);
@@ -319,7 +319,7 @@ public class DefineExternalFitnessFunctions extends UIModule {
       top.add(listPanel, BorderLayout.EAST);
 
       setLayout(new BorderLayout());
-      add(new JLabel("Enter Fitness Functions"), BorderLayout.NORTH);
+      add(new JLabel("Enter Constraints"), BorderLayout.NORTH);
       add(top, BorderLayout.CENTER);
       add(buttonPanel, BorderLayout.SOUTH);
     }

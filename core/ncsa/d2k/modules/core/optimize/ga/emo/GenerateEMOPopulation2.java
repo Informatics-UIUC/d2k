@@ -130,7 +130,7 @@ public class GenerateEMOPopulation2
   public String getOutputName(int i) {
     switch (i) {
       case 0:
-        return "Population";
+        return "population";
       default:
         return "No such output";
     }

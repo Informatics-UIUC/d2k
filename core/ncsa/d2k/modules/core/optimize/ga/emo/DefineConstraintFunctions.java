@@ -45,7 +45,7 @@ public class DefineConstraintFunctions
   }
 
   public String getInputName(int i) {
-    return "EMOPopulationInfo";
+    return "Population Info";
   }
 
   public String getOutputInfo(int i) {
@@ -53,7 +53,7 @@ public class DefineConstraintFunctions
   }
 
   public String getOutputName(int i) {
-    return "EMOPopulationInfo";
+    return "Population Info";
   }
 
   protected UserView createUserView() {

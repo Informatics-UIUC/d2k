@@ -17,6 +17,10 @@ public class PopInfoFanIn extends ComputeModule {
     return "";
   }
 
+  public String getInputName(int i) {
+    return "Population Info";
+  }
+
   public String getOutputInfo(int i) {
     return "";
   }

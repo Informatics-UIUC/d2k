@@ -35,11 +35,11 @@ public class DefineFitnessVariables
   }
 
   public String getInputName(int i) {
-    return "EMOPopulationInfo";
+    return "Population Info";
   }
 
   public String getOutputName(int i) {
-    return "EMOPopulationInfo";
+    return "Population Info";
   }
 
   public String getInputInfo(int i) {

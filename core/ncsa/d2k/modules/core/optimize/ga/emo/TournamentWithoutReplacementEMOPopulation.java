@@ -15,7 +15,7 @@ import ncsa.d2k.modules.core.optimize.ga.*;
 */
 public class TournamentWithoutReplacementEMOPopulation extends SelectionModule  {
 
-         public PropertyDescription[] getPropertyDescriptions() {
+         public PropertyDescription[] getPropertiesDescriptions() {
            return new PropertyDescription[0];
          }
 

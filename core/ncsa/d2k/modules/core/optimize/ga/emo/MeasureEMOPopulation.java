@@ -5,7 +5,7 @@ import ncsa.d2k.core.modules.*;
 
 public class MeasureEMOPopulation extends MeasureModule {
 
-  public PropertyDescription[] getPropertyDescriptions() {
+  public PropertyDescription[] getPropertiesDescriptions() {
     return new PropertyDescription[0];
   }
 

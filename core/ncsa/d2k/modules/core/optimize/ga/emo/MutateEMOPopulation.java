@@ -16,6 +16,9 @@ public class MutateEMOPopulation extends ncsa.d2k.core.modules.DataPrepModule 	 
 	private double M_rate = .0005;
 
 	private boolean debugging = false;
+        public PropertyDescription[] getPropertiesDescriptions() {
+          return new PropertyDescription[0];
+        }
 
 	/**
 		set the rankFlag.
