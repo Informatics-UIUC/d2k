@@ -74,8 +74,7 @@ public class TimeClusterBarChart extends BarChart
     barColors = getGradientColorSets();
 
     mutable = table.toExampleTable();
-    uniqValues = TableUtilities.uniqueValues(mutable, 0);
-    uniqValues = sortStringArray(uniqValues);
+    uniqValues = getUniqueValues((MutableTable)mutable, 0);
 
     // Granularity for the time dimension
     granularities = TableUtilities.uniqueValues(mutable, set.g);
@@ -166,8 +165,14 @@ public class TimeClusterBarChart extends BarChart
     }
     runs++;
 
+    // We want the bars are displayed in reverse order of granularity.
+    // TableUtilities do not sort descendently, therefor we need *(-1) to column 4, then sort
+    for (int i=0; i<mutable.getNumRows(); i++) {
+      mutable.setInt((mutable.getInt(i,4))*(-1),i,4);
+    }
     // All new rows are added to the end, need to resort
-    indices = TableUtilities.multiSortIndex(mutable, sort);
+    int[] resort = {0, 4, 2};
+    indices = TableUtilities.multiSortIndex(mutable, resort);
     mutable = (mutable.reorderRows(indices)).toExampleTable();
 
     // Include bins for spacing runs
@@ -178,7 +183,35 @@ public class TimeClusterBarChart extends BarChart
   }
 
   /**
-   * This chart makes missing values as an blank bar which has count = 0, therefore we need
+   * Find the unique values in a column that will be used to draw Axis labels.
+   * Since we need the unique values in an order, we cannot use the method
+   * TableUtilities.uniqueValues, which uses hash set and
+   * @param mTable
+   * @param col
+   * @return
+   */
+  public String[] getUniqueValues(MutableTable mTable, int col)  {
+    ArrayList uniqueList = new ArrayList();
+    String oldStr=" ";
+    int[] sort = {0};
+    int[] indices = TableUtilities.multiSortIndex(mTable, sort);
+    mTable = (MutableTable)mTable.reorderRows(indices);
+    for (int i=0; i<mTable.getNumRows(); i++) {
+      String newStr = mTable.getString(i,col).toString();
+      if (!oldStr.equals(newStr)) {
+        uniqueList.add(newStr);
+      }
+      oldStr = newStr;
+    }
+    String[] uniqueArray = new String[uniqueList.size()];
+    for (int j=0; j<uniqueList.size(); j++) {
+      uniqueArray[j] = uniqueList.get(j).toString();
+    }
+    return uniqueArray;
+  }
+
+  /**
+   * This chart draws missing values as an blank bar which has count = 0, therefore we need
    * to find the granularity level for the missing value. By matching the time value,
    * we can find the granularity level from other existing rows.
    * @param timeValue
@@ -587,7 +620,7 @@ public class TimeClusterBarChart extends BarChart
     int[] indices = TableUtilities.multiSortIndex(mutable, sort);
     MutableTable sortedTable = (MutableTable) mTable.reorderRows(indices);
     int level = 0;
-    String str = sortedTable.getString(0, set.z);  // string to show start time to end time
+    String str = sortedTable.getString(0, set.z);  // string in clustering column
     int cnt = 1;
     for (int row=1; row<sortedTable.getNumRows(); row++) {
       if (sortedTable.getInt(row, set.l)==level && !sortedTable.getString(row, set.z).equals(str)) {
@@ -648,7 +681,9 @@ public class TimeClusterBarChart extends BarChart
         tip.append("</html>");
         tipValues[bin] = tip.toString();
 
-        int colorIndex = (int) (mutable.getDouble(bin-offset, 4)); // get the granularity level
+        // to solve sorting problem, granularity level has been *(-1), we need to reverse back.
+        int colorIndex = (int) (mutable.getDouble(bin-offset, 4)*(-1)); // get the granularity level
+        //int colorIndex = (int) (mutable.getDouble(bin-offset, 4)); // get the granularity level
         GradientColorSet barColor = barColors[colorIndex];
         if (colorIndex == granLevel) {
           countOnLevel += 1;
