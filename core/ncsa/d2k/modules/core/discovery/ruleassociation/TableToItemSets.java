@@ -106,8 +106,8 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
                 sb.append( "The module uses information from the original table to determine which ");
 		sb.append( "attributes should be used to form items being considered as possible rule antecedents ");
 		sb.append( "and rule consequents. ");
-		sb.append( "A compact representation is created indicating which rows in the original table contain ");
-		sb.append( "items of interest. " );
+		sb.append( "A compact representation is created indicating which items are contained in ");
+		sb.append( "rows in the original table. ");
 		sb.append( "The items and other information used by the Apriori algorithm are written ");
 		sb.append( "to the <i>Item Sets</i> output port. ");
 
@@ -116,7 +116,7 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 		sb.append( "all attributes (columns) will be used to form items being considered as possible antecedents ");
 		sb.append( "and consequents for the association rules. " );
 		sb.append( "If an Example Table with only input attributes or only output attributes is loaded, " );
-		sb.append( "the chosen attributes will used to form items considered as possible rule antecedents and ");
+		sb.append( "the chosen attributes will be used to form items considered as possible rule antecedents and ");
 		sb.append( "possible rule consequents. " );
 		sb.append( "If an Example Table with both input and output attributes is loaded, the inputs will be " );
 		sb.append( "used to form items considered as possible rule antecedents, ");
@@ -169,3 +169,5 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 //         and Table To Sets (module name).   Updated documentation.
 // 3/18/03 Removed Target Attributes output port.  That information is now available
 //         in ItemSets and all modules that used Target Attributes already get ItemSets.
+// 3/20/03 Ready for Basic.
+// End QA Comments
