@@ -92,10 +92,17 @@ public class SparseMutableTableTest extends TestCase {
                 MutableTable mtFull = (MutableTable) getFullTable();
                 MutableTable mtEmpty = (MutableTable) getEmptyTable();
                 Column[] columns = getColumns();
-                numColumns = mtFull.getNumColumns();
+                 numColumns = mtFull.getNumColumns();
                 mtFull.insertColumn(columns[0], 1);
                 assertEquals(numColumns + 1, mtFull.getNumColumns());
                 Column result = mtFull.getColumn(1);
+
+
+                for (int i = 0, n = mtFull.getNumColumns(); i < n;i++){
+                  System.out.println(columns[0].getInt(i) + " " + result.getInt(i));
+                }
+
+
                 assertEquals(columns[0], result);
 
                 mtEmpty.insertColumn(columns[0], 0);
