@@ -145,6 +145,12 @@ public class EMOVis
 
       // add the buttons
       JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+      JButton stop = new JButton("Stop");
+      stop.addActionListener(new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          viewCancel();
+        }
+      });
       continueButton = new JButton("Continue");
       continueButton.setEnabled(false);
       continueButton.addActionListener(new AbstractAction() {
@@ -201,7 +207,7 @@ public class EMOVis
           // send this to EMOGeneratePopulation to double the pop size
           // for the next run
           pushOutput(new EMOPopulationInfo(), 0);
-          pushOutput(currentPop, 1);
+          //pushOutput(currentPop, 1);
           continueButton.setEnabled(false);
           // the next input should be a new population
           newPop = true;
@@ -209,13 +215,14 @@ public class EMOVis
           });
         }
       });
-      stopButton = new JButton("Stop");
+      stopButton = new JButton("View Population");
       stopButton.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
-          viewCancel();
+          pushOutput(currentPop, 1);
         }
       });
       buttonPanel.add(continueButton);
+      buttonPanel.add(stop);
       buttonPanel.add(stopButton);
       add(buttonPanel, BorderLayout.SOUTH);
 
@@ -584,10 +591,26 @@ public class EMOVis
         jTable.createDefaultColumnsFromModel();
         //jTable.setDefaultRenderer(ImageIcon.class, new GraphRenderer());
         jTable.setDefaultRenderer(JPanel.class, new ComponentRenderer());
+        jTable.setDefaultEditor(JPanel.class, new ComponentEditor());
         jTable.setRowHeight(ROW_HEIGHT);
         jTable.setRowSelectionAllowed(false);
         jTable.setColumnSelectionAllowed(false);
         jTable.setCellSelectionEnabled(false);
+
+        /*jTable.addMouseListener(new MouseAdapter() {
+          public void mousePressed(MouseEvent e) {
+            int col = jTable.columnAtPoint(e.getPoint());
+            int row = jTable.rowAtPoint(e.getPoint());
+
+            TableCellRenderer render = jTable.getCellRenderer(row, col);
+            MouseEvent me = SwingUtilities.convertMouseEvent(jTable, e, (Component)render);
+            System.out.println(me);
+            Component c = render.getTableCellRendererComponent(jTable,
+                                                 tblModel.getValueAt(row, col),
+                                                 false, false, row, col);
+          }
+        });*/
+
         //jTable.addMouseListener(this);
         jTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
@@ -1013,6 +1036,30 @@ public class EMOVis
       }
     }
 
+    class ComponentEditor
+        extends AbstractCellEditor implements TableCellEditor {
+
+      Object val;
+
+      public ComponentEditor() {
+      }
+
+      public Object getCellEditorValue() {
+        return val;
+      }
+
+      /**
+         Set the icon and paint the border for this cell.
+       */
+      public Component getTableCellEditorComponent(JTable table,
+          Object value, boolean isSelected, int row,
+          int column) {
+        val = value;
+        return (Component) val;
+      }
+    }
+
+
     class RotatedLabelRenderer extends JComponent implements TableCellRenderer {
       public RotatedLabelRenderer() {
       }
@@ -1046,8 +1093,8 @@ public class EMOVis
 
       ObjectiveScatterPlot[][] plots;
 
-      int[] columnSelections;
-      int[] rowSelections;
+      int[] ySelections;
+      int[] xSelections;
       String[] objectiveNames;
       HashMap nameToIndexMap;
 
@@ -1059,10 +1106,19 @@ public class EMOVis
           }
         }
 
-        columnSelections = new int[2];
-        rowSelections = new int[2];
+        ySelections = new int[2];
+        xSelections = new int[2];
+        for(int i = 0; i < 2; i++) {
+          ySelections[i] = i;
+          xSelections[i] = i;
+        }
       }
 
+      /**
+       * This will change the y objective for all plots in this row.
+       * @param index
+       * @param value
+       */
       void setRowSelection(int index, String value) {
         int val;
         try {
@@ -1071,11 +1127,12 @@ public class EMOVis
         catch (Exception e) {
           return;
         }
-        rowSelections[index] = val;
+        ySelections[index] = val;
 
         // now, for all the plots in this row, update the objectives
         for (int i = 0; i < 2; i++) {
-          plots[index][i].setObjectives(val, columnSelections[i]);
+          //plots[index][i].setObjectives(val, ySelections[i]);
+          plots[index][i].setObjectives(xSelections[i], val);
         }
         fireTableDataChanged();
       }
@@ -1088,11 +1145,12 @@ public class EMOVis
         catch (Exception e) {
           return;
         }
-        columnSelections[index] = val;
+        xSelections[index] = val;
 
         // now, for all the plots in this column, update the objectives
         for (int i = 0; i < 2; i++) {
-          plots[i][index].setObjectives(rowSelections[i], val);
+          //plots[i][index].setObjectives(xSelections[i], val);
+          plots[i][index].setObjectives(val, ySelections[i]);
         }
         fireTableDataChanged();
       }
@@ -1104,17 +1162,20 @@ public class EMOVis
           nameToIndexMap.put(names[i], new Integer(i));
 
         }
-        for (int i = 0; i < 2; i++) {
+        /*for (int i = 0; i < 2; i++) {
           setRowSelection(i, objectiveNames[i]);
-        }
+          setColumnSelection(i, objectiveNames[i]);
+        }*/
       }
 
       void setPopulationTable(MutableTable popTable) {
         for (int i = 0; i < plots.length; i++) {
           for (int j = 0; j < plots[i].length; j++) {
             ( (ObjectiveScatterPlot) plots[i][j]).setTable(popTable);
-            ( (ObjectiveScatterPlot) plots[i][j]).setObjectives(rowSelections[i],
-                columnSelections[j]);
+            //( (ObjectiveScatterPlot) plots[i][j]).setObjectives(xSelections[i],
+            //    ySelections[j]);
+            ( (ObjectiveScatterPlot) plots[i][j]).setObjectives(xSelections[j],
+                ySelections[i]);
           }
         }
         fireTableDataChanged();
@@ -1124,8 +1185,10 @@ public class EMOVis
         for (int i = 0; i < plots.length; i++) {
           for (int j = 0; j < plots[i].length; j++) {
             ( (ObjectiveScatterPlot) plots[i][j]).setPopulation(p);
-            ( (ObjectiveScatterPlot) plots[i][j]).setObjectives(rowSelections[i],
-                columnSelections[j]);
+            //( (ObjectiveScatterPlot) plots[i][j]).setObjectives(xSelections[i],
+            //    ySelections[j]);
+            ( (ObjectiveScatterPlot) plots[i][j]).setObjectives(xSelections[j],
+                ySelections[i]);
           }
         }
         //this.fireTableDataChanged();
@@ -1164,7 +1227,7 @@ public class EMOVis
             return "";
           }
           else {
-            return objectiveNames[rowSelections[row]];
+            return objectiveNames[ySelections[row]];
           }
         }
         else {
@@ -1193,7 +1256,7 @@ public class EMOVis
         if (col == 0) {
           return true;
         }
-        return false;
+        return true;
       }
     } // Objective Model
   } // EMOVisPane
