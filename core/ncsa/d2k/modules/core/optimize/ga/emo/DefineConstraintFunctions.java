@@ -12,6 +12,8 @@ import ncsa.d2k.modules.core.transform.table.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.gui.*;
 
+import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
+
 /**
  * <code>FilterConstruction</code> is a simple user interface that facilitates
  * the creation of an expression for filtering rows from a
@@ -116,7 +118,7 @@ public class DefineConstraintFunctions
 
       if(constructions != null) {
         for(int j = 0; j < constructions.length; j++) {
-          columnModel.addElement( ((EMOConstruction)constructions[j]).label);
+          columnModel.addElement( ((Construction)constructions[j]).label);
         }
       }
 
@@ -209,9 +211,9 @@ public class DefineConstraintFunctions
       Object[] last = (Object[])getLastCons();
       if(last != null ) {
         for (int i = 0; i < last.length; i++) {
-          EMOConstruction constr = (EMOConstruction) last[i];
-          modelData.addRow(new Object[] {constr.getLabel()+":"+
-              constr.getExpression(), new String()});
+          Construction constr = (Construction) last[i];
+          modelData.addRow(new Object[] {constr.label+":"+
+              constr.expression, new String()});
         }
       }
 
@@ -404,7 +406,7 @@ public class DefineConstraintFunctions
             (selected2);
 
         if (selected2 != -1) { //if selected exist
-          String label = ( (EMOConstruction) (newColumnModel.elementAt(
+          String label = ( (Construction) (newColumnModel.elementAt(
               selected2))).label;
 
           /**
@@ -430,15 +432,15 @@ public class DefineConstraintFunctions
 
          constructions = (Object[])getLastCons();
          if(constructions != null) {
-           EMOConstruction[] tmp = new EMOConstruction[constructions.length];
+           Construction[] tmp = new Construction[constructions.length];
            for (int i = 0; i < constructions.length; i++) {
-             tmp[i] = (EMOConstruction) constructions[i];
+             tmp[i] = (Construction) constructions[i];
 
              float[] tmpfloat = new float[0];
              // add an empty column of floats to the table
              table.addColumn(tmpfloat);
              // set the label of the new column added to the table
-             table.setColumnLabel(tmp[i].getLabel(), (table.getNumColumns() - 1));
+             table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
            }
 
            if (data.constraintFunctionConstructions == null) {
@@ -446,7 +448,7 @@ public class DefineConstraintFunctions
            }
            // append the new constructions onto the older constructions
            else {
-             EMOConstruction[] tmp2 = new EMOConstruction[tmp.length +
+             Construction[] tmp2 = new Construction[tmp.length +
                  data.constraintFunctionConstructions.length];
              int i = 0;
              for (; i < data.constraintFunctionConstructions.length; i++)
@@ -555,7 +557,7 @@ public class DefineConstraintFunctions
         //columnModel.addElement(new String(newNameField.getText() +
         //                                  gui.getTextArea().getText()));
 
-        EMOConstruction added = new EMOConstruction(newNameField.getText(),
+        Construction added = new Construction(newNameField.getText(),
             gui.getTextArea().getText());
         newColumnModel.addElement(added);
 

@@ -11,6 +11,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
 import ncsa.gui.*;
 
+import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
+
 /**
  * Define the fitness functions.
  * <p>Title: </p>
@@ -110,7 +112,7 @@ public class DefineFitnessFunctions
 
       if(constructions != null) {
         for(int j = 0; j < constructions.length; j++) {
-          columnModel.addElement( ((EMOConstruction)constructions[j]).label);
+          columnModel.addElement( ((Construction)constructions[j]).label);
         }
       }
 
@@ -158,12 +160,12 @@ public class DefineFitnessFunctions
 
           if (c == 0) {
             Object[] cons = (Object[]) getLastCons();
-            ( (EMOConstruction) cons[r]).setmyflag(1);
+//            ( (EMOConstruction) cons[r]).setmyflag(1);
             if (o.toString().equalsIgnoreCase(MIN)) {
-              ( (EMOConstruction) cons[r]).setflagvalue(0);
+              ( (FitnessFunctionConstruction) cons[r]).setIsMinimizing(true);
             }
             else {
-              ( (EMOConstruction) cons[r]).setflagvalue(1);
+              ( (FitnessFunctionConstruction) cons[r]).setIsMinimizing(false);
             }
           }
         }
@@ -172,13 +174,13 @@ public class DefineFitnessFunctions
       Object[] last = (Object[])getLastCons();
       if(last != null ) {
         for (int i = 0; i < last.length; i++) {
-          EMOConstruction constr = (EMOConstruction) last[i];
-          if (constr.getflagvalue() == 0)
-            modelData.addRow(new Object[] {MIN, constr.getLabel()+" = "+
-                             constr.getExpression(), new String()});
+          FitnessFunctionConstruction constr = (FitnessFunctionConstruction) last[i];
+          if (constr.getIsMinimizing())
+            modelData.addRow(new Object[] {MIN, constr.label+" = "+
+                             constr.expression, new String()});
           else
-            modelData.addRow(new Object[] {MAX, constr.getLabel()+" = "+
-                             constr.getExpression(), new String()});
+            modelData.addRow(new Object[] {MAX, constr.label+" = "+
+                             constr.expression, new String()});
         }
       }
 
@@ -370,8 +372,8 @@ public class DefineFitnessFunctions
             (selected2);
 
         if (selected2 != -1) { //if selected exist
-          String label = ( (EMOConstruction) (newColumnModel.elementAt(
-              selected2))).getLabel();
+          String label = ( (Construction) (newColumnModel.elementAt(
+              selected2))).label;
 
           /**
                * Below allows the label removed above to permanently be removed from
@@ -422,15 +424,15 @@ public class DefineFitnessFunctions
       else if (src == this.doneButton) {
 
         constructions = (Object[]) getLastCons();
-        EMOConstruction[] tmp = new EMOConstruction[constructions.length];
+        Construction[] tmp = new Construction[constructions.length];
         for (int i = 0; i < constructions.length; i++) {
-          tmp[i] = (EMOConstruction) constructions[i];
+          tmp[i] = (Construction) constructions[i];
 
           float[] tmpfloat = new float[0];
           // add an empty column of floats to the table
           table.addColumn(tmpfloat);
           // set the label of the new column added to the table
-          table.setColumnLabel(tmp[i].getLabel(), (table.getNumColumns() - 1));
+          table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
         }
 
         if (data.fitnessFunctionConstructions == null) {
@@ -438,7 +440,7 @@ public class DefineFitnessFunctions
         }
         // append the new constructions onto the older constructions
         else {
-          EMOConstruction[] tmp2 = new EMOConstruction[tmp.length +
+          Construction[] tmp2 = new Construction[tmp.length +
               data.fitnessFunctionConstructions.length];
           int i = 0;
           for (; i < data.fitnessFunctionConstructions.length; i++)
@@ -553,9 +555,9 @@ public class DefineFitnessFunctions
         modelData.addRow(new Object[] {MIN, newNameField.getText()+" = "+
                          gui.getTextArea().getText(), new String()});
 
-        EMOConstruction added = new EMOConstruction(
+        FitnessFunctionConstruction added = new FitnessFunctionConstruction(
             newNameField.getText(), gui.getTextArea().getText());
-        added.setmyflag(0);
+        added.setIsMinimizing(true);
         newColumnModel.addElement(added);
         newColumnList.setMinimumSize(new Dimension(200, 200));
 

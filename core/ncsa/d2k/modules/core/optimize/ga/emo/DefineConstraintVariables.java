@@ -7,6 +7,7 @@ import javax.swing.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
 import ncsa.d2k.modules.core.transform.attribute.*;
 
 public class DefineConstraintVariables
@@ -95,7 +96,7 @@ public class DefineConstraintVariables
 
       if(constructions != null) {
         for(int j = 0; j < constructions.length; j++) {
-          columnModel.addElement( ((EMOConstruction)constructions[j]).label);
+          columnModel.addElement( ((Construction)constructions[j]).label);
         }
       }
 
@@ -119,8 +120,7 @@ public class DefineConstraintVariables
             (selected);
 
         if (selected != -1) {
-          String label = ( (EMOConstruction) (newColumnModel.elementAt(selected))).
-              getLabel();
+          String label = ( (Construction) (newColumnModel.elementAt(selected))).label;
 
           /**
            * Remove label from columnBox,
@@ -175,15 +175,15 @@ public class DefineConstraintVariables
 
          constructions = (Object[])getLastCons();
 
-          EMOConstruction[] tmp = new EMOConstruction[constructions.length];
+          Construction[] tmp = new Construction[constructions.length];
           for(int i = 0; i < constructions.length; i++) {
-            tmp[i] = (EMOConstruction)constructions[i];
+            tmp[i] = (Construction)constructions[i];
 
             float[] tmpfloat = new float[0];
             // add an empty column of floats to the table
             table.addColumn(tmpfloat);
             // set the label of the new column added to the table
-            table.setColumnLabel(tmp[i].getLabel(), (table.getNumColumns() - 1));
+            table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
           }
 
          if(data.constraintVariableConstructions == null) {
@@ -191,7 +191,7 @@ public class DefineConstraintVariables
          }
         // append the new constructions onto the older constructions
          else {
-            EMOConstruction[] tmp2 = new EMOConstruction[tmp.length+data.constraintVariableConstructions.length];
+            Construction[] tmp2 = new Construction[tmp.length+data.constraintVariableConstructions.length];
             int i = 0;
             for(; i < data.constraintVariableConstructions.length; i++)
               tmp2[i] = data.constraintVariableConstructions[i];
@@ -292,7 +292,7 @@ public class DefineConstraintVariables
         // if the expression is valid set the expression of gui
         gui.setExpression(newExp);
 
-        EMOConstruction added = new EMOConstruction(
+        Construction added = new Construction(
               newNameField.getText(), gui.getTextArea().getText());
         newColumnModel.addElement(added);
         newColumnList.setMinimumSize(new Dimension(200, 200));

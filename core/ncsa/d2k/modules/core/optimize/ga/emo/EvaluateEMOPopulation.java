@@ -9,7 +9,7 @@ import ncsa.d2k.modules.core.transform.table.*;
     Evaluate the new population. The population object does all the work,
     this module will simply invoke the <code>evaluateAll</code> method of the population.
  */
-public class EMOEvaluateModule
+public class EvaluateEMOPopulation
     extends EvaluateModule {
 
   //////////////////////////////////
@@ -112,10 +112,10 @@ public class EMOEvaluateModule
       }
 
       //extract the fitness function variables information
-      EMOConstruction[] fitvarConstructions = pop.getPopulationInfo().fitnessVariableConstructions;
+      Construction[] fitvarConstructions = pop.getPopulationInfo().fitnessVariableConstructions;
 
       //extract the fitness function information
-      EMOConstruction[] fitConstructions = pop.getPopulationInfo().fitnessFunctionConstructions;
+      Construction[] fitConstructions = pop.getPopulationInfo().fitnessFunctionConstructions;
 
       // update the mutable table by calculating the
       //fitness function varaibles
@@ -148,10 +148,10 @@ public class EMOEvaluateModule
       }
 
       //extract the fitness constraints variables information
-      EMOConstruction[] constraintVarConstructions = pop.getPopulationInfo().constraintVariableConstructions;
+      Construction[] constraintVarConstructions = pop.getPopulationInfo().constraintVariableConstructions;
 
       //extract the fitness constraints information
-      EMOConstruction[] constraintVariableConstructions = pop.getPopulationInfo().constraintFunctionConstructions;
+      Construction[] constraintVariableConstructions = pop.getPopulationInfo().constraintFunctionConstructions;
 
       // update the mutable table by calculating the
       // constraint varaibles
@@ -189,7 +189,7 @@ public class EMOEvaluateModule
       int[] myconstraintpos = new int[constraintVariableConstructions.length];
       for (int i = 0; i < constraintVariableConstructions.length; i++) {
         int fitpos = 0;
-        while ( ( (constraintVariableConstructions[i]).getLabel()).compareTo(table.
+        while ( ( (constraintVariableConstructions[i]).label).compareTo(table.
             getColumnLabel(fitpos)) != 0) {
           fitpos++;
         }
