@@ -123,7 +123,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("input to this module. ");
 
           sb.append("</p><p> ");
-          sb.append("The main region of the display contains is a matrix that visually represents the rules. ");
+          sb.append("The main region of the display contains a matrix that visually represents the rules. ");
           sb.append("Each numbered column in the matrix corresponds to an association rule  ");
           sb.append("that met the minimum support and confidence requirements specified by the user in the ");
           sb.append("rule discovery module(s).    ");
@@ -136,8 +136,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("</p><p> ");
           sb.append("An icon in the matrix cell corresponding to ( row = <i>item i</i>, column = <i>rule r</i>) ");
           sb.append("indicates that <i>item i</i> is included in <i>rule r</i>. ");
-          sb.append("If the matrix cell icon is a box, the item is part of the rule antecedent.  If ");
-          sb.append("the icon is a check mark, the item is part of the rule consequent. ");
+          sb.append("If the matrix cell icon is a box, then the item is part of the rule antecedent.  If ");
+          sb.append("the icon is a check mark, then the item is part of the rule consequent. ");
           sb.append("For example, if the rules being displayed indicate whether or not a mushroom is edible, ");
           sb.append("a rule might be &quot;odor=none&quot; and &quot;ring_number=one&quot; then &quot;edibility=edible&quot;. ");
           sb.append("This rule would be displayed in a column with a box in the row for the item &quot;odor=none&quot; ");
@@ -145,8 +145,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("row for &quot;edibility=edible&quot;. ");
 
           sb.append("</p><p> ");
-          sb.append("Above the main matrix are two rows of bars labelled <i>Confidence</i> and <i>Support</i>. ");
-          sb.append("These bars align with, and correspond to, the rule columns in the main matrix.  For any given rule, ");
+          sb.append("Above the main matrix are two rows of bars labeled <i>Confidence</i> and <i>Support</i>. ");
+          sb.append("These bars align with the corresponding rule columns in the main matrix.  For any given rule, ");
           sb.append("the confidence and support values for that rule are represented by the degree to which the ");
           sb.append("bars above the rule column are filled in.   Brushing the mouse on a confidence or support ");
           sb.append("bar displays the exact value that is graphically represented by the bar height. ");
@@ -159,19 +159,21 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("Conversely, if the confidence button is chosen, confidence is the primary sort key and support is the secondary key.  ");
 
           sb.append("</p><p>");
-          sb.append("Directly above the confidence and support display lies a toolbar which provides alternate functionality.  ");
+          sb.append("Directly above the confidence and support display is a toolbar which provides alternate functionality.  ");
           sb.append("On the left side of this toolbar are two buttons that allow the rows of this table to be displayed ");
           sb.append("according to the sorting schemes specified by their icons.  Exactly one of these buttons will be selected ");
-          sb.append(" at all times.  The <i>ABC</i> button simply sorts the [attribute=value] combinations alphabetically.  ");
-          sb.append("The <i>123</i> button will rank the rows based on the current Confidence/Support selection, moving the ");
+          sb.append(" at all times.  The <i>Alphabetize</i> button simply sorts the [attribute=value] combinations alphabetically.  ");
+          sb.append("The <i>Rank</i> button will rank the rows based on the current Confidence/Support selection, moving the ");
           sb.append("consequents and antecedents of the highest ranking rules (according to Confidence/Support) to the ");
-          sb.append("top of the [attribute=value] list.  Opposite these buttons lie four others.  The leftmost button will revert ");
-          sb.append("back to the original table that was first displayed before any sorting or re-ordering was done.  The next button ");
-          sb.append("loads a filter that can create a much more specifically defined rule display.  The print button will print a screen ");
-          sb.append("capture of the module display.  The help button displays the module information.");
+          sb.append("top of the [attribute=value] list. On the right side of the toolbar are four additional buttons. ");
+          sb.append("The leftmost button, Restore Original, will revert ");
+          sb.append("back to the original table that was first displayed before any sorting or re-ordering was done. ");
+          sb.append("The next button, Filter, will provide an interface for constructing a filter expression ");
+          sb.append("to create a much more specifically defined rule display.  The next button, Print, will print a screen ");
+          sb.append("capture of the visual display.  The last button, Help, displays information describing this visualization.");
 
           sb.append("</p><p> ");
-          sb.append("The options menu allows the user to print a screen capture of the module display. ");
+          sb.append("The options menu allows the user to print a screen capture of the visual display. ");
 	  sb.append("The print output contains only the cells that are visible in the display window, not all the cells ");
 	  sb.append("in the rule table.  The user can scroll to different part of the matrix and print multiple times  ");
 	  sb.append("to get the full picture of large matrices. ");
