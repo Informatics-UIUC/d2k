@@ -11,12 +11,12 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.userviews.swing.*;
 
-public class EMO2 extends UIModule {
+public class EMO2
+    extends UIModule {
 
   public String[] getInputTypes() {
     return new String[] {
         "ncsa.d2k.modules.core.optimize.ga.emo.NsgaPopulation"};
-        //"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
   }
 
   public String[] getOutputTypes() {
@@ -52,27 +52,38 @@ public class EMO2 extends UIModule {
   /**
    * The UserView
    */
-  private class EMOVisPane extends JUserPane {
+  private class EMOVisPane
+      extends JUserPane {
     JComboBox viewType;
+
     ScatterPlotWidget cumulative;
     ScatterPlotWidget current;
     ScatterPlotWidget lastRun;
     ScatterPlotWidget twoRunsAgo;
 
-    NsgaPopulation pop;
-    ScatterPlotWidget spw;
+    NsgaPopulation currentPop;
+    NsgaPopulation lastPop;
+    NsgaPopulation twoPopsAgo;
+    NsgaPopulation cumulativePop;
+
+    MutableTable currentPopTable;
+    MutableTable lastPopTable;
+    MutableTable twoPopsAgoTable;
+    MutableTable cumulativePopTable;
 
     JButton continueButton;
     JButton stopButton;
+
+    boolean newPop = true;
+    int maxGen = 0;
+    int currentGen = 0;
 
     public void initView(ViewModule vm) {
       viewType = new JComboBox();
       viewType.addItem(SMALL_MULT);
       viewType.addItem(PAR_COOR);
 
-      spw = new ScatterPlotWidget();
       setLayout(new BorderLayout());
-      add(spw, BorderLayout.CENTER);
 
       JPanel buttonPanel = new JPanel();
       continueButton = new JButton("Continue");
@@ -80,7 +91,7 @@ public class EMO2 extends UIModule {
       continueButton.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           pushOutput(new EMOPopulationInfo(), 0);
-          pushOutput(pop, 1);
+          pushOutput(currentPop, 1);
           continueButton.setEnabled(false);
           newPop = true;
         }
@@ -95,68 +106,120 @@ public class EMO2 extends UIModule {
       buttonPanel.add(stopButton);
 
       add(buttonPanel, BorderLayout.SOUTH);
+
+      cumulative = new ScatterPlotWidget();
+      current = new ScatterPlotWidget();
+      lastRun = new ScatterPlotWidget();
+      twoRunsAgo = new ScatterPlotWidget();
+
+      JPanel pnl = new JPanel();
+      pnl.setLayout(new GridLayout(2, 2));
+      pnl.add(current);
+      pnl.add(cumulative);
+      pnl.add(lastRun);
+      pnl.add(twoRunsAgo);
+
+      add(pnl, BorderLayout.CENTER);
+
+      cumulativePop = null;
+      currentPop = null;
+      lastPop = null;
+      twoPopsAgo = null;
     }
-
-    boolean newPop = true;
-    int maxGen = 0;
-    int currentGen = 0;
-
-    MutableTable dataTable;
 
     public void setInput(Object o, int z) {
-      pop = (NsgaPopulation)o;
-      if(newPop) {
-        //System.out.println(pop.getNumObjectives());
-        maxGen = pop.getMaxGenerations();
-        newPop = false;
+      NsgaPopulation pop = (NsgaPopulation) o;
+      if (newPop) {
+        // reset the populations
 
-        int numObjs = pop.getNumObjectives ();
-        NsgaSolution[] nis = (NsgaSolution []) (pop.getMembers ());
-        int num = nis.length;
+        // update the cumulative population
+        if (cumulativePop == null) {
+          if (currentPop != null && lastPop != null) {
+            cumulativePop = new NewNsgaPopulation(currentPop, lastPop);
+            cumulativePopTable = (MutableTable)currentPopTable.copy();
+            NsgaSolution[] nis = (NsgaSolution[]) (cumulativePop.getMembers());
+            int num = nis.length;
+            cumulativePopTable.setNumRows(num);
+            fillFitnessTable(cumulativePop, cumulativePopTable);
+          }
+        }
+        else {
 
-        dataTable = (MutableTable)DefaultTableFactory.getInstance().createTable();
-        for(int i = 0; i < numObjs; i++) {
-          dataTable.addColumn(new double[num]);
-          dataTable.setColumnLabel(pop.getObjectiveConstraints()[i].getName(),
-                               dataTable.getNumColumns()-1);
+          cumulativePop = new NewNsgaPopulation(currentPop, cumulativePop);
+          NsgaSolution[] nis = (NsgaSolution[]) (cumulativePop.getMembers());
+          int num = nis.length;
+          cumulativePopTable.setNumRows(num);
+          fillFitnessTable(cumulativePop, cumulativePopTable);
         }
 
+        twoPopsAgo = lastPop;
+        if(lastPopTable != null)
+          twoPopsAgoTable = (MutableTable)lastPopTable.copy();
+        lastPop = currentPop;
+        if(currentPopTable != null)
+          lastPopTable = (MutableTable)currentPopTable.copy();
+        currentPop = pop;
+
+        maxGen = currentPop.getMaxGenerations();
+        newPop = false;
+
+        if(currentPopTable == null) {
+          int numObjs = currentPop.getNumObjectives();
+          NsgaSolution[] nis = (NsgaSolution[]) (currentPop.getMembers());
+          int num = nis.length;
+          currentPopTable = (MutableTable) DefaultTableFactory.getInstance().
+              createTable();
+          for (int i = 0; i < numObjs; i++) {
+            currentPopTable.addColumn(new double[num]);
+            currentPopTable.setColumnLabel(currentPop.getObjectiveConstraints()[
+                                           i].getName(),
+                                           currentPopTable.getNumColumns() - 1);
+          }
+        }
+        else {
+          NsgaSolution[] nis = (NsgaSolution[]) (currentPop.getMembers());
+          int num = nis.length;
+          currentPopTable.setNumRows(num);
+        }
       }
-      currentGen = pop.getCurrentGeneration();
-      //System.out.println("Current Gen: "+currentGen);
-      if(currentGen == maxGen-1)
+      currentGen = currentPop.getCurrentGeneration();
+      if (currentGen == maxGen - 1)
         continueButton.setEnabled(true);
 
-      NsgaSolution[] nis;
+      fillFitnessTable(currentPop, currentPopTable);
 
-      int numObjs = pop.getNumObjectives ();
-      nis = (NsgaSolution []) (pop.getMembers ());
-      int num = nis.length;
+      int[] sc = {0,1};
 
-      //TableImpl table = (TableImpl)DefaultTableFactory.getInstance().createTable();
+      if(currentPop != null)
+        current.setTable(currentPopTable, sc);
+      if(lastPop != null)
+        lastRun.setTable(lastPopTable, sc);
+      if(twoPopsAgo != null)
+        twoRunsAgo.setTable(twoPopsAgoTable, sc);
+      if(cumulativePop != null)
+        cumulative.setTable(cumulativePopTable, sc);
 
-      /*for(int i = 0; i < numObjs; i++) {
-        dataTable.addColumn(new double[num]);
-        table.setColumnLabel(pop.getObjectiveConstraints()[i].getName(),
-                             table.getNumColumns()-1);
-      }*/
-      dataTable.setNumRows(num);
-
-      for (int i = 0 ; i < num ; i++) {
-          for(int j = 0; j < numObjs; j++) {
-            dataTable.setDouble(nis[i].getObjective(j), i, j);
-          }
+      if (currentGen != maxGen - 1) {
+        pushOutput(currentPop, 2);
       }
-      //table.print();
-
-      if(currentGen != maxGen-1)
-        pushOutput(pop, 2);
-
-      int[] sc = new int[]{0, 1};
-      spw.setTable(dataTable, sc);
     }
 
-    private class MainView extends JPanel {
+    private void fillFitnessTable(NsgaPopulation pp, MutableTable tbl) {
+      int numObjs = pp.getNumObjectives();
+      NsgaSolution[] nis = (NsgaSolution[]) (pp.getMembers());
+      int num = nis.length;
+
+      tbl.setNumRows(num);
+
+      for (int i = 0; i < num; i++) {
+        for (int j = 0; j < numObjs; j++) {
+          tbl.setDouble(nis[i].getObjective(j), i, j);
+        }
+      }
+    }
+
+    private class MainView
+        extends JPanel {
       MainView() {
         setLayout(new GridLayout(2, 2));
       }
@@ -165,13 +228,15 @@ public class EMO2 extends UIModule {
     /**
        Shows all the Graphs in a JTable
      */
-    private class ScatterPlotWidget extends JPanel implements
+    private class ScatterPlotWidget
+        extends JPanel
+        implements
         java.io.Serializable, MouseListener {
 
-      int ROW_HEIGHT = 150;
-      int ROW_WIDTH = 150;
-      int NUM_ROW = 3;
-      int NUM_COL = 3;
+      int ROW_HEIGHT = 130;
+      int ROW_WIDTH = 130;
+      int NUM_ROW = 2;
+      int NUM_COL = 2;
 
       //ExampleTable et;
       //int[] inputs;
@@ -240,7 +305,8 @@ public class EMO2 extends UIModule {
         headerColumn.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         headerColumn.getTableHeader().setReorderingAllowed(false);
         headerColumn.createDefaultColumnsFromModel();
-        headerColumn.setDefaultEditor(new String().getClass(), new DefaultCellEditor(combobox));
+        headerColumn.setDefaultEditor(new String().getClass(),
+                                      new DefaultCellEditor(combobox));
 
         // setup the graph matrix
         jTable = new GraphTable(tblModel, cm);
@@ -264,23 +330,24 @@ public class EMO2 extends UIModule {
         // JLabels...so create them and find the longest
         // preferred width
         JLabel tempLabel = new JLabel();
-        for (int i = 0; i<numRows; i++) {
+        for (int i = 0; i < numRows; i++) {
           tempLabel.setText(
               jTable.getModel().getValueAt(i, 0).toString());
-          if (tempLabel.getPreferredSize().getWidth()>longest)
+          if (tempLabel.getPreferredSize().getWidth() > longest) {
             longest = (int) tempLabel.getPreferredSize().getWidth();
+          }
           tempLabel.setText("");
         }
 
         TableColumn column;
         // set the default column widths
-        for (int i = 0; i<numColumns; i++) {
-          if (i==0) {
+        for (int i = 0; i < numColumns; i++) {
+          if (i == 0) {
             column = headerColumn.getColumnModel().getColumn(i);
-            column.setPreferredWidth(longest+4);
+            column.setPreferredWidth(longest + 4);
           }
           else {
-            column = jTable.getColumnModel().getColumn(i-1);
+            column = jTable.getColumnModel().getColumn(i - 1);
             column.setPreferredWidth(ROW_WIDTH);
           }
         }
@@ -288,14 +355,18 @@ public class EMO2 extends UIModule {
         // make the preferred view show four or less graphs
         int prefWidth;
         int prefHeight;
-        if (numColumns<4)
-          prefWidth = (numColumns-1)*ROW_WIDTH;
-        else
-          prefWidth = (4)*ROW_WIDTH;
-        if (numRows<4)
-          prefHeight = numRows*ROW_HEIGHT;
-        else
-          prefHeight = 4*ROW_HEIGHT;
+        if (numColumns < 4) {
+          prefWidth = (numColumns - 1) * ROW_WIDTH;
+        }
+        else {
+          prefWidth = (4) * ROW_WIDTH;
+        }
+        if (numRows < 4) {
+          prefHeight = numRows * ROW_HEIGHT;
+        }
+        else {
+          prefHeight = 4 * ROW_HEIGHT;
+        }
         jTable.setPreferredScrollableViewportSize(new Dimension(
             prefWidth, prefHeight));
 
@@ -340,7 +411,8 @@ public class EMO2 extends UIModule {
          Cells that have been selected are marked true in the selected[][]
          matrix.
        */
-      class GraphTable extends JTable {
+      class GraphTable
+          extends JTable {
         public GraphTable(TableModel tm, TableColumnModel tcm) {
           super(tm, tcm);
         }
@@ -355,10 +427,11 @@ public class EMO2 extends UIModule {
           Object value = getValueAt(row, column);
           //boolean isSelected = selected[row][column];
           boolean rowIsAnchor =
-              (selectionModel.getAnchorSelectionIndex()==row);
+              (selectionModel.getAnchorSelectionIndex() == row);
           boolean colIsAnchor =
-              (columnModel.getSelectionModel().getAnchorSelectionIndex()==column);
-          boolean hasFocus = (rowIsAnchor&&colIsAnchor)&&hasFocus();
+              (columnModel.getSelectionModel().getAnchorSelectionIndex() ==
+               column);
+          boolean hasFocus = (rowIsAnchor && colIsAnchor) && hasFocus();
 
           return renderer.getTableCellRendererComponent(this, value,
               false, hasFocus,
@@ -370,7 +443,9 @@ public class EMO2 extends UIModule {
          A custom cell renderer that shows an ImageIcon.  A blue border is
          painted around the selected items.
        */
-      class GraphRenderer extends JLabel implements TableCellRenderer {
+      class GraphRenderer
+          extends JLabel
+          implements TableCellRenderer {
 
         //Border unselectedBorder = null;
         //Border selectedBorder = null;
@@ -386,7 +461,7 @@ public class EMO2 extends UIModule {
         public Component getTableCellRendererComponent(JTable table,
             Object value, boolean isSelected, boolean hasFocus, int row,
             int column) {
-          this.setIcon((ImageIcon) value);
+          this.setIcon( (ImageIcon) value);
           return this;
         }
       }
@@ -395,7 +470,9 @@ public class EMO2 extends UIModule {
          A custom cell renderer that shows an ImageIcon.  A blue border is
          painted around the selected items.
        */
-      class GraphRenderer2 extends JPanel implements TableCellRenderer {
+      class GraphRenderer2
+          extends JPanel
+          implements TableCellRenderer {
 
         //Border unselectedBorder = null;
         //Border selectedBorder = null;
@@ -411,7 +488,7 @@ public class EMO2 extends UIModule {
             int column) {
           //this.setIcon((ImageIcon) value);
           //return this;
-          return (Component)value;
+          return (Component) value;
         }
       }
 
@@ -420,7 +497,8 @@ public class EMO2 extends UIModule {
          displayed in the table.  The images are created from the
          Graphs.
        */
-      class ColumnPlotTableModel extends AbstractTableModel {
+      class ColumnPlotTableModel
+          extends AbstractTableModel {
         //ImageIcon[][] images;
         JPanel[][] images;
 
@@ -451,12 +529,13 @@ public class EMO2 extends UIModule {
               if ( (i < scalarColumns.length) && (j < scalarColumns.length)) {
                 DataSet[] data = new DataSet[1];
                 data[0] = new DataSet("",
-                                      Color.red, scalarColumns[j], scalarColumns[i]);
+                                      Color.red, scalarColumns[j],
+                                      scalarColumns[i]);
                 settings.xaxis = table.getColumnLabel(scalarColumns[j]);
                 settings.yaxis = table.getColumnLabel(scalarColumns[i]);
                 settings.xmaximum = new Integer(0);
-                settings.xminimum = new Integer(-20);
-                settings.yminimum = new Integer(-20);
+                settings.xminimum = new Integer( -20);
+                settings.yminimum = new Integer( -20);
                 settings.ymaximum = new Integer(0);
 
                 Graph graph = createSmallGraph(table, data, settings);
@@ -489,7 +568,7 @@ public class EMO2 extends UIModule {
          */
         public int getColumnCount() {
           //return inputs.length+1;
-          return NUM_COL+1;
+          return NUM_COL + 1;
         }
 
         /**
@@ -501,23 +580,29 @@ public class EMO2 extends UIModule {
         }
 
         public String getColumnName(int col) {
-          if (col==0)
+          if (col == 0) {
             return "";
-          else
+          }
+          else {
+
             //return et.getColumnLabel(inputs[col-1]);
             return "col";
+          }
         }
 
         public Object getValueAt(int row, int col) {
-          if (col==0)
+          if (col == 0) {
+
             //return rowheaders[row];
             return "";
-          else
-            return images[row][col-1];
+          }
+          else {
+            return images[row][col - 1];
+          }
         }
 
         public void setValueAt(Object value, int row, int col) {
-          if (col==0) {
+          if (col == 0) {
             //rowheaders[row] = (String) value;
             //ScatterPlotWidget.this.setup();
             //ScatterPlotWidget.this.revalidate();
@@ -533,8 +618,9 @@ public class EMO2 extends UIModule {
         }
 
         public boolean isCellEditable(int row, int col) {
-          if (col==0)
+          if (col == 0) {
             return true;
+          }
 
           return false;
         }

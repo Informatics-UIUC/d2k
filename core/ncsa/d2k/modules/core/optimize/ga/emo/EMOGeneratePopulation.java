@@ -203,7 +203,10 @@ public class EMOGeneratePopulation
                                  (k2 + Math.log(this.NoOfDesiredPeaks)));
     this.populationSize /= 2;
         */
-    this.populationSize = 2*100;
+
+
+       // twice the number of non dominated fronts desired
+    this.populationSize = 2*10;
   }
 
   private EMOPopulationInfo popInfo;
