@@ -618,7 +618,8 @@ public class AttributeConstruction extends HeadlessUIModule {
 
                 // added 3.25.2004 by DC
                 newColumnList.getSelectionModel().clearSelection();
-
+                newNameField.setText("");
+                gui.getTextArea().setText("");
             }
          }
 
