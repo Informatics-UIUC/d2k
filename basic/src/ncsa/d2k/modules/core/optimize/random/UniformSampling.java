@@ -22,7 +22,7 @@ public class UniformSampling
     pds[0] = new PropertyDescription(
         "objectiveScoreOutputFeatureNumber",
         "Objective Score Output Feature Number",
-        "Selects which example output feature is used to denote the objective score of the Parameter Point.  ");
+        "Selects which example output feature, from 1 to n, that is used to denote the objective score of the Parameter Point.  ");
 
     pds[1] = new PropertyDescription(
         "objectiveScoreDirection",
@@ -197,6 +197,7 @@ public class UniformSampling
 
     InitialExecution = true;
     ExampleData = null;
+    //!!! error introduced by tlr found by dkt 4/23; was:  //NumExamples = 0;
     NumExamples = 0;
 
     if (ObjectiveScoreDirection == 1) {
@@ -283,8 +284,10 @@ public class UniformSampling
       NumExamples++;
 
       // update best solution so far
-	  int outputFeature2Score = inputs.length + (ObjectiveScoreOutputFeatureNumber-1);
+      //!!! error in Tom's revisions of this module found by dkt on 4/24.  It was:  int outputFeature2Score = inputs.length + ObjectiveScoreOutputFeatureNumber;
+	  int outputFeature2Score = inputs.length + ObjectiveScoreOutputFeatureNumber - 1;
       for (int e = NumExamples - 1; e < NumExamples; e++) {
+		//!!! error in Tom's revisions of this module found by dkt on 4/24.  It was: double utility = ExampleData [e][outputFeature2Score];
 		double utility = ExampleData [outputFeature2Score][e];
         if (ObjectiveScoreDirection == 1) {
           if (utility > BestUtility) {
