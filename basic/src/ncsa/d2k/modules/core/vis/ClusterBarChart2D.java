@@ -8,16 +8,20 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.userviews.swing.*;
 
-/**
- * This module creates a cluster bar chart visualization from
- * <code>Table</code> data.
- * <p>
- * One column (by default, column 0) must contain the labels of the bars on
- * the chart, another column (by default, column 1) must contain their
- * respective heights, and one last column must contain their time values.
- * Negative height values are ignored (treated as zero). The data
- * <b>must</b> be sorted first by label and second by time value.
- */
+/*
+ This module creates a cluster bar chart visualization from Table data.
+ One column (by default, column 0) must contain the labels of the bars on the chart,
+ another column (by default, column 1) must contain their respective heights,
+ and one last column must contain their time values.
+
+ Data Type Restrictions:
+ This module sorts the data first by label and second by time value.
+ The cluster is defined as the set of unique time values for all labels.
+ If a label is missing a cluster value, it is considered as zero.
+
+ Data Handling:
+ Negative height values are considered as zero.
+*/
 public class ClusterBarChart2D extends VisModule {
 
   // Module methods
@@ -28,13 +32,13 @@ public class ClusterBarChart2D extends VisModule {
   public String getInputInfo(int index) {
     if (index == 0)
       return "A <i>Table</i> containing the data to be visualized.";
-    return "NO SUCH INPUT";
+    return "No such input";
   }
 
   public String getInputName(int index) {
     if (index == 0)
       return "Table";
-    return "NO SUCH INPUT";
+    return "No such input";
   }
 
   public String[] getInputTypes() {
@@ -55,7 +59,7 @@ public class ClusterBarChart2D extends VisModule {
     sb.append("for all labels. If a label is missing a cluster value, it is ");
     sb.append("considered as zero.");
     sb.append("</p><p>Data Handling: ");
-    sb.append("Negative height values are considered as zero).");
+    sb.append("Negative height values are considered as zero.");
     sb.append("</p>");
     return sb.toString();
   }
@@ -65,11 +69,11 @@ public class ClusterBarChart2D extends VisModule {
   }
 
   public String getOutputInfo(int index) {
-    return "NO SUCH OUTPUT";
+    return "No such output";
   }
 
   public String getOutputName(int index) {
-    return "NO SUCH OUTPUT";
+    return "No such output";
   }
 
   public String[] getOutputTypes() {
