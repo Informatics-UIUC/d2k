@@ -724,6 +724,13 @@ public class AttributeConstruction extends HeadlessUIModule {
    //headless conversion support
      public void doit() throws Exception{
        pullInput(0);
+
+
+//       AttributeTransform.Construction[] cons = (AttributeTransform.Construction[])lastCons;
+  //     cons[0].expression;
+
+
+
        if(lastCons == null)
          throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
        pushOutput(new AttributeTransform(lastCons), 0);
@@ -747,5 +754,9 @@ public class AttributeConstruction extends HeadlessUIModule {
  *          the ui remembers the previously constructed attributes (byt name)
  *          and lists them together with the available attributes in the input table.
  *          [bug 118]
+ *
+ * 11-05-03 the headless version does not validates the constructing expressions.
+ *          if the input table does not match the expressions - the transformation
+ *          will fail.
  */
 
