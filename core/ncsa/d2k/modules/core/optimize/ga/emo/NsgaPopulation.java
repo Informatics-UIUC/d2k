@@ -4,6 +4,7 @@ import java.io.Serializable;
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.util.*;
 
 /**
@@ -146,9 +147,9 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 	*   Individuals
 	*	@param ranges The traits
 	*	@param objConstraints The objective constraints array
-	*	@param targ 
+	*	@param targ
 	**/
-	public NsgaPopulation(Range[] ranges, 
+	public NsgaPopulation(Range[] ranges,
 		ObjectiveConstraints[] objConstraints, double targ){
 		super(ranges);
 		this.target = targ;
@@ -171,7 +172,7 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 		this.minFitnessMembers = new int [numObjectives];
 		this.numObjectives = numObjectives;
 	}
-		
+
 
 	/**
 	 * Compares two individuals returns a value that indicates which individual
@@ -414,7 +415,7 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 	 *     For every individual k in the front i except the first and the last individuals
 	 *       Normalize the fitness j by dividing the fitness j of individual k-1
 	 *  and individual k+1 by maximum jth fitness.
-	 *       Add absolute value of (Normalized jth fitness of individual k+1 
+	 *       Add absolute value of (Normalized jth fitness of individual k+1
 	 *- Normalized jth fitness of individual k-1) to the crowding distance of kth individual.
 	 */
 	public void computeCrowdingDistance (int [] sortListByObj, int frontSize) {
@@ -652,4 +653,59 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 	public double getWorstFitness () { return this.worst; }
 	public double getTargetFitness () { return this.target; }
 	public double getCurrentMeasure () { return this.currentMeasure; }
+
+        private EMOConstruction[] fitnessVariables;
+        private EMOConstruction[] fitnessFunctions;
+        private EMOConstruction[] constraintVariables;
+        private EMOConstruction[] constraintFunctions;
+        private MutableTable allVarNames;
+        private MutableTable tbl;
+
+        public void setFitnessVariables(EMOConstruction[] c) {
+          fitnessVariables = c;
+        }
+
+        public EMOConstruction[] getFitnessVariables() {
+          return fitnessVariables;
+        }
+
+        public void setFitnessFunctions(EMOConstruction[] c) {
+          fitnessFunctions = c;
+        }
+
+        public EMOConstruction[] getFitnessFunctions() {
+          return fitnessFunctions;
+        }
+
+        public void setConstraintVariables(EMOConstruction[] c) {
+          constraintVariables = c;
+        }
+
+        public EMOConstruction[] getConstraintVariables() {
+          return constraintVariables;
+        }
+
+        public void setConstraintFunctions(EMOConstruction[] c) {
+          constraintFunctions = c;
+        }
+
+        public EMOConstruction[] getConstraintFunctions() {
+          return constraintFunctions;
+        }
+
+        public void setAllVarNames(MutableTable t) {
+          allVarNames = t;
+        }
+
+        public MutableTable getAllVarNames() {
+          return allVarNames;
+        }
+
+        public MutableTable getTbl() {
+          return tbl;
+        }
+
+        public void setTbl(MutableTable t) {
+          tbl = t;
+        }
 }
