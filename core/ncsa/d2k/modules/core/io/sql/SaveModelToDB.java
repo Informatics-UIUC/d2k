@@ -12,21 +12,18 @@ package ncsa.d2k.modules.core.io.sql;
 
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.UserView;
-
 import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.util.datatype.*;
+import ncsa.d2k.modules.core.prediction.naivebayes.*;
+import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
-
-import ncsa.d2k.util.datatype.*;
-import ncsa.d2k.modules.core.prediction.naivebayes.*;
 
 import java.sql.*;
 import java.util.*;
 import java.text.*;
 import javax.swing.*;
-import javax.swing.table.*;
-import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -36,7 +33,10 @@ import oracle.jdbc.driver.*;
 
 public class SaveModelToDB extends UIModule {
   JOptionPane msgBoard = new JOptionPane();
+  String modelType;
   static String  NOTHING = "";
+  static String  NB = "NB"; // for NaiveBayes
+  static String  DT = "DT"; // for Decision Tree
 
   public SaveModelToDB() {
   }
@@ -48,19 +48,19 @@ public class SaveModelToDB extends UIModule {
   public String getInputInfo (int i) {
     switch(i) {
       case 0: return "JDBC data source to make database connection.";
-      case 1: return "A NaiveBayes model to save.";
+      case 1: return "A model to save.";
       default: return "No such input.";
     }
   }
 
   public String getModuleInfo () {
-    String text = "Save the NaiveBayes model to a database table.";
+    String text = "Save the model to a database table.";
     return text;
   }
 
   public String[] getInputTypes () {
     String [] in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-                    "ncsa.d2k.core.prediction.naivebayes.NaiveBayesModel" };
+                    "ncsa.d2k.infrastructure.module.PredictionModelModule" };
     return in;
   }
 
@@ -81,11 +81,10 @@ public class SaveModelToDB extends UIModule {
 
   public class SaveModelView extends JUserInputPane
     implements ActionListener {
-    /* The module that creates this view.  We need a
-       reference to it so we can get and set its properties. */
     GenericTableModel trainSet;
     GenericTableModel classLabel;
     JTextField modelName;
+    JTextField modelDesc;
     JTextField dataSize;
     JTable trainSetDef;
     JTable classLabelDef;
@@ -94,7 +93,9 @@ public class SaveModelToDB extends UIModule {
     JButton cancelBtn;
     ConnectionWrapper cw;
     Connection con;
-    NaiveBayesModel model;
+    PredictionModelModule model;
+    NaiveBayesModel modelNB;
+    DecisionTreeModel modelDT;
     File file = new File("aModel.mdl");
 
     public void setInput(Object input, int index) {
@@ -103,7 +104,16 @@ public class SaveModelToDB extends UIModule {
         System.out.println("the input 1 in setInput is " + cw.toString());
       }
       else if (index == 1) {
-        model = (NaiveBayesModel)input;
+        model = (DecisionTreeModel)input;
+        if (model.getClass().toString().equals(
+          "class ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel")) {
+          modelType = NB; // NB for NaiveBayes
+        }
+        else if (model.getClass().toString().equals(
+          "class ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel")) {
+          modelType = DT; // DT for decision tree
+          modelDT = (DecisionTreeModel)model;
+        }
         modelName.setText(NOTHING);
         dataSize.setText(NOTHING);
         notes.setText(NOTHING);
@@ -113,20 +123,34 @@ public class SaveModelToDB extends UIModule {
         displayRowCount();
         // get the attribute information
         displayAttributes();
+        // get the number of bins for Naive Bayes Model
+        if (modelType.equals(NB)) {
+          displayNumBins();
+        }
         // get the class information
         displayClasses();
       }
     }
 
     public Dimension getPreferredSize() {
-      return new Dimension (500, 400);
+      return new Dimension (500, 450);
     }
 
     public void initView(ViewModule mod) {
       removeAll();
       System.out.println("enter initView");
       cw = (ConnectionWrapper)pullInput (0);
-      model = (NaiveBayesModel)pullInput (1);
+      model = (PredictionModelModule)pullInput (1);
+      if (model.getClass().toString().equals(
+          "class ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel")) {
+          modelType = NB; // NB for NaiveBayes
+          modelNB = (NaiveBayesModel)model;
+      }
+      else if (model.getClass().toString().equals(
+          "class ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel")) {
+          modelType = DT; // DT for decision tree
+          modelDT = (DecisionTreeModel)model;
+      }
 
       // Panel to hold outline panels
       JPanel saveModelPanel = new JPanel();
@@ -140,6 +164,16 @@ public class SaveModelToDB extends UIModule {
       Constrain.setConstraints(modelInfo, modelName = new JTextField(10),
         1,0,2,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       modelName.setText(NOTHING);
+      Constrain.setConstraints(modelInfo, new JLabel("Model Type"),
+        0,1,1,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
+      Constrain.setConstraints(modelInfo, modelDesc = new JTextField(10),
+        1,1,2,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
+      if (modelType.equals(NB)) {
+        modelDesc.setText("Naive Bayes");
+      }
+      else if (modelType.equals(DT)) {
+        modelDesc.setText("Decision Tree");
+      }
       Constrain.setConstraints(modelInfo, new JLabel("Training Data Size (Records)"),
         0,3,1,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(modelInfo, dataSize = new JTextField(10),
@@ -171,9 +205,12 @@ public class SaveModelToDB extends UIModule {
       JOutlinePanel notesInfo = new JOutlinePanel("Notes");
       notesInfo.setLayout (new GridBagLayout());
       notes = new JTextArea(5,5);
+      notes.setLineWrap(true);
+      notes.setAutoscrolls(true);
       notes.setText(NOTHING);
       notes.setBackground(Color.white);
       JScrollPane textPane = new JScrollPane();
+      textPane.setAutoscrolls(true);
       textPane.getViewport().add(notes);
       textPane.setBounds(0,0,5,5);
       Constrain.setConstraints(notesInfo, textPane,
@@ -206,54 +243,62 @@ public class SaveModelToDB extends UIModule {
       displayRowCount();
       // get the attribute information
       displayAttributes();
+      // get the number of bins for Naive Bayes Model
+      if (modelType.equals(NB)) {
+        displayNumBins();
+      }
       // get the class information
       displayClasses();
     } // initView
 
     public void displayRowCount() {
-        //int totalRow = model.table.getNumRows();
-		int totalRow = 0;
+        int totalRow = model.getTrainingSetSize();
         dataSize.setText(Integer.toString(totalRow));
         System.out.println("totalRow is " + dataSize.getText());
     }
 
     public void displayAttributes() {
-      String [] attributeNames = model.getAttributeNames();
-      String attributeName;
-      int numBin;
-      int i;
-      double total;
-      for (i = 0; i < attributeNames.length; i++) {
-        trainSetDef.setValueAt(attributeNames[i].toString(),i,0);
-        // the column order in attributeNames is different the one in model.table
-        // we need to loop through model.table's column to match it
-        for (int j = 0; j</*model.table.getNumColumns()*/0; j++) {
-          /*if (attributeNames[i].toString().equals(model.table.getColumnLabel(j).toString())) {
-            if (model.table.getColumn(j) instanceof StringColumn)
-              trainSetDef.setValueAt("Text",i,1);
-            else if(model.table.getColumn(j) instanceof ByteArrayColumn)
-              trainSetDef.setValueAt("Text",i,1);
-            else if(model.table.getColumn(j) instanceof CharArrayColumn)
-              trainSetDef.setValueAt("Text",i,1);
-            else
-              trainSetDef.setValueAt("Numeric",i,1);
-          }*/
-        }
-        numBin = model.getBinNames(attributeNames[i].toString()).length;
-        trainSetDef.setValueAt(Integer.toString(numBin),i,2);
+      String [] inAttributeNames = model.getInputColumnLabels();
+      String [] outAttributeNames = model.getOutputColumnLabels();
+      String [] inAttributeTypes = model.getInputFeatureTypes();
+      String [] outAttributeTypes = model.getOutputFeatureTypes();
+      int i, j;
+      for (i = 0; i < inAttributeNames.length; i++) {
+        trainSetDef.setValueAt(inAttributeNames[i],i,0);
+        trainSetDef.setValueAt(inAttributeTypes[i],i,1);
         trainSetDef.setValueAt("Input",i,3);
       }
-      // class column is the only output column
-      trainSetDef.setValueAt(model.getClassColumn().toString(),i,0);
-      trainSetDef.setValueAt("Output",i,3);
+      for (j = i; (j-i) < outAttributeNames.length; j++) {
+        trainSetDef.setValueAt(outAttributeNames[j-i],j,0);
+        trainSetDef.setValueAt(outAttributeTypes[j-i],j,1);
+        trainSetDef.setValueAt("Output",j,3);
+      }
+    }
+
+    public void displayNumBins() {
+      String [] inAttributeNames = model.getInputColumnLabels();
+      int numBin;
+      int i;
+      for (i = 0; i < inAttributeNames.length; i++) {
+        numBin = modelNB.getBinNames(inAttributeNames[i].toString()).length;
+        trainSetDef.setValueAt(Integer.toString(numBin),i,2);
+      }
     }
 
     public void displayClasses() {
-      String [] classNames = model.getClassNames();
-      String className;
       int i;
-
+      String [] classNames = null;
+      String className;
+      // method getClassNames is not in the super class PredictionModelModule
+      // only in the NaiveBayesModel and DecisionTreeModel
+      if (modelType.equals(NB)) {
+        classNames = modelNB.getClassNames();
+      }
+      else if (modelType.equals(DT)) {
+        classNames = modelDT.getClassNames();
+      }
       for (i = 0; i < classNames.length; i++) {
+        System.out.print("in for loop");
         classLabelDef.setValueAt(classNames[i].toString(),i,0);
       }
     }
@@ -267,7 +312,7 @@ public class SaveModelToDB extends UIModule {
       else if (src == saveModelBtn) {
         System.out.println("Save model button is pressed");
         if (verifyData()) {
-          doit();
+          doAction();
         }
       }
     }
@@ -294,7 +339,7 @@ public class SaveModelToDB extends UIModule {
         if (rset.getInt(1) > 0) {
           JOptionPane.showMessageDialog(msgBoard,
           "The model name " + modelName.getText() +
-          " has be used. Please enter a different name.", "Information",
+          " has been used. Please enter a different name.", "Information",
           JOptionPane.INFORMATION_MESSAGE);
           return (false);
         }
@@ -311,7 +356,7 @@ public class SaveModelToDB extends UIModule {
     return (true);
   }
 
-  protected void doit () {
+  protected void doAction () {
     BLOB blob;
     OutputStream outstream;
     FileInputStream instream;
@@ -355,10 +400,10 @@ public class SaveModelToDB extends UIModule {
       System.out.println("notes is " + notes.getText());
 
       qryStr = "insert into model_master values ('" + modelName.getText() +
+               "', '" + modelDesc.getText() +
                "', " + Integer.parseInt(dataSize.getText()) + ", '" +
                notes.getText() + "', empty_blob(), '" + userName +
                "', to_date('" + dateStr + "', 'yyyy/mm/dd hh24:mi:ss'))";
-      //System.out.println("query string is " + qryStr);
 
       stmt.execute(qryStr);
       System.out.println("after insert");
@@ -400,6 +445,7 @@ public class SaveModelToDB extends UIModule {
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
       System.out.println("Error occoured when insert to model_master.");
+      return;
     }
 
     // save attribute info into model_attribute table
@@ -423,16 +469,16 @@ public class SaveModelToDB extends UIModule {
           sb = sb + "'" + trainSet.getValueAt(i,0) + "', ";
           // get attribute data type
           sb = sb + "'" + trainSet.getValueAt(i,1) + "', ";
-          // get bin count. Output attribute does not have bin count
-          if (trainSet.getValueAt(i,3).toString().equals("Output")) {
-            sb = sb +  "0, ";
+          // get bin count.
+          if (trainSet.getValueAt(i,2).toString().length() == 0 ||
+            trainSet.getValueAt(i,0).toString().equals(NOTHING)) {
+            sb = sb + "0, ";
           }
           else {
             sb = sb + Integer.parseInt((trainSet.getValueAt(i,2)).toString()) + ", ";
           }
           // get IO flag
           sb = sb + "'" + trainSet.getValueAt(i,3) + "')";
-          //System.out.println("sb for attribute is " + sb);
           stmt = con.createStatement ();
           stmt.executeUpdate(sb);
           stmt.close();
@@ -444,6 +490,7 @@ public class SaveModelToDB extends UIModule {
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
       System.out.println("Error occoured when insert into model_attribute.");
+      return;
     }
 
     // Save class info to model_class
@@ -480,6 +527,7 @@ public class SaveModelToDB extends UIModule {
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
       System.out.println("Error occoured when insert into model_class.");
+      return;
     }
   }
   }
