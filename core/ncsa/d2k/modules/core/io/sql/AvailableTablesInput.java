@@ -14,21 +14,35 @@ public class AvailableTablesInput extends InputModule
 
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "Pass this on to the next module that needs a connection to this data source.";
-			case 1: return "This is a list of the available tables, soon to be replaced by a superior data structure containing the table list and metadata about the tables (allowing for a much improved table selection dialog).";
+			case 0: return "Pass the database connection to the next module.";
+			case 1: return "This is a list of the available tables.";
 			default: return "No such output";
 		}
 	}
 
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: return "This data source is queried to discover what tables are available.";
+			case 0: return "The database connection to discover what tables are available.";
 			default: return "No such input";
 		}
 	}
 
 	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    Retrieves a list of available tables from a jdbc source.  </body></html>";
+          String s = "<p> Overview: ";
+          s += "This module displays the list of available database tables. </p>";
+          s += "<p> Detailed Description: ";
+          s += "This module makes a connection to a database and retrieves the ";
+          s += "list of available database tables. There are two types of tables in a ";
+          s += "database: raw data tables and aggregated cube tables. By using ";
+          s += "the property parameters: 'List Data Tables' and 'List Cube Tables', you ";
+          s += "can list one or both types of tables. For the security purpose, ";
+          s += "you may only view the tables you have been granted to. If you ";
+          s += "cannot see the tables you are looking for, please report the ";
+          s += "problems to your database administrator. </p>";
+          s += "<p> Restrictions: ";
+          s += "We currently only support Oracle database.";
+
+          return s;
 	}
 
 	public String[] getInputTypes () {
@@ -79,8 +93,8 @@ public class AvailableTablesInput extends InputModule
 
         public PropertyDescription [] getPropertiesDescriptions () {
           PropertyDescription [] pds = new PropertyDescription [2];
-          pds[0] = new PropertyDescription ("dataTableOnly", "List Data Tables Only?", "Choose True if you only want to list data tables, but not data cubes.");
-          pds[1] = new PropertyDescription ("dataCubeOnly", "List Data Cubes Only?", "Choose True if you only want to list data cubes, but not data tables.");
+          pds[0] = new PropertyDescription ("dataTableOnly", "List Data Tables", "Choose True if you only want to list data tables, but not data cubes.");
+          pds[1] = new PropertyDescription ("dataCubeOnly", "List Data Cubes", "Choose True if you only want to list data cubes, but not data tables.");
           return pds;
         }
 
@@ -92,20 +106,16 @@ public class AvailableTablesInput extends InputModule
 
 		Statement stmt = con.createStatement();
                 String qryString = "select table_name from user_tables";
-                if (dataTableOnly) {
+                if (dataTableOnly && !dataCubeOnly) {
                   qryString = qryString + " where table_name not like '%_CUBE%'";
                 }
-                else if (dataCubeOnly) {
+                else if (dataCubeOnly && !dataTableOnly) {
                   qryString = qryString + " where table_name like '%_CUBE%'";
                 }
 		ResultSet tableSet = stmt.executeQuery(qryString);
 		while (tableSet.next())
 		    v.addElement(tableSet.getString(1));
 
-	//	DatabaseMetaData dbmd = con.getMetaData();
-	//ResultSet tableSet = dbmd.getTables(null,null,"%",null);
-	//	while (tableSet.next())
-	//		v.addElement(tableSet.getString("TABLE_NAME"));
 		this.pushOutput (cw, 0);
 		this.pushOutput (v, 1);
 	}
@@ -127,7 +137,7 @@ public class AvailableTablesInput extends InputModule
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "DBConnection";
+				return "Database Connection";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -140,7 +150,7 @@ public class AvailableTablesInput extends InputModule
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "DBConnection";
+				return "Database Connection";
 			case 1:
 				return "Tables List";
 			default: return "NO SUCH OUTPUT!";
