@@ -228,115 +228,115 @@ public class SQLAutoBin extends AutoBin {
 		return bn;
 	}
 
-	protected BinDescriptor[] sameWeight(int weight) throws Exception {
-		List bins = new ArrayList();
-		int[] inputs = tbl.getInputFeatures();
-		int[] outputs = tbl.getOutputFeatures();
-		boolean colTypes[] = getColTypes(inputs.length);
-
-		for (int i = 0; i < inputs.length; i++) {
-			// if it is scalar, get the data and sort it.  put (num) into each bin,
-			// and create a new bin when the last one fills up
-			boolean isScalar = colTypes[i];
-			System.out.println("scalar ? " + i + " " + isScalar);
-			if (isScalar) {
-				try {
-					Double db1 = null;
-					ArrayList list = new ArrayList();
-					String colName = tbl.getColumnLabel(i);
-					Connection con = conn.getConnection();
-					String queryStr =
-						"select "
-							+ colName
-							+ ", count("
-							+ colName
-							+ ") from "
-							+ tableName
-							+ " group by "
-							+ colName;
-					Statement stmt = con.createStatement();
-					ResultSet groupSet = stmt.executeQuery(queryStr);
-					int itemCnt = 0;
-					while (groupSet.next()) {
-						itemCnt += groupSet.getInt(2);
-						db1 = new Double(groupSet.getDouble(1));
-						if (itemCnt >= (weight - 1)) {
-							// itemCnt >= specified weight, add the value to the list
-							list.add(db1);
-							// reset itemCnt
-							itemCnt = 0;
-						}
-					}
-					// put anything left in a bin
-					if (itemCnt > 0)
-						list.add(db1);
-
-					double[] binMaxes = new double[list.size()];
-					for (int j = 0; j < binMaxes.length; j++)
-						binMaxes[j] = ((Double) list.get(j)).doubleValue();
-					// add the first bin manually
-					BinDescriptor nbd =
-						BinDescriptorFactory.createMinNumericBinDescriptor(
-							i,
-							binMaxes[0],
-							nf,
-							tbl);
-					bins.add(nbd);
-
-					for (int j = 1; j < binMaxes.length; j++) {
-						// now create the BinDescriptor and add it to the bin list
-						nbd =
-							BinDescriptorFactory.createNumericBinDescriptor(
-								i,
-								binMaxes[j - 1],
-								binMaxes[j],
-								nf,
-								tbl);
-						bins.add(nbd);
-					}
-					// now add the last bin
-					nbd =
-						BinDescriptorFactory.createMaxNumericBinDescriptor(
-							i,
-							binMaxes[binMaxes.length - 1],
-							nf,
-							tbl);
-					bins.add(nbd);
-					stmt.close();
-				} catch (Exception e) {
-					/*    JOptionPane.showMessageDialog(msgBoard,
-					          e.getMessage(), "Error",
-					          JOptionPane.ERROR_MESSAGE); */
-					System.out.println(
-						"Error occured in addFromWeight." + e.getMessage());
-				}
-			} else {
-				HashSet vals = uniqueValues(i);
-				Iterator iter = vals.iterator();
-				while (iter.hasNext()) {
-					String item = (String) iter.next();
-					String[] st = new String[1];
-					st[0] = item;
-					BinDescriptor bd =
-						new TextualBinDescriptor(
-							i,
-							item,
-							st,
-							tbl.getColumnLabel(i));
-					bins.add(bd);
-				}
+    protected BinDescriptor[] sameWeight(int weight) throws Exception {
+	List bins = new ArrayList();
+	int[] inputs = tbl.getInputFeatures();
+	int[] outputs = tbl.getOutputFeatures();
+	boolean colTypes[] = getColTypes(inputs.length);
+	
+	for (int i = 0; i < inputs.length; i++) {
+	    // if it is scalar, get the data and sort it.  put (num) into each bin,
+	    // and create a new bin when the last one fills up
+	    boolean isScalar = colTypes[i];
+	    System.out.println("scalar ? " + i + " " + isScalar);
+	    if (isScalar) {
+		try {
+		    Double db1 = null;
+		    ArrayList list = new ArrayList();
+		    String colName = tbl.getColumnLabel(i);
+		    Connection con = conn.getConnection();
+		    String queryStr =
+			"select "
+			+ colName
+			+ ", count("
+			+ colName
+			+ ") from "
+			+ tableName
+			+ " group by "
+			+ colName;
+		    Statement stmt = con.createStatement();
+		    ResultSet groupSet = stmt.executeQuery(queryStr);
+		    int itemCnt = 0;
+		    while (groupSet.next()) {
+			itemCnt += groupSet.getInt(2);
+			db1 = new Double(groupSet.getDouble(1));
+			if (itemCnt >= (weight - 1)) {
+			    // itemCnt >= specified weight, add the value to the list
+			    list.add(db1);
+			    // reset itemCnt
+			    itemCnt = 0;
 			}
+		    }
+		    // put anything left in a bin
+		    if (itemCnt > 0)
+			list.add(db1);
+		    
+		    double[] binMaxes = new double[list.size()];
+		    for (int j = 0; j < binMaxes.length; j++)
+			binMaxes[j] = ((Double) list.get(j)).doubleValue();
+		    // add the first bin manually
+		    BinDescriptor nbd =
+			BinDescriptorFactory.createMinNumericBinDescriptor(
+									   i,
+									   binMaxes[0],
+									   nf,
+									   tbl);
+		    bins.add(nbd);
+		    
+		    for (int j = 1; j < binMaxes.length-1; j++) {
+			// now create the BinDescriptor and add it to the bin list
+			nbd =
+			    BinDescriptorFactory.createNumericBinDescriptor(
+									    i,
+									    binMaxes[j - 1],
+									    binMaxes[j],
+									    nf,
+									    tbl);
+			bins.add(nbd);
+		    }
+		    // now add the last bin
+		    nbd =
+			BinDescriptorFactory.createMaxNumericBinDescriptor(
+									   i,
+									   binMaxes[binMaxes.length - 2],
+									   nf,
+									   tbl);
+		    bins.add(nbd);
+		    stmt.close();
+		} catch (Exception e) {
+		    /*    JOptionPane.showMessageDialog(msgBoard,
+			  e.getMessage(), "Error",
+			  JOptionPane.ERROR_MESSAGE); */
+		    System.out.println(
+				       "Error occured in addFromWeight." + e.getMessage());
 		}
-
-		BinDescriptor[] bn = new BinDescriptor[bins.size()];
-		for (int i = 0; i < bins.size(); i++) {
-			bn[i] = (BinDescriptor) bins.get(i);
-
+	    } else {
+		HashSet vals = uniqueValues(i);
+		Iterator iter = vals.iterator();
+		while (iter.hasNext()) {
+		    String item = (String) iter.next();
+		    String[] st = new String[1];
+		    st[0] = item;
+		    BinDescriptor bd =
+			new TextualBinDescriptor(
+						 i,
+						 item,
+						 st,
+						 tbl.getColumnLabel(i));
+		    bins.add(bd);
 		}
-		return bn;
-
-		//return bt;
+	    }
 	}
+	
+	BinDescriptor[] bn = new BinDescriptor[bins.size()];
+	for (int i = 0; i < bins.size(); i++) {
+	    bn[i] = (BinDescriptor) bins.get(i);
+	    
+	}
+	return bn;
+	
+	//return bt;
+    }
 
 	/** verify whether the column is a numeric column
 	         *  @return a boolean array, numeric columns are flaged as true, and
