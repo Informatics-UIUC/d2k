@@ -461,7 +461,7 @@ public class Normalize extends HeadlessUIModule {
           else str = "Table " + label;
           throw new Exception(getAlias() + ": " + str +
                               " does not contain all of the configured numeric columns." +
-                              " Please reconfigure this moduel via a GUI run so it can run Headless.");
+                              " Please reconfigure this module via a GUI run so it can run Headless.");
         //pushOutput(new NormalizingTransformation(transform), 0);
         //return;
 

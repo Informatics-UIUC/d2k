@@ -22,14 +22,7 @@ import ncsa.d2k.modules.core.transform.StaticMethods;
 
  @author Peter Groves, c/o David Clutter
  *
- *comment by vered: lines 407 and 413 are currently commented out. which causes this module
- * to accept any selection of the user (no selection at all, selecting only
- * inputs, or only outputs, or having inputs and outputs with intersecting items.)
  *
- * comment by vered about doit: if this module is run headless without being
- * first configured via a gui run, the properties will be null and the itinerary
- * will abort. if during a gui run no properties were selected - then the
- * headless run will skip setting of these features.
  */
 public class ChooseAttributes extends HeadlessUIModule {
 
@@ -161,7 +154,7 @@ public class ChooseAttributes extends HeadlessUIModule {
                 String[] selectedNames;
 
                 if(selected.length == 0){
-                  System.out.println(getAlias() + ": Warning - No input attributes were configured. Skipping " +
+                  System.out.println(getAlias() + ": Warning - No input attributes were selected. Skipping " +
                                      "setting of input attributes.");
                 }
 
@@ -175,7 +168,7 @@ public class ChooseAttributes extends HeadlessUIModule {
 
                   if(inputFeatures.length < selectedNames.length)
                     throw new Exception(getAlias() + ": Some of the configured input attributes were not found in the input table."  +
-                                        " Please reconfigure this moduel via a GUI run so it can run Headless.");
+                                        " Please reconfigure this module via a GUI run so it can run Headless.");
                   //the following was commented out and replaced by the previous code line.
                   //vered.
                   /*
@@ -207,7 +200,7 @@ public class ChooseAttributes extends HeadlessUIModule {
 
                 if(outputFeatures.length < selectedNames.length)
                   throw new Exception(getAlias() + ": Some of the configured output attributes were not found in the input table." +
-                                        " Please reconfigure this moduel via a GUI run so it can run Headless.");
+                                        " Please reconfigure this module via a GUI run so it can run Headless.");
 
 		/*int[] outputFeatures = new int[selected.length];
 		for (int i = 0; i < selected.length; i++) {
@@ -560,3 +553,14 @@ public class ChooseAttributes extends HeadlessUIModule {
 
 //QA Comments Anca - added getPropertyDescription
 //QA Comments Ruth - used Example Table in what user reads (w/ space)
+
+
+      /**
+ * 11-05-03 Vered started Qa process
+ *          Module handles all cases of selection (no selection, only inputs, only
+ *          outputs, etc.) very well in both methods of execution (headless &
+ *          GUI).
+ *          the Headless doit method is right now case sensitive - and throws
+ *          an exception for any mismatch. debating on this issue - when the sensetivity
+ *          level is decided - the module will be ready.
+ */

@@ -1142,6 +1142,7 @@ public class SaveFileToDB extends HeadlessUIModule
                   if (i > 0) // add "," between columns definitions
                     sb = sb + ",";
                   String colLabel = vt.getColumnLabel(i);
+
                   colLabel = colLabel.replace('-', '_');
                   sb = sb + colLabel + " ";
 

@@ -665,7 +665,7 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
          if(targetAttributes.length < selectedAttributes.length)
            throw new Exception (getAlias() + ": Some of the configured attributes were not found " +
                                 "in the database table " + tableName +
-                                ". Please reconfigure this moduel via a GUI run so it can run Headless.");
+                                ". Please reconfigure this module via a GUI run so it can run Headless.");
 
         if (book) {
             aBook = new SQLCodeBook(cw, codeBook);

@@ -784,18 +784,22 @@ public class MergeTableRows extends HeadlessUIModule {
       final int[] ks = StaticMethods.getIntersectIds(keys, columns); //ks[i] is index of column keys[i]
       if(ks.length < keys.length)
         throw new Exception ("Some of the configured Key Columns were not found in the " +
-                             "input table " + table.getLabel() + ". Please reconfigure the module.");
+                             "input table " + ((table.getLabel()==null) ? "" : (" " +table.getLabel()))
+                             + ". Please reconfigure the module.");
 
       final int[] ms = StaticMethods.getIntersectIds(merges, columns); ; //ms[i] is index of column merges[i]
       if(ms.length < merges.length)
         throw new Exception ("Some of the configured Merging Columns were not found in the " +
-                             "input table " + table.getLabel() + ". Please reconfigure the module.");
+                             "input table " +
+                            ((table.getLabel()==null) ? "" : (" " +table.getLabel())) +
+                            ". Please reconfigure the module.");
 
       final int cntrl = StaticMethods.getID(control, columns);   //cntrl is index of column control
       if(cntrl == -1)
-        throw new Exception (getAlias() + "The control column " + control + " could not be found in " +
-                             "the input table " + table.getLabel() + ". Please " +
-                             "reconfigure the module.");
+        throw new Exception (getAlias() + "The control column \"" + control + "\" could not be found in " +
+                             "the input table"
+                             + ((table.getLabel()==null) ? "" : (" " +table.getLabel()))
+                             + ". Please reconfigure the module.");
       final String _type = type;
 
 

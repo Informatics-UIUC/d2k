@@ -1703,7 +1703,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
    for (int i=0; i<savedBins.length; i++){
      if(!colMap.containsKey(savedBins[i].label))
        throw new Exception(getAlias()+ ": Bin " +  savedBins[i].toString() + " does not match any column label in the database table." +
-                                        " Please reconfigure this moduel via a GUI run so it can run Headless.");
+                                        " Please reconfigure this module via a GUI run so it can run Headless.");
      //else relevant.add(savedBins[i]);
    }//for
 
