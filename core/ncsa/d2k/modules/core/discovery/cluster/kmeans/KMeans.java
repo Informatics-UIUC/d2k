@@ -14,8 +14,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 	Fixed the algorithm up 4/02 - pgroves
 */
-public class KMeans extends ncsa.d2k.core.modules.ComputeModule
-implements Reentrant
+public class KMeans extends ncsa.d2k.core.modules.OrderedReentrantModule
 {
 	int maxIterations=-1;
 	public void setMaxIterations(int i){
