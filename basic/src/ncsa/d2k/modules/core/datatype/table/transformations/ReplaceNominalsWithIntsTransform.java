@@ -119,6 +119,7 @@ public class ReplaceNominalsWithIntsTransform
              mt.setInt (intColumn[pp], pp, col);
          }
          mt.setColumnIsNominal(true,col);
+        // System.out.println("set col " + col + " to Nominal");
          mt.setColumnIsScalar(false,col);
 	  }
 
