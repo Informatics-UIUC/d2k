@@ -163,7 +163,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 	}
 
 	///////////////////////////////////////////
-	// Subsetting is done by reordering the subset array, rather than sorting the 
+	// Subsetting is done by reordering the subset array, rather than sorting the
 	// column.
 	//
 	/**
@@ -172,7 +172,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 		@param col the column to sort by
 	*/
 	public void sortByColumn(int col) {
-		
+
 		int [] tmp = new int [this.subset.length];
 		System.arraycopy (this.subset, 0, tmp, 0, this.subset.length);
 		this.doSort(this.getColumn(col), tmp, 0, this.getNumRows()-1, 0);
@@ -186,11 +186,11 @@ public class SubsetTableImpl extends MutableTableImpl {
 	*/
 	public void sortByColumn(int col, int begin, int end) {
 		int [] neworder = new int [end-begin+1];
-		for (int i = begin ; i <= end ; i++) 
+		for (int i = begin ; i <= end ; i++)
 			neworder[i-begin] = this.subset[i];
 		this.doSort(this.getColumn(col), neworder, 0, neworder.length-1, begin);
 	}
-	
+
 	/**
 	 Implement the quicksort algorithm.  Partition the array and
 	 recursively call doSort.
@@ -217,20 +217,22 @@ public class SubsetTableImpl extends MutableTableImpl {
 	 @return the partition point
 	 */
 	private int partition (Column A, int [] ix, int p, int r, int begin) {
+
+
 		int i = p - 1;
 		int j = r + 1;
 		while (true) {
-			
+
 			// find the first entry [j] <= entry [p].
 			do {
 				j--;
 			} while (A.compareRows (ix[j], ix[p]) > 0);
-			
+
 			// now find the first entry [i] >= entry [p].
 			do {
 				i++;
 			} while (A.compareRows (ix[i], ix[p]) < 0);
-			
+
 			if (i < j) {
 				this.swapRows(i+begin, j+begin);
 				int tmp = ix[i];
@@ -509,6 +511,8 @@ public class SubsetTableImpl extends MutableTableImpl {
 		//	getColumn(i).removeRow(subset[pos]);
 		//}
 		int[] newsubset = new int[subset.length - 1];
+
+
 		System.arraycopy(subset, 0, newsubset, 0, pos);
 		System.arraycopy(
 			subset,

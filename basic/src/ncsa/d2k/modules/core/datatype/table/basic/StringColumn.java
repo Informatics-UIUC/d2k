@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.util.TableUtilities;
 
 import java.io.*;
 import java.util.*;
@@ -313,11 +314,18 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
 			do {
 				j--;
 			} //while (A[j] > x);
-		 while(compareRows(j, p) > 0);
+
+//vered: replaced compareRows with TableUtilities method
+//so that sorting of binned columns will work
+//		 while(compareRows(j, p) > 0);
+                 while(TableUtilities.compareValues(this, j, this, p) > 0);
 			do {
 				i++;
 			} //while (A[i] < x);
-		 while(compareRows(i, p) < 0);
+
+//commented out by vered to support sorting binned attributes.
+		 //while(compareRows(i, p) < 0);
+                  while(TableUtilities.compareValues(this, i, this, p) < 0);
 			if (i < j) {
 				if (t == null) {
 					//short temp = A[i];
@@ -343,7 +351,8 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
    }
 
    private static int compareStrings(String s1, String s2) {
-	  return s1.compareTo(s2);
+     return TableUtilities.compareStrings(s1, s2);
+	  //return s1.compareTo(s2);
    }
 
    public void setNumRows(int nr) {

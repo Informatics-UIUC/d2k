@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.util.TableUtilities;
 
 import java.io.*;
 import java.util.*;
@@ -794,6 +795,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
     public int compareRows (Object element, int pos) {
         String b = internal[pos];
         return  compareStrings((String)element, b);
+
     }
 
     /**
@@ -819,7 +821,8 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
     * @see java.lang.String
      */
     private int compareStrings (String b1, String b2) {
-        return  b1.compareTo(b2);
+        //return  b1.compareTo(b2);
+        return TableUtilities.compareStrings(b1, b2);
     }
 
     /**
@@ -962,16 +965,22 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
     @return the partition index
      */
     private int partition (String[] A, int p, int r, MutableTable t) {
+
+      //vered: replaced compareRows method with TableUtilities.compareValues
+      //method, so that binned columns could be sorted too.
+
         //String x = A[p];
         int i = p - 1;
         int j = r + 1;
         while (true) {
             do {
                 j--;
-            } while (compareRows(A[j], p) > 0);
+            } //while (compareRows(A[j], p) > 0);
+            while (TableUtilities.compareStrings(A[j], this.getString(p)) > 0);
             do {
                 i++;
-            } while (compareRows(A[i], p) < 0);
+            } //while (compareRows(A[i], p) < 0);
+            while (TableUtilities.compareStrings(A[i], this.getString(p)) < 0);
             if (i < j) {
                 if (t == null) {
                     String temp = A[i];

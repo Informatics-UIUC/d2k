@@ -519,7 +519,8 @@ final public class ObjectColumn extends AbstractColumn {
 		else if (internal[pos] instanceof char[])
 			return Double.parseDouble(new String((char[]) internal[pos]));
 		else
-			return Double.parseDouble(internal[pos].toString());
+                   return Double.parseDouble(internal[pos].toString());
+
 	}
 
 	/**
@@ -578,7 +579,7 @@ final public class ObjectColumn extends AbstractColumn {
 		 
 			 return ByteUtils.writeObject(internal[pos]);
 		//return internal[pos].toString().getBytes();
-	}	
+	}
 
 	/**
 	 Set the value at pos to be newEntry.
@@ -748,7 +749,7 @@ final public class ObjectColumn extends AbstractColumn {
 		        System.arraycopy(missing, 0, newMissing, 0, missing.length);
 		        System.arraycopy(empty, 0, newEmpty, 0, empty.length);
 		        newInternal[last] = ((Boolean)newEntry).booleanValue();
-		
+
 		        internal = newInternal;
 		        missing = newMissing;
 				empty = newEmpty;
@@ -796,13 +797,13 @@ final public class ObjectColumn extends AbstractColumn {
 		        // copy all the items after the item to be removed one position up
 		        System.arraycopy(internal, pos + 1, internal, pos, internal.length -
 		                (pos + 1));
-		
+
 		        System.arraycopy(missing, pos + 1, missing, pos, internal.length -
 		                (pos + 1));
-		
+
 		        System.arraycopy(empty, pos + 1, empty, pos, internal.length -
 		                (pos + 1));
-		
+
 		        // copy the items into a new array
 		        boolean newInternal[] = new boolean[internal.length - 1];
 		        boolean newMissing[] = new boolean[internal.length-1];
@@ -810,7 +811,7 @@ final public class ObjectColumn extends AbstractColumn {
 		        System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
 		        System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
 		        System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
-		
+
 		        internal = newInternal;
 		        missing = newMissing;
 		        empty = newEmpty;
@@ -884,11 +885,11 @@ final public class ObjectColumn extends AbstractColumn {
 		            System.arraycopy(internal, 0, newInternal, 0, pos);
 		            System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
 		                    - pos);
-		
+
 		            System.arraycopy(missing, 0, newMissing, 0, pos);
 		            System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
 		                    - pos);
-		
+
 		            System.arraycopy(empty, 0, newEmpty, 0, pos);
 		            System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
 		                    - pos);
@@ -922,10 +923,10 @@ final public class ObjectColumn extends AbstractColumn {
 		        boolean emp = empty[pos1];
 		        internal[pos1] = internal[pos2];
 		        internal[pos2] = d1;
-		
+
 		        missing[pos1] = missing[pos2];
 		        missing[pos2] = miss;
-		
+
 		        empty[pos1] = empty[pos2];
 		        empty[pos2] = emp;
 		        */
@@ -1006,7 +1007,7 @@ final public class ObjectColumn extends AbstractColumn {
 		}
 		else if (d2 == nominalEmptyValue)
 		    return  1;
-		
+
 		if (d1 == nominalMissingValue) {
 		    if (d2 == nominalMissingValue)
 		        return  0;
@@ -1017,7 +1018,7 @@ final public class ObjectColumn extends AbstractColumn {
 		    return  1;
 		*/
 
-		// ANCA: 
+		// ANCA:
 		if (d1 instanceof Comparable && d2 instanceof Comparable)
 			return ((Comparable) d1).compareTo(d2);
 
@@ -1096,7 +1097,7 @@ final public class ObjectColumn extends AbstractColumn {
 		        boolean newInternal[] = new boolean[internal.length - indices.length];
 		        boolean newMissing[] = new boolean[internal.length - indices.length];
 		        boolean newEmpty[] = new boolean[internal.length - indices.length];
-		
+
 		        int newIntIdx = 0;
 		        for (int i = 0; i < getNumRows(); i++) {
 		            // check if this row is in the list of rows to remove
