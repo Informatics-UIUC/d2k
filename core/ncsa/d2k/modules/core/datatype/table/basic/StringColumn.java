@@ -33,16 +33,17 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
 
    public StringColumn(int numRows) {
 	  setOfValues = new HashMap();
-
 	  values = new String[0];
 	  rowIndicies = new int[numRows];
 	  type = ColumnTypes.STRING;
 	  setIsNominal(true);
 	  missing = new boolean[numRows];
 	  empty = new boolean[numRows];
+	  String dummy = "?";
 	  for(int i = 0; i < numRows; i++) {
-		  missing[i] = true;
+		  missing[i] = false;
 		  empty[i] = false;
+		 setString(dummy, i);
 	  }
    }
 
@@ -120,8 +121,7 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
    }
 
    public String getString(int row) {
-	   //System.out.println("GET STRING: "+this+" "+getLabel()+" "+values.length+" "+rowIndicies.length);
-	  return values[rowIndicies[row]];
+		  return values[rowIndicies[row]];
    }
 
    public void setString(String s, int row) {
@@ -133,7 +133,6 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
 		 Integer r = (Integer)setOfValues.get(s);
 		 rowIndicies[row] = r.intValue();
 	  }
-	  empty[row] = missing[row] = false;
    }
 
    public double getDouble(int row) {
