@@ -7,7 +7,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
  * Encapsulates a (reversible) transformation on a <code>MutableTable</code>
  * that replaces unique nominal column values with unique integers.
  */
-public class ReplaceNominalValuesWithIntegersTransform
+public class ReplaceNominalsWithIntsTransform
    implements ReversibleTransformation {
 
    static final long serialVersionUID = 2772230274372026572L;
@@ -15,7 +15,7 @@ public class ReplaceNominalValuesWithIntegersTransform
    protected int[] indirection;
    protected HashMap[] nominalToInteger, integerToNominal;
 
-   public ReplaceNominalValuesWithIntegersTransform(MutableTable mt) {
+   public ReplaceNominalsWithIntsTransform(MutableTable mt) {
 
 	  // how many nominal columns do we have?
 	  int numNominalColumns = 0, totalColumns = mt.getNumColumns();
