@@ -163,22 +163,22 @@ public class ADTAutoBin extends DataPrepModule {
 				TreeSet vals = adt.getUniqueValuesTreeSet(inputs[i]+1);
 				Iterator iter = vals.iterator();
 				int numRows = tbl.getNumRows();
-				
+
 			/*	if (tbl.getColumn(inputs[i]).hasMissingValues()) {
 					String[] miss = new String[1];
 					     miss[0]= tbl.getMissingString();
-					
-					
-					BinDescriptor bd = new TextualBinDescriptor (inputs[i],"Unknown",miss,tbl.getColumnLabel(inputs[i])); 
+
+
+					BinDescriptor bd = new TextualBinDescriptor (inputs[i],"Unknown",miss,tbl.getColumnLabel(inputs[i]));
 					bins.add(bd);
 					//System.out.println("has missing values for column " + inputs[i]);
 					while (iter.hasNext()) {
 										String st[] = new String[1];
 										String item = (String) iter.next();
-										st[0] = item;	
+										st[0] = item;
 
 								if(!item.equals(miss[0])) {
-			
+
 										BinDescriptor bdm =
 											new TextualBinDescriptor(
 												inputs[i],
@@ -187,10 +187,10 @@ public class ADTAutoBin extends DataPrepModule {
 												tbl.getColumnLabel(inputs[i]));
 										bins.add(bdm);}
 					}
-					
+
 				}
-				
-			
+
+
 			else { // there are no missing values in this column
 		*/	//System.out.println("no missing values for column " + inputs[i]);
 						while (iter.hasNext()) {
@@ -216,7 +216,7 @@ public class ADTAutoBin extends DataPrepModule {
 		//ANCA: adding missing values bins for attributes with missing values
 	//	bn = BinningUtils.addMissingValueBins(tbl,bn);
 		return bn;
-	
+
 	}
 }
 
@@ -227,10 +227,15 @@ public class ADTAutoBin extends DataPrepModule {
       *          as meaningless, and not expected to produce a special unique
       *          value bin - then they should be binned into UNKNOWN. [bug 127]
  */
-      
+
       /*
       * 12-3 -03 Anca
       * missing values are binned into Unknown bin - fixed [bug 127]
       * also added support for missing values in ParseFileToADTree.
-      * 12 -16-03 Anca moved creation of "unknown" bins to BinTransform 
+      * 12 -16-03 Anca moved creation of "unknown" bins to BinTransform
       **/
+
+     /**
+ * 01-04-04 Vered
+ * Module is ready for basic.
+*/

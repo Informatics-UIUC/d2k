@@ -388,3 +388,8 @@ public class AutoBin extends AutoBinOPT {
  * 12-15-03 anca - fixed [bug 165] at the AutoBinOPT level by eliminating missing values when
  *						 interval margins are defined
 */
+
+
+/**
+ * 01-04-04: vered - module is ready for basic.
+*/

@@ -1771,6 +1771,17 @@ public static final String MISSING= "missing";
 
 
         //vered - qa
+         public boolean equals(Object obj){
+           if(obj instanceof BinTree)
+             return equals((BinTree)obj);
+           else {
+             System.out.println("the second object is not of type BinTree");
+             return false;
+
+           }
+         }
+
+
         public boolean equals(BinTree bt){
 
           boolean retVal = true;
