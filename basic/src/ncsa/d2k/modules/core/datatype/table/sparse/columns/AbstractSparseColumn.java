@@ -26,6 +26,14 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
     protected VIntHashSet empty;
 
     /**
+     * FIX THIS -- DDS
+     * @return
+     */
+    public int getNumMissingValues(){
+      return missing.size();
+    }
+
+    /**
      * put your documentation comment here
      */
     public AbstractSparseColumn () {
