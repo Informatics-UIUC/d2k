@@ -30,6 +30,10 @@ public class SQLHTree extends ComputeModule
   BinDescriptor[] bins;
   double support = 0.2;
   int maxRuleSize = 5;
+  // maximum number of columns that can be included for analysis
+  int maxColumn = 25;
+  // maximum number of uniq values that is allowed for each column. Bining is required if it is over.
+  int maxUniq = 100;
   int ruleSize;
   int totalRow;
   double cutOff;
@@ -113,8 +117,24 @@ public class SQLHTree extends ComputeModule
   }
 
   public String getModuleInfo () {
-    String text = "Compute a cube for the selected table";
-    return text;
+    String s = "<p> Overview: ";
+      s += "This module computes a cube table from a selected database table. </p>";
+      s += "<p> Detailed Description: ";
+      s += "This module first makes a connection to a database, retrieves the ";
+      s += "data from a specified database table for the specified columns, ";
+      s += "where clause, and the bin definition, and then compute a data cube. ";
+      s += "You can control the cube construction by two parameters: 'maximum ";
+      s += "rule size' and 'minimum support'. The 'maximum rule size' is the ";
+      s += "maximum number of items in a rule. To avoid the exponential computation, ";
+      s += "only up to 5 items in a rule is allowed. The 'minimum support' is used ";
+      s += "to control the usefulness of discovered rules. A support of 2% ";
+      s += "for a rule means that 2% of data under analysis support this rule. ";
+      s += "By setting 'minimum support' lower, you would get more trivial rules. ";
+      s += "However, by setting 'minimum support' higher, you might loose some ";
+      s += "important rules. ";
+      s += "<p> Restrictions: ";
+      s += "We currently only support Oracle database.";
+      return s;
   }
 
     /**
@@ -125,13 +145,13 @@ public class SQLHTree extends ComputeModule
     public String getInputName (int i) {
         switch (i) {
             case 0:
-                return "ConnectionWrapper";
+                return "Database Connection";
             case 1:
-                return "FieldName";
+                return "Field Name";
             case 2:
-                return "TableName";
+                return "Table Name";
             case 3:
-                return "WhereClause";
+                return "Query Condition";
             case 4:
                 return "BinDescriptor";
             default:
@@ -147,19 +167,19 @@ public class SQLHTree extends ComputeModule
     public String getOutputName (int i) {
         switch (i) {
             case 0:
-                return "ConnectionWrapper";
+                return "Database Connection";
             case 1:
-                return "TableName";
+                return "Cube Table";
             default:
                 return  "no such output!";
         }
     }
 
   // this property is the min acceptable support score.
-  public void setMinimumSupport (double i) {
+  public void setSupport (double i) {
     support = i;
   }
-  public double getMinimumSupport () {
+  public double getSupport () {
     return support;
   }
 
@@ -189,7 +209,7 @@ public class SQLHTree extends ComputeModule
   public PropertyDescription [] getPropertiesDescriptions () {
     PropertyDescription [] pds = new PropertyDescription [2];
     pds[0] = new PropertyDescription ("maxRuleSize", "Maximum Rule Size", "The maximum number of components in each rule is restricted by Maximum Rule Size.");
-    pds[1] = new PropertyDescription ("minimumSupport", "Minimum Support", "If the occurrence ratio of a rule is below Minimum Support, it is pruned.");
+    pds[1] = new PropertyDescription ("Support", "Minimum Support", "If the occurrence ratio of a rule is below Minimum Support, it is pruned.");
     return pds;
   }
 
@@ -209,39 +229,45 @@ public class SQLHTree extends ComputeModule
     hTree = new ArrayList();
 
     totalRow = getRowCount();
-    cutOff = totalRow * support;
+    if (totalRow > 0) {
+      cutOff = totalRow * support;
+      if (setColumnList()) {
+        sortColumnList();
+        // to avoid exponential computation, the maxRuleSize is only allowed up to 5
+        if (maxRuleSize > 5) {
+          maxRuleSize = 5;
+        }
+        // if number of selected columns <= maxruleSize, ruleSize = # of selected column - 1,
+        // otherwise, ruleSize = maxRuleSize
+        if (columnList.size()>=maxRuleSize) {
+          ruleSize = maxRuleSize;
+        }
+        else {
+          ruleSize = columnList.size();
+        }
 
-    setColumnList();
-    sortColumnList();
+        initBaseHeadTbl();
+        buildHTree();
+        //printColumnList();  // for debugging
+        //printBaseHeadTbl();  // for debugging
+        //printHTree();  // for debugging
 
-    // to avoid exponential computation, the maxRuleSize is only allowed up to 5
-    if (maxRuleSize > 5) {
-      maxRuleSize = 5;
+        createCubeTable();
+        saveBaseHeadTbl();
+        createLocalHeadTbls();
+        prefixList = new int[ruleSize];
+        initPrefixList();
+        computeTree();
+        this.pushOutput(cw, 0);
+        this.pushOutput(cubeTableName, 1);
+      }
     }
-
-    // if number of selected columns <= maxruleSize, ruleSize = # of selected column - 1,
-    // otherwise, ruleSize = maxRuleSize
-    if (columnList.size()>=maxRuleSize) {
-      ruleSize = maxRuleSize;
+    else {// totalRow <= 0
+      JOptionPane.showMessageDialog(msgBoard,
+                "There is no data in the data set.", "Error",
+                JOptionPane.ERROR_MESSAGE);
+      System.out.println("There is no data in the data set.");
     }
-    else {
-      ruleSize = columnList.size();
-    }
-
-    initBaseHeadTbl();
-    buildHTree();
-    //printColumnList();  // for debugging
-    //printBaseHeadTbl();  // for debugging
-    //printHTree();  // for debugging
-
-    createCubeTable();
-    saveBaseHeadTbl();
-    createLocalHeadTbls();
-    prefixList = new int[ruleSize];
-    initPrefixList();
-    computeTree();
-    this.pushOutput(cw, 0);
-    this.pushOutput(cubeTableName, 1);
   }
 
   /** get the count of rows from the database table
@@ -272,12 +298,27 @@ public class SQLHTree extends ComputeModule
    *  column name, the count of uniq values, the starting index in head table,
    *  the data type, binned or not.
    */
-  protected void setColumnList() {
+  protected boolean setColumnList() {
     Column aColumn;
+    System.out.println("length is " + fieldNames.length);
+    // if a user has selected more than maxColumn, return false and quit the program
+    if (fieldNames.length > maxColumn) {
+      JOptionPane.showMessageDialog(msgBoard,
+                "You have selected more than " + maxColumn + " fields for analysis. " +
+                "In order to find interesting rules, please only choose the related " +
+                "fields.", "Error",
+                JOptionPane.ERROR_MESSAGE);
+      System.out.println("Too many fields have been selected.");
+      return false;
+    }
     for (int fieldIdx=0; fieldIdx<fieldNames.length; fieldIdx++) {
       try {
         // get the unique count
         int uniqCount = getUniqCount(fieldIdx);
+        // quit if something is wrong
+        if (uniqCount == 0) {
+          return (false);
+        }
         // get the data type
         String dataType;
         if (isColumnNumeric(fieldIdx))
@@ -293,12 +334,14 @@ public class SQLHTree extends ComputeModule
         columnList.add((Object) aColumn);
       }
       catch (Exception e) {
-	  JOptionPane.showMessageDialog(msgBoard,
+          JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
         System.out.println("Error occoured in setColumnList.");
+        return false;
       }
     }
+    return true;
   }
 
   /** Get the number of unique values in the column
@@ -325,7 +368,18 @@ public class SQLHTree extends ComputeModule
         uniqSet.next();
         uniqCount = uniqSet.getInt(1);
         uniqStmt.close();
-        return (uniqCount);
+        // if uniqCount > maxUniq, inform users to binning the column
+        if (uniqCount <= maxUniq)
+          return (uniqCount);
+        else {
+          JOptionPane.showMessageDialog(msgBoard,
+            "There are too many unique values in the column " +
+            fieldNames[col] + ". In order to discover interesting rules, " +
+            "you should group the values in the column.", "Error",
+            JOptionPane.ERROR_MESSAGE);
+          System.out.println("Column " + fieldNames[col] + " need to be binned.");
+          return (0);
+        }
       }
       catch (Exception e) {
         JOptionPane.showMessageDialog(msgBoard,
@@ -1209,3 +1263,4 @@ public class SQLHTree extends ComputeModule
     System.out.println("...");
   }
 }
+
