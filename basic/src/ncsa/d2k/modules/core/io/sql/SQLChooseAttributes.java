@@ -376,10 +376,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
         cols[selectedColumn] = new ObjectColumn();
         cols[selectedColumn].setLabel(colNames.get(colIdx).toString());
         // data type may be in uppercase or lowercase
-        if (colTypes.get(colIdx).toString().equals("NUMBER") ||
-            colTypes.get(colIdx).toString().equals("number") ||
-            colTypes.get(colIdx).toString().equals("NUMERIC") ||
-            colTypes.get(colIdx).toString().equals("numeric")) {
+        if(ColumnTypes.isEqualNumeric(colTypes.get(colIdx).toString())) {
           cols[selectedColumn].setIsScalar(true);
           // cannot choose numeric column as the output column
           if (outputFeatures[0] == colIdx) {
@@ -616,12 +613,10 @@ public class SQLChooseAttributes extends HeadlessUIModule {
         cols[selectedColumn].setLabel(currentColName);
 
         String type = (String) columTypes.get(new Integer(inputFeatures[i]));
-       if (type.equals("NUMBER") ||
-           type.equals("number") ||
-           type.equals("NUMERIC") ||
-           type.equals("numeric"))
-         cols[selectedColumn].setIsScalar(true);
-      else           cols[selectedColumn].setIsScalar(false);
+        if(ColumnTypes.isEqualNumeric(type))
+          cols[selectedColumn].setIsScalar(true);
+        else
+          cols[selectedColumn].setIsScalar(false);
 
       selectedInput[i] = selectedColumn;
       selectedColumn++;
@@ -636,15 +631,12 @@ public class SQLChooseAttributes extends HeadlessUIModule {
         cols[selectedColumn].setLabel(currentColName);
 
         String type = (String) columTypes.get(new Integer(outputFeatures[i]));
-       if (type.equals("NUMBER") ||
-           type.equals("number") ||
-           type.equals("NUMERIC") ||
-           type.equals("numeric"))
-         throw new Exception(getAlias() +": You cannot choose a numeric column as the output column");
-
-       else cols[selectedColumn].setIsScalar(false);
-      selectedOutput[i] = selectedColumn;
-      selectedColumn++;
+        if(ColumnTypes.isEqualNumeric(type))
+          throw new Exception(getAlias() +": You cannot choose a numeric column as the output column");
+        else
+          cols[selectedColumn].setIsScalar(false);
+       selectedOutput[i] = selectedColumn;
+       selectedColumn++;
 
 
       }//for i output features
