@@ -298,10 +298,10 @@ class PagingExampleTable extends PagingTable implements ExampleTable {
    public boolean getOutputBoolean(int e, int o) {
        return getBoolean(e, outputFeatures[o]);
    }
-   public int getNumInputs() {
+   public int getNumInputs(int e) {
        return inputFeatures.length;
    }
-   public int getNumOutputs() {
+   public int getNumOutputs(int e) {
        return outputFeatures.length;
    }
 

@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.datatype.table.util;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import gnu.trove.*;
 
 /**
  * Contains useful methods to find statistics about columns of a Table.
@@ -21,6 +22,61 @@ public class TableUtilities {
 
 	private TableUtilities() {}
 
+  /**
+   * Get all the statistics about a scalar column.  This will calculate the mean,
+   * median, variance, standard deviation, minimum, and maximum and return them
+   * in a ScalarStatistics object.
+   * @param table
+   * @param colNum
+   * @return
+   */
+  public static ScalarStatistics getScalarStatistics(Table table, int colNum) {
+    if (!table.isColumnNumeric(colNum))
+      return null;
+
+    double sample_mean, sample_variance;
+    double first_quartile, third_quartile;
+    double median, stddev;
+
+    TDoubleArrayList list = new TDoubleArrayList();
+
+    double total = 0, max = Double.MIN_VALUE, min = Double.MAX_VALUE;
+    for (int i = 0; i < table.getNumRows(); i++) {
+      if (!table.isValueMissing(i, colNum) && !table.isValueEmpty(i, colNum)) {
+	list.add(table.getDouble(i, colNum));
+	total += table.getDouble(i, colNum);
+
+	if (table.getDouble(i, colNum) > max) {
+	  max = table.getDouble(i, colNum);
+	}
+
+	if (table.getDouble(i, colNum) < min) {
+	  min = table.getDouble(i, colNum);
+	}
+      }
+    }
+
+    double[] d = list.toNativeArray();
+
+    sample_mean = total/(double)d.length;
+
+    Arrays.sort(d);
+    median = (d[(int)Math.ceil(d.length/2.0)] + d[(int)Math.floor(d.length/2.0)])/2.0;
+    first_quartile = (d[(int) Math.ceil(d.length/4.0)] + d[(int) Math.floor(d.length/4.0)])/2.0;
+    third_quartile = (d[(int) Math.ceil(d.length*3.0/4.0)] + d[(int) Math.floor(d.length*3.0/4.0)])/2.0;
+
+    total = 0; // for calculating sample variance
+    for (int i = 0; i < d.length; i++)
+      total += (d[i] - sample_mean) * (d[i] - sample_mean);
+
+    sample_variance = total / (double)(d.length - 1); // unbiased estimator
+
+    stddev = Math.sqrt(sample_variance);
+
+    return new ScalarStatistics(sample_mean, median, sample_variance, stddev, min, max, first_quartile, third_quartile);
+  }
+
+
 	/**
 	 * Get all the statistics about a scalar column.  This will calculate the mean,
 	 * median, variance, standard deviation, minimum, and maximum and return them
@@ -28,7 +84,7 @@ public class TableUtilities {
 	 * @param table
 	 * @param colNum
 	 * @return
-	 */
+	 /
 	public static ScalarStatistics getScalarStatistics(Table table, int colNum) {
 		if(!table.isColumnNumeric(colNum))
 			return null;
@@ -62,7 +118,61 @@ public class TableUtilities {
 
          stddev = Math.sqrt(sample_variance);
 		 return new ScalarStatistics(sample_mean, median, sample_variance, stddev, min, max);
+	}*/
+
+  /**
+   * Get all the statistics about a scalar column.  This will calculate the mean,
+   * median, variance, standard deviation, minimum, and maximum and return them
+   * in a ScalarStatistics object. Only rows specified by the boolean array are considered.
+   * @param table
+   * @param colNum
+   * @return
+   */
+  public static ScalarStatistics getScalarStatistics(boolean[] flags, Table table, int colNum) {
+    if (!table.isColumnNumeric(colNum))
+      return null;
+
+    double sample_mean, sample_variance;
+    double first_quartile, third_quartile;
+    double median, stddev;
+
+    TDoubleArrayList list = new TDoubleArrayList();
+
+    double total = 0, max = Double.MIN_VALUE, min = Double.MAX_VALUE;
+    for (int i = 0; i < table.getNumRows(); i++) {
+      if (!flags[i] && !table.isValueMissing(i, colNum) && !table.isValueEmpty(i, colNum)) {
+	list.add(table.getDouble(i, colNum));
+	total += table.getDouble(i, colNum);
+
+	if (table.getDouble(i, colNum) > max) {
+	  max = table.getDouble(i, colNum);
 	}
+
+	if (table.getDouble(i, colNum) < min) {
+	  min = table.getDouble(i, colNum);
+	}
+      }
+    }
+
+    double[] d = list.toNativeArray();
+
+    sample_mean = total/(double)d.length;
+
+    Arrays.sort(d);
+    median = (d[(int)Math.ceil(d.length/2.0)] + d[(int)Math.floor(d.length/2.0)])/2.0;
+    first_quartile = (d[(int) Math.ceil(d.length/4.0)] + d[(int) Math.floor(d.length/4.0)])/2.0;
+    third_quartile = (d[(int) Math.ceil(d.length*3.0/4.0)] + d[(int) Math.floor(d.length*3.0/4.0)])/2.0;
+
+    total = 0; // for calculating sample variance
+    for (int i = 0; i < d.length; i++)
+      total += (d[i] - sample_mean) * (d[i] - sample_mean);
+
+    sample_variance = total / (double)(d.length - 1); // unbiased estimator
+
+    stddev = Math.sqrt(sample_variance);
+
+    return new ScalarStatistics(sample_mean, median, sample_variance, stddev, min, max, first_quartile, third_quartile);
+  }
 
 	/**
 	 * Get all the unique values in a specific column of a Table.

@@ -319,16 +319,18 @@ public interface ExampleTable extends Table {
     public boolean getOutputBoolean(int e, int o);
 
     /**
-     * Get the number of inputs.
+     * Get the number of inputs for a specific example.
+     * @param e the example of interest
      * @return the number of inputs
      */
-    public int getNumInputs();
+    public int getNumInputs(int e);
 
     /**
-     * Get the number of outputs.
+     * Get the number of outputs for a specific example.
+     * @param e the example of interest
      * @return the number of outputs
      */
-    public int getNumOutputs();
+    public int getNumOutputs(int e);
 
     /**
      * Get the eth Example.

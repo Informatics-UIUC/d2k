@@ -187,10 +187,10 @@ class WeightedExampleTable extends WeightedTable implements ExampleTable {
     public boolean getOutputBoolean(int e, int o) {
         return getBoolean(e, outputColumns[o]);
     }
-    public int getNumInputs() {
+    public int getNumInputs(int e) {
         return inputColumns.length;
     }
-    public int getNumOutputs() {
+    public int getNumOutputs(int e) {
         return outputColumns.length;
     }
 

@@ -232,7 +232,7 @@ public class ShallowExample implements Example {
      * @return the number of inputs
      */
     public int getNumInputs() {
-        return et.getNumInputs();
+        return et.getNumInputs(rowIdx);
     }
 
     /**
@@ -240,7 +240,7 @@ public class ShallowExample implements Example {
      * @return the number of outputs
      */
     public int getNumOutputs() {
-        return et.getNumOutputs();
+        return et.getNumOutputs(rowIdx);
     }
 
     /**
