@@ -10,6 +10,8 @@ import java.awt.*;
 import java.awt.event.*;
 import ncsa.gui.*;
 
+
+
 /**
   Builds a Support Vector Machine (SVM).  This is a wrapper for the
   popular libsvm library (the Java version).  The desired SVM could
