@@ -12,8 +12,7 @@ dXQuSW5wdXQxRmlsZU5hbWV0AA1XRUtBX1JlYWRBUkZGc3EAfgAEcHQAKW5jc2EuZDJrLm1vZHVs
 ZXMud2VrYS5pbnB1dC5XRUtBX1JlYWRBUkZGdAAcV0VLQV9OYWl2ZUJheWVzTW9kZWxQcm9kdWNl
 cnNxAH4ABHB0AD1uY3NhLmQyay5tb2R1bGVzLndla2EuY2xhc3NpZmllci5XRUtBX05haXZlQmF5
 ZXNNb2RlbFByb2R1Y2VyeA==" label="WEKA_Bayes.itn">
-    <annotation><![CDATA[<HTML>
-</HTML>]]></annotation>
+    <annotation><![CDATA[]]></annotation>
     <module alias="WEKA_NaiveBayesModelProducer" classname="ncsa.d2k.modules.weka.classifier.WEKA_NaiveBayesModelProducer" xloc="146" yloc="161">
       <output index="0" classname="ncsa.d2k.modules.PredictionModelModule">
         <destination alias="WEKA_CVClassifierEvaluator" index="0"/>

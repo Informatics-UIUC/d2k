@@ -17,8 +17,7 @@ ZDJrLm1vZHVsZXMud2VrYS52aXMuV0VLQV9UcmVlVmlzdWFsaXplcnQAFVdFS0FfSjQ4TW9kZWxQ
 cm9kdWNlcnNxAH4ABHB0ADZuY3NhLmQyay5tb2R1bGVzLndla2EuY2xhc3NpZmllci5XRUtBX0o0
 OE1vZGVsUHJvZHVjZXJ0AA9JbnB1dCBGaWxlIE5hbWVzcQB+AARwdAAybmNzYS5kMmsubW9kdWxl
 cy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV4" label="WEKA_DecisionTree.itn">
-    <annotation><![CDATA[<HTML>
-</HTML>]]></annotation>
+    <annotation><![CDATA[]]></annotation>
     <module alias="WEKA_CastModelToDrawable" classname="ncsa.d2k.modules.weka.vis.WEKA_CastModelToDrawable" xloc="567" yloc="182">
       <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
       <output index="0" classname="weka.core.Drawable">

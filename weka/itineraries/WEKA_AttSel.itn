@@ -15,8 +15,7 @@ RnNxAH4ABHB0ACluY3NhLmQyay5tb2R1bGVzLndla2EuaW5wdXQuV0VLQV9SZWFkQVJGRnQAJVdF
 S0FfQXR0cmlidXRlU2VsZWN0aW9uRXZhbHVhdGlvbl9DRlNzcQB+AARwdABZbmNzYS5kMmsubW9k
 dWxlcy53ZWthLmF0dHJpYnV0ZVNlbGVjdGlvbi5ldmFsdWF0aW9uLldFS0FfQXR0cmlidXRlU2Vs
 ZWN0aW9uRXZhbHVhdGlvbl9DRlN4" label="WEKA_AttSel.itn">
-    <annotation><![CDATA[<HTML>
-</HTML>]]></annotation>
+    <annotation><![CDATA[]]></annotation>
     <module alias="WEKA_AttributeSelectionSearch_BestFirst" classname="ncsa.d2k.modules.weka.attributeSelection.search.WEKA_AttributeSelectionSearch_BestFirst" xloc="149" yloc="137">
       <output index="0" classname="weka.attributeSelection.ASSearch">
         <destination alias="WEKA_AttributeSelector" index="1"/>

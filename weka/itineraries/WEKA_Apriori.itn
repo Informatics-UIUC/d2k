@@ -10,8 +10,7 @@ Y29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVOYW1ldAANV0VLQV9SZWFkQVJGRnNxAH4ABHB0
 ACluY3NhLmQyay5tb2R1bGVzLndla2EuaW5wdXQuV0VLQV9SZWFkQVJGRnQADFdFS0FfQXByaW9y
 aXNxAH4ABHB0AC5uY3NhLmQyay5tb2R1bGVzLndla2EuYXNzb2NpYXRpb24uV0VLQV9BcHJpb3Jp
 eA==" label="WEKA_Apriori.itn">
-    <annotation><![CDATA[<HTML>
-</HTML>]]></annotation>
+    <annotation><![CDATA[]]></annotation>
     <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="29" yloc="17">
       <output index="0" classname="java.lang.String">
         <destination alias="WEKA_ReadARFF" index="0"/>
