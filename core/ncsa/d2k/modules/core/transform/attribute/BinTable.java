@@ -120,11 +120,17 @@ public class BinTable extends ncsa.d2k.infrastructure.modules.DataPrepModule imp
 					if (Columnworking instanceof NumericColumn) {
 						double d = ((NumericColumn)Columnworking).getDouble(j);
 						String str = BT.getBinNameForValue(ET.getString(j, outs[0]), ET.getColumnLabel(ins[i]), d);
-						names.setString(str, j);
+						if(str != null)
+							names.setString(str, j);
+						else
+							names.setString(Double.toString(d), j);
 					} else {
 						String str2 = ((StringColumn)Columnworking).getString(j);
 						String str3 = BT.getBinNameForValue(ET.getString(j, outs[0]), ET.getColumnLabel(ins[i]), str2);
-						names.setString(str3, j);
+						if(str3 != null)
+							names.setString(str3, j);
+						else
+							names.setString(str2, j);
 					}
 				}
 				if (!rmvCol) {
