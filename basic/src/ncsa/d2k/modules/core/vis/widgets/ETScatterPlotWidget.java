@@ -266,14 +266,20 @@ public class ETScatterPlotWidget extends JUserPane implements
 
 	// add the buttons
 	JPanel buttonPanel = new JPanel();
-      buttonPanel.setLayout(new BorderLayout());
+//      buttonPanel.setLayout(new BorderLayout());
+        buttonPanel.setLayout(new GridLayout(1, 2));
 	showComposite = new JButton("Show Composite");
 	showComposite.addActionListener(this);
-	buttonPanel.add(showComposite, BorderLayout.NORTH);
+	//buttonPanel.add(showComposite, BorderLayout.NORTH);
+	buttonPanel.add(showComposite);
 	clearSelected = new JButton("Clear Selection");
 	clearSelected.addActionListener(this);
-	buttonPanel.add(clearSelected, BorderLayout.SOUTH);
-	this.add(buttonPanel, BorderLayout.SOUTH);
+	//buttonPanel.add(clearSelected, BorderLayout.SOUTH);
+	buttonPanel.add(clearSelected);
+        JPanel pnl = new JPanel();
+        pnl.add(buttonPanel);
+	//this.add(buttonPanel, BorderLayout.SOUTH);
+	this.add(pnl, BorderLayout.SOUTH);
   }
 
   private boolean checkRowHeaders() {
