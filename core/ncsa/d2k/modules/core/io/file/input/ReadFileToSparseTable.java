@@ -66,7 +66,7 @@ public class ReadFileToSparseTable extends ReadFileToTable {
     }*/
 
     public String getModuleName() {
-        return "ReadFileToSparseTable";
+        return "Read File to Sparse Table";
     }
 
     /*public void doit() throws Exception {
@@ -291,26 +291,26 @@ public class ReadFileToSparseTable extends ReadFileToTable {
         return retVal;
     }*/
 
-	/**
-		returns a VT that has 2 columns, corresponding
-		to the row and column indices of the fields
-		that were blank in the file that was read in
-		/
-	private Table createBlanks(FlatFileReader ffr){
+   /**
+      returns a VT that has 2 columns, corresponding
+      to the row and column indices of the fields
+      that were blank in the file that was read in
+      /
+   private Table createBlanks(FlatFileReader ffr){
         int[][] blanks = ffr.getBlanks();
 
-		IntColumn rowsColumn=new IntColumn(blanks[0]);
-		rowsColumn.setLabel("Rows");
+      IntColumn rowsColumn=new IntColumn(blanks[0]);
+      rowsColumn.setLabel("Rows");
 
-		IntColumn colsColumn=new IntColumn(blanks[1]);
-		colsColumn.setLabel("Column");
+      IntColumn colsColumn=new IntColumn(blanks[1]);
+      colsColumn.setLabel("Column");
 
-		Column[] internal=new Column[2];
-		internal[0]=rowsColumn;
-		internal[1]=colsColumn;
+      Column[] internal=new Column[2];
+      internal[0]=rowsColumn;
+      internal[1]=colsColumn;
 
-		TableImpl table= (TableImpl)DefaultTableFactory.getInstance().createTable(internal);
-		return table;
+      TableImpl table= (TableImpl)DefaultTableFactory.getInstance().createTable(internal);
+      return table;
         return null;
-	}*/
+   }*/
 }
