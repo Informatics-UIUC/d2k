@@ -35,12 +35,12 @@ public class FlatFile
   RandomAccessFile File;
 
   public byte DelimiterByte = (byte) ',';
-  public byte SpaceByte = (byte) ' ';
-  public byte TabByte = 9;
   public byte EOLByte = 10; // new line = 10 (unix) !!!
-  public byte UnixEOLByte = 10;
-  public byte MacEOLByte = 13;
-  public byte QuoteByte = (byte) '"';
+  public static byte SpaceByte = (byte) ' ';
+  public static byte TabByte = 9;
+  public static byte UnixEOLByte = 10;
+  public static byte MacEOLByte = 13;
+  public static byte QuoteByte = (byte) '"';
 
   final static byte ZeroByte = (byte) '0';
   final static byte MinusByte = (byte) '-';
