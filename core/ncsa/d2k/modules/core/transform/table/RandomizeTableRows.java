@@ -9,7 +9,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
 	RandomizeVTRows.java
 */
-public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepModule implements java.io.Serializable
+public class RandomizeTableRows extends ncsa.d2k.infrastructure.modules.DataPrepModule implements java.io.Serializable
 {
 	/**
 		This pair returns the description of the various inputs.
@@ -28,7 +28,7 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return types;
 
 	}
@@ -50,7 +50,7 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return types;
 
 	}
@@ -65,17 +65,16 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 	}
 
 	/**
-		PUT YOUR CODE HERE.
-	*/
-
-	/**
 		Randomizes the rows of the Table using swapping
 	*/
 	public void doit() throws Exception {
 
-		rand = new Random(seed);
+		if(useSeed)
+			rand = new Random(seed);
+		else
+			rand = new Random();
 
-		TableImpl table = (TableImpl) pullInput(0);
+		MutableTable table = (MutableTable) pullInput(0);
 		int numRow = table.getNumRows();
 		int j = 0;
 		for (int i=0; i<numRow; i++){
@@ -83,10 +82,9 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 			table.swapRows(i,j);
 		}
 		pushOutput(table, 0);
-
 	}
 
-	int seed;
+	private int seed = 345;
 
 	public void setSeed(int x){
 		seed = x;
@@ -96,7 +94,17 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		return seed;
 	}
 
-	transient Random rand;
+	private boolean useSeed = true;
+
+	public void setUseSeed(boolean b) {
+		useSeed = b;
+	}
+
+	public boolean getUseSeed() {
+		return useSeed;
+	}
+
+	private transient Random rand;
 
 	/**
 		Chooses a random integer between two integers (inclusive)
@@ -112,10 +120,5 @@ public class RandomizeVTRows extends ncsa.d2k.infrastructure.modules.DataPrepMod
 			int theNum = (int) (rnd);
 			return theNum;
 		}
-
-
-
 	}
-
 }
-

@@ -18,12 +18,6 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
   //  PROPERTIES  //
   //////////////////
 
-  private int  Seed     = 123;
-  public  void setSeed  (int value) {       this.Seed = value;}
-  public  int  getSeed  ()             {return this.Seed;}
-
-
-
     /**
        Return a description of the function of this module.
        @return A description of this module.
@@ -50,7 +44,7 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String [] in = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String [] in = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return in;
     }
 
@@ -60,7 +54,7 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String []out = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return out;
     }
 
@@ -104,16 +98,16 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
        Perform the calculation.
     */
     public void doit() {
-    	TableImpl vt = (TableImpl)pullInput(0);
-		int columns = vt.getNumColumns();
+    	//MutableTable vt = (MutableTable)pullInput(0);
+		//int columns = vt.getNumColumns();
 
 		// create a new, empty table
-		TableImpl newVt = (TableImpl)DefaultTableFactory.getInstance().createTable(vt.getNumColumns());
+		/*TableImpl newVt = (TableImpl)DefaultTableFactory.getInstance().createTable(vt.getNumColumns());
 		newVt.setLabel(vt.getLabel());
 		newVt.setComment(vt.getComment());
 		int colNum = 0;
 
-                Random r = new Random(Seed);
+        Random r = new Random(Seed);
 		while(vt.getNumColumns() > 0) {
 			// choose a random column
 			int col = r.nextInt(vt.getNumColumns());
@@ -125,5 +119,55 @@ public class RandomizeTableColumns extends DataPrepModule implements Serializabl
 			colNum++;
 		}
 		pushOutput(newVt, 0);
+		*/
+
+		rand = new Random(seed);
+
+		MutableTable table = (MutableTable) pullInput(0);
+		int columns = table.getNumColumns();
+		int j = 0;
+		for (int i=0; i<columns; i++){
+			j = getRandomNumber(i, columns-1);
+			table.swapColumns(i,j);
+		}
+		pushOutput(table, 0);
+	}
+
+	private int seed = 345;
+
+	public void setSeed(int x){
+		seed = x;
+	}
+
+	public int getSeed(){
+		return seed;
+	}
+
+	private boolean useSeed = true;
+
+	public void setUseSeed(boolean b) {
+		useSeed = b;
+	}
+
+	public boolean getUseSeed() {
+		return useSeed;
+	}
+
+	private transient Random rand;
+
+	/**
+		Chooses a random integer between two integers (inclusive)
+		@param int m - the lower integer
+		@param int n - the higher integer
+		@return the pseudorandom integer between m and n (inclusive)
+	*/
+	public int getRandomNumber(int m, int n){
+		if (m == n)
+			return m;
+		else {
+			double rnd = (Math.abs(rand.nextDouble()))*(n-m+1) + m;
+			int theNum = (int) (rnd);
+			return theNum;
+		}
 	}
 }

@@ -183,7 +183,6 @@ public class NFoldExTable extends ncsa.d2k.infrastructure.modules.DataPrepModule
 		Does things, especially 'it'
 	*/
 	public void doit () throws Exception {
-		System.out.println("doit");
 		if (breaks == null) {
 			setup ();
 		}
