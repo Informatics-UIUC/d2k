@@ -799,6 +799,8 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
         boolean[] newEmpty = null;
         if (newOrder.length == internal.length) {
             newInternal = new double[internal.length];
+			newMissing=new boolean[internal.length];
+			newEmpty=new boolean[internal.length];
             for (int i = 0; i < internal.length; i++) {
                 newInternal[i] = internal[newOrder[i]];
                 newMissing[i] = missing[newOrder[i]];

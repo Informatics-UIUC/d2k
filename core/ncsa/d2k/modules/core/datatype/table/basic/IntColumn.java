@@ -244,7 +244,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
      * @param pos the position
      */
     public void setString (String newEntry, int pos) {
-        internal[pos] = Integer.parseInt(newEntry);
+	   internal[pos] = Integer.parseInt(newEntry);
     }
 
     /**
@@ -778,6 +778,8 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
         boolean[] newEmpty = null;
         if (newOrder.length == internal.length) {
             newInternal = new int[internal.length];
+			newMissing=new boolean[internal.length];
+			newEmpty=new boolean[internal.length];
             for (int i = 0; i < internal.length; i++) {
                 newInternal[i] = internal[newOrder[i]];
                 newMissing[i] = missing[newOrder[i]];

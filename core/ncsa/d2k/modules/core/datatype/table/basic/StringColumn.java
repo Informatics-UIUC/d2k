@@ -384,6 +384,8 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
         boolean[] newEmpty = null;
         if (newOrder.length == rowIndicies.length) {
             newInternal = new int[rowIndicies.length];
+			newMissing=new boolean[rowIndicies.length];
+			newEmpty=new boolean[rowIndicies.length];
             for (int i = 0; i < rowIndicies.length; i++) {
                 newInternal[i] = rowIndicies[newOrder[i]];
                 newMissing[i] = missing[newOrder[i]];

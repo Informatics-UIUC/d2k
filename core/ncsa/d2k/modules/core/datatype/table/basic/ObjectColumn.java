@@ -782,6 +782,8 @@ final public class ObjectColumn extends AbstractColumn {
         boolean[] newEmpty = null;
         if (newOrder.length == internal.length) {
             newInternal = new Object[internal.length];
+			newMissing=new boolean[internal.length];
+			newEmpty=new boolean[internal.length];
             for (int i = 0; i < internal.length; i++) {
                 newInternal[i] = internal[newOrder[i]];
                 newMissing[i] = missing[newOrder[i]];
