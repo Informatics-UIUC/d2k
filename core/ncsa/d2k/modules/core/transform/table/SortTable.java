@@ -55,6 +55,18 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
   }
 
   public String getModuleInfo() {
+     String info = "<P><b>Overview:</b><br> This module cascade sorts a MutableTable."+
+         "</P><p><b>Detailed Description:</b><br> This module provides the user with an "+
+         "interface to choose sorting columns for a cascading sort: The whole table is "+
+         "being sorted according to the first column that is chosen. If more than one "+
+         "column is chosen for the sort – for each successive column, a sort is being "+
+         "applied on the table only for runs in the previous column.<br>"+
+         "A run is a collection of identical values in a column.</P><P>"+
+         "<U>Note:</U> If, for example, the user selects a sorting column only for the second "+
+         "sort, the module will relate to this selection as if it is the first sort. "+
+         "No messages will be given regarding this miss-selection.</P><P><B>"+
+         "Data Handling:</b><br> The data values do not change. Only the rows and possibly the columns are reordered.</P>";
+/*
     String info = "<p>Overview: ";
     info += "This module cascade sorts a MutableTable by sorting the first column and then successive columns ";
     info += "based on runs in the previous column. A run is a collection of similar values in a column.";
@@ -62,7 +74,7 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
     info += "This module can be used to sort a table using multiple attributes. For example, the first attribute ";
     info += "sorts the entire table. Then the second attribute sorts the runs from the first attribute.";
     info += "</p><p>Data Handling: ";
-    info += "The data values do not change. Only the rows and possibly the columns are reordered.";
+    info += "The data values do not change. Only the rows and possibly the columns are reordered.";*/
     return info;
   }
 
@@ -83,7 +95,7 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
     viewDone("Done");
   }
 
-  public PropertyDescription[] getPropertyDescriptions() {
+  public PropertyDescription[] getPropertiesDescriptions() {
     PropertyDescription[] descriptions = new PropertyDescription[2];
 
     descriptions[0] = new PropertyDescription("numberOfSorts",
