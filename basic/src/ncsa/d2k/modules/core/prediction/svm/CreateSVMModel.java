@@ -13,7 +13,7 @@ import libsvm.*;
 
 public class CreateSVMModel extends ModelProducerModule
 {
-	// empty constructor 
+	// empty constructor
 	public CreateSVMModel()
 	{
 	}
@@ -75,7 +75,7 @@ public class CreateSVMModel extends ModelProducerModule
 
 	public String[] getOutputTypes()
 	{
-		String[] out = {"ncsa.d2k.modules.projects.xli.SVM.SVMModel"};
+		String[] out = {"ncsa.d2k.modules.core.prediction.svm.SVMModel"};
 		return out;
 	}
 
