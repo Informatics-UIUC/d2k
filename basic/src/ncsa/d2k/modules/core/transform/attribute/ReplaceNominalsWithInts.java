@@ -121,4 +121,6 @@ public class ReplaceNominalsWithInts extends ComputeModule {
  * 11-25-03 Vered started qa:
  *          according to new guide lines - missing values should be preserved. thus
  *          changed module info. reported bug 144 on missing values preservation.
+ * 12-05-03 bug 144 was fixed.
+ *          module is ready for basic 4.
  */

@@ -564,4 +564,5 @@ public class ChooseAttributes extends HeadlessUIModule {
  *          an exception for any mismatch. debating on this issue - when the sensetivity
  *          level is decided - the module will be ready.
  *          headless module is non-case sensitive.
+ * 12-05-03 module is ready for basic 4
  */

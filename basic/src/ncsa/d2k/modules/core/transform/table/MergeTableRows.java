@@ -687,7 +687,11 @@ public class MergeTableRows extends HeadlessUIModule {
 //           modules works well with MutableTableImpl, ExampleTablEImpl
 //           another problem with missing values: calculation of minimum/average
 //           right now - a missing value is considered to be zero when calculating
-//           these values.
+//           these values. (this problem is solved through new guide lines)
 
 //11/20/03 - module should throw exception if a missing value is encountered in
-//           key, control or merge column. [bug 135].
+//           key, control or merge column. [bug 135]. this is fixed. instead
+//           of throwing an exception the module does not list the columns with
+//           missing values.
+
+//12-05-03: modules is ready for basic 4.

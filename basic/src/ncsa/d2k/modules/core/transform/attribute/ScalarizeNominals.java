@@ -269,7 +269,7 @@ public class ScalarizeNominals extends DataPrepModule {
 
 		 int[] match = new int[numRows];
 		 boolean[] missing = new boolean [numRows];
-		 
+
 		 for (int row = 0; row < numRows; row++) {
 
 			if (table.isValueMissing(row, index) ||
@@ -453,4 +453,5 @@ public class ScalarizeNominals extends DataPrepModule {
  *          the moduel does not preserve missing values. [bug 148].
  * 12-1-03  Tom, fixed bug #148. Now resulting columns will all contain
  *          missing values where the original column contained a missing value.
+ * 12-05-03 modules is ready for basic 4
  */

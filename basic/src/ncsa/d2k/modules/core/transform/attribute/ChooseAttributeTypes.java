@@ -613,3 +613,5 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
 //         The module is well documented. UI is good. Headless version works too.
 //         was tested with StringColumns that are numeric - works great.
 //         module is ready.
+
+//12-05-03 module is ready for basic 4

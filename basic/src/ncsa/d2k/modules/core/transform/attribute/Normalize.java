@@ -362,6 +362,9 @@ public class Normalize extends HeadlessUIModule {
 
             mean /= totalNotMissing;
 
+            //QA output - vered.
+            System.out.println("the mean of this datast is: " + mean);
+
             // data now represents differences from the mean:
             for (int j = 0; j < data.length; j++)
                if (!missing[j])
@@ -383,6 +386,9 @@ public class Normalize extends HeadlessUIModule {
 
             // calculate sample standard deviation
             double sample_std_dev = Math.sqrt(sample_variance);
+
+//QA output - vered.
+            System.out.println("the standard deviation of this datast is: " + sample_std_dev);
 
             // divide to normalize data:
             if (sample_std_dev == 0.0) {
@@ -513,8 +519,6 @@ public class Normalize extends HeadlessUIModule {
  * 11-25-03 due to new guide lines regarding missing values - this module needs to go
  *          under some changes. missing values should be preserved. [bug 146]
  * 12-04-03 bug 146 was fixed.
- *          problem with correctness: the destribution of the data after normalization
- *          is not normal. for some datasets more that 73% or less than 63% of the
- *          items are falling in the range [-1,1]. this is not compatible with
- *          the module info.
+ * 12-04-03 module is ready for basic 4
+ *
  */

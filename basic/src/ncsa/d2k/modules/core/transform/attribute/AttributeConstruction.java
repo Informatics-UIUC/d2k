@@ -756,12 +756,13 @@ public class AttributeConstruction extends HeadlessUIModule {
  *
  *          the ui remembers the previously constructed attributes (byt name)
  *          and lists them together with the available attributes in the input table.
- *          [bug 118]
+ *          [bug 118] this is fixed (12-05-03)
  *
  * 11-05-03 the headless version does not validates the constructing expressions.
  *          if the input table does not match the expressions - the transformation
  *          will fail. - now it validates [11-06-03]
  *
  * 11-25-03 Missing Values handling - handles mising values as real values. [bug 145]
+ *          this was fixed (12-05-03)
  */
 

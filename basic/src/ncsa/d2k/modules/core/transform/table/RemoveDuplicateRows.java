@@ -158,4 +158,6 @@ public class RemoveDuplicateRows extends DataPrepModule {
       *
       * 11-03-03: bugs 87 & 100 are fixed.
       *
+      * 12-05-03: module is ready for basic 4.
+      *
  */

@@ -9,7 +9,7 @@ import java.util.*;
 public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 	//begin setting Properties
 /*
- * 
+ *
  	String fillerString = new String("*");
 	int fillerNumeric = 0;
 	boolean fillerBol = false;
@@ -70,7 +70,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 	/**
 	 * Return a list of the property descriptions.
 	 * @return a list of the property descriptions.
-	 
+
 	public PropertyDescription [] getPropertiesDescriptions () {
 		PropertyDescription [] pds = new PropertyDescription [3];
 		pds[0] = new PropertyDescription ("fillerBol", "Boolean Column Filler", "This value fills boolean columns.");
@@ -796,4 +796,5 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 *           a genral approach to missing values should be determined.
 * 11-20-03: key columns cannot have missing values. an exception will be thrown
        *    if such value swill be encountered in such column.
+* 12-05-03: module is ready for basic 4.
 */

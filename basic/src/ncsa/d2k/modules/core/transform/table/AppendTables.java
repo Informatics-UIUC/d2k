@@ -1303,12 +1303,13 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 *               "know" which of the values were missing in the original table.
 *               this is not being updated using setValueToMissing or any other
 *               method. [bug 103] fixed - partially.
-*     11/03/03 - preservation of missing values is not done for second table in
-*                columns that are unique to this table. [bug 108]
+* 11/03/03 - preservation of missing values is not done for second table in
+*             columns that are unique to this table. [bug 108] fixed.
 *
-	11/21/03 - missing values are not handled correctly. Any value that can not be gotten
-			from one of the two table is considered missing, it is marked as such and the
-			default value is gotten from the first input table. The properties specifying
-			the values to assign missing values of various types is gone since this
-			is now carried with the table.
+  11/21/03 - missing values are not handled correctly. Any value that can not be gotten
+            from one of the two table is considered missing, it is marked as such and the
+            default value is gotten from the first input table. The properties specifying
+            the values to assign missing values of various types is gone since this
+            is now carried with the table.
+ 12-05-03 - modules is ready for basic 4
   */
