@@ -178,6 +178,7 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 								ti.setChars(Integer.toString(0).toCharArray(), i, j);
 								ti.setValueToMissing(true, i, j);
 							}
+							
 							// otherwise put the '?' in the table and set the value to missing
 							else {
 								ti.setChars(elem, i, j);
