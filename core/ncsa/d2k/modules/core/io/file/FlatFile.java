@@ -353,7 +353,7 @@ public class FlatFile
       }
 
       if (Buffer[localByteIndex++] == localEOLByte) {
-        ColumnEnds[columnIndex] = localByteIndex - 1;
+        ColumnEnds[columnIndex] = localByteIndex - 2;
         break;
       }
     }
