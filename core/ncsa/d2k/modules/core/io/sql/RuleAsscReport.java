@@ -9,7 +9,6 @@ package ncsa.d2k.modules.core.io.sql;
  * @version 1.0
  */
 
-
 import ncsa.d2k.core.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.UserView;
@@ -89,7 +88,8 @@ public class RuleAsscReport extends UIModule
 	}
 
   public String[] getInputTypes () {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","java.util.ArrayList","java.util.ArrayList"};
+		//String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","java.util.ArrayList","java.util.ArrayList"};
+		String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"};
 		return types;
 	}
 
@@ -112,7 +112,7 @@ public class RuleAsscReport extends UIModule
       closeIt();
       removeAll();
 
-      if (index == 0) {
+      /*if (index == 0) {
         ruleTable = new TableImpl();
         ruleTable = (TableImpl)input;
       }
@@ -126,6 +126,12 @@ public class RuleAsscReport extends UIModule
         doGUI();
         displayRules();
       }
+      */
+      ruleTable = (TableImpl)input;
+      itemLabels = (ArrayList)((RuleTable)ruleTable).getNamesList();
+      freqItemSets = (ArrayList)((RuleTable)ruleTable).getItemSetsList();
+      doGUI();
+      displayRules();
     }
 
     public Dimension getPreferredSize() {
@@ -133,15 +139,20 @@ public class RuleAsscReport extends UIModule
     }
 
     public void initView(ViewModule mod) {
-      removeAll();
+      /*removeAll();
       ruleTable = new TableImpl();
       ruleTable = (TableImpl)pullInput(0);
       itemLabels = new ArrayList();
       itemLabels = (ArrayList)pullInput(1);
       freqItemSets = new ArrayList();
       freqItemSets = (ArrayList)pullInput(2);
+      ruleTable = (TableImpl)pullInput(0);
+      itemLabels = (ArrayList)((RuleTable)ruleTable).getNamesList();
+      freqItemSets = (ArrayList)((RuleTable)ruleTable).getItemSetsList();
+
       doGUI();
       displayRules();
+      */
     }
 
     public void doGUI() {

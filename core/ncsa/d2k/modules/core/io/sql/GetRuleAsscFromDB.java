@@ -116,7 +116,8 @@ public class GetRuleAsscFromDB extends UIModule
 	}
 
   public String[] getOutputTypes () {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","java.util.ArrayList","java.util.ArrayList"};
+		//String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","java.util.ArrayList","java.util.ArrayList"};
+		String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"};
 		return types;
 	}
 
@@ -276,9 +277,14 @@ public class GetRuleAsscFromDB extends UIModule
           convertToRuleTable();
           //printRuleTable();  // for debugging
           //printItemLabels(); // for debugging
-          pushOutput (ruleTable,0);
-          pushOutput (itemLabels, 1);
-          pushOutput (freqItemSets,2);
+
+            RuleTable rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
+                    itemLabels, freqItemSets);
+
+            pushOutput(rt, 0);
+          //pushOutput (ruleTable,0);
+          //pushOutput (itemLabels, 1);
+          //pushOutput (freqItemSets,2);
         }
         else { // The user has not chosen a table yet
           JOptionPane.showMessageDialog(msgBoard,
@@ -762,8 +768,8 @@ public class GetRuleAsscFromDB extends UIModule
 
   protected void convertToRuleTable() {
     Column[] cols = new Column[4];
-    cols[0] = new ObjectColumn(finalRules.size());
-    cols[1] = new ObjectColumn(finalRules.size());
+    cols[0] = new IntColumn(finalRules.size());
+    cols[1] = new IntColumn(finalRules.size());
     cols[2] = new DoubleColumn(finalRules.size());
     cols[3] = new DoubleColumn(finalRules.size());
     cols[0].setLabel("Head");
