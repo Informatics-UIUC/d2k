@@ -31,7 +31,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import ncsa.d2k.core.modules.PropertyDescription;
-import ncsa.d2k.core.modules.UIModule;
+import ncsa.d2k.core.modules.HeadlessUIModule;
 import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.core.modules.ViewModule;
 import ncsa.d2k.gui.JD2KFrame;
@@ -54,7 +54,7 @@ import ncsa.gui.JOutlinePanel;
 /**
  * put your documentation comment here
  */
-public class BinAttributes extends UIModule {
+public class BinAttributes extends HeadlessUIModule {
   private static final String EMPTY = "",
   COLON = " : ", COMMA = ",", DOTS = "...",
   OPEN_PAREN = "(", CLOSE_PAREN = ")", OPEN_BRACKET = "[", CLOSE_BRACKET = "]";
@@ -138,7 +138,7 @@ public class BinAttributes extends UIModule {
    * @return
    */
   public String getInputInfo (int i) {
-	switch (i) { 
+	switch (i) {
 	  case 0:
 		return  "A Table with attributes to bin. If it is an Example Table, only input and output features will be eligible for binning.";
 	  default:
@@ -201,7 +201,10 @@ public class BinAttributes extends UIModule {
    * property which they really should not be shown.
    **/
   public PropertyDescription[] getPropertiesDescriptions() {
-	PropertyDescription[] pds = new PropertyDescription[0];
+	PropertyDescription[] pds = new PropertyDescription[2];
+        pds[0] = this.supressDescription;
+        pds[1] = new PropertyDescription("newColumn", "Create In New Column",
+            "Set this property to true if you wish the binned columns to be created in new columns");
 	return pds;
   }
 
@@ -1504,7 +1507,23 @@ public class BinAttributes extends UIModule {
 	  return  sb.toString();
 	}
   }           // BinColumnsView
-}
+
+
+  //headless conversion support
+  public void doit()throws Exception{
+     Table table = (Table) pullInput(0);
+    BinningUtils.validateBins(table, savedBins, getAlias());
+
+     pushOutput(new BinTransform(savedBins, newColumn), 0);
+
+  }
+
+  private boolean newColumn;
+  public void setNewColumn(boolean val){newColumn = val;}
+  public boolean getNewColumn(){return newColumn;}
+
+  //headless conversion support
+}//BinAttributes
 
 
 

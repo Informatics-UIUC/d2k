@@ -1749,15 +1749,20 @@ public class ADTBinColumns extends HeadlessUIModule {
 
     Table table = (Table) pullInput(1);
 
-    System.out.println("classes were reloaded");
+    BinningUtils.validateBins(table, binDes, getAlias());
+
+     pushOutput(new BinTransform(binDes, newColumn), 0);
 
 
 
+  //following was replaced by validateBins in BinningUtils.
+
+/*
     if(binDes == null)
       throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
 
       if(binDes.length == 0){
-       binDes = new BinDescriptor[0];
+       //binDes = new BinDescriptor[0];
       System.out.println(getAlias() + ": No bins were configured. The transformation will be an empty one.");
        pushOutput(new BinTransform(binDes, newColumn), 0);
        return;
@@ -1771,7 +1776,7 @@ public class ADTBinColumns extends HeadlessUIModule {
         throw new Exception(getAlias() + ": Bin " +  binDes[i].toString() + " does not match any column label in the input table. Please reconfigure this module.");
 //      else relevant.add(binDes[i]);
     }//for
-
+*/
 
     /*binDes =  new BinDescriptor[relevant.size()];
     for(int i=0; i<binDes.length; i++)
@@ -1782,7 +1787,7 @@ public class ADTBinColumns extends HeadlessUIModule {
       binDes = new BinDescriptor[0];
     }*/
 
-    pushOutput(new BinTransform(binDes, newColumn), 0);
+   // pushOutput(new BinTransform(binDes, newColumn), 0);
 
   }//doit
   //headless conversion support

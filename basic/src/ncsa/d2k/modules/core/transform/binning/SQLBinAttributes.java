@@ -1620,9 +1620,33 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
       wrapper = (ConnectionWrapper) pullInput(0);
       String tableName = (String)pullInput(1);
       String[] fieldNames = (String[]) pullInput(2);
-//      String condition = (String) pullInput(3);
 
-      if(savedBins == null)
+      //verifying that tableName is in the data base
+    if(!StaticMethods.getAvailableTables(wrapper).containsKey(tableName.toUpperCase()))
+      throw new Exception(getAlias()+ ": Table named " + tableName +
+                          " was not found in the database.");
+
+    //verifying that the bins are relevant to this table's columns.
+    HashMap colMap = StaticMethods.getAvailableAttributes(wrapper, tableName);
+
+    if(colMap.size() == 0){
+      System.out.println(getAlias()+ ": Warning - Table " + tableName + " has no columns." );
+
+    }
+
+
+    //getting intersection between colMap and selected attributes.
+
+    String[] targetFields = StaticMethods.getIntersection(fieldNames, colMap);
+    if(targetFields.length < fieldNames.length)
+      throw new Exception (getAlias() + ": Some of the input field names were " +
+                           "not found in the database table.");
+
+    BinningUtils.validateBins(colMap, savedBins, getAlias());
+//the following code was replaced with validateBins of BinningUtils.
+
+
+    /*  if(savedBins == null)
         throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
 
       if(savedBins.length == 0) {
@@ -1633,90 +1657,15 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
         return;
       }
 
-      //verifying that tableName is in the data base
-      if(!StaticMethods.getAvailableTables(wrapper).containsKey(tableName.toUpperCase()))
-        throw new Exception(getAlias()+ ": Table named " + tableName +
-                            " was not found in the database.");
-      /*
-      Connection con = wrapper.getConnection();
-      DatabaseMetaData metadata = con.getMetaData();
-      String[] types = {"TABLE"};
-      ResultSet tableNames = metadata.getTables(null,"%","%",types);
-      boolean found = false;
-      while (tableNames.next()) {
-        String aTable = tableNames.getString("TABLE_NAME");
-        if (tableName.equalsIgnoreCase(aTable))
-          found = true;
-      } //while
 
-      if (!found)
-        throw new Exception("Table named " + tableName +
-                            " was not found in the database.");
-*/
-      //verifying that the bins are relevant to this table's columns.
-      HashMap colMap = StaticMethods.getAvailableAttributes(wrapper, tableName);
-
-      if(colMap.size() == 0){
-        System.out.println(getAlias()+ ": Warning - Table " + tableName + " has no columns." );
-//        BinDescriptor[] targetBins = new BinDescriptor[0];
-  //      pushOutput(new BinTransform(targetBins, newColumn), 0);
-    //    return;
-      }
-
-
-      //getting intersection between colMap and selected attributes.
-
-      String[] targetFields = StaticMethods.getIntersection(fieldNames, colMap);
-      if(targetFields.length < fieldNames.length)
-        throw new Exception (getAlias() + ": Some of the input field names were " +
-                             "not found in the database table.");
-      /*for (int i=0; i<fieldNames.length; i++)
-        if(colMap.containsKey(fieldNames[i]))
-          newColMap.put(fieldNames[i], new Integer(i));
-        else System.out.println(getAlias()+ ": The attribute " + fieldNames[i] + " was not found in table " +
-                                tableName + " and it will be ignored.");
-*/
-      /*    HashMap newColMap = new HashMap();
-
-       if(newColMap.size() == 0){
-
-        System.out.println(getAlias()+ ": Table " + tableName + " has no columns labeled as the configured attributes " +
-                           "on input port no. 3. The transformation " +
-                           "will be empty");
-        BinDescriptor[] targetBins = new BinDescriptor[0];
-        pushOutput(new BinTransform(targetBins, newColumn), 0);
-        return;
-
-      }*/
-
-      /*
-     ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
-     HashMap colMap = new HashMap();
-     int counter = 0;
-     while(columns.next()){
-       String columnName = columns.getString("COLUMN_NAME");
-       colMap.put( columnName, new Integer(counter));
-       counter++;
-     }//while columns
-*/
-    // Vector relevant = new Vector();
    for (int i=0; i<savedBins.length; i++){
      if(!colMap.containsKey(savedBins[i].label.toUpperCase()))
        throw new Exception(getAlias()+ ": Bin " +  savedBins[i].toString() + " does not match any column label in the database table." +
                                         " Please reconfigure this module via a GUI run so it can run Headless.");
-     //else relevant.add(savedBins[i]);
+
    }//for
+        */
 
-/*   if(relevant.size() == 0)
-     System.out.println(getAlias() + ": None of the configured bins matched the columns in the " +
-                        "configured table in the database. The transformation will be empty.");
-
-   BinDescriptor[] targetBins =  new BinDescriptor[relevant.size()];
-   for(int i=0; i<targetBins.length; i++)
-     targetBins[i] = (BinDescriptor) relevant.get(i);
-*/
-      //is in the database and that the fieldNames are in this table.
-      //verification of relevancy of the bins will be done by applyTransformation.
 
       pushOutput(new BinTransform(savedBins, newColumn), 0);
 
