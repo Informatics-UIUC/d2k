@@ -67,6 +67,10 @@ public class ExampleTableImpl
     }
     setLabel(table.getLabel());
     setComment(table.getComment());
+
+    inputNames = new String[0];
+    outputNames = new String[0];
+
     //setType(table.getType());
     if (table instanceof ExampleTableImpl) {
       // Make sure we get the input / output definitions.
@@ -77,14 +81,20 @@ public class ExampleTableImpl
         int inLen = origInputFeatures.length;
         this.inputColumns = new int[inLen];
         System.arraycopy(origInputFeatures, 0, inputColumns, 0, inLen);
+        setInputFeatures(inputColumns);
       }
+      else
+        setInputFeatures(new int[0]);
       // make a copy of the output features
       int[] origOutputFeatures = tt.getOutputFeatures();
       if (origOutputFeatures != null) {
         int outLen = origOutputFeatures.length;
         this.outputColumns = new int[outLen];
         System.arraycopy(origOutputFeatures, 0, outputColumns, 0, outLen);
+        setOutputFeatures(outputColumns);
       }
+      else
+        setOutputFeatures(new int[0]);
       // make a copy of the test set
       int[] origTestSet = tt.getTestingSet();
       if (origTestSet != null) {
@@ -99,6 +109,7 @@ public class ExampleTableImpl
         this.trainSet = new int[trainLen];
         System.arraycopy(origTrainSet, 0, trainSet, 0, trainLen);
       }
+
       //copy the transformations
       try {
         transformations = (ArrayList) ( (ArrayList) ( (MutableTable) tt).
