@@ -2,7 +2,6 @@ package ncsa.d2k.modules.core.transform.binning;
 
 import java.util.*;
 import java.text.*;
-import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.io.sql.*;

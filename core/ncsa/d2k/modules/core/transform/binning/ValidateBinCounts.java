@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.core.transform.binning;
 
 
-import ncsa.d2k.modules.core.datatype.*;;
+
+;
 public class ValidateBinCounts extends ncsa.d2k.core.modules.ComputeModule {
 
 	/**

@@ -7,7 +7,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
-import ncsa.d2k.modules.core.datatype.*;
+
 
 
 public class SQLCreateBinTree extends DataPrepModule {
