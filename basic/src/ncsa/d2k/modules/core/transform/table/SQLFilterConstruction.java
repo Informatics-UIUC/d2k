@@ -353,7 +353,7 @@ public class SQLFilterConstruction extends UIModule {
       ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
       while (columns.next()) {
         String columnName = columns.getString("COLUMN_NAME");
-        String columnType = columns.getString("TYPE_NAME");
+        String columnType = columns.getString("TYPE_NAME").toUpperCase();
         colNames.add(columnName);
         colTypes.add(columnType);
       }
@@ -369,7 +369,10 @@ public class SQLFilterConstruction extends UIModule {
     for (int colIdx = 0; colIdx < colNames.size(); colIdx++) {
       cols[colIdx] = new ObjectColumn(1);
       cols[colIdx].setLabel(colNames.get(colIdx).toString());
-      if (colTypes.get(colIdx).toString().equals("NUMBER")) {
+      if (colTypes.get(colIdx).toString().equals("NUMBER") ||
+          colTypes.get(colIdx).toString().equals("NUMERIC") ||
+          colTypes.get(colIdx).toString().equals("FLOAT") ||
+          colTypes.get(colIdx).toString().equals("INTEGER")) {
         cols[colIdx].setIsScalar(true);
       }
       else {
