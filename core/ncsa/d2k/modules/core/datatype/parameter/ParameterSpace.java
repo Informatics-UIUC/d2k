@@ -3,29 +3,19 @@ package ncsa.d2k.modules.core.datatype.parameter;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
-ParameterSpace:
-
-The AbstractParamSpaceGen (or subclasses of it) will output a ParameterSpace.
-
-·	ParameterSpace can subclass Table.
-o	Row 1 = min values
-o	Row 2 = max values
-o	Row 3 = default point
-o	Row 4 = resolutions
-o	Row 5 = subspace group
-·	Additionally, we will maintain an array of ints called subspaces that describes a partition of the space into subspaces.
-o	When a space is initially created it will contain a single entry in this array which is the count of columns.
-o	When two spaces are joined (see space joining and splitting below) this array will be appended with the column count of the appended space.  This process may occur repeatedly.
-o	Similarly, when a space is split, to new subspaces will be formed.  If N is that last entry in the subspaces array before splitting then one subspace will contain the last N columns and will have one subspaces entry of value N.  The second space will contain the remaining columns and will have the original subspaces array but with the value N removed.
-·	There should be methods as follows (list is not exhaustive)
-o	Accessors to get the min/max values (get and set parameters)
-o	Accessors to get resolution for a parameter
-o	Accessors to get names for parameters
-o	Get dimension of bias space
-o	Get the default value as a ParameterPoint.  ParameterPoint can subclass ExampleImpl
-o	Join and Spilt a subspace
-·	The column order for this table should match the order of the parameters as described in the PropertyDescriptors defined in the space generator.  The learning algorithm will need to rely on this to be able to recognize which parameter is which.  Alternatively, we could rely on the column names.
-
+A parameter space is defines the search space for an optimizer.
+The space is simply defined as a hyper-rectangle defined by min and max values for each dimension.
+Each dimension has a resolution which an optimizer may used to limit its operation.
+A parameter space contains both user modifiable and factory default settings for each parameter minimum and maximum.
+A parameter space contains both user modifiable and factory default ParameterPoint.
+An optimizer may elect to use the default ParameterPoint to select the first point in parameter space.
+A parameter space is composed of one or more subspaces.
+Each D2K module in the itinerary which the user disires to optimize has its separate ParameterSpace.
+When these separate spaces are combined to form a single unified ParameterSpace,
+the original substructure is maintain so that the ParameterSpace and ParmeterPoints can be later decomposed.
+The column order for this table should match the order of the parameters as described in the PropertyDescriptors
+defined in the space generator(s).  The learning algorithm will need to rely on this to be able to recognize
+which parameter is which.  Alternatively, we could rely on the column names.
 */
 public interface ParameterSpace extends ExampleTable, java.io.Serializable {
 
