@@ -40,6 +40,7 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
   static String DELIMITER = "\t";
   static String ELN = "\n";
   static String NA = "NOAVL";
+  String tableIn;
   String cubeTableName = NOTHING;
   String saveBookName = NOTHING;
   String saveSupport = NOTHING;
@@ -69,8 +70,10 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
   JPanel codeBookPanel;
   CardLayout codeBookLayout;
   JTextField tableName;
-  JTextField condition;
-  JTextField target;
+  JList conditionList;
+  JList targetList;
+  int[] conditionSelected;
+  int[] targetSelected;
   JTextField supportChosen;
   JTextField confidenceChosen;
   JTextField thresholdChosen;
@@ -224,18 +227,15 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
         cw = (ConnectionWrapper)input;
       }
       else if (index == 1) {
-        tableName.setText((String)input);
-        getColNames();
+        tableIn = (String)input;
+        doGUI();
+        cubeTableName = NOTHING;
+        saveSupport = NOTHING;
+        supportChosen.setText(Double.toString(minSupport));
+        confidenceChosen.setText(Double.toString(minConfidence));
+        thresholdChosen.setText(Double.toString(threshold));
+        bookName.setText(NOTHING);
       }
-      //tableName.setText(NOTHING);
-      condition.setText(NOTHING);
-      target.setText(NOTHING);
-      cubeTableName = NOTHING;
-      saveSupport = NOTHING;
-      supportChosen.setText(Double.toString(minSupport));
-      confidenceChosen.setText(Double.toString(minConfidence));
-      thresholdChosen.setText(Double.toString(threshold));
-      bookName.setText(NOTHING);
     }
 
     /*
@@ -245,8 +245,12 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
 
     public void initView(ViewModule mod) {
       parent = (SQLGetRuleAssocWithCodeBook)mod;
+    }
+
+    public void doGUI() {
       removeAll();
-      cw = (ConnectionWrapper)pullInput (0);
+      conditionList=new JList();
+      targetList=new JList();
 
       // Panel to hold outline panels
       JPanel getRulePanel = new JPanel();
@@ -259,66 +263,72 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
         0,0,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(options, tableName = new JTextField(10),
         5,0,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
-      tableName.setText((String)pullInput(1));
+      tableName.setText(tableIn);
       tableName.addActionListener(this);
-      getColNames();
+      getColNames(tableName.getText().toString());
       Constrain.setConstraints(options, tableBrowseBtn = new JButton ("Browse"),
         15,0,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
       tableBrowseBtn.addActionListener(this);
 
-      Constrain.setConstraints(options, new JLabel("Condition Attribute"),
-        0,1,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
-      Constrain.setConstraints(options, condition = new JTextField(10),
-        5,1,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
-      condition.setText(NOTHING);
-      condition.addActionListener(this);
-      Constrain.setConstraints(options, condBrowseBtn = new JButton ("Browse"),
-        15,1,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
-      condBrowseBtn.addActionListener(this);
+      DefaultListModel dlm = new DefaultListModel();
+      for(int i = 0; i < colNames.size(); i++)
+        dlm.addElement(colNames.get(i).toString());
+      conditionList.setModel(dlm);
+      dlm = new DefaultListModel();
+      for(int i = 0; i < colNames.size(); i++)
+        dlm.addElement(colNames.get(i).toString());
+      targetList.setModel(dlm);
+      JScrollPane leftScrollPane=new JScrollPane(conditionList);
+      JScrollPane rightScrollPane=new JScrollPane(targetList);
 
-      Constrain.setConstraints(options, new JLabel("Target Attribute"),
-        0,2,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
-      Constrain.setConstraints(options, target = new JTextField(10),
-        5,2,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
-      target.setText(NOTHING);
-      target.addActionListener(this);
-      Constrain.setConstraints(options, targetBrowseBtn = new JButton ("Browse"),
-        15,2,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
-      targetBrowseBtn.addActionListener(this);
+      JPanel twoPanes = new JPanel();
+      twoPanes.setLayout(new GridBagLayout());
+
+      Constrain.setConstraints(twoPanes, new JLabel("Choose Conditions"), 0, 0, 1, 1,
+      GridBagConstraints.BOTH, GridBagConstraints.CENTER, 0, 0);
+      Constrain.setConstraints(twoPanes, new JLabel("Choose Targets"), 1, 0, 1, 1,
+      GridBagConstraints.BOTH, GridBagConstraints.CENTER, 0, 0);
+      Constrain.setConstraints(twoPanes, leftScrollPane, 0, 1, 1, 1,
+      GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+      Constrain.setConstraints(twoPanes, rightScrollPane, 1, 1, 1, 1,
+      GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+
+      Constrain.setConstraints(options, twoPanes,
+        0,1,20,4, GridBagConstraints.BOTH, GridBagConstraints.WEST,1.0,1.0);
 
       Constrain.setConstraints(options, new JLabel("Minimum Support"),
-        0,3,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
+        0,5,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(options, supportChosen = new JTextField(10),
-        5,3,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
+        5,5,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       supportChosen.setText(Double.toString(minSupport));
       supportChosen.addActionListener(this);
       sortS = new Checkbox( "Sort by Support", null, true );
       sortS.addItemListener( this );
       Constrain.setConstraints(options, sortS,
-        15,3,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
+        15,5,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
 
       Constrain.setConstraints(options, new JLabel("Minimum Confidence"),
-        0,4,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
+        0,6,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(options, confidenceChosen = new JTextField(10),
-        5,4,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
+        5,6,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       confidenceChosen.setText(Double.toString(minConfidence));
       confidenceChosen.addActionListener(this);
       sortC = new Checkbox ( "Sort by Confidence", null, false);
       sortC.addItemListener( this );
       Constrain.setConstraints(options, sortC,
-        15,4,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
+        15,6,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
 
       Constrain.setConstraints(options, new JLabel("Pruning Threshold"),
-        0,5,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
+        0,7,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(options, thresholdChosen = new JTextField(10),
-        5,5,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
+        5,7,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       thresholdChosen.setText(Double.toString(threshold));
       thresholdChosen.addActionListener(this);
 
       useCodeBook = new Checkbox ( "Use Code Book", null, false);
       useCodeBook.addItemListener( this );
       Constrain.setConstraints(options, useCodeBook,
-        0,6,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
+        0,8,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
 
       codeBookPanel = new JPanel();
       codeBookLayout = new CardLayout();
@@ -345,7 +355,7 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
       codeBookLayout.show(codeBookPanel, BLANK);
 
       Constrain.setConstraints(options, codeBookPanel,
-        5,6,15,1,GridBagConstraints.NONE,GridBagConstraints.EAST,1,1);
+        5,8,15,1,GridBagConstraints.NONE,GridBagConstraints.EAST,1,1);
 
       /* Add the outline panel to getRulePanel */
       Constrain.setConstraints(getRulePanel, options,
@@ -372,14 +382,6 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
       Object src = e.getSource();
       if (src == tableBrowseBtn) {
         doTableBrowse();
-        condition.setText(NOTHING);
-        target.setText(NOTHING);
-      }
-      else if (src == condBrowseBtn) {
-        doColumnBrowse(0);
-      }
-      else if (src == targetBrowseBtn) {
-        doColumnBrowse(1);
       }
       else if (src == bookBrowseBtn) {
         doBookBrowse();
@@ -397,24 +399,26 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
           // if code book is required and the code book is not retrieved yet, then get it
           if (!saveBookName.equals(bookName.getText().toString()) &&
               useCodeBook.getState()) {
-            //codeTable = getCodeBook(bookName.getText().toString());
             aBook = new SQLCodeBook(cw, bookName.getText().toString());
             codeTable = aBook.codeBook;
             saveBookName = bookName.getText().toString();
           }
-          // only recalculate rules if table name or support are changed
+          // only recalculate rules if table name, or code table, or support are changed
           if (!cubeTableName.equals(tableName.getText().toString()) ||
               !saveSupport.equals(supportChosen.getText().toString()) ||
               changeCodeBook ) {
+            getItemLabels();
             cubeTableName = tableName.getText().toString();
             saveSupport = supportChosen.getText().toString();
             freqItemSets = new ArrayList();
             allRules = new ArrayList();
-            getItemLabels();
             //printArrayList(itemLabels);
             //printArrayList(itemText);
             extractRules();
+            //printAllRules();
           }
+          conditionSelected = conditionList.getSelectedIndices();
+          targetSelected = targetList.getSelectedIndices();
           finalRules = new ArrayList();
           filterRules();
           if (finalRules.size() > 0) {
@@ -459,20 +463,18 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
         cubeTableName = NOTHING;
         saveSupport = NOTHING;
         parent.viewCancel();
-        //closeIt();
       }
       else if (src == tableName) {
-        getColNames();
-      }
-      else if (src == target) {
-        if (target.getText().length() < 1) {
-          targetIdx = -1;
-        }
-      }
-      else if (src == condition) {
-        if (condition.getText().length() < 1) {
-          conditionIdx = -1;
-        }
+        getColNames(tableName.getText().toString());
+        System.out.println("get column after tablename is entered");
+        DefaultListModel dlm = new DefaultListModel();
+        for(int i = 0; i < colNames.size(); i++)
+          dlm.addElement(colNames.get(i).toString());
+        conditionList.setModel(dlm);
+        dlm = new DefaultListModel();
+        for(int i = 0; i < colNames.size(); i++)
+          dlm.addElement(colNames.get(i).toString());
+        targetList.setModel(dlm);
       }
       else if (src == sortBtn) {
         if (allRules.size()==0) {
@@ -554,7 +556,16 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
         public void windowClosed(WindowEvent e)
         {
           tableName.setText(btw.getChosenRow());
-          getColNames();
+          getColNames(tableName.getText().toString());
+
+          DefaultListModel dlm = new DefaultListModel();
+          for(int i = 0; i < colNames.size(); i++)
+            dlm.addElement(colNames.get(i).toString());
+          conditionList.setModel(dlm);
+          dlm = new DefaultListModel();
+          for(int i = 0; i < colNames.size(); i++)
+            dlm.addElement(colNames.get(i).toString());
+          targetList.setModel(dlm);
          }
       });
     }
@@ -563,52 +574,6 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
       System.out.println("Error occoured in doTableBrowse.");
-    }
-  }
-
-  /** connect to a database and retrieve the column list of the cube table
-   *  @param colType the column type: 0 for condition column and 1 for target column
-   */
-  protected void doColumnBrowse(int colType) {
-    String query = new String("select column_name from all_tab_columns where table_name = '");
-    query = query + tableName.getText() + "' and column_name != 'SET_SIZE' and " +
-            "column_name != 'CNT' order by column_id";
-    try {
-      bt = new BrowseTables(cw, query);
-      btw = new BrowseTablesView(bt, query);
-      btw.setSize(250,200);
-      btw.setLocation(200,250);
-      btw.setVisible(true);
-      if (colType == 0) {
-        btw.setTitle("Available Condition Attributes");
-        btw.addWindowListener(new WindowAdapter() {
-          public void windowClosed(WindowEvent e)
-          {
-            condition.setText(btw.getChosenRow());
-            conditionIdx = btw.getSelectedRow();
-            //conditionIdx = btw.selectedRow;
-            System.out.println("conditionIdx is " + conditionIdx);
-          }
-        });
-      }
-      else if (colType == 1) {
-        btw.setTitle("Available Target Attributes");
-        btw.addWindowListener(new WindowAdapter() {
-          public void windowClosed(WindowEvent e)
-          {
-            target.setText(btw.getChosenRow());
-            targetIdx = btw.getSelectedRow();
-            //targetIdx = btw.selectedRow;
-            System.out.println("targetIdx is " + targetIdx);
-          }
-        });
-      }
-    }
-    catch (Exception e){
-      JOptionPane.showMessageDialog(msgBoard,
-        e.getMessage(), "Error",
-        JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in doColumnBrowse.");
     }
   }
 
@@ -650,12 +615,6 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
     int colIdx = 0;
     int min=0;
     int max=0;
-    if (target.getText().length() < 1) {
-      targetIdx = -1;
-    }
-    if (condition.getText().length() < 1) {
-      conditionIdx = -1;
-    }
     try {
       con = cw.getConnection();
       colIdx = 0;
@@ -685,10 +644,8 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
         // use itemRange to trace the min index and max index for each column.
         itemRange[colIdx][0] = min;
         itemRange[colIdx][1] = max;
-        //valueStmt.close();
         colIdx++;
       }
-      //valueStmt.close();
     }
     catch (Exception e){
       JOptionPane.showMessageDialog(msgBoard,
@@ -699,8 +656,9 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
   }
 
   /** get column names
+   * @param aTable the name of the table
    */
-  protected void getColNames() {
+  protected void getColNames(String aTable) {
     Statement nameStmt;
     Statement cntStmt;
     ResultSet nameSet;
@@ -712,7 +670,7 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
     try {
       con = cw.getConnection();
       metadata = con.getMetaData();
-      ResultSet columns = metadata.getColumns(null,"%",tableName.getText(),"%");
+      ResultSet columns = metadata.getColumns(null,"%",aTable,"%");
       while (columns.next()) {
         String colName = columns.getString("COLUMN_NAME");
         if (!colName.equals("SET_SIZE") && !colName.equals("CNT")) {
@@ -753,13 +711,6 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
     double support;
     double parentSupport;
     double confidence;
-    if (condition.getText().equals(target.getText()) && target.getText().length()>0) {
-      JOptionPane.showMessageDialog(msgBoard,
-                "The condition attribute cannot be same as the target attribute", "Error",
-                JOptionPane.ERROR_MESSAGE);
-      System.out.println("The condition attribute cannot be same as the target attribute");
-    }
-    else {
     try {
       con = cw.getConnection();
       // the row with set_size=null keep the total count of the data table
@@ -852,7 +803,6 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
                 JOptionPane.ERROR_MESSAGE);
       System.out.println("Error occoured in extractRules.");
     }
-    }
   }
 
 
@@ -926,21 +876,13 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
    *  and target columns.
    */
   protected void filterRules() {
-    if (target.getText().length() < 1) {
-      targetIdx = -1;
-    }
-    if (condition.getText().length() < 1) {
-      conditionIdx = -1;
-    }
-
-    // only the rules related to target class are added to finalRules
     for (int ruleIdx = 0; ruleIdx < allRules.size(); ruleIdx ++) {
       Rule aRule = (Rule)allRules.get(ruleIdx);
       // filter out rules they have the low confidence
       if (aRule.confidence >= Double.valueOf(confidenceChosen.getText()).doubleValue()/100) {
         // only the rules that match specified the condition and target columns will be displayed
-        if (matchCondition(aRule,conditionIdx) && matchTarget(aRule,targetIdx)) {
-          // if a more general rule can be found, do not display the specific rule
+        if (matchCondition(aRule,conditionSelected) && matchTarget(aRule,targetSelected)) {
+          // if a more generalized rule can be found, do not display the less generalized rule
           if (isARule(aRule)) {
             finalRules.add(aRule);
           }
@@ -949,13 +891,13 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
     }
   }
 
-  /** check whether the rule match user specified condition column
+  /** check whether the rule match user specified condition columns
    *  @param rule1 the rule to check
-   *  @param conditionIdx the condition column user has chosen
+   *  @param selected the selected condition columns
    *  @return true if the rule matches user chosen column, false otherwise
    */
-  protected boolean matchCondition(Rule rule1, int conditionIdx) {
-    if (conditionIdx == -1) { // no condition attribute is specified
+  protected boolean matchCondition(Rule rule1, int[] selected) {
+    if (selected.length==0) { // no condition attributes are selected
       return (true);
     }
     else {
@@ -963,9 +905,12 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
       TIntArrayList aList = (TIntArrayList)aSet.items;
       for (int itemIdx = 0; itemIdx < aList.size(); itemIdx ++) {
         int idx = aList.get(itemIdx);
-        if (idx >= itemRange[conditionIdx][0] &&
-            idx <= itemRange[conditionIdx][1]) {
-          return (true);
+        for (int selIdx=0; selIdx<selected.length; selIdx++) {
+          int colIdx = selected[selIdx];
+          if (idx >= itemRange[colIdx][0] &&
+            idx <= itemRange[colIdx][1]) {
+            return (true);
+          }
         }
       }
     }
@@ -974,21 +919,24 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
 
   /** check whether the rule match user specified target column
    *  @param rule1 the rule to check
-   *  @param targetIdx the target column user has chosen
+   *  @param selected the selected target columns
    *  @return true if the rule matches user chosen column, false otherwise
    */
-  protected boolean matchTarget(Rule rule1, int targetIdx) {
-    if (targetIdx == -1) { // no target attribute is specified
-      return (true);
+  protected boolean matchTarget(Rule rule1, int[] selected) {
+    if (selected.length==0) { // no condition attributes are selected
+       return (true);
     }
     else {
       FreqItemSet aSet = (FreqItemSet)freqItemSets.get(rule1.bodyIdx);
       TIntArrayList aList = (TIntArrayList)aSet.items;
       for (int itemIdx = 0; itemIdx < aList.size(); itemIdx ++) {
         int idx = aList.get(itemIdx);
-        if (idx >= itemRange[targetIdx][0] &&
-            idx <= itemRange[targetIdx][1]) {
-          return (true);
+        for (int selIdx=0; selIdx<selected.length; selIdx++) {
+          int colIdx = selected[selIdx];
+          if (idx >= itemRange[colIdx][0] &&
+            idx <= itemRange[colIdx][1]) {
+            return (true);
+          }
         }
       }
     }
