@@ -92,7 +92,7 @@ public class TableEditor extends TableViewer {
   public String getInputName(int index) {
     switch(index) {
       case 0:
-        return "Table";
+        return "Mutable Table";
       default: return "No such input";
     }
   }
@@ -158,7 +158,7 @@ public class TableEditor extends TableViewer {
      A specialized TableView that uses a TableEditorModel for the
      table model.
      */
-  public class TableEditorView extends TableView implements ItemListener {
+  public class TableEditorView extends TableView /* implements ItemListener */ {
 
     protected JComboBox[] types;
     protected int[] indices;
@@ -325,7 +325,8 @@ public class TableEditor extends TableViewer {
             types[i].setSelectedItem(STRING_TYPE);
         }
         indices[i] = types[i].getSelectedIndex();
-        types[i].addItemListener(this);
+        // types[i].addItemListener(this);
+        types[i].addActionListener(this);
       }
     }
 
@@ -695,11 +696,19 @@ public class TableEditor extends TableViewer {
 
       if (source == rows)
         removeRows();
+      // listen for events from combo boxes
+      else if (map.containsKey(source)) {
+         Integer integer = (Integer) map.get(source);
+         convertColumn(integer.intValue());
+         model.fireTableDataChanged();
+      }
       else
         super.actionPerformed(event);
     }
 
-    // Listen for events from combo boxes
+    // Listen for events from combo boxes (moved to actionPerformed so it
+    // would only fire once)
+    /*
     public void itemStateChanged(ItemEvent event) {
       Object source = event.getSource();
 
@@ -709,6 +718,7 @@ public class TableEditor extends TableViewer {
         model.fireTableDataChanged();
       }
     }
+    */
 
     protected void finishUp() {
       convertTable();
