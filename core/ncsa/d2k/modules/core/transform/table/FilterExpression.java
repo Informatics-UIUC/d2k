@@ -1320,7 +1320,8 @@ public class FilterExpression implements Expression {
 
    private Element parseElement(String expression) throws ExpressionException {
 
-
+      if (expression.length() == 0)
+         throw new ExpressionException("FilterExpression: encountered empty element");
 
       double value = Double.NaN;
 
