@@ -94,7 +94,7 @@ public class GetModelFromDB extends UIModule
   * @return the human readable name of the module.
   */
   public String getModuleName() {
-    return "GetModelFromDB";
+    return "Get Model From DB";
   }
 
   /**
@@ -123,12 +123,12 @@ public class GetModelFromDB extends UIModule
     }
   }
 
-    //QA Anca added this: 
-    public PropertyDescription[] getPropertiesDescriptions() {  
-        // so that "WindowName" property is invisible  
-        return new PropertyDescription[0];   
-    } 
- 
+    //QA Anca added this:
+    public PropertyDescription[] getPropertiesDescriptions() {
+        // so that "WindowName" property is invisible
+        return new PropertyDescription[0];
+    }
+
 
 
   protected String[] getFieldNameMapping () {

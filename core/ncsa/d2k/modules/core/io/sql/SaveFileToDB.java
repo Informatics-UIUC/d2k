@@ -88,7 +88,7 @@ public class SaveFileToDB extends UIModule
        @return The name of this module.
     */
     public String getModuleName() {
-      return "SaveFileToDB";
+      return "Save File To DB";
     }
     /**
        Return a String array containing the datatypes the inputs to this module.
@@ -143,9 +143,9 @@ public class SaveFileToDB extends UIModule
     }
 
     //QA Anca added this:
-    public PropertyDescription[] getPropertiesDescriptions() { 
-        // so that "WindowName" property is invisible 
-        return new PropertyDescription[0];  
+    public PropertyDescription[] getPropertiesDescriptions() {
+        // so that "WindowName" property is invisible
+        return new PropertyDescription[0];
     }
 
 
@@ -796,5 +796,5 @@ public class SaveFileToDB extends UIModule
 // changed the input from TableImpl to Table to be more generic
 // WISH : to be able select only certain columns to be loaded when a new database table is created.
 // or else column names should not be editable/deletable when creating a new table
-// 
+//
 

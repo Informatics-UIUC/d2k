@@ -103,7 +103,7 @@ public class SQLChooseAttributes extends UIModule {
     }
 
   public String getModuleName() {
-    return "SQLChooseAttributes";
+    return "SQL Choose Attributes";
   }
 
   public String[] getInputTypes () {

@@ -91,7 +91,7 @@ public class SaveModelToDB extends UIModule {
    * @return the human readable name of the module.
    */
   public String getModuleName() {
-    return "SaveModelToDB";
+    return "Save Model To DB";
   }
 
   /**
@@ -120,11 +120,11 @@ public class SaveModelToDB extends UIModule {
     }
   }
 
-    //QA Anca added this: 
-    public PropertyDescription[] getPropertiesDescriptions() {  
-        // so that "WindowName" property is invisible  
-        return new PropertyDescription[0];   
-    } 
+    //QA Anca added this:
+    public PropertyDescription[] getPropertiesDescriptions() {
+        // so that "WindowName" property is invisible
+        return new PropertyDescription[0];
+    }
 
   protected String[] getFieldNameMapping () {
     return null;

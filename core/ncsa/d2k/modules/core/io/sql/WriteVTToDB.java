@@ -69,7 +69,7 @@ public class WriteVTToDB extends UIModule
        @return The name of this module.
     */
     public String getModuleName() {
-      return "WriteVTToDB";
+      return "Write VT To DB";
     }
     /**
        Return a String array containing the datatypes the inputs to this module.
@@ -117,11 +117,11 @@ public class WriteVTToDB extends UIModule
         return null;
     }
 
-	    //QA Anca added this: 
-	    public PropertyDescription[] getPropertiesDescriptions() {  
-		// so that "WindowName" property is invisible  
-		return new PropertyDescription[0];   
-	    } 
+	    //QA Anca added this:
+	    public PropertyDescription[] getPropertiesDescriptions() {
+		// so that "WindowName" property is invisible
+		return new PropertyDescription[0];
+	    }
 
 
     /**

@@ -77,7 +77,7 @@ public class AvailableFieldsInput extends InputModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "AvailableFieldsInput";
+		return "Available Fields Input";
 	}
 
 	/**

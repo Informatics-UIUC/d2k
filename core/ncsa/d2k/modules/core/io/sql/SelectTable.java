@@ -76,11 +76,11 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
           return s;
 	}
 
-    //QA Anca added this: 
-    public PropertyDescription[] getPropertiesDescriptions() {  
-        // so that "WindowName" property is invisible  
-        return new PropertyDescription[0];   
-    } 
+    //QA Anca added this:
+    public PropertyDescription[] getPropertiesDescriptions() {
+        // so that "WindowName" property is invisible
+        return new PropertyDescription[0];
+    }
 
 	/**
 		This method is called by D2K to get the UserView for this module.
@@ -104,7 +104,7 @@ public class SelectTable extends ncsa.d2k.core.modules.UIModule {
 		 * @return the human readable name of the module.
 		 */
 		public String getModuleName() {
-			return "SelectTable";
+			return "Select Table";
 		}
 
 		/**

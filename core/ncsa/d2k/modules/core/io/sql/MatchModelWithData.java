@@ -66,7 +66,7 @@ public class MatchModelWithData extends ComputeModule {
    * @return the human readable name of the module.
    */
   public String getModuleName() {
-    return "MatchModelWithData";
+    return "Match Model With Data";
   }
 
   /**

@@ -228,7 +228,7 @@ System.out.println ("---- Entries - "+count);
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "ReadQueryResults";
+		return "Read Query Results";
 	}
 
 	/**

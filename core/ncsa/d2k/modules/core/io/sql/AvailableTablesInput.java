@@ -126,7 +126,7 @@ public class AvailableTablesInput extends InputModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "AvailableTablesInput";
+		return "Available Tables Input";
 	}
 
 	/**

@@ -73,11 +73,11 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 	}
 
 
-    //QA Anca added this: 
-    public PropertyDescription[] getPropertiesDescriptions() {  
-        // so that "WindowName" property is invisible  
-        return new PropertyDescription[0];   
-    } 
+    //QA Anca added this:
+    public PropertyDescription[] getPropertiesDescriptions() {
+        // so that "WindowName" property is invisible
+        return new PropertyDescription[0];
+    }
 
 
 	/**
@@ -93,7 +93,7 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "SelectFields";
+		return "Select Fields";
 	}
 
 	/**

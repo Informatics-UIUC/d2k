@@ -92,7 +92,7 @@ public class ConnectToDB extends UIModule {
 
     public String getModuleName() {
 
-        return "ConnectToDB";
+        return "Connect To DB";
 
     }
 
