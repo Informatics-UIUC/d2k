@@ -13,9 +13,11 @@ import java.io.Serializable;
 		for(all TestExamples)
 			vary every column by (highVal-lowVal)/TrialsPerExample
 			a total of TrialsPerExample times
-	All of the outputs (even though they come from different examples being varied)
+	All of the outputs (even though they come from different 
+	examples being varied)
 	are put in a single column (corresponding to an InputFeature).  Finding the
-	min, max and stdev of this column will then yield some info on the sensitivity
+	min, max and stdev of this column will then yield some info 
+	on the sensitivity
 	of the model to that input
 
 	@author Peter Groves
