@@ -255,7 +255,11 @@ public class NFoldTrainTest extends ncsa.d2k.core.modules.DataPrepModule {
 	public void setDebug(boolean b){
 		debug=b;
 	}
-
+	
+	/**subclass needs access to the number of fires*/
+	public int getNumFires(){
+		return numFires;
+	}
 	// Here's the "meat" of the module implementation
 
         /**
