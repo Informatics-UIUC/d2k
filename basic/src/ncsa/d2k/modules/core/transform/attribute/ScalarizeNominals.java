@@ -62,6 +62,11 @@ public class ScalarizeNominals extends DataPrepModule {
 	 sb.append("ones. In addition, columns with blank labels are assigned ");
 	 sb.append("default ones.");
 	 sb.append("</p>");
+
+         sb.append("<P>Missing Values Handling: Missing values are preserved by this " +
+                   "module. A missing value in a certain nominal column will have matching " +
+                   "missing values in the respective scalarized columns.");
+
 	 return sb.toString();
    }
 
@@ -432,3 +437,10 @@ public class ScalarizeNominals extends DataPrepModule {
    */
 
 }
+
+
+/**
+ * QA comment
+ * 11-26-03 Vered started qa process.
+ *          the moduel does not preserve missing values. [bug 148].
+ */
