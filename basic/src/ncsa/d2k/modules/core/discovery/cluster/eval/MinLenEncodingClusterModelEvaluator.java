@@ -59,7 +59,7 @@ public class MinLenEncodingClusterModelEvaluator
 
     s += "<p>Detailed Description: ";
     s += "The minimum encoding length measure is affected by the number of clusters ";
-    s += "formed and the amount of information tha tcan be saved by tagging cluster ";
+    s += "formed and the amount of information that can be saved by tagging cluster ";
     s += "entities with a cluster ID.  The intuition is that good clusterings ";
     s += "will form clusters that meaningfully limit the possibility of values thus ";
     s += "economizing the amount of information needed to describe the overall ";
@@ -147,7 +147,7 @@ public class MinLenEncodingClusterModelEvaluator
   public String getOutputInfo(int i) {
     switch (i) {
       case 0:
-        return "This is ther score for this model.";
+        return "This is the score for this model.";
       default:
         return "No such output";
     }

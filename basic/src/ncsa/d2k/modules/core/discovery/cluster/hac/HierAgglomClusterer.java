@@ -115,36 +115,27 @@ public class HierAgglomClusterer
     pds[4] = new PropertyDescription( "distanceMetric",
                                       DISTANCE_METRIC,
         "This property determines the type of distance function to use in calculating the " +
-        "distance between two points. This distance is used in " +
-        "in determining if cluster agglomeration should continue when the <i> "+
-        DISTANCE_THRESHOLD +
-        "</i> is specified.  Cluster centroids define the points. " +
+        "distance between two points in the space of example values. " +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +
         "<p>COSINE: 1 minus the cosine of the angle between the norms of the vectors denoted by two points.</p>");
 
     pds[1] = new PropertyDescription( "numClusters",
                                       NUM_CLUSTERS,
-       "This property specifies the number of clusters to form. It must be greater than 1 and can be "+
-       "set very low and used in conjuction with <i>" +
-       AUTO_CLUSTER +
-       "</i> and <i>" +
-       DISTANCE_THRESHOLD +
-       "</i> to automatically determine a reasonable number of clusters based on a distance threshhold value. "+
+       "This property specifies the number of clusters to form. It must be greater than 1. "+
        "If <i>"+
        AUTO_CLUSTER +
        "</i> is enabled, the <i>" +
        DISTANCE_THRESHOLD +
-       "</i> value may halt cluster agglomeration and result in more than <i>"+
-       NUM_CLUSTERS +
-       "</i> clusters. ");
+       "</i> value will halt cluster agglomeration thus determining the number of clusters formed "+
+       "independent of this property's setting.");
 
     pds[3] = new PropertyDescription( "distanceThreshold",
                                       DISTANCE_THRESHOLD,
       "This property specifies the percentage of the <i>maximum distance</i> to use " +
        "as a cutoff value to halt cluster agglomeration.  " +
        "When the distance between the two clusters that are closest exceeds the cutoff value, cluster agglomeration stops, " +
-       "even if more than <i>" +
+       "even if more or less than <i>" +
        NUM_CLUSTERS +
        "</i> remain.  Lower values for the <i>" +
        DISTANCE_THRESHOLD +
@@ -156,7 +147,10 @@ public class HierAgglomClusterer
 				      AUTO_CLUSTER,
         "If this property is true, the <i>" +
         DISTANCE_THRESHOLD +
-        "</i> will be used to control when the cluster formation process halts. ");
+        "</i> will be used to control when the cluster formation process halts indepenedent of the value set " +
+        "for <i>" +
+        NUM_CLUSTERS +
+        "</i>");
 
     pds[5] = new PropertyDescription( "checkMissingValues",
                                       CHECK_MV,

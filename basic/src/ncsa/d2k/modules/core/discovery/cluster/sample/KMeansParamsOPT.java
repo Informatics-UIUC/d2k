@@ -75,7 +75,7 @@ public class KMeansParamsOPT
     if (parm1 == 0) {
       return "Control parameters, available as a Parameter Point.";
     } else if (parm1 == 1) {
-      return "Table of entities to cluster.";
+      return "Table of examples to cluster.";
     } else {
       return "No such input.";
     }
@@ -179,7 +179,7 @@ public class KMeansParamsOPT
     } else if (parm1 == 1) {
       return "Parameters for Sample Table Rows module, available as a Parameter Point.";
     } else if (parm1 == 2) {
-      return "Table of entities to cluster, unchanged by module.";
+      return "Table of examples to cluster, unchanged by module.";
     } else {
       return "No such output.";
     }

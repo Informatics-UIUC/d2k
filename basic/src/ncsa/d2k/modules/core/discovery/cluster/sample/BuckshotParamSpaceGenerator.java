@@ -69,7 +69,7 @@ public class BuckshotParamSpaceGenerator extends AbstractParamSpaceGenerator {
                                     "This property specifies the number of clusters to form (>= 2).");
     pds[1] = new PropertyDescription(SEED,
                                      "Seed",
-                                     "The seed for the random number generater used to select the random sampling of table rows. If this value is set to the same value for different runs, the results be the exact same.");
+                                     "The seed for the random number generater used to select the random sampling of table rows. If this value is set to the same value for different runs, the results could be exactly the same.");
     pds[2] = new PropertyDescription(USE_FIRST,
                                      "Use First",
                                      "If this option is selected, the first entries in the original table will be used as the sample.");

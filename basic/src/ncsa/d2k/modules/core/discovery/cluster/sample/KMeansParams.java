@@ -178,7 +178,7 @@ public class KMeansParams
    */
   public String getInputInfo(int parm1) {
     if (parm1 == 0) {
-      return "Table of entities to cluster.";
+      return "Table of examples to cluster.";
     } else {
       return "No such input.";
     }
