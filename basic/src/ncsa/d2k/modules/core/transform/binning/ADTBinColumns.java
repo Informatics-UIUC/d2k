@@ -18,7 +18,7 @@ import ncsa.d2k.modules.core.datatype.table.transformations.*;
 /**
  * put your documentation comment here
  */
-public class ADTBinColumns extends UIModule {
+public class ADTBinColumns extends HeadlessUIModule {
    private static final String EMPTY = "",
       COLON = " : ",
       COMMA = ",",
@@ -113,9 +113,12 @@ public class ADTBinColumns extends UIModule {
     * @return
     */
    public String getInputName(int i) {
-      if (i == 0)
-         return "AD Tree";
-      return "no such input";
+      switch(i){
+        case 0: return "AD Tree";
+        case 1: return "Example Table";
+        default: return "no such input";
+      }
+
    }
 
    /**
@@ -1036,9 +1039,15 @@ public class ADTBinColumns extends UIModule {
                //binIt(createInNewColumn.isSelected());
                Object[] tmp = binListModel.toArray();
                BinDescriptor[] bins = new BinDescriptor[tmp.length];
+
                for (int i = 0; i < bins.length; i++)
                   bins[i] = (BinDescriptor) tmp[i];
-               BinTransform bt =
+
+              //headless conversion support
+               setBinDes(bins);
+               //headless conversion support
+
+                BinTransform bt =
                   new BinTransform(bins, createInNewColumn.isSelected());
                pushOutput(bt, 0);
                //pushOutput(tbl, 1);
@@ -1713,7 +1722,32 @@ public class ADTBinColumns extends UIModule {
          return sb.toString();
       }
    } // ADTBinColumnsView
-}
+
+   //headless conversion support
+  private BinDescriptor[] binDes;
+  public void setBinDes(Object[] bins){binDes = (BinDescriptor[])bins;}
+  public Object[] getBinDes(){return binDes;}
+  private boolean newColumn;
+  public void setNewColumn(boolean val){newColumn = val;}
+  public boolean getNewColumn(){return newColumn;}
+
+  public PropertyDescription[] getPropertiesDescriptions(){
+    PropertyDescription[] pds = new PropertyDescription[2];
+    pds[0] = super.getPropertiesDescriptions()[0];
+    pds[1] = new PropertyDescription("newColumn", "Create In New Column",
+            "Set this property to true if you wish the binned columns to be created in new columns");
+    return pds;
+  }
+
+  protected void doit(){
+    pullInput(0);
+    pullInput(1);
+    pushOutput(new BinTransform(binDes, newColumn), 0);
+
+  }//doit
+  //headless conversion support
+
+}//ADTBinColumns
 
 class ADTBinCounts implements BinCounts {
 
@@ -1746,6 +1780,9 @@ class ADTBinCounts implements BinCounts {
    public int[] getCounts(int col, double[] borders) {
       return null;
    }
+
+
+
 }
 
 /**
