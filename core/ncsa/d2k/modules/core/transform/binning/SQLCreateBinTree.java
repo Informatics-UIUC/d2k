@@ -99,7 +99,7 @@ public class SQLCreateBinTree extends DataPrepModule {
 		// get the attributes names from the input features
 		int[] inputFeatures = et.getInputFeatures();
 		if ((inputFeatures == null) || (inputFeatures.length == 0))
-		    throw new Exception("Input features are missing. Please select the input features.");
+		    throw new Exception(getAlias() + ":Please select the input features, they are missing.");
 		String[] an = new String[inputFeatures.length];
 		for (int i = 0; i < inputFeatures.length; i++)
 		    an[i] = et.getColumnLabel(i);//.toLowerCase();
@@ -107,13 +107,21 @@ public class SQLCreateBinTree extends DataPrepModule {
 		// get the class name from the outputFeatures
 		int[] outputFeatures = et.getOutputFeatures();
 		if (outputFeatures == null || outputFeatures.length == 0)
-		    throw new Exception("Output feature is missing. Please select an output feature.");
-
+		    throw new Exception(getAlias() + ": Please select an output feature, it is missing");
 
 		String classLabel = et.getColumnLabel(outputFeatures[0]);
 		if( et.isColumnScalar(outputFeatures[0]))
-		    throw new Exception("Output feature cannot be scalar.");
+		    throw new Exception(getAlias() + ": Output feature must be nominal. Please transform it.");
 
+		if (btrans == null)
+		    throw new Exception(getAlias() + ": Bins must be defined before creating a BinTree");
+
+		BinDescriptor [] bins = btrans.getBinDescriptors();
+		
+		if(bins.length == 0 || bins.length < inputFeatures.length )
+		    throw new Exception(getAlias() + 
+			      ": Bins must be defined for each input before creating BinTree.");
+		
 		//System.out.println("CreateSQLBinTree classLabel " + classLabel);
 		int totalClassified = 0;
 		int classTotal;
