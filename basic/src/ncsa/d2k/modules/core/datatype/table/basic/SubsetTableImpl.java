@@ -278,7 +278,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     */
    public Column getColumn (int pos) {
       return this.compressColumn(pos);
-   }
+   } 
 
    /**
     * Column may or may not be the correct size for this table, it may only
@@ -372,7 +372,8 @@ public class SubsetTableImpl extends MutableTableImpl {
             expandedColumn.setValueToMissing(true, i);
          } else {
             expandedColumn.setObject(this.getObject(i, colindex), i);
-            expandedColumn.setValueToMissing(false, subset[i]);
+            // ANCA: replaced line: expandedColumn.setValueToMissing(false, subset[i]);
+            expandedColumn.setValueToMissing(false, i);
          }
       }
       return expandedColumn;      
@@ -421,9 +422,14 @@ public class SubsetTableImpl extends MutableTableImpl {
     */
    public void insertColumns(Column [] datatype, int where){
       Column [] newCols = new Column[datatype.length];
-      for (int i = 0 ; i < newCols.length ; i++)
-         newCols[i] = this.expandColumn(datatype[i]);
-      super.insertColumns(newCols, where);
+      //for (int i = 0 ; i < newCols.length ; i++)
+      //  newCols[i] = this.expandColumn(datatype[i]);
+      //super.insertColumns(newCols, where);
+      //ANCA fixed the above problem where only the first column was expanded properly
+      for (int i = 0 ; i < newCols.length ; i++) {
+        newCols[i] = this.expandColumn(datatype[i]);
+        super.insertColumn(newCols[i], where+i);
+      }
    }
    
    /**
@@ -464,7 +470,7 @@ public class SubsetTableImpl extends MutableTableImpl {
          cols[i] = oldcols[i].getSubset(newsubset);
       }
 
-      vt = new MutableTableImpl(cols);
+      vt = new SubsetTableImpl(cols);
       vt.setLabel(this.getLabel());
       vt.setComment(this.getComment());
       return vt;
@@ -826,4 +832,27 @@ public class SubsetTableImpl extends MutableTableImpl {
    public void setBoolean(boolean data, int row, int column) {
       columns[column].setBoolean(data, subset[row]);
    }
+   
+//		ANCA: method for comparing two Table objects.
+   // Could be more efficient but as is used only in Junit tests,
+   // less code is more important than speed of execution.
+   // should also compare missing and empty arrays for columns or use column.equals
+  /* public boolean equals(Object tbl) {
+   SubsetTableImpl table;
+   	try {
+   		table = (SubsetTableImpl) tbl;
+   	} catch (Exception e) {
+   		return false;
+   	}
+
+   	if(getNumRows() != table.getNumRows()) return false;
+   	if(getNumColumns() != table.getNumColumns()) return false;
+   	for (int i =0; i < getNumRows(); i ++) {
+   		for (int j =0; j < getNumColumns(); j ++)
+   			if(!getObject(i,j).equals(table.getObject(i,j))) return false;
+   	}
+   	return true;
+
+   }
+*/
 }
