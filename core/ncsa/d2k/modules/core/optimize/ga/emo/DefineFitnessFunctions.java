@@ -29,6 +29,10 @@ public class DefineFitnessFunctions
     return "Define Fitness Functions";
   }
 
+  public String getModuleInfo() {
+    return "";
+  }
+
   protected UserView createUserView() {
     return new FFConstructionGUI();
   }
@@ -46,11 +50,11 @@ public class DefineFitnessFunctions
   }
 
   public String getInputName(int i) {
-    return "EMOPopulationInfo";
+    return "Population Info";
   }
 
   public String getOutputName(int i) {
-    return "EMOPopulationInfo";
+    return "Population Info";
   }
 
   public String getInputInfo(int i) {
@@ -557,7 +561,6 @@ public class DefineFitnessFunctions
 
         FitnessFunctionConstruction added = new FitnessFunctionConstruction(
             newNameField.getText(), gui.getTextArea().getText());
-System.out.println(added.label+" "+added.expression);
         added.setIsMinimizing(true);
         newColumnModel.addElement(added);
         newColumnList.setMinimumSize(new Dimension(200, 200));

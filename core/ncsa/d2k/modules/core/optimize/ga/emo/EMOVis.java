@@ -563,6 +563,7 @@ public class EMOVis
         headerColumn.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         headerColumn.getTableHeader().setReorderingAllowed(false);
         headerColumn.createDefaultColumnsFromModel();
+        headerColumn.setDefaultRenderer(String.class, new RotatedLabelRenderer());
         headerColumn.setDefaultEditor(new String().getClass(),
                                       new DefaultCellEditor(combobox));
 
@@ -623,7 +624,7 @@ public class EMOVis
         for (int i = 0; i < numColumns; i++) {
           if (i == 0) {
             column = headerColumn.getColumnModel().getColumn(i);
-            column.setPreferredWidth(40);
+            column.setPreferredWidth(20);
           }
           else {
             column = jTable.getColumnModel().getColumn(i - 1);
@@ -807,7 +808,6 @@ public class EMOVis
             repostEvent(e);
             dispatchComponent = null;
           }
-
         }
       }
 
@@ -998,6 +998,22 @@ public class EMOVis
           Object value, boolean isSelected, boolean hasFocus, int row,
           int column) {
         return (Component) value;
+      }
+    }
+
+    class RotatedLabelRenderer extends JComponent implements TableCellRenderer {
+      public RotatedLabelRenderer() {
+      }
+
+      /**
+         Set the icon and paint the border for this cell.
+       */
+      public Component getTableCellRendererComponent(JTable table,
+          Object value, boolean isSelected, boolean hasFocus, int row,
+          int column) {
+        JPanel pnl = new JPanel(new BorderLayout());
+        pnl.add(new ncsa.gui.RotatedLabel((String)value), BorderLayout.CENTER);
+        return pnl;
       }
     }
 

@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
+import ncsa.d2k.modules.core.optimize.util.*;
 import ncsa.d2k.modules.core.transform.table.*;
 
 /**
@@ -27,41 +28,6 @@ public class EvaluateEMOPopulation
         "ncsa.d2k.modules.core.optimize.ga.emo.NsgaPopulation"};
     return types;
   }
-
-  //private double[] decode(binary[] binaryInd){
-/*  private double[] decode(MOBinaryIndividual binaryInd){
-    double[] doubleInd;
-
-    int i,l,k,m,j,iparam,nparam;
-
-    nparam = binaryInd.getNumBits();
-
-    l=1;
-    for(k=0; k<nparam; k++) { // where nparam is the string length
-       iparam=0;
-       m=1;
-       for(j=m; j<=m+ig2(k)-1; m++){
-          l=l+1;
-          iparam=iparam+binaryInd[j]*(2**(m+ig2[k]-1-j))
-      }
-      doubleInd[k] =g0[k]+g1[k]*(double)iparam;
-    }
-   }*/
-
-   // g0 = lower bound?
-   // g1 = precision?
-
-  //
-  //  g0       = lower bound values of the parameter array to be optimized.
-  //  g1       = the increment by which the parameter array is increased
-  //             from the lower bound values in the g0 array.  The minimum
-  //             parameter value is g0 and the maximum parameter value
-  //             equals g0+g1*(2**g2-1), i.e. g1 is the incremental value
-  //             between min and max.
-  //  ig2      = array of the number of bits per parameter, i.e. the number
-  //             of possible values per parameter.  For example, ig2=2 is
-  //            equivalent to 4 (=2**2) possibilities, ig2=4 is equivalent
-  //            to 16 (=2**4) possibilities.
 
   private MutableTable table;
   private NsgaPopulation population;
@@ -90,7 +56,7 @@ public class EvaluateEMOPopulation
       Individual[] individuals = pop.getMembers();
       boolean binaryType = false;
       if(individuals.length > 0) {
-        if(individuals[0] instanceof BinaryIndividual)
+        if(individuals[0] instanceof MOBinaryIndividual)
           binaryType = true;
         else
           binaryType = false;
@@ -108,7 +74,45 @@ public class EvaluateEMOPopulation
       // do the decoding so that the entries copied into the table are
       // real-valued
       else {
-          // we should do decoding here.
+          int numTraits = 0;
+          BinaryRange[] traits = (BinaryRange[]) pop.getTraits();
+
+          // for each individual
+          for (int j = 0; j < pop.size(); j++) {
+            double[] genes = ( (MOBinaryIndividual) pop.getMember(j)).toDouble();
+
+            // the max and precision are contained in the boundsAndPrecision table
+            Table bounds = ( (NsgaPopulation) pop).getPopulationInfo().boundsAndPrecision;
+
+            int curPos = 0;
+            for (int k = 0; k < traits.length; k++) {
+              int numBits = traits[k].getNumBits();
+              double num = 0.0d;
+              double max = bounds.getDouble(k, 2);
+              double min = bounds.getDouble(k, 1);
+              double precision = bounds.getDouble(k, 3);
+
+              double interval = (max - min) * precision;
+
+              // this is one trait
+              for (int l = 0; l < numBits; l++) {
+                if (genes[curPos] != 0) {
+                  num = num + Math.pow(2.0, l);
+                }
+                curPos++;
+              }
+
+              // if it is above the max, scale it down
+              num = num * precision + min;
+              if (num > max) {
+                num = max;
+              }
+              if (num < min) {
+                num = min;
+              }
+              table.setDouble(num, j, k);
+            }
+          }
       }
 
       //extract the fitness function variables information
@@ -142,7 +146,7 @@ public class EvaluateEMOPopulation
         // function values into it.
         for (int mynewii = 0; mynewii < pop.size(); mynewii++) {
           Individual mymember = pop.getMember(mynewii);
-          MONumericIndividual myni = (MONumericIndividual) mymember;
+          MOSolution myni = (MOSolution) mymember;
           myni.setObjective(i, table.getFloat(mynewii, column));
         }
       }
@@ -206,8 +210,7 @@ public class EvaluateEMOPopulation
           constrvalue += table.getFloat(mynewii, myconstraintpos[iijj]);
         }
         Individual mymember = pop.getMember(mynewii);
-        MONumericIndividual myni = (MONumericIndividual) mymember;
-        ( (NsgaSolution) myni).setConstraint(constrvalue);
+        ( (NsgaSolution) mymember).setConstraint(constrvalue);
       }
 
       // now remove the added columns so we can reuse the table again

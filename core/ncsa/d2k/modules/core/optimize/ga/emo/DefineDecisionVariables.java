@@ -20,7 +20,7 @@ public class DefineDecisionVariables
     implements Serializable {
 
   public String getModuleName() {
-    return "Define Variables";
+    return "Define Decision Variables";
   }
 
   public String[] getInputTypes() {
@@ -50,14 +50,6 @@ public class DefineDecisionVariables
      @return the description of the indexed output.
   */
   public String getOutputName(int i) {
-    /*switch (i) {
-      case 0:
-        return "Population table";
-      case 1:
-        return "Variable table model";
-      default:
-        return "No such output";
-    }*/
     return "Population Info";
   }
 
@@ -135,18 +127,13 @@ public class DefineDecisionVariables
   private class DefineVarView
       extends ncsa.d2k.userviews.swing.JUserPane {
 
-    private TableImpl table1;
     private JTextField numVarTf;
-
-    private JScrollPane jsp1;
-    private JTable tb;
 
     private DefaultTableModel model;
     private JLabel total_string_length = new JLabel("Total String Length:");
 
     public void initView(ViewModule viewmodule) {
       setLayout(new BorderLayout());
-      JPanel dummy = new JPanel();
       JPanel MainPanel[] = new JPanel[2];
 
       MainPanel[0] = new JPanel();
@@ -162,6 +149,7 @@ public class DefineDecisionVariables
       //the user.
       JLabel numVarLbl = new JLabel("Number of variables:");
       numVarTf = new JTextField(4);
+      numVarTf.setHorizontalAlignment(JTextField.CENTER);
       //This Update button will add the rows to the table
       //in accordance with the number of variables specified by
       //the user. If the number of variable specified is too large
@@ -187,33 +175,13 @@ public class DefineDecisionVariables
              */
             for (int i = model.getRowCount();
                  i < Integer.parseInt(numVarTf.getText()); i++) {
-              model.addRow(new Object[] {"x" + i, "x" + i, "",
+              model.addRow(new Object[] {Integer.toString(i), "x" + i, "",
                            "", "", ""});
             }
             for (int i = model.getRowCount();
                  i > Integer.parseInt(numVarTf.getText()); i--) {
               model.removeRow(i - 1);
             }
-
-            /**
-                 If previous values are stored in itinerary, initialized table model to them,
-                 helps cache values so that saves time when entering values
-             */
-            /*CachedRowValue[] previousSaved = getSavedRows();
-                           if(previousSaved != null) {
-              for (int i = 0; i < model.getRowCount(); i++) {
-                if (i < previousSaved.length && previousSaved[i] != null &&
-                    previousSaved[i].getlower() != null &&
-                    previousSaved[i].getupper() != null &&
-                    previousSaved[i].getprecision() != null) {
-                  model.setValueAt(previousSaved[i].getlower(), i, 2);
-                  model.setValueAt(previousSaved[i].getupper(), i, 3);
-                  model.setValueAt(previousSaved[i].getprecision(), i, 4);
-                }
-              }
-                           }*/
-            //revalidate();
-            //repaint();
           }
           catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null,
@@ -234,74 +202,6 @@ public class DefineDecisionVariables
           readFromFile();
         }
       });
-
-      // this button is pressed after the user has entered
-      // the ranges for all the variables and also the
-      // precision values for all the variables. When this button
-      // is pressed it calculates the string length.
-      // if all the values are not entered a warning dialog
-      // box is displayed.
-      //JButton calStrLenBt = new JButton("Calc. String Len");
-      //calStrLenBt.setBackground(buttonColor);
-
-      /*calStrLenBt.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent actionevent) {
-          boolean flag = false;
-          for (int i = 0; i < model.getRowCount(); i++) {
-            if ( ( (String) model.getValueAt(i, 2)).trim().length() == 0) {
-              flag = true;
-              break;
-            }
-            if ( ( (String) model.getValueAt(i, 3)).trim().length() == 0) {
-              flag = true;
-              break;
-            }
-            if ( ( (String) model.getValueAt(i, 4)).trim().length() == 0) {
-              flag = true;
-              break;
-            }
-          }
-          if (flag) {
-            JOptionPane.showMessageDialog(null,
-                                          "Please enter all information",
-                                          "alert", JOptionPane.ERROR_MESSAGE);
-          }
-          //this is the total length of the binary
-          //string that will be used to encode the
-          //individuals in the GA population.
-          else {
-            int totalLength = 0;
-            for (int i = 0; i < model.getRowCount(); i++) {
-              float numU, numL, numP, temp;
-              int sLength;
-              numU = Float.parseFloat( (String) model.getValueAt(i, 3));
-              numL = Float.parseFloat( (String) model.getValueAt(i, 2));
-              numP = Float.parseFloat( (String) model.getValueAt(i, 4));
-              if (numU < numL) {
-                JOptionPane.showMessageDialog(null,
-                    "Upper Value is less than lower value at row" + (i + 1) +
-                    " ", "alert",
-                    JOptionPane.ERROR_MESSAGE);
-                break;
-              }
-              temp = (numU - numL) / numP;
-              temp = temp + 1;
-              temp = (float) Math.log( (double) temp);
-              double temp1 = 2.0;
-              temp = (float) (temp / Math.log(temp1));
-              sLength = (int) temp;
-              if ( (temp - sLength) > 0.00001) {
-                sLength = sLength + 1;
-              }
-              totalLength += sLength;
-              model.setValueAt(new Integer(sLength), i, 5);
-            }
-            // display the total length of the string
-            total_string_length.setText(" Total String Length : " +
-                                        totalLength + " ");
-          }
-        }
-             });*/
 
       /**
        * 4 panels created, 2 of JPanel type, and 2 of Box type
@@ -325,11 +225,10 @@ public class DefineDecisionVariables
       top_left_panel.add(numVarLbl);
       top_left_panel.add(numVarTf);
 
-      bottom_left_panel.add(Box.createHorizontalStrut(100));
+      bottom_left_panel.add(Box.createHorizontalGlue());
       bottom_left_panel.add(updateBt);
-      bottom_left_panel2.add(Box.createHorizontalStrut(55));
+      bottom_left_panel2.add(Box.createHorizontalGlue());
       bottom_left_panel2.add(readFromFileBt);
-      //bottom_left_panel2.add(calStrLenBt);
 
       /**
        * myBox holds the left panels with rigid areas between them
@@ -372,10 +271,6 @@ public class DefineDecisionVariables
           return names[column];
         }
 
-        /*public Class getColumnClass(int c) {
-          return getValueAt(0, c).getClass();
-                 }*/
-
         public boolean isCellEditable(int row, int col) {
           return (col != 5 && col != 0);
         }
@@ -383,28 +278,25 @@ public class DefineDecisionVariables
         public void setValueAt(Object value, int row, int col) {
           super.setValueAt(value, row, col);
           if (col == 4) {
-            String val = (String) value;
 
             try {
-//              double d = Double.parseDouble(val);
-//System.out.println("hello: "+d);
-              boolean flag = false;
+              /*boolean isok = true;
               for (int i = 0; i < model.getRowCount(); i++) {
                 if (model.getValueAt(i, 2) != null &&
                     ( (String) model.getValueAt(i, 2)).trim().length() == 0) {
-                  flag = true;
+                  isok = true;
                   break;
                 }
 
                 if (model.getValueAt(i, 3) != null &&
                     ( (String) model.getValueAt(i, 3)).trim().length() == 0) {
-                  flag = true;
+                  isok = true;
                   break;
                 }
-                //if ( ( (String) model.getValueAt(i, 4)).trim().length() == 0) {
-                //  flag = true;
-                //  break;
-                //}
+                if ( ( (String) model.getValueAt(i, 4)).trim().length() == 0) {
+                  isok = true;
+                  break;
+                }
               }
 
               /*if (flag) {
@@ -479,7 +371,7 @@ public class DefineDecisionVariables
        * table properties set: model object, background color,
        * gridcolor
        */
-      tb = new JTable(model);
+      JTable tb = new JTable(model);
       DefaultCellEditor dce = new DefaultCellEditor(new JTextField());
       dce.setClickCountToStart(1);
       tb.getColumnModel().getColumn(1).setCellEditor(dce);
@@ -502,7 +394,7 @@ public class DefineDecisionVariables
        * Also, properties set for JScrollPane: min, preferred size,
        * and background color
        */
-      jsp1 = new JScrollPane(tb);
+      JScrollPane jsp1 = new JScrollPane(tb);
       jsp1.setPreferredSize(new Dimension(400, 100));
       jsp1.setMinimumSize(new Dimension(400, 100));
       //jsp1.setBackground(background_color);
@@ -592,7 +484,7 @@ public class DefineDecisionVariables
        * Two button objects added to it: done button and abort button
        * Property set:  background color
        */
-      bottom_button_panel = new JPanel();
+      bottom_button_panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       //bottom_button_panel.setBackground(background_color);
       bottom_button_panel.add(abrtBt);
       bottom_button_panel.add(doneBt);
@@ -612,7 +504,6 @@ public class DefineDecisionVariables
       add(myPanel, BorderLayout.NORTH);
 
       add(MainPanel[1], BorderLayout.CENTER);
-
     }
 
     public void setInput(Object object, int index) {}
@@ -625,7 +516,7 @@ public class DefineDecisionVariables
      * displayed table is also passed.
      */
     private void passOutput() {
-      table1 = new MutableTableImpl(model.getRowCount());
+      MutableTable table1 = new MutableTableImpl(model.getRowCount());
       float[] tempdata = new float[0];
       for (int i = 0; i < model.getRowCount(); i++) {
         table1.setColumn(tempdata, i);

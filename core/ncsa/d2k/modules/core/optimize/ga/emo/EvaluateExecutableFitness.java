@@ -18,16 +18,10 @@ import ncsa.d2k.modules.core.optimize.util.*;
  * @version 1.0
  */
 
-//public class EvaluateExecutableFitness extends EvaluateModule {
 public class EvaluateExecutableFitness
     extends ncsa.d2k.core.modules.ComputeModule {
 
-//  private int numExecFitness;
-  //MutableTableImpl fitnessExecs;// new TableImpl();
-//  private int[] execFitnessIds;
-//  private int[] numOutputFiles;
-
-  private Table fitnessExecs; // new TableImpl();
+  private Table fitnessExecs;
   private String[] execPathNames;
   private String[] execInputFileNames;
   private String[] execOutputFileNames;
@@ -149,205 +143,125 @@ public class EvaluateExecutableFitness
    Evaluate the individuals in this class.
    */
   public void doit() throws Exception {
-    /*if(fitnessExecs == null) {
-      fitnessExecs = (MutableTableImpl) this.pullInput(1);
-      return;
-              }*/
-
-    //  System.out.println("***************************************************");
-    //  System.out.println("entering doit function of EvaluateExecutableFitness");
     NsgaPopulation pop = (NsgaPopulation)this.pullInput(0);
     fitnessExecs = pop.getPopulationInfo().externalFitnessInfo;
 
-    //Population pop = (Population) this.pullInput(0);
-    // ***************
-
-    //fitnessExecs = new MutableTableImpl();
-    //fitnessExecs = (MutableTableImpl) this.pullInput(1);
-
-    // **************
-    //execFitnessIds = this.getFitnessIds();
-
-//            execPathNames = new String[getNumFitnessExecs()];
     execPathNames = this.getFitnessExecPaths();
-
-//            execInputFileNames = new String[getNumFitnessExecs()];
     execInputFileNames = this.getInputFileNames();
-
-//            execOutputFileNames = new String[getNumFitnessExecs()];
     execOutputFileNames = this.getOutputFileNames();
 
-//            numOutputFiles= new int[getNumFitnessExecs()];
-    //numOutputFiles = this.getNumOutputFiles();
-    // writing individual genes to all input files
-    // and prepare the input files before execution
-
-    Individual [] members = pop.getMembers();
-    if(members.length > 0) {
-      if(members[0] instanceof MOBinaryIndividual)
+    Individual[] members = pop.getMembers();
+    if (members.length > 0) {
+      if (members[0] instanceof MOBinaryIndividual) {
         this.writeBinaryGenesToFile(pop, execInputFileNames);
-      else
+      }
+      else {
         this.writeNumericGenesToFile(pop, execInputFileNames);
+      }
     }
 
-    // evaluating fitness of individuals
-    //Individual ind = pop.getMember(i);
-    //if (ind.isDirty()){
-    //System.out.println("***************************************************");
-    //System.out.println("CurrentGeneration in evaluateexecutablefitness: " + pop.getCurrentGeneration());
-    //System.out.println("execFitnessIds1 is " + execFitnessIds[0]);
-    //System.out.println("execFitnessIds1 is " + execFitnessIds[0]);
     this.evaluatePopulation(pop);
 
     this.pushOutput(pop, 0);
-    //this.pushOutput (fitnessExecs, 1);
   }
 
- /*
-  * This writes the genes of individuals to input files for different
-  * fitness function executables, that might be present in different directories
-  */
-  public void writeBinaryGenesToFile (Population popul, String[] execInputFileNames) throws IOException {
-  //(NsgaPopulation popul, String[] execInputFileNames) throws IOException {
+  /*
+   * This writes the genes of individuals to input files for different
+   * fitness function executables, that might be present in different directories
+   */
+  public void writeBinaryGenesToFile(Population popul,
+                                     String[] execInputFileNames) throws
+      IOException {
+    for (int i = 0; i < getNumFitnessExecs(); i++) {
+      try {
+        if (execInputFileNames[i] != null) {
+          FileWriter stringFileWriter = new FileWriter(execInputFileNames[i]);
+          BufferedWriter bw = new BufferedWriter(stringFileWriter);
+          PrintWriter pw = new PrintWriter(bw);
 
-    //  String genes = new String() ;
+          int numTraits = 0;
 
-      for (int i = 0 ; i < getNumFitnessExecs(); i++) {
-          try {
-             if (execInputFileNames[i] != null){
-                 FileWriter stringFileWriter = new FileWriter(execInputFileNames[i]);
-                 BufferedWriter bw = new BufferedWriter(stringFileWriter);
-                 PrintWriter pw = new PrintWriter(bw);
+          BinaryRange[] traits = (BinaryRange[]) popul.getTraits();
 
-                // NsgaSolution ni = (NsgaSolution)  popul.getMember(0);
-                  //double [] genes = (double []) ((Individual) ni).getGenes ();
-                 MOBinaryIndividual ni = (MOBinaryIndividual) popul.getMember(0);
-               // double [] genes = (double []) ni.getGenes ();
-                 //boolean [] genes = (boolean []) ni.getGenes ();
+          // write population size in file
+          pw.println(popul.size());
 
-                 //int numTraits = genes.length;
-                 int numTraits = 0;
+          // write length of each gene/chromosome
+          pw.println(traits.length);
 
-                  BinaryRange[] traits = (BinaryRange[])popul.getTraits();
+          // write genes
+          for (int j = 0; j < popul.size(); j++) {
+            double[] genes = ( (MOBinaryIndividual) popul.getMember(j)).
+                toDouble();
 
-               //  int [] genes = (int [])popul.getMember(0).getGenes ();
-//                 System.out.println("genes length" + numTraits);
-//                 System.out.println("*****************************");
+            // the max and precision are contained in the boundsAndPrecision table
+            Table bounds = ( (NsgaPopulation) popul).getPopulationInfo().
+                boundsAndPrecision;
 
-                 //System.out.println("popul size in "+ execInputFileNames[i]+"is "+ popul.size ());
+            int curPos = 0;
+            for (int k = 0; k < traits.length; k++) {
+              int numBits = traits[k].getNumBits();
+              double num = 0.0d;
+              double max = bounds.getDouble(k, 2);
+              double min = bounds.getDouble(k, 1);
+              double precision = bounds.getDouble(k, 3);
 
-                 // write population size in file
-                 pw.println(popul.size ());
-                 // write length of each gene/chromosome
-                 pw.println(traits.length);
-                 // write genes
-                 for ( int j = 0; j < popul.size (); j++ ){
-                 //   genes = popul.getMember(j).getGenes().toString();
-                 //   genes = (double [])((MONumericIndividual) popul.getMember(j)).getGenes ();
-                 // genes = (boolean [])((MOBinaryIndividual) popul.getMember(j)).getGenes ();
-                 double[] genes = ((MOBinaryIndividual)popul.getMember(j)).toDouble();
-//                    numTraits = genes.length;
+              double interval = (max - min) * precision;
 
-                  // the max and precision are contained in the boundsAndPrecision table
-                  Table bounds = ((NsgaPopulation)popul).getPopulationInfo().boundsAndPrecision;
-
-/*System.out.println("************** Invdividual: ");
-                  for(int z = 0; z < genes.length; z++) {
-                          if(genes[z] == 1.0)
-                                  System.out.print(1);
-                          else
-                                  System.out.print(0);
-                          System.out.print(" ");
-                  }
-                  System.out.println("");
-*/
-                  int curPos = 0;
-                  for(int k = 0; k < traits.length; k++) {
-                    int numBits = traits[k].getNumBits();
-                    double num = 0.0d;
-                    double max = bounds.getDouble(k, 2);
-                    double min = bounds.getDouble(k, 1);
-                    double precision = bounds.getDouble(k, 3);
-
-                    double interval = (max-min)*precision;
-
-                    // this is one trait
-                    for(int l = 0; l < numBits; l++) {
-                        //System.out.println("genes[curpos]" + genes[curPos]);
-                      if (genes[curPos] != 0) {
-                        num = num + Math.pow(2.0, l);
-//    System.out.println("**** num: "+num+" k: "+k+" l: "+l+" g: "+genes[curPos]);
-                      }
-                      curPos++;
-                    }
-//                    System.out.print("cp: "+curPos+" num: "+num);
-
-                    // if it is above the max, scale it down
-                    num = num*precision +min;
-//System.out.println(" NUM: "+num+" i:"+interval+" mx: "+max+" mn: "+min+" p: "+precision);
-                    if(num > max)
-                      num = max;
-                    if(num < min)
-                      num = min;
-                    pw.print(num+SPACE);
-                  }
-
-
-                    //if (popul.getMember(j).isDirty()){
-                     // write to file
-                    // System.out.println("numtraits :" + numTraits);
-/*                       for (int k =0; k < numTraits; k++){
-                         if (genes[k] == false){
-                           // pw.print(genes[k] + "  ");
-                           pw.print(ZERO);
-                         } else {
-                           pw.print(ONE);
-                         }
-                       }*/
-                       pw.println();
-                       //System.out.println("indiv id "+ j);
-                    // }
-
-                  }
-                 pw.println();
-                 // close file and streams
-                 pw.flush();
-                 bw.flush();
-                 stringFileWriter.flush();
-                 pw.close();
-                 bw.close();
-                 stringFileWriter.close();
-
-                 }
+              // this is one trait
+              for (int l = 0; l < numBits; l++) {
+                if (genes[curPos] != 0) {
+                  num = num + Math.pow(2.0, l);
+                }
+                curPos++;
               }
-          catch (Exception e) {
 
-                 e.printStackTrace();
+              // if it is above the max, scale it down
+              num = num * precision + min;
+              if (num > max) {
+                num = max;
+              }
+              if (num < min) {
+                num = min;
+              }
+              pw.print(num + SPACE);
+            }
+
+            pw.println();
+          }
+          pw.println();
+          // close file and streams
+          pw.flush();
+          bw.flush();
+          stringFileWriter.flush();
+          pw.close();
+          bw.close();
+          stringFileWriter.close();
+        }
+      }
+      catch (Exception e) {
+
+        e.printStackTrace();
 //                 System.err.println("IOException");
 //                 System.exit(1);
 
-                 }
-          }
+      }
+    }
 
   }
 
-
-
-
   private void evaluatePopulation(Population popul) { //(NsgaPopulation popul) { //
 
-    //MONumericIndividual[] ni = new MONumericIndividual[popul.size()];
     NsgaSolution[] ni = new NsgaSolution[popul.size()];
     String outputFileName = new String();
 
     for (int i = 0; i < popul.size(); i++) {
-      //ni[i] = (MONumericIndividual) popul.getMember(i);
       ni[i] = (NsgaSolution) popul.getMember(i);
     }
 
-    /* Evaluate the Fitnesses using the fitness executable path names and alloting
+        /* Evaluate the Fitnesses using the fitness executable path names and alloting
        the fitness values to respective ids in the population
-    */
+     */
 
     HashSet rows = new HashSet();
     rows.add(new Integer(0));
@@ -367,7 +281,6 @@ public class EvaluateExecutableFitness
       }
     }
 
-
     int fitnessID = 0;
     for (int i = 0; i < getNumFitnessExecs(); i++) {
 
@@ -385,31 +298,30 @@ public class EvaluateExecutableFitness
           ExecRunner er = new ExecRunner();
           //er.setMaxRunTimeSecs(0);
           er.exec(execPathNames[i].toString());
-        //System.out.println("<STDOUT>\n" + er.getOutString() + "</STDOUT>");
-        //System.out.println("<STDERR>\n" + er.getErrString() + "</STDERR>");
+          //System.out.println("<STDOUT>\n" + er.getOutString() + "</STDOUT>");
+          //System.out.println("<STDERR>\n" + er.getErrString() + "</STDERR>");
         }
 
-
         // Exit nicely
-         //System.exit(0);
+        //System.exit(0);
 
         // Obtain fitnesses after evaluation is over
         // reading fitness of all individuals from all output files
         //for (int k = 0; k < numOutputFiles[i]; k++) {
         //for (int k = 0; k < execOutputFileNames.length; k++) {
-          outputFileName = execOutputFileNames[i];
-          //System.out.println("name of fitness file : " + outputFileName);
-          //System.out.println(" **************** ");
-          fitness = this.readFitnessFromFile(popul, outputFileName);
-          for (int j = 0; j < popul.size(); j++) {
-            ni[j].setObjective(fitnessID, fitness[j]);
-            //  System.out.println("Fitness" + fitnessID + " in individual : " + j + "is " + fitness[j] );
-          }
+        outputFileName = execOutputFileNames[i];
+        //System.out.println("name of fitness file : " + outputFileName);
+        //System.out.println(" **************** ");
+        fitness = this.readFitnessFromFile(popul, outputFileName);
+        for (int j = 0; j < popul.size(); j++) {
+          ni[j].setObjective(fitnessID, fitness[j]);
+          //  System.out.println("Fitness" + fitnessID + " in individual : " + j + "is " + fitness[j] );
+        }
 
-          //  System.out.println("Fitness in module : " + fitnessID );
-          //  System.out.println("Fitness 1 in individual : " + fitness[1] );
-          //  System.out.println("Fitness 2 in individual : " + fitness[2] );
-          fitnessID = fitnessID + 1;
+        //  System.out.println("Fitness in module : " + fitnessID );
+        //  System.out.println("Fitness 1 in individual : " + fitness[1] );
+        //  System.out.println("Fitness 2 in individual : " + fitness[2] );
+        fitnessID = fitnessID + 1;
         //}
 
       }
@@ -428,11 +340,9 @@ public class EvaluateExecutableFitness
    * This writes the genes of individuals to input files for different
        * fitness function executables, that might be present in different directories
    */
-  private void writeNumericGenesToFile(Population popul, String[] execInputFileNames) throws
+  private void writeNumericGenesToFile(Population popul,
+                                       String[] execInputFileNames) throws
       IOException {
-    //(NsgaPopulation popul, String[] execInputFileNames) throws IOException {
-
-    //  String genes = new String() ;
 
     for (int i = 0; i < getNumFitnessExecs(); i++) {
       try {
@@ -441,17 +351,9 @@ public class EvaluateExecutableFitness
           BufferedWriter bw = new BufferedWriter(stringFileWriter);
           PrintWriter pw = new PrintWriter(bw);
 
-          // NsgaSolution ni = (NsgaSolution)  popul.getMember(0);
-          //double [] genes = (double []) ((Individual) ni).getGenes ();
           MONumericIndividual ni = (MONumericIndividual) popul.getMember(0);
           double[] genes = (double[]) ni.getGenes();
-          //  boolean [] genes = (boolean []) ni.getGenes ();
-          //  int [] genes = (int [])popul.getMember(0).getGenes ();
           int numTraits = genes.length;
-          //System.out.println("genes length" + numTraits);
-          //System.out.println("*****************************");
-
-          //System.out.println("popul size in "+ execInputFileNames[i]+"is "+ popul.size ());
 
           // write population size in file
           pw.println(popul.size());
@@ -462,24 +364,13 @@ public class EvaluateExecutableFitness
             //   genes = popul.getMember(j).getGenes().toString();
             genes = (double[]) ( (MONumericIndividual) popul.getMember(j)).
                 getGenes();
-            // genes = (boolean [])((MOBinaryIndividual) popul.getMember(j)).getGenes ();
             numTraits = genes.length;
 
-            //if (popul.getMember(j).isDirty()){
             // write to file
-            // System.out.println("numtraits :" + numTraits);
             for (int k = 0; k < numTraits; k++) {
-              //if (genes[k] == false){
               pw.print(genes[k] + SPACE);
-              // pw.print(0 + "  ");
-              //} else {
-              // pw.print(1 + "  ");
-              // }
             }
             pw.println();
-            //System.out.println("indiv id "+ j);
-            // }
-
           }
           pw.println();
           // close file and streams
@@ -489,7 +380,6 @@ public class EvaluateExecutableFitness
           pw.close();
           bw.close();
           stringFileWriter.close();
-
         }
       }
       catch (Exception e) {
@@ -513,7 +403,6 @@ public class EvaluateExecutableFitness
    */
   private double[] readFitnessFromFile(Population popul, String outFileName) throws
       IOException {
-//(NsgaPopulation popul, String outFileName ) throws IOException {
     double[] fit = new double[popul.size()];
     String[] sline = new String[2 * popul.size()];
     try {
@@ -522,20 +411,13 @@ public class EvaluateExecutableFitness
         BufferedReader br = new BufferedReader(stringFileReader);
 
         int i;
-//System.out.println("Name of fitness file in read fitness : " + outFileName);
         i = 0;
         sline[i] = br.readLine();
         while (sline[i] != null) {
-//System.out.println("sline " + i + " : " + sline[i]);
-          //Double db = new Double(sline[i]);
-          //fit[i] = db.doubleValue();
-          fit[i] = Double.parseDouble(sline[i]);//db.parseDouble(sline[i]);
+          fit[i] = Double.parseDouble(sline[i]); //db.parseDouble(sline[i]);
           i = i + 1;
           sline[i] = br.readLine();
         }
-        //System.out.println("num of fitness in read fitness" + i);
-        //System.out.println("fitness 1 in read fitness" + fit[1]);
-        //   System.out.println("fitness 145 in read fitness" + fit[145]);
 
         // close file and streams
         br.close();
@@ -555,14 +437,13 @@ public class EvaluateExecutableFitness
    * This returns the ID of all the fitness functions that are evaluated using
    * an executable.
    */
-/*  public int[] getFitnessIds() {
-    int[] execFitIds = new int[getNumFitnessExecs()];
-    for (int i = 0; i < getNumFitnessExecs(); i++) {
-      execFitIds[i] = fitnessExecs.getInt(i, 0);
-    }
-
-    return execFitIds;
-  }*/
+  /*  public int[] getFitnessIds() {
+      int[] execFitIds = new int[getNumFitnessExecs()];
+      for (int i = 0; i < getNumFitnessExecs(); i++) {
+        execFitIds[i] = fitnessExecs.getInt(i, 0);
+      }
+      return execFitIds;
+    }*/
 
   /*
    * This returns an array with entire path names of fitness executables
@@ -594,14 +475,14 @@ public class EvaluateExecutableFitness
    * This returns the number of output files of all the fitness functions that are evaluated using
        * an executable. These files would contain the fitness values after evaluation.
    */
-/*  private int[] getNumOutputFiles() {
-    int[] OutputFileNum = new int[getNumFitnessExecs()];
-    for (int i = 0; i < getNumFitnessExecs(); i++) {
-      //OutputFileNum[i] = fitnessExecs.getInt(i,3);
-      OutputFileNum[i] = 1;
-    }
-    return OutputFileNum;
-  }*/
+  /*  private int[] getNumOutputFiles() {
+      int[] OutputFileNum = new int[getNumFitnessExecs()];
+      for (int i = 0; i < getNumFitnessExecs(); i++) {
+        //OutputFileNum[i] = fitnessExecs.getInt(i,3);
+        OutputFileNum[i] = 1;
+      }
+      return OutputFileNum;
+    }*/
 
   /*
    * This returns the output file names of all the fitness functions that are evaluated using
