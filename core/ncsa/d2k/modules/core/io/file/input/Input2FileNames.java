@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.io.file.input;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.beans.PropertyVetoException;
 
 import javax.swing.*;
 
@@ -35,40 +36,93 @@ public class Input2FileNames extends InputModule {
     }
 
     public String getOutputInfo(int i) {
-        return "The absolute pathname of the specified file.";
+        if(i == 0)
+            return  "The name of the first file, possibly including the path.";
+        else
+            return "The name of the second file, possibly including the path.";
     }
 
     public String getOutputName(int i) {
         if(i == 0)
-            return "filename1";
+            return "File Name 1";
         else
-            return "filename2";
+            return "File Name 2";
+    }
+   /** Return the name of this module.
+     *  @return The display name for this module.
+     */
+    public String getModuleName() {
+        return "Input 2 File Names";
     }
 
     public String getModuleInfo() {
-        return "Input the names of two files.  The file names are input in "+
-                "the property editor for this module.  Use the 'Browse' buttons "+
-                "to select the files from your local filesystem.";
+        String s = "<p>Overview: ";
+        s += "This module is used to enter the names of two files. ";
+        s += "</p><p>Detailed Description: ";
+        s += "The module provides a properties editor that can be used to ";
+        s += "enter two file names.  The user can enter the names directly ";
+        s += "into text areas or click 'Browse' buttons to navigate ";
+        s += "the local filesystem. ";
+        s += "</p><p>";
+        s += "This module does not perform any checks to verify that ";
+        s += "the named files exist and are accessible by the user.  Such ";
+        s += "checking does not make sense as the module has no insight into ";
+        s += "how the file names will be used - for example, to read ";
+        s += "existing files or to create new ones. A check is performed to ";
+        s += "make sure that file names have been entered and an exception is ";
+        s += "thrown if either editor text area is blank. ";
+        s += "</p><p>";
+        s += "The file names are made available on the <i>File Name 1</i> ";
+        s += "and <i>File Name 2</i> output ports.";
+        s += "A path may or may not be included in each file name ";
+        s += "string.  The final forms shown in the properties editor ";
+        s += "text boxes are sent to the output ports. ";
+        s += "Typically when the Browser is used, the absolute path is ";
+        s += "included.";
+
+        return s;
+    }
+
+    /** Return an array with information on the properties the user may update.
+     *  @return The PropertyDescriptions for properties the user may update.
+     */
+    public PropertyDescription[] getPropertiesDescriptions() {
+        PropertyDescription[] pds = new PropertyDescription [2];
+
+        pds[0] = new PropertyDescription( "fileName0",
+                 "File Name 1",
+                 "The name of the first file, possibly including the path." );
+        pds[1] = new PropertyDescription( "fileName1",
+                 "File Name 2",
+                 "The name of the second file, possibly including the path.");
+        return pds;
     }
 
     /** file name0 property */
     private String fileName0;
 
-    public void setFileName0(String s) {
+    public void setFileName0(String s) throws PropertyVetoException {
+        if (s == null || s.length() == 0) {
+            throw new PropertyVetoException("File Name 1 was not given.", null);
+        }
         fileName0 =  s;
-        //fn0.setText(fileName0);
+        //jtf.setText(fileName);
     }
 
     public String getFileName0() {
         return fileName0;
     }
 
+
     /** file name1 property */
     private String fileName1;
 
-    public void setFileName1(String s) {
-        fileName1 = s;
-        //fn1.setText(fileName1);
+    public void setFileName1(String s) throws PropertyVetoException {
+        if (s == null || s.length() == 0) {
+            throw new PropertyVetoException("File Name 2 was not given.", null);
+        }
+        fileName1 =  s;
+        //jtf.setText(fileName);
     }
 
     public String getFileName1() {
