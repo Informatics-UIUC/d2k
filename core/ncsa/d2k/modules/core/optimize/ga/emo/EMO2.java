@@ -136,6 +136,7 @@ public class EMO2
         if (cumulativePop == null) {
           if (currentPop != null && lastPop != null) {
             cumulativePop = new NewNsgaPopulation(currentPop, lastPop);
+            ((NewNsgaPopulation)cumulativePop).filtering();
             cumulativePopTable = (MutableTable)currentPopTable.copy();
             NsgaSolution[] nis = (NsgaSolution[]) (cumulativePop.getMembers());
             int num = nis.length;
@@ -144,8 +145,8 @@ public class EMO2
           }
         }
         else {
-
           cumulativePop = new NewNsgaPopulation(currentPop, cumulativePop);
+          ((NewNsgaPopulation)cumulativePop).filtering();
           NsgaSolution[] nis = (NsgaSolution[]) (cumulativePop.getMembers());
           int num = nis.length;
           cumulativePopTable.setNumRows(num);
