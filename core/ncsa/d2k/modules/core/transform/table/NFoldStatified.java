@@ -90,6 +90,11 @@ public class NFoldStatified extends NFoldExTable{
 
     String once;
 
+    public void beginExecution() {
+        super.beginExecution();
+        once = null;
+    }
+
     protected void setup(){
         once = new String("first");
         table = (Table) this.pullInput (0);
