@@ -180,6 +180,18 @@ public class SparseSubsetTable extends SparseMutableTable {
   // column.
   //
 
+  public int[] getRowIndices(int rowNumber) {
+    return super.getRowIndices(subset[rowNumber]);
+  }
+
+  public int[] getRowIndicesUnsorted(int rowNumber) {
+    return super.getRowIndicesUnsorted(subset[rowNumber]);
+  }
+
+  public int getRowNumEntries(int position) {
+    return super.getRowNumEntries(subset[position]);
+  }
+
 
   /**
           Sort the specified column and rearrange the rows of the table to
