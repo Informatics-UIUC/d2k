@@ -174,7 +174,7 @@ public class SQLFilterConstruction extends UIModule {
          // scalar columns will require textfield input; nominal columns will
          // require a combobox of nominal values:
 
-         scalarField = new JTextField(6);
+         scalarField = new JTextField(10);
 
          addScalarButton = new JButton("Add");
          addScalarButton.addActionListener(this);
@@ -184,28 +184,6 @@ public class SQLFilterConstruction extends UIModule {
          nominalOrScalarLayout = new CardLayout();
          comboOrFieldPanel.setLayout(nominalOrScalarLayout);
          comboOrFieldPanel.add(scalarField, scalar);
-
-         /*
-         for (int i = 0; i < table.getNumColumns(); i++) {
-
-            if (!table.isColumnNominal(i))
-               continue;
-
-            JComboBox nominalCombo = new JComboBox(getUniqueValues(i));
-
-            comboOrFieldPanel.add(nominalCombo, table.getColumnLabel(i));
-            nominalComboBoxLookup.put(new Integer(i), nominalCombo);
-
-         }
-
-         */
-         /*
-         if (table.isColumnNominal(0)) {
-            nominalOrScalarLayout.show(comboOrFieldPanel,
-               table.getColumnLabel(0));
-            nominalShowing = 0;
-         }
-         */
 
          // find the first scalar column
          nominalShowing = 0;

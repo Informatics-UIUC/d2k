@@ -149,7 +149,7 @@ public class FilterConstruction extends UIModule {
 		 // require a combobox of nominal values:
 		 // {
 
-		 scalarField = new JTextField(6);
+		 scalarField = new JTextField();
 
 		 addScalarButton = new JButton("Add");
 		 addScalarButton.addActionListener(this);
