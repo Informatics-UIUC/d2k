@@ -206,7 +206,6 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
 
         if (InitialExecution || (!RecycleExamples)) {
 
-          RandomNumberGenerator = new Random(RandomSeed);
           ExampleSet   = (ExampleTable) this.pullInput(2);
 
           ///////////////////////
@@ -239,12 +238,12 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
             RandomizedIndices = new int[numExamples];
           }
 
-          for (int e = 0; e < numExamples; e++)
-            RandomizedIndices[e] = e;
 
 
           InitialExecution = false;
         }
+
+        RandomNumberGenerator = new Random(RandomSeed);
 
         PhaseIndex = 1;
         break;
@@ -252,6 +251,10 @@ public class MultiTrainTestBiasEvaluator extends ComputeModule {
       case 1:
 
         if (ExampleSetIndex - UtilityIndex < BatchSize && ExampleSetIndex < NumRepetitions) {
+
+
+          for (int e = 0; e < numExamples; e++)
+            RandomizedIndices[e] = e;
 
           randomizeIntArray(RandomizedIndices, numExamples);
 
