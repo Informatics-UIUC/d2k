@@ -1483,6 +1483,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                   }
                 }
                 // put anything left in a bin
+               // System.out.println("itemCnt " + itemCnt + " for  "+ colName );
                 if (itemCnt > 0)
                   list.add(db1);
 				stmt.close();
@@ -1491,36 +1492,44 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
 					  JOptionPane.showMessageDialog(msgBoard,
 							 e.getMessage(), "Error",
 							 JOptionPane.ERROR_MESSAGE);
-						   System.out.println("Error occoured in addFromWeight. " + e);
+						   System.out.println("Error occured in addFromWeight. " + e);
 					   }
 
                 double[] binMaxes = new double[list.size()];
                 for (int j = 0; j < binMaxes.length; j++) {
                   binMaxes[j] = ((Double)list.get(j)).doubleValue();
-                 //System.out.println("binmaxes for j = " + j + " is " +  binMaxes[j]);
+                // System.out.println("binmaxes for j = " + j + " is " +  binMaxes[j]);
                 }
+             
+				if (binMaxes.length < 2) {
+							 BinDescriptor nbd = createMinMaxBinDescriptor(colIdx[i]);
+								addItemToBinList(nbd);
+					 } else {
+					 
+             
                 // add the first bin manually
                 BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
                         binMaxes[0]);
                 addItemToBinList(nbd);
                 // Dora changed from   for (int j = 1; j < binMaxes.length-1; j++) {
-                for (int j = 1; j < binMaxes.length; j++) {
+                for (int j = 1; j < binMaxes.length -1; j++) {
                     // now create the BinDescriptor and add it to the bin list
-                    nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -
-                    1], binMaxes[j]);
+                    nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j]);
                     addItemToBinList(nbd);
                 }
                         // add the last bin - anca:
                         // Dora commented out the following 2 lines.
-                        /*
-                   if(binMaxes.length-2>0)     nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-2]);
-                   else     nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[0]); */
+                        
+                   //if(binMaxes.length-2>0) 
+                       nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-2]);
+                   //else 
+                     //  nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[0]); 
 
                 // Dora added the following line.
-                nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-1]);
+                //nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-1]);
 
                 addItemToBinList(nbd);
-
+				}
             }
         }
 
@@ -1603,6 +1612,20 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             return  nb;
         }
 
+		/**
+				* Create a numeric bin that goes from Double.NEGATIVE_INFINITY to Double.POSITIVE_INFINITY
+				*/
+			   private BinDescriptor createMinMaxBinDescriptor (int col) {
+				   StringBuffer nameBuffer = new StringBuffer();
+				   nameBuffer.append(OPEN_BRACKET);
+				   nameBuffer.append(DOTS);
+				   nameBuffer.append(COLON);
+				   nameBuffer.append(DOTS);
+				   nameBuffer.append(CLOSE_BRACKET);
+				   BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
+						   Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,(String)fieldNames[col]);
+				   return  nb;
+			   }
         /**
          * add an item to a bin
          * @param bd the BinDescriptor to use

@@ -1,20 +1,11 @@
 package ncsa.d2k.modules.core.transform.binning;
 
-
-
 import java.util.*;
-
 import java.text.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
-
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
-
 import ncsa.d2k.modules.core.io.sql.*;
-
 import java.sql.*;
-
-
 
 /**
 
@@ -28,36 +19,28 @@ import java.sql.*;
 
 public class SQLAutoBin extends AutoBin {
 
-
-
 	public String[] getInputTypes() {
 
 		String[] in =
-
 			{
-
 				"ncsa.d2k.modules.core.io.sql.DBConnection",
-
 				"java.lang.String",
+				"ncsa.d2k.modules.core.datatype.table.ExampleTable" };
 
-				"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-
-			//	"java.lang.String" };
+		//	"java.lang.String" };
 
 		return in;
 
 	}
 
-
-
 	/**
-
+	
 	* Get the name of the input parameter
-
+	
 	* @param i is the index of the input parameter
-
+	
 	* @return Name of the input parameter
-
+	
 	*/
 
 	public String getInputName(int i) {
@@ -76,9 +59,9 @@ public class SQLAutoBin extends AutoBin {
 
 				return "Meta Data Example Table";
 
-			//case 3 :
+				//case 3 :
 
-			//	return "Query Condition";
+				//	return "Query Condition";
 
 			default :
 
@@ -88,36 +71,31 @@ public class SQLAutoBin extends AutoBin {
 
 	}
 
-
-
 	/**
-
+	
 	* Get the data types for the output parameters
-
+	
 	* @return A object of class BinTransform
-
+	
 	*/
 
 	public String[] getOutputTypes() {
 
 		String[] types =
-
 			{ "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform" };
 
 		return types;
 
 	}
 
-
-
 	/**
-
+	
 	 * Get input information
-
+	
 	 * @param i is the index of the input parameter
-
+	
 	 * @return A description of the input parameter
-
+	
 	 */
 
 	public String getInputInfo(int i) {
@@ -136,9 +114,9 @@ public class SQLAutoBin extends AutoBin {
 
 				return "ExampleTable containing the names of the input/output features";
 
-			//case 3 :
+				//case 3 :
 
-			//	return "The query conditions.";
+				//	return "The query conditions.";
 
 			default :
 
@@ -148,16 +126,14 @@ public class SQLAutoBin extends AutoBin {
 
 	}
 
-
-
 	/**
-
+	
 	 * Get the name of the output parameters
-
+	
 	 * @param i is the index of the output parameter
-
+	
 	 * @return Name of the output parameter
-
+	
 	 */
 
 	public String getOutputName(int i) {
@@ -176,16 +152,14 @@ public class SQLAutoBin extends AutoBin {
 
 	}
 
-
-
 	/**
-
+	
 	 * Get output information
-
+	
 	 * @param i is the index of the output parameter
-
+	
 	 * @return A description of the output parameter
-
+	
 	 */
 
 	public String getOutputInfo(int i) {
@@ -204,142 +178,97 @@ public class SQLAutoBin extends AutoBin {
 
 	}
 
-
-
 	public String getModuleName() {
 
 		return "SQL Auto Discretization";
 
 	}
 
-
-
 	public String getModuleInfo() {
 
 		String s =
-
 			"<p>Overview: Automatically discretize scalar data for the "
-
 				+ "Naive Bayesian classification model. "
-
 				+ "<p>Detailed Description: Given a database connection, a database table name "
-
 				+ "a query condition, and a metadata ExampleTable containing the names of columns "
-
 				+ "define the bins for each scalar input column.  "
-
 				+ "<p>Data Type Restrictions: This module does not modify the input data."
+				+ "<P>Data Handling: When binning Uniformly, "
+				+ "the number of bins is determined by '<i>Number of Bins</i>' property, "
+				+ "and the boundaries of the bins are set so that they divide evenly over the range "
+				+ "of the binned column. "
+				+ " When binning by weight, '<i>Number of Items per Bin</I>' sets the size of each bin. "
+				+ "The values are then binned so that in each bin there is the same number of items. ";
 
-                                + "<P>Data Handling: When binning Uniformly, "
-
-                                    + "the number of bins is determined by '<i>Number of Bins</i>' property, "
-
-                                    + "and the boundaries of the bins are set so that they divide evenly over the range "
-
-                                    + "of the binned column. "
-
-                                    + " When binning by weight, '<i>Number of Items per Bin</I>' sets the size of each bin. "
-
-                                    + "The values are then binned so that in each bin there is the same number of items. ";
-
-
-
-                                /*
-
-				+ "<p>Data Handling: When binning scalar columns by the number of bins, "
-
-				+ "the maximum and minimum values of each column must be found.  When "
-
-				+ "binning scalar columns by weight, group by statements are used.";*/
+		/*
+		
+		+ "<p>Data Handling: When binning scalar columns by the number of bins, "
+		
+		+ "the maximum and minimum values of each column must be found.  When "
+		
+		+ "binning scalar columns by weight, group by statements are used.";*/
 
 		return s;
 
 	}
 
-
-
 	DBConnection conn;
 
-	String tableName;//, whereClause;
+	String tableName; //, whereClause;
 
 	ExampleTable tbl;
 
-    NumberFormat nf;
+	NumberFormat nf;
 
+	public void doit() throws Exception {
 
+		conn = (DBConnection) pullInput(0);
 
-    public void doit() throws Exception {
+		tableName = (String) pullInput(1);
 
+		//tbl = (ExampleTable) pullInput(2);
 
-
-	conn = (DBConnection) pullInput(0);
-
-	tableName = (String) pullInput(1);
-
-	//tbl = (ExampleTable) pullInput(2);
-
-	//whereClause = (String) pullInput(3);
-
-
+		//whereClause = (String) pullInput(3);
 
 		try {
 
-				tbl = (ExampleTable) pullInput(2);
+			tbl = (ExampleTable) pullInput(2);
 
-		} catch ( ClassCastException ce) {
+		} catch (ClassCastException ce) {
 
 			throw new Exception(
-
-							getAlias()
-
-								+ ": Select input/output features using SQLChooseAttributes before this module");
+				getAlias()
+					+ ": Select input/output features using SQLChooseAttributes before this module");
 
 		}
 
+		nf = NumberFormat.getInstance();
 
+		nf.setMaximumFractionDigits(3);
 
-	nf = NumberFormat.getInstance();
+		int type = getBinMethod();
 
-	nf.setMaximumFractionDigits(3);
+		int[] inputs = tbl.getInputFeatures();
 
-	int type = getBinMethod();
+		if (inputs == null || inputs.length == 0)
+			throw new Exception("Input features are missing. Please select an input feature.");
 
+		int[] outputs = tbl.getOutputFeatures();
 
+		if (outputs == null || outputs.length == 0)
+			throw new Exception("Output feature is missing. Please select an output feature.");
 
-	int [] inputs = tbl.getInputFeatures();
+		if (tbl.isColumnScalar(outputs[0]))
+			throw new Exception("Output feature must be nominal.");
 
-	if (inputs == null || inputs.length == 0)
-
-	    throw new Exception("Input features are missing. Please select an input feature.");
-
-
-
-	int [] outputs = tbl.getOutputFeatures();
-
-	if (outputs == null || outputs.length == 0)
-
-	    throw new Exception("Output feature is missing. Please select an output feature.");
-
-	if(tbl.isColumnScalar(outputs[0]))
-
-	    throw new Exception("Output feature must be nominal.");
-
-
-
-
-
-
-
-	BinDescriptor[] bins;
+		BinDescriptor[] bins;
 
 		if (type == 0) {
 
 			int number = getNumberOfBins();
 
 			if (number < 0)
-
 				throw new Exception(
-
 					getAlias() + ": Number of bins not specified!");
 
 			bins = numberOfBins(number);
@@ -352,19 +281,11 @@ public class SQLAutoBin extends AutoBin {
 
 		}
 
-
-
-
-
 		//Add bins named "unknown" for each binned column that has missing values
 
 		//bins = BinningUtils.addMissingValueBins(tbl,bins);
 
-
-
 		BinTransform bt = new BinTransform(tbl, bins, false);
-
-
 
 		pushOutput(bt, 0);
 
@@ -372,11 +293,7 @@ public class SQLAutoBin extends AutoBin {
 
 	}
 
-
-
 	protected BinDescriptor[] numberOfBins(int num) throws Exception {
-
-
 
 		List bins = new ArrayList();
 
@@ -385,8 +302,6 @@ public class SQLAutoBin extends AutoBin {
 		int[] outputs = tbl.getOutputFeatures();
 
 		boolean colTypes[] = getColTypes(inputs.length);
-
-
 
 		for (int i = 0; i < inputs.length; i++) {
 
@@ -400,11 +315,7 @@ public class SQLAutoBin extends AutoBin {
 
 				// find the maxes and mins
 
-
-
 				double minMaxTotal[] = getMMTValues(i);
-
-
 
 				double min = minMaxTotal[0];
 
@@ -418,19 +329,18 @@ public class SQLAutoBin extends AutoBin {
 
 				binMaxes[0] = min + interval;
 
-               // System.out.println("binmaxes[0] " + binMaxes[0]);
+				// System.out.println("binmaxes[0] " + binMaxes[0]);
 
-
-
-                // add the first bin manually
+				// add the first bin manually
 
 				BinDescriptor bd =
-
-					BinDescriptorFactory.createMinNumericBinDescriptor(inputs[i], binMaxes[0],nf,tbl);
+					BinDescriptorFactory.createMinNumericBinDescriptor(
+						inputs[i],
+						binMaxes[0],
+						nf,
+						tbl);
 
 				bins.add(bd);
-
-
 
 				// now add the rest
 
@@ -439,14 +349,12 @@ public class SQLAutoBin extends AutoBin {
 					binMaxes[j] = binMaxes[j - 1] + interval;
 
 					bd =
-
 						BinDescriptorFactory.createNumericBinDescriptor(
-
 							inputs[i],
-
 							binMaxes[j - 1],
-
-							binMaxes[j],nf,tbl);
+							binMaxes[j],
+							nf,
+							tbl);
 
 					bins.add(bd);
 
@@ -457,18 +365,15 @@ public class SQLAutoBin extends AutoBin {
 				// now add the last bin
 
 				bd =
-
 					BinDescriptorFactory.createMaxNumericBinDescriptor(
-
 						inputs[i],
-
-						binMaxes[binMaxes.length - 1],nf,tbl);
+						binMaxes[binMaxes.length - 1],
+						nf,
+						tbl);
 
 				bins.add(bd);
 
 			}
-
-
 
 			// if it is nominal, create a bin for each unique value.
 
@@ -487,15 +392,10 @@ public class SQLAutoBin extends AutoBin {
 					st[0] = item;
 
 					BinDescriptor bd =
-
 						new TextualBinDescriptor(
-
 							i,
-
 							item,
-
 							st,
-
 							tbl.getColumnLabel(i));
 
 					bins.add(bd);
@@ -506,283 +406,198 @@ public class SQLAutoBin extends AutoBin {
 
 		}
 
-
-
 		BinDescriptor[] bn = new BinDescriptor[bins.size()];
 
 		for (int i = 0; i < bins.size(); i++) {
 
 			bn[i] = (BinDescriptor) bins.get(i);
 
-
-
 		}
 
-        //		add "unkown" bins for relevant attributes that have missing values
+		//		add "unkown" bins for relevant attributes that have missing values
 
-	   //bn = BinningUtils.addMissingValueBins(tbl,bn);
+		//bn = BinningUtils.addMissingValueBins(tbl,bn);
 
 		return bn;
 
 	}
 
+	protected BinDescriptor[] sameWeight(int weight) throws Exception {
+
+		List bins = new ArrayList();
+		int[] inputs = tbl.getInputFeatures();
+		int[] outputs = tbl.getOutputFeatures();
+		boolean colTypes[] = getColTypes(inputs.length);
+
+		for (int i = 0; i < inputs.length; i++) {
+
+			//vered - debug
+			//System.out.println("making bins for column " + inputs[i]);
+			// if it is scalar, get the data and sort it.  put (num) into each bin,
+			// and create a new bin when the last one fills up
+
+			boolean isScalar = colTypes[i];
+
+			// System.out.println("scalar ? " + i + " " + isScalar);
+
+			if (isScalar) {
+				ArrayList list = new ArrayList();
+				try {
+
+					Double db1 = null;
+					String colName = tbl.getColumnLabel(i);
+					Connection con = conn.getConnection();
+
+					// Dora add the where clause to fix bug 172
+					String queryStr =
+						"select "
+							+ colName
+							+ ", count("
+							+ colName
+							+ ") from "
+							+ tableName
+							+ " where "
+							+ colName
+							+ " is not null group by "
+							+ colName;
+
+					Statement stmt = con.createStatement();
+					ResultSet groupSet = stmt.executeQuery(queryStr);
+
+					// anca int itemCnt = 0;
+					// dora changed from int itemCnt =-1
+					int itemCnt = 0;
+
+					while (groupSet.next()) {
+						itemCnt += groupSet.getInt(2);
+						db1 = new Double(groupSet.getDouble(1));
+						//System.out.println("itemCnt " + itemCnt + " db1  " + db1);
+						// Dora changed from if (itemCnt >= (weight - 1)) {
+						if (itemCnt >= weight) {
+
+							// itemCnt >= specified weight, add the value to the list
+
+							list.add(db1);
+
+							// reset itemCnt
+							// Dora changed from itemCnt = -1;
+							itemCnt = 0;
+
+						}
+
+					}
+
+					// put anything left in a bin
+
+					if (itemCnt > 0)
+						list.add(db1);
+						
+					stmt.close();
+			  }
+				   catch (Exception e) {
+					  						   System.out.println("Error occured in addFromWeight. " + e);
+				   }
 
 
-    protected BinDescriptor[] sameWeight(int weight) throws Exception {
+					double[] binMaxes = new double[list.size()];
+					for (int j = 0; j < binMaxes.length; j++) {
+						binMaxes[j] = ((Double) list.get(j)).doubleValue();
 
-	List bins = new ArrayList();
+					}
 
-	int[] inputs = tbl.getInputFeatures();
+					if (binMaxes.length < 2) {
+								 BinDescriptor nbd = BinDescriptorFactory.createMinMaxBinDescriptor(i,tbl);
+									bins.add(nbd);
+						 } else  {
+						 
+					// add the first bin manually
 
-	int[] outputs = tbl.getOutputFeatures();
+					BinDescriptor nbd =
+						BinDescriptorFactory.createMinNumericBinDescriptor(
+							i,
+							binMaxes[0],
+							nf,
+							tbl);
 
-	boolean colTypes[] = getColTypes(inputs.length);
+					bins.add(nbd);
 
+					// Dora changed from   for (int j = 1; j < binMaxes.length-1; j++) {
+					for (int j = 1; j < binMaxes.length -1; j++) {
+						// now create the BinDescriptor and add it to the bin list
+						nbd =
+							BinDescriptorFactory.createNumericBinDescriptor(
+								i,
+								binMaxes[j - 1],
+								binMaxes[j],
+								nf,
+								tbl);
+						bins.add(nbd);
+					}
 
+					// now add the last bin
 
-	for (int i = 0; i < inputs.length; i++) {
+					//if (binMaxes.length > 1)
+						nbd =
+							BinDescriptorFactory
+								.createMaxNumericBinDescriptor(i,
+							// dora changed from binMaxes[binMaxes.length - 2],
+										binMaxes[binMaxes.length - 2], nf, tbl);
+					// Dora comment out
+					//else
+					//					nbd =		BinDescriptorFactory.createMaxNumericBinDescriptor( i,
+					//									   binMaxes[binMaxes.length - 1],
+					//									   nf,
+					//									   tbl); 
 
+					bins.add(nbd);
+					}
+			
 
+				
+			} else {
 
-          //vered - debug
+				HashSet vals = uniqueValues(i);
 
-          //System.out.println("making bins for column " + inputs[i]);
+				Iterator iter = vals.iterator();
 
+				while (iter.hasNext()) {
 
+					String item = (String) iter.next();
 
-	    // if it is scalar, get the data and sort it.  put (num) into each bin,
+					String[] st = new String[1];
 
-	    // and create a new bin when the last one fills up
+					st[0] = item;
 
-	    boolean isScalar = colTypes[i];
+					BinDescriptor bd =
+						new TextualBinDescriptor(
+							i,
+							item,
+							st,
+							tbl.getColumnLabel(i));
 
-	   // System.out.println("scalar ? " + i + " " + isScalar);
+					bins.add(bd);
 
-	    if (isScalar) {
-
-		try {
-
-		    Double db1 = null;
-
-		    ArrayList list = new ArrayList();
-
-		    String colName = tbl.getColumnLabel(i);
-
-		    Connection con = conn.getConnection();
-
-                    // Dora add the where clause to fix bug 172
-		    String queryStr ="select "+ colName+ ", count("+ colName+ ") from "+
-                           tableName+ " where " + colName + " is not null group by "+ colName;
-
-		    Statement stmt = con.createStatement();
-
-		    ResultSet groupSet = stmt.executeQuery(queryStr);
-
-		    // anca int itemCnt = 0;
-                    // dora changed from int itemCnt =-1
-		    int itemCnt =0;
-
-		    while (groupSet.next()) {
-
-			itemCnt += groupSet.getInt(2);
-
-			db1 = new Double(groupSet.getDouble(1));
-
-
-
-
-
-			//System.out.println("itemCnt " + itemCnt + " db1  " + db1);
-                        // Dora changed from if (itemCnt >= (weight - 1)) {
-			if (itemCnt >= weight) {
-
-			    // itemCnt >= specified weight, add the value to the list
-
-			    list.add(db1);
-
-			    // reset itemCnt
-			    // Dora changed from itemCnt = -1;
-			    itemCnt = 0;
+				}
 
 			}
 
-		    }
-
-		    // put anything left in a bin
-
-		    if (itemCnt > 0)
-
-			list.add(db1);
-
-		    double[] binMaxes = new double[list.size()];
-
-		    for (int j = 0; j < binMaxes.length; j++) {
-
-		    	binMaxes[j] = ((Double) list.get(j)).doubleValue();
-
-
-
-
-
-		    }
-
-		    // add the first bin manually
-
-		    BinDescriptor nbd =
-
-			BinDescriptorFactory.createMinNumericBinDescriptor(
-
-									   i,
-
-									   binMaxes[0],
-
-									   nf,
-
-									   tbl);
-
-		    bins.add(nbd);
-
-
-
-		    // Dora changed from   for (int j = 1; j < binMaxes.length-1; j++) {
-		    for (int j = 1; j < binMaxes.length; j++) {
-
-			// now create the BinDescriptor and add it to the bin list
-
-			nbd =
-
-			    BinDescriptorFactory.createNumericBinDescriptor(
-
-									    i,
-
-									    binMaxes[j - 1],
-
-									    binMaxes[j],
-
-									    nf,
-
-									    tbl);
-
-			bins.add(nbd);
-
-		    }
-
-		    // now add the last bin
-
-		    if(binMaxes.length > 1)
-
-		    nbd =
-
-			BinDescriptorFactory.createMaxNumericBinDescriptor(
-
-									   i,
-
-									   // dora changed from binMaxes[binMaxes.length - 2],
-									   binMaxes[binMaxes.length - 1],
-
-									   nf,
-
-									   tbl);
-                    /* Dora comment out
-		    else
-
-		    nbd =
-
-			BinDescriptorFactory.createMaxNumericBinDescriptor(
-
-									   i,
-
-									   binMaxes[binMaxes.length - 1],
-
-									   nf,
-
-									   tbl); */
-
-		    bins.add(nbd);
-
-		    stmt.close();
-
-
-		} catch (Exception e) {
-
-		    /*    JOptionPane.showMessageDialog(msgBoard,
-
-			  e.getMessage(), "Error",
-
-			  JOptionPane.ERROR_MESSAGE); */
-
-		    System.out.println(
-
-				       "Error occured in addFromWeight." + e.getMessage());
-
 		}
 
-	    } else {
-
-		HashSet vals = uniqueValues(i);
-
-		Iterator iter = vals.iterator();
-
-		while (iter.hasNext()) {
-
-		    String item = (String) iter.next();
-
-		    String[] st = new String[1];
-
-		    st[0] = item;
-
-		    BinDescriptor bd =
-
-			new TextualBinDescriptor(
-
-						 i,
-
-						 item,
-
-						 st,
-
-						 tbl.getColumnLabel(i));
-
-		    bins.add(bd);
-
+		BinDescriptor[] bn = new BinDescriptor[bins.size()];
+		for (int i = 0; i < bins.size(); i++) {
+			bn[i] = (BinDescriptor) bins.get(i);
 		}
 
-	    }
+		return bn;
 
 	}
-
-
-
-	BinDescriptor[] bn = new BinDescriptor[bins.size()];
-
-	for (int i = 0; i < bins.size(); i++) {
-
-	    bn[i] = (BinDescriptor) bins.get(i);
-
-
-
-	}
-
-	//add "unkown" bins for relevant attributes that have missing values
-
-	//bn = BinningUtils.addMissingValueBins(tbl,bn);
-
-	return bn;
-
-
-
-	//return bt;
-
-    }
-
-
 
 	/** verify whether the column is a numeric column
-
+	
 	         *  @return a boolean array, numeric columns are flaged as true, and
-
+	
 	         *          categorical columns are flaged as false.
-
+	
 	         */
 
 	public boolean[] getColTypes(int len) {
@@ -798,21 +613,15 @@ public class SQLAutoBin extends AutoBin {
 			String[] names = { "TABLE" };
 
 			ResultSet tableNames =
-
 				metadata.getTables(null, "%", tableName, names);
 
 			while (tableNames.next()) {
 
 				ResultSet columns =
-
 					metadata.getColumns(
-
 						null,
-
 						"%",
-
 						tableNames.getString("TABLE_NAME"),
-
 						"%");
 
 				while (columns.next()) {
@@ -825,15 +634,13 @@ public class SQLAutoBin extends AutoBin {
 
 						if (tbl.getColumnLabel(col).equals(columnName)) {
 
-                                                  if(ColumnTypes.isEqualNumeric(dataType))
+							if (ColumnTypes.isEqualNumeric(dataType))
+								colTypes[col] = true;
 
-                                                    colTypes[col] = true;
+							else
+								colTypes[col] = false;
 
-                                                  else
-
-                                                    colTypes[col] = false;
-
-                                                  break;
+							break;
 
 						}
 
@@ -848,9 +655,9 @@ public class SQLAutoBin extends AutoBin {
 		} catch (Exception e) {
 
 			/*  JOptionPane.showMessageDialog(msgBoard,
-
+			
 			        e.getMessage(), "Error",
-
+			
 			        JOptionPane.ERROR_MESSAGE); */
 
 			System.out.println("Error occured in getColTypes.");
@@ -860,8 +667,6 @@ public class SQLAutoBin extends AutoBin {
 		}
 
 	}
-
-
 
 	public double[] getMMTValues(int col) {
 
@@ -874,21 +679,13 @@ public class SQLAutoBin extends AutoBin {
 			Connection con = conn.getConnection();
 
 			String queryStr =
-
 				"select min("
-
 					+ colName
-
 					+ "), max("
-
 					+ colName
-
 					+ "), sum("
-
 					+ colName
-
 					+ ") from "
-
 					+ tableName;
 
 			Statement stmt = con.createStatement();
@@ -908,9 +705,9 @@ public class SQLAutoBin extends AutoBin {
 		} catch (Exception e) {
 
 			/* JOptionPane.showMessageDialog(msgBoard,
-
+			
 			       e.getMessage(), "Error",
-
+			
 			       JOptionPane.ERROR_MESSAGE); */
 
 			System.out.println("Error occured in getMMTValues.");
@@ -919,18 +716,14 @@ public class SQLAutoBin extends AutoBin {
 
 		return minMaxTotal;
 
-
-
 	}
 
-
-
 	/** find unique values in a column
-
+	
 	 *  @param col the column to check for
-
+	
 	 *  @return a HashSet object that stores all unique values
-
+	
 	 */
 
 	private HashSet uniqueValues(int col) {
@@ -946,7 +739,6 @@ public class SQLAutoBin extends AutoBin {
 			Connection con = conn.getConnection();
 
 			String queryStr =
-
 				"select distinct " + colName + " from " + tableName;
 
 			Statement stmt = con.createStatement();
@@ -966,9 +758,9 @@ public class SQLAutoBin extends AutoBin {
 		} catch (Exception e) {
 
 			/* JOptionPane.showMessageDialog(msgBoard,
-
+			
 			         e.getMessage(), "Error",
-
+			
 			         JOptionPane.ERROR_MESSAGE); */
 
 			System.out.println("Error occurred in uniqueValues.");
@@ -979,17 +771,7 @@ public class SQLAutoBin extends AutoBin {
 
 	}
 
-
-
-
-
-
-
-
-
 }
-
-
 
 /*12-8-03 Anca: took out query condition input- does not seem to be used
 

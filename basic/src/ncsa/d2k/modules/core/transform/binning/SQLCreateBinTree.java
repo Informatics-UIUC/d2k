@@ -194,8 +194,7 @@ public class SQLCreateBinTree extends DataPrepModule {
 						  //             + cn[i] + " " + an[j] + " "
 						    //          + bn[k] + " " + condition);
 
-
-						String query =
+			String	query =
 							"SELECT COUNT(*)  FROM "
 								+ tableName
 								+ " WHERE "
@@ -204,6 +203,7 @@ public class SQLCreateBinTree extends DataPrepModule {
 								+ cn[i]
 								+ "\' AND "
 								+ condition;
+												
 						if(debug) System.out.println("BIN Query: "+ query);
 						ResultSet count =
 							stmt.executeQuery(

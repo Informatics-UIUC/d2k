@@ -82,4 +82,19 @@ public class BinDescriptorFactory {
 	  	return new TextualBinDescriptor(idx,"Unknown",vals,tbl.getColumnLabel(idx));
 	  }
 
+	/**
+		* Create a numeric bin that goes from Double.NEGATIVE_INFINITY to Double.POSITIVE_INFINITY
+		*/
+	   public static BinDescriptor createMinMaxBinDescriptor (int col,Table tbl) {
+		   StringBuffer nameBuffer = new StringBuffer();
+		   nameBuffer.append(OPEN_BRACKET);
+		   nameBuffer.append(DOTS);
+		   nameBuffer.append(COLON);
+		   nameBuffer.append(DOTS);
+		   nameBuffer.append(CLOSE_BRACKET);
+		   BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
+				   Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, tbl.getColumnLabel(col));
+		   return  nb;
+	   }
+
 }

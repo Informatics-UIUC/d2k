@@ -199,7 +199,7 @@ public static final String MISSING= "missing";
 			if(!ct.classify(an, value))
 				addDefault(cn, an);
 			else {
-				System.out.println("classified : cn an value " + cn + " " + an + " " + value );
+			//	System.out.println("classified : cn an value " + cn + " " + an + " " + value );
 				totalClassified++;
 				Integer t = (Integer)classTotals.get(cn);
 				classTotals.put(cn, new Integer(t.intValue() + 1));
@@ -660,7 +660,7 @@ public static final String MISSING= "missing";
 			while(!binFound && i.hasNext()) {
 				Bin b = (Bin)i.next();
 				if(b.eval(val)) {
-					System.out.println("classifiyng : an value "  + an + " " + val );
+					//System.out.println("classifiyng : an value "  + an + " " + val );
 					binFound = true;
 					bl.incrementTotal();
 				}
@@ -1582,7 +1582,7 @@ public static final String MISSING= "missing";
 			}
 
 			boolean eval(double d) {
-				System.out.println("evaluate d " +d + " upper " + upper + " lower " + lower);
+				//System.out.println("evaluate d " +d + " upper " + upper + " lower " + lower);
 				if(includeLower) {
 					if(includeUpper) {
 						return (d >= lower) && (d <= upper);
@@ -1612,7 +1612,9 @@ public static final String MISSING= "missing";
 				//Double upperValue = new Double(upper);
 				if (Double.isInfinite(lower)) eliminateLower = true;
 				if (Double.isInfinite(upper))  eliminateUpper = true;
-				//System.out.println("upper " + upper + " lower " + lower);
+			//	System.out.println("upper " + upper + " lower " + lower);
+			//	System.out.println("eliminateUpper " + eliminateUpper + " eliminateLower " + eliminateLower);
+				if (eliminateLower && eliminateUpper) return an + " is not null";
 	      if (eliminateLower) {
 					if (includeUpper)
 						return an + " <= " + upper;

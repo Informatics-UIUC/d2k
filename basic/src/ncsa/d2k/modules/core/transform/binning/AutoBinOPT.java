@@ -288,8 +288,6 @@ public class AutoBinOPT extends DataPrepModule {
 
 		for (int i = 0; i < inputs.length; i++) {
 
-
-
 			// if it is scalar, get the data and sort it.  put (num) into each bin,
 			// and create a new bin when the last one fills up
 			boolean isScalar = tbl.isColumnScalar(inputs[i]);
@@ -354,7 +352,13 @@ public class AutoBinOPT extends DataPrepModule {
 					binMaxes[j] = list.get(j);
 					// now we have the binMaxes.  add the bins to the bin tree.
 					// add the first one manually
+					//System.out.println("binmaxes for j = " + j + " is " +  binMaxes[j]);
 				}
+
+				if (binMaxes.length < 2) {
+							 BinDescriptor nbd = BinDescriptorFactory.createMinMaxBinDescriptor(inputs[i],tbl);
+								bins.add(nbd);
+					 } else { // binMaxes has more than one element
 
 				BinDescriptor bd =
 					BinDescriptorFactory.createMinNumericBinDescriptor(
@@ -378,29 +382,22 @@ public class AutoBinOPT extends DataPrepModule {
 				}
 
 				// now add the last bin
-				if (binMaxes.length > 1)
+				//if (binMaxes.length > 1)
 					bd =
 						BinDescriptorFactory.createMaxNumericBinDescriptor(
 							inputs[i],
 							binMaxes[binMaxes.length - 2],
 							nf,
 							tbl);
-				else
-					bd =
-						BinDescriptorFactory.createMaxNumericBinDescriptor(
-							inputs[i],
-							binMaxes[binMaxes.length - 1],
-							nf,
-							tbl);
+				//else
+				//bd =
+				//		BinDescriptorFactory.createMaxNumericBinDescriptor(
+				//			inputs[i],
+				//			binMaxes[binMaxes.length - 1],
+				//			nf,
+				//			tbl);
 				bins.add(bd);
-				//ANCA: if there are missing values add an "unknown" bin
-				/*if (tbl.hasMissingValues(inputs[i])) {
-					bd =
-						BinDescriptorFactory.createMissingValuesBin(
-							inputs[i],
-							tbl);
-					bins.add(bd);
-				} */
+				}
 
 			} else {
 				// if it is nominal, create a bin for each unique value.
@@ -415,18 +412,12 @@ public class AutoBinOPT extends DataPrepModule {
 							tbl);
 					bins.add(bd);
 				}
-				// ANCA: if there are missing values add an "unknown" bin
-				/*if (tbl.hasMissingValues(inputs[i])) {
-					BinDescriptor bd =
-						BinDescriptorFactory.createMissingValuesBin(
-							inputs[i],
-							tbl);
-					bins.add(bd);
-				} */
+			
 
 			}
 		}
 		BinDescriptor[] bn = new BinDescriptor[bins.size()];
+		System.out.println("bin size " + bins.size());
 		for (int i = 0; i < bins.size(); i++) {
 			bn[i] = (BinDescriptor) bins.get(i);
 

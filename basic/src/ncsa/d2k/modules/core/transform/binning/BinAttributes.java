@@ -1400,12 +1400,19 @@ public class BinAttributes extends HeadlessUIModule {
 		 missing = tbl.getColumn(colIdx[i]).getNumMissingValues();
 		double[] data =  new double[tbl.getNumRows()-missing];
 		int k=0;
-		for (int j = 0; j < data.length; j++)
-		 if (missing > 0)
-		 	if(!tbl.isValueMissing(j,colIdx[i]))
-		 		data[k++] = tbl.getDouble(j,colIdx[i]);
-		 else
-		  data[j] = tbl.getDouble(j, colIdx[i]);
+		for (int j = 0; j < data.length; j++) {
+		
+		 if (missing > 0) {
+		 		 	if(!tbl.isValueMissing(j,colIdx[i])) {
+		 		 		data[k++] = tbl.getDouble(j,colIdx[i]);
+			//System.out.println("data for k-1 = " + (k-1) + " is " + data[k-1]);
+		 	}
+		 }
+		 else {
+		 		  data[j] = tbl.getDouble(j, colIdx[i]);
+		 			//System.out.println("data for j = " + j + " is " + data[j]);
+		 }
+		}
 		// sort it
 		Arrays.sort(data);
 		ArrayList list = new ArrayList();
@@ -1413,7 +1420,7 @@ public class BinAttributes extends HeadlessUIModule {
 		// loop through the sorted data.  the next max will lie at
 		// data[curLoc+weight] items
 
-                //vered - changed curIdx from 0 to -1. this way, first bin won't be too large.
+         //vered - changed curIdx from 0 to -1. this way, first bin won't be too large.
 		int curIdx = -1;
 		while (curIdx < data.length - 1) {
 		  curIdx += weight;
@@ -1436,22 +1443,36 @@ public class BinAttributes extends HeadlessUIModule {
 		  Double dbl = new Double(data[curIdx]);
 		  list.add(dbl);
 		}
+		//System.out.println("BEFORE");
 		double[] binMaxes = new double[list.size()];
-		for (int j = 0; j < binMaxes.length; j++)
+		for (int j = 0; j < binMaxes.length; j++) {
+		
 		  binMaxes[j] = ((Double)list.get(j)).doubleValue();
+		  //System.out.println("binmaxes for j = " + j + " is " +  binMaxes[j]);
+		}
+		
+		if (binMaxes.length < 2) {
+			 BinDescriptor nbd = BinDescriptorFactory.createMinMaxBinDescriptor(colIdx[i],tbl);
+				addItemToBinList(nbd);
+	 } else { // binMaxes has more than one element
+				  
 		// add the first bin manually
 		//ANCA BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],binMaxes[0]);
 		BinDescriptor nbd = BinDescriptorFactory.createMinNumericBinDescriptor(colIdx[i],binMaxes[0],nf,tbl);
 		addItemToBinList(nbd);
 		for (int j = 1; j < binMaxes.length-1; j++) {
 		  // now create the BinDescriptor and add it to the bin list
-		  //ANca nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j]);
+		  //ANCA nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j]);
 		  nbd = BinDescriptorFactory.createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j],nf,tbl);
 		  addItemToBinList(nbd);
 		}
 		//ANCA nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length- 2]);
-		nbd = BinDescriptorFactory.createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length- 2],nf,tbl);
+		//if (binMaxes.length>2)
+		 nbd = BinDescriptorFactory.createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length- 2],nf,tbl);
+		//else
+		  //nbd = BinDescriptorFactory.createMaxNumericBinDescriptor(colIdx[i], binMaxes[0],nf,tbl);
 		addItemToBinList(nbd);
+		}
 	  }
 	}
 
