@@ -289,7 +289,7 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
                 Integer idx = (Integer)columnToIndexMap.get(inputColumnLabels[i]);
                 if(idx == null)
                     // the input column was missing, throw exception
-                    throw new Exception();
+                    throw new Exception("input column missing:index="+i+":label="+inputColumnLabels[i]);
                 else
                     inputFeat[i] = idx.intValue();
             }
@@ -555,7 +555,7 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
       return pds;
     }
 
-	
+
 	protected String getTrainingInfoHtml(){
 		StringBuffer sb=new StringBuffer();
 		sb.append("<b>Number Training Examples</b>:"+ trainingSetSize+"<br><br>");
@@ -591,6 +591,6 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
 		sb.append("</table>");
 		return sb.toString();
 	}
-	 
+
 
 }

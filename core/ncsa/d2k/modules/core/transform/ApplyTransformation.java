@@ -69,10 +69,11 @@ public class ApplyTransformation extends DataPrepModule {
 		boolean ok = t.transform(mt);
 		if(!ok)
 			throw new Exception("Transformation failed.");
+                else
+                        mt.addTransformation(t);
 
                 //vered - debug
 //                System.out.println( ( (mt.getTransformations().get(0)) == null ? "no " : "there are " + "transformations" ));
-
 		pushOutput(mt, 0);
 	}
 }

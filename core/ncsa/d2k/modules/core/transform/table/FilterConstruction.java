@@ -498,7 +498,9 @@ public class FilterConstruction extends UIModule {
 
        try {
          table.removeRowsByFlag(filter);
-         table.addTransformation(this);
+         // 4/7/02 commented out by Loretta...
+         // this add gets done by applyTransformation
+         //table.addTransformation(this);
        }
        catch(Exception e) { return false; }
 

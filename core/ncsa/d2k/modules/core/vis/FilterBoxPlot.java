@@ -188,7 +188,9 @@ public class FilterBoxPlot extends UIModule {
          catch (Exception e) {
             return false;
          }
-         mt.addTransformation(this);
+         // 4/7/02 commented out by Loretta...
+         // this add gets done by applyTransformation
+         // mt.addTransformation(this);
          return true;
       }
 

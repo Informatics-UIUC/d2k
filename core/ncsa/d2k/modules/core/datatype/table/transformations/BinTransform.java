@@ -102,7 +102,9 @@ public class BinTransform implements Transformation, Cloneable {
                 }
             }
         }
-        mt.addTransformation(this);
+        // 4/7/02 commented out by Loretta...
+        // this add gets done by applyTransformation
+        //mt.addTransformation(this);
         return  true;
     }
 
