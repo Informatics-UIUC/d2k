@@ -69,7 +69,7 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 		}
 	}
 
-	protected Table createTable(FlatFileParser df) {
+	public Table createTable(FlatFileParser df) {
 		int numRows = df.getNumRows();
 		int numColumns = df.getNumColumns();
 

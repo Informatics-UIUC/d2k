@@ -10,6 +10,7 @@ package ncsa.d2k.modules.core.transform.filters;
 //===============
 
 import java.beans.PropertyVetoException;
+import java.io.*;
 
 import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.core.modules.PropertyDescription;
@@ -116,9 +117,16 @@ public class AttributeSelector extends ComputeModule {
       System.out.println(m_attSel.toResultsString());
       
       selectedAttributes = m_attSel.selectedAttributes();
-      //rankedAttributes = m_attSel.rankedAttributes();
-
-//TODO - what is the real output of this module ???
+      rankedAttributes = m_attSel.rankedAttributes();
+      String resultsFile = "PhotoObjAll.Results";
+      FileWriter fw = new FileWriter(resultsFile,true);
+      fw.write(instances.getColumnLabel((int)rankedAttributes[0][0]));
+	  String score = " " + rankedAttributes[0][1] + "\n";
+      fw.write( score);
+      fw.flush();
+      fw.close();
+      
+      //TODO - what is the real output of this module ???
       this.pushOutput(selectedAttributes,0);
     
    

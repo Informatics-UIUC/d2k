@@ -36,8 +36,8 @@ public class SubsetTableImpl extends MutableTableImpl {
     */
    public SubsetTableImpl(TableImpl table) {
       this.columns = table.getColumns();
-      this.label = table.label;
-      this.comment = table.comment;
+      this.setLabel( table.getLabel());
+      this.setComment (table.getComment());
       this.subset = new int[table.getNumRows()];
       for (int i = 0; i < this.subset.length; i++) {
          this.subset[i] = i;
@@ -80,8 +80,8 @@ public class SubsetTableImpl extends MutableTableImpl {
     */
    public SubsetTableImpl(TableImpl table, int[] subset) {
       this.columns = table.getColumns();
-      this.label = table.label;
-      this.comment = table.comment;
+      this.setLabel( table.getLabel());
+      this.setComment (table.getComment());
       this.subset = subset;
    }
 

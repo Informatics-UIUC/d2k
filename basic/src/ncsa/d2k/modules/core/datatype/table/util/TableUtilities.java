@@ -266,6 +266,9 @@ public class TableUtilities
 
     return set;
   }
+  
+  
+  
 
   public static int getNumOfValues(Table table, int colNum) {
   	String[] values = TableUtilities.uniqueValues(table,colNum);

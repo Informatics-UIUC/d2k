@@ -141,9 +141,13 @@ public class ADTree extends Node {
 		Node node = nd;
 
 		node.count++;
-		if (debug1)
+		if (debug1) {
+		
 			System.out.println(" MAIN COUNT : " + node.count + " " + node);
-
+			System.out.println("values are ");
+			for (int j =0; j < values.length; j ++)
+				System.out.print(values[j] + " " );	
+		}
 		for (int j = 1; j <= values.length; j++) {
 
 			if (!node.containsKey(new Integer(j))) {

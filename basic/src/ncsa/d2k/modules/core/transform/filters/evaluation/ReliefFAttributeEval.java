@@ -544,6 +544,7 @@ public class ReliefFAttributeEval
     HashMap uniqueClassValues = null;
     String [] classNames = null;
     //get number of classes
+    // ANCA : class counts can be obtained once, directly from the database
     if (!m_numericClass) {
       uniqueClassValues = TableUtilities.uniqueValuesWithCounts(m_trainTable,m_classIndex);
       m_numClasses  =uniqueClassValues.size();
@@ -581,23 +582,23 @@ public class ReliefFAttributeEval
     // and 0 = distance, 1 = instance index
     m_karray = new double[m_numClasses][m_Knn][2];
 
-    // determine class probabilities
+    // determine class probabilities - can be computed from class counts
     if (!m_numericClass) {
       m_classProbs = new double[m_numClasses];
       
-      //for (int i = 0; i < m_numRows; i++) {
+      //for (int i = 0; i < m_numRows; i++) 
        // m_classProbs[(int)m_trainTable.getDouble(i,m_classIndex)]++;
-      
-      //}
-
       //for (int i = 0; i < m_numClasses; i++) {
        // m_classProbs[i] /= m_numRows;
       //}
-    	for (int i = 0; i < m_numClasses; i++) {
+
+      for (int i = 0; i < m_numClasses; i++) {
     		
     	m_classProbs[i] =
     			(((Integer)uniqueClassValues.get(classNames[i])).doubleValue())/m_numRows;
-    	//System.out.println("d2k: class probability for i " + m_classProbs[i]);
+    	//System.out.println("d2k: class probability for i " + i +" "+ m_classProbs[i]);
+    	//System.out.println(" count numRows " +  ((Integer)uniqueClassValues.get(classNames[i])).doubleValue() + 
+		//" " + m_numRows);
     	}
     }
     
@@ -619,6 +620,7 @@ public class ReliefFAttributeEval
    // int m_numColumns = m_trainTable.getNumColumns();
     
     //determine min/max for all numeric columns
+    //ANCA: can be determined from the database
     for (int i = 0; i < m_numRows; i++) {
     	for (int j = 0; j < m_numAttribs; j++) {
 	       isMissing[j] = m_trainTable.isValueMissing(i,j);
@@ -655,12 +657,14 @@ public class ReliefFAttributeEval
 						  m_karray[j][k][0] = m_karray[j][k][1] = 0;
 						}
 				}
-      findKHitMiss(z,classIndices);
+	// for each selected instance find K Hit and Miss		  
+      System.out.println("finding hits and misses for instance " + z);
+			  findKHitMiss(z,classIndices);
 
      // System.out.println("d2k weights for z " + z + " numeric " + m_numericClass);
-     //System.out.println(" m_stored " + m_stored[0] + " " + m_stored[1] + " " + m_stored[2]);
+     //System.out.println(" m_stored " + m_stored[0] + " " + m_stored[1] );
      //int cl = ((Integer)classIndices.get(m_trainTable.getString(z,m_classIndex))).intValue();
-    // System.out.println("D2K CL is " +  cl);
+     //System.out.println("D2K CL is " +  cl);
      
       if (m_numericClass) {
 			    updateWeightsNumericClass(z);
@@ -774,22 +778,51 @@ public class ReliefFAttributeEval
 
   }
 
+  
+  private int cacheLine =0;
+  private double cacheValue = 0;
+  private String cacheString = null;
+  private boolean cacheIsMissing = false;
   /**
    * Computes the difference between two given attribute
    * values.
    */
   private double difference(int index, int ln1, int ln2, int col1, int col2) {
-
-           
-			boolean mis1 =  m_trainTable.isValueMissing(ln1,col1);
-		    boolean mis2 =  m_trainTable.isValueMissing(ln2,col2);
+ 		
+  			//	System.out.println("accesssing, " + ln1 + "," + ln2);
+  			// ANCA based on the observed access pattern line ln1 covers the entire dataset
+  			// while ln2 remains constant, thus I introduced the cacheLine
+  			// this is an optimization for the case when only one attribute is processed
+  			boolean useCache = false;
+  	        if (cacheLine == ln2 ) {
+  	        		useCache = true;
+  	        		//System.out.println("using cache");
+  	        	}
+  	        else
+  	        {
+  	        	cacheLine = ln2;	
+  	        	//System.out.println("REPLACING CACHE");
+  	        }
+  	        boolean mis1 =  m_trainTable.isValueMissing(ln1,col1);
+  		    boolean mis2;
+  		    	if (useCache) mis2 = cacheIsMissing;
+  		    	else {
+  		    		mis2 =  m_trainTable.isValueMissing(ln2,col2);
+  		    		cacheIsMissing = mis2;
+  		    		}
 
 		    // If attribute is nominal
-		    //TODO change here when ReplaceNominalWithInts is phased out
+		    //TODO change here when ReplaceNominalWithInts is phased out -DONE
 		    if (m_trainTable.isColumnNominal(index)){
 		    	String val1 =  m_trainTable.getString(ln1,col1);
-		    	String val2 =  m_trainTable.getString(ln2,col2);
+		    	String val2 ;
+		    		if (useCache) val2 = cacheString;
+		    			else {
+		    				val2 =  m_trainTable.getString(ln2,col2);
+		    				cacheString = val2;
+		    			}
 		    	
+		    	//TODO - get uniqueValues only once per index !!
 		    	if (mis1 || mis2 ) {
 		    		String[] uniquevalues = TableUtilities.uniqueValues(m_trainTable,index);
 		    		int numValues = uniquevalues.length;
@@ -801,8 +834,13 @@ public class ReliefFAttributeEval
 		    	}
 		    } else if (m_trainTable.isColumnScalar(index)) {
 		    	double val1 =  m_trainTable.getDouble(ln1,col1);
-		    	double val2 =  m_trainTable.getDouble(ln2,col2);
-		    		    	
+		    	double val2;
+		    	if (useCache) val2 = cacheValue;
+		    	else {
+		    		val2 =  m_trainTable.getDouble(ln2,col2);
+		    		 cacheValue = val2;
+		    	}
+		    	
 		    	// If attribute is numeric
 		    	if (mis1 || mis2) {
 		    		if(mis1 && mis2 ) {
@@ -841,6 +879,7 @@ public class ReliefFAttributeEval
     double distance = 0;
     int firstI, secondI;
 	int numAttribs = m_trainTable.getNumColumns();
+	//System.out.println("accesssing, " + first + "," + second);
 
     for (int p1 = 0, p2 = 0; p1 < numAttribs || p2 < numAttribs;) {
       if (p1 >= numAttribs) {

@@ -22,6 +22,7 @@ public class ReplaceNominalsWithInts extends ComputeModule {
 
       ReplaceNominalsWithIntsTransform transform =
             new ReplaceNominalsWithIntsTransform(mt);
+      
 
       if (_printMapping)
          System.out.println(transform.toMappingString(mt));

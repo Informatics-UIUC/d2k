@@ -191,18 +191,14 @@ public class ChiSquaredAttributeEval
     int numInstances = data.getNumRows();
     System.out.println("number of instances " + numInstances);
 
-    //selectedColumns has to come from a user interface ore other params
-    int [] selectedColumns = new int[data.getNumColumns()-1];
+    //selectedColumns has to come from a user interface or other params
+    int [] selectedColumns =  ((ExampleTable) data).getInputFeatures();
     
     
     if (!m_Binarize) {
     	EntropyBinning m_disTransform = new EntropyBinning();
     	m_disTransform.setUseBetterEncoding(true);
     	
-    	for (int i =0; i < data.getNumColumns()-1; i ++) {
-    		selectedColumns[i] = i;
-    		//System.out.println( i + " " + data.getColumnLabel(i) + " " + data.isColumnScalar(i));
-    	}
     	BinDescriptor[] binDescr = m_disTransform.buildBins((ExampleTable)data,selectedColumns);
     	BinTransform bt = new BinTransform(data,binDescr, false);
     	bt.transform((ExampleTable)data);
