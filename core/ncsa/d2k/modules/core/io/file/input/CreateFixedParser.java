@@ -1,4 +1,3 @@
-//package ncsa.d2k.modules.projects.clutter.rdr;
 package ncsa.d2k.modules.core.io.file.input;
 
 import ncsa.d2k.modules.core.datatype.table.*;
@@ -14,7 +13,7 @@ public class CreateFixedParser extends InputModule {
 
     public String[] getInputTypes() {
         String[] in = { "java.lang.String",
-            "ncsa.d2k.modules.core.datatype.table.Table"};
+												"ncsa.d2k.modules.core.datatype.table.Table"};
         return in;
     }
 
@@ -54,14 +53,16 @@ public class CreateFixedParser extends InputModule {
     }
 
     public String getModuleInfo() {
-        // return "Create a FixedFileParser for the specified file.";
         StringBuffer sb = new StringBuffer("<p>Overview: ");
         sb.append("This module creates a parser for a fixed-format file.");
         sb.append("</p><p>Detailed Description: ");
         sb.append("Given a file name and a \"header\" Table of metadata ");
         sb.append("describing the file's format, this module creates a ");
         sb.append("parser for that file. This parser can then be passed to ");
-        sb.append("ReadFileToTable, for example, to read the file into a Table.");
+        sb.append("ParseFileToTable, for example, to read the file into a Table.");
+        sb.append("The metadata table has five columns with the following labels:");
+        sb.append("LABEL, TYPE, START, STOP, LENGTH not necessarily in this order.");
+        sb.append("The STOP column will be ignored if LENGTH column is present.");
         sb.append("</p><p>Data Type Restrictions: ");
         sb.append("The specified file must be in fixed format.");
         sb.append("</p><p>Data Handling: ");
