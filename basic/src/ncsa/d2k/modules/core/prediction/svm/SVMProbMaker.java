@@ -127,7 +127,10 @@ public class SVMProbMaker extends DataPrepModule
 				System.out.println("Building SVM for only the first output variable.");
 			}
 			else if (outputs.length == 0 || inputs.length == 0) {
-				System.out.println("Invalid features.");
+                          //vered - 02-23-04: throwing and exception instead of outputing a message.
+                          //this will terminate the intinerary.
+                          String msg = "Invalid features! You must choose input and output features to the input table!";
+                          throw new Exception(msg);
 			}
 
 			Vector vy = new Vector();
@@ -225,3 +228,14 @@ public class SVMProbMaker extends DataPrepModule
 	}
 
 }
+
+
+      /**
+ * basic 4 QA comments
+ * vered:
+ * 02-23-04
+ * made this module to throw an exception if input table has no input or output features
+ * assigned, instead of outputing a message.
+ * this will prevent throwing an array index out of bounds exception in case
+ * no output features are chosen.
+*/

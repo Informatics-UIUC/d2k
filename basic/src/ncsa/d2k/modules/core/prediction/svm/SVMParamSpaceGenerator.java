@@ -6,7 +6,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 
-public class SVMParamSpaceGenerator extends AbstractParamSpaceGenerator 
+public class SVMParamSpaceGenerator extends AbstractParamSpaceGenerator
 {
 	public static final String SVM_TYPE = "SVM Type";
 	public static final String KERNEL_TYPE = "Kernel Type";
@@ -50,12 +50,12 @@ public class SVMParamSpaceGenerator extends AbstractParamSpaceGenerator
 	  Returns a list of the property descriptions.
 	  @return a list of the property descriptions.
 	  */
-	public PropertyDescription[] getPropertiesDescriptions() 
+	public PropertyDescription[] getPropertiesDescriptions()
 	{
 		PropertyDescription[] pds = new PropertyDescription[11];
 
-		pds[0] = new PropertyDescription(SVM_TYPE, SVM_TYPE, "Type of the SVM.");
-		pds[1] = new PropertyDescription(KERNEL_TYPE, KERNEL_TYPE, "Type of the kernel.");
+		pds[0] = new PropertyDescription(SVM_TYPE, SVM_TYPE, "Type of the SVM. (0 = C-SVC, 1 = nu-SVC, 2 = One-Class SVM, 3 = epsilon-SVR, 4 = nu-SVR)");
+		pds[1] = new PropertyDescription(KERNEL_TYPE, KERNEL_TYPE, "Type of the kernel. (0 = Linear, 1 = Polynomial, 2 = Radial Basis, 3 = Sigmoid)");
 		pds[2] = new PropertyDescription(DEGREE, DEGREE, "Degree of kernel function, applicable to polynomial kernels only.");
 		pds[3] = new PropertyDescription(GAMMA, GAMMA, "Gamma of kernel function.");
 		pds[4] = new PropertyDescription(COEF0, COEF0, "Coefficent 0 of kernel function.");

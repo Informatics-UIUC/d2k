@@ -17,7 +17,7 @@ public class SVMModelReader extends ModelProducerModule
 	{
 		switch (index) {
 			case 0:
-				return "The stored SVM Model.";
+				return "File name of stored SVM Model.";
 			case 1:
 				return "Input data in an example table.";
 			default:
@@ -29,7 +29,7 @@ public class SVMModelReader extends ModelProducerModule
 	{
 		switch (index) {
 			case 0:
-				return "SVM Model File";
+				return "File Name";
 			case 1:
 				return "Example Table";
 			default:
