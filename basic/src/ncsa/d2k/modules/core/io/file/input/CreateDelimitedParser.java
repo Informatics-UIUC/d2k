@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.io.file.input;
 
 import ncsa.d2k.core.modules.*;
+import ncsa.d2k.preferences.UserPreferences;
 import ncsa.gui.*;
 import java.io.*;
 import javax.swing.*;
@@ -386,8 +387,11 @@ public class CreateDelimitedParser extends InputModule {
     public void doit() throws Exception {
         String fn = (String)pullInput(0);
         File file = new File(fn);
-        if(!file.exists())
-            throw new FileNotFoundException(getAlias()+": "+file+" did not exist.");
+        if(!file.exists()) {
+        		file = new File (UserPreferences.thisPreference.getDataPath()+File.separator+fn);
+				if(!file.exists())
+					throw new FileNotFoundException(getAlias()+": "+file+" did not exist.");
+        }
         DelimitedFileParser df;
 
         int lbl = -1;
