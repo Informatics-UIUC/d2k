@@ -75,7 +75,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
       s += "Histograms showing the data distribution based on the specified ";
       s += "binning method are provided via the 'Show' button to guide the binning process. ";
       s += "For nominal attributes, data can ";
-      s += "collected into groups by unique values. ";
+      s += "be collected into groups by unique values. ";
       s += "</p><p>";
       s += "Binning data is a very important preprocessing step in many data mining  ";
       s += "activities, especially for datasets containing continuous numeric values. ";
@@ -191,7 +191,8 @@ public class SQLBinAttributes extends HeadlessUIModule {
         PropertyDescription[] pds = new PropertyDescription[2];
         pds[0] = super.supressDescription;
         pds[1] = new PropertyDescription("newColumn", "Create In New Column",
-            "Set this property to true if you wish the binned columns to be created in new columns");
+            "Set this property to true if you wish the binned columns to be created in new columns, " +
+            "effective when 'Supress User Interface Display' is set to true.");
         return pds;
     }
 
@@ -1674,3 +1675,11 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
 
 //QA Comments
 // Anca: changed last bin in addFromWeigth
+
+  /**
+ * 12-03-03 Vered started qa process.
+ *          wrong weight binning - [bug 154]
+ *          allows overlapping binning [bug 140, 141]
+ *          null pointer exception when trying to remove a nominal bin. [bug 65]
+ *          exception when adding anominal bin [bug 155]
+ */
