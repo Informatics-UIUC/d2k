@@ -1,16 +1,15 @@
 package ncsa.d2k.modules.core.io.file.output;
 
-
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import java.io.*;
 
 /**
-   Write the contents of a Table to a flat file.
-   @author David Clutter
-*/
-public class WriteTableToFile extends OutputModule
-    {
+ * This module writes the contents of a <code>Table</code> to a flat file.
+ *
+ * @author David Clutter
+ */
+public class WriteTableToFile extends OutputModule {
 
    transient String delimiter;
 
@@ -20,7 +19,8 @@ public class WriteTableToFile extends OutputModule
    boolean useDataTypes = true;
    boolean useColumnLabels = true;
 
-/*    public boolean getComma() {
+    /*
+    public boolean getComma() {
       return comma;
     }
 
@@ -43,7 +43,7 @@ public class WriteTableToFile extends OutputModule
     public void setSpace(boolean b) {
       space = b;
     }
-*/
+    */
 
    public void setUseDataTypes(boolean b) {
       useDataTypes = b;
@@ -240,7 +240,12 @@ public class WriteTableToFile extends OutputModule
          writeTable(vt, delimiter, fileName, useColumnLabels, useDataTypes);
       }
       catch(IOException e) {
-         e.printStackTrace();
+
+         // e.printStackTrace();
+
+         System.err.println("Error writing file " + fileName + ": ");
+         System.err.println(e.getMessage());
+
       }
    }
 

@@ -1,137 +1,99 @@
 package ncsa.d2k.modules.core.vis;
 
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
-import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.io.file.output.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.userviews.swing.*;
 
 /**
-   Display the contents of a VerticalTable.
-   @author David Clutter
-*/
-public class TableViewer extends UIModule  {
+ * This module displays the contents of a <code>Table</code>.
+ *
+ * @author David Clutter
+ */
+public class TableViewer extends UIModule {
+
+////////////////////////////////////////////////////////////////////////////////
+// Module methods                                                             //
+////////////////////////////////////////////////////////////////////////////////
+
+   public UserView createUserView() {
+      return new TableView();
+   }
 
    /**
-      Return a description of the function of this module.
-      @return A description of this module.
-   */
-   public String getModuleInfo() {
-          String s = "<p> Overview: ";
-          s += "A table viewer. </p>";
-          s += "<p> Detailed Description: ";
-          s += "This module displays the contents of a Table. The table is then ";
-          s += "passed along as the output. </p>";
-
-          return s;
-    }
-
-
-    /**
-       Return the name of this module.
-       @return The name of this module.
+    * Not used by this module.
     */
-    public String getModuleName() {
-      return "TableViewer";
-   }
-
-    /**
-       Return a String array containing the datatypes the inputs to this
-       module.
-       @return The datatypes of the inputs.
-    */
-    public String[] getInputTypes() {
-      String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
-      return types;
-   }
-
-    /**
-       Return a String array containing the datatypes of the outputs of this
-       module.
-       @return The datatypes of the outputs.
-    */
-   public String[] getOutputTypes() {
-      String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
-      return types;
-   }
-
-    /**
-       Return a description of a specific input.
-       @param i The index of the input
-       @return The description of the input
-    */
-    public String getInputInfo(int i) {
-      switch (i) {
-         case 0: return "The Table to display.";
-         default: return "No such input";
-      }
-   }
-
-    /**
-       Return the name of a specific input.
-       @param i The index of the input.
-       @return The name of the input
-    */
-    public String getInputName(int i) {
-      switch(i) {
-         case 0:
-            return "Table";
-         default: return "NO SUCH INPUT!";
-      }
-   }
-
-    /**
-       Return the description of a specific output.
-       @param i The index of the output.
-       @return The description of the output.
-    */
-    public String getOutputInfo(int i) {
-      switch (i) {
-         case 0: return "The Table that was displayed.  No changes are made to the table by this module.";
-         default: return "No such output";
-      }
-   }
-
-    /**
-       Return the name of a specific output.
-       @param i The index of the output.
-       @return The name of the output
-    */
-    public String getOutputName(int i) {
-      switch(i) {
-         case 0:
-            return "Table";
-         default: return "NO SUCH OUTPUT!";
-      }
-   }
-
-    /**
-       Not used.
-    */
-    public String[] getFieldNameMapping() {
+   public String[] getFieldNameMapping() {
       return null;
-    }
+   }
 
-    /**
-       Return the UserView that will display the table.
-       @return The UserView part of this module.
-    */
-    public UserView createUserView() {
-      return new TableView();
-    }
+   public String getInputInfo(int i) {
+      if (i == 0)
+         return "The <i>Table</i> to be displayed.";
+      return "NO SUCH INPUT";
+   }
 
-    /**
-       The TableView class.  Uses a VerticalTableMatrix to display the
-      VerticalTable.
+   public String getInputName(int i) {
+      if (i == 0)
+         return "Table";
+      return "NO SUCH INPUT";
+   }
+
+   public String[] getInputTypes() {
+      return new String[] {
+         "ncsa.d2k.modules.core.datatype.table.Table"
+      };
+   }
+
+   public String getModuleInfo() {
+      StringBuffer sb = new StringBuffer("<p>Overview: ");
+      sb.append("This module displays the contents of a <i>Table</i>.");
+      sb.append("</p><p>Data Handling: ");
+      sb.append("This module does not modify its input. The <i>Table</i> ");
+      sb.append("is passed, unchanged, as the module's output.");
+      sb.append("</p>");
+      return sb.toString();
+   }
+
+   public String getModuleName() {
+      return "View Table";
+   }
+
+   public String getOutputInfo(int i) {
+      if (i == 0)
+         return "The <i>Table</i> that was displayed, unmodified.";
+      return "NO SUCH OUTPUT";
+   }
+
+   public String getOutputName(int i) {
+      if (i == 0)
+         return "Table";
+      return "NO SUCH OUTPUT";
+   }
+
+   public String[] getOutputTypes() {
+      return new String[] {
+         "ncsa.d2k.modules.core.datatype.table.Table"
+      };
+   }
+
+////////////////////////////////////////////////////////////////////////////////
+// user view                                                                  //
+////////////////////////////////////////////////////////////////////////////////
+
+   /**
+    * This class uses a <code>TableMatrix</code> to display the
+    * <code>Table</code>.
     */
-    public class TableView extends JUserPane implements ActionListener{
+   public class TableView extends JUserPane implements ActionListener {
+
       TableMatrix matrix;
       /** the table with data */
       protected Table table = null;
@@ -148,10 +110,10 @@ public class TableViewer extends UIModule  {
       /**
          Initialize the view.  Insert all components into the view.
          @param mod The VerticalTableViewer module that owns us
-      */
+         */
       public void initView(ViewModule mod) {
          parent = (TableViewer)mod;
-            menuBar = new JMenuBar();
+         menuBar = new JMenuBar();
          JMenu fileMenu = new JMenu("File");
          print = new JMenuItem("Save...");
          print.addActionListener(this);
@@ -168,19 +130,19 @@ public class TableViewer extends UIModule  {
          reference to the table and call initializeTable().
          @param input the Object that is the input
          @param idx the index of the input
-      */
+         */
       public void setInput(Object input, int idx) {
          if(idx == 0) {
             removeAll();
             table = (Table)input;
-             // a panel to put the buttons on
-             JPanel buttonPanel = new JPanel();
-             ok = new JButton("Done");
-             ok.addActionListener(this);
-             cancel = new JButton("Abort");
-             cancel.addActionListener(this);
-             buttonPanel.add(cancel);
-             buttonPanel.add(ok);
+            // a panel to put the buttons on
+            JPanel buttonPanel = new JPanel();
+            ok = new JButton("Done");
+            ok.addActionListener(this);
+            cancel = new JButton("Abort");
+            cancel.addActionListener(this);
+            buttonPanel.add(cancel);
+            buttonPanel.add(ok);
 
             // create the matrix
             matrix = new TableMatrix(table);
@@ -196,10 +158,10 @@ public class TableViewer extends UIModule  {
          uneditable in this implementation, we simply call the finish()
          method.  A subclass may want to juggle the contents of the table,
          however.
-      */
+         */
       protected void finishUp() {
          pushOutput(table, 0);
-       viewDone("Done");
+         viewDone("Done");
       }
 
       /**
@@ -208,7 +170,7 @@ public class TableViewer extends UIModule  {
          method of the VerticalTableViewer module is called if cancel is
          pressed.
          @param e the ActionEvent
-      */
+         */
       public void actionPerformed(ActionEvent e) {
          Object src = e.getSource();
          if(src == ok)
@@ -230,46 +192,19 @@ public class TableViewer extends UIModule  {
          else
             return;
          try {
-            /*
-            FileWriter fw = new FileWriter(fileName);
-
-            // write the column labels
-            for(int i = 0; i < table.getNumColumns(); i++) {
-               String s = table.getColumnLabel(i);
-               fw.write(s, 0, s.length());
-               if(i != (table.getNumColumns() - 1))
-                  fw.write(delimiter.toCharArray(), 0, delimiter.length());
-            }
-            fw.write(newLine.toCharArray(), 0, newLine.length());
-
-            // write the datatypes.
-            for(int i = 0; i < table.getNumColumns(); i++) {
-               String s = WriteTableToFile.getDataType(table.getColumnType(i));
-               fw.write(s, 0, s.length());
-               if(i != (table.getNumColumns() - 1))
-                  fw.write(delimiter.toCharArray(), 0, delimiter.length());
-            }
-            fw.write(newLine.toCharArray(), 0, newLine.length());
-
-            // write the actual data
-            for(int i = 0; i < table.getNumRows(); i++) {
-               for(int j = 0; j < table.getNumColumns(); j++) {
-                  String s = table.getString(i, j);
-                  //System.out.println("s: "+s);
-                  fw.write(s, 0, s.length());
-                  if(j != (table.getNumColumns() - 1) )
-                     fw.write(delimiter.toCharArray(), 0, delimiter.length());
-               }
-               fw.write(newLine.toCharArray(), 0, newLine.length());
-            }
-            fw.flush();
-            fw.close();
-            */
             WriteTableToFile.writeTable(table, delimiter, fileName, true, true);
          }
          catch(IOException e) {
-            e.printStackTrace();
+
+            // e.printStackTrace();
+
+            JOptionPane.showMessageDialog(this,
+               "Unable to write to file " + fileName + ":\n\n" + e.getMessage(),
+               "Error writing file", JOptionPane.ERROR_MESSAGE);
+
          }
       }
+
    }
+
 }
