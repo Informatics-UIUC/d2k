@@ -18,7 +18,7 @@ package ncsa.d2k.modules.core.prediction.decisiontree.rainforest;
  *    but the records are not removed from the data set. </p>
  * <p> 5. dominate ratio (number_mostCommonClass / number_secondMostCommonClass)
  *    is used to prune trivial nodes </p>
- * <p> 6. Numeric columns is allowed to use more than once, but if the dominateRatio
+ * <p> 6. Numeric columns are allowed to use more than once, but if the dominateRatio
  *    between parent node and child node has no improvement, the spliting will
  *    be terminated and a leaf will be formed </p>
  * <p>Copyright: Copyright (c) 2002</p>
@@ -57,7 +57,7 @@ public class SQLRainForest extends ReentrantComputeModule {
   // dominateRatio = (% of MostCommonClass) / (% of SecondMostCommonClass)
   // if dominateRatio > specified Ratio, the node should not be split further,
   // and should be created as a leaf.
-  double dominateRatio = 40.00;
+  double dominateRatio = 100.00;
   // the threshold for choosing in-memory or in-database mode
   // If the totalRow < modeThreshold, the entire data set is retrieved and load in memory.
   // Otherwise, the data set is partitioned at each tree node
@@ -167,11 +167,51 @@ public class SQLRainForest extends ReentrantComputeModule {
   }
 
   public String getModuleInfo () {
-                return "<html>  <head>      </head>  <body>    Build a decision tree from a database table  </body></html>";
-        }
+    String s = "<p>Overview: ";
+    s += "This module builds a decision tree from a database table. </p>";
+    s += "<p>Detailed Description: ";
+    s += "The module supports two different modes to build a decision tree. If the ";
+    s += "data set can be fit into the memory, the whole data set ";
+    s += "will be retrieved and resided in memory, otherwise, the data set ";
+    s += "will be partitioned at each tree node. This module automatically ";
+    s += "chooses the execution mode based on the size of the data set ";
+    s += "and the parameter 'Mode Threshold'. The tree is built ";
+    s += "recursively using the information gain metric to choose the ";
+    s += "attribute with the highest information gain as the root.  For ";
+    s += "a nominal input, the node will have branches for each unique value ";
+    s += "in the nominal column.  For scalar inputs, a binary node is created ";
+    s += "with a split point chosen that offers the greatest information gain. ";
+    s += "This module is based on RainForest and C4.5 algorithms with the following features. </p>";
+    s += "<ul><li>a special class AvcSet (Attribute-Value-Class Set) keeps the ";
+    s += "summarized information, which reduces the number of data scans and ";
+    s += "the requirement of memory. </li>";
+    s += "<li>gain ratio (gain/split-info) is used in categorical columns, ";
+    s += "but not numeric columns. </li>";
+    s += "<li>minimum-ratio-per-leaf (number_record_in_leaf / total_number_records) is ";
+    s += "used, instead of minimum-number-per-leaf. </li>";
+    s += "<li>missing values are skipped in computation of each column, ";
+    s += "but the records are not removed from the data set. </li> ";
+    s += "<li>dominate ratio (number_mostCommonClass / number_secondMostCommonClass) ";
+    s += "is used to prune trivial nodes. </li> ";
+    s += "<li>Numeric columns are allowed to be chosen for more than once. However, if the dominateRatio ";
+    s += "between parent node and child node has no improvement, the spliting will ";
+    s += "be terminated and a leaf will be formed. </li></ul></p>";
+    s += "<p>References: ";
+    s += "<ul><li>C4.5: Programs for Machine Learning by J. Ross Quinlan </li>";
+    s += "<li>RainForest: A Frame Work for Fast Decision Tree Construction ";
+    s += "of Large Datasets by J. Gehrke et al. </li></ul></p>";
+    s += "<p>Restrictions: ";
+    s += "This module will only classify examples with ";
+    s += "nominal outputs. We currently only support Oracle databases. </p>";
+    s += "<p>Data Handling: This module does not modify the input data. </p>";
+    s += "<p>Scalability: This module can handle a huge data set even the ";
+    s += "size of the data set is over the available memory. </p> ";
+    return s;
+  }
 
   public String[] getInputTypes () {
-    String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","java.lang.String",
+    String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
+                      "java.lang.String",
                       "ncsa.d2k.modules.core.datatype.table.ExampleTable",
                       "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"};
       return types;
@@ -221,15 +261,7 @@ public class SQLRainForest extends ReentrantComputeModule {
 
   public double getModeThreshold() {
     return modeThreshold;
-  }/*
-  public PropertyDescription [] getPropertiesDescriptions () {
-    PropertyDescription [] pds = new PropertyDescription [4];
-    pds[0] = new PropertyDescription ("modeThreshold", "Mode Threshold", "If the number of data records is greater than this threshold, the in-database mode is used. Otherwise, the in-memory mode is used.");
-    pds[1] = new PropertyDescription ("binNumber", "Bin Number", "If the number of distinct values in a numeric attribute is greater than Bin Number, data is grouped into this number of bins.");
-    pds[2] = new PropertyDescription ("minimumRecordsRatio", "Minimum Leaf Ratio", "Ratio of the record on a leaf to in a tree. The tree construction is terminated when this ratio is reached.");
-    pds[3] = new PropertyDescription ("dominateRatio", "Dominate Ratio", "Ratio of most-common class to second-most-common class. The tree construction is terminated after this ratio is reached.");
-    return pds;
-  } */
+  }
 
   protected String[] getFieldNameMapping () {
     return null;
@@ -263,13 +295,6 @@ public class SQLRainForest extends ReentrantComputeModule {
     setModeThreshold(pp.getValue(SQLRainForestParamSpaceGenerator.MODE_THRESHOLD));
     setBinNumber(pp.getValue(SQLRainForestParamSpaceGenerator.BIN_NUMBER));
     setDominateRatio(pp.getValue(SQLRainForestParamSpaceGenerator.DOMINATE_RATIO));
-    /*
-    System.out.println("minimum recored per leaf is " + minimumRecordsPerLeaf);
-    System.out.println("minimum ratio per leaf is " + minimumRatioPerLeaf);
-    System.out.println("dominate ratio is " + dominateRatio);
-    System.out.println("mode threshold is " + modeThreshold);
-    System.out.println("bin number is " + binNumber);
-    */
     // if totalRow < modeThreshold, use in-memory mode
     if (totalRow > 0 && totalRow < modeThreshold) {
       NodeInfo aNodeInfo = createDataTable(dbTable, meta, splitValues, totalRow);
@@ -1572,8 +1597,8 @@ public class SQLRainForest extends ReentrantComputeModule {
   }
 
   /** return true if aString is in a String List
-   *  @param aString
-   *  @param aList
+   *  @param aString The string to check for
+   *  @param aList The string list to scan
    *  @return ture if aString is in aList, false otherwise
    */
   private boolean inList(String aString, String[] aList) {
@@ -1586,8 +1611,8 @@ public class SQLRainForest extends ReentrantComputeModule {
   }
 
   /** return true if aString is in a ArrayList
-   *  @param aString
-   *  @param aList
+   *  @param aString The string to check for
+   *  @param aList The array list to scan
    *  @return true if aString is in aList, false otherwise
    */
   private boolean inList(String aString, ArrayList aList) {
@@ -1600,8 +1625,8 @@ public class SQLRainForest extends ReentrantComputeModule {
   }
 
   /** return aString's repeat number in aList
-   *  @param aString
-   *  @param aList
+   *  @param aString The string to check for
+   *  @param aList The array list to scan
    *  @return number of repeating
    */
   private int repeats (String aString, ArrayList aList) {
