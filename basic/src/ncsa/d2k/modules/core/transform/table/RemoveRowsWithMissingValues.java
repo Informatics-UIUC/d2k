@@ -61,14 +61,22 @@ public class RemoveRowsWithMissingValues extends DataPrepModule {
     }
 
     //int[] idx = new int[toRemove.size()];
-    Iterator iter = toRemove.iterator();
+    /*Iterator iter = toRemove.iterator();
         while(iter.hasNext()) {
       int i = ((Integer)iter.next()).intValue();
             mt.removeRow(i);
-    } 
-    
-	
-	
+    } */
+
+    List toRemoveList = new LinkedList(toRemove);
+    Collections.sort(toRemoveList);
+    int ctr = 0;
+    ListIterator listIter = toRemoveList.listIterator();
+    while(listIter.hasNext()) {
+      Integer val = (Integer)listIter.next();
+      mt.removeRow(val.intValue()-ctr);
+      ctr++;
+    }
+
     //mt.removeRowsByIndex(idx);
     pushOutput(mt,0);
 
