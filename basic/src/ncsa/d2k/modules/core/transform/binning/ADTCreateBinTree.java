@@ -255,7 +255,4 @@ public class ADTCreateBinTree extends DataPrepModule {
    /**
  * QA comments:
  * 12-08-03: Vered started qa process
- *           when property "Generate Verbose Output" is set to true - different
- *           outputs for something that is supposed to be the same input: the binning
- *           transformation of ADTAutoBin and ADTBinColumns.
  */
