@@ -1,4 +1,3 @@
-//package ncsa.d2k.modules.projects.clutter.rdr;
 package ncsa.d2k.modules.core.io.file.input;
 
 import ncsa.d2k.core.modules.*;
@@ -20,8 +19,16 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 		numRowsPerPage = nr;
 	}
 
+	private boolean pageSubsets = true;
+	public boolean getPageSubsets() {
+		return pageSubsets;
+	}
+	public void setPageSubsets(boolean nr) {
+		pageSubsets = nr;
+	}
+
 	public PropertyDescription[] getPropertiesDescriptions() {
-		PropertyDescription[] retVal = new PropertyDescription[2];
+		PropertyDescription[] retVal = new PropertyDescription[3];
 		retVal[0] =
 			new PropertyDescription(
 				"useBlanks",
@@ -32,6 +39,11 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 				"numRowsPerPage",
 				"The Number of Rows Per Page",
 				"The maximum number of rows in a page of the PagingTable.");
+		retVal[2] =
+			new PropertyDescription(
+				"pageSubsets",
+				"Page Subset Arrays",
+				"Set this to page subset arrays to disk rather than keeping them in memory.");
 		return retVal;
 	}
 
@@ -161,10 +173,7 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 								|| df.getColumnType(j) == ColumnTypes.SHORT
 								|| df.getColumnType(j) == ColumnTypes.BYTE) {
 
-								ti.setChars(
-									Integer.toString(0).toCharArray(),
-									i,
-									j);
+								ti.setChars(Integer.toString(0).toCharArray(), i, j);
 								ti.setValueToMissing(true, i, j);
 							}
 							// otherwise put the '?' in the table and set the value to missing
@@ -176,9 +185,13 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 					}
 			}
 			try {
+				if (pageSubsets) { 
+					pages[nt] = new SubsetsPage(ti, false);
+				} else {
+					pages[nt] = new Page(ti, false);
+				}
 				pages[nt] = new Page(ti, false);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				throw new RuntimeException ("We can't create the temporary files!");
 			}
 		}

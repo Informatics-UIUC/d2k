@@ -11,8 +11,36 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
- * A paging table simply contains a reference to a table. Page faults 
- * are caught and the appropriate table is paged in.
+ * A paging table is a collection of tabular data where not all the data resides in 
+ * memory simultaneously. The data is segmented into pages of data, each of approximately
+ * equal size. The number of table rows each page contains is user configurable. As the data
+ * is being accessed, only those pages that are being accessed are in memory.
+ * <p>
+ * There are several caveats with this table implementation:<p>
+ * <ul>
+ * <li>Paging table are slow, since the data must be read and re-read from disk. This impacts 
+ * average access time significantly, since periodically page faults will be encountered,
+ * and the next page of data must be read in. 
+ * <li>Paging tables are designed for sequential access, not random access. Random access to
+ * paging tables will result in frequent page faults and disk thrashing.
+ * <li>Only single threaded write access is supported. Multithreaded writes may result in 
+ * corrupted data.
+ * <li>Limitations on the volumn of data that can be addressed does still exist. Currently
+ * subset must be initialized by a single array, and that single array must fit in memory. However,
+ * as the array is parsed, it is spooled off to disk along with the pages of data so that it is
+ * not required to keep it in memory. However, when it is first declared it must fit in memory.
+ * There are also limitations in that the table data accessor methods take an integer index which is
+ * 32 bits.
+ * <li>Although the PageCache object can be shared among many PagingTables, a single
+ * SubsetPagingTable is not intended for multithreaded access. However, shallow copies can be
+ * used in a multi-threaded fashion.
+ * </ul>
+ * A paging table contains a reference to a PageCache object. This object contains an array of Page
+ * objects. Pages are responsible for reading and writing the pages to the disk. It will contain a
+ * reference to the table and subset array as long as they are needed. When the PageCache
+ * determins that the page is no longer needed, it will tell the Page to purge it's data. The 
+ * SubsetPagingTable has a reference to the Page currently being referenced. From the page, it gets
+ * the table, subset and columns currently being accessed by it's accessor methods.
  * @author redman
  */
 public class SubsetPagingTable extends AbstractTable implements MutableTable {
@@ -48,13 +76,8 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	 * of pages, and the last, if present is the location of the pages.
 	 */
 	static public void main(String [] args) {
-		String filepath;
 		int tableSize = Integer.parseInt(args[0]);
 		int numTables = Integer.parseInt(args[1]);
-		if (args.length == 3)
-			filepath = args[2];
-		else
-			filepath = "/tmp/D2Kpages/page-";
 			
 		// Now let's do a regular table to compare time.
 		Column[] cols = new Column[4];
@@ -147,7 +170,8 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		}
 		
 		// Create a paging table, check it's performance.
-		ExamplePagingTable spt = new ExamplePagingTable(new PageCache(pages, offset, tableSize));
+		PageCache pc = new PageCache(pages, offset, tableSize);
+		ExamplePagingTable spt = new ExamplePagingTable(pc);
 		start = System.currentTimeMillis();
 		System.out.println();
 		System.out.println("TABLE SIZE = "+spt.getNumRows());

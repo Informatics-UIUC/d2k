@@ -255,17 +255,12 @@ public class SimpleTrainTest extends DataPrepModule
 
 		// This is the number that will be test
 		int nr = orig.getNumRows();
-		int numTest = (nr*this.getTestPercent())/100;
-		int numTrain = (nr*this.getTrainPercent())/100;
+		int numTest = (int)(((long)nr*(long)this.getTestPercent())/100L);
+		int numTrain = (int)(((long)nr*(long)this.getTrainPercent())/100L);
 		if (numTest < 1 || numTrain < 1) {
-
-                  //debug - vered
-                  System.out.println("\n\n table type: " + orig.getClass().getName() + "\n\n");
-                  System.out.println("\n\nnumber of rows " + orig.getNumRows() + "\n\n");
-                  //end debug
-		  throw new Exception (this.getAlias() +
-			": The selected table was to small to be practical with the percentages specified.");
-                }
+			throw new Exception (this.getAlias() +
+				": The selected table was to small to be practical with the percentages specified.");
+      }
 		int [] test = new int [numTest];
 		int [] train = new int [numTrain];
 
@@ -299,6 +294,7 @@ public class SimpleTrainTest extends DataPrepModule
 		for(int i = numTest-1, j = nr - 1; i >= 0; i--, j--) {
 		   test[i] = random[j];
 		}
+		random = null;
 		if (debug) {
 			System.out.println("test set");
 			for(int i = 0; i < test.length; i++) {
@@ -316,7 +312,13 @@ public class SimpleTrainTest extends DataPrepModule
 		ExampleTable et = orig.toExampleTable();
 		et.setTestingSet(test);
 		et.setTrainingSet(train);
+		
+		// LAM-tlr testing
+		System.out.println("get train table");
 		this.pushOutput(et.getTrainTable(), 0);
+		
+		// LAM-tlr testing
+		System.out.println("get test table");
 		this.pushOutput(et.getTestTable(), 1);
 
 	}

@@ -7,40 +7,41 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
  * The <code>Page</code> class encapsulates a <code>Table</code> that can be
- * paged to and from disk.
+ * paged to and from disk. Pages also handle subset arrays, but this implementation
+ * does not page those out to disk, they remain resident in memory.
  *
- * @author gpape
+ * @author gpape, tredman
  */
 public class Page {
 	static final long serialVersionUID = -3452910203130295662L;
 
 	/** Sedt when we change the data. */
-	private volatile boolean dirty = false;
+	protected volatile boolean dirty = false;
 	
 	/** the time of last reference. */
-	private long timestamp;
+	protected long timestamp;
 
 	/** the file we save the table in. */
-	File pageFile;
-	
-	/** the file we save the table in. */
-	File subsetFile;
+	protected File pageFile;
 	
 	/** the table we are paging in and out. */
-	Table table;
+	protected Table table;
 
 	/** this is the subset array for the subsetted table. */
-	int [] subset;
+	protected int [] subset;
 	
+	/** these are used in the naming of the temp files. */
+	protected static final String PAGE_PREFIX = "page-";
+	protected static final String SUFFIX = ".ser";
+
 	// In practice, getNumRows() and getNumColumns() are called so frequently
 	// that we really don't want to require the table paged in before we can
 	// compute them. Thus, we keep them here, and ensure in the method calls
 	// that they are kept consistent with the table.
 
-	int numRows, numColumns;
-
-	/** this is set to true if this page is the owner of the page file. */
-	boolean ownPageFile = false;
+	protected int numRows, numColumns;
+	Page(){
+	}
 	
 	/**
 	 * Constructs a new <code>Page</code> that can read the given
@@ -54,8 +55,8 @@ public class Page {
 	 *                        construction?
 	 */
 	public Page(Table table, boolean keepInMemory) throws IOException{
-		this.pageFile = File.createTempFile("page-", ".ser");
-		this.subsetFile = File.createTempFile("offsets-", ".ser");
+		this.pageFile = File.createTempFile(PAGE_PREFIX, SUFFIX);
+		this.pageFile.deleteOnExit();
 		this.table = table;
 		numRows = table.getNumRows();
 		numColumns = table.getNumColumns();
@@ -64,11 +65,10 @@ public class Page {
 		pageOut();
 		if (!keepInMemory) {
 			this.table = null;
-			this.subset = null;
 		}
 		timestamp = System.currentTimeMillis();
 	}
-
+	
 	/**
 	 * Constructs a new <code>Page</code> that can read the given
 	 * <code>Table</code> from (and write it to) the given <code>File</code>.
@@ -81,8 +81,8 @@ public class Page {
 	 *                        construction?
 	 */
 	Page(Table table, int [] subset, boolean keepInMemory) throws IOException {
-		this.pageFile = File.createTempFile("page-", ".ser");
-		this.subsetFile = File.createTempFile("offsets-", ".ser");
+		this.pageFile = File.createTempFile(PAGE_PREFIX, SUFFIX);
+		this.pageFile.deleteOnExit();
 		this.table = table;
 		numRows = table.getNumRows();
 		numColumns = table.getNumColumns();
@@ -90,7 +90,6 @@ public class Page {
 		pageOut();
 		if (!keepInMemory) {
 			this.table = null;
-			this.subset = null;
 		}
 		timestamp = System.currentTimeMillis();
 	}
@@ -108,36 +107,37 @@ public class Page {
 	 */
 	Page(File pp, Table table, int [] s) throws IOException {
 		this.pageFile = pp;
-		this.subsetFile = File.createTempFile("offsets-", ".ser");
 		this.table = null;
 		numRows = table.getNumRows();
 		numColumns = table.getNumColumns();
-		this.subset = null;
-		
-		// Write the subset to an object output stream.
-		ObjectOutputStream O = new ObjectOutputStream(new FileOutputStream(subsetFile));
-		O.writeObject(s);
-		O.close();
-		
+		this.subset = s;
 		timestamp = System.currentTimeMillis();
 	}
 	
 	/**
-	 * trash any temp files when we get freed up.
+	 * If we are creating a new subset of the table, the page for the data
+	 * already exists, we just need to create a new subset. The table has already
+	 * been written to memory since it is already part of another paging table.
+	 * @param file a file on disk containing the data
+	 * @param table the <code>Table</code> to store
+	 * @param s the subset data.
+	 * @param keepInMemory keep the <code>Table</code> in memory after
+	 *                        construction?
 	 */
-	protected void finalize() throws Throwable {
-		if (ownPageFile && (pageFile != null && pageFile.exists()))
-			pageFile.delete();
-		if (subsetFile != null && subsetFile.exists())
-			subsetFile.delete();
-		super.finalize();
+	Page(File pp, int rows, int cols, int [] s) throws IOException {
+		this.pageFile = pp;
+		this.table = null;
+		numRows = rows;
+		numColumns = cols;
+		this.subset = s;
+		timestamp = System.currentTimeMillis();
 	}
-	
 	/**
 	 * The table must be paged in for this to work, it will update the count
 	 * of the number of rows and columns in the table.
 	 */
 	private void updateCounts() {
+		if (table == null) pageIn();
 		numRows = table.getNumRows();
 		numColumns = table.getNumColumns();
 	}
@@ -146,7 +146,7 @@ public class Page {
 	 * Return the table, if it is spooled off to disk read it in.
 	 * @return the table.
 	 */
-	Table getTable() {
+	synchronized Table getTable() {
 		if (table == null)
 			pageIn();
 		return table;
@@ -157,8 +157,6 @@ public class Page {
 	 * @return the table.
 	 */
 	int [] getSubset() {
-		if (table == null)
-			pageIn();
 		return subset;
 	}
 	
@@ -250,13 +248,6 @@ public class Page {
 				}
 				this.table = new MutableTableImpl(cols);
 				I.close();
-				
-				// Read the subset, it is in a seperate file so we can have subset tables which share the
-				// same data.	
-				I = new ObjectInputStream(new BufferedInputStream(new FileInputStream(subsetFile)));
-				this.subset = (int []) I.readObject();
-				I.close();
-				
 				start2 = end = System.currentTimeMillis();
 			}
 			fileReadTime += (start2-start);
@@ -276,7 +267,7 @@ public class Page {
 	 * <b>WARNING:</b> This method must only be called while the resource is
 	 * externally write-locked!
 	 */
-	private void pageOut() {
+	protected void pageOut() {
 		if (pageFile == null) return;
 		try {
 			
@@ -318,12 +309,6 @@ public class Page {
 				O.writeObject(((MissingValuesColumn)cols[i]).getMissingValues());
 			}
 			O.close();
-			
-			// Write the subset to an object output stream.
-			O = new ObjectOutputStream(new FileOutputStream(subsetFile));
-			O.writeObject(this.subset);
-			O.close();
-			
 		} catch (Exception e) {
 			System.err.println("Page " + pageFile + ": exception on pageOut:");
 			e.printStackTrace(System.err);
@@ -344,7 +329,6 @@ public class Page {
 		if (dirty)
 			pageOut();
 		table = null;
-		subset = null;
 	}
 
 	/**
@@ -378,25 +362,19 @@ public class Page {
 	 * Returns an exact copy of this <code>Page</code>, with its underlying
 	 * <code>Table</code> optionally retained in memory.
 	 * <p>
-	 * <b>WARNING:</b> This method must only be called while the resource is
-	 * externally write-locked (and <i>is paged in</i>)!
-	 *
 	 * @param keepInMemory    keep the <code>Table</code> in memory after
 	 *                        construction?
 	 *
 	 * @return                the new <code>Page</code> copy
 	 */
 	Page copy(boolean keepInMemory) {
-
 		File newFile = null;
-
 		try {
 			newFile = File.createTempFile("d2k-", null);
 			newFile.deleteOnExit();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		Page newPage;
 		try {
 			newPage = new Page(table.copy(), false);
@@ -404,16 +382,11 @@ public class Page {
 			e1.printStackTrace();
 			return null;
 		}
-
 		if (keepInMemory)
 			newPage.pageIn();
-
 		newPage.mark(false);
-
 		newPage.numRows = numRows;
 		newPage.numColumns = numColumns;
-
 		return newPage;
-
 	}
 }

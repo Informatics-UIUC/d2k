@@ -14,14 +14,20 @@ import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
 
 /**
  * This is where pages for a paging table are cached. It contains an array list with
- * one entry for each page. A page is actually just a serialized table, nothing more.
+ * one entry for each page. A page is kind of a serialized table, but data only.
  * For each page, a count of the number of threads referencing the thread is stored.
  * When a count goes to zero, the table can be discarded, paged out. When the table
  * implementations get a page fault, which manifests itself in the form of an array
  * index out of bounds exception, the table implementation will request the appropriate
  * page from the page manager. The page is read in if neceessary, the referer count is
  * incremented, and the offset to the start of the page is returned to the table.
- * 
+ * <p>
+ * This object also stores metadata about the columns. This include the column labels,
+ * comments, if they are nominal or scalar.\
+ * <p>
+ * There are also methods provided that manipulate the form of the tables. There are
+ * methods to add column, insert and remove columns. Rows can also be added and removed.
+ * Copy and subset methods are also provided here.
  * @author redman
  */
 public class PageCache {
@@ -175,21 +181,55 @@ public class PageCache {
 	
 	/**
 	 * Get the index of the table at the given offset.
-	 * LAM-tlr this shoudl be a binary search or a quick search.
+	 * @param row the row we search for.
+	 * @param hint suggestion of where to start looking.
+	 * @return the index of the page.
+	 */
+	final private int getPageIndexWithHint(int row, int hint) {
+		if (offsets.length > (hint+1) && 
+			row >= offsets[hint] && row < offsets[hint+1])
+			return hint;
+		else
+			return getPageIndex(row);
+	}
+	
+	/**
+	 * Get the index of the table at the given offset.
 	 * @param row
 	 * @return
 	 */
-	private int getPageIndex(int row) {
-		int i = 1;
-		int [] off = offsets;
-		for (; i < offsets.length; i++) {
-			if (off[i] > row) {
-				return i-1;
-			}
+	final private int getPageIndex(int row) {		
+		
+		int [] o = offsets;
+		int low = 1;
+		
+		// We search for two entries where row is between them, so
+		// if it is less than the offset for the second entry, 
+		// it must be the first entry.
+		if (row > o[o.length-1])
+			return o.length-1;
+		if (o.length < 2 || row < o[1])
+			return 0;
+			
+		int high = o.length-1;
+		int middle;
+		while (low <= high) {
+			middle = (low+high)/2;
+			if (row == o[middle])
+				return middle;
+			else if (row < o[middle]) {
+				if (row >= o[middle-1]) {
+
+					// We look for the first entry that is greater than or equal to.
+					return middle - 1;
+				} else 
+					high = middle-1;
+			} else
+				low = middle+1;
 		}
-		return i-1;
+		return 0;
 	}
-	
+
 	/**
 	 * Get the table at the given offset.
 	 * @param row The row attempting to access.
@@ -200,11 +240,19 @@ public class PageCache {
 		
 		// If nobody is referencing the previous page, page it out.
 		int previous = this.getPageIndex(previousOffset);
-		if (previous >= 0 && (--references[previous]) == 0)
-			pages[previous].free();
-			
-		// return the new page table.
-		int which = this.getPageIndex(row);
+		int which;
+		if (previous >= 0) {
+			if ((--references[previous]) == 0)
+				pages[previous].free();
+				
+			// If practical, use the previous offset as a hint where to start searching.
+			if (offsets.length > 2) {
+				previous = previous < offsets.length-2 ? previous+1 : offsets.length-2;
+				which = this.getPageIndexWithHint(row, previous);
+			} else 
+				which = this.getPageIndex(row);
+		} else
+			which = this.getPageIndex(row);
 		
 		// check to see if the row even exists. If it does not
 		// return null.
@@ -212,6 +260,39 @@ public class PageCache {
 			return NON_PAGE;
 			
 		references[which]++;
+		return pages[which];
+	}
+	
+	/**
+	 * Get the table at the given offset.
+	 * @param row The row attempting to access.
+	 * @param previousOffset the offset of the previously accessed table
+	 * @return the table at the given offset, or null if there is not such row.
+	 */
+	Page getPageAtAndPrefetch (int row, int previousOffset) {
+		
+		// If nobody is referencing the previous page, page it out.
+		int previous = this.getPageIndex(previousOffset);
+		if (previous >= 0 && (--references[previous]) == 0)
+			pages[previous].free();
+			
+		// return the new page table.
+		final int which = this.getPageIndex(row);
+		
+		// check to see if the row even exists. If it does not
+		// return null.
+		if (which == -1)
+			return NON_PAGE;
+			
+		references[which]++;
+		
+		// Do a prefetch, on a separate thread fetch the table.
+		new Thread () {
+			public void run() {
+				pages[which+1].getTable();
+			}
+		}.start();
+		
 		return pages[which];
 	}
 	
@@ -619,6 +700,14 @@ public class PageCache {
 		}
 	}
 	
+	int [] removeSubsetEntries(int [] ss, int where, int howmany) {
+		int remainder = ss.length - howmany;
+		int [] newss = new int [remainder];
+		System.arraycopy (ss, 0, newss, 0, where);
+		System.arraycopy (ss, where+howmany, newss, where, remainder-where);
+		return newss;
+	}
+	
 	/**
 	 * Remove the specified number of rows.
 	 * @param start
@@ -632,11 +721,13 @@ public class PageCache {
 		int offset = start - this.offsets[currentPage];
 		MutableTable t = (MutableTable) pages[currentPage].getTable();
 		if (t.getNumColumns() == 0)
-			return; // there is nothing to do if there are not columns.
+			return; // there is nothing to do if there are no columns.
 			
-		int howmany = (t.getNumRows()-offset) < len ?  
-					  (t.getNumRows()-offset) : len;
-		t.removeRows(offset, howmany);
+		int [] subset = pages[currentPage].getSubset();
+		int total = subset.length - offset;
+		int howmany = total < len ? total : len;
+		subset = this.removeSubsetEntries(subset, offset, howmany);
+		pages[currentPage].subset = subset;
 		pages[currentPage].mark(true);
 		this.freeIfUnreferenced(currentPage);
 		
@@ -649,23 +740,25 @@ public class PageCache {
 		// remove rows from consecutive tables until we have 
 		// removed the right amount.
 		while (currentPage < pages.length) {
-			t = (MutableTable) pages[currentPage].getTable();
-			int numberRows = t.getNumRows();
-			if (howmany != 0)
+			subset = pages[currentPage].getSubset();
+			int numberRows = subset.length;
+			if (howmany != 0) {
 				if (numberRows > howmany) {
-					t.removeRows(0, howmany);
+					subset = this.removeSubsetEntries(subset, 0, howmany);
+					pages[currentPage].subset = subset;
 					pages[currentPage].mark(true);
 					this.freeIfUnreferenced(currentPage);
 					offsets[currentPage] -= len - howmany;
 					howmany = 0;
 				} else {
-					t.removeRows(0, numberRows);
+					subset = this.removeSubsetEntries(subset, 0, numRows);
+					pages[currentPage].subset = subset;
 					pages[currentPage].mark(true);
 					this.freeIfUnreferenced(currentPage);
 					offsets[currentPage] -= len - howmany;
 					howmany -= numberRows;
 				}
-			else
+			} else
 				offsets[currentPage] -= len;
 			currentPage++;
 		}
@@ -1209,19 +1302,16 @@ public class PageCache {
 	PageCache subset (int [] rows) throws IOException {
 		
 		// First, sort the array.
-		Arrays.sort(rows);
-/*		this.quickSort(rows, 0, rows.length-1);
-		this.checkSort(rows);*/
-		
+		Arrays.sort(rows);		
 		Page [] newpages = new Page[this.pages.length];
 		int [] newoffsets = new int[this.pages.length];
 		int newPageCount = 0;
-				
+		
 		// Get the page at start, and it's offsets.
 		int which = this.getPageIndex(rows[0]);
 		Page currentPage = this.pages[which];
-		Table currentTable = currentPage.getTable();
 		int [] currentSubset = currentPage.getSubset();
+		this.freeIfUnreferenced(which);
 		int currentOffset = this.offsets[which];
 		
 		// Copy the subset of the subset into a new subset array.
@@ -1230,7 +1320,8 @@ public class PageCache {
 		// We have the new subset, the old table and page, now
 		// we create a new page sharing the same page data file but 
 		// a different offset file.
-		newpages[newPageCount] = new Page(currentPage.pageFile, currentTable, newsubset);
+		newpages[newPageCount] = new Page(currentPage.pageFile, currentPage.numRows,
+					currentPage.numColumns, newsubset);
 		newoffsets[newPageCount++] = 0;
 		int total = newsubset.length;
 		int len = rows.length;
@@ -1238,16 +1329,16 @@ public class PageCache {
 			which++;
 			// Get the page at start, and it's offsets.
 			currentPage = this.pages[which];
-			currentTable = currentPage.getTable();
 			currentSubset = currentPage.getSubset();
 			this.freeIfUnreferenced(which);
 			currentOffset = this.offsets[which];
 			newsubset = this.populateSubset(rows, total, currentSubset, currentOffset);
-			
+
 			// We have the new subset, the old table and page, now
 			// we create a new page sharing the same page data file but 
 			// a different offset file.
-			newpages[newPageCount] = new Page(currentPage.pageFile, currentTable, newsubset);
+			newpages[newPageCount] = new Page(currentPage.pageFile, currentPage.numRows,
+								currentPage.numColumns, newsubset);
 			newoffsets[newPageCount++] = total;
 			total += newsubset.length;
 		}
@@ -1302,51 +1393,5 @@ public class PageCache {
 			
 		}
 		return newindices;
-	}
-	
-	// LAM-tlr testing, check the order, remove this method when we are sure
-	// quicksort works.
-	private void checkSort (int [] vals) {
-		for (int i = 0 ; i < vals.length-1; i++) {
-			if (vals[i+1] < vals[i]) {
-				System.out.println("value at "+(i+1)+" less than value at "+i);
-			}
-		}
-	}
-	
-	/**
-	 * Perform a quicksort on the data using the Tri-median method to select the pivot.
-	 * The data is sorted in place.
-	 * @param l the first rule.
-	 * @param r the last rule.
-	 */
-	final private void quickSort(int [] vals, int l, int r) {
-		int pivot = (r + l) / 2;
-		int pivotVal = vals[pivot];
-
-		// from position i=l start moving to the right, from j=r start moving
-		// to the left, and swap when the value at i is more than the pivot
-		// and j's value is less than the pivot
-		int i = l;
-		int j = r;
-		while (i <= j) {
-			while ((i < r) && (vals[i] < pivotVal))
-				i++;
-			while ((j > l) && (vals[j] > pivotVal))
-				j--;
-			if (i <= j) {
-				int swap = vals[i];
-				vals[i] = vals[j];
-				vals[j] = swap;
-				i++;
-				j--;
-			}
-		}
-
-		// sort the two halves
-		if (l < j)
-			quickSort(vals, l, j);
-		if (i < r)
-			quickSort(vals, j+1, r);
 	}
 }
