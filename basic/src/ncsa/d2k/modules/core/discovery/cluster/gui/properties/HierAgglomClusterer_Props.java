@@ -30,8 +30,10 @@ import java.beans.*;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.discovery.cluster.hac.*;
+import ncsa.d2k.modules.core.discovery.cluster.sample.ClusterParameterDefns;
 
-public class HierAgglomClusterer_Props extends JPanel implements CustomModuleEditor, MouseInputListener, ChangeListener, ActionListener {
+public class HierAgglomClusterer_Props extends JPanel
+	implements CustomModuleEditor, MouseInputListener, ChangeListener, ActionListener, ClusterParameterDefns {
 
   //==============
   // Data Members
@@ -92,10 +94,10 @@ public class HierAgglomClusterer_Props extends JPanel implements CustomModuleEdi
       try{
         num = Integer.parseInt(m_numClust.getText());
       } catch (Exception e){
-        throw new PropertyVetoException("Error in number of clusters field: " + e.getMessage(), null);
+        throw new PropertyVetoException("Error in " + NUM_CLUSTERS + " field: " + e.getMessage(), null);
       }
       if (num < 2){
-        throw new PropertyVetoException("Number of clusters must be two or more.", null);
+        throw new PropertyVetoException(NUM_CLUSTERS + " must be > 1.", null);
       }
     }
 
@@ -136,7 +138,8 @@ public class HierAgglomClusterer_Props extends JPanel implements CustomModuleEdi
     m_gbc.gridwidth = 1;
     m_gbc.anchor = GridBagConstraints.EAST;
     m_cmLbl = new JLabel();
-    m_cmLbl.setText("Cluster Method: ");
+    m_cmLbl.setText(CLUSTER_METHOD + ": ");
+    m_cmLbl.setToolTipText("Select method to use in determining distance between two clusters.");
     m_gbl.setConstraints(m_cmLbl, m_gbc);
 
     m_gbc.gridx = 1;
@@ -154,15 +157,15 @@ public class HierAgglomClusterer_Props extends JPanel implements CustomModuleEdi
     m_gbc.insets = new Insets(4,2,2,2);
     m_gbc.anchor = GridBagConstraints.EAST;
     m_numClustLbl = new JLabel();
-    m_numClustLbl.setText("Number of clusters: ");
-    m_numClustLbl.setToolTipText("Enter integer value > 2 specifying number of clusters desired.");
+    m_numClustLbl.setText( NUM_CLUSTERS + ": " );
+    m_numClustLbl.setToolTipText("Enter integer value > 1 specifying maximum number of clusters desired.");
     m_gbl.setConstraints(m_numClustLbl, m_gbc);
 
     m_gbc.gridx = 1;
     m_gbc.anchor = GridBagConstraints.WEST;
     m_numClust = new JTextField(Integer.toString((_src.getNumberOfClusters() < 2)?5:_src.getNumberOfClusters()), 5);
     m_numClust.setFont(new Font("Arial", Font.BOLD,12));
-    m_numClust.setToolTipText("Enter integer value > 2 specifying number of clusters desired.");
+    m_numClust.setToolTipText("Enter integer value > 1 specifying maximum number of clusters desired.");
     m_gbl.setConstraints(m_numClust, m_gbc);
 
 
@@ -172,12 +175,12 @@ public class HierAgglomClusterer_Props extends JPanel implements CustomModuleEdi
     m_gbc.anchor = GridBagConstraints.CENTER;
     m_gbc.insets = new Insets(10,2,2,2);
 
-    m_auto = new JCheckBox("Auto Cluster",true);
+    m_auto = new JCheckBox(AUTO_CLUSTER,true);
     m_auto.addMouseListener(this);
     _initAuto = (_src.getDistanceThreshold() > 0);
     m_auto_sel = _initAuto;
     m_auto.setSelected(m_auto_sel);
-    m_auto.setToolTipText("If selected you must specify a distance threshold at which point clustering will stop.");
+    m_auto.setToolTipText("If selected, also specify a distance threshold at which point clustering will stop.");
     m_gbl.setConstraints(m_auto, m_gbc);
 
     m_gbc.gridy++;
@@ -185,7 +188,7 @@ public class HierAgglomClusterer_Props extends JPanel implements CustomModuleEdi
     m_gbc.gridwidth = 2;
     m_gbc.insets = new Insets(2,2,2,2);
     m_distLbl = new JLabel();
-    m_distLbl.setText("Distance Cutoff (% of Max):  "+ Integer.toString((_src.getDistanceThreshold() == 0)?1:_src.getDistanceThreshold()));
+    m_distLbl.setText(DISTANCE_THRESHOLD + ": "+ Integer.toString((_src.getDistanceThreshold() == 0)?1:_src.getDistanceThreshold()));
     m_gbl.setConstraints(m_distLbl, m_gbc);
 
     m_gbc.gridy++;
@@ -201,14 +204,14 @@ public class HierAgglomClusterer_Props extends JPanel implements CustomModuleEdi
     m_gbl.setConstraints(m_distSlide, m_gbc);
 
 
-
     m_gbc.gridy++;
     m_gbc.gridx = 0;
     m_gbc.anchor = GridBagConstraints.EAST;
     m_gbc.insets = new Insets(10,2,2,2);
     m_gbc.gridwidth = 1;
     m_dmLbl = new JLabel();
-    m_dmLbl.setText("Distance Metric: ");
+    m_dmLbl.setText(DISTANCE_METRIC + ": ");
+    m_dmLbl.setToolTipText("Select method to use in determining distance between two examples.");
     m_gbl.setConstraints(m_dmLbl, m_gbc);
 
     m_gbc.gridx = 1;
@@ -224,20 +227,20 @@ public class HierAgglomClusterer_Props extends JPanel implements CustomModuleEdi
 
     m_gbc.gridx = 0;
     m_gbc.gridy++;
-    m_gbc.insets = new Insets(4,2,2,2);
-    m_gbc.anchor = GridBagConstraints.CENTER;
-    m_verbose = new JCheckBox("Verbose", _src.getVerbose());
-    m_verbose.setToolTipText("Print verbose messages to console.");
-    m_gbl.setConstraints(m_verbose, m_gbc);
-    m_verbose.setVisible(_showVerbose);
-
-    m_gbc.gridy++;
     m_gbc.anchor = GridBagConstraints.CENTER;
     m_gbc.insets = new Insets(4,2,2,2);
-    this.m_checkMV = new JCheckBox("Check Missing for Values",_src.getCheckMissingValues());
-    m_checkMV.setToolTipText("Screen for missing values in the input table.");
+    this.m_checkMV = new JCheckBox(CHECK_MV,_src.getCheckMissingValues());
+    m_checkMV.setToolTipText("Check for missing values in the table of examples.");
     m_gbl.setConstraints(m_checkMV, m_gbc);
     m_checkMV.setVisible(this._showMVCheck);
+
+    m_gbc.gridy++;
+    m_gbc.insets = new Insets(4,2,2,2);
+    m_gbc.anchor = GridBagConstraints.CENTER;
+    m_verbose = new JCheckBox(VERBOSE, _src.getVerbose());
+    m_verbose.setToolTipText("Write verbose status information to console.");
+    m_gbl.setConstraints(m_verbose, m_gbc);
+    m_verbose.setVisible(_showVerbose);
 
     add(m_cmLbl);
     add(m_methods);
@@ -248,8 +251,8 @@ public class HierAgglomClusterer_Props extends JPanel implements CustomModuleEdi
     add(m_distSlide);
     add(m_dmLbl);
     add(m_distMetrics);
-    add(m_verbose);
     add(m_checkMV);
+    add(m_verbose);
 
     this.setMinimumSize(this.getPreferredSize());
     this.validateTree();
@@ -320,8 +323,15 @@ public class HierAgglomClusterer_Props extends JPanel implements CustomModuleEdi
     if (e.getSource() == m_distSlide){
       String disp = Integer.toString((m_distSlide.getValue() == 0) ? 1 : m_distSlide.getValue());
       m_distSlide.setToolTipText(disp);
-      m_distLbl.setText("Distance Cutoff (% of Max):  "+ disp);
+      m_distLbl.setText(DISTANCE_THRESHOLD + ":  "+ disp);
     }
   }
 
 }
+
+// Start QA Comments
+// 4/12/03 - Ruth Starts QA;  updated text some and uses ClusterParameterDefns to
+//           be more consistent across modules.
+// 4/13/03 - Finished tooltips;  
+//         - Ready for basic
+// End QA Comments
