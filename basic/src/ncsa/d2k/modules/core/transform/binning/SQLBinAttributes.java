@@ -428,10 +428,10 @@ public class SQLBinAttributes extends HeadlessUIModule {
                 colTypes = new boolean[fieldNames.length];
                 binListModel.removeAllElements();
 
-                if (savedBins != null)
+                /*if (savedBins != null)
                    for (int i = 0; i < savedBins.length; i++) {
                       binListModel.addElement(savedBins[i]);
-                   }
+                   }*/
 
                 DefaultListModel numModel = (DefaultListModel)numericColumnLabels.getModel(),
                 txtModel = (DefaultListModel)textualColumnLabels.getModel();
