@@ -16,7 +16,7 @@ import ncsa.d2k.modules.core.datatype.*;
  *
  *
  */
-public class FilterExpression implements Expression {
+public class FilterExpression implements Expression, java.io.Serializable {
 	private HashMap labelToIndex;
 	private Node root;
 	private Table table;
@@ -154,7 +154,7 @@ public class FilterExpression implements Expression {
 		BOOL_AND = 130, // boolean AND operator
 		BOOL_OR = 135; // boolean OR operator
 
-	protected abstract class Node {
+	protected abstract class Node implements java.io.Serializable {
 		abstract boolean evaluate(int rowNumber) throws ExpressionException;
 		public abstract String toString();
 	    // ANCA added this method
@@ -719,7 +719,7 @@ public class FilterExpression implements Expression {
 
 	/******************************************************************************/
 
-	protected abstract class Element {
+	protected abstract class Element implements java.io.Serializable {
 
 		public abstract String toString();
 
