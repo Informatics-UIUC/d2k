@@ -596,7 +596,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	 */
 	public Table shallowCopy() {
 		ExampleTableImpl eti = new ExampleTableImpl();
-		eti.setColumns(this.getColumns());
+		eti.setColumns(columns);
 		eti.setSubset(this.getSubset());
 		eti.setTrainingSet(this.getTrainingSet());
 		eti.setTestingSet(this.getTestingSet());
