@@ -15,12 +15,13 @@ public class FunctionInducerOpt extends OrderedReentrantModule implements Clonea
   double [] BiasParameters;
 
   public boolean _Trace     = false;
-  public void    set_Trace (boolean value) {       this._Trace       = value;}
+  public void    set_Trace (boolean value) {this._Trace  = value;}
   public boolean get_Trace ()              {return this._Trace;}
 
   public String getModuleInfo() {
     return "FunctionInducerOpt";
   }
+
   public String getModuleName()
   {
     return "FunctionInducerOpt";
@@ -43,7 +44,7 @@ public class FunctionInducerOpt extends OrderedReentrantModule implements Clonea
 
   public String getInputInfo(int i) {
     switch (i) {
-      case 0: return "Control Parameters";
+      case 0: return "Paramter Point containing control parameters values";
       case 1: return "Example Table";
       case 2: return "Error Function";
       default: return "No such input";
@@ -52,7 +53,7 @@ public class FunctionInducerOpt extends OrderedReentrantModule implements Clonea
 
   public String getInputName(int i) {
     switch(i) {
-      case 0: return "Control Parameters";
+      case 0: return "Parameter Point";
       case 1: return "Example Table";
       case 2: return "Error Function";
       default: return "NO SUCH INPUT!";

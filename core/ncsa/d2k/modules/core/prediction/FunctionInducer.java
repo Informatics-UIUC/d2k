@@ -88,7 +88,8 @@ public class FunctionInducer extends OrderedReentrantModule implements Cloneable
 
     ExampleTable  exampleSet      = (ExampleTable)  this.pullInput(0);
     ErrorFunction errorFunction   = (ErrorFunction) this.pullInput(1);
-
+    
+ 
     instantiateBiasFromProperties();
 
     Model model = null;
