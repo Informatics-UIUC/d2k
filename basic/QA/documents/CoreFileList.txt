@@ -129,27 +129,27 @@ DoubleExample.java
 ReadContinuousDoubleExampleTable.java
 ReadContinuousFloatExampleTable.java
 
-./datatype/table/db:
-CacheFactory.java
-Cache.java
-CacheMissException.java
-DBDataSource.java
-DBExampleTable.java
-DBPredictionTable.java
-DBTable.java
-DBTestTable.java
-DBTrainTable.java
-FixedRowCache.java
-LocalDBPredictionTable.java
-LocalDBTestTable.java
+./datatype/table/db:     Dora says these were developed by summer student and will need additional work.  Will not be in basic release.
+CacheFactory.java		not in basic
+Cache.java			not in basic
+CacheMissException.java		not in basic
+DBDataSource.java		not in basic
+DBExampleTable.java		not in basic
+DBPredictionTable.java		not in basic
+DBTable.java			not in basic
+DBTestTable.java		not in basic
+DBTrainTable.java		not in basic
+FixedRowCache.java		not in basic
+LocalDBPredictionTable.java	not in basic
+LocalDBTestTable.java		not in basic
 
 ./datatype/table/db/dstp:
 DSTPDataSource.java
 
-./datatype/table/db/sql:
-CachedSQLDataSource.java
-MutableResultSetDataSource.java
-ResultSetDataSource.java
+./datatype/table/db/sql:	Dora says these were developed by summer student and will need additional work.  Will not be in basic release.
+CachedSQLDataSource.java	not in basic
+MutableResultSetDataSource.java	not in basic
+ResultSetDataSource.java	not in basic
 
 ./datatype/table/double:
 <Empty>
@@ -428,30 +428,30 @@ BrowseTablesView.java		done
 ConnectionWrapperImpl.java	done
 ConnectionWrapper.java		done
 ConnectToDB.java		done
-CountResults.java
+CountResults.java		maybe later release
 DBConnection.java		done
-ExecuteSelect.java
-GenericMatrixModel.java
-GetModelFromDB.java
-MatchModelWithData.java
+ExecuteSelect.java		maybe later release
+GenericMatrixModel.java		to be submitted soon
+GetModelFromDB.java		to be submitted soon
+MatchModelWithData.java		to be submitted soon
 MetaTableModel.java		done
-MySQLDBConnection.java
+MySQLDBConnection.java		maybe later release
 OracleDBConnection.java		done
-OracleURLInput.java
-QueryCondition.java
+OracleURLInput.java		replaced by OracleDBConnection; will be removed
+QueryCondition.java		replaced by SQLFilterConstruction; will be removed
 ReadQueryResults.java		done
-ResultSetTableModel.java
+ResultSetTableModel.java	done (support for SaveFileToDB)
 SaveFileToDB.java		done
-SaveModelToDB.java
-SelectDBTables.java
+SaveModelToDB.java		to be submitted soon
+SelectDBTables.java		maybe later release
 SelectFields.java		done
 SelectTable.java		done
-SQLChooseIOFields.java
+SQLChooseIOFields.java		to be replaced by SQLChooseAttributes to be submitted soon
 SQLDBConnection.java		done
-SQLServerDBConnection.java
-TrainDataTable.java
-URLInput.java
-WriteVTToDB.java
+SQLServerDBConnection.java	maybe later release
+TrainDataTable.java		maybe later release
+URLInput.java			replaced by DBConnection; will be removed
+WriteVTToDB.java		maybe later release
 
 ./optimize:
 CreateExample.java			submitted
@@ -612,7 +612,7 @@ CreateDTModel.java				submitted
 DecisionTreeModel.java				submitted
 DecisionTreeNode.java				submitted
 DecisionTreePMMLTags.java			submitted - may wait for next rel on PMML
-DecisionTreeViewer.java				? is this still relevant
+DecisionTreeViewer.java				will be submitted soon
 DecisionTreeVis.java				submitted
 NumericDecisionTreeNode.java			submitted
 NumericViewableDTNode.java			submitted
@@ -638,7 +638,7 @@ DecisionTreeNode.java				submitted
 DecisionTreePartition.java
 Decomposition.java				submitted
 
-./prediction/decisiontree/rainforest:
+./prediction/decisiontree/rainforest:		will be submitted soon (all in this dir)
 CategoricalDecisionForestNode.java
 DecisionForestModel.java
 DecisionForestNode.java
