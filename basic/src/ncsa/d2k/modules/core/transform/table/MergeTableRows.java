@@ -138,16 +138,20 @@ public class MergeTableRows extends HeadlessUIModule {
 	}
 
 	public String[] getInputTypes() {
-		String[] types =
-			{ "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
-		return types;
-	}
+        // String[] types =
+        // { "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
+        String [] types =
+            { "ncsa.d2k.modules.core.datatype.table.Table" };
+        return types;
+      }
 
-	public String[] getOutputTypes() {
-		String[] types =
-			{ "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
-		return types;
-	}
+      public String[] getOutputTypes() {
+        //		String[] types =
+        //			{ "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
+        String[] types =
+            { "ncsa.d2k.modules.core.datatype.table.Table" };
+        return types;
+      }
 
 	public String getModuleInfo() {
 
@@ -263,12 +267,13 @@ public class MergeTableRows extends HeadlessUIModule {
 
 		JComboBox mergeMethod;
 
-		TableImpl table;
+		//TableImpl table;
+                Table table;
 
 		HashMap columnLookup;
 
 		public void setInput(Object o, int id) throws Exception {
-			table = (TableImpl) o;
+			table = (Table) o;
 
 			// clear all lists
 			keyListModel.removeAllElements();
@@ -708,3 +713,6 @@ public class MergeTableRows extends HeadlessUIModule {
  * 01-05-04:
  * module is ready for basic
 */
+
+// 06-23-04: changed input/output types from tableimpl to table.  [MRC]
+
