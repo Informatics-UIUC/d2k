@@ -198,7 +198,7 @@ public class WEKA_NeuralNetModelProducer extends ModelProducerModule {
 	}
 
   public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.core.modules.PredictionModelModule"};
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule"};
 		return types;
 	}
 

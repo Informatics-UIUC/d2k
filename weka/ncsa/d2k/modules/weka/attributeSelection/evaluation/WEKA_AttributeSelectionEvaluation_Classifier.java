@@ -71,7 +71,7 @@ public class WEKA_AttributeSelectionEvaluation_Classifier extends ComputeModule 
 		return "<html>  <head>      </head>  <body>    A module for supplying a classification attribute subset evaluator to the     attribute selector.  </body></html>";
 	}
   public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.core.modules.PredictionModelModule"};
+		String[] types = {"ncsa.d2k.modules.PredictionModelModule"};
 		return types;
 	}
   public String[] getOutputTypes() {
