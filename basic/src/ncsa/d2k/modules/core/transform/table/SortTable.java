@@ -324,6 +324,17 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
       for(int index=0; index < numsort; index++) {
         JComboBox combobox = new JComboBox(columnlabels);
         sortchoices[index] = combobox;
+
+        if (sortOrderNames != null && sortOrderNames.length > index) {
+
+           // contains?
+           for (int j = 0; j < columnlabels.length; j++) {
+              if (sortOrderNames[index].equals(columnlabels[j])) {
+                 sortchoices[index].setSelectedItem(columnlabels[j]);
+              }
+           }
+
+        }
       }
 
 
