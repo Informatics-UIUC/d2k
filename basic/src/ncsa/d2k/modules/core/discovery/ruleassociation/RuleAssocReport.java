@@ -119,7 +119,7 @@ public class RuleAssocReport extends UIModule
   }
 
   public String getModuleName() {
-        return "Rule Assoc Report";
+        return "Rule Association Report";
   }
 
   protected String[] getFieldNameMapping () {
@@ -180,7 +180,7 @@ public class RuleAssocReport extends UIModule
           displayRulePanel.setLayout (new GridBagLayout());
 
           // Outline panel for rules
-          final String[] columnHeading = {"IF","-->","THEN","S %","C %"};
+          final String[] columnHeading = {"IF","-->","THEN","Support %","Confidence %"};
           JOutlinePanel ruleInfo = new JOutlinePanel("Association Rules");
           ruleInfo.setLayout (new GridBagLayout());
           //ruleModel = new GenericMatrixModel(ruleTable.getNumRows(),5,false,columnHeading);
@@ -567,3 +567,11 @@ public class RuleAssocReport extends UIModule
 
 
 }
+
+
+/**
+ * 01-26-04: vered started qa process
+ * edited labels of the table this moduel displays (changed S% to be Support%
+ * and C% to be Confidence%)
+ *
+ */

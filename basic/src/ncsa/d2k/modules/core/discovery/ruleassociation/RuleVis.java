@@ -1679,7 +1679,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                    * @param view is the RuleVisView upon which the filter will operate
                    */
                   public RuleFilter(RuleVisView view){
-                    F = new JFrame("RuleFilter");
+                    F = new JFrame("Rule Filter");
                     F.getContentPane().add(this);
                     F.setSize(600,262);
                     F.setVisible(true);
@@ -2465,4 +2465,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
    /**
  * 01-23-04: vered
  * edited about text.
+ *
+ * 01-26-04:
+ * bug 234 - filter button displyas a blank window.
  */
