@@ -137,11 +137,11 @@ public class SQLGetRuleAssocFromCube extends UIModule
       s += "The user controls the rule generation via three properties: ";
       s += "<i>Minimum Support %</i>, <i>Minimum Confidence %</i>, and <i>Pruning ";
       s += "Threshold</i>. Lowering the <i>Minimum Support %</i> and <i>Minimum Confidence %</i> ";
-      s += "results in the generation of more trivial rules. However, setting these values too high can";
+      s += "results in the generation of more trivial rules. However, setting these values too high can ";
       s += "result in the pruning of important rules that occur only rarely. ";
       s += "The value of <i>Minimum Support %</i> should be no lower than the value entered when ";
       s += "the cube table was built, as the cube does not contain statistics for ";
-      s += "patterns that occur less freqently than the support threshold specified when the ";
+      s += "patterns that occur less freqently than the support threshold specified ";
       s += "at build time.  The <i>Minimum Support %</i> chosen in this module for the final rules ";
       s += "can be greater than or equal to the cube build support threshold without any loss of information. ";
 
@@ -611,7 +611,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
       }
       if (v.size()<=0) {
         JOptionPane.showMessageDialog(msgBoard,
-          "There is no any code book in the database", "Error",
+          "There is no code book in the database", "Error",
           JOptionPane.ERROR_MESSAGE);
         System.out.println("There is no any code book in the database.");
       }
