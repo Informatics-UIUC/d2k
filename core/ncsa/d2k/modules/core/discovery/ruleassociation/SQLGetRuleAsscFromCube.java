@@ -10,18 +10,16 @@ package ncsa.d2k.modules.core.discovery.ruleassociation;
  */
 
 
-import ncsa.d2k.core.*;
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 import java.sql.*;
 import java.util.ArrayList;
-import java.text.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -130,7 +128,7 @@ public class SQLGetRuleAsscFromCube extends UIModule
           s += "the 'THEN' part by choosing a target. This module will only generate ";
           s += "association rules that match your selection.";
           s += "<p> Restrictions: ";
-          s += "We currently only support Oracle database.";
+          s += "We currently only support Oracle databases.";
           return s;
   }
 

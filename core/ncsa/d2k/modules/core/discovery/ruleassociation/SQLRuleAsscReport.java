@@ -9,7 +9,7 @@ package ncsa.d2k.modules.core.discovery.ruleassociation;
  * @version 1.0
  */
 
-import ncsa.d2k.core.*;
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.userviews.swing.*;
@@ -18,18 +18,15 @@ import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 import java.sql.*;
-import java.util.*;
 import java.util.ArrayList;
-import java.text.*;
-import javax.swing.table.*;
 import javax.swing.*;
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.table.TableColumnModel;
 import javax.swing.JTable;
-import oracle.sql.*;
-import oracle.jdbc.driver.*;
+
+
 
 public class SQLRuleAsscReport extends UIModule
         {
@@ -87,10 +84,10 @@ public class SQLRuleAsscReport extends UIModule
     s += "the second column is the logic symbol '==>' to connect IF and THEN, ";
     s += "and the forth and fifth columns represent the rule's support and ";
     s += "confidence, respectively. The rules displayed in the table can be filtered by different ";
-    s += "threshold on support and confidence, and can be sorted by support or ";
+    s += "threshold values for support and confidence, and can be sorted by support or ";
     s += "confidence by the user interface module 'SQLGetRuleAsscFromCube'. </p>";
     s += "<p> Restrictions: ";
-    s += "We currently only support Oracle database.";
+    s += "We currently only support Oracle databases.";
     return s;
   }
 
