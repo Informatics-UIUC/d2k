@@ -15,7 +15,7 @@ import java.util.*;
 /**
  Allows the user to choose which columns of a table are scalar or nominal.
  */
-public class ChooseAttributeTypes extends UIModule {
+public class ChooseAttributeTypes extends HeadlessUIModule {
 
   /**
    Return a description of the function of this module.
@@ -108,9 +108,9 @@ public class ChooseAttributeTypes extends UIModule {
   }
 
 
-    public PropertyDescription[] getPropertiesDescriptions() { 
-        return new PropertyDescription[0]; // so that "windowName" property 
-        // is invisible 
+    public PropertyDescription[] getPropertiesDescriptions() {
+        return new PropertyDescription[0]; // so that "windowName" property
+        // is invisible
     }
 
 
@@ -354,12 +354,15 @@ public class ChooseAttributeTypes extends UIModule {
 
     private void setFieldsInTable(){
       Enumeration e = scalarListModel.elements();
+
+
       while(e.hasMoreElements()) {
         String s = (String)e.nextElement();
         Integer ii = (Integer)indexLookup.get(s);
         table.setColumnIsScalar(true, ii.intValue());
         table.setColumnIsNominal(false, ii.intValue());
       }
+
       e = nominalListModel.elements();
       while(e.hasMoreElements()) {
         String s = (String)e.nextElement();
@@ -367,6 +370,11 @@ public class ChooseAttributeTypes extends UIModule {
         table.setColumnIsNominal(true, ii.intValue());
         table.setColumnIsScalar(false, ii.intValue());
       }
+
+      //headless conversion
+      setScalarColumns(scalarListModel.toArray());
+      setNominalColumns(nominalListModel.toArray());
+      //headless conversion
     }
 
     /**
@@ -456,6 +464,117 @@ public class ChooseAttributeTypes extends UIModule {
       return new Dimension(minimumwidth, minimumheight);
     }
   }
+
+  //headless conversion support
+  private String[] scalarColumns;
+  private String[] nominalColumns;
+  public Object[] getScalarColumns(){return scalarColumns;}
+  public Object[] getNominalColumns(){return nominalColumns;}
+
+
+  public void setScalarColumns(Object[] scalar){
+
+
+    scalarColumns = new String[scalar.length];
+    for (int i=0; i<scalar.length; i++){
+      scalarColumns[i] = (String) scalar[i];
+
+    }
+}
+
+
+  public void setNominalColumns(Object[] nominal){
+    nominalColumns = new String[nominal.length];
+
+
+    for (int i=0; i<nominal.length; i++){
+      nominalColumns[i] = (String) nominal[i];
+
+    }
+}
+
+
+
+
+
+
+  protected void doit() throws Exception{
+    Table _table  = (Table) pullInput(0);
+
+
+
+    //creating a hash map of available columns: column name <-> column index.
+    HashMap availableColumns = new HashMap();
+    //validating that there is no intersection between the scalar and nominal columns
+    //if validate returns true that means that some columns were assigned the
+    //is nominal is scalar property. hence it is worth while building the map
+    if (validate()){
+      for (int i = 0; i < _table.getNumColumns(); i++)
+        availableColumns.put(_table.getColumnLabel(i), new Integer(i));
+    }
+
+
+
+    //if validate returns false - it does not matter that the map is empty
+    //because it means that the arrays of scalar and nominal columns are
+    //of size zero.
+
+    //going over the scalar columns.
+    for (int i=0; i<scalarColumns.length; i++)
+      if(availableColumns.containsKey(scalarColumns[i])){
+        _table.setColumnIsScalar(true, ( (Integer) availableColumns.get(scalarColumns[i])).intValue());
+        _table.setColumnIsNominal(false, ( (Integer) availableColumns.get(scalarColumns[i])).intValue());
+      }//if contains
+
+
+
+    //going over the nominal columns.
+    for (int i=0; i<nominalColumns.length; i++)
+      if(availableColumns.containsKey(nominalColumns[i])){
+        _table.setColumnIsScalar(false, ( (Integer) availableColumns.get(nominalColumns[i])).intValue());
+        _table.setColumnIsNominal(true, ( (Integer) availableColumns.get(nominalColumns[i])).intValue());
+      }//if contains
+
+
+     pushOutput(_table, 0);
+
+  }//doit
+
+  private boolean validate() throws Exception{
+
+
+
+    HashMap scalarMap;
+    scalarMap = new HashMap();
+
+    if(scalarColumns == null) scalarColumns = new String[0];
+    if(nominalColumns == null) nominalColumns = new String[0];
+    if(scalarColumns.length == 0 && nominalColumns.length == 0){
+      System.out.println("\n\nChooseAttributeTypes:\nYou did not choose any " +
+          "nominal or scalar columns.\nthe itinerary will continue " +
+          "without changing the columns' scalar\nominal properties.\n");
+      return false;
+    }//if length
+
+
+
+    for (int i=0; i<scalarColumns.length; i++)
+      scalarMap.put(scalarColumns[i], new Integer(i));
+
+
+
+    for (int i=0; i<nominalColumns.length; i++)
+      if(scalarMap.containsKey(nominalColumns[i]))
+        throw new Exception("\n\nChooseAttributeTypes:\nA column can be either scalar or nominal, it cannot be both!\n");
+
+
+    return true;
+  }//validate
+
+  //headless conversion support
+
+
+
 }
 
 //QA Comments Anca - added getPropertyDescription

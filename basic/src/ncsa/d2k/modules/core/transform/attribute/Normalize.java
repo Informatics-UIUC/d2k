@@ -1,5 +1,7 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
+import java.util.HashMap;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import ncsa.d2k.core.modules.PropertyDescription;
-import ncsa.d2k.core.modules.UIModule;
+import ncsa.d2k.core.modules.HeadlessUIModule;
 import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.core.modules.ViewModule;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
@@ -33,7 +35,7 @@ import ncsa.d2k.userviews.swing.JUserPane;
  *
  * @author gpape
  */
-public class Normalize extends UIModule {
+public class Normalize extends HeadlessUIModule {
 
 /******************************************************************************/
 /* UIModule methods                                                           */
@@ -108,12 +110,12 @@ public class Normalize extends UIModule {
       };
    }
 
-    public PropertyDescription[] getPropertiesDescriptions() { 
-	return new PropertyDescription[0]; // so that "last expression" property 
-	// is invisible 
-    } 
-    
-    
+    public PropertyDescription[] getPropertiesDescriptions() {
+	return new PropertyDescription[0]; // so that "last expression" property
+	// is invisible
+    }
+
+
 
 /******************************************************************************/
 /* GUI                                                                        */
@@ -289,6 +291,10 @@ public class Normalize extends UIModule {
                   transform[i] = indirection[indices[i]];
                }
 
+               //headless conversion support
+               setNumericLabels(numericList.getSelectedValues());
+               //headless conversion support
+
                pushOutput(new NormalizingTransformation(transform), 0);
 
             }
@@ -385,7 +391,54 @@ public class Normalize extends UIModule {
    }
 
 
-}
+//headless conversion support
+
+   private String[] numericLabels;
+   public Object[] getNumericLabels(){return numericLabels;}
+   public void setNumericLabels(Object[] labels){
+     numericLabels = new String[labels.length];
+     for (int i=0; i<labels.length; i++)
+       numericLabels[i] = (String)labels[i];
+   }
+
+   protected void doit(){
+     MutableTable _table = (MutableTable)pullInput(0);
+
+     int[] transform = new int[0]; //with this array the normalization trasform will be build
+
+     if(numericLabels == null || numericLabels.length ==0){
+        pushOutput(new NormalizingTransformation(transform), 0);
+       return;
+     }
+
+
+     //finding out how many columns are in the intersection between
+     //numericLabels and the available numeric columns in the table
+     HashMap availableNumericColumns = new HashMap();
+     for (int i=0; i<_table.getNumColumns(); i++)
+       if(_table.isColumnNumeric(i))
+         availableNumericColumns.put(_table.getColumnLabel(i), new Integer(i));
+
+
+     int numNumeric = 0;
+     for (int i=0; i<numericLabels.length; i++)
+       if(availableNumericColumns.containsKey(numericLabels[i]))
+         numNumeric++;
+
+     transform = new int[numNumeric];
+     for (int i=0; i<numericLabels.length; i++)
+       if(availableNumericColumns.containsKey(numericLabels[i]))
+         transform[i] = ((Integer)availableNumericColumns.get(numericLabels[i])).intValue();
+
+
+  pushOutput(new NormalizingTransformation(transform), 0);
+
+   }
+//headless conversion support
+
+
+
+}//Normalize
 
 
 /**
