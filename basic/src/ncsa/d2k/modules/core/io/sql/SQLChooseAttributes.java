@@ -127,8 +127,8 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
   public String getOutputName(int i) {
     switch (i) {
-      case 0: return "DatabaseTableName";
-      case 1: return "MetaTable";
+      case 0: return "Selected Table";
+      case 1: return "Meta Data Example Table";
       default: return "NoOutput";
     }
   }
@@ -365,6 +365,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
     selectedColumn = 0;
     int inputIndex = 0;
     int outputIndex = 0;
+    boolean [] missingValue = new boolean[inputFeatures.length + outputFeatures.length];
     for (int colIdx = 0; colIdx < colNames.size(); colIdx++) {
       if (isInList(colIdx, inputFeatures) && isInList(colIdx, outputFeatures)) {
         JOptionPane.showMessageDialog(msgBoard,
@@ -382,6 +383,29 @@ public class SQLChooseAttributes extends HeadlessUIModule {
         else {
           cols[selectedColumn].setIsScalar(false);
         }
+        
+		//ANCA: get the count of missing values for this column
+	/*	  int missing =0;
+		  try {
+			con = cw.getConnection();
+			String countQry = new String("select count(*) from " + tableName.getText() +
+							  " where " + colNames.get(colIdx).toString()+ " is null");
+			Statement countStmt = con.createStatement();
+			ResultSet countSet = countStmt.executeQuery(countQry);
+			countSet.next();
+			 missing = countSet.getInt(1);
+		  }
+		  catch (Exception e){
+			JOptionPane.showMessageDialog(msgBoard,
+					  e.getMessage(), "Error",
+					  JOptionPane.ERROR_MESSAGE);
+			System.out.println("Error occurred in createExampleTable.");
+		  }
+		  if (missing >0) // there are missing values in this column, set the first element to missing
+		      missingValue[selectedColumn] = true;
+		   else
+		   	missingValue[selectedColumn] = false;   
+		*/  
         if (isInList(colIdx, inputFeatures)) {
           selectedInput[inputIndex] = selectedColumn;
           inputIndex ++;
@@ -395,16 +419,6 @@ public class SQLChooseAttributes extends HeadlessUIModule {
     }
     // create an Table to hold the meta data
     MutableTableImpl table = new MutableTableImpl(cols);
-    for (int colIdx = 0; colIdx < selectedColumn; colIdx++) {
-      if (cols[colIdx].getIsScalar()) {
-        table.setColumnIsScalar(true,colIdx);
-        table.setColumnIsNominal(false,colIdx);
-      }
-      else {
-        table.setColumnIsScalar(false,colIdx);
-        table.setColumnIsNominal(true,colIdx);
-      }
-    }
     // get the count of the rows that have class labels
     try {
       con = cw.getConnection();
@@ -419,10 +433,23 @@ public class SQLChooseAttributes extends HeadlessUIModule {
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occurred in createExampleTable.");
+      System.out.println("Error occurred in createExampleTable. " + e);
     }
    // table.setNumRows(numRows);
    table.addRows(numRows);
+   for (int colIdx = 0; colIdx < selectedColumn; colIdx++) {
+	//	if (missingValue[colIdx])
+	//			cols[colIdx].setValueToMissing(true,0);
+		 if (cols[colIdx].getIsScalar()) {
+		   table.setColumnIsScalar(true,colIdx);
+		   table.setColumnIsNominal(false,colIdx);
+		 }
+		 else {
+		   table.setColumnIsScalar(false,colIdx);
+		   table.setColumnIsNominal(true,colIdx);
+		 }
+	   }
+    
     ExampleTable et = table.toExampleTable();
     et.setInputFeatures(selectedInput);
     et.setOutputFeatures(selectedOutput);
@@ -629,6 +656,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
        else
          cols[selectedColumn].setIsScalar(false);
        selectedOutput[i] = selectedColumn;
+ 
        selectedColumn++;
 
 
@@ -638,17 +666,6 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
     // create a Table to hold the meta data
     MutableTableImpl table = new MutableTableImpl(cols);
-    for (int colIdx = 0; colIdx < selectedColumn; colIdx++) {
-      if (cols[colIdx].getIsScalar()) {
-        table.setColumnIsScalar(true,colIdx);
-        table.setColumnIsNominal(false,colIdx);
-      }
-      else {
-        table.setColumnIsScalar(false,colIdx);
-        table.setColumnIsNominal(true,colIdx);
-      }
-    }
-
 
     // get the count of the rows that have class labels
     try {
@@ -669,15 +686,46 @@ public class SQLChooseAttributes extends HeadlessUIModule {
     }
    // table.setNumRows(numRows);
 
-
-
    //adding rows.
     table.addRows(numRows);
+
+	for (int colIdx = 0; colIdx < selectedColumn; colIdx++) {
+	  if (cols[colIdx].getIsScalar()) {
+		table.setColumnIsScalar(true,colIdx);
+		table.setColumnIsNominal(false,colIdx);
+	  }
+	  else {
+		table.setColumnIsScalar(false,colIdx);
+		table.setColumnIsNominal(true,colIdx);
+	  }
+
+//	ANCA: get the count of missing values for this column
+			int missing =0;
+			try {
+	//		  con = cw.getConnection();
+			  String countQry = new String("select count(*) from " + _table +
+								" where " + table.getColumn(colIdx).getLabel()+ " is null");
+			  Statement countStmt = con.createStatement();
+			  ResultSet countSet = countStmt.executeQuery(countQry);
+			  countSet.next();
+			   missing = countSet.getInt(1);
+		}
+			catch (Exception e){
+			  JOptionPane.showMessageDialog(msgBoard,
+						e.getMessage(), "Error",
+						JOptionPane.ERROR_MESSAGE);
+			  System.out.println("Error occurred in createExampleTable. " + e);
+			}
+			if (missing >0) // there are missing values in this column, set the first element to missing
+			 table.getColumn(colIdx).setValueToMissing(true,0);
+
+	}
+
     //converting to example table and setting the input and output columns.
+
     ExampleTable et = table.toExampleTable();
     et.setInputFeatures(selectedInput);
     et.setOutputFeatures(selectedOutput);
-
 
     pushOutput(_table,0);
     pushOutput(et, 1);
@@ -721,3 +769,12 @@ public class SQLChooseAttributes extends HeadlessUIModule {
   //headless conversion
 
 }
+
+/**
+ * 
+  *12-11-03 Anca added missing value info to the metadata example table
+* 				The missing value is always in the first row of the column, 
+* 				and is there just to mark the column as having missing values
+* 01-14-04 Anca - missing value info is present in the SQL table, all null values are
+* 		 		considered missing
+*/
