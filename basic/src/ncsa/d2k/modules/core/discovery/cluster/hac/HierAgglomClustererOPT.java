@@ -181,7 +181,7 @@ public class HierAgglomClustererOPT
     s += "two constructed examples. The specified percentage of this maximum distance ";
     s += "is the <i>distance cutoff</i> value. ";
     s += "When the next two most similar clusters have distance greater than the <i>distance cutoff</i> value, ";
-    s += "the clustering is stopped. ";
+    s += "the cluster agglomeration is stopped. ";
     s += "</p>";
 
     s += "<p>If the <i>";
@@ -191,7 +191,7 @@ public class HierAgglomClustererOPT
     s += "</i>. ";
     s += "</p>";
 
-    s += "<p>In actuality, the clustering continues all the way to the root of the cluster tree regardless of the halting ";
+    s += "<p>In actuality, clustering continues all the way to the root of the cluster tree regardless of the halting ";
     s += "criteria.  This allows the complete cluster tree to be placed in the <i>Cluster Model</i>. ";
     s += "The clusters at the cutoff, also known as the \"cut\",  are saved to the model separately. ";
     s += "</p>";
@@ -203,13 +203,13 @@ public class HierAgglomClustererOPT
 
     s += "<p>Data Type Restrictions: ";
     s += "The clustering does not work if the input data contains missing values. ";
-    s += "The algorithm operates on numeric and boolean datatypes.  If the data to be clustered ";
+    s += "The algorithm operates on numeric and boolean data types.  If the data to be clustered ";
     s += "contains nominal data types, it should be converted prior to performing the clustering. ";
     s += "The <i>Scalarize Nominals</i> module can be used to convert nominal types into boolean values. ";
     s += "</p>";
 
     s += "<p>Data Handling: ";
-    s += "The input <i>Table</i>, is included in the <i>Cluster Model</i>.  It is not";
+    s += "The input <i>Table</i> is included in the <i>Cluster Model</i>.  It is not ";
     s += "changed by this module.";
     s += "</p>";
 
@@ -297,4 +297,7 @@ public class HierAgglomClustererOPT
 // 4/13/03 - Asked Duane to clarify if 2 arrays are created at same time or
 //           not (scalability comment).  Yes
 //         - Not sure if full tree in model if max number of clusters causes halt.
-//
+// 4/14/03 - Heard from Duane; Few more updates 
+//         - Ready for Basic.
+// End QA Comments
+
