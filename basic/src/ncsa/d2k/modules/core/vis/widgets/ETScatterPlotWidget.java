@@ -429,7 +429,16 @@ public class ETScatterPlotWidget extends JUserPane implements
     ImageIcon[][] images;
 
     ColumnPlotTableModel() {
-      rowheaders = et.getOutputNames();
+    	
+    	// If there are not any labels for any of the ouputs,
+    	// we will not include that collumn, we will set the row
+    	// headers array to null.
+      String [] rh = et.getOutputNames();
+      rowheaders = null;
+      for (int i = 0; i < rh.length; i++) {
+      	if (rh[i].length() > 0)
+      		rowheaders = rh;
+      }
       images = new ImageIcon[outputs.length][inputs.length];
       selected = new boolean[outputs.length][inputs.length];
       GraphSettings settings = new GraphSettings();
@@ -474,7 +483,10 @@ public class ETScatterPlotWidget extends JUserPane implements
        The first column shows the output variables.
      */
     public int getColumnCount() {
-      return inputs.length+1;
+    	if (rowheaders != null)
+        return inputs.length+1;
+      else
+        return inputs.length;
     }
 
     /**
@@ -485,25 +497,32 @@ public class ETScatterPlotWidget extends JUserPane implements
     }
 
     public String getColumnName(int col) {
-      if (col==0)
-        return "";
+    	if (rowheaders != null)
+        if (col==0)
+          return "";
+        else
+          return et.getColumnLabel(inputs[col-1]);
       else
-        return et.getColumnLabel(inputs[col-1]);
+	     return et.getColumnLabel(inputs[col]);
     }
 
     public Object getValueAt(int row, int col) {
-      if (col==0)
-        return rowheaders[row];
-      else
-        return images[row][col-1];
+    	if (rowheaders != null)
+	      if (col==0)
+	        return rowheaders[row];
+	      else
+	        return images[row][col-1];
+	   else
+	     return images[row][col];
     }
 
     public void setValueAt(Object value, int row, int col) {
-      if (col==0) {
-        rowheaders[row] = (String) value;
-        ETScatterPlotWidget.this.setup();
-        ETScatterPlotWidget.this.revalidate();
-      }
+    	if (rowheaders != null)
+        if (col==0) {
+          rowheaders[row] = (String) value;
+          ETScatterPlotWidget.this.setup();
+          ETScatterPlotWidget.this.revalidate();
+        }
     }
 
     /**
