@@ -79,9 +79,9 @@ public final class DecisionTreeVis
 
   public String getModuleInfo() {
     String s = "<p>Overview: Visualize a decision tree. " +
-        "<p>Detailed Description: Given a ViewableDTModel, display the structure "+
-        "and contents of the nodes of the decision tree.  The <i>Navigator</i> "+
-        "on the left shows a small view of the entire tree.  The main area "+
+        "<p>Detailed Description: Given a ViewableDTModel, display the structure " +
+        "and contents of the nodes of the decision tree.  The <i>Navigator</i> " +
+        "on the left shows a small view of the entire tree.  The main area " +
         "shows an expanded view of the tree.";
     return s;
   }
@@ -136,9 +136,11 @@ public final class DecisionTreeVis
     private Hashtable ordertable;
     private ColorMenuItem[] coloritems;
     private DecisionTreeScheme scheme;
+    private transient HelpWindow helpWindow;
 
     public void initView(ViewModule module) {
       menubar = new JMenuBar();
+      helpWindow = new HelpWindow();
     }
 
     public Object getMenu() {
@@ -201,9 +203,10 @@ public final class DecisionTreeVis
 
       saveAsPmml = new JMenuItem("Save as PMML...");
       saveAsPmml.addActionListener(this);
-      if(!(model instanceof DecisionTreeModel))
+      if (! (model instanceof DecisionTreeModel)) {
         saveAsPmml.setEnabled(false);
 
+      }
       optionsmenu.add(colorsmenu);
       optionsmenu.addSeparator();
       optionsmenu.add(printtree);
@@ -514,22 +517,25 @@ public final class DecisionTreeVis
         searchframe.pack();
         searchframe.setVisible(true);
       }
-      else if(source == saveAsPmml) {
+      else if (source == saveAsPmml) {
         JFileChooser jfc = new JFileChooser();
 
         int returnVal = jfc.showSaveDialog(null);
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
           try {
             // get the selected file
             File newFile = jfc.getSelectedFile();
 
-            WriteDecisionTreePMML.writePMML((DecisionTreeModel)model, newFile.getAbsolutePath());
+            WriteDecisionTreePMML.writePMML( (DecisionTreeModel) model,
+                                            newFile.getAbsolutePath());
           }
-          catch(Exception e) {
-              ncsa.gui.ErrorDialog.showDialog(e, "Error Writing PMML");
+          catch (Exception e) {
+            ncsa.gui.ErrorDialog.showDialog(e, "Error Writing PMML");
           }
         }
       }
+      else if(source ==  helpbutton)
+        helpWindow.setVisible(true);
     }
 
     public Dimension getPreferredSize() {
@@ -747,5 +753,111 @@ public final class DecisionTreeVis
         }
       }
     }
+  }
+
+  private final class HelpWindow
+      extends JD2KFrame {
+    HelpWindow() {
+      super("About NaiveBayesVis");
+      JEditorPane jep = new JEditorPane("text/html", getHelpString());
+      getContentPane().add(new JScrollPane(jep));
+      setSize(400, 400);
+    }
+  }
+
+  private String getHelpString() {
+    StringBuffer s = new StringBuffer("<html>");
+    s.append("<h1>Decision Tree Vis Help</h1>");
+    s.append("<p>Overview: Decision Tree Vis is an interactive display of the");
+    s.append("contents of a decision tree.");
+    s.append("<hr>");
+    s.append(
+        "<p>Detailed Description: Decision Tree Vis is comprised of three main");
+    s.append("components: the Main Area, the Navigator, and the Node Info.");
+    s.append("<p>The Main Area shows the decision tree.  When the cursor is ");
+    s.append(
+        "positioned over a node in the tree, the Node Info is updated to show");
+    s.append(
+        "the contents of the node.  The main area also shows the branch labels");
+    s.append(
+        "of the decision tree.  The labels are displayed approximately halfway");
+    s.append("between the parent and child.  Subtrees in the Main Area can be ");
+    s.append("collapsed using the arrow widget next to a node in the tree.  A ");
+    s.append(
+        "single-click on a node will show an expanded view of the node.  This ");
+    s.append(
+        "will show the distributions of the outputs at this particular node.");
+    s.append(
+        "<p>The Navigator displays a smaller view of the Main Area.  The current");
+    s.append(
+        "portion of the tree that is displayed by the Main Area is shown by a ");
+    s.append("box in the Navigator.");
+    s.append(
+        "<p>The Node Info shows the distributions of the classified values at ");
+    s.append("the node under the mouse cursor.");
+    s.append("<hr>");
+    s.append("Menu Options:");
+    s.append("<ul>");
+    s.append("<li>Options");
+    s.append("<ul>");
+    s.append(
+        "	<li>Set Colors: The color used to display each unique classified");
+    s.append("	value can be changed.");
+    s.append(
+        "	<li>Print Tree: The entire tree can be printed using this option.");
+    s.append("	This will be the entire contents of the Main Area.");
+    s.append(
+        "	<li>Print Window: The Decision Tree Window itself can be printed");
+    s.append("	using this option.");
+    s.append("	</ul>");
+    s.append("<li>Views");
+    s.append("	<ul>");
+    s.append(
+        "	<li>Maximum Depth: The maximum depth of the tree to be shown can");
+    s.append("	be selected using the maximum depth option.  Nodes with a depth");
+    s.append("	greater than this number will not be displayed.");
+    s.append("	<li>Node Spacing: The space in pixels between nodes in the tree");
+    s.append("	can be adjusted using this option.");
+    s.append(
+        "	<li>Show labels: Toggles the display of branch labels in the Main");
+    s.append("	Area.");
+    s.append("	</ul>");
+    s.append("<li>Tools");
+    s.append("	<ul>");
+    s.append("	<li>Search: ");
+    s.append(
+        "Searches for nodes that satisfy the logical expression. The expression is the ");
+    s.append(
+        "logical AND or logical OR of conditions. The most basic condition is an ");
+    s.append(
+        "inequality based on the node population, percent, purity or split value. The ");
+    s.append(
+        "population is the number of records with the given output value. The percent ");
+    s.append(
+        "is the population of the given output value relative to the total number of ");
+    s.append(
+        "records. The purity is a measure of the entropy. The split value is the input ");
+    s.append(
+        "value used to split the node. A series of conditions is added to the Current ");
+    s.append(
+        "Conditions list. Pairs of conditions can then be selected and logically ");
+    s.append(
+        "combined using Replace. The single remaining condition is then used to search ");
+    s.append(
+        "the tree. The search results can be iterated by using Next and Previous.");
+    s.append("	</ul>");
+    s.append("</ul>");
+    s.append("<hr>");
+    s.append("Toolbar Options:");
+    s.append("<ul>");
+    s.append("	<li>Reset: Reset the view to the default viewpoint.");
+    s.append("	<li>Print Tree: Print the entire contents of the tree.");
+    s.append("	<li>Zoom: When this button is toggled, left-click the mouse ");
+    s.append("	button to zoom in and right-click the mouse button to zoom out.");
+    s.append("	<li>Search: Display the Search interface.");
+    s.append("	<li>Help: Show this help window.");
+    s.append("</ul>");
+    s.append("<html>");
+    return s.toString();
   }
 }
