@@ -9,7 +9,7 @@ import ncsa.d2k.core.modules.ComputeModule;
 
 public class UniformSampling extends ComputeModule implements java.io.Serializable {
 
-  private double     StopUtilityThreshold = 0.99;
+  private double     StopUtilityThreshold = 0.0;
   public  void    setStopUtilityThreshold (double value)  {       this.StopUtilityThreshold = value;}
   public  double  getStopUtilityThreshold ()              {return this.StopUtilityThreshold;}
 
@@ -45,22 +45,19 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
   public String getInputName(int i) {
     switch (i) {
       case 0: return "Control Parameter Space";
-      case 1: return "Objective Parameter Space";
-      case 2: return "Example";
+      case 1: return "Example";
     }
     return "";
   }
   public String getInputInfo(int i) {
     switch (i) {
       case 0: return "Control Parameter Space";
-      case 1: return "Objective Parameter Space";
-      case 2: return "Example";
+      case 1: return "Example";
     }
     return "";
   }
   public String[] getInputTypes() {
     String [] in = {
-      "ncsa.d2k.modules.core.datatype.parameter.ParameterSpace",
       "ncsa.d2k.modules.core.datatype.parameter.ParameterSpace",
       "ncsa.d2k.modules.core.datatype.table.Example"
     };
@@ -122,7 +119,7 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
       value = (inputFlags[0] > 0);
     }
     else {
-      value = (inputFlags[2] > 0);
+      value = (inputFlags[1] > 0);
     }
 
     return value;
@@ -153,7 +150,7 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
     }
     else {
 
-      Example example = (Example) this.pullInput(2);
+      Example example = (Example) this.pullInput(1);
 
       if (ExampleSet == null) {
 
