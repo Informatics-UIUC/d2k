@@ -12,6 +12,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+import ncsa.d2k.modules.core.transform.StaticMethods;
+
 /**
  Allows the user to choose which columns of a table are scalar or nominal.
  */
@@ -108,10 +110,10 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
   }
 
 
-    public PropertyDescription[] getPropertiesDescriptions() {
+  /*  public PropertyDescription[] getPropertiesDescriptions() {
         return new PropertyDescription[0]; // so that "windowName" property
         // is invisible
-    }
+    }*/
 
 
   /**
@@ -509,8 +511,9 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
     //if validate returns true that means that some columns were assigned the
     //is nominal is scalar property. hence it is worth while building the map
     if (validate()){
-      for (int i = 0; i < _table.getNumColumns(); i++)
-        availableColumns.put(_table.getColumnLabel(i), new Integer(i));
+      /*for (int i = 0; i < _table.getNumColumns(); i++)
+        availableColumns.put(_table.getColumnLabel(i), new Integer(i));*/
+      availableColumns = StaticMethods.getAvailableAttributes(_table);
     }
 
 

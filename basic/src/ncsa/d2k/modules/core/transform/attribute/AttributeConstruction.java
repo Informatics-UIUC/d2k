@@ -23,6 +23,10 @@ import ncsa.d2k.modules.core.vis.widgets.*;
  * operations are defined in the documentation for that class.
  *
  * @author gpape
+ *
+ * @todo: got negative array size exception when deleted one of the new
+ * constructed attributes (that was saved from previous run) it did not terminate
+ * the itinerary, but it does not look good.
  */
 public class AttributeConstruction extends HeadlessUIModule {
 
@@ -720,6 +724,7 @@ public class AttributeConstruction extends HeadlessUIModule {
 
    //headless conversion support
      public void doit(){
+       pullInput(0);
        pushOutput(new AttributeTransform(lastCons), 0);
      }
      //headless conversion support

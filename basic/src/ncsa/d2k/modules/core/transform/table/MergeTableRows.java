@@ -7,7 +7,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.gui.*;
+
+import ncsa.d2k.modules.core.transform.StaticMethods;
+
+
 
 /**
  * Merge rows in a table based on identical key attributes.
@@ -18,7 +23,7 @@ import ncsa.gui.*;
  * @author unascribed
  * @version 1.0
  */
-public class MergeTableRows extends UIModule {
+public class MergeTableRows extends HeadlessUIModule {
 
        ///////
        // variables and methods used to preserve settings between invocations
@@ -65,7 +70,10 @@ public class MergeTableRows extends UIModule {
 	 * @return a list of the property descriptions.
 	 */
 	public PropertyDescription [] getPropertiesDescriptions () {
-		PropertyDescription [] pds = new PropertyDescription [0];
+		PropertyDescription [] pds = new PropertyDescription [3];
+                pds[0] = super.supressDescription;
+                pds[1] = new PropertyDescription("control", "Control Column", "Name of control column in merging");
+                pds[2] = new PropertyDescription("type", "Merging Method", "Type of merging method");
 		return pds;
 	}
 
@@ -392,11 +400,25 @@ public class MergeTableRows extends UIModule {
 
 					final int ctrl = ((Integer)columnLookup.get(control)).intValue();
 
+                                         //mTbl;
+
 					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							mergeTable(ks, ms, ctrl, (String)type);
-						}
+                                            public void run() {
+                                              //changed by vered - 9/18/03
+                                              //moved the code of the merging methods to
+                                              //MergingClass, so it could be static
+                                              //and reused by doit.
+
+
+                                                 final MutableTable mTbl = MergingClass.mergeTable(ks, ms, ctrl, (String)type, table);
+                                                pushOutput(mTbl, 0);
+                                                viewDone("Done");
+
+//                                                mergeTable(ks, ms, ctrl, (String)type);
+                                            }
 					});
+
+
 					HashSet usedKeys = new HashSet();
 					for(int i = 0; i < keys.length; i++)
 						usedKeys.add(keys[i]);
@@ -409,6 +431,13 @@ public class MergeTableRows extends UIModule {
 					setLastKeys(usedKeys);
 					setLastToMerge(usedMerges);
 					setLastMergeMethod(type.toString());
+
+                                        //headless conversion support
+                                        setControl(control.toString());
+                                        setKeys(usedKeys.toArray());
+                                        setMerges(usedMerges.toArray());
+                                        setType(type.toString());
+                                        //headless conversion support
 				}
 			});
 			buttonPanel.add(abort);
@@ -416,7 +445,12 @@ public class MergeTableRows extends UIModule {
 			add(buttonPanel, BorderLayout.SOUTH);
 		}
 
-		private void mergeTable(int[] keys, int[] merges, int control, String type) {
+                //the following was commented out by vered - 9/18/03
+                //and was trasnferred to MergingClass.java (all the merge methods)
+                //and to KetSet.java
+
+
+	/*	 private void mergeTable(int[] keys, int[] merges, int control, String type) {
 			HashMap keyLookup = new HashMap(20);
 			// loop through table to find rows where all the key columns are identical
 			for(int i = 0; i < table.getNumRows(); i++) {
@@ -657,9 +691,9 @@ public class MergeTableRows extends UIModule {
 			MutableTableImpl tbl = new MutableTableImpl(cols);
 			tbl.setLabel(table.getLabel());
 			return tbl;
-		}
+		} */
 
-		private class KeySet {
+	/*	private class KeySet {
 			String[] keys;
 
 			KeySet(String[] k) {
@@ -694,13 +728,116 @@ public class MergeTableRows extends UIModule {
 					result *= keys[i].hashCode();
 				return result;
 			}
-		}
+		} */
 
 		public Dimension getPreferredSize() {
 			return new Dimension(400, 300);
                 }
 
-	}
+	}//CleanView
+
+
+    //headless conversion support
+    private String[] keys; //key columns' names. rows with same value in these columns will be merged
+    private String control; //control column name. the values of the row with largest
+                            //value in this column will be copied to the merged row.
+    private String[] merges; //column names to merge their values.
+    private String type; //type of merging (sum, count, etc.)
+
+
+    //setter and getter methods.
+    public Object[] getKeys(){return keys;}
+    public void setKeys(Object[] k){
+      keys = new String[k.length];
+      for (int i=0; i<k.length; i++)
+        keys[i] = (String) k[i];
+    }
+
+    public String getControl(){return control;}
+    public void setControl(String c){control = c;}
+
+
+    public Object[] getMerges(){return merges;}
+    public void setMerges(Object[] m){
+      merges = new String[m.length];
+      for (int i=0; i<m.length; i++)
+        merges[i] = (String) m[i];
+    }
+
+    public String getType(){return type;}
+    public void setType(String t){type = t;}
+
+    public void doit(){
+      final Table table = (Table)pullInput(0);
+
+
+      HashMap columns = StaticMethods.getAvailableAttributes(table);
+
+      //fnding out which of keys are relevant to the input table.
+
+      final int[] ks = StaticMethods.getIntersectIds(keys, columns); //ks[i] is index of column keys[i]
+      final int[] ms = StaticMethods.getIntersectIds(merges, columns); ; //ms[i] is index of column merges[i]
+      final int cntrl = StaticMethods.getID(control, columns);   //cntrl is index of column control
+      final String _type = type;
+
+
+
+      //validating that properties are not null. if they are - pushing out the
+      //table without any changes.
+      if(ks == null || ks.length == 0){
+        System.out.println("\nNo valid key column were chosen!\nThe Table remains the same!\n");
+        pushOutput(table.toExampleTable(), 0);
+        return;
+      }
+
+      if(ms == null || ms.length == 0){
+        System.out.println("\nNo valid merges column were chosen!\nThe Table remains the same!\n");
+        pushOutput(table.toExampleTable(), 0);
+        return;
+      }
+
+
+      if(control == null || cntrl == -1){
+        System.out.println("\nNo valid control column was chosen!\nThe Table remains the same!\n");
+        pushOutput(table.toExampleTable(), 0);
+        return;
+      }
+
+
+      if(type == null || type.length() == 0){
+        System.out.println("\nNo merging type was chosen!\nThe Table remains the same!\n");
+        pushOutput(table.toExampleTable(), 0);
+        return;
+      }
+
+      if(!(type.equals(MergingClass.AVE) || type.equals(MergingClass.CNT) || type.equals(MergingClass.MAX) ||
+           type.equals(MergingClass.MIN) || type.equals(MergingClass.SUM))){
+          System.out.println("\nThe chosen merging type is illegal!\nThe Table remains the same!\n");
+          pushOutput(table.toExampleTable(), 0);
+          return;
+        }
+
+      //end validation.
+
+
+      SwingUtilities.invokeLater(new Runnable() {
+              public void run() {
+                    final MutableTable mtbl =  MergingClass.mergeTable(ks, ms, cntrl, _type, table);
+                    pushOutput(mtbl, 0);
+              }
+      });
+
+
+    }//doit
+
+
+
+
+    //headless conversion support
+
+
+
+
 }
 
 

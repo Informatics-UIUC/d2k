@@ -24,6 +24,8 @@ import ncsa.d2k.modules.core.datatype.table.Transformation;
 import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
 import ncsa.d2k.userviews.swing.JUserPane;
 
+import ncsa.d2k.modules.core.transform.StaticMethods;
+
 /**
  * This module presents a user interface for interactive normalization of
  * <code>MutableTable</code> data. Selected numeric columns are normalized
@@ -416,6 +418,8 @@ public class Normalize extends HeadlessUIModule {
 
      //finding out how many columns are in the intersection between
      //numericLabels and the available numeric columns in the table
+
+
      HashMap availableNumericColumns = new HashMap();
      for (int i=0; i<_table.getNumColumns(); i++)
        if(_table.isColumnNumeric(i))
@@ -430,27 +434,29 @@ public class Normalize extends HeadlessUIModule {
       }
 
 
-        int numNumeric = 0;
+        transform = StaticMethods.getIntersectIds(numericLabels, availableNumericColumns);
+/*        int numNumeric = 0;
         for (int i = 0; i < numericLabels.length; i++)
           if (availableNumericColumns.containsKey(numericLabels[i]))
             numNumeric++;
+*/
 
-
-        if(numNumeric == 0){
+        if(transform.length == 0){
           System.out.println("\n\nNormalize:\nTable " + _table.getLabel() +
                           " does not contain any of the numeric columns you chose. " +
                           "The transformation will be an empty one");
-        pushOutput(new NormalizingTransformation(transform), 0);
-        return;
+        //pushOutput(new NormalizingTransformation(transform), 0);
+        //return;
 
         }
 
-        transform = new int[numNumeric];
+        /*
+         transform = new int[numNumeric];
         for (int i = 0; i < numericLabels.length; i++)
           if (availableNumericColumns.containsKey(numericLabels[i]))
             transform[i] = ( (Integer) availableNumericColumns.get(numericLabels[
                 i])).intValue();
-
+*/
         pushOutput(new NormalizingTransformation(transform), 0);
 
 

@@ -14,6 +14,7 @@ import ncsa.gui.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 
+import ncsa.d2k.modules.core.transform.StaticMethods;
 
 /**
  * <code>FilterConstruction</code> is a simple user interface that facilitates
@@ -28,11 +29,8 @@ import ncsa.d2k.modules.core.vis.widgets.*;
  *
  * @todo: problems with gui: when entering malformed expression it throws
  * a null pointer exception instead of informing user in a nice way.
- * @todo: problem with add parentheses. it added "()".
- * @todo: wishing for a back space. you have to clear all of the expression
- * if you've made one mistake.
  *
- * @todo: add support for parenthese in doit.
+ *
  *
  *
  */
@@ -487,6 +485,9 @@ public class FilterConstruction extends HeadlessUIModule {
      sb.append("values from columns; i.e., ColumnA != 'value', but those ");
      sb.append("values must be enclosed in tick marks (single quotes) so ");
      sb.append("as to distinguish them from column labels.");
+     sb.append("<br><br>");
+     sb.append("To add parentheses around a sub expression, mark the sub expression ");
+     sb.append("using the mouse, and click \"Add Paren\" button.");
      sb.append("</body></html>");
 
      return sb.toString();
@@ -590,9 +591,12 @@ try {
      //pulling input
      MutableTable table = (MutableTable) pullInput(0);
      //creating a column hash map
-     HashMap availableColumns = new HashMap();
+     HashMap availableColumns = StaticMethods.getAvailableAttributes(table);
+     /*
+          new HashMap();
      for (int i=0; i<table.getNumColumns(); i++)
        availableColumns.put(table.getColumnLabel(i), new Integer(i));
+*/
 
        if(availableColumns.size() == 0){
          System.out.println("Table " + table.getLabel() + " has no columns.");

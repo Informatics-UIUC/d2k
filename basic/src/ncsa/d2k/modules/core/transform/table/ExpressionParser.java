@@ -7,8 +7,14 @@ import java.util.StringTokenizer;
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2003</p>
  * <p>Company: </p>
- * @author not attributable
+ * @author vered
  * @version 1.0
+ *
+ * parses expressions with relations '==' or '=' (for sql) '!=' '<=' '>=' '<' '>',
+ * with operators '||' '&&' or 'or' and 'and' (sql)
+ * values are to be inside quotes: 'val'
+ * allows empty parentheses '()'
+ * allows no space before or after parentheses.
  */
 
 public class ExpressionParser {
@@ -17,22 +23,22 @@ public class ExpressionParser {
 
 
    public class Expected {
-    static final int OPEN_CLOSE_RIGHT = 0; //after '(' expecting '(' or ')' or a right hand operand.
+    static final int OPEN_CLOSE_LEFT = 0; //after '(' expecting '(' or ')' or a left hand operand.
     static final int AFTER_OPEN = 0;
 
-    static final int CLOSE_OPERATOR_NOTHING = 1; //after a left hand operand or a closing parentheses
+    static final int CLOSE_OPERATOR_NOTHING = 1; //after a right hand operand or a closing parentheses
     //expecting an operator (&&, ||) or ')' or nothing.
     static final int AFTER_CLOSE = 1;
-    static final int AFTER_LEFT = 1;
+    static final int AFTER_RIGHT = 1;
 
     static final int RELATION = 2; //after a right hand operand expecting a relation (<, > etc.)
-    static final int AFTER_RIGHT = 2;
+    static final int AFTER_LEFT = 2;
 
-    static final int OPEN_RIGHT = 3; //at the beginning of the parsing expecting open parentheses or right hand operand.
+    static final int OPEN_LEFT = 3; //at the beginning of the parsing expecting open parentheses or right hand operand.
     static final int BEGINNING = 3;
     static final int AFTER_OPERATOR = 3;
 
-    static final int LEFT = 4;   //after a relation expecting a left hand operand.
+    static final int RIGHT = 4;   //after a relation expecting a left hand operand.
     static final int AFTER_RELATION = 4;
 
 
@@ -67,7 +73,7 @@ public class ExpressionParser {
 
      String goodCondition = ""; //the returned value
 
-     StringTokenizer tok = new StringTokenizer(expression);
+     StringTokenizer tok = new StringTokenizer(expression, " \n\t\f\r()", true);
 
 
        int numOpen = 0;  //number of opening parenthese without matching closing ones.
@@ -89,6 +95,8 @@ public class ExpressionParser {
        //parsing the condition, each sub condition that holds a valid
           //attribute name will be copied into goodCondition
           //assuming the expression could be malformed.
+
+
 
        while(tok.hasMoreTokens()){
 
@@ -113,12 +121,18 @@ public class ExpressionParser {
 
          //according to the first character of the token identification is made.
         switch(currTok.charAt(0)){
+          case ' ':
+          case '\t':
+          case '\n':
+          case '\r':
+          case '\f': break;
+
           //open parentheses
           case '(':
             //a space is required after '('
-            if(currTok.length() > 1) throw new Exception("there must be a space before and after each parentheses!");
+   //         if(currTok.length() > 1) throw new Exception("there must be a space before and after each parentheses!");
             //are we expecting this token?
-            if(!(expected == Expected.OPEN_CLOSE_RIGHT || expected == Expected.OPEN_RIGHT))
+            if(!(expected == Expected.OPEN_CLOSE_LEFT || expected == Expected.OPEN_LEFT))
               throw new Exception("Did not expect to find '(' after " + goodCondition);
 
             //the token is legal at this point
@@ -139,9 +153,9 @@ public class ExpressionParser {
             //close parentheses
           case ')':
             //requires space after it.
-            if(currTok.length() > 1) throw new Exception("there must be a space before and after each parentheses!");
+ //           if(currTok.length() > 1) throw new Exception("there must be a space before and after each parentheses!");
              //are we expecting this token?
-             if(!(expected == Expected.CLOSE_OPERATOR_NOTHING || expected == Expected.OPEN_CLOSE_RIGHT))
+             if(!(expected == Expected.CLOSE_OPERATOR_NOTHING || expected == Expected.OPEN_CLOSE_LEFT))
                throw new Exception("Did not expect to find ')' after " + goodCondition);
              //so far it is legal
              numOpen--;
@@ -193,34 +207,38 @@ public class ExpressionParser {
 
          default: //meaning this is either left or right hand operands
 
-
-
-
-
                   //are we expecting an operand?
-                  if(!(expected == Expected.LEFT || expected == Expected.OPEN_CLOSE_RIGHT || expected == Expected.OPEN_RIGHT))
+                  if(!(expected == Expected.RIGHT || expected == Expected.OPEN_CLOSE_LEFT || expected == Expected.OPEN_LEFT))
                      throw new Exception ("Did not expect to find operand " + currTok + " after " + goodCondition);
 
-                   //if this is a left hand operand we are expecting
-                  if(expected == Expected.LEFT){
+                  if(expected == Expected.RIGHT){ //it is a right hand operand
+
                     //if it is in the map of attributes
-                    leftHand = currTok;
+                    rightHand = currTok;
                     if(map.containsKey(currTok)){
                       //switching between right to left operands
-                      leftHand = rightHand;
-                      rightHand = currTok;
-                    }
+                      rightHand = leftHand;
+                      leftHand = currTok;
+                    }//if contains currTok
 
 
-                    //now verifying that the right hand is indeed an attribute
-                    if(map.containsKey(rightHand)){
+                    //now verifying that the left hand is indeed an attribute
+                    if(map.containsKey(leftHand)){
+
+                      //testing that value is between ' '
+                      char first = rightHand.charAt(0);
+                      char last = rightHand.charAt(rightHand.length()-1);
+
+                      if(!(first == '\'' && last == '\'' ))
+                        throw new Exception ("\nValues have to be surounded by single quotes (\')\n");
+
                       //adding to good condition operator right hand relation and left hand
                       goodCondition += " " + operator + " " + rightHand + " " + relation + " " + leftHand;
                       operator = "";
-                      expected = Expected.AFTER_LEFT;
+                      expected = Expected.AFTER_RIGHT;
                       lastGoodExpected = expected;
                    //   lastGoodToken = currTok;
-                    }
+                    }//if contains leftHand
                     else { //the sub expression is not relevant
 
                       System.out.println("The attribute " + rightHand + "nor " + leftHand +
@@ -232,20 +250,29 @@ public class ExpressionParser {
                       //restoring the last good expected
                         expected = lastGoodExpected;
 
-                    }//else contains key
+                    }//else contains leftHand
 
-                  }//if expected = left
-                  else{
-                    rightHand = currTok;
-                    expected = Expected.AFTER_RIGHT;
-                  }
+                  }//if (right hand operand)
+
+                  else{ //this is a left hand operand
+
+                    leftHand = currTok;
+                    expected = Expected.AFTER_LEFT;
+                  }//else right
+
+
                   break;
         }//switch
     }//while
 
+    if(numOpen > 0 )
+      throw new Exception("\n\nThe expression " + goodCondition + " has too many opening parentheses\n");
+
     return goodCondition;
 
    }//parseExpression
+
+
 
 
 }//ExpressionParser
