@@ -13,9 +13,9 @@ import javax.swing.*;
 import java.util.*;
 
 /**
- * Filter rows from a VerticalTable
+ * Filter rows from a Table
  */
-public class FilterVT extends UIModule {
+public class FilterTable extends UIModule {
 
 	private static final String GREATER_THAN = ">";
 	private static final String LESS_THAN = "<";
@@ -31,7 +31,7 @@ public class FilterVT extends UIModule {
     public String getInputInfo (int index) {
         switch (index) {
             case 0:
-                return  "A VerticalTable to filter.";
+                return  "A Table to filter.";
             default:
                 return  "No such input";
         }
@@ -42,7 +42,7 @@ public class FilterVT extends UIModule {
      @return the data types of all inputs.
      */
     public String[] getInputTypes () {
-        String[] types =  { "ncsa.d2k.util.datatype.VerticalTable" };
+        String[] types =  { "ncsa.d2k.util.datatype.Table" };
         return  types;
     }
 
@@ -64,7 +64,7 @@ public class FilterVT extends UIModule {
      @return the data types of all outputs.
      */
     public String[] getOutputTypes () {
-        String[] types =  { "ncsa.d2k.util.datatype.VerticalTable" };
+        String[] types =  { "ncsa.d2k.util.datatype.Table" };
         return  types;
     }
 
@@ -73,7 +73,7 @@ public class FilterVT extends UIModule {
      @return the description of the module.
      */
     public String getModuleInfo () {
-        return  "Filter rows out of a VerticalTable.";
+        return  "Filter rows out of a Table.";
     }
 
     /**
@@ -96,7 +96,7 @@ public class FilterVT extends UIModule {
      * Filtering lines.
      */
     class Filter extends JUserPane implements ActionListener {
-		VerticalTable table;
+		Table table;
 		boolean []linemap;
 
         HashMap numericColumnLookup;
@@ -125,7 +125,7 @@ public class FilterVT extends UIModule {
 
 		public void setInput(Object o, int id) {
 			removeAll();
-			table = (VerticalTable)o;
+			table = (Table)o;
 			linemap = new boolean[table.getCapacity()];
 
             numericColumnLookup = new HashMap();

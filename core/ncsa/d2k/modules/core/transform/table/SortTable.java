@@ -68,7 +68,7 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule
 		numsort = sort;
 	}
 
-	public void Done(VerticalTable table) {
+	public void Done(Table table) {
 		pushOutput(table, 0);
 		viewDone("Done");
 	}
@@ -92,7 +92,7 @@ public class SortTable extends ncsa.d2k.infrastructure.modules.UIModule
 class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements ActionListener {
 	SortTable module;
 
-	VerticalTable table;
+	Table table;
 	int columns;
 	int rows;
 	int numsort;
@@ -112,7 +112,7 @@ class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements 
 	}
 
 	public void setInput(Object object, int inputindex) {
-		table = (VerticalTable) object;
+		table = (Table) object;
 		columns = table.getNumColumns();
 		rows = table.getNumRows();
 		numsort = module.getNumsort();
@@ -227,7 +227,7 @@ class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements 
 				collect(column, sorted);
 				sortindex++;
 			}
-			table = (VerticalTable) table.reOrderRows(sorted);
+			table = (Table) table.reOrderRows(sorted);
 
 			if (module.getReorder()) {
 				reorder();
@@ -239,7 +239,11 @@ class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements 
 
 	// Reorder columns
 	public void reorder() {
-		Column[] internal = (Column[]) table.getInternal();
+		//Column[] internal = (Column[]) table.getInternal();
+		Column[] internal = new Column[table.getNumColumns()];
+		for(int i = 0; i < internal.length; i++)
+			internal[i] = table.getColumn(i);
+
 		Column[] ordered = new Column[columns];
 		Hashtable hashtable = new Hashtable(sortsize);
 
@@ -259,7 +263,9 @@ class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements 
 			internalindex++;
 		}
 
-		table.setInternal(ordered);
+		//table.setInternal(ordered);
+		for(int i = 0; i < ordered.length; i++)
+			table.setColumn(ordered[i], i);
 	}
 
 	public void firstCollect(Column column, int[] sorted) {
@@ -371,15 +377,15 @@ class SortView extends ncsa.d2k.controller.userviews.swing.JUserPane implements 
 			sorted[index] = copy[index];
 	}
 
-	public class Run {
+	private final class Run {
 		int start, end;
 
-		public Run(int start, int end) {
+		Run(int start, int end) {
 			this.start = start;
 			this.end = end;
 		}
 
-		public void print() {
+		void print() {
 			System.out.println(start + "-" + end);
 		}
 	}
