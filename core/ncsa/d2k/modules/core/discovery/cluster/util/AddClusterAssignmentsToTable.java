@@ -40,12 +40,12 @@ public class AddClusterAssignmentsToTable
 
     descriptions[0] = new PropertyDescription("tableOnly",
         "Output Table Only",
-        "Choose whther to output the ClusterModel (which contains the table) or just a table. " +
-        "Default is \"True\".");
+        "If this property is true, the modified table with the cluster assignment attribute is output. " +
+        "If false, the Cluster Model, which includes the modified table, is output. " );
 
     descriptions[1] = new PropertyDescription("verbose",
-        "Verbose Ouput",
-        "Do you want verbose output to the console.");
+                                              "Generate Verbose Output",
+        "If this property is true, the module will write verbose status information to the console.");
 
     return descriptions;
   }
@@ -56,36 +56,40 @@ public class AddClusterAssignmentsToTable
   */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "This module takes as input a ClusterModel and adds a column to the ";
-    s += "end of the table that contains a cluster label (an int value) for each ";
-    s += "row.";
+    s += "This module adds an attribute to each example in the table contained in the input <i>Cluster Model</i>. ";
+    s += "The new attribute specifies the cluster label as an integer value. ";
     s += "</p>";
 
     s += "<p>Detailed Description: ";
-    s += "ClusterModels usually contain the tables that were the original input ";
-    s += "to the clustering algorithm.  An additional column is added to this ";
-    s += "table to with the cluster assignments for each row.  The new column type is ";
-    s += "int.  The user can specify via the <i>tabelOnly</i> property whether the ";
-    s += "ClusterModel is returned (containing the modified table) or whether just ";
-    s += "the table is returned.  ClusterModels implement the Table interface and delegate ";
+    s += "A <i>Cluster Model</i> contains the table that was the original input ";
+    s += "to the clustering algorithm.  An additional attribute (column) is added to this ";
+    s += "table with the cluster assignments for each example (row).  ";
+    s += "The new attribute is of type integer.  ";
+    s += "</p>";
+
+    s += "<p>";
+    s += "The user can specify via the <i>Output Tabel Only</i> property whether the ";
+    s += "Cluster Model containing the modified table is sent to the <i>Table</i> output port, ";
+    s += "or whether just the modified table is sent.  ";
+    s += "The <i>Cluster Model</i> object implements the Table interface and delegates ";
     s += "all calls to that interface to the contained table.";
     s += "</p>";
 
     s += "<p>Data Type Restrictions: ";
-    s += "The input ClusterModel must contain a table and this table must be mutable.";
+    s += "The input <i>Cluster Model</i> must contain a table, and that table must be mutable.";
     s += "</p>";
 
     s += "<p>Data Handling: ";
     s += "This module will modify (as described above) the table that is contained in ";
-    s += "the ClusterModel that was input.  If the table is an example table then the ";
-    s += "new column is added to the output features.";
+    s += "the intput <i>Cluster Model</i>.  If the table is an example table, the ";
+    s += "new column is added as an output attribute.";
     s += "</p>";
 
     s += "<p>Scalability: ";
     s += "The module does not create a new table but adds a column to the existing table. ";
     s += "The cost of this operation will vary depending on the table implementation type. ";
-    s += "For in memory table implementations it will use a memory cost the size of one int ";
-    s += "column. ";
+    s += "For in-memory table implementations, it will add a memory cost equal to the size of one integer ";
+    s += "per example in the table. ";
     s += "</p>";
     return s;
   }
@@ -95,7 +99,7 @@ public class AddClusterAssignmentsToTable
      @return The name of this module.
    */
   public String getModuleName() {
-    return "Add Cluster Column";
+    return "Add Cluster Assignments";
   }
 
   /**
@@ -106,6 +110,34 @@ public class AddClusterAssignmentsToTable
   public String[] getInputTypes() {
     String[] types = {"ncsa.d2k.modules.core.discovery.cluster.ClusterModel"};
     return types;
+  }
+
+  /**
+     Return a description of a specific input.
+     @param i The index of the input
+     @return The description of the input
+   */
+  public String getInputInfo(int i) {
+    switch (i) {
+      case 0:
+        return "The Cluster Model whose table will be modified.";
+      default:
+        return "No such input.";
+    }
+  }
+
+  /**
+     Return the name of a specific input.
+     @param i The index of the input.
+     @return The name of the input
+   */
+  public String getInputName(int i) {
+    switch (i) {
+      case 0:
+        return "Cluster Model";
+      default:
+        return "No such input";
+    }
   }
 
   /**
@@ -120,34 +152,6 @@ public class AddClusterAssignmentsToTable
   }
 
   /**
-     Return a description of a specific input.
-     @param i The index of the input
-     @return The description of the input
-   */
-  public String getInputInfo(int i) {
-    switch (i) {
-      case 0:
-        return "This is the ClusterModel that will have it's table modified.";
-      default:
-        return "No such input";
-    }
-  }
-
-  /**
-     Return the name of a specific input.
-     @param i The index of the input.
-     @return The name of the input
-   */
-  public String getInputName(int i) {
-    switch (i) {
-      case 0:
-        return "ClusterModel";
-      default:
-        return "NO SUCH INPUT!";
-    }
-  }
-
-  /**
      Return the description of a specific output.
      @param i The index of the output.
      @return The description of the output.
@@ -155,7 +159,7 @@ public class AddClusterAssignmentsToTable
   public String getOutputInfo(int i) {
     switch (i) {
       case 0:
-        return "This is the modified table.";
+        return "The modified table, possibly as part of the full Cluster Model.";
       default:
         return "No such output";
     }
@@ -171,7 +175,7 @@ public class AddClusterAssignmentsToTable
       case 0:
         return "Table";
       default:
-        return "NO SUCH OUTPUT!";
+        return "No such output";
     }
   }
 
@@ -179,16 +183,20 @@ public class AddClusterAssignmentsToTable
      Perform the work of the module.
    */
   public void doit() throws Exception {
+
+    boolean exceptionFlag = false;
     try {
 
       ClusterModel cm = (ClusterModel)this.pullInput(0);
 
       if (!cm.hasTable()){
-        throw new Exception("The input model does not contain a table.");
+	exceptionFlag = true;
+        throw new Exception(getAlias() + ": The input model does not contain a table.");
       }
 
       if (!(cm.getTable() instanceof MutableTable)){
-        throw new Exception("The input model does not contain a mutable table.");
+	exceptionFlag = true;
+        throw new Exception(getAlias() + ": The input model does not contain a mutable table.");
       }
 
       MutableTable itable = (MutableTable)cm.getTable();
@@ -215,7 +223,7 @@ public class AddClusterAssignmentsToTable
           itable.setInt(i, rows[j], col);
         }
         if (getVerbose()){
-          System.out.println("AddClusterAssignmentsToTable: Cluster " + tc.getClusterLabel() + " containing " +
+          System.out.println(getAlias() + ": Cluster " + tc.getClusterLabel() + " containing " +
                              tc.getSize() + " elements.");
         }
       }
@@ -227,11 +235,20 @@ public class AddClusterAssignmentsToTable
       }
 
     }  catch (Exception ex) {
-    ex.printStackTrace();
-    System.out.println(ex.getMessage());
-    System.out.println("EXCEPTION: AddClusterAssignmentsToTable.doit()");
-    throw ex;
-  }
-
+      if ( ! exceptionFlag ) {
+        ex.printStackTrace();
+        System.out.println( "EXCEPTION: " + getAlias() + ": " + ex.getMessage());
+      }
+      throw ex;
+    }
   }
 }
+
+// Start QA Comments
+// 4/9/03 - Ruth Starts QA
+//        - Changed module name to Add Cluster Assignments (was Add Cluster Column) to be
+//          closer to what the class name is.  Updated module info.  Added flag to
+//          'expected exceptions' so that message isn't output twice.
+// 4/10/03 - Ready for QA
+// End QA Comments
+
