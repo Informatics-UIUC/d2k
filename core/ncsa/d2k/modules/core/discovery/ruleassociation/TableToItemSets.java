@@ -27,7 +27,8 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 		switch(index) {
 			case 0:
 				return "Table";
-			default: return "No such input";
+			default:
+				return "No such input";
 		}
 	}
 
@@ -37,8 +38,10 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "The table that will be converted to an <i>ItemSets</i> object.";
-			default: return "No such input";
+			case 0:
+				return "The table that items and sets will be extracted from.";
+			default:
+				return "No such input";
 		}
 	}
 
@@ -59,10 +62,9 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "ItemSets";
-			case 1:
-				return "Target Attributes";
-			default: return "No such output";
+				return "Item Sets";
+			default:
+				return "No such output";
 		}
 	}
 
@@ -72,8 +74,10 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "The <i>ItemSets</i> object.";
-			case 1: return "The names of the target attributes.";
+			case 0:
+				return "The items of interest that were found in the table and " +
+				       "a representation of the items that occur together in the table.";
+
 			default: return "No such output";
 		}
 	}
@@ -83,7 +87,7 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-		String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets","[Ljava.lang.String;"};
+		String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"};
 		return types;
 	}
 
@@ -93,34 +97,58 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getModuleInfo () {
                 StringBuffer sb =  new StringBuffer("<p>Overview: ");
-                sb.append( "This module reads a Table and converts it into an <i>ItemSets</i> data structure for use " );
-                sb.append( "in mining association rules with the Apriori Algorithm. " );
-                sb.append( "</p><p>Detailed Description: " );
-                sb.append( "The module takes as input a Table or an Example Table, and creates an <i>ItemSets</i> object ");
-		sb.append( "that encapsulates the information required by the Apriori Rule Association algorithm. ");
-		sb.append( "In a typical itinerary, the <i>ItemSets</i> output port is connected to a <i>Multiple Outputs</i> ");
-		sb.append( "module and then to <i>Apriori</i>, <i>Compute Confidence</i>, and <i>ItemSets To Rule Table</i> modules. ");
+                sb.append( "This module reads a Table and extracts from it items for use ");
+                sb.append( "in mining association rules with the Apriori algorithm. ");
+                sb.append( "</p><p>Detailed Description: ");
+                sb.append( "This module takes as input a Table or an Example Table, and extracts items ");
+		sb.append( "that are used by the Apriori rule association algorithm. ");
+		sb.append( "An item is an [attribute,value] pair that occurs in the input table. ");
+                sb.append( "The module uses information from the original table to determine which ");
+		sb.append( "attributes should be used to form items being considered as possible rule antecedents ");
+		sb.append( "and rule consequents. ");
+		sb.append( "A compact representation is created indicating which rows in the original table contain ");
+		sb.append( "items of interest. " );
+		sb.append( "The items and other information used by the Apriori algorithm are written ");
+		sb.append( "to the <i>Item Sets</i> output port. ");
+
 		sb.append( "</p><p>" );
-		sb.append( "If a Table or an Example Table with no input or output attributes selected is the module input, ");
-		sb.append( "all attributes (columns) will be used as possible targets for the association rules. " );
+		sb.append( "If a Table or an Example Table with no specified input or output attributes is loaded, ");
+		sb.append( "all attributes (columns) will be used to form items being considered as possible antecedents ");
+		sb.append( "and consequents for the association rules. " );
 		sb.append( "If an Example Table with only input attributes or only output attributes is loaded, " );
-		sb.append( "the chosen attributes will be used as possible rule antecedents and possible rule targets. " );
-		sb.append( "If an Example Table with both input and output attributes is used, the inputs will be " );
-		sb.append( "treated as possible rule antecedents, and the outputs as possible rule targets. " );
-		sb.append( "The computational complexity of the Apriori algorithm depends upon ");
-		sb.append( "the number of possible antecedents and targets, so narrowing the search prior to this step is ");
+		sb.append( "the chosen attributes will used to form items considered as possible rule antecedents and ");
+		sb.append( "possible rule consequents. " );
+		sb.append( "If an Example Table with both input and output attributes is loaded, the inputs will be " );
+		sb.append( "used to form items considered as possible rule antecedents, ");
+		sb.append( "and the outputs used to form items considered as possible rule consequents. " );
+
+		sb.append( "</p><p> ");
+                sb.append( "The computational complexity of the Apriori algorithm depends on ");
+		sb.append( "the number of possible antecedents and consequents, so narrowing the search prior to this step is ");
 		sb.append( "highly recommended.   Use the module <i>Choose Attributes</i> to specify the subset of table ");
-		sb.append( "attributes that are of interest prior to creating the ItemSets structure in this module. ");
+		sb.append( "attributes that are of interest. ");
+                sb.append( "If the table has continuous attributes as possible rule antecendents or targets, ");
+                sb.append( "a <i>Binning</i> module should be used prior to this module to reduce the number of possible ");
+                sb.append( "values for those continuous attributes. ");
+
 		sb.append( "</p><p>" );
-		sb.append( "The names of the target attributes the association rule builder will consider is output to the port ");
-		sb.append( "<i>Target Attributes</i>,  which is connected to a <i>Compute Confidence</i> module in a typical ");
-		sb.append( "itinerary. The <i>Apriori</i> module builds rules for targets individually.  That is, no ");
-                sb.append( "rules will be built for combinations of the targets specified. ");
+		sb.append( "In a typical itinerary the <i>Item Sets</i> output port from this module is connected to ");
+		sb.append( "a <i>Generate Multiple Outputs</i> " );
+		sb.append( "module and then to an <i>Apriori</i> module which forms frequent itemsets based on ");
+		sb.append( "a minimum support value, and to a <i>Compute Confidence</i> module which forms ");
+		sb.append( "association rules that satisfy a minimum confidence value. ");
+
+                sb.append( "</p><p>Limitations: ");
+                sb.append( "The <i>Apriori</i> and <i>Compute Confidence</i> modules currently ");
+                sb.append( "build rules with a single item in the consequent.  ");
+
 		sb.append( "</p><p>Data Handling: " );
 		sb.append( "This module does not modify the input Table in any way. ");
+
 		sb.append( "</p><p>Scalability: " );
 		sb.append( "A representation of each row of the table is stored in memory. The representation is usually ");
 		sb.append( "smaller than the original data.    </p>" );
+
 		return sb.toString();
 	}
 
@@ -129,8 +157,6 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public void doit () throws Exception {
 		ItemSets iss = new ItemSets((Table)this.pullInput(0));
-		if (iss.targetNames != null)
-			this.pushOutput(iss.targetNames, 1);
 		this.pushOutput(iss,0);
 	}
 
@@ -138,7 +164,8 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 
 // Start QA Comments
 // 2/28/03 Recv from Tom
-// 3/11/03 Ruth starts QA;  Renamed TableToItemSets instead of ConvertTableToItemSets (class)
-// and Table To Sets (module name).   Updated documentation.
-
-
+// 3/11/03 Ruth starts QA;
+//       - Renamed TableToItemSets instead of ConvertTableToItemSets (class)
+//         and Table To Sets (module name).   Updated documentation.
+// 3/18/03 Removed Target Attributes output port.  That information is now available
+//         in ItemSets and all modules that used Target Attributes already get ItemSets.
