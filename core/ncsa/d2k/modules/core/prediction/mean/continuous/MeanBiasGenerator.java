@@ -1,29 +1,16 @@
-package ncsa.d2k.modules.core.prediction.regression.continuous;
+package ncsa.d2k.modules.core.prediction.mean.continuous;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.core.modules.ComputeModule;
 
-public class LinearBiasGenerator extends ComputeModule {
-  private int        NumRounds = 0;
-  public  void    setNumRounds (int value) {       this.NumRounds = value;}
-  public  int     getNumRounds ()          {return this.NumRounds;}
+public class MeanBiasGenerator extends ComputeModule {
 
-  private int        Direction = 0;
-  public  void    setDirection (int value) {       this.Direction = value;}
-  public  int     getDirection ()          {return this.Direction;}
 
-  private double     MinOutputValue = Double.NEGATIVE_INFINITY;
-  public  void    setMinOutputValue (double value) {       this.MinOutputValue = value;}
-  public  double  getMinOutputValue ()             {return this.MinOutputValue;}
-
-  private double     MaxOutputValue = Double.POSITIVE_INFINITY;
-  public  void    setMaxOutputValue (double value) {       this.MaxOutputValue = value;}
-  public  double  getMaxOutputValue ()             {return this.MaxOutputValue;}
   public String getModuleInfo() {
-    return "DecisionTreeBiasGenerator";
+    return "MeanBiasGenerator";
   }
   public String getModuleName() {
-    return "DecisionTreeBiasGenerator";
+    return "MeanBiasGenerator";
   }
 
   public String getInputName(int i) {
@@ -62,7 +49,7 @@ public class LinearBiasGenerator extends ComputeModule {
 
   public void doit() throws Exception {
 
-    int     numBiasDimensions = 4;
+    int     numBiasDimensions = 0;
     double [] bias      = new double[numBiasDimensions];
     String [] biasNames = new String[numBiasDimensions];
 
@@ -71,26 +58,13 @@ public class LinearBiasGenerator extends ComputeModule {
 
     int biasIndex = 0;
 
-    biasNames         [biasIndex] = "NumRounds";
-    bias[biasIndex] = NumRounds;
-    biasIndex++;
-    biasNames         [biasIndex] = "Direction";
-    bias[biasIndex] = Direction;
-    biasIndex++;
-    biasNames         [biasIndex] = "MinOutputValue";
-    bias[biasIndex] = MinOutputValue;
-    biasIndex++;
-    biasNames         [biasIndex] = "MaxOutputValue";
-    bias[biasIndex] = MaxOutputValue;
-    biasIndex++;
-
     ParameterPointImpl parameterPoint = new ParameterPointImpl();
 
     parameterPoint.createFromData(biasNames, bias);
 
     Class functionInducerClass = null;
     try {
-      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.regression.continuous.LinearInducerOpt");
+      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.mean.continuous.MeanInducerOpt");
     }
     catch (Exception e) {
       System.out.println("could not find class");
@@ -100,5 +74,4 @@ public class LinearBiasGenerator extends ComputeModule {
     this.pushOutput(parameterPoint,       0);
     this.pushOutput(functionInducerClass, 1);
   }
-
 }

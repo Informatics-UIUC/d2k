@@ -4,8 +4,12 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.core.modules.*;
 
-public class FunctionInducerOpt extends OrderedReentrantModule implements Cloneable
-{
+public class FunctionInducerOpt extends OrderedReentrantModule implements Cloneable {
+  public int numInputs;
+  public int numOutputs;
+  public String [] inputNames;
+  public String [] outputNames;
+
   //int NumBiasParameters = 0;
 
   double [] BiasParameters;
@@ -89,9 +93,9 @@ public class FunctionInducerOpt extends OrderedReentrantModule implements Clonea
 
   public void doit() throws Exception {
 
-    ParameterPoint parameterPoint = (ParameterPoint)pullInput(0);
-    ExampleTable  exampleSet      = (ExampleTable)  this.pullInput(1);
-    ErrorFunction errorFunction   = (ErrorFunction) this.pullInput(2);
+    ParameterPoint parameterPoint = (ParameterPoint) this.pullInput(0);
+    ExampleTable   exampleSet     = (ExampleTable)   this.pullInput(1);
+    ErrorFunction  errorFunction  = (ErrorFunction)  this.pullInput(2);
 
     instantiateBias(parameterPoint);
 

@@ -4,19 +4,14 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.core.modules.ComputeModule;
 
-public class InstanceBasedInducer extends FunctionInducer
-{
-  //int NumBiasParameters = 3;
+public class InstanceBasedInducer extends InstanceBasedInducerOpt {
 
-  private int        NeighborhoodSize = 20;
   public  void    setNeighborhoodSize (int value) {       this.NeighborhoodSize = value;}
   public  int     getNeighborhoodSize ()          {return this.NeighborhoodSize;}
 
-  private double     DistanceWeightingPower = 0.0;
   public  void    setDistanceWeightingPower (double value) {    this.DistanceWeightingPower = value;}
   public  double  getDistanceWeightingPower ()          {return this.DistanceWeightingPower;}
 
-  private double     ZeroDistanceValue = 1E-9;
   public  void    setZeroDistanceValue (double value) {    this.ZeroDistanceValue = value;}
   public  double  getZeroDistanceValue ()          {return this.ZeroDistanceValue;}
 
@@ -27,10 +22,47 @@ public class InstanceBasedInducer extends FunctionInducer
     return "InstanceBasedInducer";
   }
 
-  public void instantiateBias(double [] bias) {
-    NeighborhoodSize       = (int) bias[0];
-    DistanceWeightingPower =       bias[1];
-    ZeroDistanceValue      =       bias[2];
+  public String getInputName(int i) {
+    switch(i) {
+      case 0: return "Example Table";
+      case 1: return "Error Function";
+      default: return "Error!  No such input.";
+    }
+  }
+  public String getInputInfo(int i) {
+    switch (i) {
+      case 0: return "Example Table";
+      case 1: return "Error Function";
+      default: return "Error!  No such input.";
+    }
+  }
+  public String[] getInputTypes() {
+    String[] types = {
+      "ncsa.d2k.modules.core.datatype.table.ExampleTable",
+      "ncsa.d2k.modules.core.prediction.ErrorFunction"
+    };
+    return types;
+  }
+
+  public String getOutputName(int i) {
+    switch(i) {
+      case  0: return "Model";
+      default: return "Error!  No such output.";
+    }
+  }
+  public String getOutputInfo(int i) {
+    switch (i) {
+      case 0: return "Model";
+      default: return "Error!  No such output.";
+    }
+  }
+  public String[] getOutputTypes() {
+    String[] types = {"ncsa.d2k.modules.core.datatype.model.Model"};
+    return types;
+  }
+  public void instantiateBiasFromProperties() {
+    // Nothing to do in this case since properties are reference directly by the algorithm and no other control
+    // parameters need be set.  This may not be the case in general so this stub is left open for future development.
   }
 
   public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) {
@@ -45,7 +77,6 @@ public class InstanceBasedInducer extends FunctionInducer
       inputMins[v] = Double.POSITIVE_INFINITY;
       inputMaxs[v] = Double.NEGATIVE_INFINITY;
     }
-
 
     for (int e = 0; e < numExamples; e++) {
       for (int v = 0; v < numInputs; v++) {
@@ -72,19 +103,18 @@ public class InstanceBasedInducer extends FunctionInducer
     return (Model) model;
   }
 
-  public String getInputName(int index) {
-    switch(index) {
-      case 0: return "input0";
-      case 1: return "input1";
-      default: return "NO SUCH INPUT!";
-    }
+  public void doit() throws Exception {
+
+    ExampleTable  exampleSet      = (ExampleTable)  this.pullInput(0);
+    ErrorFunction errorFunction   = (ErrorFunction) this.pullInput(1);
+
+    instantiateBiasFromProperties();
+
+    Model model = null;
+
+    model = generateModel(exampleSet, errorFunction);
+
+    this.pushOutput(model, 0);
   }
 
-  public String getOutputName(int index) {
-    switch(index) {
-      case 0:
-        return "output0";
-      default: return "NO SUCH OUTPUT!";
-    }
-  }
 }

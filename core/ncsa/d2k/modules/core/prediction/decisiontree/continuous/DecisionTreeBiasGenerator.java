@@ -3,9 +3,7 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.core.modules.ComputeModule;
 
-public class DecisionTreeBiasGenerator extends ComputeModule
-{
-  int     numBiasDimensions = 9;
+public class DecisionTreeBiasGenerator extends ComputeModule {
 
   private int     MinDecompositionPopulation = 20;
   public  void    setMinDecompositionPopulation (int value) {       this.MinDecompositionPopulation = value;}
@@ -85,6 +83,8 @@ public class DecisionTreeBiasGenerator extends ComputeModule
 
 
   public void doit() throws Exception {
+
+    int     numBiasDimensions = 9;
     double [] bias      = new double[numBiasDimensions];
     String [] biasNames = new String[numBiasDimensions];
 

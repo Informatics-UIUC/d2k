@@ -10,7 +10,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 public class DecisionTreeInducer extends DecisionTreeInducerOpt {
 
-  public void    setUseMeanNodeModels (boolean value) {       UseMeanNodeModels = value;}
+  public void    setUseMeanNodeModels (boolean value) {       this.UseMeanNodeModels = value;}
   public boolean getUseMeanNodeModels ()              {return this.UseMeanNodeModels;}
 
   public void    setUseLinearNodeModels (boolean value) {       this.UseLinearNodeModels = value;}

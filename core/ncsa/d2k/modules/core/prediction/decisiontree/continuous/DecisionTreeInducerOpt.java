@@ -10,10 +10,6 @@ import ncsa.d2k.core.modules.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 public class DecisionTreeInducerOpt extends FunctionInducerOpt {
-  int numInputs;
-  int numOutputs;
-  String [] inputNames;
-  String [] outputNames;
 
    boolean UseMeanNodeModels = true;
    boolean UseLinearNodeModels = false;
@@ -34,6 +30,54 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
   public String getModuleInfo() {
     return "DecisionTreeInducerOpt";
   }
+
+
+  public void instantiateBias(ParameterPoint parameterPoint) {
+
+    MinDecompositionPopulation  = (int) parameterPoint.getValue(0);
+    MinErrorReduction           =       parameterPoint.getValue(1);
+
+    UseSimpleBooleanSplit   = false;
+    if (parameterPoint.getValue(2) > 0.5) UseSimpleBooleanSplit   = true;
+    UseMidPointBasedSplit   = false;
+    if (parameterPoint.getValue(3) > 0.5) UseMidPointBasedSplit   = true;
+    UseMeanBasedSplit       = false;
+    if (parameterPoint.getValue(4) > 0.5) UseMeanBasedSplit       = true;
+    UsePopulationBasedSplit = false;
+    if (parameterPoint.getValue(5) > 0.5) UsePopulationBasedSplit = true;
+    SaveNodeExamples = false;
+    if (parameterPoint.getValue(6) > 0.5) SaveNodeExamples = true;
+    UseMeanNodeModels = false;
+    if (parameterPoint.getValue(7) > 0.5) UseMeanNodeModels = true;
+    UseLinearNodeModels = false;
+    if (parameterPoint.getValue(8) > 0.5) UseLinearNodeModels = true;
+  }
+
+  public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) throws Exception {
+
+    //call superclass constructor using example table to initialize the names;
+
+    numInputs  = examples.getNumInputFeatures();
+    numOutputs = examples.getNumOutputFeatures();
+    inputNames  = new String[numInputs];
+    outputNames = new String[numOutputs];
+    for (int i = 0; i < numInputs; i++)
+      inputNames[i] = examples.getInputName(i);
+    for (int i = 0; i < numOutputs; i++)
+      outputNames[i] = examples.getOutputName(i);
+
+
+    this.errorFunction = errorFunction;
+    DecisionTreeNode decisionTree = createDecisionTree(examples);
+    decisionTree.examples = null;
+
+    DecisionTreeModel model = new DecisionTreeModel(examples, decisionTree);
+    //model.instantiate(decisionTree);
+
+    RootNode = null;
+    return (Model) model;
+  }
+
 
   ModelPrintOptions ModelPrintOptions = new ModelPrintOptions();
 
@@ -498,49 +542,5 @@ and the example table assigned to node2 contains the examples that the decomposi
     return node;
   }
 
-  public void instantiateBias(ParameterPoint parameterPoint) {
 
-    MinDecompositionPopulation  = (int) parameterPoint.getValue(0);
-    MinErrorReduction           =       parameterPoint.getValue(1);
-
-    UseSimpleBooleanSplit   = false;
-    if (parameterPoint.getValue(2) > 0.5) UseSimpleBooleanSplit   = true;
-    UseMidPointBasedSplit   = false;
-    if (parameterPoint.getValue(3) > 0.5) UseMidPointBasedSplit   = true;
-    UseMeanBasedSplit       = false;
-    if (parameterPoint.getValue(4) > 0.5) UseMeanBasedSplit       = true;
-    UsePopulationBasedSplit = false;
-    if (parameterPoint.getValue(5) > 0.5) UsePopulationBasedSplit = true;
-    SaveNodeExamples = false;
-    if (parameterPoint.getValue(6) > 0.5) SaveNodeExamples = true;
-    UseMeanNodeModels = false;
-    if (parameterPoint.getValue(7) > 0.5) UseMeanNodeModels = true;
-    UseLinearNodeModels = false;
-    if (parameterPoint.getValue(8) > 0.5) UseLinearNodeModels = true;
-  }
-
-  public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) throws Exception {
-
-    //call superclass constructor using example table to initialize the names;
-
-    numInputs  = examples.getNumInputFeatures();
-    numOutputs = examples.getNumOutputFeatures();
-    inputNames  = new String[numInputs];
-    outputNames = new String[numOutputs];
-    for (int i = 0; i < numInputs; i++)
-      inputNames[i] = examples.getInputName(i);
-    for (int i = 0; i < numOutputs; i++)
-      outputNames[i] = examples.getOutputName(i);
-
-
-    this.errorFunction = errorFunction;
-    DecisionTreeNode decisionTree = createDecisionTree(examples);
-    decisionTree.examples = null;
-
-    DecisionTreeModel model = new DecisionTreeModel(examples, decisionTree);
-    //model.instantiate(decisionTree);
-
-    RootNode = null;
-    return (Model) model;
-  }
 }

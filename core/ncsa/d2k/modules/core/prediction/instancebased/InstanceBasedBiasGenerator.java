@@ -1,29 +1,31 @@
-package ncsa.d2k.modules.core.prediction.regression.continuous;
+package ncsa.d2k.modules.core.prediction.instancebased;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.core.modules.ComputeModule;
 
-public class LinearBiasGenerator extends ComputeModule {
-  private int        NumRounds = 0;
-  public  void    setNumRounds (int value) {       this.NumRounds = value;}
-  public  int     getNumRounds ()          {return this.NumRounds;}
+public class InstanceBasedBiasGenerator extends ComputeModule {
 
-  private int        Direction = 0;
-  public  void    setDirection (int value) {       this.Direction = value;}
-  public  int     getDirection ()          {return this.Direction;}
+  private int     NeighborhoodSize = 20;
+  public  void    setNeighborhoodSize (int value) {       this.NeighborhoodSize = value;}
+  public  int     getNeighborhoodSize ()          {return this.NeighborhoodSize;}
 
-  private double     MinOutputValue = Double.NEGATIVE_INFINITY;
-  public  void    setMinOutputValue (double value) {       this.MinOutputValue = value;}
-  public  double  getMinOutputValue ()             {return this.MinOutputValue;}
+  private double  DistanceWeightingPower = 0.0;
+  public  void    setDistanceWeightingPower (double value) {       this.DistanceWeightingPower = value;}
+  public  double  getDistanceWeightingPower ()          {return this.DistanceWeightingPower;}
 
-  private double     MaxOutputValue = Double.POSITIVE_INFINITY;
-  public  void    setMaxOutputValue (double value) {       this.MaxOutputValue = value;}
-  public  double  getMaxOutputValue ()             {return this.MaxOutputValue;}
+  private double  ZeroDistanceValue = 1.0E-99;
+  public  void    setZeroDistanceValue (double value) {       this.ZeroDistanceValue = value;
+  if (value == 0.0)
+    System.out.println("Error! ZeroDistanceValue = 0.0");}
+    public  double  getZeroDistanceValue ()          {return this.ZeroDistanceValue;}
+
+
   public String getModuleInfo() {
-    return "DecisionTreeBiasGenerator";
+    return "InstanceBasedBiasGenerator";
   }
   public String getModuleName() {
-    return "DecisionTreeBiasGenerator";
+    return "InstanceBasedBiasGenerator";
   }
 
   public String getInputName(int i) {
@@ -62,7 +64,7 @@ public class LinearBiasGenerator extends ComputeModule {
 
   public void doit() throws Exception {
 
-    int     numBiasDimensions = 4;
+    int     numBiasDimensions = 3;
     double [] bias      = new double[numBiasDimensions];
     String [] biasNames = new String[numBiasDimensions];
 
@@ -71,17 +73,14 @@ public class LinearBiasGenerator extends ComputeModule {
 
     int biasIndex = 0;
 
-    biasNames         [biasIndex] = "NumRounds";
-    bias[biasIndex] = NumRounds;
+    biasNames         [biasIndex] = "NeighborhoodSize";
+    bias[biasIndex] = NeighborhoodSize;
     biasIndex++;
-    biasNames         [biasIndex] = "Direction";
-    bias[biasIndex] = Direction;
+    biasNames         [biasIndex] = "DistanceWeightingPower";
+    bias[biasIndex] = DistanceWeightingPower;
     biasIndex++;
-    biasNames         [biasIndex] = "MinOutputValue";
-    bias[biasIndex] = MinOutputValue;
-    biasIndex++;
-    biasNames         [biasIndex] = "MaxOutputValue";
-    bias[biasIndex] = MaxOutputValue;
+    biasNames         [biasIndex] = "ZeroDistanceValue";
+    bias[biasIndex] = ZeroDistanceValue;
     biasIndex++;
 
     ParameterPointImpl parameterPoint = new ParameterPointImpl();
@@ -90,7 +89,7 @@ public class LinearBiasGenerator extends ComputeModule {
 
     Class functionInducerClass = null;
     try {
-      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.regression.continuous.LinearInducerOpt");
+      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.instancebased.InstanceBasedInducerOpt");
     }
     catch (Exception e) {
       System.out.println("could not find class");
@@ -100,5 +99,4 @@ public class LinearBiasGenerator extends ComputeModule {
     this.pushOutput(parameterPoint,       0);
     this.pushOutput(functionInducerClass, 1);
   }
-
 }

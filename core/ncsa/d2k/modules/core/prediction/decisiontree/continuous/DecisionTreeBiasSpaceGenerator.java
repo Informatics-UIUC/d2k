@@ -1,13 +1,10 @@
 package ncsa.d2k.modules.core.prediction.decisiontree.continuous;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.core.modules.ComputeModule;
 
 public class DecisionTreeBiasSpaceGenerator extends ComputeModule {
-
-  int     numBiasDimensions = 9;
 
   private int     MinDecompositionPopulationMin = 20;
   public  void    setMinDecompositionPopulationMin (int value) {       this.MinDecompositionPopulationMin = value;}
@@ -75,148 +72,143 @@ public class DecisionTreeBiasSpaceGenerator extends ComputeModule {
   public void    setUseLinearNodeModelsMax (int value) {       this.UseLinearNodeModelsMax = value;}
   public int getUseLinearNodeModelsMax ()              {return this.UseLinearNodeModelsMax;}
 
-
-
-
   public String getModuleName() {
     return "DecisionTreeBiasSpaceGenerator";
-    }
+  }
   public String getModuleInfo() {
     return "DecisionTreeBiasSpaceGenerator";
-    }
+  }
 
   public String getInputName(int i) {
     return "";
-    }
+  }
+  public String getInputInfo(int i) {
+    return "";
+  }
   public String[] getInputTypes() {
     String [] in = {};
     return in;
-    }
-
-  public String getInputInfo(int i) {
-    return "";
-    }
-
+  }
 
   public String getOutputName(int i) {
     switch (i) {
-      case 0: return "Control Paramter Space";
+      case 0: return "Control Parameter Space";
       case 1: return "Function Inducer Class";
-      }
-    return "";
     }
+    return "";
+  }
   public String getOutputInfo(int i) {
     switch (i) {
-      case 0: return "Control Paramter Space";
+      case 0: return "Control Parameter Space";
       case 1: return "Function Inducer Class";
-      }
+    }
     return "";
-    }
+  }
   public String[] getOutputTypes() {
-    String [] out = {"ncsa.d2k.modules.core.datatype.parameter.ParameterSpace",
-                     "java.lang.Class"};
+    String [] out = {
+      "ncsa.d2k.modules.core.datatype.parameter.ParameterSpace",
+      "java.lang.Class"};
     return out;
-    }
+  }
 
 
 
   public void doit() throws Exception {
 
-    double [][] biasSpaceBounds = new double[2][numBiasDimensions];
-    double []   defaults        = new double[numBiasDimensions];
-    int    []   resolutions     = new int[numBiasDimensions];
-    int    []   types           = new int[numBiasDimensions];
-    String []   biasNames       = new String[numBiasDimensions];
-
-    int errorFunctionIndex;
-    String errorFunctionObjectFileName;
+    int         numControlParameters = 9;
+    double []   minControlValues = new double[numControlParameters];
+    double []   maxControlValues = new double[numControlParameters];
+    double []   defaults         = new double[numControlParameters];
+    int    []   resolutions      = new int[numControlParameters];
+    int    []   types            = new int[numControlParameters];
+    String []   biasNames        = new String[numControlParameters];
 
     int biasIndex = 0;
 
-    biasNames         [biasIndex] = "MinDecompositionPopulation";
-    biasSpaceBounds[0][biasIndex] = MinDecompositionPopulationMin;
-    biasSpaceBounds[1][biasIndex] = MinDecompositionPopulationMax;
-    defaults[biasIndex] = (biasSpaceBounds[0][biasIndex] + biasSpaceBounds[1][biasIndex]) / 2.0;
-    resolutions[biasIndex] = MinDecompositionPopulationMax - MinDecompositionPopulationMin + 1;
-    types[biasIndex] = ColumnTypes.INTEGER;
+    biasNames       [biasIndex] = "MinDecompositionPopulation";
+    minControlValues[biasIndex] = MinDecompositionPopulationMin;
+    maxControlValues[biasIndex] = MinDecompositionPopulationMax;
+    defaults        [biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
+    resolutions     [biasIndex] = MinDecompositionPopulationMax - MinDecompositionPopulationMin + 1;
+    types           [biasIndex] = ColumnTypes.INTEGER;
     biasIndex++;
 
     biasNames         [biasIndex] = "MinErrorReduction";
-    biasSpaceBounds[0][biasIndex] = MinErrorReductionMin;
-    biasSpaceBounds[1][biasIndex] = MinErrorReductionMax;
-    defaults[biasIndex] = (biasSpaceBounds[0][biasIndex] + biasSpaceBounds[1][biasIndex]) / 2.0;
+    minControlValues[biasIndex] = MinErrorReductionMin;
+    maxControlValues[biasIndex] = MinErrorReductionMax;
+    defaults[biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
     resolutions[biasIndex] = 100;
     types[biasIndex] = ColumnTypes.DOUBLE;
     biasIndex++;
 
     biasNames         [biasIndex] = "UseSimpleBooleanSplit";
-    biasSpaceBounds[0][biasIndex] = UseSimpleBooleanSplitMin;
-    biasSpaceBounds[1][biasIndex] = UseSimpleBooleanSplitMax;
-    defaults[biasIndex] = (biasSpaceBounds[0][biasIndex] + biasSpaceBounds[1][biasIndex]) / 2.0;
+    minControlValues[biasIndex] = UseSimpleBooleanSplitMin;
+    maxControlValues[biasIndex] = UseSimpleBooleanSplitMax;
+    defaults[biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
     resolutions[biasIndex] = 2;
     types[biasIndex] = ColumnTypes.BOOLEAN;
     biasIndex++;
 
     biasNames         [biasIndex] = "UseMidPointBasedSplit";
-    biasSpaceBounds[0][biasIndex] = UseMidPointBasedSplitMin;
-    biasSpaceBounds[1][biasIndex] = UseMidPointBasedSplitMax;
-    defaults[biasIndex] = (biasSpaceBounds[0][biasIndex] + biasSpaceBounds[1][biasIndex]) / 2.0;
+    minControlValues[biasIndex] = UseMidPointBasedSplitMin;
+    maxControlValues[biasIndex] = UseMidPointBasedSplitMax;
+    defaults[biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
     resolutions[biasIndex] = 2;
     types[biasIndex] = ColumnTypes.BOOLEAN;
     biasIndex++;
 
     biasNames         [biasIndex] = "UseMeanBasedSplit";
-    biasSpaceBounds[0][biasIndex] = UseMeanBasedSplitMin;
-    biasSpaceBounds[1][biasIndex] = UseMeanBasedSplitMax;
-    defaults[biasIndex] = (biasSpaceBounds[0][biasIndex] + biasSpaceBounds[1][biasIndex]) / 2.0;
+    minControlValues[biasIndex] = UseMeanBasedSplitMin;
+    maxControlValues[biasIndex] = UseMeanBasedSplitMax;
+    defaults[biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
     resolutions[biasIndex] = 2;
     types[biasIndex] = ColumnTypes.BOOLEAN;
     biasIndex++;
 
     biasNames         [biasIndex] = "UsePopulationBasedSplit";
-    biasSpaceBounds[0][biasIndex] = UsePopulationBasedSplitMin;
-    biasSpaceBounds[1][biasIndex] = UsePopulationBasedSplitMax;
-    defaults[biasIndex] = (biasSpaceBounds[0][biasIndex] + biasSpaceBounds[1][biasIndex]) / 2.0;
+    minControlValues[biasIndex] = UsePopulationBasedSplitMin;
+    maxControlValues[biasIndex] = UsePopulationBasedSplitMax;
+    defaults[biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
     resolutions[biasIndex] = 2;
     types[biasIndex] = ColumnTypes.BOOLEAN;
 
     biasIndex++;
     biasNames         [biasIndex] = "SaveNodeExamples";
-    biasSpaceBounds[0][biasIndex] = SaveNodeExamplesMin;
-    biasSpaceBounds[1][biasIndex] = SaveNodeExamplesMax;
-    defaults[biasIndex] = (biasSpaceBounds[0][biasIndex] + biasSpaceBounds[1][biasIndex]) / 2.0;
+    minControlValues[biasIndex] = SaveNodeExamplesMin;
+    maxControlValues[biasIndex] = SaveNodeExamplesMax;
+    defaults[biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
     resolutions[biasIndex] = 2;
     types[biasIndex] = ColumnTypes.BOOLEAN;
 
     biasIndex++;
     biasNames         [biasIndex] = "UseMeanNodeModels";
-    biasSpaceBounds[0][biasIndex] = UseMeanNodeModelsMin;
-    biasSpaceBounds[1][biasIndex] = UseMeanNodeModelsMax;
-    defaults[biasIndex] = (biasSpaceBounds[0][biasIndex] + biasSpaceBounds[1][biasIndex]) / 2.0;
+    minControlValues[biasIndex] = UseMeanNodeModelsMin;
+    maxControlValues[biasIndex] = UseMeanNodeModelsMax;
+    defaults[biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
     resolutions[biasIndex] = 2;
     types[biasIndex] = ColumnTypes.BOOLEAN;
     biasIndex++;
 
     biasNames         [biasIndex] = "UseLinearNodeModels";
-    biasSpaceBounds[0][biasIndex] = UseLinearNodeModelsMin;
-    biasSpaceBounds[1][biasIndex] = UseLinearNodeModelsMax;
-    defaults[biasIndex] = (biasSpaceBounds[0][biasIndex] + biasSpaceBounds[1][biasIndex]) / 2.0;
+    minControlValues[biasIndex] = UseLinearNodeModelsMin;
+    maxControlValues[biasIndex] = UseLinearNodeModelsMax;
+    defaults[biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
     resolutions[biasIndex] = 2;
     types[biasIndex] = ColumnTypes.BOOLEAN;
     biasIndex++;
 
     ParameterSpaceImpl parameterSpace = new ParameterSpaceImpl();
-    parameterSpace.createFromData(biasNames, biasSpaceBounds[0],  biasSpaceBounds[1], defaults, resolutions, types);
+    parameterSpace.createFromData(biasNames, minControlValues, maxControlValues, defaults, resolutions, types);
     Class functionInducerClass = null;
     try {
-      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.decisiontree.continuous.DecisionTreeInducer");
-      }
-      catch (Exception e) {
-        System.out.println("could not find class");
-        throw new Exception();
-      }
+      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.decisiontree.continuous.DecisionTreeInducerOpt");
+    }
+    catch (Exception e) {
+      System.out.println("could not find class");
+      throw new Exception();
+    }
 
     this.pushOutput(parameterSpace,       0);
     this.pushOutput(functionInducerClass, 1);
-    }
   }
+}

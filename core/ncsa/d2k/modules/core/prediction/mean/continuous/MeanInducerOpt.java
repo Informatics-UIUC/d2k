@@ -1,10 +1,11 @@
 package ncsa.d2k.modules.core.prediction.mean.continuous;
 import ncsa.d2k.modules.core.prediction.*;
+import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.core.modules.*;
 
-public class MeanInducerOpt extends FunctionInducer {
+public class MeanInducerOpt extends FunctionInducerOpt {
   //int NumBiasParameters = 0;
 
   public String getModuleInfo() {
@@ -14,7 +15,7 @@ public class MeanInducerOpt extends FunctionInducer {
     return "MeanInducerOpt";
   }
 
-  public void instantiateBias(double [] bias) {
+  public void instantiateBias(ParameterPoint point) throws Exception {
   }
 
   public void instantiateBiasFromProperties() {

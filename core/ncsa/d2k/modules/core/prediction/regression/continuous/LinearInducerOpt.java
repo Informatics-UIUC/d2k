@@ -1,13 +1,14 @@
 package ncsa.d2k.modules.core.prediction.regression.continuous;
 import ncsa.d2k.modules.core.prediction.*;
+import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.core.modules.*;
 import Jama.Matrix;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-public class LinearInducerOpt extends FunctionInducer
-{
+public class LinearInducerOpt extends FunctionInducerOpt {
+
   private int        NumRounds = 0;
   public  void    setNumRounds (int value) {       this.NumRounds = value;}
   public  int     getNumRounds ()          {return this.NumRounds;}
@@ -25,29 +26,27 @@ public class LinearInducerOpt extends FunctionInducer
   public  double  getMaxOutputValue ()             {return this.MaxOutputValue;}
 
 
-  public String getModuleInfo()
-  {
-    return "<html>  <head>      </head>  <body>    LinearInducerOpt  </body></html>";
+  public String getModuleName() {
+    return "LinearInducerOpt";
   }
-  public String getModuleName()
-  {
+  public String getModuleInfo() {
     return "LinearInducerOpt";
   }
 
-  public void instantiateBias(double [] bias)
-  {
-    NumRounds       = (int) bias[0];
-    Direction       = (int) bias[1];
-    MinOutputValue  =       bias[2];
-    MaxOutputValue  =       bias[3];
+  public void instantiateBias(ParameterPoint parameterPoint) {
+
+    NumRounds      = (int) parameterPoint.getValue(0);
+    Direction      = (int) parameterPoint.getValue(1);
+    MinOutputValue =       parameterPoint.getValue(2);
+    MaxOutputValue =       parameterPoint.getValue(3);
+
   }
   public void instantiateBiasFromProperties() {
     // Nothing to do in this case since properties are reference directly by the algorithm and no other control
     // parameters need be set.  This may not be the case in general so this stub is left open for future development.
   }
 
-  Object [] computeError(ExampleTable examples, boolean [] selectedInputs) throws Exception
-  {
+  Object [] computeError(ExampleTable examples, boolean [] selectedInputs) throws Exception {
 
     int numExamples = examples.getNumExamples();
     int numInputs   = examples.getNumInputFeatures();
@@ -276,15 +275,6 @@ public class LinearInducerOpt extends FunctionInducer
           "(" + thirdProductDouble[i1][0] + ")");
       }
       */
-
-
-
-
-
-
-
-
-
 
 
 

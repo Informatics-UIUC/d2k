@@ -1,10 +1,11 @@
 package ncsa.d2k.modules.core.prediction.regression.continuous;
-
-
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.parameter.*;
+import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.core.modules.ComputeModule;
 
-public class LinearBiasSpaceGenerator extends ComputeModule
-  {
+public class LinearBiasSpaceGenerator extends ComputeModule {
+
   private int        NumRoundsMin = 0;
   public  void    setNumRoundsMin (int value) {       this.NumRoundsMin = value;}
   public  int     getNumRoundsMin ()          {return this.NumRoundsMin;}
@@ -33,102 +34,101 @@ public class LinearBiasSpaceGenerator extends ComputeModule
   public  void    setMaxOutputValueMax (double value) {       this.MaxOutputValueMax = value;}
   public  double  getMaxOutputValueMax ()             {return this.MaxOutputValueMax;}
 
-
-
-  public String getModuleInfo()
-    {
+  public String getModuleName() {
     return "LinearBiasSpaceGenerator";
   }
-  public String getModuleName()
-    {
+  public String getModuleInfo() {
     return "LinearBiasSpaceGenerator";
   }
 
-  public String[] getInputTypes()
-    {
+  public String getInputName(int i) {
+    return "";
+  }
+  public String getInputInfo(int i) {
+    return "";
+  }
+  public String[] getInputTypes() {
     String [] in = {};
     return in;
-    }
+  }
 
-  public String[] getOutputTypes()
-    {
-    String [] out = {"[[D",
-                     "[S",
-                     "java.lang.Class"};
+  public String getOutputName(int i) {
+    switch (i) {
+      case 0: return "Control Parameter Space";
+      case 1: return "Function Inducer Class";
+    }
+    return "";
+  }
+  public String getOutputInfo(int i) {
+    switch (i) {
+      case 0: return "Control Parameter Space";
+      case 1: return "Function Inducer Class";
+    }
+    return "";
+  }
+  public String[] getOutputTypes() {
+    String [] out = {
+      "ncsa.d2k.modules.core.datatype.parameter.ParameterSpace",
+      "java.lang.Class"};
     return out;
-    }
+  }
 
-  public String getInputInfo(int i)
-    {
-    return "";
-    }
+  public void doit() throws Exception {
 
-  public String getInputName(int i)
-    {
-    return "";
-    }
-
-  public String getOutputInfo(int i)
-    {
-    switch (i)
-      {
-      case 0: return "BiasSpace";
-      case 1: return "BiasNames";
-      case 2: return "FunctionInducerClass";
-      }
-    return "";
-    }
-
-  public String getOutputName(int i)
-    {
-    switch (i)
-      {
-      case 0: return "BiasSpace";
-      case 1: return "BiasNames";
-      case 2: return "FunctionInducerClass";
-      }
-    return "";
-    }
-
-  public void doit() throws Exception
-    {
-    int     numBiasDimensions = 4;
-
-    double [][] biasSpaceBounds = new double[2][numBiasDimensions];
-    String []   biasNames       = new String[numBiasDimensions];
-
+    int         numControlParameters = 4;
+    double []   minControlValues = new double[numControlParameters];
+    double []   maxControlValues = new double[numControlParameters];
+    double []   defaults         = new double[numControlParameters];
+    int    []   resolutions      = new int[numControlParameters];
+    int    []   types            = new int[numControlParameters];
+    String []   biasNames        = new String[numControlParameters];
 
     int biasIndex = 0;
 
-    biasNames[biasIndex]          = "NumRounds";
-    biasSpaceBounds[0][biasIndex] = NumRoundsMin;
-    biasSpaceBounds[1][biasIndex] = NumRoundsMax;
-    biasIndex++;
-    biasNames[biasIndex]          = "Direction";
-    biasSpaceBounds[0][biasIndex] = DirectionMin;
-    biasSpaceBounds[1][biasIndex] = DirectionMax;
-    biasIndex++;
-    biasNames[biasIndex]          = "MinOutputValue";
-    biasSpaceBounds[0][biasIndex] = MinOutputValueMin;
-    biasSpaceBounds[1][biasIndex] = MinOutputValueMax;
-    biasIndex++;
-    biasNames[biasIndex]          = "MaxOutputValue";
-    biasSpaceBounds[0][biasIndex] = MaxOutputValueMin;
-    biasSpaceBounds[1][biasIndex] = MaxOutputValueMax;
+    biasNames       [biasIndex] = "NumRounds";
+    minControlValues[biasIndex] = NumRoundsMin;
+    maxControlValues[biasIndex] = NumRoundsMax;
+    defaults        [biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
+    resolutions     [biasIndex] = NumRoundsMax - NumRoundsMin + 1;
+    types           [biasIndex] = ColumnTypes.INTEGER;
     biasIndex++;
 
+    biasNames       [biasIndex] = "Direction";
+    minControlValues[biasIndex] = DirectionMin;
+    maxControlValues[biasIndex] = DirectionMax;
+    defaults        [biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
+    resolutions     [biasIndex] = DirectionMax - DirectionMin + 1;
+    types           [biasIndex] = ColumnTypes.INTEGER;
+    biasIndex++;
+
+    biasNames       [biasIndex] = "MinOutputValue";
+    minControlValues[biasIndex] = MinOutputValueMin;
+    maxControlValues[biasIndex] = MinOutputValueMax;
+    defaults        [biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
+    resolutions     [biasIndex] = 1000;
+    types           [biasIndex] = ColumnTypes.DOUBLE;
+    biasIndex++;
+
+    biasNames       [biasIndex] = "MaxOutputValue";
+    minControlValues[biasIndex] = MaxOutputValueMin;
+    maxControlValues[biasIndex] = MaxOutputValueMax;
+    defaults        [biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
+    resolutions     [biasIndex] = 1000;
+    types           [biasIndex] = ColumnTypes.DOUBLE;
+    biasIndex++;
+
+    ParameterSpaceImpl parameterSpace = new ParameterSpaceImpl();
+    parameterSpace.createFromData(biasNames, minControlValues, maxControlValues, defaults, resolutions, types);
     Class functionInducerClass = null;
     try {
-      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.regression.continuous.LinearInducer");
+      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.regression.continuous.LinearInducerOpt");
     }
     catch (Exception e) {
       System.out.println("could not find class");
       throw new Exception();
     }
 
-
-    this.pushOutput(biasSpaceBounds,      0);
-    this.pushOutput(biasNames,            1);
-    this.pushOutput(functionInducerClass, 2);
-    }
+    this.pushOutput(parameterSpace,       0);
+    this.pushOutput(functionInducerClass, 1);
   }
+}
