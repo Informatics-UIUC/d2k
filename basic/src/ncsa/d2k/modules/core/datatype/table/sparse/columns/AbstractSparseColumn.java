@@ -668,4 +668,5 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
 		if (missing.contains(pos))
 			missing.remove(pos);
 	}
+
 }

@@ -358,6 +358,38 @@ public class SparseCharArrayColumn extends SparseObjectColumn {
   }
 
 
+	/**
+	 * Returns the internal representation of this column.
+	 *
+	 */
+	public Object getInternal()
+	{
+		int max_index = -1;
+		char[][] internal = null;
+		int[] keys = elements.keys();
+
+		for (int i = 0; i < keys.length; i++) {
+			if (keys[i] > max_index)
+				max_index = keys[i];
+		}
+
+		internal = new char[max_index + 1][];
+
+		for (int i = 0; i < max_index + 1; i++) {
+			internal[i] = (char[]) elements.get(keys[i]);
+		}
+
+		return internal;
+	}
+
+	/**
+	  * Add the specified number of blank rows.
+	  * @param number number of rows to add.
+	  */
+	public void addRows(int number) 
+	{
+		// table is already sparse.  nothing to do.
+	}
 }
 
 
