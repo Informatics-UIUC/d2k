@@ -35,6 +35,7 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
      * applied in the predict method or not
      */
     protected boolean applyTransformationsInPredict = true;
+    protected boolean applyReverseTransformationsAfterPredict = true;
 
     private PredictionModelModule() {
     }
@@ -376,6 +377,8 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
         }
 
         makePredictions(pt);
+        if(transformations != null && this.getApplyReverseTransformationsAfterPredict())
+          applyReverseTransformations(pt);
         return pt;
     }
 
@@ -501,8 +504,23 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
       }
     }
 
+    protected void applyReverseTransformations(ExampleTable et) {
+      if(transformations != null) {
+        for(int i = 0; i < transformations.size(); i++) {
+          Transformation trans = (Transformation)transformations.get(i);
+          if(trans instanceof ReversibleTransformation)
+            //trans.transform(et);
+            ((ReversibleTransformation)trans).untransform(et);
+        }
+      }
+    }
+
     public void setTransformations(List trans) {
       transformations = trans;
+    }
+
+    public List getTransformations() {
+      return transformations;
     }
 
     public void setApplyTransformationsInPredict(boolean b) {
@@ -513,15 +531,27 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule im
       return applyTransformationsInPredict;
     }
 
+    public void setApplyReverseTransformationsAfterPredict(boolean b) {
+      applyReverseTransformationsAfterPredict = b;
+    }
+
+    public boolean getApplyReverseTransformationsAfterPredict() {
+      return applyReverseTransformationsAfterPredict;
+    }
+
     /**
      * Return a list of the property descriptions.
      * @return a list of the property descriptions.
      */
     public PropertyDescription[] getPropertiesDescriptions() {
-      PropertyDescription[] pds = new PropertyDescription[1];
+      PropertyDescription[] pds = new PropertyDescription[2];
       pds[0] = new PropertyDescription("applyTransformationsInPredict", "Apply all transformations before predicting",
         "Set this value to true if the data should be transformed before attemping "+
         "to make predictions.");
+      pds[1] = new PropertyDescription("applyReverseTransformationsAfterPredict",
+        "Apply all reverse transformations after predicting",
+        "Set this value to true to reverse all transformations after making "+
+        "predictions.");
       return pds;
     }
 
