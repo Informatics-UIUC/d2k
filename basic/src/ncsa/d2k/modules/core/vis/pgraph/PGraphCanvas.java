@@ -499,38 +499,6 @@ public class PGraphCanvas extends PCanvas implements GraphEventListener {
       }
    }
 
-   public void setVertexVisible(Vertex v, boolean visible) {
-      PVertexNode vn = (PVertexNode)vertexMap.get(v);
-      if (vn != null) {
-         vn.setVisible(visible);
-         // also make incident edges invisible
-         Set eset = v.getIncidentEdges();
-         int eset_size = eset.size();
-         Iterator eset_iter = eset.iterator();
-         Edge e;
-         PEdgeNode en;
-         Vertex n;
-         PVertexNode nn;
-         for (int i = 0; i < eset_size; i++) {
-            e = (Edge)eset_iter.next();
-            en = (PEdgeNode)edgeMap.get(e);
-            n = e.getOpposite(v);
-            nn = (PVertexNode)vertexMap.get(n);
-            if (en != null && n != null && vn != null) {
-               if (visible && nn.getVisible()) {
-                  en.setVisible(true);
-               }
-               else {
-                  en.setVisible(false);
-               }
-            }
-         }
-      }
-      else {
-         throw new IllegalArgumentException();
-      }
-   }
-
    public void setVertexSize(Vertex v, double d) {
       PVertexNode vn = (PVertexNode)vertexMap.get(v);
       if (vn != null) {
@@ -884,8 +852,7 @@ public class PGraphCanvas extends PCanvas implements GraphEventListener {
          double true_x = layout.getX(v);
          double true_y = layout.getY(v);
 
-         if (vn.getVisible() &&
-             Math.abs(clickPt.getX() - true_x) < vn.getWidth()/2d &&
+         if (Math.abs(clickPt.getX() - true_x) < vn.getWidth()/2d &&
              Math.abs(clickPt.getY() - true_y) < vn.getHeight()/2d) {
 
             press_x = clickPt.getX();
