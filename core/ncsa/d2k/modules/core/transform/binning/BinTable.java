@@ -2,14 +2,8 @@ package ncsa.d2k.modules.core.transform.binning;
 
 
 
-import java.awt.event.*;
-import java.io.*;
-import java.awt.*;
-import java.util.*;
-import ncsa.d2k.modules.core.datatype.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.transform.binning.*;
+
 
 /**
 	BinnedTable.java

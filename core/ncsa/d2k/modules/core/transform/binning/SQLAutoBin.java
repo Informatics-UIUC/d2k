@@ -5,7 +5,6 @@ import java.text.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.io.sql.*;
-import ncsa.d2k.modules.core.prediction.naivebayes.*;
 import java.sql.*;
 
 /**
@@ -13,7 +12,7 @@ import java.sql.*;
  * model.  This module requires a ParameterPoint to determine the method of binning
  * to be used.
  */
-public class SQLAutoBin extends NaiveBayesAutoBin {
+public class SQLAutoBin extends AutoBin {
 
 	public String[] getInputTypes() {
 		String[] in =
