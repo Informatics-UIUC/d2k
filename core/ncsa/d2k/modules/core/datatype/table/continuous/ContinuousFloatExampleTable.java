@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.datatype.table.continuous;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.TransformationModule;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
@@ -608,9 +607,6 @@ public class ContinuousFloatExampleTable
 
   public ExampleTable toExampleTable() {
     return (ExampleTable)this;
-  }
-
-  public void addTransformation(TransformationModule tm) {
   }
 
   public List getTransformations() {

@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.datatype.table.continuous;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.TransformationModule;
 import java.util.*;
 
 public class ContinuousFloatExample implements Example, java.io.Serializable {
