@@ -26,12 +26,11 @@ package ncsa.d2k.modules.core.prediction.decisiontree.rainforest;
  * @author Dora Cai
  * @version 1.0
  */
-
-
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.*;
+import ncsa.d2k.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
@@ -149,7 +148,7 @@ public class SQLRainForest extends ReentrantComputeModule {
     switch (i) {
       case 0: return "JDBC data source to make database connection.";
       case 1: return "The name of the data table.";
-      case 2: return "The example table that contains meta information.";
+      case 2: return "The table that contains meta information.";
       default: return "No such input";
     }
   }
@@ -164,7 +163,7 @@ public class SQLRainForest extends ReentrantComputeModule {
   }
 
   public String getModuleInfo () {
-                return "<html>  <head>      </head>  <body>    Build a decision tree from a data table  </body></html>";
+                return "<html>  <head>      </head>  <body>    Build a decision tree from a database table  </body></html>";
         }
 
   public String[] getInputTypes () {
@@ -181,7 +180,10 @@ public class SQLRainForest extends ReentrantComputeModule {
     return "TreeModel";
   }
 
-  /** this property is the number of bins for numeric columns. */
+  public String getModuleName() {
+    return "SQLRainForest";
+  }
+
   public void setBinNumber (int i) {
     binNumber = i;
   }
@@ -189,7 +191,6 @@ public class SQLRainForest extends ReentrantComputeModule {
     return binNumber;
   }
 
-  /** this property is the ratio of record-in-leaf / total-records */
   public void setMinimumRecordsRatio(double num) {
     minimumRecordsRatio = num;
   }
@@ -198,7 +199,6 @@ public class SQLRainForest extends ReentrantComputeModule {
     return minimumRecordsRatio;
   }
 
-  /** this property is the ratio of most-dominate-class / second-most-dominate-class */
   public void setDominateRatio(double num) {
     dominateRatio = num;
     improvementRatio = dominateRatio * 0.05;
@@ -208,7 +208,6 @@ public class SQLRainForest extends ReentrantComputeModule {
     return dominateRatio;
   }
 
-  /** this property is the threshold for switching between in-database mode and in-memory mode */
   public void setModeThreshold(int num) {
     modeThreshold = num;
   }
@@ -221,7 +220,7 @@ public class SQLRainForest extends ReentrantComputeModule {
     PropertyDescription [] pds = new PropertyDescription [4];
     pds[0] = new PropertyDescription ("modeThreshold", "Mode Threshold", "If the number of data records is greater than this threshold, the in-database mode is used. Otherwise, the in-memory mode is used.");
     pds[1] = new PropertyDescription ("binNumber", "Bin Number", "If the number of distinct values in a numeric attribute is greater than Bin Number, data is grouped into this number of bins.");
-    pds[2] = new PropertyDescription ("minimumRecordsRatio", "Minimum Number Ratio", "Ratio of the record on a leaf to in a tree. The tree construction is terminated when this ratio is reached.");
+    pds[2] = new PropertyDescription ("minimumRecordsRatio", "Minimum Leaf Ratio", "Ratio of the record on a leaf to in a tree. The tree construction is terminated when this ratio is reached.");
     pds[3] = new PropertyDescription ("dominateRatio", "Dominate Ratio", "Ratio of most-common class to second-most-common class. The tree construction is terminated after this ratio is reached.");
     return pds;
   }
@@ -231,6 +230,7 @@ public class SQLRainForest extends ReentrantComputeModule {
   }
 
   /** build decision tree
+   *  @throws Exception
    */
   public void doit() throws Exception {
     // Array of ArrayLists to keep distinct values
@@ -330,7 +330,9 @@ public class SQLRainForest extends ReentrantComputeModule {
   }
 
   /** take out a column from the attribute list
-   *
+   *  @param aColumn the column to remove
+   *  @param oldColumns the column list to remove from
+   *  @return a column list after removing a column
    */
   private String[] narrowAttributes(String aColumn, String[] oldColumns) {
     String[] newColumns = new String[oldColumns.length-1];
@@ -346,6 +348,14 @@ public class SQLRainForest extends ReentrantComputeModule {
     return newColumns;
   }
 
+  /** Extract data from a database table
+   *  @param dbTable the database table to read
+   *  @param classColName the name of the class column
+   *  @param path the branch labels from root to the current node
+   *  @param availCols the available columns to choose from
+   *  @param uniqValues unique values for the current data set
+   *  @return an object of NodeInfo that includes: avcSets, data, classTallies, and uniqValues
+   */
   private NodeInfo extractDataFromDB(String dbTable, String classColName, ArrayList path,
                                      String[] availCols, ArrayList[] uniqValues) {
     // ArrayList for avcSet
@@ -429,6 +439,13 @@ public class SQLRainForest extends ReentrantComputeModule {
     }
   };
 
+  /** partition the current data set
+   *  @param data the current data set
+   *  @param examples the data indexes to be partitioned
+   *  @param availCols the available columns to choose from
+   *  @param uniqValues the unique values in the data set
+   *  @return an object of NodeInfo that includes: avcSets, data, classTallies, and uniqValues
+   */
   private NodeInfo partitionDataSet(MutableTableImpl data, int[] examples,
                                     String[] availCols, ArrayList[] uniqValues) {
     // ArrayList for avcSet
@@ -497,6 +514,10 @@ public class SQLRainForest extends ReentrantComputeModule {
     return(aNodeInfo);
   }
 
+  /** verify whether the column is a numeric column
+   *  @param aColName the column to verify
+   *  @return true if the column is a numeric column, false otherwise
+   */
   private boolean isScalar(String aColName) {
     Column column;
     for (int colIdx=0; colIdx < meta.getNumColumns(); colIdx++) {
@@ -511,7 +532,15 @@ public class SQLRainForest extends ReentrantComputeModule {
     return false;
   }
 
-  // method for numeric values
+  /** update AVC sets (method for numeric values)
+   *  @param avcSets the AVC sets to update
+   *  @param attrName the column name to use
+   *  @param attrValue the column value to use
+   *  @param classLabel the classLabel to use
+   *  @param uniqValues the unique values in the data set. This will be the split
+   *         values for numeric data.
+   *  @return updated new AVC sets
+   */
   private ArrayList[] updAvcSets(ArrayList[] avcSets, String attrName, double attrValue,
                                String classLabel, ArrayList[] uniqValues) {
     double prevSplit = Double.MIN_VALUE;
@@ -546,7 +575,13 @@ public class SQLRainForest extends ReentrantComputeModule {
     return avcSets;
   }
 
-  // method for non-numeric column
+  /** update AVC sets (method for non-numeric values)
+   *  @param avcSets the AVC sets to update
+   *  @param attrName the column name to use
+   *  @param newAttrValue the column value to use
+   *  @param classLabel the classLabel to use
+   *  @return updated new AVC sets
+   */
   private ArrayList[] updOneAvc(ArrayList[] avcSets, String attrName, String newAttrValue, String classLabel) {
     int col = getColIdx(attrName);
     boolean found = false;
@@ -583,7 +618,14 @@ public class SQLRainForest extends ReentrantComputeModule {
     return (avcSets);
   }
 
-  // method for numeric column
+  /** update single AVC set (method for numeric values)
+   *  @param avcSets the AVC sets to update
+   *  @param attrName the column name to use
+   *  @param lowValue the lower bound for the spliting range
+   *  @param highValue the higher bound for the spliting range
+   *  @param classLabel the classLabel to use
+   *  @return updated new AVC sets
+   */
   private ArrayList[] updOneAvc(ArrayList[] avcSets, String attrName, String lowValue,
                               String highValue, String classLabel) {
     int col = getColIdx(attrName);
@@ -630,14 +672,13 @@ public class SQLRainForest extends ReentrantComputeModule {
     if examples(v) is empty, make the new branch a leaf labelled with
     the most common value among examples.
 
-    else let the new branch be the tree created by
-    buildTree(examples(v), target, attributes-{A}, exampleSet)
+    else let the new branch be the tree created by recursive call buildTree.
 
     @param path the spliting values from root to the current node
     @param availCols the candidate columns to use
-    @param avcs the AVC-group (Attribute-Value,Classlabe)
+    @param aNodeInfo an object of NodeInfo that includes: avcSets, data, classTallies, and uniqValues
     @param examples the index list of example set (this param only used in in-memory mode)
-    @return a tree
+    @return a tree node
   */
 
   private DecisionForestNode buildTree(ArrayList path, String[] availCols, NodeInfo aNodeInfo,
@@ -869,9 +910,13 @@ public class SQLRainForest extends ReentrantComputeModule {
     return((DecisionForestNode)root);
   }
 
-  /** find if all avcSets are in a same class
+  /** find whether all avcSets are in a same class
    *  Modified the original algorithm as the following:
    *  If (%mostCommonVal) / (%secondMostCommonVal) > dominateRatio, return true.
+   *  This will prune some trivial node.
+   *  @param classTallies count for each class
+   *  @return true if all data belong to a single class or dominated by a class,
+   *          false otherwise.
    */
   private boolean isSingleClass(int[] classTallies) {
     int mostCommonVal = 0;
@@ -967,7 +1012,10 @@ public class SQLRainForest extends ReentrantComputeModule {
   }
 
   /** get tallies for the class label column
-   *
+   *  @param column the class column
+   *  @param val the class value
+   *  @param avcs AVC sets to search
+   *  @return the tallies of the class column
    */
   private int[] getClassTallies(String column, String val, ArrayList[] avcs) {
     int col = getColIdx(column);
@@ -1031,6 +1079,7 @@ public class SQLRainForest extends ReentrantComputeModule {
    *  from becoming dominant.
    *  @param aPath the spliting values so far have been used
    *  @param column the input column
+   *  @param aNodeInfo an object of NodeInfo that includes: avcSets, data, classTallies, and uniqValues
    *  @return highest gain
    */
   private double categoricalGain(ArrayList aPath, String column, NodeInfo aNodeInfo) {
@@ -1062,6 +1111,7 @@ public class SQLRainForest extends ReentrantComputeModule {
   /** Find the information gain for a numeric attribute.
    *  @param aPath the spliting values so far have been used
    *  @param column the input column
+   *  @param aNodeInfo an object of NodeInfo that includes: avcSets, data, classTallies, and uniqValues
    *  @return object contains the best column and the best split value
    */
   private EntrSplit numericGain(ArrayList aPath, String column, NodeInfo aNodeInfo) {
@@ -1132,6 +1182,9 @@ public class SQLRainForest extends ReentrantComputeModule {
 
   /** create a new array list, first copy the original array list then
    *  add a new value to the new array list
+   *  @param origArray the original ArrayList
+   *  @param newValue the value to add to origArray
+   *  @return a new ArrayList
    */
   protected ArrayList expandSplitValues(ArrayList origArray, String newValue) {
     ArrayList newArray = new ArrayList();
@@ -1250,6 +1303,7 @@ public class SQLRainForest extends ReentrantComputeModule {
    *  @param aSplitValue The spliting value to use
    *  @param column The column name
    *  @param avcs The AVC sets for the current node
+   *  @return the information gain using the aSplitValue
    */
   private double numericAttributeInfo(double aSplitValue, String column, ArrayList[] avcs) {
     String lbranch = "<" + Double.toString(aSplitValue);
@@ -1277,6 +1331,11 @@ public class SQLRainForest extends ReentrantComputeModule {
   *  3. get the String[] classValues
   *  4. compute the int[] classTallies
   *  5. build the avcSets from the in-memory table
+  *  @param dbTable the database table to read
+  *  @param meta the meta information to use
+  *  @param path the split branches from root to the current node
+  *  @param total the total rows in the data set
+  *  @return an object of NodeInfo that includes: avcSets, data, classTallies, and uniqValues
   */
   private NodeInfo createDataTable(String dbTable, ExampleTable meta, ArrayList path,
                                    int total) {
@@ -1413,10 +1472,11 @@ public class SQLRainForest extends ReentrantComputeModule {
   /**
     Create a subset of the examples.  Only those examples where the value
     is equal to val will be in the subset.
+    @param data the data set to search for
     @param col the column to test
-    @param the value to test
+    @param val the value to test
     @param exam the list of examples to narrow
-    @return a subset of the original list of
+    @return a subset of the original data
   */
   private int[] narrowCategoricalExamples(MutableTableImpl data, int col, String val, int[] exam) {
     int numNewExamples = 0;
@@ -1447,6 +1507,7 @@ public class SQLRainForest extends ReentrantComputeModule {
     rows where the value is greater than than the splitValue will be in
     the subset.  Otherwise only the rows where the value is less than the
     splitValue will be in the subset.
+    @param data the data set to search for
     @param col the column to test
     @param splitValue the value to test
     @param exam the list of examples to narrow
@@ -1495,7 +1556,7 @@ public class SQLRainForest extends ReentrantComputeModule {
   /** return true if aString is in a String List
    *  @param aString
    *  @param aList
-   *  @return ture or false
+   *  @return ture if aString is in aList, false otherwise
    */
   private boolean inList(String aString, String[] aList) {
     for (int listIdx=0; listIdx<aList.length; listIdx++) {
@@ -1509,7 +1570,7 @@ public class SQLRainForest extends ReentrantComputeModule {
   /** return true if aString is in a ArrayList
    *  @param aString
    *  @param aList
-   *  @return true or false
+   *  @return true if aString is in aList, false otherwise
    */
   private boolean inList(String aString, ArrayList aList) {
     for (int strIdx=0; strIdx<aList.size(); strIdx++) {
@@ -1666,7 +1727,7 @@ public class SQLRainForest extends ReentrantComputeModule {
   }
 
   /** reorganize uniqValues. For numeric column, if the number of the unique
-  *   values <= binNumber, use the mid points of each two values as the split
+  *   values less than binNumber, use the mid points of each two values as the split
   *   points. Otherwise, calculate the split point for each bin.
   *   @param uniqValues an ArrayList for unique values in each column
   *   @return an reorgnized ArrayList for unique values in each column
@@ -1722,9 +1783,11 @@ public class SQLRainForest extends ReentrantComputeModule {
     return al;
   }
 
-  /** Compare the dominateRatio of parent node with the current node,
-   *  return true if the difference > improvementRatio, otherwise false.
-   *  @param
+  /** Compare the dominateRatio (mostCommon tally / secondMost tally) between
+   *  parent node and the current node, return true if the difference > improvementRatio
+   *  @param parentClassTallies the tallies of the parent node
+   *  @param currClassTallies the tallies of the current node
+   *  @return true if the difference > improvementRatio, otherwise false.
    */
   private boolean isRatioUp(int[] parentClassTallies, int[] currClassTallies) {
     int mostCommonVal = 0;
@@ -1761,9 +1824,6 @@ public class SQLRainForest extends ReentrantComputeModule {
       return false;
   }
 
-  /** print MutableTableImpl for debug
-   *
-   */
   private void printTable(MutableTableImpl table) {
     System.out.println("data table: ");
     for (int rowIdx=0; rowIdx<table.getNumRows(); rowIdx++) {
@@ -1774,9 +1834,6 @@ public class SQLRainForest extends ReentrantComputeModule {
     }
   }
 
-  /** print ArrayList for debug
-   *
-   */
   private void printArrayList(ArrayList al) {
     if (al.size()==0) {
       System.out.println("No value in ArrayList");
@@ -1790,9 +1847,6 @@ public class SQLRainForest extends ReentrantComputeModule {
     System.out.println();
   }
 
-  /** print String Array for debug
-   *
-   */
   private void printStringArray(String[] sa) {
     if (sa.length==0) {
       System.out.println("No value in Array");
@@ -1806,9 +1860,6 @@ public class SQLRainForest extends ReentrantComputeModule {
     System.out.println();
   }
 
-  /** print integer Array for debug
-   *
-   */
   private void printIntArray(int[] intArray) {
     if (intArray.length==0) {
       System.out.println("No value in int Array");
@@ -1821,10 +1872,6 @@ public class SQLRainForest extends ReentrantComputeModule {
     }
     System.out.println();
   }
-
-  /** print AVC sets for debug
-   *
-   */
 
   private void printAvcSets(ArrayList[] avcs) {
     System.out.println("avcs.length is " + avcs.length);
