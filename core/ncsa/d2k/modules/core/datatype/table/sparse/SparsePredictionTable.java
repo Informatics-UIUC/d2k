@@ -6,6 +6,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.examples.SparsePredictionExample;
+import ncsa.d2k.modules.core.datatype.table.sparse.examples.SparseShallowPredictionExample;
 import ncsa.d2k.modules.core.datatype.table.Example;
 import java.io.*;
 import java.util.Arrays;
@@ -105,21 +106,16 @@ public class SparsePredictionTable extends SparseExampleTable implements Predict
 
       }//if !instanceof
 
-    }
+      else{
+	predictions = ((SparsePredictionTable)table).predictions;
+       predictionColumns = new SparseMutableTable(((SparsePredictionTable)table).predictionColumns);
+      }
+
+    }//end ctor
 
 
 
-     /**
-     Given a prediction table, copies all its attributes.
 
-     @param table   a SparsePredictionTable to have its attributes copied into
-		    this table
-     */
-    public SparsePredictionTable (SparsePredictionTable table) {
-       super(table);
-       predictions = table.predictions;
-       predictionColumns = new SparseMutableTable(table.predictionColumns);
-    }
 
 
 /**
@@ -1574,5 +1570,10 @@ public class SparsePredictionTable extends SparseExampleTable implements Predict
 	return new SparsePredictionExample(this, i);
       }
 
+
+
+      public Example getShallowExample(int i){
+	return new SparseShallowPredictionExample(this, i);
+      }
 
 }//SparsePredictionTable

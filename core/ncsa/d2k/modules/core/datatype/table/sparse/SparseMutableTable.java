@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.datatype.table.sparse;
 
+
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
 //import ncsa.d2k.modules.projects.vered.sparse.primitivehash.*;
@@ -3999,8 +4000,18 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
    * @param     an array of indices of columns to be removed from this table
    */
   public void removeColumnsByIndex(int[] indices) {
+
     for (int i=0; i<indices.length; i++)
-      removeColumn(indices[i]);
+      columns.remove(indices[i]);
+
+
+   IndicesRemover remover = new IndicesRemover(indices);
+    rows.forEachValue(remover);
+/*
+    int[] allRows = this.getAllRows();
+    for(int i=0; i<allRows.length; i++)
+      ((VIntHashSet)rows.get(allRows[i])).removeAll(indices);
+*/
   }
 
 

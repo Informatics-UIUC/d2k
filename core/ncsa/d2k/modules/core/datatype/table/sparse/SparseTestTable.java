@@ -32,10 +32,12 @@ public class SparseTestTable  extends SparsePredictionTable implements TestTable
   public ExampleTable getExampleTable() {
     return  new SparseExampleTable(this);
   }
-
+/*
   public Example getExample(int index){
     return new SparsePredictionExample( (SparseTestTable) getSubset(index, 1));
   }
+*/
+
 
   /**
    * Returns an int representation of the data at row no. <codE>row</code> in the

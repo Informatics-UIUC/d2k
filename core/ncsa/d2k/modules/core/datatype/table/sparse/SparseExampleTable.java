@@ -4,6 +4,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 //import ncsa.d2k.modules.projects.vered.sparse.example.SparseExample;
 import ncsa.d2k.modules.core.datatype.table.sparse.examples.SparseExample;
+import ncsa.d2k.modules.core.datatype.table.sparse.examples.SparseShallowExample;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.TestTable;
 import ncsa.d2k.modules.core.datatype.table.TrainTable;
@@ -955,6 +956,9 @@ public class SparseExampleTable extends SparseTable implements ExampleTable {
       }
 
 
+      public Example getShallowExample(int i){
+	return new SparseShallowExample(this, i);
+      }
 
 
 

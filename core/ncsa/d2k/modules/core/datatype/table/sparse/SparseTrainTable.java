@@ -36,9 +36,6 @@ public class SparseTrainTable extends SparseExampleTable implements TrainTable {
 
 
 
-  public Example getExample(int index){
-    return new SparseExample( (SparseTrainTable) getSubset(index, 1));
-  }
 
   /**
    * Returns an int representation of the data at row no. <codE>row</code> in the
