@@ -10,92 +10,116 @@ Writes a serialized object to a file.
 */
 public class OutputSerializedObject extends OutputModule {
 
-/*    public String getModuleInfo() {
-  return "<html>  <head>      </head>  <body>    Writes a serialized object to a file. PROPS-usePropFileName is true if you     don't want it to wait for an input for a filename and instead use the     filename in the properties  </body></html>";
- }
-    */
-
-    public String getModuleInfo() {
-        StringBuffer sb = new StringBuffer("<p>Overview: ");
-        sb.append("Write a serializable object to a file. ");
-        sb.append("The Object must implement the java.io.Serializable interface.");
-        return sb.toString();
-    }
-
+    /**
+     * Return the common name of this module.
+     * @return The display name for this module.
+     */
     public String getModuleName() {
-        //return "Writes a serialized object to a file.";
-        return "Write a Serializable Object to a File";
+        return "Output Serialized Object";
     }
 
+    /**
+     * Return information about the module.
+     * @return A detailed description of the module.
+     */
+    public String getModuleInfo() {
+      StringBuffer sb = new StringBuffer("<p>Overview: ");
+      sb.append("This module writes a serializable Java object to a file.");
+      sb.append("</p><p>Detailed Description: In Java, an object that ");
+      sb.append("implements the java.io.Serializable interface can be ");
+      sb.append("converted to a stream of bytes and written out to a file ");
+      sb.append("in a process called <em>serialization</em>. ");
+      sb.append("</p><p>This module opens or creates the file indicated by ");
+      sb.append("the <i>File Name</i> input port and serializes the Java ");
+      sb.append("object from the <i>Java Object</i> input port to ");
+      sb.append("that file.");
+      sb.append("</p><p>The module will exit with an error if the file ");
+      sb.append("cannot be written to, or if the object cannot be serialized.");
+      sb.append("</p>");
+
+      return sb.toString();
+    }
+
+    /**
+     * Return a String array containing datatypes of the inputs to this module
+     * @return The datatypes of the module inputs.
+     */
     public String[] getInputTypes() {
         String[] types = {"java.lang.Object", "java.lang.String"};
         return types;
     }
 
+    /**
+     * Returns a String array containing datatypes of the output to this module
+     * @return The datatypes of the module outputs.
+     */
     public String[] getOutputTypes() {
         String[] types = {};
         return types;
     }
 
-    public String getInputInfo(int i) {
+    /**
+     * Return a description of the specified input port.
+     * @param i The index of the input.
+     * @return The description of the input.
+     */
+    public String getInputInfo (int i) {
         switch (i) {
-            case 0: return "The Object to Serialize.";
-            case 1: return "The filename to write to.";
-            default: return "No such input";
+            case 0:
+              return "The Java object to serialize.";
+            case 1:
+              return "The name of the file where the serialized object will be written.";
+            default:
+              return "No such input";
         }
     }
 
+    /**
+     * Return the name of a specific input.
+     * @param i The index of the input.
+     * @return The name of the input.
+     */
     public String getInputName(int i) {
         switch(i) {
             case 0:
-                return "Object to Serialize";
+                return "Java Object";
             case 1:
                 return "File Name";
-            default: return "NO SUCH INPUT!";
+            default:
+                return "No such input";
         }
     }
 
+   /**
+     * Return the name of a specific output.
+     * @param i The index of the output.
+     * @return The name of the output.
+     */
     public String getOutputInfo(int i) {
         switch (i) {
             default: return "No such output";
         }
     }
 
+    /**
+     * Return the name of a specified output.
+     * @param i The index of the output.
+     * @return The name of the output.
+     */
     public String getOutputName(int i) {
         switch(i) {
-            default: return "NO SUCH OUTPUT!";
+            default: return "No such output";
         }
     }
 
-    ////////////////
-    // Properties //
-    ////////////////
-
-/*  private String     FileName;// = "ObjectFile.ser";
-  public  void    setFileName (String value) {       this.FileName = value;}
-  public  String  getFileName ()             {return this.FileName; }
-
-  private boolean usePropFileName=false;
-  public void setUsePropFileName(boolean b) {usePropFileName=b;}
-  public boolean getUsePropFileName()	{return usePropFileName;}
-
-    //////////////////
-    //isReady
-    /////////////////
-  public boolean isReady(){
-   if(usePropFileName){
-    if(inputFlags[0]>0){
-     return true;
-    }
-    else
-     return false;
-   }
-   else{
-    return super.isReady();
-   }
-  }
+   /** Return an array with information on the properties the user may update.
+    *  Empty for this module!
+    *  @return The PropertyDescriptions for properties user may update. (none)
     */
-
+    public PropertyDescription[] getPropertiesDescriptions() {
+        PropertyDescription[] pds = null;
+        return pds;
+    }
 
     //////////
     // Doit //
@@ -104,20 +128,39 @@ public class OutputSerializedObject extends OutputModule {
     public void doit() throws Exception {
         Object object = pullInput(0);
         String FileName = (String)pullInput(1);
-        //if(!usePropFileName){
-        //	FileName=(String)(pullInput(1));
-        //}
-        //try
-        // {
-        FileOutputStream file = new FileOutputStream(FileName);
-        ObjectOutputStream out = new ObjectOutputStream(file);
-        out.writeObject(object);
+
+        FileOutputStream file = null;
+        ObjectOutputStream out = null;
+
+        try {
+           file = new FileOutputStream(FileName);
+        }
+        catch (FileNotFoundException e) {
+           throw new FileNotFoundException( "Could not open file: " + FileName +
+                                  "\n" + e );
+        }
+        catch (SecurityException e) {
+           throw new SecurityException( "Could not open file: " + FileName +
+                                  "\n" + e );
+        }
+
+        try {
+            out = new ObjectOutputStream(file);
+            out.writeObject(object);
+        }
+        catch (IOException e) {
+            throw new IOException( "Unable to serialize object " +
+                                   "\n" + e );
+        }
+
         out.flush();
         out.close();
-        //  }
-        //catch (java.io.IOException IOE)
-        // {
-        // System.out.println("IOException");
-        // }
     }
 }
+// QA Comments
+// 2/12/03 - Handed off to QA by David Clutter
+// 2/13/03 - Ruth started QA process.  Shortened module common
+//           name; Added some JavaDocs; deleted unused code; added more to
+//           module description; added more user-friendly exceptions.
+// 2/14/03 - checked into basic.
+// END QA Comments
