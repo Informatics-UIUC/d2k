@@ -1,5 +1,3 @@
-// working version
-
 package ncsa.d2k.modules.core.prediction.decisiontree.rainforest;
 
 
@@ -50,73 +48,15 @@ public class DecisionForestModel extends PredictionModelModule
 
         private DecisionForestNode root;
 
-
-
-        // The table that is passed to the tree to perform predictions
-
-        private transient ExampleTable table;
-
-
-
-        // The unique values in the output column of the table
-
-        //private String[] uniqueOutputs;
-
-
-
-        //private String[][] uniqueInputs;
-
-
-
         // The number of examples in the data set
 
         private int numExamples;
 
-
-
-        private int[] inputFeatures;
-
-        private int[] outputFeatures;
-
-
-
-//	private int trainingSetSize;
-
-
-
-	//private String[] inputColumnNames;
-
-	//private String[] outputColumnNames;
-
-
-
         private String[] classNames;
 
+        private String[] outputColumnLabels;
 
-
-        private boolean[] inputIsScalar;
-
-        private boolean[] outputIsScalar;
-
-
-
-        /** the labels for the input columns */
-
-        //private String[] inputColumnLabels;
-
-        /** the labels for the outputs columns */
-
-        //private String[] outputColumnLabels;
-
-        /** the datatypes for the input features */
-
-        //private int[] inputFeatureTypes;
-
-        /** the datatypes for the output features */
-
-        //private int[] outputFeatureTypes;
-
-
+        private String[] inputColumnLabels;
 
         /**
 
@@ -132,19 +72,53 @@ public class DecisionForestModel extends PredictionModelModule
 
                 setName("DecisionForestModel");
 
+                outputColumnLabels = new String[table.getOutputFeatures().length];
+
+                for (int i=0; i<outputColumnLabels.length; i++) {
+
+                  String label = table.getColumnLabel(table.getOutputFeatures()[i]);
+
+                  // column label may contain the table name as the prefix if more than one tables are used
+
+                  int idx = label.indexOf(".");
+
+                  if (idx >= 0)
+
+                    outputColumnLabels[i] = label.substring(idx+1, label.length());
+
+                  else
+
+                    outputColumnLabels[i] = label;
+
+                }
+
+                inputColumnLabels = new String[table.getInputFeatures().length];
+
+                for (int i=0; i<inputColumnLabels.length; i++) {
+
+                  String label = table.getColumnLabel(table.getInputFeatures()[i]);
+
+                  // column label may contain the table name as the prefix if more than one tables are used
+
+                  int idx = label.indexOf(".");
+
+                  if (idx >= 0)
+
+                    inputColumnLabels[i] = label.substring(idx+1, label.length());
+
+                  else
+
+                    inputColumnLabels[i] = label;
+
+                }
+
                 root = rt;
-
-                inputFeatures = table.getInputFeatures();
-
-                outputFeatures = table.getOutputFeatures();
 
                 numExamples = totalRow;
 
                 classNames = classValues;
 
         }
-
-
 
         public String getModuleInfo() {
 
@@ -158,15 +132,11 @@ public class DecisionForestModel extends PredictionModelModule
 
         }
 
-
-
     public String getModuleName() {
 
         return "Rain Forest Decision Tree Model";
 
     }
-
-
 
         public String[] getInputTypes() {
 
@@ -175,10 +145,6 @@ public class DecisionForestModel extends PredictionModelModule
                 return in;
 
         }
-
-
-
-        // change to prediction table
 
         public String[] getOutputTypes() {
 
@@ -189,8 +155,6 @@ public class DecisionForestModel extends PredictionModelModule
                 return out;
 
         }
-
-
 
         public String getInputInfo(int i) {
 
@@ -208,8 +172,6 @@ public class DecisionForestModel extends PredictionModelModule
 
         }
 
-
-
     public String getInputName(int i) {
 
           switch (i) {
@@ -226,8 +188,6 @@ public class DecisionForestModel extends PredictionModelModule
 
     }
 
-
-
         public String getOutputInfo(int i) {
 
           switch (i) {
@@ -241,8 +201,6 @@ public class DecisionForestModel extends PredictionModelModule
           }
 
         }
-
-
 
     public String getOutputName(int i) {
 
@@ -258,7 +216,6 @@ public class DecisionForestModel extends PredictionModelModule
 
     }
 
-
         /**
 
                 Get the class names.
@@ -269,13 +226,9 @@ public class DecisionForestModel extends PredictionModelModule
 
           public String[] getClassNames() {
 
-          //public final String[] getClassNames() {
-
                 return classNames;
 
         }
-
-
 
         /**
 
@@ -294,90 +247,6 @@ public class DecisionForestModel extends PredictionModelModule
                 pushOutput(this, 1);
 
         }
-
-
-
-        /**
-
-                Predict an outcome for each row of the table using the
-
-                decision tree.
-
-                @param val the table
-
-                @return the table with an extra column of predictions at the end
-
-        */
-
-/*	public PredictionTable predict(ExampleTable val) {
-
-                table = (ExampleTable)val;
-
-
-
-                // When building model by RainForest algorithm, prediction table
-
-                // does not exist, the date type of the prediction column is "object".
-
-                // When using model to predict testing examples, the prediction
-
-                // table is created, and the data type of the prediction column is "String".
-
-                if (table.getColumnType(table.getNumColumns()-1)==9) {
-
-                  return null;
-
-                }
-
-                numExamples = table.getNumRows();
-
-
-
-                PredictionTable pt = null;
-
-                if (table instanceof PredictionTable)
-
-                        pt = (PredictionTable) table;
-
-                else
-
-                        pt = table.toPredictionTable();
-
-
-
-                int[] outputs = pt.getOutputFeatures();
-
-                int[] preds = pt.getPredictionSet();
-
-
-
-                if(preds.length == 0) {
-
-                        String [] predic = new String[pt.getNumRows()];
-
-                        pt.addPredictionColumn(predic, "Predictions");
-
-                        preds = pt.getPredictionSet();
-
-                }
-
-
-
-                for(int i = 0; i < pt.getNumRows(); i++) {
-
-                        String pred = (String)root.evaluate(root, pt, i);
-
-                        pt.setStringPrediction(pred, i, 0);
-
-                }
-
-                return pt;
-
-        }*/
-
-
-
-
 
         protected void makePredictions(PredictionTable pt) {
 
@@ -403,10 +272,6 @@ public class DecisionForestModel extends PredictionModelModule
 
         }
 
-
-
-
-
         /**
 
          * Get the number of examples from the data set passed to
@@ -422,8 +287,6 @@ public class DecisionForestModel extends PredictionModelModule
                 return numExamples;
 
         }
-
-
 
         /**
 
@@ -442,8 +305,6 @@ public class DecisionForestModel extends PredictionModelModule
                 //return uniqueOutputs;
 
         }
-
-
 
         /**
 
@@ -499,8 +360,6 @@ public class DecisionForestModel extends PredictionModelModule
 
         }
 
-
-
         /**
 
                 Get the root of this decision tree.
@@ -515,15 +374,11 @@ public class DecisionForestModel extends PredictionModelModule
 
         }
 
-
-
         public void setRoot(DecisionForestNode newRoot) {
 
                 root = newRoot;
 
         }
-
-
 
         /**
 
@@ -539,15 +394,11 @@ public class DecisionForestModel extends PredictionModelModule
 
         }
 
-
-
         public String[] getInputs() {
 
                 return getInputColumnLabels();
 
         }
-
-
 
         public String[] getUniqueInputValues(int index) {
 
@@ -557,13 +408,29 @@ public class DecisionForestModel extends PredictionModelModule
 
         }
 
-
-
         public boolean scalarInput(int index) {
 
             //return inputIsScalar[index];
             return super.getScalarInputs()[index];
 
+        }
+
+        /**
+         * Get the labels of the output columns.
+         * @return the labels of the output columns
+         */
+        public String[] getOutputColumnLabels() {
+
+            return outputColumnLabels;
+        }
+
+        /**
+         * Get the labels of the input columns.
+         * @return the labels of the input columns
+         */
+        public String[] getInputColumnLabels() {
+
+            return inputColumnLabels;
         }
 
 
