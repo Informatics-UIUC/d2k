@@ -212,6 +212,9 @@ public class Scale extends UIModule {
             GridBagLayout numericColumnsLayout = new GridBagLayout();
             numericColumnsPanel.setLayout(numericColumnsLayout);
 
+            // !:
+            // Box numericColumnsBox = new Box(BoxLayout.Y_AXIS);
+
             int layoutVIndex = 0; // vertical position for numericColumnsLayout
             panelMap = new HashMap();
 

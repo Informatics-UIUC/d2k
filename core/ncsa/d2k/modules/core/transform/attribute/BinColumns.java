@@ -53,7 +53,9 @@ public class BinColumns extends UIModule {
           "<li><u>Uniform Weight:</U><br> Enter a positive integer value for even binning with that number in each bin.</li>"+
           "</ul></P><P>The user may also bin nominal data.</P>"+
           "<P>For further information on how to use this module the user may click on the \"Help\" button during run time and get detailed description of each functionality.</P>"+
-          "<P><B>Data Handling:</b><BR> This module does not change its input. Rather than that it outputs a Transformation that can be then applied to the data.</P>"+
+          "<P><B>Data Handling:</b><BR> This module may change its input " +
+          "<i>MutableTable</i>: any column labels that are null will be assigned " +
+          "default labels. Otherwise, this module does not change its input. Rather than that it outputs a Transformation that can be then applied to the data.</P>"+
           "</body></html>";
     }
 
@@ -63,7 +65,7 @@ public class BinColumns extends UIModule {
      */
     public String[] getInputTypes () {
         String[] types =  {
-            "ncsa.d2k.modules.core.datatype.table.Table"
+            "ncsa.d2k.modules.core.datatype.table.MutableTable"
         };
         return  types;
     }
@@ -74,7 +76,7 @@ public class BinColumns extends UIModule {
      */
     public String[] getOutputTypes () {
         String[] types =  {
-            "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform", "ncsa.d2k.modules.core.datatype.table.Table"
+            "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform", "ncsa.d2k.modules.core.datatype.table.MutableTable"
         };
         return  types;
     }
@@ -87,7 +89,7 @@ public class BinColumns extends UIModule {
     public String getInputInfo (int i) {
         switch (i) {
             case 0:
-                return  "A Table with columns to bin.";
+                return  "A MutableTable with columns to bin.";
             default:
                 return  "No such input";
         }
@@ -103,7 +105,7 @@ public class BinColumns extends UIModule {
             case 0:
                 return "Bin Transformation";
             case 1:
-                return  "Table";
+                return  "Mutable Table";
             default:
                 return  "no such output!";
         }
@@ -116,7 +118,7 @@ public class BinColumns extends UIModule {
      */
     public String getInputName (int i) {
         if (i == 0)
-            return  "Table";
+            return  "Mutable Table";
         return  "no such input";
     }
 
@@ -130,7 +132,7 @@ public class BinColumns extends UIModule {
             case 0:
                 return "A BinTransform, as defined by the user, that can be applied to the input Table.";
             case 1:
-                return  "The input Table unchanged.  In order to bin the columns of this table the Bin Transformation should be Applied to it.";
+                return  "The input Table, unchanged.  In order to bin the columns of this table the Bin Transformation should be Applied to it.";
             default:
                 return  "No such output";
         }
@@ -159,7 +161,7 @@ public class BinColumns extends UIModule {
         private HashSet[] uniqueColumnValues;
         private JList numericColumnLabels, textualColumnLabels, currentBins;
         private DefaultListModel binListModel;
-        private Table tbl;
+        private MutableTable tbl;
 
         /* numeric text fields */
         private JTextField uRangeField, specRangeField, intervalField, weightField;
@@ -195,7 +197,15 @@ public class BinColumns extends UIModule {
          * @param id
          */
         public void setInput (Object o, int id) {
-            tbl = (Table)o;
+            tbl = (MutableTable)o;
+
+            // set column lables on the table if necessary...
+            for (int i = 0; i < tbl.getNumColumns(); i++) {
+               if (tbl.getColumnLabel(i) == null || tbl.getColumnLabel(i).length() == 0) {
+                  tbl.setColumnLabel("column_" + i, i);
+               }
+            }
+
             // clear all text fields and lists...
             curSelName.setText(EMPTY);
             textBinName.setText(EMPTY);
