@@ -438,6 +438,21 @@ public class BinColumns extends UIModule {
                         }
                     }
                     String txt = intervalField.getText();
+
+                    double intrval;
+                    try {
+                       intrval = Double.parseDouble(txt);
+                    }
+                    catch(NumberFormatException ex) {
+                       ErrorDialog.showDialog("You must specify a valid, positive interval.", "Error");
+                       return;
+                    }
+
+                    if (intrval <= 0) {
+                       ErrorDialog.showDialog("You must specify a valid, positive interval.", "Error");
+                       return;
+                    }
+
                     //vered: inserting a try catch to deal with inllegal argument exceptions
                     try{
                     //if(txt != null && txt.length() != 0) {
@@ -1102,6 +1117,11 @@ public class BinColumns extends UIModule {
                //vered:
               ErrorDialog.showDialog("Must specify a positive number", "Error");
                 return;
+            }
+
+            if (intrval <= 0) {
+               ErrorDialog.showDialog("Must specify a positive number", "Error");
+               return;
             }
 
             // find the mins and maxes

@@ -265,7 +265,7 @@ public class SQLBinColumns extends UIModule {
           return counts;
         }
         catch (Exception e) {
-	  JOptionPane.showMessageDialog(msgBoard,
+     JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
           System.out.println("Error occoured in getCounts.");
@@ -327,6 +327,7 @@ public class SQLBinColumns extends UIModule {
         private Connection con;
         private Statement stmt;
         private String queryStr;
+        private int uniqueTextualIndex;
 
         /**
          * set up input
@@ -334,6 +335,9 @@ public class SQLBinColumns extends UIModule {
          * @param id input ID
          */
         public void setInput (Object o, int id) {
+
+            uniqueTextualIndex = 0;
+
             if(id == 0) {
                 connectionWrapper = (ConnectionWrapper)o;
                 numArrived = 1;
@@ -514,8 +518,26 @@ public class SQLBinColumns extends UIModule {
                     }
 
                     String txt = uRangeField.getText();
+
+                    try {
+                       int range = Integer.parseInt(txt);
+                       if (range <= 1)
+                          throw new NumberFormatException();
+                    }
+                    catch (NumberFormatException ex) {
+                       ErrorDialog.showDialog("Must specify a valid range - an integer greater than 1.", "Error");
+                       uRangeField.setText(EMPTY);
+                       return;
+                    }
+
                     if(txt != null && txt.length() != 0) {
                     String col = (String)numericColumnLabels.getSelectedValue();
+
+                    if (col == null) {
+                       ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                       return;
+                    }
+
                     final Histogram H = new UniformHistogram(binCounts,
                             uRangeField.getText(), colLook, col);
                     JD2KFrame frame = new JD2KFrame("Uniform Range");
@@ -584,7 +606,8 @@ public class SQLBinColumns extends UIModule {
                     String txt = specRangeField.getText();
                     if(txt == null || txt.length() == 0) {
                         // show message dialog
-                        ErrorDialog.showDialog("Must specify range.", "Error");
+                        // ErrorDialog.showDialog("Must specify range.", "Error");
+                        ErrorDialog.showDialog("Please enter a comma-separated sequence of\ninteger or floating-point values for\nthe endpoints of each bin. ", "Error");
                         return;
                     }
 
@@ -596,6 +619,12 @@ public class SQLBinColumns extends UIModule {
                     }
                     JD2KFrame frame = new JD2KFrame("Specified Range");
                     String col = (String)numericColumnLabels.getSelectedValue();
+
+                    if (col == null) {
+                       ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                       return;
+                    }
+
                     frame.getContentPane().add(new RangeHistogram(binCounts,
                              specRangeField.getText(), colLook, col));
                              frame.pack();
@@ -630,8 +659,29 @@ public class SQLBinColumns extends UIModule {
                         }
                     }
                     String txt = intervalField.getText();
+
+                    double intrval;
+                    try {
+                       intrval = Double.parseDouble(txt);
+                    }
+                    catch(NumberFormatException ex) {
+                       ErrorDialog.showDialog("You must specify a valid, positive interval.", "Error");
+                       return;
+                    }
+
+                    if (intrval <= 0) {
+                       ErrorDialog.showDialog("You must specify a valid, positive interval.", "Error");
+                       return;
+                    }
+
                     if(txt != null && txt.length() != 0) {
                         String col = (String)numericColumnLabels.getSelectedValue();
+
+                        if(col == null) {
+                           ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                           return;
+                        }
+
                     final Histogram H = new IntervalHistogram(binCounts,
                              intervalField.getText(), colLook, col);
                              JD2KFrame frame = new JD2KFrame("Bin Interval");
@@ -670,8 +720,7 @@ public class SQLBinColumns extends UIModule {
                              frame.setVisible(true);
                     }
                     else {
-                        // message dialog...you must specify an interval
-                        ErrorDialog.showDialog("Must specify interval.", "Error");
+                       ErrorDialog.showDialog("You must specify a valid interval", "Error");
                     }
                 }
             });
@@ -746,27 +795,28 @@ public class SQLBinColumns extends UIModule {
                  * event for button ">"
                  * @param e the action event
                  */
-                public void actionPerformed (ActionEvent e) {
-                    if (!setup_complete)
-                        return;
-                    Object[] sel = textUniqueVals.getSelectedValues();
-                    for (int i = 0; i < sel.length; i++) {
-                        textUniqueModel.removeElement(sel[i]);
-                        textCurrentModel.addElement(sel[i]);
-                    }
+               public void actionPerformed (ActionEvent e) {
+                   if (!setup_complete)
+                       return;
+                   Object[] sel = textUniqueVals.getSelectedValues();
+                   for (int i = 0; i < sel.length; i++) {
+                       // textUniqueModel.removeElement(sel[i]);
+                       if (!textCurrentModel.contains(sel[i]))
+                           textCurrentModel.addElement(sel[i]);
+                   }
                 }
             });
             JButton removeTextFromGroup = new JButton("<");
             removeTextFromGroup.addActionListener(new AbstractAction() {
 
-                public void actionPerformed (ActionEvent e) {
-                    if (!setup_complete)
-                        return;
-                    Object[] sel = textCurrentGroup.getSelectedValues();
-                    for (int i = 0; i < sel.length; i++) {
-                        textCurrentModel.removeElement(sel[i]);
-                        textUniqueModel.addElement(sel[i]);
-                    }
+               public void actionPerformed (ActionEvent e) {
+                   if (!setup_complete)
+                       return;
+                   Object[] sel = textCurrentGroup.getSelectedValues();
+                   for (int i = 0; i < sel.length; i++) {
+                       textCurrentModel.removeElement(sel[i]);
+                       // textUniqueModel.addElement(sel[i]);
+                   }
                 }
             });
             JTabbedPane jtp = new JTabbedPane(JTabbedPane.TOP);
@@ -797,9 +847,23 @@ public class SQLBinColumns extends UIModule {
                  */
                 public void actionPerformed (ActionEvent e) {
                     Object[] sel = textCurrentModel.toArray();
+
+                    if (sel.length == 0) {
+                       ErrorDialog.showDialog("You must select some nominal values to group.", "Error");
+                       return;
+                    }
+
                     Object val = textualColumnLabels.getSelectedValue();
                     int idx = ((Integer)columnLookup.get(val)).intValue();
-                    BinDescriptor bd = createTextualBin(idx, textBinName.getText(),
+
+                    String textualBinName;
+
+                    if (textBinName.getText().length() == 0)
+                       textualBinName = "bin" + uniqueTextualIndex++;
+                     else
+                        textualBinName = textBinName.getText();
+
+                    BinDescriptor bd = createTextualBin(idx, textualBinName,
                             sel);
                     HashSet set = uniqueColumnValues[idx];
                     for (int i = 0; i < sel.length; i++) {
@@ -949,7 +1013,7 @@ public class SQLBinColumns extends UIModule {
                     for (int i = 0; i < bins.length; i++)
                         bins[i] = (BinDescriptor)tmp[i];
                     BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
-										pushOutput(bt, 0);
+                              pushOutput(bt, 0);
                     viewDone("Done");
                 }
             });
@@ -994,7 +1058,7 @@ public class SQLBinColumns extends UIModule {
             return set;
           }
           catch (Exception e) {
-	    JOptionPane.showMessageDialog(msgBoard,
+       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
             System.out.println("Error occoured in uniqueValues.");
@@ -1043,7 +1107,11 @@ public class SQLBinColumns extends UIModule {
             // ...get this number
             try {
                 num = Integer.parseInt(txt);
+                if (num <= 1)
+                   throw new NumberFormatException();
             } catch (NumberFormatException e) {
+                ErrorDialog.showDialog("Must specify a valid range - an integer greater than 1.", "Error");
+                uRangeField.setText(EMPTY);
                 return;
             }
 
@@ -1075,8 +1143,22 @@ public class SQLBinColumns extends UIModule {
          */
         private void addSpecifiedRange () {
             int[] colIdx = getSelectedNumericIndices();
+
+            //vered:
+            if(colIdx.length == 0){
+               ErrorDialog.showDialog("You must select a column to bin.", "Error");
+               return;
+            }
+
             // specified range is a comma-separated list of bin maxes
             String txt = specRangeField.getText();
+
+            //vered:
+            if(txt == null || txt.length() == 0) {
+               ErrorDialog.showDialog("Please enter a comma-separated sequence of\ninteger or floating-point values for\nthe endpoints of each bin. ", "Error");
+               return;
+            }
+
             ArrayList al = new ArrayList();
             StringTokenizer strTok = new StringTokenizer(txt, COMMA);
             double[] binMaxes = new double[strTok.countTokens()];
@@ -1087,6 +1169,8 @@ public class SQLBinColumns extends UIModule {
                     binMaxes[idx++] = Double.parseDouble(s);
                 }
             } catch (NumberFormatException e) {
+               //vered
+               ErrorDialog.showDialog("Please enter a comma-separated sequence of\ninteger or floating-point values for\nthe endpoints of each bin. ", "Error");
                 return;
             }
 
@@ -1114,13 +1198,27 @@ public class SQLBinColumns extends UIModule {
          */
         private void addFromInterval () {
             int[] colIdx = getSelectedNumericIndices();
+
+            //vered:
+            if(colIdx.length == 0){
+              ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                return;
+            }
+
             // the interval is the width
             String txt = intervalField.getText();
             double intrval;
             try {
                 intrval = Double.parseDouble(txt);
             } catch (NumberFormatException e) {
+               //vered:
+              ErrorDialog.showDialog("Must specify a positive number", "Error");
                 return;
+            }
+
+            if (intrval <= 0) {
+               ErrorDialog.showDialog("Must specify a positive number", "Error");
+               return;
             }
 
             for (int i = 0; i < fieldNames.length; i++) {
@@ -1154,14 +1252,26 @@ public class SQLBinColumns extends UIModule {
         private void addFromWeight () {
             int[] colIdx = getSelectedNumericIndices();
             // the weight is the number of items in each bin
+
+            //vered:
+            if(colIdx.length == 0){
+              ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                return;
+            }
+
             String txt = weightField.getText();
             int weight;
             try {
-                weight = Integer.parseInt(txt);
+               weight = Integer.parseInt(txt);
+               //vered:
+               if(weight <= 0) throw new NumberFormatException();
+
+            } catch (NumberFormatException e) {
+               //vered:
+               ErrorDialog.showDialog("Must specify a positive integer", "Error");
+               return;
             }
-            catch (NumberFormatException e) {
-                return;
-            }
+
             for (int i = 0; i < colIdx.length; i++) {
               try {
                 Double db1 = null;
@@ -1201,13 +1311,13 @@ public class SQLBinColumns extends UIModule {
                     1], binMaxes[j]);
                     addItemToBinList(nbd);
                 }
-								// add the last bin - anca:
-								nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-1]);
+                        // add the last bin - anca:
+                        nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-1]);
                 addItemToBinList(nbd);
                 stmt.close();
               }
               catch (Exception e) {
-	          JOptionPane.showMessageDialog(msgBoard,
+             JOptionPane.showMessageDialog(msgBoard,
                     e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
                   System.out.println("Error occoured in addFromWeight.");
@@ -1269,7 +1379,7 @@ public class SQLBinColumns extends UIModule {
         }
 
         /**
-         * Create a numeric bin that goes from min to 
+         * Create a numeric bin that goes from min to
          * @param col the index of the column
          * @param min the min value in the bin
          * @return a BinDescriptor object
