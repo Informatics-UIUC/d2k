@@ -51,9 +51,9 @@ public class WriteVTToDB extends UIModule
     JTextField choosedTableName;
 
     /* variables for JTable objects */
-    JTable newTable;
-    JTable dbTable;
-    JTable vtTable;
+    JTable newTableDef;
+    JTable dbTableDef;
+    JTable vtTableDef;
 
     /* maximum number in vertical tables */
     int maxNumRow;
@@ -76,7 +76,7 @@ public class WriteVTToDB extends UIModule
        @return The name of this module.
     */
     public String getModuleName() {
-		return "WriteVTToDB";
+      return "WriteVTToDB";
     }
     /**
        Return a String array containing the datatypes the inputs to this module.
@@ -145,16 +145,15 @@ public class WriteVTToDB extends UIModule
     */
     public class TableNameView extends JUserInputPane
 	implements ActionListener {
-        /* The module that creates this view.  We need a
-	    reference to it so we can get and set its properties. */
-	WriteVTToDB parentModule;
 
         /* variables for createTable tab */
         JButton createTableBtn;
+        JButton cancelAddBtn;
 
         /* variables for appendTable tab */
         JButton browseBtn;
         JButton appendTableBtn;
+        JButton cancelAppendBtn;
 
 
 	public Dimension getPreferredSize() {
@@ -170,11 +169,8 @@ public class WriteVTToDB extends UIModule
             vt = (VerticalTable)pullInput(1);
             /* the number of rows in vt JTables is determined by inputed vertical table */
             maxNumRow = vt.getNumColumns();
-            System.out.println("the input 1 in initView is " + cw.toString());
-            System.out.println("the input 2 in initView is " + vt.toString());
 
             System.out.println("enter initView");
-	    parentModule = (WriteVTToDB)mod;
 
             /* layout the createTable tab */
             JPanel createTablePanel = new JPanel();
@@ -187,14 +183,12 @@ public class WriteVTToDB extends UIModule
             /* Table with scrollbar for editing the new database table definition */
             /* the number of columns is determined by the number of columns in input vt */
             newModel = new MetaTableModel(maxNumRow,3,true);
-            JTable newTableDef = new JTable(newModel);
+            newTableDef = new JTable(newModel);
             JScrollPane pane = new JScrollPane(newTableDef);
             newTableDef.setPreferredScrollableViewportSize (new Dimension(250,300));
 
             /* Allow to select a single row only */
             newTableDef.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            /*  need a reference for other methods in this view*/
-            newTable = newTableDef;
 
             /* Use input information on VerticalTable as the default column definition */
             setUpColumnDefault(newTableDef);
@@ -214,9 +208,12 @@ public class WriteVTToDB extends UIModule
 
             /* Add outline panel and button into the createTable tab */
             Constrain.setConstraints(createTablePanel, newTableInfo,
-                      0,0,3,2,GridBagConstraints.HORIZONTAL,GridBagConstraints.NORTH,1,1);
+                      0,0,3,3,GridBagConstraints.HORIZONTAL,GridBagConstraints.NORTH,1,1);
+            Constrain.setConstraints(createTablePanel, cancelAddBtn = new JButton ("     Cancel     "),
+                      1,3,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,1,1);
+            cancelAddBtn.addActionListener(this);
             Constrain.setConstraints(createTablePanel, createTableBtn = new JButton ("Create Table"),
-                      1,3,1,1,GridBagConstraints.NONE, GridBagConstraints.CENTER,2,1);
+                      2,3,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
             createTableBtn.addActionListener(this);
 
             /* layout the appendTable tab */
@@ -236,15 +233,13 @@ public class WriteVTToDB extends UIModule
             /* Second outline panel inside of appendTablePanel */
             JOutlinePanel dbTableInfo = new JOutlinePanel("DB Table Information");
             dbTableInfo.setLayout (new GridBagLayout());
-
             /* Table with scrollbar for viewing the existing table definition */
             /* the database table has up to 100 columns and not editable */
             dbModel = new MetaTableModel(100,3,false);
-            JTable dbTableDef = new JTable(dbModel);
+            dbTableDef = new JTable(dbModel);
             JScrollPane dbPane = new JScrollPane(dbTableDef);
             dbTableDef.setPreferredScrollableViewportSize(new Dimension(250,125));
             dbTableDef.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            dbTable = dbTableDef;
             Constrain.setConstraints(dbTableInfo, dbPane,
                       0,0,2,5,GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER,1,1);
 
@@ -255,12 +250,11 @@ public class WriteVTToDB extends UIModule
             /* Table with scrollbar for viewing the VT table definition */
             /* the number of columns in VT table is determined by number of columns in vt input */
             vtModel = new MetaTableModel(maxNumRow,3,false);
-            JTable vtTableDef = new JTable(vtModel);
+            vtTableDef = new JTable(vtModel);
             JScrollPane vtPane = new JScrollPane(vtTableDef);
             vtTableDef.setPreferredScrollableViewportSize(new Dimension(250,125));
             vtTableDef.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             setUpColumnDefault(vtTableDef);
-            vtTable = vtTableDef;
             Constrain.setConstraints(vtTableInfo, vtPane,
                       0,0,2,5,GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER,1,1);
 
@@ -271,8 +265,11 @@ public class WriteVTToDB extends UIModule
                       0,1,3,7,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
             Constrain.setConstraints(appendTablePanel, vtTableInfo,
                       0,8,3,7,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
+            Constrain.setConstraints(appendTablePanel, cancelAppendBtn = new JButton("     Cancel     "),
+                      1,15,1,1,GridBagConstraints.NONE,GridBagConstraints.EAST,1,1);
+            cancelAppendBtn.addActionListener(this);
             Constrain.setConstraints(appendTablePanel, appendTableBtn = new JButton("Append Table"),
-                      1,15,1,1,GridBagConstraints.NONE,GridBagConstraints.CENTER,2,1);
+                      2,15,1,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
             appendTableBtn.addActionListener(this);
 
             /* Put 2 tabs into tabbedpane */
@@ -387,11 +384,11 @@ public class WriteVTToDB extends UIModule
             System.out.println("the input 2 in setInput is " + vt.toString());
             newModel.initTableModel(maxNumRow,3);
             newModel.fireTableDataChanged();
-            setUpColumnDefault(newTable);
-            setUpDataTypeCombo(newTable.getColumnModel().getColumn(1));
+            setUpColumnDefault(newTableDef);
+            setUpDataTypeCombo(newTableDef.getColumnModel().getColumn(1));
             vtModel.initTableModel(maxNumRow,3);
             vtModel.fireTableDataChanged();
-            setUpColumnDefault(vtTable);
+            setUpColumnDefault(vtTableDef);
           }
 	}
 
@@ -399,8 +396,8 @@ public class WriteVTToDB extends UIModule
         public void actionPerformed(ActionEvent e) {
             Object src = e.getSource();
             if (src == createTableBtn) {
-                if (doCreateTable(newTable)) {
-                  doInsertTable(newTableName.getText(), newTable);
+                if (doCreateTable()) {
+                  doInsertTable(newTableName.getText(), newTableDef);
                 }
             }
             else if (src == appendTableBtn) {
@@ -408,10 +405,10 @@ public class WriteVTToDB extends UIModule
                  clicking appendTableBtn. We need to force firing getDBTableDef */
               dbModel.initTableModel(100,3);
               dbModel.fireTableDataChanged();
-              getDBTableDef(dbTable,choosedTableName.getText().toUpperCase());
-              boolean pass = doValidate(dbTable, vtTable);
+              getDBTableDef();
+              boolean pass = doValidate(dbTableDef, vtTableDef);
               if (pass) {
-                doInsertTable(choosedTableName.getText(), vtTable);
+                doInsertTable(choosedTableName.getText(), vtTableDef);
               }
             }
             else if (src == choosedTableName) {
@@ -420,11 +417,19 @@ public class WriteVTToDB extends UIModule
                 /* wipe out previously loaded table definition */
                 dbModel.initTableModel(100,3);
                 dbModel.fireTableDataChanged();
-                getDBTableDef(dbTable,choosedTableName.getText().toUpperCase());
+                getDBTableDef();
               }
             }
             else if (src == browseBtn) {
               doBrowse();
+            }
+            else if (src == cancelAddBtn) {
+              System.out.println("cancel add button is pressed");
+              viewAbort();
+            }
+            else if (src == cancelAppendBtn) {
+              System.out.println("cancel append button is pressed");
+              viewAbort();
             }
         } /* end of actionPerformed */
 
@@ -441,11 +446,11 @@ public class WriteVTToDB extends UIModule
               btw.addWindowListener(new WindowAdapter() {
                   public void windowClosed(WindowEvent e)
                   {
-                    choosedTableName.setText(btw.getChoosedTableName());
+                    choosedTableName.setText(btw.getChoosedRow());
                     /* wipe out previously loaded table definition */
                     dbModel.initTableModel(100,3);
                     dbModel.fireTableDataChanged();
-                    getDBTableDef(dbTable,choosedTableName.getText());
+                    getDBTableDef();
                   }
               });
            }
@@ -458,11 +463,8 @@ public class WriteVTToDB extends UIModule
       }
     } /* end of TableNameView */
 
-    /** create a database table based on user's input
-        @param newTable The JTable that has the structure of the database table to create
-        @return completion status of creating table
-    */
-    protected boolean doCreateTable (JTable newTable) {
+    /** create a database table based on user's input */
+    protected boolean doCreateTable () {
       try {
           System.out.println ("Entering doCreateTable.");
           System.out.println("TableName is: " + newTableName.getText());
@@ -478,17 +480,17 @@ public class WriteVTToDB extends UIModule
           String sb = new String("create table " + newTableName.getText() +
                       " (");
           int i = 0;
-          for (i=0; i<newTable.getRowCount(); i++) {
+          for (i=0; i<newTableDef.getRowCount(); i++) {
             /* s1 is column name */
-            String s1 = newTable.getValueAt(i,0).toString();
+            String s1 = newTableDef.getValueAt(i,0).toString();
             if (s1.length()>0) {
               if (i > 0) // add "," between columns definitions
                 sb = sb + ",";
-              sb = sb + (String) newTable.getValueAt(i,0) + " ";
+              sb = sb + (String) newTableDef.getValueAt(i,0) + " ";
               /* s2 is column type */
-              String s2 = newTable.getValueAt(i,1).toString();
+              String s2 = newTableDef.getValueAt(i,1).toString();
               if (s2.length()>0) {
-                String len = newTable.getValueAt(i, 2).toString();
+                String len = newTableDef.getValueAt(i, 2).toString();
                 if (s2.equals("string"))
                   sb = sb + "varchar2(" + len.toString()+")";
                 else if (s2.equals("byte[]"))
@@ -602,30 +604,28 @@ public class WriteVTToDB extends UIModule
     }
 
     /** get the structure of a database table
-        @param dbTable The JTable to display the structure of the database table
-        @param tableName The name of the database table
     */
-    protected void getDBTableDef(JTable dbTable, String tableName) {
+    protected void getDBTableDef() {
         System.out.println("enter getDBTableDef");
         try {
           Connection con = cw.getConnection ();
           Statement stmt;
           String sb = new String("select column_name, data_type, data_length " +
             "from all_tab_columns where table_name = '" +
-            tableName.toString() + "' order by column_id");
+            choosedTableName.getText().toUpperCase() + "' order by column_id");
           stmt = con.createStatement ();
           ResultSet tableSet = stmt.executeQuery(sb);
           int rIdx = 0;
           while (tableSet.next()) {
-            dbTable.setValueAt(tableSet.getString(1),rIdx,0);
-            dbTable.setValueAt(tableSet.getString(2),rIdx,1);
-            dbTable.setValueAt(tableSet.getString(3),rIdx,2);
+            dbTableDef.setValueAt(tableSet.getString(1),rIdx,0);
+            dbTableDef.setValueAt(tableSet.getString(2),rIdx,1);
+            dbTableDef.setValueAt(tableSet.getString(3),rIdx,2);
             rIdx++;
           }
           /* if rIdx == 0, that indicate the tableSet is empty, the db table does not exist */
           if (rIdx == 0) {
             JOptionPane.showMessageDialog(msgBoard,
-                "Table " + tableName.toString() + " does not exist.", "Error",
+                "Table " + choosedTableName.getText() + " does not exist.", "Error",
                 JOptionPane.ERROR_MESSAGE);
             System.out.println("table does not exist.");
           }
