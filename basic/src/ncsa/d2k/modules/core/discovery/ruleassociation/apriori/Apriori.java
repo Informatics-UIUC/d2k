@@ -232,6 +232,7 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule{
 			" Maximum Items per Rule cannot be less than 2.",
 			null );
 		}
+                maxSize = yy;
         }
 	public int getMaxRuleSize () {
 		return this.maxSize;
