@@ -286,7 +286,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		  inputNames[i] = this.getColumnLabel(inputs[i]);
 
 		  // LAM-tlr, below i was passed as the index to getColumn, I changed to to inputs[i].
-		  ins[i] = this.getColumn(inputs[i]);
+		  ins[i] = columns[inputs[i]];
 		}
 	}
 
@@ -302,7 +302,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 			outputNames[i] = getColumnLabel(outCols[i]);
 
 			// LAM-tlr, below i was passed as the index to getColumn, I changed to to inputs[i].
-			outs[i] = this.getColumn(outCols[i]);
+			outs[i] = columns[outCols[i]];
 		}
 	}
 
@@ -635,7 +635,9 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		if (testSet == null) {
 			return null;
 		}
-		return new ExampleTableImpl(this, testSet);
+      ExampleTableImpl eti = (ExampleTableImpl) this.shallowCopy();
+      eti.subset=testSet;
+      return eti;
 	}
 
 	/**
@@ -643,10 +645,9 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	@return a reference to a Table referencing only the training data.
 	*/
 	public Table getTrainTable() {
-		if (trainSet == null) {
-			return null;
-		}
-		return new ExampleTableImpl(this, trainSet);
+      ExampleTableImpl eti = (ExampleTableImpl) this.shallowCopy();
+      eti.subset=trainSet;
+      return eti;
 	}
 
 	/////////////////////////////////////////
