@@ -378,13 +378,6 @@ public class SQLChooseAttributes extends HeadlessUIModule {
         // data type may be in uppercase or lowercase
         if(ColumnTypes.isEqualNumeric(colTypes.get(colIdx).toString())) {
           cols[selectedColumn].setIsScalar(true);
-          // cannot choose numeric column as the output column
-          if (outputFeatures[0] == colIdx) {
-            JOptionPane.showMessageDialog(msgBoard,
-                      "You cannot choose a numeric column as the output column", "Error",
-                      JOptionPane.ERROR_MESSAGE);
-            return null;
-          }
         }
         else {
           cols[selectedColumn].setIsScalar(false);
@@ -632,9 +625,9 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
         String type = (String) columTypes.get(new Integer(outputFeatures[i]));
         if(ColumnTypes.isEqualNumeric(type))
-          throw new Exception(getAlias() +": You cannot choose a numeric column as the output column");
-        else
-          cols[selectedColumn].setIsScalar(false);
+         cols[selectedColumn].setIsScalar(true);
+       else
+         cols[selectedColumn].setIsScalar(false);
        selectedOutput[i] = selectedColumn;
        selectedColumn++;
 
