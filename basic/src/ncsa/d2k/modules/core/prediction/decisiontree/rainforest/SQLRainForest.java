@@ -298,46 +298,64 @@ public class SQLRainForest extends SQLRainForestOPT {
     inputFeatures = meta.getInputFeatures();
     outputFeatures = new int[meta.getOutputFeatures().length];
     outputFeatures = meta.getOutputFeatures();
-    outputCol = outputFeatures[0];
-    classColName = meta.getColumnLabel(outputCol);
-    ArrayList splitValues = new ArrayList();
-    String[] availableCols = new String[inputFeatures.length];
-    for (int colIdx=0; colIdx<inputFeatures.length; colIdx++) {
-      availableCols[colIdx] = meta.getColumnLabel(inputFeatures[colIdx]);
-    }
-   // totalRow = meta.getNumEntries();
-   totalRow = meta.getNumRows();
-    minimumRecordsPerLeaf = totalRow * minimumRatioPerLeaf;
 
-    // if totalRow < modeThreshold, use in-memory mode
-    if (totalRow > 0 && totalRow < modeThreshold) {
-      NodeInfo aNodeInfo = createDataTable(dbTable, meta, splitValues, totalRow);
-      int[] exampleSet;
-      // use all rows as examples at first
-      exampleSet = new int[aNodeInfo.data.getNumRows()];
-      for (int rowIdx=0; rowIdx<aNodeInfo.data.getNumRows(); rowIdx++) {
-        exampleSet[rowIdx] = rowIdx;
-      }
-      DecisionForestNode rootNode = buildTree(splitValues, availableCols, aNodeInfo, exampleSet);
-      DecisionForestModel mdl = new DecisionForestModel(rootNode, meta, totalRow, classValues);
-      //PredictionModelModule pmm=(PredictionModelModule) mdl;
-      //pushOutput(pmm, 0);
-      pushOutput(mdl, 0);
+
+    if(meta.isColumnScalar(outputFeatures[0])) {
+         JOptionPane.showMessageDialog(msgBoard,
+                                    getAlias() + ": You cannot choose a numeric column as the output column", "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+      System.out.println(getAlias() + ": You cannot choose a numeric column as the output column.");
     }
-    else if (totalRow >= modeThreshold) { // use in-db mode
-      classValues = getClassValues(classColName);
-      uniqValues = getUniqValues(dbTable, splitValues,availableCols);
-      NodeInfo aNodeInfo = extractDataFromDB(dbTable,classColName,splitValues,availableCols,uniqValues);
-      DecisionForestNode rootNode = buildTree(splitValues, availableCols, aNodeInfo, null);
-      DecisionForestModel mdl = new DecisionForestModel(rootNode, meta, totalRow, classValues);
-      PredictionModelModule pmm=(PredictionModelModule) mdl;
-      pushOutput(pmm, 0);
-    }
+
     else {
-      JOptionPane.showMessageDialog(msgBoard,
-                "No data", "Error",
-                JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occurred in doit, no data.");
+      outputCol = outputFeatures[0];
+      classColName = meta.getColumnLabel(outputCol);
+      ArrayList splitValues = new ArrayList();
+      String[] availableCols = new String[inputFeatures.length];
+      for (int colIdx = 0; colIdx < inputFeatures.length; colIdx++) {
+        availableCols[colIdx] = meta.getColumnLabel(inputFeatures[colIdx]);
+      }
+      // totalRow = meta.getNumEntries();
+      totalRow = meta.getNumRows();
+      minimumRecordsPerLeaf = totalRow * minimumRatioPerLeaf;
+
+      // if totalRow < modeThreshold, use in-memory mode
+      if (totalRow > 0 && totalRow < modeThreshold) {
+        NodeInfo aNodeInfo = createDataTable(dbTable, meta, splitValues,
+                                             totalRow);
+        int[] exampleSet;
+        // use all rows as examples at first
+        exampleSet = new int[aNodeInfo.data.getNumRows()];
+        for (int rowIdx = 0; rowIdx < aNodeInfo.data.getNumRows(); rowIdx++) {
+          exampleSet[rowIdx] = rowIdx;
+        }
+        DecisionForestNode rootNode = buildTree(splitValues, availableCols,
+                                                aNodeInfo, exampleSet);
+        DecisionForestModel mdl = new DecisionForestModel(rootNode, meta,
+            totalRow, classValues);
+        //PredictionModelModule pmm=(PredictionModelModule) mdl;
+        //pushOutput(pmm, 0);
+        pushOutput(mdl, 0);
+      }
+      else if (totalRow >= modeThreshold) { // use in-db mode
+        classValues = getClassValues(classColName);
+        uniqValues = getUniqValues(dbTable, splitValues, availableCols);
+        NodeInfo aNodeInfo = extractDataFromDB(dbTable, classColName,
+                                               splitValues, availableCols,
+                                               uniqValues);
+        DecisionForestNode rootNode = buildTree(splitValues, availableCols,
+                                                aNodeInfo, null);
+        DecisionForestModel mdl = new DecisionForestModel(rootNode, meta,
+            totalRow, classValues);
+        PredictionModelModule pmm = (PredictionModelModule) mdl;
+        pushOutput(pmm, 0);
+      }
+      else {
+        JOptionPane.showMessageDialog(msgBoard,
+                                      "No data", "Error",
+                                      JOptionPane.ERROR_MESSAGE);
+        System.out.println("Error occurred in doit, no data.");
+      }
     }
   }
 
