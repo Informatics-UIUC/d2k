@@ -668,6 +668,11 @@ public class ReadDelimitedFormat extends InputModule
 			vt.setChars(newBytes, curRow, curCol);
 			curCol++;
 		}
+
+		// fill in blank entries at the end..
+		for(int i = curCol; i <= vt.getNumColumns()-1; i++) {
+			vt.setChars(new char[0], curRow, i);
+		}
 	}
 
 	protected ArrayList createSDRow (String row) {
