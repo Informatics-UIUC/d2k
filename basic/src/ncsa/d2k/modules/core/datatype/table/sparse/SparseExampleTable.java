@@ -684,10 +684,11 @@ public class SparseExampleTable
 
     // Copy failed, maybe objects in a column that are not serializable.
     Column[] cols = new Column[this.getNumColumns()];
-    Column[] oldcols = this.getColumns();
+    //Column[] oldcols = this.getColumns();
 
     for (int i = 0; i < cols.length; i++) {
-      cols[i] = oldcols[i].getSubset(subset);
+      //System.out.println(i);
+      cols[i] = getColumn(i).getSubset(subset);
     }
 
     // Copy the subset, the inputs set, the output set, and the test and train sets.
