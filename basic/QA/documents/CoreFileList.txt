@@ -11,7 +11,7 @@ Following are all under source/core/ncsa/d2k/modules/core/...
 /control:
 DummyOutput.java		save
 InvSwitchPasser.java		save
-MultiPusher.java		move to basic
+MultiPusher.java		move to basic (RENAME)
 ObjectBlocker.java		save
 ObjectHolder.java		save
 ObjectPasser.java		save
@@ -263,7 +263,7 @@ CoverageSampler_Props.java			submitted
 FractionationParams_Props.java			submitted
 FractionationSampler_Props.java			submitted
 HierAgglomClusterer_Props.java			submitted
-KMeansParams_Props.java				submitted
+KMeansParams_Props.java				done
 
 ./discovery/cluster/hac:
 HAC.java					submitted
@@ -292,11 +292,12 @@ FractionationParamsOPT.java			submitted
 FractionationParamSpaceGenerator.java	submitted
 FractionationSampler.java			submitted
 FractionationSamplerOPT.java			submitted
-KMeansParams.java				submitted
-KMeansParamsOPT.java				submitted
-KMeansParamSpaceGenerator.java			submitted
+KMeansParameterDefns.java			done
+KMeansParams.java				done
+KMeansParamsOPT.java				done
+KMeansParamSpaceGenerator.java			done
 OneTimeInputBroker.java				submitted
-SampleTableRowsOPT.java				submitted
+SampleTableRowsOPT.java				done
 
 ./discovery/cluster/util:
 AddClusterAssignmentsToTable.java		submitted
@@ -801,7 +802,7 @@ RandomizeTableRows.java			done
 RemoveDuplicateRows.java		done
 ReplaceNominalsWithInts.java		done
 RotateVerticalTable.java		?, ask Peter G.
-SampleTableRows.java			move
+SampleTableRows.java			done
 SetTrainOrTest.java			save
 SimpleTrainTest.java			done
 SortTable.java				done
