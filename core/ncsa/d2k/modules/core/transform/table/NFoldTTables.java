@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.transform.table;
 
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import java.util.Random;
@@ -148,8 +149,8 @@ public class NFoldTTables extends ncsa.d2k.core.modules.DataPrepModule {
 
 	public String getOutputInfo(int i){
 		switch (i) {
-			case 0: return "This is the output table containing the test data.";
-			case 1: return "The table allows acces to the training data.";
+			case 0: return "This is the output table containing the train data.";
+			case 1: return "The table allows acces to the testing data.";
 			case 2: return "This integer contains the number of folds. This is the same value as the     property, numberFolds, which can be set by the user.";
 			default: return "No such output";
 		}
@@ -207,8 +208,8 @@ public class NFoldTTables extends ncsa.d2k.core.modules.DataPrepModule {
 		TestTable testT= examples.getTestTable();
 		TrainTable trainT= examples.getTrainTable();
 
-		this.pushOutput (testT, 0);
-		this.pushOutput (trainT, 1);
+		this.pushOutput (trainT, 0);
+		this.pushOutput (testT, 1);
 
 		if(numFires==0){
 			this.pushOutput (new Integer(breaks.length+1), 2);
@@ -254,9 +255,9 @@ public class NFoldTTables extends ncsa.d2k.core.modules.DataPrepModule {
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "Test Table";
-			case 1:
 				return "Train Table";
+			case 1:
+				return "Test Table";
 			case 2:
 				return "Number Folds";
 			default: return "NO SUCH OUTPUT!";
