@@ -28,7 +28,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 		return "<p>      Overview: From the input table, will generate a training table and a       testing"+
 			" table. The percent test and the percent train are indicated by       properties.    </p>  "+
 			"  <p>      Detailed Description: The percent test and the percent train is entered       using"+
-			" a custom gui. The test and train data can be either selected at       random, or if the <i>User"+
+			" a custom gui. The test and train data can be either selected at       random, or if the <i>Use"+
 			" First</i> property is set, the first entries       are taken as the test data, and the last"+
 			" entries are taken as the       training data. If the percent test and the percent train is"+
 			" more than       100 percent, some entries will have to be used more than once.    </p>    <p>"+
@@ -261,7 +261,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 		TestTrainSlider slider = null;
 
 		/** if selected, the first N entries are the test entries. */
-		JCheckBox first = new JCheckBox("Select First Entries");
+		JCheckBox first = new JCheckBox("Use First Entries");
 
 		/**
 		 * Given the module to change.
@@ -279,7 +279,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 									 GridBagConstraints.CENTER, 0.0, 0.0);
 			Constrain.setConstraints(this, slider, 0, 1, 1, 1, GridBagConstraints.NONE,
 									 GridBagConstraints.CENTER, 0.0, 0.0);
-			label = new JLabel("Check to select to select first items rather than random.");
+			label = new JLabel("Check to select first items rather than random.");
 			label.setFont(tmp);
 			Constrain.setConstraints(this, label, 0, 2, 1, 1, GridBagConstraints.NONE,
 									 GridBagConstraints.CENTER, 0.0, 0.0);
