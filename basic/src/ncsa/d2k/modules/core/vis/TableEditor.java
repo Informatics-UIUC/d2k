@@ -194,7 +194,7 @@ public class TableEditor extends TableViewer {
                 STRING_TYPE,
                 DOUBLE_TYPE,
                 INT_TYPE,
-                BYTE_ARRAY_TYPE,
+                BYTE_TYPE,
                 CHAR_ARRAY_TYPE,
                 BOOLEAN_TYPE,
                 FLOAT_TYPE,
@@ -452,23 +452,23 @@ public class TableEditor extends TableViewer {
                             else
                                 mt.setString(buffer[j], j, i);
                     }
-                } else if (selected.equals(BYTE_ARRAY_TYPE)) {
-                    if (!(table.getColumnType(i) == ColumnTypes.BYTE_ARRAY)) {
+                } else if (selected.equals(BYTE_TYPE)) {
+                    if (!(table.getColumnType(i) == ColumnTypes.BYTE)) {
 
                         // get data
-                        byte[][] buffer = new byte[table.getNumRows()][];
+                        byte[] buffer = new byte[table.getNumRows()];
                         boolean[] missing = new boolean[table.getNumRows()];
                         for (int row = 0; row < buffer.length; row++) {
                             missing[row] = table.isValueMissing(row, i);
                             if (missing[row])
-                                buffer[row] = table.getMissingString().getBytes();
+                                buffer[row] = (byte) table.getMissingInt();
                             else
-                                buffer[row] = table.getBytes(row, i);
+                                buffer[row] = table.getByte(row, i);
                         }
 
                         // Clone the column.
                         MutableTable mt = (MutableTable) table;
-                        Column column = ColumnUtilities.toByteArrayColumn(mt.getColumn(i));
+                        Column column = ColumnUtilities.toByteColumn(mt.getColumn(i));
                         mt.setColumn(column, i);
 
                         // set missing values
@@ -476,7 +476,7 @@ public class TableEditor extends TableViewer {
                             if (missing[j])
                                 mt.setValueToMissing(true, j, i);
                             else
-                                mt.setBytes(buffer[j], j, i);
+                                mt.setByte(buffer[j], j, i);
                     }
                 } else if (selected.equals(CHAR_ARRAY_TYPE)) {
                     if (!(table.getColumnType(i) == ColumnTypes.CHAR_ARRAY)) {
