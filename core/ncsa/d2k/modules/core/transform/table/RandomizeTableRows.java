@@ -4,12 +4,13 @@ package ncsa.d2k.modules.core.transform.table;
 
 
 
+
 import ncsa.d2k.core.modules.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
-	RandomizeVTRows.java
+	RandomizeTableRows.java
 */
 public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 {
@@ -19,7 +20,7 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "The table to be randomized";
+			case 0: return "The table to have rows randomized";
 			default: return "No such input";
 		}
 	}
@@ -39,7 +40,7 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "The resulting tables rows are randomly ordered.";
+			case 0: return "The resulting table with rows randomly reordered.";
 			default: return "No such output";
 		}
 	}
@@ -58,10 +59,15 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "Overview: Randomizes the order of rows of a Table.    <p>      Detailed Description: Randomly"+
-			" swap rows in the table to ensure a random       ordering of the data. This simple module does"+
-			" it's work on the data in       place, so it doesn't need to allocation memory or move much"+
-			" data.    </p>";
+		return "<p>Overview: This module randomly reorders the rows of a Table. </p><p>Detailed Description:"+
+			" The rows in the Table are randomly swapped to ensure a random ordering of the data. A"+
+			" <i>Seed</i> may be specified for initializing the random number generator. If you specify"+
+			" a <i>Seed</i>, remember to set the <i>Use Seed Value Indicated</i> flag to TRUE. Otherwise, it will"+
+			" generate a random number without a seed initialization.    </p>    <p> Data Handling:"+
+			" This module does its work on the data in place, so it doesn't need to allocate more memory."+
+			" However, it does actually swap the rows of the data.    </p>    <p> Scalability:"+
+			" For large data sets this module could do a lot of row swapping, which would mean alot"+
+			" of data movement. </p>";
 	}
 
 	/**
@@ -103,6 +109,20 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 	public boolean getUseSeed() {
 		return useSeed;
 	}
+
+        public PropertyDescription [] getPropertiesDescriptions() {
+          PropertyDescription [] pds = new PropertyDescription [2];
+
+          pds[0] = new PropertyDescription("seed","Seed",
+                   "The Seed is used to initialize the random number generator.");
+
+          pds[1] = new PropertyDescription("useSeed",
+                   "Use Seed Value Indicated",
+                   "The random number generator can be called with or without an initialization seed value. "+
+                   "This flag indicates whether the seed value given should be used.");
+
+          return pds;
+        }
 
 	private transient Random rand;
 
