@@ -23,7 +23,38 @@ public class PredictionTableReport extends VisModule  {
        @return A description of this module.
     */
     public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    Display some statistics about a PredictionTable, including the number of     correct predictions and a confusion matrix.  </body></html>";
+//		return "<html>  <head>      </head>  <body>    Display some statistics about a PredictionTable, including the number of     correct predictions and a confusion matrix.  </body></html>";
+      StringBuffer sb = new StringBuffer("<p>Overview: Provides a visualization");
+      sb.append(" to evaluate the performance of a predictive model.");
+      sb.append("<p>Detailed Description: Given a PredictionTable with both ");
+      sb.append("the predictions and the actual values, this module will ");
+      sb.append("provide a simple visualization to evaluate the performance of ");
+      sb.append("a predictive model on a data set.  The <i>accuracy</i>, defined ");
+      sb.append("as the number of correct predictions, is displayed.  A pie chart ");
+      sb.append("depicting the accuracy is also shown.  A confusion matrix for ");
+      sb.append("the PredictionTable is created.  The confusion matrix displays ");
+      sb.append("the <i>precision</i> and <i>recall</i> of the predictive model. ");
+      sb.append("<i>Precision</i> is defined as the number of correct predictions ");
+      sb.append("within a class divided by the number of predictions within a ");
+      sb.append("class.  <i>Recall</i> is the number of relevant predictions ");
+      sb.append("within a class divided by the number that actually exist in ");
+      sb.append("a class.  The confusion matrix also displays the <i>Type I</i> ");
+      sb.append("and <i>Type II</i> errors.  <i>Type I</i> error is defined as ");
+      sb.append("accepting an item as a member of a class whenit is actually ");
+      sb.append("false, known as a false positive.  <i>Type II</i> error is ");
+      sb.append("defined as rejecting an item as a member of class when it is ");
+      sb.append("actually true, known as a false negative.  The confusion ");
+      sb.append("matrix is shown with the unique predictions along the top. ");
+      sb.append("These are labeled <i>Prediction =</i>.  The actual values are ");
+      sb.append("displayed along the side.  These are labeled <i>Ground Truth</i>.");
+      sb.append("<p>Data Type Restrictions: A PredictionTable with both the ");
+      sb.append("predictions and actual values is required.  This module only ");
+      sb.append("supports classification predictons.  Continuous predictions ");
+      sb.append("are not supported.");
+      sb.append("<p>Data Handling: This module does not modify the input data.");
+      sb.append("<p>Scalability: This module makes one pass over the data to ");
+      sb.append("count the number of correct and incorrect predictions.");
+      return sb.toString();
 	}
 
     /**
@@ -61,7 +92,7 @@ public class PredictionTableReport extends VisModule  {
     */
     public String getInputInfo(int i) {
 		switch (i) {
-			case 0: return "A PredictionTable.";
+			case 0: return "A PredictionTable with both the actual values and predictions.";
 			default: return "No such input";
 		}
 	}
