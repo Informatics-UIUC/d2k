@@ -347,6 +347,14 @@ public class BinAttributes extends HeadlessUIModule {
 
 		}
 
+      if (savedBins != null && savedBins.length > 0) {
+
+         for (int b = 0; b < savedBins.length; b++) {
+            binListModel.addElement(savedBins[b]);
+         }
+
+      }
+
 		if (!validateBins(binListModel)) {
 		   binListModel.removeAllElements();
 		}
@@ -361,9 +369,10 @@ public class BinAttributes extends HeadlessUIModule {
 	public void initView (ViewModule m) {
 	  currentBins = new JList();
 	  binListModel = new DefaultListModel();
-	  currentBins.setModel(binListModel);
-	  currentBins.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	  currentBins.addListSelectionListener(new CurrentListener());
+     currentBins.setModel(binListModel);
+     currentBins.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+     currentBins.addListSelectionListener(new CurrentListener());
+
 	  // set up the numeric tab
 	  numericColumnLabels = new JList();
 	  numericColumnLabels.setModel(new DefaultListModel());
