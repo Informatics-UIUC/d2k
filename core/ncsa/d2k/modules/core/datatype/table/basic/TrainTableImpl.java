@@ -13,14 +13,14 @@ import java.util.*;
 public final class TrainTableImpl extends ExampleTableImpl implements TrainTable {
     protected ExampleTable original = null;
 
-	static final long serialVersionUID = 3645653836067022357L;
+   static final long serialVersionUID = 3645653836067022357L;
 
-	TrainTableImpl(int i) {
-		super(i);
-	}
+   TrainTableImpl(int i) {
+      super(i);
+   }
 
     /**
-	 * Create a new TrainTable
+    * Create a new TrainTable
      * @param ttt the ExampleTable from which this table is derived
      */
     TrainTableImpl (ExampleTableImpl ttt) {
@@ -38,7 +38,7 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
      @return A new Column with a copy of the contents of this column.
      */
     public Table copy () {
-       	TrainTableImpl vt;
+         TrainTableImpl vt;
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -58,26 +58,26 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
             vt.setLabel(getLabel());
             vt.setComment(getComment());
             //vt.setType(getType());
-			vt.setInputFeatures(getInputFeatures());
-			vt.setOutputFeatures(getOutputFeatures());
-			vt.transformations = (ArrayList)transformations.clone();
-			vt.setTestingSet(getTestingSet());
-			vt.setTrainingSet(getTrainingSet());
-			vt.original = original;
+         vt.setInputFeatures(getInputFeatures());
+         vt.setOutputFeatures(getOutputFeatures());
+         vt.transformations = (ArrayList)transformations.clone();
+         vt.setTestingSet(getTestingSet());
+         vt.setTrainingSet(getTrainingSet());
+         vt.original = original;
             return  vt;
         }
     }
 
     /**
      * Get the example table from which this table was derived.
-	 * @return the example table from which this table was derived
+    * @return the example table from which this table was derived
      */
     public ExampleTable getExampleTable () {
         return  original;
     }
 
     /**
-	 * Get an int value from the table.
+    * Get an int value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the int at (row, column)
@@ -87,7 +87,7 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
     }
 
     /**
-	 * Get a short value from the table.
+    * Get a short value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the short at (row, column)
@@ -97,7 +97,7 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
     }
 
     /**
-	 * Get a long value from the table.
+    * Get a long value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the long at (row, column)
@@ -107,7 +107,7 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
     }
 
     /**
-	 * Get a float value from the table.
+    * Get a float value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the float at (row, column)
@@ -117,7 +117,7 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
     }
 
     /**
-	 * Get a double value from the table.
+    * Get a double value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the double at (row, column)
@@ -127,7 +127,7 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
     }
 
     /**
-	 * Get a String from the table.
+    * Get a String from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the String at (row, column)
@@ -137,7 +137,7 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
     }
 
     /**
-	 * Get an array of bytes from the table.
+    * Get an array of bytes from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the value at (row, column) as an array of bytes
@@ -147,7 +147,7 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
     }
 
     /**
-	 * Get an array of chars from the table.
+    * Get an array of chars from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the value at (row, column) as an array of chars
@@ -157,7 +157,7 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
     }
 
     /**
-	 * Get a boolean value from the table.
+    * Get a boolean value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the boolean value at (row, column)
@@ -174,11 +174,202 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
         return  this.trainSet.length;
     }
 
-	public int getNumExamples() {
-		return getNumRows();
-	}
+   public int getNumExamples() {
+      return getNumRows();
+   }
 
-	public PredictionTable toPredictionTable() {
-		return null;
-	}
+   public PredictionTable toPredictionTable() {
+      return null;
+   }
+
+   ////////////////////////////////////
+   // now, TrainTableImpl must override all methods that add, insert, and
+   // remove rows in order to correctly keep track of its train set.
+
+   public void addRow(int[] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(float[] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(double[] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(long[] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(short[] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(boolean[] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(String[] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(char[][] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(byte[][] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(Object[] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(byte[] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(char[] newEntry) {
+      addTraining();
+      super.addRow(newEntry);
+   }
+
+   public void insertRow(int[] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void insertRow(float[] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void insertRow(double[] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void insertRow(long[] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void insertRow(short[] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void insertRow(boolean[] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void insertRow(String[] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void insertRow(char[][] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void insertRow(byte[][] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void insertRow(Object[] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void insertRow(byte[] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void insertRow(char[] newEntry, int position) {
+      insertTraining(trainSet[position]);
+      super.insertRow(newEntry, trainSet[position]);
+   }
+
+   public void removeRow(int row) {
+      super.removeRow(trainSet[row]);
+      removeTraining(row);
+   }
+
+   public void removeRows(int start, int len) {
+      for (int i = 0; i < len; i++)
+         removeRow(start);
+   }
+
+   public void removeRowsByFlag(boolean[] flags) {
+      int offset = 0;
+      for (int i = 0; i < flags.length; i++)
+         if (flags[i])
+            removeRow(i - offset++);
+   }
+
+   public void removeRowsByIndex(int[] indices) {
+      int offset = 0;
+      for (int i = 0; i < indices.length; i++)
+         removeRow(indices[i] - offset++);
+   }
+
+   // maintenance methods:
+
+   private void addTraining() {
+
+      int[] newTrainingSet = new int[trainSet.length + 1];
+      for (int i = 0; i < trainSet.length; i++)
+         newTrainingSet[i] = trainSet[i];
+      newTrainingSet[trainSet.length] = super.getNumRows();
+
+      trainSet = newTrainingSet;
+
+   }
+
+   private void insertTraining(int tablePosition) {
+
+      for (int i = 0; i < trainSet.length; i++)
+         if (trainSet[i] >= tablePosition)
+            trainSet[i]++;
+
+      int[] newTrainingSet = new int[trainSet.length + 1];
+      for (int i = 0; i < trainSet.length; i++)
+         newTrainingSet[i] = trainSet[i];
+      newTrainingSet[trainSet.length] = tablePosition;
+
+      Arrays.sort(newTrainingSet);
+
+      trainSet = newTrainingSet;
+
+   }
+
+   private void removeTraining(int trainingPosition) {
+
+      int[] newTrainingSet = new int[trainSet.length - 1];
+      for (int i = 0; i < trainingPosition; i++)
+         newTrainingSet[i] = trainSet[i];
+
+      for (int i = trainingPosition + 1; i < trainSet.length; i++)
+         newTrainingSet[i - 1] = trainSet[i] - 1;
+
+      trainSet = newTrainingSet;
+
+   }
+
 }

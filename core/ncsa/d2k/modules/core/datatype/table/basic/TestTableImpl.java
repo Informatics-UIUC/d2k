@@ -14,32 +14,32 @@ import java.util.*;
  */
 public final class TestTableImpl extends PredictionTableImpl implements TestTable {
 
-	static final long serialVersionUID = -7408690070856124087L;
+   static final long serialVersionUID = -7408690070856124087L;
 
-	private ExampleTable original;
+   private ExampleTable original;
 
-	private TestTableImpl(int i) {
-		super(i);
-	}
+   private TestTableImpl(int i) {
+      super(i);
+   }
 
     /**
      Given an example table, copy it's input columns, and create new
      columns to hold the predicted values.
-	 @param ttt the prediction table that this test table is derived from
+    @param ttt the prediction table that this test table is derived from
      */
     TestTableImpl (PredictionTableImpl ttt) {
         super(ttt);
-		original = ttt;
+      original = ttt;
     }
 
     /**
      Given an example table, copy it's input columns, and create new
      columns to hold the predicted values.
-	 @param ttt the prediction table that this test table is derived from
+    @param ttt the prediction table that this test table is derived from
      */
     TestTableImpl (ExampleTableImpl ttt) {
         super(ttt);
-		original = ttt;
+      original = ttt;
         //predictions = new int[outputColumns.length];
         //Column []newColumns = new Column[columns.length + outputColumns.length];
         //int i = 0;
@@ -105,7 +105,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
      @return A new Column with a copy of the contents of this column.
      */
     public Table copy () {
-       	TestTableImpl vt;
+         TestTableImpl vt;
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -125,18 +125,18 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
             vt.setLabel(getLabel());
             vt.setComment(getComment());
             //vt.setType(getType());
-			vt.setInputFeatures(getInputFeatures());
-			vt.setOutputFeatures(getOutputFeatures());
-			vt.setPredictionSet(getPredictionSet());
-			vt.transformations = (ArrayList)transformations.clone();
-			vt.setTestingSet(getTestingSet());
-			vt.setTrainingSet(getTrainingSet());
+         vt.setInputFeatures(getInputFeatures());
+         vt.setOutputFeatures(getOutputFeatures());
+         vt.setPredictionSet(getPredictionSet());
+         vt.transformations = (ArrayList)transformations.clone();
+         vt.setTestingSet(getTestingSet());
+         vt.setTrainingSet(getTrainingSet());
             return  vt;
         }
     }
 
     /**
-	 * Get an int value from the table.
+    * Get an int value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the int at (row, column)
@@ -146,8 +146,8 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Set an int value in the table.
-	 * @param data the value to set
+    * Set an int value in the table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -156,7 +156,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Get a short value from the table.
+    * Get a short value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the short at (row, column)
@@ -166,8 +166,8 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Set a short value in the table.
-	 * @param data the value to set
+    * Set a short value in the table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -176,7 +176,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Get a long value from the table.
+    * Get a long value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the long at (row, column)
@@ -186,8 +186,8 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Set a long value in the table.
-	 * @param data the value to set
+    * Set a long value in the table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -196,7 +196,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Get a float value from the table.
+    * Get a float value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the float at (row, column)
@@ -206,8 +206,8 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Set a float value in the table.
-	 * @param data the value to set
+    * Set a float value in the table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -216,7 +216,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Get a double value from the table.
+    * Get a double value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the double at (row, column)
@@ -226,8 +226,8 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Set a double value in the table.
-	 * @param data the value to set
+    * Set a double value in the table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -236,7 +236,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Get a String value from the table.
+    * Get a String value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the String at (row, column)
@@ -246,8 +246,8 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Set a String value in the table.
-	 * @param data the value to set
+    * Set a String value in the table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -256,7 +256,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Get a value from the table as an array of bytes.
+    * Get a value from the table as an array of bytes.
      * @param row the row of the table
      * @param column the column of the table
      * @return the value at (row, column) as an array of bytes
@@ -266,8 +266,8 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Set a byte[] value in the table.
-	 * @param data the value to set
+    * Set a byte[] value in the table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -276,7 +276,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Get a value from the table as an array of chars
+    * Get a value from the table as an array of chars
      * @param row the row of the table
      * @param column the column of the table
      * @return the value at (row, column) as an array of chars
@@ -286,8 +286,8 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Set a char[] value in the table.
-	 * @param data the value to set
+    * Set a char[] value in the table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -296,7 +296,7 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Get a boolean value from the table.
+    * Get a boolean value from the table.
      * @param row the row of the table
      * @param column the column of the table
      * @return the boolean value at (row, column)
@@ -306,8 +306,8 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
     }
 
     /**
-	 * Set a boolean value in the table.
-	 * @param data the value to set
+    * Set a boolean value in the table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -317,22 +317,213 @@ public final class TestTableImpl extends PredictionTableImpl implements TestTabl
 
     /**
      get the number of entries in the test set.
-	 @return the number of entries in the test set
+    @return the number of entries in the test set
      */
     public int getNumRows () {
         return  testSet.length;
     }
 
-	public int getNumExamples() {
-		return getNumRows();
-	}
+   public int getNumExamples() {
+      return getNumRows();
+   }
 
-	public ExampleTable getExampleTable() {
-		return original;
-	}
+   public ExampleTable getExampleTable() {
+      return original;
+   }
 
-	public PredictionTable toPredictionTable() {
-		return this;
-	}
+   public PredictionTable toPredictionTable() {
+      return this;
+   }
+
+   ////////////////////////////////////
+   // now, TestTableImpl must override all methods that add, insert, and
+   // remove rows in order to correctly keep track of its test set.
+
+   public void addRow(int[] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(float[] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(double[] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(long[] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(short[] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(boolean[] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(String[] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(char[][] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(byte[][] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(Object[] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(byte[] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void addRow(char[] newEntry) {
+      addTesting();
+      super.addRow(newEntry);
+   }
+
+   public void insertRow(int[] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void insertRow(float[] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void insertRow(double[] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void insertRow(long[] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void insertRow(short[] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void insertRow(boolean[] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void insertRow(String[] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void insertRow(char[][] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void insertRow(byte[][] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void insertRow(Object[] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void insertRow(byte[] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void insertRow(char[] newEntry, int position) {
+      insertTesting(testSet[position]);
+      super.insertRow(newEntry, testSet[position]);
+   }
+
+   public void removeRow(int row) {
+      super.removeRow(testSet[row]);
+      removeTesting(row);
+   }
+
+   public void removeRows(int start, int len) {
+      for (int i = 0; i < len; i++)
+         removeRow(start);
+   }
+
+   public void removeRowsByFlag(boolean[] flags) {
+      int offset = 0;
+      for (int i = 0; i < flags.length; i++)
+         if (flags[i])
+            removeRow(i - offset++);
+   }
+
+   public void removeRowsByIndex(int[] indices) {
+      int offset = 0;
+      for (int i = 0; i < indices.length; i++)
+         removeRow(indices[i] - offset++);
+   }
+
+   // maintenance methods:
+
+   private void addTesting() {
+
+      int[] newTestingSet = new int[testSet.length + 1];
+      for (int i = 0; i < testSet.length; i++)
+         newTestingSet[i] = testSet[i];
+      newTestingSet[testSet.length] = super.getNumRows();
+
+      testSet = newTestingSet;
+
+   }
+
+   private void insertTesting(int tablePosition) {
+
+      for (int i = 0; i < testSet.length; i++)
+         if (testSet[i] >= tablePosition)
+            testSet[i]++;
+
+      int[] newTestingSet = new int[testSet.length + 1];
+      for (int i = 0; i < testSet.length; i++)
+         newTestingSet[i] = testSet[i];
+      newTestingSet[testSet.length] = tablePosition;
+
+      Arrays.sort(newTestingSet);
+
+      testSet = newTestingSet;
+
+   }
+
+   private void removeTesting(int testingPosition) {
+
+      int[] newTestingSet = new int[testSet.length - 1];
+      for (int i = 0; i < testingPosition; i++)
+         newTestingSet[i] = testSet[i];
+
+      for (int i = testingPosition + 1; i < testSet.length; i++)
+         newTestingSet[i - 1] = testSet[i] - 1;
+
+      testSet = newTestingSet;
+
+   }
+
 }
 
