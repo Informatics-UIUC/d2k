@@ -13,29 +13,19 @@ import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.controller.classloading.*;
 import ncsa.d2k.infrastructure.views.UserView;
 import ncsa.d2k.io.*;
-import ncsa.d2k.controller.editor.tree.*;
-
 import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.util.datatype.*;
 
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
-
-import ncsa.d2k.util.datatype.*;
-import ncsa.d2k.modules.core.prediction.naivebayes.*;
 
 import java.sql.*;
 import java.util.*;
 import java.text.*;
 import javax.swing.*;
-import javax.swing.tree.*;
-import javax.swing.event.*;
 import java.io.*;
-import java.lang.reflect.*;
-import javax.swing.table.*;
-import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 
 import oracle.sql.*;
 import oracle.jdbc.driver.*;
@@ -49,6 +39,7 @@ public class GetModelFromDB extends UIModule
   BrowseTables bt;
   BrowseTablesView btw;
   JTextField modelName;
+  JTextField modelDesc;
   GenericTableModel trainSet;
   GenericTableModel classLabel;
   JTextField dataSize;
@@ -62,7 +53,7 @@ public class GetModelFromDB extends UIModule
 
   public String getOutputInfo (int i) {
     switch(i) {
-      case 0: return "A NaiveBayes model to visualize";
+      case 0: return "A model";
       default: return "No such output";
     }
   }
@@ -85,7 +76,7 @@ public class GetModelFromDB extends UIModule
   }
 
   public String[] getOutputTypes () {
-    String [] out = {"ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
+    String [] out = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
     return out;
   }
 
@@ -107,12 +98,14 @@ public class GetModelFromDB extends UIModule
     JButton browseBtn;
     JButton cancelBtn;
     JButton getModelBtn;
-    NaiveBayesModel model;
+    //NaiveBayesModel model;
+    PredictionModelModule model;
 
     public void setInput(Object input, int index) {
       if (index == 0) {
         cw = (ConnectionWrapper)input;
         modelName.setText(NOTHING);
+        modelDesc.setText(NOTHING);
         dataSize.setText(NOTHING);
         notes.setText(NOTHING);
         trainSet.initTableModel(100,4);
@@ -144,6 +137,11 @@ public class GetModelFromDB extends UIModule
       Constrain.setConstraints(modelInfo, browseBtn = new JButton ("Browse"),
         3,0,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,1,1);
       browseBtn.addActionListener(this);
+      Constrain.setConstraints(modelInfo, new JLabel("Model Type"),
+        0,1,1,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
+      Constrain.setConstraints(modelInfo, modelDesc = new JTextField(10),
+        1,1,2,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
+      modelDesc.setText(NOTHING);
       Constrain.setConstraints(modelInfo, new JLabel("Training Data Size (Records)"),
         0,3,1,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(modelInfo, dataSize = new JTextField(10),
@@ -175,9 +173,12 @@ public class GetModelFromDB extends UIModule
       JOutlinePanel notesInfo = new JOutlinePanel("Notes");
       notesInfo.setLayout (new GridBagLayout());
       notes = new JTextArea(5,5);
+      notes.setLineWrap(true);
+      notes.setAutoscrolls(true);
       notes.setText(NOTHING);
       notes.setBackground(Color.white);
       JScrollPane textPane = new JScrollPane();
+      textPane.setAutoscrolls(true);
       textPane.getViewport().add(notes);
       textPane.setBounds(0,0,5,5);
       Constrain.setConstraints(notesInfo, textPane,
@@ -288,14 +289,15 @@ public class GetModelFromDB extends UIModule
     try {
       Connection con = cw.getConnection();
       Statement stmt;
-      String sb = new String("select train_set_count, notes " +
+      String sb = new String("select model_type, train_set_count, notes " +
             "from model_master where model_name = '" +
             modelName.getText()) + "'";
       stmt = con.createStatement ();
       ResultSet tableSet = stmt.executeQuery(sb);
       tableSet.next();
-      dataSize.setText(tableSet.getString(1));
-      notes.setText(tableSet.getString(2));
+      modelDesc.setText(tableSet.getString(1));
+      dataSize.setText(tableSet.getString(2));
+      notes.setText(tableSet.getString(3));
       stmt.close();
     }
     catch (Exception e){
