@@ -24,7 +24,7 @@ public class SelectDBTables extends UIModule {
     }
 
     public String[] getOutputTypes() {
-        String[] out = {"ncsa.d2k.modules.core.io.sql.DBTable"};
+        String[] out = {"ncsa.d2k.modules.core.datatype.table.db.DBTable"};
 //        String[] out = null;
         return out;
     }
