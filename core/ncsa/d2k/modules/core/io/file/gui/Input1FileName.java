@@ -53,7 +53,7 @@ public class Input1FileName extends UIModule {
 	public String getModuleInfo() {
 		return "Select a file from the local file system.  Properties: "+
             "defaultPath: the default directory that is shown in the file chooser. "+
-            "lastPath: the last file that was chosen. This is simply used to save "+
+            "lastFile: the last file that was chosen. This is simply used to save "+
             "state and should not be edited.";
 	}
 
