@@ -277,7 +277,36 @@ public class SQLBinColumns extends UIModule {
       }
 
       public int[] getCounts(int col, double[] borders) {
-        return null;
+        System.out.println("col is " + col);
+        int[] counts = new int[borders.length];
+        double low = 0;
+        double high;
+        try {
+          for (int i = 0; i < borders.length; i++) {
+            high = borders[i];
+            String colName = fieldNames[col];
+            con = wrapper.getConnection();
+            queryStr = "select count(" + colName + ") from " + tableName +
+                       " where " + colName + " > " + low + " and " + colName +
+                       " <= " + high;
+            System.out.println("queryStr is " + queryStr);
+            stmt = con.createStatement();
+            ResultSet cntSet = stmt.executeQuery(queryStr);
+            cntSet.next();
+            counts[i] = cntSet.getInt(1);
+          }
+          for (int i=0; i<counts.length; i++) {
+            System.out.println(i + " item is " + counts[i]);
+          }
+          return counts;
+        }
+        catch (Exception e) {
+	  JOptionPane.showMessageDialog(msgBoard,
+                e.getMessage(), "Error",
+                JOptionPane.ERROR_MESSAGE);
+          System.out.println("Error occoured in getCounts.");
+          return counts;
+        }
       }
 
       public double getTotal(int col) {
