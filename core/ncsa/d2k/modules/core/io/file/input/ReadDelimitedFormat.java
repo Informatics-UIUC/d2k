@@ -59,10 +59,10 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	protected int inOutRow = -1;
 
 	/** the value to replace missing numerics values with. */
-	protected double emptyValue = 0;
+	protected double missingValue = 0;
 
-	public double getEmptyValue() {
-		return emptyValue;
+	public double getMissingValue() {
+		return missingValue;
 	}
 
 	/*public void setComment(String s) {
@@ -73,8 +73,8 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 		return comment;
 	}*/
 
-	public void setEmptyValue(double d) {
-		emptyValue = d;
+	public void setMissingValue(double d) {
+		missingValue = d;
 	}
 
 	/**
@@ -148,7 +148,18 @@ public class ReadDelimitedFormat extends InputModule implements Serializable {
 	   @return A description of this module.
 	*/
 	public String getModuleInfo() {
-		return "Optimized for a file with a single delimiter.";
+		String str = "Loads data that is in a delimited format "+
+                "from the input filename into a "+
+                "VerticleTable and outputs this VerticleTable. "+
+                "This is optimized for a file with a single character delimiter. "+
+                "This module has several properties. "+
+                "labelsRow indicates which row specifies attribute labels, if none specify '-l'. "+
+                "typesRow indicates which row specifies data types, if none specify '-1'. "+
+                "inoutRow indicates which row specifies the attributes to use "+
+                "as input and output, if none specify '-1'. " +
+                "useStringAndDouble indicates whether or not the system needs to determine data types. "+
+                "missingValue is the value to use for missing numeric values.";
+                return str;
 	}
 
 	/**
