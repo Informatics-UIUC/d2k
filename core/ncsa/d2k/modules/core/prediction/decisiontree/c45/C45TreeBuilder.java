@@ -33,7 +33,7 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
     return super.getMinimumRatioPerLeaf();
   }
 
-  public String getModuleInfo() {
+/*  public String getModuleInfo() {
     String s = "Build a C4.5 decision tree.  The tree is build recursively, ";
     s += "always choosing the attribute with the highest information gain ";
     s += "as the root.  The gain ratio is used, whereby the information ";
@@ -48,9 +48,9 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
     s += "should suffice for most trees.  The threshold is a property of ";
     s += "this module.";
     return s;
-  }
+  }*/
 
-  public String getInputInfo(int i) {
+  /*public String getInputInfo(int i) {
     String in = "An ExampleTable to build a decision tree from. ";
     in += "Only one output feature is used.";
     return in;
@@ -58,7 +58,7 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
 
   public String getInputName(int i) {
     return "TrainingTable";
-  }
+  }*/
 
   public String[] getInputTypes() {
     String[] in = {
@@ -66,12 +66,12 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
     return in;
   }
 
-  public String[] getOutputTypes() {
+  /*public String[] getOutputTypes() {
     String[] out = {
         "ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
         "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
     return out;
-  }
+  }*/
 
   /**
    Build the decision tree

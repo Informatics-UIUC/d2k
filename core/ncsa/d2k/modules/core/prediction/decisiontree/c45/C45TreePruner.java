@@ -93,12 +93,16 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
               "replacement will replace a node by one of its leaves if the "+
               "induced error of the replacement is less than the sum of the errors "+
               "for the leaves of the node.  Subtree raising will lift a subtree if "+
-              "the error for the raised subtree is less than the original."+
+              "the error for the raised subtree is less than the original.  The "+
+              "complexity of pruning the tree is O(n (log n)<sup>2</sup>)."+
               "<p>References: C4.5: Programs for Machine Learning by J. Ross Quinlan"+
               "<p>Data Type Restrictions: The Unpruned Root must be a DecisionTreeNode "+
               "built by the C4.5 Tree Builder."+
               "<p>Data Handling: This module will attempt to classify the examples "+
-              "in the Example Table N times, where N is the number of nodes in the tree.";
+              "in the Example Table N times, where N is the number of nodes in the tree."+
+              "<p>Scalability: This module will classify the examples in the ExampleTable "+
+              "at least once for each node of the tree.  This module will need "+
+              "enough memory to hold those predictions.";
               return s;
 	}
 

@@ -8,7 +8,7 @@ import org.dom4j.io.*;
 
 import java.util.*;
 
-public class PMMLDT extends InputModule {
+public class CreateDecisionTreeFromPMML extends InputModule {
   HashMap datafields;
 
   public void doit() throws Exception {
