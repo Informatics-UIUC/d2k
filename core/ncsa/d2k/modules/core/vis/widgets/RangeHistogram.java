@@ -20,10 +20,10 @@ import ncsa.d2k.modules.core.transform.attribute.*;
 
 public class RangeHistogram extends Histogram {
 
-   public RangeHistogram(/*Table table,*/BinCounts bc, String parameter, HashMap lookup)
+   public RangeHistogram(/*Table table,*/BinCounts bc, String parameter, HashMap lookup, String col)
       throws IllegalArgumentException {
 
-      super(bc, parameter, lookup);
+      super(bc, parameter, lookup, col);
    }
 
    protected VisualPanel createVisualPanel() {

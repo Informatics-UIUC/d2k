@@ -55,7 +55,8 @@ public class Histogram extends JPanel {
 
    protected BinCounts binCounts;
 
-   public Histogram(/*Table table,*/BinCounts bc, /*int behavior,*/ String parameter, HashMap lookup)
+   public Histogram(/*Table table,*/BinCounts bc, /*int behavior,*/ String parameter,
+                        HashMap lookup, String col)
       throws IllegalArgumentException {
 
       //if (behavior < HISTOGRAM_MIN || behavior > HISTOGRAM_MAX)
@@ -121,7 +122,8 @@ public class Histogram extends JPanel {
         }
         columnLookup = lookup;
 
-        currentColumnIndex =  ((Integer)columnLookup.get(columnSelect.getSelectedItem())).intValue();
+        currentColumnIndex =  ((Integer)columnLookup.get(/*columnSelect.getSelectedItem()*/col)).intValue();
+        columnSelect.setSelectedItem(col);
 
       sliderReporter = new JTextField(6);
       sliderReporter.setEditable(false);

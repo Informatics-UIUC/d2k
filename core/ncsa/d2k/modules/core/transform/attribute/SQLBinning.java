@@ -116,7 +116,7 @@ public class SQLBinning extends DataPrepModule  {
        Perform the calculation.
     */
     public void doit() {
-	ConnectionWrapper conn  = (ConnectionWrapper)pullInput(0);
+	ConnectionWrapperImpl conn  = (ConnectionWrapperImpl)pullInput(0);
 	String tableName = (String)pullInput(1);
 	BinTree bt = (BinTree)pullInput(2);
 	ExampleTable vt = (ExampleTable)pullInput(3);

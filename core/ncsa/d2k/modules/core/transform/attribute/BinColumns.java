@@ -241,8 +241,9 @@ public class BinColumns extends UIModule {
 
                     String txt = uRangeField.getText();
                     if(txt != null && txt.length() != 0) {
+                        String selCol = (String)numericColumnLabels.getSelectedValue();
                     final Histogram H = new UniformHistogram(new TableBinCounts(tbl),
-                            uRangeField.getText(), colLook);
+                            uRangeField.getText(), colLook, selCol);
                     JD2KFrame frame = new JD2KFrame("Uniform Range");
                     frame.getContentPane().setLayout(new GridBagLayout());
                     Constrain.setConstraints(frame.getContentPane(), H, 0,
@@ -329,8 +330,9 @@ public class BinColumns extends UIModule {
                         }
                     }
                     JD2KFrame frame = new JD2KFrame("Specified Range");
+                    String col = (String)numericColumnLabels.getSelectedValue();
                     frame.getContentPane().add(new RangeHistogram(new TableBinCounts(tbl),
-                            /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook));
+                            /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook, col));
                              frame.pack();
                              frame.setVisible(true);
                 }
@@ -364,8 +366,9 @@ public class BinColumns extends UIModule {
                     }
                     String txt = intervalField.getText();
                     if(txt != null && txt.length() != 0) {
+                    String col = (String)numericColumnLabels.getSelectedValue();
                     final Histogram H = new IntervalHistogram(new TableBinCounts(tbl),
-                            /*Histogram.HISTOGRAM_INTERVAL,*/ intervalField.getText(), colLook);
+                            /*Histogram.HISTOGRAM_INTERVAL,*/ intervalField.getText(), colLook, col);
                              JD2KFrame frame = new JD2KFrame("Bin Interval");
                              frame.getContentPane().setLayout(new GridBagLayout());
                              Constrain.setConstraints(frame.getContentPane(), H, 0,

@@ -277,36 +277,7 @@ public class SQLBinColumns extends UIModule {
       }
 
       public int[] getCounts(int col, double[] borders) {
-        System.out.println("col is " + col);
-        int[] counts = new int[borders.length];
-        double low = 0;
-        double high;
-        try {
-          for (int i = 0; i < borders.length; i++) {
-            high = borders[i];
-            String colName = fieldNames[col];
-            con = wrapper.getConnection();
-            queryStr = "select count(" + colName + ") from " + tableName +
-                       " where " + colName + " > " + low + " and " + colName +
-                       " <= " + high;
-            System.out.println("queryStr is " + queryStr);
-            stmt = con.createStatement();
-            ResultSet cntSet = stmt.executeQuery(queryStr);
-            cntSet.next();
-            counts[i] = cntSet.getInt(1);
-          }
-          for (int i=0; i<counts.length; i++) {
-            System.out.println(i + " item is " + counts[i]);
-          }
-          return counts;
-        }
-        catch (Exception e) {
-	  JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error",
-                JOptionPane.ERROR_MESSAGE);
-          System.out.println("Error occoured in getCounts.");
-          return counts;
-        }
+        return null;
       }
 
       public double getTotal(int col) {
@@ -476,8 +447,10 @@ public class SQLBinColumns extends UIModule {
 
                     String txt = uRangeField.getText();
                     if(txt != null && txt.length() != 0) {
+                        System.out.println("SHOW RANGE: "+binCounts);
+                    String selectedColumn = (String)numericColumnLabels.getSelectedValue();
                     final Histogram H = new UniformHistogram(binCounts,
-                            uRangeField.getText(), colLook);
+                            uRangeField.getText(), colLook, selectedColumn);
                     JD2KFrame frame = new JD2KFrame("Uniform Range");
                     frame.getContentPane().setLayout(new GridBagLayout());
                     Constrain.setConstraints(frame.getContentPane(), H, 0,
@@ -564,8 +537,9 @@ public class SQLBinColumns extends UIModule {
                         }
                     }
                     JD2KFrame frame = new JD2KFrame("Specified Range");
+                    String col = (String)numericColumnLabels.getSelectedValue();
                     frame.getContentPane().add(new RangeHistogram(binCounts,
-                            /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook));
+                            /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook, col));
                              frame.pack();
                              frame.setVisible(true);
                 }
@@ -599,8 +573,9 @@ public class SQLBinColumns extends UIModule {
                     }
                     String txt = intervalField.getText();
                     if(txt != null && txt.length() != 0) {
+                        String col = (String)numericColumnLabels.getSelectedValue();
                     final Histogram H = new IntervalHistogram(binCounts,
-                            /*Histogram.HISTOGRAM_INTERVAL,*/ intervalField.getText(), colLook);
+                            /*Histogram.HISTOGRAM_INTERVAL,*/ intervalField.getText(), colLook, col);
                              JD2KFrame frame = new JD2KFrame("Bin Interval");
                              frame.getContentPane().setLayout(new GridBagLayout());
                              Constrain.setConstraints(frame.getContentPane(), H, 0,

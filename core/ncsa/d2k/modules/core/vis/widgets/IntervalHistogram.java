@@ -20,10 +20,10 @@ import ncsa.d2k.modules.core.transform.attribute.*;
 
 public class IntervalHistogram extends Histogram {
 
-   public IntervalHistogram(/*Table table,*/BinCounts bc, String parameter, HashMap lookup)
+   public IntervalHistogram(/*Table table,*/BinCounts bc, String parameter, HashMap lookup, String col)
       throws IllegalArgumentException {
 
-      super(bc, parameter, lookup);
+      super(bc, parameter, lookup, col);
 
       /*if (behavior < HISTOGRAM_MIN || behavior > HISTOGRAM_MAX)
          throw new IllegalArgumentException("Invalid histogram behavior.");

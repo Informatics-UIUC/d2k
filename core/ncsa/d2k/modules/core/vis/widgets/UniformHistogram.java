@@ -20,10 +20,18 @@ import ncsa.d2k.modules.core.transform.attribute.*;
 
 public class UniformHistogram extends Histogram {
 
-   public UniformHistogram(/*Table table,*/BinCounts bc, String parameter, HashMap lookup)
+/*   public UniformHistogram(BinCounts bc, String parameter, HashMap lookup)
       throws IllegalArgumentException {
 
       super(bc, parameter, lookup);
+      System.out.println("UH BC: "+binCounts);
+   }
+    */
+
+   public UniformHistogram(/*Table table,*/BinCounts bc, String parameter, HashMap lookup, String colName)
+      throws IllegalArgumentException {
+
+      super(bc, parameter, lookup, colName);
    }
 
    protected VisualPanel createVisualPanel() {
@@ -72,8 +80,12 @@ public class UniformHistogram extends Histogram {
             }*/
             counts = binCounts.getCounts(currentColumnIndex, borders);
 
-            for (int i = 0; i < heights.length; i++)
+            for (int i = 0; i < heights.length; i++) {
+                System.out.println("BINCOUNTS: "+binCounts);
+                System.out.println("heights: "+heights);
+                System.out.println("counts: "+counts);
                heights[i] = (double)counts[i] / (double)/*tbl.*/binCounts.getNumRows();
+            }
    }
 
    private class UniformVisualPanel extends VisualPanel {
