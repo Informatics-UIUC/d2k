@@ -196,18 +196,44 @@ public class BinColumns extends UIModule {
          JButton showURange = new JButton("Show");
          showURange.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-               Histogram H = new Histogram(table, Histogram.HISTOGRAM_UNIFORM, uRangeField.getText());
+               final Histogram H = new Histogram(table, Histogram.HISTOGRAM_UNIFORM, uRangeField.getText());
                JD2KFrame frame = new JD2KFrame("Uniform Range");
-               frame.getContentPane().add(H);
+
+               frame.getContentPane().setLayout(new GridBagLayout());
+               Constrain.setConstraints(frame.getContentPane(), H, 0, 0, 3, 1,
+                  GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+
+               final JButton uniformAdd = new JButton("Add");
+
+               Constrain.setConstraints(frame.getContentPane(), new JLabel(""), 0, 1, 1, 1,
+                  GridBagConstraints.NONE, GridBagConstraints.SOUTHWEST, .33, 0);
+               Constrain.setConstraints(frame.getContentPane(), uniformAdd, 1, 1, 1, 1,
+                  GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, .34, 0);
+               Constrain.setConstraints(frame.getContentPane(), new JLabel(""), 2, 1, 1, 1,
+                  GridBagConstraints.NONE, GridBagConstraints.SOUTHEAST, .33, 0);
+
+               uniformAdd.addActionListener(new AbstractAction() {
+                  final JSlider uniformSlider = H.getSlider();
+                  public void actionPerformed(ActionEvent e) {
+                     uRangeField.setText(Integer.toString(uniformSlider.getValue()));
+                     numericColumnLabels.clearSelection();
+                     setSelectedNumericIndex(H.getSelection());
+                     addUniRange();
+                     uRangeField.setText(EMPTY);
+                  }
+               });
+
                frame.pack();
                frame.setVisible(true);
 
+               /*
                final JSlider uniformSlider = H.getSlider();
                uniformSlider.addChangeListener(new ChangeListener() {
                   public void stateChanged(ChangeEvent e) {
                      uRangeField.setText(Integer.toString(uniformSlider.getValue()));
                   }
                });
+               */
             }
          });
          urangepnl.setLayout(new GridBagLayout());
@@ -270,18 +296,48 @@ public class BinColumns extends UIModule {
          JButton showInterval = new JButton("Show");
          showInterval.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-               Histogram H = new Histogram(table, Histogram.HISTOGRAM_INTERVAL, intervalField.getText());
+               final Histogram H = new Histogram(table, Histogram.HISTOGRAM_INTERVAL, intervalField.getText());
                JD2KFrame frame = new JD2KFrame("Bin Interval");
-               frame.getContentPane().add(H);
+
+               frame.getContentPane().setLayout(new GridBagLayout());
+               Constrain.setConstraints(frame.getContentPane(), H, 0, 0, 3, 1,
+                  GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+
+               final JButton intervalAdd = new JButton("Add");
+
+               Constrain.setConstraints(frame.getContentPane(), new JLabel(""), 0, 1, 1, 1,
+                  GridBagConstraints.NONE, GridBagConstraints.SOUTHWEST, .33, 0);
+               Constrain.setConstraints(frame.getContentPane(), intervalAdd, 1, 1, 1, 1,
+                  GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, .34, 0);
+               Constrain.setConstraints(frame.getContentPane(), new JLabel(""), 2, 1, 1, 1,
+                  GridBagConstraints.NONE, GridBagConstraints.SOUTHEAST, .33, 0);
+
+               intervalAdd.addActionListener(new AbstractAction() {
+                  final JSlider intervalSlider = H.getSlider();
+                  public void actionPerformed(ActionEvent e) {
+                     int sel = H.getSelection();
+                     numericColumnLabels.clearSelection();
+                     setSelectedNumericIndex(sel);
+
+                     double interval = getInterval();
+
+                     intervalField.setText(Double.toString(H.getPercentage() * interval));
+                     addFromInterval();
+                     intervalField.setText(EMPTY);
+                  }
+               });
+
                frame.pack();
                frame.setVisible(true);
 
+               /*
                final JSlider intervalSlider = H.getSlider();
                intervalSlider.addChangeListener(new ChangeListener() {
                   public void stateChanged(ChangeEvent e) {
                      intervalField.setText(Integer.toString(intervalSlider.getValue()));
                   }
                });
+               */
             }
          });
          Constrain.setConstraints(intervalpnl, new JLabel("Interval"),
@@ -704,6 +760,31 @@ public class BinColumns extends UIModule {
          for (int i = 0; i < colIdx.length; i++)
             colIdx[i] = ((Integer)columnLookup.get(setVals[i])).intValue();
          return colIdx;
+      }
+
+      private void setSelectedNumericIndex(int index) {
+         numericColumnLabels.setSelectedIndex(index);
+      }
+
+      /**
+       * Get the range of the first selected column.
+       */
+      private double getInterval() {
+
+         int colIdx = numericColumnLabels.getSelectedIndex();
+
+         double max = Double.MIN_VALUE, min = Double.MAX_VALUE;
+
+         for (int i = 0; i < table.getNumRows(); i++) {
+            double d = table.getDouble(i, colIdx);
+            if (d < min)
+               min = d;
+            if (d > max)
+               max = d;
+         }
+
+         return max - min;
+
       }
 
       /**

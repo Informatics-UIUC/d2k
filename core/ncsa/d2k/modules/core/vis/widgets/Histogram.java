@@ -48,6 +48,8 @@ public class Histogram extends JPanel {
    private VisualPanel visual;
    private StatisticsPanel statistics;
 
+   private JTextField sliderReporter;
+
    public Histogram(Table table, int behavior, String parameter)
       throws IllegalArgumentException {
 
@@ -75,6 +77,11 @@ public class Histogram extends JPanel {
          }
       }
 
+      sliderReporter = new JTextField(6);
+      sliderReporter.setEditable(false);
+      sliderReporter.setBackground(Color.white);
+      sliderReporter.setHorizontalAlignment(JTextField.RIGHT);
+
       histogram = new HistogramPanel();  // order is important here!
       slider = new SliderPanel();
       selection = new SelectionPanel();
@@ -94,6 +101,14 @@ public class Histogram extends JPanel {
 
    public JSlider getSlider() {
       return slider.getSlider();
+   }
+
+   public int getSelection() {
+      return columnSelect.getSelectedIndex();
+   }
+
+   public double getPercentage() {
+      return .01*((double)slider.getValue());
    }
 
    private void calculateBins() {
@@ -327,7 +342,7 @@ public class Histogram extends JPanel {
                      max = table.getDouble(i, currentColumnIndex);
                }
 
-               this.setBorder(new TitledBorder(" Bin as a percentage of interval: "));
+               this.setBorder(new TitledBorder(" Bin size as a percentage of interval: "));
                try { dval = Double.parseDouble(parameter); }
                catch(NumberFormatException e) { val = 50; break; }
 
@@ -340,12 +355,17 @@ public class Histogram extends JPanel {
 
          }
 
-         if (behavior == HISTOGRAM_INTERVAL)
+         if (behavior == HISTOGRAM_INTERVAL) {
             slide = new JSlider(1, 100, val);
-         else
+            slide.setMajorTickSpacing(99);
+            sliderReporter.setText(Integer.toString(val) + "%");
+         }
+         else {
             slide = new JSlider(1, val*2, val);
+            slide.setMajorTickSpacing(val*2 - 1);
+            sliderReporter.setText(Integer.toString(val));
+         }
 
-         slide.setMajorTickSpacing(5);
          slide.setPaintTicks(true);
          slide.setPaintLabels(true);
          slide.addChangeListener(new SliderListener());
@@ -353,6 +373,8 @@ public class Histogram extends JPanel {
          this.setLayout(new GridBagLayout());
          Constrain.setConstraints(this, slide, 0, 0, 1, 1,
             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+         Constrain.setConstraints(this, sliderReporter, 1, 0, 1, 1,
+            GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
 
       }
 
@@ -473,6 +495,10 @@ public class Histogram extends JPanel {
    private class SliderListener implements ChangeListener {
       public void stateChanged(ChangeEvent e) {
          calculateBins();
+         if (behavior == HISTOGRAM_INTERVAL)
+            sliderReporter.setText(Integer.toString(slider.getValue()) + "%");
+         else
+            sliderReporter.setText(Integer.toString(slider.getValue()));
          histogram.repaint();
       }
    }
