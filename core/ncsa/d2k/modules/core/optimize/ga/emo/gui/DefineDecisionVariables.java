@@ -34,7 +34,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
  * same order as the variables are defined.
  */
 public class DefineDecisionVariables
-    extends UIModule
+    extends HeadlessUIModule
     implements Serializable {
 
   public String getModuleName() {
@@ -118,7 +118,8 @@ public class DefineDecisionVariables
    *  @return The PropertyDescriptions for properties the user may update.
    */
   public PropertyDescription[] getPropertiesDescriptions() {
-    return new PropertyDescription[0];
+    PropertyDescription[] props = super.getPropertiesDescriptions();
+    return new PropertyDescription[] {props[0]};
   }
 
   private CachedRowValue[] savedRows;
@@ -160,6 +161,69 @@ public class DefineDecisionVariables
   public String[] getFieldNameMapping() {
     return null;
   }
+  
+  public void doit() throws Exception {
+    
+    CachedRowValue[] vals = getSavedRows();
+    if(vals == null)
+        throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+    
+//    DecisionVariables varTable = new DecisionVariables();
+    int numVars = vals.length;
+    Parameters data = new Parameters();
+
+    for (int i = 0; i < numVars; i++) {
+      CachedRowValue value = vals[i];
+      String name = (String)value.varName;
+      String min = (String)value.lower;
+      String max = (String)value.upper;
+      String prec = (String) value.precision;
+      Object len = value.length; 
+      String strLen = len.toString();
+
+      double dmin;
+      try {
+        dmin = Double.parseDouble(min);
+      }
+      catch (Exception e) {
+        dmin = 0;
+      }
+
+      double dmax;
+      try {
+        dmax = Double.parseDouble(max);
+      }
+      catch (Exception e) {
+        dmax = 0;
+      }
+
+      double dprec;
+      try {
+        dprec = Double.parseDouble(prec);
+      }
+      catch (Exception e) {
+        dprec = 0;
+      }
+
+      int dstr;
+      try {
+        dstr = Integer.parseInt(strLen);
+      }
+      catch (Exception e) {
+        dstr = 0;
+      }
+
+//      varTable.addVariable(name, dmin, dmax, dprec, dstr);
+      DecisionVariable var = new DecisionVariable(name, dmin, dmax, dprec, dstr);
+      data.addDecisionVariable(var);
+    }
+
+//    data.decisionVariables = varTable;
+    if(getSeedTable() != null)
+      data.seedTable = seedTable;
+
+    pushOutput(data, 0);
+  }
 
   /**
      The GUI for feeding the information of the variables of the problem.
@@ -170,7 +234,7 @@ public class DefineDecisionVariables
     private JTextField numVarTf;
     private DefaultTableModel model;
     private JLabel total_string_length = new JLabel("Total String Length:");
-    //private Table seedTable = null;
+    private Table seedTable = null;
 
     public void initView(ViewModule viewmodule) {
       setLayout(new BorderLayout());
@@ -211,8 +275,8 @@ public class DefineDecisionVariables
       //Color buttonColor = new Color(255, 240, 40);
       //updateBt.setBackground( (buttonColor));
 
-      ActionListener al = new ActionListener() {
-        public void actionPerformed(ActionEvent actionevent) {
+      ActionListener al = new RunnableAction() {
+        public void run() {
           try {
             /**
              Table model created to hold number of objects needed based on
@@ -244,13 +308,13 @@ public class DefineDecisionVariables
       //updateBt.addActionListener(al);
       numVarTf.addActionListener(al);
 
-      readFromFileBt.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+      readFromFileBt.addActionListener(new RunnableAction() {
+        public void run() {
           readFromFile();
         }
       });
-      seedFromFileBt.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent ae) {
+      seedFromFileBt.addActionListener(new RunnableAction() {
+        public void run() {
           readSeedFile();
         }
       });
@@ -399,7 +463,6 @@ public class DefineDecisionVariables
               for (int i = 0; i < model.getRowCount(); i++) {
                 float numU, numL, numP, numBits;
 
-                int sLength;
                 numU = Float.parseFloat( (String) model.getValueAt(i, 3));
                 numL = Float.parseFloat( (String) model.getValueAt(i, 2));
                 numP = Float.parseFloat( (String) model.getValueAt(i, 4));
@@ -410,7 +473,7 @@ public class DefineDecisionVariables
                       JOptionPane.ERROR_MESSAGE);
                   break;
                 }
-                numBits = (numU - numL + 1) / numP;
+/*                numBits = (numU - numL + 1) / numP;
                 numBits = (float) Math.log( (double) numBits);
                 numBits = (float) (numBits / Math.log(2.0));
 
@@ -424,7 +487,8 @@ public class DefineDecisionVariables
                 if (sLength < numBits) {
                   sLength++;
 
-                }
+                }*/
+                int sLength = DecisionVariable.calculateStringLength(numL, numU, numP);
                 totalLength += sLength;
                 model.setValueAt(new Integer(sLength), i, 5);
               }
@@ -511,8 +575,8 @@ public class DefineDecisionVariables
       // is fed in by the user and then the output is passed.
       //if something is missing then a warning dialog box appears.
       JButton doneBt = new JButton("Done");
-      doneBt.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent actionevent) {
+      doneBt.addActionListener(new RunnableAction() {
+        public void run() {
           boolean flag = false;
           for (int i = 0; i < model.getRowCount(); i++) {
             if ( ( (String) model.getValueAt(i, 2)).trim().length() == 0) {
@@ -560,8 +624,8 @@ public class DefineDecisionVariables
       //when this is pressed all open windows are closed
       //and itineary is aborted
       JButton abrtBt = new JButton("Abort");
-      abrtBt.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent actionevent) {
+      abrtBt.addActionListener(new RunnableAction() {
+        public void run() {
           viewCancel();
         }
       });
@@ -635,8 +699,9 @@ public class DefineDecisionVariables
              cols[4] = new FloatColumn(numVars);
        */
 
-      DecisionVariables varTable = new DecisionVariables();
+      //DecisionVariables varTable = new DecisionVariables();
       int numVars = model.getRowCount();
+      Parameters data = new Parameters();
 
       for (int i = 0; i < numVars; i++) {
         String name = (String) model.getValueAt(i, 1);
@@ -670,27 +735,28 @@ public class DefineDecisionVariables
           dprec = 0;
         }
 
-        double dstr;
+        int dstr;
         try {
-          dstr = Double.parseDouble(strLen);
+          dstr = Integer.parseInt(strLen);
         }
         catch (Exception e) {
           dstr = 0;
         }
 
-        varTable.addVariable(name, dmin, dmax, dprec, dstr);
+      //  varTable.addVariable(name, dmin, dmax, dprec, dstr);
+      DecisionVariable var = new DecisionVariable(name, dmin, dmax, dprec, dstr);
+      data.addDecisionVariable(var);
       }
 
-      Parameters data = new Parameters();
-      data.decisionVariables = varTable;
+//      data.decisionVariables = varTable;
       if(getSeedTable() != null)
-        data.decisionVariables.setSeedTable(seedTable);
-
+        data.seedTable = seedTable;
       pushOutput(data, 0);
     }
 
     private void readFromFile() {
       JFileChooser jfc = new JFileChooser();
+      jfc.setCurrentDirectory(new File(System.getProperty("user.dir")));
       int retVal = jfc.showOpenDialog(null);
 
       if (retVal == jfc.APPROVE_OPTION) {
@@ -771,7 +837,7 @@ public class DefineDecisionVariables
           MutableTable mt = new MutableTableImpl(numTok);
           for(int i = 0; i < numTok; i++) {
            //BASIC3  mt.setColumn(new double[numLines], i);
-          	mt.setColumn(new DoubleColumn(numLines), i);
+                mt.setColumn(new DoubleColumn(numLines), i);
           }
 
           br = new BufferedReader(new FileReader(file));

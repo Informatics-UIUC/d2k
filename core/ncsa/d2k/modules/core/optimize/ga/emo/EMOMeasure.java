@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo;
 
 import ncsa.d2k.modules.core.optimize.ga.*;
+import ncsa.d2k.core.modules.*;
 
 /**
  * Checks to see when the maximum number of generations has been achieved.
@@ -33,6 +34,14 @@ public class EMOMeasure extends MeasureModule {
       return "EMOPopulation";
     return "Parameters";
   }
+  
+  /*  Return an array with information on the properties the user may update.
+   *  @return The PropertyDescriptions for properties the user may update.
+   */
+  public PropertyDescription[] getPropertiesDescriptions() {
+    return new PropertyDescription[0];
+  }
+  
 
   public void doit() {
     EMOPopulation pop = (EMOPopulation)pullInput(0);

@@ -10,12 +10,13 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.functions.*;
 
 /**
  * Define variables to be used in the calculation of fitness functions.  These
  * variables are calculated by performing transformations on a Table.
  */
-public class DefineFitnessVariables
+public class DefineNewVariable
     extends AttributeConstruction {
 
   public String getModuleInfo() {
@@ -37,7 +38,7 @@ public class DefineFitnessVariables
   }
 
   public String getModuleName() {
-    return "Define Fitness Variables";
+    return "Define New Variable";
   }
 
   protected UserView createUserView() {
@@ -71,14 +72,25 @@ public class DefineFitnessVariables
   public String getOutputInfo(int i) {
     return "The parameters for EMO, with the fitness variables added.";
   }
+  
+  public void doit() throws Exception {
+    Parameters params = (Parameters)pullInput(0);  
+    Object[] constructions = (Object[]) getLastCons();
+    if (constructions != null) {
+      for (int i = 0; i < constructions.length; i++) {
+        Construction ffc = (Construction)
+            constructions[i];
 
-  /** Return an array with information on the properties the user may update.
-   *  @return The PropertyDescriptions for properties the user may update.
-   */
-  public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] pds = new PropertyDescription[0];
-    return pds;
+        Variable fcf = new Variable(ffc);
+        params.addFunction(fcf);
+      }
+    }
+    else {
+        throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");      
+    }
+    pushOutput(params, 0);
   }
+
 
   //inner class, extends attributeConstruction's inner gui class
   protected class DefineVarView
@@ -90,45 +102,53 @@ public class DefineFitnessVariables
     protected DefaultComboBoxModel columnModel;
 
     protected Parameters parameters;
+    
+    public void initialize() {
+      super.initialize();
+      this.newLabels = (String[])getNewLabel();
+      this.newTypes = (int[])getNewTyp();
+      this.constructions = (Object[])getLastCons();
+
+      if (constructions != null) {
+         for (int i = 0; i < constructions.length; i++) {
+
+            Construction current =
+               (Construction)constructions[i];
+
+            try {
+               expression.setLazyExpression(current.expression, newLabels, newTypes);
+            }
+            catch(Exception e) { } // this can't really happen, since it
+                                   // would have been caught on the last run
+
+            newColumnModel.addElement(current);
+
+         }
+      }
+      newAttributeLabel.setText("New Variable Name:");
+    }
+    
 
     public void setInput(Object o, int i) {
       parameters = (Parameters) o;
-//      table = (MutableTable) data.varNames;
-      DecisionVariables dv = parameters.decisionVariables;
-      int numVars = dv.getNumVariables();
+      java.util.List dv = parameters.getDecisionVariables();
+      int numVars = dv.size();
       table = new MutableTableImpl(numVars);
 
       for (int j = 0; j < numVars; j++) {
        //BASIC3 table.setColumn(new double[0], j);
-      	table.setColumn(new DoubleColumn(0), j);
-        table.setColumnLabel(dv.getVariableName(j), j);
+       DecisionVariable var = (DecisionVariable)dv.get(j);
+        table.setColumn(new DoubleColumn(0), j);
+        table.setColumnLabel(var.getName(), j);
       }
-      // add columns for any FF, FV, CV, or CF defined before this...
-      FitnessFunctions ff = parameters.fitnessFunctions;
-      for(int j = 0; j < ff.getNumFitnessVariables(); j++) {
-       //BASIC3 table.addColumn(new double[0]);
-      	DoubleColumn dc = new DoubleColumn(new double[0]);
-      	table.addColumn(dc);
-      	table.setColumnLabel(ff.getFitnessVariableName(j), table.getNumColumns()-1);
-      }
-      for(int j = 0; j < ff.getNumFitnessFunctions(); j++) {
-        //BASIC3 table.addColumn(new double[0]);
+
+      java.util.List funcList = parameters.getFunctions();
+      int size = funcList.size();
+      for(int j = 0; j < size; j++) {
+        Function f = (Function)funcList.get(j);  
         DoubleColumn dc = new DoubleColumn(new double[0]);
+        dc.setLabel(f.getName());
         table.addColumn(dc);
-        table.setColumnLabel(ff.getFitnessFunctionName(j), table.getNumColumns()-1);
-      }
-      Constraints con = parameters.constraints;
-      for(int j = 0; j < con.getNumConstraintVariables(); j++) {
-        //BASIC3 table.addColumn(new double[0]);
-        DoubleColumn dc = new DoubleColumn(new double[0]);
-        table.addColumn(dc);
-        table.setColumnLabel(con.getConstraintVariableName(j), table.getNumColumns()-1);
-      }
-      for(int j = 0; j < con.getNumConstraintFunctions(); j++) {
-        //BASIC3 table.addColumn(new double[0]);
-        DoubleColumn dc = new DoubleColumn(new double[0]);
-        table.addColumn(dc);
-        table.setColumnLabel(con.getConstraintFunctionName(j), table.getNumColumns()-1);
       }
 
       this.initialize();
@@ -179,70 +199,84 @@ public class DefineFitnessVariables
       Object src = e.getSource();
       // delete the selected expression
       if (src == deleteButton) {
-        //Selected row index of table retrieved and stored
-        int selected = newColumnList.getSelectedIndex();
-        //Index of item in the list calculated here
-        int item = (table.getNumColumns()) - newColumnModel.getSize() +
-            (selected);
+        Runnable r = new Runnable() {
+          public void run() {
 
-        if (selected != -1) {
-          String label = ( (Construction) (newColumnModel.elementAt(selected))).label;
+            //Selected row index of table retrieved and stored
+            int selected = newColumnList.getSelectedIndex();
+            //Index of item in the list calculated here
+            int item = (table.getNumColumns()) - newColumnModel.getSize() +
+                (selected);
 
-          /**
-           * Remove label from columnBox,
-           * remove row from modelData
-           * table columnLabel null at item's location
-           * Remove item at selected index from newColumnModel
-           */
-          columnBox.removeItem(label);
-          //table.setColumnLabel(null, item);
-          //table.removeColumn(item);
-          newColumnModel.removeElementAt(selected);
+            if (selected != -1) {
+              String label = ( (Construction) (newColumnModel.elementAt(
+                  selected))).label;
 
-          /**
-               * Below allows the label removed above to permanently be removed from
-           * existence so as not to be reloaded elsewhere
-           */
-          if (newLabels != null) {
+              /**
+               * Remove label from columnBox,
+               * remove row from modelData
+               * table columnLabel null at item's location
+               * Remove item at selected index from newColumnModel
+               */
+              columnBox.removeItem(label);
+              //table.setColumnLabel(null, item);
+              //table.removeColumn(item);
+              newColumnModel.removeElementAt(selected);
 
-            String[] newNewLabels = new String[newLabels.length - 1];
-            int[] newNewTypes = new int[newTypes.length - 1];
-            int index = 0;
+              /**
+                   * Below allows the label removed above to permanently be removed from
+               * existence so as not to be reloaded elsewhere
+               */
+              if (newLabels != null) {
 
-            for (index = 0; index < newLabels.length; index++) {
-              if (newLabels[index].equals(label)) {
-                break;
+                String[] newNewLabels = new String[newLabels.length - 1];
+                int[] newNewTypes = new int[newTypes.length - 1];
+                int index = 0;
+
+                for (index = 0; index < newLabels.length; index++) {
+                  if (newLabels[index].equals(label)) {
+                    break;
+                  }
+                  else {
+                    newNewLabels[index] = newLabels[index];
+                    newNewTypes[index] = newTypes[index];
+                  }
+                }
+
+                for (; index < newNewLabels.length; index++) {
+                  newNewLabels[index] = newLabels[index + 1];
+                  newNewTypes[index] = newTypes[index + 1];
+                }
+                newLabels = newNewLabels;
+                newTypes = newNewTypes;
               }
-              else {
-                newNewLabels[index] = newLabels[index];
-                newNewTypes[index] = newTypes[index];
-              }
-            }
+              //BASIC3
+              //if (_newLab != null) {
+              // _newLab = newLabels;
+              //}
+              //_newTyp = newTypes;
 
-            for (; index < newNewLabels.length; index++) {
-              newNewLabels[index] = newLabels[index + 1];
-              newNewTypes[index] = newTypes[index + 1];
+              // _lastCons = newColumnModel.toArray();
+              if (getNewLabel() != null) {
+                setNewLabel(newLabels);
+              }
+              setNewTyp(newTypes);
+              setLastCons(newColumnModel.toArray());
+
+              // added 3.25.2004 by DC
+              newColumnList.getSelectionModel().clearSelection();
             }
-            newLabels = newNewLabels;
-            newTypes = newNewTypes;
           }
-          //BASIC3
-          //if (_newLab != null) {
-           // _newLab = newLabels;
-          //}
-          //_newTyp = newTypes;
-          
-         // _lastCons = newColumnModel.toArray();
-         if(getNewLabel() != null) {
-         	setNewLabel(newLabels);
-         }
-         setNewTyp(newTypes);
-          setLastCons(newColumnModel.toArray());
-          
-        }
+        };
+        SwingUtilities.invokeLater(r);
       }
       else if (src == this.doneButton) {
-        done();
+        Runnable r = new Runnable() {
+          public void run() {
+            done();
+          }
+        };
+        SwingUtilities.invokeLater(r);
       }
       else {
         super.actionPerformed(e);
@@ -252,26 +286,11 @@ public class DefineFitnessVariables
     protected void done() {
       constructions = (Object[]) getLastCons();
       if(constructions != null) {
-        Construction[] tmp = new Construction[constructions.length];
+        //Construction[] tmp = new Construction[constructions.length];
         for (int i = 0; i < constructions.length; i++) {
-          tmp[i] = (Construction) constructions[i];
-
-          float[] tmpfloat = new float[0];
-          // add an empty column of floats to the table
-          //BASIC3 table.addColumn(tmpfloat);
-          FloatColumn dc = new FloatColumn(tmpfloat);
-          table.addColumn(dc);
-         // set the label of the new column added to the table
-          table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
-        }
-
-        FitnessFunctions ff = parameters.fitnessFunctions;
-        if(ff == null) {
-          ff = new FitnessFunctions();
-          parameters.fitnessFunctions = ff;
-        }
-        for(int i = 0; i < tmp.length; i++) {
-          ff.addFitnessVariable(tmp[i]);
+          Construction c = (Construction) constructions[i];
+          Variable var = new Variable(c);
+          parameters.addFunction(var);
         }
       }
 
@@ -360,10 +379,26 @@ public class DefineFitnessVariables
 
         // if the expression is valid set the expression of gui
         gui.setExpression(newExp);
+        
+// Changed 3.25.3004 by DC            
+            if(selectedItem != null) {
+              String newName = newNameField.getText();
+                selectedItem.label = newNameField.getText();
+                selectedItem.expression = gui.getTextArea().getText();
+                newColumnModel.set(selectedIndex, selectedItem);
+                newColumnList.getSelectionModel().clearSelection();
+            }
+            else {
+              Construction added = new Construction(
+                newNameField.getText(), gui.getTextArea().getText());
+              newColumnModel.addElement(added);
+            }
+// end change            
+        
 
-        Construction added = new Construction(
+/*        Construction added = new Construction(
             newNameField.getText(), gui.getTextArea().getText());
-        newColumnModel.addElement(added);
+        newColumnModel.addElement(added);*/
         newColumnList.setMinimumSize(new Dimension(200, 200));
 
         

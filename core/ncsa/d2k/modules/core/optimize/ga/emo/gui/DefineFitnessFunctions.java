@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.table.*;
 
 import ncsa.d2k.core.modules.*;
@@ -12,6 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
 import ncsa.gui.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.functions.*;
 
 /**
  * Define the fitness functions.
@@ -46,9 +48,6 @@ public class DefineFitnessFunctions
     s += "operations available on boolean attributes are AND and OR.";
     return s;
   }
-
-
-
 
   protected UserView createUserView() {
     return new FFConstructionGUI();
@@ -87,13 +86,26 @@ public class DefineFitnessFunctions
   private static final String MIN = "Min";
   private static final String MAX = "Max";
 
-  /** Return an array with information on the properties the user may update.
-   *  @return The PropertyDescriptions for properties the user may update.
-   */
-  public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] pds = new PropertyDescription[0];
-    return pds;
+  public void doit() throws Exception {
+    Parameters params = (Parameters)pullInput(0);  
+    Object[] constructions = (Object[]) getLastCons();
+    if (constructions != null) {
+      for (int i = 0; i < constructions.length; i++) {
+        FitnessFunctionConstruction ffc = (FitnessFunctionConstruction)
+            constructions[i];
+
+        FitnessConstructionFunction fcf = new FitnessConstructionFunction(
+            ffc,
+            ffc.getIsMinimizing());
+        params.addFunction(fcf);
+      }
+    }
+    else {
+        throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");      
+    }
+    pushOutput(params, 0);
   }
+  
 
   private static class FitnessFunctionConstruction
       extends Construction {
@@ -128,43 +140,25 @@ public class DefineFitnessFunctions
 
     public void setInput(Object o, int i) {
       parameters = (Parameters) o;
-      DecisionVariables dv = parameters.decisionVariables;
-      int numVars = dv.getNumVariables();
+      
+      java.util.List dv = parameters.getDecisionVariables();
+      int numVars = dv.size();
       table = new MutableTableImpl(numVars);
 
       for (int j = 0; j < numVars; j++) {
-       //BASIC3 table.setColumn(new double[0], j);
-      	table.setColumn(new DoubleColumn(0), j);
-        table.setColumnLabel(dv.getVariableName(j), j);
+        //BASIC3 table.setColumn(new double[0], j);
+        DecisionVariable var = (DecisionVariable) dv.get(j);
+        table.setColumn(new DoubleColumn(0), j);
+        table.setColumnLabel(var.getName(), j);
       }
-      // add columns for any FF, FV, CV, or CF defined before this...
-      FitnessFunctions ff = parameters.fitnessFunctions;
-      for(int j = 0; j < ff.getNumFitnessVariables(); j++) {
-    //BASIC3    table.addColumn(new double[0]);
-      	DoubleColumn dc = new DoubleColumn(new double[0]);
-      	table.addColumn(dc);
-      	table.setColumnLabel(ff.getFitnessVariableName(j), table.getNumColumns()-1);
-      }
-      for(int j = 0; j < ff.getNumFitnessFunctions(); j++) {
-         	//BASIC3 table.addColumn(new double[0]);
-      	DoubleColumn dc = new DoubleColumn(new double[0]);
-      	table.addColumn(dc);
-      	
-      	table.setColumnLabel(ff.getFitnessFunctionName(j), table.getNumColumns()-1);
-      }
-      Constraints con = parameters.constraints;
-      for(int j = 0; j < con.getNumConstraintVariables(); j++) {
-        //BASIC3 table.addColumn(new double[0]);
-      	DoubleColumn dc = new DoubleColumn(new double[0]);
-      	table.addColumn(dc);
-      	table.setColumnLabel(con.getConstraintVariableName(j), table.getNumColumns()-1);
-      }
-      for(int j = 0; j < con.getNumConstraintFunctions(); j++) {
-       //BASIC3 table.addColumn(new double[0]);
-      	DoubleColumn dc = new DoubleColumn(new double[0]);
-      	table.addColumn(dc);
-      	
-      	table.setColumnLabel(con.getConstraintFunctionName(j), table.getNumColumns()-1);
+
+      java.util.List funcList = parameters.getFunctions();
+      int size = funcList.size();
+      for (int j = 0; j < size; j++) {
+        Function f = (Function) funcList.get(j);
+        DoubleColumn dc = new DoubleColumn(new double[0]);
+        dc.setLabel(f.getName());
+        table.addColumn(dc);
       }
 
       this.initialize();
@@ -270,6 +264,7 @@ public class DefineFitnessFunctions
             modelData.addRow(new Object[] {MAX, constr.label + " = " +
                              constr.expression /*, new String()*/});
           }
+          newColumnModel.addElement(constr);
         }
       }
 
@@ -279,6 +274,31 @@ public class DefineFitnessFunctions
        */
       tableData = new JTable(modelData);
       //tableData.setGridColor(Color.LIGHT_GRAY);
+      final ListSelectionModel rowSel = tableData.getSelectionModel();
+      rowSel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      rowSel.addListSelectionListener(new ListSelectionListener() {
+        public void valueChanged(ListSelectionEvent e) {
+          if (e.getValueIsAdjusting()) {
+            return;
+          }
+          if (rowSel.isSelectionEmpty()) {
+            selectedItem = null;
+            newNameField.setText("");
+            gui.getTextArea().setText("");
+            return;
+          }
+          else {
+            int selRow = rowSel.getMinSelectionIndex();
+
+            FitnessFunctionConstruction ff = (FitnessFunctionConstruction)
+                newColumnModel.get(selRow);
+            selectedItem = ff;
+            selectedIndex = selRow;
+            newNameField.setText(ff.label);
+            gui.getTextArea().setText(ff.expression);
+          }
+        }
+      });
 
       /**
        * JScrollPane jsp intialized with JTable parameter
@@ -444,6 +464,7 @@ public class DefineFitnessFunctions
                                GridBagConstraints.SOUTH, 0, 0);
 
       //bottomPanel.removeAll();
+      newAttributeLabel.setText("New Fitness Function Name:");
     }
 
     public void setMaxMinColumn(TableColumn column) {
@@ -458,98 +479,119 @@ public class DefineFitnessFunctions
 
       Object src = e.getSource();
       if (src == deleteButton) {
-        //Selected row index of table retrieved and stored
-        int selected2 = tableData.getSelectedRow();
-        //Index of item in the list calculated here
-        int item = (table.getNumColumns()) - tableData.getRowCount() +
-            (selected2);
+        Runnable r = new Runnable() {
+          public void run() {
 
-        if (selected2 != -1) { //if selected exist
-          String label = ( (Construction) (newColumnModel.elementAt(
-              selected2))).label;
+            //Selected row index of table retrieved and stored
+            int selected2 = tableData.getSelectedRow();
+            //Index of item in the list calculated here
+            int item = (table.getNumColumns()) - tableData.getRowCount() +
+                (selected2);
 
-          /**
-               * Below allows the label removed above to permanently be removed from
-           * existence so as not to be reloaded elsewhere
-           */
-          if (newLabels != null) {
+            if (selected2 != -1) { //if selected exist
+              String label = ( (Construction) (newColumnModel.elementAt(
+                  selected2))).label;
 
-            String[] newNewLabels = new String[newLabels.length - 1];
-            int[] newNewTypes = new int[newTypes.length - 1];
+              /**
+                   * Below allows the label removed above to permanently be removed from
+               * existence so as not to be reloaded elsewhere
+               */
+              if (newLabels != null) {
 
-            int index = 0;
-            for (index = 0; index < newLabels.length; index++) {
-              if (newLabels[index].equals(label)) {
-                break;
+                String[] newNewLabels = new String[newLabels.length - 1];
+                int[] newNewTypes = new int[newTypes.length - 1];
+
+                int index = 0;
+                for (index = 0; index < newLabels.length; index++) {
+                  if (newLabels[index].equals(label)) {
+                    break;
+                  }
+                  else {
+                    newNewLabels[index] = newLabels[index];
+                    newNewTypes[index] = newTypes[index];
+                  }
+                }
+
+                for (; index < newNewLabels.length; index++) {
+                  newNewLabels[index] = newLabels[index + 1];
+                  newNewTypes[index] = newTypes[index + 1];
+                }
+
+                newLabels = newNewLabels;
+                newTypes = newNewTypes;
+
               }
-              else {
-                newNewLabels[index] = newLabels[index];
-                newNewTypes[index] = newTypes[index];
-              }
+
+              //BASIC3 _lastCons = newColumnModel.toArray();
+              //_newLab = newLabels;
+              //_newTyp = newTypes;
+
+              setLastCons(newColumnModel.toArray());
+              setNewLabel(newLabels);
+              setNewTyp(newTypes);
+
+              /**
+               * Remove label from columnBox, label from the columnModel,
+               * remove row from modelData
+               * table columnLabel null at item's location
+               * Remove item at selected2 index from newColumnModel
+               */
+              columnBox.removeItem(label);
+              //columnModel.removeElement(label);
+              newColumnModel.removeElementAt(selected2);
+              modelData.removeRow(selected2);
+
+              tableData.getSelectionModel().clearSelection();
+              newNameField.setText("");
+              gui.getTextArea().setText("");
             }
-
-            for (; index < newNewLabels.length; index++) {
-              newNewLabels[index] = newLabels[index + 1];
-              newNewTypes[index] = newTypes[index + 1];
-            }
-
-            newLabels = newNewLabels;
-            newTypes = newNewTypes;
-
           }
-
-          
-          //BASIC3 _lastCons = newColumnModel.toArray();
-          //_newLab = newLabels;
-          //_newTyp = newTypes;
-          
-          setLastCons (newColumnModel.toArray());
-          setNewLabel(newLabels);
-          setNewTyp( newTypes);
-          
-          
-          /**
-           * Remove label from columnBox, label from the columnModel,
-           * remove row from modelData
-           * table columnLabel null at item's location
-           * Remove item at selected2 index from newColumnModel
-           */
-          columnBox.removeItem(label);
-          //columnModel.removeElement(label);
-          newColumnModel.removeElementAt(selected2);
-          modelData.removeRow(selected2);
-        }
+        };
+        SwingUtilities.invokeLater(r);
       }
       else if (src == this.doneButton) {
+        Runnable r = new Runnable() {
+          public void run() {
 
-        constructions = (Object[]) getLastCons();
-        Construction[] tmp = new Construction[constructions.length];
-        for (int i = 0; i < constructions.length; i++) {
-          tmp[i] = (Construction) constructions[i];
+            constructions = (Object[]) getLastCons();
+//        Construction[] tmp = new Construction[constructions.length];
+            for (int i = 0; i < constructions.length; i++) {
+              FitnessFunctionConstruction ffc = (FitnessFunctionConstruction)
+                  constructions[i];
 
-          float[] tmpfloat = new float[0];
-          // add an empty column of floats to the table
-          //BASIC3 table.addColumn(tmpfloat);
-          FloatColumn dc = new FloatColumn(tmpfloat);
-          table.addColumn(dc);
-          // set the label of the new column added to the table
-          table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
-        }
+              /*          tmp[i] = (Construction) constructions[i];
+                        float[] tmpfloat = new float[0];
+                        // add an empty column of floats to the table
+                        //BASIC3 table.addColumn(tmpfloat);
+                        FloatColumn dc = new FloatColumn(tmpfloat);
+                        table.addColumn(dc);
+                        // set the label of the new column added to the table
+                   table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
+                      }*/
 
-        FitnessFunctions ff = parameters.fitnessFunctions;
-        if (ff == null) {
-          ff = new FitnessFunctions();
-          parameters.fitnessFunctions = ff;
-        }
-        for (int i = 0; i < tmp.length; i++) {
-          ff.addFitnessFunction( (FitnessFunctionConstruction) tmp[i],
-                                ( (FitnessFunctionConstruction) tmp[i]).
-                                getIsMinimizing());
-        }
+              /*        FitnessFunctions ff = parameters.fitnessFunctions;
+                      if (ff == null) {
+                        ff = new FitnessFunctions();
+                        parameters.fitnessFunctions = ff;
+                      }
+                      for (int i = 0; i < constructions.length; i++) {
+                   FitnessFunctionConstruction ffc = (FitnessFunctionConstruction)
+                            constructions[i];
+                        ff.addFitnessFunction( ffc, ffc.getIsMinimizing());
+                      }*/
 
-        pushOutput(parameters, 0);
-        parameters = null;
-        viewDone("Done");
+              FitnessConstructionFunction fcf = new FitnessConstructionFunction(
+                  ffc,
+                  ffc.getIsMinimizing());
+              parameters.addFunction(fcf);
+            }
+
+            pushOutput(parameters, 0);
+            parameters = null;
+            viewDone("Done");
+          }
+        };
+        SwingUtilities.invokeLater(r);
       }
       else {
         super.actionPerformed(e);
@@ -647,24 +689,36 @@ public class DefineFitnessFunctions
         /**
          * Add to table object array with: empty string, label of function,  function itself, and time stirng
          */
-        modelData.addRow(new Object[] {MIN, newNameField.getText() + " = " +
-                         gui.getTextArea().getText() /*, new String()*/});
 
-        FitnessFunctionConstruction added = new FitnessFunctionConstruction(
-            newNameField.getText(), gui.getTextArea().getText());
-        added.setIsMinimizing(true);
-        newColumnModel.addElement(added);
-        newColumnList.setMinimumSize(new Dimension(200, 200));
+        // check to see if this already exists.
+
+        if (selectedItem != null) {
+          String newName = newNameField.getText();
+          modelData.setValueAt(newName + " = " + gui.getTextArea().getText(),
+                               selectedIndex, 1);
+          selectedItem.label = newNameField.getText();
+          selectedItem.expression = gui.getTextArea().getText();
+          tableData.getSelectionModel().clearSelection();
+        }
+        else {
+          modelData.addRow(new Object[] {MIN, newNameField.getText() + " = " +
+                           gui.getTextArea().getText() /*, new String()*/});
+
+          FitnessFunctionConstruction added = new FitnessFunctionConstruction(
+              newNameField.getText(), gui.getTextArea().getText());
+          added.setIsMinimizing(true);
+          newColumnModel.addElement(added);
+        }
+        //newColumnList.setMinimumSize(new Dimension(200, 200));
 
         //BASIC3 _lastCons = newColumnModel.toArray();
         //_newLab = newLabels;
         //_newTyp = newTypes;
-        
-        setLastCons (newColumnModel.toArray());
+
+        setLastCons(newColumnModel.toArray());
         setNewLabel(newLabels);
-        setNewTyp( newTypes);
-        
-        
+        setNewTyp(newTypes);
+
         //newColumnModel.addElement(added);
 
         // if the expression is valid set the expression of gui
@@ -688,5 +742,8 @@ public class DefineFitnessFunctions
 
       }
     }
+
+    FitnessFunctionConstruction selectedItem = null;
+    int selectedIndex;
   }
 }

@@ -12,6 +12,10 @@ import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.gui.*;
+
 /**
  * Plot the current generation vs. the average fitness.
  */
@@ -23,8 +27,6 @@ public class SOVis extends UIModule {
 
   public String[] getOutputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.Population",
-        "ncsa.d2k.modules.core.optimize.ga.Population",
         "ncsa.d2k.modules.core.optimize.ga.Population"
     };
   }
@@ -41,27 +43,21 @@ public class SOVis extends UIModule {
     switch(i) {
       case(0):
         return "The unchanged population.";
-      case(1):
-        return "The unchanged population to be sent to display decision variables.";
-      case(2):
-        return "The unchanged population to be sent to display genes.";
       default:
         return "";
     }
   }
 
   public String getOutputName(int i) {
-    if(i == 0)
       return "EMOPopulation";
-    if(i == 1)
-      return "Decision Variables";
-    if(i == 2)
-      return "Genes";
-    return "";
   }
 
   public String getModuleInfo() {
     return "Plot the average fitness against the generation number.";
+  }
+  
+  public String getModuleName() {
+    return "Single-Objective Visualization";
   }
 
   protected UserView createUserView() {
@@ -70,6 +66,13 @@ public class SOVis extends UIModule {
 
   public String[] getFieldNameMapping() {
     return null;
+  }
+  
+  /*  Return an array with information on the properties the user may update.
+   *  @return The PropertyDescriptions for properties the user may update.
+   */
+  public PropertyDescription[] getPropertiesDescriptions() {
+    return new PropertyDescription[0];
   }
 
   protected class SOView extends JUserPane {
@@ -101,15 +104,21 @@ public class SOVis extends UIModule {
         }
       });
       viewDecisionVariables = new JButton("View Decision Variables");
-      viewDecisionVariables.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent ae) {
-          pushOutput(pop, 1);
+      viewDecisionVariables.addActionListener(new RunnableAction() {
+        public void run() {
+          Table t = ((EMOPopulation)pop).getDecisionVariablesTable();
+          TableFrame frame = new TableFrame("Decision Variables", t);
+          frame.pack();
+          frame.show();
         }
       });
       viewGenes = new JButton("View Genes");
-      viewGenes.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent ae) {
-          pushOutput(pop, 2);
+      viewGenes.addActionListener(new RunnableAction() {
+        public void run() {
+          Table t = ((EMOPopulation)pop).getGenesTable();
+          TableFrame frame = new TableFrame("Genes", t);
+          frame.pack();
+          frame.show();
         }
       });
 
@@ -150,6 +159,10 @@ public class SOVis extends UIModule {
         mt.setColumn(new DoubleColumn(0), 1);
         mt.setColumnLabel("Average Fitness", 1);
         scatterPlot.init(mt, dataSets, graphSettings);
+        
+        done.setEnabled(false);
+        viewDecisionVariables.setEnabled(false);
+        viewGenes.setEnabled(false);
       }
       p.computeStatistics();
 
@@ -167,8 +180,15 @@ public class SOVis extends UIModule {
 //      ((MutableTableImpl)mt).print();
 
       scatterPlot.setTable(mt);
-      if(p.getCurrentGeneration() == p.getMaxGenerations()-1)
+      if(p.getCurrentGeneration() == p.getMaxGenerations()-1) {
         done.setEnabled(true);
+        viewDecisionVariables.setEnabled(true);
+        Parameters params = ((EMOPopulation)pop).getParameters();
+        if(params.createBinaryIndividuals) 
+          viewGenes.setEnabled(true);
+        else
+          viewGenes.setEnabled(false);
+      }
       pushOutput(o, 0);
     }
   }

@@ -1,9 +1,12 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
+import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.nsga.*;
 import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import ncsa.d2k.userviews.swing.*;
 
@@ -29,7 +32,7 @@ import java.util.*;
  * The scatter plots in the JTables are FitnessPlots.  FitnessPlots allow the
  * user to select points by drawing a box around an area.  The "View Selected"
  * button can then be pressed to view the selected individuals in a table.
- * Selection is only enabled on plots that are not currently being updated; thus
+     * Selection is only enabled on plots that are not currently being updated; thus
  * the currently evaluating population must be paused in order for selection to
  * be enabled.  The cumulative populations have selection enabled all the time,
  * since they are not being updated continuously.
@@ -48,9 +51,9 @@ public class MOVis
 
   public String[] getOutputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.Population",
-        "ncsa.d2k.modules.core.optimize.ga.Population",
         "ncsa.d2k.modules.core.optimize.ga.Population"};
+    //"ncsa.d2k.modules.core.optimize.ga.Population",
+    //"ncsa.d2k.modules.core.optimize.ga.Population"};
   }
 
   public String getInputInfo(int i) {
@@ -66,29 +69,48 @@ public class MOVis
   }
 
   public String getOutputName(int i) {
-    if(i == 0)
+    if (i == 0) {
       return "EMOPopulation";
-    if(i == 1)
-      return "Decision Variables";
-    if(i == 2)
-      return "Genes";
+    }
+    /*    if (i == 1) {
+          return "Decision Variables";
+        }
+        if (i == 2) {
+          return "Genes";
+        }*/
     return "";
+  }
+  
+  public String getModuleName() {
+    return "Multi-Objective Visualization";
   }
 
   public String getModuleInfo() {
-String s = "A visualization for a multi-objective population in EMO.  Four JTables are";
-s += " used to show the current population, the last cumulative population, the";
-s += " cumulative popualtion from two runs ago, and the cumulative population from";
-s += " three runs ago.  The fitness functions of these populations are displayed in";
-s += " scatterplots.  The rows and columns of the JTables can be changed, and it is";
-s += " possible to plot any combinations of fitness functions on the scatter plots.";
-s += " The scatter plots in the JTables are FitnessPlots.  FitnessPlots allow the";
-s += " user to select points by drawing a box around an area.  The View Selected";
-s += " button can then be pressed to view the selected individuals in a table.";
-s += " Selection is only enabled on plots that are not currently being updated; thus";
-s += " the currently evaluating population must be paused in order for selection to";
-s += " be enabled.  The cumulative populations have selection enabled all the time,";
-s += " since they are not being updated continuously.";
+    String s =
+        "A visualization for a multi-objective population in EMO.  Four JTables are";
+    s +=
+        " used to show the current population, the last cumulative population, the";
+    s +=
+        " cumulative popualtion from two runs ago, and the cumulative population from";
+    s +=
+        " three runs ago.  The fitness functions of these populations are displayed in";
+    s +=
+        " scatterplots.  The rows and columns of the JTables can be changed, and it is";
+    s +=
+        " possible to plot any combinations of fitness functions on the scatter plots.";
+    s +=
+        " The scatter plots in the JTables are FitnessPlots.  FitnessPlots allow the";
+    s +=
+        " user to select points by drawing a box around an area.  The View Selected";
+    s +=
+        " button can then be pressed to view the selected individuals in a table.";
+    s +=
+        " Selection is only enabled on plots that are not currently being updated; thus";
+    s +=
+        " the currently evaluating population must be paused in order for selection to";
+    s +=
+        " be enabled.  The cumulative populations have selection enabled all the time,";
+    s += " since they are not being updated continuously.";
     return s;
   }
 
@@ -101,10 +123,18 @@ s += " since they are not being updated continuously.";
   }
 
   public void beginExecution() {
-    if(this.userView != null) {
-      ((MOView)userView).initView(this);
+    if (this.userView != null) {
+      ( (MOView) userView).initView(this);
     }
   }
+  
+  /*  Return an array with information on the properties the user may update.
+   *  @return The PropertyDescriptions for properties the user may update.
+   */
+  public PropertyDescription[] getPropertiesDescriptions() {
+    return new PropertyDescription[0];
+  }
+  
 
   protected class MOView
       extends JUserPane {
@@ -120,8 +150,8 @@ s += " since they are not being updated continuously.";
 
     protected JButton continueButton;
     protected JButton pauseButton;
-    protected JButton viewDecisionVariables;
-    protected JButton viewGenes;
+    //protected JButton viewDecisionVariables;
+    //protected JButton viewGenes;
 
     protected int numDecisionVariables;
     protected int numObjectives;
@@ -142,7 +172,10 @@ s += " since they are not being updated continuously.";
     protected static final String CUMULATIVE = "Cumulative ";
     protected static final String RUN = "Run: ";
     protected static final String POP_SIZE = "Population Size: ";
-    protected static final String NUM_SOL = "Number of Nondominated Solutions: ";
+    protected static final String NUM_SOL =
+        "Number of Nondominated Solutions: ";
+    
+    boolean binaryIndividuals;
 
     /**
      * create the gui components
@@ -185,28 +218,52 @@ s += " since they are not being updated continuously.";
       continueButton.setToolTipText("Continue execution");
       pauseButton = new JButton("Pause");
       pauseButton.setToolTipText("Pause execution");
-      viewDecisionVariables = new JButton("View Decision Variables");
-      viewDecisionVariables.setToolTipText("View the decision variables of the current population");
-      // when View Decision Variables is pressed, push the current pop
-      // out on pipe 1
-      viewDecisionVariables.addActionListener(new AbstractAction() {
+      /*viewDecisionVariables = new JButton("View Decision Variables");
+             viewDecisionVariables.setToolTipText(
+          "View the decision variables of the current population");
+             // when View Decision Variables is pressed, push the current pop
+             // out on pipe 1
+             viewDecisionVariables.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent ae) {
-          pushOutput(populations[CURRENT], 1);
+//          pushOutput(populations[CURRENT], 1);
+          MutableTable mt = new MutableTableImpl();
+          NsgaPopulation pop = populations[CURRENT];
+          Parameters params = ( (EMOPopulation) pop).getParameters();
+          // now, for each decision variable, add a column
+          //int numDecisionVariables = params.decisionVariables.getNumVariables();
+          int numDecisionVariables = params.getNumDecisionVariables();
+          int size = pop.size();
+          double[][] dvs = new double[numDecisionVariables][size];
+          for (int i = 0; i < size; i++) {
+            double[] vals = pop.getMember(i).toDoubleValues();
+            for (int j = 0; j < numDecisionVariables; j++) {
+              dvs[j][i] = vals[j];
+            }
+          }
+          java.util.List dvars = params.getDecisionVariables();
+          for (int i = 0; i < numDecisionVariables; i++) {
+            DoubleColumn dc = new DoubleColumn(dvs[i]);
+            DecisionVariable dv = (DecisionVariable) dvars.get(i);
+            //dc.setLabel(params.decisionVariables.getVariableName(i));
+            dc.setLabel(dv.getName());
+            mt.addColumn(dc);
+          }
+          ( (MutableTableImpl) mt).print();
         }
-      });
-      viewGenes = new JButton("View Genes");
-      viewGenes.setToolTipText("View the genes of the current population");
-      // when View Genes is pressed, push the current pop
-      // out on pipe 2
-      viewGenes.addActionListener(new AbstractAction() {
+             });
+             viewGenes = new JButton("View Genes");
+           viewGenes.setToolTipText("View the genes of the current population");
+             // when View Genes is pressed, push the current pop
+             // out on pipe 2
+             viewGenes.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent ae) {
           pushOutput(populations[CURRENT], 2);
         }
-      });
+             });*/
 
       continueButton.setEnabled(false);
-      viewDecisionVariables.setEnabled(false);
-      viewGenes.setEnabled(false);
+      //viewDecisionVariables.setEnabled(false);
+      //viewGenes.setEnabled(false);
       continueButton.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           continueExecution();
@@ -231,8 +288,8 @@ s += " since they are not being updated continuously.";
       buttonPanel.add(continueButton);
       buttonPanel.add(pauseButton);
       buttonPanel.add(stopButton);
-      buttonPanel.add(viewDecisionVariables);
-      buttonPanel.add(viewGenes);
+      //buttonPanel.add(viewDecisionVariables);
+      //buttonPanel.add(viewGenes);
       add(buttonPanel, BorderLayout.SOUTH);
     }
 
@@ -246,8 +303,8 @@ s += " since they are not being updated continuously.";
       paused = true;
       pauseButton.setEnabled(false);
       continueButton.setEnabled(true);
-      viewDecisionVariables.setEnabled(true);
-      viewGenes.setEnabled(true);
+      //viewDecisionVariables.setEnabled(true);
+      //viewGenes.setEnabled(true);
       runViews[CURRENT].enableSelection();
     }
 
@@ -259,8 +316,8 @@ s += " since they are not being updated continuously.";
     protected void continueExecution() {
       paused = false;
       continueButton.setEnabled(false);
-      viewDecisionVariables.setEnabled(false);
-      viewGenes.setEnabled(false);
+      //viewDecisionVariables.setEnabled(false);
+      //viewGenes.setEnabled(false);
       pauseButton.setEnabled(true);
       runViews[CURRENT].disableSelection();
       runViews[CURRENT].removeSelection();
@@ -269,6 +326,7 @@ s += " since they are not being updated continuously.";
 
     public void setInput(Object o, int i) {
       NsgaPopulation p = (NsgaPopulation) o;
+      this.binaryIndividuals = ((EMOPopulation)p).getParameters().createBinaryIndividuals;
 
       // if this is a new population, reset the cumulative populations
       if (p != populations[CURRENT]) {
@@ -327,8 +385,9 @@ s += " since they are not being updated continuously.";
             FitnessTable ft = new FitnessTable(populations[CUMUL_ONE].size(),
                                                populations[CUMUL_ONE].
                                                getNumObjectives());
-            int rankZero = copyFitnessValuesToFitnessTable(populations[CUMUL_ONE],
-                                                 ft);
+            int rankZero = copyFitnessValuesToFitnessTable(populations[
+                CUMUL_ONE],
+                ft);
             fitnessTables[CUMUL_ONE] = ft;
 
             runViews[CUMUL_ONE].disableSelection();
@@ -362,7 +421,7 @@ s += " since they are not being updated continuously.";
                                              populations[CUMUL_ONE].
                                              getNumObjectives());
           int rankZero = copyFitnessValuesToFitnessTable(populations[CUMUL_ONE],
-                                               ft);
+              ft);
           fitnessTables[CUMUL_ONE] = ft;
 
           runViews[CUMUL_ONE].disableSelection();
@@ -421,11 +480,12 @@ s += " since they are not being updated continuously.";
       runViews[CURRENT].solutionsLabel.setText(rank.toString());
       runViews[CURRENT].redraw();
 
-      if (p.getCurrentGeneration() == p.getMaxGenerations() - 1)
+      if (p.getCurrentGeneration() == p.getMaxGenerations() - 1) {
         pauseExecution();
-
-      if (!paused)
+      }
+      if (!paused) {
         pushOutput(p, 0);
+      }
     }
 
     /**
@@ -467,7 +527,8 @@ s += " since they are not being updated continuously.";
 
       protected int populationIndex;
       protected JButton viewSelected;
-      protected JD2KFrame frame;
+      protected JButton viewDecisionVars;
+      protected JButton viewGenes;
 
       RunView(int index) {
         populationIndex = index;
@@ -497,24 +558,15 @@ s += " since they are not being updated continuously.";
                                  0, 0);
         add(pnl, BorderLayout.CENTER);
 
-/*        add(om, BorderLayout.CENTER);
+        /*        add(om, BorderLayout.CENTER);
+                JPanel labelPanel = new JPanel(new GridLayout(3, 1));
+                labelPanel.add( (runLabel = new JLabel(" ")));
+                labelPanel.add( (sizeLabel = new JLabel(" ")));
+                labelPanel.add( (solutionsLabel = new JLabel(" ")));
+                add(labelPanel, BorderLayout.NORTH);
+         */
 
-        JPanel labelPanel = new JPanel(new GridLayout(3, 1));
-        labelPanel.add( (runLabel = new JLabel(" ")));
-        labelPanel.add( (sizeLabel = new JLabel(" ")));
-        labelPanel.add( (solutionsLabel = new JLabel(" ")));
-
-        add(labelPanel, BorderLayout.NORTH);
- */
-
-        frame = new JD2KFrame();
-        frame.addWindowListener(new WindowAdapter() {
-          public void windowClosing(WindowEvent we) {
-            frame.getContentPane().removeAll();
-            frame.setVisible(false);
-          }
-        });
-        viewSelected = new JButton("View Selected");
+        viewSelected = new JButton("Selected");
         JPanel bPanel = new JPanel();
         bPanel.add(viewSelected);
         add(bPanel, BorderLayout.SOUTH);
@@ -522,14 +574,84 @@ s += " since they are not being updated continuously.";
         viewSelected.addActionListener(new AbstractAction() {
           public void actionPerformed(ActionEvent e) {
             TableModel tModel = om.tblModel.getSelected();
-            JTable jt = new JTable(tModel);
-            JScrollPane jsp = new JScrollPane(jt);
-            frame.setTitle(runLabel.getText());
-            frame.getContentPane().add(jsp);
-            frame.pack();
-            frame.show();
+            // now we want to make a Table and use a TableFrame
+            int cols = tModel.getColumnCount();
+            int rows = tModel.getRowCount();
+            
+            MutableTableImpl mt = new MutableTableImpl(cols);
+            for(int i = 0; i < cols; i++) {
+              StringColumn sc = new StringColumn(rows);
+              sc.setLabel(tModel.getColumnName(i)); 
+              mt.setColumn(sc, i);
+            }
+            
+            // now copy the data into the table
+            for(int i = 0; i < rows; i++) {
+              for(int j = 0; j < cols; j++) {
+                String val = (String)tModel.getValueAt(i, j);  
+                mt.setString(val, i, j); 
+              } 
+            }
+            
+            TableFrame tf = new TableFrame("Selected Individuals", mt);
+            tf.pack();
+            tf.show();
           }
         });
+        viewDecisionVars = new JButton("Decision Variables");
+        viewDecisionVars.setEnabled(false);
+        viewDecisionVars.addActionListener(new RunnableAction() {
+          public void run() {
+            Table t = om.tblModel.getDecisionVariables();
+            TableFrame tf = new TableFrame("Decision Variables", t); 
+            tf.pack();
+            tf.show();
+          }
+        });
+        bPanel.add(viewDecisionVars);
+        
+        viewGenes = new JButton("Genes");
+        viewGenes.setEnabled(false);
+        viewGenes.addActionListener(new RunnableAction() {
+          public void run() {
+            Table t = om.tblModel.getGenes();
+            TableFrame tf = new TableFrame("Genes", t);
+            tf.pack();
+            tf.show();
+          }
+        });
+        bPanel.add(viewGenes); 
+      }
+
+      /**
+         Calculate the size of the scrollable area.
+         @return the size of the scrollable area
+       */
+      protected Dimension calcPreferredScrollableViewportSize(JTable jTable,
+          TableModel tm) {
+        // make the preferred width of the table inside this scroller
+        // to be either the width of all the columns, or MAX_WIDTH,
+        // whichever is smaller
+        int rowWidth = jTable.getColumnModel().getColumn(0).getPreferredWidth();
+        int wid = 0;
+        for (int i = 0; i < tm.getColumnCount() - 1; i++) {
+          if ( (wid + rowWidth) > 400) {
+            break;
+          }
+          wid += rowWidth;
+        }
+        // make the preferred height of the table inside this scroller
+        // to be either the height of all the rows, or MAX_HEIGHT,
+        // whichever is smaller
+        int hei = 0;
+        int rowHeight = jTable.getRowHeight();
+        for (int i = 0; i < tm.getRowCount(); i++) {
+          if ( (hei + rowHeight) > 400) {
+            break;
+          }
+          hei += rowHeight;
+        }
+        return new Dimension(wid, hei);
       }
 
       void redraw() {
@@ -539,11 +661,16 @@ s += " since they are not being updated continuously.";
       void enableSelection() {
         om.enableSelection();
         viewSelected.setEnabled(true);
+        viewDecisionVars.setEnabled(true);
+        if(binaryIndividuals)
+          viewGenes.setEnabled(true);
       }
 
       void disableSelection() {
         om.disableSelection();
         viewSelected.setEnabled(false);
+        viewDecisionVars.setEnabled(false);
+        viewGenes.setEnabled(false);
       }
 
       void removeSelection() {
@@ -1181,6 +1308,18 @@ s += " since they are not being updated continuously.";
           }
           fireTableDataChanged();
         }
+        
+        Table getDecisionVariables() {
+          NsgaPopulation p = MOView.this.populations[populationIndex];
+          Table t = ((EMOPopulation)p).getDecisionVariablesTable();
+          return t; 
+        }
+        
+        Table getGenes() {
+          NsgaPopulation p = MOView.this.populations[populationIndex];
+          Table t = ((EMOPopulation)p).getGenesTable();
+          return t; 
+        }
 
         /**
          * Get a table model for the selected points.
@@ -1195,7 +1334,8 @@ s += " since they are not being updated continuously.";
           return new SelectedTableModel(t, selected);
         }
 
-        protected class SelectedTableModel extends DefaultTableModel {
+        protected class SelectedTableModel
+            extends DefaultTableModel {
           Table tbl;
           int[] selectedRows;
 
@@ -1205,10 +1345,12 @@ s += " since they are not being updated continuously.";
           }
 
           public int getRowCount() {
-            if(selectedRows != null)
+            if (selectedRows != null) {
               return selectedRows.length;
-            else
+            }
+            else {
               return 0;
+            }
           }
 
           public int getColumnCount() {

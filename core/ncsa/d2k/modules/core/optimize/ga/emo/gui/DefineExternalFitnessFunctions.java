@@ -6,20 +6,22 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.*;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
+import ncsa.d2k.modules.core.optimize.ga.emo.functions.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
 /**
  * An interface to input the fitness functions when the fitness functions are
- * calculated by a foreign executable
+ * calculated by an external executable
  * @author David Clutter
  * @version 1.0
  */
 public class DefineExternalFitnessFunctions
-    extends UIModule {
+    extends HeadlessUIModule {
 
   public String[] getInputTypes() {
     return new String[] {
@@ -39,6 +41,10 @@ public class DefineExternalFitnessFunctions
   public String getOutputInfo(int i) {
     return
         "The parameters for the EMO problem, with the constraint violation functions defined.";
+  }
+  
+  public String getModuleName() {
+    return "Define External Fitness Functions";
   }
 
   public String getModuleInfo() {
@@ -95,8 +101,40 @@ public class DefineExternalFitnessFunctions
    *  @return The PropertyDescriptions for properties the user may update.
    */
   public PropertyDescription[] getPropertiesDescriptions() {
-    return new PropertyDescription[0];
+    PropertyDescription[] props = super.getPropertiesDescriptions();
+    return new PropertyDescription[] {props[0]};
   }
+  
+  public void doit() throws Exception {
+    Parameters params = (Parameters)pullInput(0);
+
+    Object[] vals = getFitnessFunctions();
+    if(vals == null)
+        throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+      
+      // now create the table and add it to the pop info
+      int numFunctions = vals.length;
+
+      for(int i = 0; i < numFunctions; i++) {
+        FitnessFunction f = (FitnessFunction) vals[i];
+        boolean b;
+        if(f.minmax.equals(MINIMIZE))
+          b = true;
+        else
+          b = false;
+
+        //ff.addExternFitnessFunction(f.name, f.exec, f.input, f.output, b);
+        FitnessExecFunction fef = new FitnessExecFunction(f.name, 
+            System.getProperty("user.dir")+File.separator+f.exec,
+            System.getProperty("user.dir")+File.separator+f.input, 
+            System.getProperty("user.dir")+File.separator+f.output, 
+            b);
+        params.addFunction(fef);
+      }
+
+      // push out the pop info
+      pushOutput(params, 0);
+  }  
 
   private class ExternalView
       extends JUserPane {
@@ -121,24 +159,23 @@ public class DefineExternalFitnessFunctions
 
     protected Parameters parameters;
 
-    public Dimension getPreferredSize() {
-      return new Dimension(600, 250);
-    }
-
     private static final String HTML = "<html>";
     private static final String INPUT = "Input: ";
     private static final String BR = "<br>";
     private static final String OUTPUT = "Output: ";
     private static final String MAXMIN = "Max/Min: ";
     private static final String CLOSE = "</html>";
+    
+    private FitnessFunction selectedItem;
+    private int selectedIndex;
 
     public void initView(ViewModule vm) {
       // the remove button
       JPanel removeButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       removeFunction = new JButton("Remove");
       // when remove is pressed, remove all the selected elements in the jlist
-      removeFunction.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+      removeFunction.addActionListener(new RunnableAction() {
+        public void run() {
           Object[] vals = definedFunctions.getSelectedValues();
           for (int i = 0; i < vals.length; i++) {
             definedFunctionsModel.removeElement(vals[i]);
@@ -179,18 +216,58 @@ public class DefineExternalFitnessFunctions
           return tip.toString();
         }
       };
+      
+      definedFunctions.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+// added 3.25.2004 by DC         
+      final ListSelectionModel rowSel = definedFunctions.getSelectionModel();
+      rowSel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      rowSel.addListSelectionListener(new ListSelectionListener() {
+        public void valueChanged(ListSelectionEvent e) {
+          if(e.getValueIsAdjusting())
+            return;
+          if(rowSel.isSelectionEmpty())  {
+            selectedItem = null;
+            functionName.setText("");
+            execPath.setText("");
+            inputFilePath.setText("");
+            outputFilePath.setText("");
+            
+            return;
+          }
+          else {
+            int selRow = rowSel.getMinSelectionIndex();
+
+            selectedItem = (FitnessFunction)definedFunctionsModel.elementAt(selRow);
+            selectedIndex = selRow;
+            
+            // now fill in the text areas
+            execPath.setText(selectedItem.exec);
+            functionName.setText(selectedItem.name);
+            inputFilePath.setText(selectedItem.input);
+            outputFilePath.setText(selectedItem.output);
+            min.setSelectedItem(selectedItem.minmax);
+          }
+        }
+      });
+      
       JScrollPane scroll = new JScrollPane(definedFunctions);
       scroll.setColumnHeaderView(new JLabel("Fitness Functions"));
-      scroll.setPreferredSize(new Dimension(200, 200));
+      scroll.setPreferredSize(new Dimension(175, 150));
       JPanel listPanel = new JPanel(new BorderLayout());
+      listPanel.add(Box.createHorizontalStrut(20), BorderLayout.WEST);
       listPanel.add(scroll, BorderLayout.CENTER);
       listPanel.add(removeButtonPanel, BorderLayout.SOUTH);
+      
+      JPanel p2 = new JPanel(new BorderLayout());
+      p2.add(listPanel, BorderLayout.NORTH);
+      p2.add(new JPanel(), BorderLayout.CENTER);
 
       JPanel mainPanel = new JPanel(new GridBagLayout());
       JButton selectExec = new JButton("...");
-      selectExec.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+      selectExec.addActionListener(new RunnableAction() {
+        public void run() {
           JFileChooser jfc = new JFileChooser();
+          jfc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
           // set the title of the FileDialog
           StringBuffer sb = new StringBuffer("Select File");
@@ -200,7 +277,15 @@ public class DefineExternalFitnessFunctions
           String fn;
           int retVal = jfc.showOpenDialog(null);
           if (retVal == JFileChooser.APPROVE_OPTION) {
-            fn = jfc.getSelectedFile().getAbsolutePath();
+            File file = jfc.getSelectedFile(); 
+            File parent = file.getParentFile(); 
+            if(!parent.equals(new File(System.getProperty("user.dir")))) {
+              JOptionPane.showMessageDialog(null, "The executable must be located in the working directory, "+System.getProperty("user.dir"),
+                                            "Error", JOptionPane.ERROR_MESSAGE);   
+              return; 
+            }
+            
+            fn = file.getName();
           }
           else {
             return;
@@ -209,9 +294,10 @@ public class DefineExternalFitnessFunctions
         }
       });
       JButton selectInput = new JButton("...");
-      selectInput.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+      selectInput.addActionListener(new RunnableAction() {
+        public void run() {
           JFileChooser jfc = new JFileChooser();
+          jfc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
           // set the title of the FileDialog
           StringBuffer sb = new StringBuffer("Select File");
@@ -221,7 +307,15 @@ public class DefineExternalFitnessFunctions
           String fn;
           int retVal = jfc.showOpenDialog(null);
           if (retVal == JFileChooser.APPROVE_OPTION) {
-            fn = jfc.getSelectedFile().getAbsolutePath();
+            File file = jfc.getSelectedFile(); 
+            File parent = file.getParentFile(); 
+            if(!parent.equals(new File(System.getProperty("user.dir")))) {
+              JOptionPane.showMessageDialog(null, "The input file must be located in the working directory, "+System.getProperty("user.dir"),
+                                            "Error", JOptionPane.ERROR_MESSAGE);   
+              return; 
+            }
+            
+            fn = file.getName();
           }
           else {
             return;
@@ -230,9 +324,10 @@ public class DefineExternalFitnessFunctions
         }
       });
       JButton selectOutput = new JButton("...");
-      selectOutput.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+      selectOutput.addActionListener(new RunnableAction() {
+        public void run() {
           JFileChooser jfc = new JFileChooser();
+          jfc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
           // set the title of the FileDialog
           StringBuffer sb = new StringBuffer("Select File");
@@ -242,7 +337,15 @@ public class DefineExternalFitnessFunctions
           String fn;
           int retVal = jfc.showOpenDialog(null);
           if (retVal == JFileChooser.APPROVE_OPTION) {
-            fn = jfc.getSelectedFile().getAbsolutePath();
+            File file = jfc.getSelectedFile(); 
+            File parent = file.getParentFile(); 
+            if(!parent.equals(new File(System.getProperty("user.dir")))) {
+              JOptionPane.showMessageDialog(null, "The output file must be located in the working directory, "+System.getProperty("user.dir"),
+                                            "Error", JOptionPane.ERROR_MESSAGE);   
+              return; 
+            }
+
+            fn = file.getName();
           }
           else {
             return;
@@ -251,71 +354,114 @@ public class DefineExternalFitnessFunctions
         }
       });
 
-      Constrain.setConstraints(mainPanel, new JLabel("Function Name"), 0, 0, 1,
-                               1, GridBagConstraints.NONE,
-                               GridBagConstraints.WEST,
+      Constrain.setConstraints(mainPanel, new JLabel("Function Name"), 
+                               0, 0, 1, 1, 
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST,
                                1, 1);
-      functionName = new JTextField(20);
+      functionName = new JTextField(10);
       Constrain.setConstraints(mainPanel, functionName, 1, 0, 1, 1,
                                GridBagConstraints.HORIZONTAL,
-                               GridBagConstraints.WEST,
+                               GridBagConstraints.NORTHWEST,
                                1, 1);
 
-      Constrain.setConstraints(mainPanel, new JLabel("Path to Executable"), 0,
-                               1,
-                               1, 1, GridBagConstraints.NONE,
-                               GridBagConstraints.WEST,
+      Constrain.setConstraints(mainPanel, new JLabel("Path to Executable"), 
+                               0, 1, 1, 1, GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST,
                                1, 1);
-      execPath = new JTextField(20);
+      execPath = new JTextField(10);
       Constrain.setConstraints(mainPanel, execPath, 1, 1, 1, 1,
                                GridBagConstraints.HORIZONTAL,
-                               GridBagConstraints.WEST,
+                               GridBagConstraints.NORTHWEST,
                                1, 1);
       Constrain.setConstraints(mainPanel, selectExec, 2, 1, 1, 1,
-                               GridBagConstraints.NONE, GridBagConstraints.WEST,
-                               1, 1);
+                               GridBagConstraints.NONE, 
+                               GridBagConstraints.NORTHWEST,
+                               0, 0);
 
       Constrain.setConstraints(mainPanel, new JLabel("Input File"), 0, 2, 1, 1,
-                               GridBagConstraints.NONE, GridBagConstraints.WEST,
-                               1, 1);
-      inputFilePath = new JTextField(20);
+                               GridBagConstraints.HORIZONTAL, 
+                               GridBagConstraints.NORTHWEST,
+                               0, 0);
+      inputFilePath = new JTextField(10);
       Constrain.setConstraints(mainPanel, inputFilePath, 1, 2, 1, 1,
                                GridBagConstraints.HORIZONTAL,
-                               GridBagConstraints.WEST,
+                               GridBagConstraints.NORTHWEST,
                                1, 1);
       Constrain.setConstraints(mainPanel, selectInput, 2, 2, 1, 1,
-                               GridBagConstraints.NONE, GridBagConstraints.WEST,
-                               1, 1);
+                               GridBagConstraints.NONE, 
+                               GridBagConstraints.NORTHWEST,
+                               0, 0);
 
       Constrain.setConstraints(mainPanel, new JLabel("Output File"), 0, 3, 1, 1,
-                               GridBagConstraints.NONE, GridBagConstraints.WEST,
+                               GridBagConstraints.HORIZONTAL, 
+                               GridBagConstraints.NORTHWEST,
                                1, 1);
-      outputFilePath = new JTextField(20);
+      outputFilePath = new JTextField(10);
       Constrain.setConstraints(mainPanel, outputFilePath, 1, 3, 1, 1,
                                GridBagConstraints.HORIZONTAL,
-                               GridBagConstraints.WEST,
+                               GridBagConstraints.NORTHWEST,
                                1, 1);
       Constrain.setConstraints(mainPanel, selectOutput, 2, 3, 1, 1,
-                               GridBagConstraints.NONE, GridBagConstraints.WEST,
-                               1, 1);
+                               GridBagConstraints.NONE, 
+                               GridBagConstraints.NORTHWEST,
+                               0, 0);
 
-      Constrain.setConstraints(mainPanel, new JLabel("Minimize/Maximize"), 0, 4,
-                               1, 1,
-                               GridBagConstraints.NONE, GridBagConstraints.WEST,
+      Constrain.setConstraints(mainPanel, new JLabel("Minimize/Maximize"), 
+                               0, 4, 0, 0,
+                               GridBagConstraints.HORIZONTAL, 
+                               GridBagConstraints.NORTHWEST,
                                1, 1);
       Object[] items = {MINIMIZE, MAXIMIZE};
       min = new JComboBox(items);
       Constrain.setConstraints(mainPanel, min, 1, 4, 1, 1,
-                               GridBagConstraints.NONE, GridBagConstraints.WEST,
-                               1, 1);
-      Constrain.setConstraints(mainPanel, new JPanel(), 0, 5, 1, 1,
-                               GridBagConstraints.BOTH, GridBagConstraints.NORTHWEST,
-                               2,2);
-
+                               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                               0, 0);
+      
       JButton add = new JButton("Add Fitness Function");
-      add.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-          // add the ff
+      add.addActionListener(new RunnableAction() {
+        public void run() {
+          
+          if(selectedItem != null) {
+            String nme = functionName.getText();
+              if (nme == null || nme.trim().length() == 0) {
+                JOptionPane.showMessageDialog(null, "Function name not specified",
+                                              "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+              }
+              String exec = execPath.getText();
+              if (exec == null || exec.trim().length() == 0) {
+                JOptionPane.showMessageDialog(null,
+                                              "Executable path name not specified",
+                                              "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+              }
+              String input = inputFilePath.getText();
+              if (input == null || input.trim().length() == 0) {
+                JOptionPane.showMessageDialog(null,
+                                              "Input file path name not specified",
+                                              "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+              }
+              String output = outputFilePath.getText();
+              if (output == null || output.trim().length() == 0) {
+                JOptionPane.showMessageDialog(null,
+                                              "Output file path name not specified",
+                                              "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+              }
+              String minmax = (String) min.getSelectedItem();
+            
+              selectedItem.name = nme;
+              selectedItem.exec = exec;
+              selectedItem.input = input;
+              selectedItem.output = output;
+              selectedItem.minmax = minmax;
+              
+              definedFunctionsModel.set(selectedIndex, selectedItem);
+              definedFunctions.getSelectionModel().clearSelection();             
+              return;
+          }
 
           String nme = functionName.getText();
           if (nme == null || nme.trim().length() == 0) {
@@ -358,9 +504,9 @@ public class DefineExternalFitnessFunctions
           outputFilePath.setText("");
         }
       });
-
+      
       Constrain.setConstraints(mainPanel, add, 1, 5, 1, 1,
-                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NONE,
                                GridBagConstraints.WEST,
                                1, 1);
 
@@ -369,51 +515,29 @@ public class DefineExternalFitnessFunctions
       // when done is pressed, push out the EMOPopulationParams
       // with the externalFitnessInfo set, and the useExternalFitnessEvaluation
       // flag to true
-      done.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+      done.addActionListener(new RunnableAction() {
+        public void run() {
           Object[] functions = definedFunctionsModel.toArray();
           setFitnessFunctions(functions);
 
           // now create the table and add it to the pop info
-          /*MutableTableImpl tbl = new MutableTableImpl();
-          int numFunctions = functions.length;
-          tbl.addColumn(new String[numFunctions]);
-          tbl.addColumn(new String[numFunctions]);
-          tbl.addColumn(new String[numFunctions]);
-          tbl.addColumn(new String[numFunctions]);
-          tbl.addColumn(new String[numFunctions]);
-
-          // the table that describes the FFs has 5 columns
-          tbl.setColumnLabel("Function Name", 0);
-          tbl.setColumnLabel("Executable", 1);
-          tbl.setColumnLabel("Input File", 2);
-          tbl.setColumnLabel("Output File", 3);
-          tbl.setColumnLabel("Min/Max", 4);
-
-          for (int i = 0; i < functions.length; i++) {
-            FitnessFunction f = (FitnessFunction) functions[i];
-            tbl.setString(f.name, i, 0);
-            tbl.setString(f.exec, i, 1);
-            tbl.setString(f.input, i, 2);
-            tbl.setString(f.output, i, 3);
-            tbl.setString(f.minmax, i, 4);
-          }
-              */
-          FitnessFunctions ff = parameters.fitnessFunctions;
-          if(ff == null) {
-            ff = new FitnessFunctions();
-            parameters.fitnessFunctions = ff;
-          }
           int numFunctions = functions.length;
 
-          for(int i = 0; i < functions.length; i++) {
+          for(int i = 0; i < numFunctions; i++) {
             FitnessFunction f = (FitnessFunction) functions[i];
             boolean b;
             if(f.minmax.equals(MINIMIZE))
               b = true;
             else
               b = false;
-            ff.addExternFitnessFunction(f.name, f.exec, f.input, f.output, b);
+              
+            //ff.addExternFitnessFunction(f.name, f.exec, f.input, f.output, b);
+            FitnessExecFunction fef = new FitnessExecFunction(f.name, 
+                System.getProperty("user.dir")+File.separator+f.exec,
+                System.getProperty("user.dir")+File.separator+f.input, 
+                System.getProperty("user.dir")+File.separator+f.output, 
+                b);
+            parameters.addFunction(fef);
           }
 
           // push out the pop info
@@ -423,19 +547,27 @@ public class DefineExternalFitnessFunctions
         }
       });
       JButton abort = new JButton("Abort");
-      abort.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+      abort.addActionListener(new RunnableAction() {
+        public void run() {
           viewCancel();
         }
       });
       buttonPanel.add(abort);
       buttonPanel.add(done);
+      
+      JPanel p3 = new JPanel(new BorderLayout());
+      p3.add(mainPanel, BorderLayout.NORTH);
+      p3.add(new JPanel(), BorderLayout.CENTER);
 
       JPanel top = new JPanel(new BorderLayout());
       mainPanel.setBorder(new EmptyBorder(1, 10, 5, 0));
-      top.add(mainPanel, BorderLayout.CENTER);
-      top.add(listPanel, BorderLayout.EAST);
-
+      top.add(p3, BorderLayout.CENTER);
+      top.add(p2, BorderLayout.EAST);
+      
+      JPanel p1 = new JPanel(new BorderLayout());
+      p1.add(top, BorderLayout.WEST);
+      p1.add(new JPanel(), BorderLayout.CENTER);
+      
       setLayout(new BorderLayout());
       JLabel lbl = new JLabel("Enter Fitness Functions");
       Font f = lbl.getFont();
@@ -444,7 +576,7 @@ public class DefineExternalFitnessFunctions
       lbl.setBorder(new EmptyBorder(10, 10, 10, 0));
 
       add(lbl, BorderLayout.NORTH);
-      add(top, BorderLayout.CENTER);
+      add(p1, BorderLayout.CENTER);
       add(buttonPanel, BorderLayout.SOUTH);
     }
 
