@@ -187,12 +187,12 @@ public class InfoGainAttributeEval
   public void buildEvaluator (Table data)
     throws Exception {
 
-    //if (data.checkForStringAttributes()) {
-    //  throw  new UnsupportedAttributeTypeException("Can't handle string attributes!");
-    //}
+    
 
     int[] outputFeatures = ((ExampleTable) data).getOutputFeatures();
 
+    int[] inputFeatures = ((ExampleTable) data).getInputFeatures();
+    
     if (outputFeatures == null || outputFeatures.length == 0) 
     	throw new Exception ( " Class attribute must be specified in ChooseAttributes ");
     
@@ -204,16 +204,11 @@ public class InfoGainAttributeEval
     int numInstances = data.getNumRows();
 
 
-    //selectedColumns has to come from a user interface ore other params
-    int [] selectedColumns = new int[data.getNumColumns()-1];
-
+   
     if (!m_Binarize) {
       EntropyBinning m_disTransform = new EntropyBinning();
       m_disTransform.setUseBetterEncoding(true);
-      for (int i =0; i < data.getNumColumns()-1; i ++) {
-               selectedColumns[i] = i;
-      }
-      BinDescriptor[] binDescr = m_disTransform.buildBins((ExampleTable)data,selectedColumns);
+      BinDescriptor[] binDescr = m_disTransform.buildBins((ExampleTable)data,inputFeatures);
       BinTransform bt = new BinTransform(data,binDescr, false);
       bt.transform((ExampleTable)data);
     } else {
