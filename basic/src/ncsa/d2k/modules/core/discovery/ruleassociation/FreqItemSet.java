@@ -25,6 +25,7 @@ public class FreqItemSet implements java.io.Serializable {
         if(items != null) {
             StringBuffer sb = new StringBuffer();
             int[] ar = items.toNativeArray();
+            Arrays.sort(ar);
             for(int i = 0; i < ar.length; i++) {
                 sb.append(Integer.toString(ar[i]));
                 if(i != ar.length-1)
