@@ -186,10 +186,15 @@ public class PredictionTableReport extends VisModule  {
 	   		@param input the Object that is the input
 	   		@param idx the index of the input
 		*/
-		public void setInput(Object input, int idx) {
+		public void setInput(Object input, int idx) throws Exception {
 			PredictionTable pt = (PredictionTable)input;
 			int []outputs = pt.getOutputFeatures();
 			int []preds = pt.getPredictionSet();
+
+                        if(outputs == null)
+                          throw new Exception("The output attributes were undefined.");
+                        if(preds == null)
+                          throw new Exception("The prediction features were undefined.");
 
 			jtp = new JTabbedPane();
 			for(int i = 0; i < outputs.length; i++) {
