@@ -37,9 +37,13 @@ public class ReadTransposedVT extends ReadDelimitedFormat
 		@return a VerticalTable containing the data from the file, or null
 		if any errors occur
 	*/
-	protected VerticalTable readFile(File f) {
+	protected VerticalTable readSDFile(File f) {
 		int maxInputRowLength = 0;
 		int maxInputColumnLength =0;
+		byte[] delbyt=new byte[1];
+		delbyt[0]=delimiterOne;
+		delimiter=new String(delbyt);
+		System.out.println("Delimiter:"+delimiter);
 		ArrayList rowPtrs = new ArrayList();
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(f));
