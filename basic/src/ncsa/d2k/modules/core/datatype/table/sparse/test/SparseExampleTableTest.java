@@ -116,12 +116,12 @@ public class SparseExampleTableTest
     }
   }
 
-//  public void testToPredictionTable() {
-//    SparseExampleTable et = (SparseExampleTable) getFullTable();
-//    SparsePredictionTable pt = new SparsePredictionTable(et);
-//    SparsePredictionTable result = (SparsePredictionTable) et.toPredictionTable();
-//    assertEquals(result, pt);
-//  }
+  public void testToPredictionTable() {
+    SparseExampleTable et = (SparseExampleTable) getFullTable();
+    SparsePredictionTable pt = new SparsePredictionTable(et);
+    SparsePredictionTable result = (SparsePredictionTable) et.toPredictionTable();
+    assertEquals(result, pt);
+  }
 
   public void testGetNumInputOuputFeatures() {
     SparseExampleTable etFull = (SparseExampleTable) getFullTable();

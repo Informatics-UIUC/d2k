@@ -778,6 +778,9 @@ public class SparseExampleTable
      @return a reference to a Table referencing only the training data.
    */
   public Table getTrainTable() {
+    if (trainSet == null) {
+      return null;
+    }
     SparseExampleTable eti = (SparseExampleTable)this.shallowCopy();
     eti.subset = trainSet;
     return eti;
