@@ -22,7 +22,7 @@ public class ScaleDoubles extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "      This is the input example table with the inputs and outputs selected.   ";
+			case 0: return "an example table with the inputs and outputs selected.   ";
 			default: return "No such input";
 		}
 	}
@@ -42,7 +42,7 @@ public class ScaleDoubles extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "      Scales all double and float columns to the range 0-1.   ";
+			case 0: return "The input table with double and float columns scaled to the range 0-1.   ";
 			default: return "No such output";
 		}
 	}
@@ -61,7 +61,9 @@ public class ScaleDoubles extends ncsa.d2k.core.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    This module will examine each input column and output column, and if they     contain nominal values, it will convert them to multiple colunms (of     booleans) one for each possible value of the attribute.  </body></html>";
+		return "<html>  <head>      </head>  <body>     "+
+                "this module scales columns that contain double or float values in a mutable table. "+
+                "it ignores other type of columns.</body></html>";
 	}
 
 	private Column getScaledColumn (DoubleColumn col) {
@@ -89,7 +91,7 @@ public class ScaleDoubles extends ncsa.d2k.core.modules.DataPrepModule
 
 		for (int i = 0 ; i < et.getNumColumns () ; i++) {
 			Column col = et.getColumn (i);
-		System.out.println ("COLUMN TPE = "+col.getClass().getName());
+		System.out.println ("COLUMN TYPE = "+col.getClass().getName());
 			if (inputs == null) {
 
 				// Is the column contain scalable stuff?
@@ -138,7 +140,7 @@ public class ScaleDoubles extends ncsa.d2k.core.modules.DataPrepModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "Scalarize Nominals";
+		return "Scale Doubles";
 	}
 
 	/**
