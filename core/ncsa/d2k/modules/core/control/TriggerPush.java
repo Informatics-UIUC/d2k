@@ -62,8 +62,10 @@ public class TriggerPush extends DataPrepModule
 		}
 		totalFires++;
 		pullInput(1);
-		if (debug)
-			System.out.println("TriggerPush:"+totalFires);
+		if (debug){
+			System.out.println(getAlias()+":"
+				+totalFires+":"+theObject.toString());
+		}
 		pushOutput(theObject, 0);
 
 

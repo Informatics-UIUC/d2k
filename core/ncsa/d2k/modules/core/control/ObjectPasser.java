@@ -45,9 +45,10 @@ public class ObjectPasser extends DataPrepModule
 		does it
 	*/
 	public void doit() throws Exception{
+		Object ob=pullInput(0);
 		if(debug)
-			System.out.println(getAlias()+": Firing.");
-		pushOutput(pullInput(0), 0);
+			System.out.println(getAlias()+": Firing. "+ob.toString());
+		pushOutput(ob, 0);
 	}
 		
 	
