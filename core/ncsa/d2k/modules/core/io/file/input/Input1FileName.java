@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.io.file.input;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.beans.PropertyVetoException;
 
 import javax.swing.*;
 
@@ -35,23 +36,66 @@ public class Input1FileName extends InputModule {
     }
 
     public String getOutputInfo(int i) {
-        return "The absolute pathname of the specified file.";
+        return "The name of the file, possibly including the path.";
     }
 
     public String getOutputName(int i) {
-        return "filename";
+        return "File Name";
+    }
+
+    /** Return the name of this module.
+     *  @return The display name for this module.
+     */
+    public String getModuleName() {
+        return "Input File Name";
     }
 
     public String getModuleInfo() {
-        return "Input the name of a single file.  The file name is input in "+
-                "the properties editor.  Use the 'Browse' button to select "+
-                "the file from your local filesytem.";
+        String s = "<p>Overview: ";
+        s += "This module is used to enter the name of a file. ";
+        s += "</p><p>Detailed Description: ";
+        s += "The module provides a properties editor that can be used to ";
+        s += "enter a file name.  The user can enter the name directly into ";
+        s += "a text area or click a 'Browse' button to navigate ";
+        s += "the local filesystem. ";
+        s += "</p><p>";
+        s += "This module does not perform any checks to verify that ";
+        s += "the named file exists and is accessible by the user.  Such ";
+        s += "checking does not make sense as the module has no insight into ";
+        s += "how the file name will be used - for example, to read an ";
+        s += "existing file or to create a new one. A check is performed to ";
+        s += "make sure that a file name has been entered and an exception is ";
+        s += "thrown if the editor text area is blank. ";
+        s += "</p><p>";
+        s += "The file name is made available on the <i>File Name</i> output ";
+        s += "port.  A path may or may not be included in the file name ";
+        s += "string.  The final form shown in the properties editor ";
+        s += "text box is sent to the <i>File Name</i> output port. ";
+        s += "Typically when the Browser is used, the absolute path is ";
+        s += "included.";
+
+        return s;
+    }
+
+    /** Return an array with information on the properties the user may update.
+     *  @return The PropertyDescriptions for properties the user may update.
+     */
+    public PropertyDescription[] getPropertiesDescriptions() {
+        PropertyDescription[] pds = new PropertyDescription [1];
+
+        pds[0] = new PropertyDescription( "fileName",
+                 "File Name",
+                 "The name of a file, possibly including the path." );
+        return pds;
     }
 
     /** The file name property */
     private String fileName;
 
-    public void setFileName(String s) {
+    public void setFileName(String s) throws PropertyVetoException {
+        if (s == null || s.length() == 0) {
+            throw new PropertyVetoException("No file name was given.", null);
+        }
         fileName =  s;
         //jtf.setText(fileName);
     }
