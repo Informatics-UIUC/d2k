@@ -16,6 +16,7 @@ public class RowImpl implements Row, Serializable {
 
 	public RowImpl () {
 	}
+	
 	RowImpl (TableImpl et) {
 		table = et;
 		columns = table.getColumns();

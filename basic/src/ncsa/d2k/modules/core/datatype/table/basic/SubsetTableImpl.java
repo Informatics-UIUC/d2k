@@ -280,8 +280,14 @@ public class SubsetTableImpl extends MutableTableImpl {
     */
    public void setColumns (Column[] newColumns) {
       Column copyColumns [] = new Column [this.getNumColumns()];
+     
       for (int i = 0 ; i < this.getNumColumns() ; i++)
-         this.setColumn (this.expandColumn(newColumns[i]), i);
+      	this.setColumn(this.expandColumn(newColumns[i]),i);
+      	//for (int i = 0 ; i < newColumns.length ; i++) {
+      	  //copyColumns[i]= this.expandColumn(newColumns[i]);
+        //    this.setColumn (newColumns[i], i);
+      //}
+         
    }
 
    /**
@@ -291,10 +297,14 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the Column at in the table at pos
     */
    public Column getColumn (int pos) {
+   	//System.out.println("position " + pos);
+   	//Thread.dumpStack();
+   	
       return this.compressColumn(pos);
    } 
-
-   /**
+  
+   
+     /**
     * 
     * Get a Column from the table.
     * @param pos the position of the Column to get from table
@@ -490,7 +500,7 @@ public class SubsetTableImpl extends MutableTableImpl {
          cols[i] = oldcols[i].getSubset(newsubset);
       }
 
-      vt = new SubsetTableImpl(cols);
+      vt = new MutableTableImpl(cols);
       vt.setLabel(this.getLabel());
       vt.setComment(this.getComment());
       return vt;

@@ -258,4 +258,22 @@ public class ExampleImpl extends RowImpl implements Serializable, Example {
 	final public boolean getOutputBoolean(int o) {
 		return outputColumns [o].getBoolean(index);
 	}
+
+	//ANCA: method for comparing two ExampleImpl objects.
+	final public boolean equals(Object ex) {
+		Row example;
+		try {
+			example = (Row) ex;
+		} catch (Exception e) {
+			return false;
+		}
+
+		for (int i =0; i < (inputColumns.length+outputColumns.length); i ++) {
+					if(!this.getString(i).equals(example.getString(i))) return false;
+		}
+		return true;
+
+	}
+
+	
 }

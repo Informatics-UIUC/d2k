@@ -433,28 +433,28 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
 	}
 
 //		ANCA: method for comparing two Table objects.
-		  // Could be more efficient but as is used only in Junit tests,
-		  // less code is more important than speed of execution.
-		  // should also compare missing and empty arrays for columns or use column.equals
-		public boolean equals(Object tbl) {
-						Table table;
-						try {
-								table = (Table) tbl;
-						} catch (Exception e) {
-								return false;
-						}
+	// Could be more efficient but as is used only in Junit tests,
+	// less code is more important than speed of execution.
+	// should also compare missing and empty arrays for columns or use column.equals
+	public boolean equals(Object tbl) {
+		Table table;
+		try {
+			table = (Table) tbl;
+		} catch (Exception e) {
+			return false;
+		}
 
-				if(getNumRows() != table.getNumRows()) return false;
-				if(getNumColumns() != table.getNumColumns()) return false;
-								for (int i =0; i < getNumRows(); i ++) {
-												for (int j =0; j < getNumColumns(); j ++)
-														if(!getObject(i,j).equals(table.getObject(i,j))) return false;
-														}
-								return true;
+		if(getNumRows() != table.getNumRows()) return false;
+		if(getNumColumns() != table.getNumColumns()) return false;
+		for (int i =0; i < getNumRows(); i ++) {
+			for (int j =0; j < getNumColumns(); j ++)
+				if(!getObject(i,j).equals(table.getObject(i,j))) return false;
+		}
+		return true;
 
-						}
+	}
 
-
+	
 
 	/**
 	 * Return true if any value in this Table is missing.

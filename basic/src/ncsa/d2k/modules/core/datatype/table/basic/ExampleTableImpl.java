@@ -557,6 +557,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		// Copy failed, maybe objects in a column that are not serializable.
 		Column[] cols = new Column[this.getNumColumns()];
 		Column[] oldcols = this.columns;
+
 		for (int i = 0; i < cols.length; i++) {
 			cols[i] = oldcols[i].getSubset(newsubset);
 		}
