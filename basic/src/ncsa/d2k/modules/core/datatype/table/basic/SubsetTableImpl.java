@@ -294,19 +294,22 @@ public class SubsetTableImpl extends MutableTableImpl {
 
       //if col is the first column in the table add it as is and initialize subset
       int numRows = super.getNumRows();
-      if (columns.length == 0) {
-         if (subset.length == 0) {
-            numRows = col.getNumRows();
-            subset = new int[numRows];
-            for (int i = 0; i < this.getNumRows(); i++) {
-               subset[i] = i;
-            }
-            expandedColumn = col;
+      if (columns.length == 0 && subset.length == 0) {
+         
+         // This is the first column added. Set the subset to include everything
+         // and submist the column unmodified.
+         numRows = col.getNumRows();
+         subset = new int[numRows];
+         for (int i = 0; i < this.getNumRows(); i++) {
+            subset[i] = i;
          }
+         expandedColumn = col;
       } else if (numRows == col.getNumRows()) {
          expandedColumn = col;
       } else {
          
+         // the column is not the correct size, resize it to size of the 
+         // other columns in the table.
          try {
             expandedColumn = (Column)Class.forName(columnClass).newInstance();
          } catch (Exception e) {
@@ -395,10 +398,8 @@ public class SubsetTableImpl extends MutableTableImpl {
       // Expand the columns before adding them.
       for (int i = 0 ; i < cols.length ; i++) {
          cols[i] = this.expandColumn(cols[i]);
+         super.addColumn(cols[i]);
       }
-      
-      // relegate the add operation to the superclass.
-      super.addColumns(cols);
    }
 
    /**
