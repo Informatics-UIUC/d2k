@@ -171,4 +171,56 @@ final public class ColumnUtilities {
 		//dc.setType(new String());
 		return dc;
 	}
+
+
+    /**
+       Loop through the items in column, if they can all be represented
+       numerically, return true.  Otherwise return false.
+       @param column the column to test
+       @return true if column contains only numeric data, false otherwise
+    */
+    public static boolean isNumericColumn(Column column) {
+        int numRows = column.getNumRows();
+        for(int row = 0; row < numRows; row++) {
+            try {
+                Double d = Double.valueOf(column.getString(row));
+            }
+            catch(Exception e) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+       Create a column given the type and size.
+       @param type the type of column to create
+       @param size the initial size of the column
+       @return a new, empty column
+    */
+    public static Column createColumn(String type, int size) {
+        if(type.compareToIgnoreCase("String") == 0)
+            return new StringColumn(size);
+        else if(type.compareToIgnoreCase("float") == 0)
+            return new FloatColumn(size);
+        else if(type.compareToIgnoreCase("double") == 0)
+            return new DoubleColumn(size);
+        else if(type.compareToIgnoreCase("int") == 0)
+            return new IntColumn(size);
+        else if(type.compareToIgnoreCase("boolean") == 0)
+            return new BooleanColumn(size);
+        else if(type.compareToIgnoreCase("char[]") == 0)
+            return new ContinuousCharArrayColumn(size);
+        else if(type.compareToIgnoreCase("byte[]") == 0)
+            return new ContinuousByteArrayColumn(size);
+        else if(type.compareToIgnoreCase("long") == 0)
+            return new LongColumn(size);
+        else if(type.compareToIgnoreCase("short") == 0)
+            return new ShortColumn(size);
+	else
+	    return new StringColumn(size);
+    }
+    
+
 }

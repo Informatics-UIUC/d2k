@@ -702,6 +702,36 @@ public class TableImpl extends AbstractTable {
         }
     }
 
+
+    /**
+     Will write the contents of this Table to the file.
+     Each row of the Table will be written to a separate line
+     of the file and the elements will be separated by ",".
+     <br>
+     This method assumes there is a proper implementation of
+     getString for every underlying column.  (note: this should never
+     be a problem, as any implmentation of Column should be able to
+     support a String rep)
+    */
+    public void writeToFile (String fileName) {
+        PrintWriter out = null;
+        try {
+            out=new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+        } catch (IOException io) {
+            System.out.println(io);
+        }
+
+        int rows = this.getNumRows();
+        int cols = this.getNumColumns();
+        for (int r = 0; r < rows; r++) {
+            if( cols > 0) out.write(this.getString(r,0));
+            for (int c = 1; c < cols; c++)
+                out.write("," + this.getString(r, c) );
+            out.write('\n');
+        }
+    }
+
+
     /**
     	Sort a column and rearrange the rows of the Table accordingly.
     	The column must support sorting.
@@ -720,5 +750,32 @@ public class TableImpl extends AbstractTable {
         else
             throw  new NotSupportedException();
     }
+
+
+    /**
+       Sort the specified segment of a column and rearrange the rows of the table to
+       correspond to the sorted column.
+       @param col the column to sort by
+       @param begin the row no. which marks the beginnig column segment to be sorted
+       @param end the row no. which marks the end of the column segment to be sorted
+       @throws NotSupportedException thrown when the column does not support
+       sorting
+    */
+
+    public void sortByColumn(int col, int begin, int end) 
+            throws NotSupportedException 
+    {
+	Column c = getColumn(col);
+	if(c instanceof AbstractColumn) {
+	    if( (c instanceof NumericColumn) || (c instanceof TextualColumn))
+		((AbstractColumn)c).sort(this, begin, end);
+	    else
+		throw new NotSupportedException();
+	}
+	else
+	    throw new NotSupportedException();
+    }
+    
+
 }
 

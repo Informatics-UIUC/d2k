@@ -1062,6 +1062,22 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
     }
 
     /**
+       Sort the elements in this column starting with row 'begin' up to row 'end',
+       and swap the rows in the table  we are a part of.
+       @param t the VerticalTable to swap rows for
+       @param begin the row no. which marks the beginnig of the  column segment to be sorted
+       @param end the row no. which marks the end of the column segment to be sorted
+       @exception NotSupportedException when sorting is not supported
+    */
+    public void sort(Table t,int begin, int end)
+	throws NotSupportedException
+    {
+	doSort( begin, end, t);
+    }
+
+
+
+    /**
      Implement the quicksort algorithm.  Partition the array and
      recursively call doSort.
      @param p the beginning index

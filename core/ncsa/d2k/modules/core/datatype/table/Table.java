@@ -281,17 +281,31 @@ public interface Table extends java.io.Serializable {
     /**
     	Set the number of Columns this Table can hold
     	@param numCols the maximum number of Columns this Table can hold
-     */
-	public void setNumColumns(int numColumns);
+    */
+    
+    public void setNumColumns(int numColumns);
 
-	/**
-		Sort the specified column and rearrange the rows of the table to
-		correspond to the sorted column.
-		@param col the column to sort by
-		@throws NotSupportedException thrown when the column does not support
-		sorting
-	*/
-	public void sortByColumn(int col) throws NotSupportedException;
+    /**
+       Sort the specified column and rearrange the rows of the table to
+       correspond to the sorted column.
+       @param col the column to sort by
+       @throws NotSupportedException thrown when the column does not support
+       sorting
+    */
+    public void sortByColumn(int col) throws NotSupportedException;
+    
+    
+    /**
+       Sort the specified segment of a column and rearrange the rows of the table to
+       correspond to the sorted column.
+       @param col the column to sort by
+       @param begin the row no. which marks the beginnig column segment to be sorted
+       @param end the row no. which marks the end of the column segment to be sorted
+       @throws NotSupportedException thrown when the column does not support
+       sorting
+    */
+    public void sortByColumn(int col, int begin, int end) throws NotSupportedException;
+
 
 	/**
 		Swap the positions of two Columns.

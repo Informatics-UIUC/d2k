@@ -204,13 +204,23 @@ public interface Column extends java.io.Serializable {
      */
 	public void sort() throws NotSupportedException;
 
-    /**
+     /**
     	Sort the elements in this column, and swap the rows in the table
 		it is a member of.
     	@param t the Table to swap rows for
     	@exception NotSupportedException when sorting is not supported
      */
 	public void sort(Table t) throws NotSupportedException;
+
+    /**
+    	Sort the elements in this column, between the begin and end positions ,
+	and swap the rows in the table it is a member of.
+    	@param t the Table to swap rows for
+	@param begin the row no. which marks the beginnig of the  column segment to be sorted
+	@param end the row no. which marks the end of the column segment to be sorted
+    	@exception NotSupportedException when sorting is not supported
+     */
+	public void sort(Table t, int begin, int end) throws NotSupportedException;
 
     /**
     	Compare the values of the object passed in and pos. Return 0 if they
