@@ -5,39 +5,14 @@ import java.text.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
+import ncsa.d2k.core.modules.*;
 
 /**
  * Automatically discretize scalar data for the Naive Bayesian classification
  * model.  This module requires a ParameterPoint to determine the method of binning
  * to be used.
  */
-public class NaiveBayesAutoBin
-    extends NaiveBayesAutoBinOPT {
-
-  public String[] getInputTypes() {
-    String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-    return in;
-  }
-
-  public String getModuleInfo() {
-    String s = "<p>Overview: Automatically discretize scalar data for the " +
-        "Naive Bayesian classification model.  This module requires a " +
-        "ParameterPoint to determine the method of binning to be used." +
-        "<p>Detailed Description: Given a Parameter Point from a Naive Bayes " +
-        "Parameter Space and a table of Examples, define the bins for each " +
-        "scalar input column.  Nominal input columns will have a bin defined " +
-        "for each unique value in the column." +
-        "<p>Properties: none" +
-        "<p>Data Type Restrictions: This module does not modify the input data." +
-        "<p>Data Handling: When binning scalar columns by the number of bins, " +
-        "the maximum and minimum values of each column must be found.  When " +
-        "binning scalar columns by weight, the data in each individual column " +
-        "is first sorted using a merge sort and then another pass is used to " +
-        "find the bounds of the bins." +
-        "<p>Scalability: The module requires enough memory to make copies of " +
-        "each of the scalar input columns.";
-    return s;
-  }
+public class NaiveBayesAutoBin extends NaiveBayesAutoBinOPT {
 
   private int binMethod;
   public void setBinMethod(int i) throws Exception {
@@ -45,11 +20,9 @@ public class NaiveBayesAutoBin
       throw new Exception("Bin Method must be 0 or 1");
     binMethod = i;
   }
-
   public int getBinMethod() {
     return binMethod;
   }
-
 
   private int binWeight;
   public void setBinWeight(int i) throws Exception {
@@ -70,6 +43,55 @@ public class NaiveBayesAutoBin
   public int getNumberOfBins() {
     return numberOfBins;
   }
+
+  public String[] getInputTypes() {
+    String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+    return in;
+  }
+
+  public String getModuleInfo() {
+    String s = "<p>Overview: Automatically discretize scalar data for the " +
+        "Naive Bayesian classification model." +
+        "<p>Detailed Description: Given a table of Examples, define the bins for each " +
+        "scalar input column.  Nominal input columns will have a bin defined " +
+        "for each unique value in the column." +
+        "<p>Properties: none" +
+        "<p>Data Type Restrictions: This module does not modify the input data." +
+        "<p>Data Handling: When binning scalar columns by the number of bins, " +
+        "the maximum and minimum values of each column must be found.  When " +
+        "binning scalar columns by weight, the data in each individual column " +
+        "is first sorted using a merge sort and then another pass is used to " +
+        "find the bounds of the bins." +
+        "<p>Scalability: The module requires enough memory to make copies of " +
+        "each of the scalar input columns.";
+    return s;
+  }
+
+
+  /**
+   * Return a list of the property descriptions.
+   * @return a list of the property descriptions.
+   */
+  public PropertyDescription[] getPropertiesDescriptions() {
+    PropertyDescription[] pds = new PropertyDescription[3];
+    pds[0] = new PropertyDescription("binMethod", "Discretization Method",
+        "The method to use for discretization.  Select 0 to create bins" +
+        " by weight.  This will create bins with an equal number of items in "+
+        "each slot.  Select 1 to discretize by specifying the number of bins. "+
+        "This will give equally spaced bins between the minimum and maximum for "+
+        "each scalar column.");
+    pds[1] = new PropertyDescription("binWeight", "Number of Items per Bin",
+        "When binning by weight, this is the number of items" +
+        " that will go in each bin.  The last bin may have less than "+
+        "<i>weight</i> values, however.");
+    pds[2] = new PropertyDescription("numberOfBins", "Number of Bins",
+                                     "Define the number of bins absolutely. "+
+                                     "This will give equally spaced bins between "+
+                                     "the minimum and maximum for each scalar "+
+                                     "column.");
+    return pds;
+  }
+
 
   public void doit() throws Exception {
     ExampleTable et = (ExampleTable) pullInput(0);

@@ -482,10 +482,25 @@ public final class NaiveBayesModel
       @return A description of this module.
    */
   public String getModuleInfo() {
-    StringBuffer sb = new StringBuffer("Makes predictions based on the");
-    sb.append(" data it was created with.  The predictions are put into ");
-    sb.append(" a new column of the table.");
-    return sb.toString();
+//    StringBuffer sb = new StringBuffer("Makes predictions based on the");
+//    sb.append(" data it was created with.  The predictions are put into ");
+//    sb.append(" a new column of the table.");
+//    return sb.toString();
+
+    return "<p>Overview: Make predictions based on the data this model was " +
+        "trained with."+
+        "<p>Detailed Description: Given a BinTree object that contains counts for "+
+        "each discrete item in the training data set, this module creates a "+
+        "Naive Bayesian learning model.  This method is based on Bayes's rule "+
+        "for conditional probablility.  It \"naively\" assumes independence of "+
+        "the input features."+
+        "<p>Data Type Restrictions: This model can only use nominal data as the inputs "+
+        "and can only classify one nominal output.  The binning procedure will "+
+        "discretize any scalar inputs in the training data, but the output data "+
+        "is not binned and should be nominal."+
+        "<p>Data Handling: The input data is neither modified nor destroyed."+
+        "<p>Scalability: The module utilizes the counts in the BinTree, and "+
+        "as such does not perform any significant computations.";
   }
 
   /**
