@@ -11,8 +11,10 @@ import java.util.*;
 //===============
 
 import ncsa.d2k.modules.core.datatype.table.db.DBDataSource;
+import ncsa.d2k.modules.core.datatype.table.db.DBTable;
 import backend.*;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
+
 import ncsa.d2k.modules.core.io.dstp.*;
 
 /**
@@ -30,6 +32,10 @@ import ncsa.d2k.modules.core.io.dstp.*;
  * <p>Company: NCSA Automated Learning Group</p>
  * @author D. Searsmith
  * @version 1.0
+ *
+ * added by vered as part of conversion to headless
+ * uck, attribute and MetaNode are now stand alone classes.
+ * all "DSTPView." before these class names were commented out.
  */
 public class DSTPDataSource extends Thread implements DBDataSource, ProgressQueryable {
 
@@ -38,8 +44,13 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
   //==============
 
   transient private DSTPConnection _conn = null;
-  private DSTPView.MetaNode _meta = null;
+  //MetaData is now a stand alone class. [vered - conversion to headless]
+  //private DSTPView.MetaNode _meta = null;
+  private MetaNode _meta = null;
   private boolean _debug = false;
+
+//part of headless conversion support.
+  private boolean nogui = false;
 
   private Vector _data = null;
 
@@ -56,16 +67,36 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
   // Constructor(s)
   //===============
 
-  public DSTPDataSource(DSTPView view, DSTPView.MetaNode meta){
+//MetaData is now a stand alone class. [vered - conversion to headless]
+  public DSTPDataSource(DSTPView view, MetaNode meta){
     _meta = meta;
     _view = view;
     start();
   }
 
-  public DSTPDataSource(DSTPView.MetaNode meta, Vector data){
+//MetaData is now a stand alone class. [vered - conversion to headless]
+  public DSTPDataSource(/*DSTPView.*/MetaNode meta, Vector data){
+
+    //vered - debug
+    System.out.println("some value is a ssigned to _data, and its size = " + data.size());
+    //end debug
     _meta = meta;
     _data = data;
   }
+
+//headless conversion support
+  //the following field and constructor are used by doit method of ParseDSTPToDBTable
+private ParseDSTPToDBTable _module = null;
+  public DSTPDataSource(MetaNode meta, ParseDSTPToDBTable module){
+   _meta = meta;
+   nogui = true;
+   _module = module;
+   //_view = view;
+   start();
+
+ }
+ //headless conversion support
+
 
 
   //================
@@ -78,12 +109,22 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
   //================
 
   public void run(){
+
+
+
     if (buildSettings()){
+      if(nogui)
+        _module.push(new DBTable(this), 0);
+      else
       _view.pushOut(this);
     } else {
+      if(!nogui)
       _view.enableAll();
+      else System.out.println("something went wrong in building settings");
     }
-  }
+
+
+  }//run
 
   //=================
   // Private Methods
@@ -97,11 +138,16 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
   private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException {
     stream.defaultReadObject();
     if (_data == null){
-      buildSettings();
+
+        buildSettings();
+
     }
   }
 
-  private boolean buildSettings(){
+  private boolean buildSettings() {
+
+
+
     try {
       System.out.println("Building settings ...");
       _conn = new DSTPConnection(_meta.getServerName());
@@ -115,7 +161,7 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
       //set ucks
       Iterator ucks = _meta.getUCK();
       while(ucks.hasNext()){
-        String uckname = ((DSTPView.uck)ucks.next()).getUCKName();
+        String uckname = ((uck)ucks.next()).getUCKName();
         // the 'set uck' command for all selected ucks
         String sCommandString = "set uck " + uckname;
         System.out.println(sCommandString);
@@ -134,12 +180,17 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
       //set attributes
       Iterator atts = _meta.getSelectedAttributes();
       while(atts.hasNext()){
-        DSTPView.attribute att = (DSTPView.attribute)atts.next();
+        /*DSTPView.*/attribute att = (/*DSTPView.*/attribute)atts.next();
         System.out.println(att.getAttName());
         sCommandString += " " + att.getAttNumber();
       }
       System.out.println("Starting read ...");
       _data = new Vector();
+
+      //vered - debug
+      System.out.println("size of vector _data = " + _data.size());
+      //end debug
+
       int cnt = 0;
       try {
         cnt = Integer.parseInt(_meta.getDatafileNumRecords());
@@ -153,11 +204,18 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
       System.out.println("End read ...");
       //quitConnection();
     } catch (Exception e){
-      System.out.println("EXCEPTION in building datasource: " + e);
-      javax.swing.JOptionPane.showMessageDialog(null, e.getMessage());
+
+      //headless conversion support.
+      //in efforts to make this method usefull also to doit of ParseDSTP...
+      System.out.println("EXCEPTION in building datasource: " );
+      e.printStackTrace();
       return false;
       //e.printStackTrace();
     }
+
+
+
+
     return true;
   }
 
@@ -181,7 +239,7 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
       Iterator atts = _meta.getSelectedAttributes();
       int j = 0;
       while(atts.hasNext()){
-        DSTPView.attribute att = (DSTPView.attribute)atts.next();
+        /*DSTPView.*/attribute att = (/*DSTPView.*/attribute)atts.next();
         cols[0][j++] = att.getAttName();
       }
       return cols;
@@ -341,7 +399,7 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
       int j = 0;
       String retval = null;
       while(atts.hasNext()){
-        DSTPView.attribute att = (DSTPView.attribute)atts.next();
+        /*DSTPView.*/attribute att = (/*DSTPView.*/attribute)atts.next();
         if (i == j++){
           retval = att.getAttName();
           break;
@@ -375,7 +433,7 @@ public class DSTPDataSource extends Thread implements DBDataSource, ProgressQuer
       int j = 0;
       String retval = null;
       while(atts.hasNext()){
-        DSTPView.attribute att = (DSTPView.attribute)atts.next();
+        /*DSTPView.*/attribute att = (/*DSTPView.*/attribute)atts.next();
         if (i == j++){
           retval = att.getAttType();
           break;
