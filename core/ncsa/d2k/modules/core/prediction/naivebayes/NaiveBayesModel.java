@@ -609,7 +609,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 				//Column c = pt.getColumn(ins[col]);
 
 				//if(c instanceof NumericColumn)
-                if(table.isColumnScalar(ins[col]))
+                if(pt.isColumnScalar(ins[col]))
 					bn = binTree.getBinNameForValue(pt.getColumnLabel(ins[col]),
 						pt.getDouble(row, ins[col]));
 				else
