@@ -226,7 +226,7 @@ public class TableCluster implements Serializable {
       java.util.HashSet ofeats = new java.util.HashSet();
       if (_table instanceof ExampleTable) {
         ofeats = new java.util.HashSet();
-        int[] xfeats = ( (ExampleTable) _table).getOutputFeatures();
+        int[] xfeats = ( (ExampleTable) _table).getInputFeatures();
         for (int x = 0, y = xfeats.length; x < y; x++){
           ofeats.add(new Integer(xfeats[x]));
         }
@@ -240,10 +240,12 @@ public class TableCluster implements Serializable {
         tempv = new double[numcols];
         tempi = new int[numcols];
       }
+
+      //System.out.println("Numcols: " + ( (ExampleTable) _table).getInputFeatures().length);
       for (int j = 0, m = members.length; j < m; j++) {
         int feats[] = ((SparseTable)_table).getRowIndices(members[j]);
         for (int i = 0, n = feats.length; i < n; i++) {
-          if (!ofeats.contains(new Integer(feats[i]))){
+          if (ofeats.contains(new Integer(feats[i]))){
             temp[feats[i]] += _table.getDouble(members[j], feats[i]);
           }
         }

@@ -832,6 +832,28 @@ public class SparseSubsetTable extends SparseMutableTable {
   ///////////////////////
   // Missing and empty values.
   //
+
+  /**
+   * Return true if any value in this Table is missing.
+   * @return true if there are any missing values, false if there are no missing values
+   */
+  public boolean hasMissingValues() {
+    int[] colarr = columns.keys();
+    gnu.trove.TIntHashSet ihash = new gnu.trove.TIntHashSet(this.getSubset());
+    for (int i = 0; i < colarr.length; i++) {
+      int[] rowarr = ( (AbstractSparseColumn) getCol(colarr[i])).getIndices();
+      for (int j = 0; j < rowarr.length; j++) {
+        if (ihash.contains(rowarr[j])){
+          if (super.isValueMissing(rowarr[j], colarr[i])) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+
   public boolean isValueMissing(int row, int column) {
     //the index out of bounds check is performed in the getColumn call.
     Column col = super.getColumn(column);

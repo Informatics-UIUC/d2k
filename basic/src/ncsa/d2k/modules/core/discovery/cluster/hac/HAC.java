@@ -600,16 +600,19 @@ public class HAC {
         }
 
       } else {
+        gnu.trove.TIntHashSet ihash = new gnu.trove.TIntHashSet(ifeatures);
         for (int i = 0, n = itable.getNumRows(); i < n; i++) {
           int[] cols = ((SparseTable)itable).getRowIndices(i);
           for (int j = 0, m = cols.length; j < m; j++) {
-            if (! (itable.getColumnType(cols[j]) == ColumnTypes.BOOLEAN)) {
-              double compval = itable.getDouble(i, cols[j]);
-              if (max[cols[j]] < compval) {
-                max[cols[j]] = compval;
-              }
-              if (min[cols[j]] > compval) {
-                min[cols[j]] = compval;
+            if (ihash.contains(cols[j])){
+              if (! (itable.getColumnType(cols[j]) == ColumnTypes.BOOLEAN)) {
+                double compval = itable.getDouble(i, cols[j]);
+                if (max[cols[j]] < compval) {
+                  max[cols[j]] = compval;
+                }
+                if (min[cols[j]] > compval) {
+                  min[cols[j]] = compval;
+                }
               }
             }
           }
