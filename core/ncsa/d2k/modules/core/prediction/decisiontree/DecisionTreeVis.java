@@ -25,8 +25,9 @@ public final class DecisionTreeVis extends VisModule  {
 	private static final String searchicon = File.separator + "images" + File.separator + "search.gif";
 	private static final String printicon = File.separator + "images" + File.separator + "printit.gif";
 	private static final String homeicon = File.separator + "images" + File.separator + "home.gif";
+	private static final String helpicon = File.separator + "images"  +File.separator +"help.gif";
 
-	private static final Dimension buttonsize = new Dimension(25, 25);
+	private static final Dimension buttonsize = new Dimension(22, 22);
 
 	private static final int MENUITEMS = 15;
 
@@ -111,9 +112,10 @@ public final class DecisionTreeVis extends VisModule  {
 
 		JPanel sidepanel;
 		JScrollPane sidescrollpane;
+		JPanel buttonpanel;
 
 		JPanel toolpanel;
-		JButton resetbutton, printbutton, searchbutton;
+		JButton resetbutton, printbutton, searchbutton, helpbutton;
 		JToggleButton zoombutton;
 
 		Hashtable colortable;
@@ -270,10 +272,32 @@ public final class DecisionTreeVis extends VisModule  {
 			zoombutton.addActionListener(this);
 			zoombutton.setToolTipText("Zoom");
 
+			image = getImage(helpicon);
+			if(image != null)
+				icon = new ImageIcon(image);
+			if(icon != null) {
+				helpbutton = new JButton(icon);
+				helpbutton.setMaximumSize(buttonsize);
+				helpbutton.setPreferredSize(buttonsize);
+			}
+			else
+				helpbutton = new JButton("H");
+			helpbutton.addActionListener(this);
+			helpbutton.setToolTipText("Help");
+
 			toolpanel.setLayout(new GridBagLayout());
 			Constrain.setConstraints(toolpanel, new JPanel(), 0, 0, 1, 1, GridBagConstraints.BOTH,
 				GridBagConstraints.NORTHWEST, 1, 1);
-			Constrain.setConstraints(toolpanel, resetbutton, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+			buttonpanel = new JPanel();
+			buttonpanel.setLayout(new GridLayout(1, 5));
+			buttonpanel.add(resetbutton);
+			buttonpanel.add(printbutton);
+			buttonpanel.add(zoombutton);
+			buttonpanel.add(searchbutton);
+			buttonpanel.add(helpbutton);
+			Constrain.setConstraints(toolpanel, buttonpanel, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.NORTHWEST, 0, 0);
+			/*Constrain.setConstraints(toolpanel, resetbutton, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
 				GridBagConstraints.NORTHWEST, 0, 0);
 			Constrain.setConstraints(toolpanel, printbutton, 2, 0, 1, 1, GridBagConstraints.HORIZONTAL,
 				GridBagConstraints.NORTHWEST, 0, 0);
@@ -281,6 +305,7 @@ public final class DecisionTreeVis extends VisModule  {
 				GridBagConstraints.NORTHWEST, 0, 0);
 			Constrain.setConstraints(toolpanel, searchbutton, 4, 0, 1, 1, GridBagConstraints.HORIZONTAL,
 				GridBagConstraints.NORTHWEST, 0, 0);
+			*/
 
 			// Split pane
 			brushpanel = new BrushPanel(model);
@@ -375,20 +400,21 @@ public final class DecisionTreeVis extends VisModule  {
 			else if (source == showlabels)
 				treescrollpane.toggleLabels();
 
-			else if (source == zoom) {
+			/*else if (source == zoom) {
 				if (zoom.isSelected())
 					zoombutton.setSelected(true);
 				else
 					zoombutton.setSelected(false);
 
 				treescrollpane.toggleZoom();
-			}
+			}*/
 
 			else if (source == zoombutton) {
-				if (zoombutton.isSelected())
+				/*if (zoombutton.isSelected())
 					zoom.setSelected(true);
 				else
 					zoom.setSelected(false);
+				*/
 
 				treescrollpane.toggleZoom();
 			}
@@ -445,7 +471,18 @@ public final class DecisionTreeVis extends VisModule  {
 		}
 
 		public Dimension getPreferredSize() {
-			return new Dimension(800, 600);
+			Dimension top = buttonpanel.getPreferredSize();
+			Dimension left = navigatorpanel.getPreferredSize();
+			Dimension mainarea = treescrollpane.getPreferredSize();
+
+			int width = (int)left.getWidth()+(int)mainarea.getWidth();
+			int height = (int)top.getHeight()+(int)mainarea.getHeight();
+
+			if(width > 800)
+				width = 800;
+			if(height > 600)
+				height = 600;
+			return new Dimension(width, height);
 		}
 
 		private class ColorMenuItem extends JMenuItem {

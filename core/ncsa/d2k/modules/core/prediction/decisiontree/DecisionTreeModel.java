@@ -5,6 +5,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import java.io.Serializable;
 import java.util.*;
 
+
+
 /**
 	Encapsulates a decision tree.  Takes an ExampleTable as input
 	and uses the decision tree to predict the outcome for each row
@@ -37,16 +39,19 @@ public class DecisionTreeModel extends PredictionModelModule
 	private String[] inputColumnNames;
 	private String[] outputColumnNames;
 
-	private String[] inputTypes;
-	private String[] outputTypes;
+	//private String[] inputTypes;
+	//private String[] outputTypes;
 
 	private String[] classNames;
+
+        private boolean[] inputIsScalar;
+        private boolean[] outputIsScalar;
 
 	/**
 		Constructor
 		@param rt the root of the decision tree
 	*/
-	DecisionTreeModel(DecisionTreeNode rt, ExampleTable table) {
+	public DecisionTreeModel(DecisionTreeNode rt, ExampleTable table) {
 		setName("DecisionTreeModel");
 		root = rt;
 		inputFeatures = table.getInputFeatures();
@@ -54,25 +59,32 @@ public class DecisionTreeModel extends PredictionModelModule
 		trainingSetSize = table.getNumRows();
 
 		inputColumnNames = new String[inputFeatures.length];
-		inputTypes = new String[inputFeatures.length];
+		//inputTypes = new String[inputFeatures.length];
+                inputIsScalar = new boolean[inputFeatures.length];
 		for(int i = 0; i < inputFeatures.length; i++) {
 			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
 			//if(table.getColumn(inputFeatures[i]) instanceof NumericColumn)
-			if(table.isColumnNumeric(inputFeatures[i]))
-				inputTypes[i] = "Scalar";
+			if(table.isColumnScalar(inputFeatures[i]))
+				//inputTypes[i] = "Scalar";
+                                inputIsScalar[i] = true;
 			else
-				inputTypes[i] = "Nominal";
+				//inputTypes[i] = "Nominal";
+                                inputIsScalar[i] = false;
 		}
 
 		outputColumnNames = new String[outputFeatures.length];
-		outputTypes = new String[outputFeatures.length];
+		//outputTypes = new String[outputFeatures.length];
+                outputIsScalar = new boolean[outputFeatures.length];
 		for(int i = 0; i < outputFeatures.length; i++) {
 			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
 			//if(table.getColumn(outputFeatures[i]) instanceof NumericColumn)
-			if(table.isColumnNumeric(outputFeatures[i]))
-				outputTypes[i] = "Scalar";
+			//if(table.isColumnNumeric(outputFeatures[i]))
+                        if(table.isColumnScalar(outputFeatures[i]))
+				//outputTypes[i] = "Scalar";
+                                outputIsScalar[i] = true;
 			else
-				outputTypes[i] = "Nominal";
+				//outputTypes[i] = "Nominal";
+                                outputIsScalar[i] = false;
 		}
 
 		classNames = uniqueValues(table, outputFeatures[0]);
@@ -80,6 +92,9 @@ public class DecisionTreeModel extends PredictionModelModule
 		uniqueInputs = new String[inputFeatures.length][];
 		for (int index = 0; index < inputFeatures.length; index++)
 			uniqueInputs[index] = uniqueValues(table, inputFeatures[index]);
+
+		// do unique outputs here
+		uniqueOutputs = uniqueValues(table, outputFeatures[0]);
 	}
 
 	public String getModuleInfo() {
@@ -148,11 +163,26 @@ public class DecisionTreeModel extends PredictionModelModule
 	}
 
 	public String[] getInputFeatureTypes() {
-		return inputTypes;
+                String[] retVal = new String[inputIsScalar.length];
+                for(int i = 0; i < inputIsScalar.length; i++) {
+                    if(inputIsScalar[i])
+                        retVal[i] = "Scalar";
+                    else
+                        retVal[i] = "Nominal";
+                }
+                return retVal;
+		//return inputTypes;
 	}
 
 	public String[] getOutputFeatureTypes() {
-		return outputTypes;
+                String[] retVal = new String[outputIsScalar.length];
+                for(int i = 0; i < outputIsScalar.length; i++) {
+                    if(outputIsScalar[i])
+                        retVal[i] = "Scalar";
+                    else
+                        retVal[i] = "Nominal";
+                }
+                return retVal;
 	}
 
 	/**
@@ -203,7 +233,7 @@ public class DecisionTreeModel extends PredictionModelModule
 			String pred = (String)root.evaluate(pt, i);
 			pt.setStringPrediction(pred, i, 0);
 		}
-		uniqueOutputs = uniqueValues(pt, outputs[0]);
+		//uniqueOutputs = uniqueValues(pt, outputs[0]);
 		return pt;
 	}
 
@@ -260,6 +290,10 @@ public class DecisionTreeModel extends PredictionModelModule
 		return root;
 	}
 
+	public void setRoot(DecisionTreeNode newRoot) {
+		root = newRoot;
+	}
+
 	/**
 		Get the Viewable root of this decision tree.
 		@return the root of the tree
@@ -277,9 +311,12 @@ public class DecisionTreeModel extends PredictionModelModule
 	}
 
 	public boolean scalarInput(int index) {
-		if (inputTypes[index].equals("Scalar"))
+		//if (inputTypes[index].equals("Scalar"))
+                /*if(inputIsScalar[index])
 			return true;
 
 		return false;
+            */
+            return inputIsScalar[index];
 	}
 }

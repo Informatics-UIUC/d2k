@@ -705,6 +705,7 @@ public class C45TreeBuilder extends ComputeModule {
 		Build the decision tree
 	*/
 	public void doit() {
+        System.out.println("DOIT");
 		table = (ExampleTable)pullInput(0);
 		int[] inputs = table.getInputFeatures();
 		outputs = table.getOutputFeatures();

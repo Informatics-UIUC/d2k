@@ -44,6 +44,14 @@ public final class NumericDecisionTreeNode extends DecisionTreeNode
 	public final void addBranch(String val, DecisionTreeNode child) {
 	}
 
+	public void setBranch(int branchNum, String val, DecisionTreeNode child) {
+		DecisionTreeNode oldChild = getChild(branchNum);
+
+		children.set(branchNum, child);
+		branchLabels.set(branchNum, val);
+		child.setParent(this);
+	}
+
 	/**
 		Add left and right children to this node.
 		@param split the split value for this node
@@ -79,7 +87,15 @@ public final class NumericDecisionTreeNode extends DecisionTreeNode
 	*/
 	public final Object evaluate(Table vt, int row) {
 		if(isLeaf()) {
-			incrementOutputTally(label);
+			if(training) {
+				String actualVal = vt.getString(((ExampleTable)vt).getOutputFeatures()[0], row);
+				if(actualVal.equals(label))
+					incrementOutputTally(label, true);
+				else
+					incrementOutputTally(label, false);
+			}
+			else
+				incrementOutputTally(label, false);
 			return label;
 		}
 
@@ -94,7 +110,7 @@ public final class NumericDecisionTreeNode extends DecisionTreeNode
 			}
 		}
 		if(colNum < 0) {
-			incrementOutputTally(UNKNOWN);
+			incrementOutputTally(UNKNOWN, false);
 			return UNKNOWN;
 		}
 

@@ -37,6 +37,8 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 
 	private static final String EQUALS = " = ";
 
+
+
 	/**
 		Get the label of a branch.
 		@param i the branch to get the label of
@@ -58,7 +60,6 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 		@param child the child node
 	*/
 	public final void addBranch(String val, DecisionTreeNode child) {
-		//child.setLabel(val);
 		outputToChildMap.put(val, child);
 		children.add(child);
 		branchLabels.add(val);
@@ -73,6 +74,15 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 		DecisionTreeNode left, String rightlabel, DecisionTreeNode right) {
 	}
 
+	public void setBranch(int branchNum, String val, DecisionTreeNode newChild) {
+		DecisionTreeNode oldChild = getChild(branchNum);
+
+		outputToChildMap.put(val, newChild);
+		children.set(branchNum, newChild);
+		branchLabels.set(branchNum, val);
+		newChild.setParent(this);
+	}
+
 	/**
 		Evaluate a record from the data set.  If this is a leaf, return the
 		label of this node.  Otherwise find the column of the table that
@@ -85,9 +95,16 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 		@return the result of evaluating the record
 	*/
 	public final Object evaluate(Table vt, int row) {
-
 		if(isLeaf()) {
-			incrementOutputTally(label);
+			if(training) {
+				String actualVal = vt.getString(row, ((ExampleTable)vt).getOutputFeatures()[0]);
+				if(actualVal.equals(label))
+					incrementOutputTally(label, true);
+				else
+					incrementOutputTally(label, false);
+			}
+			else
+				incrementOutputTally(label, false);
 			return label;
 		}
 
@@ -102,7 +119,7 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 			}
 		}
 		if(colNum < 0) {
-			incrementOutputTally(UNKNOWN);
+			incrementOutputTally(UNKNOWN, false);
 			return UNKNOWN;
 		}
 
@@ -112,11 +129,15 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 		// lookup the node to branch on in the outputToChildMap
 		if(outputToChildMap.containsKey(s)) {
 			DecisionTreeNode dtn = (DecisionTreeNode)outputToChildMap.get(s);
+			if(training) {
+				//Integer idx = (Integer)childIndexLookup.get(dtn);
+				//childNumTrainingExamples[idx.intValue()]++;
+			}
 			// recurse on the child subtree
 			return dtn.evaluate(vt, row);
 		}
 
-		incrementOutputTally(UNKNOWN);
+		incrementOutputTally(UNKNOWN, false);
 		return UNKNOWN;
 	}
 
@@ -136,5 +157,11 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 	 */
 	public String getSplitAttribute() {
 		return getLabel();
+	}
+
+    public void clear() {
+		super.clear();
+		//for(int i = 0; i < childNumTrainingExamples.length; i++)
+		//	childNumTrainingExamples[i] = 0;
 	}
 }

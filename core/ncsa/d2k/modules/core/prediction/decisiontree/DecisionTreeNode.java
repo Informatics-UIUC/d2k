@@ -25,7 +25,17 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 	protected String label;
 
 	/** The tallies for the records that pass through this node */
-	protected HashMap outputValueTallies;
+	//protected HashMap outputValueTallies;
+
+	protected HashMap outputIndexLookup;
+	protected String[] outputValues;
+	protected int[] outputTallies;
+
+	protected boolean training;
+
+	protected int numCorrect;
+	protected int numIncorrect;
+	protected int numTrainingExamples;
 
 	/**
 		Create a new DecisionTreeNode.
@@ -33,7 +43,17 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 	DecisionTreeNode() {
 		children = new ArrayList();
 		branchLabels = new ArrayList();
-		outputValueTallies = new HashMap();
+		//outputValueTallies = new HashMap();
+
+		//childIndexLookup = new HashMap();
+		//childNumTrainingExamples = new int[0];
+
+		outputIndexLookup = new HashMap();
+		outputValues = new String[0];
+		outputTallies = new int[0];
+		training = true;
+		numCorrect = 0;
+		numIncorrect = 0;
 	}
 
 	/**
@@ -55,6 +75,36 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 		parent = prnt;
 	}
 
+	public void setTraining(boolean b) {
+		training = b;
+		for(int i = 0; i < getNumChildren(); i++)
+			getChild(i).setTraining(b);
+	}
+
+	public boolean getTraining() {
+		return training;
+	}
+
+	public int getNumCorrect() {
+		return numCorrect;
+	}
+
+	public int getNumIncorrect() {
+		return numIncorrect;
+	}
+
+	protected final static String[] expandStringArray(String[] oldArray) {
+		String[] retVal = new String[oldArray.length+1];
+		System.arraycopy(oldArray, 0, retVal, 0, oldArray.length);
+		return retVal;
+	}
+
+	protected final static int[] expandIntArray(int[] oldArray) {
+		int[] retVal = new int[oldArray.length+1];
+		System.arraycopy(oldArray, 0, retVal, 0, oldArray.length);
+		return retVal;
+	}
+
 	/**
 		Get the count of the number of records with the given
 		output value that passed through this node.
@@ -63,10 +113,15 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 			given output value that passed through this node
 	*/
 	public int getOutputTally(String outputVal) throws Exception{
-		Integer i = (Integer)outputValueTallies.get(outputVal);
+		/*Integer i = (Integer)outputValueTallies.get(outputVal);
 		if(i == null)
 			return 0;
 		return i.intValue();
+		*/
+		Integer index = (Integer)outputIndexLookup.get(outputVal);
+		if(index == null)
+			return 0;
+		return outputTallies[index.intValue()];
 	}
 
 	/**
@@ -75,19 +130,38 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 	 */
 	public int getTotal() {
 		int tot = 0;
-		Iterator iter = outputValueTallies.values().iterator();
+		/*Iterator iter = outputValueTallies.values().iterator();
 		while(iter.hasNext()) {
 			Integer tal = (Integer)iter.next();
 			tot += tal.intValue();
 		}
 		return tot;
+		*/
+		for(int i = 0; i < outputTallies.length; i++) {
+			tot += outputTallies[i];
+		}
+		return tot;
 	}
+
+	public DecisionTreeNode getChildWithMostTrainingExamples() {
+		int numTE = Integer.MIN_VALUE;
+		DecisionTreeNode node = null;
+
+		for(int i = 0; i < getNumChildren(); i++) {
+			if(getChild(i).getNumTrainingExamples() >= numTE) {
+				node = getChild(i);
+				numTE = node.getNumTrainingExamples();
+			}
+		}
+		return node;
+	}
+
 	/**
 		Increment the output tally for the given output value
 		@param outputVal the output value to increment
 	*/
-	protected void incrementOutputTally(String outputVal) {
-		Integer i = (Integer)outputValueTallies.get(outputVal);
+	protected void incrementOutputTally(String outputVal, boolean correct) {
+		/*Integer i = (Integer)outputValueTallies.get(outputVal);
 		if(i == null) {
 			outputValueTallies.put(outputVal, new Integer(1));
 		}
@@ -98,6 +172,30 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 		}
 		if(parent != null)
 			parent.incrementOutputTally(outputVal);
+		*/
+
+		if(training) {
+			numTrainingExamples++;
+			if(correct)
+				numCorrect++;
+			else
+				numIncorrect++;
+		}
+
+		Integer index = (Integer)outputIndexLookup.get(outputVal);
+		// create a new one
+		if(index == null) {
+			outputIndexLookup.put(outputVal, new Integer(outputValues.length));
+			outputValues = expandStringArray(outputValues);
+			outputValues[outputValues.length-1] = outputVal;
+			outputTallies = expandIntArray(outputTallies);
+			outputTallies[outputTallies.length-1] = 1;
+		}
+		else {
+			outputTallies[index.intValue()]++;
+		}
+		if(parent != null)
+			parent.incrementOutputTally(outputVal, correct);
 	}
 
 	public ViewableDTNode getViewableParent() {
@@ -191,6 +289,8 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 	*/
 	abstract public void addBranch(String val, DecisionTreeNode child);
 
+	abstract public void setBranch(int branchNum, String val, DecisionTreeNode child);
+
 	/**
 		Add left and right children to this node.
 		@param split the split value for this node
@@ -218,6 +318,10 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 		if(parent == null)
 			return 0;
 		return parent.getDepth() + 1;
+	}
+
+	int getNumTrainingExamples() {
+		return numTrainingExamples;
 	}
 
 	/**
@@ -263,7 +367,15 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
      * Clear the values from this node and its children.
      */
     public void clear() {
-        outputValueTallies.clear();
+        //outputValueTallies.clear();
+		outputIndexLookup.clear();
+		outputValues = new String[0];
+		outputTallies = new int[0];
+
+		numCorrect = 0;
+		numIncorrect = 0;
+		numTrainingExamples = 0;
+
         for(int i = 0; i < children.size(); i++)
             ((DecisionTreeNode)children.get(i)).clear();
     }
