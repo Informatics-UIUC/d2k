@@ -154,7 +154,9 @@ abstract public class AbstractSparseColumn
        * @param len - number of consequitive rows to remove after row #<code>pos</code>
    */
   public void removeRows(int pos, int len) {
-    int[] indices = VHashService.getIndicesInRange(pos, pos + len, getElements());
+
+    //VERED: (7-13-04) added the '-1' after 'len'. range is from pos to pos+len-1 including....
+    int[] indices = VHashService.getIndicesInRange(pos, pos + len -1, getElements());
     for (int i = 0; i < indices.length; i++) {
       removeRow(indices[i]);
     }
@@ -688,9 +690,35 @@ abstract public class AbstractSparseColumn
     if(!missing.equals(col.missing)) return false;
     if(!empty.equals(col.empty)) return false;
 */
-    for (int i=0; i<col.getNumRows(); i++){
-      if(col.getBoolean(i) != this.getBoolean(i)) return false;
+
+    //VERED: comparing sparse column is different than comparing regular ones.
+    //2 sparse columns might hold the same value but in different row indices.
+    //this happens especially in the test cases...
+    //there fore I've changed this method so that it will compare the data
+    //indices independently. (7-13-04)
+    if(this.getNumEntries() != col.getNumEntries()) return false;
+
+    int thisNumRows = getNumRows();
+    int otherNumRows = col.getNumRows();
+    int thisCounter = 0;
+    int otherCounter = 0;
+
+    while( thisCounter < thisNumRows && otherCounter <otherNumRows ){
+      //if both counters points to an existing value - comparing the values.
+      if(doesValueExist(thisCounter) && col.doesValueExist(otherCounter)){
+        if(! col.getString(otherCounter).equals( this.getString(thisCounter)) ) return false;
+        otherCounter++;
+        thisCounter++;
+      }
+      else{ //one of the counters needs to be promoted.
+        if(!doesValueExist(thisCounter)) thisCounter++;
+        else otherCounter++;
+      }
     }
+
+    /*for (int i=0; i<col.getNumRows(); i++){
+      if(col.getString(i) != this.getString(i)) return false;
+    }*/
     return retVal;
   }
 

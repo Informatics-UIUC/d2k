@@ -118,17 +118,18 @@ public class SparseObjectColumn
   //================
 
   /**
-   * If the object at row # row is a byte array, returns the first item in the
-   * array. else - returns a representation of this object as a bytes array.
+   * VERED - modified this method 7-13-04:
+   * SparseByteColumn.toByte method already validated the condition.
+   * and returns the dafault value in these end cases.
    * @param row the row number
    */
   public byte getByte(int row) {
     Object obj = elements.get(row);
-    if (obj != null && isDataNumeric(row)) {
+ //   if (obj != null && isDataNumeric(row)) {
       return SparseByteColumn.toByte(obj);
-    }
+//    }
 
-    return SparseDefaultValues.getDefaultByte();
+ //   return SparseDefaultValues.getDefaultByte();
   }
 
   /**
