@@ -35,7 +35,7 @@ public class HTree extends ComputeModule
   static String NOTHING = "";
   static String DELIMITER = "\t";
   static String ELN = "\n";
-  static String NA = "NOVAL";
+  static String NA = "ZZZZZ";
   // String for the list of column names seperated by ","
   String columnStr;
 
@@ -596,9 +596,9 @@ public class HTree extends ComputeModule
       }
       else { // should never get to this point
         JOptionPane.showMessageDialog(msgBoard,
-                "Can't find the item in the baseHeadTbl", "Error",
+                "Can't find the item in the baseHeadTbl for " + val, "Error",
                 JOptionPane.ERROR_MESSAGE);
-        System.out.println("Error occoured in getIndex.");
+        System.out.println("Error occoured in getIndex 1.");
         return (-1); // not found the item
       }
     }
@@ -610,9 +610,9 @@ public class HTree extends ComputeModule
       }
       // should never get to this point
       JOptionPane.showMessageDialog(msgBoard,
-                "Can't find the item in the baseHeadTbl", "Error",
+                "Can't find the item in the baseHeadTbl for " + val, "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in getIndex.");
+      System.out.println("Error occoured in getIndex 2.");
       return (-1); // not found the item
     }
   }
