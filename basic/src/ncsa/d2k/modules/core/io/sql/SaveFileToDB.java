@@ -8,7 +8,7 @@ package ncsa.d2k.modules.core.io.sql;
  * @author Dora Cai
  * @version 1.0
  *
- * @todo: make this module show its properties at info window.
+ *
  */
 
 import ncsa.d2k.core.modules.*;
@@ -29,6 +29,7 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import ncsa.d2k.modules.core.io.file.input.FlatFileParser;
 
 public class SaveFileToDB extends HeadlessUIModule
        implements java.io.Serializable {
@@ -428,17 +429,20 @@ public class SaveFileToDB extends HeadlessUIModule
                 // check the first row in the data table. If the first row contains
                 // the strings of data type, the user has not set the property "typeRow"
                 // correctly in data loading.
-                for (int idx = 0; idx < vt.getNumColumns(); idx++) {
-                  if (vt.getString(0,idx).equals("double") ||
-                      vt.getString(0,idx).equals("string")) {
+
+                //now this module handles all data type names.
+                if(checkTypeRow()){
+                //for (int idx = 0; idx < vt.getNumColumns(); idx++) {
+                  //if (vt.getString(0,idx).equals("double") ||
+                    //  vt.getString(0,idx).equals("string")) {
                     JOptionPane.showMessageDialog(msgBoard,
                       "The data table has problems. You did not set the property 'typeRow' " +
                       "correctly for reading data.",
                       "Information", JOptionPane.INFORMATION_MESSAGE);
                     viewAbort();
                     return;
-                  }
-                }
+                  }//if check type row
+
                 if (vt.getNumRows() >= maxDataRow) {
                   JOptionPane.showMessageDialog(msgBoard,
                      "There are more than " + maxDataRow + " rows to load. For more " +
@@ -568,6 +572,8 @@ public class SaveFileToDB extends HeadlessUIModule
             return (false);
           }
 
+
+
           String sb = new String("create table " + newTableName.getText() +
                       " (");
           int i = 0;
@@ -587,28 +593,47 @@ public class SaveFileToDB extends HeadlessUIModule
               String s2 = newTableDef.getValueAt(i,1).toString();
               if (s2.length()>0) {
                 String len = newTableDef.getValueAt(i, 2).toString();
-                if (s2.equals("string"))
+                /*
+                 making this module compatible with data types of flat file parser.
+                 vered.
+                 */
+                //if (s2.equals("string"))
+                if(s2.equalsIgnoreCase(FlatFileParser.STRING_TYPE))
                   sb = sb + "varchar(" + len.toString()+")";
-                else if (s2.equals("byte[]"))
+                //else if (s2.equals("byte[]"))
+                else if (s2.equalsIgnoreCase(FlatFileParser.BYTE_ARRAY_TYPE))
                   sb = sb + "varchar(" + len.toString()+")";
-                else if (s2.equals("char[]"))
+                //else if (s2.equals("char[]"))
+                else if (s2.equalsIgnoreCase(FlatFileParser.CHAR_ARRAY_TYPE))
                   sb = sb + "varchar(" + len.toString()+")";
-                else if (s2.equals("int"))
+                //else if (s2.equals("int"))
+                else if (s2.equalsIgnoreCase(FlatFileParser.INT_TYPE))
                   sb = sb + "numeric";
-                else if (s2.equals("float"))
+                //else if (s2.equals("float"))
+                else if (s2.equalsIgnoreCase(FlatFileParser.FLOAT_TYPE))
+                  sb = sb + number/* supporting also oracle  - vered. "numeric"*/;
+                //else if (s2.equals("double"))
+                else if (s2.equalsIgnoreCase(FlatFileParser.DOUBLE_TYPE))
+                  sb = sb + number /* supporting also oracle - vered. "numeric"*/;
+
+                //else if (s2.equals("long"))
+                else if (s2.equalsIgnoreCase(FlatFileParser.LONG_TYPE))
                   sb = sb + "numeric";
-                else if (s2.equals("double"))
-                  sb = sb + "numeric";
-                else if (s2.equals("long"))
-                  sb = sb + "numeric";
-                else if (s2.equals("short"))
+                //else if (s2.equals("short"))
+                else if (s2.equalsIgnoreCase(FlatFileParser.SHORT_TYPE))
                   sb = sb + "numeric";
 
 
                 /* boolean datatype is saved as varchar */
-                else if (s2.equals("boolean"))
+               // else if (s2.equals("boolean"))
+               else if(s2.equalsIgnoreCase(FlatFileParser.BOOLEAN_TYPE))
                   sb = sb + "varchar(" + "5)";
 
+                  /*adding support gor char and byte - vered*/
+              else if (s2.equalsIgnoreCase(FlatFileParser.CHAR_TYPE))
+                sb = sb + "varchar(" + "5)";
+              else if (s2.equalsIgnoreCase(FlatFileParser.BYTE_TYPE))
+                sb = sb + "varchar(" + "5)";
 
 
                 else {
@@ -629,6 +654,10 @@ public class SaveFileToDB extends HeadlessUIModule
               break;
           } /* end for */
           sb = sb + ")";
+
+
+
+
           Connection con = cw.getConnection ();
           Statement stmt = con.createStatement ();
           stmt.executeUpdate(sb);
@@ -791,17 +820,18 @@ public class SaveFileToDB extends HeadlessUIModule
     */
     protected boolean isTypeMatch (Object type1, Object type2) {
       if (type1.toString().toLowerCase().indexOf("varchar")>=0) {
-        if (type2.equals("string") || type2.equals("boolean") ||
-            type2.equals("byte[]") || type2.equals("char[]"))
+        if (type2.equals(FlatFileParser.STRING_TYPE) || type2.equals(FlatFileParser.BOOLEAN_TYPE) ||
+            type2.equals(FlatFileParser.BYTE_ARRAY_TYPE) || type2.equals(FlatFileParser.CHAR_ARRAY_TYPE) ||
+            type2.equals(FlatFileParser.BYTE_TYPE) || type2.equals(FlatFileParser.CHAR_TYPE) )
           return (true);
         else
           return (false);
       }
       else if (type1.toString().toLowerCase().indexOf("number")>=0 ||
                type1.toString().toLowerCase().indexOf("numeric")>=0) {
-        if (type2.equals("int") || type2.equals("float") ||
-            type2.equals("double") || type2.equals("long") ||
-            type2.equals("short"))
+        if (type2.equals(FlatFileParser.INT_TYPE) || type2.equals(FlatFileParser.FLOAT_TYPE) ||
+            type2.equals(FlatFileParser.DOUBLE_TYPE) || type2.equals(FlatFileParser.LONG_TYPE) ||
+            type2.equals(FlatFileParser.SHORT_TYPE))
             return (true);
         else
             return (false);
@@ -843,10 +873,12 @@ public class SaveFileToDB extends HeadlessUIModule
 
         public PropertyDescription [] getPropertiesDescriptions () {
          // PropertyDescription [] super_pds = super.getPropertiesDescriptions();
-         PropertyDescription [] pds = new PropertyDescription [3];
+         PropertyDescription [] pds = new PropertyDescription [5];
          pds[0] = super.supressDescription;
          pds[1] = new PropertyDescription ("createNewTable", "Create New Table", "true if file is to be saved to a new table. false if file is to be appended to an existing table");
          pds[2] = new PropertyDescription ("tableName", "Table Name", "The table name to which the file is to be saved.");
+         pds[3] = new PropertyDescription ("isSql", "SQL Server", "Set this property to true if the input connection is to an SQL server.");
+         pds[4] = new PropertyDescription ("isOracle", "Oracle Server", "Set this property to true if the input connection is to an Oracle server.");
          return pds;
        }
 
@@ -873,25 +905,54 @@ public class SaveFileToDB extends HeadlessUIModule
 
            //conversion to headless - Vered - 9-9-03
 
+           /**
+            * returns true if finds at the first row of <code>vt</code>
+            * data types names (such as 'double, 'string').
+            *
+            * @return true if finds at the first row of <code>vt</code>
+            * data types names (such as 'double, 'string').
+            */
+           protected boolean checkTypeRow(){
+             for (int idx = 0; idx < vt.getNumColumns(); idx++){
+               String current = vt.getString(0, idx);
+               if (current.equalsIgnoreCase(FlatFileParser.BOOLEAN_TYPE) ||
+                   current.equalsIgnoreCase(FlatFileParser.BYTE_ARRAY_TYPE) ||
+                   current.equalsIgnoreCase(FlatFileParser.BYTE_TYPE) ||
+                   current.equalsIgnoreCase(FlatFileParser.CHAR_ARRAY_TYPE) ||
+
+                   current.equalsIgnoreCase(FlatFileParser.CHAR_TYPE) ||
+                   current.equalsIgnoreCase(FlatFileParser.DOUBLE_TYPE) ||
+                   current.equalsIgnoreCase(FlatFileParser.FLOAT_TYPE) ||
+                   current.equalsIgnoreCase(FlatFileParser.INT_TYPE) ||
+
+                   current.equalsIgnoreCase(FlatFileParser.LONG_TYPE) ||
+                   current.equalsIgnoreCase(FlatFileParser.SHORT_TYPE) ||
+                   current.equalsIgnoreCase(FlatFileParser.STRING_TYPE))
+                 return true;
+             }//for
+
+             return false;
+
+           }//checkTypeRow
+
            public void doit() throws Exception{
          cw = (ConnectionWrapper)pullInput(0);
          vt = (Table)pullInput(1);
 
          //validation tests...
 
+         if(tableName == null || tableName.length() == 0)
+           throw new Exception( "Table name is missing or was not set properly.\n");
+
          // check the first row in the data table. If the first row contains
          // the strings of data type, the user has not set the property "typeRow"
          // correctly in data loading.
-
-         //@todo: handle all data types.
-         for (int idx = 0; idx < vt.getNumColumns(); idx++)
-           if (vt.getString(0,idx).equals("double") ||
-               vt.getString(0,idx).equals("string"))
+           if(checkTypeRow())
              throw new Exception ("The data table has problems. You did not set the property 'typeRow' " +
                "correctly for reading data.");
 
          //checking the the table is not larger than allowed.
-         //@todo: double check this constant 100000
+
          if (vt.getNumRows() >= maxDataRow)
              throw new Exception ("There are more than " + maxDataRow + " rows to load. For more " +
                 "efficient data loading, please use " +
@@ -1016,12 +1077,12 @@ public class SaveFileToDB extends HeadlessUIModule
           try {
               System.out.println("TableName is: " + getTableName());
 
-              if (tableName == null || tableName.length() == 0 )
+         /*     if (tableName == null || tableName.length() == 0 )
                    {
                 System.out.println("\n\nSavefileToDB:\n" +
                 "Table name is missing. Table cannot be created\n\n");
                 return (false);
-              }
+              }*/
 
               String sb = new String("create table " + tableName +
                           " (");
@@ -1041,7 +1102,11 @@ public class SaveFileToDB extends HeadlessUIModule
                 if (s1.length()>0) {
                   if (i > 0) // add "," between columns definitions
                     sb = sb + ",";
-                  sb = sb + vt.getColumnLabel(i) + " ";
+                  String colLabel = vt.getColumnLabel(i);
+                  colLabel = colLabel.replace('-', '_');
+                  sb = sb + colLabel + " ";
+
+                  //sb = sb + vt.getColumnLabel(i) + " ";
 
 
                 /* type is the column type*/
@@ -1060,10 +1125,13 @@ public class SaveFileToDB extends HeadlessUIModule
                   case ColumnTypes.CHAR_ARRAY: sb = sb + "varchar(" + ColumnMaxLength[i]+")";
                     break;
                   case ColumnTypes.INTEGER:
-                  case ColumnTypes.FLOAT:
-                  case ColumnTypes.DOUBLE:
                   case ColumnTypes.LONG:
                   case ColumnTypes.SHORT: sb = sb + "numeric";
+                    break;
+                  case ColumnTypes.FLOAT:
+                    case ColumnTypes.DOUBLE:
+                      sb = sb + number /* supporting also oracle -vered. "numeric"*/;
+
                     break;
                   case ColumnTypes.BOOLEAN: sb = sb + "varchar(" + "5)";
                     break;
@@ -1078,6 +1146,9 @@ public class SaveFileToDB extends HeadlessUIModule
               } /* end for */
 
               sb = sb + ")";
+
+
+
               Connection con = cw.getConnection ();
               Statement stmt = con.createStatement ();
               stmt.executeUpdate(sb);
@@ -1202,7 +1273,29 @@ public class SaveFileToDB extends HeadlessUIModule
 
 //conversion headless
 
+//in order to supprt oracle data bases as sql
+     private boolean isOracle;
+     private boolean isSql;
 
+     public boolean getIsOracle(){return isOracle;}
+     public boolean getIsSql(){return isSql;}
+
+     public void setIsOracle(boolean val){isOracle = val;}
+     public void setIsSql(boolean val){isSql = val;}
+
+
+     //public static final String SQL_NUMERIC = "numeric";
+     public static final String SQL_NUMBER = "numeric";
+     //public static final String ORACLE_NUMERIC = "numeric";
+     public static final String ORACLE_NUMBER = "number";
+
+
+     protected String number;
+     public void beginExecution(){
+       if(isOracle) number = ORACLE_NUMBER;
+       else number = SQL_NUMBER;
+
+     }
 
 
 }
