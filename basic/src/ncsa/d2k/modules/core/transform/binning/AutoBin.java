@@ -12,7 +12,6 @@ import java.awt.*;
 import java.awt.event.*;
 import ncsa.gui.*;
 
-
 /**
  * Automatically discretize scalar data for the Naive Bayesian classification
  * model.  This module requires a ParameterPoint to determine the method of binning
@@ -20,286 +19,346 @@ import ncsa.gui.*;
  */
 public class AutoBin extends AutoBinOPT {
 
-  public static final int WEIGHT = 1;
-  public static final int UNIFORM = 0;
+	public static final int WEIGHT = 1;
+	public static final int UNIFORM = 0;
 
-  private int binMethod;
-  public void setBinMethod(int i) throws PropertyVetoException {
-    binMethod =i;
-    if(binMethod != 0 && binMethod != 1)
-          throw new PropertyVetoException("Discretization Method must be 0 or 1",null);
-      }
-  public int getBinMethod() {
-    return binMethod;
-  }
+	private int binMethod;
+	public void setBinMethod(int i) throws PropertyVetoException {
+		binMethod = i;
+		if (binMethod != 0 && binMethod != 1)
+			throw new PropertyVetoException(
+				"Discretization Method must be 0 or 1",
+				null);
+	}
+	public int getBinMethod() {
+		return binMethod;
+	}
 
-  private int binWeight=1;
-  public void setBinWeight(int i)  throws PropertyVetoException {
-    if(i < 1)
-      throw new PropertyVetoException("Number of items per bin must be a positive integer.",null);
-    binWeight = i;
-  }
-  public int getBinWeight() {
-    return binWeight;
-  }
+	private int binWeight = 1;
+	public void setBinWeight(int i) throws PropertyVetoException {
+		if (i < 1)
+			throw new PropertyVetoException(
+				"Number of items per bin must be a positive integer.",
+				null);
+		binWeight = i;
+	}
+	public int getBinWeight() {
+		return binWeight;
+	}
 
-  private int numberOfBins=2;
-  public void setNumberOfBins(int i)  throws PropertyVetoException {
-    if(i < 2)
-	throw new PropertyVetoException("Number of bins must be higher than 1.", null);
-         numberOfBins = i;
-  }
-  public int getNumberOfBins() {
-    return numberOfBins;
-  }
+	private int numberOfBins = 2;
+	public void setNumberOfBins(int i) throws PropertyVetoException {
+		if (i < 2)
+			throw new PropertyVetoException(
+				"Number of bins must be higher than 1.",
+				null);
+		numberOfBins = i;
+	}
+	public int getNumberOfBins() {
+		return numberOfBins;
+	}
 
-  public String[] getInputTypes() {
-    String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-    return in;
-  }
+	public String[] getInputTypes() {
+		String[] in = { "ncsa.d2k.modules.core.datatype.table.ExampleTable" };
+		return in;
+	}
 
-  public String getModuleInfo() {
-   /* String s = "<p>Overview: Automatically discretize scalar data for the " +
-        "Naive Bayesian classification model." +
-        "<p>Detailed Description: Given a table of Examples, define the bins for each " +
-        "scalar input column.  Nominal input columns will have a bin defined " +
-        "for each unique value in the column." +
-        "<p>Data Handling: When binning scalar columns by the number of bins, " +
-        "the maximum and minimum values of each column must be found.  When " +
-        "binning scalar columns by weight, the data in each individual column " +
-        "is first sorted using a merge sort and then another pass is used to " +
-        "find the bounds of the bins. This module does not modify the input data." +
-        "<p>Scalability: The module requires enough memory to make copies of " +
-        "each of the scalar input columns.";*/
-   String s = "<p>Overview: Automatically discretize scalar data for the " +
-        "Naive Bayesian classification model." +
-        "<p>Detailed Description: Given a table of Examples, define the bins for each " +
-        "scalar input column.  </P><P><u>Nominal Columns</u>:<BR>Nominal input columns " +
-        "will have a bin defined " +
-        "for each unique value in the column." +
-        "<p><u>Scalar Columns</u>:<br>When binning Uniformly, " +
-        "the number of bins is determined by '<i>Number of Bins</i>' property, " +
-        "and the boundaries of the bins are set so that they divide evenly over the range " +
-        "of the binned column.<br>" +
-" When binning by weight, '<i>Number of Items per Bin</I>' sets the size of each bin. " +
-        "The values are then binned so that in each bin there is the same number of items. " +
-        "For more details see description of property '<i>Number of Items per Bin</I>'." +
+	public String getModuleInfo() {
+		/* String s = "<p>Overview: Automatically discretize scalar data for the " +
+		     "Naive Bayesian classification model." +
+		     "<p>Detailed Description: Given a table of Examples, define the bins for each " +
+		     "scalar input column.  Nominal input columns will have a bin defined " +
+		     "for each unique value in the column." +
+		     "<p>Data Handling: When binning scalar columns by the number of bins, " +
+		     "the maximum and minimum values of each column must be found.  When " +
+		     "binning scalar columns by weight, the data in each individual column " +
+		     "is first sorted using a merge sort and then another pass is used to " +
+		     "find the bounds of the bins. This module does not modify the input data." +
+		     "<p>Scalability: The module requires enough memory to make copies of " +
+		     "each of the scalar input columns.";*/
+		String s =
+			"<p>Overview: Automatically discretize scalar data for the "
+				+ "Naive Bayesian classification model."
+				+ "<p>Detailed Description: Given a table of Examples, define the bins for each "
+				+ "scalar input column.  </P><P><u>Nominal Columns</u>:<BR>Nominal input columns "
+				+ "will have a bin defined "
+				+ "for each unique value in the column."
+				+ "<p><u>Scalar Columns</u>:<br>When binning Uniformly, "
+				+ "the number of bins is determined by '<i>Number of Bins</i>' property, "
+				+ "and the boundaries of the bins are set so that they divide evenly over the range "
+				+ "of the binned column.<br>"
+				+ " When binning by weight, '<i>Number of Items per Bin</I>' sets the size of each bin. "
+				+ "The values are then binned so that in each bin there is the same number of items. "
+				+ "For more details see description of property '<i>Number of Items per Bin</I>'."
+				+ "</P><P>Data Handling: This module does not modify the input data."
+				+ "<p>Scalability: The module requires enough memory to make copies of "
+				+ "each of the scalar input columns.";
 
-        "</P><P>Data Handling: This module does not modify the input data." +
-            "<p>Scalability: The module requires enough memory to make copies of " +
-            "each of the scalar input columns.";
+		return s;
+	}
 
+	/**
+	 * Return a list of the property descriptions.
+	 * @return a list of the property descriptions.
+	 */
+	public PropertyDescription[] getPropertiesDescriptions() {
+		PropertyDescription[] pds = new PropertyDescription[3];
+		pds[0] =
+			new PropertyDescription(
+				"binMethod",
+				"Discretization Method",
+				"The method to use for discretization.  Select 1 to create bins"
+					+ " by weight.  This will create bins with an equal number of items in "
+					+ "each slot.  Select 0 to do uniform discretization by specifying the number of bins. "
+					+ "This will result in equally spaced bins between the minimum and maximum for "
+					+ "each scalar column.");
+		pds[1] =
+			new PropertyDescription(
+				"binWeight",
+				"Number of Items per Bin",
+				"When binning by weight, this is the number of items"
+					+ " that will go in each bin.  However, the bins may contain more or fewer values than "
+					+ "weight values, depending on how many items equal the bin limits. Typically "
+					+ "the last bin will contain less or equal to weight  values and the rest of the "
+					+ "bins will contain a number that is  equal or greater to weight  values.");
+		pds[2] =
+			new PropertyDescription(
+				"numberOfBins",
+				"Number of Bins",
+				"Define the number of bins absolutely. "
+					+ "This will give equally spaced bins between "
+					+ "the minimum and maximum for each scalar "
+					+ "column.");
+		return pds;
+	}
 
-    return s;
-  }
+	public void doit() throws Exception {
+		tbl = (ExampleTable) pullInput(0);
 
+		inputs = tbl.getInputFeatures();
+		outputs = tbl.getOutputFeatures();
+		if ((inputs == null) || (inputs.length == 0))
+			throw new Exception(
+				getAlias()
+					+ ": Please select the input features, they are missing.");
 
-  /**
-   * Return a list of the property descriptions.
-   * @return a list of the property descriptions.
-   */
-  public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] pds = new PropertyDescription[3];
-    pds[0] = new PropertyDescription("binMethod", "Discretization Method",
-        "The method to use for discretization.  Select 1 to create bins" +
-        " by weight.  This will create bins with an equal number of items in "+
-        "each slot.  Select 0 to do uniform discretization by specifying the number of bins. "+
-        "This will result in equally spaced bins between the minimum and maximum for "+
-        "each scalar column.");
-    pds[1] = new PropertyDescription("binWeight", "Number of Items per Bin",
-        "When binning by weight, this is the number of items" +
-        " that will go in each bin.  However, the bins may contain more or fewer values than "+
-        "weight values, depending on how many items equal the bin limits. Typically " +
-	 "the last bin will contain less or equal to weight  values and the rest of the " +
-         "bins will contain a number that is  equal or greater to weight  values.");
-    pds[2] = new PropertyDescription("numberOfBins", "Number of Bins",
-                                     "Define the number of bins absolutely. "+
-                                     "This will give equally spaced bins between "+
-                                     "the minimum and maximum for each scalar "+
-                                     "column.");
-    return pds;
-  }
+		if (outputs == null || outputs.length == 0)
+			throw new Exception(
+				getAlias()
+					+ ": Please select an output feature, it is missing");
 
+		if (tbl.isColumnScalar(outputs[0]))
+			throw new Exception(
+				getAlias()
+					+ ": Output feature must be nominal. Please transform it.");
 
-  public void doit() throws Exception {
-    tbl = (ExampleTable) pullInput(0);
+		nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(3);
 
-    inputs = tbl.getInputFeatures();
-    outputs = tbl.getOutputFeatures();
-    if ((inputs == null) || (inputs.length == 0))
-	  throw new Exception(getAlias() + ": Please select the input features, they are missing.");
+		int type = getBinMethod();
 
-    if (outputs == null || outputs.length == 0)
-	  throw new Exception(getAlias() + ": Please select an output feature, it is missing");
+		// if type == 0, specify the number of bins
+		// if type == 1, use uniform weight
+		//BinTree bt;
+		BinDescriptor[] bins;
+		if (type == 0) {
+			//int number = (int)pp.getValue(ParamSpaceGenerator.NUMBER_OF_BINS);
+			int number = getNumberOfBins();
+			if (number < 0)
+				throw new Exception(
+					getAlias() + ": Number of bins not specified!");
+			bins = numberOfBins(number);
+		} else {
+			//      int weight = (int)pp.getValue(ParamSpaceGenerator.ITEMS_PER_BIN);
+			int weight = getBinWeight();
+			bins = sameWeight(weight);
+		}
 
-    if(tbl.isColumnScalar(outputs[0]))
-	  throw new Exception(getAlias() + ": Output feature must be nominal. Please transform it.");
+		BinTransform bt = new BinTransform(bins, false);
 
-    nf = NumberFormat.getInstance();
-    nf.setMaximumFractionDigits(3);
+		pushOutput(bt, 0);
+	} //doit
 
-   int type = getBinMethod();
+	public CustomModuleEditor getPropertyEditor() {
+		return new PropEdit();
+	}
 
+	private class PropEdit extends JPanel implements CustomModuleEditor {
 
-    // if type == 0, specify the number of bins
-    // if type == 1, use uniform weight
-    //BinTree bt;
-    BinDescriptor[] bins;
-    if (type == 0) {
-     //int number = (int)pp.getValue(ParamSpaceGenerator.NUMBER_OF_BINS);
-     int number = getNumberOfBins();
-     if(number < 0)
-       throw new Exception(getAlias()+": Number of bins not specified!");
-      bins = numberOfBins(number);
-    }
-    else {
-//      int weight = (int)pp.getValue(ParamSpaceGenerator.ITEMS_PER_BIN);
-      int weight = getBinWeight();
-      bins = sameWeight(weight);
-    }
+		JLabel methodLabel = new JLabel("Discretization Method");
+		String[] methods = { "Uniform", "Weight" };
+		JComboBox methodList;
 
-    BinTransform bt = new BinTransform(bins, false);
+		JTextField numItemsText;
+		JLabel numItemslbl = new JLabel("Number of Items per Bin");
 
-    pushOutput(bt, 0);
-  }//doit
+		JTextField numBinsText;
+		JLabel numBinslbl = new JLabel("Number of Bins");
 
+		boolean numItemsChange = false;
+		boolean numBinsChange = false;
+		boolean methodChange = false;
 
-  public CustomModuleEditor getPropertyEditor() {
-      return new PropEdit();
-  }
+		private PropEdit() {
+			// int lr = getLabelsRow();
+			int method = getBinMethod();
+			methodList = new JComboBox(methods);
+			methodList.setSelectedIndex(method);
+			//add action listener.
 
-  private class PropEdit extends JPanel implements CustomModuleEditor {
+			methodLabel.setToolTipText("The method used for discretization");
 
-    JLabel methodLabel= new JLabel("Discretization Method");
-    String[]  methods = {"Uniform", "Weight"};
-    JComboBox methodList;
+			numItemslbl.setToolTipText(
+				getPropertiesDescriptions()[1].getDescription());
+			numItemsText = new JTextField();
 
-    JTextField numItemsText;
-    JLabel numItemslbl = new JLabel ("Number of Items per Bin");
+			numBinsText = new JTextField();
+			numBinslbl.setToolTipText(
+				getPropertiesDescriptions()[2].getDescription());
 
-    JTextField numBinsText;
-    JLabel numBinslbl = new JLabel ("Number of Bins");
+			numBinsText.setText(Integer.toString(getNumberOfBins()));
+			numItemsText.setText(Integer.toString(getBinWeight()));
 
-      boolean numItemsChange = false;
-      boolean numBinsChange = false;
-      boolean methodChange = false;
+			numBinsText.setEnabled(getBinMethod() == AutoBin.UNIFORM);
+			numItemsText.setEnabled(getBinMethod() == AutoBin.WEIGHT);
 
-      private PropEdit() {
-         // int lr = getLabelsRow();
-         int method = getBinMethod();
-         methodList= new JComboBox(methods);
-         methodList.setSelectedIndex(method);
-         //add action listener.
+			numBinsText.addKeyListener(new KeyAdapter() {
+				public void keyPressed(KeyEvent e) {
+					numBinsChange = true;
+				}
+			});
 
-         methodLabel.setToolTipText("The method used for discretization");
+			numItemsText.addKeyListener(new KeyAdapter() {
+				public void keyPressed(KeyEvent e) {
+					numItemsChange = true;
+				}
+			});
 
+			methodList.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
 
-         numItemslbl.setToolTipText(getPropertiesDescriptions()[1].getDescription());
-         numItemsText = new JTextField();
+					int method = methodList.getSelectedIndex();
+					try {
+						setBinMethod(method);
+					} catch (PropertyVetoException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						System.out.println("This is not a valid method!");
+					}
+					numBinsText.setEnabled(method == AutoBin.UNIFORM);
+					numItemsText.setEnabled(method == AutoBin.WEIGHT);
 
-         numBinsText = new JTextField();
-         numBinslbl.setToolTipText(getPropertiesDescriptions()[2].getDescription());
+				}
+			});
 
-          numBinsText.setText(Integer.toString(getNumberOfBins()));
-          numItemsText.setText(Integer.toString(getBinWeight()));
+			// add the components for delimited properties
+			setLayout(new GridBagLayout());
+			/*Constrain.setConstraints(pnl, new JLabel("Delimited Format File Properties"), 0, 0, 2, 1,
+			                         GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+			                         1,1, new Insets(2, 2, 15, 2));
+			*/
+			Constrain.setConstraints(
+				this,
+				methodLabel,
+				0,
+				0,
+				1,
+				1,
+				GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.EAST,
+				1,
+				1);
+			Constrain.setConstraints(
+				this,
+				methodList,
+				1,
+				0,
+				1,
+				1,
+				GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.WEST,
+				1,
+				1);
+			Constrain.setConstraints(
+				this,
+				numBinslbl,
+				0,
+				1,
+				1,
+				1,
+				GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.EAST,
+				1,
+				1);
+			Constrain.setConstraints(
+				this,
+				numBinsText,
+				1,
+				1,
+				1,
+				1,
+				GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.WEST,
+				1,
+				1);
+			Constrain.setConstraints(
+				this,
+				numItemslbl,
+				0,
+				2,
+				1,
+				1,
+				GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.EAST,
+				1,
+				1);
+			Constrain.setConstraints(
+				this,
+				numItemsText,
+				1,
+				2,
+				1,
+				1,
+				GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.WEST,
+				1,
+				1);
+		}
 
+		public boolean updateModule() throws Exception {
+			boolean didChange = false;
 
-           numBinsText.setEnabled(getBinMethod()==AutoBin.UNIFORM);
-           numItemsText.setEnabled(getBinMethod()==AutoBin.WEIGHT);
+			if (numItemsChange) {
+				try {
+					int numItems = Integer.parseInt(numItemsText.getText());
+					setBinWeight(numItems);
+					didChange = true;
+				} catch (NumberFormatException e) {
+					throw new Exception("Please indicate an integer number for the number of items per bin.");
+				}
 
+			} //if
 
-          numBinsText.addKeyListener(new KeyAdapter() {
-              public void keyPressed(KeyEvent e) {
-                  numBinsChange = true;
-              }
-          });
+			if (numBinsChange) {
+				try {
+					int numBins = Integer.parseInt(numBinsText.getText());
+					setNumberOfBins(numBins);
+					didChange = true;
+				} catch (NumberFormatException e) {
+					throw new Exception("Please indicate an integer number for the number bins.");
+				}
 
+			} //if
 
-          numItemsText.addKeyListener(new KeyAdapter() {
-              public void keyPressed(KeyEvent e) {
-                   numItemsChange = true;
-              }
-          });
+			return didChange;
+		} //updateModule
+	} //PropEdit
 
-
-          methodList.addActionListener(new AbstractAction() {
-              public void actionPerformed(ActionEvent e) throws Exception{
-
-
-                  int method = methodList.getSelectedIndex();
-               setBinMethod(method);
-                  numBinsText.setEnabled(method==AutoBin.UNIFORM);
-                numItemsText.setEnabled(method==AutoBin.WEIGHT);
-
-              }
-          });
-
-
-          // add the components for delimited properties
-          setLayout(new GridBagLayout());
-      /*Constrain.setConstraints(pnl, new JLabel("Delimited Format File Properties"), 0, 0, 2, 1,
-                               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                               1,1, new Insets(2, 2, 15, 2));
-      */
-          Constrain.setConstraints(this, methodLabel, 0, 0, 1, 1,
-                                   GridBagConstraints.HORIZONTAL, GridBagConstraints.EAST,
-                                   1,1);
-          Constrain.setConstraints(this, methodList, 1, 0, 1, 1,
-                                   GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                   1,1);
-          Constrain.setConstraints(this , numBinslbl, 0, 1, 1, 1,
-                                   GridBagConstraints.HORIZONTAL, GridBagConstraints.EAST,
-                                   1,1);
-          Constrain.setConstraints(this, numBinsText, 1, 1, 1, 1,
-                                   GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                   1,1);
-          Constrain.setConstraints(this, numItemslbl, 0, 2, 1, 1,
-                                   GridBagConstraints.HORIZONTAL, GridBagConstraints.EAST,
-                                   1,1);
-          Constrain.setConstraints(this, numItemsText, 1, 2, 1, 1,
-                                   GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                   1,1);
-      }
-
-      public boolean updateModule() throws Exception {
-          boolean didChange = false;
-
-
-           if(numItemsChange) {
-             try{
-               int numItems = Integer.parseInt(numItemsText.getText());
-               setBinWeight(numItems);
-               didChange = true;
-             }
-             catch(NumberFormatException e){
-                throw new Exception("Please indicate an integer number for the number of items per bin.");
-             }
-
-           }//if
-
-           if(numBinsChange) {
-             try{
-               int numBins = Integer.parseInt(numBinsText.getText());
-              setNumberOfBins(numBins);
-              didChange = true;
-             }
-             catch(NumberFormatException e){
-                throw new Exception("Please indicate an integer number for the number bins.");
-             }
-
-           }//if
-
-          return didChange;
-      }//updateModule
-  }//PropEdit
-
-
-}//AutoBin
+} //AutoBin
 
 //QA Comments Anca:
 // added propertyVetoExceptions
 // added checks for input/output feature existence and nominal class variable
-
 
 /**
  * 11-17-03 Vered started qa process.

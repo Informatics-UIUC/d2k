@@ -512,6 +512,12 @@ public class ParameterPointImpl extends ExampleImpl implements Serializable, Par
 	  return this.getTable().hasMissingValues();
 	}
 
+	/* (non-Javadoc)
+	 * @see ncsa.d2k.modules.core.datatype.table.Table#hasMissingValues(int)
+	 */
+	public boolean hasMissingValues(int columnIndex) {
+		return this.getColumn(columnIndex).hasMissingValues();
+	}
 	/**
 	 * Return a column representing the data in column n.
 	 * @param n the column to get.

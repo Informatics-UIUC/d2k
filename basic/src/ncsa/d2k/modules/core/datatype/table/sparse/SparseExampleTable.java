@@ -1003,6 +1003,22 @@ public class SparseExampleTable
   }
 
   /**
+   * Return true if the any of the input or output columns contains missing values.
+   * @return true if the any of the input or output columns contains missing values.
+   */
+  public boolean hasMissingInputsOutputs() {
+    for (int i = 0 ; i < inputColumns.length ; i++) {
+      if (this.hasMissingValues(inputColumns[i]))
+        return true;
+    }
+    for (int i = 0 ; i < outputColumns.length ; i++) {
+      if (this.hasMissingValues(outputColumns[i]))
+        return true;
+    }
+    return false;
+  }
+	
+  /**
    * Returns true if the column associated with index <codE>inputIndex</code>
    * into the input set is nominal. otherwise returns false.
    * This method is the same as isColumnNominal(inputColumns[inputIndex])

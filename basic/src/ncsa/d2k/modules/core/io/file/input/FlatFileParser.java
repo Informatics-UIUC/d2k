@@ -33,6 +33,7 @@ public interface FlatFileParser {
     public static final String BYTE_TYPE = "byte";
 	public static final String LONG_TYPE = "long";
 	public static final String SHORT_TYPE = "short";
+	public static final String NOMINAL_TYPE = "nominal";
 
     public static final String LABEL = "label";
     public static final String TYPE = "type";

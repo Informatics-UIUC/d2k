@@ -811,15 +811,8 @@ public class MergeTableRows extends HeadlessUIModule {
                              "or via a GUI run, so it can run Headless.");
 
       //end validation.
-
-
-      SwingUtilities.invokeLater(new Runnable() {
-              public void run() {
-                    final MutableTable mtbl =  MergingClass.mergeTable(ks, ms, cntrl, _type, table);
-                    pushOutput(mtbl, 0);
-              }
-      });
-
+	  final MutableTable mtbl =  MergingClass.mergeTable(ks, ms, cntrl, _type, table);
+	  pushOutput(mtbl, 0);
 
     }//doit
 

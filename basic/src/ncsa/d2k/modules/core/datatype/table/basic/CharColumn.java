@@ -9,14 +9,13 @@ import java.util.*;
  * which stores single character data. The internal representation is a
  * <code>char</code> array.
  */
-final public class CharColumn extends AbstractColumn implements TextualColumn {
+final public class CharColumn extends MissingValuesColumn implements TextualColumn {
 
 	//static final long serialVersionUID = 4400422800710542291L;
 	static final long serialVersionUID = -5392783624060594709L;
 
 	/** the internal representation of this Column */
 	private char[] internal = null;
-	private boolean[] missing = null;
 	private boolean[] empty = null;
 	/**
 	 * Creates a new, empty <code>CharColumn</code>.
@@ -72,7 +71,7 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 		internal = newInt;
 		setIsNominal(true);
 		type = ColumnTypes.CHAR;
-		missing = miss;
+		this.setMissingValues(miss);
 		empty = emp;
 		setLabel(lbl);
 		setComment(comm);
@@ -116,7 +115,7 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 				em[i] = empty[i];
 
 			}
-			bac.missing = miss;
+			this.setMissingValues(miss);
 			bac.empty = em;
 			return bac;
 		}
@@ -138,7 +137,7 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 		System.arraycopy(missing, 0, newMissing, 0, missing.length);
 		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
 		internal = newInternal;
-		missing = newMissing;
+		this.setMissingValues(newMissing);
 		empty = newEmpty;
 	}
 
@@ -476,16 +475,6 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 	    @param newCapacity a new capacity
 	 */
 	public void setNumRows(int newCapacity) {
-		/*        if (internal != null) {
-		            char[] newInternal = new char[newCapacity];
-		            if (newCapacity > internal.length)
-		                newCapacity = internal.length;
-		            System.arraycopy(internal, 0, newInternal, 0, newCapacity);
-		            internal = newInternal;
-		        }
-		        else
-		            internal = new char[newCapacity];
-		        */
 		if (internal != null) {
 			char[] newInternal = new char[newCapacity];
 			boolean[] newMissing = new boolean[newCapacity];
@@ -496,7 +485,7 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 			System.arraycopy(missing, 0, newMissing, 0, missing.length);
 			System.arraycopy(empty, 0, newEmpty, 0, empty.length);
 			internal = newInternal;
-			missing = newMissing;
+			this.setMissingValues(newMissing);
 			empty = newEmpty;
 		} else {
 			internal = new char[newCapacity];
@@ -536,30 +525,9 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 		CharColumn bac = new CharColumn(subset);
 		bac.setLabel(getLabel());
 		bac.setComment(getComment());
-		//bac.setNominalEmptyValue(getNominalEmptyValue());
-		//bac.setNominalMissingValue(getNominalMissingValue());
-		//bac.setScalarEmptyValue(getScalarEmptyValue());
-		//bac.setScalarMissingValue(getScalarMissingValue());
-		bac.missing = newMissing;
+		this.setMissingValues(newMissing);
 		bac.empty = newEmpty;
-
 		return bac;
-
-		/*        if ((pos + len) > internal.length)
-		            throw  new ArrayIndexOutOfBoundsException();
-		        boolean[] subset = new boolean[len];
-		        boolean[] newMissing = new boolean[len];
-		        boolean[] newEmpty = new boolean[len];
-		        System.arraycopy(internal, pos, subset, 0, len);
-		        System.arraycopy(missing, pos, newMissing, 0, len);
-		        System.arraycopy(empty, pos, newEmpty, 0, len);
-		        BooleanColumn bc = new BooleanColumn(subset);
-		        bc.missing = newMissing;
-		        bc.empty = newEmpty;
-		        bc.setLabel(getLabel());
-		        bc.setComment(getComment());
-		        return  bc;
-		        */
 	}
 
 	/**
@@ -580,15 +548,6 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 			newMissing[i] = missing[rows[i]];
 			newEmpty[i] = empty[rows[i]];
 		}
-
-		//                System.arraycopy(missing, pos, newMissing, 0, len);
-		//                System.arraycopy(empty, pos, newEmpty, 0, len);
-		/*BooleanColumn bc = new BooleanColumn(subset);
-		        bc.missing = newMissing;
-		        bc.empty = newEmpty;
-		bc.setLabel(getLabel());
-		bc.setComment(getComment());
-		*/
 		CharColumn bc =
 			new CharColumn(
 				subset,
@@ -650,9 +609,8 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 		System.arraycopy(internal, 0, newInternal, 0, internal.length);
 		newInternal[last] = ((Character) newEntry).charValue();
 		internal = newInternal;
-		missing = newMissing;
+		this.setMissingValues(newMissing);
 		empty = newEmpty;
-		
 	}
 
 	/**
@@ -716,7 +674,7 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
 		}
 		newInternal[pos] = ((Character) newEntry).charValue();
 		internal = newInternal;
-		missing = newMissing;
+		this.setMissingValues(newMissing);
 		empty = newEmpty;
 	}
 
@@ -955,42 +913,8 @@ private int partition(char[] A, int p, int r, MutableTable t) {
 		}
 	}  
 	
-
-/*private int partition (char[] A, int p, int r, MutableTable t) {
-		//String x = A[p];
-		int i = p - 1;
-		int j = r + 1;
-		while (true) {
-			do {
-				j--;
-			} while (compareRows(A[j], p) > 0);
-			do {
-				i++;
-			} while (compareRows(A[i], p) < 0);
-			if (i < j) {
-				if (t == null) {
-					char temp = A[i];
-					A[i] = A[j];
-					A[j] = temp;
-				}
-				else
-					t.swapRows(i, j);
-			}
-			else
-				return  j;
-		} 
-	} 
-*/
-	public void setValueToMissing(boolean b, int row) {
-		missing[row] = b;
-	}
-
 	public void setValueToEmpty(boolean b, int row) {
 		empty[row] = b;
-	}
-
-	public boolean isValueMissing(int row) {
-		return missing[row];
 	}
 
 	public boolean isValueEmpty(int row) {

@@ -17,13 +17,12 @@ import java.util.*;
  It is inefficient for: removals, insertions, searching(on contents of word),
  <br>
  */
-final public class StringObjectColumn extends AbstractColumn implements TextualColumn {
+final public class StringObjectColumn extends MissingValuesColumn implements TextualColumn {
 
 	static final long serialVersionUID = 7592751696371096295L;
 
     /** the internal representation of this Column */
     private String[] internal = null;
-    private boolean[] missing = null;
 	private boolean[] empty = null;
     /**
      Create a new empty StringObjectColumn
@@ -69,7 +68,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         this.setInternal(newInternal);
         type = ColumnTypes.STRING;
         setIsNominal(true);
-        missing = miss;
+		this.setMissingValues(miss);
         empty = emp;
         setLabel(lbl);
         setComment(comm);
@@ -95,24 +94,10 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
             ois.close();
             return  newCol;
         } catch (Exception e) {
-            //newCol = new StringObjectColumn(getCapacity());
             String[] newVals = new String[getNumRows()];
             for (int i = 0; i < getNumRows(); i++) {
-                /*String s = internal[i];
-                if (s != null)
-                    newCol.setString(new String(internal[i]), i);
-                else
-                    newCol.setString(null, i);
-                */
                 newVals[i] = getString(i);
             }
-            //newCol.setLabel(getLabel());
-            //newCol.setComment(getComment());
-         	//newCol.type = getType();
-			//newCol.setScalarEmptyValue(getScalarEmptyValue());
-			//newCol.setScalarMissingValue(getScalarMissingValue());
-			//newCol.setNominalEmptyValue(getNominalEmptyValue());
-			//newCol.setNominalMissingValue(getNominalMissingValue());
             boolean[] miss = new boolean[internal.length];
             boolean[] em = new boolean[internal.length];
             for(int i = 0; i < internal.length; i++) {
@@ -121,9 +106,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
 
             }
             newCol = new StringObjectColumn(newVals, miss, em, getLabel(), getComment());
-            //newCol.missing = miss;
-			//newCol.empty = em;
-            return  newCol;
+           return  newCol;
         }
     }
 	/**
@@ -140,7 +123,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
 		System.arraycopy(missing, 0, newMissing, 0, missing.length);
 		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
 		internal = newInternal;
-		missing = newMissing;
+		this.setMissingValues(newMissing);
 		empty = newEmpty;
 	}
 
@@ -411,7 +394,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
             System.arraycopy(missing, 0, newMissing, 0, missing.length);
             System.arraycopy(empty, 0, newEmpty, 0, empty.length);
             internal = newInternal;
-            missing = newMissing;
+			this.setMissingValues(newMissing);
             empty = newEmpty;
         }
         else {
@@ -447,36 +430,9 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         System.arraycopy(internal, pos, subset, 0, len);
         System.arraycopy(missing, pos, newMissing, 0, len);
         System.arraycopy(empty, pos, newEmpty, 0, len);
-        /*StringObjectColumn sc = new StringObjectColumn(subset);
-        sc.setLabel(getLabel());
-        sc.setComment(getComment());
-        //sc.type = getType();
-		//sc.setScalarEmptyValue(getScalarEmptyValue());
-		//sc.setScalarMissingValue(getScalarMissingValue());
-		//sc.setNominalEmptyValue(getNominalEmptyValue());
-		//sc.setNominalMissingValue(getNominalMissingValue());
-        sc.missing = newMissing;
-        sc.empty = newEmpty;
-        */
         StringObjectColumn sc = new StringObjectColumn(subset, newMissing,
                 newEmpty, getLabel(), getComment());
         return  sc;
-
-/*        if ((pos + len) > internal.length)
-            throw  new ArrayIndexOutOfBoundsException();
-        boolean[] subset = new boolean[len];
-        boolean[] newMissing = new boolean[len];
-        boolean[] newEmpty = new boolean[len];
-        System.arraycopy(internal, pos, subset, 0, len);
-        System.arraycopy(missing, pos, newMissing, 0, len);
-        System.arraycopy(empty, pos, newEmpty, 0, len);
-        BooleanColumn bc = new BooleanColumn(subset);
-        bc.missing = newMissing;
-        bc.empty = newEmpty;
-        bc.setLabel(getLabel());
-        bc.setComment(getComment());
-        return  bc;
-        */
     }
 
     /**
@@ -497,15 +453,6 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
           newMissing[i] = missing[rows[i]];
           newEmpty[i] = empty[rows[i]];
         }
-
-//                System.arraycopy(missing, pos, newMissing, 0, len);
-//                System.arraycopy(empty, pos, newEmpty, 0, len);
-        /*BooleanColumn bc = new BooleanColumn(subset);
-                bc.missing = newMissing;
-                bc.empty = newEmpty;
-        bc.setLabel(getLabel());
-        bc.setComment(getComment());
-        */
         StringObjectColumn bc = new StringObjectColumn(subset, newMissing, newEmpty, getLabel(), getComment());
         return  bc;
     }
@@ -544,12 +491,6 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
      @param newEntry a new entry
      */
     public void addRow (Object newEntry) {
-        /*int last = 0;
-         for(int i=internal.length-1;i>=0;i--)
-         if( internal[i] != null )
-         last = i;
-         this.internal[last+1] = (String)newEntry;
-         */
         int last = internal.length;
         String[] newInternal = new String[internal.length + 1];
         boolean[] newMissing = new boolean[internal.length + 1];
@@ -559,22 +500,8 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         System.arraycopy(empty, 0, newEmpty, 0, empty.length);
         newInternal[last] = (String)newEntry;
         internal = newInternal;
-        missing = newMissing;
+		this.setMissingValues(newMissing);
 		empty = newEmpty;
-
-/*        int last = internal.length;
-        boolean[] newInternal = new boolean[internal.length + 1];
-        boolean[] newMissing = new boolean[internal.length + 1];
-        boolean[] newEmpty = new boolean[internal.length + 1];
-        System.arraycopy(internal, 0, newInternal, 0, internal.length);
-        System.arraycopy(missing, 0, newMissing, 0, missing.length);
-        System.arraycopy(empty, 0, newEmpty, 0, empty.length);
-        newInternal[last] = ((Boolean)newEntry).booleanValue();
-
-        internal = newInternal;
-        missing = newMissing;
-		empty = newEmpty;
-        */
     }
 
     /**
@@ -600,33 +527,9 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
         System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
         internal = newInternal;
-        missing = newMissing;
+		this.setMissingValues(newMissing);
         empty = newEmpty;
         return  removed;
-/*        boolean removed = internal[pos];
-        // copy all the items after the item to be removed one position up
-        System.arraycopy(internal, pos + 1, internal, pos, internal.length -
-                (pos + 1));
-
-        System.arraycopy(missing, pos + 1, missing, pos, internal.length -
-                (pos + 1));
-
-        System.arraycopy(empty, pos + 1, empty, pos, internal.length -
-                (pos + 1));
-
-        // copy the items into a new array
-        boolean newInternal[] = new boolean[internal.length - 1];
-        boolean newMissing[] = new boolean[internal.length-1];
-        boolean newEmpty[] = new boolean[internal.length-1];
-        System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
-        System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
-        System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
-
-        internal = newInternal;
-        missing = newMissing;
-        empty = newEmpty;
-        return  new Boolean(removed);
-        */
     }
 
     /**
@@ -636,9 +539,6 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
      @param pos the position to insert at
      */
     public void insertRow (Object newEntry, int pos) {
-        /*System.arraycopy(internal,pos,internal,pos+1,internal.length-(pos+1));
-         internal[pos] = (String)newEntry;
-         */
         if (pos > getCapacity()) {
             addRow(newEntry);
             return;
@@ -665,38 +565,8 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         }
         newInternal[pos] = (String)newEntry;
         internal = newInternal;
-        missing = newMissing;
+		this.setMissingValues(newMissing);
         empty = newEmpty;
-/*        if (pos > getNumRows()) {
-            addRow(newEntry);
-            return;
-        }
-        boolean[] newInternal = new boolean[internal.length + 1];
-        boolean[] newMissing = new boolean[internal.length + 1];
-        boolean[] newEmpty = new boolean[internal.length + 1];
-        if (pos == 0) {
-            System.arraycopy(internal, 0, newInternal, 1, getNumRows());
-            System.arraycopy(missing, 0, newMissing, 1, getNumRows());
-            System.arraycopy(empty, 0, newEmpty, 1, getNumRows());
-        }
-        else {
-            System.arraycopy(internal, 0, newInternal, 0, pos);
-            System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
-                    - pos);
-
-            System.arraycopy(missing, 0, newMissing, 0, pos);
-            System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
-                    - pos);
-
-            System.arraycopy(empty, 0, newEmpty, 0, pos);
-            System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
-                    - pos);
-        }
-        newInternal[pos] = ((Boolean)newEntry).booleanValue();
-        internal = newInternal;
-        missing = newMissing;
-        empty = newEmpty;
-        */
     }
 
     /**
@@ -715,18 +585,6 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
 
         empty[pos1] = empty[pos2];
         empty[pos2] = emp;
-/*        boolean d1 = internal[pos1];
-        boolean miss = missing[pos1];
-        boolean emp = empty[pos1];
-        internal[pos1] = internal[pos2];
-        internal[pos2] = d1;
-
-        missing[pos1] = missing[pos2];
-        missing[pos2] = miss;
-
-        empty[pos1] = empty[pos2];
-        empty[pos2] = emp;
-        */
     }
 
     /**
@@ -753,34 +611,8 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         }
         else
             throw  new ArrayIndexOutOfBoundsException();
-        /*StringObjectColumn sc = new StringObjectColumn(newInternal);
-        sc.setLabel(getLabel());
-        sc.setComment(getComment());
-      	sc.type = getType();
-		sc.setScalarEmptyValue(getScalarEmptyValue());
-		sc.setScalarMissingValue(getScalarMissingValue());
-		sc.setNominalEmptyValue(getNominalEmptyValue());
-		sc.setNominalMissingValue(getNominalMissingValue());*/
         StringObjectColumn sc = new StringObjectColumn(newInternal, newMissing,newEmpty,getLabel(), getComment());
         return  sc;
-/*        boolean[] newInternal = null;
-        boolean[] newMissing = null;
-        boolean[] newEmpty = null;
-        if (newOrder.length == internal.length) {
-            newInternal = new boolean[internal.length];
-            newMissing = new boolean[internal.length];
-            newEmpty = new boolean[internal.length];
-            for (int i = 0; i < internal.length; i++) {
-                newInternal[i] = internal[newOrder[i]];
-                newMissing[i] = missing[newOrder[i]];
-                newEmpty[i] = empty[newOrder[i]];
-            }
-        }
-        else
-            throw  new ArrayIndexOutOfBoundsException();
-        BooleanColumn bc = new BooleanColumn(newInternal, newMissing, newEmpty, getLabel(), getComment());
-        return  bc;
-        */
     }
 
     /**
@@ -886,34 +718,8 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
                 internal[i] = null;
         }
         internal = newInternal;
-        missing = newMissing;
+		this.setMissingValues(newMissing);
         empty = newEmpty;
-/*        HashSet toRemove = new HashSet(indices.length);
-        for (int i = 0; i < indices.length; i++) {
-            Integer id = new Integer(indices[i]);
-            toRemove.add(id);
-        }
-        boolean newInternal[] = new boolean[internal.length - indices.length];
-        boolean newMissing[] = new boolean[internal.length - indices.length];
-        boolean newEmpty[] = new boolean[internal.length - indices.length];
-
-        int newIntIdx = 0;
-        for (int i = 0; i < getNumRows(); i++) {
-            // check if this row is in the list of rows to remove
-            //Integer x = (Integer)toRemove.get(new Integer(i));
-            // if this row is not in the list, copy it into the new internal
-            //if (x == null) {
-         if(!toRemove.contains(new Integer(i))) {
-                newInternal[newIntIdx] = internal[i];
-                newMissing[newIntIdx] = missing[i];
-                newEmpty[newIntIdx] = empty[i];
-                newIntIdx++;
-            }
-        }
-        internal = newInternal;
-        missing = newMissing;
-        empty = newEmpty;
-        */
     }
 
     /**
@@ -994,16 +800,8 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
                 return  j;
         }
     }
-    public void setValueToMissing(boolean b, int row) {
-        missing[row] = b;
-    }
-
     public void setValueToEmpty(boolean b, int row) {
         empty[row] = b;
-    }
-
-    public boolean isValueMissing(int row) {
-        return missing[row];
     }
 
     public boolean isValueEmpty(int row) {

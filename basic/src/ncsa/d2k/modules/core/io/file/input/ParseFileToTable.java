@@ -152,7 +152,8 @@ public class ParseFileToTable extends InputModule {
         }
 
         MutableTableImpl ti = new MutableTableImpl(columns);
-        for(int i = 0; i < numRows; i++) {
+        
+         for(int i = 0; i < numRows; i++) {
             ParsedLine pl = df.getRowElements(i);
             char[][] row = pl.elements;
             boolean[] blanks = pl.blanks;
@@ -160,9 +161,8 @@ public class ParseFileToTable extends InputModule {
                 for(int j = 0; j < columns.length; j++) {
                     boolean isMissing = true;
                     char[] elem = row[j];//(char[])row.get(j);
-
-                    // test to see if this is '?'
-                    // if it is, this value is missing.
+ 					// test to see if this is '?'
+					// if it is, this value is missing.
                     for(int k = 0; k < elem.length; k++) {
                         if(elem[k] != QUESTION && elem[k] != SPACE) {
                             isMissing = false;
@@ -206,8 +206,9 @@ public class ParseFileToTable extends InputModule {
                             ti.setValueToMissing(true, i, j);
                         }
                     }
-                }
+               }
             }
+            
         }
 
         // if types were not specified, we should try to convert to double columns
@@ -301,7 +302,7 @@ public class ParseFileToTable extends InputModule {
         }
         */
 
-        return ti;
+       return ti;
     }
 
     /**

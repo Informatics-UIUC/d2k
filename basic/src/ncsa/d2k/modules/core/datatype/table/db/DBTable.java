@@ -662,4 +662,11 @@ public class DBTable extends AbstractTable implements Table {
           throw new RuntimeException("getColumn is not supported in DBTable.");
         }
 
+		/* (non-Javadoc)
+		 * @see ncsa.d2k.modules.core.datatype.table.Table#hasMissingValues(int)
+		 */
+		public boolean hasMissingValues(int columnIndex) {
+			return this.getColumn(columnIndex).hasMissingValues();
+		}
+
 } //DBTable

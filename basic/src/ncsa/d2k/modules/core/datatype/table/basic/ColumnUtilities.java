@@ -336,7 +336,7 @@ final public class ColumnUtilities {
 				break;
 			}
 			case (ColumnTypes.STRING) : {
-				c= new StringColumn(size);
+				c= new StringObjectColumn(size);
 				break;
 			}
 			case (ColumnTypes.CHAR_ARRAY) : {
@@ -368,11 +368,16 @@ final public class ColumnUtilities {
 				break;
 
 			}
+			case (ColumnTypes.NOMINAL) : {
+				c= new StringColumn(size);
+				break;
+
+			}
 			default : {
 				//System.err.println(	"ColumnUtilities:CopyColumn"+
 				//					": Invalid Column Type");
 				//c= new ObjectColumn();
-                c = new StringColumn(size);
+                c = new StringObjectColumn(size);
 			}
 		}
 		c.setLabel("");

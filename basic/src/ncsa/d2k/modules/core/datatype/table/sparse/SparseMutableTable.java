@@ -5141,6 +5141,12 @@ public class SparseMutableTable
     return true;
   }
 
+  /**
+   * @see ncsa.d2k.modules.core.datatype.table.Table#hasMissingValues(int)
+   */
+  public boolean hasMissingValues(int columnIndex) {
+	  return this.getColumn(columnIndex).hasMissingValues();
+  }
 
 } //SparseMutableTable
 /*

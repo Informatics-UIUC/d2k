@@ -30,6 +30,8 @@ public final class ColumnTypes {
 	public static final int BYTE = 10;
 	/** A column of char values */
 	public static final int CHAR = 11;
+	/** A column of char values */
+	public static final int NOMINAL = 12;
 
   private static final String[] _names = {"INTEGER",
     "FLOAT",
@@ -42,7 +44,8 @@ public final class ColumnTypes {
     "BOOLEAN",
     "OBJECT",
     "BYTE",
-    "CHAR"};
+    "CHAR",
+    "NOMINAL"};
 
   public static String getTypeName(int i){
     return _names[i];

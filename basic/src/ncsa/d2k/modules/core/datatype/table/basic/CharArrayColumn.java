@@ -19,14 +19,13 @@ import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
  <br>
  */
 final public class CharArrayColumn
-	extends AbstractColumn
+	extends MissingValuesColumn
 	implements TextualColumn {
 
 	static final long serialVersionUID = -2731483357925113065L;
 
 	/** the internal representation of this Column */
 	private char[][] internal = null;
-	private boolean[] missing = null;
 	private boolean[] empty = null;
 	/**
 	 Create a new, empty CharArrayColumn
@@ -84,7 +83,7 @@ final public class CharArrayColumn
 		this.setInternal(newInternal);
 		setIsNominal(true);
 		type = ColumnTypes.CHAR_ARRAY;
-		missing = newMiss;
+		this.setMissingValues(newMiss);
 		empty = newEmp;
 		setLabel(lbl);
 		setComment(comm);
@@ -120,12 +119,6 @@ final public class CharArrayColumn
 				//cac.setChars(temp, i);
 				newVals[i] = temp;
 			}
-			//cac.setLabel(getLabel());
-			//cac.setComment(getComment());
-			//cac.setScalarEmptyValue(getScalarEmptyValue());
-			//cac.setScalarMissingValue(getScalarMissingValue());
-			//cac.setNominalEmptyValue(getNominalEmptyValue());
-			//cac.setNominalMissingValue(getNominalMissingValue());
 			boolean[] miss = new boolean[internal.length];
 			boolean[] em = new boolean[internal.length];
 			for (int i = 0; i < internal.length; i++) {
@@ -133,8 +126,6 @@ final public class CharArrayColumn
 				em[i] = empty[i];
 
 			}
-			//cac.missing = miss;
-			//cac.empty = em;
 			cac =
 				new CharArrayColumn(
 					newVals,
@@ -142,7 +133,6 @@ final public class CharArrayColumn
 					em,
 					getLabel(),
 					getComment());
-			//cac.setType(getType());
 			return cac;
 		}
 	}
@@ -164,7 +154,7 @@ final public class CharArrayColumn
 		System.arraycopy(missing, 0, newMissing, 0, missing.length);
 		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
 		internal = newInternal;
-		missing = newMissing;
+		this.setMissingValues(newMissing);
 		empty = newEmpty;
 	}
 
@@ -475,7 +465,7 @@ final public class CharArrayColumn
 			System.arraycopy(missing, 0, newMissing, 0, missing.length);
 			System.arraycopy(empty, 0, newEmpty, 0, empty.length);
 			internal = newInternal;
-			missing = newMissing;
+			this.setMissingValues(newMissing);
 			empty = newEmpty;
 		} else {
 			internal = new char[newCapacity][];
@@ -511,17 +501,6 @@ final public class CharArrayColumn
 		System.arraycopy(internal, pos, subset, 0, len);
 		System.arraycopy(missing, pos, newMissing, 0, len);
 		System.arraycopy(empty, pos, newEmpty, 0, len);
-		/*CharArrayColumn cac = new CharArrayColumn(subset);
-		cac.setLabel(getLabel());
-		cac.setComment(getComment());
-		cac.missing = newMissing;
-		cac.empty = newEmpty;
-		*/
-		//cac.setScalarEmptyValue(getScalarEmptyValue());
-		//cac.setScalarMissingValue(getScalarMissingValue());
-		//cac.setNominalEmptyValue(getNominalEmptyValue());
-		//cac.setNominalMissingValue(getNominalMissingValue());
-		//cac.setType(getType());
 		CharArrayColumn cac =
 			new CharArrayColumn(
 				subset,
@@ -550,15 +529,6 @@ final public class CharArrayColumn
 			newMissing[i] = missing[rows[i]];
 			newEmpty[i] = empty[rows[i]];
 		}
-
-		//                System.arraycopy(missing, pos, newMissing, 0, len);
-		//                System.arraycopy(empty, pos, newEmpty, 0, len);
-		/*BooleanColumn bc = new BooleanColumn(subset);
-		        bc.missing = newMissing;
-		        bc.empty = newEmpty;
-		bc.setLabel(getLabel());
-		bc.setComment(getComment());
-		*/
 		CharArrayColumn bc =
 			new CharArrayColumn(
 				subset,
@@ -612,22 +582,9 @@ final public class CharArrayColumn
 		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
 		newInternal[last] = (char[]) newEntry;
 		internal = newInternal;
+		this.setMissingValues(newMissing);
 		missing = newMissing;
 		empty = newEmpty;
-
-		/*        int last = internal.length;
-		        boolean[] newInternal = new boolean[internal.length + 1];
-		        boolean[] newMissing = new boolean[internal.length + 1];
-		        boolean[] newEmpty = new boolean[internal.length + 1];
-		        System.arraycopy(internal, 0, newInternal, 0, internal.length);
-		        System.arraycopy(missing, 0, newMissing, 0, missing.length);
-		        System.arraycopy(empty, 0, newEmpty, 0, empty.length);
-		        newInternal[last] = ((Boolean)newEntry).booleanValue();
-		
-		        internal = newInternal;
-		        missing = newMissing;
-				empty = newEmpty;
-		        */
 	}
 
 	/**
@@ -664,33 +621,9 @@ final public class CharArrayColumn
 		System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
 		System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
 		internal = newInternal;
-		missing = newMissing;
+		this.setMissingValues(newMissing);
 		empty = newEmpty;
 		return removed;
-		/*        boolean removed = internal[pos];
-		        // copy all the items after the item to be removed one position up
-		        System.arraycopy(internal, pos + 1, internal, pos, internal.length -
-		                (pos + 1));
-		
-		        System.arraycopy(missing, pos + 1, missing, pos, internal.length -
-		                (pos + 1));
-		
-		        System.arraycopy(empty, pos + 1, empty, pos, internal.length -
-		                (pos + 1));
-		
-		        // copy the items into a new array
-		        boolean newInternal[] = new boolean[internal.length - 1];
-		        boolean newMissing[] = new boolean[internal.length-1];
-		        boolean newEmpty[] = new boolean[internal.length-1];
-		        System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
-		        System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
-		        System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
-		
-		        internal = newInternal;
-		        missing = newMissing;
-		        empty = newEmpty;
-		        return  new Boolean(removed);
-		        */
 	}
 
 	/**
@@ -737,39 +670,8 @@ final public class CharArrayColumn
 		}
 		newInternal[pos] = (char[]) newEntry;
 		internal = newInternal;
-		missing = newMissing;
+		this.setMissingValues(newMissing);
 		empty = newEmpty;
-
-		/*        if (pos > getNumRows()) {
-		            addRow(newEntry);
-		            return;
-		        }
-		        boolean[] newInternal = new boolean[internal.length + 1];
-		        boolean[] newMissing = new boolean[internal.length + 1];
-		        boolean[] newEmpty = new boolean[internal.length + 1];
-		        if (pos == 0) {
-		            System.arraycopy(internal, 0, newInternal, 1, getNumRows());
-		            System.arraycopy(missing, 0, newMissing, 1, getNumRows());
-		            System.arraycopy(empty, 0, newEmpty, 1, getNumRows());
-		        }
-		        else {
-		            System.arraycopy(internal, 0, newInternal, 0, pos);
-		            System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
-		                    - pos);
-		
-		            System.arraycopy(missing, 0, newMissing, 0, pos);
-		            System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
-		                    - pos);
-		
-		            System.arraycopy(empty, 0, newEmpty, 0, pos);
-		            System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
-		                    - pos);
-		        }
-		        newInternal[pos] = ((Boolean)newEntry).booleanValue();
-		        internal = newInternal;
-		        missing = newMissing;
-		        empty = newEmpty;
-		        */
 	}
 
 	/**
@@ -788,18 +690,6 @@ final public class CharArrayColumn
 
 		empty[pos1] = empty[pos2];
 		empty[pos2] = emp;
-		/*        boolean d1 = internal[pos1];
-		        boolean miss = missing[pos1];
-		        boolean emp = empty[pos1];
-		        internal[pos1] = internal[pos2];
-		        internal[pos2] = d1;
-		
-		        missing[pos1] = missing[pos2];
-		        missing[pos2] = miss;
-		
-		        empty[pos1] = empty[pos2];
-				empty[pos2] = emp;
-		        */
 	}
 
 	/**
@@ -824,14 +714,6 @@ final public class CharArrayColumn
 			}
 		} else
 			throw new ArrayIndexOutOfBoundsException();
-		/*CharArrayColumn cac = new CharArrayColumn(newInternal);
-		cac.setLabel(getLabel());
-		//cac.setType(getType());
-		cac.setComment(getComment());
-		cac.setScalarEmptyValue(getScalarEmptyValue());
-		cac.setScalarMissingValue(getScalarMissingValue());
-		cac.setNominalEmptyValue(getNominalEmptyValue());
-		cac.setNominalMissingValue(getNominalMissingValue());*/
 		CharArrayColumn cac =
 			new CharArrayColumn(
 				newInternal,
@@ -841,24 +723,6 @@ final public class CharArrayColumn
 				getComment());
 
 		return cac;
-		/*        boolean[] newInternal = null;
-		        boolean[] newMissing = null;
-		        boolean[] newEmpty = null;
-		        if (newOrder.length == internal.length) {
-		            newInternal = new boolean[internal.length];
-		            newMissing = new boolean[internal.length];
-		            newEmpty = new boolean[internal.length];
-		            for (int i = 0; i < internal.length; i++) {
-		                newInternal[i] = internal[newOrder[i]];
-		                newMissing[i] = missing[newOrder[i]];
-		                newEmpty[i] = empty[newOrder[i]];
-		            }
-		        }
-		        else
-		            throw  new ArrayIndexOutOfBoundsException();
-		        BooleanColumn bc = new BooleanColumn(newInternal, newMissing, newEmpty, getLabel(), getComment());
-		        return  bc;
-		        */
 	}
 
 	/**
@@ -961,34 +825,8 @@ final public class CharArrayColumn
 			//   internal[i] = null;
 		}
 		internal = newInternal;
-		missing = newMissing;
+		this.setMissingValues(newMissing);
 		empty = newEmpty;
-		/*        HashSet toRemove = new HashSet(indices.length);
-		        for (int i = 0; i < indices.length; i++) {
-		            Integer id = new Integer(indices[i]);
-		            toRemove.add(id);
-		        }
-		        boolean newInternal[] = new boolean[internal.length - indices.length];
-		        boolean newMissing[] = new boolean[internal.length - indices.length];
-		        boolean newEmpty[] = new boolean[internal.length - indices.length];
-		
-		        int newIntIdx = 0;
-		        for (int i = 0; i < getNumRows(); i++) {
-		            // check if this row is in the list of rows to remove
-		            //Integer x = (Integer)toRemove.get(new Integer(i));
-		            // if this row is not in the list, copy it into the new internal
-		            //if (x == null) {
-		         if(!toRemove.contains(new Integer(i))) {
-		                newInternal[newIntIdx] = internal[i];
-		                newMissing[newIntIdx] = missing[i];
-		                newEmpty[newIntIdx] = empty[i];
-		                newIntIdx++;
-		            }
-		        }
-		        internal = newInternal;
-		        missing = newMissing;
-		        empty = newEmpty;
-		        */
 	}
 
 	//////////////////////////////////////
@@ -1073,16 +911,9 @@ final public class CharArrayColumn
 				return j;
 		}
 	}
-	public void setValueToMissing(boolean b, int row) {
-		missing[row] = b;
-	}
 
 	public void setValueToEmpty(boolean b, int row) {
 		empty[row] = b;
-	}
-
-	public boolean isValueMissing(int row) {
-		return missing[row];
 	}
 
 	public boolean isValueEmpty(int row) {

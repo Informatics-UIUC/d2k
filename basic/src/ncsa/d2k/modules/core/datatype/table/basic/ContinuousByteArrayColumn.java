@@ -23,7 +23,7 @@ import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
  * The buffer will compact itself when a row is removed from this column.  The
  * space freed up from the removal will not be freed until trim() is called.
  */
-final public class ContinuousByteArrayColumn extends AbstractColumn implements TextualColumn{
+final public class ContinuousByteArrayColumn extends MissingValuesColumn implements TextualColumn{
 
 	static final long serialVersionUID = -495473524189333589L;
 
@@ -37,7 +37,6 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 	protected static final int DEFAULT_INITIAL_SIZE = 2048;
 	/** the multiple used to increment the size of the internal buffer */
 	private float capacityIncrement = 1.3f;
-    private boolean[] missing = null;
 	private boolean[] empty = null;
 	/**
 	 * Create a new ContinuousByteArrayColumn with the specified number
@@ -156,11 +155,8 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
                 bac.setBytes(res, i);
             }
             bac.setLabel(getLabel());
+            bac.setMissingValues(missing);
             bac.setComment(getComment());
-			//bac.setScalarEmptyValue(getScalarEmptyValue());
-			//bac.setScalarMissingValue(getScalarMissingValue());
-			//bac.setNominalEmptyValue(getNominalEmptyValue());
-			//bac.setNominalMissingValue(getNominalMissingValue());
             return  bac;
         }
 	}
@@ -682,14 +678,6 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
      @return a subset of this Column
      */
     public Column getSubset (int pos, int len) {
-		/*int size = rowPtrs[pos+len]-rowPtrs[pos];
-		byte[] newinternal = new byte[size];
-		int [] newrowPtrs = new int[len-pos];
-		System.arraycopy(internal, pos, newinternal, 0, size);
-		System.arraycopy(rowPtrs, pos, newrowPtrs, 0, len);
-
-		return new ContinuousByteArrayColumn(newinternal, newrowPtrs);
-		*/
 		ContinuousByteArrayColumn cac = new ContinuousByteArrayColumn(len);
 		int idx = 0;
 		for(int i = pos; i < pos+len; i++) {
@@ -698,10 +686,6 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 		}
 		cac.setLabel(getLabel());
 		cac.setComment(getComment());
-		//cac.setScalarEmptyValue(getScalarEmptyValue());
-		//cac.setScalarMissingValue(getScalarMissingValue());
-		//cac.setNominalEmptyValue(getNominalEmptyValue());
-		//cac.setNominalMissingValue(getNominalMissingValue());
 		return cac;
     }
 
@@ -724,18 +708,9 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
           newEmpty[i] = empty[rows[i]];
         }
 
-//                System.arraycopy(missing, pos, newMissing, 0, len);
-//                System.arraycopy(empty, pos, newEmpty, 0, len);
-        /*BooleanColumn bc = new BooleanColumn(subset);
-                bc.missing = newMissing;
-                bc.empty = newEmpty;
-        bc.setLabel(getLabel());
-        bc.setComment(getComment());
-        */
-        //BooleanColumn bc = new BooleanColumn(subset, newMissing, newEmpty, getLabel(), getComment());
         ContinuousByteArrayColumn cbac = new ContinuousByteArrayColumn(subset);
-        cbac.missing = newMissing;
-        cbac.empty = newEmpty;
+		cbac.setMissingValues(newMissing);
+       	cbac.empty = newEmpty;
         cbac.setLabel(getLabel());
         cbac.setComment(getComment());
         return cbac;
@@ -799,7 +774,7 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 		 boolean[] newEmpty = new boolean[last + 1];
 		 		 System.arraycopy(missing, 0, newMissing, 0, missing.length);
 		 System.arraycopy(empty, 0, newEmpty, 0, empty.length);
-		 		 missing = newMissing;
+		this.setMissingValues(newMissing);
 		 empty = newEmpty;
     }
 
@@ -1207,31 +1182,8 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
                 return  j;
         }
     }
-/*    public void setValueToMissing(boolean b, int row) {
-        missing[row] = b;
-    }
-
     public void setValueToEmpty(boolean b, int row) {
         empty[row] = b;
-    }
-
-    public boolean isValueMissing(int row) {
-        return missing[row];
-    }
-
-    public boolean isValueEmpty(int row) {
-        return empty[row];
-	}*/
-    public void setValueToMissing(boolean b, int row) {
-        missing[row] = b;
-    }
-
-    public void setValueToEmpty(boolean b, int row) {
-        empty[row] = b;
-    }
-
-    public boolean isValueMissing(int row) {
-        return missing[row];
     }
 
     public boolean isValueEmpty(int row) {

@@ -355,6 +355,12 @@ public interface ExampleTable extends MutableTable {
      */
     public int getOutputType(int o);
 
+	/**
+	 * Return true if the any of the input or output columns contains missing values.
+	 * @return true if the any of the input or output columns contains missing values.
+	 */
+	public boolean hasMissingInputsOutputs();
+	
     /**
      * Return true if the ith input is nominal, false otherwise.
      * @param i the input index

@@ -227,6 +227,8 @@ public class DelimitedFileParser implements FlatFileParser {
                 columnTypes[i] = ColumnTypes.CHAR_ARRAY;
             else if(type.equalsIgnoreCase(BOOLEAN_TYPE))
                 columnTypes[i] = ColumnTypes.BOOLEAN;
+			else if(type.equalsIgnoreCase(NOMINAL_TYPE))
+				columnTypes[i] = ColumnTypes.NOMINAL;
             else
                 columnTypes[i] = ColumnTypes.STRING;
         }

@@ -489,4 +489,16 @@ abstract public class TableImpl implements Table {
 					return true;
 		return false;
 	}
+	
+	/**
+	 * Return true if any value in this Table is missing.
+	 * @param columnIndex, the index of the column to search for missing values.
+	 * @return true if there are any missing values, false if there are no missing values
+	 */
+	public boolean hasMissingValues(int columnIndex) {
+		for(int j = 0; j < getNumRows(); j++)
+			if(isValueMissing(j, columnIndex))
+				return true;
+		return false;
+	}
 }

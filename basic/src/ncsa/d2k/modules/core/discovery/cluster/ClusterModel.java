@@ -720,6 +720,17 @@ public class ClusterModel
       return _table.isValueMissing(row, col);
     }
   }
+  /* (non-Javadoc)
+   * @see ncsa.d2k.modules.core.datatype.table.Table#hasMissingValues(int)
+   */
+  public boolean hasMissingValues(int columnIndex) {
+	if (_table == null) {
+	  System.out.println("ERROR: " + getAlias() + ".isValueMissing(...) -- Model does not contain table data and will return false");
+	  return false;
+	} else {
+	  return _table.hasMissingValues(columnIndex);
+	}
+  }
 
   /**
    * See Table in ncsa.d2k.modules.core.datatype.table

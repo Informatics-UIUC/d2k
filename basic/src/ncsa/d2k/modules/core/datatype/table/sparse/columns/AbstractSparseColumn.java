@@ -329,6 +329,18 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
         return  missing.contains(row);
     }
 
+	/**
+	 * Verifies if any missing values exist in the table
+	 * @param row - the row which its value is being validated.
+	 * @return true if the value is missing, false otherwise
+	 */
+	public boolean hasMissingValues () {
+		for (int i = 0 ; i < this.getNumRows() ; i++)
+			if (this.isValueMissing(i))
+				return true;
+		return false;
+	}
+
     /**
      * Puts the data stored in this column into <code>buffer</code>.
      * <codE>buffer</codE> must be an array of some type. the values will be

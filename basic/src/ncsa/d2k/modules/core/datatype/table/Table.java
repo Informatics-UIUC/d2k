@@ -340,6 +340,13 @@ public interface Table extends java.io.Serializable {
 	public boolean hasMissingValues();
 
 	/**
+	* Return true if any value in the column at columnIndex is missing.\
+	* @param columnIndex the index of the column to check.
+	* @return true if there are any missing values, false if there are no missing values
+	*/
+	public boolean hasMissingValues(int columnIndex);
+
+	/**
 	 * Return a column representing the data in column n.
 	 * @param n the column to get.
 	 * @return a column representing the data.

@@ -23,7 +23,7 @@ import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
  * The buffer will compact itself when a row is removed from this column.  The
  * space freed up from the removal will not be freed until trim() is called.
  */
-public class ContinuousCharArrayColumn extends AbstractColumn implements TextualColumn {
+public class ContinuousCharArrayColumn extends MissingValuesColumn implements TextualColumn {
 
 	static final long serialVersionUID = -5647877299627985582L;
 
@@ -37,7 +37,6 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 	protected static final int DEFAULT_INITIAL_SIZE = 2048;
 	/** the multiple used to increment the size of the internal buffer */
 	private float capacityIncrement = 1.3f;
-    private boolean[] missing = null;
 	private boolean[] empty = null;
 	/**
 	 * Create a new ContinuousCharArrayColumn
@@ -726,7 +725,7 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
         */
         //BooleanColumn bc = new BooleanColumn(subset, newMissing, newEmpty, getLabel(), getComment());
         ContinuousCharArrayColumn cbac = new ContinuousCharArrayColumn(subset);
-        cbac.missing = newMissing;
+        cbac.setMissingValues(newMissing);
         cbac.empty = newEmpty;
         cbac.setLabel(getLabel());
         cbac.setComment(getComment());
@@ -1200,31 +1199,8 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
                 return  j;
         }
     }
-/*    public void setValueToMissing(boolean b, int row) {
-        missing[row] = b;
-    }
-
     public void setValueToEmpty(boolean b, int row) {
         empty[row] = b;
-    }
-
-    public boolean isValueMissing(int row) {
-        return missing[row];
-    }
-
-    public boolean isValueEmpty(int row) {
-        return empty[row];
-	}*/
-    public void setValueToMissing(boolean b, int row) {
-        missing[row] = b;
-    }
-
-    public void setValueToEmpty(boolean b, int row) {
-        empty[row] = b;
-    }
-
-    public boolean isValueMissing(int row) {
-        return missing[row];
     }
 
     public boolean isValueEmpty(int row) {

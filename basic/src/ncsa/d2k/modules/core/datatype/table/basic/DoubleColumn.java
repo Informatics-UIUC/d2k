@@ -14,7 +14,7 @@ import java.util.*;
  compareing of doubles
  It is very inefficient for: removals, insertions, additions
  */
-final public class DoubleColumn extends AbstractColumn implements NumericColumn {
+final public class DoubleColumn extends MissingValuesColumn implements NumericColumn {
 	//static final long serialVersionUID = 5514367304811178549L;
 	static final long serialVersionUID = -5854760060261143830L;
 
@@ -22,7 +22,6 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
 
     /** holds DoubleColumn's internal data rep */
     private double[] internal = null;
-    private boolean[] missing = null;
 	private boolean[] empty = null;
     /**
      Create a new, emtpy DoubleColumn.
@@ -39,10 +38,6 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
         internal = new double[capacity];
         setIsScalar(true);
         type = ColumnTypes.DOUBLE;
-	 	//setScalarMissingValue(new Double(Double.NEGATIVE_INFINITY));
-	 	//setScalarEmptyValue(new Double(Double.POSITIVE_INFINITY));
-		//setNominalMissingValue(Double.toString(Double.NEGATIVE_INFINITY));
-		//setNominalEmptyValue(Double.toString(Double.POSITIVE_INFINITY));
         missing = new boolean[internal.length];
         empty = new boolean[internal.length];
         for(int i = 0; i < internal.length; i++) {
@@ -59,10 +54,6 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
         internal = vals;
         setIsScalar(true);
         type = ColumnTypes.DOUBLE;
-		//setScalarMissingValue(new Double(Double.NEGATIVE_INFINITY));
-		//setScalarEmptyValue(new Double(Double.POSITIVE_INFINITY));
-		//setNominalMissingValue(Double.toString(Double.NEGATIVE_INFINITY));
-		//setNominalEmptyValue(Double.toString(Double.POSITIVE_INFINITY));
         missing = new boolean[internal.length];
         empty = new boolean[internal.length];
         for(int i = 0; i < internal.length; i++) {
@@ -76,7 +67,7 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
         internal = vals;
         setIsScalar(true);
         type = ColumnTypes.DOUBLE;
-        missing = miss;
+        this.setMissingValues(miss);
         empty =emp;
         setLabel(lbl);
         setComment(com);
@@ -107,14 +98,6 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
             for (int i = 0; i < getNumRows(); i++)
                 //dc.setDouble(internal[i], i);
                 newVals[i] = getDouble(i);
-            //dc.min = getMin();
-            //dc.max = getMax();
-            //dc.setLabel(getLabel());
-            //dc.setComment(getComment());
-			//dc.setScalarEmptyValue(getScalarEmptyValue());
-			//dc.setScalarMissingValue(getScalarMissingValue());
-			//dc.setNominalEmptyValue(getNominalEmptyValue());
-			//dc.setNominalMissingValue(getNominalMissingValue());
             boolean[] miss = new boolean[internal.length];
             boolean[] em = new boolean[internal.length];
             for(int i = 0; i < internal.length; i++) {
@@ -123,10 +106,6 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
 
             }
             dc = new DoubleColumn(newVals, miss, em, getLabel(), getComment());
-            //dc.min = getMin();
-            //dc.max = getMax();
-            //dc.missing = miss;
-			//dc.empty = em;
             return  dc;
         }
     }
@@ -147,7 +126,7 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
 		System.arraycopy(missing, 0, newMissing, 0, missing.length);
 		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
 		internal = newInternal;
-		missing = newMissing;
+		this.setMissingValues(newMissing);
 		empty = newEmpty;
 	}
 
@@ -202,7 +181,7 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
             System.arraycopy(missing, 0, newMissing, 0, missing.length);
             System.arraycopy(empty, 0, newEmpty, 0, empty.length);
             internal = newInternal;
-            missing = newMissing;
+			this.setMissingValues(newMissing);
             empty = newEmpty;
         }
         else {
@@ -306,36 +285,10 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
         System.arraycopy(internal, pos, subset, 0, len);
         System.arraycopy(missing, pos, newMissing, 0, len);
         System.arraycopy(empty, pos, newEmpty, 0, len);
-        /*DoubleColumn dc = new DoubleColumn(subset);
-        dc.setLabel(getLabel());
-        dc.setComment(getComment());
-		//dc.setScalarEmptyValue(getScalarEmptyValue());
-		//dc.setScalarMissingValue(getScalarMissingValue());
-		//dc.setNominalEmptyValue(getNominalEmptyValue());
-		//dc.setNominalMissingValue(getNominalMissingValue());
-        dc.missing = newMissing;
-        dc.empty = newEmpty;
-        */
         DoubleColumn dc = new DoubleColumn(subset, newMissing, newEmpty,
                 getLabel(), getComment());
 
         return  dc;
-
-/*        if ((pos + len) > internal.length)
-            throw  new ArrayIndexOutOfBoundsException();
-        boolean[] subset = new boolean[len];
-        boolean[] newMissing = new boolean[len];
-        boolean[] newEmpty = new boolean[len];
-        System.arraycopy(internal, pos, subset, 0, len);
-        System.arraycopy(missing, pos, newMissing, 0, len);
-        System.arraycopy(empty, pos, newEmpty, 0, len);
-        BooleanColumn bc = new BooleanColumn(subset);
-        bc.missing = newMissing;
-        bc.empty = newEmpty;
-        bc.setLabel(getLabel());
-        bc.setComment(getComment());
-        return  bc;
-        */
     }
 
     /**
@@ -356,15 +309,6 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
           newMissing[i] = missing[rows[i]];
           newEmpty[i] = empty[rows[i]];
         }
-
-//                System.arraycopy(missing, pos, newMissing, 0, len);
-//                System.arraycopy(empty, pos, newEmpty, 0, len);
-        /*BooleanColumn bc = new BooleanColumn(subset);
-                bc.missing = newMissing;
-                bc.empty = newEmpty;
-        bc.setLabel(getLabel());
-        bc.setComment(getComment());
-        */
         DoubleColumn bc = new DoubleColumn(subset, newMissing, newEmpty, getLabel(), getComment());
         return  bc;
     }
@@ -643,19 +587,6 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
      @param newEntry a new entry
      */
     public void addRow (Object newEntry) {
-        /*int last = internal.length;
-         for(int i=internal.length-1;i>=0;i--)
-         if( internal[i] == emptyValue )
-         last = i;
-         if (last != (internal.length) )
-         internal[last] = ((Number)newEntry).doubleValue();
-         else {
-         double[] newInternal = new double[internal.length+1];
-         System.arraycopy(newInternal,0,internal,0,internal.length);
-         newInternal[last] = ((Number)newEntry).doubleValue();
-         internal=newInternal;
-         }
-         */
         int last = internal.length;
         double[] newInternal = new double[internal.length + 1];
         boolean[] newMissing = new boolean[internal.length + 1];
@@ -665,22 +596,8 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
         System.arraycopy(empty, 0, newEmpty, 0, empty.length);
         newInternal[last] = ((Double)newEntry).doubleValue();
         internal = newInternal;
-        missing = newMissing;
+		this.setMissingValues(newMissing);
 		empty = newEmpty;
-
-/*        int last = internal.length;
-        boolean[] newInternal = new boolean[internal.length + 1];
-        boolean[] newMissing = new boolean[internal.length + 1];
-        boolean[] newEmpty = new boolean[internal.length + 1];
-        System.arraycopy(internal, 0, newInternal, 0, internal.length);
-        System.arraycopy(missing, 0, newMissing, 0, missing.length);
-        System.arraycopy(empty, 0, newEmpty, 0, empty.length);
-        newInternal[last] = ((Boolean)newEntry).booleanValue();
-
-        internal = newInternal;
-        missing = newMissing;
-		empty = newEmpty;
- */
     }
 
     /**
@@ -704,34 +621,10 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
         System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
         System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
         internal = newInternal;
-        missing = newMissing;
+		this.setMissingValues(newMissing);
         empty = newEmpty;
         return  new Double(removed);
-/*        boolean removed = internal[pos];
-        // copy all the items after the item to be removed one position up
-        System.arraycopy(internal, pos + 1, internal, pos, internal.length -
-                (pos + 1));
-
-        System.arraycopy(missing, pos + 1, missing, pos, internal.length -
-                (pos + 1));
-
-        System.arraycopy(empty, pos + 1, empty, pos, internal.length -
-                (pos + 1));
-
-        // copy the items into a new array
-        boolean newInternal[] = new boolean[internal.length - 1];
-        boolean newMissing[] = new boolean[internal.length-1];
-        boolean newEmpty[] = new boolean[internal.length-1];
-        System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
-        System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
-        System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
-
-        internal = newInternal;
-        missing = newMissing;
-        empty = newEmpty;
-        return  new Boolean(removed);
-        */
-    }
+   }
 
     /**
      Inserts a new entry in the Column at position pos.
@@ -773,39 +666,8 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
         }
         newInternal[pos] = ((Double)newEntry).doubleValue();
         internal = newInternal;
-        missing = newMissing;
+		this.setMissingValues(newMissing);
         empty = newEmpty;
-
-/*        if (pos > getNumRows()) {
-            addRow(newEntry);
-            return;
-        }
-        boolean[] newInternal = new boolean[internal.length + 1];
-        boolean[] newMissing = new boolean[internal.length + 1];
-        boolean[] newEmpty = new boolean[internal.length + 1];
-        if (pos == 0) {
-            System.arraycopy(internal, 0, newInternal, 1, getNumRows());
-            System.arraycopy(missing, 0, newMissing, 1, getNumRows());
-            System.arraycopy(empty, 0, newEmpty, 1, getNumRows());
-        }
-        else {
-            System.arraycopy(internal, 0, newInternal, 0, pos);
-            System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
-                    - pos);
-
-            System.arraycopy(missing, 0, newMissing, 0, pos);
-            System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
-                    - pos);
-
-            System.arraycopy(empty, 0, newEmpty, 0, pos);
-            System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
-                    - pos);
-        }
-        newInternal[pos] = ((Boolean)newEntry).booleanValue();
-        internal = newInternal;
-        missing = newMissing;
-        empty = newEmpty;
-        */
     }
 
     /**
@@ -824,18 +686,6 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
 
         empty[pos1] = empty[pos2];
         empty[pos2] = emp;
-/*        boolean d1 = internal[pos1];
-        boolean miss = missing[pos1];
-        boolean emp = empty[pos1];
-        internal[pos1] = internal[pos2];
-        internal[pos2] = d1;
-
-        missing[pos1] = missing[pos2];
-        missing[pos2] = miss;
-
-        empty[pos1] = empty[pos2];
-        empty[pos2] = emp;
-        */
     }
 
     /**
@@ -860,34 +710,8 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
         }
         else
             throw  new ArrayIndexOutOfBoundsException();
-        /*DoubleColumn dc = new DoubleColumn(newInternal);
-        dc.setLabel(getLabel());
-        dc.setComment(getComment());
-		dc.setScalarEmptyValue(getScalarEmptyValue());
-		dc.setScalarMissingValue(getScalarMissingValue());
-		dc.setNominalEmptyValue(getNominalEmptyValue());
-		dc.setNominalMissingValue(getNominalMissingValue());
-        */
         DoubleColumn dc = new DoubleColumn(newInternal, newMissing, newEmpty, getLabel(), getComment());
         return  dc;
-/*        boolean[] newInternal = null;
-        boolean[] newMissing = null;
-        boolean[] newEmpty = null;
-        if (newOrder.length == internal.length) {
-            newInternal = new boolean[internal.length];
-            newMissing = new boolean[internal.length];
-            newEmpty = new boolean[internal.length];
-            for (int i = 0; i < internal.length; i++) {
-                newInternal[i] = internal[newOrder[i]];
-                newMissing[i] = missing[newOrder[i]];
-                newEmpty[i] = empty[newOrder[i]];
-            }
-        }
-        else
-            throw  new ArrayIndexOutOfBoundsException();
-        BooleanColumn bc = new BooleanColumn(newInternal, newMissing, newEmpty, getLabel(), getComment());
-        return  bc;
-        */
     }
 
     /**
@@ -939,24 +763,6 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
     public int compareRows (int pos1, int pos2) {
         double d1 = internal[pos1];
         double d2 = internal[pos2];
-        /*if (d1 == scalarEmptyValue) {
-            if (d2 == scalarEmptyValue)
-                return  0;
-            else
-                return  -1;
-        }
-        else if (d2 == scalarEmptyValue)
-            return  1;
-
-		if(d1 == scalarMissingValue) {
-			if(d2 == scalarMissingValue)
-				return 0;
-			else
-				return -1;
-		}
-		else if(d2 == scalarMissingValue)
-			return 1;
-        */
 
         if (d1 > d2)
             return  1;
@@ -995,34 +801,8 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
             }
         }
         internal = newInternal;
-        missing = newMissing;
+		this.setMissingValues(newMissing);
         empty = newEmpty;
-/*        HashSet toRemove = new HashSet(indices.length);
-        for (int i = 0; i < indices.length; i++) {
-            Integer id = new Integer(indices[i]);
-            toRemove.add(id);
-        }
-        boolean newInternal[] = new boolean[internal.length - indices.length];
-        boolean newMissing[] = new boolean[internal.length - indices.length];
-        boolean newEmpty[] = new boolean[internal.length - indices.length];
-
-        int newIntIdx = 0;
-        for (int i = 0; i < getNumRows(); i++) {
-            // check if this row is in the list of rows to remove
-            //Integer x = (Integer)toRemove.get(new Integer(i));
-            // if this row is not in the list, copy it into the new internal
-            //if (x == null) {
-         if(!toRemove.contains(new Integer(i))) {
-                newInternal[newIntIdx] = internal[i];
-                newMissing[newIntIdx] = missing[i];
-                newEmpty[newIntIdx] = empty[i];
-                newIntIdx++;
-            }
-        }
-        internal = newInternal;
-        missing = newMissing;
-        empty = newEmpty;
-        */
     }
 
     /**
@@ -1112,31 +892,8 @@ final public class DoubleColumn extends AbstractColumn implements NumericColumn 
         }
     }
 
-/*	public void setValueToMissing(int row) {
-		setDouble(scalarMissingValue, row);
-	}
-
-	public void setValueToEmpty(int row) {
-		setDouble(scalarEmptyValue, row);
-	}
-
-	public boolean isValueMissing(int row) {
-		return getDouble(row) == scalarMissingValue;
-	}
-
-	public boolean isValueEmpty(int row) {
-		return getDouble(row) == scalarEmptyValue;
-	}*/
-    public void setValueToMissing(boolean b, int row) {
-        missing[row] = b;
-    }
-
     public void setValueToEmpty(boolean b, int row) {
         empty[row] = b;
-    }
-
-    public boolean isValueMissing(int row) {
-        return missing[row];
     }
 
     public boolean isValueEmpty(int row) {

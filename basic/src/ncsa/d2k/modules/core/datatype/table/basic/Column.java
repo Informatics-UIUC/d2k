@@ -393,6 +393,12 @@ public interface Column extends java.io.Serializable {
 	public int getType();
 
 	/**
+	 * return true if there are any missing values in the column.
+	 * @return true if there are any missing values in the column.
+	 */
+	public boolean hasMissingValues();
+	
+	/**
 	 * Return true if the value at row is missing, false otherwise
 	 * @param row the row index
 	 * @return true if the value at row is missing, false otherwise
