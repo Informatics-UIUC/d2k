@@ -184,6 +184,8 @@ public class SimpleTrainTest extends DataPrepModule  {
 		int nr = orig.getNumRows();
 		int numTest = (nr*this.getTestPercent())/100;
 		int numTrain = (nr*this.getTrainPercent())/100;
+		if (numTest < 1 || numTrain < 1)
+			throw new Exception (this.getAlias()+": The selected table was to small to be practical with the percentages specified.");
 		int [] test = new int [numTest];
 		int [] train = new int [numTrain];
 
