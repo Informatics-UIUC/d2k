@@ -45,6 +45,8 @@ public class SVMUtils {
   /**
     * given an example table, creates a vector of doubles with the content
     * of input features in row number <codE>index</code> in <codE>tbl</code>.
+    * the last double in the returned vector is 1. (this is so because of computations
+    * done by ISvmModel)
     * @param tbl - data source.
     * @param index - row index into tbl.
     * @return - vector of doubles with the content of input features in row

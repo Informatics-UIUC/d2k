@@ -137,9 +137,11 @@ protected  Isvm model ;
            "property does not match the number of input features of the input table of this" +
            "model, (or the Table according to which the update is being done), then " +
            "an exception is thrown and the itinerary is aborted.</P>" +
-           "<P><U>Data Restriction</U>: This model can process only scalar data. It " +
-           "can handle only one output feature that should be binary. In particular " +
-           "the values of the output feature should be 1 and -1.</P>";
+           "<P><U>Data Restriction</U>: The input data to this model should be scalarized " +
+           "by <i>Scalarize Nominals</i>, so that each attribute is binary and numeric as well. " +
+           "The model " +
+           "can handle only one output feature that should also be binary. " +
+           "The values of the output feature should be 1 and -1.</P>";
    }
 
 //debugging purposes.

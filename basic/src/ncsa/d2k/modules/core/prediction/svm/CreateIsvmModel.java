@@ -67,7 +67,8 @@ public class CreateIsvmModel extends ModelProducerModule
               "<P>This module generates a new IsvmModel and initializes it " +
               "according to the properties, as they are set by the user." +
 "<P>          Please note that if <I>Number Input Features</I> does not match the future"+
-" input Tables of the output model, an exception will be thrown.</P>" ;
+" input Tables of the output model, an exception will be thrown when this model attempts " +
+              " to train or predict.</P>" ;
 
 
 	}
