@@ -29,4 +29,7 @@ Java Object, java.lang.Object, Input,  The object to be serialized,      OutputS
 
 Input Table,   d2k.modules.core.datatype.table.basic.TableImpl, Original Table to be operated on,   MergeTableRows (Merge Table Rows)
 Output Table,  d2k.modules.core.datatype.table.basic.TableImpl, Resulting Table after merges,       MergeTableRows (Merge Table Rows)
+First Table, ncsa.d2k.modules.core.datatype.table.Table, First table to combine,                    AppendTables (Append Tables)
+Second Table, ncsa.d2k.modules.core.datatype.table.Table, Second table to combine,                  AppendTables (Append Tables)
+Result Table, ncsa.d2k.modules.core.datatype.table.ExampleTable, Table resulting from combination,  AppendTables (Append Tables)
 
