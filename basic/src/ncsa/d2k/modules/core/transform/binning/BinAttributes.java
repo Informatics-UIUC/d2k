@@ -1338,7 +1338,7 @@ public class BinAttributes extends HeadlessUIModule {
 		// the number of bins is (max - min) / (bin width)
 		int num = (int)Math.round((maxes[i] - mins[i])/intrval);
 
-		//System.out.println("column " + i + " max " + maxes[i] + " min " + mins[i] + " num " + num+ " original " +( maxes[i]-mins[i])/intrval + " interval " + intrval); 
+		//System.out.println("column " + i + " max " + maxes[i] + " min " + mins[i] + " num " + num+ " original " +( maxes[i]-mins[i])/intrval + " interval " + intrval);
 		double[] binMaxes = new double[num];
 		binMaxes[0] = mins[i];
 		// add the first bin manually
@@ -1781,5 +1781,9 @@ class TableBinCounts implements BinCounts {
  *           when the interval values devided (max-min) into an integer...
  *
  *           bug 179 - array index out of bounds exception with weight binning.
+ *
+ * 01-08-04: vered.
+  * user may create bins with identical names in same attribute - bug 207.
+
  *
 */

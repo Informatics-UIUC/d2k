@@ -988,4 +988,13 @@ class ADTBinCounts implements BinCounts {
 /**
  * 1-05-04:
   * vered - module is ready fro basic.
+  *
+  * 01-08-04: vered.
+  * due to bug 207 (an option to create bins with identical names in same attribute) the
+  * module is pulled back to qa process.
+  *
+  * waiting for an answer form Anca regarding the type of input port indexed 1
+  * (ExampleTable vs Table) the module can work with regular Table that was generated
+  * by ParseFileToTable but cannot work with regular metadata Table that was
+  * created by CreateADTree.
 */

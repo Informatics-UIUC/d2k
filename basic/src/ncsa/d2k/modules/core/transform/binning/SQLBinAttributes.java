@@ -1785,4 +1785,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
  *          second run. [bug 169].
  *          error with weight binning [bug 177]
  *
+ * 01-08-04: vered.
+  * user may create bins with identical names in same attribute [bug 207].
+
  */
