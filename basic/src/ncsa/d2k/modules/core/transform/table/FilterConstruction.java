@@ -23,8 +23,20 @@ import ncsa.d2k.modules.core.vis.widgets.*;
  * string and its format.)
  *
  * @author gpape
+ *
+ * added by vered:
+ *
+ * @todo: problems with gui: when entering malformed expression it throws
+ * a null pointer exception instead of informing user in a nice way.
+ * @todo: problem with add parentheses. it added "()".
+ * @todo: wishing for a back space. you have to clear all of the expression
+ * if you've made one mistake.
+ *
+ * @todo: add support for parenthese in doit.
+ *
+ *
  */
-public class FilterConstruction extends UIModule {
+public class FilterConstruction extends HeadlessUIModule {
 
 /******************************************************************************/
 /* Module methods                                                             */
@@ -49,6 +61,7 @@ public class FilterConstruction extends UIModule {
          " <i>sepal_length</i> which is numeric, a filter       resulting from the following expression"+
          " (sepal_length &gt;= 6.0) &amp;&amp;       (sepal_length &lt;= 7.0) will result in the removal"+
          " of all rows where the       sepal_length is not in the range from 6.0 to 7.0, inclusive.  "+
+         " Please note that names of columns are case sensitive." +
          "  </p>    <p>      Data Type Restrictions: Filter operations are supported for numeric data"+
          "       only at this point.    </p>" +
          "<p>Data Handling: This module <i>may</i> modify its input data: columns with blank labels " +
@@ -100,9 +113,13 @@ public class FilterConstruction extends UIModule {
       _lastExpression = value;
    }
 
+
    public PropertyDescription[] getPropertiesDescriptions() {
-      return new PropertyDescription[0]; // so that "last expression" property
-                                         // is invisible
+    PropertyDescription[] pds = new PropertyDescription[2];
+    pds[0] = super.supressDescription;
+    pds[1] = new PropertyDescription("expression", "Filter Expression", "Set this expression to filter rows in the table");
+    return pds;
+
    }
 
 /******************************************************************************/
@@ -429,6 +446,9 @@ public class FilterConstruction extends UIModule {
      public void expressionChanged(Object evaluation) {
         _lastExpression = gui.getTextArea().getText();
        pushOutput(new FilterTransformation((boolean[])evaluation, false), 0);
+       //headless conversion support
+       setExpression(_lastExpression);
+       //headless conversion support
        viewDone("Done");
      }
 
@@ -492,17 +512,30 @@ public class FilterConstruction extends UIModule {
        if (filter == null)
           return true;
 
-try {	
+try {
+          //9-17-03 vered:
+          //chnaged order of removing rows. if removing from beginning
+          //to end an array index out of bound exception is likely.
+          //in addition to a likelyhood of the exception, since a mutable table
+          //is a subset table - removing first from the beginning chnages the indexing
+          //of the end rows. which might result in filtering the wrong rows.
        if (!filterThese)
-         for (int i = 0; i < filter.length; i++)
+         //commented by vered.
+         //for (int i = 0; i<filter.length; i++)
+         for (int i = filter.length-1; i >=0 ; i--)
           if(!filter[i])
            table.removeRow(i);
-            
+
+
          // 4/7/02 commented out by Loretta...
          // this add gets done by applyTransformation
          //table.addTransformation(this);
        }
-       catch(Exception e) { return false; }
+       catch(Exception e) {
+
+         e.printStackTrace();
+
+       return false; }
 
        return true;
 
@@ -544,6 +577,92 @@ try {
          default: return "NO SUCH OUTPUT!";
       }
    }
+
+
+   //headless conversion support
+   private String expression; //the expression that was set by the user
+   public String getExpression(){return expression;}
+   public void setExpression(String ex){expression = ex;}
+
+
+
+
+   public void doit() throws Exception{
+     //pulling input
+     MutableTable table = (MutableTable) pullInput(0);
+     //creating a column hash map
+     HashMap availableColumns = new HashMap();
+     for (int i=0; i<table.getNumColumns(); i++)
+       availableColumns.put(table.getColumnLabel(i), new Integer(i));
+
+      String goodCondition = ""; //this will construct the transformation
+
+      StringTokenizer tok = new StringTokenizer(expression);
+            //parsing the condition, each sub condition that holds a valid
+            //attribute name will be copied into goodCondition
+
+            boolean first = true; //is it the first sub expression
+
+        //assuming the expression could be malformed.
+            //if it is the first one to be parsed and it has at least 3 more tokens
+            //then there is still yet another sub expression to parse.
+            //if it is not the first one - at least 4 tokens are needed.
+            while((first && tok.countTokens() >= 3) || (!first && tok.countTokens() >= 4)){
+
+            boolean added = false;  //whether a sub expression was added of not.
+
+            String joint = null;
+            if(!first){ //meaning the following token is "and" or "or".
+              joint = tok.nextToken();
+              goodCondition += " " + joint + " ";
+            }//if !first
+            else first = false;
+
+             //parsing the 3 tokens that make the sub expression.
+             String leftHand = tok.nextToken();
+             String relation = tok.nextToken();
+             String rightHand = tok.nextToken();
+
+             //if the right hand operand is the attribute - swaping between them.
+             if(availableColumns.containsKey(rightHand)){
+               String temp = leftHand;
+               leftHand = rightHand;
+               rightHand = temp;
+             }//if contains key
+
+             //checking that leftHand is an attribute.
+             if(availableColumns.containsKey(leftHand)){
+               //adding the parsed tokens to the good condition
+               goodCondition += leftHand + " " + relation + " " + rightHand;
+               added = true;
+
+             }//if contains key
+
+              if(!added && joint != null){
+                //now the joint that was added should be taken off
+                int index = goodCondition.lastIndexOf(joint);
+                String temp = goodCondition.substring(0, index);
+                goodCondition = temp;
+              }//if !added
+
+            }//while has more tokens
+
+            //now good condition holds only relevant filters.
+            //building a filter expression
+            FilterExpression fEx = new FilterExpression(table);
+            fEx.setExpression(goodCondition);
+            //getting the array of booleans - which row to filter.
+            boolean[] eval = ( boolean[] )fEx.evaluate();
+            //pushing out the transformation
+            pushOutput(new FilterTransformation(eval, false), 0);
+
+
+
+
+
+   }//doit
+
+   //headless conversion support
 }
 
  /**

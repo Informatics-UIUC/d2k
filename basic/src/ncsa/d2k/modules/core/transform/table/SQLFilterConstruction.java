@@ -618,48 +618,36 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      //if it is the first one to be parsed and it has at least 3 more tokens
      //then there is still yet another sub expression to parse.
      //if it is not the first one - at least 4 tokens are needed.
-
-    // String currentToken = null; //will hold the attribute or the value.
-
      while((first && tok.countTokens() >= 3) || (!first && tok.countTokens() >= 4)){
 
      boolean added = false;  //whether a sub expression was added of not.
-
 
      String joint = null;
      if(!first){ //meaning the following token is "and" or "or".
        joint = tok.nextToken();
        goodCondition += " " + joint + " ";
      }//if !first
-
-      else first = false;
-
+     else first = false;
 
       //parsing the 3 tokens that make the sub expression.
       String leftHand = tok.nextToken();
       String relation = tok.nextToken();
       String rightHand = tok.nextToken();
 
-
-
-
-
-
       //if the right hand operand is the attribute - swaping between them.
       if(availableAttributes.containsKey(rightHand)){
-
-
         String temp = leftHand;
         leftHand = rightHand;
         rightHand = temp;
       }//if contains key
 
+      //checking that leftHand is an attribute.
       if(availableAttributes.containsKey(leftHand)){
-
         //adding the parsed tokens to the good condition
         goodCondition += leftHand + " " + relation + " " + rightHand;
         added = true;
-      }
+
+      }//if contains key
 
        if(!added && joint != null){
          //now the joint that was added should be taken off
