@@ -1,4 +1,3 @@
-// package ncsa.d2k.modules.projects.gpape;
 package ncsa.d2k.modules.core.transform.attribute;
 
 import java.awt.*;
@@ -11,7 +10,14 @@ import ncsa.d2k.userviews.swing.*;
 
 /**
  * This module presents a user interface for interactive normalization of
- * <code>MutableTable</code> data.
+ * <code>MutableTable</code> data. Selected numeric columns are normalized
+ * (<i>standardized</i>) to a set of values such that the mean of that set
+ * is approximately zero and the standard deviation of that set is
+ * approximately one.
+ * <p>
+ * All transformed columns are converted to type <code>double</code>.
+ *
+ * @author gpape
  */
 public class Normalize extends UIModule {
 
@@ -27,15 +33,17 @@ public class Normalize extends UIModule {
 
    public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
-      sb.append("This module presents a simple user interface for ");
-      sb.append("the interactive normalization of float and double data. ");
-      sb.append("The user can specify which of these columns should be ");
-      sb.append("normalized and to what range they should be mapped ");
-      sb.append("(the default range is 0 to 1).");
+      sb.append("This module presents a simple user interface for the ");
+      sb.append("interactive normalization (<i>standardization</i>) of ");
+      sb.append("numeric <i>MutableTable</i> data. Numeric columns selected ");
+      sb.append("by the user are normalized to a set of values such that the ");
+      sb.append("mean of that set is approximately zero and the standard ");
+      sb.append("deviation of that set is approximately one.");
       sb.append("</p><p>Data Handling: ");
       sb.append("This module does not modify its input data. Rather, its ");
-      sb.append("output is a <i>Transformation</i> that can later be used ");
-      sb.append("to normalize the specified columns.");
+      sb.append("output is a <i>Transformation</i> that can later be used to ");
+      sb.append("normalize the specified columns. All transformed columns ");
+      sb.append("will be converted to type <i>double</i>.");
       sb.append("</p>");
       return sb.toString();
    }
@@ -86,145 +94,141 @@ public class Normalize extends UIModule {
 
    private class NormalizeUI extends JUserPane implements ActionListener {
 
-      private Dimension minimumSize = new Dimension(400, 250);
-
-      private HashMap panelMap;
-      private Insets emptyInsets = new Insets(0, 0, 0, 0),
-                     labelInsets = new Insets(0, 10, 0, 10),
-                     buttonInsets = new Insets(5, 5, 5, 5);
-
       private MutableTable table;
 
+      private JList numericList; // list of available numeric columns
       private JButton abortButton, doneButton;
 
-      public void initView(ViewModule mod) { }
+      private int[] indirection; // points into table, at numeric columns
+      private String[] numericLabels;
 
-      public Dimension getMinimumSize() {
-         return minimumSize;
-      }
+      private Insets emptyInsets  = new Insets( 0,  0,  0,  0),
+                     labelInsets  = new Insets(10, 10, 10, 10),
+                     buttonInsets = new Insets( 5,  5,  5,  5);
+
+      public void initView(ViewModule mod) { }
 
       public void setInput(Object obj, int ind) {
 
          if (ind != 0)
             return;
 
-         this.removeAll();
-         panelMap = new HashMap();
-
          table = (MutableTable)obj;
+         removeAll();
 
-         JPanel scalarColumnsPanel = new JPanel();
-         GridBagLayout scalarColumnsLayout = new GridBagLayout();
-         scalarColumnsPanel.setLayout(scalarColumnsLayout);
+         // how many numeric columns are there?
 
-         int layoutVIndex = 0; // vertical position for scalarColumnsLayout
-
-         ///////////////////////////////////////////////////////////////////////
-         // add fields for normalization
-         ///////////////////////////////////////////////////////////////////////
-
+         int numNumericColumns = 0, columnType;
          for (int i = 0; i < table.getNumColumns(); i++) {
 
-            if (table.getColumnType(i) == ColumnTypes.FLOAT ||
-                table.getColumnType(i) == ColumnTypes.DOUBLE) {
+            columnType = table.getColumnType(i);
 
-               // add separator if necessary
+            if (columnType == ColumnTypes.BYTE    ||
+                columnType == ColumnTypes.DOUBLE  ||
+                columnType == ColumnTypes.FLOAT   ||
+                columnType == ColumnTypes.INTEGER ||
+                columnType == ColumnTypes.LONG    ||
+                columnType == ColumnTypes.SHORT) {
 
-               if (panelMap.size() > 0) {
-                  JSeparator separator = new JSeparator();
-                  scalarColumnsLayout.addLayoutComponent(
-                     separator, new GridBagConstraints(
-                        0, layoutVIndex++, 2, 1, 1.0, 1.0,
-                        GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-                        emptyInsets, 0, 0
-                     )
-                  );
-                  scalarColumnsPanel.add(separator);
-               }
-
-               // add column label
-
-               JLabel labelLabel = new JLabel(table.getColumnLabel(i));
-
-               scalarColumnsLayout.addLayoutComponent(
-                  labelLabel, new GridBagConstraints(
-                     0, layoutVIndex, 1, 1, 1.0, 1.0,
-                     GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-                     labelInsets, 0, 0
-                  )
-               );
-               scalarColumnsPanel.add(labelLabel);
-
-               // add column panel
-
-               ColumnPanel columnPanel = new ColumnPanel();
-
-               panelMap.put(new Integer(i), columnPanel);
-
-               scalarColumnsLayout.addLayoutComponent(
-                  columnPanel, new GridBagConstraints(
-                     1, layoutVIndex++, 1, 1, 1.0, 1.0,
-                     GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-                     emptyInsets, 0, 0
-                  )
-               );
-               scalarColumnsPanel.add(columnPanel);
+               numNumericColumns++;
 
             }
 
          }
 
-         ///////////////////////////////////////////////////////////////////////
-         // add buttons
-         ///////////////////////////////////////////////////////////////////////
+         // construct list of available numeric columns
 
-         JPanel buttonsPanel = new JPanel();
-         GridBagLayout buttonsLayout = new GridBagLayout();
-         buttonsPanel.setLayout(buttonsLayout);
+         indirection = new int[numNumericColumns];
+         numericLabels = new String[numNumericColumns];
+
+         int index = 0;
+         for (int i = 0; i < table.getNumColumns(); i++) {
+
+            columnType = table.getColumnType(i);
+
+            if (columnType == ColumnTypes.BYTE    ||
+                columnType == ColumnTypes.DOUBLE  ||
+                columnType == ColumnTypes.FLOAT   ||
+                columnType == ColumnTypes.INTEGER ||
+                columnType == ColumnTypes.LONG    ||
+                columnType == ColumnTypes.SHORT) {
+
+               indirection[index] = i;
+               numericLabels[index] = table.getColumnLabel(i);
+
+               index++;
+
+            }
+
+         }
+
+         numericList = new JList(numericLabels);
+
+         // set up button panel
 
          abortButton = new JButton("Abort");
          abortButton.addActionListener(this);
          doneButton = new JButton("Done");
          doneButton.addActionListener(this);
+         JLabel buttonFillerLabel = new JLabel(" ");
 
-         JLabel fillerLabel = new JLabel(" ");
+         JPanel buttonPanel = new JPanel();
+         GridBagLayout buttonLayout = new GridBagLayout();
+         buttonPanel.setLayout(buttonLayout);
 
-         buttonsLayout.addLayoutComponent(abortButton, new GridBagConstraints(
-            0, 0, 1, 1, 1.0, 1.0,
+         buttonLayout.addLayoutComponent(abortButton,
+            new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.WEST, GridBagConstraints.NONE,
             buttonInsets, 0, 0));
-         buttonsPanel.add(abortButton);
-         buttonsLayout.addLayoutComponent(fillerLabel, new GridBagConstraints(
-            1, 0, 1, 1, 1.0, 1.0,
+         buttonPanel.add(abortButton);
+
+         buttonLayout.addLayoutComponent(buttonFillerLabel,
+            new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
             emptyInsets, 0, 0));
-         buttonsPanel.add(fillerLabel);
-         buttonsLayout.addLayoutComponent(doneButton, new GridBagConstraints(
-            2, 0, 1, 1, 1.0, 1.0,
+         buttonPanel.add(buttonFillerLabel);
+
+         buttonLayout.addLayoutComponent(doneButton,
+            new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.EAST, GridBagConstraints.NONE,
             buttonInsets, 0, 0));
-         buttonsPanel.add(doneButton);
+         buttonPanel.add(doneButton);
 
-         ///////////////////////////////////////////////////////////////////////
-         // set up this panel's layout
-         ///////////////////////////////////////////////////////////////////////
+         // if no numeric columns, attach a message to that effect. otherwise,
+         // attach the JList.
 
          GridBagLayout layout = new GridBagLayout();
-         this.setLayout(layout);
+         setLayout(layout);
 
-         JScrollPane scroll = new JScrollPane(scalarColumnsPanel);
+         if (numNumericColumns == 0) {
 
-         layout.addLayoutComponent(scroll, new GridBagConstraints(
-            0, 0, 1, 1, 1.0, 1.0,
-            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            emptyInsets, 0, 0));
-         layout.addLayoutComponent(buttonsPanel, new GridBagConstraints(
-            0, 1, 1, 1, 1.0, 0.0,
+            JLabel noNumericLabel = new JLabel(
+               "This table does not have any numeric columns to normalize.");
+
+            layout.addLayoutComponent(noNumericLabel,
+               new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
+               GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+               labelInsets, 0, 0));
+            add(noNumericLabel);
+
+         }
+         else {
+
+            JScrollPane numericScroll = new JScrollPane(numericList);
+
+            layout.addLayoutComponent(numericScroll,
+               new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
+               GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+               emptyInsets, 0, 0));
+            add(numericScroll);
+
+         }
+
+         layout.addLayoutComponent(buttonPanel,
+            new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0,
             GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL,
             emptyInsets, 0, 0));
-
-         this.add(scroll);
-         this.add(buttonsPanel);
+         add(buttonPanel);
 
       }
 
@@ -238,107 +242,25 @@ public class Normalize extends UIModule {
 
          else if (src == doneButton) {
 
-            int numRelevantColumns = panelMap.size();
+            if (indirection.length == 0) {
+               pushOutput(new NormalizingTransformation(new int[0]), 0);
+            }
+            else {
 
-            int[] indices = new int[numRelevantColumns];
-            double[] min = new double[numRelevantColumns];
-            double[] max = new double[numRelevantColumns];
+               int[] indices = numericList.getSelectedIndices();
+               int[] transform = new int[indices.length];
 
-            int index = 0;
-            for (int i = 0; i < table.getNumColumns(); i++) {
-
-               if (table.getColumnType(i) == ColumnTypes.FLOAT ||
-                   table.getColumnType(i) == ColumnTypes.DOUBLE) {
-
-                  ColumnPanel columnPanel = (ColumnPanel)panelMap.get(
-                     new Integer(i));
-
-                  if (columnPanel.normalizeCheck.isSelected()) {
-
-                     indices[index] = i;
-
-                     double d;
-                     try {
-                        d = Double.parseDouble(columnPanel.minField.getText());
-                     }
-                     catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(this,
-                              "not a number: " + columnPanel.minField.getText(),
-                              "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                     }
-                     min[index] = d;
-
-                     try {
-                        d = Double.parseDouble(columnPanel.maxField.getText());
-                     }
-                     catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(this,
-                              "not a number: " + columnPanel.maxField.getText(),
-                              "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                     }
-                     max[index] = d;
-
-                  }
-                  else {
-
-                     indices[index] = -1;
-
-                  }
-
-                  index++;
-
+               for (int i = 0; i < indices.length; i++) {
+                  transform[i] = indirection[indices[i]];
                }
+
+               pushOutput(new NormalizingTransformation(transform), 0);
 
             }
 
-            pushOutput(new NormalizingTransformation(indices, min, max), 0);
             viewDone("Done");
 
          }
-
-      }
-
-   }
-
-   private class ColumnPanel extends JPanel implements ActionListener {
-
-      JCheckBox normalizeCheck;
-      JLabel minLabel, maxLabel;
-      JTextField minField, maxField;
-
-      public ColumnPanel() {
-
-         super();
-
-         normalizeCheck = new JCheckBox();
-         normalizeCheck.setSelected(true);
-         normalizeCheck.addActionListener(this);
-
-         minLabel = new JLabel("Min:");
-         minField = new JTextField(5);
-         minField.setText("0.0");
-         maxLabel = new JLabel("Max:");
-         maxField = new JTextField(5);
-         maxField.setText("1.0");
-
-         add(normalizeCheck);
-         add(minLabel);
-         add(minField);
-         add(maxLabel);
-         add(maxField);
-
-      }
-
-      public void actionPerformed(ActionEvent e) {
-
-         boolean selected = normalizeCheck.isSelected();
-
-         minLabel.setEnabled(selected);
-         minField.setEnabled(selected);
-         maxLabel.setEnabled(selected);
-         maxField.setEnabled(selected);
 
       }
 
@@ -350,88 +272,74 @@ public class Normalize extends UIModule {
 
    private class NormalizingTransformation implements Transformation {
 
-      private int[] indices;
-      private double[] min;
-      private double[] max;
+      private int[] indices; // numeric column indices in the table
 
-      NormalizingTransformation(int[] indices, double[] min, double[] max) {
+      NormalizingTransformation(int[] indices) {
          this.indices = indices;
-         this.min = min;
-         this.max = max;
       }
 
       public boolean transform(MutableTable table) {
 
-         for (int i = 0; i < indices.length; i++) {
+         if (indices.length == 0 || table.getNumRows() == 0) {
+            // no transformation is necessary
+            return true;
+         }
 
-            if (indices[i] < 0)
-               continue;
+         // loop over all relevant numeric column indices in the table
+         for (int count = 0; count < indices.length; count++) {
 
-            int index = indices[i];
+            double[] data = new double[table.getNumRows()];
 
-            if (table.getColumnType(index) == ColumnTypes.FLOAT) {
+            int index = indices[count];
 
-               float oldMin = Float.MAX_VALUE, oldMax = Float.MIN_VALUE;
+            // data first represents the data from the table:
+            for (int j = 0; j < data.length; j++)
+               data[j] = table.getDouble(j, index);
 
-               int numRows = table.getNumRows();
-               float f;
+            // calculate mean
+            double mean = 0;
+            for (int j = 0; j < data.length; j++)
+               mean += data[j];
 
-               for (int j = 0; j < table.getNumRows(); j++) {
-                  f = table.getFloat(j, index);
-                  if (f < oldMin)
-                     oldMin = f;
-                  if (f > oldMax)
-                     oldMax = f;
-               }
+            mean /= data.length;
 
-               float oldRange = oldMax - oldMin;
-               float newRange = (float)max[i] - (float)min[i];
+            // data now represents differences from the mean:
+            for (int j = 0; j < data.length; j++)
+               data[j] = data[j] - mean;
 
-               float nf;
-               for (int j = 0; j < table.getNumRows(); j++) {
+            // calculate sum of squares of differences
+            double sq_diff_sum = 0;
+            for (int j = 0; j < data.length; j++)
+               sq_diff_sum += (data[j] * data[j]);
 
-                  f = table.getFloat(j, index);
+            // calculate sample variance
+            double sample_variance = 0;
 
-                  nf = (f - oldMin)*newRange/oldRange + (float)min[i];
+            if (data.length == 1)
+               sample_variance = sq_diff_sum;
+            else
+               sample_variance = sq_diff_sum / (data.length - 1);
 
-                  table.setFloat(nf, j, index);
+            // calculate sample standard deviation
+            double sample_std_dev = Math.sqrt(sample_variance);
 
-               }
-
-            }
-            else if (table.getColumnType(index) == ColumnTypes.DOUBLE) {
-
-               double oldMin = Double.MAX_VALUE, oldMax = Double.MIN_VALUE;
-
-               int numRows = table.getNumRows();
-               double d;
-
-               for (int j = 0; j < table.getNumRows(); j++) {
-                  d = table.getDouble(j, index);
-                  if (d < oldMin)
-                     oldMin = d;
-                  if (d > oldMax)
-                     oldMax = d;
-               }
-
-               double oldRange = oldMax - oldMin;
-               double newRange = max[i] - min[i];
-
-               double nd;
-               for (int j = 0; j < table.getNumRows(); j++) {
-
-                  d = table.getDouble(j, index);
-
-                  nd = (d - oldMin)*newRange/oldRange + min[i];
-
-                  table.setDouble(nd, j, index);
-
-               }
-
+            // divide to normalize data:
+            if (sample_std_dev == 0.0) {
+               for (int j = 0; j < data.length; j++)
+                  data[j] = 0;
             }
             else {
-               return false;
+               for (int j = 0; j < data.length; j++)
+                  data[j] = data[j] /= sample_std_dev;
             }
+
+            String columnLabel = table.getColumnLabel(index);
+            String columnComment = table.getColumnComment(index);
+
+            table.setColumn(data, index);
+
+            table.setColumnLabel(columnLabel, index);
+            table.setColumnComment(columnComment, index);
 
          }
 
