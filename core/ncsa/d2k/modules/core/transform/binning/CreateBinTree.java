@@ -37,7 +37,7 @@ public class CreateBinTree extends DataPrepModule {
    }
 
    public String getOutputInfo(int i) {
-      return "Bin Tree structure without counts";
+      return "Bin Tree structure holding counts";
    }
 
    public String getInputName(int i) {
@@ -62,9 +62,9 @@ public class CreateBinTree extends DataPrepModule {
        sb.append( "Given a Binning Transformation containing the definition of the bins, "); 
        sb.append( "and an Example Table that has the input/ output attribute labels and types, "); 
        sb.append( "this module builds a Bin Tree that can be later used to clasify data. ");
-       sb.append( "</p><p>A Bin Tree holds information about the number of examples that fall into each bin. ");
-       sb.append( "The Bin Tree can "); 
-       sb.append( "use only one output feature. If more are selected in the Example Table, only the first one will be used." );
+       sb.append( "</p><p>A Bin Tree holds information about the number of examples that fall into each bin ");
+       sb.append( "for each class. The Bin Tree can use only one output "); 
+       sb.append( "feature as a class. If more are selected in the Example Table, only the first one will be used." );
        sb.append( "</p><p> Scalability: a large enough number of features will result "); 
        sb.append( "in an OutOfMemory error. Use feature selection to reduce the number of features.</p>");
        return sb.toString(); 
