@@ -98,7 +98,7 @@ public class CreateDecisionTreeParameterPoint
   }
 
   public boolean UseOneHalfSplit = false;
-  public void setUseOneHalfSplit(boolean value) throws PropertyVetoException {
+  public void setUseOneHalfSplit(boolean value) {
     this.UseOneHalfSplit = value;
   }
 

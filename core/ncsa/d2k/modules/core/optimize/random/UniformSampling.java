@@ -5,40 +5,114 @@ import ncsa.d2k.modules.core.datatype.table.continuous.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import java.util.Random;
 import ncsa.d2k.core.modules.ComputeModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+import java.beans.PropertyVetoException;
 
 
 public class UniformSampling extends ComputeModule implements java.io.Serializable {
 
-  private double     StopUtilityThreshold = 0.0;
-  public  void    setStopUtilityThreshold (double value)  {       this.StopUtilityThreshold = value;}
-  public  double  getStopUtilityThreshold ()              {return this.StopUtilityThreshold;}
+  public PropertyDescription[] getPropertiesDescriptions() {
 
-  private int        MaxNumIterations     = 100;
-  public  void    setMaxNumIterations     (int value)     {       this.MaxNumIterations = value;}
-  public  int     getMaxNumIterations     ()              {return this.MaxNumIterations;}
+    PropertyDescription[] pds = new PropertyDescription[6];
 
-  private int        RandomSeed           = 123;
-  public  void    setRandomSeed           (int value)     {       this.RandomSeed = value;}
-  public  int     getRandomSeed           ()              {return this.RandomSeed;}
+    pds[0] = new PropertyDescription(
+        "objectiveScoreOutputFeatureNumber",
+        "Objective Score Output Feature Number",
+        "Selects which example output feature is used to denote the objective score of the Parameter Point.  ");
 
-  private int        UtilityIndex         = 0;
-  public  void    setUtilityIndex         (int value)     {       this.UtilityIndex = value;}
-  public  int     getUtilityIndex         ()              {return this.UtilityIndex;}
+    pds[1] = new PropertyDescription(
+        "objectiveScoreDirection",
+        "Objective Score Direction",
+        "Determines whether the objective score is to be minimized (-1) or maximized (1).  ");
 
-  private int        UtilityDirection     = -1;
-  public  void    setUtilityDirection     (int value)     {       this.UtilityDirection = value;}
-  public  int     getUtilityDirection     ()              {return this.UtilityDirection;}
+    pds[2] = new PropertyDescription(
+        "stopObjectiveScoreThreshold",
+        "Stop Utility Threshold",
+        "Optimization halts when an example is generated with an objective score which is greater or less than threshold depending on Objective Score Direction.  ");
 
-  private boolean    Trace                = false;
-  public  void    setTrace                (boolean value) {       this.Trace = value;}
-  public  boolean getTrace                ()              {return this.Trace;}
+    pds[3] = new PropertyDescription(
+        "maxNumIterations",
+        "Maximum Number of Iterations",
+        "Optimization halts when this limit on the number of iterations is exceeded.  ");
+
+    pds[4] = new PropertyDescription(
+        "randomSeed",
+        "Random Number Generator Initial Seed",
+        "This integer is use to seed the random number generator which is used to select points in parameter space.  ");
+
+    pds[5] = new PropertyDescription(
+        "trace",
+        "Trace",
+        "Report extra information during execution to trace the modules execution.  ");
+
+    return pds;
+  }
+
+
+  private int ObjectiveScoreOutputFeatureNumber = 1;
+  public void setObjectiveScoreOutputFeatureNumber(int value) throws PropertyVetoException {
+    if (value < 1) {
+      throw new PropertyVetoException(" < 1", null);
+    }
+    this.ObjectiveScoreOutputFeatureNumber = value;
+    }
+  public  int getObjectiveScoreOutputFeatureNumber () {
+    return this.ObjectiveScoreOutputFeatureNumber;
+    }
+
+  private int ObjectiveScoreDirection = -1;
+  public  void setObjectiveScoreDirection (int value) throws PropertyVetoException {
+    if (!((value == -1) || (value == 1))) {
+      throw new PropertyVetoException(" must be -1 or 1", null);
+    }
+    this.ObjectiveScoreDirection = value;
+    }
+  public int getObjectiveScoreDirection () {
+    return this.ObjectiveScoreDirection;
+    }
+
+  private double StopObjectiveScoreThreshold = 0.0;
+  public void setStopObjectiveScoreThreshold (double value)  {
+    this.StopObjectiveScoreThreshold = value;
+    }
+  public double  getStopObjectiveScoreThreshold () {
+    return this.StopObjectiveScoreThreshold;
+    }
+
+  private int MaxNumIterations = 10;
+  public void setMaxNumIterations (int value) throws PropertyVetoException {
+    if (value < 1) {
+      throw new PropertyVetoException(" < 1", null);
+    }
+    this.MaxNumIterations = value;
+    }
+  public int getMaxNumIterations () {
+    return this.MaxNumIterations;
+    }
+
+  private int RandomSeed = 123;
+  public void setRandomSeed (int value)  {
+    this.RandomSeed = value;
+    }
+  public int getRandomSeed () {
+    return this.RandomSeed;
+    }
+
+  private boolean Trace = false;
+  public void setTrace (boolean value) {
+    this.Trace = value;
+    }
+  public boolean getTrace () {
+    return this.Trace;
+    }
 
 
   public String getModuleName() {
-    return "UniformSampling";
+    return "Random Optimizer";
   }
   public String getModuleInfo() {
-    return "UniformSampling";
+    return "This module implements a simple random sampling optimizer which selects points according to a uniform " +
+           "distribution over the parameter space.  Every point in the space as equal likelihood of being selected.  ";
   }
 
 
@@ -51,8 +125,8 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
   }
   public String getInputInfo(int i) {
     switch (i) {
-      case 0: return "Control Parameter Space";
-      case 1: return "Example";
+      case 0: return "The Control Parameter Space to search";
+      case 1: return "The Example created by combining the Parameter Point and the objective scores";
     }
     return "";
   }
@@ -74,9 +148,9 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
   }
   public String getOutputInfo(int i) {
     switch (i) {
-      case 0: return "Parameter Point";
-      case 1: return "Optimal Example Table";
-      case 2: return "Complete Example Table";
+      case 0: return "The next Parameter Point selected for evaluation";
+      case 1: return "An example table consisting of only the Optimal Example(s)";
+      case 2: return "An example table consisting of all Examples generated during optimization";
     }
     return "";
   }
@@ -102,7 +176,7 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
     ExampleSet = null;
     NumExamples = 0;
 
-    if (UtilityDirection == 1) {
+    if (ObjectiveScoreDirection == 1) {
       BestUtility = Double.NEGATIVE_INFINITY;
     }
     else {
@@ -193,9 +267,9 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
 
       for (int e = NumExamples - 1; e < NumExamples; e++) {
 
-        double utility = ExampleSet.getExample(e).getOutputDouble(UtilityIndex);
+        double utility = ExampleSet.getExample(e).getOutputDouble(ObjectiveScoreOutputFeatureNumber - 1);
 
-        if (UtilityDirection == 1) {
+        if (ObjectiveScoreDirection == 1) {
           if (utility > BestUtility) {
             BestUtility      = utility;
             BestExampleIndex = e;
@@ -218,9 +292,9 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
     boolean stop = false;
 
     if (NumExamples > 0) {
-      if ((UtilityDirection ==  1) && (BestUtility >= StopUtilityThreshold))
+      if ((ObjectiveScoreDirection ==  1) && (BestUtility >= StopObjectiveScoreThreshold))
         stop = true;
-      if ((UtilityDirection == -1) && (BestUtility <= StopUtilityThreshold))
+      if ((ObjectiveScoreDirection == -1) && (BestUtility <= StopObjectiveScoreThreshold))
         stop = true;
       if (NumExamples >= MaxNumIterations)
         stop = true;
@@ -241,7 +315,7 @@ public class UniformSampling extends ComputeModule implements java.io.Serializab
         System.out.println("  Number of Experiments = " + NumExamples);
 
         System.out.println("NumExamples............ " + NumExamples);
-        System.out.println("UtilityDirection....... " + UtilityDirection);
+        System.out.println("ObjectiveScoreDirection....... " + ObjectiveScoreDirection);
         System.out.println("BestUtility............ " + BestUtility);
         System.out.println("BestExampleNumber...... " + (BestExampleIndex + 1));
       }
