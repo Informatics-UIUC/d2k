@@ -64,7 +64,7 @@ public class DefineBins extends UIModule implements HasNames {
 			"ncsa.d2k.util.datatype.VerticalTable",
 			"java.util.HashMap"};
 		*/
-		String []out = {"ncsa.d2k.modules.dataprep.field.BinTree",
+		String []out = {"ncsa.d2k.modules.core.datatype.BinTree",
 			"ncsa.d2k.util.datatype.ExampleTable"};
 		return out;
 	}
