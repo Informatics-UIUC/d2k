@@ -241,4 +241,6 @@ public class ARFFFileParser extends DelimitedFileParser {
 //           to d2K missing values.  Documented in CreateARFFParser but
 //           decided w/ other QA folks not to put into basic until some of
 //           these resolved (next release).
+// 3/3/03  - Missing values are in fact handled (down the road, not here).
+//         - Committing to basic.   Still wish for validating parser.
 // END QA Comments
