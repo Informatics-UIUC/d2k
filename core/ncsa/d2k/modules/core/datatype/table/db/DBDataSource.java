@@ -1,21 +1,16 @@
 package ncsa.d2k.modules.core.datatype.table.db;
 
-
 /**
- * <p>Title: DBTableConnect</p>
+ * <p>Title: DBDataSource</p>
  * <p>Description: This is a DBConnection that is 'bound' to a particular database.
  * Objects of this class are bound to a database, tables within the database,
  * and columns within those tables.</p>
  * <p>Copyright: Copyright (c) 2002</p>
  * <p>Company: NCSA</p>
- * @author Sameer Mathur
+ * @author Sameer Mathur, David Clutter
  * @version 1.0
  */
 public interface DBDataSource extends java.io.Serializable /*extends DBConnection */{
-
-    //public String[]   getUserSelectedTables();
-    //public String[][] getUserSelectedCols ();
-    //public String     getUserSelectedWhere();
 
     public DBDataSource copy();
 

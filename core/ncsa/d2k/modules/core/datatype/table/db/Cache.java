@@ -1,10 +1,16 @@
 package ncsa.d2k.modules.core.datatype.table.db;
 
 import java.sql.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
+/**
+ * <p>Title: CacheMissException </p>
+ * <p>Description: Abstract class implementing the common Cache functionality </p>
+ * <p>Copyright: NCSA (c) 2002</p>
+ * <p>Company: </p>
+ * @author Sameer Mathur, David Clutter
+ * @version 1.0
+ */
 
 public abstract class Cache implements java.io.Serializable {
 
@@ -76,7 +82,6 @@ public abstract class Cache implements java.io.Serializable {
         }
         catch (Exception e){
             e.printStackTrace();
-            System.out.println("0. Error occoured in Cache:WhichRowInCache");
            return -2;
         }
     }// RowInCache
@@ -110,53 +115,5 @@ public abstract class Cache implements java.io.Serializable {
         //now update maxRowNum
         maxRowNum = minRowNum + getNumCacheRows() -1;
     }
-
-/*
-    public void update(int rowInResultSet, ResultSet rs) throws SQLException {
-            minRowNum = rowInResultSet;
-
-            ResultSetMetaData rsmd = rs.getMetaData();
-
-            // this is the potential time-consuming step, if the # records is very large..
-            int count = 0;
-            if(rowInResultSet > 0) {
-                while (rs.next() ){
-                    count++;
-                    if (count == rowInResultSet)
-                        break;
-                }
-            }
-             // either the result set empties (less likely)
-             // or the maximum # of rows that can be written to the Cache -- getNumCacheRows()
-             // have been written (a lot more likely)
-
-            // compare #cols // compare column datatypes
-            boolean check = (table.getNumColumns() == rsmd.getColumnCount());
-
-            int numRowsAddedToCache = 0;
-            if (check) {
-                while (  (rs.next()) && (numRowsAddedToCache < getMaxCacheRows()) ) {
-                    for (int c = 1; c <= rsmd.getColumnCount(); c++) {
-                        if (rsmd.getColumnType(c) == 2) {
-                            table.setDouble(rs.getDouble(c), numRowsAddedToCache, c-1);
-                        }
-                        else { //(rsmd.getColumnType(c) == 12)
-                            table.setString(rs.getString(c), numRowsAddedToCache, c-1);
-                        }
-                    }//for loop processes all the columns for a particular row
-                    numRowsAddedToCache++;
-                }//while
-            }
-            else {
-                System.out.println("Error: # Rows, # Cols, Column Datatype do not match");
-            }
-
-            //now update how many rows were written to the cache
-            setNumCacheRows(numRowsAddedToCache);
-            //now update maxRowNum
-            maxRowNum = minRowNum + getNumCacheRows() -1;
-    }
-*/
-
 
 } //Cache

@@ -1,12 +1,18 @@
-package ncsa.d2k.modules.core.datatype.table.db;
+/**
+ * <p>Title: LocalDBPredictionTable </p>
+ * <p>Description: keeps the cache locally in a TableImpl </p>
+ * <p>Copyright: NCSA (c) 2002</p>
+ * <p>Company: </p>
+ * @author Sameer Mathur, David Clutter
+ * @version 1.0
+ */
 
+package ncsa.d2k.modules.core.datatype.table.db;
 
 import java.io.*;
 import java.util.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
 import ncsa.d2k.modules.core.io.sql.*;
 
 public class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
@@ -33,75 +39,6 @@ public class LocalDBPredictionTable extends DBExampleTable implements Prediction
         original = pet;
 
         newTableHackVariable = false;
-
-        // each page in pet should have a corresponding page in a new
-        // MutablePagingTable to hold the prediction columns.
-
-        // Page[] predictionPages = new Page[pet.pages.length];
-        // Page[] predictionInitial = new Page[pet.manager.capacity];
-
-        /*if (outputColumns == null) {
-
-            predictionSet = new int[0];
-
-            TableImpl table =
-                    (TableImpl)DefaultTableFactory.getInstance().createTable();
-
-            boolean[] dummy = new boolean[getNumRows()]; // old: pet.getNumRows()
-            for (int i = 0; i < dummy.length; i++)
-                dummy[i] = false;
-
-            table.addColumn(dummy);
-
-            //predictionColumnsTable = new MutablePagingTable(
-            //   table, pet.pages.length, pet.manager.capacity);
-
-         /*
-         try {
-
-            pet.manager.globalLock.acquireRead();
-
-            for (int i = 0; i < pet.pages.length; i++) {
-
-               File file = File.createTempFile("d2k-", null);
-               file.deleteOnExit();
-
-               TableImpl table =
-                  (TableImpl)DefaultTableFactory.getInstance().createTable();
-            // table.setNumRows(pet.pages[i].getNumRows());
-
-               Page page = new Page(file, table, i < pet.manager.capacity);
-               page.setNumRows(pet.pages[i].getNumRows());
-
-               predictionPages[i] = page;
-               if (i < pet.manager.capacity)
-                  predictionInitial[i] = page;
-
-            }
-
-            pet.manager.globalLock.releaseRead();
-
-         }
-         catch(InterruptedException e) { e.printStackTrace(); }
-         catch(IOException e) { e.printStackTrace(); }
-
-         predictionColumnsTable = new MutablePagingTable(predictionPages,
-            new PageManager(predictionPages, predictionInitial));
-         */
-
-       /*     indirection = new int[pet.getNumColumns()];
-            prediction = new boolean[indirection.length];
-
-            for (int i = 0; i < indirection.length; i++) {
-                indirection[i] = i;
-                prediction[i] = false;
-            }
-
-        }
-        else {
-
-            newTableHackVariable = false;
-        */
 
             predictionSet = new int[outputColumns.length];
             for (int j = 0; j < predictionSet.length; j++)
@@ -177,182 +114,11 @@ public class LocalDBPredictionTable extends DBExampleTable implements Prediction
                     default:
                         break;
                 }
-        //    }
-
-            //TableImpl ti = (TableImpl)DefaultTableFactory.getInstance().createTable(c);
-            //predictionColumnsTable = new MutablePagingTable(ti, pet.pages.length, pet.manager.capacity);
             predictionColumnsTable = (TableImpl)DefaultTableFactory.getInstance().createTable(c);
         }
     }
 
-/*
-      System.out.println("ppt numRows");
-      for (int i = 0; i < predictionColumnsTable.pages.length; i++)
-         System.out.println(predictionColumnsTable.pages[i].getNumRows());
-*/
 
-/*
-try {
-   predictionColumnsTable.manager.globalLock.acquireRead();
-   predictionColumnsTable.manager.globalLock.releaseRead();
-}
-catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
-*/
-
-//System.out.println("predictionColumnsTable.manager.debug():");
-//predictionColumnsTable.manager.debug();
-
-/*
-      for (int i = 0; i < predictionColumnsTable.pages.length; i++) {
-
-    // System.out.println("page " + i);
-
-         try {
-
-            boolean correct = false;
-            do {
-
-               Lock lock = predictionColumnsTable.manager.request(predictionColumnsTable.pages[i]);
-
-               lock.acquireRead();
-
-                  correct = predictionColumnsTable.manager.check(predictionColumnsTable.pages[i], lock);
-    //
-                  if (correct) {
-
-                     for (int j = 0; j < predictionColumnsTable.pages[i].getNumColumns(); j++) {
-
-                        System.out.println("column " + j);
-
-                        TableImpl ti = (TableImpl)predictionColumnsTable.pages[i].table;
-
-                        System.out.println(ti.getColumn(j) + " " +
-                           ti.getColumn(j).getNumRows());
-
-                     }
-
-                  }
-    //
-               lock.releaseRead();
-
-            } while (!correct);
-
-         }
-         catch(InterruptedException e) { e.printStackTrace(); }
-
-      }
-*/
-
-   /*
-   System.out.println("starting wait...");
-   long startTime = System.currentTimeMillis(), cTime = 0;
-   while (cTime < startTime + 5000) { cTime = System.currentTimeMillis(); }
-   System.out.println("...end wait");
-   */
-
-
-   /******************************************************************************/
-
-/*   private void readObject(ObjectInputStream in)
-      throws IOException, ClassNotFoundException {
-
-      numPages = in.readInt();
-      managerCapacity = in.readInt();
-
-      pages = new Page[numPages];
-
-      for (int i = 0; i < numPages; i++) {
-         pages[i] = (Page)in.readObject();
-         if (i >= managerCapacity)
-            pages[i].free();
-      }
-
-      offsets = (int[])in.readObject();
-      manager = (PageManager)in.readObject();
-      columnIsNominal = (boolean[])in.readObject();
-
-      manager.clearWorkingSet(pages, managerCapacity);
-
-      inputFeatures = (int[])in.readObject();
-      outputFeatures = (int[])in.readObject();
-      testSet = (int[])in.readObject();
-      trainSet = (int[])in.readObject();
-
-      predictionSet = (int[])in.readObject();
-      predictionColumnsTable = (MutablePagingTable)in.readObject();
-      indirection = (int[])in.readObject();
-      prediction = (boolean[])in.readObject();
-      original = (PagingTable)in.readObject();
-      newTableHackVariable = in.readBoolean();
-
-      /*
-      in.defaultReadObject();
-
-      System.out.println("--\n" + manager + " " + manager.workingSet);
-      for (int i = 0; i < pages.length; i++)
-         System.out.println(pages[i]);
-      System.out.println(managerCapacity);
-
-      manager.clearWorkingSet(pages, managerCapacity);
-
-      System.out.println(manager + " " + manager.workingSet);
-      */
-
-//   }
-
- /*  private void writeObject(ObjectOutputStream out) throws IOException {
-
-      out.writeInt(numPages);
-      out.writeInt(managerCapacity);
-
-      try {
-
-         for (int i = 0; i < pages.length; i++) {
-
-            boolean correct = false;
-            do {
-
-               Lock lock = manager.request(pages[i]);
-
-               lock.acquireWrite();
-
-                  correct = manager.check(pages[i], lock);
-
-                  if (correct)
-                     out.writeObject(pages[i]);
-
-               lock.releaseWrite();
-
-            } while (!correct);
-
-         }
-
-      }
-      catch(InterruptedException e) { e.printStackTrace(); }
-
-      out.writeObject(offsets);
-      out.writeObject(manager);
-      out.writeObject(columnIsNominal);
-
-      out.writeObject(inputFeatures);
-      out.writeObject(outputFeatures);
-      out.writeObject(testSet);
-      out.writeObject(trainSet);
-
-      out.writeObject(predictionSet);
-      out.writeObject(predictionColumnsTable);
-      out.writeObject(indirection);
-      out.writeObject(prediction);
-      out.writeObject(original);
-      out.writeBoolean(newTableHackVariable);
-
-      /*
-      System.out.println("writing capacity " + this + " " + managerCapacity);
-
-      out.defaultWriteObject();
-      */
-
-//   }
 
 /*****************************************************************************/
 /* utility methods                                                           */
@@ -468,32 +234,7 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
 
     }
 
-    // temporary
-   /*
-   public void showDebug() {
-      System.out.println("-----");
 
-      System.out.print("Indirection:");
-      for (int i = 0; i < indirection.length; i++)
-         if (prediction[i])
-            System.out.print(" " + indirection[i] + "p");
-         else
-            System.out.print(" " + indirection[i] + "o");
-      System.out.println("");
-
-      System.out.print("Prediction:");
-      for (int i = 0; i < prediction.length; i++)
-         System.out.print(" " + prediction[i]);
-      System.out.println("");
-
-      System.out.print("Prediction set:");
-      for (int i = 0; i < predictionSet.length; i++)
-         System.out.print(" " + predictionSet[i]);
-      System.out.println("");
-
-      System.out.println("-----");
-   }
-   */
 
    /*****************************************************************************/
 /* Table methods                                                             */
@@ -910,9 +651,7 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @param predictionColIdx the index into the prediction set
     */
    public void setStringPrediction(String prediction, int row, int predictionColIdx) {
-       // setString(prediction, row, predictionSet[predictionColIdx]);
        predictionColumnsTable.setString(prediction, row, predictionColIdx);
-       //System.out.println("||| " + predictionColumnsTable.getString(row, predictionColIdx));
    }
 
    /**
@@ -923,7 +662,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @param predictionColIdx the index into the prediction set
     */
    public void setCharsPrediction(char[] prediction, int row, int predictionColIdx) {
-       // setChars(prediction, row, predictionSet[predictionColIdx]);
        predictionColumnsTable.setChars(prediction, row, predictionColIdx);
    }
 
@@ -935,7 +673,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @param predictionColIdx the index into the prediction set
     */
    public void setBytesPrediction(byte[] prediction, int row, int predictionColIdx) {
-       // setBytes(prediction, row, predictionSet[predictionColIdx]);
        predictionColumnsTable.setBytes(prediction, row, predictionColIdx);
    }
 
@@ -947,7 +684,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @param predictionColIdx the index into the prediction set
     */
    public void setObjectPrediction(Object prediction, int row, int predictionColIdx) {
-       // setObject(prediction, row, predictionSet[predictionColIdx]);
        predictionColumnsTable.setObject(prediction, row, predictionColIdx);
    }
 
@@ -959,7 +695,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @param predictionColIdx the index into the prediction set
     */
    public void setBytePrediction(byte prediction, int row, int predictionColIdx) {
-       // setByte(prediction, row, predictionSet[predictionColIdx]);
        predictionColumnsTable.setByte(prediction, row, predictionColIdx);
    }
 
@@ -971,7 +706,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @param predictionColIdx the index into the prediction set
     */
    public void setCharPrediction(char prediction, int row, int predictionColIdx) {
-       // setChar(prediction, row, predictionSet[predictionColIdx]);
        predictionColumnsTable.setChar(prediction, row, predictionColIdx);
    }
 
@@ -983,7 +717,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public int getIntPrediction(int row, int predictionColIdx) {
-       // return getInt(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getInt(row, predictionColIdx);
    }
 
@@ -995,7 +728,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public float getFloatPrediction(int row, int predictionColIdx) {
-       // return getFloat(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getFloat(row, predictionColIdx);
    }
 
@@ -1007,7 +739,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public double getDoublePrediction(int row, int predictionColIdx) {
-       // return getDouble(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getDouble(row, predictionColIdx);
    }
 
@@ -1019,7 +750,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public long getLongPrediction(int row, int predictionColIdx) {
-       // return getLong(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getLong(row, predictionColIdx);
    }
 
@@ -1031,7 +761,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public short getShortPrediction(int row, int predictionColIdx) {
-       // return getShort(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getShort(row, predictionColIdx);
    }
 
@@ -1043,7 +772,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public boolean getBooleanPrediction(int row, int predictionColIdx) {
-       // return getBoolean(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getBoolean(row, predictionColIdx);
    }
 
@@ -1055,7 +783,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public String getStringPrediction(int row, int predictionColIdx) {
-       // return getString(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getString(row, predictionColIdx);
    }
 
@@ -1067,7 +794,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public char[] getCharsPrediction(int row, int predictionColIdx) {
-       // return getChars(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getChars(row, predictionColIdx);
    }
 
@@ -1079,7 +805,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public byte[] getBytesPrediction(int row, int predictionColIdx) {
-       // return getBytes(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getBytes(row, predictionColIdx);
    }
 
@@ -1091,7 +816,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public Object getObjectPrediction(int row, int predictionColIdx) {
-       // return getObject(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getObject(row, predictionColIdx);
    }
 
@@ -1103,7 +827,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public byte getBytePrediction(int row, int predictionColIdx) {
-       // return getByte(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getByte(row, predictionColIdx);
    }
 
@@ -1115,7 +838,6 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
     * @return the prediction at (row, getPredictionSet()[predictionColIdx])
     */
    public char getCharPrediction(int row, int predictionColIdx) {
-       // return getChar(row, predictionSet[predictionColIdx]);
        return predictionColumnsTable.getChar(row, predictionColIdx);
    }
 
