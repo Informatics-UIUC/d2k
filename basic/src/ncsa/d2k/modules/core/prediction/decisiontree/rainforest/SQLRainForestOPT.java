@@ -163,7 +163,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
       case 0: return "Database Connection";
       case 1: return "Database Table";
       case 2: return "Meta Table";
-      case 3: return "Parameters";
+      case 3: return "Parameter Point";
       default: return "NoInput";
     }
   }
@@ -231,18 +231,19 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
   }
 
   public String getModuleName() {
-    return "SQL Rain Forest OPT";
+    return "SQL Rain Forest Optimizable";
   }
 
+   
   public void setBinNumber (double i) throws PropertyVetoException {
       if (i <  0 )
           throw new PropertyVetoException(" < 0", null);
       binNumber = i;
   }
 
-  public double getBinNumber () {
-    return binNumber;
-  }
+    //public double getBinNumber () {
+    // return binNumber;
+    // }
 
   public void setMinimumRatioPerLeaf(double num) throws PropertyVetoException {
       if(num < 0 || num >1)
@@ -250,9 +251,9 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     minimumRatioPerLeaf = num;
   }
 
-  public double getMinimumRatioPerLeaf() {
-    return minimumRatioPerLeaf;
-  }
+    // public double getMinimumRatioPerLeaf() {
+    // return minimumRatioPerLeaf;
+    //}
 
   public void setDominateRatio(double num) throws PropertyVetoException {
       if (num < 0)
@@ -261,9 +262,9 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     improvementRatio = dominateRatio * 0.05;
   }
 
-  public double getDominateRatio() {
-    return dominateRatio;
-  }
+    // public double getDominateRatio() {
+    // return dominateRatio;
+    //}
 
   public void setModeThreshold(double num) throws PropertyVetoException {
       if( num < 0)
@@ -271,19 +272,21 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     modeThreshold = num;
   }
 
-  public double getModeThreshold() {
-    return modeThreshold;
-  }
+    // public double getModeThreshold() {
+    //return modeThreshold;
+    // }
 
   protected String[] getFieldNameMapping () {
     return null;
   }
 
+    /*
     public static final String MIN_RATIO = "Minimum Leaf Size Ratio";
     public static final String MODE_THRESHOLD = "Mode Threshold";
     public static final String BIN_NUMBER = "Bin Number";
     public static final String DOMINATE_RATIO = "Dominate Class Ratio";
-
+    */
+    /*
   public PropertyDescription [] getPropertiesDescriptions () {
     PropertyDescription [] pds = new PropertyDescription [4];
     pds[0] = new PropertyDescription ("minimumRatioPerLeaf", MIN_RATIO, "The minimum ratio of records in a leaf to the total number of records in the tree. The tree construction is terminated when this ratio is reached.");
@@ -292,6 +295,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     pds[3] = new PropertyDescription ("dominateRatio", DOMINATE_RATIO, "Ratio of most-common class to second-most-common class. The tree construction is terminated when this ratio is reached.");
     return pds;
   }
+    */
 
   /** build decision tree
    *  @throws Exception
