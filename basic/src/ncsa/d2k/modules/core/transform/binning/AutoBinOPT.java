@@ -164,7 +164,7 @@ public class AutoBinOPT extends DataPrepModule {
 			bins = sameWeight(weight);
 		}
 
-		BinTransform bt = new BinTransform(bins, false);
+		BinTransform bt = new BinTransform(tbl, bins, false);
 
 		pushOutput(bt, 0);
 	}
@@ -222,8 +222,7 @@ public class AutoBinOPT extends DataPrepModule {
 
 				//System.out.println("binmaxes[length-1] " + binMaxes[binMaxes.length-1]);
 				// now add the last bin
-				
-
+			
 				bd =
 					BinDescriptorFactory.createMaxNumericBinDescriptor(
 						inputs[i],
@@ -234,17 +233,18 @@ public class AutoBinOPT extends DataPrepModule {
 				bins.add(bd);
 
 				//		ANCA: if there are missing values add an "unknown" bin
-				if (tbl.hasMissingValues(inputs[i])) {
+			/*	if (tbl.hasMissingValues(inputs[i])) {
 					bd =
 						BinDescriptorFactory.createMissingValuesBin(
 							inputs[i],
 							tbl);
 					bins.add(bd);
-				}
-			}
+				} */
+			} 
 
-			// if it is nominal, create a bin for each unique value.
-			else {
+			
+			else { 
+//		if it is nominal, create a bin for each unique value.
 				String[] vals = TableUtilities.uniqueValues(tbl, inputs[i]);
 				for (int j = 0; j < vals.length; j++) {
 					String[] st = { vals[j] };
@@ -257,13 +257,13 @@ public class AutoBinOPT extends DataPrepModule {
 					bins.add(bd);
 				}
 				//		ANCA: if there are missing values add an "unknown" bin
-				if (tbl.hasMissingValues(inputs[i])) {
+			/*	if (tbl.hasMissingValues(inputs[i])) {
 					BinDescriptor bd =
 						BinDescriptorFactory.createMissingValuesBin(
 							inputs[i],
 							tbl);
 					bins.add(bd);
-				}
+				} */
 			}
 		}
 
@@ -290,9 +290,22 @@ public class AutoBinOPT extends DataPrepModule {
 			boolean isScalar = tbl.isColumnScalar(inputs[i]);
 			if (isScalar) {
 				int numRows = tbl.getNumRows();
-				double[] vals = new double[tbl.getNumRows()];
-				for (int j = 0; j < numRows; j++)
-					vals[j] = tbl.getDouble(j, inputs[i]);
+				int missing =0;
+				if (tbl.getColumn(inputs[i]).hasMissingValues()) 
+					missing = tbl.getColumn(inputs[i]).getNumMissingValues();
+				double[] vals =  new double[tbl.getNumRows()-missing];
+				
+				//ANCA added support for eliminating missing values when setting interval limits
+				for (int j = 0; j < numRows; j++) {
+					//check if column has missing values
+					if (missing >0) {
+						//if value is missing do not add it
+						if(!tbl.isValueMissing(j,inputs[i]))	
+					    	vals[j] = tbl.getDouble(j, inputs[i]);
+					}
+					else
+				    vals[j] = tbl.getDouble(j, inputs[i]);
+				}
 				Arrays.sort(vals);
 
 				//!!!!!!!!!!!!!!!
@@ -375,15 +388,15 @@ public class AutoBinOPT extends DataPrepModule {
 							tbl);
 				bins.add(bd);
 				//ANCA: if there are missing values add an "unknown" bin
-				if (tbl.hasMissingValues(inputs[i])) {
+				/*if (tbl.hasMissingValues(inputs[i])) {
 					bd =
 						BinDescriptorFactory.createMissingValuesBin(
 							inputs[i],
 							tbl);
 					bins.add(bd);
-				}
+				} */
 
-			} else {
+			} else { 
 				// if it is nominal, create a bin for each unique value.
 				String[] vals = TableUtilities.uniqueValues(tbl, inputs[i]);
 				for (int j = 0; j < vals.length; j++) {
@@ -397,13 +410,13 @@ public class AutoBinOPT extends DataPrepModule {
 					bins.add(bd);
 				}
 				// ANCA: if there are missing values add an "unknown" bin
-				if (tbl.hasMissingValues(inputs[i])) {
+				/*if (tbl.hasMissingValues(inputs[i])) {
 					BinDescriptor bd =
 						BinDescriptorFactory.createMissingValuesBin(
 							inputs[i],
 							tbl);
 					bins.add(bd);
-				}
+				} */
 
 			}
 		}
@@ -417,76 +430,7 @@ public class AutoBinOPT extends DataPrepModule {
 		//return bt;
 	}
 
-	/**
-	 * put your documentation comment here
-	 * @param idx
-	 * @param name
-	 * @param sel
-	 * @return
-	 /
-	 /*
-	protected BinDescriptor createTextualBin(int idx, String name, String[] vals) {
-	  return new TextualBinDescriptor(idx, name, vals, tbl.getColumnLabel(idx));
-	}
-	*/
-
-	/**
-	 * Create a numeric bin that goes from min to max.
-	 /
-	 /*
-	protected BinDescriptor createNumericBinDescriptor(int col, double min,
-	    double max) {
-	  StringBuffer nameBuffer = new StringBuffer();
-	  nameBuffer.append(OPEN_PAREN);
-	  nameBuffer.append(nf.format(min));
-	  nameBuffer.append(COLON);
-	  nameBuffer.append(nf.format(max));
-	  nameBuffer.append(CLOSE_BRACKET);
-	  BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-	                                              min, max,
-	                                              tbl.getColumnLabel(col));
-	  return nb;
-	}
-	*/
-
-	/**
-	 * Create a numeric bin that goes from Double.MIN_VALUE to max
-	 /
-	 /*  protected BinDescriptor createMinNumericBinDescriptor(int col, double max) {
-	  StringBuffer nameBuffer = new StringBuffer();
-	  nameBuffer.append(OPEN_BRACKET);
-	  nameBuffer.append(DOTS);
-	  nameBuffer.append(COLON);
-	  nameBuffer.append(nf.format(max));
-	  nameBuffer.append(CLOSE_BRACKET);
-	  BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-	                                              Double.NEGATIVE_INFINITY, max,
-	                                              tbl.getColumnLabel(col));
-	  return nb;
-	  } */
-
-	/**
-	 * Create a numeric bin that goes from min to Double.MAX_VALUE
-	 /
-	 /*  protected BinDescriptor createMaxNumericBinDescriptor(int col, double min) {
-	  StringBuffer nameBuffer = new StringBuffer();
-	  nameBuffer.append(OPEN_PAREN);
-	  nameBuffer.append(nf.format(min));
-	  nameBuffer.append(COLON);
-	  nameBuffer.append(DOTS);
-	  nameBuffer.append(CLOSE_BRACKET);
-	  BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-	                                              min, Double.POSITIVE_INFINITY,
-	                                              tbl.getColumnLabel(col));
-	  return nb;
-	  } */
-
-	/*  protected static final String
-	  EMPTY = "", COLON = " : ", COMMA = ",",
-	  DOTS = "...", OPEN_PAREN = "(", CLOSE_PAREN = ")",
-	  OPEN_BRACKET = "[", CLOSE_BRACKET = "]";
-	  */
-
+	
 }
 // QA comments Anca:
 //added check for input/output attribute selections - since ChooseAttribute does not guarantee selections
@@ -502,4 +446,6 @@ public class AutoBinOPT extends DataPrepModule {
 /**
 * 12-2-03 Anca - added support for missing values by adding an extra textualBin 
 * with name "unknown" for columns that have missing values.
-*/
+* 12 -15-03 Anca  - added support for eliminating missing values when bin boundaries are defined
+* 12 -16 -03 Anca - moved creation of "unknown" bins to BinTransform constructor
+**/

@@ -40,7 +40,6 @@ import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.transformations.BinTransform;
-import ncsa.d2k.modules.core.datatype.table.util.TableUtilities;
 import ncsa.d2k.modules.core.vis.widgets.Histogram;
 import ncsa.d2k.modules.core.vis.widgets.IntervalHistogram;
 import ncsa.d2k.modules.core.vis.widgets.RangeHistogram;
@@ -1013,14 +1012,9 @@ public class BinAttributes extends HeadlessUIModule {
 				savedBins[i] = bins[i];
 
 		//ANCA
-			//try {
-			//	   ExampleTable etbl = (ExampleTable) tbl;
-			//	   savedBins = BinningUtils.addMissingValueBins(etbl,savedBins);
-			//	} catch ( ClassCastException ce) {
-					 savedBins = BinningUtils.addMissingValueBins(tbl,savedBins);
-			//	}
-
-			 BinTransform bt = new BinTransform(savedBins, createInNewColumn.isSelected());
+			//		 savedBins = BinningUtils.addMissingValueBins(tbl,savedBins);
+			
+			 BinTransform bt = new BinTransform(tbl, savedBins, createInNewColumn.isSelected());
 
 			 pushOutput(bt, 0);
 			 viewDone("Done");
@@ -1620,8 +1614,8 @@ public class BinAttributes extends HeadlessUIModule {
   //headless conversion support
   public void doit()throws Exception{
      Table table = (Table) pullInput(0);
-    BinningUtils.validateBins(table, savedBins, getAlias());
-     pushOutput(new BinTransform(savedBins, newColumn), 0);
+    //BinningUtils.validateBins(table, savedBins, getAlias());
+     pushOutput(new BinTransform(table, savedBins, newColumn), 0);
 
   }
 
@@ -1742,4 +1736,6 @@ class TableBinCounts implements BinCounts {
 * 				using (max-min)/ number of internals and thus what appears
 *               as 3.6 interval margin is in fact 3.5999996. Without NumberFormat nf
 * 				the 3.59999996 will be displayed and there will be no confusion.
-*/
+*
+* 12 -16-03 Anca moved creation of "unknown" bins to BinTransform
+*/ 

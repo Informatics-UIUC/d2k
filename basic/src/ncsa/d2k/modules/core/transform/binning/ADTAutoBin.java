@@ -138,7 +138,7 @@ public class ADTAutoBin extends DataPrepModule {
 
 	    BinDescriptor[] bins = createAutoNominalBins();
 
-	    BinTransform bt = new BinTransform(bins, false);
+	    BinTransform bt = new BinTransform(tbl, bins, false);
 
 	    pushOutput(bt, 0);
 		//pushOutput(et, 1);
@@ -164,7 +164,7 @@ public class ADTAutoBin extends DataPrepModule {
 				Iterator iter = vals.iterator();
 				int numRows = tbl.getNumRows();
 				
-				if (tbl.getColumn(inputs[i]).hasMissingValues()) {
+			/*	if (tbl.getColumn(inputs[i]).hasMissingValues()) {
 					String[] miss = new String[1];
 					     miss[0]= tbl.getMissingString();
 					
@@ -192,7 +192,7 @@ public class ADTAutoBin extends DataPrepModule {
 				
 			
 			else { // there are no missing values in this column
-			//System.out.println("no missing values for column " + inputs[i]);
+		*/	//System.out.println("no missing values for column " + inputs[i]);
 						while (iter.hasNext()) {
 								String item = (String) iter.next();
 								String[] st = new String[1];
@@ -205,7 +205,7 @@ public class ADTAutoBin extends DataPrepModule {
 										tbl.getColumnLabel(inputs[i]));
 								bins.add(bd);
 							}
-			}
+		//	}
 			}
 		}
 		BinDescriptor[] bn = new BinDescriptor[bins.size()];
@@ -213,6 +213,8 @@ public class ADTAutoBin extends DataPrepModule {
 			bn[i] = (BinDescriptor) bins.get(i);
 
 		}
+		//ANCA: adding missing values bins for attributes with missing values
+	//	bn = BinningUtils.addMissingValueBins(tbl,bn);
 		return bn;
 	
 	}
@@ -230,4 +232,5 @@ public class ADTAutoBin extends DataPrepModule {
       * 12-3 -03 Anca
       * missing values are binned into Unknown bin - fixed [bug 127]
       * also added support for missing values in ParseFileToADTree.
-      */
+      * 12 -16-03 Anca moved creation of "unknown" bins to BinTransform 
+      **/

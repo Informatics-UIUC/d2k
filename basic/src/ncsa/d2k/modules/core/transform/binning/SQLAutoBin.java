@@ -180,7 +180,7 @@ public class SQLAutoBin extends AutoBin {
 		//Add bins named "unknown" for each binned column that has missing values
 		bins = BinningUtils.addMissingValueBins(tbl,bins);
 
-		BinTransform bt = new BinTransform(bins, false);
+		BinTransform bt = new BinTransform(tbl, bins, false);
 		
 		pushOutput(bt, 0);
 		//pushOutput(et, 1);
@@ -259,7 +259,7 @@ public class SQLAutoBin extends AutoBin {
 
 		}
         //		add "unkown" bins for relevant attributes that have missing values
-	   bn = BinningUtils.addMissingValueBins(tbl,bn);
+	   //bn = BinningUtils.addMissingValueBins(tbl,bn);
 		return bn;
 	}
 
@@ -373,7 +373,7 @@ public class SQLAutoBin extends AutoBin {
 
 	}
 	//add "unkown" bins for relevant attributes that have missing values
-	bn = BinningUtils.addMissingValueBins(tbl,bn);
+	//bn = BinningUtils.addMissingValueBins(tbl,bn);
 	return bn;
 
 	//return bt;
@@ -495,3 +495,4 @@ public class SQLAutoBin extends AutoBin {
 *				Missing values are set in SQLChooseAttributes in the  metadata example table
 */
 //12-12--03 Anca - added check and exception for input table that is not an ExampleTable
+// 12 -16-03 Anca moved creation of "unknown" bins to BinTransform 

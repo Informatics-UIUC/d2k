@@ -1094,7 +1094,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
                     for (int i = 0; i < bins.length; i++)
                        savedBins[i] = bins[i];
 
-                    BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
+                    BinTransform bt = new BinTransform(null, bins, createInNewColumn.isSelected());
                               pushOutput(bt, 0);
                     viewDone("Done");
                   // }
@@ -1738,7 +1738,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
         */
 
 
-      pushOutput(new BinTransform(savedBins, newColumn), 0);
+      pushOutput(new BinTransform(null, savedBins, newColumn), 0);
 
     }//doit
     //headless conversion support

@@ -171,7 +171,7 @@ public class AutoBin extends AutoBinOPT {
 			bins = sameWeight(weight);
 		}
 
-		BinTransform bt = new BinTransform(bins, false);
+		BinTransform bt = new BinTransform(tbl, bins, false);
 
 		pushOutput(bt, 0);
 	} //doit
@@ -382,3 +382,7 @@ public class AutoBin extends AutoBinOPT {
 /**
  * 12-10-03 vered: creates bins smaller than the weight setting. [bug 165]
  */
+/*
+ * 12-15-03 anca - fixed [bug 165] at the AutoBinOPT level by eliminating missing values when 
+ *						 interval margins are defined
+*/

@@ -222,27 +222,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 				//  weightField.setText(EMPTY);
 				columnLookup = new HashMap();
 
-				//	added support for selected columns in ExampleTable
-	/*			int[] columns;
-				int numColumns;
-				try {
-					ExampleTable etbl = (ExampleTable) tbl;
-					int[] inputs = etbl.getInputFeatures();
-					int[] outputs = etbl.getOutputFeatures();
-					numColumns = inputs.length + outputs.length;
-					columns = new int[numColumns];
-					for (int i = 0; i < inputs.length; i++)
-						columns[i] = inputs[i];
-					for (int i = inputs.length; i < numColumns; i++)
-						columns[i] = outputs[i - inputs.length];
-
-				} catch (ClassCastException ce) { // tbl was not an ExampleTable
-					numColumns = tbl.getNumColumns();
-					columns = new int[numColumns];
-					for (int i = 0; i < numColumns; i++)
-						columns[i] = i;
-				}
-*/
+		
 				uniqueColumnValues = new TreeSet[tbl.getNumColumns() + 1];
 				binListModel.removeAllElements();
 				//  DefaultListModel numModel =
@@ -633,17 +613,13 @@ public class ADTBinColumns extends HeadlessUIModule {
 						bins[i] = (BinDescriptor) tmp[i];
 
 					//ANCA add "unknown" bins for missing values
-					//try {
-				//		ExampleTable etbl = (ExampleTable) tbl;
-				//		bins = BinningUtils.addMissingValueBins(etbl, bins);
-				//	} catch (ClassCastException ce) {
-						bins = BinningUtils.addMissingValueBins(tbl, bins);
-				//	}
+					//	bins = BinningUtils.addMissingValueBins(tbl, bins);
+			
 
 					//headless conversion support
 					setBinDes(bins);
 					BinTransform bt =
-						new BinTransform(bins, createInNewColumn.isSelected());
+						new BinTransform(tbl, bins, createInNewColumn.isSelected());
 
 					pushOutput(bt, 0);
 					//pushOutput(tbl, 1);
@@ -939,9 +915,9 @@ public class ADTBinColumns extends HeadlessUIModule {
 
 		Table table = (Table) pullInput(1);
 
-		BinningUtils.validateBins(table, binDes, getAlias());
+		//BinningUtils.validateBins(table, binDes, getAlias());
 
-		pushOutput(new BinTransform(binDes, newColumn), 0);
+		pushOutput(new BinTransform(table, binDes, newColumn), 0);
 
 	} //doit
 	//headless conversion support
@@ -1006,5 +982,6 @@ class ADTBinCounts implements BinCounts {
  * 			method does not return missing values ('?' or the one returned by getMissinsString())
  * 			in the list of unique values
   * 12-08-03 list of unique values is not restored after removing all bins. [bug 159] (fixed)
+  * 12 -16-03 Anca moved creation of "unknown" bins to BinTransform 
  */
 
