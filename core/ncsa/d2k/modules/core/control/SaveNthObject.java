@@ -67,20 +67,23 @@ public class SaveNthObject extends ComputeModule
 			savedObjs.add(pullInput(0));
 				numfires++;
 			if(debug)
-				System.out.println("numfires:"+numfires);
+				System.out.println(getAlias()+" numfires:"+numfires);
 	
 		}
 		if(lastPushed&&(inputFlags[1]>0)){
 			maxfires=((Integer)pullInput(1)).intValue();
 			lastPushed=false;
 			if(debug)
-				System.out.println("maxfires set to "+maxfires);
-			return;
+				System.out.println(getAlias()+" maxfires set to "+maxfires);
 		}
 		
 		if(numfires>=maxfires){
+			if(debug)
+				System.out.println(getAlias()+" numfires>=maxfires");
 			numfires-=maxfires;
 			if(savedObjs.size()!=0){
+				if(debug)
+					System.out.println(getAlias()+" Pushing");
 				pushOutput(savedObjs.get(maxfires-1), 0);
 				Vector t=savedObjs;
 				
