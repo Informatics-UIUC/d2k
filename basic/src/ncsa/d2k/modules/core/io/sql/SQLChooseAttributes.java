@@ -506,7 +506,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
 
 
-  protected void doit() throws Exception{
+  public void doit() throws Exception{
     cw = (ConnectionWrapper)pullInput(0);
     String _table = (String)pullInput(1);
 

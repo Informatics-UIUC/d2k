@@ -489,7 +489,7 @@ public class ConnectToDB extends HeadlessUIModule {
     /**
        connects to the database, according to the settings of the properties.
        */
-        protected void doit() throws Exception{
+        public void doit() throws Exception{
 
           //checking that the properties are not null
           if(dbInstance == null)

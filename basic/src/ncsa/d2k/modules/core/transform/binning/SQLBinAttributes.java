@@ -1609,7 +1609,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
   public void setNewColumn(boolean val){newColumn = val;}
   public boolean getNewColumn(){return newColumn;}
 
-    protected void doit(){
+    public void doit(){
       //pulling input so that this module will be executed only once.
       wrapper = (ConnectionWrapper) pullInput(0);
       String tableName = (String)pullInput(1);

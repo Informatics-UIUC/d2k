@@ -1742,7 +1742,7 @@ public class ADTBinColumns extends HeadlessUIModule {
     return pds;
   }
 
-  protected void doit(){
+  public void doit(){
     pullInput(0);
     pullInput(1);
     pushOutput(new BinTransform(binDes, newColumn), 0);

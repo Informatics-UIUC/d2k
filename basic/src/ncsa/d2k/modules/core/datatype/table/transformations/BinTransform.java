@@ -43,8 +43,10 @@ public class BinTransform implements Transformation, Cloneable {
             binRelevant[i] = false;
         for (int i = 0; i < bins.length; i++) {
             Integer idx = (Integer)colIndexLookup.get(bins[i].label);
-            if(idx != null)
+            if(idx != null){
               binRelevant[idx.intValue()] = true;
+
+            }
             //else
             //   System.out.println("COLUMN LABEL NOT FOUND!!!");
               //binRelevant[bins[i].column_number] = true;

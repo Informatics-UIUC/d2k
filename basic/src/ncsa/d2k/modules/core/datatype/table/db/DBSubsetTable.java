@@ -39,6 +39,11 @@ DBSubsetTable(){}
         for(int i=0; i<temp.length; i++)
           subset[i] = temp[i];
       }
+      else{
+        subset = new int[super.getNumRows()];
+        for (int i=0; i<subset.length; i++)
+          subset[i] = i;
+      }
 
     }
 

@@ -498,7 +498,7 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
 
 
 
-  protected void doit() throws Exception{
+  public void doit() throws Exception{
     Table _table  = (Table) pullInput(0);
 
 

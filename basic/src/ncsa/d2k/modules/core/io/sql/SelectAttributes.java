@@ -288,7 +288,7 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
         public void setSelectedAttributes(Object[] att){selectedAttributes = (String[])att;}
         public Object[] getSelectedAttributes( ){return selectedAttributes;}
 
-        protected void doit() throws Exception{
+        public void doit() throws Exception{
 
           Vector availableAttributes = (Vector)pullInput(0);
           int numTarget = 0;  //counter for elements in intersection of selectedAttributes and availableAttributes.

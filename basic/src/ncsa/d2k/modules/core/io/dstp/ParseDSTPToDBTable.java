@@ -70,9 +70,9 @@ public class ParseDSTPToDBTable
    * @return array
    */
   public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] descriptions = new PropertyDescription[1];
-
-    descriptions[0] = new PropertyDescription("serverName",
+    PropertyDescription[] descriptions = new PropertyDescription[2];
+    descriptions[0] = super.getPropertiesDescriptions()[0];
+    descriptions[1] = new PropertyDescription("serverName",
                                               "DSTP Server DNS or IP",
         "This is the address of the DSTP server.");
 

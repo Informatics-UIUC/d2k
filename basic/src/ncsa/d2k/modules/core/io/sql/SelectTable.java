@@ -227,7 +227,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
         public String getSelectedTable(){return selectedTable;}
         public void setSelectedTable(String name){selectedTable = name;}
 
-        protected void doit(){
+        public void doit(){
           pullInput(0);
 
           if (selectedTable == null || selectedTable.length() == 0)

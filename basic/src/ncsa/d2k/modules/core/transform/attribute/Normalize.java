@@ -402,7 +402,7 @@ public class Normalize extends HeadlessUIModule {
        numericLabels[i] = (String)labels[i];
    }
 
-   protected void doit(){
+   public void doit(){
      MutableTable _table = (MutableTable)pullInput(0);
 
      int[] transform = new int[0]; //with this array the normalization trasform will be build

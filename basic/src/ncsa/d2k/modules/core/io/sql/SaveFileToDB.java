@@ -873,7 +873,7 @@ public class SaveFileToDB extends HeadlessUIModule
 
            //conversion to headless - Vered - 9-9-03
 
-           protected void doit() throws Exception{
+           public void doit() throws Exception{
          cw = (ConnectionWrapper)pullInput(0);
          vt = (Table)pullInput(1);
 

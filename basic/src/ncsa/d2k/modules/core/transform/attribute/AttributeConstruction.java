@@ -719,7 +719,7 @@ public class AttributeConstruction extends HeadlessUIModule {
    }
 
    //headless conversion support
-     protected void doit(){
+     public void doit(){
        pushOutput(new AttributeTransform(lastCons), 0);
      }
      //headless conversion support
