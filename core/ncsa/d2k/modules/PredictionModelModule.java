@@ -31,8 +31,17 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule {
         setTrainingTable(train);
     }
 
-    protected PredictionModelModule(PredictionModelModule model) {
-        setMetaDataFromModel(model);
+    protected PredictionModelModule(
+        int trainingSetSize,
+        String[] inputColumnLabels,
+        String[] outputColumnLabels,
+        int[] inputFeatureTypes,
+        int[] outputFeatureTypes) {
+          this.trainingSetSize    = trainingSetSize;
+          this.inputColumnLabels  = inputColumnLabels;
+          this.outputColumnLabels = outputColumnLabels;
+          this.inputFeatureTypes  = inputFeatureTypes;
+          this.outputFeatureTypes = outputFeatureTypes;
     }
 
     /**
@@ -367,14 +376,6 @@ abstract public class PredictionModelModule extends /*Prediction*/ModelModule {
         outputFeatureTypes = new int[outputs.length];
         for(int i = 0; i < outputs.length; i++)
             outputFeatureTypes[i] = et.getColumnType(outputs[i]);
-    }
-
-    protected void setMetaDataFromModel(PredictionModelModule model) {
-      this.trainingSetSize = model.trainingSetSize;
-      this.inputColumnLabels = model.inputColumnLabels;
-      this.outputColumnLabels = model.outputColumnLabels;
-      this.inputFeatureTypes = model.inputFeatureTypes;
-      this.outputFeatureTypes = model.outputFeatureTypes;
     }
 
     /**

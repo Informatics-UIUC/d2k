@@ -97,7 +97,12 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       if (RootNode.model == null)
         model = new MeanModel(examples, outputSums);
       else
-        model = new MeanModel(RootNode.model, outputSums);
+        model = new MeanModel(RootNode.model.getTrainingSetSize(),
+                              RootNode.model.getInputColumnLabels(),
+                              RootNode.model.getOutputColumnLabels(),
+                              RootNode.model.getInputFeatureTypes(),
+                              RootNode.model.getOutputFeatureTypes(),
+                              outputSums);
 
       //model.Instantiate(numInputs, numOutputs, inputNames, outputNames, outputSums);
 

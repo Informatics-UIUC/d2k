@@ -1,44 +1,17 @@
 package ncsa.d2k.modules.core.datatype.model;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.*;
-public class Model extends PredictionModelModule /*, FunctionDouble1DArrayToDouble1DArray */ implements java.io.Serializable
-{
+public class Model extends PredictionModelModule implements java.io.Serializable {
 
 
   protected Model(ExampleTable examples) {
     super(examples);
   }
 
-  protected Model(PredictionModelModule model) {
-    super(model);
+  protected Model(int trainingSetSize, String[] inputColumnLabels, String[] outputColumnLabels,
+                  int[] inputFeatureTypes, int[] outputFeatureTypes) {
+    super(trainingSetSize, inputColumnLabels, outputColumnLabels, inputFeatureTypes, outputFeatureTypes);
   }
-
-  //public int numInputs;
-  //public int numOutputs;
-  //public String [] inputNames;
-  //public String [] outputNames;
-
-
-
-  //double [][][] examples;
-
-  /*
-  public double [] Evaluate(double [] inputs) throws Exception
-    {
-    DoubleExample [] examples = new DoubleExample[1];
-    double [][] data = new double[2][];
-    double [] outputs = new double[1];
-    data[0] = inputs;
-    data[1] = outputs;
-
-    DoubleExample    example = new DoubleExample(data, numInputs, numOutputs, inputNames, outputNames);
-    examples[0] = example;
-    DoubleExampleSet exampleSet = new DoubleExampleSet(examples);
-
-
-    return Evaluate(exampleSet, 0);
-    }
-  */
 
   public double [] Evaluate(ExampleTable exampleSet, int e) throws Exception
   {
@@ -61,15 +34,13 @@ public class Model extends PredictionModelModule /*, FunctionDouble1DArrayToDoub
     throw new Exception();
   }
 
-  public int getNumInputs()
-  {
+  public int getNumInputs() {
     return getInputColumnLabels().length;
   }
 
   //renaming
 
-  public String[] getInputFeatureNames()
-    {
+  public String[] getInputFeatureNames() {
     return getInputColumnLabels();
     }
 

@@ -13,8 +13,9 @@ public class MeanModel extends Model implements java.io.Serializable
     this.meanOutputValues = meanOutputValues;
   }
 
-  public MeanModel(PredictionModelModule model, double [] meanOutputValues) {
-    super(model);
+  public MeanModel(int trainingSetSize, String[] inputColumnLabels, String[] outputColumnLabels,
+                   int[] inputFeatureTypes, int[] outputFeatureTypes, double [] meanOutputValues) {
+    super(trainingSetSize, inputColumnLabels, outputColumnLabels, inputFeatureTypes, outputFeatureTypes);
     this.meanOutputValues = meanOutputValues;
   }
 
