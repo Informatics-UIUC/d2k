@@ -839,7 +839,7 @@ abstract public class TableImpl extends AbstractTable implements /*Mutable*/Tabl
         }
       Column newColumns[] = new Column[getNumColumns()-indices.length];
         int newIntIdx = 0;
-        for (int i = 0; i < getNumRows(); i++) {
+        for (int i = 0; i < getNumColumns(); i++) {
             // check if this row is in the list of rows to remove
             // if this row is not in the list, copy it into the new internal
          if(!toRemove.contains(new Integer(i))) {
