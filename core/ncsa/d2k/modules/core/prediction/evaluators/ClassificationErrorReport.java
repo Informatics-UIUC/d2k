@@ -10,6 +10,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 import javax.swing.*;
 import java.text.*;
 import java.awt.*;
+import java.util.*;
 
 /**
  * Shows some statistics about models evaluated using ClassificationErrorEvaluator.
@@ -25,7 +26,7 @@ public class ClassificationErrorReport extends VisModule  {
 	}
 
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.prediction.evaluators.ClassificationErrorStats","java.lang.Integer"};
+		String[] types = {"java.util.ArrayList","java.lang.Integer"};
 		return types;
 	}
 
@@ -72,14 +73,14 @@ public class ClassificationErrorReport extends VisModule  {
 		return new StatsView();
 	}
 
+	int numFolds;
+
 	/**
 	 * Consists of a JTabbedPane with N tabs.  Each tab contains
 	 * a JTextArea with a description of each fold.
 	 */
 	private final class StatsView extends JUserPane {
 
-		ClassificationErrorStats stats;
-		int numFolds;
 		NumberFormat nf;
 
 		public void initView(ViewModule m) {
@@ -90,9 +91,11 @@ public class ClassificationErrorReport extends VisModule  {
 		boolean hasStats = false;
 		boolean hasNum = false;
 
+		ArrayList tables;
+
 		public void setInput(Object o, int i) {
 			if(i == 0) {
-				stats = (ClassificationErrorStats)o;
+				tables = (ArrayList)o;
 				hasStats = true;
 			}
 			else if(i == 1) {
@@ -143,7 +146,7 @@ public class ClassificationErrorReport extends VisModule  {
 
 			for(int j =0; j < numFolds; j++) {
 				JTabbedPane jtp = new JTabbedPane();
-				PredictionTable pt = (PredictionTable)stats.getTable(j);
+				PredictionTable pt = (PredictionTable)tables.get(j);
 				int[] outputs = pt.getOutputFeatures();
 				int[] preds = pt.getPredictionSet();
 				for(int i = 0; i < outputs.length; i++) {

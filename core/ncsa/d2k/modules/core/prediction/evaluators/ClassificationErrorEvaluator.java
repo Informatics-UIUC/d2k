@@ -6,6 +6,8 @@ import ncsa.d2k.core.modules.ModelModule;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.*;
 
+import java.util.*;
+
 /**
  * Meant to be used in conjunction with NFoldTTables.  This module takes N
  * PredictionModelModules and N testing sets.  The testing set is passed to
@@ -19,20 +21,20 @@ public class ClassificationErrorEvaluator extends ModelEvaluatorModule  {
 	}
 
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.PredictionModelModule","ncsa.d2k.modules.core.datatype.table.PredictionTable","java.lang.Integer"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.PredictionTable","java.lang.Integer"};
 		return types;
 	}
 
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.prediction.evaluators.ClassificationErrorStats","java.lang.Integer"};
+		String[] types = {"java.util.ArrayList","java.lang.Integer"};
 		return types;
 	}
 
 	public String getInputInfo(int i) {
 		switch (i) {
-			case 0: return "A testing data set.";
-			case 1: return "The number of folds.";
-			case 2: return "No such input.";
+			case 0: return "A PredictionModelModule to evaluate";
+			case 1: return "A PredictionTable to test the model with.";
+			case 2: return "The number of folds.";
 			default: return "No such input";
 		}
 	}
@@ -40,11 +42,11 @@ public class ClassificationErrorEvaluator extends ModelEvaluatorModule  {
 	public String getInputName(int i) {
 		switch(i) {
 			case 0:
-				return "TestSet";
+				return "Model";
 			case 1:
-				return "N";
+				return "TestTable";
 			case 2:
-				return "No such input.";
+				return "N";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -52,7 +54,7 @@ public class ClassificationErrorEvaluator extends ModelEvaluatorModule  {
 	public String getOutputInfo(int i) {
 		switch (i) {
 			case 0: return "The statistics about each fold.";
-			case 1: return "No such output.";
+			case 1: return "The number of folds.";
 			default: return "No such output";
 		}
 	}
@@ -62,7 +64,7 @@ public class ClassificationErrorEvaluator extends ModelEvaluatorModule  {
 			case 0:
 				return "Stats";
 			case 1:
-				return "No such output";
+				return "N";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
@@ -74,14 +76,12 @@ public class ClassificationErrorEvaluator extends ModelEvaluatorModule  {
 	public void beginExecution() {
 		numFolds = 0;
 		numFires = 0;
-		stats = new ClassificationErrorStats();
 	}
 
 	/** the number of folds, ie the number of models that will be created */
 	private int numFolds = 0;
 	/** the number of times this has fired so far */
 	private int numFires = 0;
-	private ClassificationErrorStats stats;
 
 	/**
 	 * If we have not fired yet, we are ready when all 3 inputs are available.
@@ -93,36 +93,44 @@ public class ClassificationErrorEvaluator extends ModelEvaluatorModule  {
 			return super.isReady();
 		else {
 			// this is ready if there are inputs waiting on the first two pipes
-			int[] flags = getFlags();
-			return flags[0] > 0 && flags[1] > 0;
+			return getInputPipeSize(0) > 0;
 		}
 	}
+
+	ArrayList tables;
 
 	public void doit() {
 		// the first fire.  just call the predict method and keep this
 		// model as the best
 		if(numFires == 0) {
-			PredictionModelModule pmm = (PredictionModelModule)pullInput(0);
-			PredictionTable pt = (PredictionTable)pullInput(1);
-			Integer n = (Integer)pullInput(2);
+			PredictionTable pt = (PredictionTable)pullInput(0);
+			Integer n = (Integer)pullInput(1);
 			numFolds = n.intValue();
 
-			int[] pred = pt.getPredictionSet();
+			/*int[] pred = pt.getPredictionSet();
 			Pair p = score(pt);
 			double score = p.percent;
 			stats.addFold(pmm.getTrainingSetSize(), pt.getNumRows(), p.correct, score, pt);
+			*/
+			tables = new ArrayList();
+			tables.add(pt);
 			numFires++;
 		}
 		// call the predict method and keep the model if it is the best one
 		else {
-			PredictionModelModule pmm = (PredictionModelModule)pullInput(0);
-			PredictionTable pt = (PredictionTable)pullInput(1);
+			PredictionTable pt = (PredictionTable)pullInput(0);
+			tables.add(pt);
+			numFires++;
 
-			Pair thisscore = score(pt);
+			/*Pair thisscore = score(pt);
 			stats.addFold(pmm.getTrainingSetSize(), pt.getNumRows(), thisscore.correct, thisscore.percent, pt);
 			numFires++;
 			if(numFires == numFolds) {
 				pushOutput(stats, 0);
+				pushOutput(new Integer(numFolds), 1);
+			}*/
+			if(numFires == numFolds) {
+				pushOutput(tables, 0);
 				pushOutput(new Integer(numFolds), 1);
 			}
 		}
@@ -151,25 +159,21 @@ public class ClassificationErrorEvaluator extends ModelEvaluatorModule  {
 		int [] preds = pt.getPredictionSet();
 
 		for(int row = 0; row < pt.getNumRows(); row++) {
-			boolean ok = true;
-
 			for(int col =0; col < outs.length; col++) {
 				//Column c = pt.getColumn(outs[col]);
-				if(pt.isColumnNumeric(outs[col])) {
+				if(pt.isColumnScalar(outs[col])) {
 					double real = pt.getDouble(row, outs[col]);
 					double pred = pt.getDoublePrediction(row, col);
 					if(real != pred)
-						ok = false;
+						numCorrect++;
 				}
 				else {
 					String real = pt.getString(row, outs[col]);
 					String pred = pt.getStringPrediction(row, col);
 					if(!real.equals(pred))
-						ok = false;
+						numCorrect++;
 				}
 			}
-			if(ok)
-				numCorrect++;
 		}
 		double numRows = (double)pt.getNumRows();
 
