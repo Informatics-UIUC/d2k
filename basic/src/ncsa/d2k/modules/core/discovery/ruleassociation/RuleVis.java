@@ -31,8 +31,12 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
         private static final String printicon = File.separator+"images"+File.separator+"printit.gif";
         private static final String refreshicon = File.separator+"images"+File.separator+"home.gif";
         private static final String helpicon = File.separator+"images"+File.separator+"help.gif";
-        private static final String abcicon = File.separator+"images"+File.separator+"abc.gif";
+        //note that the following are used only because alpha and rank
+        //icons are not available now
+        //private static final String tableicon = File.separator+"images"+File.separator+"table.gif";
+        //private static final String zoomicon = File.separator+"images"+File.separator+"zoom.gif";
         private static final String rankicon = File.separator+"images"+File.separator+"rank.gif";
+        private static final String alphaicon = File.separator+"images"+File.separator+"abc.gif";
 
 	/**	This method returns an array of strings that contains the data types for the inputs.
 		@return the data types of all inputs.
@@ -164,7 +168,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("top of the [attribute=value] list.  Opposite these buttons lie four others.  The leftmost button will revert ");
           sb.append("back to the original table that was first displayed before any sorting or re-ordering was done.  The next button ");
           sb.append("loads a filter that can create a much more specifically defined rule display.  The print button will print a screen ");
-          sb.append("capture of the module display.  The help button displays this dialog.");
+          sb.append("capture of the module display.  The help button displays the module information.");
 
           sb.append("</p><p> ");
           sb.append("The options menu allows the user to print a screen capture of the module display. ");
@@ -303,7 +307,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 
                         im = null;
                         icon = null;
-                        im = mod.getImage(abcicon);
+                        im = mod.getImage(alphaicon);
+
                         if(im != null)
                           icon = new ImageIcon(im);
                         if(icon != null) {
@@ -485,8 +490,10 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		/**	Create a panel which will contain the buttons that sort by the various
 			means, confidence and support.
 		*/
-		JButton conf = new JButton("Confidence");
-		JButton  sup = new JButton("Support");
+		//JButton conf = new JButton("Confidence");
+		//JButton  sup = new JButton("Support");
+		JRadioButton conf = new JRadioButton("Confidence", false);
+		JRadioButton sup = new JRadioButton("Support", false);
 		final int BSIZE = 13;
 		private JPanel getSortPanel () {
 			JPanel buttons = new JPanel ();
@@ -569,12 +576,13 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                       ALPHA = false;
                     }
                     else if (e.getSource() == filterButton){
-                      JFrame F = new JFrame("RuleFilter");
+                      /*JFrame F = new JFrame("RuleFilter");
                       RuleFilter R = new RuleFilter();
                       R.setInput(ruleTable,0);
                       F.getContentPane().add(R);
                       F.setSize(600,262);
                       F.setVisible(true);
+                      */
                     }
                     else if (e.getSource() == print || e.getSource() == printButton) {
                       PrinterJob pj = PrinterJob.getPrinterJob();
@@ -659,6 +667,10 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 				// cells.
 				Image a = /*module.*/getImage ("/images/rulevis/checkmark-blue.gif");
 				Image b = /*module.*/getImage ("/images/rulevis/box-beige.gif");
+
+                                ButtonGroup group = new ButtonGroup();
+                                group.add(conf);
+                                group.add(sup);
 				conf.addActionListener (this);
 				sup.addActionListener (this);
 
