@@ -193,7 +193,8 @@ public class BackPropModel extends PredictionModelModule
 	*/
 	protected NNlearn learnFn;
 
-
+	/*controls the scaling/unscaling of the inputs and outputs*/
+	ScalingTransformation scaler;
 	public final double bias=-1.0;
 
 	public final boolean trainingSuccess;
@@ -233,7 +234,7 @@ public class BackPropModel extends PredictionModelModule
 		int i,j,k;
 		data=et.getTrainTable();
 
-
+		params=prms;
 		/* make sure all of the columns we have to work with are
 		scalar*/
 		if(!verifyData()){
@@ -242,7 +243,6 @@ public class BackPropModel extends PredictionModelModule
 		}
 
 
-		params=prms;
 		transform((TrainTable)data);
 
 		//set up arrays, fill w/ random values
@@ -453,7 +453,7 @@ public class BackPropModel extends PredictionModelModule
 			mins[i]=lowerBound;
 			colIndices[i]=et.getOutputFeatures()[i-numInputs];
 		}
-		ScalingTransformation scaler=new ScalingTransformation(
+		scaler=new ScalingTransformation(
 				colIndices, mins, maxs, et);
 		scaler.transform(et);
 		this.getTransformations().add(scaler);
@@ -756,6 +756,17 @@ public class BackPropModel extends PredictionModelModule
 	public void makePredictions(PredictionTable pt){
 		//make predictions for the test examples
 		data = pt;
+		
+		try{
+			//must scale the inputs before making predicitons
+			scaler.transform(pt);
+		}catch(Exception e){
+			System.out.println("Error scaling the prediction table. A possible"+
+			" reason for this is that the prediction table *must* have its"+
+			" output columns set for the neural net to work (even though this"+
+			" is not normally a constraint.");
+			e.printStackTrace();
+		}
 
 		//make a Table to put the predictions in, a column for every output
 		//feature
@@ -772,6 +783,8 @@ public class BackPropModel extends PredictionModelModule
 				pt.setDoublePrediction(predictedResults[i][j], i,j);
 			}
 		}
+		//now must untransform for the sake of the predictions
+		scaler.untransform(pt);
 	}
 
 	/**
