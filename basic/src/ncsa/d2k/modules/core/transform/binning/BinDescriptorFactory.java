@@ -6,8 +6,11 @@
  */
 package ncsa.d2k.modules.core.transform.binning;
 
-import java.text.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import ncsa.d2k.modules.core.datatype.table.*;
+
 
 
 public class BinDescriptorFactory {
@@ -112,8 +115,8 @@ public class BinDescriptorFactory {
 	  	//nf = NumberFormat.getInstance();
 	  	//nf.setMaximumFractionDigits(decimalPositions);
 	  
-	  	//String rounded = nf.format(number).toString();
-	  	System.out.println("rounded " + rounded); // 0.67
+	  	String rounded = nf.format(number).toString();
+	  	//System.out.println("rounded " + rounded); // 0.67
 	  	
 	  	 return (new Double(rounded)).doubleValue();
 	  		
