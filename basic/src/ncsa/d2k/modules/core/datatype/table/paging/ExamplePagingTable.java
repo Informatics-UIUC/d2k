@@ -857,7 +857,12 @@ public class ExamplePagingTable extends SubsetPagingTable implements ExampleTabl
 	 * @see ncsa.d2k.modules.core.datatype.table.ExampleTable#toPredictionTable()
 	 */
 	public PredictionTable toPredictionTable() {
-		return new PredictionTable(this);
+		try {
+			return new PredictionPagingTable(this);
+		} catch (Exception e) {
+			throw new RuntimeException("There was a problem with the disk IO system, and "+
+				"the paging prediction table could not be created. Check disk space.");
+		}
 	}
 	
 	/**
