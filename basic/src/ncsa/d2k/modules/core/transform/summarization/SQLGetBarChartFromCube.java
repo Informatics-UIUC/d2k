@@ -670,22 +670,30 @@ public boolean createItemDataTableHeadless(int col, String[] attributes, String 
 
         public void doit() throws Exception{
 
+          //validating code book use
           if(book && (codeBook == null || codeBook.length() == 0))
             throw new Exception("You must choose a code book or set 'Use Code Book' to false\n");
 
           if(selectedAttributes == null || selectedAttributes.length == 0)
             throw new Exception("You must select attributes!\n");
 
+          //validating table name
 
-
-          ConnectionWrapper cw = (ConnectionWrapper) pullInput(0);
+         cw = (ConnectionWrapper) pullInput(0);
           String tableName = (String) pullInput(1);
+
+
 
           if(!(tableName.indexOf("_CUBE") >=0))
             throw new Exception ("The input table must be a cubed table, and must have the string '_CUBE' in its name");
 
           if(tableName == null || tableName.length() == 0)
             throw new Exception("Illegal table name!\n");
+
+          if(!StaticMethods.getAvailableTables(cw).containsKey(tableName))
+            throw new Exception ("Table " + tableName + " was not found in the database!");
+
+
 
           con = cw.getConnection();
           DatabaseMetaData metadata = con.getMetaData();
@@ -709,6 +717,8 @@ public boolean createItemDataTableHeadless(int col, String[] attributes, String 
             aBook = new SQLCodeBook(cw, codeBook);
             codeTable = aBook.codeBook;
          }
+
+
 
          for (int idx = 0; idx < targetAttributes.length; idx++)
            // if code book is required and the code book is not retrieved yet, then get it

@@ -30,7 +30,10 @@ import ncsa.d2k.modules.core.transform.StaticMethods;
  * @todo: problems with gui: when entering malformed expression it throws
  * a null pointer exception instead of informing user in a nice way.
  *
- *
+ * @todo: expressions that are equivalent yield different output.
+ * for example: att_1 == val_1 && ( att_2 != val_2 || att_3 != val_3)
+ * gives different output than:
+ * att_1 == val_1 && ( val_2 != att_2 || att_3 != val_3)
  *
  *
  */
@@ -607,6 +610,8 @@ try {
        }
 
       String goodCondition = ExpressionParser.parseExpression(expression, availableColumns, false);
+
+
 
       //now good condition holds only relevant filters.
       //building a filter expression

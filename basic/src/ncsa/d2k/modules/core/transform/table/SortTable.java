@@ -1,20 +1,36 @@
+
+
+
+/*
+ * Created on Sep 9, 2003
+ *
+ * To change the template for this generated file go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
+ */
+
 package ncsa.d2k.modules.core.transform.table;
+
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
+import ncsa.d2k.modules.core.transform.StaticMethods;
+
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.gui.*;
+
 
 /**
  Cascade sorts a MutableTable by sorting the first column and then
  successive columns based on runs in the previous column. A run is
  a collection of similar values in a column.
  */
-public class SortTable extends ncsa.d2k.core.modules.UIModule {
+public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
+
 
   public String getInputInfo(int index) {
     switch (index) {
@@ -23,10 +39,12 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
     }
   }
 
+
   public String[] getInputTypes() {
     String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
     return types;
   }
+
 
   public String getInputName(int index) {
     switch (index) {
@@ -35,6 +53,7 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
     }
   }
 
+
   public String getOutputInfo(int index) {
     switch (index) {
       case 0: return "The sorted Table.";
@@ -42,10 +61,12 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
     }
   }
 
+
   public String[] getOutputTypes() {
     String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
     return types;
   }
+
 
   public String getOutputName(int index) {
     switch (index) {
@@ -54,12 +75,13 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
     }
   }
 
+
   public String getModuleInfo() {
      String info = "<P><b>Overview:</b><br> This module cascade sorts a MutableTable."+
          "</P><p><b>Detailed Description:</b><br> This module provides the user with an "+
          "interface to choose sorting columns for a cascading sort: The whole table is "+
          "being sorted according to the first column that is chosen. If more than one "+
-         "column is chosen for the sort � for each successive column, a sort is being "+
+         "column is chosen for the sort for each successive column, a sort is being "+
          "applied on the table only for runs in the previous column.<br>"+
          "A run is a collection of identical values in a column.</P><P>"+
          "<u>Missing Values Handling:</u> This module handles missing values as if they were " +
@@ -82,63 +104,128 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
     return info;
   }
 
+
   public String getModuleName() {
     return "Cascade-sort Table";
   }
+
 
   protected UserView createUserView() {
     return new SortTableView();
   }
 
+
   public String[] getFieldNameMapping() {
     return null;
   }
+
 
   private void done(Table table) {
     pushOutput(table, 0);
     viewDone("Done");
   }
 
-  public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] descriptions = new PropertyDescription[2];
 
-    descriptions[0] = new PropertyDescription("numberOfSorts",
+  public PropertyDescription[] getPropertiesDescriptions() {
+    PropertyDescription[] descriptions = new PropertyDescription[3];
+
+    descriptions[0] = this.supressDescription;
+
+
+    descriptions[1] = new PropertyDescription("numberOfSorts",
         "Number of attributes to use for sorting",
         "Determines the number of attributes to use for sorting.");
 
-    descriptions[1] = new PropertyDescription("reorderColumns",
+
+    descriptions[2] = new PropertyDescription("reorderColumns",
         "Reorder columns based on order of attributes used",
         "Determines if columns will be reordered based on order of attributes used.");
+
 
     return descriptions;
   }
 
+ //ANCA: added doit method for Headless execution
+
+ public void doit() {
+        MutableTable table =(MutableTable) pullInput(0);
+        CascadeSort cSort = new CascadeSort(table);
+        //vered - commented out this line - it makes the sorting to always
+        //be the same, sort by first column.
+        //int[] sortorder = cSort.getDefaultSortOrder();
+        int[] sortorder = getSortOrder(table);
+
+        if(sortorder != null && sortorder.length != 0)
+          cSort.sort(sortorder);
+
+        pushOutput(table,0);
+}
+
+       //vered - added this method, to figure out the cascading sort order
+       //according to sortOrderNames
+       private int[] getSortOrder(Table table){
+         int[] retVal = new int[0];
+         HashMap columns = StaticMethods.getAvailableAttributes(table);
+         if(columns.size() == 0)
+           System.out.println("The input table has no columns. It is output as is");
+
+
+
+         retVal = StaticMethods.getIntersectIds(sortOrderNames, columns);
+         if(retVal == null || retVal.length == 0)
+           System.out.println("None of the configured labels were found in the input table. "+
+                              "\nThe table is ouput as is.");
+
+
+         return retVal;
+       }//getSortOrder
+
+
+//vered: added this property, to remember the cancading order of the sort:
+       private String[] sortOrderNames;
+       public void setSortOrderNames(Object[] names){
+       sortOrderNames = new String[names.length];
+       for (int i=0; i<names.length; i++)
+         sortOrderNames[i] = (String)names[i];
+     }
+       public Object[] getSortOrderNames(){return sortOrderNames;}
+
+
   private int numberOfSorts = 5;
+
 
   public int getNumberOfSorts() {
     return numberOfSorts;
   }
 
+
   public void setNumberOfSorts(int sort) {
     numberOfSorts = sort;
   }
 
+
   boolean reorderColumns = false;
+
 
   public boolean getReorderColumns() {
     return reorderColumns;
   }
 
+
   public void setReorderColumns(boolean order) {
     reorderColumns = order;
   }
 
+
+
   private static final String NONE = "None";
+
 
   /**
    SortTableView
    */
   private class SortTableView extends ncsa.d2k.userviews.swing.JUserPane {
+
 
     MutableTable table;
     int columns;
@@ -149,18 +236,24 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
     int[] runs = null;
     boolean first = true;
 
+
     private SortTableView parent = this;
 
+
     //QuickQueue queue, lastqueue;
+
 
     JLabel[] sortlabels;
     JComboBox[] sortchoices;
 
+
     JButton done, abort;
+
 
     public void initView(ViewModule viewmod) {
       //module = (SortTable) viewmod;
     }
+
 
     public void setInput(Object object, int inputindex) {
       table = (MutableTable) object;
@@ -168,8 +261,10 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
       rows = table.getNumRows();
       numsort = getNumberOfSorts();
 
+
       if (numsort > columns)
         numsort = columns;
+
 
       sortlabels = new JLabel[numsort];
       for(int index=0; index < numsort; index++) {
@@ -177,16 +272,20 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
         sortlabels[index] = label;
       }
 
+
       String[] columnlabels = new String[columns+1];
       columnlabels[0] = NONE;
       for(int index=0; index < columns; index++) {
         String columnlabel = table.getColumnLabel(index);
 
+
         if (columnlabel == null || columnlabel.length() == 0)
            columnlabel = "column " + index;
 
+
         columnlabels[index+1] = columnlabel;
       }
+
 
       sortchoices = new JComboBox[numsort];
       for(int index=0; index < numsort; index++) {
@@ -194,23 +293,29 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
         sortchoices[index] = combobox;
       }
 
+
       buildView();
     }
+
 
     public void buildView() {
       removeAll();
       setLayout(new BorderLayout());
 
+
       JPanel scrollpanel = new JPanel();
       scrollpanel.setLayout(new GridBagLayout());
+
 
       for(int index=0; index < numsort; index++) {
         Constrain.setConstraints(scrollpanel, sortlabels[index], 0, index, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 1);
         Constrain.setConstraints(scrollpanel, sortchoices[index], 1, index, 1, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 0);
       }
 
+
       JScrollPane scrollpane = new JScrollPane(scrollpanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
       add(scrollpane, BorderLayout.CENTER);
+
 
       JPanel buttonpanel = new JPanel();
       abort = new JButton("Abort");
@@ -218,16 +323,20 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
       //abort.addActionListener(this);
       //done.addActionListener(this);
 
+
       abort.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           viewAbort();
         }
       });
 
+
       done.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
 
+
           getSortOrder();
+
 
           // check to make sure the user hasn't chosen the same column twice
           HashMap sortMap = new HashMap(); Integer I;
@@ -235,9 +344,11 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
              I = new Integer(sortorder[i]);
              if (sortMap.containsKey(I)) {
 
+
                 JOptionPane.showMessageDialog(parent,
                    "You cannot sort on the same column twice.",
                    "Error", JOptionPane.ERROR_MESSAGE);
+
 
                 return;
              }
@@ -250,19 +361,32 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
         }
       });
 
+
       buttonpanel.add(abort);
       buttonpanel.add(done);
       add(buttonpanel, BorderLayout.SOUTH);
     }
 
+
     public Dimension getPreferredSize() {
       return new Dimension(300, 200);
     }
 
+
     public void getSortOrder() {
       ArrayList sortList = new ArrayList();
+
+      //vered: headless support
+      ArrayList sortListNames = new ArrayList();
+
       for(int i = 0; i < sortchoices.length; i++) {
         int idx = sortchoices[i].getSelectedIndex();
+
+        //vered - headless support
+        String selectedLabel = (String) sortchoices[i].getSelectedItem();
+        sortListNames.add(selectedLabel);
+
+
         if(idx != 0)
           sortList.add(new Integer(idx-1));
         // else
@@ -272,7 +396,11 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
       for(int i = 0; i < sortList.size(); i++)
         sortorder[i] = ((Integer)sortList.get(i)).intValue();
       numsort = sortorder.length;
+
+      //vered - headless support
+      setSortOrderNames(sortListNames.toArray());
     }
+
 
     /**
      Find the indices where a run ends in a column.  A run is a collection of
@@ -282,7 +410,7 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
      @param col the column of interest
      @return
      */
-    private int[] findRuns(int col) {
+  /* private int[] findRuns(int col) {
       if (first) {
         //System.out.println("FindRuns: "+table.getColumnLabel(col));
         ArrayList runList = new ArrayList();
@@ -363,12 +491,31 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
         }
         return retVal;
       }
-    }
+    } */
 
+
+//ANCA: Took CascadeSort outside the module to make it reusable.
     /**
      * Sort the table for each column selected
      */
-    private void sort() {
+   private void sort() {
+
+     CascadeSort cSort = new CascadeSort(table);
+     cSort.sort(sortorder);
+
+         if(getReorderColumns())
+                         reorder();
+
+          // Reset global variables
+         runs = null;
+         sortorder = null;
+         first = true;
+         pushOutput(table, 0);
+
+    }
+
+    /*
+   private void sort() {
       if(sortorder.length > 0) {
         table.sortByColumn(sortorder[0]);
         for(int i = 1; i < sortorder.length; i++) {
@@ -376,6 +523,7 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
           // table.sortByColumn(col, begin, end) for each run
           runs = findRuns(sortorder[i-1]);
           first = false;
+
 
           // Do the first sort outside the loop
           table.sortByColumn(sortorder[i], 0, runs[0]);
@@ -393,35 +541,46 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
       sortorder = null;
       first = true;
       pushOutput(table, 0);
+    } */
+
+
+//      Reorder columns
+         public void reorder() {
+
+
+                int[] indirection = new int[table.getNumColumns()];
+
+
+                for (int i = 0; i < indirection.length; i++)
+                   indirection[i] = i;
+
+
+                for(int i = 0; i < sortorder.length; i++) {
+
+
+                   table.swapColumns(i, indirection[sortorder[i]]);
+
+
+                   int tmp = indirection[i];
+                   indirection[i] = indirection[sortorder[i]];
+                   indirection[sortorder[i]] = tmp;
+
+
+                }
+
+
     }
 
-    // Reorder columns
-    public void reorder() {
-
-       int[] indirection = new int[table.getNumColumns()];
-
-       for (int i = 0; i < indirection.length; i++)
-          indirection[i] = i;
-
-       for(int i = 0; i < sortorder.length; i++) {
-
-          table.swapColumns(i, indirection[sortorder[i]]);
-
-          int tmp = indirection[i];
-          indirection[i] = indirection[sortorder[i]];
-          indirection[sortorder[i]] = tmp;
-
-       }
-
-    }
 
   }
+
 
   public void initialize(int[] array) {
     for (int index=0; index < array.length; index++)
       array[index] = index;
   }
 }
+
 
 /**
  * QA comments:

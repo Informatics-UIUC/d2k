@@ -591,7 +591,7 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
         if(selectedAttributes == null || selectedAttributes.length != 2  )
           throw new Exception("you must select 2 columns!\n");
 
-        ConnectionWrapper cw = (ConnectionWrapper) pullInput(0);
+         cw = (ConnectionWrapper) pullInput(0);
         String tableName = (String) pullInput(1);
 
         if(!(tableName.indexOf("_CUBE") >=0))
@@ -599,6 +599,11 @@ public class SQLGetClusterBarChartFromCube extends HeadlessUIModule {
 
         if(tableName == null || tableName.length() == 0)
           throw new Exception("Illegal table name!\n");
+
+
+        if(!StaticMethods.getAvailableTables(cw).containsKey(tableName))
+          throw new Exception ("Table " + tableName + " was not found in the database!");
+
 
         con = cw.getConnection();
         DatabaseMetaData metadata = con.getMetaData();

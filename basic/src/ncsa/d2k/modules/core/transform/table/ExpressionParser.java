@@ -46,11 +46,11 @@ public class ExpressionParser {
 
    /**
     * parses <code>expression</code> into sub expression, to verify
-    * that all of them are legal and relevant to the attribute in <code>map</code>.
+    * that all of them are legal and relevant to the attributes in <code>map</code>.
     * allows empty parentheses. checks for validity of parentheses as well.
-    * this method is static becuase it supports also sql filter construction module.
+    * this method is static becuase it supports also sql filter construction module's doit.
     * @param expression - an expression to parse. operators as && or ||
-    * @param map - attributes map. each right hand operand in the returned value
+    * @param map - attributes map. each left hand operand in the returned value
     *              must be in the map. (maps attribute name <-> id
     * @return -    <code>expression</code> - pruned if needed (if sub expressions
     *              have attributes that are not in <code>map</code>
@@ -233,7 +233,7 @@ public class ExpressionParser {
                         throw new Exception ("\nValues have to be surounded by single quotes (\')\n");
 
                       //adding to good condition operator right hand relation and left hand
-                      goodCondition += " " + operator + " " + rightHand + " " + relation + " " + leftHand;
+                      goodCondition += " " + operator + " " + leftHand + " " + relation + " " + rightHand;
                       operator = "";
                       expected = Expected.AFTER_RIGHT;
                       lastGoodExpected = expected;
@@ -242,8 +242,8 @@ public class ExpressionParser {
                     else { //the sub expression is not relevant
 
                       System.out.println("The attribute " + rightHand + "nor " + leftHand +
-                      " in the sub expression: " + rightHand + " " +
-                                         relation + " " + leftHand +
+                      " in the sub expression: " +  leftHand + " " +
+                                         relation + " " + rightHand +
                                          "could not be found in the attribute map.\n" +
                                          "The expression is being removed");
 

@@ -15,6 +15,8 @@ import ncsa.gui.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 
+import ncsa.d2k.modules.core.transform.StaticMethods;
+
 /**
  * @todo: this module does not support binning of numeric column.
  * therefore the documentation about how to bin numeric columns
@@ -1743,8 +1745,36 @@ public class ADTBinColumns extends HeadlessUIModule {
   }
 
   public void doit(){
-    pullInput(0);
-    pullInput(1);
+    //the tree is not necessary for validating relevancy of bins to the table.
+    /*ADTree tree = (ADTree) */pullInput(0);
+
+    Table table = (Table) pullInput(1);
+
+    if(binDes == null || binDes.length == 0){
+       binDes = new BinDescriptor[0];
+      System.out.println("No bins were selected via a gui run. The transformation will be an empty one.");
+       pushOutput(new BinTransform(binDes, newColumn), 0);
+       return;
+    }
+
+//validating relevancy of bins to the input table.
+    HashMap columns = StaticMethods.getAvailableAttributes(table);
+    Vector relevant = new Vector();
+    for (int i=0; i<binDes.length; i++){
+      if(!columns.containsKey(binDes[i].label))
+        System.out.println("Bin " +  binDes[i].toString() + " does not match any column label in the input table. It will be ignored.");
+      else relevant.add(binDes[i]);
+    }//for
+
+    binDes =  new BinDescriptor[relevant.size()];
+    for(int i=0; i<binDes.length; i++)
+      binDes[i] = (BinDescriptor) relevant.get(i);
+
+    if(binDes == null || binDes.length == 0){
+      System.out.println("None of the bins matched the input table, the transformation will be an empty one.");
+      binDes = new BinDescriptor[0];
+    }
+
     pushOutput(new BinTransform(binDes, newColumn), 0);
 
   }//doit

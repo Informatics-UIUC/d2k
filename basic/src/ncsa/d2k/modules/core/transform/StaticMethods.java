@@ -2,7 +2,8 @@ package ncsa.d2k.modules.core.transform;
 
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-
+import java.sql.*;
+import ncsa.d2k.modules.core.io.sql.*;
 /**
  * <p>Title: </p>
  * <p>Description: </p>
@@ -17,6 +18,39 @@ import ncsa.d2k.modules.core.datatype.table.*;
 public class StaticMethods {
   public StaticMethods() {
   }
+
+  static public HashMap getAvailableTables(ConnectionWrapper cw) throws Exception{
+    HashMap retVal = new HashMap();
+    Connection con = cw.getConnection();
+     DatabaseMetaData metadata = con.getMetaData();
+     String[] type = {"TABLE"};
+     ResultSet names = metadata.getTables(null,"%","%",type);
+     int counter = 0;
+     while (names.next()) {
+       String currName = names.getString("TABLE_NAME");
+       retVal.put(currName, new Integer(counter));
+       counter++;
+     } //while
+    return retVal;
+  }
+
+  static public HashMap getAvailableAttributes(ConnectionWrapper cw, String tableName) throws Exception{
+   HashMap retVal = new HashMap();
+   Connection con = cw.getConnection();
+    DatabaseMetaData metadata = con.getMetaData();
+    String[] type = {"TABLE"};
+   ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
+    int counter = 0;
+    while (columns.next()) {
+       String columnName = columns.getString("COLUMN_NAME");
+       retVal.put(columnName , new Integer(counter));
+       counter++;
+     }//while column
+
+   return retVal;
+ }
+
+
 
   /**
    * builds a hash map of columns' labels in <code>table</code>.

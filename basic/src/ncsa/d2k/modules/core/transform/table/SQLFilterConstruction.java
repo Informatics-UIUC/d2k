@@ -16,6 +16,7 @@ import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import java.sql.*;
 
+import ncsa.d2k.modules.core.transform.StaticMethods;
 
 /**
  * <code>SQLFilterConstruction</code> is a simple user interface that facilitates
@@ -581,9 +582,18 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 
      String goodCondition = ""; //this will be pushed out.
 
+//validating
+     //getting tables names in data base
 
+     HashMap tables = StaticMethods.getAvailableTables(cw);
+     //checking that tableName is in the hashmap
+     if(!tables.containsKey(tableName))
+       throw new Exception ("Table " + tableName + " was not found in the data base!");
 
-     //connecting to data base and getting all the available attributes
+     //getting all attributes names.
+     HashMap availableAttributes = StaticMethods.getAvailableAttributes(cw, tableName);
+
+     /*//connecting to data base and getting all the available attributes
      //in the given table name.
      Connection con = cw.getConnection();
      HashMap availableAttributes = new HashMap();
@@ -591,19 +601,21 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
      int counter = 0;
 
+
+
      //populating the map
      while (columns.next()) {
        String columnName = columns.getString("COLUMN_NAME");
        availableAttributes.put(columnName , new Integer(counter));
        counter++;
      }//while column
-
-     if(counter == 0){
+*/
+     if(availableAttributes.size() == 0){
        //this means either the table was not found in the data base, or that
        //it has no columns. the query condition will be empty anyway
-       System.out.println("\n\nSQL Filter Construction:\nEither Table " +
-                          tableName + " is not in the given database, or " +
-                          "it has no columns. The filter will be empty");
+       System.out.println("\n\nSQL Filter Construction:\n Table " +
+                          tableName +
+                          " has no columns. The filter will be empty");
        pushOutput(goodCondition, 0);
        return;
      }
