@@ -73,10 +73,7 @@ public class RemoveDuplicateRows extends DataPrepModule {
                 setOfUniqueRows.add(rs);
         }
         int[] toRem = rowsToRemove.toNativeArray();
-        for (int i =0; i < toRem.length; i++){
-          //vered - debug
-          System.out.println("removing row no. " + i);
-          //end debug
+        for (int i = toRem.length-1; i > -1; i--){
           mt.removeRow(toRem[i]);
         }
         pushOutput(mt, 0);
