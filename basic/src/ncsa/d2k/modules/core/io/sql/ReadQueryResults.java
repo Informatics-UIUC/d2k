@@ -26,7 +26,7 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 			case 0: return "      This manages the sql database connection object.   ";
 			case 1: return "      The names of the fields needed from within the table.   ";
 			case 2: return "      The name of the table containing the fields.   ";
-			case 3: return "      Contains the where clause for the sq1 query.   ";
+			case 3: return "      Contains the where clause for the sq1 query (Optional).   ";
 			default: return "No such input";
 		}
 	}
@@ -70,7 +70,7 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
           s += "<p>Detailed Description: ";
           s += "This module constructs a SQL query based on 4 inputs: the database ";
           s += "connection object, the selected table, the selected fields, and ";
-          s += "the query condition. This module then executes the query and retrieve ";
+          s += "the query condition (optional). This module then executes the query and retrieve ";
           s += "the data from the specified database. This module can be used to display ";
           s += "database data, or to prepare the database data set for feeding into ";
           s += "mining processes. </p>";
@@ -97,21 +97,35 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 		// get the name of the table.
 		String tableList = (String) this.pullInput (2);
                 // get the query condition.
-                String whereClause = (String) this.pullInput (3);
+      /*          String whereClause;
+                if((String) this.pullInput(3) == null)
+                  whereClause = "";
+                else
+                  whereClause = (String) this.pullInput (3);
+*/
+                String whereClause="";
+                if (isInputPipeConnected(3)) {
+                  whereClause = (String)pullInput(3);
+                  if (whereClause.length()==0)
+                    whereClause = null;
+                }
+                else if (!isInputPipeConnected(3)) {
+                  whereClause = null;
+       }
 
 
 
 		////////////////////////////
 		// Get the number of entries in the table.
 		String query = "SELECT COUNT(*) FROM "+tableList;
-                if (whereClause.length() > 0)
+                if (whereClause != null && whereClause.length() > 0)
                    query += " WHERE " + whereClause;
 		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		int count = 0;
 		while (rs.next ())
 			count = rs.getInt (1);
-System.out.println ("---- Entries - "+count);
+                      System.out.println ("---- Entries - "+count);
 
 		///////////////////////////
 		// Get the column types, and create the appropriate column
@@ -120,7 +134,7 @@ System.out.println ("---- Entries - "+count);
 		// construct the query to get clumn information.
 		query = "SELECT "+fieldList.toString()+" FROM "+tableList;
 
-                if (whereClause.length() > 0)
+                if (whereClause != null && whereClause.length() > 0)
                    query += " WHERE " + whereClause;
 
 		// Get the number of columns selected.
@@ -179,7 +193,7 @@ System.out.println ("---- Entries - "+count);
 		// Now fill in the data
 		// construct the query to get the column metadata.
 		query = "SELECT "+fieldList.toString()+" FROM "+tableList;
-                if (whereClause.length() > 0)
+                if (whereClause != null && whereClause.length() > 0)
 			query += " WHERE "+whereClause;
 
 		// Now populate the table.
@@ -211,7 +225,7 @@ System.out.println ("---- Entries - "+count);
 						  vt.setString (rs.getString (i+1), where, i);
 						break;
                                         default:
-                                                vt.setString(" ", where, i);
+                                                vt.setString(rs.getString (i+1), where, i);
                                                 break;
 				}
                               }
@@ -242,7 +256,7 @@ System.out.println ("---- Entries - "+count);
 			case 2:
 				return "Selected Table";
 			case 3:
-				return "Query Condition";
+				return "Query Condition (Optional)";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -259,5 +273,14 @@ System.out.println ("---- Entries - "+count);
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
+
+        public boolean isReady() {
+          if (!isInputPipeConnected(3)) {
+            return (getInputPipeSize(0)>0 &&
+                    getInputPipeSize(1)>0 &&
+                    getInputPipeSize(2)>0);
+          }
+          return super.isReady();
+        }
 }
 
