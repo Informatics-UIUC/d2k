@@ -385,7 +385,7 @@ System.out.println( "initView\n" );
 					}
 					if(merges == null || merges.length == 0) {
 						ErrorDialog.showDialog(
-							"You must select attributes to merge.", "Error");
+							"You must select one or more attributes to merge.", "Error");
 						return;
 					}
 					if(type == null) {
