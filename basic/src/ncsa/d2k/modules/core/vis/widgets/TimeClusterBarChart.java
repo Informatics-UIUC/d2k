@@ -539,7 +539,8 @@ public class TimeClusterBarChart extends BarChart
       g2.setColor(Color.black);
       y += samplecolorsize;
       g2.drawString(legendStrings[index], (int) (x+samplecolorsize+smallspace), (int) y);
-      y += fontheight - samplecolorsize;
+      //y += fontheight - samplecolorsize;
+      y += fontheight - samplecolorsize + smallspace;
       g2.drawString(legendTimeRanges[index], (int) x, (int) y);
     }
   }
