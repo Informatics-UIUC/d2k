@@ -64,7 +64,7 @@ public class BarChart extends Chart {
       */
 
       // Find interval for y data
-      NumericColumn column;
+      //NumericColumn column;
       if ((settings.yminimum == null) || (settings.ymaximum == null)) {
          //(set.y)
          double[] mm = getMinAndMax(table, set.y);
@@ -137,10 +137,15 @@ public class BarChart extends Chart {
 
    public void initOffsets() {
       // Offsets of axis
-      leftoffset = 65;
-      rightoffset = 65;
-      bottomoffset = 65;
-      topoffset = 65;
+      //leftoffset = 65;
+      //rightoffset = 65;
+      //bottomoffset = 65;
+      //topoffset = 65;
+        leftoffset = .2*getWidth();
+	    rightoffset = .1*getWidth();
+        // Offsets of axis
+        bottomoffset = .25*getHeight();
+		topoffset = .05*getHeight();
    }
 
    // Resize scale
