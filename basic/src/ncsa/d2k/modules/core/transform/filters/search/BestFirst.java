@@ -39,7 +39,6 @@ import ncsa.d2k.modules.core.transform.filters.Utils;
 import ncsa.d2k.modules.core.transform.filters.evaluation.ASEvaluation;
 import ncsa.d2k.modules.core.transform.filters.evaluation.SubsetEvaluator;
 import ncsa.d2k.modules.core.transform.filters.evaluation.UnsupervisedSubsetEvaluator;
-import ncsa.d2k.modules.core.transform.filters.search.*;
 
 /**
  * Class for performing a best first search. <p>

@@ -278,19 +278,16 @@ public class ConsistencySubsetEval extends SubsetEvaluator {
    * generated successfully
    */
   public void buildEvaluator (Table data) throws Exception {
-    //if (data.checkForStringAttributes()) {
-     // throw  new UnsupportedAttributeTypeException("Can't handle string attributes!");
-    //}
-
+   
     m_trainTable = data;
 	int[] outputFeatures = ((ExampleTable) m_trainTable).getOutputFeatures();
-
+	int [] inputFeatures = ((ExampleTable) m_trainTable).getInputFeatures();
+	
 	if (outputFeatures == null || outputFeatures.length == 0) 
 		throw new Exception ( " Class attribute must be specified in ChooseAttributes ");
-	
-	int cindex = outputFeatures[0];
-	int [] classIndexArray =  { cindex };
-	if (m_trainTable.hasMissingValues(cindex))
+
+	m_classIndex = outputFeatures[0];
+	if (m_trainTable.hasMissingValues(m_classIndex))
 		throw new Exception (" Missing values in class column cannot be handled. Remove them before this module.");
 //TODO maybe reintroduce this transformation
 	//RemoveRowsWithMissingTransform  removeMissing =
@@ -317,12 +314,8 @@ public class ConsistencySubsetEval extends SubsetEvaluator {
 
     m_disTransform = new EntropyBinning();
     m_disTransform.setUseBetterEncoding(true);
-    //selectedColumns has to come from a user interface ore other params
-    int [] selectedColumns = new int[m_trainTable.getNumColumns()-1];
-    for (int i =0; i < m_trainTable.getNumColumns()-1; i ++) {
-              selectedColumns[i] = i;
-    }
-    BinDescriptor[] binDescr = m_disTransform.buildBins((ExampleTable)m_trainTable,selectedColumns);
+    
+    BinDescriptor[] binDescr = m_disTransform.buildBins((ExampleTable)m_trainTable,inputFeatures);
     BinTransform bt = new BinTransform(m_trainTable,binDescr, false);
     bt.transform((ExampleTable)m_trainTable);
         // transform nominal binned attributes to numeric ones
@@ -361,8 +354,9 @@ public class ConsistencySubsetEval extends SubsetEvaluator {
     // create new hash table
     m_table = new Hashtable((int)(m_numInstances * 1.5));
 
+    // extract the relevant columns determined by the Bitset and insert rows into hashtable
     for (i=0;i<m_numInstances;i++) {
-      //Instance inst = m_trainTable.instance(i);
+     
       for (int j=0;j<fs.length;j++) {
 	if (fs[j] == m_classIndex) {
 	  throw new Exception("A subset should not contain the class!");

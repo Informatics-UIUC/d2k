@@ -219,7 +219,8 @@ public class CfsSubsetEval
   {
       m_trainTable = data;
 	int[] outputFeatures = ((ExampleTable)data).getOutputFeatures();
-
+	int[] inputFeatures = ((ExampleTable)data).getInputFeatures();
+	
 	if (outputFeatures == null || outputFeatures.length == 0) 
 		throw new Exception ( " Class attribute must be specified in ChooseAttributes ");
 	
@@ -240,12 +241,8 @@ public class CfsSubsetEval
     if(!m_isNumeric) {
       m_disTransform = new EntropyBinning();
       m_disTransform.setUseBetterEncoding(true);
-      //selectedColumns has to come from a user interface ore other params
-      int [] selectedColumns = new int[m_trainTable.getNumColumns()-1];
-      for (int i =0; i < m_trainTable.getNumColumns()-1; i ++) {
-               selectedColumns[i] = i;
-      }
-      BinDescriptor[] binDescr = m_disTransform.buildBins((ExampleTable)m_trainTable,selectedColumns);
+      
+      BinDescriptor[] binDescr = m_disTransform.buildBins((ExampleTable)m_trainTable,inputFeatures);
       BinTransform bt = new BinTransform(m_trainTable,binDescr, false);
       bt.transform((ExampleTable)m_trainTable);
     }
