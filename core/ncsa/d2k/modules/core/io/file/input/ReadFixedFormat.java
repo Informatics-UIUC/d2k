@@ -1,5 +1,5 @@
+//package ncsa.d2k.modules.core.io.file.input;
 package ncsa.d2k.modules.core.io.file.input;
-
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.pipes.*;
@@ -14,7 +14,7 @@ import ncsa.d2k.modules.core.io.file.*;
  */
 
 public class ReadFixedFormat extends ncsa.d2k.core.modules.InputModule
-    
+
 {
     protected boolean _ignoreSyntaxErrors;
     protected String  _comments;
