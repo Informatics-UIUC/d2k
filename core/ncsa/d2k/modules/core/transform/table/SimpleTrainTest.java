@@ -1,7 +1,5 @@
 package ncsa.d2k.modules.core.transform.table;
 
-
-
 import ncsa.gui.Constrain;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
@@ -21,6 +19,7 @@ import java.beans.PropertyVetoException;
 */
 public class SimpleTrainTest extends DataPrepModule  {
 
+	boolean debug = true;
 	/**
 	   Return a description of the function of this module.
 	   @return A description of this module.
@@ -218,11 +217,24 @@ public class SimpleTrainTest extends DataPrepModule  {
 		for(int i = numTrain-1, j = nr - 1; i >= 0; i--, j--) {
 		   train[i] = random[j];
 		}
+		if (debug) {
+			System.out.println("test set");
+			for(int i = 0; i < test.length; i++) {
+				if (i > 0) System.out.print(",");
+				System.out.print(test[i]);
+			}
 
+			// do the train assignment, from the end of the array of indices.
+			System.out.println("train set");
+			for(int i = 0; i < train.length; i++) {
+				if (i > 0) System.out.print(",");
+				System.out.print(train[i]);
+			}
+		}
 		ExampleTable et = orig.toExampleTable();
 		et.setTestingSet(test);
 		et.setTrainingSet(train);
-		this.pushOutput(et.getTestTable(), 1);
+		this.pushOutput(et.getTestTable(), 0);
 		this.pushOutput(et.getTrainTable(), 1);
 	}
 
