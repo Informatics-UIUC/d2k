@@ -609,6 +609,13 @@ public class VIntShortHashMap
   //=================
   // Private Methods
   //=================
+  /**
+     * vered - May 18 - implemented this method so that sparse boolean column
+     * could be de-serialized too.
+     *
+     * this method writes the transient field (_values) into the stream, so it
+     * could be read again.
+     */
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
     stream.defaultWriteObject();
@@ -616,13 +623,11 @@ public class VIntShortHashMap
     // number of entries
     stream.writeInt(_size);
 
-    /**
-         * TODO: SOLVE NON-PUBLIC CLASS PROBLEM WITH  gnu.trove.SerializationProcedure
-     */
-    /*        VSerializationProcedure writeProcedure = new VSerializationProcedure(stream);
+
+           VSerializationProcedure writeProcedure = new VSerializationProcedure(stream);
             if (! forEachEntry(writeProcedure)) {
                 throw writeProcedure.exception;
-            }*/
+            }
   }
 
   private void readObject(ObjectInputStream stream) throws IOException,
