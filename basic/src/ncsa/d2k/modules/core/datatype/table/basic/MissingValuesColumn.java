@@ -61,4 +61,23 @@ public abstract class MissingValuesColumn extends AbstractColumn {
 			if (miss[i]) 
 				this.numMissingValues++;
 	}
+
+	/**
+	 * Get missing values in a boolean array.
+	 * @ return the missing value flags.
+	 */
+	
+	final public boolean[] getMissingValues() {
+		 return missing;
+	}
+
+/*
+ * Get number of missing values
+ * @ return the number of missing values  
+ */
+ 
+ final public int getNumMissingValues() {
+ 	return numMissingValues;
+ }
+ 
 }

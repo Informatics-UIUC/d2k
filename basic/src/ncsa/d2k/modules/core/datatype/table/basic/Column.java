@@ -399,6 +399,12 @@ public interface Column extends java.io.Serializable {
 	public boolean hasMissingValues();
 	
 	/**
+		 * return the number of missing values in the column.
+		 * @return number of missing values in the column.
+		 */
+		public int getNumMissingValues();
+	
+	/**
 	 * Return true if the value at row is missing, false otherwise
 	 * @param row the row index
 	 * @return true if the value at row is missing, false otherwise
