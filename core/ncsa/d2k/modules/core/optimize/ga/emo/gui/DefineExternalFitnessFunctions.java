@@ -34,24 +34,42 @@ public class DefineExternalFitnessFunctions
 
   public String getInputInfo(int i) {
     return
-        "A data structure to hold the information about the fitness functions.";
+        "The parameters for the EMO problem.";
   }
 
   public String getOutputInfo(int i) {
     return
-        "A data structure to hold the information about the fitness functions.";
+        "The parameters for the EMO problem, with the constraint violation functions defined.";
   }
 
   public String getModuleInfo() {
-    return "Input the parameters for an executable to calculate fitness functions.";
+    String s = "<p>Overview: ";
+    s += "Input fitness functions that are calculated by an executable.";
+    s += "<p>Detailed Description: ";
+    s += "Input all the properties needed to call an executable to evaluate ";
+    s += "the fitness functions for a population.";
+    s += "First, input the name of the fitness function.  Next, input the path ";
+    s += "to the executable.  Next, input the paths to the input and output files. ";
+    s += "Finally, choose whether the fitness function is minimizing or ";
+    s += "maximizing.";
+    s += "<p>An executable must read the genes in from a file and write out ";
+    s += "a file containing the values of the fitness functions.  The format ";
+    s += "of the input file is fixed.  The first line contains the size of the ";
+    s += "population.  The second line contains the number of traits.";
+    s += "Every following line should contain the values for an individual, ";
+    s += "space-delimited.";
+    s += "The output file must also follow a specific format.  Each row of ";
+    s += "the file must contain the value for this fitness function on the ";
+    s += "associated individual in the genes file.  Order is preserved.";
+    return s;
   }
 
   public String getInputName(int i) {
-    return "EMOParams";
+    return "EMOParameters";
   }
 
   public String getOutputName(int i) {
-    return "EMOParams";
+    return "EMOParameters";
   }
 
   protected UserView createUserView() {

@@ -4,17 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
-import java.util.*;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
-import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.gui.*;
-
-import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
+import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
+import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.gui.*;
 
 /**
  * Define the fitness functions.
@@ -33,7 +29,21 @@ public class DefineFitnessFunctions
   }
 
   public String getModuleInfo() {
-    return "";
+    String s = "<p>Overview:";
+    s += "Define functions to be used in the calculation of fitness functions.";
+    s += "<p>Detailed Description: ";
+    s += " Define the fitness functions that are calculated by performing transformations ";
+    s += " on a Table.";
+    s += "This module provides a GUI used to specify expression strings.";
+    s += "These expressions are interpreted as operations on existing ";
+    s += "attributes in the table and are used to construct new attributes. ";
+    s += "When the GUI is dismissed, the information needed to construct ";
+    s += "these new attributes is encapsulated in a <i>Transformation</i> ";
+    s += "object that is applied when evaluating a population.";
+    s += "The available operations on numeric attributes are addition, ";
+    s += "subtraction, multiplication, division, and modulus. The ";
+    s += "operations available on boolean attributes are AND and OR.";
+    return s;
   }
 
   protected UserView createUserView() {
@@ -53,19 +63,21 @@ public class DefineFitnessFunctions
   }
 
   public String getInputName(int i) {
-    return "EMOParams";
+    return "Parameters";
   }
 
   public String getOutputName(int i) {
-    return "EMOParams";
+    return "Parameters";
   }
 
   public String getInputInfo(int i) {
-    return "";
+    return
+        "The parameters for the EMO problem.";
   }
 
   public String getOutputInfo(int i) {
-    return "";
+    return
+        "The parameters for the EMO problem, with the constraint violation functions defined.";
   }
 
   private static final String MIN = "Min";
@@ -75,11 +87,12 @@ public class DefineFitnessFunctions
    *  @return The PropertyDescriptions for properties the user may update.
    */
   public PropertyDescription[] getPropertiesDescriptions() {
-      PropertyDescription[] pds = new PropertyDescription [0];
-      return pds;
+    PropertyDescription[] pds = new PropertyDescription[0];
+    return pds;
   }
 
- private class FitnessFunctionConstruction extends Construction {
+  private class FitnessFunctionConstruction
+      extends Construction {
 
     private boolean isMinimizing = false;
 
@@ -95,7 +108,6 @@ public class DefineFitnessFunctions
       this.isMinimizing = b;
     }
   }
-
 
   /**
    * inner class, extends attributeConstruction's inner gui class
@@ -136,9 +148,9 @@ public class DefineFitnessFunctions
         columnModel.addElement(table.getColumnLabel(i));
       }
 
-      if(constructions != null) {
-        for(int j = 0; j < constructions.length; j++) {
-          columnModel.addElement( ((Construction)constructions[j]).label);
+      if (constructions != null) {
+        for (int j = 0; j < constructions.length; j++) {
+          columnModel.addElement( ( (Construction) constructions[j]).label);
         }
       }
 
@@ -204,16 +216,19 @@ public class DefineFitnessFunctions
         }
       };
 
-      Object[] last = (Object[])getLastCons();
-      if(last != null ) {
+      Object[] last = (Object[]) getLastCons();
+      if (last != null) {
         for (int i = 0; i < last.length; i++) {
-          FitnessFunctionConstruction constr = (FitnessFunctionConstruction) last[i];
-          if (constr.getIsMinimizing())
-            modelData.addRow(new Object[] {MIN, constr.label+" = "+
-                             constr.expression/*, new String()*/});
-          else
-            modelData.addRow(new Object[] {MAX, constr.label+" = "+
-                             constr.expression/*, new String()*/});
+          FitnessFunctionConstruction constr = (FitnessFunctionConstruction)
+              last[i];
+          if (constr.getIsMinimizing()) {
+            modelData.addRow(new Object[] {MIN, constr.label + " = " +
+                             constr.expression /*, new String()*/});
+          }
+          else {
+            modelData.addRow(new Object[] {MAX, constr.label + " = " +
+                             constr.expression /*, new String()*/});
+          }
         }
       }
 
@@ -473,13 +488,14 @@ public class DefineFitnessFunctions
         }
 
         FitnessFunctions ff = parameters.fitnessFunctions;
-        if(ff == null) {
+        if (ff == null) {
           ff = new FitnessFunctions();
           parameters.fitnessFunctions = ff;
         }
-        for(int i = 0; i < tmp.length; i++) {
-          ff.addFitnessFunction((FitnessFunctionConstruction)tmp[i],
-                                ((FitnessFunctionConstruction)tmp[i]).getIsMinimizing());
+        for (int i = 0; i < tmp.length; i++) {
+          ff.addFitnessFunction( (FitnessFunctionConstruction) tmp[i],
+                                ( (FitnessFunctionConstruction) tmp[i]).
+                                getIsMinimizing());
         }
 
         pushOutput(parameters, 0);
@@ -582,8 +598,8 @@ public class DefineFitnessFunctions
         /**
          * Add to table object array with: empty string, label of function,  function itself, and time stirng
          */
-        modelData.addRow(new Object[] {MIN, newNameField.getText()+" = "+
-                         gui.getTextArea().getText()/*, new String()*/});
+        modelData.addRow(new Object[] {MIN, newNameField.getText() + " = " +
+                         gui.getTextArea().getText() /*, new String()*/});
 
         FitnessFunctionConstruction added = new FitnessFunctionConstruction(
             newNameField.getText(), gui.getTextArea().getText());

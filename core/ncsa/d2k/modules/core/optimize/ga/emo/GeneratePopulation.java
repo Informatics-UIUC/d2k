@@ -5,6 +5,8 @@ import ncsa.d2k.modules.core.optimize.util.*;
 import ncsa.d2k.modules.core.optimize.ga.nsga.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
 
+import ncsa.d2k.modules.core.datatype.table.*;
+
 /**
  * Generate a population.
  */
@@ -203,6 +205,7 @@ public class GeneratePopulation
       //set the maximum number of generations
       ((Population)pop).setMaxGenerations(params.maxGenerations);
 
+      seedPopulation((Population)pop, params);
       pushOutput(pop, 0);
     }
     // otherwise, for an MO problem (mulitple fitness functions) create
@@ -237,7 +240,42 @@ public class GeneratePopulation
       //set the maximum number of generations
       ((NsgaPopulation)pop).setMaxGenerations(params.maxGenerations);
 
+      seedPopulation((NsgaPopulation)pop, params);
       pushOutput(pop, 0);
+    }
+  }
+
+  private void seedPopulation(Population p, Parameters params) {
+    DecisionVariables dv = params.decisionVariables;
+    Table tbl = dv.getSeedTable();
+    if(tbl == null)
+      return;
+
+    int numTraits = p.getTraits().length;
+    if(tbl.getNumColumns() != numTraits) {
+      return;
+    }
+
+    if(params.createBinaryIndividuals) {
+      BinarySolution[] sols = (BinarySolution[])p.getMembers();
+      int size = tbl.getNumRows();
+      for(int i = 0; i < size; i++) {
+        BinarySolution bs = sols[i];
+        // !!!!!!!!!!!!!!!!!!!!
+        // now we need to change the double value into a bit string ...
+      }
+    }
+    else {
+      DoubleSolution[] sols = (DoubleSolution[])p.getMembers();
+      int size = tbl.getNumRows();
+      for(int i = 0; i < size; i++) {
+        DoubleSolution ds = sols[i];
+        double[] vals = new double[numTraits];
+        for(int j = 0;j < numTraits; j++) {
+          vals[j] = tbl.getDouble(i, j);
+        }
+        ds.setParameters(vals);
+      }
     }
   }
 }

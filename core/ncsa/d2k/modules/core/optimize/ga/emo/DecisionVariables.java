@@ -28,6 +28,8 @@ public class DecisionVariables {
 
   private MutableTable varNameTable;
 
+  private Table seedTable;
+
   /**
    * constructor
    */
@@ -39,6 +41,14 @@ public class DecisionVariables {
     table.setColumn(new double[0], 2);
     table.setColumn(new double[0], 3);
     table.setColumn(new double[0], 4);
+  }
+
+  public void setSeedTable(Table t) {
+    seedTable = t;
+  }
+
+  public Table getSeedTable() {
+    return seedTable;
   }
 
   /**

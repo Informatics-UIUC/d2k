@@ -5,6 +5,10 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.ga.mutation.*;
 
+/**
+ * Mutate a population.  The mutation is performed by the Mutation object
+ * carried in the Parameters of the EMOPopulation.
+ */
 public class PerformMutation extends ComputeModule {
 
   public String[] getInputTypes() {
@@ -18,15 +22,15 @@ public class PerformMutation extends ComputeModule {
   }
 
   public String getInputInfo(int i) {
-    return "";
+    return "The population to mutate.";
   }
 
   public String getOutputInfo(int i) {
-    return "";
+    return "The mutated population.";
   }
 
   public String getModuleInfo() {
-    return "";
+    return "Mutate a population.";
   }
 
   public void beginExecution() {

@@ -10,8 +10,30 @@ import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
 
+/**
+ * Define variables to be used in the calculation of fitness functions.  These
+ * variables are calculated by performing transformations on a Table.
+ */
 public class DefineFitnessVariables
     extends AttributeConstruction {
+
+  public String getModuleInfo() {
+    String s = "<p>Overview:";
+    s += "Define variables to be used in the calculation of fitness functions.";
+    s += "<p>Detailed Description: ";
+    s += " Define variables that are calculated by performing transformations ";
+    s += " on a Table.";
+    s += "This module provides a GUI used to specify expression strings.";
+    s += "These expressions are interpreted as operations on existing ";
+    s += "attributes in the table and are used to construct new attributes. ";
+    s += "When the GUI is dismissed, the information needed to construct ";
+    s += "these new attributes is encapsulated in a <i>Transformation</i> ";
+    s += "object that is applied when evaluating a population.";
+    s += "The available operations on numeric attributes are addition, ";
+    s += "subtraction, multiplication, division, and modulus. The ";
+    s += "operations available on boolean attributes are AND and OR.";
+    return s;
+  }
 
   public String getModuleName() {
     return "Define Fitness Variables";
@@ -34,19 +56,19 @@ public class DefineFitnessVariables
   }
 
   public String getInputName(int i) {
-    return "Parameters";
+    return "EMOParameters";
   }
 
   public String getOutputName(int i) {
-    return "Parameters";
+    return "EMOParameters";
   }
 
   public String getInputInfo(int i) {
-    return "";
+    return "The parameters for EMO.";
   }
 
   public String getOutputInfo(int i) {
-    return "";
+    return "The parameters for EMO, with the fitness variables added.";
   }
 
   /** Return an array with information on the properties the user may update.

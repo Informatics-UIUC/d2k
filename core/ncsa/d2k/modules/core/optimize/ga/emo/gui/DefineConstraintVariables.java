@@ -11,11 +11,33 @@ import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
 import ncsa.d2k.modules.core.transform.attribute.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 
+/**
+ * Define variables to be used in the calculation of constraint violation
+ * functions.
+ */
 public class DefineConstraintVariables
     extends DefineFitnessVariables {
 
   public String getModuleName() {
     return "Define Constraint Variables";
+  }
+
+  public String getModuleInfo() {
+    String s = "<p>Overview:";
+    s += "Define variables to be used in the calculation of constraint violation functions.";
+    s += "<p>Detailed Description: ";
+    s += " Define variables that are calculated by performing transformations ";
+    s += " on a Table.";
+    s += "This module provides a GUI used to specify expression strings.";
+    s += "These expressions are interpreted as operations on existing ";
+    s += "attributes in the table and are used to construct new attributes. ";
+    s += "When the GUI is dismissed, the information needed to construct ";
+    s += "these new attributes is encapsulated in a <i>Transformation</i> ";
+    s += "object that is applied when evaluating a population.";
+    s += "The available operations on numeric attributes are addition, ";
+    s += "subtraction, multiplication, division, and modulus. The ";
+    s += "operations available on boolean attributes are AND and OR.";
+    return s;
   }
 
   protected UserView createUserView() {

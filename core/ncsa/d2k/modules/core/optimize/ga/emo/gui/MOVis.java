@@ -9,6 +9,9 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 import ncsa.d2k.userviews.swing.*;
 
+import ncsa.d2k.gui.*;
+import ncsa.gui.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -26,8 +29,14 @@ public class MOVis
         "ncsa.d2k.modules.core.optimize.ga.Population"};
   }
 
+  // 0 = current pop
+  // 1 = view decision vars
+  // 2 = view genes
+
   public String[] getOutputTypes() {
     return new String[] {
+        "ncsa.d2k.modules.core.optimize.ga.Population",
+        "ncsa.d2k.modules.core.optimize.ga.Population",
         "ncsa.d2k.modules.core.optimize.ga.Population"};
   }
 
@@ -54,29 +63,43 @@ public class MOVis
   protected class MOView
       extends JUserPane {
     protected FitnessTable[] fitnessTables;
-    protected NsgaPopulation populations[];
-    
+    protected NsgaPopulation[] populations;
     protected RunView[] runViews;
 
     protected boolean paused = false;
 
     protected JButton continueButton;
     protected JButton pauseButton;
+    protected JButton viewDecisionVariables;
+    protected JButton viewGenes;
 
     protected int numDecisionVariables;
     protected int numObjectives;
-    protected String[] decisionVariableNames;
-    protected String[] objectiveNames;
+
+    protected static final int NUM_VIEWS = 4;
+    protected static final int CURRENT = 0;
+    protected static final int CUMUL_ONE = 1;
+    protected static final int CUMUL_TWO = 2;
+    protected static final int CUMUL_THREE = 3;
+
+    protected int run = 0;
+
+    protected NsgaPopulation tmpPopulation;
+
+    protected static final String CUMULATIVE = "Cumulative ";
+    protected static final String RUN = "Run: ";
+    protected static final String POP_SIZE = "Population Size: ";
+    protected static final String NUM_SOL = "Number of Nondominated Solutions: ";
 
     public void initView(ViewModule vm) {
-      populations = new NsgaPopulation[4];
-      fitnessTables = new FitnessTable[4];
-      for (int i = 0; i < 4; i++) {
+      populations = new NsgaPopulation[NUM_VIEWS];
+      fitnessTables = new FitnessTable[NUM_VIEWS];
+      runViews = new RunView[NUM_VIEWS];
+      for (int i = 0; i < NUM_VIEWS; i++) {
         populations[i] = null;
         fitnessTables[i] = null;
       }
-      runViews = new RunView[4];
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < NUM_VIEWS; i++) {
         runViews[i] = new RunView(i);
       }
       setLayout(new BorderLayout());
@@ -88,13 +111,31 @@ public class MOVis
       bg.add(runViews[CUMUL_THREE]);
 
       JScrollPane jsp = new JScrollPane(bg);
-      jsp.setPreferredSize(new Dimension(750, 415));
+      jsp.setPreferredSize(new Dimension(750, 425));
       add(jsp, BorderLayout.CENTER);
 
       continueButton = new JButton("Continue");
+      continueButton.setToolTipText("Continue execution");
       pauseButton = new JButton("Pause");
+      pauseButton.setToolTipText("Pause execution");
+      viewDecisionVariables = new JButton("View Decision Variables");
+      viewDecisionVariables.setToolTipText("View the decision variables of the current population");
+      viewDecisionVariables.addActionListener(new AbstractAction() {
+        public void actionPerformed(ActionEvent ae) {
+          pushOutput(populations[CURRENT], 1);
+        }
+      });
+      viewGenes = new JButton("View Genes");
+      viewGenes.setToolTipText("View the genes of the current population");
+      viewGenes.addActionListener(new AbstractAction() {
+        public void actionPerformed(ActionEvent ae) {
+          pushOutput(populations[CURRENT], 2);
+        }
+      });
 
       continueButton.setEnabled(false);
+      viewDecisionVariables.setEnabled(false);
+      viewGenes.setEnabled(false);
       continueButton.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           continueExecution();
@@ -108,15 +149,18 @@ public class MOVis
       });
 
       JButton stopButton = new JButton("Stop");
+      stopButton.setToolTipText("Stop execution");
       stopButton.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           viewCancel();
         }
       });
-      JPanel buttonPanel = new JPanel();
+      JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       buttonPanel.add(continueButton);
       buttonPanel.add(pauseButton);
       buttonPanel.add(stopButton);
+      buttonPanel.add(viewDecisionVariables);
+      buttonPanel.add(viewGenes);
       add(buttonPanel, BorderLayout.SOUTH);
     }
 
@@ -125,25 +169,21 @@ public class MOVis
       paused = true;
       pauseButton.setEnabled(false);
       continueButton.setEnabled(true);
+      viewDecisionVariables.setEnabled(true);
+      viewGenes.setEnabled(true);
       runViews[CURRENT].enableSelection();
     }
 
     protected void continueExecution() {
       paused = false;
       continueButton.setEnabled(false);
+      viewDecisionVariables.setEnabled(false);
+      viewGenes.setEnabled(false);
       pauseButton.setEnabled(true);
       runViews[CURRENT].disableSelection();
+      runViews[CURRENT].removeSelection();
       pushOutput(populations[CURRENT], 0);
     }
-
-    protected static final int CURRENT = 0;
-    protected static final int CUMUL_ONE = 1;
-    protected static final int CUMUL_TWO = 2;
-    protected static final int CUMUL_THREE = 3;
-
-    protected int run = 0;
-
-    protected NsgaPopulation tmpPopulation;
 
     public void setInput(Object o, int i) {
       NsgaPopulation p = (NsgaPopulation) o;
@@ -155,6 +195,7 @@ public class MOVis
         populations[CUMUL_THREE] = populations[CUMUL_TWO];
         fitnessTables[CUMUL_THREE] = fitnessTables[CUMUL_TWO];
         if (populations[CUMUL_THREE] != null) {
+          runViews[CUMUL_THREE].disableSelection();
           runViews[CUMUL_THREE].setPopulationTable(fitnessTables[CUMUL_THREE]);
           runViews[CUMUL_THREE].redraw();
 
@@ -165,12 +206,14 @@ public class MOVis
               runViews[CUMUL_TWO].sizeLabel.getText());
           runViews[CUMUL_THREE].solutionsLabel.setText(
               runViews[CUMUL_TWO].solutionsLabel.getText());
+          runViews[CUMUL_THREE].enableSelection();
         }
 
         // CUMUL_TWO becomes CUMUL_ONE
         populations[CUMUL_TWO] = populations[CUMUL_ONE];
         fitnessTables[CUMUL_TWO] = fitnessTables[CUMUL_ONE];
         if (populations[CUMUL_TWO] != null) {
+          runViews[CUMUL_TWO].disableSelection();
           runViews[CUMUL_TWO].setPopulationTable(fitnessTables[CUMUL_TWO]);
           runViews[CUMUL_TWO].redraw();
 
@@ -181,6 +224,7 @@ public class MOVis
               runViews[CUMUL_ONE].sizeLabel.getText());
           runViews[CUMUL_TWO].solutionsLabel.setText(
               runViews[CUMUL_ONE].solutionsLabel.getText());
+          runViews[CUMUL_TWO].enableSelection();
         }
 
         // CUMUL_ONE becomes
@@ -201,10 +245,11 @@ public class MOVis
             FitnessTable ft = new FitnessTable(populations[CUMUL_ONE].size(),
                                                populations[CUMUL_ONE].
                                                getNumObjectives());
-            int rankZero = copyPopulationToTable(populations[CUMUL_ONE],
+            int rankZero = copyFitnessValuesToFitnessTable(populations[CUMUL_ONE],
                                                  ft);
             fitnessTables[CUMUL_ONE] = ft;
 
+            runViews[CUMUL_ONE].disableSelection();
             // set the fitness table
             runViews[CUMUL_ONE].setPopulationTable(fitnessTables[CUMUL_ONE]);
 
@@ -222,6 +267,7 @@ public class MOVis
             sb.append(Integer.toString(rankZero));
             runViews[CUMUL_ONE].solutionsLabel.setText(sb.toString());
             runViews[CUMUL_ONE].redraw();
+            runViews[CUMUL_ONE].enableSelection();
           }
         }
         else {
@@ -233,10 +279,11 @@ public class MOVis
           FitnessTable ft = new FitnessTable(populations[CUMUL_ONE].size(),
                                              populations[CUMUL_ONE].
                                              getNumObjectives());
-          int rankZero = copyPopulationToTable(populations[CUMUL_ONE],
+          int rankZero = copyFitnessValuesToFitnessTable(populations[CUMUL_ONE],
                                                ft);
           fitnessTables[CUMUL_ONE] = ft;
 
+          runViews[CUMUL_ONE].disableSelection();
           // set the fitness table
           runViews[CUMUL_ONE].setPopulationTable(fitnessTables[CUMUL_ONE]);
 
@@ -253,6 +300,7 @@ public class MOVis
           sb.append(Integer.toString(rankZero));
           runViews[CUMUL_ONE].solutionsLabel.setText(sb.toString());
           runViews[CUMUL_ONE].redraw();
+          runViews[CUMUL_ONE].enableSelection();
         }
 
         // reset the current population
@@ -273,7 +321,7 @@ public class MOVis
         runViews[CURRENT].sizeLabel.setText(sz.toString());
 
         if (run == 1) {
-          objectiveNames = new String[numObj];
+          String[] objectiveNames = new String[numObj];
           for (int j = 0; j < numObj; j++) {
             objectiveNames[j] = p.getObjectiveConstraints()[j].getName();
           }
@@ -285,27 +333,27 @@ public class MOVis
 
       // now copy the fitness values from the pop into the table
       FitnessTable ft = fitnessTables[CURRENT];
-      int numRankZero = copyPopulationToTable(p, ft);
+      int numRankZero = copyFitnessValuesToFitnessTable(p, ft);
       StringBuffer rank = new StringBuffer(NUM_SOL);
       rank.append(numRankZero);
       runViews[CURRENT].solutionsLabel.setText(rank.toString());
       runViews[CURRENT].redraw();
 
-      if (p.getCurrentGeneration() == p.getMaxGenerations() - 1) {
+      if (p.getCurrentGeneration() == p.getMaxGenerations() - 1)
         pauseExecution();
-      }
 
-      if (!paused) {
+      if (!paused)
         pushOutput(p, 0);
-      }
     }
 
     /**
-         * Copy the population into the table and return the number of rank 0 solutions
+     * Copy the values of the fitness functions into the table and return
+     * the number of rank 0 solutions
      * @param pop
      * @return
      */
-    private int copyPopulationToTable(NsgaPopulation pop, FitnessTable ft) {
+    private int copyFitnessValuesToFitnessTable(NsgaPopulation pop,
+                                                FitnessTable ft) {
       int size = pop.size();
       int numObj = pop.getNumObjectives();
       int numRankZero = 0;
@@ -321,13 +369,8 @@ public class MOVis
       return numRankZero;
     }
 
-    private static final String CUMULATIVE = "Cumulative ";
-    private static final String RUN = "Run: ";
-    private static final String POP_SIZE = "Population Size: ";
-    private static final String NUM_SOL = "Number of Nondominated Solutions: ";
-
     // class that holds the jtables and the info area
-    class RunView
+    protected class RunView
         extends JPanel {
       protected int ROW_HEIGHT = 150;
       protected int ROW_WIDTH = 150;
@@ -336,19 +379,43 @@ public class MOVis
 
       protected FitnessPlotMatrix om;
 
-      JLabel runLabel;
-      JLabel sizeLabel;
-      JLabel solutionsLabel;
-      
-      int populationIndex;
-      
-      JButton viewSelected;
+      protected JLabel runLabel;
+      protected JLabel sizeLabel;
+      protected JLabel solutionsLabel;
+
+      protected int populationIndex;
+      protected JButton viewSelected;
+      protected JD2KFrame frame;
 
       RunView(int index) {
         populationIndex = index;
         setLayout(new BorderLayout());
         om = new FitnessPlotMatrix();
-        add(om, BorderLayout.CENTER);
+
+        JPanel pnl = new JPanel(new GridBagLayout());
+        Constrain.setConstraints(pnl, (runLabel = new JLabel(" ")),
+                                 0, 0, 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 0, 0);
+        Constrain.setConstraints(pnl, (sizeLabel = new JLabel(" ")),
+                                 0, 1, 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 0, 0);
+        Constrain.setConstraints(pnl, (solutionsLabel = new JLabel(" ")),
+                                 0, 2, 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 0, 0);
+        Constrain.setConstraints(pnl, om,
+                                 0, 3, 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 0, 0);
+        add(pnl, BorderLayout.CENTER);
+
+/*        add(om, BorderLayout.CENTER);
 
         JPanel labelPanel = new JPanel(new GridLayout(3, 1));
         labelPanel.add( (runLabel = new JLabel(" ")));
@@ -356,7 +423,15 @@ public class MOVis
         labelPanel.add( (solutionsLabel = new JLabel(" ")));
 
         add(labelPanel, BorderLayout.NORTH);
-        
+ */
+
+        frame = new JD2KFrame();
+        frame.addWindowListener(new WindowAdapter() {
+          public void windowClosing(WindowEvent we) {
+            frame.getContentPane().removeAll();
+            frame.setVisible(false);
+          }
+        });
         viewSelected = new JButton("View Selected");
         JPanel bPanel = new JPanel();
         bPanel.add(viewSelected);
@@ -367,10 +442,10 @@ public class MOVis
             TableModel tModel = om.tblModel.getSelected();
             JTable jt = new JTable(tModel);
             JScrollPane jsp = new JScrollPane(jt);
-            JFrame f = new JFrame();
-            f.getContentPane().add(jsp);
-            f.pack();
-            f.show();
+            frame.setTitle(runLabel.getText());
+            frame.getContentPane().add(jsp);
+            frame.pack();
+            frame.show();
           }
         });
       }
@@ -389,6 +464,10 @@ public class MOVis
         viewSelected.setEnabled(false);
       }
 
+      void removeSelection() {
+        om.removeSelection();
+      }
+
       void setPopulationTable(FitnessTable ft) {
         om.setPopulationTable(ft);
       }
@@ -396,7 +475,7 @@ public class MOVis
       /**
          Shows all the Graphs in a JTable
        */
-      private class FitnessPlotMatrix
+      protected class FitnessPlotMatrix
           extends JPanel
           implements java.io.Serializable {
 
@@ -421,6 +500,10 @@ public class MOVis
               tblModel.plots[i][j].disableSelection();
             }
           }
+        }
+
+        void removeSelection() {
+          tblModel.plots[0][0].removeAllSelections();
         }
 
         void redraw() {
@@ -906,11 +989,11 @@ public class MOVis
          A custom cell renderer that shows an ImageIcon.  A blue border is
          painted around the selected items.
        */
-      class ComponentRenderer
+      protected class ComponentRenderer
           extends JPanel
           implements TableCellRenderer {
 
-        public ComponentRenderer() {
+        ComponentRenderer() {
           setDoubleBuffered(false);
         }
 
@@ -924,13 +1007,13 @@ public class MOVis
         }
       }
 
-      class ComponentEditor
+      protected class ComponentEditor
           extends AbstractCellEditor
           implements TableCellEditor {
 
         Object val;
 
-        public ComponentEditor() {
+        ComponentEditor() {
         }
 
         public Object getCellEditorValue() {
@@ -948,10 +1031,10 @@ public class MOVis
         }
       }
 
-      class RotatedLabelRenderer
+      protected class RotatedLabelRenderer
           extends JComponent
           implements TableCellRenderer {
-        public RotatedLabelRenderer() {
+        RotatedLabelRenderer() {
         }
 
         /**
@@ -978,7 +1061,7 @@ public class MOVis
          displayed in the table.  The images are created from the
          Graphs.
        */
-      class ObjectiveModel
+      protected class ObjectiveModel
           extends AbstractTableModel
           implements SelectionChangedListener {
 
@@ -1027,34 +1110,34 @@ public class MOVis
           // get the population table
           Population p = MOView.this.populations[populationIndex];
           Table t = p.getTable();
-          
+
           return new SelectedTableModel(t, selected);
         }
-        
-        class SelectedTableModel extends DefaultTableModel {
-          Table tbl;  
+
+        protected class SelectedTableModel extends DefaultTableModel {
+          Table tbl;
           int[] selectedRows;
-          
+
           SelectedTableModel(Table t, int[] rows) {
             tbl = t;
             selectedRows = rows;
           }
-          
+
           public int getRowCount() {
             if(selectedRows != null)
               return selectedRows.length;
-            else 
+            else
               return 0;
           }
-          
+
           public int getColumnCount() {
-            return tbl.getNumColumns();  
+            return tbl.getNumColumns();
           }
-          
+
           public String getColumnName(int i) {
             return tbl.getColumnLabel(i);
           }
-          
+
           public Object getValueAt(int r, int c) {
             return tbl.getString(selectedRows[r], c);
           }
@@ -1193,4 +1276,4 @@ public class MOVis
 
     } // Run View
   } // MO View
-}
+} // MO Vis

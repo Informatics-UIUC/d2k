@@ -11,6 +11,11 @@ import java.util.*;
 
 import ncsa.d2k.modules.core.optimize.ga.nsga.*;
 
+/**
+ * Fitness plot is a scatter plot graph that plots two fitness functions.  The
+ * points are drawn on a BufferedImage that is only updated when the points are
+ * changed.
+ */
 abstract public class FitnessPlot
     extends JPanel
     implements MouseListener, MouseMotionListener {
@@ -78,20 +83,38 @@ abstract public class FitnessPlot
     setChanged(true);
   }
 
+  /**
+   * Enable points to be selected by drawing a box.
+   */
   public void enableSelection() {
     selectionEnabled = true;
   }
 
+  /**
+   * Disable points to be selected.
+   */
   public void disableSelection() {
     selectionEnabled = false;
   }
 
+  /**
+   * Called when a point is selected.
+   * @param i the index of the row in the table.
+   */
   protected void addSelection(int i) {
   }
 
+  /**
+   * Clear all the selections made by the user.
+   */
   protected void removeAllSelections() {
   }
 
+  /**
+   * Set this to be changed.  The image will be re-created upon repaint
+   * if this has been changed.
+   * @param b
+   */
   public void setChanged(boolean b) {
     changed = b;
   }
@@ -108,6 +131,10 @@ abstract public class FitnessPlot
   public void mouseEntered(MouseEvent e) {}
   public void mouseExited(MouseEvent e) {}
 
+  /**
+   * When the mouse is released, select all points within the box drawn.
+   * @param e
+   */
   public void mouseReleased(MouseEvent e) {
     if (selectionEnabled) {
       mousePressed = false;
@@ -171,8 +198,10 @@ abstract public class FitnessPlot
         double xval = getXValue(i);
         double yval = getYValue(i);
 
+        // if the point is inside the box
         if (xval >= smallestX && xval <= biggestX) {
           if (yval >= smallestY && yval <= biggestY) {
+            // select it
             addSelection(i);
             setChanged(true);
           }
@@ -183,10 +212,24 @@ abstract public class FitnessPlot
     }
   }
 
+  /**
+   * Get the x value for the ith point to be plotted.
+   * @param i
+   * @return
+   */
   abstract protected double getXValue(int i);
 
+  /**
+   * Get the y value for the ith point to be plotted.
+   * @param i
+   * @return
+   */
   abstract protected double getYValue(int i);
 
+  /**
+   * Get the number of individuals to be plotted.
+   * @return
+   */
   abstract protected int getNumIndividuals();
 
   private static float TINY = 0.00001f;
@@ -209,6 +252,10 @@ abstract public class FitnessPlot
    */
   abstract public void setObjectives(int x, int y);
 
+
+  /**
+   * Find the minimum and maximum and repaint.
+   */
   public void redraw() {
     findMinMax();
     repaint();
@@ -257,6 +304,7 @@ abstract public class FitnessPlot
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
     Graphics2D g2 = (Graphics2D) g;
+    // only update the image if the changed flag has been set
     if (isChanged()) {
       image.flush();
       Graphics2D imgG2 = (Graphics2D) image.getGraphics();

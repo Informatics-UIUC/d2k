@@ -120,7 +120,7 @@ public class TestParams extends ComputeModule {
  params.selection = new TruncationObj();
  params.createBinaryIndividuals = false;
 
-    params.populationSize = 250;
+    params.populationSize = 50;
     params.maxGenerations = 100;
 
     pushOutput(params, 0);

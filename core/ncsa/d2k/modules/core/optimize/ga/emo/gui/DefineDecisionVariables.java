@@ -6,18 +6,33 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.table.*;
 import javax.swing.border.*;
+import javax.swing.table.*;
 
-import ncsa.gui.*;
 import ncsa.d2k.core.modules.*;
-//import ncsa.d2k.modules.core.datatype.table.*;
-//import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
+import ncsa.gui.*;
+
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
- Newemo1.java
-*/
+ * An interface to input the decision variables in EMO.  In addition to specifying
+ * the number of decision variables, the user can specify the name, minimum,
+ * maximum, and precision of each of the variables.
+ *
+ * The variables can be read from a file.  The file must be tab-delimited,
+ * with one variable specified on each line of the file.  There must be four
+ * values on each line (in this order): the name, the minimum value,
+ * the maximum value, and the precision.
+ *
+ * The population can be seeded with values for the decision variables.  These
+ * seeded values are read in from a file.  The file must be tab-delimited,
+ * with one individual in the population fully described on one line.  Thus,
+ * the number of values on one line must equal the number of decision variables
+ * used in the problem.  In addition, the values on a line must appear in the
+ * same order as the variables are defined.
+ */
 public class DefineDecisionVariables
     extends UIModule
     implements Serializable {
@@ -42,24 +57,26 @@ public class DefineDecisionVariables
   /**
      This pair returns an array of strings that contains the data types for the outputs.
      @return the data types of all outputs.
-  */
+   */
   public String[] getOutputTypes() {
-    String[] types = {"ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
+    String[] types = {
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
     return types;
   }
 
   /**
      This pair returns the description of the outputs.
      @return the description of the indexed output.
-  */
+   */
   public String getOutputName(int i) {
-    return "EMOParams";
+    return "EMOParameters";
   }
 
   public String getOutputInfo(int index) {
     switch (index) {
       case 0:
-        String s = "A data structure containing the information about the decision variables.";
+        String s =
+            "The parameters for EMO, with the DecisionVariables updated.";
         return s;
       default:
         return "No such output";
@@ -72,15 +89,27 @@ public class DefineDecisionVariables
    */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "Define the decision variables.";
-    s += "<p>Detailed Description: ";
-    s += "Define all the decision variables for the problem.  The variables ";
-    s += "can be entered manually or can be loaded from a file.  To enter the ";
-    s += "variables manually, input the number of decision variables and hit the ";
-    s += "update button.  To load the variables from a file, hit the Read From File button ";
-    s += "and select the file to load.  The file ";
-    s += "should have four columns: name, lower bound, upper bound, and precision, ";
-    s += "in that order.";
+    s += "Define the decision variables in EMO.";
+    s += "<p>Detailed Description: An interface to input the decision variables";
+    s += " in EMO.  In addition to specifying";
+    s += " the number of decision variables, the user can specify the name,";
+    s += " minimum, maximum, and precision of each of the variables.<br>";
+    s +=
+        " The variables can be read from a file.  The file must be comma-delimited,";
+    s +=
+        " with one variable specified on each line of the file.  There must be four";
+    s += " values on each line (in this order): the name, the minimum value,";
+    s += " the maximum value, and the precision.<br>";
+    s +=
+        " The population can be seeded with values for the decision variables.  These";
+    s +=
+        " seeded values are read in from a file.  The file must be comma-delimited,";
+    s +=
+        " with one individual in the population fully described on one line.  Thus,";
+    s +=
+        " the number of values on one line must equal the number of decision variable";
+    s += " used in the problem.  In addition, the values must appear in the same";
+    s += " order as the variables are defined.";
     s += "</p>";
     return s;
   }
@@ -108,6 +137,14 @@ public class DefineDecisionVariables
     return savedRows;
   }
 
+//  private Table seedTable;
+/*  public void setSeedTable(Table t) {
+    seedTable = t;
+  }
+  public Table getSeedTable() {
+    return seedTable;
+  }*/
+
   /**
      This pair is called by D2K to get the UserView for this module.
      @return the UserView.
@@ -133,6 +170,7 @@ public class DefineDecisionVariables
     private JTextField numVarTf;
     private DefaultTableModel model;
     private JLabel total_string_length = new JLabel("Total String Length:");
+    private Table seedTable = null;
 
     public void initView(ViewModule viewmodule) {
       setLayout(new BorderLayout());
@@ -143,10 +181,10 @@ public class DefineDecisionVariables
 
       MainPanel[1].setLayout(new BoxLayout(MainPanel[1], BoxLayout.Y_AXIS));
       /*MainPanel[0].setMinimumSize(new Dimension(200, 50));
-      MainPanel[0].setPreferredSize(new Dimension(200, 50));
-      MainPanel[1].setMinimumSize(new Dimension(400, 230));
-      MainPanel[1].setPreferredSize(new Dimension(400, 230));
-*/
+             MainPanel[0].setPreferredSize(new Dimension(200, 50));
+             MainPanel[1].setMinimumSize(new Dimension(400, 230));
+             MainPanel[1].setPreferredSize(new Dimension(400, 230));
+       */
 
       // this is the number of variables specified by
       //the user.
@@ -162,9 +200,9 @@ public class DefineDecisionVariables
       // and this will update the number of rows in the table.
       //JButton updateBt = new JButton("Update");
       JButton readFromFileBt = new JButton("Read From File");
-      readFromFileBt.setEnabled(false);
+//      readFromFileBt.setEnabled(true);
       JButton seedFromFileBt = new JButton("Seed From File");
-      seedFromFileBt.setEnabled(false);
+//      seedFromFileBt.setEnabled(false);
 
       /**
        The Color object, buttonColor, creates a yellowish
@@ -179,7 +217,7 @@ public class DefineDecisionVariables
             /**
              Table model created to hold number of objects needed based on
              entered variable number
-            */
+             */
             for (int i = model.getRowCount();
                  i < Integer.parseInt(numVarTf.getText()); i++) {
               model.addRow(new Object[] {Integer.toString(i), "x" + i, "",
@@ -211,50 +249,51 @@ public class DefineDecisionVariables
           readFromFile();
         }
       });
+      seedFromFileBt.addActionListener(new AbstractAction() {
+        public void actionPerformed(ActionEvent ae) {
+          readSeedFile();
+        }
+      });
 
       /**
        * 4 panels created, 2 of JPanel type, and 2 of Box type
        * (box allows objects to positioned in a structured manner)
        */
-/*      JPanel panel_0 = new JPanel();
-      JPanel top_left_panel = new JPanel();
-      Box bottom_left_panel = new Box(BoxLayout.X_AXIS);
-      Box bottom_left_panel2 = new Box(BoxLayout.X_AXIS);
+      /*      JPanel panel_0 = new JPanel();
+            JPanel top_left_panel = new JPanel();
+            Box bottom_left_panel = new Box(BoxLayout.X_AXIS);
+            Box bottom_left_panel2 = new Box(BoxLayout.X_AXIS);
+            /**Color object, background color created with certain rgb settings
+        *
+        */
+       //Color background_color = new Color(235, 235, 255);
 
-      /**Color object, background color created with certain rgb settings
-       *
-       */
-      //Color background_color = new Color(235, 235, 255);
-
-      /**
-       * Panel top_left_panel property set: background color
-       * Two objects added to top_left_panel
-       */
-      //top_left_panel.setBackground(background_color);
-/*      top_left_panel.add(numVarLbl);
-      top_left_panel.add(numVarTf);
-
-      bottom_left_panel.add(Box.createHorizontalGlue());
-      bottom_left_panel.add(updateBt);
-      bottom_left_panel2.add(Box.createHorizontalGlue());
-      bottom_left_panel2.add(readFromFileBt);
-
-      /**
-       * myBox holds the left panels with rigid areas between them
-       * myBox2 holds myBox
-       */
-/*      Box myBox;
-      Box myBox2;
-      myBox2 = new Box(BoxLayout.X_AXIS);
-      myBox = new Box(BoxLayout.Y_AXIS);
-
-      /*myBox.add(top_left_panel);
-      myBox.add(Box.createRigidArea(new Dimension(1, 15)));
-      myBox.add(bottom_left_panel);
-      myBox.add(Box.createRigidArea(new Dimension(1, 15)));
-      myBox.add(bottom_left_panel2);
-      myBox2.add(myBox);
-*/
+       /**
+        * Panel top_left_panel property set: background color
+        * Two objects added to top_left_panel
+        */
+       //top_left_panel.setBackground(background_color);
+       /*      top_left_panel.add(numVarLbl);
+             top_left_panel.add(numVarTf);
+             bottom_left_panel.add(Box.createHorizontalGlue());
+             bottom_left_panel.add(updateBt);
+             bottom_left_panel2.add(Box.createHorizontalGlue());
+             bottom_left_panel2.add(readFromFileBt);
+             /**
+         * myBox holds the left panels with rigid areas between them
+         * myBox2 holds myBox
+         */
+        /*      Box myBox;
+              Box myBox2;
+              myBox2 = new Box(BoxLayout.X_AXIS);
+              myBox = new Box(BoxLayout.Y_AXIS);
+              /*myBox.add(top_left_panel);
+               myBox.add(Box.createRigidArea(new Dimension(1, 15)));
+               myBox.add(bottom_left_panel);
+               myBox.add(Box.createRigidArea(new Dimension(1, 15)));
+               myBox.add(bottom_left_panel2);
+               myBox2.add(myBox);
+          */
 
       JPanel varPanel = new JPanel();
       varPanel.setLayout(new GridBagLayout());
@@ -264,37 +303,37 @@ public class DefineDecisionVariables
       Constrain.setConstraints(varPanel, lblPanel, 0, 0, 2, 1,
                                GridBagConstraints.NONE,
                                GridBagConstraints.CENTER,
-                               1,1);
-/*      Constrain.setConstraints(varPanel, numVarTf, 1, 0, 1, 1,
-                               GridBagConstraints.NONE,
-                               GridBagConstraints.CENTER,
-                               1,1);
+                               1, 1);
+      /*      Constrain.setConstraints(varPanel, numVarTf, 1, 0, 1, 1,
+                                     GridBagConstraints.NONE,
+                                     GridBagConstraints.CENTER,
+                                     1,1);
+            Constrain.setConstraints(varPanel, new JPanel(), 0, 1, 1, 1,
+                                     GridBagConstraints.HORIZONTAL,
+                                     GridBagConstraints.EAST,
+                                     1,1);
+            Constrain.setConstraints(varPanel, updateBt, 1, 1, 1, 1,
+                                     GridBagConstraints.HORIZONTAL,
+                                     GridBagConstraints.EAST,
+                                     0,0);*/
       Constrain.setConstraints(varPanel, new JPanel(), 0, 1, 1, 1,
                                GridBagConstraints.HORIZONTAL,
                                GridBagConstraints.EAST,
-                               1,1);
-      Constrain.setConstraints(varPanel, updateBt, 1, 1, 1, 1,
-                               GridBagConstraints.HORIZONTAL,
-                               GridBagConstraints.EAST,
-                               0,0);*/
-      Constrain.setConstraints(varPanel, new JPanel(), 0, 1, 1, 1,
-                               GridBagConstraints.HORIZONTAL,
-                               GridBagConstraints.EAST,
-                               1,1);
+                               1, 1);
       Constrain.setConstraints(varPanel, readFromFileBt, 1, 1, 1, 1,
                                GridBagConstraints.HORIZONTAL,
                                GridBagConstraints.EAST,
-                               0,0);
+                               0, 0);
       Constrain.setConstraints(varPanel, new JPanel(), 0, 2, 1, 1,
                                GridBagConstraints.HORIZONTAL,
                                GridBagConstraints.EAST,
-                               1,1);
+                               1, 1);
       Constrain.setConstraints(varPanel, seedFromFileBt, 1, 2, 1, 1,
                                GridBagConstraints.HORIZONTAL,
                                GridBagConstraints.EAST,
-                               0,0);
+                               0, 0);
 
-      varPanel.setBorder(new EmptyBorder(5,5,5,0));
+      varPanel.setBorder(new EmptyBorder(5, 5, 5, 0));
       (MainPanel[0]).add(varPanel);
 
       final String[] names = {
@@ -330,13 +369,12 @@ public class DefineDecisionVariables
 
             try {
               /*boolean isok = true;
-              for (int i = 0; i < model.getRowCount(); i++) {
+                             for (int i = 0; i < model.getRowCount(); i++) {
                 if (model.getValueAt(i, 2) != null &&
                     ( (String) model.getValueAt(i, 2)).trim().length() == 0) {
                   isok = true;
                   break;
                 }
-
                 if (model.getValueAt(i, 3) != null &&
                     ( (String) model.getValueAt(i, 3)).trim().length() == 0) {
                   isok = true;
@@ -346,19 +384,18 @@ public class DefineDecisionVariables
                   isok = true;
                   break;
                 }
-              }
+                             }
+                             /*if (flag) {
+                 JOptionPane.showMessageDialog(null,
+                                               "Please enter all information",
+                    "alert", JOptionPane.ERROR_MESSAGE);
+                              }*/
 
-              /*if (flag) {
-                JOptionPane.showMessageDialog(null,
-                                              "Please enter all information",
-                   "alert", JOptionPane.ERROR_MESSAGE);
-                             }*/
-
-              //this is the total length of the binary
-              //string that will be used to encode the
-              //individuals in the GA population.
-              //else {
-              int totalLength = 0;
+               //this is the total length of the binary
+               //string that will be used to encode the
+               //individuals in the GA population.
+               //else {
+               int totalLength = 0;
               for (int i = 0; i < model.getRowCount(); i++) {
                 float numU, numL, numP, numBits;
 
@@ -383,10 +420,11 @@ public class DefineDecisionVariables
                 // the string length must be an integer, so we will need to
                 // round up if numBits is not an integer
 
-                sLength = (int)Math.floor(numBits);
-                if(sLength < numBits)
+                sLength = (int) Math.floor(numBits);
+                if (sLength < numBits) {
                   sLength++;
 
+                }
                 totalLength += sLength;
                 model.setValueAt(new Integer(sLength), i, 5);
               }
@@ -459,7 +497,7 @@ public class DefineDecisionVariables
       Box string_length_panel = new Box(BoxLayout.X_AXIS);
       string_length_panel.add(Box.createHorizontalStrut(200));
       string_length_panel.add(total_string_length);
-      string_length_panel.setBorder(new EmptyBorder(10, 5,5,5));
+      string_length_panel.setBorder(new EmptyBorder(10, 5, 5, 5));
 
       MainPanel[1].add(string_length_panel);
       /**
@@ -537,13 +575,13 @@ public class DefineDecisionVariables
       //bottom_button_panel.setBackground(background_color);
       bottom_button_panel.add(abrtBt);
       bottom_button_panel.add(doneBt);
-      bottom_button_panel.setBorder(new EmptyBorder(5,5,5,5));
+      bottom_button_panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 
       /**
        * Mainpanel adds bottom_button_panel
        */
-      MainPanel[0].setBorder(new EmptyBorder(10, 5,5,5));
-      MainPanel[1].setBorder(new EmptyBorder(10, 5,5,5));
+      MainPanel[0].setBorder(new EmptyBorder(10, 5, 5, 5));
+      MainPanel[1].setBorder(new EmptyBorder(10, 5, 5, 5));
       MainPanel[1].add(bottom_button_panel);
       add(MainPanel[0], BorderLayout.WEST);
       //JPanel myPanel = new JPanel();
@@ -573,7 +611,6 @@ public class DefineDecisionVariables
       super.paintComponent(g2);
     }
 
-
     /**
      * this method is used to pass output from the module
      * a mutable table is created based on the variable
@@ -583,27 +620,26 @@ public class DefineDecisionVariables
      */
     private void passOutput() {
       /*MutableTable table1 = new MutableTableImpl(model.getRowCount());
-      float[] tempdata = new float[0];
-      for (int i = 0; i < model.getRowCount(); i++) {
+             float[] tempdata = new float[0];
+             for (int i = 0; i < model.getRowCount(); i++) {
         table1.setColumn(tempdata, i);
         table1.setColumnLabel( (String) (model.getValueAt(i, 1)), i);
-      }
-      table1.setNumRows(0);
+             }
+             table1.setNumRows(0);
+             int numVars = model.getRowCount();
+             Column[] cols = new Column[5];
+             cols[0] = new StringColumn(numVars);
+             cols[1] = new FloatColumn(numVars);
+             cols[2] = new FloatColumn(numVars);
+             cols[3] = new FloatColumn(numVars);
+             cols[4] = new FloatColumn(numVars);
+       */
 
+      DecisionVariables varTable = new DecisionVariables();
       int numVars = model.getRowCount();
-      Column[] cols = new Column[5];
-      cols[0] = new StringColumn(numVars);
-      cols[1] = new FloatColumn(numVars);
-      cols[2] = new FloatColumn(numVars);
-      cols[3] = new FloatColumn(numVars);
-      cols[4] = new FloatColumn(numVars);
-      */
-
-     DecisionVariables varTable = new DecisionVariables();
-     int numVars = model.getRowCount();
 
       for (int i = 0; i < numVars; i++) {
-        String name = (String)model.getValueAt(i, 1);
+        String name = (String) model.getValueAt(i, 1);
         String min = (String) model.getValueAt(i, 2);
         String max = (String) model.getValueAt(i, 3);
         String prec = (String) model.getValueAt(i, 4);
@@ -614,7 +650,7 @@ public class DefineDecisionVariables
         try {
           dmin = Double.parseDouble(min);
         }
-        catch(Exception e) {
+        catch (Exception e) {
           dmin = 0;
         }
 
@@ -622,7 +658,7 @@ public class DefineDecisionVariables
         try {
           dmax = Double.parseDouble(max);
         }
-        catch(Exception e) {
+        catch (Exception e) {
           dmax = 0;
         }
 
@@ -630,7 +666,7 @@ public class DefineDecisionVariables
         try {
           dprec = Double.parseDouble(prec);
         }
-        catch(Exception e) {
+        catch (Exception e) {
           dprec = 0;
         }
 
@@ -638,7 +674,7 @@ public class DefineDecisionVariables
         try {
           dstr = Double.parseDouble(strLen);
         }
-        catch(Exception e) {
+        catch (Exception e) {
           dstr = 0;
         }
 
@@ -647,6 +683,8 @@ public class DefineDecisionVariables
 
       Parameters data = new Parameters();
       data.decisionVariables = varTable;
+      if(seedTable != null)
+        data.decisionVariables.setSeedTable(seedTable);
 
       pushOutput(data, 0);
     }
@@ -663,27 +701,31 @@ public class DefineDecisionVariables
           String line = null;
 
           int numLines = 0;
-          while( (line = br.readLine()) != null)
+          while ( (line = br.readLine()) != null) {
             numLines++;
 
+          }
           numVarTf.setText(Integer.toString(numLines));
           // now set the model to have this number of lines
           model.setNumRows(numLines);
-          for(int i = 0; i < numLines; i++)
-            model.setValueAt("x"+i, i, 0);
+          for (int i = 0; i < numLines; i++) {
+            model.setValueAt("x" + i, i, 0);
 
+          }
           br = new BufferedReader(new FileReader(file));
 
           int lineNum = 0;
           while ( (line = br.readLine()) != null) {
             StringTokenizer st = new StringTokenizer(line);
-            if(st.countTokens() != 4)
-              throw new Exception("File format is incorrect.  File should have exactly four columns.");
+            if (st.countTokens() != 4) {
+              throw new Exception(
+                  "File format is incorrect.  File should have exactly four columns.");
+            }
             int colNum = 0;
-            while(st.hasMoreTokens()) {
+            while (st.hasMoreTokens()) {
               String s = st.nextToken();
 
-              model.setValueAt(s, lineNum, colNum+1);
+              model.setValueAt(s, lineNum, colNum + 1);
               colNum++;
             }
 
@@ -697,7 +739,66 @@ public class DefineDecisionVariables
         }
         catch (IOException e) {
         }
-        catch(Exception e) {
+        catch (Exception e) {
+          JOptionPane.showMessageDialog(null, e.getMessage(),
+                                        "Error",
+                                        JOptionPane.ERROR_MESSAGE);
+        }
+      }
+    }
+
+    private void readSeedFile() {
+      JFileChooser jfc = new JFileChooser();
+      int retVal = jfc.showOpenDialog(null);
+
+      if (retVal == jfc.APPROVE_OPTION) {
+        String file = jfc.getSelectedFile().getAbsolutePath();
+
+        try {
+          BufferedReader br = new BufferedReader(new FileReader(file));
+          String line = null;
+
+          int numLines = 0;
+          int numTok = 0;
+          while ( (line = br.readLine()) != null) {
+            int tok = new StringTokenizer(line).countTokens();
+            if(tok > numTok)
+              numTok = tok;
+            numLines++;
+          }
+
+          // now create a new MutableTableImpl to hold the seeding values
+          MutableTable mt = new MutableTableImpl(numTok);
+          for(int i = 0; i < numTok; i++) {
+            mt.setColumn(new double[numLines], i);
+          }
+
+          br = new BufferedReader(new FileReader(file));
+
+          int lineNum = 0;
+          while ( (line = br.readLine()) != null) {
+            StringTokenizer st = new StringTokenizer(line);
+            int colNum = 0;
+            while (st.hasMoreTokens()) {
+              String s = st.nextToken();
+
+              mt.setString(s, lineNum, colNum);
+
+              colNum++;
+            }
+
+            lineNum++;
+          }
+          seedTable = mt;
+        }
+        catch (FileNotFoundException ex) {
+          JOptionPane.showMessageDialog(null, "The file was not found.",
+                                        "File not found",
+                                        JOptionPane.ERROR_MESSAGE);
+        }
+        catch (IOException e) {
+        }
+        catch (Exception e) {
           JOptionPane.showMessageDialog(null, e.getMessage(),
                                         "Error",
                                         JOptionPane.ERROR_MESSAGE);
@@ -707,7 +808,7 @@ public class DefineDecisionVariables
   }
 
   /**
-   * <code>CachedRowValue</code> is a simple class that contains the elements of
+       * <code>CachedRowValue</code> is a simple class that contains the elements of
    * one row in a JTable with six headers.
    *
    * @author navarrob
@@ -715,7 +816,7 @@ public class DefineDecisionVariables
   private class CachedRowValue
       implements Serializable {
 
-  static final long serialVersionUID = 7134596339214916408L;
+    static final long serialVersionUID = 7134596339214916408L;
 
     /**
      * The six columns of one row in a JTable of NewEmo1.java

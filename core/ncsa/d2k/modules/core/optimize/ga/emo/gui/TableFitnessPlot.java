@@ -8,6 +8,9 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 import gnu.trove.*;
 
+/**
+ * A Fitness Plot where the values are kept in a Table.
+ */
 public class TableFitnessPlot
     extends FitnessPlot {
 
@@ -36,7 +39,7 @@ public class TableFitnessPlot
     if(fitnessTable == null)
       return;
     synchronized (fitnessTable) {
-      g.setColor(Color.red);
+      g.setColor(Color.black);
       int numMembers = fitnessTable.getNumRows();
       for (int index = 0; index < numMembers; index++) {
         double xvalue = getXValue(index);
@@ -48,7 +51,7 @@ public class TableFitnessPlot
         g.fill(new Rectangle2D.Double(x, y, 2, 2));
       }
 
-      g.setColor(Color.blue);
+      g.setColor(Color.red);
       for (int index = 0; index < numMembers; index++) {
         if (fitnessTable.getSelectedFlag(index)) {
 
@@ -74,13 +77,13 @@ public class TableFitnessPlot
 
   protected void removeAllSelections() {
     super.removeAllSelections();
-    synchronized (fitnessTable) {
-      int numRows = getNumIndividuals();
-      for (int i = 0; i < numRows; i++) {
-        fitnessTable.setSelectedFlag(false, i);
+      synchronized (fitnessTable) {
+        int numRows = getNumIndividuals();
+        for (int i = 0; i < numRows; i++) {
+          fitnessTable.setSelectedFlag(false, i);
+        }
+        fitnessTable.clearSelectionList();
       }
-      fitnessTable.clearSelectionList();
-    }
   }
 
   public void setObjectives(int x, int y) {

@@ -83,9 +83,6 @@ public class EvaluatePopulation
   private List executeList;
   private List inputFileList;
 
-  /** true if the individuals in the population are binary solutions */
-  private boolean binaryType;
-
   private class Pair {
     String exec;
     String input;
@@ -108,6 +105,13 @@ public class EvaluatePopulation
       // create a table to copy the population into
       populationTable = pop.getParameters().decisionVariables.
           createVariableNameTable();
+      populationTable = (MutableTable)populationTable.copy();
+
+      int numCol = populationTable.getNumColumns();
+      int numVar = pop.getParameters().decisionVariables.getNumVariables();
+      if(numCol > numVar) {
+        populationTable.removeColumns(numVar, (numCol-numVar));
+      }
 
       // check to see if there are any fitness functions done by Constructions
       numFitnessVars = fitnessFunctions.getNumFitnessVariables();
@@ -195,15 +199,6 @@ public class EvaluatePopulation
 
         inputFileList = new ArrayList(inputs);
       }
-
-      // determine if the population contains binary or real-coded genes
-      Individual[] individuals = ( (Population) pop).getMembers();
-      if (individuals.length > 0) {
-        if (individuals[0] instanceof BinarySolution)
-          binaryType = true;
-        else
-          binaryType = false;
-      }
     }
 
     // copy the population into the population table if any
@@ -215,7 +210,7 @@ public class EvaluatePopulation
     // this is the number of columns in the table by default
     // keep it, because we are going to remove the columns
     // created by Constructions when we are done
-    int numDecisionVariables = populationTable.getNumColumns();
+    int numDecisionVariables = pop.getParameters().decisionVariables.getNumVariables();
 
     // first evaluate the FF variables and FF created by Constructions
     if (hasFF || hasFVars) {
@@ -321,9 +316,7 @@ public class EvaluatePopulation
     // remove all columns created by the transformations
     int numAddedColumns = this.numConstraintVars + this.numConstraintFunctions +
         this.numFitnessVars + this.numFitnessFunctions;
-    for (int i = 0; i < numAddedColumns; i++) {
-      populationTable.removeColumns(numDecisionVariables, numAddedColumns);
-    }
+    populationTable.removeColumns(numDecisionVariables, numAddedColumns);
 
     // write out the population if external executables are used
     // we only need to write out the first file, and make copies for
@@ -332,10 +325,7 @@ public class EvaluatePopulation
       // we need to write out the file.  Only write out the first file,
       // make copies for all other executables
       String firstFile = (String)this.inputFileList.get(0);
-      //if (binaryType)
-        this.writeBinaryGenesToFile(firstFile);
-      //else
-      //  this.writeNumericGenesToFile(firstFile);
+      this.writePopulationToFile(firstFile);
 
       // now make copies of the file for the other inputs
       for (int i = 1; i < inputFileList.size(); i++) {
@@ -450,7 +440,7 @@ public class EvaluatePopulation
    *  the actual genes, converted to a real value.
    * @param fileName the name of the file to copy to
    */
-  private void writeBinaryGenesToFile(String fileName) throws IOException {
+  private void writePopulationToFile(String fileName) throws IOException {
     Population popul = (Population) population;
 
     FileWriter stringFileWriter = new FileWriter(fileName);
@@ -521,58 +511,6 @@ public class EvaluatePopulation
     bw.close();
     stringFileWriter.close();
   }
-
-  /*
-   * This writes the genes of individuals to input files for different
-       * fitness function executables, that might be present in different directories
-   *
-   * Right now this only works for MO populations!!!
-   */
-/*  private void writeNumericGenesToFile(String fileName) throws
-      IOException {
-    Population popul = (Population) population;
-
-    FileWriter stringFileWriter = new FileWriter(fileName);
-    BufferedWriter bw = new BufferedWriter(stringFileWriter);
-    PrintWriter pw = new PrintWriter(bw);
-
-    //Individual ni = (Individual) popul.getMember(0);
-    //double[] genes = (double[]) ni.getGenes();
-    int numTraits = popul.getTraits().length;
-
-    // write population size in file
-    pw.println(popul.size());
-    // write length of each gene/chromosome
-    pw.println(numTraits);
-    // write genes
-    for (int j = 0; j < popul.size(); j++) {
-      //   genes = popul.getMember(j).getGenes().toString();
-
-      ////////////////////////////////////////////////////////////
-      // !!! LAM
-      // if an IntInvidual is used, an int[] will be returned...
-      // right now IntIndividuals are not used so thia is currently
-      // not a problem
-      double[] genes = (double[]) ( (Individual) popul.getMember(j)).getGenes();
-      numTraits = genes.length;
-
-      // write to file
-      for (int k = 0; k < numTraits; k++) {
-        //pw.print(genes[k] + SPACE);
-        pw.print(genes[k]);
-        pw.print(SPACE);
-      }
-      pw.println();
-    }
-    pw.println();
-    // close file and streams
-    pw.flush();
-    bw.flush();
-    stringFileWriter.flush();
-    pw.close();
-    bw.close();
-    stringFileWriter.close();
-  }*/
 
   private double[] readOutput(String fileName) throws IOException {
     double[] fit = new double[ ( (Population) population).size()];

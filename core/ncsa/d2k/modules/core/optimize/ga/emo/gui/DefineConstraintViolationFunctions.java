@@ -29,8 +29,23 @@ public class DefineConstraintViolationFunctions
   }
 
   public String getModuleInfo() {
-    return "";
+    String s = "<p>Overview:";
+    s += "Define functions to be used in the calculation of constraint violation functions.";
+    s += "<p>Detailed Description: ";
+    s += " Define the constraint violation functions that are calculated by performing transformations ";
+    s += " on a Table.";
+    s += "This module provides a GUI used to specify expression strings.";
+    s += "These expressions are interpreted as operations on existing ";
+    s += "attributes in the table and are used to construct new attributes. ";
+    s += "When the GUI is dismissed, the information needed to construct ";
+    s += "these new attributes is encapsulated in a <i>Transformation</i> ";
+    s += "object that is applied when evaluating a population.";
+    s += "The available operations on numeric attributes are addition, ";
+    s += "subtraction, multiplication, division, and modulus. The ";
+    s += "operations available on boolean attributes are AND and OR.";
+    return s;
   }
+
 
   protected UserView createUserView() {
     return new ConstrViolationView();
@@ -57,11 +72,11 @@ public class DefineConstraintViolationFunctions
   }
 
   public String getInputInfo(int i) {
-    return "";
+    return "The parameters for the EMO problem.";
   }
 
   public String getOutputInfo(int i) {
-    return "";
+    return "The parameters for the EMO problem.";
   }
 
   /** Return an array with information on the properties the user may update.

@@ -30,11 +30,11 @@ public class DefineExternalConstraints extends UIModule {
   }
 
   public String getInputInfo(int i) {
-    return "A data structure to hold the information about the fitness functions.";
+    return "The parameters for the EMO problem.";
   }
 
   public String getOutputInfo(int i) {
-    return "A data structure to hold the information about the fitness functions.";
+    return "The parameters for the EMO problem.";
   }
 
   public String getInputName(int i) {
@@ -46,7 +46,24 @@ public class DefineExternalConstraints extends UIModule {
   }
 
   public String getModuleInfo() {
-    return "";
+    String s = "<p>Overview: ";
+    s += "Input constraint violation functions that are calculated by an executable.";
+    s += "<p>Detailed Description: ";
+    s += "Input all the properties needed to call an executable to evaluate ";
+    s += "the constraint violation functions for a population.";
+    s += "First, input the name of the constraint.  Next, input the path ";
+    s += "to the executable.  Next, input the paths to the input and output files. ";
+    s += "Finally, input a weight to assign to this constraint.";
+    s += "<p>An executable must read the genes in from a file and write out ";
+    s += "a file containing the values of the fitness functions.  The format ";
+    s += "of the input file is fixed.  The first line contains the size of the ";
+    s += "population.  The second line contains the number of traits.";
+    s += "Every following line should contain the values for an individual, ";
+    s += "space-delimited.";
+    s += "The output file must also follow a specific format.  Each row of ";
+    s += "the file must contain the value for this constraint violation function on the ";
+    s += "associated individual in the genes file.  Order is preserved.";
+    return s;
   }
 
   protected UserView createUserView() {

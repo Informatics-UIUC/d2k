@@ -14,14 +14,14 @@ import ncsa.d2k.gui.*;
 import ncsa.d2k.modules.core.optimize.ga.crossover.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.crossover.*;
-import ncsa.d2k.modules.core.optimize.ga.mutation.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.mutation.*;
-import ncsa.d2k.modules.core.optimize.ga.selection.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.selection.*;
+import ncsa.d2k.modules.core.optimize.ga.mutation.*;
+import ncsa.d2k.modules.core.optimize.ga.selection.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
-public class Params
+public class InputParameters
     extends UIModule {
 
   public String[] getInputTypes() {

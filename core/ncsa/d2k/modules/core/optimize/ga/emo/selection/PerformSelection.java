@@ -5,6 +5,10 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
+/**
+ * Perform selection on a population.  The selection is handled by the
+ * Selection object contained in the EMOPopulation.
+ */
 public class PerformSelection extends ComputeModule {
 
   public String[] getInputTypes() {

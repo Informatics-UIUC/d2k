@@ -7,9 +7,8 @@ import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.ga.crossover.*;
 
 /**
- * A special crossover module for EMO that can invoke any of the crossover methods
- * enumerated in the Crossover interface.  An object is then created and the
- * performCrossover method is called on that object.
+ * Perform crossover for a population.  The crossover is performed by
+ * the Crossover object contained in the Parameters of the EMOPopulation.
  */
 public class PerformCrossover extends ComputeModule {
 
@@ -40,7 +39,7 @@ public class PerformCrossover extends ComputeModule {
   }
 
   public String getModuleInfo() {
-    return "";
+    return "Perform crossover on a population.";
   }
 
   public void beginExecution() {
