@@ -26,7 +26,7 @@ final public class BooleanColumn extends AbstractColumn {
      */
     public BooleanColumn (int capacity) {
         internal = new boolean[capacity];
-        setType(new Boolean(false));
+        //setType(new Boolean(false));
     }
 
     /**
@@ -35,7 +35,7 @@ final public class BooleanColumn extends AbstractColumn {
      */
     public BooleanColumn (boolean[] vals) {
         this.setInternal(vals);
-        setType(new Boolean(false));
+        //setType(new Boolean(false));
     }
 
     /**
@@ -63,7 +63,7 @@ final public class BooleanColumn extends AbstractColumn {
                 newCol.setBoolean(internal[i], i);
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
-            newCol.setType(getType());
+            //newCol.setType(getType());
             return  newCol;
         }
     }
@@ -361,7 +361,7 @@ final public class BooleanColumn extends AbstractColumn {
         BooleanColumn bc = new BooleanColumn(subset);
         bc.setLabel(getLabel());
         bc.setComment(getComment());
-        bc.setType(getType());
+        //bc.setType(getType());
         return  bc;
     }
 
@@ -480,7 +480,7 @@ final public class BooleanColumn extends AbstractColumn {
             throw  new ArrayIndexOutOfBoundsException();
         BooleanColumn bc = new BooleanColumn(newInternal);
         bc.setLabel(getLabel());
-        bc.setType(getType());
+        //bc.setType(getType());
         bc.setComment(getComment());
         return  bc;
     }

@@ -77,7 +77,7 @@ public class TableImpl extends AbstractTable {
                 vt.setColumn(getColumn(i).copy(), i);
             vt.setLabel(getLabel());
             vt.setComment(getComment());
-            vt.setType(getType());
+            //vt.setType(getType());
             return  vt;
         }
     }
@@ -652,7 +652,7 @@ public class TableImpl extends AbstractTable {
             newTable.setColumn(columns[i].reOrderRows(newOrder), i);
         newTable.setLabel(getLabel());
         newTable.setComment(getComment());
-        newTable.setType(getType());
+        //newTable.setType(getType());
         return  newTable;
     }
 

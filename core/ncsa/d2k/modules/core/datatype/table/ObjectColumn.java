@@ -34,7 +34,7 @@ final public class ObjectColumn extends AbstractColumn {
      */
     public ObjectColumn (int capacity) {
         internal = new Object[capacity];
-        setType(new Object());
+        //setType(new Object());
     }
 
     /**
@@ -43,7 +43,7 @@ final public class ObjectColumn extends AbstractColumn {
      */
     public ObjectColumn (Object[] vals) {
         this.setInternal(vals);
-        setType(new Object());
+        //setType(new Object());
     }
 
     /**
@@ -71,7 +71,7 @@ final public class ObjectColumn extends AbstractColumn {
                 newCol.setObject(internal[i], i);
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
-            newCol.setType(getType());
+            //newCol.setType(getType());
             return  newCol;
         }
     }
@@ -170,7 +170,7 @@ final public class ObjectColumn extends AbstractColumn {
         ObjectColumn oc = new ObjectColumn(subset);
         oc.setLabel(getLabel());
         oc.setComment(getComment());
-        oc.setType(getType());
+        //oc.setType(getType());
         return  oc;
     }
 
@@ -536,7 +536,7 @@ final public class ObjectColumn extends AbstractColumn {
         else
             throw  new ArrayIndexOutOfBoundsException();
         ObjectColumn oc = new ObjectColumn(newInternal);
-        oc.setType(getType());
+        //oc.setType(getType());
         oc.setComment(getComment());
         oc.setLabel(getLabel());
         return  oc;

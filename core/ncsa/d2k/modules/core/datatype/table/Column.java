@@ -7,13 +7,11 @@ package ncsa.d2k.modules.core.datatype.table;
 	Column defines methods that are common to all implementations.  These
 	include the insertion and deletion of rows and row reordering methods.
 	Several methods are defined to provide metadata about the contents of a
-	Column.  These include a label, a comment, and a data type.  Accessor
-	methods are also defined for each primitive data type and for several
-	common Object types used.
+	Column.  Accessor methods are also defined for each primitive data type and
+	for several common Object types used.  The Column implementation must
+	provide the necessary datatype conversions.
 */
 public interface Column extends java.io.Serializable {
-	//////////////////////////////////////
-	//// Accessing Metadata
 
 	/**
 		Get the label associated with this Column.
@@ -38,18 +36,6 @@ public interface Column extends java.io.Serializable {
 		@param comment the comment which describes this Column
 	*/
 	public void setComment( String comment );
-
-	/**
-		Get the type associated with this Column.
-		@return the type of data this Column holds
-	*/
-	public Object getType( );
-
-	/**
-		Set the type associated with this Column.
-		@param tp the type of data this Column holds
-	*/
-	public void setType( Object tp );
 
 	/**
 	  	Get the number of rows in this Column.  Same as getCapacity().

@@ -140,7 +140,7 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
             }
             bac.setLabel(getLabel());
             bac.setComment(getComment());
-            bac.setType(getType());
+            //bac.setType(getType());
             return  bac;
         }
 	}
@@ -633,7 +633,7 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 			idx++;
 		}
 		cac.setLabel(getLabel());
-		cac.setType(getType());
+		//cac.setType(getType());
 		cac.setComment(getComment());
 		return cac;
     }
@@ -858,7 +858,7 @@ final public class ContinuousByteArrayColumn extends TextualColumn {
 
 		ContinuousByteArrayColumn bc = new ContinuousByteArrayColumn(newinternal, newrowPtrs);
 		bc.setLabel(getLabel());
-		bc.setType(getType());
+		//bc.setType(getType());
 		bc.setComment(getComment());
 		return bc;
     }

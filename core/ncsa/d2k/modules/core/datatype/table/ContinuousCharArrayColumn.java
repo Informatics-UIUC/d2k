@@ -138,7 +138,7 @@ public class ContinuousCharArrayColumn extends TextualColumn {
             }
             bac.setLabel(getLabel());
             bac.setComment(getComment());
-            bac.setType(getType());
+            //bac.setType(getType());
             return  bac;
         }
 	}
@@ -628,7 +628,7 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 			idx++;
 		}
 		cac.setLabel(getLabel());
-		cac.setType(getType());
+		//cac.setType(getType());
 		cac.setComment(getComment());
 		return cac;
     }
@@ -851,7 +851,7 @@ public class ContinuousCharArrayColumn extends TextualColumn {
 
 		ContinuousCharArrayColumn cac = new ContinuousCharArrayColumn(newinternal, newrowPtrs);
 		cac.setLabel(getLabel());
-		cac.setType(getType());
+		//cac.setType(getType());
 		cac.setComment(getComment());
 		return cac;
     }

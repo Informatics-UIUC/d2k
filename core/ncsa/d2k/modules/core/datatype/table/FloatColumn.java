@@ -33,7 +33,7 @@ final public class FloatColumn extends NumericColumn {
      */
     public FloatColumn (int capacity) {
         internal = new float[capacity];
-        setType(new Float((float)0.0));
+        //setType(new Float((float)0.0));
     }
 
     /**
@@ -42,7 +42,7 @@ final public class FloatColumn extends NumericColumn {
      */
     public FloatColumn (float[] vals) {
         this.setInternal(vals);
-        setType(new Float((float)0.0));
+        //setType(new Float((float)0.0));
     }
 
     /**
@@ -70,7 +70,7 @@ final public class FloatColumn extends NumericColumn {
                 fc.setFloat(internal[i], i);
             fc.setLabel(getLabel());
             fc.setComment(getComment());
-            fc.setType(getType());
+            //fc.setType(getType());
             return  fc;
         }
     }
@@ -216,7 +216,7 @@ final public class FloatColumn extends NumericColumn {
         FloatColumn fc = new FloatColumn(subset);
         fc.setLabel(getLabel());
         fc.setComment(getComment());
-        fc.setType(getType());
+        //fc.setType(getType());
         return  fc;
     }
 
@@ -546,7 +546,7 @@ final public class FloatColumn extends NumericColumn {
             throw  new ArrayIndexOutOfBoundsException();
         FloatColumn fc = new FloatColumn(newInternal);
         fc.setLabel(getLabel());
-        fc.setType(getType());
+        //fc.setType(getType());
         fc.setComment(getComment());
         return  fc;
     }

@@ -33,7 +33,7 @@ final public class ShortColumn extends NumericColumn {
      */
     public ShortColumn (int capacity) {
         internal = new short[capacity];
-        setType(new Short((short)0));
+        //setType(new Short((short)0));
     }
 
     /**
@@ -42,7 +42,7 @@ final public class ShortColumn extends NumericColumn {
      */
     public ShortColumn (short[] vals) {
         this.setInternal(vals);
-        setType(new Short((short)0));
+        //setType(new Short((short)0));
     }
 
     /**
@@ -69,7 +69,7 @@ final public class ShortColumn extends NumericColumn {
                 newCol.setShort(internal[i], i);
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
-            newCol.setType(getType());
+            //newCol.setType(getType());
             return  newCol;
         }
     }
@@ -395,7 +395,7 @@ final public class ShortColumn extends NumericColumn {
         ShortColumn sc = new ShortColumn(subset);
         sc.setLabel(getLabel());
         sc.setComment(getComment());
-        sc.setType(getType());
+        //sc.setType(getType());
         return  sc;
     }
 
@@ -530,7 +530,7 @@ final public class ShortColumn extends NumericColumn {
         else
             throw  new ArrayIndexOutOfBoundsException();
         ShortColumn sc = new ShortColumn(newInternal);
-        sc.setType(getType());
+        //sc.setType(getType());
         sc.setLabel(getLabel());
         sc.setComment(getComment());
         return  sc;

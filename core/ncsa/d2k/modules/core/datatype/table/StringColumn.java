@@ -112,7 +112,7 @@ final public class StringColumn extends ContinuousCharArrayColumn {
             }
             bac.setLabel(getLabel());
             bac.setComment(getComment());
-            bac.setType(getType());
+            //bac.setType(getType());
             return  bac;
         }
 	}

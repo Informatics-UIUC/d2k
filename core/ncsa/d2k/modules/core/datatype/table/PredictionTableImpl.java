@@ -110,7 +110,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
                 vt.setColumn(getColumn(i).copy(), i);
             vt.setLabel(getLabel());
             vt.setComment(getComment());
-            vt.setType(getType());
+            //vt.setType(getType());
 			vt.setInputFeatures(getInputFeatures());
 			vt.setOutputFeatures(getOutputFeatures());
 			vt.setPredictionSet(getPredictionSet());

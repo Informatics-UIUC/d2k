@@ -7,7 +7,7 @@ package ncsa.d2k.modules.core.datatype.table;
 abstract public class AbstractColumn implements Column {
 	private String label;
 	private String comment;
-	private Object type;
+	//private Object type;
 
 	/**
 		Get the label associated with this Column.
@@ -45,15 +45,15 @@ abstract public class AbstractColumn implements Column {
 		Get the type associated with this Column.
 		@return the type of data this Column holds
 	*/
-	final public Object getType( ) {
+	/*final public Object getType( ) {
 		return type;
-	}
+	}*/
 
 	/**
 		Set the type associated with this Column.
 		@param tp the type of data this Column holds
 	*/
-	final public void setType( Object tp ) {
+	/*final public void setType( Object tp ) {
 		type = tp;
-	}
+	}*/
 }

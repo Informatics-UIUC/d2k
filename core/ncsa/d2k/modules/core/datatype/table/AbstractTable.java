@@ -6,7 +6,7 @@ package ncsa.d2k.modules.core.datatype.table;
 public abstract class AbstractTable implements Table {
 	private String label;
 	private String comment;
-	private Object type;
+	//private Object type;
 
 	/**
 		Get the label associated with this Table.
@@ -44,15 +44,15 @@ public abstract class AbstractTable implements Table {
 		Get the type associated with this Table.
 		@return the type of data this Table holds
 	*/
-	final public Object getType( ) {
+	/*final public Object getType( ) {
 		return type;
-	}
+	}*/
 
 	/**
 		Set the type associated with this Table.
 		@param tp the type of data this Table holds
 	*/
-	final public void setType( Object tp ) {
+	/*final public void setType( Object tp ) {
 		type = tp;
-	}
+	}*/
 }

@@ -33,7 +33,7 @@ final public class DoubleColumn extends NumericColumn {
      */
     public DoubleColumn (int capacity) {
         internal = new double[capacity];
-        setType(new Double(0.0));
+        //setType(new Double(0.0));
     }
 
     /**
@@ -42,7 +42,7 @@ final public class DoubleColumn extends NumericColumn {
      */
     public DoubleColumn (double[] vals) {
         this.setInternal(vals);
-        setType(new Double(0.0));
+        //setType(new Double(0.0));
     }
 
     /**
@@ -72,7 +72,7 @@ final public class DoubleColumn extends NumericColumn {
             dc.max = getMax();
             dc.setLabel(getLabel());
             dc.setComment(getComment());
-            dc.setType(getType());
+            //dc.setType(getType());
             return  dc;
         }
     }
@@ -218,7 +218,7 @@ final public class DoubleColumn extends NumericColumn {
         DoubleColumn dc = new DoubleColumn(subset);
         dc.setLabel(getLabel());
         dc.setComment(getComment());
-        dc.setType(getType());
+        //dc.setType(getType());
         return  dc;
     }
 
@@ -555,7 +555,7 @@ final public class DoubleColumn extends NumericColumn {
         DoubleColumn dc = new DoubleColumn(newInternal);
         dc.setLabel(getLabel());
         dc.setComment(getComment());
-        dc.setType(getType());
+        //dc.setType(getType());
         return  dc;
     }
 

@@ -59,7 +59,7 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
             columns[i] = table.getColumn(i);
         setLabel(table.getLabel());
         setComment(table.getComment());
-		setType(table.getType());
+		//setType(table.getType());
         if (table instanceof ExampleTableImpl) {
             // Make sure we get the input / output definitions.
             ExampleTableImpl tt = (ExampleTableImpl)table;
@@ -122,7 +122,7 @@ public class ExampleTableImpl extends TableImpl implements ExampleTable {
                 vt.setColumn(getColumn(i).copy(), i);
             vt.setLabel(getLabel());
             vt.setComment(getComment());
-            vt.setType(getType());
+            //vt.setType(getType());
 			vt.setInputFeatures(getInputFeatures());
 			vt.setOutputFeatures(getOutputFeatures());
 			vt.transformations = (ArrayList)transformations.clone();

@@ -34,7 +34,7 @@ final public class IntColumn extends NumericColumn {
      */
     public IntColumn (int capacity) {
         internal = new int[capacity];
-        setType(new Integer(0));
+        //setType(new Integer(0));
     }
 
     /**
@@ -43,7 +43,7 @@ final public class IntColumn extends NumericColumn {
      */
     public IntColumn (int[] vals) {
         this.setInternal(vals);
-        setType(new Integer(0));
+        //setType(new Integer(0));
     }
 
     /**
@@ -71,7 +71,7 @@ final public class IntColumn extends NumericColumn {
                 newCol.setInt(internal[i], i);
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
-            newCol.setType(getType());
+            //newCol.setType(getType());
             return  newCol;
         }
     }
@@ -397,7 +397,7 @@ final public class IntColumn extends NumericColumn {
         IntColumn ic = new IntColumn(subset);
         ic.setLabel(getLabel());
         ic.setComment(getComment());
-        ic.setType(getType());
+        //ic.setType(getType());
         return  ic;
     }
 
@@ -534,7 +534,7 @@ final public class IntColumn extends NumericColumn {
         else
             throw  new ArrayIndexOutOfBoundsException();
         IntColumn ic = new IntColumn(newInternal);
-        ic.setType(getType());
+        //ic.setType(getType());
         ic.setLabel(getLabel());
         ic.setComment(getComment());
         return  ic;

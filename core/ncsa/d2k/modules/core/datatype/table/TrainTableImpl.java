@@ -54,7 +54,7 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
                 vt.setColumn(getColumn(i).copy(), i);
             vt.setLabel(getLabel());
             vt.setComment(getComment());
-            vt.setType(getType());
+            //vt.setType(getType());
 			vt.setInputFeatures(getInputFeatures());
 			vt.setOutputFeatures(getOutputFeatures());
 			vt.transformations = (ArrayList)transformations.clone();

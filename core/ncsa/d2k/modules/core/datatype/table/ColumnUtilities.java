@@ -17,7 +17,7 @@ final public class ColumnUtilities {
 			dc.setDouble(sc.getDouble(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		dc.setType(new Double(0));
+		//dc.setType(new Double(0));
 		return dc;
 	}
 
@@ -33,7 +33,7 @@ final public class ColumnUtilities {
 			dc.setInt(sc.getInt(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		dc.setType(new Integer(0));
+		//dc.setType(new Integer(0));
 		return dc;
 	}
 
@@ -48,9 +48,9 @@ final public class ColumnUtilities {
 		for(int i = 0; i < sc.getCapacity(); i++)
 			dc.setLong(sc.getLong(i), i);
 		dc.setLabel(sc.getLabel());
-		dc.setType(new Long(0));
+		//dc.setType(new Long(0));
 		dc.setComment(sc.getComment());
-		dc.setType(new Long(0));
+		//dc.setType(new Long(0));
 		return dc;
 	}
 
@@ -66,7 +66,7 @@ final public class ColumnUtilities {
 			dc.setShort(sc.getShort(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		dc.setType(new Short((short)0));
+		//dc.setType(new Short((short)0));
 		return dc;
 	}
 
@@ -82,7 +82,7 @@ final public class ColumnUtilities {
 			dc.setFloat(sc.getFloat(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		dc.setType(new Float(0));
+		//dc.setType(new Float(0));
 		return dc;
 	}
 
@@ -98,7 +98,7 @@ final public class ColumnUtilities {
 			dc.setBoolean(sc.getBoolean(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		dc.setType(new Boolean(false));
+		//dc.setType(new Boolean(false));
 		return dc;
 	}
 
@@ -151,7 +151,7 @@ final public class ColumnUtilities {
 			dc.setObject(sc.getObject(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		dc.setType(new Object());
+		//dc.setType(new Object());
 		return dc;
 	}
 
@@ -168,7 +168,7 @@ final public class ColumnUtilities {
 			dc.setString(sc.getString(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		dc.setType(new String());
+		//dc.setType(new String());
 		return dc;
 	}
 }

@@ -34,8 +34,8 @@ final public class ByteArrayColumn extends TextualColumn {
      */
     public ByteArrayColumn (int capacity) {
         internal = new byte[capacity][];
-        byte[] ty = new byte[0];
-        setType(ty);
+        //byte[] ty = new byte[0];
+        //setType(ty);
     }
 
     /**
@@ -44,8 +44,8 @@ final public class ByteArrayColumn extends TextualColumn {
      */
     public ByteArrayColumn (byte[][] newInternal) {
         this.setInternal(newInternal);
-        byte[] ty = new byte[0];
-        setType(ty);
+        //byte[] ty = new byte[0];
+        //setType(ty);
     }
 
     /**
@@ -78,7 +78,7 @@ final public class ByteArrayColumn extends TextualColumn {
             }
             bac.setLabel(getLabel());
             bac.setComment(getComment());
-            bac.setType(getType());
+            //bac.setType(getType());
             return  bac;
         }
     }
@@ -369,7 +369,7 @@ final public class ByteArrayColumn extends TextualColumn {
         ByteArrayColumn bac = new ByteArrayColumn(subset);
         bac.setLabel(getLabel());
         bac.setComment(getComment());
-        bac.setType(getType());
+        //bac.setType(getType());
         return  bac;
     }
 
@@ -489,7 +489,7 @@ final public class ByteArrayColumn extends TextualColumn {
             throw  new ArrayIndexOutOfBoundsException();
         ByteArrayColumn bac = new ByteArrayColumn(newInternal);
         bac.setLabel(getLabel());
-        bac.setType(getType());
+        //bac.setType(getType());
         bac.setComment(getComment());
         return  bac;
     }

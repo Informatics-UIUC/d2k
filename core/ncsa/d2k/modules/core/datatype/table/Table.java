@@ -34,9 +34,6 @@ package ncsa.d2k.modules.core.datatype.table;
 */
 public interface Table extends java.io.Serializable {
 
-	//////////////////////////////////////
-	//// ACCESSING TABLE FIELDS
-
 	/**
 		Get a Column from the table.
 		@param pos the position of the Column to get from table
@@ -324,18 +321,6 @@ public interface Table extends java.io.Serializable {
 		@param comment the comment which describes this Table
 	*/
 	public void setComment( String comment );
-
-	/**
-		Get the type associated with this Table.
-		@return the type of data this Table holds
-	*/
-	public Object getType( );
-
-	/**
-		Set the type associated with this Table.
-		@param tp the type of data this Table holds
-	*/
-	public void setType( Object tp );
 
 	/**
 	  	Get the number of rows in this Table.  Same as getCapacity().

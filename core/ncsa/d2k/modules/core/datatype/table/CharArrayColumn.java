@@ -35,8 +35,8 @@ final public class CharArrayColumn extends TextualColumn {
      */
     public CharArrayColumn (int capacity) {
         internal = new char[capacity][];
-        char[] ty = new char[0];
-        setType(ty);
+        //char[] ty = new char[0];
+        //setType(ty);
     }
 
     /**
@@ -45,8 +45,8 @@ final public class CharArrayColumn extends TextualColumn {
      */
     public CharArrayColumn (char[][] newInternal) {
         this.setInternal(newInternal);
-        char[] ty = new char[0];
-        setType(ty);
+        //char[] ty = new char[0];
+        //setType(ty);
     }
 
     /**
@@ -79,7 +79,7 @@ final public class CharArrayColumn extends TextualColumn {
             }
             cac.setLabel(getLabel());
             cac.setComment(getComment());
-            cac.setType(getType());
+            //cac.setType(getType());
             return  cac;
         }
     }
@@ -365,7 +365,7 @@ final public class CharArrayColumn extends TextualColumn {
         CharArrayColumn cac = new CharArrayColumn(subset);
         cac.setLabel(getLabel());
         cac.setComment(getComment());
-        cac.setType(getType());
+        //cac.setType(getType());
         return  cac;
     }
 
@@ -481,7 +481,7 @@ final public class CharArrayColumn extends TextualColumn {
             throw  new ArrayIndexOutOfBoundsException();
         CharArrayColumn cac = new CharArrayColumn(newInternal);
         cac.setLabel(getLabel());
-        cac.setType(getType());
+        //cac.setType(getType());
         cac.setComment(getComment());
         return  cac;
     }
