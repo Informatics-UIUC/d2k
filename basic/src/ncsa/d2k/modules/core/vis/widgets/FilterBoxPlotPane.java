@@ -246,12 +246,17 @@ public class FilterBoxPlotPane extends JPanel {
             for (int row = 0; row < flags.length; row++) {
                if (flags[row]) {
                   double data = table.getDouble(row, column);
-
-                  if (data < lowerbound || data > upperbound) {
+				  
+				  if (table.isValueMissing(row, column))
+				  	
+				  	 // we always include missing values.
+				  	 clone[row] = true;
+                  else if (data < lowerbound || data > upperbound) {
+                  	
+                  	 // the data is out of range.
                      clone[row] = false;
                      csize--;
-                  }
-                  else
+                  } else
                      clone[row] = true;
                }
                else {

@@ -371,15 +371,14 @@ public class TableEditor extends TableViewer {
 
             // get data
             double[] buffer = new double[table.getNumRows()];
-			for (int row = 0 ; row < buffer.length; row++)
-                         buffer[row] = table.getDouble(row, i);
-
-//            table.getColumn(buffer, i);
-
-            // get missing values
-            boolean[] missing = new boolean[table.getNumRows()];
-            for (int j = 0; j < missing.length; j++)
-               missing[j] = table.isValueMissing(j, i);
+			boolean[] missing = new boolean[table.getNumRows()];
+			for (int row = 0 ; row < buffer.length; row++) {
+		      missing[row] = table.isValueMissing(row, i);
+		      if (missing[row])
+		      	buffer[row] = table.getMissingDouble();
+		      else
+                buffer[row] = table.getDouble(row, i);
+			}
 
             MutableTable mt = (MutableTable)table;
 
@@ -392,7 +391,6 @@ public class TableEditor extends TableViewer {
             for (int j = 0; j < missing.length; j++)
                if (missing[j])
                   mt.setValueToMissing(true, j, i);
-
           }
         }
         else if(selected.equals(INT_TYPE)) {
@@ -403,13 +401,14 @@ public class TableEditor extends TableViewer {
 
             // get data
             int[] buffer = new int[table.getNumRows()];
-            for (int row = 0 ; row < buffer.length; row++)
-                         buffer[row] = table.getInt(row, i);
-
-            // get missing values
-            boolean[] missing = new boolean[table.getNumRows()];
-            for (int j = 0; j < missing.length; j++)
-               missing[j] = table.isValueMissing(j, i);
+			boolean[] missing = new boolean[table.getNumRows()];
+			for (int row = 0 ; row < buffer.length; row++) {
+			  missing[row] = table.isValueMissing(row, i);
+			  if (missing[row])
+				buffer[row] = table.getMissingInt();
+			  else
+				buffer[row] = table.getInt(row, i);
+			}
 
             MutableTable mt = (MutableTable)table;
 
@@ -433,13 +432,14 @@ public class TableEditor extends TableViewer {
 
             // get data
             String[] buffer = new String[table.getNumRows()];
-            for (int row = 0 ; row < buffer.length; row++)
-                         buffer[row] = table.getString(row, i);
-
-            // get missing values
-            boolean[] missing = new boolean[table.getNumRows()];
-            for (int j = 0; j < missing.length; j++)
-               missing[j] = table.isValueMissing(j, i);
+			boolean[] missing = new boolean[table.getNumRows()];
+			for (int row = 0 ; row < buffer.length; row++) {
+			  missing[row] = table.isValueMissing(row, i);
+			  if (missing[row])
+				buffer[row] = table.getMissingString();
+			  else
+				buffer[row] = table.getString(row, i);
+			}
 
             MutableTable mt = (MutableTable)table;
 
@@ -451,8 +451,7 @@ public class TableEditor extends TableViewer {
             // set missing values
             for (int j = 0; j < missing.length; j++) {
                if (missing[j]) {
-                  mt.setString("?", j, i);
-                  mt.setValueToMissing(true, j, i);
+                   mt.setValueToMissing(true, j, i);
                }
             }
 
@@ -466,13 +465,14 @@ public class TableEditor extends TableViewer {
 
             // get data
             byte[][] buffer = new byte[table.getNumRows()][];
-            for (int row = 0 ; row < buffer.length; row++)
-                         buffer[row] = table.getBytes(row, i);
-
-            // get missing values
-            boolean[] missing = new boolean[table.getNumRows()];
-            for (int j = 0; j < missing.length; j++)
-               missing[j] = table.isValueMissing(j, i);
+			boolean[] missing = new boolean[table.getNumRows()];
+			for (int row = 0 ; row < buffer.length; row++) {
+			  missing[row] = table.isValueMissing(row, i);
+			  if (missing[row])
+				buffer[row] = table.getMissingString().getBytes();
+			  else
+				buffer[row] = table.getBytes(row, i);
+			}
 
             MutableTable mt = (MutableTable)table;
 
@@ -485,7 +485,6 @@ public class TableEditor extends TableViewer {
             for (int j = 0; j < missing.length; j++)
                if (missing[j])
                   mt.setValueToMissing(true, j, i);
-
           }
         }
         else if(selected.equals(CHAR_ARRAY_TYPE)) {
@@ -496,13 +495,14 @@ public class TableEditor extends TableViewer {
 
             // get data
             char[][] buffer = new char[table.getNumRows()][];
-            for (int row = 0 ; row < buffer.length; row++)
-                         buffer[row] = table.getChars(row, i);
-
-            // get missing values
-            boolean[] missing = new boolean[table.getNumRows()];
-            for (int j = 0; j < missing.length; j++)
-               missing[j] = table.isValueMissing(j, i);
+			boolean[] missing = new boolean[table.getNumRows()];
+			for (int row = 0 ; row < buffer.length; row++) {
+			  missing[row] = table.isValueMissing(row, i);
+			  if (missing[row])
+				buffer[row] = table.getMissingString().toCharArray();
+			  else
+				buffer[row] = table.getChars(row, i);
+			}
 
             MutableTable mt = (MutableTable)table;
 
@@ -514,7 +514,6 @@ public class TableEditor extends TableViewer {
             // set missing values
             for (int j = 0; j < missing.length; j++)
                if (missing[j]) {
-                  mt.setString("?", j, i);
                   mt.setValueToMissing(true, j, i);
                }
 
@@ -528,13 +527,14 @@ public class TableEditor extends TableViewer {
 
             // get data
             float[] buffer = new float[table.getNumRows()];
-            for (int row = 0 ; row < buffer.length; row++)
-                         buffer[row] = table.getFloat(row, i);
-
-            // get missing values
-            boolean[] missing = new boolean[table.getNumRows()];
-            for (int j = 0; j < missing.length; j++)
-               missing[j] = table.isValueMissing(j, i);
+			boolean[] missing = new boolean[table.getNumRows()];
+			for (int row = 0 ; row < buffer.length; row++) {
+			  missing[row] = table.isValueMissing(row, i);
+			  if (missing[row])
+				buffer[row] = (float)table.getMissingDouble();
+			  else
+				buffer[row] = table.getFloat(row, i);
+			}
 
             MutableTable mt = (MutableTable)table;
 
@@ -547,7 +547,6 @@ public class TableEditor extends TableViewer {
             for (int j = 0; j < missing.length; j++)
                if (missing[j])
                   mt.setValueToMissing(true, j, i);
-
           }
         }
         else if(selected.equals(LONG_TYPE)) {
@@ -558,13 +557,14 @@ public class TableEditor extends TableViewer {
 
             // get data
             long[] buffer = new long[table.getNumRows()];
-            for (int row = 0 ; row < buffer.length; row++)
-                         buffer[row] = table.getLong(row, i);
-
-            // get missing values
-            boolean[] missing = new boolean[table.getNumRows()];
-            for (int j = 0; j < missing.length; j++)
-               missing[j] = table.isValueMissing(j, i);
+			boolean[] missing = new boolean[table.getNumRows()];
+			for (int row = 0 ; row < buffer.length; row++) {
+			  missing[row] = table.isValueMissing(row, i);
+			  if (missing[row])
+				buffer[row] = table.getMissingInt();
+			  else
+				buffer[row] = table.getLong(row, i);
+			}
 
             MutableTable mt = (MutableTable)table;
 
@@ -577,7 +577,6 @@ public class TableEditor extends TableViewer {
             for (int j = 0; j < missing.length; j++)
                if (missing[j])
                   mt.setValueToMissing(true, j, i);
-
           }
         }
         else if(selected.equals(SHORT_TYPE)) {
@@ -588,13 +587,14 @@ public class TableEditor extends TableViewer {
 
             // get data
             short[] buffer = new short[table.getNumRows()];
-            for (int row = 0 ; row < buffer.length; row++)
-                         buffer[row] = table.getShort(row, i);
-
-            // get missing values
-            boolean[] missing = new boolean[table.getNumRows()];
-            for (int j = 0; j < missing.length; j++)
-               missing[j] = table.isValueMissing(j, i);
+			boolean[] missing = new boolean[table.getNumRows()];
+			for (int row = 0 ; row < buffer.length; row++) {
+			  missing[row] = table.isValueMissing(row, i);
+			  if (missing[row])
+				buffer[row] = (short) table.getMissingInt();
+			  else
+				buffer[row] = table.getShort(row, i);
+			}
 
             MutableTable mt = (MutableTable)table;
 
@@ -618,13 +618,14 @@ public class TableEditor extends TableViewer {
 
             // get data
             boolean[] buffer = new boolean[table.getNumRows()];
-            for (int row = 0 ; row < buffer.length; row++)
-                         buffer[row] = table.getBoolean(row, i);
-
-            // get missing values
-            boolean[] missing = new boolean[table.getNumRows()];
-            for (int j = 0; j < missing.length; j++)
-               missing[j] = table.isValueMissing(j, i);
+			boolean[] missing = new boolean[table.getNumRows()];
+			for (int row = 0 ; row < buffer.length; row++) {
+			  missing[row] = table.isValueMissing(row, i);
+			  if (missing[row])
+				buffer[row] = table.getMissingBoolean();
+			  else
+				buffer[row] = table.getBoolean(row, i);
+			}
 
             MutableTable mt = (MutableTable)table;
 
@@ -637,7 +638,6 @@ public class TableEditor extends TableViewer {
             for (int j = 0; j < missing.length; j++)
                if (missing[j])
                   mt.setValueToMissing(true, j, i);
-
           }
         }
         else if(selected.equals(BYTE_TYPE)) {
@@ -648,13 +648,14 @@ public class TableEditor extends TableViewer {
 
             // get data
             byte[] buffer = new byte[table.getNumRows()];
-            for (int row = 0 ; row < buffer.length; row++)
-                         buffer[row] = table.getByte(row, i);
-
-            // get missing values
-            boolean[] missing = new boolean[table.getNumRows()];
-            for (int j = 0; j < missing.length; j++)
-               missing[j] = table.isValueMissing(j, i);
+			boolean[] missing = new boolean[table.getNumRows()];
+			for (int row = 0 ; row < buffer.length; row++) {
+			  missing[row] = table.isValueMissing(row, i);
+			  if (missing[row])
+				buffer[row] = table.getMissingByte();
+			  else
+				buffer[row] = table.getByte(row, i);
+			}
 
             MutableTable mt = (MutableTable)table;
 
@@ -667,7 +668,6 @@ public class TableEditor extends TableViewer {
             for (int j = 0; j < missing.length; j++)
                if (missing[j])
                   mt.setValueToMissing(true, j, i);
-
           }
         }
         else if(selected.equals(CHAR_TYPE)) {
@@ -678,13 +678,14 @@ public class TableEditor extends TableViewer {
 
             // get data
             char[] buffer = new char[table.getNumRows()];
-            for (int row = 0 ; row < buffer.length; row++)
-                         buffer[row] = table.getChar(row, i);
-
-            // get missing values
-            boolean[] missing = new boolean[table.getNumRows()];
-            for (int j = 0; j < missing.length; j++)
-               missing[j] = table.isValueMissing(j, i);
+			boolean[] missing = new boolean[table.getNumRows()];
+			for (int row = 0 ; row < buffer.length; row++) {
+			  missing[row] = table.isValueMissing(row, i);
+			  if (missing[row])
+				buffer[row] = table.getMissingChar();
+			  else
+				buffer[row] = table.getChar(row, i);
+			}
 
             MutableTable mt = (MutableTable)table;
 
@@ -696,7 +697,6 @@ public class TableEditor extends TableViewer {
             // set missing values
             for (int j = 0; j < missing.length; j++) {
                if (missing[j]) {
-                  mt.setChar('?', j, i);
                   mt.setValueToMissing(true, j, i);
                }
             }
