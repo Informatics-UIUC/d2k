@@ -168,6 +168,17 @@ public class PCView extends JUserPane implements ActionListener, Printable  {
          menuBar.add(helpMenu);
          JMenu displaycols = new JMenu("Display Columns");
 
+         HashSet displayedcols = new HashSet();
+         if(table instanceof ExampleTable) {
+           int[] inputs = ((ExampleTable)table).getInputFeatures();
+           int[] outputs = ((ExampleTable)table).getOutputFeatures();
+
+            for(int j = 0; j < inputs.length; j++)
+              displayedcols.add(new Integer(inputs[j]));
+            for(int j = 0; j < outputs.length; j++)
+              displayedcols.add(new Integer(outputs[j]));
+         }
+
          int numItems = 0;
          JMenu curMenu = displaycols;
          for(int j = 0; j < table.getNumColumns(); j++) {
@@ -176,6 +187,10 @@ public class PCView extends JUserPane implements ActionListener, Printable  {
                j);
             dcmi.addActionListener(this);
             dcmi.setSelected(true);
+            if(table instanceof ExampleTable) {
+              if(!displayedcols.contains(new Integer(j)))
+                dcmi.setSelected(false);
+            }
             if(numItems == MAX_MENU_ITEMS) {
                JMenu nextMenu = new JMenu(MORE);
                curMenu.insert(nextMenu, 0);
@@ -648,34 +663,89 @@ public class PCView extends JUserPane implements ActionListener, Printable  {
             app = a;
             firsttime = true;
             mousedrag = false;
-            columnorder = new int[table.getNumColumns()];
-            columnlocations = new float[table.getNumColumns()];
-            weights = new float[table.getNumColumns()][table.getNumRows()];
-            heights = new float[table.getNumColumns()][table.getNumRows()];
-            mins = new double[table.getNumColumns()];
-            maxes = new double[table.getNumColumns()];
-            for(int j = 0; j < columnorder.length; j++) {
-               columnorder[j] = j;
-               //Column c = table.getColumn(j);
-               //if(c instanceof NumericColumn) {
-               if(table.isColumnNumeric(j)) {
+
+            if(!(table instanceof ExampleTable)) {
+              columnorder = new int[table.getNumColumns()];
+              columnlocations = new float[table.getNumColumns()];
+              weights = new float[table.getNumColumns()][table.getNumRows()];
+              heights = new float[table.getNumColumns()][table.getNumRows()];
+              mins = new double[table.getNumColumns()];
+              maxes = new double[table.getNumColumns()];
+              for (int j = 0; j < columnorder.length; j++) {
+                columnorder[j] = j;
+                //Column c = table.getColumn(j);
+                //if(c instanceof NumericColumn) {
+                if (table.isColumnNumeric(j)) {
                   //NumericColumn nc = (NumericColumn)c;
                   MaxMin mm = getMaxMin(j);
                   //float max = (float)nc.getMax();
                   //float min = (float)nc.getMin();
-                  mins[j] = (float)mm.min;
-                  maxes[j] = (float)mm.max;
-                  for(int k = 0; k < table.getNumRows(); k++)
-                     weights[j][k] = ((float)maxes[j]-table.getFloat(k, j))/((float)maxes[j]-(float)mins[j]);
-               }
-               else {
+                  mins[j] = (float) mm.min;
+                  maxes[j] = (float) mm.max;
+                  for (int k = 0; k < table.getNumRows(); k++)
+                    weights[j][k] = ( (float) maxes[j] - table.getFloat(k, j)) /
+                        ( (float) maxes[j] - (float) mins[j]);
+                }
+                else {
                   //Column sc = (Column)c;
                   HashMap hm = uniqueValues(table, j);
-                  for(int k = 0; k < table.getNumRows(); k++) {
-                     Integer ii = (Integer)hm.get(table.getString(k, j));
-                     weights[j][k] = ii.floatValue()/(hm.size()+1);
+                  for (int k = 0; k < table.getNumRows(); k++) {
+                    Integer ii = (Integer) hm.get(table.getString(k, j));
+                    weights[j][k] = ii.floatValue() / (hm.size() + 1);
                   }
-               }
+                }
+              }
+            }
+            else {
+              ExampleTable et = (ExampleTable)table;
+              int[] inputs = et.getInputFeatures();
+              int[] outputs = et.getOutputFeatures();
+
+              int idx = 0;
+              int[] all = new int[inputs.length+outputs.length];
+              for(int i = 0; i < inputs.length; i++) {
+                all[idx] = inputs[i];
+                idx++;
+              }
+              for(int i = 0; i < outputs.length; i++) {
+                all[idx] = outputs[i];
+                idx++;
+              }
+
+              columnorder = new int[all.length];
+              columnlocations = new float[all.length];
+              weights = new float[table.getNumColumns()][table.getNumRows()];
+              heights = new float[table.getNumColumns()][table.getNumRows()];
+              mins = new double[table.getNumColumns()];
+              maxes = new double[table.getNumColumns()];
+              for (int j = 0; j < columnorder.length; j++) {
+                columnorder[j] = all[j];
+              }
+              for(int j = 0; j < table.getNumColumns(); j++) {
+
+                //Column c = table.getColumn(j);
+                //if(c instanceof NumericColumn) {
+                if (table.isColumnNumeric(j)) {
+                  //NumericColumn nc = (NumericColumn)c;
+                  MaxMin mm = getMaxMin(j);
+                  //float max = (float)nc.getMax();
+                  //float min = (float)nc.getMin();
+                  mins[j] = (float) mm.min;
+                  maxes[j] = (float) mm.max;
+                  for (int k = 0; k < table.getNumRows(); k++)
+                    weights[j][k] = ( (float) maxes[j] - table.getFloat(k, j)) /
+                        ( (float) maxes[j] - (float) mins[j]);
+                }
+                else {
+                  //Column sc = (Column)c;
+                  HashMap hm = uniqueValues(table, j);
+                  for (int k = 0; k < table.getNumRows(); k++) {
+                    Integer ii = (Integer) hm.get(table.getString(k, j));
+                    weights[j][k] = ii.floatValue() / (hm.size() + 1);
+                  }
+                }
+              }
+
             }
             linemap = new boolean[table.getNumRows()];
             for(int j = 0; j < linemap.length; j++)
