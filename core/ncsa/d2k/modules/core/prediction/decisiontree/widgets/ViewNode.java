@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
 import javax.swing.*;
+import java.awt.image.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
 /*
@@ -59,6 +60,8 @@ public final class ViewNode {
 	// the branch label above this node
 	private String blabel;
 
+	private BufferedImage img;
+
 	public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode, String blab) {
 		dmodel = model;
 		dnode = node;
@@ -78,6 +81,14 @@ public final class ViewNode {
 			frame.addNotify();
 			frame.setFont(DecisionTreeScheme.textfont);
 		}
+
+		img = new BufferedImage((int)gwidth, (int)gheight, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2 = img.createGraphics();
+		this.drawNode(g2);
+	}
+
+	public Image getImage() {
+		return img;
 	}
 
 	public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode) {
@@ -366,5 +377,79 @@ public final class ViewNode {
 			g2.setColor(DecisionTreeScheme.viewtrianglecolor);
 			g2.fill(triangle);
 		}
+	}
+
+	public void drawNode(Graphics2D g2) {
+		double x1, y1;
+
+		// Background
+		g2.setColor(scheme.viewbackgroundcolor);
+		g2.fill(new Rectangle2D.Double(0, 0, gwidth, gheight));
+
+		// Tickmarks
+		g2.setColor(scheme.viewtickcolor);
+		g2.setStroke(new BasicStroke(1));
+		x1 = leftinset;
+		y1 = yincrement;
+		for (int index = 0; index < ygrid; index++) {
+			g2.draw(new Line2D.Double(x1, y1, x1+tickmark, y1));
+			y1 += yincrement;
+		}
+
+		// Bars
+		BarColors barcolors = scheme.getBarColors();
+		x1 = leftinset + tickmark + barspace;
+		for (int index = 0; index < values.length; index++) {
+			double barheight = yscale*values[index];
+			y1 = 1 + gheight - yincrement - barheight;
+			g2.setColor(barcolors.getNextColor());
+			g2.fill(new Rectangle2D.Double(x1, y1, barwidth, barheight));
+			x1 += barwidth + barspace;
+		}
+
+		// Triangle
+		if (isLeaf())
+			return;
+
+		/*theight = .866025*tside;
+		double ycomponent = tside/2;
+		double xcomponent = .577350*ycomponent;
+		double xcenter, ycenter;
+
+		if (collapsed) {
+			xcenter = 0 + gwidth/2 + tspace + xcomponent;
+			ycenter = 0 + gheight - ycomponent;
+
+			int xpoints[] = {(int) (xcenter-xcomponent), (int) (xcenter+theight-xcomponent), (int) (xcenter-xcomponent)};
+			int ypoints[] = {(int) (ycenter-ycomponent), (int) ycenter, (int) (ycenter+ycomponent)};
+
+			GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
+			triangle.moveTo((int) (xcenter-xcomponent), (int) (ycenter-ycomponent));
+			for (int index = 1; index < xpoints.length; index++) {
+				triangle.lineTo(xpoints[index], ypoints[index]);
+			}
+			triangle.closePath();
+
+			g2.setColor(scheme.viewtrianglecolor);
+			g2.fill(triangle);
+		}
+		else {
+			xcenter = 0 + gwidth/2 + tspace + xcomponent;
+			ycenter = 0 + gheight - ycomponent;
+
+			int xpoints[] = {(int) (xcenter-ycomponent), (int) (xcenter+ycomponent), (int) (xcenter)};
+			int ypoints[] = {(int) (ycenter-xcomponent), (int) (ycenter-xcomponent), (int) (ycenter+ycomponent)};
+
+			GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
+			triangle.moveTo((int) (xcenter-ycomponent), (int) (ycenter-xcomponent));
+			for (int index = 1; index < xpoints.length; index++) {
+				triangle.lineTo(xpoints[index], ypoints[index]);
+			}
+			triangle.closePath();
+
+			g2.setColor(DecisionTreeScheme.viewtrianglecolor);
+			g2.fill(triangle);
+		}
+		*/
 	}
 }

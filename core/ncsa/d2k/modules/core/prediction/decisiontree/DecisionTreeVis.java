@@ -90,7 +90,7 @@ class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
 	JFrame helpWindow;
 
 	public Dimension getPreferredSize() {
-		return new Dimension(600, 400);
+		return new Dimension(800, 600);
 	}
 
 	public void initView(ViewModule module) {

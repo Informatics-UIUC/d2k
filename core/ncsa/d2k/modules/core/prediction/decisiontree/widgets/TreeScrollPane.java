@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
 import java.awt.print.*;
+import java.awt.image.*;
 
 import javax.swing.*;
 import ncsa.d2k.util.*;
@@ -25,6 +26,35 @@ public final class TreeScrollPane extends JScrollPane {
 	public TreeScrollPane(ViewableDTModel model, BrushPanel panel) {
 
 		treepanel = new TreePanel(model, panel);
+
+		/*BufferedImage img = new BufferedImage((int)treepanel.dwidth,
+			(int)treepanel.dheight, BufferedImage.TYPE_USHORT_555_RGB);
+		System.out.println("w: "+treepanel.dwidth+" h: "+treepanel.dheight);
+		Graphics2D g2 = (Graphics2D)img.createGraphics();
+		treepanel.paintComponent(g2);
+		viewport = getViewport();
+		final Image ii = img;
+		final int wid = (int)treepanel.dwidth;
+		final int hei = (int)treepanel.dheight;
+		JPanel p = new JPanel() {
+			public void paint(Graphics g) {
+				super.paint(g);
+				g.drawImage(ii, 0, 0, this);
+			}
+
+			public Dimension getPreferredSize() {
+				return new Dimension(wid, hei);
+			}
+
+			public Dimension getMinimumSize() {
+				return new Dimension(wid, hei);
+			}
+		};
+		p.addMouseListener(treepanel);
+		p.addMouseMotionListener(treepanel);
+
+		viewport.setView(p);
+		*/
 
 		viewport = getViewport();
 		viewport.setView(treepanel);
@@ -78,6 +108,7 @@ public final class TreeScrollPane extends JScrollPane {
 		boolean labels = true;
 
 		int lastx, lasty;
+		boolean ok = false;
 
 		public TreePanel(ViewableDTModel model, BrushPanel panel) {
 			brushpanel = panel;
@@ -102,10 +133,11 @@ public final class TreeScrollPane extends JScrollPane {
 			dwidth = vroot.findSubtreeWidth();
 			dheight = (vroot.yspace + vroot.gheight)*(mdepth + 1) + vroot.yspace;
 
-			setBackground(DecisionTreeScheme.treebackgroundcolor);
+			//setBackground(DecisionTreeScheme.treebackgroundcolor);
 
 			addMouseListener(this);
 			addMouseMotionListener(this);
+			ok = true;
 		}
 
 		public void findMaximumDepth(ViewableDTNode dnode) {
@@ -147,17 +179,100 @@ public final class TreeScrollPane extends JScrollPane {
 			}
 		}
 
+		/*public void repaint() {
+			super.repaint();
+
+			if(ok) {
+		BufferedImage img = new BufferedImage((int)dwidth,
+			(int)dheight, BufferedImage.TYPE_USHORT_555_RGB);
+		Graphics2D g2 = (Graphics2D)img.createGraphics();
+		treepanel.paintComponent(g2);
+		//viewport = getViewport();
+		final Image ii = img;
+		final int wid = (int)treepanel.dwidth;
+		final int hei = (int)treepanel.dheight;
+		JPanel p = new JPanel() {
+			public void paint(Graphics g) {
+				super.paint(g);
+				g.drawImage(ii, 0, 0, this);
+			}
+
+			public Dimension getPreferredSize() {
+				return new Dimension(wid, hei);
+			}
+
+			public Dimension getMinimumSize() {
+				return new Dimension(wid, hei);
+			}
+		};
+		p.addMouseListener(treepanel);
+		p.addMouseMotionListener(treepanel);
+
+		viewport.setView(p);
+		}
+		}*/
+
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			Rectangle r = new Rectangle((int)dwidth, (int)dheight);
+			g2.setColor(DecisionTreeScheme.treebackgroundcolor);
+			g2.fill(r);
 
 			drawViewTree(g2, vroot);
 		}
 
 		// Draws the view tree
 		public void drawViewTree(Graphics2D g2, ViewNode vnode) {
-			vnode.drawViewNode(g2);
+			//vnode.drawViewNode(g2);
+			g2.drawImage(vnode.getImage(), (int)(vnode.x-vnode.gwidth/2), (int)vnode.y, null);
+
+			vnode.theight = .866025*vnode.tside;
+			double ycomponent = vnode.tside/2;
+			double xcomponent = .577350*ycomponent;
+			double xcenter, ycenter;
+
+			// draw the triangles
+			if(!vnode.isLeaf()) {
+			if (vnode.collapsed) {
+				xcenter = vnode.x + vnode.gwidth/2 + vnode.tspace + xcomponent;
+				ycenter = vnode.y + vnode.gheight - ycomponent;
+
+				int xpoints[] = {(int) (xcenter-xcomponent),
+					(int) (xcenter+vnode.theight-xcomponent), (int) (xcenter-xcomponent)};
+				int ypoints[] = {(int) (ycenter-ycomponent), (int) ycenter, (int) (ycenter+ycomponent)};
+
+				GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
+				triangle.moveTo((int) (xcenter-xcomponent), (int) (ycenter-ycomponent));
+				for (int index = 1; index < xpoints.length; index++) {
+					triangle.lineTo(xpoints[index], ypoints[index]);
+				}
+				triangle.closePath();
+
+				g2.setColor(DecisionTreeScheme.viewtrianglecolor);
+				g2.fill(triangle);
+			}
+			else {
+				xcenter = vnode.x + vnode.gwidth/2 + vnode.tspace + xcomponent;
+				ycenter = vnode.y + vnode.gheight - ycomponent;
+
+				int xpoints[] = {(int) (xcenter-ycomponent),
+					(int) (xcenter+ycomponent), (int) (xcenter)};
+				int ypoints[] = {(int) (ycenter-xcomponent),
+					(int) (ycenter-xcomponent), (int) (ycenter+ycomponent)};
+
+				GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
+				triangle.moveTo((int) (xcenter-ycomponent), (int) (ycenter-xcomponent));
+				for (int index = 1; index < xpoints.length; index++) {
+					triangle.lineTo(xpoints[index], ypoints[index]);
+				}
+				triangle.closePath();
+
+				g2.setColor(DecisionTreeScheme.viewtrianglecolor);
+				g2.fill(triangle);
+			}
+			}
 
 			if (vnode.collapsed)
 				return;

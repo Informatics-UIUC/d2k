@@ -67,10 +67,13 @@ public final class ExpandedGraph extends JPanel {
 	double percentspace = 8;
 	double axisspace = 4;
 
+	double maxtallywidth;
+
 	ViewableDTNode dnode;
 
 	String[] outputs;
 	double[] values;
+	int[] tallies;
 	int datasize;
 
 	DecisionTreeScheme scheme;
@@ -88,12 +91,14 @@ public final class ExpandedGraph extends JPanel {
 
 		outputs = model.getUniqueOutputValues();
 		values = new double[outputs.length];
+		tallies = new int[outputs.length];
 		for(int index = 0; index < outputs.length; index++){
 			try {
 				if(dnode.getTotal() == 0)
 					values[index] = 0;
 				else
 					values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
+				tallies[index] = dnode.getOutputTally(outputs[index]);
 			} catch (Exception exception) {
 				System.out.println("Exception from getOutputTally");
 			}
@@ -119,6 +124,13 @@ public final class ExpandedGraph extends JPanel {
 		smallascent = smallmetrics.getAscent();
 		dpercentwidth = smallmetrics.stringWidth("100.0%");
 		percentwidth = smallmetrics.stringWidth("100");
+
+		maxtallywidth = 0;
+		for(int i = 0; i < tallies.length; i++) {
+			double d = smallmetrics.stringWidth(Integer.toString(tallies[i]));
+			if(d > maxtallywidth)
+				maxtallywidth = d;
+		}
 
 		setBackground(scheme.expandedbackgroundcolor);
 	}
@@ -205,6 +217,11 @@ public final class ExpandedGraph extends JPanel {
 			g2.drawString(outputs[index], (int) x, (int) y);
 
 			x += outputwidth + outputspace;
+
+			String tally = Integer.toString(tallies[index]);
+			g2.drawString(tally, (int)x, (int)y);
+
+			x += maxtallywidth + outputspace;
 			String value = numberformat.format(values[index]) + "%";
 			g2.drawString(value, (int) x, (int) y);
 
@@ -311,7 +328,7 @@ public final class ExpandedGraph extends JPanel {
 		xdata = xpath;
 		ydata = ypath + pathheight + ypathspace;
 
-		datawidth = dataleft + samplesize + samplespace + outputwidth + outputspace + dpercentwidth + dataright;
+		datawidth = dataleft + samplesize + samplespace + outputwidth + outputspace + dpercentwidth + dataright+maxtallywidth;
 		dataheight = datatop + datasize*samplesize + (datasize-1)*samplespace + databottom;
 
 		if (pathwidth > datawidth)
