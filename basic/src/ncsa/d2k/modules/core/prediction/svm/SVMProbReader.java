@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.projects.xli.SVM;
+package ncsa.d2k.modules.core.prediction.svm;
 
 import java.util.Vector;
 import java.io.*;
