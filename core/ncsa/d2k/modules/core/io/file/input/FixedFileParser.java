@@ -68,6 +68,7 @@ public class FixedFileParser implements FlatFileParser {
         else
            throw new Exception("Could not determine column sizes.");
 
+
         // the existence of the file should have been checked beforehand.
         _reader = new LineNumberReader(new FileReader(file));
 
@@ -82,7 +83,28 @@ public class FixedFileParser implements FlatFileParser {
             lineLength = line.length();
         }
 
-				boolean debug = true;
+
+				//QA added - check column bounds
+	  	  int lenHdr = header.getNumRows();
+        for (int i =0 ; i < lenHdr; i ++) {
+				if (_columnBegin[i] < 1)
+					 throw new Exception ("Column start " + _columnBegin[i] + " must  be greater than zero." +
+							" Please correct format ");
+		     if(_columnBegin[i] > _columnEnd[i])
+				   throw new Exception ("Column start " + _columnBegin[i] + " must be less  or equal to " +
+						  "column end " + _columnEnd[i] + ". Please correct format");
+				if (_columnBegin[i] > lineLength)
+				  throw new Exception ("Column start " + _columnBegin[i] + " must be less or equal to " +
+					 "line length " + lineLength + ". Please correct format");
+				if (_columnEnd[i] > lineLength)
+				  throw new Exception ("Column end " + _columnEnd[i] + " must be less or equal " +
+					 "line length " + lineLength + ". Please correct format");
+
+       }
+
+
+
+
         if (debug ) {
 				System.out.println("LL: "+lineLength);
         System.out.println("NR: "+_tableLength);
@@ -167,10 +189,11 @@ public class FixedFileParser implements FlatFileParser {
 	    for ( int i = 0 ; i <  nr ; i++) {
 	        start = _columnBegin[i];
 	        end=start+vt.getInt(i,col)-1;
-	        start = end+1;
+	        start = end+1;       //QA comment - this statement has no effect on _columnBegin
 	        _columnEnd[i] = end;
 	    }
     }
+
 
     public char[][] getRowElements(int i) {
         try {
@@ -218,9 +241,9 @@ public class FixedFileParser implements FlatFileParser {
         return -1;
     }*/
 
-		boolean debug = true;
+		boolean debug = false;
 
-    private char[][] parseLine(int row) throws IOException {
+    private char[][] parseLine(int row) throws Exception {
 	  	if(debug) System.out.println("noOfColumns:"+_noOfColumns);
         //ArrayList retVal = new ArrayList();
       char[][] retVal = new char[_noOfColumns][];
@@ -245,8 +268,9 @@ public class FixedFileParser implements FlatFileParser {
 
       String ln = _reader.readLine();
       char[] lineChars = ln.toCharArray();
+			int lineLength = ln.length();
 
-      if(debug) System.out.println("parse line: "+row+" "+ ln);
+      if(debug) System.out.println("parse line: "+row+" "+ ln + " lenght : " + ln.length());
 
 		  for(int col=0; col<_noOfColumns; col++){
 		    //getting rid of whitespace
@@ -254,17 +278,17 @@ public class FixedFileParser implements FlatFileParser {
 			  trueEnd   = _columnEnd[col]-1;
 			  //trueBegin= _columnBegin[col];
 				//trueEnd= _columnEnd[col];
+
 			while(((lineChars[trueBegin]==' ')/*||(lineChars[trueBegin]=='0')*/)
 			    &&(trueBegin<trueEnd))
-					trueBegin++;
-
+								trueBegin++;
 			//System.out.println("b:"+trueBegin+" e:"+trueEnd);
-			while((lineChars[trueEnd]==' ')&&(trueEnd>trueBegin))
-			   trueEnd--;
+			//while((lineChars[trueEnd]==' ')&&(trueEnd>trueBegin))
+			 //  trueEnd--;
 
 			if(debug) System.out.println("b:"+trueBegin+" e:"+trueEnd);
 
-			if(trueBegin!=trueEnd){
+			//if(trueBegin!=trueEnd){
             //if(true) {
 			    /*try{
 			        tableColumns[col].setString(
@@ -283,15 +307,15 @@ public class FixedFileParser implements FlatFileParser {
                     */
          char[] element = new String(lineChars, trueBegin, trueEnd-trueBegin+1).toCharArray();
        //char[] element = new String(lineChars, _columnBegin[col], _columnEnd[col]-_columnBegin[col]+1).toCharArray();
-         if(debug) System.out.println(new String(element)+"/");
+         if(debug) System.out.println(new String(element)+"!");
                 //retVal.add(element);
          retVal[col] = element;
-			}
-      else {
-         //retVal.add(new char[0]);
+			//}
+      /*else {
+
           retVal[col] = new char[0];
 		      addBlank(row, col);
-       }
+       } */
 		  }
         return retVal;
     }
@@ -346,4 +370,14 @@ public class FixedFileParser implements FlatFileParser {
         }
         return blanks;
 	}*/
+
+
 }
+
+// QA Comments
+// 2/14/03 - Handed off to QA by David Clutter
+// 2/16/03 - Anca started QA process. Added error handling for bad formating
+//           see check column bounds comment
+// 2/ ?/03 - checked into basic.
+// END QA Comments
+

@@ -417,5 +417,5 @@ public class CreateDelimitedParser extends InputModule {
 // 2/14/03 - Handed off to QA by David Clutter
 // 2/16/03 - Anca started QA process.  Updated module info and changed input
 //           name to File Name.
-// 2/18/03 - checked into basic.
+// 2/?/03 - checked into basic.
 // END QA Comments
