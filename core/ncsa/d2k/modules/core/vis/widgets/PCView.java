@@ -128,9 +128,12 @@ public class PCView extends JUserPane implements ActionListener, Printable  {
 		private double[] maxes;
 		private ViewModule module;
 
-		public PCView() {}
+		public PCView() {
+            menuBar = new JMenuBar();
+        }
 
 		public PCView(ViewModule mod, Table tbl) {
+			menuBar = new JMenuBar();
 			initView(mod);
 			setInput(tbl, 0);
 		}
@@ -156,7 +159,6 @@ public class PCView extends JUserPane implements ActionListener, Printable  {
 			nf.setMaximumFractionDigits(2);
 
 			// create the menus
-			menuBar = new JMenuBar();
 			JMenu opt = new JMenu("Options");
 			JMenu helpMenu = new JMenu("Help");
 			helpItem = new JMenuItem("About ParallelCoordinateVis..");
