@@ -912,6 +912,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
                             sel);
                     HashSet set = uniqueColumnValues[idx];
                     for (int i = 0; i < sel.length; i++) {
+                       textUniqueModel.removeElement(sel[i]);
                         textCurrentModel.removeElement(sel[i]);
                         set.remove(sel[i]);
                     }
@@ -1003,11 +1004,38 @@ public class SQLBinAttributes extends HeadlessUIModule {
                  * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
-                    if (!setup_complete)
-                        return;
-                    binListModel.removeAllElements();
-                    currentSelectionModel.removeAllElements();
-                    curSelName.setText(EMPTY);
+
+                   if (!setup_complete)
+                      return;
+
+                   while (binListModel.getSize() > 0) {
+
+                      BinDescriptor bd = (BinDescriptor)binListModel.firstElement();
+
+                      if (bd instanceof TextualBinDescriptor) {
+                         uniqueColumnValues[bd.column_number].addAll(((TextualBinDescriptor)bd).vals);
+                      }
+                      binListModel.remove(0);
+
+                   }
+
+                   // binListModel.removeAllElements();
+                   currentSelectionModel.removeAllElements();
+                   curSelName.setText(EMPTY);
+
+                   // update the group
+                   Object lbl = textualColumnLabels.getSelectedValue();
+                   // gpape:
+                   if (lbl != null) {
+                      int idx = ((Integer)columnLookup.get(lbl)).intValue();
+                      HashSet unique = uniqueColumnValues[idx];
+                      textUniqueModel.removeAllElements();
+                      textCurrentModel.removeAllElements();
+                      Iterator i = unique.iterator();
+                      while (i.hasNext())
+                         textUniqueModel.addElement(i.next());
+                   }
+
                 }
             });
             createInNewColumn = new JCheckBox("Create in new column", false);
@@ -1089,6 +1117,31 @@ public class SQLBinAttributes extends HeadlessUIModule {
             add(bxl, BorderLayout.CENTER);
             add(buttonPanel, BorderLayout.SOUTH);
           }  // initView
+
+          private boolean checkDuplicateNumericBins(int[] newIndices) {
+
+             for (int bdi = 0; bdi < binListModel.getSize(); bdi++) {
+
+                BinDescriptor bd = (BinDescriptor)binListModel.elementAt(bdi);
+
+                for (int i = 0; i < newIndices.length; i++) {
+
+                   if (newIndices[i] == bd.column_number) {
+
+                      JOptionPane.showMessageDialog(this, "You must remove all existing bins on attribute '" +
+                      fieldNames[newIndices[i]] + "' before creating new ones.", "Error", JOptionPane.ERROR_MESSAGE);
+
+                      return false;
+
+                   }
+
+                }
+
+             }
+
+             return true;
+
+          }
 
           private boolean validateBins(DefaultListModel newBins) {
             boolean match = false;
@@ -1182,6 +1235,10 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
         private void addUniRange () {
             int[] colIdx = getSelectedNumericIndices();
 
+            if (!checkDuplicateNumericBins(colIdx)) {
+               return;
+            }
+
             // uniform range is the number of bins...
             String txt = uRangeField.getText();
             int num;
@@ -1228,6 +1285,10 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             //vered:
             if(colIdx.length == 0){
                ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
+               return;
+            }
+
+            if (!checkDuplicateNumericBins(colIdx)) {
                return;
             }
 
@@ -1286,6 +1347,10 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                 return;
             }
 
+            if (!checkDuplicateNumericBins(colIdx)) {
+               return;
+            }
+
             // the interval is the width
             String txt = intervalField.getText();
             double intrval;
@@ -1341,6 +1406,10 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             if(colIdx.length == 0){
               ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
                 return;
+            }
+
+            if (!checkDuplicateNumericBins(colIdx)) {
+               return;
             }
 
             String txt = weightField.getText();

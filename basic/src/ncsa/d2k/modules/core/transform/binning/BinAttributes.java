@@ -21,6 +21,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
@@ -276,9 +277,9 @@ public class BinAttributes extends HeadlessUIModule {
 		if (tbl.getColumnLabel(i) == null || tbl.getColumnLabel(i).length() == 0) {
 		  tbl.setColumnLabel("column_" + i, i);
 		}
-	  } 
+	  }
 
-   				  
+
 	  // clear all text fields and lists...
 	  curSelName.setText(EMPTY);
 	  textBinName.setText(EMPTY);
@@ -699,13 +700,22 @@ public class BinAttributes extends HeadlessUIModule {
 
 		  for (int input=0; input < inputs.length; input++) {
 			Integer integer = (Integer) columnLookup.get((String) inputs[input]);
-			String[] values = TableUtilities.uniqueValues(tbl, integer.intValue());
+			// String[] values = TableUtilities.uniqueValues(tbl, integer.intValue());
+         Object[] values = textUniqueModel.toArray();
 
 			for (int value = 0; value < values.length; value++) {
-			  String[] bin = {values[value]};
-			  BinDescriptor descriptor = BinDescriptorFactory.createTextualBin(integer.intValue(), values[value], bin, tbl);
+			  String[] bin = {values[value].toString()};
+			  BinDescriptor descriptor = BinDescriptorFactory.createTextualBin(integer.intValue(), values[value].toString(), bin, tbl);
 			  addItemToBinList(descriptor);
 			}
+
+         Object val = inputs[input];
+         int idx = ((Integer)columnLookup.get(val)).intValue();
+         HashSet set = uniqueColumnValues[idx];
+         textUniqueModel.removeAllElements();
+         textCurrentModel.removeAllElements();
+         set.clear();
+
 		  }
 		}
 	  });
@@ -802,6 +812,7 @@ public class BinAttributes extends HeadlessUIModule {
 
 		  HashSet set = uniqueColumnValues[idx];
 		  for (int i = 0; i < sel.length; i++) {
+           textUniqueModel.removeElement(sel[i]);
 			textCurrentModel.removeElement(sel[i]);
 			set.remove(sel[i]);
 		  }
@@ -875,13 +886,16 @@ public class BinAttributes extends HeadlessUIModule {
 		public void actionPerformed (ActionEvent e) {
 		  if (!setup_complete)
 			return;
+
 		  if (currentSelectedBin != null) {
 			int col = currentSelectedBin.column_number;
 			if (currentSelectedBin instanceof TextualBinDescriptor)
 			  uniqueColumnValues[col].addAll(((TextualBinDescriptor)currentSelectedBin).vals);
+
 			binListModel.removeElement(currentSelectedBin);
 			currentSelectionModel.removeAllElements();
 			curSelName.setText(EMPTY);
+
 			// update the group
 			Object lbl = textualColumnLabels.getSelectedValue();
 			// gpape:
@@ -894,6 +908,7 @@ public class BinAttributes extends HeadlessUIModule {
 			  while (i.hasNext())
 				textUniqueModel.addElement(i.next());
 			}
+
 		  }
 		}
 	  });
@@ -906,11 +921,38 @@ public class BinAttributes extends HeadlessUIModule {
 		 * @param e
 		 */
 		public void actionPerformed (ActionEvent e) {
+
 		  if (!setup_complete)
 			return;
-		  binListModel.removeAllElements();
+
+        while (binListModel.getSize() > 0) {
+
+           BinDescriptor bd = (BinDescriptor)binListModel.firstElement();
+
+           if (bd instanceof TextualBinDescriptor) {
+              uniqueColumnValues[bd.column_number].addAll(((TextualBinDescriptor)bd).vals);
+           }
+           binListModel.remove(0);
+
+        }
+
+		  // binListModel.removeAllElements();
 		  currentSelectionModel.removeAllElements();
 		  curSelName.setText(EMPTY);
+
+        // update the group
+        Object lbl = textualColumnLabels.getSelectedValue();
+        // gpape:
+        if (lbl != null) {
+          int idx = ((Integer)columnLookup.get(lbl)).intValue();
+          HashSet unique = uniqueColumnValues[idx];
+          textUniqueModel.removeAllElements();
+          textCurrentModel.removeAllElements();
+          Iterator i = unique.iterator();
+          while (i.hasNext())
+           textUniqueModel.addElement(i.next());
+			}
+
 		}
 	  });
 	  // gpape:
@@ -969,7 +1011,7 @@ public class BinAttributes extends HeadlessUIModule {
 			 savedBins = new BinDescriptor[bins.length];
 			 for (int i = 0; i < bins.length; i++)
 				savedBins[i] = bins[i];
-		
+
 		//ANCA
 			//try {
 			//	   ExampleTable etbl = (ExampleTable) tbl;
@@ -979,7 +1021,7 @@ public class BinAttributes extends HeadlessUIModule {
 			//	}
 
 			 BinTransform bt = new BinTransform(savedBins, createInNewColumn.isSelected());
-			 
+
 			 pushOutput(bt, 0);
 			 viewDone("Done");
 		  // }
@@ -1020,6 +1062,31 @@ public class BinAttributes extends HeadlessUIModule {
 	  add(bxl, BorderLayout.CENTER);
 	  add(buttonPanel, BorderLayout.SOUTH);
 	}
+
+   private boolean checkDuplicateNumericBins(int[] newIndices) {
+
+      for (int bdi = 0; bdi < binListModel.getSize(); bdi++) {
+
+         BinDescriptor bd = (BinDescriptor)binListModel.elementAt(bdi);
+
+         for (int i = 0; i < newIndices.length; i++) {
+
+            if (newIndices[i] == bd.column_number) {
+
+               JOptionPane.showMessageDialog(this, "You must remove all existing bins on attribute '" +
+               tbl.getColumnLabel(newIndices[i]) + "' before creating new ones.", "Error", JOptionPane.ERROR_MESSAGE);
+
+               return false;
+
+            }
+
+         }
+
+      }
+
+      return true;
+
+   }
 
 	private boolean validateBins(DefaultListModel newBins) {
 	   boolean match = false;
@@ -1091,13 +1158,16 @@ public class BinAttributes extends HeadlessUIModule {
 	 */
 	private void addUniRange () {
 	  int[] colIdx = getSelectedNumericIndices();
+
 	  //vered
 	  if(colIdx.length == 0){
 		ErrorDialog.showDialog("Must select an attribute to bin.", "Error");
 		return;
 	  }
 
-
+     if (!checkDuplicateNumericBins(colIdx)) {
+        return;
+     }
 
 	  // uniform range is the number of bins...
 	  String txt = uRangeField.getText();
@@ -1161,6 +1231,10 @@ public class BinAttributes extends HeadlessUIModule {
 		return;
 	  }
 
+     if (!checkDuplicateNumericBins(colIdx)) {
+        return;
+     }
+
 	  // specified range is a comma-separated list of bin maxes
 	  String txt = specRangeField.getText();
 
@@ -1191,7 +1265,7 @@ public class BinAttributes extends HeadlessUIModule {
 		addItemToBinList(nbd);
 		for (int j = 1; j < binMaxes.length; j++) {
 		  // now create the BinDescriptor and add it to the bin list
-		  
+
 		  //ANCA nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -1], binMaxes[j]);
 		  nbd = BinDescriptorFactory.createNumericBinDescriptor(colIdx[i], binMaxes[j -1], binMaxes[j],nf,tbl);
 		  addItemToBinList(nbd);
@@ -1212,6 +1286,10 @@ public class BinAttributes extends HeadlessUIModule {
 		ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
 		return;
 	  }
+
+     if (!checkDuplicateNumericBins(colIdx)) {
+        return;
+     }
 
 	  // the interval is the width
 	  String txt = intervalField.getText();
@@ -1279,6 +1357,10 @@ public class BinAttributes extends HeadlessUIModule {
 		ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
 		return;
 	  }
+
+     if (!checkDuplicateNumericBins(colIdx)) {
+        return;
+     }
 
 	  // the weight is the number of items in each bin
 	  String txt = weightField.getText();
@@ -1650,7 +1732,7 @@ class TableBinCounts implements BinCounts {
  */
 
 /** 12-04-03 anca added "unknown" bins for columns that have missing values
- *               changed  marked with ANCA  
+ *               changed  marked with ANCA
  * 			- fixed [bug 140], [bug 150]
 */
 

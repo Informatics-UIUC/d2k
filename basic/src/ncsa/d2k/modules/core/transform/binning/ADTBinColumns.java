@@ -427,6 +427,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 
 					TreeSet set = uniqueColumnValues[idx];
 					for (int i = 0; i < sel.length; i++) {
+                  textUniqueModel.removeElement(sel[i]);
 						textCurrentModel.removeElement(sel[i]);
 						set.remove(sel[i]);
 					}
@@ -543,11 +544,38 @@ public class ADTBinColumns extends HeadlessUIModule {
 				 * @param e
 				 */
 				public void actionPerformed(ActionEvent e) {
-					if (!setup_complete)
-						return;
-					binListModel.removeAllElements();
-					currentSelectionModel.removeAllElements();
-					curSelName.setText(EMPTY);
+
+               if (!setup_complete)
+                  return;
+
+               while (binListModel.getSize() > 0) {
+
+                  BinDescriptor bd = (BinDescriptor)binListModel.firstElement();
+
+                  if (bd instanceof TextualBinDescriptor) {
+                     uniqueColumnValues[bd.column_number].addAll(((TextualBinDescriptor)bd).vals);
+                  }
+                  binListModel.remove(0);
+
+               }
+
+               // binListModel.removeAllElements();
+               currentSelectionModel.removeAllElements();
+               curSelName.setText(EMPTY);
+
+               // update the group
+               Object lbl = textualColumnLabels.getSelectedValue();
+               // gpape:
+               if (lbl != null) {
+                  int idx = ((Integer)columnLookup.get(lbl)).intValue();
+                  TreeSet unique = uniqueColumnValues[idx];
+                  textUniqueModel.removeAllElements();
+                  textCurrentModel.removeAllElements();
+                  Iterator i = unique.iterator();
+                  while (i.hasNext())
+                     textUniqueModel.addElement(i.next());
+               }
+
 				}
 			});
 			// gpape:
