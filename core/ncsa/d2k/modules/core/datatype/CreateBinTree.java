@@ -50,7 +50,7 @@ public class CreateBinTree extends DataPrepModule {
 
    public void doit() {
       BinTransform bt = (BinTransform)pullInput(0);
-      ExampleTable et = (ExampleTable)pullInput(0);
+      ExampleTable et = (ExampleTable)pullInput(1);
 
       BinTree tree = createBinTree(bt, et);
       pushOutput(tree, 0);
