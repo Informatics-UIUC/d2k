@@ -13,7 +13,7 @@ import java.io.Serializable;
 	a default tally is incremented.  The number of unknown class names and
 	attribute names are both kept as well.
 */
-public class BinTree extends HashMap implements Serializable {
+public class BinTree extends HashMap implements Serializable, Cloneable {
 	public static String EQUAL_TO = "=";
 	public static String LESS_THAN = "<";
 	public static String GREATER_THAN = ">";
