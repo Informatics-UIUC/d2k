@@ -58,10 +58,16 @@ public class Normalize extends HeadlessUIModule {
       sb.append("mean of that set is approximately zero and the standard ");
       sb.append("deviation of that set is approximately one.</P>");
 
-      sb.append("<P><U>Missing Values Handling:</U> This module handles missing values" +
+  /*    sb.append("<P><U>Missing Values Handling:</U> This module handles missing values" +
         " as if they were real meaningful values. For example, if a missing values is represented " +
         "by zero, then after applying the transformation this zero will be changed according " +
         "to the normalizing definition.</P>");
+*/
+  sb.append("</p><p>Missing Values Handling: Missing values are preserved by " +
+              "the output Transformation of this module. Missing values are ignored " +
+              "and not being considered during normalization. ");
+
+
 
       sb.append("</p><p>Data Handling: ");
       sb.append("This module does not modify its input data. Rather, its ");
@@ -493,4 +499,6 @@ public class Normalize extends HeadlessUIModule {
  *
  * 11-04-03 Vered started QA process.
  *          Module is ready unless handling of missing values will change.
+ * 11-25-03 due to new guide lines regarding missing values - this module needs to go
+ *          under some changes. missing values should be preserved. [bug 146]
  */
