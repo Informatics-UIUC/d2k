@@ -35,6 +35,20 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 		outputToChildMap = new HashMap();
 	}
 
+	private static final String EQUALS = " = ";
+
+	/**
+		Get the label of a branch.
+		@param i the branch to get the label of
+		@return the label of branch i
+	*/
+	public String getBranchLabel(int i) {
+		StringBuffer sb = new StringBuffer(getLabel());
+		sb.append(EQUALS);
+		sb.append((String)branchLabels.get(i));
+		return sb.toString();
+	}
+
 	/**
 		Add a branch to this node, given the label of the branch and
 		the child node.  For a CategoricalDecisionTreeNode, the label
