@@ -4,13 +4,15 @@ package ncsa.d2k.modules.core.io.sql;
 import ncsa.d2k.core.modules.InputModule;
 import java.sql.*;
 import java.util.Vector;
+import javax.swing.*;
 
 public class AvailableFieldsInput extends InputModule
 {
+  JOptionPane msgBoard = new JOptionPane();
 	public String getOutputInfo (int index) {
 		switch (index) {
 			case 0: return "Pass this database connection to the next module.";
-			case 1: return "This is a list of the fields available in the specified table.";
+			case 1: return "A list of the fields available in the selected table.";
 			default: return "No such output";
 		}
 	}
@@ -48,17 +50,26 @@ public class AvailableFieldsInput extends InputModule
 	public void doit () throws Exception
 	{
 		String tableName = (String) this.pullInput (1);
-		ConnectionWrapper cw = (ConnectionWrapper) this.pullInput (0);
-		Connection con = cw.getConnection();
-		Vector v = new Vector();
-		Vector c = new Vector();
-		DatabaseMetaData dbmd = con.getMetaData();
-		ResultSet tableSet = dbmd.getColumns (null,null,tableName,"%");
-		while (tableSet.next())
+                if (tableName == null || tableName.length()== 0) {
+                  JOptionPane.showMessageDialog(msgBoard,
+                            "No table is selected.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                  System.out.println("No table is selected");
+
+                }
+                else {
+                  ConnectionWrapper cw = (ConnectionWrapper) this.pullInput (0);
+                  Connection con = cw.getConnection();
+                  Vector v = new Vector();
+                  Vector c = new Vector();
+                  DatabaseMetaData dbmd = con.getMetaData();
+                  ResultSet tableSet = dbmd.getColumns (null,null,tableName,"%");
+                  while (tableSet.next())
 			v.addElement(tableSet.getString("COLUMN_NAME"));
 
-		this.pushOutput (cw, 0);
-		this.pushOutput (v, 1);
+                  this.pushOutput (cw, 0);
+                  this.pushOutput (v, 1);
+                }
 	}
 
 	/**

@@ -1,7 +1,6 @@
 package ncsa.d2k.modules.core.io.sql;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.*;
 import ncsa.d2k.userviews.widgets.*;
 import java.awt.*;
@@ -17,6 +16,7 @@ import ncsa.d2k.userviews.widgets.swing.*;
 */
 public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 
+  JOptionPane msgBoard = new JOptionPane();
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
@@ -225,11 +225,19 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 				public void actionPerformed(ActionEvent ae) {
 					Object[] values = selectedModel.toArray();
 					String[] retVal = new String[values.length];
-					for(int i = 0; i < retVal.length; i++) {
+                                        if (retVal.length==0) {
+                                          JOptionPane.showMessageDialog(msgBoard,
+                                                    "You must select some fields.", "Error",
+                                                    JOptionPane.ERROR_MESSAGE);
+                                          System.out.println("No columns are selected");
+                                        }
+                                        else {
+                                          for(int i = 0; i < retVal.length; i++) {
 						retVal[i] = (String)values[i];
-					}
-					pushOutput(retVal, 0);
-					viewDone("Done");
+                                          }
+                                          pushOutput(retVal, 0);
+                                          viewDone("Done");
+                                        }
 				}
 			});
 
