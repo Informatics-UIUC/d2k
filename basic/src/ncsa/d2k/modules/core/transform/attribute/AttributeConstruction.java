@@ -738,5 +738,14 @@ public class AttributeConstruction extends HeadlessUIModule {
 // 7-17-03 Ruth changed module name to be Attribute Construction.
 //         Deleted commented out code - it's in CVS if needed.
 //         Explicitly call setWindowName so it matches module alias.
-//
+
+
+   /**
+ * 11-04-03 Vered started QA process
+ *          the ui validates illegal expressions [bug 117]
+ *
+ *          the ui remembers the previously constructed attributes (byt name)
+ *          and lists them together with the available attributes in the input table.
+ *          [bug 118]
+ */
 
