@@ -1410,4 +1410,16 @@ public class TableImpl extends AbstractTable implements /*Mutable*/Table {
          subset.setColumn((Column)columns[i].getSubset(rows), i);
      return  subset;
    }
+
+   /**
+    * Return true if any value in this Table is missing.
+    * @return true if there are any missing values, false if there are no missing values
+    */
+   public boolean hasMissingValues() {
+    for(int i = 0; i < getNumColumns(); i++)
+      for(int j = 0; j < getNumRows(); j++)
+        if(isValueMissing(j, i))
+          return true;
+    return false;
+   }
 }

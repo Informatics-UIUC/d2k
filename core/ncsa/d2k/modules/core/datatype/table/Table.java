@@ -356,4 +356,11 @@ public interface Table extends java.io.Serializable {
 
         public Table getSubset(int[] rows);
 
+
+        /**
+         * Return true if any value in this Table is missing.
+         * @return true if there are any missing values, false if there are no missing values
+         */
+        public boolean hasMissingValues();
+
 }/*Table*/

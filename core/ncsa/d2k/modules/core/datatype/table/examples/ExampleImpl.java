@@ -13,7 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.util.*;
  * @author unascribed
  * @version 1.0
  */
-public class ExampleImpl extends TableImpl implements Example {
+public class ExampleImpl extends MutableTableImpl implements Example {
 	static final long serialVersionUID = 8436788752105562461L;
 
 	private int[] inputs;
