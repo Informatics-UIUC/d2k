@@ -182,8 +182,8 @@ public class AttributeConstruction extends HeadlessUIModule {
       protected ViewModule mod;
       
       // added DC 3.25.2004
-      private Construction selectedItem;
-      private int selectedIndex;
+      protected Construction selectedItem;
+      protected int selectedIndex;
 
       public ColumnConstructionGUI() {
         this.newLabels = (String[])AttributeConstruction.this.getNewLabel();
