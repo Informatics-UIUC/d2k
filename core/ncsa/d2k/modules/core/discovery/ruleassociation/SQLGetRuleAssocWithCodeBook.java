@@ -11,20 +11,18 @@ package ncsa.d2k.modules.core.discovery.ruleassociation;
 
 
 
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+import java.util.*;
+import javax.swing.*;
+import gnu.trove.*;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.UserView;
-import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
-import ncsa.gui.Constrain;
-import ncsa.gui.JOutlinePanel;
-import java.sql.*;
-import java.util.ArrayList;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import gnu.trove.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.gui.*;
 
 public class SQLGetRuleAssocWithCodeBook extends UIModule
         {
@@ -143,7 +141,10 @@ public class SQLGetRuleAssocWithCodeBook extends UIModule
           s += "will be pruned. This module also provides an user-interface to filter out rules. ";
           s += "You can specify the 'IF' part by choosing a condition, and specify ";
           s += "the 'THEN' part by choosing a target. This module will only generate ";
-          s += "association rules that match your selection.";
+          s += "association rules that match your selections. In addition, this module ";
+          s += "not only can display the discoved rules in predefined codes, ";
+          s += "but also in detailed descriptions by choosing the 'Use Code Book' ";
+          s += "option and specifying a code book for use. ";
           s += "<p> Restrictions: ";
           s += "We currently only support Oracle databases.";
           return s;
