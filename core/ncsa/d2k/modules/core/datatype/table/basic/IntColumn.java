@@ -35,8 +35,8 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
      */
     public IntColumn (int capacity) {
         internal = new int[capacity];
-		setIsScalar(true);
-		type = ColumnTypes.INTEGER;
+      setIsScalar(true);
+      type = ColumnTypes.INTEGER;
     }
 
     /**
@@ -44,9 +44,9 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
      * @param vals the initial values
      */
     public IntColumn (int[] vals) {
-		internal = vals;
-		setIsScalar(true);
-		type = ColumnTypes.INTEGER;
+      internal = vals;
+      setIsScalar(true);
+      type = ColumnTypes.INTEGER;
     }
 
     /**
@@ -95,19 +95,19 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
         return  numEntries;
     }
 
-	/**
-	 * Get the number of rows that this column can hold.
-	 * @return the number of rows this column can hold
-	 */
-	public int getNumRows() {
-		return internal.length;
-	}
+   /**
+    * Get the number of rows that this column can hold.
+    * @return the number of rows this column can hold
+    */
+   public int getNumRows() {
+      return internal.length;
+   }
 
     /**
      Set the number of rows for this IntColumn.  If the Column implementation supports
      capacity than the suggestion may be followed. The capacity is it's potential
      max number of entries.  If numEntries is greater than newCapacity then Column
-	 may be truncated.
+    may be truncated.
      @param newCapacity the new capacity
      */
     public void setNumRows (int newCapacity) {
@@ -292,7 +292,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
      */
     public byte getByte (int pos) {
         //return (String.valueOf(this.internal[pos])).getBytes();
-		return getBytes(pos)[0];
+      return (byte)getInt(pos);
     }
 
     /**
@@ -301,9 +301,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
      * @param pos the position
      */
     public void setByte (byte newEntry, int pos) {
-		byte[] b = new byte[1];
-		b[0] = newEntry;
-		setBytes(b, pos);
+      setInt((int)newEntry, pos);
     }
 
     /**
@@ -348,34 +346,32 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
     }
 
     /**
-     * Convert the entry at pos to a String and return it as a char
+     * gets the entry at pos as a char
      * @param pos the position
-     * @return the entry at pos as a char[]
+     * @return the entry at pos as a char
      */
     public char getChar (int pos) {
-		return getChars(pos)[0];
+      return (char)getInt(pos);
     }
 
     /**
-     * Convert newEntry to a String and call setString()
+     * casts newentry to an int and sets it at pos
      * @param newEntry the new item
      * @param pos the position
      */
     public void setChar (char newEntry, int pos) {
-		char[] c = new char[1];
-		c[0] = newEntry;
-        setChars(c, pos);
+      setInt((int)newEntry, pos);
     }
 
     /**
-     * Return true if the entry at pos is greater than zero, false othersie
+     * Return false if the entry at pos is equal to zero, true othersie
      * @param pos the position
-     * @return true if the entry at pos is greater than zero, false otherwise
+     * @return false if the entry at pos is equal to zero, true otherwise
      */
     public boolean getBoolean (int pos) {
-        if (internal[pos] > 0)
-            return  true;
-        return  false;
+        if (internal[pos] == 0)
+            return  false;
+        return  true;
     }
 
     /**
@@ -412,7 +408,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
      However, Column will be unaware of those changes until you call
      setInternal as, so state variables can get out of sync.
      @return the internal representation of this Column.
-	 @deprecated
+    @deprecated
      */
     public Object getInternal () {
         return  this.internal;
@@ -496,7 +492,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
 
     /**
      * Removes an entry from the Column, at pos.  The number of rows in this
-	 * column will decrease by one.
+    * column will decrease by one.
      * @param pos the position to remove
      * @return a Integer representation of the removed int
      */
@@ -558,7 +554,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
      * Get a copy of this Column, reordered, based on the input array of indices.
      * Does not overwrite this Column.
      * @param newOrder an array of indices indicating a new order
-	 * @return a copy of this column, re-ordered
+    * @return a copy of this column, re-ordered
      */
     public Column reorderRows (int[] newOrder) {
         int[] newInternal = null;
@@ -578,7 +574,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
     /**
      * Compare the values of the object passed in and pos. Return 0 if they
      * are the same, greater than zero if element is greater,
-	 * and less than zero if element is less.
+    * and less than zero if element is less.
      * @param element the object to be passed in should be a subclass of Number
      * @param pos the position of the element in Column to be compared with
      * @return a value representing the relationship- >, <, or == 0
@@ -604,7 +600,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
     /**
      * Compare pos1 and pos2 positions in the Column. Return 0 if they
      * are the same, greater than zero if pos1 is greater,
-	 * and less than zero if pos1 is less.
+    * and less than zero if pos1 is less.
      * @param pos1 the position of the first element to compare
      * @param pos2 the position of the second element to compare
      * @return a value representing the relationship- >, <, or == 0
@@ -644,7 +640,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
             // if this row is not in the list, copy it into the new internal
-			if(!toRemove.contains(new Integer(i))) {
+         if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }
@@ -680,11 +676,11 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
     */
     public void sort(MutableTable t,int begin, int end)
     {
-	if (end > internal.length -1) {
-	    System.err.println(" end index was out of bounds");
-	    end = internal.length -1;
-	}
-	internal = doSort(internal, begin, end, t);
+   if (end > internal.length -1) {
+       System.err.println(" end index was out of bounds");
+       end = internal.length -1;
+   }
+   internal = doSort(internal, begin, end, t);
 
     }
 
@@ -695,7 +691,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
      * @param p the beginning index
      * @param r the ending index
      * @param t the VerticalTable to swap rows for
-	 * @return a sorted array of ints
+    * @return a sorted array of ints
      */
     private static int[] doSort (int[] A, int p, int r, MutableTable t) {
         if (p < r) {
@@ -712,7 +708,7 @@ final public class IntColumn extends AbstractColumn implements NumericColumn {
      * @param p the beginning index
      * @param r the ending index
      * @param t the Table to swap rows for
-	 * @return the partition point
+    * @return the partition point
      */
     final private static int partition (int[] A, int p, int r, MutableTable t) {
         int x = A[p];

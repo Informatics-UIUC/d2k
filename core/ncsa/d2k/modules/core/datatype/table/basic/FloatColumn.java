@@ -31,28 +31,28 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
 
     /**
      * Create a new FloatColumn with the specified capacity.
-	 * @param capacity the initial capacity
+    * @param capacity the initial capacity
      */
     public FloatColumn (int capacity) {
         internal = new float[capacity];
-		setIsScalar(true);
-		type = ColumnTypes.FLOAT;
+      setIsScalar(true);
+      type = ColumnTypes.FLOAT;
     }
 
     /**
      * Create a new FloatColumn with the specified values.
-	 * @param vals the initial values stored in this column
+    * @param vals the initial values stored in this column
      */
     public FloatColumn (float[] vals) {
-		internal = vals;
-		setIsScalar(true);
-		type = ColumnTypes.FLOAT;
+      internal = vals;
+      setIsScalar(true);
+      type = ColumnTypes.FLOAT;
     }
 
     /**
      * Return an exact copy of this column.  A deep copy is attempted, but if it
-	 * fails a new column will be created, initialized with the same data as this
-	 * column.
+    * fails a new column will be created, initialized with the same data as this
+    * column.
      * @return A new Column with a copy of the contents of this column.
      */
     public Column copy () {
@@ -80,11 +80,11 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
 
     //////////////////////////////////////
     //// Accessing Metadata
-	/**
-	 * Get the number of entries this Column holds.  This is the number of
-	 * non-null entries in the Column.
-	 * @return this Column's number of entries
-	 */
+   /**
+    * Get the number of entries this Column holds.  This is the number of
+    * non-null entries in the Column.
+    * @return this Column's number of entries
+    */
     public int getNumEntries () {
         int numEntries = 0;
         for (int i = 0; i < internal.length; i++)
@@ -93,19 +93,19 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
         return  numEntries;
     }
 
-	/**
-	 * Get the number of rows that this column can hold.  Same as getCapacity().
-	 * @return the number of rows this column can hold
-	 */
-	public int getNumRows() {
-		return internal.length;
-	}
+   /**
+    * Get the number of rows that this column can hold.  Same as getCapacity().
+    * @return the number of rows this column can hold
+    */
+   public int getNumRows() {
+      return internal.length;
+   }
 
     /**
      Suggests a new capacity for this FloatColumn.  If the Column implementation supports
      capacity than the suggestion may be followed. The capacity is its potential
      max number of entries.  If numEntries is greater than newCapacity then
-	 the Column will be truncated.
+    the Column will be truncated.
      @param newCapacity the new capacity
      */
     public void setNumRows (int newCapacity) {
@@ -349,7 +349,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      */
     public byte getByte (int pos) {
         //return (String.valueOf(this.internal[pos])).getBytes();
-		return getBytes(pos)[0];
+      return (byte)getFloat(pos);
     }
 
     /**
@@ -358,16 +358,14 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      * @param pos the position
      */
     public void setByte (byte newEntry, int pos) {
-		byte[] b = new byte[1];
-		b[0] = newEntry;
-		setBytes(b, pos);
+      setFloat((float)newEntry, pos);
     }
 
     /**
      * If newEntry is a Number, store the float value of newEntry
      * otherwise call setString() on newEntry.toString()
-	 * @param newEntry the object to put into this column at pos
-	 * @param pos the row to put newEntry into
+    * @param newEntry the object to put into this column at pos
+    * @param pos the row to put newEntry into
      */
     public void setObject (Object newEntry, int pos) {
         if (newEntry instanceof Number)
@@ -405,12 +403,12 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     }
 
     /**
-     * Convert the entry at pos to a String and return it as a char
+     * Casts the entry at pos to an int and return it as a char
      * @param pos the position
      * @return the entry at pos as a char[]
      */
     public char getChar (int pos) {
-		return getChars(pos)[0];
+      return (char)getInt(pos);
     }
 
     /**
@@ -425,14 +423,14 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     }
 
     /**
-     * Returns true if the value at pos is greater than zero.  False otherwise
+     * Returns false if the value at pos is equal to zero.  true otherwise
      * @param pos the position
-     * @return true if the value at pos is greater than zero, false otherwise
+     * @return false if the value at pos is equal to zero, true otherwise
      */
     public boolean getBoolean (int pos) {
-        if (internal[pos] > 0)
-            return  true;
-        return  false;
+        if (internal[pos] == 0)
+            return  false;
+        return  true;
     }
 
     /**
@@ -569,7 +567,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      * Get a copy of this Column, reordered, based on the input array of indices.
      * Does not overwrite this Column.
      * @param newOrder an array of indices indicating a new order
-	 * @return a copy of this column, re-ordered
+    * @return a copy of this column, re-ordered
      */
     public Column reorderRows (int[] newOrder) {
         float[] newInternal = null;
@@ -653,7 +651,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
             // if this row is not in the list, copy it into the new internal
-			if(!toRemove.contains(new Integer(i))) {
+         if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }
@@ -686,11 +684,11 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     */
     public void sort(MutableTable t,int begin, int end)
     {
-	if (end > internal.length -1) {
-	    System.err.println(" end index was out of bounds");
-	    end = internal.length -1;
-	}
-	internal = doSort(internal, begin, end, t);
+   if (end > internal.length -1) {
+       System.err.println(" end index was out of bounds");
+       end = internal.length -1;
+   }
+   internal = doSort(internal, begin, end, t);
 
     }
 
@@ -703,7 +701,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      * @param p the beginning index
      * @param r the ending index
      * @param t the Table to swap rows for
-	 * @return a sorted array of floats
+    * @return a sorted array of floats
      */
     private static float[] doSort (float[] A, int p, int r, MutableTable t) {
         if (p < r) {
@@ -720,7 +718,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      * @param p the beginning index
      * @param r the ending index
      * @param t the Table to swap rows for
-	 * @return the parition index
+    * @return the parition index
      */
     private static int partition (float[] A, int p, int r, MutableTable t) {
         float x = A[p];

@@ -35,8 +35,8 @@ final public class ObjectColumn extends AbstractColumn {
      */
     public ObjectColumn (int capacity) {
         internal = new Object[capacity];
-		setIsNominal(true);
-		type = ColumnTypes.OBJECT;
+      setIsNominal(true);
+      type = ColumnTypes.OBJECT;
     }
 
     /**
@@ -44,15 +44,15 @@ final public class ObjectColumn extends AbstractColumn {
      @param vals the initial values
      */
     public ObjectColumn (Object[] vals) {
-		internal = vals;
-		setIsNominal(true);
-		type = ColumnTypes.OBJECT;
+      internal = vals;
+      setIsNominal(true);
+      type = ColumnTypes.OBJECT;
     }
 
     /**
      Return an exact copy of this column.  A deep copy is attempted, but if
-	 it fails a new column will be created, initialized with the same data
-	 as this column.
+    it fails a new column will be created, initialized with the same data
+    as this column.
      @return A new Column with a copy of the contents of this column.
      */
     public Column copy () {
@@ -83,7 +83,7 @@ final public class ObjectColumn extends AbstractColumn {
      @exception NotSupportedException when sorting is not supported
      */
     public void sort () {
-		;
+      ;
     }
 
     /**
@@ -93,27 +93,27 @@ final public class ObjectColumn extends AbstractColumn {
      @exception NotSupportedException when sorting is not supported
      */
     public void sort (MutableTable t) {
-		;
+      ;
     }
 
     /**
-    	Sort the items in this column.  Not supported for BooleanColumn.
-    	@param t the Table to swap rows for
-	@param begin the row no. which marks the beginnig of the  column segment to be sorted
-	@param end the row no. which marks the end of the column segment to be sorted
-    	@exception NotSupportedException when sorting is not supported
+      Sort the items in this column.  Not supported for BooleanColumn.
+      @param t the Table to swap rows for
+   @param begin the row no. which marks the beginnig of the  column segment to be sorted
+   @param end the row no. which marks the end of the column segment to be sorted
+      @exception NotSupportedException when sorting is not supported
      */
     public void sort (MutableTable t, int begin, int end) {
-		;
+      ;
     }
 
     //////////////////////////////////////
     //// Accessing Metadata
-	/**
-		Get the number of entries this Column holds.  This is the number of
-		non-null entries in the Column.
-		@return this Column's number of entries
-	*/
+   /**
+      Get the number of entries this Column holds.  This is the number of
+      non-null entries in the Column.
+      @return this Column's number of entries
+   */
     public int getNumEntries () {
         int numEntries = 0;
         for (int i = 0; i < internal.length; i++)
@@ -122,18 +122,18 @@ final public class ObjectColumn extends AbstractColumn {
         return  numEntries;
     }
 
-	/**
-	 * Get the number of rows that this column can hold.  Same as getCapacity().
-	 * @return the number of rows this column can hold
-	 */
-	public int getNumRows() {
-		return internal.length;
-	}
+   /**
+    * Get the number of rows that this column can hold.  Same as getCapacity().
+    * @return the number of rows this column can hold
+    */
+   public int getNumRows() {
+      return internal.length;
+   }
 
     /**
      Set a new capacity for this ObjectColumn.  The capacity is its potential
      max number of entries.  If numEntries is greater than newCapacity the
-	 Column will be truncated.
+    Column will be truncated.
      @param newCapacity the new capacity
      */
     public void setNumRows (int newCapacity) {
@@ -209,7 +209,7 @@ final public class ObjectColumn extends AbstractColumn {
             return  ((Number)internal[pos]).intValue();
         else if (internal[pos] instanceof byte[])
             return  Integer.parseInt(new String((byte[])internal[pos]));
-			//ByteUtils.toInt((byte[])internal[pos]);
+         //ByteUtils.toInt((byte[])internal[pos]);
         else if (internal[pos] instanceof char[])
             return  Integer.parseInt(new String((char[])internal[pos]));
         else
@@ -236,7 +236,7 @@ final public class ObjectColumn extends AbstractColumn {
         if (internal[pos] instanceof Number)
             return  ((Number)internal[pos]).shortValue();
         else if (internal[pos] instanceof byte[])
-			return Short.parseShort(new String((byte[])internal[pos]));
+         return Short.parseShort(new String((byte[])internal[pos]));
             //return  ByteUtils.toShort((byte[])internal[pos]);
         else if (internal[pos] instanceof char[])
             return  Short.parseShort(new String((char[])internal[pos]));
@@ -265,7 +265,7 @@ final public class ObjectColumn extends AbstractColumn {
             return  ((Number)internal[pos]).longValue();
         else if (internal[pos] instanceof byte[])
             //return  ByteUtils.toLong((byte[])internal[pos]);
-			return Long.parseLong(new String((byte[])internal[pos]));
+         return Long.parseLong(new String((byte[])internal[pos]));
         else if (internal[pos] instanceof char[])
             return  Long.parseLong(new String((char[])internal[pos]));
         else
@@ -293,7 +293,7 @@ final public class ObjectColumn extends AbstractColumn {
             return  ((Number)internal[pos]).doubleValue();
         else if (internal[pos] instanceof byte[])
             //return  ByteUtils.toDouble((byte[])internal[pos]);
-			return Double.parseDouble(new String((byte[])internal[pos]));
+         return Double.parseDouble(new String((byte[])internal[pos]));
         else if (internal[pos] instanceof char[])
             return  Double.parseDouble(new String((char[])internal[pos]));
         else
@@ -321,7 +321,7 @@ final public class ObjectColumn extends AbstractColumn {
             return  ((Number)internal[pos]).floatValue();
         else if (internal[pos] instanceof byte[])
             //return  ByteUtils.toFloat((byte[])internal[pos]);
-			return Float.parseFloat(new String((byte[])internal[pos]));
+         return Float.parseFloat(new String((byte[])internal[pos]));
         else if (internal[pos] instanceof char[])
             return  Float.parseFloat(new String((char[])internal[pos]));
         else
@@ -368,7 +368,7 @@ final public class ObjectColumn extends AbstractColumn {
      @return the entry at pos as a byte[]
      */
     public byte getByte (int pos) {
-		return getBytes(pos)[0];
+      return getBytes(pos)[0];
     }
 
     /**
@@ -377,9 +377,7 @@ final public class ObjectColumn extends AbstractColumn {
      @param pos the position
      */
     public void setByte (byte newEntry, int pos) {
-		byte[] b = new byte[1];
-		b[0] = newEntry;
-		setBytes(b, pos);
+      setObject(new Byte(newEntry), pos);
     }
 
     /**
@@ -430,7 +428,7 @@ final public class ObjectColumn extends AbstractColumn {
      @return the item at pos as a char[]
      */
     public char getChar (int pos) {
-		return getChars(pos)[0];
+      return getChars(pos)[0];
     }
 
     /**
@@ -439,9 +437,7 @@ final public class ObjectColumn extends AbstractColumn {
      @param pos the position
      */
     public void setChar (char newEntry, int pos) {
-		char[] c = new char[1];
-		c[0] = newEntry;
-		setChars(c, pos);
+      setObject(new Character(newEntry), pos);
     }
 
     /**
@@ -571,7 +567,7 @@ final public class ObjectColumn extends AbstractColumn {
      Get a copy of this Column, reordered, based on the input array of indices.
      Does not overwrite this Column.
      @param newOrder an array of indices indicating a new order
-	 @return a copy of this column, re-ordered
+    @return a copy of this column, re-ordered
      */
     public Column reorderRows (int[] newOrder) {
         Object[] newInternal = null;
@@ -591,7 +587,7 @@ final public class ObjectColumn extends AbstractColumn {
     /**
      Compare the values of the object passed in and pos. Return 0 if they
      are the same, greater than zero if element is greater,
-	 and less than zero if element is less.
+    and less than zero if element is less.
      @param element the object to be passed in should be a subclass of Number
      @param pos the position of the element in Column to be compared with
      @return a value representing the relationship- >, <, or == 0
@@ -616,7 +612,7 @@ final public class ObjectColumn extends AbstractColumn {
     /**
      Compare pos1 and pos2 positions in the Column. Return 0 if they
      are the same, greater than zero if pos1 is greater,
-	 and less than zero if pos1 is less.
+    and less than zero if pos1 is less.
      @param pos1 the position of the first element to compare
      @param pos2 the position of the second element to compare
      @return a value representing the relationship- >, <, or == 0
@@ -657,7 +653,7 @@ final public class ObjectColumn extends AbstractColumn {
             //Integer x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
             //if (x == null) {
-			if(!toRemove.contains(new Integer(i))) {
+         if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }

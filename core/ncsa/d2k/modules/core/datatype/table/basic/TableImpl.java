@@ -17,39 +17,39 @@ import java.util.*;
  */
 public class TableImpl extends AbstractTable implements MutableTable {
 
-	private static TableFactory tableFactory = DefaultTableFactory.getInstance();
+   private static TableFactory tableFactory = DefaultTableFactory.getInstance();
 
     protected Column[] columns = null;
 
-	/**
-	 * Create a new Table with zero columns.
-	 */
+   /**
+    * Create a new Table with zero columns.
+    */
     public TableImpl () {
         columns = new Column[0];
     }
 
     /**
-	 * Create a new Table with the specified number of columns.  Space for the
-	 * columns is created, but the columns themselves will be null.
-	 * @param numColumns the initial number of columns
+    * Create a new Table with the specified number of columns.  Space for the
+    * columns is created, but the columns themselves will be null.
+    * @param numColumns the initial number of columns
      */
     public TableImpl (int numColumns) {
-		setKeyColumn(0);
+      setKeyColumn(0);
         columns = new Column[numColumns];
     }
 
     /**
-	 * Create a new Table with the specified columns.
-	 * @param c the initial columns
+    * Create a new Table with the specified columns.
+    * @param c the initial columns
      */
     public TableImpl (Column[] c) {
-		setKeyColumn(0);
+      setKeyColumn(0);
         columns = c;
     }
 
     /**
-    	Create a TableImpl from a StaticDocument
-    	@param sd the StaticDocument
+      Create a TableImpl from a StaticDocument
+      @param sd the StaticDocument
      */
     /*public TableImpl (StaticDocument sd) {
         keyColumn = 0;
@@ -62,7 +62,7 @@ public class TableImpl extends AbstractTable implements MutableTable {
      * Return an exact copy of this Table.  A deep copy
      * is attempted, but if it fails a new Table will be created,
      * initialized with the same data as this Table.
-   	 * @return A new Table with a copy of the contents of this column.
+       * @return A new Table with a copy of the contents of this column.
      */
     public Table copy () {
         TableImpl vt;
@@ -89,9 +89,9 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-    	Fill the initialized table with data from staticDoc.
-    	If this table is not initialized to match staticDoc's structure and types... there will be problems...
-		@param sd a static document
+      Fill the initialized table with data from staticDoc.
+      If this table is not initialized to match staticDoc's structure and types... there will be problems...
+      @param sd a static document
      */
     //public void fillTable (StaticDocument sd) {
         /*if(!staticDoc.isSquare())
@@ -124,10 +124,10 @@ public class TableImpl extends AbstractTable implements MutableTable {
     //////////////////////////////////////
     //// ACCESSING Table Fields
 
-	/**
-	 * Return the number of Columns this table holds.
-	 * @return the capacity of the number of Columns in table
-	*/
+   /**
+    * Return the number of Columns this table holds.
+    * @return the capacity of the number of Columns in table
+   */
     public int getNumColumns () {
         return  columns.length;
     }
@@ -151,11 +151,11 @@ public class TableImpl extends AbstractTable implements MutableTable {
         }
     }
 
-	/**
-	 * Get a Column from the table.
-	 * @param pos the position of the Column to get from table
-	 * @return the Column at in the table at pos
-	 */
+   /**
+    * Get a Column from the table.
+    * @param pos the position of the Column to get from table
+    * @return the Column at in the table at pos
+    */
     public Column getColumn (int pos) {
         return  columns[pos];
     }
@@ -200,7 +200,7 @@ public class TableImpl extends AbstractTable implements MutableTable {
      * @returns the comment associated with the Column.
      */
     public String getColumnComment (int pos) {
-		return columns[pos].getComment();
+      return columns[pos].getComment();
     }
 
     /**
@@ -212,10 +212,10 @@ public class TableImpl extends AbstractTable implements MutableTable {
         columns[pos].setComment(label);
     }
 
-	/**
-	 * Add a new Column after the last occupied position in this Table.
-	 * @param newColumn the Column to be added to the table
-	*/
+   /**
+    * Add a new Column after the last occupied position in this Table.
+    * @param newColumn the Column to be added to the table
+   */
     public void addColumn (Column newColumn) {
         Column[] newColumns = new Column[columns.length + 1];
         System.arraycopy(columns, 0, newColumns, 0, columns.length);
@@ -235,57 +235,57 @@ public class TableImpl extends AbstractTable implements MutableTable {
         columns = newColumns;
     }
 
-	/**
-	 * Remove a range of columns from the Table.
-	 * @param start the start position of the range to remove
-	 * @param len the number to remove-the length of the range
-	 */
+   /**
+    * Remove a range of columns from the Table.
+    * @param start the start position of the range to remove
+    * @param len the number to remove-the length of the range
+    */
     public void removeColumns (int start, int len) {
         Column[] newColumns = new Column[columns.length - len];
         System.arraycopy(columns, 0, newColumns, 0, start);
         System.arraycopy(columns, start + len, newColumns, start,
-			newColumns.length - start);
+         newColumns.length - start);
         columns = newColumns;
     }
 
-	/**
-	 * Remove a row from this Table.
-	 * @param pos the row to remove
-	 */
+   /**
+    * Remove a row from this Table.
+    * @param pos the row to remove
+    */
     public void removeRow (int pos) {
         for (int i = 0; i < getNumColumns(); i++)
-        	getColumn(i).removeRow(pos);
+         getColumn(i).removeRow(pos);
     }
 
-	/**
-	 * Remove a range of rows from the Table.
-	 * @param start the start position of the range to remove
-	 * @param len the number to remove-the length of the range
-	 */
-	public void removeRows(int start, int len) {
-		for (int i = 0; i < getNumColumns(); i++)
-			getColumn(i).removeRows(start, len);
-	}
+   /**
+    * Remove a range of rows from the Table.
+    * @param start the start position of the range to remove
+    * @param len the number to remove-the length of the range
+    */
+   public void removeRows(int start, int len) {
+      for (int i = 0; i < getNumColumns(); i++)
+         getColumn(i).removeRows(start, len);
+   }
 
-	/**
-	 * Insert a new Column at the indicated position in this Table.  All
-	 * subsequent Columns will be shifted.
-	 * @param newColumn the new Column
-	 * @param position the position at which to insert
-	 */
+   /**
+    * Insert a new Column at the indicated position in this Table.  All
+    * subsequent Columns will be shifted.
+    * @param newColumn the new Column
+    * @param position the position at which to insert
+    */
     public void insertColumn (Column newColumn, int position) {
         Column[] newColumns = new Column[columns.length + 1];
         System.arraycopy(columns, 0, newColumns, 0, position);
         newColumns[position] = newColumn;
         System.arraycopy(columns, position, newColumns, position + 1,
-			columns.length - position);
+         columns.length - position);
         columns = newColumns;
     }
 
     //////////////////////////////////////
     /**
-	 * Set an Object in the Table.
-	 * @param element the value to set
+    * Set an Object in the Table.
+    * @param element the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -314,8 +314,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-	 * Set an int value in the Table.
-	 * @param data the value to set
+    * Set an int value in the Table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -334,8 +334,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-	 * Set a short value in the Table.
-	 * @param data the value to set
+    * Set a short value in the Table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -354,8 +354,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-	 * Set a long value in the Table.
-	 * @param data the value to set
+    * Set a long value in the Table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -374,8 +374,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-	 * Set a float value in the Table.
-	 * @param data the value to set
+    * Set a float value in the Table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -394,8 +394,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-	 * Set a double value in the Table.
-	 * @param data the value to set
+    * Set a double value in the Table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -414,8 +414,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-	 * Set a String value in the Table.
-	 * @param data the value to set
+    * Set a String value in the Table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -434,8 +434,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-	 * Set a byte[] value in the Table.
-	 * @param data the value to set
+    * Set a byte[] value in the Table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -454,8 +454,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-	 * Set a byte value in the Table.
-	 * @param data the value to set
+    * Set a byte value in the Table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -474,8 +474,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-	 * Set a char[] value in the Table.
-	 * @param data the value to set
+    * Set a char[] value in the Table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -494,8 +494,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-	 * Set a char value in the Table.
-	 * @param data the value to set
+    * Set a char value in the Table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -514,8 +514,8 @@ public class TableImpl extends AbstractTable implements MutableTable {
     }
 
     /**
-	 * Set a boolean value in the Table.
-	 * @param data the value to set
+    * Set a boolean value in the Table.
+    * @param data the value to set
      * @param row the row of the table
      * @param column the column of the table
      */
@@ -538,23 +538,23 @@ public class TableImpl extends AbstractTable implements MutableTable {
         return  columns[0].getNumRows();
     }
 
-	/**
-	 * Get the number of non-null entries this Table holds.  This simply
-	 * delegates the call to getNumEntries() on the first Column in this Table.
-	 * @return this Table's number of entries
-	 */
-	public int getNumEntries() {
-		if (columns.length < 1)
-			return 0;
-		return columns[0].getNumEntries();
-	}
+   /**
+    * Get the number of non-null entries this Table holds.  This simply
+    * delegates the call to getNumEntries() on the first Column in this Table.
+    * @return this Table's number of entries
+    */
+   public int getNumEntries() {
+      if (columns.length < 1)
+         return 0;
+      return columns[0].getNumEntries();
+   }
 
-	/**
-	 * Sets a new capacity for this Table.  The capacity is its potential
-	 * maximum number of Columns.  If numEntries is greater than newCapacity,
-	 * the Table will be truncated.
-	 * @param newCapacity a new capacity
-	 */
+   /**
+    * Sets a new capacity for this Table.  The capacity is its potential
+    * maximum number of Columns.  If numEntries is greater than newCapacity,
+    * the Table will be truncated.
+    * @param newCapacity a new capacity
+    */
     public void setNumRows (int newCapacity) {
         if (columns != null)
             for (int c = 0; c < columns.length; c++)
@@ -562,157 +562,157 @@ public class TableImpl extends AbstractTable implements MutableTable {
                     columns[c].setNumRows(newCapacity);
     }
 
-	/**
-	 * Get all the entries from the specified row.  The caller must pass in
-	 * a buffer for the data to be copied into.  This buffer should be one of
-	 * following data types: int[], float[], double[], long[], short[], boolean[],
-	 * String[], char[][], byte[][], Object[], byte[], or char[].  The data from
-	 * the specified row will then be copied into the buffer.  If the length of
-	 * the buffer is greater than the number of columns in the table, an
-	 * ArrayIndexOutOfBoundsException will be thrown.
-	 * @param buffer the array to copy data into
-	 * @param pos the index of the row to copy
-	 */
+   /**
+    * Get all the entries from the specified row.  The caller must pass in
+    * a buffer for the data to be copied into.  This buffer should be one of
+    * following data types: int[], float[], double[], long[], short[], boolean[],
+    * String[], char[][], byte[][], Object[], byte[], or char[].  The data from
+    * the specified row will then be copied into the buffer.  If the length of
+    * the buffer is greater than the number of columns in the table, an
+    * ArrayIndexOutOfBoundsException will be thrown.
+    * @param buffer the array to copy data into
+    * @param pos the index of the row to copy
+    */
     public void getRow (Object buffer, int pos) {
-		if(buffer instanceof int[]) {
-			int[] b1 = (int[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getInt(pos, i);
-		}
-		else if(buffer instanceof float[]) {
-			float[] b1 = (float[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getFloat(pos, i);
-		}
-		else if(buffer instanceof double[]) {
-			double[] b1 = (double[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getDouble(pos, i);
-		}
-		else if(buffer instanceof long[]) {
-			long[] b1 = (long[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getLong(pos, i);
-		}
-		else if(buffer instanceof short[]) {
-			short[] b1 = (short[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getShort(pos, i);
-		}
-		else if(buffer instanceof boolean[]) {
-			boolean[] b1 = (boolean[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getBoolean(pos, i);
-		}
-		else if(buffer instanceof String[]) {
-			String[] b1 = (String[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getString(pos, i);
-		}
-		else if(buffer instanceof char[][]) {
-			char[][] b1 = (char[][])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getChars(pos, i);
-		}
-		else if(buffer instanceof byte[][]) {
-			byte[][] b1 = (byte[][])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getBytes(pos, i);
-		}
-		else if(buffer instanceof Object[]) {
-			Object[] b1 = (Object[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getObject(pos, i);
-		}
-		else if(buffer instanceof byte[]) {
-			byte[] b1 = (byte[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getByte(pos, i);
-		}
-		else if(buffer instanceof char[]) {
-			char[] b1 = (char[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getChar(pos, i);
-		}
+      if(buffer instanceof int[]) {
+         int[] b1 = (int[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getInt(pos, i);
+      }
+      else if(buffer instanceof float[]) {
+         float[] b1 = (float[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getFloat(pos, i);
+      }
+      else if(buffer instanceof double[]) {
+         double[] b1 = (double[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getDouble(pos, i);
+      }
+      else if(buffer instanceof long[]) {
+         long[] b1 = (long[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getLong(pos, i);
+      }
+      else if(buffer instanceof short[]) {
+         short[] b1 = (short[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getShort(pos, i);
+      }
+      else if(buffer instanceof boolean[]) {
+         boolean[] b1 = (boolean[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getBoolean(pos, i);
+      }
+      else if(buffer instanceof String[]) {
+         String[] b1 = (String[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getString(pos, i);
+      }
+      else if(buffer instanceof char[][]) {
+         char[][] b1 = (char[][])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getChars(pos, i);
+      }
+      else if(buffer instanceof byte[][]) {
+         byte[][] b1 = (byte[][])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getBytes(pos, i);
+      }
+      else if(buffer instanceof Object[]) {
+         Object[] b1 = (Object[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getObject(pos, i);
+      }
+      else if(buffer instanceof byte[]) {
+         byte[] b1 = (byte[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getByte(pos, i);
+      }
+      else if(buffer instanceof char[]) {
+         char[] b1 = (char[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getChar(pos, i);
+      }
     }
 
-	/**
-	 * Get all the entries from the specified column.  The caller must pass in
-	 * a buffer for the data to be copied into.  This buffer should be one of
-	 * following data types: int[], float[], double[], long[], short[], boolean[],
-	 * String[], char[][], byte[][], Object[], byte[], or char[].  The data from
-	 * the specified row will then be copied into the buffer.  If the length of
-	 * the buffer is greater than the number of rows in the table, an
-	 * ArrayIndexOutOfBoundsException will be thrown.
-	 * @param buffer the array to copy data into
-	 * @param pos the index of the column to copy
-	 */
-	public void getColumn (Object buffer, int pos) {
-		if(buffer instanceof int[]) {
-			int[] b1 = (int[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getInt(i, pos);
-		}
-		else if(buffer instanceof float[]) {
-			float[] b1 = (float[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getFloat(i, pos);
-		}
-		else if(buffer instanceof double[]) {
-			double[] b1 = (double[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getDouble(i, pos);
-		}
-		else if(buffer instanceof long[]) {
-			long[] b1 = (long[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getLong(i, pos);
-		}
-		else if(buffer instanceof short[]) {
-			short[] b1 = (short[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getShort(i, pos);
-		}
-		else if(buffer instanceof boolean[]) {
-			boolean[] b1 = (boolean[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getBoolean(i, pos);
-		}
-		else if(buffer instanceof String[]) {
-			String[] b1 = (String[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getString(i, pos);
-		}
-		else if(buffer instanceof char[][]) {
-			char[][] b1 = (char[][])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getChars(i, pos);
-		}
-		else if(buffer instanceof byte[][]) {
-			byte[][] b1 = (byte[][])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getBytes(i, pos);
-		}
-		else if(buffer instanceof Object[]) {
-			Object[] b1 = (Object[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getObject(i, pos);
-		}
-		else if(buffer instanceof byte[]) {
-			byte[] b1 = (byte[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getByte(i, pos);
-		}
-		else if(buffer instanceof char[]) {
-			char[] b1 = (char[])buffer;
-			for(int i = 0; i < b1.length; i++)
-				b1[i] = getChar(i, pos);
-		}
-	}
+   /**
+    * Get all the entries from the specified column.  The caller must pass in
+    * a buffer for the data to be copied into.  This buffer should be one of
+    * following data types: int[], float[], double[], long[], short[], boolean[],
+    * String[], char[][], byte[][], Object[], byte[], or char[].  The data from
+    * the specified row will then be copied into the buffer.  If the length of
+    * the buffer is greater than the number of rows in the table, an
+    * ArrayIndexOutOfBoundsException will be thrown.
+    * @param buffer the array to copy data into
+    * @param pos the index of the column to copy
+    */
+   public void getColumn (Object buffer, int pos) {
+      if(buffer instanceof int[]) {
+         int[] b1 = (int[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getInt(i, pos);
+      }
+      else if(buffer instanceof float[]) {
+         float[] b1 = (float[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getFloat(i, pos);
+      }
+      else if(buffer instanceof double[]) {
+         double[] b1 = (double[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getDouble(i, pos);
+      }
+      else if(buffer instanceof long[]) {
+         long[] b1 = (long[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getLong(i, pos);
+      }
+      else if(buffer instanceof short[]) {
+         short[] b1 = (short[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getShort(i, pos);
+      }
+      else if(buffer instanceof boolean[]) {
+         boolean[] b1 = (boolean[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getBoolean(i, pos);
+      }
+      else if(buffer instanceof String[]) {
+         String[] b1 = (String[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getString(i, pos);
+      }
+      else if(buffer instanceof char[][]) {
+         char[][] b1 = (char[][])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getChars(i, pos);
+      }
+      else if(buffer instanceof byte[][]) {
+         byte[][] b1 = (byte[][])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getBytes(i, pos);
+      }
+      else if(buffer instanceof Object[]) {
+         Object[] b1 = (Object[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getObject(i, pos);
+      }
+      else if(buffer instanceof byte[]) {
+         byte[] b1 = (byte[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getByte(i, pos);
+      }
+      else if(buffer instanceof char[]) {
+         char[] b1 = (char[])buffer;
+         for(int i = 0; i < b1.length; i++)
+            b1[i] = getChar(i, pos);
+      }
+   }
 
     /**
      * Gets a subset of this Table's rows, a cropped Table, given a start
-	 * position and length.  The returned Table is a copy of the original.
+    * position and length.  The returned Table is a copy of the original.
      * @param pos the start position for the subset
      * @param len the length of the subset
      * @return a subset of this Table's rows
@@ -732,22 +732,22 @@ public class TableImpl extends AbstractTable implements MutableTable {
        columns = newColumns;
     }
 
-	/**
-		Set the entry at the given position to newRow.
-		@param newRow a new entry
-		@param pos the position to set
-	*/
+   /**
+      Set the entry at the given position to newRow.
+      @param newRow a new entry
+      @param pos the position to set
+   */
     /*public void setRow (Object[] newRow, int pos) {
         Object[] ne = (Object[])newRow;
         for (int i = 0; i < columns.length; i++)
             columns[i].setRow(ne[i], pos);
     }*/
 
-	/**
-	 * Add a row to the end of this Table.  An Object[] should be passed to
-	 * this method, with an entry for each Column in the Table.
-	 * @param newRow the Object to put into the new row
-	 */
+   /**
+    * Add a row to the end of this Table.  An Object[] should be passed to
+    * this method, with an entry for each Column in the Table.
+    * @param newRow the Object to put into the new row
+    */
     /*public void addRow (Object[] newRow) {
         if (newRow instanceof Object[]) {
             Object[] toAdd = (Object[])newRow;
@@ -762,12 +762,12 @@ public class TableImpl extends AbstractTable implements MutableTable {
 
 
 
-	/**
-	 * Insert a new row into this Table.  An Object[] should be passed to
-	 * this method, with an entry for each Column in the Table.
-	 * @param newRow the Object to insert
-	 * @param pos the position to insert the new row
-	 */
+   /**
+    * Insert a new row into this Table.  An Object[] should be passed to
+    * this method, with an entry for each Column in the Table.
+    * @param newRow the Object to insert
+    * @param pos the position to insert the new row
+    */
     /*public void insertRow (Object[] newRow, int pos) {
         if (newRow instanceof Object[]) {
             Object[] toAdd = (Object[])newRow;
@@ -780,11 +780,11 @@ public class TableImpl extends AbstractTable implements MutableTable {
             System.out.println("An Object[] must be passed to " + "insertRow().  The row was not inserted.");
     }*/
 
-	/**
-	 * Swap the positions of two rows.
-	 * @param pos1 the first row to swap
-	 * @param pos2 the second row to swap
-	 */
+   /**
+    * Swap the positions of two rows.
+    * @param pos1 the first row to swap
+    * @param pos2 the second row to swap
+    */
     public void swapRows (int pos1, int pos2) {
         for (int i = 0; i < columns.length; i++) {
             Object Obj1 = columns[i].getRow(pos1);
@@ -793,11 +793,11 @@ public class TableImpl extends AbstractTable implements MutableTable {
         }
     }
 
-	/**
-	 * Swap the positions of two Columns.
-	 * @param pos1 the first column to swap
-	 * @param pos2 the second column to swap
-	 */
+   /**
+    * Swap the positions of two Columns.
+    * @param pos1 the first column to swap
+    * @param pos2 the second column to swap
+    */
     public void swapColumns (int pos1, int pos2) {
         Column temp = getColumn(pos1);
         setColumn(getColumn(pos2), pos1);
@@ -808,7 +808,7 @@ public class TableImpl extends AbstractTable implements MutableTable {
      * Get a copy of this Table, reordered, based on the input array of indexes,
      * does not overwrite this Table.
      * @param newOrder an array of indices indicating a new order
-	 * @return a copy of this table that has been reordered.
+    * @return a copy of this table that has been reordered.
      */
     public Table reorderRows (int[] newOrder) {
         TableImpl newTable = new TableImpl(columns.length);
@@ -819,19 +819,19 @@ public class TableImpl extends AbstractTable implements MutableTable {
         return  newTable;
     }
 
-	/**
-	 * MUST GET COPIES!!
-	 * @param newOrder
-	 * @return
-	 */
-	public Table reorderColumns(int[] newOrder) {
-		TableImpl newTable = new TableImpl(columns.length);
-		for(int i = 0; i < newOrder.length; i++)
-			newTable.setColumn(getColumn(newOrder[i]).copy(), i);
-		newTable.setLabel(getLabel());
-		newTable.setComment(getComment());
-		return newTable;
-	}
+   /**
+    * MUST GET COPIES!!
+    * @param newOrder
+    * @return
+    */
+   public Table reorderColumns(int[] newOrder) {
+      TableImpl newTable = new TableImpl(columns.length);
+      for(int i = 0; i < newOrder.length; i++)
+         newTable.setColumn(getColumn(newOrder[i]).copy(), i);
+      newTable.setLabel(getLabel());
+      newTable.setComment(getComment());
+      return newTable;
+   }
 
     /**
      * Given an array of booleans, will remove the positions in the Table
@@ -852,7 +852,7 @@ public class TableImpl extends AbstractTable implements MutableTable {
      * number of rows, the remaining elements will be discarded.
      * @param flags the boolean array of remove flags
      */
-	public void removeColumnsByFlag(boolean[] flags) {
+   public void removeColumnsByFlag(boolean[] flags) {
         // keep a list of the row indices to remove
         LinkedList ll = new LinkedList();
         int i = 0;
@@ -873,7 +873,7 @@ public class TableImpl extends AbstractTable implements MutableTable {
         }
         // now call remove by index to remove the rows
         removeColumnsByIndex(toRemove);
-	}
+   }
 
     /**
      * Given an array of ints, will remove the rows in the Table,
@@ -890,24 +890,24 @@ public class TableImpl extends AbstractTable implements MutableTable {
      * which are indicated by the ints in the array.
      * @param indices the indicies of the columns to remove
      */
-	public void removeColumnsByIndex(int[] indices) {
+   public void removeColumnsByIndex(int[] indices) {
         HashSet toRemove = new HashSet(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
             toRemove.add(id);
         }
-		Column newColumns[] = new Column[getNumColumns()-indices.length];
+      Column newColumns[] = new Column[getNumColumns()-indices.length];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
             // if this row is not in the list, copy it into the new internal
-			if(!toRemove.contains(new Integer(i))) {
+         if(!toRemove.contains(new Integer(i))) {
                 newColumns[newIntIdx] = columns[i];
                 newIntIdx++;
             }
         }
-		columns = newColumns;
-	}
+      columns = newColumns;
+   }
 
     //////////////////////////////////////
 
@@ -948,354 +948,353 @@ public class TableImpl extends AbstractTable implements MutableTable {
         }
         else
             throw  new NotSupportedException();
-		*/
-		getColumn(col).sort(this);
+      */
+      getColumn(col).sort(this);
     }
 
     /**
        Sort the elements in this column starting with row 'begin' up to row 'end',
-	   @param col the index of the column to sort
+      @param col the index of the column to sort
        @param begin the row no. which marks the beginnig of the  column segment to be sorted
        @param end the row no. which marks the end of the column segment to be sorted
     */
     public void sortByColumn(int col, int begin, int end) {
-		getColumn(col).sort(this, begin, end);
-	}
+      getColumn(col).sort(this, begin, end);
+   }
 
-	public TableFactory getTableFactory() {
-		return tableFactory;
-	}
+   public TableFactory getTableFactory() {
+      return tableFactory;
+   }
 
-	public boolean isColumnNominal(int index) {
-		return getColumn(index).getIsNominal();
-	}
+   public boolean isColumnNominal(int index) {
+      return getColumn(index).getIsNominal();
+   }
 
-	public boolean isColumnScalar(int index) {
-		return getColumn(index).getIsScalar();
-	}
+   public boolean isColumnScalar(int index) {
+      return getColumn(index).getIsScalar();
+   }
 
-	public void setColumnIsNominal(boolean value, int index) {
-		getColumn(index).setIsNominal(value);
-	}
+   public void setColumnIsNominal(boolean value, int index) {
+      getColumn(index).setIsNominal(value);
+   }
 
-	public void setColumnIsScalar(boolean value, int index) {
-		getColumn(index).setIsScalar(value);
-	}
+   public void setColumnIsScalar(boolean value, int index) {
+      getColumn(index).setIsScalar(value);
+   }
 
-	public void setColumn(char[] data, int pos) {
-		// create the column
-		// set it
-		// copy old column label and comment??
-	}
-	public void setColumn(byte[] data, int pos) {
-		ByteColumn bc = new ByteColumn(data);
-		setColumn(bc, pos);
-	}
+   public void setColumn(char[] data, int pos) {
+      CharColumn cc = new CharColumn(data);
+      setColumn(cc, pos);
+   }
+   public void setColumn(byte[] data, int pos) {
+      ByteColumn bc = new ByteColumn(data);
+      setColumn(bc, pos);
+   }
 
-	public void setColumn(int[] data, int pos) {
-		IntColumn ic = new IntColumn(data);
-		setColumn(ic, pos);
-	}
-	public void setColumn(float[] data, int pos) {
-		FloatColumn ic = new FloatColumn(data);
-		setColumn(ic, pos);
-	}
-	public void setColumn(double[] data, int pos) {
-		DoubleColumn ic = new DoubleColumn(data);
-		setColumn(ic, pos);
-	}
-	public void setColumn(long[] data, int pos) {
-		LongColumn ic = new LongColumn(data);
-		setColumn(ic, pos);
-	}
-	public void setColumn(short[] data, int pos) {
-		ShortColumn ic = new ShortColumn(data);
-		setColumn(ic, pos);
-	}
-	public void setColumn(String[] data, int pos) {
-		StringColumn ic = new StringColumn(data);
-		setColumn(ic, pos);
-	}
-	public void setColumn(byte[][] data, int pos) {
-		ContinuousByteArrayColumn bc = new ContinuousByteArrayColumn(data);
-		setColumn(bc, pos);
-	}
-	public void setColumn(char[][] data, int pos) {
-		ContinuousCharArrayColumn cc = new ContinuousCharArrayColumn(data);
-		setColumn(cc, pos);
-	}
-	public void setColumn(Object[] data, int pos) {
-		ObjectColumn ic = new ObjectColumn(data);
-		setColumn(ic, pos);
-	}
-	public void setColumn(boolean[] data, int pos) {
-		BooleanColumn ic = new BooleanColumn(data);
-		ic.setLabel(getColumnLabel(pos));
-		ic.setComment(getColumnComment(pos));
-		setColumn(ic, pos);
-	}
+   public void setColumn(int[] data, int pos) {
+      IntColumn ic = new IntColumn(data);
+      setColumn(ic, pos);
+   }
+   public void setColumn(float[] data, int pos) {
+      FloatColumn ic = new FloatColumn(data);
+      setColumn(ic, pos);
+   }
+   public void setColumn(double[] data, int pos) {
+      DoubleColumn ic = new DoubleColumn(data);
+      setColumn(ic, pos);
+   }
+   public void setColumn(long[] data, int pos) {
+      LongColumn ic = new LongColumn(data);
+      setColumn(ic, pos);
+   }
+   public void setColumn(short[] data, int pos) {
+      ShortColumn ic = new ShortColumn(data);
+      setColumn(ic, pos);
+   }
+   public void setColumn(String[] data, int pos) {
+      StringColumn ic = new StringColumn(data);
+      setColumn(ic, pos);
+   }
+   public void setColumn(byte[][] data, int pos) {
+      ContinuousByteArrayColumn bc = new ContinuousByteArrayColumn(data);
+      setColumn(bc, pos);
+   }
+   public void setColumn(char[][] data, int pos) {
+      ContinuousCharArrayColumn cc = new ContinuousCharArrayColumn(data);
+      setColumn(cc, pos);
+   }
+   public void setColumn(Object[] data, int pos) {
+      ObjectColumn ic = new ObjectColumn(data);
+      setColumn(ic, pos);
+   }
+   public void setColumn(boolean[] data, int pos) {
+      BooleanColumn ic = new BooleanColumn(data);
+      ic.setLabel(getColumnLabel(pos));
+      ic.setComment(getColumnComment(pos));
+      setColumn(ic, pos);
+   }
 
-	public void setRow(char[] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setChar(data[i], pos);
-	}
-	public void setRow(byte[] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setByte(data[i], pos);
-	}
-	public void setRow(int[] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setInt(data[i], pos);
-	}
-	public void setRow(float[] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setFloat(data[i], pos);
-	}
-	public void setRow(double[] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setDouble(data[i], pos);
-	}
-	public void setRow(long[] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setLong(data[i], pos);
-	}
-	public void setRow(short[] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setShort(data[i], pos);
-	}
-	public void setRow(String[] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setString(data[i], pos);
-	}
-	public void setRow(byte[][] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setBytes(data[i], pos);
-	}
-	public void setRow(char[][] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setChars(data[i], pos);
-	}
-	public void setRow(Object[] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setObject(data[i], pos);
-	}
-	public void setRow(boolean[] data, int pos) {
-		for(int i = 0; i < getNumColumns(); i++)
-			getColumn(i).setBoolean(data[i], pos);
-	}
+   public void setRow(char[] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setChar(data[i], pos);
+   }
+   public void setRow(byte[] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setByte(data[i], pos);
+   }
+   public void setRow(int[] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setInt(data[i], pos);
+   }
+   public void setRow(float[] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setFloat(data[i], pos);
+   }
+   public void setRow(double[] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setDouble(data[i], pos);
+   }
+   public void setRow(long[] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setLong(data[i], pos);
+   }
+   public void setRow(short[] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setShort(data[i], pos);
+   }
+   public void setRow(String[] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setString(data[i], pos);
+   }
+   public void setRow(byte[][] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setBytes(data[i], pos);
+   }
+   public void setRow(char[][] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setChars(data[i], pos);
+   }
+   public void setRow(Object[] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setObject(data[i], pos);
+   }
+   public void setRow(boolean[] data, int pos) {
+      for(int i = 0; i < getNumColumns(); i++)
+         getColumn(i).setBoolean(data[i], pos);
+   }
 
-	public void insertColumn(char[] data, int pos) {
-		CharColumn cc = new CharColumn(data);
-		insertColumn(cc, pos);
-	}
-	public void insertColumn(byte[] data, int pos) {
-		ByteColumn bc = new ByteColumn(data);
-		insertColumn(bc, pos);
-	}
-	public void insertColumn(int[] data, int pos) {
-		IntColumn ic = new IntColumn(data);
-		insertColumn(ic, pos);
-	}
-	public void insertColumn(float[] data, int pos) {
-		FloatColumn fc = new FloatColumn(data);
-		insertColumn(fc, pos);
-	}
-	public void insertColumn(double[] data, int pos) {
-		DoubleColumn dc = new DoubleColumn(data);
-		insertColumn(dc, pos);
-	}
-	public void insertColumn(long[] data, int pos) {
-		LongColumn lc = new LongColumn(data);
-		insertColumn(lc, pos);
-	}
-	public void insertColumn(short[] data, int pos) {
-		ShortColumn sc = new ShortColumn(data);
-		insertColumn(sc, pos);
-	}
-	public void insertColumn(String[] data, int pos) {
-		StringColumn sc = new StringColumn(data);
-		insertColumn(sc, pos);
-	}
-	public void insertColumn(byte[][] data, int pos) {
+   public void insertColumn(char[] data, int pos) {
+      CharColumn cc = new CharColumn(data);
+      insertColumn(cc, pos);
+   }
+   public void insertColumn(byte[] data, int pos) {
+      ByteColumn bc = new ByteColumn(data);
+      insertColumn(bc, pos);
+   }
+   public void insertColumn(int[] data, int pos) {
+      IntColumn ic = new IntColumn(data);
+      insertColumn(ic, pos);
+   }
+   public void insertColumn(float[] data, int pos) {
+      FloatColumn fc = new FloatColumn(data);
+      insertColumn(fc, pos);
+   }
+   public void insertColumn(double[] data, int pos) {
+      DoubleColumn dc = new DoubleColumn(data);
+      insertColumn(dc, pos);
+   }
+   public void insertColumn(long[] data, int pos) {
+      LongColumn lc = new LongColumn(data);
+      insertColumn(lc, pos);
+   }
+   public void insertColumn(short[] data, int pos) {
+      ShortColumn sc = new ShortColumn(data);
+      insertColumn(sc, pos);
+   }
+   public void insertColumn(String[] data, int pos) {
+      StringColumn sc = new StringColumn(data);
+      insertColumn(sc, pos);
+   }
+   public void insertColumn(byte[][] data, int pos) {
       ContinuousByteArrayColumn bc = new ContinuousByteArrayColumn(data);
       insertColumn(bc, pos);
-	}
-	public void insertColumn(char[][] data, int pos) {
+   }
+   public void insertColumn(char[][] data, int pos) {
       ContinuousCharArrayColumn ac = new ContinuousCharArrayColumn(data);
       insertColumn(ac, pos);
-	}
-	public void insertColumn(Object[] data, int pos) {
-		ObjectColumn oc = new ObjectColumn(data);
-		insertColumn(oc, pos);
-	}
-	public void insertColumn(boolean[] data, int pos) {
-		BooleanColumn bc = new BooleanColumn(data);
-		insertColumn(bc, pos);
-	}
+   }
+   public void insertColumn(Object[] data, int pos) {
+      ObjectColumn oc = new ObjectColumn(data);
+      insertColumn(oc, pos);
+   }
+   public void insertColumn(boolean[] data, int pos) {
+      BooleanColumn bc = new BooleanColumn(data);
+      insertColumn(bc, pos);
+   }
 
-	public void insertRow(char[] data, int pos) {
+   public void insertRow(char[] data, int pos) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).insertRow(new Character(data[i]), pos);
-	}
-	public void insertRow(byte[] data, int pos) {
+   }
+   public void insertRow(byte[] data, int pos) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).insertRow(new Byte(data[i]), pos);
     }
-	public void insertRow(int[] data, int pos) {
+   public void insertRow(int[] data, int pos) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).insertRow(new Integer(data[i]), pos);
     }
-	public void insertRow(float[] data, int pos) {
+   public void insertRow(float[] data, int pos) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).insertRow(new Float(data[i]), pos);
     }
-	public void insertRow(double[] data, int pos) {
+   public void insertRow(double[] data, int pos) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).insertRow(new Double(data[i]), pos);
     }
-	public void insertRow(long[] data, int pos) {
+   public void insertRow(long[] data, int pos) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).insertRow(new Long(data[i]), pos);
     }
-	public void insertRow(short[] data, int pos) {
+   public void insertRow(short[] data, int pos) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).insertRow(new Short(data[i]), pos);
     }
-	public void insertRow(String[] data, int pos) {
+   public void insertRow(String[] data, int pos) {
       for(int i = 0; i< data.length; i++)
         getColumn(i).insertRow(data[i], pos);
     }
-	public void insertRow(byte[][] data, int pos) {
+   public void insertRow(byte[][] data, int pos) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).insertRow(data[i], pos);
     }
-	public void insertRow(char[][] data, int pos) {
+   public void insertRow(char[][] data, int pos) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).insertRow(data[i], pos);
     }
-	public void insertRow(Object[] data, int pos) {
+   public void insertRow(Object[] data, int pos) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).insertRow(data[i], pos);
     }
-	public void insertRow(boolean[] data, int pos) {
+   public void insertRow(boolean[] data, int pos) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).insertRow(new Boolean(data[i]), pos);
     }
 
-	public void addColumn(char[] data) {
-		CharColumn cc = new CharColumn(data);
-		addColumn(cc);
-	}
-	public void addColumn(byte[] data) {
-		ByteColumn bc = new ByteColumn(data);
-		addColumn(bc);
-	}
+   public void addColumn(char[] data) {
+      CharColumn cc = new CharColumn(data);
+      addColumn(cc);
+   }
+   public void addColumn(byte[] data) {
+      ByteColumn bc = new ByteColumn(data);
+      addColumn(bc);
+   }
 
-	public void addColumn(int[] data) {
-		IntColumn ic = new IntColumn(data);
-		addColumn(ic);
-	}
+   public void addColumn(int[] data) {
+      IntColumn ic = new IntColumn(data);
+      addColumn(ic);
+   }
 
-	public void addColumn(float[] data) {
-		FloatColumn fc = new FloatColumn(data);
-		addColumn(fc);
-	}
+   public void addColumn(float[] data) {
+      FloatColumn fc = new FloatColumn(data);
+      addColumn(fc);
+   }
 
-	public void addColumn(double[] data) {
-		DoubleColumn lc = new DoubleColumn(data);
-		addColumn(lc);
-	}
+   public void addColumn(double[] data) {
+      DoubleColumn lc = new DoubleColumn(data);
+      addColumn(lc);
+   }
 
-	public void addColumn(long[] data) {
-		LongColumn lc = new LongColumn(data);
-		addColumn(lc);
-	}
+   public void addColumn(long[] data) {
+      LongColumn lc = new LongColumn(data);
+      addColumn(lc);
+   }
 
-	public void addColumn(short[] data) {
-		ShortColumn sc = new ShortColumn(data);
-		addColumn(sc);
-	}
+   public void addColumn(short[] data) {
+      ShortColumn sc = new ShortColumn(data);
+      addColumn(sc);
+   }
 
-	public void addColumn(String[] data) {
-		StringColumn sc = new StringColumn(data);
-		addColumn(sc);
-	}
+   public void addColumn(String[] data) {
+      StringColumn sc = new StringColumn(data);
+      addColumn(sc);
+   }
 
-	public void addColumn(byte[][] data) {
+   public void addColumn(byte[][] data) {
       ContinuousByteArrayColumn bc = new ContinuousByteArrayColumn(data);
       addColumn(bc);
-	}
+   }
 
-	public void addColumn(char[][] data) {
+   public void addColumn(char[][] data) {
       ContinuousCharArrayColumn ac = new ContinuousCharArrayColumn(data);
       addColumn(ac);
-	}
+   }
 
-	public void addColumn(Object[] data) {
-		ObjectColumn oc = new ObjectColumn(data);
-		addColumn(oc);
-	}
+   public void addColumn(Object[] data) {
+      ObjectColumn oc = new ObjectColumn(data);
+      addColumn(oc);
+   }
 
-	public void addColumn(boolean[] data) {
-		BooleanColumn bc = new BooleanColumn(data);
-		addColumn(bc);
-	}
+   public void addColumn(boolean[] data) {
+      BooleanColumn bc = new BooleanColumn(data);
+      addColumn(bc);
+   }
 
-	public void addRow(char[] data) {
+   public void addRow(char[] data) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).addRow(new Character(data[i]));
     }
-	public void addRow(byte[] data) {
+   public void addRow(byte[] data) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).addRow(new Byte(data[i]));
     }
-	public void addRow(int[] data) {
+   public void addRow(int[] data) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).addRow(new Integer(data[i]));
     }
-	public void addRow(float[] data) {
+   public void addRow(float[] data) {
       for(int i = 0; i< data.length; i++)
         getColumn(i).addRow(new Float(data[i]));
     }
-	public void addRow(double[] data) {
+   public void addRow(double[] data) {
       for(int i = 0; i< data.length; i++)
         getColumn(i).addRow(new Double(data[i]));
     }
-	public void addRow(long[] data) {
+   public void addRow(long[] data) {
       for(int i = 0; i< data.length; i++)
         getColumn(i).addRow(new Long(data[i]));
     }
-	public void addRow(short[] data) {
+   public void addRow(short[] data) {
       for(int i = 0; i< data.length; i++)
         getColumn(i).addRow(new Short(data[i]));
     }
-	public void addRow(String[] data) {
+   public void addRow(String[] data) {
       for(int i= 0; i< data.length; i++)
         getColumn(i).addRow(data[i]);
     }
-	public void addRow(byte[][] data) {
+   public void addRow(byte[][] data) {
       for(int i= 0; i< data.length; i++)
         getColumn(i).addRow(data[i]);
     }
-	public void addRow(char[][] data) {
+   public void addRow(char[][] data) {
       for(int i = 0; i< data.length; i++)
         getColumn(i).addRow(data[i]);
     }
-	public void addRow(Object[] data) {
+   public void addRow(Object[] data) {
       for(int i = 0; i < data.length; i++)
         getColumn(i).addRow(data[i]);
     }
-	public void addRow(boolean[] data) {
+   public void addRow(boolean[] data) {
       for(int i= 0; i< data.length; i++)
         getColumn(i).addRow(new Boolean(data[i]));
     }
 
-	public boolean isColumnNumeric(int position) {
-		if(getColumn(position) instanceof NumericColumn)
-			return true;
+   public boolean isColumnNumeric(int position) {
+      if(getColumn(position) instanceof NumericColumn)
+         return true;
 
-		Column col = getColumn(position);
-		int numRows = col.getNumRows();
+      Column col = getColumn(position);
+      int numRows = col.getNumRows();
         for(int row = 0; row < numRows; row++) {
             try {
                 Double d = Double.valueOf(col.getString(row));
@@ -1305,13 +1304,13 @@ public class TableImpl extends AbstractTable implements MutableTable {
             }
         }
         return true;
-	}
+   }
 
-	public int getColumnType(int position) {
-		return getColumn(position).getType();
-	}
+   public int getColumnType(int position) {
+      return getColumn(position).getType();
+   }
 
-	public ExampleTable toExampleTable() {
-		return new ExampleTableImpl(this);
-	}
+   public ExampleTable toExampleTable() {
+      return new ExampleTableImpl(this);
+   }
 }

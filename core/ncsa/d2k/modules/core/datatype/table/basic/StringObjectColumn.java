@@ -34,7 +34,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
      */
     public StringObjectColumn (int capacity) {
         internal = new String[capacity];
-		type = ColumnTypes.STRING;
+      type = ColumnTypes.STRING;
     }
 
     /**
@@ -43,7 +43,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
      */
     public StringObjectColumn (String[] newInternal) {
         this.setInternal(newInternal);
-		type = ColumnTypes.STRING;
+      type = ColumnTypes.STRING;
     }
 
     /**
@@ -76,13 +76,13 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
             }
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
-			newCol.type = getType();
+         newCol.type = getType();
             return  newCol;
         }
     }
 
-	public void trim() {
-	}
+   public void trim() {
+   }
 
     /** support TextualColumn */
     //////////////////////////////////////
@@ -269,20 +269,25 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         internal[pos] = new Boolean(newEntry).toString();
     }
 
-	public byte getByte(int pos) {
-		return (byte)'b';
-	}
+   public byte getByte(int pos) {
+      return getBytes(pos)[0];
+   }
 
-	public void setByte(byte b, int pos) {
-	}
+   public void setByte(byte b, int pos) {
+      byte[] ba = new byte[1];
+      ba[0] = b;
+      setBytes(ba, pos);
+   }
 
-	public char getChar(int pos) {
-		return 'a';
-	}
+   public char getChar(int pos) {
+      return getChars(pos)[0];
+   }
 
-	public void setChar(char c, int pos) {
-
-	}
+   public void setChar(char c, int pos) {
+      char[] ca = new char[1];
+      ca[0] = c;
+      setChars(ca, pos);
+   }
 
     //////////////////////////////////////
     //// Accessing Metadata
@@ -300,13 +305,13 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         return  numEntries;
     }
 
-	/**
-	 * Get the number of rows that this column can hold.  Same as getCapacity
-	 * @return the number of rows this column can hold
-	 */
-	public int getNumRows() {
-		return getCapacity();
-	}
+   /**
+    * Get the number of rows that this column can hold.  Same as getCapacity
+    * @return the number of rows this column can hold
+    */
+   public int getNumRows() {
+      return getCapacity();
+   }
     /**
      Get the capacity of this Column, its potential maximum number of entries
      @return the max number of entries this Column can hold
@@ -358,7 +363,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         StringObjectColumn sc = new StringObjectColumn(subset);
         sc.setLabel(getLabel());
         sc.setComment(getComment());
-		sc.type = getType();
+      sc.type = getType();
         return  sc;
     }
 
@@ -470,7 +475,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
      Does not overwrite this Column.
 
      @param newOrder an array of indices indicating a new order
-	 @return a copy of this Column, re-ordered
+    @return a copy of this Column, re-ordered
      */
     public Column reorderRows (int[] newOrder) {
         String[] newInternal = null;
@@ -484,14 +489,14 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         StringObjectColumn sc = new StringObjectColumn(newInternal);
         sc.setLabel(getLabel());
         sc.setComment(getComment());
-		sc.type = getType();
+      sc.type = getType();
         return  sc;
     }
 
     /**
      Compare the values of the element passed in and pos. Return 0 if they
      are the same, greater than zero if element is greater,
-	 and less than zero if element is less.
+    and less than zero if element is less.
 
      @param element the element to be passed in and compared
      @param pos the position of the element in Column to be compare with
@@ -505,7 +510,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
     /**
      Compare pos1 and pos2 positions in the Column. Return 0 if they
      are the same, greater than zero if pos1 is greater,
-	 and less than zero if pos1 is less.
+    and less than zero if pos1 is less.
 
      @param pos1 the position of the first element to compare
      @param pos2 the position of the second element to compare
@@ -518,11 +523,11 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
     }
 
     /**
-	 * Compare two Strings
+    * Compare two Strings
      * @param b1 the first String to compare
      * @param b2 the second String to compare
      * @return the result of compareTo
-	 * @see java.lang.String
+    * @see java.lang.String
      */
     private int compareStrings (String b1, String b2) {
         return  b1.compareTo(b2);
@@ -604,9 +609,9 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         internal = doSort(internal, 0, internal.length - 1, vt);
     }
 
-	public void sort(MutableTable vt, int begin, int end) {
-		internal = doSort(internal, begin, end, vt);
-	}
+   public void sort(MutableTable vt, int begin, int end) {
+      internal = doSort(internal, begin, end, vt);
+   }
 
     /**
      Implement the quicksort algorithm.  Partition the array and
@@ -615,7 +620,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
      @param p the beginning index
      @param r the ending index
      @param t the VerticalTable to swap rows for
-	 @return a sorted array of Strings
+    @return a sorted array of Strings
      */
     private String[] doSort (String[] A, int p, int r, MutableTable t) {
         if (p < r) {
@@ -632,7 +637,7 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
      @param p the beginning index
      @param r the ending index
      @param t the VerticalTable to swap rows for
-	 @return the partition index
+    @return the partition index
      */
     private int partition (String[] A, int p, int r, MutableTable t) {
         //String x = A[p];

@@ -35,8 +35,8 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      */
     public ShortColumn (int capacity) {
         internal = new short[capacity];
-		setIsScalar(true);
-		type = ColumnTypes.SHORT;
+      setIsScalar(true);
+      type = ColumnTypes.SHORT;
     }
 
     /**
@@ -44,9 +44,9 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @param vals the initial values
      */
     public ShortColumn (short[] vals) {
-		internal = vals;
-		setIsScalar(true);
-		type = ColumnTypes.SHORT;
+      internal = vals;
+      setIsScalar(true);
+      type = ColumnTypes.SHORT;
     }
 
     /**
@@ -93,18 +93,18 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
         return  numEntries;
     }
 
-	/**
-	 * Get the number of rows that this Column can hold.  Same as getCapacity().
-	 * @return the number of rows this Column can hold
-	 */
-	public int getNumRows() {
-		return internal.length;
-	}
+   /**
+    * Get the number of rows that this Column can hold.  Same as getCapacity().
+    * @return the number of rows this Column can hold
+    */
+   public int getNumRows() {
+      return internal.length;
+   }
 
     /**
      Set a new capacity for this ShortColumn.  The capacity is its potential
      max number of entries.  If numEntries is greater than newCapacity, the
-	 Column will be truncated.
+    Column will be truncated.
      @param newCapacity the new capacity
      */
     public void setNumRows (int newCapacity) {
@@ -286,7 +286,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @return the value of the item at pos as a byte[]
      */
     public byte getByte (int pos) {
-		return getBytes(pos)[0];
+      return (byte)getShort(pos);
     }
 
     /**
@@ -295,9 +295,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @param pos the position
      */
     public void setByte (byte newEntry, int pos) {
-		byte[] b = new byte[1];
-		b[0] = newEntry;
-		setBytes(b, pos);
+      setShort((short)newEntry, pos);
     }
 
     /**
@@ -341,34 +339,32 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
     }
 
     /**
-     Convert the entry at pos to a String and return it as a char[].
+     returns the entry at pos, cast to a char.
      @param pos the position
      @return the value at pos as a char[]
      */
     public char getChar (int pos) {
-		return getChars(pos)[0];
+      return (char)getShort(pos);
     }
 
     /**
-     Convert newEntry to a String and call setString().
+     casts newEntry to a short and sets it at pos.
      @param newEntry the new item
      @param pos the position
      */
     public void setChar (char newEntry, int pos) {
-		char[] c = new char[1];
-		c[0] = newEntry;
-		setChars(c, pos);
+      setShort((short)newEntry, pos);
     }
 
     /**
-     If the value at pos is greater than zero, return true, else return false.
+     If the value at pos is equal to zero, return false, else return true.
      @param pos the position
-     @return true if the value at pos is greater than zero, false otherwise
+     @return false if the value at pos is equal to zero, true otherwise
      */
     public boolean getBoolean (int pos) {
-        if (internal[pos] > 0)
-            return  true;
-        return  false;
+        if (internal[pos] == 0)
+            return  false;
+        return  true;
     }
 
     /**
@@ -548,7 +544,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      Get a copy of this Column, reordered, based on the input array of indices.
      Does not overwrite this Column.
      @param newOrder an array of indices indicating a new order
-	 @return a copy of this column, re-ordered
+    @return a copy of this column, re-ordered
      */
     public Column reorderRows (int[] newOrder) {
         short[] newInternal = null;
@@ -568,7 +564,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
     /**
      Compare the values of the object passed in and pos. Return 0 if they
      are the same, greater than zero if element is greater,
-	 and less than zero if element is less.
+    and less than zero if element is less.
      @param element the object to be passed in should be a subclass of Number
      @param pos the position of the element in Column to be compared with
      @return a value representing the relationship- >, <, or == 0
@@ -594,7 +590,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
     /**
      Compare pos1 and pos2 positions in the Column. Return 0 if they
      are the same, greater than zero if pos1 is greater,
-	 and less than zero if pos1 is less.
+    and less than zero if pos1 is less.
      @param pos1 the position of the first element to compare
      @param pos2 the position of the second element to compare
      @return a value representing the relationship- >, <, or == 0
@@ -636,7 +632,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
             //Integer x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
             //if (x == null) {
-			if(!toRemove.contains(new Integer(i))) {
+         if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }
@@ -673,11 +669,11 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
     */
     public void sort(MutableTable t,int begin, int end)
     {
-	if (end > internal.length -1) {
-	    System.err.println(" end index was out of bounds");
-	    end = internal.length -1;
-	}
-	internal = doSort(internal, begin, end, t);
+   if (end > internal.length -1) {
+       System.err.println(" end index was out of bounds");
+       end = internal.length -1;
+   }
+   internal = doSort(internal, begin, end, t);
 
     }
 
@@ -689,7 +685,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @param p the beginning index
      @param r the ending index
      @param t the Table to swap rows for
-	 @return a sorted array of shorts
+    @return a sorted array of shorts
      */
     private static short[] doSort (short[] A, int p, int r, MutableTable t) {
         if (p < r) {
@@ -706,7 +702,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @param p the beginning index
      @param r the ending index
      @param t the Table to swap rows for
-	 @return the new partition point
+    @return the new partition point
      */
     private static int partition (short[] A, int p, int r, MutableTable t) {
         short x = A[p];

@@ -35,8 +35,8 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      */
     public LongColumn (int capacity) {
         internal = new long[capacity];
-		setIsScalar(true);
-		type = ColumnTypes.LONG;
+      setIsScalar(true);
+      type = ColumnTypes.LONG;
     }
 
     /**
@@ -44,9 +44,9 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      @param vals the values to put into the column
      */
     public LongColumn (long[] vals) {
-		internal = vals;
-		setIsScalar(true);
-		type = ColumnTypes.LONG;
+      internal = vals;
+      setIsScalar(true);
+      type = ColumnTypes.LONG;
     }
 
     /**
@@ -96,13 +96,13 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
         return  numEntries;
     }
 
-	/**
-	 * Get the number of rows that this column can hold.  Same as getCapacity
-	 * @return the number of rows this column can hold
-	 */
-	public int getNumRows() {
-		return internal.length;
-	}
+   /**
+    * Get the number of rows that this column can hold.  Same as getCapacity
+    * @return the number of rows this column can hold
+    */
+   public int getNumRows() {
+      return internal.length;
+   }
 
     /**
      Suggests a new capacity for this ShortColumn.  If the Column implementation supports
@@ -290,7 +290,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      @return the value at pos as a byte
      */
     public byte getByte (int pos) {
-		return getBytes(pos)[0];
+      return (byte)getLong(pos);
     }
 
     /**
@@ -299,9 +299,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      @param pos the position
      */
     public void setByte (byte newEntry, int pos) {
-		byte[] b = new byte[1];
-		b[0] = newEntry;
-		setBytes(b, pos);
+      setLong((long)newEntry, pos);
     }
 
     /**
@@ -345,12 +343,14 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
     }
 
     /**
-     Convert the entry at pos to a String and return it as a char.
+     Casts the entry at pos to an int and returns the corresponding Unicode
+     character. This will only do what you expect if the entry is less
+     than or equal to <code>Integer.MAX_VALUE</code>.
      @param pos the position
      @return the value at pos as an array of chars
      */
     public char getChar (int pos) {
-		return getChars(pos)[0];
+      return (char)getInt(pos);
     }
 
     /**
@@ -359,20 +359,20 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      @param pos the position
      */
     public void setChar (char newEntry, int pos) {
-		char[] c = new char[1];
-		c[0] = newEntry;
-		setChars(c, pos);
+      char[] c = new char[1];
+      c[0] = newEntry;
+      setChars(c, pos);
     }
 
     /**
-     If the value at pos is greater than zero, return true.  false otherwise
+     If the value at pos is equal to zero, return false.  true otherwise
      @param pos the position
-     @return true if the value at pos is greater than zero, false otherwise
+     @return false if the value at pos is equal to zero, true otherwise
      */
     public boolean getBoolean (int pos) {
-        if (internal[pos] > 0)
-            return  true;
-        return  false;
+        if (internal[pos] == 0)
+            return  false;
+        return  true;
     }
 
     /**
@@ -553,7 +553,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      Get a copy of this Column, reordered, based on the input array of indices.
      Does not overwrite this Column.
      @param newOrder an array of indices indicating a new order
-	 @return a copy of this column, re-ordered
+    @return a copy of this column, re-ordered
      */
     public Column reorderRows (int[] newOrder) {
         long[] newInternal = null;
@@ -573,7 +573,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
     /**
      Compare the values of the object passed in and pos. Return 0 if they
      are the same, greater than zero if element is greater,
-	 and less than zero if element is less.
+    and less than zero if element is less.
      @param element the object to be passed in should be a subclass of Number
      @param pos the position of the element in Column to be compared with
      @return a value representing the relationship- >, <, or == 0
@@ -599,7 +599,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
     /**
      Compare pos1 and pos2 positions in the Column. Return 0 if they
      are the same, greater than zero if pos1 is greater,
-	 and less than zero if pos1 is less.
+    and less than zero if pos1 is less.
      @param pos1 the position of the first element to compare
      @param pos2 the position of the second element to compare
      @return a value representing the relationship- >, <, or == 0
@@ -643,7 +643,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
 //            Integer x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
  //           if (x == null) {
-			if(!toRemove.contains(new Integer(i))) {
+         if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }
@@ -679,11 +679,11 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
     */
     public void sort(MutableTable t,int begin, int end)
     {
-	if (end > internal.length -1) {
-	    System.err.println(" end index was out of bounds");
-	    end = internal.length -1;
-	}
-	internal = doSort(internal, begin, end, t);
+   if (end > internal.length -1) {
+       System.err.println(" end index was out of bounds");
+       end = internal.length -1;
+   }
+   internal = doSort(internal, begin, end, t);
 
     }
 
@@ -695,7 +695,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      @param p the beginning index
      @param r the ending index
      @param t the Table to swap rows for
-	 @return a sorted array of longs
+    @return a sorted array of longs
      */
     private static long[] doSort (long[] A, int p, int r, MutableTable t) {
         if (p < r) {
@@ -712,7 +712,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      @param p the beginning index
      @param r the ending index
      @param t the Table to swap rows for
-	 @return the partition point
+    @return the partition point
      */
     private static int partition (long[] A, int p, int r, MutableTable t) {
         long x = A[p];
