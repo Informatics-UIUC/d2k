@@ -141,7 +141,7 @@ public class RectGraph  extends BaseGraph implements MouseInputListener  {
     int blueR = blueH - blueL;
 
     if (getDisplayMode() == RectGraph.DisplayCohesion){
-      if (color == Color.ORANGE){
+      if (color == Color.orange){
         g2.setColor(color);
       } else {
         long red = Math.round(redR*((double)rect.getWidth()/(double)xmaximum));

@@ -137,14 +137,14 @@ public class DendogramPanel
       add(buildPanel(_root));
 
       JMenu chooseColors = new JMenu("Choose Colors");
-      ImageIcon hi = new ImageIcon(new ColorComponent(Color.GREEN).getImage());
-      hiSelectedColor = new ColorMenuItem("Selected High Color", hi, Color.RED);
+      ImageIcon hi = new ImageIcon(new ColorComponent(Color.green).getImage());
+      hiSelectedColor = new ColorMenuItem("Selected High Color", hi, Color.red);
       hiSelectedColor.addActionListener(this);
       chooseColors.add(hiSelectedColor);
 
-      ImageIcon low = new ImageIcon(new ColorComponent(Color.RED).getImage());
+      ImageIcon low = new ImageIcon(new ColorComponent(Color.red).getImage());
       lowSelectedColor = new ColorMenuItem("Selected Low Color", low,
-                                           Color.GREEN);
+                                           Color.green);
       lowSelectedColor.addActionListener(this);
       chooseColors.add(lowSelectedColor);
 

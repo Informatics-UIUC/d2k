@@ -433,7 +433,7 @@ public abstract class BaseGraph  extends JPanel {
       if (m_ends != null){
         obs = (Object[])m_ends.get(i);
         if (obs[2] != null){
-          g2.setColor(Color.RED);
+          g2.setColor(Color.red);
         }
       }
       g2.drawString(lbl, (int) (leftoffset-stringwidth-smallspace), (int) (y0scale+fontascent/2));
