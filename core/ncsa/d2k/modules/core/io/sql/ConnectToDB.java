@@ -477,7 +477,9 @@ public class ConnectToDB extends UIModule {
 
         private JComboBox cbV;
 
-        private String[] Vendors = {"Oracle", "MySQL", "SQLServer"};
+        // we currently only support Oracle
+        private String[] Vendors = {"Oracle"};
+        //private String[] Vendors = {"Oracle", "MySQL", "SQLServer"};
 
         private int dbFlag;
 
@@ -590,7 +592,8 @@ public class ConnectToDB extends UIModule {
                         tfD.setText("oracle.jdbc.driver.OracleDriver");
 
                     }
-
+                    /*
+                    // we don't support MySQL and SQLServer at this point
                     else if (newSelection == "MySQL") {
 
                         tfPo.setText("1520");
@@ -606,6 +609,7 @@ public class ConnectToDB extends UIModule {
                         tfD.setText("com.microsoft.jdbc.sqlserver.SQLServerDriver");
 
                     }
+                    */
 
                 }
 
@@ -983,9 +987,12 @@ public class ConnectToDB extends UIModule {
                       //dbi.setConnectionWrapper(out);
 
                       pushOutput (oc, 0);
+                      viewDone("Done");
 
                   }
 
+                  /*
+                  // We don't support MySQL and SQLServer at this time
                   else if ( _driver.equals("org.gjt.mm.mysql.Driver")) {
 
                       setUrl("jdbc:mysql://" + getMachine()+ "/" + getDbInstance());
@@ -1025,8 +1032,8 @@ public class ConnectToDB extends UIModule {
                   else
 
                       pushOutput(null, 0);
-
-                  viewDone("Done");
+                  */
+                  //viewDone("Done");
 
         }
 
