@@ -121,11 +121,16 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
    }
 
 	/**
-	 * Returns the internal representation of the data.
+	 * This method will expand the compressed nominal string data into a complete string array.
 	 * @return the internal representation of the data.
 	 */
 	public Object getInternal () {
-		return this.values;
+		int num = this.getNumRows();
+		String [] ir = new String [num];
+		for (int i = 0 ; i < num ; i++) {
+			ir[i] = this.getString(i);
+		}
+		return ir;
 	}
 
    /**

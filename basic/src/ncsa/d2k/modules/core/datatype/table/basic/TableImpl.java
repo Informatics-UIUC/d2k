@@ -352,6 +352,13 @@ abstract public class TableImpl implements Table {
             Object Obj1 = columns[i].getRow(pos1);
             columns[i].setRow(columns[i].getRow(pos2), pos1);
             columns[i].setRow(Obj1, pos2);
+            
+            // swap missing values.
+            boolean missing1 = columns[i].isValueMissing(pos1);
+            boolean missing2 = columns[i].isValueMissing(pos2);
+            columns[i].setValueToMissing(missing2, pos1);
+            columns[i].setValueToMissing(missing1, pos2);
+            
         }
     }
 

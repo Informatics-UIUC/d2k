@@ -73,7 +73,7 @@ public class MergeTableRows extends HeadlessUIModule {
 		PropertyDescription [] pds = new PropertyDescription [3];
                 pds[0] = super.supressDescription;
                 pds[1] = new PropertyDescription("control", "Control Column", "Name of control column in merging");
-                pds[2] = new PropertyDescription("type", "Merging Method", "Type of merging method");
+                pds[2] = new PropertyDescription("type", "Merging Method", "Type of merging method(Sum, Average, Minimum, Maximum or Count)");
 		return pds;
 	}
 

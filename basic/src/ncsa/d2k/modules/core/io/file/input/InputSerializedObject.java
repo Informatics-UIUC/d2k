@@ -112,26 +112,16 @@ public class InputSerializedObject extends InputModule {
     public void doit () throws Exception {
 
         String FileName = (String)(pullInput(0));
-        FileInputStream file = null;
+        ObjectInputStream in = null;
 
         try {
-           file = new FileInputStream(FileName);
+           in = ModuleUtilities.getObjectInputStream(FileName);
         }
         catch (FileNotFoundException e) {
            throw new FileNotFoundException( "Could not open file: " + FileName +
                                   "\n" + e );
-        }
-        catch (SecurityException e) {
+        } catch (SecurityException e) {
            throw new SecurityException( "Could not open file: " + FileName +
-                                  "\n" + e );
-        }
-
-        ObjectInputStream in = null;
-        try {
-            in = new ObjectInputStream(file);
-        }
-        catch (IOException e) {
-           throw new IOException( "File " + FileName + " has invalid format" +
                                   "\n" + e );
         }
 
