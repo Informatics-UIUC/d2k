@@ -38,6 +38,8 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
 	}
 
 	public StringColumn(String[] data) {
+		setOfValues = new HashMap();
+		values = new String[0];
 		rowIndicies = new int[data.length];
 		for(int i = 0; i < data.length; i++) {
 			setString(data[i], i);
