@@ -26,7 +26,7 @@ public class DecisionTreeVis extends ncsa.d2k.infrastructure.modules.VisModule {
 	}
 
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel"};
+		String[] types = {"java.lang.Object"};
 		return types;
 	}
 
