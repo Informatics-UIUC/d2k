@@ -11,20 +11,18 @@ package ncsa.d2k.modules.core.discovery.ruleassociation;
 
 
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.UserView;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.io.sql.*;
-import ncsa.gui.Constrain;
-import ncsa.gui.JOutlinePanel;
-import java.sql.*;
-import java.util.ArrayList;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyVetoException;
+import java.sql.*;
+import java.util.*;
+import javax.swing.*;
 import gnu.trove.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.io.sql.*;
+import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.gui.*;
 
 public class SQLGetRuleAssocFromCube extends UIModule
         {
@@ -42,12 +40,17 @@ public class SQLGetRuleAssocFromCube extends UIModule
   static String DELIMITER = "\t";
   static String ELN = "\n";
   static String NA = "NOAVL";
+  String tableIn;
   String cubeTableName = NOTHING;
+  String saveBookName = NOTHING;
   String saveSupport = NOTHING;
+  boolean changeCodeBook = true;
   // ArrayList for column names
   ArrayList colNames;
-  // ArrayList to keep all rule labels
+  // ArrayList to keep all rule labels in short code
   ArrayList itemLabels;
+  // ArrayList to keep all rule labels in expand text
+  ArrayList itemText;
   // ArrayList to keep the objects of the class FreqItemSet
   ArrayList freqItemSets;
   // Array to keep the objects of the class Rule
@@ -61,18 +64,28 @@ public class SQLGetRuleAssocFromCube extends UIModule
   }
   ArrayList finalRules;
   TableImpl ruleTable;
+  TableImpl codeTable;
+  SQLCodeBook aBook;
 
+  JPanel codeBookPanel;
+  CardLayout codeBookLayout;
   JTextField tableName;
-  JTextField condition;
-  JTextField target;
+  JList conditionList;
+  JList targetList;
+  int[] conditionSelected;
+  int[] targetSelected;
   JTextField supportChosen;
   JTextField confidenceChosen;
   JTextField thresholdChosen;
+  JTextField bookName;
+  JLabel bookLabel;
   Checkbox sortS;
   Checkbox sortC;
+  Checkbox useCodeBook;
   JButton tableBrowseBtn;
   JButton targetBrowseBtn;
   JButton condBrowseBtn;
+  JButton bookBrowseBtn;
   JButton cancelBtn;
   JButton ruleBtn;
   JButton sortBtn;
@@ -82,6 +95,10 @@ public class SQLGetRuleAssocFromCube extends UIModule
   BrowseTablesView btw;
   int targetIdx = -1;
   int conditionIdx = -1;
+
+  private static String BLANK = "NoCodeBook";
+  private static String FILLED = "WithCodeBook";
+
 
   public SQLGetRuleAssocFromCube() {
   }
@@ -112,7 +129,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
           s += "The 'IF' part is the condition of the rule, or called left-hand side ";
           s += "of the rule. The 'THEN' part is the target of the rule, or called ";
           s += "right-hand side of the rule. 'SUPPORT' and 'CONFIDENCE' are ";
-          s += "two measures of rule interestingness. They respectively reflect ";
+          s += "two measuresre of rule interestingness. They respectively reflect ";
           s += "the usefulness and certainty of discovered rules. A support of 2% ";
           s += "for a rule means that 2% of data under analysis support this rule. ";
           s += "A confidence of 60% means that 60% of data that match 'IF' condition ";
@@ -127,9 +144,12 @@ public class SQLGetRuleAssocFromCube extends UIModule
           s += "will be pruned. This module also provides an user-interface to filter out rules. ";
           s += "You can specify the 'IF' part by choosing a condition, and specify ";
           s += "the 'THEN' part by choosing a target. This module will only generate ";
-          s += "association rules that match your selection.";
+          s += "association rules that match your selections. In addition, this module ";
+          s += "not only can display the discoved rules in predefined codes, ";
+          s += "but also in detailed descriptions by choosing the 'Use Code Book' ";
+          s += "option and specifying a code book for use. ";
           s += "<p> Restrictions: ";
-          s += "We currently only support Oracle databases.";
+          s += "We currently only support Oracle and SQLServer databases.";
           return s;
   }
 
@@ -146,8 +166,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
   /** this property is the min acceptable support score.
    *  @param i the minimum support to set
    */
-  public void setMinSupport (double i) throws PropertyVetoException {
-      if( i < 0 || i > 100) throw new PropertyVetoException (" < 0 or > 100", null);
+  public void setMinSupport (double i) {
     minSupport = i;
   }
   public double getMinSupport () {
@@ -157,8 +176,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
   /** this property is the min acceptable confidence score.
    *  @param i the minimum confidence to set
    */
-  public void setMinConfidence (double i) throws PropertyVetoException {
-      if( i < 0 || i > 100) throw new PropertyVetoException (" < 0 or > 100", null);
+  public void setMinConfidence (double i) {
     minConfidence = i;
   }
   public double getMinConfidence () {
@@ -171,8 +189,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
    *           rule is pruned. E.g. A=>C (confidence 0.95) and (A,B)=>C
    *           (confidence 0.94), with pruningThreshold 0.1, (A,B)=>C is pruned
    */
-  public void setThreshold (double i) throws PropertyVetoException {
-      if( i < 0 || i > 100) throw new PropertyVetoException (" < 0 or > 100", null);
+  public void setThreshold (double i) {
     threshold = i;
   }
   public double getThreshold () {
@@ -202,31 +219,38 @@ public class SQLGetRuleAssocFromCube extends UIModule
   public class GetRuleView extends JUserPane
     implements ActionListener, ItemListener {
 
+    /** a reference to our parent module */
+    protected SQLGetRuleAssocFromCube parent;
+
     public void setInput(Object input, int index) {
       if (index == 0) {
         cw = (ConnectionWrapper)input;
       }
       else if (index == 1) {
-        tableName.setText((String)input);
-        getColNames();
+        tableIn = (String)input;
+        doGUI();
+        cubeTableName = NOTHING;
+        saveSupport = NOTHING;
+        supportChosen.setText(Double.toString(minSupport));
+        confidenceChosen.setText(Double.toString(minConfidence));
+        thresholdChosen.setText(Double.toString(threshold));
+        bookName.setText(NOTHING);
       }
-      //tableName.setText(NOTHING);
-      condition.setText(NOTHING);
-      target.setText(NOTHING);
-      cubeTableName = NOTHING;
-      saveSupport = NOTHING;
-      supportChosen.setText(Double.toString(minSupport));
-      confidenceChosen.setText(Double.toString(minConfidence));
-      thresholdChosen.setText(Double.toString(threshold));
     }
 
-    /*public Dimension getPreferredSize() {
-      return new Dimension (500, 240);
-    }*/
+    /*
+    public Dimension getPreferredSize() {
+      return new Dimension (500, 280);
+    } */
 
     public void initView(ViewModule mod) {
+      parent = (SQLGetRuleAssocFromCube)mod;
+    }
+
+    public void doGUI() {
       removeAll();
-      cw = (ConnectionWrapper)pullInput (0);
+      conditionList=new JList();
+      targetList=new JList();
 
       // Panel to hold outline panels
       JPanel getRulePanel = new JPanel();
@@ -239,68 +263,106 @@ public class SQLGetRuleAssocFromCube extends UIModule
         0,0,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(options, tableName = new JTextField(10),
         5,0,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
-      tableName.setText((String)pullInput(1));
+      tableName.setText(tableIn);
       tableName.addActionListener(this);
-      getColNames();
+      getColNames(tableName.getText().toString());
       Constrain.setConstraints(options, tableBrowseBtn = new JButton ("Browse"),
         15,0,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
       tableBrowseBtn.addActionListener(this);
 
-      Constrain.setConstraints(options, new JLabel("Condition Attribute"),
-        0,1,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
-      Constrain.setConstraints(options, condition = new JTextField(10),
-        5,1,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
-      condition.setText(NOTHING);
-      condition.addActionListener(this);
-      Constrain.setConstraints(options, condBrowseBtn = new JButton ("Browse"),
-        15,1,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
-      condBrowseBtn.addActionListener(this);
+      DefaultListModel dlm = new DefaultListModel();
+      for(int i = 0; i < colNames.size(); i++)
+        dlm.addElement(colNames.get(i).toString());
+      conditionList.setModel(dlm);
+      dlm = new DefaultListModel();
+      for(int i = 0; i < colNames.size(); i++)
+        dlm.addElement(colNames.get(i).toString());
+      targetList.setModel(dlm);
+      JScrollPane leftScrollPane=new JScrollPane(conditionList);
+      JScrollPane rightScrollPane=new JScrollPane(targetList);
 
-      Constrain.setConstraints(options, new JLabel("Target Attribute"),
-        0,2,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
-      Constrain.setConstraints(options, target = new JTextField(10),
-        5,2,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
-      target.setText(NOTHING);
-      target.addActionListener(this);
-      Constrain.setConstraints(options, targetBrowseBtn = new JButton ("Browse"),
-        15,2,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
-      targetBrowseBtn.addActionListener(this);
+      JPanel twoPanes = new JPanel();
+      twoPanes.setLayout(new GridBagLayout());
+
+      Constrain.setConstraints(twoPanes, new JLabel("Choose Conditions"), 0, 0, 1, 1,
+      GridBagConstraints.BOTH, GridBagConstraints.CENTER, 0, 0);
+      Constrain.setConstraints(twoPanes, new JLabel("Choose Targets"), 1, 0, 1, 1,
+      GridBagConstraints.BOTH, GridBagConstraints.CENTER, 0, 0);
+      Constrain.setConstraints(twoPanes, leftScrollPane, 0, 1, 1, 1,
+      GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+      Constrain.setConstraints(twoPanes, rightScrollPane, 1, 1, 1, 1,
+      GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+
+      Constrain.setConstraints(options, twoPanes,
+        0,1,20,4, GridBagConstraints.BOTH, GridBagConstraints.WEST,1.0,1.0);
 
       Constrain.setConstraints(options, new JLabel("Minimum Support"),
-        0,3,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
+        0,5,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(options, supportChosen = new JTextField(10),
-        5,3,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
+        5,5,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       supportChosen.setText(Double.toString(minSupport));
       supportChosen.addActionListener(this);
       sortS = new Checkbox( "Sort by Support", null, true );
       sortS.addItemListener( this );
       Constrain.setConstraints(options, sortS,
-        15,3,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
+        15,5,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
 
       Constrain.setConstraints(options, new JLabel("Minimum Confidence"),
-        0,4,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
+        0,6,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(options, confidenceChosen = new JTextField(10),
-        5,4,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
+        5,6,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       confidenceChosen.setText(Double.toString(minConfidence));
       confidenceChosen.addActionListener(this);
       sortC = new Checkbox ( "Sort by Confidence", null, false);
       sortC.addItemListener( this );
       Constrain.setConstraints(options, sortC,
-        15,4,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
+        15,6,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
 
       Constrain.setConstraints(options, new JLabel("Pruning Threshold"),
-        0,5,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
+        0,7,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(options, thresholdChosen = new JTextField(10),
-        5,5,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
+        5,7,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       thresholdChosen.setText(Double.toString(threshold));
       thresholdChosen.addActionListener(this);
+
+      useCodeBook = new Checkbox ( "Use Code Book", null, false);
+      useCodeBook.addItemListener( this );
+      Constrain.setConstraints(options, useCodeBook,
+        0,8,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.EAST,1,1);
+
+      codeBookPanel = new JPanel();
+      codeBookLayout = new CardLayout();
+      codeBookPanel.setLayout(codeBookLayout);
+
+      JPanel filledPanel = new JPanel();
+      filledPanel.setLayout (new GridBagLayout());
+      Constrain.setConstraints(filledPanel, bookLabel = new JLabel("Code Book Name"),
+        0,0,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
+      Constrain.setConstraints(filledPanel, bookName = new JTextField(10),
+        5,0,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
+      bookName.setText(NOTHING);
+      bookName.addActionListener(this);
+      Constrain.setConstraints(filledPanel, bookBrowseBtn = new JButton ("Browse"),
+        15,0,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
+      bookBrowseBtn.addActionListener(this);
+      codeBookPanel.add(filledPanel, FILLED);
+
+      JPanel blankPanel = new JPanel();
+      blankPanel.setLayout (new GridBagLayout());
+      Constrain.setConstraints(blankPanel, new JPanel(),
+        0,0,1,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
+      codeBookPanel.add(blankPanel, BLANK);
+      codeBookLayout.show(codeBookPanel, BLANK);
+
+      Constrain.setConstraints(options, codeBookPanel,
+        5,8,15,1,GridBagConstraints.NONE,GridBagConstraints.EAST,1,1);
 
       /* Add the outline panel to getRulePanel */
       Constrain.setConstraints(getRulePanel, options,
         0,0,5,5,GridBagConstraints.BOTH,GridBagConstraints.CENTER,1.0,1.0);
       Constrain.setConstraints(getRulePanel, new JPanel(),
         0,6,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,0.5,0);
-      Constrain.setConstraints(getRulePanel, cancelBtn = new JButton ("   Cancel   "),
+      Constrain.setConstraints(getRulePanel, cancelBtn = new JButton ("   Abort   "),
         1,6,1,1,GridBagConstraints.NONE, GridBagConstraints.EAST,0,0);
       cancelBtn.addActionListener(this);
       Constrain.setConstraints(getRulePanel, ruleBtn = new JButton ("Get Rules"),
@@ -320,27 +382,43 @@ public class SQLGetRuleAssocFromCube extends UIModule
       Object src = e.getSource();
       if (src == tableBrowseBtn) {
         doTableBrowse();
-        condition.setText(NOTHING);
-        target.setText(NOTHING);
       }
-      else if (src == condBrowseBtn) {
-        doColumnBrowse(0);
-      }
-      else if (src == targetBrowseBtn) {
-        doColumnBrowse(1);
+      else if (src == bookBrowseBtn) {
+        doBookBrowse();
+        changeCodeBook = true;
       }
       else if (src == ruleBtn) {
-        if (tableName.getText().length()>0) {
-          // only recalculate rules if table name or support are changed
+        if (useCodeBook.getState() && bookName.getText().length()<=0) {
+          // The user has not chosen a code book yet
+          JOptionPane.showMessageDialog(msgBoard,
+            "You must choose a code book.", "Error",
+            JOptionPane.ERROR_MESSAGE);
+          System.out.println("There is no code book selected.");
+        }
+        else if (tableName.getText().length()>0) {
+          // if code book is required and the code book is not retrieved yet, then get it
+          if (!saveBookName.equals(bookName.getText().toString()) &&
+              useCodeBook.getState()) {
+            aBook = new SQLCodeBook(cw, bookName.getText().toString());
+            codeTable = aBook.codeBook;
+            saveBookName = bookName.getText().toString();
+          }
+          // only recalculate rules if table name, or code table, or support are changed
           if (!cubeTableName.equals(tableName.getText().toString()) ||
-              !saveSupport.equals(supportChosen.getText().toString())  ) {
+              !saveSupport.equals(supportChosen.getText().toString()) ||
+              changeCodeBook ) {
+            getItemLabels();
             cubeTableName = tableName.getText().toString();
             saveSupport = supportChosen.getText().toString();
             freqItemSets = new ArrayList();
             allRules = new ArrayList();
-            getItemLabels();
+            //printArrayList(itemLabels);
+            //printArrayList(itemText);
             extractRules();
+            //printAllRules();
           }
+          conditionSelected = conditionList.getSelectedIndices();
+          targetSelected = targetList.getSelectedIndices();
           finalRules = new ArrayList();
           filterRules();
           if (finalRules.size() > 0) {
@@ -352,8 +430,16 @@ public class SQLGetRuleAssocFromCube extends UIModule
               sortRuleTable(SUPPORT);
             }
 
-            RuleTable rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
+            changeCodeBook = false;
+            RuleTable rt;
+            if (useCodeBook.getState()) {
+              rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
+                    itemText, freqItemSets);
+            }
+            else {
+              rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
                     itemLabels, freqItemSets);
+            }
 
             pushOutput(rt, 0);
           }
@@ -363,12 +449,12 @@ public class SQLGetRuleAssocFromCube extends UIModule
             "There is no rule discovered. You may like to adjust " +
             "Minimum Support, Minimum Confidence and Pruning Threshold, and try again.",
             "Error", JOptionPane.ERROR_MESSAGE);
-            System.out.println("There is no table selected.");
+            System.out.println("There is no rule discovered.");
           }
         }
-        else { // The user has not chosen a table yet
+        else if (tableName.getText().length()<=0) { // The user has not chosen a table yet
           JOptionPane.showMessageDialog(msgBoard,
-          "Click the button 'Browse' to choose a table first.", "Error",
+          "You must choose a table first.", "Error",
           JOptionPane.ERROR_MESSAGE);
           System.out.println("There is no table selected.");
         }
@@ -376,20 +462,19 @@ public class SQLGetRuleAssocFromCube extends UIModule
       else if (src == cancelBtn) {
         cubeTableName = NOTHING;
         saveSupport = NOTHING;
-        closeIt();
+        parent.viewCancel();
       }
       else if (src == tableName) {
-        getColNames();
-      }
-      else if (src == target) {
-        if (target.getText().length() < 1) {
-          targetIdx = -1;
-        }
-      }
-      else if (src == condition) {
-        if (condition.getText().length() < 1) {
-          conditionIdx = -1;
-        }
+        getColNames(tableName.getText().toString());
+        System.out.println("get column after tablename is entered");
+        DefaultListModel dlm = new DefaultListModel();
+        for(int i = 0; i < colNames.size(); i++)
+          dlm.addElement(colNames.get(i).toString());
+        conditionList.setModel(dlm);
+        dlm = new DefaultListModel();
+        for(int i = 0; i < colNames.size(); i++)
+          dlm.addElement(colNames.get(i).toString());
+        targetList.setModel(dlm);
       }
       else if (src == sortBtn) {
         if (allRules.size()==0) {
@@ -405,9 +490,16 @@ public class SQLGetRuleAssocFromCube extends UIModule
           sortRuleTable(SUPPORT);
         }
         if (finalRules.size() > 0) {
-          RuleTable rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
-                    itemLabels, freqItemSets);
-
+          changeCodeBook = false;
+          RuleTable rt;
+          if (useCodeBook.getState()) {
+            rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
+                  itemText, freqItemSets);
+          }
+          else {
+            rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
+                  itemLabels, freqItemSets);
+          }
           pushOutput(rt, 0);
         }
       }
@@ -434,16 +526,37 @@ public class SQLGetRuleAssocFromCube extends UIModule
           sortS.setState(true);
         }
       }
+      else if (e.getSource() == useCodeBook) {
+        if (useCodeBook.getState()) {
+          changeCodeBook = true;
+          codeBookLayout.show(codeBookPanel, FILLED);
+          bookName.setText(NOTHING);
+        }
+        else {
+          changeCodeBook = true;
+          codeBookLayout.show(codeBookPanel, BLANK);
+          bookName.setText(NOTHING);
+        }
+      }
     }
   }
 
   /** connect to a database and retrieve the list of available cube tables
    */
   protected void doTableBrowse() {
-    String query = "select table_name from user_tables where table_name like '%_CUBE'";
+    Vector v = new Vector();
     try {
-      bt = new BrowseTables(cw, query);
-      btw = new BrowseTablesView(bt, query);
+      DatabaseMetaData metadata = null;
+      con = cw.getConnection();
+      metadata = con.getMetaData();
+      String[] types = {"TABLE"};
+      ResultSet tableNames = metadata.getTables(null,"%","%_CUBE%",types);
+      while (tableNames.next()) {
+        String aTable = tableNames.getString("TABLE_NAME");
+        v.addElement(aTable);
+      }
+      bt = new BrowseTables(cw, v);
+      btw = new BrowseTablesView(bt, v);
       btw.setSize(250,200);
       btw.setTitle("Available Cube Tables");
       btw.setLocation(200,250);
@@ -452,7 +565,16 @@ public class SQLGetRuleAssocFromCube extends UIModule
         public void windowClosed(WindowEvent e)
         {
           tableName.setText(btw.getChosenRow());
-          getColNames();
+          getColNames(tableName.getText().toString());
+
+          DefaultListModel dlm = new DefaultListModel();
+          for(int i = 0; i < colNames.size(); i++)
+            dlm.addElement(colNames.get(i).toString());
+          conditionList.setModel(dlm);
+          dlm = new DefaultListModel();
+          for(int i = 0; i < colNames.size(); i++)
+            dlm.addElement(colNames.get(i).toString());
+          targetList.setModel(dlm);
          }
       });
     }
@@ -464,69 +586,53 @@ public class SQLGetRuleAssocFromCube extends UIModule
     }
   }
 
-  /** connect to a database and retrieve the column list of the cube table
-   *  @param colType the column type: 0 for condition column and 1 for target column
+  /** connect to a database and retrieve the list of available book code tables
    */
-  protected void doColumnBrowse(int colType) {
-    String query = new String("select column_name from all_tab_columns where table_name = '");
-    query = query + tableName.getText() + "' and column_name != 'SET_SIZE' and " +
-            "column_name != 'CNT' order by column_id";
+  protected void doBookBrowse() {
+    Vector v = new Vector();
     try {
-      bt = new BrowseTables(cw, query);
-      btw = new BrowseTablesView(bt, query);
+      DatabaseMetaData metadata = null;
+      con = cw.getConnection();
+      metadata = con.getMetaData();
+      String[] types = {"TABLE"};
+      ResultSet tableNames = metadata.getTables(null,"%","%_CODEBOOK%",types);
+      while (tableNames.next()) {
+        String aTable = tableNames.getString("TABLE_NAME");
+        v.addElement(aTable);
+      }
+      bt = new BrowseTables(cw, v);
+      btw = new BrowseTablesView(bt, v);
       btw.setSize(250,200);
+      btw.setTitle("Available Code Book Tables");
       btw.setLocation(200,250);
       btw.setVisible(true);
-      if (colType == 0) {
-        btw.setTitle("Available Condition Attributes");
-        btw.addWindowListener(new WindowAdapter() {
-          public void windowClosed(WindowEvent e)
-          {
-            condition.setText(btw.getChosenRow());
-            conditionIdx = btw.getSelectedRow();
-            //conditionIdx = btw.selectedRow;
-            System.out.println("conditionIdx is " + conditionIdx);
-          }
-        });
-      }
-      else if (colType == 1) {
-        btw.setTitle("Available Target Attributes");
-        btw.addWindowListener(new WindowAdapter() {
-          public void windowClosed(WindowEvent e)
-          {
-            target.setText(btw.getChosenRow());
-            targetIdx = btw.getSelectedRow();
-            //targetIdx = btw.selectedRow;
-            System.out.println("targetIdx is " + targetIdx);
-          }
-        });
-      }
+      btw.addWindowListener(new WindowAdapter() {
+        public void windowClosed(WindowEvent e)
+        {
+          bookName.setText(btw.getChosenRow());
+         }
+      });
     }
     catch (Exception e){
       JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in doColumnBrowse.");
+      System.out.println("Error occoured in doBookBrowse.");
     }
   }
 
-  /** build an ArrayList itemLabels to keep strings "colName=colValue".
+  /** build an ArrayList itemLables to keep strings "colName=colValue".
    *  to speed up search and filtering, build an int[2] to keep the min index
    *  and max index for each column.
    */
   protected void getItemLabels() {
     itemLabels = new ArrayList();
+    itemText = new ArrayList();
     Statement valueStmt;
     ResultSet valueSet;
     int colIdx = 0;
     int min=0;
     int max=0;
-    if (target.getText().length() < 1) {
-      targetIdx = -1;
-    }
-    if (condition.getText().length() < 1) {
-      conditionIdx = -1;
-    }
     try {
       con = cw.getConnection();
       colIdx = 0;
@@ -540,16 +646,24 @@ public class SQLGetRuleAssocFromCube extends UIModule
         valueSet = valueStmt.executeQuery(valueQry);
         min = itemLabels.size();
         while (valueSet.next()) {
-          itemLabels.add(colName+"="+valueSet.getString(1));
+          String codeVal = valueSet.getString(1);
+          itemLabels.add(colName+"="+codeVal);
+          if (useCodeBook.getState()) {
+            String textVal = aBook.getDescription(colName+"="+codeVal);
+            if (textVal==null) { // if there is no mapping description, then use the code
+              itemText.add(colName+"="+codeVal);
+            }
+            else { // if there is a description, then use the description
+              itemText.add(colName+"="+textVal);
+            }
+          }
         }
         max = itemLabels.size()-1;
         // use itemRange to trace the min index and max index for each column.
         itemRange[colIdx][0] = min;
         itemRange[colIdx][1] = max;
-        //valueStmt.close();
         colIdx++;
       }
-      //valueStmt.close();
     }
     catch (Exception e){
       JOptionPane.showMessageDialog(msgBoard,
@@ -560,8 +674,9 @@ public class SQLGetRuleAssocFromCube extends UIModule
   }
 
   /** get column names
+   * @param aTable the name of the table
    */
-  protected void getColNames() {
+  protected void getColNames(String aTable) {
     Statement nameStmt;
     Statement cntStmt;
     ResultSet nameSet;
@@ -573,7 +688,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
     try {
       con = cw.getConnection();
       metadata = con.getMetaData();
-      ResultSet columns = metadata.getColumns(null,"%",tableName.getText(),"%");
+      ResultSet columns = metadata.getColumns(null,"%",aTable,"%");
       while (columns.next()) {
         String colName = columns.getString("COLUMN_NAME");
         if (!colName.equals("SET_SIZE") && !colName.equals("CNT")) {
@@ -614,13 +729,6 @@ public class SQLGetRuleAssocFromCube extends UIModule
     double support;
     double parentSupport;
     double confidence;
-    if (condition.getText().equals(target.getText()) && target.getText().length()>0) {
-      JOptionPane.showMessageDialog(msgBoard,
-                "The condition attribute cannot be same as the target attribute", "Error",
-                JOptionPane.ERROR_MESSAGE);
-      System.out.println("The condition attribute cannot be same as the target attribute");
-    }
-    else {
     try {
       con = cw.getConnection();
       // the row with set_size=null keep the total count of the data table
@@ -713,7 +821,6 @@ public class SQLGetRuleAssocFromCube extends UIModule
                 JOptionPane.ERROR_MESSAGE);
       System.out.println("Error occoured in extractRules.");
     }
-    }
   }
 
 
@@ -787,21 +894,13 @@ public class SQLGetRuleAssocFromCube extends UIModule
    *  and target columns.
    */
   protected void filterRules() {
-    if (target.getText().length() < 1) {
-      targetIdx = -1;
-    }
-    if (condition.getText().length() < 1) {
-      conditionIdx = -1;
-    }
-
-    // only the rules related to target class are added to finalRules
     for (int ruleIdx = 0; ruleIdx < allRules.size(); ruleIdx ++) {
       Rule aRule = (Rule)allRules.get(ruleIdx);
       // filter out rules they have the low confidence
       if (aRule.confidence >= Double.valueOf(confidenceChosen.getText()).doubleValue()/100) {
         // only the rules that match specified the condition and target columns will be displayed
-        if (matchCondition(aRule,conditionIdx) && matchTarget(aRule,targetIdx)) {
-          // if a more general rule can be found, do not display the specific rule
+        if (matchCondition(aRule,conditionSelected) && matchTarget(aRule,targetSelected)) {
+          // if a more generalized rule can be found, do not display the less generalized rule
           if (isARule(aRule)) {
             finalRules.add(aRule);
           }
@@ -810,13 +909,13 @@ public class SQLGetRuleAssocFromCube extends UIModule
     }
   }
 
-  /** check whether the rule match user specified condition column
+  /** check whether the rule match user specified condition columns
    *  @param rule1 the rule to check
-   *  @param conditionIdx the condition column user has chosen
+   *  @param selected the selected condition columns
    *  @return true if the rule matches user chosen column, false otherwise
    */
-  protected boolean matchCondition(Rule rule1, int conditionIdx) {
-    if (conditionIdx == -1) { // no condition attribute is specified
+  protected boolean matchCondition(Rule rule1, int[] selected) {
+    if (selected.length==0) { // no condition attributes are selected
       return (true);
     }
     else {
@@ -824,9 +923,12 @@ public class SQLGetRuleAssocFromCube extends UIModule
       TIntArrayList aList = (TIntArrayList)aSet.items;
       for (int itemIdx = 0; itemIdx < aList.size(); itemIdx ++) {
         int idx = aList.get(itemIdx);
-        if (idx >= itemRange[conditionIdx][0] &&
-            idx <= itemRange[conditionIdx][1]) {
-          return (true);
+        for (int selIdx=0; selIdx<selected.length; selIdx++) {
+          int colIdx = selected[selIdx];
+          if (idx >= itemRange[colIdx][0] &&
+            idx <= itemRange[colIdx][1]) {
+            return (true);
+          }
         }
       }
     }
@@ -835,21 +937,24 @@ public class SQLGetRuleAssocFromCube extends UIModule
 
   /** check whether the rule match user specified target column
    *  @param rule1 the rule to check
-   *  @param targetIdx the target column user has chosen
+   *  @param selected the selected target columns
    *  @return true if the rule matches user chosen column, false otherwise
    */
-  protected boolean matchTarget(Rule rule1, int targetIdx) {
-    if (targetIdx == -1) { // no target attribute is specified
-      return (true);
+  protected boolean matchTarget(Rule rule1, int[] selected) {
+    if (selected.length==0) { // no condition attributes are selected
+       return (true);
     }
     else {
       FreqItemSet aSet = (FreqItemSet)freqItemSets.get(rule1.bodyIdx);
       TIntArrayList aList = (TIntArrayList)aSet.items;
       for (int itemIdx = 0; itemIdx < aList.size(); itemIdx ++) {
         int idx = aList.get(itemIdx);
-        if (idx >= itemRange[targetIdx][0] &&
-            idx <= itemRange[targetIdx][1]) {
-          return (true);
+        for (int selIdx=0; selIdx<selected.length; selIdx++) {
+          int colIdx = selected[selIdx];
+          if (idx >= itemRange[colIdx][0] &&
+            idx <= itemRange[colIdx][1]) {
+            return (true);
+          }
         }
       }
     }
@@ -936,6 +1041,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
   /** convert ArrayList to table
    */
   protected void convertToRuleTable() {
+    System.out.println("the size of finalRules for association is " + finalRules.size());
     Column[] cols = new Column[4];
     cols[0] = new ObjectColumn(finalRules.size());
     cols[1] = new ObjectColumn(finalRules.size());
@@ -1003,10 +1109,10 @@ public class SQLGetRuleAssocFromCube extends UIModule
     }
   }
 
-  public void printItemLabels() {
-    System.out.println("item label list: ");
-    for (int i = 0; i < itemLabels.size(); i++) {
-      System.out.println("item" + i + " is " + itemLabels.get(i).toString() + ", ");
+  public void printArrayList(ArrayList al) {
+    System.out.println("Array list: ");
+    for (int i = 0; i < al.size(); i++) {
+      System.out.println("item" + i + " is " + al.get(i).toString() + ", ");
     }
   }
 
