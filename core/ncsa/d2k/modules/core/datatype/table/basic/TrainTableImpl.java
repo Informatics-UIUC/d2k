@@ -82,7 +82,9 @@ public final class TrainTableImpl
   }
 
   public Table getSubset(int pos, int len) {
-	ExampleTable et = (ExampleTable)original.getSubset(pos, len);
+    int[] rowsT = new int[len];
+    System.arraycopy(trainSet, pos, rowsT, 0, len);
+	//ExampleTable et = (ExampleTable)original.getSubset(pos, len);
 //    ExampleTable et  = t.toExampleTable();
 
 /*    int[] newin = new int[inputColumns.length];
@@ -107,10 +109,16 @@ public final class TrainTableImpl
 	et.setTestingSet(newtest);
 	*/
 
-	return et.getTrainTable();
+	//return et.getTrainTable();
+        return getSubset(rowsT);
   }
 
   public Table getSubset(int[] rows) {
+      int[] rowsT = new int[rows.length];
+      System.arraycopy(rows, 0, rowsT, 0, rows.length);
+      for (int i = 0, n = rows.length;i < n; i++){
+        rows[i] = this.trainSet[rowsT[i]];
+      }
 	ExampleTable et = (ExampleTable)original.getSubset(rows);
 //    ExampleTable et = t.toExampleTable();
 
