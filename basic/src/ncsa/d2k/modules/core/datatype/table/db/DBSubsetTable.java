@@ -62,6 +62,10 @@ public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection){
   public void insertColumns(Column[] datatype, int where) {
     throw new RuntimeException("Table mutation not supported in DBTable.");
   }
+  public void insertRos(int where, int count) {
+   throw new RuntimeException("Table mutation not supported in DBTable.");
+ }
+
   public void removeColumn(int position) {
     throw new RuntimeException("Table mutation not supported in DBTable.");
   }
@@ -303,6 +307,15 @@ public DBSubsetTable(DBDataSource _dbdatasource, DBConnection _dbconnection){
     return new DBSubsetRow(dataSource, dbConnection, this, subset);
   }
 
+  /**
+           * Return this Table as an ExampleTable.
+           * @return This object as an ExampleTable
+           */
+         public ExampleTable toExampleTable(){
+             DBExampleTable retVal =  new DBExampleTable(this, dataSource.copy(), dbConnection);
+             retVal.subset = this.subset;
+             return retVal;
+     }
 
 
 

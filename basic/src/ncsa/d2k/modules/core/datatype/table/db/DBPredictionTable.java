@@ -912,6 +912,9 @@ class DBPredictionTable extends DBExampleTable implements PredictionTable{
             return predictionColumns.getColumnLabel(position-numDBTableCols+1);
     }
 
+
+
+
 ////////////////// BEGIN PRIVATE HELPER FUNCTIONS ////////////////////////////////////////
 
     private void addPredictonColumnHelper(String label) {

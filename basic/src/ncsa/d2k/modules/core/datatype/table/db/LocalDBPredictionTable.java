@@ -5,6 +5,10 @@
  * <p>Company: </p>
  * @author Sameer Mathur, David Clutter
  * @version 1.0
+ *
+ *
+ * @todo: change the predictionColumnsTable to be a SubsetTable.
+ * change also the respective class member in DBPredictionExample.
  */
 
 package ncsa.d2k.modules.core.datatype.table.db;
@@ -40,6 +44,8 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
         original = pet;
 
         newTableHackVariable = false;
+
+    //    subset = pet.subset;
 
             predictionSet = new int[outputColumns.length];
             for (int j = 0; j < predictionSet.length; j++)
@@ -123,7 +129,8 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
 //todo: return DBPredictionRow here.
 public Row getRow(){
 
-      return null;
+    return new DBPredictionExample(dataSource, dbConnection, predictionColumnsTable.getRow(),
+                                   this, subset, this.indirection, this.prediction);
 
     }
 

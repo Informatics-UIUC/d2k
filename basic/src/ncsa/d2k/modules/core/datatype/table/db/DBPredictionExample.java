@@ -20,23 +20,24 @@ import ncsa.d2k.modules.core.io.sql.*;
  * the prediction columns in a LocalDBPredictionTable, it is known to be
  * represented by a MutableTable. hence the careless casting in these methods.
  *
- * @todo: define APIs for Row and its inherited and implementing classes.
- * are all examples to be fast examples? is there a need in a (really) mutable
- * example ?
+ * @todo: change constructor to receive a subset table impl and not a mutabl etable.
  *
  */
 
 public class DBPredictionExample extends DBExample implements PredictionExample {
 
-  protected MutableExample predictionExample;
+  protected Row predictionExample;
   protected int[] indirection;
   protected boolean[] prediction;
 
 
   public DBPredictionExample(DBDataSource _dataSource,  DBConnection _dbConnection,
-                             MutableExample mEx, DBTable _table) {
-    super(_dataSource, _dbConnection, _table);
-    predictionExample = mEx;
+                             Row predictionRow, DBTable _table, int[] indices,
+                             int[] _indirection, boolean[] _prediction) {
+    super(_dataSource, _dbConnection, _table, indices);
+    predictionExample = predictionRow;
+    indirection = _indirection;
+    prediction = _prediction;
 
 
   }

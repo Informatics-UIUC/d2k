@@ -34,6 +34,7 @@ class DBExampleTable extends DBSubsetTable implements ExampleTable{
         super(_dbdatasource, _dbconnection);
 
         if (orig instanceof ExampleTable) {
+          subset = ((DBExampleTable)orig).subset;
             if (((ExampleTable)orig).getTestingSet() != null) {
                 testSet = new int[((ExampleTable)orig).getTestingSet().length];
                 for (int i=0; i<((ExampleTable)orig).getTestingSet().length; i++) {
@@ -52,7 +53,9 @@ class DBExampleTable extends DBSubsetTable implements ExampleTable{
                 this.inputColumns = new int[((ExampleTable)orig).getInputFeatures().length];
                 for (int i=0; i<((ExampleTable)orig).getInputFeatures().length; i++) {
                     inputColumns[i] = ((ExampleTable)orig).getInputFeatures()[i];
+
                 }
+
             }
 
             if (((ExampleTable)orig).getOutputFeatures() != null) {
@@ -221,7 +224,7 @@ class DBExampleTable extends DBSubsetTable implements ExampleTable{
     }
 
     public PredictionTable toPredictionTable() {
-            return new LocalDBPredictionTable(this, dataSource.copy());
+            return new LocalDBPredictionTable(this, dataSource.copy(), this.dbConnection);
     }
 
     //VERED 8-25-03
