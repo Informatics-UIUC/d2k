@@ -80,7 +80,7 @@ public class ConnectToDB extends UIModule {
        @return The output types.
     */
     public String[] getOutputTypes() {
-        String[] out = {"ncsa.d2k.modules.projects.smathur.io.sql.DBConnection" };
+        String[] out = {"ncsa.d2k.modules.core.io.sql.DBConnection" };
         return out;
     }
 

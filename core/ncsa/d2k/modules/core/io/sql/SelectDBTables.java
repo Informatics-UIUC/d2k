@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.projects.smathur.io.sql;
+package ncsa.d2k.modules.core.io.sql;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -12,18 +12,19 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.Constrain;
 
-import ncsa.d2k.modules.projects.smathur.io.sql.*;
+import ncsa.d2k.modules.core.datatype.table.db.*;
+import ncsa.d2k.modules.core.datatype.table.db.sql.*;
 
-public class QueryDB extends UIModule {
+public class SelectDBTables extends UIModule {
 
     public String[] getInputTypes() {
-        String[] in = {"ncsa.d2k.modules.projects.smathur.io.sql.DBConnection"};
+        String[] in = {"ncsa.d2k.modules.core.io.sql.DBConnection"};
 //       String[] in = {"ncsa.d2k.modules.projects.smathur.io.sql.TestGui"};
         return in;
     }
 
     public String[] getOutputTypes() {
-        String[] out = {"ncsa.d2k.modules.projects.smathur.io.sql.DBTable"};
+        String[] out = {"ncsa.d2k.modules.core.io.sql.DBTable"};
 //        String[] out = null;
         return out;
     }
