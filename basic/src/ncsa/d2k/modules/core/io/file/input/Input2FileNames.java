@@ -179,42 +179,29 @@ public class Input2FileNames extends InputModule {
 
             // first file name
             JButton b0 = new JButton("Browse");
-
-            JPanel p2 = new JPanel();
-            p2.setLayout(new BorderLayout());
-            p2.add(fn0, BorderLayout.CENTER);
-            p2.add(b0, BorderLayout.EAST);
-
-            JPanel p1 = new JPanel();
-            p1.setLayout(new GridLayout(2, 1));
-            p1.add(new JLabel("File Name 1"));
-            p1.add(p2);
-
-            // second file name
-            JButton b1 = new JButton("Browse");
-            JPanel p3 = new JPanel();
-            p3.setLayout(new BorderLayout());
-            p3.add(fn1, BorderLayout.CENTER);
-            p3.add(b1, BorderLayout.EAST);
-
-            JPanel p4 = new JPanel();
-            p4.setLayout(new GridLayout(2, 1));
-            p4.add(new JLabel("File Name 2"));
-            p4.add(p3);
-
-            Constrain.setConstraints(this, p1, 0, 0, 1, 1,
-                                     GridBagConstraints.NONE,
-                                     GridBagConstraints.WEST, 0, 0);
-
-            Constrain.setConstraints(this, p4, 0, 1, 1, 1,
-                                     GridBagConstraints.NONE,
-                                     GridBagConstraints.WEST, 0, 0);
-
-            Constrain.setConstraints(this, new JPanel(), 0, 3, 2, 1,
-                                     GridBagConstraints.BOTH,
-                                     GridBagConstraints.WEST, 2, 1);
-
-            b0.addActionListener(new AbstractAction() {
+			JButton b1 = new JButton("Browse");
+ 
+			Constrain.setConstraints(this, new JLabel ("File Name 1"), 0, 0, 1, 1,
+									  GridBagConstraints.NONE,
+									  GridBagConstraints.CENTER, 0, 0);
+			Constrain.setConstraints(this, fn0, 1, 0, 1, 1,
+									  GridBagConstraints.HORIZONTAL,
+									  GridBagConstraints.CENTER, 1, 0);
+			Constrain.setConstraints(this, b0, 2, 0, 1, 1,
+									  GridBagConstraints.NONE,
+									  GridBagConstraints.CENTER, 0, 0);
+									  
+			Constrain.setConstraints(this, new JLabel ("File Name 2"), 0, 1, 1, 1,
+									  GridBagConstraints.NONE,
+									  GridBagConstraints.CENTER, 0, 0);
+			Constrain.setConstraints(this, fn1, 1, 1, 1, 1,
+									  GridBagConstraints.HORIZONTAL,
+									  GridBagConstraints.CENTER, 1, 0);
+			Constrain.setConstraints(this, b1, 2, 1, 1, 1,
+									  GridBagConstraints.NONE,
+									  GridBagConstraints.CENTER, 0, 0);
+			
+           b0.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
 
@@ -333,4 +320,6 @@ public class Input2FileNames extends InputModule {
 // 5/16/03 - don't throw exception if no filename entered in prop dialog - instead
 //           only at runtime. need better way to check if only info scanned or
 //           if edit done. for now, none, and annoying, so removed check added 2/13.
+// 9/19/03 - For 4.0 it is now possible to make text box size variable, and I have
+//		     done that.
 // END QA Comments

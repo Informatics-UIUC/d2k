@@ -16,7 +16,7 @@ import ncsa.d2k.modules.core.datatype.table.db.*;
  * @version 1.0
  */
 
-public class CreateExampleTableModule extends ComputeModule {
+public class CreateExampletableModule extends ComputeModule {
 
   public String getModuleInfo() {
     return "This module creates an example table from a table. " +

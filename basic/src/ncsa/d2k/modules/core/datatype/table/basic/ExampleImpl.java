@@ -1,7 +1,9 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-public class ExampleImpl extends RowImpl implements Example {
+import java.io.Serializable;
+
+public class ExampleImpl extends RowImpl implements Serializable, Example {
 
 	/** this is the index of the row to access. */
 	private int index;
@@ -15,6 +17,9 @@ public class ExampleImpl extends RowImpl implements Example {
 	/** the test columns */
 	private int [] subset;
 
+	public ExampleImpl () {
+		super ();
+	}
 	public ExampleImpl (ExampleTableImpl et) {
 		super(et);
 

@@ -1,7 +1,9 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
+
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import javax.swing.*;
 import ncsa.d2k.core.modules.*;
@@ -18,7 +20,7 @@ import ncsa.d2k.userviews.swing.*;
  *
  * @author gpape
  */
-public class Scale extends UIModule {
+public class Scale extends HeadlessUIModule {
 
 /******************************************************************************/
 /* UIModule methods                                                           */
@@ -27,71 +29,136 @@ public class Scale extends UIModule {
    public UserView createUserView() {
       return new ScaleUI();
    }
-
+   public void doit () throws Exception {
+   	  MutableTable table = (MutableTable) this.pullInput(0);
+   	  if (indices == null || from_min == null || from_max == null || to_min == null || to_max == null) {
+   	     throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+      }
+      int nc = table.getNumColumns();
+   	  if (nc < indices.length) {
+   	  	 throw new Exception (this.getAlias()+" has not been configured to run headless with a table of this structure. Not enough columns in the table");
+   	  }
+   	  
+   	  // Find the maximum column index.
+   	  int max = -1;
+   	  for (int i = 0 ; i < indices.length ; i++) 
+   	  	 if (indices[i] > max) 
+   	  		max = indices[i];
+   	  
+   	  if (nc < max) {
+		throw new Exception (this.getAlias()+" has not been configured to run headless with a table of this structure. Not enough columns in the table");
+	  }
+	  
+	  for (int i = 0 ; i < indices.length ; i++) {
+	  	 if (indices[i] >= 0) {
+		     Column col = table.getColumn(indices[i]);
+		     if (!col.getIsScalar()) {
+				throw new Exception (this.getAlias()+" has not been configured to run headless with a table of this structure. Column "+col.getLabel()+" is not scalar.");
+			 }
+	  	 }
+	  }
+	  pushOutput(new ScalingTransformation(indices, from_min, from_max,
+	      to_min, to_max), 0);
+   }
+   
    public String[] getFieldNameMapping() { return null; }
 
    public String getModuleInfo() {
-      StringBuffer sb = new StringBuffer("<p>Overview: ");
-      sb.append("This module presents a simple user interface for the ");
-      sb.append("interactive scaling of numeric <i>MutableTable</i> data. ");
-      sb.append("Numeric columns selected by the user can be scaled to ");
-      sb.append("a specified range (the default range is 0 to 1).");
-
-
-      sb.append("<P><U>Missing Values Handling:</U> This module handles missing values" +
-        " as if they were real meaningful values. For example, if a missing values is represented " +
-        "by a number (e.g. zero), then this number may appear as lower or upper bound of its column, " +
-        "although it is marked as a missing value in its table. If it indeed becomes a lower or upper " +
-        "bound, it affects of course the scaling results.</P>");
-
-
-      sb.append("</p><p>Data Handling: ");
-      sb.append("This module does not modify its input data. Rather, its ");
-      sb.append("output is a <i>Transformation</i> that can later be used to ");
-      sb.append("scale the specified columns. All transformed columns will ");
-      sb.append("be converted to type <i>double</i>.");
-      sb.append("</p>");
-      return sb.toString();
-   }
+		return "<p>      Overview: This module presents a simple user interface for the       interactive scaling"+
+			" of numeric <i>MutableTable</i> data. Numeric columns       selected by the user can be scaled"+
+			" to a specified range (the default       range is 0 to 1).    </p>    <p>      Detailed Description:"+
+			" A user interface is displayed that has an entry       for the current range of data values"+
+			" for each attribute in the table       passed in. The user may change the current range as well"+
+			" as the range to       scale the data to. The scaling is done as if the data is within the "+
+			"      current range values specified, values which are out of this range are       pinned. If"+
+			" the gui is suppressed, this modules will use the last entries       the user made to apply"+
+			" to the input table, however, the current range is       always gotten from the table, the previous"+
+			" selection made via the gui is       ignored. If the columns the user has previously selected"+
+			" did not exist       or if they are no longer scalar, it will fail.    </p>    <p>      <u>Missing"+
+			" Values Handling:</u> This module handles missing values as if       they were real meaningful"+
+			" values. For example, if a missing values is       represented by a number (e.g. zero), then"+
+			" this number may appear as       lower or upper bound of its column, although it is marked as"+
+			" a missing       value in its table. If it indeed becomes a lower or upper bound, it       affects"+
+			" of course the scaling results.    </p>    <p>      Data Handling: This module does not modify"+
+			" its input data. Rather, its       output is a <i>Transformation</i> that can later be used"+
+			" to scale the       specified columns. All transformed columns will be converted to type <i>"+
+			"      double</i>.    </p>";
+	}
 
    public String getModuleName() {
-      return "Scale Values";
-   }
+		return "Scale Values";
+	}
 
    public String getInputInfo(int index) {
-      if (index == 0)
-         return "A <i>MutableTable</i> with columns to be scaled.";
-      return null;
-   }
+		switch (index) {
+			case 0: return "A <i>MutableTable</i> with columns to be scaled.";
+			default: return "No such input";
+		}
+	}
 
    public String getInputName(int index) {
-      if (index == 0)
-         return "Mutable Table";
-      return null;
-   }
+		switch(index) {
+			case 0:
+				return "Mutable Table";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
    public String[] getInputTypes() {
-      return new String[] {
-         "ncsa.d2k.modules.core.datatype.table.MutableTable"
-      };
-   }
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		return types;
+	}
 
    public String getOutputInfo(int index) {
-      if (index == 0)
-         return "A scaling transformation for the specified columns.";
-      return null;
-   }
+		switch (index) {
+			case 0: return "A scaling transformation for the specified columns.";
+			default: return "No such output";
+		}
+	}
 
    public String getOutputName(int index) {
-      if (index == 0)
-         return "Transformation";
-      return null;
-   }
+		switch(index) {
+			case 0:
+				return "Transformation";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
    public String[] getOutputTypes() {
-      return new String[] {
-         "ncsa.d2k.modules.core.datatype.table.Transformation"
-      };
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Transformation"};
+		return types;
+	}
+   private int[] indices;
+   public void setIndices (int [] ni) {
+      this.indices = ni;
+   }
+   public int [] getIndices () {
+      return this.indices;
+   }
+   private double[] from_min, from_max, to_min, to_max;
+   public void setFromMin (double [] ni) {
+	  this.from_min = ni;
+   }
+   public double [] getFromMin () {
+	  return this.from_min;
+   }
+   public void setFromMax (double [] ni) {
+	  this.from_max = ni;
+   }
+   public double [] getFromMax () {
+	  return this.from_max;
+   }
+   public void setToMin (double [] ni) {
+	  this.to_min = ni;
+   }
+   public double [] getToMin () {
+	  return this.to_min;
+   }
+   public void setToMax (double [] ni) {
+	  this.to_max = ni;
+   }
+   public double [] getToMax () {
+	  return this.to_max;
    }
 
 /******************************************************************************/
@@ -300,11 +367,11 @@ public class Scale extends UIModule {
 
             int numRelevantColumns = indirection.length;
 
-            int[] indices = new int[numRelevantColumns];
-            double[] from_min = new double[numRelevantColumns];
-            double[] from_max = new double[numRelevantColumns];
-            double[] to_min = new double[numRelevantColumns];
-            double[] to_max = new double[numRelevantColumns];
+            indices = new int[numRelevantColumns];
+            from_min = new double[numRelevantColumns];
+            from_max = new double[numRelevantColumns];
+            to_min = new double[numRelevantColumns];
+            to_max = new double[numRelevantColumns];
 
             for (int count = 0; count < indirection.length; count++) {
 

@@ -4,6 +4,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import ncsa.d2k.modules.core.datatype.parameter.*;
+
+import java.io.Serializable;
 /**
 
 The ParameterPoint object can extend ExampleImpl.
@@ -13,7 +15,7 @@ Note: It is important that this be an Example so that additional layers
 (optimizing the optimizer etc..) can more easily be implemented.
 
 */
-public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
+public class ParameterPointImpl extends ExampleImpl implements Serializable, ParameterPoint {
 
 	/**
 	 * return a parameter point from the given arrays.
@@ -278,7 +280,7 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 	/**
 		Returns the name associated with the column.
 		@param position the index of the Column name to get.
-		@returns the name associated with the column.
+		@return the name associated with the column.
 	*/
 	public String getColumnLabel(int position){
 		return this.getTable().getColumnLabel(position);
@@ -287,7 +289,7 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 	/**
 		Returns the comment associated with the column.
 		@param position the index of the Column name to get.
-		@returns the comment associated with the column.
+		@return the comment associated with the column.
 	*/
 	public String getColumnComment(int position){
 		return this.getTable().getColumnComment(position);

@@ -1,10 +1,10 @@
 package ncsa.d2k.modules.core.transform.table;
 
+
 import ncsa.d2k.core.modules.DataPrepModule;
 import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
-
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -58,26 +58,33 @@ public class SeparateTableByKey extends DataPrepModule {
 	//////////////////////////////////
 
 	public String getModuleInfo () {
-		return "This module will subset the table into n different tables where n is the number of unique values of the key attribute specified in the attribute property. All the examples in the table having the same value for the attribute will be placed in the same file. All the subset files will get pushed one at a time until all the tables have been pushed.";
+		return "Overview: This module will subset the table into n different tables where     n is the number"+
+			" of unique values of the key attribute specified in the     attribute property. Detailed Description:"+
+			" All the examples in the table having the same value for     the attribute will be placed in"+
+			" the same resulting table. All the subset     files will get pushed one at a time until all"+
+			" the tables have been pushed.Data Handling: All resulting tables are subset tables.";
 	}
 	static final String [] ins = {"ncsa.d2k.modules.core.datatype.table.Table"};
 	public String [] getInputTypes() {
-		return ins;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
 	}
 	static final String [] outs = {"ncsa.d2k.modules.core.datatype.table.Table"};
 	public String [] getOutputTypes() {
-		return outs;
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+		return types;
 	}
 	public String getInputInfo(int i) {
 		switch (i) {
-			case 0: return "Input table to subset by key.";
+			case 0: return "This is the input table which will be subseted to get tables sharing a     common value for the key column.";
 			default: return "No such input";
 		}
 	}
 	public String getInputName(int i) {
 		switch(i) {
-			case 0: return "Input Table";
-			default: return "No such input";
+			case 0:
+				return "Input Table";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 	public String getOutputInfo(int i) {
@@ -88,8 +95,9 @@ public class SeparateTableByKey extends DataPrepModule {
 	}
 	public String getOutputName(int i) {
 		switch(i) {
-			case 0: return "Subset Table";
-			default: return "No such output";
+			case 0:
+				return "Subset Table";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 
@@ -210,4 +218,12 @@ public class SeparateTableByKey extends DataPrepModule {
 		}
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SeparateTableByKey";
+	}
 }

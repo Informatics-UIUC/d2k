@@ -1,7 +1,9 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-public class RowImpl implements Row {
+import java.io.Serializable;
+
+public class RowImpl implements Row, Serializable {
 
 	/** this is the index of the row to access. */
 	private int index;
@@ -12,6 +14,8 @@ public class RowImpl implements Row {
 	/** columns in total. */
 	private Column [] columns;
 
+	public RowImpl () {
+	}
 	RowImpl (TableImpl et) {
 		table = et;
 		columns = table.getColumns();

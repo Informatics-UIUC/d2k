@@ -16,7 +16,7 @@ import ncsa.d2k.modules.core.datatype.table.db.*;
  * @version 1.0
  */
 
-public class CreatePredictionTableModule extends ComputeModule {
+public class CreatePredictiontableModule extends ComputeModule {
 
   public String getModuleInfo() {
     return "This module creates a prediction table from an example table. " ;

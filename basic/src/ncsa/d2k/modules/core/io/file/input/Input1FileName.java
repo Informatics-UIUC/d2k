@@ -132,30 +132,24 @@ public class Input1FileName extends InputModule {
 
         private PropEdit() {
             setLayout(new GridBagLayout());
-            jtf = new JTextField(20);
-            jtf.setText(getFileName());
-
-            JButton b0 = new JButton("Browse");
-
-            JPanel p2 = new JPanel();
-            p2.setLayout(new BorderLayout());
-            p2.add(jtf, BorderLayout.CENTER);
-            p2.add(b0, BorderLayout.EAST);
-
-            JPanel p1 = new JPanel();
-            p1.setLayout(new GridLayout(2, 1));
-            p1.add(new JLabel("File Name"));
-            p1.add(p2);
-
-            Constrain.setConstraints(this, p1, 0, 0, 1, 1,
-                                     GridBagConstraints.NONE,
-                                     GridBagConstraints.WEST, 0, 0);
-
-            Constrain.setConstraints(this, new JPanel(), 0, 2, 2, 1,
-                                     GridBagConstraints.BOTH,
-                                     GridBagConstraints.WEST, 2, 1);
-
-            b0.addActionListener(new AbstractAction() {
+			this.setMinimumSize (new Dimension(14, 14));
+           
+            String name = getFileName();
+            jtf = new JTextField(10);
+            jtf.setText(name);
+ 			JButton b0 = new JButton("Browse");
+												  
+			Constrain.setConstraints(this, new JLabel ("File Name"), 0, 0, 1, 1,
+									  GridBagConstraints.NONE,
+									  GridBagConstraints.CENTER, 0, 0);
+			Constrain.setConstraints(this, jtf, 1, 0, 1, 1,
+									  GridBagConstraints.HORIZONTAL,
+									  GridBagConstraints.CENTER, 1, 0);				  
+			Constrain.setConstraints(this, b0, 2, 0, 1, 1,
+									  GridBagConstraints.NONE,
+									  GridBagConstraints.CENTER, 0, 0);
+			
+			b0.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
 
@@ -225,4 +219,6 @@ public class Input1FileName extends InputModule {
 // 5/16/03 - don't throw exception if no filename entered in prop dialog - instead
 //           only at runtime. need better way to check if only info scanned or
 //           if edit done. for now, none, and annoying, so removed check added 2/13.
+// 9/19/03 - For 4.0 it is now possible to make text box size variable, and I have
+//			 done that.
 // END QA Comments

@@ -117,7 +117,7 @@ public class ParseFileToPagingTable extends ParseFileToTable {
         int numRows = df.getNumRows();
         int numColumns = df.getNumColumns();
 
-        MutablePagingTable pt = new MutablePagingTable();
+        /*MutablePagingTable pt = new MutablePagingTable();
 
         // now figure out how many sub-tables we will make.
         int numTables = (int)Math.ceil(((double)numRows)/((double)numRowsPerPage));
@@ -169,7 +169,7 @@ public class ParseFileToPagingTable extends ParseFileToTable {
                     columns[col] = new BooleanColumn(pageRowNums[nt]);
                 else
                     columns[col] = new StringColumn(pageRowNums[nt]);
-                */
+                
                 columns[col] = ColumnUtilities.createColumn(type, pageRowNums[nt]);
 
                 if(type != -1)
@@ -200,7 +200,7 @@ public class ParseFileToPagingTable extends ParseFileToTable {
                         catch(NumberFormatException e) {
                             ti.setChars(Integer.toString(0).toCharArray(), ctr, colidx);
                         }
-                */
+                
                     boolean isMissing = true;
                     char[] elem = row[j];//(char[])row.get(j);
 
@@ -298,8 +298,8 @@ public class ParseFileToPagingTable extends ParseFileToTable {
                     }
                 }
             }
-        }
-        return pt;
+        }*/
+        return null;
     }
 
    /**
