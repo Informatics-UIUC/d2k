@@ -121,7 +121,7 @@ public class ClusterAssignmentOPT
     if (parm1 == 0) {
       return "Control parameters for the module.";
     } else if (parm1 == 1) {
-      return "Table containing initial centroids.";
+      return "Cluster Model or Table containing the initial centroids.";
     } else if (parm1 == 2) {
       return "Table containing all the examples to cluster.";
     } else {
@@ -138,7 +138,7 @@ public class ClusterAssignmentOPT
     if (parm1 == 0) {
       return "Parameter Point";
     } else if (parm1 == 1) {
-      return "Sample Table";
+      return "Cluster Model or Table";
     } else if (parm1 == 2) {
       return "Table";
     } else {
@@ -168,8 +168,6 @@ public class ClusterAssignmentOPT
     String s = "<p>Overview: ";
     s += "This module finds a locally optimal clustering by iteratively assigning examples to ";
     s += "selected points in vector space. ";
-    s += "The clustering method, distance metric, and maximum number of iterations are determined by the ";
-    s += "input <i>Parameter Point</i>. ";
     s += "</p>";
 
     s += "<p>Detailed Description: ";
@@ -186,8 +184,8 @@ public class ClusterAssignmentOPT
     s += "</p>";
 
     s += "<p>";
-    s += "This module takes a set of cluster centroids (<i>Sample Table</i>) ";
-    s += "and a table of examples to be clustered (<i>Table</i>) and repeatedly assigns ";
+    s += "This module takes a set of cluster centroids and a set of examples to be clustered ";
+    s += "and repeatedly assigns ";
     s += "the examples to the cluster whose centroid is closest in vector space, where distance is ";
     s += "computed using the specified <i>";
     s += DISTANCE_METRIC;
@@ -196,8 +194,11 @@ public class ClusterAssignmentOPT
     s += MAX_ITERATIONS;
     s += "</i> times, halting sooner if the current iteration produces results not significantly ";
     s += "different from the previous iteration. ";
-    s += "The number of original centroids in <i>Sample Table</i> determines the <i>Number of Clusters</i> formed. ";
-    s += "The number of rows in the <i>Table</i> determines the <i>Number of Examples</i> in the final clusters. ";
+
+    s += "The initial centroids are input via the <i>Cluster Model or Table</i> port, and the ";
+    s += "number of initial centroids determines the <i>Number of Clusters</i> formed. ";
+    s += "The set of examples to be clustered are input via the <i>Table</i> port, and ";
+    s += "the number of rows in that table determines the <i>Number of Examples</i> in the final clusters. ";
     s += "</p>";
 
     s += "<p>The Hierarchical Agglomerative Clustering (HAC) algorithm, a bottom-up strategy, ";
@@ -205,14 +206,14 @@ public class ClusterAssignmentOPT
     s += "The method used to determine intercluster similarity is controlled by the <i>";
     s += CLUSTER_METHOD;
     s += "</i> parameter. ";
-    s += "The cluster tree is stored in the newly formed model, <i>Cluster Model</i>, along with the initial table ";
+    s += "The cluster tree is stored in a newly formed model, <i>Cluster Model</i>, along with the initial table ";
     s += "of examples and the set of table clusters formed.";
     s += "</p>";
 
     s += "<p>Data Type Restrictions: ";
-    s += "The <i>Sample Table</i> and <i>Table</i> inputs must have the same structure; ";
-    s += "attribute types and order (and input features ";
-    s += "if example tables), must be identical. ";
+    s += "The <i>Cluster Model or Table</i> and <i>Table</i> inputs must have the same underlying ";
+    s += "table structure. ";
+    s += "That is, attribute types, order, and input features (if specified), must be identical. ";
     s += "The clustering does not work if the input data contains missing values. ";
     s += "The algorithm operates on numeric and boolean datatypes.  If the data to be clustered ";
     s += "contains nominal data types, it should be converted prior to performing the clustering. ";
@@ -295,4 +296,6 @@ public class ClusterAssignmentOPT
 //        - Waiting to hear back from Duane on why Table must be mutable if not changed.
 // 4/9/03 - Don't need mutable - slipped thru cracks from earlier version.
 //        - Ready for basic.
+// 4/10/03 - Ruth updated module info and input port name as not just Sample Tables
+//           determine the initial cluster centroids.
 // End QA Comments

@@ -68,9 +68,9 @@ public class AddClusterAssignmentsToTable
     s += "</p>";
 
     s += "<p>";
-    s += "The user can specify via the <i>Output Tabel Only</i> property whether the ";
-    s += "Cluster Model containing the modified table is sent to the <i>Table</i> output port, ";
-    s += "or whether just the modified table is sent.  ";
+    s += "The <i>Output Tabel Only</i> property controls whether the ";
+    s += "modified table or the entire Cluster Model, ";
+    s += "which includes the modified table, is output. ";
     s += "The <i>Cluster Model</i> object implements the Table interface and delegates ";
     s += "all calls to that interface to the contained table.";
     s += "</p>";
@@ -81,7 +81,7 @@ public class AddClusterAssignmentsToTable
 
     s += "<p>Data Handling: ";
     s += "This module will modify (as described above) the table that is contained in ";
-    s += "the intput <i>Cluster Model</i>.  If the table is an example table, the ";
+    s += "the input <i>Cluster Model</i>.  If the table is an example table, the ";
     s += "new column is added as an output attribute.";
     s += "</p>";
 
@@ -173,7 +173,7 @@ public class AddClusterAssignmentsToTable
   public String getOutputName(int i) {
     switch (i) {
       case 0:
-        return "Table";
+        return "Table or Cluster Model";
       default:
         return "No such output";
     }
