@@ -4,10 +4,10 @@ package ncsa.d2k.modules.core.transform.table;
 
 
 
+import java.util.*;
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-import java.util.Random;
 
 /**
 	SampleTableRows.java
@@ -49,7 +49,7 @@ public class SampleTableRows extends DataPrepModule  {
 	   @return The datatypes of the inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
@@ -59,7 +59,7 @@ public class SampleTableRows extends DataPrepModule  {
 	   @return The datatypes of the outputs.
 	*/
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
@@ -160,25 +160,75 @@ public class SampleTableRows extends DataPrepModule  {
 	/**
 	   Perform the calculation.
 	*/
-	public void doit() {
-		MutableTable orig = (MutableTable)pullInput(0);
-		MutableTable newTable = (MutableTable)orig.copy();
+	public void doit() throws Exception {
 
-		// only keep the first N rows
-		if(useFirst) {
-			for(int i = newTable.getNumRows()-1; i > N-1; i--)
-				newTable.removeRow(i);
-		}
-		else {
-			Random r = new Random(seed);
-			int numRows = newTable.getNumRows();
-			int numRowsToDelete = numRows - N;
-			// for each rowToDelete, randomly pluck one out
-			for(int i = 0; i < numRowsToDelete; i++) {
-				numRows = newTable.getNumRows();
-				newTable.removeRow(Math.abs(r.nextInt()) % numRows);
-			}
-		}
-		pushOutput(newTable, 0);
+          Table orig = (Table) pullInput(0);
+          Table newTable = null;
+
+          if (N > (orig.getNumRows()-1)){
+            throw new Exception("SampleTableRows: Sample size is >= the number of table rows.  Use a smaller value.");
+          }
+
+          //System.out.println("Sampling " + N + " rows from a table of " +
+          //                   orig.getNumRows() + " rows.");
+
+          // only keep the first N rows
+          if (useFirst) {
+            newTable = (Table) orig.getSubset(0, N);
+          } else {
+            int numRows = orig.getNumRows();
+            int[] keeps = new int[N];
+            Random r = new Random(seed);
+            if (N < (orig.getNumRows()/2)){
+              ArrayList keepers = new ArrayList();
+              for (int i = 0; i < N; i++) {
+                int ind = Math.abs(r.nextInt()) % numRows;
+                Integer indO = new Integer(ind);
+                if (keepers.contains(indO)) {
+                  i--;
+                } else {
+                  keeps[i] = ind;
+                  keepers.add(indO);
+                }
+              }
+            } else {
+              ArrayList pickers = new ArrayList();
+              for (int i = 0, n = numRows; i < n; i++) {
+                pickers.add(new Integer(i));
+              }
+              for (int i = 0; i < N; i++) {
+                int ind = Math.abs(r.nextInt()) % pickers.size();
+                //System.out.println(pickers.size() + " " + ind);
+                keeps[i] = ( (Integer) pickers.remove(ind)).intValue();
+              }
+            }
+            newTable = orig.getSubset(keeps);
+          }
+
+          //System.out.println("Sampled table contains " +
+          //newTable.getNumRows() + " rows.");
+
+          pushOutput(newTable, 0);
+
+
+//		MutableTable orig = (MutableTable)pullInput(0);
+//		MutableTable newTable = (MutableTable)orig.copy();
+//
+//		// only keep the first N rows
+//		if(useFirst) {
+//			for(int i = newTable.getNumRows()-1; i > N-1; i--)
+//				newTable.removeRow(i);
+//		}
+//		else {
+//			Random r = new Random(seed);
+//			int numRows = newTable.getNumRows();
+//			int numRowsToDelete = numRows - N;
+//			// for each rowToDelete, randomly pluck one out
+//			for(int i = 0; i < numRowsToDelete; i++) {
+//				numRows = newTable.getNumRows();
+//				newTable.removeRow(Math.abs(r.nextInt()) % numRows);
+//			}
+//		}
+//		pushOutput(newTable, 0);
 	}
 }
