@@ -208,18 +208,30 @@ public class TableUtilities {
 		return retVal;
 	}
 
+        public static HashSet uniqueValueSet(Table table, int colNum) {
+          int numRows = table.getNumRows();
+
+          // count the number of unique items in this column
+          HashSet set = new HashSet();
+          for(int i = 0; i < numRows; i++) {
+            String s = table.getString(i, colNum);
+            if(!set.contains(s))
+              set.add(s);
+          }
+          return set;
+        }
 
     public static boolean isKeyColumn(Table table, int colNum) {
 		int numRows = table.getNumRows();
-		
+
 		String [] unique = TableUtilities.uniqueValues(table,colNum);
 		//there is no support for missing values - unique no of values could be less
 		//than numRows if there were missing values
 		if (numRows != unique.length)
 		    return false;
-		else 
+		else
 		    return true;
-		
+
     }
 
 
