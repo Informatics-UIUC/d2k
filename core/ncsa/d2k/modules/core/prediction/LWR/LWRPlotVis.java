@@ -395,7 +395,7 @@ public class LWRPlotVis extends VisModule
 			//if (iCol >0) {
 			if (iRow == 0){
 
-				DataSet tmpset = new DataSet("scatter-popup", Color.blue, iCol, 2*iCol+scatterTable.getNumInputFeatures()+1);
+				DataSet tmpset = new DataSet("scatter-popup", Color.blue, iCol, 2*iCol+scatterTable.getNumInputFeatures());
 				set = new DataSet[1];
 				set[0] = tmpset;
 
@@ -585,7 +585,7 @@ public class LWRPlotVis extends VisModule
 					for(int j = 0; j < numAttributes; j++) {	//iterate over column
 						if (i == 0) {
 							DataSet []data = new DataSet[1];
-							data[0] = new DataSet("", Color.red, j, 2*j+scatterTable.getNumInputFeatures()+1);
+							data[0] = new DataSet("", Color.red, j, 2*j+scatterTable.getNumInputFeatures());
 							Graph graph = createSmallFunctionGraph(plotTable, data, settings);
 							img = f.createImage(ROW_WIDTH, ROW_HEIGHT);
 							Graphics imgG = img.getGraphics();
@@ -644,10 +644,11 @@ public class LWRPlotVis extends VisModule
 
 			public String getColumnName2(int col) {
 				int[] inputs = scatterTable.getInputFeatures();
+				int[] outputs = scatterTable.getOutputFeatures();
 				if (col < scatterTable.getNumInputFeatures())
 					return scatterTable.getColumnLabel(inputs[col]);
 				else
-					return scatterTable.getColumnLabel(scatterTable.getNumColumns()-1);
+					return scatterTable.getColumnLabel(outputs[0]);
 
 			}
 
@@ -663,8 +664,11 @@ public class LWRPlotVis extends VisModule
 
 			public Object getValueAt(int row, int col) {
 				if(col == 0)
-					if (row == 0)
-						return scatterTable.getColumnLabel(scatterTable.getNumColumns()-1);
+					if (row == 0){
+						//return scatterTable.getColumnLabel(scatterTable.getNumColumns()-1);
+						int[] outputs = scatterTable.getOutputFeatures();
+						return scatterTable.getColumnLabel(outputs[0]);
+					}
 					else
 						return scatterTable.getColumnLabel(row-1);
 				else

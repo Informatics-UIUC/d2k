@@ -91,14 +91,15 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 
 		TableImpl xTable = generatePlotValues();
 
-		N = xTable.getNumColumns();
+		N = xTable.getNumColumns();	//N = numInputColumns + 1
 
 		//place to put the final predictions (will become a PredictionTable)
-		//finalTable = ((ExampleTable) exTable.copy()).toPredictionTable();
-		finalTable = new PredictionTableImpl((ExampleTableImpl) (new ExampleTableImpl(xTable).copy()));
-		//finalTable.removeColumn(finalTable.getNumColumns()-1);
+		ExampleTableImpl tempTable = (ExampleTableImpl) (new ExampleTableImpl(xTable)).copy();
+		tempTable.removeColumn(tempTable.getNumColumns()-1);
+		finalTable = new PredictionTableImpl(tempTable);
 
-	for (int i=0; i<N; i++){
+	// Go through *once* for each input Column
+	for (int i=0; i<(N-1); i++){
 
 		TableImpl TestTable = testTableLWRGen(xTable, i);
 
@@ -106,13 +107,20 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		//the regression (redefines TraintableSubset)
 		determineSubset(TestTable);
 
-		//Each of these arrays stores the corresponding value for each query.
-		//Thus, their length is the number of queries
+		//Each of these arrays stores an array of values for each query.
+		//It is overwritten as we iterate through the queries.
+		//It must be as big as the number of training values.
+
+		
 		weights = new double[TraintableSubset.getNumRows()];
 		kernels = new double[TraintableSubset.getNumRows()];
 		distances = new double[TraintableSubset.getNumRows()];
-		criterion = new double[TraintableSubset.getNumRows()];
 
+
+		//This is a value associated with a prediction.
+		//There is one prediction per query.  Therefore, 
+		//there is one element of this array per prediction
+		criterion = new double[TestTable.getNumRows()];
 
 		//if the number of nearest neighbors given is too big,
 		//default to not using k-nearest neighbors bandwith selection
@@ -140,9 +148,9 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 
 		X = new Matrix(constructX());
 
-
+		//System.out.println("xTable numRows is "+xTable.getNumRows());
+		//System.out.println("c is equal to "+numRows);
 		for (int c=0; c<numRows; c++){
-
 			//getting a query from the test data
 			double[] q = getQuery(c, TestTable);
 
@@ -202,6 +210,7 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 				Traintable.getColumn(doubAr, Traintable.getNumColumns()-1);
 				double ans = doubAr[minDistIndex];
 				prediction[c] = ans;
+				criterion[c] = 0;
 
 
 			}
@@ -218,8 +227,8 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 
 		}
 
-		finalTable.addPredictionColumn(prediction, "Predictions");
-		finalTable.addPredictionColumn(criterion, "Criterion");
+		finalTable.addPredictionColumn(prediction, "Predictions"+i);
+		finalTable.addPredictionColumn(criterion, "Criterion"+i);
 
 
 	}	//end big if statement; should collect predCols
@@ -726,15 +735,18 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 
 	/**
 		testTableLWRGen
-		the normal Euclidean distance for two n-dimensional vectors
+		Takes a column of input values + a column of predictions to make a
+		test table
 		@param Table xTble - the table to make a Testtable from
 		@param int i - the index into xTble for getting a column of its data
 		@return  a TableImpl object of testing data
 	*/
 	public TableImpl testTableLWRGen(Table xTble, int i) {
-		//the output column of the Traintable is copied into the last
-		//column of the xTable.  Thus, we can grab column N-1 for the
-		//predictions.
+		//the output column of the Traintable has already been copied 
+		//into the last column of the xTable.
+		//Thus, we can grab column N-1 for the
+		//predictions.  Returns a TableImpl with two columns, possibly w/o
+		//the same number of rows
 
 		//double[] predArray = new double[xTble.getNumRows()];
 		double[] predArray;
@@ -751,14 +763,20 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 
 		double[] anArray;
 		//handling the case of not enough predictions to fill a full array
-		if (NotEnoughPredictions && i==(N-1))
+		DoubleColumn col;
+		/*if (NotEnoughPredictions && i==(N-1)){
 			anArray = new double[TotalNumPredictions];
-		else
-			anArray= new double[xTble.getNumRows()];
+			xTble.getColumn(anArray, i);
+			double[] filler = fillZeros(anArray, xTble.getNumRows());
+			col = new DoubleColumn(filler);
+			col.setLabel(xTble.getColumnLabel(i));
+		}
+		else{*/
+		anArray= new double[xTble.getNumRows()];
 		xTble.getColumn(anArray, i);
-		DoubleColumn col = new DoubleColumn(anArray);
+		col = new DoubleColumn(anArray);
 		col.setLabel(xTble.getColumnLabel(i));
-
+		//}
 		DoubleColumn[] c = {col, predCol};
 		TableImpl t = (TableImpl)DefaultTableFactory.getInstance().createTable(c);
 		return t;
@@ -769,7 +787,8 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		Uses the Traintable ExampleTable to generate a TableImple
 		with a column for each input Column in Traintable.  There are
 		num_pts values in each column, equally spaced from the min to
-		the max.
+		the max.  Also include the column of predicted values, which 
+		will not have the same number of rows.
 		@param double[] x - a vector
 		@param double[] q - a vector
 		@return double ans - the distance
@@ -794,14 +813,18 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 			doubCol.setLabel(Traintable.getColumnLabel(inputCols[i]));
 			returnTable.addColumn(doubCol);
 		}
+		double[] doubAr2 = new double[numRow];
+		Traintable.getColumn(doubAr2, outputCols[0]);
+		returnTable.addColumn(doubAr2);
+		returnTable.setColumnLabel(Traintable.getColumnLabel(outputCols[0]), returnTable.getNumColumns()-1);
 
-		for (int j=0; j< outputCols.length; j++){
+		/*for (int j=0; j< outputCols.length; j++){
 			double min, max;
 			double[] doubAr2 = new double[numRow];
 			Traintable.getColumn(doubAr2, outputCols[j]);
 			returnTable.addColumn(doubAr2);
 			returnTable.setColumnLabel(Traintable.getColumnLabel(outputCols[j]), returnTable.getNumColumns()-1);
-		}
+		}*/
 
 	/*	for (int i=0; i< numCol-1; i++){
 			double min, max;
@@ -871,6 +894,16 @@ public class LWRModel extends PredictionModelModule implements Serializable {
 		return xvalues;
 	}
 
+	public double[] fillZeros(double[] ar, int newLength){
+		double[] newAr = new double[newLength];
+		for (int i = 0; i<ar.length; i++){
+			newAr[i] = ar[i];
+		}
+		for (int j =ar.length; j<newLength; j++){
+			newAr[j] = 0;
+		}
+	return newAr;
+	}
 
 	public void setKernelSelector(int x){
 		kernelSelector = x;
