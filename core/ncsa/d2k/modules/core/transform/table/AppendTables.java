@@ -1,7 +1,5 @@
 package ncsa.d2k.modules.core.transform.table;
 
-
-
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -139,7 +137,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 	 * @return string array containing the datatypes of the outputs.
 	 */
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
