@@ -490,4 +490,7 @@ public class Normalize extends HeadlessUIModule {
  * 2-28-03  Vered started qa.
  *          added to module info a note about missing values handling.
  * 3-24-03 Anca: added getPropertyDescription()
+ *
+ * 11-04-03 Vered started QA process.
+ *          Module is ready unless handling of missing values will change.
  */

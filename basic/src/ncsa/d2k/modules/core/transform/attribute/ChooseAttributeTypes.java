@@ -537,7 +537,7 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
         _table.setColumnIsNominal(false, index);
         if(!_table.isColumnNumeric(index))
           System.out.println(getAlias() + ": Column " + scalarColumns[i] + " was selected as scalar, but " +
-                             "this column is not numeric. Continueing anyway.");
+                             "this column is not numeric. Continuing anyway.");
 
       }//if contains
     else
@@ -554,7 +554,7 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
         _table.setColumnIsNominal(true, index);
         if(_table.isColumnNumeric(index))
           System.out.println(getAlias() + ": Column " + nominalColumns[i] + " was selected as nominal, but " +
-                             "this column is numeric. Continueing anyway.");
+                             "this column is numeric. Continuing anyway.");
 
       }//if contains
       else
@@ -607,3 +607,9 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
 
 //QA Comments Anca - added getPropertyDescription
 // modified module info
+
+
+//11-04-03 Vered started QA process:
+//         The module is well documented. UI is good. Headless version works too.
+//         was tested with StringColumns that are numeric - works great.
+//         module is ready.

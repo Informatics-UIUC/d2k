@@ -38,17 +38,17 @@ public class Scale extends HeadlessUIModule {
    	  if (nc < indices.length) {
    	  	 throw new Exception (this.getAlias()+" has not been configured to run headless with a table of this structure. Not enough columns in the table");
    	  }
-   	  
+
    	  // Find the maximum column index.
    	  int max = -1;
-   	  for (int i = 0 ; i < indices.length ; i++) 
-   	  	 if (indices[i] > max) 
+   	  for (int i = 0 ; i < indices.length ; i++)
+   	  	 if (indices[i] > max)
    	  		max = indices[i];
-   	  
+
    	  if (nc < max) {
 		throw new Exception (this.getAlias()+" has not been configured to run headless with a table of this structure. Not enough columns in the table");
 	  }
-	  
+
 	  for (int i = 0 ; i < indices.length ; i++) {
 	  	 if (indices[i] >= 0) {
 		     Column col = table.getColumn(indices[i]);
@@ -60,7 +60,7 @@ public class Scale extends HeadlessUIModule {
 	  pushOutput(new ScalingTransformation(indices, from_min, from_max,
 	      to_min, to_max), 0);
    }
-   
+
    public String[] getFieldNameMapping() { return null; }
 
    public String getModuleInfo() {
@@ -634,4 +634,8 @@ class ScalingTransformation implements Transformation {
  * QA comments:
  * 2-28-03  Vered started qa.
  *          added to module info a note about missing values handling.
+ *
+ * 11-04-03 Vered started QA process
+ *          UI allows insertion of min values that are greater than the max values.
+ *          [bug 115]
  */
