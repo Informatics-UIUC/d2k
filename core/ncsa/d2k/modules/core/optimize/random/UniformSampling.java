@@ -121,7 +121,8 @@ public class UniformSampling
 
   public String getModuleInfo() {
     return "This module implements a simple random sampling optimizer which selects points according to a uniform " +
-        "distribution over the parameter space.  Every point in the space as equal likelihood of being selected.  ";
+           "distribution over the parameter space.  Every point in the space has equal likelihood of being selected.  ";
+
   }
 
   public String getInputName(int i) {
