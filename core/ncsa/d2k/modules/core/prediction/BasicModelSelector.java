@@ -30,7 +30,7 @@ public class BasicModelSelector extends ModelSelectorModule implements HasNames 
 	}
 
 	public String getInputName(int i) {
-		return "model";
+		return "Model";
 	}
 
 	public String getOutputInfo(int i) {
@@ -38,7 +38,7 @@ public class BasicModelSelector extends ModelSelectorModule implements HasNames 
 	}
 
 	public String getOutputName(int i) {
-		return "model";
+		return "Model";
 	}
 
 	public String getModuleName() {
