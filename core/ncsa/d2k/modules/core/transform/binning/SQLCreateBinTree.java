@@ -98,18 +98,21 @@ public class SQLCreateBinTree extends DataPrepModule {
 
 		// get the attributes names from the input features
 		int[] inputFeatures = et.getInputFeatures();
-  	if ((inputFeatures == null) || (inputFeatures.length == 0))
-		 throw new Exception("Input features are missing. Please select the input features.");
+		if ((inputFeatures == null) || (inputFeatures.length == 0))
+		    throw new Exception("Input features are missing. Please select the input features.");
 		String[] an = new String[inputFeatures.length];
 		for (int i = 0; i < inputFeatures.length; i++)
-			an[i] = et.getColumnLabel(i);
+		    an[i] = et.getColumnLabel(i);//.toLowerCase();
 
 		// get the class name from the outputFeatures
 		int[] outputFeatures = et.getOutputFeatures();
 		if (outputFeatures == null || outputFeatures.length == 0)
-		 throw new Exception("Output feature is missing. Please select an output feature.");
+		    throw new Exception("Output feature is missing. Please select an output feature.");
+
 
 		String classLabel = et.getColumnLabel(outputFeatures[0]);
+		if( et.isColumnScalar(outputFeatures[0]))
+		    throw new Exception("Output feature cannot be scalar.");
 
 		//System.out.println("CreateSQLBinTree classLabel " + classLabel);
 		int totalClassified = 0;
@@ -138,11 +141,9 @@ public class SQLCreateBinTree extends DataPrepModule {
 				cn[i] = (String) items.get(new Integer(i));
 
 			// given feature names and class values create bin tree
-			// bt = btrans.createBinTree(cn, an);
-			bt =
-				CreateBinTree.createBinTree(btrans.getBinDescriptors(), cn, an);
+			bt = CreateBinTree.createBinTree(btrans.getBinDescriptors(), cn, an);
 
-			// bt.printAll();
+			//bt.printAll();
 			//determine the counts in each bin
 			Statement stmt = conn.getConnection().createStatement();
 			for (i = 0; i < cn.length; i++) {

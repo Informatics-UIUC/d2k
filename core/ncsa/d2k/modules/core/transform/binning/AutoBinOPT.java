@@ -110,6 +110,10 @@ public class AutoBinOPT
 
 	if (outputs == null || outputs.length == 0)
 			 throw new Exception("Output feature is missing. Please select an output feature.");
+
+	if(tbl.isColumnScalar(outputs[0])) 
+	    throw new Exception("Output feature must be nominal."); 
+
 			 
     nf = NumberFormat.getInstance();
     nf.setMaximumFractionDigits(3);
@@ -119,11 +123,11 @@ public class AutoBinOPT
       nameToIndexMap.put(name, new Integer(i));
     }
 
-    Integer method = (Integer) nameToIndexMap.get(ParamSpaceGenerator.
+    Integer method = (Integer) nameToIndexMap.get(AutoParamSpaceGenerator.
                                                   BIN_METHOD);
 
     */
-   int type = (int)pp.getValue(ParamSpaceGenerator.BIN_METHOD);
+   int type = (int)pp.getValue(AutoBinParamSpaceGenerator.BIN_METHOD);
 
     /*if (method == null) {
       throw new Exception(getAlias() + ":  Could not find Bin Method!");
@@ -142,7 +146,7 @@ public class AutoBinOPT
         throw new Exception(getAlias() + ": Number of bins not specified!");
       }
       */
-     int number = (int)pp.getValue(ParamSpaceGenerator.NUMBER_OF_BINS);
+     int number = (int)pp.getValue(AutoBinParamSpaceGenerator.NUMBER_OF_BINS);
      if(number < 0)
        throw new Exception(getAlias()+": Number of bins not specified!");
       bins = numberOfBins(number);
@@ -153,7 +157,7 @@ public class AutoBinOPT
       if (weight == null) {
         throw new Exception(getAlias() + ": Items per bin not specified!");
       }*/
-      int weight = (int)pp.getValue(ParamSpaceGenerator.ITEMS_PER_BIN);
+      int weight = (int)pp.getValue(AutoBinParamSpaceGenerator.ITEMS_PER_BIN);
       bins = sameWeight(weight);
     }
 
@@ -212,6 +216,7 @@ public class AutoBinOPT
                                                 binMaxes[binMaxes.length - 1], nf, tbl);
 
         bins.add(bd);
+	System.out.println("BinDescriptors created for numberOfBins");
       }
 
       // if it is nominal, create a bin for each unique value.

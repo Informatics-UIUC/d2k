@@ -60,11 +60,11 @@ public class CreateBinTree extends DataPrepModule {
        sb.append("Creates an empty BinTree."); 
        sb.append("<p>Detailed Description: "); 
        sb.append( "Given a BinTransform containing the definition of the bins, "); 
-       sb.append( "an ExampleTable "); 
-       sb.append( "that has the input/ output attribute labels and types, builds a BinTree "); 
-       sb.append( "that can be later used to clasify data. " );
-       sb.append( "<p> Scalability: a large enough number of attributes will result "); 
-       sb.append( "in an OutOfMemory error. Use attribute selection to reduce the number.");
+       sb.append( "an ExampleTable that has the input/ output attribute labels and types, "); 
+       sb.append( "builds a BinTree that can be later used to clasify data. The BinTree can "); 
+       sb.append( "use only one output feature. If more are selected only the first one will be used." );
+       sb.append( "<p> Scalability: a large enough number of features will result "); 
+       sb.append( "in an OutOfMemory error. Use feature selection to reduce the number of features.");
        return sb.toString(); 
 
    }
@@ -73,66 +73,143 @@ public class CreateBinTree extends DataPrepModule {
       return "Create Bin Tree";
    }
 
-   public void doit() {
+   public void doit() throws Exception {
       BinTransform bt = (BinTransform)pullInput(0);
       ExampleTable et = (ExampleTable)pullInput(1);
 
       BinTree tree = createBinTree(bt, et);
+      int [] ins = et.getInputFeatures();
+      int [] out = et.getOutputFeatures();
+
+      if ((ins == null) || (ins.length == 0))
+	  throw new Exception("Input features are missing. Please select the input features.");
+      
+      if (out == null || out.length == 0)
+	  throw new Exception("Output feature is missing. Please select an output feature.");
+
+      // we only support one out variable..
+      int classColumn = out[0];
+
+      if (et.isColumnScalar(classColumn)) 
+	  throw new Exception("Output feature should be nominal. Please transform it.");
+
+      int numRows = et.getNumRows();
+      long startTime = System.currentTimeMillis();
+      for(int i = 0; i < ins.length; i++) {
+	  // numeric columns
+	  if(et.isColumnScalar(ins[i])) {
+	      for(int j = 0; j < numRows; j++) {
+		  tree.classify(et.getString(j, classColumn),
+				et.getColumnLabel(ins[i]), et.getDouble(j, ins[i]));
+	      }
+	      
+	  }
+	  
+	  // everything else is treated as textual columns
+	  else {
+	      for(int j = 0; j < numRows; j++)
+		  tree.classify(et.getString(j, classColumn),
+				et.getColumnLabel(ins[i]), et.getString(j, ins[i]));
+	  }
+      }
+      
+      long endTime = System.currentTimeMillis();
+      if (debug) System.out.println ( "time in msec " + (endTime-startTime));
+      if (debug)tree.printAll();
       pushOutput(tree, 0);
-   }
+   
+}
+
 
    public static BinTree createBinTree(BinDescriptor[] bins, String[] cn, String[] an) {
+       
+       // converting the attribute labels to lower case
+       // done for compatibility with BinTrees produced by SQL
+       /*   String lowerCaseAn [] = new String[an.length];
+       for (int i =0; i < an.length ; i++)
+	   lowerCaseAn[i] = an[i].toLowerCase();
+       */
+
       BinTree bt = new BinTree(cn, an);
 
+      //System.out.println("bins.length " + bins.length);
       for(int i = 0; i < bins.length; i++) {
          BinDescriptor bd = bins[i];
-         String attlabel = bd.label;
-				 if(bd instanceof NumericBinDescriptor) {
-            double max = ((NumericBinDescriptor)bd).max;
-            double min = ((NumericBinDescriptor)bd).min;
-
-            try {
-               bt.addNumericBin(bd.label, bd.name, min, false,
-                                max, true);
-            }
-            catch(Exception e) {
-            }
+         String attLabel = bd.label;//.toLowerCase();
+         //System.out.println("bin label " +attLabel + " " + bd.name);
+	 if(bd instanceof NumericBinDescriptor) {
+	     double max = ((NumericBinDescriptor)bd).max;
+	     double min = ((NumericBinDescriptor)bd).min;
+	     
+	     try {
+		 bt.addNumericBin(attLabel, bd.name, min, false,
+				  max, true);
+	     }
+	     catch(Exception e) {
+	     }
          }
          else {
-            HashSet vals = ((TextualBinDescriptor)bd).vals;
-            String[] values = new String[vals.size()];
-            Iterator ii = vals.iterator();
-            int idx = 0;
-            while(ii.hasNext()) {
-               values[idx] = (String)ii.next();
-					               idx++;
+	     HashSet vals = ((TextualBinDescriptor)bd).vals;
+	     String[] values = new String[vals.size()];
+	     Iterator ii = vals.iterator();
+	     int idx = 0;
+	     while(ii.hasNext()) {
+		 values[idx] = (String)ii.next();
+		 idx++;
+	     }
+	     
+	     try {
+		 bt.addStringBin(attLabel, bd.name, values);
             }
-
-            try {
-							   bt.addStringBin(bd.label, bd.name, values);
-            }
-            catch(Exception e) {
-            }
+	     catch(Exception e) {
+	     }
          }
-
+	 
       }
       return bt;
+
    }
+    
 
-   public static BinTree createBinTree(BinTransform bt, ExampleTable et) {
-      int[] outputs = et.getOutputFeatures();
-      int[] inputs = et.getInputFeatures();
+    public static BinTree createBinTree(BinTransform bt, ExampleTable et) {
+	int[] outputs = et.getOutputFeatures();
+	int[] inputs = et.getInputFeatures();
+	
+	HashMap used = new HashMap();
+	
+	String[] cn = TableUtilities.uniqueValues(et, outputs[0]);
+	String[] an = new String[inputs.length];
+	for(int i = 0; i < an.length; i++)
+	    an[i] = et.getColumnLabel(inputs[i]);
+	return createBinTree(bt.getBinDescriptors(), cn, an);
+    }
+    
 
-      HashMap used = new HashMap();
+    boolean debug; 
+ 
+    public boolean getDebug() { 
+	return debug; 
+    } 
+ 
+    public void setDebug(boolean deb) { 
+	debug = deb; 
+    } 
 
-      String[] cn = TableUtilities.uniqueValues(et, outputs[0]);
-      String[] an = new String[inputs.length];
-      for(int i = 0; i < an.length; i++)
-         an[i] = et.getColumnLabel(inputs[i]);
-      return createBinTree(bt.getBinDescriptors(), cn, an);
-   }
+    public PropertyDescription[] getPropertiesDescriptions(){ 
+	PropertyDescription[] pd = new PropertyDescription[1] ; 
+	pd[0] = new PropertyDescription("debug", "Debug Mode", 
+					"This property controls the module's output to the stdout. " + 
+					"If set to true the created BinTree will be printed. ");
+					
+	return pd; 
+    } 
+
+
+
 
 }
 // QA comments Anca:
 // added input/output names, description, module info text
 // module gives OutOfMemory error for large number of attributes
+// merged Binning module functionality in this module
+// added debug variable

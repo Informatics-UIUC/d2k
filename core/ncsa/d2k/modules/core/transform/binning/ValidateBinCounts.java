@@ -36,7 +36,8 @@ public class ValidateBinCounts extends ncsa.d2k.core.modules.ComputeModule {
 	 * @return string array containing the datatypes of the inputs.
 	 */
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.transform.binning.BinTree","ncsa.d2k.modules.core.transform.binning.BinTree"};
+		String[] types = {"ncsa.d2k.modules.core.transform.binning.BinTree",
+				  "ncsa.d2k.modules.core.transform.binning.BinTree"};
 		return types;
 	}
 
@@ -116,8 +117,8 @@ public class ValidateBinCounts extends ncsa.d2k.core.modules.ComputeModule {
 						if (bt1.getTally(cn[i], an[j], bn[k]) != bt2.getTally(cn[i], an[j].toLowerCase(), bn[k]))
 							throw new Exception ("counts are not equal for class " + cn[i]
 							+ " attribute " + an[j] + " bin " + bn[k]);
-							//System.out.println ("counts are not equal for class " + cn[i]
-							//									+ " attribute " + an[j] + " bin " + bn[k]);
+							System.out.println ("counts are not equal for class " + cn[i]
+															+ " attribute " + an[j] + " bin " + bn[k]);
 				 }
 			}
 	  }

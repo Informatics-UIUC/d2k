@@ -113,14 +113,24 @@ public class ADTAutoBin extends DataPrepModule {
 
 	public void doit() throws Exception {
 
-		adt = (ADTree) pullInput(0);
-		tbl = (ExampleTable) pullInput(1);
-
-		BinDescriptor[] bins = createAutoNominalBins();
-
-		BinTransform bt = new BinTransform(bins, false);
-
-		pushOutput(bt, 0);
+	    adt = (ADTree) pullInput(0);
+	    tbl = (ExampleTable) pullInput(1);
+	    
+	    int [] inputs = tbl.getInputFeatures(); 
+	    if (inputs == null || inputs.length == 0)  
+		throw new Exception("Input features are missing. Please select an input feature."); 
+	    
+	    int [] outputs = tbl.getOutputFeatures(); 
+	    if (outputs == null || outputs.length == 0)  
+		throw new Exception("Output feature is missing. Please select an output feature."); 
+	    if(tbl.isColumnScalar(outputs[0])) 
+		throw new Exception("Output feature must be nominal."); 
+	    
+	    BinDescriptor[] bins = createAutoNominalBins();
+	    
+	    BinTransform bt = new BinTransform(bins, false);
+	    
+	    pushOutput(bt, 0);
 		//pushOutput(et, 1);
 	}
 
@@ -134,7 +144,7 @@ public class ADTAutoBin extends DataPrepModule {
 
 			//System.out.println("scalar ? " + i + " " + isScalar);
 			if (isScalar) {
-				//ADTrees do not support scalar values
+			    throw new Exception ("ADTrees do not support scalar values");
 			}
 
 			// if it is nominal, create a bin for each unique value.

@@ -107,43 +107,5 @@ public class Binning extends DataPrepModule  {
        Perform the calculation.
     */
     public void doit() throws Exception {
-		BinTree bt = (BinTree)pullInput(0);
-		ExampleTable vt = (ExampleTable)pullInput(1);
-
-		int [] ins = vt.getInputFeatures();
-		int [] out = vt.getOutputFeatures();
-
-		// we only support one out variable..
-		int classColumn = out[0];
-
-        //                int numRows = sc.getNumRows();
-		int numRows = vt.getNumRows();
-		//long startTime = System.currentTimeMillis();
-		for(int i = 0; i < ins.length; i++) {
-			//Column sc = vt.getColumn(ins[i]);
-
-			// numeric columns
-			//if(sc instanceof NumericColumn) {
-            if(vt.isColumnScalar(ins[i])) {
-				for(int j = 0; j < numRows; j++) {
-					bt.classify(vt.getString(j, classColumn),
-						vt.getColumnLabel(ins[i]), vt.getDouble(j, ins[i]));
-					}
-
-			}
-
-			// everything else is treated as textual columns
-			else {
-				for(int j = 0; j < numRows; j++)
-					bt.classify(vt.getString(j, classColumn),
-						vt.getColumnLabel(ins[i]), vt.getString(j, ins[i]));
-			}
-		}
-
-		//long endTime = System.currentTimeMillis();
-		//System.out.println ( "time in msec " + (endTime-startTime));
-	//	bt.printAll();
-		pushOutput(bt, 0);
-		pushOutput(vt, 1);
     }
 }

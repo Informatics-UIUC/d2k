@@ -126,17 +126,29 @@ public class SQLAutoBin extends AutoBin {
 	ExampleTable tbl;
     NumberFormat nf;
     
-	public void doit() throws Exception {
+    public void doit() throws Exception {
+	
+	conn = (DBConnection) pullInput(0);
+	tableName = (String) pullInput(1);
+	tbl = (ExampleTable) pullInput(2);
+	whereClause = (String) pullInput(3);
+	nf = NumberFormat.getInstance();
+	nf.setMaximumFractionDigits(3);
+	int type = getBinMethod();
 
-		conn = (DBConnection) pullInput(0);
-		tableName = (String) pullInput(1);
-		tbl = (ExampleTable) pullInput(2);
-		whereClause = (String) pullInput(3);
-		nf = NumberFormat.getInstance();
-		  nf.setMaximumFractionDigits(3);
-		int type = getBinMethod();
-
-		BinDescriptor[] bins;
+	int [] inputs = tbl.getInputFeatures(); 
+	if (inputs == null || inputs.length == 0)  
+	    throw new Exception("Input features are missing. Please select an input feature."); 
+	
+	int [] outputs = tbl.getOutputFeatures(); 
+	if (outputs == null || outputs.length == 0)  
+	    throw new Exception("Output feature is missing. Please select an output feature."); 
+	if(tbl.isColumnScalar(outputs[0])) 
+	    throw new Exception("Output feature must be nominal."); 
+	
+	
+	
+	BinDescriptor[] bins;
 		if (type == 0) {
 			int number = getNumberOfBins();
 			if (number < 0)

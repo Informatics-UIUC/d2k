@@ -1553,7 +1553,7 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 				//Double upperValue = new Double(upper);
 				if (Double.isInfinite(lower)) eliminateLower = true;
 				if (Double.isInfinite(upper))  eliminateUpper = true;
-				System.out.println("upper " + upper + " lower " + lower);
+				//System.out.println("upper " + upper + " lower " + lower);
 	      if (eliminateLower) {
 					if (includeUpper)
 						return an + " <= " + upper;
@@ -1595,7 +1595,7 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
      */
     boolean includeLowerBound(String an, String bn) throws BinNotFoundException {
 		BinList bl = (BinList)get(an);
-
+                //System.out.println("an: " + an + "bn: " + bn);
 		if(bl == null)
 		    throw new BinNotFoundException();
 		Bin b = (Bin)bl.get(bn);

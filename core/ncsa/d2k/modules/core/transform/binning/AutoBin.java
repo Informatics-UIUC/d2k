@@ -80,8 +80,10 @@ public class AutoBin extends AutoBinOPT {
         "each scalar column.");
     pds[1] = new PropertyDescription("binWeight", "Number of Items per Bin",
         "When binning by weight, this is the number of items" +
-        " that will go in each bin.  The last bin may have less than "+
-        "<i>weight</i> values, however.");
+        " that will go in each bin.  However, the bins may contain more or fewer values than "+
+        "<i>weight</i> values, depending on how many items equal the bin limits. Typically " +
+	 "the last bin will contain less or equal to <i>weight</i> values and the rest of the " +
+         "bins will contain a number that is  equal or greater to <i>weight</i> values.");
     pds[2] = new PropertyDescription("numberOfBins", "Number of Bins",
                                      "Define the number of bins absolutely. "+
                                      "This will give equally spaced bins between "+
@@ -96,11 +98,14 @@ public class AutoBin extends AutoBinOPT {
 
     inputs = tbl.getInputFeatures();
     outputs = tbl.getOutputFeatures();
-	if ((inputs == null) || (inputs.length == 0))
-			 throw new Exception("Input features are missing. Please select the input features.");
+    if ((inputs == null) || (inputs.length == 0))
+	throw new Exception("Input features are missing. Please select the input features.");
 
-if (outputs == null || outputs.length == 0)
-			 throw new Exception("Output feature is missing. Please select an output feature.");
+    if (outputs == null || outputs.length == 0)
+	throw new Exception("Output feature is missing. Please select an output feature.");
+
+    if(tbl.isColumnScalar(outputs[0])) 
+        throw new Exception("Output feature must be nominal."); 
 
 
     nf = NumberFormat.getInstance();
