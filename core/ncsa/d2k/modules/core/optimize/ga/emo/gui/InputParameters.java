@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 import java.util.*;
 
 import java.awt.*;
+import java.awt.geom.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -21,12 +22,16 @@ import ncsa.d2k.modules.core.optimize.ga.selection.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
+/**
+ * An interface to input the parameters for EMO.
+ */
 public class InputParameters
     extends UIModule {
 
   public String[] getInputTypes() {
     return new String[] {
-        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.Parameters",
+        "java.lang.Object"};
   }
 
   public String[] getOutputTypes() {
@@ -67,6 +72,33 @@ public class InputParameters
     return new PropertyDescription[0];
   }
 
+  public boolean isReady() {
+    if(!timing) 
+      return (getInputPipeSize(0) > 0);
+    else
+      return (getInputPipeSize(1) > 0);
+  }
+  
+  public void beginExecution() {
+    timing = false;
+  }
+  
+  public Object[] getPulledInputs() {
+    Object[] inputs = new Object[2];  
+    if(timing) {
+      inputs[0] = pullInput(0);  
+      inputs[1] = new NOP();
+    }
+    else {
+      inputs[0] = new NOP();
+      inputs[1] = pullInput(1);
+    }
+    return inputs;
+  }
+  
+  private boolean timing = false;
+  private long startTime;
+
   private CachedParams cachedParams;
   public void setCachedParams(CachedParams cp) {
     cachedParams = cp;
@@ -79,7 +111,7 @@ public class InputParameters
   /**
    * Contains the cached parameters that were input.
    */
-  private class CachedParams
+  private static class CachedParams
       implements java.io.Serializable {
 
     /** the number of variables in the problem */
@@ -101,6 +133,8 @@ public class InputParameters
     String maxRunTime;
     /** the difference in time */
     String diff;
+    /** the number of solutions */ 
+    String numSolutions;
 
     /** the name of the selected mutation type */
     String mutName;
@@ -144,6 +178,7 @@ public class InputParameters
     /** the label in the TimePanel that shows the difference in times */
     transient private JLabel difference;
     transient private int numObjectives;
+    transient private BarPanel barPanel;
 
     transient private Mutation selectedMutation;
     transient private Crossover selectedCrossover;
@@ -473,6 +508,7 @@ public class InputParameters
       cp.estimatedTimeReq = estimatedTime.getText();
       // save the difference
       cp.diff = difference.getText();
+      cp.numSolutions = this.numSolutions.getText();
 
       // need to save which type of mutation, sel, crossover selected
       // save the name of the type selected
@@ -518,23 +554,73 @@ public class InputParameters
     }
 
     public void setInput(Object o, int i) {
-      params = (Parameters) o;
+      if(i == 0) {
+        params = (Parameters) o;
 
-      // how many objectives are there?
-      numObjectives = params.fitnessFunctions.getTotalNumFitnessFunctions();
+        // how many objectives are there?
+        numObjectives = params.fitnessFunctions.getTotalNumFitnessFunctions();
 
-      // now get the cached params.  check if the cached params match this
-      // population.  if so, fill in everything with the cached params
+        // now get the cached params.  check if the cached params match this
+        // population.  if so, fill in everything with the cached params
 
-      // cached params are assumed to be equal if the number of objectives,
-      // the number of decision variables, and the names of the decision vars
-      // are the same.
-      if (useCachedParams()) {
-        setCachedValues();
-        // else, fill in default values
+        // cached params are assumed to be equal if the number of objectives,
+        // the number of decision variables, and the names of the decision vars
+        // are the same.
+        if (useCachedParams()) {
+          setCachedValues();
+          // else, fill in default values
+        }
+        else {
+          setRecommendedValues();
+        }
       }
       else {
-        setRecommendedValues();
+        long stopTime = System.currentTimeMillis();  
+        timing = false;
+        
+        // now we have the start and stop times.
+        // set the estimated run time for a full population...
+        long runtime = stopTime-startTime;
+        
+        // this is the runtime for a population of 2.  
+        // assuming linearity, multiply by (popsize/2) and by
+        // the number of generations to get the time for the full pop
+        
+        double popSize;
+        // if the overriden population size is valid, use that
+        try {
+          popSize = Double.parseDouble(
+              (String) paramsModel.getValueAt(POP_SIZE, OVERRIDE));
+        }
+        // otherwise use the recommended value
+        catch (Exception ex) {
+          popSize = Double.parseDouble(
+              (String) paramsModel.getValueAt(POP_SIZE, REC));
+        }
+  
+        double gens;
+        // if the overriden max gens is valid, use that
+        try {
+          gens = Double.parseDouble(
+              (String) paramsModel.getValueAt(MAX_GEN, OVERRIDE));
+        }
+        // otherwise use the recommended value
+        catch (Exception ex) {
+          gens = Double.parseDouble(
+              (String) paramsModel.getValueAt(MAX_GEN, REC));
+        }
+        double totalruntime = runtime*popSize*gens; 
+        
+        // the time is in milliseconds.
+        // divide by 1000 to get the number of seconds
+        double seconds = totalruntime/1000;
+        // divide by 60 to get the number of minutes
+        double mins = seconds/60;
+        
+        this.estimatedRunTime.setText(Double.toString(mins));
+        this.estimatedTime.setText(Double.toString(mins));
+        barPanel.setEstimatedRunTime(Double.toString(mins));
+        this.updateDifference();
       }
     }
 
@@ -766,6 +852,19 @@ public class InputParameters
         } // if
       } // for
 
+      if(cache.maxRunTime != null) {
+        this.maxRunTime.setText(cache.maxRunTime);
+        this.specifiedMaxTime.setText(cache.maxRunTime);
+        barPanel.setMaxRunTime(cache.maxRunTime);
+      }
+      if(cache.estimatedTimeReq != null) {
+        this.estimatedRunTime.setText(cache.estimatedTimeReq);
+        this.estimatedTime.setText(cache.estimatedTimeReq);
+        barPanel.setEstimatedRunTime(cache.estimatedTimeReq);
+      }
+      updateDifference();
+      if(cache.numSolutions != null)
+        this.numSolutions.setText(cache.numSolutions);
     }
 
     public Dimension getPreferredSize() {
@@ -840,6 +939,15 @@ public class InputParameters
                                  GridBagConstraints.WEST,
                                  1, 1);
         JButton estimate = new JButton("Estimate");
+        estimate.addActionListener(new AbstractAction() {
+          public void actionPerformed(ActionEvent e) {
+            timing = true;   
+            // create a new params with a pop size of 2
+            // get the start time
+            startTime = System.currentTimeMillis();
+            // push it out on output 1
+          }
+        });
         Constrain.setConstraints(timePanel, estimate, 0, 1, 1, 1,
                                  GridBagConstraints.NONE,
                                  GridBagConstraints.WEST,
@@ -948,6 +1056,8 @@ public class InputParameters
             // set the #solutions ...
             estimatedTime.setEditable(false);
             estimatedRunTime.setText(estimatedTime.getText());
+            barPanel.setEstimatedRunTime(estimatedTime.getText());
+            updateDifference();
           }
         });
         // make the session name field uneditable and transfer the focus
@@ -964,6 +1074,8 @@ public class InputParameters
           public void focusLost(FocusEvent e) {
             String txt = maxRunTime.getText();
             specifiedMaxTime.setText(txt);
+            barPanel.setMaxRunTime(txt);
+            updateDifference();
           }
         });
         // make the session name field uneditable and transfer the focus
@@ -983,6 +1095,27 @@ public class InputParameters
         advFrame.setVisible(false);
       }
     }
+    
+    void updateDifference() {
+      String est = estimatedRunTime.getText();   
+      String mx = specifiedMaxTime.getText();
+      
+      try {
+        double e = Double.parseDouble(est);
+        double m = Double.parseDouble(mx);
+        
+        if(e > m) {
+          double diff = e - m;
+          difference.setText("+"+diff);
+        }
+        else {
+          double diff = m-e;  
+          difference.setText(Double.toString(diff));
+        }
+      }
+      catch(Exception e) {
+      }
+    }
 
     /**
      * arrange the EstimatedTimeFactor components
@@ -1000,8 +1133,8 @@ public class InputParameters
                                  GridBagConstraints.WEST,
                                  1, 1);
 
-        BarPanel bp = new BarPanel();
-        Constrain.setConstraints(this, bp, 0, 1, 1, 1,
+        barPanel = new BarPanel();
+        Constrain.setConstraints(this, barPanel, 0, 1, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
                                  GridBagConstraints.WEST,
                                  1, 1);
@@ -1494,9 +1627,72 @@ public class InputParameters
 
     private class BarPanel
         extends JPanel {
-      /*      public Dimension getPreferredSize() {
+      
+            public Dimension getPreferredSize() {
               return new Dimension(300, 100);
-            }*/
+            }
+      
+      BarPanel() {
+        estimatedRunTime = -1;
+        maxRunTime = -1;
+      }
+      
+      double estimatedRunTime;
+      double maxRunTime;
+      
+      void setEstimatedRunTime(String time) {
+        try {
+          estimatedRunTime = Double.parseDouble(time);
+          repaint();
+        }
+        catch(Exception e) {
+        }
+      }
+      
+      void setMaxRunTime(String time) {
+        try {
+          maxRunTime = Double.parseDouble(time);
+          repaint();
+        }
+        catch(Exception e) {
+        }
+      }
+      
+      protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        
+        
+        if( (estimatedRunTime > 0) && (maxRunTime > 0) ) {
+          Graphics2D g2 = (Graphics2D)g;
+          double maximum;  
+          if(estimatedRunTime > maxRunTime)
+            maximum = estimatedRunTime;
+          else
+            maximum = maxRunTime;
+            
+          int width = this.getWidth(); 
+          int height = this.getHeight();
+          
+          int verticalOffset = (int)(height/8); 
+          int horizSize = (int)(.8*width); 
+          int horizOffset = (int)(.2*width);
+          
+          // draw the string  
+          g2.setColor(Color.darkGray);
+          g2.drawString("estimated run time", horizOffset, verticalOffset); 
+          
+          g2.setColor(Color.lightGray);
+          g2.fill(new Rectangle2D.Double(horizOffset, 2*verticalOffset, 
+                                         horizSize*(estimatedRunTime/maximum), 
+                                         verticalOffset));
+          g2.setColor(Color.darkGray);
+          g2.drawString("max run time", horizOffset, 5*verticalOffset);
+          g2.setColor(Color.lightGray);
+          g2.fill(new Rectangle2D.Double(horizOffset, 6*verticalOffset, 
+                                         horizSize*(maxRunTime/maximum), 
+                                         verticalOffset));
+        }
+      }
     }
 
     /**

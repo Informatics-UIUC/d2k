@@ -91,7 +91,7 @@ public class DefineFitnessFunctions
     return pds;
   }
 
-  private class FitnessFunctionConstruction
+  private static class FitnessFunctionConstruction
       extends Construction {
 
     private boolean isMinimizing = false;
@@ -118,13 +118,12 @@ public class DefineFitnessFunctions
     //for use in determining time
     //private JButton timeButton;
     //for use in displaying fitness function
-    private JTable tableData;
-    private DefaultTableModel modelData;
-    private Parameters parameters;
+    private transient JTable tableData;
+    private transient DefaultTableModel modelData;
+    private transient Parameters parameters;
 
     public void setInput(Object o, int i) {
       parameters = (Parameters) o;
-//      this.table = (MutableTable) data.varNames;
       this.table = parameters.decisionVariables.createVariableNameTable();
       this.initialize();
     }
@@ -593,7 +592,7 @@ public class DefineFitnessFunctions
          * for selecting max or min for
          * the newly added fitness function
          */
-        gui.setExpression(newExp);
+//        gui.setExpression(newExp);
 
         /**
          * Add to table object array with: empty string, label of function,  function itself, and time stirng

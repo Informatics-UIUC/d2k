@@ -137,13 +137,13 @@ public class DefineDecisionVariables
     return savedRows;
   }
 
-//  private Table seedTable;
-/*  public void setSeedTable(Table t) {
+  private Table seedTable;
+  public void setSeedTable(Table t) {
     seedTable = t;
   }
   public Table getSeedTable() {
     return seedTable;
-  }*/
+  }
 
   /**
      This pair is called by D2K to get the UserView for this module.
@@ -170,7 +170,7 @@ public class DefineDecisionVariables
     private JTextField numVarTf;
     private DefaultTableModel model;
     private JLabel total_string_length = new JLabel("Total String Length:");
-    private Table seedTable = null;
+    //private Table seedTable = null;
 
     public void initView(ViewModule viewmodule) {
       setLayout(new BorderLayout());
@@ -683,7 +683,7 @@ public class DefineDecisionVariables
 
       Parameters data = new Parameters();
       data.decisionVariables = varTable;
-      if(seedTable != null)
+      if(getSeedTable() != null)
         data.decisionVariables.setSeedTable(seedTable);
 
       pushOutput(data, 0);
@@ -789,7 +789,7 @@ public class DefineDecisionVariables
 
             lineNum++;
           }
-          seedTable = mt;
+          setSeedTable(mt);
         }
         catch (FileNotFoundException ex) {
           JOptionPane.showMessageDialog(null, "The file was not found.",

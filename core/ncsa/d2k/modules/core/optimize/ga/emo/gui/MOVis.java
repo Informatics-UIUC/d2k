@@ -21,6 +21,22 @@ import javax.swing.plaf.*;
 import javax.swing.plaf.basic.*;
 import java.util.*;
 
+/**
+ * A visualization for a multi-objective population in EMO.  Four JTables are
+ * used to show the current population, the last cumulative population, the 
+ * cumulative popualtion from two runs ago, and the cumulative population from
+ * three runs ago.  The fitness functions of these populations are displayed in
+ * scatterplots.  The rows and columns of the JTables can be changed, and it is
+ * possible to plot any combinations of fitness functions on the scatter plots.
+ * 
+ * The scatter plots in the JTables are FitnessPlots.  FitnessPlots allow the
+ * user to select points by drawing a box around an area.  The "View Selected"
+ * button can then be pressed to view the selected individuals in a table.
+ * Selection is only enabled on plots that are not currently being updated; thus
+ * the currently evaluating population must be paused in order for selection to
+ * be enabled.  The cumulative populations have selection enabled all the time,
+ * since they are not being updated continuously.
+ */
 public class MOVis
     extends UIModule {
 
@@ -49,7 +65,20 @@ public class MOVis
   }
 
   public String getModuleInfo() {
-    return "";
+String s = "A visualization for a multi-objective population in EMO.  Four JTables are";
+s += " used to show the current population, the last cumulative population, the";
+s += " cumulative popualtion from two runs ago, and the cumulative population from";
+s += " three runs ago.  The fitness functions of these populations are displayed in";
+s += " scatterplots.  The rows and columns of the JTables can be changed, and it is";
+s += " possible to plot any combinations of fitness functions on the scatter plots.";
+s += " The scatter plots in the JTables are FitnessPlots.  FitnessPlots allow the";
+s += " user to select points by drawing a box around an area.  The View Selected";
+s += " button can then be pressed to view the selected individuals in a table.";
+s += " Selection is only enabled on plots that are not currently being updated; thus";
+s += " the currently evaluating population must be paused in order for selection to";
+s += " be enabled.  The cumulative populations have selection enabled all the time,";
+s += " since they are not being updated continuously.";
+    return s;  
   }
 
   protected UserView createUserView() {
@@ -62,8 +91,12 @@ public class MOVis
 
   protected class MOView
       extends JUserPane {
+    
+    /** the fitness tables that hold the values of the FF to be graphed */
     protected FitnessTable[] fitnessTables;
+    /** the populations: current, last cumulative run, etc */
     protected NsgaPopulation[] populations;
+    /** the gui components for the populations */
     protected RunView[] runViews;
 
     protected boolean paused = false;
@@ -84,6 +117,9 @@ public class MOVis
 
     protected int run = 0;
 
+    /** temporarily hold the very first pop, so that we can make a cumulative
+     * from it and the second pop.
+     */
     protected NsgaPopulation tmpPopulation;
 
     protected static final String CUMULATIVE = "Cumulative ";
@@ -91,35 +127,48 @@ public class MOVis
     protected static final String POP_SIZE = "Population Size: ";
     protected static final String NUM_SOL = "Number of Nondominated Solutions: ";
 
+    /**
+     * create the gui components
+     * @param vm
+     */
     public void initView(ViewModule vm) {
+      // this will hold the populations
       populations = new NsgaPopulation[NUM_VIEWS];
+      // this will hold the tables to be graphed
       fitnessTables = new FitnessTable[NUM_VIEWS];
+      // this will hold the gui components
       runViews = new RunView[NUM_VIEWS];
+      
+      // initialize everything
       for (int i = 0; i < NUM_VIEWS; i++) {
         populations[i] = null;
         fitnessTables[i] = null;
-      }
-      for (int i = 0; i < NUM_VIEWS; i++) {
         runViews[i] = new RunView(i);
       }
       setLayout(new BorderLayout());
 
+      // add the run views
       JPanel bg = new JPanel(new GridLayout(2, 2));
       bg.add(runViews[CURRENT]);
       bg.add(runViews[CUMUL_ONE]);
       bg.add(runViews[CUMUL_TWO]);
       bg.add(runViews[CUMUL_THREE]);
 
+      // put the run views into a scroll pane
       JScrollPane jsp = new JScrollPane(bg);
       jsp.setPreferredSize(new Dimension(750, 425));
+      // add the scroll pane to this
       add(jsp, BorderLayout.CENTER);
 
+      // add the buttons
       continueButton = new JButton("Continue");
       continueButton.setToolTipText("Continue execution");
       pauseButton = new JButton("Pause");
       pauseButton.setToolTipText("Pause execution");
       viewDecisionVariables = new JButton("View Decision Variables");
       viewDecisionVariables.setToolTipText("View the decision variables of the current population");
+      // when View Decision Variables is pressed, push the current pop
+      // out on pipe 1
       viewDecisionVariables.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent ae) {
           pushOutput(populations[CURRENT], 1);
@@ -127,6 +176,8 @@ public class MOVis
       });
       viewGenes = new JButton("View Genes");
       viewGenes.setToolTipText("View the genes of the current population");
+      // when View Genes is pressed, push the current pop 
+      // out on pipe 2
       viewGenes.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent ae) {
           pushOutput(populations[CURRENT], 2);
@@ -155,6 +206,7 @@ public class MOVis
           viewCancel();
         }
       });
+      // add the buttons
       JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       buttonPanel.add(continueButton);
       buttonPanel.add(pauseButton);
@@ -164,6 +216,11 @@ public class MOVis
       add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * pause..  diable pause button.  enable continue button,
+     * view decision variables, and view genes.  enable selection
+     * on the run view that shows the current pop 
+     */
     protected void pauseExecution() {
       // enable selection on the fitness plot
       paused = true;
@@ -174,6 +231,11 @@ public class MOVis
       runViews[CURRENT].enableSelection();
     }
 
+    /**
+     * continue after a pause.  enable the pause button.  disable continue,
+     * view decision variables, and view genes.  disable selection on the
+     * run view that shows the current pop
+     */
     protected void continueExecution() {
       paused = false;
       continueButton.setEnabled(false);
@@ -238,7 +300,7 @@ public class MOVis
             populations[CUMUL_ONE] = new NewNsgaPopulation(tmpPopulation,
                 populations[CURRENT]);
             ( (NewNsgaPopulation) populations[CUMUL_ONE]).filtering();
-            // set tmpPopulation to be null
+            // set tmpPopulation to be null.  we don't need it anymore
             tmpPopulation = null;
 
             // copy pop into a fitness table
