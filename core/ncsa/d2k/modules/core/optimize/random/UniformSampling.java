@@ -283,9 +283,9 @@ public class UniformSampling
       NumExamples++;
 
       // update best solution so far
-	  int outputFeature2Score = inputs.length + (ObjectiveScoreOutputFeatureNumber-1);
+	  int outputFeature2Score = inputs.length + ObjectiveScoreOutputFeatureNumber;
       for (int e = NumExamples - 1; e < NumExamples; e++) {
-		double utility = ExampleData [outputFeature2Score][e];
+		double utility = ExampleData [e][outputFeature2Score];
         if (ObjectiveScoreDirection == 1) {
           if (utility > BestUtility) {
             BestUtility = utility;
