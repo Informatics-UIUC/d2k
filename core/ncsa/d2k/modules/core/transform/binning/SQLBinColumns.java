@@ -237,7 +237,7 @@ public class SQLBinColumns extends UIModule {
        */
       public int[] getCounts(int col, double[] borders) {
         int[] counts = new int[borders.length+1];
-        String colName = fieldNames[col];
+        String colName = fieldNames[col].toLowerCase();
         double low = -9999999.99;
         double high;
         try {
@@ -378,13 +378,15 @@ public class SQLBinColumns extends UIModule {
                 totalRows = getTotalRows();
                 colTypes = getColTypes();
                 for (int i = 0; i < fieldNames.length; i++) {
-                  columnLookup.put(fieldNames[i], new Integer(i));
+                  columnLookup.put(fieldNames[i].toLowerCase(), new Integer(i));
                   if (binCounts.isColumnNumeric(i)) {
-                    numModel.addElement((String)fieldNames[i]);
+                    //numModel.addElement((String)fieldNames[i]);
+                    numModel.addElement(((String)fieldNames[i]).toLowerCase());
                     getMMTValues(i); // compute min, max and total
                   }
                   else {
-                    txtModel.addElement((String)fieldNames[i]);
+                    //txtModel.addElement((String)fieldNames[i]);
+                    txtModel.addElement(((String)fieldNames[i]).toLowerCase());
                   }
                 }
                 // finished...
@@ -418,7 +420,7 @@ public class SQLBinColumns extends UIModule {
 
         public void getMMTValues(int col) {
           try {
-            String colName = fieldNames[col];
+            String colName = fieldNames[col].toLowerCase();
             con = wrapper.getConnection();
             queryStr = "select min(" + colName + "), max(" + colName + "), sum("
                      + colName + ") from " + tableName;
@@ -512,7 +514,7 @@ public class SQLBinColumns extends UIModule {
                     HashMap colLook = new HashMap();
                     for (int i = 0; i < fieldNames.length; i++) {
                         if(binCounts.isColumnNumeric(i)) {
-                            colLook.put((String)fieldNames[i], new Integer(i));
+                            colLook.put((String)fieldNames[i].toLowerCase(), new Integer(i));
                         }
                     }
 
@@ -613,7 +615,7 @@ public class SQLBinColumns extends UIModule {
                     HashMap colLook = new HashMap();
                     for (int i = 0; i < fieldNames.length; i++) {
                         if(binCounts.isColumnNumeric(i)) {
-                            colLook.put((String)fieldNames[i], new Integer(i));
+                            colLook.put((String)fieldNames[i].toLowerCase(), new Integer(i));
                         }
                     }
                     JD2KFrame frame = new JD2KFrame("Specified Range");
@@ -654,7 +656,7 @@ public class SQLBinColumns extends UIModule {
                     HashMap colLook = new HashMap();
                     for (int i = 0; i < fieldNames.length; i++) {
                         if(binCounts.isColumnNumeric(i)) {
-                            colLook.put((String)fieldNames[i], new Integer(i));
+                            colLook.put((String)fieldNames[i].toLowerCase(), new Integer(i));
                         }
                     }
                     String txt = intervalField.getText();
@@ -1045,7 +1047,7 @@ public class SQLBinColumns extends UIModule {
             // count the number of unique items in this column
             HashSet set = new HashSet();
           try {
-            String colName = fieldNames[col];
+            String colName = fieldNames[col].toLowerCase();
             con = connectionWrapper.getConnection();
             queryStr = "select distinct " + colName + " from " + tableName;
             stmt = con.createStatement();
@@ -1279,7 +1281,7 @@ public class SQLBinColumns extends UIModule {
                 Double db1 = null;
                 ArrayList list = new ArrayList();
                 int aColIdx = colIdx[i];
-                String colName = fieldNames[aColIdx];
+                String colName = fieldNames[aColIdx].toLowerCase();
                 con = connectionWrapper.getConnection();
                 queryStr = "select " + colName + ", count(" + colName + ") from " +
                            tableName + " group by " + colName;
@@ -1338,7 +1340,7 @@ public class SQLBinColumns extends UIModule {
             String[] vals = new String[sel.length];
             for (int i = 0; i < vals.length; i++)
                 vals[i] = sel[i].toString();
-            return  new TextualBinDescriptor(idx, name, vals, (String)fieldNames[idx]);
+            return  new TextualBinDescriptor(idx, name, vals, (String)fieldNames[idx].toLowerCase());
         }
 
         /**
@@ -1357,7 +1359,7 @@ public class SQLBinColumns extends UIModule {
             nameBuffer.append(nf.format(max));
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    min, max, (String)fieldNames[col]);
+                    min, max, (String)fieldNames[col].toLowerCase());
             return  nb;
         }
 
@@ -1376,7 +1378,7 @@ public class SQLBinColumns extends UIModule {
             nameBuffer.append(nf.format(max));
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    Double.NEGATIVE_INFINITY, max, (String)fieldNames[col]);
+                    Double.NEGATIVE_INFINITY, max, (String)fieldNames[col].toLowerCase());
             return  nb;
         }
 
@@ -1394,7 +1396,7 @@ public class SQLBinColumns extends UIModule {
             nameBuffer.append(DOTS);
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    min, Double.POSITIVE_INFINITY, (String)fieldNames[col]);
+                    min, Double.POSITIVE_INFINITY, (String)fieldNames[col].toLowerCase());
             return  nb;
         }
 
