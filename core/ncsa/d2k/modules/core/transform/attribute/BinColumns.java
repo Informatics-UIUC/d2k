@@ -153,7 +153,7 @@ public class BinColumns extends UIModule {
             columnLookup.put(table.getColumnLabel(i), new Integer(i));
 
             //if (table.getColumn(i) instanceof NumericColumn)
-			if(table.isColumnNumeric(i))
+         if(table.isColumnNumeric(i))
                numModel.addElement(table.getColumnLabel(i));
 
             else { //if (table.getColumn(i) instanceof TextualColumn) {
@@ -196,11 +196,18 @@ public class BinColumns extends UIModule {
          JButton showURange = new JButton("Show");
          showURange.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
+               Histogram H = new Histogram(table, Histogram.HISTOGRAM_UNIFORM, uRangeField.getText());
                JD2KFrame frame = new JD2KFrame("Uniform Range");
-               frame.getContentPane().add(new Histogram(table,
-                  Histogram.HISTOGRAM_UNIFORM, uRangeField.getText()));
+               frame.getContentPane().add(H);
                frame.pack();
                frame.setVisible(true);
+
+               final JSlider uniformSlider = H.getSlider();
+               uniformSlider.addChangeListener(new ChangeListener() {
+                  public void stateChanged(ChangeEvent e) {
+                     uRangeField.setText(Integer.toString(uniformSlider.getValue()));
+                  }
+               });
             }
          });
          urangepnl.setLayout(new GridBagLayout());
@@ -263,11 +270,18 @@ public class BinColumns extends UIModule {
          JButton showInterval = new JButton("Show");
          showInterval.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
+               Histogram H = new Histogram(table, Histogram.HISTOGRAM_INTERVAL, intervalField.getText());
                JD2KFrame frame = new JD2KFrame("Bin Interval");
-               frame.getContentPane().add(new Histogram(table,
-                  Histogram.HISTOGRAM_INTERVAL, intervalField.getText()));
+               frame.getContentPane().add(H);
                frame.pack();
                frame.setVisible(true);
+
+               final JSlider intervalSlider = H.getSlider();
+               intervalSlider.addChangeListener(new ChangeListener() {
+                  public void stateChanged(ChangeEvent e) {
+                     intervalField.setText(Integer.toString(intervalSlider.getValue()));
+                  }
+               });
             }
          });
          Constrain.setConstraints(intervalpnl, new JLabel("Interval"),
@@ -600,6 +614,7 @@ public class BinColumns extends UIModule {
                new String[table.getNumColumns()][table.getNumRows()];
 
             for(int i = 0; i < table.getNumColumns(); i++) {
+               if (binRelevant[i])
                for(int j = 0; j < table.getNumRows(); j++) {
 
                   // find the correct bin for this column
@@ -611,7 +626,7 @@ public class BinColumns extends UIModule {
 
                         // this has the correct column index
                         //if(c[i] instanceof NumericColumn) {
-						if(table.isColumnNumeric(i)) {
+                  if(table.isColumnNumeric(i)) {
                            if(bins[k].eval(table.getDouble(j, i))) {
                               newcols[i][j] = bins[k].name;
                               binfound = true;
@@ -626,8 +641,10 @@ public class BinColumns extends UIModule {
 
                      }
 
-                     if(binfound)
+                     if(binfound) {
+                        binRelevant[i] = true;
                         break;
+                     }
                   }
 
                   if(!binfound)
@@ -639,6 +656,8 @@ public class BinColumns extends UIModule {
 
             for(int i = 0; i < table.getNumColumns(); i++) {
 
+               if (binRelevant[i]) {
+
                //sc[i] = new StringColumn(newcols[i]);
                //sc[i].setComment(table.getColumn(i).getComment());
 
@@ -646,13 +665,15 @@ public class BinColumns extends UIModule {
                   if (binRelevant[i]) {
                      //sc[i].setLabel(table.getColumnLabel(i) + " bin");
                      table.addColumn(newcols[i]);
-					 table.setColumnLabel(table.getColumnLabel(i)+" bin", table.getNumColumns()-1);
+                table.setColumnLabel(table.getColumnLabel(i)+" bin", table.getNumColumns()-1);
                   }
                }
                else {
                   String oldLabel = table.getColumnLabel(i);
                   table.setColumn(newcols[i], i);
-				  table.setColumnLabel(oldLabel, i);
+              table.setColumnLabel(oldLabel, i);
+               }
+
                }
 
             }
@@ -1047,16 +1068,16 @@ public class BinColumns extends UIModule {
             if (!e.getValueIsAdjusting()) {
 
                Object lbl = textualColumnLabels.getSelectedValue();
-			   if(lbl != null) {
-               	int idx = ((Integer)columnLookup.get(lbl)).intValue();
-               	HashSet unique = uniqueColumnValues[idx];
-               	textUniqueModel.removeAllElements();
-               	textCurrentModel.removeAllElements();
-               	Iterator i = unique.iterator();
-               	while(i.hasNext())
+            if(lbl != null) {
+                  int idx = ((Integer)columnLookup.get(lbl)).intValue();
+                  HashSet unique = uniqueColumnValues[idx];
+                  textUniqueModel.removeAllElements();
+                  textCurrentModel.removeAllElements();
+                  Iterator i = unique.iterator();
+                  while(i.hasNext())
                   textUniqueModel.addElement(i.next());
 
-			   }
+            }
             }
 
          }

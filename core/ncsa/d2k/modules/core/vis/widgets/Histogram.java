@@ -64,10 +64,10 @@ public class Histogram extends JPanel {
       boolean found_numeric = false;
       for (int i = 0; i < table.getNumColumns(); i++) {
          //if (table.getColumn(i) instanceof NumericColumn) {
-		 if(table.isColumnNumeric(i)) {
+       if(table.isColumnNumeric(i)) {
             if (!found_numeric) {
                //current = (NumericColumn)table.getColumn(i);
-			   currentColumnIndex = i;
+            currentColumnIndex = i;
                found_numeric = true;
             }
             columnLookup.put(table.getColumnLabel(i), new Integer(i));
@@ -90,6 +90,10 @@ public class Histogram extends JPanel {
 
       initialized = true;
 
+   }
+
+   public JSlider getSlider() {
+      return slider.getSlider();
    }
 
    private void calculateBins() {
@@ -323,7 +327,7 @@ public class Histogram extends JPanel {
                      max = table.getDouble(i, currentColumnIndex);
                }
 
-               this.setBorder(new TitledBorder(" Bin interval: "));
+               this.setBorder(new TitledBorder(" Bin as a percentage of interval: "));
                try { dval = Double.parseDouble(parameter); }
                catch(NumberFormatException e) { val = 50; break; }
 
@@ -340,9 +344,10 @@ public class Histogram extends JPanel {
             slide = new JSlider(1, 100, val);
          else
             slide = new JSlider(1, val*2, val);
-		//slide.setMajorTickSpacing(10);
-		//slide.setPaintTicks(true);
-		//slide.setPaintLabels(true);
+
+         slide.setMajorTickSpacing(5);
+         slide.setPaintTicks(true);
+         slide.setPaintLabels(true);
          slide.addChangeListener(new SliderListener());
 
          this.setLayout(new GridBagLayout());
@@ -355,6 +360,10 @@ public class Histogram extends JPanel {
          return slide.getValue();
       }
 
+      public JSlider getSlider() {
+         return slide;
+      }
+
    }
 
    private class StatisticsPanel extends JPanel {
@@ -365,14 +374,19 @@ public class Histogram extends JPanel {
 
          n = new JTextField(10);
          n.setEditable(false);
+         n.setBorder(null);
          mean = new JTextField(10);
          mean.setEditable(false);
+         mean.setBorder(null);
          median = new JTextField(10);
          median.setEditable(false);
+         median.setBorder(null);
          stddev = new JTextField(10);
          stddev.setEditable(false);
+         stddev.setBorder(null);
          variance = new JTextField(10);
          variance.setEditable(false);
+         variance.setBorder(null);
 
          N = NumberFormat.getInstance();
          N.setMaximumFractionDigits(4);
