@@ -5,6 +5,10 @@ public class Model extends PredictionModelModule /*, FunctionDouble1DArrayToDoub
   {
 
 
+  protected Model() {
+    super(null);
+  }
+
   public int numInputs;
   public int numOutputs;
   public String [] inputNames;
@@ -167,9 +171,13 @@ public class Model extends PredictionModelModule /*, FunctionDouble1DArrayToDoub
 	 * @param value a table with a set of examples to predict on
 	 * @return the input table, with extra columns for predictions
 	 */
-	public PredictionTable predict (ExampleTable table) {
+	public PredictionTable predict (Table table) {
           return null;
 	}
+
+        public void makePredictions(PredictionTable pt) {
+
+        }
 
 	/**
 	 * Get the size of the training set that built this model.
@@ -216,7 +224,7 @@ public class Model extends PredictionModelModule /*, FunctionDouble1DArrayToDoub
 	 * be Numeric or Text.
 	 * @return the datatypes of the input columns in the training table
 	 */
-	public String [] getInputFeatureTypes() {
+	public int[] getInputFeatureTypes() {
 		return null;
 	}
 
@@ -225,7 +233,7 @@ public class Model extends PredictionModelModule /*, FunctionDouble1DArrayToDoub
 	 * be Numeric or Text.
 	 * @return the data types of the output columns in the training table
 	 */
-	public String [] getOutputFeatureTypes() {
+	public int[] getOutputFeatureTypes() {
 		return null;
 	}
 

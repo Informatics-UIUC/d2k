@@ -331,17 +331,19 @@ public class SaveModelToDB extends UIModule {
     public void displayAttributes() {
       String [] inAttributeNames = model.getInputColumnLabels();
       String [] outAttributeNames = model.getOutputColumnLabels();
-      String [] inAttributeTypes = model.getInputFeatureTypes();
-      String [] outAttributeTypes = model.getOutputFeatureTypes();
+      int [] inAttributeTypes = model.getInputFeatureTypes();
+      int [] outAttributeTypes = model.getOutputFeatureTypes();
       int i, j;
       for (i = 0; i < inAttributeNames.length; i++) {
         trainSetDef.setValueAt(inAttributeNames[i],i,0);
-        trainSetDef.setValueAt(inAttributeTypes[i],i,1);
+        //trainSetDef.setValueAt(inAttributeTypes[i],i,1);
+        trainSetDef.setValueAt(ColumnTypes.getTypeName(inAttributeTypes[i]),i,1);
         trainSetDef.setValueAt("Input",i,3);
       }
       for (j = i; (j-i) < outAttributeNames.length; j++) {
         trainSetDef.setValueAt(outAttributeNames[j-i],j,0);
-        trainSetDef.setValueAt(outAttributeTypes[j-i],j,1);
+        //trainSetDef.setValueAt(outAttributeTypes[j-i],j,1);
+        trainSetDef.setValueAt(ColumnTypes.getTypeName(outAttributeTypes[j-i]),j,1);
         trainSetDef.setValueAt("Output",j,3);
       }
     }

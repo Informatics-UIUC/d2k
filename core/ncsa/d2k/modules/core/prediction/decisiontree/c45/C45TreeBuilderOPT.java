@@ -106,11 +106,11 @@ public class C45TreeBuilderOPT
    */
   private boolean debug = false;
 
-  public void setDebug(boolean b) {
+  protected void setDebug(boolean b) {
     debug = b;
   }
 
-  public boolean getDebug() {
+  protected boolean getDebug() {
     return debug;
   }
 
@@ -656,7 +656,7 @@ public class C45TreeBuilderOPT
   protected transient int numExamples;
 
   public String getModuleInfo() {
-    String s = "Build a C4.5 decision tree.  The tree is build recursively, ";
+/*    String s = "Build a C4.5 decision tree.  The tree is build recursively, ";
     s += "always choosing the attribute with the highest information gain ";
     s += "as the root.  The gain ratio is used, whereby the information ";
     s += "gain is divided by the information given by the size of the ";
@@ -670,7 +670,29 @@ public class C45TreeBuilderOPT
     s += "should suffice for most trees.  The threshold is a property of ";
     s += "this module.";
     return s;
+ */
+    String s = "<p>Overview: Build a decision tree.  The tree is built "+
+        "recursively using the information gain metric to choose the root."+
+        "<p>Detailed Description: Build a decision tree using the C4.5 "+
+        "algorithm.  A decision tree is built recursively, choosing the "+
+        "attribute with the highest information gain as the root.  For "+
+        "a nominal input, the node will have branches for each unique value "+
+        "in the nominal column.  For scalar inputs, a binary node is created "+
+        "with a split point chosen that offer the greatest information gain. "+
+        "The choosing of split points for a scalar input is potentially an "+
+        "O(n^2) operation at each node of the tree."+
+        "<p>References: C4.5:Programs for Machine Learning by J. Ross Quinlan"+
+        "<p>Data Type Restrictions: This module will only classify examples with "+
+        "nominal outputs."+
+        "<p>Data Handling: This module does not modify the input data."+
+        "<p>Scalability: The selection of split points for scalar inputs is "+
+        "potentially an O(n^2) operation at each node of the tree.  The "+
+        "selection of split points for nominal inputs is an O(n) operation.";
+
+      return s;
   }
+
+  // C4.5:Programs for Machine Learning J. Ross Quinlan
 
   public String getModuleName() {
     return "C4.5TreeBuilder";

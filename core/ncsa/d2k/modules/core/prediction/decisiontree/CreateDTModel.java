@@ -1,6 +1,5 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
-
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
@@ -11,7 +10,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 public class CreateDTModel extends ModelProducerModule  {
 
 	public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    Given a DecisionTreeNode that is the root of a decision tree, create a new     DecisionTreeModel from it.  </body></html>";
+		return "Given a DecisionTreeNode that is the root of a decision tree, create a new     DecisionTreeModel from it.";
 	}
 
     public String getModuleName() {
@@ -19,7 +18,8 @@ public class CreateDTModel extends ModelProducerModule  {
 	}
 
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
+                    "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return types;
 	}
 

@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.vis.widgets;
 
 import java.awt.*;
 
-public class DataSet {
+public class DataSet implements java.io.Serializable {
 	String name;
 	public Color color;
 	public int x, y;

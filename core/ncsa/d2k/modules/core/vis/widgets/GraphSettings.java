@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
-public class GraphSettings {
+public class GraphSettings implements java.io.Serializable {
 	public String title, xaxis, yaxis;
 
 	public Integer xminimum, xmaximum;

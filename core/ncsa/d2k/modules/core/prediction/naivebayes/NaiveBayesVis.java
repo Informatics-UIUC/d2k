@@ -572,7 +572,7 @@ public final class NaiveBayesVis
      // helpItem.addActionListener(this);
 
     //  HelpSet hs = new HelpSet(getClass().getClassLoader(), url);
-    HelpSet hs = getHelpSet("/help/nbvis/nbhs.hs");
+    HelpSet hs = getHelpSet("help/nbvis");
     if(hs != null) {
       HelpBroker helpbroker = hs.createHelpBroker();
       ActionListener listener = new CSH.DisplayHelpFromSource(helpbroker);

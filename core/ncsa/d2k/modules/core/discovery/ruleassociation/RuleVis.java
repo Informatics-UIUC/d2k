@@ -137,6 +137,7 @@ private class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements 
 	ValueVisDataModel vvdm;
 	RuleVisDataModel rvdm;
     JMenuItem print;
+    JMenuItem pmml;
     JMenuBar menuBar;
 
 	/**	This method adds the components to a Panel and then adds the Panel
@@ -148,7 +149,10 @@ private class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements 
         JMenu options = new JMenu("Options");
         print = new JMenuItem("Print...");
         print.addActionListener(this);
+        pmml = new JMenuItem("Save as PMML..");
+        pmml.addActionListener(this);
         options.add(print);
+        options.add(pmml);
         menuBar.add(options);
 	}
 
@@ -301,6 +305,15 @@ private class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements 
                         }
                     }
 			}
+            else if(e.getSource() == pmml) {
+                JFileChooser fileChooser = new JFileChooser();
+                int retVal = fileChooser.showSaveDialog(null);
+                if(retVal == fileChooser.APPROVE_OPTION) {
+                    java.io.File file = fileChooser.getSelectedFile();
+                    WriteRuleAssocPMML.writePMML(ruleTable, file.getAbsolutePath());
+                }
+
+            }
 
                 rvdm.fireTableDataChanged();
                 vvdm.fireTableDataChanged();

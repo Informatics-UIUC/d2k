@@ -334,6 +334,7 @@ public class SearchPanel extends JPanel implements ActionListener {
 			try {
 				dvalue = Double.parseDouble(svalue);
 			} catch (Exception exception) {
+                exception.printStackTrace();
 			}
 
 			PopulationCondition condition = new PopulationCondition(attribute, operator, dvalue);

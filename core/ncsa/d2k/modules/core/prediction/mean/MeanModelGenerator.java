@@ -88,6 +88,7 @@ public class MeanModelGenerator extends ModelGeneratorModule
 			does the real work, computes the averages
 		*/
 		public MeanModel(ExampleTableImpl et){
+                        super(et);
 			averages=new double[et.getNumOutputFeatures()];
 
 			for(int i=0; i<et.getNumOutputFeatures(); i++){
@@ -110,9 +111,10 @@ public class MeanModelGenerator extends ModelGeneratorModule
 		*******************************/
 
 
-	public PredictionTable predict(ExampleTable et){
+//	public PredictionTable predict(ExampleTable et){
+        protected void makePredictions(PredictionTable predTable) {
 
-		if(et instanceof TestTable){
+/*		if(et instanceof TestTable){
 			for(int i=0; i<averages.length; i++){
 				for(int e=0; e<et.getNumTestExamples(); e++){
 					((TestTableImpl)et).setDouble(averages[i], e,
@@ -128,27 +130,29 @@ public class MeanModelGenerator extends ModelGeneratorModule
 		}else{
 			predTable=(PredictionTableImpl)et.toPredictionTable();
 		}
+               */
+
 		//if there are no spots for pred columns
-		if(predTable.getNumOutputFeatures()==0){
+/*		if(predTable.getNumOutputFeatures()==0){
 			for(int i=0; i<outputNames.length; i++){
-				DoubleColumn dc=new DoubleColumn(et.getNumRows());
+				DoubleColumn dc=new DoubleColumn(predTable.getNumRows());
 				dc.setLabel(outputNames[i]);
 				predTable.addPredictionColumn(dc);
 			}
-		}
+		}*/
 		for(int i=0; i<averages.length; i++){
-			for(int e=0; e<et.getNumRows(); e++){
+			for(int e=0; e<predTable.getNumRows(); e++){
 				predTable.setDouble(averages[i], e,
 									predTable.getPredictionSet()[i]);
 			}
 		}
 
-		return predTable;
+		//return predTable;
 	}
 
 
 	/* just calls predict on the pulled in table*/
-  	 public void doit() {
+  	 public void doit() throws Exception {
 		 pushOutput(predict((ExampleTable)pullInput(0)), 0);
 
   	 }

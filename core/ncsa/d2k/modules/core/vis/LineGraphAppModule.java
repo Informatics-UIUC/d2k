@@ -1425,7 +1425,7 @@ public class LineGraphAppModule extends VisModule {
 
    }
 
-   public class LineGraphVerticalTable extends TableImpl
+   public class LineGraphVerticalTable extends MutableTableImpl
       implements Serializable {
 
       int numRecords, numFields, numLines;

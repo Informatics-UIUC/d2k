@@ -319,6 +319,7 @@ public class NNModelGenerator
     ****************************************************************************************/
 
     public NNModel(TrainTableImpl d, double[] p, boolean transform) {
+                super(d);
 		data=d;
 		doTransform=transform;
 
@@ -512,12 +513,26 @@ public class NNModelGenerator
 		*******************************/
 
 
-	public PredictionTable predict(ExampleTable value){
+        public PredictionTable predict(Table value) throws Exception {
+          if(value instanceof ExampleTable)
+            data = (ExampleTableImpl)value;
+          return super.predict(value);
+
+        }
+
+//	public PredictionTable predict(ExampleTable value){
+        protected void makePredictions(PredictionTable predTable) {
+
+
+
+
 		//this now becomes the global data that the compute function uses
-		data=(ExampleTableImpl)value;
+                // DC 3.5.03 this was put into the predict() method
+		//data=(ExampleTableImpl)value;
 
 		//make a VT to put the predictions in, a column for every output feature
-		TableImpl predictedResults= (TableImpl)DefaultTableFactory.getInstance().createTable(outputNames.length);
+/*		MutableTableImpl predictedResults= (MutableTableImpl)
+                    DefaultTableFactory.getInstance().createTable(outputNames.length);
 		for(int i=0; i<outputNames.length; i++){
 			//make sure to get the real length, not just the number of test examples
 			predictedResults.setColumn(new DoubleColumn(data.getNumRows()), i);
@@ -561,13 +576,13 @@ public class NNModelGenerator
 		}
 		data=null;
 		return predTable;
-
+*/
 	}
 
     /**
        Perform these actions when this module is executed.
     */
-    public void doit() {
+    public void doit() throws Exception {
 
 		ExampleTable queryData=(ExampleTable)pullInput(0);
 

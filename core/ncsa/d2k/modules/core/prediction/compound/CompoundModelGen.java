@@ -178,7 +178,7 @@ public class CompoundModelGen extends ModelGeneratorModule
 							ModelScore[] scores,
 							boolean differentModels){
 
-
+                        super(et);
 			outputNames=new String[et.getNumOutputFeatures()];
 			for(int i=0; i<outputNames.length;i++){
 				outputNames[i]=et.getColumnLabel(et.getOutputFeatures()[i]);
@@ -310,9 +310,10 @@ public class CompoundModelGen extends ModelGeneratorModule
 			*******************************/
 
 
-		public PredictionTable predict(ExampleTable et){
+//		public PredictionTable predict(ExampleTable et){
+                protected void makePredictions(PredictionTable predTable) {
 
-			PredictionTable predTable;
+/*			PredictionTable predTable;
 			if(et instanceof PredictionTable){
 				predTable=(PredictionTable)et;
 			}else{
@@ -326,6 +327,7 @@ public class CompoundModelGen extends ModelGeneratorModule
 					predTable.addPredictionColumn(dc ,outputNames[i]);
 				}
 			}
+                      */
 
 			//for every output, we get rid of the output
 			//features (make length=0), its corresponding
@@ -338,16 +340,30 @@ public class CompoundModelGen extends ModelGeneratorModule
 			for(int i=0; i<models.length;i++){
 				predTable.getPredictionSet()[0]=
 					holdPredictionSet[i];
-				predTable=(PredictionTable)models[i].predict(predTable);
+
+
+                                // DC 3.5.03
+                                // This will not work---the predict method will make
+                                // extra prediction columns.  need to call makePredictions()
+                                // on the PredictionModelModule probably
+
+                                // also we should remove the try-catch block if possible
+
+                                try {
+                                  predTable = (PredictionTable) models[i].predict(predTable);
+                                }
+                                catch(Exception e) {
+
+                                }
 			}
 			predTable.setOutputFeatures(holdOutputFeatures);
 			predTable.setPredictionSet(holdPredictionSet);
-			return predTable;
+		//	return predTable;
 		}
 
 
 		/* just calls predict on the pulled in table*/
- 	 	 public void doit() {
+ 	 	 public void doit() throws Exception {
 			 pushOutput(predict((ExampleTable)pullInput(0)),0);
 
 	  	 }

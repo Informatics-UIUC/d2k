@@ -6,6 +6,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import Jama.*;
+import ncsa.d2k.modules.core.datatype.parameter.*;
 
 /**
 	LWRModelGen.java
@@ -14,7 +15,7 @@ import Jama.*;
 	@talumbau
 
 */
-public class LWRModelGen extends ModelGeneratorModule 
+public class LWRModelGen extends ModelGeneratorModule
 {
 
 	/**
@@ -34,7 +35,8 @@ public class LWRModelGen extends ModelGeneratorModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
+                  "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"};
 		return types;
 	}
 
@@ -42,8 +44,6 @@ public class LWRModelGen extends ModelGeneratorModule
 		switch(i) {
 			case 0:
 				return "Traintable";
-			case 1:
-				return "Testtable";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -88,7 +88,7 @@ public class LWRModelGen extends ModelGeneratorModule
 		return "modelgen";
 	}
 
-	int kernelSelector;
+/*	int kernelSelector;
 	int distanceSelector;
 	int nearestNeighbors;
 	int numberOfPoints = 60;
@@ -133,6 +133,7 @@ public class LWRModelGen extends ModelGeneratorModule
 	public boolean getUseNearestNeighbors(){
 		return useNearestNeighbors;
 	}
+        */
 
 	LWRModel model;
 /**
@@ -141,7 +142,22 @@ public class LWRModelGen extends ModelGeneratorModule
 
 	public void doit() throws Exception {
 		ExampleTable Traintable = (ExampleTable) pullInput(0);
-		ExampleTable Testtable = (ExampleTable) pullInput(1);
+                ParameterPoint pp = (ParameterPoint)pullInput(1);
+
+                int kernelSelector = (int)pp.getValue(LWRParamSpaceGenerator.KERNEL_SELECTOR);
+                int nearestNeighbors = (int)pp.getValue(LWRParamSpaceGenerator.NEAREST_NEIGHBORS);
+                int numberOfPoints = (int)pp.getValue(LWRParamSpaceGenerator.NUMBER_OF_POINTS);
+                int useNearest = (int)pp.getValue(LWRParamSpaceGenerator.USE_NEAREST);
+
+                boolean useNearestNeighbors;
+                if(useNearest == 0)
+                  useNearestNeighbors = false;
+                else
+                  useNearestNeighbors = true;
+
+                int distanceSelector = 0;
+
+		//ExampleTable Testtable = (ExampleTable) pullInput(1);
 		model = new LWRModel(Traintable, kernelSelector, distanceSelector, nearestNeighbors, useNearestNeighbors, numberOfPoints);
 		pushOutput(model, 0);
 	}

@@ -576,6 +576,7 @@ public final class DecisionTreeVis extends VisModule  {
 					navigatorpanel.rebuildTree();
 
 				} catch (Exception exception) {
+                    exception.printStackTrace();
 				}
 			}
 		}
@@ -646,6 +647,7 @@ public final class DecisionTreeVis extends VisModule  {
 					treescrollpane.setDepth(ivalue);
 
 				} catch (Exception exception) {
+                    exception.printStackTrace();
 				}
 			}
 		}

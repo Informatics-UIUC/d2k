@@ -38,10 +38,10 @@ public class DecisionForestModel extends PredictionModelModule
 	private int[] inputFeatures;
 	private int[] outputFeatures;
 
-	private int trainingSetSize;
+//	private int trainingSetSize;
 
-	private String[] inputColumnNames;
-	private String[] outputColumnNames;
+//	private String[] inputColumnNames;
+//	private String[] outputColumnNames;
 
 	private String[] classNames;
 
@@ -53,28 +53,29 @@ public class DecisionForestModel extends PredictionModelModule
 		@param rt the root of the decision tree
 	*/
 	public DecisionForestModel(DecisionForestNode rt, ExampleTable table, int totalRow, String[] classValues) {
+                super(table);
 		setName("DecisionForestModel");
 		root = rt;
 		inputFeatures = table.getInputFeatures();
 		outputFeatures = table.getOutputFeatures();
-		trainingSetSize = totalRow;
+//		trainingSetSize = totalRow;
                 numExamples = totalRow;
                 classNames = classValues;
 
-		inputColumnNames = new String[inputFeatures.length];
+//		inputColumnNames = new String[inputFeatures.length];
                 inputIsScalar = new boolean[inputFeatures.length];
 		for(int i = 0; i < inputFeatures.length; i++) {
-			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
+//			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
 			if(table.isColumnScalar(inputFeatures[i]))
                                 inputIsScalar[i] = true;
 			else
                                 inputIsScalar[i] = false;
 		}
 
-		outputColumnNames = new String[outputFeatures.length];
+//		outputColumnNames = new String[outputFeatures.length];
                 outputIsScalar = new boolean[outputFeatures.length];
 		for(int i = 0; i < outputFeatures.length; i++) {
-			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
+//			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
                         if(table.isColumnScalar(outputFeatures[i]))
                                 outputIsScalar[i] = true;
 			else
@@ -148,7 +149,7 @@ public class DecisionForestModel extends PredictionModelModule
           }
     }
 
-	public int getTrainingSetSize() {
+/*	public int getTrainingSetSize() {
 		return trainingSetSize;
 	}
 
@@ -166,9 +167,9 @@ public class DecisionForestModel extends PredictionModelModule
 
 	public int[] getOutputFeatureIndices() {
 		return outputFeatures;
-	}
+	}*/
 
-	public String[] getInputFeatureTypes() {
+/*	public String[] getInputFeatureTypes() {
                 String[] retVal = new String[inputIsScalar.length];
                 for(int i = 0; i < inputIsScalar.length; i++) {
                     if(inputIsScalar[i])
@@ -178,8 +179,8 @@ public class DecisionForestModel extends PredictionModelModule
                 }
                 return retVal;
 	}
-
-	public String[] getOutputFeatureTypes() {
+*/
+/*	public String[] getOutputFeatureTypes() {
                 String[] retVal = new String[outputIsScalar.length];
                 for(int i = 0; i < outputIsScalar.length; i++) {
                     if(outputIsScalar[i])
@@ -188,7 +189,7 @@ public class DecisionForestModel extends PredictionModelModule
                         retVal[i] = "Nominal";
                 }
                 return retVal;
-	}
+	}*/
 
 	/**
 		Get the class names.
@@ -202,7 +203,7 @@ public class DecisionForestModel extends PredictionModelModule
 	/**
 		Pull in the table and pass it to predict.
 	*/
-	public void doit() {
+	public void doit() throws Exception {
 		ExampleTable et = (ExampleTable)pullInput(0);
                 PredictionTable retVal = predict(et);
                 pushOutput(retVal, 0);
@@ -215,7 +216,7 @@ public class DecisionForestModel extends PredictionModelModule
 		@param val the table
 		@return the table with an extra column of predictions at the end
 	*/
-	public PredictionTable predict(ExampleTable val) {
+/*	public PredictionTable predict(ExampleTable val) {
 		table = (ExampleTable)val;
 
                 // When building model by RainForest algorithm, prediction table
@@ -247,7 +248,15 @@ public class DecisionForestModel extends PredictionModelModule
 			pt.setStringPrediction(pred, i, 0);
 		}
 		return pt;
-	}
+	}*/
+
+        protected void makePredictions(PredictionTable pt) {
+            for(int i = 0; i < pt.getNumRows(); i++) {
+                String pred = (String)root.evaluate(root, pt, i);
+                pt.setStringPrediction(pred, i, 0);
+            }
+        }
+
 
 	/**
 	 * Get the number of examples from the data set passed to

@@ -149,7 +149,7 @@ public class ReadRuleAssocPMML extends InputModule implements RulePMMLTags {
         conc.setLabel("Confidence");
 
         Column[] cols = {ac, cc, sc, conc};
-        TableImpl ti = new TableImpl(cols);
+        TableImpl ti = new MutableTableImpl(cols);
 
         ArrayList names = new ArrayList(items.length);
         for(int i = 0; i < items.length; i++)

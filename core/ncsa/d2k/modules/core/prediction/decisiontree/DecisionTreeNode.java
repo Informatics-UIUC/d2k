@@ -1,8 +1,8 @@
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
-import java.io.Serializable;
-import java.io.Writer;
+import java.io.*;
 import java.util.*;
+
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
@@ -197,6 +197,27 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 		if(parent != null)
 			parent.incrementOutputTally(outputVal, correct);
 	}
+
+        /**
+         * Explicitly set the output tally for this node.  Does not increment
+         * the output tally of the parent node.
+         * @param outputVal the output value
+         * @param tally the tally
+         */
+        public void setOutputTally(String outputVal, int tally) {
+          Integer index = (Integer)outputIndexLookup.get(outputVal);
+          // create a new one
+          if(index == null) {
+                  outputIndexLookup.put(outputVal, new Integer(outputValues.length));
+                  outputValues = expandStringArray(outputValues);
+                  outputValues[outputValues.length-1] = outputVal;
+                  outputTallies = expandIntArray(outputTallies);
+                  outputTallies[outputTallies.length-1] = 1;
+          }
+          else {
+                  outputTallies[index.intValue()]++;
+          }
+        }
 
 	public ViewableDTNode getViewableParent() {
 		return (ViewableDTNode) parent;

@@ -70,13 +70,14 @@ public final class NaiveBayesModel
   private int[] inputFeatures;
   private int[] outputFeatures;
 
-  private int trainingSetSize;
+/*  private int trainingSetSize;
 
   private String[] inputColumnNames;
   private String[] outputColumnNames;
 
   private String[] inputTypes;
   private String[] outputTypes;
+ */
 
   /**
    Constructor
@@ -85,13 +86,14 @@ public final class NaiveBayesModel
    @param t the types lookup table
    */
   NaiveBayesModel(BinTree bt, ExampleTable vt) {
+    super(vt);
     setName("NaiveBayesModel");
     binTree = bt;
     table = vt;
 
     inputFeatures = table.getInputFeatures();
     outputFeatures = table.getOutputFeatures();
-    trainingSetSize = table.getNumRows();
+/*    trainingSetSize = table.getNumRows();
 
     inputColumnNames = new String[inputFeatures.length];
     inputTypes = new String[inputFeatures.length];
@@ -117,7 +119,7 @@ public final class NaiveBayesModel
       else {
         outputTypes[i] = "Nominal";
       }
-    }
+    }*/
 
     cn = bt.getClassNames();
 
@@ -586,7 +588,7 @@ public final class NaiveBayesModel
    Pull in the data to predict, and do the prediction.  A new Column
    is added to the table to hold the predictions.
    */
-  public void doit() {
+  public void doit() throws Exception {
     Table vt = (Table) pullInput(0);
     PredictionTable result;
 
@@ -601,7 +603,7 @@ public final class NaiveBayesModel
     pushOutput(this, 1);
   }
 
-  public int getTrainingSetSize() {
+/*  public int getTrainingSetSize() {
     return trainingSetSize;
   }
 
@@ -627,6 +629,78 @@ public final class NaiveBayesModel
 
   public String[] getOutputFeatureTypes() {
     return outputTypes;
+  }*/
+
+
+  protected void makePredictions(PredictionTable pt) {
+/*    PredictionTable pt = null;
+    if (src instanceof PredictionTable) {
+      pt = (PredictionTable) src;
+    }
+    else {
+      pt = (PredictionTable) src.toPredictionTable();
+
+    }
+*/
+    int numCorrect = 0;
+
+    int[] ins = pt.getInputFeatures();
+    int[] outs = pt.getOutputFeatures();
+    int[] preds = pt.getPredictionSet();
+
+/*    if (preds.length == 0) {
+      String[] newPreds = new String[pt.getNumRows()];
+      pt.addPredictionColumn(newPreds, "Predictions");
+      preds = pt.getPredictionSet();
+    }
+
+*/
+    int numRows = pt.getNumRows();
+    for (int row = 0; row < numRows; row++) {
+      double[] currentEv = null;
+
+      // for each column
+      for (int col = 0; col < ins.length; col++) {
+        String aName = pt.getColumnLabel(ins[col]);
+        String bn = null;
+
+        // skip over the class column and omitted columns.
+        //Column c = pt.getColumn(ins[col]);
+
+        //if(c instanceof NumericColumn)
+        if (pt.isColumnScalar(ins[col])) {
+          bn = binTree.getBinNameForValue(pt.getColumnLabel(ins[col]),
+                                          pt.getDouble(row, ins[col]));
+        }
+        else {
+          bn = binTree.getBinNameForValue(pt.getColumnLabel(ins[col]),
+                                          pt.getString(row, ins[col]));
+
+        }
+        if (bn != null) {
+          currentEv = addEvidence(pt.getColumnLabel(ins[col]), bn);
+        }
+      }
+      // now predict
+      if (currentEv != null) {
+        // largest chunk of pie is the prediction
+        int id = getIndexOfMax(currentEv);
+
+        // get the predicted class
+        String predictedClass = cn[id];
+        pt.setStringPrediction(predictedClass, row, 0);
+
+        if (predictedClass.trim().equals(pt.getString(row, outs[0]))) {
+          numCorrect++;
+        }
+      }
+      else {
+        pt.setStringPrediction(null, row, 0);
+      }
+      clearEvidence();
+    }
+    //System.out.print("Number of correct predictions: "+numCorrect);
+    //System.out.println(" out of: "+pt.getNumRows());
   }
 
   /**
@@ -637,7 +711,7 @@ public final class NaiveBayesModel
    to the end of the table.  The format of the prediction data is
    assumed to be the same as that of the training data!
    */
-  public PredictionTable predict(ExampleTable src) {
+  /*public PredictionTable predict(ExampleTable src) {
     PredictionTable pt = null;
     if (src instanceof PredictionTable) {
       pt = (PredictionTable) src;
@@ -706,7 +780,7 @@ public final class NaiveBayesModel
     //System.out.println(" out of: "+pt.getNumRows());
 
     return pt;
-  }
+  }*/
 
   //	METHODS USED BY NAIVE BAYES VIS
 
@@ -731,7 +805,8 @@ public final class NaiveBayesModel
    @return the column number
    */
   public final String getClassColumn() {
-    return outputColumnNames[0];
+    //return outputColumnNames[0];
+    return this.getOutputColumnLabels()[0];
   }
 
   /**

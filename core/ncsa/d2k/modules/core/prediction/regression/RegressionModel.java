@@ -60,6 +60,7 @@ import Jama.*;
 
 		*/
 		public RegressionModel(ExampleTable et, boolean useMean){
+                        super(et);
 			predictMean=useMean;
 			TrainTable tt=et.getTrainTable();
 
@@ -163,7 +164,7 @@ import Jama.*;
 		*******************************/
 
 
-	public PredictionTable predict(ExampleTable et){
+/*	public PredictionTable predict(ExampleTable et){
 
 
 		PredictionTable predTable;
@@ -201,7 +202,49 @@ import Jama.*;
 			}
 		}
 		return predTable;
-	}
+	}*/
+
+        protected void makePredictions(PredictionTable predTable){
+
+
+/*                PredictionTable predTable;
+                if(et instanceof PredictionTable){
+                        predTable=(PredictionTable)et;
+                }else{
+                        predTable= et.toPredictionTable();
+                }
+
+                //if there are no spots for pred columns
+                if(predTable.getNumOutputFeatures()==0){
+                        for(int i=0; i<outputNames.length; i++){
+                                //DoubleColumn dc=new DoubleColumn(et.getNumRows());
+                                //dc.setLabel(outputNames[i]);
+                                predTable.addPredictionColumn(new double[et.getNumRows()],outputNames[i]);
+                        }
+                }*/
+
+                int exampleCount=predTable.getNumRows();
+                for(int e=0; e<exampleCount; e++){
+                        for(int oi=0; oi<outputNames.length; oi++){
+                                double sum;
+                                if(!predictMean){
+                                        sum=0.0;
+                                        sum+=coefficients[oi][0];
+                                        for(int i=0; i<predTable.getNumInputFeatures();i++){
+                                                sum+=predTable.getDouble(e, predTable.getInputFeatures()[i])*
+                                                                        coefficients[oi][i+1];
+                                        }
+                                        //System.out.println("Reg:"+outputNames[oi]);
+                                }else{
+                                        sum=mean[oi];
+                                }
+                                predTable.setDoublePrediction(sum, e, oi);
+
+                        }
+                }
+//                return predTable;
+        }
+
 
 	public double predictRow(ExampleTable et, int row, int outputColumn){
 	//	System.out.println("outputCol:"+outputColumn);
@@ -221,7 +264,7 @@ import Jama.*;
 
 
 	/* just calls predict on the pulled in table*/
-  	 public void doit() {
+  	 public void doit() throws Exception {
 		 ExampleTable et=(ExampleTable)pullInput(0);
 		 pushOutput(predict(et), 0);
 

@@ -116,7 +116,7 @@ public class ConvertItemSetsToRuleTable extends DataPrepModule {
 		DoubleColumn supportCol = new DoubleColumn(support);
 		supportCol.setLabel(SUPPORT);
 		Column[] c = {headColumn, bodyColumn, supportCol, confidenceCol};
-		TableImpl ti = new TableImpl(c);
+		TableImpl ti = new MutableTableImpl(c);
 		String[] names = sets.names;
 		ArrayList al = new ArrayList(names.length);
 		for(int i = 0; i < names.length; i++)

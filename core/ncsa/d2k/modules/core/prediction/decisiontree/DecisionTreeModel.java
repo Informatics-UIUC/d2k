@@ -34,10 +34,10 @@ public class DecisionTreeModel extends PredictionModelModule
 	private int[] inputFeatures;
 	private int[] outputFeatures;
 
-	private int trainingSetSize;
+//	private int trainingSetSize;
 
-	private String[] inputColumnNames;
-	private String[] outputColumnNames;
+//	private String[] inputColumnNames;
+//	private String[] outputColumnNames;
 
 	//private String[] inputTypes;
 	//private String[] outputTypes;
@@ -45,24 +45,27 @@ public class DecisionTreeModel extends PredictionModelModule
 	private String[] classNames;
 
         private boolean[] inputIsScalar;
-        private boolean[] outputIsScalar;
+       private boolean[] outputIsScalar;
 
 	/**
 		Constructor
 		@param rt the root of the decision tree
 	*/
 	public DecisionTreeModel(DecisionTreeNode rt, ExampleTable table) {
+            super(table);
 		setName("DecisionTreeModel");
 		root = rt;
 		inputFeatures = table.getInputFeatures();
 		outputFeatures = table.getOutputFeatures();
-		trainingSetSize = table.getNumRows();
+//		trainingSetSize = table.getNumRows();
 
-		inputColumnNames = new String[inputFeatures.length];
+/*		inputColumnNames = new String[inputFeatures.length];
 		//inputTypes = new String[inputFeatures.length];
+               */
                 inputIsScalar = new boolean[inputFeatures.length];
+
 		for(int i = 0; i < inputFeatures.length; i++) {
-			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
+//			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
 			//if(table.getColumn(inputFeatures[i]) instanceof NumericColumn)
 			if(table.isColumnScalar(inputFeatures[i]))
 				//inputTypes[i] = "Scalar";
@@ -72,11 +75,11 @@ public class DecisionTreeModel extends PredictionModelModule
                                 inputIsScalar[i] = false;
 		}
 
-		outputColumnNames = new String[outputFeatures.length];
+//		outputColumnNames = new String[outputFeatures.length];
 		//outputTypes = new String[outputFeatures.length];
                 outputIsScalar = new boolean[outputFeatures.length];
 		for(int i = 0; i < outputFeatures.length; i++) {
-			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
+//			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
 			//if(table.getColumn(outputFeatures[i]) instanceof NumericColumn)
 			//if(table.isColumnNumeric(outputFeatures[i]))
                         if(table.isColumnScalar(outputFeatures[i]))
@@ -95,6 +98,11 @@ public class DecisionTreeModel extends PredictionModelModule
 
 		// do unique outputs here
 		uniqueOutputs = uniqueValues(table, outputFeatures[0]);
+                try {
+                  predict(table);
+                }
+                catch(Exception e) {
+                }
 	}
 
 	public String getModuleInfo() {
@@ -105,7 +113,7 @@ public class DecisionTreeModel extends PredictionModelModule
 	}
 
     public String getModuleName() {
-        return "DTModel";
+        return "C4.5 Decision Tree Model";
     }
 
 	public String[] getInputTypes() {
@@ -142,7 +150,7 @@ public class DecisionTreeModel extends PredictionModelModule
             return "DTModel";
     }
 
-	public int getTrainingSetSize() {
+/*	public int getTrainingSetSize() {
 		return trainingSetSize;
 	}
 
@@ -183,7 +191,7 @@ public class DecisionTreeModel extends PredictionModelModule
                         retVal[i] = "Nominal";
                 }
                 return retVal;
-	}
+	}*/
 
 	/**
 		Get the class names.
@@ -196,7 +204,7 @@ public class DecisionTreeModel extends PredictionModelModule
 	/**
 		Pull in the table and pass it to predict.
 	*/
-	public void doit() {
+	public void doit() throws Exception {
 		ExampleTable et = (ExampleTable)pullInput(0);
 		PredictionTable retVal = predict(et);
 		pushOutput(retVal, 0);
@@ -209,7 +217,7 @@ public class DecisionTreeModel extends PredictionModelModule
 		@param val the table
 		@return the table with an extra column of predictions at the end
 	*/
-	public PredictionTable predict(ExampleTable val) {
+/*	public PredictionTable predict(ExampleTable val) {
 		table = (ExampleTable)val;
 		numExamples = table.getNumRows();
 
@@ -235,16 +243,24 @@ public class DecisionTreeModel extends PredictionModelModule
 		}
 		//uniqueOutputs = uniqueValues(pt, outputs[0]);
 		return pt;
-	}
+	}*/
+
+        protected void makePredictions(PredictionTable pt) {
+            for(int i = 0; i < pt.getNumRows(); i++) {
+                String pred = (String)root.evaluate(pt, i);
+                pt.setStringPrediction(pred, i, 0);
+            }
+        }
+
 
 	/**
 	 * Get the number of examples from the data set passed to
 	 * the predict method.
 	 * @return the number of examples.
 	 */
-	public int getNumExamples() {
+/*	public int getNumExamples() {
 		return numExamples;
-	}
+	}*/
 
 	/**
 		Get the unique values of the output column.
@@ -290,9 +306,9 @@ public class DecisionTreeModel extends PredictionModelModule
 		return root;
 	}
 
-	public void setRoot(DecisionTreeNode newRoot) {
+/*	public void setRoot(DecisionTreeNode newRoot) {
 		root = newRoot;
-	}
+	}*/
 
 	/**
 		Get the Viewable root of this decision tree.

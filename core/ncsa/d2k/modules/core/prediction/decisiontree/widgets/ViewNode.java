@@ -445,6 +445,7 @@ public class ViewNode {
 					return evaluateNominal(splitcondition);
 			}
 		} catch (Exception exception) {
+            exception.printStackTrace();
 			return false;
 		}
 
