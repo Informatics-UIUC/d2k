@@ -235,8 +235,6 @@ public class SQLGetRuleAssocFromCube extends UIModule
       // Outline panel for options
       JOutlinePanel options = new JOutlinePanel("Options");
       options.setLayout (new GridBagLayout());
-      //JScrollPane optionPane = new JScrollPane(options);
-      //options.setPreferredSize(new Dimension(400, 200));
       Constrain.setConstraints(options, new JLabel("Table Name"),
         0,0,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(options, tableName = new JTextField(10),
