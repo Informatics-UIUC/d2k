@@ -661,7 +661,12 @@ class ScalingTransformation implements Transformation {
 
 		// Create the new column, set the column in the table, then
 		// set the new scaled values. In this way, we preserve the subset.
-		Column col = ColumnUtilities.toDoubleColumn(table.getColumn(index));
+		Column col = null;
+		if (table.getColumnType(index) == ColumnTypes.DOUBLE)
+			col = ColumnUtilities.toDoubleColumn(table.getColumn(index));
+		else
+			col = ColumnUtilities.toFloatColumn(table.getColumn(index));
+			
 		table.setColumn(col, index);
 		for (int i = 0 ; i < data.length ; i++) {
 		   if (missing[i])

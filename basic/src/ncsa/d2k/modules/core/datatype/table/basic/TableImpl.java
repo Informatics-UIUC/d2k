@@ -180,7 +180,7 @@ abstract public class TableImpl extends AbstractTable {
      * @return the float in the Table at (row, column)
      */
     public float getFloat (int row, int column) {
-        return  columns[column].getFloat(row);
+        return columns[column].getFloat(row);
     }
 
     /**

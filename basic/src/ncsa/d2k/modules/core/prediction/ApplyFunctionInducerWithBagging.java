@@ -1,18 +1,10 @@
 package ncsa.d2k.modules.core.prediction;
 
+
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-//import ncsa.d2k.modules.projects.dtcheng.primitive.Utility;
-
 import ncsa.d2k.core.modules.*;
 import java.util.Random;
-
-// LAM-tlr I removed these. EnsembleModel is in this package, so we don't need to
-// import and datatype doesn't seem to be used.
-//
-//import ncsa.d2k.modules.projects.dtcheng.datatype.ContinuousDoubleExampleTable;
-//import ncsa.d2k.modules.projects.dtcheng.EnsembleModel;
-//import ncsa.d2k.modules.projects.dtcheng.datatype.*;
 import ncsa.d2k.modules.core.prediction.evaluators.Utility;
 
 public class ApplyFunctionInducerWithBagging
@@ -46,72 +38,75 @@ public class ApplyFunctionInducerWithBagging
   }
 
   public String getModuleName() {
-    return "Apply Function Inducer With Bagging";
-  }
+		return "Apply Function Inducer With Bagging";
+	}
 
   public String getModuleInfo() {
-    return
-        "This module applies a function inducer module to the given example table using the given error function and with boosting to produce a model";
-  }
+		return "<p>"+
+"      Overview: This module applies a function inducer module to the given "+
+"      example table using the given error function and with boosting to "+
+"      produce a ensemble of models."+
+"    </p>"+
+"    <p>"+
+"      Detailed Description: This module will generate several models using the "+
+"      given function inducer and error function. The resulting models are then "+
+"      combined into an ensemble model that can be used to provide a possibly "+
+"      more accurate prediction. The &quot;Number Subsamples&quot; determines how many "+
+"      times the data is subsampled. The &quot;Number Final Models&quot; determines how "+
+"      many models will exist in the final ensemble model. Random set can be "+
+"      set to some non-negative value to set the output of the random number "+
+"      generator to the same sequence of values for each invocation."+
+"    </p>" +
+"	  <p>References:<A name=\"Breiman:1994:bagging\"></A>Leo Breiman. <A href=\"http://www.work.caltech.edu/cs156/01/papers/bagging.ps.gz\">" +
+"     Bagging predictors</A>. Technical Report 421, Department of Statistics, University of California at Berkeley, September 1994." +
+"		</p>";
+	}
 
   public String getInputName(int i) {
-    switch (i) {
-      case 0:
-        return "Function Inducer";
-      case 1:
-        return "Error Function";
-      case 2:
-        return "Examples";
-      default:
-        return "No such input";
-    }
-  }
+		switch(i) {
+			case 0:
+				return "Function Inducer";
+			case 1:
+				return "Error Function";
+			case 2:
+				return "Examples";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
   public String getInputInfo(int i) {
-    switch (i) {
-      case 0:
-        return "The function inducer module used to generate the model";
-      case 1:
-        return "The error function used to guide the function inducer";
-      case 2:
-        return "The example table used for generating the model";
-      default:
-        return "No such input";
-    }
-  }
+		switch (i) {
+			case 0: return "The function inducer module used to generate the model.";
+			case 1: return "The error function used to guide the function inducer.";
+			case 2: return "The example table used for generating the model.";
+			default: return "No such input";
+		}
+	}
 
   public String[] getInputTypes() {
-    String[] types = {
-        "ncsa.d2k.modules.core.prediction.FunctionInducerOpt",
-        "ncsa.d2k.modules.core.prediction.ErrorFunction",
-        "ncsa.d2k.modules.core.datatype.table.ExampleTable"
-    };
-    return types;
-  }
+		String[] types = {"ncsa.d2k.modules.core.prediction.FunctionInducerOpt","ncsa.d2k.modules.core.prediction.ErrorFunction","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
+	}
 
   public String getOutputName(int i) {
-    switch (i) {
-      case 0:
-        return "Model";
-      default:
-        return "No such output";
-    }
-  }
+		switch(i) {
+			case 0:
+				return "Model";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
   public String getOutputInfo(int i) {
-    switch (i) {
-      case 0:
-        return "The model generated from the example table and the error function";
-      default:
-        return "No such output";
-    }
-  }
+		switch (i) {
+			case 0: return "The model generated from the example table and the error function.";
+			default: return "No such output";
+		}
+	}
 
   public String[] getOutputTypes() {
-    String[] types = {
-        "ncsa.d2k.modules.core.datatype.model.Model"};
-    return types;
-  }
+		String[] types = {"ncsa.d2k.modules.core.datatype.model.Model"};
+		return types;
+	}
 
 
 
@@ -199,5 +194,23 @@ public class ApplyFunctionInducerWithBagging
 
     this.pushOutput(new EnsembleModel(Examples, models, NumberOfModelsInEnsemble, EnsembleModel.AVERAGE), 0);
   }
+  /**
+   * Return a list of the property descriptions.
+   * @return a list of the property descriptions.
+   */
+  public PropertyDescription[] getPropertiesDescriptions() {
+	PropertyDescription[] pds = new PropertyDescription[3];
+	pds[0] = new PropertyDescription("numSubSampleExamples",
+									 "Number Subsamples",
+									 "This determins the number of subsamples that will be taken to produce the models.");
+	pds[1] = new PropertyDescription("numberOfModelsInEnsemble",
+									 "Number Final Models",
+									 "This is the number of models that will be included in the final ensemble.");
+	pds[2] = new PropertyDescription("randomSeed",
+									 "Random Seed",
+									 "If not -1, will generate the same sequence of values at each run.");
+	return pds;
+  }
+
 
  }

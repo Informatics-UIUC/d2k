@@ -417,7 +417,7 @@ final public class FloatColumn extends MissingValuesColumn implements NumericCol
      * @return the value at pos
      */
     public float getFloat (int pos) {
-        return  this.internal[pos];
+        return this.internal[pos];
     }
 
     /**

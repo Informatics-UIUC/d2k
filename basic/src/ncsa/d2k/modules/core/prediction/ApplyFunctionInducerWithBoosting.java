@@ -1,9 +1,8 @@
 package ncsa.d2k.modules.core.prediction;
 
+
 import ncsa.d2k.modules.core.datatype.model.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-//import ncsa.d2k.modules.projects.dtcheng.*;
-
 import ncsa.d2k.core.modules.*;
 //import ncsa.d2k.modules.projects.dtcheng.datatype.*;
 
@@ -20,72 +19,74 @@ public class ApplyFunctionInducerWithBoosting
   }
 
   public String getModuleName() {
-    return "Apply Function Inducer With Boosting";
-  }
+		return "Apply Function Inducer With Boosting";
+	}
 
   public String getModuleInfo() {
-    return
-        "This module applies a function inducer module to the given example table using the given error function and with boosting to produce a model";
-  }
+		return "<p>"+
+"      Overview: This module applies a function inducer module to the given "+
+"      example table using the given error function and with boosting to "+
+"      produce a model."+
+"    </p>"+
+"    <p>"+
+"      Detailed Description: This module uses the given function inducer to "+
+"      build an ordered series of different models. Each round, a new set of "+
+"      examples is created by first forming a model with the current set of "+
+"      examples, then using the model to predict each output, and then re;acing "+
+"      the current output variable with the difference between the prediction "+
+"      and actual output values. In this way, each model tries to predict the "+
+"      different left over after applying the previous model in the series."+
+"    </p>"+
+"    <p>"+
+"      References:"+
+"    </p>";
+	}
 
   public String getInputName(int i) {
-    switch (i) {
-      case 0:
-        return "Function Inducer";
-      case 1:
-        return "Error Function";
-      case 2:
-        return "Examples";
-      default:
-        return "No such input";
-    }
-  }
+		switch(i) {
+			case 0:
+				return "Function Inducer";
+			case 1:
+				return "Error Function";
+			case 2:
+				return "Examples";
+			default: return "NO SUCH INPUT!";
+		}
+	}
 
   public String getInputInfo(int i) {
-    switch (i) {
-      case 0:
-        return "The function inducer module used to generate the model";
-      case 1:
-        return "The error function used to guide the function inducer";
-      case 2:
-        return "The example table used for generating the model";
-      default:
-        return "No such input";
-    }
-  }
+		switch (i) {
+			case 0: return "The function inducer module used to generate the model,";
+			case 1: return "The error function used to guide the function inducer.";
+			case 2: return "The example table used for generating the model.";
+			default: return "No such input";
+		}
+	}
 
   public String[] getInputTypes() {
-    String[] types = {
-        "ncsa.d2k.modules.core.prediction.FunctionInducerOpt",
-        "ncsa.d2k.modules.core.prediction.ErrorFunction",
-        "ncsa.d2k.modules.core.datatype.table.ExampleTable"
-    };
-    return types;
-  }
+		String[] types = {"ncsa.d2k.modules.core.prediction.FunctionInducerOpt","ncsa.d2k.modules.core.prediction.ErrorFunction","ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		return types;
+	}
 
   public String getOutputName(int i) {
-    switch (i) {
-      case 0:
-        return "Model";
-      default:
-        return "No such output";
-    }
-  }
+		switch(i) {
+			case 0:
+				return "Model";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 
   public String getOutputInfo(int i) {
-    switch (i) {
-      case 0:
-        return "The model generated from the example table and the error function";
-      default:
-        return "No such output";
-    }
-  }
+		switch (i) {
+			case 0: return "The model generated from the example table and the error function.";
+			default: return "No such output";
+		}
+	}
 
   public String[] getOutputTypes() {
-    String[] types = {
-        "ncsa.d2k.modules.core.datatype.model.Model"};
-    return types;
-  }
+		String[] types = {"ncsa.d2k.modules.core.datatype.model.Model"};
+		return types;
+	}
 
   public void doit() throws Exception {
 

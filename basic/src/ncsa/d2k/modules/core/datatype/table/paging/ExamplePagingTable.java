@@ -52,7 +52,7 @@ public class ExamplePagingTable extends SubsetPagingTable implements ExampleTabl
 	}
 	
 	/**
-	 * Given only the page cache. the first data access will cause a page fault.
+	 * Given only the page cache. read first page.
 	 * @param pager
 	 */
 	public ExamplePagingTable(PageCache pager) {
@@ -894,4 +894,36 @@ public class ExamplePagingTable extends SubsetPagingTable implements ExampleTabl
 		ept.testSet = this.testSet;
 		return ept;
 	}
+	/**
+	 * Return a subset of the data. The paging table returned will actually replicate the data,
+	 * because the subset array is stored with the data in an out-of-memory page, so we are required
+	 * to use a different page.
+	 * @param row the row index.
+	 * @param column the column index
+	 * @return the object representation of the data at the given row and column.
+	 */
+	public Table getSubset(int start, int len) {
+		try {
+			return new ExamplePagingTable(cache.subset(start, len));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * get a subset of the indexed rows.
+	 * @param rows the rows to include.
+	 */
+	public Table getSubset(int[] rows) {
+		PageCache fudge;
+		try {
+			fudge = cache.subset(rows);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return new ExamplePagingTable(fudge);
+	}
+	
 }
