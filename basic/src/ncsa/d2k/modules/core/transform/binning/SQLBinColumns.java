@@ -50,28 +50,77 @@ public class SQLBinColumns extends UIModule {
      * @return A description for the module
      */
     public String getModuleInfo () {
-      String s = "<p> Overview: ";
-      s += "This module allows the user to interactively bin data. </p>";
+      String s = "<p>Overview: ";
+      s += "This module allows the user to interactively group data into bins. </p>";
       s += "<p> Detailed Description: ";
-      s += "This module makes a connection to a database and provides a ";
-      s += "user-interface to bin data for the specified table, fields and ";
-      s += "query conditions. For the scalar fields, data can be binned by ";
-      s += "the uniform ranges, specified ranges, bin intervals, or uniform ";
-      s += "weight. Histograms for data distribution based on the specified ";
-      s += "binning methods are provided. For the nominal fields, data can ";
-      s += "grouped by unique values. Binning data is a very important preprocessing ";
-      s += "step in many data mining processes, especially for continuous numeric data. ";
-      s += "By clustering similar data together, interesting patterns can be ";
-      s += "discovered between clusters. However, binning data is an optional ";
+      s += "This module makes a connection to a database ";
+      s += "and provides a user interface that allows data ";
+      s += "to be grouped into bins. ";
+      s += "The specific database, table, and attribute data that are presented for binning are ";
+      s += "controlled via information read from the <i>Database Connection</i>, <i>Selected Table</i>, ";
+      s += "and <i>Selected Attributes</i> input ports. ";
+      s += "</p><p>";
+      s += "For scalar attributes, data can be binned using a number of methods:  ";
+      s += "A) The data can be binned uniformly into a number of bins specified by the user.  ";
+      s += "B) The user can explicitly specify the range of values that will be included in each bin.  ";
+      s += "C) An interval size can be specified for each bin.  ";
+      s += "D) Each bin can be given uniform weight with a specified number of data points included in each bin. ";
+      s += "Histograms showing the data distribution based on the specified ";
+      s += "binning method are provided via the 'Show' button to guide the binning process. ";
+      s += "For nominal attributes, data can ";
+      s += "collected into groups by unique values. ";
+      s += "</p><p>";
+      s += "Binning data is a very important preprocessing step in may data mining  ";
+      s += "activities, especially for datasets containing continuous numeric values. ";
+      s += "By grouping similar data together, interesting patterns can be ";
+      s += "discovered between groups and computational complexity can be reduced. ";
+      s += "However, binning data is an optional ";
       s += "process. For a data set with a small number of unique values, especially ";
-      s += "a small nominal data set, binning may not be necessary. You can skip ";
-      s += "this step by clicking 'Done' button without any actions. ";
+      s += "a small nominal data set, binning may not be necessary. The user can omit";
+      s += "the binning step by clicking the 'Done' button without performing any binning actions. ";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle and SQLServer databases. This module consumes ";
-      s += "substantial CPU and memory to display data histograms. Sufficient ";
-      s += "memory is essential to run this module for a huge data set.";
+      s += "Only support Oracle and SQLServer databases are currently supported. ";
+      s += "</p><p>Scalability ";
+      s += "This module consumes ";
+      s += "substantial CPU and memory to display data histograms. The amount of memory ";
+      s += "required is related to the size of the dataset being processed. ";
 
       return s;
+    }
+
+    /**
+     * Get the name of the input parameter
+     * @param i is the index of the input parameter
+     * @return Name of the input parameter
+     */
+    public String getInputName (int i) {
+        switch (i) {
+            case 0:
+                return "Database Connection";
+            case 1:
+                return "Selected Attributes";
+            case 2:
+                return "Selected Table";
+            default:
+                return  "No such input";
+        }
+    }
+    /**
+     * Get input information
+     * @param i is the index of the input parameter
+     * @return A description of the input parameter
+     */
+    public String getInputInfo (int i) {
+        switch (i) {
+            case 0:
+                return "The database connection.";
+            case 1:
+                return "The attributes selected from the specified table.";
+            case 2:
+                return "The selected table from the database.";
+            default:
+                return  "No such input";
+        }
     }
 
     /**
@@ -85,34 +134,6 @@ public class SQLBinColumns extends UIModule {
             "java.lang.String"
         };
         return  types;
-    }
-
-    /**
-     * Get the data types for the output parameters
-     * @return A object of class BinTransform
-     */
-    public String[] getOutputTypes () {
-        String[] types =  {"ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"
-        };
-        return  types;
-    }
-
-    /**
-     * Get input information
-     * @param i is the index of the input parameter
-     * @return A description of the input parameter
-     */
-    public String getInputInfo (int i) {
-        switch (i) {
-            case 0:
-                return "The database connection.";
-            case 1:
-                return "The fields selected from the specified table.";
-            case 2:
-                return "The selected table from a database.";
-            default:
-                return  "No such input";
-        }
     }
 
     /**
@@ -130,24 +151,6 @@ public class SQLBinColumns extends UIModule {
     }
 
     /**
-     * Get the name of the input parameter
-     * @param i is the index of the input parameter
-     * @return Name of the input parameter
-     */
-    public String getInputName (int i) {
-        switch (i) {
-            case 0:
-                return "Database Connection";
-            case 1:
-                return "Selected Fields";
-            case 2:
-                return "Selected Table";
-            default:
-                return  "No such input";
-        }
-    }
-
-    /**
      * Get output information
      * @param i is the index of the output parameter
      * @return A description of the output parameter
@@ -155,11 +158,24 @@ public class SQLBinColumns extends UIModule {
     public String getOutputInfo (int i) {
         switch (i) {
             case 0:
-                return  "A BinTransformation object that contains column_numbers, names and lables";
+                return  "A Binning Transformation object that " +
+			"contains column numbers, names, and labels";
             default:
                 return  "No such output";
         }
     }
+
+    /**
+     * Get the data types for the output parameters
+     * @return A object of class BinTransform
+     */
+    public String[] getOutputTypes () {
+        String[] types =  {"ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"
+        };
+        return  types;
+    }
+
+
 
 
     //QA Anca added this:
