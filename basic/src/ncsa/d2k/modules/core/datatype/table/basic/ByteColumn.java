@@ -1068,13 +1068,18 @@ final public class ByteColumn extends AbstractColumn implements NumericColumn {
         //String x = A[p];
         int i = p - 1;
         int j = r + 1;
+		//ANCA introduced Object el , because A[j] is treated like an int and compareRows(int,int) is
+			//called instead of compareRows(object,int);
+		Byte el;
         while (true) {
             do {
                 j--;
-            } while (compareRows(A[j], p) > 0);
+				el = new Byte(A[j]);
+            } while (compareRows(el, p) > 0);
             do {
                 i++;
-            } while (compareRows(A[i], p) < 0);
+				el  = new Byte(A[i]);
+            } while (compareRows(el, p) < 0);
             if (i < j) {
                 if (t == null) {
                     /*byte temp = A[i];

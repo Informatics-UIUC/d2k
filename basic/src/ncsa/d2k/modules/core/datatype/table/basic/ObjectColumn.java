@@ -567,9 +567,15 @@ final public class ObjectColumn extends AbstractColumn {
 	 */
 	public byte[] getBytes(int pos) {
 		//return internal[pos].toString().getBytes();
+		byte tmp[] = new byte[1];
 		if (internal[pos] instanceof byte[])
 			return (byte[]) internal[pos];
-		else
+		else if (internal[pos] instanceof Byte) {
+		tmp[0] = ((Byte) internal[pos]).byteValue();
+		 return tmp;
+		}
+		 else
+		 
 			 return ByteUtils.writeObject(internal[pos]);
 		//return internal[pos].toString().getBytes();
 	}	
