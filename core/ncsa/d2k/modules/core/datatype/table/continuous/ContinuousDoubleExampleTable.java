@@ -288,11 +288,11 @@ public class ContinuousDoubleExampleTable
   }
 
   public void setInput(int e, int i, double value) {
-    data[exampleIndices[e] * numFeatures + inputIndices[i]] = (float) value;
+    data[exampleIndices[e] * numFeatures + inputIndices[i]] = value;
   }
 
   public void setOutput(int e, int i, double value) {
-    data[exampleIndices[e] * numFeatures + outputIndices[i]] = (float) value;
+    data[exampleIndices[e] * numFeatures + outputIndices[i]] = value;
   }
 
   /*
@@ -636,7 +636,7 @@ public class ContinuousDoubleExampleTable
   }
 
   public int getNumTestExamples() {
-    return 0;
+    return numExamples;
   }
 
   public int[] getOutputFeatures() {
@@ -693,7 +693,7 @@ public class ContinuousDoubleExampleTable
   }
 
   public TrainTable getTrainTable() {
-    return null;
+    return (TrainTable) this;
   }
 
   public PredictionTable toPredictionTable() {

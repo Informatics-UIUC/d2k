@@ -87,10 +87,18 @@ public class ReadContinuousDoubleExampleTable
   public void setFixedFormat(boolean value) {
     this.FixedFormat = value;
   }
-
   public boolean getFixedFormat() {
     return this.FixedFormat;
   }
+
+  private boolean UseJavaDoubleParser = false;
+  public void setUseJavaDoubleParser(boolean value) {
+    this.UseJavaDoubleParser = value;
+  }
+  public boolean getUseJavaDoubleParser() {
+    return this.UseJavaDoubleParser;
+  }
+
 
   private boolean ConvertStringsToIndices = false;
   public void setConvertStringsToIndices(boolean value) {
@@ -373,15 +381,34 @@ public class ReadContinuousDoubleExampleTable
 
         for (int f = 0; f < numColumns; f++) {
 
-          if (FixedFormat)
-            columnValues[f] = rio.ByteStringToDouble(buffer,
-                                           rio.LineStart +
-                                           (f * CharsPerColumn),
-                                           rio.LineStart +
-                                           ( (f + 1) * CharsPerColumn) - 1);
-          else
-            columnValues[f] = rio.ByteStringToDouble(buffer, rio.ColumnStarts[f],
-                                           rio.ColumnEnds[f]);
+          if (FixedFormat) {
+            if (UseJavaDoubleParser) {
+              String string = new String(buffer,
+                                         rio.LineStart + (f * CharsPerColumn),
+                                         rio.LineStart + ( (f + 1) * CharsPerColumn) - 1);
+              columnValues[f] = Double.parseDouble(string);
+            }
+            else {
+              columnValues[f] = rio.ByteStringToDouble(buffer,
+                  rio.LineStart +
+                  (f * CharsPerColumn),
+                  rio.LineStart +
+                  ( (f + 1) * CharsPerColumn) - 1);
+            }
+          }
+          else {
+            if (UseJavaDoubleParser) {
+              String string = new String(buffer,
+                                         rio.ColumnStarts[f],
+                                         rio.ColumnEnds[f]);
+              columnValues[f] = Double.parseDouble(string);
+
+            }
+            else {
+              columnValues[f] = rio.ByteStringToDouble(buffer, rio.ColumnStarts[f],
+                  rio.ColumnEnds[f]);
+            }
+          }
 
         }
 
