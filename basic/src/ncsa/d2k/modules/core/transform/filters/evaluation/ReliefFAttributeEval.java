@@ -27,6 +27,7 @@ package ncsa.d2k.modules.core.transform.filters.evaluation;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
+import java.util.*;
 
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.Table;
@@ -539,10 +540,24 @@ public class ReliefFAttributeEval
       m_numericClass = false;
     }
 
+    HashMap classIndices = null;
+    HashMap uniqueClassValues = null;
+    String [] classNames = null;
     //get number of classes
     if (!m_numericClass) {
-      String [] uniques = TableUtilities.uniqueValues(m_trainTable,m_classIndex);
-      m_numClasses = uniques.length;
+      uniqueClassValues = TableUtilities.uniqueValuesWithCounts(m_trainTable,m_classIndex);
+      m_numClasses  =uniqueClassValues.size();
+      classIndices = new HashMap(m_numClasses) ;
+      classNames = new String [m_numClasses];
+      Iterator it = uniqueClassValues.keySet().iterator();
+      int i = 0;
+      String name;
+      while(it.hasNext()) {
+      	name = (String) it.next();
+        classIndices.put(name, new Integer(i));
+      	classNames[i] = name;
+      	i++;
+      }
     }
     else {
       m_ndc = 0;
@@ -569,15 +584,23 @@ public class ReliefFAttributeEval
     // determine class probabilities
     if (!m_numericClass) {
       m_classProbs = new double[m_numClasses];
+      
+      //for (int i = 0; i < m_numRows; i++) {
+       // m_classProbs[(int)m_trainTable.getDouble(i,m_classIndex)]++;
+      
+      //}
 
-      for (int i = 0; i < m_numRows; i++) {
-        m_classProbs[(int)m_trainTable.getDouble(i,m_classIndex)]++;
-      }
-
-      for (int i = 0; i < m_numClasses; i++) {
-        m_classProbs[i] /= m_numRows;
-      }
+      //for (int i = 0; i < m_numClasses; i++) {
+       // m_classProbs[i] /= m_numRows;
+      //}
+    	for (int i = 0; i < m_numClasses; i++) {
+    		
+    	m_classProbs[i] =
+    			(((Integer)uniqueClassValues.get(classNames[i])).doubleValue())/m_numRows;
+    	//System.out.println("d2k: class probability for i " + m_classProbs[i]);
+    	}
     }
+    
 
     m_worst = new double[m_numClasses];
     m_index = new int[m_numClasses];
@@ -599,7 +622,7 @@ public class ReliefFAttributeEval
     for (int i = 0; i < m_numRows; i++) {
     	for (int j = 0; j < m_numAttribs; j++) {
 	       isMissing[j] = m_trainTable.isValueMissing(i,j);
-	       temp[j]=m_trainTable.getDouble(i,j);
+	       if (isNumeric[j]) temp[j]=m_trainTable.getDouble(i,j); //TODO check if set to NAN is needed here
     	}
 		updateMinMax(temp,isNumeric,isMissing);
     }
@@ -632,16 +655,22 @@ public class ReliefFAttributeEval
 						  m_karray[j][k][0] = m_karray[j][k][1] = 0;
 						}
 				}
-        findKHitMiss(z);
+      findKHitMiss(z,classIndices);
 
-     //   System.out.println("d2k weights for z " + z + " numeric " + m_numericClass);
-        if (m_numericClass) {
+     // System.out.println("d2k weights for z " + z + " numeric " + m_numericClass);
+     //System.out.println(" m_stored " + m_stored[0] + " " + m_stored[1] + " " + m_stored[2]);
+     //int cl = ((Integer)classIndices.get(m_trainTable.getString(z,m_classIndex))).intValue();
+    // System.out.println("D2K CL is " +  cl);
+     
+      if (m_numericClass) {
 			    updateWeightsNumericClass(z);
         } else {
-				  updateWeightsDiscreteClass(z);
+				  updateWeightsDiscreteClass(z,classIndices);
         }
-      //  for (int g =0; g < m_weights.length; g ++)
-        	//System.out.println("d2k " + m_weights[g]);
+      // if ( z == 0) {
+        //for (int g =0; g < m_weights.length; g ++)
+        //	System.out.println("d2k " + m_weights[g]);
+       //}
       }
     }
     
@@ -751,26 +780,29 @@ public class ReliefFAttributeEval
    */
   private double difference(int index, int ln1, int ln2, int col1, int col2) {
 
-
-			double val1 =  m_trainTable.getDouble(ln1,col1);
-			double val2 =  m_trainTable.getDouble(ln2,col2);
+           
 			boolean mis1 =  m_trainTable.isValueMissing(ln1,col1);
 		    boolean mis2 =  m_trainTable.isValueMissing(ln2,col2);
 
 		    // If attribute is nominal
 		    //TODO change here when ReplaceNominalWithInts is phased out
 		    if (m_trainTable.isColumnNominal(index)){
+		    	String val1 =  m_trainTable.getString(ln1,col1);
+		    	String val2 =  m_trainTable.getString(ln2,col2);
+		    	
 		    	if (mis1 || mis2 ) {
 		    		String[] uniquevalues = TableUtilities.uniqueValues(m_trainTable,index);
 		    		int numValues = uniquevalues.length;
 		    		return (1.0 - (1.0/((double)numValues)));
-		    	} else if (val1 != val2) {
+		    	} else if (!val1.equals( val2)) {
 		    		return 1;
 		    	} else {
 		    		return 0;
 		    	}
 		    } else if (m_trainTable.isColumnScalar(index)) {
-		    	
+		    	double val1 =  m_trainTable.getDouble(ln1,col1);
+		    	double val2 =  m_trainTable.getDouble(ln2,col2);
+		    		    	
 		    	// If attribute is numeric
 		    	if (mis1 || mis2) {
 		    		if(mis1 && mis2 ) {
@@ -989,7 +1021,7 @@ public class ReliefFAttributeEval
    *
    * @param instNum the index of the instance to use when updating weights
    */
-  private void updateWeightsDiscreteClass (int instNum) {
+  private void updateWeightsDiscreteClass (int instNum, HashMap classIndices) {
     int i, j, k;
     int cl;
     double cc = m_numRows;
@@ -1004,17 +1036,18 @@ public class ReliefFAttributeEval
 
     //TODO change here when ReplaceNominalWithInts is phased out
     // store the indexes (sparse instances) of non-zero elements
-    double [] inst = new double[m_numAttribs];
+    
+    //double [] inst = new double[m_numAttribs];
     // 	m_trainTable.getRow(inst,instNum);	
-    for (int l = 0; l< m_numAttribs; l++) 
-     inst[l]=m_trainTable.getDouble(instNum,l);
+    //for (int l = 0; l< m_numAttribs; l++) 
+     //inst[l]=m_trainTable.getDouble(instNum,l);
    
-
     // get the class of this instance
-    cl = (int)m_trainTable.getInt(instNum,m_classIndex);
+    cl = ((Integer)classIndices.get(m_trainTable.getString(instNum,m_classIndex))).intValue();
 
-   // if (instNum < 1) 
-    //	System.out.println("cl " + cl + " m_weightByDistance " + m_weightByDistance);
+    
+ //  if (instNum < 1) 
+   // 	System.out.println("cl " + cl + " m_weightByDistance " + m_weightByDistance);
     
     // sort nearest neighbours and set up normalization variables
     if (m_weightByDistance) {
@@ -1063,37 +1096,37 @@ public class ReliefFAttributeEval
     
     // do the k nearest hits of the same class
     for (j = 0, temp_diff = 0.0; j < m_stored[cl]; j++) {
-    	double [] cmp =  new double[m_numAttribs];
-    	int cmpNum;
+    	//double [] cmp =  new double[m_numAttribs];
+    	int cmpNum = -1;
     	if (m_weightByDistance) {
     		// m_trainTable.getRow(cmp,(int)m_karray[cl][tempSortedClass[j]][1]);
-    		for (int l = 0; l< m_numAttribs; l++) 
-    			cmp[l]=m_trainTable.getDouble((int)m_karray[cl][tempSortedClass[j]][1],l);
+    		//for (int l = 0; l< m_numAttribs; l++) 
+    			//cmp[l]=m_trainTable.getDouble((int)m_karray[cl][tempSortedClass[j]][1],l);
     		cmpNum = (int)m_karray[cl][tempSortedClass[j]][1];
     	}
     	else {
     		//m_trainTable.getRow(cmp,p,(int)m_karray[cl][j][1]);
-    		for (int l = 0; l< m_numAttribs; l++) 
-    			cmp[l]=m_trainTable.getDouble((int)m_karray[cl][j][1],l);
+    		//for (int l = 0; l< m_numAttribs; l++) 
+    			//cmp[l]=m_trainTable.getDouble((int)m_karray[cl][j][1],l);
     		cmpNum = (int)m_karray[cl][j][1];
     	}
     	
 //    	if (instNum < 1) {
-//    		System.out.println("karray cl j " + m_karray[cl][j][1] + " " + cl + " " + j );
-//    		System.out.println(" cmp " );
-//    		
-//    		for (int g =0; g < cmp.length; g ++)
-//    			System.out.print(cmp[g]+ " ");
-//    		System.out.println("" );
-//    	}
+  //  		System.out.println("karray cl j " + m_karray[cl][j][1] + " " + cl + " " + j );
+    //		System.out.println(" cmp " );
+   		
+   	//	for (int g =0; g < m_numAttribs; g ++)
+    //			System.out.print(m_trainTable.getString((int)m_karray[cl][j][1],g)+ " ");
+    //		System.out.println("" );
+   	//}
     	
-    	for (int p1 = 0, p2 = 0;	p1 < inst.length || p2 < cmp.length;) {
-    		if (p1 >= inst.length) {
+    	for (int p1 = 0, p2 = 0;	p1 < m_numAttribs || p2 < m_numAttribs;) {
+    		if (p1 >= m_numAttribs) {
     			firstI = m_trainTable.getNumColumns();
     		} else {
     			firstI = p1;
     		}
-    		if (p2 >= cmp.length) {
+    		if (p2 >= m_numAttribs) {
     			secondI = m_trainTable.getNumColumns();
     		} else {
     			secondI = p2;
@@ -1128,7 +1161,8 @@ public class ReliefFAttributeEval
     			}
     		}
     		m_weights[i] -= temp_diff;
-    		
+    		//if (instNum < 1)
+    		 //System.out.println(" i  m _weights[i] " + i + " " + m_weights[i]);
     	}
     }
     
@@ -1137,32 +1171,36 @@ public class ReliefFAttributeEval
     temp_diff = 0.0;
     
     for (k = 0; k < m_numClasses; k++) {
+    //	if (instNum < 1) System.out.println("d2k k cl " + k + " " + cl + " " + m_numAttribs);
     	if (k != cl) // already done cl
     	{
+    //		if (instNum < 1) System.out.println("d2k k m_stored[k] " + k + " " + m_stored[k]);
     		for (j = 0, temp = 0.0; j < m_stored[k]; j++) {
-    			double [] cmp = new double[m_numAttribs];
+    //			if (instNum < 1) System.out.println("d2k j k m_stored[k] " + j + " " + k + " " + m_stored[k]);
+    			//double [] cmp = new double[m_numAttribs];
     			int cmpNum;
     			if (m_weightByDistance) {
     				//m_trainTable.getRow(cmp,(int)m_karray[k][tempSortedAtt[k][j]][1]);
-    				for (int l = 0; l< m_numAttribs; l++) 
-    					cmp[l]=m_trainTable.getDouble((int)m_karray[k][tempSortedAtt[k][j]][1],l);
+    				//for (int l = 0; l< m_numAttribs; l++) 
+    					//cmp[l]=m_trainTable.getDouble((int)m_karray[k][tempSortedAtt[k][j]][1],l);
     				
     				cmpNum = (int)m_karray[k][tempSortedAtt[k][j]][1];
     			}
     			else {
     				//m_trainTable.getRow(cmp,(int)m_karray[k][j][1]);
-    				for (int l = 0; l< m_numAttribs; l++) 
-    					cmp[l]=m_trainTable.getDouble((int)m_karray[k][j][1],l);
+    				//for (int l = 0; l< m_numAttribs; l++) 
+    				//	cmp[l]=m_trainTable.getDouble((int)m_karray[k][j][1],l);
     				cmpNum = (int)m_karray[k][j][1];
     			}
     			for (int p1 = 0, p2 = 0;
-    			p1 < inst.length || p2 < cmp.length;) {
-    				if (p1 >= inst.length) {
+    			p1 < m_numAttribs || p2 < m_numAttribs;) {
+    //				if (instNum < 1) System.out.println("d2k p1 p2  " + p1 + " " + p2);
+    				if (p1 >= m_numAttribs) {
     					firstI = m_trainTable.getNumColumns();
     				} else {
     					firstI = p1;
     				}
-    				if (p2 >= cmp.length) {
+    				if (p2 >= m_numAttribs) {
     					secondI = m_trainTable.getNumColumns();
     				} else {
     					secondI = p2;
@@ -1196,6 +1234,10 @@ public class ReliefFAttributeEval
     						temp_diff /= (double)m_stored[k];
     					}
     				}
+    				
+    //				if (instNum < 1)
+    //					System.out.println("d2k temp_diff " + temp_diff + " for j, p1, p2 " + j + " " + p1 + " " + p2 );
+    				
     				if (m_numClasses > 2) {
     					m_weights[i] += ((m_classProbs[k]/w_norm)*temp_diff);
     				} else {
@@ -1215,13 +1257,13 @@ public class ReliefFAttributeEval
    *
    * @param instNum the index of the instance to find nearest neighbours of
    */
-private void findKHitMiss (int instNum) {
+private void findKHitMiss (int instNum, HashMap classIndices) {
     int i, j;
     int cl;
     double ww;
     double temp_diff = 0.0;
 
-		int thisInst = instNum;
+	int thisInst = instNum;
 
     for (i = 0; i < m_numRows; i++) {
 			if (i != instNum) {
@@ -1233,19 +1275,22 @@ private void findKHitMiss (int instNum) {
 			  }
 			  else { 
 			  	//TODO change this when ReplaceNominalsWithInts is phased out
-			  	cl = (int)m_trainTable.getInt(i,m_classIndex);
+			  	cl = ((Integer)classIndices.get(m_trainTable.getString(i,m_classIndex))).intValue();
+			  	//System.out.println("D2K CL for instNum is " + instNum + " " +  cl);
+			  	//cl = (int)m_trainTable.getInt(i,m_classIndex);
 			  }
-			  if(i == 0) {
-			  	//System.out.println("d2k temp_diff  i thisInst " + temp_diff + " " + i + " " + thisInst);
-			  	//System.out.println("class index " + m_classIndex);
-			  	//System.out.println("d2k cl instNum" + cl + " " + instNum + " " + m_numericClass);
-			  }
+			//  if(i == 0) {
+			 // 	System.out.println("d2k temp_diff  i thisInst " + temp_diff + " " + i + " " + thisInst);
+			 // 	System.out.println("class index " + m_classIndex);
+			 // 	System.out.println("d2k cl instNum " + cl + " " + instNum + " " + m_numericClass);
+			 // }
 			  
 			  // add this diff to the list for the class of this instance
 			  if (m_stored[cl] < m_Knn) {
 			  	m_karray[cl][m_stored[cl]][0] = temp_diff;
 			  	m_karray[cl][m_stored[cl]][1] = i;
 			  	m_stored[cl]++;
+			  	
 			  	
 			  	// note the worst diff for this class
 			  	for (j = 0, ww = -1.0; j < m_stored[cl]; j++) {
@@ -1277,7 +1322,12 @@ private void findKHitMiss (int instNum) {
 			  	}
 			}
     }
-  }
+
+    
+    	//for (int y =0 ; y < m_stored.length; y ++)
+    	//	System.out.println("d2k y m_stored " + y + " " + m_stored[y]);
+}
+
 
 
 }
