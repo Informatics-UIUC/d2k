@@ -206,7 +206,12 @@ public class TableEditor extends TableViewer {
         setupTypes();
 
         // Create the matrix
-        model = new TableEditorModel((MutableTable) table, types);
+        if (maxFractionDigits >= 0) {
+           model = new TableEditorModel((MutableTable) table, types, maxFractionDigits);
+        }
+        else {
+           model = new TableEditorModel((MutableTable) table, types);
+        }
         matrix = new TableMatrix(model);
 
         TableColumnModel tc = matrix.getJTable().getColumnModel();

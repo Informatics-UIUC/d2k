@@ -25,6 +25,18 @@ public class TableEditorModel extends TableViewerModel {
    }
 
    /**
+      Constructor which takes a maximum number of fraction digits to be returned
+      by <code>getValueAt</code>.
+      @param t the table to display
+      @param b an array of combo boxes to display in the first row
+      @param maxFractionDigits the maximum number of fraction digits
+   */
+   public TableEditorModel(MutableTable t, JComboBox[] b, int maxFractionDigits) {
+      super(t, maxFractionDigits);
+      dataTypes = b;
+   }
+
+   /**
       There is one extra row, for the combo boxes.
       @return the number of rows in the table
    */
@@ -50,7 +62,27 @@ public class TableEditorModel extends TableViewerModel {
       if (table.isValueMissing(row-1, col-1))
           return "?";
 
-      return table.getString(row-1, col-1);
+      if (numberFormat != null && maxFractionDigits >= 0) {
+
+         String orig = table.getString(row-1, col-1);
+         String fmtd = null;
+
+         try {
+            fmtd = numberFormat.format(numberFormat.parse(orig));
+         }
+         catch(Exception e) { return orig; }
+
+         return fmtd;
+
+      }
+      else {
+
+         return table.getString(row-1, col-1);
+
+      }
+
+      // return table.getString(row-1, col-1);
+
    }
 
    /**

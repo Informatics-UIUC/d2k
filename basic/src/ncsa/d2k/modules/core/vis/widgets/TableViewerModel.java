@@ -5,6 +5,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.text.NumberFormat;
 import javax.swing.*;
 import javax.swing.table.*;
 
@@ -18,12 +19,31 @@ public class TableViewerModel extends AbstractTableModel {
    /** The VerticalTable that holds the data */
    protected Table table;
 
+   protected int maxFractionDigits;
+   protected NumberFormat numberFormat;
+
    /**
       Constructor.
       @param vt The VerticalTable that we represent
    */
    public TableViewerModel(Table vt) {
       table = vt;
+
+      maxFractionDigits = -1;
+   }
+
+   /**
+      Constructor, setting the maximum number of fraction digits to be returned
+      by <code>getValueAt</code>.
+      @param vt The VerticalTable that we represent
+      @param maxFractionDigits the maximum number of fraction digits
+   */
+   public TableViewerModel(Table vt, int maxFractionDigits) {
+      table = vt;
+
+      this.maxFractionDigits = maxFractionDigits;
+      numberFormat = NumberFormat.getInstance();
+      numberFormat.setMaximumFractionDigits(maxFractionDigits);
    }
 
    /**
@@ -66,9 +86,29 @@ public class TableViewerModel extends AbstractTableModel {
       if (table.isValueMissing(row, col-1))
           return "?";
 
-      try{
-         return table.getString (row, col-1);
-      }catch (NullPointerException e){
+      try {
+
+         if (numberFormat != null && maxFractionDigits >= 0) {
+
+            String orig = table.getString(row, col - 1);
+            String fmtd = null;
+
+            try {
+               fmtd = numberFormat.format(numberFormat.parse(orig));
+            }
+            catch(Exception e) { return orig; }
+
+            return fmtd;
+
+         }
+         else {
+
+            return table.getString(row, col - 1);
+
+         }
+
+      }
+      catch (NullPointerException e){
          return "";
       }
    }

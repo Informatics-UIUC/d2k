@@ -124,6 +124,23 @@ public class TableViewer extends UIModule {
 // properties                                                                 //
 ////////////////////////////////////////////////////////////////////////////////
 
+   protected int maxFractionDigits = -1;
+   public int getMaxFractionDigits() { return maxFractionDigits; }
+   public void setMaxFractionDigits(int value) { maxFractionDigits = value; }
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+
+      PropertyDescription[] pds = new PropertyDescription[1];
+
+      pds[0] = new PropertyDescription("maxFractionDigits",
+         "Maximum fraction digits displayed",
+         "Specifies the maximum number of digits after the decimal point to be displayed for numeric data (-1 for no restriction). The underlying data is not affected.");
+
+      return pds;
+
+   }
+
+   /*
    public PropertyDescription[] getPropertiesDescriptions() {
 
       // This module doesn't have any properties that the user should edit.
@@ -133,6 +150,7 @@ public class TableViewer extends UIModule {
       return pds;
 
    }
+   */
 
 ////////////////////////////////////////////////////////////////////////////////
 // user view                                                                  //
@@ -195,7 +213,13 @@ public class TableViewer extends UIModule {
             buttonPanel.add(ok);
 
             // create the matrix
-            matrix = new TableMatrix(table);
+            if (maxFractionDigits < 0) {
+               matrix = new TableMatrix(table);
+            }
+            else {
+               matrix = new TableMatrix(table, maxFractionDigits);
+            }
+
             // add everything to this
             add(matrix, BorderLayout.CENTER);
             add(buttonPanel, BorderLayout.SOUTH);
@@ -268,7 +292,7 @@ public class TableViewer extends UIModule {
 // 3/24/03  - Added getPropertiesDescriptions() so that no properties the user
 //            can't edit are shown. (RA)
 // 3/31/03 - Added docs about the save option.
-//	     Added docs about how to close the display.
+//      Added docs about how to close the display.
 //           Added docs about limitations.
 //           OK for basic.
 // 7/16/03 - Ruth added call to setWindowName so that pop-up consistently has
