@@ -608,6 +608,8 @@ public class SQLFilterConstruction extends HeadlessUIModule {
        return;
      }
 
+     goodCondition = ExpressionParser.parseExpression(queryCondition, availableAttributes, true);
+/*
      StringTokenizer tok = new StringTokenizer(queryCondition);
      //parsing the condition, each sub condition that holds a valid
      //attribute name will be copied into goodCondition
@@ -615,10 +617,12 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      boolean first = true; //is it the first sub expression
 
  //assuming the expression could be malformed.
-     //if it is the first one to be parsed and it has at least 3 more tokens
-     //then there is still yet another sub expression to parse.
-     //if it is not the first one - at least 4 tokens are needed.
+ //if it is the first one to be parsed and it has at least 3 more tokens
+        //then there is still yet another sub expression to parse.
+        //if it is not the first one - at least 4 tokens are needed.
+
      while((first && tok.countTokens() >= 3) || (!first && tok.countTokens() >= 4)){
+
 
      boolean added = false;  //whether a sub expression was added of not.
 
@@ -657,6 +661,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
        }//if !added
 
      }//while has more tokens
+ */
 
 
      pushOutput(goodCondition,0);

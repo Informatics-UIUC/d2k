@@ -586,7 +586,6 @@ try {
 
 
 
-
    public void doit() throws Exception{
      //pulling input
      MutableTable table = (MutableTable) pullInput(0);
@@ -595,69 +594,24 @@ try {
      for (int i=0; i<table.getNumColumns(); i++)
        availableColumns.put(table.getColumnLabel(i), new Integer(i));
 
-      String goodCondition = ""; //this will construct the transformation
+       if(availableColumns.size() == 0){
+         System.out.println("Table " + table.getLabel() + " has no columns.");
+         System.out.println("The transformation will be an empty one");
+         boolean[] val = new boolean[0];
+         pushOutput(new FilterTransformation(val, false), 0);
+         return;
+       }
 
-      StringTokenizer tok = new StringTokenizer(expression);
-            //parsing the condition, each sub condition that holds a valid
-            //attribute name will be copied into goodCondition
+      String goodCondition = ExpressionParser.parseExpression(expression, availableColumns, false);
 
-            boolean first = true; //is it the first sub expression
-
-        //assuming the expression could be malformed.
-            //if it is the first one to be parsed and it has at least 3 more tokens
-            //then there is still yet another sub expression to parse.
-            //if it is not the first one - at least 4 tokens are needed.
-            while((first && tok.countTokens() >= 3) || (!first && tok.countTokens() >= 4)){
-
-            boolean added = false;  //whether a sub expression was added of not.
-
-            String joint = null;
-            if(!first){ //meaning the following token is "and" or "or".
-              joint = tok.nextToken();
-              goodCondition += " " + joint + " ";
-            }//if !first
-            else first = false;
-
-             //parsing the 3 tokens that make the sub expression.
-             String leftHand = tok.nextToken();
-             String relation = tok.nextToken();
-             String rightHand = tok.nextToken();
-
-             //if the right hand operand is the attribute - swaping between them.
-             if(availableColumns.containsKey(rightHand)){
-               String temp = leftHand;
-               leftHand = rightHand;
-               rightHand = temp;
-             }//if contains key
-
-             //checking that leftHand is an attribute.
-             if(availableColumns.containsKey(leftHand)){
-               //adding the parsed tokens to the good condition
-               goodCondition += leftHand + " " + relation + " " + rightHand;
-               added = true;
-
-             }//if contains key
-
-              if(!added && joint != null){
-                //now the joint that was added should be taken off
-                int index = goodCondition.lastIndexOf(joint);
-                String temp = goodCondition.substring(0, index);
-                goodCondition = temp;
-              }//if !added
-
-            }//while has more tokens
-
-            //now good condition holds only relevant filters.
-            //building a filter expression
-            FilterExpression fEx = new FilterExpression(table);
-            fEx.setExpression(goodCondition);
-            //getting the array of booleans - which row to filter.
-            boolean[] eval = ( boolean[] )fEx.evaluate();
-            //pushing out the transformation
-            pushOutput(new FilterTransformation(eval, false), 0);
-
-
-
+      //now good condition holds only relevant filters.
+      //building a filter expression
+      FilterExpression fEx = new FilterExpression(table);
+      fEx.setExpression(goodCondition);
+      //getting the array of booleans - which row to filter.
+      boolean[] eval = ( boolean[] )fEx.evaluate();
+      //pushing out the transformation
+      pushOutput(new FilterTransformation(eval, false), 0);
 
 
    }//doit

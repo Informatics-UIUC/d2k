@@ -839,6 +839,8 @@ public class FilterExpression implements Expression {
 
 
 
+
+
          if (I == null)
 
             throw new ExpressionException("FilterExpression: invalid column label: " + columnLabel);
