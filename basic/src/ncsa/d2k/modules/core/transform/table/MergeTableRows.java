@@ -12,8 +12,6 @@ import ncsa.gui.*;
 
 import ncsa.d2k.modules.core.transform.StaticMethods;
 
-
-
 /**
  * Merge rows in a table based on identical key attributes.
  * <p>Title: </p>
@@ -25,9 +23,9 @@ import ncsa.d2k.modules.core.transform.StaticMethods;
  */
 public class MergeTableRows extends HeadlessUIModule {
 
-       ///////
-       // variables and methods used to preserve settings between invocations
-       ///////
+	///////
+	// variables and methods used to preserve settings between invocations
+	///////
 
 	private String lastControl;
 	public String getLastControl() {
@@ -61,19 +59,27 @@ public class MergeTableRows extends HeadlessUIModule {
 		lastMergeMethod = s;
 	}
 
-        ///////
-        // standard info-related methods
-        ///////
+	///////
+	// standard info-related methods
+	///////
 
 	/**
 	 * Return a list of the property descriptions that a user may edit.
 	 * @return a list of the property descriptions.
 	 */
-	public PropertyDescription [] getPropertiesDescriptions () {
-		PropertyDescription [] pds = new PropertyDescription [3];
-                pds[0] = super.supressDescription;
-                pds[1] = new PropertyDescription("control", "Control Column", "Name of control column for merging (will be used if \"Supress User Interface Display\" is set to true");
-                pds[2] = new PropertyDescription("type", "Merging Method", "Type of merging method (Sum, Average, Minimum, Maximum or Count) will be used if \"Supress User Interface Display\" is set to true");
+	public PropertyDescription[] getPropertiesDescriptions() {
+		PropertyDescription[] pds = new PropertyDescription[3];
+		pds[0] = super.supressDescription;
+		pds[1] =
+			new PropertyDescription(
+				"control",
+				"Control Column",
+				"Name of control column for merging (will be used if \"Supress User Interface Display\" is set to true");
+		pds[2] =
+			new PropertyDescription(
+				"type",
+				"Merging Method",
+				"Type of merging method (Sum, Average, Minimum, Maximum or Count) will be used if \"Supress User Interface Display\" is set to true");
 		return pds;
 	}
 
@@ -91,10 +97,10 @@ public class MergeTableRows extends HeadlessUIModule {
 	 * @return the human readable name of the indexed input.
 	 */
 	public String getInputName(int index) {
-		switch(index) {
-			case 0:
+		switch (index) {
+			case 0 :
 				return "Input Table";
-			default:
+			default :
 				return "No such input.";
 		}
 	}
@@ -105,109 +111,139 @@ public class MergeTableRows extends HeadlessUIModule {
 	 * @return the human readable name of the indexed output.
 	 */
 	public String getOutputName(int index) {
-		switch(index) {
-			case 0:
+		switch (index) {
+			case 0 :
 				return "Output Table";
-			default:
+			default :
 				return "No such output.";
 		}
 	}
 
 	public String getInputInfo(int i) {
 		switch (i) {
-			case 0: return "The table to be processed by the row merge operation.";
-			default: return "No such input.";
+			case 0 :
+				return "The table to be processed by the row merge operation.";
+			default :
+				return "No such input.";
 		}
 	}
 
 	public String getOutputInfo(int i) {
 		switch (i) {
-			case 0: return "The table that results from the row merge operation.";
-			default: return "No such output.";
+			case 0 :
+				return "The table that results from the row merge operation.";
+			default :
+				return "No such output.";
 		}
 	}
 
-	public String [] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+	public String[] getInputTypes() {
+		String[] types =
+			{ "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
 		return types;
 	}
 
-	public String [] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+	public String[] getOutputTypes() {
+		String[] types =
+			{ "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
 		return types;
 	}
 
 	public String getModuleInfo() {
 
-      	String s = "<p>Overview: ";
-      	  s += "This module merges rows in a table that have the same values for one or more key attributes.  ";
-          s += "The user selects the key attribute(s) and specifies other information about how the rows should be merged. ";
+		String s = "<p>Overview: ";
+		s
+			+= "This module merges rows in a table that have the same values for one or more key attributes.  ";
+		s
+			+= "The user selects the key attribute(s) and specifies other information about how the rows should be merged. ";
 
-      	  s += "</p><p>Detailed Description: ";
-      	  s += "This module merges multiple rows from the <i>Input Table</i> into a single row in the <i>Output Table</i>. ";
-          s += "Rows are merged if they have identical values for one or more key attributes. ";
-          s += "A set of rows from the <i>Input Table</i> that has identical values for the key attributes are called ";
-          s += "<i>matching rows</i>.   One output row is produced for each set of matching rows. ";
-          s += "The module presents a dialog that allows selection of the key attribute(s) and control over additional ";
-      	  s += "merge parameters. ";
+		s += "</p><p>Detailed Description: ";
+		s
+			+= "This module merges multiple rows from the <i>Input Table</i> into a single row in the <i>Output Table</i>. ";
+		s
+			+= "Rows are merged if they have identical values for one or more key attributes. ";
+		s
+			+= "A set of rows from the <i>Input Table</i> that has identical values for the key attributes are called ";
+		s
+			+= "<i>matching rows</i>.   One output row is produced for each set of matching rows. ";
+		s
+			+= "The module presents a dialog that allows selection of the key attribute(s) and control over additional ";
+		s += "merge parameters. ";
 
-      	  s += "</p><p>";
-      	  s += "The module dialog lists all of the attributes in the <i>Input Table</i> and allows the user to select one ";
-          s += "or more of them to be the <i>Key</i> for the merge. ";
-          s += "The module merges table rows with identical values for all of the specified Key attributes. ";
-          s += "The module dialog also lists all of the numeric attributes in the <i>Input Table</i> and allows the user ";
-          s += "to select one of these as the <i>Control</i> attribute. ";
-          s += "The Control determines which row in each matching row set will be used as the basis ";
-          s += "for the resulting merged row. ";
-          s += "For a set of matching rows, the row with the maximum value for the Control attribute is the control row. ";
+		s += "</p><p>";
+		s
+			+= "The module dialog lists all of the attributes in the <i>Input Table</i> and allows the user to select one ";
+		s += "or more of them to be the <i>Key</i> for the merge. ";
+		s
+			+= "The module merges table rows with identical values for all of the specified Key attributes. ";
+		s
+			+= "The module dialog also lists all of the numeric attributes in the <i>Input Table</i> and allows the user ";
+		s += "to select one of these as the <i>Control</i> attribute. ";
+		s
+			+= "The Control determines which row in each matching row set will be used as the basis ";
+		s += "for the resulting merged row. ";
+		s
+			+= "For a set of matching rows, the row with the maximum value for the Control attribute is the control row. ";
 
-          s += "</p><p>";
-          s += "The module dialog also lists the numeric attributes under the <i>Merge</i> heading, ";
-          s += "and allows the user to select ";
-          s += "one or more of these attributes to be merged across matching rows using the operation specified via the ";
-          s += "dialog's <i>Merge Method</i>. ";
-          s += "The possible merge methods are <i>Sum</i>, <i>Average</i>, ";
-          s += "<i>Maximum</i>, <i>Minimum</i>, and <i>Count</i>. ";
-          s += "For each of the Merge attributes selected, the merge method will be applied to the attribute values of all ";
-          s += "matching rows in a set and the result will appear in the output merged row. ";
+		s += "</p><p>";
+		s
+			+= "The module dialog also lists the numeric attributes under the <i>Merge</i> heading, ";
+		s += "and allows the user to select ";
+		s
+			+= "one or more of these attributes to be merged across matching rows using the operation specified via the ";
+		s += "dialog's <i>Merge Method</i>. ";
+		s += "The possible merge methods are <i>Sum</i>, <i>Average</i>, ";
+		s += "<i>Maximum</i>, <i>Minimum</i>, and <i>Count</i>. ";
+		s
+			+= "For each of the Merge attributes selected, the merge method will be applied to the attribute values of all ";
+		s
+			+= "matching rows in a set and the result will appear in the output merged row. ";
 
-          s += "</p><p>";
-          s += "Each row in the <i>Output Table</i> will have the values of the control row attributes ";
-          s += "for all string attributes and for the numeric attributes that were not selected as Merge attributes. ";
-          s += "That is to say, all data that is not ";
-          s += "merged using the merge method is simply copied from the control row for each set of matching rows. ";
+		s += "</p><p>";
+		s
+			+= "Each row in the <i>Output Table</i> will have the values of the control row attributes ";
+		s
+			+= "for all string attributes and for the numeric attributes that were not selected as Merge attributes. ";
+		s += "That is to say, all data that is not ";
+		s
+			+= "merged using the merge method is simply copied from the control row for each set of matching rows. ";
 
-          s += "</p><p>Data Type Restrictions: ";
-          s += "The <i>Input Table</i> must contain at least one numeric attribute that can be used as the <i>Control</i>. ";
-          s += "In addition, the Merge Method can only be applied to numeric attributes. ";
+		s += "</p><p>Data Type Restrictions: ";
+		s
+			+= "The <i>Input Table</i> must contain at least one numeric attribute that can be used as the <i>Control</i>. ";
+		s
+			+= "In addition, the Merge Method can only be applied to numeric attributes. ";
 
-          s += "</p><p>Data Handling: ";
-          s += "The <i>Input Table</i> is not modified.   The <i>Output Table</i> is created by the module. ";
+		s += "</p><p>Data Handling: ";
+		s
+			+= "The <i>Input Table</i> is not modified.   The <i>Output Table</i> is created by the module. ";
 
-          s += "</p><p>Missing Values Handling: ";
-         s += "The key, control and merge columns in the <i>Input Table</i> should be clean of missing values. " +
-           "If a missing value is encountered an Exception will be thrown. Use 'RemoveRowsWithMissingValues' module " +
-           "before this module, to clean the <i>Input Table</i>.";
+		s += "</p><p>Missing Values Handling: ";
+		s
+			+= "The key, control and merge columns in the <i>Input Table</i> should be clean of missing values. "
+			+ "If a missing value is encountered an Exception will be thrown. Use 'RemoveRowsWithMissingValues' module "
+			+ "before this module, to clean the <i>Input Table</i>.";
 
+		s += "</p><p>Scalability: ";
+		s
+			+= "This module should scale very well for tables where the key attribute has a limited number ";
+		s += "of unique values. When that is not the case, ";
+		s
+			+= "in other words, if the key attribute selected is not nominal, the module will not scale ";
+		s += "well.</p>";
 
-	  s += "</p><p>Scalability: ";
-          s += "This module should scale very well for tables where the key attribute has a limited number ";
-          s += "of unique values. When that is not the case, ";
-          s += "in other words, if the key attribute selected is not nominal, the module will not scale ";
-          s += "well.</p>";
-
-          return s;
+		return s;
 	}
 
-        //////
-        // the meat
-        /////
+	//////
+	// the meat
+	/////
 
 	protected UserView createUserView() {
 		return new CleanView();
 	}
 
-	public String [] getFieldNameMapping() {
+	public String[] getFieldNameMapping() {
 		return null;
 	}
 
@@ -215,7 +251,7 @@ public class MergeTableRows extends HeadlessUIModule {
 	private static final String AVE = "Average";
 	private static final String MAX = "Maximum";
 	private static final String MIN = "Minimum";
-        private static final String CNT = "Count";
+	private static final String CNT = "Count";
 
 	private class CleanView extends JUserPane {
 		JList keyAttributeList;
@@ -231,8 +267,8 @@ public class MergeTableRows extends HeadlessUIModule {
 
 		HashMap columnLookup;
 
-		public void setInput (Object o, int id) throws Exception {
-			table = (TableImpl)o;
+		public void setInput(Object o, int id) throws Exception {
+			table = (TableImpl) o;
 
 			// clear all lists
 			keyListModel.removeAllElements();
@@ -249,38 +285,45 @@ public class MergeTableRows extends HeadlessUIModule {
 			// now add the column labels
 			// keyListModel entries can be string or numeric type columns
 			// controlListModel and mergeListModel entries must be numeric type columns
-			int ni = 0;		// index for numeric type selections
-			for(int i = 0; i < table.getNumColumns(); i++) {
+			int ni = 0; // index for numeric type selections
+			for (int i = 0; i < table.getNumColumns(); i++) {
+				if (table.hasMissingValues(i))
+					continue;
+
 				columnLookup.put(table.getColumnLabel(i), new Integer(i));
 
 				keyListModel.addElement(table.getColumnLabel(i));
-				if(lastKeys != null && lastKeys.contains(table.getColumnLabel(i))) {
-				   selectedKeys.add(new Integer(i));
-                                }
+				if (lastKeys != null
+					&& lastKeys.contains(table.getColumnLabel(i))) {
+					selectedKeys.add(new Integer(i));
+				}
 
-				if(table.getColumn(i) instanceof NumericColumn) {
+				if (table.getColumn(i) instanceof NumericColumn) {
 					controlListModel.addElement(table.getColumnLabel(i));
-					if(lastControl != null && lastControl.equals(table.getColumnLabel(i))) {
+					if (lastControl != null
+						&& lastControl.equals(table.getColumnLabel(i))) {
 						selectedControls.add(new Integer(ni));
 					}
 
 					mergeListModel.addElement(table.getColumnLabel(i));
-					if(lastToMerge != null && lastToMerge.contains(table.getColumnLabel(i))) {
+					if (lastToMerge != null
+						&& lastToMerge.contains(table.getColumnLabel(i))) {
 						selectedMerges.add(new Integer(ni));
-   					}
+					}
 
 					ni++;
 				}
-				if(table.getColumnLabel(i).length() > longest.length())
+				if (table.getColumnLabel(i).length() > longest.length())
 					longest = table.getColumnLabel(i);
 
 			}
 
-                        // Don't force user to Abort if table data is wrong - abort for them with message.
-                        if (controlListModel.size() == 0 ) {
-                            throw new Exception( getAlias() +
-                               ": Input Table does not contain any numeric attributes - itinerary will be aborted" );
-                        }
+			// Don't force user to Abort if table data is wrong - abort for them with message.
+			if (controlListModel.size() == 0) {
+				throw new Exception(
+					getAlias()
+						+ ": Input Table does not contain any numeric attributes - itinerary will be aborted");
+			}
 
 			keyAttributeList.setPrototypeCellValue(longest);
 			controlAttribute.setPrototypeCellValue(longest);
@@ -289,8 +332,8 @@ public class MergeTableRows extends HeadlessUIModule {
 			int[] selKeys = new int[selectedKeys.size()];
 			int idx = 0;
 			Iterator iter = selectedKeys.iterator();
-			while(iter.hasNext()) {
-				Integer num = (Integer)iter.next();
+			while (iter.hasNext()) {
+				Integer num = (Integer) iter.next();
 				selKeys[idx] = num.intValue();
 				idx++;
 			}
@@ -298,8 +341,8 @@ public class MergeTableRows extends HeadlessUIModule {
 			int[] selControls = new int[selectedControls.size()];
 			idx = 0;
 			iter = selectedControls.iterator();
-			while(iter.hasNext()) {
-				Integer num = (Integer)iter.next();
+			while (iter.hasNext()) {
+				Integer num = (Integer) iter.next();
 				selControls[idx] = num.intValue();
 				idx++;
 			}
@@ -307,17 +350,17 @@ public class MergeTableRows extends HeadlessUIModule {
 			int[] selMerge = new int[selectedMerges.size()];
 			idx = 0;
 			iter = selectedMerges.iterator();
-			while(iter.hasNext()) {
-				Integer num = (Integer)iter.next();
+			while (iter.hasNext()) {
+				Integer num = (Integer) iter.next();
 				selMerge[idx] = num.intValue();
 				idx++;
 			}
 
 			keyAttributeList.setSelectedIndices(selKeys);
-                        controlAttribute.setSelectedIndices(selControls);
+			controlAttribute.setSelectedIndices(selControls);
 			attributesToMerge.setSelectedIndices(selMerge);
 			mergeMethod.setSelectedItem(lastMergeMethod);
-                }
+		}
 
 		public void initView(ViewModule m) {
 			keyAttributeList = new JList();
@@ -326,12 +369,11 @@ public class MergeTableRows extends HeadlessUIModule {
 			controlAttribute = new JList();
 			controlListModel = new DefaultListModel();
 			controlAttribute.setModel(controlListModel);
-                        controlAttribute.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			controlAttribute.setSelectionMode(
+				ListSelectionModel.SINGLE_SELECTION);
 			attributesToMerge = new JList();
 			mergeListModel = new DefaultListModel();
 			attributesToMerge.setModel(mergeListModel);
-
-
 
 			JScrollPane jsp1 = new JScrollPane(keyAttributeList);
 			jsp1.setColumnHeaderView(new JLabel("Key"));
@@ -340,7 +382,7 @@ public class MergeTableRows extends HeadlessUIModule {
 			JScrollPane jsp3 = new JScrollPane(attributesToMerge);
 			jsp3.setColumnHeaderView(new JLabel("To Merge"));
 
-			String [] methods = {SUM, AVE, MAX, MIN, CNT};
+			String[] methods = { SUM, AVE, MAX, MIN, CNT };
 			mergeMethod = new JComboBox(methods);
 			JPanel pnl = new JPanel();
 			pnl.add(new JLabel("Merge Method"));
@@ -370,67 +412,78 @@ public class MergeTableRows extends HeadlessUIModule {
 			JButton done = new JButton("Done");
 			done.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-					Object [] keys = keyAttributeList.getSelectedValues();
+					Object[] keys = keyAttributeList.getSelectedValues();
 					Object control = controlAttribute.getSelectedValue();
-					Object [] merges = attributesToMerge.getSelectedValues();
+					Object[] merges = attributesToMerge.getSelectedValues();
 					final Object type = mergeMethod.getSelectedItem();
 
-					if(keys == null || keys.length == 0) {
+					if (keys == null || keys.length == 0) {
 						ErrorDialog.showDialog(
-							"You must select a key attribute.", "Error");
+							"You must select a key attribute.",
+							"Error");
 						return;
 					}
-					if(control == null) {
+					if (control == null) {
 						ErrorDialog.showDialog(
-							"You must select a control attribute.", "Error");
+							"You must select a control attribute.",
+							"Error");
 						return;
 					}
-					if(merges == null || merges.length == 0) {
+					if (merges == null || merges.length == 0) {
 						ErrorDialog.showDialog(
-							"You must select one or more attributes to merge.", "Error");
+							"You must select one or more attributes to merge.",
+							"Error");
 						return;
 					}
-					if(type == null) {
+					if (type == null) {
 						ErrorDialog.showDialog(
-							"You must select a method to merge by.", "Error");
+							"You must select a method to merge by.",
+							"Error");
 						return;
 					}
 
-					final int [] ks = new int[keys.length];
-					for(int i = 0; i < keys.length; i++)
-						ks[i] = ((Integer)columnLookup.get(keys[i])).intValue();
+					final int[] ks = new int[keys.length];
+					for (int i = 0; i < keys.length; i++)
+						ks[i] =
+							((Integer) columnLookup.get(keys[i])).intValue();
 
-					final int [] ms = new int[merges.length];
-					for(int i = 0; i < merges.length; i++)
-						ms[i] = ((Integer)columnLookup.get(merges[i])).intValue();
+					final int[] ms = new int[merges.length];
+					for (int i = 0; i < merges.length; i++)
+						ms[i] =
+							((Integer) columnLookup.get(merges[i])).intValue();
 
-					final int ctrl = ((Integer)columnLookup.get(control)).intValue();
+					final int ctrl =
+						((Integer) columnLookup.get(control)).intValue();
 
-                                         //mTbl;
+					//mTbl;
 
 					SwingUtilities.invokeLater(new Runnable() {
-                                            public void run() {
-                                              //changed by vered - 9/18/03
-                                              //moved the code of the merging methods to
-                                              //MergingClass, so it could be static
-                                              //and reused by doit.
+						public void run() {
+							//changed by vered - 9/18/03
+							//moved the code of the merging methods to
+							//MergingClass, so it could be static
+							//and reused by doit.
 
+							final MutableTable mTbl =
+								MergingClass.mergeTable(
+									ks,
+									ms,
+									ctrl,
+									(String) type,
+									table);
+							pushOutput(mTbl, 0);
+							viewDone("Done");
 
-                                                 final MutableTable mTbl = MergingClass.mergeTable(ks, ms, ctrl, (String)type, table);
-                                                pushOutput(mTbl, 0);
-                                                viewDone("Done");
-
-//                                                mergeTable(ks, ms, ctrl, (String)type);
-                                            }
+							//                                                mergeTable(ks, ms, ctrl, (String)type);
+						}
 					});
 
-
 					HashSet usedKeys = new HashSet();
-					for(int i = 0; i < keys.length; i++)
+					for (int i = 0; i < keys.length; i++)
 						usedKeys.add(keys[i]);
 
 					HashSet usedMerges = new HashSet();
-					for(int i = 0; i < merges.length; i++)
+					for (int i = 0; i < merges.length; i++)
 						usedMerges.add(merges[i]);
 
 					setLastControl(control.toString());
@@ -438,12 +491,12 @@ public class MergeTableRows extends HeadlessUIModule {
 					setLastToMerge(usedMerges);
 					setLastMergeMethod(type.toString());
 
-                                        //headless conversion support
-                                        setControl(control.toString());
-                                        setKeys(usedKeys.toArray());
-                                        setMerges(usedMerges.toArray());
-                                        setType(type.toString());
-                                        //headless conversion support
+					//headless conversion support
+					setControl(control.toString());
+					setKeys(usedKeys.toArray());
+					setMerges(usedMerges.toArray());
+					setType(type.toString());
+					//headless conversion support
 				}
 			});
 			buttonPanel.add(abort);
@@ -451,387 +504,162 @@ public class MergeTableRows extends HeadlessUIModule {
 			add(buttonPanel, BorderLayout.SOUTH);
 		}
 
-                //the following was commented out by vered - 9/18/03
-                //and was trasnferred to MergingClass.java (all the merge methods)
-                //and to KetSet.java
-
-
-	/*	 private void mergeTable(int[] keys, int[] merges, int control, String type) {
-			HashMap keyLookup = new HashMap(20);
-			// loop through table to find rows where all the key columns are identical
-			for(int i = 0; i < table.getNumRows(); i++) {
-				// get the keys for this row
-				String [] kys = new String[keys.length];
-				for(int j = 0; j < kys.length; j++)
-					kys[j] = table.getString(i, keys[j]);
-				KeySet set = new KeySet(kys);
-				if(!keyLookup.containsKey(set)) {
-					ArrayList list = new ArrayList();
-					list.add(new Integer(i));
-					keyLookup.put(set, list);
-				}
-				else {
-					ArrayList list = (ArrayList)keyLookup.get(set);
-					list.add(new Integer(i));
-					// necessary?
-					keyLookup.put(set, list);
-				}
-			}
-
-			// create the table
-			MutableTableImpl newTable = createTable(keyLookup.size());
-
-			int curRow = 0;
-			// now convert the array lists to int[]
-			Iterator iter = keyLookup.keySet().iterator();
-			while(iter.hasNext()) {
-				Object key = iter.next();
-				ArrayList list = (ArrayList)keyLookup.get(key);
-				int [] array = new int[list.size()];
-				for(int q = 0; q < list.size(); q++)
-					array[q] = ((Integer)list.get(q)).intValue();
-				//now go ahead and do the merging..
-				if(type.equals(MAX))
-					mergeMax(newTable, curRow, keys, merges, control, array);
-				else if(type.equals(MIN))
-					mergeMin(newTable, curRow, keys, merges, control, array);
-				else if(type.equals(AVE))
-					mergeAve(newTable, curRow, keys, merges, control, array);
-				else if(type.equals(SUM))
-					mergeSum(newTable, curRow, keys, merges, control, array);
-				else if(type.equals(CNT))
-					mergeCnt(newTable, curRow, keys, merges, control, array);
-				curRow++;
-			}
-
-			// the number of rows of the cleaned table is equal to the number of unique keys..
-			pushOutput(newTable, 0);
-			viewDone("Done");
-		}
-
-		private void mergeMax(MutableTableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
-			// find the maximum in the control column.  this row will be the one
-			// where data is copied from
-
-			int maxRow = rows[0];
-			double maxVal = table.getDouble(rows[0], control);
-			for(int i = 1; i < rows.length; i++) {
-				if(table.getDouble(rows[i], control) > maxVal) {
-					maxVal = table.getDouble(rows[i], control);
-					maxRow = rows[i];
-				}
-			}
-
-			// copy all the row data in
-			for(int i = 0; i < tbl.getNumColumns(); i++) {
-				Column c = tbl.getColumn(i);
-				if(c instanceof NumericColumn)
-					tbl.setDouble(table.getDouble(maxRow, i), rowLoc, i);
-				else
-					tbl.setString(table.getString(maxRow, i), rowLoc, i);
-			}
-		}
-
-		private void mergeMin(MutableTableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
-			// find the maximum in the control column.  this row will be the one
-			// where data is copied from
-
-			int maxRow = rows[0];
-			double maxVal = table.getDouble(rows[0], control);
-			for(int i = 1; i < rows.length; i++) {
-				if(table.getDouble(rows[i], control) > maxVal) {
-					maxVal = table.getDouble(rows[i], control);
-					maxRow = rows[i];
-				}
-			}
-
-			// copy all the row data in
-			for(int i = 0; i < tbl.getNumColumns(); i++) {
-				Column c = tbl.getColumn(i);
-				if(c instanceof NumericColumn)
-					tbl.setDouble(table.getDouble(maxRow, i), rowLoc, i);
-				else
-					tbl.setString(table.getString(maxRow, i), rowLoc, i);
-			}
-
-			// now find the minimum
-			for(int i = 0; i < mergeCols.length; i++) {
-				double minimum = 0;
-				for(int j = 0; j < rows.length; j++) {
-         			    if ( j == 0 ) {
-					minimum = table.getDouble(rows[j], mergeCols[i]);
-                                    } else {
-					double testVal = table.getDouble(rows[j], mergeCols[i]);
-					if ( testVal < minimum ) {
-					    minimum = testVal;
-					}
-				    }
-				}
-				tbl.setDouble(minimum, rowLoc, mergeCols[i]);
-			}
-		}
-
-		private void mergeAve(MutableTableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
-			// find the maximum in the control column.  this row will be the one
-			// where data is copied from
-
-			int maxRow = rows[0];
-			double maxVal = table.getDouble(rows[0], control);
-			for(int i = 1; i < rows.length; i++) {
-				if(table.getDouble(rows[i], control) > maxVal) {
-					maxVal = table.getDouble(rows[i], control);
-					maxRow = rows[i];
-				}
-			}
-
-			// copy all the row data in
-			for(int i = 0; i < tbl.getNumColumns(); i++) {
-				Column c = tbl.getColumn(i);
-				if(c instanceof NumericColumn)
-					tbl.setDouble(table.getDouble(maxRow, i), rowLoc, i);
-				else
-					tbl.setString(table.getString(maxRow, i), rowLoc, i);
-			}
-
-			// now find the averages
-			for(int i = 0; i < mergeCols.length; i++) {
-				double sums = 0;
-				for(int j = 0; j < rows.length; j++) {
-					sums += table.getDouble(rows[j], mergeCols[i]);
-				}
-				tbl.setDouble(sums/(double)rows.length, rowLoc, mergeCols[i]);
-			}
-		}
-
-		private void mergeSum(MutableTableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
-			// find the maximum in the control column.  this row will be the one
-			// where data is copied from
-
-			int maxRow = rows[0];
-			double maxVal = table.getDouble(rows[0], control);
-			for(int i = 1; i < rows.length; i++) {
-				if(table.getDouble(rows[i], control) > maxVal) {
-					maxVal = table.getDouble(rows[i], control);
-					maxRow = rows[i];
-				}
-			}
-
-			// copy all the row data in
-			for(int i = 0; i < tbl.getNumColumns(); i++) {
-				Column c = tbl.getColumn(i);
-				if(c instanceof NumericColumn)
-					tbl.setDouble(table.getDouble(maxRow, i), rowLoc, i);
-				else
-					tbl.setString(table.getString(maxRow, i), rowLoc, i);
-			}
-
-			// now find the sums
-			for(int i = 0; i < mergeCols.length; i++) {
-				double sums = 0;
-				for(int j = 0; j < rows.length; j++) {
-					sums += table.getDouble(rows[j], mergeCols[i]);
-				}
-				tbl.setDouble(sums, rowLoc, mergeCols[i]);
-			}
-		}
-
-		private void mergeCnt(MutableTableImpl tbl, int rowLoc, int[] keys, int [] mergeCols, int control, int [] rows) {
-			// find the maximum in the control column.  this row will be the one
-			// where data is copied from
-
-			int maxRow = rows[0];
-			double maxVal = table.getDouble(rows[0], control);
-			for(int i = 1; i < rows.length; i++) {
-				if(table.getDouble(rows[i], control) > maxVal) {
-					maxVal = table.getDouble(rows[i], control);
-					maxRow = rows[i];
-				}
-			}
-
-			// copy all the row data in
-			for(int i = 0; i < tbl.getNumColumns(); i++) {
-				Column c = tbl.getColumn(i);
-				if(c instanceof NumericColumn)
-					tbl.setDouble(table.getDouble(maxRow, i), rowLoc, i);
-				else
-					tbl.setString(table.getString(maxRow, i), rowLoc, i);
-			}
-
-			// the count is the number of rows - write than in each column
-                        // that's being merged.
-                        int cnt = rows.length;
-			for(int i = 0; i < mergeCols.length; i++) {
-				tbl.setDouble(cnt, rowLoc, mergeCols[i]);
-			}
-		}
-
-		private MutableTableImpl createTable(int numRows) {
-			Column[] cols = new Column[table.getNumColumns()];
-			for(int i = 0; i < table.getNumColumns(); i++) {
-				Column c = table.getColumn(i);
-				Column newCol = null;
-				if(c instanceof IntColumn)
-					newCol = new IntColumn(numRows);
-				else if(c instanceof StringColumn)
-					newCol = new StringColumn(numRows);
-				else if(c instanceof FloatColumn)
-					newCol = new FloatColumn(numRows);
-				else if(c instanceof LongColumn)
-					newCol = new LongColumn(numRows);
-				else if(c instanceof DoubleColumn)
-					newCol = new DoubleColumn(numRows);
-				else if(c instanceof BooleanColumn)
-					newCol = new BooleanColumn(numRows);
-				else if(c instanceof ContinuousCharArrayColumn)
-					newCol = new ContinuousCharArrayColumn(numRows);
-				else if(c instanceof ContinuousByteArrayColumn)
-					newCol = new ContinuousByteArrayColumn(numRows);
-				else if(c instanceof ShortColumn)
-					newCol = new ShortColumn(numRows);
-				else
-					newCol = new StringColumn(numRows);
-				newCol.setLabel(c.getLabel());
-				cols[i] = newCol;
-			}
-
-			MutableTableImpl tbl = new MutableTableImpl(cols);
-			tbl.setLabel(table.getLabel());
-			return tbl;
-		} */
-
-	/*	private class KeySet {
-			String[] keys;
-
-			KeySet(String[] k) {
-				keys = k;
-			}
-
-			public boolean equals(Object o) {
-				KeySet other = (KeySet)o;
-				String [] otherkeys = other.keys;
-
-				if(otherkeys.length != keys.length)
-					return false;
-
-				for(int i = 0; i < keys.length; i++)
-					if(!keys[i].equals(otherkeys[i]))
-						return false;
-				return true;
-			}
-
-			public String toString() {
-				StringBuffer sb = new StringBuffer();
-				for(int i = 0; i < keys.length; i++) {
-					sb.append(keys[i]);
-					sb.append(" ");
-				}
-				return sb.toString();
-			}
-
-			public int hashCode() {
-				int result = 37;
-				for(int i = 0; i < keys.length; i++)
-					result *= keys[i].hashCode();
-				return result;
-			}
-		} */
+		//the following was commented out by vered - 9/18/03
+		//and was trasnferred to MergingClass.java (all the merge methods)
+		//and to KetSet.java
 
 		public Dimension getPreferredSize() {
 			return new Dimension(400, 300);
-                }
+		}
 
-	}//CleanView
+	} //CleanView
 
+	//headless conversion support
+	private String[] keys;
+	//key columns' names. rows with same value in these columns will be merged
+	private String control;
+	//control column name. the values of the row with largest
+	//value in this column will be copied to the merged row.
+	private String[] merges; //column names to merge their values.
+	private String type; //type of merging (sum, count, etc.)
 
-    //headless conversion support
-    private String[] keys; //key columns' names. rows with same value in these columns will be merged
-    private String control; //control column name. the values of the row with largest
-                            //value in this column will be copied to the merged row.
-    private String[] merges; //column names to merge their values.
-    private String type; //type of merging (sum, count, etc.)
+	//setter and getter methods.
+	public Object[] getKeys() {
+		return keys;
+	}
+	public void setKeys(Object[] k) {
+		keys = new String[k.length];
+		for (int i = 0; i < k.length; i++)
+			keys[i] = (String) k[i];
+	}
 
+	public String getControl() {
+		return control;
+	}
+	public void setControl(String c) {
+		control = c;
+	}
 
-    //setter and getter methods.
-    public Object[] getKeys(){return keys;}
-    public void setKeys(Object[] k){
-      keys = new String[k.length];
-      for (int i=0; i<k.length; i++)
-        keys[i] = (String) k[i];
-    }
+	public Object[] getMerges() {
+		return merges;
+	}
+	public void setMerges(Object[] m) {
+		merges = new String[m.length];
+		for (int i = 0; i < m.length; i++)
+			merges[i] = (String) m[i];
+	}
 
-    public String getControl(){return control;}
-    public void setControl(String c){control = c;}
+	public String getType() {
+		return type;
+	}
+	public void setType(String t) {
+		type = t;
+	}
 
+	public void doit() throws Exception {
+		final Table table = (Table) pullInput(0);
 
-    public Object[] getMerges(){return merges;}
-    public void setMerges(Object[] m){
-      merges = new String[m.length];
-      for (int i=0; i<m.length; i++)
-        merges[i] = (String) m[i];
-    }
+		HashMap columns = StaticMethods.getAvailableAttributes(table);
 
-    public String getType(){return type;}
-    public void setType(String t){type = t;}
+		//validating that properties are not null.
+		if (keys == null
+			|| keys.length == 0
+			|| merges == null
+			|| merges.length == 0
+			|| control == null
+			|| control.length() == 0
+			|| type == null
+			|| type.length() == 0)
+			throw new Exception(
+				this.getAlias()
+					+ " has not been configured. Before running headless, run with the gui and configure the parameters.");
 
-    public void doit() throws Exception{
-      final Table table = (Table)pullInput(0);
+		//fnding out which of keys are relevant to the input table.
 
+		final int[] ks = StaticMethods.getIntersectIds(keys, columns);
+		//ks[i] is index of column keys[i]
+		if (ks.length < keys.length)
+			throw new Exception(
+				"Some of the configured Key Columns were not found in the "
+					+ "input table "
+					+ ((table.getLabel() == null)
+						? ""
+						: (" " + table.getLabel()))
+					+ ". Please reconfigure the module.");
 
-      HashMap columns = StaticMethods.getAvailableAttributes(table);
+		for (int i = 0; i < ks.length; i++) {
+			if (table.hasMissingValues(ks[i]))
+				throw new Exception(
+					this.getAlias()
+						+ " : A key column ("
+						+ table.getColumnLabel(ks[i])
+						+ ") has missing values. That is not allowed.");
+		}
 
-      //validating that properties are not null.
-      if(keys == null || keys.length == 0 || merges == null || merges.length == 0 ||
-        control == null || control.length() == 0 ||  type == null || type.length() == 0)
-         throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+		final int[] ms = StaticMethods.getIntersectIds(merges, columns);
+		; //ms[i] is index of column merges[i]
+		if (ms.length < merges.length)
+			throw new Exception(
+				"Some of the configured Merging Columns were not found in the "
+					+ "input table "
+					+ ((table.getLabel() == null)
+						? ""
+						: (" " + table.getLabel()))
+					+ ". Please reconfigure the module.");
 
+		for (int i = 0; i < ms.length; i++) {
+			if (table.hasMissingValues(ms[i]))
+				throw new Exception(
+					this.getAlias()
+						+ " : A merge column ("
+						+ table.getColumnLabel(ms[i])
+						+ ") has missing values. That is not allowed.");
+		}
 
-      //fnding out which of keys are relevant to the input table.
+		final int cntrl = StaticMethods.getID(control, columns);
+		//cntrl is index of column control
+		if (cntrl == -1)
+			throw new Exception(
+				getAlias()
+					+ "The control column \""
+					+ control
+					+ "\" could not be found in "
+					+ "the input table"
+					+ ((table.getLabel() == null)
+						? ""
+						: (" " + table.getLabel()))
+					+ ". Please reconfigure the module.");
 
-      final int[] ks = StaticMethods.getIntersectIds(keys, columns); //ks[i] is index of column keys[i]
-      if(ks.length < keys.length)
-        throw new Exception ("Some of the configured Key Columns were not found in the " +
-                             "input table " + ((table.getLabel()==null) ? "" : (" " +table.getLabel()))
-                             + ". Please reconfigure the module.");
+		if (table.hasMissingValues(cntrl))
+			throw new Exception(
+				this.getAlias()
+					+ " : The control column ("
+					+ control
+					+ ") has missing values. That is not allowed.");
 
-      final int[] ms = StaticMethods.getIntersectIds(merges, columns); ; //ms[i] is index of column merges[i]
-      if(ms.length < merges.length)
-        throw new Exception ("Some of the configured Merging Columns were not found in the " +
-                             "input table " +
-                            ((table.getLabel()==null) ? "" : (" " +table.getLabel())) +
-                            ". Please reconfigure the module.");
+		final String _type = type;
 
-      final int cntrl = StaticMethods.getID(control, columns);   //cntrl is index of column control
-      if(cntrl == -1)
-        throw new Exception (getAlias() + "The control column \"" + control + "\" could not be found in " +
-                             "the input table"
-                             + ((table.getLabel()==null) ? "" : (" " +table.getLabel()))
-                             + ". Please reconfigure the module.");
-      final String _type = type;
+		if (!(type.equalsIgnoreCase(MergingClass.AVE)
+			|| type.equalsIgnoreCase(MergingClass.CNT)
+			|| type.equals(MergingClass.MAX)
+			|| type.equalsIgnoreCase(MergingClass.MIN)
+			|| type.equalsIgnoreCase(MergingClass.SUM)))
+			throw new Exception(
+				getAlias()
+					+ ": The merging type is illegal!\n"
+					+ "Please reconfigure this module using the properties editor "
+					+ "or via a GUI run, so it can run Headless.");
 
+		//end validation.
+		final MutableTable mtbl =
+			MergingClass.mergeTable(ks, ms, cntrl, _type, table);
+		pushOutput(mtbl, 0);
 
+	} //doit
 
-      if(!(type.equalsIgnoreCase(MergingClass.AVE) || type.equalsIgnoreCase(MergingClass.CNT) || type.equals(MergingClass.MAX) ||
-           type.equalsIgnoreCase(MergingClass.MIN) || type.equalsIgnoreCase(MergingClass.SUM)))
-        throw new Exception (getAlias() + ": The merging type is illegal!\n" +
-                             "Please reconfigure this module using the properties editor " +
-                             "or via a GUI run, so it can run Headless.");
-
-      //end validation.
-	  final MutableTable mtbl =  MergingClass.mergeTable(ks, ms, cntrl, _type, table);
-	  pushOutput(mtbl, 0);
-
-    }//doit
-
-
-
-
-    //headless conversion support
-
-
-
+	//headless conversion support
 
 }
-
 
 // QA Comments
 // 2/24/03 - Handed off to QA by Loretta - replaces CleanAndMergeTable.
@@ -849,7 +677,6 @@ public class MergeTableRows extends HeadlessUIModule {
 //           WISH:  Allow "All" option where all stats are computed and
 //           new columns are added.  (see loretta for details)
 // END QA Comments
-
 
 //QA Comments
 //10/23/03 - vered started QA process.
