@@ -3,19 +3,14 @@ package ncsa.d2k.modules.core.datatype.parameter;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
-
-The ParameterPoint object can extend ExampleImpl.
-It will be input to the learning algorithm.
-It should use the same column names and column order as the ParameterSpace implementation.
-Note: It is important that this be an Example so that additional layers
-(optimizing the optimizer etc..) can more easily be implemented.
-
+The ParameterPoint object can extends Table.
+A ParameterPoint defines a point in a ParameterSpace.
+Parameters can be accessed by name if desired.
 */
 
-public interface ParameterPoint extends Example, java.io.Serializable {
+public interface ParameterPoint extends Table {
 
   //static final long serialVersionUID = 2508941379956505568L;
-
 
   /**
    * Create a ParameterPoint from the information in the given table.
@@ -33,9 +28,7 @@ public interface ParameterPoint extends Example, java.io.Serializable {
    * @param types the type as an integer as defined in ColumnTypes.
    * @return a ParameterPoint.
    */
-
   public ParameterPoint createFromData(String [] names, double [] values);
-
 
   /**
    * Get the number of parameters that define the space.
@@ -57,5 +50,23 @@ public interface ParameterPoint extends Example, java.io.Serializable {
    */
   public double getValue(int parameterIndex);
 
+  /**
+   * Get the value of a parameter.
+   * @param name is a string which names the parameter of interest.
+   * @return a double value representing the minimum possible value of the parameter.
+   */
+  public double getValue(String name) throws Exception;
+
+  /**
+   * Get the parameter index of that corresponds to the given name.
+   * @return an integer representing the index of the parameters.
+   */
+  public int getParameterIndex(String name) throws Exception;
+
+  /**
+   * Get the parameter index of that corresponds to the given name.
+   * @return an integer representing the index of the parameters.
+   */
+  public ParameterPoint [] segmentPoint(ParameterPoint point, int splitIndex);
 
 } /* ParameterPoint */

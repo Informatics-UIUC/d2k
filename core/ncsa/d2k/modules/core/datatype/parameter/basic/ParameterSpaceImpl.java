@@ -53,7 +53,7 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
    * @param types the type as an integer as defined in ColumnTypes.
    * @return a ParameterSpace.
    */
-  public ParameterSpace createFromData(
+  public ParameterSpace createFromData (
       String [] names,
       double [] minValues,
     double [] maxValues,
@@ -90,17 +90,9 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
       }
     }
 
+    super.initialize(data, numRows, numParameters, 0, names, null);
 
-    ContinuousExampleSet table = new ContinuousExampleSet(data,
-        numRows,
-        numParameters,
-        0,
-        names,
-        null);
-
-    ParameterSpace space = createFromTable(table);
-
-    return space;
+    return this;
   }
 
   /**
@@ -124,7 +116,7 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
    * Get the parameter index of that corresponds to the given name.
    * @return an integer representing the index of the parameters.
    */
-  public int getParameterIndex(String name) {
+  public int getParameterIndex(String name) throws Exception {
     return -1;
   }
 

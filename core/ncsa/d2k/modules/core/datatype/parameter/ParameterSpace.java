@@ -71,7 +71,7 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * Get the parameter index of that corresponds to the given name.
    * @return an integer representing the index of the parameters.
    */
-  public int getParameterIndex(String name);
+  public int getParameterIndex(String name) throws Exception;
 
   /**
    * Get the minimum value of a parameter.
