@@ -32,7 +32,8 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.discovery.cluster.sample.*;
 import ncsa.d2k.modules.core.discovery.cluster.hac.*;
 
-public class ClusterAssignment_Props extends JPanel implements CustomModuleEditor, ActionListener {
+public class ClusterAssignment_Props extends JPanel 
+	implements CustomModuleEditor, ActionListener, ClusterParameterDefns {
 
   //==============
   // Data Members
@@ -84,11 +85,11 @@ public class ClusterAssignment_Props extends JPanel implements CustomModuleEdito
       maxit = Integer.parseInt(m_max.getText());
     }
     catch (Exception e) {
-      throw new PropertyVetoException("Error in number of assignments field: " +
+      throw new PropertyVetoException("Error in " + MAX_ITERATIONS + " field: " +
                                       e.getMessage(), null);
     }
     if (maxit < 1) {
-      throw new PropertyVetoException("Number of assignments must be > 1.", null);
+      throw new PropertyVetoException(MAX_ITERATIONS + " must be > 0.", null);
     }
 
     if (_src != null){
@@ -125,7 +126,8 @@ public class ClusterAssignment_Props extends JPanel implements CustomModuleEdito
     m_gbc.gridwidth = 1;
     m_gbc.anchor = GridBagConstraints.EAST;
     m_cmLbl = new JLabel();
-    m_cmLbl.setText("Cluster Method: ");
+    m_cmLbl.setText(CLUSTER_METHOD + ": ");
+    m_cmLbl.setToolTipText("Select method to use in determining distance between two clusters."); 
     //m_cmLbl.setFont(new Font("Arial", Font.BOLD,10));
     m_gbl.setConstraints(m_cmLbl, m_gbc);
 
@@ -145,16 +147,18 @@ public class ClusterAssignment_Props extends JPanel implements CustomModuleEdito
     m_gbc.insets = new Insets(4,2,2,2);
     m_gbc.anchor = GridBagConstraints.EAST;
     m_maxLbl = new JLabel();
-    m_maxLbl.setText("Number of assignments: ");
+    m_maxLbl.setText(MAX_ITERATIONS + ": ");
     //m_numClustLbl.setFont(new Font("Arial", Font.BOLD,10));
-    m_maxLbl.setToolTipText("Enter integer value > 0 specifying number of assignment passes to perform.");
+    m_maxLbl.setToolTipText("Enter integer value > 0 specifying maximum number of " +
+                             "cluster assignment/refinement iterations." );
     m_gbl.setConstraints(m_maxLbl, m_gbc);
 
     m_gbc.gridx = 1;
     m_gbc.anchor = GridBagConstraints.WEST;
     m_max = new JTextField(Integer.toString((_src.getNumAssignments() < 1)?5:_src.getNumAssignments()), 5);
     m_max.setFont(new Font("Arial", Font.BOLD,12));
-    m_max.setToolTipText("Enter integer value > 0 specifying number of assignment passes to perform.");
+    m_maxLbl.setToolTipText("Enter integer value > 0 specifying maximum number of " +
+                             "cluster assignment/refinement iterations." );
     m_gbl.setConstraints(m_max, m_gbc);
 
 
@@ -164,7 +168,8 @@ public class ClusterAssignment_Props extends JPanel implements CustomModuleEdito
     m_gbc.insets = new Insets(10,2,2,2);
     m_gbc.gridwidth = 1;
     m_dmLbl = new JLabel();
-    m_dmLbl.setText("Distance Metric: ");
+    m_dmLbl.setText( DISTANCE_METRIC + ": ");
+    m_dmLbl.setToolTipText("Select method to use in determining distance between two examples.");       
     //m_dmLbl.setFont(new Font("Arial", Font.BOLD,10));
     m_gbl.setConstraints(m_dmLbl, m_gbc);
 
@@ -182,22 +187,22 @@ public class ClusterAssignment_Props extends JPanel implements CustomModuleEdito
 
     m_gbc.gridx = 0;
     m_gbc.gridy++;
-    m_gbc.insets = new Insets(4,2,2,2);
-    m_gbc.anchor = GridBagConstraints.CENTER;
-    m_verbose = new JCheckBox("Verbose", _src.getVerbose());
-    //m_verbose.setFont(new Font("Arial", Font.BOLD,10));
-    m_verbose.setToolTipText("Print verbose messages to console.");
-    m_gbl.setConstraints(m_verbose, m_gbc);
-    m_verbose.setVisible(_showVerbose);
-
-    m_gbc.gridy++;
     m_gbc.anchor = GridBagConstraints.CENTER;
     m_gbc.insets = new Insets(4,2,2,2);
-    this.m_checkMV = new JCheckBox("Check Missing for Values",_src.getCheckMissingValues());
+    this.m_checkMV = new JCheckBox(CHECK_MV,_src.getCheckMissingValues());
     //m_checkMV.setFont(new Font("Arial", Font.BOLD,10));
-    m_checkMV.setToolTipText("Screen for missing values in the input table.");
+    m_checkMV.setToolTipText("Check for missing values in the table of examples.");
     m_gbl.setConstraints(m_checkMV, m_gbc);
     m_checkMV.setVisible(this._showMVCheck);
+
+    m_gbc.gridy++;
+    m_gbc.insets = new Insets(4,2,2,2);
+    m_gbc.anchor = GridBagConstraints.CENTER;
+    m_verbose = new JCheckBox(VERBOSE, _src.getVerbose());
+    //m_verbose.setFont(new Font("Arial", Font.BOLD,10));
+    m_verbose.setToolTipText("Write verbose status information to console.");
+    m_gbl.setConstraints(m_verbose, m_gbc);
+    m_verbose.setVisible(_showVerbose);
 
     add(m_cmLbl);
     add(m_methods);
@@ -205,8 +210,8 @@ public class ClusterAssignment_Props extends JPanel implements CustomModuleEdito
     add(m_max);
     add(m_dmLbl);
     add(m_distMetrics);
-    add(m_verbose);
     add(m_checkMV);
+    add(m_verbose);
 
     this.setMinimumSize(this.getPreferredSize());
     this.validateTree();
@@ -231,3 +236,9 @@ public class ClusterAssignment_Props extends JPanel implements CustomModuleEdito
 
 
 }
+// Start QA Comments
+// 4/8/03 - Ruth starts QA;  Updates for consistenct w/ other modules.
+//          added ClusterParameterDefns; Fixed one bounds check;
+//          Ready for Basic
+// End QA Comments
+

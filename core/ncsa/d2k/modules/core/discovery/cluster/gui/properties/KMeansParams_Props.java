@@ -33,7 +33,7 @@ import ncsa.d2k.modules.core.discovery.cluster.hac.*;
 import ncsa.d2k.modules.core.discovery.cluster.sample.*;
 
 public class KMeansParams_Props extends JPanel
-    implements CustomModuleEditor, ActionListener, KMeansParameterDefns {
+    implements CustomModuleEditor, ActionListener, ClusterParameterDefns {
 
   //==============
   // Data Members
@@ -284,4 +284,5 @@ public class KMeansParams_Props extends JPanel
 //          Made minor changes for consistency - some tests/msgs didn't agree.
 // 4/7/03 - Used KMeansParameterDefns so dialog & property descriptions are consistent.
 //        - Ready for Basic
+// 4/8/03 - Changed to use ClusterParameterDefns
 // End QA Comments
