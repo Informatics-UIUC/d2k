@@ -46,6 +46,9 @@ public class EMOEvaluateModule
     }
    }*/
 
+  MutableTable table;
+  NsgaPopulation population;
+  int numCols;
 
   /**
      Do the evaluation, using the evaluate function provided by the population
@@ -55,9 +58,12 @@ public class EMOEvaluateModule
   public void doit() throws Exception {
       // the current population of the GA run
       NsgaPopulation pop = (NsgaPopulation)this.pullInput(0);
-
-      //MutableTable newmt = pop.getTbl();//pop.getAllVarNames();
-      MutableTable newmt = (MutableTable)pop.getPopulationInfo().varNames.copy();
+      if(population == null || pop != population) {
+        table = (MutableTable) pop.getPopulationInfo().varNames.copy();
+        table.setNumRows(pop.size());
+        numCols = table.getNumColumns();
+        population = pop;
+      }
 
       Individual[] individuals = pop.getMembers();
       boolean binaryType = false;
@@ -69,12 +75,11 @@ public class EMOEvaluateModule
       }
 
       int numOfvar = pop.getNumGenes();
-      newmt.setNumRows(pop.size());
       if(!binaryType) {
         for (int i = 0; i < pop.size(); i++) {
           double[] tabrows = (double[]) ( (pop.getMember(i)).getGenes());
           for (int j = 0; j < numOfvar; j++) {
-            newmt.setDouble(tabrows[j], i, j);
+            table.setDouble(tabrows[j], i, j);
           }
         }
       }
@@ -96,7 +101,7 @@ public class EMOEvaluateModule
         AttributeTransform myvarct = new AttributeTransform(
             new Object[]{fitvarConstructions[i]});
         //apply the transformation
-        myvarct.transform(newmt);
+        myvarct.transform(table);
       }
 
       // update the mutable table by calculating the
@@ -105,10 +110,10 @@ public class EMOEvaluateModule
         AttributeTransform myfitct = new AttributeTransform(
             new Object[]{fitConstructions[i]});
         //apply the transformation
-        boolean retVal = myfitct.transform(newmt);
+        boolean retVal = myfitct.transform(table);
         if(!retVal)
           throw new Exception("Couldn't transform.");
-        int column = newmt.getNumColumns()-1;
+        int column = table.getNumColumns()-1;
 
         // after updating the mutable table, we update the
         // population by filling in the corresponding fitness
@@ -116,7 +121,7 @@ public class EMOEvaluateModule
         for (int mynewii = 0; mynewii < pop.size(); mynewii++) {
           Individual mymember = pop.getMember(mynewii);
           MONumericIndividual myni = (MONumericIndividual) mymember;
-          myni.setObjective(i, newmt.getFloat(mynewii, column));
+          myni.setObjective(i, table.getFloat(mynewii, column));
         }
       }
 
@@ -132,7 +137,7 @@ public class EMOEvaluateModule
         AttributeTransform myvarct = new AttributeTransform(
             new Object[]{constraintVarConstructions[i]});
         //apply the transformation
-        myvarct.transform(newmt);
+        myvarct.transform(table);
       }
 
       // update the mutable table by calculating the constraints
@@ -154,7 +159,7 @@ public class EMOEvaluateModule
         // It is important to note that transform function adds
         // a new column to the table and hence we deleted the column
         // corresponding to the constraint before transforming
-        myfitct.transform(newmt);
+        myfitct.transform(table);
       }
 
       //this is the array of integers that contain the column
@@ -162,7 +167,7 @@ public class EMOEvaluateModule
       int[] myconstraintpos = new int[constraintVariableConstructions.length];
       for (int i = 0; i < constraintVariableConstructions.length; i++) {
         int fitpos = 0;
-        while ( ( (constraintVariableConstructions[i]).getLabel()).compareTo(newmt.
+        while ( ( (constraintVariableConstructions[i]).getLabel()).compareTo(table.
             getColumnLabel(fitpos)) != 0) {
           fitpos++;
         }
@@ -176,11 +181,17 @@ public class EMOEvaluateModule
       for (int mynewii = 0; mynewii < pop.size(); mynewii++) {
         constrvalue = 0;
         for (int iijj = 0; iijj < constraintVariableConstructions.length; iijj++) {
-          constrvalue += newmt.getFloat(mynewii, myconstraintpos[iijj]);
+          constrvalue += table.getFloat(mynewii, myconstraintpos[iijj]);
         }
         Individual mymember = pop.getMember(mynewii);
         MONumericIndividual myni = (MONumericIndividual) mymember;
         ( (NsgaSolution) myni).setConstraint(constrvalue);
+      }
+
+      // now remove the added columns so we can reuse the table again
+      int newNumCols = table.getNumColumns();
+      for(int i = numCols; i < newNumCols; i++) {
+        table.removeColumn(numCols);
       }
 
       this.pushOutput(pop, 0);

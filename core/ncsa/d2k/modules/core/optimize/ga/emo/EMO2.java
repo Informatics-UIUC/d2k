@@ -65,9 +65,9 @@ public class EMO2
     /** the current population */
     NsgaPopulation currentPop;
     /** the last population */
-    NsgaPopulation lastPop;
+    NsgaPopulation lastCumulativePop;
     /** the population from two runs ago */
-    NsgaPopulation twoPopsAgo;
+    NsgaPopulation twoCumulativeAgo;
     /** the cumulative (combined and filtered) population */
     NsgaPopulation cumulativePop;
 
@@ -80,8 +80,15 @@ public class EMO2
 
     PopInfo currentPopInfo;
     PopInfo cumulativePopInfo;
-    PopInfo lastPopInfo;
-    PopInfo twoAgoInfo;
+    PopInfo lastCumulativePopInfo;
+    PopInfo twoCumulativeAgoInfo;
+
+    MutableTable currentPopTable;
+    //MutableTable cumulativePopTable;
+    //MutableTable lastCumulativePopTable;
+    //MutableTable twoCumulativeAgoTable;
+
+    NsgaPopulation firstPop = null;
 
     public void initView(ViewModule vm) {
       // the type of view
@@ -97,6 +104,26 @@ public class EMO2
       continueButton.setEnabled(false);
       continueButton.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
+          twoCumulativeAgo = lastCumulativePop;
+          lastCumulativePop = cumulativePop;
+
+          if(cumulativePop != null) {
+            cumulativePop = new NewNsgaPopulation(currentPop, cumulativePop);
+            ((NewNsgaPopulation)cumulativePop).filtering();
+          }
+          else if(firstPop != null && firstPop != currentPop) {
+            cumulativePop = new NewNsgaPopulation(currentPop, firstPop);
+            ((NewNsgaPopulation)cumulativePop).filtering();
+            firstPop = null;
+          }
+
+          if(twoCumulativeAgo != null)
+            twoCumulativeAgoInfo.setPopulation(twoCumulativeAgo, null);
+          if(lastCumulativePop != null)
+            lastCumulativePopInfo.setPopulation(lastCumulativePop, null);
+          if(cumulativePop != null)
+            cumulativePopInfo.setPopulation(cumulativePop, null);
+
           pushOutput(new EMOPopulationInfo(), 0);
           pushOutput(currentPop, 1);
           continueButton.setEnabled(false);
@@ -118,17 +145,17 @@ public class EMO2
       currentPopInfo.setPreferredSize(new Dimension(350,375));
       cumulativePopInfo = new PopInfo();
       cumulativePopInfo.setPreferredSize(new Dimension(350,375));
-      lastPopInfo = new PopInfo();
-      lastPopInfo.setPreferredSize(new Dimension(350,375));
-      twoAgoInfo = new PopInfo();
-      twoAgoInfo.setPreferredSize(new Dimension(350,375));
+      lastCumulativePopInfo = new PopInfo();
+      lastCumulativePopInfo.setPreferredSize(new Dimension(350,375));
+      twoCumulativeAgoInfo = new PopInfo();
+      twoCumulativeAgoInfo.setPreferredSize(new Dimension(350,375));
 
       JPanel pnl = new JPanel();
       pnl.setLayout(new GridLayout(2, 2));
       pnl.add(currentPopInfo);
       pnl.add(cumulativePopInfo);
-      pnl.add(lastPopInfo);
-      pnl.add(twoAgoInfo);
+      pnl.add(lastCumulativePopInfo);
+      pnl.add(twoCumulativeAgoInfo);
 
       JScrollPane jsp = new JScrollPane(pnl);
       jsp.setPreferredSize(new Dimension(800, 400));
@@ -137,8 +164,8 @@ public class EMO2
 
       cumulativePop = null;
       currentPop = null;
-      lastPop = null;
-      twoPopsAgo = null;
+      lastCumulativePop = null;
+      twoCumulativeAgo = null;
     }
 
     int MATRIX_ROW_WIDTH = 400;
@@ -147,81 +174,218 @@ public class EMO2
     public void setInput(Object o, int z) {
       NsgaPopulation pop = (NsgaPopulation) o;
 
+      // the first generation of a new population
+      if(newPop) {
+        maxGen = pop.getMaxGenerations();
+        maxGen--;
+System.out.println("Max Gen: "+maxGen);
+        newPop = false;
+        currentPop = pop;
+      }
+
+      currentGen = currentPop.getCurrentGeneration();
+
+      // now copy the data from the currentPop into the currentPopTable
+      // create a new table
+      int numObjs = currentPop.getNumObjectives();
+      NsgaSolution[] nis = (NsgaSolution[]) (currentPop.getMembers());
+      int numSolutions = nis.length;
+
+      int numRankZero = 0;
+      for(int i = 0; i < nis.length; i++) {
+        if(nis[i].getRank() == 0)
+          numRankZero++;
+      }
+
+      currentPopTable = (MutableTable) DefaultTableFactory.getInstance().createTable();
+      for (int i = 0; i < numObjs; i++) {
+        currentPopTable.addColumn(new double[numRankZero]);
+        currentPopTable.setColumnLabel(currentPop.getObjectiveConstraints()[
+                                       i].getName(),
+                                       currentPopTable.getNumColumns() - 1);
+      }
+      fillFitnessTable(currentPop, currentPopTable);
+
+      if (currentPop != null)
+       currentPopInfo.setPopulation(currentPop, currentPopTable);
+
+      if (currentGen == maxGen) {
+        if(firstPop == null && cumulativePop == null)
+          firstPop = currentPop;
+        continueButton.setEnabled(true);
+      }
+      else
+        pushOutput(currentPop, 2);
+
+/*System.out.println("newpop: "+newPop);
+
       // reset the populations
       if (newPop) {
+        // get the maximum number of generations for the current population
+        maxGen = pop.getMaxGenerations();
+        newPop = false;
+        // twoPopsAgo becomes the last pop
+        twoCumulativeAgo = lastCumulativePop;
+        twoCumulativeAgoTable = lastCumulativePopTable;
+
+        // the last pop becomes the current pop
+        lastCumulativePop = cumulativePop;
+        lastCumulativePopTable = cumulativePopTable;
+
         // update the cumulative population
         if (cumulativePop == null) {
           // if both the current and last pop are not null, then create the
           // cumulative pop
-          if (currentPop != null && lastPop != null) {
-            // create the population
-            cumulativePop = new NewNsgaPopulation(currentPop, lastPop);
-            ( (NewNsgaPopulation) cumulativePop).filtering();
-          }
+            cumulativePop = currentPop;
+
+            // create a new table
+            int numObjs = cumulativePop.getNumObjectives();
+            NsgaSolution[] nis = (NsgaSolution[]) (cumulativePop.getMembers());
+            int numSolutions = nis.length;
+
+            int numRankZero = 0;
+            for(int i = 0; i < nis.length; i++) {
+              if(nis[i].getRank() == 0)
+                numRankZero++;
+            }
+
+            cumulativePopTable = (MutableTable) DefaultTableFactory.getInstance().createTable();
+            for (int i = 0; i < numObjs; i++) {
+              cumulativePopTable.addColumn(new double[numRankZero]);
+              cumulativePopTable.setColumnLabel(cumulativePop.getObjectiveConstraints()[
+                                             i].getName(),
+                                             cumulativePopTable.getNumColumns() - 1);
+            }
+            fillFitnessTable(cumulativePop, cumulativePopTable);
         }
         else {
           // the cumulative is the junction of the current pop and the (current)
           // cumulative pop
           cumulativePop = new NewNsgaPopulation(currentPop, cumulativePop);
           ( (NewNsgaPopulation) cumulativePop).filtering();
+
+          // create a table
+          // create a new table
+          int numObjs = cumulativePop.getNumObjectives();
+          NsgaSolution[] nis = (NsgaSolution[]) (cumulativePop.getMembers());
+          int numSolutions = nis.length;
+
+          int numRankZero = 0;
+          for(int i = 0; i < nis.length; i++) {
+            if(nis[i].getRank() == 0)
+              numRankZero++;
+          }
+
+          cumulativePopTable = (MutableTable) DefaultTableFactory.getInstance().createTable();
+          for (int i = 0; i < numObjs; i++) {
+            cumulativePopTable.addColumn(new float[numRankZero]);
+            cumulativePopTable.setColumnLabel(cumulativePop.getObjectiveConstraints()[
+                                           i].getName(),
+                                           cumulativePopTable.getNumColumns() - 1);
+          }
+          fillFitnessTable(cumulativePop, cumulativePopTable);
         }
 
-        // twoPopsAgo becomes the last pop
-        twoPopsAgo = lastPop;
-
-        // the last pop becomes the current pop
-        lastPop = currentPop;
-
         // the current pop becomes the pop just pulled in
         currentPop = pop;
+        // create a new table for currentPop
+        int numObjs = currentPop.getNumObjectives();
+        NsgaSolution[] nis = (NsgaSolution[]) (currentPop.getMembers());
+        int numSolutions = nis.length;
 
-        // get the maximum number of generations for the current population
-        maxGen = currentPop.getMaxGenerations();
-        newPop = false;
+        int numRankZero = 0;
+        for(int i = 0; i < numSolutions; i++) {
+          if(nis[i].getRank() == 0)
+            numRankZero++;
+        }
 
-        if (lastPop != null)
-         lastPopInfo.setPopulation(lastPop);
-        if (twoPopsAgo != null)
-         twoAgoInfo.setPopulation(twoPopsAgo);
+        currentPopTable = (MutableTable) DefaultTableFactory.getInstance().createTable();
+        for (int i = 0; i < numObjs; i++) {
+          currentPopTable.addColumn(new float[numRankZero]);
+          currentPopTable.setColumnLabel(currentPop.getObjectiveConstraints()[
+                                         i].getName(),
+                                         currentPopTable.getNumColumns() - 1);
+        }
+        fillFitnessTable(currentPop, currentPopTable);
+
+        //newPop = false;
+
+        if (lastCumulativePop != null)
+         lastCumulativePopInfo.setPopulation(lastCumulativePop, lastCumulativePopTable);
+        if (twoCumulativeAgo != null)
+         twoCumulativeAgoInfo.setPopulation(twoCumulativeAgo, twoCumulativeAgoTable);
         if (cumulativePop != null)
-         cumulativePopInfo.setPopulation(cumulativePop);
+         cumulativePopInfo.setPopulation(cumulativePop, cumulativePopTable);
+
       }
       else {
-        // the current pop becomes the pop just pulled in
-        currentPop = pop;
+          // the current pop becomes the pop just pulled in
+          currentPop = pop;
+
+          int numObjs = currentPop.getNumObjectives();
+          NsgaSolution[] nis = (NsgaSolution[]) (currentPop.getMembers());
+          int numSolutions = nis.length;
+
+          // the current pop becomes the pop just pulled in
+          currentPop = pop;
+          int numRankZero = 0;
+          for(int i = 0; i < numSolutions; i++) {
+            if(nis[i].getRank() == 0)
+              numRankZero++;
+          }
+
+          currentPopTable = (MutableTable) DefaultTableFactory.getInstance().createTable();
+          for (int i = 0; i < numObjs; i++) {
+            currentPopTable.addColumn(new float[numRankZero]);
+            currentPopTable.setColumnLabel(currentPop.getObjectiveConstraints()[
+                                         i].getName(),
+                                         currentPopTable.getNumColumns() - 1);
+          }
+
+          fillFitnessTable(currentPop, currentPopTable);
       }
 
       currentGen = currentPop.getCurrentGeneration();
+System.out.println("currentGen: "+currentGen);
       if (currentGen == maxGen - 1)
         continueButton.setEnabled(true);
 
       if (currentPop != null)
-       currentPopInfo.setPopulation(currentPop);
+       currentPopInfo.setPopulation(currentPop, currentPopTable);
 
       if (currentGen != maxGen - 1)
         pushOutput(currentPop, 2);
+*/
     }
 
-    private Table fillFitnessTable(NsgaPopulation pp) {
+    private void fillFitnessTable(NsgaPopulation pp, MutableTable popTable) {
       // now copy the table here
       int numObjs = pp.getNumObjectives();
       NsgaSolution[] nis = (NsgaSolution[]) (pp.getMembers());
       int numSolutions = nis.length;
-      MutableTable popTable = (MutableTable) DefaultTableFactory.getInstance().
-          createTable();
-      for (int i = 0; i < numObjs; i++) {
-        popTable.addColumn(new double[numSolutions]);
-        popTable.setColumnLabel(currentPop.getObjectiveConstraints()[
-                                       i].getName(),
-                                       popTable.getNumColumns() - 1);
-      }
 
+      //MutableTable popTable = (MutableTable) DefaultTableFactory.getInstance().
+      //    createTable();
+      //for (int i = 0; i < numObjs; i++) {
+      //  popTable.addColumn(new double[numSolutions]);
+      //  popTable.setColumnLabel(currentPop.getObjectiveConstraints()[
+      //                                 i].getName(),
+      //                                 popTable.getNumColumns() - 1);
+      //}
+
+      int curRow = 0;
+
+      // for each solution
       for (int i = 0; i < numSolutions; i++) {
-        for (int j = 0; j < numObjs; j++) {
-          popTable.setDouble(nis[i].getObjective(j), i, j);
+
+        // if it is rank 0
+        if(nis[i].getRank() == 0) {
+          // copy each objective into the table
+          for (int j = 0; j < numObjs; j++)
+            popTable.setFloat((float)nis[i].getObjective(j), curRow, j);
+          curRow++;
         }
       }
-      return popTable;
     }
 
     private class PopInfo
@@ -239,7 +403,7 @@ public class EMO2
 
       boolean isCumulative = false;
 
-      BufferedScatterPlotTableModel tableModel;
+      ObjectiveModel tableModel;
 
       PopInfo() {
         runNumber = new JLabel(RUN);
@@ -252,8 +416,8 @@ public class EMO2
         labels.add(popSize);
         labels.add(numSolutions);
 
-        BufferedScatterPlotMatrix scatterPlot = new BufferedScatterPlotMatrix();
-        tableModel = (BufferedScatterPlotTableModel)scatterPlot.jTable.getModel();
+        ObjectiveMatrix scatterPlot = new ObjectiveMatrix();
+        tableModel = (ObjectiveModel)scatterPlot.jTable.getModel();
 
         this.setLayout(new BorderLayout());
         labels.setBorder(new EmptyBorder(0, 15, 0, 0));
@@ -261,14 +425,17 @@ public class EMO2
         add(scatterPlot, BorderLayout.CENTER);
       }
 
-      void setPopulation(NsgaPopulation p) {
+      void setPopulation(NsgaPopulation p, MutableTable table) {
         if (!isCumulative) {
           runNumber.setText(RUN);
         }
         popSize.setText(POP_SIZE + p.getMembers().length);
         numSolutions.setText(NUM_SOL);
 
-        tableModel.setPopulation(p);
+        if(table != null)
+          tableModel.setPopulationTable(table);
+        else
+          tableModel.setPopulation(p);
       }
     }
 
@@ -286,8 +453,8 @@ public class EMO2
         labels.add(popSize);
         labels.add(numSolutions);
 
-        BufferedScatterPlotMatrix scatterPlot = new BufferedScatterPlotMatrix(false);
-        tableModel = (BufferedScatterPlotTableModel)scatterPlot.jTable.getModel();
+        ObjectiveMatrix scatterPlot = new ObjectiveMatrix();
+        tableModel = (ObjectiveModel)scatterPlot.jTable.getModel();
 
         this.setLayout(new BorderLayout());
         labels.setBorder(new EmptyBorder(0, 15, 0, 0));
@@ -295,96 +462,17 @@ public class EMO2
         add(scatterPlot, BorderLayout.CENTER);
       }
 
-      void setPopulation(NsgaPopulation p) {
+      void setPopulation(NsgaPopulation p, MutableTable table) {
         if (!isCumulative) {
           runNumber.setText(RUN);
         }
         popSize.setText(POP_SIZE + p.getMembers().length);
         numSolutions.setText(NUM_SOL);
 
-        tableModel.setPopulation(p);
-      }
-    }
-
-    /**
-     * A scatter plot that is an image
-     */
-    class BufferedScatterPlot
-        extends JPanel {
-      Image image;
-
-      BufferedScatterPlot() {
-        JPanel pnl = new JPanel();
-        this.setDoubleBuffered(false);
-        pnl.setBackground(Color.white);
-        image = new BufferedImage(ROW_WIDTH, ROW_HEIGHT,
-                                  BufferedImage.TYPE_INT_ARGB);
-        Graphics imgG = image.getGraphics();
-        pnl.setSize(new Dimension(ROW_WIDTH, ROW_HEIGHT));
-        pnl.paint(imgG);
-      }
-
-      void setTable(Table table, int[] scalarColumns) {
-        image.flush();
-        GraphSettings settings = new GraphSettings();
-        settings.displayaxislabels = false;
-        settings.displaylegend = false;
-        settings.displaytitle = false;
-
-        DataSet[] data = new DataSet[1];
-        data[0] = new DataSet("",
-                              Color.red, scalarColumns[0],
-                              scalarColumns[1]);
-        settings.xaxis = table.getColumnLabel(scalarColumns[0]);
-        settings.yaxis = table.getColumnLabel(scalarColumns[1]);
-        settings.xmaximum = new Integer(0);
-        settings.xminimum = new Integer(-20);
-        settings.yminimum = new Integer(-20);
-        settings.ymaximum = new Integer(0);
-
-        Graph graph = createSmallGraph(table, data, settings);
-        Graphics imgG = image.getGraphics();
-        graph.setSize(new Dimension(ROW_WIDTH, ROW_HEIGHT));
-        graph.paint(imgG);
-        graph = null;
-        table = null;
-      }
-
-      public void paint(Graphics g) {
-        super.paint(g);
-        g.drawImage(image, 0, 0, null);
-      }
-    }
-
-    class NonBufferedScatterPlot
-        extends ScatterPlotSmall {
-
-      NonBufferedScatterPlot() {
-        settings = new GraphSettings();
-        settings.displayaxislabels = false;
-        settings.displaylegend = false;
-        settings.displaytitle = false;
-        settings.xmaximum = new Integer(0);
-        settings.xminimum = new Integer(-20);
-        settings.yminimum = new Integer(-20);
-        settings.ymaximum = new Integer(0);
-
-        sets = new DataSet[0];
-      }
-
-      void setTable(Table table, int[] scalarColumns) {
-        sets = new DataSet[1];
-        sets[0] = new DataSet("",
-                              Color.red, scalarColumns[0],
-                              scalarColumns[1]);
-        settings.xaxis = table.getColumnLabel(scalarColumns[0]);
-        settings.yaxis = table.getColumnLabel(scalarColumns[1]);
-        settings.xmaximum = new Integer(0);
-        settings.xminimum = new Integer( -20);
-        settings.yminimum = new Integer( -20);
-        settings.ymaximum = new Integer(0);
-
-        setTable(table);
+        if(table != null)
+          tableModel.setPopulationTable(table);
+        else
+          tableModel.setPopulation(p);
       }
     }
 
@@ -396,18 +484,11 @@ public class EMO2
     /**
        Shows all the Graphs in a JTable
      */
-    private class BufferedScatterPlotMatrix
+    private class ObjectiveMatrix
         extends JPanel
         implements java.io.Serializable {
 
-      public BufferedScatterPlotMatrix() {
-        setup();
-      }
-
-      boolean doBuffering = true;
-
-      public BufferedScatterPlotMatrix(boolean b) {
-        doBuffering = b;
+      public ObjectiveMatrix() {
         setup();
       }
 
@@ -438,11 +519,8 @@ public class EMO2
           }
         };
 
-        BufferedScatterPlotTableModel tblModel;
-        if(doBuffering)
-          tblModel = new BufferedScatterPlotTableModel();
-        else
-          tblModel = new BufferedScatterPlotTableModel(true);
+        ObjectiveModel tblModel;
+        tblModel = new ObjectiveModel();
 
         JComboBox combobox = new JComboBox();
 
@@ -877,6 +955,7 @@ public class EMO2
         implements TableCellRenderer {
 
       public ComponentRenderer() {
+        setDoubleBuffered(false);
       }
 
       /**
@@ -894,41 +973,33 @@ public class EMO2
        displayed in the table.  The images are created from the
        Graphs.
      */
-    class BufferedScatterPlotTableModel
+    class ObjectiveModel
         extends AbstractTableModel {
-      JPanel[][] panels;
+      ObjectiveScatterPlot[][] panels;
       boolean nonBuffered = false;
 
-      BufferedScatterPlotTableModel() {
-        panels = new JPanel[2][2];
+      ObjectiveModel() {
+        panels = new ObjectiveScatterPlot[2][2];
         for(int i = 0; i < 2; i++)
           for(int j = 0; j < 2; j++) {
-            panels[i][j] = new BufferedScatterPlot();
+            panels[i][j] = new ObjectiveScatterPlot();
           }
       }
 
-      BufferedScatterPlotTableModel(boolean b) {
-        panels = new JPanel[2][2];
-        for(int i = 0; i < 2; i++)
-          for(int j = 0; j < 2; j++) {
-            panels[i][j] = new NonBufferedScatterPlot();
-          }
-        nonBuffered = true;
+      void setPopulationTable(MutableTable popTable) {
+        for(int i = 0; i < panels.length; i++)
+          for(int j = 0; j < panels[i].length; j++) {
+            ((ObjectiveScatterPlot)panels[i][j]).setTable(popTable);
+            ((ObjectiveScatterPlot)panels[i][j]).setObjectives(0, 1);
+        }
+        this.fireTableDataChanged();
       }
 
       void setPopulation(NsgaPopulation p) {
-        Table popTable = fillFitnessTable(p);
-        if(nonBuffered) {
-          for(int i = 0; i < panels.length; i++)
-            for(int j = 0; j < panels[i].length; j++) {
-              ((NonBufferedScatterPlot)panels[i][j]).setTable(popTable, new int[]{0,1});
-            }
-        }
-        else {
-          for(int i = 0; i < panels.length; i++)
-            for(int j = 0; j < panels[i].length; j++) {
-              ((BufferedScatterPlot)panels[i][j]).setTable(popTable, new int[]{0,1});
-            }
+        for(int i = 0; i < panels.length; i++)
+          for(int j = 0; j < panels[i].length; j++) {
+            ((ObjectiveScatterPlot)panels[i][j]).setPopulation(p);
+            ((ObjectiveScatterPlot)panels[i][j]).setObjectives(0, 1);
         }
         this.fireTableDataChanged();
       }
