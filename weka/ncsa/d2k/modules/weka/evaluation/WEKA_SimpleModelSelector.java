@@ -8,7 +8,7 @@ package ncsa.d2k.modules.weka.evaluation;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.PredictionModelModule;
+import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.infrastructure.modules.ModelSelectorModule;
 import ncsa.d2k.infrastructure.modules.ModelModule;
 
@@ -38,7 +38,7 @@ public class WEKA_SimpleModelSelector extends ModelSelectorModule {
   }
 
   public String[] getInputTypes() {
-    String[] in = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
+    String[] in = {"ncsa.d2k.modules.PredictionModelModule"};
     return in;
   }
 

@@ -8,8 +8,9 @@ package ncsa.d2k.modules.weka.evaluation;
 //===============
 // Other Imports
 //===============
-import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.weka.classifier.WEKA_ModelDelegator;
+import ncsa.d2k.modules.PredictionModelModule;
+import ncsa.d2k.infrastructure.modules.ModelEvaluatorModule;
 import weka.core.*;
 import weka.classifiers.*;
 
@@ -37,7 +38,7 @@ public class WEKA_CVClassifierEvaluator extends ModelEvaluatorModule {
   }
 
   public String[] getOutputTypes() {
-    String [] out = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
+    String [] out = {"ncsa.d2k.modules.PredictionModelModule"};
     return out;
   }
 
@@ -47,7 +48,7 @@ public class WEKA_CVClassifierEvaluator extends ModelEvaluatorModule {
   }
 
   public String[] getInputTypes() {
-    String []in = {"ncsa.d2k.infrastructure.modules.PredictionModelModule", "weka.core.Instances"};
+    String []in = {"ncsa.d2k.modules.PredictionModelModule", "weka.core.Instances"};
     return in;
   }
 

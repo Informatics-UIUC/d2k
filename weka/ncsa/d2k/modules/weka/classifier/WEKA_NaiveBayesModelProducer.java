@@ -102,7 +102,7 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule implements
    * @return The datatypes of the outputs.
    */
   public String[] getOutputTypes() {
-    String [] out = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
+    String [] out = {"ncsa.d2k.modules.PredictionModelModule"};
     return out;
   }
 
@@ -134,7 +134,7 @@ public class WEKA_NaiveBayesModelProducer extends ModelProducerModule implements
    */
   public String getOutputInfo(int i) {
     if(i == 0) {
-      return "ncsa.d2k.infrastructure.modules.PredictionModelModule: A WEKA_NaiveBayesModel module.";
+      return "ncsa.d2k.modules.PredictionModelModule: A WEKA_NaiveBayesModel module.";
     } else {
       return "no such output";
     }

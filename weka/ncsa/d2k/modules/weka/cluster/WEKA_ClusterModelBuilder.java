@@ -8,7 +8,8 @@ package ncsa.d2k.modules.weka.cluster;
 // Other Imports
 //===============
 
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.modules.PredictionModelModule;
+import ncsa.d2k.infrastructure.modules.ComputeModule;
 import weka.clusterers.*;
 import weka.core.Instances;
 import ncsa.d2k.modules.weka.cluster.WEKA_ClusterModelDelegator;
@@ -50,18 +51,18 @@ public class WEKA_ClusterModelBuilder extends ComputeModule {
     return "Takes the input instances and uses them to train the input clusterer.  Outputs the trained model.";
   }
   public String[] getInputTypes() {
-    String []in = {"weka.core.Instances","ncsa.d2k.infrastructure.modules.PredictionModelModule"};
+    String []in = {"weka.core.Instances","ncsa.d2k.modules.PredictionModelModule"};
     return in;
   }
   public String[] getOutputTypes() {
-    String[] out = {"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
+    String[] out = {"ncsa.d2k.modules.PredictionModelModule"};
     return out;
   }
   public String getInputInfo(int parm1) {
     if (parm1 == 1) {
       return "weka.core.Instances: training set.";
     } else if (parm1 == 0) {
-      return "ncsa.d2k.infrastructure.modules.PredictionModelModule: input model.";
+      return "ncsa.d2k.modules.PredictionModelModule: input model.";
     } else {
       return "No such input.";
     }
