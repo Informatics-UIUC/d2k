@@ -202,6 +202,9 @@ public class Input1FileName extends InputModule {
 //           in property setter method
 // 2/12/03 - emailed david c to see if text box could be variable size
 // 2/13/03 - text box std as is;  david c pointed out error in except handler
-//           ruth fixed error (with help) and committed
-// 2/13/03 - checked into basic.
+//           when module saved/reloaded w/o setting property name.
+//           ruth fixed error (with help) and committed;  still throw exception
+//           if property dialog/info scanned w/o entering filename. not best
+//           but seems no option as setter called when dialog closed.
+// 2/14/03 - checked into basic.
 // END QA Comments
