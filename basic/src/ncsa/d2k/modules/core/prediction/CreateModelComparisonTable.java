@@ -154,6 +154,12 @@ public class CreateModelComparisonTable extends ComputeModule
       tbl.removeRows(counter, tbl.getNumRows() - counter);
     }
 
+    if(fileName == null){
+      System.out.println(getAlias() + ": Output File Name property was not set!" +
+                         " Cannot save the comparison table to output file.");
+      return;
+
+    }
 
 
        FileOutputStream file = null;
@@ -166,11 +172,20 @@ public class CreateModelComparisonTable extends ComputeModule
           System.out.println( getAlias() + ": Could not open file: " + fileName +
                                  "\nTable could not be saved\n" );
             e.printStackTrace();
+            return;
        }
        catch (SecurityException e) {
         System.out.println(  getAlias() + ": Could not open file: " + fileName +
                                  "\nTable could not be saved\n" );
          e.printStackTrace();
+         return;
+       }
+       catch(Exception e){
+         System.out.println(  getAlias() + ": Could not open file: " + fileName +
+                                 "\nTable could not be saved\n" );
+         e.printStackTrace();
+         return;
+
        }
 
        try {
