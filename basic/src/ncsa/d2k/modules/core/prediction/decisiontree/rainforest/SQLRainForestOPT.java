@@ -19,7 +19,7 @@ package ncsa.d2k.modules.core.prediction.decisiontree.rainforest;
  * <p> 5. dominate ratio (number_mostCommonClass / number_secondMostCommonClass)
  *    is used to prune trivial nodes </p>
  * <p> 6. Numeric columns are allowed to use more than once, but if the dominateRatio
- *    between parent node and child node has no improvement, the splitting will
+ *    between parent node and child node has no improvement, the spliting will
  *    be terminated and a leaf will be formed </p>
  * <p>Copyright: Copyright (c) 2002</p>
  * <p>Company: NCSA ALG </p>
@@ -163,7 +163,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
       case 0: return "Database Connection";
       case 1: return "Database Table";
       case 2: return "Meta Table";
-      case 3: return "Parameter Point";
+      case 3: return "Parameters";
       default: return "NoInput";
     }
   }
@@ -196,7 +196,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     s += "<li>dominate ratio (number_mostCommonClass / number_secondMostCommonClass) ";
     s += "is used to prune trivial nodes. </li> ";
     s += "<li>Numeric columns are allowed to be chosen more than once. However, if the dominateRatio ";
-    s += "between parent node and child node shows no improvement, the splitting will ";
+    s += "between parent node and child node shows no improvement, the spliting will ";
     s += "be terminated and a leaf will be formed. </li></ul></p>";
     s += "<p>References: ";
     s += "<ul><li>C4.5: Programs for Machine Learning by J. Ross Quinlan </li>";
@@ -204,7 +204,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     s += "of Large Datasets by J. Gehrke et al. </li></ul></p>";
     s += "<p>Restrictions: ";
     s += "This module will only classify examples with ";
-    s += "nominal outputs. We currently only support Oracle databases. ";
+    s += "nominal outputs. We currently only support Oracle and SQLServer databases. ";
     s += "There are two implementations on RainForest. <i>SQLRainForest</i> does ";
     s += "not do parameter optimization, but <i>SQLRainForestOPT<i> does.</p>";
     s += "<p>Data Handling: This module does not modify the input data. </p>";
@@ -231,9 +231,8 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
   }
 
   public String getModuleName() {
-    return "SQL Rain Forest Optimizable";
+    return "SQL Rain Forest OPT";
   }
-
 
   public void setBinNumber (double i) throws PropertyVetoException {
       if (i <  0 )
@@ -241,9 +240,9 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
       binNumber = i;
   }
 
-    //public double getBinNumber () {
-    // return binNumber;
-    // }
+  public double getBinNumber () {
+    return binNumber;
+  }
 
   public void setMinimumRatioPerLeaf(double num) throws PropertyVetoException {
       if(num < 0 || num >1)
@@ -251,9 +250,9 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     minimumRatioPerLeaf = num;
   }
 
-    // public double getMinimumRatioPerLeaf() {
-    // return minimumRatioPerLeaf;
-    //}
+  public double getMinimumRatioPerLeaf() {
+    return minimumRatioPerLeaf;
+  }
 
   public void setDominateRatio(double num) throws PropertyVetoException {
       if (num < 0)
@@ -262,9 +261,9 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     improvementRatio = dominateRatio * 0.05;
   }
 
-    // public double getDominateRatio() {
-    // return dominateRatio;
-    //}
+  public double getDominateRatio() {
+    return dominateRatio;
+  }
 
   public void setModeThreshold(double num) throws PropertyVetoException {
       if( num < 0)
@@ -272,21 +271,19 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     modeThreshold = num;
   }
 
-    // public double getModeThreshold() {
-    //return modeThreshold;
-    // }
+  public double getModeThreshold() {
+    return modeThreshold;
+  }
 
   protected String[] getFieldNameMapping () {
     return null;
   }
 
-    /*
     public static final String MIN_RATIO = "Minimum Leaf Size Ratio";
     public static final String MODE_THRESHOLD = "Mode Threshold";
     public static final String BIN_NUMBER = "Bin Number";
     public static final String DOMINATE_RATIO = "Dominate Class Ratio";
-    */
-    /*
+
   public PropertyDescription [] getPropertiesDescriptions () {
     PropertyDescription [] pds = new PropertyDescription [4];
     pds[0] = new PropertyDescription ("minimumRatioPerLeaf", MIN_RATIO, "The minimum ratio of records in a leaf to the total number of records in the tree. The tree construction is terminated when this ratio is reached.");
@@ -295,7 +292,6 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     pds[3] = new PropertyDescription ("dominateRatio", DOMINATE_RATIO, "Ratio of most-common class to second-most-common class. The tree construction is terminated when this ratio is reached.");
     return pds;
   }
-    */
 
   /** build decision tree
    *  @throws Exception
@@ -695,8 +691,8 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
   /** update single AVC set (method for numeric values)
    *  @param avcSets the AVC sets to update
    *  @param attrName the column name to use
-   *  @param lowValue the lower bound for the splitting range
-   *  @param highValue the higher bound for the splitting range
+   *  @param lowValue the lower bound for the spliting range
+   *  @param highValue the higher bound for the spliting range
    *  @param classLabel the classLabel to use
    *  @return updated new AVC sets
    */
@@ -748,7 +744,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
 
     else let the new branch be the tree created by recursive call buildTree.
 
-    @param path the splitting values from root to the current node
+    @param path the spliting values from root to the current node
     @param availCols the candidate columns to use
     @param aNodeInfo an object of NodeInfo that includes: avcSets, data, classTallies, and uniqValues
     @param examples the index list of example set (this param only used in in-memory mode)
@@ -1195,7 +1191,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
    *  ratio is used, where the information gain is divided by the
    *  split information. This prevents highly branching attributes
    *  from becoming dominant.
-   *  @param aPath the splitting values so far have been used
+   *  @param aPath the spliting values so far have been used
    *  @param column the input column
    *  @param aNodeInfo an object of NodeInfo that includes: avcSets, data, classTallies, and uniqValues
    *  @return highest gain
@@ -1227,7 +1223,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
   }
 
   /** Find the information gain for a numeric attribute.
-   *  @param aPath the splitting values so far have been used
+   *  @param aPath the spliting values so far have been used
    *  @param column the input column
    *  @param aNodeInfo an object of NodeInfo that includes: avcSets, data, classTallies, and uniqValues
    *  @return object contains the best column and the best split value
@@ -1418,7 +1414,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
   }
 
   /** Find the information gain of a numeric column
-   *  @param aSplitValue The splitting value to use
+   *  @param aSplitValue The spliting value to use
    *  @param column The column name
    *  @param avcs The AVC sets for the current node
    *  @return the information gain using the aSplitValue
@@ -1767,7 +1763,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
             // find min value and max value
             double min = Double.parseDouble(aUniqCol.get(0).toString());
             double max = Double.parseDouble(aUniqCol.get(aUniqCol.size()-1).toString());
-            // rebuild the ArrayList to keep splitting values for specified number of bins
+            // rebuild the ArrayList to keep spliting values for specified number of bins
             double interval = (max - min)/binNumber;
             for (int valueIdx=1; valueIdx<binNumber; valueIdx++) {
               double tmpval = min+(interval*valueIdx);
@@ -1837,7 +1833,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
           // find min value and max value
           double min = Double.parseDouble(aUniqCol.get(0).toString());
           double max = Double.parseDouble(aUniqCol.get(aUniqCol.size()-1).toString());
-          // rebuild the ArrayList to keep splitting values for specified number of bins
+          // rebuild the ArrayList to keep spliting values for specified number of bins
           double interval = (max - min)/binNumber;
           for (int valueIdx=1; valueIdx<binNumber; valueIdx++) {
             double tmpval = min+(interval*valueIdx);
@@ -1876,7 +1872,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
           // find min value and max value
           double min = Double.parseDouble(aUniqCol.get(0).toString());
           double max = Double.parseDouble(aUniqCol.get(aUniqCol.size()-1).toString());
-          // rebuild the ArrayList to keep splitting values for specified number of bins
+          // rebuild the ArrayList to keep spliting values for specified number of bins
           double interval = (max - min)/binNumber;
           for (int valueIdx=1; valueIdx<binNumber; valueIdx++) {
             double tmpval = min+(interval*valueIdx);
