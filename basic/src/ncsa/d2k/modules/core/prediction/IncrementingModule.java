@@ -48,13 +48,13 @@ protected UpdateableModelModule model;
   private boolean deepCopy = true;
   public void setDeepCopy(boolean bl){deepCopy = bl;}
   public boolean getDeepCopy(){return deepCopy ;}
-/*
+
   public PropertyDescription[] getPropertiesDescriptions(){
      PropertyDescription[] pds = new PropertyDescription[1];
      pds[0] = new PropertyDescription("deepCopy", "Create Deep Copy of Input Model",
                                       "Set this property to true if you wish the model to be copied before retraining.");
      return pds;
-   }*/
+   }
 
 
 
