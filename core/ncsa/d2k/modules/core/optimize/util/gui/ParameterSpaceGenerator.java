@@ -29,7 +29,8 @@ public class ParameterSpaceGenerator extends AbstractParamSpaceGenerator {
 	 */
 	protected ParameterSpace getDefaultSpace() {
 		ParameterSpaceImpl psi =  new ParameterSpaceImpl();
-		return psi.createFromData(names, min, max, def, res, types);
+		psi.createFromData(names, min, max, def, res, types);
+		return psi;
 	}
 
 	/**

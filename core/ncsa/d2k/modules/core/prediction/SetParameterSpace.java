@@ -85,7 +85,7 @@ public class SetParameterSpace extends JPanel implements CustomModuleEditor {
 				types[i] = space.getType(i);
 			}
 			this.spaceGen.space = (ParameterSpace) space.getClass().newInstance();
-			this.spaceGen.space = this.spaceGen.space.createFromData(names, min, max, def, res, types);
+			this.spaceGen.space.createFromData(names, min, max, def, res, types);
 			return true;
 		} else
 

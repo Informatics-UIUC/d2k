@@ -40,7 +40,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	 * @param types the type as an integer as defined in ColumnTypes.
 	 * @return a ParameterSpace.
 	 */
-	public ParameterSpace createFromData(String [] names,
+	public void createFromData(String [] names,
 										 double [] minValues,
 										 double [] maxValues,
 										 double [] defaultValues,
@@ -85,7 +85,6 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 		}
 		this.res = resolutions;
 		spi.addSubspace(numColumns);
-		return spi;
 	}
 
 	/**
@@ -350,7 +349,8 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 
 		// Now we have the data, make the paramter space.
 		ParameterSpaceImpl psi = new ParameterSpaceImpl();
-		return psi.createFromData(names,mins,maxs,defaults,res,types);
+		psi.createFromData(names,mins,maxs,defaults,res,types);
+		return psi;
 	}
 
 	/**
@@ -381,7 +381,6 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 			types[counter] = firstSpace.getType(i);
 			names[counter] = firstSpace.getName(i);
 		}
-		psi.addSubspace(firstSpace.getNumParameters());
 		for (int i = 0 ;i < secondSpace.getNumParameters(); i++, counter++) {
 			mins[counter] = secondSpace.getMinValue(i);
 			maxs[counter] = secondSpace.getMaxValue(i);
@@ -390,8 +389,9 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 			types[counter] = secondSpace.getType(i);
 			names[counter] = secondSpace.getName(i);
 		}
+		psi.createFromData(names,mins,maxs,defaults,res,types);
+		psi.addSubspace(firstSpace.getNumParameters());
 		psi.addSubspace(secondSpace.getNumParameters());
-		psi = (ParameterSpaceImpl) psi.createFromData(names,mins,maxs,defaults,res,types);
 		return psi;
 	}
 
