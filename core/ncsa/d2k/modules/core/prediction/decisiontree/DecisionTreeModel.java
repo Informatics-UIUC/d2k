@@ -13,7 +13,7 @@ import java.util.Iterator;
 	TODO: change to PredictionTable
 */
 public class DecisionTreeModel extends PredictionModelModule
-	implements Serializable {
+	implements Serializable, ViewableDTModel {
 
 	/** The root of the decision tree */
 	DecisionTreeNode root;
@@ -156,4 +156,14 @@ public class DecisionTreeModel extends PredictionModelModule
 	public DecisionTreeNode getRoot() {
 		return root;
 	}
+	/**
+		Get the Viewable root of this decision tree.
+		@return the root of the tree
+	*/
+	public ViewableDTNode getViewableRoot() {
+		return root;
+	}
+
+
+	
 }
