@@ -10,6 +10,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.userviews.swing.*;
+import ncsa.gui.ErrorDialog;
 
 /**
  * This module presents a user interface for the interactive scaling of
@@ -438,6 +439,25 @@ public class Scale extends HeadlessUIModule {
 
             }
 
+			// Check the mins are less than the maxes.
+			for (int i = 0 ; i < from_max.length ;i++) {
+				if (from_max[i] < from_min[i]) {
+					ColumnPanel columnPanel = (ColumnPanel)panelMap.get(
+						new Integer(i));
+					ErrorDialog.showDialog(this,
+					columnPanel.lbl+": from maximum can not be less than the min.",
+						"Max < Min");
+					return;
+				}
+				if (to_max[i] < to_min[i]) {
+					ColumnPanel columnPanel = (ColumnPanel)panelMap.get(
+						new Integer(i));
+					ErrorDialog.showDialog(this,
+						columnPanel.lbl+": to maximum can not be less than the min.",
+						"Max < Min");
+					return;
+				}
+			}
             pushOutput(new ScalingTransformation(indices, from_min, from_max,
                to_min, to_max), 0);
             viewDone("Done");
@@ -458,12 +478,13 @@ public class Scale extends HeadlessUIModule {
       JLabel fromLabel, fromMinLabel, fromMaxLabel,
              toLabel, toMinLabel, toMaxLabel;
       JTextField fromMinField, fromMaxField, toMinField, toMaxField;
-
+	  String lbl;
       public ColumnPanel(String label, double fromMin, double fromMax,
          boolean addSeparator) {
 
          super();
-
+		 
+		 lbl = label;
          scaleCheck = new JCheckBox();
          scaleCheck.setSelected(true);
          scaleCheck.addActionListener(this);

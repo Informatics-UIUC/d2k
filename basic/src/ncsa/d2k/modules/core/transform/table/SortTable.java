@@ -351,8 +351,6 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
       JPanel buttonpanel = new JPanel();
       abort = new JButton("Abort");
       done = new JButton("Done");
-      //abort.addActionListener(this);
-      //done.addActionListener(this);
 
 
       abort.addActionListener(new AbstractAction() {
