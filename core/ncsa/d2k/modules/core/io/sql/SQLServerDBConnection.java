@@ -233,14 +233,11 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                         query.append(", ");
                 }
 
-    System.out.println("*****************QUERY: ONE TABLE *****************");
-    System.out.println(query.toString());
+//    System.out.println("*****************QUERY: ONE TABLE *****************");
+//    System.out.println(query.toString());
             return query.toString();
         }
         else {                                                   //USER SELECTED >1 TABLES
-            /**
-             * BEGIN PROCESSING columns[][]..
-             */
             // separate the columns into uniqueColumns and duplicateColumns
             int i = 0;
             Set uniques = new HashSet();
@@ -251,15 +248,16 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                         dups.add(columns[tabl][tablCol]);
 
             uniques.removeAll(dups);  // Destructive set-difference
-            String uniqueColumns[] = (String[]) uniques.toArray( new String[ uniques.size() ] );
-            String duplicateColumns[] = (String[]) dups.toArray( new String[ dups.size() ] );
-             /**
-              * BEGIN CREATING QUERY
-              */
+
+            Vector uniqueVec = new Vector(uniques);
+            Vector duplicateVec = new Vector(dups);
+
+            // First : Create SELECT Clause
+//            query.append("SELECT * FROM (SELECT ");
             query.append("SELECT ");
-            for (int l=0; l<duplicateColumns.length; l++){
+
+            for (int l=0; l<duplicateVec.size(); l++){
                 // get the 2 tables that a duplicate column belongs to
-                // how?
                 //first find the two [x] indices of columns[x][y] where the column is present
                 //next, use these indices on the tables[] array to retrieve the tables
                 int idx1 = 0;
@@ -267,14 +265,14 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                 int table1, table2;
                 for (table1 = 0; table1 < columns.length; table1++)
                     for (int tablCol = 0; tablCol < columns[table1].length; tablCol++)
-                        if( columns[table1][tablCol] == duplicateColumns[l] ) {
+                        if( columns[table1][tablCol] == duplicateVec.elementAt(l)) {
                             idx1 = table1;
                             break;
                         }
 
                 for (table2 = table1; table2 < columns.length; table2++)
                     for (int tablCol = 0; tablCol < columns[table2].length; tablCol++)
-                        if( columns[table2][tablCol] == duplicateColumns[l] ) {
+                        if( columns[table2][tablCol] == duplicateVec.elementAt(l) ) {
                             idx2 = table2;
                             break;
                         }
@@ -282,20 +280,39 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                 // now append  "<TableName1>.<DuplicateColumnName>"
                 query.append(tables[idx1]);
                 query.append(".");
-                query.append(duplicateColumns[l]);
-                if (l<duplicateColumns.length-1)
+                query.append(duplicateVec.elementAt(l));
+                if (l<duplicateVec.size()-1)
                     query.append(", ");
             }
 
-            if ((duplicateColumns.length > 0) && (uniqueColumns.length > 0))
+            if ((duplicateVec.size() > 0) && (uniqueVec.size() > 0))
                 query.append(", ");
 
-            for (int m=0; m<uniqueColumns.length; m++){
-                query.append(uniqueColumns[m]);
-                if (m<uniqueColumns.length-1)
-                    query.append(", ");
+/*
+System.out.println("printing uniqueColumns ");
+for (int q=0; q<uniqueVec.size(); q++){
+    System.out.println(uniqueVec.elementAt(q));
+}
+System.out.println("printing duplicateColumns ");
+for (int q=0; q<duplicateVec.size(); q++){
+    System.out.println(duplicateVec.elementAt(q));
+}
+*/
+            int ct = 0;
+            for (int tabl = 0; tabl < columns.length; tabl++) {
+                for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
+                    if (duplicateVec.contains(columns[tabl][tablCol]))
+                        continue;
+                    else {
+                        ct++;
+                        query.append(tables[tabl]);//..........
+                        query.append(".");         //..........
+                        query.append(columns[tabl][tablCol]);
+                        if(ct < uniqueVec.size())
+                            query.append(", ");
+                    }
+                }
             }
-//System.out.println("str part1 : " + str);
 
             // Second : Create FROM Clause
             query.append(" FROM ");
@@ -314,9 +331,8 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
             }
 
             query.append(" ORDER BY ");
-            for (int l=0; l<duplicateColumns.length; l++){
+            for (int l=0; l<duplicateVec.size(); l++){
                 // get the 2 tables that a duplicate column belongs to
-                // how?
                 //first find the two [x] indices of columns[x][y] where the column is present
                 //next, use these indices on the tables[] array to retrieve the tables
                 int idx1 = 0;
@@ -324,14 +340,14 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                 int table1, table2;
                 for (table1 = 0; table1 < columns.length; table1++)
                     for (int tablCol = 0; tablCol < columns[table1].length; tablCol++)
-                        if( columns[table1][tablCol] == duplicateColumns[l] ) {
+                        if( columns[table1][tablCol] == duplicateVec.elementAt(l)) {
                             idx1 = table1;
                             break;
                         }
 
                 for (table2 = table1; table2 < columns.length; table2++)
                     for (int tablCol = 0; tablCol < columns[table2].length; tablCol++)
-                        if( columns[table2][tablCol] == duplicateColumns[l] ) {
+                        if( columns[table2][tablCol] == duplicateVec.elementAt(l) ) {
                             idx2 = table2;
                             break;
                         }
@@ -339,18 +355,35 @@ System.out.println("SQLServerConnection: createTableQuery without Sequence: " + 
                 // now append  "<TableName1>.<DuplicateColumnName>"
                 query.append(tables[idx1]);
                 query.append(".");
-                query.append(duplicateColumns[l]);
-                if (l<duplicateColumns.length-1)
+                query.append(duplicateVec.elementAt(l));
+                if (l<duplicateVec.size()-1)
                     query.append(", ");
             }
 
-            if ((duplicateColumns.length > 0) && (uniqueColumns.length > 0))
+            if ((duplicateVec.size() > 0) && (uniqueVec.size() > 0))
                 query.append(", ");
 
-            for (int m=0; m<uniqueColumns.length; m++){
-                query.append(uniqueColumns[m]);
-                if (m<uniqueColumns.length-1)
+/*
+            for (int m=0; m<uniqueVec.size(); m++){
+                query.append(uniqueVec.elementAt(m));
+                if (m<uniqueVec.size()-1)
                     query.append(", ");
+            }
+*/
+            int ct2 = 0;
+            for (int tabl = 0; tabl < columns.length; tabl++) {
+                for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
+                    if (duplicateVec.contains(columns[tabl][tablCol]))
+                        continue;
+                    else {
+                        ct2++;
+                        query.append(tables[tabl]);//..........
+                        query.append(".");         //..........
+                        query.append(columns[tabl][tablCol]);
+                        if(ct2 < uniqueVec.size())
+                            query.append(", ");
+                    }
+                }
             }
 
 //            query.append(")");

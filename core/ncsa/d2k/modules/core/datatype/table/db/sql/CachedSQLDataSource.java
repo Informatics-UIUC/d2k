@@ -120,66 +120,38 @@ public class CachedSQLDataSource implements DBDataSource {
         return this.whereClause;
     }
 
-
-
-
-
     private String[]   getDistinctUserSelectedCols(){
-        String[][] columns = this.userAllColumns;
-
-        ////PROCESS DIFFERENTLY FOR SINGLE TABLE SELECTIONS AND MULTIPLE TABLE SELECTIONS
+        String[][] columns = userAllColumns;
 
         if (columns.length == 1) {
-//System.out.println("***SQLDBDonncection: getDistinctUserSelectedCols - single table***");
-//for (int k=0; k<columns[0].length; k++) {
-//    System.out.println(columns[0][k]);
-//}
             return columns[0];
         }
         else {  // columns.length > 1
-
-            //first: count the # columns in the 2D-array columns (including duplicates)
-            int numAllCols = 0;
-            for (int tabl = 0; tabl < columns.length; tabl++)
-                numAllCols += columns[tabl].length;
-
-            //second: initialize space for a 1-D string array of all columns and copy into it
-            String[] allCols = new String[numAllCols];
-            int i = 0;
-            for (int tabl = 0; tabl < columns.length; tabl++)
-                for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++)
-                    allCols[i++] = columns[tabl][tablCol];
-
-            //third: separate the columns into uniqueColumns and duplicateColumns
+            //separate the columns into uniqueColumns and duplicateColumns
             Set uniques = new HashSet();
             Set dups = new HashSet();
 
-            for (int j=0; j<allCols.length; j++)
-                if (!uniques.add(allCols[j]))
-                    dups.add(allCols[j]);
-
+            for (int tabl = 0; tabl < columns.length; tabl++)
+                for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++)
+                    if (!uniques.add(columns[tabl][tablCol]))
+                        dups.add(columns[tabl][tablCol]);
             uniques.removeAll(dups);  // Destructive set-difference
 
-            String unqCols[] = (String[]) uniques.toArray( new String[ uniques.size() ] );
-            String dupCols[] = (String[]) dups.toArray( new String[ dups.size() ] );
+            Vector uniqueVec = new Vector(uniques);
+            Vector duplicateVec = new Vector(dups);
+            Vector unique = new Vector();
 
-            //fourth: combine uniqueColumns and duplicateColumns
-            String unqDupCols[] = new String[unqCols.length + dupCols.length];
-            int numUnq = 0;
-            for (numUnq=0; numUnq<unqCols.length; numUnq++)
-                unqDupCols[numUnq] = unqCols[numUnq];
-
-            int numDup = 0;
-            for (numDup=0; numDup<dupCols.length; numDup++)
-                unqDupCols[numDup+unqCols.length] = dupCols[numDup];
-
-System.out.println("***SQLDBDonncection: getDistinctUserSelectedCols - multiple tables***");
-for (int k=0; k<unqDupCols.length; k++) {
-    System.out.println(unqDupCols[k]);
-}
-            return unqDupCols;
+            for (int tabl = 0; tabl < columns.length; tabl++) {
+                for (int tablCol = 0; tablCol < columns[tabl].length; tablCol++) {
+                    if (duplicateVec.contains(columns[tabl][tablCol]))
+                            continue;
+                    else
+                        unique.add(columns[tabl][tablCol]);
+                }
+            }
+            duplicateVec.addAll(unique);
+            return (String[]) duplicateVec.toArray(new String[duplicateVec.size()]);
         }
-
     } //getDistinctUserSelectedCols
 
     protected void     setNumDistinctUserSelectedCols (String[][] columns){
