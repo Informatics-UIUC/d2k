@@ -33,7 +33,7 @@ public class PrintModel
     pds[3] = new PropertyDescription(
         "maximumFractionDigits",
         "Maximum Fraction Digits",
-        "The number of digets after the decimal point to report when printing numbers");
+        "The number of digits after the decimal point to report when printing numbers");
 
     pds[4] = new PropertyDescription(
         "outputLabel",

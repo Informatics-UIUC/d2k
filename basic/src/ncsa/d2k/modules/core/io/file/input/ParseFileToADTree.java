@@ -63,8 +63,8 @@ public class ParseFileToADTree extends InputModule {
    			sb.append("<p> Data Issues: Designed to work with nominal data, cannot handle real data.");
 				sb.append( "In practice the tree is not useful for real data.");
 				sb.append("<p> Scalability: The ADTree is in fact an index structure for a datacube.");
-				sb.append("If there are a lot of attributes and they have many values the structure");
-			  sb.append("will easily run out of memory. Optimizations have been made so that only the");
+				sb.append("If there are a lot of attributes and they have many values the structure ");
+			  sb.append("will easily run out of memory. Optimizations have been made so that only the ");
   			sb.append("first branch of the tree is stored in memory and the rest are built as needed when ");
 			  sb.append("the counts are retrived");
         return sb.toString();

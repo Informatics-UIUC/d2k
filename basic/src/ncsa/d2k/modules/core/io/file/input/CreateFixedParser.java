@@ -62,11 +62,11 @@ public class CreateFixedParser extends InputModule {
         sb.append("ParseFileToTable, for example, to read the file into a Table.");
         sb.append("The table of metadata has five columns with the following labels:");
         sb.append("LABEL, TYPE, START, STOP, LENGTH not necessarily in this order.");
-        sb.append("The START column needs to be always present. Only one of the");
-				sb.append("STOP or LENGTH columns need to be present.");
-				sb.append("The STOP column will be ignored if LENGTH column is present.");
-				sb.append("Columns start from 1 not from zero. Start and stop columns are inclusive,");
-				sb.append("for a column with one character the start and stop will be equal. ");
+        sb.append("The START column needs to be always present. Only one of the ");
+	sb.append("STOP or LENGTH columns need to be present.");
+	sb.append("The STOP column will be ignored if LENGTH column is present.");
+	sb.append("Columns start from 1 not from zero. Start and stop columns are inclusive,");
+	sb.append("for a column with one character the start and stop will be equal. ");
         sb.append("</p><p>Data Type Restrictions: ");
         sb.append("The specified file must be in fixed format.");
         sb.append("</p><p>Data Handling: ");

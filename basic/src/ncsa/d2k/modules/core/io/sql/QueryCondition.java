@@ -7,7 +7,7 @@ import java.io.*;
 /*&%^2 Do not modify this section. */
 /**
 	QueryCondition.java
-	
+
 */
 public class QueryCondition extends ncsa.d2k.core.modules.DataPrepModule
 /*#end^2 Continue editing. ^#&*/
@@ -38,7 +38,7 @@ public class QueryCondition extends ncsa.d2k.core.modules.DataPrepModule
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "      This is the search criterion for the search. If the string is blank therre will be no where clause in the database, all records will be retrieved.   ";
+			case 0: return "      This is the search criterion for the search. If the string is blank there will be no where clause in the database, all records will be retrieved.   ";
 			default: return "No such output";
 		}
 	}
@@ -59,7 +59,7 @@ public class QueryCondition extends ncsa.d2k.core.modules.DataPrepModule
 	public String getModuleInfo () {
 		return "<html>  <head>      </head>  <body>    This module pushes a string containing the condition for the where clause  of the sql query. It should be employed by users experienced with the SQL syntax. Less experienced users are encouraged to use SQLFilterConstruction module.  </body></html>";
 	}
-	
+
 	String query = "";
 	public void setCondition (String cond) {
 		query = cond;
@@ -67,7 +67,7 @@ public class QueryCondition extends ncsa.d2k.core.modules.DataPrepModule
 	public String getCondition () {
 		return query;
 	}
-	
+
 	/**
 		PUT YOUR CODE HERE.
 	*/
