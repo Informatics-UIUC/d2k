@@ -698,5 +698,7 @@ class ScalingTransformation implements Transformation {
  * bug 221 - handling of subset tables. table viewer throws an array index out of
  * bounds exception with subset table had a scaling transformation applied to.
  * (fixed)
+ *
+ * 01-21-04: modules is ready for basic 4.
 
  */

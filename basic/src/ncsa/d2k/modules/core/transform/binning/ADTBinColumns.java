@@ -406,7 +406,7 @@ public class ADTBinColumns extends HeadlessUIModule {
                       ErrorDialog.showDialog("The bin name must be unique, "+textualBinName+" already used.", "Error");
                       return;
                     }
-              
+
 					BinDescriptor bd =
 						createTextualBin(idx, textualBinName, sel);
 
@@ -1010,10 +1010,14 @@ class ADTBinCounts implements BinCounts {
   * (ExampleTable vs Table) the module can work with regular Table that was generated
   * by ParseFileToTable but cannot work with regular metadata Table that was
   * created by CreateADTree.
-  * 
+  *
   * 01-13 04 Anca:
   * changed input 1 from Table to ExampleTable to be consistent with the other binning modules
   * Input 1 can be table if the results of the binning are used in a transformation ( applyTransformation)
   * but for use in creating a BinTree an ExampleTable is needed.
-  * 
+  *
+  * 01-21-04: vered:
+  * bug 207 is fixed.
+  * module is ready for basic 4.
+  *
 */

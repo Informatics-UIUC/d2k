@@ -410,5 +410,7 @@ public class ScalarizeNominals extends DataPrepModule {
  *
  * 01-13-04:
  * bug 225 - assigns same label to new scalarized columns that replace the
- * nominal ones.
+ * nominal ones. (fixed)
+ *
+ * 01-21-04: module is ready for basic 4
  */

@@ -249,4 +249,7 @@ public class ADTAutoBin extends DataPrepModule {
  *
  * 01-15-04:
  * bug 227 is fixed.
+ *
+ * 01-21-04:
+ * module is ready for basic 4.
 */

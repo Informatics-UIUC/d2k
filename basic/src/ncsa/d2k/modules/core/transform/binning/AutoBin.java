@@ -401,4 +401,8 @@ public class AutoBin extends AutoBinOPT {
  * bug 216 - array index out of bounds exception when performing weight binning
  * ona subset table (which its subset does not include all of the records of the
  * original table) with missing values. (the exception is thrown by AutoBinOPT)
+ *
+ * 01-21-04:
+ * bug 216 is fixed.
+ * ready for basuc 4.
 */

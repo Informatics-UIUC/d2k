@@ -672,6 +672,6 @@ try {
  *            the result was an empty table. (bug 110) fixed.
  *
  * 01-06-04:
- * module is ready fro basic.
+ * module is ready for basic.
 
   */

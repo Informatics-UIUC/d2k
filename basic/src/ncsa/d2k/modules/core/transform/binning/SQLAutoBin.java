@@ -786,4 +786,7 @@ public class SQLAutoBin extends AutoBin {
 * 01-11-04: Vered
 * bug 215 - creates one bin too many, the last one, which is expendable, as non of the
 * data is being binned into it. (fixed)
+ *
+ * 01-21-04:
+ * module is ready for basic 4
 */

@@ -528,4 +528,6 @@ public class Normalize extends HeadlessUIModule {
  * by a table viewer. the table veiwer throws and array index out of bound exception
  * [bug 218] (fixed)
  *
+ * 01-21-04: module is ready for basic 4
+ *
  */

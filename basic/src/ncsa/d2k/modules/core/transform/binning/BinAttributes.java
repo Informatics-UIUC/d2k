@@ -812,7 +812,7 @@ public class BinAttributes extends HeadlessUIModule {
             ErrorDialog.showDialog("The bin name must be unique, "+textualBinName+" already used.", "Error");
             return;
           }
-              
+
 		  BinDescriptor bd = createTextualBin(idx, textualBinName,
 			  sel);
 
@@ -1063,7 +1063,7 @@ public class BinAttributes extends HeadlessUIModule {
 	  add(bxl, BorderLayout.CENTER);
 	  add(buttonPanel, BorderLayout.SOUTH);
 	}
-    
+
     private boolean checkDuplicateBinNames(String newName) {
        for (int bdi = 0; bdi < binListModel.getSize(); bdi++) {
           BinDescriptor bd = (BinDescriptor)binListModel.elementAt(bdi);
@@ -1889,6 +1889,10 @@ class TableBinCounts implements BinCounts {
  * its exclusive index. beforehand - j and k were serving as interchangeably
  * as index into data, which made the last items in data to be left as zeros
  * if the column has missing values.
+ *
+ * 01-21-04: vered
+ * bug 207 is fixed.
+ * module is ready for basic 4.
 
  *
 */

@@ -949,4 +949,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
  the items are being copied from the original whole set of the table, until
  reached the number of rows in the subset table. (fixed)
 
+ 01-21-04:
+ ready for basic 4.
+
   */

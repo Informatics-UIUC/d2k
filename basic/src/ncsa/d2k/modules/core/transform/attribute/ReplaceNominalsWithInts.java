@@ -127,5 +127,7 @@ public class ReplaceNominalsWithInts extends ComputeModule {
  * 01-12-04: module is pulled back into qa process.
  * bug 219 - handling of subset tables. table viewer throws an array index out of
  * bounds exception with subset table that had this module's transformation
- * applied to.
+ * applied to. (fixed)
+ *
+ * 01-21-04: modules is ready for basic 4
  */

@@ -460,5 +460,5 @@ public class AutoBinOPT extends DataPrepModule {
  * Module is pulled back into qa process.
  * bug 216 - array index out of bounds exception when performing weight binning
  * ona subset table (which its subset does not include all of the records of the
- * original table) with missing values.
+ * original table) with missing values. (fixed).
 */

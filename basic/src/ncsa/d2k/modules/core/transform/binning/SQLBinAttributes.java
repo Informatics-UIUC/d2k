@@ -936,7 +936,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
                       ErrorDialog.showDialog("The bin name must be unique, "+textualBinName+" already used.", "Error");
                       return;
                     }
-              
+
 BinDescriptor bd = createTextualBin(idx, textualBinName, sel);
                     HashSet set = uniqueColumnValues[idx];
                     for (int i = 0; i < sel.length; i++) {
@@ -1871,14 +1871,14 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
  *          wrong weight binning - [bug 154] fixed
  *          allows overlapping binning [bug 140, 141] fixed
  *          null pointer exception when trying to remove a nominal bin. [bug 65] (fixed)
- *          exception when adding anominal bin [bug 155]
+ *          exception when adding anominal bin [bug 155] (fixed)
  *
  * 12-23-03 unique values maintenance and overlapping binning of nominal columns in
- *          second run. [bug 169].
+ *          second run. [bug 169] (fixed).
  *          error with weight binning [bug 177] (fixed)
  *
  * 01-08-04: vered.
-  * user may create bins with identical names in same attribute [bug 207].
+  * user may create bins with identical names in same attribute [bug 207] (fixed).
   *
 *01-08-04 Anca:
 *fixed bug 177 by checking to see if binMaxes in addFromWeigth does have two maxes or only one
@@ -1891,4 +1891,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
  * changed the way bin maxes are computed in the addFromInterval method. now it is Math methods independant.
  * all code lines that were changed or added are preceeded by a comment line "//vered"
  * and description of change.
+ *
+ * 01-21-04: vered.
+ * module is ready for basic 4.
  */
