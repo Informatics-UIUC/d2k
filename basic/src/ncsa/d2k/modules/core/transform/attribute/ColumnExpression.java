@@ -166,18 +166,19 @@ public class ColumnExpression
     ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl ti =
         new ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl();
 
-    ti.addColumn(new double[]{4,4});
-    ti.addColumn(new double[]{3,3});
-    ti.addColumn(new double[]{5,5});
+    ti.addColumn(new double[]{2.0430180});
+    ti.addColumn(new double[]{0.6180778});
+    ti.addColumn(new double[]{0.0066803});
 
-    ti.setColumnLabel("x1", 0);
-    ti.setColumnLabel("x2", 1);
-    ti.setColumnLabel("x3", 2);
+    ti.setColumnLabel("x0", 0);
+    ti.setColumnLabel("x1", 1);
+    ti.setColumnLabel("x2", 2);
 //    ti.print();
 
     ColumnExpression ce = new ColumnExpression(ti);
     //String exp = "exp( neg(x1) ) * sin(x2)^6";
-    String exp = "exp( neg( x1+x2 ) ) * sin(x2)^6";
+    //String exp = "exp( neg( x1+x2 ) ) * sin(x2)^6";
+String exp = "neg(10)-exp(0.2*sqrt( (x0^2)+(x1^2) )  ) + neg(10) - exp(0.2 * sqrt( (x1^2)+(x2^2) ) )";
     //String exp = "sin(x2)^6";
     try {
       ce.setExpression(exp);
@@ -352,19 +353,18 @@ public class ColumnExpression
                  ex.startsWith(NAT_LOG) || ex.startsWith(ABS) ||
                  ex.startsWith(NEG) || ex.startsWith(ASIN) ||
                  ex.startsWith(ACOS) || ex.startsWith(ATAN) ) {
-
                 // try to move the current location to the end of the function
 
                 // the index of the first parenthesis
-                int firstParen = ex.indexOf('(', i);
+                int firstParen = expression.indexOf('(', i);
                 // the number of open paren
                 int numOpen = 1;
                 // if it had the parenthesis
                 if (firstParen != -1) {
                   int k = firstParen+1;
                   // for each character
-                  for (; k < ex.length(); k++) {
-                    char cc = ex.charAt(k);
+                  for (; k < expression.length(); k++) {
+                    char cc = expression.charAt(k);
                     if (cc == '(') {
 //System.out.println("OPEN PAREN:"+k);
                       numOpen++;
@@ -412,6 +412,10 @@ public class ColumnExpression
 
         // now we recurse
       }
+//System.out.println("***New OperationNode: left:"+
+//          expression.substring(0, best_pos).trim()+" right:"+
+//          expression.substring(best_pos + offset, expression.length()).trim());
+
       return new OperationNode(
           best_type,
           parse(expression.substring(0, best_pos).trim()),
@@ -426,6 +430,7 @@ public class ColumnExpression
            expression.indexOf(NAT_LOG) != -1 || expression.indexOf(ABS) != -1 ||
            expression.indexOf(NEG) != -1 || expression.indexOf(ASIN) != -1 ||
            expression.indexOf(ACOS) != -1 || expression.indexOf(ATAN) != -1) {
+//System.out.println("***New FunctionNode: "+expression);
       return new FunctionNode(expression);
     }
     else { // this is a terminal
@@ -441,7 +446,7 @@ public class ColumnExpression
       }
 
       try {
-//System.out.println("New TerminalNode "+expression);
+//System.out.println("***New TerminalNode "+expression);
         return new TerminalNode(1, 1, Float.parseFloat(expression));
       }
       catch (Exception e) {
