@@ -71,12 +71,11 @@ public class WriteDBToFile extends OutputModule
 
             descriptions[1] = new PropertyDescription("useColumnLabels",
                     "Write Column Labels",
-                    "Controls whether the table's column labels are written to the file.");
+                    "Controls whether the column labels should be written to the file.");
 
             descriptions[2] = new PropertyDescription("useDataTypes",
                     "Write Data Types",
-                    "Controls whether the table's column data types are written to the file.");
-
+                    "Controls whether the column data types should be written to the file.");
             return descriptions;
 
         }
@@ -92,7 +91,8 @@ public class WriteDBToFile extends OutputModule
                         case 0: return "      This manages the sql database connection object.   ";
                         case 1: return "      The names of the fields needed from within the table.   ";
                         case 2: return "      The name of the table containing the fields.   ";
-                        case 3: return "      Contains the where clause for the sq1 query (Optional).   ";
+                        case 3: return "      Contains the where clause for the sql query (Optional).   ";
+                        case 4: return "      The name of the file to write to.   ";
                         default: return "No such input";
                 }
         }
@@ -102,7 +102,9 @@ public class WriteDBToFile extends OutputModule
                 @return the data types of all inputs.
         */
         public String[] getInputTypes () {
-                String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","[Ljava.lang.String;","java.lang.String","java.lang.String"};
+                String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
+                                  "[Ljava.lang.String;","java.lang.String",
+                                  "java.lang.String","java.lang.String"};
                 return types;
         }
 
@@ -131,13 +133,14 @@ public class WriteDBToFile extends OutputModule
         */
         public String getModuleInfo () {
           String s = "<p>Overview: ";
-          s += "This module constructs a SQL statement, and retrieves data from a database and writes to files. </p>";
+          s += "This module constructs a SQL statement, and retrieves data from a database and writes to a file. </p>";
           s += "<p>Detailed Description: ";
-          s += "This module constructs a SQL query based on 4 inputs: the database ";
-          s += "connection object, the selected table, the selected fields, and ";
-          s += "the query condition (optional). This module then executes the query and retrieves ";
+          s += "This module constructs a SQL query based on 5 inputs: the database ";
+          s += "connection object, the selected table, the selected fields, ";
+          s += "the query condition (optional), and the name of the file to write to. ";
+          s += "This module then executes the query and retrieves ";
           s += "the data from the specified database and outputs ";
-          s += "database data to files. </p>";
+          s += "database data to a specified file. </p>";
           s += "<p>Restrictions: ";
           s += "We currently only support Oracle, SqlServer, DB2 and MySql databases. </p>";
           return s;
@@ -158,17 +161,6 @@ public class WriteDBToFile extends OutputModule
                 } else if (delimChar.equals("T")) {
                         delimiter = "\t";
                 }
-
-                JFileChooser chooser = new JFileChooser();
-                String fileName;
-                int retVal = chooser.showSaveDialog(null);
-                if(retVal == JFileChooser.APPROVE_OPTION)
-                      fileName = chooser.getSelectedFile().getAbsolutePath();
-                else
-                      return;
-
-
-                fw = new FileWriter(fileName);
 
                 // We need a connection wrapper
                 ConnectionWrapper cw = (ConnectionWrapper) this.pullInput (0);
@@ -192,35 +184,25 @@ public class WriteDBToFile extends OutputModule
                 }
                 else if (!isInputPipeConnected(3)) {
                   whereClause = null;
-       }
+                }
 
-
-
-                ////////////////////////////
-                // Get the number of entries in the table.
-                String query = "SELECT COUNT(*) FROM "+tableList;
-                if (whereClause != null && whereClause.length() > 0)
-                   query += " WHERE " + whereClause;
-                Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery(query);
-                int count = 0;
-                while (rs.next ())
-                        count = rs.getInt (1);
-//                      System.out.println ("---- Entries - "+count);
+                // get the name of the file to write to
+                String fileName = (String) this.pullInput(4);
+                fw = new FileWriter(fileName);
 
                 ///////////////////////////
                 // Get the column types, and create the appropriate column
                 // objects
 
                 // construct the query to get clumn information.
-                query = "SELECT "+fieldList.toString()+" FROM "+tableList;
+                String query = "SELECT "+fieldList.toString()+" FROM "+tableList;
 
                 if (whereClause != null && whereClause.length() > 0)
                    query += " WHERE " + whereClause;
 
                 // Get the number of columns selected.
-                stmt = con.createStatement();
-                rs = stmt.executeQuery(query);
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
                 ResultSetMetaData rsmd = rs.getMetaData ();
                 int numColumns = rsmd.getColumnCount ();
                 MutableTableImpl vt =  new MutableTableImpl(numColumns);
@@ -262,14 +244,6 @@ public class WriteDBToFile extends OutputModule
                 for (int i = 0 ; i < numColumns ; i++)
                         types[i] = rsmd.getColumnType (i+1);
 
-                //////////////////////////////////////
-                // Now fill in the data
-                // construct the query to get the column metadata.
-                query = "SELECT "+fieldList.toString()+" FROM "+tableList;
-                if (whereClause != null && whereClause.length() > 0)
-                        query += " WHERE "+whereClause;
-
-
                 // Now populate the table.
                 for (int where = 0; rs.next (); where++){
                         for (int i = 0 ; i < numColumns ; i++) {
@@ -285,12 +259,6 @@ public class WriteDBToFile extends OutputModule
                                                   fw.write(rs.getInt(i+1));
                                                 break;
                                         case Types.DOUBLE:
-                                                if (rs.getString(i+1) == null) {
-                                                  fw.write("");
-                                                }
-                                                else
-                                                  fw.write(rs.getString(i+1));
-                                                break;
                                         case Types.NUMERIC:
                                         case Types.DECIMAL:
                                         case Types.FLOAT:
@@ -299,7 +267,7 @@ public class WriteDBToFile extends OutputModule
                                                   fw.write("");
                                                 }
                                                 else
-                                                  fw.write(rs.getString(i+1));
+                                                  fw.write(Double.toString(rs.getDouble(i+1)));
                                                 break;
                                         case Types.CHAR:
                                         case Types.VARCHAR:
@@ -347,6 +315,9 @@ public class WriteDBToFile extends OutputModule
                                 return "Selected Table";
                         case 3:
                                 return "Query Condition (Optional)";
+                        case 4:
+                                return "File Name";
+
                         default: return "NO SUCH INPUT!";
                 }
         }
@@ -366,7 +337,8 @@ public class WriteDBToFile extends OutputModule
           if (!isInputPipeConnected(3)) {
             return (getInputPipeSize(0)>0 &&
                     getInputPipeSize(1)>0 &&
-                    getInputPipeSize(2)>0);
+                    getInputPipeSize(2)>0 &&
+                    getInputPipeSize(4)>0);
           }
           return super.isReady();
         }
