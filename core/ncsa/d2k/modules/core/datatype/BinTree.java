@@ -429,6 +429,13 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 		return ct.getTotal(an);
 	}
 
+        public void setTotal(String cn, String an, int total) {
+		ClassTree ct = (ClassTree)get(cn);
+		if(ct == null)
+                  ;
+		ct.setTotal(an, total);
+        }
+
 	/**
 		Get the number of unknown classes
 		@return the number of unknown classes
@@ -448,6 +455,50 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 			return -1;
 		return ct.getNumUnknownAttributes();
 	}
+
+
+    // ADDED DC 3.12.2003
+
+    /**
+     *  Return true if the lower bound of the specified bin is included,
+     *  false otherwise
+     */
+    public boolean includeLowerBound(String cn, String an, String bn) throws Exception {
+		ClassTree ct = (ClassTree)get(cn);
+		if(ct == null)
+            throw new Exception("The bin could not be found.");
+		return ct.includeLowerBound(an, bn);
+    }
+
+    public boolean includeUpperBound(String cn, String an, String bn) throws Exception {
+		ClassTree ct = (ClassTree)get(cn);
+		if(ct == null)
+            throw new Exception("The bin could not be found.");
+		return ct.includeUpperBound(an, bn);
+    }
+
+    public double getLowerBound(String cn, String an, String bn) throws Exception {
+		ClassTree ct = (ClassTree)get(cn);
+		if(ct == null)
+            throw new Exception("The bin could not be found.");
+		return ct.getLowerBound(an, bn);
+    }
+
+    public double getUpperBound(String cn, String an, String bn) throws Exception {
+		ClassTree ct = (ClassTree)get(cn);
+		if(ct == null)
+            throw new Exception("The bin could not be found.");
+		return ct.getUpperBound(an, bn);
+    }
+
+
+    public void setBinTally(String cn, String an, String bn, int tally) throws Exception {
+	ClassTree ct = (ClassTree)get(cn);
+	if(ct == null)
+           throw new Exception("The bin could not be found.");
+	ct.setBinTally(an, bn, tally);
+    }
+
 
     private final String getCondition (String cn, String an, String bn) {
         ClassTree ct = (ClassTree)get(cn);
@@ -679,6 +730,13 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 				return -1;
 			return bl.getTotal();
 		}
+
+                void setTotal(String an, int total) {
+		  BinList bl = (BinList)get(an);
+		  if(bl == null)
+                    ;
+		  bl.setTotal(total);
+                }
 
 		int getNumUnknownAttributes() {
 			return unknownAttributes;
@@ -1501,7 +1559,90 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 				return null;
 			}
 		}
-	}
+
+    /**
+     *  Return true if the lower bound of the specified bin is included,
+     *  false otherwise
+     */
+    boolean includeLowerBound(String an, String bn) throws BinNotFoundException {
+		BinList bl = (BinList)get(an);
+
+		if(bl == null)
+		    throw new BinNotFoundException();
+		Bin b = (Bin)bl.get(bn);
+        Evaluate e = b.item;
+        if(e instanceof BoundedNumericEvaluate)
+            return ((BoundedNumericEvaluate)e).includeLower;
+        else if(e instanceof NumericEvaluate)
+            // what to do?
+            return false;
+        else
+            throw new BinNotFoundException();
+    }
+
+    boolean includeUpperBound(String an, String bn) throws BinNotFoundException {
+		BinList bl = (BinList)get(an);
+
+		if(bl == null)
+		    throw new BinNotFoundException();
+		Bin b = (Bin)bl.get(bn);
+        Evaluate e = b.item;
+        if(e instanceof BoundedNumericEvaluate)
+            return ((BoundedNumericEvaluate)e).includeUpper;
+        else if(e instanceof NumericEvaluate)
+            // what to do?
+            return false;
+        else
+            throw new BinNotFoundException();
+    }
+
+    double getLowerBound(String an, String bn) throws BinNotFoundException {
+		BinList bl = (BinList)get(an);
+
+		if(bl == null)
+		    throw new BinNotFoundException();
+		Bin b = (Bin)bl.get(bn);
+        Evaluate e = b.item;
+        if(e instanceof BoundedNumericEvaluate)
+            return ((BoundedNumericEvaluate)e).lower;
+        else if(e instanceof NumericEvaluate)
+            // what to do?
+            return 0;
+        else
+            throw new BinNotFoundException();
+    }
+
+    double getUpperBound(String an, String bn) throws BinNotFoundException {
+//        return 0;
+		BinList bl = (BinList)get(an);
+
+		if(bl == null)
+		    throw new BinNotFoundException();
+		Bin b = (Bin)bl.get(bn);
+        Evaluate e = b.item;
+        if(e instanceof BoundedNumericEvaluate)
+            return ((BoundedNumericEvaluate)e).upper;
+        else if(e instanceof NumericEvaluate)
+            // what to do?
+            return 0;
+        else
+            throw new BinNotFoundException();
+    }
+
+
+    void setBinTally(String an, String bn, int tally) throws BinNotFoundException {
+      BinList bl = (BinList) get(an);
+      bl.total += tally;
+
+      if (bl == null)
+        throw new BinNotFoundException();
+      Bin b = (Bin) bl.get(bn);
+      if(b == null)
+        throw new BinNotFoundException();
+      else
+        b.tally = tally;
+    }
+  }
 
     private class DefaultTree extends HashMap implements Serializable {
 
