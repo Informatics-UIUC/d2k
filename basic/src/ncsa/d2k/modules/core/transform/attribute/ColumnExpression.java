@@ -52,7 +52,7 @@ public class ColumnExpression implements Expression {
 			labelToIndex.put(table.getColumnLabel(i), new Integer(i));
 		this.initMissing();
 	}
-	
+
 	/**
 	 * Return a reference to the missing values array.
 	 * @return
@@ -442,8 +442,15 @@ public class ColumnExpression implements Expression {
 					 * If failed to find string value in table, create new terminal node just for string
 					 * Use a flag of 2, distinguish from other terminal nodes
 					 */
+               /*
 					float tempmyfloat = 0;
 					return new TerminalNode(2, expression, tempmyfloat);
+               */
+               // the problem with this ^^^ is that it introduces the ability
+               // to parse any string, which breaks syntax checking. for now
+               // we're going to throw an exception here instead.
+               throw new ExpressionException(expression + " does not appear to be " +
+                  "a scalar value or an attribute name");
 				}
 
 			}
