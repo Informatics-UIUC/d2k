@@ -12,6 +12,8 @@ import java.util.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 
+import ncsa.d2k.modules.core.transform.StaticMethods;
+
 /**
  ChooseAttributes.java  (previously ChooseFields)
 
@@ -19,6 +21,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
  Then assigns them in an ExampleTable.
 
  @author Peter Groves, c/o David Clutter
+ *
+ * @todo: allows choosing same attribute both as input and output
  */
 public class ChooseAttributes extends HeadlessUIModule {
 
@@ -139,22 +143,40 @@ public class ChooseAttributes extends HeadlessUIModule {
 
 		// Create the input feature index array.
 		Object[] selected = this.getSelectedInputs ();
+
+                //vered - test that all columns are really in the map
+                String[] selectedNames = new String[selected.length];
+                for(int i=0; i<selectedNames.length; i++)
+                    selectedNames[i] = (String)selected[i];
+
+                int[] inputFeatures = StaticMethods.getIntersectIds(selectedNames, colindices);
+                //the following was commented out and replaced by the previous code line.
+                //vered.
+                /*
 		int[] inputFeatures = new int[selected.length];
 		for (int i = 0; i < selected.length; i++) {
 			String s = (String) selected[i];
 			Integer ii = (Integer) colindices.get (s);
 			inputFeatures[i] = ii.intValue ();
 		}
+              */
 
 		// Create the output features array
 		selected = this.getSelectedOutputs ();
-		int[] outputFeatures = new int[selected.length];
+                selectedNames = new String[selected.length];
+                for(int i=0; i<selectedNames.length; i++)
+                    selectedNames[i] = (String)selected[i];
+                //the following was commented out and replaced by the previous code line.
+                //vered.
+                int[] outputFeatures = StaticMethods.getIntersectIds(selectedNames, colindices);
+
+		/*int[] outputFeatures = new int[selected.length];
 		for (int i = 0; i < selected.length; i++) {
 			String s = (String) selected[i];
 			Integer ii = (Integer) colindices.get (s);
 			outputFeatures[i] = ii.intValue ();
 		}
-
+*/
 		// Create the example table and push it.
 		ExampleTable et = table.toExampleTable();
 		et.setInputFeatures (inputFeatures);
