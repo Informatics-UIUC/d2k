@@ -50,6 +50,7 @@ import ncsa.gui.Constrain;
 import ncsa.gui.DisposeOnCloseListener;
 import ncsa.gui.ErrorDialog;
 import ncsa.gui.JOutlinePanel;
+import ncsa.d2k.modules.core.datatype.table.util.*;
 
 /**
  * put your documentation comment here
@@ -1186,13 +1187,21 @@ public class BinAttributes extends HeadlessUIModule {
 	  for (int i = 0; i < colIdx.length; i++) {
 		// find the max and min and make equally spaced bins
 		//NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
+/*
 		for (int j = 0; j < tbl.getNumRows(); j++) {
-		  double d = tbl.getDouble(j, colIdx[i]);
+			
+		   double  d = tbl.getDouble(j, colIdx[i]);
+		        
 		  if (d > maxes[i])
 			maxes[i] = d;
 		  if (d < mins[i])
 			mins[i] = d;
-		}
+		} */
+//		ANCA added support for missing  values
+		ScalarStatistics ss = TableUtilities.getScalarStatistics(tbl, colIdx[i]);
+		 maxes[i] = ss.getMaximum();
+		mins[i] = ss.getMinimum();
+		
 		double[] binMaxes = new double[num - 1];
 		double interval = (maxes[i] - mins[i])/(double)num;
 		// add the first bin manually
@@ -1369,12 +1378,22 @@ public class BinAttributes extends HeadlessUIModule {
 		ErrorDialog.showDialog("Must specify a positive integer", "Error");
 		return;
 	  }
-	  // we need to sort the data, but do not want to sort the
+	  
+	    // we need to sort the data, but do not want to sort the
 	  // actual column, so we get a copy of the data
 	  for (int i = 0; i < colIdx.length; i++) {
 		//NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-		double[] data = new double[tbl.getNumRows()];
+		//ANCA added support for eliminating missing values when setting interval limits
+		int missing =0;
+		 if (tbl.getColumn(colIdx[i]).hasMissingValues()) 
+		 missing = tbl.getColumn(colIdx[i]).getNumMissingValues();
+		double[] data =  new double[tbl.getNumRows()-missing];
+		int k=0;
 		for (int j = 0; j < data.length; j++)
+		 if (missing > 0) 
+		 	if(!tbl.isValueMissing(j,colIdx[i]))
+		 		data[k++] = tbl.getDouble(j,colIdx[i]);
+		 else
 		  data[j] = tbl.getDouble(j, colIdx[i]);
 		// sort it
 		Arrays.sort(data);

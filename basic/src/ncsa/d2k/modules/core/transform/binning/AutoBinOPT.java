@@ -296,12 +296,13 @@ public class AutoBinOPT extends DataPrepModule {
 				double[] vals =  new double[tbl.getNumRows()-missing];
 				
 				//ANCA added support for eliminating missing values when setting interval limits
+				int k=0;
 				for (int j = 0; j < numRows; j++) {
 					//check if column has missing values
 					if (missing >0) {
 						//if value is missing do not add it
 						if(!tbl.isValueMissing(j,inputs[i]))	
-					    	vals[j] = tbl.getDouble(j, inputs[i]);
+					    	vals[k++] = tbl.getDouble(j, inputs[i]);
 					}
 					else
 				    vals[j] = tbl.getDouble(j, inputs[i]);
