@@ -51,7 +51,7 @@ public class ParseFileToADTree extends InputModule {
 
     public String getModuleInfo() {
         StringBuffer sb = new StringBuffer("<p>Overview: ");
-        sb.append("Reads a file and stores attribute occurence counts into an ADTree index structure ");
+        sb.append("Reads a file and stores attribute occurrence counts into an ADTree index structure ");
         sb.append("<p>Detailed Description: ");
         sb.append("Given a parser, reads the data, counting how many times each attribute value occurs.");
         sb.append("All these counts are stored into an ADTree structure. See B. Anderson and A. Moore ");
@@ -66,7 +66,7 @@ public class ParseFileToADTree extends InputModule {
 				sb.append("If there are a lot of attributes and they have many values the structure ");
 			  sb.append("will easily run out of memory. Optimizations have been made so that only the ");
   			sb.append("first branch of the tree is stored in memory and the rest are built as needed when ");
-			  sb.append("the counts are retrived");
+			  sb.append("the counts are retrieved");
         return sb.toString();
     }
 

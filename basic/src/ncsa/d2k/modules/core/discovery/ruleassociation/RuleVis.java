@@ -101,7 +101,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("input <i>Rule Table<i>. ");
 
           sb.append("</p><p>Detailed Description: ");
-          sb.append("This module presents a visual represention of association rules identified by ");
+          sb.append("This module presents a visual representation of association rules identified by ");
           sb.append("a discovery algorithm. ");
           sb.append("D2K includes several modules that implement association rule discovery algorithms, ");
           sb.append("all of which save their results in a <i>Rule Table</i> structure that can be used as ");
@@ -150,7 +150,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	  sb.append("to get the full picture of large matrices. ");
 
           sb.append("</p><p>Scalability: ");
-          sb.append("While this module can display a large number of items and rules, there can be a noticable delay " );
+          sb.append("While this module can display a large number of items and rules, there can be a noticeable delay " );
 	  sb.append("in opening the visualization when a large number of cells are involved. " );
           sb.append("Also, as the number of cells increases beyond ");
           sb.append("a certain point, it is difficult to gain insights from the display.  Advanced features to help ");

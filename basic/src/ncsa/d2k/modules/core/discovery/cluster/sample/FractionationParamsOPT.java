@@ -114,7 +114,7 @@ public class FractionationParamsOPT
    */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "The Coverage clustering algorithm is a type of kmeans approach where a sample set";
+    s += "The Coverage clustering algorithm is a type of kmeans approach where a sample set ";
     s += "is formed as follows: <br>";
     s += "In the FractionationSampler, the initial examples (converted to clusters) by a key attribute denoted by <i>Sort Attribute</i>. ";
     s += "The set of sorted clusters is then segmented into equal partitions of size <i>maxPartitionsize</i>. ";

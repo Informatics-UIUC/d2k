@@ -92,7 +92,7 @@ public class TableViewer extends UIModule {
       sb.append("is passed, unchanged, as the module's output.");
       sb.append("Only the Table data that is presently visible in the window is requested. ");
       sb.append("For some table representations, in particular those where the table data is not all kept in memory, ");
-      sb.append("refocusing the window view on different table cells can result in some noticable ");
+      sb.append("refocusing the window view on different table cells can result in some noticeable ");
       sb.append("delay while the new table data is loaded. ");
 
       return sb.toString();

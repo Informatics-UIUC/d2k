@@ -268,7 +268,7 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
      * in this column
      *
      * @param row   the row number to check if a double value can be retrieved from it
-     * @return      true if a double value can be retrived from row no.
+     * @return      true if a double value can be retrieved from row no.
      *              <code>row</code>. false if an exception occures while trying
      *              to retrieve the value
      */

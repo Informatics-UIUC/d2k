@@ -328,7 +328,7 @@ public class BackPropModel extends PredictionModelModule
 
 	/*** compute
 
-	the main function to calculate the ouput(s) given an input vector.
+	the main function to calculate the output(s) given an input vector.
 	@param e the row index in the table 'data' to use as input
 	@param results[e][out] the output 'out' will be put in row 'e' of this table
 	*/

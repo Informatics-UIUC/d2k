@@ -41,7 +41,7 @@ public class MinLenEncodingClusterModelEvaluator
     PropertyDescription[] descriptions = new PropertyDescription[1];
 
     descriptions[0] = new PropertyDescription("verbose",
-                                              "Verbose Ouput",
+                                              "Verbose Output",
         "Do you want verbose output to the console.");
 
     return descriptions;

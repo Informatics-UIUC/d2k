@@ -69,7 +69,7 @@ public class CoverageSampler extends CoverageSamplerOPT {
     PropertyDescription[] descriptions = new PropertyDescription[5];
     descriptions[0] = new PropertyDescription("maxNumCenters",
                                               "Maximum Samples.",
-        "Maximum nunmber of samples to be generated");
+        "Maximum number of samples to be generated");
     descriptions[1] = new PropertyDescription("cutOff",
                                               "Distance Threshold",
                                      "This property specifies the percent of the max distance to use " +

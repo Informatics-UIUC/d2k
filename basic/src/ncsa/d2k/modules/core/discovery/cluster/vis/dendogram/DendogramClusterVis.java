@@ -114,7 +114,7 @@ public class DendogramClusterVis
     s += "a hierarchical agglomerative clustering algorithm.  Some cluster models will ";
     s += "contain complete dendogram trees (from the actual table rows to the single ";
     s += "root cluster.  Other models will contain trees that start at some cluster cut ";
-    s += "(for example the clusters returned from a KMeans algortihm) to the root. ";
+    s += "(for example the clusters returned from a KMeans algorithm) to the root. ";
     s += "Also, not all trees are monotonic (i.e. the height of subclusters is always <= ";
     s += "to the height of their parents where height is measured in cluster dissimilarity. ";
     s += "In particular, the centroid clustering methods (see HierAgglomClusterer props) are ";
