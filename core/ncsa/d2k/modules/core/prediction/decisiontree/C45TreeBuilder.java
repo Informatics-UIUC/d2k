@@ -111,18 +111,20 @@ public class C45TreeBuilder extends ComputeModule
 	private double numericAttributeEntropy(VerticalTable vt, double splitVal,
 		ArrayList examples, int attCol, int outCol) {
 
-		HashMap lessThanTally = new HashMap();
+		/*HashMap lessThanTally = new HashMap();
 		HashMap greaterThanTally = new HashMap();
-		double lessThanTot = 0;
-		double greaterThanTot = 0;
+		*/
+		int lessThanTot = 0;
+		int greaterThanTot = 0;
 
+		/*
 		// count up the number of examples less than and greater than
 		// the split point
 		for(int i = 0; i < examples.size(); i++) {
 			Integer rowIdx = (Integer)examples.get(i);
 			double val = vt.getDouble(rowIdx.intValue(), attCol);
-
 			String out = vt.getString(rowIdx.intValue(), outCol);
+
 			if(val < splitVal) {
 				if(lessThanTally.containsKey(out)) {
 					Integer in = (Integer)lessThanTally.get(out);
@@ -130,7 +132,7 @@ public class C45TreeBuilder extends ComputeModule
 					lessThanTally.put(out, new Integer(tal));
 				}
 				else {
-					lessThanTally.put(out, new Integer(1));
+					lessThanTally.put(out, ONE);
 				}
 				lessThanTot++;
 			}
@@ -141,28 +143,102 @@ public class C45TreeBuilder extends ComputeModule
 					greaterThanTally.put(out, new Integer(tal));
 				}
 				else {
-					greaterThanTally.put(out, new Integer(1));
+					greaterThanTally.put(out, ONE);
 				}
 				greaterThanTot++;
 			}
 		}
+		*/
+
+		int [] lessThanTally = new int[0];
+		int [] greaterThanTally = new int[0];
+		HashMap lessThanIndexMap = new HashMap();
+		HashMap greaterThanIndexMap = new HashMap();
+		for(int i = 0; i < examples.size(); i++) {
+			Integer rowIdx = (Integer)examples.get(i);
+			int idx = rowIdx.intValue();
+
+			double val = vt.getDouble(idx, attCol);
+			String out = vt.getString(idx, outCol);
+
+			int loc;
+			if(val < splitVal) {
+				if(lessThanIndexMap.containsKey(out)) {
+					Integer in = (Integer)lessThanIndexMap.get(out);
+					loc = in.intValue();
+					lessThanTally[loc]++;
+				}
+				// found a new one..
+				else {
+					lessThanIndexMap.put(out, new Integer(lessThanIndexMap.size()));
+					lessThanTally = expandArray(lessThanTally);
+					lessThanTally[lessThanTally.length-1] = 1;
+				}
+				lessThanTot++;
+			}
+			else {
+				if(greaterThanIndexMap.containsKey(out)) {
+					Integer in = (Integer)greaterThanIndexMap.get(out);
+					loc = in.intValue();
+					greaterThanTally[loc]++;
+				}
+				// found a new one..
+				else {
+					greaterThanIndexMap.put(out, new Integer(greaterThanIndexMap.size()));
+					greaterThanTally = expandArray(greaterThanTally);
+					greaterThanTally[greaterThanTally.length-1] = 1;
+				}
+				greaterThanTot++;
+			}
+		}
+
+		// now put all the totals in hash maps..
+		/*lessThanTally = new HashMap(ltm.size());
+		Iterator ii = ltm.keySet().iterator();
+		while(ii.hasNext()) {
+			String out = (String)ii.next();
+			Integer loc = (Integer)ltm.get(out);
+
+			lessThanTally.put(out, new Integer(lt[loc.intValue()]));
+		}
+
+		greaterThanTally = new HashMap(gtm.size());
+		ii = gtm.keySet().iterator();
+		while(ii.hasNext()) {
+			String out = (String)ii.next();
+			Integer loc = (Integer)gtm.get(out);
+
+			greaterThanTally.put(out, new Integer(gt[loc.intValue()]));
+		}
+		*/
+
+		/*Maps mm = dothis(vt, splitVal, examples, attCol, outCol);
+		lessThanTally = mm.lessThan;
+		greaterThanTally = mm.greaterThan;
+		double lessThanTot = mm.lt;
+		double greaterThanTot = mm.gt;
+		*/
 		// now that we have tallies of the outputs for this att value
 		// we can calculate the entropy.
 
 		// get the probablities for the examples less than the split
-		double[] probs = new double[lessThanTally.size()];
-		Iterator it = lessThanTally.values().iterator();
+		//double[] probs = new double[lessThanTally.size()];
+		double[] probs = new double[lessThanTally.length];
+		for(int i = 0; i < lessThanTally.length; i++)
+			probs[i] = ((double)lessThanTally[i])/((double)lessThanTot);
+
+		/*Iterator it = lessThanTally.values().iterator();
 		int idx = 0;
 		while(it.hasNext()) {
 			Integer in = (Integer)it.next();
 			double d = (double)in.intValue();
 			probs[idx] = d/lessThanTot;
 			idx++;
-		}
+		}*/
 
 		// get the probablities for the examples greater than or equal to
 		// the split
-		double[] greaterProbs = new double[greaterThanTally.size()];
+		/*double[] greaterProbs = new double[greaterThanTally.size()];
 		it = greaterThanTally.values().iterator();
 		idx = 0;
 		while(it.hasNext()) {
@@ -170,12 +246,135 @@ public class C45TreeBuilder extends ComputeModule
 			double d = (double)in.intValue();
 			greaterProbs[idx] = d/greaterThanTot;
 			idx++;
-		}
+		}*/
+		double[] greaterProbs = new double[greaterThanTally.length];
+		for(int i = 0; i < greaterThanTally.length; i++)
+			greaterProbs[i] = ((double)greaterThanTally[i])/((double)greaterThanTot);
 
 		// return the sum of the information given on each side of the split
 		return (lessThanTot/(double)examples.size())*entropy(probs) +
 			(greaterThanTot/(double)examples.size())*entropy(greaterProbs);
 	}
+
+	/*private class Maps {
+		HashMap lessThan;
+		HashMap greaterThan;
+		double lt;
+		double gt;
+	}*/
+
+	private static int[] expandArray(int[] orig) {
+		int [] newarray = new int[orig.length+1];
+		System.arraycopy(orig, 0, newarray, 0, orig.length);
+		return newarray;
+	}
+
+	/*private Maps dothis(VerticalTable vt, double splitVal,
+		ArrayList examples, int attCol, int outCol) {
+		HashMap lessThanTally = new HashMap();
+		HashMap greaterThanTally = new HashMap();
+		double lessThanTot = 0;
+		double greaterThanTot = 0;
+
+		// count up the number of examples less than and greater than
+		// the split point
+		for(int i = 0; i < examples.size(); i++) {
+			Integer rowIdx = (Integer)examples.get(i);
+			double val = vt.getDouble(rowIdx.intValue(), attCol);
+			String out = vt.getString(rowIdx.intValue(), outCol);
+
+			if(val < splitVal) {
+				if(lessThanTally.containsKey(out)) {
+					Integer in = (Integer)lessThanTally.get(out);
+					int tal = in.intValue() + 1;
+					lessThanTally.put(out, new Integer(tal));
+				}
+				else {
+					lessThanTally.put(out, ONE);
+				}
+				lessThanTot++;
+			}
+			else {
+				if(greaterThanTally.containsKey(out)) {
+					Integer in = (Integer)greaterThanTally.get(out);
+					int tal = in.intValue() + 1;
+					greaterThanTally.put(out, new Integer(tal));
+				}
+				else {
+					greaterThanTally.put(out, ONE);
+				}
+				greaterThanTot++;
+			}
+		}
+
+		int [] lt = new int[0];
+		int [] gt = new int[0];
+		HashMap ltm = new HashMap();
+		HashMap gtm = new HashMap();
+		for(int i = 0; i < examples.size(); i++) {
+			Integer rowIdx = (Integer)examples.get(i);
+			int idx = rowIdx.intValue();
+
+			double val = vt.getDouble(idx, attCol);
+			String out = vt.getString(idx, outCol);
+
+			int loc;
+			if(val < splitVal) {
+				if(ltm.containsKey(out)) {
+					Integer in = (Integer)ltm.get(out);
+					loc = in.intValue();
+					lt[loc]++;
+				}
+				// found a new one..
+				else {
+					ltm.put(out, new Integer(ltm.size()));
+					lt = expand(lt);
+					lt[lt.length-1] = 1;
+				}
+				lessThanTot++;
+			}
+			else {
+				if(gtm.containsKey(out)) {
+					Integer in = (Integer)gtm.get(out);
+					loc = in.intValue();
+					gt[loc]++;
+				}
+				// found a new one..
+				else {
+					gtm.put(out, new Integer(gtm.size()));
+					gt = expand(gt);
+					gt[gt.length-1] = 1;
+				}
+				greaterThanTot++;
+			}
+		}
+
+		// now put all the totals in hash maps..
+		lessThanTally = new HashMap(ltm.size());
+		Iterator ii = ltm.keySet().iterator();
+		while(ii.hasNext()) {
+			String out = (String)ii.next();
+			Integer loc = (Integer)ltm.get(out);
+
+			lessThanTally.put(out, new Integer(lt[loc.intValue()]));
+		}
+
+		greaterThanTally = new HashMap(gtm.size());
+		ii = gtm.keySet().iterator();
+		while(ii.hasNext()) {
+			String out = (String)ii.next();
+			Integer loc = (Integer)gtm.get(out);
+
+			greaterThanTally.put(out, new Integer(gt[loc.intValue()]));
+		}
+
+		Maps m = new Maps();
+		m.lessThan = lessThanTally;
+		m.greaterThan = greaterThanTally;
+		m.lt = lessThanTot;
+		m.gt = greaterThanTot;
+		return m;
+	}*/
 
 	/**
 		Find the best split value for the given column with the given examples.
@@ -350,10 +549,34 @@ public class C45TreeBuilder extends ComputeModule
 	private double categoricalAttributeEntropy(int colNum, String attValue,
 		ArrayList examples) {
 
-		HashMap outTally = new HashMap();
-		double tot = 0;
+		//HashMap outTally = new HashMap();
+		int tot = 0;
 
+		int [] outtally = new int[0];
+		HashMap outIndexMap = new HashMap();
 		for(int i = 0; i < examples.size(); i++) {
+			Integer rowIdx = (Integer)examples.get(i);
+			int idx = rowIdx.intValue();
+
+			String s = table.getString(idx, colNum);
+
+			if(s.equals(attValue)) {
+				String out = table.getString(idx, outputs[0]);
+
+				if(outIndexMap.containsKey(out)) {
+					Integer in = (Integer)outIndexMap.get(out);
+					outtally[in.intValue()]++;
+				}
+				else {
+					outIndexMap.put(out, new Integer(outIndexMap.size()));
+					outtally = expandArray(outtally);
+					outtally[outtally.length-1] = 1;
+				}
+				tot++;
+			}
+		}
+
+		/*for(int i = 0; i < examples.size(); i++) {
 			Integer rowIdx = (Integer)examples.get(i);
 			String s = table.getString(rowIdx.intValue(), colNum);
 			if(s.equals(attValue)) {
@@ -370,10 +593,11 @@ public class C45TreeBuilder extends ComputeModule
 				}
 				tot++;
 			}
-		}
+		}*/
+
 		// now that we have tallies of the outputs for this att value
 		// we can calculate the entropy.
-		double[] probs = new double[outTally.size()];
+		/*double[] probs = new double[outTally.size()];
 		Iterator it = outTally.values().iterator();
 		int idx = 0;
 		while(it.hasNext()) {
@@ -381,7 +605,10 @@ public class C45TreeBuilder extends ComputeModule
 			double d = (double)in.intValue();
 			probs[idx] = d/tot;
 			idx++;
-		}
+		}*/
+		double [] probs = new double[outtally.length];
+		for(int i = 0; i < probs.length; i++)
+			probs[i] = ((double)outtally[i])/((double)tot);
 
 		return (tot/(double)examples.size())*entropy(probs);
 	}

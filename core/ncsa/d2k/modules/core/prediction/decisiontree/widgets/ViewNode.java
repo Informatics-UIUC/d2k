@@ -39,7 +39,7 @@ public final class ViewNode {
 	double yspace = 80;
 
 	double gwidth;
-	double gheight = 60;
+	double gheight = 45;
 	double leftinset = 5;
 	double rightinset = 5;
 	double barwidth = 16;

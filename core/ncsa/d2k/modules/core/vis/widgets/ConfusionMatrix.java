@@ -108,8 +108,6 @@ public class ConfusionMatrix extends JScrollPane {
 			//d[predicted][actual]++;
 			if(actual < outs.length && predicted < outs.length)
 				d[predicted][actual]++;
-			else
-				System.out.println("p: "+preds[predicted]);
 		}
 
 		correct = 0;
@@ -125,7 +123,7 @@ public class ConfusionMatrix extends JScrollPane {
 		Setup the row headers.
 	*/
 	private void setupTable(int[][] d, String[] r, String[] c) {
-		MatrixModel tblModel = new MatrixModel(d, r, r);
+		MatrixModel tblModel = new MatrixModel(d, r, c);
 		/*JTable tmp = new JTable();
 		Graphics g = tmp.getGraphics();
 		FontMetrics fm = g.getFontMetrics();
