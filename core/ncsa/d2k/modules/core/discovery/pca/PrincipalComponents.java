@@ -6,7 +6,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 
 
-/*
+/**
 	Performs PCA on an ExampleTable's
 	input columns.  This module simply finds the
 	weights. Push to 'ApplyWeightedSummation' module

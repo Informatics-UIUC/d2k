@@ -4,7 +4,7 @@ package ncsa.d2k.modules.core.discovery.pca;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-/*
+/**
 
 <p><b>Overview</b>: Given the outputs of the PCA module, transforms
  the inputs of a data set into M principal components, where M is 
@@ -37,7 +37,7 @@ Only numeric input features are supported. If non-numeric input
 and number of principle components.
 	
 	@author pgroves
-	*/
+	**/
 
 public class ApplyWeightedSum extends ComputeModule 
 	implements java.io.Serializable{
