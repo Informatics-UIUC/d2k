@@ -106,7 +106,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 	 * return the integer array that defines the subset of the original table.
 	 * @return a subset.
 	 */
-	final protected int[] getSubset() {
+	final public int[] getSubset() {
 		return subset;
 	}
 
