@@ -139,7 +139,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 	 * @return string array containing the datatypes of the outputs.
 	 */
 	public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
 
@@ -919,3 +919,5 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 //        - committed to Basic.
 //	  - WISH:  At some point may want implementation that's efficient for Tables that aren't
 //          column-oriented.
+// 3/7/03 - Changed output port type to Table after confirmation from Tom.
+// End QA Comments
