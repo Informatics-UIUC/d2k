@@ -558,6 +558,7 @@ public class HAC {
     double[] min = new double[ifeatures.length];
     for (int i = 0, n = ifeatures.length; i < n; i++) {
       min[i] = Double.MAX_VALUE;
+      max[i] = Double.MIN_VALUE;
     }
     int bcnts = 0;
     for (int i = 0, n = ifeatures.length; i < n; i++) {
