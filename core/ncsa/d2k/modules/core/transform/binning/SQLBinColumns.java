@@ -162,6 +162,16 @@ public class SQLBinColumns extends UIModule {
         }
     }
 
+
+    //QA Anca added this: 
+    public PropertyDescription[] getPropertiesDescriptions() {  
+        // so that "WindowName" property is invisible  
+        return new PropertyDescription[0];   
+    } 
+ 
+
+
+
     /**
      * Create a GUI interface
      * @return An object of SQLBinColumnsView
