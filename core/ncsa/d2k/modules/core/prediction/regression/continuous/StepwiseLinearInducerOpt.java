@@ -261,4 +261,14 @@ public class StepwiseLinearInducerOpt
 
     return (Model) bestModel;
   }
+
+
+    //QA Anca added this:
+    public PropertyDescription[] getPropertiesDescriptions() {
+        // so that "ordered and _trace" property are invisible
+        return new PropertyDescription[0]; 
+    }
+
+
+
   }
