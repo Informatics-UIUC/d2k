@@ -68,6 +68,14 @@ public class DefineConstraintVariables
 
     private EMOPopulationInfo data;
 
+    public void paintComponent(Graphics g) {
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                          RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+      super.paintComponent(g2);
+    }
+
+
     public void setInput(Object o, int i) {
       data = (EMOPopulationInfo) o;
       table = (MutableTable) data.varNames;

@@ -82,6 +82,14 @@ public class DefineExternalConstraints extends UIModule {
       return new Dimension(600, 250);
     }
 
+    public void paintComponent(Graphics g) {
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                          RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+      super.paintComponent(g2);
+    }
+
+
     public void initView(ViewModule vm) {
       // the remove button
       JPanel removeButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));

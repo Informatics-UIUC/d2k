@@ -82,6 +82,13 @@ public class DefineExternalFitnessFunctions extends UIModule {
       return new Dimension(600, 250);
     }
 
+    static final String HTML = "<html>";
+    static final String INPUT = "Input: ";
+    static final String BR = "<br>";
+    static final String OUTPUT = "Output: ";
+    static final String MAXMIN = "Max/Min: ";
+    static final String CLOSE = "</html>";
+
     public void initView(ViewModule vm) {
       // the remove button
       JPanel removeButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -102,7 +109,26 @@ public class DefineExternalFitnessFunctions extends UIModule {
         for(int i = 0; i < ff.length; i++)
           definedFunctionsModel.addElement(ff[i]);
       }
-      definedFunctions = new JList(definedFunctionsModel);
+      definedFunctions = new JList(definedFunctionsModel) {
+        public String getToolTipText(MouseEvent me) {
+          Point p = me.getPoint();
+          int idx = locationToIndex(p);
+          FitnessFunction ff = (FitnessFunction)definedFunctionsModel.elementAt(idx);
+
+          StringBuffer tip = new StringBuffer();
+          tip.append(HTML);
+          tip.append(INPUT);
+          tip.append(ff.input);
+          tip.append(BR);
+          tip.append(OUTPUT);
+          tip.append(ff.output);
+          tip.append(BR);
+          tip.append(MAXMIN);
+          tip.append(ff.minmax);
+          tip.append(CLOSE);
+          return tip.toString();
+        }
+      };
       JScrollPane scroll = new JScrollPane(definedFunctions);
       scroll.setPreferredSize(new Dimension(200, 200));
       JPanel listPanel = new JPanel(new BorderLayout());
@@ -324,11 +350,21 @@ public class DefineExternalFitnessFunctions extends UIModule {
       add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    public void paintComponent(Graphics g) {
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                          RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+      super.paintComponent(g2);
+    }
+
+
     public void setInput(Object o, int i) {
       popInfo = (EMOPopulationInfo)o;
     }
 
     class FitnessFunction implements Serializable {
+      static final long serialVersionUID = 1824836916530132076L;
+
       String name;
       String exec;
       String input;
@@ -344,7 +380,8 @@ public class DefineExternalFitnessFunctions extends UIModule {
       }
 
       public String toString() {
-        return name+" : "+exec+" "+input+" "+output+" "+minmax;
+        //return "<html>"+name+" :<br>    "+exec+"<br>"+input+"<br>"+output+"<br>"+minmax+"</html>";
+        return name;
       }
     }
   }

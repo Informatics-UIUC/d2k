@@ -4,11 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import java.util.*;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.gui.*;
 
 import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
@@ -83,7 +85,7 @@ public class DefineFitnessFunctions
       extends ColumnConstructionGUI {
 
     //for use in determining time
-    private JButton timeButton;
+    //private JButton timeButton;
     //for use in displaying fitness function
     private JTable tableData;
     private DefaultTableModel modelData;
@@ -125,6 +127,13 @@ public class DefineFitnessFunctions
       columnBox.setModel(columnModel);
     }
 
+    public void paintComponent(Graphics g) {
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                          RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+      super.paintComponent(g2);
+    }
+
     public void initialize() {
       //Initialize method called of class that is extended
       //super.setValues(newExpressionStrings, guiTypes, guiConstructions);
@@ -135,7 +144,7 @@ public class DefineFitnessFunctions
       final String[] names = {
           "",
           "",
-          "Time"
+          //"Time"
       };
       modelData = new DefaultTableModel() {
         public int getColumnCount() {
@@ -181,10 +190,10 @@ public class DefineFitnessFunctions
           FitnessFunctionConstruction constr = (FitnessFunctionConstruction) last[i];
           if (constr.getIsMinimizing())
             modelData.addRow(new Object[] {MIN, constr.label+" = "+
-                             constr.expression, new String()});
+                             constr.expression/*, new String()*/});
           else
             modelData.addRow(new Object[] {MAX, constr.label+" = "+
-                             constr.expression, new String()});
+                             constr.expression/*, new String()*/});
         }
       }
 
@@ -281,8 +290,8 @@ public class DefineFitnessFunctions
       /**
            * TimeButton initialized to JButton, properties set: preferredSize, minimumSize
        */
-      timeButton = new JButton("Time it");
-      timeButton.setEnabled(false);
+      //timeButton = new AAButton("Time it");
+      //timeButton.setEnabled(false);
       //timeButton.setPreferredSize(new Dimension(75, 30));
       //timeButton.setMinimumSize(new Dimension(75, 30));
       /**
@@ -301,8 +310,8 @@ public class DefineFitnessFunctions
        * timeText initialized to JTextfield, 10 spaces wide,
        * two properties set: minimumSize and preferredSize
        */
-      JTextField timeText = new JTextField(5);
-      timeText.setEnabled(false);
+      //JTextField timeText = new AATextField(5);
+      //timeText.setEnabled(false);
       //timeText.setMinimumSize(new Dimension(50, 20));
       //timeText.setPreferredSize(new Dimension(50, 20));
 
@@ -317,9 +326,9 @@ public class DefineFitnessFunctions
        * Panel button_boxPanel adds three items: timeButton, horizontal strut
        * and delete button
        */
-      button_boxPanel.add(timeButton);
+      //button_boxPanel.add(timeButton);
       //button_boxPanel.add(Box.createHorizontalStrut(50));
-      button_boxPanel.add(Box.createHorizontalStrut(20));
+      //button_boxPanel.add(Box.createHorizontalStrut(20));
       button_boxPanel.add(deleteButton);
 
       /**
@@ -328,8 +337,8 @@ public class DefineFitnessFunctions
        */
       //textlabel_boxPanel.add(Box.createHorizontalStrut(70));
       textlabel_boxPanel.add(Box.createHorizontalStrut(20));
-      textlabel_boxPanel.add(new JLabel("Total Time: "));
-      textlabel_boxPanel.add(timeText);
+      //textlabel_boxPanel.add(new AALabel("Total Time: "));
+      //textlabel_boxPanel.add(timeText);
 
       /**
        * buttonPanel adds textlabel_boxPanel, and button_boxPanel
@@ -561,7 +570,7 @@ public class DefineFitnessFunctions
          * Add to table object array with: empty string, label of function,  function itself, and time stirng
          */
         modelData.addRow(new Object[] {MIN, newNameField.getText()+" = "+
-                         gui.getTextArea().getText(), new String()});
+                         gui.getTextArea().getText()/*, new String()*/});
 
         FitnessFunctionConstruction added = new FitnessFunctionConstruction(
             newNameField.getText(), gui.getTextArea().getText());

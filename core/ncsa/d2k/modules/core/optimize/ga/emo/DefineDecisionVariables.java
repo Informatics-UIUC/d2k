@@ -7,7 +7,9 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import javax.swing.border.*;
 
+import ncsa.gui.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
@@ -18,8 +20,6 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 public class DefineDecisionVariables
     extends UIModule
     implements Serializable {
-
-  static final long serialVersionUID = 5053865571628514478L;
 
   public String getModuleName() {
     return "Define Decision Variables";
@@ -130,7 +130,6 @@ public class DefineDecisionVariables
       extends ncsa.d2k.userviews.swing.JUserPane {
 
     private JTextField numVarTf;
-
     private DefaultTableModel model;
     private JLabel total_string_length = new JLabel("Total String Length:");
 
@@ -142,24 +141,27 @@ public class DefineDecisionVariables
       MainPanel[1] = new JPanel();
 
       MainPanel[1].setLayout(new BoxLayout(MainPanel[1], BoxLayout.Y_AXIS));
-      MainPanel[0].setMinimumSize(new Dimension(200, 50));
+      /*MainPanel[0].setMinimumSize(new Dimension(200, 50));
       MainPanel[0].setPreferredSize(new Dimension(200, 50));
       MainPanel[1].setMinimumSize(new Dimension(400, 230));
       MainPanel[1].setPreferredSize(new Dimension(400, 230));
+*/
 
       // this is the number of variables specified by
       //the user.
       JLabel numVarLbl = new JLabel("Number of variables:");
       numVarTf = new JTextField(4);
       numVarTf.setHorizontalAlignment(JTextField.CENTER);
+
       //This Update button will add the rows to the table
       //in accordance with the number of variables specified by
       //the user. If the number of variable specified is too large
       // a scroll pane will be used. Also, user can change this
       // number of variables as many times as he wants
       // and this will update the number of rows in the table.
-      JButton updateBt = new JButton("Update");
+      //JButton updateBt = new JButton("Update");
       JButton readFromFileBt = new JButton("Read From File");
+      JButton seedFromFileBt = new JButton("Seed From File");
 
       /**
        The Color object, buttonColor, creates a yellowish
@@ -168,13 +170,13 @@ public class DefineDecisionVariables
       //Color buttonColor = new Color(255, 240, 40);
       //updateBt.setBackground( (buttonColor));
 
-      updateBt.addActionListener(new ActionListener() {
+      ActionListener al = new ActionListener() {
         public void actionPerformed(ActionEvent actionevent) {
-
           try {
             /**
-             Table model created to hold number of objects needed based on entered variable number
-             */
+             Table model created to hold number of objects needed based on
+             entered variable number
+            */
             for (int i = model.getRowCount();
                  i < Integer.parseInt(numVarTf.getText()); i++) {
               model.addRow(new Object[] {Integer.toString(i), "x" + i, "",
@@ -197,7 +199,9 @@ public class DefineDecisionVariables
                 "alert", JOptionPane.ERROR_MESSAGE);
           }
         }
-      });
+      };
+      //updateBt.addActionListener(al);
+      numVarTf.addActionListener(al);
 
       readFromFileBt.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
@@ -209,7 +213,7 @@ public class DefineDecisionVariables
        * 4 panels created, 2 of JPanel type, and 2 of Box type
        * (box allows objects to positioned in a structured manner)
        */
-      JPanel panel_0 = new JPanel();
+/*      JPanel panel_0 = new JPanel();
       JPanel top_left_panel = new JPanel();
       Box bottom_left_panel = new Box(BoxLayout.X_AXIS);
       Box bottom_left_panel2 = new Box(BoxLayout.X_AXIS);
@@ -224,7 +228,7 @@ public class DefineDecisionVariables
        * Two objects added to top_left_panel
        */
       //top_left_panel.setBackground(background_color);
-      top_left_panel.add(numVarLbl);
+/*      top_left_panel.add(numVarLbl);
       top_left_panel.add(numVarTf);
 
       bottom_left_panel.add(Box.createHorizontalGlue());
@@ -236,27 +240,67 @@ public class DefineDecisionVariables
        * myBox holds the left panels with rigid areas between them
        * myBox2 holds myBox
        */
-      Box myBox;
+/*      Box myBox;
       Box myBox2;
       myBox2 = new Box(BoxLayout.X_AXIS);
       myBox = new Box(BoxLayout.Y_AXIS);
 
-      myBox.add(top_left_panel);
-      myBox.add(Box.createRigidArea(new Dimension(1, 20)));
+      /*myBox.add(top_left_panel);
+      myBox.add(Box.createRigidArea(new Dimension(1, 15)));
       myBox.add(bottom_left_panel);
       myBox.add(Box.createRigidArea(new Dimension(1, 15)));
       myBox.add(bottom_left_panel2);
       myBox2.add(myBox);
+*/
 
-      (MainPanel[0]).add(myBox2);
+      JPanel varPanel = new JPanel();
+      varPanel.setLayout(new GridBagLayout());
+      JPanel lblPanel = new JPanel();
+      lblPanel.add(numVarLbl);
+      lblPanel.add(numVarTf);
+      Constrain.setConstraints(varPanel, lblPanel, 0, 0, 2, 1,
+                               GridBagConstraints.NONE,
+                               GridBagConstraints.CENTER,
+                               1,1);
+/*      Constrain.setConstraints(varPanel, numVarTf, 1, 0, 1, 1,
+                               GridBagConstraints.NONE,
+                               GridBagConstraints.CENTER,
+                               1,1);
+      Constrain.setConstraints(varPanel, new JPanel(), 0, 1, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.EAST,
+                               1,1);
+      Constrain.setConstraints(varPanel, updateBt, 1, 1, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.EAST,
+                               0,0);*/
+      Constrain.setConstraints(varPanel, new JPanel(), 0, 1, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.EAST,
+                               1,1);
+      Constrain.setConstraints(varPanel, readFromFileBt, 1, 1, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.EAST,
+                               0,0);
+      Constrain.setConstraints(varPanel, new JPanel(), 0, 2, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.EAST,
+                               1,1);
+      Constrain.setConstraints(varPanel, seedFromFileBt, 1, 2, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.EAST,
+                               0,0);
+
+      varPanel.setBorder(new EmptyBorder(5,5,5,0));
+      (MainPanel[0]).add(varPanel);
 
       final String[] names = {
           "",
           "Name",
-          "lower",
-          "upper",
-          "precision",
-          "string length"
+          "Lower",
+          "Upper",
+          "Precision",
+          "String Length"
       };
       // model for the table
 
@@ -329,7 +373,6 @@ public class DefineDecisionVariables
                 numBits = (numU - numL + 1) / numP;
                 numBits = (float) Math.log( (double) numBits);
                 numBits = (float) (numBits / Math.log(2.0));
-
 
                 // now we know the number of bits required to represent
                 // a number in this interval
@@ -413,6 +456,7 @@ public class DefineDecisionVariables
       Box string_length_panel = new Box(BoxLayout.X_AXIS);
       string_length_panel.add(Box.createHorizontalStrut(200));
       string_length_panel.add(total_string_length);
+      string_length_panel.setBorder(new EmptyBorder(10, 5,5,5));
 
       MainPanel[1].add(string_length_panel);
       /**
@@ -490,25 +534,36 @@ public class DefineDecisionVariables
       //bottom_button_panel.setBackground(background_color);
       bottom_button_panel.add(abrtBt);
       bottom_button_panel.add(doneBt);
+      bottom_button_panel.setBorder(new EmptyBorder(5,5,5,5));
 
       /**
        * Mainpanel adds bottom_button_panel
        */
+      MainPanel[0].setBorder(new EmptyBorder(10, 5,5,5));
+      MainPanel[1].setBorder(new EmptyBorder(10, 5,5,5));
       MainPanel[1].add(bottom_button_panel);
       add(MainPanel[0], BorderLayout.WEST);
-      JPanel myPanel = new JPanel();
-      myPanel.add(new JLabel(" "));
+      //JPanel myPanel = new JPanel();
+      //myPanel.add(new JLabel(" "));
       //myPanel.setBackground(background_color);
-      JPanel myPanel2 = new JPanel();
-      myPanel2.add(new JLabel("        "));
+      //JPanel myPanel2 = new JPanel();
+      //myPanel2.add(new JLabel("        "));
       //myPanel2.setBackground(background_color);
-      add(myPanel2, BorderLayout.EAST);
-      add(myPanel, BorderLayout.NORTH);
+      //add(myPanel2, BorderLayout.EAST);
+      //add(myPanel, BorderLayout.NORTH);
 
       add(MainPanel[1], BorderLayout.CENTER);
     }
 
     public void setInput(Object object, int index) {}
+
+    public void paintComponent(Graphics g) {
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                          RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+      super.paintComponent(g2);
+    }
+
 
     /**
      * this method is used to pass output from the module

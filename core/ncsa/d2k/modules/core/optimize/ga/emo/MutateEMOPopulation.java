@@ -90,12 +90,12 @@ public class MutateEMOPopulation extends ncsa.d2k.core.modules.DataPrepModule 	 
 	}
 
 	public String[] getInputTypes () {
-		String[] types = {"ncsa.d2k.modules.core.optimize.ga.NsgaPopulation"};
+		String[] types = {"ncsa.d2k.modules.core.optimize.ga.EMOPopulation"};
 		return types;
 	}
 
 	public String[] getOutputTypes () {
-		String[] types = {"ncsa.d2k.modules.core.optimize.ga.NsgaPopulation"};
+		String[] types = {"ncsa.d2k.modules.core.optimize.ga.EMOPopulation"};
 		return types;
 	}
 
@@ -124,8 +124,8 @@ public class MutateEMOPopulation extends ncsa.d2k.core.modules.DataPrepModule 	 
 		Population population = (Population) this.pullInput (0);
 
                 if(firstTime) {
-                  NsgaPopulation nsga = (NsgaPopulation)population;
-                  this.M_rate = nsga.getPopulationInfo().mutationRate;
+                  EMOPopulation emo = (EMOPopulation)population;
+                  this.M_rate = emo.getPopulationInfo().mutationRate;
 		  this.Mu_next = (int) Math.ceil (Math.log (Math.random ()) / Math.log (1.0 - M_rate));
                 }
 

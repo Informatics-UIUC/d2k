@@ -25,7 +25,7 @@ import ncsa.d2k.modules.core.optimize.util.*;
 	value. This class overrides the evaluateAll method to accumulate the best objective
 	values after the members have all been evalutated.
 */
-abstract public class NsgaPopulation extends Population implements Serializable {
+abstract public class NsgaPopulation extends EMOPopulation implements Serializable {
 
 	/** number of objectives to optimize on.*/
 	int numObjectives;
@@ -799,13 +799,5 @@ abstract public class NsgaPopulation extends Population implements Serializable 
 	public double getTargetFitness () { return this.target; }
 	public double getCurrentMeasure () { return this.currentMeasure; }
 
-        private EMOPopulationInfo popInfo;
 
-        public void setPopulationInfo(EMOPopulationInfo popI) {
-          popInfo = popI;
-        }
-
-        public EMOPopulationInfo getPopulationInfo() {
-          return popInfo;
-        }
 }

@@ -19,18 +19,18 @@ public class EvaluateEMOPopulation
 
   public String[] getInputTypes() {
     String[] types = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.NsgaPopulation"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulation"};
     return types;
   }
 
   public String[] getOutputTypes() {
     String[] types = {
-        "ncsa.d2k.modules.core.optimize.ga.emo.NsgaPopulation"};
+        "ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulation"};
     return types;
   }
 
   private MutableTable table;
-  private NsgaPopulation population;
+  private EMOPopulation population;
   private int numCols;
 
   public void endExecution() {
@@ -45,7 +45,7 @@ public class EvaluateEMOPopulation
    */
   public void doit() throws Exception {
       // the current population of the GA run
-      NsgaPopulation pop = (NsgaPopulation)this.pullInput(0);
+      EMOPopulation pop = (EMOPopulation)this.pullInput(0);
       if(population == null || pop != population) {
         table = (MutableTable) pop.getPopulationInfo().varNames.copy();
         table.setNumRows(pop.size());
@@ -152,10 +152,12 @@ public class EvaluateEMOPopulation
       }
 
       //extract the fitness constraints variables information
-      Construction[] constraintVarConstructions = pop.getPopulationInfo().constraintVariableConstructions;
+      Construction[] constraintVarConstructions =
+          pop.getPopulationInfo().constraintVariableConstructions;
 
       //extract the fitness constraints information
-      Construction[] constraintVariableConstructions = pop.getPopulationInfo().constraintFunctionConstructions;
+      Construction[] constraintVariableConstructions =
+          pop.getPopulationInfo().constraintFunctionConstructions;
 
       // update the mutable table by calculating the
       // constraint varaibles
@@ -179,8 +181,7 @@ public class EvaluateEMOPopulation
         //newmt.removeColumn(fitpos);
         //create a column transform for the corresponding
         //constraint
-        EMOFilter myfitct = new EMOFilter(
-            constraintVariableConstructions[i]);
+        EMOFilter myfitct = new EMOFilter(constraintVariableConstructions[i]);
         //apply the transformation
         // It is important to note that transform function adds
         // a new column to the table and hence we deleted the column
@@ -269,7 +270,6 @@ public class EvaluateEMOPopulation
           table.setColumnLabel(current.label, table.getNumColumns() - 1);
           // table is successfully transformed and hence return true
           return true;
-
       }
   }
 }
