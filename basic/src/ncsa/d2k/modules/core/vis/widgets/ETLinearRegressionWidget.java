@@ -10,6 +10,12 @@ public class ETLinearRegressionWidget extends ETScatterPlotWidget {
 		super();
 	}
 
+        public ETLinearRegressionWidget(boolean missing) {
+          super(missing);
+        }
+
+        boolean plotMissingValues = true;
+
 	public ETLinearRegressionWidget(ExampleTable table) {
 		super(table);
 	}
@@ -37,7 +43,9 @@ public class ETLinearRegressionWidget extends ETScatterPlotWidget {
 	*/
 	protected Graph createGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
-		return new LinearRegression(vt, d, gs);
+		Graph g = new LinearRegression(vt, d, gs);
+                g.setPlotMissingValues(this.plotMissingValues);
+                return g;
 	}
 
 	private final class ETLRHelpWindow extends JD2KFrame {

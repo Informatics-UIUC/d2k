@@ -12,7 +12,8 @@ public class LinearRegression extends Graph {
 		super(table, set, settings);
 	}
 
-	public double[] getMinAndMax(Table table, int ndx) {
+        // commented out by DC because it is also in the superclass
+	/*public double[] getMinAndMax(Table table, int ndx) {
 		double[] minAndMax = new double[2];
 		double mandm;
 		for (int i = 0; i < table.getNumRows(); i++) {
@@ -25,7 +26,7 @@ public class LinearRegression extends Graph {
 			}
 		}
 		return minAndMax;
-	}
+	}*/
 
 	public void drawDataSet(Graphics2D g2, DataSet set) {
 		int size = table.getNumRows();
@@ -37,40 +38,86 @@ public class LinearRegression extends Graph {
 		ydataminimum = mm[0];
 		ydatamaximum = mm[1];
 
-		// Draw points
-		for (int index=0; index < size; index++) {
-			double xvalue = table.getDouble(index, set.x);
-			double yvalue = table.getDouble(index, set.y);
+                if(plotMissingValues) {
+                  // Draw points
+                  for (int index = 0; index < size; index++) {
+                    double xvalue = table.getDouble(index, set.x);
+                    double yvalue = table.getDouble(index, set.y);
 
-			drawPoint(g2, set.color, xvalue, yvalue);
-		}
+                    drawPoint(g2, set.color, xvalue, yvalue);
+                  }
 
-		// Draw line
-		double sumx = 0;
-		double sumy = 0;
-		double sumproductxy = 0;
-		double sumxsquared = 0;
+                  // Draw lines
+                  double sumx = 0;
+                  double sumy = 0;
+                  double sumproductxy = 0;
+                  double sumxsquared = 0;
 
-		for (int index=0; index < size; index++) {
-			double xvalue = table.getDouble(index, set.x);
-			double yvalue = table.getDouble(index, set.y);
+                  for (int index = 0; index < size; index++) {
+                    double xvalue = table.getDouble(index, set.x);
+                    double yvalue = table.getDouble(index, set.y);
 
-			sumx += xvalue;
-			sumy += yvalue;
-			sumproductxy += (xvalue*yvalue);
-			sumxsquared += (xvalue*xvalue);
-		}
+                    sumx += xvalue;
+                    sumy += yvalue;
+                    sumproductxy += (xvalue * yvalue);
+                    sumxsquared += (xvalue * xvalue);
+                  }
 
-		double numerator = (size*sumproductxy)-(sumx*sumy);
-		double denominator = (size*sumxsquared)-(sumx*sumx);
-		double slope = numerator/denominator;
+                  double numerator = (size * sumproductxy) - (sumx * sumy);
+                  double denominator = (size * sumxsquared) - (sumx * sumx);
+                  double slope = numerator / denominator;
 
-		double intercept = (sumy-slope*sumx)/size;
+                  double intercept = (sumy - slope * sumx) / size;
 
-		double startregression = slope*xdataminimum+intercept;
-		double endregression = slope*xdatamaximum+intercept;
+                  double startregression = slope * xdataminimum + intercept;
+                  double endregression = slope * xdatamaximum + intercept;
 
-		drawRegressionLine(g2, set.color, xdataminimum, startregression, xdatamaximum, endregression);
+                  drawRegressionLine(g2, set.color, xdataminimum, startregression,
+                                     xdatamaximum, endregression);
+                }
+                // otherwise we need to check if any missing values are present
+                else {
+                  // Draw points
+                  for (int index = 0; index < size; index++) {
+                    if(table.isValueMissing(index, set.x) || table.isValueMissing(index, set.y))
+                      continue;
+
+                    double xvalue = table.getDouble(index, set.x);
+                    double yvalue = table.getDouble(index, set.y);
+
+                    drawPoint(g2, set.color, xvalue, yvalue);
+                  }
+
+                  // Draw lines
+                  double sumx = 0;
+                  double sumy = 0;
+                  double sumproductxy = 0;
+                  double sumxsquared = 0;
+
+                  for (int index = 0; index < size; index++) {
+                    if(table.isValueMissing(index, set.x) || table.isValueMissing(index, set.y))
+                      continue;
+                    double xvalue = table.getDouble(index, set.x);
+                    double yvalue = table.getDouble(index, set.y);
+
+                    sumx += xvalue;
+                    sumy += yvalue;
+                    sumproductxy += (xvalue * yvalue);
+                    sumxsquared += (xvalue * xvalue);
+                  }
+
+                  double numerator = (size * sumproductxy) - (sumx * sumy);
+                  double denominator = (size * sumxsquared) - (sumx * sumx);
+                  double slope = numerator / denominator;
+
+                  double intercept = (sumy - slope * sumx) / size;
+
+                  double startregression = slope * xdataminimum + intercept;
+                  double endregression = slope * xdatamaximum + intercept;
+
+                  drawRegressionLine(g2, set.color, xdataminimum, startregression,
+                                     xdatamaximum, endregression);
+                }
 	}
 
 	public void drawRegressionLine(Graphics2D g2, Color color, double x0, double y0, double x1, double y1) {

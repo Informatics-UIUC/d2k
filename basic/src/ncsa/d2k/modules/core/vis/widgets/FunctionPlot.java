@@ -26,20 +26,45 @@ public class FunctionPlot extends Graph {
 
    public void drawDataSet(Graphics2D g2, DataSet set) {
 
-      int ypixel, lastypixel;
-      int size = table.getNumRows();
-      double xvalue, yvalue, oldx, oldy;
-      yvalue = table.getDouble(0, set.y);
-      xvalue = table.getDouble(0, set.x);
-      drawPoint(g2, Color.black, xvalue, yvalue);
+      if(plotMissingValues) {
+        int ypixel, lastypixel;
+        int size = table.getNumRows();
+        double xvalue, yvalue, oldx, oldy;
+        yvalue = table.getDouble(0, set.y);
+        xvalue = table.getDouble(0, set.x);
+        drawPoint(g2, Color.black, xvalue, yvalue);
 
-      for ( int index=1; index<size; index++){
-         oldx = xvalue;
-         oldy = yvalue;
-         xvalue = table.getDouble(index, set.x);
-         yvalue = table.getDouble(index, set.y);
-         drawFLine(g2, set.color, oldx, oldy, xvalue, yvalue);
-         drawPoint(g2, Color.black, xvalue, yvalue);
+        for (int index = 1; index < size; index++) {
+          oldx = xvalue;
+          oldy = yvalue;
+          xvalue = table.getDouble(index, set.x);
+          yvalue = table.getDouble(index, set.y);
+          drawFLine(g2, set.color, oldx, oldy, xvalue, yvalue);
+          drawPoint(g2, Color.black, xvalue, yvalue);
+        }
+      }
+      // otherwise we need to check each value to see if it is missing
+      else {
+
+        // LAM - out of laziness, assume that the first point is not missing.
+        int ypixel, lastypixel;
+        int size = table.getNumRows();
+        double xvalue, yvalue, oldx, oldy;
+        yvalue = table.getDouble(0, set.y);
+        xvalue = table.getDouble(0, set.x);
+        drawPoint(g2, Color.black, xvalue, yvalue);
+
+        for (int index = 1; index < size; index++) {
+          if(!table.isValueMissing(index, set.x) && !table.isValueMissing(index, set.y)) {
+            oldx = xvalue;
+            oldy = yvalue;
+            xvalue = table.getDouble(index, set.x);
+            yvalue = table.getDouble(index, set.y);
+            drawFLine(g2, set.color, oldx, oldy, xvalue, yvalue);
+            drawPoint(g2, Color.black, xvalue, yvalue);
+          }
+        }
+
       }
    }
 

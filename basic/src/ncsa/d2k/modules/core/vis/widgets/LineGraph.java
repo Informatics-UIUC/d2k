@@ -16,15 +16,30 @@ public class LineGraph extends Graph {
 
 		int size = table.getNumRows();
 
-		for (int index=0; (index+1) < size; index++) {
-			double xvalue0 = table.getDouble(index, set.x);
-			double yvalue0 = table.getDouble(index, set.y);
+                if(plotMissingValues) {
+                  for (int index = 0; (index + 1) < size; index++) {
+                    double xvalue0 = table.getDouble(index, set.x);
+                    double yvalue0 = table.getDouble(index, set.y);
 
-			double xvalue1 = table.getDouble(index+1, set.x);
-			double yvalue1 = table.getDouble(index+1, set.y);
+                    double xvalue1 = table.getDouble(index + 1, set.x);
+                    double yvalue1 = table.getDouble(index + 1, set.y);
 
-			drawPointLine(g2, set.color, xvalue0, yvalue0, xvalue1, yvalue1);
-		}
+                    drawPointLine(g2, set.color, xvalue0, yvalue0, xvalue1, yvalue1);
+                  }
+                }
+                // otherwise we need to check all values
+                else {
+                  for (int index = 0; (index + 1) < size; index++) {
+
+                    double xvalue0 = table.getDouble(index, set.x);
+                    double yvalue0 = table.getDouble(index, set.y);
+
+                    double xvalue1 = table.getDouble(index + 1, set.x);
+                    double yvalue1 = table.getDouble(index + 1, set.y);
+
+                    drawPointLine(g2, set.color, xvalue0, yvalue0, xvalue1, yvalue1);
+                  }
+                }
 	}
 
 	// Draw two data points and line

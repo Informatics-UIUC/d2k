@@ -18,23 +18,55 @@ public class ScatterPlot extends Graph {
 
 		int size = table.getNumRows();
 
-		for (int index=0; index < size; index++) {
-			double xvalue;
-			double yvalue;
-			if(xcolumn)
-				xvalue = table.getDouble(index, set.x);
-			else {
-				String v = table.getString(index, set.x);
-				xvalue = (double)((Integer)xStringLookup[index].get(v)).intValue();
-			}
-			if(ycolumn)
-				yvalue = table.getDouble(index, set.y);
-			else {
-				String v = table.getString(index, set.y);
-				yvalue = (double)((Integer)yStringLookup[index].get(v)).intValue();
-			}
+                // if we are plotting missing values, just plot all points
+                if(plotMissingValues) {
+                  for (int index = 0; index < size; index++) {
+                    double xvalue;
+                    double yvalue;
+                    if (xcolumn)
+                      xvalue = table.getDouble(index, set.x);
+                    else {
+                      String v = table.getString(index, set.x);
+                      xvalue = (double) ( (Integer) xStringLookup[index].get(v)).intValue();
+                    }
+                    if (ycolumn)
+                      yvalue = table.getDouble(index, set.y);
+                    else {
+                      String v = table.getString(index, set.y);
+                      yvalue = (double) ( (Integer) yStringLookup[index].get(v)).intValue();
+                    }
 
-			drawPoint(g2, set.color, xvalue, yvalue);
-		}
+                    drawPoint(g2, set.color, xvalue, yvalue);
+                  }
+                }
+                // otherwise we need to check to see if the values are missing
+                else {
+                  for (int index = 0; index < size; index++) {
+                    double xvalue;
+                    double yvalue;
+
+                    if(table.isValueMissing(index, set.x) || table.isValueMissing(index, set.y))
+                      continue;
+
+                    if (xcolumn)
+                      xvalue = table.getDouble(index, set.x);
+                    else {
+                      String v = table.getString(index, set.x);
+                      xvalue = (double) ( (Integer) xStringLookup[index].get(v)).intValue();
+                    }
+                    if (ycolumn)
+                      yvalue = table.getDouble(index, set.y);
+                    else {
+                      String v = table.getString(index, set.y);
+                      yvalue = (double) ( (Integer) yStringLookup[index].get(v)).intValue();
+                    }
+
+                    drawPoint(g2, set.color, xvalue, yvalue);
+                  }
+
+                }
+
+
+
 	}
 }

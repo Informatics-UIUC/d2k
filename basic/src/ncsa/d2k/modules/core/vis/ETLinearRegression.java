@@ -69,8 +69,13 @@ public class ETLinearRegression extends ETScatterPlot {
    }
 
    protected UserView createUserView() {
-      return new ETLinearRegressionWidget();
+      //return new ETLinearRegressionWidget();
+      UserView uv = new ETLinearRegressionWidget(this.getPlotMissingValues());
+      return uv;
    }
+
+
+
 }
 
  /**

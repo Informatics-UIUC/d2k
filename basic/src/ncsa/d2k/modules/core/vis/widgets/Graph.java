@@ -79,13 +79,30 @@ public abstract class Graph extends JPanel {
    protected FontMetrics metrics;
    protected int fontheight, fontascent;
 
+  protected boolean plotMissingValues = true;
+
+  public boolean getPlotMissingValues() {
+    return plotMissingValues;
+  }
+
+  public void setPlotMissingValues(boolean b) {
+    plotMissingValues = b;
+  }
+
    public double[] getMinAndMax(Table table, int ndx) {
       double[] minAndMax = new double[2];
       minAndMax[0] = Double.POSITIVE_INFINITY;
       minAndMax[1] = Double.NEGATIVE_INFINITY;
       double mandm;
       for (int i = 0; i < table.getNumRows(); i++) {
-         mandm = table.getDouble(i, ndx);
+         if(plotMissingValues)
+          mandm = table.getDouble(i, ndx);
+         else {
+          if(table.isValueMissing(i, ndx))
+            continue;
+          else
+            mandm = table.getDouble(i, ndx);
+         }
          if (mandm >= minAndMax[1]) {
             minAndMax[1] = mandm;
          }

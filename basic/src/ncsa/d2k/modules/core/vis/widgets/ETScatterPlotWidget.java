@@ -34,10 +34,22 @@ public class ETScatterPlotWidget extends JUserPane implements
   JMenuItem helpItem;
   JFrame helpWindow;
 
+  protected boolean plotMissingValues;
+
   public ETScatterPlotWidget() {
   }
 
   public ETScatterPlotWidget(ExampleTable table) {
+	initView(null);
+	setInput(table, 0);
+  }
+
+  public ETScatterPlotWidget(boolean missing) {
+    plotMissingValues = missing;
+  }
+
+  public ETScatterPlotWidget(ExampleTable table, boolean missing) {
+        this(missing);
 	initView(null);
 	setInput(table, 0);
   }
@@ -580,7 +592,9 @@ public class ETScatterPlotWidget extends JUserPane implements
    */
   protected Graph createSmallGraph(Table vt, DataSet[] d,
 								   GraphSettings gs) {
-	return new ScatterPlotSmall(vt, d, gs);
+	Graph g = new ScatterPlotSmall(vt, d, gs);
+        ((ScatterPlotSmall)g).setPlotMissingValues(this.plotMissingValues);
+        return g;
   }
 
   /**
@@ -591,7 +605,9 @@ public class ETScatterPlotWidget extends JUserPane implements
    */
   protected Graph createGraph(Table vt, DataSet[] d,
 							  GraphSettings gs) {
-	return new ScatterPlot(vt, d, gs);
+	Graph g = new ScatterPlot(vt, d, gs);
+        ((ScatterPlot)g).setPlotMissingValues(this.plotMissingValues);
+        return g;
   }
 
   protected JFrame getHelpWindow() {

@@ -19,16 +19,28 @@ public class ScatterPlotSmall extends Graph {
 	}
 
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-
-
 		int size = table.getNumRows();
 
-		for (int index=0; index < size; index++) {
-			double xvalue = table.getDouble(index, set.x);
-			double yvalue = table.getDouble(index, set.y);
+                if(plotMissingValues) {
+                  for (int index = 0; index < size; index++) {
+                    double xvalue = table.getDouble(index, set.x);
+                    double yvalue = table.getDouble(index, set.y);
 
-			drawPoint(g2, set.color, xvalue, yvalue);
-		}
+                    drawPoint(g2, set.color, xvalue, yvalue);
+                  }
+                }
+                else {
+                  for (int index = 0; index < size; index++) {
+                    if(table.isValueMissing(index, set.x) || table.isValueMissing(index, set.y))
+                       continue;
+                    double xvalue = table.getDouble(index, set.x);
+                    double yvalue = table.getDouble(index, set.y);
+
+                    drawPoint(g2, set.color, xvalue, yvalue);
+                  }
+
+
+                }
 	}
 
 	public void drawPoint(Graphics2D g2, Color color, double xvalue, double yvalue) {

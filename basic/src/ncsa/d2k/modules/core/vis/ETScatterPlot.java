@@ -26,6 +26,14 @@ import ncsa.d2k.modules.core.vis.widgets.*;
 public class ETScatterPlot extends VisModule
     {
 
+      protected boolean plotMissingValues = true;
+      public boolean getPlotMissingValues() {
+        return plotMissingValues;
+      }
+      public void setPlotMissingValues(boolean b) {
+        plotMissingValues = b;
+      }
+
     /**
        Return a description of the function of this module.
        @return A description of this module.
@@ -127,9 +135,19 @@ public class ETScatterPlot extends VisModule
       return null;
    }
 
-   public PropertyDescription[] getPropertiesDescriptions() {
+/*   public PropertyDescription[] getPropertiesDescriptions() {
       return new PropertyDescription[0];
-   }
+   }*/
+  public PropertyDescription[] getPropertiesDescriptions() {
+    PropertyDescription[] pds = new PropertyDescription[1];
+
+    pds[0] = new PropertyDescription("plotMissingValues",
+      "Plot Missing Values",
+      "True if missing values should be plotted, false otherwise");
+
+    return pds;
+  }
+
 
 }
 
