@@ -8,7 +8,7 @@ import javax.swing.table.*;
 	Renders the confidence and support values, They are represented
 	by a vertical bar.
 */
-class LabelCellRenderer extends DefaultTableCellRenderer  {
+public class LabelCellRenderer extends DefaultTableCellRenderer  {
 	private String what = null;
 	int myrow, mycolumn;
 
@@ -17,7 +17,7 @@ class LabelCellRenderer extends DefaultTableCellRenderer  {
 		need to be the same height.
 		@param i the height of the labels.
 	*/
-	LabelCellRenderer () {
+	public LabelCellRenderer () {
 		super ();
 		this.setHorizontalAlignment (JLabel.RIGHT);
 	}
