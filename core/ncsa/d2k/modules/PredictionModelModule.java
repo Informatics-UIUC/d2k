@@ -94,7 +94,7 @@ abstract public class PredictionModelModule extends ModelModule {
 	 *	Pull in the ExampleTable, pass it to the predict() method,
 	 *	and push out the PredictionTable returned by predict();
 	 */
-	public void doit() {
+	public void doit() throws Exception {
 		ExampleTable et = (ExampleTable)pullInput(0);
 		pushOutput(predict(et), 0);
 	}
