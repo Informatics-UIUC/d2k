@@ -12,7 +12,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 	@author David Clutter
 */
 public final class CategoricalDecisionForestNode extends DecisionForestNode
-	implements Serializable, CategoricalViewableDTNode {
+	implements Serializable, NominalViewableDTNode {
 
 	/* Maps an output to a specific child.  Used in evaluate() */
 	private HashMap outputToChildMap;
@@ -111,7 +111,11 @@ public final class CategoricalDecisionForestNode extends DecisionForestNode
 		return getLabel();
 	}
 
-    public void clear() {
+	public double getSplitValue() {
+		return 0;
+	}
+
+        public void clear() {
 		super.clear();
 		//for(int i = 0; i < childNumTrainingExamples.length; i++)
 		//	childNumTrainingExamples[i] = 0;

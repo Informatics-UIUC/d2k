@@ -13,7 +13,7 @@ import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 public final class NumericDecisionForestNode extends DecisionForestNode
-	implements Serializable, NumericViewableDTNode {
+	implements Serializable, NominalViewableDTNode {
 
 	/** everything less than the split value goes left */
 	private static final int LEFT = 0;
@@ -103,5 +103,9 @@ public final class NumericDecisionForestNode extends DecisionForestNode
 	 */
 	public String getSplitAttribute() {
 		return getLabel();
+	}
+
+	public String[] getSplitValues() {
+		return null;
 	}
 }
