@@ -289,6 +289,7 @@ public class WriteTableToFile extends OutputModule {
       // write the actual data
 	  boolean checkMissing = true;
       for(int i = 0; i < vt.getNumRows(); i++) {
+      //	System.out.println("numofRows" + vt.getNumRows());
          for(int j = 0; j < vt.getNumColumns(); j++) {
             String s;
 
@@ -296,12 +297,13 @@ public class WriteTableToFile extends OutputModule {
 				if (checkMissing && (vt.isValueMissing(i, j) || vt.isValueEmpty(i, j)))
 					s = "";
 				else
-					s = vt.getString(i, j);
+					s=vt.getString(i, j);
 			} catch (NullPointerException npe) {
-
-				// This table has not missing or empty values, don't check.
-				checkMissing = false;
-				s = vt.getString(i, j);
+                 //ANCA intoduced line below for when vt.getString returns nullPointerException
+                  s ="";
+				// This table has not missing or empty values, don't check. ???
+				//checkMissing = false;
+				//s = vt.getString(i, j);
 			}
             //System.out.println("s: "+s);
             fw.write(s, 0, s.length());
