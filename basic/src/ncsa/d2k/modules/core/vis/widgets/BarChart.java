@@ -478,9 +478,9 @@ public class BarChart extends Chart
     for (int i=0; i<barBoundary.length; i++) {
       if (inRectangle(cx, cy, barBoundary[i])) {
         tip.append("<html>");
-        tip.append(xlabel.toLowerCase() + ": " + table.getString(i, set.x));
+        tip.append(" " + xlabel.toLowerCase() + ": " + table.getString(i, set.x));
         tip.append("<br>");
-        tip.append("frequency: " + table.getDouble(i, set.y));
+        tip.append(" frequency: " + table.getDouble(i, set.y));
         tip.append("</html>");
         break;
       }
