@@ -161,7 +161,7 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 	}
 
 	/** showProgress option **/
-	private boolean showProgress = true;
+	private boolean showProgress = false;
 	public boolean getShowProgress () {
 		return showProgress;
 	}
