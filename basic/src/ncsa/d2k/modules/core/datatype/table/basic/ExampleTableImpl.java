@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-
+import ncsa.d2k.modules.core.datatype.table.examples.ShallowExample;
 import java.io.*;
 import java.util.*;
 
@@ -1056,7 +1056,7 @@ public class ExampleTableImpl
   }
 
   public Example getExample(int i) {
-    return null;
+    return new ShallowExample(this, i);
   }
 
   public String getInputName(int i) {
