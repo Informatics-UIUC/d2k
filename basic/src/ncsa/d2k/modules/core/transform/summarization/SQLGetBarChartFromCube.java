@@ -290,7 +290,9 @@ public class SQLGetBarChartFromCube extends UIModule {
       else if (src == displayBtn) {
         Object[] values = selectedModel.toArray();
         String[] retVal = new String[values.length];
-        if (cubeTableName.getText().length()>0 && retVal.length > 0) {
+        if (cubeTableName.getText().length()>0 &&
+            retVal.length > 0 &&
+            cubeTableName.getText().toString().indexOf("_CUBE")>=0) {
           if (useCodeBook.getState()) {
             aBook = new SQLCodeBook(cw, bookName.getText().toString());
             codeTable = aBook.codeBook;
@@ -317,6 +319,12 @@ public class SQLGetBarChartFromCube extends UIModule {
           "You must select some attributes.", "Error",
           JOptionPane.ERROR_MESSAGE);
           System.out.println("There are no attributes selected.");
+        }
+        else if (cubeTableName.getText().toString().indexOf("_CUBE")<0) {
+          JOptionPane.showMessageDialog(msgBoard,
+          "To display a chart, you must select a cube table rather than a data table.", "Error",
+          JOptionPane.ERROR_MESSAGE);
+          System.out.println("A cube table is selected instead of a data table.");
         }
       }
       else if (src == cancelBtn) {
