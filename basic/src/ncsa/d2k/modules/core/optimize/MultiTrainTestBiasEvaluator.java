@@ -364,18 +364,16 @@ final private static boolean useContinuous = false;
 
 		  Table currentTrainExampleSet, currentTestExampleSet;
 		  // LAM-tlr this is part of the patch.
-		  /* if ( ExampleSet instanceof ContinuousDoubleExampleTable ||
-			  ExampleSet instanceof ContinuousDoubleExampleTable) {
-			  currentTrainExampleSet = (ExampleTable) ExampleSet.
-									   getSubsetByReference(trainSetIndicies);
-			  currentTestExampleSet = (ExampleTable) ExampleSet.
-									  getSubsetByReference(testSetIndicies);
-		  } else { */
+                  // updated by dkt 4/26 to allow for continuous tables, but with now compilation dependency
+                    if ( ExampleSet.getClass().toString().equals("class ncsa.d2k.modules.core.datatype.table.continuous.ContinuousDoubleExampleTable")) {
+			  currentTrainExampleSet = (ExampleTable) ExampleSet.getSubsetByReference(trainSetIndicies);
+			  currentTestExampleSet = (ExampleTable) ExampleSet.getSubsetByReference(testSetIndicies);
+		  } else {
 			  ExampleSet.setTestingSet(testSetIndicies);
 			  ExampleSet.setTrainingSet(trainSetIndicies);
 			  currentTrainExampleSet = ExampleSet.getTrainTable();
 			  currentTestExampleSet = ExampleSet.getTestTable();
-			  //}
+			  }
 		  this.pushOutput(ControlPoint, 0);
 		  this.pushOutput(currentTrainExampleSet, 1);
 		  this.pushOutput(currentTestExampleSet, 2);
@@ -418,7 +416,7 @@ final private static boolean useContinuous = false;
 		  //Anca: changed over to parameter.impl.*
 		  //  ParameterPoint meanObjectivePoint = new ParameterPointImpl();
 		  // meanObjectivePoint.createFromData(names, meanUtilityArray);
-		  ParameterPoint meanObjectivePoint = 
+		  ParameterPoint meanObjectivePoint =
 		      ParameterPointImpl.getParameterPoint(names,meanUtilityArray);
 		  this.pushOutput(meanObjectivePoint, 3);
 		  this.pushOutput(UtilityValues,      4);
