@@ -582,7 +582,7 @@ public final class NaiveBayesVis
       saveAsPmml.addActionListener(this);
 
       JMenu helpMenu = new JMenu("Help");
-      helpItem = new JMenuItem("About NaiveBayesVis..");
+      helpItem = new JMenuItem("About Naive Bayes Vis..");
       helpMenu.add(helpItem);
       helpItem.addActionListener(this);
 
@@ -1764,7 +1764,7 @@ public final class NaiveBayesVis
   private final class HelpWindow
       extends JD2KFrame {
     HelpWindow() {
-      super("About NaiveBayesVis");
+      super("About Naive Bayes Vis");
       JEditorPane jep = new JEditorPane("text/html", getHelpString());
       jep.setBackground(yellowish);
       getContentPane().add(new JScrollPane(jep));
