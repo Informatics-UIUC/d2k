@@ -137,7 +137,9 @@ public class BuckshotParams
                                      "This property specifies the percent of the max distance to use " +
                                      "as a cutoff value to halt clustering ([1...100].  The max distance between examples " +
                                      "is approximated by taking the min and max of each attribute and forming a " +
-                                     "min example and a max example -- then finding the distance between the two.");
+                                     "min example and a max example -- then finding the distance between the two. " +
+                                     "For this algorithm, the number of cluisters value is still used to generate the " +
+                                     "initial sample size, even if auto is selected.");
     pds[6] = new PropertyDescription("maxIterations",
                                               "Number of Assignment Passes",
         "This property specifies the number of iterations of cluster refinement to perform (> 0).");

@@ -150,6 +150,10 @@ public class HAC {
       }
     }
 
+    if (inittable.getNumRows() < 1) {
+        throw new Exception("Hier. Agglom. Clusterer: Input table has no rows.");
+    }
+
     ClusterModel model = null;
 
     m_start = System.currentTimeMillis();

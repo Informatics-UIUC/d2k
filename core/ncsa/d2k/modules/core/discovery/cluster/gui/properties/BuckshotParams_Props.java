@@ -32,7 +32,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.discovery.cluster.hac.*;
 import ncsa.d2k.modules.core.discovery.cluster.sample.*;
 
-public class BuckshotParams_Props extends JPanel implements CustomModuleEditor, MouseInputListener, ChangeListener, ActionListener {
+public class BuckshotParams_Props extends JPanel implements CustomModuleEditor, /*MouseInputListener,*/ ChangeListener, ActionListener {
 
   //==============
   // Data Members
@@ -88,8 +88,12 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor, 
 
   public boolean updateModule() throws Exception {
 
+    /*
+        need to set this to a default value because the sampler needs to get
+        sqrt(num_clusters*table_rows) of examples even if we are doing auto
+        clustering.
+     */
     int num = -1;
-    if (this.m_numClust.isEnabled()){
       try{
         num = Integer.parseInt(m_numClust.getText());
       } catch (Exception e){
@@ -98,7 +102,6 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor, 
       if (num < 2){
         throw new PropertyVetoException("Number of clusters must be two or more.", null);
       }
-    }
 
     int seed = -1;
     try {
@@ -223,7 +226,7 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor, 
     m_gbc.insets = new Insets(10,2,2,2);
 
     m_auto = new JCheckBox("Auto Cluster",true);
-    m_auto.addMouseListener(this);
+    //m_auto.addMouseListener(this);
     _initAuto = (_src.getDistanceThreshold() > 0);
     m_auto_sel = _initAuto;
     m_auto.setSelected(m_auto_sel);
@@ -247,7 +250,7 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor, 
     m_distSlide.setMajorTickSpacing(25);
     m_distSlide.setPaintLabels(true);
     m_distSlide.addChangeListener(this);
-    m_distSlide.setEnabled(m_auto_sel);
+    //m_distSlide.setEnabled(m_auto_sel);
     m_gbl.setConstraints(m_distSlide, m_gbc);
 
     m_gbc.gridy++;
@@ -322,45 +325,45 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor, 
     }
   }
 
-  //=========================================
-  // Interface Implementation: MouseListener
-  //=========================================
-
-  public void mouseClicked(MouseEvent evt){
-    //System.out.println("MOUSE CLICKED");
-  }
-
-  public void mouseEntered(MouseEvent evt){
-  }
-
-  public void mouseExited(MouseEvent evt){
-  }
-
-  public void mousePressed(MouseEvent evt){
-    if (evt.getSource() == m_auto){
-      m_auto_sel = !m_auto_sel;
-      m_distSlide.setEnabled(m_auto_sel);
-      m_numClust.setEnabled(!m_auto_sel);
-      repaint();
-    }
-  }
-
-  public void mouseReleased(MouseEvent evt){
-    if (evt.getSource() == m_auto){
-      if (m_auto.isSelected() != m_auto_sel){
-        m_auto.setSelected(m_auto_sel);
-      }
-      repaint();
-    }
-  }
-
-  public void mouseMoved(MouseEvent evt){
-    //System.out.println("MOUSE MOVED");
-  }
-
-  public void mouseDragged(MouseEvent evt){
-    //System.out.println("MOUSE DRAGGED");
-  }
+//  //=========================================
+//  // Interface Implementation: MouseListener
+//  //=========================================
+//
+//  public void mouseClicked(MouseEvent evt){
+//    //System.out.println("MOUSE CLICKED");
+//  }
+//
+//  public void mouseEntered(MouseEvent evt){
+//  }
+//
+//  public void mouseExited(MouseEvent evt){
+//  }
+//
+//  public void mousePressed(MouseEvent evt){
+//    if (evt.getSource() == m_auto){
+//      m_auto_sel = !m_auto_sel;
+//      m_distSlide.setEnabled(m_auto_sel);
+//      m_numClust.setEnabled(!m_auto_sel);
+//      repaint();
+//    }
+//  }
+//
+//  public void mouseReleased(MouseEvent evt){
+//    if (evt.getSource() == m_auto){
+//      if (m_auto.isSelected() != m_auto_sel){
+//        m_auto.setSelected(m_auto_sel);
+//      }
+//      repaint();
+//    }
+//  }
+//
+//  public void mouseMoved(MouseEvent evt){
+//    //System.out.println("MOUSE MOVED");
+//  }
+//
+//  public void mouseDragged(MouseEvent evt){
+//    //System.out.println("MOUSE DRAGGED");
+//  }
 
   //==========================================
   // Interface Implementation: ChangeListener

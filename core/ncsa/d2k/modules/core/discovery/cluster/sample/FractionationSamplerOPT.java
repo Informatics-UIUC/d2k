@@ -39,7 +39,7 @@ public class FractionationSamplerOPT
 
   protected ArrayList _pushing = null;
 
-  protected MutableTable _itable = null;
+  protected Table _itable = null;
 
   //============
   // Properties
@@ -280,7 +280,7 @@ public class FractionationSamplerOPT
       }
 
       if (this.inputFlags[1] > 0) {
-        _itable = (MutableTable)this.pullInput(1);
+        _itable = (Table)this.pullInput(1);
         if (this.getCheckMissingValues()) {
           if (_itable.hasMissingValues()) {
             throw new TableMissingValuesException("FractionationSamplerOPT: Please replace or filter out missing values in your data.");
@@ -290,6 +290,9 @@ public class FractionationSamplerOPT
         this.m_numberOfClusters = (int) pp.getValue(0);
         this.m_nthSortTerm = (int) pp.getValue(1);
         this.m_maxPartitionSize = (int) pp.getValue(2);
+        if (this.m_nthSortTerm > (_itable.getNumColumns()-1)) {
+            throw new Exception("FractionationSamplerOPT: The sort attribute index is too large for this table: " + m_nthSortTerm);
+        }
       }
 
       if (this.inputFlags[2] > 0) {
