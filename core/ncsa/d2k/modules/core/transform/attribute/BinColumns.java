@@ -1,143 +1,118 @@
-package  ncsa.d2k.modules.core.transform.attribute;
+package ncsa.d2k.modules.core.transform.attribute;
 
-import  java.awt.*;
-import  java.awt.event.*;
-import  java.io.*;
-import  java.text.*;
-import  java.util.*;
-import  javax.swing.*;
-import  javax.swing.event.*;
-import  ncsa.d2k.core.modules.*;
-import  ncsa.d2k.gui.*;
-//import ncsa.d2k.modules.core.datatype.*;
-import  ncsa.d2k.modules.core.datatype.table.*;
-import  ncsa.d2k.modules.core.vis.widgets.*;
-import  ncsa.d2k.userviews.swing.*;
-import  ncsa.gui.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.text.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.gui.*;
 import ncsa.d2k.modules.core.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
-
+import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.gui.*;
 
 /**
- * put your documentation comment here
+ * This module presents a user interface for the interactive binning of
+ * <code>MutableTable</code> data.
  */
 public class BinColumns extends UIModule {
-    private static final String EMPTY = "",
-    COLON = " : ", COMMA = ",", DOTS = "...",
-    OPEN_PAREN = "(", CLOSE_PAREN = ")", OPEN_BRACKET = "[", CLOSE_BRACKET = "]";
 
-    private NumberFormat nf;
+   private static final String
+      EMPTY = "",          COLON = " : ",        COMMA = ",",
+      DOTS = "...",        OPEN_PAREN = "(",     CLOSE_PAREN = ")",
+      OPEN_BRACKET = "[",  CLOSE_BRACKET = "]";
 
-    /**
-     * put your documentation comment here
-     * @return
-     */
-    public String getModuleName () {
-        return  "BinColumns";
-    }
+   private NumberFormat nf;
 
-    /**
-     * put your documentation comment here
-     * @return
-     */
-    public String getModuleInfo () {
-        return  "<html>  <head>      </head>  <body>    Allows the user to interactively bin data.  </body></html>";
-    }
+////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * put your documentation comment here
-     * @return
-     */
-    public String[] getInputTypes () {
-        String[] types =  {
-            "ncsa.d2k.modules.core.datatype.table.Table"
-        };
-        return  types;
-    }
+   protected UserView createUserView() {
+      return new BinColumnsView();
+   }
 
-    /**
-     * put your documentation comment here
-     * @return
-     */
-    public String[] getOutputTypes () {
-        String[] types =  {
-            "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform", "ncsa.d2k.modules.core.datatype.table.Table"
-        };
-        return  types;
-    }
+   public String[] getFieldNameMapping() {
+      return null;
+   }
 
-    /**
-     * put your documentation comment here
-     * @param i
-     * @return
-     */
-    public String getInputInfo (int i) {
-        switch (i) {
-            case 0:
-                return  "A Table with columns to bin.";
-            default:
-                return  "No such input";
-        }
-    }
+   public String getInputInfo(int index) {
+      if (index == 0)
+         return  "A <i>MutableTable</i> with columns to be binned.";
+      return null;
+   }
 
-    /**
-     * put your documentation comment here
-     * @param i
-     * @return
-     */
-    public String getOutputName (int i) {
-        switch (i) {
-            case 0:
-                return "BinTransform";
-            case 1:
-                return  "Table";
-            default:
-                return  "no such output!";
-        }
-    }
+   public String getInputName (int i) {
+      if (i == 0)
+         return "Mutable Table";
+      return null;
+   }
 
-    /**
-     * put your documentation comment here
-     * @param i
-     * @return
-     */
-    public String getInputName (int i) {
-        if (i == 0)
-            return  "Table";
-        return  "BinColumns has no such input.";
-    }
+   public String[] getInputTypes() {
+      return new String[] {
+         "ncsa.d2k.modules.core.datatype.table.MutableTable"
+      };
+   }
 
-    /**
-     * put your documentation comment here
-     * @param i
-     * @return
-     */
-    public String getOutputInfo (int i) {
-        switch (i) {
-            case 0:
-                return "A BinTransform that can be applied to the input Table.";
-            case 1:
-                return  "The unchanged Table.  Apply the BinTransform to the Table to replace the binned columns.";
-            default:
-                return  "No such output";
-        }
-    }
+   public String getModuleName() {
+      return "Bin Columns";
+   }
 
-    /**
-     * put your documentation comment here
-     * @return
-     */
-    protected UserView createUserView () {
-        return  new BinColumnsView();
-    }
+   public String getModuleInfo() {
+      StringBuffer sb = new StringBuffer("<p>Overview: ");
+      sb.append("This module presents a user interface for the interactive ");
+      sb.append("binning of tabular data.");
+      sb.append("</p><p>Detailed Description: ");
+      sb.append("This module's interface provides four methods for the ");
+      sb.append("binning of numeric data: ");
+      sb.append("</p><p>");
+      sb.append("<i>Uniform range</i> binning divides the binning range ");
+      sb.append("evenly over an integer number of bins.");
+      sb.append("</p><p>");
+      sb.append("<i>Specified range</i> binning sets the boundaries of each ");
+      sb.append("bin at a user-specified end-point.");
+      sb.append("</p><p>");
+      sb.append("<i>Bin interval</i> binning sets each bin of the data to ");
+      sb.append("have the same user-specified width.");
+      sb.append("<i>Uniform weight</i> binning creates bins such that each ");
+      sb.append("bin has the same number of members.");
+      sb.append("</p><p>");
+      sb.append("The binning of nominal data is supported as well.");
+      sb.append("</p><p>Data Handling: ");
+      sb.append("This module does not modify its input data. Rather, its ");
+      sb.append("output is a <i>Transformation</i> that can later be applied ");
+      sb.append("to bin the columns of the table.");
+      sb.append("</p>");
+      return sb.toString();
+   }
 
-    /**
-     * put your documentation comment here
-     * @return
-     */
-    public String[] getFieldNameMapping () {
-        return  null;
-    }
+   public String getOutputInfo(int index) {
+      if (index == 0)
+         return "A <i>BinTransform</i> that can be applied to the input table.";
+      // else if (index == 1)
+      //    return "The unchanged input table.";
+      return null;
+   }
+
+   public String getOutputName(int index) {
+      if (index == 0)
+         return "Bin Transform";
+      // else if (index == 1)
+      //    return "Mutable Table";
+      return null;
+   }
+
+   public String[] getOutputTypes() {
+      return new String[] {
+         "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"
+         // "ncsa.d2k.modules.core.datatype.table.MutableTable"
+      };
+   }
+
+////////////////////////////////////////////////////////////////////////////////
 
     private class BinColumnsView extends JUserPane {
         private boolean setup_complete;
@@ -1238,9 +1213,9 @@ public class BinColumns extends UIModule {
             sb.append("alternately be previewed in histogram form by clicking the corresponding ");
             sb.append("``Show'' button (this accepts, but does not require, a value in the text field). ");
             sb.append("Uniform weight binning has no histogram (it would always look the same).");
-            sb.append("<br><br>To bin textual data, click the ``Textual'' tab (top left) to bring ");
-            sb.append("up the ``Textual Columns'' selection area. Click on a column to show a list ");
-            sb.append("of unique textual values in that column in the ``Unique Values'' area below. ");
+            sb.append("<br><br>To bin nominal data, click the ``Nominal'' tab (top left) to bring ");
+            sb.append("up the ``Nominal Columns'' selection area. Click on a column to show a list ");
+            sb.append("of unique nominal values in that column in the ``Unique Values'' area below. ");
             sb.append("Select one or more of these values and click the right arrow button to group ");
             sb.append("these values. They can then be assigned a collective name as before.");
             sb.append("<br><br>To assign a name to a particular bin, select that bin in ");

@@ -13,9 +13,9 @@ public class CreateSQLBinTree extends DataPrepModule {
 
     public String[] getInputTypes() {
         String[] in ={"ncsa.d2k.modules.core.datatype.table.transformations.BinTransform",
-										  "ncsa.d2k.modules.core.datatype.table.ExampleTable",
-						           "ncsa.d2k.modules.io.sql.DBConnection",
-					             "java.lang.String"};
+                                "ncsa.d2k.modules.core.datatype.table.ExampleTable",
+                             "ncsa.d2k.modules.io.sql.DBConnection",
+                            "java.lang.String"};
         return in;
     }
 
@@ -25,13 +25,13 @@ public class CreateSQLBinTree extends DataPrepModule {
     }
 
     public String getInputInfo(int i) {
-			switch (i) {
-			case 0: return "BinningTransformation containing the bin definitions";
-			case 1: return "ExampleTable containing the names of the input/output features";
-			case 2: return "connection to the database";
-			case 3: return "name of the table containing the data" ;
-			default: return "No such input";
-			}
+         switch (i) {
+         case 0: return "BinningTransformation containing the bin definitions";
+         case 1: return "ExampleTable containing the names of the input/output features";
+         case 2: return "connection to the database";
+         case 3: return "name of the table containing the data" ;
+         default: return "No such input";
+         }
     }
 
     public String getOutputInfo(int i) {
@@ -39,13 +39,13 @@ public class CreateSQLBinTree extends DataPrepModule {
     }
 
     public String getInputName(int i) {
-			switch (i) {
-			case 0: return "BinningTransformation";
-		  case 1: return "MetaDataExampleTable";
-			case 2: return "DBConnection";
-			case 3: return "TableName";
-			default: return "No such input";
-			}
+         switch (i) {
+         case 0: return "BinningTransformation";
+        case 1: return "MetaDataExampleTable";
+         case 2: return "DBConnection";
+         case 3: return "TableName";
+         default: return "No such input";
+         }
     }
 
     public String getOutputName(int i) {
@@ -54,7 +54,7 @@ public class CreateSQLBinTree extends DataPrepModule {
 
     public String getModuleInfo() {
         return "From given bin definitions (BinTransformation) and data definition "
-				+ "builds a BInTree containing counts for all bins";
+            + "builds a BInTree containing counts for all bins";
 
     }
 
@@ -64,19 +64,19 @@ public class CreateSQLBinTree extends DataPrepModule {
 
     public void doit() {
         BinTransform btrans = (BinTransform)pullInput(0);
-				ExampleTable et = (ExampleTable) pullInput(1);
+            ExampleTable et = (ExampleTable) pullInput(1);
         DBConnection conn = (DBConnection)pullInput(2);
         String tableName = (String)pullInput(3);
 
         // get the attributes names from the input features
         int[] inputFeatures = et.getInputFeatures();
-				String[] an = new String[inputFeatures.length];
-				for (int i =0; i < inputFeatures.length; i ++)
-				  an[i] = et.getColumnLabel(i);
+            String[] an = new String[inputFeatures.length];
+            for (int i =0; i < inputFeatures.length; i ++)
+              an[i] = et.getColumnLabel(i);
 
-				// get the class name from the outputFeatures
-				int[] outputFeatures = et.getOutputFeatures();
-				String classLabel = et.getColumnLabel(outputFeatures[0]);
+            // get the class name from the outputFeatures
+            int[] outputFeatures = et.getOutputFeatures();
+            String classLabel = et.getColumnLabel(outputFeatures[0]);
 
         int totalClassified = 0;
         int classTotal;
@@ -87,27 +87,28 @@ public class CreateSQLBinTree extends DataPrepModule {
         // get sql counts and set the tallys
         BinTree bt = null;
         try {
-					//get all the unique class values for the given output feature
+               //get all the unique class values for the given output feature
          HashMap items = new HashMap();
-				 Statement stmt0 = conn.getConnection().createStatement();
+             Statement stmt0 = conn.getConnection().createStatement();
          ResultSet uniqueItems =
-	  			    stmt0.executeQuery("SELECT DISTINCT" + classLabel
-								  				      + " FROM " + tableName);
+                stmt0.executeQuery("SELECT DISTINCT" + classLabel
+                                          + " FROM " + tableName);
           int i =0;
           while(uniqueItems.next()) {
             String s = uniqueItems.getString(1);
             items.put(new Integer(i++),s);
           }
-					int classNum = items.size();
-					String[] cn = new String[classNum];
-					for (i =0 ; i < classNum; i ++)
-					   cn[i] = (String) items.get(new Integer(i));
+               int classNum = items.size();
+               String[] cn = new String[classNum];
+               for (i =0 ; i < classNum; i ++)
+                  cn[i] = (String) items.get(new Integer(i));
 
-						 // given feature names and class values create bin tree
-	          bt = btrans.createBinTree(cn, an);
+                   // given feature names and class values create bin tree
+             // bt = btrans.createBinTree(cn, an);
+             bt = CreateBinTree.createBinTree(btrans.getBinDescriptors(), cn, an);
 
-					 //determine the counts in each bin
-				    Statement stmt = conn.getConnection().createStatement();
+                //determine the counts in each bin
+                Statement stmt = conn.getConnection().createStatement();
             for (i=0; i <cn.length ; i++) {
                 classTotal =0;
                 for (int j=0; j <an.length ; j++) {

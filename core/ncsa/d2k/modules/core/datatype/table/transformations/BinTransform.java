@@ -2,7 +2,6 @@ package ncsa.d2k.modules.core.datatype.table.transformations;
 
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.util.*;
 
 import java.util.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
@@ -106,55 +105,8 @@ public class BinTransform implements Transformation {
         return  true;
     }
 
-    public BinTree createBinTree(String[] cn, String[] an) {
-        BinTree bt = new BinTree(cn, an);
-
-         for(int i = 0; i < bins.length; i++) {
-           BinDescriptor bd = bins[i];
-           String attlabel = bd.label;
-           if(bd instanceof NumericBinDescriptor) {
-             double max = ((NumericBinDescriptor)bd).max;
-             double min = ((NumericBinDescriptor)bd).min;
-
-             try {
-                 bt.addNumericBin(bd.label, bd.name, min, false,
-                   max, true);
-             }
-             catch(Exception e) {
-             }
-           }
-           else {
-             HashSet vals = ((TextualBinDescriptor)bd).vals;
-             String[] values = new String[vals.size()];
-             Iterator ii = vals.iterator();
-             int idx = 0;
-             while(ii.hasNext()) {
-               values[idx] = (String)ii.next();
-               idx++;
-             }
-
-             try {
-               bt.addStringBin(bd.label, bd.name, values);
-             }
-             catch(Exception e) {
-             }
-        }
-
-        }
-        return bt;
+    public BinDescriptor[] getBinDescriptors() {
+       return bins;
     }
 
-
-    public BinTree createBinTree(ExampleTable et) {
-      int[] outputs = et.getOutputFeatures();
-      int[] inputs = et.getInputFeatures();
-
-      HashMap used = new HashMap();
-
-      String[] cn = TableUtilities.uniqueValues(et, outputs[0]);
-      String[] an = new String[inputs.length];
-      for(int i = 0; i < an.length; i++)
-        an[i] = et.getColumnLabel(inputs[i]);
-      return createBinTree(cn, an);
-    }
 }
