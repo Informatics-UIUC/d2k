@@ -23,7 +23,7 @@ public class ErrorFunctionGenerator extends ComputeModule {
    */
   public PropertyDescription [] getPropertiesDescriptions () {
 	  PropertyDescription [] pds = new PropertyDescription [1];
-	  pds[0] = new PropertyDescription ("errorFunctionName", "Error Function", "The name of the error function, can be Absolute, Classification, Likelyhood or Variance.");
+	  pds[0] = new PropertyDescription ("errorFunctionName", "Error Function", "The name of the error function, can be Absolute, Classification, Likelihood or Variance.");
 	  return pds;
   }
 
@@ -38,12 +38,12 @@ public class ErrorFunctionGenerator extends ComputeModule {
 			" can be       measured or represented. The name of the error function is user       selectable"+
 			" via a customer properties user interface. The property editor       will produce an editor"+
 			" that provides the names of all the supported       error fuctions. The currently supported"+
-			" error functions are <i>Absolute</i>, <i>Classification</i>, <i>Likelyhood</i> and <i>Variance</i>."+
+			" error functions are <i>Absolute</i>, <i>Classification</i>, <i>Likelihood</i> and <i>Variance</i>."+
 			" The absolute       error is the sum of all the differences in the predicted and actual    "+
 			"   values. Classification will only work if there is one output feature. It       will yield"+
-			" 0 if there is no classification error, 1 otherwise.       Likelyhood returns the negative of"+
+			" 0 if there is no classification error, 1 otherwise.       Likelihood returns the negative of"+
 			" the sum of the log of probabilities       fo the actual classes. This is useful when using"+
-			" likelyhood to guide the       formation of the Probability Density Function based models. Variance"+
+			" Likelihood to guide the       formation of the Probability Density Function based models. Variance"+
 			"       returns the sum of all the squared differrences between predicted and       actual output"+
 			" values.    </p>";
 	}
@@ -107,7 +107,7 @@ public class ErrorFunctionGenerator extends ComputeModule {
    * @author Thomas Redman
    */
   class SetErrorFunction extends JPanel implements CustomModuleEditor {
-	final String [] errors = {"Absolute","Classification","Likelyhood","Variance"};
+	final String [] errors = {"Absolute","Classification","Likelihood","Variance"};
 	JComboBox errorsSelection = new JComboBox(errors);
 	SetErrorFunction() {
 		JLabel tt = new JLabel("Error Function");

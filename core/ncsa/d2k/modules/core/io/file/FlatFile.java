@@ -1,81 +1,80 @@
 package ncsa.d2k.modules.core.io.file;
+
 import java.io.*;
 import java.util.*;
 
-public class FlatFile extends Exception {
+public class FlatFile
+    extends Exception {
   /***********/
   /* Globals */
   /***********/
-
 
   static int MaxNumColumns = 10000;
 
   public boolean ReadWholeLines = true;
 
-  byte    x;
-  public String  FileName;
-  public long    FileLength;
-  String         Direction;
-  int            BufferSize;
-  public byte    Buffer[];
+  byte x;
+  public String FileName;
+  public long FileLength;
+  String Direction;
+  int BufferSize;
+  public byte Buffer[];
 
-  long           Position;
-  int            BufferIndex;
-  int            ByteIndex;
-  int            NumLeftoverBytes = 0;
+  long Position;
+  int BufferIndex;
+  int ByteIndex;
+  int NumLeftoverBytes = 0;
 
-  int            BufferNumBytes;
-  int            RealBufferNumBytes;
+  int BufferNumBytes;
+  int RealBufferNumBytes;
 
-  public int     LineNumBytes;
+  public int LineNumBytes;
 
-
-
-  public boolean EOF  = false;
+  public boolean EOF = false;
 
   RandomAccessFile File;
 
-  public byte DelimiterByte     = (byte) ',';
-  public byte SpaceByte    = (byte) ' ';
-  public byte EOLByte      = 10; // new line = 10 (unix) !!!
+  public byte DelimiterByte = (byte) ',';
+  public byte SpaceByte = (byte) ' ';
+  public byte EOLByte = 10; // new line = 10 (unix) !!!
   public byte UnixEOLByte = 10;
-  public byte MacEOLByte  = 13;
-  public byte QuoteByte    = (byte) '"';
+  public byte MacEOLByte = 13;
+  public byte QuoteByte = (byte) '"';
 
-  final static byte ZeroByte    = (byte) '0';
-  final static byte MinusByte   = (byte) '-';
-  final static byte PlusByte    = (byte) '+';
+  final static byte ZeroByte = (byte) '0';
+  final static byte MinusByte = (byte) '-';
+  final static byte PlusByte = (byte) '+';
   final static byte DecimalByte = (byte) '.';
-  final static byte LowerEByte  = (byte) 'e';
-  final static byte UpperEByte  = (byte) 'E';
+  final static byte LowerEByte = (byte) 'e';
+  final static byte UpperEByte = (byte) 'E';
 
-  public int  LineStart;
-  public int  LineEnd;
-  public int  [] ColumnStarts = new int[MaxNumColumns];
-  public int  [] ColumnEnds   = new int[MaxNumColumns];
-  public int  NumColumns;
+  public int LineStart;
+  public int LineEnd;
+  public int[] ColumnStarts = new int[MaxNumColumns];
+  public int[] ColumnEnds = new int[MaxNumColumns];
+  public int NumColumns;
 
-  public boolean  ReportOpenings = false;
+  public boolean ReportOpenings = false;
 
-
-  public FlatFile(String fileName, String direction, int bufferSize, boolean readWholeLines) throws Exception {
+  public FlatFile(String fileName, String direction, int bufferSize,
+                  boolean readWholeLines) throws Exception {
     this.ReadWholeLines = readWholeLines;
 
     if (ReportOpenings)
       System.out.println("opening " + fileName);
 
-    this.FileName      = fileName;
-    this.Direction     = direction;
-    this.BufferSize    = bufferSize;
-    BufferIndex        = 0;
-    NumLeftoverBytes   = 0;
-    Position           = 0;
-    Buffer             = new byte[BufferSize];
-    BufferNumBytes     = 0;
+    this.FileName = fileName;
+    this.Direction = direction;
+    this.BufferSize = bufferSize;
+    BufferIndex = 0;
+    NumLeftoverBytes = 0;
+    Position = 0;
+    Buffer = new byte[BufferSize];
+    BufferNumBytes = 0;
     RealBufferNumBytes = 0;
-    ByteIndex          = 0;
-    LineNumBytes       = 0;
-    EOF                = false;
+    ByteIndex = 0;
+    LineNumBytes = 0;
+    EOF = false;
 
     try {
       if (Direction.equals("r")) {
@@ -89,14 +88,14 @@ public class FlatFile extends Exception {
         }
       }
       else
-        if (Direction.equals("w")) {
-      eraseFile(FileName);
-      File = new RandomAccessFile(FileName, "rw");
-      if (File == null) {
-        System.out.println("couldn't open file: " + FileName);
-        throw new Exception();
-      }
+      if (Direction.equals("w")) {
+        eraseFile(FileName);
+        File = new RandomAccessFile(FileName, "rw");
+        if (File == null) {
+          System.out.println("couldn't open file: " + FileName);
+          throw new Exception();
         }
+      }
     }
     catch (Exception e) {
       System.out.println("couldn't open file: " + FileName);
@@ -106,13 +105,10 @@ public class FlatFile extends Exception {
     positionByByte(0L);
   }
 
-
   final static int DefaultBufferSize = 500000;
   public FlatFile(String fileName, String direction) throws Exception {
     new FlatFile(fileName, direction, DefaultBufferSize, false);
   }
-
-
 
   public void close() throws Exception {
     if (File != null) {
@@ -130,11 +126,6 @@ public class FlatFile extends Exception {
     }
   }
 
-
-
-
-
-
   public void finalize() throws Exception {
     if (File != null) {
       try {
@@ -150,18 +141,13 @@ public class FlatFile extends Exception {
 
   }
 
-
-
-
-
-
   public void eraseFile(String fileName) {
     try {
       File file = new File(fileName);
       file.delete();
     }
     catch (Exception e) {
-      System.out.println("eraseFile(" + fileName +") failed");
+      System.out.println("eraseFile(" + fileName + ") failed");
     }
 
   }
@@ -190,17 +176,13 @@ public class FlatFile extends Exception {
       throw new Exception();
     }
 
-
     if (Direction.equals("r"))
       readNextBuffer();
-    ByteIndex    = (int) (newPosition % BufferSize);
+    ByteIndex = (int) (newPosition % BufferSize);
 
     Position = newPosition;
 
   }
-
-
-
 
   public void positionByFraction(double newFraction) throws Exception {
     long newPosition = (long) (newFraction * FileLength);
@@ -208,11 +190,7 @@ public class FlatFile extends Exception {
     positionByByte(newPosition);
   }
 
-
-
-
   void readNextBuffer() throws Exception {
-
 
     try {
 
@@ -226,8 +204,8 @@ public class FlatFile extends Exception {
         }
       }
 
-
-      int numBytesRead = File.read(Buffer, NumLeftoverBytes, BufferSize - NumLeftoverBytes);
+      int numBytesRead = File.read(Buffer, NumLeftoverBytes,
+                                   BufferSize - NumLeftoverBytes);
 
       //System.out.println("numBytesRead = " + numBytesRead);
 
@@ -238,9 +216,8 @@ public class FlatFile extends Exception {
 
       RealBufferNumBytes = NumLeftoverBytes + actualNumBytesRead;
 
-      if ((numBytesRead == -1) && (RealBufferNumBytes == 0))
+      if ( (numBytesRead == -1) && (RealBufferNumBytes == 0))
         EOF = true;
-
 
       NumLeftoverBytes = 0;
 
@@ -254,12 +231,12 @@ public class FlatFile extends Exception {
 
       BufferNumBytes = RealBufferNumBytes - NumLeftoverBytes;
 
-      if (BufferNumBytes == 0)  // !!! does this work
+      if (BufferNumBytes == 0) // !!! does this work
         EOF = true;
 
-      //System.out.println("NumLeftoverBytes = " + NumLeftoverBytes);
-      //System.out.println("RealBufferNumBytes = " + RealBufferNumBytes);
-      //System.out.println("BufferNumBytes = " + BufferNumBytes);
+        //System.out.println("NumLeftoverBytes = " + NumLeftoverBytes);
+        //System.out.println("RealBufferNumBytes = " + RealBufferNumBytes);
+        //System.out.println("BufferNumBytes = " + BufferNumBytes);
 
       BufferIndex++;
 
@@ -274,11 +251,7 @@ public class FlatFile extends Exception {
       throw new Exception();
     }
 
-
-
   }
-
-
 
   void writeNextBuffer() throws Exception {
 
@@ -294,14 +267,7 @@ public class FlatFile extends Exception {
       throw new Exception();
     }
 
-
-
   }
-
-
-
-
-
 
   public byte readByte() throws Exception {
     //if (Position >= FileLength)
@@ -313,11 +279,10 @@ public class FlatFile extends Exception {
     if (ByteIndex >= BufferNumBytes)
       readNextBuffer();
 
-    //Position++;
+      //Position++;
 
     return Buffer[ByteIndex++];
   }
-
 
   public char readI8() throws Exception {
     if (ByteIndex >= BufferSize)
@@ -331,20 +296,16 @@ public class FlatFile extends Exception {
       return (char) (256 + value);
   }
 
-
   public void writeByte(byte x) throws Exception {
 
     if (ByteIndex >= BufferSize)
       writeNextBuffer();
 
-
-    //Position++;
+      //Position++;
 
     Buffer[ByteIndex++] = x;
 
   }
-
-
 
   public void skipToNextLine() throws Exception {
     while (true) {
@@ -361,22 +322,16 @@ public class FlatFile extends Exception {
     }
   }
 
-
-
-
-
   public void readLine() throws Exception {
 
-    int  localByteIndex      = ByteIndex;
-    int  localBufferNumBytes = BufferNumBytes;
-    byte localEOLByte        = EOLByte;
-
-
+    int localByteIndex = ByteIndex;
+    int localBufferNumBytes = BufferNumBytes;
+    byte localEOLByte = EOLByte;
 
     if (localByteIndex >= localBufferNumBytes) {
       readNextBuffer();
       localBufferNumBytes = BufferNumBytes;
-      localByteIndex       = ByteIndex;
+      localByteIndex = ByteIndex;
     }
 
     LineStart = localByteIndex;
@@ -414,14 +369,11 @@ public class FlatFile extends Exception {
 
   }
 
-
-  public void writeLine(byte bytes[], int startIndex, int endIndex) throws Exception {
+  public void writeLine(byte bytes[], int startIndex, int endIndex) throws
+      Exception {
     for (int i = startIndex; i < endIndex; i++)
       writeByte(bytes[i]);
   }
-
-
-
 
   public void writeIntAsByteString(int sum) throws Exception {
     int startIndex;
@@ -433,8 +385,8 @@ public class FlatFile extends Exception {
     }
 
     if (sum < 0) {
-      writeByte((byte) '-');
-      sum = - sum;
+      writeByte( (byte) '-');
+      sum = -sum;
     }
 
     int base = 1000000000;
@@ -460,16 +412,36 @@ public class FlatFile extends Exception {
       //System.out.println("base = " + base);
 
       switch (digit) {
-        case 0: writeByte((byte) (ZeroByte + 0)); break;
-        case 1: writeByte((byte) (ZeroByte + 1)); break;
-        case 2: writeByte((byte) (ZeroByte + 2)); break;
-        case 3: writeByte((byte) (ZeroByte + 3)); break;
-        case 4: writeByte((byte) (ZeroByte + 4)); break;
-        case 5: writeByte((byte) (ZeroByte + 5)); break;
-        case 6: writeByte((byte) (ZeroByte + 6)); break;
-        case 7: writeByte((byte) (ZeroByte + 7)); break;
-        case 8: writeByte((byte) (ZeroByte + 8)); break;
-        case 9: writeByte((byte) (ZeroByte + 9)); break;
+        case 0:
+          writeByte( (byte) (ZeroByte + 0));
+          break;
+        case 1:
+          writeByte( (byte) (ZeroByte + 1));
+          break;
+        case 2:
+          writeByte( (byte) (ZeroByte + 2));
+          break;
+        case 3:
+          writeByte( (byte) (ZeroByte + 3));
+          break;
+        case 4:
+          writeByte( (byte) (ZeroByte + 4));
+          break;
+        case 5:
+          writeByte( (byte) (ZeroByte + 5));
+          break;
+        case 6:
+          writeByte( (byte) (ZeroByte + 6));
+          break;
+        case 7:
+          writeByte( (byte) (ZeroByte + 7));
+          break;
+        case 8:
+          writeByte( (byte) (ZeroByte + 8));
+          break;
+        case 9:
+          writeByte( (byte) (ZeroByte + 9));
+          break;
       }
 
       sum = sum - digit * base;
@@ -479,14 +451,13 @@ public class FlatFile extends Exception {
 
   }
 
-
   public void writeIntAsByteStringPadded(int sum, int base) throws Exception {
     int startIndex;
     int endIndex;
 
     if (sum < 0) {
-      writeByte((byte) '-');
-      sum = - sum;
+      writeByte( (byte) '-');
+      sum = -sum;
     }
 
     if (sum >= base) {
@@ -504,16 +475,36 @@ public class FlatFile extends Exception {
       //System.out.println("base = " + base);
 
       switch (digit) {
-        case 0: writeByte((byte) (ZeroByte + 0)); break;
-        case 1: writeByte((byte) (ZeroByte + 1)); break;
-        case 2: writeByte((byte) (ZeroByte + 2)); break;
-        case 3: writeByte((byte) (ZeroByte + 3)); break;
-        case 4: writeByte((byte) (ZeroByte + 4)); break;
-        case 5: writeByte((byte) (ZeroByte + 5)); break;
-        case 6: writeByte((byte) (ZeroByte + 6)); break;
-        case 7: writeByte((byte) (ZeroByte + 7)); break;
-        case 8: writeByte((byte) (ZeroByte + 8)); break;
-        case 9: writeByte((byte) (ZeroByte + 9)); break;
+        case 0:
+          writeByte( (byte) (ZeroByte + 0));
+          break;
+        case 1:
+          writeByte( (byte) (ZeroByte + 1));
+          break;
+        case 2:
+          writeByte( (byte) (ZeroByte + 2));
+          break;
+        case 3:
+          writeByte( (byte) (ZeroByte + 3));
+          break;
+        case 4:
+          writeByte( (byte) (ZeroByte + 4));
+          break;
+        case 5:
+          writeByte( (byte) (ZeroByte + 5));
+          break;
+        case 6:
+          writeByte( (byte) (ZeroByte + 6));
+          break;
+        case 7:
+          writeByte( (byte) (ZeroByte + 7));
+          break;
+        case 8:
+          writeByte( (byte) (ZeroByte + 8));
+          break;
+        case 9:
+          writeByte( (byte) (ZeroByte + 9));
+          break;
       }
 
       sum = sum - digit * base;
@@ -522,7 +513,6 @@ public class FlatFile extends Exception {
     }
 
   }
-
 
   public void print(byte value) throws Exception {
     writeByte(value);
@@ -535,17 +525,17 @@ public class FlatFile extends Exception {
   public void print(double value) throws Exception {
 
     if (value < 0.0) {
-      writeByte((byte) '-');
-      value = - value;
+      writeByte( (byte) '-');
+      value = -value;
     }
 
     int decimalBase = 1000;
 
-    int preDecimalValue  = (int) (value * decimalBase + 0.5) / decimalBase;
+    int preDecimalValue = (int) (value * decimalBase + 0.5) / decimalBase;
     int postDecimalValue = (int) (value * decimalBase + 0.5) % decimalBase;
 
     writeIntAsByteString(preDecimalValue);
-    print((byte) '.');
+    print( (byte) '.');
     writeIntAsByteStringPadded(postDecimalValue, decimalBase);
   }
 
@@ -556,89 +546,142 @@ public class FlatFile extends Exception {
       writeByte(bytes[i]);
   }
 
-
   public void println() throws Exception {
     writeByte(EOLByte);
   }
-
 
   public void println(byte value) throws Exception {
     print(value);
     println();
   }
+
   public void println(int value) throws Exception {
     print(value);
     println();
   }
+
   public void println(double value) throws Exception {
     print(value);
     println();
   }
+
   public void println(String string) throws Exception {
     print(string);
     println();
   }
 
-  public static int ByteStringToInt(byte byteString[], int startIndex, int endIndex) {
+  public static int ByteStringToInt(byte byteString[], int startIndex,
+                                    int endIndex) {
     int sum = 0;
     int sign = 1;
     for (int i = startIndex; i < endIndex; i++) {
       switch (byteString[i]) {
-      case MinusByte:    sign = sign * -1;   break;
+        case MinusByte:
+          sign = sign * -1;
+          break;
 
-      case ZeroByte + 0: sum = sum * 10;     break;
-      case ZeroByte + 1: sum = sum * 10 + 1; break;
-      case ZeroByte + 2: sum = sum * 10 + 2; break;
-      case ZeroByte + 3: sum = sum * 10 + 3; break;
-      case ZeroByte + 4: sum = sum * 10 + 4; break;
-      case ZeroByte + 5: sum = sum * 10 + 5; break;
-      case ZeroByte + 6: sum = sum * 10 + 6; break;
-      case ZeroByte + 7: sum = sum * 10 + 7; break;
-      case ZeroByte + 8: sum = sum * 10 + 8; break;
-      case ZeroByte + 9: sum = sum * 10 + 9; break;
+        case ZeroByte + 0:
+          sum = sum * 10;
+          break;
+        case ZeroByte + 1:
+          sum = sum * 10 + 1;
+          break;
+        case ZeroByte + 2:
+          sum = sum * 10 + 2;
+          break;
+        case ZeroByte + 3:
+          sum = sum * 10 + 3;
+          break;
+        case ZeroByte + 4:
+          sum = sum * 10 + 4;
+          break;
+        case ZeroByte + 5:
+          sum = sum * 10 + 5;
+          break;
+        case ZeroByte + 6:
+          sum = sum * 10 + 6;
+          break;
+        case ZeroByte + 7:
+          sum = sum * 10 + 7;
+          break;
+        case ZeroByte + 8:
+          sum = sum * 10 + 8;
+          break;
+        case ZeroByte + 9:
+          sum = sum * 10 + 9;
+          break;
 
-      default:            sum = sum * 10;     break;
-    }
+        default:
+          sum = sum * 10;
+          break;
+      }
     }
     return sum * sign;
   }
 
-  public static double ByteStringToDouble(byte byteString[], int startIndex, int endIndex) {
-    double   sum       = 0.0;
-    int      expSum   = 0;
-    int      decimalIndex = -1;
-    int      sign      = 1;
-    int      expSign  = 1;
+  public static double ByteStringToDouble(byte byteString[], int startIndex,
+                                          int endIndex) {
+    double sum = 0.0;
+    int expSum = 0;
+    int decimalIndex = -1;
+    int sign = 1;
+    int expSign = 1;
     boolean exponent = false;
-    double   returnValue;
+    double returnValue;
 
     int stringIndex;
 
-    for (stringIndex = startIndex; stringIndex < endIndex && !exponent; stringIndex++) {
+    for (stringIndex = startIndex; stringIndex < endIndex && !exponent;
+         stringIndex++) {
       switch (byteString[stringIndex]) {
-      case DecimalByte:  decimalIndex = stringIndex;      break;
+        case DecimalByte:
+          decimalIndex = stringIndex;
+          break;
 
-      case MinusByte:    sign = sign * -1;   break;
+        case MinusByte:
+          sign = sign * -1;
+          break;
 
-      case ZeroByte + 0: sum = sum * 10;     break;
-      case ZeroByte + 1: sum = sum * 10 + 1; break;
-      case ZeroByte + 2: sum = sum * 10 + 2; break;
-      case ZeroByte + 3: sum = sum * 10 + 3; break;
-      case ZeroByte + 4: sum = sum * 10 + 4; break;
-      case ZeroByte + 5: sum = sum * 10 + 5; break;
-      case ZeroByte + 6: sum = sum * 10 + 6; break;
-      case ZeroByte + 7: sum = sum * 10 + 7; break;
-      case ZeroByte + 8: sum = sum * 10 + 8; break;
-      case ZeroByte + 9: sum = sum * 10 + 9; break;
+        case ZeroByte + 0:
+          sum = sum * 10;
+          break;
+        case ZeroByte + 1:
+          sum = sum * 10 + 1;
+          break;
+        case ZeroByte + 2:
+          sum = sum * 10 + 2;
+          break;
+        case ZeroByte + 3:
+          sum = sum * 10 + 3;
+          break;
+        case ZeroByte + 4:
+          sum = sum * 10 + 4;
+          break;
+        case ZeroByte + 5:
+          sum = sum * 10 + 5;
+          break;
+        case ZeroByte + 6:
+          sum = sum * 10 + 6;
+          break;
+        case ZeroByte + 7:
+          sum = sum * 10 + 7;
+          break;
+        case ZeroByte + 8:
+          sum = sum * 10 + 8;
+          break;
+        case ZeroByte + 9:
+          sum = sum * 10 + 9;
+          break;
 
-      case LowerEByte:
-      case UpperEByte:
-        exponent = true;
+        case LowerEByte:
+        case UpperEByte:
+          exponent = true;
 
-      default:            sum = sum * 10;     break;
+        default:
+          sum = sum * 10;
+          break;
+      }
     }
-    }
-
 
     int numDecimals;
 
@@ -650,37 +693,59 @@ public class FlatFile extends Exception {
     }
 
     for (int i = 0; i < numDecimals; i++) {
-      sum /=  10.0;
+      sum /= 10.0;
     }
-
 
     if (!exponent) {
       returnValue = sign * sum;
     }
-    else
-    {
+    else {
 
       switch (byteString[stringIndex]) {
-        case MinusByte: expSign = -1; break;
-        case PlusByte:  expSign =  1; break;
+        case MinusByte:
+          expSign = -1;
+          break;
+        case PlusByte:
+          expSign = 1;
+          break;
       }
 
       expSum = 0;
       stringIndex++;
       for (int i = 0; i < 2; i++) {
         switch (byteString[stringIndex]) {
-        case (byte) (ZeroByte + 0): expSum = expSum * 10;     break;
-        case (byte) (ZeroByte + 1): expSum = expSum * 10 + 1; break;
-        case (byte) (ZeroByte + 2): expSum = expSum * 10 + 2; break;
-        case (byte) (ZeroByte + 3): expSum = expSum * 10 + 3; break;
-        case (byte) (ZeroByte + 4): expSum = expSum * 10 + 4; break;
-        case (byte) (ZeroByte + 5): expSum = expSum * 10 + 5; break;
-        case (byte) (ZeroByte + 6): expSum = expSum * 10 + 6; break;
-        case (byte) (ZeroByte + 7): expSum = expSum * 10 + 7; break;
-        case (byte) (ZeroByte + 8): expSum = expSum * 10 + 8; break;
-        case (byte) (ZeroByte + 9): expSum = expSum * 10 + 9; break;
-      }
-      stringIndex++;
+          case (byte) (ZeroByte + 0):
+            expSum = expSum * 10;
+            break;
+          case (byte) (ZeroByte + 1):
+            expSum = expSum * 10 + 1;
+            break;
+          case (byte) (ZeroByte + 2):
+            expSum = expSum * 10 + 2;
+            break;
+          case (byte) (ZeroByte + 3):
+            expSum = expSum * 10 + 3;
+            break;
+          case (byte) (ZeroByte + 4):
+            expSum = expSum * 10 + 4;
+            break;
+          case (byte) (ZeroByte + 5):
+            expSum = expSum * 10 + 5;
+            break;
+          case (byte) (ZeroByte + 6):
+            expSum = expSum * 10 + 6;
+            break;
+          case (byte) (ZeroByte + 7):
+            expSum = expSum * 10 + 7;
+            break;
+          case (byte) (ZeroByte + 8):
+            expSum = expSum * 10 + 8;
+            break;
+          case (byte) (ZeroByte + 9):
+            expSum = expSum * 10 + 9;
+            break;
+        }
+        stringIndex++;
       }
 
       returnValue = sign * sum * Math.pow(10.0, expSign * expSum);
