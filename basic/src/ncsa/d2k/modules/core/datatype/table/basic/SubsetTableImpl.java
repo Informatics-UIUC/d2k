@@ -120,7 +120,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 	 * @param length the number of entries.
 	 * @return the new adjusted subset.
 	 */
-	private int[] resubset(int start, int length) {
+	protected int[] resubset(int start, int length) {
 		int[] tmp = new int[length];
 		for (int i = 0; i < length; i++) {
 			tmp[i] = subset[start + i];
@@ -134,7 +134,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 	 * @param newset the new subset.
 	 * @return the adjusted newsubset.
 	 */
-	private int[] resubset(int[] newset) {
+	protected int[] resubset(int[] newset) {
 		for (int i = 0; i < newset.length; i++) {
 			newset[i] = subset[newset[i]];
 		}
@@ -239,12 +239,6 @@ public class SubsetTableImpl extends MutableTableImpl {
 
 			String columnClass = (cols[k].getClass()).getName();
 			Column expandedColumn = null;
-			try {
-				expandedColumn =
-					(Column) Class.forName(columnClass).newInstance();
-			} catch (Exception e) {
-				System.out.println(e);
-			}
 
 			//if col is the first column in the table add it as is and initialize subset
 			int numRows = super.getNumRows();
@@ -255,9 +249,21 @@ public class SubsetTableImpl extends MutableTableImpl {
 					for (int i = 0; i < this.getNumRows(); i++) {
 						subset[i] = i;
 					}
-					expandedColumn = cols[k];
 				}
+
+				// LAM-tlr, I moved this down from inside the above condition. If it is
+				// inside the condition above, after the first column is added, the rest of
+				// the columns are empty.
+				expandedColumn = cols[k];
 			} else {
+				// LAM-tlr, I moved this down from above. If we are to use the column
+				// as is, we don't need to reallocate it.
+				try {
+					expandedColumn =
+						(Column) Class.forName(columnClass).newInstance();
+				} catch (Exception e) {
+					System.out.println(e);
+				}
 				expandedColumn.addRows(numRows);
 				expandedColumn.setLabel(cols[k].getLabel());
 				expandedColumn.setComment(cols[k].getComment());
@@ -281,6 +287,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 		columns = newColumns;
 
 	}
+
 	/**
 	 * Return a copy of this Table.
 	 * @return A new Table with a copy of the contents of this table.
@@ -385,7 +392,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 		 * @param pos the row to remove
 		 */
 	public void removeRows(int pos, int cnt) {
-		//		ANCA: rows need not be removed from the columns if they are removed from the subset	
+		//		ANCA: rows need not be removed from the columns if they are removed from the subset
 		//for (int i = 0; i < getNumColumns(); i++) {
 		//	getColumn(i).removeRows(pos, cnt);
 		//}

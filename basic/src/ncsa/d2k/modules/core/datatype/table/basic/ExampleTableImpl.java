@@ -213,31 +213,40 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 
 	/**
 	Returns the number of input features.
-	@returns the number of input features.
+	@return the number of input features.
 	*/
 	public int getNumInputFeatures() {
-		return inputColumns.length;
+		if (inputColumns == null)
+			return 0;
+		else
+			return inputColumns.length;
 	}
 
 	/**
 	Return the number of examples in the training set.
-	@returns the number of examples in the training set.
+	@return the number of examples in the training set.
 	*/
 	public int getNumTrainExamples() {
-		return this.trainSet.length;
+		if (trainSet == null)
+			return 0;
+		else
+			return trainSet.length;
 	}
 
 	/**
 	Return the number of examples in the testing set.
-	@returns the number of examples in the testing set.
+	@return the number of examples in the testing set.
 	*/
 	public int getNumTestExamples() {
-		return this.testSet.length;
+		if (testSet == null)
+			return 0;
+		else
+			return testSet.length;
 	}
 
 	/**
 	Get the number of output features.
-	@returns the number of output features.
+	@return the number of output features.
 	*/
 	public int[] getOutputFeatures() {
 		return outputColumns;
@@ -245,10 +254,15 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 
 	/**
 	Get the number of output features.
-	@returns the number of output features.
+	@return
+
+	 the number of output features.
 	*/
 	public int getNumOutputFeatures() {
-		return outputColumns.length;
+		if (outputColumns == null)
+			return 0;
+		else
+			return outputColumns.length;
 	}
 
 	/**
@@ -261,7 +275,9 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		inputNames = new String[inputs.length];
 		for (int i = 0; i < inputNames.length; i++) {
 		  inputNames[i] = this.getColumnLabel(inputs[i]);
-		  ins[i] = this.getColumn(i);
+
+		  // LAM-tlr, below i was passed as the index to getColumn, I changed to to inputs[i].
+		  ins[i] = this.getColumn(inputs[i]);
 		}
 	}
 
@@ -275,7 +291,9 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		outputNames = new String[outs.length];
 		for (int i = 0; i < outputNames.length; i++) {
 			outputNames[i] = getColumnLabel(outCols[i]);
-			outs[i] = this.getColumn(i);
+
+			// LAM-tlr, below i was passed as the index to getColumn, I changed to to inputs[i].
+			outs[i] = this.getColumn(outCols[i]);
 		}
 	}
 
@@ -309,6 +327,194 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	*/
 	public int[] getTestingSet() {
 		return testSet;
+	}
+
+	///////////// Copying ////////////////////
+
+	/**
+	 * Return a copy of this Table.
+	 * @return A new Table with a copy of the contents of this table.
+	 */
+	public Table copy() {
+		TableImpl vt;
+
+		// Copy failed, maybe objects in a column that are not serializable.
+		Column[] cols = new Column[this.getNumColumns()];
+		Column[] oldcols = this.getColumns();
+		for (int i = 0; i < cols.length; i++) {
+			cols[i] = oldcols[i].copy();
+		}
+
+		// Copy the subset, the inputs set, the output set, and the test and train sets.
+		int[] newsubset = new int[subset.length];
+		System.arraycopy(subset, 0, newsubset, 0, subset.length);
+		int[] newins = new int[inputColumns.length];
+		System.arraycopy(inputColumns, 0, newins, 0, inputColumns.length);
+		int[] newouts = new int[outputColumns.length];
+		System.arraycopy(outputColumns, 0, newouts, 0, outputColumns.length);
+		int[] newtest = new int[testSet.length];
+		System.arraycopy(testSet, 0, newtest, 0, testSet.length);
+		int[] newtrain = new int[trainSet.length];
+		System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
+
+		ExampleTableImpl mti = new ExampleTableImpl ();
+		mti.addColumns(cols);
+		mti.subset = newsubset;
+		mti.setInputFeatures(newins);
+		mti.setOutputFeatures(newouts);
+		mti.setTestingSet(newtest);
+		mti.setTrainingSet(newtest);
+		mti.setKeyColumn (this.getKeyColumn());
+		mti.setLabel (this.getLabel());
+		mti.setComment (this.getComment());
+
+		//copy the transformations
+		try {
+			transformations = (ArrayList) ( (ArrayList) this.
+										 getTransformations()).clone();
+		} catch (Exception e) {
+		  e.printStackTrace();
+		  transformations = null;
+		}
+
+		return mti;
+	}
+
+	/**
+	 * Make a deep copy of the table, include length rows begining at start
+	 * @param start the first row to include in the copy
+	 * @param length the number of rows to include
+	 * @return a new copy of the table.
+	 */
+	public Table copy(int start, int length) {
+		int[] newsubset = this.resubset(start, length);
+
+		// Copy failed, maybe objects in a column that are not serializable.
+		Column[] cols = new Column[this.getNumColumns()];
+		Column[] oldcols = this.getColumns();
+		for (int i = 0; i < cols.length; i++) {
+			cols[i] = oldcols[i].getSubset(newsubset);
+		}
+
+		// Copy the subset, the inputs set, the output set, and the test and train sets.
+		int len = inputColumns == null ? 0 : inputColumns.length;
+		int [] newins = new int[len];
+		if (len > 0) System.arraycopy(inputColumns, 0, newins, 0, inputColumns.length);
+
+		len = outputColumns == null ? 0 : outputColumns.length;
+		int [] newouts = new int[len];
+		if (len > 0) System.arraycopy(outputColumns, 0, newouts, 0, outputColumns.length);
+
+		len = testSet == null ? 0 : testSet.length;
+		int [] newtest = new int[len];
+		if (len > 0) System.arraycopy(testSet, 0, newtest, 0, testSet.length);
+
+		len = trainSet == null ? 0 : trainSet.length;
+		int [] newtrain = new int[len];
+		if (len > 0) System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
+
+		ExampleTableImpl mti = new ExampleTableImpl ();
+		mti.addColumns(cols);
+		int [] ns = new int [newsubset.length];
+		for (int i = 0 ; i < ns.length ; i++)
+			ns [i] = i;
+		mti.subset = ns;
+		mti.setInputFeatures(newins);
+		mti.setOutputFeatures(newouts);
+
+		// LAM-tlr wrong, subset the subsets.
+		mti.setTestingSet(newtest);
+		mti.setTrainingSet(newtest);
+		mti.setKeyColumn (this.getKeyColumn());
+		mti.setLabel (this.getLabel());
+		mti.setComment (this.getComment());
+
+		//copy the transformations
+		try {
+			transformations = (ArrayList) ( (ArrayList) this.
+										 getTransformations()).clone();
+		} catch (Exception e) {
+		  e.printStackTrace();
+		  transformations = null;
+		}
+
+		return mti;
+	}
+
+	/**
+	 * Make a deep copy of the table, include length rows begining at start
+	 * @param start the first row to include in the copy
+	 * @param length the number of rows to include
+	 * @return a new copy of the table.
+	 */
+	public Table copy(int[] subset) {
+		TableImpl vt;
+		int[] newsubset = this.resubset(subset);
+
+		// Copy failed, maybe objects in a column that are not serializable.
+		Column[] cols = new Column[this.getNumColumns()];
+		Column[] oldcols = this.getColumns();
+		for (int i = 0; i < cols.length; i++) {
+			cols[i] = oldcols[i].getSubset(newsubset);
+		}
+
+		// Copy the subset, the inputs set, the output set, and the test and train sets.
+		int len = inputColumns == null ? 0 : inputColumns.length;
+		int [] newins = new int[len];
+		if (len > 0) System.arraycopy(inputColumns, 0, newins, 0, inputColumns.length);
+
+		len = outputColumns == null ? 0 : outputColumns.length;
+		int [] newouts = new int[len];
+		if (len > 0) System.arraycopy(outputColumns, 0, newouts, 0, outputColumns.length);
+
+		len = testSet == null ? 0 : testSet.length;
+		int [] newtest = new int[len];
+		if (len > 0) System.arraycopy(testSet, 0, newtest, 0, testSet.length);
+
+		len = trainSet == null ? 0 : trainSet.length;
+		int [] newtrain = new int[len];
+		if (len > 0) System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
+
+
+		ExampleTableImpl mti = new ExampleTableImpl ();
+		mti.addColumns(cols);
+		int [] ns = new int [newsubset.length];
+		for (int i = 0 ; i < ns.length ; i++) ns [i] = i;
+		mti.subset = ns;
+		mti.setInputFeatures(newins);
+		mti.setOutputFeatures(newouts);
+
+		// LAM-tlr, this is wrong, we need to subset the test and train sets here.
+		mti.setTestingSet(newtest);
+		mti.setTrainingSet(newtest);
+		mti.setKeyColumn (this.getKeyColumn());
+		mti.setLabel (this.getLabel());
+		mti.setComment (this.getComment());
+
+		//copy the transformations
+		try {
+			transformations = (ArrayList) ( (ArrayList) this.
+										 getTransformations()).clone();
+		} catch (Exception e) {
+		  e.printStackTrace();
+		  transformations = null;
+		}
+
+		return mti;
+	}
+
+	/**
+	 * Do a shallow copy on the data by creating a new instance of a MutableTable,
+	 * and initialize all it's fields from this one.
+	 * @return a shallow copy of the table.
+	 */
+	public Table shallowCopy() {
+		SubsetTableImpl vt =
+			new SubsetTableImpl(this.getColumns(), this.subset);
+		vt.setKeyColumn(getKeyColumn());
+		vt.setLabel(getLabel());
+		vt.setComment(getComment());
+		return vt;
 	}
 
 	//////////////// Access the test train sets data ///////////////////

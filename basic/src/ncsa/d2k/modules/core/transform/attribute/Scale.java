@@ -480,91 +480,89 @@ public class Scale extends UIModule {
       }
 
    }
-
+}
 /******************************************************************************/
 /* Transformation                                                             */
 /******************************************************************************/
 
-   private class ScalingTransformation implements Transformation {
+class ScalingTransformation implements Transformation {
 
-      private int[] indices;
-      private double[] from_min, from_max, to_min, to_max;
+  private int[] indices;
+  private double[] from_min, from_max, to_min, to_max;
 
-      ScalingTransformation(int[] indices, double[] from_min, double[] from_max,
-         double[] to_min, double[] to_max) {
+  ScalingTransformation(int[] indices, double[] from_min, double[] from_max,
+	 double[] to_min, double[] to_max) {
 
-         this.indices = indices;
-         this.from_min = from_min;
-         this.from_max = from_max;
-         this.to_min = to_min;
-         this.to_max = to_max;
+	 this.indices = indices;
+	 this.from_min = from_min;
+	 this.from_max = from_max;
+	 this.to_min = to_min;
+	 this.to_max = to_max;
 
-      }
+  }
 
-      public boolean transform(MutableTable table) {
+  public boolean transform(MutableTable table) {
 
-         if (indices.length == 0 || table.getNumRows() == 0) {
-            // no transformation is necessary
-            return true;
-         }
+	 if (indices.length == 0 || table.getNumRows() == 0) {
+		// no transformation is necessary
+		return true;
+	 }
 
-         for (int count = 0; count < indices.length; count++) {
+	 for (int count = 0; count < indices.length; count++) {
 
-            int index = indices[count];
+		int index = indices[count];
 
-            if (index < 0) // this column wasn't selected for scaling
-               continue;
+		if (index < 0) // this column wasn't selected for scaling
+		   continue;
 
-            double[] data = new double[table.getNumRows()];
+		double[] data = new double[table.getNumRows()];
 
-            double from_range = from_max[count] - from_min[count];
-            double to_range = to_max[count] - to_min[count];
+		double from_range = from_max[count] - from_min[count];
+		double to_range = to_max[count] - to_min[count];
 
-            double d;
+		double d;
 
-            if (from_range == 0) { // no variance in data...
+		if (from_range == 0) { // no variance in data...
 
-               d = table.getDouble(0, index);
+		   d = table.getDouble(0, index);
 
-               if (d >= to_min[count] && d <= to_max[count]) {
-                  // data is in new range; leave it alone
-                  for (int j = 0; j < data.length; j++)
-                     data[j] = table.getDouble(j, index);
-               }
-               else {
-                  // data is out of new range; set to min
-                  for (int j = 0; j < data.length; j++)
-                     data[j] = to_min[count];
-               }
+		   if (d >= to_min[count] && d <= to_max[count]) {
+			  // data is in new range; leave it alone
+			  for (int j = 0; j < data.length; j++)
+				 data[j] = table.getDouble(j, index);
+		   }
+		   else {
+			  // data is out of new range; set to min
+			  for (int j = 0; j < data.length; j++)
+				 data[j] = to_min[count];
+		   }
 
-            }
-            else { // ordinary data; scale away!
+		}
+		else { // ordinary data; scale away!
 
-               for (int j = 0; j < data.length; j++) {
-                  d = table.getDouble(j, index);
-                  data[j] = (d - from_min[count])*to_range/from_range
-                          + to_min[count];
-               }
+		   for (int j = 0; j < data.length; j++) {
+			  d = table.getDouble(j, index);
+			  data[j] = (d - from_min[count])*to_range/from_range
+					  + to_min[count];
+		   }
 
-            }
+		}
 
-            String columnLabel = table.getColumnLabel(index);
-            String columnComment = table.getColumnComment(index);
+		String columnLabel = table.getColumnLabel(index);
+		String columnComment = table.getColumnComment(index);
 
-            table.setColumn(new DoubleColumn(data), index);
+		table.setColumn(new DoubleColumn(data), index);
 
-            table.setColumnLabel(columnLabel, index);
-            table.setColumnComment(columnComment, index);
+		table.setColumnLabel(columnLabel, index);
+		table.setColumnComment(columnComment, index);
 
-         }
+	 }
 
-         return true;
+	 return true;
 
-      }
-
-   }
-
+  }
 }
+
 /**
  * QA comments:
  * 2-28-03  Vered started qa.

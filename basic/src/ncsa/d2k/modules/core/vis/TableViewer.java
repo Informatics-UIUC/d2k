@@ -230,7 +230,7 @@ public class TableViewer extends UIModule {
             add(buttonPanel, BorderLayout.SOUTH);
          }
          // Make sure window name matches current module alias
-         parent.setWindowName( getAlias() );
+        // parent.setWindowName( getAlias() );
       }
 
       /**

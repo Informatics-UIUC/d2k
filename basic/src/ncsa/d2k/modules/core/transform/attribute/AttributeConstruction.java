@@ -217,8 +217,6 @@ public class AttributeConstruction extends UIModule {
 
      public void initialize() {
 
-         mod.setWindowName( getAlias() );
-
          this.removeAll();
          expression = new ColumnExpression(table);
 

@@ -11,7 +11,7 @@ package ncsa.d2k.modules.core.discovery.ruleassociation;
 
 
 import java.io.*;
-import java.sql.*;
+//import java.sql.*;
 import java.util.*;
 
 import java.awt.*;
@@ -20,7 +20,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.io.sql.*;
+// ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
@@ -30,8 +30,8 @@ public class RuleAssocReport extends UIModule
   //JOptionPane msgBoard = new JOptionPane();
   File file;
   FileWriter fw;
-  ConnectionWrapper cw;
-  Connection con;
+  //ConnectionWrapper cw;
+  //Connection con;
   String cubeTableName;
   //double minSupport = 0.1;
   //double minConfidence = 0.5;

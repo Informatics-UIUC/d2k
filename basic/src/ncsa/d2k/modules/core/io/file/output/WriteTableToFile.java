@@ -63,7 +63,7 @@ public class WriteTableToFile extends OutputModule {
        sb.append("<p>This module writes the contents of a Table to a file. ");
        sb.append("</p><p>Detailed Description: ");
        sb.append("This module writes the contents of the input ");
-       sb.append("<i>Table</i> to the file specified by the input <i>File Name</i> ");
+       sb.append("<i>Table</i> to the file specified by the input <i>File Name</i> if that input is connected, otherwise it will write the table to a file whose name is constructed from the table label.");
        sb.append("The user can select a space, a common, or a tab as the ");
        sb.append("column delimiter using the properties editor. ");
        sb.append("If the <i>useColumnLabels</i> property is set, ");
@@ -175,15 +175,33 @@ public class WriteTableToFile extends OutputModule {
       }
    }
 
+	/**
+	 * if the file name input is not connected, ignore it.
+	 * @return true if we are ready to fire.
+	 */
+	public boolean isReady() {
+		if (this.isInputPipeConnected(0))
+			return super.isReady();
+		else
+			return this.inputFlags[1] > 0;
+	}
+
     /**
       Write the table to the file.
    */
     public void doit() throws Exception {
-      String fileName = (String)pullInput(0);
       Table vt = (Table)pullInput(1);
+	  String filename;
+	  if (this.isInputPipeConnected(0))
+		  filename = (String)pullInput(0);
+	  else {
+	   	  filename = vt.getLabel()+".out.csv";
+		  System.out.println("Writing file to "+new File(filename).getPath());
+	  }
+
+
       FileWriter fw;
       String newLine = "\n";
-
       delimiter = ",";      // default to comma
       if (delimChar.equals("S")) {
          delimiter = " ";
@@ -193,11 +211,11 @@ public class WriteTableToFile extends OutputModule {
 
       try {
           // write the actual data
-         writeTable(vt, delimiter, fileName, useColumnLabels, useDataTypes);
+         writeTable(vt, delimiter, filename, useColumnLabels, useDataTypes);
       }
       catch (IOException e) {
          throw new IOException( getAlias() +
-              ": Could not open file: " + fileName +
+              ": Could not open file: " + filename +
               "\n" + e );
       }
 
@@ -269,15 +287,22 @@ public class WriteTableToFile extends OutputModule {
       }
 
       // write the actual data
+	  boolean checkMissing = true;
       for(int i = 0; i < vt.getNumRows(); i++) {
          for(int j = 0; j < vt.getNumColumns(); j++) {
             String s;
 
-            if (vt.isValueMissing(i, j) || vt.isValueEmpty(i, j))
-                s = "";
-            else
-                s = vt.getString(i, j);
+			try {
+				if (checkMissing && (vt.isValueMissing(i, j) || vt.isValueEmpty(i, j)))
+					s = "";
+				else
+					s = vt.getString(i, j);
+			} catch (NullPointerException npe) {
 
+				// This table has not missing or empty values, don't check.
+				checkMissing = false;
+				s = vt.getString(i, j);
+			}
             //System.out.println("s: "+s);
             fw.write(s, 0, s.length());
             if(j != (vt.getNumColumns() - 1) )

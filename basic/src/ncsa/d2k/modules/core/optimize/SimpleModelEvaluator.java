@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.optimize;
 
-
+import ncsa.d2k.modules.*;
 import ncsa.d2k.modules.core.datatype.sort.*;
 import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.core.modules.*;
@@ -189,6 +189,9 @@ public class SimpleModelEvaluator
     switch (i) {
       case 0:
         return "Objective Parameter Point";
+	  case 1:
+		return "Prediction Table";
+
     }
     return "";
   }
@@ -197,20 +200,23 @@ public class SimpleModelEvaluator
     switch (i) {
       case 0:
         return "A point in objective space indicating the predictive error of model";
+	  case 1:
+		return "The prediction table generated to analyze the results.";
     }
     return "";
   }
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"};
+        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+		"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
     return out;
   }
 
   public void doit() throws Exception {
 
     ErrorFunction errorFunction = (ErrorFunction)this.pullInput(0);
-    Model        model         = (Model)        this.pullInput(1);
+    PredictionModelModule         model         = (PredictionModelModule)        this.pullInput(1);
     ExampleTable  exampleTable  = (ExampleTable) this.pullInput(2);
 
     ExampleTable examples = exampleTable;
@@ -291,9 +297,14 @@ public class SimpleModelEvaluator
 
     if (reportAverageError) {
       synchronized (System.out) {
-        System.out.println(reportLineLabel +
+	    if (exampleTable.getLabel () != null)
+          System.out.println(reportLineLabel + "(" + exampleTable.getLabel() + ")" +
                            ErrorFunction.getErrorFunctionName(errorFunction.
             errorFunctionIndex) + " = " + utility[0]);
+		else
+			System.out.println(reportLineLabel +
+                           ErrorFunction.getErrorFunctionName(errorFunction.
+					errorFunctionIndex) + " = " + utility[0]);
       }
     }
 
@@ -307,6 +318,7 @@ public class SimpleModelEvaluator
     ParameterPoint objectivePoint =  ParameterPointImpl.getParameterPoint(names,utility);
     //    objectivePoint.createFromData(names, utility);
     this.pushOutput(objectivePoint, 0);
+	this.pushOutput(predictionTable, 1);
 
   }
 }

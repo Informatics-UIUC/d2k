@@ -69,7 +69,7 @@ public class AttributeTransform implements Transformation {
                break;
              case ColumnExpression.TYPE_STRING:
                String[] p = (String[]) evaluation;
-               table.addColumn(p);
+               table.addColumn(new StringColumn(p));
             break;
 
             default:
