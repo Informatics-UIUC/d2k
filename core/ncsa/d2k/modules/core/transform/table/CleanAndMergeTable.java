@@ -71,7 +71,7 @@ public class CleanAndMergeTable extends UIModule {
 	public String getInputInfo(int i) {
 		switch (i) {
 			case 0: return "This is the original table that will be compressed by the row merge     operation.";
-			default: return "No such input";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 
@@ -79,7 +79,7 @@ public class CleanAndMergeTable extends UIModule {
 		switch (i) {
 			case 0: return "This is the original unmodified table.";
 			case 1: return "The merged table is the result of the row merge operation.";
-			default: return "No such output";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 
@@ -103,8 +103,8 @@ public class CleanAndMergeTable extends UIModule {
 			" from     the record with the maximum value in the Control column.</p><p>Data Type Restrictions: The"+
 			" data that is to be merged is expected to be     numeric. The control is also expected to be"+
 			" numberic.</p><p>Data Handling: The newly created table is passed on the second output, the     original"+
-			" table is passed on the first. The original data in unmodified.</p><p>Scalability: This module should"+
-			" scale very well on tables where the key field     selected produces a limited number of unique"+
+			" table is passed on the first. The original data is unmodified.</p><p>Scalability: This module should"+
+			" scale very well on tables where the key field selected produces a limited number of unique"+
 			" records. In those cases where     that is not the case, in other words, the key field selected"+
 			" is not     nominal, this module will not scale well.</p>";
 	}
