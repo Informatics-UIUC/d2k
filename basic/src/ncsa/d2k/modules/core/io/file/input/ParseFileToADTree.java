@@ -171,9 +171,9 @@ public class ParseFileToADTree extends InputModule {
 
      public PropertyDescription[] getPropertiesDescriptions(){
       PropertyDescription[] pd = new PropertyDescription[1] ;
-      pd[0] = new PropertyDescription("debug", "Debug Mode",
-            "This property controls the first debug level of the ADTree. setting "  +
-            "it to true will generate more output to stdout while building the ADTree.");
+       pd[0] = new PropertyDescription("debug", "Generate Verbose Output",
+            "If this property is true, the module will write verbose status information to the console " +
+            "while building the ADTree. ");
       return pd;
      }
 

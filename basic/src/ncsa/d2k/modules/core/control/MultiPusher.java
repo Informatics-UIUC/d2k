@@ -218,13 +218,14 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
 		  " by the <i>N - Number Times to Push</i> property. In this case, the "+
 		  "module will not wait for the second input before firing. If FALSE,"+
 		  " the value of \"N\" will be determined by the second input.");
-      pds[2] = new PropertyDescription("debug",
-        "Debug",
-        "If true, will print the number of times the module has fired, every "+
-		  "time it is fired.");
-		pds[1] = new PropertyDescription("timesToFire",
+      pds[1] = new PropertyDescription("timesToFire",
 			"N - Number Times to Push",
        	"The number of times to pass the input object");
+
+      pds[2] = new PropertyDescription("debug",
+        "Generate Verbose Output",
+        "If true, will write to the console the number of times the module has fired, every "+
+		  "time it is fired.");
       return pds;
     }
 

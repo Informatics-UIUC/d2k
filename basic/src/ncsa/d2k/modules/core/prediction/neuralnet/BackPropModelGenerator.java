@@ -248,10 +248,10 @@ public class BackPropModelGenerator
         "If true, the last model produced by this module during execution "+
 		  "will appear in the Generated Models Pane.");
       pds[1] = new PropertyDescription("debug",
-        "Debug",
-        "Will print out lots of the internal data of the neural net. To ev"+
-		  "eryone but advanced users, this is probably only useful to verify"+
-		  " when the module is firing");
+        "Generate Verbose Output",
+        "If true, the module will output to the console the internal data of the neural net. "+
+        "To all but advanced users, this is probably only useful to determine when the module "+
+        "is firing");
       return pds;
     }
 	////////////////////////////////

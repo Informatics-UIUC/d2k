@@ -236,9 +236,9 @@ public class ADTCreateBinTree extends DataPrepModule {
 
 	public PropertyDescription[] getPropertiesDescriptions(){
       PropertyDescription[] pd = new PropertyDescription[1] ;
-      pd[0] = new PropertyDescription("debug", "Debug Mode",
+      pd[0] = new PropertyDescription("debug", "Generate Verbose Output",
             "This property controls the module's output to stdout. If set to true " +
-						" the BinTree created will be printed. ");
+						" the created BinTree will be printed. ");
       return pd;
      }
 
