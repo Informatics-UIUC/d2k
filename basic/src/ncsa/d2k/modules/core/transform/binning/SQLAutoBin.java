@@ -19,8 +19,8 @@ public class SQLAutoBin extends AutoBin {
 			{
 				"ncsa.d2k.modules.core.io.sql.DBConnection",
 				"java.lang.String",
-				"ncsa.d2k.modules.core.datatype.table.ExampleTable",
-				"java.lang.String" };
+				"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+			//	"java.lang.String" };
 		return in;
 	}
 
@@ -37,8 +37,8 @@ public class SQLAutoBin extends AutoBin {
 				return "Database Table Name";
 			case 2 :
 				return "Meta Data Example Table";
-			case 3 :
-				return "Query Condition";
+			//case 3 :
+			//	return "Query Condition";
 			default :
 				return "No such input";
 		}
@@ -67,8 +67,8 @@ public class SQLAutoBin extends AutoBin {
 				return "The selected table from a database.";
 			case 2 :
 				return "ExampleTable containing the names of the input/output features";
-			case 3 :
-				return "The query conditions.";
+			//case 3 :
+			//	return "The query conditions.";
 			default :
 				return "No such input";
 		}
@@ -129,7 +129,7 @@ public class SQLAutoBin extends AutoBin {
 	}
 
 	DBConnection conn;
-	String tableName, whereClause;
+	String tableName;//, whereClause;
 	ExampleTable tbl;
     NumberFormat nf;
 
@@ -138,7 +138,7 @@ public class SQLAutoBin extends AutoBin {
 	conn = (DBConnection) pullInput(0);
 	tableName = (String) pullInput(1);
 	tbl = (ExampleTable) pullInput(2);
-	whereClause = (String) pullInput(3);
+	//whereClause = (String) pullInput(3);
 	nf = NumberFormat.getInstance();
 	nf.setMaximumFractionDigits(3);
 	int type = getBinMethod();
@@ -189,12 +189,13 @@ public class SQLAutoBin extends AutoBin {
 
 				double minMaxTotal[] = getMMTValues(i);
 
-				double max = minMaxTotal[0];
-				double min = minMaxTotal[1];
+				double min = minMaxTotal[0];
+				double max = minMaxTotal[1];
+				//System.out.println("min, max: " + min + " " + max);
 				double[] binMaxes = new double[num - 1];
 				double interval = (max - min) / (double) num;
 				binMaxes[0] = min + interval;
-                //System.out.println("binmaxes[0] " + binMaxes[0]);
+               // System.out.println("binmaxes[0] " + binMaxes[0]);
 
                 // add the first bin manually
 				BinDescriptor bd =
@@ -244,6 +245,8 @@ public class SQLAutoBin extends AutoBin {
 			bn[i] = (BinDescriptor) bins.get(i);
 
 		}
+        //		add "unkown" bins for relevant attributes that have missing values
+	   bn = BinningUtils.addMissingValueBins(tbl,bn);
 		return bn;
 	}
 
@@ -257,33 +260,27 @@ public class SQLAutoBin extends AutoBin {
 	    // if it is scalar, get the data and sort it.  put (num) into each bin,
 	    // and create a new bin when the last one fills up
 	    boolean isScalar = colTypes[i];
-	    System.out.println("scalar ? " + i + " " + isScalar);
+	   // System.out.println("scalar ? " + i + " " + isScalar);
 	    if (isScalar) {
 		try {
 		    Double db1 = null;
 		    ArrayList list = new ArrayList();
 		    String colName = tbl.getColumnLabel(i);
 		    Connection con = conn.getConnection();
-		    String queryStr =
-			"select "
-			+ colName
-			+ ", count("
-			+ colName
-			+ ") from "
-			+ tableName
-			+ " group by "
-			+ colName;
+		    String queryStr ="select "+ colName+ ", count("+ colName+ ") from "+ tableName+ " group by "+ colName;
 		    Statement stmt = con.createStatement();
 		    ResultSet groupSet = stmt.executeQuery(queryStr);
-		    int itemCnt = 0;
+		    // anca int itemCnt = 0;
+		    int itemCnt =-1;
 		    while (groupSet.next()) {
 			itemCnt += groupSet.getInt(2);
 			db1 = new Double(groupSet.getDouble(1));
+			//System.out.println("itemCnt " + itemCnt + " db1  " + db1);
 			if (itemCnt >= (weight - 1)) {
 			    // itemCnt >= specified weight, add the value to the list
 			    list.add(db1);
 			    // reset itemCnt
-			    itemCnt = 0;
+			    itemCnt = -1;
 			}
 		    }
 		    // put anything left in a bin
@@ -291,8 +288,10 @@ public class SQLAutoBin extends AutoBin {
 			list.add(db1);
 
 		    double[] binMaxes = new double[list.size()];
-		    for (int j = 0; j < binMaxes.length; j++)
-			binMaxes[j] = ((Double) list.get(j)).doubleValue();
+		    for (int j = 0; j < binMaxes.length; j++) {
+		    	binMaxes[j] = ((Double) list.get(j)).doubleValue();
+		    	//System.out.println("binMaxes " + binMaxes[j] + " " + j);
+		    }
 		    // add the first bin manually
 		    BinDescriptor nbd =
 			BinDescriptorFactory.createMinNumericBinDescriptor(
@@ -360,6 +359,8 @@ public class SQLAutoBin extends AutoBin {
 	    bn[i] = (BinDescriptor) bins.get(i);
 
 	}
+	//add "unkown" bins for relevant attributes that have missing values
+	bn = BinningUtils.addMissingValueBins(tbl,bn);
 	return bn;
 
 	//return bt;
@@ -471,3 +472,9 @@ public class SQLAutoBin extends AutoBin {
 
 
 }
+
+/*12-8-03 Anca: took out query condition input- does not seem to be used 
+ *   			fixed [bug 152] - SQLAutoBin - wrong weight binning - - changed line 271 form 0 to -1
+* 				fixed [bug 151] - wrong uniform binning -  min, max were interchanged
+**				added "unknown" bins for relevant attributes that have missing values
+*/
