@@ -71,7 +71,7 @@ public class BrowseTablesView extends JD2KFrame
         else
         {
           selectedRow = lsm.getMinSelectionIndex();
-          System.out.println("Selected Row........"+selectedRow);
+          // System.out.println("Selected Row........"+selectedRow);
         }
       }
     });
@@ -115,7 +115,7 @@ public class BrowseTablesView extends JD2KFrame
         else
         {
           selectedRow = lsm.getMinSelectionIndex();
-          System.out.println("Selected Row........"+selectedRow);
+          // System.out.println("Selected Row........"+selectedRow);
         }
       }
     });
