@@ -17,14 +17,11 @@ import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
 
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.sql.*;
-import java.util.*;
-import java.text.*;
 import javax.swing.*;
 import javax.swing.table.*;
-import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -33,7 +30,7 @@ public class SaveFileToDB extends UIModule
     /* Input holder for ConnectionWrapper */
     protected ConnectionWrapper cw;
     /* Input holder for VerticalTable */
-    protected TableImpl vt;
+    protected Table vt;
     /* SQL Query String */
     protected String query;
     /* The resultset table model */
@@ -71,18 +68,18 @@ public class SaveFileToDB extends UIModule
     */
     public String getModuleInfo() {
       String s = "<p> Overview: ";
-      s += "This module saves data from an data table to a database table. </p>";
+      s += "This module saves data from a data table to a database table. </p>";
       s += "<p> Detailed Description: ";
-      s += "This module takes an Oracle database Connection and an example ";
-      s += "table as the input, and save the data from ";
+      s += "This module takes an Oracle database Connection and a ";
+      s += "table as the input, and saves the data from ";
       s += "the data table to a database table. There are two options " ;
       s += "provided. You can either create a new database table to save the data, ";
-      s += "or append the data to an existing database table. you may only ";
-      s += "append data to a database table you have been granted to. If you ";
-      s += "cannot find the database table you want to add data, please report the ";
+      s += "or append the data to an existing database table. You may only ";
+      s += "append data to a database table you have been granted permissions to do so. If you ";
+      s += "cannot find the database table you want to add data to, please report the ";
       s += "problem to your database administrator. </p>";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle database.";
+      s += "We currently only support Oracle databases.";
 
       return s;
     }
@@ -99,7 +96,7 @@ public class SaveFileToDB extends UIModule
     */
     public String[] getInputTypes () {
         String [] in = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-                        "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
+                        "ncsa.d2k.modules.core.datatype.table.Table" };
         return in;
     }
     /**
@@ -126,9 +123,9 @@ public class SaveFileToDB extends UIModule
     public String getInputName (int i) {
       switch(i) {
               case 0:
-                      return "Database Connection";
+                      return "DatabaseConnection";
               case 1:
-                      return "Data Table";
+                      return "Table";
               default: return "NO SUCH INPUT!";
       }
     }
@@ -188,7 +185,7 @@ public class SaveFileToDB extends UIModule
         public void initView(ViewModule mod) {
             removeAll();
             cw = (ConnectionWrapper)pullInput(0);
-            vt = (TableImpl)pullInput(1);
+            vt = (Table)pullInput(1);
 
             /* layout the createTable tab */
             JPanel createTablePanel = new JPanel();
@@ -305,7 +302,7 @@ public class SaveFileToDB extends UIModule
             String sLength;
             for (int i = 0; i < vt.getNumColumns(); i++) {
                 String sLabel = vt.getColumnLabel(i);
-                String sType = getDataType(vt.getColumn(i));
+                String sType = getDataType(vt.getColumnType(i));
                 if (sType.equals("string")||
                     sType.equals("byte[]")||
                     sType.equals("char[]"))
@@ -323,26 +320,26 @@ public class SaveFileToDB extends UIModule
             @param c The column of the table
             @return The data type of the column
         */
-        public String getDataType(Column c) {
-            if (c instanceof StringColumn)
+        public String getDataType( int type) {
+            if ( type == ColumnTypes.STRING)
                 return "string";
-            else if(c instanceof IntColumn)
+            else if(type == ColumnTypes.INTEGER)
                 return "int";
-            else if(c instanceof FloatColumn)
+            else if(type == ColumnTypes.FLOAT)
                 return "float";
-            else if(c instanceof DoubleColumn)
+            else if(type == ColumnTypes.DOUBLE)
                 return "double";
-            else if(c instanceof LongColumn)
+            else if(type == ColumnTypes.LONG)
                 return "long";
-            else if(c instanceof ShortColumn)
+            else if(type == ColumnTypes.SHORT)
                 return "short";
-            else if(c instanceof BooleanColumn)
+            else if(type == ColumnTypes.BOOLEAN)
                 return "boolean";
-            else if(c instanceof ObjectColumn)
+            else if(type == ColumnTypes.OBJECT)
                 return "object";
-            else if(c instanceof ByteArrayColumn)
+            else if(type == ColumnTypes.BYTE_ARRAY)
                 return "byte[]";
-            else if(c instanceof CharArrayColumn)
+            else if(type == ColumnTypes.CHAR_ARRAY)
                 return "char[]";
             else
                 return "unknown";
@@ -395,7 +392,7 @@ public class SaveFileToDB extends UIModule
             cw = (ConnectionWrapper)input;
           }
           else if (index == 1) {
-            vt = (TableImpl)input;
+            vt = (Table)input;
             newTableName.setText(NOTHING);
             chosenTableName.setText(NOTHING);
             newModel.initTableModel(maxNumRow,3);
@@ -785,3 +782,7 @@ public class SaveFileToDB extends UIModule
       return(true);
     }
 }
+
+// QA Comments Anca 03/12/03
+// changed the input from TableImpl to Table to be more generic
+// WISH : to be able select only certain columns to be loaded when a new database table is created.
