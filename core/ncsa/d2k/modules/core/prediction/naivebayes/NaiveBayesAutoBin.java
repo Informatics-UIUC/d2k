@@ -1,15 +1,10 @@
 package ncsa.d2k.modules.core.prediction.naivebayes;
 
 import java.text.*;
-import java.util.*;
 
-import gnu.trove.*;
-import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
-import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
-import ncsa.d2k.modules.core.datatype.table.util.*;
 
 /**
  * Automatically discretize scalar data for the Naive Bayesian classification
@@ -17,57 +12,11 @@ import ncsa.d2k.modules.core.datatype.table.util.*;
  * to be used.
  */
 public class NaiveBayesAutoBin
-    extends DataPrepModule {
+    extends NaiveBayesAutoBinOPT {
 
   public String[] getInputTypes() {
-    String[] in = {
-        "ncsa.d2k.modules.core.datatype.table.ExampleTable",
-        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"};
+    String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
     return in;
-  }
-
-  public String getInputInfo(int i) {
-    if (i == 0) {
-      return "A table of examples.";
-    }
-    else {
-      return "A ParameterPoint from a Naive Bayes Parameter Space.";
-    }
-  }
-
-  public String getInputName(int i) {
-    if (i == 0) {
-      return "Example Table";
-    }
-    else {
-      return "Parameter Point";
-    }
-  }
-
-  public String[] getOutputTypes() {
-    String[] out = {
-        "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform",
-        "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
-    return out;
-  }
-
-  public String getOutputInfo(int i) {
-    if (i == 0) {
-      return "A BinTransform that contains all the information needed to " +
-          "discretize the Example Table";
-    }
-    else {
-      return "The Example Table, unchanged.";
-    }
-  }
-
-  public String getOutputName(int i) {
-    if (i == 0) {
-      return "Bin Transform";
-    }
-    else {
-      return "Example Table";
-    }
   }
 
   public String getModuleInfo() {
@@ -90,13 +39,41 @@ public class NaiveBayesAutoBin
     return s;
   }
 
-  public String getModuleName() {
-    return "Naive Bayes Discretization";
+  private int binMethod;
+  public void setBinMethod(int i) throws Exception {
+    if(binMethod < 0 || binMethod > 1)
+      throw new Exception("Bin Method must be 0 or 1");
+    binMethod = i;
+  }
+
+  public int getBinMethod() {
+    return binMethod;
+  }
+
+
+  private int binWeight;
+  public void setBinWeight(int i) throws Exception {
+    if(binWeight < 0)
+      throw new Exception("Bin Weight must be a positive integer.");
+    binWeight = i;
+  }
+  public int getBinWeight() {
+    return binWeight;
+  }
+
+  private int numberOfBins;
+  public void setNumberOfBins(int i) throws Exception {
+    if(numberOfBins < 0)
+      throw new Exception("Number of bins must be a positive integer.");
+    numberOfBins = i;
+  }
+  public int getNumberOfBins() {
+    return numberOfBins;
   }
 
   public void doit() throws Exception {
     ExampleTable et = (ExampleTable) pullInput(0);
-    ParameterPoint pp = (ParameterPoint) pullInput(1);
+    //ParameterPoint pp = (ParameterPoint) pullInput(1);
 //    HashMap nameToIndexMap = new HashMap();
 
     tbl = et;
@@ -112,7 +89,8 @@ public class NaiveBayesAutoBin
                                                   BIN_METHOD);
 
     */
-   int type = (int)pp.getValue(NaiveBayesParamSpaceGenerator.BIN_METHOD);
+   //int type = (int)pp.getValue(NaiveBayesParamSpaceGenerator.BIN_METHOD);
+   int type = getBinMethod();
 
     /*if (method == null) {
       throw new Exception(getAlias() + ":  Could not find Bin Method!");
@@ -131,7 +109,8 @@ public class NaiveBayesAutoBin
         throw new Exception(getAlias() + ": Number of bins not specified!");
       }
       */
-     int number = (int)pp.getValue(NaiveBayesParamSpaceGenerator.NUMBER_OF_BINS);
+     //int number = (int)pp.getValue(NaiveBayesParamSpaceGenerator.NUMBER_OF_BINS);
+     int number = getNumberOfBins();
      if(number < 0)
        throw new Exception(getAlias()+": Number of bins not specified!");
       bins = numberOfBins(number);
@@ -142,7 +121,8 @@ public class NaiveBayesAutoBin
       if (weight == null) {
         throw new Exception(getAlias() + ": Items per bin not specified!");
       }*/
-      int weight = (int)pp.getValue(NaiveBayesParamSpaceGenerator.ITEMS_PER_BIN);
+//      int weight = (int)pp.getValue(NaiveBayesParamSpaceGenerator.ITEMS_PER_BIN);
+      int weight = getBinWeight();
       bins = sameWeight(weight);
     }
 
@@ -153,238 +133,4 @@ public class NaiveBayesAutoBin
 
     tbl = null;
   }
-
-  protected ExampleTable tbl;
-  protected NumberFormat nf;
-
-  protected BinDescriptor[] numberOfBins(int num) throws Exception {
-    List bins = new ArrayList();
-
-    int[] inputs = tbl.getInputFeatures();
-    int[] outputs = tbl.getOutputFeatures();
-
-    String[] an = new String[inputs.length];
-    for (int i = 0; i < inputs.length; i++) {
-      an[i] = tbl.getColumnLabel(inputs[i]);
-    }
-    String[] cn = TableUtilities.uniqueValues(tbl, outputs[0]);
-    BinTree bt = new BinTree(cn, an);
-
-    NumberFormat nf = NumberFormat.getInstance();
-    nf.setMaximumFractionDigits(3);
-
-    for (int i = 0; i < inputs.length; i++) {
-      boolean isScalar = tbl.isColumnScalar(inputs[i]);
-      // if it is scalar, find the max and min and create equally-spaced bins
-      if (isScalar) {
-        // find the maxes and mins
-        ScalarStatistics ss = TableUtilities.getScalarStatistics(tbl, inputs[i]);
-        double max = ss.getMaximum();
-        double min = ss.getMinimum();
-        double[] binMaxes = new double[num - 1];
-        double interval = (max - min) / (double) num;
-        binMaxes[0] = min + interval;
-
-        // add the first bin manually
-        BinDescriptor bd = this.createMinNumericBinDescriptor(inputs[i],
-            binMaxes[0]);
-        bins.add(bd);
-
-        // now add the rest
-        for (int j = 1; j < binMaxes.length; j++) {
-          binMaxes[j] = binMaxes[j - 1] + interval;
-          bd = this.createNumericBinDescriptor(inputs[i], binMaxes[j - 1],
-                                               binMaxes[j]);
-          bins.add(bd);
-        }
-
-        // now add the last bin
-        bd = this.createMaxNumericBinDescriptor(inputs[i],
-                                                binMaxes[binMaxes.length - 1]);
-        bins.add(bd);
-      }
-
-      // if it is nominal, create a bin for each unique value.
-      else {
-        String[] vals = TableUtilities.uniqueValues(tbl, inputs[i]);
-        for (int j = 0; j < vals.length; j++) {
-          String[] st = {
-              vals[j]};
-          BinDescriptor bd = this.createTextualBin(inputs[i], vals[j], st);
-          bins.add(bd);
-        }
-      }
-    }
-
-    BinDescriptor[] bn = new BinDescriptor[bins.size()];
-    for (int i = 0; i < bins.size(); i++) {
-      bn[i] = (BinDescriptor) bins.get(i);
-
-    }
-    return bn;
-  }
-
-  protected BinDescriptor[] sameWeight(int weight) throws Exception {
-    List bins = new ArrayList();
-
-    int[] inputs = tbl.getInputFeatures();
-    int[] outputs = tbl.getOutputFeatures();
-    String[] an = new String[inputs.length];
-    for (int i = 0; i < inputs.length; i++) {
-      an[i] = tbl.getColumnLabel(inputs[i]);
-    }
-    String[] cn = TableUtilities.uniqueValues(tbl, outputs[0]);
-
-    for (int i = 0; i < inputs.length; i++) {
-      // if it is scalar, get the data and sort it.  put (num) into each bin,
-      // and create a new bin when the last one fills up
-      boolean isScalar = tbl.isColumnScalar(inputs[i]);
-      if (isScalar) {
-        double[] vals = new double[tbl.getNumRows()];
-        tbl.getColumn(vals, inputs[i]);
-        Arrays.sort(vals);
-
-        //!!!!!!!!!!!!!!!
-        TDoubleArrayList list = new TDoubleArrayList();
-        // now find the bin maxes...
-        // loop through the sorted data.  the next max will lie at
-        // data[curLoc+weight] items
-        int curIdx = 0;
-        while (curIdx < vals.length - 1) {
-          curIdx += weight;
-          if (curIdx > vals.length - 1) {
-            curIdx = vals.length - 1;
-            // now loop until the next unique item is found
-          }
-          boolean done = false;
-          if (curIdx == vals.length - 1) {
-            done = true;
-          }
-          while (!done) {
-            if (vals[curIdx] != vals[curIdx + 1]) {
-              done = true;
-            }
-            else {
-              curIdx++;
-            }
-            if (curIdx == vals.length - 1) {
-              done = true;
-            }
-          }
-          // now we have the current index
-          // add the value at this index to the list
-          //Double dbl = new Double(vals[curIdx]);
-          list.add(vals[curIdx]);
-        }
-        double[] binMaxes = new double[list.size()];
-        for (int j = 0; j < binMaxes.length; j++) {
-          binMaxes[j] = list.get(j);
-
-          // now we have the binMaxes.  add the bins to the bin tree.
-          // add the first one manually
-        }
-        BinDescriptor bd = this.createMinNumericBinDescriptor(inputs[i],
-            binMaxes[0]);
-        bins.add(bd);
-
-        // add the other bins
-        // now add the rest
-        for (int j = 1; j < binMaxes.length; j++) {
-          //binMaxes[j] = binMaxes[j - 1] + interval;
-          bd = this.createNumericBinDescriptor(inputs[i], binMaxes[j - 1],
-                                               binMaxes[j]);
-          bins.add(bd);
-        }
-
-        // now add the last bin
-        bd = this.createMaxNumericBinDescriptor(inputs[i],
-                                                binMaxes[binMaxes.length - 1]);
-        bins.add(bd);
-      }
-
-      else {
-        // if it is nominal, create a bin for each unique value.
-        String[] vals = TableUtilities.uniqueValues(tbl, inputs[i]);
-        for (int j = 0; j < vals.length; j++) {
-          String[] st = {
-              vals[j]};
-          BinDescriptor bd = this.createTextualBin(inputs[i], vals[j], st);
-          bins.add(bd);
-        }
-      }
-    }
-    BinDescriptor[] bn = new BinDescriptor[bins.size()];
-    for (int i = 0; i < bins.size(); i++) {
-      bn[i] = (BinDescriptor) bins.get(i);
-
-    }
-    return bn;
-
-    //return bt;
-  }
-
-  /**
-   * put your documentation comment here
-   * @param idx
-   * @param name
-   * @param sel
-   * @return
-   */
-  protected BinDescriptor createTextualBin(int idx, String name, String[] vals) {
-    return new TextualBinDescriptor(idx, name, vals, tbl.getColumnLabel(idx));
-  }
-
-  /**
-   * Create a numeric bin that goes from min to max.
-   */
-  protected BinDescriptor createNumericBinDescriptor(int col, double min,
-      double max) {
-    StringBuffer nameBuffer = new StringBuffer();
-    nameBuffer.append(OPEN_PAREN);
-    nameBuffer.append(nf.format(min));
-    nameBuffer.append(COLON);
-    nameBuffer.append(nf.format(max));
-    nameBuffer.append(CLOSE_BRACKET);
-    BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                                                min, max,
-                                                tbl.getColumnLabel(col));
-    return nb;
-  }
-
-  /**
-   * Create a numeric bin that goes from Double.MIN_VALUE to max
-   */
-  protected BinDescriptor createMinNumericBinDescriptor(int col, double max) {
-    StringBuffer nameBuffer = new StringBuffer();
-    nameBuffer.append(OPEN_BRACKET);
-    nameBuffer.append(DOTS);
-    nameBuffer.append(COLON);
-    nameBuffer.append(nf.format(max));
-    nameBuffer.append(CLOSE_BRACKET);
-    BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                                                Double.MIN_VALUE, max,
-                                                tbl.getColumnLabel(col));
-    return nb;
-  }
-
-  /**
-   * Create a numeric bin that goes from min to Double.MAX_VALUE
-   */
-  protected BinDescriptor createMaxNumericBinDescriptor(int col, double min) {
-    StringBuffer nameBuffer = new StringBuffer();
-    nameBuffer.append(OPEN_PAREN);
-    nameBuffer.append(nf.format(min));
-    nameBuffer.append(COLON);
-    nameBuffer.append(DOTS);
-    nameBuffer.append(CLOSE_BRACKET);
-    BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                                                min, Double.MAX_VALUE,
-                                                tbl.getColumnLabel(col));
-    return nb;
-  }
-
-  protected static final String
-      EMPTY = "", COLON = " : ", COMMA = ",",
-      DOTS = "...", OPEN_PAREN = "(", CLOSE_PAREN = ")",
-      OPEN_BRACKET = "[", CLOSE_BRACKET = "]";
 }

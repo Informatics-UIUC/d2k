@@ -54,6 +54,10 @@ public class PrepareForVis extends DataPrepModule {
         "input, where N is the number of training examples.";
   }
 
+  public String getModuleName() {
+    return "Prepare Model for Visualization";
+  }
+
   public void doit() throws Exception {
     NaiveBayesModel nbm = (NaiveBayesModel)pullInput(0);
     nbm.setupForVis();
