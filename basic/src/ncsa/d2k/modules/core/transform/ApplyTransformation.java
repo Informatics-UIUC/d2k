@@ -11,7 +11,7 @@ public class ApplyTransformation extends DataPrepModule {
 
 	public String[] getInputTypes() {
 		String[] in = {"ncsa.d2k.modules.core.datatype.table.Transformation",
-			"ncsa.d2k.modules.core.datatype.table.Table"};
+			"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return in;
 	}
 
@@ -32,13 +32,13 @@ public class ApplyTransformation extends DataPrepModule {
 	}
 
 	public String[] getOutputTypes() {
-		String[] out = { "ncsa.d2k.modules.core.datatype.table.Table"};
+		String[] out = { "ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return out;
 	}
 
 	public String getOutputInfo(int i) {
         switch(i){
-            case 0: return "The Transformed input Table";
+            case 0: return "The transformed input Table";
             default: return "no such input";
           }
 	}
@@ -57,8 +57,8 @@ public class ApplyTransformation extends DataPrepModule {
 	public String getModuleInfo() {
 		return "<p>Overview: This module applies a Transformation to a Table. " +
                 "</p><P>Detailed Description: " +
-                "This module applies a Transformation to a Table and outputs " +
-                "the transformed table. " +
+                "This module applies a Transformation to a MutableTable and outputs " +
+                "the transformed table as a MutableTable. " +
                 "</p><P>Data Handling: This modules modifies the input Table</P>";
 	}
 
@@ -87,6 +87,10 @@ public class ApplyTransformation extends DataPrepModule {
 //         intstead of mutable table;  no longer has table on output.  needs
 //         developer to verify that use of table/mutable table is correct. should
 //         it be just table throughout?  ruth
+// 23-6-04 taking and returning table is not correct; the doit method treats in and
+//         outputs as MutableTables, so let's make sure that they are.
+//         lying about this doesn't help anyone.
+//         miranda
 
 
 
