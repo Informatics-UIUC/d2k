@@ -140,7 +140,7 @@ public class CleanAndMergeTable extends UIModule {
                                         if(lastToMerge != null && lastToMerge.contains(table.getColumnLabel(i)))
                                             selectedMerges.add(new Integer(i));
 					controlListModel.addElement(table.getColumnLabel(i));
-                                        if(lastControl.equals(table.getColumnLabel(i)))
+                                        if(lastControl != null && lastControl.equals(table.getColumnLabel(i)))
                                             selectedControls.add(new Integer(i));
 				}
 				if(table.getColumnLabel(i).length() > longest.length())
