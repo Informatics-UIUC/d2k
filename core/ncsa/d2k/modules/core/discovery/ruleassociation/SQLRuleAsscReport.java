@@ -55,7 +55,7 @@ public class SQLRuleAsscReport extends UIModule
   ArrayList freqItemSets;
 
   String [] columnHeading;
-  GenericTableModel ruleModel;
+  GenericMatrixModel ruleModel;
   JTable ruleList;
   JButton doneBtn;
   JButton printBtn;
@@ -96,7 +96,7 @@ public class SQLRuleAsscReport extends UIModule
     return null;
   }
 
-    /**
+  /**
     Create the UserView object for this module-view combination.
     @return The UserView associated with this module.
   */
@@ -133,7 +133,7 @@ public class SQLRuleAsscReport extends UIModule
       String[] columnHeading = {"IF","-->","THEN","S","C"};
       JOutlinePanel ruleInfo = new JOutlinePanel("Association Rules");
       ruleInfo.setLayout (new GridBagLayout());
-      ruleModel = new GenericTableModel(ruleTable.getNumRows(),5,false,columnHeading);
+      ruleModel = new GenericMatrixModel(ruleTable.getNumRows(),5,false,columnHeading);
       ruleList = new JTable(ruleModel);
       TableColumnModel colModel = ruleList.getColumnModel();
       colModel.getColumn(0).setPreferredWidth(200);
