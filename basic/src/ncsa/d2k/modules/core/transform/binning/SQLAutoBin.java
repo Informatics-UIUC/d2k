@@ -147,7 +147,7 @@ public class SQLAutoBin extends AutoBin {
 							getAlias()
 								+ ": Select input/output features using SQLChooseAttributes before this module");
 		}
-	
+
 	nf = NumberFormat.getInstance();
 	nf.setMaximumFractionDigits(3);
 	int type = getBinMethod();
@@ -176,12 +176,12 @@ public class SQLAutoBin extends AutoBin {
 			bins = sameWeight(weight);
 		}
 
-		
+
 		//Add bins named "unknown" for each binned column that has missing values
 		//bins = BinningUtils.addMissingValueBins(tbl,bins);
 
 		BinTransform bt = new BinTransform(tbl, bins, false);
-		
+
 		pushOutput(bt, 0);
 		//pushOutput(et, 1);
 	}
@@ -270,6 +270,10 @@ public class SQLAutoBin extends AutoBin {
 	boolean colTypes[] = getColTypes(inputs.length);
 
 	for (int i = 0; i < inputs.length; i++) {
+
+          //vered - debug
+          System.out.println("making bins for column " + inputs[i]);
+
 	    // if it is scalar, get the data and sort it.  put (num) into each bin,
 	    // and create a new bin when the last one fills up
 	    boolean isScalar = colTypes[i];
@@ -288,8 +292,12 @@ public class SQLAutoBin extends AutoBin {
 		    while (groupSet.next()) {
 			itemCnt += groupSet.getInt(2);
 			db1 = new Double(groupSet.getDouble(1));
+
+
 			//System.out.println("itemCnt " + itemCnt + " db1  " + db1);
 			if (itemCnt >= (weight - 1)) {
+
+
 			    // itemCnt >= specified weight, add the value to the list
 			    list.add(db1);
 			    // reset itemCnt
@@ -303,7 +311,8 @@ public class SQLAutoBin extends AutoBin {
 		    double[] binMaxes = new double[list.size()];
 		    for (int j = 0; j < binMaxes.length; j++) {
 		    	binMaxes[j] = ((Double) list.get(j)).doubleValue();
-		    	//System.out.println("binMaxes " + binMaxes[j] + " " + j);
+
+
 		    }
 		    // add the first bin manually
 		    BinDescriptor nbd =
@@ -342,6 +351,8 @@ public class SQLAutoBin extends AutoBin {
 									   tbl);
 		    bins.add(nbd);
 		    stmt.close();
+
+
 		} catch (Exception e) {
 		    /*    JOptionPane.showMessageDialog(msgBoard,
 			  e.getMessage(), "Error",
@@ -486,7 +497,7 @@ public class SQLAutoBin extends AutoBin {
 
 }
 
-/*12-8-03 Anca: took out query condition input- does not seem to be used 
+/*12-8-03 Anca: took out query condition input- does not seem to be used
  *   			fixed [bug 152] - SQLAutoBin - wrong weight binning - - changed itemCnt from 0 to -1
 * 				fixed [bug 151] - wrong uniform binning -  min, max were interchanged
 **				added "unknown" bins for relevant attributes that have missing values
@@ -495,4 +506,4 @@ public class SQLAutoBin extends AutoBin {
 *				Missing values are set in SQLChooseAttributes in the  metadata example table
 */
 //12-12--03 Anca - added check and exception for input table that is not an ExampleTable
-// 12 -16-03 Anca moved creation of "unknown" bins to BinTransform 
+// 12 -16-03 Anca moved creation of "unknown" bins to BinTransform

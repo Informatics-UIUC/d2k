@@ -125,11 +125,11 @@ public class SQLCreateBinTree extends DataPrepModule {
 		    throw new Exception(getAlias() + ": Bins must be defined before creating a BinTree");
 
 		BinDescriptor [] bins = btrans.getBinDescriptors();
-		
+
 		if(bins.length == 0 || bins.length < inputFeatures.length )
-		    throw new Exception(getAlias() + 
+		    throw new Exception(getAlias() +
 			      ": Bins must be defined for each input before creating BinTree.");
-		
+
 		//System.out.println("CreateSQLBinTree classLabel " + classLabel);
 		int totalClassified = 0;
 		int classTotal;
@@ -177,12 +177,23 @@ public class SQLCreateBinTree extends DataPrepModule {
 							(BinTree.ClassTree.Bin) bl.get(bn[k]);
 						String condition = b.getCondition(an[j]);
 
+                                                //vered - debug
+                                                if(bn == null)
+                                                  System.out.println("bn is null");
+                                                else if(bn[k] == null)
+                                                  System.out.println("bn[k] is null");
+                                                if(an == null)
+                                                  System.out.println("an is null");
+                                                else if(an[j] == null)
+                                                 System.out.println("an[j] is null");
+                                                 //end debug
+
 						if (bn[k].equals("Unknown")) condition = an[j] + " is null";
 						//else System.out.println("not unknown");
 						//System.out.println("cn, an, bn, BIN Condition: "
 						  //             + cn[i] + " " + an[j] + " "
 						    //          + bn[k] + " " + condition);
-						
+
 
 						String query =
 							"SELECT COUNT(*)  FROM "

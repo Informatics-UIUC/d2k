@@ -92,13 +92,13 @@ public static final String MISSING= "missing";
 				ct.addBinFromEquation(an, bn, eqn, num);
 		}
 	}
-	
+
 	public void addMissingValuesBin(String cn, String an)
 		throws DuplicateBinNameException, AttributeNotFoundException {
 
 			ClassTree ct = (ClassTree)get(cn);
 					ct.addStringBin(an, MISSING, " ");
-						
+
 	}
 
 	/**
@@ -194,7 +194,7 @@ public static final String MISSING= "missing";
 			unknownClasses++;
 			return;
 		}
-		
+
 		try {
 			if(!ct.classify(an, value))
 				addDefault(cn, an);
@@ -207,7 +207,7 @@ public static final String MISSING= "missing";
 		}
 		catch(AttributeNotFoundException e) {}
 	}
-	
+
 	/*public void classifyMissing(String cn, String an) {
 			ClassTree ct = (ClassTree)get(cn);
 			if(ct == null) {
@@ -667,8 +667,8 @@ public static final String MISSING= "missing";
 			}
 			return binFound;
 		}
-		
-		
+
+
 		/**
 					Find a suitable bin for a double item
 				*/
@@ -685,7 +685,7 @@ public static final String MISSING= "missing";
 					if (b==null) {
 						try {
 							this.addStringBin(an,MISSING,"");
-						} catch (DuplicateBinNameException e) {} 
+						} catch (DuplicateBinNameException e) {}
 						b = (Bin) bl.get(MISSING);
 					}
 					b.incrementTally();
@@ -1768,6 +1768,55 @@ public static final String MISSING= "missing";
 	private static final char close = ')';
 	private static final String EMPTY = "";
 	private static final String SPACE = " ";
+
+
+        //vered - qa
+        public boolean equals(BinTree bt){
+
+          boolean retVal = true;
+
+          if (!attributeList.equals(bt.attributeList)){
+            retVal = false;
+            System.out.println("attribute List are not equal!");
+          }
+
+          Arrays.sort(attributeNames);
+          Arrays.sort(bt.attributeNames);
+          if (!Arrays.equals(attributeNames, bt.attributeNames)){
+            retVal = false;
+            System.out.println("attribute Names are not equal!");
+          }
+
+          Arrays.sort(classNames);
+          Arrays.sort(bt.classNames);
+          if(!Arrays.equals(classNames, bt.classNames)){
+            retVal = false;
+            System.out.println("class Names are not equal!");
+          }
+
+          if(!classTotals.equals(bt.classTotals)){
+            retVal = false;
+            System.out.println("class totals are not equal!");
+          }
+
+          if(!defaultTree.equals(bt.defaultTree)){
+            retVal = false;
+            System.out.println("default trees are not equal!");
+          }
+
+          if(this.totalClassified != bt.totalClassified ){
+            retVal = false;
+            System.out.println("total classified are not equal!");
+          }
+          if(this.unknownClasses != bt.unknownClasses){
+            retVal = false;
+            System.out.println("unknown classes are not equal!");
+          }
+
+
+
+          return retVal;
+        }
 }
 
 
