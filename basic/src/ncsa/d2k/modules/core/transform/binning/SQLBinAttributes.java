@@ -327,7 +327,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
      JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-          System.out.println("Error occoured in getCounts.");
+          System.out.println("Error occured in getCounts.");
           return counts;
         }
       }
@@ -488,9 +488,9 @@ public class SQLBinAttributes extends HeadlessUIModule {
 
 
             JOptionPane.showMessageDialog(msgBoard,
-                  e.getMessage(), "Error",
+                  "Error getting rows of table.", "Error",
                   JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occoured in getTotalRows.");
+            System.out.println("Error occured in getTotalRows.");
 
             return 0;
           }
@@ -515,7 +515,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
             JOptionPane.showMessageDialog(msgBoard,
                   e.getMessage(), "Error",
                   JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occoured in getMMTValues.");
+            System.out.println("Error occured in getMMTValues.");
           }
         }
 
@@ -549,9 +549,9 @@ public class SQLBinAttributes extends HeadlessUIModule {
           }
           catch (Exception e) {
             JOptionPane.showMessageDialog(msgBoard,
-                  e.getMessage(), "Error",
+                  "Error in columns of metadata table.", "Error",
                   JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occoured in getColTypes.");
+            System.out.println("Error occured in getColTypes.");
             return null;
           }
         }
@@ -1609,7 +1609,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(OPEN_PAREN);
             //nameBuffer.append(nf.format(min));
-            min = BinDescriptorFactory.round(min,3);      
+            min = BinDescriptorFactory.round(min,3);
             nameBuffer.append(min);
             nameBuffer.append(COLON);
             //nameBuffer.append(nf.format(max));
