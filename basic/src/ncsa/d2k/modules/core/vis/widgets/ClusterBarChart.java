@@ -45,6 +45,13 @@ public class ClusterBarChart extends BarChart
 
   public ClusterBarChart(Table table, DataSet set, GraphSettings settings, int xincrement, int yincrement) throws Exception {
     super(table, set, settings);
+    // Dependencies
+    if (table.getNumRows() == 0) {
+      throw new Exception("Table exception: No rows to display.");
+    }
+    if (!table.isColumnNominal(set.z)) {
+      throw new Exception("Nominal exception: The " + set.z + " column is not a nominal column");
+    }
 
     settings.displayaxislabels = false;
     settings.displaylegend = true;
@@ -55,13 +62,6 @@ public class ClusterBarChart extends BarChart
     minimumyoffsetincrement = yincrement;
 
     yvalueincrement = (ymaximum-yminimum)/gridsize;
-
-    // Dependencies
-    if (table.getNumRows() == 0)
-      throw new Exception("Table exception");
-
-    if (!table.isColumnNominal(set.z))
-      throw new Exception("Nominal exception");
 
     mutable = table.toExampleTable();
 
@@ -320,7 +320,7 @@ public class ClusterBarChart extends BarChart
       if (counter == runsize) {
         counter = 0;
         // draw a seperation line between clustered values
-        g2.draw(new Line2D.Double(x, getGraphHeight()-bottomoffset, x, getGraphHeight()-bottomoffset+(tickmarksize*3)));
+        g2.draw(new Line2D.Double(x, getGraphHeight()-bottomoffset, x, getGraphHeight()-bottomoffset+(tickmarksize*4)));
       }
 
       else {
