@@ -4,7 +4,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 /*
-	works just like NFoldTTables except that the test tables
+	works just like NFoldCrossValidation except that the test tables
 	are all the same tables w/ different test sets.  this
 	way, when your done cross-validating you have a single table
 	w/ a prediction for every record.  unfortunately, you
@@ -13,7 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 	*/
 
-public class NFoldTTables_inplace extends NFoldTTables{
+public class NFoldTTables_inplace extends NFoldCrossValidation{
 
 
 	protected TestTable testT;

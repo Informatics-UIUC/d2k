@@ -18,7 +18,7 @@ import gnu.trove.*;
  * @author unascribed
  * @version 1.0
  */
-public class NFoldStatified extends NFoldTTables {
+public class NFoldStatified extends NFoldCrossValidation {
 	Hashtable uniqueOutputToRows;
 	TIntArrayList testIndices, trainIndices;
 
