@@ -12,6 +12,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import java.sql.*;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -111,7 +112,7 @@ public class SQLHTree extends ComputeModule
       case 1: return "Field Names";
       case 2: return "Table Name";
       case 3: return "Where Clause";
-      case 4: return "Bin Descriptor";
+      case 4: return "Bin Transform";
       default: return "No such input";
     }
   }
@@ -133,7 +134,11 @@ public class SQLHTree extends ComputeModule
       s += "However, by setting 'minimum support' higher, you might loose some ";
       s += "important rules. ";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle database.";
+      s += "We currently only support Oracle database. Since the intensive ";
+      s += "computation in constructing data cube, the memory and CPU requirment ";
+      s += "may substantially increase when more fields and more unique values ";
+      s += "are included. We suggest you only choose the data set that has less ";
+      s += "than 25 fields for analysis. ";
       return s;
   }
 
@@ -147,13 +152,13 @@ public class SQLHTree extends ComputeModule
             case 0:
                 return "Database Connection";
             case 1:
-                return "Field Name";
+                return "Selected Fields";
             case 2:
-                return "Table Name";
+                return "Selected Table";
             case 3:
                 return "Query Condition";
             case 4:
-                return "BinDescriptor";
+                return "Bin Transform";
             default:
                 return  "No such input";
         }
@@ -196,7 +201,7 @@ public class SQLHTree extends ComputeModule
                      "[Ljava.lang.String;",
                      "java.lang.String",
                      "java.lang.String",
-                     "ncsa.d2k.modules.core.datatype.BinDescriptor"};
+                     "ncsa.d2k.modules.core.datatype.table.transforms.BinTransform"};
     return in;
   }
 
@@ -209,7 +214,7 @@ public class SQLHTree extends ComputeModule
   public PropertyDescription [] getPropertiesDescriptions () {
     PropertyDescription [] pds = new PropertyDescription [2];
     pds[0] = new PropertyDescription ("maxRuleSize", "Maximum Rule Size", "The maximum number of components in each rule is restricted by Maximum Rule Size.");
-    pds[1] = new PropertyDescription ("Support", "Minimum Support", "If the occurrence ratio of a rule is below Minimum Support, it is pruned.");
+    pds[1] = new PropertyDescription ("support", "Minimum Support", "If the occurrence ratio of a rule is below Minimum Support, it is pruned.");
     return pds;
   }
 
@@ -223,7 +228,8 @@ public class SQLHTree extends ComputeModule
     tableName = (String)pullInput(2);
     cubeTableName = tableName + "_CUBE";
     whereClause = (String)pullInput(3);
-    bins = (BinDescriptor[])pullInput(4);
+    BinTransform btf = (BinTransform)pullInput(4);
+    bins = btf.getBinDescriptors();
     columnList = new ArrayList();
     baseHeadTbl = new ArrayList();
     hTree = new ArrayList();
@@ -300,13 +306,12 @@ public class SQLHTree extends ComputeModule
    */
   protected boolean setColumnList() {
     Column aColumn;
-    System.out.println("length is " + fieldNames.length);
     // if a user has selected more than maxColumn, return false and quit the program
     if (fieldNames.length > maxColumn) {
       JOptionPane.showMessageDialog(msgBoard,
                 "You have selected more than " + maxColumn + " fields for analysis. " +
-                "In order to find interesting rules, please only choose the related " +
-                "fields.", "Error",
+                "You should only choose the fields " +
+                "you are interested.", "Error",
                 JOptionPane.ERROR_MESSAGE);
       System.out.println("Too many fields have been selected.");
       return false;
