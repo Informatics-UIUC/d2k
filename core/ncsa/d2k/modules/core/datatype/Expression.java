@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.datatype;
 
-import ncsa.d2k.modules.core.transform.attribute.*;
+
 
 /**
  * The <code>Expression</code> interface encapsulates any parsed-string
