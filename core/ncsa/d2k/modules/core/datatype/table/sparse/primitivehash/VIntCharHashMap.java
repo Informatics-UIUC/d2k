@@ -524,6 +524,11 @@ public class VIntCharHashMap extends TIntHash implements Serializable, VHashMap{
       *                 </code> through <codE>end</cdoe>.
       */
      public char[] getValuesInRange(int begin, int end){
+       if(end < begin) {
+        char[] retVal = {};
+        return retVal;
+      }
+
 	int[] keysInRange = VHashService.getIndicesInRange(begin, end, this);
 	if (keysInRange == null)    return null;
 
@@ -549,6 +554,10 @@ public class VIntCharHashMap extends TIntHash implements Serializable, VHashMap{
    *                    smaller than or equal to the value that is mapped to y.
    */
    public VIntIntHashMap getSortedOrder(int begin, int end){
+
+    if(end < begin) {
+      return new VIntIntHashMap(0);
+    }
      //sorting the valid row numbers
     int[] validKeys = VHashService.getIndicesInRange(begin, end, this);
 

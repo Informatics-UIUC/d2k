@@ -153,6 +153,10 @@ public class VIntIntHashMap extends TIntIntHashMap implements VHashMap{
       *                 </code> through <codE>end</cdoe>.
       */
      public int[] getValuesInRange(int begin, int end){
+       if(end < begin) {
+      int[] retVal = {};
+      return retVal;
+    }
 	int[] keysInRange = VHashService.getIndicesInRange(begin, end, this);
 	if (keysInRange == null)    return null;
 
@@ -178,6 +182,11 @@ public class VIntIntHashMap extends TIntIntHashMap implements VHashMap{
    *                    smaller than or equal to the value that is mapped to y.
    */
    public VIntIntHashMap getSortedOrder(int begin, int end){
+
+    if(end < begin) {
+      return new VIntIntHashMap(0);
+    }
+
      //sorting the valid row numbers
     int[] validKeys = VHashService.getIndicesInRange(begin, end, this);
 

@@ -4119,6 +4119,9 @@ public class SparseMutableTable extends SparseTable implements MutableTable {
  */
   public void sortByColumn(int col, int begin, int end) {
 
+     if(end < begin) return ;
+
+
     Column sorting= getColumn(col);
     if (sorting != null)  sorting.sort(this, begin, end);
 

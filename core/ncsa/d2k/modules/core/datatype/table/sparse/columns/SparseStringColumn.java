@@ -790,6 +790,10 @@ public class SparseStringColumn extends AbstractSparseColumn{
   }
 
   public VIntIntHashMap getNewOrder(int begin, int end){
+     if(end < begin) {
+
+      return new VIntIntHashMap(0);
+    }
     SparseStringObjectColumn tempCol = new SparseStringObjectColumn(this);
     return tempCol.getNewOrder(begin, end);
   }

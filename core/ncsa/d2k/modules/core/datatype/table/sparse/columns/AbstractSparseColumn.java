@@ -464,6 +464,7 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
    *              <code>begin</codE> and <code>end</codE>.
    */
   public VIntIntHashMap getNewOrder(int begin, int end){
+    if(end < begin) return new VIntIntHashMap(0);
     return getElements().getSortedOrder(begin, end);
   }
 
@@ -479,6 +480,12 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
    *              <code>begin</code> and <code>end</code>, sorted.
    */
    protected int[] getRowsInRange(int begin, int end){
+
+
+    if(end < begin) {
+      int[] retVal = {};
+      return retVal;
+    }
 
      return VHashService.getIndicesInRange(begin, end, getElements());
 
@@ -510,6 +517,7 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
     * @param end      row no. at which ends the section to be sorted.
     */
       public void sort(MutableTable t, int begin, int end){
+        if(end < begin) return;
 
 	((SparseMutableTable)t).sort(getNewOrder(begin, end));
 	}

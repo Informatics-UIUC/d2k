@@ -79,12 +79,14 @@ public class SparseStringObjectColumn extends SparseObjectColumn{
 
     copy(column);
 
+
     type = ColumnTypes.STRING;
   }
 
 
 
  protected SparseStringObjectColumn (SparseStringColumn column){
+
 
 
 

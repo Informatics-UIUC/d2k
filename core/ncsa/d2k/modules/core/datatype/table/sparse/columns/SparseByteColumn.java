@@ -799,6 +799,11 @@ public class SparseByteColumn extends AbstractSparseColumn {
   *                 <codE>end</code>, sorted.
   */
   protected byte[] getValuesInRange(int begin, int end){
+
+     if(end < begin) {
+      byte[] retVal = {};
+      return retVal;
+    }
      return elements.getValuesInRange(begin, end);
     /*
     byte[] values =  new byte[end - begin +1];

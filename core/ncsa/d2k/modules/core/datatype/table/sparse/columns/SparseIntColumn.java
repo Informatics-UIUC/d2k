@@ -682,6 +682,10 @@ public class SparseIntColumn extends AbstractSparseColumn {
   *                 <codE>end</code>, sorted.
   */
   protected int[] getValuesInRange(int begin, int end){
+     if(end < begin) {
+      int[] retVal = {};
+      return retVal;
+    }
      return elements.getValuesInRange(begin, end);
      /*
     int[] values =  new int[end - begin +1];

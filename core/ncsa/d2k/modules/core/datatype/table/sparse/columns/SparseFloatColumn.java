@@ -702,6 +702,10 @@ public class SparseFloatColumn extends AbstractSparseColumn  {
   *                 <codE>end</code>, sorted.
   */
   protected float[] getValuesInRange(int begin, int end){
+     if(end < begin) {
+      float[] retVal = {};
+      return retVal;
+    }
      return elements.getValuesInRange(begin, end);
     /*
     float[] values =  new float[end - begin +1];

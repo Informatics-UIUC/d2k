@@ -793,6 +793,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
  */
  public VIntIntHashMap getNewOrder(int[] validRows){
 
+
     Object[] sortedValues = getValuesInRange(validRows[0], validRows[validRows.length-1]);
 
     Object[] rawValues = getValues(validRows);
@@ -837,8 +838,18 @@ public class SparseObjectColumn extends AbstractSparseColumn {
      * @param end       the last row in the section from which to retrieve the new order.
      */
    public VIntIntHashMap getNewOrder(int begin, int end){
+
+     if(end < begin) {
+      return new VIntIntHashMap(0);
+
+    }
 	    //sorting the valid row numbers
     int[] validRows = getRowsInRange(begin, end);
+
+    //vered - debug
+    if(validRows.length == 0)
+     System.out.println("begin = " + begin + " end = " + end);
+     //end debug
     return getNewOrder(validRows);
 
    }
@@ -854,6 +865,11 @@ public class SparseObjectColumn extends AbstractSparseColumn {
   *                 <codE>end</code>, sorted.
   */
   protected Object[] getValuesInRange(int begin, int end){
+
+     if(end < begin) {
+      Object[] retVal = {};
+      return retVal;
+    }
 
   int[] indices = VHashService.getIndicesInRange(begin, end, elements);
     Object[] values =  new Object[indices.length];

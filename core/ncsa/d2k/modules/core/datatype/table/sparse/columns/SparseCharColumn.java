@@ -694,7 +694,10 @@ public class SparseCharColumn extends AbstractSparseColumn {
   *                 <codE>end</code>, sorted.
   */
   protected char[] getValuesInRange(int begin, int end){
-
+ if(end < begin) {
+      char[] retVal = {};
+      return retVal;
+    }
   return elements.getValuesInRange(begin, end);
   /*
     char[] values = new char[end - begin +1];

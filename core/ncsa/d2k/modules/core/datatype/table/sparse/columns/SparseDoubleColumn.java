@@ -696,6 +696,10 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
   *                 <codE>end</code>, sorted.
   */
   protected double[] getValuesInRange(int begin, int end){
+     if(end < begin) {
+      double[] retVal = {};
+      return retVal;
+    }
      return elements.getValuesInRange(begin, end);
      /*
     double[] values =  new double[end - begin +1];

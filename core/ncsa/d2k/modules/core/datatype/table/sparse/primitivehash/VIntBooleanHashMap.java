@@ -564,6 +564,9 @@ public class VIntBooleanHashMap extends TIntHash implements Serializable, VHashM
      *          and as values
      */
     public VIntIntHashMap getSortedOrder(int begin, int end){
+       if(end < begin) {
+      return new VIntIntHashMap(0);
+    }
 	int[] keysInRange = VHashService.getIndicesInRange(begin, end, this);
 	return getSortedOrder(keysInRange);
      }
