@@ -52,7 +52,7 @@ public class ReplaceNominalsWithIntsTransform
 		 for (int j = 0; j < numRows; j++) {
 			if (mt.isValueMissing(j, col))
 				continue;
-				
+
 			item = mt.getString(j, col);
 			if (!nominalToInteger[i].containsKey(item)) {
 			   nominalToInteger[i].put(item, new Integer(numItems));
@@ -112,15 +112,15 @@ public class ReplaceNominalsWithIntsTransform
 			 	missing[j] = true;
 			 }
 		 }
-         
+
          Column newColumn = ColumnUtilities.toIntColumn(mt.getColumn(col));
          mt.setColumn(newColumn, col);
          for (int pp = 0; pp < numRows ; pp++) {
              mt.setInt (intColumn[pp], pp, col);
          }
-         mt.setColumnIsNominal(true,col);
+         mt.setColumnIsNominal(false,col);
         // System.out.println("set col " + col + " to Nominal");
-         mt.setColumnIsScalar(false,col);
+         mt.setColumnIsScalar(true,col);
 	  }
 
 	  return true;
