@@ -1,4 +1,4 @@
-family,'product-type',steel,carbon,hardness,'temper_rolling',condition,formability,strength,'non-ageing','surface-finish','surface-quality',enamelability,bc,bf,bt,'bw/me',bl,m,chrom,phos,cbond,marvi,exptl,ferro,corr,'blue/bright/varn/clean',lustre,jurofm,s,p,shape,thick,width,len,oil,bore,packing,class
+family,product-type,steel,carbon,hardness,temper_rolling,condition,formability,strength,non-ageing,surface-finish,surface-quality,enamelability,bc,bf,bt,bw/me,bl,m,chrom,phos,cbond,marvi,exptl,ferro,corr,blue/bright/varn/clean,lustre,jurofm,s,p,shape,thick,width,len,oil,bore,packing,class
 String,String,String,double,double,String,String,String,double,String,String,String,String,String,String,String,String,String,String,String,String,String,String,String,String,String,String,String,String,String,String,String,double,double,double,String,String,String,String
 ?,C,A,8.0,0.0,?,S,?,0.0,?,?,G,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,COIL,0.7,610.0,0.0,?,0,?,3
 ?,C,R,0.0,0.0,?,S,2,0.0,?,?,E,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,Y,?,?,?,COIL,3.2,610.0,0.0,?,0,?,3
