@@ -1,1151 +1,1345 @@
-package  ncsa.d2k.modules.core.vis;
+package ncsa.d2k.modules.core.vis;
 
-import com.sun.j3d.utils.behaviors.keyboard.*;
-import com.sun.j3d.utils.behaviors.mouse.*;
-import com.sun.j3d.utils.geometry.*;
-import com.sun.j3d.utils.universe.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.text.*;
 import java.util.*;
+
 import javax.media.j3d.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.vecmath.*;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.gui.*;
+
+import com.sun.j3d.utils.behaviors.keyboard.*;
+import com.sun.j3d.utils.behaviors.vp.*;
+import com.sun.j3d.utils.geometry.*;
+import com.sun.j3d.utils.universe.*;
 import ncsa.d2k.core.modules.*;
+import ncsa.d2k.gui.*;
 import ncsa.d2k.modules.core.datatype.table.Table;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
 /**
- * A three-dimensional scatter plot.  Requires Java3D.
- * Still to be done: add a legend.  Use J3DGraphics2D or display in 3d?
+ * <code>ScatterPlot3D</code> is a three-dimensional scatter plot that
+ * requires Java 3D.
  */
-public class ScatterPlot3D extends VisModule implements Serializable {
 
-    /** used in the display of text */
-    private static final String EMPTY = "";
-    private static final String COMMA = ", ";
-    private static final String SPACE = " ";
-    private static final String COLON = ": ";
-    private static final String FONT_TYPE = "Helvetica";
-    private static final int FONT_SIZE = 14;
-    private static final String DASH = " - ";
-    private static final String X = "X";
-    private static final String Y = "Y";
-    private static final String Z = "Z";
+// Still to be done: add a legend. Use J3DGraphics2D or display in 3D?
 
-    /** the child number of each component of the scene */
-    private static final int X_AXIS = 0;
-    private static final int Y_AXIS = 1;
-    private static final int Z_AXIS = 2;
-    private static final int X_SCALE = 3;
-    private static final int Y_SCALE = 4;
-    private static final int Z_SCALE = 5;
-    private static final int LEGEND = 6;
-    private static final int NUM_STATIC_CHILDREN = 7;
+public class ScatterPlot3D extends VisModule {
 
-    /** the multiplier that each coordinate is multiplied by */
-    private static final double multFactor = .15;
+////////////////////////////////////////////////////////////////////////////////
 
-    /** colors used */
-	// lt. grey
-    private static final Color3f axisColor = new Color3f(.5098f, .5098f, .5098f);
-	//dk. grey
-    private static final Color3f backgroundColor = new Color3f(.35294f, .35294f, .35294f);
-	// lt. blue
-    private static final Color3f plainColor = new Color3f(0.8f, 0.9254901f, .9568627f);
-	// yellow
-    private static final Color3f labelColor = new Color3f(1.0f, 1.0f, .4f);
+   /**
+    * Returns a description of this module.
+    *
+    * @return                the description
+    */
+   public String getModuleInfo() {
+      return "ScatterPlot3D is a three-dimensional visualization of Table data as a scatter plot.";
+   }
 
-    /**
-	 * Return a description of this module.
-     * @return a description
-     */
-    public String getModuleInfo () {
-        return  "ScatterPlot3D is a three-dimensional visualization of " +
-                "Table data as a scatter plot.";
-    }
+   /**
+    * Returns an array of <code>String</code>s specifying the input types of
+    * this module.
+    *
+    * @return                the input types
+    */
+   public String[] getInputTypes() {
+      String[] i = {"ncsa.d2k.modules.core.datatype.table.Table"};
+      return i;
+   }
 
-    /**
-	 * The input types.
-     * @return the input types
-     */
-    public String[] getInputTypes () {
-        String[] i =  { "ncsa.d2k.modules.core.datatype.table.Table" };
-        return  i;
-    }
+   /**
+    * Returns a description of the input corresponding to the given index.
+    *
+    * @param index           the index of an input to this module
+    * @return                a description of this input
+    */
+   public String getInputInfo(int index) {
+      if (index == 0) return "The Table to be visualized.";
+      else return "ScatterPlot3D has no such input.";
+   }
 
-    /**
-	 * The input info
-     * @param index the index of the input
-     * @return that input's info
-     */
-    public String getInputInfo (int index) {
-        if (index == 0)
-            return  "The Table to be visualized.";
-        else
-            return  "ScatterPlot3D has no such input.";
-    }
+   /**
+    * Returns an array of <code>String</code>s specifying the output types of
+    * this module.
+    *
+    * @return                the output types
+    */
+   public String[] getOutputTypes() { return null; }
 
-    /**
-	 * The output types
-     * @return the output types
-     */
-    public String[] getOutputTypes () {
-        return  null;
-    }
+   /**
+    * Returns a description of the output corresponding to the given index.
+    *
+    * @param index           the index of an output of this module
+    * @return                a description of this output
+    */
+   public String getOutputInfo(int index) {
+      return "ScatterPlot3D has no outputs.";
+   }
 
-    /**
-	 * The output info
-     * @param index the index of the output
-     * @return that output's info
-     */
-    public String getOutputInfo (int index) {
-        return  "ScatterPlot3D has no outputs.";
-    }
+   /**
+    * Unused by this module.
+    *
+    * @return                <code>null</code>
+    */
+   public String[] getFieldNameMapping() { return null; }
 
-    /**
-	 * not used.
-     * @return null
-     */
-    public String[] getFieldNameMapping () {
-        return  null;
-    }
+   /**
+    * Returns this module's <code>UserView</code>.
+    *
+    * @return                the <code>UserView</code>
+    */
+   protected UserView createUserView() {
+      return new ScatterPlot3DView();
+   }
 
-    /**
-	 * Return the user view
-     * @return the user view
-     */
-    protected UserView createUserView () {
-        return  new ScatterPlot3DView();
-    }
+////////////////////////////////////////////////////////////////////////////////
 
-	/**
-	 * The user view.
-	 */
-    private class ScatterPlot3DView extends JUserPane implements Serializable {
-        /** the control panel */
-        private ScatterPlot3DControl control;
+   // used in the display of text
+   private static final String
+      EMPTY = "",
+      COMMA = ", ",
+      SPACE = " ",
+      COLON = ": ",
+      DASH = " - ",
+      X = "X",
+      Y = "Y",
+      Z = "Z",
+      FONT_TYPE = "Helvetica";
+   private static final int
+      FONT_SIZE = 14;
 
-        /** the table holding the data */
-        private Table table;
+   // the child number of each component of the scene
+   private static final int
+      X_AXIS = 0,
+      Y_AXIS = 1,
+      Z_AXIS = 2,
+      X_SCALE = 3,
+      Y_SCALE = 4,
+      Z_SCALE = 5,
+      LEGEND = 6,
+      BACKGROUND = 7,
+      NUM_STATIC_CHILDREN = 8;
 
-        /** the canvas area */
-        private ScatterPlot3DCanvas canvas;
+   // possible drawing schemes
+   private static final int
+      DRAW_CUBES = 0,
+      DRAW_ROUGH_SPHERES = 1,
+      DRAW_SMOOTH_SPHERES = 2;
 
-        /** the settings */
-        private ScatterPlot3DGraphSettings settings;
+   // colors used
+   private static final Color3f
+      axisColor = new Color3f(.5098f, .5098f, .5098f), // light grey
+      backgroundColor = new Color3f(.35294f, .35294f, .35294f), // dark grey
+      plainColor = new Color3f(0.8f, 0.9254901f, .9568627f), // light blue
+      labelColor = new Color3f(1.0f, 1.0f, .4f); // yellow
 
-        /** the transform group to add/remove children from */
-        private TransformGroup objTrans;
+   private class ScatterPlot3DView extends JUserPane implements Serializable {
 
-        /** the number of user-defined scenes displayed as of the last refresh */
-        private int numScenes = 0;
+      // the table holding the data
+      private Table table;
 
-        /** the max and min for each column */
-        private double xMax = 5;
-        private double xMin = -5;
-        private double yMax = 5;
-        private double yMin = -5;
-        private double zMax = 5;
-        private double zMin = -5;
+      private ScatterPlot3DControl control;
+      private ScatterPlot3DGraphSettings settings;
 
-        /** used to format numbers to strings */
-        private NumberFormat nf;
+      private BranchGroup objRoot;
 
-        private HelpWindow helpWindow;
-        private JMenuItem helpItem;
-        private JMenuBar menuBar;
+      // used to format numbers to strings
+      private NumberFormat nf;
 
-        /**
-		 * not used.
-         * @param m the module
-         */
-        public void initView (ViewModule m) {}
+      // the number of user-defined scenes as of the last refresh
+      private int numScenes = 0;
 
-        /**
-		 * receive an input
-         * @param o the input object
-         * @param i the index
-         */
-        public void setInput (Object o, int i) {
-            if (i == 0) {
-                table = (Table)o;
-                execute();
+      // the max and min for each column
+      private double xMin, yMin, zMin, xMax, yMax, zMax;
+
+      // multiplication factor
+      private double multFactor = 1;
+
+      // drawing scheme
+      private int drawScheme = DRAW_ROUGH_SPHERES;
+
+      private HelpWindow helpWindow;
+      private JMenuItem helpItem;
+      private JMenuBar menuBar;
+
+      public void initView(ViewModule m) { }
+
+      public void setInput(Object o, int i) {
+         if (i != 0) return;
+         table = (Table)o;
+         execute();
+      }
+
+      public Object getMenu() {
+         return menuBar;
+      }
+
+      /**
+       * Initial setup.
+       */
+      private void execute() {
+
+         control = new ScatterPlot3DControl();
+         settings = new ScatterPlot3DGraphSettings();
+
+         nf = NumberFormat.getInstance();
+         nf.setMaximumFractionDigits(2);
+
+         Canvas3D canvas = new Canvas3D(SimpleUniverse.getPreferredConfiguration()) {
+            public Dimension getMinimumSize() { return new Dimension(200, 200); }
+            public Dimension getPreferredSize() { return new Dimension(400, 400); }
+
+            // fps to System.out:
+            /*
+            boolean start = true;
+            int frames;
+            double seconds;
+            long current, last;
+            public void postRender() {
+
+               if (start) {
+                  start = false;
+                  frames = 0;
+                  current = last = System.currentTimeMillis();
+               }
+               else {
+                  frames++;
+                  if (frames == 50) {
+                     frames = 0;
+                     current = System.currentTimeMillis();
+                     seconds = (double)(current - last)/1000.0;
+                     System.out.println("FPS: " + 50.0/seconds);
+                     last = current;
+                  }
+               }
+
             }
-        }
+            */
+         };
 
-        public Object getMenu() {
-            return menuBar;
-        }
+         SimpleUniverse universe = new SimpleUniverse(canvas);
 
-        /**
-         * Find the maximum and minimum for each column.  Iterate
-         * over all data sets to find the maximum and minimum over all
-         * the data sets.
-		 * @param sets the data sets that will be shown
-         */
-        private void findMinMax (ScatterPlot3DDataSet[] sets) {
-            xMax = 1;
-            xMin = 0;
-            yMax = 1;
-            yMin = 0;
-            zMax = 1;
-            zMin = 0;
-            for (int i = 0; i < sets.length; i++) {
-                int x = sets[i].x;
-                int y = sets[i].y;
-                int z = sets[i].z;
+         OrbitBehavior ob = new OrbitBehavior(canvas, OrbitBehavior.REVERSE_ALL);
+         ob.setSchedulingBounds(new BoundingSphere(new Point3d(), 100.0));
+         ob.setRotationCenter(new Point3d(0, 0, 0));
 
-                for (int j = 0; j < table.getNumRows(); j++) {
-                    double d = table.getDouble(j, x);
-                    if (d > xMax)
-                        xMax = d;
-                    if (d < xMin)
-                        xMin = d;
-                }
+         universe.getViewingPlatform().setViewPlatformBehavior(ob);
+         universe.getViewingPlatform().setNominalViewingTransform();
 
-                for (int j = 0; j < table.getNumRows(); j++) {
-                    double d = table.getDouble(j, y);
-                    if (d > yMax)
-                        yMax = d;
-                    if (d < yMin)
-                        yMin = d;
-                }
-                for (int j = 0; j < table.getNumRows(); j++) {
-                    double d = table.getDouble(j, z);
-                    if (d > zMax)
-                        zMax = d;
-                    if (d < zMin)
-                        zMin = d;
-                }
-            }
-        }
+         objRoot = createInitialScene();
 
-        /**
-         * Initial set-up.
-         */
-        private void execute () {
-            settings = new ScatterPlot3DGraphSettings();
-            nf = NumberFormat.getInstance();
-            nf.setMaximumFractionDigits(2);
-            control = new ScatterPlot3DControl();
-            canvas = new ScatterPlot3DCanvas(SimpleUniverse.getPreferredConfiguration());
-            // create universe
-            SimpleUniverse u = new SimpleUniverse(canvas);
-            u.getViewingPlatform().setNominalViewingTransform();
-            BranchGroup scene = createInitialScene();
-            scene.compile();
-            u.addBranchGraph(scene);
-            JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                    control, canvas);
-            split.setOneTouchExpandable(true);
-            setLayout(new BorderLayout());
-            add(split, BorderLayout.CENTER);
+         TransformGroup tg = universe.getViewingPlatform().getViewPlatformTransform();
+         KeyNavigatorBehavior kb = new KeyNavigatorBehavior(tg);
+         kb.setSchedulingBounds(new BoundingSphere(new Point3d(), 100.0));
+         objRoot.addChild(kb);
 
-            helpWindow = new HelpWindow();
-            menuBar = new JMenuBar();
-            JMenu hlp = new JMenu("Help");
-            helpItem = new JMenuItem("About ScatterPlot3D..");
-            helpItem.addActionListener(new HelpListener());
-            hlp.add(helpItem);
-            menuBar.add(hlp);
-        }
+         objRoot.compile();
+         universe.addBranchGraph(objRoot);
 
-        class HelpListener implements ActionListener {
-            public void actionPerformed(ActionEvent e) {
-                helpWindow.setVisible(true);
-            }
-        }
+         JSplitPane split = new JSplitPane
+            (JSplitPane.HORIZONTAL_SPLIT, control, canvas);
+         // split.setOneTouchExpandable(true);
 
-        /**
-         * Add a user-defined scene.
-		 * @param set the data set to display in the scene
-         */
-        private void addScene (ScatterPlot3DDataSet set) {
-            BranchGroup total = new BranchGroup();
-            Transform3D t = new Transform3D();
-            total.setCapability(BranchGroup.ALLOW_DETACH);
-            Appearance a = new Appearance();
-            a.setColoringAttributes(new ColoringAttributes(new Color3f(set.color),
-                    ColoringAttributes.FASTEST));
-            Sphere s;
-            TransformGroup tg;
-            double dx, dy, dz;
-            for (int count2 = 0; count2 < table.getNumRows(); count2++) {
-                s = new Sphere(0.01f);
-                // !: different data set scales?
-                s.setAppearance(a);
-                dx = table.getDouble(count2, set.x);
-                dy = table.getDouble(count2, set.y);
-                dz = table.getDouble(count2, set.z);
-                t = new Transform3D();
-                t.setTranslation(new Vector3d(multFactor*dx, multFactor*dy,
-                        multFactor*(dz)));
-                tg = new TransformGroup(t);
-                tg.addChild(s);
-                total.addChild(tg);
-            }
-            objTrans.addChild(total);
-        }
+         this.setLayout(new BorderLayout());
+         this.add(split, BorderLayout.CENTER);
 
-        /**
-         * Create the initial scene.  This has the axes and their labels.
-		 * @return the root branch group with the coordinate axes and their labels
-         */
-        private BranchGroup createInitialScene () {
-            BranchGroup objRoot = new BranchGroup();
-            objRoot.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
-            objRoot.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
-            Transform3D transform = new Transform3D();
-            objTrans = new TransformGroup();
-            objTrans.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-            objTrans.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-            objTrans.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
-            objTrans.setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
-            objTrans.setCapability(TransformGroup.ALLOW_CHILDREN_EXTEND);
-            MouseRotate mr = new MouseRotate(objTrans);
-            mr.setSchedulingBounds(new BoundingSphere(new Point3d(), 1000.0));
-            objRoot.addChild(mr);
-            MouseZoom mz = new MouseZoom(objTrans);
-            mz.setSchedulingBounds(new BoundingSphere(new Point3d(), 1000.0));
-            objRoot.addChild(mz);
-            MouseTranslate mt = new MouseTranslate(objTrans);
-            mt.setSchedulingBounds(new BoundingSphere(new Point3d(), 1000.0));
-            objRoot.addChild(mt);
-            KeyNavigatorBehavior keyNav = new KeyNavigatorBehavior(objTrans);
-            keyNav.setSchedulingBounds(new BoundingSphere(new Point3d(), 1000.0));
-            objRoot.addChild(keyNav);
-            // add the axes and their labels
-            objTrans.addChild(drawXAxis());                     // child 0
-            objTrans.addChild(drawYAxis());                     // child 1
-            objTrans.addChild(drawZAxis());                     // child 2
-            objTrans.addChild(drawXScale());                    // child 3
-            objTrans.addChild(drawYScale());                    // child 4
-            objTrans.addChild(drawZScale());                    // child 5
-            objTrans.addChild(drawLegend());                    // child 6
-            objRoot.addChild(objTrans);
-            Background background = new Background(backgroundColor);
-            background.setApplicationBounds(new BoundingSphere(new Point3d(0.0d,
-                    0.0d, 0.0d), 1000));
-            objRoot.addChild(background);
-            return  objRoot;
-        }
+         helpWindow = new HelpWindow();
+         menuBar = new JMenuBar();
+         JMenu hlp = new JMenu("Help");
+         helpItem = new JMenuItem("About ScatterPlot3D...");
+         helpItem.addActionListener(new HelpListener());
+         hlp.add(helpItem);
+         menuBar.add(hlp);
 
-        /**
-         * Update the coordinates axes.
-         */
-        private void updateAxes () {
-            objTrans.setChild(drawXAxis(), X_AXIS);
-            objTrans.setChild(drawYAxis(), Y_AXIS);
-            objTrans.setChild(drawZAxis(), Z_AXIS);
-        }
+      }
 
-        /**
-         * Update the labels and scales for the axes.
-         */
-        private void updateScales () {
-            objTrans.setChild(drawXScale(), X_SCALE);
-            objTrans.setChild(drawYScale(), Y_SCALE);
-            objTrans.setChild(drawZScale(), Z_SCALE);
-        }
+      class HelpListener implements ActionListener {
+         public void actionPerformed(ActionEvent e) {
+            helpWindow.setVisible(true);
+         }
+      }
 
-        /**
-         * put your documentation comment here
-         */
-        private void updateLegend () {
-            objTrans.setChild(drawLegend(), LEGEND);
-        }
+      class HelpWindow extends JD2KFrame {
+         HelpWindow() {
+            super("About ScatterPlot3D");
+            JEditorPane jep = new JEditorPane("text/html", getHelpString());
+            getContentPane().add(new JScrollPane(jep));
+            setSize(400, 400);
+         }
+      }
 
-        /**
-         * Remove all the user-defined scenes from the canvas.  These nodes
-         * are the points in the scatterplot.
-         */
-        private void removeAllUserScenes () {
-            // the first NUM_STATIC_CHILDREN scenes are the axes and their labels,
-            // remove all scenes with an index greater than NUM_STATIC_CHILDREN
-            for (int i = NUM_STATIC_CHILDREN; i < numScenes + NUM_STATIC_CHILDREN; i++)
-                objTrans.removeChild(NUM_STATIC_CHILDREN);
-            numScenes = 0;
-        }
+      /**
+       * Iterates over all data sets to find the maximum and minimum over all
+       * applicable data.
+       *
+       * @param set          the data sets that will be displayed
+       */
+      private void findMinMax(ScatterPlot3DDataSet[] sets) {
 
-        /**
-		 * Create the legend
-         * @return a BranchGroup with the legend
-         */
-        private BranchGroup drawLegend () {
-            BranchGroup bg = new BranchGroup();
-            bg.setCapability(BranchGroup.ALLOW_DETACH);
-            bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
-            return  bg;
-        }
+         xMin = yMin = zMin = Double.MAX_VALUE;
+         xMax = yMax = zMax = Double.MIN_VALUE;
 
-        /**
-         * Create the x-axis.
-		 * @return a BranchGroup with the x-axis
-         */
-        private BranchGroup drawXAxis () {
-            LineArray xaxis = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
-            xaxis.setCoordinate(0, new Point3f((float)(settings.Xmin*multFactor),
-                    0, 0));
-            xaxis.setCoordinate(1, new Point3f((float)(settings.Xmax*multFactor),
-                    0, 0));
-            xaxis.setColor(0, axisColor);
-            xaxis.setColor(1, axisColor);
-            BranchGroup bg = new BranchGroup();
-            bg.setCapability(BranchGroup.ALLOW_DETACH);
-            bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
-            bg.addChild(new Shape3D(xaxis));
-            return  bg;
-        }
+         // loop rearranged to better support paging tables
+         int x, y, z; double d;
+         for (int i = 0; i < table.getNumRows(); i++)
+            for (int j = 0; j < sets.length; j++) {
 
-        /**
-         * Create the y-axis.
-		 * @return a BranchGroup with the y-axis
-         */
-        private BranchGroup drawYAxis () {
-            LineArray yaxis = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
-            yaxis.setCoordinate(0, new Point3f(0, (float)(settings.Ymin*multFactor),
-                    0));
-            yaxis.setCoordinate(1, new Point3f(0, (float)(settings.Ymax*multFactor),
-                    0));
-            yaxis.setColor(0, axisColor);
-            yaxis.setColor(1, axisColor);
-            BranchGroup bg = new BranchGroup();
-            bg.setCapability(BranchGroup.ALLOW_DETACH);
-            bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
-            bg.addChild(new Shape3D(yaxis));
-            return  bg;
-        }
+               x = sets[j].x;
+               y = sets[j].y;
+               z = sets[j].z;
 
-        /**
-         * Create the z-axis.
-		 * @return a BranchGroup with the z-axis
-         */
-        private BranchGroup drawZAxis () {
-            LineArray zaxis = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
-            zaxis.setCoordinate(0, new Point3f(0, 0, (float)(settings.Zmin*multFactor)));
-            zaxis.setCoordinate(1, new Point3f(0, 0, (float)(settings.Zmax*multFactor)));
-            zaxis.setColor(0, axisColor);
-            zaxis.setColor(1, axisColor);
-            BranchGroup bg = new BranchGroup();
-            bg.setCapability(BranchGroup.ALLOW_DETACH);
-            bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
-            bg.addChild(new Shape3D(zaxis));
-            return  bg;
-        }
+               d = table.getDouble(i, x);
+               if (d > xMax) xMax = d;
+               if (d < xMin) xMin = d;
 
-        /**
-         * Draw the labels along the x-axis.
-		 * @return a BranchGroup with the x axis labels
-         */
-        private BranchGroup drawXScale () {
-            BranchGroup bg = new BranchGroup();
-            bg.setCapability(BranchGroup.ALLOW_DETACH);
-            bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
-            Text2D text;
-            int numTicks = 3;
-            double xInc = (settings.Xmax - settings.Xmin)/numTicks;
-            double xLoc = settings.Xmin;
-            for (int i = 0; i <= numTicks; i++) {
-                if (xLoc != 0) {
-                    Transform3D trans = new Transform3D();
-                    trans.setTranslation(new Vector3d(multFactor*xLoc, 0, 0));
-                    TransformGroup tg = new TransformGroup(trans);
-                    tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
-                    text = new Text2D(nf.format(xLoc), plainColor, FONT_TYPE,
-                            FONT_SIZE, 1);
-                    tg.addChild(text);
-                    bg.addChild(tg);
-                }
-                xLoc += xInc;
+               d = table.getDouble(i, y);
+               if (d > yMax) yMax = d;
+               if (d < yMin) yMin = d;
+
+               d = table.getDouble(i, z);
+               if (d > zMax) zMax = d;
+               if (d < zMin) zMin = d;
+
             }
 
-            xLoc += xInc/3;
-            Transform3D trans = new Transform3D();
-            trans.setTranslation(new Vector3d(multFactor*xLoc, 0, 0));
-            TransformGroup tg = new TransformGroup(trans);
-            tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
-            StringBuffer sb = new StringBuffer(X);
-            if (settings.x.length() > 0) {
-                sb.append(DASH);
-                sb.append(settings.x);
-            }
-            text = new Text2D(sb.toString(), labelColor, FONT_TYPE, FONT_SIZE,
-                    1);
-            tg.addChild(text);
-            bg.addChild(tg);
-            return  bg;
-        }
+         // now we also find the multiplication scale factor
+         multFactor = Math.abs(xMin);
+         if (Math.abs(xMax) > multFactor)
+            multFactor = Math.abs(xMax);
+         if (Math.abs(yMin) > multFactor)
+            multFactor = Math.abs(yMin);
+         if (Math.abs(yMax) > multFactor)
+            multFactor = Math.abs(yMax);
+         if (Math.abs(zMin) > multFactor)
+            multFactor = Math.abs(zMin);
+         if (Math.abs(zMax) > multFactor)
+            multFactor = Math.abs(zMax);
+         multFactor = 1/multFactor;
 
-        /**
-         * Draw the labels along the y-axis.  The graph label is also drawn
-         * at the top of the y-axis.
-		 * @return a BranchGroup with the y axis labels
-         */
-        private BranchGroup drawYScale () {
-            BranchGroup bg = new BranchGroup();
-            bg.setCapability(BranchGroup.ALLOW_DETACH);
-            bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
-            Text2D text;
-            int numTicks = 3;
-            double yInc = (settings.Ymax - settings.Ymin)/numTicks;
-            double yLoc = settings.Ymin;
-            for (int i = 0; i <= numTicks; i++) {
-                if (yLoc != 0) {
-                    Transform3D trans = new Transform3D();
-                    trans.setTranslation(new Vector3d(0, multFactor*yLoc, 0));
-                    TransformGroup tg = new TransformGroup(trans);
-                    tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
-                    text = new Text2D(nf.format(yLoc), plainColor, FONT_TYPE,
-                            FONT_SIZE, 1);
-                    tg.addChild(text);
-                    bg.addChild(tg);
-                }
-                yLoc += yInc;
-            }
-            yLoc += yInc/3;
-            Transform3D trans = new Transform3D();
-            trans.setTranslation(new Vector3d(0, multFactor*yLoc, 0));
-            TransformGroup tg = new TransformGroup(trans);
-            tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
-            StringBuffer sb = new StringBuffer(Y);
-            if (settings.y.length() > 0) {
-                sb.append(DASH);
-                sb.append(settings.y);
-            }
-            text = new Text2D(sb.toString(), labelColor, FONT_TYPE, FONT_SIZE,
-                    1);
-            tg.addChild(text);
-            bg.addChild(tg);
-            if (settings.title_string.length() > 0) {
-                yLoc += yInc/3;
-                Transform3D t2 = new Transform3D();
-                t2.setTranslation(new Vector3d(0, multFactor*yLoc, 0));
-                TransformGroup tg2 = new TransformGroup(t2);
-                tg2.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
-                text = new Text2D(settings.title_string, labelColor, FONT_TYPE,
-                        FONT_SIZE, 1);
-                tg2.addChild(text);
-                bg.addChild(tg2);
-            }
-            return  bg;
-        }
+      }
 
-        /**
-         * Draw the labels along the z-axis.
-		 * @return a BranchGroup with the z axis labels
-         */
-        private BranchGroup drawZScale () {
-            BranchGroup bg = new BranchGroup();
-            bg.setCapability(BranchGroup.ALLOW_DETACH);
-            bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
-            Text2D text;
-            int numTicks = 3;
-            double zInc = (settings.Zmax - settings.Zmin)/numTicks;
-            double zLoc = settings.Zmin;
-            for (int i = 0; i <= numTicks; i++) {
-                if (zLoc != 0) {
-                    Transform3D trans = new Transform3D();
-                    trans.setTranslation(new Vector3d(0, 0, multFactor*zLoc));
-                    TransformGroup tg = new TransformGroup(trans);
-                    tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
-                    text = new Text2D(nf.format(zLoc), plainColor, FONT_TYPE,
-                            FONT_SIZE, 1);
-                    tg.addChild(text);
-                    bg.addChild(tg);
-                }
-                zLoc += zInc;
-            }
-            zLoc += zInc/3;
-            Transform3D trans = new Transform3D();
-            trans.setTranslation(new Vector3d(0, 0, multFactor*zLoc));
-            TransformGroup tg = new TransformGroup(trans);
-            tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
-            StringBuffer sb = new StringBuffer(Z);
-            if (settings.z.length() > 0) {
-                sb.append(DASH);
-                sb.append(settings.z);
-            }
-            text = new Text2D(sb.toString(), labelColor, FONT_TYPE, FONT_SIZE,
-                    1);
-            tg.addChild(text);
-            bg.addChild(tg);
-            return  bg;
-        }
+      /**
+       * Adds a user-defined scene.
+       *
+       * @param set          the data set to display in the scene
+       */
+      private void addScene(ScatterPlot3DDataSet set) {
 
-        /**
-         * The controls
-         */
-        private class ScatterPlot3DControl extends JPanel
-                implements ActionListener, Serializable {
-            private JTabbedPane tabbed;
-            private JPanel editlist, properties;
-            // Edit/List panel objects
-            private JLabel edit_name_label, edit_color_label, edit_xvar_label,
-                    edit_yvar_label, edit_zvar_label;
-            private JTextField edit_name_field;
-            private ColorPanel edit_color;
-            private JComboBox edit_xbox, edit_ybox, edit_zbox;
-            private JButton edit_add;
-            private JList edit_list;
-            private DefaultListModel edit_listmodel;
-            private JScrollPane edit_scroll;
-            private JButton edit_delete, edit_refresh;
-            // Properties panel objects
-            private JLabel prop_xmin_label, prop_ymin_label, prop_zmin_label,
-                    prop_xmax_label, prop_ymax_label, prop_zmax_label, prop_title_label,
-                    prop_xaxis_label, prop_yaxis_label, prop_zaxis_label;
-            private JTextField prop_xmin_field, prop_ymin_field, prop_zmin_field,
-                    prop_xmax_field, prop_ymax_field, prop_zmax_field, prop_title_field,
-                    prop_xaxis_field, prop_yaxis_field, prop_zaxis_field;
-            private JCheckBox prop_grid, prop_legend;
-            private Vector labels;
-            private HashMap map;
+         numScenes++;
 
-            /**
-			 * Constructor
-             */
-            ScatterPlot3DControl () {
-                // Edit subpanel
-                edit_name_label = new JLabel("Name: ");
-                edit_color_label = new JLabel("Color: ");
-                edit_xvar_label = new JLabel("X Variable: ");
-                edit_yvar_label = new JLabel("Y Variable: ");
-                edit_zvar_label = new JLabel("Z Variable: ");
-                edit_name_field = new JTextField();
-                edit_color = new ColorPanel();
-                labels = new Vector();
-                map = new HashMap();
-                Column column;
-                int index = 0;
-                for (int count = 0; count < table.getNumColumns(); count++) {
-                    if (table.isColumnNumeric(count)) {
-                        labels.add((String)table.getColumnLabel(count));
-                        map.put(new Integer(index++), new Integer(count));
-                    }
-                }
-                edit_xbox = new JComboBox(labels);
-                edit_ybox = new JComboBox(labels);
-                edit_zbox = new JComboBox(labels);
-                edit_add = new JButton("Add");
-                edit_add.addActionListener(this);
-                JPanel editpanel = new JPanel();
-                editpanel.setBorder(new TitledBorder("Edit: "));
-                editpanel.setLayout(new GridBagLayout());
-                Constrain.setConstraints(editpanel, edit_name_label, 0, 0,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(editpanel, edit_name_field, 1, 0,
-                        1, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(editpanel, edit_color_label, 0, 1,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(editpanel, edit_color, 1, 1, 1, 1,
-                        GridBagConstraints.NONE, GridBagConstraints.WEST, 0,
-                        0);
-                Constrain.setConstraints(editpanel, edit_xvar_label, 0, 2,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(editpanel, edit_xbox, 1, 2, 1, 1,
-                        GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(editpanel, edit_yvar_label, 0, 3,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(editpanel, edit_ybox, 1, 3, 1, 1,
-                        GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(editpanel, edit_zvar_label, 0, 4,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(editpanel, edit_zbox, 1, 4, 1, 1,
-                        GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(editpanel, edit_add, 1, 5, 1, 1, GridBagConstraints.NONE,
-                        GridBagConstraints.EAST, 1, 1);
-                // List subpanel
-                edit_list = new JList(new DefaultListModel());
-                edit_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                edit_listmodel = (DefaultListModel)edit_list.getModel();
-                edit_delete = new JButton("Delete");
-                edit_delete.addActionListener(this);
-                edit_scroll = new JScrollPane(edit_list, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-                        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-                JPanel listpanel = new JPanel();
-                listpanel.setBorder(new TitledBorder("List: "));
-                listpanel.setLayout(new GridBagLayout());
-                Constrain.setConstraints(listpanel, edit_scroll, 0, 0, 1, 1,
-                        GridBagConstraints.BOTH, GridBagConstraints.WEST, 1,
-                        .5);
-                Constrain.setConstraints(listpanel, edit_delete, 0, 1, 1, 1,
-                        GridBagConstraints.NONE, GridBagConstraints.NORTHEAST,
-                        0, .5);
-                // Edit/List panel
-                editlist = new JPanel();
-                editlist.setLayout(new GridBagLayout());
-                Constrain.setConstraints(editlist, editpanel, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                        GridBagConstraints.NORTHWEST, 0, 0);
-                Constrain.setConstraints(editlist, listpanel, 0, 1, 1, 1, GridBagConstraints.BOTH,
-                        GridBagConstraints.WEST, 1, 1);
-                // Properties panel
-                prop_xmin_label = new JLabel("X Minimum: ");
-                prop_ymin_label = new JLabel("Y Minimum: ");
-                prop_zmin_label = new JLabel("Z Minimum: ");
-                prop_xmax_label = new JLabel("X Maximum: ");
-                prop_ymax_label = new JLabel("Y Maximum: ");
-                prop_zmax_label = new JLabel("Z Maximum: ");
-                prop_title_label = new JLabel("Title: ");
-                prop_xaxis_label = new JLabel("X Axis: ");
-                prop_yaxis_label = new JLabel("Y Axis: ");
-                prop_zaxis_label = new JLabel("Z Axis: ");
-                prop_xmin_field = new JTextField();
-                prop_ymin_field = new JTextField();
-                prop_zmin_field = new JTextField();
-                prop_xmax_field = new JTextField();
-                prop_ymax_field = new JTextField();
-                prop_zmax_field = new JTextField();
-                prop_title_field = new JTextField();
-                prop_xaxis_field = new JTextField();
-                prop_yaxis_field = new JTextField();
-                prop_zaxis_field = new JTextField();
-                prop_grid = new JCheckBox("Grid", false);
-                prop_legend = new JCheckBox("Legend", false);
-                prop_grid.setEnabled(false);
-                prop_legend.setEnabled(false);
-                properties = new JPanel();
-                properties.setBorder(new TitledBorder("Properties: "));
-                properties.setLayout(new GridBagLayout());
-                Constrain.setConstraints(properties, prop_xmin_label, 0, 0,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_xmin_field, 1, 0,
-                        1, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_xmax_label, 2, 0,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_xmax_field, 3, 0,
-                        1, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_ymin_label, 0, 1,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_ymin_field, 1, 1,
-                        1, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        1, 0);
-                Constrain.setConstraints(properties, prop_ymax_label, 2, 1,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_ymax_field, 3, 1,
-                        1, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        1, 0);
-                Constrain.setConstraints(properties, prop_zmin_label, 0, 3,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_zmin_field, 1, 3,
-                        1, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        1, 0);
-                Constrain.setConstraints(properties, prop_zmax_label, 2, 3,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_zmax_field, 3, 3,
-                        1, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        1, 0);
-                Constrain.setConstraints(properties, prop_title_label, 0, 4,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_title_field, 1, 4,
-                        3, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_xaxis_label, 0, 5,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_xaxis_field, 1, 5,
-                        3, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_yaxis_label, 0, 6,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_yaxis_field, 1, 6,
-                        3, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_zaxis_label, 0, 7,
-                        1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_zaxis_field, 1, 7,
-                        3, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                        0, 0);
-                Constrain.setConstraints(properties, prop_grid, 0, 8, 1, 1,
-                 GridBagConstraints.NONE, GridBagConstraints.NORTHWEST,
-                 0, 0);
-                Constrain.setConstraints(properties, prop_legend, 0, 9, 1,
-                        1, GridBagConstraints.NONE, GridBagConstraints.NORTHWEST,
-                        0, 1);
-                // Tab the control panels
-                tabbed = new JTabbedPane(SwingConstants.TOP);
-                tabbed.add("Scatter Plot", editlist);
-                tabbed.add("Settings", properties);
-                edit_refresh = new JButton("Refresh");
-                edit_refresh.addActionListener(this);
-                // ...and finish
-                //setMinimumSize(new Dimension(0, 0));
-                setLayout(new GridBagLayout());
-                Constrain.setConstraints(this, tabbed, 0, 0, 1, 1, GridBagConstraints.BOTH,
-                        GridBagConstraints.NORTHWEST, 1, 1);
-                Constrain.setConstraints(this, edit_refresh, 0, 1, 1, 1, GridBagConstraints.NONE,
-                        GridBagConstraints.NORTHWEST, 0, 0);
+         BranchGroup bg = new BranchGroup();
+         bg.setCapability(BranchGroup.ALLOW_DETACH);
+         bg.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
+
+         Appearance A = new Appearance();
+         A.setColoringAttributes(new ColoringAttributes(
+            new Color3f(set.color), ColoringAttributes.FASTEST));
+
+         int index;
+         double x, y, z, dx, dy, dz, c = .01;
+         double[] offsets, d;
+         TriangleArray T;
+         switch (drawScheme) {
+
+         case DRAW_CUBES:
+
+            double[] f = new double[108*table.getNumRows()];
+            T = new TriangleArray(36*table.getNumRows(),
+               TriangleArray.COORDINATES | TriangleArray.BY_REFERENCE);
+
+            double dxpc, dxmc, dypc, dymc, dzpc, dzmc;
+            index = 0; // coordinate offset
+            for (int i = 0; i < table.getNumRows(); i++) {
+
+               x = table.getDouble(i, set.x);
+               y = table.getDouble(i, set.y);
+               z = table.getDouble(i, set.z);
+
+               if (x < settings.Xmin || x > settings.Xmax ||
+                   y < settings.Ymin || y > settings.Ymax ||
+                   z < settings.Zmin || z > settings.Zmax)
+                  continue;
+
+               dx = multFactor*x;
+               dy = multFactor*y;
+               dz = multFactor*z;
+               dxpc = dx + c; dypc = dy + c; dzpc = dz + c;
+               dxmc = dx - c; dymc = dy - c; dzmc = dz - c;
+
+               // cube top
+               f[index]      = dxmc; f[index +  3] = dxpc; f[index +  6] = dxmc;
+               f[index +  1] = dypc; f[index +  4] = dypc; f[index +  7] = dypc;
+               f[index +  2] = dzpc; f[index +  5] = dzmc; f[index +  8] = dzmc;
+               f[index +  9] = dxmc; f[index + 12] = dxpc; f[index + 15] = dxpc;
+               f[index + 10] = dypc; f[index + 13] = dypc; f[index + 16] = dypc;
+               f[index + 11] = dzpc; f[index + 14] = dzpc; f[index + 17] = dzmc;
+               // cube bottom
+               f[index + 18] = dxpc; f[index + 21] = dxmc; f[index + 24] = dxmc;
+               f[index + 19] = dymc; f[index + 22] = dymc; f[index + 25] = dymc;
+               f[index + 20] = dzmc; f[index + 23] = dzpc; f[index + 26] = dzmc;
+               f[index + 27] = dxpc; f[index + 30] = dxmc; f[index + 33] = dxpc;
+               f[index + 28] = dymc; f[index + 31] = dymc; f[index + 34] = dymc;
+               f[index + 29] = dzpc; f[index + 32] = dzpc; f[index + 35] = dzmc;
+               // cube front
+               f[index + 36] = dxmc; f[index + 39] = dxpc; f[index + 42] = dxmc;
+               f[index + 37] = dymc; f[index + 40] = dymc; f[index + 43] = dypc;
+               f[index + 38] = dzpc; f[index + 41] = dzpc; f[index + 44] = dzpc;
+               f[index + 45] = dxpc; f[index + 48] = dxmc; f[index + 51] = dxpc;
+               f[index + 46] = dypc; f[index + 49] = dypc; f[index + 52] = dymc;
+               f[index + 47] = dzpc; f[index + 50] = dzpc; f[index + 53] = dzpc;
+               // cube back
+               f[index + 54] = dxmc; f[index + 57] = dxmc; f[index + 60] = dxpc;
+               f[index + 55] = dymc; f[index + 58] = dypc; f[index + 61] = dymc;
+               f[index + 56] = dzmc; f[index + 59] = dzmc; f[index + 62] = dzmc;
+               f[index + 63] = dxpc; f[index + 66] = dxpc; f[index + 69] = dxmc;
+               f[index + 64] = dypc; f[index + 67] = dymc; f[index + 70] = dypc;
+               f[index + 65] = dzmc; f[index + 68] = dzmc; f[index + 71] = dzmc;
+               // cube left
+               f[index + 72] = dxmc; f[index + 75] = dxmc; f[index + 78] = dxmc;
+               f[index + 73] = dypc; f[index + 76] = dymc; f[index + 79] = dymc;
+               f[index + 74] = dzmc; f[index + 77] = dzmc; f[index + 80] = dzpc;
+               f[index + 81] = dxmc; f[index + 84] = dxmc; f[index + 87] = dxmc;
+               f[index + 82] = dypc; f[index + 85] = dymc; f[index + 88] = dypc;
+               f[index + 83] = dzmc; f[index + 86] = dzpc; f[index + 89] = dzpc;
+               // cube right
+               f[index + 90] = dxpc; f[index + 93] = dxpc; f[index + 96] = dxpc;
+               f[index + 91] = dypc; f[index + 94] = dymc; f[index + 97] = dymc;
+               f[index + 92] = dzmc; f[index + 95] = dzpc; f[index + 98] = dzmc;
+               f[index +  99] = dxpc; f[index + 102] = dxpc; f[index + 105] = dxpc;
+               f[index + 100] = dypc; f[index + 103] = dypc; f[index + 106] = dymc;
+               f[index + 101] = dzmc; f[index + 104] = dzpc; f[index + 107] = dzpc;
+
+               index += 108; // 12 triangles per cube, 3 vertices per triangle
+
             }
 
-            /**
-			 * This listens for action events on buttons.
-             * @param event the action event
-             */
-            public void actionPerformed (ActionEvent event) {
-                Object src = event.getSource();
-                if (src == edit_add) {
-                    String name = edit_name_field.getText();
-                    if (name.equals(EMPTY))
-                        return;
-                    Color color = edit_color.getColor();
-                    int index = edit_xbox.getSelectedIndex();
-                    Integer X = (Integer)map.get(new Integer(index));
-                    String label = table.getColumnLabel(X.intValue());
-                    name = name + COLON + label;
-                    index = edit_ybox.getSelectedIndex();
-                    Integer Y = (Integer)map.get(new Integer(index));
-                    label = table.getColumnLabel(Y.intValue());
-                    name = name + COMMA + label;
-                    index = edit_zbox.getSelectedIndex();
-                    Integer Z = (Integer)map.get(new Integer(index));
-                    label = table.getColumnLabel(Z.intValue());
-                    name = name + COMMA + label;
-                    ScatterPlot3DDataSet dataSet = new ScatterPlot3DDataSet(name,
-                            color, X.intValue(), Y.intValue(), Z.intValue());
-                    edit_listmodel.addElement(dataSet);
-                    edit_name_field.setText(EMPTY);
-                }
-                else if (src == edit_delete) {
-                    int index = edit_list.getSelectedIndex();
-                    if (index != -1) {
-                        edit_listmodel.removeElementAt(index);
-                    }
-                }
-                else if (src == edit_refresh) {
-                    int size = edit_listmodel.getSize();
-                    if (size == 0) {
-                        removeAllUserScenes();
-                        numScenes = 0;
-                        return;
-                    }
-                    // scatter plot data
-                    ScatterPlot3DDataSet[] set = new ScatterPlot3DDataSet[size];
-                    for (int count = 0; count < size; count++)
-                        set[count] = (ScatterPlot3DDataSet)edit_listmodel.getElementAt(count);
-                    // recalculate the min and max for each axis based
-                    // on the data sets loaded
-                    findMinMax(set);
-                    // property data
-                    String title = prop_title_field.getText();
-                    String xaxis = prop_xaxis_field.getText();
-                    String yaxis = prop_yaxis_field.getText();
-                    String zaxis = prop_zaxis_field.getText();
-                    String value;
-                    double Xmin, Xmax, Ymin, Ymax, Zmin, Zmax;
-                    value = prop_xmin_field.getText();
-                    if (value.trim().length() == 0)
-                        //Xmin = null;
-                        Xmin = xMin;
-                    else
-                        //Xmin = new Integer(value);
-                        Xmin = Double.parseDouble(value);
-                    value = prop_xmax_field.getText();
-                    if (value.trim().length() == 0)
-                        Xmax = xMax;
-                    else
-                        //Xmax = new Integer(value);
-                        Xmax = Double.parseDouble(value);
-                    value = prop_ymin_field.getText();
-                    if (value.trim().length() == 0)
-                        //Ymin = null;
-                        Ymin = yMin;
-                    else
-                        //Ymin = new Integer(value);
-                        Ymin = Double.parseDouble(value);
-                    value = prop_ymax_field.getText();
-                    if (value.trim().length() == 0)
-                        //Ymax = null;
-                        Ymax = yMax;
-                    else
-                        //Ymax = new Integer(value);
-                        Ymax = Double.parseDouble(value);
-                    value = prop_zmin_field.getText();
-                    if (value.trim().length() == 0)
-                        //Zmin = null;
-                        Zmin = zMin;
-                    else
-                        //Zmin = new Integer(value);
-                        Zmin = Double.parseDouble(value);
-                    value = prop_zmax_field.getText();
-                    if (value.trim().length() == 0)
-                        //Zmax = null;
-                        Zmax = zMax;
-                    else
-                        //Zmax = new Integer(value);
-                        Zmax = Double.parseDouble(value);
-                    //boolean display_grid = prop_grid.isSelected(),
-                    boolean display_legend = prop_legend.isSelected();
+            T.setCoordRefDouble(f);
+            bg.addChild(new Shape3D(T, A));
+            bg.compile();
+            objRoot.addChild(bg);
 
-                    // remove all user-defined scenes
-                    removeAllUserScenes();
+            break;
 
-                    // create new graph settings
-                    settings = new ScatterPlot3DGraphSettings(title, xaxis,
-                            yaxis, zaxis, Xmin, Xmax, Ymin, Ymax, Zmin, Zmax,
-                            10, false, true, display_legend, false, true, true);
+         case DRAW_ROUGH_SPHERES:
+         case DRAW_SMOOTH_SPHERES:
 
-                    // replace each axis
-                    updateAxes();
+            int dtheta, dphi, offsetLength;
 
-                    // replace each scale
-                    updateScales();
-                    // replace the legend
-                    updateLegend();
-
-                    // add each user defined scene
-                    for (int i = 0; i < set.length; i++)
-                        addScene(set[i]);
-                    numScenes = set.length;
-                }
+            if (drawScheme == DRAW_ROUGH_SPHERES) {
+               dtheta = 45; // 40;
+               dphi = 45; // 40;
+               offsetLength = 576; // 810;
             }
-        }       // ScatterPlot3D$ScatterPlot3DControl
-
-        /**
-         * A data set for the scatterplot
-         */
-        private class ScatterPlot3DDataSet {
-            String name;
-            Color color;
-            int x, y, z;
-
-            /**
-			 * Constructor
-             * @param name the name of the data set
-             * @param color the color to use
-             * @param x the index of the x column
-             * @param y the index of the y column
-             * @param z the index of the z column
-             */
-            ScatterPlot3DDataSet (String name, Color color, int x, int y, int z) {
-                this.name = name;
-                this.color = color;
-                this.x = x;
-                this.y = y;
-                this.z = z;
+            else {
+               dtheta = 30;
+               dphi = 30;
+               offsetLength = 1296;
             }
 
-            /**
-			 * Return the name.
-             * @return the name
-             */
-            public String toString () {
-                return  name;
-            }
-        }
+            offsets = new double[offsetLength];
 
-        /**
-         * The graph settings
-         */
-        private class ScatterPlot3DGraphSettings {
-            String title_string, x, y, z;
-            double Xmin, Xmax, Ymin, Ymax, Zmin, Zmax;
-            int grid_size;
-            boolean grid, scale, legend, ticks, title, labels;
+            double x1, x2, x3, x4,
+                   y1, y2, y3, y4,
+                   z1, z2, z3, z4;
 
-            /**
-			 * Constructor
-             */
-            ScatterPlot3DGraphSettings () {
-                title_string = EMPTY;
-                x = EMPTY;
-                y = EMPTY;
-                z = EMPTY;
-                Xmin = xMin;
-                Xmax = xMax;
-                Ymin = yMin;
-                Ymax = yMax;
-                Zmin = zMin;
-                Zmax = zMax;
-                grid_size = 10;
-                grid = true;
-                scale = true;
-                legend = true;
-                ticks = true;
-                title = true;
-                labels = true;
-            }
+            // convert spherical to cartesian coordinates
+            index = 0;
+            for (int theta = -90; theta < 90; theta += dtheta)
+               for (int phi = 0; phi < 360; phi += dphi) {
 
-            /**
-			 * Constructor
-             * @param title_string the graph title
-             * @param x the x-axis title
-             * @param y the y-axis title
-             * @param z the z-axis title
-             * @param Xmin the x minimum
-             * @param Xmax the x maximum
-             * @param Ymin the y minimum
-             * @param Ymax the y maximum
-             * @param Zmin the z minimum
-             * @param Zmax the z maximum
-             * @param grid_size size of the grid
-             * @param grid true if grid should be shown
-             * @param scale true if scale should be shown
-             * @param legend true if legend should be shown
-             * @param ticks true if ticks should be shown
-             * @param title true if title should be shown
-             * @param labels true if labels should be shown
-             */
-            ScatterPlot3DGraphSettings (String title_string, String x, String y,
-                    String z, double Xmin, double Xmax, double Ymin, double Ymax,
-                    double Zmin, double Zmax, int grid_size, boolean grid,
-                    boolean scale, boolean legend, boolean ticks, boolean title,
-                    boolean labels) {
-                this.title_string = title_string;
-                this.x = x;
-                this.y = y;
-                this.z = z;
-                this.Xmin = Xmin;
-                this.Xmax = Xmax;
-                this.Ymin = Ymin;
-                this.Ymax = Ymax;
-                this.Zmin = Zmin;
-                this.Zmax = Zmax;
-                this.grid_size = 10;
-                this.grid = grid;
-                this.scale = scale;
-                this.legend = legend;
-                this.ticks = ticks;
-                this.title = title;
-                this.labels = labels;
-            }
-        }
+                  x1 = c*Math.cos(Math.toRadians(theta))*Math.cos(Math.toRadians(phi));
+                  x2 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.cos(Math.toRadians(phi));
+                  x3 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.cos(Math.toRadians(phi + dphi));
+                  x4 = c*Math.cos(Math.toRadians(theta))*Math.cos(Math.toRadians(phi + dphi));
 
-        /**
-         * A Canvas3D with a decent default size.
-         */
-        private class ScatterPlot3DCanvas extends Canvas3D {
+                  y1 = c*Math.cos(Math.toRadians(theta))*Math.sin(Math.toRadians(phi));
+                  y2 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.sin(Math.toRadians(phi));
+                  y3 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.sin(Math.toRadians(phi + dphi));
+                  y4 = c*Math.cos(Math.toRadians(theta))*Math.sin(Math.toRadians(phi + dphi));
 
-            /**
-			 * Constructor
-             * @param graphicsConfig graphics configurations for this canvas
-             */
-            public ScatterPlot3DCanvas (GraphicsConfiguration graphicsConfig) {
-                super(graphicsConfig);
+                  z1 = c*Math.sin(Math.toRadians(theta));
+                  z2 = c*Math.sin(Math.toRadians(theta + dtheta));
+                  z3 = c*Math.sin(Math.toRadians(theta + dtheta));
+                  z4 = c*Math.sin(Math.toRadians(theta));
+
+                  // two triangles per iteration.
+                  // first triangle:
+                  offsets[index] = x1;
+                  offsets[index + 1] = y1;
+                  offsets[index + 2] = z1;
+
+                  offsets[index + 3] = x2;
+                  offsets[index + 4] = y2;
+                  offsets[index + 5] = z2;
+
+                  offsets[index + 6] = x3;
+                  offsets[index + 7] = y3;
+                  offsets[index + 8] = z3;
+
+                  // second triangle:
+                  offsets[index + 9] = x1;
+                  offsets[index + 10] = y1;
+                  offsets[index + 11] = z1;
+
+                  offsets[index + 12] = x3;
+                  offsets[index + 13] = y3;
+                  offsets[index + 14] = z3;
+
+                  offsets[index + 15] = x4;
+                  offsets[index + 16] = y4;
+                  offsets[index + 17] = z4;
+
+                  index += 18;
+
+               }
+
+            // now we iterate and add the point offsets to the trig offsets
+            d = new double[offsetLength*table.getNumRows()];
+
+            for (int i = 0; i < table.getNumRows(); i++) {
+
+               x = table.getDouble(i, set.x);
+               y = table.getDouble(i, set.y);
+               z = table.getDouble(i, set.z);
+
+               if (x < settings.Xmin || x > settings.Xmax ||
+                   y < settings.Ymin || y > settings.Ymax ||
+                   z < settings.Zmin || z > settings.Zmax)
+                  continue;
+
+               dx = multFactor*x;
+               dy = multFactor*y;
+               dz = multFactor*z;
+
+               for (int j = 0; j < offsetLength; j += 3) {
+                  d[offsetLength*i + j] = dx + offsets[j];
+                  d[offsetLength*i + j + 1] = dy + offsets[j + 1];
+                  d[offsetLength*i + j + 2] = dz + offsets[j + 2];
+               }
+
             }
 
-            /**
-			 * get the minimum size
-             * @return the minimum size
-             */
-            public Dimension getMinimumSize () {
-                return  new Dimension(0, 0);
+            T = new TriangleArray((offsetLength/3)*table.getNumRows(),
+               TriangleArray.COORDINATES | TriangleArray.BY_REFERENCE);
+            T.setCoordRefDouble(d);
+            bg.addChild(new Shape3D(T, A));
+            bg.compile();
+            objRoot.addChild(bg);
+
+            break;
+
+         }
+
+      }
+
+      /**
+       * Creates the initial scene. This contains the axes and their labels.
+       *
+       * @return             the root branch group
+       */
+      private BranchGroup createInitialScene() {
+
+         BranchGroup objRoot = new BranchGroup();
+         // objRoot.setCapability(BranchGroup.ALLOW_DETACH);
+         objRoot.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
+         objRoot.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+
+         // the order in which we add these child branches is significant:
+         objRoot.addChild(drawXAxis());          // child 0
+         objRoot.addChild(drawYAxis());          // child 1
+         objRoot.addChild(drawZAxis());          // child 2
+         objRoot.addChild(drawXScale());         // child 3
+         objRoot.addChild(drawYScale());         // child 4
+         objRoot.addChild(drawZScale());         // child 5
+         objRoot.addChild(drawLegend());         // child 6
+
+         Background background = new Background(backgroundColor);
+         background.setApplicationBounds(
+            new BoundingSphere(new Point3d(), 100));
+
+         objRoot.addChild(background);           // child 7
+
+         return objRoot;
+
+      }
+
+      private void updateAxes() {
+         objRoot.setChild(drawXAxis(), X_AXIS);
+         objRoot.setChild(drawYAxis(), Y_AXIS);
+         objRoot.setChild(drawZAxis(), Z_AXIS);
+      }
+
+      private void updateScales() {
+         objRoot.setChild(drawXScale(), X_SCALE);
+         objRoot.setChild(drawYScale(), Y_SCALE);
+         objRoot.setChild(drawZScale(), Z_SCALE);
+      }
+
+      private void updateLegend() {
+         objRoot.setChild(drawLegend(), LEGEND);
+      }
+
+      /**
+       * Removes all of the user-defined scenes from the canvas. These nodes
+       * correspond to each set of points in the scatter plot.
+       */
+      private void removeAllUserScenes() {
+
+         // the first NUM_STATIC_CHILDREN scenes are the axes and their labels.
+         // we remove all scenes with an index >= NUM_STATIC_CHILDREN
+         for (int i = NUM_STATIC_CHILDREN; i < NUM_STATIC_CHILDREN + numScenes; i++)
+            objRoot.removeChild(NUM_STATIC_CHILDREN);
+         numScenes = 0;
+
+      }
+
+      /**
+       * Creates the x-axis.
+       *
+       * @return             a BranchGroup with the x-axis
+       */
+      private BranchGroup drawXAxis() {
+
+         LineArray xaxis = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
+         xaxis.setCoordinate(0, new Point3f(
+            (float)(settings.Xmin*multFactor), 0, 0));
+         xaxis.setColor(0, axisColor);
+         xaxis.setCoordinate(1, new Point3f(
+            (float)(settings.Xmax*multFactor), 0, 0));
+         xaxis.setColor(1, axisColor);
+
+         BranchGroup bg = new BranchGroup();
+         bg.setCapability(BranchGroup.ALLOW_DETACH);
+         // bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
+         bg.addChild(new Shape3D(xaxis));
+         return bg;
+
+      }
+
+      /**
+       * Creates the y-axis.
+       *
+       * @return             a BranchGroup with the y-axis
+       */
+      private BranchGroup drawYAxis() {
+
+         LineArray yaxis = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
+         yaxis.setCoordinate(0, new Point3f(
+            0, (float)(settings.Ymin*multFactor), 0));
+         yaxis.setColor(0, axisColor);
+         yaxis.setCoordinate(1, new Point3f(
+            0, (float)(settings.Ymax*multFactor), 0));
+         yaxis.setColor(1, axisColor);
+
+         BranchGroup bg = new BranchGroup();
+         bg.setCapability(BranchGroup.ALLOW_DETACH);
+         // bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
+         bg.addChild(new Shape3D(yaxis));
+         return bg;
+
+      }
+
+      /**
+       * Creates the z-axis.
+       *
+       * @return             a BranchGroup with the z-axis
+       */
+      private BranchGroup drawZAxis() {
+
+         LineArray zaxis = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
+         zaxis.setCoordinate(0, new Point3f(
+            0, 0, (float)(settings.Zmin*multFactor)));
+         zaxis.setColor(0, axisColor);
+         zaxis.setCoordinate(1, new Point3f(
+            0, 0, (float)(settings.Zmax*multFactor)));
+         zaxis.setColor(1, axisColor);
+
+         BranchGroup bg = new BranchGroup();
+         bg.setCapability(BranchGroup.ALLOW_DETACH);
+         // bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
+         bg.addChild(new Shape3D(zaxis));
+         return bg;
+
+      }
+
+      /**
+       * Draws the labels along the x-axis.
+       *
+       * @return             a BranchGroup with the x-axis labels
+       */
+      private BranchGroup drawXScale() {
+
+         BranchGroup bg = new BranchGroup();
+         bg.setCapability(BranchGroup.ALLOW_DETACH);
+         // bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
+
+         int numTicks = 3;
+         Text2D text;
+
+         double xInc = (settings.Xmax - settings.Xmin)/numTicks;
+         double xLoc = settings.Xmin;
+
+         for (int i = 0; i <= numTicks; i++) {
+            if (xLoc != 0) {
+               Transform3D trans = new Transform3D();
+               trans.setTranslation(new Vector3d(multFactor*xLoc, 0, 0));
+               TransformGroup tg = new TransformGroup(trans);
+               // tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
+               text = new Text2D(nf.format(xLoc), plainColor, FONT_TYPE, FONT_SIZE, 1);
+               tg.addChild(text);
+               bg.addChild(tg);
             }
+            xLoc += xInc;
+         }
 
-            /**
-			 * get the preferred size
-             * @return the preferred size
-             */
-            public Dimension getPreferredSize () {
-                return  new Dimension(400, 400);
+         // xLoc -= xInc/2;
+
+         Transform3D trans = new Transform3D();
+         trans.setTranslation(new Vector3d(multFactor*xLoc, 0, 0));
+         TransformGroup tg = new TransformGroup(trans);
+         // tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
+
+         StringBuffer sb = new StringBuffer(X);
+         if (settings.x.length() > 0) {
+            sb.append(DASH);
+            sb.append(settings.x);
+         }
+         text = new Text2D(sb.toString(), labelColor, FONT_TYPE, FONT_SIZE, 1);
+         tg.addChild(text);
+         bg.addChild(tg);
+
+         return bg;
+
+      }
+
+      /**
+       * Draws the labels along the y-axis.
+       *
+       * @return             a BranchGroup with the y-axis labels
+       */
+      private BranchGroup drawYScale() {
+
+         BranchGroup bg = new BranchGroup();
+         bg.setCapability(BranchGroup.ALLOW_DETACH);
+         // bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
+
+         int numTicks = 3;
+         Text2D text;
+
+         double xInc = (settings.Ymax - settings.Ymin)/numTicks;
+         double xLoc = settings.Ymin;
+
+         for (int i = 0; i <= numTicks; i++) {
+            if (xLoc != 0) {
+               Transform3D trans = new Transform3D();
+               trans.setTranslation(new Vector3d(0, multFactor*xLoc, 0));
+               TransformGroup tg = new TransformGroup(trans);
+               // tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
+               text = new Text2D(nf.format(xLoc), plainColor, FONT_TYPE, FONT_SIZE, 1);
+               tg.addChild(text);
+               bg.addChild(tg);
             }
-        }
+            xLoc += xInc;
+         }
 
-        /**
-         * Choose the color of the points.
-         */
-        private class ColorPanel extends JPanel
-                implements ActionListener {
-            private JPanel renderpanel;
-            private JButton editorbutton;
-            private Color defaultColor = Color.red;
-            private Color color;
+         // xLoc -= xInc/2;
 
-            /**
-			 * constructor.
-             */
-            ColorPanel () {
-                editorbutton = new JButton("Edit");
-                editorbutton.addActionListener(this);
-                color = defaultColor;
-                renderpanel = new JPanel();
-                renderpanel.setBackground(color);
-                renderpanel.setSize(new Dimension(10, 10));
-                add(renderpanel);
-                add(editorbutton);
+         Transform3D trans = new Transform3D();
+         trans.setTranslation(new Vector3d(0, multFactor*xLoc, 0));
+         TransformGroup tg = new TransformGroup(trans);
+         // tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
+
+         StringBuffer sb = new StringBuffer(Y);
+         if (settings.y.length() > 0) {
+            sb.append(DASH);
+            sb.append(settings.y);
+         }
+         text = new Text2D(sb.toString(), labelColor, FONT_TYPE, FONT_SIZE, 1);
+         tg.addChild(text);
+         bg.addChild(tg);
+
+         if (settings.title_string.length() > 0) {
+             xLoc += xInc/2;
+             Transform3D t2 = new Transform3D();
+             t2.setTranslation(new Vector3d(0, multFactor*xLoc, 0));
+             TransformGroup tg2 = new TransformGroup(t2);
+             tg2.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
+             text = new Text2D(settings.title_string, labelColor, FONT_TYPE,
+                     FONT_SIZE, 1);
+             tg2.addChild(text);
+             bg.addChild(tg2);
+         }
+
+         return bg;
+
+      }
+
+      /**
+       * Draws the labels along the z-axis.
+       *
+       * @return             a BranchGroup with the z-axis labels
+       */
+      private BranchGroup drawZScale() {
+
+         BranchGroup bg = new BranchGroup();
+         bg.setCapability(BranchGroup.ALLOW_DETACH);
+         // bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
+
+         int numTicks = 3;
+         Text2D text;
+
+         double xInc = (settings.Zmax - settings.Zmin)/numTicks;
+         double xLoc = settings.Zmin;
+
+         for (int i = 0; i <= numTicks; i++) {
+            if (xLoc != 0) {
+               Transform3D trans = new Transform3D();
+               trans.setTranslation(new Vector3d(0, 0, multFactor*xLoc));
+               TransformGroup tg = new TransformGroup(trans);
+               // tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
+               text = new Text2D(nf.format(xLoc), plainColor, FONT_TYPE, FONT_SIZE, 1);
+               tg.addChild(text);
+               bg.addChild(tg);
             }
+            xLoc += xInc;
+         }
 
-            /**
-			 * listen for action events
-             * @param event the action event
-             */
-            public void actionPerformed (ActionEvent event) {
-                color = JColorChooser.showDialog(this, "Edit Color", defaultColor);
-                renderpanel.setBackground(color);
+         // xLoc -= xInc/2;
+
+         Transform3D trans = new Transform3D();
+         trans.setTranslation(new Vector3d(0, 0, multFactor*xLoc));
+         TransformGroup tg = new TransformGroup(trans);
+         // tg.setCapability(TransformGroup.ALLOW_CHILDREN_READ);
+
+         StringBuffer sb = new StringBuffer(Z);
+         if (settings.z.length() > 0) {
+            sb.append(DASH);
+            sb.append(settings.z);
+         }
+         text = new Text2D(sb.toString(), labelColor, FONT_TYPE, FONT_SIZE, 1);
+         tg.addChild(text);
+         bg.addChild(tg);
+
+         return bg;
+
+      }
+
+      /**
+       * Draws the legend. (This currently doesn't do anything.)
+       *
+       * @return             a BranchGroup with the legend
+       */
+      private BranchGroup drawLegend() {
+
+         BranchGroup bg = new BranchGroup();
+         bg.setCapability(BranchGroup.ALLOW_DETACH);
+         // bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
+         return bg;
+
+      }
+
+////////////////////////////////////////////////////////////////////////////////
+
+      private class ScatterPlot3DControl extends JPanel
+         implements Serializable, ActionListener {
+
+         private HashMap columnLookup;
+         private Vector columnLabels;
+
+         private JTextField nameField;
+         private ColorPanel colorPanel;
+         private JComboBox xCombo, yCombo, zCombo;
+         private JButton addButton, deleteButton, refreshButton;
+         private JList editList;
+         private DefaultListModel editListModel;
+
+         private JTextField xMinField, xMaxField,
+                            yMinField, yMaxField,
+                            zMinField, zMaxField,
+                            titleField,
+                            xAxisField, yAxisField, zAxisField;
+
+         private JRadioButton cubeRadio, roughRadio, smoothRadio;
+
+         ScatterPlot3DControl() {
+
+            columnLookup = new HashMap();
+            columnLabels = new Vector();
+
+            int index = 0;
+            for (int i = 0; i < table.getNumColumns(); i++)
+               if (table.isColumnNumeric(i)){
+                  columnLookup.put(new Integer(index++), new Integer(i));
+                  columnLabels.add((String)table.getColumnLabel(i));
+               }
+
+            xCombo = new JComboBox(columnLabels);
+            yCombo = new JComboBox(columnLabels);
+            zCombo = new JComboBox(columnLabels);
+
+            nameField = new JTextField();
+            colorPanel = new ColorPanel();
+            addButton = new JButton("Add");
+            addButton.addActionListener(this);
+
+            JPanel editPanel = new JPanel();
+            editPanel.setBorder(new TitledBorder(" Edit: "));
+            editPanel.setLayout(new GridBagLayout());
+            Constrain.setConstraints(editPanel, new JLabel("Name: "), 0, 0, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(editPanel, nameField, 1, 0, 1, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+            Constrain.setConstraints(editPanel, new JLabel("Color: "), 0, 1, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(editPanel, colorPanel, 1, 1, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(editPanel, new JLabel("X Variable: "), 0, 2, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(editPanel, xCombo, 1, 2, 1, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+            Constrain.setConstraints(editPanel, new JLabel("Y Variable: "), 0, 3, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(editPanel, yCombo, 1, 3, 1, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+            Constrain.setConstraints(editPanel, new JLabel("Z Variable: "), 0, 4, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(editPanel, zCombo, 1, 4, 1, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+            Constrain.setConstraints(editPanel, addButton, 1, 5, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.SOUTHEAST, 0, 0);
+
+            editList = new JList(new DefaultListModel());
+            editList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            editListModel = (DefaultListModel)editList.getModel();
+            deleteButton = new JButton("Delete");
+            deleteButton.addActionListener(this);
+
+            JPanel listPanel = new JPanel();
+            listPanel.setBorder(new TitledBorder(" List: "));
+            listPanel.setLayout(new GridBagLayout());
+            Constrain.setConstraints(listPanel, new JScrollPane(editList), 0, 0, 1, 1,
+               GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+            Constrain.setConstraints(listPanel, deleteButton, 0, 1, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.SOUTHEAST, 0, 0);
+
+            JPanel editAndListPanel = new JPanel();
+            editAndListPanel.setLayout(new GridBagLayout());
+            Constrain.setConstraints(editAndListPanel, editPanel, 0, 0, 1, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
+            Constrain.setConstraints(editAndListPanel, listPanel, 0, 1, 1, 1,
+               GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+
+            xMinField = new JTextField();
+            xMaxField = new JTextField();
+            yMinField = new JTextField();
+            yMaxField = new JTextField();
+            zMinField = new JTextField();
+            zMaxField = new JTextField();
+            titleField = new JTextField();
+            xAxisField = new JTextField();
+            yAxisField = new JTextField();
+            zAxisField = new JTextField();
+
+            cubeRadio = new JRadioButton("Cubes");
+            cubeRadio.addActionListener(this);
+            roughRadio = new JRadioButton("Rough spheres");
+            roughRadio.addActionListener(this);
+            roughRadio.setSelected(true);
+            smoothRadio = new JRadioButton("Smooth spheres");
+            smoothRadio.addActionListener(this);
+
+            ButtonGroup bgroup = new ButtonGroup();
+            bgroup.add(cubeRadio);
+            bgroup.add(roughRadio);
+            bgroup.add(smoothRadio);
+
+            JPanel radioPanel = new JPanel();
+            radioPanel.setLayout(new GridBagLayout());
+            Constrain.setConstraints(radioPanel, cubeRadio, 0, 0, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(radioPanel, roughRadio, 0, 1, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(radioPanel, smoothRadio, 0, 2, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+
+            JPanel settingsPanel = new JPanel();
+            settingsPanel.setBorder(new TitledBorder("Properties: "));
+            settingsPanel.setLayout(new GridBagLayout());
+            // x min and max
+            Constrain.setConstraints(settingsPanel, new JLabel("X Minimum: "), 0, 0, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(settingsPanel, xMinField, 1, 0, 1, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 0);
+            Constrain.setConstraints(settingsPanel, new JLabel("X Maximum: "), 2, 0, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(settingsPanel, xMaxField, 3, 0, 1, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 0);
+            // y min and max
+            Constrain.setConstraints(settingsPanel, new JLabel("Y Minimum: "), 0, 1, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(settingsPanel, yMinField, 1, 1, 1, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 0);
+            Constrain.setConstraints(settingsPanel, new JLabel("Y Maximum: "), 2, 1, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(settingsPanel, yMaxField, 3, 1, 1, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 0);
+            // z min and max
+            Constrain.setConstraints(settingsPanel, new JLabel("Z Minimum: "), 0, 2, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(settingsPanel, zMinField, 1, 2, 1, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 0);
+            Constrain.setConstraints(settingsPanel, new JLabel("Z Maximum: "), 2, 2, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(settingsPanel, zMaxField, 3, 2, 1, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 0);
+            // title and labels
+            Constrain.setConstraints(settingsPanel, new JLabel("Title: "), 0, 3, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(settingsPanel, titleField, 1, 3, 3, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 0);
+            Constrain.setConstraints(settingsPanel, new JLabel("X Axis: "), 0, 4, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(settingsPanel, xAxisField, 1, 4, 3, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 0);
+            Constrain.setConstraints(settingsPanel, new JLabel("Y Axis: "), 0, 5, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(settingsPanel, yAxisField, 1, 5, 3, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 0);
+            Constrain.setConstraints(settingsPanel, new JLabel("Z Axis: "), 0, 6, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            Constrain.setConstraints(settingsPanel, zAxisField, 1, 6, 3, 1,
+               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 0);
+            // radio buttons
+            Constrain.setConstraints(settingsPanel, radioPanel, 0, 7, 4, 1,
+               GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+            // blank space
+            Constrain.setConstraints(settingsPanel, new JLabel(), 0, 8, 4, 1,
+               GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+
+            JTabbedPane tabbed = new JTabbedPane(SwingConstants.TOP);
+            tabbed.add("Scatter Plot", editAndListPanel);
+            tabbed.add("Settings", settingsPanel);
+            refreshButton = new JButton("Refresh");
+            refreshButton.addActionListener(this);
+
+            this.setLayout(new GridBagLayout());
+            Constrain.setConstraints(this, tabbed, 0, 0, 1, 1,
+               GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
+            Constrain.setConstraints(this, refreshButton, 0, 1, 1, 1,
+               GridBagConstraints.NONE, GridBagConstraints.SOUTHEAST, 0, 0);
+
+         }
+
+         /**
+          * This listens for action events on buttons.
+          *
+          * @param e         the action event
+          */
+         public void actionPerformed(ActionEvent e) {
+
+            Object src = e.getSource();
+
+            if (src == addButton) {
+
+               String name = nameField.getText();
+
+               if (name.length() == 0) {
+                  JOptionPane.showMessageDialog(this,
+                     "You must specify a name for the data set.",
+                     "ScatterPlot3D", JOptionPane.ERROR_MESSAGE);
+                  return;
+               }
+
+               // determine which columns have been selected
+               int x = ((Integer)columnLookup.get(new Integer(xCombo.getSelectedIndex()))).intValue(),
+                   y = ((Integer)columnLookup.get(new Integer(yCombo.getSelectedIndex()))).intValue(),
+                   z = ((Integer)columnLookup.get(new Integer(zCombo.getSelectedIndex()))).intValue();
+
+               ScatterPlot3DDataSet set = new ScatterPlot3DDataSet(
+                  name + COLON + table.getColumnLabel(x) + COMMA +
+                     table.getColumnLabel(y) + COMMA + table.getColumnLabel(z),
+                  colorPanel.getColor(), x, y, z
+               );
+
+               editListModel.addElement(set);
+               nameField.setText(null);
+
             }
+            else if (src == deleteButton) {
 
-            /**
-			 * get the chosen color
-             * @return the chosen color
-             */
-            Color getColor () {
-                return  color;
+               int index = editList.getSelectedIndex();
+               if (index != -1)
+                  editListModel.removeElementAt(index);
+
             }
+            else if (src == refreshButton) {
 
-            /**
-			 * set the chosen color
-             * @param color
-             */
-            void setColor (Color color) {
-                this.color = color;
+               int size = editListModel.getSize();
+
+               if (size == 0) {
+                  removeAllUserScenes();
+                  numScenes = 0;
+                  return;
+               }
+
+               // scatter plot data
+               ScatterPlot3DDataSet[] sets = new ScatterPlot3DDataSet[size];
+               for (int i = 0; i < size; i++)
+                  sets[i] = (ScatterPlot3DDataSet)editListModel.getElementAt(i);
+
+               findMinMax(sets);
+
+               String value,
+                  title = titleField.getText(),
+                  xaxis = xAxisField.getText(),
+                  yaxis = yAxisField.getText(),
+                  zaxis = zAxisField.getText();
+               double Xmin, Xmax, Ymin, Ymax, Zmin, Zmax;
+
+               // attempt to determine mininums and maximums specified by user
+
+               value = xMinField.getText();
+               if (value.trim().length() == 0) Xmin = xMin;
+               else Xmin = Double.parseDouble(value);
+
+               value = xMaxField.getText();
+               if (value.trim().length() == 0) Xmax = xMax;
+               else Xmax = Double.parseDouble(value);
+
+               value = yMinField.getText();
+               if (value.trim().length() == 0) Ymin = yMin;
+               else Ymin = Double.parseDouble(value);
+
+               value = yMaxField.getText();
+               if (value.trim().length() == 0) Ymax = yMax;
+               else Ymax = Double.parseDouble(value);
+
+               value = zMinField.getText();
+               if (value.trim().length() == 0) Zmin = zMin;
+               else Zmin = Double.parseDouble(value);
+
+               value = zMaxField.getText();
+               if (value.trim().length() == 0) Zmax = zMax;
+               else Zmax = Double.parseDouble(value);
+
+               removeAllUserScenes();
+
+               settings = new ScatterPlot3DGraphSettings(
+                  title, xaxis, yaxis, zaxis,
+                  Xmin, Xmax, Ymin, Ymax, Zmin, Zmax,
+                  10, false, true, false, false, true, true);
+
+               updateAxes();
+               updateScales();
+               updateLegend();
+
+               for (int i = 0; i < size; i++)
+                  addScene(sets[i]);
+
             }
-        }
-       	private class HelpWindow extends JD2KFrame {
-            HelpWindow() {
-			    super("About ScatterPlot3D");
-			    JEditorPane jep = new JEditorPane("text/html", getHelpString());
-			    getContentPane().add(new JScrollPane(jep));
-			    setSize(400, 400);
-		    }
-	    }
-    } // ScatterPlot3D$ScatterPlot3DView
+            else if (src == cubeRadio)
+               drawScheme = DRAW_CUBES;
+            else if (src == roughRadio)
+               drawScheme = DRAW_ROUGH_SPHERES;
+            else if (src == smoothRadio)
+               drawScheme = DRAW_SMOOTH_SPHERES;
 
-    private static final String getHelpString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<html>");
-        sb.append("<body>");
-        sb.append("<h2>ScatterPlot3D</h2>");
-        sb.append("This module visualizes a data set in three dimensions.");
-        sb.append("<h3>Keyboard controls</h3>");
-        sb.append("<ul><li>+/= key: bring scene to home view");
-        sb.append("<li>number pad -: zoom out");
-        sb.append("<li>number pad +: zoom in");
-        sb.append("<li>up arrow: move scene back");
-        sb.append("<li>down arrow: move scene forward");
-        sb.append("<li>left arrow: rotate scene counterclockwise in x");
-        sb.append("<li>right arrow: rotate scene clockwise in x");
-        sb.append("<li>Page Up: rotate scene counterclockwise in z");
-        sb.append("<li>Page Down: rotate scene clockwise in z");
-        sb.append("</ul>");
-        sb.append("<h3>Mousing Functions</h3>");
-        sb.append("<ul><li>Drag with left mouse button: rotate scene");
-        sb.append("<li>Drag with right mouse button: move scene");
-        sb.append("<li>Drag with middle mouse button: zoom scene");
-        sb.append("</ul></body></html>");
-        return sb.toString();
-    }
-} // ScatterPlot3D
+         }
+
+      } // /ScatterPlot3D$ScatterPlot3DView$ScatterPlot3DControl
+
+////////////////////////////////////////////////////////////////////////////////
+
+      /**
+       * UI for choosing the color of the points.
+       */
+      private class ColorPanel extends JPanel implements ActionListener {
+
+         private JButton editButton;
+         private JPanel renderPanel;
+         private Color color;
+
+         ColorPanel() {
+
+            editButton = new JButton("Edit");
+            editButton.addActionListener(this);
+
+            color = Color.red;
+
+            renderPanel = new JPanel();
+            renderPanel.setBackground(color);
+            renderPanel.setSize(new Dimension(15, 15));
+
+            this.add(renderPanel);
+            this.add(editButton);
+
+         }
+
+         public void actionPerformed(ActionEvent e) {
+
+            color = JColorChooser.showDialog(this, "Edit color", Color.red);
+            renderPanel.setBackground(color);
+
+         }
+
+         public Color getColor() {
+            return color;
+         }
+
+         public void setColor(Color color) {
+            this.color = color;
+         }
+
+      } // /ScatterPlot3D$ScatterPlot3DView$ColorPanel
+
+      /**
+       * The graph settings.
+       */
+      private class ScatterPlot3DGraphSettings {
+         String title_string, x, y, z;
+         double Xmin, Xmax, Ymin, Ymax, Zmin, Zmax;
+         int grid_size;
+         boolean grid, scale, legend, ticks, title, labels;
+
+         /**
+          * Default constructor.
+          */
+         ScatterPlot3DGraphSettings () {
+            title_string = EMPTY;
+            x = EMPTY;
+            y = EMPTY;
+            z = EMPTY;
+            Xmin = Double.MIN_VALUE; // xMin;
+            Xmax = Double.MAX_VALUE; // xMax;
+            Ymin = Double.MIN_VALUE; // yMin;
+            Ymax = Double.MAX_VALUE; // yMax;
+            Zmin = Double.MIN_VALUE; // zMin;
+            Zmax = Double.MAX_VALUE; // zMax;
+            grid_size = 10;
+            grid = true;
+            scale = true;
+            legend = true;
+            ticks = true;
+            title = true;
+            labels = true;
+         }
+
+         /**
+          * Constructor that takes parameters.
+          *
+          * @param title_string the graph title
+          * @param x            the x-axis title
+          * @param y            the y-axis title
+          * @param z            the z-axis title
+          * @param Xmin         the x minimum
+          * @param Xmax         the x maximum
+          * @param Ymin         the y minimum
+          * @param Ymax         the y maximum
+          * @param Zmin         the z minimum
+          * @param Zmax         the z maximum
+          * @param grid_size    size of the grid
+          * @param grid true    if grid should be shown
+          * @param scale true   if scale should be shown
+          * @param legend true  if legend should be shown
+          * @param ticks true   if ticks should be shown
+          * @param title true   if title should be shown
+          * @param labels true  if labels should be shown
+          */
+         ScatterPlot3DGraphSettings (String title_string, String x, String y,
+                 String z, double Xmin, double Xmax, double Ymin, double Ymax,
+                 double Zmin, double Zmax, int grid_size, boolean grid,
+                 boolean scale, boolean legend, boolean ticks, boolean title,
+                 boolean labels) {
+            this.title_string = title_string;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.Xmin = Xmin;
+            this.Xmax = Xmax;
+            this.Ymin = Ymin;
+            this.Ymax = Ymax;
+            this.Zmin = Zmin;
+            this.Zmax = Zmax;
+            this.grid_size = 10;
+            this.grid = grid;
+            this.scale = scale;
+            this.legend = legend;
+            this.ticks = ticks;
+            this.title = title;
+            this.labels = labels;
+         }
+
+      }
+
+      /**
+       * A data set for the scatter plot.
+       */
+      private class ScatterPlot3DDataSet {
+
+         String name;
+         Color color;
+         int x, y, z;
+
+         /**
+          * Constructor.
+          *
+          * @param name      the name of the data set
+          * @param color     the color to use
+          * @param x         the index of the x column
+          * @param y         the index of the y column
+          * @param z         the index of the z column
+          */
+         ScatterPlot3DDataSet (String name, Color color, int x, int y, int z) {
+            this.name = name;
+            this.color = color;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+         }
+
+         /**
+          * Returns the name corresponding to this data set.
+          *
+          * @return          the name
+          */
+         public String toString () {
+            return name;
+         }
+
+      }
+
+   } // /ScatterPlot3D$ScatterPlot3DView
+
+   private static final String getHelpString() {
+      StringBuffer sb = new StringBuffer();
+      sb.append("<html>");
+      sb.append("<body>");
+      sb.append("<h2>ScatterPlot3D</h2>");
+      sb.append("This module visualizes a data set in three dimensions.");
+
+      sb.append("<h3>Keyboard controls</h3>");
+      sb.append("<ul><li>+/= key: bring scene to home view");
+      // sb.append("<li>number pad -: zoom out");
+      // sb.append("<li>number pad +: zoom in");
+      sb.append("<li>up arrow: move scene back");
+      sb.append("<li>down arrow: move scene forward");
+      sb.append("<li>left arrow: rotate scene counterclockwise in x");
+      sb.append("<li>right arrow: rotate scene clockwise in x");
+      sb.append("<li>Page Up: rotate scene counterclockwise in z");
+      sb.append("<li>Page Down: rotate scene clockwise in z");
+      sb.append("</ul>");
+
+      sb.append("<h3>Mousing Functions</h3>");
+      sb.append("<ul><li>Drag with left mouse button: rotate scene");
+      sb.append("<li>Drag with right mouse button: move scene");
+      sb.append("<li>Drag with middle mouse button: zoom scene");
+      sb.append("</ul></body></html>");
+      return sb.toString();
+   }
+
+} // /ScatterPlot3D

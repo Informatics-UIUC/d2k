@@ -1,25 +1,25 @@
 package ncsa.d2k.modules.core.vis;
 
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.*;
+import java.util.*;
+
+import javax.media.j3d.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.vecmath.*;
 
 import com.sun.j3d.utils.behaviors.keyboard.*;
 import com.sun.j3d.utils.behaviors.mouse.*;
 import com.sun.j3d.utils.geometry.*;
 import com.sun.j3d.utils.universe.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.util.*;
-import javax.media.j3d.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.vecmath.*;
-import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.gui.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
 /**
@@ -32,31 +32,31 @@ import ncsa.gui.*;
 public class SurfacePlot3D extends VisModule {
 
    public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    SurfacePlot3D is a three-dimensional visualization of Table data as a     surface plot.  </body></html>";
-	}
+      return "<html>  <head>      </head>  <body>    SurfacePlot3D is a three-dimensional visualization of Table data as a     surface plot.  </body></html>";
+   }
 
    public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
-		return types;
-	}
+      String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+      return types;
+   }
 
    public String[] getOutputTypes() {
-		String[] types = {		};
-		return types;
-	}
+      String[] types = {      };
+      return types;
+   }
 
    public String getInputInfo(int index) {
-		switch (index) {
-			case 0: return "The Table to be visualized.";
-			default: return "No such input";
-		}
-	}
+      switch (index) {
+         case 0: return "The Table to be visualized.";
+         default: return "No such input";
+      }
+   }
 
    public String getOutputInfo(int index) {
-		switch (index) {
-			default: return "No such output";
-		}
-	}
+      switch (index) {
+         default: return "No such output";
+      }
+   }
 
    public String[] getFieldNameMapping() { return null; }
    protected UserView createUserView() { return new SurfacePlot3DVis(); }
@@ -383,6 +383,7 @@ public class SurfacePlot3D extends VisModule {
          BranchGroup all = new BranchGroup();
          all.setCapability(BranchGroup.ALLOW_DETACH);
 
+         /*
          Appearance a;
          Sphere s;
          TransformGroup tg;
@@ -409,6 +410,97 @@ public class SurfacePlot3D extends VisModule {
             all.addChild(tg);
 
          }
+         */
+
+         Appearance a = new Appearance();
+         Color hc = control.getLowColor();
+         a.setColoringAttributes(new ColoringAttributes(
+            new Color3f(hc.getRed(), hc.getGreen(), hc.getBlue()),
+            ColoringAttributes.FASTEST));
+
+         // rough spheres from scatter plot
+         int dtheta = 40, dphi = 40, offsetLength = 810;
+         double[] offsets = new double[offsetLength];
+         int index = 0;
+
+         double c = .05,
+                x, y, z,
+                x1, x2, x3, x4,
+                y1, y2, y3, y4,
+                z1, z2, z3, z4;
+
+         // convert spherical to cartesian coordinates
+         for (int theta = -90; theta < 90; theta += dtheta)
+            for (int phi = 0; phi < 360; phi += dphi) {
+
+               x1 = c*Math.cos(Math.toRadians(theta))*Math.cos(Math.toRadians(phi));
+               x2 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.cos(Math.toRadians(phi));
+               x3 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.cos(Math.toRadians(phi + dphi));
+               x4 = c*Math.cos(Math.toRadians(theta))*Math.cos(Math.toRadians(phi + dphi));
+
+               y1 = c*Math.cos(Math.toRadians(theta))*Math.sin(Math.toRadians(phi));
+               y2 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.sin(Math.toRadians(phi));
+               y3 = c*Math.cos(Math.toRadians(theta + dtheta))*Math.sin(Math.toRadians(phi + dphi));
+               y4 = c*Math.cos(Math.toRadians(theta))*Math.sin(Math.toRadians(phi + dphi));
+
+               z1 = c*Math.sin(Math.toRadians(theta));
+               z2 = c*Math.sin(Math.toRadians(theta + dtheta));
+               z3 = c*Math.sin(Math.toRadians(theta + dtheta));
+               z4 = c*Math.sin(Math.toRadians(theta));
+
+               // two triangles per iteration.
+               // first triangle:
+               offsets[index] = x1;
+               offsets[index + 1] = y1;
+               offsets[index + 2] = z1;
+
+               offsets[index + 3] = x2;
+               offsets[index + 4] = y2;
+               offsets[index + 5] = z2;
+
+               offsets[index + 6] = x3;
+               offsets[index + 7] = y3;
+               offsets[index + 8] = z3;
+
+               // second triangle:
+               offsets[index + 9] = x1;
+               offsets[index + 10] = y1;
+               offsets[index + 11] = z1;
+
+               offsets[index + 12] = x3;
+               offsets[index + 13] = y3;
+               offsets[index + 14] = z3;
+
+               offsets[index + 15] = x4;
+               offsets[index + 16] = y4;
+               offsets[index + 17] = z4;
+
+               index += 18;
+
+            }
+
+         // now we iterate and add the point offsets to the trig offsets
+         double[] d = new double[offsetLength*points.length];
+
+         for (int i = 0; i < points.length; i++) {
+
+            x = points[i].x;
+            y = points[i].y;
+            z = points[i].z;
+
+            for (int j = 0; j < offsetLength; j += 3) {
+               d[offsetLength*i + j] = x + offsets[j];
+               d[offsetLength*i + j + 1] = y + offsets[j + 1];
+               d[offsetLength*i + j + 2] = z + offsets[j + 2];
+            }
+
+         }
+
+         TriangleArray T = new TriangleArray((offsetLength/3)*points.length,
+            TriangleArray.COORDINATES | TriangleArray.BY_REFERENCE);
+         T.setCoordRefDouble(d);
+         all.addChild(new Shape3D(T, a));
+         all.compile();
 
          return all;
 
@@ -796,35 +888,35 @@ public class SurfacePlot3D extends VisModule {
    } // SurfacePlot3DVis
 
 
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "SurfacePlot3D";
-	}
+   /**
+    * Return the human readable name of the module.
+    * @return the human readable name of the module.
+    */
+   public String getModuleName() {
+      return "SurfacePlot3D";
+   }
 
-	/**
-	 * Return the human readable name of the indexed input.
-	 * @param index the index of the input.
-	 * @return the human readable name of the indexed input.
-	 */
-	public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "input0";
-			default: return "NO SUCH INPUT!";
-		}
-	}
+   /**
+    * Return the human readable name of the indexed input.
+    * @param index the index of the input.
+    * @return the human readable name of the indexed input.
+    */
+   public String getInputName(int index) {
+      switch(index) {
+         case 0:
+            return "input0";
+         default: return "NO SUCH INPUT!";
+      }
+   }
 
-	/**
-	 * Return the human readable name of the indexed output.
-	 * @param index the index of the output.
-	 * @return the human readable name of the indexed output.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			default: return "NO SUCH OUTPUT!";
-		}
-	}
+   /**
+    * Return the human readable name of the indexed output.
+    * @param index the index of the output.
+    * @return the human readable name of the indexed output.
+    */
+   public String getOutputName(int index) {
+      switch(index) {
+         default: return "NO SUCH OUTPUT!";
+      }
+   }
 } // SurfacePlot3D
