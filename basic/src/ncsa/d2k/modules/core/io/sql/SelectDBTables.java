@@ -28,27 +28,34 @@ public class SelectDBTables extends UIModule {
     }
 
     public String getInputInfo(int i) {
-        return "";
+        return "A connection to a database from which data is to be loaded into a DBTable.";
     }
 
     public String getInputName(int i) {
-        return "";
+        return "Database Connection";
     }
 
     public String getOutputInfo(int i) {
-        return "";
+        return "A DBTable with the data from the selected table in the database.";
     }
 
     public String getOutputName(int i) {
-        return "";
+        return "Database Table";
     }
 
     public String getModuleInfo() {
-        return "";
+        return "<P><B>OverView:</b> This module allows the user to select tables" +
+            " from a data base, then loads the chosen table's data into a database " +
+            "table.</P><P><B>Detailed Description:</b> This module provides the user " +
+            "an interface to select one table or more from a database which <i>Database " +
+            "Connection</i> is related to. For each table the user can then select " +
+            "which attributes (columns) he would like to have in the resulting table. " +
+            "The data is then loaded into a <i>DBTable</i>, which is the output of this " +
+            "module.</P><P><B>Data Handling:</B> DBTables are non-mutable.</P>";
     }
 
     public String getModuleName() {
-        return "";
+        return "Select Database Tables";
     }
 
     protected UserView createUserView() {
