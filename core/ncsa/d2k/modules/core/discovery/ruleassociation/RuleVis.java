@@ -84,8 +84,6 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		}
 	}
 
-
-
 	/**
 	 * Return the human readable name of the module.
 	 * @return the human readable name of the module.
@@ -103,8 +101,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("input <i>Rule Table<i>. ");
 
           sb.append("</p><p>Detailed Description: ");
-          sb.append("This module presents the user with a visual represention of association rules identified by ");
-          sb.append("a discovery algorithm to help the user understand the rules that were found. ");
+          sb.append("This module presents a visual represention of association rules identified by ");
+          sb.append("a discovery algorithm. ");
           sb.append("D2K includes several modules that implement association rule discovery algorithms, ");
           sb.append("all of which save their results in a <i>Rule Table</i> structure that can be used as ");
           sb.append("input to this module. ");
@@ -116,8 +114,9 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
           sb.append("rule discovery module(s).    ");
           sb.append("Items used in the rules, that is [attribute=value] pairs, are listed along the left  ");
           sb.append("side of the matrix. ");
-          sb.append("Note that some items may not be included in any rule because there was insufficient  ");
-          sb.append("support and/or confidence to consider the item significant. ");
+          sb.append("Note that some items in the original data set may not be included in any rule ");
+          sb.append("because there was insufficient support and/or confidence to consider the item ");
+          sb.append("significant. ");
 
           sb.append("</p><p> ");
           sb.append("An icon in the matrix cell corresponding to ( row = <i>item i</i>, column = <i>rule r</i>) ");
@@ -933,11 +932,12 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 //
 // 3/*/03  - Ruth did QA and Tom did updates to the module.
 // 3/28/03 - Ready for basic.
-//         - WISH:  Don't show items that don't appear in any rules.
 //         - WISH:  Group items so attributes show up next to each other (perhaps
 //                  done earlier in module sequence prior to building items or rule table.
 //         - WISH:  Allow sorting by items that have included in most rules.
 //         - WISH:  Show rule consequent items at top of item list.
 //         - WISH:  Put back option to save as PMML when that is working.
 //         - WISH:  Offer way to print entire matrix, not just viewable area.
+// 4/5/03  - Updated Info a bit after Loretta changed so items that aren't in any rules
+//           are no longer displayed.  Also, removed that from the Wish List. - ruth
 // End QA Comments.
