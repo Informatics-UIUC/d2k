@@ -92,6 +92,10 @@ public class SQLCodeBook {
     return book;
   }
 
+  /** Get the row count from the code table
+   *  @return number of rows
+   */
+
   public int getCodeCount() {
     return (codeBook.getNumRows());
   }
