@@ -35,7 +35,7 @@ public class VTColumnSelect extends UIModule  {
 	}
 
    public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.basic.TableImpl","ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
 		return types;
 	}
 
