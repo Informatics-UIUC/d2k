@@ -92,30 +92,34 @@ public class BinTransform implements Transformation, Cloneable {
 						newcols[i][j] = UNKNOWN;
 				}
 		}
-		//StringColumn[] sc = new StringColumn[table.getNumColumns()];
+
+		// Construct the new columns
+		// 1/7/04 TLR - I changed this so it would work correctly with subset tables.
+		// Now, we use the column utility to duplicate the original column as a string
+		// column. Once we have the duplicated column, we replace the entries in the column
+		// with the bin indicator strings by using the methods of the table so the subset
+		// will still apply.
 		int numColumns = mt.getNumColumns();
 		for (int i = 0; i < numColumns; i++) {
 			if (binRelevant[i]) {
-				//sc[i] = new StringColumn(newcols[i]);
-				//sc[i].setComment(table.getColumn(i).getComment());
+				
+				// Create a new column of type string containing the string rep
+				// of the original data.
+				int ci = i;
+				StringColumn sc = ColumnUtilities.toStringColumn(mt.getColumn(i));
 				if (new_column) {
-					if (binRelevant[i]) {
-						//sc[i].setLabel(table.getColumnLabel(i) + " bin");
-						mt.addColumn(new StringColumn(newcols[i]));
-						mt.setColumnLabel(
-							mt.getColumnLabel(i) + BIN,
-							mt.getNumColumns() - 1);
-					}
+					mt.addColumn(sc);
+					ci = mt.getNumColumns()-1;
 				} else {
-					String oldLabel = mt.getColumnLabel(i);
-					mt.setColumn(new StringColumn(newcols[i]), i);
-					mt.setColumnLabel(oldLabel, i);
+					mt.setColumn(sc, i);					
 				}
+				
+				// Set the strings, use the method of the table, in case it is
+				// a subset table.
+				for (int row = 0 ; row < mt.getNumRows() ; row++)
+					mt.setString (newcols[i][row], row, ci);
 			}
 		}
-		// 4/7/02 commented out by Loretta...
-		// this add gets done by applyTransformation
-		//mt.addTransformation(this);
 		return true;
 	}
 

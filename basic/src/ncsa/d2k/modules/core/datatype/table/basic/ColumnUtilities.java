@@ -19,7 +19,7 @@ final public class ColumnUtilities {
 			dc.setDouble(sc.getDouble(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		//dc.setType(new Double(0));
+		ColumnUtilities.copyMissingValues(sc, dc);
 		return dc;
 	}
 
@@ -35,7 +35,7 @@ final public class ColumnUtilities {
 			dc.setInt(sc.getInt(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		//dc.setType(new Integer(0));
+		ColumnUtilities.copyMissingValues(sc, dc);
 		return dc;
 	}
 
@@ -50,9 +50,8 @@ final public class ColumnUtilities {
 		for(int i = 0; i < sc.getNumRows(); i++)
 			dc.setLong(sc.getLong(i), i);
 		dc.setLabel(sc.getLabel());
-		//dc.setType(new Long(0));
 		dc.setComment(sc.getComment());
-		//dc.setType(new Long(0));
+		ColumnUtilities.copyMissingValues(sc, dc);
 		return dc;
 	}
 
@@ -68,7 +67,7 @@ final public class ColumnUtilities {
 			dc.setShort(sc.getShort(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		//dc.setType(new Short((short)0));
+		ColumnUtilities.copyMissingValues(sc, dc);
 		return dc;
 	}
 
@@ -84,7 +83,7 @@ final public class ColumnUtilities {
 			dc.setFloat(sc.getFloat(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		//dc.setType(new Float(0));
+		ColumnUtilities.copyMissingValues(sc, dc);
 		return dc;
 	}
 
@@ -100,45 +99,9 @@ final public class ColumnUtilities {
 			dc.setBoolean(sc.getBoolean(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		//dc.setType(new Boolean(false));
+		ColumnUtilities.copyMissingValues(sc, dc);
 		return dc;
 	}
-
-	/**
-		Create a new CharArrayColumn with the data from sc.  The
-		Objects in the new column are references to the Objects in
-		the original column.
-		@param sc the original column
-		@return a CharArrayColumn initialized with the data from sc
-	*/
-	/*public static final CharArrayColumn toCharArrayColumn(Column sc) {
-		CharArrayColumn dc = new CharArrayColumn(sc.getCapacity());
-		for(int i = 0; i < sc.getCapacity(); i++)
-			dc.setChars(sc.getChars(i), i);
-		dc.setLabel(sc.getLabel());
-		dc.setComment(sc.getComment());
-		char[] ty = new char[0];
-		dc.setType(ty);
-		return dc;
-	}*/
-
-	/**
-		Create a new ByteArrayColumn with the data from sc.  The
-		Objects in the new column are references to the Objects in
-		the original column.
-		@param sc the original column
-		@return a FloatColumn initialized with the data from sc
-	*/
-	/*public static final ByteArrayColumn toByteArrayColumn(AbstractColumn sc) {
-		ByteArrayColumn dc = new ByteArrayColumn(sc.getCapacity());
-		for(int i = 0; i < sc.getCapacity(); i++)
-			dc.setBytes(sc.getBytes(i), i);
-		dc.setLabel(sc.getLabel());
-		dc.setComment(sc.getComment());
-		byte[] ty = new byte[0];
-		dc.setType(ty);
-		return dc;
-	}*/
 
 	/**
 		Create a new ObjectColumn with the data from sc.  The
@@ -153,7 +116,7 @@ final public class ColumnUtilities {
 			dc.setObject(sc.getObject(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		//dc.setType(new Object());
+		ColumnUtilities.copyMissingValues(sc, dc);
 		return dc;
 	}
 
@@ -170,10 +133,19 @@ final public class ColumnUtilities {
 			dc.setString(sc.getString(i), i);
 		dc.setLabel(sc.getLabel());
 		dc.setComment(sc.getComment());
-		//dc.setType(new String());
+		ColumnUtilities.copyMissingValues(sc, dc);
 		return dc;
 	}
 
+	/**
+	 * Copy the missing values from one column to another.
+	 * @param from column to copy missing values from.
+	 * @param to column to copy the missing values to.
+	 */
+	private static void copyMissingValues(Column from, Column to) {
+		((MissingValuesColumn)to).setMissingValues(
+			((MissingValuesColumn)from).getMissingValues());
+	}
 
     /**
        Loop through the items in column, if they can all be represented
