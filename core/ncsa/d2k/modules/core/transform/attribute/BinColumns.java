@@ -1,118 +1,156 @@
-package ncsa.d2k.modules.core.transform.attribute;
+package  ncsa.d2k.modules.core.transform.attribute;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.gui.*;
+import  java.awt.*;
+import  java.awt.event.*;
+import  java.io.*;
+import  java.text.*;
+import  java.util.*;
+import  javax.swing.*;
+import  javax.swing.event.*;
+import  ncsa.d2k.core.modules.*;
+import  ncsa.d2k.gui.*;
+//import ncsa.d2k.modules.core.datatype.*;
+import  ncsa.d2k.modules.core.datatype.table.*;
+import  ncsa.d2k.modules.core.vis.widgets.*;
+import  ncsa.d2k.userviews.swing.*;
+import  ncsa.gui.*;
 import ncsa.d2k.modules.core.datatype.*;
-import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
-import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.gui.*;
+
 
 /**
- * This module presents a user interface for the interactive binning of
- * <code>MutableTable</code> data.
+ * put your documentation comment here
  */
 public class BinColumns extends UIModule {
+    private static final String EMPTY = "",
+    COLON = " : ", COMMA = ",", DOTS = "...",
+    OPEN_PAREN = "(", CLOSE_PAREN = ")", OPEN_BRACKET = "[", CLOSE_BRACKET = "]";
 
-   private static final String
-      EMPTY = "",          COLON = " : ",        COMMA = ",",
-      DOTS = "...",        OPEN_PAREN = "(",     CLOSE_PAREN = ")",
-      OPEN_BRACKET = "[",  CLOSE_BRACKET = "]";
+    private NumberFormat nf;
 
-   private NumberFormat nf;
+    /**
+     * put your documentation comment here
+     * @return
+     */
+    public String getModuleName () {
+        return  "Bin Columns";
+    }
 
-////////////////////////////////////////////////////////////////////////////////
+    /**
+     * put your documentation comment here
+     * @return
+     */
+    public String getModuleInfo () {
+        return  "<html>  <head>      </head>  <body>" +
+        "<P><b>Overview:</B> This module allows a user to interactively bin data from a table.</P>"+
+        "<P><B>Detailed Description:</B><br>Numeric data can be binned in four ways:<br>" +
+         " <UL>          <LI><U>Uniform range:</U><br>" +
+          "Enter a positive integer value for the number of bins. Bin Columns will divide the binning range evenly over these bins. </li>"+
+          "<li><u>Specified range:</u><br>"+
+          "Enter a comma-separated sequence of integer or floating-point values for the endpoints of each bin.</li>"+
+          "<li><U>Bin Interval:</u><br>"+
+          "Enter an integer or floating-point value for the width of each bin.</li>"+
+          "<li><u>Uniform Weight:</U><br> Enter a positive integer value for even binning with that number in each bin.</li>"+
+          "</ul></P><P>The user may also bin nominal data.</P>"+
+          "<P>For further information on how to use this module the user may click on the \"Help\" button during run time and get detailed description of each functionality.</P>"+
+          "<P><B>Data Handling:</b><BR> This module does not change its input. Rather than that it outputs a Transformation that can be then applied to the data.</P>"+
+          "</body></html>";
+    }
 
-   protected UserView createUserView() {
-      return new BinColumnsView();
-   }
+    /**
+     * put your documentation comment here
+     * @return
+     */
+    public String[] getInputTypes () {
+        String[] types =  {
+            "ncsa.d2k.modules.core.datatype.table.Table"
+        };
+        return  types;
+    }
 
-   public String[] getFieldNameMapping() {
-      return null;
-   }
+    /**
+     * put your documentation comment here
+     * @return
+     */
+    public String[] getOutputTypes () {
+        String[] types =  {
+            "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform", "ncsa.d2k.modules.core.datatype.table.Table"
+        };
+        return  types;
+    }
 
-   public String getInputInfo(int index) {
-      if (index == 0)
-         return  "A <i>MutableTable</i> with columns to be binned.";
-      return null;
-   }
+    /**
+     * put your documentation comment here
+     * @param i
+     * @return
+     */
+    public String getInputInfo (int i) {
+        switch (i) {
+            case 0:
+                return  "A Table with columns to bin.";
+            default:
+                return  "No such input";
+        }
+    }
 
-   public String getInputName (int i) {
-      if (i == 0)
-         return "Mutable Table";
-      return null;
-   }
+    /**
+     * put your documentation comment here
+     * @param i
+     * @return
+     */
+    public String getOutputName (int i) {
+        switch (i) {
+            case 0:
+                return "Bin Transformation";
+            case 1:
+                return  "Table";
+            default:
+                return  "no such output!";
+        }
+    }
 
-   public String[] getInputTypes() {
-      return new String[] {
-         "ncsa.d2k.modules.core.datatype.table.MutableTable"
-      };
-   }
+    /**
+     * put your documentation comment here
+     * @param i
+     * @return
+     */
+    public String getInputName (int i) {
+        if (i == 0)
+            return  "Table";
+        return  "no such input";
+    }
 
-   public String getModuleName() {
-      return "Bin Columns";
-   }
+    /**
+     * put your documentation comment here
+     * @param i
+     * @return
+     */
+    public String getOutputInfo (int i) {
+        switch (i) {
+            case 0:
+                return "A BinTransform, as defined by the user, that can be applied to the input Table.";
+            case 1:
+                return  "The input Table unchanged.  In order to bin the columns of this table the Bin Transformation should be Applied to it.";
+            default:
+                return  "No such output";
+        }
+    }
 
-   public String getModuleInfo() {
-      StringBuffer sb = new StringBuffer("<p>Overview: ");
-      sb.append("This module presents a user interface for the interactive ");
-      sb.append("binning of tabular data.");
-      sb.append("</p><p>Detailed Description: ");
-      sb.append("This module's interface provides four methods for the ");
-      sb.append("binning of numeric data: ");
-      sb.append("</p><p>");
-      sb.append("<i>Uniform range</i> binning divides the binning range ");
-      sb.append("evenly over an integer number of bins.");
-      sb.append("</p><p>");
-      sb.append("<i>Specified range</i> binning sets the boundaries of each ");
-      sb.append("bin at a user-specified end-point.");
-      sb.append("</p><p>");
-      sb.append("<i>Bin interval</i> binning sets each bin of the data to ");
-      sb.append("have the same user-specified width.");
-      sb.append("<i>Uniform weight</i> binning creates bins such that each ");
-      sb.append("bin has the same number of members.");
-      sb.append("</p><p>");
-      sb.append("The binning of nominal data is supported as well.");
-      sb.append("</p><p>Data Handling: ");
-      sb.append("This module does not modify its input data. Rather, its ");
-      sb.append("output is a <i>Transformation</i> that can later be applied ");
-      sb.append("to bin the columns of the table.");
-      sb.append("</p>");
-      return sb.toString();
-   }
+    /**
+     * put your documentation comment here
+     * @return
+     */
+    protected UserView createUserView () {
+        return  new BinColumnsView();
+    }
 
-   public String getOutputInfo(int index) {
-      if (index == 0)
-         return "A <i>BinTransform</i> that can be applied to the input table.";
-      // else if (index == 1)
-      //    return "The unchanged input table.";
-      return null;
-   }
-
-   public String getOutputName(int index) {
-      if (index == 0)
-         return "Bin Transform";
-      // else if (index == 1)
-      //    return "Mutable Table";
-      return null;
-   }
-
-   public String[] getOutputTypes() {
-      return new String[] {
-         "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"
-         // "ncsa.d2k.modules.core.datatype.table.MutableTable"
-      };
-   }
-
-////////////////////////////////////////////////////////////////////////////////
+    /**
+     * put your documentation comment here
+     * @return
+     */
+    public String[] getFieldNameMapping () {
+        return  null;
+    }
 
     private class BinColumnsView extends JUserPane {
         private boolean setup_complete;
@@ -219,8 +257,18 @@ public class BinColumns extends UIModule {
                     }
 
                     String txt = uRangeField.getText();
-                    if(txt != null && txt.length() != 0) {
+                    //vered: replacing if else with try catch
+                    //if(txt != null && txt.length() != 0)
+                    try
+                    {
+                      int i = Integer.parseInt(txt);  //if this is successful then it is safe to go on with the preview
+                      if(i<=1)
+                         throw new NumberFormatException();
+
+
                         String selCol = (String)numericColumnLabels.getSelectedValue();
+                        if(selCol == null) throw new NullPointerException();
+
                     final Histogram H = new UniformHistogram(new TableBinCounts(tbl),
                             uRangeField.getText(), colLook, selCol);
                     JD2KFrame frame = new JD2KFrame("Uniform Range");
@@ -251,10 +299,15 @@ public class BinColumns extends UIModule {
                     });
                     frame.pack();
                     frame.setVisible(true);
-                    }
-                    else {
+                    }//try
+                    //else
+                    catch(NumberFormatException nfe){
                         // message dialog...must specify range
-                        ErrorDialog.showDialog("Must specify range.", "Error");
+                      ErrorDialog.showDialog("Must specify a valid range - an integer greater than 1.", "Error");
+                        uRangeField.setText(EMPTY);
+                    }
+                    catch(NullPointerException npe){
+                      ErrorDialog.showDialog("You must select a column to bin.", "Error");
                     }
                     /*
                      final JSlider uniformSlider = H.getSlider();
@@ -295,26 +348,44 @@ public class BinColumns extends UIModule {
             showSpecRange.addActionListener(new AbstractAction() {
 
                 public void actionPerformed (ActionEvent e) {
-                    String txt = specRangeField.getText();
-                    if(txt == null || txt.length() == 0) {
-                        // show message dialog
-                        ErrorDialog.showDialog("Must specify range.", "Error");
-                        return;
-                    }
 
-                    HashMap colLook = new HashMap();
-                    for (int i = 0; i < tbl.getNumColumns(); i++) {
-                        if(tbl.isColumnNumeric(i)) {
-                            colLook.put(tbl.getColumnLabel(i), new Integer(i));
-                        }
+                  //@todo: add exception handling for illegal input
+                    String txt = specRangeField.getText();
+                    //vered: wrapped it all with try catch.
+                    try{
+                      if(txt == null || txt.length() == 0) {
+                          // show message dialog
+                          //vered
+                          throw new IllegalArgumentException();
+
+                          //ErrorDialog.showDialog("Must specify range.", "Error");
+                         // return;
+                      }
+
+
+                      HashMap colLook = new HashMap();
+                      for (int i = 0; i < tbl.getNumColumns(); i++) {
+                          if(tbl.isColumnNumeric(i)) {
+                              colLook.put(tbl.getColumnLabel(i), new Integer(i));
+                          }
+                      }//for
+                      JD2KFrame frame = new JD2KFrame("Specified Range");
+                      String col = (String)numericColumnLabels.getSelectedValue();
+                      //vered:
+                      if (col == null) throw new NullPointerException();
+
+                      frame.getContentPane().add(new RangeHistogram(new TableBinCounts(tbl),
+                              /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook, col));
+                               frame.pack();
+                               frame.setVisible(true);
+                    }//try
+                    catch(NullPointerException npe){
+                       ErrorDialog.showDialog("You must select a column to bin.", "Error");
                     }
-                    JD2KFrame frame = new JD2KFrame("Specified Range");
-                    String col = (String)numericColumnLabels.getSelectedValue();
-                    frame.getContentPane().add(new RangeHistogram(new TableBinCounts(tbl),
-                            /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook, col));
-                             frame.pack();
-                             frame.setVisible(true);
-                }
+                    catch(IllegalArgumentException iae){
+                      ErrorDialog.showDialog("Please enter a comma-separated sequence of\ninteger or floating-point values for\nthe endpoints of each bin. ", "Error");
+                    }
+                }//action performed.
             });
             Box b1 = new Box(BoxLayout.X_AXIS);
             b1.add(specRangeField);
@@ -344,8 +415,15 @@ public class BinColumns extends UIModule {
                         }
                     }
                     String txt = intervalField.getText();
-                    if(txt != null && txt.length() != 0) {
+                    //vered: inserting a try catch to deal with inllegal argument exceptions
+                    try{
+                    //if(txt != null && txt.length() != 0) {
+                      if(txt == null || txt.length() == 0) throw new IllegalArgumentException("Must specify an interval");
+
                     String col = (String)numericColumnLabels.getSelectedValue();
+                    //vered: added this to prevent null pointer exception in init of histogram.
+                    if(col == null) throw new NullPointerException();
+
                     final Histogram H = new IntervalHistogram(new TableBinCounts(tbl),
                             /*Histogram.HISTOGRAM_INTERVAL,*/ intervalField.getText(), colLook, col);
                              JD2KFrame frame = new JD2KFrame("Bin Interval");
@@ -382,11 +460,20 @@ public class BinColumns extends UIModule {
                              });
                              frame.pack();
                              frame.setVisible(true);
+                    }//try
+                    catch(IllegalArgumentException iae){
+                      String str = iae.getMessage();
+                      if(str == null || str.length() == 0) str = "You must specify a valid interval";
+                      ErrorDialog.showDialog(str, "Error");
                     }
+                    catch(NullPointerException npe){
+                      ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                    }
+                    /*vered - the if else replaced by try catch
                     else {
                         // message dialog...you must specify an interval
                         ErrorDialog.showDialog("Must specify interval.", "Error");
-                    }
+                    }*/
                              /*
                      final JSlider intervalSlider = H.getSlider();
                      intervalSlider.addChangeListener(new ChangeListener() {
@@ -684,7 +771,7 @@ public class BinColumns extends UIModule {
                         bins[i] = (BinDescriptor)tmp[i];
                     BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
                     pushOutput(bt, 0);
-                     // pushOutput(tbl, 1);
+                    pushOutput(tbl, 1);
                     viewDone("Done");
                 }
             });
@@ -846,13 +933,25 @@ public class BinColumns extends UIModule {
          */
         private void addUniRange () {
             int[] colIdx = getSelectedNumericIndices();
+            //vered
+            if(colIdx.length == 0){
+             ErrorDialog.showDialog("Must select a column to bin.", "Error");
+                return;
+            }
+
+
+
             // uniform range is the number of bins...
             String txt = uRangeField.getText();
             int num;
             // ...get this number
             try {
                 num = Integer.parseInt(txt);
+                //vered:
+                if(num<=1) throw new NumberFormatException();
             } catch (NumberFormatException e) {
+              //vered:
+              ErrorDialog.showDialog("Must specify an integer greater thatn 1.", "Error");
                 return;
             }
             // find the maxes and mins
@@ -897,18 +996,33 @@ public class BinColumns extends UIModule {
          */
         private void addSpecifiedRange () {
             int[] colIdx = getSelectedNumericIndices();
+            //vered:
+              if(colIdx.length == 0){
+             ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                return;
+            }
+
             // specified range is a comma-separated list of bin maxes
             String txt = specRangeField.getText();
-            ArrayList al = new ArrayList();
-            StringTokenizer strTok = new StringTokenizer(txt, COMMA);
-            double[] binMaxes = new double[strTok.countTokens()];
-            int idx = 0;
+
+              //vered:
+              if(txt == null || txt.length() == 0) {
+                ErrorDialog.showDialog("Please enter a comma-separated sequence of\ninteger or floating-point values for\nthe endpoints of each bin. ", "Error");
+                  return;
+              }
+
+              ArrayList al = new ArrayList();
+              StringTokenizer strTok = new StringTokenizer(txt, COMMA);
+              double[] binMaxes = new double[strTok.countTokens()];
+              int idx = 0;
             try {
-                while (strTok.hasMoreElements()) {
-                    String s = (String)strTok.nextElement();
-                    binMaxes[idx++] = Double.parseDouble(s);
-                }
+                  while (strTok.hasMoreElements()) {
+                      String s = (String)strTok.nextElement();
+                      binMaxes[idx++] = Double.parseDouble(s);
+                  }
             } catch (NumberFormatException e) {
+              //vered
+              ErrorDialog.showDialog("Please enter a comma-separated sequence of\ninteger or floating-point values for\nthe endpoints of each bin. ", "Error");
                 return;
             }
             // now create and add the bins
@@ -933,14 +1047,23 @@ public class BinColumns extends UIModule {
          */
         private void addFromInterval () {
             int[] colIdx = getSelectedNumericIndices();
+            //vered:
+            if(colIdx.length == 0){
+              ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                return;
+            }
+
             // the interval is the width
             String txt = intervalField.getText();
             double intrval;
             try {
                 intrval = Double.parseDouble(txt);
             } catch (NumberFormatException e) {
+               //vered:
+              ErrorDialog.showDialog("Must specify a positive number", "Error");
                 return;
             }
+
             // find the mins and maxes
             double[] maxes = new double[colIdx.length];
             double[] mins = new double[colIdx.length];
@@ -985,12 +1108,24 @@ public class BinColumns extends UIModule {
          */
         private void addFromWeight () {
             int[] colIdx = getSelectedNumericIndices();
+
+            //vered:
+            if(colIdx.length == 0){
+              ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                return;
+            }
+
             // the weight is the number of items in each bin
             String txt = weightField.getText();
             int weight;
             try {
                 weight = Integer.parseInt(txt);
+                //vered:
+                if(weight <= 0) throw new NumberFormatException();
+
             } catch (NumberFormatException e) {
+              //vered:
+              ErrorDialog.showDialog("Must specify a positive integer", "Error");
                 return;
             }
             // we need to sort the data, but do not want to sort the
@@ -1179,7 +1314,7 @@ public class BinColumns extends UIModule {
              * put your documentation comment here
              */
             public HelpWindow () {
-                super("About BinColumns");
+                super("About Bin Columns");
                 JEditorPane ep = new JEditorPane("text/html", getHelpString());
                 ep.setCaretPosition(0);
                 getContentPane().add(new JScrollPane(ep));
@@ -1193,11 +1328,11 @@ public class BinColumns extends UIModule {
          */
         private String getHelpString () {
             StringBuffer sb = new StringBuffer();
-            sb.append("<html><body><h2>BinColumns</h2>");
+            sb.append("<html><body><h2>Bin Columns</h2>");
             sb.append("This module allows a user to interactively bin data from a table. ");
             sb.append("Numeric data can be binned in four ways:<ul>");
             sb.append("<li><b>Uniform range</b><br>");
-            sb.append("Enter a positive integer value for the number of bins. BinColumns will ");
+            sb.append("Enter a positive integer value for the number of bins. Bin Columns will ");
             sb.append("divide the binning range evenly over these bins.");
             sb.append("<br><li><b>Specified range</b>:<br>");
             sb.append("Enter a comma-separated sequence of integer or floating-point values ");
@@ -1207,21 +1342,21 @@ public class BinColumns extends UIModule {
             sb.append("<br><li><b>Uniform Weight</b>:<br>");
             sb.append("Enter a positive integer value for even binning with that number in each bin.");
             sb.append("</ul>");
-            sb.append("To bin numeric data, select columns from the ``Numeric Columns'' ");
+            sb.append("To bin numeric data, select columns from the \"Numeric Columns\" ");
             sb.append("selection area (top left) and select a binning method by entering a value ");
-            sb.append("in the corresponding text field and clicking ``Add''. Data can ");
+            sb.append("in the corresponding text field and clicking \"Add\". Data can ");
             sb.append("alternately be previewed in histogram form by clicking the corresponding ");
-            sb.append("``Show'' button (this accepts, but does not require, a value in the text field). ");
+            sb.append("\"Show\" button (this accepts, but does not require, a value in the text field). ");
             sb.append("Uniform weight binning has no histogram (it would always look the same).");
-            sb.append("<br><br>To bin nominal data, click the ``Nominal'' tab (top left) to bring ");
-            sb.append("up the ``Nominal Columns'' selection area. Click on a column to show a list ");
-            sb.append("of unique nominal values in that column in the ``Unique Values'' area below. ");
+            sb.append("<br><br>To bin nominal data, click the \"Nominal\" tab (top left) to bring ");
+            sb.append("up the \"Nominal Columns\" selection area. Click on a column to show a list ");
+            sb.append("of unique nominal values in that column in the \"Unique Values\" area below. ");
             sb.append("Select one or more of these values and click the right arrow button to group ");
             sb.append("these values. They can then be assigned a collective name as before.");
             sb.append("<br><br>To assign a name to a particular bin, select that bin in ");
-            sb.append("the ``Current Bins'' selection area (top right), enter a name in ");
-            sb.append("the ``Name'' field below, and click ``Update''. To bin the data and ");
-            sb.append("output the new table, click ``Done''.");
+            sb.append("the \"Current Bins\" selection area (top right), enter a name in ");
+            sb.append("the \"Name\" field below, and click \"Update\". To bin the data and ");
+            sb.append("output the new table, click \"Done\".");
             sb.append("</body></html>");
             return  sb.toString();
         }
@@ -1307,3 +1442,9 @@ class TableBinCounts implements BinCounts {
         return counts;
     }
 }
+
+/**
+ * QA comments:
+ * 2-27-03 vered started qa. added module description, exception handling.
+ * 2-27-03 commit back to core and back to greg - to reveiw bin nominal columns tab.
+ */
