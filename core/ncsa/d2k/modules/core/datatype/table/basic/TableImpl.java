@@ -15,7 +15,7 @@ import java.util.*;
  * of Table.
  * <br>
  */
-public class TableImpl extends AbstractTable implements /*Mutable*/Table {
+abstract public class TableImpl extends AbstractTable implements /*Mutable*/Table {
 	//static final long serialVersionUID = 2152647679198922423L;
 	static final long serialVersionUID = -2629248420114547112L;
 
@@ -70,35 +70,6 @@ public class TableImpl extends AbstractTable implements /*Mutable*/Table {
         this.fillTable(sd);
     }*/
 
-    /**
-     * Return an exact copy of this Table.  A deep copy
-     * is attempted, but if it fails a new Table will be created,
-     * initialized with the same data as this Table.
-       * @return A new Table with a copy of the contents of this column.
-     */
-    public Table copy () {
-        TableImpl vt;
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(this);
-            byte buf[] = baos.toByteArray();
-            oos.close();
-            ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            vt = (TableImpl)ois.readObject();
-            ois.close();
-            return  vt;
-        } catch (Exception e) {
-            vt = new TableImpl(getNumColumns());
-            vt.setKeyColumn(getKeyColumn());
-            for (int i = 0; i < getNumColumns(); i++)
-                vt.setColumn(getColumn(i).copy(), i);
-            vt.setLabel(getLabel());
-            vt.setComment(getComment());
-            return  vt;
-        }
-    }
 
     /**
       Fill the initialized table with data from staticDoc.
@@ -723,20 +694,6 @@ public class TableImpl extends AbstractTable implements /*Mutable*/Table {
    }
 
     /**
-     * Gets a subset of this Table's rows, a cropped Table, given a start
-    * position and length.  The returned Table is a copy of the original.
-     * @param pos the start position for the subset
-     * @param len the length of the subset
-     * @return a subset of this Table's rows
-     */
-    public Table getSubset (int pos, int len) {
-        TableImpl subset = new TableImpl(columns.length);
-        for (int i = 0; i < columns.length; i++)
-            subset.setColumn((Column)columns[i].getSubset(pos, len), i);
-        return  subset;
-    }
-
-    /**
      * Sets the reference to the internal representation of this Table.
      * @param newColumns a new internal representation for this Table
      */
@@ -816,34 +773,6 @@ public class TableImpl extends AbstractTable implements /*Mutable*/Table {
         setColumn(temp, pos2);
     }
 
-    /**
-     * Get a copy of this Table, reordered, based on the input array of indexes,
-     * does not overwrite this Table.
-     * @param newOrder an array of indices indicating a new order
-    * @return a copy of this table that has been reordered.
-     */
-    public Table reorderRows (int[] newOrder) {
-        TableImpl newTable = new TableImpl(columns.length);
-        for (int i = 0; i < columns.length; i++)
-            newTable.setColumn(columns[i].reorderRows(newOrder), i);
-        newTable.setLabel(getLabel());
-        newTable.setComment(getComment());
-        return  newTable;
-    }
-
-   /**
-    * MUST GET COPIES!!
-    * @param newOrder
-    * @return
-    */
-   public Table reorderColumns(int[] newOrder) {
-      TableImpl newTable = new TableImpl(columns.length);
-      for(int i = 0; i < newOrder.length; i++)
-         newTable.setColumn(getColumn(newOrder[i]).copy(), i);
-      newTable.setLabel(getLabel());
-      newTable.setComment(getComment());
-      return newTable;
-   }
 
     /**
      * Given an array of booleans, will remove the positions in the Table
@@ -1402,13 +1331,6 @@ public class TableImpl extends AbstractTable implements /*Mutable*/Table {
      ExampleTable et = toExampleTable();
      et.setTrainingSet(rows);
      return et.getTrainTable();
-   }
-
-   public Table getSubset(int [] rows) {
-     TableImpl subset = new TableImpl(columns.length);
-     for (int i = 0; i < columns.length; i++)
-         subset.setColumn((Column)columns[i].getSubset(rows), i);
-     return  subset;
    }
 
    /**

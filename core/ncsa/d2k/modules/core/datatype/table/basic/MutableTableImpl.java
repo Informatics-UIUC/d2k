@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.datatype.table.basic;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import java.util.*;
-
+import java.io.*;
 /**
  * MutableTable defines methods used to mutate the contents of a Table.
  */
@@ -736,26 +736,6 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
     }
 
 	/**
-		Get a copy of this Table reordered based on the input array of indexes.
-		Does not overwrite this Table.
-		@param newOrder an array of indices indicating a new order
-		@return a copy of this column with the rows reordered
-	*/
-	public Table reorderRows(int[] newOrder) {
-        return super.reorderRows(newOrder);
-    }
-
-	/**
-		Get a copy of this Table reordered based on the input array of indexes.
-		Does not overwrite this Table.
-		@param newOrder an array of indices indicating a new order
-		@return a copy of this column with the rows reordered
-	*/
-	public Table reorderColumns(int[] newOrder) {
-        return super.reorderColumns(newOrder);
-    }
-
-	/**
 		Swap the positions of two rows.
 		@param pos1 the first row to swap
 		@param pos2 the second row to swap
@@ -1013,4 +993,81 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	 * @param col the column index
 	 */
 	//public void setScalarEmptyValue(Number val, int col) {}
+	/**
+	 * Gets a subset of this Table's rows, a cropped Table, given a start
+	* position and length.  The returned Table is a copy of the original.
+	 * @param pos the start position for the subset
+	 * @param len the length of the subset
+	 * @return a subset of this Table's rows
+	 */
+	public Table getSubset (int pos, int len) {
+		TableImpl subset = new MutableTableImpl(columns.length);
+		for (int i = 0; i < columns.length; i++)
+			subset.setColumn((Column)columns[i].getSubset(pos, len), i);
+		return  subset;
+	}
+
+	public Table getSubset(int [] rows) {
+	  TableImpl subset = new MutableTableImpl(columns.length);
+	  for (int i = 0; i < columns.length; i++)
+		  subset.setColumn((Column)columns[i].getSubset(rows), i);
+	  return  subset;
+	}
+	/**
+	 * Get a copy of this Table, reordered, based on the input array of indexes,
+	 * does not overwrite this Table.
+	 * @param newOrder an array of indices indicating a new order
+	* @return a copy of this table that has been reordered.
+	 */
+	public Table reorderRows (int[] newOrder) {
+		TableImpl newTable = new MutableTableImpl(columns.length);
+		for (int i = 0; i < columns.length; i++)
+			newTable.setColumn(columns[i].reorderRows(newOrder), i);
+		newTable.setLabel(getLabel());
+		newTable.setComment(getComment());
+		return  newTable;
+	}
+
+	/**
+	 * MUST GET COPIES!!
+	 * @param newOrder
+	 * @return
+	 */
+	public Table reorderColumns(int[] newOrder) {
+	   TableImpl newTable = new MutableTableImpl(columns.length);
+	   for(int i = 0; i < newOrder.length; i++)
+		  newTable.setColumn(getColumn(newOrder[i]).copy(), i);
+	   newTable.setLabel(getLabel());
+	   newTable.setComment(getComment());
+	   return newTable;
+	}
+	/**
+	 * Return an exact copy of this Table.  A deep copy
+	 * is attempted, but if it fails a new Table will be created,
+	 * initialized with the same data as this Table.
+	   * @return A new Table with a copy of the contents of this column.
+	 */
+	public Table copy () {
+		TableImpl vt;
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+			byte buf[] = baos.toByteArray();
+			oos.close();
+			ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			vt = (TableImpl)ois.readObject();
+			ois.close();
+			return  vt;
+		} catch (Exception e) {
+			vt = new MutableTableImpl(getNumColumns());
+			vt.setKeyColumn(getKeyColumn());
+			for (int i = 0; i < getNumColumns(); i++)
+				vt.setColumn(getColumn(i).copy(), i);
+			vt.setLabel(getLabel());
+			vt.setComment(getComment());
+			return  vt;
+		}
+	}
 }
