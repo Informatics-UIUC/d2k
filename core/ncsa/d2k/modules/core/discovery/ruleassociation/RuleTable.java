@@ -7,8 +7,14 @@ import gnu.trove.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 
-/**
- *
+/** This class contains the following components:
+ * minimumSupport - minimum support specified by a user
+ * minimumConfidence - minimum confidence specified by a user
+ * numberOfTransactions - number of records in the data set
+ * ruleTable - an ExampleTable to hold all rules
+ * items - a List to hold all item labels
+ * itemSets - a List to hold all frequent item sets. Each frequent item set
+ *            is represented by a list of item indexes.
  */
 public class RuleTable extends MutableTableImpl {
 
@@ -29,11 +35,11 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Create a new RuleTable
-     * @param rls
-     * @param minCon
-     * @param minSupp
-     * @param names
-     * @param sets
+     * @param rls an ExampleTable to hold all rules
+     * @param minCon the minimum confidence specified by a user
+     * @param minSupp the minimum support specified by a user
+     * @param names list of item labels
+     * @param sets list of frequent item sets
      */
     public RuleTable(TableImpl rls, double minCon, double minSupp, int numTrans, List names, List sets) {
         // the support and confidence columns are in the wrong order when we get them.
@@ -104,7 +110,7 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the minimum confidence
-     * @return
+     * @return the confidence a user specified
      */
     public double getMinimumConfidence() {
         return minimumConfidence;
@@ -112,7 +118,7 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the minimum support
-     * @return
+     * @return the support a user specified
      */
     public double getMinimumSupport() {
         return minimumSupport;
@@ -120,7 +126,7 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the number of transactions
-     * @return
+     * @return the number of transactions in the data set
      */
     public int getNumberOfTransactions() {
         return numberOfTransactions;
@@ -128,8 +134,8 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the confidence for a specific rule
-     * @param row
-     * @return
+     * @param row the rule to check.
+     * @return the confidence of the rule.
      */
     public double getConfidence(int row) {
         return getDouble(getNumRows()-1-row, CONFIDENCE);
@@ -137,8 +143,8 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the support for a specific rule
-     * @param row
-     * @return
+     * @param row the rule to check.
+     * @return the support of the rule.
      */
     public double getSupport(int row) {
         return getDouble(getNumRows()-1-row, SUPPORT);
@@ -146,8 +152,8 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the antecedent for a specific rule
-     * @param row
-     * @return
+     * @param row the rule to check.
+     * @return the antecedent of the rule represented by a list of item indexes.
      */
     public int[] getRuleAntecedent(int row) {
         int idx = getInt(getNumRows()-1-row, IF);
@@ -158,8 +164,8 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the ID of the antecedent for a specific rule
-     * @param row
-     * @return
+     * @param row the rule to check
+     * @return the frequent set ID for the antecedent of the rule.
      */
     public int getRuleAntecedentID(int row) {
         return getInt(getNumRows()-1-row, IF);
@@ -167,8 +173,8 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the consequent for a specific rule
-     * @param row
-     * @return
+     * @param row the rule to check for.
+     * @return the consequent of the rule represented by a list of item indexes.
      */
     public int[] getRuleConsequent(int row) {
         int idx = getInt(getNumRows()-1-row, THEN);
@@ -179,8 +185,8 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the ID of the consequent for a specific rule
-     * @param row
-     * @return
+     * @param row the rule to check for.
+     * @return the frequent set ID for the consequent of the rule.
      */
     public int getRuleConsequentID(int row) {
         return getInt(getNumRows()-1-row, THEN);
@@ -188,7 +194,7 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the number of rules.
-     * @return
+     * @return the number of rules for the data set.
      */
     public int getNumRules() {
         return getNumRows();
@@ -196,7 +202,7 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the list of names.
-     * @return
+     * @return the list of item labels.
      */
     public List getNamesList() {
         return items;
@@ -204,7 +210,7 @@ public class RuleTable extends MutableTableImpl {
 
     /**
      * Get the list of FreqItemSets
-     * @return
+     * @return the list of FreqItemSets.
      */
     public List getItemSetsList() {
         return itemSets;
