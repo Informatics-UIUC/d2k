@@ -342,7 +342,7 @@ public class Normalize extends HeadlessUIModule {
 
             double[] data = new double[table.getNumRows()];
 			boolean [] missing = new boolean[data.length];
-			
+
             int index = indices[count];
 
             // data first represents the data from the table:
@@ -512,4 +512,9 @@ public class Normalize extends HeadlessUIModule {
  *          Module is ready unless handling of missing values will change.
  * 11-25-03 due to new guide lines regarding missing values - this module needs to go
  *          under some changes. missing values should be preserved. [bug 146]
+ * 12-04-03 bug 146 was fixed.
+ *          problem with correctness: the destribution of the data after normalization
+ *          is not normal. for some datasets more that 73% or less than 63% of the
+ *          items are falling in the range [-1,1]. this is not compatible with
+ *          the module info.
  */
