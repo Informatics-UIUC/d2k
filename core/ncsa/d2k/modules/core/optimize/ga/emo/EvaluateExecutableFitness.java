@@ -126,7 +126,7 @@ public class EvaluateExecutableFitness
   public String getOutputName(int index) {
     switch (index) {
       case 0:
-        return "MsgaPopulation";
+        return "NsgaPopulation";
 //      case 1:
 //        return "Fitness executable table";
       default:

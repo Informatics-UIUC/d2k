@@ -15,7 +15,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
  Newemo1.java
 */
-public class DefineVariables
+public class DefineDecisionVariables
     extends UIModule
     implements Serializable {
 
@@ -29,11 +29,11 @@ public class DefineVariables
   }
 
   public String getInputName(int index) {
-    return "EMOData";
+    return "";
   }
 
   public String getInputInfo(int index) {
-    return "EMOData";
+    return "";
   }
 
   /**
@@ -58,19 +58,14 @@ public class DefineVariables
       default:
         return "No such output";
     }*/
-    return "EMOPopulationInfo";
+    return "Population Info";
   }
 
   public String getOutputInfo(int index) {
     switch (index) {
       case 0:
-        String s = "This is the mutable table that has zero rows.";
-        s += "The coulmn corresponds to the variables of the problem.";
+        String s = "A data structure containing the information about the decision variables.";
         return s;
-      case 1:
-        s = "This is the default table model that has information";
-        s += " of the ranges of each variable and required precision for";
-        s += " each variable.";
       default:
         return "No such output";
     }
@@ -82,16 +77,15 @@ public class DefineVariables
    */
   public String getModuleInfo() {
     String s = "<p>Overview: ";
-    s += "This is the place of first interaction of user with the EMO GUI.";
-    s += "This takes in the information regarding the variables of the";
-    s += "problem.";
-    s += "</p><p>Detailed Description: ";
-    s += "This module asks user to fill in information regarding the";
-    s += "number of variables in the problem, the desired precision of";
-    s += "each variable, the upper and lower value of each variable.";
-    s += "It calculates the stringlength for each variable.";
-    s += "</p><p>Data Type Restrictions:";
-    s += "The variables of the problem are floats.";
+    s += "Define the decision variables.";
+    s += "<p>Detailed Description: ";
+    s += "Define all the decision variables for the problem.  The variables ";
+    s += "can be entered manually or can be loaded from a file.  To enter the ";
+    s += "variables manually, input the number of decision variables and hit the ";
+    s += "update button.  To load the variables from a file, hit the Read From File button ";
+    s += "and select the file to load.  The file ";
+    s += "should have four columns: name, lower bound, upper bound, and precision, ";
+    s += "in that order.";
     s += "</p>";
     return s;
   }
@@ -175,7 +169,7 @@ public class DefineVariables
       // number of variables as many times as he wants
       // and this will update the number of rows in the table.
       JButton updateBt = new JButton("Update");
-      JButton readFromFileBt = new JButton("Read File");
+      JButton readFromFileBt = new JButton("Read From File");
 
       /**
        The Color object, buttonColor, creates a yellowish

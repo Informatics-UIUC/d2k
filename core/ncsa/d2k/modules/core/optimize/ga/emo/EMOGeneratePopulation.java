@@ -2,6 +2,8 @@ package ncsa.d2k.modules.core.optimize.ga.emo;
 
 import java.io.*;
 
+import ncsa.d2k.core.modules.*;
+
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.util.*;
@@ -13,10 +15,79 @@ public class EMOGeneratePopulation
     extends PopulationPrep
     implements Serializable {
 
+  public PropertyDescription[] getPropertiesDescriptions() {
+
+    PropertyDescription[] pds = new PropertyDescription[6];
+
+    pds[0] = new PropertyDescription(
+        "nonDominatedFronts",
+        "Number of nondominated fronts",
+        "The number of nondominated fronts desired");
+
+    pds[1] = new PropertyDescription(
+        "useRecommendedPopSize",
+        "Use Recommended Population Size",
+        "Use the recommended population size");
+
+    pds[2] = new PropertyDescription(
+        "populationSize",
+        "Overridden population size",
+        "When the recommended population size is not used, use this population size");
+
+    pds[3] = new PropertyDescription(
+        "useRecommendedNumGenerations",
+        "Use the recommended number of generations",
+        "Use the recommended number of generations");
+
+    pds[4] = new PropertyDescription(
+        "maxGenerations",
+        "Overridden number of generations",
+        "When the recommended number of generations is not used, use this number of generations");
+
+    pds[5] = new PropertyDescription(
+        "createBinaryIndividuals",
+        "Create binary individuals",
+        "Create binary individuals if true, create real-coded individuals if false");
+
+    return pds;
+  }
+
+  private int nonDominatedFronts = 10;
+  public void setNonDominatedFronts(int i) {
+    nonDominatedFronts = i;
+  }
+  public int getNonDominatedFronts() {
+    return nonDominatedFronts;
+  }
+
+  private boolean useRecommendedPopSize = true;
+  public void setUseRecommendedPopSize(boolean b) {
+    useRecommendedPopSize = b;
+  }
+  public boolean getUseRecommendedPopSize() {
+    return useRecommendedPopSize;
+  }
+
+  private boolean useRecommendedNumGenerations = true;
+  public void setUseRecommendedNumGenerations(boolean b) {
+    useRecommendedNumGenerations = b;
+  }
+  public boolean getUseRecommendedNumGenerations() {
+    return useRecommendedNumGenerations;
+  }
+
+  public int getMaxGenerations() {
+    return this.maxGenerations;
+  }
+
+  public void setMaxGenerations(int i) {
+    maxGenerations = i;
+  }
+
   public String getInputName(int i) {
     switch (i) {
       case 0:
-        return "EMOData";
+        return "Population Info";
       default:
         return "No such output";
     }
@@ -25,9 +96,8 @@ public class EMOGeneratePopulation
   public String getInputInfo(int index) {
     switch (index) {
       case 0:
-        String s = "This is the default table model that will have ";
-        s += "information regarding the decion variable bounds  ";
-        s += "and precision.";
+        String s = "This is a data structure containing all the information "+
+          "about the decision variables, fitness functions, and constraints.";
         return s;
       default:
         return "No such Input";
@@ -60,13 +130,7 @@ public class EMOGeneratePopulation
   public String getOutputInfo(int index) {
     switch (index) {
       case 0:
-        String s = "This is the updated mutable table that it received  ";
-        s += "as an input. There are popsize number of rows in the table ";
-        s += "and columns corresponding to the variables are filled";
-        s += " according to the generated initial population";
-        return s;
-      case 1:
-        s = "This is the initial population";
+        String s = "This is the initial population ";
         s += "generated for the GA run ";
         return s;
       default:
@@ -83,6 +147,15 @@ public class EMOGeneratePopulation
         "ncsa.d2k.modules.core.optimize.ga.emo.NsgaPopulation"};
     return types;
   }
+
+  /**
+          This method returns the description of the module.
+          @return the description of the module.
+  */
+  public String getModuleInfo () {
+          return "This module will produce a population for input to the genetic algorithm.";
+  }
+
 
   //////////////////////////////////
   // The properties of this serializable module are the
@@ -190,7 +263,7 @@ public class EMOGeneratePopulation
      Calculate the population size for the GA run based on the properties set by the user. This is based on Patrick Reed proposal of using Mahfoud population sizing equation to multiobjective GAs.
    */
 
-  public void CalculateAndSetPopulationSize() {
+  //public void CalculateAndSetPopulationSize() {
     /*double k2;
     double k1 = 1.0;
     double temp1;
@@ -206,8 +279,8 @@ public class EMOGeneratePopulation
 
 
     // twice the number of non dominated fronts desired
-    this.populationSize = 2*10;
-  }
+  //  this.populationSize = 2*10;
+  //}
 
   private boolean createBinaryIndividuals = true;
   public void setCreateBinaryIndividuals(boolean b) {
@@ -229,17 +302,24 @@ public class EMOGeneratePopulation
       populationTbl = (MutableTable) popInfo.varNames;
       variableNames = (MutableTable)populationTbl.copy();
 
+      if(this.getUseRecommendedPopSize())
+        this.populationSize = 2* this.getNonDominatedFronts();
+
       bounds = (MutableTable) popInfo.boundsAndPrecision;
       firstRun = false;
-      int stringLength = 0;
-      for(int i = 0; i < bounds.getNumRows(); i++) {
-        stringLength += bounds.getInt(i, bounds.getNumColumns()-1);
+
+      if(this.getUseRecommendedNumGenerations()) {
+        int stringLength = 0;
+        for (int i = 0; i < bounds.getNumRows(); i++) {
+          stringLength += bounds.getInt(i, bounds.getNumColumns() - 1);
+        }
+        this.maxGenerations = 2 * stringLength;
       }
-      this.maxGenerations = 2*stringLength;
-      System.out.println("MaxGen: "+maxGenerations);
-      this.CalculateAndSetPopulationSize();
+
+      //System.out.println("MaxGen: "+maxGenerations);
+      //this.CalculateAndSetPopulationSize();
       //populationSize = 10;
-      System.out.println("Pop Size: "+this.populationSize);
+      //System.out.println("Pop Size: "+this.populationSize);
     }
     else {
       // consume the dummy input
