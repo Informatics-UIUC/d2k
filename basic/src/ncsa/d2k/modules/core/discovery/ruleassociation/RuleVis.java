@@ -392,6 +392,25 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			return Printable.PAGE_EXISTS;
 		}
 
+                private class RowHeadTable extends JTable {
+                  RowHeadTable(TableModel tm) {
+                    super(tm);
+                  }
+
+                  public String getToolTipText(MouseEvent e) {
+                    Point p = e.getPoint();
+                    int row = this.rowAtPoint(p);
+                    String tip = getTipForRow(row);
+                    return tip;
+                  }
+
+                  private String getTipForRow(int r) {
+                    String tp = (String)getModel().getValueAt(r, 0);
+                    return tp;
+                  }
+
+                }
+
 
 		/** construct a table for the row heads.
 		*/
@@ -408,7 +427,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 
                     JViewport jv = new JViewport ();
                     DefaultTableModel dtm = new DefaultTableModel (rowNames, cn);
-                    rhjt = new JTable (dtm);
+                    //rhjt = new JTable (dtm);
+                    rhjt = new RowHeadTable (dtm);
 
 
 			rhjt.setBackground (RuleVis.RULE_VIS_BACKGROUND);
