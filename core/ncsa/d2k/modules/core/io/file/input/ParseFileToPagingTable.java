@@ -217,7 +217,14 @@ public class ParseFileToPagingTable extends ParseFileToTable {
                     // if the value was missing..
                     else {
                         // put 0 in a numeric column and set the value to missing
-                        if(ti.isColumnNumeric(j)) {
+//                        if(ti.isColumnNumeric(j)) {
+                        if (df.getColumnType(i) == ColumnTypes.INTEGER ||
+                            df.getColumnType(i) == ColumnTypes.DOUBLE ||
+                            df.getColumnType(i) == ColumnTypes.FLOAT ||
+                            df.getColumnType(i) == ColumnTypes.LONG ||
+                            df.getColumnType(i) == ColumnTypes.SHORT ||
+                            df.getColumnType(i) == ColumnTypes.BYTE) {
+
                             ti.setChars(Integer.toString(0).toCharArray(), i, j);
                             ti.setValueToMissing(true, i, j);
                         }
@@ -257,11 +264,27 @@ public class ParseFileToPagingTable extends ParseFileToTable {
                 }
 
                 if(isNumeric) {
+                  boolean[] missing = new boolean[pt.getNumRows()];
+                  boolean[] empty = new boolean[pt.getNumRows()];
+                  for(int k = 0; k < pt.getNumRows(); k++) {
+                    if(pt.isValueMissing(k, i))
+                      missing[k] = true;
+                    if(pt.isValueEmpty(k, i))
+                      empty[k] = true;
+                  }
+
                     //DoubleColumn dc = new DoubleColumn(newCol);
                     String oldLabel = pt.getColumnLabel(i);
                     //dc.setLabel(pt.getColumnLabel(i));
                     pt.setColumn(newCol, i);
                     pt.setColumnLabel(oldLabel, i);
+
+                    for(int k = 0; k < pt.getNumRows(); k++) {
+                      if(missing[k])
+                        pt.setValueToMissing(true, k, i);
+                      if(empty[k])
+                        pt.setValueToMissing(true, k, i);
+                    }
                 }
             }
         }

@@ -180,7 +180,14 @@ public class ParseFileToSparseTable extends ParseFileToTable {
                     // if the value was missing..
                     else {
                         // put 0 in a numeric column and set the value to missing
-                        if(ti.isColumnNumeric(j)) {
+//                        if(ti.isColumnNumeric(j)) {
+                    if (df.getColumnType(i) == ColumnTypes.INTEGER ||
+                              df.getColumnType(i) == ColumnTypes.DOUBLE ||
+                              df.getColumnType(i) == ColumnTypes.FLOAT ||
+                              df.getColumnType(i) == ColumnTypes.LONG ||
+                              df.getColumnType(i) == ColumnTypes.SHORT ||
+                              df.getColumnType(i) == ColumnTypes.BYTE) {
+
                             ti.setChars(Integer.toString(0).toCharArray(), i, j);
                             ti.setValueToMissing(true, i, j);
                         }
@@ -228,11 +235,29 @@ public class ParseFileToSparseTable extends ParseFileToTable {
                 }
 
                 if(isNumeric) {
+                    boolean[] missing = new boolean[ti.getNumRows()];
+                    boolean[] empty = new boolean[ti.getNumRows()];
+                    for(int k = 0; k < ti.getNumRows(); k++) {
+                      if(ti.isValueMissing(k, i))
+                        missing[k] = true;
+                      if(ti.isValueEmpty(k, i))
+                        empty[k] = true;
+                    }
+
+
                     //SparseDoubleColumn dc = new SparseDoubleColumn(newCol);
                     //dc.setLabel(ti.getColumnLabel(i));
                     String oldlbl = ti.getColumnLabel(i);
+
                     ti.setColumn(newCol, i);
                     ti.setColumnLabel(/*ti.getColumnLabel(i)*/oldlbl, i);
+
+                    for(int k = 0; k < ti.getNumRows(); k++) {
+                      if(missing[k])
+                        ti.setValueToMissing(true, k, i);
+                      if(empty[k])
+                        ti.setValueToMissing(true, k, i);
+                    }
                 }
             }
         }
