@@ -28,7 +28,7 @@ public class ChooseAttributes extends UIModule  {
     String info = "<p>Overview: ";
     info += "This module allows the user to choose which columns of a table are inputs and outputs.";
     info += "</p><p>Detailed Description: ";
-    info += "This module outputs an ExampleTable with the input and output features assigned. ";
+    info += "This module outputs an <i>Example Table</i> with the input and output features assigned. ";
     info += "Inputs and outputs do not have to be selected, nor do they have to be mutually exclusive. ";
     info += "</p><p>Data Handling: ";
     info += "This module does not modify the data in the table. It only sets the input and output features.";
@@ -95,7 +95,7 @@ public class ChooseAttributes extends UIModule  {
    */
   public String getOutputInfo(int i) {
     switch (i) {
-      case 0: return "The ExampleTable with input and output features assigned.";
+      case 0: return "The Example Table with input and output features assigned.";
       default: return "No such output";
     }
   }
@@ -108,7 +108,7 @@ public class ChooseAttributes extends UIModule  {
   public String getOutputName(int i) {
     switch(i) {
       case 0:
-        return "ExampleTable";
+        return "Example Table";
       default: return "No such output";
     }
   }
@@ -431,3 +431,4 @@ public class ChooseAttributes extends UIModule  {
 }
 
 //QA Comments Anca - added getPropertyDescription
+//QA Comments Ruth - used Example Table in what user reads (w/ space)
