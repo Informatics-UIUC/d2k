@@ -267,7 +267,7 @@ public class ScalarizeNominals extends DataPrepModule {
 
                     for (int j = 0; j < uniqueValues.length; j++) {
                         if (s.equals(uniqueValues[indirection[j]])) {
-                            match[row] = j;
+                            match[row] = indirection[j];
                             break;
                         }
                     }
