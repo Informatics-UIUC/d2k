@@ -178,7 +178,7 @@ public class SQLAutoBin extends AutoBin {
 
 		
 		//Add bins named "unknown" for each binned column that has missing values
-		bins = BinningUtils.addMissingValueBins(tbl,bins);
+		//bins = BinningUtils.addMissingValueBins(tbl,bins);
 
 		BinTransform bt = new BinTransform(tbl, bins, false);
 		
