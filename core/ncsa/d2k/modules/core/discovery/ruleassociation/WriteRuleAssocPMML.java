@@ -4,12 +4,10 @@ import java.io.*;
 import java.util.*;
 
 import ncsa.d2k.core.modules.*;
+
 import org.dom4j.*;
 import org.dom4j.io.*;
 
-/**
- *
- */
 public class WriteRuleAssocPMML extends OutputModule implements RulePMMLTags {
 
     public String[] getInputTypes() {
@@ -18,7 +16,7 @@ public class WriteRuleAssocPMML extends OutputModule implements RulePMMLTags {
     }
 
     public String getInputInfo(int i) {
-        if(i == 0)
+        if (i == 0)
             return "The RuleTable";
         else
             return "Filename to write PMML to.";
@@ -37,76 +35,94 @@ public class WriteRuleAssocPMML extends OutputModule implements RulePMMLTags {
     }
 
     public void doit() throws Exception {
-        RuleTable rt = (RuleTable)pullInput(0);
-        String fn = (String)pullInput(1);
+        RuleTable rt = (RuleTable) pullInput(0);
+        String fn = (String) pullInput(1);
         writePMML(rt, fn);
     }
 
     public static void writePMML(RuleTable rt, String fileName) {
-        // make assoc items
-        List items = rt.getNamesList();
-        List itemSets = rt.getItemSetsList();
 
         Document document = DocumentHelper.createDocument();
+        document.addDocType("PMML", "http://www.dmg.org/v2-0/pmml_v2_0.dtd",
+                        "http://www.dmg.org/v2-0/pmml_v2_0.dtd");
+
+        // Root
         Element root = document.addElement("PMML");
         root.addAttribute("version", "2.0");
 
+        // Header
         Element header = root.addElement("Header");
         header.addAttribute("copyright", "NCSA ALG");
         header.addAttribute("description", "association rules");
 
-        // make data dictionary
-        Element dataDictionary = root.addElement("DataDictionary");
+        // Data dictionary
+        Element dataDictionary = root.addElement(DATA_DICT);
+        Element datafield = dataDictionary.addElement(DATA_FIELD);
 
-        // make assoc input stats
-        Element assocInputStats = root.addElement("AssociationModel");
-        assocInputStats.addAttribute("functionName", "associationRules");
-        assocInputStats.addAttribute(NUM_TRANS,
-                                     Integer.toString(rt.getNumberOfTransactions()));
-        assocInputStats.addAttribute(MIN_SUP,
-                                     Double.toString(rt.getMinimumSupport()));
-        assocInputStats.addAttribute(MIN_CON,
-                                     Double.toString(rt.getMinimumConfidence()));
-        assocInputStats.addAttribute(NUM_ITEM,
-                                     Integer.toString(items.size()));
-        assocInputStats.addAttribute(NUM_ITEMSETS,
-                                     Integer.toString(itemSets.size()));
-        assocInputStats.addAttribute(NUM_RULE,
-                                     Integer.toString(rt.getNumRules()));
-        //MINING SCHEMA
-        Element miningSchema = assocInputStats.addElement("MiningSchema");
-        miningSchema.addAttribute("name", "transaction");
-        miningSchema.addAttribute("name", "item");
+        datafield.addAttribute(NAME, "transaction");
+        datafield.addAttribute(OPTYPE, CATEGORICAL);
 
-        // make assoc items
+        datafield = dataDictionary.addElement(DATA_FIELD);
+        datafield.addAttribute(NAME, "item");
+        datafield.addAttribute(OPTYPE, CATEGORICAL);
+
+        // Association model
+        List items = rt.getNamesList();
+        List itemSets = rt.getItemSetsList();
+
+        Element assocModel = root.addElement(ASSOC_MODEL);
+        assocModel.addAttribute(FUNCTION_NAME, "associationRules");
+        assocModel.addAttribute(NUM_TRANS,
+                                Integer.toString(rt.getNumberOfTransactions()));
+        assocModel.addAttribute(MIN_SUP,
+                                Double.toString(rt.getMinimumSupport()));
+        assocModel.addAttribute(MIN_CON,
+                                Double.toString(rt.getMinimumConfidence()));
+        assocModel.addAttribute(NUM_ITEM,
+                                Integer.toString(items.size()));
+        assocModel.addAttribute(NUM_ITEMSETS,
+                                Integer.toString(itemSets.size()));
+        assocModel.addAttribute(NUM_RULE,
+                                Integer.toString(rt.getNumRules()));
+        //Mining schema
+        Element miningSchema = assocModel.addElement(MINING_SCHEMA);
+        Element miningField = miningSchema.addElement(MINING_FIELD);
+
+        miningField.addAttribute(NAME, "transaction");
+
+        miningField = miningSchema.addElement(MINING_FIELD);
+        miningField.addAttribute(NAME, "item");
+
+        // Association items
         for(int i = 0; i < items.size(); i++) {
-            Element assocItem = root.addElement(ITEM);
+            Element assocItem = assocModel.addElement(ITEM);
             assocItem.addAttribute(ID, Integer.toString(i));
             assocItem.addAttribute(VALUE, (String)items.get(i));
         }
 
-        // make assoc itemsets
+        // Association itemsets
         for(int i = 0; i < itemSets.size(); i++) {
-            FreqItemSet fis = (FreqItemSet)itemSets.get(i);
+            FreqItemSet fis = (FreqItemSet) itemSets.get(i);
 
-            Element itemset = root.addElement(ITEMSET);
-            itemset.addAttribute(ID, Integer.toString(i));
-            itemset.addAttribute(SUPPORT, Integer.toString((int)fis.support));
+            Element set = assocModel.addElement(ITEMSET);
+            set.addAttribute(ID, Integer.toString(i));
+            set.addAttribute(SUPPORT, Integer.toString((int)fis.support));
+
             int[] vals = fis.items.toNativeArray();
             for(int j = 0; j < vals.length; j++) {
-                Element assocItemRef = itemset.addElement(ITEMREF);
+                Element assocItemRef = set.addElement(ITEMREF);
                 assocItemRef.addAttribute(ITEM_REF, Integer.toString(vals[j]));
             }
         }
 
-        // make assoc rules
+        // Association rules
         for(int i = 0; i < rt.getNumRules(); i++) {
             int hd = rt.getRuleAntecedentID(i);
             int bd = rt.getRuleConsequentID(i);
             double conf = rt.getConfidence(i);
             double supp = rt.getSupport(i);
 
-            Element assocRule = root.addElement(ASSOC_RULE);
+            Element assocRule = assocModel.addElement(ASSOC_RULE);
             assocRule.addAttribute(SUPPORT, Double.toString(supp));
             assocRule.addAttribute(CONFIDENCE, Double.toString(conf));
             assocRule.addAttribute(ANTECEDENT, Integer.toString(hd));

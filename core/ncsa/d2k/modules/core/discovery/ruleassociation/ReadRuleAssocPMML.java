@@ -20,7 +20,7 @@ public class ReadRuleAssocPMML extends InputModule implements RulePMMLTags {
     }
 
     public String[] getOutputTypes() {
-        String[] out = {"ncsa.d2k.modules.core.discover.ruleassociation.RuleTable"};
+        String[] out = {"ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"};
         return out;
     }
 
@@ -45,7 +45,6 @@ public class ReadRuleAssocPMML extends InputModule implements RulePMMLTags {
 
         try {
             reader = new SAXReader("org.apache.xerces.parsers.SAXParser", false);
-            //reader = new SAXReader(false);
         }
         catch(Exception e) {
             throw e;
@@ -91,7 +90,7 @@ public class ReadRuleAssocPMML extends InputModule implements RulePMMLTags {
         double[] confidence = new double[numberOfRules];
 
         // read in the items
-        Iterator itemIterator = root.elementIterator(ITEM);
+        Iterator itemIterator = stats.elementIterator(ITEM);
         while(itemIterator.hasNext()) {
             Element currentItem = (Element)itemIterator.next();
             int id = Integer.parseInt(currentItem.attribute(ID).getValue());
@@ -100,7 +99,7 @@ public class ReadRuleAssocPMML extends InputModule implements RulePMMLTags {
         }
 
         // read in the item sets
-        Iterator itemsetIterator = root.elementIterator(ITEMSET);
+        Iterator itemsetIterator = stats.elementIterator(ITEMSET);
         while(itemsetIterator.hasNext()) {
             Element currentItemset = (Element)itemsetIterator.next();
             int id = Integer.parseInt(currentItemset.attribute(ID).getValue());
@@ -126,7 +125,7 @@ public class ReadRuleAssocPMML extends InputModule implements RulePMMLTags {
         }
 
         int idx = 0;
-        Iterator ruleIterator = root.elementIterator(ASSOC_RULE);
+        Iterator ruleIterator = stats.elementIterator(ASSOC_RULE);
         while(ruleIterator.hasNext()) {
             Element rule = (Element)ruleIterator.next();
             double sup = Double.parseDouble(rule.attribute(SUPPORT).getValue());
