@@ -473,15 +473,19 @@ public class BarChart extends Chart
   public void setToolTipText(MouseEvent e) {
     double cx = e.getX();
     double cy = e.getY();
-    String tip = "";
+    StringBuffer tip = new StringBuffer("");
     // search barBoundary to find which bar has been pointed to
     for (int i=0; i<barBoundary.length; i++) {
       if (inRectangle(cx, cy, barBoundary[i])) {
-        tip = table.getString(i, set.x) + " " + table.getDouble(i, set.y);
+        tip.append("<html>");
+        tip.append(xlabel.toLowerCase() + ": " + table.getString(i, set.x));
+        tip.append("<br>");
+        tip.append("frequency: " + table.getDouble(i, set.y));
+        tip.append("</html>");
         break;
       }
     }
-    setToolTipText(tip);
+    setToolTipText(tip.toString());
   }
 
   public boolean inRectangle(double x, double y, Rectangle2D.Double rectangle) {
