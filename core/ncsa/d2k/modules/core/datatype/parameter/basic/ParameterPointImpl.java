@@ -7,8 +7,8 @@ public class ParameterPointImpl extends ContinuousExampleSet implements Paramete
 
   final static int valueRowIndex = 0;
 
-  public ParameterPointImpl () {
-  }
+  //public ParameterPointImpl () {
+  //}
 
   public ParameterPoint createFromTable(MutableTable table) {
 
@@ -81,7 +81,7 @@ public class ParameterPointImpl extends ContinuousExampleSet implements Paramete
     points[0] = headPoint;
     points[1] = tailPoint;
 
-    return null;
+    return points;
   }
 
 }

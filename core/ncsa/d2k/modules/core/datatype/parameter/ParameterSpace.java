@@ -146,21 +146,21 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * @param parameterIndex the index of the parameter of interest.
    * @return a int value representing the subpace index number of parameter.
    */
-  public int getSubspaceIndex(int parameterIndex);
+  public int getSubspaceIndex(int parameterIndex) throws Exception;
 
   /**
    * Get the subspace parameter index of a parameter.
    * @param parameterIndex the index of the parameter of interest.
    * @return a int value representing the subpace index number of parameter.
    */
-  public int getSubspaceParameterIndex(int parameterIndex);
+  public int getSubspaceParameterIndex(int parameterIndex) throws Exception;
 
   /**
    * Get a subspace from the space.
    * @param subspaceIndex the index of the subspace of interest.
    * @return a ParameterSpace which defines the indicated subspace.
    */
-  public ParameterSpace getSubspace(int subspaceIndex);
+  public ParameterSpace getSubspace(int subspaceIndex) throws Exception;
 
   /**
    * Set the minimum value of a parameter.
@@ -208,6 +208,5 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * Split a ParameterSpace into two parameter spaces.
    * @return an array of two ParameterSpaces which define the two subspaces, the first being the head and the second being the tail.
    */
-  public ParameterSpace [] splitSubspaces(ParameterSpace space);
-
+  public ParameterSpace [] segmentSpace(ParameterSpace space, int splitIndex);
 } /* ParameterSpace */
