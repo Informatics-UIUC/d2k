@@ -163,6 +163,7 @@ public class TableViewer extends UIModule {
          */
       public void initView(ViewModule mod) {
          parent = (TableViewer)mod;
+	 parent.setWindowName( getAlias() );
          menuBar = new JMenuBar();
          JMenu fileMenu = new JMenu("File");
          print = new JMenuItem("Save...");
@@ -269,6 +270,8 @@ public class TableViewer extends UIModule {
 //	     Added docs about how to close the display.
 //           Added docs about limitations.
 //           OK for basic.
+// 7/16/03 - Ruth added call to setWindowName so that pop-up consistently has
+//           alias as the window name;  before it didn't always work.
 //
 // WISH: Want to have column types shown, or at least offer an option to do so.
 // WISH: Work (or behave consistently) if multiple input tables are received.  Currently
