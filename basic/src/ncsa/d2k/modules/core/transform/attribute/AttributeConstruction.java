@@ -496,6 +496,20 @@ public class AttributeConstruction
 
       operationBox.addItem("%");
 
+      operationBox.addItem("^");
+      operationBox.addItem("neg()");
+      operationBox.addItem("log()");
+      operationBox.addItem("ln()");
+      operationBox.addItem("sqrt()");
+      operationBox.addItem("abs()");
+      operationBox.addItem("exp()");
+      operationBox.addItem("sin()");
+      operationBox.addItem("asin()");
+      operationBox.addItem("cos()");
+      operationBox.addItem("acos()");
+      operationBox.addItem("tan()");
+      operationBox.addItem("atan()");
+
       addOperationButton = new JButton(
 
           new ImageIcon(mod.getImage("/images/addbutton.gif")));

@@ -44,7 +44,7 @@ public class ColumnExpression
 
   /*public MutableTable getTable() {
     return (MutableTable) table;
-  }*/
+  }
 
   public void setTable(MutableTable mt) {
     table = mt;
@@ -55,7 +55,7 @@ public class ColumnExpression
 
     }
 
-  }
+  }*/
 
       /******************************************************************************/
       /* Expression interface                                                       */
@@ -165,32 +165,29 @@ public class ColumnExpression
   public static void main(String[] args) {
     ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl ti =
         new ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl();
-    double[] d1 = {
-        4, 4};
-    double[] d2 = {
-        3, 3};
-    ti.addColumn(d1);
-    ti.addColumn(d2);
 
-    ti.setColumnLabel("one", 0);
-    ti.setColumnLabel("two", 1);
+    ti.addColumn(new double[]{4,4});
+    ti.addColumn(new double[]{3,3});
+    ti.addColumn(new double[]{5,5});
+
+    ti.setColumnLabel("x1", 0);
+    ti.setColumnLabel("x2", 1);
+    ti.setColumnLabel("x3", 2);
     ti.print();
 
     ColumnExpression ce = new ColumnExpression(ti);
-    String exp = "one ^ two * exp(5)";
+    String exp = "exp( neg(x1) ) * sin(x2)^6";
     try {
-      ce.setExpression(exp);//, new String[] {"three"}
-                           //, new int[] {ColumnTypes.DOUBLE});
+      ce.setExpression(exp);
       Object o = ce.evaluate();
       double[] ar = (double[])o;
       for(int i =0; i < ar.length; i++)
         System.out.println(ar[i]);
-      System.out.println(o);
+      //System.out.println(o);
     }
     catch (Exception e) {
       e.printStackTrace();
     }
-
   }
 
       /******************************************************************************/
@@ -205,7 +202,7 @@ public class ColumnExpression
       MODULUS = 4,
       AND = 5,
       OR = 6; // if you add any more with higher precedence than
-  // AND, make sure you update best_type in parse()!
+              // AND, make sure you update best_type in parse()!
 
   private static final int
       POW = 7;
@@ -215,10 +212,10 @@ public class ColumnExpression
       //EXP = 11;
 
   private static final int[] order = {
-      0, 0, 2, 2, 1, 4, 3, 2};
+      0, 0, 2, 2, 1, 4, 3, 3};
 
   private Node parse(String expression) throws ExpressionException {
-
+//    System.out.println("parse: "+expression);
     char c;
 
     // we're interested in the shallowest operator of least precedence
@@ -327,18 +324,6 @@ public class ColumnExpression
             best_pos = i;
           }
           break;
-
-        // could be log/ln
-        //case 'l':
-        //  break;
-
-        // could be sqrt
-        //case 's':
-        //    break;
-
-        // could be exp
-        //case 'e':
-        //  break;
       }
 
       if (depth > max_depth) {
@@ -348,10 +333,8 @@ public class ColumnExpression
 
     if (best_depth > max_depth) { // if there were no parentheses (important!)
       best_depth = 0;
-
     }
     if (operator_found) { // we must recurse
-//System.out.println("Operator found: "+expression);
 
       // first, remove extraneous parentheses, which are going to confuse
       // the parser.
@@ -362,7 +345,6 @@ public class ColumnExpression
           expression = expression.substring(1, expression.length() - 1);
           best_pos--;
         }
-
       }
 
       int offset = 1;
@@ -371,25 +353,23 @@ public class ColumnExpression
 
         // now we recurse
       }
+//      System.out.println("new OperationNode");
       return new OperationNode(
           best_type,
           parse(expression.substring(0, best_pos).trim()),
           parse(expression.substring(best_pos + offset, expression.length()).
                 trim())
           );
-
     }
-
+    // check if it is a function node before checking if it is a terminal node
     else if(expression.indexOf(LOG) != -1 || expression.indexOf(EXP) != -1 ||
             expression.indexOf(SIN) != -1 || expression.indexOf(COS) != -1 ||
            expression.indexOf(TAN) != -1 || expression.indexOf(SQRT) != -1 ||
-           expression.indexOf(NAT_LOG) != -1 || expression.indexOf(ABS) != -1) {
-      return new ComplexNode(expression);
+           expression.indexOf(NAT_LOG) != -1 || expression.indexOf(ABS) != -1 ||
+           expression.indexOf(NEG) != -1) {
+      return new FunctionNode(expression);
     }
-
     else { // this is a terminal
-
-//System.out.println("This is a terminal. "+expression);
       // we still have to remove extraneous parentheses, but it's a
       // little different this time
       if (max_depth > 0) {
@@ -400,21 +380,19 @@ public class ColumnExpression
         }
 
       }
-//System.out.println("Now here: "+expression);
+
       try {
+//        System.out.println("New TerminalNode "+expression);
         return new TerminalNode(1, 1, Float.parseFloat(expression));
       }
       catch (Exception e) {
         float tempmyfloat = 0;
         return new TerminalNode(0, getIndex(expression), tempmyfloat);
       }
-
     }
-
   }
 
   private int getIndex(String label) throws ExpressionException {
-
     StringBuffer buffer = new StringBuffer(label.trim());
 
     for (int i = 0; i < buffer.length(); i++) {
@@ -432,7 +410,6 @@ public class ColumnExpression
     }
 
     return I.intValue();
-
   }
 
       /******************************************************************************/
@@ -455,87 +432,134 @@ public class ColumnExpression
     public abstract String toString();
 
     public abstract Object evaluate() throws ExpressionException;
-
   }
 
-  private static final String LOG = "log";
-  private static final String EXP = "exp";
-  private static final String NAT_LOG = "ln";
-  private static final String ABS = "abs";
-  private static final String SIN = "sin";
-  private static final String ASIN = "asin";
-  private static final String COS = "cos";
-  private static final String ACOS = "acos";
-  private static final String TAN = "tan";
-  private static final String ATAN = "atan";
-  private static final String SQRT = "sqrt";
+  /**
+   * supported functions
+   */
+  private static final String LOG = "log",
+      EXP = "exp",
+      NAT_LOG = "ln",
+      ABS = "abs",
+      SIN = "sin",
+      ASIN = "asin",
+      COS = "cos",
+      ACOS = "acos",
+      TAN = "tan",
+      ATAN = "atan",
+      SQRT = "sqrt",
+      NEG = "neg";
 
-  private class ComplexNode extends Node {
+  private static final int
+    LOG_OP = 0,
+    EXP_OP = 1,
+    NAT_LOG_OP = 2,
+    ABS_OP = 3,
+    SIN_OP = 4,
+    ASIN_OP = 5,
+    COS_OP = 6,
+    ACOS_OP = 7,
+    TAN_OP = 8,
+    ATAN_OP = 9,
+    SQRT_OP = 10,
+    NEG_OP = 11;
 
-    Node argument;
-    String operation;
+  /**
+   * A FunctionNode is a mathematical function on another node.
+   * Currently log, exp, ln, abs, sin, asin, cos, acos, tan, atan,
+   * sqrt, and neg are supported.
+   */
+  private class FunctionNode extends Node {
 
-    ComplexNode(String expression) throws ExpressionException {
+    private Node argument;
+    //private String operation;
+    private int operation;
+
+    FunctionNode(String expression) throws ExpressionException {
+      // all the functions return doubles
       returnType = TYPE_DOUBLE;
 
       expression = expression.trim();
+
+      // it is a log
       if(expression.startsWith(LOG)) {
-        operation = LOG;
+        operation = LOG_OP;
+        // remove the log part of the expression
         String tmpExp = expression.substring(LOG.length()+1, expression.length()-1);
+        // parse the argument
         argument = parse(tmpExp);
       }
+      // it is an exp (e^x)
       else if(expression.startsWith(EXP)) {
-        operation = EXP;
+        operation = EXP_OP;
+        // remove the exp part of the expression
         String tmpExp = expression.substring(EXP.length()+1, expression.length()-1);
+        // parse the argument
         argument = parse(tmpExp);
       }
       else if(expression.startsWith(NAT_LOG)) {
-        operation = NAT_LOG;
+        operation = NAT_LOG_OP;
         String tmpExp = expression.substring(NAT_LOG.length()+1, expression.length()-1);
+        // parse the argument
         argument = parse(tmpExp);
       }
       else if(expression.startsWith(ABS)) {
-        operation = ABS;
+        operation = ABS_OP;
         String tmpExp = expression.substring(ABS.length()+1, expression.length()-1);
+        // parse the argument
         argument = parse(tmpExp);
       }
       else if(expression.startsWith(SIN)) {
-        operation = SIN;
+        operation = SIN_OP;
         String tmpExp = expression.substring(SIN.length()+1, expression.length()-1);
+        // parse the argument
         argument = parse(tmpExp);
       }
       else if(expression.startsWith(ASIN)) {
-        operation = ASIN;
+        operation = ASIN_OP;
         String tmpExp = expression.substring(ASIN.length()+1, expression.length()-1);
+        // parse the argument
         argument = parse(tmpExp);
       }
       else if(expression.startsWith(COS)) {
-        operation = COS;
+        operation = COS_OP;
         String tmpExp = expression.substring(COS.length()+1, expression.length()-1);
+        // parse the argument
         argument = parse(tmpExp);
       }
       else if(expression.startsWith(ACOS)) {
-        operation = ACOS;
+        operation = ACOS_OP;
         String tmpExp = expression.substring(ACOS.length()+1, expression.length()-1);
+        // parse the argument
         argument = parse(tmpExp);
       }
       else if(expression.startsWith(TAN)) {
-        operation = TAN;
+        operation = TAN_OP;
         String tmpExp = expression.substring(TAN.length()+1, expression.length()-1);
+        // parse the argument
         argument = parse(tmpExp);
       }
       else if(expression.startsWith(ATAN)) {
-        operation = ATAN;
+        operation = ATAN_OP;
         String tmpExp = expression.substring(ATAN.length()+1, expression.length()-1);
+        // parse the argument
         argument = parse(tmpExp);
       }
       else if(expression.startsWith(SQRT)) {
-        operation = SQRT;
+        operation = SQRT_OP;
         String tmpExp = expression.substring(SQRT.length()+1, expression.length()-1);
+        // parse the argument
         argument = parse(tmpExp);
       }
+      else if(expression.startsWith(NEG)) {
+        operation = NEG_OP;
+        String tmpExp = expression.substring(NEG.length()+1, expression.length()-1);
+        // parse the argument
+        argument = parse(tmpExp);
+      }
+
       else
-        throw new ExpressionException("ComplexNode");
+        throw new ExpressionException("FunctionNode: not an expression "+expression);
     }
 
     public String toString() {
@@ -545,9 +569,11 @@ public class ColumnExpression
     public Object evaluate() throws ExpressionException {
       double[] retVal = new double[table.getNumRows()];
       double[] arg;
+      // evaluate the argument and copy all of its results into a double
+      // array for simplicity later
       switch(argument.returnType) {
         case TYPE_BOOLEAN:
-          throw new ExpressionException("NOPE");
+          throw new ExpressionException("FunctionNode: Functions do not evaluate to boolean values.");
         case TYPE_DOUBLE:
           arg = (double[])argument.evaluate();
           break;
@@ -582,58 +608,56 @@ public class ColumnExpression
             arg[i] = s[i];
           break;
         default:
-          throw new ExpressionException("Nope2");
+          throw new ExpressionException("FunctionNode: Cannot use return type.");
       }
 
-      if(operation.equals(LOG)) {
-        for(int i = 0; i < arg.length; i++) {
-          retVal[i] = Math.log(arg[i])/Math.log(10);
-        }
-      }
-      else if(operation.equals(SIN)) {
-        for(int i = 0; i < arg.length; i++) {
-          retVal[i] = Math.sin(arg[i]);
-        }
-      }
-      else if(operation.equals(COS)) {
-        for(int i = 0; i < arg.length; i++) {
-          retVal[i] = Math.cos(arg[i]);
-        }
-      }
-      else if(operation.equals(TAN)) {
-        for(int i = 0; i < arg.length; i++) {
-          retVal[i] = Math.tan(arg[i]);
-        }
-      }
-      else if(operation.equals(SQRT)) {
-        for(int i = 0; i < arg.length; i++) {
-          retVal[i] = Math.sqrt(arg[i]);
-        }
-      }
-      else if(operation.equals(ABS)) {
-        for(int i = 0; i < arg.length; i++) {
-          retVal[i] = Math.abs(arg[i]);
-        }
-      }
-      else if(operation.equals(EXP)) {
-        for(int i = 0; i < arg.length; i++) {
-          retVal[i] = Math.exp(arg[i]);
-        }
-      }
-      else if(operation.equals(ASIN)) {
-        for(int i = 0; i < arg.length; i++) {
-          retVal[i] = Math.asin(arg[i]);
-        }
-      }
-      else if(operation.equals(ACOS)) {
-        for(int i = 0; i < arg.length; i++) {
-          retVal[i] = Math.acos(arg[i]);
-        }
-      }
-      else if(operation.equals(ATAN)) {
-        for(int i = 0; i < arg.length; i++) {
-          retVal[i] = Math.atan(arg[i]);
-        }
+      switch(operation) {
+        case LOG_OP:
+          for (int i = 0; i < arg.length; i++)
+            retVal[i] = Math.log(arg[i]) / Math.log(10);
+          break;
+        case SIN_OP:
+          for (int i = 0; i < arg.length; i++)
+            retVal[i] = Math.sin(arg[i]);
+          break;
+        case COS_OP:
+          for (int i = 0; i < arg.length; i++)
+            retVal[i] = Math.cos(arg[i]);
+          break;
+        case TAN_OP:
+          for (int i = 0; i < arg.length; i++)
+            retVal[i] = Math.tan(arg[i]);
+          break;
+        case SQRT_OP:
+          for (int i = 0; i < arg.length; i++)
+            retVal[i] = Math.sqrt(arg[i]);
+          break;
+        case ABS_OP:
+          for (int i = 0; i < arg.length; i++)
+            retVal[i] = Math.abs(arg[i]);
+          break;
+        case EXP_OP:
+          for (int i = 0; i < arg.length; i++)
+            retVal[i] = Math.exp(arg[i]);
+          break;
+        case ASIN_OP:
+          for (int i = 0; i < arg.length; i++)
+            retVal[i] = Math.asin(arg[i]);
+          break;
+        case ACOS_OP:
+          for (int i = 0; i < arg.length; i++)
+            retVal[i] = Math.acos(arg[i]);
+          break;
+        case ATAN_OP:
+          for (int i = 0; i < arg.length; i++)
+            retVal[i] = Math.atan(arg[i]);
+           break;
+        case NEG_OP:
+          for (int i = 0; i < arg.length; i++)
+            retVal[i] = arg[i] * -1;
+            break;
+          default:
+            throw new ExpressionException("FunctionNode: Function not recognized.");
       }
 
       return retVal;
