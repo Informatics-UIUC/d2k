@@ -50,7 +50,7 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 			case(0):
 				return "Example Table";
 			case(1):
-				return "Unpruned Root";
+				return "Decision Tree Root";
 			default:
 				return "";
 		}
@@ -76,7 +76,7 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 	public String getOutputName(int i) {
 		switch(i) {
 			case(0):
-				return "Pruned Root";
+				return "Decision Tree Root";
 			case(1):
 				return "Example Table";
 			default:

@@ -44,10 +44,12 @@ public class WriteNaiveBayesPMML
     ExampleTable et = (ExampleTable) pullInput(1);
 
     Document document = DocumentHelper.createDocument();
-    Element root = document.addElement("PMML");
-    root.addAttribute("version", "2.0");
+    document.addDocType("PMML", "pmml20.dtd", "pmml20.dtd");
 
-    Element header = root.addElement("Header");
+    Element pmml = document.addElement("PMML");
+    pmml.addAttribute("version", "2.0");
+
+    Element header = pmml.addElement("Header");
     header.addAttribute("copyright", "NCSA ALG");
     header.addAttribute("description", "a naive bayes model");
 
@@ -77,7 +79,7 @@ public class WriteNaiveBayesPMML
     }
 
     // do the data dictionary
-    Element dictionary = root.addElement(DATA_DICT);
+    Element dictionary = pmml.addElement(DATA_DICT);
     dictionary.addAttribute(NO_FIELDS,
                             Integer.toString(inputNames.length +
                                              outNames.length));
@@ -146,7 +148,7 @@ public class WriteNaiveBayesPMML
     }
     // finished with the dictionary.
 
-    Element modelElement = root.addElement("NaiveBayesModel");
+    Element modelElement = pmml.addElement("NaiveBayesModel");
     modelElement.addAttribute("modelName", "foo");
     modelElement.addAttribute("functionName", "classification");
     modelElement.addAttribute("threshold", "0.001");
@@ -266,7 +268,7 @@ public class WriteNaiveBayesPMML
     }
 
     try {
-      XMLWriter writer = new XMLWriter(new FileWriter("/home/clutter/test.pmml"),
+      XMLWriter writer = new XMLWriter(new FileWriter("/home/clutter/testnb.pmml"),
                                        OutputFormat.createPrettyPrint());
       writer.write(document);
       writer.flush();

@@ -2,20 +2,22 @@ package ncsa.d2k.modules.core.prediction.decisiontree;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 import org.dom4j.*;
 import org.dom4j.io.*;
 
 import java.util.*;
 
-public class CreateDecisionTreeFromPMML extends InputModule {
+public class CreateDecisionTreeFromPMML extends InputModule implements DecisionTreePMMLTags {
   HashMap datafields;
 
   public void doit() throws Exception {
     String pmml = (String) pullInput(0);
     datafields = new HashMap();
 
-    SAXReader reader = new SAXReader();
+    SAXReader reader = new SAXReader(false);
     Document document = reader.read(pmml);
 
     Node compound = document.selectSingleNode("//CompoundPredicate");
@@ -49,7 +51,68 @@ public class CreateDecisionTreeFromPMML extends InputModule {
       decisionnode = new CategoricalDecisionTreeNode(markupnode.childfield, null);
     build(markupnode, decisionnode);
 
-    pushOutput(decisionnode, 0);
+
+    // added by DC
+    Element miningSchema = (Element) document.selectSingleNode("/PMML/MiningSchema");
+    List ins = new LinkedList();
+    List outs = new LinkedList();
+
+    List miningFields = miningSchema.elements("MiningField");
+    for(int i = 0; i < miningFields.size(); i++) {
+      Element fld = (Element)miningFields.get(i);
+      Attribute usage = fld.attribute("usageType");
+      if(usage == null || usage.getValue().equals("active"))
+        ins.add(fld.attributeValue("name"));
+      else if(usage.getValue().equals("predicted"))
+        outs.add(fld.attributeValue("name"));
+    }
+
+    String[] inputs = new String[ins.size()];
+    for(int i = 0; i < ins.size(); i++)
+      inputs[i] = (String)ins.get(i);
+
+    String[] outputs = new String[outs.size()];
+    for(int i = 0; i < outs.size(); i++)
+      outputs[i] = (String)outs.get(i);
+
+
+    // now make the ExampleTable.
+    int[] inFeat = new int[inputs.length];
+    int[] outFeat = new int[outputs.length];
+
+    MutableTableImpl ti = new MutableTableImpl();
+    for(int i = 0; i < inputs.length; i++) {
+      String optype = (String)datafields.get(inputs[i]);
+      if(optype.equals("categorical")) {
+        ti.addColumn(new String[0]);
+        ti.setColumnIsNominal(true, i);
+        ti.setColumnIsScalar(false, i);
+        ti.setColumnLabel(inputs[i], i);
+      }
+      else {
+        ti.addColumn(new double[0]);
+        ti.setColumnIsNominal(false, i);
+        ti.setColumnIsScalar(true, i);
+        ti.setColumnLabel(inputs[i], i);
+      }
+      inFeat[i] = i;
+    }
+
+    for(int i = 0; i < outputs.length; i++) {
+      ti.addColumn(new String[0]);
+      ti.setColumnIsNominal(true, i+inputs.length);
+        ti.setColumnLabel(outputs[i], i+inputs.length);
+      outFeat[i] = i+inputs.length;
+    }
+
+    ExampleTable et = ti.toExampleTable();
+    et.setInputFeatures(inFeat);
+    et.setOutputFeatures(outFeat);
+
+    DecisionTreeModel dtm = new DecisionTreeModel(decisionnode, et);
+
+    //pushOutput(decisionnode, 0);
+    pushOutput(dtm, 0);
   }
 
   void walk(Element element, MarkupNode markupnode) {
@@ -209,7 +272,8 @@ public class CreateDecisionTreeFromPMML extends InputModule {
   }
 
   public String[] getOutputTypes() {
-    String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode"};
+    //String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode"};
+    String[] types = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel"};
     return types;
   }
 

@@ -80,7 +80,7 @@ public class WriteDecisionTreePMML
     Document document = DocumentHelper.createDocument();
     document.addDocType("PMML", "pmml20.dtd", "pmml20.dtd");
 
-    Element root = document.addElement("PMML");
+    Element root = document.addElement(PMML);
     root.addAttribute("version", "2.0");
 
     Element header = root.addElement("Header");
@@ -160,14 +160,14 @@ public class WriteDecisionTreePMML
     DecisionTreeNode treeRoot = dtm.getRoot();
     Element treeRootElement = treeModel.addElement("Node");
     treeRootElement.addAttribute(SCORE, "xxx");
-    treeRootElement.addAttribute("recordCount",
+    treeRootElement.addAttribute(RECORD_COUNT,
                                  Integer.toString(treeRoot.getTotal()));
     treeRootElement.addElement("True");
     try {
       for (int value = 0; value < outValues.length; value++) {
         String outputvalue = outValues[value];
         int tally = treeRoot.getOutputTally(outputvalue);
-        Element distribution = treeRootElement.addElement("ScoreDistribution");
+        Element distribution = treeRootElement.addElement(SCORE_DISTRIBUTION);
         distribution.addAttribute(VALUE, outputvalue);
         distribution.addAttribute("recordCount", Integer.toString(tally));
       }

@@ -14,7 +14,8 @@ import java.util.*;
 public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMMLTags {
 
     public String[] getInputTypes() {
-        return null;
+      String[] in = {"java.lang.String"};
+      return in;
     }
 
     public String getInputInfo(int i) {
@@ -34,42 +35,39 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
         return "";
     }
 
-
     public void doit() throws Exception {
-        FileInputStream fis = new FileInputStream("/home/clutter/naive.pmml");
+        String fileName = (String)pullInput(0);
+
+        // read in the file
+        FileInputStream fis = new FileInputStream(fileName);
         SAXReader reader = new SAXReader(false);
 
         Document document = reader.read(fis);
-        Element root = document.getRootElement();
 
-        // testing
-        List rtelem = root.elements();
-        for(int i = 0; i < rtelem.size(); i++) {
-          Element e = (Element)rtelem.get(i);
-          System.out.println(e.getName());
-        }
+        // get the root element
+        Element pmml = document.getRootElement();
 
-        Element pmml = root.element(PMML);
-
-        Element dictionary = root.element(DATA_DICT);
-        // now get all DataFields
-
+        // get the data dictionary
+        Element dictionary = pmml.element(DATA_DICT);
+        // get the naive bayes model element
         Element model = pmml.element(NBM);
         String modelName = model.attributeValue(MODEL_NAME);
         String functionName = model.attributeValue(FUNCTION_NAME);
         String threshold = model.attributeValue(THRESHOLD);
 
+        // get the mining schema
         Element miningSchema = model.element(MINING_SCHEMA);
 
         List ins = new LinkedList();
         List outs = new LinkedList();
 
         // process mining schema
+        // get lists of the inputs (active) and outputs (predicted)
         List miningFields = miningSchema.elements(MINING_FIELD);
         for(int i = 0; i < miningFields.size(); i++) {
             Element miningFld = (Element)miningFields.get(i);
             Attribute usage = miningFld.attribute(USAGE_TYPE);
-            if(usage == null)
+            if(usage == null || usage.getValue().equals("active"))
                 ins.add(miningFld.attributeValue(NAME));
             else if(usage.getValue().equals(PREDICTED))
                 outs.add(miningFld.attributeValue(NAME));
@@ -78,9 +76,9 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
         String[] inputs = new String[ins.size()];
         String[] outputs = new String[outs.size()];
         for(int i = 0; i < inputs.length; i++)
-            inputs[i] = (String)ins.get(i);
+          inputs[i] = (String) ins.get(i);
         for(int i = 0; i < outputs.length; i++)
-            outputs[i] = (String)outs.get(i);
+          outputs[i] = (String) outs.get(i);
 
         String[] uniqueOutputs = null;
 
@@ -115,6 +113,7 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
             }
         }
 
+        // create the bin tree to hold the counts
         BinTree binTree = new BinTree(uniqueOutputs, inputs);
         int totalClassified = 0;
 
@@ -133,12 +132,14 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
 
             // it is a categorical input.  easy.
             if(categoricalInputs.contains(name)) {
+                // get the pair counts
                 List pairCts = input.elements(PAIR_COUNTS);
                 // for each pair count, add the bin.
                 for(int j = 0; j < pairCts.size(); j++) {
                   Element pairCt = (Element)pairCts.get(j);
                   String val = pairCt.attributeValue(VALUE);
 
+                  // add the bin
                   binTree.addStringBin(name, val, val);
 
                   // now that the bin is added, we can set the tallies
@@ -150,14 +151,13 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
                     String outCount = ct.attributeValue(COUNT);
 
                     // now set the tally.
-                    // !!!!!!!!!!!
                     binTree.setBinTally(outVal, name, val, Integer.parseInt(outCount));
-//                    totalClassified += Integer.parseInt(outCount);
                   }
                 }
             }
             // it is a continuous input.  harder.
             else {
+              // get the derived field
               Element derivedFld = input.element(DERIVED_FIELD);
               Element discretize = derivedFld.element(DISCRETIZE);
               List bins = discretize.elements(DISCRETIZE_BIN);
@@ -216,9 +216,7 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
                   String outCount = ct.attributeValue(COUNT);
 
                   // now set the tally.
-                  // !!!!!!!!!!!
                   binTree.setBinTally(outVal, name, binname, Integer.parseInt(outCount));
-//                    totalClassified += Integer.parseInt(outCount);
                 }
               }
             }
@@ -226,7 +224,7 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
 
         // define the bins
 
-        Element outputElement = model.element("BayesOutput");
+        Element outputElement = model.element(BAYES_OUTPUT);
 
         // for each output get the class total
         Element tvc = outputElement.element(TARGET_VALUE_COUNTS);
@@ -242,24 +240,36 @@ public class CreateNBModelFromPMML extends InputModule implements NaiveBayesPMML
         binTree.setTotalClassified(totalClassified);
 
         // now make the ExampleTable.
-        MutableTableImpl ti = new MutableTableImpl();
-        ti.addColumn(new double[0]);
-        ti.addColumn(new double[0]);
-        ti.addColumn(new double[0]);
-        ti.addColumn(new double[0]);
-        ti.addColumn(new String[0]);
+        int[] inFeat = new int[inputs.length];
+        int[] outFeat = new int[outputs.length];
 
-        ti.setColumnLabel("sepal-length", 0);
-        ti.setColumnLabel("sepal-width", 1);
-        ti.setColumnLabel("petal-length", 2);
-        ti.setColumnLabel("petal-width", 3);
-        ti.setColumnLabel("flower-type", 4);
+        MutableTableImpl ti = new MutableTableImpl();
+        for(int i = 0; i < inputs.length; i++) {
+          if(categoricalInputs.contains(inputs[i])) {
+            ti.addColumn(new String[0]);
+            ti.setColumnIsNominal(true, i);
+            ti.setColumnIsScalar(false, i);
+            ti.setColumnLabel(inputs[i], i);
+          }
+          else {
+            ti.addColumn(new double[0]);
+            ti.setColumnIsNominal(false, i);
+            ti.setColumnIsScalar(true, i);
+            ti.setColumnLabel(inputs[i], i);
+          }
+          inFeat[i] = i;
+        }
+
+        for(int i = 0; i < outputs.length; i++) {
+          ti.addColumn(new String[0]);
+          ti.setColumnIsNominal(true, i+inputs.length);
+            ti.setColumnLabel(outputs[i], i+inputs.length);
+          outFeat[i] = i+inputs.length;
+        }
 
         ExampleTable et = ti.toExampleTable();
-        int[] inputFeat = {0,1,2,3};
-        int[] outputFeat = {4};
-        et.setInputFeatures(inputFeat);
-        et.setOutputFeatures(outputFeat);
+        et.setInputFeatures(inFeat);
+        et.setOutputFeatures(outFeat);
 
         NaiveBayesModel nbm = new NaiveBayesModel(binTree, et);
         pushOutput(nbm, 0);
