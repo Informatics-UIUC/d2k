@@ -204,16 +204,28 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 					case Types.SMALLINT:
 					case Types.INTEGER:
 					case Types.BIGINT:
-                                                vt.setInt (rs.getInt (i+1), where, i);
+                                                if (rs.getString(i+1) == null) {
+                                                  vt.setDouble(Double.NaN, where, i);
+                                                }
+                                                else
+                                                  vt.setInt (rs.getInt (i+1), where, i);
 						break;
 					case Types.DOUBLE:
-       					        vt.setDouble (rs.getDouble (i+1), where, i);
+                                                if (rs.getString(i+1) == null) {
+                                                  vt.setDouble(Double.NaN, where, i);
+                                                }
+                                                else
+       					          vt.setDouble (rs.getDouble (i+1), where, i);
 						break;
 					case Types.NUMERIC:
 					case Types.DECIMAL:
 					case Types.FLOAT:
 					case Types.REAL:
-                                                vt.setFloat (rs.getFloat (i+1), where, i);
+                                                if (rs.getString(i+1) == null) {
+                                                  vt.setDouble(Double.NaN, where, i);
+                                                }
+                                                else
+                                                  vt.setFloat (rs.getFloat (i+1), where, i);
 						break;
 					case Types.CHAR:
 					case Types.VARCHAR:
