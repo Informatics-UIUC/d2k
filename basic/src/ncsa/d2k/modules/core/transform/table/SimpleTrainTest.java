@@ -19,6 +19,8 @@ import java.beans.PropertyVetoException;
 */
 public class SimpleTrainTest extends DataPrepModule  
 {
+	public final int RANDOM = 0;
+	public final int SEQUENTIAL = 1;
 
 	boolean debug = false;
 	/**
@@ -136,22 +138,24 @@ public class SimpleTrainTest extends DataPrepModule
 	/** percent of dataset to use to train the model. */
 	int trainPercent = 50;
 
-	/** 
-	  True if the samples are to be drawn randomly from the database.
-	  False will result in the first N being chosen. 
+	/**
+	  The type of sampling to use: random or sequential.
 	  */
-	boolean randomSampling;
+	int samplingMethod;
 
 	/** the seed for the random number generator */
 	int seed;
 
-	public void setRandomSampling(boolean b) {
-		randomSampling = b;
+	public void setSamplingMethod(int val) 
+	{
+		samplingMethod = val;
 	}
 
-	public boolean getRandomSampling() {
-		return randomSampling;
+	public int getSamplingMethod() 
+	{
+		return samplingMethod;
 	}
+
 
 	public void setSeed(int i) throws PropertyVetoException 
 	{
@@ -194,7 +198,12 @@ public class SimpleTrainTest extends DataPrepModule
 		PropertyDescription [] pds = new PropertyDescription [4];
 		pds[0] = new PropertyDescription ("trainPercent", "Train Percent", "This percentage of the data will be used for training the model.");
 		pds[1] = new PropertyDescription ("testPercent", "Test Percent", "This percentage of the data will be used for testing the model.");
-		pds[2] = new PropertyDescription ("randomSampling", "Random Sampling", "If this option is selected, the entries will be selected randomly.  Otherwise, the first entries in the database will be used for testing and the last entries for training.");
+		pds[2] = new PropertyDescription ("samplingMethod", "Sampling " +
+			"Method", "The method of sampling to use.  The choices are: "+
+			"<p>Random: samples will be drawn randomly without " +
+			"replacement from the original table.</p>" +
+			"<p>Sequential: the first entries in the table will be used"
+			+ "as the sample.");
 		pds[3] = new PropertyDescription ("seed", "Random Seed", "Seed of random sampling.  Ignored if Random Sampling is off.");
 		return pds;
 	}
@@ -222,7 +231,7 @@ public class SimpleTrainTest extends DataPrepModule
 
 		// If we are to select the examples for test and train at random,
 		// we need to to shuffle the indices.
-		if(randomSampling) {
+		if(samplingMethod == RANDOM) {
 			// Shuffle the indices randomly.
 			Random r = new Random();
 			for(int i = 0; i < nr; i++) {
@@ -289,8 +298,13 @@ public class SimpleTrainTest extends DataPrepModule
 		//JSlider slider = new JSlider(1,99);
 		TestTrainSlider slider = null;
 
-		/** if selected, the first N entries are the test entries. */
-		JCheckBox first = new JCheckBox("Use Random Sampling");
+		/** sequential vs random sampling. */
+	    JLabel m_sampling_method_label = null;
+  		javax.swing.JComboBox m_sampling_methods = null;
+
+	    String[] sampling_method_labels = {"Random", "Sequential"};
+	    String[] sampling_method_desc = {"Randomly sample without " +
+		  "replacement.", "The first entries will be returned."};
 		
 		/** if random sampling is used, these will be exposed. */
 	    JLabel m_seed_label = null;
@@ -305,9 +319,18 @@ public class SimpleTrainTest extends DataPrepModule
 			this.module = stt;
 			this.setLayout(new GridBagLayout());
 			slider = new TestTrainSlider(stt.getTestPercent(), stt.getTrainPercent());
-			first.setSelected(module.getRandomSampling());
-			first.setFont(tmp);
-			first.addActionListener(this);
+
+			m_sampling_method_label = new JLabel();
+			m_sampling_method_label.setText("Sample Method: ");
+			m_sampling_method_label.setToolTipText("Select method of sampling."); 
+			m_sampling_method_label.setFont(tmp);
+
+			m_sampling_methods = new JComboBox(sampling_method_labels);
+			m_sampling_methods.setEditable(false);
+			m_sampling_methods.setToolTipText(sampling_method_desc[stt.getSamplingMethod()]);
+			m_sampling_methods.setSelectedIndex(stt.getSamplingMethod());
+			m_sampling_methods.setFont(tmp);
+			m_sampling_methods.addActionListener(this);
 
 			m_seed_label = new JLabel("Random Seed: ");
 			m_seed_label.setFont(tmp);
@@ -325,8 +348,11 @@ public class SimpleTrainTest extends DataPrepModule
 			Constrain.setConstraints(this, label, 0, 2, 1, 1, GridBagConstraints.NONE,
 									 GridBagConstraints.CENTER, 0.0, 0.0);
 
-			Constrain.setConstraints(this, first, 0, 3, 1, 1, GridBagConstraints.NONE,
+			Constrain.setConstraints(this, m_sampling_method_label, 0, 3, 1, 1, GridBagConstraints.NONE,
 									 GridBagConstraints.CENTER, 0.0, 0.0);
+
+			Constrain.setConstraints(this, m_sampling_methods, 0, 3, 1, 1, GridBagConstraints.NONE,
+									 GridBagConstraints.EAST, 0.0, 0.0);
 
 			Constrain.setConstraints(this, m_seed_label, 0, 4, 1, 1, GridBagConstraints.NONE,
 									 GridBagConstraints.CENTER, 0.0, 0.0);
@@ -334,7 +360,7 @@ public class SimpleTrainTest extends DataPrepModule
 			Constrain.setConstraints(this, m_seed, 0, 4, 1, 1, GridBagConstraints.NONE,
 									 GridBagConstraints.EAST, 0.0, 0.0);
 
-			if (stt.getRandomSampling()) {
+			if (stt.getSamplingMethod() == stt.RANDOM) {
 				m_seed.setEnabled(true);
 				m_seed_label.setEnabled(true);
 			}
@@ -370,8 +396,8 @@ public class SimpleTrainTest extends DataPrepModule
 				module.setTrainPercent(trainpercent);
 				changed = true;
 			}
-			if (module.getRandomSampling() != first.isSelected()) {
-				module.setRandomSampling(first.isSelected());
+			if (module.getSamplingMethod() != m_sampling_methods.getSelectedIndex()) {
+				module.setSamplingMethod(this.m_sampling_methods.getSelectedIndex());
 				changed = true;
 			}
 
@@ -395,10 +421,11 @@ public class SimpleTrainTest extends DataPrepModule
 		{
 			Object src = e.getSource();
 
-			if (src == this.first) {
-				JCheckBox cb = (JCheckBox) src;
+			if (src == this.m_sampling_methods) {
+				JComboBox cb = (JComboBox) src;
+				m_sampling_methods.setToolTipText(sampling_method_desc[cb.getSelectedIndex()]);
 
-				if (cb.isSelected()) {
+				if (cb.getSelectedIndex() == module.RANDOM) {
 					m_seed.setEnabled(true);
 					m_seed_label.setEnabled(true);
 				}
