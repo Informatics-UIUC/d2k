@@ -28,10 +28,10 @@ File Parser, d2k.modules.core.io.file.input.ARFFFileParser, Output,  An ARFF Fil
 Java Object, java.lang.Object, Output, The object that was deserialized, InputSerializedObject (Input Serialized Object)
 Java Object, java.lang.Object, Input,  The object to be serialized,      OutputSerializedObject (Output Serialized Object)
 
-Input Table,  d2k.modules.core.datatype.table.basic.TableImpl,  Input,  Original Table to be operated on,   MergeTableRows (Merge Table Rows)
-Output Table, d2k.modules.core.datatype.table.basic.TableImpl,  Output, Resulting Table after merges,       MergeTableRows (Merge Table Rows)
-First Table,  ncsa.d2k.modules.core.datatype.table.Table,        Input,  First table to combine,             AppendTables (Append Tables)
-Second Table, ncsa.d2k.modules.core.datatype.table.Table,        Input,  Second table to combine,            AppendTables (Append Tables)
-Result Table, ncsa.d2k.modules.core.datatype.table.ExampleTable, Output, Table resulting from combination,   AppendTables (Append Tables)
-Table,        ncsa.d2k.modules.core.datatype.table.Table,        Input,  Table to write,  		     WriteTableToFile (Write Table To File)
+Input Table,  d2k.modules.core.datatype.table.basic.TableImpl, Input,  Original Table to be operated on,   MergeTableRows (Merge Table Rows)
+Output Table, d2k.modules.core.datatype.table.basic.TableImpl, Output, Resulting Table after merges,       MergeTableRows (Merge Table Rows)
+First Table,  ncsa.d2k.modules.core.datatype.table.Table,      Input,  First table to combine,             AppendTables (Append Tables)
+Second Table, ncsa.d2k.modules.core.datatype.table.Table,      Input,  Second table to combine,            AppendTables (Append Tables)
+Result Table, ncsa.d2k.modules.core.datatype.table.eTable,     Output, Table resulting from combination,   AppendTables (Append Tables)
+Table,        ncsa.d2k.modules.core.datatype.table.Table,      Input,  Table to write, 		           WriteTableToFile (Write Table To File)
 
