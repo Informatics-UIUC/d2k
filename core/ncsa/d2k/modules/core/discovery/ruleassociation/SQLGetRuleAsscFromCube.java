@@ -70,7 +70,7 @@ public class SQLGetRuleAsscFromCube extends UIModule
   Checkbox sortS;
   Checkbox sortC;
   JButton tableBrowseBtn;
-  JButton columnBrowseBtn;
+  JButton targetBrowseBtn;
   JButton condBrowseBtn;
   JButton cancelBtn;
   JButton ruleBtn;
@@ -258,9 +258,9 @@ public class SQLGetRuleAsscFromCube extends UIModule
         5,2,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       target.setText(NOTHING);
       target.addActionListener(this);
-      Constrain.setConstraints(options, columnBrowseBtn = new JButton ("Browse"),
+      Constrain.setConstraints(options, targetBrowseBtn = new JButton ("Browse"),
         15,2,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
-      columnBrowseBtn.addActionListener(this);
+      targetBrowseBtn.addActionListener(this);
 
       Constrain.setConstraints(options, new JLabel("Minimum Support"),
         0,3,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
@@ -312,11 +312,13 @@ public class SQLGetRuleAsscFromCube extends UIModule
       Object src = e.getSource();
       if (src == tableBrowseBtn) {
         doTableBrowse();
+        condition.setText(NOTHING);
+        target.setText(NOTHING);
       }
       else if (src == condBrowseBtn) {
         doColumnBrowse(0);
       }
-      else if (src == columnBrowseBtn) {
+      else if (src == targetBrowseBtn) {
         doColumnBrowse(1);
       }
       else if (src == ruleBtn) {
@@ -430,7 +432,7 @@ public class SQLGetRuleAsscFromCube extends UIModule
   /** connect to a database and retrieve the list of available cube tables
    */
   protected void doTableBrowse() {
-    String query = "select table_name from all_tables where table_name like '%_CUBE'";
+    String query = "select table_name from user_tables where table_name like '%_CUBE'";
     try {
       bt = new BrowseTables(cw, query);
       btw = new BrowseTablesView(bt, query);
@@ -459,7 +461,8 @@ public class SQLGetRuleAsscFromCube extends UIModule
    */
   protected void doColumnBrowse(int colType) {
     String query = new String("select column_name from all_tab_columns where table_name = '");
-    query = query + tableName.getText() + "' order by column_id";
+    query = query + tableName.getText() + "' and column_name != 'SET_SIZE' and " +
+            "column_name != 'CNT' order by column_id";
     try {
       bt = new BrowseTables(cw, query);
       btw = new BrowseTablesView(bt, query);
