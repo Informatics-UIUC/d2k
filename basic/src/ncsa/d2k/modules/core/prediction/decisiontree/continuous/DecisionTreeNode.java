@@ -1,9 +1,8 @@
 package ncsa.d2k.modules.core.prediction.decisiontree.continuous;
 
-import ncsa.d2k.modules.core.datatype.model.Model;
-import ncsa.d2k.modules.core.datatype.table.ExampleTable;
-import ncsa.d2k.modules.core.prediction.decisiontree.ScalarViewableDTNode;
-import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTNode;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.model.*;
+import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
 public class DecisionTreeNode implements java.io.Serializable, ScalarViewableDTNode {
 
@@ -11,7 +10,6 @@ public class DecisionTreeNode implements java.io.Serializable, ScalarViewableDTN
   int depth;
   int numExamples;
   ExampleTable examples;
-  //SubsetTableImpl examples;
   Model model;
   Decomposition decomposition;
   DecisionTreeNode root = null;

@@ -10,21 +10,24 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 
 import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.projects.dtcheng.*;
+import ncsa.d2k.modules.projects.dtcheng.datatype.*;
 
+public class DecisionTreeInducerOpt
+    extends FunctionInducerOpt {
 
-public class DecisionTreeInducerOpt extends FunctionInducerOpt {
+  boolean UseMeanNodeModels = true;
+  boolean UseLinearNodeModels = false;
+  boolean UseOneHalfSplit = false;
+  boolean UseMidPointBasedSplit = false;
+  boolean UseMeanBasedSplit = true;
+  boolean UsePopulationBasedSplit = false;
+  boolean SaveNodeExamples = false;
+  int MinDecompositionPopulation = 20;
+  int MaxTreeDepth = 20;
+  double MinErrorReduction = 0.0;
 
-   boolean UseMeanNodeModels          = true;
-   boolean UseLinearNodeModels        = false;
-   boolean UseOneHalfSplit      = false;
-   boolean UseMidPointBasedSplit      = false;
-   boolean UseMeanBasedSplit          = true;
-   boolean UsePopulationBasedSplit    = false;
-   boolean SaveNodeExamples           = false;
-   int     MinDecompositionPopulation = 20;
-   double  MinErrorReduction          = 0.0;
-
-   boolean PrintEvolvingModels = false;
+  boolean PrintEvolvingModels = false;
 
   public String getModuleName() {
     return "Decision Tree Inducer Optimizable";
@@ -49,8 +52,10 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     s += "<ul>";
     s += "<li><i>Generate splits only at 1/2</i>:  Generate splits only at 0.5.  Works well when inputs are scaled from 0.0 to 1.0.</li>";
     s += "<li><i>Generate mean splits</i>:  Generate splits at the mean input attribute value within the node.  </li>";
-    s += "<li><i>Generate midpoint splits</i>:  Generate splits at the midpoint between the min and max input attribute value within the node.  </li>";
-    s += "<li><i>Generate median splits</i>:  Generate splits at the median input attribute value within the node which requires n log n sorting.  </li> ";
+    s +=
+        "<li><i>Generate midpoint splits</i>:  Generate splits at the midpoint between the min and max input attribute value within the node.  </li>";
+    s +=
+        "<li><i>Generate median splits</i>:  Generate splits at the median input attribute value within the node which requires n log n sorting.  </li> ";
     s += "</ul>";
 
     s += "Determining whether to split a node is controlled by the following parameters: ";
@@ -72,42 +77,41 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     return s;
   }
 
-
-
   public void setControlParameters(ParameterPoint parameterPoint) {
 
-    MinDecompositionPopulation  = (int) parameterPoint.getValue(0);
-    MinErrorReduction           =       parameterPoint.getValue(1);
+    int i = 0;
+    MinDecompositionPopulation = (int) parameterPoint.getValue(i++);
+    MaxTreeDepth = (int) parameterPoint.getValue(i++);
+    MinErrorReduction = parameterPoint.getValue(i++);
 
-    UseOneHalfSplit       = false;
-    if (parameterPoint.getValue(2) > 0.5) UseOneHalfSplit   = true;
-    UseMidPointBasedSplit       = false;
-    if (parameterPoint.getValue(3) > 0.5) UseMidPointBasedSplit   = true;
-    UseMeanBasedSplit           = false;
-    if (parameterPoint.getValue(4) > 0.5) UseMeanBasedSplit       = true;
-    UsePopulationBasedSplit     = false;
-    if (parameterPoint.getValue(5) > 0.5) UsePopulationBasedSplit = true;
-    SaveNodeExamples            = false;
-    if (parameterPoint.getValue(6) > 0.5) SaveNodeExamples        = true;
-    UseMeanNodeModels           = false;
-    if (parameterPoint.getValue(7) > 0.5) UseMeanNodeModels       = true;
-    UseLinearNodeModels         = false;
-    if (parameterPoint.getValue(8) > 0.5) UseLinearNodeModels     = true;
+    UseOneHalfSplit = false;
+    if (parameterPoint.getValue(i++) > 0.5) UseOneHalfSplit = true;
+    UseMidPointBasedSplit = false;
+    if (parameterPoint.getValue(i++) > 0.5) UseMidPointBasedSplit = true;
+    UseMeanBasedSplit = false;
+    if (parameterPoint.getValue(i++) > 0.5) UseMeanBasedSplit = true;
+    UsePopulationBasedSplit = false;
+    if (parameterPoint.getValue(i++) > 0.5) UsePopulationBasedSplit = true;
+    SaveNodeExamples = false;
+    if (parameterPoint.getValue(i++) > 0.5) SaveNodeExamples = true;
+    UseMeanNodeModels = false;
+    if (parameterPoint.getValue(i++) > 0.5) UseMeanNodeModels = true;
+    UseLinearNodeModels = false;
+    if (parameterPoint.getValue(i++) > 0.5) UseLinearNodeModels = true;
   }
 
   public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) throws Exception {
 
     //call superclass constructor using example table to initialize the names;
 
-    numInputs   = examples.getNumInputFeatures();
-    numOutputs  = examples.getNumOutputFeatures();
-    inputNames  = new String[numInputs];
+    numInputs = examples.getNumInputFeatures();
+    numOutputs = examples.getNumOutputFeatures();
+    inputNames = new String[numInputs];
     outputNames = new String[numOutputs];
     for (int i = 0; i < numInputs; i++)
       inputNames[i] = examples.getInputName(i);
     for (int i = 0; i < numOutputs; i++)
       outputNames[i] = examples.getOutputName(i);
-
 
     this.errorFunction = errorFunction;
     DecisionTreeNode decisionTree = createDecisionTree(examples);
@@ -120,7 +124,6 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     return (Model) model;
   }
 
-
   ModelPrintOptions ModelPrintOptions = new ModelPrintOptions();
 
   public void calculateOutputMeansMinsMaxs(DecisionTreeNode node) throws Exception {
@@ -129,9 +132,9 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
     int numExamples = examples.getNumRows();
 
-    double [] outputSums = new double[numOutputs];
-    double [] outputMins = new double[numOutputs];
-    double [] outputMaxs = new double[numOutputs];
+    double[] outputSums = new double[numOutputs];
+    double[] outputMins = new double[numOutputs];
+    double[] outputMaxs = new double[numOutputs];
 
     for (int f = 0; f < numOutputs; f++) {
       outputMins[f] = Double.MAX_VALUE;
@@ -149,13 +152,13 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       }
     }
 
-    for (int f = 0; f < numOutputs; f++){
+    for (int f = 0; f < numOutputs; f++) {
       outputSums[f] /= numExamples;
     }
 
     node.outputMeans = outputSums;
-    node.outputMins  = outputMins;
-    node.outputMaxs  = outputMaxs;
+    node.outputMins = outputMins;
+    node.outputMaxs = outputMaxs;
   }
 
   public void createModel(DecisionTreeNode node) throws Exception {
@@ -165,7 +168,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     if (UseMeanNodeModels || (!UseMeanNodeModels && !UseLinearNodeModels)) {
       int numExamples = examples.getNumRows();
 
-      double [] outputSums = new double[numOutputs];
+      double[] outputSums = new double[numOutputs];
 
       for (int e = 0; e < numExamples; e++) {
         for (int f = 0; f < numOutputs; f++) {
@@ -173,7 +176,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
         }
       }
 
-      for (int f = 0; f < numOutputs; f++){
+      for (int f = 0; f < numOutputs; f++) {
         outputSums[f] /= numExamples;
       }
 
@@ -184,13 +187,13 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
         model = new MeanOutputModel(examples, outputSums);
       else
         model = new MeanOutputModel(RootNode.model.getTrainingSetSize(),
-                              RootNode.model.getInputColumnLabels(),
-                              RootNode.model.getOutputColumnLabels(),
-                              RootNode.model.getInputFeatureTypes(),
-                              RootNode.model.getOutputFeatureTypes(),
-                              outputSums);
+                                    RootNode.model.getInputColumnLabels(),
+                                    RootNode.model.getOutputColumnLabels(),
+                                    RootNode.model.getInputFeatureTypes(),
+                                    RootNode.model.getOutputFeatureTypes(),
+                                    outputSums);
 
-      //model.Instantiate(numInputs, numOutputs, inputNames, outputNames, outputSums);
+        //model.Instantiate(numInputs, numOutputs, inputNames, outputNames, outputSums);
 
       node.model = model;
     }
@@ -214,8 +217,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       //ParameterPointImpl parameterPoint = new ParameterPointImpl();
       //parameterPoint.createFromData(biasNames, bias);
 
-      ParameterPoint parameterPoint
-	  = ParameterPointImpl.getParameterPoint(biasNames, bias);
+      ParameterPoint parameterPoint = ParameterPointImpl.getParameterPoint(biasNames, bias);
 
       StepwiseLinearInducerOpt inducer = new StepwiseLinearInducerOpt();
 
@@ -248,7 +250,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
   }
 
   DecisionTreeNode RootNode;
-  int              NodeIndex;
+  int NodeIndex;
   public DecisionTreeNode createDecisionTree(ExampleTable examples) throws Exception {
 
     NodeIndex = 0;
@@ -258,7 +260,6 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     RootNode.examples = examples;
     RootNode.numExamples = examples.getNumRows();
     RootNode.root = RootNode;
-
 
     calculateOutputMeansMinsMaxs(RootNode);
 
@@ -294,37 +295,34 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     return RootNode;
   }
 
+  double[][] SortArray;
 
-  double [][] SortArray;
-
-  public Decomposition [] createDecompositions(DecisionTreeNode node) {
+  public Decomposition[] createDecompositions(DecisionTreeNode node) {
     ExampleTable examples = node.examples;
     int numExamples = examples.getNumRows();
 
     int numSplitMethods = 0;
 
-    if (UseOneHalfSplit)   numSplitMethods++;
-    if (UseMidPointBasedSplit)   numSplitMethods++;
-    if (UseMeanBasedSplit)       numSplitMethods++;
+    if (UseOneHalfSplit) numSplitMethods++;
+    if (UseMidPointBasedSplit) numSplitMethods++;
+    if (UseMeanBasedSplit) numSplitMethods++;
     if (UsePopulationBasedSplit) numSplitMethods++;
-
 
     int numDecompositions = numInputs * numSplitMethods;
     int decompositionIndex = 0;
 
-    Decomposition [] decompositions = new Decomposition[numDecompositions];
+    Decomposition[] decompositions = new Decomposition[numDecompositions];
 
+    for (int inputIndex = 0; inputIndex < numInputs; inputIndex++) {
 
-    for (int inputIndex = 0; inputIndex < numInputs; inputIndex++){
-
-      if (UseOneHalfSplit){
+      if (UseOneHalfSplit) {
         decompositions[decompositionIndex] = new Decomposition();
         decompositions[decompositionIndex].inputIndex = inputIndex;
-        decompositions[decompositionIndex].value      = 0.5;
+        decompositions[decompositionIndex].value = 0.5;
         decompositionIndex++;
       }
 
-      if (UseMidPointBasedSplit){
+      if (UseMidPointBasedSplit) {
         double min = Double.POSITIVE_INFINITY;
         double max = Double.NEGATIVE_INFINITY;
         for (int e = 0; e < numExamples; e++) {
@@ -337,7 +335,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
         decompositions[decompositionIndex] = new Decomposition();
         decompositions[decompositionIndex].inputIndex = inputIndex;
-        decompositions[decompositionIndex].value      = (max - min) / 2.0;
+        decompositions[decompositionIndex].value = (max - min) / 2.0;
         decompositionIndex++;
       }
 
@@ -350,7 +348,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
         decompositions[decompositionIndex] = new Decomposition();
         decompositions[decompositionIndex].inputIndex = inputIndex;
-        decompositions[decompositionIndex].value      = sum / numExamples;
+        decompositions[decompositionIndex].value = sum / numExamples;
         decompositionIndex++;
       }
 
@@ -370,7 +368,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
 
         decompositions[decompositionIndex] = new Decomposition();
         decompositions[decompositionIndex].inputIndex = inputIndex;
-        decompositions[decompositionIndex].value      = splitValue;
+        decompositions[decompositionIndex].value = splitValue;
         decompositionIndex++;
       }
     }
@@ -378,21 +376,20 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     return decompositions;
   }
 
-/*
-This method partitions the given example table into two tables based on the given decompostion.
-The example table assigned to node1 contains the examples that the decomposition function evaluates true for
-and the example table assigned to node2 contains the examples that the decomposition function evaluates false for.
-*/
+  /*
+   This method partitions the given example table into two tables based on the given decompostion.
+   The example table assigned to node1 contains the examples that the decomposition function evaluates true for
+   and the example table assigned to node2 contains the examples that the decomposition function evaluates false for.
+   */
 
+  int[] workNode1ExampleIndices;
+  int[] workNode2ExampleIndices;
 
-  int [] workNode1ExampleIndices;
-  int [] workNode2ExampleIndices;
-
-  public void partitionExamples (ExampleTable examples,
-                                 DecisionTreeNode parrentNode,
-                                 DecisionTreeNode node1,
-                                 DecisionTreeNode node2,
-                                 Decomposition decomposition) throws Exception {
+  public void partitionExamples(ExampleTable examples,
+                                DecisionTreeNode parrentNode,
+                                DecisionTreeNode node1,
+                                DecisionTreeNode node2,
+                                Decomposition decomposition) throws Exception {
 
     if (workNode1ExampleIndices == null || workNode1ExampleIndices.length < examples.getNumRows()) {
       workNode1ExampleIndices = new int[examples.getNumRows()];
@@ -412,8 +409,8 @@ and the example table assigned to node2 contains the examples that the decomposi
       }
     }
 
-    int [] node1ExampleIndicies = new int[numNode1Examples];
-    int [] node2ExampleIndicies = new int[numNode2Examples];
+    int[] node1ExampleIndicies = new int[numNode1Examples];
+    int[] node2ExampleIndicies = new int[numNode2Examples];
 
     for (int i = 0; i < numNode1Examples; i++) {
       node1ExampleIndicies[i] = workNode1ExampleIndices[i];
@@ -422,18 +419,18 @@ and the example table assigned to node2 contains the examples that the decomposi
       node2ExampleIndicies[i] = workNode2ExampleIndices[i];
     }
 
-
-
 //!!! should I just use the train set method for example set subseting or both? what about n-way subsetting?
 //luckily, for now I can assume that at least the train test set are independent;
 
     //ExampleTable node1ExampleSet = (ExampleTable) examples.copy();
     //node1ExampleSet.setTestingSet(node1ExampleIndicies);
-    node1.examples = (ExampleTable) examples.getSubset(node1ExampleIndicies);
- 
+    //node1.examples = (ExampleTable) examples.getSubset(node1ExampleIndicies);
+    node1.examples = (ExampleTable) ((ContinuousDoubleExampleTable) examples).getSubset(node1ExampleIndicies);
+
     //ExampleTable node2ExampleSet = (ExampleTable) examples.copy();
     //node2ExampleSet.setTestingSet(node2ExampleIndicies);
-    node2.examples = (ExampleTable) examples.getSubset(node2ExampleIndicies);
+    //node2.examples = (ExampleTable) examples.getSubset(node2ExampleIndicies);
+    node2.examples = (ExampleTable) ((ContinuousDoubleExampleTable) examples).getSubset(node2ExampleIndicies);
 
     //System.out.println("node1.examples.numExamples() = " + node1.examples.getNumRows());
     //System.out.println("node2.examples.numExamples() = " + node2.examples.getNumRows());
@@ -446,36 +443,36 @@ and the example table assigned to node2 contains the examples that the decomposi
 
   }
 
-
   public DecisionTreeNode recursiveDecomposition(DecisionTreeNode node, int depth) throws Exception {
 
     if (node.examples.getNumRows() < MinDecompositionPopulation)
       return node;
 
+    if (depth >= MaxTreeDepth)
+      return node;
+
     double parentError = node.error;
 
+    if (_Trace) {
+      System.out.println("creating decompositions");
+    }
 
-    if (_Trace){
-    System.out.println("creating decompositions");}
-
-    Decomposition [] decompositions = createDecompositions(node);
+    Decomposition[] decompositions = createDecompositions(node);
     int numDecompositions = decompositions.length;
 
     //!!!
     //ExampleTable examples = (ExampleTable) node.examples.copy();
     ExampleTable examples = node.examples;
-    int    numExamples = examples.getNumRows();
-
-
+    int numExamples = examples.getNumRows();
 
     double bestErrorReduction = Double.NEGATIVE_INFINITY;
     Decomposition bestDecomposition = null;
 
-    DecisionTreeNode     childNode1 = new DecisionTreeNode();
+    DecisionTreeNode childNode1 = new DecisionTreeNode();
     //childNode1.examples = examples.shallowCopy();
     //childNode1.examples.allocateExamplePointers(numExamples);
 
-    DecisionTreeNode     childNode2 = new DecisionTreeNode();
+    DecisionTreeNode childNode2 = new DecisionTreeNode();
     //childNode2.examples = examples.shallowCopy();
     //childNode2.examples.allocateExamplePointers(numExamples);
 
@@ -494,7 +491,6 @@ and the example table assigned to node2 contains the examples that the decomposi
     for (int decompositionIndex = 0; decompositionIndex < numDecompositions; decompositionIndex++) {
 
       Decomposition decomposition = decompositions[decompositionIndex];
-
 
       // count examples in each child
       int numNode1Examples = 0;
@@ -516,7 +512,6 @@ and the example table assigned to node2 contains the examples that the decomposi
       if ((numNode1Examples < MinDecompositionPopulation) ||
           (numNode2Examples < MinDecompositionPopulation))
         continue;
-
 
       // partition examples
       //childNode1.examples.allocateExamplePointers(numNode1Examples);
@@ -545,12 +540,16 @@ and the example table assigned to node2 contains the examples that the decomposi
           ((numNode1Examples > 0) && (numNode2Examples > 0))) {
 
         bestErrorReduction = errorReduction;
-        bestDecomposition  = decomposition;
+        bestDecomposition = decomposition;
 
         DecisionTreeNode tempNode;
 
-        tempNode = bestChildNode1;  bestChildNode1 = childNode1;  childNode1 = tempNode;
-        tempNode = bestChildNode2;  bestChildNode2 = childNode2;  childNode2 = tempNode;
+        tempNode = bestChildNode1;
+        bestChildNode1 = childNode1;
+        childNode1 = tempNode;
+        tempNode = bestChildNode2;
+        bestChildNode2 = childNode2;
+        childNode2 = tempNode;
       }
 
     }
@@ -566,7 +565,6 @@ and the example table assigned to node2 contains the examples that the decomposi
     // !!!
     childNode1 = null;
     childNode2 = null;
-
 
     if ((bestErrorReduction > MinErrorReduction * RootNode.numExamples)) {
       if (_Trace) {
@@ -603,11 +601,10 @@ and the example table assigned to node2 contains the examples that the decomposi
     return node;
   }
 
-
-    //QA Anca added this:
-    public PropertyDescription[] getPropertiesDescriptions() {
-	// so that "ordered and _trace" property are invisible
-        return new PropertyDescription[0];
-    }
+  //QA Anca added this:
+  public PropertyDescription[] getPropertiesDescriptions() {
+    // so that "ordered and _trace" property are invisible
+    return new PropertyDescription[0];
+  }
 
 }

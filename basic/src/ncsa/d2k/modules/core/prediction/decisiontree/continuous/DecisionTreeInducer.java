@@ -31,6 +31,17 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     return this.MinDecompositionPopulation;
   }
 
+  public void setMaxTreeDepth(int value) throws PropertyVetoException {
+    if (value < 1) {
+      throw new PropertyVetoException(" < 1", null);
+    }
+    this.MaxTreeDepth = value;
+  }
+
+  public int getMaxTreeDepth() {
+    return this.MaxTreeDepth;
+  }
+
   //private double MinErrorReduction = 0.0;
   public void setMinErrorReduction(double value) {
     this.MinErrorReduction = value;
@@ -242,25 +253,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
 
   public void doit() throws Exception {
 
- //ANCA : added exceptions
-	ExampleTable  exampleSet ;
-    try {
-    	exampleSet = (ExampleTable)this.pullInput(0);
-    } catch ( java.lang.ClassCastException e) {
-         throw new Exception("Input/Output attributes not selected.");
-    }
-    
-    int[] inputs = exampleSet.getInputFeatures();
-    int [] outputs = exampleSet.getOutputFeatures();
-    for (int i = 0; i < inputs.length; i++)
-    	if(!(exampleSet.getColumn(inputs[i])).getIsScalar()) 
-    		throw new Exception ("input attributes  like" +exampleSet.getColumn(inputs[i]).getLabel()  + " must be numeric");
-	
-	for (int i = 0; i < outputs.length; i++)
-			if(!(exampleSet.getColumn(outputs[i])).getIsScalar()) 
-				throw new Exception ("output attribute  must be numeric");
-    		
-    		
+    ExampleTable  exampleSet      = (ExampleTable)  this.pullInput(0);
     ErrorFunction errorFunction   = (ErrorFunction) this.pullInput(1);
 
     instantiateBiasFromProperties();
