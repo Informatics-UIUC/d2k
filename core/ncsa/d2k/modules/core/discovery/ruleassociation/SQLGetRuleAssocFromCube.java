@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyVetoException;
 import gnu.trove.*;
 
 public class SQLGetRuleAssocFromCube extends UIModule
@@ -145,7 +146,8 @@ public class SQLGetRuleAssocFromCube extends UIModule
   /** this property is the min acceptable support score.
    *  @param i the minimum support to set
    */
-  public void setMinSupport (double i) {
+  public void setMinSupport (double i) throws PropertyVetoException {
+      if( i < 0 || i > 100) throw new PropertyVetoException (" < 0 or > 100", null);
     minSupport = i;
   }
   public double getMinSupport () {
@@ -155,7 +157,8 @@ public class SQLGetRuleAssocFromCube extends UIModule
   /** this property is the min acceptable confidence score.
    *  @param i the minimum confidence to set
    */
-  public void setMinConfidence (double i) {
+  public void setMinConfidence (double i) throws PropertyVetoException {
+      if( i < 0 || i > 100) throw new PropertyVetoException (" < 0 or > 100", null);
     minConfidence = i;
   }
   public double getMinConfidence () {
@@ -168,7 +171,8 @@ public class SQLGetRuleAssocFromCube extends UIModule
    *           rule is pruned. E.g. A=>C (confidence 0.95) and (A,B)=>C
    *           (confidence 0.94), with pruningThreshold 0.1, (A,B)=>C is pruned
    */
-  public void setThreshold (double i) {
+  public void setThreshold (double i) throws PropertyVetoException {
+      if( i < 0 || i > 100) throw new PropertyVetoException (" < 0 or > 100", null);
     threshold = i;
   }
   public double getThreshold () {
