@@ -325,12 +325,15 @@ public class SparseMutableTable
   }
 
   public Table shallowCopy() {
-    SparseMutableTable new_table = new SparseMutableTable();
-    new_table.setLabel(this.getLabel());
+    SparseMutableTable new_table = new SparseMutableTable(this);
+    new_table.transformations = this.transformations;
+
+/* VERED - commented this out so shallow copy will be REALLY shalllow....
+        new_table.setLabel(this.getLabel());
     new_table.setComment(this.getComment());
     for (int i = 0, n = this.getNumColumns(); i < n; i++) {
       new_table.addColumn( (AbstractSparseColumn) getCol(i));
-    }
+    }*/
     return new_table;
   }
 

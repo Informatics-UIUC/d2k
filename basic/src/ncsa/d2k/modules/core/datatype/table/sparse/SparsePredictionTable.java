@@ -66,44 +66,63 @@ public class SparsePredictionTable
    * columns to hold the predicted values.
    * @param ttt the ExampleTable that contains the inital values
    */
-  public SparsePredictionTable(SparseExampleTable ttt) {
+  public SparsePredictionTable(SparseTable ttt) {
     super(ttt);
+    /* this is taken care by super's constructor.
     if (outputColumns == null) {
       predictionSet = new int[0];
       outputColumns = new int[0];
-    }
+    }*/
+    if(ttt instanceof PredictionTable)
+      predictionSet = ((PredictionTable) ttt).getPredictionSet();
+
     else {
       predictionSet = new int[outputColumns.length];
 
-      // Copy the existing columns.
-    }
 //    Column[] newColumns = new Column[outputColumns.length];
 //    System.arraycopy(columns, 0, newColumns, 0, columns.length);
-    int i = this.getNumColumns();
+      int i = this.getNumColumns();
 
-    // Create new columns which will contain the predicted values.
-    for (int i2 = 0; i2 < outputColumns.length; i++, i2++) {
-      //Column col = ttt.getColumn(outputColumns[i2]);
-      //col = ColumnUtilities.createColumn(col.getType(), col.getNumRows());
-      this.addColumn(ttt.getColumnType(outputColumns[i2]));
-      StringBuffer newLabel = new StringBuffer(ttt.getColumnLabel(outputColumns[i2]));
-      newLabel.append(PREDICTION_COLUMN_APPEND_TEXT);
-      this.setColumnLabel(newLabel.toString(), i);
-      //newColumns[i] = col;
-      predictionSet[i2] = i;
+      // Create new columns which will contain the predicted values.
+      for (int i2 = 0; i2 < outputColumns.length; i++, i2++) {
+        //Column col = ttt.getColumn(outputColumns[i2]);
+        //col = ColumnUtilities.createColumn(col.getType(), col.getNumRows());
+        this.addColumn(ttt.getColumnType(outputColumns[i2]));
+        StringBuffer newLabel = new StringBuffer(ttt.getColumnLabel(
+            outputColumns[i2]));
+        newLabel.append(PREDICTION_COLUMN_APPEND_TEXT);
+        this.setColumnLabel(newLabel.toString(), i);
+        //newColumns[i] = col;
+        predictionSet[i2] = i;
+      }
     }
 //    columns = newColumns;
   }
 
+
   /**
+   * Do a shallow copy on the data by creating a new instance of a MutableTable,
+   * and initialize all it's fields from this one.
+   * @return a shallow copy of the table.
+   */
+  public Table shallowCopy() {
+    SparsePredictionTable spt = new SparsePredictionTable(this);
+    spt.transformations = transformations;
+    return spt;
+  }
+
+
+  /**
+   *
    * Given a prediction table, copy its input columns, and create new
    * columns to hold the predicted values.
    * @param ttt the prediction table to start with
    */
+  /*VERED - commented this out - it is taken care by other constructor.
   public SparsePredictionTable(SparsePredictionTable ttt) {
     super(ttt);
     predictionSet = ttt.getPredictionSet();
-  }
+  }*/
 
   /**
    * Copy method. Return an exact copy of this column.  A deep copy

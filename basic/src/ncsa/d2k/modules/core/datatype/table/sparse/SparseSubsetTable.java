@@ -49,7 +49,20 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @param subset the integer subset.
    */
   public SparseSubsetTable(SparseTable table) {
+
     super(table);
+    if (table instanceof SparseSubsetTable) {
+      subset = ((SparseSubsetTable) table).subset;
+    }
+    else{
+      subset = new int[table.getNumRows()];
+      for (int i = 0; i < this.subset.length; i++)
+        this.subset[i] = i;
+    }
+
+
+
+    /*
     this.subset = new int[table.getNumRows()];
     if (table instanceof SparseSubsetTable) {
       int[] tmp = ((SparseSubsetTable)table).getSubset();
@@ -61,7 +74,7 @@ public class SparseSubsetTable extends SparseMutableTable {
       for (int i = 0; i < this.subset.length; i++) {
         this.subset[i] = i;
       }
-
+*/
 
   }
 
@@ -513,13 +526,24 @@ public class SparseSubsetTable extends SparseMutableTable {
     /**
      * Since we want to make a deep copy of the table we can just return
      * a SparseMutableTable.
+     *
+     * VERED - made this method like its sister SubsetTableIml.copy()
+     * to return a subset table.
+     * the subset of the returned table will inlude all of its rows.
+     * because we have copied only the subset...
+     *
+     * @todo revise this issue - whether to return an exact copy of this table
+     * or a compressed one...
      */
      SparseMutableTable vt;
      vt = (SparseMutableTable)super.copy(subset);
+     SparseSubsetTable sst = new SparseSubsetTable(vt);
      //this is probably redundant -- DS
-     vt.setLabel(this.getLabel());
-     vt.setComment(this.getComment());
-     return vt;
+     //VERED - it is redundant, taken care by SparseMutableTable
+    // vt.setLabel(this.getLabel());
+     //vt.setComment(this.getComment());
+
+     return sst;
   }
 
   /**
@@ -536,9 +560,10 @@ public class SparseSubsetTable extends SparseMutableTable {
     SparseMutableTable vt;
     int[] newsubset = this.resubset(start, length);
     vt = (SparseMutableTable)super.copy(newsubset);
-    vt.setLabel(this.getLabel());
-    vt.setComment(this.getComment());
-    return vt;
+     SparseSubsetTable sst = new SparseSubsetTable(vt);
+//    vt.setLabel(this.getLabel());
+ //   vt.setComment(this.getComment());
+    return sst;
   }
 
   /**
@@ -555,9 +580,10 @@ public class SparseSubsetTable extends SparseMutableTable {
     SparseMutableTable vt;
     int[] newsubset = this.resubset(asubset);
     vt = (SparseMutableTable)super.copy(newsubset);
-    vt.setLabel(this.getLabel());
-    vt.setComment(this.getComment());
-    return vt;
+ //   vt.setLabel(this.getLabel());
+ //   vt.setComment(this.getComment());
+  SparseSubsetTable sst = new SparseSubsetTable(vt);
+    return sst;
   }
 
   /**
@@ -566,13 +592,8 @@ public class SparseSubsetTable extends SparseMutableTable {
    * @return a shallow copy of the table.
    */
   public Table shallowCopy() {
-
-    SparseMutableTable smt = (SparseMutableTable)super.shallowCopy();
-    int[] newsubset = new int[subset.length];
-    System.arraycopy(subset, 0, newsubset, 0, subset.length);
-    SparseSubsetTable sst = new SparseSubsetTable(smt, newsubset);
-    sst.setLabel(getLabel());
-    sst.setComment(getComment());
+    SparseSubsetTable sst = new SparseSubsetTable(this);
+    sst.transformations = transformations;
     return sst;
   }
 

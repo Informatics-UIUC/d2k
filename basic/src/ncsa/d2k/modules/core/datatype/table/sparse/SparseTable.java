@@ -126,44 +126,15 @@ public abstract class SparseTable
    * creates a shallow copy of <codE>T</code>
    */
   public SparseTable(SparseTable T) {
-
-    //making a shallow copy of rows.
-    rows = new VIntObjectHashMap(T.getNumRows());
-
-    //retrieving valid rows numbers
-    int[] rKeys;
-
-//todo: this cases should be handle in constructor of subset table... ?
-    //should not be here. especially now that train and test tables are subset tables...
-    if (T instanceof TestTable) {
-      rKeys = ( (SparseExampleTable) T).testSet;
-    }
-    else if (T instanceof TrainTable) {
-      rKeys = ( (SparseExampleTable) T).trainSet;
-    }
-    else {
-      rKeys = T.rows.keys();
-
-    }
-
-    for (int i = 0; i < rKeys.length; i++) {
-      rows.put(rKeys[i], T.rows.get(rKeys[i]));
-
-      //making a shallow copy of columns
-    }
-    columns = new VIntObjectHashMap(T.columns.size());
-    int[] cKeys = T.columns.keys();
-    for (int i = 0; i < cKeys.length; i++) {
-      columns.put(cKeys[i], T.columns.get(cKeys[i]));
-
-    }
-    numRows = T.numRows;
+//VERED: making all references to refer to T's objects
+    columnRef = T.columnRef;
+    columns = T.columns;
+    comment = T.comment;
+    label = T.label;
     numColumns = T.numColumns;
-    columnRef = T.columnRef.copy();
-//    reversedRef = T.reversedRef.copy();
-
-
-    copyAttributes(T);
+    numRows = T.numRows;
+    rows = T.rows;
+//    copyAttributes(T);
   }
 
 

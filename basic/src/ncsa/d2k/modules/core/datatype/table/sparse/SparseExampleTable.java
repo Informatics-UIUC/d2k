@@ -70,18 +70,32 @@ public class SparseExampleTable
 //    trainSet = null;
 //  }
 
-  /* Instantiate this table with the content of <codE>table</code>*/
+  /* Instantiate this table with the content of <codE>table</code>
+   this Table and <code>table</code> will share all references.
+   */
   public SparseExampleTable(SparseTable table) {
     super(table);
     if (table instanceof SparseExampleTable) {
-      copyArrays( (SparseExampleTable) table);
+      SparseExampleTable tbl = (SparseExampleTable) table;
+      inputColumns = tbl.inputColumns;
+      inputNames = tbl.inputNames;
+      outputColumns = tbl.outputColumns;
+      outputNames = tbl.outputNames;
+      testSet = tbl.testSet;
+      trainSet = tbl.trainSet;
+
+//      copyArrays( (SparseExampleTable) table);
     }
-    else {
-//      inputColumns = null;
-//      outputColumns = null;
-//      testSet = null;
-//      trainSet = null;
+    else{
+      //initialize arrays to avoid null pointer exception
+      inputColumns = new int[0];
+      inputNames = new String[0];
+      outputColumns = new int[0];
+      outputNames = new String[0];
+      testSet = new int[0];
+      trainSet = new int[0];
     }
+
   }
 
   /* Instantiate this table with the content of <codE>table</code>*/
@@ -104,16 +118,8 @@ public class SparseExampleTable
 
   /* Instantiate this table with the content of <codE>table</code>*/
   public SparseExampleTable(SparseTable table, int[] ss) {
-    super(table, ss);
-    if (table instanceof SparseExampleTable) {
-      copyArrays( (SparseExampleTable) table);
-    }
-    else {
-//      inputColumns = null;
-//      outputColumns = null;
-//      testSet = null;
-//      trainSet = null;
-    }
+    this(table);
+    subset = ss;
   }
 
   /* Instantiate this table with the content of <codE>table</code>*/
@@ -135,6 +141,15 @@ public class SparseExampleTable
     if (table.outputColumns != null) {
       outputColumns = copyArray(table.outputColumns);
     }
+    if (table.inputNames != null) {
+     inputNames = copyArray(table.inputNames);
+   }
+   if (table.outputNames != null) {
+     outputNames = copyArray(table.outputNames);
+   }
+
+
+
     if (table.testSet != null) {
       testSet = copyArray(table.testSet);
     }
@@ -148,6 +163,13 @@ public class SparseExampleTable
     System.arraycopy(arr, 0, retVal, 0, retVal.length);
     return retVal;
   }
+
+  protected String[] copyArray(String[] arr) {
+   String[] retVal = new String[arr.length];
+   System.arraycopy(arr, 0, retVal, 0, retVal.length);
+   return retVal;
+ }
+
 
   //=========================================================================
   //                      Example Table Interface
@@ -742,20 +764,13 @@ public class SparseExampleTable
   /**
    * Do a shallow copy on the data by creating a new instance of a MutableTable,
    * and initialize all it's fields from this one.
+   *
    * @return a shallow copy of the table.
    */
   public Table shallowCopy() {
-    SparseTable tab = (SparseTable)super.shallowCopy();
-    SparseExampleTable set = new SparseExampleTable(tab);
+    //VERED (7-15-04) made this method to return a TRULY shallow copy.
 
-//    eti.setSubset(copyIntArray(this.getSubset()));
-    set.setTrainingSet(copyArray(this.getTrainingSet()));
-    set.setTestingSet(copyArray(this.getTestingSet()));
-    set.setInputFeatures(copyArray(this.getInputFeatures()));
-    set.setOutputFeatures(copyArray(this.getOutputFeatures()));
-//    set.setLabel(this.getLabel());
-//    set.setComment(this.getComment());
-    set.transformations = this.transformations;
+   SparseExampleTable set = new SparseExampleTable(this);
     return set;
   }
 
