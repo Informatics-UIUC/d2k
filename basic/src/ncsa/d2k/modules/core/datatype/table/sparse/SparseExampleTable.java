@@ -1728,6 +1728,23 @@ public class SparseExampleTable
       }
       setOutputFeatures(newout);
     }
+
+    //adjust input/output array values to account for column indice shifts -- DDS
+    int[] newin = this.getInputFeatures();
+    for (int i = 0, n = newin.length; i < n; i++){
+      if (newin[i] > position){
+        newin[i]--;
+      }
+    }
+    this.setInputFeatures(newin);
+    int[] newout = this.getOutputFeatures();
+    for (int i = 0, n = newout.length; i < n; i++){
+      if (newout[i] > position){
+        newout[i]--;
+      }
+    }
+    this.setOutputFeatures(newout);
+
   }
 
   /**
