@@ -95,14 +95,14 @@ public class ParseDSTPToDBTable
    * @return array
    */
   public PropertyDescription[] getPropertiesDescriptions() {
-    PropertyDescription[] descriptions = new PropertyDescription[5];
+    PropertyDescription[] descriptions = new PropertyDescription[4];
     descriptions[0] = super.supressDescription;
     descriptions[1] = new PropertyDescription("serverName",
                                               "DSTP Server DNS or IP",
         "This is the address of the DSTP server.");
     descriptions[2] = new PropertyDescription("category", "Category", "Category of the datafile to be loaded");
     descriptions[3] = new PropertyDescription("datafileName", "Datafile Name", "The data file to be loaded");
-    descriptions[4] = new PropertyDescription("datafileSource", "Datafile Source", "The data file to be loaded");
+    //descriptions[4] = new PropertyDescription("datafileSource", "Datafile Source", "The data file to be loaded");
 
     return descriptions;
   }
@@ -275,8 +275,8 @@ public class ParseDSTPToDBTable
   private String category;       //category of chosen node
 
   private String datafileName;   //datafile name
-  private String[] attNames;     //selected attribute names in datafileSource
-  private String[] attTypes;     //selected attribute types in datafileSource
+  private String[] attNames;     //selected attribute names in datafileName
+  private String[] attTypes;     //selected attribute types in datafileName
 
   //setter and getter methods
   public String getCategory(){return category;}
@@ -307,6 +307,10 @@ public class ParseDSTPToDBTable
 
   public void doit() throws Exception{
 
+    //validating that properties were set:
+    if(m_servername == null || attNames == null || attTypes == null || category == null || datafileName == null)
+      throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+
 
   //creating a tree panel to hold the data in the dataspace.
   DSTPTreePanel tree = new DSTPTreePanel(m_servername);
@@ -334,7 +338,7 @@ public class ParseDSTPToDBTable
 //validating that the chosen category was found in the dataspace
 
   if(categoryNode == null)
-    throw new Exception ("The chosen category " + category + " does not exist in the chosen server " + m_servername + " dataspace");
+    throw new Exception (this.getAlias()+": The chosen category " + category + " does not exist in the chosen server " + m_servername + " dataspace");
 
 //everything is ok...
   //retrieving the category's children - datafiles.
@@ -355,7 +359,7 @@ public class ParseDSTPToDBTable
 //validating that the chosen datafile is in the chosen category
 
   if(fileNode == null)
-    throw new Exception ("The chosen datafile name " + datafileName + " does not exist in the chosen category " + category);
+    throw new Exception (this.getAlias()+ ": The chosen datafile name " + datafileName + " does not exist in the chosen category " + category);
 
 //everything is fine...
 
@@ -386,7 +390,7 @@ public class ParseDSTPToDBTable
   String[] targetAttNames = StaticMethods.getIntersection(attNames, attsNameMap);
 
   if(targetAttNames.length == 0)
-    throw new Exception("None of the selected attributes is in the given dataspace");
+    throw new Exception(this.getAlias()+ ": None of the selected attributes is in the given dataspace");
 
 //verifying that each type matches.
 
@@ -407,7 +411,7 @@ public class ParseDSTPToDBTable
 
     //validating matching between the types.
     if(! currType.equals(selectedType))
-      throw new Exception("The selected type for attribute name " + targetAttNames[i] +
+      throw new Exception(this.getAlias()+ ": The selected type for attribute name " + targetAttNames[i] +
     " does not match the type is the data space.");
 
       //if everything is ok, adding to the array list.
