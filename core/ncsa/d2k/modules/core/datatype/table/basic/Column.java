@@ -233,6 +233,15 @@ public interface Column extends java.io.Serializable {
 	public void sort(MutableTable t);
 
     /**
+       Sort the elements in this column starting with row 'begin' up to row 'end',
+       and swap the rows in the table  we are a part of.
+       @param t the VerticalTable to swap rows for
+       @param begin the row no. which marks the beginnig of the  column segment to be sorted
+       @param end the row no. which marks the end of the column segment to be sorted
+    */
+    public void sort(MutableTable t,int begin, int end);
+
+    /**
     	Compare the values of the object passed in and pos. Return 0 if they
     	are the same, greater than zero if element is greater,
 		and less than zero if element is less.

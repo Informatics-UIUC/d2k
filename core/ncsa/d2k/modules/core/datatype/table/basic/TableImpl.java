@@ -952,6 +952,16 @@ public class TableImpl extends AbstractTable implements MutableTable {
 		getColumn(col).sort(this);
     }
 
+    /**
+       Sort the elements in this column starting with row 'begin' up to row 'end',
+	   @param col the index of the column to sort
+       @param begin the row no. which marks the beginnig of the  column segment to be sorted
+       @param end the row no. which marks the end of the column segment to be sorted
+    */
+    public void sortByColumn(int col, int begin, int end) {
+		getColumn(col).sort(this, begin, end);
+	}
+
 	public TableFactory getTableFactory() {
 		return tableFactory;
 	}

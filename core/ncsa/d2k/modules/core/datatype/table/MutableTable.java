@@ -692,6 +692,14 @@ public interface MutableTable extends Table {
 	*/
 	public void sortByColumn(int col);
 
+    /**
+       Sort the elements in this column starting with row 'begin' up to row 'end',
+	   @param col the index of the column to sort
+       @param begin the row no. which marks the beginnig of the  column segment to be sorted
+       @param end the row no. which marks the end of the column segment to be sorted
+    */
+    public void sortByColumn(int col, int begin, int end);
+
 	/**
 		Sets a new capacity for this Table.  The capacity is its potential
 		maximum number of entries.  If numEntries is greater than newCapacity,
