@@ -14,17 +14,17 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
  * @version 1.0
  */
 class EMOUniformCrossover
-    extends UniformCrossoverObj implements BinaryIndividualFunction {
+    extends UniformCrossoverObj implements BinaryIndividualFunction, java.io.Serializable {
 
   public String getName() {
     return "Uniform Crossover";
   }
-  
+
   public String getDescription() {
     return "";
   }
-  
+
   public Property[] getProperties() {
-    return null;  
+    return null;
   }
 }

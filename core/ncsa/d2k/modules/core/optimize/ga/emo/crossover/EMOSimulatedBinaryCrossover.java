@@ -9,7 +9,7 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
  * @version 1.0
  */
 class EMOSimulatedBinaryCrossover
-    extends SimulatedBinaryCrossoverObj implements RealIndividualFunction {
+    extends SimulatedBinaryCrossoverObj implements RealIndividualFunction, java.io.Serializable {
 
   private NProp n;
 

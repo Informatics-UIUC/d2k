@@ -4,7 +4,7 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
 class EMOTruncation extends TruncationObj
-  implements BinaryIndividualFunction, RealIndividualFunction {
+  implements BinaryIndividualFunction, RealIndividualFunction, java.io.Serializable {
 
   public String getDescription() {
     return "";
@@ -13,7 +13,7 @@ class EMOTruncation extends TruncationObj
   public String getName() {
     return "Truncation";
   }
-  
+
   public Property[] getProperties() {
     return null;
   }

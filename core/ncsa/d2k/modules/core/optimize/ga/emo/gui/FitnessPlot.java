@@ -136,7 +136,7 @@ abstract public class FitnessPlot
    * @param e
    */
   public void mouseReleased(MouseEvent e) {
-    if (selectionEnabled) {
+    if (selectionEnabled && mousePressed) {
       mousePressed = false;
       removeAllSelections();
 

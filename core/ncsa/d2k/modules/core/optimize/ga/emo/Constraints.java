@@ -18,7 +18,7 @@ import java.util.*;
  * A constraint variable is a transformation on a table that creates a variable,
  * most likely to be used in the calculation of the constraints.
  */
-public class Constraints {
+public class Constraints implements java.io.Serializable {
 
   /**
    * Keeps the information about the constraints evaluated by

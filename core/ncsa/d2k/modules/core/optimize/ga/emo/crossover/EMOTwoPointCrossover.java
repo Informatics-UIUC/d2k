@@ -14,16 +14,16 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
  * @version 1.0
  */
 class EMOTwoPointCrossover
-    extends Crossover implements BinaryIndividualFunction {
+    extends Crossover implements BinaryIndividualFunction, java.io.Serializable {
 
   public String getName() {
     return "Two Point Crossover";
   }
-  
+
   public String getDescription() {
     return "";
   }
-  
+
   public Property[] getProperties() {
     return null;
   }

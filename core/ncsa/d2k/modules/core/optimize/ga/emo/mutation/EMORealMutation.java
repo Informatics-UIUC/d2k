@@ -4,10 +4,10 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.mutation.*;
 
 class EMORealMutation
-    extends RealMutationObj implements RealIndividualFunction {
+    extends RealMutationObj implements RealIndividualFunction, java.io.Serializable {
 
   private NProp n;
-  
+
   EMORealMutation() {
     n = new NProp();
   }
@@ -15,7 +15,7 @@ class EMORealMutation
   public String getName() {
     return "Real Mutation";
   }
-  
+
   public String getDescription() {
     return "";
   }

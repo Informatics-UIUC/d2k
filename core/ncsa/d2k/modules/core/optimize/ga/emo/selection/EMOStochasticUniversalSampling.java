@@ -4,7 +4,7 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
 class EMOStochasticUniversalSampling extends StochasticUniversalSamplingObj
-  implements BinaryIndividualFunction, RealIndividualFunction {
+  implements BinaryIndividualFunction, RealIndividualFunction, java.io.Serializable {
 
   public String getDescription() {
     return "";
@@ -13,7 +13,7 @@ class EMOStochasticUniversalSampling extends StochasticUniversalSamplingObj
   public String getName() {
     return "Stochastic Universal Sampling";
   }
-  
+
   public Property[] getProperties() {
     return null;
   }

@@ -4,10 +4,10 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
 class EMORankSelection extends RankSelectionObj
-    implements BinaryIndividualFunction, RealIndividualFunction {
+    implements BinaryIndividualFunction, RealIndividualFunction, java.io.Serializable {
 
   private PressureProp pp;
-  
+
   EMORankSelection() {
     pp = new PressureProp();
   }
@@ -15,7 +15,7 @@ class EMORankSelection extends RankSelectionObj
   public String getName() {
     return "Rank Selection";
   }
-  
+
   public String getDescription() {
     return "";
   }

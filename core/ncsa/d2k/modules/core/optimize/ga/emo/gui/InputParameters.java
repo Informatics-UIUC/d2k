@@ -57,7 +57,7 @@ public class InputParameters
   }
 
   public String getModuleInfo() {
-    return "";
+    return "Input all the parameters to run the GA.";
   }
 
   protected UserView createUserView() {

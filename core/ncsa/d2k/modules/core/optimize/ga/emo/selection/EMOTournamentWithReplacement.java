@@ -4,7 +4,7 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.selection.*;
 
 class EMOTournamentWithReplacement extends TournamentWithReplacementObj
-  implements BinaryIndividualFunction, RealIndividualFunction {
+  implements BinaryIndividualFunction, RealIndividualFunction, java.io.Serializable {
 
   public String getDescription() {
     return "";
@@ -13,7 +13,7 @@ class EMOTournamentWithReplacement extends TournamentWithReplacementObj
   public String getName() {
     return "Tournament With Replacement";
   }
-  
+
   public Property[] getProperties() {
     return null;
   }

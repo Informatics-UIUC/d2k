@@ -18,7 +18,7 @@ import java.util.*;
  * A fitness variable is a transformation on a table that creates a variable,
  * most likely to be used in the calculation of the FFs.
  */
-public class FitnessFunctions {
+public class FitnessFunctions implements java.io.Serializable {
 
   /** keeps the descriptions of the executables */
   private MutableTable externalFunctions;

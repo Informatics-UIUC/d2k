@@ -7,7 +7,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
  * A structure to define the decision variables used in an EMO problem.  The
  * name, minimum, maximum, precision, and string length are kept.
  */
-public class DecisionVariables {
+public class DecisionVariables implements java.io.Serializable {
 
   /////////////////////////////////////////////////////
   // constants used to index columns in the table

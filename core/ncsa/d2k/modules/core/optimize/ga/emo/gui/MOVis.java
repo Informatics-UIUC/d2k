@@ -1179,9 +1179,8 @@ s += " since they are not being updated continuously.";
           // get the list of selected index
           int[] selected = plots[0][0].fitnessTable.getSelectedRows();
           // get the population table
-          Population p = MOView.this.populations[populationIndex];
+          NsgaPopulation p = MOView.this.populations[populationIndex];
           Table t = p.getTable();
-
           return new SelectedTableModel(t, selected);
         }
 

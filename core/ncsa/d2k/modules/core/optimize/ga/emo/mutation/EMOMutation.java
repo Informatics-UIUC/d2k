@@ -4,16 +4,16 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.optimize.ga.mutation.*;
 
 class EMOMutation
-    extends Mutation implements BinaryIndividualFunction {
+    extends Mutation implements BinaryIndividualFunction, java.io.Serializable {
 
   public String getName() {
     return "Mutation";
   }
-  
+
   public String getDescription() {
     return "";
   }
-  
+
   public Property[] getProperties() {
     return null;
   }
