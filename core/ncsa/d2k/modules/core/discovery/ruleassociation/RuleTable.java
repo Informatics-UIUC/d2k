@@ -48,6 +48,47 @@ public class RuleTable extends MutableTableImpl {
     }
 
     /**
+     * cleanup removes attribute-value combinations from the visualization
+     * that are not part of any rule. First the remap field identifies which
+     * items(attribute-values) are not used. Then the remap field is used to
+     * determine the items to be removed and identify the new value that items
+     * should use.  Then it adjusts the frequent item sets.
+     * This method By Loretta Auvil
+     */
+    public void cleanup() {
+        // assign value of 1 if attribute-value is used
+        int [] remap = new int[items.size()];
+        for (int i=0; i < getNumRules(); i++) {
+          int[] ante = getRuleAntecedent(i);
+          for (int j=0; j < ante.length; j++)
+            if (remap[ante[j]] != 1)
+              remap[ante[j]] = 1;
+          int[] conseq = getRuleConsequent(i);
+          for (int j=0; j < conseq.length; j++)
+            if (remap[conseq[j]] != 1)
+              remap[conseq[j]] = 1;
+        }
+        //calculate new index for attribute-value
+        int adjustment = 0;
+        int len = items.size();
+        for (int i=0; i < len; i++)
+          if (remap[i] != 1) {
+            items.remove(i-adjustment);
+            adjustment++;
+            remap[i] = -1;
+          }
+          else
+            remap[i] = i-adjustment;
+        //adjust the values of frequent item sets by the remap data
+        for (int i=0; i < itemSets.size(); i++) {
+          FreqItemSet fis = (FreqItemSet)itemSets.get(i);
+          len = fis.items.size();
+          for (int j=0; j<len; j++)
+            fis.items.set(j,remap[fis.items.get(j)]);
+        }
+    }
+
+    /**
      * Sort the rules by confidence.
      */
     public void sortByConfidence() {

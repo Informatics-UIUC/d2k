@@ -152,7 +152,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 
           sb.append("</p><p>Scalability: ");
           sb.append("While this module can display a large number of items and rules, there can be a noticable delay " );
-	  sb.append("in opening the visualization when a large number of cells are involved. " ); 
+	  sb.append("in opening the visualization when a large number of cells are involved. " );
           sb.append("Also, as the number of cells increases beyond ");
           sb.append("a certain point, it is difficult to gain insights from the display.  Advanced features to help ");
           sb.append("in these cases are being discussed for a future release. ");
@@ -163,7 +163,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 
         public PropertyDescription[] getPropertiesDescriptions() {
 		// hide properties that the user shouldn't udpate
-       		return new PropertyDescription[0]; 
+       		return new PropertyDescription[0];
    	}
 
 
@@ -399,6 +399,9 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		public void setInput(Object o, int index) {
 			if (index == 0)
 				ruleTable = (RuleTable)o;
+                                // Added call to cleanup() to remove items
+                                // from the RuleTable that are not used in any rules
+                                ruleTable.cleanup();
 				itemLabels = ruleTable.getNamesList();
 				// Do we have all the inputs we need?
 				if ((ruleTable != null) /*&& (itemLabels != null)*/){
@@ -927,14 +930,14 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 }
 
 // Start QA Comments
-// 
-// 3/*/03  - Ruth did QA and Tom did updates to the module.  
+//
+// 3/*/03  - Ruth did QA and Tom did updates to the module.
 // 3/28/03 - Ready for basic.
 //         - WISH:  Don't show items that don't appear in any rules.
 //         - WISH:  Group items so attributes show up next to each other (perhaps
 //                  done earlier in module sequence prior to building items or rule table.
 //         - WISH:  Allow sorting by items that have included in most rules.
 //         - WISH:  Show rule consequent items at top of item list.
-//         - WISH:  Put back option to save as PMML when that is working.  
+//         - WISH:  Put back option to save as PMML when that is working.
 //         - WISH:  Offer way to print entire matrix, not just viewable area.
 // End QA Comments.
