@@ -48,7 +48,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 	   @return The name of this module.
 	*/
 	public String getModuleName() {
-		return "SimpleTrainTest";
+		return "Simple Train Test";
 	}
 
 	/**
