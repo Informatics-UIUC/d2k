@@ -43,25 +43,26 @@ public class BarChart2D extends VisModule {
     StringBuffer sb = new StringBuffer("<p>Overview: ");
     sb.append("This module creates a bar chart visualization from ");
     sb.append("<i>Table</i> data. One column (by default, column 0) ");
-    sb.append("must contain the labels of the bars on the chart, and ");
-    sb.append("another column (by default, column 1) must contain their ");
-    sb.append("respective heights.");
+    sb.append("must contain the labels for the bars on the chart. ");
+    sb.append("Another column (by default, column 1) must contain the ");
+    sb.append("data values to be plotted - these values control the heights ");
+    sb.append("of the bars.");
     sb.append("</p><p>Data Handling: ");
-    sb.append("Negative height values are ignored (treated as zero).");
+    sb.append("Negative data values are ignored (treated as zero).");
     sb.append("</p>");
     return sb.toString();
   }
 
   public String getModuleName() {
-    return "2D Bar Chart";
+    return "Bar Chart 2D";
   }
 
   public String getOutputInfo(int index) {
-    return "NO SUCH OUTPUT";
+    return "No such output";
   }
 
   public String getOutputName(int index) {
-    return "NO SUCH OUTPUT";
+    return "No such output";
   }
 
   public String[] getOutputTypes() {
@@ -100,8 +101,8 @@ public class BarChart2D extends VisModule {
     pds[0] = new PropertyDescription("labelsColumn", "Labels column",
                                      "Specifies which column of the table contains the data labels.");
 
-    pds[1] = new PropertyDescription("heightsColumn", "Heights column",
-                                     "Specifies which column of the table contains the data heights.");
+    pds[1] = new PropertyDescription("heightsColumn", "Data values column",
+                                     "Specifies which column of the table contains the data values.");
 
     pds[2] = new PropertyDescription("XIncrement", "Minimum x increment",
                                      "Specifies the minimum increment in pixels on x axis.");
