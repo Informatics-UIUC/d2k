@@ -152,6 +152,7 @@ public class ParameterPointImpl extends ExampleImpl implements Serializable, Par
 	public void setMissingByte(byte newMissingByte) {
 		this.defaultMissingByte = newMissingByte;
 	}
+   
 	/**
 	 * return a parameter point from the given arrays.
 	 * @return

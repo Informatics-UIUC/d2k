@@ -111,7 +111,7 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
 	 * @param pos the position of the Column to get from table
 	 * @return the Column at in the table at pos
 	 */
-	final Column [] getColumns () {
+	Column [] getColumns () {
 		return columns;
 	}
 	/**
