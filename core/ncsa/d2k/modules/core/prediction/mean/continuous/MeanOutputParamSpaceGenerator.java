@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.prediction;
+package ncsa.d2k.modules.core.prediction.mean.continuous;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.prediction.AbstractParamSpaceGenerator;
@@ -19,7 +19,8 @@ public class MeanOutputParamSpaceGenerator extends AbstractParamSpaceGenerator {
 
     public String getOutputInfo(int i) { 
 	switch (i) { 
-	case 0: return "Control Parameter Space for Mean Output Inducer"; 
+	case 0: return "Control Parameter Space for Mean Output Inducer." + 
+		    " There are no parameters for the Mean Output inducer at this time."; 
 	case 1: return "Mean Output Function Inducer Class"; 
 	} 
 	return ""; 

@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.prediction;
+package ncsa.d2k.modules.core.prediction.regression.continuous;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.prediction.AbstractParamSpaceGenerator;

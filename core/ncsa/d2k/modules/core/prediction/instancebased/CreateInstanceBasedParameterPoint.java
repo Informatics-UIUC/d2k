@@ -26,8 +26,8 @@ public class CreateInstanceBasedParameterPoint
         "Distance Weighting Power",
         "The value of the power term in the inverse distance weighting formula.  " +
         "Setting this to zero causes equal weighting of all examples.  " +
-        "Setting it two 1.0 gives inverse distance weighting.  " +
-        "Setting it two 2.0 gives inverse distance squared weighting and so on.  ");
+        "Setting it to 1.0 gives inverse distance weighting.  " +
+        "Setting it to 2.0 gives inverse distance squared weighting and so on.  ");
 
     pds[2] = new PropertyDescription(
         "zeroDistanceValue",
