@@ -104,8 +104,8 @@ public class Input1FileName extends InputModule {
         // property dialog being used
         if ( s != null && s.length() == 0) {
             throw new PropertyVetoException(
-		"A file name must be entered before the dialog can be closed.",
-		 null);
+                "A file name must be entered before the dialog can be closed.",
+                 null);
         }
 
       **
@@ -132,37 +132,44 @@ public class Input1FileName extends InputModule {
 
         private PropEdit() {
             setLayout(new GridBagLayout());
-			this.setMinimumSize (new Dimension(14, 14));
+                        this.setMinimumSize (new Dimension(14, 14));
            
             String name = getFileName();
             jtf = new JTextField(10);
             jtf.setText(name);
- 			JButton b0 = new JButton("Browse");
-												  
-			Constrain.setConstraints(this, new JLabel ("File Name"), 0, 0, 1, 1,
-									  GridBagConstraints.NONE,
-									  GridBagConstraints.CENTER, 0, 0);
-			Constrain.setConstraints(this, jtf, 1, 0, 1, 1,
-									  GridBagConstraints.HORIZONTAL,
-									  GridBagConstraints.CENTER, 1, 0);				  
-			Constrain.setConstraints(this, b0, 2, 0, 1, 1,
-									  GridBagConstraints.NONE,
-									  GridBagConstraints.CENTER, 0, 0);
-			
-			b0.addActionListener(new AbstractAction() {
+                        JButton b0 = new JButton("Browse");
+                                                                                                  
+                        Constrain.setConstraints(this, new JLabel ("File Name"), 0, 0, 1, 1,
+                                                                          GridBagConstraints.NONE,
+                                                                          GridBagConstraints.CENTER, 0, 0);
+                        Constrain.setConstraints(this, jtf, 1, 0, 1, 1,
+                                                                          GridBagConstraints.HORIZONTAL,
+                                                                          GridBagConstraints.CENTER, 1, 0);				  
+                        Constrain.setConstraints(this, b0, 2, 0, 1, 1,
+                                                                          GridBagConstraints.NONE,
+                                                                          GridBagConstraints.CENTER, 0, 0);
+                        
+                        b0.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
 
                     String d = getFileName();
                     if(d == null)
                       d = jtf.getText();
-                    if(d != null) {
+                    //if(d != null) {                      
+// added 3.25.2004 by DC --- d.trim().length() > 0                      
+                    if(d != null && (d.trim().length() > 0)) {
                       File thefile = new File(d);
                       if(thefile.isDirectory())
                         chooser.setCurrentDirectory(thefile);
                       else
                         chooser.setSelectedFile(thefile);
                     }
+// added 3.25.2004 by DC                    
+                    else {
+                      chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+                    }
+// end                 
 
                     // set the title of the FileDialog
                     StringBuffer sb = new StringBuffer("Select File");
@@ -222,3 +229,5 @@ public class Input1FileName extends InputModule {
 // 9/19/03 - For 4.0 it is now possible to make text box size variable, and I have
 //			 done that.
 // END QA Comments
+ 
+ // 3/25/2004 clutter changed JFileChooser to start in the current working directory

@@ -112,7 +112,7 @@ public class Input2FileNames extends InputModule {
         // to get thrown if an itinerary is saved/reloaded without the
         // property dialog being used
         if ( s != null && s.length() == 0) {
- 	    throw new PropertyVetoException(
+            throw new PropertyVetoException(
                 "File Name 1 must be entered before the dialog can be closed.",
                  null);
         }
@@ -142,7 +142,7 @@ public class Input2FileNames extends InputModule {
         // to get thrown if an itinerary is saved/reloaded without the
         // property dialog being used
         if ( s != null && s.length() == 0) {
- 	    throw new PropertyVetoException(
+            throw new PropertyVetoException(
                 "File Name 2 must be entered before the dialog can be closed.",
                  null);
         }
@@ -179,28 +179,28 @@ public class Input2FileNames extends InputModule {
 
             // first file name
             JButton b0 = new JButton("Browse");
-			JButton b1 = new JButton("Browse");
+                        JButton b1 = new JButton("Browse");
  
-			Constrain.setConstraints(this, new JLabel ("File Name 1"), 0, 0, 1, 1,
-									  GridBagConstraints.NONE,
-									  GridBagConstraints.CENTER, 0, 0);
-			Constrain.setConstraints(this, fn0, 1, 0, 1, 1,
-									  GridBagConstraints.HORIZONTAL,
-									  GridBagConstraints.CENTER, 1, 0);
-			Constrain.setConstraints(this, b0, 2, 0, 1, 1,
-									  GridBagConstraints.NONE,
-									  GridBagConstraints.CENTER, 0, 0);
-									  
-			Constrain.setConstraints(this, new JLabel ("File Name 2"), 0, 1, 1, 1,
-									  GridBagConstraints.NONE,
-									  GridBagConstraints.CENTER, 0, 0);
-			Constrain.setConstraints(this, fn1, 1, 1, 1, 1,
-									  GridBagConstraints.HORIZONTAL,
-									  GridBagConstraints.CENTER, 1, 0);
-			Constrain.setConstraints(this, b1, 2, 1, 1, 1,
-									  GridBagConstraints.NONE,
-									  GridBagConstraints.CENTER, 0, 0);
-			
+                        Constrain.setConstraints(this, new JLabel ("File Name 1"), 0, 0, 1, 1,
+                                                                          GridBagConstraints.NONE,
+                                                                          GridBagConstraints.CENTER, 0, 0);
+                        Constrain.setConstraints(this, fn0, 1, 0, 1, 1,
+                                                                          GridBagConstraints.HORIZONTAL,
+                                                                          GridBagConstraints.CENTER, 1, 0);
+                        Constrain.setConstraints(this, b0, 2, 0, 1, 1,
+                                                                          GridBagConstraints.NONE,
+                                                                          GridBagConstraints.CENTER, 0, 0);
+                                                                          
+                        Constrain.setConstraints(this, new JLabel ("File Name 2"), 0, 1, 1, 1,
+                                                                          GridBagConstraints.NONE,
+                                                                          GridBagConstraints.CENTER, 0, 0);
+                        Constrain.setConstraints(this, fn1, 1, 1, 1, 1,
+                                                                          GridBagConstraints.HORIZONTAL,
+                                                                          GridBagConstraints.CENTER, 1, 0);
+                        Constrain.setConstraints(this, b1, 2, 1, 1, 1,
+                                                                          GridBagConstraints.NONE,
+                                                                          GridBagConstraints.CENTER, 0, 0);
+                        
            b0.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
@@ -208,13 +208,21 @@ public class Input2FileNames extends InputModule {
                     String d = getFileName0();
                     if(d == null)
                       d = fn0.getText();
-                    if(d != null) {
+                    //if(d != null) {
+// added 3.25.2004 by DC --- d.trim().length() > 0                      
+                    if(d != null && (d.trim().length() > 0)) {                       
                       File thefile = new File(d);
                       if(thefile.isDirectory())
                         chooser.setCurrentDirectory(thefile);
                       else
                         chooser.setSelectedFile(thefile);
                     }
+// added 3.25.2004 by DC                    
+                               else {
+                                chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+                               }
+// end   
+                    
 
                     // set the title of the FileDialog
                     StringBuffer sb = new StringBuffer("Select File 1");
@@ -244,13 +252,21 @@ public class Input2FileNames extends InputModule {
                     String d = getFileName1();
                     if(d == null)
                       d = fn1.getText();
-                    if(d != null) {
+                    //if(d != null) {
+// added 3.25.2004 by DC --- d.trim().length() > 0                      
+                    if(d != null && (d.trim().length() > 0)) {                      
                       File thefile = new File(d);
                       if(thefile.isDirectory())
                         chooser.setCurrentDirectory(thefile);
                       else
                         chooser.setSelectedFile(thefile);
                     }
+// added 3.25.2004 by DC                    
+                     else {
+                      chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+                     }
+// end                 
+                    
 
                     // set the title of the FileDialog
                     StringBuffer sb = new StringBuffer("Select File 2");
@@ -323,3 +339,5 @@ public class Input2FileNames extends InputModule {
 // 9/19/03 - For 4.0 it is now possible to make text box size variable, and I have
 //		     done that.
 // END QA Comments
+ 
+  // 3/25/2004 clutter changed JFileChooser to start in the current working directory
