@@ -903,15 +903,15 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 
 	////////////////////////////////
 	// Metadata methods.
-	//
-	public int getNumInputs(int e) {
+	//ANCA: methods not used
+/*	public int getNumInputs(int e) {
 		return inputColumns.length;
 	}
 
 	public int getNumOutputs(int e) {
 		return outputColumns.length;
 	}
-
+*/
 	/*public Row getRow() {
 	return null;
 	}*/
