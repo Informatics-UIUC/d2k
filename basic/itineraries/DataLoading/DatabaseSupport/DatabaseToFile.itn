@@ -6,18 +6,18 @@ dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
 AAARdwgAAAAJAAAACnQAFVNRTEZpbHRlckNvbnN0cnVjdGlvbnNyABtuY3NhLmQyay5jb3JlLlJl
 c291cmNlRW50cnnVLiwgQgMm0gIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0
 O0wAD29iamVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAO25jc2EuZDJrLm1v
-ZHVsZXMuY29yZS50cmFuc2Zvcm0udGFibGUuU1FMRmlsdGVyQ29uc3RydWN0aW9udAAPSW5wdXQg
-RmlsZSBOYW1lc3EAfgAEcHQAMm5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0Lklu
-cHV0MUZpbGVOYW1ldAAQV3JpdGUgREIgVG8gRmlsZXNxAH4ABHB0ACpuY3NhLmQyay5tb2R1bGVz
-LmNvcmUuaW8uc3FsLldyaXRlREJUb0ZpbGV0ABFTZWxlY3QgQXR0cmlidXRlc3NxAH4ABHB0AC1u
-Y3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLlNlbGVjdEF0dHJpYnV0ZXN0AAtTZWxlY3RUYWJs
+ZHVsZXMuY29yZS50cmFuc2Zvcm0udGFibGUuU1FMRmlsdGVyQ29uc3RydWN0aW9udAARU2VsZWN0
+IEF0dHJpYnV0ZXNzcQB+AARwdAAtbmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLnNxbC5TZWxlY3RB
+dHRyaWJ1dGVzdAAQV3JpdGUgREIgVG8gRmlsZXNxAH4ABHB0ACpuY3NhLmQyay5tb2R1bGVzLmNv
+cmUuaW8uc3FsLldyaXRlREJUb0ZpbGV0AA9JbnB1dCBGaWxlIE5hbWVzcQB+AARwdAAybmNzYS5k
+MmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV0AAtTZWxlY3RUYWJs
 ZXNxAH4ABHB0AChuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLlNlbGVjdFRhYmxldAAUQXZh
 aWxhYmxlVGFibGVzSW5wdXRzcQB+AARwdAAxbmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLnNxbC5B
 dmFpbGFibGVUYWJsZXNJbnB1dHQAGkF2YWlsYWJsZSBBdHRyaWJ1dGVzIElucHV0c3EAfgAEcHQA
 NW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5zcWwuQXZhaWxhYmxlQXR0cmlidXRlc0lucHV0dAAH
-RmFuT3V0MXNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAALQ29u
-bmVjdFRvREJzcQB+AARwdAAobmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLnNxbC5Db25uZWN0VG9E
-QnQABkZhbk91dHNxAH4ABHBxAH4AHXg=" label="DatabaseToFile.itn">
+RmFuT3V0MXNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAAGRmFu
+T3V0c3EAfgAEcHEAfgAddAALQ29ubmVjdFRvREJzcQB+AARwdAAobmNzYS5kMmsubW9kdWxlcy5j
+b3JlLmlvLnNxbC5Db25uZWN0VG9EQng=" label="DatabaseToFile.itn">
     <annotation><![CDATA[<p>
       <b>DatabaseToTable</b>
     </p>
@@ -108,6 +108,51 @@ QnQABkZhbk91dHNxAH4ABHBxAH4AHXg=" label="DatabaseToFile.itn">
     <p>
       The table retrieved can be used by other modules that input a table.
     </p>]]></annotation>
+    <module alias="AvailableTablesInput" classname="ncsa.d2k.modules.core.io.sql.AvailableTablesInput" xloc="55" yloc="132">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="Available Attributes Input" index="0"/>
+      </output>
+      <output index="1" classname="java.util.Vector">
+        <destination alias="SelectTable" index="0"/>
+      </output>
+      <property name="dataCubeOnly" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+      <property name="dataTableOnly" value="true"/>
+    </module>
+    <module alias="SQLFilterConstruction" classname="ncsa.d2k.modules.core.transform.table.SQLFilterConstruction" xloc="515" yloc="20">
+      <input index="0" classname="ncsa.d2k.modules.io.input.sql.ConnectionWrapper"/>
+      <input index="1" classname="java.lang.String"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="Write DB To File" index="3"/>
+      </output>
+      <property name="includeMissingValues" value="true"/>
+      <property name="windowName" value="SQLFilterConstruction"/>
+      <property name="lastExpression" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="queryCondition" value=""/>
+      <property name="supressGui" value="false"/>
+    </module>
+    <module alias="SelectTable" classname="ncsa.d2k.modules.core.io.sql.SelectTable" xloc="236" yloc="204">
+      <input index="0" classname="java.util.Vector"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="windowName" value="SelectTable"/>
+      <property name="selectedTable" value="VERED_MISSING"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="supressGui" value="false"/>
+    </module>
+    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="473" yloc="26">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="SQLFilterConstruction" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="Write DB To File" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
     <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="320" yloc="110">
       <input index="0" classname="java.lang.String"/>
       <output index="0" classname="java.lang.String">
@@ -120,10 +165,22 @@ QnQABkZhbk91dHNxAH4ABHBxAH4AHXg=" label="DatabaseToFile.itn">
         <destination alias="Write DB To File" index="2"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAADAAAAAAAAAAAAAAAA"/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAADAAAAAAAAAAAAAAAA"/>
+    </module>
+    <module alias="ConnectToDB" classname="ncsa.d2k.modules.core.io.sql.ConnectToDB" xloc="18" yloc="20">
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="AvailableTablesInput" index="0"/>
+      </output>
+      <property name="url" value="jdbc:oracle:thin:@sol.ncsa.uiuc.edu:1521:oracle2"/>
+      <property name="dbVendor" value=""/>
+      <property name="port" value=""/>
+      <property name="machine" value=""/>
+      <property name="username" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="supressGui" value="false"/>
+      <property name="password" value=""/>
+      <property name="windowName" value="ConnectToDB"/>
+      <property name="driver" value=""/>
+      <property name="dbInstance" value=""/>
     </module>
     <module alias="Available Attributes Input" classname="ncsa.d2k.modules.core.io.sql.AvailableAttributesInput" xloc="287" yloc="21">
       <input index="0" classname="ncsa.d2k.modules.io.input.sql.ConnectionWrapper"/>
@@ -135,113 +192,17 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAADAAAAAAAAAAAAAAAA"/>
         <destination alias="Select Attributes" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAgAAAAAAAAAA"/>
-    </module>
-    <module alias="ConnectToDB" classname="ncsa.d2k.modules.core.io.sql.ConnectToDB" xloc="7" yloc="20">
-      <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
-        <destination alias="AvailableTablesInput" index="0"/>
-      </output>
-      <property name="password" value=""/>
-      <property name="dbVendor" value=""/>
-      <property name="dbInstance" value=""/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAA"/>
-      <property name="username" value=""/>
-      <property name="url" value="jdbc:oracle:thin:@sol.ncsa.uiuc.edu:1521:oracle2"/>
-      <property name="supressGui" value="false"/>
-      <property name="driver" value=""/>
-      <property name="machine" value=""/>
-      <property name="port" value=""/>
-    </module>
-    <module alias="SQLFilterConstruction" classname="ncsa.d2k.modules.core.transform.table.SQLFilterConstruction" xloc="515" yloc="20">
-      <input index="0" classname="ncsa.d2k.modules.io.input.sql.ConnectionWrapper"/>
-      <input index="1" classname="java.lang.String"/>
-      <output index="0" classname="java.lang.String">
-        <destination alias="Write DB To File" index="3"/>
-      </output>
-      <property name="includeMissingValues" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="lastExpression" value=""/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAA="/>
-      <property name="queryCondition" value=""/>
-      <property name="supressGui" value="false"/>
-    </module>
-    <module alias="SelectTable" classname="ncsa.d2k.modules.core.io.sql.SelectTable" xloc="236" yloc="204">
-      <input index="0" classname="java.util.Vector"/>
-      <output index="0" classname="java.lang.String">
-        <destination alias="FanOut" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
-      <property name="selectedTable" value="VERED_MISSING"/>
-      <property name="supressGui" value="false"/>
-    </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="577" yloc="288">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Write DB To File" index="4"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="fileName" value="C:\test2.txt"/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAB"/>
-    </module>
-    <module alias="AvailableTablesInput" classname="ncsa.d2k.modules.core.io.sql.AvailableTablesInput" xloc="55" yloc="132">
-      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
-        <destination alias="Available Attributes Input" index="0"/>
-      </output>
-      <output index="1" classname="java.util.Vector">
-        <destination alias="SelectTable" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAACAAAAAAAAAAA="/>
-      <property name="dataTableOnly" value="true"/>
-      <property name="dataCubeOnly" value="false"/>
-    </module>
-    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="473" yloc="26">
-      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
-        <destination alias="SQLFilterConstruction" index="0"/>
-      </output>
-      <output index="1" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
-        <destination alias="Write DB To File" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAACAAAAAAAAAAA="/>
     </module>
     <module alias="Select Attributes" classname="ncsa.d2k.modules.core.io.sql.SelectAttributes" xloc="470" yloc="110">
       <input index="0" classname="java.util.Vector"/>
       <output index="0" classname="[Ljava.lang.String;">
         <destination alias="Write DB To File" index="1"/>
       </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
       <property name="selectedAttributes" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5TdHJpbmc7rdJW5+kde0cCAAB4cAAAAAV0AAxTRVBBTF9MRU5H
 VEh0AAtTRVBBTF9XSURUSHQADFBFVEFMX0xFTkdUSHQAC1BFVEFMX1dJRFRIdAALRkxPV0VSX1RZ
 UEU="/>
+      <property name="windowName" value="Select Attributes"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
       <property name="supressGui" value="false"/>
     </module>
     <module alias="Write DB To File" classname="ncsa.d2k.modules.core.io.sql.WriteDBToFile" xloc="656" yloc="148">
@@ -250,14 +211,17 @@ UEU="/>
       <input index="2" classname="java.lang.String"/>
       <input index="3" classname="java.lang.String"/>
       <input index="4" classname="java.lang.String"/>
-      <property name="useDataTypes" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAABQAAAAAAAAAAAAAAAAAAAAAAAAAAdXEAfgADAAAAAA=="/>
-      <property name="useColumnLabels" value="true"/>
       <property name="delimChar" value="C"/>
+      <property name="useColumnLabels" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="useDataTypes" value="true"/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="577" yloc="288">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Write DB To File" index="4"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="fileName" value="C:\test2.txt"/>
     </module>
   </itinerary>
 </toolkit>
