@@ -540,7 +540,7 @@ nextrule:	        for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.lengt
 	 * Called when we are all done, it will construct the rules, and
 	 * if there are any, pass them along.
 	 */
-	final private void finish () {
+	final private void finish () throws Exception {
 		done = true;
 		int [][] finalRules = null;
 		int finalRuleCount = 0;
@@ -553,25 +553,25 @@ nextrule:	        for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.lengt
 					continue;
 			finalRules[finalRuleCount++] = tmp;
 		}
-		if (finalRules != null) {
-			this.pushOutput (finalRules, 0);
-			if ( showProgress || debug ) {
-			    System.out.println( getAlias()
-				+ ": A total of " + finalRuleCount
-				+ " frequent itemsets were found that met the specified Minimum Support of "
-				+ getMinimumSupport() + "%." );
-			}
-		} else {
-			System.out.println( getAlias()
-				+ ": No Association Rules were found that met the specified Minimum Support of "
-				+ getMinimumSupport() + "%." );
-                }
+
                 if ( showProgress || debug ) {
-		    System.out.println ( getAlias()
-		        + ": Elapsed Wallclock Time was "
+		    System.out.println( getAlias()
+			+ ": A total of " + finalRuleCount
+			+ " frequent itemsets were found that met the specified Minimum Support of "
+			+ getMinimumSupport() + "%." );
+		    System.out.println( getAlias()
+		        + ": Elapsed wallclock time was "
 			+ (System.currentTimeMillis()-startTime)/1000.0
-                        + " Seconds" );
+                        + " seconds" );
                 }
+
+		if (finalRules == null ) {
+                        throw new Exception( getAlias()
+                               + ": No frequent itemsets were found that met the minimimum support of "
+			       + getMinimumSupport() + "%."  );
+                }
+
+		this.pushOutput (finalRules, 0);
 	}
 
 	/**

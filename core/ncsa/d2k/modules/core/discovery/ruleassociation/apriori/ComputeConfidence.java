@@ -353,6 +353,7 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 			}
 
 		}
+
 		if ( showProgress || debug )  {
 			System.out.println( getAlias()
 				+ ": A total of "
@@ -360,6 +361,13 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 				+ " rules were found that met the specified Minimum Confidence of "
 				+ getConfidence() + "%." );
 		}
+
+		if ( finalRules.size() == 0 ) {
+			throw new Exception( getAlias()
+				+ ": No rules met the minimum confidence of "
+				+ getConfidence() + "%."  );
+		}
+
 
 		// Following code basically extracted from ConvertItemSetsToRuleTable
 		// and folded into this module reusing datastructures we already have.
