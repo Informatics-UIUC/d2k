@@ -44,7 +44,6 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
 
 
   JTextField cubeTableName;
-  JButton tableBrowseBtn;
   JList selectedFields;
   JList possibleFields;
   DefaultListModel possibleModel;
@@ -158,11 +157,8 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
         5,0,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       //cubeTableName.setText((String)pullInput(1));
       cubeTableName.setText(cube);
-      cubeTableName.addActionListener(this);
+      cubeTableName.setEditable(false);
       doColumnBrowse();
-      Constrain.setConstraints(options, tableBrowseBtn = new JButton ("Browse"),
-        15,0,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
-      tableBrowseBtn.addActionListener(this);
 
       JPanel buttons = new JPanel ();
       buttons.setLayout (new GridLayout(6,1));
@@ -268,10 +264,7 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
 
     public void actionPerformed(ActionEvent e) {
       Object src = e.getSource();
-      if (src == tableBrowseBtn) {
-        doTableBrowse();
-      }
-      else if (src == displayBtn) {
+      if (src == displayBtn) {
         Object[] values = selectedModel.toArray();
         String[] retVal = new String[values.length];
         if (useCodeBook.getState() && bookName.getText().length()<=0) {
@@ -289,7 +282,7 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
         }
         else if (cubeTableName.getText().length()<=0) { // The user has not chosen a table yet
           JOptionPane.showMessageDialog(msgBoard,
-          "Click the button 'Browse' to choose a table first.", "Error",
+          "There is no cube table selected.", "Error",
           JOptionPane.ERROR_MESSAGE);
           System.out.println("There is no table selected.");
         }
@@ -318,11 +311,6 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
         cubeTableName.setText(NOTHING);
         closeIt();
       }
-      else if (src == cubeTableName) {
-        if (cubeTableName.getText().length()>0) {
-          doColumnBrowse();
-        }
-      }
       else if (src == bookBrowseBtn) {
         doBookBrowse();
       }
@@ -339,42 +327,6 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
           bookName.setText(NOTHING);
         }
       }
-    }
-  }
-
-  /** connect to a database and retrieve the list of available cube tables
-   */
-  protected void doTableBrowse() {
-    Vector v = new Vector();
-    try {
-      DatabaseMetaData metadata = null;
-      con = cw.getConnection();
-      metadata = con.getMetaData();
-      String[] types = {"TABLE"};
-      ResultSet tableNames = metadata.getTables(null,"%","%_CUBE%",types);
-      while (tableNames.next()) {
-        String aTable = tableNames.getString("TABLE_NAME");
-        v.addElement(aTable);
-      }
-      bt = new BrowseTables(cw, v);
-      btw = new BrowseTablesView(bt, v);
-      btw.setSize(250,200);
-      btw.setTitle("Available Cube Tables");
-      btw.setLocation(200,250);
-      btw.setVisible(true);
-      btw.addWindowListener(new WindowAdapter() {
-        public void windowClosed(WindowEvent e)
-        {
-          cubeTableName.setText(btw.getChosenRow());
-          doColumnBrowse();
-         }
-      });
-    }
-    catch (Exception e){
-      JOptionPane.showMessageDialog(msgBoard,
-        e.getMessage(), "Error",
-        JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in doTableBrowse.");
     }
   }
 

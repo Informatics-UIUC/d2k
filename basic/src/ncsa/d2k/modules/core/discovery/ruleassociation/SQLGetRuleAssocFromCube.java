@@ -80,9 +80,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
   JTextField bookName;
   JLabel bookLabel;
   Checkbox useCodeBook;
-  JButton tableBrowseBtn;
-  JButton targetBrowseBtn;
-  JButton condBrowseBtn;
+  //JButton tableBrowseBtn;
   JButton bookBrowseBtn;
   JButton cancelBtn;
   JButton ruleBtn;
@@ -266,11 +264,8 @@ public class SQLGetRuleAssocFromCube extends UIModule
       Constrain.setConstraints(options, tableName = new JTextField(10),
         5,0,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
       tableName.setText(tableIn);
-      tableName.addActionListener(this);
+      tableName.setEditable(false);
       getColNames(tableName.getText().toString());
-      Constrain.setConstraints(options, tableBrowseBtn = new JButton ("Browse"),
-        15,0,1,1,GridBagConstraints.NONE, GridBagConstraints.WEST,1,1);
-      tableBrowseBtn.addActionListener(this);
 
       DefaultListModel dlm = new DefaultListModel();
       for(int i = 0; i < colNames.size(); i++)
@@ -374,10 +369,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
 
     public void actionPerformed(ActionEvent e) {
       Object src = e.getSource();
-      if (src == tableBrowseBtn) {
-        doTableBrowse();
-      }
-      else if (src == bookBrowseBtn) {
+      if (src == bookBrowseBtn) {
         doBookBrowse();
         changeCodeBook = true;
       }
@@ -389,18 +381,6 @@ public class SQLGetRuleAssocFromCube extends UIModule
         cubeTableName = NOTHING;
         saveSupport = NOTHING;
         parent.viewCancel();
-      }
-      else if (src == tableName) {
-        getColNames(tableName.getText().toString());
-        System.out.println("get column after tablename is entered");
-        DefaultListModel dlm = new DefaultListModel();
-        for(int i = 0; i < colNames.size(); i++)
-          dlm.addElement(colNames.get(i).toString());
-        conditionList.setModel(dlm);
-        dlm = new DefaultListModel();
-        for(int i = 0; i < colNames.size(); i++)
-          dlm.addElement(colNames.get(i).toString());
-        targetList.setModel(dlm);
       }
       // The "Done" button displays rules only once, no interactive and
       // continual display
@@ -502,53 +482,6 @@ public class SQLGetRuleAssocFromCube extends UIModule
           bookName.setText(NOTHING);
         }
       }
-    }
-  }
-
-
-
-  /** connect to a database and retrieve the list of available cube tables
-   */
-  protected void doTableBrowse() {
-    Vector v = new Vector();
-    try {
-      DatabaseMetaData metadata = null;
-      con = cw.getConnection();
-      metadata = con.getMetaData();
-      String[] types = {"TABLE"};
-      ResultSet tableNames = metadata.getTables(null,"%","%_CUBE%",types);
-      while (tableNames.next()) {
-        String aTable = tableNames.getString("TABLE_NAME");
-        v.addElement(aTable);
-      }
-      bt = new BrowseTables(cw, v);
-      btw = new BrowseTablesView(bt, v);
-      btw.setSize(250,200);
-      btw.setTitle("Available Cube Tables");
-      btw.setLocation(200,250);
-      btw.setVisible(true);
-      btw.addWindowListener(new WindowAdapter() {
-        public void windowClosed(WindowEvent e)
-        {
-          tableName.setText(btw.getChosenRow());
-          getColNames(tableName.getText().toString());
-
-          DefaultListModel dlm = new DefaultListModel();
-          for(int i = 0; i < colNames.size(); i++)
-            dlm.addElement(colNames.get(i).toString());
-          conditionList.setModel(dlm);
-          dlm = new DefaultListModel();
-          for(int i = 0; i < colNames.size(); i++)
-            dlm.addElement(colNames.get(i).toString());
-          targetList.setModel(dlm);
-         }
-      });
-    }
-    catch (Exception e){
-      JOptionPane.showMessageDialog(msgBoard,
-        e.getMessage(), "Error",
-        JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in doTableBrowse.");
     }
   }
 
@@ -1007,7 +940,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
   /** convert ArrayList to table
    */
   protected void convertToRuleTable() {
-    System.out.println("the size of finalRules for association is " + finalRules.size());
+    //System.out.println("the size of finalRules for association is " + finalRules.size());
     Column[] cols = new Column[4];
     cols[0] = new ObjectColumn(finalRules.size());
     cols[1] = new ObjectColumn(finalRules.size());
