@@ -31,15 +31,15 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
         "Setting it to 2.0 gives inverse distance squared weighting and so on.  ");
 
     pds[2] = new PropertyDescription(
-        "zeroDistanceValue",
-        "Zero Distance Value",
+        "ZeroDistanceWeight",
+        "Zero Distance Weight",
         "What weight to associate to a stored example which has zero distance to example to be predicted.  " +
         "Since division by zero is not permitted, some value must be assigned to examples with zero distance.  "  +
         "This value is the weight and exact match should be given.  ");
     return pds;
   }
 
-  private int NeighborhoodSize = 20;
+  //private int NeighborhoodSize = 20;
   public void setNeighborhoodSize(int value) throws PropertyVetoException {
     if (value < 1) {
       throw new PropertyVetoException(" < 1", null);
@@ -51,7 +51,7 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
     return this.NeighborhoodSize;
   }
 
-  private double DistanceWeightingPower = 0.0;
+  //private double DistanceWeightingPower = 0.0;
   public void setDistanceWeightingPower(double value) {
     this.DistanceWeightingPower = value;
   }
@@ -60,16 +60,16 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
     return this.DistanceWeightingPower;
   }
 
-  private double ZeroDistanceValue = 0.0;
-  public void setZeroDistanceValue(double value) throws PropertyVetoException {
+  //private double ZeroDistanceWeight = 0.0;
+  public void setZeroDistanceWeight(double value) throws PropertyVetoException {
     if (value < 0.0) {
       throw new PropertyVetoException(" < 0.0", null);
     }
-    this.ZeroDistanceValue = value;
+    this.ZeroDistanceWeight = value;
   }
 
-  public double getZeroDistanceValue() {
-    return this.ZeroDistanceValue;
+  public double getZeroDistanceWeight() {
+    return this.ZeroDistanceWeight;
   }
 
 
@@ -152,7 +152,7 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
         inputRanges,
         NeighborhoodSize,
         DistanceWeightingPower,
-        ZeroDistanceValue,
+        ZeroDistanceWeight,
         examples);
 
     return (Model) model;

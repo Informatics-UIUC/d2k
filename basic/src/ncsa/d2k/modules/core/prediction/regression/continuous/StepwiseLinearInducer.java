@@ -34,7 +34,7 @@ public class StepwiseLinearInducer extends StepwiseLinearInducerOpt {
     return pds;
   }
 
-  private boolean UseStepwise = false;
+  //private boolean UseStepwise = false;
   public void setUseStepwise(boolean value) throws PropertyVetoException {
     this.UseStepwise = value;
   }
@@ -43,7 +43,7 @@ public class StepwiseLinearInducer extends StepwiseLinearInducerOpt {
     return this.UseStepwise;
   }
 
-  private int Direction = 1;
+  //private int Direction = 1;
   public void setDirection(int value) throws PropertyVetoException {
     if (!((value == -1) || (value == 1))) {
       throw new PropertyVetoException(" must be -1 or 1", null);
@@ -54,7 +54,7 @@ public class StepwiseLinearInducer extends StepwiseLinearInducerOpt {
     return this.Direction;
   }
 
-  private int NumRounds = 1;
+  //private int NumRounds = 1;
   public void setNumRounds(int value) throws PropertyVetoException {
     if (value < 1) {
       throw new PropertyVetoException(" < 1", null);

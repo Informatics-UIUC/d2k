@@ -12,8 +12,9 @@ import ncsa.d2k.modules.core.datatype.table.*;
 public class StepwiseLinearInducerOpt
     extends FunctionInducerOpt {
 
-  private int NumRounds = 0;
-  private int Direction = 0;
+  int NumRounds = 0;
+  int Direction = 0;
+  boolean UseStepwise = false;
 
   public String getModuleName() {
     return "Stepwise Linear Inducer Optimizable";
@@ -54,8 +55,10 @@ public String getModuleInfo() {
     NumRounds = (int) parameterPoint.getValue(2);
 
     if (useStepwise < 0.5) {
-      NumRounds = 0;
-      Direction = 0;
+      UseStepwise = false;
+    }
+    else {
+      UseStepwise = true;
     }
 
   }
@@ -225,6 +228,13 @@ public String getModuleInfo() {
 
   public Model generateModel(ExampleTable examples, ErrorFunction errorFunction) throws
       Exception {
+
+
+    if (!UseStepwise) {
+      NumRounds = 0;
+      Direction = 0;
+    }
+
 
     int numExamples = examples.getNumExamples();
     int numInputs = examples.getNumInputFeatures();
