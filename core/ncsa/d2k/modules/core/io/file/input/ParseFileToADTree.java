@@ -51,11 +51,11 @@ public class ParseFileToADTree extends InputModule {
 
     public String getModuleInfo() {
         StringBuffer sb = new StringBuffer("<p>Overview: ");
-        sb.append("Read a file into an ADTree index structure ");
+        sb.append("Reads a file into an ADTree index structure ");
         sb.append("<p>Detailed Description: ");
-        sb.append("Given a FlatFileParser, read the data and store all counts");
-        sb.append("into an ADTree.");
-        sb.append("An ExampleTable that contains the meta data for the ADTree");
+        sb.append("Given a FlatFileParser, reads the data and stores all counts ");
+        sb.append("into an ADTree. ");
+        sb.append("An ExampleTable that contains the meta data for the ADTree ");
         sb.append("is also created.");
         return sb.toString();
     }
@@ -78,10 +78,10 @@ public class ParseFileToADTree extends InputModule {
                 cols[i] = new StringColumn(numRows);
             else if(typ == ColumnTypes.DOUBLE)
                 //cols[i] = new DoubleColumn(numRows);
-								throw new Exception ( "Cannot build ADTree for continuous data in column " + i);
+                          throw new Exception ( "Cannot build ADTree for continuous data in column " + i);
             else if(typ == ColumnTypes.FLOAT)
                 //cols[i] = new FloatColumn(numRows);
-								throw new Exception ( "Cannot build ADTree for continuous data in column " + i);
+			throw new Exception ( "Cannot build ADTree for continuous data in column " + i);
             else if(typ == ColumnTypes.INTEGER)
                 cols[i] = new IntColumn(numRows);
             else if(typ == ColumnTypes.SHORT)
@@ -101,7 +101,7 @@ public class ParseFileToADTree extends InputModule {
             else
                 cols[i] = new StringColumn(numRows);
 
-				    String lbl = ffr.getColumnLabel(i);
+            String lbl = ffr.getColumnLabel(i);
             if(lbl != null)
                 cols[i].setLabel(lbl);
             else
@@ -154,6 +154,14 @@ public class ParseFileToADTree extends InputModule {
         return debug;
      }
 
+     public PropertyDescription[] getPropertiesDescriptions(){
+      PropertyDescription[] pd = new PropertyDescription[1] ;
+      pd[0] = new PropertyDescription("debug", "Debug Mode",
+            "This property controls the first debug level of the ADTree. setting "  +
+            "it to true will generate more output to stdout while building the ADTree.");
+      return pd;
+     }
+
 }
 // QA Comments
 // 2/14/03 - Handed off to QA by David Clutter
@@ -162,5 +170,7 @@ public class ParseFileToADTree extends InputModule {
 //           FEATURE REQUEST: a module that will create an ADTree
 //           from selected columns only, either from a table or from a file..
 // 2/18/03 - checked into basic.
+// 2/21/03 - vered started QA second test.
+//           added getPropertiesDescriptions method.
 // END QA Comments
 
