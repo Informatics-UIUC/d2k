@@ -15,1823 +15,949 @@ import ncsa.gui.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 
-import ncsa.d2k.modules.core.transform.StaticMethods;
-
 /**
  *
  */
 public class ADTBinColumns extends HeadlessUIModule {
-   private static final String EMPTY = "",
-      COLON = " : ",
-      COMMA = ",",
-      DOTS = "...",
-      OPEN_PAREN = "(",
-      CLOSE_PAREN = ")",
-      OPEN_BRACKET = "[",
-      CLOSE_BRACKET = "]";
-
-   private NumberFormat nf;
-
-   /**
-    * put your documentation comment here
-    * @return
-    */
-   public String getModuleName() {
-      return "AD Tree Bin Columns";
-   }
-
-   /**
-    * put your documentation comment here
-    * @return
-    */
-   public String getModuleInfo() {
-      return "<html>  <head>      </head>  <body>"
-         + "<P><b>Overview:</B> This module allows a user to interactively bin data using counts stored in an ADTree.</P>"
-         + "<P><B>Detailed Description:</B> Numeric data cannot be binned."
-         + " The user may bin only nominal data.</P>"
-         + "<P>For further information on how to use this module the user may click on the \"Help\" button during run time and get detailed description of each functionality.</P>"
-         + "<P><B>Data Handling:</b><BR> This module does not change its input. Rather than that it outputs a Transformation that can be then applied to the data.</P>"
-         + "</body></html>";
-   }
-
-   /**
-    * put your documentation comment here
-    * @return
-    */
-   public String[] getInputTypes() {
-      String[] types =
-         {
-            "ncsa.d2k.modules.core.datatype.ADTree",
-            "ncsa.d2k.modules.core.datatype.table.Table" };
-      return types;
-   }
-
-   /**
-    * put your documentation comment here
-    * @return
-    */
-   public String[] getOutputTypes() {
-      String[] types =
-         {  "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform" };
-
-      return types;
-   }
-
-   /**
-    * put your documentation comment here
-    * @param i
-    * @return
-    */
-   public String getInputInfo(int i) {
-      switch (i) {
-         case 0 :
-            return "An ADTree containing counts.";
-         case 1 :
-            return "ExampleTable containing the names of the input/output features.";
-         default :
-            return "No such input";
-      }
-   }
-
-   /**
-    * put your documentation comment here
-    * @param i
-    * @return
-    */
-   public String getOutputName(int i) {
-      switch (i) {
-         case 0 :
-            return "Binning Transformation";
-         case 1 :
-            return "Meta Data Example Table";
-         default :
-            return "no such output!";
-      }
-   }
-
-   /**
-    * put your documentation comment here
-    * @param i
-    * @return
-    */
-   public String getInputName(int i) {
-      switch(i){
-        case 0: return "AD Tree";
-        case 1: return "Example Table";
-        default: return "no such input";
-      }
-
-   }
-
-   /**
-    * put your documentation comment here
-    * @param i
-    * @return
-    */
-   public String getOutputInfo(int i) {
-      switch (i) {
-         case 0 :
-            return "A BinTransform, as defined by the user, that can be applied to the input Table.";
-         default :
-            return "No such output";
-      }
-   }
-
-   /**
-    * put your documentation comment here
-    * @return
-    */
-   protected UserView createUserView() {
-      return new ADTBinColumnsView();
-   }
-
-   /**
-    * put your documentation comment here
-    * @return
-    */
-   public String[] getFieldNameMapping() {
-      return null;
-   }
-
-   private class ADTBinColumnsView extends JUserPane {
-      private boolean setup_complete;
-      private BinDescriptor currentSelectedBin;
-      private HashMap columnLookup;
-      private TreeSet[] uniqueColumnValues;
-      private JList /*numericColumnLabels*/ textualColumnLabels, currentBins;
-      private DefaultListModel binListModel;
-      private Table tbl;
-      private int numArrived = 0;
-      private ADTree adt;
-
-      /* numeric text fields */
-      private JTextField uRangeField,
-         specRangeField,
-         intervalField,
-         weightField;
-
-      /* textual lists */
-      private JList textUniqueVals, textCurrentGroup;
-      private DefaultListModel textUniqueModel, textCurrentModel;
-
-      /* textual text field */
-      private JTextField textBinName;
-
-      /* current selection fields */
-      private JTextField curSelName;
-      private JList currentSelectionItems;
-      private DefaultListModel currentSelectionModel;
-      private JButton abort, done;
-      private JCheckBox createInNewColumn;
-
-      int uniqueTextualIndex = 0;
-
-      /**
-       * put your documentation comment here
-       */
-      private ADTBinColumnsView() {
-         setup_complete = false;
-         nf = NumberFormat.getInstance();
-         nf.setMaximumFractionDigits(3);
-      }
-
-      /**
-       * put your documentation comment here
-       * @param o
-       * @param id
-       */
-      public void setInput(Object o, int id) {
-         if (id == 0) {
-            adt = (ADTree) o;
-            numArrived = 1;
-         }
-         if (id == 1) {
-            tbl = (Table) o;
-            numArrived++;
-         }
-
-         if (numArrived == 2) {
-            // clear all text fields and lists...
-            curSelName.setText(EMPTY);
-            textBinName.setText(EMPTY);
-          //  uRangeField.setText(EMPTY);
-          //  specRangeField.setText(EMPTY);
-          //  intervalField.setText(EMPTY);
-          //  weightField.setText(EMPTY);
-            columnLookup = new HashMap();
-            uniqueColumnValues = new TreeSet[tbl.getNumColumns() + 1];
-            binListModel.removeAllElements();
-          //  DefaultListModel numModel =
-            //   (DefaultListModel) numericColumnLabels.getModel(),
-             DefaultListModel  txtModel =
-                  (DefaultListModel) textualColumnLabels.getModel();
-            //numModel.removeAllElements();
-            txtModel.removeAllElements();
-
-            textCurrentModel.removeAllElements();
-            textUniqueModel.removeAllElements();
-            uniqueTextualIndex = 0;
-
-            for (int i = 0; i < tbl.getNumColumns(); i++) {
-               int idx = adt.getIndexForLabel(tbl.getColumnLabel(i));
-               columnLookup.put(tbl.getColumnLabel(i), new Integer(idx));
-               //if column is scalar ignore - cannot be binned using ADTree
-               if (!tbl.isColumnScalar(i)) {
-                  txtModel.addElement(tbl.getColumnLabel(i));
-                  //System.out.println("label " + tbl.getColumnLabel(i) + "idx " + idx);
-                  uniqueColumnValues[idx] = uniqueValues(idx);
-               }
-            }
-            // finished...
-            setup_complete = true;
-         }
-      }
-
-      /**
-       * Create all of the components and add them to the view.
-       */
-      public void initView(ViewModule m) {
-         currentBins = new JList();
-         binListModel = new DefaultListModel();
-         currentBins.setModel(binListModel);
-         currentBins.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-         currentBins.addListSelectionListener(new CurrentListener());
-         // set up the numeric tab
-
-         //vered: removing the numeric tab, since this module does not support
-         //binning of numeric data.
-
-         /*
-         numericColumnLabels = new JList();
-         numericColumnLabels.setModel(new DefaultListModel());
-
-         // uniform range
-         JOutlinePanel urangepnl = new JOutlinePanel("Uniform Range");
-         uRangeField = new JTextField(5);
-         JButton addURange = new JButton("Add");
-         addURange.addActionListener(new AbstractAction() {
-
-            public void actionPerformed(ActionEvent e) {
-               addUniRange();
-               uRangeField.setText(EMPTY);
-            }
-         });
-         JButton showURange = new JButton("Show");
-         showURange.addActionListener(new AbstractAction() {
-
-            public void actionPerformed(ActionEvent e) {
-               HashMap colLook = new HashMap();
-               for (int i = 0; i < tbl.getNumColumns(); i++) {
-                  if (tbl.isColumnNumeric(i)) {
-                     colLook.put(tbl.getColumnLabel(i), new Integer(i));
-                  }
-               }
-
-               String txt = uRangeField.getText();
-               //vered: replacing if else with try catch
-               //if(txt != null && txt.length() != 0)
-               try {
-                  int i = Integer.parseInt(txt);
-                  //if this is successful then it is safe to go on with the preview
-                  if (i <= 1)
-                     throw new NumberFormatException();
-
-                  String selCol =
-                     (String) numericColumnLabels.getSelectedValue();
-                  if (selCol == null)
-                     throw new NullPointerException();
-
-                  final Histogram H =
-                     new UniformHistogram(
-                        new ADTBinCounts(),
-                        uRangeField.getText(),
-                        colLook,
-                        selCol);
-                  JD2KFrame frame = new JD2KFrame("Uniform Range");
-                  frame.getContentPane().setLayout(new GridBagLayout());
-                  Constrain.setConstraints(
-                     frame.getContentPane(),
-                     H,
-                     0,
-                     0,
-                     3,
-                     1,
-                     GridBagConstraints.BOTH,
-                     GridBagConstraints.CENTER,
-                     1,
-                     1);
-                  final JButton uniformAdd = new JButton("Add");
-                  Constrain.setConstraints(
-                     frame.getContentPane(),
-                     new JLabel(""),
-                     0,
-                     1,
-                     1,
-                     1,
-                     GridBagConstraints.NONE,
-                     GridBagConstraints.SOUTHWEST,
-                     .33,
-                     0);
-                  Constrain.setConstraints(
-                     frame.getContentPane(),
-                     uniformAdd,
-                     1,
-                     1,
-                     1,
-                     1,
-                     GridBagConstraints.HORIZONTAL,
-                     GridBagConstraints.SOUTH,
-                     .34,
-                     0);
-                  Constrain.setConstraints(
-                     frame.getContentPane(),
-                     new JLabel(""),
-                     2,
-                     1,
-                     1,
-                     1,
-                     GridBagConstraints.NONE,
-                     GridBagConstraints.SOUTHEAST,
-                     .33,
-                     0);
-                  uniformAdd.addActionListener(new AbstractAction() {
-                     final JSlider uniformSlider = H.getSlider();
-
-                     public void actionPerformed(ActionEvent e) {
-                        uRangeField.setText(
-                           Integer.toString(uniformSlider.getValue()));
-                        numericColumnLabels.clearSelection();
-                        setSelectedNumericIndex(H.getSelection());
-                        addUniRange();
-                        uRangeField.setText(EMPTY);
-                     }
-                  });
-                  frame.pack();
-                  frame.setVisible(true);
-               } //try
-               //else
-               catch (NumberFormatException nfe) {
-                  // message dialog...must specify range
-                  ErrorDialog.showDialog(
-                     "Must specify a valid range - an integer greater than 1.",
-                     "Error");
-                  uRangeField.setText(EMPTY);
-               } catch (NullPointerException npe) {
-                  ErrorDialog.showDialog(
-                     "You must select a column to bin.",
-                     "Error");
-               }
-               /*
-                final JSlider uniformSlider = H.getSlider();
-                uniformSlider.addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent e) {
-                uRangeField.setText(Integer.toString(uniformSlider.getValue()));
-                }
-                });
-                */
-/*
-            }
-         });
-         urangepnl.setLayout(new GridBagLayout());
-         Constrain.setConstraints(
-            urangepnl,
-            new JLabel("Number of Bins"),
-            0,
-            0,
-            1,
-            1,
-            GridBagConstraints.HORIZONTAL,
-            GridBagConstraints.WEST,
-            1,
-            1);
-         Box b = new Box(BoxLayout.X_AXIS);
-         b.add(uRangeField);
-         b.add(addURange);
-         b.add(showURange);
-         Constrain.setConstraints(
-            urangepnl,
-            b,
-            1,
-            0,
-            1,
-            1,
-            GridBagConstraints.NONE,
-            GridBagConstraints.EAST,
-            1,
-            1);
-         // specified range
-         JOutlinePanel specrangepnl = new JOutlinePanel("Specified Range");
-         specrangepnl.setLayout(new GridBagLayout());
-         Constrain.setConstraints(
-            specrangepnl,
-            new JLabel("Range"),
-            0,
-            0,
-            1,
-            1,
-            GridBagConstraints.HORIZONTAL,
-            GridBagConstraints.WEST,
-            1,
-            1);
-         specRangeField = new JTextField(5);
-         JButton addSpecRange = new JButton("Add");
-         addSpecRange.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-               addSpecifiedRange();
-               specRangeField.setText(EMPTY);
-            }
-         });
-         JButton showSpecRange = new JButton("Show");
-         showSpecRange.addActionListener(new AbstractAction() {
-
-            public void actionPerformed(ActionEvent e) {
-
-               //@todo: add exception handling for illegal input
-               String txt = specRangeField.getText();
-               //vered: wrapped it all with try catch.
-               try {
-                  if (txt == null || txt.length() == 0) {
-                     // show message dialog
-                     //vered
-                     throw new IllegalArgumentException();
-
-                     //ErrorDialog.showDialog("Must specify range.", "Error");
-                     // return;
-                  }
-
-                  HashMap colLook = new HashMap();
-                  for (int i = 0; i < tbl.getNumColumns(); i++) {
-                     if (tbl.isColumnNumeric(i)) {
-                        colLook.put(
-                           tbl.getColumnLabel(i),
-                           new Integer(i));
-                     }
-                  } //for
-                  JD2KFrame frame = new JD2KFrame("Specified Range");
-                  String col =
-                     (String) numericColumnLabels.getSelectedValue();
-                  //vered:
-                  if (col == null)
-                     throw new NullPointerException();
-
-                  frame
-                     .getContentPane()
-                     .add(new RangeHistogram(new ADTBinCounts(),
-                  /*Histogram.HISTOGRAM_RANGE,*/
- /*                 specRangeField.getText(), colLook, col));
-                  frame.pack();
-                  frame.setVisible(true);
-               } //try
-               catch (NullPointerException npe) {
-                  ErrorDialog.showDialog(
-                     "You must select a column to bin.",
-                     "Error");
-               } catch (IllegalArgumentException iae) {
-                  ErrorDialog.showDialog(
-                     "Please enter a comma-separated sequence of\ninteger or floating-point values for\nthe endpoints of each bin. ",
-                     "Error");
-               }
-            } //action performed.
-         });
-         Box b1 = new Box(BoxLayout.X_AXIS);
-         b1.add(specRangeField);
-         b1.add(addSpecRange);
-         b1.add(showSpecRange);
-         Constrain.setConstraints(
-            specrangepnl,
-            b1,
-            1,
-            0,
-            1,
-            1,
-            GridBagConstraints.NONE,
-            GridBagConstraints.EAST,
-            1,
-            1);
-         // interval
-         JOutlinePanel intervalpnl = new JOutlinePanel("Bin Interval");
-         intervalpnl.setLayout(new GridBagLayout());
-         intervalField = new JTextField(5);
-         JButton addInterval = new JButton("Add");
-         addInterval.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-               addFromInterval();
-               intervalField.setText(EMPTY);
-            }
-         });
-         JButton showInterval = new JButton("Show");
-         showInterval.addActionListener(new AbstractAction() {
-
-            public void actionPerformed(ActionEvent e) {
-               HashMap colLook = new HashMap();
-               for (int i = 0; i < tbl.getNumColumns(); i++) {
-                  if (tbl.isColumnNumeric(i)) {
-                     colLook.put(tbl.getColumnLabel(i), new Integer(i));
-                  }
-               }
-               String txt = intervalField.getText();
-               //vered: inserting a try catch to deal with inllegal argument exceptions
-               try {
-                  //if(txt != null && txt.length() != 0) {
-                  if (txt == null || txt.length() == 0)
-                     throw new IllegalArgumentException("Must specify an interval");
-
-                  String col =
-                     (String) numericColumnLabels.getSelectedValue();
-                  //vered: added this to prevent null pointer exception in init of histogram.
-                  if (col == null)
-                     throw new NullPointerException();
-
-                  final Histogram H =
-                     new IntervalHistogram(new ADTBinCounts(),
-                  /*Histogram.HISTOGRAM_INTERVAL,*/
-  /*                intervalField.getText(), colLook, col);
-                  JD2KFrame frame = new JD2KFrame("Bin Interval");
-                  frame.getContentPane().setLayout(new GridBagLayout());
-                  Constrain.setConstraints(
-                     frame.getContentPane(),
-                     H,
-                     0,
-                     0,
-                     3,
-                     1,
-                     GridBagConstraints.BOTH,
-                     GridBagConstraints.CENTER,
-                     1,
-                     1);
-                  final JButton intervalAdd = new JButton("Add");
-                  Constrain.setConstraints(
-                     frame.getContentPane(),
-                     new JLabel(""),
-                     0,
-                     1,
-                     1,
-                     1,
-                     GridBagConstraints.NONE,
-                     GridBagConstraints.SOUTHWEST,
-                     .33,
-                     0);
-                  Constrain.setConstraints(
-                     frame.getContentPane(),
-                     intervalAdd,
-                     1,
-                     1,
-                     1,
-                     1,
-                     GridBagConstraints.HORIZONTAL,
-                     GridBagConstraints.SOUTH,
-                     .34,
-                     0);
-                  Constrain.setConstraints(
-                     frame.getContentPane(),
-                     new JLabel(""),
-                     2,
-                     1,
-                     1,
-                     1,
-                     GridBagConstraints.NONE,
-                     GridBagConstraints.SOUTHEAST,
-                     .33,
-                     0);
-                  intervalAdd.addActionListener(new AbstractAction() {
-                     final JSlider intervalSlider = H.getSlider();
-
-                     /**
-                      * put your documentation comment here
-                      * @param e
-                      */
-   /*                  public void actionPerformed(ActionEvent e) {
-                        int sel = H.getSelection();
-                        numericColumnLabels.clearSelection();
-                        setSelectedNumericIndex(sel);
-                        double interval = getInterval();
-                        intervalField.setText(
-                           Double.toString(
-                              H.getPercentage() * interval));
-                        addFromInterval();
-                        intervalField.setText(EMPTY);
-                     }
-                  });
-                  frame.pack();
-                  frame.setVisible(true);
-               } //try
-               catch (IllegalArgumentException iae) {
-                  String str = iae.getMessage();
-                  if (str == null || str.length() == 0)
-                     str = "You must specify a valid interval";
-                  ErrorDialog.showDialog(str, "Error");
-               } catch (NullPointerException npe) {
-                  ErrorDialog.showDialog(
-                     "You must select a column to bin.",
-                     "Error");
-               }
-               /*vered - the if else replaced by try catch
-               else {
-                   // message dialog...you must specify an interval
-                   ErrorDialog.showDialog("Must specify interval.", "Error");
-               }*/
-               /*
-               final JSlider intervalSlider = H.getSlider();
-               intervalSlider.addChangeListener(new ChangeListener() {
-               public void stateChanged(ChangeEvent e) {
-               intervalField.setText(Integer.toString(intervalSlider.getValue()));
-               }
-               });
-               */
-/*
-            }
-         });
-         Constrain.setConstraints(
-            intervalpnl,
-            new JLabel("Interval"),
-            0,
-            0,
-            1,
-            1,
-            GridBagConstraints.HORIZONTAL,
-            GridBagConstraints.WEST,
-            1,
-            1);
-         Box b2 = new Box(BoxLayout.X_AXIS);
-         b2.add(intervalField);
-         b2.add(addInterval);
-         b2.add(showInterval);
-         Constrain.setConstraints(
-            intervalpnl,
-            b2,
-            1,
-            0,
-            1,
-            1,
-            GridBagConstraints.NONE,
-            GridBagConstraints.EAST,
-            1,
-            1);
-         // uniform weight
-         JOutlinePanel weightpnl = new JOutlinePanel("Uniform Weight");
-         weightpnl.setLayout(new GridBagLayout());
-         weightField = new JTextField(5);
-         JButton addWeight = new JButton("Add");
-         addWeight.addActionListener(new AbstractAction() {
-
-            /**
-             * put your documentation comment here
-             * @param e
-             */
- /*           public void actionPerformed(ActionEvent e) {
-               addFromWeight();
-               weightField.setText(EMPTY);
-            }
-         });
-         // JButton showWeight = new JButton("Show");
-         // showWeight.setEnabled(false);
-         Constrain.setConstraints(
-            weightpnl,
-            new JLabel("Number in each bin"),
-            0,
-            0,
-            1,
-            1,
-            GridBagConstraints.HORIZONTAL,
-            GridBagConstraints.WEST,
-            1,
-            1);
-         Box b3 = new Box(BoxLayout.X_AXIS);
-         b3.add(weightField);
-         b3.add(addWeight);
-         // b3.add(showWeight);
-         Constrain.setConstraints(
-            weightpnl,
-            b3,
-            1,
-            0,
-            1,
-            1,
-            GridBagConstraints.NONE,
-            GridBagConstraints.EAST,
-            1,
-            1);
-         // add all numeric components
-         JPanel numpnl = new JPanel();
-         numpnl.setLayout(new GridBagLayout());
-         JScrollPane jsp = new JScrollPane(numericColumnLabels);
-         //jsp.setColumnHeaderView(new JLabel("Numeric Columns"));
-         Constrain.setConstraints(
-            numpnl,
-            jsp,
-            0,
-            0,
-            4,
-            1,
-            GridBagConstraints.BOTH,
-            GridBagConstraints.WEST,
-            1,
-            1);
-         Constrain.setConstraints(
-            numpnl,
-            urangepnl,
-            0,
-            1,
-            4,
-            1,
-            GridBagConstraints.HORIZONTAL,
-            GridBagConstraints.WEST,
-            1,
-            1);
-         Constrain.setConstraints(
-            numpnl,
-            specrangepnl,
-            0,
-            2,
-            4,
-            1,
-            GridBagConstraints.HORIZONTAL,
-            GridBagConstraints.WEST,
-            1,
-            1);
-         Constrain.setConstraints(
-            numpnl,
-            intervalpnl,
-            0,
-            3,
-            4,
-            1,
-            GridBagConstraints.HORIZONTAL,
-            GridBagConstraints.WEST,
-            1,
-            1);
-         Constrain.setConstraints(
-            numpnl,
-            weightpnl,
-            0,
-            4,
-            4,
-            1,
-            GridBagConstraints.HORIZONTAL,
-            GridBagConstraints.WEST,
-            1,
-            1);
-
-           */
-
-         // textual bins
-         JPanel txtpnl = new JPanel();
-         txtpnl.setLayout(new GridBagLayout());
-         textualColumnLabels = new JList();
-         textualColumnLabels.setSelectionMode(
-            ListSelectionModel.SINGLE_SELECTION);
-         textualColumnLabels.addListSelectionListener(new TextualListener());
-         textualColumnLabels.setModel(new DefaultListModel());
-         textUniqueVals = new JList();
-         textUniqueModel = new DefaultListModel();
-         textUniqueVals.setModel(textUniqueModel);
-         textUniqueVals.setFixedCellWidth(100);
-         textCurrentGroup = new JList();
-         textCurrentGroup.setFixedCellWidth(100);
-         textCurrentModel = new DefaultListModel();
-         textCurrentGroup.setModel(textCurrentModel);
-         JButton addTextToGroup = new JButton(">");
-         addTextToGroup.addActionListener(new AbstractAction() {
-
-            /**
-             * put your documentation comment here
-             * @param e
-             */
-            public void actionPerformed(ActionEvent e) {
-               if (!setup_complete)
-                  return;
-               Object[] sel = textUniqueVals.getSelectedValues();
-               for (int i = 0; i < sel.length; i++) {
-                  // textUniqueModel.removeElement(sel[i]);
-                  if (!textCurrentModel.contains(sel[i]))
-                     textCurrentModel.addElement(sel[i]);
-               }
-            }
-         });
-         JButton removeTextFromGroup = new JButton("<");
-         removeTextFromGroup.addActionListener(new AbstractAction() {
-
-            /**
-             * put your documentation comment here
-             * @param e
-             */
-            public void actionPerformed(ActionEvent e) {
-               if (!setup_complete)
-                  return;
-               Object[] sel = textCurrentGroup.getSelectedValues();
-               for (int i = 0; i < sel.length; i++) {
-                  textCurrentModel.removeElement(sel[i]);
-                  // textUniqueModel.addElement(sel[i]);
-               }
-            }
-         });
-         JTabbedPane jtp = new JTabbedPane(JTabbedPane.TOP);
-
-  //       jtp.add(numpnl, "Scalar");
-         jtp.add(txtpnl, "Nominal");
-         Box bx = new Box(BoxLayout.Y_AXIS);
-         bx.add(Box.createGlue());
-         bx.add(addTextToGroup);
-         bx.add(removeTextFromGroup);
-         bx.add(Box.createGlue());
-         Box bx1 = new Box(BoxLayout.X_AXIS);
-         JScrollPane jp1 = new JScrollPane(textUniqueVals);
-         jp1.setColumnHeaderView(new JLabel("Unique Values"));
-         bx1.add(jp1);
-         bx1.add(Box.createGlue());
-         bx1.add(bx);
-         bx1.add(Box.createGlue());
-         JScrollPane jp2 = new JScrollPane(textCurrentGroup);
-         jp2.setColumnHeaderView(new JLabel("Current Group"));
-         bx1.add(jp2);
-         textBinName = new JTextField(10);
-         JButton addTextBin = new JButton("Add");
-         addTextBin.addActionListener(new AbstractAction() {
-
-            /**
-             * put your documentation comment here
-             * @param e
-             */
-            public void actionPerformed(ActionEvent e) {
-               Object[] sel = textCurrentModel.toArray();
-
-               if (sel.length == 0) {
-                  ErrorDialog.showDialog(
-                     "You must select some nominal values to group.",
-                     "Error");
-                  return;
-               }
-
-               Object val = textualColumnLabels.getSelectedValue();
-
-               //int idx = ((Integer)columnLookup.get(val)).intValue();
-               int idx = adt.getIndexForLabel((String) val);
-
-               String textualBinName;
-
-               if (textBinName.getText().length() == 0)
-                  textualBinName = "bin" + uniqueTextualIndex++;
-               else
-                  textualBinName = textBinName.getText();
-
-               BinDescriptor bd =
-                  createTextualBin(idx, textualBinName, sel);
-
-               TreeSet set = uniqueColumnValues[idx];
-               for (int i = 0; i < sel.length; i++) {
-                  textCurrentModel.removeElement(sel[i]);
-                  set.remove(sel[i]);
-               }
-               addItemToBinList(bd);
-               textBinName.setText(EMPTY);
-            }
-         });
-         JOutlinePanel jop = new JOutlinePanel("Group");
-         JPanel pp = new JPanel();
-         pp.add(new JLabel("Name"));
-         pp.add(textBinName);
-         pp.add(addTextBin);
-         jop.setLayout(new BoxLayout(jop, BoxLayout.Y_AXIS));
-         jop.add(bx1);
-         jop.add(pp);
-         JScrollPane jp3 = new JScrollPane(textualColumnLabels);
-         Constrain.setConstraints(
-            txtpnl,
-            jp3,
-            0,
-            0,
-            4,
-            1,
-            GridBagConstraints.BOTH,
-            GridBagConstraints.WEST,
-            1,
-            1);
-         Constrain.setConstraints(
-            txtpnl,
-            jop,
-            0,
-            1,
-            4,
-            1,
-            GridBagConstraints.HORIZONTAL,
-            GridBagConstraints.WEST,
-            1,
-            1);
-         // now add everything
-         JPanel pq = new JPanel();
-         pq.setLayout(new BorderLayout());
-         JScrollPane jp4 = new JScrollPane(currentBins);
-         jp4.setColumnHeaderView(new JLabel("Current Bins"));
-         pq.add(jp4, BorderLayout.CENTER);
-         JOutlinePanel jop5 = new JOutlinePanel("Current Selection");
-         currentSelectionItems = new JList();
-         currentSelectionItems.setVisibleRowCount(4);
-         currentSelectionItems.setEnabled(false);
-         currentSelectionModel = new DefaultListModel();
-         currentSelectionItems.setModel(currentSelectionModel);
-         JPanel pt = new JPanel();
-         curSelName = new JTextField(10);
-         pt.add(new JLabel("Name"));
-         pt.add(curSelName);
-         JButton updateCurrent = new JButton("Update");
-         updateCurrent.addActionListener(new AbstractAction() {
-
-            /**
-             * put your documentation comment here
-             * @param e
-             */
-            public void actionPerformed(ActionEvent e) {
-               if (!setup_complete)
-                  return;
-               if (currentSelectedBin != null) {
-                  currentSelectedBin.name = curSelName.getText();
-                  currentBins.repaint();
-               }
-            }
-         });
-         JButton removeBin = new JButton("Remove Bin");
-         removeBin.addActionListener(new AbstractAction() {
-
-            /**
-             * put your documentation comment here
-             * @param e
-             */
-            public void actionPerformed(ActionEvent e) {
-               if (!setup_complete)
-                  return;
-               if (currentSelectedBin != null) {
-                  int col = currentSelectedBin.column_number;
-                  if (currentSelectedBin instanceof TextualBinDescriptor)
-                     uniqueColumnValues[col].addAll(
-                        (
-                           (
-                              TextualBinDescriptor) currentSelectedBin)
-                                 .vals);
-                  binListModel.removeElement(currentSelectedBin);
-                  currentSelectionModel.removeAllElements();
-                  curSelName.setText(EMPTY);
-                  // update the group
-                  Object lbl = textualColumnLabels.getSelectedValue();
-                  // gpape:
-                  if (lbl != null) {
-                     //int idx = ((Integer)columnLookup.get(lbl)).intValue();
-                     int idx = adt.getIndexForLabel((String) lbl);
-                     TreeSet unique = uniqueColumnValues[idx];
-                     textUniqueModel.removeAllElements();
-                     textCurrentModel.removeAllElements();
-                     Iterator i = unique.iterator();
-                     while (i.hasNext())
-                        textUniqueModel.addElement(i.next());
-                  }
-               }
-            }
-         });
-         // gpape:
-         JButton removeAllBins = new JButton("Remove All");
-         removeAllBins.addActionListener(new AbstractAction() {
-
-            /**
-             * put your documentation comment here
-             * @param e
-             */
-            public void actionPerformed(ActionEvent e) {
-               if (!setup_complete)
-                  return;
-               binListModel.removeAllElements();
-               currentSelectionModel.removeAllElements();
-               curSelName.setText(EMPTY);
-            }
-         });
-         // gpape:
-         createInNewColumn = new JCheckBox("Create in new column", false);
-         Box pg = new Box(BoxLayout.X_AXIS);
-         pg.add(updateCurrent);
-         //pg.add(removeItems);
-         pg.add(removeBin);
-         pg.add(removeAllBins);
-         // gpape:
-         Box pg2 = new Box(BoxLayout.X_AXIS);
-         pg2.add(createInNewColumn);
-         jop5.setLayout(new BoxLayout(jop5, BoxLayout.Y_AXIS));
-         jop5.add(pt);
-         JScrollPane pane = new JScrollPane(currentSelectionItems);
-         pane.setColumnHeaderView(new JLabel("Items"));
-         jop5.add(pane);
-         jop5.add(pg);
-         jop5.add(pg2);
-         JPanel bgpnl = new JPanel();
-         bgpnl.setLayout(new BorderLayout());
-         bgpnl.add(jp4, BorderLayout.CENTER);
-         bgpnl.add(jop5, BorderLayout.SOUTH);
-         // finally add everything to this
-         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-         Box bxl = new Box(BoxLayout.X_AXIS);
-         //bxl.add(jtp); commented out by vered. no need for a tab...
-         bxl.add(txtpnl);
-         bxl.add(bgpnl);
-         JPanel buttonPanel = new JPanel();
-         abort = new JButton("Abort");
-         abort.addActionListener(new AbstractAction() {
-
-            /**
-             * put your documentation comment here
-             * @param e
-             */
-            public void actionPerformed(ActionEvent e) {
-               viewCancel();
-            }
-         });
-         done = new JButton("Done");
-         done.addActionListener(new AbstractAction() {
-
-            /**
-             * put your documentation comment here
-             * @param e
-             */
-            public void actionPerformed(ActionEvent e) {
-               //binIt(createInNewColumn.isSelected());
-               Object[] tmp = binListModel.toArray();
-               BinDescriptor[] bins = new BinDescriptor[tmp.length];
-
-               for (int i = 0; i < bins.length; i++)
-                  bins[i] = (BinDescriptor) tmp[i];
-
-              //headless conversion support
-               setBinDes(bins);
-               //headless conversion support
-
-                BinTransform bt =
-                  new BinTransform(bins, createInNewColumn.isSelected());
-               pushOutput(bt, 0);
-               //pushOutput(tbl, 1);
-               viewDone("Done");
-            }
-         });
-         JButton showTable = new JButton("Show Table");
-         showTable.addActionListener(new AbstractAction() {
-
-            /**
-             * put your documentation comment here
-             * @param e
-             */
-            public void actionPerformed(ActionEvent e) {
-               JD2KFrame frame = new JD2KFrame("Table");
-               frame.getContentPane().add(new TableMatrix(tbl));
-               frame.addWindowListener(new DisposeOnCloseListener(frame));
-               frame.pack();
-               frame.setVisible(true);
-            }
-         });
-         JButton helpButton = new JButton("Help");
-         helpButton.addActionListener(new AbstractAction() {
-
-            /**
-             * put your documentation comment here
-             * @param e
-             */
-            public void actionPerformed(ActionEvent e) {
-               HelpWindow help = new HelpWindow();
-               help.setVisible(true);
-            }
-         });
-         buttonPanel.add(abort);
-         buttonPanel.add(done);
-         buttonPanel.add(showTable);
-         buttonPanel.add(helpButton);
-         setLayout(new BorderLayout());
-         add(bxl, BorderLayout.CENTER);
-         add(buttonPanel, BorderLayout.SOUTH);
-      }
-
-      /*private void binIt(boolean new_column) {
-      // boolean replace = true;
-       Object[] tmp = binListModel.toArray();
-       BinDescriptor[] bins = new BinDescriptor[tmp.length];
-       for (int i = 0; i < bins.length; i++)
-       bins[i] = (BinDescriptor)tmp[i];
-      // need to figure out which columns have been binned:
-       boolean[] binRelevant = new boolean[table.getNumColumns()];
-       for (int i = 0; i < binRelevant.length; i++)
-       binRelevant[i] = false;
-       for (int i = 0; i < bins.length; i++)
-       binRelevant[bins[i].column_number] = true;
-      // if (replace) {
-      //Column[] c = new Column[table.getNumColumns()];
-      //for(int i = 0; i < c.length; i++)
-      //  c[i] = table.getColumn(i);
-       String[][] newcols =
-       new String[table.getNumColumns()][table.getNumRows()];
-       for(int i = 0; i < table.getNumColumns(); i++) {
-       if (binRelevant[i])
-       for(int j = 0; j < table.getNumRows(); j++) {
-      // find the correct bin for this column
-       boolean binfound = false;
-       for(int k = 0; k < bins.length; k++) {
-       if(bins[k].column_number == i) {
-      // this has the correct column index
-      //if(c[i] instanceof NumericColumn) {
-       if(table.isColumnNumeric(i)) {
-       if(bins[k].eval(table.getDouble(j, i))) {
-       newcols[i][j] = bins[k].name;
-       binfound = true;
-       }
-       }
-       else {
-       if(bins[k].eval(table.getString(j, i))) {
-       newcols[i][j] = bins[k].name;
-       binfound = true;
-       }
-       }
-       }
-       if(binfound) {
-       binRelevant[i] = true;
-       break;
-       }
-       }
-       if(!binfound)
-       newcols[i][j] = "Unknown";
-       }
-       }
-      //StringColumn[] sc = new StringColumn[table.getNumColumns()];
-       for(int i = 0; i < table.getNumColumns(); i++) {
-       if (binRelevant[i]) {
-      //sc[i] = new StringColumn(newcols[i]);
-      //sc[i].setComment(table.getColumn(i).getComment());
-       if (new_column) {
-       if (binRelevant[i]) {
-      //sc[i].setLabel(table.getColumnLabel(i) + " bin");
-       table.addColumn(newcols[i]);
-       table.setColumnLabel(table.getColumnLabel(i)+" bin", table.getNumColumns()-1);
-       }
-       }
-       else {
-       String oldLabel = table.getColumnLabel(i);
-       table.setColumn(newcols[i], i);
-       table.setColumnLabel(oldLabel, i);
-       }
-       }
-       }
-      // }
-       }*/
-
-      private TreeSet uniqueValues(int col) {
-         // return the number of unique items in this column
-         TreeSet set = adt.getUniqueValuesTreeSet(col);
-         return set;
-      }
-
-      /**
-       * Get the column indices of the selected numeric columns.
-       *
-      private int[] getSelectedNumericIndices() {
-         Object[] setVals = numericColumnLabels.getSelectedValues();
-         int[] colIdx = new int[setVals.length];
-         for (int i = 0; i < colIdx.length; i++)
-            colIdx[i] = ((Integer) columnLookup.get(setVals[i])).intValue();
-         return colIdx;
-      }*/
-
-      /**
-       * put your documentation comment here
-       * @param index
-       *
-      private void setSelectedNumericIndex(int index) {
-         numericColumnLabels.setSelectedIndex(index);
-      }
+	private static final String EMPTY = "",
+		COLON = " : ",
+		COMMA = ",",
+		DOTS = "...",
+		OPEN_PAREN = "(",
+		CLOSE_PAREN = ")",
+		OPEN_BRACKET = "[",
+		CLOSE_BRACKET = "]";
+
+	private NumberFormat nf;
+
+	/**
+	 * put your documentation comment here
+	 * @return
+	 */
+	public String getModuleName() {
+		return "AD Tree Bin Columns";
+	}
+
+	/**
+	 * put your documentation comment here
+	 * @return
+	 */
+	public String getModuleInfo() {
+		return "<html>  <head>      </head>  <body>"
+			+ "<P><b>Overview:</B> This module allows a user to interactively bin data using counts stored in an ADTree.</P>"
+			+ "<P><B>Detailed Description:</B> Numeric data cannot be binned."
+			+ " The user may bin only nominal data.</P>"
+			+ "<P>For further information on how to use this module the user may click on the \"Help\" button during run time and get detailed description of each functionality.</P>"
+			+ "<P><B>Data Handling:</b><BR> This module does not change its input. Rather than that it outputs a Transformation that can be then applied to the data.</P>"
+			+ "</body></html>";
+	}
+
+	/**
+	 * put your documentation comment here
+	 * @return
+	 */
+	public String[] getInputTypes() {
+		String[] types =
+			{
+				"ncsa.d2k.modules.core.datatype.ADTree",
+				"ncsa.d2k.modules.core.datatype.table.Table" };
+		return types;
+	}
+
+	/**
+	 * put your documentation comment here
+	 * @return
+	 */
+	public String[] getOutputTypes() {
+		String[] types =
+			{ "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform" };
+
+		return types;
+	}
+
+	/**
+	 * put your documentation comment here
+	 * @param i
+	 * @return
+	 */
+	public String getInputInfo(int i) {
+		switch (i) {
+			case 0 :
+				return "An ADTree containing counts.";
+			case 1 :
+				return "ExampleTable containing the names of the input/output features.";
+			default :
+				return "No such input";
+		}
+	}
+
+	/**
+	 * put your documentation comment here
+	 * @param i
+	 * @return
+	 */
+	public String getOutputName(int i) {
+		switch (i) {
+			case 0 :
+				return "Binning Transformation";
+			case 1 :
+				return "Meta Data Example Table";
+			default :
+				return "no such output!";
+		}
+	}
+
+	/**
+	 * put your documentation comment here
+	 * @param i
+	 * @return
+	 */
+	public String getInputName(int i) {
+		switch (i) {
+			case 0 :
+				return "AD Tree";
+			case 1 :
+				return "Example Table";
+			default :
+				return "no such input";
+		}
+
+	}
+
+	/**
+	 * put your documentation comment here
+	 * @param i
+	 * @return
+	 */
+	public String getOutputInfo(int i) {
+		switch (i) {
+			case 0 :
+				return "A BinTransform, as defined by the user, that can be applied to the input Table.";
+			default :
+				return "No such output";
+		}
+	}
+
+	/**
+	 * put your documentation comment here
+	 * @return
+	 */
+	protected UserView createUserView() {
+		return new ADTBinColumnsView();
+	}
+
+	/**
+	 * put your documentation comment here
+	 * @return
+	 */
+	public String[] getFieldNameMapping() {
+		return null;
+	}
+
+	private class ADTBinColumnsView extends JUserPane {
+		private boolean setup_complete;
+		private BinDescriptor currentSelectedBin;
+		private HashMap columnLookup;
+		private TreeSet[] uniqueColumnValues;
+		private JList /*numericColumnLabels*/
+		textualColumnLabels, currentBins;
+		private DefaultListModel binListModel;
+		private Table tbl;
+		private int numArrived = 0;
+		private ADTree adt;
+
+		/* numeric text fields */
+		private JTextField uRangeField,
+			specRangeField,
+			intervalField,
+			weightField;
+
+		/* textual lists */
+		private JList textUniqueVals, textCurrentGroup;
+		private DefaultListModel textUniqueModel, textCurrentModel;
+
+		/* textual text field */
+		private JTextField textBinName;
+
+		/* current selection fields */
+		private JTextField curSelName;
+		private JList currentSelectionItems;
+		private DefaultListModel currentSelectionModel;
+		private JButton abort, done;
+		private JCheckBox createInNewColumn;
+
+		int uniqueTextualIndex = 0;
+
+		/**
+		 * put your documentation comment here
+		 */
+		private ADTBinColumnsView() {
+			setup_complete = false;
+			nf = NumberFormat.getInstance();
+			nf.setMaximumFractionDigits(3);
+		}
+
+		/**
+		 * put your documentation comment here
+		 * @param o
+		 * @param id
+		 */
+		public void setInput(Object o, int id) {
+			if (id == 0) {
+				adt = (ADTree) o;
+				numArrived = 1;
+			}
+			if (id == 1) {
+				tbl = (Table) o;
+				numArrived++;
+			}
+
+			if (numArrived == 2) {
+				// clear all text fields and lists...
+				curSelName.setText(EMPTY);
+				textBinName.setText(EMPTY);
+				//  uRangeField.setText(EMPTY);
+				//  specRangeField.setText(EMPTY);
+				//  intervalField.setText(EMPTY);
+				//  weightField.setText(EMPTY);
+				columnLookup = new HashMap();
+
+				//	added support for selected columns in ExampleTable
+	/*			int[] columns;
+				int numColumns;
+				try {
+					ExampleTable etbl = (ExampleTable) tbl;
+					int[] inputs = etbl.getInputFeatures();
+					int[] outputs = etbl.getOutputFeatures();
+					numColumns = inputs.length + outputs.length;
+					columns = new int[numColumns];
+					for (int i = 0; i < inputs.length; i++)
+						columns[i] = inputs[i];
+					for (int i = inputs.length; i < numColumns; i++)
+						columns[i] = outputs[i - inputs.length];
+
+				} catch (ClassCastException ce) { // tbl was not an ExampleTable
+					numColumns = tbl.getNumColumns();
+					columns = new int[numColumns];
+					for (int i = 0; i < numColumns; i++)
+						columns[i] = i;
+				}
 */
+				uniqueColumnValues = new TreeSet[tbl.getNumColumns() + 1];
+				binListModel.removeAllElements();
+				//  DefaultListModel numModel =
+				//   (DefaultListModel) numericColumnLabels.getModel(),
+				DefaultListModel txtModel =
+					(DefaultListModel) textualColumnLabels.getModel();
+				//numModel.removeAllElements();
+				txtModel.removeAllElements();
 
+				textCurrentModel.removeAllElements();
+				textUniqueModel.removeAllElements();
+				uniqueTextualIndex = 0;
 
-      /**
-       * Get the range of the first selected column.
-       *
-       * vered - removing this method, as it i snot being called upon
-       *
-      private double getInterval() {
-// !:
-// int colIdx = numericColumnLabels.getSelectedIndex();
-      int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue())).intValue();
-         double max = Double.MIN_VALUE, min = Double.MAX_VALUE;
-         for (int i = 0; i < tbl.getNumRows(); i++) {
-            double d = tbl.getDouble(i, colIdx);
-            if (d < min)
-               min = d;
-            if (d > max)
-               max = d;
-         }
-         return max - min;
-      }
-      */
+				//ANCA moved fix below from BinAttributes to ADTBinAttributes
+                 //	!: check inputs/outputs if example table
+					 ExampleTable et = null;
+					 HashMap etInputs = null;
+					 HashMap etOutputs = null;
+					 if (tbl instanceof ExampleTable) {
+						et = (ExampleTable)tbl;
+						int[] inputs = et.getInputFeatures();
+						int[] outputs = et.getOutputFeatures();
+						etInputs = new HashMap();
+						etOutputs = new HashMap();
 
-      /**
-       * Add uniform range bins
-       *
-       * vered: removed this method. as it is not being called upon.
-       *
-      private void addUniRange() {
-         int[] colIdx = getSelectedNumericIndices();
-         //vered
-         if (colIdx.length == 0) {
-            ErrorDialog.showDialog("Must select a column to bin.", "Error");
-            return;
-         }
+						for (int i = 0; i < inputs.length; i++) {
+						   etInputs.put(new Integer(inputs[i]), null);
+						}
+						for (int i = 0; i < outputs.length; i++) {
+						   etOutputs.put(new Integer(outputs[i]), null);
+						}
+					 }
 
-         // uniform range is the number of bins...
-         String txt = uRangeField.getText();
-         int num;
-         // ...get this number
-         try {
-            num = Integer.parseInt(txt);
-            //vered:
-            if (num <= 1)
-               throw new NumberFormatException();
-         } catch (NumberFormatException e) {
-            //vered:
-            ErrorDialog.showDialog(
-               "Must specify an integer greater thatn 1.",
-               "Error");
-            return;
-         }
-         // find the maxes and mins
-         double[] maxes = new double[colIdx.length];
-         double[] mins = new double[colIdx.length];
-         for (int i = 0; i < colIdx.length; i++) {
-            maxes[i] = Double.MIN_VALUE;
-            mins[i] = Double.MAX_VALUE;
-         }
-         for (int i = 0; i < colIdx.length; i++) {
-            // find the max and min and make equally spaced bins
-            //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-            for (int j = 0; j < tbl.getNumRows(); j++) {
-               double d = tbl.getDouble(j, colIdx[i]);
-               if (d > maxes[i])
-                  maxes[i] = d;
-               if (d < mins[i])
-                  mins[i] = d;
-            }
-            double[] binMaxes = new double[num - 1];
-            double interval = (maxes[i] - mins[i]) / (double) num;
-            // add the first bin manually
-            binMaxes[0] = mins[i] + interval;
-            BinDescriptor nbd =
-               createMinNumericBinDescriptor(colIdx[i], binMaxes[0]);
-            addItemToBinList(nbd);
-            for (int j = 1; j < binMaxes.length; j++) {
-               binMaxes[j] = binMaxes[j - 1] + interval;
-               // now create the BinDescriptor and add it to the bin list
-               nbd =
-                  createNumericBinDescriptor(
-                     colIdx[i],
-                     binMaxes[j - 1],
-                     binMaxes[j]);
-               addItemToBinList(nbd);
-            }
-            nbd =
-               createMaxNumericBinDescriptor(
-                  colIdx[i],
-                  binMaxes[binMaxes.length - 1]);
-            addItemToBinList(nbd);
-         }
-      }
-      */
+					 for (int i = 0; i < tbl.getNumColumns(); i++) {
 
-      /**
-       * Add bins from a user-specified range
-       *
-       * this method is removed, as it is not beign called.
-       *
-      private void addSpecifiedRange() {
-         int[] colIdx = getSelectedNumericIndices();
-         //vered:
-         if (colIdx.length == 0) {
-            ErrorDialog.showDialog(
-               "You must select a column to bin.",
-               "Error");
-            return;
-         }
+						if (et != null) {
+						   if (!etInputs.containsKey(new Integer(i)) &&
+							   !etOutputs.containsKey(new Integer(i))) {
+							  continue;
+						   }
+						}
 
-         // specified range is a comma-separated list of bin maxes
-         String txt = specRangeField.getText();
+						columnLookup.put(tbl.getColumnLabel(i), new Integer(i));
+						//if (table.getColumn(i) instanceof NumericColumn)
+						if (!tbl.isColumnScalar(i)) {
+						int idx =
+							adt.getIndexForLabel(tbl.getColumnLabel(i));
+						columnLookup.put(
+							tbl.getColumnLabel(i),
+							new Integer(idx));
+						   txtModel.addElement(tbl.getColumnLabel(i));
+						   uniqueColumnValues[idx] = uniqueValues(idx);
+						}
 
-         //vered:
-         if (txt == null || txt.length() == 0) {
-            ErrorDialog.showDialog(
-               "Please enter a comma-separated sequence of\ninteger or floating-point values for\nthe endpoints of each bin. ",
-               "Error");
-            return;
-         }
+					 }
 
-         ArrayList al = new ArrayList();
-         StringTokenizer strTok = new StringTokenizer(txt, COMMA);
-         double[] binMaxes = new double[strTok.countTokens()];
-         int idx = 0;
-         try {
-            while (strTok.hasMoreElements()) {
-               String s = (String) strTok.nextElement();
-               binMaxes[idx++] = Double.parseDouble(s);
-            }
-         } catch (NumberFormatException e) {
-            //vered
-            ErrorDialog.showDialog(
-               "Please enter a comma-separated sequence of\ninteger or floating-point values for\nthe endpoints of each bin. ",
-               "Error");
-            return;
-         }
-         // now create and add the bins
-         for (int i = 0; i < colIdx.length; i++) {
-            BinDescriptor nbd =
-               createMinNumericBinDescriptor(colIdx[i], binMaxes[0]);
-            addItemToBinList(nbd);
-            for (int j = 1; j < binMaxes.length; j++) {
-               // now create the BinDescriptor and add it to the bin list
-               nbd =
-                  createNumericBinDescriptor(
-                     colIdx[i],
-                     binMaxes[j - 1],
-                     binMaxes[j]);
-               addItemToBinList(nbd);
-            }
-            nbd =
-               createMaxNumericBinDescriptor(
-                  colIdx[i],
-                  binMaxes[binMaxes.length - 1]);
-            addItemToBinList(nbd);
-         }
-      }
-      */
+				if (!validateBins(binListModel)) {
+						   binListModel.removeAllElements();
+						}
+					 	
+				// finished...
+				setup_complete = true;
+			}
+		}
 
-      /**
-       * Add bins from an interval - the width of each bin
-       *
-       * vered: this method is removed as it is not being called
-       *
-      private void addFromInterval() {
-         int[] colIdx = getSelectedNumericIndices();
-         //vered:
-         if (colIdx.length == 0) {
-            ErrorDialog.showDialog(
-               "You must select a column to bin.",
-               "Error");
-            return;
-         }
+		/**
+		 * Create all of the components and add them to the view.
+		 */
+		public void initView(ViewModule m) {
+			currentBins = new JList();
+			binListModel = new DefaultListModel();
+			currentBins.setModel(binListModel);
+			currentBins.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			currentBins.addListSelectionListener(new CurrentListener());
+			// set up the numeric tab
 
-         // the interval is the width
-         String txt = intervalField.getText();
-         double intrval;
-         try {
-            intrval = Double.parseDouble(txt);
-         } catch (NumberFormatException e) {
-            //vered:
-            ErrorDialog.showDialog(
-               "Must specify a positive number",
-               "Error");
-            return;
-         }
+			//vered: removing the numeric tab, since this module does not support
+			//binning of numeric data.
 
-         // find the mins and maxes
-         double[] maxes = new double[colIdx.length];
-         double[] mins = new double[colIdx.length];
-         for (int i = 0; i < colIdx.length; i++) {
-            maxes[i] = Double.MIN_VALUE;
-            mins[i] = Double.MAX_VALUE;
-         }
-         for (int i = 0; i < colIdx.length; i++) {
-            // find the max and min
-            //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-            for (int j = 0; j < tbl.getNumRows(); j++) {
-               double d = tbl.getDouble(j, colIdx[i]);
-               if (d > maxes[i])
-                  maxes[i] = d;
-               if (d < mins[i])
-                  mins[i] = d;
-            }
-            // the number of bins is (max - min) / (bin width)
-            int num = (int) Math.ceil((maxes[i] - mins[i]) / intrval);
-            double[] binMaxes = new double[num];
-            binMaxes[0] = mins[i];
-            // add the first bin manually
-            BinDescriptor nbd =
-               createMinNumericBinDescriptor(colIdx[i], binMaxes[0]);
-            addItemToBinList(nbd);
-            for (int j = 1; j < binMaxes.length; j++) {
-               binMaxes[j] = binMaxes[j - 1] + intrval;
-               // now create the BinDescriptor and add it to the bin list
-               nbd =
-                  createNumericBinDescriptor(
-                     colIdx[i],
-                     binMaxes[j - 1],
-                     binMaxes[j]);
-               addItemToBinList(nbd);
-            }
-            nbd =
-               createMaxNumericBinDescriptor(
-                  colIdx[i],
-                  binMaxes[binMaxes.length - 1]);
-            addItemToBinList(nbd);
-         }
-      }
-*/
-      /**
-       * Add bins given a weight. This will attempt to make bins with an
-       * equal number of tallies in each.
-       *
-       * vered: this method is removed as it is not being called.
-       *
-      private void addFromWeight() {
-         int[] colIdx = getSelectedNumericIndices();
+			// textual bins
+			JPanel txtpnl = new JPanel();
+			txtpnl.setLayout(new GridBagLayout());
+			textualColumnLabels = new JList();
+			textualColumnLabels.setSelectionMode(
+				ListSelectionModel.SINGLE_SELECTION);
+			textualColumnLabels.addListSelectionListener(new TextualListener());
+			textualColumnLabels.setModel(new DefaultListModel());
+			textUniqueVals = new JList();
+			textUniqueModel = new DefaultListModel();
+			textUniqueVals.setModel(textUniqueModel);
+			textUniqueVals.setFixedCellWidth(100);
+			textCurrentGroup = new JList();
+			textCurrentGroup.setFixedCellWidth(100);
+			textCurrentModel = new DefaultListModel();
+			textCurrentGroup.setModel(textCurrentModel);
+			JButton addTextToGroup = new JButton(">");
+			addTextToGroup.addActionListener(new AbstractAction() {
 
-         //vered:
-         if (colIdx.length == 0) {
-            ErrorDialog.showDialog(
-               "You must select a column to bin.",
-               "Error");
-            return;
-         }
+				/**
+				 * put your documentation comment here
+				 * @param e
+				 */
+				public void actionPerformed(ActionEvent e) {
+					if (!setup_complete)
+						return;
+					Object[] sel = textUniqueVals.getSelectedValues();
+					for (int i = 0; i < sel.length; i++) {
+						// textUniqueModel.removeElement(sel[i]);
+						if (!textCurrentModel.contains(sel[i]))
+							textCurrentModel.addElement(sel[i]);
+					}
+				}
+			});
+			JButton removeTextFromGroup = new JButton("<");
+			removeTextFromGroup.addActionListener(new AbstractAction() {
 
-         // the weight is the number of items in each bin
-         String txt = weightField.getText();
-         int weight;
-         try {
-            weight = Integer.parseInt(txt);
-            //vered:
-            if (weight <= 0)
-               throw new NumberFormatException();
+				/**
+				 * put your documentation comment here
+				 * @param e
+				 */
+				public void actionPerformed(ActionEvent e) {
+					if (!setup_complete)
+						return;
+					Object[] sel = textCurrentGroup.getSelectedValues();
+					for (int i = 0; i < sel.length; i++) {
+						textCurrentModel.removeElement(sel[i]);
+						// textUniqueModel.addElement(sel[i]);
+					}
+				}
+			});
+			JTabbedPane jtp = new JTabbedPane(JTabbedPane.TOP);
 
-         } catch (NumberFormatException e) {
-            //vered:
-            ErrorDialog.showDialog(
-               "Must specify a positive integer",
-               "Error");
-            return;
-         }
-         // we need to sort the data, but do not want to sort the
-         // actual column, so we get a copy of the data
-         for (int i = 0; i < colIdx.length; i++) {
-            //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-            double[] data = new double[tbl.getNumRows()];
-            for (int j = 0; j < data.length; j++)
-               data[j] = tbl.getDouble(j, colIdx[i]);
-            // sort it
-            Arrays.sort(data);
-            ArrayList list = new ArrayList();
-            // now find the bin maxes...
-            // loop through the sorted data.  the next max will lie at
-            // data[curLoc+weight] items
-            int curIdx = 0;
-            while (curIdx < data.length - 1) {
-               curIdx += weight;
-               if (curIdx > data.length - 1)
-                  curIdx = data.length - 1;
-               // now loop until the next unique item is found
-               boolean done = false;
-               if (curIdx == data.length - 1)
-                  done = true;
-               while (!done) {
-                  if (data[curIdx] != data[curIdx + 1])
-                     done = true;
-                  else
-                     curIdx++;
-                  if (curIdx == data.length - 1)
-                     done = true;
-               }
-               // now we have the current index
-               // add the value at this index to the list
-               Double dbl = new Double(data[curIdx]);
-               list.add(dbl);
-            }
-            double[] binMaxes = new double[list.size()];
-            for (int j = 0; j < binMaxes.length; j++)
-               binMaxes[j] = ((Double) list.get(j)).doubleValue();
-            // add the first bin manually
-            BinDescriptor nbd =
-               createMinNumericBinDescriptor(colIdx[i], binMaxes[0]);
-            addItemToBinList(nbd);
-            for (int j = 1; j < binMaxes.length; j++) {
-               // now create the BinDescriptor and add it to the bin list
-               nbd =
-                  createNumericBinDescriptor(
-                     colIdx[i],
-                     binMaxes[j - 1],
-                     binMaxes[j]);
-               addItemToBinList(nbd);
-            }
-            nbd =
-               createMaxNumericBinDescriptor(
-                  colIdx[i],
-                  binMaxes[binMaxes.length - 1]);
-            addItemToBinList(nbd);
-         }
-      }
-      */
+			//       jtp.add(numpnl, "Scalar");
+			jtp.add(txtpnl, "Nominal");
+			Box bx = new Box(BoxLayout.Y_AXIS);
+			bx.add(Box.createGlue());
+			bx.add(addTextToGroup);
+			bx.add(removeTextFromGroup);
+			bx.add(Box.createGlue());
+			Box bx1 = new Box(BoxLayout.X_AXIS);
+			JScrollPane jp1 = new JScrollPane(textUniqueVals);
+			jp1.setColumnHeaderView(new JLabel("Unique Values"));
+			bx1.add(jp1);
+			bx1.add(Box.createGlue());
+			bx1.add(bx);
+			bx1.add(Box.createGlue());
+			JScrollPane jp2 = new JScrollPane(textCurrentGroup);
+			jp2.setColumnHeaderView(new JLabel("Current Group"));
+			bx1.add(jp2);
+			textBinName = new JTextField(10);
+			JButton addTextBin = new JButton("Add");
+			addTextBin.addActionListener(new AbstractAction() {
 
-      /**
-       * put your documentation comment here
-       * @param idx
-       * @param name
-       * @param sel
-       * @return
-       */
-      private BinDescriptor createTextualBin(
-         int idx,
-         String name,
-         Object[] sel) {
-         String[] vals = new String[sel.length];
-         for (int i = 0; i < vals.length; i++)
-            vals[i] = sel[i].toString();
-         return new TextualBinDescriptor(idx, name, vals, adt.getLabel(idx));
-      }
+				/**
+				 * put your documentation comment here
+				 * @param e
+				 */
+				public void actionPerformed(ActionEvent e) {
+					Object[] sel = textCurrentModel.toArray();
 
-      /**
-       * Create a numeric bin that goes from min to max.
-       */
-      private BinDescriptor createNumericBinDescriptor(
-         int col,
-         double min,
-         double max) {
-         StringBuffer nameBuffer = new StringBuffer();
-         nameBuffer.append(OPEN_PAREN);
-         nameBuffer.append(nf.format(min));
-         nameBuffer.append(COLON);
-         nameBuffer.append(nf.format(max));
-         nameBuffer.append(CLOSE_BRACKET);
-         BinDescriptor nb =
-            new NumericBinDescriptor(
-               col,
-               nameBuffer.toString(),
-               min,
-               max,
-               tbl.getColumnLabel(col));
-         return nb;
-      }
+					if (sel.length == 0) {
+						ErrorDialog.showDialog(
+							"You must select some nominal values to group.",
+							"Error");
+						return;
+					}
 
-      /**
-       * Create a numeric bin that goes from Double.MIN_VALUE to max
-       */
-      private BinDescriptor createMinNumericBinDescriptor(
-         int col,
-         double max) {
-         StringBuffer nameBuffer = new StringBuffer();
-         nameBuffer.append(OPEN_BRACKET);
-         nameBuffer.append(DOTS);
-         nameBuffer.append(COLON);
-         nameBuffer.append(nf.format(max));
-         nameBuffer.append(CLOSE_BRACKET);
-         BinDescriptor nb =
-            new NumericBinDescriptor(
-               col,
-               nameBuffer.toString(),
-               Double.MIN_VALUE,
-               max,
-               tbl.getColumnLabel(col));
-         return nb;
-      }
+					Object val = textualColumnLabels.getSelectedValue();
 
-      /**
-       * Create a numeric bin that goes from min to Double.MAX_VALUE
-       */
-      private BinDescriptor createMaxNumericBinDescriptor(
-         int col,
-         double min) {
-         StringBuffer nameBuffer = new StringBuffer();
-         nameBuffer.append(OPEN_PAREN);
-         nameBuffer.append(nf.format(min));
-         nameBuffer.append(COLON);
-         nameBuffer.append(DOTS);
-         nameBuffer.append(CLOSE_BRACKET);
-         BinDescriptor nb =
-            new NumericBinDescriptor(
-               col,
-               nameBuffer.toString(),
-               min,
-               Double.MAX_VALUE,
-               tbl.getColumnLabel(col));
-         return nb;
-      }
+					//int idx = ((Integer)columnLookup.get(val)).intValue();
+					int idx = adt.getIndexForLabel((String) val);
 
-      /**
-       * put your documentation comment here
-       * @param bd
-       */
-      private void addItemToBinList(BinDescriptor bd) {
-         binListModel.addElement(bd);
-      }
+					String textualBinName;
 
-      private class CurrentListener implements ListSelectionListener {
+					if (textBinName.getText().length() == 0)
+						textualBinName = "bin" + uniqueTextualIndex++;
+					else
+						textualBinName = textBinName.getText();
 
-         /**
-          * put your documentation comment here
-          * @param e
-          */
-         public void valueChanged(ListSelectionEvent e) {
-            if (!setup_complete)
-               return;
-            if (!e.getValueIsAdjusting()) {
-               currentSelectedBin =
-                  (BinDescriptor) currentBins.getSelectedValue();
-               if (currentSelectedBin == null) {
-                  currentSelectionModel.removeAllElements();
-                  curSelName.setText(EMPTY);
-                  return;
-               }
-               curSelName.setText(currentSelectedBin.name);
-               if (currentSelectedBin instanceof NumericBinDescriptor) {
-                  currentSelectionModel.removeAllElements();
-                  currentSelectionModel.addElement(
-                     currentSelectedBin.name);
-               } else {
-                  currentSelectionModel.removeAllElements();
-                  HashSet hs =
-                     (HashSet)
-                        (
-                           (
-                              TextualBinDescriptor) currentSelectedBin)
-                                 .vals;
-                  Iterator i = hs.iterator();
-                  while (i.hasNext())
-                     currentSelectionModel.addElement(i.next());
-               }
-            }
-         }
-      } // ADTBinColumnsView$CurrentListener
+					BinDescriptor bd =
+						createTextualBin(idx, textualBinName, sel);
 
-      private class TextualListener implements ListSelectionListener {
+					TreeSet set = uniqueColumnValues[idx];
+					for (int i = 0; i < sel.length; i++) {
+						textCurrentModel.removeElement(sel[i]);
+						set.remove(sel[i]);
+					}
+					addItemToBinList(bd);
+					textBinName.setText(EMPTY);
+				}
+			});
+			JOutlinePanel jop = new JOutlinePanel("Group");
+			JPanel pp = new JPanel();
+			pp.add(new JLabel("Name"));
+			pp.add(textBinName);
+			pp.add(addTextBin);
+			jop.setLayout(new BoxLayout(jop, BoxLayout.Y_AXIS));
+			jop.add(bx1);
+			jop.add(pp);
+			JScrollPane jp3 = new JScrollPane(textualColumnLabels);
+			Constrain.setConstraints(
+				txtpnl,
+				jp3,
+				0,
+				0,
+				4,
+				1,
+				GridBagConstraints.BOTH,
+				GridBagConstraints.WEST,
+				1,
+				1);
+			Constrain.setConstraints(
+				txtpnl,
+				jop,
+				0,
+				1,
+				4,
+				1,
+				GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.WEST,
+				1,
+				1);
+			// now add everything
+			JPanel pq = new JPanel();
+			pq.setLayout(new BorderLayout());
+			JScrollPane jp4 = new JScrollPane(currentBins);
+			jp4.setColumnHeaderView(new JLabel("Current Bins"));
+			pq.add(jp4, BorderLayout.CENTER);
+			JOutlinePanel jop5 = new JOutlinePanel("Current Selection");
+			currentSelectionItems = new JList();
+			currentSelectionItems.setVisibleRowCount(4);
+			currentSelectionItems.setEnabled(false);
+			currentSelectionModel = new DefaultListModel();
+			currentSelectionItems.setModel(currentSelectionModel);
+			JPanel pt = new JPanel();
+			curSelName = new JTextField(10);
+			pt.add(new JLabel("Name"));
+			pt.add(curSelName);
+			JButton updateCurrent = new JButton("Update");
+			updateCurrent.addActionListener(new AbstractAction() {
 
-         /**
-          * put your documentation comment here
-          * @param e
-          */
-         public void valueChanged(ListSelectionEvent e) {
-            if (!setup_complete)
-               return;
-            if (!e.getValueIsAdjusting()) {
-               Object lbl = textualColumnLabels.getSelectedValue();
-               if (lbl != null) {
-                  //int idx = ((Integer)columnLookup.get(lbl)).intValue();
-                  int idx = adt.getIndexForLabel((String) lbl);
-                  //System.out.println("index " + idx + " label " + (String)lbl);
-                  TreeSet unique = uniqueColumnValues[idx];
-                  textUniqueModel.removeAllElements();
-                  textCurrentModel.removeAllElements();
-                  Iterator i = unique.iterator();
-                  while (i.hasNext())
-                     textUniqueModel.addElement(i.next());
-               }
-            }
-         }
-      } // ADTBinColumnsView$TextualListener
+				/**
+				 * put your documentation comment here
+				 * @param e
+				 */
+				public void actionPerformed(ActionEvent e) {
+					if (!setup_complete)
+						return;
+					if (currentSelectedBin != null) {
+						currentSelectedBin.name = curSelName.getText();
+						currentBins.repaint();
+					}
+				}
+			});
+			JButton removeBin = new JButton("Remove Bin");
+			removeBin.addActionListener(new AbstractAction() {
 
-      private class HelpWindow extends JD2KFrame {
+				/**
+				 * put your documentation comment here
+				 * @param e
+				 */
+				public void actionPerformed(ActionEvent e) {
+					if (!setup_complete)
+						return;
+					if (currentSelectedBin != null) {
+						int col = currentSelectedBin.column_number;
+						if (currentSelectedBin instanceof TextualBinDescriptor)
+							uniqueColumnValues[col].addAll(
+								(
+									(
+										TextualBinDescriptor) currentSelectedBin)
+											.vals);
+						binListModel.removeElement(currentSelectedBin);
+						currentSelectionModel.removeAllElements();
+						curSelName.setText(EMPTY);
+						// update the group
+						Object lbl = textualColumnLabels.getSelectedValue();
+						// gpape:
+						if (lbl != null) {
+							//int idx = ((Integer)columnLookup.get(lbl)).intValue();
+							int idx = adt.getIndexForLabel((String) lbl);
+							TreeSet unique = uniqueColumnValues[idx];
+							textUniqueModel.removeAllElements();
+							textCurrentModel.removeAllElements();
+							Iterator i = unique.iterator();
+							while (i.hasNext())
+								textUniqueModel.addElement(i.next());
+						}
+					}
+				}
+			});
+			// gpape:
+			JButton removeAllBins = new JButton("Remove All");
+			removeAllBins.addActionListener(new AbstractAction() {
 
-         /**
-          * put your documentation comment here
-          */
-         public HelpWindow() {
-            super("About ADT Bin Columns");
-            JEditorPane ep = new JEditorPane("text/html", getHelpString());
-            ep.setCaretPosition(0);
-            getContentPane().add(new JScrollPane(ep));
-            setSize(400, 400);
-         }
-      }
+				/**
+				 * put your documentation comment here
+				 * @param e
+				 */
+				public void actionPerformed(ActionEvent e) {
+					if (!setup_complete)
+						return;
+					binListModel.removeAllElements();
+					currentSelectionModel.removeAllElements();
+					curSelName.setText(EMPTY);
+				}
+			});
+			// gpape:
+			createInNewColumn = new JCheckBox("Create in new column", false);
+			Box pg = new Box(BoxLayout.X_AXIS);
+			pg.add(updateCurrent);
+			//pg.add(removeItems);
+			pg.add(removeBin);
+			pg.add(removeAllBins);
+			// gpape:
+			Box pg2 = new Box(BoxLayout.X_AXIS);
+			pg2.add(createInNewColumn);
+			jop5.setLayout(new BoxLayout(jop5, BoxLayout.Y_AXIS));
+			jop5.add(pt);
+			JScrollPane pane = new JScrollPane(currentSelectionItems);
+			pane.setColumnHeaderView(new JLabel("Items"));
+			jop5.add(pane);
+			jop5.add(pg);
+			jop5.add(pg2);
+			JPanel bgpnl = new JPanel();
+			bgpnl.setLayout(new BorderLayout());
+			bgpnl.add(jp4, BorderLayout.CENTER);
+			bgpnl.add(jop5, BorderLayout.SOUTH);
+			// finally add everything to this
+			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			Box bxl = new Box(BoxLayout.X_AXIS);
+			//bxl.add(jtp); commented out by vered. no need for a tab...
+			bxl.add(txtpnl);
+			bxl.add(bgpnl);
+			JPanel buttonPanel = new JPanel();
+			abort = new JButton("Abort");
+			abort.addActionListener(new AbstractAction() {
 
-      /**
-       * put your documentation comment here
-       * @return
-       */
-      private String getHelpString() {
-         StringBuffer sb = new StringBuffer();
-         sb.append("<html><body><h2>Bin Columns</h2>");
-         sb.append(
-            "This module allows a user to interactively bin nominal data from a table. ");
+				/**
+				 * put your documentation comment here
+				 * @param e
+				 */
+				public void actionPerformed(ActionEvent e) {
+					viewCancel();
+				}
+			});
+			done = new JButton("Done");
+			done.addActionListener(new AbstractAction() {
 
-         sb.append(
-            "Click on a nominal column to show a list ");
-         sb.append(
-            "of unique nominal values in that column in the \"Unique Values\" area below. ");
-         sb.append(
-            "Select one or more of these values and click the right arrow button to group ");
-         sb.append(
-            "these values. They can then be assigned a collective name, by entering a string in " +
-            "the name text field on the left.");
-         sb.append(
-            "<br><br>To assign a name to a particular bin, select that bin in ");
-         sb.append(
-            "the \"Current Bins\" selection area (top right), enter a name in ");
-         sb.append(
-            "the \"Name\" field below, and click \"Update\". To bin the data and ");
-         sb.append("output the new table, click \"Done\".");
-         sb.append("</body></html>");
-         return sb.toString();
-      }
-   } // ADTBinColumnsView
+				/**
+				 * put your documentation comment here
+				 * @param e
+				 */
+				public void actionPerformed(ActionEvent e) {
+					//binIt(createInNewColumn.isSelected());
+					Object[] tmp = binListModel.toArray();
+					BinDescriptor[] bins = new BinDescriptor[tmp.length];
 
-   //headless conversion support
-  private BinDescriptor[] binDes;
-  public void setBinDes(Object[] bins){binDes = (BinDescriptor[])bins;}
-  public Object[] getBinDes(){return binDes;}
-  private boolean newColumn;
-  public void setNewColumn(boolean val){newColumn = val;}
-  public boolean getNewColumn(){return newColumn;}
+					for (int i = 0; i < bins.length; i++)
+						bins[i] = (BinDescriptor) tmp[i];
 
-  public PropertyDescription[] getPropertiesDescriptions(){
-    PropertyDescription[] pds = new PropertyDescription[2];
-    pds[0] = super.supressDescription;
-    pds[1] = new PropertyDescription("newColumn", "Create In New Column",
-            "Set this property to true if you wish the binned columns to be created in new columns. " +
-            "It will be used only when 'Supress User Interface Display' is set to true.");
-    return pds;
-  }
+					//ANCA add "unknown" bins for missing values
+					//try {
+				//		ExampleTable etbl = (ExampleTable) tbl;
+				//		bins = BinningUtils.addMissingValueBins(etbl, bins);
+				//	} catch (ClassCastException ce) {
+						bins = BinningUtils.addMissingValueBins(tbl, bins);
+				//	}
 
-  public void doit() throws Exception{
-    //the tree is not necessary for validating relevancy of bins to the table.
-    /*ADTree tree = (ADTree) */pullInput(0);
+					//headless conversion support
+					setBinDes(bins);
+					BinTransform bt =
+						new BinTransform(bins, createInNewColumn.isSelected());
 
-    Table table = (Table) pullInput(1);
+					pushOutput(bt, 0);
+					//pushOutput(tbl, 1);
+					viewDone("Done");
+				}
+			});
+			JButton showTable = new JButton("Show Table");
+			showTable.addActionListener(new AbstractAction() {
 
-    BinningUtils.validateBins(table, binDes, getAlias());
+				/**
+				 * put your documentation comment here
+				 * @param e
+				 */
+				public void actionPerformed(ActionEvent e) {
+					JD2KFrame frame = new JD2KFrame("Table");
+					frame.getContentPane().add(new TableMatrix(tbl));
+					frame.addWindowListener(new DisposeOnCloseListener(frame));
+					frame.pack();
+					frame.setVisible(true);
+				}
+			});
+			JButton helpButton = new JButton("Help");
+			helpButton.addActionListener(new AbstractAction() {
 
-     pushOutput(new BinTransform(binDes, newColumn), 0);
+				/**
+				 * put your documentation comment here
+				 * @param e
+				 */
+				public void actionPerformed(ActionEvent e) {
+					HelpWindow help = new HelpWindow();
+					help.setVisible(true);
+				}
+			});
+			buttonPanel.add(abort);
+			buttonPanel.add(done);
+			buttonPanel.add(showTable);
+			buttonPanel.add(helpButton);
+			setLayout(new BorderLayout());
+			add(bxl, BorderLayout.CENTER);
+			add(buttonPanel, BorderLayout.SOUTH);
+		}
 
+		private TreeSet uniqueValues(int col) {
+			// return the number of unique items in this column
+			TreeSet set = adt.getUniqueValuesTreeSet(col);
+			return set;
+		}
 
+		private boolean validateBins(DefaultListModel newBins) {
+			   boolean match = false;
+			   for (int binIdx = 0; binIdx < newBins.size(); binIdx++) {
+				  if (!(columnLookup.containsKey(((BinDescriptor)newBins.get(binIdx)).label))) {
+					 // ErrorDialog.showDialog("Current bins contain non-selected attributes. Please remove them.", "Error");
+					 // System.out.println("no good: " + ((BinDescriptor)newBins.get(binIdx)).label);
+					 return false;
+				  }
+			   }
+			   return true;
+			}
 
-  //following was replaced by validateBins in BinningUtils.
+		/**
+		 * put your documentation comment here
+		 * @param idx
+		 * @param name
+		 * @param sel
+		 * @return
+		 */
+		private BinDescriptor createTextualBin(
+			int idx,
+			String name,
+			Object[] sel) {
+			String[] vals = new String[sel.length];
+			for (int i = 0; i < vals.length; i++)
+				vals[i] = sel[i].toString();
+			return new TextualBinDescriptor(idx, name, vals, adt.getLabel(idx));
+		}
 
-/*
-    if(binDes == null)
-      throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+		/**
+		 * Create a numeric bin that goes from min to max.
+		 */
+		private BinDescriptor createNumericBinDescriptor(
+			int col,
+			double min,
+			double max) {
+			StringBuffer nameBuffer = new StringBuffer();
+			nameBuffer.append(OPEN_PAREN);
+			nameBuffer.append(nf.format(min));
+			nameBuffer.append(COLON);
+			nameBuffer.append(nf.format(max));
+			nameBuffer.append(CLOSE_BRACKET);
+			BinDescriptor nb =
+				new NumericBinDescriptor(
+					col,
+					nameBuffer.toString(),
+					min,
+					max,
+					tbl.getColumnLabel(col));
+			return nb;
+		}
 
-      if(binDes.length == 0){
-       //binDes = new BinDescriptor[0];
-      System.out.println(getAlias() + ": No bins were configured. The transformation will be an empty one.");
-       pushOutput(new BinTransform(binDes, newColumn), 0);
-       return;
-    }
+		/**
+		 * Create a numeric bin that goes from Double.MIN_VALUE to max
+		 */
+		private BinDescriptor createMinNumericBinDescriptor(
+			int col,
+			double max) {
+			StringBuffer nameBuffer = new StringBuffer();
+			nameBuffer.append(OPEN_BRACKET);
+			nameBuffer.append(DOTS);
+			nameBuffer.append(COLON);
+			nameBuffer.append(nf.format(max));
+			nameBuffer.append(CLOSE_BRACKET);
+			BinDescriptor nb =
+				new NumericBinDescriptor(
+					col,
+					nameBuffer.toString(),
+					Double.MIN_VALUE,
+					max,
+					tbl.getColumnLabel(col));
+			return nb;
+		}
 
-//validating relevancy of bins to the input table.
-    HashMap columns = StaticMethods.getAvailableAttributes(table);
-  //  Vector relevant = new Vector();
-    for (int i=0; i<binDes.length; i++){
-      if(!columns.containsKey(binDes[i].label.toUpperCase()))
-        throw new Exception(getAlias() + ": Bin " +  binDes[i].toString() + " does not match any column label in the input table. Please reconfigure this module.");
-//      else relevant.add(binDes[i]);
-    }//for
-*/
+		/**
+		 * Create a numeric bin that goes from min to Double.MAX_VALUE
+		 */
+		private BinDescriptor createMaxNumericBinDescriptor(
+			int col,
+			double min) {
+			StringBuffer nameBuffer = new StringBuffer();
+			nameBuffer.append(OPEN_PAREN);
+			nameBuffer.append(nf.format(min));
+			nameBuffer.append(COLON);
+			nameBuffer.append(DOTS);
+			nameBuffer.append(CLOSE_BRACKET);
+			BinDescriptor nb =
+				new NumericBinDescriptor(
+					col,
+					nameBuffer.toString(),
+					min,
+					Double.MAX_VALUE,
+					tbl.getColumnLabel(col));
+			return nb;
+		}
 
-    /*binDes =  new BinDescriptor[relevant.size()];
-    for(int i=0; i<binDes.length; i++)
-      binDes[i] = (BinDescriptor) relevant.get(i);
+		/**
+		 * put your documentation comment here
+		 * @param bd
+		 */
+		private void addItemToBinList(BinDescriptor bd) {
+			binListModel.addElement(bd);
+		}
 
-    if(binDes == null || binDes.length == 0){
-      System.out.println(getAlias() + ": None of the bins matched the input table, the transformation will be an empty one.");
-      binDes = new BinDescriptor[0];
-    }*/
+		private class CurrentListener implements ListSelectionListener {
 
-   // pushOutput(new BinTransform(binDes, newColumn), 0);
+			/**
+			 * put your documentation comment here
+			 * @param e
+			 */
+			public void valueChanged(ListSelectionEvent e) {
+				if (!setup_complete)
+					return;
+				if (!e.getValueIsAdjusting()) {
+					currentSelectedBin =
+						(BinDescriptor) currentBins.getSelectedValue();
+					if (currentSelectedBin == null) {
+						currentSelectionModel.removeAllElements();
+						curSelName.setText(EMPTY);
+						return;
+					}
+					curSelName.setText(currentSelectedBin.name);
+					if (currentSelectedBin instanceof NumericBinDescriptor) {
+						currentSelectionModel.removeAllElements();
+						currentSelectionModel.addElement(
+							currentSelectedBin.name);
+					} else {
+						currentSelectionModel.removeAllElements();
+						HashSet hs =
+							(HashSet)
+								(
+									(
+										TextualBinDescriptor) currentSelectedBin)
+											.vals;
+						Iterator i = hs.iterator();
+						while (i.hasNext())
+							currentSelectionModel.addElement(i.next());
+					}
+				}
+			}
+		} // ADTBinColumnsView$CurrentListener
 
-  }//doit
-  //headless conversion support
+		private class TextualListener implements ListSelectionListener {
 
-}//ADTBinColumns
+			/**
+			 * put your documentation comment here
+			 * @param e
+			 */
+			public void valueChanged(ListSelectionEvent e) {
+				if (!setup_complete)
+					return;
+				if (!e.getValueIsAdjusting()) {
+					Object lbl = textualColumnLabels.getSelectedValue();
+					if (lbl != null) {
+						//int idx = ((Integer)columnLookup.get(lbl)).intValue();
+						int idx = adt.getIndexForLabel((String) lbl);
+						//System.out.println("index " + idx + " label " + (String)lbl);
+						TreeSet unique = uniqueColumnValues[idx];
+						textUniqueModel.removeAllElements();
+						textCurrentModel.removeAllElements();
+						Iterator i = unique.iterator();
+						while (i.hasNext())
+							textUniqueModel.addElement(i.next());
+					}
+				}
+			}
+		} // ADTBinColumnsView$TextualListener
+
+		private class HelpWindow extends JD2KFrame {
+
+			/**
+			 * put your documentation comment here
+			 */
+			public HelpWindow() {
+				super("About ADT Bin Columns");
+				JEditorPane ep = new JEditorPane("text/html", getHelpString());
+				ep.setCaretPosition(0);
+				getContentPane().add(new JScrollPane(ep));
+				setSize(400, 400);
+			}
+		}
+
+		/**
+		 * put your documentation comment here
+		 * @return
+		 */
+		private String getHelpString() {
+			StringBuffer sb = new StringBuffer();
+			sb.append("<html><body><h2>Bin Columns</h2>");
+			sb.append(
+				"This module allows a user to interactively bin nominal data from a table. ");
+
+			sb.append("Click on a nominal column to show a list ");
+			sb.append(
+				"of unique nominal values in that column in the \"Unique Values\" area below. ");
+			sb.append(
+				"Select one or more of these values and click the right arrow button to group ");
+			sb.append(
+				"these values. They can then be assigned a collective name, by entering a string in "
+					+ "the name text field on the left.");
+			sb.append(
+				"<br><br>To assign a name to a particular bin, select that bin in ");
+			sb.append(
+				"the \"Current Bins\" selection area (top right), enter a name in ");
+			sb.append(
+				"the \"Name\" field below, and click \"Update\". To bin the data and ");
+			sb.append("output the new table, click \"Done\".");
+			sb.append("</body></html>");
+			return sb.toString();
+		}
+	} // ADTBinColumnsView
+
+	//headless conversion support
+	private BinDescriptor[] binDes;
+	public void setBinDes(Object[] bins) {
+		binDes = (BinDescriptor[]) bins;
+	}
+	public Object[] getBinDes() {
+		return binDes;
+	}
+	private boolean newColumn;
+	public void setNewColumn(boolean val) {
+		newColumn = val;
+	}
+	public boolean getNewColumn() {
+		return newColumn;
+	}
+
+	public PropertyDescription[] getPropertiesDescriptions() {
+		PropertyDescription[] pds = new PropertyDescription[2];
+		pds[0] = super.supressDescription;
+		pds[1] =
+			new PropertyDescription(
+				"newColumn",
+				"Create In New Column",
+				"Set this property to true if you wish the binned columns to be created in new columns. "
+					+ "It will be used only when 'Supress User Interface Display' is set to true.");
+		return pds;
+	}
+
+	public void doit() throws Exception {
+		//the tree is not necessary for validating relevancy of bins to the table.
+		/*ADTree tree = (ADTree) */
+		pullInput(0);
+
+		Table table = (Table) pullInput(1);
+
+		BinningUtils.validateBins(table, binDes, getAlias());
+
+		pushOutput(new BinTransform(binDes, newColumn), 0);
+
+	} //doit
+	//headless conversion support
+
+} //ADTBinColumns
 
 class ADTBinCounts implements BinCounts {
 
-   private Table table;
-   double[][] minMaxes;
+	private Table table;
+	double[][] minMaxes;
 
-   private static final int MIN = 0;
-   private static final int MAX = 1;
+	private static final int MIN = 0;
+	private static final int MAX = 1;
 
-   public ADTBinCounts() {
+	public ADTBinCounts() {
 
-   }
+	}
 
-   public int getNumRows() {
-      return -1;
-   }
+	public int getNumRows() {
+		return -1;
+	}
 
-   public double getMin(int col) {
-      return -1;
-   }
+	public double getMin(int col) {
+		return -1;
+	}
 
-   public double getMax(int col) {
-      return -1;
-   }
+	public double getMax(int col) {
+		return -1;
+	}
 
-   public double getTotal(int col) {
-      return -1;
-   }
+	public double getTotal(int col) {
+		return -1;
+	}
 
-   public int[] getCounts(int col, double[] borders) {
-      return null;
-   }
-
-
+	public int[] getCounts(int col, double[] borders) {
+		return null;
+	}
 
 }
 
 /**
  * QA comments:
  * 2-27-03 vered started qa. added module description, exception handling.
- * 2-27-03 commit back to core and back to greg - to reveiw bin nominal columns tab.
+ * 2-27-03 commit back to core and back to greg - to review bin nominal columns tab.
  *
  *
  * 11-19-03: Vered started qa process
@@ -1845,3 +971,11 @@ class ADTBinCounts implements BinCounts {
  * 11-21-03 The modules treats Table and ExampleTable the same. it ignores the
  *          selection of input/output features. [bug 136]
  */
+
+/* 12-02-03 Anca - fixed [bug 136] - moved fix from BinAttributes into this file
+/* 12-04-03 Anca added "unknown" bins for missing values - fixed [bug 134]
+ *    			the fix did involve the support class ADTree whose uniqueValues 
+ * 			method does not return missing values ('?' or the one returned by getMissinsString())
+ * 			in the list of unique values	         
+ */
+ 

@@ -155,6 +155,8 @@ public class ADTCreateBinTree extends DataPrepModule {
 
 		int index = adt.getIndexForLabel(classLabel);
 		String cn[] = adt.getUniqueValues(index);
+		//for (int i =0; i < cn.length; i ++)
+		//System.out.println("cn[i] " + cn[i]);
 
 		// get the attributes names from the input features
 		int[] inputFeatures = vt.getInputFeatures();
@@ -175,12 +177,12 @@ public class ADTCreateBinTree extends DataPrepModule {
 			for (int j = 0; j < an.length; j++) {
 				String[] bn = bt.getBinNames(cn[i], an[j]);
 				binListTotal = 0;
-
+				BinTree.ClassTree.BinList bl = null;
 				for (int k = 0; k < bn.length; k++) {
 
 					BinTree.ClassTree ct = (BinTree.ClassTree) bt.get(cn[i]);
-					BinTree.ClassTree.BinList bl =
-						(BinTree.ClassTree.BinList) ct.get(an[j]);
+					 
+					bl =(BinTree.ClassTree.BinList) ct.get(an[j]);
 					BinTree.ClassTree.Bin b =
 						(BinTree.ClassTree.Bin) bl.get(bn[k]);
 					String condition = b.getCondition(an[j]);
@@ -193,7 +195,7 @@ public class ADTCreateBinTree extends DataPrepModule {
 						hm.put(classLabel, cn[i]);
 					}
 
-					if (debug) System.out.println("pairs " + pairs);
+					//if (debug) System.out.println("pairs " + pairs);
 
 					int s = adt.getDirectCount(adt, pairs);
 					// int s = adt.getCount(adt,pairs);
@@ -203,16 +205,20 @@ public class ADTCreateBinTree extends DataPrepModule {
 								+ " ,att:"+ condition	+ ")="+ s);
 
 					b.setTally(s);
+					
 					totalClassified = totalClassified + s;
 					classTotal = classTotal + s;
 					binListTotal = binListTotal + s;
-					bl.setTotal(binListTotal);
-
 				}
+				if(bl != null) {	bl.setTotal(binListTotal); } 
+			//	System.out.println("totalClassified " + totalClassified + " classTotal " + classTotal + " binListTotal " + binListTotal);   
+				
 			}
+		//	System.out.println("totalClassified " + totalClassified + " classTotal " + classTotal);
 			bt.setClassTotal(cn[i], classTotal);
 		}
-
+		
+		//System.out.println("totalClassified " + totalClassified);
 		bt.setTotalClassified(totalClassified);
 
 		long endTime = System.currentTimeMillis();

@@ -17,6 +17,7 @@ public class NumericBinDescriptor extends BinDescriptor {
      */
     public NumericBinDescriptor (int col, String n, double mn, double mx, String label) {
         super(col, label);
+		//System.out.println("NumericBinDescriptor min " + mn + " max " + mx);
         column_number = col;
         name = n;
         min = mn;

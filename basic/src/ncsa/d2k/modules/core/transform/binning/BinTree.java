@@ -19,6 +19,7 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 	public static final String GREATER_THAN = ">";
 	public static final String LESS_THAN_EQUAL_TO = "<=";
 	public static final String GREATER_THAN_EQUAL_TO = ">=";
+public static final String MISSING= "missing";
 
 	/** A lookup table for DefaultTrees */
 	private HashMap defaultTree;
@@ -90,6 +91,14 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 			if(ct != null)
 				ct.addBinFromEquation(an, bn, eqn, num);
 		}
+	}
+	
+	public void addMissingValuesBin(String cn, String an)
+		throws DuplicateBinNameException, AttributeNotFoundException {
+
+			ClassTree ct = (ClassTree)get(cn);
+					ct.addStringBin(an, MISSING, " ");
+						
 	}
 
 	/**
@@ -185,10 +194,12 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 			unknownClasses++;
 			return;
 		}
+		
 		try {
 			if(!ct.classify(an, value))
 				addDefault(cn, an);
 			else {
+				System.out.println("classified : cn an value " + cn + " " + an + " " + value );
 				totalClassified++;
 				Integer t = (Integer)classTotals.get(cn);
 				classTotals.put(cn, new Integer(t.intValue() + 1));
@@ -196,6 +207,23 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 		}
 		catch(AttributeNotFoundException e) {}
 	}
+	
+	/*public void classifyMissing(String cn, String an) {
+			ClassTree ct = (ClassTree)get(cn);
+			if(ct == null) {
+				unknownClasses++;
+				return;
+			}
+	   try  {
+				if(!  ct.classifyMissing(an))
+				addDefault(cn,an);
+				else {
+					totalClassified++;
+					Integer t = (Integer)classTotals.get(cn);
+					classTotals.put(cn, new Integer(t.intValue() + 1));
+				}
+	   }  catch(AttributeNotFoundException e ) {}
+} */
 
 	/**
 		Classify a String value by looking up the class and attribute and
@@ -632,12 +660,38 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 			while(!binFound && i.hasNext()) {
 				Bin b = (Bin)i.next();
 				if(b.eval(val)) {
+					System.out.println("classifiyng : an value "  + an + " " + val );
 					binFound = true;
 					bl.incrementTotal();
 				}
 			}
 			return binFound;
 		}
+		
+		
+		/**
+					Find a suitable bin for a double item
+				*/
+			/*	boolean classifyMissing(String an)
+					throws AttributeNotFoundException {
+					BinList bl = (BinList)get(an);
+					if(bl == null) {
+						// this is an unknown attribute.
+						// we cannot classify it further
+						unknownAttributes++;
+						throw new AttributeNotFoundException();
+					}
+					Bin b =(Bin) bl.get(MISSING);
+					if (b==null) {
+						try {
+							this.addStringBin(an,MISSING,"");
+						} catch (DuplicateBinNameException e) {} 
+						b = (Bin) bl.get(MISSING);
+					}
+					b.incrementTally();
+					bl.incrementTotal();
+					return true;
+					} */
 
 		String getBinNameForValue(String an, double val) {
 			BinList bl = (BinList)get(an);
@@ -1137,6 +1191,10 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
                         tally = n;
                     }
 
+			public void incrementTally() {
+								   tally = tally + 1;
+							   }
+
 
 		}
 
@@ -1512,7 +1570,7 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 
 			BoundedNumericEvaluate(double low, boolean includeLow,
 				double high, boolean includeHi) {
-
+				//	System.out.println("created BoundedNumEval low " + low + " high " + high);
 				lower = low;
 				includeLower = includeLow;
 				upper = high;
@@ -1524,6 +1582,7 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 			}
 
 			boolean eval(double d) {
+				System.out.println("evaluate d " +d + " upper " + upper + " lower " + lower);
 				if(includeLower) {
 					if(includeUpper) {
 						return (d >= lower) && (d <= upper);

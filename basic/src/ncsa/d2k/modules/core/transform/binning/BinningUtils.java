@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.transform.binning;
 import ncsa.d2k.modules.core.datatype.table.Table;
-import ncsa.d2k.modules.core.datatype.table.transformations.BinTransform;
+import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import java.util.*;
 import ncsa.d2k.modules.core.transform.StaticMethods;
 
@@ -63,6 +63,74 @@ public class BinningUtils {
 
    return true;
  }
+ 
+ public static BinDescriptor[] addMissingValueBins(Table tbl, BinDescriptor[] bins ) {
+ 
+	HashMap colIndexLookup = new HashMap(tbl.getNumColumns());
+			for (int i = 0; i < tbl.getNumColumns(); i++) {
+				colIndexLookup.put(tbl.getColumnLabel(i), new Integer(i));
+			}
 
+			// need to figure out which columns have been binned:
+			boolean[] binRelevant = new boolean[tbl.getNumColumns()];
+			for (int i = 0; i < binRelevant.length; i++)
+				binRelevant[i] = false;
+			for (int i = 0; i < bins.length; i++) {
+				Integer idx = (Integer) colIndexLookup.get(bins[i].label);
+				if (idx != null) {
+					binRelevant[idx.intValue()] = true;
+					// System.out.println("relevant column " + idx.intValue());
+				}
+				//else
+				//   System.out.println("COLUMN LABEL NOT FOUND!!!");
+				//binRelevant[bins[i].column_number] = true;
+			}
+ 
+ 
+ 	ArrayList unknowBins = new ArrayList();
+ 	int numColumns = tbl.getNumColumns();
+ 	for (int i=0; i < numColumns; i++) {
+ 		if (binRelevant[i])
+		 	  if(tbl.getColumn(i).hasMissingValues())
+ 	  			unknowBins.add( BinDescriptorFactory.createMissingValuesBin(i,tbl));
+ 	 	}
+ 	
+ 	BinDescriptor[] newbins = new BinDescriptor[bins.length + unknowBins.size()];
+ 	int i;
+ 	for (i =0; i < bins.length; i++)
+ 		newbins[i]=bins[i];
+ 	Iterator it = unknowBins.iterator();
+ 	while (it.hasNext())
+ 		newbins[i++] = (BinDescriptor)it.next();
+ 
+ 	return newbins;	
+ }
+ 
+/* 
+ public static BinDescriptor[] addMissingValueBins(ExampleTable tbl, BinDescriptor[] bins ) {
+ 	
+	 ArrayList unknowBins = new ArrayList();
+	 int [] inputs = tbl.getInputFeatures();
+	 int []outputs = tbl.getOutputFeatures();
+	 for (int i=0; i < inputs.length; i++)
+	   if(tbl.getColumn(inputs[i]).hasMissingValues())
+		 unknowBins.add( BinDescriptorFactory.createMissingValuesBin(inputs[i],tbl));
+ 	
+	for (int i=0; i < outputs.length; i++)
+		   if(tbl.getColumn(outputs[i]).hasMissingValues())
+			 unknowBins.add( BinDescriptorFactory.createMissingValuesBin(outputs[i],tbl));
+ 	
+	 BinDescriptor[] newbins = new BinDescriptor[bins.length + unknowBins.size()];
+	 int i;
+	 for (i =0; i < bins.length; i++)
+		 newbins[i]=bins[i];
+	 Iterator it = unknowBins.iterator();
+	 while (it.hasNext())
+		 newbins[i++] = (BinDescriptor)it.next();
+ 
+	 return newbins;	
+  }
+ 
+*/
 
 }

@@ -162,29 +162,60 @@ public class ADTAutoBin extends DataPrepModule {
 			else {
 				TreeSet vals = adt.getUniqueValuesTreeSet(inputs[i]+1);
 				Iterator iter = vals.iterator();
-				while (iter.hasNext()) {
-					String item = (String) iter.next();
-					String[] st = new String[1];
-					st[0] = item;
-					BinDescriptor bd =
-						new TextualBinDescriptor(
-							i,
-							item,
-							st,
-							tbl.getColumnLabel(i));
+				int numRows = tbl.getNumRows();
+				
+				if (tbl.getColumn(inputs[i]).hasMissingValues()) {
+					String[] miss = new String[1];
+					     miss[0]= tbl.getMissingString();
+					
+					
+					BinDescriptor bd = new TextualBinDescriptor (inputs[i],"Unknown",miss,tbl.getColumnLabel(inputs[i])); 
 					bins.add(bd);
+					//System.out.println("has missing values for column " + inputs[i]);
+					while (iter.hasNext()) {
+										String st[] = new String[1];
+										String item = (String) iter.next();
+										st[0] = item;	
+
+								if(!item.equals(miss[0])) {
+			
+										BinDescriptor bdm =
+											new TextualBinDescriptor(
+												inputs[i],
+												item,
+												st,
+												tbl.getColumnLabel(inputs[i]));
+										bins.add(bdm);}
+					}
+					
 				}
+				
+			
+			else { // there are no missing values in this column
+			//System.out.println("no missing values for column " + inputs[i]);
+						while (iter.hasNext()) {
+								String item = (String) iter.next();
+								String[] st = new String[1];
+								st[0] = item;
+								BinDescriptor bd =
+									new TextualBinDescriptor(
+										inputs[i],
+										item,
+										st,
+										tbl.getColumnLabel(inputs[i]));
+								bins.add(bd);
+							}
+			}
 			}
 		}
-
 		BinDescriptor[] bn = new BinDescriptor[bins.size()];
 		for (int i = 0; i < bins.size(); i++) {
 			bn[i] = (BinDescriptor) bins.get(i);
 
 		}
 		return bn;
+	
 	}
-
 }
 
       /**
@@ -194,3 +225,9 @@ public class ADTAutoBin extends DataPrepModule {
       *          as meaningless, and not expected to produce a special unique
       *          value bin - then they should be binned into UNKNOWN. [bug 127]
  */
+      
+      /*
+      * 12-3 -03 Anca
+      * missing values are binned into Unknown bin - fixed [bug 127]
+      * also added support for missing values in ParseFileToADTree.
+      */

@@ -258,7 +258,8 @@ public class BinAttributes extends HeadlessUIModule {
 	private BinColumnsView () {
 	  setup_complete = false;
 	  nf = NumberFormat.getInstance();
-	  nf.setMaximumFractionDigits(3);
+	  nf.setMaximumFractionDigits(5);
+	  nf.setMinimumFractionDigits(5);
 	}
 
 	/**
@@ -268,14 +269,16 @@ public class BinAttributes extends HeadlessUIModule {
 	 */
 	public void setInput (Object o, int id) {
 	  tbl = (MutableTable)o;
+	  //tbl = (Table)o;
 
 	  // set column labels on the table if necessary...
-	  for (int i = 0; i < tbl.getNumColumns(); i++) {
+	 for (int i = 0; i < tbl.getNumColumns(); i++) {
 		if (tbl.getColumnLabel(i) == null || tbl.getColumnLabel(i).length() == 0) {
 		  tbl.setColumnLabel("column_" + i, i);
 		}
-	  }
+	  } 
 
+   				  
 	  // clear all text fields and lists...
 	  curSelName.setText(EMPTY);
 	  textBinName.setText(EMPTY);
@@ -966,8 +969,17 @@ public class BinAttributes extends HeadlessUIModule {
 			 savedBins = new BinDescriptor[bins.length];
 			 for (int i = 0; i < bins.length; i++)
 				savedBins[i] = bins[i];
+		
+		//ANCA
+			//try {
+			//	   ExampleTable etbl = (ExampleTable) tbl;
+			//	   savedBins = BinningUtils.addMissingValueBins(etbl,savedBins);
+			//	} catch ( ClassCastException ce) {
+					 savedBins = BinningUtils.addMissingValueBins(tbl,savedBins);
+			//	}
 
-			 BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
+			 BinTransform bt = new BinTransform(savedBins, createInNewColumn.isSelected());
+			 
 			 pushOutput(bt, 0);
 			 viewDone("Done");
 		  // }
@@ -1121,18 +1133,19 @@ public class BinAttributes extends HeadlessUIModule {
 		double interval = (maxes[i] - mins[i])/(double)num;
 		// add the first bin manually
 		binMaxes[0] = mins[i] + interval;
-		BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
-			binMaxes[0]);
+		//ANCA BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],binMaxes[0]);
+		BinDescriptor nbd = BinDescriptorFactory.createMinNumericBinDescriptor(colIdx[i],binMaxes[0],nf,tbl);
 		addItemToBinList(nbd);
 		for (int j = 1; j < binMaxes.length; j++) {
 		  binMaxes[j] = binMaxes[j - 1] + interval;
+		//  System.out.println("bin Maxes " + binMaxes[j-1]);
 		  // now create the BinDescriptor and add it to the bin list
-		  nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -
-			  1], binMaxes[j]);
+		  //ANCA nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j]);
+		  nbd = BinDescriptorFactory.createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j],nf,tbl);
 		  addItemToBinList(nbd);
 		}
-		nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length
-			- 1]);
+		//ANCA nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length- 1]);
+		nbd = BinDescriptorFactory.createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length- 1],nf,tbl);
 		addItemToBinList(nbd);
 	  }
 	}
@@ -1173,17 +1186,18 @@ public class BinAttributes extends HeadlessUIModule {
 	  }
 	  // now create and add the bins
 	  for (int i = 0; i < colIdx.length; i++) {
-		BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
-		binMaxes[0]);
+		//ANCA BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],binMaxes[0]);
+		BinDescriptor nbd = BinDescriptorFactory.createMinNumericBinDescriptor(colIdx[i],binMaxes[0],nf,tbl);
 		addItemToBinList(nbd);
 		for (int j = 1; j < binMaxes.length; j++) {
 		  // now create the BinDescriptor and add it to the bin list
-		  nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -
-		  1], binMaxes[j]);
+		  
+		  //ANCA nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -1], binMaxes[j]);
+		  nbd = BinDescriptorFactory.createNumericBinDescriptor(colIdx[i], binMaxes[j -1], binMaxes[j],nf,tbl);
 		  addItemToBinList(nbd);
 		}
-		nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length
-			- 1]);
+		//ANCA nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length- 1]);
+		nbd = BinDescriptorFactory.createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length- 1],nf,tbl);
 		addItemToBinList(nbd);
 	  }
 	}
@@ -1237,18 +1251,18 @@ public class BinAttributes extends HeadlessUIModule {
 		double[] binMaxes = new double[num];
 		binMaxes[0] = mins[i];
 		// add the first bin manually
-		BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
-			binMaxes[0]);
+		//ANCA BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],binMaxes[0]);
+		BinDescriptor nbd = BinDescriptorFactory.createMinNumericBinDescriptor(colIdx[i],binMaxes[0],nf,tbl);
 		addItemToBinList(nbd);
 		for (int j = 1; j < binMaxes.length; j++) {
 		  binMaxes[j] = binMaxes[j - 1] + intrval;
 		  // now create the BinDescriptor and add it to the bin list
-		  nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -
-			  1], binMaxes[j]);
+		  //ANCA nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j]);
+		  nbd = BinDescriptorFactory.createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j],nf,tbl);
 		  addItemToBinList(nbd);
 		}
-		nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length
-			- 1]);
+		//ANCA nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length- 1]);
+		nbd = BinDescriptorFactory.createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length- 1],nf,tbl);
 		addItemToBinList(nbd);
 	  }
 	}
@@ -1320,17 +1334,17 @@ public class BinAttributes extends HeadlessUIModule {
 		for (int j = 0; j < binMaxes.length; j++)
 		  binMaxes[j] = ((Double)list.get(j)).doubleValue();
 		// add the first bin manually
-		BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
-			binMaxes[0]);
+		//ANCA BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],binMaxes[0]);
+		BinDescriptor nbd = BinDescriptorFactory.createMinNumericBinDescriptor(colIdx[i],binMaxes[0],nf,tbl);
 		addItemToBinList(nbd);
 		for (int j = 1; j < binMaxes.length-1; j++) {
 		  // now create the BinDescriptor and add it to the bin list
-		  nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j -
-		  1], binMaxes[j]);
+		  //ANca nbd = createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j]);
+		  nbd = BinDescriptorFactory.createNumericBinDescriptor(colIdx[i], binMaxes[j - 1], binMaxes[j],nf,tbl);
 		  addItemToBinList(nbd);
 		}
-		nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length
-			- 2]);
+		//ANCA nbd = createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length- 2]);
+		nbd = BinDescriptorFactory.createMaxNumericBinDescriptor(colIdx[i], binMaxes[binMaxes.length- 2],nf,tbl);
 		addItemToBinList(nbd);
 	  }
 	}
@@ -1354,11 +1368,14 @@ public class BinAttributes extends HeadlessUIModule {
 	 */
 	private BinDescriptor createNumericBinDescriptor (int col, double min,
 		double max) {
+      System.out.println(" min " + min + " max " + max);
 	  StringBuffer nameBuffer = new StringBuffer();
 	  nameBuffer.append(OPEN_PAREN);
-	  nameBuffer.append(nf.format(min));
+	  //ANCA nameBuffer.append(nf.format(min));
+	  nameBuffer.append(min);
 	  nameBuffer.append(COLON);
-	  nameBuffer.append(nf.format(max));
+	  //ANCA nameBuffer.append(nf.format(max));
+	  nameBuffer.append(max);
 	  nameBuffer.append(CLOSE_BRACKET);
 	  BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
 		  min, max, tbl.getColumnLabel(col));
@@ -1373,7 +1390,8 @@ public class BinAttributes extends HeadlessUIModule {
 	  nameBuffer.append(OPEN_BRACKET);
 	  nameBuffer.append(DOTS);
 	  nameBuffer.append(COLON);
-	  nameBuffer.append(nf.format(max));
+	  //ANCA nameBuffer.append(nf.format(max));
+	  nameBuffer.append(max);
 	  nameBuffer.append(CLOSE_BRACKET);
 	  BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
 		  Double.NEGATIVE_INFINITY, max, tbl.getColumnLabel(col));
@@ -1386,7 +1404,8 @@ public class BinAttributes extends HeadlessUIModule {
 	private BinDescriptor createMaxNumericBinDescriptor (int col, double min) {
 	  StringBuffer nameBuffer = new StringBuffer();
 	  nameBuffer.append(OPEN_PAREN);
-	  nameBuffer.append(nf.format(min));
+	 //ANCA nameBuffer.append(nf.format(min));
+	 nameBuffer.append(min);
 	  nameBuffer.append(COLON);
 	  nameBuffer.append(DOTS);
 	  nameBuffer.append(CLOSE_BRACKET);
@@ -1520,7 +1539,6 @@ public class BinAttributes extends HeadlessUIModule {
   public void doit()throws Exception{
      Table table = (Table) pullInput(0);
     BinningUtils.validateBins(table, savedBins, getAlias());
-
      pushOutput(new BinTransform(savedBins, newColumn), 0);
 
   }
@@ -1630,3 +1648,16 @@ class TableBinCounts implements BinCounts {
  * 12-03-03 incorrect uniform binning [bug 153]
  *          missing values are binned as real values [bug 150]
  */
+
+/** 12-04-03 anca added "unknown" bins for columns that have missing values
+ *               changed  marked with ANCA  
+ * 			- fixed [bug 140], [bug 150]
+*/
+
+/** 12-05-03 - anca - fixed [bug 153]  - changes marked with ANCA
+ *              The problem: display of double values using NumberFormat.
+*               the margins of the interval for uniform binning are computed
+* 				using (max-min)/ number of internals and thus what appears
+*               as 3.6 interval margin is in fact 3.5999996. Without NumberFormat nf
+* 				the 3.59999996 will be displayed and there will be no confusion.
+*/
