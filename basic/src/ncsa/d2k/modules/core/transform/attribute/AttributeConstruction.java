@@ -772,6 +772,6 @@ public class AttributeConstruction extends HeadlessUIModule {
  *
  * 11-05-03 the headless version does not validates the constructing expressions.
  *          if the input table does not match the expressions - the transformation
- *          will fail.
+ *          will fail. - now it validates [11-06-03]
  */
 
