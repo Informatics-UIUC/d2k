@@ -71,12 +71,14 @@ public class NFoldCrossValidation extends ncsa.d2k.core.modules.DataPrepModule {
 	/**
 		Setup the indexing array and shuffle it randomly.
 	*/
-	protected void setup () {
+	protected void setup () throws Exception {
 
 		// First time through, init the table field, compute the
 		// breaks and indices
 		table = (Table) this.pullInput (0);
 		numRows = table.getNumRows ();
+		if (numRows < (N * 2))
+			throw new Exception (this.getAlias()+": There must be twice as many rows in a table as the number of folds to do N-Fold Cross Validation.");
 		breaks = this.getTableBreaks (numRows);
 		indices = new int [numRows];
 		for (int i = 0 ; i < numRows ; i++)
