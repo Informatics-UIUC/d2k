@@ -134,6 +134,15 @@ public class SQLBinAttributes extends HeadlessUIModule {
         }
     }
 
+/*	public boolean isReady() {
+			  if (!isInputPipeConnected(3)) {
+				return (getInputPipeSize(0)>0 &&
+						getInputPipeSize(1)>0 &&
+						getInputPipeSize(2)>0);
+			  }
+			  return super.isReady();
+			}
+			*/
     /**
      * Get the data types for the input parameters
      * @return Connection Wrapper, list of columns chosed, table name, where clause
@@ -1445,9 +1454,10 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             }
 
             for (int i = 0; i < colIdx.length; i++) {
+				Double db1 = null;
+						 ArrayList list = new ArrayList();
+         
               try {
-                Double db1 = null;
-                ArrayList list = new ArrayList();
                 int aColIdx = colIdx[i];
                 String colName = fieldNames[aColIdx];
                 //String colName = fieldNames[aColIdx].toLowerCase();
@@ -1471,10 +1481,20 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                 // put anything left in a bin
                 if (itemCnt > 0)
                   list.add(db1);
-
+				stmt.close();
+			  }
+					   catch (Exception e) {
+					  JOptionPane.showMessageDialog(msgBoard,
+							 e.getMessage(), "Error",
+							 JOptionPane.ERROR_MESSAGE);
+						   System.out.println("Error occoured in addFromWeight. " + e);
+					   }
+         
                 double[] binMaxes = new double[list.size()];
-                for (int j = 0; j < binMaxes.length; j++)
-                    binMaxes[j] = ((Double)list.get(j)).doubleValue();
+                for (int j = 0; j < binMaxes.length; j++) {
+                  binMaxes[j] = ((Double)list.get(j)).doubleValue();
+                 //System.out.println("binmaxes for j = " + j + " is " +  binMaxes[j]);
+                }
                 // add the first bin manually
                 BinDescriptor nbd = createMinNumericBinDescriptor(colIdx[i],
                         binMaxes[0]);
@@ -1486,16 +1506,10 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                     addItemToBinList(nbd);
                 }
                         // add the last bin - anca:
-                        nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-2]);
+                   if(binMaxes.length-2>0)     nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-2]);
+                   else     nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[0]);
                 addItemToBinList(nbd);
-                stmt.close();
-              }
-              catch (Exception e) {
-             JOptionPane.showMessageDialog(msgBoard,
-                    e.getMessage(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
-                  System.out.println("Error occoured in addFromWeight.");
-              }
+          
             }
         }
 
@@ -1787,5 +1801,6 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
  *
  * 01-08-04: vered.
   * user may create bins with identical names in same attribute [bug 207].
-
+*01-08-04 Anca:
+*fixed bug 177 by checking to see if binMaxes in addFromWeigth does have two maxes or only one 
  */
