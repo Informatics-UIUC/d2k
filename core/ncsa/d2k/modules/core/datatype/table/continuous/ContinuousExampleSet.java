@@ -1,214 +1,227 @@
-package ncsa.d2k.modules.projects.dtcheng;
+package ncsa.d2k.modules.core.datatype.table.continuous;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.TransformationModule;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-public class ContinuousExampleSet extends AbstractExampleSet implements ExampleTable, TestTable, java.io.Serializable {
+public class ContinuousExampleSet implements ExampleTable, java.io.Serializable {
 
-  public String [] inputNames;
-  public String [] outputNames;
-  int numFeatures;
   int numExamples;
-  int numInputs;
-  int numOutputs;
-  float data[];
-  int [] exampleIndices;
-  int [] testingSet;
+  int numFeatures;
+  String [] names;
+  int       numInputs;
+  int       numOutputs;
+  //String [] inputNames;
+  //String [] outputNames;
+  int    [] inputIndices;
+  int    [] outputIndices;
+  int    [] exampleIndices;
+  int    [] testingSet;
+
+  double data[];
 
   public ContinuousExampleSet () {
   }
 
-  public ContinuousExampleSet (float [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
+  void initialize(double [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
+
+    this.numExamples = numExamples;
+    this.numFeatures = numInputs + numOutputs;
+
+    this.names = new String[this.numFeatures];
+    for (int i = 0; i < numInputs; i++) {
+      this.names[i] = inputNames[i];
+    }
+    for (int i = 0; i < numOutputs; i++) {
+      this.names[numInputs + i] = outputNames[i];
+    }
+    this.numInputs   = numInputs;
+    this.numOutputs  = numOutputs;
+
+    //this.inputNames   = inputNames;
+    //this.outputNames  = outputNames;
+
+    this.inputIndices = new int[numInputs];
+    for (int i = 0; i < numInputs; i++) {
+      this.inputIndices[i] = i;
+    }
+    this.outputIndices = new int[numOutputs];
+    for (int i = 0; i < numOutputs; i++) {
+      this.outputIndices[i] = numInputs + i;
+    }
+
+    this.exampleIndices = new int[numExamples];
+    for (int i = 0; i < numExamples; i++)
+      this.exampleIndices[i] = i;
 
     this.data = data;
-    int [] exampleIndices = new int[numExamples];
-    for (int i = 0; i < numExamples; i++)
-      exampleIndices[i] = i;
-    this.exampleIndices = exampleIndices;
-    this.numExamples = numExamples;
-    this.numFeatures = numInputs + numOutputs;
-    this.numInputs   = numInputs;
-    this.numOutputs  = numOutputs;
-    this.inputNames   = inputNames;
-    this.outputNames  = outputNames;
   }
 
-/*
-  public void allocateExamplePointers(int numExamples) {
-    int [] exampleIndices = new int[numExamples];
-    this.exampleIndices = exampleIndices;
-    this.numExamples = numExamples;
-    }
 
-  public void allocateSpace(int numExamples, int numInputs, int numOutputs) {
-    this.data = new float[numExamples * (numInputs + numOutputs)];
-    int [] exampleIndices = new int[numExamples];
-    int [] testingSet = new int[numExamples];
-    for (int i = 0; i < numExamples; i++)
-      exampleIndices[i] = i;
-    this.exampleIndices = exampleIndices;
-    this.testingSet    = testingSet;
-    this.numExamples = numExamples;
-    this.numFeatures = numInputs + numOutputs;
-    this.numInputs   = numInputs;
-    this.numOutputs  = numOutputs;
-    }
 
-  public ExampleTable shallowCopy() {
-    ContinuousExampleSet copy = new ContinuousExampleSet();
-    copy.data             = this.data;
-    copy.exampleIndices   = this.exampleIndices;
-    copy.numExamples      = this.numExamples;
-    copy.numFeatures      = this.numFeatures;
-    copy.numInputs        = this.numInputs;
-    copy.numOutputs       = this.numOutputs;
-    copy.inputNames       = this.inputNames;
-    copy.outputNames      = this.outputNames;
-    return (ContinuousExampleSet) copy;
+  public ContinuousExampleSet (double [] data, int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
+
+    initialize(data, numExamples, numInputs, numOutputs, inputNames, outputNames);
   }
-*/
+
+
+  public ContinuousExampleSet (int numExamples, int numInputs, int numOutputs, String [] inputNames, String [] outputNames) {
+    double [] data = new double[numExamples * (numInputs + numOutputs)];
+    initialize(data, numExamples, numInputs, numOutputs, inputNames, outputNames);
+  }
+
+
+
+public ContinuousExampleSet (double [][][] data, String [] inputNames, String [] outputNames) {
+
+    int numExamples = data.length;
+    int numInputs   = inputNames.length;
+    int numOutputs  = outputNames.length;
+    int numFeatures = numInputs + numOutputs;
+
+    double [] values = new double[numExamples * numFeatures];
+
+    for (int e = 0; e < numExamples; e++) {
+      for (int i = 0; i < numInputs; i++) {
+        values[e * numFeatures             + i] = data[e][0][i];
+      }
+      for (int i = 0; i < numOutputs; i++) {
+        values[e * numFeatures + numInputs + i] = data[e][1][i];
+      }
+    }
+
+    initialize(values, numExamples, numInputs, numOutputs, inputNames, outputNames);
+
+
+  }
 
   public Table copy() {
     ContinuousExampleSet copy   = new ContinuousExampleSet();
-    copy.inputNames         = this.inputNames;
-    copy.outputNames        = this.outputNames;
-    copy.numFeatures        = this.numFeatures;
+
     copy.numExamples        = this.numExamples;
+    copy.numFeatures        = this.numFeatures;
+    copy.names              = (String []) this.names.clone();
     copy.numInputs          = this.numInputs;
     copy.numOutputs         = this.numOutputs;
-    copy.data               = (float []) this.data.clone();
-    copy.exampleIndices     = (int []) this.exampleIndices.clone();
+    //copy.inputNames         = (String []) this.inputNames.clone();
+    //copy.outputNames        = (String []) this.outputNames.clone();
+    copy.inputIndices       = (int    []) this.inputIndices.clone();
+    copy.outputIndices      = (int    []) this.outputIndices.clone();
+    copy.exampleIndices     = (int    []) this.exampleIndices.clone();
     if (testingSet != null)
-      copy.testingSet         = (int []) this.testingSet.clone();
+      copy.testingSet       = (int    []) this.testingSet.clone();
+    copy.data               = (double []) this.data.clone();
     return (Table) copy;
   }
 
-/*
-  public ContinuousExampleSet(AbstractExample [] examples)
-    {
-    this.examples    = examples;
-    this.numExamples = examples.length;
-    this.numInputs   = examples[0].getNumInputs();
-    this.numOutputs  = examples[0].getNumOutputs();
-    }
-
-  public void allocateExamplePointers(int numExamples)
-    {
-    this.examples = new AbstractExample[numExamples];
-    this.numExamples = numExamples;
-    }
-*/
-
-
 
   public double getInputDouble(int e, int i) {
-    return (double) data[exampleIndices[e] * numFeatures + i];
+    return (double) data[exampleIndices[e] * numFeatures + inputIndices[i]];
   }
 
   public double getOutputDouble(int e, int i) {
-    return (double) data[exampleIndices[e] * numFeatures + numInputs + i];
+    return (double) data[exampleIndices[e] * numFeatures + outputIndices[i]];
   }
 
 
   public String getInputString(int e, int i) {
-    return Float.toString(data[exampleIndices[e] * numFeatures + i]);
+    return Double.toString(data[exampleIndices[e] * numFeatures + inputIndices[i]]);
   }
 
   public String getOutputString(int e, int i) {
-    return Float.toString(data[exampleIndices[e] * numFeatures + numInputs + i]);
+    return Double.toString(data[exampleIndices[e] * numFeatures + outputIndices[i]]);
   }
 
   public int getInputInt(int e, int i) {
-    return (int) data[exampleIndices[e] * numFeatures + i];
+    return (int) data[exampleIndices[e] * numFeatures + inputIndices[i]];
   }
 
   public int getOutputInt(int e, int i) {
-    return (int) data[exampleIndices[e] * numFeatures + numInputs + i];
+    return (int) data[exampleIndices[e] * numFeatures  + outputIndices[i]];
   }
 
   public float getInputFloat(int e, int i) {
-    return (float) data[exampleIndices[e] * numFeatures + i];
+    return (float) data[exampleIndices[e] * numFeatures + inputIndices[i]];
   }
 
   public float getOutputFloat(int e, int i) {
-    return (float) data[exampleIndices[e] * numFeatures + numInputs + i];
+    return (float) data[exampleIndices[e] * numFeatures + outputIndices[i]];
   }
 
   public short getInputShort(int e, int i) {
-    return (short) data[exampleIndices[e] * numFeatures  + i];
+    return (short) data[exampleIndices[e] * numFeatures + inputIndices[i]];
   }
 
   public short getOutputShort(int e, int i) {
-    return (short) data[exampleIndices[e] * numFeatures + numInputs + i];
+    return (short) data[exampleIndices[e] * numFeatures  + outputIndices[i]];
   }
 
   public long getInputLong(int e, int i) {
-    return (long) data[exampleIndices[e] * numFeatures  + i];
+    return (long) data[exampleIndices[e] * numFeatures + inputIndices[i]];
   }
 
   public long getOutputLong(int e, int i) {
-    return (long) data[exampleIndices[e] * numFeatures + numInputs + i];
+    return (long) data[exampleIndices[e] * numFeatures  + outputIndices[i]];
   }
 
   public byte getInputByte(int e, int i) {
-    return (byte) data[exampleIndices[e] * numFeatures  + i];
+    return (byte) data[exampleIndices[e] * numFeatures + inputIndices[i]];
   }
 
   public byte getOutputByte(int e, int i) {
-    return (byte) data[exampleIndices[e] * numFeatures + numInputs + i];
+    return (byte) data[exampleIndices[e] * numFeatures + outputIndices[i]];
   }
 
   public Object getInputObject(int e, int i) {
-    return (Object) new Double(data[exampleIndices[e] * numFeatures  + i]);
+    return (Object) new Double(data[exampleIndices[e] * numFeatures + inputIndices[i]]);
   }
 
   public Object getOutputObject(int e, int i)
   {
-    return (Object) new Double(data[exampleIndices[e] * numFeatures + numInputs + i]);
+    return (Object) new Double(data[exampleIndices[e] * numFeatures + outputIndices[i]]);
   }
 
   public char getInputChar(int e, int i) {
-    return (char) data[exampleIndices[e] * numFeatures  + i];
+    return (char) data[exampleIndices[e] * numFeatures + inputIndices[i]];
   }
 
   public char getOutputChar(int e, int i) {
-    return (char) data[exampleIndices[e] * numFeatures + numInputs + i];
+    return (char) data[exampleIndices[e] * numFeatures + outputIndices[i]];
   }
 
   public byte[] getInputBytes(int e, int i) {
     byte [] bytes = new byte[1];
-    bytes[0] = (byte) data[exampleIndices[e] * numFeatures  + i];
+    bytes[0] = (byte) data[exampleIndices[e] * numFeatures + inputIndices[i]];
     return bytes;
   }
 
   public byte[] getOutputBytes(int e, int i) {
     byte [] bytes = new byte[1];
-    bytes[0] = (byte) data[exampleIndices[e] * numFeatures + numInputs + i];
+    bytes[0] = (byte) data[exampleIndices[e] * numFeatures + outputIndices[i]];
     return bytes;
   }
 
   public char[] getInputChars(int e, int i) {
     char [] chars = new char[1];
-    chars[0] = (char) data[exampleIndices[e] * numFeatures  + i];
+    chars[0] = (char) data[exampleIndices[e] * numFeatures + inputIndices[i]];
     return chars;
   }
 
   public char[] getOutputChars(int e, int i) {
     char [] chars = new char[1];
-    chars[0] = (char) data[exampleIndices[e] * numFeatures + numInputs + i];
+    chars[0] = (char) data[exampleIndices[e] * numFeatures + outputIndices[i]];
     return chars;
   }
 
   public boolean getInputBoolean(int e, int i) {
-    if (data[exampleIndices[e] * numFeatures  + i] < 0.5)
+    if (data[exampleIndices[e] * numFeatures + inputIndices[i]] < 0.5)
       return false;
     else
       return true;
   }
 
   public boolean getOutputBoolean(int e, int i) {
-    if (data[exampleIndices[e] * numFeatures + numInputs + i] < 0.5)
+    if (data[exampleIndices[e] * numFeatures + outputIndices[i]] < 0.5)
       return false;
     else
       return true;
@@ -223,33 +236,38 @@ public class ContinuousExampleSet extends AbstractExampleSet implements ExampleT
   }
 
   public Example getExample(int e) {
-    return (Example) new FloatExample(this, e);
+    return (Example) new ContinuousExample(this, e);
   }
 
 
   public String getInputName(int i) {
-    return this.inputNames[i];
+    return this.names[inputIndices[i]];
   }
-
-  public String [] getOutputNames() {
-    return this.outputNames;
-  }
-
   public String [] getInputNames() {
-    return this.inputNames;
+    String [] names = new String[this.numInputs];
+    for (int i = 0; i < this.numInputs; i++) {
+      names[i] = getInputName(i);
+    }
+    return names;
   }
 
   public String getOutputName(int i) {
-    return this.outputNames[i];
+    return this.names[outputIndices[i]];
+  }
+  public String [] getOutputNames() {
+    String [] names = new String[this.numOutputs];
+    for (int i = 0; i < this.numOutputs; i++) {
+      names[i] = getOutputName(i);
+    }
+    return names;
   }
 
+
   public int getInputType(int i) {
-    System.out.println("Must override this method!");
     return ColumnTypes.DOUBLE;
   }
 
   public int getOutputType(int i) {
-    System.out.println("Must override this method!");
     return ColumnTypes.DOUBLE;
   }
 
@@ -279,11 +297,11 @@ public class ContinuousExampleSet extends AbstractExampleSet implements ExampleT
   }
 
   public void setInput(int e, int i, double value) {
-    data[exampleIndices[e] * numFeatures + i] = (float) value;
+    data[exampleIndices[e] * numFeatures + inputIndices[i]] = (float) value;
   }
 
   public void setOutput(int e, int i, double value) {
-    data[exampleIndices[e] * numFeatures + numInputs + i] = (float) value;
+    data[exampleIndices[e] * numFeatures + outputIndices[i]] = (float) value;
   }
 
 /*
@@ -318,7 +336,7 @@ public class ContinuousExampleSet extends AbstractExampleSet implements ExampleT
   }
 
   public String getString(int row, int column) {
-    return Float.toString(data[exampleIndices[row] * numFeatures + column]);
+    return Double.toString(data[exampleIndices[row] * numFeatures + column]);
   }
 
   public byte[] getBytes(int row, int column) {
@@ -326,7 +344,7 @@ public class ContinuousExampleSet extends AbstractExampleSet implements ExampleT
   }
 
   public boolean getBoolean(int row, int column) {
-    float value = data[exampleIndices[row] * numFeatures + column];
+    double value = data[exampleIndices[row] * numFeatures + column];
     if (value < 0.5)
       return false;
     else
@@ -356,39 +374,31 @@ public class ContinuousExampleSet extends AbstractExampleSet implements ExampleT
   {
     String label = null;
     if (position < numInputs)
-      label = inputNames[position];
+      label = getInputName(position);
     else
-      label = outputNames[position - numInputs];
+      label = getOutputName(position - numInputs);
     return label;
   }
-  public String getColumnComment(int position)
-  {
+  public String getColumnComment(int position) {
     return null;
   }
-  public String getLabel()
-  {
+  public String getLabel() {
     return null;
   }
-  public void setLabel(String labl)
-  {
+  public void setLabel(String labl) {
   }
-  public String getComment()
-  {
+  public String getComment() {
     return null;
   }
-  public void setComment(String comment)
-  {
+  public void setComment(String comment) {
   }
-  public int getNumRows()
-  {
+  public int getNumRows() {
     return numExamples;
   }
-  public int getNumEntries()
-  {
+  public int getNumEntries() {
     return numExamples;
   }
-  public int getNumColumns()
-  {
+  public int getNumColumns() {
     return numFeatures;
   }
   public void getRow (Object buffer, int pos) {
@@ -520,6 +530,12 @@ public class ContinuousExampleSet extends AbstractExampleSet implements ExampleT
   public Table getSubset(int start, int len) {
     return null;
   }
+  public Table getSubsetByReference(int start, int len) {
+    return null;
+  }
+  public Table getSubsetByReference(int rows[]){
+    return null;
+  }
 
   public TableFactory getTableFactory() {
     return null;
@@ -553,7 +569,7 @@ public class ContinuousExampleSet extends AbstractExampleSet implements ExampleT
   public void addTransformation (TransformationModule tm) {
   }
 
-  public ArrayList getTransformations () {
+  public List getTransformations () {
     return null;
   }
 
@@ -822,15 +838,7 @@ public class ContinuousExampleSet extends AbstractExampleSet implements ExampleT
     int newIndex;
 
 
-    String [] newInputNames = new String[newNumInputs];
-    newIndex = 0;
-    for (int i = 0; i < numInputs; i++) {
-      if (!deleteFeatures[i])
-        newInputNames[newIndex++] = inputNames[i];
-    }
-    this.inputNames = newInputNames;
-
-    float [] newData = new float[numExamples * (newNumInputs + numOutputs)];
+    double [] newData = new double[numExamples * (newNumInputs + numOutputs)];
 
     for (int e = 0; e < numExamples; e++) {
       newIndex = 0;
@@ -865,5 +873,922 @@ public class ContinuousExampleSet extends AbstractExampleSet implements ExampleT
   public boolean scalarInput(int index) {
     return true;
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /**
+   * Add a row to the end of this Table, initialized with integer data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(int[] newEntry) {
+  }
+
+  /**
+   * Add a row to the end of this Table, initialized with float data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(float[] newEntry){
+  }
+  /**
+   * Add a row to the end of this Table, initialized with double data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(double[] newEntry){
+
+    int newNumExamples = numExamples + 1;
+    int [] newExampleIndices = new int[newNumExamples];
+    System.arraycopy(this.exampleIndices, 0, newExampleIndices, 0, this.numExamples);
+    newExampleIndices[this.exampleIndices.length] = this.numExamples;
+
+    double [] newData = new double[newNumExamples * this.numFeatures];
+    System.arraycopy(this.data, 0, newData, 0, this.numExamples * this.numFeatures);
+    System.arraycopy(newEntry, 0, newData, this.numExamples * this.numFeatures, this.numFeatures);
+
+    this.numExamples++;
+
+
+
+  }
+
+  /**
+   * Add a row to the end of this Table, initialized with long data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(long[] newEntry){
+  }
+
+  /**
+   * Add a row to the end of this Table, initialized with short data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(short[] newEntry){
+  }
+
+  /**
+   * Add a row to the end of this Table, initialized with boolean data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(boolean[] newEntry){
+  }
+
+  /**
+   * Add a row to the end of this Table, initialized with String data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(String[] newEntry){
+  }
+
+  /**
+   * Add a row to the end of this Table, initialized with char[] data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(char[][] newEntry) {
+  }
+
+  /**
+   * Add a row to the end of this Table, initialized with byte[] data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(byte[][] newEntry){
+  }
+
+  /**
+   * Add a row to the end of this Table, initialized with Object[] data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(Object[] newEntry){
+  }
+
+  /**
+   * Add a row to the end of this Table, initialized with byte data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(byte[] newEntry){
+  }
+
+  /**
+   * Add a row to the end of this Table, initialized with char data.
+   * @param newEntry the data to put into the new row.
+   */
+  public void addRow(char[] newEntry){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with integer data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(int[] newEntry, int position){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with float data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(float[] newEntry, int position){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with double data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(double[] newEntry, int position){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with long data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(long[] newEntry, int position){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with short data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(short[] newEntry, int position){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with boolean data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(boolean[] newEntry, int position){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with String data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(String[] newEntry, int position){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with char[] data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(char[][] newEntry, int position){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with byte[] data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(byte[][] newEntry, int position){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with Object data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(Object[] newEntry, int position){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with byte data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(byte[] newEntry, int position){
+  }
+
+  /**
+   * Insert a new row into this Table, initialized with char data.
+   * @param newEntry the data to put into the inserted row.
+   * @param position the position to insert the new row
+   */
+  public void insertRow(char[] newEntry, int position){
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with integer data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(int[] newEntry) {
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with float data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(float[] newEntry) {
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with double data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(double[] newEntry) {
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with long data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(long[] newEntry) {
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with short data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(short[] newEntry) {
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with boolean data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(boolean[] newEntry) {
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with String data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(String[] newEntry) {
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with char[] data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(char[][] newEntry) {
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with byte[] data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(byte[][] newEntry) {
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with Object data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(Object[] newEntry) {
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with byte data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(byte[] newEntry) {
+  }
+
+  /**
+   * Add a new column to the end of this table, initialized with char data.
+   * @param newEntry the data to initialize the column with.
+   */
+  public void addColumn(char[] newEntry) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with integer data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(int[] newEntry, int position) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with float data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(float[] newEntry, int position) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with double data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(double[] newEntry, int position) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with long data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(long[] newEntry, int position) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with short data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(short[] newEntry, int position) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with boolean data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(boolean[] newEntry, int position) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with String data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(String[] newEntry, int position) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with char[] data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(char[][] newEntry, int position) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with byte[] data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(byte[][] newEntry, int position) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with Object data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(Object[] newEntry, int position) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with byte data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(byte[] newEntry, int position) {
+  }
+
+  /**
+   * Insert a new column into this Table, initialized with char data.
+   * @param newEntry the initial values of the new column.
+   * @param position the position to insert the new row
+   */
+  public void insertColumn(char[] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of int data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(int[] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of float data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(float[] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of double data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(double[] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of long data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(long[] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of short data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(short[] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of boolean data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(boolean[] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of String data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(String[] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of char[] data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(char[][] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of byte[] data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(byte[][] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of Object data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(Object[] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of byte data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(byte[] newEntry, int position) {
+  }
+
+  /**
+   * Set the row at the given position to an array of char data.
+   *	@param newEntry the new values of the row.
+   *	@param position the position to set
+   */
+  public void setRow(char[] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of int data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(int[] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of float data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(float[] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of double data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(double[] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of long data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(long[] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of short data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(short[] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of boolean data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(boolean[] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of String data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(String[] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of char data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(char[][] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of byte[] data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(byte[][] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of Object data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(Object[] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of byte data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(byte[] newEntry, int position) {
+  }
+
+  /**
+   * Set the column at the given position to an array of char data.
+   *	@param newEntry the new values of the column.
+   *	@param position the position to set
+   */
+  public void setColumn(char[] newEntry, int position) {
+  }
+
+  /**
+  Remove a column from the table.
+  @param position the position of the Column to remove
+  */
+  public void removeColumn(int position) {
+  }
+
+  /**
+  Remove a range of columns from the table.
+  @param start the start position of the range to remove
+  @param len the number to remove-the length of the range
+  */
+  public void removeColumns(int start, int len) {
+  }
+
+  /**
+   * Remove a row from this Table.
+   * @param row the row to remove
+   */
+  public void removeRow(int row) {
+  }
+
+  /**
+  Remove a range of rows from the table.
+  @param start the start position of the range to remove
+  @param len the number to remove-the length of the range
+  */
+  public void removeRows(int start, int len) {
+  }
+
+  /**
+   * Remove rows from this Table using a boolean map.
+   * @param flags an array of booleans to map to this Table's rows.  Those
+   * with a true will be removed, all others will not be removed
+   */
+  public void removeRowsByFlag(boolean[] flags) {
+  }
+
+  /**
+   * Remove rows from this Table using a boolean map.
+   * @param flags an array of booleans to map to this Table's rows.  Those
+   * with a true will be removed, all others will not be removed
+   */
+  public void removeColumnsByFlag(boolean[] flags) {
+  }
+
+  /**
+   * Remove rows from this Table by index.
+   * @param indices a list of the rows to remove
+   */
+  public void removeRowsByIndex(int[] indices) {
+  }
+
+  /**
+   * Remove rows from this Table by index.
+   * @param indices a list of the rows to remove
+   */
+  public void removeColumnsByIndex(int[] indices) {
+  }
+
+  /**
+  Get a copy of this Table reordered based on the input array of indexes.
+  Does not overwrite this Table.
+  @param newOrder an array of indices indicating a new order
+  @return a copy of this column with the rows reordered
+  */
+  public Table reorderRows(int[] newOrder) {
+    return null;
+  }
+
+  /**
+  Get a copy of this Table reordered based on the input array of indexes.
+  Does not overwrite this Table.
+  @param newOrder an array of indices indicating a new order
+  @return a copy of this column with the rows reordered
+  */
+  public Table reorderColumns(int[] newOrder) {
+    return null;
+  }
+
+  /**
+  Swap the positions of two rows.
+  @param pos1 the first row to swap
+  @param pos2 the second row to swap
+  */
+  public void swapRows(int pos1, int pos2) {
+  }
+
+  /**
+  Swap the positions of two columns.
+  @param pos1 the first column to swap
+  @param pos2 the second column to swap
+  */
+  public void swapColumns(int pos1, int pos2) {
+  }
+
+  /**
+  Set a specified element in the table.  If an element exists at this
+  position already, it will be replaced.  If the position is beyond the capacity
+  of this table then an ArrayIndexOutOfBounds will be thrown.
+  @param element the new element to be set in the table
+  @param row the row to be changed in the table
+  @param column the Column to be set in the given row
+  */
+  public void setObject(Object element, int row, int column) {
+  }
+
+  /**
+   * Set an int value in the table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setInt(int data, int row, int column) {
+  }
+
+  /**
+   * Set a short value in the table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setShort(short data, int row, int column) {
+  }
+
+  /**
+   * Set a float value in the table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setFloat(float data, int row, int column) {
+  }
+
+  /**
+   * Set an double value in the table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setDouble(double data, int row, int column) {
+  }
+
+  /**
+   * Set a long value in the table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setLong(long data, int row, int column) {
+  }
+
+  /**
+   * Set a String value in the table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setString(String data, int row, int column) {
+  }
+
+  /**
+   * Set a byte[] value in the table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setBytes(byte[] data, int row, int column) {
+  }
+
+  /**
+   * Set a boolean value in the table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setBoolean(boolean data, int row, int column) {
+  }
+
+  /**
+   * Set a char[] value in the table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setChars(char[] data, int row, int column) {
+  }
+
+  /**
+   * Set a byte value in the table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setByte(byte data, int row, int column) {
+  }
+
+  /**
+   * Set a char value in the table.
+   * @param data the value to set
+   * @param row the row of the table
+   * @param column the column of the table
+   */
+  public void setChar(char data, int row, int column) {
+  }
+
+  /**
+  Set the name associated with a column.
+  @param label the new column label
+  @param position the index of the column to set
+  */
+  public void setColumnLabel(String label, int position) {
+  }
+
+  /**
+  Set the comment associated with a column.
+  @param comment the new column comment
+  @param position the index of the column to set
+  */
+  public void setColumnComment(String comment, int position) {
+  }
+
+  /**
+     Set the number of columns this Table can hold.
+     @param numColumns the number of columns this Table can hold
+     */
+  public void setNumColumns(int numColumns) {
+  }
+
+  /**
+  Sort the specified column and rearrange the rows of the table to
+  correspond to the sorted column.
+  @param col the column to sort by
+  */
+  public void sortByColumn(int col) {
+  }
+
+  /**
+       Sort the elements in this column starting with row 'begin' up to row 'end',
+    @param col the index of the column to sort
+       @param begin the row no. which marks the beginnig of the  column segment to be sorted
+       @param end the row no. which marks the end of the column segment to be sorted
+       */
+  public void sortByColumn(int col, int begin, int end) {
+  }
+
+  /**
+  Sets a new capacity for this Table.  The capacity is its potential
+  maximum number of entries.  If numEntries is greater than newCapacity,
+  then the Table may be truncated.
+  @param newCapacity a new capacity
+  */
+  public void setNumRows(int newCapacity) {
+  }
+
+  /////////// Collect the transformations that were performed. /////////
+  /**
+     Add the transformation to the list.
+     @param tm the Transformation that performed the reversable transform.
+     */
+  public void addTransformation (Transformation tm) {
+  }
+
+  /**
+   * Set the value at (row, col) to be missing or not missing.
+   * @param b true if the value should be set as missing, false otherwise
+   * @param row the row index
+   * @param col the column index
+   */
+  public void setValueToMissing(boolean b, int row, int col) {
+  }
+
+  /**
+   * Set the value at (row, col) to be empty or not empty.
+   * @param b true if the value should be set as empty, false otherwise
+   * @param row the row index
+   * @param col the column index
+   */
+  public void setValueToEmpty(boolean b, int row, int col) {
+  }
+
+  /**
+   * Set the value used to signify a nominal empty value for col.
+   * @param val the new value
+   * @param col the column index
+   */
+  //public void setNominalEmptyValue(String val, int col);
+
+  /**
+   * Set the value used to signify a scalar missing value for col.
+   * @param val the new value
+   * @param col the column index
+   */
+  //public void setScalarMissingValue(Number val, int col);
+
+  /**
+   * Set the value used to signify a nominal missing value for col.
+   * @param val the new value
+   * @param col the column index
+   */
+  //public void setNominalMissingValue(String val, int col);
+
+  /**
+   * Set the value used to signify a scalar empty value for col.
+   * @param val the new value
+   * @param col the column index
+   */
+  //public void setScalarEmptyValue(Number val, int col);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
