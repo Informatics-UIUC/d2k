@@ -314,19 +314,18 @@ public class CompoundModelGen extends ModelGeneratorModule
 
 		public PredictionTable predict(ExampleTable et){
 
-			PredictionTableImpl predTable;
+			PredictionTable predTable;
 			if(et instanceof PredictionTable){
-				predTable=(PredictionTableImpl)et;
+				predTable=(PredictionTable)et;
 			}else{
-				predTable= (PredictionTableImpl)et.toPredictionTable();
+				predTable= (PredictionTable)et.toPredictionTable();
 			}
 
 			//if there are no spots for pred columns
 			if(predTable.getNumOutputFeatures()==0){
 				for(int i=0; i<outputNames.length; i++){
-					DoubleColumn dc=new DoubleColumn(et.getNumRows());
-					dc.setLabel(outputNames[i]);
-					predTable.addPredictionColumn(dc);
+					double[] dc = new double[et.getNumRows()];
+					predTable.addPredictionColumn(dc ,outputNames[i]);
 				}
 			}
 
@@ -339,12 +338,9 @@ public class CompoundModelGen extends ModelGeneratorModule
 			predTable.setOutputFeatures(new int[1]);
 			predTable.setPredictionSet(new int[1]);
 			for(int i=0; i<models.length;i++){
-				/*predTable.getOutputFeatures()[0]=
-					holdOutputFeatures()[i];
-				*/
 				predTable.getPredictionSet()[0]=
 					holdPredictionSet[i];
-				predTable=(PredictionTableImpl)models[i].predict(predTable);
+				predTable=(PredictionTable)models[i].predict(predTable);
 			}
 			predTable.setOutputFeatures(holdOutputFeatures);
 			predTable.setPredictionSet(holdPredictionSet);
