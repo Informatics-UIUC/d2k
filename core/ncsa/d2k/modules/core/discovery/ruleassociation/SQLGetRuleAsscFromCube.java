@@ -89,7 +89,7 @@ public class SQLGetRuleAsscFromCube extends UIModule
 
   public String getOutputInfo (int i) {
 		switch (i) {
-			case 0: return "An object of class RuleTable.";
+			case 0: return "An object of RuleTable.";
 			default: return "No such output";
 		}
 	}
@@ -97,14 +97,42 @@ public class SQLGetRuleAsscFromCube extends UIModule
   public String getInputInfo (int i) {
 		switch (i) {
 			case 0: return "JDBC data source to make database connection.";
-			case 1: return "The name of the table which stores the data statistics.";
+			case 1: return "The name of the cube table which stores the data statistics.";
 			default: return "No such input";
 		}
 	}
 
   public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    Extract association rules from a cube table  </body></html>";
-	}
+        String s = "<p> Overview: ";
+          s += "This module extracts association rules from a cube table. </p>";
+          s += "<p> Detailed Description: ";
+          s += "This module first makes a connection to a database and retrieves the ";
+          s += "data from a specified cube table, then compute the association ";
+          s += "rules and present them to users. Each association rule has 4 components: 'IF' ";
+          s += "part, 'THEN' part, 'SUPPORT' part, and 'CONFIDENCE' part. ";
+          s += "The 'IF' part is the condition of the rule, or called left-hand side ";
+          s += "of the rule. The 'THEN' part is the target of the rule, or called ";
+          s += "right-hand side of the rule. 'SUPPORT' and 'CONFIDENCE' are ";
+          s += "two measuresre of rule interestingness. They respectively reflect ";
+          s += "the usefulness and certainty of discovered rules. A support of 2% ";
+          s += "for a rule means that 2% of data under analysis support this rule. ";
+          s += "A confidence of 60% means that 60% of data that match 'IF' condition ";
+          s += "support this rule. You can control the rule generation by three ";
+          s += "parameters: 'minimum support', 'minimum confidence', and 'pruning ";
+          s += "threshold'. By setting 'minimum support' and 'minimum confidence' lower ";
+          s += "you would get more trivial rules. However, by setting 'minimum support' ";
+          s += "and 'minimum confidence' higher, you might loose some important rules. ";
+          s += "The parameter 'pruning threshold' is used to prune rules after they ";
+          s += "are generated. A 'pruning threshold' 10% means if the confidence ";
+          s += "of two similar rules is less than 10%, the more specialized rule ";
+          s += "will be pruned. This module also provides an user-interface to filter out rules. ";
+          s += "You can specify the 'IF' part by choosing a condition, and specify ";
+          s += "the 'THEN' part by choosing a target. This module will only generate ";
+          s += "association rules that match your selection.";
+          s += "<p> Restrictions: ";
+          s += "We currently only support Oracle database.";
+          return s;
+  }
 
   public String[] getInputTypes () {
 		String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper","java.lang.String"};
@@ -142,10 +170,10 @@ public class SQLGetRuleAsscFromCube extends UIModule
    *           rule is pruned. E.g. A=>C (confidence 0.95) and (A,B)=>C
    *           (confidence 0.94), with pruningThreshold 0.1, (A,B)=>C is pruned
    */
-  public void setPruningThreshold (double i) {
+  public void setThreshold (double i) {
     threshold = i;
   }
-  public double getPruningThreshold () {
+  public double getThreshold () {
     return threshold;
   }
 
@@ -307,18 +335,28 @@ public class SQLGetRuleAsscFromCube extends UIModule
           }
           finalRules = new ArrayList();
           filterRules();
-          convertToRuleTable();
-          if (sortC.getState()) {
-            sortRuleTable(CONFIDENCE);
-          }
-          else if (sortS.getState()) {
-            sortRuleTable(SUPPORT);
-          }
+          if (finalRules.size() > 0) {
+            convertToRuleTable();
+            if (sortC.getState()) {
+              sortRuleTable(CONFIDENCE);
+            }
+            else if (sortS.getState()) {
+              sortRuleTable(SUPPORT);
+            }
 
-          RuleTable rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
+            RuleTable rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
                     itemLabels, freqItemSets);
 
-          pushOutput(rt, 0);
+            pushOutput(rt, 0);
+          }
+          // if no rules discovered, inform user.
+          else {
+            JOptionPane.showMessageDialog(msgBoard,
+            "There is no rule discovered. You may like to adjust " +
+            "Minimum Support, Minimum Confidence and Pruning Threshold, and try again.",
+            "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("There is no table selected.");
+          }
         }
         else { // The user has not chosen a table yet
           JOptionPane.showMessageDialog(msgBoard,
@@ -987,9 +1025,9 @@ public class SQLGetRuleAsscFromCube extends UIModule
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "Connect Wrapper";
+				return "Database Connection";
 			case 1:
-				return "Cube Table Name";
+				return "Cube Table";
 			default: return "NO SUCH INPUT!";
 		}
 	}

@@ -65,9 +65,7 @@ public class SQLRuleAsscReport extends UIModule
 
   public String getInputInfo (int i) {
 		switch (i) {
-			case 0: return "A rule table that has 4 columns: Head, Body, Support and Confidence.";
-			case 1: return "An array list that contains all rule labels (column name = column value).";
-                        case 3: return "An array list that contains all frequent item sets.";
+			case 0: return "A table that has 4 columns: Head, Body, Support and Confidence.";
 			default: return "No such input";
 		}
 	}
@@ -79,8 +77,22 @@ public class SQLRuleAsscReport extends UIModule
 	}
 
   public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    Display the association rules in text format.  </body></html>";
-	}
+    String s = "<p> Overview: ";
+    s += "This module displays the association rules in a tablet form. </p>";
+    s += "<p> Detailed Description: ";
+    s += "This module takes a rule table, that has 4 columns: Head, Body, ";
+    s += "Support and Confidence, as an input and displays the association ";
+    s += "rules in a tablet form. The first column in the table is the 'IF' ";
+    s += "part of the rule, the third column is the 'THEN' part of the rule, ";
+    s += "the second column is the logic symbol '==>' to connect IF and THEN, ";
+    s += "and the forth and fifth columns represent the rule's support and ";
+    s += "confidence, respectively. The rules displayed in the table can be filtered by different ";
+    s += "threshold on support and confidence, and can be sorted by support or ";
+    s += "confidence by the user interface module 'SQLGetRuleAsscFromCube'. </p>";
+    s += "<p> Restrictions: ";
+    s += "We currently only support Oracle database.";
+    return s;
+  }
 
   public String[] getOutputTypes () {
 		String[] types = {		};
@@ -91,6 +103,22 @@ public class SQLRuleAsscReport extends UIModule
 		String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"};
 		return types;
 	}
+
+  public String getInputName(int index) {
+    switch(index) {
+      case 0:
+        return "Rule Table";
+      default: return "NO SUCH INPUT!";
+    }
+  }
+
+  public String getOutputName(int index) {
+    return "NO SUCH OUTPUT!";
+  }
+
+  public String getModuleName() {
+    return "SQLRuleAsscReport";
+  }
 
   protected String[] getFieldNameMapping () {
     return null;
@@ -289,39 +317,5 @@ public class SQLRuleAsscReport extends UIModule
       e.printStackTrace();
     }
   }
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "SQLRuleAsscReport";
-	}
 
-	/**
-	 * Return the human readable name of the indexed input.
-	 * @param index the index of the input.
-	 * @return the human readable name of the indexed input.
-	 */
-	public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "input0";
-			case 1:
-				return "input1";
-                        case 2:
-                                return "input2";
-			default: return "NO SUCH INPUT!";
-		}
-	}
-
-	/**
-	 * Return the human readable name of the indexed output.
-	 * @param index the index of the output.
-	 * @return the human readable name of the indexed output.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			default: return "NO SUCH OUTPUT!";
-		}
-	}
 }
